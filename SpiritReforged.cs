@@ -34,7 +34,7 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Load()
 	{
-		SaplingTile.Autoload(this);
+		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();

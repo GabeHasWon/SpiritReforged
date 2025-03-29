@@ -9,32 +9,6 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 /// <summary> Simplifies building a sapling tile by automatically setting common data. See <see cref="SaplingTile{T}"/> for <see cref="CustomTree"/>s. </summary>
 public abstract class SaplingTile : ModTile
 {
-	#region custom tree
-	//Excluded from SaplingTile<T> because it is generic
-	/// <summary> Stores tile anchors for custom trees. </summary>
-	public static readonly HashSet<ushort> CustomAnchorTypes = [];
-
-	/// <summary> Autoloads <see cref="CustomModTree"/>s for each <see cref="SaplingTile{T}"/> in the mod. Ensure that this is called after all required tiles are loaded. </summary>
-	public static void Autoload(Mod mod)
-	{
-		var saplings = mod.GetContent<SaplingTile>().ToArray();
-
-		for (int i = saplings.Length - 1; i >= 0; i--)
-		{
-			var c = saplings[i];
-
-			//Use reflection because we can't infer generic type here
-			if (c.GetType().GetProperty("AnchorTypes", BindingFlags.Instance | BindingFlags.Public)?.GetValue(c) is int[] anchors)
-			{
-				mod.AddContent(new CustomModTree(c.Type, anchors));
-
-				foreach (int type in anchors)
-					CustomAnchorTypes.Add((ushort)type);
-			}
-		}
-	}
-	#endregion
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -95,6 +69,11 @@ public abstract class SaplingTile<T> : SaplingTile where T : CustomTree
 {
 	public abstract int[] AnchorTypes { get; }
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		CustomSapling.SaplingToCustomTree.Add(Type, ModContent.GetInstance<T>().Type);
+	}
 	/// <summary> Called before <see cref="TileObjectData.addTile"/> is automatically called in <see cref="SetStaticDefaults"/>.<br/>
 	/// Use this to modify object data without needing to override SetStaticDefaults.</summary>
 	public override void PreAddObjectData() => TileObjectData.newTile.AnchorValidTiles = AnchorTypes;
@@ -102,5 +81,33 @@ public abstract class SaplingTile<T> : SaplingTile where T : CustomTree
 	{
 		if (Main.rand.NextBool(8))
 			CustomTree.GrowTree<T>(i, j);
+	}
+}
+
+public static class CustomSapling
+{
+	/// <summary> Stores custom saplings and their associated tree types. </summary>
+	public static readonly Dictionary<ushort, ushort> SaplingToCustomTree = [];
+	/// <summary> Stores tile anchors for custom trees. </summary>
+	public static readonly HashSet<ushort> CustomAnchorTypes = [];
+
+	/// <summary> Autoloads <see cref="CustomModTree"/>s for each <see cref="SaplingTile{T}"/> in the mod. Ensure that this is called after all required tiles are loaded. </summary>
+	public static void Autoload(Mod mod)
+	{
+		var saplings = mod.GetContent<SaplingTile>().ToArray();
+
+		for (int i = saplings.Length - 1; i >= 0; i--)
+		{
+			var c = saplings[i];
+
+			//Use reflection because we can't infer generic type here
+			if (c.GetType().GetProperty("AnchorTypes", BindingFlags.Instance | BindingFlags.Public)?.GetValue(c) is int[] anchors)
+			{
+				mod.AddContent(new CustomModTree(c.Type, anchors));
+
+				foreach (int type in anchors)
+					CustomAnchorTypes.Add((ushort)type);
+			}
+		}
 	}
 }

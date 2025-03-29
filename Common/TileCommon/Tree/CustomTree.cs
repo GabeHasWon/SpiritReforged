@@ -30,7 +30,21 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	private static bool AppliedDetours = false;
 
-	/// <summary> Grows a custom tree at the given coordinates. </summary>
+	#region grow methods
+	/// <summary> Attempts to grow a custom tree from a sapling at the given coordinates. </summary>
+	/// <returns> Whether the tree was successfully grown. </returns>
+	public static bool GrowTree(int i, int j)
+	{
+		if (!CustomSapling.SaplingToCustomTree.TryGetValue(Main.tile[i, j].TileType, out ushort type) || TileLoader.GetTile(type) is not CustomTree instance)
+			return false;
+
+		while (!WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(i, j + 1)))
+			j++; //Find the ground
+
+		return GrowTreeFromInstance(i, j, instance);
+	}
+
+	/// <summary> Attempts to grow a custom tree of <see cref="{T}"/> at the given coordinates. </summary>
 	/// <returns> Whether the tree was successfully grown. </returns>
 	public static bool GrowTree<T>(int i, int j) where T : CustomTree
 	{
@@ -38,6 +52,11 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 			j++; //Find the ground
 
 		var instance = ModContent.GetInstance<T>() as CustomTree;
+		return GrowTreeFromInstance(i, j, instance);
+	}
+
+	private static bool GrowTreeFromInstance(int i, int j, CustomTree instance)
+	{
 		int height = instance.TreeHeight;
 
 		if (WorldGen.InWorld(i, j) && WorldMethods.AreaClear(i, j - (height - 1), 1, height))
@@ -51,11 +70,10 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 		return Framing.GetTileSafely(i, j).TileType == instance.Type;
 	}
+	#endregion
 
 	#region detours
-	/// <summary> <inheritdoc/><para/>
-	/// Includes detours for tree drawing.
-	/// </summary>
+	/// <summary> <inheritdoc/><para/> Includes detours for tree drawing and logic. </summary>
 	public override void Load()
 	{
 		if (Main.dedServ || AppliedDetours)
@@ -63,7 +81,9 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 		On_TileDrawing.DrawTrees += DrawAllFoliage;
 		On_TileDrawing.PreDrawTiles += ResetPoints;
+
 		On_WorldGen.IsTileTypeFitForTree += MakeUnfit;
+		On_Player.IsBottomOfTreeTrunkNoRoots += ConfirmTreeTrunk;
 
 		AppliedDetours = true;
 	}
@@ -90,10 +110,20 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 	/// <summary> Forces <see cref="CustomModTree"/>s to be unfit for gen. </summary>
 	private static bool MakeUnfit(On_WorldGen.orig_IsTileTypeFitForTree orig, ushort type)
 	{
-		if (SaplingTile.CustomAnchorTypes.Contains(type))
+		if (CustomSapling.CustomAnchorTypes.Contains(type))
 			return false;
 
 		return orig(type);
+	}
+
+	/// <summary> Allows custom trees to work with the Axe of Regrowth. </summary>
+	private static bool ConfirmTreeTrunk(On_Player.orig_IsBottomOfTreeTrunkNoRoots orig, Player self, int x, int y)
+	{
+		var t = Main.tile[x, y];
+		if (t.HasTile && TileLoader.GetTile(t.TileType) is CustomTree && t.TileType != Main.tile[x, y + 1].TileType)
+			return true; //Skips orig
+
+		return orig(self, x, y);
 	}
 	#endregion
 
