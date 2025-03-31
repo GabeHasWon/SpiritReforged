@@ -138,19 +138,24 @@ internal class BackpackPlayerData : PacketData
 	public override void OnReceive(BinaryReader reader, int whoAmI)
 	{
 		bool visibility = reader.ReadBoolean();
-		byte player = reader.ReadByte();
+		byte who = reader.ReadByte();
 
 		Item backpack = ItemIO.Receive(reader);
 		Item vanity = ItemIO.Receive(reader);
 		Item dye = ItemIO.Receive(reader);
 
-		Main.player[player].GetModPlayer<BackpackPlayer>().packVisible = visibility;
-		Main.player[player].GetModPlayer<BackpackPlayer>().backpack = backpack;
-		Main.player[player].GetModPlayer<BackpackPlayer>().vanityBackpack = vanity;
-		Main.player[player].GetModPlayer<BackpackPlayer>().packDye = dye;
+		Player player = Main.player[who];
+		player.GetModPlayer<BackpackPlayer>().packVisible = visibility;
+
+		if (Main.myPlayer != who) // Don't override backpack on player who sent the packet
+		{
+			player.GetModPlayer<BackpackPlayer>().backpack = backpack;
+			player.GetModPlayer<BackpackPlayer>().vanityBackpack = vanity;
+			player.GetModPlayer<BackpackPlayer>().packDye = dye;
+		}
 
 		if (Main.netMode == NetmodeID.Server)
-			new BackpackPlayerData(visibility, player).Send(ignoreClient: whoAmI);
+			new BackpackPlayerData(visibility, who).Send(ignoreClient: who);
 	}
 
 	public override void OnSend(ModPacket modPacket)
