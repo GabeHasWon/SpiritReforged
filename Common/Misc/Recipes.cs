@@ -41,6 +41,6 @@ internal class Recipes : ModSystem
 		RecipeGroup.RegisterGroup("PHMEvilMaterial", BaseGroup(ItemID.ShadowScale, [ItemID.ShadowScale, ItemID.TissueSample]));
 		RecipeGroup.RegisterGroup("EvilMaterial", BaseGroup(ItemID.CursedFlame, [ItemID.CursedFlame, ItemID.Ichor]));
 		RecipeGroup.RegisterGroup("Shells", BaseGroup(ItemID.Seashell, [ItemID.Seashell, ItemID.TulipShell, ItemID.JunoniaShell, ItemID.LightningWhelkShell]));
-		//RecipeGroup.RegisterGroup("ArcaneNecklace", BaseGroup(ModContent.ItemType<ArcaneNecklaceGold>(), [ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()]));
+		RecipeGroup.RegisterGroup("ClayAndMud", BaseGroup(ItemID.ClayBlock, [ItemID.ClayBlock, ItemID.MudBlock]));
 	}
 }

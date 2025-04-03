@@ -1349,3 +1349,118 @@ AncientKoiTotem: {
 	Tooltip: ""
 
 }
+
+PotteryWheelItem: {
+	DisplayName: Pottery Wheel
+	Tooltip: Used for crafting decorative pots
+}
+
+CavernPotItem: {
+	DisplayName: Cavern Pot
+	Tooltip: ""
+}
+
+GoldPotItem: {
+	DisplayName: Ornate Pot
+	Tooltip: ""
+}
+
+IcePotItem: {
+	DisplayName: Frozen Pot
+	Tooltip: ""
+}
+
+DesertPotItem: {
+	DisplayName: Desert Pot
+	Tooltip: ""
+}
+
+JunglePotItem: {
+	DisplayName: Jungle Pot
+	Tooltip: ""
+}
+
+DungeonPotItem: {
+	DisplayName: Dungeon Pot
+	Tooltip: ""
+}
+
+CorruptPotItem: {
+	DisplayName: Corrupt Pot
+	Tooltip: ""
+}
+
+CrimsonPotItem: {
+	DisplayName: Crimson Pot
+	Tooltip: ""
+}
+
+MarblePotItem: {
+	DisplayName: Marble Pot
+	Tooltip: ""
+}
+
+HellPotItem: {
+	DisplayName: Obsidian Pot
+	Tooltip: ""
+}
+
+AncientCavernPotItem: {
+	DisplayName: Ancient Cavern Pot
+	Tooltip: ""
+}
+
+AncientIcePotItem: {
+	DisplayName: Ancient Frozen Pot
+	Tooltip: ""
+}
+
+AncientJunglePotItem: {
+	DisplayName: Ancient Jungle Pot
+	Tooltip: ""
+}
+
+AncientDungeonPotItem: {
+	DisplayName: Ancient Dungeon Pot
+	Tooltip: ""
+}
+
+AncientHellPotItem: {
+	DisplayName: Ancient Obsidian Pot
+	Tooltip: ""
+}
+
+AncientCorruptPotItem: {
+	DisplayName: Ancient Corrupt Pot
+	Tooltip: ""
+}
+
+AncientSpiderPotItem: {
+	DisplayName: Ancient Spider Pot
+	Tooltip: ""
+}
+
+AncientCrimsonPotItem: {
+	DisplayName: Ancient Crimson Pot
+	Tooltip: ""
+}
+
+AncientPyramidPotItem: {
+	DisplayName: Ancient Pyramid Pot
+	Tooltip: ""
+}
+
+AncientTemplePotItem: {
+	DisplayName: Ancient Temple Pot
+	Tooltip: ""
+}
+
+AncientMarblePotItem: {
+	DisplayName: Ancient Marble Pot
+	Tooltip: ""
+}
+
+AncientDesertPotItem: {
+	DisplayName: Ancient Desert Pot
+	Tooltip: ""
+}

@@ -1,3 +1,4 @@
+using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Cloud.Items;
@@ -20,10 +21,18 @@ public class BiomePots : ModTile
 	private static readonly HashSet<Point16> GlowPoints = [];
 
 	#region drawing detours
+	/// <summary> Prevents static detours from being applied twice when the rubble is autoloaded. </summary>
+	private static bool AppliedDetours;
+
 	public override void Load()
 	{
-		DrawOrderSystem.DrawTilesNonSolidEvent += DrawGlow;
-		On_TileDrawing.PreDrawTiles += ClearAll;
+		if (!AppliedDetours)
+		{
+			DrawOrderSystem.DrawTilesNonSolidEvent += DrawGlow;
+			On_TileDrawing.PreDrawTiles += ClearAll;
+
+			AppliedDetours = true;
+		}
 	}
 
 	private static void DrawGlow()
