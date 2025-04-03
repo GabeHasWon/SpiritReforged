@@ -1338,5 +1338,5 @@ WayfarerLegs: {
 
 AncientKoiTotem: {
 	// DisplayName: Ancient Koi Totem
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
 }

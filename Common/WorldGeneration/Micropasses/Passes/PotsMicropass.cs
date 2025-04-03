@@ -10,6 +10,24 @@ internal class PotsMicropass : Micropass
 {
 	public override string WorldGenName => "Pots";
 
+	public override void Load(Mod mod) => On_WorldGen.PlacePot += MushroomPotConversion;
+
+	/// <summary> 50% chance to replace regular pots placed on mushroom grass. </summary>
+	private static bool MushroomPotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
+	{
+		if (WorldGen.generatingWorld && Main.rand.NextBool())
+		{
+			var ground = Main.tile[x, y + 1];
+			if (ground.HasTile && ground.TileType == TileID.MushroomGrass)
+			{
+				WorldGen.PlaceTile(x, y, ModContent.TileType<MushroomPots>(), true, style: Main.rand.Next(3));
+				return false; //Skips orig
+			}
+		}
+
+		return orig(x, y, type, style);
+	}
+
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
 		afterIndex = true;
@@ -76,10 +94,12 @@ internal class PotsMicropass : Micropass
 			style = GetRange(BiomePots.Style.Crimson);
 		else if (tile is TileID.Marble)
 			style = GetRange(BiomePots.Style.Marble);
+		else if (tile is TileID.MushroomGrass)
+			style = GetRange(BiomePots.Style.Mushroom);
 
 		if (y > Main.UnderworldLayer)
 			style = GetRange(BiomePots.Style.Hell);
-		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick || Main.wallDungeon[wall])
+		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick && Main.wallDungeon[wall])
 			style = GetRange(BiomePots.Style.Dungeon);
 
 		if (style != -1)

@@ -5,10 +5,8 @@ public class WayfarerBody : ModItem
 {
 	public override void Load()
 	{
-		if (Main.netMode == NetmodeID.Server)
-			return;
-
-		EquipLoader.AddEquipTexture(Mod, $"{Texture}_{EquipType.Back}", EquipType.Back, this);
+		if (!Main.dedServ)
+			EquipLoader.AddEquipTexture(Mod, $"{Texture}_{EquipType.Back}", EquipType.Back, this);
 	}
 
 	public override void SetStaticDefaults() => ArmorIDs.Body.Sets.NeedsToDrawArm[Item.bodySlot] = true;
@@ -25,8 +23,14 @@ public class WayfarerBody : ModItem
 	public override void UpdateEquip(Player player)
 	{
 		player.moveSpeed += 0.05f;
-		player.runAcceleration += .01f;
+		player.runAcceleration += 0.01f;
+	}
 
-		player.back = (sbyte)EquipLoader.GetEquipSlot(Mod, $"{Texture}_{EquipType.Back}", EquipType.Back);
+	public override void EquipFrameEffects(Player player, EquipType type)
+	{
+		var bodyVanitySlot = player.armor[11];
+
+		if (bodyVanitySlot.IsAir || bodyVanitySlot.type == Type)
+			player.back = (sbyte)EquipLoader.GetEquipSlot(Mod, nameof(WayfarerBody), EquipType.Back);
 	}
 }

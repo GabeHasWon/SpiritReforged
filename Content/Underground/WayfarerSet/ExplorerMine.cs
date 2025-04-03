@@ -1,6 +1,6 @@
 ﻿namespace SpiritReforged.Content.Underground.WayfarerSet;
 
-class ExplorerMine : ModBuff
+public class ExplorerMine : ModBuff
 {
 	public override void SetStaticDefaults() => Main.buffNoTimeDisplay[Type] = false;
 

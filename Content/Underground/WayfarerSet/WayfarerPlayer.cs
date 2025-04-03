@@ -1,10 +1,9 @@
 ﻿using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.Particles;
-using Terraria;
+using SpiritReforged.Content.Underground.Tiles;
+using System.Linq;
 using Terraria.Audio;
-using Terraria.ModLoader;
 
 namespace SpiritReforged.Content.Underground.WayfarerSet;
 
@@ -27,59 +26,45 @@ internal class WayfarerPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		Item bodyVanitySlot = Player.armor[11];
-		Item bodyArmorSlot = Player.armor[1];
-		if (bodyVanitySlot.type == ModContent.ItemType<WayfarerBody>() || bodyArmorSlot.type == ModContent.ItemType<WayfarerBody>() && bodyVanitySlot.IsAir)
-			Player.back = (sbyte)EquipLoader.GetEquipSlot(Mod, nameof(WayfarerBody), EquipType.Back);
+		if (active)
+			Player.GetModPlayer<CoinLootPlayer>().enemyCoinMultiplier = 1.1f;
 	}
 }
 
-internal class WayfarerNPC : GlobalNPC
+internal class WayfarerGlobalTile : GlobalTile
 {
-	public override bool PreKill(NPC npc)
-	{
-		if (Main.player[npc.lastInteraction].GetModPlayer<WayfarerPlayer>().active)
-			npc.value *= 1.1f; //+10% coin drops (same as pearl string)
+	private static readonly int[] PotTypes = [TileID.Pots, ModContent.TileType<BiomePots>(), ModContent.TileType<StackablePots>(), ModContent.TileType<MushroomPots>()];
 
-		return true;
-	}
-}
-
-internal class WayfarerTile : GlobalTile
-{
 	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (!Main.dedServ)
+		if (Main.dedServ)
+			return;
+
+		var player = Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(), 16, 16)];
+
+		if (player.GetModPlayer<WayfarerPlayer>().active && PotTypes.Contains(type))
 		{
-			// TODO: Add all pot variants here
-			Player player = Main.LocalPlayer;
-			if (player.GetModPlayer<WayfarerPlayer>().active && type == TileID.Pots)
-			{
-				if (!player.HasBuff(ModContent.BuffType<ExplorerPot>()))
-					DoFX();
+			if (!player.HasBuff<ExplorerPot>())
+				DoFX(player);
 
-				player.AddBuff(ModContent.BuffType<ExplorerPot>(), 600);
-			}
+			player.AddBuff(ModContent.BuffType<ExplorerPot>(), 600);
+		}
 
-			if (player.GetModPlayer<WayfarerPlayer>().active && Main.tileSpelunker[type] && Main.tileSolid[type])
-			{
-				if (!player.HasBuff(ModContent.BuffType<ExplorerMine>()))
-					DoFX();
+		if (player.GetModPlayer<WayfarerPlayer>().active && Main.tileSpelunker[type] && Main.tileSolid[type])
+		{
+			if (!player.HasBuff<ExplorerMine>())
+				DoFX(player);
 
-				player.AddBuff(ModContent.BuffType<ExplorerMine>(), 600);
-			}
+			player.AddBuff(ModContent.BuffType<ExplorerMine>(), 600);
 		}
 	}
 
-	public void DoFX()
+	private static void DoFX(Player player)
 	{
-		Player player = Main.LocalPlayer;
 		SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 2f }, player.Center);
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/PositiveOutcome") with { Pitch = -.35f }, player.Center);
 
 		for (int i = 0; i < 12; i++)
 			ParticleHandler.SpawnParticle(new GlowParticle(player.Center, Main.rand.NextVector2CircularEdge(1, 1), Color.PapayaWhip, Main.rand.NextFloat(0.25f, 0.4f), Main.rand.Next(30, 50), 8));
-
 	}
 }
-

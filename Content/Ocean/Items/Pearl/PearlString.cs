@@ -23,17 +23,8 @@ public class PearlString : AccessoryItem
 	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
 		base.UpdateAccessory(player, hideVisual);
+
 		player.luck += .15f;
-	}
-}
-
-internal class PearlStringNPC : GlobalNPC
-{
-	public override bool PreKill(NPC npc)
-	{
-		if (Main.player[npc.lastInteraction].HasAccessory<PearlString>())
-			npc.value *= 1.1f; //+10% coin drops
-
-		return true;
+		player.GetModPlayer<CoinLootPlayer>().enemyCoinMultiplier = 1.1f;
 	}
 }

@@ -12,7 +12,7 @@ public class BiomePots : ModTile
 {
 	public enum Style : int
 	{
-		Cavern, Gold, Ice, Desert, Jungle, Dungeon, Corruption, Crimson, Marble, Hell
+		Cavern, Gold, Ice, Desert, Jungle, Dungeon, Corruption, Crimson, Marble, Hell, Mushroom
 	}
 
 	/// <summary> Unit for distance-based vfx. </summary>
@@ -74,7 +74,7 @@ public class BiomePots : ModTile
 			var world = new Vector2(i, j) * 16;
 			float strength = Main.LocalPlayer.DistanceSQ(world) / (DistMod * DistMod);
 
-			if (strength < 1 && Main.rand.NextFloat(5f) < 1f - strength)
+			if (strength < 1 && Main.rand.NextFloat(8f) < 1f - strength)
 			{
 				var d = Dust.NewDustDirect(world, 16, 16, DustID.TreasureSparkle, 0, 0, Scale: Main.rand.NextFloat());
 				d.noGravity = true;
@@ -328,7 +328,7 @@ public class BiomePots : ModTile
 
 				if (style == Style.Desert)
 					type = ItemID.FossilOre;
-				else if (style == Style.Dungeon)
+				else if (style == Style.Dungeon && NPC.downedBoss3)
 					type = ItemID.Bone;
 				else if (style == Style.Marble)
 					type = ItemID.Javelin;
@@ -384,7 +384,8 @@ public class BiomePots : ModTile
 				{ Style.Corruption, [ItemID.CorruptTorch, ItemID.UnholyArrow] },
 				{ Style.Crimson, [ItemID.CrimsonTorch, ItemID.UnholyArrow] },
 				{ Style.Marble, [ItemID.YellowTorch, ItemID.JestersArrow] },
-				{ Style.Hell, [ItemID.DemonTorch, ItemID.HellfireArrow] }
+				{ Style.Hell, [ItemID.DemonTorch, ItemID.HellfireArrow] },
+				{ Style.Mushroom, [ItemID.MushroomTorch, ItemID.WoodenArrow] }
 			};
 
 			int index = (context == "arrow") ? 1 : 0;
