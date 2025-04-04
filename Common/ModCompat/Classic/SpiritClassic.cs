@@ -42,6 +42,8 @@ internal class SpiritClassic : ModSystem
 
 			ClassicToReforged.Add(id, item.Type);
 			ItemID.Sets.ShimmerTransformToItem[id] = item.Type; //Populate shimmer transformations
+
+			ClassicMod.Call("AddItemDefinition", id, item.Type);
 		}
 
 		if (ClassicMod.TryFind("SulfurDeposit", out ModItem sulfur)) //Add Sulfur to our Hydrothermal vent pool

@@ -1,10 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Misc.Maps;
 
+[FromClassic("MapScroll")]
 public class TornMapPiece : ModItem
 {
 	public override void SetStaticDefaults()
