@@ -26,13 +26,11 @@ public class JellyfishMinion : BaseMinion
 	private const int AISTATE_PASSIVEFLOAT = 0; //jellyfish bouncing around player
 	private const int AISTATE_FLYTOPLAYER = 1; //ignore tiles and fly to player if too far
 	private const int AISTATE_AIMTOTARGET = 2; //slowly aim to target, then charge at them
-	private const int AISTATE_DASH = 3; //during the dash
-	private const int AISTATE_PREPARESHOOT = 4; //between the dash and before shooting, adjust velocity and rotation to rise upwards
-	private const int AISTATE_SHOOT = 5; //when near target, hover in place and shoot lightning
+	private const int AISTATE_PREPARESHOOT = 3; //between the dash and before shooting, adjust velocity and rotation to rise upwards
+	private const int AISTATE_SHOOT = 4; //when near target, hover in place and shoot lightning
 
 	//Constants used in drawing methods and for the ai pattern
 	private const int SHOOTTIME = 45; //Time between shots
-	private const int DASHTIME = 30; //Time the dash takes
 	private const int AIMTIME = 50; //Time it takes to aim the dash
 	private const int BOUNCETIME = 90; //General time between bounces
 	private const int RISETIME = 20; //Time it takes to rise upwards after the dash
@@ -119,12 +117,12 @@ public class JellyfishMinion : BaseMinion
 
 	public override void TargettingBehavior(Player player, NPC target)
 	{
-		Projectile.tileCollide = true;
+		Projectile.tileCollide = false;
 		AiTimer++;
 
 		if (AiState < AISTATE_AIMTOTARGET)
 		{
-			AiState = Projectile.Distance(target.Center) >= SHOOT_RANGE ? AISTATE_AIMTOTARGET : AISTATE_PREPARESHOOT;
+			AiState = (Projectile.Distance(target.Center) >= SHOOT_RANGE || !Collision.CanHit(Projectile, target)) ? AISTATE_AIMTOTARGET : AISTATE_PREPARESHOOT;
 			AiTimer = 0;
 			Projectile.netUpdate = true;
 		}
@@ -143,47 +141,9 @@ public class JellyfishMinion : BaseMinion
 				{
 					AiTimer = 0;
 					AiState = AISTATE_PREPARESHOOT;
-
-					/*AiState = AISTATE_DASH;
-					AiTimer = 0;
-					float DashSpeed = 26;
-					Projectile.velocity = Projectile.DirectionTo(target.Center) * DashSpeed;
-					Projectile.rotation = AdjustedVelocityAngle;
-					Projectile.netUpdate = true;
-
-					if (!Main.dedServ)
-					{
-						Color particleColor = IsPink ? new Color(255, 161, 225) : new Color(156, 255, 245);
-						for (int i = 0; i < 8; i++)
-						{
-							var particleVelocity = Projectile.velocity.RotatedByRandom(MathHelper.Pi / 2) * Main.rand.NextFloat(0.03f, 0.05f);
-							ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, particleVelocity, particleColor, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30), 4));
-						}
-
-						for (int i = 0; i < 6; i++)
-						{
-							var particleVelocity = Projectile.velocity * Main.rand.NextFloat(0.1f, 0.25f);
-							ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + Main.rand.NextVector2Circular(10, 10), particleVelocity, particleColor, Main.rand.NextFloat(0.4f, 0.6f), 50, 3, delegate (Particle p) { p.Velocity *= 0.97f; }));
-						}
-					}*/
 				}
 
 				break;
-
-			/*case AISTATE_DASH:
-				//put vfx here maybe
-
-				Projectile.velocity *= 0.96f;
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * Projectile.velocity.Length(), 0.025f);
-
-				if (AiTimer >= DASHTIME)
-				{
-					AiState = Projectile.Distance(target.Center) >= SHOOT_RANGE ? AISTATE_AIMTOTARGET : AISTATE_PREPARESHOOT;
-					AiTimer = 0;
-					Projectile.netUpdate = true;
-				}
-
-				break;*/
 
 			case AISTATE_PREPARESHOOT:
 				float progress = AiTimer / RISETIME;
@@ -242,7 +202,7 @@ public class JellyfishMinion : BaseMinion
 					Projectile.velocity = 0.5f * new Vector2(-xSpeed * aimDirection.X, -ySpeed);
 				}
 
-				if (Projectile.Distance(target.Center) >= SHOOT_RANGE)
+				if (Projectile.Distance(target.Center) >= SHOOT_RANGE || !Collision.CanHit(Projectile, target))
 				{
 					AiState = AISTATE_AIMTOTARGET;
 					AiTimer = 0;
@@ -270,17 +230,6 @@ public class JellyfishMinion : BaseMinion
 			Projectile.QuickDraw(Main.spriteBatch, Projectile.rotation, null, drawColor);
 		}
 
-		void DrawGlowmask(float opacity)
-		{
-			GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Projectile.type, out var glowMask);
-			Vector2 position = Projectile.Center - Main.screenPosition;
-			for (int j = 0; j < 4; j++)
-			{
-				position += Vector2.UnitX.RotatedBy(MathHelper.PiOver2 * j);
-				Main.spriteBatch.Draw(glowMask.Glowmask.Value, position, Projectile.DrawFrame(), Projectile.GetAlpha(drawColor * opacity), Projectile.rotation, Projectile.DrawFrame().Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-			}
-		}
-
 		if (AiState == AISTATE_SHOOT)
 		{
 			DrawGlowmask(Math.Min(AiTimer / SHOOTTIME, 1) / 5);
@@ -294,46 +243,30 @@ public class JellyfishMinion : BaseMinion
 			DrawGlowmask(flashOpacity);
 		}
 
-		if (AiState == AISTATE_DASH)
-		{
-			Color trailColor = GetColor;
-			trailColor.A = 0;
-			float opacity = (1 - (float)Math.Cos(MathHelper.TwoPi * AiTimer / DASHTIME)) / 4;
-			opacity = EaseFunction.EaseCircularOut.Ease(opacity);
-			DrawGlowmask(opacity);
-			Projectile.QuickDrawTrail(Main.spriteBatch, opacity, Projectile.rotation, null, trailColor);
-		}
-
 		return false;
+
+		void DrawGlowmask(float opacity)
+		{
+			GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Projectile.type, out var glowMask);
+			Vector2 position = Projectile.Center - Main.screenPosition;
+			for (int j = 0; j < 4; j++)
+			{
+				position += Vector2.UnitX.RotatedBy(MathHelper.PiOver2 * j);
+				Main.spriteBatch.Draw(glowMask.Glowmask.Value, position, Projectile.DrawFrame(), Projectile.GetAlpha(drawColor * opacity), Projectile.rotation, Projectile.DrawFrame().Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			}
+		}
 	}
 
 	public override void PostAI()
 	{
 		Lighting.AddLight(Projectile.Center, GetColor.ToVector3() * .25f);
 
-		//lifted almost directly from old ai
-		foreach (Projectile p in Main.projectile.Where(x => x.active && x != null && x.type == Projectile.type && x.owner == Projectile.owner && x != Projectile))
-			if (p.Hitbox.Intersects(Projectile.Hitbox) && AiState != AISTATE_DASH)
-				Projectile.velocity += Projectile.DirectionFrom(p.Center) / 10;
-	}
-
-	public override bool OnTileCollide(Vector2 oldVelocity)
-	{
-		if (AiState == AISTATE_DASH)
+		foreach (var p in Main.ActiveProjectiles) //Avoid grouping up
 		{
-			SoundEngine.PlaySound(SoundID.NPCHit13.WithVolumeScale(0.5f).WithPitchOffset(0.3f), Projectile.Center);
-			Collision.HitTiles(Projectile.Center, Projectile.velocity, Projectile.width, Projectile.height);
-			Projectile.Bounce(oldVelocity, 0.25f);
+			if (p.whoAmI != Projectile.whoAmI && p.type == Projectile.type && p.owner == Projectile.owner && p.Hitbox.Intersects(Projectile.Hitbox))
+				Projectile.velocity += Projectile.DirectionFrom(p.Center) / 10;
 		}
-
-		return false;
 	}
 
-	public override bool MinionContactDamage() => AiState == AISTATE_DASH;
-
-	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
-	{
-		fallThrough = true;
-		return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
-	}
+	public override bool MinionContactDamage() => false;
 }

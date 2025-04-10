@@ -64,15 +64,7 @@ public abstract class BaseMinion(float TargettingRange, float DeaggroRange, Vect
 	public override void AI()
 	{
 		float maxdist = TargettingRange;
-		NPC miniontarget = Projectile.OwnerMinionAttackTargetNPC;
-		bool CanReachTarget(NPC npc, bool initialTargetCheck)
-		{
-			bool success = npc.CanBeChasedBy(this) && CanSelectTarget(npc) && npc.Distance(Player.Center) <= DeaggroRange;
-			if (npc.Distance(Player.Center) > maxdist && npc.Distance(Projectile.Center) > maxdist && !HadTarget && initialTargetCheck) //Only check when it's looking for a new valid target
-				return false;
-
-			return success;
-		}
+		var miniontarget = Projectile.OwnerMinionAttackTargetNPC;
 
 		if (miniontarget != null && CanReachTarget(miniontarget, false))
 			_targetNPC = miniontarget;
@@ -111,12 +103,23 @@ public abstract class BaseMinion(float TargettingRange, float DeaggroRange, Vect
 		int framespersecond = 1;
 		int startframe = 0;
 		int endframe = Main.projFrames[Projectile.type];
+
 		if (DoAutoFrameUpdate(ref framespersecond, ref startframe, ref endframe))
 			UpdateFrame(framespersecond, startframe, endframe);
+
+		bool CanReachTarget(NPC npc, bool initialTargetCheck)
+		{
+			bool success = npc.CanBeChasedBy(this) && CanSelectTarget(npc) && npc.Distance(Player.Center) <= DeaggroRange;
+
+			if (npc.Distance(Player.Center) > maxdist && npc.Distance(Projectile.Center) > maxdist && !HadTarget && initialTargetCheck) //Only check when it's looking for a new valid target
+				return false;
+
+			return success;
+		}
 	}
 
-	/// <summary> Checks whether this minion is allowed to aggro on <paramref name="target"/>. Involves a simple collision check by default. </summary>
-	public virtual bool CanSelectTarget(NPC target) => Collision.CanHitLine(Projectile.Center, 0, 0, target.Center, 0, 0);
+	/// <summary> Checks whether this minion is allowed to aggro on <paramref name="target"/>. Involves simple collision and target checks by default. </summary>
+	public virtual bool CanSelectTarget(NPC target) => target == _targetNPC || Collision.CanHitLine(Projectile.Center, 0, 0, target.Center, 0, 0);
 
 	public virtual void IdleMovement(Player player) { }
 

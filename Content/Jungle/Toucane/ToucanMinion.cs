@@ -23,9 +23,6 @@ public class ToucanMinion : BaseMinion
 
 	private int _featherShotFrameTime;
 	/// <summary> For how long this minion can select a target without considering collision. </summary>
-	private int _targetMemory;
-	/// <summary> The whoAmI of the last NPC target. Expires with <see cref="_targetMemory"/>. </summary>
-	private int _lastTargetInMemory = -1;
 
 	public ToucanMinion() : base(700, 1200, new Vector2(40, 40)) { }
 
@@ -102,8 +99,6 @@ public class ToucanMinion : BaseMinion
 		AiTimer++;
 
 		_featherShotFrameTime = 0;
-		_targetMemory = 0;
-		_lastTargetInMemory = -1;
 
 		if (AiState is not STATE_HOVERTORESTSPOT and not STATE_RESTING and not STATE_HOVERIDLY)
 		{
@@ -189,26 +184,6 @@ public class ToucanMinion : BaseMinion
 
 			AiState = STATE_HOVERIDLY;
 		}
-	}
-
-	public override bool CanSelectTarget(NPC target)
-	{
-		var projRect = Projectile.getRect();
-		var npcRect = target.getRect();
-		bool inCollisionRange = Collision.CanHitLine(projRect.Top(), 0, 0, npcRect.TopLeft(), npcRect.Width, npcRect.Height);
-
-		if (target.whoAmI == _lastTargetInMemory || inCollisionRange)
-		{
-			if (inCollisionRange)
-			{
-				_targetMemory = TargetMemoryMax;
-				_lastTargetInMemory = target.whoAmI;
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private bool CanLandProjectile(NPC target) => Collision.CanHitLine(Projectile.Center, 0, 0, target.Center, 0, 0);
@@ -323,11 +298,6 @@ public class ToucanMinion : BaseMinion
 		}
 
 		_featherShotFrameTime = Math.Max(_featherShotFrameTime - 1, 0);
-		_targetMemory = Math.Max(_targetMemory - 1, 0);
-
-		if (_targetMemory == 0)
-			_lastTargetInMemory = -1;
-
 		AiTimer++;
 	}
 
