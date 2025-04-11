@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.BigBombs;
@@ -34,6 +35,14 @@ public class BoomShroom : AccessoryItem
 internal class BoomShroomPlayer : ModPlayer
 {
 	private static readonly Dictionary<int, int> SmallToLarge = [];
+
+	public static int MakeLarge(int type)
+	{
+		if (SmallToLarge.TryGetValue(type, out int value))
+			return value;
+
+		return type;
+	}
 
 	public override void SetStaticDefaults()
 	{
