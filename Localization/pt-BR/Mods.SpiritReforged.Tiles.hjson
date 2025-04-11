@@ -11,6 +11,10 @@ Records: {
 
 		Value increases when further underground.
 		''' */
+	// Worm: Scatters a variety of worms when destroyed.
+	// Platter: A hot meal ready for the taking. Who would leave this behind?
+	// Aether: Provides various useful, sparkly upgrades.
+	// Stuffed: What a strange place to find a merchant. They're just asking to be bothered.
 	// Biome: Contains a greater variety of loot than common pots.
 }
 

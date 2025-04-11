@@ -1,10 +1,12 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Content.Underground.Pottery;
+using SpiritReforged.Content.Underground.Tiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-/// <summary> Helper for building pot tiles automatically registered in the Potstiary. </summary>
+/// <summary> Helper for building pot tiles automatically registered in the Potstiary.<br/>
+/// Automatically calls <see cref="LootTable.Resolve"/> if this tile implements <see cref="ILootTile"/>. </summary>
 public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => default; //Effectively creates no connection with the Rubblemaker item
@@ -49,10 +51,10 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 		Main.tileFrameImportant[Type] = true;
 		Main.tileSpelunker[Type] = true;
 
-		AddObjectData();
-
 		AddMapEntry(new Color(100, 90, 35), Language.GetText("MapObject.Pot"));
 		DustType = -1;
+
+		AddObjectData();
 	}
 
 	/// <summary> Adds object data for this pot. By default, assumes <see cref="TileObjectData.Style2x2"/> with <see cref="TileObjectData.StyleWrapLimit"/> of 3. </summary>
@@ -70,6 +72,26 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 	}
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		if (Autoloader.IsRubble(Type) || WorldGen.generatingWorld)
+			return;
+
+		if (Main.netMode != NetmodeID.MultiplayerClient && this is ILootTile loot)
+		{
+			var position = new Vector2(i, j).ToWorldCoordinates(16, 16);
+
+			var p = Main.player[Player.FindClosest(position, 0, 0)];
+			loot.AddLoot(TileObjectData.GetTileStyle(Main.tile[i, j])).Resolve(new Rectangle((int)position.X - 16, (int)position.Y - 16, 32, 32), p);
+		}
+
+		if (!Main.dedServ)
+			DeathEffects(i, j, frameX, frameY);
+	}
+
+	/// <summary> Called after <see cref="ModTile.KillMultiTile"/> on singleplayer/multiplayer clients. </summary>
+	public virtual void DeathEffects(int i, int j, int frameX, int frameY) { }
 
 	/// <summary> Calculates coin values similarly to how vanilla pots do. </summary>
 	internal static float CalculateCoinValue()

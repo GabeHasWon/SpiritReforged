@@ -3,15 +3,19 @@ using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.NPCs;
+using System.Linq;
 
 namespace SpiritMod.World.Micropasses;
 
 internal class PotsMicropass : Micropass
 {
+	private delegate bool GenDelegate(int x, int y);
+	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
+		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
+
 	public override string WorldGenName => "Pots";
 
 	public override void Load(Mod mod) => On_WorldGen.PlacePot += MushroomPotConversion;
-
 	/// <summary> 50% chance to replace regular pots placed on mushroom grass. </summary>
 	private static bool MushroomPotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
 	{
@@ -36,26 +40,25 @@ internal class PotsMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
 	{
-		const int maxTries = 5000; //Failsafe
-
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Caves");
 
-		int maxPots = (int)(Main.maxTilesX * Main.maxTilesY * 0.0005); //Normal weight is 0.0008
+		Generate(CreateStuffed, Main.maxTilesX / WorldGen.WorldSizeSmallX * 9, out _);
+		Generate(CreateWorm, Main.maxTilesX / WorldGen.WorldSizeSmallX * 24, out _);
+		Generate(CreatePlatter, Main.maxTilesX / WorldGen.WorldSizeSmallX * 28, out _);
+		Generate(CreateAether, Main.maxTilesX / WorldGen.WorldSizeSmallX * 3, out _);
+
+		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005), out _); //Normal pot generation weight is 0.0008
+		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055), out int pots);
+
+		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
+	}
+
+	/// <param name="count"> The target number of successes. </param>
+	/// <param name="generated"> The actual number of successes. </param>
+	private static void Generate(GenDelegate del, int count, out int generated)
+	{
+		const int maxTries = 5000; //Failsafe
 		int pots = 0;
-
-		for (int t = 0; t < maxTries; t++) //Generate stacked pots
-		{
-			int x = Main.rand.Next(20, Main.maxTilesX - 20);
-			int y = Main.rand.Next((int)GenVars.worldSurfaceHigh, Main.maxTilesY - 20);
-
-			WorldMethods.FindGround(x, ref y);
-
-			if (CreateStack(x, y - 1) && ++pots >= maxPots)
-				break;
-		}
-
-		maxPots = (int)(Main.maxTilesX * Main.maxTilesY * 0.00055);
-		pots = 0;
 
 		for (int t = 0; t < maxTries; t++) //Generate uncommon pots
 		{
@@ -64,11 +67,59 @@ internal class PotsMicropass : Micropass
 
 			WorldMethods.FindGround(x, ref y);
 
-			if (CreateUncommon(x, y - 1) && ++pots >= maxPots)
+			if (del(x, y - 1) && ++pots >= count)
 				break;
 		}
 
-		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
+		generated = pots;
+	}
+
+	private static bool CreateStuffed(int x, int y)
+	{
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || Main.tile[x, y].LiquidAmount > 100 || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<StuffedPots>();
+		WorldGen.PlaceTile(x, y, type, true, style: Main.rand.Next(3));
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	private static bool CreateWorm(int x, int y)
+	{
+		int wall = Main.tile[x, y].WallType;
+
+		if (y < Main.worldSurface && wall == WallID.None || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<WormPot>();
+		WorldGen.PlaceTile(x, y, type, true);
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	private static bool CreatePlatter(int x, int y)
+	{
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<SilverPlatters>();
+		WorldGen.PlaceTile(x, y, type, true, style: Main.rand.Next(3));
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	private static bool CreateAether(int x, int y)
+	{
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !NearShimmer() || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<AetherShipment>();
+		WorldGen.PlaceTile(x, y, type, true);
+
+		return Main.tile[x, y].TileType == type;
+
+		bool NearShimmer() => Math.Abs(x - GenVars.shimmerPosition.X) < Main.maxTilesX * .2f && Math.Abs(y - GenVars.shimmerPosition.Y) < Main.maxTilesY * .2f;
 	}
 
 	/// <summary> Picks a relevant biome pot style and places it (<see cref="BiomePots"/>). </summary>
@@ -150,5 +201,12 @@ internal class PotsMicropass : Micropass
 		return false;
 
 		static int GetRandomStyle() => WorldGen.genRand.Next(12);
+	}
+
+	/// <summary> Checks whether the below tile is contained in <see cref="CommonBlacklist"/>. </summary>
+	private static bool CommonSurface(int x, int y)
+	{
+		var t = Main.tile[x, y + 1];
+		return !CommonBlacklist.Contains(t.TileType);
 	}
 }

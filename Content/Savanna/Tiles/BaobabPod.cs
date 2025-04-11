@@ -4,15 +4,11 @@ using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Savanna.Items.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 public class BaobabPod : ModTile, ISwayTile
 {
-	/// <summary> Stores modified rotation per top-left tile coordinate. </summary>
-	private static readonly Dictionary<Point16, float> hitData = [];
-
 	private const int numStages = 3;
 
 	public override void SetStaticDefaults()
@@ -44,16 +40,14 @@ public class BaobabPod : ModTile, ISwayTile
 
 		if (!Main.dedServ)
 		{
-			//Add hitData
-			float random = Main.rand.NextFloat(-1f, 1f) * .5f;
-			var key = new Point16(i, j);
-			if (!hitData.TryAdd(key, random))
-				hitData[key] = random;
+			ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f), fail);
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/HardNaturalHit") with { Pitch = stage - 1 }, new Vector2(i + 1, j + 1) * 16);
 			for (int d = 0; d < 10; d++)
+			{
 				Dust.NewDustDirect(new Vector2(i, j) * 16, 32, 32, DustType, Scale: Main.rand.NextFloat())
 					.velocity = (Vector2.UnitY * -Main.rand.NextFloat(2f)).RotatedByRandom(MathHelper.Pi);
+			}
 		}
 
 		if (stage == numStages - 1) //Break open
@@ -138,12 +132,6 @@ public class BaobabPod : ModTile, ISwayTile
 			NetMessage.SendData(MessageID.SyncItem, number: id, number2: 100f);
 	}
 
-	public override void KillMultiTile(int i, int j, int frameX, int frameY)
-	{
-		var key = new Point16(i, j);
-		hitData.Remove(key);
-	} //Remove our hitdata
-
 	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
@@ -155,28 +143,10 @@ public class BaobabPod : ModTile, ISwayTile
 		var position = new Vector2(i, j) * 16 - Main.screenPosition;
 		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, data.CoordinateHeights[t.TileFrameY / 18]);
 
-		spriteBatch.Draw(texture, position + origin, source, color, GetRotation(i, j), origin, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position + origin, source, color, ISwayTile.GetInstancedRotation(i, j), origin, 1, SpriteEffects.None, 0);
 
 		if (t.TileFrameY > 0)
 			DrawGrassOverlay(i, j, spriteBatch, offset, rotation, origin);
-
-		//Update hitData
-		TileExtensions.GetTopLeft(ref i, ref j);
-
-		var key = new Point16(i, j);
-		if (hitData.TryGetValue(key, out float hitRot))
-			hitData[key] = MathHelper.Lerp(hitRot, 0, .1f);
-
-		static float GetRotation(int i, int j)
-		{
-			TileExtensions.GetTopLeft(ref i, ref j);
-
-			var key = new Point16(i, j);
-			if (hitData.TryGetValue(key, out float rotation))
-				return rotation;
-
-			return 0;
-		}
 	}
 
 	private static void DrawGrassOverlay(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)

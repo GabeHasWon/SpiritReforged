@@ -40,19 +40,18 @@ public struct TileRecord(string key, int tileType, params int[] tileStyles)
 
 		int tileStyle = styles[0];
 		var data = TileObjectData.GetTileData(type, 0);
+
+		if (data is null)
+			return;
+
 		var texture = TextureAssets.Tile[type].Value;
 
-		//Defaults- useful for vanilla pots which have no object data
-		int wrapLimit = 3;
-		int width = 2;
-		int height = 2;
+		int wrapLimit = data.StyleWrapLimit;
+		int width = data.Width;
+		int height = data.Height;
 
-		if (data != null)
-		{
-			wrapLimit = data.StyleWrapLimit;
-			width = data.Width;
-			height = data.Height;
-		}
+		if (wrapLimit == 0)
+			wrapLimit = data.RandomStyleRange;
 
 		for (int x = 0; x < width; x++)
 		{
@@ -63,6 +62,10 @@ public struct TileRecord(string key, int tileType, params int[] tileStyles)
 				int startY = (tileStyle / wrapLimit * height + y) * tileFrame;
 
 				var source = new Rectangle(startX, startY, 16, 16);
+
+				if (y == 4)
+					source.Height = 8; //Avoid clipping
+
 				var center = new Vector2(width * 16 / 2, height * 16 / 2);
 				var drawPos = position + new Vector2(x * 16, y * 16) - center;
 

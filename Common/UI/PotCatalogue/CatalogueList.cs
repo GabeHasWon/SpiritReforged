@@ -69,7 +69,7 @@ public class CatalogueList : UIElement
 			lastHeight = e.Height.Pixels;
 		}
 
-		_scrollbar?.SetView(1f, Math.Max(y - Height.Pixels * .9f, 1)); //Recalculate maximum scrollbar view
+		_scrollbar?.SetView(1f, Math.Max(y - Height.Pixels * .8f, 1)); //Recalculate maximum scrollbar view
 		RecalculateChildren();
 	}
 

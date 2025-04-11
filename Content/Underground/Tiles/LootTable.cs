@@ -1,9 +1,10 @@
 using Terraria.GameContent.ItemDropRules;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
 /// <summary> Facilitates a tile with an <see cref="ILoot"/> drop table.<br/>
-/// Does not drop items automatically. See <see cref="LootTable.Resolve"/>. </summary>
+/// Does not drop items automatically unless used alongside <see cref="PotTile"/>. See <see cref="LootTable.Resolve"/>. </summary>
 public interface ILootTile
 {
 	public LootTable AddLoot(int objectStyle);

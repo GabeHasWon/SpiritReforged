@@ -1528,6 +1528,41 @@ MushroomPotsItem: {
 	Tooltip: ""
 }
 
+SilverPlattersItem: {
+	DisplayName: Silver Platter
+	Tooltip: ""
+}
+
+StuffedPotsItem: {
+	DisplayName: Stuffed Pot
+	Tooltip: ""
+}
+
+WormPotItem: {
+	DisplayName: Worm Pot
+	Tooltip: ""
+}
+
+AetherShipmentItem: {
+	DisplayName: Aether Shipment
+	Tooltip: ""
+}
+
+PotionVatsAntiqueItem: {
+	DisplayName: Antique Potion Vat
+	Tooltip: ""
+}
+
+PotionVatsCloningItem: {
+	DisplayName: Cloning Potion Vat
+	Tooltip: ""
+}
+
+SilverFoodPlatterItem: {
+	DisplayName: Silver Food Platter
+	Tooltip: ""
+}
+
 RadonMossItem: {
 	DisplayName: Radon Moss
 	Tooltip: 'A sight to dwell upon and never forget'

@@ -1,7 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
-using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
