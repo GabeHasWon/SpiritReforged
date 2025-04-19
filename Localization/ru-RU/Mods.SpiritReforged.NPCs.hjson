@@ -338,3 +338,8 @@ PotterySlime: {
 }
 
 // StompableGnome.DisplayName: Stompable Gnome
+
+DunceCrab: {
+	// DisplayName: Dunce Crab
+	// Entry: ""
+}
