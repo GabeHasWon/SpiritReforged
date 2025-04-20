@@ -31,4 +31,12 @@ internal class OceanGlobalNPC : GlobalNPC
 			shop.Add<Items.Vanity.BikiniBottom>(Condition.InBeach, fCondition);
 		}
 	}
+
+	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+	{
+		Player player = spawnInfo.Player;
+
+		if (player.ZoneBeach && spawnInfo.Water && !spawnInfo.PlayerInTown && !spawnInfo.Invasion)
+			pool.Add(NPCID.Shark, 0.02f);
+	}
 }
