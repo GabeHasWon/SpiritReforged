@@ -1,8 +1,7 @@
 ﻿using Terraria.WorldBuilding;
-using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Content.Underground.Tiles;
 
-namespace SpiritMod.World.Micropasses;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class CartsMicropass : Micropass
 {

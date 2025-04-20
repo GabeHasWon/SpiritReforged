@@ -2,7 +2,7 @@
 using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Content.Forest.Stargrass;
 
-namespace SpiritMod.World.Micropasses;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class StargrassMicropass : Micropass
 {

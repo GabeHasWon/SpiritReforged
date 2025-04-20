@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Common.WorldGeneration.Micropasses;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class GravelMicropass : Micropass
 {

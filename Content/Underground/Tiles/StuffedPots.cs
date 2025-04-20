@@ -23,7 +23,7 @@ public class StuffedPots : PotTile
 		base.AddObjectData();
 	}
 
-	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), Language.GetText("Mods.SpiritReforged.Items.StuffedPotsItem.DisplayName"));
 
 	public override bool KillSound(int i, int j, bool fail)
 	{

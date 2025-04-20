@@ -41,7 +41,7 @@ public class ScryingPot : PotTile, ILootTile
 		DustType = DustID.Pot;
 	}
 
-	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), Language.GetText("Mods.SpiritReforged.Items.ScryingPotItem.DisplayName"));
 
 	public override bool KillSound(int i, int j, bool fail)
 	{

@@ -41,7 +41,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		AnimationFrameHeight = FullHeight;
 	}
 
-	public override void AddMapData() => AddMapEntry(new Color(225, 174, 252), CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(new Color(225, 174, 252), Language.GetText("Mods.SpiritReforged.Items.AetherShipmentItem.DisplayName"));
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{

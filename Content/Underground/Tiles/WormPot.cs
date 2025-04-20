@@ -19,7 +19,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Worm");
+		var desc = Language.GetText(TileRecord.DescKey + ".Worm");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
 	}
 
@@ -40,7 +40,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 		DustType = DustID.Plantera_Pink;
 	}
 
-	public override void AddMapData() => AddMapEntry(Color.MediumVioletRed, CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(Color.MediumVioletRed, Language.GetText("Mods.SpiritReforged.Items.WormPotItem.DisplayName"));
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

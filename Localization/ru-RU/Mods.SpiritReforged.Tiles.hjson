@@ -11,6 +11,7 @@ Records: {
 
 		Value increases when further underground.
 		''' */
+	// Potion: Contains a potent brew.
 	// UpsideDown: `Manufacturing error`
 	// Worm: Scatters a variety of worms when destroyed.
 	// Platter: A hot meal ready for the taking. Who would leave this behind?
@@ -36,15 +37,4 @@ TermiteJar_Tile.MapEntry: Банка с термитами
 GarInAJarTile.MapEntry: Щука в банке
 KillieFishbowlTile.MapEntry: Аквариум с килли рыбкой
 // OreCarts.MapEntry: Minecart
-// AetherShipment.MapEntry: "{$Mods.SpiritReforged.Items.AetherShipmentItem.DisplayName}"
-// ScryingPot.MapEntry: "{$Mods.SpiritReforged.Items.ScryingPotItem.DisplayName}"
-// SilverPlatters.MapEntry: "{$Mods.SpiritReforged.Items.SilverPlattersItem.DisplayName}"
-// StuffedPots.MapEntry: "{$Mods.SpiritReforged.Items.StuffedPotsItem.DisplayName}"
-// WormPot.MapEntry: "{$Mods.SpiritReforged.Items.WormPotItem.DisplayName}"
-// AetherShipmentRubble.MapEntry: "{$Mods.SpiritReforged.Items.AetherShipmentItem.DisplayName}"
-// ScryingPotRubble.MapEntry: "{$Mods.SpiritReforged.Items.ScryingPotItem.DisplayName}"
-// SilverPlattersRubble.MapEntry: "{$Mods.SpiritReforged.Items.SilverPlattersItem.DisplayName}"
-// StuffedPotsRubble.MapEntry: "{$Mods.SpiritReforged.Items.StuffedPotsItem.DisplayName}"
-// WormPotRubble.MapEntry: "{$Mods.SpiritReforged.Items.WormPotItem.DisplayName}"
-// UpsideDownPot.MapEntry: "{$Mods.SpiritReforged.Items.UpsideDownPotItem.DisplayName}"
-// UpsideDownPotRubble.MapEntry: "{$Mods.SpiritReforged.Items.UpsideDownPotItem.DisplayName}"
+// PotionVats.MapEntry: Potion Vat

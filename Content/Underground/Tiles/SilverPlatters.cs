@@ -26,7 +26,7 @@ public class SilverPlatters : PotTile, ILootTile
 		base.AddObjectData();
 	}
 
-	public override void AddMapData() => AddMapEntry(Color.Silver, CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(Color.Silver, Language.GetText("Mods.SpiritReforged.Items.SilverPlattersItem.DisplayName"));
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{

@@ -37,7 +37,7 @@ public class UpsideDownPot : PotTile
 		DustType = -1;
 	}
 
-	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), CreateMapEntryName());
+	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), Language.GetText("Mods.SpiritReforged.Items.UpsideDownPotItem.DisplayName"));
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{

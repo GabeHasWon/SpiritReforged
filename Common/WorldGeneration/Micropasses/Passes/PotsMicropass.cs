@@ -1,9 +1,12 @@
-﻿using SpiritReforged.Common.WorldGeneration.Micropasses;
-using SpiritReforged.Common.WorldGeneration;
-using SpiritReforged.Content.Underground.NPCs;
+﻿using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.WorldBuilding;
+using SpiritReforged.Content.Underground.Tiles.Potion;
+using SpiritReforged.Common.TileCommon;
+using Terraria.DataStructures;
+
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class PotsMicropass : Micropass
 {
@@ -40,7 +43,8 @@ internal class PotsMicropass : Micropass
 	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Caves");
 
-        Generate(CreateScrying, Main.maxTilesX / WorldGen.WorldSizeSmallX * 9, out _);
+		Generate(CreatePotion, Main.maxTilesX / WorldGen.WorldSizeSmallX * 10, out _);
+		Generate(CreateScrying, Main.maxTilesX / WorldGen.WorldSizeSmallX * 9, out _);
         Generate(CreateStuffed, Main.maxTilesX / WorldGen.WorldSizeSmallX * 9, out _);
 		Generate(CreateWorm, Main.maxTilesX / WorldGen.WorldSizeSmallX * 24, out _);
 		Generate(CreatePlatter, Main.maxTilesX / WorldGen.WorldSizeSmallX * 28, out _);
@@ -72,6 +76,28 @@ internal class PotsMicropass : Micropass
 		}
 
 		generated = pots;
+	}
+
+	private static bool CreatePotion(int x, int y)
+	{
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<PotionVats>();
+		WorldGen.PlaceTile(x, y, type, true, style: Main.rand.Next([0, 3, 6]));
+
+		if (Main.tile[x, y].TileType == type)
+		{
+			TileExtensions.GetTopLeft(ref x, ref y);
+			TileEntity.PlaceEntityNet(x, y, ModContent.TileEntityType<VatSlot>());
+
+			if (TileEntity.ByPosition.TryGetValue(new Point16(x, y), out var value) && value is VatSlot slot)
+				slot.item = new Item(VatSlot.GetRandomPotion());
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static bool CreateScrying(int x, int y)
