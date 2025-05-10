@@ -15,6 +15,7 @@ using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.Items.ExplorerTreads;
 using SpiritReforged.Content.Underground.Items.Zipline;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
+using SpiritReforged.Content.Underworld.Blasphemer;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 

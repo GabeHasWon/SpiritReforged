@@ -8,8 +8,9 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
+using SpiritReforged.Common.Misc;
 
-namespace SpiritReforged.Content.Underground.Items;
+namespace SpiritReforged.Content.Underworld.Blasphemer;
 
 [AutoloadGlowmask("255,255,255")]
 public class Blasphemer : ClubItem
@@ -22,7 +23,7 @@ public class Blasphemer : ClubItem
 		Item.damage = 65;
 		Item.knockBack = 6;
 		ChargeTime = 40;
-		SwingTime = 24;
+		SwingTime = 30;
 		Item.width = 60;
 		Item.height = 60;
 		Item.crit = 8;
@@ -41,35 +42,47 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 	public void DoTrailCreation(TrailManager tM)
 	{
-		float trailDist = 80 * MeleeSizeModifier;
-		float trailWidth = 30 * MeleeSizeModifier;
+		float trailDist = 82 * MeleeSizeModifier;
+		float trailWidth = 50 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
-		float rotOffset = -0.1f;
+		float rotOffset = -MathHelper.PiOver4 / 4;
+		float trailLength = 0.5f;
 
 		if (FullCharge)
 		{
-			trailDist *= 1.1f;
-			trailWidth *= 1.1f;
+			trailDist *= 1.2f;
+			trailWidth *= 1.2f;
 			angleRangeMod = 1.2f;
-			rotOffset = -MathHelper.PiOver4 / 2;
+			trailLength = 1;
 		}
 
-		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth)
+		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth * 0.9f)
 		{
-			Color = Color.White,
-			SecondaryColor = Color.DarkSlateBlue,
-			TrailLength = 0.33f,
-			Intensity = 0.5f,
+			Color = Color.DarkGray,
+			SecondaryColor = Color.Black,
+			TrailLength = 0.4f,
+			Intensity = 1,
+			UseLightColor = true
 		};
 
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 
-		parameters.Color = Color.Yellow;
-		parameters.SecondaryColor = Color.OrangeRed;
-		parameters.UseLightColor = false;
-		parameters.Intensity = 2f;
+		SwingTrailParameters Fparameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 1.05f, trailWidth)
+		{
+			Color = Color.Yellow.Additive(200),
+			SecondaryColor = Color.Red.Additive(200),
+			TrailLength = trailLength,
+			Intensity = 3,
+			UseLightColor = false
+		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "cloudNoise", new Vector2(3f, 0.5f)), TrailLayer.UnderProjectile));
+		tM.CreateCustomTrail(new SwingTrail(Projectile, Fparameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(4, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
+
+		Fparameters.Distance /= 2;
+		Fparameters.Width *= 0.75f;
+		Fparameters.TrailLength *= 0.66f;
+		Fparameters.Intensity *= 0.66f;
+		tM.CreateCustomTrail(new SwingTrail(Projectile, Fparameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(2, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
 	}
 
 	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
@@ -102,7 +115,7 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 				var center = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f);
 				var velocity = (Projectile.velocity * Main.rand.NextFloat(3f)).RotatedBy(Projectile.rotation);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(center, velocity, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f), 100, 5));
+				ParticleHandler.SpawnParticle(new EmberParticle(center, velocity / 2, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f), 60, 5));
 			}
 		}
 	}
@@ -174,4 +187,10 @@ class Firespike : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
 	//Reduce damage with hits
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f);
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+
+		return false;
+	}
 }
