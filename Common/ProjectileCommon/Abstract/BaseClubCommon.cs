@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
@@ -102,12 +103,8 @@ public abstract partial class BaseClubProj : ModProjectile
 		ResetData();
 	}
 
-	/// <summary>
-	/// Translates the club's base rotation to the value needed for drawing the projectile and player arm, without the programmer needing to offset the rotation and account for player direction.
-	/// </summary>
-	/// <param name="owner"></param>
-	/// <param name="clubRotation"></param>
-	/// <param name="armRotation"></param>
+	/// <summary> Translates the club's base rotation to the value needed for drawing the projectile and player arm, without the programmer needing to offset the rotation and account for player direction.
+	/// <br/> This does not account for <see cref="Player.fullRotation"/>, which must be calculated independently. </summary>
 	private void TranslateRotation(Player owner, out float clubRotation, out float armRotation)
 	{
 		float output = BaseRotation * owner.gravDir + 1.7f;
@@ -121,6 +118,26 @@ public abstract partial class BaseClubProj : ModProjectile
 		clubRotation = output - clubOffset;
 		armRotation = output;
 	}
+
+	/// <summary>
+	/// Returns where the top of the club should draw, rather than the projectile center used for collision. <br />
+	/// Can input an offset to move the output backwards down the club
+	/// </summary>
+	/// <param name="offset"></param>
+	/// <returns></returns>
+	public Vector2 GetHeadPosition(Vector2 offset)
+	{
+		Vector2 handPos = Owner.GetHandRotated();
+		float rotation = Projectile.rotation - PiOver4 * Owner.direction;
+		if (Owner.direction < 0)
+			rotation -= Pi;
+
+		Vector2 directionUnit = rotation.ToRotationVector2();
+
+		return handPos + directionUnit * (Size - offset) * TotalScale;
+	}
+
+	public Vector2 GetHeadPosition(float offset = 0) => GetHeadPosition(new Vector2(offset));
 
 	/// <summary>
 	/// Quickly does a shockwave circle visual, used primarily for clubs slamming into tiles.
@@ -152,14 +169,14 @@ public abstract partial class BaseClubProj : ModProjectile
 	/// Quickly does a dust cloud visual, used primarily for clubs slamming into tiles.
 	/// </summary>
 	/// <param name="maxClouds"></param>
-	internal void DustClouds(int maxClouds)
+	internal void DustClouds(int maxClouds, Vector2? positionOverride = null)
 	{
 		float chargeFactor = Clamp(EaseQuadIn.Ease(Charge), 0.33f, 1f);
 		float chargeFactorLerped = Lerp(chargeFactor, 1, 0.5f);
 
 		for (int i = 0; i < maxClouds * chargeFactorLerped; i++)
 		{
-			Vector2 smokePos = Projectile.Bottom + Vector2.UnitX * Main.rand.NextFloat(-20, 20);
+			Vector2 smokePos = (positionOverride ?? Projectile.Bottom) + Vector2.UnitX * Main.rand.NextFloat(-20, 20);
 
 			float scale = Main.rand.NextFloat(0.05f, 0.07f) * TotalScale;
 			scale *= 1 + chargeFactor / 2;

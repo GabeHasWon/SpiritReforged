@@ -113,10 +113,14 @@ public class ButterflyMinion : BaseMinion
 
 	public override void PostDraw(Color lightColor)
 	{
+		if (AiState == StuckToPlayer)
+			Projectile.gfxOffY = Player.gfxOffY;
+
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition, null, Color.Pink.Additive() * Projectile.Opacity * 0.6f, 0, bloom.Size() / 2, 0.2f, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.Pink.Additive() * Projectile.Opacity * 0.6f, 0, bloom.Size() / 2, 0.2f, SpriteEffects.None, 0);
 
 		float opacity = AiState == Moving ? 0.6f : 0f;
+
 		Projectile.QuickDrawTrail(Main.spriteBatch, opacity, drawColor: Color.White.Additive(50));
 		Projectile.QuickDraw(drawColor: Color.White.Additive(150) * (opacity + 0.4f));
 	}

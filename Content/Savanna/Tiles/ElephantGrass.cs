@@ -7,7 +7,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class ElephantGrass : ModTile, IConvertibleTile
+public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 {
 	protected virtual Color SubColor => Color.Goldenrod;
 
@@ -48,6 +48,9 @@ public class ElephantGrass : ModTile, IConvertibleTile
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
+		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HeldItem.type == ItemID.Sickle)
+			yield return new Item(ItemID.Hay, Main.rand.Next(3, 6));
+
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(1, 3));
 	}
@@ -193,6 +196,12 @@ public class ElephantGrass : ModTile, IConvertibleTile
 		});
 
 		return true;
+	}
+
+	public bool OnCutAttempt(int i, int j)
+	{
+		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];
+		return p.HeldItem.type == ItemID.Sickle; //Only allow this tile to be cut using a sickle
 	}
 }
 

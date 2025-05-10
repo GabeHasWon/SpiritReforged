@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System.Linq;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -22,6 +23,7 @@ internal class PotteryStructureMicropass : Micropass
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Pottery");
 
+		HashSet<Rectangle> regions = [];
 		int maxStructures = Main.maxTilesX / WorldGen.WorldSizeSmallX * 5;
 		int structures = 0;
 
@@ -32,21 +34,21 @@ internal class PotteryStructureMicropass : Micropass
 
 			WorldMethods.FindGround(x, ref y);
 
-			if (y > Main.UnderworldLayer || WorldGen.oceanDepths(x, y))
+			if (y > Main.UnderworldLayer || y < Main.worldSurface || WorldGen.oceanDepths(x, y))
 				continue;
 
-			if (CreateStructure(x, y) && ++structures >= maxStructures)
+			if (CreateStructure(x, y, ref regions) && ++structures >= maxStructures)
 				break;
 		}
 	}
 
-	public static bool CreateStructure(int x, int y)
+	public static bool CreateStructure(int x, int y, ref HashSet<Rectangle> regions)
 	{
 		int radius = 20 + (int)((float)Main.maxTilesX / WorldGen.WorldSizeSmallX * 5f);
 		var pt = new Point(x, y);
 		Rectangle area = new(x - radius, y - radius, radius * 2, radius * 2);
 
-		if (!GenVars.structures.CanPlace(area, 4))
+		if (!GenVars.structures.CanPlace(area, 4) || regions.Any(x => x.Intersects(area)))
 			return false;
 
 		Dictionary<ushort, int> typeToCount = [];
@@ -66,10 +68,10 @@ internal class PotteryStructureMicropass : Micropass
 		for (int i = 0; i < 3; i++)
 			CreateColumn(x - radius + (int)(radius * 2 * (i / 2f)), y - 2);
 
-		for (int i = 0; i < 30; i++)
+		for (int i = 0; i < 30; i++) //Cobwebs
 		{
 			var webPoint = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
-			if (WorldGen.SolidOrSlopedTile(webPoint.X, webPoint.Y))
+			if (WorldGen.SolidOrSlopedTile(webPoint.X, webPoint.Y)) //Try again
 			{
 				i--;
 				continue;
@@ -79,9 +81,27 @@ internal class PotteryStructureMicropass : Micropass
 				new Modifiers.Blotches(4), new Modifiers.Dither(), new Modifiers.IsEmpty(), new Actions.PlaceTile(TileID.Cobweb)));
 		}
 
+		for (int i = 0; i < 3; i++) //Ruined walls
+		{
+			var wallPoint = WorldGen.genRand.NextVector2FromRectangle(area with { Height = area.Height / 2 }).ToPoint();
+			if (WorldGen.SolidOrSlopedTile(wallPoint.X, wallPoint.Y)) //Try again
+			{
+				i--;
+				continue;
+			}
+
+			while (area.Contains(wallPoint) && !WorldGen.SolidOrSlopedTile(wallPoint.X, wallPoint.Y))
+				wallPoint.Y++;
+
+			WorldUtils.Gen(wallPoint, new Shapes.Circle(4), Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Modifiers.Blotches(), new Actions.SwapSolidTile(TileID.WoodBlock)));
+			WorldUtils.Gen(wallPoint, new Shapes.Circle(3), Actions.Chain(new Modifiers.IsTouching(true, TileID.WoodBlock), new Modifiers.Blotches(3), new Modifiers.Dither(), new Actions.PlaceWall(WallID.Planked)));
+		}
+
 		WorldGen.PlaceTile(x, y - 3, ModContent.TileType<PotteryWheel>(), true, true);
 
 		AddPots(area);
+		regions.Add(area);
+
 		return true;
 	}
 

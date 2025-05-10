@@ -66,7 +66,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 200, MathHelper.PiOver2, 0.6f);
 		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 240, MathHelper.PiOver2, 0.6f);
 		
-		if(FullCharge)
+		if (FullCharge)
 		{
 			float particleRot = -float.Pi / 2.5f * Projectile.direction;
 			if (particleRot < 0)
@@ -84,7 +84,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 			Point tilepos = spawnPos.ToTileCoordinates();
 			tilepos.Y -= 1;
 			int tilesfrombase = 0;
-			int maxtilesfrombase = 15;
+			const int maxtilesfrombase = 3;
 
 			int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
 
@@ -93,14 +93,15 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 				tilepos.Y--;
 
 				if (++tilesfrombase >= maxtilesfrombase)
-					break;
+					return;
 			}
 
 			while (!CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
 			{
 				tilepos.Y++;
+
 				if (++tilesfrombase >= maxtilesfrombase)
-					break;
+					return;
 			}
 
 			if (Main.myPlayer == Projectile.owner)

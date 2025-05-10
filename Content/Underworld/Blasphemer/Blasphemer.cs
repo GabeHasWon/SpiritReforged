@@ -20,7 +20,7 @@ public class Blasphemer : ClubItem
 	public override void SetStaticDefaults() => ItemLootDatabase.AddItemRule(ItemID.ObsidianLockbox, ItemDropRule.Common(Type, 5));
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 65;
+		Item.damage = 38;
 		Item.knockBack = 6;
 		ChargeTime = 40;
 		SwingTime = 30;
@@ -136,7 +136,7 @@ class Firespike : ModProjectile
 	public override string Texture => "Terraria/Images/Projectile_0";
 	public override void SetDefaults()
 	{
-		Projectile.Size = new Vector2(32);
+		Projectile.Size = new Vector2(16);
 		Projectile.timeLeft = TimeLeftMax;
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
@@ -146,8 +146,18 @@ class Firespike : ModProjectile
 
 	public override void AI()
 	{
+		int surfaceDuration = 0;
+
 		while (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+		{
 			Projectile.position.Y--; //Move out of solid tiles
+
+			if (++surfaceDuration > 40)
+			{
+				Projectile.Kill();
+				return;
+			}
+		}
 
 		float speedY = -2.5f;
 		var fire = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Utils.SelectRandom(Main.rand, 6, 259, 158), 0f, speedY, 200, default, Main.rand.NextFloat() + 1f);

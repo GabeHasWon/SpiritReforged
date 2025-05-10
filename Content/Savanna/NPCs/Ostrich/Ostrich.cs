@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Biome;
@@ -8,7 +9,7 @@ using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
-using System.Linq;
+using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.Utilities;
@@ -32,7 +33,6 @@ public class Ostrich : ModNPC
 	}
 
 	private static readonly int[] endFrames = [3, 7, 5, 8, 9, 6, 6, 13];
-	private const int drownTimeMax = 300;
 	private const float runSpeed = 4f;
 	private const int noCollideTimeMax = 10;
 
@@ -44,11 +44,10 @@ public class Ostrich : ModNPC
 	public ref float TargetSpeed => ref NPC.ai[2]; //Stores a direction to lerp to over time
 	public ref float NoCollideTime => ref NPC.localAI[0]; //Counts how long the NPC hasn't been grounded for
 
-	private float frameRate = .2f;
-	private int drownTime;
+	private float _frameRate = .2f;
 	/// <summary> Tracks the last horizontal jump coordinate so the NPC doesn't constantly jump in the same place. </summary>
-	private int oldX;
-	private bool wasCharging;
+	private int _oldX;
+	private bool _wasCharging;
 
 	public override void SetStaticDefaults()
 	{
@@ -79,14 +78,14 @@ public class Ostrich : ModNPC
 		NPC.TargetClosest(false);
 		var target = Main.player[NPC.target];
 
-		TrySwim();
+		//NPC.CheckDrowning();
 		TryJump();
 
 		switch (AIState)
 		{
 			case (int)State.Stopped:
 
-				frameRate = .1f;
+				_frameRate = .1f;
 
 				if (ShouldRunAway(16 * 10))
 					ChangeState(State.Running);
@@ -112,7 +111,7 @@ public class Ostrich : ModNPC
 			case (int)State.Running:
 
 				const float runSpeed = 4f;
-				frameRate = Math.Min(Math.Abs(NPC.velocity.X) / 6.5f, .25f);
+				_frameRate = Math.Min(Math.Abs(NPC.velocity.X) / 6.5f, .25f);
 
 				if (!Charging && ShouldRunAway(16 * 28, 2.5f)) //Prioritize running from the player
 				{
@@ -126,7 +125,7 @@ public class Ostrich : ModNPC
 
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, TargetSpeed, .03f);
 
-					if (wasCharging && NPC.collideX) //Bounce
+					if (_wasCharging && NPC.collideX) //Bounce
 						NPC.velocity.X = -NPC.velocity.X;
 
 					if (Math.Abs(NPC.velocity.X) < 1.5f && Counter > 10) //(Counter) give me some time to accelerate before being able to stop
@@ -147,16 +146,18 @@ public class Ostrich : ModNPC
 				if (ShouldRunAway(16 * 8))
 				{
 					ChangeState(State.MunchEnd);
-					frameRate = .25f; //Stop in a hurry
+					_frameRate = .25f; //Stop in a hurry
 				}
 				else if (OnTransitionFrame && Counter % 30 == 0 && Main.rand.NextBool(3))
+				{
 					if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(4) || Counter > 600)
 					{
 						ChangeState(State.MunchEnd, true);
-						frameRate = .15f;
+						_frameRate = .15f;
 					}
 					else
 						NPC.frameCounter = 0; //Randomly restart the animation
+				}
 
 				if (!Main.dedServ && !OnTransitionFrame && (int)NPC.frameCounter % (endFrames[AIState] / 2) == 0)
 				{
@@ -170,12 +171,15 @@ public class Ostrich : ModNPC
 
 			case (int)State.Walking:
 
-				frameRate = .25f;
+				_frameRate = .25f;
 
 				if (ShouldRunAway(16 * 28, 2.5f)) //Prioritize running from the player
 					ChangeState(State.Running);
 				else //Wander
 				{
+					if (Math.Abs(TargetSpeed) > 1.5f)
+						TargetSpeed = 1.5f * Math.Sign(TargetSpeed); //Avoid moving too quickly when walking
+
 					if (Counter % 160 == 159 && Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(2) || Counter > 500 || NPC.velocity == Vector2.Zero)
 					{
 						if (NPC.velocity.X == 0)
@@ -207,7 +211,7 @@ public class Ostrich : ModNPC
 
 		if (Charging && !Main.dedServ)
 		{
-			if (!wasCharging && Counter != 0)
+			if (!_wasCharging && Counter != 0)
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = .5f, PitchVariance = .5f }, NPC.Center);
 
 			if (Counter % 15 == 0)
@@ -220,7 +224,7 @@ public class Ostrich : ModNPC
 			NPC.direction = NPC.spriteDirection = 1;
 
 		Counter++;
-		wasCharging = Charging;
+		_wasCharging = Charging;
 
 		bool ShouldRunAway(int distance, float limit = 4f) => NPC.Distance(target.Center) < distance && target.velocity.Length() > limit;
 
@@ -230,37 +234,14 @@ public class Ostrich : ModNPC
 
 			if (NPC.collideX && NPC.velocity == Vector2.Zero) //Jump
 			{
-				if ((int)NPC.Center.X == oldX)
+				if ((int)NPC.Center.X == _oldX)
 					TargetSpeed = -NPC.direction;
 				else
 				{
-					oldX = (int)NPC.Center.X;
+					_oldX = (int)NPC.Center.X;
 					NPC.velocity.Y = -height;
 				}
 			}
-		}
-
-		void TrySwim()
-		{
-			if (NPC.wet && Collision.WetCollision(NPC.position, NPC.width, NPC.height / 3))
-			{
-				if (++drownTime > drownTimeMax)
-				{
-					NPC.velocity *= .99f;
-					if (Main.rand.NextBool(8))
-						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.BreatheBubble);
-
-					if (drownTime % 3 == 0 && --NPC.life <= 0)
-					{
-						SoundEngine.PlaySound(NPC.DeathSound, NPC.Center);
-						HitEffect(new NPC.HitInfo());
-					}
-				}
-				//else
-				//	NPC.velocity.Y = Math.Max(NPC.velocity.Y - .75f, -3f);
-			}
-			else if (!NPC.wet)
-				drownTime = 0;
 		}
 	}
 
@@ -270,7 +251,7 @@ public class Ostrich : ModNPC
 			return;
 
 		NPC.frameCounter = 0;
-		frameRate = .2f;
+		_frameRate = .2f;
 		Counter = 0;
 		AIState = (int)toState;
 
@@ -282,11 +263,29 @@ public class Ostrich : ModNPC
 	public override bool? CanBeHitByItem(Player player, Item item) => player.dontHurtCritters ? false : null;
 	public override bool? CanBeHitByProjectile(Projectile projectile)
 	{
-		if (projectile.npcProj || projectile.owner == 255)
+		if (projectile.BelongsToPlayer())
+			return Main.player[projectile.owner].dontHurtCritters ? false : null;
+		else
 			return projectile.friendly;
+	}
 
-		var p = Main.player[projectile.owner];
-		return p.dontHurtCritters ? false : null;
+	//Allow this NPC to be chased after being struck by the player
+	public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+	{
+		if (!NPC.chaseable)
+		{
+			NPC.chaseable = true;
+			NPC.netUpdate = true;
+		}
+	}
+
+	public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
+	{
+		if (projectile.BelongsToPlayer() && !NPC.chaseable)
+		{
+			NPC.chaseable = true;
+			NPC.netUpdate = true;
+		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => Charging;
@@ -319,15 +318,17 @@ public class Ostrich : ModNPC
 		const int scareRange = 16 * 20;
 
 		foreach (var other in Main.ActiveNPCs)
+		{
 			if (other.type == Type && other.Distance(NPC.Center) <= scareRange && other.ModNPC is Ostrich ostrich)
 			{
 				ostrich.ChangeState(State.Running);
 
-				if (!wasCharging) //Continue to charge in the same direction when struck
-					ostrich.TargetSpeed = hit.HitDirection * (runSpeed + 1);
+				if (!_wasCharging) //Continue to charge in the same direction when struck
+					ostrich.TargetSpeed = hit.HitDirection * (runSpeed + 2);
 				else
-					ostrich.TargetSpeed = other.direction * (runSpeed + 1);
+					ostrich.TargetSpeed = other.direction * (runSpeed + 2);
 			}
+		}
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -336,7 +337,7 @@ public class Ostrich : ModNPC
 		NPC.frame.X = NPC.frame.Width * AIState;
 
 		if (!(AIState is (int)State.Idle2 && (int)NPC.frameCounter == 2 && Counter < 40)) //Hold this idle pose (looking back) specifically
-			NPC.frameCounter += frameRate;
+			NPC.frameCounter += _frameRate;
 
 		if (AIState is (int)State.Running or (int)State.Walking) //Running and walking are the only states that loops automatically
 			NPC.frameCounter %= endFrames[AIState];
@@ -396,6 +397,9 @@ public class Ostrich : ModNPC
 		npcLoot.AddCommon<OstrichEgg>(7);
 		npcLoot.AddCommon<OstrichPants>(30);
 	}
+
+	public override void SendExtraAI(BinaryWriter writer) => writer.Write(NPC.chaseable);
+	public override void ReceiveExtraAI(BinaryReader reader) => NPC.chaseable = reader.ReadBoolean();
 }
 
 public class OstrichImpact(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, float taperExponent, int detatchTime = -1) : MotionNoiseCone(entity, basePosition, velocity, width, length, rotation, maxTime, detatchTime)

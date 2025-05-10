@@ -48,7 +48,7 @@ public class PotterySlime : ModNPC
 	{
 		List<string> names = [];
 
-		for (int i = 0; i < 13; i++)
+		for (int i = 0; i < 27; i++)
 			names.Add(Language.GetTextValue("Mods.SpiritReforged.NPCs.PotterySlime.Names." + i));
 
 		return names;

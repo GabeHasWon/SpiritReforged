@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.MathHelpers;
+﻿using Terraria;
+
+namespace SpiritReforged.Common.MathHelpers;
 
 public static class CollisionCheckHelper
 {
@@ -20,6 +22,21 @@ public static class CollisionCheckHelper
 				if (TileID.Sets.Platforms[Framing.GetTileSafely(new Point(x, y)).TileType])
 					return true;
 			}
+		}
+
+		return false;
+	}
+
+	public static bool LineOfSightSolidTop(Vector2 start, Vector2 end)
+	{
+		Vector2 checkPoint = start;
+		int numChecks = (int)(start.Distance(end) / 16f);
+
+		for(int i = 0; i < numChecks; i++)
+		{
+			checkPoint += start.DirectionTo(end) * 16;
+			if (Main.tileSolidTop[Framing.GetTileSafely(checkPoint).TileType] || Collision.SolidTiles(checkPoint, 1, 1))
+				return true;
 		}
 
 		return false;

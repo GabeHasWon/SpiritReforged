@@ -10,8 +10,9 @@ namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 [AutoloadGlowmask("Method:Content.Ocean.Hydrothermal.Tiles.Magmastone Glow")]
 public class Magmastone : ModTile, IAutoloadTileItem
 {
+	#region glow
 	/// <summary> The rate in which <see cref="glowPoints"/> value decays. </summary>
-	private const float glowDecayRate = .1f;
+	private const float GlowDecayRate = .1f;
 
 	/// <summary> Magmastone glow origin points, handled by the local client. </summary>
 	private static readonly Dictionary<Point16, float> glowPoints = [];
@@ -22,7 +23,7 @@ public class Magmastone : ModTile, IAutoloadTileItem
 	/// <param name="i"> The X tile coordinate. </param>
 	/// <param name="j"> The Y tile coordinate. </param>
 	/// <returns> Whether the point was successfully added. </returns>
-	public static bool AddGlowPoint(int i, int j) => glowPoints.TryAdd(new Point16(i, j), HydrothermalVent.eruptDuration * glowDecayRate + 1);
+	public static bool AddGlowPoint(int i, int j) => glowPoints.TryAdd(new Point16(i, j), HydrothermalVent.eruptDuration * GlowDecayRate + 1);
 
 	/// <summary> Toggles a non-duration based glow point for the local client. Can be synced using <see cref="MessageType.MagmaGlowPoint"/> in multiplayer. </summary>
 	/// <param name="i"> The X tile coordinate. </param>
@@ -81,13 +82,14 @@ public class Magmastone : ModTile, IAutoloadTileItem
 
 		foreach (var key in glowPoints.Keys) //Update glowPoint durations
 		{
-			if ((glowPoints[key] -= glowDecayRate) <= 0)
+			if ((glowPoints[key] -= GlowDecayRate) <= 0)
 			{
 				glowPoints.Remove(key);
 				break;
 			}
 		}
 	}
+	#endregion;
 
 	public void AddItemRecipes(ModItem item)
 	{
@@ -103,7 +105,7 @@ public class Magmastone : ModTile, IAutoloadTileItem
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 
 		AddMapEntry(new Color(200, 160, 80));
-		this.Merge(TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>());
+		this.Merge(TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>(), TileID.Stone);
 
 		DustType = DustID.Asphalt;
 		MineResist = .5f;

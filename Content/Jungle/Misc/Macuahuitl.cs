@@ -8,6 +8,7 @@ using SpiritReforged.Common.BuffCommon.Stacking;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ModCompat;
 using static SpiritReforged.Common.Easing.EaseFunction;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Jungle.Misc;
 
@@ -24,7 +25,7 @@ public class Macuahuitl : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 18;
+		Item.damage = 16;
 		Item.knockBack = 2;
 		ChargeTime = 40;
 		SwingTime = 24;
@@ -109,6 +110,9 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	internal override float ChargedRotationInterpolate(float progress)
 	{
+		if (FullCharge && ++Projectile.localAI[0] % 28f == 0)
+			SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = 0.5f, Pitch = 0.5f }, Projectile.Center);
+
 		float rate = 0.22f * progress;
 		return BaseRotation + rate;
 	}

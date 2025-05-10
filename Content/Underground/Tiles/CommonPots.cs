@@ -28,7 +28,7 @@ public class CommonPots : PotTile, ILootTile
 				break;
 
 			case "CommonPotsGranite":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GraniteBlock, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
 				break;
 		}
 	}

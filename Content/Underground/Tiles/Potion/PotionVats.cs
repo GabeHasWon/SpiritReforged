@@ -46,8 +46,23 @@ public class PotionVats : PotTile, ICutAttempt
 		LocalizedText dicovered = AutoloadedPotItem.Discovered;
 		var function = (modItem as AutoloadedPotItem).RecordedPot;
 
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup("GoldBars", 2)
-			.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+		switch (group.name)
+		{
+			case "PotionVatsAntique":
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup("GoldBars", 2)
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+				break;
+
+			case "PotionVatsCloning":
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup(RecipeGroupID.IronBar, 2)
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+				break;
+
+			case "PotionVatsAlchemy":
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup("CopperBars", 2)
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+				break;
+		}
 	}
 
 	public override void AddObjectData()

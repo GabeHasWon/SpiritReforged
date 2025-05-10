@@ -16,7 +16,7 @@ internal class LivingBaobab : ModTile
 
 		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
 		AddMapEntry(new Color(142, 125, 106));
-		this.Merge(TileID.Sand, TileID.Dirt, ModContent.TileType<SavannaDirt>());
+		this.Merge(TileID.Sand, TileID.Dirt, ModContent.TileType<SavannaDirt>(), ModContent.TileType<Drywood>());
 
 		HitSound = SoundID.Dig;
 		DustType = DustID.t_PearlWood;

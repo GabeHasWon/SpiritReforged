@@ -9,7 +9,7 @@ public class PlatinumClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 32;
+		Item.damage = 26;
 		Item.knockBack = 8;
 		ChargeTime = 20;
 		SwingTime = 30;
@@ -22,5 +22,5 @@ public class PlatinumClub : ClubItem
 		Item.UseSound = BaseClubProj.DefaultSwing;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.PlatinumBar, 20).AddTile(TileID.Anvils).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.PlatinumBar, 16).AddTile(TileID.Anvils).Register();
 }

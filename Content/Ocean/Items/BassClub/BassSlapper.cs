@@ -8,7 +8,7 @@ public class BassSlapper : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 28;
+		Item.damage = 26;
 		Item.knockBack = 14;
 		ChargeTime = 50;
 		SwingTime = 26;

@@ -319,22 +319,36 @@ PotterySlime: {
 	DisplayName: Pottery Slime
 
 	Names: {
-		0: Mason
-		1: Chip
-		2: Curio
-		3: Kint
-		4: Vis
-		5: Urn
-		6: Penny
-		7: Callie
-		8: Clay
-		9: Cass
-		10: Tycho
-		11: Ash
-		12: Cap
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
 	}
 
-	Entry: ""
+	Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
 }
 
 StompableGnome.DisplayName: Stompable Gnome

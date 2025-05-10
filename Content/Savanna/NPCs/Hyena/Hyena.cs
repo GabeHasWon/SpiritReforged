@@ -28,7 +28,6 @@ public class Hyena : ModNPC
 
 	private static Asset<Texture2D> meatItemTexture;
 	private static readonly int[] endFrames = [4, 2, 5, 5, 5, 13, 8];
-	private const int drownTimeMax = 300;
 
 	private bool OnTransitionFrame => (int)NPC.frameCounter >= endFrames[AnimationState]; //Used to determine whether an animation is complete and can be looped or exited
 
@@ -44,7 +43,6 @@ public class Hyena : ModNPC
 	private bool isAngry;
 	/// <summary> Tracks the last horizontal jump coordinate so the NPC doesn't constantly jump in the same place. </summary>
 	private int oldX;
-	private int drownTime;
 	/// <summary> Which target types should be focused when searching. </summary>
 	private TargetSearchFlag focus = TargetSearchFlag.All;
 
@@ -83,7 +81,7 @@ public class Hyena : ModNPC
 		var search = NPC.FindTarget(focus, WithinDistanceAndVisible(NPC.Center, searchDist), NPCsByDistanceAndType(NPC, searchDist));
 		bool wounded = NPC.life < NPC.lifeMax * .25f;
 
-		bool swimming = TrySwim();
+		NPC.CheckDrowning();
 		TryJump();
 
 		if (!wounded && Main.bloodMoon) //Permanently hate players during blood moons
@@ -213,7 +211,7 @@ public class Hyena : ModNPC
 				{
 					ChangeAnimationState(State.TrotEnd);
 
-					if (!holdingMeat && !swimming && Main.rand.NextBool(250)) //Randomly laugh; not synced
+					if (!holdingMeat && !NPC.wet && Main.rand.NextBool(250)) //Randomly laugh; not synced
 					{
 						ChangeAnimationState(State.Laugh);
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh") with { Volume = 1.25f, PitchVariance = 0.4f, MaxInstances = 2 }, NPC.Center);
@@ -241,7 +239,7 @@ public class Hyena : ModNPC
 		{
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
-			if (NPC.collideX && (NPC.velocity == Vector2.Zero || swimming))
+			if (NPC.collideX && (NPC.velocity == Vector2.Zero || NPC.wet))
 			{
 				if ((int)NPC.Center.X == oldX)
 					TargetSpeed = -NPC.direction;
@@ -265,31 +263,6 @@ public class Hyena : ModNPC
 				if (Math.Sign(NPC.velocity.X) == Math.Sign(NPC.velocity.X + update)) //Does this require a change in direction?
 					NPC.velocity.X += update;
 			}
-		}
-
-		bool TrySwim() //Contains logic for floating and drowning
-		{
-			if (NPC.wet && Collision.WetCollision(NPC.position, NPC.width, NPC.height / 2))
-			{
-				if (++drownTime > drownTimeMax) //Drown
-				{
-					NPC.velocity *= .99f;
-					if (Main.rand.NextBool(8))
-						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.BreatheBubble);
-
-					if (drownTime % 3 == 0 && --NPC.life <= 0)
-					{
-						SoundEngine.PlaySound(NPC.DeathSound, NPC.Center);
-						HitEffect(new NPC.HitInfo());
-					}
-				}
-				//else
-				//	NPC.velocity.Y = Math.Max(NPC.velocity.Y - .75f, -1.5f);
-			}
-			else if (!NPC.wet)
-				drownTime = 0;
-
-			return NPC.wet;
 		}
 
 		void SetPace()

@@ -1,5 +1,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -33,18 +34,6 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 	private bool _inputHeld = false;
 
 	public GoldClubProj() : base(new Vector2(82)) { }
-
-	private Vector2 GetHammerTopPos()
-	{
-		Vector2 handPos = Owner.GetFrontHandPosition(Owner.compositeFrontArm.stretch, Owner.compositeFrontArm.rotation);
-		float rotation = Projectile.rotation - PiOver4 * Owner.direction;
-		if (Owner.direction < 0)
-			rotation -= Pi;
-
-		Vector2 directionUnit = rotation.ToRotationVector2();
-
-		return handPos + directionUnit * 70 * TotalScale;
-	}
 
 	internal override float ChargedScaleInterpolate(float progress) => (Direction == 1) ? base.ChargedScaleInterpolate(progress) : 1;
 
@@ -112,7 +101,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 			static void ParticleDelegate(Particle p) => p.Velocity *= 0.85f;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(GetHammerTopPos() + Main.rand.NextVector2Square(5, 5), particleVel, Ruby, particleScale, Main.rand.Next(15, 20), 4, ParticleDelegate));
+			ParticleHandler.SpawnParticle(new GlowParticle(GetHeadPosition(12) + Main.rand.NextVector2Square(5, 5), particleVel, Ruby, particleScale, Main.rand.Next(15, 20), 4, ParticleDelegate));
 		}
 
 		if (owner.controlUseItem && GetSwingProgress < SwingShrinkThreshold)
@@ -240,8 +229,8 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 		Color color = Projectile.GetAlpha(Ruby.Additive()) * EaseQuadIn.Ease(starProgress) * BaseScale * 0.5f;
 
-		Main.spriteBatch.Draw(starTex, GetHammerTopPos() - Main.screenPosition, null, color, 0, starOrigin, scale, SpriteEffects.None, 0);
-		Main.spriteBatch.Draw(starTex, GetHammerTopPos() - Main.screenPosition, null, color, 0, starOrigin, scale / 2, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(starTex, GetHeadPosition(12) - Main.screenPosition, null, color, 0, starOrigin, scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(starTex, GetHeadPosition(12) - Main.screenPosition, null, color, 0, starOrigin, scale / 2, SpriteEffects.None, 0);
 	}
 
 	internal override void SendExtraDataSafe(BinaryWriter writer)

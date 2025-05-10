@@ -20,7 +20,7 @@ public class Shockhammer : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 53;
+		Item.damage = 36;
 		Item.knockBack = 8;
 		ChargeTime = 40;
 		SwingTime = 30;

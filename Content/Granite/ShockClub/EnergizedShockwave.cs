@@ -43,21 +43,23 @@ public class EnergizedShockwave : ModProjectile
 		Projectile.localNPCHitCooldown = -1;
 	}
 
-	public override void OnSpawn(IEntitySource source) => ScaleX = maxScaleX;
+	public override void OnSpawn(IEntitySource source) { }
 
 	public override void AI()
 	{
+		if (Projectile.timeLeft == timeLeftMax)
+			ScaleX = maxScaleX; //Just spawned
+
 		if (ScaleY < maxScaleY)
 			ScaleY += 0.1f;
 
 		ScaleX = MathHelper.Max(0, ScaleX - (float)(maxScaleX / (timeLeftMax + 2)));
-		Projectile.alpha += 255 / timeLeftMax;
+		Projectile.Opacity = Projectile.timeLeft / (float)timeLeftMax;
 
 		Projectile.velocity.Y = 8;
 		Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(0, Projectile.velocity.Y), 0.035f);
 
-		float throwaway = 6;
-		Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref throwaway, ref Projectile.gfxOffY); //Automatically move up 1 tile tall walls
+		Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref Projectile.stepSpeed, ref Projectile.gfxOffY); //Automatically move up 1 tile tall walls
 
 		int heightMod = 2;
 		Vector2 basePos = Projectile.Center + Vector2.UnitY * (Projectile.height - heightMod) * 0.5f;
@@ -69,13 +71,13 @@ public class EnergizedShockwave : ModProjectile
 			ParticleHandler.SpawnParticle(new GlowParticle(spawnPos, -Vector2.UnitY * Main.rand.NextFloat(6), new Color(140, 200, 255), Color.Cyan, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 30), 6, DelegateAction));
 		}
 
-		Lighting.AddLight(basePos, Color.LightCyan.ToVector3());
-		Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() / 2);
+		Lighting.AddLight(basePos, Color.LightCyan.ToVector3() * Projectile.Opacity);
+		Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() / 2 * Projectile.Opacity);
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
-		Projectile.velocity.X = oldVelocity.X;
+		//Projectile.velocity.X = oldVelocity.X;
 		return false;
 	}
 

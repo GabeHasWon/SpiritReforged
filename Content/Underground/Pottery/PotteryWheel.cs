@@ -11,7 +11,7 @@ public class PotteryWheel : ModTile, IAutoloadTileItem
 	private const int FullFrameHeight = 18 * 3;
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.StoneBlock, 10)
-		.AddRecipeGroup(RecipeGroupID.Wood, 15).AddIngredient(ItemID.BottledWater).Register();
+		.AddRecipeGroup(RecipeGroupID.Wood, 15).AddIngredient(ItemID.BottledWater).AddTile(TileID.WorkBenches).Register();
 
 	public override void SetStaticDefaults()
 	{

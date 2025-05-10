@@ -9,7 +9,7 @@ public class GoldClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 35;
+		Item.damage = 29;
 		Item.knockBack = 8;
 		ChargeTime = 45;
 		SwingTime = 35;
@@ -21,5 +21,5 @@ public class GoldClub : ClubItem
 		Item.shoot = ModContent.ProjectileType<GoldClubProj>();
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.GoldBar, 20).AddTile(TileID.Anvils).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.GoldBar, 16).AddTile(TileID.Anvils).Register();
 }
