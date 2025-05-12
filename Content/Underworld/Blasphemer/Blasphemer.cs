@@ -114,7 +114,7 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		}
 
 		//Sine movement ember particles
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < 12; i++)
 		{
 			float maxOffset = 40 * TotalScale;
 			float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
@@ -125,13 +125,16 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 			static void ParticleDelegate(Particle p, Vector2 initialVel, float timeOffset, float rotationAmount, float numCycles)
 			{
-				float progress = EaseQuadOut.Ease(p.Progress);
+				float sineProgress = EaseQuadOut.Ease(p.Progress);
 
-				p.Velocity = initialVel.RotatedBy(rotationAmount * (float)Math.Sin(TwoPi * (timeOffset + progress) * numCycles)) * EaseQuadOut.Ease(1 - p.Progress);
+				p.Velocity = initialVel.RotatedBy(rotationAmount * (float)Math.Sin(TwoPi * (timeOffset + sineProgress) * numCycles)) * (1 - p.Progress);
 			}
 
-			ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 60), 3,
-				p => ParticleDelegate(p, velocity * -Vector2.UnitY, Main.rand.NextFloat(), Main.rand.NextFloat(PiOver4 / 2), Main.rand.NextFloat(0.5f))));
+			float timeOffset = Main.rand.NextFloat();
+			float rotationAmount = Main.rand.NextFloat(PiOver4);
+			float numCycles = Main.rand.NextFloat(0.5f, 2);
+			ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 80), 3,
+				p => ParticleDelegate(p, velocity * -Vector2.UnitY, timeOffset, rotationAmount, numCycles)));
 		}
 
 		if (FullCharge)
@@ -263,14 +266,18 @@ class Firespike : ModProjectile
 		effect.Parameters["distortScroll"].SetValue(new Vector2(scrollSpeed * globalTimer) / 2);
 
 		effect.Parameters["intensity"].SetValue(2.5f * EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress)));
-		effect.Parameters["dissipate"].SetValue(1 - timeLeftProgress);
+		effect.Parameters["fadePower"].SetValue(2);
+		effect.Parameters["tapering"].SetValue(0.33f);
+
+		var primitiveDims = new Vector2(Lerp(0, 360, EaseCubicOut.Ease(EaseCircularOut.Ease(1 - timeLeftProgress))), 70) * Projectile.scale;
+		effect.Parameters["pixelDimensions"].SetValue(primitiveDims / 2);
 
 		var square = new SquarePrimitive
 		{
 			Color = Color.White,
-			Height = 70 * Projectile.scale,
-			Length = Lerp(0, 360, EaseCubicOut.Ease(EaseCircularOut.Ease(1 - timeLeftProgress))) * Projectile.scale,
-			Position = Projectile.Center - Main.screenPosition - Vector2.UnitY * Lerp(0, 360, EaseCubicOut.Ease(EaseCircularOut.Ease(1 - timeLeftProgress))) / 2,
+			Height = primitiveDims.Y,
+			Length = primitiveDims.X,
+			Position = Projectile.Center - Main.screenPosition - Vector2.UnitY * primitiveDims.X / 2,
 			Rotation = -PiOver2
 		};
 

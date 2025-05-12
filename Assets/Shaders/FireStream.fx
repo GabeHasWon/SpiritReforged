@@ -26,7 +26,9 @@ float2 distortStretch;
 float2 scroll;
 float2 distortScroll;
 float intensity;
-float dissipate;
+float tapering;
+float fadePower;
+float2 pixelDimensions;
 
 struct VertexShaderInput
 {
@@ -55,11 +57,6 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-float EaseCircOut(float x)
-{
-    return sqrt(1 - pow(x - 1, 2));
-}
-
 float adjustYCoord(float yCoord, float multFactor, float anchorCoord = 0.5f)
 {
     float temp = yCoord - anchorCoord;
@@ -86,45 +83,47 @@ float4 ColorLerp3(float amount)
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
-    float4 color = input.Color;
-    
-    float2 baseCoords = float2(round(input.TextureCoordinates.x * 200) / 200, round(input.TextureCoordinates.y * 50) / 50);
-    float strength = pow(1 - baseCoords.x, 1.5f);
+    //Pixellate the shader
+    float2 baseCoords = float2(round(input.TextureCoordinates.x * pixelDimensions.x) / pixelDimensions.x, round(input.TextureCoordinates.y * pixelDimensions.y) / pixelDimensions.y);
     float yCoord = baseCoords.y;
-
     
+    //Fade out the gradient based on x coordinate
+    float strength = pow(1 - baseCoords.x, fadePower);
+    
+    //Distort the shader using a noise texture
     float2 distortCoord = float2((baseCoords.x - distortScroll.x) * distortStretch.x / 2, adjustYCoord(yCoord + distortScroll.y, 1 / distortStretch.y));
     float distortStrength = (tex2D(distortSampler, distortCoord).r - 0.5f) * lerp(0, 0.1f, 1 - strength);
     
     float xCoord = baseCoords.x + distortStrength;
     yCoord += distortStrength;
     
-    yCoord = adjustYCoord(yCoord, pow(strength, 0.25f));
+    //Taper the result based on the x coordinate
+    yCoord = adjustYCoord(yCoord, pow(1 - xCoord, tapering));
     
-    strength = min(strength, 1);
+    //Fade the strength gradient out based on distance from the vertical center
     float absYDist = abs(yCoord - 0.5f) * 2;
     if (absYDist > 1)
-        strength = 0;
-    
-    if (strength == 0)
         return float4(0, 0, 0, 0);
     
-    strength *= pow(EaseCircOut(1 - absYDist), 2);
+    strength *= 1 - pow(absYDist, 2);
     
-    float2 texCoordA = float2((baseCoords.x - scroll.x) * textureStretch.x / 2, adjustYCoord(yCoord + scroll.y, 1 / textureStretch.y));
-    float2 texCoordB = float2((baseCoords.x - scroll.x * 0.75f) * textureStretch.x * 0.7f, adjustYCoord(yCoord - scroll.y, 0.8f / textureStretch.y));
-    float2 texCoordC = float2((baseCoords.x - scroll.x * 2) * textureStretch.x * 0.25f, adjustYCoord(yCoord, 0.25f / textureStretch.y));
+    float2 texCoordA = float2((xCoord - scroll.x) * textureStretch.x / 2, adjustYCoord(yCoord + scroll.y, 1 / textureStretch.y));
+    float2 texCoordB = float2((xCoord - scroll.x * 0.75f) * textureStretch.x * 0.7f, adjustYCoord(yCoord - scroll.y, 0.8f / textureStretch.y));
+    float2 texCoordsMask = float2((xCoord - scroll.x * 2) * textureStretch.x * 0.25f, adjustYCoord(yCoord, 0.25f / textureStretch.y));
     
-    float colorStrength = pow(1 - (tex2D(textureSampler, texCoordA).r * tex2D(textureSampler, texCoordB).r), lerp(3, 0.5f, baseCoords.x));
+    //Multiply the noise with itself using 2 different scroll speeds and tilings to create a less static texture
+    float colorStrength = 1 - (tex2D(textureSampler, texCoordA).r * tex2D(textureSampler, texCoordB).r);
+    colorStrength = pow(colorStrength, lerp(2, 1, xCoord));
     colorStrength = max(colorStrength - pow(strength, 3) / 3, 0);
-    float stepStrength = min(strength + pow(strength, 2) * tex2D(textureSampler, texCoordC).r, 1);
+    
+    //Use a step function and smoothstep to define the shape of the fire, then multiply by the strength gradient at the end
+    float stepStrength = min(strength + pow(strength, 2) * tex2D(textureSampler, texCoordsMask).r, 1);
     if (step(colorStrength, stepStrength) == 0)
         return float4(0, 0, 0, 0);
     
     colorStrength = max(1 - smoothstep(0, stepStrength, colorStrength), 0) * strength;
-    colorStrength = round(colorStrength * 15) / 15;
 
-    float4 finalColor = color * ColorLerp3(pow(colorStrength, 2)) * pow(colorStrength, 1.25f);
+    float4 finalColor = input.Color * ColorLerp3(pow(colorStrength, 2)) * colorStrength;
     return finalColor * intensity;
 }
 
