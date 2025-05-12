@@ -247,22 +247,22 @@ class Firespike : ModProjectile
 	{
 		float timeLeftProgress = Projectile.timeLeft / (float)TimeLeftMax;
 		Effect effect = AssetLoader.LoadedShaders["FireStream"];
-		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0).Additive(240).ToVector4());
-		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0).Additive(220).ToVector4());
-		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33).Additive(200).ToVector4());
+		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0).ToVector4());
+		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0).ToVector4());
+		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33).ToVector4());
 
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
 		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
 
 		effect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.5f));
-		effect.Parameters["distortStretch"].SetValue(new Vector2(5, 2));
+		effect.Parameters["distortStretch"].SetValue(new Vector2(3, 1));
 
 		float globalTimer = Main.GlobalTimeWrappedHourly;
 		float scrollSpeed = 1f;
 		effect.Parameters["scroll"].SetValue(new Vector2(scrollSpeed * globalTimer));
 		effect.Parameters["distortScroll"].SetValue(new Vector2(scrollSpeed * globalTimer) / 2);
 
-		effect.Parameters["intensity"].SetValue(2f * EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress)));
+		effect.Parameters["intensity"].SetValue(2.5f * EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress)));
 		effect.Parameters["dissipate"].SetValue(1 - timeLeftProgress);
 
 		var square = new SquarePrimitive
