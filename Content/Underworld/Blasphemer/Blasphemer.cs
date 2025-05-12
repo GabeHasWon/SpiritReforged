@@ -9,6 +9,10 @@ using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using static SpiritReforged.Common.Easing.EaseFunction;
+using static Microsoft.Xna.Framework.MathHelper;
 
 namespace SpiritReforged.Content.Underworld.Blasphemer;
 
@@ -39,14 +43,15 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 	public BlasphemerProj() : base(new Vector2(104)) { }
 
 	public override float WindupTimeRatio => 0.8f;
+	public override float SwingShrinkThreshold => 0.65f;
 
 	public void DoTrailCreation(TrailManager tM)
 	{
-		float trailDist = 82 * MeleeSizeModifier;
-		float trailWidth = 50 * MeleeSizeModifier;
+		float trailDist = 78 * MeleeSizeModifier;
+		float trailWidth = 60 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
-		float rotOffset = -MathHelper.PiOver4 / 4;
-		float trailLength = 0.5f;
+		float rotOffset = -PiOver4 / 4;
+		float trailLength = 0.75f;
 
 		if (FullCharge)
 		{
@@ -56,33 +61,32 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 			trailLength = 1;
 		}
 
-		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth * 0.9f)
+		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 0.95f, trailWidth * 0.9f)
 		{
 			Color = Color.DarkGray,
 			SecondaryColor = Color.Black,
-			TrailLength = 0.4f,
-			Intensity = 1,
+			TrailLength = 0.45f,
+			Intensity = 1.5f,
 			UseLightColor = true
 		};
 
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 
-		SwingTrailParameters Fparameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 1.05f, trailWidth)
+		SwingTrailParameters flameTrailParameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth)
 		{
 			Color = Color.Yellow.Additive(200),
-			SecondaryColor = Color.Red.Additive(200),
+			SecondaryColor = Color.Red.Additive(150),
 			TrailLength = trailLength,
-			Intensity = 3,
+			Intensity = 1.75f,
 			UseLightColor = false
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, Fparameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(4, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
+		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(4, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
 
-		Fparameters.Distance /= 2;
-		Fparameters.Width *= 0.75f;
-		Fparameters.TrailLength *= 0.66f;
-		Fparameters.Intensity *= 0.66f;
-		tM.CreateCustomTrail(new SwingTrail(Projectile, Fparameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(2, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
+		flameTrailParameters.Distance /= 2;
+		flameTrailParameters.Width *= 0.75f;
+		flameTrailParameters.TrailLength *= 0.5f;
+		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(2, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
 	}
 
 	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
@@ -91,6 +95,44 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 	{
 		TrailManager.TryTrailKill(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
+
+		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 280, PiOver2, 0.4f);
+
+		//black smoke particles
+		for (int i = 0; i < 16; i++)
+		{
+			Vector2 smokePos = Projectile.Bottom + Vector2.UnitX * Main.rand.NextFloat(-10, 10);
+
+			float easedProgress = EaseQuadOut.Ease(i / 16f);
+			float scale = Lerp(0.12f, 0.03f, easedProgress) * TotalScale;
+
+			float speed = Lerp(0.5f, 3.5f, easedProgress);
+
+			int lifeTime = (int)(Lerp(30, 40, easedProgress) + Main.rand.Next(-5, 6));
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.Black * 0.66f, scale, EaseCircularIn, lifeTime));
+		}
+
+		//Sine movement ember particles
+		for (int i = 0; i < 16; i++)
+		{
+			float maxOffset = 40 * TotalScale;
+			float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
+			Vector2 dustPos = Projectile.Bottom + Vector2.UnitX * offset;
+			float velocity = Lerp(4, 1, EaseCircularIn.Ease(Math.Abs(offset) / maxOffset)) * Main.rand.NextFloat(0.25f, 1);
+			if (FullCharge)
+				velocity *= 1.33f;
+
+			static void ParticleDelegate(Particle p, Vector2 initialVel, float timeOffset, float rotationAmount, float numCycles)
+			{
+				float progress = EaseQuadOut.Ease(p.Progress);
+
+				p.Velocity = initialVel.RotatedBy(rotationAmount * (float)Math.Sin(TwoPi * (timeOffset + progress) * numCycles)) * EaseQuadOut.Ease(1 - p.Progress);
+			}
+
+			ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 60), 3,
+				p => ParticleDelegate(p, velocity * -Vector2.UnitY, Main.rand.NextFloat(), Main.rand.NextFloat(PiOver4 / 2), Main.rand.NextFloat(0.5f))));
+		}
 
 		if (FullCharge)
 		{
@@ -102,6 +144,8 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 				Dust.NewDustDirect(Projectile.position - new Vector2(0, 10), Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f));
 
 			ParticleHandler.SpawnParticle(new Shatter(position + Vector2.UnitY * 10, Color.OrangeRed * 0.2f, TotalScale, 20));
+
+			SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact.WithVolumeScale(1.5f), position);
 		}
 	}
 
@@ -140,7 +184,7 @@ class Firespike : ModProjectile
 		Projectile.timeLeft = TimeLeftMax;
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
-		Projectile.hide = true;
+		Projectile.hide = false;
 		Projectile.penetrate = -1;
 	}
 
@@ -159,16 +203,17 @@ class Firespike : ModProjectile
 			}
 		}
 
-		float speedY = -2.5f;
-		var fire = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, Utils.SelectRandom(Main.rand, 6, 259, 158), 0f, speedY, 200, default, Main.rand.NextFloat() + 1f);
-		fire.velocity *= new Vector2(0.5f, 2f);
-		fire.position = Projectile.Bottom;
+		surfaceDuration = 0;
+		while (!Collision.SolidCollision(Projectile.Center, Projectile.width, Projectile.height, true))
+		{
+			Projectile.position.Y++;
+		}
 
 		if (Main.rand.NextBool(5))
 		{
 			var pos = Projectile.position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f);
-			var gore = Gore.NewGorePerfect(Projectile.GetSource_FromAI(), pos, (Vector2.UnitY * -Main.rand.NextFloat(3f, 7f)).RotatedByRandom(0.25f), GoreID.Smoke1, Main.rand.NextFloat(0.5f, 2f));
-			gore.alpha = 150;
+
+			//ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(4), Color.Black * 0.75f, Main.rand.NextFloat(0.05f, 0.2f), EaseQuadIn, Main.rand.Next(20, 30)));
 		}
 
 		if (Main.rand.NextBool(10))
@@ -200,6 +245,36 @@ class Firespike : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
+		float timeLeftProgress = Projectile.timeLeft / (float)TimeLeftMax;
+		Effect effect = AssetLoader.LoadedShaders["FireStream"];
+		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0).Additive(240).ToVector4());
+		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0).Additive(220).ToVector4());
+		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33).Additive(200).ToVector4());
+
+		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+
+		effect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.5f));
+		effect.Parameters["distortStretch"].SetValue(new Vector2(5, 2));
+
+		float globalTimer = Main.GlobalTimeWrappedHourly;
+		float scrollSpeed = 1f;
+		effect.Parameters["scroll"].SetValue(new Vector2(scrollSpeed * globalTimer));
+		effect.Parameters["distortScroll"].SetValue(new Vector2(scrollSpeed * globalTimer) / 2);
+
+		effect.Parameters["intensity"].SetValue(2f * EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress)));
+		effect.Parameters["dissipate"].SetValue(1 - timeLeftProgress);
+
+		var square = new SquarePrimitive
+		{
+			Color = Color.White,
+			Height = 70 * Projectile.scale,
+			Length = Lerp(0, 360, EaseCubicOut.Ease(EaseCircularOut.Ease(1 - timeLeftProgress))) * Projectile.scale,
+			Position = Projectile.Center - Main.screenPosition - Vector2.UnitY * Lerp(0, 360, EaseCubicOut.Ease(EaseCircularOut.Ease(1 - timeLeftProgress))) / 2,
+			Rotation = -PiOver2
+		};
+
+		PrimitiveRenderer.DrawPrimitiveShape(square, effect);
 
 		return false;
 	}

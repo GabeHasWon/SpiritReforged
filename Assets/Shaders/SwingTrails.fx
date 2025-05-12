@@ -55,7 +55,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-const float FadeOutRangeX = 0.9f;
+const float FadeOutRangeX = 0.95f;
 
 float EaseCircOut(float x)
 {
@@ -69,33 +69,49 @@ float adjustYCoord(float yCoord, float multFactor, float anchorCoord = 0.5f)
     return temp + anchorCoord;
 }
 
-float4 CleanStreak(VertexShaderOutput input) : COLOR0
+float EaseOutIn(float input, float power)
 {
-    float strength = 0;
+    power = max(power, 0.001f);
+    if (input < 0.5f)
+        return pow(2 * input, power) / 2;
     
+    return pow(2 * (input - 0.5f), 1 / power) + 0.5f;
+}
+
+float2 SwingTrailBasicShape(float inputXCoord, float2 inputStrengthYCoord, float yCoordCenterpoint = 0.5f)
+{
     float trailEnd = max(progress - trailLength, 0);
-    float frontFade = progress * FadeOutRangeX;
-    float yCoord = input.TextureCoordinates.y;
-    
-    //fade out based on position
-    if (input.TextureCoordinates.x < progress) //horizontal
+    if (inputXCoord < progress)
     {
-        float trailProgress = (input.TextureCoordinates.x - trailEnd) / (progress - trailEnd);
-        strength = pow(trailProgress, fadeStrength);
-        yCoord = adjustYCoord(yCoord, pow(trailProgress, taperStrength), 1);
+        float trailProgress = (inputXCoord - trailEnd) / (progress - trailEnd);
+        inputStrengthYCoord.x = pow(trailProgress, fadeStrength);
+        inputStrengthYCoord.y = adjustYCoord(inputStrengthYCoord.y, pow(trailProgress, taperStrength), yCoordCenterpoint);
         
-        if (input.TextureCoordinates.x < trailEnd)
+        if (inputXCoord < trailEnd)
             return 0;
         
         float fadeStart = progress * FadeOutRangeX;
-        if (input.TextureCoordinates.x > fadeStart)
+        if (inputXCoord > fadeStart)
         {
-            float frontFade = (input.TextureCoordinates.x - fadeStart) / (progress - fadeStart);
+            float frontFade = (inputXCoord - fadeStart) / (progress - fadeStart);
             frontFade = 1 - frontFade;
             
-            strength *= pow(frontFade, 1.75f);
+            inputStrengthYCoord.x *= pow(frontFade, 1.75f);
         }
     }
+    
+    return float2(inputStrengthYCoord.x, inputStrengthYCoord.y);
+}
+
+float4 CleanStreak(VertexShaderOutput input) : COLOR0
+{
+    float strength = 0;
+    float yCoord = input.TextureCoordinates.y;
+    
+    float2 tempStrYCoord = float2(strength, yCoord);
+    tempStrYCoord = SwingTrailBasicShape(input.TextureCoordinates.x, tempStrYCoord, 1);
+    strength = tempStrYCoord.x;
+    yCoord = tempStrYCoord.y;
     
     strength = min(strength, 1);
     if (yCoord > 1 || yCoord < 0)
@@ -118,30 +134,12 @@ float4 NoiseStreak(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
     float strength = 0;
-    
-    float trailEnd = max(progress - trailLength, 0);
-    float frontFade = progress * FadeOutRangeX;
     float yCoord = input.TextureCoordinates.y;
     
-    //fade out based on position
-    if (input.TextureCoordinates.x < progress) //horizontal
-    {
-        float trailProgress = (input.TextureCoordinates.x - trailEnd) / (progress - trailEnd);
-        strength = pow(trailProgress, fadeStrength);
-        yCoord = adjustYCoord(yCoord, pow(trailProgress, taperStrength));
-        
-        if (input.TextureCoordinates.x < trailEnd)
-            strength = 0;
-        
-        float fadeStart = progress * FadeOutRangeX;
-        if (input.TextureCoordinates.x > fadeStart)
-        {
-            float frontFade = (input.TextureCoordinates.x - fadeStart) / (progress - fadeStart);
-            frontFade = 1 - frontFade;
-            
-            strength *= pow(frontFade, 1.75f);
-        }
-    }
+    float2 tempStrYCoord = float2(strength, yCoord);
+    tempStrYCoord = SwingTrailBasicShape(input.TextureCoordinates.x, tempStrYCoord);
+    strength = tempStrYCoord.x;
+    yCoord = tempStrYCoord.y;
     
     strength = min(strength, 1);
     float absYDist = abs(yCoord - 0.5f) * 2;
@@ -156,43 +154,18 @@ float4 NoiseStreak(VertexShaderOutput input) : COLOR0
     return finalColor * intensity;
 }
 
-float EaseOutIn(float input, float power)
-{
-    power = max(power, 0.001f);
-    if (input < 0.5f)
-        return pow(input, power);
-    
-    return pow(2 * (input - 0.5f), 1 / power);
-}
-
 float4 FlameTrail(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
     float strength = 0;
-    
     float trailEnd = max(progress - trailLength, 0);
-    float frontFade = progress * FadeOutRangeX;
     float yCoord = input.TextureCoordinates.y;
     float xCoord = (input.TextureCoordinates.x - trailEnd) / (progress - trailEnd);
     
-    //fade out based on position
-    if (input.TextureCoordinates.x < progress) //horizontal
-    {
-        strength = pow(xCoord, fadeStrength);
-        yCoord = adjustYCoord(yCoord, pow(xCoord, taperStrength));
-        
-        if (input.TextureCoordinates.x < trailEnd)
-            strength = 0;
-        
-        float fadeStart = progress * FadeOutRangeX;
-        if (input.TextureCoordinates.x > fadeStart)
-        {
-            float frontFade = (input.TextureCoordinates.x - fadeStart) / (progress - fadeStart);
-            frontFade = 1 - frontFade;
-            
-            strength *= pow(frontFade, 1.75f);
-        }
-    }
+    float2 tempStrYCoord = float2(strength, yCoord);
+    tempStrYCoord = SwingTrailBasicShape(input.TextureCoordinates.x, tempStrYCoord, 0.8f);
+    strength = tempStrYCoord.x;
+    yCoord = tempStrYCoord.y;
     
     strength = min(strength, 1);
     float absYDist = abs(yCoord - 0.5f) * 2;
@@ -204,18 +177,19 @@ float4 FlameTrail(VertexShaderOutput input) : COLOR0
     
     strength *= pow(EaseCircOut(1 - absYDist), 3);
     
-    float2 texCoordA = float2((xCoord - timer) * coordMods.x / 2, adjustYCoord(yCoord + timer / 2, 1 / coordMods.y));
-    float2 texCoordB = float2((xCoord - timer * 0.75f) * coordMods.x * 0.7f, adjustYCoord(yCoord - timer / 2, 0.8f / coordMods.y));
-    float2 texCoordC = float2((xCoord - timer * 2) * coordMods.x * 0.25f, adjustYCoord(yCoord, 0.25f / coordMods.y));
+    float2 texCoordA = float2((input.TextureCoordinates.x - timer) * coordMods.x / 2, adjustYCoord(yCoord + timer / 2, 1 / coordMods.y));
+    float2 texCoordB = float2((input.TextureCoordinates.x - timer * 0.75f) * coordMods.x * 0.7f, adjustYCoord(yCoord - timer / 2, 0.8f / coordMods.y));
+    float2 texCoordC = float2((input.TextureCoordinates.x - timer * 2) * coordMods.x * 0.25f, adjustYCoord(yCoord, 0.25f / coordMods.y));
     
     float uExponent = lerp(textureExponent.x, textureExponent.y, xCoord);
     float colorStrength = pow(1 - (tex2D(baseSampler, texCoordA).r * tex2D(baseSampler, texCoordB).r), uExponent);
-    if (step(colorStrength, pow(strength, 0.25f)) == 0 && colorStrength != 1)
+    float stepStrength = min(strength + pow(strength, 0.25f) * tex2D(baseSampler, texCoordC).r, 1);
+    if (step(colorStrength, stepStrength) == 0 && colorStrength != 1)
         return float4(0, 0, 0, 0);
     
-    colorStrength = max(min(1 - smoothstep(0, pow(strength, 0.25f), colorStrength), 1), 0) * strength;
+    colorStrength = max(min((strength / 5) + 1 - smoothstep(0, stepStrength, colorStrength), 1), 0) * strength;
 
-    float4 finalColor = color * lerp(baseColorDark, baseColorLight, EaseOutIn(colorStrength, 2)) * pow(colorStrength, 1.5f);
+    float4 finalColor = color * lerp(baseColorDark, baseColorLight, pow(EaseOutIn(colorStrength, 0.5f), 3)) * pow(colorStrength, 1.25f);
     return finalColor * intensity;
 }
 

@@ -149,19 +149,21 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 	{
 		Effect effect;
 		effect = AssetLoader.LoadedShaders["SwingTrails"];
-		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
 		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
 
 		effect.Parameters["coordMods"].SetValue(coordMods);
 		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * swingTrail.DissolveProgress);
-		effect.Parameters["taperStrength"].SetValue(1.25f);
-		effect.Parameters["fadeStrength"].SetValue(1 + 5 * EaseCircularOut.Ease(1 - swingTrail.DissolveProgress));
-		effect.Parameters["textureExponent"].SetValue(Vector2.Lerp(new Vector2(0.25f, 4), Vector2.Zero, 1 - swingTrail.DissolveProgress));
+		effect.Parameters["taperStrength"].SetValue(0.85f);
+		effect.Parameters["fadeStrength"].SetValue(0.75f + 6 * EaseCubicOut.Ease(1 - swingTrail.DissolveProgress));
+		effect.Parameters["textureExponent"].SetValue(Vector2.Lerp(new Vector2(0.5f, 3), Vector2.Zero, EaseCircularIn.Ease(1 - swingTrail.DissolveProgress)));
 
-		effect.Parameters["timer"].SetValue(-2f * Main.GlobalTimeWrappedHourly / coordMods.X);
+		float globalTimer = (Main.GlobalTimeWrappedHourly / coordMods.X);
+		float scrollSpeed = MathHelper.Lerp(-2f, 0f, EaseQuadOut.Ease(1 - swingTrail.DissolveProgress));
+		effect.Parameters["timer"].SetValue(scrollSpeed * globalTimer);
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity);
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
 		swingTrail.EffectPass = "FlameTrailPass";
 
 		return effect;
