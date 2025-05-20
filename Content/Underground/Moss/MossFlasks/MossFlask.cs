@@ -4,9 +4,8 @@ using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Underground.Items.MossFlasks;
+namespace SpiritReforged.Content.Underground.Moss.MossFlasks;
 
-[AutoloadGlowmask("255,255,255")]
 public abstract class MossFlask : ModItem
 {
 	public override void SetDefaults()
@@ -116,10 +115,12 @@ public abstract class MossFlaskProjectile : ModProjectile
 	{
 		Projectile.QuickDraw();
 
-		var data = GlowmaskItem.ItemIdToGlowmask[ItemType];
-		var glow = data.Glowmask.Value;
+		if (GlowmaskItem.ItemIdToGlowmask.TryGetValue(ItemType, out var data))
+		{
+			var glow = data.Glowmask.Value;
+			Main.EntitySpriteDraw(glow, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(data.GetDrawColor(Projectile)), Projectile.rotation, glow.Size() / 2, Projectile.scale, default);
+		}
 
-		Main.EntitySpriteDraw(glow, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(data.GetDrawColor(Projectile)), Projectile.rotation, glow.Size() / 2, Projectile.scale, default);
 		return false;
 	}
 }

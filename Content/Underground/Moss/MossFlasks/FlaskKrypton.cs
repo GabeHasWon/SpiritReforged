@@ -1,5 +1,8 @@
-﻿namespace SpiritReforged.Content.Underground.Items.MossFlasks;
+﻿using SpiritReforged.Common.Visuals.Glowmasks;
 
+namespace SpiritReforged.Content.Underground.Moss.MossFlasks;
+
+[AutoloadGlowmask("255,255,255")]
 public class FlaskKrypton : MossFlask
 {
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.KryptonMoss, 3).AddIngredient(ItemID.Bottle).Register();

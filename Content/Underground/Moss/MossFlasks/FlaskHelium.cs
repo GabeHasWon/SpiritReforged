@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Visuals.Glowmasks;
 
-namespace SpiritReforged.Content.Underground.Items.MossFlasks;
+namespace SpiritReforged.Content.Underground.Moss.MossFlasks;
 
-[AutoloadGlowmask("Method:Content.Underground.Items.MossFlasks.FlaskHelium Glow")]
+[AutoloadGlowmask("Method:Content.Underground.Moss.MossFlasks.FlaskHelium Glow")]
 public class FlaskHelium : MossFlask
 {
 	public static Color Glow(object obj) => Main.DiscoColor;
