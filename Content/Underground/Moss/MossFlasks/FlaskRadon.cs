@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Content.Dusts;
+﻿using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Underground.Moss.Radon;
 
-namespace SpiritReforged.Content.Underground.Items.MossFlasks;
+namespace SpiritReforged.Content.Underground.Moss.MossFlasks;
 
+[AutoloadGlowmask("255,255,255")]
 public class FlaskRadon : MossFlask
 {
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<RadonMossItem>(), 3).AddIngredient(ItemID.Bottle).Register();

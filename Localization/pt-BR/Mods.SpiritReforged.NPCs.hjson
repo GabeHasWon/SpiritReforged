@@ -361,12 +361,12 @@ PotterySlime: {
 
 DunceCrab: {
 	// DisplayName: Dunce Crab
-	// Entry: ""
+	// Entry: One of the most common causes for adventuring accidents, this cave-dwelling mollusk is usually quite the surprise. It feeds on mosses and lichen often found in caves.
 }
 
 Wheezer: {
 	// DisplayName: Wheezer
-	// Entry: A weezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	// Entry: A wheezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
 }
 
 WorldFrog: {

@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Content.Dusts;
+﻿using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 
-namespace SpiritReforged.Content.Underground.Items.MossFlasks;
+namespace SpiritReforged.Content.Underground.Moss.MossFlasks;
 
+[AutoloadGlowmask("255,255,255")]
 public class FlaskOganesson : MossFlask
 {
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<OganessonMossItem>(), 3).AddIngredient(ItemID.Bottle).Register();

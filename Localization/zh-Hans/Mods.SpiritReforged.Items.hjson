@@ -1776,3 +1776,33 @@ ZenithPotsPaleItem: {
 	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
 	Tooltip: ""
 }
+
+FlaskBlue: {
+	// DisplayName: Blue Moss Flask
+	// Tooltip: ""
+}
+
+FlaskBrown: {
+	// DisplayName: Brown Moss Flask
+	// Tooltip: ""
+}
+
+FlaskGreen: {
+	// DisplayName: Green Moss Flask
+	// Tooltip: ""
+}
+
+FlaskLava: {
+	// DisplayName: Lava Moss Flask
+	// Tooltip: ""
+}
+
+FlaskPurple: {
+	// DisplayName: Purple Moss Flask
+	// Tooltip: ""
+}
+
+FlaskRed: {
+	// DisplayName: Red Moss Flask
+	// Tooltip: ""
+}
