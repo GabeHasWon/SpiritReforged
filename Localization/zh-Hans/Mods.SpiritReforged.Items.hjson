@@ -1779,30 +1779,30 @@ ZenithPotsPaleItem: {
 
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
-	// Tooltip: ""
+	// Tooltip: Spreads moss on impact
 }
 
 FlaskBrown: {
 	// DisplayName: Brown Moss Flask
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
 	// DisplayName: Green Moss Flask
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
 	// DisplayName: Lava Moss Flask
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
 	// DisplayName: Purple Moss Flask
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
 	// DisplayName: Red Moss Flask
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
