@@ -1,6 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
@@ -23,18 +25,8 @@ public class JinxBowShot : GlobalProjectile
 	{
 		//Initialize old positions to projectile's center on spawn
 		if(IsJinxbowShot)
-		{
-			//Trailing looks worse with high extra update arrows, convert it into velocity instead
-			int maxExtraUpdates = Main.player[projectile.owner].magicQuiver ? 1 : 0;
-			if(projectile.extraUpdates > maxExtraUpdates)
-			{
-				projectile.velocity *= projectile.extraUpdates / (float)maxExtraUpdates;
-				projectile.extraUpdates = maxExtraUpdates;
-			}
-
 			for (int i = 0; i < _oldPositions.Length; i++)
 				_oldPositions[i] = projectile.Center;
-		}
 
 		//If a jinxbow arrow spawns a projectile (i.e. Holy arrows, luminite arrows), the spawned projectile counts as a summon projectile instead of ranged.
 		//Additionally applies to projectiles spawned from projectiles spawned by arrows, like holy arrow stars recursively spawning
@@ -45,6 +37,7 @@ public class JinxBowShot : GlobalProjectile
 				projectile.DamageType = DamageClass.Summon;
 				IsJinxbowSubshot = true;
 				projectile.netUpdate = true;
+				projectile.minion = true;
 			}
 		}
 	}
@@ -65,6 +58,22 @@ public class JinxBowShot : GlobalProjectile
 		if (!IsJinxbowShot || Main.dedServ)
 			return;
 
+		Texture2D arrowTex = TextureAssets.Projectile[projectile.type].Value;
+		Color color = TextureColorCache.GetBrightestColor(arrowTex);
+
+		ParticleHandler.SpawnParticle(new ImpactLinePrim(projectile.Center, Vector2.Zero, color.Additive(), new(0.66f, 2.25f), 10, 1));
+		ParticleHandler.SpawnParticle(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), color.Additive(), 0.66f, 25));
+
+		for(int i = 0; i < 12; i++) 
+		{
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 4);
+			float scale = Main.rand.NextFloat(0.3f, 0.7f);
+			int lifeTime = Main.rand.Next(12, 40);
+			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+
+			ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, color.Additive(), scale, lifeTime, 1, DelegateAction));
+			ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+		}
 	}
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
@@ -97,10 +106,10 @@ public class JinxBowShot : GlobalProjectile
 				scale = new(projectile.scale);
 
 				//Draw border around the main image
-				for (int j = 0; j < 6; j++)
+				for (int j = 0; j < 12; j++)
 				{
-					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 6f) * 2;
-					Main.EntitySpriteDraw(solid, position + offset, null, color.Additive(200), projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
+					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 12f) * 2;
+					Main.EntitySpriteDraw(solid, position + offset, null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive() * 0.33f, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
 				}
 			}
 			else //Otherwise draw as trail
