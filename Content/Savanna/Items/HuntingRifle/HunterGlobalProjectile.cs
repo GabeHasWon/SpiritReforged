@@ -55,7 +55,7 @@ public class HunterGlobalProjectile : GlobalProjectile
 			var texture = TextureAssets.Projectile[873].Value;
 
 			float lerp = 1f - i / (float)(trailLength - 1);
-			var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
+			var brightest = TextureColorCache.GetDarkestColor(defaultTexture);
 			var color = (Color.Lerp(brightest.MultiplyRGBA(Color.Black * .5f), brightest, lerp) with { A = 0 }) * lerp;
 			var position = projectile.Center - Main.screenPosition - projectile.velocity * i;
 			var scale = new Vector2(.5f * lerp, 1f) * projectile.scale;

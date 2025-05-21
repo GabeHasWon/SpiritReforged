@@ -1776,3 +1776,8 @@ ZenithPotsPaleItem: {
 	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
 	Tooltip: ""
 }
+
+JinxBow: {
+	DisplayName: Jinx Bow
+	Tooltip: ""
+}
