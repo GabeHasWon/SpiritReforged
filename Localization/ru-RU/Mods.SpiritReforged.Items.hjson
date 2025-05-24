@@ -1798,3 +1798,8 @@ FlaskRed: {
 	// DisplayName: Red Moss Flask
 	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
+
+TitleMusicBoxItem: {
+	// DisplayName: Music Box (Spirit Title)
+	// Tooltip: ""
+}
