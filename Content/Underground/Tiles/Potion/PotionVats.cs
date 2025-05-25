@@ -5,7 +5,6 @@ using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Common.Particle;
 using System.Linq;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;

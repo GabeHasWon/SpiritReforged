@@ -9,6 +9,11 @@ namespace SpiritReforged.Content.Forest.Misc.Maps;
 [FromClassic("MapScroll")]
 public class TornMapPiece : ModItem
 {
+	public static readonly SoundStyle PageFlip = new("SpiritReforged/Assets/SFX/Item/PageFlip")
+	{
+		Pitch = .5f
+	};
+
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 3;
@@ -53,7 +58,7 @@ public class TornMapPiece : ModItem
 				SoundEngine.PlaySound(SoundID.Coins with { Pitch = 1 });
 			}
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/PageFlip") { Pitch = .5f }, player.Center);
+			SoundEngine.PlaySound(PageFlip, player.Center);
 		}
 
 		return true;

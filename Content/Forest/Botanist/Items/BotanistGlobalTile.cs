@@ -1,25 +1,13 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Forest.Botanist.Items;
 
 internal class BotanistGlobalTile : GlobalTile
 {
-	private readonly int[] VanillaHerbs = [TileID.BloomingHerbs, TileID.MatureHerbs];
-	private static int[] SpiritHerbs => [ModContent.TileType<Cloud.Items.CloudstalkTile>()];
-
-	public List<int> AllHerbs = null;
-
 	public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch)
 	{
-		if (AllHerbs is null)
-		{
-			var herbs = new List<int>();
-			herbs.AddRange(SpiritHerbs);
-			herbs.AddRange(VanillaHerbs);
-			AllHerbs = herbs;
-		}
-
-		if (AllHerbs.Contains(type) && Main.LocalPlayer.GetModPlayer<BotanistPlayer>().active)
+		if (HerbTile.HerbTypes.Contains(type) && BotanistHat.SetActive(Main.LocalPlayer))
 		{
 			Tile tile = Main.tile[i, j];
 			float darkness = (1.2f - Lighting.Brightness(i, j)) / 1.2f;
@@ -32,10 +20,4 @@ internal class BotanistGlobalTile : GlobalTile
 
 		return true;
 	}
-}
-
-internal class BotanistPlayer : ModPlayer
-{
-	public bool active = false;
-	public override void ResetEffects() => active = false;
 }

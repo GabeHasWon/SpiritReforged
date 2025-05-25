@@ -8,11 +8,18 @@ namespace SpiritReforged.Content.Forest.FairyWhistle;
 [FromClassic("FairyWhistleItem")]
 public class FairyWhistle : ModItem
 {
+	public static readonly SoundStyle Whistle = new("SpiritReforged/Assets/SFX/Item/Whistle")
+	{
+		PitchVariance = .3f,
+		Volume = 1.2f
+	};
+
 	public override void SetStaticDefaults()
 	{
 		MoRHelper.AddElement(Item, MoRHelper.Arcane);
 		MoRHelper.AddElement(Item, MoRHelper.Nature, true);
 	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 4;
@@ -29,7 +36,7 @@ public class FairyWhistle : ModItem
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.shoot = ModContent.ProjectileType<FairyMinion>();
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Whistle") with { PitchVariance = .3f, Volume = 1.2f };
+		Item.UseSound = Whistle;
 		Item.autoReuse = true;
 	}
 

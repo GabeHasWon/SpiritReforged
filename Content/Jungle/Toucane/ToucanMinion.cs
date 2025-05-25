@@ -10,8 +10,6 @@ namespace SpiritReforged.Content.Jungle.Toucane;
 [AutoloadMinionBuff]
 public class ToucanMinion : BaseMinion
 {
-	private const int TargetMemoryMax = 20;
-
 	private ref float AiState => ref Projectile.ai[0];
 	private ref float AiTimer => ref Projectile.ai[1];
 
@@ -22,8 +20,19 @@ public class ToucanMinion : BaseMinion
 	private const float STATE_FEATHERSHOOT = 4;
 	private const float STATE_GLIDING = 5;
 
+	public static readonly SoundStyle Cry = new("SpiritReforged/Assets/SFX/Projectile/BirdCry_1")
+	{
+		PitchVariance = 0.3f,
+		Volume = 0.5f
+	};
+
+	public static readonly SoundStyle Whoosh = new("SpiritReforged/Assets/SFX/Projectile/SmallProjectileWoosh_1")
+	{
+		PitchVariance = 0.3f,
+		Volume = 1.25f
+	};
+
 	private int _featherShotFrameTime;
-	/// <summary> For how long this minion can select a target without considering collision. </summary>
 
 	public ToucanMinion() : base(700, 1200, new Vector2(40, 40)) { }
 
@@ -241,7 +250,7 @@ public class ToucanMinion : BaseMinion
 					if (Main.netMode != NetmodeID.Server)
 					{
 						SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { PitchVariance = 0.3f, Volume = 0.5f }, Projectile.Center);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/BirdCry_1") with { PitchVariance = 0.3f, Volume = 0.5f }, Projectile.Center);
+						SoundEngine.PlaySound(Cry, Projectile.Center);
 					}
 
 					Projectile.velocity = Projectile.DirectionTo(target.Center).RotatedByRandom(MathHelper.PiOver4) * GlideStartVelocity;
@@ -253,7 +262,7 @@ public class ToucanMinion : BaseMinion
 				if (AiTimer % FeatherShootTime == 0) //shoot feather after given amount of time, with some recoil on the minion
 				{
 					if (Main.netMode != NetmodeID.Server)
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SmallProjectileWoosh_1") with { PitchVariance = 0.3f, Volume = 1.25f }, Projectile.Center);
+						SoundEngine.PlaySound(Whoosh, Projectile.Center);
 
 					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.DirectionTo(target.Center) * 8, ModContent.ProjectileType<ToucanFeather>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 					for (int j = 0; j < 6; j++)

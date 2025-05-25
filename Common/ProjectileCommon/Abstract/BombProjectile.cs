@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using System.IO;
 using Terraria.Audio;
 
 namespace SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -16,10 +15,8 @@ public abstract class BombProjectile : ModProjectile
 	/// <summary> Whether this bomb sticks to tiles according to <see cref="CheckStuck"/>. </summary>
 	public bool sticky;
 
-	private bool _startedExplosion;
-
-	internal int _damage;
-	internal float _knockback;
+	private int _damage;
+	private float _knockback;
 
 	/// <summary> Sets the timeLeft and timeLeftMax values for this projectile, for convenience. </summary>
 	public void SetTimeLeft(int value) => Projectile.timeLeft = timeLeftMax = value;
@@ -33,7 +30,6 @@ public abstract class BombProjectile : ModProjectile
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.Explosive[Type] = true;
-
 		MoRHelper.AddElement(Projectile, MoRHelper.Explosive);
 	}
 
@@ -69,14 +65,11 @@ public abstract class BombProjectile : ModProjectile
 
 		if (Projectile.owner == Main.myPlayer && Projectile.timeLeft <= 3)
 		{
+			if (!DealingDamage)
+				StartExplosion();
+
 			DealingDamage = true;
 			Projectile.PrepareBombToBlow();
-
-			if (!_startedExplosion)
-			{
-				_startedExplosion = true;
-				StartExplosion();
-			}
 		}
 
 		Projectile.TryShimmerBounce();
@@ -106,6 +99,7 @@ public abstract class BombProjectile : ModProjectile
 		}
 	}
 
+	/// <summary> Called when <see cref="DealingDamage"/> is first set to true. </summary>
 	public virtual void StartExplosion() { }
 
 	public override void OnKill(int timeLeft)
@@ -123,14 +117,13 @@ public abstract class BombProjectile : ModProjectile
 		Projectile.knockBack = _knockback;
 	}
 
-	/// <summary> Destroys tiles in <see cref="area"/>. </summary>
+	/// <summary> Destroys walls and tiles within <see cref="area"/>. </summary>
 	public void DestroyTiles()
 	{
-		//Destroy walls and tiles
-		var area = new Rectangle((int)(Projectile.Center.X / 16) - this.area / 2, (int)(Projectile.Center.Y / 16) - this.area / 2, this.area, this.area);
-		bool doWalls = Projectile.ShouldWallExplode(Projectile.Center, this.area, area.X, area.X + this.area, area.Y, area.Y + this.area);
+		var rect = new Rectangle((int)(Projectile.Center.X / 16) - area / 2, (int)(Projectile.Center.Y / 16) - area / 2, area, area);
+		bool doWalls = Projectile.ShouldWallExplode(Projectile.Center, area, rect.X, rect.X + area, rect.Y, rect.Y + area);
 
-		Projectile.ExplodeTiles(Projectile.Center, this.area / 2, area.X, area.X + this.area, area.Y, area.Y + this.area, doWalls);
+		Projectile.ExplodeTiles(Projectile.Center, area / 2, rect.X, rect.X + area, rect.Y, rect.Y + area, doWalls);
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
@@ -146,8 +139,4 @@ public abstract class BombProjectile : ModProjectile
 		Projectile.QuickDraw();
 		return false;
 	}
-
-	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_startedExplosion);
-
-	public override void ReceiveExtraAI(BinaryReader reader) => _startedExplosion = reader.ReadBoolean();
 }

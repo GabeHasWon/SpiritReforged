@@ -118,9 +118,9 @@ public partial class CatalogueUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		base.Update(gameTime);
-
-		if (!Main.playerInventory)
+		if (Main.LocalPlayer.controlInv)
 			UISystem.SetInactive<CatalogueUI>();
+
+		base.Update(gameTime);
 	}
 }

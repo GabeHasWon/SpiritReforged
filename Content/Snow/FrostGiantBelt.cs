@@ -7,7 +7,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Snow;
 
 [AutoloadEquip(EquipType.Waist)]
-public class FrostGiantBelt : AccessoryItem
+public class FrostGiantBelt : EquippableItem
 {
 	/// <summary> Checks if <paramref name="player"/> is charging a club projectile. </summary>
 	public static bool ClubCharging(Player player)
@@ -36,7 +36,7 @@ internal class FrostGiantPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		if(Player.HasAccessory<FrostGiantBelt>())
+		if(Player.HasEquip<FrostGiantBelt>())
 		{
 			if(FrostGiantBelt.ClubCharging(Player))
 			{
@@ -57,7 +57,7 @@ internal class FrostGiantPlayer : ModPlayer
 
 	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 	{
-		if (Player.HasAccessory<FrostGiantBelt>() && FrostGiantBelt.ClubCharging(Player))
+		if (Player.HasEquip<FrostGiantBelt>() && FrostGiantBelt.ClubCharging(Player))
 			modifiers.Knockback *= 0.5f;
 	}
 }

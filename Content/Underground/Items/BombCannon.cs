@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -16,10 +17,9 @@ using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.Color;
 using static Microsoft.Xna.Framework.MathHelper;
-using Terraria.GameContent.Tile_Entities;
+using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Underground.Items;
 
@@ -28,9 +28,9 @@ public class BombCannon : ModItem
 {
 	public const float ContactDamagePercentage = 0.25f;
 
-	public static int[] AmmoBombIDs = [ItemID.Bomb, ItemID.StickyBomb, ItemID.BouncyBomb, ItemID.BombFish];
-	public static int[] BouncyBombProjIDs = [ProjectileID.BouncyBomb, ModContent.ProjectileType<BombBouncy>()];
-	public static int[] StickyBombProjIDs = [ProjectileID.StickyBomb, ModContent.ProjectileType<BombSticky>(), ProjectileID.BombFish, ModContent.ProjectileType<BombFish>()];
+	public static readonly int[] AmmoBombIDs = [ItemID.Bomb, ItemID.StickyBomb, ItemID.BouncyBomb, ItemID.BombFish];
+	public static readonly int[] BouncyBombProjIDs = [ProjectileID.BouncyBomb, ModContent.ProjectileType<BombBouncy>()];
+	public static readonly int[] StickyBombProjIDs = [ProjectileID.StickyBomb, ModContent.ProjectileType<BombSticky>(), ProjectileID.BombFish, ModContent.ProjectileType<BombFish>()];
 
 	public override void SetStaticDefaults()
 	{
@@ -60,7 +60,7 @@ public class BombCannon : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.HasAccessory<BoomShroom>())
+		if (player.HasEquip<BoomShroom>())
 			type = BoomShroomPlayer.MakeLarge(type);
 
 		Projectile.NewProjectile(source, position, velocity, Item.shoot, damage, knockback, player.whoAmI, type, 0, velocity.Length());
@@ -91,9 +91,9 @@ internal class BombCannonHeld : ModProjectile
 		get => (int)Projectile.ai[0];
 		set => Projectile.ai[0] = value;
 	}
-
 	public ref float Charge => ref Projectile.ai[1];
 	public ref float StoredVelocity => ref Projectile.ai[2];
+
 	public float Progress => (float)Charge / ChargeTimeMax;
 
 	public override string Texture => ModContent.GetInstance<BombCannon>().Texture;
@@ -110,15 +110,17 @@ internal class BombCannonHeld : ModProjectile
 
 	public override void AI()
 	{
+		const float chargeThreshold = 0.3f;
 		const int wait = 8;
 		const int stagger = 10;
+
 		var owner = Main.player[Projectile.owner];
 
 		if (!_released)
 		{
 			if (!owner.channel || Progress == 1)
 			{
-				if (Progress > .3f) //Only fire if charged enough
+				if (Progress > chargeThreshold) //Only fire if charged enough
 					Fire();
 
 				_released = true;
@@ -138,7 +140,6 @@ internal class BombCannonHeld : ModProjectile
 			if ((int)Charge % limit == limit - 1)
 			{
 				SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = Progress * .5f }, Projectile.Center);
-
 				var start = Projectile.Center + new Vector2(8, 10 * Projectile.direction).RotatedBy(Projectile.rotation);
 
 				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
@@ -156,7 +157,7 @@ internal class BombCannonHeld : ModProjectile
 
 		if (_released) //Handle recoil visuals after firing
 		{
-			if (Progress > .3f)
+			if (Progress > chargeThreshold)
 			{
 				float sProgress = Math.Clamp((Projectile.timeLeft - wait) / (float)stagger, 0, 1);
 
@@ -180,29 +181,21 @@ internal class BombCannonHeld : ModProjectile
 
 	private void Fire()
 	{
-		var p = Main.player[Projectile.owner];
-		p.PickAmmo(p.HeldItem, out _, out _, out _, out _, out _); //Consume relevant ammo
+		var owner = Main.player[Projectile.owner];
+		owner.PickAmmo(owner.HeldItem, out _, out _, out _, out _, out _); //Consume relevant ammo
 
 		if (Projectile.owner == Main.myPlayer)
 		{
 			var velocity = Projectile.velocity * Progress;
-			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, ModContent.ProjectileType<BombCannonShot>(), 0, Projectile.knockBack, Projectile.owner, ShootType, 1, preSpawnAction: delegate (Projectile p)
+			bool boomShroom = owner.HasEquip<BoomShroom>();
+			int type = boomShroom ? ModContent.ProjectileType<BigCannonBomb>() : ModContent.ProjectileType<CannonBomb>();
+
+			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, type, (int)(Projectile.damage * BombCannon.ContactDamagePercentage), Projectile.knockBack, Projectile.owner, ShootType, 1, preSpawnAction: delegate (Projectile p)
 			{
 				p.timeLeft = (int)(p.timeLeft * (1f - Progress));
 
-				var bomb = p.ModProjectile as BombCannonShot;
-				bomb.Bouncy = BombCannon.StickyBombProjIDs.Contains(ShootType);
-				bomb.sticky = BombCannon.BouncyBombProjIDs.Contains(ShootType);
-				bomb.SetDamage(Projectile.damage);
-
-				if(Main.player[Projectile.owner].HasAccessory<BoomShroom>())
-				{
-					bomb.BoomShroom = true;
-					bomb.area = 15;
-					p.Resize(32, 32);
-					bomb.SetDamage((int)(Projectile.damage * 1.5f));
-					p.scale = 0;
-				}
+				var bomb = p.ModProjectile as CannonBomb;
+				bomb.SetDamage((int)(Projectile.damage * (boomShroom ? 1.5f : 1)));
 			});
 		}
 
@@ -249,23 +242,19 @@ internal class BombCannonHeld : ModProjectile
 	}
 }
 
-internal class BombCannonShot : BombProjectile, ITrailProjectile
+internal class CannonBomb : BombProjectile, ITrailProjectile
 {
-	internal bool Bouncy { get; set; } = false;
+	/// <summary> The original projectile this one is mimicking the sprite and behavior of. </summary>
+	public int CopyProj
+	{
+		get => (int)Projectile.ai[0];
+		set => Projectile.ai[0] = value;
+	}
+	public override string Texture => AssetLoader.EmptyTexture;
 
-	internal bool BoomShroom { get; set; } = false;
-
-	/// <summary>
-	/// The original projectile this one is mimicking the sprite and behavior of.
-	/// </summary>
-	internal int CopyProj { get => (int)Projectile.ai[0]; set => Projectile.ai[0] = value; }
-
-	/// <summary>
-	/// Tracks how much the contact damage of the projectile should be reduced with each enemy struck.
-	/// </summary>
-	internal ref float DamageModifier => ref Projectile.ai[1];
-
-	public override string Texture => ModContent.GetInstance<BombCannon>().Texture;
+	public bool bouncy;
+	private bool _justSpawned;
+	private int _lastTimeLeft;
 
 	public override void SetDefaults()
 	{
@@ -273,10 +262,10 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 		Projectile.DamageType = DamageClass.Ranged;
 	}
 
-	public void DoTrailCreation(TrailManager tM)
+	public virtual void DoTrailCreation(TrailManager tM)
 	{
-		float baseWidth = BoomShroom ? 60 : 40;
-		float baseLength = BoomShroom ? 360 : 240;
+		float baseWidth = 40;
+		float baseLength = 240;
 
 		ITrailCap tCap = new RoundCap();
 		ITrailPosition tPos = new DefaultTrailPosition();
@@ -291,46 +280,16 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 
 	public override void AI()
 	{
-		base.AI();
-
-		if (!DealingDamage)
+		if (!_justSpawned)
 		{
-			if(BoomShroom)
-			{
-				float oldScale = Projectile.scale; //Resize logic
-				Projectile.scale = Math.Min(Projectile.scale + .15f, 1);
+			bouncy = BombCannon.BouncyBombProjIDs.Contains(CopyProj);
+			sticky = BombCannon.StickyBombProjIDs.Contains(CopyProj);
 
-				if (Projectile.scale != oldScale)
-				{
-					int size = (int)Math.Max(32 * Projectile.scale, 2);
-					Projectile.Resize(size, size);
-				}
-			}
-
-			//Hacky fake collision logic, due to the explosive projectile set seeming to always make bombs explode instantly on hit
-			//Might be missing something to ensure proper interactions with accessories and other on hit effects?
-			Player owner = Main.player[Projectile.owner];
-			foreach (NPC npc in Main.ActiveNPCs)
-			{
-				if (npc.Hitbox.Intersects(Projectile.Hitbox))
-				{
-					bool animalFriendshipCheck = npc.CountsAsACritter && owner.dontHurtCritters;
-					if(Projectile.localNPCImmunity[npc.whoAmI] == 0 && !npc.friendly && !animalFriendshipCheck)
-					{
-						owner.ApplyDamageToNPC(npc,
-								   (int)owner.GetTotalDamage<RangedDamageClass>().ApplyTo(DamageModifier * _damage * BombCannon.ContactDamagePercentage),
-								   Projectile.knockBack,
-								   Projectile.velocity.X > 0 ? 1 : -1,
-								   Main.rand.Next(100) < Projectile.CritChance,
-								   DamageClass.Ranged,
-								   true);
-
-						DamageModifier *= 0.8f;
-						Projectile.localNPCImmunity[npc.whoAmI] = -1;
-					}
-				}
-			}
+			_justSpawned = true;
 		}
+
+		_lastTimeLeft = Projectile.timeLeft;
+		base.AI();
 
 		if (Projectile.velocity == Vector2.Zero && Projectile.oldVelocity == Vector2.Zero)
 			TrailManager.TryTrailKill(Projectile);
@@ -357,13 +316,12 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
-		if(Bouncy)
+		if (bouncy)
 		{
 			Projectile.Bounce(oldVelocity);
 			return false;
 		}
-
-		else if(!sticky)
+		else if (!sticky)
 		{
 			Projectile.Bounce(oldVelocity, 0.3f);
 
@@ -371,7 +329,7 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 			rotationDifference = Math.Abs(rotationDifference);
 
 			//Create a new trail to prevent the vertex strip from freaking out over movements in opposite directions
-			if(rotationDifference > PiOver2 * 1.5f)
+			if (rotationDifference > PiOver2 * 1.5f)
 			{
 				TrailManager.TryTrailKill(Projectile);
 
@@ -385,17 +343,21 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 		return base.OnTileCollide(oldVelocity);
 	}
 
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (!DealingDamage)
+			Projectile.timeLeft = _lastTimeLeft; //Preserve timeLeft because Sets.Explosive automatically sets it to 3
+	}
+
 	public override void OnKill(int timeLeft)
 	{
 		if (Main.dedServ)
 			return;
 
 		SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
-		if(BoomShroom)
-			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 
 		//Particle circles showing radius of explosion
-		var ease = new PolynomialEase((float x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+		var ease = new PolynomialEase(x => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 		var stretch = new Vector2(2, 1);
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.25f).Additive(150), Red, 1f, 30 * area, 20, "Star2", stretch, ease)
@@ -466,7 +428,6 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 		}
 
 		Main.EntitySpriteDraw(solid, Projectile.Center - Main.screenPosition, drawRect, White, Projectile.rotation, origin, scale * 1.1f, SpriteEffects.None);
-
 		Main.EntitySpriteDraw(copyTexture, Projectile.Center - Main.screenPosition, drawRect, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, scale, SpriteEffects.None);
 
 		var color = Projectile.GetAlpha(Red.Additive(150)) * lerp * 2;
@@ -480,5 +441,54 @@ internal class BombCannonShot : BombProjectile, ITrailProjectile
 
 		int numFlashes = 9;
 		return EaseCircularIn.Ease((float)Math.Sin(EaseCircularIn.Ease(progress) * numFlashes * Pi));
+	}
+}
+
+internal class BigCannonBomb : CannonBomb
+{
+	public override void DoTrailCreation(TrailManager tM)
+	{
+		float baseWidth = 60;
+		float baseLength = 360;
+
+		ITrailCap tCap = new RoundCap();
+		ITrailPosition tPos = new DefaultTrailPosition();
+		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
+
+		tM.CreateTrail(Projectile, new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 2, baseLength, tShader);
+		tM.CreateTrail(Projectile, new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 1.5f, baseLength, tShader);
+		tM.CreateTrail(Projectile, new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, baseWidth, baseLength, tShader);
+
+		tM.CreateTrail(Projectile, new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, baseWidth, baseLength, new DefaultShader());
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+		area = 15;
+		Projectile.scale = 0;
+	}
+
+	public override void AI()
+	{
+		base.AI();
+
+		if (!DealingDamage)
+		{
+			float oldScale = Projectile.scale; //Resize logic
+			Projectile.scale = Math.Min(Projectile.scale + .1f, 1);
+
+			if (Projectile.scale != oldScale)
+			{
+				int size = (int)Math.Max(Bomb.CommonSize * Projectile.scale, 2);
+				Projectile.Resize(size, size);
+			}
+		}
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		base.OnKill(timeLeft);
+		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 	}
 }

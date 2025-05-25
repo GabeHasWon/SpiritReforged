@@ -9,6 +9,12 @@ public class OreCarts : ModTile
 {
 	public const int FrameWidth = 54;
 
+	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/StoneCrack1")
+	{
+		Volume = .25f,
+		PitchVariance = .3f
+	};
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -104,7 +110,7 @@ public class OreCarts : ModTile
 	{
 		SoundEngine.PlaySound(SoundID.Item127 with { PitchVariance = .4f }, area.Center());
 		SoundEngine.PlaySound(SoundID.Item89 with { Pitch = .5f }, area.Center());
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack1") { Volume = .25f, PitchVariance = .3f }, area.Center());
+		SoundEngine.PlaySound(Break, area.Center());
 
 		ParticleHandler.SpawnParticle(new Particles.SmokeCloud(area.Bottom(), Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 

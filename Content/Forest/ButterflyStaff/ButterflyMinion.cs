@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-[AutoloadMinionBuff()]
+[AutoloadMinionBuff]
 public class ButterflyMinion : BaseMinion
 {
 	private const float Moving = 0;

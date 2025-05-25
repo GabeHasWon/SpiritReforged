@@ -14,6 +14,7 @@ using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
+[AutoloadHead]
 public class Cartographer : WorldNPC, ITravelNPC
 {
 	protected override bool CloneNewInstances => true;

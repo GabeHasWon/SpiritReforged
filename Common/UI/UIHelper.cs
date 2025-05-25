@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SpiritReforged;
+namespace SpiritReforged.Common.UI;
 
 internal static class UIHelper
 {

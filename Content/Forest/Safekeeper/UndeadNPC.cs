@@ -1,15 +1,13 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
-using System.IO;
-using Terraria.Audio;
-using Terraria.GameContent.Drawing;
-using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Safekeeper;
 
 public class UndeadNPC : GlobalNPC
 {
-	private const float DecayRate = .025f;
+	public override bool InstancePerEntity => true;
+
+	private static readonly HashSet<int> NoDeathAnim = [];
 
 	private static readonly HashSet<int> UndeadTypes = [NPCID.Zombie, NPCID.ZombieDoctor, NPCID.ZombieElf, NPCID.ZombieElfBeard, NPCID.ZombieElfGirl, NPCID.ZombieEskimo, 
 		NPCID.ZombieMerman, NPCID.ZombieMushroom, NPCID.ZombieMushroomHat, NPCID.ZombiePixie, NPCID.ZombieRaincoat, NPCID.ZombieSuperman, NPCID.ZombieSweater, 
@@ -27,25 +25,37 @@ public class UndeadNPC : GlobalNPC
 		NPCID.GiantCursedSkull, NPCID.Frankenstein, NPCID.DD2SkeletonT1, NPCID.DD2SkeletonT3, NPCID.Poltergeist, NPCID.Wraith, NPCID.FloatyGross, NPCID.Mummy, 
 		NPCID.BloodMummy, NPCID.DarkMummy, NPCID.LightMummy, NPCID.Ghost];
 
-	private static readonly HashSet<NPC> ToDraw = [];
 	private static bool TrackingGore;
-
-	/// <summary> Decreases by <see cref="DecayRate"/>. </summary>
-	private float _decayTime = 1;
-
-	public override bool InstancePerEntity => true;
 
 	internal static bool AddCustomUndead(params object[] args)
 	{
-		if (args.Length == 2 && args[1] is int customType) //Context, undead type
-			return UndeadTypes.Add(customType);
+		switch (args.Length)
+		{
+			case 2:
+				{
+					if (args[0] is int customType)
+						return UndeadTypes.Add(customType);
+					else
+						throw new ArgumentException("AddUndead parameter 0 should be an int!");
+				}
+			case 3:
+				{
+					if (args[0] is not int customType)
+						throw new ArgumentException("AddUndead parameter 0 should be an int!");
+
+					if (args[1] is not bool excludeDeathAnim)
+						throw new ArgumentException("AddUndead parameter 1 should be a bool!");
+
+					return UndeadTypes.Add(customType) && (!excludeDeathAnim || NoDeathAnim.Add(customType));
+				}
+		}
 
 		return false;
 	}
 
 	/// <summary> Checks whether the NPC of the given type is considered "undead". </summary>
 	internal static bool IsUndeadType(int type) => UndeadTypes.Contains(type) || NPCID.Sets.Zombies[type] || NPCID.Sets.Skeletons[type] || NPCID.Sets.DemonEyes[type];
-	private static bool ShouldTrackGore(NPC self) => self.TryGetGlobalNPC(out UndeadNPC _) && Interaction(self).HasAccessory<SafekeeperRing>();
+	private static bool ShouldTrackGore(NPC self) => self.TryGetGlobalNPC(out UndeadNPC _) && Interaction(self).HasEquip<SafekeeperRing>();
 	public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => IsUndeadType(entity.type);
 
 	#region detours
@@ -53,7 +63,6 @@ public class UndeadNPC : GlobalNPC
 	{
 		On_NPC.HitEffect_HitInfo += TrackGore;
 		On_Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += StopGore;
-		On_Main.DrawNPCs += DrawNPCsInQueue;
 	}
 
 	/// <summary> Tracks on hit gores for removal according to <see cref="ShouldTrackGore"/>. </summary>
@@ -74,63 +83,15 @@ public class UndeadNPC : GlobalNPC
 
 		return result;
 	}
-
-	private static void DrawNPCsInQueue(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
-	{
-		const float spotScale = .5f;
-
-		orig(self, behindTiles);
-
-		if (ToDraw.Count == 0)
-			return; //Nothing to draw; don't restart the spritebatch
-
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-		var effect = AssetLoader.LoadedShaders["NoiseFade"];
-
-		foreach (var npc in ToDraw) //Draw all shader-affected NPCs
-		{
-			var effects = npc.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			var texture = TextureAssets.Npc[npc.type].Value;
-			var frame = npc.frame with { Y = 0 };
-
-			float decayTime = 0;
-			if (npc.TryGetGlobalNPC(out UndeadNPC gNPC))
-				decayTime = gNPC._decayTime;
-
-			effect.Parameters["power"].SetValue(decayTime * 50f);
-			effect.Parameters["size"].SetValue(new Vector2(1, Main.npcFrameCount[npc.type]) * spotScale);
-			effect.Parameters["noiseTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
-			effect.CurrentTechnique.Passes[0].Apply();
-
-			Main.spriteBatch.Draw(texture, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), frame, Color.Black, npc.rotation, frame.Size() / 2, npc.scale, effects, 0);
-		}
-
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin();
-
-		ToDraw.Clear();
-	}
 	#endregion
 
-	public override void HitEffect(NPC npc, NPC.HitInfo hit)
+	public override bool CheckDead(NPC npc)
 	{
-		if (npc.life <= 0 && Interaction(npc).HasAccessory<SafekeeperRing>())
-		{
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				npc.NPCLoot();
+		bool value = base.CheckDead(npc);
+		if (value && Main.netMode != NetmodeID.MultiplayerClient && Interaction(npc).HasEquip<SafekeeperRing>() && !NoDeathAnim.Contains(npc.type))
+			UndeadDecay.StartEffect(npc);
 
-				npc.life = 1;
-				npc.dontTakeDamage = true;
-				npc.netUpdate = true;
-
-				_decayTime -= DecayRate;
-			}
-
-			BurnAway(npc);
-		}
+		return value;
 	}
 
 	/// <summary> Returns the index <see cref="NPC.lastInteraction"/> in singleplayer and <see cref="NPC.FindClosestPlayer()"/> in multiplayer. </summary>
@@ -141,68 +102,5 @@ public class UndeadNPC : GlobalNPC
 			return Main.player[npc.lastInteraction];
 		else
 			return Main.player[npc.FindClosestPlayer()];
-	}
-
-	/// <summary> Visual and sound effects for burning away. </summary>
-	private static void BurnAway(NPC npc)
-	{
-		if (Main.dedServ)
-			return;
-
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/Fire_1") with { Pitch = .25f, PitchVariance = .2f }, npc.Center);
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Pitch = .8f, PitchVariance = .2f }, npc.Center);
-
-		var pos = npc.Center;
-		for (int i = 0; i < 3; i++)
-			ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.AshTreeShake, new ParticleOrchestraSettings() with { PositionInWorld = pos });
-
-		ParticleHandler.SpawnParticle(new Particles.LightBurst(npc.Center, 0, Color.Goldenrod, npc.scale * .8f, 10));
-
-		for (int i = 0; i < 15; i++)
-		{
-			ParticleHandler.SpawnParticle(new Particles.GlowParticle(npc.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f),
-				Color.White, Color.Lerp(Color.Goldenrod, Color.Orange, Main.rand.NextFloat()), 1, Main.rand.Next(10, 20), 8));
-		}
-	}
-
-	public override void PostAI(NPC npc)
-	{
-		if (_decayTime == 1)
-			return;
-
-		if ((_decayTime -= DecayRate) <= 0)
-		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/Dust_1") with { Pitch = .75f, PitchVariance = .25f }, npc.Center);
-			npc.active = false;
-		}
-
-		var dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Asphalt, Scale: Main.rand.NextFloat(.5f, 1.5f));
-		dust.velocity = -npc.velocity;
-		dust.noGravity = true;
-		dust.color = new Color(25, 20, 20);
-	}
-
-	public override bool CanHitNPC(NPC npc, NPC target) => _decayTime == 1;
-	public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot) => _decayTime == 1;
-
-	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-	{
-		if (_decayTime == 1)
-			return true;
-
-		ToDraw.Add(npc);
-		return false;
-	}
-
-	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
-	{
-		binaryWriter.Write(_decayTime);
-		binaryWriter.Write(npc.dontTakeDamage); //dontTakeDamage isn't normally synced, so sync it here
-	}
-
-	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
-	{
-		_decayTime = binaryReader.ReadSingle();
-		npc.dontTakeDamage = binaryReader.ReadBoolean();
 	}
 }

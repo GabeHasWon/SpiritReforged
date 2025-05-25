@@ -1,14 +1,8 @@
 namespace SpiritReforged.Content.Underground.WayfarerSet;
 
-[AutoloadEquip(EquipType.Body)]
+[AutoloadEquip(EquipType.Body, EquipType.Back)]
 public class WayfarerBody : ModItem
 {
-	public override void Load()
-	{
-		if (!Main.dedServ)
-			EquipLoader.AddEquipTexture(Mod, $"{Texture}_{EquipType.Back}", EquipType.Back, this);
-	}
-
 	public override void SetStaticDefaults() => ArmorIDs.Body.Sets.NeedsToDrawArm[Item.bodySlot] = true;
 	public override void SetDefaults()
 	{

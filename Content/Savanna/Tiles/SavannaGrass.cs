@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -14,6 +15,7 @@ public class SavannaGrass : GrassTile, IConvertibleTile
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassMowed>();
 		RegisterItemDrop(Mod.Find<ModItem>("SavannaDirtItem").Type);
 		AddMapEntry(MapColor);
 		this.Merge(ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassCrimson>());
@@ -100,6 +102,7 @@ public class SavannaGrassCorrupt : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = -1;
 		TileID.Sets.Corrupt[Type] = true;
 		TileID.Sets.AddCorruptionTile(Type, 20);
 	}
@@ -133,6 +136,7 @@ public class SavannaGrassCrimson : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = -1;
 		TileID.Sets.AddCrimsonTile(Type, 20);
 		TileID.Sets.Crimson[Type] = true;
 	}
@@ -166,6 +170,7 @@ public class SavannaGrassHallow : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassHallowMowed>();
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 20;
 	}

@@ -9,6 +9,13 @@ namespace SpiritReforged.Content.Forest.RoguesCrest;
 
 public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 {
+	public static readonly SoundStyle BigSwing = new("SpiritReforged/Assets/SFX/Item/BigSwing");
+
+	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1")
+	{
+		Pitch = 1.25f
+	};
+
 	private bool Trailing => Projectile.velocity.Length() >= ProjectileID.Sets.TrailCacheLength[Type] && AiState == Attacking;
 
 	private const int Returning = 0;
@@ -38,7 +45,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 	{
 		Player mp = Main.player[Projectile.owner];
 
-		if (mp.HasAccessory<RogueCrest>())
+		if (mp.HasEquip<RogueCrest>())
 			Projectile.timeLeft = 2;
 
 		return true;
@@ -87,7 +94,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 
 			if (AiTimer <= 0 && Projectile.Distance(target.Center) > 30) //Lunge, then go on cooldown
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") with { Pitch = 1.25f }, Projectile.Center);
+				SoundEngine.PlaySound(Slash, Projectile.Center);
 
 				AiTimer = attackCooldown;
 				Projectile.velocity = (Projectile.DirectionTo(target.Center) * 24).RotatedByRandom(0.1f);
@@ -101,8 +108,6 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 					dust.noGravity = true;
 					dust.noLightEmittence = true;
 				}
-
-				
 
 				for (int i = 0; i < 3; i++)
 				{
@@ -128,7 +133,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 			ParticleHandler.SpawnParticle(new Particles.LightBurst(target.Center, 0, Color.Red, .5f, 10) { noLight = true });
 			ParticleHandler.SpawnParticle(new Particles.LightBurst(target.Center, 0, Color.White, .3f, 10) { noLight = true });
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BigSwing"), Projectile.Center);
+			SoundEngine.PlaySound(BigSwing, Projectile.Center);
 			SoundEngine.PlaySound(SoundID.NPCDeath12 with { Volume = .1f, Pitch = .25f }, Projectile.Center);
 		}
 

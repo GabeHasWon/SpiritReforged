@@ -13,7 +13,7 @@ JellyfishMinion_Buff: {
 	Description: 可爱且有弹性的水母为你而战！
 }
 
-JellyfishBuff: {
+JellyfishPet_Buff: {
 	DisplayName: 友善的水母
 	Description: 这只充满活力的水母喜欢跟着你！
 }
@@ -63,7 +63,7 @@ QuenchPotion_Buff: {
 	Description: 其他药水的持续时间延长25%
 }
 
-TumblerPetBuff: {
+TumblerPet_Buff: {
 	DisplayName: 矛盾的翻滚怪
 	Description: 一个友善的风滚草正跟着你
 }

@@ -6,18 +6,6 @@ using Terraria.Audio;
 
 namespace SpiritReforged.Content.Underground.WayfarerSet;
 
-internal class WayfarerPlayer : ModPlayer
-{
-	public bool active;
-
-	public override void ResetEffects() => active = false;
-	public override void PostUpdateEquips()
-	{
-		if (active)
-			Player.GetModPlayer<CoinLootPlayer>().AddMult(10);
-	}
-}
-
 internal class WayfarerGlobalTile : GlobalTile
 {
 	public static readonly SoundStyle PositiveOutcome = new("SpiritReforged/Assets/SFX/Ambient/PositiveOutcome")
@@ -31,7 +19,7 @@ internal class WayfarerGlobalTile : GlobalTile
 	{
 		const int maxDistance = 800;
 
-		if (WorldMethods.Generating || effectOnly || fail || Main.gameMenu)
+		if (WorldMethods.Generating || effectOnly || fail)
 			return;
 
 		var world = new Vector2(i, j).ToWorldCoordinates();
@@ -53,7 +41,7 @@ internal class WayfarerGlobalTile : GlobalTile
 			player.AddBuff(ModContent.BuffType<ExplorerMine>(), 600);
 		}
 
-		bool ActiveAndInRange() => player.TryGetModPlayer(out WayfarerPlayer p) && p.active && player.DistanceSQ(world) < maxDistance * maxDistance;
+		bool ActiveAndInRange() => WayfarerHead.SetActive(player) && player.DistanceSQ(world) < maxDistance * maxDistance;
 	}
 
 	private static void DoFX(Player player)
