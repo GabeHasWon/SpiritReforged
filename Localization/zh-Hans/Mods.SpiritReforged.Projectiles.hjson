@@ -36,3 +36,4 @@ RollingBowlder.DisplayName: 滚动巨石
 Firespike.DisplayName: 火刺
 CannonBomb.DisplayName: 炸弹大炮
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"

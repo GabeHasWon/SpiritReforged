@@ -4,7 +4,6 @@ using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace SpiritReforged.Content.Underground.Moss;
 
