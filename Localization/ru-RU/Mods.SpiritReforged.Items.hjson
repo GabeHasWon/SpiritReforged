@@ -1803,3 +1803,8 @@ TitleMusicBoxItem: {
 	// DisplayName: Music Box (Spirit Title)
 	// Tooltip: ""
 }
+
+Drypowder: {
+	// DisplayName: Drypowder
+	// Tooltip: Spreads the savanna
+}

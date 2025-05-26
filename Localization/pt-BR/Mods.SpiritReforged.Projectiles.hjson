@@ -36,3 +36,4 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // Firespike.DisplayName: Firespike
 // CannonBomb.DisplayName: Bomb Cannon Shot
 // BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
