@@ -31,14 +31,14 @@ public class UndeadNPC : GlobalNPC
 	{
 		switch (args.Length)
 		{
-			case 2:
+			case 1:
 				{
 					if (args[0] is int customType)
 						return UndeadTypes.Add(customType);
 					else
 						throw new ArgumentException("AddUndead parameter 0 should be an int!");
 				}
-			case 3:
+			case 2:
 				{
 					if (args[0] is not int customType)
 						throw new ArgumentException("AddUndead parameter 0 should be an int!");

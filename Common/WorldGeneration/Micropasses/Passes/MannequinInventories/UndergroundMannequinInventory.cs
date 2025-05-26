@@ -40,6 +40,18 @@ internal class UndergroundMannequinInventory : MannequinInventory
 			if (CrossMod.Thorium.TryFind("Wreath", out ModItem wreath))
 				AccType.Add(wreath.Type, 0.1f);
 		}
+
+		if (CrossMod.Redemption.Enabled)
+		{
+			if (CrossMod.Redemption.TryFind("LeatherSheath", out ModItem leatherSheath))
+				AccType.Add(leatherSheath.Type, 0.25f);
+
+			if (CrossMod.Redemption.TryFind("DurableBowString", out ModItem bowString))
+				AccType.Add(bowString.Type, 0.25f);
+
+			if (CrossMod.Redemption.TryFind("ShellNecklace", out ModItem shellNecklace))
+				AccType.Add(shellNecklace.Type, 0.1f);
+		}
 	}
 
 	public override void SetMannequin(Point16 position)
@@ -60,6 +72,28 @@ internal class UndergroundMannequinInventory : MannequinInventory
 			inv[0] = new(ItemID.AncientIronHelmet);
 			inv[1] = new();
 			inv[2] = new();
+		}
+
+		if (CrossMod.Redemption.Enabled)
+		{
+			if (chance < .1f)
+			{
+				if (Main.rand.NextBool(2))
+				{
+					if (CrossMod.Redemption.TryFind("CommonGuardHelm1", out ModItem commonHelm1))
+						inv[0] = new(commonHelm1.Type);
+				}
+				else
+				{
+					if (CrossMod.Redemption.TryFind("CommonGuardHelm2", out ModItem commonHelm2))
+						inv[0] = new(commonHelm2.Type);
+				}
+
+				if (CrossMod.Redemption.TryFind("CommonGuardPlateMail", out ModItem commonPlate))
+					inv[1] = new(commonPlate.Type);
+				if (CrossMod.Redemption.TryFind("CommonGuardGreaves", out ModItem commonGreaves))
+					inv[2] = new(commonGreaves.Type);
+			}
 		}
 
 		if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te) || te is not TEDisplayDoll mannequin)
