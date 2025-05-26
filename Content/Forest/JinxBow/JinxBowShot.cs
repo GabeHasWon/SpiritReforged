@@ -76,6 +76,12 @@ public class JinxBowShot : GlobalProjectile
 		}
 	}
 
+	public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (IsJinxbowShot && Main.rand.NextBool(5))
+			target.GetGlobalNPC<JinxMarkNPC>().SetMark(target, projectile);
+	}
+
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
 	{
 		if (!IsJinxbowShot)
@@ -109,11 +115,11 @@ public class JinxBowShot : GlobalProjectile
 				for (int j = 0; j < 12; j++)
 				{
 					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 12f) * 2;
-					Main.EntitySpriteDraw(solid, position + offset, null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive() * 0.33f, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
+					Main.EntitySpriteDraw(solid, position + offset, null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive(100) * 0.33f, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
 				}
 			}
 			else //Otherwise draw as trail
-				Main.EntitySpriteDraw(solid, Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f), null, Color.Lerp(brightest, Color.Lavender, 0.5f).Additive() * EaseFunction.EaseCubicIn.Ease(lerp) * 0.5f, projectile.rotation, solid.Size() / 2, new Vector2(projectile.scale), SpriteEffects.None); 
+				Main.EntitySpriteDraw(solid, Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f), null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive(100) * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f, projectile.rotation, solid.Size() / 2, new Vector2(projectile.scale), SpriteEffects.None); 
 
 			Main.EntitySpriteDraw(texture, position, null, color, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
 		}

@@ -107,3 +107,8 @@ ExplorerMine: {
 	DisplayName: Explorer's Vigor
 	Description: Keep digging!
 }
+
+JinxMark: {
+	DisplayName: Jinx Mark
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}

@@ -107,3 +107,8 @@ ExplorerMine: {
 	DisplayName: 探险家的活力
 	Description: 挖下去吧！
 }
+
+JinxMark: {
+	// DisplayName: Jinx Mark
+	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
