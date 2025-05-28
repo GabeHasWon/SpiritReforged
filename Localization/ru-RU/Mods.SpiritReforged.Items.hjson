@@ -1808,3 +1808,8 @@ Drypowder: {
 	// DisplayName: Drypowder
 	// Tooltip: Spreads the savanna
 }
+
+ElephantKite: {
+	// DisplayName: Elephant Kite
+	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
