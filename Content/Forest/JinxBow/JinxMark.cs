@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
@@ -29,16 +30,15 @@ public class JinxMarkNPC : GlobalNPC
 
 	public void SetMark(NPC npc, Projectile projectile)
 	{
-		const int markTime = 60 * 30;
 		_storedPlayer = projectile.owner;
 		if (!npc.HasBuff<JinxMark>())
-			npc.AddBuff(ModContent.BuffType<JinxMark>(), markTime);
+			npc.AddBuff(ModContent.BuffType<JinxMark>(), (int)(JinxBowMinion.MARK_COOLDOWN * JinxBowMinion.MARK_LINGER_RATIO));
 
 		else
 		{
 			int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
 			if (index > -1)
-				npc.buffTime[index] = markTime;
+				npc.buffTime[index] = JinxBowMinion.MARK_COOLDOWN;
 		}
 	}
 
@@ -60,6 +60,24 @@ public class JinxMarkNPC : GlobalNPC
 					if(proj.ModProjectile is JinxBowMinion jinxBow)
 					{
 						jinxBow.DoEmpoweredShot(npc);
+
+						if(!Main.dedServ)
+						{
+							ParticleHandler.SpawnParticle(new ImpactLinePrim(npc.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(0.75f, 3), 12, 1));
+							ParticleHandler.SpawnParticle(new LightBurst(npc.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 20));
+
+							for (int i = 0; i < 10; i++)
+							{
+								Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 4);
+								float scale = Main.rand.NextFloat(0.3f, 0.7f);
+								int lifeTime = Main.rand.Next(12, 40);
+								static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+
+								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
+								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+							}
+						}
+
 						break;
 					}
 				}
@@ -73,17 +91,21 @@ public class JinxMarkNPC : GlobalNPC
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Draw the mark icon
 	{
-		const int fadeout = 20; //The number of ticks this effect fades out for
-
 		if (!npc.dontTakeDamage && npc.HasBuff<JinxMark>())
 		{
+			const int maxBuffTime = (int)(JinxBowMinion.MARK_COOLDOWN * JinxBowMinion.MARK_LINGER_RATIO);
+
 			var source = icon.Frame();
 
 			int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
 			int time = (index == -1) ? 0 : npc.buffTime[index];
-			var color = (Color.White * .75f * Math.Min(time / (float)fadeout, 1)).Additive();
+			var compoundSineEase = EaseFunction.CompoundEase([EaseFunction.EaseQuadIn, EaseFunction.EaseSine, EaseFunction.EaseCircularOut, EaseFunction.EaseQuadOut]);
+			float buffTimeProgress = time / (float)maxBuffTime;
+			var color = Color.White.Additive() * compoundSineEase.Ease(buffTimeProgress);
+			float scale = MathHelper.Lerp(0.8f, 1.1f, compoundSineEase.Ease(buffTimeProgress));
+			scale += (EaseFunction.EaseSine.Ease((Main.GlobalTimeWrappedHourly * 1.4f) % 1) - 0.5f) * 0.03f;
 
-			spriteBatch.Draw(icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, 0, source.Size() / 2, 1, default, 0);
+			spriteBatch.Draw(icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, 0, source.Size() / 2, scale, default, 0);
 		}
 	}
 }

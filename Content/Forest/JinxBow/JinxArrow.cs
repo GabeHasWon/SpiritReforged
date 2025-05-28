@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Forest.JinxBow;
 
 public class JinxArrow : ModProjectile
 {
-	private const int MAX_TIMELEFT = 40;
+	private const int MAX_TIMELEFT = 80;
 
 	private ref float StuckNPC => ref Projectile.ai[0];
 	private bool HasStruckNPC { get => Projectile.ai[1] == 1; set => Projectile.ai[1] = value ? 1 : 0; }
@@ -29,11 +29,6 @@ public class JinxArrow : ModProjectile
 		Projectile.tileCollide = false;
 		Projectile.usesIDStaticNPCImmunity = true;
 		Projectile.idStaticNPCHitCooldown = -1;
-	}
-
-	public override bool PreAI()
-	{
-		return true;
 	}
 
 	public override void AI()
@@ -59,7 +54,7 @@ public class JinxArrow : ModProjectile
 		HasStruckNPC = true;
 	}
 
-	public override bool? CanHitNPC(NPC target) => !HasStruckNPC && target.whoAmI == (int)StuckNPC;
+	public override bool? CanHitNPC(NPC target) => target.whoAmI == (int)StuckNPC;
 
 	public override bool? CanDamage() => !HasStruckNPC;
 
@@ -80,7 +75,7 @@ public class JinxArrow : ModProjectile
 			Main.EntitySpriteDraw(projTex, drawPos + offset, null, drawColor * 0.2f, Projectile.rotation, projTex.Size() / 2, Projectile.scale, SpriteEffects.None);
 		}
 
-		Projectile.QuickDraw(drawColor: Color.MediumPurple.Additive(50) * EaseFunction.EaseCircularIn.Ease(Projectile.timeLeft / (float)MAX_TIMELEFT));
+		Projectile.QuickDraw(drawColor: drawColor);
 		return false;
 	}
 }

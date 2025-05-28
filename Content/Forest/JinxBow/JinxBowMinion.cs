@@ -14,6 +14,9 @@ namespace SpiritReforged.Content.Forest.JinxBow;
 
 public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 {
+	public const int MARK_COOLDOWN = 600;
+	public const float MARK_LINGER_RATIO = 0.5f;
+
 	private const int FIRE_TIME = 60;
 	private const int COOLDOWN_TIME = 30;
 
@@ -40,6 +43,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	private ref float BounceTimer => ref Projectile.ai[1];
 	private ref float StoredRotation => ref Projectile.ai[2];
 
+	public float MarkCooldown { get; set; } = 0;
+
 	public override void AbstractSetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -47,6 +52,10 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	}
 
 	public override void AbstractSetDefaults() => Projectile.minionSlots = 0f;
+
+	public override bool? CanDamage() => false;
+
+	public override bool DoAutoFrameUpdate(ref int framesPerSecond, ref int startFrame, ref int endFrame) => false;
 
 	public override bool PreAI()
 	{
@@ -62,16 +71,16 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	public override void AI()
 	{
 		if (_isDoingEmpoweredShot)
-			EmpoweredShot(Main.player[Projectile.owner], Main.npc[_empoweredShotTarget]);
+			EmpoweredShotBehavior(Main.player[Projectile.owner], Main.npc[_empoweredShotTarget]);
 		else
 			base.AI();
 
 		AiTimer = Math.Max(0, AiTimer - 1);
 		BounceTimer = Math.Max(0, BounceTimer - 1);
-
+		MarkCooldown = Math.Max(0, MarkCooldown - 1);
 	}
 
-	public void EmpoweredShot(Player player, NPC target)
+	public void EmpoweredShotBehavior(Player player, NPC target)
 	{
 		void EndAttack()
 		{
@@ -111,7 +120,6 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			AiTimer = FIRE_TIME + COOLDOWN_TIME;
 
 			Vector2 arrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation + MathHelper.PiOver2 * targetDirection) * _selectedArrow.shootSpeed;
-			Vector2 arrowPos = target.Center - arrowVelocity * 7;
 
 			BounceTimer = COOLDOWN_TIME;
 
@@ -121,50 +129,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			_storedOffset -= visualArrowVelocity;
 
 			if (!Main.dedServ)
-			{
-				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1.25f }, Projectile.Center);
-				SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 1.25f }, Projectile.Center);
-
-				//Visuals from arrow fire position
-				Color particleColor = Color.MediumPurple.Additive(50);
-				Vector2 particleSpawn = Projectile.Center + visualArrowVelocity;
-				float ringRotation = visualArrowVelocity.ToRotation() + MathHelper.Pi;
-
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(particleSpawn, visualArrowVelocity / 2, particleColor, new(0.75f, 4), 16, 0.9f));
-
-				Particle p = new TexturedPulseCircle(particleSpawn, particleColor, 0.8f, 120, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(0.8f, ringRotation);
-				p.Velocity = -visualArrowVelocity / 60;
-				ParticleHandler.SpawnParticle(p); 
-
-				p = new TexturedPulseCircle(Projectile.Center + visualArrowVelocity / 2, particleColor, 0.8f, 80, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(0.8f, ringRotation);
-				p.Velocity = visualArrowVelocity / 60;
-				ParticleHandler.SpawnParticle(p);
-
-				//Visual from arrow spawn position
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(arrowPos, arrowVelocity / 2, particleColor, new(0.75f, 3), 16, 1, target));
-
-				p = new TexturedPulseCircle(arrowPos - arrowVelocity * 3f, particleColor, 0.8f, 120, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(0.9f, arrowVelocity.ToRotation() + MathHelper.Pi);
-				p.Velocity = arrowVelocity / 60;
-				ParticleHandler.SpawnParticle(p);
-
-				p = new TexturedPulseCircle(arrowPos - arrowVelocity * 3f, particleColor, 0.8f, 80, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(0.9f, arrowVelocity.ToRotation() + MathHelper.Pi);
-				p.Velocity = arrowVelocity / 30;
-				ParticleHandler.SpawnParticle(p);
-
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(1, 4), 14, 1));
-				ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 25));
-
-				for (int i = 0; i < 18; i++)
-				{
-					Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 6);
-					float scale = Main.rand.NextFloat(0.3f, 0.7f);
-					int lifeTime = Main.rand.Next(12, 40);
-					static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
-
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
-				}
-			}
+				EmpoweredShotFX(target, visualArrowVelocity, arrowVelocity);
 
 			_hasDoneEmpoweredShot = true;
 			Projectile.netUpdate = true;
@@ -174,8 +139,6 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		if(_hasDoneEmpoweredShot && BounceTimer == 0)
 			EndAttack();
 	}
-
-	public override bool? CanDamage() => false;
 
 	public override void IdleMovement(Player player)
 	{
@@ -278,12 +241,56 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		if (_isDoingEmpoweredShot)
 		{
 			_selectedArrow.type = ModContent.ProjectileType<JinxArrow>();
-			_selectedArrow.damage = Projectile.damage + 20;
+			_selectedArrow.damage = Projectile.damage + 30;
 			_selectedArrow.brightColor = Color.MediumPurple;
 		}
 	}
 
-	public override bool DoAutoFrameUpdate(ref int framesPerSecond, ref int startFrame, ref int endFrame) => false;
+	private void EmpoweredShotFX(NPC target, Vector2 visualArrowVelocity, Vector2 arrowVelocity)
+	{
+		SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1.25f }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 1.25f }, Projectile.Center);
+
+		Vector2 arrowPos = target.Center - arrowVelocity * 7;
+
+		//Visuals from arrow fire position
+		Color particleColor = Color.MediumPurple.Additive(50);
+		Vector2 particleSpawn = Projectile.Center + visualArrowVelocity;
+		float ringRotation = visualArrowVelocity.ToRotation() + MathHelper.Pi;
+
+		void MakeRing(Vector2 spawnPos, Vector2 velocity, float size, float rotation, float skew = 0.8f)
+		{
+			Particle p = new TexturedPulseCircle(spawnPos, particleColor, 0.8f, size, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(skew, rotation);
+			p.Velocity = velocity;
+			ParticleHandler.SpawnParticle(p);
+		}
+
+		ParticleHandler.SpawnParticle(new ImpactLinePrim(particleSpawn, visualArrowVelocity / 2, particleColor, new(0.75f, 4), 16, 0.9f));
+
+		MakeRing(particleSpawn, -visualArrowVelocity / 60, 120, ringRotation);
+		MakeRing(Projectile.Center + visualArrowVelocity / 2, visualArrowVelocity / 60, 80, ringRotation);
+
+		//Visual from arrow spawn position
+		ParticleHandler.SpawnParticle(new ImpactLinePrim(arrowPos, arrowVelocity / 2, particleColor, new(0.75f, 3), 16, 1, target));
+
+		ringRotation = arrowVelocity.ToRotation() + MathHelper.Pi;
+		MakeRing(arrowPos - arrowVelocity * 3f, arrowVelocity / 60, 120, ringRotation, 0.9f);
+		MakeRing(arrowPos - arrowVelocity * 3f, arrowVelocity / 30, 80, ringRotation, 0.9f);
+
+		ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(1, 4), 14, 1));
+		ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 25));
+
+		for (int i = 0; i < 18; i++)
+		{
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 6);
+			float scale = Main.rand.NextFloat(0.3f, 0.7f);
+			int lifeTime = Main.rand.Next(12, 40);
+			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+
+			ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
+			ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+		}
+	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{

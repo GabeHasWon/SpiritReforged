@@ -15,7 +15,9 @@ public class JinxBowShot : GlobalProjectile
 	public const int TrailLength = 9;
 
 	public bool IsJinxbowShot { get; set; } = false;
-	public bool IsJinxbowSubshot { get; set; } = false;
+	private bool IsJinxbowSubshot { get; set; } = false;
+
+	private int ParentProjID { get; set; } = -1;
 
 	private readonly Vector2[] _oldPositions = new Vector2[TrailLength];
 
@@ -32,6 +34,9 @@ public class JinxBowShot : GlobalProjectile
 		//Additionally applies to projectiles spawned from projectiles spawned by arrows, like holy arrow stars recursively spawning
 		if (source is EntitySource_Parent { Entity: Projectile parent })
 		{
+			if(IsJinxbowShot)
+				ParentProjID = parent.whoAmI;
+
 			if (parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowShot || parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowSubshot)
 			{
 				projectile.DamageType = DamageClass.Summon;
@@ -78,8 +83,19 @@ public class JinxBowShot : GlobalProjectile
 
 	public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (IsJinxbowShot && Main.rand.NextBool(5))
-			target.GetGlobalNPC<JinxMarkNPC>().SetMark(target, projectile);
+		if (IsJinxbowShot)
+		{
+			Projectile parent = Main.projectile[ParentProjID];
+			
+			if(parent.ModProjectile is JinxBowMinion jinxBow)
+			{
+				if(jinxBow.MarkCooldown == 0)
+				{
+					target.GetGlobalNPC<JinxMarkNPC>().SetMark(target, projectile);
+					jinxBow.MarkCooldown = JinxBowMinion.MARK_COOLDOWN;
+				}
+			}
+		}
 	}
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
@@ -93,7 +109,7 @@ public class JinxBowShot : GlobalProjectile
 		Main.instance.LoadProjectile(873);
 
 		var defaultTexture = TextureAssets.Projectile[projectile.type].Value;
-		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.Lavender);
+		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.MediumPurple);
 		var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
 
 		for (int i = TrailLength - 1; i >= 0; i--)
@@ -105,6 +121,7 @@ public class JinxBowShot : GlobalProjectile
 			var position = _oldPositions[i] - Main.screenPosition;
 			var scale = new Vector2(.5f * lerp, 1) * projectile.scale;
 
+			Color brightestPurpleLerp = Color.Lerp(brightest, Color.MediumPurple.Additive(50), 0.33f).Additive(100);
 			if (i == 0)
 			{
 				color = Color.White with { A = 200 };
@@ -115,11 +132,16 @@ public class JinxBowShot : GlobalProjectile
 				for (int j = 0; j < 12; j++)
 				{
 					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 12f) * 2;
-					Main.EntitySpriteDraw(solid, position + offset, null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive(100) * 0.33f, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
+					var drawColor = brightestPurpleLerp * 0.33f;
+					Main.EntitySpriteDraw(solid, position + offset, null, drawColor, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
 				}
 			}
 			else //Otherwise draw as trail
-				Main.EntitySpriteDraw(solid, Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f), null, Color.Lerp(brightest, Color.Lavender, 0.33f).Additive(100) * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f, projectile.rotation, solid.Size() / 2, new Vector2(projectile.scale), SpriteEffects.None); 
+			{
+				var drawPos = Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f);
+				var drawColor = brightestPurpleLerp * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
+				Main.EntitySpriteDraw(solid, drawPos, null, drawColor, projectile.rotation, solid.Size() / 2, new Vector2(projectile.scale), SpriteEffects.None);
+			}
 
 			Main.EntitySpriteDraw(texture, position, null, color, projectile.rotation, texture.Size() / 2, scale, SpriteEffects.None);
 		}
@@ -131,11 +153,13 @@ public class JinxBowShot : GlobalProjectile
 	{
 		bitWriter.WriteBit(IsJinxbowShot);
 		bitWriter.WriteBit(IsJinxbowSubshot);
+		binaryWriter.Write(ParentProjID);
 	}
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
 		IsJinxbowShot = bitReader.ReadBit();
 		IsJinxbowSubshot = bitReader.ReadBit();
+		ParentProjID = binaryReader.ReadInt32();
 	}
 }
