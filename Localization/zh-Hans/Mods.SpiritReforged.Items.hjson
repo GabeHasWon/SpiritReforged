@@ -1757,6 +1757,11 @@ Bowlder: {
 	Tooltip: 蓄力攻击会释放一颗致命巨石
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: ""
+}
+
 Blasphemer: {
 	DisplayName: 亵渎者
 	Tooltip: 蓄力攻击会爆发火焰涌泉

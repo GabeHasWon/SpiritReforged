@@ -1757,6 +1757,11 @@ Bowlder: {
 	// Tooltip: Charged strikes release a deadly bowlder
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: ""
+}
+
 Blasphemer: {
 	// DisplayName: Blasphemer
 	// Tooltip: Charged strikes erupt into a fiery geyser
