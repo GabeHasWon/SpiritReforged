@@ -1751,7 +1751,7 @@ Bowlder: {
 
 BoStaff: {
 	// DisplayName: Bo Staff
-	// Tooltip: ""
+	// Tooltip: Dealing continuous damage builds combo
 }
 
 Blasphemer: {

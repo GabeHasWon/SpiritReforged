@@ -16,9 +16,8 @@ public class BoStaff : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 12;
-		Item.crit = 2;
-		Item.knockBack = 5;
+		Item.damage = 10;
+		Item.knockBack = 6;
 		Item.useTime = Item.useAnimation = 25;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
@@ -112,7 +111,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				SecondaryColor = Color.LightGray,
 				TrailLength = 0.25f,
 				Intensity = intensity,
-				DissolveThreshold = 0.9f
+				DissolveThreshold = Spinning ? 1f : 0.9f
 			};
 
 			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
@@ -139,10 +138,16 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
 		bool activelySpinning = Spinning && !_released;
 
-		if (activelySpinning && !owner.channel)
+		if (activelySpinning)
 		{
-			_released = true;
-			Counter = 0;
+			if (!owner.channel)
+			{
+				_released = true;
+				Counter = 0;
+			}
+
+			if (Main.rand.NextBool())
+				Dust.NewDustDirect(GetEnd(20), Projectile.width, Projectile.height, DustID.WoodFurniture, Alpha: Main.rand.Next(140, 200)).noGravity = true;
 		}
 
 		if (!UpdateCollision())
@@ -152,7 +157,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		Projectile.Center = activelySpinning ? owner.Center : owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 
 		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
-		owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.8f);
+		owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 		owner.heldProj = Projectile.whoAmI;
 
 		if (Counter == 0)
@@ -213,6 +218,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	}
 
 	public override void OnKill(int timeLeft) => BoStaff.HitCombo = (Projectile.numHits == 0 || Spinning) ? 0 : BoStaff.HitCombo + 1;
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = (target.Center.X - Projectile.Center.X < 0) ? -1 : 1;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
