@@ -24,6 +24,7 @@ Misc: {
 	NoStock: Out of stock
 	GraveText: <wavy>The text is old and faded; you can't quite make out what it says.
 	MenuButton: Use menu style
+	UpdateMap: Map has been updated.
 }
 
 DamageSources: {
