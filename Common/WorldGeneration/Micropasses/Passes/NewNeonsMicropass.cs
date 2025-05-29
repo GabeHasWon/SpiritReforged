@@ -27,7 +27,9 @@ internal class NewNeonsMicropass : Micropass
 		orig(justNeon);
 
 		NeonMossTypes ??= [TileID.KryptonMoss, TileID.XenonMoss, TileID.ArgonMoss, TileID.VioletMoss, ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()];
-		NeonMossInfo.SetValue(null, (ushort)WorldGen.genRand.Next(NeonMossTypes));
+
+		if (WorldGen.genRand.NextBool(6))
+			NeonMossInfo.SetValue(null, (ushort)WorldGen.genRand.Next([ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()]));
 	}
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
@@ -63,7 +65,9 @@ internal class NewNeonsMicropass : Micropass
 	/// <summary> Generate all neon mosses, per <see cref="NeonSeed"/>. </summary>
 	private static void GenerateAllMosses()
 	{
-		int numGenerated = 0;
+		float numGenerated = 0;
+		float rate = 1f / (Main.maxTilesX / 2100f);
+
 		ushort gennedType = (ushort)NeonMossInfo.GetValue(null);
 		int[] allTypes = [.. NeonMossTypes, TileID.RainbowMoss];
 
@@ -77,14 +81,14 @@ internal class NewNeonsMicropass : Micropass
 		{
 			if (Main.tile[i, j].HasTile && Main.tile[i, j].TileType == TileID.Stone)
 			{
-				ushort typeToGen = (ushort)allTypes[numGenerated];
+				ushort typeToGen = (ushort)allTypes[(int)numGenerated];
 				if (typeToGen != gennedType) //Avoid generating the already selected moss type
 				{
 					NeonMossInfo.SetValue(null, typeToGen);
 					WorldGen.neonMossBiome(i, j);
 				}
 
-				numGenerated++;
+				numGenerated += rate;
 			}
 
 			return numGenerated >= allTypes.Length;
