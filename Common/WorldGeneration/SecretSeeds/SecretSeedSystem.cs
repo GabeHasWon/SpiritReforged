@@ -8,7 +8,7 @@ using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
-namespace SpiritReforged.Common.WorldGeneration.Seeds;
+namespace SpiritReforged.Common.WorldGeneration.SecretSeeds;
 
 internal class SecretSeedSystem : ModSystem
 {
@@ -41,12 +41,19 @@ internal class SecretSeedSystem : ModSystem
 		WorldSecretSeed = null;
 
 		foreach (string key in SecretSeeds.Keys)
-		{
-			if (processedSeed.Equals(SecretSeeds[key].Key, StringComparison.CurrentCultureIgnoreCase))
+			if (CompareFromArray(SecretSeeds[key]))
 			{
 				WorldSecretSeed = SecretSeeds[key];
 				break;
 			}
+
+		bool CompareFromArray(SecretSeed s)
+		{
+			foreach (string key in s.Keys)
+				if (processedSeed.Equals(key, StringComparison.CurrentCultureIgnoreCase))
+					return true;
+
+			return false;
 		}
 	}
 
