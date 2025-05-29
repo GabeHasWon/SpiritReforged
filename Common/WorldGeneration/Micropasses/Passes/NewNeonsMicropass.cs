@@ -66,7 +66,7 @@ internal class NewNeonsMicropass : Micropass
 	private static void GenerateAllMosses()
 	{
 		float numGenerated = 0;
-		float rate = 1f / (Main.maxTilesX / 2100f);
+		float rate = 2100f / Main.maxTilesX;
 
 		ushort gennedType = (ushort)NeonMossInfo.GetValue(null);
 		int[] allTypes = [.. NeonMossTypes, TileID.RainbowMoss];
