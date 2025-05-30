@@ -7,7 +7,6 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Forest.JinxBow;

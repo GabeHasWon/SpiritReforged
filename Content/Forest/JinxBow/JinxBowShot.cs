@@ -4,7 +4,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 

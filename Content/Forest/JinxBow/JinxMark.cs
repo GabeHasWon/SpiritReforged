@@ -1,11 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using Terraria.Audio;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
