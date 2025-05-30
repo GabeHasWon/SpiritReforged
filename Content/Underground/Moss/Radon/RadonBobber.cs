@@ -5,7 +5,7 @@ using SpiritReforged.Content.Underground.Moss.Oganesson;
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
 [AutoloadGlowmask("255,255,255")]
-public class RadonBobber : AccessoryItem
+public class RadonBobber : EquippableItem
 {
 	public override void SetDefaults()
 	{
@@ -16,7 +16,7 @@ public class RadonBobber : AccessoryItem
 		Item.accessory = true;
 	}
 
-	public override void SafeUpdateAccessory(Player player, bool hideVisual)
+	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
 		player.fishingSkill += 10;
 		player.accFishingBobber = true;

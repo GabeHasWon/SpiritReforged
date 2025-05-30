@@ -13,7 +13,7 @@ JellyfishMinion_Buff: {
 	Description: Миленькая, упругая медуза сражается за вас!
 }
 
-JellyfishBuff: {
+JellyfishPet_Buff: {
 	DisplayName: Дружелюбная медуза
 	Description: Эта медуза просто обожает путешествовать вместе с вами!
 }
@@ -63,7 +63,7 @@ QuenchPotion_Buff: {
 	Description: Другие зелья длятся на 25% дольше
 }
 
-TumblerPetBuff: {
+TumblerPet_Buff: {
 	DisplayName: Дружелюбный кувыркун
 	Description: Этот игривый клубок ветра не отстаёт ни на шаг!
 }

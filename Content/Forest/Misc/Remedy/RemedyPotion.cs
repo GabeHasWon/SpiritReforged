@@ -7,6 +7,12 @@ namespace SpiritReforged.Content.Forest.Misc.Remedy;
 
 public class RemedyPotion : ModItem
 {
+	public static readonly SoundStyle Pop = new("SpiritReforged/Assets/SFX/Item/Bottle_Pop")
+	{
+		Pitch = 0.3f,
+		PitchVariance = 0.1f
+	};
+
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 20;
 
 	public override void SetDefaults()
@@ -32,7 +38,7 @@ public class RemedyPotion : ModItem
 			if (player.HasBuff(type))
 			{
 				DoHealVisuals(player);
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Bottle_Pop") { Pitch = .3f, PitchVariance = .1f }, player.Center);
+				SoundEngine.PlaySound(Pop, player.Center);
 				SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = .8f }, player.Center);
 				break;
 			}

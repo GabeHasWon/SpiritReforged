@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 
 public abstract class SavannaShrubsBase : ModTile, IConvertibleTile
 {
-	protected virtual int[] Anchors => [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaDirt>(), TileID.Sand];
+	protected virtual int[] Anchors => [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaDirt>(), TileID.Sand];
 
 	public override void SetStaticDefaults()
 	{
@@ -120,5 +120,5 @@ public class SavannaShrubsCrimson : SavannaShrubsBase
 
 public class SavannaShrubsHallow : SavannaShrubsBase
 {
-	protected override int[] Anchors => [ModContent.TileType<SavannaGrassHallow>(), TileID.Pearlsand];
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>(), TileID.Pearlsand];
 }

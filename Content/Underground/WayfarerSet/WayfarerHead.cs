@@ -1,13 +1,17 @@
-using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Content.Forest.Botanist.Items;
+using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Underground.WayfarerSet;
 
 [AutoloadEquip(EquipType.Head)]
 public class WayfarerHead : ModItem
 {
-	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawHatHair[Item.headSlot] = true;
+	/// <returns> Whether the set bonus related to this item is active on <paramref name="player"/>. </returns>
+	public static bool SetActive(Player player) => player.active
+		&& player.armor[0].type == ModContent.ItemType<WayfarerHead>()
+		&& player.armor[1].type == ModContent.ItemType<WayfarerBody>()
+		&& player.armor[2].type == ModContent.ItemType<WayfarerLegs>();
 
+	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawHatHair[Item.headSlot] = true;
 	public override void SetDefaults()
 	{
 		Item.width = 32;
@@ -23,6 +27,6 @@ public class WayfarerHead : ModItem
 	public override void UpdateArmorSet(Player player)
 	{
 		player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Wayfarer");
-		player.GetModPlayer<WayfarerPlayer>().active = true;
+		player.GetModPlayer<CoinLootPlayer>().AddMult(10);
 	}
 }

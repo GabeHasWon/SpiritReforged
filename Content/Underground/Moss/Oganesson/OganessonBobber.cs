@@ -4,7 +4,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
 [AutoloadGlowmask("255,255,255")]
-public class OganessonBobber : AccessoryItem
+public class OganessonBobber : EquippableItem
 {
 	public override void SetDefaults()
 	{
@@ -15,7 +15,7 @@ public class OganessonBobber : AccessoryItem
 		Item.accessory = true;
 	}
 
-	public override void SafeUpdateAccessory(Player player, bool hideVisual)
+	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
 		player.fishingSkill += 10;
 		player.accFishingBobber = true;

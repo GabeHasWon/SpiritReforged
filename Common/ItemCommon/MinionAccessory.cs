@@ -7,7 +7,7 @@
 /// </summary>
 public record MinionAccessoryData(int ProjType, int Damage);
 
-public abstract class MinionAccessory : AccessoryItem
+public abstract class MinionAccessory : EquippableItem
 {
 	public static readonly Dictionary<int, MinionAccessoryData> MinionDataByItemId = [];
 	public abstract MinionAccessoryData Data { get; }
@@ -34,7 +34,7 @@ public abstract class MinionAccessory : AccessoryItem
 	/// <inheritdoc cref="ModItem.SetDefaults"/>
 	public virtual void Defaults() { }
 
-	public override void UpdateEquip(Player player)
+	public override void UpdateEquippable(Player player)
 	{
 		if (player.whoAmI == Main.myPlayer && MinionDataByItemId.TryGetValue(Type, out var data))
 		{

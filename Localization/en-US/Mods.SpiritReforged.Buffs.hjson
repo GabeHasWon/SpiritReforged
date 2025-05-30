@@ -13,7 +13,7 @@ JellyfishMinion_Buff: {
 	Description: A cute, bouncy Jellyfish fights for you!
 }
 
-JellyfishBuff: {
+JellyfishPet_Buff: {
 	DisplayName: Friendly Jellyfish
 	Description: This energetic jellyfish loves following you around!
 }
@@ -63,7 +63,7 @@ QuenchPotion_Buff: {
 	Description: Other potions last 25% longer
 }
 
-TumblerPetBuff: {
+TumblerPet_Buff: {
 	DisplayName: Ambivalent Tumbler
 	Description: A friendly tumbleweed is following you
 }

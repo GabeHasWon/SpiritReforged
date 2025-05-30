@@ -4,7 +4,7 @@ using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.GildedScarab;
 
-public class GildedScarab : AccessoryItem
+public class GildedScarab : EquippableItem
 {
 	public override void SetDefaults()
 	{
@@ -44,7 +44,7 @@ internal class GildedScarabPlayer : ModPlayer
 
 	public override void OnHurt(Player.HurtInfo info)
 	{
-		if (Player.HasAccessory<GildedScarab>())
+		if (Player.HasEquip<GildedScarab>())
 		{
 			if (info.DamageSource.SourceOtherIndex is 3 or 2) //Lava or spike damage
 				return;

@@ -1,14 +1,15 @@
+using SpiritReforged.Common.BuffCommon;
+
 namespace SpiritReforged.Content.Savanna.Items.WrithingSticks;
 
 public class WrithingSticks : ModItem
 {
 	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<HuntingRifle.HuntingRifle>();
-
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.Fish);
 		Item.shoot = ModContent.ProjectileType<TumblerPet>();
-		Item.buffType = ModContent.BuffType<TumblerPetBuff>();
+		Item.buffType = AutoloadedPetBuff.Registered[Item.shoot];
 	}
 
 	public override void UseStyle(Player player, Rectangle heldItemFrame)

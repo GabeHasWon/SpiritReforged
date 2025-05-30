@@ -10,6 +10,7 @@ using SpiritReforged.Common.NPCCommon.Abstract;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
+[AutoloadHead]
 public class Hiker : WorldNPC
 {
 	/// <summary> Stores all information for the hiker to pass properly between clones. </summary>
@@ -40,7 +41,7 @@ public class Hiker : WorldNPC
 	protected override bool CloneNewInstances => true;
 
 	private static Asset<Texture2D> stickTexture;
-	private static Profiles.StackedNPCProfile npcProfile;
+	//private static Profiles.StackedNPCProfile npcProfile;
 
 	private HikerInfo _info = new();
 
@@ -68,7 +69,7 @@ public class Hiker : WorldNPC
 		NPCID.Sets.AttackAverageChance[Type] = 30;
 
 		stickTexture = ModContent.Request<Texture2D>(Texture + "Stick");
-		npcProfile = new Profiles.StackedNPCProfile(new Profiles.DefaultNPCProfile(Texture, NPCHeadLoader.GetHeadSlot(HeadTexture), Texture + "_Party"));
+		//npcProfile = new Profiles.StackedNPCProfile(new Profiles.DefaultNPCProfile(Texture, NPCHeadLoader.GetHeadSlot(HeadTexture), Texture + "_Party"));
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
 		{ Velocity = 1f });
@@ -247,16 +248,14 @@ public class Hiker : WorldNPC
 				Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
 	}
 
-	public override ITownNPCProfile TownNPCProfile() => npcProfile;
+	//public override ITownNPCProfile TownNPCProfile() => npcProfile;
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 	{
 		damage = 15;
 		knockback = 3f;
 	}
-
 	public override void TownNPCAttackSwing(ref int itemWidth, ref int itemHeight) => itemWidth = itemHeight = 30;
-
 	public override void DrawTownAttackSwing(ref Texture2D item, ref Rectangle itemFrame, ref int itemSize, ref float scale, ref Vector2 offset)
 	{
 		item = stickTexture.Value;

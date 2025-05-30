@@ -54,7 +54,7 @@ public class SavannaFountain : ModTile, IAutoloadTileItem
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (Main.tile[i, j].TileFrameY >= FrameHeight)
+		if (closer && !Main.dedServ && Main.tile[i, j].TileFrameY >= FrameHeight)
 			Main.LocalPlayer.GetModPlayer<FountainPlayer>().SetFountain<SavannaWaterStyle>();
 	}
 

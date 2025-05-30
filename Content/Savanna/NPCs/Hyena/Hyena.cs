@@ -35,6 +35,34 @@ public class Hyena : ModNPC
 	public ref float Counter => ref NPC.ai[1]; //Used to change behaviour at intervals
 	public ref float TargetSpeed => ref NPC.ai[2]; //Stores a direction to lerp to over time
 
+	public static readonly SoundStyle Laugh = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh")
+	{
+		Volume = 1.25f,
+		PitchVariance = 0.4f,
+		MaxInstances = 2
+	};
+
+	public static readonly SoundStyle Bark = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark")
+	{
+		Volume = 0.18f,
+		PitchVariance = 0.4f
+	};
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/Hyena_Death")
+	{
+		Volume = 0.75f,
+		Pitch = 0.2f,
+		MaxInstances = 0
+	};
+
+	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit")
+	{
+		Volume = 0.75f,
+		Pitch = -0.05f,
+		PitchVariance = 0.4f,
+		MaxInstances = 2
+	};
+
 	/// <summary> Whether this NPC is holding raw meat. </summary>
 	private bool holdingMeat;
 	/// <summary> Whether this NPC can deal damage. </summary>
@@ -145,7 +173,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && AnimationState == (int)State.TrotEnd && Main.rand.NextBool(800)) //Randomly laugh when still; not synced
 					{
 						ChangeAnimationState(State.Laugh);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh") with { Volume = 1.25f, PitchVariance = 0.4f, MaxInstances = 2 }, NPC.Center);
+						SoundEngine.PlaySound(Laugh, NPC.Center);
 					}
 				//}
 			}
@@ -173,7 +201,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && Main.rand.NextBool(250)) //Randomly bark; not synced
 					{
 						ChangeAnimationState(State.BarkingAngry);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark") with { Volume = .18f, PitchVariance = .4f }, NPC.Center);
+						SoundEngine.PlaySound(Bark, NPC.Center);
 					}
 				}
 
@@ -214,7 +242,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && !NPC.wet && Main.rand.NextBool(250)) //Randomly laugh; not synced
 					{
 						ChangeAnimationState(State.Laugh);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh") with { Volume = 1.25f, PitchVariance = 0.4f, MaxInstances = 2 }, NPC.Center);
+						SoundEngine.PlaySound(Laugh, NPC.Center);
 					}
 				}
 
@@ -372,10 +400,10 @@ public class Hyena : ModNPC
 				for (int i = 1; i < 4; i++)
 					Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(.3f), Mod.Find<ModGore>("Hyena" + i).Type);
 
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/Hyena_Death") with { Volume = .75f, Pitch = .2f, MaxInstances = 0 }, NPC.Center);
+				SoundEngine.PlaySound(Death, NPC.Center);
 			}
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit") with { Volume = .75f, Pitch = -.05f, PitchVariance = .4f, MaxInstances = 2 }, NPC.Center);
+			SoundEngine.PlaySound(Hit, NPC.Center);
 		}
 
 		TargetSpeed = hit.HitDirection * 3;

@@ -96,7 +96,7 @@ internal class OpenWoundsPlayer : ModPlayer
 				new BleedTimeData((short)target.whoAmI, time).Send();
 		}
 
-		bool DoesMelee() => hit.DamageType.CountsAsClass(DamageClass.Melee) || hit.DamageType.CountsAsClass(DamageClass.SummonMeleeSpeed);
+		bool DoesMelee() => hit.DamageType.CountsAsClass(DamageClass.Melee);
 	}
 }
 

@@ -4,7 +4,6 @@ using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace SpiritReforged.Content.Underground.Moss;
 
@@ -213,7 +212,9 @@ internal class LandscaperTile : GlobalTile
 				5 => ItemID.LavaMoss,
 				6 => ItemID.KryptonMoss,
 				7 => ItemID.XenonMoss,
-				_ => ItemID.VioletMoss
+				8 => ItemID.ArgonMoss,
+				9 => ItemID.VioletMoss,
+				_ => ItemID.RainbowMoss
 			}; //Set drops manually because the prior method can't read them
 
 		if (tileType is TileID.JunglePlants or TileID.JunglePlants2)

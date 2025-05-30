@@ -98,7 +98,7 @@ internal class CanyonEntrance : CaveEntrance
 
 				if (i > useX - wallLeftEdge && i < useX + wallRightEdge)
 					tile.Clear(TileDataType.Wall);
-				else if ((tile.HasTile || withinTiles) && j > y + 15)
+				else if ((tile.HasTile || withinTiles) && j > y + 15 && CanFillWalls(i, j))
 				{
 					float noise = wallNoise.GetNoise(i, j);
 
@@ -108,6 +108,11 @@ internal class CanyonEntrance : CaveEntrance
 						tile.WallType = wallDirt;
 				}
 			}
+		}
+
+		static bool CanFillWalls(int x, int y)
+		{
+			return Main.tile[x, y].WallType is not WallID.CrimstoneUnsafe or WallID.EbonstoneUnsafe;
 		}
 	}
 

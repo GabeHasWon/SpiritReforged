@@ -3,7 +3,7 @@
 namespace SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
 
 [AutoloadEquip(EquipType.Front)]
-internal class LeatherCloakItem : AccessoryItem
+internal class LeatherCloakItem : EquippableItem
 {
 	public override void SetDefaults()
 	{

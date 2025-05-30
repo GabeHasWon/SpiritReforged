@@ -34,6 +34,6 @@ Shockwave.DisplayName: 冲击波
 EnergizedShockwave.DisplayName: 能量冲击波
 RollingBowlder.DisplayName: 滚动巨石
 Firespike.DisplayName: 火刺
-BombCannonShot.DisplayName: 炸弹大炮
-// JinxBowMinion.DisplayName: Jinx Bow Minion
-// JinxArrow.DisplayName: Jinx Arrow
+CannonBomb.DisplayName: 炸弹大炮
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"

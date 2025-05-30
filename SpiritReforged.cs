@@ -14,7 +14,6 @@ global using NPCUtils;
 
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
 
@@ -39,8 +38,7 @@ public partial class SpiritReforgedMod : Mod
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
-		AutoloadMinionDictionary.AddBuffs(Code);
-		
+
 		TrailDetours.Initialize();
 
 		AssetLoader.Load(this);
@@ -53,7 +51,6 @@ public partial class SpiritReforgedMod : Mod
 	{
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
-		AutoloadMinionDictionary.Unload();
 		AssetLoader.Unload();
 		TrailDetours.Unload();
 

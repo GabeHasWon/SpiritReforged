@@ -9,7 +9,7 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 [AutoloadEquip(EquipType.Neck)]
 [FromClassic("PendantOfTheOcean")]
-public class OceanPendant : AccessoryItem
+public class OceanPendant : EquippableItem
 {
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });
 
@@ -22,7 +22,7 @@ public class OceanPendant : AccessoryItem
 		Item.accessory = true;
 	}
 
-	public override void UpdateEquip(Player player)
+	public override void UpdateEquippable(Player player)
 	{
 		if (Collision.WetCollision(player.position, player.width, player.height))
 		{

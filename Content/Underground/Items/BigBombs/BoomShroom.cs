@@ -6,7 +6,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 namespace SpiritReforged.Content.Underground.Items.BigBombs;
 
 [AutoloadGlowmask("255,255,255")]
-public class BoomShroom : AccessoryItem
+public class BoomShroom : EquippableItem
 {
 	public override void SetDefaults()
 	{
@@ -47,7 +47,7 @@ internal class BoomShroomPlayer : ModPlayer
 
 	public override float UseSpeedMultiplier(Item item)
 	{
-		if (Player.HasAccessory<BoomShroom>() && SmallToLarge.ContainsKey(item.shoot))
+		if (Player.HasEquip<BoomShroom>() && SmallToLarge.ContainsKey(item.shoot))
 			return 0.5f;
 
 		return 1f;
@@ -55,7 +55,7 @@ internal class BoomShroomPlayer : ModPlayer
 
 	public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		if (Player.HasAccessory<BoomShroom>() && SmallToLarge.TryGetValue(type, out int t))
+		if (Player.HasEquip<BoomShroom>() && SmallToLarge.TryGetValue(type, out int t))
 			type = t;
 	}
 }

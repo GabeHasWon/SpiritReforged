@@ -15,6 +15,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	}
 
 	private const int FrameWidth = 18; // A constant for readability and to kick out those magic numbers
+	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
 	public override void SetStaticDefaults()
 	{
@@ -30,6 +31,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
+		HerbTypes.Add(Type);
 
 		HitSound = SoundID.Grass;
 		DustType = DustID.Grass;
@@ -117,7 +119,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		else if (stage is PlantStage.Growing)
 			herbStack = 1;
 
-		if (p.GetModPlayer<BotanistPlayer>().active)
+		if (BotanistHat.SetActive(p))
 		{
 			seedStack += 2;
 			herbStack += 1;

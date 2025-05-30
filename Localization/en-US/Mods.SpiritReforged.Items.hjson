@@ -1777,7 +1777,92 @@ ZenithPotsPaleItem: {
 	Tooltip: ""
 }
 
-JinxBow: {
-	DisplayName: Jinx Bow
+FlaskBlue: {
+	DisplayName: Blue Moss Flask
+	Tooltip: Spreads moss on impact
+}
+
+FlaskBrown: {
+	DisplayName: Brown Moss Flask
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskGreen: {
+	DisplayName: Green Moss Flask
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskLava: {
+	DisplayName: Lava Moss Flask
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskPurple: {
+	DisplayName: Purple Moss Flask
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskRed: {
+	DisplayName: Red Moss Flask
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+TitleMusicBoxItem: {
+	DisplayName: Music Box (Spirit Title)
+	Tooltip: ""
+}
+
+Drypowder: {
+	DisplayName: Drypowder
+	Tooltip: Spreads the savanna
+}
+
+ElephantKite: {
+	DisplayName: Elephant Kite
+	Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+PurityBonsaiItem: {
+	DisplayName: Willow Bonsai
+	Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	DisplayName: Ruby Bonsai
+	Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	DisplayName: Sakura Bonsai
+	Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	DisplayName: Yellow Willow Bonsai
+	Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	DisplayName: Amethyst Bonsai
+	Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	DisplayName: Diamond Bonsai
+	Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	DisplayName: Emerald Bonsai
+	Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	DisplayName: Sapphire Bonsai
+	Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	DisplayName: Topaz Bonsai
 	Tooltip: ""
 }

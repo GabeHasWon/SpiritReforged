@@ -1,5 +1,4 @@
 ﻿using Humanizer;
-using Microsoft.Xna.Framework.Input;
 using MonoMod.Utils;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
@@ -18,6 +17,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
+[AutoloadHead]
 public class WorldFrog : ModNPC
 {
 	public const string LocPath = "Mods.SpiritReforged.NPCs.WorldFrog.";

@@ -34,6 +34,6 @@ FallingBaobabFruit.DisplayName: Падающий плод баобаба
 // EnergizedShockwave.DisplayName: Energized Shockwave
 // RollingBowlder.DisplayName: Rolling Bowlder
 // Firespike.DisplayName: Firespike
-// BombCannonShot.DisplayName: Bomb Cannon Shot
-// JinxBowMinion.DisplayName: Jinx Bow Minion
-// JinxArrow.DisplayName: Jinx Arrow
+// CannonBomb.DisplayName: Bomb Cannon Shot
+// BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"

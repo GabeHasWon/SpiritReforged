@@ -38,7 +38,7 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 
 	public override void PreAddObjectData()
 	{
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>()];
 
 		AddMapEntry(new Color(120, 80, 75), Language.GetText("MapObject.Tree"));
 		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
@@ -55,9 +55,11 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 
 	public override void NearbyEffects(int i, int j, bool closer) //Spawn platforms
 	{
-		var pt = new Point16(i, j);
+		if (closer || !IsTreeTop(i, j))
+			return;
 
-		if (IsTreeTop(i, j) && !Platforms.Where(x => x.TreePosition == pt).Any())
+		var pt = new Point16(i, j);
+		if (!Platforms.Any(x => x.TreePosition == pt))
 		{
 			//Spawn our entity at direct tile coordinates where it can reposition itself after updating
 			SimpleEntitySystem.NewEntity(typeof(TreetopPlatform), pt.ToVector2());
@@ -274,7 +276,7 @@ public class AcaciaTreeHallow : AcaciaTree
 		base.PreAddObjectData();
 
 		TileID.Sets.Hallow[Type] = true;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>()];
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)

@@ -1,11 +1,10 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaGrass : GrassTile, IConvertibleTile
+public class SavannaGrass : GrassTile
 {
 	protected override int DirtType => ModContent.TileType<SavannaDirt>();
 	protected virtual Color MapColor => new(104, 156, 70);
@@ -14,6 +13,7 @@ public class SavannaGrass : GrassTile, IConvertibleTile
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassMowed>();
 		RegisterItemDrop(Mod.Find<ModItem>("SavannaDirtItem").Type);
 		AddMapEntry(MapColor);
 		this.Merge(ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassCrimson>());
@@ -76,19 +76,19 @@ public class SavannaGrass : GrassTile, IConvertibleTile
 
 	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != Mod.Find<ModItem>("SavannaDirtItem").Type;
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
+		int type = conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<SavannaGrassHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaGrassCorrupt>(),
-			_ => ModContent.TileType<SavannaGrass>(),
-		});
+			BiomeConversionID.Purity => ModContent.TileType<SavannaGrass>(),
+			BiomeConversionID.Corruption => ModContent.TileType<SavannaGrassCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<SavannaGrassHallow>(),
+			_ => -1,
+		};
 
-		return true;
+		if (type != -1)
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 
@@ -100,6 +100,7 @@ public class SavannaGrassCorrupt : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = -1;
 		TileID.Sets.Corrupt[Type] = true;
 		TileID.Sets.AddCorruptionTile(Type, 20);
 	}
@@ -133,6 +134,7 @@ public class SavannaGrassCrimson : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = -1;
 		TileID.Sets.AddCrimsonTile(Type, 20);
 		TileID.Sets.Crimson[Type] = true;
 	}
@@ -166,6 +168,7 @@ public class SavannaGrassHallow : SavannaGrass
 	{
 		base.SetStaticDefaults();
 
+		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassHallowMowed>();
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 20;
 	}

@@ -34,7 +34,7 @@ public class PotteryWheel : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		Main.playerInventory = true;
+		Main.playerInventory = false;
 		UISystem.SetActive<CatalogueUI>();
 
 		return true;

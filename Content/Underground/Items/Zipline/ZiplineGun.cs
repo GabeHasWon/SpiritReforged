@@ -14,7 +14,7 @@ public class ZiplineGun : ModItem
 	public const int ExceedDist = 150;
 	public const int UseTime = 60;
 
-	private static Asset<Texture2D> xTexture;
+	private static Asset<Texture2D> X_Texture;
 
 	#region checks
 	/// <summary> Gets the cursor position in tile coordinates optionally adjusted by <see cref="MagnetCursor"/>. </summary>
@@ -101,11 +101,11 @@ public class ZiplineGun : ModItem
 
 	public override void Load()
 	{
-		xTexture = ModContent.Request<Texture2D>(Texture + "_Cancel");
+		X_Texture = ModContent.Request<Texture2D>(Texture + "_Cancel");
 		On_Main.DrawInterface_6_TileGridOption += DrawAssistant;
 	}
 
-	private void DrawAssistant(On_Main.orig_DrawInterface_6_TileGridOption orig)
+	private static void DrawAssistant(On_Main.orig_DrawInterface_6_TileGridOption orig)
 	{
 		bool oldMouseShowGrid = Main.MouseShowBuildingGrid;
 
@@ -135,7 +135,7 @@ public class ZiplineGun : ModItem
 				if (!exceedsRange)
 					DrawDottedLine(Color.Red.Additive());
 
-				var x = xTexture.Value;
+				var x = X_Texture.Value;
 
 				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Red * .5f).Additive());
 				Main.spriteBatch.Draw(x, finalPos, null, Color.Red.Additive(), rotation, x.Size() / 2, 1 + rotation, default, 0);
@@ -304,12 +304,13 @@ public class ZiplineGun : ModItem
 [AutoloadGlowmask("255,255,255", false)]
 internal class ZiplineGunHeld : ModProjectile
 {
+	public static readonly SoundStyle LMG = new("SpiritReforged/Assets/SFX/Item/LMG");
+
 	private static int TimeLeftMax => ZiplineGun.UseTime;
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.ZiplineGun.DisplayName");
 
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 11;
-
 	public override void SetDefaults()
 	{
 		Projectile.timeLeft = TimeLeftMax;
@@ -343,9 +344,9 @@ internal class ZiplineGunHeld : ModProjectile
 			rotation -= (Projectile.timeLeft < TimeLeftMax - fireTime - 3 ? .5f : .25f) * Projectile.direction;
 
 			if (Projectile.timeLeft == idleTime)
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/LMG") { Volume = .4f, Pitch = .8f }, Projectile.Center);
+				SoundEngine.PlaySound(LMG with { Volume = .4f, Pitch = .8f }, Projectile.Center);
 			else if (Projectile.timeLeft % 8 == 0)
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/LMG") { Volume = .1f, Pitch = MathHelper.Lerp(1f, -.5f, ((float)Projectile.timeLeft - fireTime) / ((float)TimeLeftMax - idleTime)) }, Projectile.Center);
+				SoundEngine.PlaySound(LMG with { Volume = .1f, Pitch = MathHelper.Lerp(1f, -.5f, ((float)Projectile.timeLeft - fireTime) / ((float)TimeLeftMax - idleTime)) }, Projectile.Center);
 		}
 		else
 		{

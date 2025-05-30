@@ -50,7 +50,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 				return base.Texture;
 
 			string def = base.Texture;
-			return def.Remove(def.Length - 4); //Remove 'proj'
+			return def[..^4]; //Remove 'proj'
 		}
 	}
 
@@ -191,6 +191,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		Projectile.Center = Owner.RotatedRelativePoint(Owner.Center - new Vector2((int)(Math.Cos(rotation) * Size.X), (int)(Math.Sin(rotation) * Size.Y)));
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
+		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation + 0.4f * Owner.direction);
 		Owner.itemAnimation = Owner.itemTime = 2;
 	}
 

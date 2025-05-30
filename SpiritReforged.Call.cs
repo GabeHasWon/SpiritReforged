@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Forest.Safekeeper;
+﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
@@ -24,7 +25,7 @@ public partial class SpiritReforgedMod : Mod
 			{
 				case "AddUndead":
 					{
-						return UndeadNPC.AddCustomUndead(args);
+						return UndeadNPC.AddCustomUndead(args[1..]);
 					}
 				case "GetSavannaArea":
 					{
@@ -33,6 +34,16 @@ public partial class SpiritReforgedMod : Mod
 				case "AddPotionVat":
 					{
 						return PotionColorDatabase.ParseNewPotion(args[1..]);
+					}
+				case "HasBackpack":
+					{
+						if (args[1] is not Player player)
+							throw new ArgumentException("args[1] should be a Player!");
+
+						if (args.Length > 2)
+							throw new ArgumentException("args should be 2 elements long (\"HasBackpack\", player)!");
+
+						return player.GetModPlayer<BackpackPlayer>().backpack.ModItem is BackpackItem;
 					}
 				default:
 					{

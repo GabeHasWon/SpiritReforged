@@ -13,7 +13,7 @@ JellyfishMinion_Buff: {
 	Description: Uma água-viva fofa e saltitante luta por você!
 }
 
-JellyfishBuff: {
+JellyfishPet_Buff: {
 	DisplayName: Água-Viva Amigável
 	Description: Essa água-viva cheia de energia adora te acompanhar!
 }
@@ -63,7 +63,7 @@ QuenchPotion_Buff: {
 	Description: Outras poções duram 25% mais
 }
 
-TumblerPetBuff: {
+TumblerPet_Buff: {
 	DisplayName: Tumbleweed Amigável
 	Description: Uma bolota de galhos amiga está te seguindo
 }
