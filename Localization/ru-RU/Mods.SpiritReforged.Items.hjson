@@ -1858,3 +1858,8 @@ TopazBonsaiItem: {
 	// DisplayName: Topaz Bonsai
 	// Tooltip: ""
 }
+
+JinxBow: {
+	// DisplayName: Jinx Bow
+	// Tooltip: ""
+}

@@ -59,7 +59,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	public override bool PreAI()
 	{
 		Player mp = Main.player[Projectile.owner];
-		if (mp.HasAccessory<JinxBow>())
+		if (mp.HasEquip<JinxBow>())
 			Projectile.timeLeft = 2;
 
 		SetArrowData(mp);
@@ -314,17 +314,22 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				arrowPos += Projectile.Center - Main.screenPosition;
 				var arrowOrigin = new Vector2(arrowTex.Width / 2, arrowTex.Height);
 
+				Color solidColor = Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge;
 				Color glowColor = _selectedArrow.brightColor;
 				glowColor = Color.Lerp(glowColor, Color.Lavender, 0.33f).Additive(100);
 				glowColor *= EaseFunction.EaseQuadOut.Ease(easedCharge);
 
 				Rectangle drawRect = arrowTex.Bounds;
+
+				//Make it look like the arrow is being magically formed in the bow by reducing draw rectangle height until fully charged, and color adjustments
 				if(_isDoingEmpoweredShot)
 				{
 					glowColor *= easedCharge;
+					solidColor = glowColor;
 					drawRect.Height = (int)(drawRect.Height * easedCharge);
 				}
 
+				//Glowy blur behind the arrow
 				for (int i = 0; i < 12; i++)
 				{
 					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 12f) * 2;
@@ -334,11 +339,11 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 					Main.EntitySpriteDraw(arrowSolid, arrowPos + offset, drawRect, glowColor * 0.15f, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None);
 				}
 
-				if(!_isDoingEmpoweredShot)
-					Main.EntitySpriteDraw(arrowTex, arrowPos, drawRect, Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
-
+				//Draw solid arrow and white flash above the arrow when spawned in
+				Main.EntitySpriteDraw(arrowTex, arrowPos, drawRect, Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
 				Main.EntitySpriteDraw(arrowSolid, arrowPos, drawRect, glowColor * EaseFunction.EaseCubicIn.Ease(1 - shootProgress), Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None);
 
+				//During empowered shot, do a blur star at the arrow's head
 				if(_isDoingEmpoweredShot)
 				{
 					var arrowHead = arrowPos + Vector2.UnitX.RotatedBy(Projectile.rotation) * (arrowTex.Height - 5);
