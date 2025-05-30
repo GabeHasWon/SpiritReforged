@@ -6,6 +6,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
 
@@ -76,6 +77,8 @@ public class JinxMarkNPC : GlobalNPC
 								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
 								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
 							}
+
+							ParticleHandler.SpawnParticle(new TexturedPulseCircle(npc.Center, Color.MediumPurple.Additive(50), 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
 						}
 
 						break;
@@ -108,4 +111,8 @@ public class JinxMarkNPC : GlobalNPC
 			spriteBatch.Draw(icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, 0, source.Size() / 2, scale, default, 0);
 		}
 	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) => binaryWriter.Write((short)_storedPlayer);
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) => _storedPlayer = binaryReader.ReadInt16();
 }
