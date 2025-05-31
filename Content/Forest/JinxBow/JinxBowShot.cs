@@ -22,6 +22,8 @@ public class JinxBowShot : GlobalProjectile
 
 	public override bool InstancePerEntity => true;
 
+	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly;
+
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		//Initialize old positions to projectile's center on spawn
@@ -105,7 +107,7 @@ public class JinxBowShot : GlobalProjectile
 		//Partially adapted from hunter rifle vfx
 
 		//Load texture if not already loaded
-		Main.instance.LoadProjectile(873);
+		Main.instance.LoadProjectile(ProjectileID.HallowBossRainbowStreak);
 
 		var defaultTexture = TextureAssets.Projectile[projectile.type].Value;
 		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.MediumPurple);
@@ -113,7 +115,7 @@ public class JinxBowShot : GlobalProjectile
 
 		for (int i = TrailLength - 1; i >= 0; i--)
 		{
-			var texture = TextureAssets.Projectile[873].Value;
+			var texture = TextureAssets.Projectile[ProjectileID.HallowBossRainbowStreak].Value;
 
 			float lerp = 1f - i / (float)(TrailLength - 1);
 			var color = (Color.Lerp(brightest.MultiplyRGBA(Color.Black * .5f), brightest, lerp) with { A = 0 }) * lerp;

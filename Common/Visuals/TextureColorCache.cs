@@ -26,6 +26,7 @@ internal class TextureColorCache
 		BrightestColorCache.Add(texture, brightest);
 		return brightest;
 	}
+
 	public static Color GetDarkestColor(Texture2D texture)
 	{
 		if (DarkestColorCache.TryGetValue(texture, out Color value))
