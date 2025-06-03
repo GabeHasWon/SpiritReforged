@@ -19,7 +19,7 @@ JellyfishPet_Buff: {
 }
 
 DoubleJumpPotionBuff: {
-	DisplayName: Зифирный прыжок
+	DisplayName: Зефирный прыжок
 	Description: Временно даёт двойной прыжок
 }
 
@@ -45,7 +45,7 @@ Impaled: {
 
 KoiTotemBuff: {
 	DisplayName: Тотем кои
-	Description: Повышает мастерство рыбалки
+	Description: Увеличивает мастерство рыбалки
 }
 
 ButterflyMinion_Buff: {
@@ -64,8 +64,8 @@ QuenchPotion_Buff: {
 }
 
 TumblerPet_Buff: {
-	DisplayName: Дружелюбный кувыркун
-	Description: Этот игривый клубок ветра не отстаёт ни на шаг!
+	DisplayName: Дружелюбное перекати-поле
+	Description: Это игривое перекати-поле не отстаёт ни на шаг!
 }
 
 Frozen: {
@@ -75,7 +75,7 @@ Frozen: {
 
 GildedScarabBuff: {
 	DisplayName: Золотой скарабей
-	Description: Защита увеличена на {0}
+	Description: Увеличивает защиту на {0}
 }
 
 PoolNoodleBubbleBuff: {
@@ -99,11 +99,11 @@ OpenWounds: {
 }
 
 ExplorerPot: {
-	// DisplayName: Explorer's Thrill
-	// Description: You're eager for more!
+	DisplayName: Трепет исследователя
+	Description: Вы жаждете большего!
 }
 
 ExplorerMine: {
-	// DisplayName: Explorer's Vigor
-	// Description: Keep digging!
+	DisplayName: Силы исследователя
+	Description: Продолжайте копать!
 }

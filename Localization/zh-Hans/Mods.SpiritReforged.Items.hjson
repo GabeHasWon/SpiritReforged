@@ -1583,7 +1583,7 @@ RadonMossItem: {
 }
 
 OganessonMossItem: {
-	DisplayName: 鿫苔藓
+	DisplayName: 「气奥」苔藓
 	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
@@ -1598,12 +1598,12 @@ RadonMossBrickWallItem: {
 }
 
 OganessonMossBrickItem: {
-	DisplayName: 鿫苔藓砖
+	DisplayName: 「气奥」苔藓砖
 	Tooltip: ""
 }
 
 OganessonMossBrickWallItem: {
-	DisplayName: 鿫苔藓砖墙
+	DisplayName: 「气奥」苔藓砖墙
 	Tooltip: ""
 }
 
@@ -1666,7 +1666,7 @@ FlaskNeon: {
 }
 
 FlaskOganesson: {
-	DisplayName: 鿫苔藓烧瓶
+	DisplayName: 「气奥」苔藓烧瓶
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1691,7 +1691,7 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	DisplayName: 鿫浮标
+	DisplayName: 「气奥」浮标
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1820,4 +1820,19 @@ Drypowder: {
 ElephantKite: {
 	// DisplayName: Elephant Kite
 	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（沙尘暴）
+	Tooltip: ""
 }

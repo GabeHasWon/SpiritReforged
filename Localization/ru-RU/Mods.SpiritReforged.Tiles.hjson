@@ -1,30 +1,30 @@
 Records: {
-	/* CoinPortal:
+	 CoinPortal:
 		'''
-		Always contains a coin portal.
+		Всегда содержит портал с монетками.
 
-		A lucky find!
-		''' */
-	/* Common:
+		Удачная находка!
+		''' 
+	 Common:
 		'''
-		A common pot which sometimes contains useful goodies.
+		Обычный горшок, который иногда содержит полезные штучки.
 
-		Value increases when further underground.
-		''' */
-	/* Zenith:
+		Чем глубже под землей, тем больше ценность.
+		''' 
+	 Zenith:
 		'''
-		A common pot which sometimes contains useful goodies... this one is needlessly gaudy.
+		Обычный горшок, который иногда содержит полезные штучки... этот вообще безвкусный.
 
-		Value increases when further underground.
-		''' */
-	// Potion: Contains a potent brew.
-	// UpsideDown: `Manufacturing error`
-	// Worm: Scatters a variety of worms when destroyed.
-	// Platter: A hot meal ready for the taking. Who would leave this behind?
-	// Aether: Provides various useful, sparkly upgrades.
-	// Stuffed: What a strange place to find a merchant. They're just asking to be bothered.
-	// Scrying: Reveals a large portion of the map upon being destroyed.
-	// Biome: Contains a greater variety of loot than common pots.
+		Чем глубже под землей, тем больше ценность.
+		''' 
+	 Potion: Содержит крепкий напиток.
+	 UpsideDown: `Ошибка вычисления`
+	 Worm: При уничтожении вываливается множество червей.
+	 Platter: Вкусняшка готовая к принятию. Кто оставил это тут?
+	 Aether: Дарует приятные улучшения.
+	 Stuffed: Какое странное место для торговца. Они напрашиваются на беспокойство.
+	 Scrying: Открывает большую часть карты после уничтоженмя.
+	 Biome: Содержит куда больше полезных штучек, чем обычные горшки.
 }
 
 SunkenTreasureTile.MapEntry: Затонувшее сокровище
@@ -42,7 +42,7 @@ HerosMemorialStatue.MapEntry: Памятник героя
 TermiteJar_Tile.MapEntry: Банка с термитами
 GarInAJarTile.MapEntry: Щука в банке
 KillieFishbowlTile.MapEntry: Аквариум с килли рыбкой
-// OreCarts.MapEntry: Minecart
-// PotionVats.MapEntry: Potion Vat
-// ObsidianShroom.MapEntry: Obsidian Shroom
-// Starflower.MapEntry: Starflower
+OreCarts.MapEntry: Вагонетка
+PotionVats.MapEntry: Чан для зелий
+ObsidianShroom.MapEntry: Обсидиановый гриб
+Starflower.MapEntry: Звёздоцвет

@@ -1,6 +1,7 @@
 ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
+Moonbird: Moonbird
 BySalvati: Автор: {$Salvati}
 
 Duststorm: {
@@ -21,4 +22,19 @@ SavannaNight: {
 DeepOcean: {
 	DisplayName: Глубокий океан
 	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: Тема дневной саванны
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: Тема ночной саванны
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: Тема песчаного шторма
+	Author: "{$By} jakedastardly"
 }

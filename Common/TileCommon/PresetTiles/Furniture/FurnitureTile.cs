@@ -9,6 +9,7 @@ public abstract class FurnitureTile : ModTile, IAutoloadTileItem
 	/// <summary> The defining material in most furniture recipes. </summary>
 	public virtual int CoreMaterial => ItemID.None;
 
+	public virtual void StaticItemDefaults(ModItem item) { }
 	public virtual void SetItemDefaults(ModItem item) { }
 	public virtual void AddItemRecipes(ModItem item) { }
 

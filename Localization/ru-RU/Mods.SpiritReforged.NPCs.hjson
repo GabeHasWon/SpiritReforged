@@ -226,15 +226,15 @@ Cartographer: {
 			}
 
 			WulfrumBunker: {
-				// 0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				// 1: This was were my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
-				// 2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
+				 0: Надеюсь, я правильно запомнил. Бродил я тут, как обычно, и вдруг за рощицей увидел странную зелёную механическую конструкцию. Наверху всякие штуки торчат, а снизу доносится механическое жужжание... Нет уж, спасибо!
+				 1: Тут был мой лагерь, прямо здесь. Я отдыхал после долгого пути, как вдруг этот маленький механический тип с огромной рукой УКРАЛ мой рюкзак. Хорошо хоть я успел отдохнуть - пришлось потом долго за ним гоняться!
+				 2: Вот оно! Такое не скоро забудешь. Редко встретишь промышленные сооружения в этих местах, и мне это только на руку. Не выношу всего этого шума. Особенно после того, как появилось энергополе, и всякие железяки начали в меня лететь!
 			}
 
 			BloodAltar: {
-				// 0: And... there! Charting the surface is only, well, the surface. I find a lot of strange things underground, and many of them I steer clear from... What? I'm a cartographer, not an adventurer!
-				// 1: Should be it! You seem like the capable type. I'd found this undead fellow who actually listened to reason, which was strange enough, but he sold me this... hand. I followed where it pointed to and found myself at an unsettling crypt... Maybe you can get something out of all this, I'm not going back there.
-				// 2: You up for a challenge? I'm not, that's for sure. There's this dungeon with a room that reeks of blood... And with that strange altar in the middle, yeah I didn't stay for long.
+				 0: Ну вот... Готово! Но карта поверхности — это лишь, так сказать, верхушка айсберга. Под землёй я находил много странного, и большую часть обхожу стороной... Что? Я картограф, а не искатель приключений!
+				 1: Вроде всё! Выглядишь ты, человеком толковым. Вот, встретил я тут одного мертвеца — и, представляешь, он адекватно мыслил! Редкость, да? Ну так вот, он продал мне эту... руку. Я пошёл туда, куда она указывала, и очутился у жуткой гробницы... Может, тебе это чем-то поможет, но я туда больше не сунусь.
+				 2: Хочешь испытание? Я — точно нет. Есть тут подземелье с комнатой, где так и тащит кровью... И этот странный алтарь посредине — да я не стал там задерживаться!
 			}
 
 			FirstPin: Метка добавлена в твою "Коллекцию". Заглянуть к ней можно в любой момент — в нижнем левом углу карты
@@ -316,76 +316,76 @@ HideZombieSmall: {
 }
 
 PotterySlime: {
-	// DisplayName: Pottery Slime
+	 DisplayName: Слизень-гончар
 
 	Names: {
-		// 0: Sable
-		// 1: Saki
-		// 2: Sal
-		// 3: Santra
-		// 4: Sark
-		// 5: Sassafrass
-		// 6: Satya
-		// 7: Sawyl
-		// 8: Seppo
-		// 9: Shammy
-		// 10: Shard
-		// 11: Shio
-		// 12: Silas
-		// 13: Silica
-		// 14: Silty
-		// 15: Sleet
-		// 16: Sloan
-		// 17: Snap
-		// 18: Soggy
-		// 19: Soda
-		// 20: Sonya
-		// 21: Sparta
-		// 22: Splet
-		// 23: Spot
-		// 24: Stratton
-		// 25: Sullivan
-		// 26: Swain
+		 0: Сэйбл
+		 1: Саки
+		 2: Сал
+		 3: Сантра
+		 4: Сарк
+		 5: Сассафрасс
+		 6: Сатя
+		 7: Сэвил
+		 8: Сеппо
+		 9: Шэмми
+		 10: Шард
+		 11: Щио
+		 12: Силас
+		 13: Силика
+		 14: Силти
+		 15: Слит
+		 16: Слоан
+		 17: Снеп
+		 18: Согги
+		 19: Сода
+		 20: Соня
+		 21: Спарта
+		 22: Сплет
+		 23: Спот
+		 24: Страттон
+		 25: Сулливан
+		 26: Свэйн
 	}
 
 	Chatter: {
-		// 0: Wubba dooble doo?
-		// 1: Plip plop. Blorp.
-		// 2: Wawa.
+		 0: Вуба даби ду?
+		 1: Флип флоп. Блорп.
+		 2: Вава.
 	}
 
-	// Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
+	 Entry: Хочешь верь, хочешь нет, но этот слизнь мировое исскуство керамики, ты наблюдаешь за настоящим мастером!
 }
 
-// StompableGnome.DisplayName: Stompable Gnome
+ StompableGnome.DisplayName: Топтаный гном
 
 DunceCrab: {
-	// DisplayName: Dunce Crab
-	// Entry: One of the most common causes for adventuring accidents, this cave-dwelling mollusk is usually quite the surprise. It feeds on mosses and lichen often found in caves.
+	 DisplayName: Краб-недоумок
+	 Entry: Один из главных виновников несчастных случаев среди искателей приключений — этот пещерный краб обычно оказывается неприятным сюрпризом. Питается мхами и лишайниками, типичными для подземелий.
 }
 
 Wheezer: {
-	// DisplayName: Wheezer
-	// Entry: A wheezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	 DisplayName: Визгун
+	 Entry: Визгун - крайне ядовитый родственник саламандры, отличающийся невероятной агрессивностью. Парадоксально, но их любимая пища - нежный падуб, что идёт в разрез с их плотоядностью.
 }
 
 WorldFrog: {
-	// DisplayName: Helpful Looking Frog
-	// Button: Update World
+	 DisplayName: Полезно выглядящая жабка
+	 Button: Обновить мир
 
 	Sounds: {
-		// 0: Croak
-		// 1: Ribbit
+		 0: Ква-ква
+		 1: Квак
 	}
 
 	Dialogue: {
-		// 0: If you wish to look for things to explore, I've got an offer for you - I implore!
-		// 1: You look for things new? Betwixt my hands, an offer I drew!
-		// 2: My magicks sense something missing in the air; but - you should not despair!
+		 0: Если хочешь поискать, что можно исследовать, у меня есть для тебя предложение - умоляю!
+		 1: Ищещь что-то новенькое? Меж моих ладоней нарисовалось предложение!
+		 2: Чует магия, чего-то не хватает в воздухе. Но - не вешай нос!
 	}
 
 	Reports: {
-		// CavesAndClubs_0: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
-		// CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
+		 CavesAndClubs_0: Фокус покус, не печалься, мой милый, я заполнил пещеры горшками красивыми!
+		 CavesAndClubs_1: Абра-кадабра! Дарю горшки вам новы, спустись же под землю, да вкуси их основы!
 	}
 }

@@ -25,15 +25,15 @@ SkullSentryMucus.DisplayName: Слизь черепа-часового
 SkullSentrySentry.DisplayName: Череп плотоядки
 ZiplineProj.DisplayName: Канатный снаряд
 FallingBaobabFruit.DisplayName: Падающий плод баобаба
-// RollingCart.DisplayName: Rolling Cart
-// RadonMossBobber.DisplayName: Radon Moss Bobber
-// OganessonMossBobber.DisplayName: Oganesson Moss Bobber
-// BuffAura.DisplayName: Buff Aura
-// WheezerCloud.DisplayName: Poisonous Gas
-// Shockwave.DisplayName: Shockwave
-// EnergizedShockwave.DisplayName: Energized Shockwave
-// RollingBowlder.DisplayName: Rolling Bowlder
-// Firespike.DisplayName: Firespike
-// CannonBomb.DisplayName: Bomb Cannon Shot
-// BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+RollingCart.DisplayName: Катящаяся вагонетка
+RadonMossBobber.DisplayName: Поплавок из радонового мха 
+OganessonMossBobber.DisplayName: Поплавок из оганессонового мха
+BuffAura.DisplayName: Аура баффа
+WheezerCloud.DisplayName: Ядовитый газ
+Shockwave.DisplayName: Ударная волна
+EnergizedShockwave.DisplayName: Энергитическая ударная волна
+RollingBowlder.DisplayName: Катящаяся булыга
+Firespike.DisplayName: Огнешип
+CannonBomb.DisplayName: Выстрел бомбопушки
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
