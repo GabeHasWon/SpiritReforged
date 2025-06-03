@@ -1,8 +1,6 @@
 using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.MapCommon;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.Forest.Misc.Pins;
-using SpiritReforged.Content.Forest.Misc.Maps;
 using SpiritReforged.Content.Savanna.Biome;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -11,8 +9,10 @@ using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
 using System.IO;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Forest.Cartography.Pins;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Cartography;
 
 [AutoloadHead]
 public class Cartographer : WorldNPC, ITravelNPC
@@ -85,9 +85,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 		InterestType type;
 
 		do 
-		{
 			type = (InterestType)Main.rand.Next((int)InterestType.Count);
-		} while (!PointOfInterestSystem.HasInterestType(type));
+while (!PointOfInterestSystem.HasInterestType(type));
 
 		var item = new Item(GetPinType(type));
 		string pinName = item.ModItem.Name;
@@ -142,13 +141,11 @@ public class Cartographer : WorldNPC, ITravelNPC
 			return;
 
 		if (NPC.life <= 0)
-		{
 			for (int i = 1; i < 7; i++)
 			{
 				int goreType = Mod.Find<ModGore>(nameof(Cartographer) + i).Type;
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity, goreType);
 			}
-		}
 
 		for (int d = 0; d < 8; d++)
 			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood,
@@ -176,10 +173,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 	public bool CanSpawnTraveler()
 	{
 		foreach (var p in Main.ActivePlayers)
-		{
 			if (p.TryGetModPlayer(out PinPlayer pinPl) && pinPl.PinProgress != 0)
 				return true;
-		}
 
 		return false;
 	}

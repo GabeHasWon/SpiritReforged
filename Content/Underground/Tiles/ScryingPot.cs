@@ -2,7 +2,7 @@ using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Forest.Misc.Maps;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
