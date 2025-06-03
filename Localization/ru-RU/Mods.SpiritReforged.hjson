@@ -24,6 +24,7 @@ Misc: {
 	NoStock: Нет в наличии
 	GraveText: <wavy>Текст выцветший и старый; разобрать его не удаётся.
 	MenuButton: Использовать стиль меню
+	// UpdateMap: Map has been updated.
 }
 
 DamageSources: {

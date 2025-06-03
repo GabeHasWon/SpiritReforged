@@ -1,21 +1,16 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
-using SpiritReforged.Common.WorldGeneration;
-using System.IO;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.Map;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
 public class CartographyTable : ModTile, IAutoloadTileItem
 {
-	[WorldBound]
-	internal static WorldMap RecordedMap;
-
 	private const int FullFrameHeight = 18 * 3;
+
+	public override void Load() => base.Load();
 
 	public override void SetStaticDefaults()
 	{
@@ -38,7 +33,7 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		SetMap();
+		MappingSystem.SetMap();
 		Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UpdateMap"), new Color(255, 240, 20));
 
 		return true;
@@ -76,73 +71,5 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 			frameCounter = 0;
 			frame = ++frame % 4;
 		}
-	}
-
-	private static void SetMap()
-	{
-		if (RecordedMap is null)
-		{
-			RecordedMap = Main.Map;
-			return;
-		}
-
-		for (int x = 0; x < RecordedMap.MaxWidth; x++)
-		{
-			for (int y = 0; y < RecordedMap.MaxHeight; y++)
-			{
-				var tileToPost = Main.Map[x, y];
-
-				if (tileToPost.Light > RecordedMap[x, y].Light)
-					RecordedMap.SetTile(x, y, ref tileToPost);
-			}
-		}
-
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			new SyncMapData(RecordedMap).Send();
-	}
-}
-
-internal class SyncMapData : PacketData
-{
-	private readonly WorldMap _map;
-
-	public SyncMapData() { }
-	public SyncMapData(WorldMap map) => _map = map;
-
-	public override void OnReceive(BinaryReader reader, int whoAmI)
-	{
-		CartographyTable.RecordedMap ??= new(Main.maxTilesX, Main.maxTilesY);
-
-		for (int x = 0; x < _map.MaxWidth; x++)
-		{
-			for (int y = 0; y < _map.MaxHeight; y++)
-			{
-				//ushort type = reader.ReadUInt16();
-				byte light = reader.ReadByte(); //Only read light levels because the rest is inferred (and not written)
-				//byte color = reader.ReadByte();
-
-				var tileToPost = MapHelper.CreateMapTile(x, y, light);
-				CartographyTable.RecordedMap.SetTile(x, y, ref tileToPost);
-			}
-		}
-
-		if (Main.netMode == NetmodeID.Server) //Relay to other clients
-			new SyncMapData(CartographyTable.RecordedMap).Send(ignoreClient: whoAmI);
-	}
-
-	public override void OnSend(ModPacket modPacket)
-	{
-		for (int x = 0; x < _map.MaxWidth; x++)
-		{
-			for (int y = 0; y < _map.MaxHeight; y++)
-				WriteSingleMapTile(modPacket, _map[x, y]);
-		}
-	}
-
-	private static void WriteSingleMapTile(ModPacket modPacket, MapTile tile)
-	{
-		//modPacket.Write(tile.Type);
-		modPacket.Write(tile.Light); //Only write light levels because we can infer the rest
-		//modPacket.Write(tile.Color);
 	}
 }

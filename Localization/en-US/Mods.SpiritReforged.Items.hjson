@@ -1836,3 +1836,8 @@ SavannaSandstormOtherworldMusicBoxItem: {
 	DisplayName: Otherworldly Music Box (Duststorm)
 	Tooltip: ""
 }
+
+CartographyTableItem: {
+	DisplayName: Cartography Table Item
+	Tooltip: ""
+}

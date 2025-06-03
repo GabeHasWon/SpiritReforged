@@ -1760,27 +1760,12 @@ Hummus: {
 }
 
 ZenithPotsItem: {
-	DisplayName: Зенитный горшочек 
+	DisplayName: Зенитный горшочек
 	Tooltip: ""
 }
 
 ZenithPotsPaleItem: {
 	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
-	Tooltip: ""
-}
-
-OtherworldSavannaMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Саванна, день)
-	Tooltip: ""
-}
-
-OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Саванна, ночь)
-	Tooltip: ""
-}
-
-SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Песчаный шторм)
 	Tooltip: ""
 }
 
@@ -1827,4 +1812,24 @@ Drypowder: {
 ElephantKite: {
 	// DisplayName: Elephant Kite
 	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: Музыкальная шкатулка (Саванна, день)
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: Музыкальная шкатулка (Саванна, ночь)
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: Музыкальная шкатулка (Песчаный шторм)
+	Tooltip: ""
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table Item
+	// Tooltip: ""
 }

@@ -25,9 +25,8 @@ SkullSentryMucus.DisplayName: Слизь черепа-часового
 SkullSentrySentry.DisplayName: Череп плотоядки
 ZiplineProj.DisplayName: Канатный снаряд
 FallingBaobabFruit.DisplayName: Падающий плод баобаба
-DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
 RollingCart.DisplayName: Катящаяся вагонетка
-RadonMossBobber.DisplayName: Поплавок из радонового мха 
+RadonMossBobber.DisplayName: Поплавок из радонового мха
 OganessonMossBobber.DisplayName: Поплавок из оганессонового мха
 BuffAura.DisplayName: Аура баффа
 WheezerCloud.DisplayName: Ядовитый газ
@@ -37,3 +36,4 @@ RollingBowlder.DisplayName: Катящаяся булыга
 Firespike.DisplayName: Огнешип
 CannonBomb.DisplayName: Выстрел бомбопушки
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
