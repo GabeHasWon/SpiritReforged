@@ -17,8 +17,8 @@ public class FingerGun : ModItem
 {
 	public override void SetStaticDefaults()
 	{
-		ItemLootDatabase.AddItemRule(ItemID.IronCrate, ItemDropRule.Common(Type, 8));
-		ItemLootDatabase.AddItemRule(ItemID.IronCrateHard, ItemDropRule.Common(Type, 8));
+		ItemLootDatabase.AddItemRule(ItemID.IronCrate, ItemDropRule.Common(Type, 15));
+		ItemLootDatabase.AddItemRule(ItemID.IronCrateHard, ItemDropRule.Common(Type, 15));
 
 		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
 	}
