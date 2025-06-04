@@ -37,3 +37,4 @@ FallingBaobabFruit.DisplayName: Падающий плод баобаба
 // CannonBomb.DisplayName: Bomb Cannon Shot
 // BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
 // DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+// FingerShot.DisplayName: Finger Shot

@@ -1866,3 +1866,13 @@ TopazBonsaiItem: {
 	// DisplayName: Topaz Bonsai
 	// Tooltip: ""
 }
+
+FingerGun: {
+	// DisplayName: Finger Blaster
+	/* Tooltip:
+		'''
+		Ignores some enemy defense
+		Increased fire rate at higher mana
+		'Bang!'
+		''' */
+}
