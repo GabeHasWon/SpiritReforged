@@ -1,10 +1,13 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.FingerGun;
 
@@ -12,6 +15,14 @@ namespace SpiritReforged.Content.Underground.Items.FingerGun;
 [AutoloadEquip(EquipType.HandsOn)]
 public class FingerGun : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.IronCrate, ItemDropRule.Common(Type, 8));
+		ItemLootDatabase.AddItemRule(ItemID.IronCrateHard, ItemDropRule.Common(Type, 8));
+
+		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
+	}
+
 	public override void SetDefaults()
 	{
 		Item.DamageType = DamageClass.Magic;

@@ -52,20 +52,17 @@ public class FingerShot : ModProjectile
 		Lighting.AddLight(Projectile.Center, Color.LightCyan.ToVector3() / 3);
 	}
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-	{
-		if (Main.dedServ)
-			return;
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => DoFX();
 
-		Color particleColor = Color.Lerp(Color.LightCyan, Color.Cyan, 0.66f).Additive();
-		ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, Main.rand.NextFloatDirection(), particleColor, 0.33f * Projectile.scale, 14));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, particleColor, new Vector2(0.5f, 1) * Projectile.scale, 9, 0, target));
-		SoundEngine.PlaySound(SoundID.Item158.WithPitchOffset(1).WithVolumeScale(0.33f), Projectile.Center);
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		DoFX();
+		return base.OnTileCollide(oldVelocity);
 	}
 
-	public override void OnKill(int timeLeft)
+	private void DoFX()
 	{
-		if (timeLeft == 0 || Main.dedServ || Projectile.penetrate == 0)
+		if (Main.dedServ)
 			return;
 
 		Color particleColor = Color.Lerp(Color.LightCyan, Color.Cyan, 0.66f).Additive();
