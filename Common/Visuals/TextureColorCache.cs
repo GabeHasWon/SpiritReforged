@@ -8,6 +8,7 @@ namespace SpiritReforged.Common.Visuals;
 internal class TextureColorCache
 {
 	private static readonly Dictionary<Texture2D, Color> BrightestColorCache = [];
+	private static readonly Dictionary<Texture2D, Color> DarkestColorCache = [];
 	private static readonly Dictionary<Texture2D, Texture2D> SolidTextureCache = [];
 
 	public static Color GetBrightestColor(Texture2D texture)
@@ -17,13 +18,29 @@ internal class TextureColorCache
 
 		var data = new Color[texture.Width * texture.Height];
 		texture.GetData(data);
-		var brightest = data.OrderBy(x => x.ToVector3().Length()).FirstOrDefault();
+		var brightest = data.OrderByDescending(x => x.ToVector3().Length()).FirstOrDefault();
 
 		if (brightest == default)
 			brightest = Color.White;
 
 		BrightestColorCache.Add(texture, brightest);
 		return brightest;
+	}
+
+	public static Color GetDarkestColor(Texture2D texture)
+	{
+		if (DarkestColorCache.TryGetValue(texture, out Color value))
+			return value;
+
+		var data = new Color[texture.Width * texture.Height];
+		texture.GetData(data);
+		var darkest = data.OrderBy(x => x.ToVector3().Length()).FirstOrDefault(x => x != default);
+
+		if (darkest == default)
+			darkest = Color.White;
+
+		DarkestColorCache.Add(texture, darkest);
+		return darkest;
 	}
 
 	public static Texture2D ColorSolid(Texture2D texture, Color color)

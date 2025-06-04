@@ -1867,12 +1867,11 @@ TopazBonsaiItem: {
 	Tooltip: ""
 }
 
-FingerGun: {
-	DisplayName: Finger Blaster
+JinxBow: {
+	DisplayName: Jinxbow
 	Tooltip:
 		'''
-		Ignores some enemy defense
-		Increased fire rate at higher mana
-		'Bang!'
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		'''
 }

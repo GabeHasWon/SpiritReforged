@@ -37,4 +37,5 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // CannonBomb.DisplayName: Bomb Cannon Shot
 // BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
 // DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
-// FingerShot.DisplayName: Finger Shot
+// JinxArrow.DisplayName: Jinx Arrow
+// JinxBowMinion.DisplayName: Jinx Bow Minion

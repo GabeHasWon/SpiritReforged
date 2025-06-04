@@ -1867,12 +1867,7 @@ TopazBonsaiItem: {
 	// Tooltip: ""
 }
 
-FingerGun: {
-	// DisplayName: Finger Blaster
-	/* Tooltip:
-		'''
-		Ignores some enemy defense
-		Increased fire rate at higher mana
-		'Bang!'
-		''' */
+JinxBow: {
+	// DisplayName: Jinx Bow
+	// Tooltip: ""
 }
