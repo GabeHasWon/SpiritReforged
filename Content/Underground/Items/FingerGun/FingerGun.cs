@@ -67,16 +67,16 @@ public class FingerGunArmManager : ModPlayer
 		{
 			Player.GetModPlayer<ExtraDrawOnPlayer>().DrawDict.Add(FireHandDraw, ExtraDrawOnPlayer.DrawType.Additive);
 
-			int signDirection = Math.Sign(Player.DirectionTo(Main.MouseWorld).X);
-			if (signDirection != Player.direction && signDirection != 0)
-				Player.ChangeDir(signDirection);
-
-			float armRot = Player.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
-			Player.CompositeArmStretchAmount armStretch = Player.CompositeArmStretchAmount.Full;
-
 			if (Player.ItemAnimationActive)
 			{
 				float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
+
+				int signDirection = Math.Sign(Player.DirectionTo(Main.MouseWorld).X);
+				if (signDirection != Player.direction && signDirection != 0)
+					Player.ChangeDir(signDirection);
+
+				float armRot = Player.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
+				Player.CompositeArmStretchAmount armStretch = Player.CompositeArmStretchAmount.Full;
 
 				armStretch = animProgress switch
 				{
@@ -87,10 +87,10 @@ public class FingerGunArmManager : ModPlayer
 				};
 
 				armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCubicOut, EaseFunction.EaseSine]).Ease(animProgress) - 0.5f);
-				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
-			}
 
-			Player.SetCompositeArmFront(true, armStretch, armRot);
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
+				Player.SetCompositeArmFront(true, armStretch, armRot);
+			}
 		}
 	}
 
