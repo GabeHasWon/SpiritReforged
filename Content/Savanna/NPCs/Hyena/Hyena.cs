@@ -37,14 +37,14 @@ public class Hyena : ModNPC
 
 	public static readonly SoundStyle Laugh = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh")
 	{
-		Volume = 1.25f,
+		Volume = 0.15f,
 		PitchVariance = 0.4f,
 		MaxInstances = 2
 	};
 
 	public static readonly SoundStyle Bark = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark")
 	{
-		Volume = 0.18f,
+		Volume = 0.05f,
 		PitchVariance = 0.4f
 	};
 
@@ -58,8 +58,7 @@ public class Hyena : ModNPC
 	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit")
 	{
 		Volume = 0.75f,
-		Pitch = -0.05f,
-		PitchVariance = 0.4f,
+		PitchRange = (-0.45f, -0.35f),
 		MaxInstances = 2
 	};
 

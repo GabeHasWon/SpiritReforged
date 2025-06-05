@@ -33,7 +33,7 @@ internal class PotsMicropass : Micropass
 					return false; //Skips orig
 				}
 			}
-			else if (ground.HasTile && ground.TileType == TileID.Granite)
+			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
 				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
 				return false; //Skips orig

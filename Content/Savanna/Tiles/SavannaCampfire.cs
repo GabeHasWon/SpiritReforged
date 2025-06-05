@@ -12,6 +12,8 @@ public class SavannaCampfire : ModTile, IAutoloadTileItem
 	private static Asset<Texture2D> glowTexture;
 	private const int fullFrameHeight = 18 * 2;
 
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddIngredient(ItemID.Torch, 5).Register();
+
 	private static bool OnFire(int i, int j) => Main.tile[i, j].TileFrameY < fullFrameHeight;
 
 	public override void Load() => glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow");

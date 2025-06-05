@@ -1583,7 +1583,7 @@ RadonMossItem: {
 }
 
 OganessonMossItem: {
-	DisplayName: 鿫苔藓
+	DisplayName: 「气奥」苔藓
 	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
@@ -1598,12 +1598,12 @@ RadonMossBrickWallItem: {
 }
 
 OganessonMossBrickItem: {
-	DisplayName: 鿫苔藓砖
+	DisplayName: 「气奥」苔藓砖
 	Tooltip: ""
 }
 
 OganessonMossBrickWallItem: {
-	DisplayName: 鿫苔藓砖墙
+	DisplayName: 「气奥」苔藓砖墙
 	Tooltip: ""
 }
 
@@ -1666,7 +1666,7 @@ FlaskNeon: {
 }
 
 FlaskOganesson: {
-	DisplayName: 鿫苔藓烧瓶
+	DisplayName: 「气奥」苔藓烧瓶
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1691,7 +1691,7 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	DisplayName: 鿫浮标
+	DisplayName: 「气奥」浮标
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1782,6 +1782,21 @@ ZenithPotsPaleItem: {
 	Tooltip: ""
 }
 
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（沙尘暴）
+	Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact
@@ -1820,4 +1835,59 @@ TitleMusicBoxItem: {
 Drypowder: {
 	// DisplayName: Drypowder
 	// Tooltip: Spreads the savanna
+}
+
+ElephantKite: {
+	// DisplayName: Elephant Kite
+	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+PurityBonsaiItem: {
+	// DisplayName: Willow Bonsai
+	// Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	// DisplayName: Ruby Bonsai
+	// Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	// DisplayName: Sakura Bonsai
+	// Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	// DisplayName: Yellow Willow Bonsai
+	// Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	// DisplayName: Amethyst Bonsai
+	// Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	// DisplayName: Diamond Bonsai
+	// Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	// DisplayName: Emerald Bonsai
+	// Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	// DisplayName: Sapphire Bonsai
+	// Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	// DisplayName: Topaz Bonsai
+	// Tooltip: ""
+}
+
+JinxBow: {
+	// DisplayName: Jinx Bow
+	// Tooltip: ""
 }

@@ -19,8 +19,6 @@ public class OganessonMoss : GrassTile
 		Main.tileMoss[Type] = true;
 
 		this.Merge(DirtType, TileID.GrayBrick);
-		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;
-		TileID.Sets.NeedsGrassFraming[Type] = true;
 		TileID.Sets.Conversion.Moss[Type] = true;
 
 		SetEntry();
@@ -37,13 +35,10 @@ public class OganessonMoss : GrassTile
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (SpreadHelper.Spread(i, j, Type, 1, DirtType) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread moss
+		SpreadHelper.Spread(i, j, Type, 1, DirtType);  //Try spread moss
+		SpreadHelper.Spread(i, j, ModContent.TileType<OganessonMossGrayBrick>(), 1, TileID.GrayBrick); //Also spread to gray bricks
 
-		if (SpreadHelper.Spread(i, j, ModContent.TileType<OganessonMossGrayBrick>(), 1, TileID.GrayBrick) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Also spread to gray bricks
-
-		GrowTiles(i, j);
+		GrowPlants(i, j);
 	}
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
@@ -51,6 +46,6 @@ public class OganessonMoss : GrassTile
 		yield return new Item(ItemID.StoneBlock); //Drop stone blocks in every normal circumstance despite having a different type registered
 	}
 
-	protected virtual void GrowTiles(int i, int j) => Placer.PlacePlant<OganessonPlants>(i, j, Main.rand.Next(OganessonPlants.StyleRange));
+	public override void GrowPlants(int i, int j) => Placer.PlacePlant<OganessonPlants>(i, j, Main.rand.Next(OganessonPlants.StyleRange));
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.15f, 0.15f, 0.15f);
 }

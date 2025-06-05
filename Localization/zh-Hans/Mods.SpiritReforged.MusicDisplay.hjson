@@ -1,6 +1,7 @@
 ModName: 魂灵新魄
 Salvati: Salvati
 Sbubby: Sbubby
+Moonbird: Moonbird
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
@@ -21,4 +22,19 @@ SavannaNight: {
 DeepOcean: {
 	DisplayName: 海洋深处
 	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: 异界稀树平原 - 昼
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: 异界稀树平原 - 夜
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: 异界沙尘暴
+	Author: "{$By} jakedastardly"
 }
