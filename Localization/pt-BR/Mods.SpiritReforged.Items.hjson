@@ -1777,6 +1777,21 @@ ZenithPotsPaleItem: {
 	// Tooltip: ""
 }
 
+OtherworldSavannaMusicBoxItem: {
+	// DisplayName: Otherworldly Music Box (Savanna Day)
+	// Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	// DisplayName: Otherworldly Music Box (Savanna Night)
+	// Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	// DisplayName: Otherworldly Music Box (Duststorm)
+	// Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact

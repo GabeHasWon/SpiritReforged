@@ -7,35 +7,35 @@ PopulateOcean: Оживление подводного мира
 Gravel: Рассыпание гравия
 SavannaTerrain: Формирование саванных плато
 SavannaObjects: Наполнение саванны
-// Ecotones: Mapping ecotones
-// Caves: Decorating caves
-// NeonMosses: Glowing moss
-// Pottery: Stashing pots
+Ecotones: Рассчёты под эко-тоны
+Caves: Украшение пещер
+NeonMosses: Выращивание мха
+Pottery: Расстановка горшков
 
 Signs: {
 	Underground: {
 		Common: {
-			// 0: <wavy>Pots hold the secret...
-			// 1: <wavy>The text is too faded to read.
-			// 2: <colorful:255,80,80>The sign is covered in unintelligible scrawling from a dubious liquid.
-			// 3: <wavy>......er's Wares
-			// 4: <wavy>The old sign has almost crumbled to dust.
-			// 5: <wavy>A crudely drawn skeleton beckons.
-			// 6: <wavy>If you're reading this, I'm already dead.
-			// 7: If you're reading this, I'm doing great!
-			// 8: <wavy>Beware: Worms
-			// 9: The sign rambles on about something you can't quite understand. It's not worth reading further.
-			// 10: Dwarven scripture is scrawled all over the sign. You can read none of it.
+			0: <wavy>Горшки что-то скрывают...
+			1: <wavy>Текст на этой табличке давно стёрся.
+			2: <colorful:255,80,80>Табличка покрыта непонятными каракулями, написанными странного рода краской.
+			3: <wavy>Лавк... ...теля
+			4: <wavy>Эта старая табличка уже вот-вот развалится.
+			5: <wavy>Коряво нарисованный скелет подзывает вас.
+			6: <wavy>Если вы читаете это — я уже мёртв.
+			7: Если вы это читаете — со мной всё в порядке!
+			8: <wavy>Осторожно: черви
+			9: Табличка усердно разглагольствует о чём-то, чего вы не понимаете. Читать дальше кажется вам бессмысленно.
+			10: По всей табличке накорябано что-то на языке гномов. К сожалению, вы его не знаете.
 		}
 
 		Rare: {
-			// 0: <wavy>Collect my pages...
-			// 1: Looks like there's no goo balls around here. -the Sign Painter
-			/* 2:
+			0: <wavy>Собери мои страницы...
+			1: Похоже, здесь тягучек нет. -Художник
+			2:
 				'''
-				<wavy>0
-				days since cave incident
-				''' */
+				<wavy>Прошло 0 дней
+				с несчастного случая в пещере
+				'''
 		}
 	}
 }

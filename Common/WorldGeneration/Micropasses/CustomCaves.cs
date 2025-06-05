@@ -8,12 +8,12 @@ using Terraria.WorldBuilding;
 namespace SpiritReforged.Common.WorldGeneration.Micropasses;
 
 /// <summary> Handles replacing mountain caves with our custom caves. </summary>
-internal class CustomCaves : ILoadable
+internal class CustomCaves : ModSystem
 {
 	private static readonly Dictionary<Point16, CaveEntranceType> TypeByPosition = [];
 	private static bool AddingMountainCaves = false;
 
-	public void Load(Mod mod)
+	public override void Load()
 	{
 		On_WorldGen.Mountinater += OverrideGenMound;
 		On_WorldGen.Cavinator += ModifyCavinatorForCaveType;
@@ -24,8 +24,6 @@ internal class CustomCaves : ILoadable
 		if (pass != null)
 			WorldGen.DetourPass((PassLegacy)pass, AddFlagToMountainCavePass);
 	}
-
-	public void Unload() { }
 
 	private static void AddFlagToMountainCavePass(WorldGen.orig_GenPassDetour orig, object self, GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -62,4 +60,7 @@ internal class CustomCaves : ILoadable
 		TypeByPosition.TryGetValue(new Point16(i, j), out CaveEntranceType type); //If the value isn't found, type is default (vanilla)
 		return type;
 	}
+
+	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) => 
+		tasks.Add(new PassLegacy("Reset Custom Cave Info", (_, _) => TypeByPosition.Clear()));
 }

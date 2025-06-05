@@ -11,7 +11,8 @@ public class SavannaBiome : ModBiome
 		if (Main.LocalPlayer.ZoneGraveyard || Main.bloodMoon)
 			return -1;
 
-		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, "Assets/Music/Savanna") : MusicLoader.GetMusicSlot(Mod, "Assets/Music/SavannaNight");
+		string name = SpiritReforgedMod.SwapMusic ? "SavannaOtherworld" : "Savanna";
+		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
 	public override void SetStaticDefaults() => NPCHappinessHelper.SetAverage<SavannaBiome>(ModContent.GetInstance<JungleBiome>(), ModContent.GetInstance<DesertBiome>());

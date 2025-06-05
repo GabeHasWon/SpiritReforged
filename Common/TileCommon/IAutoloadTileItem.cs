@@ -13,6 +13,7 @@ public interface IAutoloadTileItem
 	public string Name { get; }
 	public string Texture { get; }
 
+	public void StaticItemDefaults(ModItem item) { }
 	public void SetItemDefaults(ModItem item) { }
 	public void AddItemRecipes(ModItem item) { }
 }
@@ -52,6 +53,8 @@ public class AutoloadedTileItem(string name, string texture, IAutoloadTileItem h
 		item._hooks = _hooks;
 		return item;
 	}
+
+	public override void SetStaticDefaults() => _hooks.StaticItemDefaults(this);
 
 	public override void SetDefaults()
 	{
