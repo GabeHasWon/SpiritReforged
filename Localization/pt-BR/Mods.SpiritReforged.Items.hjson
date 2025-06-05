@@ -1888,6 +1888,10 @@ TopazBonsaiItem: {
 }
 
 JinxBow: {
-	// DisplayName: Jinx Bow
-	// Tooltip: ""
+	// DisplayName: Jinxbow
+	/* Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		''' */
 }

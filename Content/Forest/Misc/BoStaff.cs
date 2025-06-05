@@ -103,7 +103,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		for (int i = 0; i < 2; i++)
 		{
 			float trailWidth = (i == 0) ? 80 : 30;
-			float trailDist = Reach * (ActivelySpinning ? 0.5f : 1) - trailWidth / 2;
+			float trailDist = Reach * (ActivelySpinning ? 0.7f : 1) - trailWidth / 2;
 			float intensity = (i == 0) ? 0.25f : 0.3f;
 
 			SwingTrailParameters parameters = new(SwingArc, rotation, trailDist, trailWidth)
@@ -137,6 +137,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	{
 		var owner = Main.player[Projectile.owner];
 		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
+		int direction = (Projectile.velocity.X > 0) ? 1 : -1;
 
 		if (ActivelySpinning)
 		{
@@ -146,20 +147,28 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				Counter = 0;
 
 				if (!Main.dedServ)
-				{
 					TrailManager.TryTrailKill(Projectile);
-					TrailManager.ManualTrailSpawn(Projectile);
-				}
 			}
 
 			if (Main.rand.NextBool())
 				Dust.NewDustDirect(GetEnd(20), Projectile.width, Projectile.height, DustID.WoodFurniture, Alpha: Main.rand.Next(140, 200)).noGravity = true;
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				int newDir = Math.Sign(Main.MouseWorld.X - owner.Center.X);
+
+				if (newDir != direction)
+				{
+					Projectile.velocity.X *= -1;
+					Projectile.netUpdate = true;
+				}
+			}
 		}
 
 		if (!UpdateCollision())
 			Projectile.rotation = Projectile.velocity.ToRotation() - SwingArc / 2 + SwingArc * progress;
 
-		Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
+		Projectile.spriteDirection = Projectile.direction = owner.direction = direction;
 		Projectile.Center = ActivelySpinning ? owner.Center : owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 
 		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
@@ -171,7 +180,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 		Counter++;
 
-		if (ActivelySpinning || Counter < SwingTime - 2)
+		if (ActivelySpinning || Counter < SwingTime - 1)
 			owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
 
 		if (owner.dead)
@@ -215,12 +224,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 		_meleeScale = owner.GetAdjustedItemScale(owner.HeldItem);
 		Projectile.scale = _meleeScale;
-
-		if (SpinMove)
-		{
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 10;
-		}
+		Projectile.localNPCHitCooldown = ActivelySpinning ? 20 : -1;
 	}
 
 	public override void OnKill(int timeLeft)
@@ -247,8 +251,6 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	}
 
 	public override bool? CanCutTiles() => _collided ? false : null;
-	public override bool? CanDamage() => _collided ? false : null;
-
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;
