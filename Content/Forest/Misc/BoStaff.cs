@@ -67,7 +67,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		{
 			const float spinSpeed = 2f;
 
-			if (Spinning && !_released)
+			if (ActivelySpinning)
 				return (float)Counter / SwingTime * spinSpeed % 1;
 
 			float min = MathHelper.Min((float)Counter / (SwingTime * 0.7f), 1);
@@ -76,7 +76,8 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	}
 
 	private float SwingTime => Main.player[Projectile.owner].itemTimeMax * (Projectile.extraUpdates + 1); //The full duration of the swing
-	public bool Spinning => Projectile.ai[2] == 1;
+	public bool SpinMove => Projectile.ai[2] == 1;
+	public bool ActivelySpinning => SpinMove && !_released;
 
 	public ref float SwingArc => ref Projectile.ai[0]; //The full arc of the swing in radians
 	public ref float Counter => ref Projectile.ai[1];
@@ -102,7 +103,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		for (int i = 0; i < 2; i++)
 		{
 			float trailWidth = (i == 0) ? 80 : 30;
-			float trailDist = Reach - trailWidth / 2;
+			float trailDist = Reach * (ActivelySpinning ? 0.5f : 1) - trailWidth / 2;
 			float intensity = (i == 0) ? 0.25f : 0.3f;
 
 			SwingTrailParameters parameters = new(SwingArc, rotation, trailDist, trailWidth)
@@ -111,7 +112,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				SecondaryColor = Color.LightGray,
 				TrailLength = 0.25f,
 				Intensity = intensity,
-				DissolveThreshold = Spinning ? 1f : 0.9f
+				DissolveThreshold = SpinMove ? 1f : 0.9f
 			};
 
 			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
@@ -136,14 +137,19 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	{
 		var owner = Main.player[Projectile.owner];
 		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
-		bool activelySpinning = Spinning && !_released;
 
-		if (activelySpinning)
+		if (ActivelySpinning)
 		{
 			if (!owner.channel)
 			{
 				_released = true;
 				Counter = 0;
+
+				if (!Main.dedServ)
+				{
+					TrailManager.TryTrailKill(Projectile);
+					TrailManager.ManualTrailSpawn(Projectile);
+				}
 			}
 
 			if (Main.rand.NextBool())
@@ -154,7 +160,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 			Projectile.rotation = Projectile.velocity.ToRotation() - SwingArc / 2 + SwingArc * progress;
 
 		Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
-		Projectile.Center = activelySpinning ? owner.Center : owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+		Projectile.Center = ActivelySpinning ? owner.Center : owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 
 		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 		owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
@@ -165,7 +171,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 		Counter++;
 
-		if (activelySpinning || Counter < SwingTime - 2)
+		if (ActivelySpinning || Counter < SwingTime - 2)
 			owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
 
 		if (owner.dead)
@@ -175,7 +181,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	/// <returns> Whether collision has occurred. </returns>
 	private bool UpdateCollision()
 	{
-		if (Spinning && _released && !_collided && Counter > 10 && SolidCollision()) //One-time hit effects
+		if (SpinMove && _released && !_collided && Counter > 10 && SolidCollision()) //One-time hit effects
 		{
 			_collided = true;
 
@@ -210,14 +216,19 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		_meleeScale = owner.GetAdjustedItemScale(owner.HeldItem);
 		Projectile.scale = _meleeScale;
 
-		if (Spinning)
+		if (SpinMove)
 		{
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = 10;
 		}
 	}
 
-	public override void OnKill(int timeLeft) => BoStaff.HitCombo = (Projectile.numHits == 0 || Spinning) ? 0 : BoStaff.HitCombo + 1;
+	public override void OnKill(int timeLeft)
+	{
+		if (Main.myPlayer == Projectile.owner)
+			BoStaff.HitCombo = (Projectile.numHits == 0 || SpinMove) ? 0 : BoStaff.HitCombo + 1;
+	}
+
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = (target.Center.X - Projectile.Center.X < 0) ? -1 : 1;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -249,12 +260,11 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		bool activelySpinning = Spinning && !_released;
-		int cutoff = activelySpinning ? 0 : 30;
+		int cutoff = ActivelySpinning ? 0 : 30;
 
 		var texture = TextureAssets.Projectile[Type].Value;
 		var frame = new Rectangle(cutoff, 0, texture.Width - cutoff, texture.Height);
-		var origin = activelySpinning ? frame.Size() / 2 : new Vector2(10, frame.Height / 2);
+		var origin = ActivelySpinning ? frame.Size() / 2 : new Vector2(10, frame.Height / 2);
 
 		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
 		return false;
