@@ -19,7 +19,9 @@ public class SavannaGrassMowed : GrassTile
 		AddMapEntry(MapColor);
 	}
 
+	public override void RandomUpdate(int i, int j) { }
 	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != ItemMethods.AutoItemType<SavannaDirt>();
+
 	public override void Convert(int i, int j, int conversionType)
 	{
 		int type = (ConversionType)conversionType switch
@@ -37,7 +39,6 @@ public class SavannaGrassMowed : GrassTile
 public class SavannaGrassHallowMowed : SavannaGrassMowed
 {
 	protected override Color MapColor => new(78, 193, 227);
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

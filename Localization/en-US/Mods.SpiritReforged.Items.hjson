@@ -1841,3 +1841,57 @@ CartographyTableItem: {
 	DisplayName: Cartography Table
 	Tooltip: Allows you to share your map with other players
 }
+
+PurityBonsaiItem: {
+	DisplayName: Willow Bonsai
+	Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	DisplayName: Ruby Bonsai
+	Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	DisplayName: Sakura Bonsai
+	Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	DisplayName: Yellow Willow Bonsai
+	Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	DisplayName: Amethyst Bonsai
+	Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	DisplayName: Diamond Bonsai
+	Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	DisplayName: Emerald Bonsai
+	Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	DisplayName: Sapphire Bonsai
+	Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	DisplayName: Topaz Bonsai
+	Tooltip: ""
+}
+
+JinxBow: {
+	DisplayName: Jinxbow
+	Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		'''
+}

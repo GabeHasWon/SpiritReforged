@@ -26,15 +26,12 @@ public class OganessonMossGrayBrick : GrassTile
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (SpreadHelper.Spread(i, j, Type, 1, DirtType) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread moss
+		SpreadHelper.Spread(i, j, Type, 1, DirtType); //Try spread moss
+		SpreadHelper.Spread(i, j, ModContent.TileType<OganessonMoss>(), 1, TileID.Stone); //Also spread to stone
 
-		if (SpreadHelper.Spread(i, j, ModContent.TileType<OganessonMoss>(), 1, TileID.Stone) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Also spread to stone
-
-		GrowTiles(i, j);
+		GrowPlants(i, j);
 	}
 
-	protected virtual void GrowTiles(int i, int j) => Placer.PlacePlant<OganessonPlants>(i, j, Main.rand.Next(OganessonPlants.StyleRange));
+	public override void GrowPlants(int i, int j) => Placer.PlacePlant<OganessonPlants>(i, j, Main.rand.Next(OganessonPlants.StyleRange));
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.3f, 0.3f, 0.3f);
 }

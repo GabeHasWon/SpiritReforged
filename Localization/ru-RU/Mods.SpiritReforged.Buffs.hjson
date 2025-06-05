@@ -107,3 +107,8 @@ ExplorerMine: {
 	DisplayName: Силы исследователя
 	Description: Продолжайте копать!
 }
+
+JinxMark: {
+	// DisplayName: Jinx Mark
+	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
