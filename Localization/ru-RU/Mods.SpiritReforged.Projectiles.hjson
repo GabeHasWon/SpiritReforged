@@ -36,6 +36,6 @@ RollingBowlder.DisplayName: Катящаяся булыга
 Firespike.DisplayName: Огнешип
 CannonBomb.DisplayName: Выстрел бомбопушки
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
 // JinxArrow.DisplayName: Jinx Arrow
 // JinxBowMinion.DisplayName: Jinx Bow Minion

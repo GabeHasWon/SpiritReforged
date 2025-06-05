@@ -1777,6 +1777,21 @@ ZenithPotsPaleItem: {
 	Tooltip: ""
 }
 
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（沙尘暴）
+	Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact
