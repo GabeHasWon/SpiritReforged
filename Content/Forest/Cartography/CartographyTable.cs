@@ -1,16 +1,13 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.UI.PotCatalogue;
-using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
 public class CartographyTable : ModTile, IAutoloadTileItem
 {
-	private const int FullFrameHeight = 18 * 3;
-
-	public override void Load() => base.Load();
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 1, silver: 20);
 
 	public override void SetStaticDefaults()
 	{
@@ -28,11 +25,13 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(191, 142, 111), this.AutoModItem().DisplayName);
 		DustType = DustID.WoodFurniture;
-		AnimationFrameHeight = FullFrameHeight;
 	}
 
 	public override bool RightClick(int i, int j)
 	{
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+			return false;
+
 		MappingSystem.SetMap();
 		Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UpdateMap"), new Color(255, 240, 20));
 
@@ -41,35 +40,30 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 
 	public override void MouseOver(int i, int j)
 	{
-		if (UISystem.IsActive<CatalogueUI>())
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 			return;
 
 		var p = Main.LocalPlayer;
-
 		p.cursorItemIconEnabled = true;
 		p.cursorItemIconID = this.AutoItem().type;
 		p.noThrow = 2;
 	}
 
-	public override void NearbyEffects(int i, int j, bool closer)
-	{
-		if (Main.dedServ || !TileObjectData.IsTopLeft(i, j))
-			return;
-
-		var world = new Vector2(i, j).ToWorldCoordinates(16, 16);
-
-		if (UISystem.IsActive<CatalogueUI>() && Main.LocalPlayer.Distance(world) > 16 * 5)
-			UISystem.SetInactive<CatalogueUI>();
-	}
-
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
-	public override void AnimateTile(ref int frame, ref int frameCounter)
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (++frameCounter >= 4)
+		if (MappingSystem.MapUpdated && TileObjectData.IsTopLeft(i, j))
 		{
-			frameCounter = 0;
-			frame = ++frame % 4;
+			var texture = TextureAssets.QuicksIcon.Value;
+			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+
+			float y = (float)Math.Sin(Main.timeForVisualEffects / 20f) * 2f;
+			var position = new Vector2(i, j).ToWorldCoordinates(24, -8 + y) - Main.screenPosition + TileExtensions.TileOffset;
+
+			spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
+			spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.3f, 0, bloom.Size() / 2, 0.2f, default, 0);
 		}
 	}
 }

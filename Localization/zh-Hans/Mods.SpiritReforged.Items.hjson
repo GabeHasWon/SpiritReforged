@@ -1838,6 +1838,6 @@ SavannaSandstormOtherworldMusicBoxItem: {
 }
 
 CartographyTableItem: {
-	// DisplayName: Cartography Table Item
-	// Tooltip: ""
+	// DisplayName: Cartography Table
+	// Tooltip: Allows you to share your map with other players
 }

@@ -11,6 +11,7 @@ using System.IO;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Forest.Cartography.Pins;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Common.ItemCommon;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
@@ -76,7 +77,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 	}
 
 	public override void AddShops() => new NPCShop(Type).Add<PinRed>().Add<PinYellow>().Add<PinGreen>().Add<PinBlue>()
-		.AddLimited<TornMapPiece>(4, 6).Add(ItemID.Binoculars).Add(ItemID.Compass, Condition.InBelowSurface).AddLimited(ItemID.TrifoldMap, 1, Condition.Hardmode).Register();
+		.AddLimited<TornMapPiece>(4, 6).Add(ItemID.Binoculars).Add(ItemID.Compass, Condition.InBelowSurface)
+		.Add(ItemMethods.AutoItemType<CartographyTable>()).AddLimited(ItemID.TrifoldMap, 1, Condition.Hardmode).Register();
 
 	private void MapFunctionality()
 	{
