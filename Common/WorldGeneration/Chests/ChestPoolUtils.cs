@@ -7,30 +7,35 @@ public static class ChestPoolUtils
 	/// <summary> Struct containing information related to chest item pools. </summary>
 	public struct ChestInfo
 	{
-		/// <param name="item"> The item type to add to the chest pool. </param>
 		/// <param name="stack"> The item stack. </param>
 		/// <param name="chance"> The chance for the item to generate. </param>
-		public ChestInfo(int item, int stack = 1, float chance = 1)
+		/// <param name="items"> The selection of item types to add to the chest pool. </param>
+		public ChestInfo(int stack = 1, float chance = 1, params int[] items)
 		{
-			items = item;
-			this.stack = stack;
+			itemTypes = items;
+			_minStack = _maxstack = stack;
 			this.chance = chance;
 		}
 
-		/// <param name="items"> The item types to add to the chest pool. Only one item type will be selected when using int[]. </param>
-		/// <param name="stack"> The item stack. </param>
+		/// <param name="minStack"> The minimum item stack. </param>
+		/// <param name="maxStack"> The maximum item stack. </param>
 		/// <param name="chance"> The chance for the item to generate. </param>
-		public ChestInfo(int[] items, int stack = 1, float chance = 1)
+		/// <param name="items"> The selection of item types to add to the chest pool. </param>
+		public ChestInfo(int minStack = 1, int maxStack = 1, float chance = 1, params int[] items)
 		{
-			this.items = items;
-			this.stack = stack;
+			itemTypes = items;
+			_minStack = minStack;
+			_maxstack = maxStack;
 			this.chance = chance;
 		}
 
-		public object items;
-		public int stack;
+		public int[] itemTypes;
 		public float chance;
 
+		private readonly int _minStack;
+		private readonly int _maxstack;
+
+		public readonly int Stack => WorldGen.genRand.Next(_minStack, _maxstack);
 		public readonly List<ChestInfo> ToList() => [this];
 	}
 
@@ -39,17 +44,8 @@ public static class ChestPoolUtils
 	{
 		foreach (ChestInfo chestInfo in list)
 		{
-			switch (chestInfo.items)
-			{
-				case int[] itemPool:
-					chest.item[itemIndex].SetDefaults(itemPool[Main.rand.Next(itemPool.Length)]);
-					break;
-				case int intItem:
-					chest.item[itemIndex].SetDefaults((int)chestInfo.items);
-					break;
-			}
-
-			chest.item[itemIndex].stack = chestInfo.stack;
+			chest.item[itemIndex].SetDefaults(chestInfo.itemTypes[Main.rand.Next(chestInfo.itemTypes.Length)]);
+			chest.item[itemIndex].stack = chestInfo.Stack;
 			chest.item[itemIndex].Prefix(-1);
 
 			itemIndex++;
@@ -68,7 +64,7 @@ public static class ChestPoolUtils
 
 		foreach (ChestInfo c in list)
 		{ //prune the list based on the chances of items being added and stacks
-			if (Main.rand.NextFloat() >= c.chance || c.stack == 0)
+			if (Main.rand.NextFloat() >= c.chance || c.Stack == 0)
 				continue; //skip
 
 			newList.Add(c);
@@ -88,7 +84,7 @@ public static class ChestPoolUtils
 	{
 		int itemIndex = 0;
 
-		int[] importantItemPool = (int[])list.ElementAt(0).items;
+		int[] importantItemPool = (int[])list.ElementAt(0).itemTypes;
 		int itemToPlace = 0;
 		bool canPlace = false;
 		while (!canPlace)
@@ -125,7 +121,7 @@ public static class ChestPoolUtils
 
 	public static void AddToModdedChestWithOverlapCheck(List<ChestInfo> list, int chestType)
 	{
-		int[] items = (int[])list.ElementAt(0).items;
+		int[] items = (int[])list.ElementAt(0).itemTypes;
 		bool[] placedItems = new bool[items.Length];
 
 		for (int chestIndex = 0; chestIndex < Main.chest.Length; chestIndex++)

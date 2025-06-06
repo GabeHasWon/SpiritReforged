@@ -1893,15 +1893,19 @@ JinxBow: {
 
 Flarepowder: {
 	DisplayName: Flarepowder
-	Tooltip: ""
+	Tooltip: Releases a spread of drifting magic powder
 }
 
 VexpowderBlue: {
-	DisplayName: Vexpowder Blue
-	Tooltip: ""
+	DisplayName: Vexpowder
+	Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		'''
 }
 
 VexpowderRed: {
-	DisplayName: Vexpowder Red
-	Tooltip: ""
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }

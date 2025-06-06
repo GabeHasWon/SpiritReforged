@@ -1,11 +1,13 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Ocean.Hydrothermal;
 using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.MagicPowder;
@@ -15,9 +17,11 @@ public class Flarepowder : ModItem
 	private static readonly Asset<Texture2D> HeldTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld"));
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
+	public bool IsDerived => GetType() != typeof(Flarepowder);
+
 	public override void Load()
 	{
-		if (GetType() == typeof(Flarepowder)) //Prevent derived types from detouring
+		if (!IsDerived) //Prevent derived types from detouring
 		{
 			On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
 		}
@@ -26,10 +30,10 @@ public class Flarepowder : ModItem
 	private static void DrawHeldItem(On_PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
 	{
 		int heldType = drawinfo.drawPlayer.HeldItem.type;
-		if (PowderTypes.ContainsKey(heldType))
+		if (PowderTypes.TryGetValue(heldType, out int value))
 		{
 			var texture = HeldTexture.Value;
-			var source = texture.Frame(1, 3, 0, PowderTypes[heldType], 0, -2);
+			var source = texture.Frame(1, 3, 0, value, 0, -2);
 
 			Vector2 origin = source.Size() / 2;
 			Vector2 dirOffset = drawinfo.drawPlayer.ItemAnimationActive ? new(11, -2) : new(13, 0);
@@ -57,17 +61,23 @@ public class Flarepowder : ModItem
 		};
 
 		PowderTypes.Add(Type, frame);
+		
+		if (!IsDerived)
+		{
+			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
+		}
 	}
 
 	public override void SetDefaults()
 	{
-		Item.damage = 10;
+		Item.damage = 14;
 		Item.DamageType = DamageClass.Magic;
 		Item.width = Item.height = 14;
 		Item.useTime = Item.useAnimation = 20;
 		Item.maxStack = Item.CommonMaxStack;
 		Item.useStyle = ItemUseStyleID.HoldUp;
 		Item.holdStyle = ItemHoldStyleID.HoldFront;
+		Item.UseSound = SoundID.Item1;
 		Item.useTurn = true;
 		Item.autoReuse = true;
 		Item.consumable = true;
@@ -88,7 +98,7 @@ public class Flarepowder : ModItem
 	{
 		for (int i = 0; i < 8; i++)
 		{
-			var vel = (velocity * Main.rand.NextFloat(0.1f, 1f)).RotatedByRandom(1f);
+			var vel = (velocity * Main.rand.NextFloat(0.1f, 1f)).RotatedByRandom(0.8f);
 			Projectile.NewProjectile(source, position, vel, type, damage, knockback, player.whoAmI);
 		}
 
@@ -96,19 +106,21 @@ public class Flarepowder : ModItem
 	}
 }
 
-internal class FlarepowderDust : ModProjectile, ITrailProjectile
+internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 {
 	public const int TimeLeftMax = 60 * 3;
 
 	/// <summary> Must have 3 elements. </summary>
-	public virtual Color[] Colors => [Color.Orange, Color.LightCoral, Color.Goldenrod];
+	public virtual Color[] Colors => [Color.LightCoral, Color.Orange, Color.Goldenrod];
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
 
 	public void DoTrailCreation(TrailManager tm)
 	{
-		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[1].Additive()), new RoundCap(), new DefaultTrailPosition(), 10, 20);
-		tm.CreateTrail(Projectile, new LightColorTrail(new Color(87, 35, 88) * 0.6f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 15, 50);
-		tm.CreateTrail(Projectile, new StandardColorTrail(Color.White.Additive()), new RoundCap(), new DefaultTrailPosition(), 5, 10);
+		float scale = Projectile.scale;
+
+		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[1].Additive()), new RoundCap(), new DefaultTrailPosition(), 10 * scale, 20 * scale);
+		tm.CreateTrail(Projectile, new LightColorTrail(new Color(87, 35, 88) * 0.6f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 15 * scale, 50 * scale);
+		tm.CreateTrail(Projectile, new StandardColorTrail(Color.White.Additive()), new RoundCap(), new DefaultTrailPosition(), 5 * scale, 10 * scale);
 	}
 
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
@@ -135,8 +147,8 @@ internal class FlarepowderDust : ModProjectile, ITrailProjectile
 				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
 				var color = Color.Lerp(Colors[0], Colors[1], mag) * 3;
 
-				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, color, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
-				ParticleHandler.SpawnParticle(new DissipatingSmoke(Projectile.Center, velocity * 0.8f, Color.White, color, Main.rand.NextFloat(0.05f, 0.1f), Main.rand.Next(20, 50)));
+				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[0], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, color, Main.rand.NextFloat(0.05f, 0.1f), Common.Easing.EaseBuilder.EaseCircularInOut, Main.rand.Next(20, 60)));
 			}
 
 			if (Projectile.owner == Main.myPlayer)
@@ -144,10 +156,12 @@ internal class FlarepowderDust : ModProjectile, ITrailProjectile
 				const float range = 0.01f;
 
 				Projectile.ai[0] = Main.rand.NextFloat(-range, range);
-				Projectile.timeLeft = (int)(Projectile.timeLeft * Main.rand.NextFloat(0.2f, 1f));
+				Projectile.timeLeft = (int)(Projectile.timeLeft * Main.rand.NextFloat(0.6f, 1f));
 
 				Projectile.netUpdate = true;
 			}
+
+			TrailManager.ManualTrailSpawn(Projectile);
 		}
 
 		if (Projectile.velocity.Length() > 1.25f && Main.rand.NextBool(5))
@@ -165,15 +179,20 @@ internal class FlarepowderDust : ModProjectile, ITrailProjectile
 	public override void OnKill(int timeLeft)
 	{
 		const int explosion = 80;
+		float angle = Main.rand.NextFloat(MathHelper.Pi);
 
 		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[1] * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
+		circle.Angle = angle;
 		ParticleHandler.SpawnParticle(circle);
 
 		var circle2 = new TexturedPulseCircle(Projectile.Center, (Color.White * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
+		circle2.Angle = angle;
 		ParticleHandler.SpawnParticle(circle2);
 
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();
+
+		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), MaxInstances = 3 }, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -195,4 +214,7 @@ internal class FlarepowderDust : ModProjectile, ITrailProjectile
 
 	public override bool? CanCutTiles() => false;
 	public override bool? CanDamage() => (Projectile.timeLeft <= 1) ? null : false;
+
+	public override void SendExtraAI(BinaryWriter writer) => writer.Write((ushort)Projectile.timeLeft);
+	public override void ReceiveExtraAI(BinaryReader reader) => Projectile.timeLeft = reader.ReadInt16();
 }
