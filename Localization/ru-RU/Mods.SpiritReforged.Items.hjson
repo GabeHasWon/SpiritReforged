@@ -1896,12 +1896,6 @@ JinxBow: {
 ExplosiveRum: {
 	// DisplayName: Explosive Rum
 	// Tooltip: "'Oh, there it is!'"
-	// DisplayName: Jinxbow
-	/* Tooltip:
-		'''
-		Fires arrows at enemies without consuming ammo and occasionally marks them
-		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
-		''' */
 }
 
 Flarepowder: {
