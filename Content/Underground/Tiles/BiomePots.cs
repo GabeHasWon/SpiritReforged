@@ -40,8 +40,18 @@ public class BiomePots : PotTile, ILootTile
 
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
-		var record = new TileRecord(group.name, type, group.styles);
-		RecordHandler.Records.Add(record.AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Biome")));
+		var record = new TileRecord(group.name, type, group.styles).AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Biome"));
+
+		if (group.name == "BiomePotsCrimson")
+		{
+			record.Hide(() => !WorldGen.crimson); //Conditionally hide some entries
+		}
+		else if (group.name == "BiomePotsCorruption")
+		{
+			record.Hide(() => WorldGen.crimson);
+		}
+
+		RecordHandler.Records.Add(record);
 	}
 
 	public override Dictionary<string, int[]> TileStyles => new()
@@ -212,7 +222,7 @@ public class BiomePots : PotTile, ILootTile
 		{
 			#region loot
 			var p = Main.player[Player.FindClosest(center, 0, 0)];
-			AddLoot(TileObjectData.GetTileStyle(Main.tile[i, j])).Resolve(new Rectangle((int)center.X - 16, (int)center.Y - 16, 32, 32), p);
+			LootTable.Resolve(i, j, Type, frameX, frameY);
 
 			ItemMethods.SplitCoins((int)(CalculateCoinValue() * GetValue(style)), delegate (int type, int stack)
 			{
@@ -359,9 +369,8 @@ public class BiomePots : PotTile, ILootTile
 		Vector2 GetRandom(float distance = 15f) => center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(distance);
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		var loot = new LootTable();
 		var style = GetStyle(objectStyle / 3 * 36);
 
 		if (style is Style.Dungeon)
@@ -426,7 +435,6 @@ public class BiomePots : PotTile, ILootTile
 		branch.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 1, 3));
 
 		loot.Add(new OneFromRulesRule(1, [.. branch]));
-		return loot;
 
 		int ArrowType()
 		{

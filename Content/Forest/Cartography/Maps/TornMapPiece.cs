@@ -4,7 +4,7 @@ using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
-namespace SpiritReforged.Content.Forest.Misc.Maps;
+namespace SpiritReforged.Content.Forest.Cartography.Maps;
 
 [FromClassic("MapScroll")]
 public class TornMapPiece : ModItem

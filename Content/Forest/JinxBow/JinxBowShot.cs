@@ -27,7 +27,7 @@ public class JinxBowShot : GlobalProjectile
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		//Initialize old positions to projectile's center on spawn
-		if(IsJinxbowShot)
+		if (IsJinxbowShot)
 			for (int i = 0; i < _oldPositions.Length; i++)
 				_oldPositions[i] = projectile.Center;
 

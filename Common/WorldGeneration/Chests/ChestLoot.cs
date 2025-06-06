@@ -2,9 +2,7 @@
 using SpiritReforged.Content.Forest.ArcaneNecklace;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Forest.Misc;
-using SpiritReforged.Content.Forest.Misc.Maps;
 using SpiritReforged.Content.Forest.RoguesCrest;
-using SpiritReforged.Content.Jungle.Misc;
 using SpiritReforged.Content.Jungle.Misc.DyeCrate;
 using SpiritReforged.Content.Jungle.Toucane;
 using SpiritReforged.Content.Ocean.Items.PoolNoodle;
@@ -15,6 +13,7 @@ using SpiritReforged.Content.Underground.Items.ExplorerTreads;
 using SpiritReforged.Content.Underground.Items.Zipline;
 using SpiritReforged.Content.Forest.MagicPowder;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
