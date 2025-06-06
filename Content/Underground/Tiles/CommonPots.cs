@@ -1,5 +1,4 @@
 using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
@@ -71,5 +70,5 @@ public class CommonPots : PotTile, ILootTile
 		return true;
 	}
 
-	public LootTable AddLoot(int objectStyle) => ModContent.GetInstance<Pots>().AddLoot(objectStyle);
+	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
 }

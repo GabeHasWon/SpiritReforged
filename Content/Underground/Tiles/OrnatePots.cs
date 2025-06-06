@@ -63,9 +63,6 @@ public class OrnatePots : PotTile, ILootTile
 			{
 				Item.NewItem(new EntitySource_TileBreak(i, j), spawn, new Item(type, stack), noGrabDelay: true);
 			});
-
-			var p = Main.player[Player.FindClosest(spawn, 0, 0)];
-			AddLoot(TileObjectData.GetTileStyle(Main.tile[i, j])).Resolve(new Rectangle((int)spawn.X - 16, (int)spawn.Y - 16, 32, 32), p);
 		}
 
 		base.KillMultiTile(i, j, frameX, frameY);
@@ -83,13 +80,10 @@ public class OrnatePots : PotTile, ILootTile
 		}
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		var loot = new LootTable();
 		loot.Add(ItemDropRule.Common(ItemID.LuckPotion, 2, 1, 2));
 		loot.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 1, 3));
-
-		return loot;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

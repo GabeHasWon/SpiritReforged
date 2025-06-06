@@ -1792,6 +1792,11 @@ SavannaSandstormOtherworldMusicBoxItem: {
 	Tooltip: ""
 }
 
+SavannaTorchItem: {
+	// DisplayName: Savanna Torch
+	// Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact
