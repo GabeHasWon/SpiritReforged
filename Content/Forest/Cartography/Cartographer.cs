@@ -86,9 +86,9 @@ public class Cartographer : WorldNPC, ITravelNPC
 
 		InterestType type;
 
-		do 
+		do
 			type = (InterestType)Main.rand.Next((int)InterestType.Count);
-while (!PointOfInterestSystem.HasInterestType(type));
+			while (!PointOfInterestSystem.HasInterestType(type));
 
 		var item = new Item(GetPinType(type));
 		string pinName = item.ModItem.Name;
@@ -143,15 +143,16 @@ while (!PointOfInterestSystem.HasInterestType(type));
 			return;
 
 		if (NPC.life <= 0)
+		{
 			for (int i = 1; i < 7; i++)
 			{
 				int goreType = Mod.Find<ModGore>(nameof(Cartographer) + i).Type;
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity, goreType);
 			}
+		}
 
 		for (int d = 0; d < 8; d++)
-			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood,
-				Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
+			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
