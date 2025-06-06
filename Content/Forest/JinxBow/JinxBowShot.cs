@@ -35,15 +35,18 @@ public class JinxBowShot : GlobalProjectile
 		//Additionally applies to projectiles spawned from projectiles spawned by arrows, like holy arrow stars recursively spawning
 		if (source is EntitySource_Parent { Entity: Projectile parent })
 		{
-			if(IsJinxbowShot)
+			if (IsJinxbowShot)
 				ParentProjID = parent.whoAmI;
 
-			if (parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowShot || parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowSubshot)
+			if (parent.TryGetGlobalProjectile(out JinxBowShot jinx))
 			{
-				projectile.DamageType = DamageClass.Summon;
-				IsJinxbowSubshot = true;
-				projectile.netUpdate = true;
-				projectile.minion = true;
+				if (jinx.IsJinxbowShot || jinx.IsJinxbowSubshot)
+				{
+					projectile.DamageType = DamageClass.Summon;
+					IsJinxbowSubshot = true;
+					projectile.netUpdate = true;
+					projectile.minion = true;
+				}
 			}
 		}
 	}
