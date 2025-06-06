@@ -1769,6 +1769,26 @@ ZenithPotsPaleItem: {
 	Tooltip: ""
 }
 
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, день)
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, ночь)
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: Потусторонняя музыкальная шкатулка (Пыльная буря)
+	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	// DisplayName: Savanna Torch
+	// Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact
@@ -1812,26 +1832,6 @@ Drypowder: {
 ElephantKite: {
 	// DisplayName: Elephant Kite
 	// Tooltip: "{$CommonItemTooltip.Kite}"
-}
-
-OtherworldSavannaMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, день)
-	Tooltip: ""
-}
-
-OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, ночь)
-	Tooltip: ""
-}
-
-SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (Пыльная буря)
-	Tooltip: ""
-}
-
-SavannaTorchItem: {
-	// DisplayName: Savanna Torch
-	// Tooltip: ""
 }
 
 CartographyTableItem: {
@@ -1885,6 +1885,15 @@ TopazBonsaiItem: {
 }
 
 JinxBow: {
-	// DisplayName: Jinx Bow
-	// Tooltip: ""
+	// DisplayName: Jinxbow
+	/* Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
 }

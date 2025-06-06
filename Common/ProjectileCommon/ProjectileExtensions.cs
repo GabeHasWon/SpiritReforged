@@ -118,5 +118,14 @@ internal static class ProjectileExtensions
 		}
 	}
 
+	public static void UpdateFrame(this Projectile projectile, byte ticksPerFrame)
+	{
+		if (++projectile.frameCounter >= ticksPerFrame)
+		{
+			projectile.frameCounter = 0;
+			projectile.frame = ++projectile.frame % Main.projFrames[projectile.type];
+		}
+	}
+
 	public static bool BelongsToPlayer(this Projectile p) => !(p.npcProj || p.owner == 255 || p.trap);
 }
