@@ -27,7 +27,7 @@ public class JinxBowShot : GlobalProjectile
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		//Initialize old positions to projectile's center on spawn
-		if(IsJinxbowShot)
+		if (IsJinxbowShot)
 			for (int i = 0; i < _oldPositions.Length; i++)
 				_oldPositions[i] = projectile.Center;
 
@@ -35,15 +35,18 @@ public class JinxBowShot : GlobalProjectile
 		//Additionally applies to projectiles spawned from projectiles spawned by arrows, like holy arrow stars recursively spawning
 		if (source is EntitySource_Parent { Entity: Projectile parent })
 		{
-			if(IsJinxbowShot)
+			if (IsJinxbowShot)
 				ParentProjID = parent.whoAmI;
 
-			if (parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowShot || parent.GetGlobalProjectile<JinxBowShot>().IsJinxbowSubshot)
+			if (parent.TryGetGlobalProjectile(out JinxBowShot jinx))
 			{
-				projectile.DamageType = DamageClass.Summon;
-				IsJinxbowSubshot = true;
-				projectile.netUpdate = true;
-				projectile.minion = true;
+				if (jinx.IsJinxbowShot || jinx.IsJinxbowSubshot)
+				{
+					projectile.DamageType = DamageClass.Summon;
+					IsJinxbowSubshot = true;
+					projectile.netUpdate = true;
+					projectile.minion = true;
+				}
 			}
 		}
 	}

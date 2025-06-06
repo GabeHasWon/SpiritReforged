@@ -1842,21 +1842,6 @@ ElephantKite: {
 	Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
-OtherworldSavannaMusicBoxItem: {
-	DisplayName: Otherworldly Music Box (Savanna Day)
-	Tooltip: ""
-}
-
-OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Otherworldly Music Box (Savanna Night)
-	Tooltip: ""
-}
-
-SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Otherworldly Music Box (Duststorm)
-	Tooltip: ""
-}
-
 CartographyTableItem: {
 	DisplayName: Cartography Table
 	Tooltip: Allows you to share your map with other players
@@ -1914,4 +1899,9 @@ JinxBow: {
 		Fires arrows at enemies without consuming ammo and occasionally marks them
 		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		'''
+}
+
+ExplosiveRum: {
+	DisplayName: Explosive Rum
+	Tooltip: "'Oh, there it is!'"
 }

@@ -1842,21 +1842,6 @@ ElephantKite: {
 	// Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
-OtherworldSavannaMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 昼）
-	Tooltip: ""
-}
-
-OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 夜）
-	Tooltip: ""
-}
-
-SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（沙尘暴）
-	Tooltip: ""
-}
-
 CartographyTableItem: {
 	// DisplayName: Cartography Table
 	// Tooltip: Allows you to share your map with other players
@@ -1908,6 +1893,15 @@ TopazBonsaiItem: {
 }
 
 JinxBow: {
-	// DisplayName: Jinx Bow
-	// Tooltip: ""
+	// DisplayName: Jinxbow
+	/* Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
 }
