@@ -6,8 +6,7 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class MagicParticle : Particle
 {
-	private const float FADETIME = 0.3f;
-	private int _frame;
+	private readonly int _frame;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 	public override ParticleLayer DrawLayer => ParticleLayer.BelowProjectile;

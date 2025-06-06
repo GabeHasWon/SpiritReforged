@@ -43,7 +43,7 @@ public class Flarepowder : ModItem
 			Color color = drawinfo.drawPlayer.HeldItem.GetAlpha(Lighting.GetColor((drawinfo.ItemLocation / 16).ToPoint()));
 
 			drawinfo.DrawDataCache.Add(new DrawData(texture, location, source, color, drawinfo.drawPlayer.itemRotation, origin, 1, drawinfo.itemEffect));
-			return;
+			return; //Skips orig
 		}
 
 		orig(ref drawinfo);
@@ -165,9 +165,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		}
 
 		if (Projectile.velocity.Length() > 1.25f && Main.rand.NextBool(5))
-		{
-			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f), DustID.Torch, Projectile.velocity * 0.5f).noGravity = true;
-		}
+			SpawnDust(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f));
 
 		Projectile.velocity *= 0.98f;
 		Projectile.velocity = Projectile.velocity.RotatedBy(Projectile.ai[0]);
@@ -175,6 +173,8 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 		Projectile.UpdateFrame(10);
 	}
+
+	public virtual void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.Torch, Projectile.velocity * 0.5f).noGravity = !Main.rand.NextBool(8);
 
 	public override void OnKill(int timeLeft)
 	{
