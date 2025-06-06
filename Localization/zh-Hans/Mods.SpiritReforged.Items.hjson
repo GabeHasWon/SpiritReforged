@@ -1837,6 +1837,26 @@ ElephantKite: {
 	// Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（沙尘暴）
+	Tooltip: ""
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table
+	// Tooltip: Allows you to share your map with other players
+}
+
 PurityBonsaiItem: {
 	// DisplayName: Willow Bonsai
 	// Tooltip: ""

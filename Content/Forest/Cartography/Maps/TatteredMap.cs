@@ -1,6 +1,6 @@
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc.Maps;
+namespace SpiritReforged.Content.Forest.Cartography.Maps;
 
 public class TatteredMap : ModItem
 {
