@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Forest.Cartography;
 
 public class MappingSystem : ModSystem
 {
+	/// <summary> Used to record whether a change has actually occured on the server map. </summary>
 	public static bool MapUpdated { get; private set; }
 	[WorldBound(Manual = true)]
 	internal static WorldMap RecordedMap;
@@ -18,6 +19,11 @@ public class MappingSystem : ModSystem
 		while (SyncMapData.Queue.Count > 0)
 		{
 			new SyncMapData().Send();
+		}
+
+		if (!MapUpdated) //Specify that the player only shared their map and didn't update
+		{
+			Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.ShareMap"), new Color(255, 240, 20));
 		}
 
 		new NotifyMapData().Send();
@@ -56,7 +62,7 @@ public class MappingSystem : ModSystem
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
 			ushort count = reader.ReadUInt16();
-			bool final = count < CountLimit; //Whether a client is requesting map data from the server
+			bool final = count < CountLimit;
 
 			for (int i = 0; i < count; i++)
 			{
@@ -79,18 +85,23 @@ public class MappingSystem : ModSystem
 				else
 				{
 					Main.Map.SetTile(x, y, ref t);
-
-					if (final)
-						Main.refreshMap = true;
 				}
 			}
 
-			if (final && Main.netMode == NetmodeID.Server)
+			if (final)
 			{
-				EnqueueMap(RecordedMap);
-				while (Queue.Count > 0)
+				if (MapUpdated && Main.netMode == NetmodeID.Server)
 				{
-					new SyncMapData().Send(toClient: whoAmI); //Relay back to the initiator
+					EnqueueMap(RecordedMap);
+					while (Queue.Count > 0)
+					{
+						new SyncMapData().Send(toClient: whoAmI); //Relay back to the initiator
+					}
+				}
+				else if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					Main.refreshMap = true;
+					Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.ShareAndUpdateMap"), new Color(255, 240, 20));
 				}
 			}
 		}
@@ -121,7 +132,7 @@ public class MappingSystem : ModSystem
 		}
 	}
 
-	/// <summary> Notifies all clients whether map data was updated on the server. </summary>
+	/// <summary> Notifies everybody of updated map data on the server. </summary>
 	internal class NotifyMapData : PacketData
 	{
 		public NotifyMapData() { }
@@ -130,8 +141,8 @@ public class MappingSystem : ModSystem
 		{
 			if (Main.netMode == NetmodeID.Server)
 				new NotifyMapData().Send(ignoreClient: whoAmI);
-			else
-				MapUpdated = true;
+
+			MapUpdated = true;
 		}
 
 		public override void OnSend(ModPacket modPacket) { }

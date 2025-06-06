@@ -33,8 +33,6 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 			return false;
 
 		MappingSystem.SetMap();
-		Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UpdateMap"), new Color(255, 240, 20));
-
 		return true;
 	}
 

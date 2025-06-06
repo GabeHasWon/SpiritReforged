@@ -24,7 +24,8 @@ Misc: {
 	NoStock: Нет в наличии
 	GraveText: <wavy>Старая, выцветшая надпись... Что здесь было написано?
 	MenuButton: Использовать стиль меню
-	// UpdateMap: Map has been updated.
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {
