@@ -1905,3 +1905,22 @@ ExplosiveRum: {
 	DisplayName: Explosive Rum
 	Tooltip: "'Oh, there it is!'"
 }
+
+Flarepowder: {
+	DisplayName: Flarepowder
+	Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	DisplayName: Vexpowder
+	Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		'''
+}
+
+VexpowderRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
