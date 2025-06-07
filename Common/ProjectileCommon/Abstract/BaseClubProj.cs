@@ -10,14 +10,6 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 {
-	/// <summary>
-	/// Various parameters for clubs. All of these default to true.
-	/// </summary>
-	/// <param name="PlayFullChargeSound">Whether the little magic SFX sound is played at full charge or not.</param>
-	/// <param name="HasSmash">If the club should smash into tiles at all.</param>
-	/// <param name="HasChargeFlash">If the club should flash white to signify a full charge or not.</param>
-	public record struct ClubParameters(bool PlayFullChargeSound = true, bool HasSmash = true, bool HasChargeFlash = true);
-
 	internal const int MAX_FLICKERTIME = 20;
 
 	internal readonly Vector2 Size = textureSize;
@@ -41,7 +33,6 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	protected int _swingTimer;
 	protected int _windupTimer;
 	protected int _flickerTime;
-	protected ClubParameters _parameters = new();
 
 	private bool _hasFlickered = false;
 
@@ -156,7 +147,10 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		SafeAI();
 
 		if (Owner.dead)
+		{
 			Projectile.Kill();
+			return;
+		}
 
 		Owner.heldProj = Projectile.whoAmI;
 		Owner.direction = Math.Sign(Projectile.direction);
@@ -164,7 +158,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		if (AllowUseTurn && Projectile.owner == Main.myPlayer)
 		{
 			int newDir = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
-			Projectile.velocity.X = newDir == 0 ? Owner.direction : newDir;
+			Projectile.velocity.X = (newDir == 0) ? Owner.direction : newDir;
 
 			if (newDir != Owner.direction)
 				Projectile.netUpdate = true;
@@ -225,7 +219,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 			SafeDraw(Main.spriteBatch, texture, lightColor, handPos, drawPos);
 
 			//Flash when fully charged
-			if (CheckAIState(AIStates.CHARGING) && _flickerTime > 0 && _parameters.HasChargeFlash)
+			if (CheckAIState(AIStates.CHARGING) && _flickerTime > 0)
 			{
 				Texture2D flash = TextureColorCache.ColorSolid(texture, Color.White);
 				float alpha = EaseQuadIn.Ease(EaseSine.Ease(_flickerTime / (float)MAX_FLICKERTIME));

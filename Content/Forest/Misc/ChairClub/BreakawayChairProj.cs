@@ -10,20 +10,15 @@ namespace SpiritReforged.Content.Forest.Misc.ChairClub;
 
 class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 {
-	public BreakawayChairProj() : base(new Vector2(24)) 
-	{	
-	}
+	public BreakawayChairProj() : base(new Vector2(24)) { }
 
+	internal override bool ChargeIndication => false;
 	public override float WindupTimeRatio => 0.8f;
 
 	public override void SafeSetDefaults()
 	{
 		Projectile.penetrate = 1;
 		Projectile.hostile = true;
-
-		_parameters.PlayFullChargeSound = false;
-		_parameters.HasSmash = false;
-		_parameters.HasChargeFlash = false;
 	}
 
 	public void DoTrailCreation(TrailManager tM)
@@ -53,6 +48,9 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 	}
 
 	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
+
+	public override bool CanHitPlayer(Player target) => target.whoAmI != Projectile.owner;
+	internal override bool CanCollide(float progress) => false;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
@@ -86,14 +84,11 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
 
 		Projectile.Kill();
+		Main.player[Projectile.owner].HeldItem.stack--; //"Break" a stack of the chair
 
 		SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 
-		// "Break" a stack of the chair
-		Player owner = Main.player[Projectile.owner];
-		owner.HeldItem.stack--;
-
 		for (int i = 0; i < 3; ++i)
-			Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity, ModContent.Find<ModGore>("SpiritReforged/BreakawayChair" + i).Type);
+			Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>("BreakawayChair" + i).Type);
 	}
 }

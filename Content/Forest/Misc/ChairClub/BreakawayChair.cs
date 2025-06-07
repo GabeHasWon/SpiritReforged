@@ -8,6 +8,8 @@ public class BreakawayChair : ClubItem
 	{
 		Item.damage = 5;
 		Item.knockBack = 5;
+		ChargeTime = 20;
+		SwingTime = 24;
 		Item.width = 60;
 		Item.height = 60;
 		Item.crit = 4;
@@ -15,9 +17,6 @@ public class BreakawayChair : ClubItem
 		Item.rare = ItemRarityID.White;
 		Item.shoot = ModContent.ProjectileType<BreakawayChairProj>();
 		Item.maxStack = Item.CommonMaxStack;
-
-		SwingTime = 24;
-		ChargeTime = 20;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 4).AddTile(TileID.WorkBenches).Register();

@@ -1927,5 +1927,5 @@ VexpowderRed: {
 
 BreakawayChair: {
 	// DisplayName: Breakaway Chair
-	// Tooltip: ""
+	// Tooltip: Breaks on impact
 }
