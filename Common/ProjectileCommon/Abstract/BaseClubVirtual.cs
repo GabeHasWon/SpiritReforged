@@ -78,7 +78,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			ChargeComplete(owner);
 
-			if (!Main.dedServ)
+			if (!Main.dedServ && _parameters.PlayFullChargeSound)
 				SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
 
 			_flickerTime = MAX_FLICKERTIME;
@@ -107,10 +107,11 @@ public abstract partial class BaseClubProj : ModProjectile
 		BaseRotation = SwingingRotationInterpolate(swingProgress);
 
 		//If the club is touching a tile and isn't currently meant to phase through tiles, do the smash
-		if (validTile && CanCollide(swingProgress))
+		if (validTile && CanCollide(swingProgress) && _parameters.HasSmash)
 		{
 			SetAIState(AIStates.POST_SMASH);
 			OnSmash(Projectile.Center);
+
 			if (!Main.dedServ)
 			{
 				float volume = Clamp(EaseQuadOut.Ease(Charge), 0.66f, 1f);

@@ -10,6 +10,14 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 {
+	/// <summary>
+	/// Various parameters for clubs. All of these default to true.
+	/// </summary>
+	/// <param name="PlayFullChargeSound">Whether the little magic SFX sound is played at full charge or not.</param>
+	/// <param name="HasSmash">If the club should smash into tiles at all.</param>
+	/// <param name="HasChargeFlash">If the club should flash white to signify a full charge or not.</param>
+	public record struct ClubParameters(bool PlayFullChargeSound = true, bool HasSmash = true, bool HasChargeFlash = true);
+
 	internal const int MAX_FLICKERTIME = 20;
 
 	internal readonly Vector2 Size = textureSize;
@@ -33,12 +41,14 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	protected int _swingTimer;
 	protected int _windupTimer;
 	protected int _flickerTime;
+	protected ClubParameters _parameters = new();
 
 	private bool _hasFlickered = false;
 
 	/// <summary><inheritdoc cref="ModProjectile.DisplayName"/><para/>
 	/// Automatically attempts to use the associated item localization. </summary>
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items." + Name.Replace("Proj", string.Empty) + ".DisplayName");
+
 	/// <summary><inheritdoc cref="ModProjectile.Texture"/><para/>
 	/// Automatically attempts to use the associated item texture. </summary>
 	public override string Texture
@@ -215,7 +225,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 			SafeDraw(Main.spriteBatch, texture, lightColor, handPos, drawPos);
 
 			//Flash when fully charged
-			if (CheckAIState(AIStates.CHARGING) && _flickerTime > 0)
+			if (CheckAIState(AIStates.CHARGING) && _flickerTime > 0 && _parameters.HasChargeFlash)
 			{
 				Texture2D flash = TextureColorCache.ColorSolid(texture, Color.White);
 				float alpha = EaseQuadIn.Ease(EaseSine.Ease(_flickerTime / (float)MAX_FLICKERTIME));

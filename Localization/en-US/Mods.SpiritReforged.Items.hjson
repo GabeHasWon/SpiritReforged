@@ -1905,3 +1905,8 @@ ExplosiveRum: {
 	DisplayName: Explosive Rum
 	Tooltip: "'Oh, there it is!'"
 }
+
+BreakawayChair: {
+	DisplayName: Breakaway Chair
+	Tooltip: Breaks on impact
+}
