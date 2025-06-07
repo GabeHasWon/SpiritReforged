@@ -1924,3 +1924,8 @@ VexpowderRed: {
 	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }
+
+BreakawayChair: {
+	DisplayName: Breakaway Chair
+	Tooltip: Breaks on impact
+}

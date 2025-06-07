@@ -75,14 +75,14 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 
 	public override void AfterCollision()
 	{
-		if(_numSlams < MAX_SLAMS && FullCharge)
+		if (_numSlams < MAX_SLAMS && FullCharge)
 		{
 			_lingerTimer--;
 			float lingerProgress = _lingerTimer / (float)LingerTime;
 			lingerProgress = 1 - lingerProgress;
 			BaseRotation = Lerp(BaseRotation, HoldAngle_Final, EaseCubicOut.Ease(lingerProgress) / 6f);
 
-			if(lingerProgress >= 0.66f)
+			if (lingerProgress >= 0.66f)
 			{
 				SetAIState(AIStates.SWINGING);
 				ResetData();
@@ -106,7 +106,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		DustClouds(6);
 
 		//placeholder water dust
-		for(int i = 0; i < 10; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			float maxOffset = 35 * TotalScale;
 			float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
@@ -117,8 +117,8 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 
 			ParticleHandler.SpawnParticle(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
 
-			for(int j = 0; j < 2; j++)
-				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale : Main.rand.NextFloat(2));
+			for (int j = 0; j < 2; j++)
+				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale: Main.rand.NextFloat(2));
 		}
 
 		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 220, PiOver2, 0.4f);
