@@ -24,6 +24,8 @@ Misc: {
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {

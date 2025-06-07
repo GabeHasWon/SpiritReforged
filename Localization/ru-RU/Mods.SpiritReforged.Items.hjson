@@ -24,7 +24,7 @@ PirateKey: {
 
 RawFish: {
 	DisplayName: Сырая рыба
-	Tooltip: "'Можно съесть... но лучше приготовить!'"
+	Tooltip: "'Можно съесть и так... но лучше приготовить!'"
 }
 
 SunkenTreasure: {
@@ -450,10 +450,10 @@ ButterflyStaff: {
 }
 
 PoolNoodle: {
-	DisplayName: Аквахлыст
+	DisplayName: Нудл-хлыст
 	Tooltip:
 		'''
-		3 урона метки призыва
+		Увеличивает урон призываемых существ на 3
 		{$CommonItemTooltip.Whips}
 		Попавшие под удар враги могут взрываться пузырями
 		'''
@@ -465,7 +465,7 @@ ToucaneItem: {
 }
 
 QuenchPotion: {
-	DisplayName: Зелье жажды
+	DisplayName: Зелье утоления жажды
 	Tooltip: Эффекты других зелий длятся на 25% дольше
 }
 
@@ -490,7 +490,7 @@ LivingBaobabWand: {
 }
 
 WrithingSticks: {
-	DisplayName: Шевелящиеся палки
+	DisplayName: Шевелящиеся ветки
 	Tooltip: Призывают дружелюбный перекати-поле, который следует за вами
 }
 
@@ -893,7 +893,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: Музыкальная шкатулка (Песчаная буря)
+	DisplayName: Музыкальная шкатулка (Пыльная буря)
 }
 
 FishLure: {
@@ -1381,12 +1381,12 @@ SandBombSticky: {
 }
 
 CoarseBomb: {
-	DisplayName: Бомба с саванновой землёй
+	DisplayName: Бомба с саванной землёй
 	Tooltip: Небольшой взрыв, распространяющий саваннскую землю
 }
 
 CoarseBombSticky: {
-	DisplayName: Липкая бомба с саванновой землёй
+	DisplayName: Липкая бомба с саванной землёй
 	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
@@ -1445,7 +1445,7 @@ BiomePotsDungeonItem: {
 }
 
 BiomePotsCorruptionItem: {
-	DisplayName: Искаженный горшочек
+	DisplayName: Искажённый горшочек
 	Tooltip: ""
 }
 
@@ -1495,7 +1495,7 @@ PotsHellItem: {
 }
 
 PotsCorruptionItem: {
-	DisplayName: Маленький искаженный горшочек
+	DisplayName: Маленький искажённый горшочек
 	Tooltip: ""
 }
 
@@ -1566,7 +1566,7 @@ PotionVatsCloningItem: {
 
 SilverFoodPlatterItem: {
 	DisplayName: Серебряное блюдо с едой
-	Tooltip: ПКМ — чтобы поместить предмет на блюдо
+	Tooltip: ПКМ, чтобы поместить предмет на блюдо
 }
 
 RadonMossItem: {
@@ -1720,13 +1720,13 @@ FrostGiantBelt: {
 	DisplayName: Пояс ледяного великана
 	Tooltip:
 		'''
-		50% сопротивление отдаче при зарядке дубины
-		Во время зарядки дубины постепенно повышается защита
+		50% сопротивление отбрасыванию при зарядке дубины
+		Во время зарядки дубины постепенно повышает защиту
 		'''
 }
 
 Macuahuitl: {
-	DisplayName: Макауитль
+	DisplayName: Макуауитль
 	Tooltip:
 		'''
 		Быстро вращается вокруг игрока, вызывая кровотечение
@@ -1775,18 +1775,23 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Саванна, день)
+	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, день)
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Саванна, ночь)
+	DisplayName: Потусторонняя музыкальная шкатулка (Саванна, ночь)
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Песчаный шторм)
+	DisplayName: Потусторонняя музыкальная шкатулка (Пыльная буря)
 	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	// DisplayName: Savanna Torch
+	// Tooltip: ""
 }
 
 FlaskBlue: {
@@ -1832,6 +1837,11 @@ Drypowder: {
 ElephantKite: {
 	// DisplayName: Elephant Kite
 	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table
+	// Tooltip: Allows you to share your map with other players
 }
 
 PurityBonsaiItem: {
@@ -1886,4 +1896,28 @@ JinxBow: {
 		Fires arrows at enemies without consuming ammo and occasionally marks them
 		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	// DisplayName: Flarepowder
+	// Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	// DisplayName: Vexpowder
+	/* Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		''' */
+}
+
+VexpowderRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }

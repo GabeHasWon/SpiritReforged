@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace SpiritReforged.Content.Forest.Misc.Maps;
+namespace SpiritReforged.Content.Forest.Cartography.Maps;
 
 public class TatteredMapWall : ModTile
 {

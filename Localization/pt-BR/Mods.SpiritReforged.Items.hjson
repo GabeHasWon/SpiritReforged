@@ -1797,6 +1797,11 @@ SavannaSandstormOtherworldMusicBoxItem: {
 	// Tooltip: ""
 }
 
+SavannaTorchItem: {
+	// DisplayName: Savanna Torch
+	// Tooltip: ""
+}
+
 FlaskBlue: {
 	// DisplayName: Blue Moss Flask
 	// Tooltip: Spreads moss on impact
@@ -1840,6 +1845,11 @@ Drypowder: {
 ElephantKite: {
 	// DisplayName: Elephant Kite
 	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table
+	// Tooltip: Allows you to share your map with other players
 }
 
 PurityBonsaiItem: {
@@ -1894,4 +1904,28 @@ JinxBow: {
 		Fires arrows at enemies without consuming ammo and occasionally marks them
 		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	// DisplayName: Flarepowder
+	// Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	// DisplayName: Vexpowder
+	/* Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		''' */
+}
+
+VexpowderRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }

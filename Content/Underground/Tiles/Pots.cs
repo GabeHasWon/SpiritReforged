@@ -35,6 +35,22 @@ public class Pots : PotTile, ILootTile
 		}
 	}
 
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	{
+		if (group.name == "PotsCrimson")
+		{
+			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => !WorldGen.crimson)); //Conditionally hide some entries
+		}
+		else if (group.name == "PotsCorruption")
+		{
+			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => WorldGen.crimson));
+		}
+		else
+		{
+			base.AddRecord(type, group);
+		}
+	}
+
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group)
 	{
 		int wheel = ModContent.TileType<PotteryWheel>();
@@ -108,10 +124,9 @@ public class Pots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
 		string styleName = StyleDatabase.GetName(Type, (byte)objectStyle);
-		var loot = new LootTable();
 
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
@@ -150,7 +165,6 @@ public class Pots : PotTile, ILootTile
 			branch.Add(ItemDropRule.Common(ItemID.Rope, 1, 20, 40));
 
 		loot.Add(new OneFromRulesRule(1, [.. branch]));
-		return loot;
 
 		int TorchType()
 		{

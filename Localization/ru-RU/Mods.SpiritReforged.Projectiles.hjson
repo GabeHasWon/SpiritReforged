@@ -39,3 +39,8 @@ BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.Display
 // DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
 // JinxArrow.DisplayName: Jinx Arrow
 // JinxBowMinion.DisplayName: Jinx Bow Minion
+// RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+// VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"

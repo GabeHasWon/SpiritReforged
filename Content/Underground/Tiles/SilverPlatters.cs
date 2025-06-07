@@ -70,10 +70,8 @@ public class SilverPlatters : PotTile, ILootTile
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			var p = Main.player[Player.FindClosest(center, 0, 0)];
-			
 			for (int x = 0; x < 2; x++) //Roll twice
-				AddLoot(TileObjectData.GetTileStyle(t)).Resolve(new Rectangle((int)center.X - 16, (int)center.Y - 16, 32, 32), p);
+				LootTable.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -94,10 +92,8 @@ public class SilverPlatters : PotTile, ILootTile
 		}
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		var loot = new LootTable();
-
 		loot.AddOneFromOptions(1, ItemID.RoastedBird, ItemID.BunnyStew, ItemID.CookedFish, ItemID.GrilledSquirrel, ItemID.SauteedFrogLegs,
 			ModContent.ItemType<CookedMeat>(), ModContent.ItemType<FishChips>(), ModContent.ItemType<HoneySalmon>());
 
@@ -106,6 +102,5 @@ public class SilverPlatters : PotTile, ILootTile
 			ItemID.RoastedDuck, ItemID.ChickenNugget, ItemID.SeafoodDinner, ItemID.GrubSoup, ItemID.ShrimpPoBoy, ItemID.Pho, ItemID.FroggleBunwich));
 
 		loot.Add(rule);
-		return loot;
 	}
 }

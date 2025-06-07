@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Misc.Pins;
 using Terraria.GameInput;
 using Terraria.UI;
 
