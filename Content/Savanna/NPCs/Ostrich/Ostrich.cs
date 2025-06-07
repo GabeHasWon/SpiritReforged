@@ -9,6 +9,7 @@ using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -404,6 +405,7 @@ public class Ostrich : ModNPC
 		npcLoot.AddCommon<RawMeat>(3);
 		npcLoot.AddCommon<OstrichEgg>(7);
 		npcLoot.AddCommon<OstrichPants>(30);
+		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(NPC.chaseable);
