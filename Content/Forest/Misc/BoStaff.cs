@@ -18,7 +18,7 @@ public class BoStaff : ModItem
 	{
 		Item.damage = 10;
 		Item.knockBack = 6;
-		Item.useTime = Item.useAnimation = 25;
+		Item.useTime = Item.useAnimation = 28;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
@@ -34,7 +34,7 @@ public class BoStaff : ModItem
 		Item.noMelee = true;
 	}
 
-	public override float UseSpeedMultiplier(Player player) => (HitCombo == 2) ? 0.5f : 1f;
+	public override float UseSpeedMultiplier(Player player) => (HitCombo == 2) ? 0.38f : 1f;
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		float fullArc = 4f;
@@ -47,7 +47,7 @@ public class BoStaff : ModItem
 		}
 		else if (HitCombo == 2)
 		{
-			fullArc += 2;
+			fullArc += 3;
 		}
 
 		_swingArc = (_swingArc == fullArc) ? -fullArc : fullArc;
@@ -68,10 +68,12 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 			const float spinSpeed = 2f;
 
 			if (ActivelySpinning)
-				return (float)Counter / SwingTime * spinSpeed % 1;
+			{
+				float progress = (float)Counter / SwingTime * spinSpeed % 1;
+				return (Counter < SwingTime / 2) ? EaseFunction.EaseCircularIn.Ease(progress) : progress;
+			}
 
-			float min = MathHelper.Min((float)Counter / (SwingTime * 0.7f), 1);
-			return EaseFunction.EaseCircularInOut.Ease(min);
+			return EaseFunction.EaseCircularInOut.Ease(MathHelper.Min((float)Counter / (SwingTime * 0.7f), 1));
 		}
 	}
 
@@ -109,7 +111,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 			SwingTrailParameters parameters = new(SwingArc, rotation, trailDist, trailWidth)
 			{
 				Color = Color.White,
-				SecondaryColor = Color.LightGray,
+				SecondaryColor = Color.MediumVioletRed,
 				TrailLength = 0.25f,
 				Intensity = intensity,
 				DissolveThreshold = SpinMove ? 1f : 0.9f
@@ -131,6 +133,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 		Projectile.extraUpdates = 1;
+		Projectile.scale = 0;
 	}
 
 	public override void AI()
@@ -139,19 +142,25 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
 		int direction = (Projectile.velocity.X > 0) ? 1 : -1;
 
+		Projectile.scale = MathHelper.Min(Projectile.scale + 0.05f, _meleeScale);
+
 		if (ActivelySpinning)
 		{
 			if (!owner.channel)
 			{
 				_released = true;
-				Counter = 0;
+				Counter = 0; //Causes ClientSpawn to be called again
 
 				if (!Main.dedServ)
 					TrailManager.TryTrailKill(Projectile);
 			}
 
 			if (Main.rand.NextBool())
-				Dust.NewDustDirect(GetEnd(20), Projectile.width, Projectile.height, DustID.WoodFurniture, Alpha: Main.rand.Next(140, 200)).noGravity = true;
+			{
+				var dust = Dust.NewDustDirect(GetEnd(20), Projectile.width, Projectile.height, DustID.DynastyShingle_Red, Alpha: Main.rand.Next(100, 150), Scale: 0.75f);
+				dust.noGravity = true;
+				dust.velocity = -Vector2.UnitY.RotatedBy(Projectile.rotation);
+			}
 
 			if (Main.myPlayer == Projectile.owner)
 			{
@@ -197,7 +206,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 			TrailManager.TryTrailKill(Projectile);
 			Collision.HitTiles(GetEnd(20), Vector2.Zero, Projectile.width, Projectile.height);
 
-			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.25f }, GetEnd());
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.5f }, GetEnd());
 
 			for (int i = 0; i < 12; i++)
 				Dust.NewDustPerfect(GetEnd(20), DustID.t_LivingWood, (Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(1f), Scale: Main.rand.NextFloat(0.9f, 1.1f)).noGravity = Main.rand.NextBool();
@@ -223,8 +232,10 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		}
 
 		_meleeScale = owner.GetAdjustedItemScale(owner.HeldItem);
-		Projectile.scale = _meleeScale;
 		Projectile.localNPCHitCooldown = ActivelySpinning ? 20 : -1;
+
+		if (!ActivelySpinning)
+			Projectile.scale = _meleeScale;
 	}
 
 	public override void OnKill(int timeLeft)

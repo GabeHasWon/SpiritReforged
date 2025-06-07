@@ -4,14 +4,12 @@ using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Forest.Misc.Maps;
 using SpiritReforged.Content.Forest.RoguesCrest;
-using SpiritReforged.Content.Jungle.Misc;
 using SpiritReforged.Content.Jungle.Misc.DyeCrate;
 using SpiritReforged.Content.Jungle.Toucane;
 using SpiritReforged.Content.Ocean.Items.PoolNoodle;
 using SpiritReforged.Content.Ocean.Items.Vanity;
 using SpiritReforged.Content.Ocean.Items.Vanity.Towel;
 using SpiritReforged.Content.Underground.Items.BoulderClub;
-using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.Items.ExplorerTreads;
 using SpiritReforged.Content.Underground.Items.Zipline;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
@@ -35,6 +33,7 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo([ModContent.ItemType<RogueCrest>(), ModContent.ItemType<CraneFeather>()], 1, 0.33f), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo([ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()], 1, 0.125f), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(ModContent.ItemType<DoubleJumpPotion>(), 3, 0.35f), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
+		AddToVanillaChest(new ChestInfo(ModContent.ItemType<BoStaff>(), 3, 0.12f), (int)VanillaChestID.Wood, 1);
 
 		AddToVanillaChest(new ChestInfo(ModContent.ItemType<GildedScarab>(), 1, 0.25f), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
 
