@@ -7,6 +7,8 @@ internal class MossSlime : ModNPC
 	protected static Dictionary<int, Asset<Texture2D>> FrontSpritesById = [];
 	protected static Dictionary<int, Asset<Texture2D>> BackSpritesById = [];
 
+	private static int DummyBestiaryType = -1;
+
 	public override string Texture => "SpiritReforged/Content/Underground/NPCs/MossSlimes/MossSlimeBase";
 
 	protected virtual Vector3 LightColor { get; }
@@ -16,7 +18,7 @@ internal class MossSlime : ModNPC
 	{
 		Main.npcFrameCount[Type] = 2;
 
-		if (Type == ModContent.NPCType<MossSlime>())
+		if (Type != ModContent.NPCType<MossSlime>())
 		{
 			string path = $"SpiritReforged/Content/Underground/NPCs/MossSlimes/{Name}";
 			FrontSpritesById.Add(Type, ModContent.Request<Texture2D>(path + "_Front"));
@@ -36,8 +38,11 @@ internal class MossSlime : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		// Give all credit to Moss Slime as the "prototypical" slime
-		string persistentId = ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[ModContent.NPCType<MossSlime>()];
-		bestiaryEntry.UIInfoProvider = new CommonEnemyUICollectionInfoProvider(persistentId, false);
+		ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type] = ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[ModContent.NPCType<MossSlime>()];
+
+		if (Type != ModContent.NPCType<MossSlime>())
+			return;
+
 		bestiaryEntry.AddInfo(this, "Caverns");
 	}
 
@@ -52,23 +57,39 @@ internal class MossSlime : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		if (Type == ModContent.NPCType<MossSlime>())
-			return false;
+		{
+			DummyBestiaryType = (Main.GameUpdateCount % 360) switch
+			{
+				_ => ModContent.NPCType<LavaMossSlime>()
+			};
 
-		Texture2D back = BackSpritesById[Type].Value;
-		Vector2 position = NPC.Center - screenPos;
+			NPC.type = DummyBestiaryType;
+			DrawMoss(spriteBatch, screenPos, drawColor, true);
+			return NPC.IsABestiaryIconDummy;
+		}
 
-		spriteBatch.Draw(back, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0);
+		DrawMoss(spriteBatch, screenPos, drawColor, true);
 		return true;
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (Type == ModContent.NPCType<MossSlime>())
+		if (Type == ModContent.NPCType<MossSlime>() || DummyBestiaryType != -1)
+		{
+			DrawMoss(spriteBatch, screenPos, drawColor, false);
+			NPC.type = ModContent.NPCType<MossSlime>();
+			DummyBestiaryType = -1;
 			return;
+		}
 
-		Texture2D front = FrontSpritesById[Type].Value;
+		DrawMoss(spriteBatch, screenPos, drawColor, false);
+	}
+
+	private void DrawMoss(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, bool drawBack)
+	{
+		Texture2D tex = (drawBack ? BackSpritesById[Type] : FrontSpritesById[Type]).Value;
 		Vector2 position = NPC.Center - screenPos;
 
-		spriteBatch.Draw(front, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0);
 	}
 }
