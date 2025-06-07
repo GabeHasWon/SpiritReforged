@@ -389,3 +389,13 @@ WorldFrog: {
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
 	}
 }
+
+LavaMossSlime: {
+	// DisplayName: Lava Moss Slime
+	// Entry: A curious group of slimes which somehow have moss covering them.
+}
+
+MossSlime: {
+	// DisplayName: Moss Slime
+	// Entry: ""
+}

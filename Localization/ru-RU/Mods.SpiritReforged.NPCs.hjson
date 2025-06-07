@@ -389,3 +389,13 @@ WorldFrog: {
 		CavesAndClubs_1: Абра-кадабра! Дарю горшки вам новы, спустись же под землю, да вкуси их основы!
 	}
 }
+
+LavaMossSlime: {
+	// DisplayName: Lava Moss Slime
+	// Entry: A curious group of slimes which somehow have moss covering them.
+}
+
+MossSlime: {
+	// DisplayName: Moss Slime
+	// Entry: ""
+}

@@ -389,3 +389,13 @@ WorldFrog: {
 		CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
 	}
 }
+
+LavaMossSlime: {
+	DisplayName: Lava Moss Slime
+	Entry: A curious group of slimes which somehow have moss covering them.
+}
+
+MossSlime: {
+	DisplayName: Moss Slime
+	Entry: ""
+}
