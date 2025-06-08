@@ -1,4 +1,5 @@
 using SpiritReforged.Common;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 
@@ -84,7 +85,7 @@ public class SavannaGrass : GrassTile
 			BiomeConversionID.Corruption => ModContent.TileType<SavannaGrassCorrupt>(),
 			BiomeConversionID.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
 			BiomeConversionID.Hallow => ModContent.TileType<SavannaGrassHallow>(),
-			_ => -1,
+			_ => ConversionCalls.GetConversionType(conversionType, Type),
 		};
 
 		if (type != -1)

@@ -86,4 +86,19 @@ public partial class SpiritReforgedMod : Mod
 
 		return null;
 	}
+
+	internal static int ConvertToInteger(object arg, string errorMessage)
+	{
+		int value;
+		if (arg is int intVal)
+			value = intVal;
+		else if (arg is short shortVal)
+			value = shortVal;
+		else if (arg is ushort ushortVal)
+			value = ushortVal;
+		else
+			throw new ArgumentException(errorMessage);
+
+		return value;
+	}
 }
