@@ -21,10 +21,18 @@ public class RollingPot : PotTile, ILootTile
 
 	public override void AddObjectData()
 	{
+		bool rubble = Autoloader.IsRubble(Type);
+
 		Main.tileOreFinderPriority[Type] = 575;
-		Main.tileNoFail[Type] = !Autoloader.IsRubble(Type);
+		Main.tileNoFail[Type] = !rubble;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+
+		if (rubble)
+			TileObjectData.newTile.RandomStyleRange = 2;
+		else
+			HitSound = null;
+
 		TileObjectData.newTile.Origin = new(0, 1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.StyleWrapLimit = 2;
@@ -106,7 +114,7 @@ internal class PotBoulder : ModProjectile
 		}
 	}
 
-	public override bool PreDraw(ref Color lightColor) //Splices tile sheet graphics together
+	public override bool PreDraw(ref Color lightColor)
 	{
 		FallingPot.Unify4x4Sheet(Projectile.Center, Projectile.GetAlpha(lightColor), ModContent.TileType<RollingPot>(), new Point(4, 2), (int)Style, Projectile.rotation, Projectile.scale);
 		return false;
