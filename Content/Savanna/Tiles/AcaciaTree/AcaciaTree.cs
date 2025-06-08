@@ -269,6 +269,25 @@ public class AcaciaTreeCrimson : AcaciaTree
 	}
 }
 
+[Autoload(false)]
+public class AcaciaTreeCrossmod(string texture, string name, int anchor) : AcaciaTree
+{
+	public override string Texture => _texture;
+	public override string Name => _name;
+
+	private readonly string _texture = texture;
+	private readonly string _name = name;
+	private readonly int _anchor = anchor;
+
+	public override void PreAddObjectData()
+	{
+		base.PreAddObjectData();
+
+		TileID.Sets.Crimson[Type] = true;
+		TileObjectData.newTile.AnchorValidTiles = [_anchor];
+	}
+}
+
 public class AcaciaTreeHallow : AcaciaTree
 {
 	public override void PreAddObjectData()

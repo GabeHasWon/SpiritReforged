@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
@@ -54,7 +55,7 @@ public class SavannaFoliage : ModTile
 			BiomeConversionID.Corruption => ModContent.TileType<SavannaFoliageCorrupt>(),
 			BiomeConversionID.Crimson => ModContent.TileType<SavannaFoliageCrimson>(),
 			BiomeConversionID.Hallow => ModContent.TileType<SavannaFoliageHallow>(),
-			_ => -1
+			_ => ConversionCalls.GetConversionType(conversionType, Type),
 		};
 
 		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))

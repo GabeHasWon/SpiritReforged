@@ -1,11 +1,13 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Corruption;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaRootsLarge : ModTile, IConvertibleTile
+public class AcaciaRootsLarge : ModTile
 {
 	public virtual Point FrameOffset => Point.Zero;
 
@@ -17,6 +19,8 @@ public class AcaciaRootsLarge : ModTile, IConvertibleTile
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 		Main.tileNoFail[Type] = true;
+
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
@@ -58,24 +62,26 @@ public class AcaciaRootsLarge : ModTile, IConvertibleTile
 		return false;
 	}
 
-	public virtual bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
 		TileExtensions.GetTopLeft(ref i, ref j);
+
+		int id = conversionType switch
+		{
+			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsLargeHallow>(),
+			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsLargeCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsLargeCorrupt>(),
+			_ => ModContent.TileType<AcaciaRootsLarge>(),
+		};
+
+		if (id == -1)
+			id = ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>());
 
 		for (int w = 0; w < 3; w++)
 		{
 			var tile = Main.tile[i + w, j];
-
-			tile.TileType = (ushort)(type switch
-			{
-				ConversionType.Hallow => ModContent.TileType<AcaciaRootsLargeHallow>(),
-				ConversionType.Crimson => ModContent.TileType<AcaciaRootsLargeCrimson>(),
-				ConversionType.Corrupt => ModContent.TileType<AcaciaRootsLargeCorrupt>(),
-				_ => ModContent.TileType<AcaciaRootsLarge>(),
-			});
+			tile.TileType = (ushort)id;
 		}
-
-		return true;
 	}
 }
 
@@ -98,24 +104,26 @@ public class AcaciaRootsSmall : AcaciaRootsLarge
 		TileObjectData.addTile(Type);
 	}
 
-	public override bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
 		TileExtensions.GetTopLeft(ref i, ref j);
+
+		int id = conversionType switch
+		{
+			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsSmallHallow>(),
+			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsSmallCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsSmallCorrupt>(),
+			_ => -1,
+		};
+
+		if (id == -1)
+			id = ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>());
 
 		for (int w = 0; w < 2; w++)
 		{
 			var tile = Main.tile[i + w, j];
-
-			tile.TileType = (ushort)(type switch
-			{
-				ConversionType.Hallow => ModContent.TileType<AcaciaRootsSmallHallow>(),
-				ConversionType.Crimson => ModContent.TileType<AcaciaRootsSmallCrimson>(),
-				ConversionType.Corrupt => ModContent.TileType<AcaciaRootsSmallCorrupt>(),
-				_ => ModContent.TileType<AcaciaRootsSmall>(),
-			});
+			tile.TileType = (ushort)id;
 		}
-
-		return true;
 	}
 }
 

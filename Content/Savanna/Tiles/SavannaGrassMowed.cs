@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.GameContent.Metadata;
@@ -29,7 +30,7 @@ public class SavannaGrassMowed : GrassTile
 			ConversionType.Hallow => ModContent.TileType<SavannaGrassHallowMowed>(),
 			ConversionType.Corrupt => ModContent.TileType<SavannaGrassCorrupt>(),
 			ConversionType.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
-			_ => ModContent.TileType<SavannaGrassMowed>()
+			_ => ConversionCalls.GetConversionType(conversionType, Type),
 		};
 
 		WorldGen.ConvertTile(i, j, type);

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Pottery;
@@ -71,6 +72,18 @@ public partial class SpiritReforgedMod : Mod
 							throw new ArgumentException("PotDiscovered parameter 2 should be a Player.");
 
 						return player.GetModPlayer<RecordPlayer>().IsValidated(key);
+					}
+				case "RegisterConversionTable":
+					{
+						return ConversionCalls.RegisterConversionTable(args[1..]);
+					}
+				case "RegisterConversionTile":
+					{
+						return ConversionCalls.RegisterConversionTile(args[1..]);
+					}
+				case "AddSavannaTree":
+					{
+						return ConversionCalls.AddSavannaTree(args[1..]);
 					}
 				default:
 					{

@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Corruption;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -19,6 +20,8 @@ public class OceanKelp : ModTile, IConvertibleTile
 		Main.tileFrameImportant[Type] = true;
 
 		TileID.Sets.NotReallySolid[Type] = true;
+
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.WaterPlacement = LiquidPlacement.OnlyInFullLiquid;
@@ -251,6 +254,11 @@ public class OceanKelp : ModTile, IConvertibleTile
 			sin *= (y - j) / 4f;
 
 		return sin;
+	}
+
+	public override void Convert(int i, int j, int conversionType)
+	{
+
 	}
 
 	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
