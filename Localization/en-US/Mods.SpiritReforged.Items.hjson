@@ -1949,3 +1949,8 @@ AncientMarksmanPlate: {
 	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
 	Tooltip: ""
 }
+
+RollingPotItem: {
+	DisplayName: Rolling Pot
+	Tooltip: ""
+}
