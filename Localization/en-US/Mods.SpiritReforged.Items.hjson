@@ -1934,3 +1934,18 @@ BreakawayChair: {
 	DisplayName: Breakaway Chair
 	Tooltip: Breaks on impact
 }
+
+AncientMarksmanHood: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	Tooltip: ""
+}
