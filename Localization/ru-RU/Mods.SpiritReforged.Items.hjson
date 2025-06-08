@@ -1921,3 +1921,8 @@ BreakawayChair: {
 	// DisplayName: Breakaway Chair
 	// Tooltip: Breaks on impact
 }
+
+RollingPotItem: {
+	// DisplayName: Rolling Pot
+	// Tooltip: ""
+}
