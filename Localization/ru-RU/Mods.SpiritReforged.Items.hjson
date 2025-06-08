@@ -1749,6 +1749,11 @@ Bowlder: {
 	Tooltip: Заряженные удары выпускают смертоносный булыжник
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: Dealing continuous damage builds combo
+}
+
 Blasphemer: {
 	DisplayName: Богохулец
 	Tooltip: Заряженные удары извергают огненный гейзер
@@ -1920,6 +1925,21 @@ VexpowderRed: {
 BreakawayChair: {
 	// DisplayName: Breakaway Chair
 	// Tooltip: Breaks on impact
+}
+
+AncientMarksmanHood: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	// Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	// Tooltip: ""
 }
 
 RollingPotItem: {
