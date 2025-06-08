@@ -300,7 +300,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		var position = target.getRect().ClosestPointInRect(GetEnd());
+		var position = target.Hitbox.ClosestPointInRect(GetEnd());
 
 		for (int i = 0; i < 5; i++)
 		{
