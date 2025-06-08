@@ -14,6 +14,7 @@ using SpiritReforged.Content.Underground.Items.Zipline;
 using SpiritReforged.Content.Forest.MagicPowder;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.Forest.Misc.Bo;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
@@ -35,8 +36,9 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo(1, 0.125f, ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(3, 0.35f, ModContent.ItemType<DoubleJumpPotion>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(25, 50, 0.3f, ModContent.ItemType<Flarepowder>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
+        AddToVanillaChest(new ChestInfo(ModContent.ItemType<BoStaff>(), 3, 0.12f), (int)VanillaChestID.Wood, 1);
 
-		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<GildedScarab>()), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
+        AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<GildedScarab>()), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
 
 		AddToVanillaChest(new ChestInfo(2, 0.3f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(2, 0.25f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Ivy, Main.rand.Next(1, 4));

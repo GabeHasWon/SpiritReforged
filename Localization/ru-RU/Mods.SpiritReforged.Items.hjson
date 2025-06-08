@@ -1749,6 +1749,11 @@ Bowlder: {
 	Tooltip: Заряженные удары выпускают смертоносный булыжник
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: Dealing continuous damage builds combo
+}
+
 Blasphemer: {
 	DisplayName: Богохулец
 	Tooltip: Заряженные удары извергают огненный гейзер
