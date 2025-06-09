@@ -103,7 +103,9 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		TrailManager.ManualTrailSpawn(Projectile);
 
 		if (FullCharge)
+		{
 			SoundEngine.PlaySound(Main.rand.Next([Swing1, Swing2]), Projectile.Center);
+		}
 	}
 
 	public override void OnSmash(Vector2 position)

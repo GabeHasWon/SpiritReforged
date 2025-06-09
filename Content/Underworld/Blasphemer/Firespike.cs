@@ -2,19 +2,24 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
+using Terraria.UI;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Underworld.Blasphemer;
 
-class Firespike : ModProjectile
+class Firespike : ModProjectile, IDrawOverTiles
 {
 	public const int GeyserTime = 16;
 	public const int LingerTime = 300;
+
+	public static readonly Asset<Texture2D> Cracks = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(Firespike), "TileCracks"));
 
 	public bool Lingering => Projectile.timeLeft <= LingerTime;
 	public bool CanSplit => Projectile.ai[0] > 0;
@@ -26,7 +31,7 @@ class Firespike : ModProjectile
 		Projectile.timeLeft = GeyserTime + LingerTime;
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
-		Projectile.hide = false;
+		Projectile.hide = true;
 		Projectile.penetrate = -1;
 	}
 
@@ -38,7 +43,7 @@ class Firespike : ModProjectile
 		{
 			if (Main.rand.NextBool(10))
 			{
-				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-20, 20), 0);
+				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-12, 12), 0);
 				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.WallOfFleshGoatMountFlames, new ParticleOrchestraSettings() { PositionInWorld = position });
 			}
 
@@ -68,7 +73,7 @@ class Firespike : ModProjectile
 		{
 			float step = 1f - Projectile.ai[0] / 4f;
 
-			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = step - 0.2f, Volume = step, MaxInstances = 3 }, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = step - 0.4f, Volume = step, MaxInstances = 3 }, Projectile.Center);
 			SoundEngine.PlaySound(SoundID.Item34 with { MaxInstances = 3 }, Projectile.Center);
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.OrangeRed.Additive(), 0.9f, 170, 15, "supPerlin", Vector2.One).WithSkew(0.8f, PiOver2));
@@ -85,7 +90,7 @@ class Firespike : ModProjectile
 	private void Surface()
 	{
 		int surfaceDuration = 0;
-		while (WorldGen.SolidTile((Projectile.Top / 16).ToPoint()) || Main.tileSolidTop[Framing.GetTileSafely(Projectile.Top).TileType])
+		while (WorldGen.SolidTile(GetOrigin()) || Main.tileSolidTop[Framing.GetTileSafely(GetOrigin()).TileType])
 		{
 			Projectile.position.Y--; //Move out of solid tiles
 
@@ -94,7 +99,7 @@ class Firespike : ModProjectile
 		}
 
 		
-		while (!WorldGen.SolidTile((Projectile.Top / 16).ToPoint()) && !Main.tileSolidTop[Framing.GetTileSafely(Projectile.Top).TileType])
+		while (!WorldGen.SolidTile(GetOrigin()) && !Main.tileSolidTop[Framing.GetTileSafely(GetOrigin()).TileType])
 		{
 			Projectile.position.Y++;
 
@@ -112,6 +117,8 @@ class Firespike : ModProjectile
 
 			return false;
 		}
+
+		Point GetOrigin() => ((Projectile.Center - Vector2.UnitY * 2) / 16).ToPoint();
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -133,6 +140,9 @@ class Firespike : ModProjectile
 		if (Projectile.timeLeft < LingerTime)
 			modifiers.DisableKnockback();
 	}
+
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		=> behindNPCsAndTiles.Add(index);
 
 	public override bool PreDraw(ref Color lightColor)
 	{
@@ -193,5 +203,19 @@ class Firespike : ModProjectile
 		};
 
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect);
+	}
+
+	public void DrawOverTiles(SpriteBatch spriteBatch)
+	{
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Texture2D texture = Cracks.Value;
+
+		var position = Projectile.Center.ToTileCoordinates().ToWorldCoordinates() - Main.screenPosition;
+		var source = texture.Frame(3, 1, (int)Projectile.position.X % 3, 0, -2);
+		float scale = 1f;
+		float opacity = Projectile.timeLeft / (float)(GeyserTime + LingerTime);
+
+		spriteBatch.Draw(bloom, position, null, Color.Red.Additive() * 0.5f * opacity, 0, bloom.Size() / 2, scale * 0.5f, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position, source, Color.White.Additive() * opacity * 2, 0, source.Size() / 2, scale, SpriteEffects.None, 0);
 	}
 }
