@@ -29,6 +29,7 @@ float intensity;
 float tapering;
 float fadePower;
 float2 pixelDimensions;
+int numColors;
 
 struct VertexShaderInput
 {
@@ -106,7 +107,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         return float4(0, 0, 0, 0);
     
     strength *= 1 - pow(absYDist, 2);
-    
+
     float2 texCoordA = float2((xCoord - scroll.x) * textureStretch.x / 2, adjustYCoord(yCoord + scroll.y, 1 / textureStretch.y));
     float2 texCoordB = float2((xCoord - scroll.x * 0.75f) * textureStretch.x * 0.7f, adjustYCoord(yCoord - scroll.y, 0.8f / textureStretch.y));
     float2 texCoordsMask = float2((xCoord - scroll.x * 2) * textureStretch.x * 0.25f, adjustYCoord(yCoord, 0.25f / textureStretch.y));
@@ -122,7 +123,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
         return float4(0, 0, 0, 0);
     
     colorStrength = max(1 - smoothstep(0, stepStrength, colorStrength), 0) * strength;
-
+    colorStrength = round(colorStrength * numColors) / numColors;
+    
     float4 finalColor = input.Color * ColorLerp3(pow(colorStrength, 2)) * colorStrength;
     return finalColor * intensity;
 }
