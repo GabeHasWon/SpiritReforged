@@ -9,6 +9,7 @@ using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -43,6 +44,14 @@ public class Ostrich : ModNPC
 	public ref float Counter => ref NPC.ai[1];
 	public ref float TargetSpeed => ref NPC.ai[2]; //Stores a direction to lerp to over time
 	public ref float NoCollideTime => ref NPC.localAI[0]; //Counts how long the NPC hasn't been grounded for
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/Ostrich_Death")
+	{
+		Volume = .75f,
+		PitchVariance = .5f,
+		Pitch = -.5f,
+		MaxInstances = 0
+	};
 
 	private float _frameRate = .2f;
 	/// <summary> Tracks the last horizontal jump coordinate so the NPC doesn't constantly jump in the same place. </summary>
@@ -307,7 +316,7 @@ public class Ostrich : ModNPC
 			for (int i = 1; i < 5; i++)
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(), Mod.Find<ModGore>("Ostrich" + i).Type);
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/Ostrich_Death") with { Volume = .75f, PitchVariance = .5f, Pitch = -.5f, MaxInstances = 0 }, NPC.Center);
+			SoundEngine.PlaySound(Death, NPC.Center);
 		}
 
 		ScareNearby(hit);
@@ -396,6 +405,7 @@ public class Ostrich : ModNPC
 		npcLoot.AddCommon<RawMeat>(3);
 		npcLoot.AddCommon<OstrichEgg>(7);
 		npcLoot.AddCommon<OstrichPants>(30);
+		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(NPC.chaseable);

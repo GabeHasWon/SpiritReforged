@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
@@ -12,6 +13,9 @@ public class JellyfishStaff : ModItem
 	{
 		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.PinkJellyfish), ItemDropRule.Common(Type, 100)));
 		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.BlueJellyfish), ItemDropRule.Common(Type, 500)));
+
+		MoRHelper.AddElement(Item, MoRHelper.Thunder);
+		MoRHelper.AddElement(Item, MoRHelper.Water, true);
 	}
 
 	public override void SetDefaults()

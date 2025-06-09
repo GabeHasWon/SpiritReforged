@@ -45,6 +45,7 @@ internal static class CrossMod
 		public static explicit operator Mod(ModEntry e) => e.Instance;
 	}
 
+	public static readonly ModEntry Redemption = new("Redemption");
 	public static readonly ModEntry Fables = new("CalamityFables");
 	public static readonly ModEntry Thorium = new("ThoriumMod");
 	public static readonly ModEntry NewBeginnings = new("NewBeginnings");

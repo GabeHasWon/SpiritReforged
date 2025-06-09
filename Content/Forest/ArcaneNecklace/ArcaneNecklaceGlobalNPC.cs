@@ -28,7 +28,7 @@ internal class ArcaneNecklaceGlobalNPC : GlobalNPC
 		if (target.type == NPCID.TargetDummy)
 			return;
 
-		if ((player.HasAccessory<ArcaneNecklaceGold>() || player.HasAccessory<ArcaneNecklacePlatinum>()) && player.statMana < player.statManaMax2 && Main.rand.NextBool(15))
+		if ((player.HasEquip<ArcaneNecklaceGold>() || player.HasEquip<ArcaneNecklacePlatinum>()) && player.statMana < player.statManaMax2 && Main.rand.NextBool(15))
 		{
 			var pos = target.Center;
 

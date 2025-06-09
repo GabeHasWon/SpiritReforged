@@ -8,7 +8,7 @@ using Terraria.Audio;
 namespace SpiritReforged.Content.Forest.Safekeeper;
 
 //[AutoloadEquip(EquipType.HandsOn)]
-public class SafekeeperRing : AccessoryItem
+public class SafekeeperRing : EquippableItem
 {
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });
 
@@ -22,8 +22,6 @@ public class SafekeeperRing : AccessoryItem
 
 	public override void UpdateAccessory(Player player, bool hideVisual)
 	{
-		base.UpdateAccessory(player, hideVisual);
-
 		float mult = 0;
 		foreach (var npc in Main.ActiveNPCs)
 		{
@@ -75,7 +73,7 @@ internal class UndeadModPlayer : ModPlayer
 {
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (Player.HasAccessory<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type))
+		if (Player.HasEquip<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type))
 			modifiers.FinalDamage *= 1.25f;
 	}
 
@@ -86,7 +84,7 @@ internal class UndeadModPlayer : ModPlayer
 		if (Main.dedServ)
 			return;
 
-		if (Player.HasAccessory<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type) && target.life < MathHelper.Min(100, target.lifeMax * .25f))
+		if (Player.HasEquip<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type) && target.life < MathHelper.Min(100, target.lifeMax * .25f))
 		{
 			var points = new Vector2[Main.rand.Next(2, 4)];
 

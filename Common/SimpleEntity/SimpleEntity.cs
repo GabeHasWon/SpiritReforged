@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.SimpleEntity;
+﻿using SpiritReforged.Common.Visuals;
+
+namespace SpiritReforged.Common.SimpleEntity;
 
 public abstract class SimpleEntity : Entity
 {
@@ -7,7 +9,7 @@ public abstract class SimpleEntity : Entity
 
 	public Asset<Texture2D> Texture => SimpleEntitySystem.Textures[SimpleEntitySystem.Types[GetType()]];
 
-	public virtual string TexturePath => GetType().Namespace.Replace('.', '/') + "/" + GetType().Name;
+	public virtual string TexturePath => DrawHelpers.RequestLocal(GetType(), GetType().Name); //GetType().Namespace.Replace('.', '/') + "/" + GetType().Name;
 
 	/// <summary> Can be used to set defaults. </summary>
 	public virtual void Load() { }

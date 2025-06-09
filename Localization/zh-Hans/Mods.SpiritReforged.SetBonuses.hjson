@@ -21,9 +21,9 @@ Marksman:
 	注意力集中时，你的下次攻击必定暴击且造成更多伤害
 	受到伤害时注意力会中断，但站定不动时会注意力会集中的更快
 	'''
-/* Wayfarer:
+Wayfarer:
 	'''
-	Slain enemies drop more coins
-	Breaking pots grants a movement speed buff
-	Mining ore grants a mining speed buff
-	''' */
+	击杀敌人会掉落更多钱币
+	打破罐子时会获得移动速度增益
+	挖掘矿石时会获得挖掘速度增益
+	'''

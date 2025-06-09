@@ -1,7 +1,10 @@
+using SpiritReforged.Common.ModCompat;
+
 namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
 public class BambooHalberd : ModItem
 {
+	public override void SetStaticDefaults() => ItemID.Sets.Spears[Type] = true;
 	public override void SetDefaults()
 	{
 		Item.damage = 5;
@@ -42,6 +45,8 @@ public class BambooHalberdProj : ModProjectile
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
 		Projectile.ownerHitCheck = true;
+
+		MoRHelper.SetSpearBonus(Projectile);
 	}
 
 	public override void AI()

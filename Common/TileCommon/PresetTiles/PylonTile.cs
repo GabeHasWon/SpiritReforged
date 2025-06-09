@@ -20,10 +20,8 @@ public abstract class PylonTile : ModPylon, IAutoloadTileItem
 		mapIcon = ModContent.Request<Texture2D>(Texture + "_MapIcon");
 	}
 
-	/// <summary>
-	/// <inheritdoc/>
-	/// <para/> Only override this if you need to change basic pylon behaviour. Use <see cref="SetStaticDefaults(LocalizedText)"/> otherwise.
-	/// </summary>
+	/// <summary><inheritdoc/><para/>
+	/// Only override this if you need to change basic pylon behaviour. Use <see cref="SetStaticDefaults(LocalizedText)"/> otherwise.</summary>
 	public override void SetStaticDefaults()
 	{
 		Main.tileLighted[Type] = true;
@@ -48,10 +46,8 @@ public abstract class PylonTile : ModPylon, IAutoloadTileItem
 		SetStaticDefaults(ModItem.DisplayName);
 	}
 
-	/// <summary>
-	/// <inheritdoc cref="ModBlockType.SetStaticDefaults"/>
-	/// <para/> Includes helper <paramref name="mapEntry"/>.
-	/// </summary>
+	/// <summary><inheritdoc cref="ModBlockType.SetStaticDefaults"/><para/>
+	/// Includes helper <paramref name="mapEntry"/>.</summary>
 	/// <param name="mapEntry"> The default map localization for pylons. </param>
 	public virtual void SetStaticDefaults(LocalizedText mapEntry) { }
 
@@ -78,4 +74,4 @@ public abstract class PylonTile : ModPylon, IAutoloadTileItem
 	}
 }
 
-public sealed class PylonTileEntity : TEModdedPylon { }
+public sealed class PylonTileEntity : TEModdedPylon;

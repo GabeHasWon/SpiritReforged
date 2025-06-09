@@ -1,3 +1,4 @@
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Vanilla.Food;
@@ -84,6 +85,8 @@ public class Wheezer : ModNPC
 
 	public override void AI()
 	{
+		const int idleDistance = 600;
+
 		if (!Main.dedServ)
 		{
 			if (Main.rand.NextBool(700))
@@ -98,7 +101,7 @@ public class Wheezer : ModNPC
 
 		NPC.TargetClosest((State)Animation is State.Walk or State.Idle);
 		var target = Main.player[NPC.target];
-		bool canHit = Collision.CanHit(NPC, target);
+		bool canHit = target.DistanceSQ(NPC.Center) < idleDistance * idleDistance && CollisionCheckHelper.CanReachFromGround(NPC, target, 50);
 
 		if (!TrySleeping(canHit))
 			WalkingBehaviour(canHit);
@@ -205,7 +208,7 @@ public class Wheezer : ModNPC
 			{
 				if (NPC.DistanceSQ(target.Center) < backOffDistance * backOffDistance)
 				{
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * -.5f, .1f); //Back off when on cooldown
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * -0.5f, .1f); //Back off when on cooldown
 				}
 				else
 				{
@@ -216,7 +219,7 @@ public class Wheezer : ModNPC
 
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
-			if ((NPC.collideX || FoundGap()) && NPC.velocity.Y == 0)
+			if (!Reverse && (NPC.collideX || FoundGap()) && NPC.velocity.Y == 0)
 				NPC.velocity.Y = -5f; //Jump
 
 			if (NPC.collideX)
@@ -232,10 +235,7 @@ public class Wheezer : ModNPC
 
 	private bool TrySleeping(bool canHit)
 	{
-		const int idleDistance = 500;
-		var target = Main.player[NPC.target];
-
-		if (target.DistanceSQ(NPC.Center) > idleDistance * idleDistance && !canHit)
+		if (!canHit)
 			MakeIdle();
 
 		if ((State)Animation is State.Hiccup)
@@ -355,7 +355,7 @@ public class Wheezer : ModNPC
 		int frame = (int)NPC.frameCounter;
 		NPC.frame.Y = frame * frameHeight;
 
-		if (canLoop && NPC.velocity.Y != 0) //Jump
+		if ((State)Animation is State.Walk or State.Idle && NPC.velocity.Y != 0) //Jump
 		{
 			NPC.frame.X = 480 * _style;
 			NPC.frame.Y = frameHeight;

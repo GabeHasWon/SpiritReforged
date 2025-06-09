@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
 
@@ -6,6 +7,11 @@ namespace SpiritReforged.Content.Forest.ButterflyStaff;
 [AutoloadGlowmask("255,255,255")]
 public class ButterflyStaff : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		MoRHelper.AddElement(Item, MoRHelper.Arcane);
+		MoRHelper.AddElement(Item, MoRHelper.Nature, true);
+	}
 	public override void SetDefaults()
 	{
 		Item.damage = 14;

@@ -97,6 +97,9 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	public bool OnCutAttempt(int i, int j)
 	{
+		if (ClubQuickKill(i, j))
+			return true;
+
 		bool fail = AdjustFrame(i, j);
 		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
 
@@ -195,9 +198,8 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		}
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		var loot = new LootTable();
 		loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.AegisFruit, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
 
 		if (Main.expertMode || Main.masterMode)
@@ -206,7 +208,5 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 			loot.AddCommon(ItemID.ShimmerTorch, 1, 4, 14);
 
 		loot.AddCommon(ItemID.ShimmerArrow, 1, 10, 20);
-
-		return loot;
 	}
 }

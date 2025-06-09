@@ -1,10 +1,17 @@
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter;
 
 public class ReefSpear : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.Spears[Type] = true;
+
+		MoRHelper.AddElement(Item, MoRHelper.Water);
+	}
 	public override void SetDefaults()
 	{
 		Item.damage = 20;

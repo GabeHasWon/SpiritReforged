@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SpiritReforged;
+namespace SpiritReforged.Common.UI;
 
 internal static class UIHelper
 {
@@ -16,6 +16,9 @@ internal static class UIHelper
 	/// <summary> Wraps <paramref name="text"/> like <see cref="Utils.WordwrapString"/> but with respect for newline. </summary>
 	public static string[] WrapText(string text, int bounds)
 	{
+		if (bounds < 0)
+			return [text];
+
 		string[] subText = text.Split('\n');
 		List<string> result = [];
 

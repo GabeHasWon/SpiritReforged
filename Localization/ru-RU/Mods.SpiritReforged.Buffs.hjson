@@ -13,13 +13,13 @@ JellyfishMinion_Buff: {
 	Description: Миленькая, упругая медуза сражается за вас!
 }
 
-JellyfishBuff: {
+JellyfishPet_Buff: {
 	DisplayName: Дружелюбная медуза
 	Description: Эта медуза просто обожает путешествовать вместе с вами!
 }
 
 DoubleJumpPotionBuff: {
-	DisplayName: Зифирный прыжок
+	DisplayName: Зефирный прыжок
 	Description: Временно даёт двойной прыжок
 }
 
@@ -45,7 +45,7 @@ Impaled: {
 
 KoiTotemBuff: {
 	DisplayName: Тотем кои
-	Description: Повышает мастерство рыбалки
+	Description: Увеличивает мастерство рыбалки
 }
 
 ButterflyMinion_Buff: {
@@ -63,9 +63,9 @@ QuenchPotion_Buff: {
 	Description: Другие зелья длятся на 25% дольше
 }
 
-TumblerPetBuff: {
-	DisplayName: Дружелюбный кувыркун
-	Description: Этот игривый клубок ветра не отстаёт ни на шаг!
+TumblerPet_Buff: {
+	DisplayName: Дружелюбное перекати-поле
+	Description: Это игривое перекати-поле не отстаёт ни на шаг!
 }
 
 Frozen: {
@@ -75,7 +75,7 @@ Frozen: {
 
 GildedScarabBuff: {
 	DisplayName: Золотой скарабей
-	Description: Защита увеличена на {0}
+	Description: Увеличивает защиту на {0}
 }
 
 PoolNoodleBubbleBuff: {
@@ -99,11 +99,16 @@ OpenWounds: {
 }
 
 ExplorerPot: {
-	// DisplayName: Explorer's Thrill
-	// Description: You're eager for more!
+	DisplayName: Трепет исследователя
+	Description: Вы жаждете большего!
 }
 
 ExplorerMine: {
-	// DisplayName: Explorer's Vigor
-	// Description: Keep digging!
+	DisplayName: Силы исследователя
+	Description: Продолжайте копать!
+}
+
+JinxMark: {
+	// DisplayName: Jinx Mark
+	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
 }

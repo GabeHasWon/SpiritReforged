@@ -1,13 +1,11 @@
-﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Underground.WayfarerSet;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ModLoader.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -23,9 +21,9 @@ internal class UndergroundHouseMicropass : ModSystem
 		LoomHouse = 4
 	}
 
-	private readonly static Dictionary<Point16, TEDisplayDoll> dolls = [];
+	private readonly static Dictionary<Point16, HouseType> dolls = [];
 
-	private static FieldInfo teDollInventory = null;
+	internal static FieldInfo teDollInventory = null;
 
 	public override void Load()
 	{
@@ -38,7 +36,7 @@ internal class UndergroundHouseMicropass : ModSystem
 	{
 		orig(self, context, structures);
 
-		if (self is not WoodHouseBuilder)
+		if (self.Type != HouseType.Wood && self.Type != HouseType.Ice)
 			return;
 
 		bool hasPlaced = false;
@@ -49,7 +47,7 @@ internal class UndergroundHouseMicropass : ModSystem
 		{
 			int y = room.Height - 1 + room.Y;
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.Sign) && WorldGen.genRand.NextBool(5) && PlaceDecorInRoom(room, room.Y + 1, TileID.Signs))
+			if (!skipFlags.HasFlag(AddedHouseFlags.Sign) && WorldGen.genRand.NextBool(5) && PlaceDecorInRoom(room, room.Y + 1, TileID.Signs) && self.Type == HouseType.Wood)
 			{
 				hasPlaced = true;
 				skipFlags |= AddedHouseFlags.Sign;
@@ -62,7 +60,7 @@ internal class UndergroundHouseMicropass : ModSystem
 				skipFlags |= AddedHouseFlags.Mannequin;
 			}
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.LoomHouse) && WorldGen.genRand.NextBool(10))
+			if (!skipFlags.HasFlag(AddedHouseFlags.LoomHouse) && WorldGen.genRand.NextBool(10) && self.Type == HouseType.Wood)
 			{
 				if (PlaceDecorInRoom(room, y, TileID.Loom, Main.rand.Next(2)))
 				{
@@ -122,7 +120,7 @@ internal class UndergroundHouseMicropass : ModSystem
 								mannequin = TileEntity.ByID[id] as TEDisplayDoll;
 							}
 
-							dolls.Add(new(x, y), mannequin);
+							dolls.Add(new(x, y), self.Type);
 						}
 					}
 				}
@@ -186,19 +184,24 @@ internal class UndergroundHouseMicropass : ModSystem
 	public override void SaveWorldData(TagCompound tag)
 	{
 		if (dolls.Count > 0)
+		{
 			tag.Add("dolls", dolls.Keys.ToArray());
+			tag.Add("biomes", dolls.Values.Select(x => (byte)x).ToArray());
+		}
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
-		if (!tag.TryGet("dolls", out Point16[] positions))
+		if (!tag.TryGet("dolls", out Point16[] positions) || !tag.TryGet("biomes", out byte[] biomes))
 			return;
 
 		dolls.Clear();
 
-		foreach (var position in positions)
+		for (int i = 0; i < positions.Length; i++)
 		{
-			dolls.Add(position, new());
+			Point16 position = positions[i];
+			var biome = (HouseType)biomes[i];
+			dolls.Add(position, biome);
 		}
 	}
 
@@ -207,64 +210,8 @@ internal class UndergroundHouseMicropass : ModSystem
 		if (dolls.Count == 0)
 			return;
 
-		WeightedRandom<int> accType = new(WorldGen.genRand);
-		accType.Add(ItemID.Aglet, 0.5f);
-		accType.Add(ItemID.HermesBoots, 0.1f);
-		accType.Add(ItemID.FartinaJar, 0.01f);
-		accType.Add(ItemID.FrogLeg, 0.3f);
-		accType.Add(ItemID.ClimbingClaws, 0.25f);
-		accType.Add(ItemID.ShoeSpikes, 0.25f);
-		accType.Add(ItemID.BandofRegeneration, 0.4f);
-		accType.Add(GenVars.gold == TileID.Gold ? ItemID.GoldWatch : ItemID.PlatinumWatch, 0.4f);
-
-		if (CrossMod.Thorium.Enabled)
-		{
-			if (CrossMod.Thorium.TryFind(GenVars.iron == TileID.Iron ? "IronShield" : "LeadShield", out ModItem shield))
-				accType.Add(shield.Type, 0.1f);
-
-			if (CrossMod.Thorium.TryFind("FrostburnPouch", out ModItem frostburnPouch))
-				accType.Add(frostburnPouch.Type, 0.1f);
-
-			if (CrossMod.Thorium.TryFind("LeatherSheath", out ModItem leatherSheath))
-				accType.Add(leatherSheath.Type, 0.3f);
-
-			if (CrossMod.Thorium.TryFind("DartPouch", out ModItem dartPouch))
-				accType.Add(dartPouch.Type, 0.2f);
-
-			if (CrossMod.Thorium.TryFind("Wreath", out ModItem wreath))
-				accType.Add(wreath.Type, 0.1f);
-		}
-
-		foreach (var position in dolls.Keys)
-		{
-			Item[] inv = [new(ModContent.ItemType<WayfarerHead>()), new(ModContent.ItemType<WayfarerBody>()), new(ModContent.ItemType<WayfarerLegs>()),
-				new(), new(), new(), new(), new()];
-
-			float chance = Main.rand.NextFloat();
-
-			if (chance < .10f)
-			{
-				inv[0] = new(ItemID.AncientGoldHelmet);
-				inv[1] = new();
-				inv[2] = new();
-			}
-			else if (chance < .15f)
-			{
-				inv[0] = new(ItemID.AncientIronHelmet);
-				inv[1] = new();
-				inv[2] = new();
-			}
-
-			if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te) || te is not TEDisplayDoll mannequin)
-			{
-				int id = TEDisplayDoll.Place(position.X, position.Y);
-				mannequin = TileEntity.ByID[id] as TEDisplayDoll;
-			}
-
-			int slot = WorldGen.genRand.Next(5) + 3;
-			inv[slot] = new Item(accType);
-			teDollInventory.SetValue(mannequin, inv);
-		}
+		foreach (var doll in dolls)
+			MannequinInventory.InventoryByBiome[doll.Value].SetMannequin(doll.Key);
 
 		dolls.Clear();
 	}

@@ -12,6 +12,7 @@ public interface IRecordTile : INamedStyles
 
 public class RecordHandler : ModSystem
 {
+	public static readonly Dictionary<int, Action<int, ILoot>> ActionByType = [];
 	public static readonly HashSet<TileRecord> Records = [];
 
 	/// <summary> Checks whether the tile at the given coordinates corresponds to a record. </summary>
@@ -52,8 +53,68 @@ public class RecordHandler : ModSystem
 				continue;
 
 			foreach (var group in StyleDatabase.Groups[type])
+			{
 				r.AddRecord(type, group);
+
+				if (TileLoader.GetTile(type) is ILootTile loot)
+					ActionByType.TryAdd(type, loot.AddLoot); //Automatically register a loot table if applicable
+			}
 		}
+	}
+
+	public static bool ManualAddRecord(object[] args)
+	{
+		if (args.Length < 3)
+			throw new ArgumentException("AddPotstiaryRecord requires at least 3 parameters.");
+
+		if (args[0] is not int or ushort)
+			throw new ArgumentException("AddPotstiaryRecord parameter 0 should be an int or ushort.");
+
+		int type = (int)args[0];
+
+		if (args[1] is not int[] styles)
+			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int[].");
+
+		if (args[2] is not string name)
+			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be a string.");
+
+		var e = new TileRecord(name, type, styles);
+
+		if (args.Length > 3 && args[3] is byte rating)
+			e.AddRating(rating);
+
+		if (args.Length > 4) //Hidden
+		{
+			if (args[4] is bool hidden && hidden)
+			{
+				e.Hide();
+			}
+			else if (args[4] is Func<bool> hiddenFunc)
+			{
+				e.Hide(hiddenFunc);
+			}
+		}
+
+		if (args.Length > 5) //Add a loot pool
+		{
+			if (args[5] is bool hasBasicLoot && hasBasicLoot)
+			{
+				ActionByType.Add(type, ModContent.GetInstance<Pots>().AddLoot);
+			}
+			else if (args[5] is Action<int, ILoot> dele)
+			{
+				ActionByType.Add(type, dele);
+			}
+		}
+
+		if (args.Length > 6 && args[6] is LocalizedText desc)
+			e.AddDescription(desc);
+
+		if (args.Length > 7 && args[7] is LocalizedText dispName)
+			e.AddDisplayName(dispName);
+
+		Records.Add(e);
+		return true;
 	}
 }
 
@@ -67,6 +128,7 @@ internal class RecordPlayer : ModPlayer
 	public bool IsNew(string name) => _newAndShiny.Contains(name);
 	public bool RemoveNew(string name) => _newAndShiny.Remove(name);
 
+	/// <summary> Unlocks the entry of <paramref name="name"/> for this player. </summary>
 	public void Validate(string name)
 	{
 		if (!IsValidated(name))
@@ -75,6 +137,7 @@ internal class RecordPlayer : ModPlayer
 		_validated.Add(name);
 	}
 
+	/// <returns> Whether the entry of <paramref name="name"/> is unlocked for this player. </returns>
 	public bool IsValidated(string name) => _validated.Contains(name);
 
 	public override void SaveData(TagCompound tag) => tag[nameof(_validated)] = _validated;

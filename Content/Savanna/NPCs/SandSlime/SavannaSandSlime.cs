@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -11,6 +12,11 @@ public class SavannaSandSlime : ModNPC
 	{
 		Main.npcFrameCount[Type] = 3;
 		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.ShimmerSlime;
+
+		MoRHelper.AddElement(NPC, MoRHelper.Earth);
+		MoRHelper.AddElement(NPC, MoRHelper.Water);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Slime);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Hot);
 	}
 
 	public override void SetDefaults()
@@ -42,7 +48,7 @@ public class SavannaSandSlime : ModNPC
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
 		var player = spawnInfo.Player;
-		return player.InModBiome<SavannaBiome>() && !spawnInfo.PlayerInTown && spawnInfo.SpawnTileType == ModContent.TileType<SavannaGrass>() 
+		return player.InModBiome<SavannaBiome>() && !spawnInfo.PlayerInTown && spawnInfo.SpawnTileType == ModContent.TileType<SavannaGrass>()
 			&& player.GetModPlayer<DustStormPlayer>().ZoneDustStorm ? 0.3f : 0;
 	}
 }

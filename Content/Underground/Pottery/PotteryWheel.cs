@@ -27,14 +27,14 @@ public class PotteryWheel : ModTile, IAutoloadTileItem
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(254, 121, 2), this.AutoModItem().DisplayName);
+		AddMapEntry(new Color(191, 142, 111), this.AutoModItem().DisplayName);
 		DustType = DustID.WoodFurniture;
 		AnimationFrameHeight = FullFrameHeight;
 	}
 
 	public override bool RightClick(int i, int j)
 	{
-		Main.playerInventory = true;
+		Main.playerInventory = false;
 		UISystem.SetActive<CatalogueUI>();
 
 		return true;
@@ -54,7 +54,7 @@ public class PotteryWheel : ModTile, IAutoloadTileItem
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!TileObjectData.IsTopLeft(i, j))
+		if (Main.dedServ || !TileObjectData.IsTopLeft(i, j))
 			return;
 
 		var world = new Vector2(i, j).ToWorldCoordinates(16, 16);

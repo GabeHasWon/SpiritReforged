@@ -60,8 +60,15 @@ public class Bomb : BombProjectile, ILargeExplosive
 		var ease = new PolynomialEase((float x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 		var stretch = Vector2.One;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease));
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease));
+		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
+		{
+			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
+		});
+
+		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease)
+		{
+			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
+		});
 
 		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, .04f * area, EaseFunction.EaseCubicOut, 40));
 

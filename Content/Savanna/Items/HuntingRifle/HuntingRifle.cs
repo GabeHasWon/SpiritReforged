@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -9,22 +10,26 @@ namespace SpiritReforged.Content.Savanna.Items.HuntingRifle;
 
 public class HuntingRifle : ModItem
 {
-	private static Asset<Texture2D> CursorTexture;
-	private static float cursorOpacity;
+	public static Asset<Texture2D> CursorTexture { get; private set; }
+	public static readonly SoundStyle Gunshot = new("SpiritReforged/Assets/SFX/Item/Gunshot");
+
+	/// <summary> The item type of <see cref="HuntingRifle"/> cached for detour efficiency. </summary>
+	private static int StaticType;
+	private static float CursorOpacity;
 
 	public override void Load()
 	{
 		if (!Main.dedServ)
-			CursorTexture = ModContent.Request<Texture2D>(Texture.Remove(Texture.Length - Name.Length) + "Cursor_Reticle");
+			CursorTexture = DrawHelpers.RequestLocal(GetType(), "Cursor_Reticle", false);
 
 		CustomCursor.DrawCustomCursor += DrawCustomCursor;
 	}
 
-	private void DrawCustomCursor(bool thick)
+	private static void DrawCustomCursor(bool thick)
 	{
-		if (Main.gameMenu || Main.LocalPlayer.mouseInterface || Main.LocalPlayer.HeldItem.type != Type)
+		if (Main.gameMenu || Main.LocalPlayer.mouseInterface || Main.LocalPlayer.HeldItem.type != StaticType)
 		{
-			cursorOpacity = 0;
+			CursorOpacity = 0;
 			return;
 		}
 
@@ -35,7 +40,7 @@ public class HuntingRifle : ModItem
 			+ MathHelper.Min(Main.LocalPlayer.velocity.Length(), 2);
 		//Distance, item animation, and player velocity adjustments
 
-		cursorOpacity = MathHelper.Min(cursorOpacity + .05f, 1f);
+		CursorOpacity = MathHelper.Min(CursorOpacity + .05f, 1f);
 		Color color = Main.cursorColor;
 
 		if (thick) //Border cursor color
@@ -62,11 +67,15 @@ public class HuntingRifle : ModItem
 				Main.spriteBatch.Draw(CursorTexture.Value, position + new Vector2(2), frame, shadowColor, rotation, origin, scale, SpriteEffects.None, 0f);
 			}
 
-			Main.spriteBatch.Draw(CursorTexture.Value, position, frame, color * cursorOpacity, rotation, origin, scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(CursorTexture.Value, position, frame, color * CursorOpacity, rotation, origin, scale, SpriteEffects.None, 0f);
 		}
 	}
 
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WrithingSticks.WrithingSticks>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WrithingSticks.WrithingSticks>();
+		StaticType = Type;
+	}
 
 	public override void SetDefaults()
     {
@@ -74,7 +83,7 @@ public class HuntingRifle : ModItem
         Item.damage = 22;
         Item.knockBack = 5;
         Item.useAnimation = Item.useTime = 60;
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Gunshot");
+		Item.UseSound = Gunshot;
         Item.noMelee = true;
         Item.noUseGraphic = true;
         Item.autoReuse = true;
@@ -130,7 +139,20 @@ public class HuntingRifle : ModItem
 
 public class HuntingRifleProj : ModProjectile
 {
-    public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.HuntingRifle.DisplayName");
+	public static readonly SoundStyle Eject = new("SpiritReforged/Assets/SFX/Item/Eject")
+	{
+		PitchVariance = .2f
+	};
+
+	public static readonly SoundStyle Ring = new("SpiritReforged/Assets/SFX/Item/Ring")
+	{
+		PitchVariance = .25f,
+		Pitch = -.6f
+	};
+
+	public static readonly Asset<Texture2D> Flash = ModContent.Request<Texture2D>(ModContent.GetInstance<HuntingRifleProj>().Texture + "_Flash");
+
+	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.HuntingRifle.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);
 
 	public override void SetDefaults()
@@ -157,13 +179,13 @@ public class HuntingRifleProj : ModProjectile
 		};
 
 		if (Projectile.timeLeft == halfTime + 15)
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Eject") with { PitchVariance = .2f }, Projectile.Center);
+			SoundEngine.PlaySound(Eject, Projectile.Center);
 		else if (Projectile.timeLeft == halfTime)
 		{
 			var velocity = (new Vector2(-owner.direction, -owner.gravDir) * Main.rand.NextFloat(8f, 12f)).RotateRandom(.2f);
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.ShellDust>(), velocity).scale = 1; //Scale is slightly randomized otherwise
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Ring") with { PitchVariance = .25f, Pitch = -.6f, Volume = .6f }, Projectile.Center);
+			SoundEngine.PlaySound(Ring, Projectile.Center);
 		}
 		else if (Projectile.timeLeft < halfTime)
 		{
@@ -205,7 +227,7 @@ public class HuntingRifleProj : ModProjectile
 
     private void DrawMuzzleFlash()
     {
-        var texture = ModContent.Request<Texture2D>(Texture + "_Flash").Value;
+        var texture = Flash.Value;
         var pos = Projectile.Center - Main.screenPosition + (Vector2.UnitX * (TextureAssets.Projectile[Type].Width() - Projectile.width / 2)).RotatedBy(Projectile.velocity.ToRotation());
         float unit = Main.rand.NextFloat(.5f);
         var scale = new Vector2(1 + unit, 1 - unit) * Projectile.scale;

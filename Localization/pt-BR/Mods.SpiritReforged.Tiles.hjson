@@ -11,6 +11,12 @@ Records: {
 
 		Value increases when further underground.
 		''' */
+	/* Zenith:
+		'''
+		A common pot which sometimes contains useful goodies... this one is needlessly gaudy.
+
+		Value increases when further underground.
+		''' */
 	// Potion: Contains a potent brew.
 	// UpsideDown: `Manufacturing error`
 	// Worm: Scatters a variety of worms when destroyed.
@@ -19,6 +25,7 @@ Records: {
 	// Stuffed: What a strange place to find a merchant. They're just asking to be bothered.
 	// Scrying: Reveals a large portion of the map upon being destroyed.
 	// Biome: Contains a greater variety of loot than common pots.
+	// Boulder: Rolls along the ground when disturbed.
 }
 
 SunkenTreasureTile.MapEntry: Tesouro Afundado
@@ -40,3 +47,4 @@ KillieFishbowlTile.MapEntry: Aquário de Killie
 // PotionVats.MapEntry: Potion Vat
 // ObsidianShroom.MapEntry: Obsidian Shroom
 // Starflower.MapEntry: Starflower
+// BonsaiTrees.MapEntry: Bonsai

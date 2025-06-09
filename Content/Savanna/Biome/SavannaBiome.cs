@@ -11,7 +11,8 @@ public class SavannaBiome : ModBiome
 		if (Main.LocalPlayer.ZoneGraveyard || Main.bloodMoon)
 			return -1;
 
-		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, "Assets/Music/Savanna") : MusicLoader.GetMusicSlot(Mod, "Assets/Music/SavannaNight");
+		string name = SpiritReforgedMod.SwapMusic ? "SavannaOtherworld" : "Savanna";
+		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
 	public override void SetStaticDefaults() => NPCHappinessHelper.SetAverage<SavannaBiome>(ModContent.GetInstance<JungleBiome>(), ModContent.GetInstance<DesertBiome>());
@@ -39,7 +40,8 @@ internal class SavannaTileCounts : ModSystem
 
 	public static bool InSavanna => ModContent.GetInstance<SavannaTileCounts>().savannaCount >= 400;
 
-	public override void SetStaticDefaults() => SavannaTypes = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>()];
+	public override void SetStaticDefaults() => SavannaTypes = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), 
+		ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassHallowMowed>()];
 
 	public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 	{

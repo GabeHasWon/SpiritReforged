@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
@@ -9,6 +8,7 @@ public class OganessonMossItem : ModItem
 	{
 		Item.ResearchUnlockCount = 25;
 
+		ItemID.Sets.ExtractinatorMode[Type] = ItemID.LavaMoss;
 		ItemID.Sets.DisableAutomaticPlaceableDrop[Type] = true;
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.RainbowMoss;
 	}
@@ -33,14 +33,6 @@ public class OganessonMossItem : ModItem
 			player.cursorItemIconEnabled = true;
 			player.cursorItemIconID = Type;
 		}
-	}
-
-	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, .252f, .252f, .252f);
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		Item.DrawInWorld(Color.White, rotation, scale);
-		return false;
 	}
 
 	public override bool? UseItem(Player player)
@@ -73,5 +65,12 @@ public class OganessonMossItem : ModItem
 		}
 
 		return null;
+	}
+
+	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, .252f, .252f, .252f);
+	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+	{
+		Item.DrawInWorld(Color.White, rotation, scale);
+		return false;
 	}
 }

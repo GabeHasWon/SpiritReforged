@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Underground.NPCs;
@@ -11,7 +12,12 @@ public class WheezerCloud : ModProjectile
 	public float Progress => Projectile.timeLeft / (float)TimeLeftMax;
 	public bool DealDamage => Projectile.velocity.Length() > .5f;
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 8;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 8;
+
+		MoRHelper.AddElement(Projectile, MoRHelper.Wind);
+	}
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(Size);
@@ -29,6 +35,7 @@ public class WheezerCloud : ModProjectile
 		Projectile.rotation += Projectile.velocity.X * .01f;
 
 		Projectile.velocity *= .9f;
+		Projectile.velocity.Y = Math.Max(Projectile.velocity.Y - 0.02f, -0.5f); //Slowly rise over time
 		Projectile.UpdateFrame(15);
 
 		int square = (int)(Size * Projectile.scale);

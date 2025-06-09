@@ -4,7 +4,7 @@ by Team Spirit
 English (by Team Spirit)
 Português Brasileiro (Tradução por Lucas Rotulo)
 Русский (Перевод от RUnion Team)
-简体中文(translated by Lacewing, Lin)
+简体中文 (translated by Lacewing, 狐萝卜, and Lin)
 
 Spirit Reforged is a general content mod which aims to create a fleshed out, high-quality experience for players at all points of progression. We want to make your world come to life by creating memorable environments, encounters, and high-quality items. 
 
@@ -12,11 +12,11 @@ Spirit Reforged is the latest and main project developed by Team Spirit, also re
 
 Spirit Reforged is a standalone project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
-Version 0.1 brings you a new ecotone minibiome, the Savanna, as well as an Ocean expansion, new weapons, NPCs, and more. Here are the stats at a glance:
+Our brand new update, Caves and Clubs (v0.1.1) brings you a new subclass: clubs, new underground worldgen, new enemies, weapons, NPCs, and more! Here are the stats at a glance:
 
-- 229 Items
+- 316 Items
 - 1 New Minibiome: The Savanna
-- 28 Enemies and NPCs, including 2 new wandering World NPCs to encounter
+- 33 Enemies and NPCs, including 2 new wandering World NPCs to encounter
 - Numerous microbiomes, microstructures, and discoveries scattered across the world
 
 We hope you enjoy Spirit Reforged and join Team Spirit on our next adventure.

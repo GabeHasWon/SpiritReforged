@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
-using Terraria.DataStructures;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
@@ -30,20 +29,19 @@ public class EnergizedShockwave : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.width = 20;
-		Projectile.height = 100;
+		Projectile.Size = new(20, 100);
+		Projectile.DamageType = DamageClass.Melee;
 		Projectile.aiStyle = 0;
 		Projectile.penetrate = -1;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = timeLeftMax;
 		Projectile.friendly = true;
-		DrawOriginOffsetY = 8;
 		Projectile.extraUpdates = 1;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
-	}
 
-	public override void OnSpawn(IEntitySource source) { }
+		DrawOriginOffsetY = 8;
+	}
 
 	public override void AI()
 	{
@@ -75,12 +73,7 @@ public class EnergizedShockwave : ModProjectile
 		Lighting.AddLight(Projectile.Center, Color.Cyan.ToVector3() / 2 * Projectile.Opacity);
 	}
 
-	public override bool OnTileCollide(Vector2 oldVelocity)
-	{
-		//Projectile.velocity.X = oldVelocity.X;
-		return false;
-	}
-
+	public override bool OnTileCollide(Vector2 oldVelocity) => false;
 	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
 	{
 		fallThrough = false;

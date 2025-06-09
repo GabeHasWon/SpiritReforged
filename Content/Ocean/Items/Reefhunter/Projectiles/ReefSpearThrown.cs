@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
@@ -37,6 +38,8 @@ public class ReefSpearThrown : ModProjectile
 		Projectile.tileCollide = true;
 		Projectile.DamageType = DamageClass.Melee;
 		Projectile.aiStyle = 0;
+
+		MoRHelper.SetSpearBonus(Projectile);
 	}
 
 	public override bool? CanDamage() => !HasTarget;

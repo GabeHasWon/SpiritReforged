@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -19,6 +20,8 @@ public class PoolNoodle : ModItem
 
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 8));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 8));
+
+		MoRHelper.AddElement(Item, MoRHelper.Water, true);
 	}
 
 	public override void SetDefaults()

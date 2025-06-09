@@ -43,6 +43,18 @@ public class WorldMethods
 		return j;
 	}
 
+	/// <summary> Scans up, then down for the nearest surface tile. </summary>
+	public static int FindGround(int i, int j)
+	{
+		while (j > 20 && WorldGen.SolidOrSlopedTile(i, j - 1))
+			j--; //Up
+
+		while (j < Main.maxTilesY - 20 && !WorldGen.SolidOrSlopedTile(i, j))
+			j++; //Down
+
+		return j;
+	}
+
 	/// <summary> Scans up, then down for the nearest surface tile. Breaks if near any world edge and returns false. </summary>
 	public static bool SafeFindGround(int i, ref int j)
 	{

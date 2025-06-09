@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.RoguesCrest;
@@ -21,5 +22,7 @@ public class RogueCrest : MinionAccessory
 		Item.value = Item.buyPrice(0, 3, 0, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.defense = 1;
+
+		MoRHelper.SetSlashBonus(Item);
 	}
 }

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using System.IO;
@@ -20,7 +21,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	public int SwingTime { get; private set; }
 	public float MeleeSizeModifier { get; private set; }
 
-	internal int WindupTime => (int)(ChargeTime * WindupTimeRatio);
+	internal int WindupTime => (int)(ChargeTime * WindupTimeRatio / ChargeSpeedMult);
 	internal int LingerTime => (int)(SwingTime * LingerTimeRatio);
 
 	public float Charge { get => Projectile.ai[0]; set => Projectile.ai[0] = value; }
@@ -38,6 +39,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	/// <summary><inheritdoc cref="ModProjectile.DisplayName"/><para/>
 	/// Automatically attempts to use the associated item localization. </summary>
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items." + Name.Replace("Proj", string.Empty) + ".DisplayName");
+
 	/// <summary><inheritdoc cref="ModProjectile.Texture"/><para/>
 	/// Automatically attempts to use the associated item texture. </summary>
 	public override string Texture
@@ -49,7 +51,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 				return base.Texture;
 
 			string def = base.Texture;
-			return def.Remove(def.Length - 4); //Remove 'proj'
+			return def[..^4]; //Remove 'proj'
 		}
 	}
 
@@ -74,6 +76,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 
+		MoRHelper.SetHammerBonus(Projectile);
 		SafeSetDefaults();
 	}
 
@@ -144,7 +147,10 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		SafeAI();
 
 		if (Owner.dead)
+		{
 			Projectile.Kill();
+			return;
+		}
 
 		Owner.heldProj = Projectile.whoAmI;
 		Owner.direction = Math.Sign(Projectile.direction);
@@ -152,7 +158,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		if (AllowUseTurn && Projectile.owner == Main.myPlayer)
 		{
 			int newDir = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
-			Projectile.velocity.X = newDir == 0 ? Owner.direction : newDir;
+			Projectile.velocity.X = (newDir == 0) ? Owner.direction : newDir;
 
 			if (newDir != Owner.direction)
 				Projectile.netUpdate = true;
@@ -189,6 +195,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		Projectile.Center = Owner.RotatedRelativePoint(Owner.Center - new Vector2((int)(Math.Cos(rotation) * Size.X), (int)(Math.Sin(rotation) * Size.Y)));
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
+		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation + 0.4f * Owner.direction);
 		Owner.itemAnimation = Owner.itemTime = 2;
 	}
 

@@ -1,14 +1,15 @@
 ﻿using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.ItemCommon;
+using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
 internal static class PlayerExtensions
 {
-	public static bool HasAccessory(this Player player, Item item) => item.ModItem is AccessoryItem acc && player.GetModPlayer<MiscAccessoryPlayer>().accessory[acc.AccName];
-	public static bool HasAccessory(this Player player, ModItem item) => item is AccessoryItem acc && player.GetModPlayer<MiscAccessoryPlayer>().accessory[acc.AccName];
-	public static bool HasAccessory<TItem>(this Player player) where TItem : AccessoryItem => player.GetModPlayer<MiscAccessoryPlayer>().accessory[ModContent.GetInstance<TItem>().AccName];
-	public static bool HasAccessory(this Player player, int itemId) => HasAccessory(player, ContentSamples.ItemsByType[itemId]);
+	public static bool HasEquip(this Player player, Item item) => item.ModItem is EquippableItem && player.GetModPlayer<ItemEquipPlayer>().equips[item.Name];
+	public static bool HasEquip(this Player player, ModItem item) => item is EquippableItem && player.GetModPlayer<ItemEquipPlayer>().equips[item.Name];
+	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<ItemEquipPlayer>().equips[ModContent.GetInstance<TItem>().Name];
+	public static bool HasEquip(this Player player, int itemId) => HasEquip(player, ContentSamples.ItemsByType[itemId]);
 
 	/// <summary> Checks whether the player is in the corruption, crimson, or hallow. </summary>
 	public static bool ZoneEvil(this Player player) => player.ZoneCorrupt || player.ZoneCrimson || player.ZoneHallow;
@@ -33,5 +34,12 @@ internal static class PlayerExtensions
 		float rotation = player.compositeFrontArm.rotation;
 
 		return player.GetHandRotated(stretch, rotation);
+	}
+
+	public static void SimpleShakeScreen(this Player player, float strength, float vibrationCycles, int frames, float distanceFalloff, string uniqueIdentity = null)
+	{
+		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
+		PunchCameraModifier modifier = new(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
+		Main.instance.CameraModifiers.Add(modifier);
 	}
 }

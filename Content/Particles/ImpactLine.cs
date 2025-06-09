@@ -10,12 +10,12 @@ public class ImpactLine : Particle
 
 	public bool UseLightColor { get; set; }
 
-	private readonly Entity _ent = null;
+	internal readonly Entity _ent = null;
 
-	private Color _color;
-	private Vector2 _scaleMod;
-	private Vector2 _offset;
-	private float _acceleration;
+	internal Color _color;
+	internal Vector2 _scaleMod;
+	internal Vector2 _offset;
+	internal readonly float _acceleration;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 

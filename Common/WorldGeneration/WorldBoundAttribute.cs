@@ -1,19 +1,24 @@
-﻿using System.Collections;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace SpiritReforged.Common.WorldGeneration;
 
-/// <summary> 
-/// Resets this static field to its original value when <see cref="WorldGen.clearWorld()"/> is called.<br/>
-/// For <see cref="IEnumerable"/>s, this will call any Clear method (such as <see cref="HashSet{T}.Clear"/>) instead of nulling the value.
-/// </summary>
+/// <summary>Resets this static field to its original value when <see cref="WorldGen.clearWorld()"/> is called.<br/>
+/// For <see cref="IEnumerable"/>s, this will call any Clear method (such as <see cref="HashSet{T}.Clear"/>) instead of nulling the value.</summary>
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-internal class WorldBoundAttribute : Attribute { }
+internal class WorldBoundAttribute : Attribute
+{
+	/// <summary> When true, prevents alternative reset behaviour from taking place. </summary>
+	public bool Manual;
+}
 
 internal class WorldBoundSystem : ModSystem
 {
-	private static readonly Dictionary<FieldInfo, object> Defaults = [];
-	private static readonly Dictionary<FieldInfo, MethodInfo> ClearAction = [];
+	private readonly record struct FieldData(object Obj, MethodInfo Alt = null)
+	{
+		public readonly object Default = Obj;
+		public readonly MethodInfo Alternative = Alt;
+	}
+	private static readonly Dictionary<FieldInfo, FieldData> Defaults = [];
 
 	public override void Load()
 	{
@@ -21,27 +26,24 @@ internal class WorldBoundSystem : ModSystem
 		{
 			foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
 			{
-				if (field.GetCustomAttribute<WorldBoundAttribute>() != null)
-				{
-					Defaults.Add(field, field.GetValue(null));
-
-					var clearMethod = field.FieldType.GetMethod("Clear", BindingFlags.Public | BindingFlags.Instance);
-
-					if (clearMethod != null)
-						ClearAction.Add(field, clearMethod);
-				}
+				if (field.GetCustomAttribute<WorldBoundAttribute>() is WorldBoundAttribute attr)
+					Defaults.Add(field, new(field.GetValue(null), attr.Manual ? null : GetOptionalInfo(field)));
 			}
 		}
+
+		static MethodInfo GetOptionalInfo(FieldInfo info) => info.FieldType.GetMethod("Clear", BindingFlags.Public | BindingFlags.Instance);
 	}
 
 	public override void ClearWorld()
 	{
 		foreach (var info in Defaults.Keys)
 		{
-			if (ClearAction.TryGetValue(info, out var clearMethod))
-				clearMethod.Invoke(info.GetValue(Defaults[info]), []);
-			else 
-				info.SetValue(null, Defaults[info]);
+			var data = Defaults[info];
+
+			if (data.Alternative is null)
+				info.SetValue(null, data.Default);
+			else
+				data.Alternative.Invoke(info.GetValue(data), null);
 		}
 	}
 }

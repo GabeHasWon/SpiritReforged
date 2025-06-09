@@ -1,6 +1,4 @@
-﻿using Terraria;
-
-namespace SpiritReforged.Common.MathHelpers;
+﻿namespace SpiritReforged.Common.MathHelpers;
 
 public static class CollisionCheckHelper
 {
@@ -40,6 +38,51 @@ public static class CollisionCheckHelper
 		}
 
 		return false;
+	}
+
+	/// <summary> Checks whether <paramref name="end"/> can be reached by traversing solid tiles for a gravity-affected entity. </summary>
+	/// <param name="start"> The entity trying to reach <paramref name="end"/>. </param>
+	/// <param name="end"> The entity to reach. </param>
+	/// <param name="allowedHeight"> How many pixels above <paramref name="start"/> can be reached. If the entity jumps, include jump height here. </param>
+	/// <param name="fallHeightCutoff"> The maximum number of pixels <paramref name="start"/> can fall before this check is invalidated. </param>
+	public static bool CanReachFromGround(Entity start, Entity end, int allowedHeight, int fallHeightCutoff = 200)
+	{
+		const int moveDist = 16;
+
+		int direction = Math.Sign(end.Center.X - start.Center.X);
+		int loops = (int)(Math.Abs(start.Center.X - end.Center.X) / moveDist) + 1;
+		Vector2 position = start.position;
+
+		for (int i = 0; i < loops; i++)
+		{
+			float oldY = position.Y;
+
+			while (!Collision.SolidCollision(position + new Vector2(0, moveDist), start.width, start.height) && !Collision.IsWorldPointSolid(position + new Vector2(start.width / 2, start.height)))
+			{
+				position.Y += moveDist; //Move down
+
+				if (Math.Abs(oldY - position.Y) > fallHeightCutoff)
+					return false;
+			}
+
+			while (Collision.SolidCollision(position, start.width, start.height))
+			{
+				position.Y -= moveDist; //Move up
+
+				if (Math.Abs(oldY - position.Y) > allowedHeight)
+					return false;
+			}
+
+			position.X += direction * moveDist;
+
+			Rectangle hit = Hitbox();
+			if ((hit with { Y = hit.Y - allowedHeight, Height = hit.Height + allowedHeight }).Intersects(end.Hitbox))
+				return true;
+		}
+
+		return false;
+
+		Rectangle Hitbox() => new((int)position.X, (int)position.Y, start.width, start.height);
 	}
 
 	/// <summary> Based on <see cref="Collision.TileCollision"/> but ignores slopes completely. </summary>

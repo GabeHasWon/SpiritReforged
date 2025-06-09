@@ -13,9 +13,12 @@
     <Reference Include="StructureHelper">
       <HintPath>lib\StructureHelper.dll</HintPath>
     </Reference>
-	  <Reference Include="RubbleAutoloader">
-		  <HintPath>lib\RubbleAutoloader.dll</HintPath>
-	  </Reference>
+	<Reference Include="RubbleAutoloader">
+		<HintPath>lib\RubbleAutoloader.dll</HintPath>
+	</Reference>
+	<Reference Include="ILLogger">
+		<HintPath>lib\ILLogger.dll</HintPath>
+	</Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Localization\ru-RU\" />

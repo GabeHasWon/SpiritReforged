@@ -10,8 +10,8 @@ SlotContexts.Backpack: 背包
 Conditions: {
 	InSavanna: 于稀树平原
 	PeevedTumbler: 当闪烁时
-	// Discovered: Discovery
-	// Submerged: Submerged
+	Discovered: 发现
+	Submerged: 水下
 }
 
 Misc: {
@@ -22,8 +22,10 @@ Misc: {
 	}
 
 	NoStock: 无库存
-	GraveText: <wavy>这段文字旧得泛黄；你看不清上面写的是什么。
+	GraveText: <wavy>其上文字年久失色；令你难以辨认。
 	MenuButton: 使用菜单样式
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {

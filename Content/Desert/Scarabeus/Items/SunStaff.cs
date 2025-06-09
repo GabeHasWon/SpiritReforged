@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
@@ -8,7 +9,13 @@ public class SunStaff : ModItem
 {
 	public override bool IsLoadingEnabled(Mod mod) => false;
 
-	public override void SetStaticDefaults() => Item.staff[Type] = true;
+	public override void SetStaticDefaults()
+	{
+		Item.staff[Type] = true;
+
+		MoRHelper.AddElement(Item, MoRHelper.Fire);
+		MoRHelper.AddElement(Item, MoRHelper.Holy, true);
+	}
 
 	public override void SetDefaults()
 	{

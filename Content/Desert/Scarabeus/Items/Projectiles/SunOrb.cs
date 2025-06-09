@@ -128,7 +128,7 @@ public class SunOrb : ModProjectile
 			progress = AiTimer / GROWTIME;
 			progress = Min(progress, 1);
 
-			Projectile.scale = CompoundEase(EaseCircularIn, EaseOutBack(2), progress, 0.2f);
+			Projectile.scale = MultistepEase(EaseCircularIn, EaseOutBack(2), 0.2f).Ease(progress);
 			_rayScale = new Vector3(EaseQuadOut.Ease(Min(progress, 1)) * Projectile.scale);
 			_rayScale.X *= Projectile.scale;
 		}
@@ -140,7 +140,7 @@ public class SunOrb : ModProjectile
 			if (progress == 0)
 				Projectile.Kill();
 
-			Projectile.scale = CompoundEase(EaseCubicIn, EaseCubicOut, progress, 0.2f) * Lerp(1, 1.3f, progress);
+			Projectile.scale = MultistepEase(EaseCubicIn, EaseCubicOut, 0.2f).Ease(progress) * Lerp(1, 1.3f, progress);
 			_rayScale = new Vector3(EaseQuadOut.Ease(Min(Projectile.scale, 1)));
 			_rayScale.X *= Lerp(0.5f, 1.2f, EaseCircularIn.Ease(progress)) * Projectile.scale;
 		}

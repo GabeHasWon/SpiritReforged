@@ -37,22 +37,69 @@ public abstract class EaseFunction
 		return new PolynomialEase((float x) => (float)(1 + c3 * Math.Pow(x - 1, 3) + c1 * Math.Pow(x - 1, 2)));
 	}
 
-	public static float CompoundEase(EaseFunction easeStart, EaseFunction easeEnd, float curTime, float cutOff = 0.5f)
+	public static EaseFunction EaseOutElastic(double maxValue = 2.09439) => new PolynomialEase((float x) => x switch
 	{
-		float inverseCutoff = 1 - cutOff;
-		float easeStartRate = 1 / cutOff;
-		float easeEndRate = 1 / inverseCutoff;
-		if (curTime < cutOff)
-			return easeStart.Ease(easeStartRate * curTime) * cutOff;
-		else
-			return cutOff + easeEnd.Ease(easeEndRate * (curTime - cutOff)) * inverseCutoff;
+		0 => 0,
+		1 => 1,
+		_ => (float)(Math.Pow(2, -10 * x) * Math.Sin((x * 10 - 0.75) * maxValue) + 1)
+	});
+
+	/// <summary>
+	/// Returns the result of multiple ease functions applied to one input, as its own singular function.
+	/// </summary>
+	/// <param name="inputs"></param>
+	/// <returns></returns>
+	public static EaseFunction CompoundEase(EaseFunction[] inputs)
+	{
+		float func(float x)
+		{
+			for (int i = 0; i < inputs.Length; i++)
+				x = inputs[i].Ease(x);
+
+			return x;
+		}
+
+		return new PolynomialEase(func);
 	}
 
-	public static float CompoundEaseLerp(EaseFunction easeStart, EaseFunction easeEnd, float curTime, EaseFunction interpolationEase = null)
+	/// <summary>
+	/// Returns the result of two different ease functions being stitched together, as its own singular function. <br />
+	/// "cutOff" refers to the point at which the function switches from the first to the second function, as a percentage (ie 0.5f refers to 50% through)
+	/// </summary>
+	/// <param name="easeStart"></param>
+	/// <param name="easeEnd"></param>
+	/// <param name="cutOff"></param>
+	/// <returns></returns>
+	public static EaseFunction MultistepEase(EaseFunction easeStart, EaseFunction easeEnd, float cutOff = 0.5f)
+	{
+		float func(float x)
+		{
+			float inverseCutoff = 1 - cutOff;
+			float easeStartRate = 1 / cutOff;
+			float easeEndRate = 1 / inverseCutoff;
+			if (x < cutOff)
+				return easeStart.Ease(easeStartRate * x) * cutOff;
+			else
+				return cutOff + easeEnd.Ease(easeEndRate * (x - cutOff)) * inverseCutoff;
+		}
+
+		return new PolynomialEase(func);
+	}
+
+	/// <summary>
+	/// Returns the result of two different ease functions being smoothly combined, as its own singular function. <br />
+	/// Interpolates from the first function to the second as the eased value increases, with an optional parameter to affect how this function's interpolation is eased.
+	/// </summary>
+	/// <param name="easeStart"></param>
+	/// <param name="easeEnd"></param>
+	/// <param name="interpolationEase"></param>
+	/// <returns></returns>
+	public static EaseFunction MultistepEaseLerp(EaseFunction easeStart, EaseFunction easeEnd, EaseFunction interpolationEase = null)
 	{
 		interpolationEase ??= Linear;
+		float func(float x) => MathHelper.Lerp(easeStart.Ease(x), easeEnd.Ease(x), interpolationEase.Ease(x));
 
-		return MathHelper.Lerp(easeStart.Ease(curTime), easeEnd.Ease(curTime), interpolationEase.Ease(curTime));
+		return new PolynomialEase(func);
 	}
 
 	public abstract float Ease(float time);

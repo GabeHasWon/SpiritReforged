@@ -3,6 +3,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -34,6 +35,33 @@ public class Hyena : ModNPC
 	public int AnimationState { get => (int)NPC.ai[0]; set => NPC.ai[0] = value; } //What animation is currently being played
 	public ref float Counter => ref NPC.ai[1]; //Used to change behaviour at intervals
 	public ref float TargetSpeed => ref NPC.ai[2]; //Stores a direction to lerp to over time
+
+	public static readonly SoundStyle Laugh = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh")
+	{
+		Volume = 0.15f,
+		PitchVariance = 0.4f,
+		MaxInstances = 2
+	};
+
+	public static readonly SoundStyle Bark = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark")
+	{
+		Volume = 0.05f,
+		PitchVariance = 0.4f
+	};
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/Hyena_Death")
+	{
+		Volume = 0.75f,
+		Pitch = 0.2f,
+		MaxInstances = 0
+	};
+
+	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit")
+	{
+		Volume = 0.75f,
+		PitchRange = (-0.45f, -0.35f),
+		MaxInstances = 2
+	};
 
 	/// <summary> Whether this NPC is holding raw meat. </summary>
 	private bool holdingMeat;
@@ -145,7 +173,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && AnimationState == (int)State.TrotEnd && Main.rand.NextBool(800)) //Randomly laugh when still; not synced
 					{
 						ChangeAnimationState(State.Laugh);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh") with { Volume = 1.25f, PitchVariance = 0.4f, MaxInstances = 2 }, NPC.Center);
+						SoundEngine.PlaySound(Laugh, NPC.Center);
 					}
 				//}
 			}
@@ -173,7 +201,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && Main.rand.NextBool(250)) //Randomly bark; not synced
 					{
 						ChangeAnimationState(State.BarkingAngry);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark") with { Volume = .18f, PitchVariance = .4f }, NPC.Center);
+						SoundEngine.PlaySound(Bark, NPC.Center);
 					}
 				}
 
@@ -214,7 +242,7 @@ public class Hyena : ModNPC
 					if (!holdingMeat && !NPC.wet && Main.rand.NextBool(250)) //Randomly laugh; not synced
 					{
 						ChangeAnimationState(State.Laugh);
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh") with { Volume = 1.25f, PitchVariance = 0.4f, MaxInstances = 2 }, NPC.Center);
+						SoundEngine.PlaySound(Laugh, NPC.Center);
 					}
 				}
 
@@ -372,10 +400,10 @@ public class Hyena : ModNPC
 				for (int i = 1; i < 4; i++)
 					Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(.3f), Mod.Find<ModGore>("Hyena" + i).Type);
 
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/Hyena_Death") with { Volume = .75f, Pitch = .2f, MaxInstances = 0 }, NPC.Center);
+				SoundEngine.PlaySound(Death, NPC.Center);
 			}
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit") with { Volume = .75f, Pitch = -.05f, PitchVariance = .4f, MaxInstances = 2 }, NPC.Center);
+			SoundEngine.PlaySound(Hit, NPC.Center);
 		}
 
 		TargetSpeed = hit.HitDirection * 3;
@@ -473,6 +501,7 @@ public class Hyena : ModNPC
 	{
 		npcLoot.AddCommon<RawMeat>(3);
 		npcLoot.AddCommon(ItemID.Leather, 2, 3, 5);
+		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}
 
 	public override void OnKill()

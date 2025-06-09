@@ -1,4 +1,5 @@
-﻿using MonoMod.Cil;
+﻿using ILLogger;
+using MonoMod.Cil;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ProjectileCommon;
@@ -27,7 +28,7 @@ internal class PreNewProjectile : ILoadable
 
 		if (!c.TryGotoNext(x => x.MatchCall("Terraria.ModLoader.ProjectileLoader", "OnSpawn")))
 		{
-			SpiritReforgedMod.Instance.Logger.Debug("Failed goto ProjectileLoader.OnSpawn; Index");
+			SpiritReforgedMod.Instance.LogIL("Modify New Projectile", "Member 'ProjectileLoader.OnSpawn' not found.");
 			return;
 		}
 

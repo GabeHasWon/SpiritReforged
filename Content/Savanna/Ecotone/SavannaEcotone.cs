@@ -2,8 +2,8 @@
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
-using SpiritReforged.Common.WorldGeneration.Seeds;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;

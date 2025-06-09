@@ -109,7 +109,7 @@ internal class LandscaperTile : GlobalTile
 		TileID.KryptonMoss, TileID.LavaMoss, TileID.PurpleMoss, TileID.RainbowMoss, TileID.RedMoss, TileID.VioletMoss, TileID.XenonMoss, 
 		ModContent.TileType<OganessonMoss>(), ModContent.TileType<RadonMoss>()];
 
-	private static readonly HashSet<int> CutTypes = [TileID.MushroomPlants, TileID.LongMoss, TileID.JunglePlants, TileID.JunglePlants2];
+	private static readonly HashSet<int> CutTypes = [TileID.MushroomPlants, TileID.LongMoss, TileID.JunglePlants, TileID.JunglePlants2, TileID.Plants, TileID.Plants2];
 
 	public override void Load() => On_Player.Update += ShowHoverIcon;
 	private static void ShowHoverIcon(On_Player.orig_Update orig, Player self, int i)
@@ -148,12 +148,21 @@ internal class LandscaperTile : GlobalTile
 			if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool())
 			{
 				var t = Main.tile[i, j];
-				int drop = TileLoader.GetItemDropFromTypeAndStyle(t.TileType);
+				int oldType = t.TileType;
 
-				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(), drop);
+				WorldGen.KillTile(i, j, true);
+
+				if (t.TileType != oldType) //Checks if the operation was successful
+				{
+					int drop = GetItems(i, j, oldType);
+					Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(), drop);
+				}
+			}
+			else
+			{
+				WorldGen.KillTile(i, j, true);
 			}
 
-			WorldGen.KillTile(i, j, true);
 			return true;
 		}
 
@@ -182,30 +191,44 @@ internal class LandscaperTile : GlobalTile
 
 		if (p.HeldItem.type == ModContent.ItemType<LandscapingShears>() && Main.rand.NextBool())
 		{
-			var t = Main.tile[i, j];
-			int drop = TileLoader.GetItemDropFromTypeAndStyle(t.TileType);
-
-			if (type is TileID.LongMoss)
-				drop = (t.TileFrameX / 22) switch
-				{
-					0 => ItemID.GreenMoss,
-					1 => ItemID.BrownMoss,
-					2 => ItemID.RedMoss,
-					3 => ItemID.BlueMoss,
-					4 => ItemID.PurpleMoss,
-					5 => ItemID.LavaMoss,
-					6 => ItemID.KryptonMoss,
-					7 => ItemID.XenonMoss,
-					_ => ItemID.VioletMoss
-				}; //Set drops manually because the prior method can't read them
-
-			if (type is TileID.JunglePlants or TileID.JunglePlants2)
-				drop = ItemID.JungleGrassSeeds;
-
-			if (type is TileID.MushroomPlants)
-				drop = ItemID.GlowingMushroom;
-
+			int drop = GetItems(i, j, type);
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(), drop);
 		}
+	}
+
+	private static int GetItems(int i, int j, int tileType)
+	{
+		var t = Main.tile[i, j];
+		int drop = TileLoader.GetItemDropFromTypeAndStyle(tileType);
+
+		if (tileType is TileID.LongMoss)
+			drop = (t.TileFrameX / 22) switch
+			{
+				0 => ItemID.GreenMoss,
+				1 => ItemID.BrownMoss,
+				2 => ItemID.RedMoss,
+				3 => ItemID.BlueMoss,
+				4 => ItemID.PurpleMoss,
+				5 => ItemID.LavaMoss,
+				6 => ItemID.KryptonMoss,
+				7 => ItemID.XenonMoss,
+				8 => ItemID.ArgonMoss,
+				9 => ItemID.VioletMoss,
+				_ => ItemID.RainbowMoss
+			}; //Set drops manually because the prior method can't read them
+
+		if (tileType is TileID.JunglePlants or TileID.JunglePlants2)
+			drop = ItemID.JungleGrassSeeds;
+
+		if (tileType is TileID.Plants or TileID.Plants2)
+			drop = ItemID.Seed;
+
+		if (tileType is TileID.MushroomPlants)
+			drop = ItemID.GlowingMushroom;
+
+		if (tileType is TileID.MushroomGrass)
+			drop = ItemID.MushroomGrassSeeds;
+
+		return drop;
 	}
 }

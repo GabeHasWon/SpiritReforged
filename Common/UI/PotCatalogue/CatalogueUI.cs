@@ -57,7 +57,8 @@ public partial class CatalogueUI : AutoUIState
 			bool locked = !Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(value.key);
 			bool newAndShiny = Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsNew(value.key);
 
-			_entries.AddEntry(new CatalogueEntry(value, locked, newAndShiny));
+			if (value.hidden?.Invoke() != true || !locked)
+				_entries.AddEntry(new CatalogueEntry(value, locked, newAndShiny));
 		}
 	}
 
@@ -107,14 +108,19 @@ public partial class CatalogueUI : AutoUIState
 		}
 	}
 
-	public override void Update(GameTime gameTime)
+	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		base.Update(gameTime);
-
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
-		if (!Main.playerInventory)
+		base.DrawSelf(spriteBatch);
+	}
+
+	public override void Update(GameTime gameTime)
+	{
+		if (Main.LocalPlayer.controlInv)
 			UISystem.SetInactive<CatalogueUI>();
+
+		base.Update(gameTime);
 	}
 }

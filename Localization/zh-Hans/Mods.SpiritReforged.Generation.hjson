@@ -1,4 +1,4 @@
-Discoveries: 正在添加发现
+Discoveries: 正在添加散迹
 Stargrass: 正在生长星草
 HerosMemorial: 正在缅怀一位英雄
 Butterfly: 正在隐藏蝴蝶圣地
@@ -8,34 +8,34 @@ Gravel: 正在放置砾石
 SavannaTerrain: 正在创造高原
 SavannaObjects: 正在填充稀树平原
 Ecotones: 正在绘制生态区地图
-// Caves: Decorating caves
-// NeonMosses: Glowing moss
-// Pottery: Stashing pots
+Caves: 正在装饰洞穴
+NeonMosses: 正在生长苔藓
+Pottery: 正在储藏罐子
 
 Signs: {
 	Underground: {
 		Common: {
-			// 0: <wavy>Pots hold the secret...
-			// 1: <wavy>The text is too faded to read.
-			// 2: <colorful:255,80,80>The sign is covered in unintelligible scrawling from a dubious liquid.
-			// 3: <wavy>......er's Wares
-			// 4: <wavy>The old sign has almost crumbled to dust.
-			// 5: <wavy>A crudely drawn skeleton beckons.
-			// 6: <wavy>If you're reading this, I'm already dead.
-			// 7: If you're reading this, I'm doing great!
-			// 8: <wavy>Beware: Worms
-			// 9: The sign rambles on about something you can't quite understand. It's not worth reading further.
-			// 10: Dwarven scripture is scrawled all over the sign. You can read none of it.
+			0: <wavy>罐子中藏着秘密……
+			1: <wavy>文字失色难以辨认。
+			2: <colorful:255,80,80>这个标牌上覆盖着用可疑液体写下的潦草字迹。
+			3: <wavy>……者杂货。
+			4: <wavy>老旧的标牌几乎化为了尘埃。
+			5: <wavy>粗糙绘制的骷髅正向你招手。
+			6: <wavy>如果你读到此这段文字，说明我早已不在人世。
+			7: 如果你读到此这段文字，说明我做的很好！
+			8: <wavy>当心：蠕虫
+			9: 标牌上语无伦次的内容令人费解。不值得继续阅读。
+			10: 标牌上写满了歪歪扭扭的矮人语经文。你一个字都看不懂。
 		}
 
 		Rare: {
-			// 0: <wavy>Collect my pages...
-			// 1: Looks like there's no goo balls around here. -the Sign Painter
-			/* 2:
+			0: <wavy>收集我的书页……
+			1: 看来这附近没有粘液球呢——标牌画家
+			2:
 				'''
 				<wavy>0
-				days since cave incident
-				''' */
+				↑ 未发生洞穴事故天数
+				'''
 		}
 	}
 }

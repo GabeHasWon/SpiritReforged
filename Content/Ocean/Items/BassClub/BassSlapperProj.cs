@@ -9,6 +9,7 @@ using System.IO;
 using Terraria.Audio;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
+using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.Ocean.Items.BassClub;
 
@@ -73,14 +74,14 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 
 	public override void AfterCollision()
 	{
-		if(_numSlams < MAX_SLAMS && FullCharge)
+		if (_numSlams < MAX_SLAMS && FullCharge)
 		{
 			_lingerTimer--;
 			float lingerProgress = _lingerTimer / (float)LingerTime;
 			lingerProgress = 1 - lingerProgress;
 			BaseRotation = Lerp(BaseRotation, HoldAngle_Final, EaseCubicOut.Ease(lingerProgress) / 6f);
 
-			if(lingerProgress >= 0.66f)
+			if (lingerProgress >= 0.66f)
 			{
 				SetAIState(AIStates.SWINGING);
 				ResetData();
@@ -104,7 +105,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		DustClouds(6);
 
 		//placeholder water dust
-		for(int i = 0; i < 10; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			float maxOffset = 35 * TotalScale;
 			float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
@@ -115,8 +116,8 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 
 			ParticleHandler.SpawnParticle(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
 
-			for(int j = 0; j < 2; j++)
-				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale : Main.rand.NextFloat(2));
+			for (int j = 0; j < 2; j++)
+				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale: Main.rand.NextFloat(2));
 		}
 
 		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 220, PiOver2, 0.4f);
@@ -135,7 +136,10 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		var basePosition = Vector2.Lerp(Projectile.Center, target.Center, 0.6f);
 		Vector2 directionUnit = basePosition.DirectionFrom(Owner.MountedCenter) * TotalScale;
 
-		int numParticles = FullCharge ? 24 : 16;
+		ParticleHandler.SpawnParticle(new SlapperHit(basePosition, FullCharge ? 1 : 0.75f, hit.Crit));
+
+		int numParticles = FullCharge ? 12 : 6;
+		Color particleColor = hit.Crit ? Color.Red : Color.Goldenrod;
 		for (int i = 0; i < numParticles; i++)
 		{
 			float maxOffset = 15;
@@ -149,8 +153,8 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			rotationOffset *= Main.rand.NextFloat(0.9f, 1.1f);
 
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
-			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
-			p.UseLightColor = true;
+			var p = new ImpactLine(position, particleVel, particleColor.Additive(160) * 0.75f, new Vector2(0.4f, 0.8f) * TotalScale, Main.rand.Next(12, 16), 0.8f);
+			p.UseLightColor = false;
 			ParticleHandler.SpawnParticle(p);
 		}
 	}
@@ -171,24 +175,29 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		Vector2 getHoldPoint(Vector2 input) => Effects == SpriteEffects.FlipHorizontally ? Size - input : new Vector2(input.X, Size.Y - input.Y);
 
 		Vector2 tailOffset = new(14);
-		Vector2 bodyOffset = new(22);
+		Vector2 bodyOffset1 = new(22);
+		Vector2 bodyOffset2 = new(40, 48);
 		Vector2 headOffset = new(54, 62);
 
-		float bodyRotation = lerpRotation(0.5f);
+		float bodyRotation1 = lerpRotation(0.3f);
+		float bodyRotation2 = lerpRotation(0.6f);
 		float headRotation = lerpRotation(0.9f);
 
 		Vector2 TailPos = drawPosition;
-		Vector2 BodyPos = GetSegmentPosition(TailPos, tailOffset, bodyOffset, Projectile.rotation);
-		Vector2 HeadPos = GetSegmentPosition(BodyPos, bodyOffset, headOffset, bodyRotation);
+		Vector2 BodyPos1 = GetSegmentPosition(TailPos, tailOffset, bodyOffset1, Projectile.rotation);
+		Vector2 BodyPos2 = GetSegmentPosition(BodyPos1, bodyOffset1, bodyOffset2, bodyRotation1);
+		Vector2 HeadPos = GetSegmentPosition(BodyPos2, bodyOffset2, headOffset, bodyRotation2);
 
-		int frameHeight = texture.Height / 3;
+		int frameHeight = texture.Height / 4;
 		var TailFrame = new Rectangle(0, 0, texture.Width, frameHeight);
-		var BodyFrame = new Rectangle(0, frameHeight, texture.Width, frameHeight);
-		var HeadFrame = new Rectangle(0, frameHeight * 2, texture.Width, frameHeight);
+		var BodyFrame1 = new Rectangle(0, frameHeight, texture.Width, frameHeight);
+		var BodyFrame2 = new Rectangle(0, frameHeight * 2, texture.Width, frameHeight);
+		var HeadFrame = new Rectangle(0, frameHeight * 3, texture.Width, frameHeight);
 
 		Color drawColor = Projectile.GetAlpha(lightColor);
 		Main.EntitySpriteDraw(texture, TailPos, TailFrame, drawColor, Projectile.rotation, getHoldPoint(tailOffset), TotalScale, Effects, 0);
-		Main.EntitySpriteDraw(texture, BodyPos, BodyFrame, drawColor, bodyRotation, getHoldPoint(bodyOffset), TotalScale, Effects, 0);
+		Main.EntitySpriteDraw(texture, BodyPos1, BodyFrame1, drawColor, bodyRotation1, getHoldPoint(bodyOffset1), TotalScale, Effects, 0);
+		Main.EntitySpriteDraw(texture, BodyPos2, BodyFrame2, drawColor, bodyRotation2, getHoldPoint(bodyOffset2), TotalScale, Effects, 0);
 		Main.EntitySpriteDraw(texture, HeadPos, HeadFrame, drawColor, headRotation, getHoldPoint(headOffset), TotalScale, Effects, 0);
 
 		//Flash when fully charged

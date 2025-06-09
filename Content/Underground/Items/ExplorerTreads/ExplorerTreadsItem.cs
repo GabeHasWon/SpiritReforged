@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 
 [AutoloadEquip(EquipType.Shoes)]
 [FromClassic("ExplorerTreads")]
-public class ExplorerTreadsItem : AccessoryItem
+public class ExplorerTreadsItem : EquippableItem
 {
 	public override void SetDefaults()
 	{

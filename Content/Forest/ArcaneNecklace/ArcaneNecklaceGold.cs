@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Forest.ArcaneNecklace;
 
 [AutoloadEquip(EquipType.Neck)]
 [FromClassic("ArcaneNecklace")]
-public class ArcaneNecklaceGold : AccessoryItem
+public class ArcaneNecklaceGold : EquippableItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -25,5 +25,5 @@ public class ArcaneNecklaceGold : AccessoryItem
 		Item.accessory = true;
 	}
 
-	public override void SafeUpdateAccessory(Player player, bool hideVisual) => player.statManaMax2 += 20;
+	public override void UpdateAccessory(Player player, bool hideVisual) => player.statManaMax2 += 20;
 }

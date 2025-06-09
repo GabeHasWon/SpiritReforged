@@ -9,8 +9,7 @@ public abstract class WorldNPC : ModNPC
 	/// <summary> Whether this NPC has spawned today. Commonly checked in <see cref="SpawnChance"/> to prevent multiple spawns in one day. </summary>
 	public bool SpawnedToday => WorldNPCFlags.SpawnedToday[Name];
 
-	/// <summary>
-	/// <inheritdoc/><para/>
+	/// <summary><inheritdoc/><para/>
 	/// Automatically registers this NPC for <see cref="WorldNPCFlags.SpawnedToday"/>.<br/>
 	/// Additionally sets <see cref="NPCID.Sets.ActsLikeTownNPC"/> and <see cref="NPCID.Sets.NoTownNPCHappiness[Type]"/> to true.
 	/// </summary>
@@ -34,8 +33,7 @@ public abstract class WorldNPC : ModNPC
 
 	public override bool CanChat() => true; //Must be specified because this isn't a town NPC
 
-	/// <summary>
-	/// <inheritdoc/><para/>
+	/// <summary><inheritdoc/><para/>
 	/// Automatically sets <see cref="WorldNPCFlags.SpawnedToday"/>.
 	/// </summary>
 	public override void OnSpawn(IEntitySource source) => WorldNPCFlags.SpawnedToday[Name] = true;

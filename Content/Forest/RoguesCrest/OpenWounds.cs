@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -51,7 +52,7 @@ internal class OpenWoundsNPC : GlobalNPC
 		return false;
 	}
 
-	public override void Load() => icon = ModContent.Request<Texture2D>((GetType().Namespace + ".Wound_Icon").Replace('.', '/'));
+	public override void Load() => icon = DrawHelpers.RequestLocal(GetType(), "Wound_Icon", false);
 
 	public override void UpdateLifeRegen(NPC npc, ref int damage)
 	{
@@ -95,7 +96,7 @@ internal class OpenWoundsPlayer : ModPlayer
 				new BleedTimeData((short)target.whoAmI, time).Send();
 		}
 
-		bool DoesMelee() => hit.DamageType.CountsAsClass(DamageClass.Melee) || hit.DamageType.CountsAsClass(DamageClass.SummonMeleeSpeed);
+		bool DoesMelee() => hit.DamageType.CountsAsClass(DamageClass.Melee);
 	}
 }
 

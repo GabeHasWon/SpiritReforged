@@ -1340,429 +1340,617 @@ PinWulfrum: {
 }
 
 WayfarerHead: {
-	// DisplayName: Wayfarer's Hat
-	// Tooltip: Immunity to darkness
+	DisplayName: 远行者帽
+	Tooltip: 使你免疫黑暗减益
 }
 
 WayfarerBody: {
-	// DisplayName: Wayfarer's Rucksack
-	// Tooltip: 5% increased movement speed
+	DisplayName: 远行者背包
+	Tooltip: 增加5%移动速度
 }
 
 WayfarerLegs: {
-	// DisplayName: Wayfarer's Pants
-	// Tooltip: 7% increased movement speed
+	DisplayName: 远行者裤
+	Tooltip: 增加7%移动速度
 }
 
 AncientKoiTotem: {
-	// DisplayName: Ancient Koi Totem
-	// Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+	DisplayName: 远古锦鲤图腾
+	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
-	// DisplayName: Boom Shroom
-	/* Tooltip:
+	DisplayName: 爆炸蘑菇
+	Tooltip:
 		'''
-		All thrown explosives are much larger... and stronger
-		Downtime between throws is increased
-		''' */
+		所有的投掷类爆炸物都会变得更大……以及更强
+		投掷间隔增加
+		'''
 }
 
 ClayBomb: {
-	// DisplayName: Clay Bomb
-	// Tooltip: A small explosion that will spread clay
+	DisplayName: 粘土炸弹
+	Tooltip: 会散布粘土的小爆炸
 }
 
 ClayBombSticky: {
-	// DisplayName: Sticky Clay Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+	DisplayName: 粘性粘土炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
 }
 
 SandBomb: {
-	// DisplayName: Sand Bomb
-	// Tooltip: A small explosion that will spread sand
+	DisplayName: 沙子炸弹
+	Tooltip: 会散布沙块的小爆炸
 }
 
 SandBombSticky: {
-	// DisplayName: Sticky Sand Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+	DisplayName: 粘性沙子炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
 }
 
 CoarseBomb: {
-	// DisplayName: Coarse Bomb
-	// Tooltip: A small explosion that will spread coarse dirt
+	DisplayName: 粗泥炸弹
+	Tooltip: 会散布粗泥的小爆炸
 }
 
 CoarseBombSticky: {
-	// DisplayName: Sticky Coarse Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+	DisplayName: 粘性粗泥炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
 MudBomb: {
-	// DisplayName: Mud Bomb
-	// Tooltip: A small explosion that will spread mud
+	DisplayName: 泥巴炸弹
+	Tooltip: 会散布泥巴的小爆炸
 }
 
 MudBombSticky: {
-	// DisplayName: Sticky Mud Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+	DisplayName: 粘性泥巴炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
 }
 
 HideTunic: {
-	// DisplayName: Hide Tunic
-	// Tooltip: Increases melee size and knockback by 25%
+	DisplayName: 隐匿束腰外衣
+	Tooltip: 增加25%近战大小和击退
 }
 
 PotteryWheelItem: {
-	// DisplayName: Pottery Wheel
-	/* Tooltip:
+	DisplayName: 陶轮
+	Tooltip:
 		'''
-		Used for crafting decorative pots
-		<right> when placed to view available recipes
-		''' */
+		用于制作装饰罐子
+		放置后右键点击以查看可用配方
+		'''
 }
 
 BiomePotsCavernItem: {
-	// DisplayName: Cavern Pot
-	// Tooltip: ""
+	DisplayName: 洞穴罐子
+	Tooltip: ""
 }
 
 OrnatePotsItem: {
-	// DisplayName: Ornate Pot
-	// Tooltip: ""
+	DisplayName: 华丽罐子
+	Tooltip: ""
 }
 
 BiomePotsIceItem: {
-	// DisplayName: Frozen Pot
-	// Tooltip: ""
+	DisplayName: 冰封罐子
+	Tooltip: ""
 }
 
 BiomePotsDesertItem: {
-	// DisplayName: Desert Pot
-	// Tooltip: ""
+	DisplayName: 沙漠罐子
+	Tooltip: ""
 }
 
 BiomePotsJungleItem: {
-	// DisplayName: Jungle Pot
-	// Tooltip: ""
+	DisplayName: 丛林罐子
+	Tooltip: ""
 }
 
 BiomePotsDungeonItem: {
-	// DisplayName: Dungeon Pot
-	// Tooltip: ""
+	DisplayName: 地牢罐子
+	Tooltip: ""
 }
 
 BiomePotsCorruptionItem: {
-	// DisplayName: Corrupt Pot
-	// Tooltip: ""
+	DisplayName: 腐化罐子
+	Tooltip: ""
 }
 
 BiomePotsCrimsonItem: {
-	// DisplayName: Crimson Pot
-	// Tooltip: ""
+	DisplayName: 猩红罐子
+	Tooltip: ""
 }
 
 BiomePotsMarbleItem: {
-	// DisplayName: Marble Pot
-	// Tooltip: ""
+	DisplayName: 大理石罐子
+	Tooltip: ""
 }
 
 BiomePotsHellItem: {
-	// DisplayName: Obsidian Pot
-	// Tooltip: ""
+	DisplayName: 黑曜石罐子
+	Tooltip: ""
 }
 
 BiomePotsMushroomItem: {
-	// DisplayName: Mushroom Pot
-	// Tooltip: ""
+	DisplayName: 蘑菇罐子
+	Tooltip: ""
 }
 
 PotsCavernItem: {
-	// DisplayName: Small Cavern Pot
-	// Tooltip: ""
+	DisplayName: 小型洞穴罐子
+	Tooltip: ""
 }
 
 PotsIceItem: {
-	// DisplayName: Small Frozen Pot
-	// Tooltip: ""
+	DisplayName: 小型冰封罐子
+	Tooltip: ""
 }
 
 PotsJungleItem: {
-	// DisplayName: Small Jungle Pot
-	// Tooltip: ""
+	DisplayName: 小型丛林罐子
+	Tooltip: ""
 }
 
 PotsDungeonItem: {
-	// DisplayName: Small Dungeon Pot
-	// Tooltip: ""
+	DisplayName: 小型地牢罐子
+	Tooltip: ""
 }
 
 PotsHellItem: {
-	// DisplayName: Small Obsidian Pot
-	// Tooltip: ""
+	DisplayName: 小型黑曜石罐子
+	Tooltip: ""
 }
 
 PotsCorruptionItem: {
-	// DisplayName: Small Corrupt Pot
-	// Tooltip: ""
+	DisplayName: 小型腐化罐子
+	Tooltip: ""
 }
 
 PotsSpiderItem: {
-	// DisplayName: Small Spider Pot
-	// Tooltip: ""
+	DisplayName: 小型蜘蛛罐子
+	Tooltip: ""
 }
 
 PotsCrimsonItem: {
-	// DisplayName: Small Crimson Pot
-	// Tooltip: ""
+	DisplayName: 小型猩红罐子
+	Tooltip: ""
 }
 
 PotsPyramidItem: {
-	// DisplayName: Small Pyramid Pot
-	// Tooltip: ""
+	DisplayName: 小型金字塔罐子
+	Tooltip: ""
 }
 
 PotsTempleItem: {
-	// DisplayName: Small Temple Pot
-	// Tooltip: ""
+	DisplayName: 小型神庙罐子
+	Tooltip: ""
 }
 
 PotsMarbleItem: {
-	// DisplayName: Small Marble Pot
-	// Tooltip: ""
+	DisplayName: 小型大理石罐子
+	Tooltip: ""
 }
 
 PotsDesertItem: {
-	// DisplayName: Small Desert Pot
-	// Tooltip: ""
+	DisplayName: 小型沙漠罐子
+	Tooltip: ""
 }
 
 CommonPotsMushroomItem: {
-	// DisplayName: Small Mushroom Pot
-	// Tooltip: ""
+	DisplayName: 小型蘑菇罐子
+	Tooltip: ""
 }
 
 SilverPlattersItem: {
-	// DisplayName: Silver Platter
-	// Tooltip: ""
+	DisplayName: 银制托盘
+	Tooltip: ""
 }
 
 StuffedPotsItem: {
-	// DisplayName: Stuffed Pot
-	// Tooltip: ""
+	DisplayName: 填充罐子
+	Tooltip: ""
 }
 
 WormPotItem: {
-	// DisplayName: Worm Pot
-	// Tooltip: ""
+	DisplayName: 蠕虫罐子
+	Tooltip: ""
 }
 
 AetherShipmentItem: {
-	// DisplayName: Aether Shipment
-	// Tooltip: ""
+	DisplayName: 以太货物
+	Tooltip: ""
 }
 
 PotionVatsAntiqueItem: {
-	// DisplayName: Antique Potion Vat
-	// Tooltip: ""
+	DisplayName: 古董药罐
+	Tooltip: ""
 }
 
 PotionVatsCloningItem: {
-	// DisplayName: Cloning Potion Vat
-	// Tooltip: ""
+	DisplayName: 克隆药罐
+	Tooltip: ""
 }
 
 SilverFoodPlatterItem: {
-	// DisplayName: Silver Food Platter
-	// Tooltip: <right> to place item on platter
+	DisplayName: 银制食物托盘
+	Tooltip: 右键将物品放置在托盘上
 }
 
 RadonMossItem: {
-	// DisplayName: Radon Moss
-	// Tooltip: "{$ItemTooltip.XenonMoss}"
+	DisplayName: 氡苔藓
+	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
 OganessonMossItem: {
-	// DisplayName: Oganesson Moss
-	// Tooltip: "{$ItemTooltip.XenonMoss}"
+	DisplayName: 「气奥」苔藓
+	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
 RadonMossBrickItem: {
-	// DisplayName: Radon Moss Brick
-	// Tooltip: ""
+	DisplayName: 氡苔藓砖
+	Tooltip: ""
 }
 
 RadonMossBrickWallItem: {
-	// DisplayName: Radon Moss Brick Wall
-	// Tooltip: ""
+	DisplayName: 氡苔藓砖墙
+	Tooltip: ""
 }
 
 OganessonMossBrickItem: {
-	// DisplayName: Oganesson Moss Brick
-	// Tooltip: ""
+	DisplayName: 「气奥」苔藓砖
+	Tooltip: ""
 }
 
 OganessonMossBrickWallItem: {
-	// DisplayName: Oganesson Moss Brick Wall
-	// Tooltip: ""
+	DisplayName: 「气奥」苔藓砖墙
+	Tooltip: ""
 }
 
 ScryingPotItem: {
-	// DisplayName: Scrying Pot
-	// Tooltip: ""
+	DisplayName: 占卜罐
+	Tooltip: ""
 }
 
 BombCannon: {
-	// DisplayName: Bomb Cannon
-	/* Tooltip:
+	DisplayName: 炸弹大炮
+	Tooltip:
 		'''
-		Uses bombs as ammo
-		Bombs fired from the cannon don't destroy tiles
-		'A groundbreaking invention'
-		''' */
+		使用炸弹作为弹药
+		大炮发射的炸弹不会破坏五块
+		“一项开创性的发明”
+		'''
 }
 
 PotHead: {
-	// DisplayName: Pot Head
-	// Tooltip: ""
+	DisplayName: 罐子头
+	Tooltip: ""
 }
 
 UpsideDownPotItem: {
-	// DisplayName: Upside Down Pot
-	// Tooltip: ""
+	DisplayName: 倒吊罐
+	Tooltip: ""
 }
 
 PotionVatsAlchemyItem: {
-	// DisplayName: Alchemical Potion Vat
-	// Tooltip: ""
+	DisplayName: 炼金药罐
+	Tooltip: ""
 }
 
-// DunceCrabBannerItem.DisplayName: Dunce Crab Banner
-// WheezerBannerItem.DisplayName: Wheezer Banner
+DunceCrabBannerItem.DisplayName: 笨蟹旗
+WheezerBannerItem.DisplayName: 响尾兽旗
 
 WheezerStatueItem: {
-	// DisplayName: Wheezer Statue
-	// Tooltip: ""
+	DisplayName: 响尾兽
+	Tooltip: ""
 }
 
 FlaskArgon: {
-	// DisplayName: Argon Moss Flask
-	// Tooltip: Spreads glowing moss on impact
+	DisplayName: 氩苔藓烧瓶
+	Tooltip: 碰撞时扩散发光苔藓
 }
 
 FlaskHelium: {
-	// DisplayName: Helium Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 氦苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
-	// DisplayName: Krypton Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 氪苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
-	// DisplayName: Neon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 氖苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
-	// DisplayName: Oganesson Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 「气奥」苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
-	// DisplayName: Radon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 氡苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
-	// DisplayName: Xenon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: 氙苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 BiomePotsGraniteItem: {
-	// DisplayName: Granite Pot
-	// Tooltip: ""
+	DisplayName: 花岗岩罐子
+	Tooltip: ""
 }
 
 CommonPotsGraniteItem: {
-	// DisplayName: Small Granite Pot
-	// Tooltip: ""
+	DisplayName: 小型花岗岩罐子
+	Tooltip: ""
 }
 
 OganessonBobber: {
-	// DisplayName: Oganesson Bobber
-	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+	DisplayName: 「气奥」浮标
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	// DisplayName: Radon Bobber
-	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+	DisplayName: 氡浮标
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 LandscapingShears: {
-	// DisplayName: Landscaping Shears
-	// Tooltip: Increases yield when harvesting foliage
+	DisplayName: 园艺剪
+	Tooltip: 收割树叶时的产量增加
 }
 
 WoodenClub: {
-	// DisplayName: Wooden Club
-	// Tooltip: Can be charged to increase damage and knockback
+	DisplayName: 木棒
+	Tooltip: 蓄力会增加伤害和击退
 }
 
 GoldClub: {
-	// DisplayName: Golden Greathammer
-	// Tooltip: Use again during a swing to follow up with a chargeable uppercut
+	DisplayName: 黄金大锤
+	Tooltip: 在挥击的过程中再次使用可以进行蓄力上击
 }
 
 PlatinumClub: {
-	// DisplayName: Platinum Scepter
-	/* Tooltip:
+	DisplayName: 铂金权杖
+	Tooltip:
 		'''
-		Does an upwards swing that knocks enemies into the air
-		Hold to follow up with a downwards slam
-		''' */
+		可以向上挥击，将敌人击飞到空中
+		长按进行追击，向下猛砸
+		'''
 }
 
 FrostGiantBelt: {
-	// DisplayName: Frost Giant Belt
-	/* Tooltip:
+	DisplayName: 冰霜大腰带
+	Tooltip:
 		'''
-		50% knockback resistance while charging a club
-		Charging a club gradually increases defense
-		''' */
+		蓄力棍棒类武器时增加50%击退抗性
+		蓄力棍棒类武器时会逐渐增加防御力
+		'''
 }
 
 Macuahuitl: {
-	// DisplayName: Macuahuitl
-	/* Tooltip:
+	DisplayName: 双刃锯剑
+	Tooltip:
 		'''
-		Can be rapidly swung around the user, inflicting bleed
-		Charged strikes deal bonus damage to bleeding enemies
-		''' */
+		可快速绕身旋转挥动，造成流血减益
+		蓄力攻击会对流血的敌人造成额外伤害
+		'''
 }
 
 BassSlapper: {
-	// DisplayName: Bass Slapper
-	// Tooltip: Fully charging does multiple slams in quick succession
+	DisplayName: 低音连打鲈
+	Tooltip: 完全蓄力会快速释放连续打击
 }
 
 Shockhammer: {
-	// DisplayName: Shockhammer
-	// Tooltip: Fully charging releases a shockwave that travels along tiles
+	DisplayName: 冲击锤
+	Tooltip: 完全蓄力会释放一道沿着物块传播的冲击波
 }
 
 Bowlder: {
-	// DisplayName: Bowlder
-	// Tooltip: Charged strikes release a deadly bowlder
+	DisplayName: 巨石
+	Tooltip: 蓄力攻击会释放一颗致命巨石
+}
+
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: Dealing continuous damage builds combo
 }
 
 Blasphemer: {
-	// DisplayName: Blasphemer
-	// Tooltip: Charged strikes erupt into a fiery geyser
+	DisplayName: 亵渎者
+	Tooltip: 蓄力攻击会爆发火焰涌泉
 }
 
 Hummus: {
-	// DisplayName: Hummus
-	// Tooltip: Warm and tasty!
+	DisplayName: 鹰嘴豆泥
+	Tooltip: 温暖可口！
+}
+
+ZenithPotsItem: {
+	DisplayName: 天顶罐子
+	Tooltip: ""
+}
+
+ZenithPotsPaleItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（沙尘暴）
+	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	// DisplayName: Savanna Torch
+	// Tooltip: ""
+}
+
+FlaskBlue: {
+	// DisplayName: Blue Moss Flask
+	// Tooltip: Spreads moss on impact
+}
+
+FlaskBrown: {
+	// DisplayName: Brown Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskGreen: {
+	// DisplayName: Green Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskLava: {
+	// DisplayName: Lava Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskPurple: {
+	// DisplayName: Purple Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskRed: {
+	// DisplayName: Red Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+TitleMusicBoxItem: {
+	// DisplayName: Music Box (Spirit Title)
+	// Tooltip: ""
+}
+
+Drypowder: {
+	// DisplayName: Drypowder
+	// Tooltip: Spreads the savanna
+}
+
+ElephantKite: {
+	// DisplayName: Elephant Kite
+	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table
+	// Tooltip: Allows you to share your map with other players
+}
+
+PurityBonsaiItem: {
+	// DisplayName: Willow Bonsai
+	// Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	// DisplayName: Ruby Bonsai
+	// Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	// DisplayName: Sakura Bonsai
+	// Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	// DisplayName: Yellow Willow Bonsai
+	// Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	// DisplayName: Amethyst Bonsai
+	// Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	// DisplayName: Diamond Bonsai
+	// Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	// DisplayName: Emerald Bonsai
+	// Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	// DisplayName: Sapphire Bonsai
+	// Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	// DisplayName: Topaz Bonsai
+	// Tooltip: ""
+}
+
+JinxBow: {
+	// DisplayName: Jinxbow
+	/* Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	// DisplayName: Flarepowder
+	// Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	// DisplayName: Vexpowder
+	/* Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		''' */
+}
+
+VexpowderRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	// DisplayName: Breakaway Chair
+	// Tooltip: Breaks on impact
+}
+
+AncientMarksmanHood: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	// Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	// Tooltip: ""
+}
+
+RollingPotItem: {
+	// DisplayName: Rolling Pot
+	// Tooltip: ""
 }

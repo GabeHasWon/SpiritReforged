@@ -52,9 +52,16 @@ public abstract partial class BaseClubProj : ModProjectile
 	/// </summary>
 	public virtual float SwingSpeedMult => Charge == 1 ? 1.2f : 1f;
 
+	/// <summary>
+	/// A flat multiplier to how fast the charge and windup complete, ie dividing the effective "ChargeTime"
+	/// </summary>
+	public virtual float ChargeSpeedMult => 1f;
+
 	internal virtual bool AllowUseTurn => CheckAIState(AIStates.CHARGING);
 
 	internal virtual bool AllowRelease => true;
+
+	internal virtual bool ChargeIndication => true;
 
 	public virtual void Charging(Player owner)
 	{
@@ -65,7 +72,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		}
 		else
 		{
-			Charge += 1f / ChargeTime;
+			Charge += ChargeSpeedMult / ChargeTime;
 			Charge = Min(Charge, 1);
 		}
 
@@ -73,10 +80,12 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			ChargeComplete(owner);
 
-			if (!Main.dedServ)
+			if (!Main.dedServ && ChargeIndication)
+			{
 				SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+				_flickerTime = MAX_FLICKERTIME;
+			}
 
-			_flickerTime = MAX_FLICKERTIME;
 			_hasFlickered = true;
 			Projectile.netUpdate = true;
 		}
@@ -106,6 +115,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			SetAIState(AIStates.POST_SMASH);
 			OnSmash(Projectile.Center);
+
 			if (!Main.dedServ)
 			{
 				float volume = Clamp(EaseQuadOut.Ease(Charge), 0.66f, 1f);
@@ -146,6 +156,10 @@ public abstract partial class BaseClubProj : ModProjectile
 			Projectile.Kill();
 
 		BaseRotation += Lerp(-0.05f, 0.05f, EaseQuadIn.Ease(lingerProgress)) * (1 + Charge / 2);
+	}
+
+	public void KillAndStopAnimation()
+	{
 	}
 
 	/// <summary>

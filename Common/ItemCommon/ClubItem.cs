@@ -1,6 +1,7 @@
 ﻿using Terraria.DataStructures;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Common.ItemCommon;
 
@@ -26,6 +27,8 @@ public abstract class ClubItem : ModItem
 		Item.useTurn = true;
 		Item.shootSpeed = 1f;
 		Item.reuseDelay = 10;
+
+		MoRHelper.SetHammerBonus(Item);
 
 		SafeSetDefaults();
 	}

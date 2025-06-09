@@ -1,4 +1,5 @@
-﻿using MonoMod.Cil;
+﻿using ILLogger;
+using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon.TileSway;
 using System.Linq;
 using Terraria.DataStructures;
@@ -80,7 +81,7 @@ internal class DrawOrderSystem : ModSystem
 			{
 				if (!c.TryGotoNext(x => x.MatchCallvirt<SpriteBatch>("End")))
 				{
-					SpiritReforgedMod.Instance.Logger.Debug("Failed goto SpriteBatch.End; Index: " + i);
+					SpiritReforgedMod.Instance.LogIL("Draw Order Solids", $"Method 'SpriteBatch.End' index {i} not found.");
 					return;
 				}
 			}

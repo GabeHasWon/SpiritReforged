@@ -9,7 +9,7 @@ internal class SavannaMenuTheme : ModMenu
 
 	public override void OnSelected() => SpiritLogo.Reset();
 
-	public override void Update(bool isOnTitleScreen) => SpiritLogo.Update(1 / 60f, isOnTitleScreen);
+	public override void Update(bool isOnTitleScreen) => SpiritLogo.Update(1 / 60f);
 
 	public static void SavannaOrangePalette(out Color outlineColor, out Color underlineColor, out Color shadowColor, //General colors
 		out Color sFillColor, out Color sGradientTopColor, out Color sGradientBottomColor, out Color sOutlineGlowColor, //S colors

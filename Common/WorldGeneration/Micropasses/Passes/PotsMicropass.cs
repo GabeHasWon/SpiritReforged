@@ -16,7 +16,25 @@ internal class PotsMicropass : Micropass
 
 	public override string WorldGenName => "Pots";
 
-	public override void Load(Mod mod) => On_WorldGen.PlacePot += PotConversion;
+	public override void Load(Mod mod)
+	{
+		On_WorldGen.PlacePot += PotConversion;
+		On_WorldGen.PlaceTile += PotBoulderConversion;
+	}
+
+	private static bool PotBoulderConversion(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
+	{
+		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(3))
+		{
+			int placed = ModContent.TileType<RollingPot>();
+
+			WorldGen.PlaceTile(i - 1, j, placed, true, style: 1);
+			return Main.tile[i, j].TileType == placed; //Skips orig
+		}
+
+		return orig(i, j, Type, mute, forced, plr, style);
+	}
+
 	/// <summary> 50% chance to replace regular pots placed on mushroom grass.<br/>
 	/// 100% chance to replace regular pots placed on granite. </summary>
 	private static bool PotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
@@ -33,7 +51,7 @@ internal class PotsMicropass : Micropass
 					return false; //Skips orig
 				}
 			}
-			else if (ground.HasTile && ground.TileType == TileID.Granite)
+			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
 				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
 				return false; //Skips orig
@@ -57,7 +75,8 @@ internal class PotsMicropass : Micropass
 
 	public static void RunMultipliedTask(float multiplier)
 	{
-		float scale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX * multiplier;
+		float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
+		float scale = (worldScale + (worldScale - 1)) * multiplier;
 
 		Generate(CreateOrnate, (int)(scale * 5), out _);
 		Generate(CreatePotion, (int)(scale * 46), out _);
@@ -67,9 +86,13 @@ internal class PotsMicropass : Micropass
 		Generate(CreatePlatter, (int)(scale * 24), out _);
 		Generate(CreateAether, (int)(scale * 3), out _);
 		Generate(CreateUpsideDown, (int)(scale * 4), out _);
+		Generate(CreateBoulder, (int)(scale * 15), out _);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
+
+		if (Main.zenithWorld)
+			Generate(CreateZenith, (int)(scale * 200), out _);
 
 		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
 	}
@@ -101,7 +124,7 @@ internal class PotsMicropass : Micropass
 
 		if (attempt.success)
 		{
-			slot.item = new Item(VatSlot.GetRandomPotion());
+			slot.item = new Item(VatSlot.GetRandomNaturalPotion());
 			return true;
 		}
 
@@ -192,6 +215,36 @@ internal class PotsMicropass : Micropass
 
 		int type = ModContent.TileType<UpsideDownPot>();
 		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreateBoulder(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<RollingPot>();
+		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreateZenith(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<CommonPots>();
+		int style = (WorldGen.SavedOreTiers.Gold == TileID.Gold) ? WorldGen.genRand.Next(6, 9) : WorldGen.genRand.Next(9, 12);
+
+		Placer.Check(x, y, type, style).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;
 	}

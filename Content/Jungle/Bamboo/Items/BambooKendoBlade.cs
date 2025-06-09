@@ -87,7 +87,6 @@ public class KendoBladeSwing : ModProjectile
 	private const int Reach = 100;
 
 	private float SwingTime => Main.player[Projectile.owner].itemTimeMax; //The full duration of the swing
-
 	public ref float SwingArc => ref Projectile.ai[0]; //The full arc of the swing in radians
 	public ref float Counter => ref Projectile.ai[1];
 
@@ -189,6 +188,8 @@ public class KendoBladeSwing : ModProjectile
 
 public class KendoBladeLunge : ModProjectile
 {
+	public static readonly SoundStyle BigSwing = new("SpiritReforged/Assets/SFX/Item/BigSwing");
+
 	public int targetWhoAmI = -1;
 	private Vector2 lastPosition;
 
@@ -199,11 +200,9 @@ public class KendoBladeLunge : ModProjectile
 	public ref float Counter => ref Projectile.ai[0];
 
 	public override string Texture => "SpiritReforged/Content/Jungle/Bamboo/Items/BambooKendoBladeProj";
-
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
-
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(38);
@@ -334,8 +333,7 @@ public class KendoBladeLunge : ModProjectile
 		}
 
 		SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = .8f }, Projectile.Center);
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BigSwing"), target.Center);
-		//SpiritMod.primitives.CreateTrail(new AnimePrimTrailTwo(target));
+		SoundEngine.PlaySound(BigSwing, target.Center);
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

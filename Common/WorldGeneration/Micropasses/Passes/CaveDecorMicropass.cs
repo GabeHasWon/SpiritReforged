@@ -41,7 +41,7 @@ internal class CaveDecorMicropass : Micropass
 	{
 		WorldMethods.FindGround(x, ref y);
 
-		if (Main.tile[x, y].TileType != TileID.Stone)
+		if (Main.tile[x, y].TileType != TileID.Stone || Main.tile[x, y - 1].CheckingLiquid)
 			return false;
 
 		y--;

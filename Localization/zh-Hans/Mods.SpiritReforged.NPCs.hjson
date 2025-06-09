@@ -316,56 +316,76 @@ HideZombieSmall: {
 }
 
 PotterySlime: {
-	// DisplayName: Pottery Slime
+	DisplayName: 陶艺史莱姆
 
 	Names: {
-		// 0: Sable
-		// 1: Saki
-		// 2: Sal
-		// 3: Santra
-		// 4: Sark
-		// 5: Sassafrass
-		// 6: Satya
-		// 7: Sawyl
-		// 8: Seppo
-		// 9: Shammy
-		// 10: Shard
-		// 11: Shio
-		// 12: Silas
-		// 13: Silica
-		// 14: Silty
-		// 15: Sleet
-		// 16: Sloan
-		// 17: Snap
-		// 18: Soggy
-		// 19: Soda
-		// 20: Sonya
-		// 21: Sparta
-		// 22: Splet
-		// 23: Spot
-		// 24: Stratton
-		// 25: Sullivan
-		// 26: Swain
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
 	}
 
-	// Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
+	Chatter: {
+		0: 哇吧嘟啵嘟？
+		1: 噗哩噗通。噗噜。
+		2: 哇哇。
+	}
+
+	Entry: 信不信由你，这个史莱姆可是世界闻名的陶艺大师——你眼前站着的，正是当代顶尖艺术家！
 }
 
-// StompableGnome.DisplayName: Stompable Gnome
+StompableGnome.DisplayName: 可被踩头的侏儒
 
 DunceCrab: {
-	// DisplayName: Dunce Crab
-	// Entry: ""
+	DisplayName: 笨蟹
+	Entry: 这种穴居软体动物是探险事故最常见的原因之一，往往令人猝不及防。它以洞穴中常见的苔藓和地衣为食。
 }
 
 Wheezer: {
-	// DisplayName: Wheezer
-	// Entry: A weezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	DisplayName: 响尾兽
+	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
 }
 
 WorldFrog: {
-	// DisplayName: World Frog
-	// Dialogue: Ribbit.
-	// Button: Update World
-	// Reports.CavesAndClubs: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
+	DisplayName: 看起来有帮助的青蛙
+	Button: 更新世界
+
+	Sounds: {
+		0: 咕嘎——
+		1: 呱呱
+	}
+
+	Dialogue: {
+		0: 若欲探新寻物游，吾有一事相恳求！
+		1: 欲觅新奇未知处？掌中契约已拟就！
+		2: 天机隐现异气流，且莫彷徨且莫愁！
+	}
+
+	Reports: {
+		CavesAndClubs_0: 莫叹空空洞穴幽，百瓮藏宝待君收！
+		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
+	}
 }

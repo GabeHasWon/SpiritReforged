@@ -9,6 +9,9 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 /// <summary> A tile entity who can store a single item, saved on unload. See <see cref="SingleSlotData"/> for syncing. </summary>
 public abstract class SingleSlotEntity : ModTileEntity
 {
+	/// <summary> Whether <see cref="Player.PlayDroppedItemAnimation"/> should be called in <see cref="OnInteract"/>. Defaults to true. </summary>
+	public virtual bool PlayDroppedAnimation => true;
+
 	public Item item = new();
 
 	/// <summary> Called on the local client when right-clicking a tile. </summary>
@@ -42,7 +45,9 @@ public abstract class SingleSlotEntity : ModTileEntity
 
 			if (!item.IsAir)
 			{
-				player.PlayDroppedItemAnimation(20);
+				if (PlayDroppedAnimation)
+					player.PlayDroppedItemAnimation(20);
+
 				Recipe.FindRecipes();
 			}
 

@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using ILLogger;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
 namespace SpiritReforged.Common.TileCommon;
@@ -26,7 +27,9 @@ internal class ModifySmartTarget : ModSystem
 			c.EmitDelegate(Modify);
 		}
 		else
-			SpiritReforgedMod.Instance.Logger.Debug($"IL edit '{nameof(PostCoords)}' failed");
+		{
+			SpiritReforgedMod.Instance.LogIL("Modify Smart Target", "Method 'Step_StaffOfRegrowth' not found.");
+		}
 	}
 
 	public override void SetStaticDefaults()

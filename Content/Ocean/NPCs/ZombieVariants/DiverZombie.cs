@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using Terraria.GameContent.Bestiary;
 
@@ -13,6 +14,10 @@ public class DiverZombie : ReplaceNPC
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.Zombies[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Skeleton;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Wet);
 	}
 
 	public override void SetDefaults()
@@ -106,7 +111,7 @@ public class DiverZombie : ReplaceNPC
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ItemID.Flipper, 100);
-		npcLoot.AddOneFromOptions(65, ModContent.ItemType<Items.Vanity.DiverSet.DiverLegs>(), 
+		npcLoot.AddOneFromOptions(65, ModContent.ItemType<Items.Vanity.DiverSet.DiverLegs>(),
 			ModContent.ItemType<Items.Vanity.DiverSet.DiverHead>(), ModContent.ItemType<Items.Vanity.DiverSet.DiverBody>());
 	}
 

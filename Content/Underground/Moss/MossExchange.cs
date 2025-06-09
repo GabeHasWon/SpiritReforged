@@ -8,6 +8,8 @@ namespace SpiritReforged.Content.Underground.Moss;
 internal class MossExchange : ModSystem
 {
 	public const string Group = "GlowingMoss";
+
+	/// <summary> All glowing moss types except for <see cref="ItemID.RainbowMoss"/>. </summary>
 	public static readonly HashSet<int> GlowingMossTypes = [ItemID.ArgonMoss, ItemID.KryptonMoss, ItemID.LavaMoss, ItemID.VioletMoss, ItemID.XenonMoss, ModContent.ItemType<OganessonMossItem>(), ModContent.ItemType<RadonMossItem>()];
 
 	public override void AddRecipeGroups() => RecipeGroup.RegisterGroup(Group, Recipes.BaseGroup(ItemID.ArgonMoss, [.. GlowingMossTypes]));

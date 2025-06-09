@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using SpiritReforged.Common.ModCompat;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.CactusStaff;
@@ -15,6 +16,8 @@ public class CactusWallProj : ModProjectile
 	{
 		ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
 		Main.projFrames[Type] = 3;
+
+		MoRHelper.AddElement(Projectile, MoRHelper.Nature);
 	}
 
 	public override void SetDefaults()

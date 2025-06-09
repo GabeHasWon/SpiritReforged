@@ -10,6 +10,7 @@ sampler noise
 float power;
 float2 size;
 float2 offset;
+float4 tint;
 
 struct VertexShaderInput
 {
@@ -26,7 +27,7 @@ float4 MainPS(VertexShaderInput input) : COLOR0
     float4 noiseStrength = noiseColor.r;
     noiseStrength = pow(noiseStrength, power);
 
-    return input.Color * texColor.a * (1 - noiseStrength.r * 255);
+    return tint * texColor.a * (1 - noiseStrength.r * 255);
 }
 
 technique BasicColorDrawing

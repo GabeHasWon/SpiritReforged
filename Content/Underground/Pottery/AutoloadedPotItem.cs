@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Visuals;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Pottery;
@@ -10,7 +11,7 @@ public sealed class AutoloadedPotItem(string baseName, StyleGroup group, RecipeD
 {
 	protected override bool CloneNewInstances => true;
 	public override string Name => _group.name + "Item";
-	public override string Texture => (GetType().Namespace + $".{_group.name}").Replace('.', '/');
+	public override string Texture => DrawHelpers.RequestLocal(GetType(), _group.name);
 
 	private string _baseName = baseName;
 	private StyleGroup _group = group;

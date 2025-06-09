@@ -5,7 +5,6 @@ using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Common.Particle;
 using System.Linq;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
@@ -119,6 +118,9 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public bool OnCutAttempt(int i, int j)
 	{
+		if (ClubQuickKill(i, j))
+			return true;
+
 		bool fail = AdjustFrame(i, j);
 
 		var cache = Main.tile[i, j];
@@ -276,44 +278,29 @@ public class PotionVats : PotTile, ICutAttempt
 
 public class VatSlot : SingleSlotEntity
 {
-	private static readonly Dictionary<int, Color> BrewColor = new()
-	{
-		{ ItemID.GravitationPotion, Color.Purple },
-		{ ItemID.FeatherfallPotion, new Color(34, 194, 246) },
-		{ ItemID.BattlePotion, new Color(127, 96, 180) },
-		{ ItemID.CalmingPotion, new Color(102, 101, 201) },
-		{ ItemID.EndurancePotion, new Color(185, 185, 170) },
-		{ ItemID.TrapsightPotion, new Color(250, 105, 30) },
-		{ ItemID.HunterPotion, new Color(250, 120, 34) },
-		{ ItemID.ShinePotion, new Color(222, 230, 10) },
-		{ ItemID.MiningPotion, new Color(105, 170, 170) },
-		{ ItemID.SpelunkerPotion, new Color(225, 185, 22) },
-		{ ItemID.SwiftnessPotion, Color.LightSeaGreen },
-		{ ItemID.WrathPotion, new Color(216, 73, 63) },
-		{ ItemID.ObsidianSkinPotion, new Color(90, 72, 168) },
-		{ ModContent.ItemType<DoubleJumpPotion>(), new Color(147, 132, 207) },
-		{ ItemID.LuckPotion, new Color(41, 60, 70) },
-		{ ItemID.IronskinPotion, new Color(230, 222, 10) },
-		{ ItemID.LifeforcePotion, new Color(250, 64, 188) }
-	};
-
 	public Color GetColor() => GetColorFromPotion(item.type);
+
 	public static Color GetColorFromPotion(int type)
 	{
-		if (BrewColor.TryGetValue(type, out Color value))
+		if (PotionColorDatabase.NaturalBrewColors.TryGetValue(type, out Color value))
 			return value;
+
+		if (PotionColorDatabase.DecorativeBrewColors.TryGetValue(type, out Color decor))
+			return decor;
 
 		return Color.Transparent;
 	}
 
 	/// <summary> Returns a random potion type from those registered for this tile entity. </summary>
-	public static int GetRandomPotion()
+	public static int GetRandomNaturalPotion()
 	{
-		var list = BrewColor.Keys.ToList();
+		var list = PotionColorDatabase.NaturalBrewColors.Keys.ToList();
 		return list[Main.rand.Next(list.Count)];
 	}
 
-	public override bool CanAddItem(Item item) => BrewColor.ContainsKey(item.type);
+	public override bool CanAddItem(Item item) => PotionColorDatabase.NaturalBrewColors.ContainsKey(item.type) 
+		|| PotionColorDatabase.DecorativeBrewColors.ContainsKey(item.type);
+
 	public override bool IsTileValidForEntity(int x, int y)
 	{
 		var t = Framing.GetTileSafely(x, y);

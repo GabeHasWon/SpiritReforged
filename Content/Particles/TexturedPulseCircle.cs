@@ -7,6 +7,7 @@ public class TexturedPulseCircle : PulseCircle
 {
 	private readonly string _texture;
 	private readonly Vector2 _textureStretch;
+
 	public TexturedPulseCircle(Vector2 position, Color ringColor, Color bloomColor, float ringWidth, float maxRadius, int maxTime, string texture, Vector2 textureStretch, EaseFunction MovementStyle = null, bool inverted = false, float endRingWidth = 0) : base(position, ringColor, bloomColor, ringWidth, maxRadius, maxTime, MovementStyle, inverted, endRingWidth)
 	{
 		_texture = texture;

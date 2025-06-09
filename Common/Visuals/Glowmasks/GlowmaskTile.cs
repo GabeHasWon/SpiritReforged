@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using ILLogger;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon;
 using System.Linq;
@@ -23,9 +24,27 @@ internal class GlowmaskTile : GlobalTile
 		var p_glowColor = c.Method.Parameters.Where(x => x.Name == "glowColor").FirstOrDefault();
 		var p_glowSourceRect = c.Method.Parameters.Where(x => x.Name == "glowSourceRect").FirstOrDefault();
 
-		if (p_typeCache == default || p_glowTexture == default || p_glowColor == default || p_glowSourceRect == default)
+		if (p_typeCache == default)
 		{
-			SpiritReforgedMod.Instance.Logger.Info($"IL edit '{nameof(InjectGlowmaskData)}' failed; all required parameters not found.");
+			SpiritReforgedMod.Instance.LogIL("Inject Glowmask Data", "Parameter 'typeCache' not found.");
+			return;
+		}
+
+		if (p_glowTexture == default)
+		{
+			SpiritReforgedMod.Instance.LogIL("Inject Glowmask Data", "Parameter 'glowTexture' not found.");
+			return;
+		}
+
+		if (p_glowColor == default)
+		{
+			SpiritReforgedMod.Instance.LogIL("Inject Glowmask Data", "Parameter 'glowColor' not found.");
+			return;
+		}
+
+		if (p_glowSourceRect == default)
+		{
+			SpiritReforgedMod.Instance.LogIL("Inject Glowmask Data", "Parameter 'glowSourceRect' not found.");
 			return;
 		}
 

@@ -1,7 +1,7 @@
 using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
+using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -15,7 +15,7 @@ public class CommonPots : PotTile, ILootTile
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
 	{
 		int wheel = ModContent.TileType<PotteryWheel>();
 		LocalizedText dicovered = AutoloadedPotItem.Discovered;
@@ -70,5 +70,5 @@ public class CommonPots : PotTile, ILootTile
 		return true;
 	}
 
-	public LootTable AddLoot(int objectStyle) => ModContent.GetInstance<Pots>().AddLoot(objectStyle);
+	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
 }

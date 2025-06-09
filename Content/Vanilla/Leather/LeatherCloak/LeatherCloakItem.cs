@@ -3,7 +3,7 @@
 namespace SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
 
 [AutoloadEquip(EquipType.Front)]
-internal class LeatherCloakItem : AccessoryItem
+internal class LeatherCloakItem : EquippableItem
 {
 	public override void SetDefaults()
 	{
@@ -21,8 +21,7 @@ internal class LeatherCloakItem : AccessoryItem
 	}
 
 	public override void AddRecipes() => CreateRecipe()
-			.AddIngredient(ItemID.Leather, 6)
-			.AddIngredient(ItemID.Silk, 5)
-			.AddTile(TileID.WorkBenches)
+			.AddIngredient(ItemID.Leather, 8)
+			.AddTile(TileID.Loom)
 			.Register();
 }

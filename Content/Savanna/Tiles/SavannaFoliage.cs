@@ -1,10 +1,11 @@
-﻿using SpiritReforged.Common.TileCommon.Corruption;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaFoliage : ModTile, IConvertibleTile
+public class SavannaFoliage : ModTile
 {
 	public const int StyleRange = 15;
 
@@ -22,6 +23,7 @@ public class SavannaFoliage : ModTile, IConvertibleTile
 		Main.tileCut[Type] = true;
 		Main.tileBlockLight[Type] = false;
 
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
@@ -41,21 +43,22 @@ public class SavannaFoliage : ModTile, IConvertibleTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		Tile tile = Main.tile[i, j];
-		int oldId = tile.TileType;
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
-		tile.TileType = (ushort)(type switch
+		int type = conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<SavannaFoliageHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaFoliageCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaFoliageCorrupt>(),
-			_ => ModContent.TileType<SavannaFoliage>(),
-		});
+			BiomeConversionID.Purity => ModContent.TileType<SavannaFoliage>(),
+			BiomeConversionID.Corruption => ModContent.TileType<SavannaFoliageCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<SavannaFoliageCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<SavannaFoliageHallow>(),
+			_ => -1
+		};
 
-		return oldId != tile.TileType;
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)

@@ -1,4 +1,5 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
@@ -55,10 +56,35 @@ public class UpsideDownPot : PotTile
 [AutoloadEquip(EquipType.Head)]
 public class PotHead : ModItem
 {
+	public static int EquipSlot { get; private set; }
+
+	public override void Load()
+	{
+		PlayerEvents.OnKill += DropPot;
+		On_Player.KillMe += HideGores;
+	}
+
+	private static void DropPot(Player p)
+	{
+		if (Main.myPlayer == p.whoAmI && p.head == EquipSlot)
+		{
+			var velocity = new Vector2(0, -Main.rand.NextFloat(2, 5)).RotatedByRandom(1);
+			Projectile.NewProjectile(p.GetSource_Death(), p.Top, velocity, ModContent.ProjectileType<FallingPot>(), 0, 0, p.whoAmI);
+		}
+	}
+
+	private static void HideGores(On_Player.orig_KillMe orig, Player self, PlayerDeathReason damageSource, double dmg, int hitDirection, bool pvp)
+	{
+		orig(self, damageSource, dmg, hitDirection, pvp);
+
+		if (self.head == EquipSlot)
+			self.immuneAlpha = 255;
+	}
+
+	public override void SetStaticDefaults() => EquipSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
 	public override void SetDefaults()
 	{
-		Item.width = 24;
-		Item.height = 24;
+		Item.Size = new(24);
 		Item.value = Item.sellPrice(gold: 3);
 		Item.rare = ItemRarityID.White;
 		Item.vanity = true;

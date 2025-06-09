@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -16,6 +17,9 @@ public class Shockhammer : ClubItem
 	{
 		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteFlyer), ItemDropRule.Common(Type, 20)));
 		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem), ItemDropRule.Common(Type, 20)));
+
+		MoRHelper.AddElement(Item, MoRHelper.Earth);
+		MoRHelper.AddElement(Item, MoRHelper.Thunder, true);
 	}
 
 	public override void SafeSetDefaults()

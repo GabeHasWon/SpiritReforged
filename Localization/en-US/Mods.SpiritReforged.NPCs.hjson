@@ -348,6 +348,12 @@ PotterySlime: {
 		26: Swain
 	}
 
+	Chatter: {
+		0: Wubba dooble doo?
+		1: Plip plop. Blorp.
+		2: Wawa.
+	}
+
 	Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
 }
 
@@ -355,17 +361,31 @@ StompableGnome.DisplayName: Stompable Gnome
 
 DunceCrab: {
 	DisplayName: Dunce Crab
-	Entry: ""
+	Entry: One of the most common causes for adventuring accidents, this cave-dwelling mollusk is usually quite the surprise. It feeds on mosses and lichen often found in caves.
 }
 
 Wheezer: {
 	DisplayName: Wheezer
-	Entry: A weezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	Entry: A wheezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
 }
 
 WorldFrog: {
-	DisplayName: World Frog
-	Dialogue: Ribbit.
+	DisplayName: Helpful Looking Frog
 	Button: Update World
-	Reports.CavesAndClubs: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
+
+	Sounds: {
+		0: Croak
+		1: Ribbit
+	}
+
+	Dialogue: {
+		0: If you wish to look for things to explore, I've got an offer for you - I implore!
+		1: You look for things new? Betwixt my hands, an offer I drew!
+		2: My magicks sense something missing in the air; but - you should not despair!
+	}
+
+	Reports: {
+		CavesAndClubs_0: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
+		CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
+	}
 }

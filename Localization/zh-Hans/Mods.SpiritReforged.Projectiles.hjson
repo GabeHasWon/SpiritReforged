@@ -25,12 +25,22 @@ SkullSentryMucus.DisplayName: 骷髅哨兵粘液
 SkullSentrySentry.DisplayName: 骷髅哨兵
 ZiplineProj.DisplayName: 飞索
 FallingBaobabFruit.DisplayName: 掉落的面包树果实
-// RollingCart.DisplayName: Rolling Cart
-// RadonMossBobber.DisplayName: Radon Moss Bobber
-// OganessonMossBobber.DisplayName: Oganesson Moss Bobber
-// BuffAura.DisplayName: Buff Aura
-// WheezerCloud.DisplayName: Poisonous Gas
-// Shockwave.DisplayName: Shockwave
-// EnergizedShockwave.DisplayName: Energized Shockwave
-// RollingBowlder.DisplayName: Rolling Bowlder
-// Firespike.DisplayName: Firespike
+RollingCart.DisplayName: 手推车
+RadonMossBobber.DisplayName: 氡苔藓浮标
+OganessonMossBobber.DisplayName: 「气奥」苔藓浮标
+BuffAura.DisplayName: 增益光环
+WheezerCloud.DisplayName: 毒气
+Shockwave.DisplayName: 冲击波
+EnergizedShockwave.DisplayName: 能量冲击波
+RollingBowlder.DisplayName: 滚动巨石
+Firespike.DisplayName: 火刺
+CannonBomb.DisplayName: 炸弹大炮
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+// JinxArrow.DisplayName: Jinx Arrow
+// JinxBowMinion.DisplayName: Jinx Bow Minion
+// RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+// VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"

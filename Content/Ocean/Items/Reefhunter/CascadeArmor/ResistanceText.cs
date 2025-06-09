@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using ILLogger;
+using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.Misc;
 
@@ -98,7 +99,12 @@ internal class ResistanceTextHandler : ILoadable
 	{
 		ILCursor c = new(il);
 
-		c.GotoNext(MoveType.After, x => x.MatchCall<CombatText>("NewText"));
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<CombatText>("NewText")))
+		{
+			SpiritReforgedMod.Instance.LogIL("Track Combat Text", "Method 'CombatText.NewText' not found.");
+			return;
+		}
+
 		c.EmitDelegate(SetText); //Only track player damage associated text
 	}
 

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 using Terraria.DataStructures;
@@ -26,6 +27,8 @@ public class RoyalKhopesh : ModItem
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.shoot = ModContent.ProjectileType<RoyalKhopeshHeld>();
 		//Item.UseSound = SoundID.DD2_MonkStaffSwing;
+
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

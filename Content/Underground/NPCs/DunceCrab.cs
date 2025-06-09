@@ -39,6 +39,7 @@ public class DunceCrab : ModNPC
 	private float Angle => Surface / 4f * MathHelper.TwoPi;
 	private bool OnTransitionFrame => NPC.frameCounter == LastFrame - 1;
 	private int LastFrame => endFrames[(int)Animation % endFrames.Length];
+	private ref float MossEatingTimer => ref NPC.localAI[3];
 
 	public static readonly SoundStyle ShellHide = new("SpiritReforged/Assets/SFX/Ambient/Jar")
 	{
@@ -198,8 +199,9 @@ public class DunceCrab : ModNPC
 		#region hidey
 		var target = Main.player[NPC.target];
 		int distanceX = (int)Math.Abs(NPC.Center.X - target.Center.X);
+		bool eatingMoss = EatingMoss();
 
-		if ((Side)Surface is Side.Down && target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target))
+		if ((Side)Surface is Side.Down && (target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target)) || eatingMoss)
 		{
 			ChangeState(State.Hide);
 			NPC.rotation = MathHelper.Pi;
@@ -212,6 +214,12 @@ public class DunceCrab : ModNPC
 			{
 				ChangeState(State.Fall);
 				NPC.velocity.Y = .5f;
+			}
+
+			if (eatingMoss && ++MossEatingTimer > 120) // "Eat" moss
+			{
+				MossEatingTimer = 0;
+				Collision.HitTiles(NPC.TopLeft - new Vector2(0, 0), Vector2.Zero, NPC.width, 10);
 			}
 
 			return;
@@ -261,6 +269,13 @@ public class DunceCrab : ModNPC
 				return ((Side)Surface is Side.Up or Side.Down) ? NPC.collideX : NPC.collideY;
 			else //The y axis
 				return ((Side)Surface is Side.Up or Side.Down) ? NPC.collideY : NPC.collideX;
+		}
+
+		// Used only for making the NPC look like it's "eating" moss; purely visual.
+		bool EatingMoss()
+		{
+			Tile tile = Main.tile[(NPC.Top - new Vector2(0, 6)).ToTileCoordinates()];
+			return tile.HasTile && Main.tileMoss[tile.TileType];
 		}
 	}
 

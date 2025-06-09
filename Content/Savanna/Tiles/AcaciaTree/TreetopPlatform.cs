@@ -8,9 +8,8 @@ namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
 public class TreetopPlatform : SimpleEntity
 {
+	public override string TexturePath => AssetLoader.EmptyTexture;
 	public Point16? TreePosition { get; private set; }
-
-	public override string TexturePath => "Terraria/Images/Projectile_0";
 
 	public override void Load()
 	{

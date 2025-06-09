@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Ocean.Items.BassClub;
 
@@ -6,6 +7,7 @@ public class BassSlapper : ClubItem
 {
 	internal override float DamageScaling => 1.25f;
 
+	public override void SetStaticDefaults() => MoRHelper.AddElement(Item, MoRHelper.Water, true);
 	public override void SafeSetDefaults()
 	{
 		Item.damage = 26;

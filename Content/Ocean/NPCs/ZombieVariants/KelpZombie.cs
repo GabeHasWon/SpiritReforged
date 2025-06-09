@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using Terraria.GameContent.Bestiary;
 
@@ -13,6 +14,10 @@ public class KelpZombie : ReplaceNPC
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Skeleton;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Wet);
 	}
 
 	public override void SetDefaults()

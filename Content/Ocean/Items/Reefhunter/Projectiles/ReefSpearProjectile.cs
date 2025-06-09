@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
@@ -42,6 +43,8 @@ public class ReefSpearProjectile : ModProjectile
 		Projectile.localNPCHitCooldown = -1;
 		Projectile.ownerHitCheck = true;
 		DrawHeldProjInFrontOfHeldItemAndArms = false;
+
+		MoRHelper.SetSpearBonus(Projectile);
 	}
 
 	public override bool? CanDamage() => true;

@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Content.Desert.GildedScarab;
 using SpiritReforged.Content.Forest.ArcaneNecklace;
+using SpiritReforged.Content.Underground.WayfarerSet;
 
 namespace SpiritReforged.Common.ModCompat.Classic;
 
@@ -73,7 +74,7 @@ internal class SpiritClassic : ModSystem
 				continue;
 
 			int cType = recipe.createItem?.type ?? 0;
-			if (ModifyRecipe(recipe, out bool modified))
+			if (ModifyIngredients(recipe, out bool modified))
 			{
 				if (modified)
 					modLog += $"{ItemLoader.GetItem(cType)?.Name ?? string.Empty} ({recipe.RecipeIndex}), ";
@@ -85,17 +86,25 @@ internal class SpiritClassic : ModSystem
 			disLog += $"{ItemLoader.GetItem(cType)?.Name ?? string.Empty} ({recipe.RecipeIndex}), ";
 		}
 
-		SpiritReforgedMod.Instance.Logger.Info(disLog.Remove(disLog.Length - 2, 2));
-		SpiritReforgedMod.Instance.Logger.Info(modLog.Remove(modLog.Length - 2, 2));
+		SpiritReforgedMod.Instance.Logger.Info(disLog[..^2]);
+		SpiritReforgedMod.Instance.Logger.Info(modLog[..^2]);
 	}
 
 	/// <summary> Modifies recipes added by Classic if the result isn't contained in <see cref="ClassicItemToReforged"/> but ingredients are. </summary>
-	private static bool ModifyRecipe(Recipe recipe, out bool modified)
+	private static bool ModifyIngredients(Recipe recipe, out bool modified)
 	{
 		modified = false;
 
 		if (ClassicItemToReforged.ContainsKey(recipe.createItem.type))
+		{
+			if (ModifyResult(recipe))
+			{
+				modified = true;
+				return true;
+			}
+
 			return false; //The result is obsolete
+		}
 
 		for (int i = recipe.requiredItem.Count - 1; i >= 0; i--)
 		{
@@ -113,6 +122,23 @@ internal class SpiritClassic : ModSystem
 		}
 
 		return true;
+	}
+
+	/// <summary> Conditionally modifies recipes added by Classic if the result is contained in <see cref="ClassicItemToReforged"/>. </summary>
+	private static bool ModifyResult(Recipe recipe)
+	{
+		return Match<WayfarerHead>() || Match<WayfarerBody>() || Match<WayfarerLegs>();
+
+		bool Match<T>() where T : ModItem //Only works if internal names match
+		{
+			if (CrossMod.Classic.TryFind(typeof(T).Name, out ModItem item) && item.Type == recipe.createItem.type)
+			{
+				recipe.createItem.ChangeItemType(ModContent.ItemType<T>());
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	public override void PostWorldGen()

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Particles;
@@ -219,5 +220,13 @@ public abstract partial class BaseClubProj : ModProjectile
 	/// </summary>
 	/// <param name="Proj"></param>
 	/// <returns></returns>
-	public static float GetSwingProgressStatic(Projectile Proj) => Proj.ModProjectile is BaseClubProj baseClub ? EaseQuadOut.Ease(baseClub.GetSwingProgress) : 0;
+	public static float GetSwingProgressStatic(Projectile Proj, EaseFunction easing) => Proj.ModProjectile is BaseClubProj baseClub ? easing.Ease(baseClub.GetSwingProgress) : 0;
+	
+	/// <summary>
+	/// Returns a static function to be used for the club's vertex strip. <br />
+	/// Assumes default swinging behavior, if the vertex strip doesn't match the swing, create a different local static function to match it.
+	/// </summary>
+	/// <param name="Proj"></param>
+	/// <returns></returns>
+	public static float GetSwingProgressStatic(Projectile Proj) => GetSwingProgressStatic(Proj, EaseQuadOut);
 }

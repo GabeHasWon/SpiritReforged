@@ -1,24 +1,31 @@
 Records: {
-	/* CoinPortal:
+	CoinPortal:
 		'''
-		Always contains a coin portal.
+		永远包含一个金币传送门。
 
-		A lucky find!
-		''' */
-	/* Common:
+		幸运的发现！
 		'''
-		A common pot which sometimes contains useful goodies.
+	Common:
+		'''
+		常见的罐子，里面有时有一些有用的东西。
 
-		Value increases when further underground.
-		''' */
-	// Potion: Contains a potent brew.
-	// UpsideDown: `Manufacturing error`
-	// Worm: Scatters a variety of worms when destroyed.
-	// Platter: A hot meal ready for the taking. Who would leave this behind?
-	// Aether: Provides various useful, sparkly upgrades.
-	// Stuffed: What a strange place to find a merchant. They're just asking to be bothered.
-	// Scrying: Reveals a large portion of the map upon being destroyed.
-	// Biome: Contains a greater variety of loot than common pots.
+		所处位置越深，价值越高。
+		'''
+	Zenith:
+		'''
+		常见的罐子，里面有时有一些有用的东西……但这个罐子华丽得毫无必要。
+
+		所处位置越深，价值越高。
+		'''
+	Potion: 内含强效混合物。
+	UpsideDown: `生产错误`
+	Worm: 被破坏时会掉出各种蠕虫。
+	Platter: 一份热腾腾的饭菜，随时可取。是谁落在这儿的呢？
+	Aether: 提供各种实用又闪亮的升级物品。
+	Stuffed: 在这种地方遇到商人真奇怪，他们简直是自找麻烦。
+	Scrying: 被破坏时能揭示大片地图。
+	Biome: 比常见的罐子包含更多种类的战利品。
+	// Boulder: Rolls along the ground when disturbed.
 }
 
 SunkenTreasureTile.MapEntry: 沉没的宝藏
@@ -36,7 +43,8 @@ HerosMemorialStatue.MapEntry: 英雄纪念碑
 TermiteJar_Tile.MapEntry: 白蚁罐
 GarInAJarTile.MapEntry: 罐中雀鳝
 KillieFishbowlTile.MapEntry: 鳉鱼鱼缸
-// OreCarts.MapEntry: Minecart
-// PotionVats.MapEntry: Potion Vat
-// ObsidianShroom.MapEntry: Obsidian Shroom
-// Starflower.MapEntry: Starflower
+OreCarts.MapEntry: 矿车
+PotionVats.MapEntry: 药罐
+ObsidianShroom.MapEntry: 黑曜石蘑菇
+Starflower.MapEntry: 星状花
+// BonsaiTrees.MapEntry: Bonsai
