@@ -390,12 +390,12 @@ WorldFrog: {
 	}
 }
 
-LavaMossSlime: {
-	// DisplayName: Lava Moss Slime
-	// Entry: A curious group of slimes which somehow have moss covering them.
+MossSlime: {
+	// DisplayName: Moss Slimes
+	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses.
 }
 
-MossSlime: {
-	// DisplayName: Moss Slime
-	// Entry: ""
-}
+// KryptonMossSlime.DisplayName: Krypton Moss Slime
+// LavaMossSlime.DisplayName: Lava Moss Slime
+// NeonMossSlime.DisplayName: Neon Moss Slime
+// XenonMossSlime.DisplayName: Xenon Moss Slime

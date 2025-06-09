@@ -2,6 +2,9 @@
 
 namespace SpiritReforged.Content.Underground.NPCs.MossSlimes;
 
+/// <summary>
+/// Prototype class used as a parent class for all Moss Slimes, and also for the bestiary entry.
+/// </summary>
 internal class MossSlime : ModNPC
 {
 	protected static Dictionary<int, Asset<Texture2D>> FrontSpritesById = [];
@@ -60,6 +63,9 @@ internal class MossSlime : ModNPC
 		{
 			DummyBestiaryType = (Main.GameUpdateCount % 360) switch
 			{
+				< 60 => ModContent.NPCType<KryptonMossSlime>(),
+				< 120 => ModContent.NPCType<NeonMossSlime>(),
+				< 180 => ModContent.NPCType<XenonMossSlime>(),
 				_ => ModContent.NPCType<LavaMossSlime>()
 			};
 
@@ -91,5 +97,12 @@ internal class MossSlime : ModNPC
 		Vector2 position = NPC.Center - screenPos;
 
 		spriteBatch.Draw(tex, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, SpriteEffects.None, 0);
+
+		if (drawBack)
+		{
+			MossSlime slime = ModContent.GetModNPC(Type) as MossSlime;
+			int heightOff = NPC.frame.Y == 0 ? 0 : 2;
+			Main.DrawItemIcon(spriteBatch, ContentSamples.ItemsByType[slime.MossType], position - new Vector2(0, heightOff), drawColor, 32);
+		}
 	}
 }
