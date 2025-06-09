@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
@@ -7,7 +9,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
+public class ElephantGrass : ModTile, ICutAttempt
 {
 	protected virtual Color SubColor => Color.Goldenrod;
 
@@ -22,6 +24,8 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
 		Main.tileCut[Type] = true;
+
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
@@ -181,24 +185,22 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		}
 	}
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
 		var tile = Main.tile[i, j];
 
-		tile.TileType = (ushort)(type switch
+		tile.TileType = (ushort)(conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<ElephantGrassHallow>(),
-			ConversionType.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<ElephantGrassCorrupt>(),
-			_ => ModContent.TileType<ElephantGrass>(),
+			BiomeConversionID.Hallow => ModContent.TileType<ElephantGrassHallow>(),
+			BiomeConversionID.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<ElephantGrassCorrupt>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<ElephantGrass>()),
 		});
-
-		return true;
 	}
-
+	
 	public bool OnCutAttempt(int i, int j)
 	{
 		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];

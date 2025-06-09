@@ -1,13 +1,13 @@
 ﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class OceanKelp : ModTile, IConvertibleTile
+public class OceanKelp : ModTile
 {
 	private const int ClumpX = 92;
 
@@ -258,29 +258,22 @@ public class OceanKelp : ModTile, IConvertibleTile
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-
-	}
-
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
 		var tile = Main.tile[i, j];
 		int oldType = tile.TileType;
 
-		tile.TileType = (ushort)(type switch
+		tile.TileType = (ushort)(conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<OceanKelpHallowed>(),
-			ConversionType.Crimson => ModContent.TileType<OceanKelpCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<OceanKelpCorrupt>(),
-			_ => ModContent.TileType<OceanKelp>(),
+			BiomeConversionID.Hallow => ModContent.TileType<OceanKelpHallowed>(),
+			BiomeConversionID.Crimson => ModContent.TileType<OceanKelpCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<OceanKelpCorrupt>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<OceanKelp>()),
 		});
 
-		if (oldType != tile.TileType)
-			TileCorruptor.Convert(new EntitySource_TileUpdate(i, j), type, i, j - 1);
-
-		return true;
+		if (oldType != tile.TileType && Main.tile[i, j - 1].TileType == oldType)
+			WorldGen.Convert(i, j - 1, conversionType, 0);
 	}
 }
 

@@ -81,11 +81,10 @@ public class SavannaGrass : GrassTile
 	{
 		int type = conversionType switch
 		{
-			BiomeConversionID.Purity => ModContent.TileType<SavannaGrass>(),
 			BiomeConversionID.Corruption => ModContent.TileType<SavannaGrassCorrupt>(),
 			BiomeConversionID.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
 			BiomeConversionID.Hallow => ModContent.TileType<SavannaGrassHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaGrass>()),
 		};
 
 		if (type != -1)

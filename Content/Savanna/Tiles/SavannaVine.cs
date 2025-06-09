@@ -1,11 +1,15 @@
-﻿using SpiritReforged.Common.TileCommon.Corruption;
+﻿using RubbleAutoloader;
+using SpiritReforged.Common;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 using static Terraria.GameContent.Drawing.TileDrawing;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaVine : ModTile, ISwayTile, IConvertibleTile
+public class SavannaVine : ModTile, ISwayTile
 {
 	public int Style => (int)TileCounterType.Vine;
 
@@ -15,6 +19,8 @@ public class SavannaVine : ModTile, ISwayTile, IConvertibleTile
 		Main.tileCut[Type] = true;
 		Main.tileNoFail[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileID.Sets.IsVine[Type] = true;
 		TileID.Sets.VineThreads[Type] = true;
@@ -37,22 +43,20 @@ public class SavannaVine : ModTile, ISwayTile, IConvertibleTile
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
+		if (ConvertAdjacentSet.Converting)
+			return;
 
 		var tile = Main.tile[i, j];
 
-		tile.TileType = (ushort)(type switch
+		tile.TileType = (ushort)(conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<SavannaVineHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaVineCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaVineCorrupt>(),
-			_ => ModContent.TileType<SavannaVine>(),
+			BiomeConversionID.Hallow => ModContent.TileType<SavannaVineHallow>(),
+			BiomeConversionID.Crimson => ModContent.TileType<SavannaVineCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<SavannaVineCorrupt>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaVine>()),
 		});
-
-		return true;
 	}
 }
 

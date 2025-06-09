@@ -1,7 +1,8 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
@@ -13,7 +14,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaTree : CustomTree, IConvertibleTile
+public class AcaciaTree : CustomTree
 {
 	/// <summary> All Acacia treetop platforms that exist in the world. </summary>
 	internal static IEnumerable<TreetopPlatform> Platforms
@@ -39,6 +40,8 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>()];
+
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		AddMapEntry(new Color(120, 80, 75), Language.GetText("MapObject.Tree"));
 		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
@@ -224,26 +227,24 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
 	}
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false; //Only rely on the anchor tile source (TileUpdate) for conversions
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
 		int oldType = Main.tile[i, j].TileType;
 		var tile = Main.tile[i, j];
 
-		tile.TileType = (ushort)(type switch
+		tile.TileType = (ushort)(conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
-			ConversionType.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<AcaciaTreeCorrupt>(),
-			_ => ModContent.TileType<AcaciaTree>(),
+			BiomeConversionID.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
+			BiomeConversionID.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
+			BiomeConversionID.Corruption => ModContent.TileType<AcaciaTreeCorrupt>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaTree>()),
 		});
 
-		if (Main.tile[i, j - 1].TileType == oldType) //Convert the entire tree from the base
-			TileCorruptor.Convert(new EntitySource_TileUpdate(i, j), type, i, j - 1);
-
-		return true;
+		if (Main.tile[i, j - 1].TileType == oldType) // Convert the entire tree from the base
+			WorldGen.Convert(conversionType, i, j - 1);
 	}
 }
 
