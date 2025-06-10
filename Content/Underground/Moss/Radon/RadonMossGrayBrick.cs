@@ -15,7 +15,6 @@ public class RadonMossGrayBrick : GrassTile
 		base.SetStaticDefaults();
 
 		Main.tileLighted[Type] = true;
-		Main.tileMoss[Type] = true;
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(252, 248, 3));

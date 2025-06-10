@@ -4,6 +4,8 @@ namespace SpiritReforged.Common.ItemCommon;
 
 internal static class ItemMethods
 {
+	public delegate void CoinAction(int type, int stack);
+
 	/// <summary> Spawns an item and automatically syncs it for the multiplayer client. </summary>
 	public static void NewItemSynced(IEntitySource source, Item item, Vector2 position, bool noGrabDelay = false)
 	{
@@ -15,8 +17,6 @@ internal static class ItemMethods
 
 	/// <inheritdoc cref="NewItemSynced(IEntitySource, Item, Vector2, bool)"/>
 	public static void NewItemSynced(IEntitySource source, int itemType, Vector2 position, bool noGrabDelay = false) => NewItemSynced(source, new Item(itemType), position, noGrabDelay);
-
-	public delegate void CoinAction(int type, int stack);
 
 	/// <summary> Splits the given coin value randomly into item stacks. </summary>
 	public static void SplitCoins(int fullValue, CoinAction action, int stacks = 0)

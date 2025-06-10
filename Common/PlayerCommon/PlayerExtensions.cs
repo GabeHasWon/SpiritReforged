@@ -36,6 +36,8 @@ internal static class PlayerExtensions
 		return player.GetHandRotated(stretch, rotation);
 	}
 
+	public static Tile TargetTile(this Player player) => Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
+
 	public static void SimpleShakeScreen(this Player player, float strength, float vibrationCycles, int frames, float distanceFalloff, string uniqueIdentity = null)
 	{
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
