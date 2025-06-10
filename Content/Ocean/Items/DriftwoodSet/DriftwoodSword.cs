@@ -25,5 +25,5 @@ public class DriftwoodSword : ModItem
 		Item.UseSound = SoundID.Item1;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 16).AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 16).AddTile(TileID.WorkBenches).Register();
 }

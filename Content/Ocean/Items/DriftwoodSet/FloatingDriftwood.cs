@@ -30,7 +30,7 @@ public class FloatingDriftwood : FloatingItem
 			_ => 10
 		};
 
-		player.QuickSpawnItem(player.GetSource_OpenItem(Item.type, "Pickup"), ItemMethods.AutoItemType<Driftwood>(), stack);
+		player.QuickSpawnItem(player.GetSource_OpenItem(Item.type, "Pickup"), AutoContent.ItemType<Driftwood>(), stack);
 		return false;
 	}
 }

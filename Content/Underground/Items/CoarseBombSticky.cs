@@ -11,7 +11,7 @@ public class CoarseBombSticky : ModItem
 		Item.shoot = ModContent.ProjectileType<CoarseBombStickyProjectile>();
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StickyBomb).AddIngredient(ItemMethods.AutoItemType<SavannaDirt>(), 25).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StickyBomb).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 25).Register();
 }
 
 public class CoarseBombStickyProjectile : CoarseBombProjectile

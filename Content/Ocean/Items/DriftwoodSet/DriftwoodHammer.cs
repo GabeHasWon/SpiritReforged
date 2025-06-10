@@ -11,5 +11,5 @@ public class DriftwoodHammer : ModItem
 		Item.hammer = 39;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 8).AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 8).AddTile(TileID.WorkBenches).Register();
 }

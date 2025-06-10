@@ -1,11 +1,15 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 public class SparrowCage : CageTile, IAutoloadTileItem
 {
 	public override int NumFrames => 35;
+
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Terrarium).AddIngredient(AutoContent.ItemType<Sparrow>()).Register();
 	public override void AddObjectData()
 	{
 		TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.BirdCage, 0));

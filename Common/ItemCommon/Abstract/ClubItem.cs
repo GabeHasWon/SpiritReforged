@@ -3,7 +3,7 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ModCompat;
 
-namespace SpiritReforged.Common.ItemCommon;
+namespace SpiritReforged.Common.ItemCommon.Abstract;
 
 public abstract class ClubItem : ModItem
 {
@@ -63,9 +63,7 @@ public abstract class ClubItem : ModItem
 		StatModifier meleeStat = Main.LocalPlayer.GetTotalDamage(DamageClass.Melee);
 
 		foreach (TooltipLine line in tooltips)
-		{
 			if (line.Mod == "Terraria" && line.Name == "Damage") //Replace the vanilla text with our own
 				line.Text = $"{(int)meleeStat.ApplyTo(Item.damage)}-{(int)meleeStat.ApplyTo(Item.damage * DamageScaling)}" + Language.GetText("LegacyTooltip.2");
-		}
 	}
 }

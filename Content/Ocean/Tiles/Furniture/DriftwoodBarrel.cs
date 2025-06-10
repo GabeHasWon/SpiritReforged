@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 public class DriftwoodBarrel : ChestTile
 {
 	public override void AddItemRecipes(ModItem item) => item.CreateRecipe()
-		.AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 9)
+		.AddIngredient(AutoContent.ItemType<Driftwood>(), 9)
 		.AddRecipeGroup(RecipeGroupID.IronBar)
 		.AddTile(TileID.Sawmill)
 		.Register();

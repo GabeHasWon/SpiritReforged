@@ -13,7 +13,7 @@ public class BambooPot : ModTile, IAutoloadTileItem
 	}
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
-		.AddIngredient(ItemMethods.AutoItemType<StrippedBamboo>(), 5).AddTile(TileID.Sawmill).Register();
+		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 5).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
 	{

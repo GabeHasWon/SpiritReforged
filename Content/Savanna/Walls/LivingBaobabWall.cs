@@ -8,8 +8,8 @@ public class LivingBaobabWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
-		int drywood = ItemMethods.AutoItemType<Drywood>();
-		int livingBaobabWall = ItemMethods.AutoItemType<LivingBaobabWall>();
+		int drywood = AutoContent.ItemType<Drywood>();
+		int livingBaobabWall = AutoContent.ItemType<LivingBaobabWall>();
 
 		item.CreateRecipe(4).AddIngredient(drywood).AddTile(TileID.LivingLoom).Register();
 		Recipe.Create(drywood).AddIngredient(livingBaobabWall, 4).AddTile(TileID.LivingLoom).Register();

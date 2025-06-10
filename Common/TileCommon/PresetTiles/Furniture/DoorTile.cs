@@ -1,6 +1,5 @@
 using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;

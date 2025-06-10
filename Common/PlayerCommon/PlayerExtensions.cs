@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Common.PlayerCommon;

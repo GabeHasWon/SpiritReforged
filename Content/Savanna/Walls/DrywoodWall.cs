@@ -8,11 +8,11 @@ public class DrywoodWall : ModWall, IAutoloadWallItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
-		item.CreateRecipe(4).AddIngredient(ItemMethods.AutoItemType<Drywood>())
+		item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<Drywood>())
 			.AddTile(TileID.WorkBenches).Register();
 
 		//Allow wall items to be crafted back into base materials
-		Recipe.Create(ItemMethods.AutoItemType<Drywood>()).AddIngredient(item.Type, 4)
+		Recipe.Create(AutoContent.ItemType<Drywood>()).AddIngredient(item.Type, 4)
 			.AddTile(TileID.WorkBenches).Register();
 	}
 

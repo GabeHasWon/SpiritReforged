@@ -156,7 +156,7 @@ public class PeevedTumbler : ModNPC
 		var rule = new LeadingConditionRule(new HasItem());
 
 		rule.OnSuccess(ItemDropRule.Common(ItemID.Nachos, 26));
-		rule.OnSuccess(ItemDropRule.Common(ItemMethods.AutoItemType<Drywood>(), minimumDropped: 5, maximumDropped: 15));
+		rule.OnSuccess(ItemDropRule.Common(AutoContent.ItemType<Drywood>(), minimumDropped: 5, maximumDropped: 15));
 		rule.OnSuccess(ItemDropRule.OneFromOptions(25, ModContent.ItemType<Items.Tools.LivingBaobabWand>(), ModContent.ItemType<Items.Tools.LivingBaobabLeafWand>()));
 		rule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<Items.WrithingSticks.WrithingSticks>(), 20));
 

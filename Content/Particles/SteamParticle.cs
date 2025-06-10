@@ -5,9 +5,6 @@ namespace SpiritReforged.Content.Particles;
 
 public class SteamParticle : Particle
 {
-	private const float FADETIME = 0.3f;
-	private readonly Action<Particle> _action;
-
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolids;
 
@@ -17,13 +14,6 @@ public class SteamParticle : Particle
 		Velocity = velocity;
 		Scale = scale;
 		MaxTime = timeLeft;
-	}
-
-	public override void Update()
-	{
-		float fadeintime = MaxTime * FADETIME;
-
-		_action?.Invoke(this);
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

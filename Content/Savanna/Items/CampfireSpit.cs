@@ -1,5 +1,8 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -27,7 +30,6 @@ public class CampfireSpit : ModItem
 	}
 
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 25;
-
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 14;
@@ -51,7 +53,6 @@ public class CampfireSpit : ModItem
 	}
 
 	public override bool CanUseItem(Player player) => CanPlace(player);
-
 	public override bool? UseItem(Player player)
 	{
 		if (Main.myPlayer == player.whoAmI && player.ItemAnimationJustStarted)
@@ -112,13 +113,13 @@ public class CampfireSlot : SingleSlotEntity
 		return TileID.Sets.Campfire[t.TileType] && TileObjectData.IsTopLeft(x, y);
 	}
 
-	public override bool CanAddItem(Item item) => RoastGlobalTile.AllowedTypes.ContainsKey(item.type);
+	public override bool CanAddItem(Item item) => RoastGlobalTile.CookedByRaw.ContainsKey(item.type);
 
 	public override void Update()
 	{
 		base.Update();
 
-		if (RoastGlobalTile.AllowedTypes.TryGetValue(item.type, out int value) && CampfireLit() && ++cookCounter >= cookCounterMax)
+		if (RoastGlobalTile.CookedByRaw.TryGetValue(item.type, out int value) && CampfireLit() && ++cookCounter >= cookCounterMax)
 		{
 			item = new Item(value);
 			cookCounter = 0;
@@ -144,10 +145,9 @@ public class CampfireSlot : SingleSlotEntity
 
 public class RoastGlobalTile : GlobalTile
 {
-	private static Asset<Texture2D> TileTexture;
+	private static readonly Asset<Texture2D> TileTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(RoastGlobalTile), "CampfireSpit_Tile"));
 
-	/// <summary> Raw to cooked items. </summary>
-	internal static Dictionary<int, int> AllowedTypes;
+	internal static Dictionary<int, int> CookedByRaw;
 
 	private static TileEntity Entity(int i, int j)
 	{
@@ -162,30 +162,31 @@ public class RoastGlobalTile : GlobalTile
 
 	private static bool IsTopHalf(int i, int j) => Main.tile[i, j].TileFrameY % (18 * 2) == 0;
 
-	public override void Load() => TileTexture = Mod.Assets.Request<Texture2D>("Content/Savanna/Items/CampfireSpit_Tile");
-
 	public override void SetStaticDefaults()
 	{
-		TileTexture = Mod.Assets.Request<Texture2D>("Content/Savanna/Items/CampfireSpit_Tile");
-		AllowedTypes = new() { { ModContent.ItemType<RawMeat>(), ModContent.ItemType<CookedMeat>() },
+		CookedByRaw = new()
+		{
+			{ ModContent.ItemType<RawMeat>(), ModContent.ItemType<CookedMeat>() },
 			{ ItemID.Marshmallow, ItemID.CookedMarshmallow }, 
 			{ ItemID.Squirrel, ItemID.GrilledSquirrel },
-			{ Mod.Find<ModItem>("SparrowItem").Type, ItemID.RoastedBird },
+			{ ItemID.SquirrelRed, ItemID.GrilledSquirrel },
+			{ AutoContent.ItemType<Sparrow>(), ItemID.RoastedBird },
 			{ ModContent.ItemType<RawFish>(), ItemID.CookedFish },
 			{ ItemID.Bass, ItemID.CookedFish }, 
 			{ ItemID.Trout, ItemID.CookedFish }, 
-			{ ItemID.AtlanticCod, ItemID.CookedFish }};
+			{ ItemID.AtlanticCod, ItemID.CookedFish }
+		};
 
 		if (RecipeGroup.recipeGroups.TryGetValue(RecipeGroupID.Birds, out RecipeGroup birdsGroup))
 		{
 			foreach (int birdIDs in birdsGroup.ValidItems)
-				AllowedTypes[birdIDs] = ItemID.RoastedBird;
+				CookedByRaw[birdIDs] = ItemID.RoastedBird;
 		}
 
 		if (RecipeGroup.recipeGroups.TryGetValue(RecipeGroupID.Ducks, out RecipeGroup ducksGroup))
 		{
 			foreach (int duckIDs in ducksGroup.ValidItems)
-				AllowedTypes[duckIDs] = ItemID.RoastedDuck;
+				CookedByRaw[duckIDs] = ItemID.RoastedDuck;
 		}
 	}
 

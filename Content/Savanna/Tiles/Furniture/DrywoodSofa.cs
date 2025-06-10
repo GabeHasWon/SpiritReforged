@@ -5,5 +5,5 @@ namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 
 public class DrywoodSofa : SofaTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Drywood>();
+	public override int CoreMaterial => AutoContent.ItemType<Drywood>();
 }

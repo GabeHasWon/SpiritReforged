@@ -355,6 +355,7 @@ PotterySlime: {
 	}
 
 	Entry: Хотите верьте, хотите нет, но этот слизень — известный во всём мире гончар. Вы наблюдаете за настоящим мастером!
+	// Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/PotsCavernItem] in the cavern
 }
 
 StompableGnome.DisplayName: Топтаный гном

@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -10,6 +9,7 @@ using System.IO;
 using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Underground.Items.BoulderClub;
 

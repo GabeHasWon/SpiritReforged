@@ -355,6 +355,7 @@ PotterySlime: {
 	}
 
 	// Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
+	// Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/PotsCavernItem] in the cavern
 }
 
 // StompableGnome.DisplayName: Stompable Gnome

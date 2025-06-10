@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Savanna.Biome;
 
@@ -24,5 +25,5 @@ public class SavannaTorch : TorchTile
 public class SavannaTorchItem : TorchItem
 {
 	public override int TileType => ModContent.TileType<SavannaTorch>();
-	public override void AddRecipes() => CreateRecipe(3).AddIngredient(ItemID.Gel).AddIngredient(ItemMethods.AutoItemType<Drywood>()).Register();
+	public override void AddRecipes() => CreateRecipe(3).AddIngredient(ItemID.Gel).AddIngredient(AutoContent.ItemType<Drywood>()).Register();
 }

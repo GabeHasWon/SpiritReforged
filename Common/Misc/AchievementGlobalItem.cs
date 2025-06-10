@@ -22,7 +22,7 @@ internal class AchievementModifications : GlobalItem
 	public override bool OnPickup(Item item, Player player)
 	{
 		// Add the TIMBER achievement when picking up Drywood
-		if (item.type == ModContent.GetInstance<Drywood>().AutoItem().type)
+		if (item.type == AutoContent.ItemType<Drywood>())
 			CompleteAchievement(Main.Achievements.GetAchievement("TIMBER"));
 
 		return true;

@@ -6,11 +6,11 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodWorkBench : WorkBenchTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Driftwood>();
+	public override int CoreMaterial => AutoContent.ItemType<Driftwood>();
 
 	public override void StaticDefaults()
 	{
 		base.StaticDefaults();
-		SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", this.AutoItem().type);
+		SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", this.AutoItemType());
 	}
 }

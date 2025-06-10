@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -7,8 +6,9 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.BuffCommon.Stacking;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ModCompat;
-using static SpiritReforged.Common.Easing.EaseFunction;
 using Terraria.Audio;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Jungle.Misc;
 

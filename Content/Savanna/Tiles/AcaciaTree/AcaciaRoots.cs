@@ -23,7 +23,7 @@ public class AcaciaRootsLarge : ModTile, IConvertibleTile
 		SetObjectData();
 
 		DustType = DustID.WoodFurniture;
-		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
+		RegisterItemDrop(AutoContent.ItemType<Drywood>());
 		AddMapEntry(new Color(87, 61, 51));
 	}
 

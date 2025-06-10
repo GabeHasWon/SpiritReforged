@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;
@@ -7,6 +8,7 @@ namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 [AutoloadCritter]
 public class GoldKillifish : Killifish
 {
+	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
 	public override void OnSpawn(IEntitySource source) { }
 
 	public override void AI()

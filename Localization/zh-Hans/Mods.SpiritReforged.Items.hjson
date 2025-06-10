@@ -1798,8 +1798,8 @@ SavannaSandstormOtherworldMusicBoxItem: {
 }
 
 SavannaTorchItem: {
-	// DisplayName: Savanna Torch
-	// Tooltip: ""
+	DisplayName: 稀树平原火把
+	Tooltip: ""
 }
 
 FlaskBlue: {
