@@ -22,6 +22,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 
 	public ShockhammerProj() : base(new Vector2(96)) { }
 
+	internal override Color ChargeColor => Color.Cyan;
 	public override float WindupTimeRatio => 0.9f;
 
 	public void DoTrailCreation(TrailManager tM)

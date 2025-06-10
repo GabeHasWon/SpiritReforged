@@ -1,7 +1,5 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -21,6 +19,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	public int Direction { get; set; } = 1;
 
+	internal override Color ChargeColor => Color.Gold;
 	public override float WindupTimeRatio => 0.8f;
 
 	public override float HoldAngle_Intial => base.HoldAngle_Intial;

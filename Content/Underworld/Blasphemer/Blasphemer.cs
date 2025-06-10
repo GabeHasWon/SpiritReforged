@@ -44,13 +44,33 @@ public class Blasphemer : ClubItem
 [AutoloadGlowmask("255,255,255", false)]
 class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 {
-	public static readonly SoundStyle Impact1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceImpact_1") { Volume = 0.5f, PitchRange = (-0.5f, -0.2f) };
-	public static readonly SoundStyle Impact2 = new("SpiritReforged/Assets/SFX/Item/FieryMaceImpact_2") { Volume = 0.5f, PitchRange = (-0.5f, -0.2f) };
-	public static readonly SoundStyle Swing1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_1") { PitchVariance = 0.2f, PitchRange = (-0.4f, 0f) };
-	public static readonly SoundStyle Swing2 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_2") { PitchVariance = 0.2f, PitchRange = (-0.4f, 0f) };
+	public static readonly SoundStyle Impact1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceImpact_1")
+	{
+		Volume = 0.5f,
+		PitchRange = (-0.5f, -0.2f)
+	};
+	
+	public static readonly SoundStyle Impact2 = new("SpiritReforged/Assets/SFX/Item/FieryMaceImpact_2")
+	{
+		Volume = 0.5f,
+		PitchRange = (-0.5f, -0.2f)
+	};
+
+	public static readonly SoundStyle Swing1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_1")
+	{
+		PitchVariance = 0.2f,
+		PitchRange = (-0.4f, 0f)
+	};
+
+	public static readonly SoundStyle Swing2 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_2")
+	{
+		PitchVariance = 0.2f,
+		PitchRange = (-0.4f, 0f)
+	};
 
 	public BlasphemerProj() : base(new Vector2(100)) { }
 
+	internal override Color ChargeColor => Color.OrangeRed;
 	public override float WindupTimeRatio => 0.8f;
 	public override float SwingShrinkThreshold => 0.65f;
 

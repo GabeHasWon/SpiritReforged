@@ -14,6 +14,7 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 {
 	private bool _inputHeld = true;
 
+	internal override Color ChargeColor => Color.CadetBlue;
 	public override float HoldAngle_Intial => Pi * 2.4f;
 	public override float HoldAngle_Final => -base.HoldAngle_Final / 4;
 	public override float WindupTimeRatio => 2.2f;

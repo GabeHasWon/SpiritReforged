@@ -43,6 +43,8 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	public MacuahuitlProj() : base(new Vector2(82)) { }
 
 	public bool ChargeStrike => FullCharge && CheckAIState(AIStates.SWINGING);
+
+	internal override Color ChargeColor => Color.Pink;
 	public override float WindupTimeRatio => 0.8f;
 
 	public void DoTrailCreation(TrailManager tM)

@@ -8,7 +8,6 @@ using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
-using Terraria.UI;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
@@ -137,8 +136,10 @@ class Firespike : ModProjectile, IDrawOverTiles
 	{
 		modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f); //Reduce damage with hits
 
-		if (Projectile.timeLeft < LingerTime)
+		if (Lingering)
 			modifiers.DisableKnockback();
+		else
+			target.velocity.Y -= 10f * target.knockBackResist;
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -210,12 +211,13 @@ class Firespike : ModProjectile, IDrawOverTiles
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Texture2D texture = Cracks.Value;
 
-		var position = Projectile.Center.ToTileCoordinates().ToWorldCoordinates() - Main.screenPosition;
-		var source = texture.Frame(3, 1, (int)Projectile.position.X % 3, 0, -2);
 		float scale = 1f;
 		float opacity = Projectile.timeLeft / (float)(GeyserTime + LingerTime);
 
-		spriteBatch.Draw(bloom, position, null, Color.Red.Additive() * 0.5f * opacity, 0, bloom.Size() / 2, scale * 0.5f, SpriteEffects.None, 0);
-		spriteBatch.Draw(texture, position, source, Color.White.Additive() * opacity * 2, 0, source.Size() / 2, scale, SpriteEffects.None, 0);
+		var position = Projectile.Center.ToTileCoordinates().ToWorldCoordinates();
+		var source = texture.Frame(3, 1, (int)position.X % 3, 0, -2);
+
+		spriteBatch.Draw(bloom, position - Main.screenPosition, null, Color.Red.Additive() * 0.5f * opacity, 0, bloom.Size() / 2, scale * 0.3f, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position - Main.screenPosition, source, Color.White.Additive() * opacity * 2, 0, source.Size() / 2, scale, SpriteEffects.None, 0);
 	}
 }
