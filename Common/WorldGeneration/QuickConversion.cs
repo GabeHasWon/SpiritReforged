@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.ModCompat;
+using System.Linq;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.WorldGeneration;
@@ -19,6 +20,9 @@ internal class QuickConversion
 		Dictionary<BiomeType, int> biomeCounts = new() { { BiomeType.Purity, 0 }, { BiomeType.Jungle, 0 }, { BiomeType.Ice, 0 }, { BiomeType.Mushroom, 0 }, 
 			{ BiomeType.Desert, 0 } };
 
+		// Remnants jungles are much more rocky and muddy, making it harder to detect with our normal values
+		int jungleStep = CrossMod.Remnants.Enabled ? 2 : 1;
+
 		for (int i = position.X; i < position.X + size.X; i++)
 		{
 			for (int j = position.Y; j < position.Y + size.Y; j++)
@@ -29,7 +33,7 @@ internal class QuickConversion
 					continue;
 
 				if (tile.TileType is TileID.JungleGrass or TileID.JungleVines or TileID.JunglePlants)
-					biomeCounts[BiomeType.Jungle]++;
+					biomeCounts[BiomeType.Jungle] += jungleStep;
 				else if (tile.TileType is TileID.Dirt or TileID.Stone or TileID.ClayBlock)
 					biomeCounts[BiomeType.Purity]++;
 				else if (tile.TileType is TileID.SnowBlock or TileID.IceBlock)
