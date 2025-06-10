@@ -8,6 +8,7 @@ internal class ButterflyMicropass : Micropass
 {
 	public override string WorldGenName => "Butterfly Shrines";
 
+	// Remnants will take care of our butterfly shrines on their end at some point, change in the future
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Sunflowers"));
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
@@ -15,7 +16,7 @@ internal class ButterflyMicropass : Micropass
 		const int maxTries = 2000;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Butterfly");
-		int repeats = Main.maxTilesX / WorldGen.WorldSizeSmallX; //1 shrine in small and medium worlds, 2 in large
+		int repeats = Main.maxTilesX / WorldGen.WorldSizeSmallX; // 1 shrine in small and medium worlds, 2 in large
 
 		for (int i = 0; i < repeats; i++)
 		{

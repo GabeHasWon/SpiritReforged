@@ -1757,6 +1757,11 @@ Bowlder: {
 	// Tooltip: Charged strikes release a deadly bowlder
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: Dealing continuous damage builds combo
+}
+
 Blasphemer: {
 	// DisplayName: Blasphemer
 	// Tooltip: Charged strikes erupt into a fiery geyser
@@ -1904,4 +1909,48 @@ JinxBow: {
 ExplosiveRum: {
 	// DisplayName: Explosive Rum
 	// Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	// DisplayName: Flarepowder
+	// Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	// DisplayName: Vexpowder
+	/* Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		''' */
+}
+
+VexpowderRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	// DisplayName: Breakaway Chair
+	// Tooltip: Breaks on impact
+}
+
+AncientMarksmanHood: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	// Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	// Tooltip: ""
+}
+
+RollingPotItem: {
+	// DisplayName: Rolling Pot
+	// Tooltip: ""
 }

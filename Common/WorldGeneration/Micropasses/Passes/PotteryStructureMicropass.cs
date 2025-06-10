@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Underground.Pottery;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 using System.Linq;
@@ -19,7 +20,6 @@ internal class PotteryStructureMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
 	{
-		const int xPadding = 40;
 		const int maxTries = 1000; //Failsafe
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Pottery");
@@ -27,11 +27,12 @@ internal class PotteryStructureMicropass : Micropass
 		HashSet<Rectangle> regions = [];
 		int maxStructures = Main.maxTilesX / WorldGen.WorldSizeSmallX * 5;
 		int structures = 0;
+		int xPadding = CrossMod.Remnants.Enabled ? 400 : 40;
 
 		for (int t = 0; t < maxTries; t++)
 		{
 			int x = WorldGen.genRand.Next(xPadding, Main.maxTilesX - xPadding);
-			int y = WorldGen.genRand.Next((int)Main.worldSurface, Main.UnderworldLayer - 20);
+			int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, Main.UnderworldLayer - 20);
 
 			WorldMethods.FindGround(x, ref y);
 

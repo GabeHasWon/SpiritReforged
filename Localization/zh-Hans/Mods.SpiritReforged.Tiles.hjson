@@ -25,6 +25,7 @@ Records: {
 	Stuffed: 在这种地方遇到商人真奇怪，他们简直是自找麻烦。
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
+	// Boulder: Rolls along the ground when disturbed.
 }
 
 SunkenTreasureTile.MapEntry: 沉没的宝藏

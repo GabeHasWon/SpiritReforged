@@ -39,6 +39,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	/// <summary><inheritdoc cref="ModProjectile.DisplayName"/><para/>
 	/// Automatically attempts to use the associated item localization. </summary>
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items." + Name.Replace("Proj", string.Empty) + ".DisplayName");
+
 	/// <summary><inheritdoc cref="ModProjectile.Texture"/><para/>
 	/// Automatically attempts to use the associated item texture. </summary>
 	public override string Texture
@@ -146,7 +147,10 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		SafeAI();
 
 		if (Owner.dead)
+		{
 			Projectile.Kill();
+			return;
+		}
 
 		Owner.heldProj = Projectile.whoAmI;
 		Owner.direction = Math.Sign(Projectile.direction);
@@ -154,7 +158,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		if (AllowUseTurn && Projectile.owner == Main.myPlayer)
 		{
 			int newDir = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
-			Projectile.velocity.X = newDir == 0 ? Owner.direction : newDir;
+			Projectile.velocity.X = (newDir == 0) ? Owner.direction : newDir;
 
 			if (newDir != Owner.direction)
 				Projectile.netUpdate = true;
