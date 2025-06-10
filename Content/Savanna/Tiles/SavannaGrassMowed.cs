@@ -20,7 +20,7 @@ public class SavannaGrassMowed : GrassTile
 	}
 
 	public override void RandomUpdate(int i, int j) { }
-	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.AutoItemType<SavannaDirt>();
+	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.ItemType<SavannaDirt>();
 
 	public override void Convert(int i, int j, int conversionType)
 	{
