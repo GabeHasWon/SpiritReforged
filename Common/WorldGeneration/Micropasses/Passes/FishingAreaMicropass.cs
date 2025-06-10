@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.ModCompat;
+using Terraria.DataStructures;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -33,25 +34,28 @@ internal class FishingAreaMicropass : Micropass
 			string structureName = "Assets/Structures/Coves/FishCove" + subId + subChar;
 
 			Point16 size = StructureHelper.API.Generator.GetStructureDimensions(structureName, SpiritReforgedMod.Instance);
-			Point16 position;
+			Point16 pos;
+
+			int edge = CrossMod.Remnants.Enabled ? 400 : 200;
+			int rock = (int)Main.rockLayer;
 
 			do
 			{
-				position = new Point16(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next((int)Main.rockLayer, (int)(Main.rockLayer + Main.maxTilesY) / 2));
-			} while (!Collision.SolidCollision(position.ToWorldCoordinates(), 32, 32));
+				pos = new Point16(WorldGen.genRand.Next(edge, Main.maxTilesX - edge), WorldGen.genRand.Next(rock, (rock + Main.maxTilesY) / 2));
+			} while (!Collision.SolidCollision(pos.ToWorldCoordinates(), 32, 32));
 
-			position -= WorldGen.genRand.Next(OffsetsBySubId[subId]);
+			pos -= WorldGen.genRand.Next(OffsetsBySubId[subId]);
 
-			if (GenVars.structures.CanPlace(new Rectangle(position.X, position.Y, size.X, size.Y), 10))
+			if (GenVars.structures.CanPlace(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10) && AvoidsMicrobiomes(pos))
 			{
-				if (!StructureTools.SpawnConvertedStructure(position, size, structureName, QuickConversion.BiomeType.Desert))
+				if (!StructureTools.SpawnConvertedStructure(pos, size, structureName, QuickConversion.BiomeType.Desert))
 				{
 					i--;
 					continue;
 				}
 
-				var area = new Rectangle(position.X, position.Y, size.X, size.Y);
-				StructureTools.ClearActuators(position.X, position.Y, size.X, size.Y);
+				var area = new Rectangle(pos.X, pos.Y, size.X, size.Y);
+				StructureTools.ClearActuators(pos.X, pos.Y, size.X, size.Y);
 
 				Coves.Add(area);
 				GenVars.structures.AddProtectedStructure(area, 6);
@@ -62,6 +66,27 @@ internal class FishingAreaMicropass : Micropass
 
 		foreach (var area in Coves)
 			ScanForChests(area);
+	}
+
+	/// <summary>
+	/// Stops the fishing coves from being placed over granite and marble biomes.
+	/// </summary>
+	private static bool AvoidsMicrobiomes(Point16 pos)
+	{
+		int count = 0;
+
+		for (int i = pos.X - 40; i < pos.X + 40; ++i)
+		{
+			for (int j = pos.Y - 40; j < pos.Y + 40; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType is TileID.Granite or TileID.Marble)
+					count++;
+			}
+		}
+
+		return count < 10;
 	}
 
 	/// <summary> Bandaid fix for barrel inventory slots sometimes being air. </summary>
