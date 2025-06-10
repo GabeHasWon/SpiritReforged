@@ -61,12 +61,6 @@ public abstract partial class BaseClubProj : ModProjectile
 
 	internal virtual bool AllowRelease => true;
 
-	/// <summary> Whether this club uses special sounds and visuals to indicate full charge. </summary>
-	internal virtual bool ChargeIndication => true;
-
-	/// <summary> The signature color of this club's charge indicator. </summary>
-	internal virtual Color ChargeColor => Color.White;
-
 	public virtual void Charging(Player owner)
 	{
 		if (_windupTimer < WindupTime)
@@ -84,7 +78,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			ChargeComplete(owner);
 
-			if (!Main.dedServ && ChargeIndication)
+			if (!Main.dedServ && _parameters.HasIndicator)
 			{
 				SoundEngine.PlaySound(Ready, Projectile.Center);
 				_flickerTime = MAX_FLICKERTIME;

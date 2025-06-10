@@ -44,7 +44,6 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	public bool ChargeStrike => FullCharge && CheckAIState(AIStates.SWINGING);
 
-	internal override Color ChargeColor => Color.Pink;
 	public override float WindupTimeRatio => 0.8f;
 
 	public void DoTrailCreation(TrailManager tM)
@@ -101,6 +100,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	{
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
+		_parameters.ChargeColor = Color.Pink;
 	}
 
 	internal override void ChargeComplete(Player owner) => TrailManager.ManualTrailSpawn(Projectile);

@@ -19,7 +19,6 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	public int Direction { get; set; } = 1;
 
-	internal override Color ChargeColor => Color.Gold;
 	public override float WindupTimeRatio => 0.8f;
 
 	public override float HoldAngle_Intial => base.HoldAngle_Intial;
@@ -101,6 +100,8 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, swingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "noiseCrystal", new Vector2(3f, 0.5f)), TrailLayer.UnderProjectile));
 
 	}
+
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Gold;
 
 	public override void OnSwingStart()
 	{

@@ -70,7 +70,6 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 	public BlasphemerProj() : base(new Vector2(100)) { }
 
-	internal override Color ChargeColor => Color.OrangeRed;
 	public override float WindupTimeRatio => 0.8f;
 	public override float SwingShrinkThreshold => 0.65f;
 
@@ -117,6 +116,8 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		flameTrailParameters.TrailLength *= 0.5f;
 		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(2, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
 	}
+
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.OrangeRed;
 
 	public override void OnSwingStart()
 	{

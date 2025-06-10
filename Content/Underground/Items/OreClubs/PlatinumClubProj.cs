@@ -14,7 +14,6 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 {
 	private bool _inputHeld = true;
 
-	internal override Color ChargeColor => Color.CadetBlue;
 	public override float HoldAngle_Intial => Pi * 2.4f;
 	public override float HoldAngle_Final => -base.HoldAngle_Final / 4;
 	public override float WindupTimeRatio => 2.2f;
@@ -74,6 +73,8 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "FlameTrail", new Vector2(3f, 0.25f)), TrailLayer.UnderProjectile));
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "supPerlin", new Vector2(1.5f, 1.25f)), TrailLayer.UnderProjectile));
 	}
+
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.CadetBlue;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
