@@ -43,6 +43,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	public MacuahuitlProj() : base(new Vector2(82)) { }
 
 	public bool ChargeStrike => FullCharge && CheckAIState(AIStates.SWINGING);
+
 	public override float WindupTimeRatio => 0.8f;
 
 	public void DoTrailCreation(TrailManager tM)
@@ -99,6 +100,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	{
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
+		_parameters.ChargeColor = Color.Pink;
 	}
 
 	internal override void ChargeComplete(Player owner) => TrailManager.ManualTrailSpawn(Projectile);

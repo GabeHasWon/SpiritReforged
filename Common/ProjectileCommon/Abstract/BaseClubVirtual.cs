@@ -61,8 +61,6 @@ public abstract partial class BaseClubProj : ModProjectile
 
 	internal virtual bool AllowRelease => true;
 
-	internal virtual bool ChargeIndication => true;
-
 	public virtual void Charging(Player owner)
 	{
 		if (_windupTimer < WindupTime)
@@ -80,9 +78,9 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			ChargeComplete(owner);
 
-			if (!Main.dedServ && ChargeIndication)
+			if (!Main.dedServ && _parameters.HasIndicator)
 			{
-				SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+				SoundEngine.PlaySound(Ready, Projectile.Center);
 				_flickerTime = MAX_FLICKERTIME;
 			}
 

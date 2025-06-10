@@ -34,14 +34,13 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		float trailDist = 64 * MeleeSizeModifier;
 		float trailWidth = 50 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
-		float rotOffset = 0;
+		float rotOffset = -PiOver4 / 2;
 
 		if (FullCharge)
 		{
 			trailDist *= 1.1f;
 			trailWidth *= 1.1f;
 			angleRangeMod = 1.125f;
-			rotOffset = 0;
 		}
 
 		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth)
