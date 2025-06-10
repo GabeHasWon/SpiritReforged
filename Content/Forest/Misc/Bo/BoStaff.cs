@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -326,6 +327,8 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	}
 
 	public override bool? CanCutTiles() => _collided ? false : null;
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
+
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;

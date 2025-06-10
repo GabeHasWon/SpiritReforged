@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
 using Terraria.Audio;
@@ -133,6 +134,7 @@ public class KendoBladeSwing : ModProjectile
 		Projectile.scale = MathHelper.Min(Projectile.scale + .075f, 1); //Fade in
 	}
 
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;
