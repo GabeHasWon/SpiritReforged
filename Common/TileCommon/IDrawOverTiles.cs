@@ -8,7 +8,10 @@ internal interface IDrawOverTiles
 
 internal class DrawOverHandler : ModSystem
 {
+	public static event Action PostDrawTilesSolid;
+
 	internal static readonly HashSet<int> DrawTypes = [];
+	public static bool Drawing { get; private set; }
 	internal static RenderTarget2D TileTarget { get; private set; }
 	internal static RenderTarget2D OverlayTarget { get; private set; }
 
@@ -23,7 +26,13 @@ internal class DrawOverHandler : ModSystem
 		});
 
 		On_Main.CheckMonoliths += DrawIntoTargets;
-		On_Main.DoDraw_Tiles_Solid += DrawTargets;
+		On_Main.DoDraw_Tiles_Solid += static (orig, self) =>
+		{
+			orig(self);
+			PostDrawTilesSolid?.Invoke();
+		};
+
+		PostDrawTilesSolid += DrawTargets;
 	}
 
 	public override void SetStaticDefaults()
@@ -49,7 +58,7 @@ internal class DrawOverHandler : ModSystem
 				cached.Add(p);
 		}
 
-		if (cached.Count == 0)
+		if (!(Drawing = cached.Count != 0))
 			return;
 
 		var spriteBatch = Main.spriteBatch;
@@ -87,11 +96,9 @@ internal class DrawOverHandler : ModSystem
 		}
 	}
 
-	private static void DrawTargets(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
+	private static void DrawTargets()
 	{
-		orig(self);
-
-		if (OverlayTarget is null || TileTarget is null)
+		if (!Drawing || OverlayTarget is null || TileTarget is null)
 			return;
 
 		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
