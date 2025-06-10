@@ -1959,3 +1959,12 @@ InvisibleLure: {
 	DisplayName: Invisible Lure
 	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
+
+SharpshooterGlove: {
+	DisplayName: Sharpshooter's Glove
+	Tooltip:
+		'''
+		Increases ranged damage at a distance
+		Consecutive shots at this range deal increased damage
+		'''
+}
