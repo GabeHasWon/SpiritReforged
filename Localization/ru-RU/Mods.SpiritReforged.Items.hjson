@@ -1946,3 +1946,8 @@ RollingPotItem: {
 	// DisplayName: Rolling Pot
 	// Tooltip: ""
 }
+
+InvisibleLure: {
+	// DisplayName: Invisible Lure
+	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
