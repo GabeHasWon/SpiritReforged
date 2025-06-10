@@ -7,6 +7,7 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -96,6 +97,8 @@ public class Flarepowder : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/MagicCast1") with { PitchRange = (0.5f, 1f), MaxInstances = 2 }, player.Center);
+
 		for (int i = 0; i < 8; i++)
 		{
 			var vel = (velocity * Main.rand.NextFloat(0.1f, 1f)).RotatedByRandom(0.8f);
@@ -192,7 +195,8 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();
 
-		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), MaxInstances = 3 }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), Volume = .35f, MaxInstances = 5 }, Projectile.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_Hard") with { PitchRange = (0f, 0.75f), Volume = .5f, MaxInstances = 5 }, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
