@@ -61,11 +61,15 @@ internal class MossSlime : ModNPC
 	{
 		if (Type == ModContent.NPCType<MossSlime>())
 		{
-			DummyBestiaryType = (Main.GameUpdateCount % 360) switch
+			DummyBestiaryType = (Main.GameUpdateCount % 480) switch
 			{
 				< 60 => ModContent.NPCType<KryptonMossSlime>(),
 				< 120 => ModContent.NPCType<NeonMossSlime>(),
 				< 180 => ModContent.NPCType<XenonMossSlime>(),
+				< 240 => ModContent.NPCType<ArgonMossSlime>(),
+				< 300 => ModContent.NPCType<OganessonMossSlime>(),
+				< 360 => ModContent.NPCType<RadonMossSlime>(),
+				< 420 => ModContent.NPCType<HeliumMossSlime>(),
 				_ => ModContent.NPCType<LavaMossSlime>()
 			};
 
@@ -93,6 +97,9 @@ internal class MossSlime : ModNPC
 
 	private void DrawMoss(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, bool drawBack)
 	{
+		if (NPC.type == ModContent.NPCType<HeliumMossSlime>())
+			drawColor = Main.DiscoColor;
+
 		Texture2D tex = (drawBack ? BackSpritesById[Type] : FrontSpritesById[Type]).Value;
 		Vector2 position = NPC.Center - screenPos;
 
