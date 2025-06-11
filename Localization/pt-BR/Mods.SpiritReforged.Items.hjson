@@ -1955,6 +1955,9 @@ RollingPotItem: {
 	// Tooltip: ""
 }
 
+
+// MossSlimeBannerItem.DisplayName: Moss Slime Banner Item
+
 InvisibleLure: {
 	// DisplayName: Invisible Lure
 	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"

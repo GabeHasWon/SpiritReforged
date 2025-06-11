@@ -402,3 +402,17 @@ WorldFrog: {
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
 	}
 }
+
+MossSlime: {
+	// DisplayName: Moss Slime
+	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+}
+
+// KryptonMossSlime.DisplayName: Krypton Moss Slime
+// LavaMossSlime.DisplayName: Lava Moss Slime
+// NeonMossSlime.DisplayName: Neon Moss Slime
+// XenonMossSlime.DisplayName: Xenon Moss Slime
+// ArgonMossSlime.DisplayName: Argon Moss Slime
+// HeliumMossSlime.DisplayName: Helium Moss Slime
+// OganessonMossSlime.DisplayName: Oganesson Moss Slime
+// RadonMossSlime.DisplayName: Radon Moss Slime
