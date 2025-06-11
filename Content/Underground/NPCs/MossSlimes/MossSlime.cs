@@ -5,6 +5,7 @@ namespace SpiritReforged.Content.Underground.NPCs.MossSlimes;
 /// <summary>
 /// Prototype class used as a parent class for all Moss Slimes, and also for the bestiary entry.
 /// </summary>
+[AutoloadBanner]
 internal class MossSlime : ModNPC
 {
 	protected static Dictionary<int, Asset<Texture2D>> FrontSpritesById = [];
@@ -38,6 +39,8 @@ internal class MossSlime : ModNPC
 		NPC.CloneDefaults(NPCID.BlackSlime);
 		NPC.aiStyle = NPCAIStyleID.Slime;
 
+		Banner = ModContent.NPCType<MossSlime>();
+
 		AIType = NPCID.BlueSlime;
 		AnimationType = NPCID.BlueSlime;
 	}
@@ -60,6 +63,14 @@ internal class MossSlime : ModNPC
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(MossType, 1, 5, 10);
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		if (GetType() == typeof(MossSlime))
+			return 0;
+
+		return spawnInfo.SpawnTileY > Main.worldSurface && SpawnTilesById[Type].Contains(spawnInfo.SpawnTileType) ? 0.3f : 0;
+	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
@@ -84,14 +95,6 @@ internal class MossSlime : ModNPC
 
 		DrawMoss(spriteBatch, screenPos, drawColor, true);
 		return true;
-	}
-
-	public override float SpawnChance(NPCSpawnInfo spawnInfo)
-	{
-		if (GetType() == typeof(MossSlime))
-			return 0;
-
-		return spawnInfo.SpawnTileY > Main.worldSurface && SpawnTilesById[Type].Contains(spawnInfo.SpawnTileType) ? 0.3f : 0; 
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -119,9 +122,9 @@ internal class MossSlime : ModNPC
 
 		if (drawBack)
 		{
-			MossSlime slime = ModContent.GetModNPC(Type) as MossSlime;
+			var slime = ModContent.GetModNPC(Type) as MossSlime;
 			int heightOff = NPC.frame.Y == 0 ? 0 : 2;
-			Main.DrawItemIcon(spriteBatch, ContentSamples.ItemsByType[slime.MossType], position - new Vector2(0, heightOff), drawColor, 32);
+			Main.DrawItemIcon(spriteBatch, ContentSamples.ItemsByType[slime.MossType], position - new Vector2(0, heightOff), drawColor * 0.5f, 32);
 		}
 	}
 }

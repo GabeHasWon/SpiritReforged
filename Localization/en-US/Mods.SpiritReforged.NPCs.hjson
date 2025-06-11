@@ -391,7 +391,7 @@ WorldFrog: {
 }
 
 MossSlime: {
-	DisplayName: Moss Slimes
+	DisplayName: Moss Slime
 	Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
 }
 
