@@ -83,7 +83,7 @@ public class Flarepowder : ModItem
 		Item.consumable = true;
 		Item.noMelee = true;
 		Item.shoot = ModContent.ProjectileType<FlarepowderDust>();
-		Item.shootSpeed = 5;
+		Item.shootSpeed = 5.7f;
 		Item.value = Item.sellPrice(copper: 4);
 	}
 

@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
