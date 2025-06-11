@@ -1955,8 +1955,7 @@ RollingPotItem: {
 	// Tooltip: ""
 }
 
-
-// MossSlimeBannerItem.DisplayName: Moss Slime Banner Item
+// MossSlimeBannerItem.DisplayName: Moss Slime Banner
 
 InvisibleLure: {
 	// DisplayName: Invisible Lure
