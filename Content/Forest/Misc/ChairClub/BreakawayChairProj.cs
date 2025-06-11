@@ -12,13 +12,13 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 {
 	public BreakawayChairProj() : base(new Vector2(24)) { }
 
-	internal override bool ChargeIndication => false;
 	public override float WindupTimeRatio => 0.8f;
 
 	public override void SafeSetDefaults()
 	{
 		Projectile.penetrate = 1;
 		Projectile.hostile = true;
+		_parameters.HasIndicator = false;
 	}
 
 	public void DoTrailCreation(TrailManager tM)

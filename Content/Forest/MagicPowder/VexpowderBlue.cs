@@ -13,7 +13,7 @@ public class VexpowderBlue : Flarepowder
 		Item.damage = 10;
 	}
 
-	public override void AddRecipes() => CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.VileMushroom);
+	public override void AddRecipes() => CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.VileMushroom).Register();
 }
 
 internal class VexpowderBlueDust : FlarepowderDust

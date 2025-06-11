@@ -27,7 +27,7 @@ public class DrywoodHelmet : ModItem
 
 	public override void AddRecipes()
 	{
-		int drywood = ItemMethods.AutoItemType<Drywood>();
+		int drywood = AutoContent.ItemType<Drywood>();
 
 		CreateRecipe().AddIngredient(drywood, 20).AddTile(TileID.WorkBenches).Register();
 		Recipe.Create(ModContent.ItemType<DrywoodBreastplate>()).AddIngredient(drywood, 30).AddTile(TileID.WorkBenches).Register();

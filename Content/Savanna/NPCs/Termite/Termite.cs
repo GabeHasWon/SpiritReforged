@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,6 +14,12 @@ public class Termite : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
+		{
+			item.value = Item.sellPrice(copper: 95);
+			item.bait = 9;
+		});
+
 		Main.npcFrameCount[Type] = 3;
 		Main.npcCatchable[Type] = true;
 		NPCID.Sets.CountsAsCritter[Type] = true;

@@ -402,7 +402,7 @@ public class Ostrich : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddCommon<RawMeat>(3);
+		npcLoot.AddCommon<RawMeat>(6);
 		npcLoot.AddCommon<OstrichEgg>(7);
 		npcLoot.AddCommon<OstrichPants>(30);
 		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());

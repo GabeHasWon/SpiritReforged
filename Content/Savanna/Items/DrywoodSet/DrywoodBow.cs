@@ -6,7 +6,5 @@ namespace SpiritReforged.Content.Savanna.Items.DrywoodSet;
 public class DrywoodBow : ModItem
 {
 	public override void SetDefaults() => Item.CloneDefaults(ItemID.BorealWoodBow);
-
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Drywood>(), 10)
-			.AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Drywood>(), 10).AddTile(TileID.WorkBenches).Register();
 }

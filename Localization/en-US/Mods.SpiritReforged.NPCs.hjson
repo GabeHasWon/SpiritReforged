@@ -182,7 +182,7 @@ Cartographer: {
 					'''
 				2:
 					'''
-					So a while ago I was seeing how quickly I could run from jungle bats, right? And the boom, right over here on the map, the air gets real dusty. A savanna sprawls out in front of me. What a sight!
+					So a while ago I was seeing how quickly I could run from jungle bats, right? And then boom, right over here on the map, the air gets real dusty. A savanna sprawls out in front of me. What a sight!
 					And just for the record, I found out that I can run REAL quick when I need to.
 					'''
 			}
@@ -355,6 +355,7 @@ PotterySlime: {
 	}
 
 	Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
+	Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
 }
 
 StompableGnome.DisplayName: Stompable Gnome

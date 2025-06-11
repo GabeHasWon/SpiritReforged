@@ -11,5 +11,5 @@ public class DriftwoodBow : ModItem
 		Item.damage = 8;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 10).AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 10).AddTile(TileID.WorkBenches).Register();
 }

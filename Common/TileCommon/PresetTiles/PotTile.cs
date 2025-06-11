@@ -1,5 +1,5 @@
 ﻿using RubbleAutoloader;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;

@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Underground.Moss.Radon;
 [AutoloadGlowmask("225,225,225")]
 public class RadonMossBrick : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(ItemMethods.AutoItemType<RadonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<RadonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
 
 	public override void SetStaticDefaults()
 	{

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
@@ -21,10 +22,18 @@ public class Gar : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		CreateItemDefaults();
+
 		Main.npcFrameCount[NPC.type] = 12;
 		Main.npcCatchable[NPC.type] = true;
 		NPCID.Sets.CountsAsCritter[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Shimmerfly;
+	}
+
+	public virtual void CreateItemDefaults()
+	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 5, 37));
+		ItemEvents.CreateItemDefaults(this.AutoItemType("Banner"), item => item.value = Item.sellPrice(0, 0, 2, 0));
 	}
 
 	public override void SetDefaults()

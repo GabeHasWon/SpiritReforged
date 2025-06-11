@@ -4,6 +4,7 @@ using Terraria.DataStructures;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 

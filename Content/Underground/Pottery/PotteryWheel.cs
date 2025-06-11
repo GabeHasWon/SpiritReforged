@@ -27,7 +27,7 @@ public class PotteryWheel : ModTile, IAutoloadTileItem
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(191, 142, 111), this.AutoModItem().DisplayName);
+		AddMapEntry(new Color(191, 142, 111), this.AutoItem().ModItem.DisplayName);
 		DustType = DustID.WoodFurniture;
 		AnimationFrameHeight = FullFrameHeight;
 	}

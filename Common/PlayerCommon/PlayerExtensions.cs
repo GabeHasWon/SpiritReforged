@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Common.PlayerCommon;
@@ -35,6 +35,8 @@ internal static class PlayerExtensions
 
 		return player.GetHandRotated(stretch, rotation);
 	}
+
+	public static Tile TargetTile(this Player player) => Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
 	public static void SimpleShakeScreen(this Player player, float strength, float vibrationCycles, int frames, float distanceFalloff, string uniqueIdentity = null)
 	{

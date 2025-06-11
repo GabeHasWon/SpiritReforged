@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Common.ItemCommon;
+namespace SpiritReforged.Common.ItemCommon.Abstract;
 
 public abstract class FoodItem : ModItem
 {

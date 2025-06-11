@@ -355,6 +355,7 @@ PotterySlime: {
 	}
 
 	Entry: 信不信由你，这个史莱姆可是世界闻名的陶艺大师——你眼前站着的，正是当代顶尖艺术家！
+	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
 }
 
 StompableGnome.DisplayName: 可被踩头的侏儒

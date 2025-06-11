@@ -1,4 +1,4 @@
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.NPCCommon;

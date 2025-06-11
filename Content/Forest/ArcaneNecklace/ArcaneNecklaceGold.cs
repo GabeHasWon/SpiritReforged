@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.GameContent.ItemDropRules;
 

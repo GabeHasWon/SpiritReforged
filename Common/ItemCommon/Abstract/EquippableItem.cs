@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.ItemCommon;
+﻿namespace SpiritReforged.Common.ItemCommon.Abstract;
 
 /// <summary>Automatically provides equip flags for items in <see cref="ItemEquipPlayer.equips"/>.
 /// <br/>See <see cref="PlayerCommon.PlayerExtensions"/> for additional helpers. </summary>

@@ -1,4 +1,4 @@
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 

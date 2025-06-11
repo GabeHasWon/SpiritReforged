@@ -14,7 +14,7 @@ internal class LivingBaobab : ModTile
 		TileID.Sets.ChecksForMerge[Type] = true;
 		TileID.Sets.IsSkippedForNPCSpawningGroundTypeCheck[Type] = true;
 
-		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
+		RegisterItemDrop(AutoContent.ItemType<Drywood>());
 		AddMapEntry(new Color(142, 125, 106));
 		this.Merge(TileID.Sand, TileID.Dirt, ModContent.TileType<SavannaDirt>(), ModContent.TileType<Drywood>());
 

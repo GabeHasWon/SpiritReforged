@@ -5,5 +5,5 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodCandle : CandleTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Driftwood>();
+	public override int CoreMaterial => AutoContent.ItemType<Driftwood>();
 }

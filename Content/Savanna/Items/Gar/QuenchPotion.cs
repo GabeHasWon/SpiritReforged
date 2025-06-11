@@ -67,6 +67,6 @@ public class QuenchPotion : ModItem
 		Item.UseSound = SoundID.Item3;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BottledWater).AddIngredient(ItemMethods.AutoItemType<NPCs.Gar.Gar>())
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BottledWater).AddIngredient(AutoContent.ItemType<NPCs.Gar.Gar>())
 		.AddIngredient(ItemID.Blinkroot).AddIngredient(ItemID.Moonglow).AddIngredient(ItemID.Waterleaf).AddTile(TileID.Bottles).Register();
 }

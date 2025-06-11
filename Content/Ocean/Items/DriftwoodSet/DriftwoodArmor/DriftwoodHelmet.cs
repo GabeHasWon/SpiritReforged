@@ -29,7 +29,7 @@ public class DriftwoodHelmet : ModItem
 
 	public override void AddRecipes()
 	{
-		int driftwood = ItemMethods.AutoItemType<Driftwood>();
+		int driftwood = AutoContent.ItemType<Driftwood>();
 
 		CreateRecipe().AddIngredient(driftwood, 15).AddTile(TileID.WorkBenches).Register();
 		Recipe.Create(ModContent.ItemType<DriftwoodChestplate>()).AddIngredient(driftwood, 20).AddTile(TileID.WorkBenches).Register();

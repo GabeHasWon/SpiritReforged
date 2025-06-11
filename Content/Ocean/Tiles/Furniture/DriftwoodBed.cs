@@ -5,5 +5,5 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodBed : BedTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Driftwood>();
+	public override int CoreMaterial => AutoContent.ItemType<Driftwood>();
 }

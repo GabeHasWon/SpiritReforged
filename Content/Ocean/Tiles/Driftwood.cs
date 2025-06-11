@@ -25,7 +25,7 @@ public class Driftwood : ModTile, IAutoloadTileItem
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(item.type, 5, 10, 30));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(item.type, 5, 10, 30));
 
-		SpiritClassic.AddItemReplacement("DriftwoodTileItem", this.AutoItem().type);
-		ItemID.Sets.ShimmerTransformToItem[this.AutoItem().type] = ItemID.Wood;
+		SpiritClassic.AddItemReplacement("DriftwoodTileItem", item.type);
+		ItemID.Sets.ShimmerTransformToItem[item.type] = ItemID.Wood;
 	}
 }
