@@ -1968,3 +1968,8 @@ SharpshooterGlove: {
 		增加在此范围内连续射击时造成的伤害
 		'''
 }
+
+BonsaiPot: {
+	// DisplayName: Bonsai Pot
+	// Tooltip: Used to craft decorative bonsai
+}

@@ -1,3 +1,15 @@
+VanillaDialogue: {
+	ArmsDealer: {
+		Savanna1: Lotta big game around these parts. Even you could hit 'em if you had one of my trusty sidearms.
+		Savanna2: Shamone
+	}
+
+	Stylist: {
+		Savanna1: It's wicked hard to maintain my hairstyle in this climate.
+		Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+	}
+}
+
 Crinoid: {
 	DisplayName: Crinoid
 	Entry: These curious critters are closely related to starfish. They feed off of whatever sinks down to the bottom of the sea.

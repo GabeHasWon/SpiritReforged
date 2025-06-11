@@ -10,6 +10,12 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract partial class BaseClubProj : ModProjectile
 {
+	public static readonly SoundStyle DefaultReady = new("SpiritReforged/Assets/SFX/Item/ClubReady")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.15f
+	};
+
 	public static readonly SoundStyle DefaultSwing = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 	{
 		Volume = 0.66f

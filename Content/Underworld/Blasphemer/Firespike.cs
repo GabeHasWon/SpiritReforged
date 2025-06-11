@@ -89,7 +89,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 	private void Surface()
 	{
 		int surfaceDuration = 0;
-		while (WorldGen.SolidTile(GetOrigin()) || Main.tileSolidTop[Framing.GetTileSafely(GetOrigin()).TileType])
+		while (WorldGen.SolidTile(GetOrigin()))
 		{
 			Projectile.position.Y--; //Move out of solid tiles
 

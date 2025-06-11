@@ -14,11 +14,6 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	public record struct ClubParameters(bool HasIndicator = true, Color ChargeColor = default);
 	internal const int MAX_FLICKERTIME = 20;
 
-	public static readonly SoundStyle Ready = new("SpiritReforged/Assets/SFX/Item/ClubReady")
-	{
-		PitchVariance = 0.15f
-	};
-
 	internal readonly Vector2 Size = textureSize;
 
 	public float DamageScaling { get; private set; }

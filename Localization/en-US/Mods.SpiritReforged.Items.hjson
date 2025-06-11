@@ -1968,3 +1968,8 @@ SharpshooterGlove: {
 		Consecutive shots at this range deal increased damage
 		'''
 }
+
+BonsaiPot: {
+	DisplayName: Bonsai Pot
+	Tooltip: Used to craft decorative bonsai
+}
