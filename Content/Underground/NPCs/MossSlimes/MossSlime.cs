@@ -9,6 +9,7 @@ internal class MossSlime : ModNPC
 {
 	protected static Dictionary<int, Asset<Texture2D>> FrontSpritesById = [];
 	protected static Dictionary<int, Asset<Texture2D>> BackSpritesById = [];
+	protected static Dictionary<int, HashSet<int>> SpawnTilesById = [];
 
 	private static int DummyBestiaryType = -1;
 
@@ -16,17 +17,20 @@ internal class MossSlime : ModNPC
 
 	protected virtual Vector3 LightColor { get; }
 	protected virtual int MossType { get; }
+	protected virtual HashSet<int> TileTypes { get; } = [];
 
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 2;
 
-		if (Type != ModContent.NPCType<MossSlime>())
+		if (Type != ModContent.NPCType<MossSlime>() && !Main.dedServ)
 		{
 			string path = $"SpiritReforged/Content/Underground/NPCs/MossSlimes/{Name}";
 			FrontSpritesById.Add(Type, ModContent.Request<Texture2D>(path + "_Front"));
 			BackSpritesById.Add(Type, ModContent.Request<Texture2D>(path + "_Back"));
 		}
+
+		SpawnTilesById.Add(Type, TileTypes);
 	}
 
 	public override void SetDefaults()
@@ -80,6 +84,14 @@ internal class MossSlime : ModNPC
 
 		DrawMoss(spriteBatch, screenPos, drawColor, true);
 		return true;
+	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		if (GetType() == typeof(MossSlime))
+			return 0;
+
+		return spawnInfo.SpawnTileY > Main.worldSurface && SpawnTilesById[Type].Contains(spawnInfo.SpawnTileType) ? 0.3f : 0; 
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
