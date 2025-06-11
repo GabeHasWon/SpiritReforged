@@ -1959,3 +1959,8 @@ InvisibleLure: {
 	// DisplayName: Invisible Lure
 	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
+
+BonsaiPot: {
+	// DisplayName: Bonsai Pot
+	// Tooltip: Used to craft decorative bonsai
+}
