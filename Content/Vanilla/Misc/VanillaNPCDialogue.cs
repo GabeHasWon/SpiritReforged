@@ -9,7 +9,6 @@ public class VanillaNPCDialogue : GlobalNPC
 	{
 		Player player = Main.LocalPlayer;
 
-		//Arms Dealer
 		if (npc.type == NPCID.ArmsDealer)
 		{
 			if (player.InModBiome<SavannaBiome>())
@@ -19,7 +18,6 @@ public class VanillaNPCDialogue : GlobalNPC
 			}
 		}
 
-		//Stylist
 		if (npc.type == NPCID.Stylist)
 		{
 			if (player.InModBiome<SavannaBiome>())
