@@ -59,12 +59,14 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 	public static readonly SoundStyle Swing1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_1")
 	{
+		Volume = 0.6f,
 		PitchVariance = 0.2f,
 		PitchRange = (-0.4f, 0f)
 	};
 
 	public static readonly SoundStyle Swing2 = new("SpiritReforged/Assets/SFX/Item/FieryMaceSwing_2")
 	{
+		Volume = 0.6f,
 		PitchVariance = 0.2f,
 		PitchRange = (-0.4f, 0f)
 	};
