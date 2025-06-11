@@ -1,3 +1,15 @@
+VanillaDialogue: {
+	ArmsDealer: {
+		// Savanna1: Lotta big game around these parts. Even you could hit 'em if you had one of my trusty sidearms.
+		// Savanna2: Shamone
+	}
+
+	Stylist: {
+		// Savanna1: It's hard to maintain my hairstyle in this climate.
+		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+	}
+}
+
 Crinoid: {
 	DisplayName: 海百合
 	Entry: 这些稀奇的动物与海星有着密切的亲缘关系。它们以沉入海底的任何东西为食。
