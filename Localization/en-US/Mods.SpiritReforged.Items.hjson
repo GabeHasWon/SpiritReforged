@@ -1960,6 +1960,15 @@ InvisibleLure: {
 	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
 
+SharpshooterGlove: {
+	DisplayName: Sharpshooter's Glove
+	Tooltip:
+		'''
+		Increases ranged damage at a distance
+		Consecutive shots at this range deal increased damage
+		'''
+}
+
 BonsaiPot: {
 	DisplayName: Bonsai Pot
 	Tooltip: Used to craft decorative bonsai
