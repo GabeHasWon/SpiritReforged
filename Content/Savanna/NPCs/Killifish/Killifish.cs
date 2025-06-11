@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
@@ -19,11 +20,19 @@ public class Killifish : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		CreateItemDefaults();
+
 		Main.npcFrameCount[Type] = 9;
 		Main.npcCatchable[Type] = true;
 
 		NPCID.Sets.CountsAsCritter[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+	}
+
+	public virtual void CreateItemDefaults()
+	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
+		ItemEvents.CreateItemDefaults(this.AutoItemType("Banner"), item => item.value = Item.sellPrice(0, 0, 2, 0));
 	}
 
 	public override void SetDefaults()

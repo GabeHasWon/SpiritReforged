@@ -21,12 +21,12 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 	}
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
-		.AddIngredient(ItemMethods.AutoItemType<StrippedBamboo>(), 14).AddTile(TileID.Sawmill).Register();
+		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 14).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
 	{
 		BirdTypes = [ItemID.Cardinal, ItemID.BlueJay, ItemID.GoldBird, ItemID.Bird, ItemID.Seagull, 
-			ItemID.BlueMacaw, ItemID.GrayCockatiel, ItemMethods.AutoItemType<Sparrow>()];
+			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>()];
 
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;

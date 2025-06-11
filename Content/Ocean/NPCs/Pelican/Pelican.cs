@@ -38,7 +38,7 @@ public class Pelican : ModNPC
 		choice = new(Main.rand);
 		choice.Add(ItemID.None, 6);
 		choice.Add(ModContent.ItemType<Kelp>(), 0.25f);
-		choice.Add(ItemMethods.AutoItemType<Driftwood>(), 0.1f);
+		choice.Add(AutoContent.ItemType<Driftwood>(), 0.1f);
 		choice.Add(ItemID.RedSnapper, 1f);
 		choice.Add(ItemID.Shrimp, 0.5f);
 		choice.Add(ItemID.Trout, 1.5f);

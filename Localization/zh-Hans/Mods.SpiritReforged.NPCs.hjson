@@ -1,3 +1,15 @@
+VanillaDialogue: {
+	ArmsDealer: {
+		// Savanna1: Lotta big game around these parts. Even you could hit 'em if you had one of my trusty sidearms.
+		// Savanna2: Shamone
+	}
+
+	Stylist: {
+		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+	}
+}
+
 Crinoid: {
 	DisplayName: 海百合
 	Entry: 这些稀奇的动物与海星有着密切的亲缘关系。它们以沉入海底的任何东西为食。
@@ -355,6 +367,7 @@ PotterySlime: {
 	}
 
 	Entry: 信不信由你，这个史莱姆可是世界闻名的陶艺大师——你眼前站着的，正是当代顶尖艺术家！
+	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
 }
 
 StompableGnome.DisplayName: 可被踩头的侏儒
@@ -389,3 +402,17 @@ WorldFrog: {
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
 	}
 }
+
+MossSlime: {
+	// DisplayName: Moss Slime
+	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+}
+
+// KryptonMossSlime.DisplayName: Krypton Moss Slime
+// LavaMossSlime.DisplayName: Lava Moss Slime
+// NeonMossSlime.DisplayName: Neon Moss Slime
+// XenonMossSlime.DisplayName: Xenon Moss Slime
+// ArgonMossSlime.DisplayName: Argon Moss Slime
+// HeliumMossSlime.DisplayName: Helium Moss Slime
+// OganessonMossSlime.DisplayName: Oganesson Moss Slime
+// RadonMossSlime.DisplayName: Radon Moss Slime

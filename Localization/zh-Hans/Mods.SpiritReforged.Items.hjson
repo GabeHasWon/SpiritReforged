@@ -1798,8 +1798,8 @@ SavannaSandstormOtherworldMusicBoxItem: {
 }
 
 SavannaTorchItem: {
-	// DisplayName: Savanna Torch
-	// Tooltip: ""
+	DisplayName: 稀树平原火把
+	Tooltip: ""
 }
 
 FlaskBlue: {
@@ -1948,4 +1948,30 @@ AncientMarksmanLegs: {
 AncientMarksmanPlate: {
 	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
 	// Tooltip: ""
+}
+
+RollingPotItem: {
+	// DisplayName: Rolling Pot
+	// Tooltip: ""
+}
+
+// MossSlimeBannerItem.DisplayName: Moss Slime Banner
+
+InvisibleLure: {
+	// DisplayName: Invisible Lure
+	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	DisplayName: 神射手手套
+	Tooltip:
+		'''
+		增加在一定距离时的远程伤害
+		增加在此范围内连续射击时造成的伤害
+		'''
+}
+
+BonsaiPot: {
+	// DisplayName: Bonsai Pot
+	// Tooltip: Used to craft decorative bonsai
 }

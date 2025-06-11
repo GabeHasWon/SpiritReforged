@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.ItemCommon;
+﻿namespace SpiritReforged.Common.ItemCommon.Abstract;
 
 public abstract class TorchItem : ModItem
 {

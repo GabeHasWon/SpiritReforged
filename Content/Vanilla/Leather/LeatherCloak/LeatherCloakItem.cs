@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
 

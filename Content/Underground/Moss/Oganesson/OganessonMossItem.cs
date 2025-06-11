@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
@@ -35,36 +36,32 @@ public class OganessonMossItem : ModItem
 		}
 	}
 
+	public override bool CanUseItem(Player player) => player.IsTargetTileInItemRange(Item);
+
 	public override bool? UseItem(Player player)
 	{
-		if (Main.myPlayer == player.whoAmI)
+		var tile = player.TargetTile();
+		if (tile.TileType == TileID.Stone)
 		{
-			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			if (tile.HasTile && player.IsTargetTileInItemRange(Item))
-			{
-				if (tile.TileType == TileID.Stone)
-				{
-					WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, ModContent.TileType<OganessonMoss>(), forced: true);
-
-					if (Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendTileSquare(player.whoAmI, Player.tileTargetX, Player.tileTargetY);
-
-					return true;
-				}
-
-				if (tile.TileType == TileID.GrayBrick)
-				{
-					WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, ModContent.TileType<OganessonMossGrayBrick>(), forced: true);
-
-					if (Main.netMode != NetmodeID.SinglePlayer)
-						NetMessage.SendTileSquare(player.whoAmI, Player.tileTargetX, Player.tileTargetY);
-
-					return true;
-				}
-			}
+			TryPlace(ModContent.TileType<OganessonMoss>());
+			return true;
+		}
+		else if (tile.TileType == TileID.GrayBrick)
+		{
+			TryPlace(ModContent.TileType<OganessonMossGrayBrick>());
+			return true;
 		}
 
 		return null;
+
+		static void TryPlace(int type)
+		{
+			WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, type, forced: true);
+			var t = Main.tile[Player.tileTargetX, Player.tileTargetY];
+
+			if (t.TileType == type && Main.netMode != NetmodeID.SinglePlayer)
+				NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY);
+		}
 	}
 
 	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, .252f, .252f, .252f);

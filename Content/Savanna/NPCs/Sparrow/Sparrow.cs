@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -10,9 +11,11 @@ public class Sparrow : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(silver: 5));
+
 		Main.npcFrameCount[Type] = 5;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
-		Recipes.AddToGroup(RecipeGroupID.Birds, Mod.Find<ModItem>(Name + "Item").Type);
+		Recipes.AddToGroup(RecipeGroupID.Birds, this.AutoItemType());
 	}
 
 	public override void SetDefaults()

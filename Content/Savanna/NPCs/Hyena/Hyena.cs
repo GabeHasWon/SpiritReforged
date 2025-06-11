@@ -499,7 +499,7 @@ public class Hyena : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddCommon<RawMeat>(3);
+		npcLoot.AddCommon<RawMeat>(5);
 		npcLoot.AddCommon(ItemID.Leather, 2, 3, 5);
 		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}

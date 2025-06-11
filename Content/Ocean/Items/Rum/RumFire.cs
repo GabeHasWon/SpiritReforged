@@ -59,7 +59,7 @@ public class RumFire : ModProjectile
 	private void Surface()
 	{
 		int surfaceDuration = 0;
-		while (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height) || Main.tileSolidTop[Framing.GetTileSafely(Projectile.Bottom).TileType])
+		while (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height, true))
 		{
 			Projectile.position.Y--; //Move up out of solid tiles
 
@@ -68,7 +68,7 @@ public class RumFire : ModProjectile
 		}
 
 		surfaceDuration = 0;
-		while (!Collision.SolidCollision(Projectile.position + Vector2.UnitY, Projectile.width, Projectile.height) && !Main.tileSolidTop[Framing.GetTileSafely(Projectile.Bottom + Vector2.UnitY).TileType])
+		while (!Collision.SolidCollision(Projectile.position + Vector2.UnitY, Projectile.width, Projectile.height, true))
 		{
 			Projectile.position.Y++; //Move down onto solid tiles
 

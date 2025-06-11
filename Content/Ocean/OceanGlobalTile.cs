@@ -14,7 +14,7 @@ public class OceanGlobalTile : GlobalTile
 	{
 		int[] sands = [TileID.Sand, TileID.Crimsand, TileID.Ebonsand, TileID.Pearlsand]; //All valid sands
 		int[] woods = [TileID.WoodBlock, TileID.BorealWood, TileID.Ebonwood, TileID.DynastyWood, TileID.RichMahogany, TileID.PalmWood, TileID.Shadewood, TileID.WoodenBeam,
-			ItemMethods.AutoItemType<Driftwood>(), ModContent.TileType<Drywood>(), TileID.Pearlwood];
+			AutoContent.ItemType<Driftwood>(), ModContent.TileType<Drywood>(), TileID.Pearlwood];
 
 		bool inOcean = (i < Main.maxTilesX / 16 || i > Main.maxTilesX / 16 * 15) && j < (int)Main.worldSurface;
 		bool inWorldBounds = i > 40 && i < Main.maxTilesX - 40;

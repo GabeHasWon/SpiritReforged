@@ -26,7 +26,7 @@ public abstract class CageTile : ModTile, IAutoloadTileItem
 		AnimationFrameHeight = 54;
 		AdjTiles = [TileID.BirdCage];
 
-		RegisterItemDrop(this.AutoItem().type);
+		RegisterItemDrop(this.AutoItemType());
 	}
 
 	public virtual void AddObjectData()

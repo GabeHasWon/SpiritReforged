@@ -42,7 +42,7 @@ public class AcaciaTree : CustomTree
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>()];
 
 		AddMapEntry(new Color(120, 80, 75), Language.GetText("MapObject.Tree"));
-		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
+		RegisterItemDrop(AutoContent.ItemType<Drywood>());
 		DustType = DustID.WoodFurniture;
 	}
 
@@ -84,7 +84,7 @@ public class AcaciaTree : CustomTree
 		drop.Add(ModContent.ItemType<Caryocar>(), .2f);
 		drop.Add(ModContent.ItemType<CustardApple>(), .2f);
 		drop.Add(ModContent.ItemType<BaobabFruit>(), .2f);
-		drop.Add(ItemMethods.AutoItemType<Drywood>(), .8f);
+		drop.Add(AutoContent.ItemType<Drywood>(), .8f);
 		drop.Add(ModContent.ItemType<LivingBaobabWand>(), .033f);
 		drop.Add(ModContent.ItemType<LivingBaobabLeafWand>(), .03f);
 		drop.Add(ItemID.Acorn, .7f);

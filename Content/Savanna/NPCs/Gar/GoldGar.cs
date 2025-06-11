@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Vanilla.Food;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Gar;
@@ -5,6 +6,8 @@ namespace SpiritReforged.Content.Savanna.NPCs.Gar;
 [AutoloadCritter]
 public class GoldGar : Gar
 {
+	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
+
 	public override void AI()
 	{
 		base.AI();

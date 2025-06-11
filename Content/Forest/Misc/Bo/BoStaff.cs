@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -42,7 +43,7 @@ public class BoStaff : ModItem
 		return (HitCombo == 2) ? 0.38f : 1f;
 	}
 
-	public override bool AltFunctionUse(Player player) => true;
+	public override bool AltFunctionUse(Player player) => false; //Makes the alt attack inaccessible
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
@@ -326,6 +327,8 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	}
 
 	public override bool? CanCutTiles() => _collided ? false : null;
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
+
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;

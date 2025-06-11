@@ -7,10 +7,10 @@ public class DriftwoodPlatform : ModTile, IAutoloadTileItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
-		item.CreateRecipe(2).AddIngredient(ItemMethods.AutoItemType<Driftwood>()).Register();
+		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<Driftwood>()).Register();
 
 		//Allow platform items to be crafted back into base materials
-		Recipe.Create(ItemMethods.AutoItemType<Driftwood>()).AddIngredient(item.Type, 2)
+		Recipe.Create(AutoContent.ItemType<Driftwood>()).AddIngredient(item.Type, 2)
 			.AddTile(TileID.WorkBenches).Register();
 	}
 

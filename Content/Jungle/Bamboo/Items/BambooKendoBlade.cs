@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
 using Terraria.Audio;
@@ -78,7 +79,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 		info.DrawDataCache.Add(new DrawData(texture.Value, drawPos, frame, color, rotation, new Vector2(30), 1, info.playerEffect, 0));
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
 }
 
 public class KendoBladeSwing : ModProjectile
@@ -133,6 +134,7 @@ public class KendoBladeSwing : ModProjectile
 		Projectile.scale = MathHelper.Min(Projectile.scale + .075f, 1); //Fade in
 	}
 
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;

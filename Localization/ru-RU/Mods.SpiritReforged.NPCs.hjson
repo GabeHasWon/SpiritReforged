@@ -1,3 +1,15 @@
+VanillaDialogue: {
+	ArmsDealer: {
+		// Savanna1: Lotta big game around these parts. Even you could hit 'em if you had one of my trusty sidearms.
+		// Savanna2: Shamone
+	}
+
+	Stylist: {
+		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+	}
+}
+
 Crinoid: {
 	DisplayName: Морская лилия
 	Entry: Эти загадочные создания — родственники морских звёзд. Они прочно цепляются за дно и терпеливо ловят всё, что опустится к ним с морских глубин.
@@ -355,6 +367,7 @@ PotterySlime: {
 	}
 
 	Entry: Хотите верьте, хотите нет, но этот слизень — известный во всём мире гончар. Вы наблюдаете за настоящим мастером!
+	// Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
 }
 
 StompableGnome.DisplayName: Топтаный гном
@@ -389,3 +402,17 @@ WorldFrog: {
 		CavesAndClubs_1: Абра-кадабра! Дарю горшки вам новы, спустись же под землю, да вкуси их основы!
 	}
 }
+
+MossSlime: {
+	// DisplayName: Moss Slime
+	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+}
+
+// KryptonMossSlime.DisplayName: Krypton Moss Slime
+// LavaMossSlime.DisplayName: Lava Moss Slime
+// NeonMossSlime.DisplayName: Neon Moss Slime
+// XenonMossSlime.DisplayName: Xenon Moss Slime
+// ArgonMossSlime.DisplayName: Argon Moss Slime
+// HeliumMossSlime.DisplayName: Helium Moss Slime
+// OganessonMossSlime.DisplayName: Oganesson Moss Slime
+// RadonMossSlime.DisplayName: Radon Moss Slime

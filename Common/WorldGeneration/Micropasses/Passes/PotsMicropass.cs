@@ -16,7 +16,25 @@ internal class PotsMicropass : Micropass
 
 	public override string WorldGenName => "Pots";
 
-	public override void Load(Mod mod) => On_WorldGen.PlacePot += PotConversion;
+	public override void Load(Mod mod)
+	{
+		On_WorldGen.PlacePot += PotConversion;
+		On_WorldGen.PlaceTile += PotBoulderConversion;
+	}
+
+	private static bool PotBoulderConversion(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
+	{
+		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(3))
+		{
+			int placed = ModContent.TileType<RollingPot>();
+
+			WorldGen.PlaceTile(i - 1, j, placed, true, style: 1);
+			return Main.tile[i, j].TileType == placed; //Skips orig
+		}
+
+		return orig(i, j, Type, mute, forced, plr, style);
+	}
+
 	/// <summary> 50% chance to replace regular pots placed on mushroom grass.<br/>
 	/// 100% chance to replace regular pots placed on granite. </summary>
 	private static bool PotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
@@ -68,6 +86,7 @@ internal class PotsMicropass : Micropass
 		Generate(CreatePlatter, (int)(scale * 24), out _);
 		Generate(CreateAether, (int)(scale * 3), out _);
 		Generate(CreateUpsideDown, (int)(scale * 4), out _);
+		Generate(CreateBoulder, (int)(scale * 15), out _);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
@@ -195,6 +214,20 @@ internal class PotsMicropass : Micropass
 			return false;
 
 		int type = ModContent.TileType<UpsideDownPot>();
+		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreateBoulder(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<RollingPot>();
 		Placer.Check(x, y, type).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;

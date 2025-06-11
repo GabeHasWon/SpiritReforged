@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Ocean.Items.Pearl;

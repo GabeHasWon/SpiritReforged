@@ -25,6 +25,7 @@ Records: {
 	Stuffed: Какое странное место для торговца. Прямо напрашиваются на беспокойство.
 	Scrying: Открывает большую часть карты после уничтожения.
 	Biome: Содержит куда больше полезных предметов, чем обычные горшки.
+	// Boulder: Rolls along the ground when disturbed.
 }
 
 SunkenTreasureTile.MapEntry: Затонувшее сокровище

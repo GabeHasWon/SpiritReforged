@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.ItemCommon;
+﻿namespace SpiritReforged.Common.ItemCommon.Abstract;
 
 /// <summary> 
 /// A class that handles boilerplate code that every minion accessory (accessories that spawn a guy) has. 

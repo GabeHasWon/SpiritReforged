@@ -5,6 +5,6 @@ namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 
 public class DrywoodChandelier : ChandelierTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Drywood>();
+	public override int CoreMaterial => AutoContent.ItemType<Drywood>();
 	public override bool BlurGlowmask => false;
 }

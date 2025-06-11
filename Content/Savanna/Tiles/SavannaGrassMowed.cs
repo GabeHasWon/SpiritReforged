@@ -15,12 +15,12 @@ public class SavannaGrassMowed : GrassTile
 		base.SetStaticDefaults();
 
 		TileMaterials.SetForTileId(Type, TileMaterials.GetByTileId(TileID.GolfGrass));
-		RegisterItemDrop(ItemMethods.AutoItemType<SavannaDirt>());
+		RegisterItemDrop(AutoContent.ItemType<SavannaDirt>());
 		AddMapEntry(MapColor);
 	}
 
 	public override void RandomUpdate(int i, int j) { }
-	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != ItemMethods.AutoItemType<SavannaDirt>();
+	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.ItemType<SavannaDirt>();
 
 	public override void Convert(int i, int j, int conversionType)
 	{

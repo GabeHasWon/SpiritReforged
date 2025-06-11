@@ -61,6 +61,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 
 	}
 
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Cyan;
 	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
 
 	public override void OnSmash(Vector2 position)

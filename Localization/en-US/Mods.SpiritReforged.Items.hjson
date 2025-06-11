@@ -1949,3 +1949,29 @@ AncientMarksmanPlate: {
 	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
 	Tooltip: ""
 }
+
+RollingPotItem: {
+	DisplayName: Rolling Pot
+	Tooltip: ""
+}
+
+MossSlimeBannerItem.DisplayName: Moss Slime Banner
+
+InvisibleLure: {
+	DisplayName: Invisible Lure
+	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	DisplayName: Sharpshooter's Glove
+	Tooltip:
+		'''
+		Increases ranged damage at a distance
+		Consecutive shots at this range deal increased damage
+		'''
+}
+
+BonsaiPot: {
+	DisplayName: Bonsai Pot
+	Tooltip: Used to craft decorative bonsai
+}
