@@ -80,7 +80,7 @@ public abstract partial class BaseClubProj : ModProjectile
 
 			if (!Main.dedServ && _parameters.HasIndicator)
 			{
-				SoundEngine.PlaySound(Ready, Projectile.Center);
+				SoundEngine.PlaySound(DefaultReady, Projectile.Center);
 				_flickerTime = MAX_FLICKERTIME;
 			}
 

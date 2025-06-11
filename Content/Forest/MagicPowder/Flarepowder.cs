@@ -7,7 +7,6 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -117,6 +116,16 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 	public virtual Color[] Colors => [Color.LightCoral, Color.Orange, Color.Goldenrod];
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
 
+	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/Impact_Hard")
+	{
+		PitchRange = (0f, 0.75f),
+		Volume = 0.5f,
+		MaxInstances = 5
+	};
+
+	/// <summary> Represents a min to max value range. </summary>
+	public (float, float) randomTimeLeft;
+
 	public void DoTrailCreation(TrailManager tm)
 	{
 		float scale = Projectile.scale;
@@ -135,6 +144,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
+		randomTimeLeft = (0.6f, 1f);
 	}
 
 	public override void AI()
@@ -159,7 +169,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 				const float range = 0.01f;
 
 				Projectile.ai[0] = Main.rand.NextFloat(-range, range);
-				Projectile.timeLeft = (int)(Projectile.timeLeft * Main.rand.NextFloat(0.6f, 1f));
+				Projectile.timeLeft = (int)(Projectile.timeLeft * Main.rand.NextFloat(randomTimeLeft.Item1, randomTimeLeft.Item2));
 
 				Projectile.netUpdate = true;
 			}
@@ -195,8 +205,13 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();
 
-		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), Volume = .35f, MaxInstances = 5 }, Projectile.Center);
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_Hard") with { PitchRange = (0f, 0.75f), Volume = .5f, MaxInstances = 5 }, Projectile.Center);
+		PlayDeathSound();
+	}
+
+	public virtual void PlayDeathSound()
+	{
+		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), Volume = 0.35f, MaxInstances = 5 }, Projectile.Center);
+		SoundEngine.PlaySound(Impact, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
