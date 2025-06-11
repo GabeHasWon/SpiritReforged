@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
@@ -20,7 +22,6 @@ public class OceanKelp : ModTile
 		Main.tileFrameImportant[Type] = true;
 
 		TileID.Sets.NotReallySolid[Type] = true;
-
 		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -261,19 +262,16 @@ public class OceanKelp : ModTile
 		if (!ConvertAdjacentSet.Converting)
 			return;
 
-		var tile = Main.tile[i, j];
-		int oldType = tile.TileType;
-
-		tile.TileType = (ushort)(conversionType switch
+		int type = conversionType switch
 		{
 			BiomeConversionID.Hallow => ModContent.TileType<OceanKelpHallowed>(),
 			BiomeConversionID.Crimson => ModContent.TileType<OceanKelpCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<OceanKelpCorrupt>(),
 			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<OceanKelp>()),
-		});
+		};
 
-		if (oldType != tile.TileType && Main.tile[i, j - 1].TileType == oldType)
-			WorldGen.Convert(i, j - 1, conversionType, 0);
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 

@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
@@ -40,8 +40,6 @@ public class AcaciaTree : CustomTree
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>()];
-
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		AddMapEntry(new Color(120, 80, 75), Language.GetText("MapObject.Tree"));
 		RegisterItemDrop(ItemMethods.AutoItemType<Drywood>());
@@ -232,19 +230,16 @@ public class AcaciaTree : CustomTree
 		if (!ConvertAdjacentSet.Converting)
 			return;
 
-		int oldType = Main.tile[i, j].TileType;
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(conversionType switch
+		int type = conversionType switch
 		{
-			BiomeConversionID.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
-			BiomeConversionID.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<AcaciaTreeCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
 			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaTree>()),
-		});
+		};
 
-		if (Main.tile[i, j - 1].TileType == oldType) // Convert the entire tree from the base
-			WorldGen.Convert(conversionType, i, j - 1);
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 
@@ -283,8 +278,6 @@ public class AcaciaTreeCrossmod(string texture, string name, int anchor) : Acaci
 	public override void PreAddObjectData()
 	{
 		base.PreAddObjectData();
-
-		TileID.Sets.Crimson[Type] = true;
 		TileObjectData.newTile.AnchorValidTiles = [_anchor];
 	}
 }
@@ -305,7 +298,7 @@ public class AcaciaTreeHallow : AcaciaTree
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = GetSway(i, j) * .08f;
+		float rotation = GetSway(i, j) * 0.08f;
 
 		if (IsTreeTop(i, j)) //Draw treetops
 		{

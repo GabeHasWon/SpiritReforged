@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -26,7 +26,6 @@ public class ElephantGrass : ModTile, ICutAttempt
 		Main.tileCut[Type] = true;
 
 		SpiritSets.ConvertsByAdjacent[Type] = true;
-
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -190,15 +189,16 @@ public class ElephantGrass : ModTile, ICutAttempt
 		if (!ConvertAdjacentSet.Converting)
 			return;
 
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(conversionType switch
+		int type = conversionType switch
 		{
-			BiomeConversionID.Hallow => ModContent.TileType<ElephantGrassHallow>(),
-			BiomeConversionID.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<ElephantGrassCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<ElephantGrassHallow>(),
 			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<ElephantGrass>()),
-		});
+		};
+
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 	
 	public bool OnCutAttempt(int i, int j)

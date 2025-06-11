@@ -1,8 +1,7 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
@@ -21,7 +20,6 @@ public abstract class SavannaShrubsBase : ModTile
 		Main.tileNoFail[Type] = true;
 
 		SpiritSets.ConvertsByAdjacent[Type] = true;
-
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 
@@ -48,15 +46,16 @@ public abstract class SavannaShrubsBase : ModTile
 		if (!ConvertAdjacentSet.Converting || Autoloader.IsRubble(Type))
 			return;
 
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(conversionType switch
+		int type = conversionType switch
 		{
-			BiomeConversionID.Hallow => ModContent.TileType<SavannaShrubsHallow>(),
-			BiomeConversionID.Crimson => ModContent.TileType<SavannaShrubsCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<SavannaShrubsCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<SavannaShrubsCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<SavannaShrubsHallow>(),
 			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaShrubs>()),
-		});
+		};
+
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 

@@ -2,15 +2,21 @@
 using System.Reflection;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Common.TileCommon;
+namespace SpiritReforged.Common.TileCommon.Conversion;
 
-internal class ConvertAdjacentSet : GlobalTile
+public class ConvertAdjacentSet : GlobalTile
 {
 	/// <summary> Whether a tile is being converted by adjacents. Should be checked in <see cref="ModBlockType.Convert"/>. </summary>
 	public static bool Converting { get; private set; }
 
 	private static int Conversion;
 	private static Hook CustomHook = null;
+
+	public static void SetType(int type)
+	{
+		if (type == -1 || type < BiomeConversionID.Count || BiomeConversionLoader.GetBiomeConversion(type) is not null)
+			Conversion = type;
+	}
 
 	public override void Load()
 	{
@@ -44,20 +50,21 @@ internal class ConvertAdjacentSet : GlobalTile
 		CustomHook = null;
 	}
 
+	/// <summary> Checks whether anchors are valid for <paramref name="type"/>. </summary>
 	public static bool CheckAnchors(int i, int j, int type)
 	{
 		if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
 		{
-			if (data.AnchorBottom != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i, j + 1).TileType))
+			if (data.AnchorBottom != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i, j + 1).TileType) || data.isValidAlternateAnchor(Framing.GetTileSafely(i, j + 1).TileType))
 				return true;
 
-			if (data.AnchorLeft != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i - 1, j).TileType))
+			if (data.AnchorLeft != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i - 1, j).TileType) || data.isValidAlternateAnchor(Framing.GetTileSafely(i - 1, j).TileType))
 				return true;
 
-			if (data.AnchorRight != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i + 1, j).TileType))
+			if (data.AnchorRight != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i + 1, j).TileType) || data.isValidAlternateAnchor(Framing.GetTileSafely(i + 1, j).TileType))
 				return true;
 
-			if (data.AnchorTop != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i, j - 1).TileType))
+			if (data.AnchorTop != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i, j - 1).TileType) || data.isValidAlternateAnchor(Framing.GetTileSafely(i, j - 1).TileType))
 				return true;
 		}
 

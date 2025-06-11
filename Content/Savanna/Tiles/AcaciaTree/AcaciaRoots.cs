@@ -2,7 +2,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
@@ -21,7 +21,6 @@ public class AcaciaRootsLarge : ModTile
 		Main.tileNoFail[Type] = true;
 
 		SpiritSets.ConvertsByAdjacent[Type] = true;
-
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		SetObjectData();
@@ -64,24 +63,19 @@ public class AcaciaRootsLarge : ModTile
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
-		int id = conversionType switch
+		int type = conversionType switch
 		{
 			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsLargeHallow>(),
 			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsLargeCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsLargeCorrupt>(),
-			_ => ModContent.TileType<AcaciaRootsLarge>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsLarge>())
 		};
 
-		if (id == -1)
-			id = ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>());
-
-		for (int w = 0; w < 3; w++)
-		{
-			var tile = Main.tile[i + w, j];
-			tile.TileType = (ushort)id;
-		}
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 
@@ -106,24 +100,19 @@ public class AcaciaRootsSmall : AcaciaRootsLarge
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
-		int id = conversionType switch
+		int type = conversionType switch
 		{
 			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsSmallHallow>(),
 			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsSmallCrimson>(),
 			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsSmallCorrupt>(),
-			_ => -1,
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>())
 		};
 
-		if (id == -1)
-			id = ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>());
-
-		for (int w = 0; w < 2; w++)
-		{
-			var tile = Main.tile[i + w, j];
-			tile.TileType = (ushort)id;
-		}
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 
