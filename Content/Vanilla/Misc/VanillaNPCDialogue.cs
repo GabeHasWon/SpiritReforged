@@ -51,6 +51,51 @@ public class VanillaNPCDialogue : GlobalNPC
 			}
 		}
 
+		if (npc.type == NPCID.PartyGirl)
+		{
+			if (player.InModBiome<SavannaBiome>())
+			{
+				if (Main.rand.NextBool(3))
+					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.PartyGirl.Savanna");
+
+				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
+				{
+					if (Main.rand.NextBool(2))
+						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.PartyGirl.Duststorm");
+				}
+			}
+		}
+
+		if (npc.type == NPCID.Golfer)
+		{
+			if (player.InModBiome<SavannaBiome>())
+			{
+				if (Main.rand.NextBool(3))
+					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Golfer.Savanna");
+
+				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
+				{
+					if (Main.rand.NextBool(2))
+						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Golfer.Duststorm");
+				}
+			}
+		}
+
+		if (npc.type == NPCID.BestiaryGirl)
+		{
+			if (player.InModBiome<SavannaBiome>())
+			{
+				if (Main.rand.NextBool(3))
+					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Zoologist.Savanna1");
+
+				if (player.statLife < player.statLifeMax)
+				{
+					if (Main.rand.NextBool(2))
+						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Zoologist.Savanna2");
+				}
+			}
+		}
+
 		if (npc.type == NPCID.TravellingMerchant)
 		{
 			int cartographer = NPC.FindFirstNPC(ModContent.NPCType<Cartographer>());
@@ -83,6 +128,12 @@ public class VanillaNPCDialogue : GlobalNPC
 			{
 				if (Main.rand.NextBool(6))
 					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.Ecotone");
+			}
+
+			if (player.ZoneBeach)
+			{
+				if (Main.rand.NextBool(3))
+					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.Kelp");
 			}
 		}
 
