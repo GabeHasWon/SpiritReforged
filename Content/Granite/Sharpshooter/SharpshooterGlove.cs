@@ -7,7 +7,6 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
-using Terraria;
 
 namespace SpiritReforged.Content.Granite.Sharpshooter;
 
@@ -58,7 +57,6 @@ internal class SharpshooterPlayer : ModPlayer
 	}
 
 	public override void Load() => On_Main.DrawNPC += DrawReticle;
-
 	private static void DrawReticle(On_Main.orig_DrawNPC orig, Main self, int iNPCIndex, bool behindTiles)
 	{
 		orig(self, iNPCIndex, behindTiles);
@@ -68,8 +66,7 @@ internal class SharpshooterPlayer : ModPlayer
 			var npc = Main.npc[iNPCIndex];
 			bool onCooldown = CooldownByNPC.TryGetValue(npc.whoAmI, out float value);
 
-			if (AtRange(Main.LocalPlayer, npc))
-				DrawSingle(Main.spriteBatch, npc, value);
+			DrawSingle(Main.spriteBatch, npc, value);
 
 			if (onCooldown && (CooldownByNPC[npc.whoAmI] -= 0.05f) <= 0)
 				CooldownByNPC.Remove(iNPCIndex);
@@ -79,17 +76,23 @@ internal class SharpshooterPlayer : ModPlayer
 	private static void DrawSingle(SpriteBatch spriteBatch, NPC npc, float cooldown)
 	{
 		const float distanceFade = 500;
+		const float playerDistanceFade = 50;
 
-		float opacity = MathHelper.Clamp(1f - Main.MouseWorld.Distance(npc.Center) / distanceFade, 0, 1);
+		float cursorOpacity = MathHelper.Clamp(1f - Main.MouseWorld.Distance(npc.Center) / distanceFade, 0, 1);
+		float playerOpacity = MathHelper.Clamp((Main.LocalPlayer.Distance(npc.Center) - SharpshooterGlove.EffectiveDistance) / playerDistanceFade, 0, 1);
+		float opacity = Math.Min(cursorOpacity, playerOpacity);
+
 		if (opacity <= 0)
 			return;
 
+		opacity = Math.Max(opacity, cooldown * 2);
+
 		var texture = Reticle.Value;
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		float lerp = (float)Math.Sin(Main.timeForVisualEffects / 40f);
 		float scale = 1 + lerp * 0.2f;
 
-		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-		spriteBatch.Draw(bloom, npc.Center - Main.screenPosition, null, (Color.Cyan * Math.Max(opacity, cooldown * 2) * 0.2f).Additive(), 0, bloom.Size() / 2, scale * 0.2f, default, 0);
+		spriteBatch.Draw(bloom, npc.Center - Main.screenPosition, null, (Color.Cyan * opacity * 0.2f).Additive(), 0, bloom.Size() / 2, scale * 0.2f, default, 0);
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -105,7 +108,7 @@ internal class SharpshooterPlayer : ModPlayer
 
 			DrawHelpers.DrawChromaticAberration(new Vector2(1), 1, delegate(Vector2 offset, Color color)
 			{
-				spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, (color * Math.Max(opacity, cooldown) * 2).Additive(), rotation, source.Size() / 2, scale, default, 0);
+				spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, (color * opacity).Additive(), rotation, source.Size() / 2, scale, default, 0);
 			});
 		}
 	}
