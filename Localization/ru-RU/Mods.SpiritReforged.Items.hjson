@@ -1972,3 +1972,8 @@ PolishedAmberItem: {
 	// DisplayName: Polished Amber
 	// Tooltip: ""
 }
+
+PolishedAmberUnsafeItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.PolishedAmberItem.DisplayName}"
+	// Tooltip: ""
+}

@@ -17,17 +17,8 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
-		int type = ModContent.TileType<PolishedAmber>();
-		var texture = TextureAssets.Tile[type].Value;
-
 		foreach (var pt in ReflectionPoints)
-		{
-			var color = Color.White;
-			var t = Framing.GetTileSafely(pt);
-			var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);
-
-			spriteBatch.Draw(texture, new Vector2(pt.X, pt.Y) * 16 - Main.screenPosition, source, color, 0, Vector2.Zero, 1, default, 0);
-		}
+			CustomDraw(pt.X, pt.Y, spriteBatch, true);
 	}
 
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
@@ -49,8 +40,11 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 
 	public override void Load()
 	{
-		DrawOverHandler.PostDrawTilesSolid += DrawShine;
-		TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
+		if (GetType() == typeof(PolishedAmber)) //Prevent derived types from detouring. We can't use "is" because it accounts for subclasses, rendering the check useless
+		{
+			DrawOverHandler.PostDrawTilesSolid += DrawShine;
+			TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
+		}
 	}
 
 	private static void DrawShine()
