@@ -7,8 +7,11 @@ namespace SpiritReforged.Content.Desert.Tiles.Amber;
 
 public partial class PolishedAmber : ModTile, IAutoloadTileItem
 {
-	public static ModTarget2D TileTarget { get; } = new(() => ReflectionPoints.Count != 0, DrawTileTarget);
-	public static ModTarget2D OverlayTarget { get; } = new(() => ReflectionPoints.Count != 0, DrawOverlayTarget);
+	public static bool CanDraw => Drawing = ReflectionPoints.Count != 0;
+	public static bool Drawing { get; private set; }
+
+	public static ModTarget2D TileTarget { get; } = new(() => CanDraw, DrawTileTarget);
+	public static ModTarget2D OverlayTarget { get; } = new(() => CanDraw, DrawOverlayTarget);
 
 	public static readonly HashSet<Point16> ReflectionPoints = [];
 
@@ -52,7 +55,7 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 
 	private static void DrawShine()
 	{
-		if (TileTarget.Target is null || OverlayTarget.Target is null)
+		if (!Drawing || TileTarget.Target is null || OverlayTarget.Target is null)
 			return;
 
 		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
@@ -62,5 +65,7 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 
 		Main.spriteBatch.Draw(OverlayTarget, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, default, 0);
 		Main.spriteBatch.End();
+
+		Drawing = false;
 	}
 }
