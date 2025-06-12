@@ -115,9 +115,9 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 			if (Main.myPlayer == Projectile.owner)
 			{
 				spawnPos = tilepos.ToWorldCoordinates();
-				var velocity = Vector2.UnitX * 12 * Owner.direction;
+				var velocity = Vector2.UnitX * 7 * Owner.direction;
 
-				PreNewProjectile.New(Projectile.GetSource_FromAI("ClubSmash"), spawnPos, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling), Projectile.knockBack, Projectile.owner,
+				PreNewProjectile.New(Projectile.GetSource_FromAI("ClubSmash"), spawnPos, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling * 0.75f), (int)(Projectile.knockBack / 2), Projectile.owner,
 					preSpawnAction: delegate (Projectile projectile) { projectile.position.Y -= Projectile.height + 16; });
 
 				SoundEngine.PlaySound(MagicCast, Projectile.Center);

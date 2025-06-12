@@ -14,6 +14,13 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 
 	public override float WindupTimeRatio => 0.8f;
 
+	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/ChairBreak")
+	{
+		PitchRange = (0f, 0.5f),
+		Volume = 0.5f,
+		MaxInstances = 2
+	};
+
 	public override void SafeSetDefaults()
 	{
 		Projectile.penetrate = 1;
@@ -54,6 +61,8 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
+		SoundEngine.PlaySound(Impact, Projectile.Center);
+
 		var basePosition = Vector2.Lerp(Projectile.Center, target.Center, 0.6f);
 		Vector2 directionUnit = basePosition.DirectionFrom(Owner.MountedCenter) * TotalScale;
 

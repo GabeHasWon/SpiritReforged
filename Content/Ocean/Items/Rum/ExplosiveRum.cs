@@ -22,7 +22,7 @@ public class ExplosiveRum : ModItem
 		Item.damage = 13;
 		Item.knockBack = 1.5f;
 		Item.value = Item.sellPrice(0, 0, 0, 50);
-		Item.rare = ItemRarityID.Orange;
+		Item.rare = ItemRarityID.Blue;
 	}
 }
 

@@ -21,8 +21,8 @@ public class SharpshooterGlove : EquippableItem
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 38;
-		Item.value = Item.buyPrice(gold: 2);
-		Item.rare = ItemRarityID.Green;
+		Item.value = Item.buyPrice(gold: 1);
+		Item.rare = ItemRarityID.Blue;
 		Item.accessory = true;
 	}
 

@@ -9,9 +9,14 @@ public class VexpowderRed : Flarepowder
 		Item.damage = 10;
 		Item.crit = 2;
 		Item.shootSpeed = 6.2f;
+		Item.value = Item.sellPrice(copper: 7);
 	}
 
-	public override void AddRecipes() => CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.ViciousMushroom).Register();
+	public override void AddRecipes()
+	{
+		CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.ViciousMushroom).Register();
+		CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.ViciousPowder, 5).Register();
+	}
 }
 
 internal class VexpowderRedDust : VexpowderBlueDust

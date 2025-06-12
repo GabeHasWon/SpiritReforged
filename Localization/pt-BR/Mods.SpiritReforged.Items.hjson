@@ -1691,12 +1691,12 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	// DisplayName: Oganesson Bobber
+	// DisplayName: Oganesson Moss Fishing Bobber
 	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	// DisplayName: Radon Bobber
+	// DisplayName: Radon Moss Fishing Bobber
 	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
