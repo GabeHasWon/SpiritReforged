@@ -16,12 +16,13 @@ public class Drypowder : ModItem
 		Item.useTime = 10;
 		Item.maxStack = Item.CommonMaxStack;
 		Item.useStyle = ItemUseStyleID.Swing;
+		Item.UseSound = SoundID.Item1;
 		Item.useTurn = true;
 		Item.autoReuse = true;
 		Item.consumable = true;
 		Item.shoot = ModContent.ProjectileType<DrypowderSpray>();
 		Item.shootSpeed = 5;
-		Item.value = Item.sellPrice(copper: 4);
+		Item.value = Item.sellPrice(copper: 20);
 	}
 
 	public override void AddRecipes()
@@ -42,7 +43,7 @@ internal class DrypowderSpray : ModProjectile
 		{
 			for (int i = 0; i < 2; i++)
 			{
-				var d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, Projectile.velocity.X, Projectile.velocity.Y, Main.rand.Next(50, 150), Scale: Main.rand.NextFloat() + 1f);
+				var d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Sand, Projectile.velocity.X, Projectile.velocity.Y, Main.rand.Next(50, 150), Scale: Main.rand.NextFloat() + .75f);
 				d.noGravity = true;
 				d.fadeIn = 1.2f;
 			}

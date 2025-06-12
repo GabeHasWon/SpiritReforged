@@ -14,7 +14,7 @@ public class JinxBow : MinionAccessory
 	{
 		Item.width = 20;
 		Item.height = 40;
-		Item.value = Item.buyPrice(0, 3, 0, 0);
-		Item.rare = ItemRarityID.Blue;
+		Item.value = Item.buyPrice(0, 1, 0, 0);
+		Item.rare = ItemRarityID.Green;
 	}
 }
