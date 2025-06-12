@@ -1,11 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles.Amber;
 
-public partial class PolishedAmber : ModTile, IAutoloadTileItem
+public abstract class ShiningAmber : ModTile
 {
 	public const int FullFrameHeight = 90;
 
@@ -15,13 +14,12 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 		Main.tileMergeDirt[Type] = true;
 		Main.tileBlockLight[Type] = false;
 		Main.tileLighted[Type] = true;
-		Main.tileBrick[Type] = true;
 
 		AddMapEntry(Color.Orange);
-		DustType = DustID.GemAmber;
-		MineResist = .5f;
+		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<FossilAmber>(), ModContent.TileType<FossilAmberSafe>());
 
-		this.AutoItem().ResearchUnlockCount = 100;
+		DustType = DustID.GemAmber;
+		MineResist = 0.5f;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
@@ -30,7 +28,7 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		CustomDraw(i, j, spriteBatch);
-		ReflectionPoints.Add(new Point16(i, j));
+		ShiningAmberVisuals.ReflectionPoints.Add(new Point16(i, j));
 
 		return false;
 	}

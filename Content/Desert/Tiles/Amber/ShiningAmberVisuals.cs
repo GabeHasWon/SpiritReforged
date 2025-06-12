@@ -5,7 +5,8 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles.Amber;
 
-public partial class PolishedAmber : ModTile, IAutoloadTileItem
+/// <summary> Handles rendertarget visuals for <see cref="ShiningAmber"/>. </summary>
+public class ShiningAmberVisuals : ILoadable
 {
 	public static bool CanDraw => Drawing = ReflectionPoints.Count != 0;
 	public static bool Drawing { get; private set; }
@@ -15,10 +16,18 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 
 	public static readonly HashSet<Point16> ReflectionPoints = [];
 
+	public void Load(Mod mod)
+	{
+		DrawOverHandler.PostDrawTilesSolid += DrawShine;
+		TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
+	}
+
+	public void Unload() { }
+
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
 		foreach (var pt in ReflectionPoints)
-			CustomDraw(pt.X, pt.Y, spriteBatch, true);
+			ShiningAmber.CustomDraw(pt.X, pt.Y, spriteBatch, true);
 	}
 
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
@@ -35,15 +44,6 @@ public partial class PolishedAmber : ModTile, IAutoloadTileItem
 				var position = new Vector2(noise.Width * scale * (x - scroll), noise.Height * scale * (y - scroll));
 				spriteBatch.Draw(noise, position, null, (Color.Goldenrod * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
 			}
-		}
-	}
-
-	public override void Load()
-	{
-		if (GetType() == typeof(PolishedAmber)) //Prevent derived types from detouring. We can't use "is" because it accounts for subclasses, rendering the check useless
-		{
-			DrawOverHandler.PostDrawTilesSolid += DrawShine;
-			TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
 		}
 	}
 
