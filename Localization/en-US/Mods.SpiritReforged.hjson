@@ -47,3 +47,5 @@ GameTips: {
 	ReforgedTip8: The top of Acacia trees can be stood on if you need some height.
 	ReforgedTip9: Items randomly float atop the ocean; check in once in a while!
 }
+
+Emotes.CartorgrapherEmote.Command: cartorgrapheremote
