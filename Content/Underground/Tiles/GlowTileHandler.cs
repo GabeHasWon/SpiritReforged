@@ -1,5 +1,4 @@
 using SpiritReforged.Common.TileCommon;
-using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -26,8 +25,8 @@ public class GlowTileHandler : ILoadable
 
 	public void Load(Mod mod)
 	{
-		DrawOrderSystem.DrawTilesNonSolidEvent += DrawGlow;
-		On_TileDrawing.PreDrawTiles += ClearAll;
+		DrawOrderSystem.DrawTilesNonSolid += DrawGlow;
+		TileEvents.PreDrawAction(false, GlowPoints.Clear);
 	}
 
 	private static void DrawGlow()
@@ -37,16 +36,6 @@ public class GlowTileHandler : ILoadable
 			var world = p.Location.ToWorldCoordinates(p.Width / 2, p.Height / 2 + 2);
 			DrawGlow(world - Main.screenPosition, GlowPoints[p], p.Width, p.Height);
 		}
-	}
-
-	private static void ClearAll(On_TileDrawing.orig_PreDrawTiles orig, TileDrawing self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
-	{
-		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
-
-		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
-
-		if (!solidLayer && flag)
-			GlowPoints.Clear();
 	}
 
 	/// <summary> Draws a fancy glow effect at the given tile region. <para/>

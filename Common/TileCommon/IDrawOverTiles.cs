@@ -73,7 +73,7 @@ internal class DrawOverHandler : ModSystem
 		DrawCache.Clear();
 		CacheValue = null;
 
-		if (!drawing || OverlayTarget is null || TileTarget is null)
+		if (!drawing || OverlayTarget.Target is null || TileTarget.Target is null)
 			return;
 
 		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
