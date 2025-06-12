@@ -12,6 +12,8 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Forest.Cartography.Pins;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.EmoteCommon;
+using Terraria.GameContent.UI;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
@@ -29,6 +31,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		return cartographer;
 	}
 
+	public override void Load() => CustomEmote.LoadCustomEmote(new(GetType(), EmoteID.Category.Town, () => NPC.AnyNPCs(ModContent.NPCType<Cartographer>())));
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

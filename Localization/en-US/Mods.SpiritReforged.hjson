@@ -48,4 +48,4 @@ GameTips: {
 	ReforgedTip9: Items randomly float atop the ocean; check in once in a while!
 }
 
-Emotes.CartorgrapherEmote.Command: cartographer
+Emotes.CartographerEmote.Command: cartographer
