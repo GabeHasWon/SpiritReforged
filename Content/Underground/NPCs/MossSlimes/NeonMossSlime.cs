@@ -2,7 +2,8 @@
 
 internal class NeonMossSlime : MossSlime
 {
-	protected override Vector3 LightColor => new(0.45f, 0.05f, 0.45f);
+	protected override Vector3 LightColor => new(0.5f, 0.07f, 0.5f);
 	protected override int MossType => ItemID.PurpleMoss;
 	protected override HashSet<int> TileTypes => [TileID.VioletMoss, TileID.VioletMossBrick];
+	protected override int DustType => DustID.VioletMoss;
 }
