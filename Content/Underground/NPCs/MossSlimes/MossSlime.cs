@@ -138,6 +138,7 @@ internal class MossSlime : ModNPC
 			Main.DrawItemIcon(spriteBatch, ContentSamples.ItemsByType[slime.MossType], position - new Vector2(0, heightOff), drawColor * 0.5f, 32);
 		}
 	}
+
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (!Main.dedServ)
