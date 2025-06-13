@@ -35,9 +35,6 @@ internal class UndergroundMannequinInventory : MannequinInventory
 			if (CrossMod.Thorium.TryFind("LeatherSheath", out ModItem leatherSheath))
 				AccType.Add(leatherSheath.Type, 0.3f);
 
-			if (CrossMod.Thorium.TryFind("DartPouch", out ModItem dartPouch))
-				AccType.Add(dartPouch.Type, 0.2f);
-
 			if (CrossMod.Thorium.TryFind("Wreath", out ModItem wreath))
 				AccType.Add(wreath.Type, 0.1f);
 		}
