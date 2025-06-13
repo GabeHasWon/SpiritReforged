@@ -2,6 +2,12 @@
 
 public class VexpowderRed : Flarepowder
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<VexpowderBlue>();
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

@@ -8,7 +8,12 @@ namespace SpiritReforged.Content.Savanna.Items;
 
 public class Drypowder : ModItem
 {
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 99;
+	public override void SetStaticDefaults()
+	{
+		Item.ResearchUnlockCount = 99;
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.PurificationPowder;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 14;

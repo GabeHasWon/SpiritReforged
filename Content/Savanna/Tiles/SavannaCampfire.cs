@@ -35,6 +35,8 @@ public class SavannaCampfire : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(254, 121, 2), Language.GetText("ItemName.Campfire"));
 		DustType = -1;
 		AdjTiles = [TileID.Campfire];
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ShimmerCampfire;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

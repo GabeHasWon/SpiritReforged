@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -8,6 +9,7 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
@@ -208,5 +210,12 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 			loot.AddCommon(ItemID.ShimmerTorch, 1, 4, 14);
 
 		loot.AddCommon(ItemID.ShimmerArrow, 1, 10, 20);
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("InspirationGem", out ModItem inspirationGem) && CrossMod.Thorium.TryFind("AstralWave", out ModItem astralWave))
+				loot.AddOneFromOptions(1, inspirationGem.Type, astralWave.Type);
+
+		}
 	}
 }

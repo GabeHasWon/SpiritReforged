@@ -7,6 +7,12 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class VexpowderBlue : Flarepowder
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<VexpowderRed>();
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
