@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -33,6 +34,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 		Item.useTurn = true;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)

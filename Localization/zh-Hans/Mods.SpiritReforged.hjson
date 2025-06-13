@@ -48,4 +48,7 @@ GameTips: {
 	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
 }
 
-// Emotes.CartographerEmote.Command: cartographer
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
+}

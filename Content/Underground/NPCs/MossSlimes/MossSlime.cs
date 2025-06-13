@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria;
 using Terraria.GameContent.Bestiary;
@@ -36,6 +37,8 @@ internal class MossSlime : ModNPC
 		}
 
 		SpawnTilesById.Add(Type, TileTypes);
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Slime);
 	}
 
 	public override void SetDefaults()
