@@ -48,4 +48,7 @@ GameTips: {
 	ReforgedTip9: Вещи иногда всплывают на поверхность океана — заглядывайте время от времени!
 }
 
-// Emotes.CartographerEmote.Command: cartographer
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
+}

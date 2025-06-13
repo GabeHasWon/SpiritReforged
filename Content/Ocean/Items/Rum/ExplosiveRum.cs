@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using Terraria.Audio;
 
@@ -10,7 +11,11 @@ public class ExplosiveRum : ModItem
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MolotovCocktail;
 
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.DD2Bartender,
-		new NPCShop.Entry(ModContent.ItemType<ExplosiveRum>(), Condition.InBeach)));
+		  new NPCShop.Entry(ModContent.ItemType<ExplosiveRum>(), Condition.InBeach)));
+	}
+
+		MoRHelper.AddElement(Item, MoRHelper.Explosive);
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
 	}
 
 	public override void SetDefaults()
