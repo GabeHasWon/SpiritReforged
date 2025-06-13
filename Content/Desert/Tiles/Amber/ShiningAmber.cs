@@ -6,8 +6,6 @@ namespace SpiritReforged.Content.Desert.Tiles.Amber;
 
 public abstract class ShiningAmber : ModTile
 {
-	public const int FullFrameHeight = 90;
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -16,7 +14,7 @@ public abstract class ShiningAmber : ModTile
 		Main.tileLighted[Type] = true;
 
 		AddMapEntry(Color.Orange);
-		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<FossilAmber>(), ModContent.TileType<FossilAmberSafe>());
+		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>());
 
 		DustType = DustID.GemAmber;
 		MineResist = 0.5f;
@@ -49,7 +47,7 @@ public abstract class ShiningAmber : ModTile
 			return;
 		}
 
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY % FullFrameHeight, 16, 16);
+		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 		spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + (intoRenderTarget ? Vector2.Zero : TileExtensions.TileOffset), source, color, 0, Vector2.Zero, 1, default, 0);
 	}
 }

@@ -1981,7 +1981,7 @@ PolishedAmberItem: {
 	// Tooltip: ""
 }
 
-FossilAmberSafeItem: {
+AmberFossilSafeItem: {
 	// DisplayName: Amber Fossil
 	// Tooltip: ""
 }

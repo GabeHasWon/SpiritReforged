@@ -4,11 +4,14 @@ using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
 
-internal class TileEvents : ILoadable
+public class TileEvents : ILoadable
 {
-	private delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
+	public delegate void PreDrawDelegate(bool solidLayer, bool forRenderTarget, bool intoRenderTargets);
+	public delegate void PlaceTileDelegate(int i, int j, int type);
+	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
 
-	public static event Action<bool, bool, bool> PreDrawTiles;
+	public static event PreDrawDelegate PreDrawTiles;
+	public static event PlaceTileDelegate PlaceTile;
 
 	/// <summary> Exposes <see cref="TileLoader.TileFrame"/> resetFrame from the last invocation.<br/>
 	/// A common use case for this is in <see cref="ModTile.PostTileFrame"/>, where it's not normally available. </summary>
@@ -29,9 +32,17 @@ internal class TileEvents : ILoadable
 		}
 	};
 
+	/// <summary> Subscribes to <see cref="PlaceTile"/> and conditionally invokes <paramref name="action"/> according to <paramref name="tileType"/>. </summary>
+	public static void PlaceTileAction(int tileType, PlaceTileDelegate action) => PlaceTile += (i, j, type) =>
+	{
+		if (type == tileType)
+			action.Invoke(i, j, type);
+	};
+
 	public void Load(Mod mod)
 	{
 		On_TileDrawing.PreDrawTiles += PreDrawTilesDetour;
+		On_WorldGen.PlaceTile += PlaceTileDetour;
 
 		var type = typeof(Mod).Assembly.GetType("Terraria.ModLoader.TileLoader");
 		MethodInfo info = type.GetMethod("TileFrame", BindingFlags.Static | BindingFlags.Public, [typeof(int), typeof(int), typeof(int), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType()]);
@@ -42,6 +53,14 @@ internal class TileEvents : ILoadable
 	{
 		PreDrawTiles?.Invoke(solidLayer, forRenderTargets, intoRenderTargets);
 		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
+	}
+
+	private static bool PlaceTileDetour(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
+	{
+		bool value = orig(i, j, Type, mute, forced, plr, style);
+		PlaceTile?.Invoke(i, j, Type);
+
+		return value;
 	}
 
 	private static bool HookTileFrame(TileFrameDelegate orig, int i, int j, int type, ref bool resetFrame, ref bool noBreak)
