@@ -4,146 +4,79 @@ using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Underground.Items.BigBombs;
 
-namespace SpiritReforged.Common.NPCCommon;
+namespace SpiritReforged.Content.Vanilla.Misc;
 
 public class VanillaNPCDialogue : GlobalNPC
 {
+	public const string CommonPath = "Mods.SpiritReforged.NPCs.VanillaDialogue.";
+
 	public override void GetChat(NPC npc, ref string chat)
 	{
 		Player player = Main.LocalPlayer;
 
-		if (npc.type == NPCID.ArmsDealer)
+		SetChat(ref chat, npc.type == NPCID.ArmsDealer && player.InModBiome<SavannaBiome>() && Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "ArmsDealer.Savanna1"));
+
+		if (npc.type == NPCID.Stylist && player.InModBiome<SavannaBiome>())
 		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3)) 
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.ArmsDealer.Savanna1");
-			}
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Stylist.Savanna1"));
+			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Stylist.Duststorm1"));
 		}
 
-		if (npc.type == NPCID.Stylist)
+		if (npc.type == NPCID.Nurse && player.InModBiome<SavannaBiome>())
 		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Stylist.Savanna1");
-
-				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
-				{
-					if (Main.rand.NextBool(2))
-						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Stylist.Duststorm1");
-				}
-			}
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Nurse.Savanna"));
+			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Nurse.Duststorm"));
 		}
 
-		if (npc.type == NPCID.Nurse)
+		if (npc.type == NPCID.PartyGirl && player.InModBiome<SavannaBiome>())
 		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Nurse.Savanna");
-
-				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
-				{
-					if (Main.rand.NextBool(2))
-						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Nurse.Duststorm");
-				}
-			}
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "PartyGirl.Savanna"));
+			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "PartyGirl.Duststorm"));
 		}
 
-		if (npc.type == NPCID.PartyGirl)
+		if (npc.type == NPCID.Golfer && player.InModBiome<SavannaBiome>())
 		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.PartyGirl.Savanna");
-
-				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
-				{
-					if (Main.rand.NextBool(2))
-						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.PartyGirl.Duststorm");
-				}
-			}
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Golfer.Savanna"));
+			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Golfer.Duststorm"));
 		}
 
-		if (npc.type == NPCID.Golfer)
+		if (npc.type == NPCID.BestiaryGirl && player.InModBiome<SavannaBiome>())
 		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Golfer.Savanna");
-
-				if (player.GetModPlayer<DustStormPlayer>().ZoneDustStorm)
-				{
-					if (Main.rand.NextBool(2))
-						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Golfer.Duststorm");
-				}
-			}
-		}
-
-		if (npc.type == NPCID.BestiaryGirl)
-		{
-			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Zoologist.Savanna1");
-
-				if (player.statLife < player.statLifeMax)
-				{
-					if (Main.rand.NextBool(2))
-						chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Zoologist.Savanna2");
-				}
-			}
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Zoologist.Savanna1"));
+			SetChat(ref chat, player.statLife < player.statLifeMax && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Zoologist.Savanna2"));
 		}
 
 		if (npc.type == NPCID.TravellingMerchant)
 		{
 			int cartographer = NPC.FindFirstNPC(ModContent.NPCType<Cartographer>());
-			if (cartographer >= 0)
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.TravellingMerchant.Cartographer2", Main.npc[cartographer].GivenName);
-			}
-			else
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.TravellingMerchant.Cartographer1");
-			}
 
-			if (Main.rand.NextBool(4))
-				chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.TravellingMerchant.Discoveries");
+			if (cartographer > 0)
+				SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "TravellingMerchant.Cartographer2", Main.npc[cartographer].GivenName));
+			else
+				SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "TravellingMerchant.Cartographer1"));
+
+			SetChat(ref chat, Main.rand.NextBool(4), Language.GetTextValue(CommonPath + "TravellingMerchant.Discoveries"));
 		}
 
 		if (npc.type == NPCID.Guide)
 		{
-			if (Main.rand.NextBool(6))
-				chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.WorldNPC");
+			SetChat(ref chat, Main.rand.NextBool(6), Language.GetTextValue(CommonPath + "Guide.WorldNPC"));
 			
 			if (player.InModBiome<SavannaBiome>())
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.Savanna");
-			}
+				SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Guide.Savanna"));
 			else
-			{
-				if (Main.rand.NextBool(6))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.Ecotone");
-			}
+				SetChat(ref chat, Main.rand.NextBool(6), Language.GetTextValue(CommonPath + "Guide.Ecotone"));
 
-			if (player.ZoneBeach)
-			{
-				if (Main.rand.NextBool(3))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Guide.Kelp");
-			}
+			SetChat(ref chat, player.ZoneBeach && Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Guide.Kelp"));
 		}
 
-		if (npc.type == NPCID.Demolitionist)
-		{
-			if (player.HasItem(ModContent.ItemType<BoomShroom>()) || player.HasEquip<BoomShroom>())
-			{
-				if (Main.rand.NextBool(4))
-					chat = Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Demolitionist.HasBoomshroom");
-			}
-		}
+		bool hasBoomShroom = player.HasItem(ModContent.ItemType<BoomShroom>()) || player.HasEquip<BoomShroom>() && Main.rand.NextBool(4);
+		SetChat(ref chat, npc.type == NPCID.Demolitionist && hasBoomShroom, Language.GetTextValue(CommonPath + "Demolitionist.HasBoomshroom"));
+	}
+
+	private static void SetChat(ref string chat, bool condition, string message)
+	{
+		if (condition)
+			chat = message;
 	}
 }
