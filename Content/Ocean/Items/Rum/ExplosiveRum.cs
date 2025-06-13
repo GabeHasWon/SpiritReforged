@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using Terraria.Audio;
@@ -6,8 +7,14 @@ namespace SpiritReforged.Content.Ocean.Items.Rum;
 
 public class ExplosiveRum : ModItem
 {
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.DD2Bartender,
+	public override void SetStaticDefaults()
+	{
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.DD2Bartender,
 		new NPCShop.Entry(ModContent.ItemType<ExplosiveRum>(), Condition.InBeach)));
+
+		MoRHelper.AddElement(Item, MoRHelper.Explosive);
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
+	}
 
 	public override void SetDefaults()
 	{

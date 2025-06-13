@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -33,6 +34,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 		Item.useTurn = true;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)
@@ -186,6 +188,8 @@ public class KendoBladeSwing : ModProjectile
 
 		Main.EntitySpriteDraw(new DrawData(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), .75f, effects, 0));
 	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
 }
 
 public class KendoBladeLunge : ModProjectile

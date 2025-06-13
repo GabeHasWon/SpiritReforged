@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -35,6 +36,7 @@ public class BombCannon : ModItem
 	{
 		ItemEvents.CreateItemDefaults(item => item.ammo = ItemID.Bomb, AmmoBombIDs);
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
+		MoRHelper.AddElement(Item, MoRHelper.Explosive, true);
 	}
 
 	public override void SetDefaults()
