@@ -1,60 +1,13 @@
-using SpiritReforged.Common.Visuals;
 using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 
 namespace SpiritReforged.Common.EmoteCommon;
 
-public sealed class CustomEmote : ModEmoteBubble
+public abstract class CustomEmote : ModEmoteBubble
 {
-	public override string Name => _name;
-	public override string Texture => _texture;
-	protected override bool CloneNewInstances => true;
+	public virtual int Category => EmoteID.Category.General;
 
-	/// <summary> Whether conditions are fulfilled for this emote to appear during NPC interaction. </summary>
-	public bool Active => _activeCondition.Invoke();
-
-	private string _name;
-	private string _texture;
-	private int _category;
-	private Func<bool> _activeCondition;
-
-	public override ModEmoteBubble Clone(EmoteBubble newEntity)
-	{
-		var emote = base.Clone(newEntity) as CustomEmote;
-		emote._name = _name;
-		emote._texture = _texture;
-		emote._category = _category;
-		emote._activeCondition = _activeCondition;
-
-		return emote;
-	}
-
-	/// <summary> Creates a new emote with an explicit name and texture. </summary>
-	public CustomEmote(string name, string texture, int category, Func<bool> activeCondition)
-	{
-		_name = name;
-		_texture = texture;
-		_category = category;
-		_activeCondition = activeCondition;
-	}
-
-	/// <summary> Creates a new emote with <see cref="Name"/> and <see cref="Texture"/> resulting from <paramref name="parentType"/>. </summary>
-	public CustomEmote(Type parentType, int category, Func<bool> activeCondition)
-	{
-		_name = parentType.Name + "Emote";
-		_texture = DrawHelpers.RequestLocal(parentType, _name);
-		_category = category;
-		_activeCondition = activeCondition;
-	}
-
-	/// <summary> Shorthand for <see cref="Mod.AddContent"/>. </summary>
-	public static void LoadCustomEmote(CustomEmote emote) => SpiritReforgedMod.Instance.AddContent(emote);
-
-	public override void SetStaticDefaults()
-	{
-		AddToCategory(_category);
-		EmoteNPC.LoadedEmotes.Add(this);
-	}
+	public override void SetStaticDefaults() => AddToCategory(Category);
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle frame, Vector2 origin, SpriteEffects spriteEffects)
 	{
