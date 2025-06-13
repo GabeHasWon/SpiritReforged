@@ -188,6 +188,8 @@ public class KendoBladeSwing : ModProjectile
 
 		Main.EntitySpriteDraw(new DrawData(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), .75f, effects, 0));
 	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
 }
 
 public class KendoBladeLunge : ModProjectile
