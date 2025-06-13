@@ -33,13 +33,14 @@ public class ShiningAmberVisuals : ILoadable
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
 	{
 		const float scale = 4;
+
 		var noise = TextureAssets.Extra[193].Value;
 		float scroll = (float)Main.timeForVisualEffects / 4000f % 1;
 		float opacity = (0.5f + (float)Math.Sin(Main.timeForVisualEffects / 100f) * 0.1f) * 0.25f;
 
-		for (int x = 0; x < 3; x++)
+		for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
 		{
-			for (int y = 0; y < 3; y++)
+			for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y++)
 			{
 				var position = new Vector2(noise.Width * scale * (x - scroll), noise.Height * scale * (y - scroll));
 				spriteBatch.Draw(noise, position, null, (Color.Goldenrod * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
