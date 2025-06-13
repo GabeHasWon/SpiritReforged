@@ -1,12 +1,13 @@
+using Terraria.GameContent.UI;
 using Terraria.GameContent.UI.Elements;
 
 namespace SpiritReforged.Common.EmoteCommon;
-public abstract class BaseCustomEmote : ModEmoteBubble
-{
-	protected abstract Asset<Texture2D> EmoteTextureAsset { get; }
-	protected abstract int EmoteCategoryID { get; }
 
-	public override void SetStaticDefaults() => AddToCategory(EmoteCategoryID);
+public abstract class CustomEmote : ModEmoteBubble
+{
+	public virtual int Category => EmoteID.Category.General;
+
+	public override void SetStaticDefaults() => AddToCategory(Category);
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Rectangle frame, Vector2 origin, SpriteEffects spriteEffects)
 	{
@@ -18,7 +19,7 @@ public abstract class BaseCustomEmote : ModEmoteBubble
 		if (!EmoteBubble.IsFullyDisplayed)
 			return false;
 
-		spriteBatch.Draw(EmoteTextureAsset.Value, position, frame, Color.White, 0f, origin, 1f, spriteEffects, 0f);
+		spriteBatch.Draw(texture, position, frame, Color.White, 0f, origin, 1f, spriteEffects, 0f);
 		return false;
 	}
 
@@ -28,7 +29,7 @@ public abstract class BaseCustomEmote : ModEmoteBubble
 		Rectangle bubbleFrame = uiEmoteButton.BubbleTexture.Frame(8, 39, 1, 0);
 
 		spriteBatch.Draw(uiEmoteButton.BubbleTexture.Value, position, bubbleFrame, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
-		spriteBatch.Draw(EmoteTextureAsset.Value, position, frame, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(uiEmoteButton.EmoteTexture.Value, position, frame, Color.White, 0f, origin, 1f, SpriteEffects.None, 0f);
 		spriteBatch.Draw(uiEmoteButton.BorderTexture.Value, position - Vector2.One * 2f, null, borderColor, 0f, origin, 1f, SpriteEffects.None, 0f);
 
 		return false;
