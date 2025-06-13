@@ -41,7 +41,6 @@ internal class Recipes : ModSystem
 		RecipeGroup.RegisterGroup("EvilMaterial", BaseGroup(ItemID.CursedFlame, [ItemID.CursedFlame, ItemID.Ichor]));
 		RecipeGroup.RegisterGroup("Shells", BaseGroup(ItemID.Seashell, [ItemID.Seashell, ItemID.TulipShell, ItemID.JunoniaShell, ItemID.LightningWhelkShell]));
 		RecipeGroup.RegisterGroup("ClayAndMud", BaseGroup(ItemID.ClayBlock, [ItemID.ClayBlock, ItemID.MudBlock]));
-		RecipeGroup.RegisterGroup("AmberBugs", BaseGroup(ItemID.Grasshopper, FossilAmber.ContainedItems));
 	}
 
 	public static RecipeGroup BaseGroup(object GroupName, int[] Items)

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.TileCommon;
 
@@ -18,21 +17,21 @@ public interface IAutoloadTileItem
 	public void AddItemRecipes(ModItem item) { }
 }
 
-public class AutoloadTileItemSystem : ModSystem
+public class AutoloadTileItemSystem : ILoadable
 {
-	public override void Load()
+	public const string Item = "Item";
+
+	public void Load(Mod mod)
 	{
-		var types = AssemblyManager.GetLoadableTypes(Mod.Code).Where(x => typeof(IAutoloadTileItem).IsAssignableFrom(x) && !x.IsAbstract);
-
-		foreach (var item in types)
+		var instances = mod.GetContent<ModItem>().Where(x => x is IAutoloadTileItem);
+		foreach (var item in instances)
 		{
-			if (!typeof(ModTile).IsAssignableFrom(item))
-				throw new InvalidCastException("IAutoloadTileItem should be placed on only ModTiles!");
-
-			var instance = Activator.CreateInstance(item) as IAutoloadTileItem;
-			Mod.AddContent(new AutoloadedTileItem(instance.Name + "Item", instance.Texture + "Item", instance));
+			var tileItem = item as IAutoloadTileItem;
+			mod.AddContent(new AutoloadedTileItem(tileItem.Name + Item, tileItem.Texture + Item, tileItem));
 		}
 	}
+
+	public void Unload() { }
 }
 
 public class AutoloadedTileItem(string name, string texture, IAutoloadTileItem hooks) : ModItem
@@ -58,7 +57,7 @@ public class AutoloadedTileItem(string name, string texture, IAutoloadTileItem h
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(Mod.Find<ModTile>(_internalName.Replace("Item", "")).Type);
+		Item.DefaultToPlaceableTile(Mod.Find<ModTile>(_internalName.Replace(AutoloadTileItemSystem.Item, string.Empty)).Type);
 		_hooks.SetItemDefaults(this);
 	}
 

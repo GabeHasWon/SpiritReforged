@@ -81,7 +81,16 @@ public class FossilAmber : ShiningAmber
 /// <summary> A placeable amber fossil. </summary>
 public class FossilAmberSafe : FossilAmber, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddRecipeGroup("AmberBugs").Register();
+	public void AddItemRecipes(ModItem item)
+	{
+		StartRecipe().AddRecipeGroup(RecipeGroupID.Fireflies).Register();
+		StartRecipe().AddRecipeGroup(RecipeGroupID.Dragonflies).Register();
+		StartRecipe().AddIngredient(ItemID.Grasshopper).Register();
+		StartRecipe().AddIngredient(ItemID.Frog).Register();
+
+		Recipe StartRecipe() => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10);
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
