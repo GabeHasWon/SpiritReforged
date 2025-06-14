@@ -1,9 +1,9 @@
-﻿using SpiritReforged.Content.Underground.NPCs;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Underground.Tiles.Potion;
 using System.Linq;
 using Terraria.WorldBuilding;
-using SpiritReforged.Content.Underground.Tiles.Potion;
-using SpiritReforged.Common.TileCommon;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -13,6 +13,15 @@ internal class PotsMicropass : Micropass
 	private delegate bool GenDelegate(int x, int y);
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
+
+	public static float WorldMultiplier
+	{
+		get
+		{
+			float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
+			return worldScale + (worldScale - 1);
+		}
+	}
 
 	public override string WorldGenName => "Pots";
 
@@ -75,8 +84,7 @@ internal class PotsMicropass : Micropass
 
 	public static void RunMultipliedTask(float multiplier)
 	{
-		float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
-		float scale = (worldScale + (worldScale - 1)) * multiplier;
+		float scale = WorldMultiplier * multiplier;
 
 		Generate(CreateOrnate, (int)(scale * 5), out _);
 		Generate(CreatePotion, (int)(scale * 46), out _);
