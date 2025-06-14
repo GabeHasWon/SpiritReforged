@@ -19,7 +19,7 @@ public class ShiningAmberVisuals : ILoadable
 	public void Load(Mod mod)
 	{
 		DrawOverHandler.PostDrawTilesSolid += DrawShine;
-		TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
+		TileEvents.AddPreDrawAction(true, ReflectionPoints.Clear);
 	}
 
 	public void Unload() { }

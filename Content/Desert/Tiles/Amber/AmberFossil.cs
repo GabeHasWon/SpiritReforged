@@ -27,7 +27,9 @@ public class AmberFossil : ShiningAmber
 			return; //An entity already exists here
 
 		int itemType = WorldGen.genRand.Next(AmberItemTypes);
-		((FossilEntity)TileEntity.ByID[ModContent.GetInstance<FossilEntity>().Place(i, j)]).itemType = itemType;
+		int id = ModContent.GetInstance<FossilEntity>().Place(i, j);
+
+		((FossilEntity)TileEntity.ByID[id]).itemType = itemType;
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			new FossilData((short)i, (short)j, itemType).Send();
