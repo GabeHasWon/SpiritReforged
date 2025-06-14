@@ -281,4 +281,11 @@ internal class UpdaterSystem : ModSystem
 			return Main.tile[x, y].TileType == type;
 		}
 	}
+
+	[Ver("0.1.2")]
+	private static void PatchUp(out string report)
+	{
+		WorldMethods.Generate(PotsMicropass.CreateBoulder, (int)(PotsMicropass.WorldMultiplier * 8), out _);
+		report = "CavesAndClubs";
+	}
 }
