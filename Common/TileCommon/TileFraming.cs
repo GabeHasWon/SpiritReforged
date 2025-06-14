@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.WorldGeneration;
-using Terraria;
 using static SpiritReforged.Common.WorldGeneration.OpenFlags;
 
 namespace SpiritReforged.Common.TileCommon;
