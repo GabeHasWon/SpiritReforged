@@ -1985,3 +1985,18 @@ AmberFossilSafeItem: {
 	DisplayName: Amber Fossil
 	Tooltip: ""
 }
+
+GildedSandstoneItem: {
+	DisplayName: Gilded Sandstone
+	Tooltip: ""
+}
+
+RedSandstoneBrickItem: {
+	DisplayName: Red Sandstone Brick
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedItem: {
+	DisplayName: Cracked Red Sandstone Brick
+	Tooltip: "'Still structurally sound!'"
+}
