@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Content.Desert.Tiles.Amber;
+
+namespace SpiritReforged.Common.Misc;
 
 internal class Recipes : ModSystem
 {
@@ -8,6 +10,18 @@ internal class Recipes : ModSystem
 	/// <param name="groupID"> The recipe group to add to. </param>
 	/// <param name="type"> The item type to add. </param>
 	public static void AddToGroup(int groupID, int type) => groupEntries.Add(type, groupID);
+
+	/// <summary> Provides an array of all item types included in groups <paramref name="groupIDs"/>. </summary>
+	public static int[] GetTypesFromGroup(params int[] groupIDs)
+	{
+		List<int> allTypes = [];
+		foreach (int id in groupIDs)
+		{
+			allTypes.AddRange(RecipeGroup.recipeGroups[id].ValidItems);
+		}
+
+		return [.. allTypes];
+	}
 
 	public override void AddRecipeGroups()
 	{

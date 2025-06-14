@@ -1975,3 +1975,13 @@ BonsaiPot: {
 	DisplayName: Bonsai Pot
 	Tooltip: Used to craft decorative bonsai
 }
+
+PolishedAmberItem: {
+	DisplayName: Polished Amber
+	Tooltip: ""
+}
+
+AmberFossilSafeItem: {
+	DisplayName: Amber Fossil
+	Tooltip: ""
+}

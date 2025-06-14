@@ -1,0 +1,77 @@
+﻿using MonoMod.RuntimeDetour;
+using System.Reflection;
+using Terraria.GameContent.Drawing;
+
+namespace SpiritReforged.Common.TileCommon;
+
+public class TileEvents : ILoadable
+{
+	public delegate void PreDrawDelegate(bool solidLayer, bool forRenderTarget, bool intoRenderTargets);
+	public delegate void PlaceTileDelegate(int i, int j, int type);
+	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
+
+	public static event PreDrawDelegate PreDrawTiles;
+	public static event PlaceTileDelegate PlaceTile;
+
+	/// <summary> Exposes <see cref="TileLoader.TileFrame"/> resetFrame from the last invocation.<br/>
+	/// A common use case for this is in <see cref="ModTile.PostTileFrame"/>, where it's not normally available. </summary>
+	public static bool ResetFrame { get; private set; }
+	private static Hook TileFrameHook = null;
+
+	/// <summary> Subscribes to <see cref="PreDrawTiles"/> and conditionally invokes <paramref name="action"/> according to <paramref name="inSolidLayer"/>. </summary>
+	public static void AddPreDrawAction(bool inSolidLayer, Action action) => PreDrawTiles += (solidLayer, forRenderTargets, intoRenderTargets) =>
+	{
+		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
+
+		if (flag)
+		{
+			if (inSolidLayer && solidLayer)
+				action.Invoke();
+			else if (!inSolidLayer && !solidLayer)
+				action.Invoke();
+		}
+	};
+
+	/// <summary> Subscribes to <see cref="PlaceTile"/> and conditionally invokes <paramref name="action"/> according to <paramref name="tileType"/>. </summary>
+	public static void AddPlaceTileAction(int tileType, PlaceTileDelegate action) => PlaceTile += (i, j, type) =>
+	{
+		if (type == tileType)
+			action.Invoke(i, j, type);
+	};
+
+	public void Load(Mod mod)
+	{
+		On_TileDrawing.PreDrawTiles += PreDrawTilesDetour;
+		On_WorldGen.PlaceTile += PlaceTileDetour;
+
+		var type = typeof(Mod).Assembly.GetType("Terraria.ModLoader.TileLoader");
+		MethodInfo info = type.GetMethod("TileFrame", BindingFlags.Static | BindingFlags.Public, [typeof(int), typeof(int), typeof(int), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType()]);
+		TileFrameHook = new Hook(info, HookTileFrame, true);
+	}
+
+	private static void PreDrawTilesDetour(On_TileDrawing.orig_PreDrawTiles orig, TileDrawing self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
+	{
+		PreDrawTiles?.Invoke(solidLayer, forRenderTargets, intoRenderTargets);
+		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
+	}
+
+	private static bool PlaceTileDetour(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
+	{
+		bool value = orig(i, j, Type, mute, forced, plr, style);
+		PlaceTile?.Invoke(i, j, Type);
+
+		return value;
+	}
+
+	private static bool HookTileFrame(TileFrameDelegate orig, int i, int j, int type, ref bool resetFrame, ref bool noBreak)
+	{
+		ResetFrame = resetFrame;
+		return orig(i, j, type, ref resetFrame, ref noBreak);
+	}
+
+	public void Unload()
+	{
+		TileFrameHook?.Undo();
+		TileFrameHook = null;
+	}
+}
