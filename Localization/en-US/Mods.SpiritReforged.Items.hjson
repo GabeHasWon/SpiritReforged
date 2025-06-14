@@ -1897,6 +1897,11 @@ TopazBonsaiItem: {
 	Tooltip: ""
 }
 
+AmberBonsaiItem: {
+	DisplayName: Amber Bonsai
+	Tooltip: ""
+}
+
 JinxBow: {
 	DisplayName: Jinxbow
 	Tooltip:
