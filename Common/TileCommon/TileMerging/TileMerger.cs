@@ -33,7 +33,7 @@ internal class TileMerger : ILoadable
 			if (!TryFindFrame(i, j, type, out var frame) || !TextureByType.TryGetValue(type, out var textureAsset))
 				continue;
 
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + offset;
+			var position = new Vector2(i, j) * 16 - Main.screenPosition + offset;
 			spriteBatch.Draw(textureAsset.Value, position, new Rectangle(frame.X + frameNumber * FullFrameWidth, frame.Y, 16, 16), color);
 		}
 	}
@@ -43,15 +43,7 @@ internal class TileMerger : ILoadable
 		ushort frameX = 0;
 		ushort frameY = 0;
 
-		bool up = Main.tile[i, j - 1].TileType == type;
-		bool down = Main.tile[i, j + 1].TileType == type;
-		bool left = Main.tile[i - 1, j].TileType == type;
-		bool right = Main.tile[i + 1, j].TileType == type;
-
-		//bool upLeft = false;
-		//bool downLeft = false;
-		//bool upRight = false;
-		//bool downRight = false;
+		GetMerge(i, j, type, out bool up, out bool down, out bool left, out bool right);
 
 		if (!up && !down && !left && !right)
 		{
@@ -137,5 +129,36 @@ internal class TileMerger : ILoadable
 
 		frame = new Point(frameX, frameY);
 		return true;
+	}
+
+	private static void GetMerge(int i, int j, int mergeType, out bool up, out bool down, out bool left, out bool right)
+	{
+		Tile tile = Main.tile[i, j];
+		Tile upTile = Main.tile[i, j - 1];
+		Tile downTile = Main.tile[i, j + 1];
+		Tile leftTile = Main.tile[i - 1, j];
+		Tile rightTile = Main.tile[i + 1, j];
+
+		up = down = left = right = false;
+
+		if (upTile.TileType == mergeType && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
+		{
+			up = true;
+		}
+
+		if (downTile.TileType == mergeType && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
+		{
+			down = true;
+		}
+
+		if (leftTile.TileType == mergeType && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
+		{
+			left = true;
+		}
+
+		if (rightTile.TileType == mergeType && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
+		{
+			right = true;
+		}
 	}
 }
