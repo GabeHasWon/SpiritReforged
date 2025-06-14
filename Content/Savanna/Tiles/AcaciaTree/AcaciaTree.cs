@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
@@ -13,7 +14,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaTree : CustomTree, IConvertibleTile
+public class AcaciaTree : CustomTree
 {
 	/// <summary> All Acacia treetop platforms that exist in the world. </summary>
 	internal static IEnumerable<TreetopPlatform> Platforms
@@ -224,26 +225,21 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
 	}
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false; //Only rely on the anchor tile source (TileUpdate) for conversions
+		if (!ConvertAdjacentSet.Converting)
+			return;
 
-		int oldType = Main.tile[i, j].TileType;
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
+		int type = conversionType switch
 		{
-			ConversionType.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
-			ConversionType.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<AcaciaTreeCorrupt>(),
-			_ => ModContent.TileType<AcaciaTree>(),
-		});
+			BiomeConversionID.Corruption => ModContent.TileType<AcaciaTreeCorrupt>(),
+			BiomeConversionID.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
+			BiomeConversionID.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
+			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaTree>()),
+		};
 
-		if (Main.tile[i, j - 1].TileType == oldType) //Convert the entire tree from the base
-			TileCorruptor.Convert(new EntitySource_TileUpdate(i, j), type, i, j - 1);
-
-		return true;
+		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
+			WorldGen.ConvertTile(i, j, type);
 	}
 }
 
@@ -269,6 +265,23 @@ public class AcaciaTreeCrimson : AcaciaTree
 	}
 }
 
+[Autoload(false)]
+public class AcaciaTreeCrossmod(string texture, string name, int anchor) : AcaciaTree
+{
+	public override string Texture => _texture;
+	public override string Name => _name;
+
+	private readonly string _texture = texture;
+	private readonly string _name = name;
+	private readonly int _anchor = anchor;
+
+	public override void PreAddObjectData()
+	{
+		base.PreAddObjectData();
+		TileObjectData.newTile.AnchorValidTiles = [_anchor];
+	}
+}
+
 public class AcaciaTreeHallow : AcaciaTree
 {
 	public override void PreAddObjectData()
@@ -285,7 +298,7 @@ public class AcaciaTreeHallow : AcaciaTree
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = GetSway(i, j) * .08f;
+		float rotation = GetSway(i, j) * 0.08f;
 
 		if (IsTreeTop(i, j)) //Draw treetops
 		{
