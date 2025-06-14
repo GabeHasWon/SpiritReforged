@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.WorldGeneration;
+using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
@@ -9,13 +10,7 @@ public class StargrassMowed : StargrassTile
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-
-		Main.tileLighted[Type] = true;
-		TileID.Sets.Conversion.Grass[Type] = true;
-
-		RegisterItemDrop(ItemID.DirtBlock);
-		AddMapEntry(new Color(28, 216, 151));
-		DustType = DustID.Flare_Blue;
+		TileMaterials.SetForTileId(Type, TileMaterials.GetByTileId(TileID.GolfGrass));
 	}
 
 	public override void Convert(int i, int j, int conversionType)
