@@ -12,6 +12,8 @@ public class SavannaCampfire : ModTile, IAutoloadTileItem
 	private static Asset<Texture2D> glowTexture;
 	private const int fullFrameHeight = 18 * 2;
 
+	public void StaticItemDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ShimmerCampfire;
+
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddIngredient(ModContent.ItemType<SavannaTorchItem>(), 5).Register();
 
 	private static bool OnFire(int i, int j) => Main.tile[i, j].TileFrameY < fullFrameHeight;
@@ -35,8 +37,6 @@ public class SavannaCampfire : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(254, 121, 2), Language.GetText("ItemName.Campfire"));
 		DustType = -1;
 		AdjTiles = [TileID.Campfire];
-
-		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.ShimmerCampfire;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
