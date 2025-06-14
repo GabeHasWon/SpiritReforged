@@ -24,6 +24,9 @@ public class ModTarget2D : ILoadable
 
 	private void Register()
 	{
+		if (Main.dedServ)
+			return;
+
 		Main.QueueMainThreadAction(() =>
 		{
 			var gd = Main.instance.GraphicsDevice;
