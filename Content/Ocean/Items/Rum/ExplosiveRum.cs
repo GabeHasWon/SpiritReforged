@@ -12,7 +12,6 @@ public class ExplosiveRum : ModItem
 
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.DD2Bartender,
 		  new NPCShop.Entry(ModContent.ItemType<ExplosiveRum>(), Condition.InBeach)));
-	}
 
 		MoRHelper.AddElement(Item, MoRHelper.Explosive);
 		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
