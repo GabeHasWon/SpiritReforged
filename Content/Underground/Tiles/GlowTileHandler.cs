@@ -26,7 +26,7 @@ public class GlowTileHandler : ILoadable
 	public void Load(Mod mod)
 	{
 		DrawOrderSystem.DrawTilesNonSolid += DrawGlow;
-		TileEvents.PreDrawAction(false, GlowPoints.Clear);
+		TileEvents.AddPreDrawAction(false, GlowPoints.Clear);
 	}
 
 	private static void DrawGlow()

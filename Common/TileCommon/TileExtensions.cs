@@ -68,10 +68,14 @@ public static class TileExtensions
 	public static Vector2 DrawPosition(this ModTile _, int i, int j, Vector2 off = default) => DrawPosition(i, j, off);
 	public static Vector2 DrawPosition(int i, int j, Vector2 off = default) => new Vector2(i, j) * 16 - Main.screenPosition - off + TileOffset;
 
-	public static void DrawSloped(this ModTile _, int i, int j, Texture2D texture, Color color, Vector2 positionOffset, bool overrideFrame = false)
-		=> DrawSloped(i, j, texture, color, positionOffset, overrideFrame);
+	/// <summary> Default tile slope drawing. See the overload for more customizeablility. </summary>
+	public static void DrawSloped(int i, int j)
+	{
+		var texture = TextureAssets.Tile[Main.tile[i, j].TileType].Value;
+		DrawSloped(i, j, texture, Lighting.GetColor(i, j), TileOffset);
+	}
 
-	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 positionOffset, bool overrideFrame = false)
+	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 offset, bool overrideFrame = false)
 	{
 		Tile tile = Main.tile[i, j];
 		int frameX = tile.TileFrameX;
@@ -86,7 +90,7 @@ public static class TileExtensions
 		int width = 16;
 		int height = 16;
 		var location = new Vector2(i * 16, j * 16);
-		Vector2 offsets = -Main.screenPosition + TileOffset + positionOffset;
+		Vector2 offsets = -Main.screenPosition + offset;
 		Vector2 drawLoc = location + offsets;
 
 		if (tile.Slope == 0 && !tile.IsHalfBlock || Main.tileSolid[tile.TileType] && Main.tileSolidTop[tile.TileType]) //second one should be for platforms

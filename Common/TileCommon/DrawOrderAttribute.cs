@@ -88,7 +88,7 @@ internal class DrawOrderSystem : ModSystem
 		};
 		#endregion
 
-		TileEvents.PreDrawAction(false, SpecialDrawPoints.Clear);
+		TileEvents.AddPreDrawAction(false, SpecialDrawPoints.Clear);
 
 		PostDrawPlayers += () => Draw(Layer.OverPlayers);
 		DrawTilesNonSolid += () => Draw(Layer.NonSolid);

@@ -19,7 +19,7 @@ public class TileEvents : ILoadable
 	private static Hook TileFrameHook = null;
 
 	/// <summary> Subscribes to <see cref="PreDrawTiles"/> and conditionally invokes <paramref name="action"/> according to <paramref name="inSolidLayer"/>. </summary>
-	public static void PreDrawAction(bool inSolidLayer, Action action) => PreDrawTiles += (solidLayer, forRenderTargets, intoRenderTargets) =>
+	public static void AddPreDrawAction(bool inSolidLayer, Action action) => PreDrawTiles += (solidLayer, forRenderTargets, intoRenderTargets) =>
 	{
 		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
 
@@ -33,7 +33,7 @@ public class TileEvents : ILoadable
 	};
 
 	/// <summary> Subscribes to <see cref="PlaceTile"/> and conditionally invokes <paramref name="action"/> according to <paramref name="tileType"/>. </summary>
-	public static void PlaceTileAction(int tileType, PlaceTileDelegate action) => PlaceTile += (i, j, type) =>
+	public static void AddPlaceTileAction(int tileType, PlaceTileDelegate action) => PlaceTile += (i, j, type) =>
 	{
 		if (type == tileType)
 			action.Invoke(i, j, type);

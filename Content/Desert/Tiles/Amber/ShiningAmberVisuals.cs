@@ -19,7 +19,7 @@ public class ShiningAmberVisuals : ILoadable
 	public void Load(Mod mod)
 	{
 		DrawOverHandler.PostDrawTilesSolid += DrawShine;
-		TileEvents.PreDrawAction(true, ReflectionPoints.Clear);
+		TileEvents.AddPreDrawAction(true, ReflectionPoints.Clear);
 	}
 
 	public void Unload() { }
@@ -55,6 +55,7 @@ public class ShiningAmberVisuals : ILoadable
 
 		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
 		s.Parameters["tileTexture"].SetValue(TileTarget);
+		s.Parameters["lightness"].SetValue(100);
 
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, Main.Rasterizer, s, Main.GameViewMatrix.TransformationMatrix);
 

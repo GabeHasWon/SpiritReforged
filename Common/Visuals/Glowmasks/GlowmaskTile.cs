@@ -91,7 +91,7 @@ internal class GlowmaskTile : GlobalTile
 			if (tile.Slope != SlopeType.Solid || tile.IsHalfBlock) //This method can draw slopes
 			{
 				var pos = TileExtensions.DrawPosition(i, j);
-				TileExtensions.DrawSloped(i, j, glow.Glowmask.Value, glow.GetDrawColor(new Point(i, j)), Vector2.Zero);
+				TileExtensions.DrawSloped(i, j, glow.Glowmask.Value, glow.GetDrawColor(new Point(i, j)), TileExtensions.TileOffset);
 			}
 		}
 	}
