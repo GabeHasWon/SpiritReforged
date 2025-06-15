@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
@@ -103,7 +104,7 @@ public class Flarepowder : ModItem
 
 		for (int i = 0; i < 8; i++)
 		{
-			var vel = (velocity * Main.rand.NextFloat(0.1f, 1f)).RotatedByRandom(0.8f);
+			var vel = (velocity * Main.rand.NextFloat(0.4f, 1)).RotatedByRandom(0.4f);
 			Projectile.NewProjectile(source, position, vel, type, damage, knockback, player.whoAmI);
 		}
 
@@ -147,7 +148,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
-		randomTimeLeft = (0.35f, 0.6f);
+		randomTimeLeft = (0.25f, 0.4f);
 	}
 
 	public override void AI()
@@ -172,14 +173,29 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 		if (doDustSpawn)
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				float mag = Main.rand.NextFloat();
-				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
-				var color = Color.Lerp(Color.Black, new Color(255, 242, 200), mag) * 0.9f;
+				float mag = Main.rand.NextFloat(0.33f, 1);
+				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f) * 1.33f;
 
-				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, color, Main.rand.NextFloat(0.05f, 0.1f), Common.Easing.EaseBuilder.EaseCircularInOut, Main.rand.Next(20, 60)));
+				if(Main.rand.NextBool())
+					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
+
+				var fireCloud = new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, Color.Yellow.Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60));
+				fireCloud.SecondaryColor = Color.Red.Additive();
+				fireCloud.TertiaryColor = Color.DarkRed.Additive();
+				fireCloud.ColorLerpExponent = 1.2f;
+				fireCloud.Intensity = 0.2f;
+				fireCloud.UseLightColor = false;
+				ParticleHandler.SpawnParticle(fireCloud);
+
+				var smokeCloud = new SmokeCloud(fireCloud.Position, fireCloud.Velocity, Color.Gray, fireCloud.Scale * 1.25f, EaseFunction.EaseCubicOut, Main.rand.Next(60, 90));
+				smokeCloud.SecondaryColor = Color.DarkSlateGray;
+				smokeCloud.TertiaryColor = Color.Black;
+				smokeCloud.ColorLerpExponent = 2f;
+				smokeCloud.Intensity = 0.33f;
+				smokeCloud.Layer = ParticleLayer.BelowProjectile;
+				ParticleHandler.SpawnParticle(smokeCloud);
 			}
 		}
 

@@ -2,11 +2,21 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.Particles;
 
 public class DissipatingImage : Particle
 {
+	public Color? SecondaryColor { get; set; } = null;
+	public Color? TertiaryColor { get; set; } = null;
+
+	public ParticleLayer Layer { get; set; } = ParticleLayer.AboveProjectile;
+
+	public float ColorLerpExponent { get; set; } = 1;
+	public float Intensity { get; set; } = 1;
+	public float DissolveAmount { get; set; } = 0;
+
 	public bool UseLightColor { get; set; }
 
 	private readonly string _texture;
@@ -47,7 +57,7 @@ public class DissipatingImage : Particle
 		_scaleMod = 1 + Progress / 2;
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AboveProjectile;
+	public override ParticleLayer DrawLayer => Layer;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
@@ -59,13 +69,20 @@ public class DissipatingImage : Particle
 		else
 		{
 			Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-			effect.Parameters["uColor"].SetValue(Color.ToVector4());
-			effect.Parameters["uTexture"].SetValue(asset.Value);
-			effect.Parameters["perlinNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+			effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
+			effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
+			effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
+			effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
+
 			effect.Parameters["Progress"].SetValue(Progress);
-			effect.Parameters["xMod"].SetValue(_noiseStretch.X);
-			effect.Parameters["yMod"].SetValue(_noiseStretch.Y);
-			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadIn.Ease(Progress));
+			effect.Parameters["uTexture"].SetValue(asset.Value);
+			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+			effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
+			effect.Parameters["coordMods"].SetValue(_noiseStretch);
+			effect.Parameters["intensity"].SetValue(EaseFunction.EaseCubicOut.Ease(1 - Progress) * Intensity);
+
+			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadOut.Ease(Progress));
+			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
 
 			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 			effect.Parameters["texExponent"].SetValue(texExponent);
@@ -76,7 +93,7 @@ public class DissipatingImage : Particle
 
 			var square = new SquarePrimitive
 			{
-				Color = lightColor * _opacity,
+				Color = lightColor,
 				Height = Scale * asset.Height() * _scaleMod,
 				Length = Scale * asset.Width() * _scaleMod,
 				Position = Position - Main.screenPosition,

@@ -1980,3 +1980,8 @@ BonsaiPot: {
 	DisplayName: Bonsai Pot
 	Tooltip: Used to craft decorative bonsai
 }
+
+FingerGun: {
+	DisplayName: Finger Gun
+	Tooltip: ""
+}

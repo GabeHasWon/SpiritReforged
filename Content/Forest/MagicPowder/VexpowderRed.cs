@@ -27,6 +27,6 @@ public class VexpowderRed : Flarepowder
 
 internal class VexpowderRedDust : VexpowderBlueDust
 {
-	public override Color[] Colors => [Color.Red, Color.OrangeRed, Color.Goldenrod];
+	public override Color[] Colors => [Color.Goldenrod, Color.Red, Color.Magenta * 0.5f];
 	public override void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.RedTorch, Projectile.velocity * 0.5f, Scale: Main.rand.NextFloat(0.5f, 1.2f)).noGravity = true;
 }

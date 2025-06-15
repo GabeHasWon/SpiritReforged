@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -32,7 +33,7 @@ public class VexpowderBlue : Flarepowder
 
 internal class VexpowderBlueDust : FlarepowderDust
 {
-	public override Color[] Colors => [Color.Violet, Color.BlueViolet, Color.Goldenrod];
+	public override Color[] Colors => [Color.Violet, Color.BlueViolet, Color.DarkViolet];
 
 	public override void SetDefaults()
 	{
@@ -44,14 +45,21 @@ internal class VexpowderBlueDust : FlarepowderDust
 	{
 		base.OnClientSpawn(false);
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			float mag = Main.rand.NextFloat();
-			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
-			var color = Color.Lerp(Colors[0], Colors[1], mag) * 3;
+			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.4f) * 1.33f;
 
-			ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[0], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, color, Main.rand.NextFloat(0.05f, 0.1f), Common.Easing.EaseBuilder.EaseCircularInOut, Main.rand.Next(20, 60)));
+			if(Main.rand.NextBool())
+				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.375f, Colors[0], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
+
+			var fireCloud = new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, Colors[0].Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60));
+			fireCloud.SecondaryColor = Colors[1].Additive();
+			fireCloud.TertiaryColor = Colors[2].Additive();
+			fireCloud.ColorLerpExponent = 0.8f;
+			fireCloud.Intensity = 0.3f;
+			fireCloud.UseLightColor = false;
+			ParticleHandler.SpawnParticle(fireCloud);
 		}
 	}
 

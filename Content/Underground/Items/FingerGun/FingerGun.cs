@@ -47,37 +47,53 @@ public class FingerGun : ModItem
 	public override float UseSpeedMultiplier(Player player)
 	{
 		float manaPercentage = player.statMana / (float)player.statManaMax2;
-		return MathHelper.Lerp(1, 3, manaPercentage);
+		return MathHelper.Lerp(1, 2.5f, manaPercentage);
+	}
+
+	public override void HoldItem(Player player)
+	{
+		float manaPercentage = player.statMana / (float)player.statManaMax2;
+		if (Main.rand.NextBool(3) && !Main.dedServ && player.HandPosition != null && !player.ItemAnimationActive)
+		{
+			Vector2 handPos = player.HandPosition.Value;
+
+			int type = Main.rand.Next(1, 3);
+
+			var fire = new DissipatingImage(handPos + Vector2.UnitX * player.direction * 3, Color.LightCyan.Additive(), 0, Main.rand.NextFloat(0.01f, 0.025f), Main.rand.NextFloat(0.06f, 0.1f), "Fire" + type, new(0.1f, 0.1f), new(2, 1), Main.rand.Next(10, 40));
+			fire.Velocity = -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2;
+			fire.SecondaryColor = Color.Cyan.Additive();
+			fire.TertiaryColor = Color.DarkGreen.Additive();
+			fire.DissolveAmount = 1;
+			fire.Intensity = manaPercentage * manaPercentage;
+			fire.UseLightColor = false;
+			fire.Layer = ParticleLayer.AbovePlayer;
+
+			ParticleHandler.SpawnParticle(fire);
+		}
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		velocity = velocity.RotatedByRandom(MathHelper.Pi / 16);
-		velocity *= Main.rand.NextFloat(0.9f, 1.2f) * 0.66f;
-		position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation) + velocity;
+		velocity = velocity.RotatedByRandom(MathHelper.Pi / 32);
+		velocity *= Main.rand.NextFloat(0.9f, 1.2f) * 1.33f;
+		position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation);
 
 		if (!Main.dedServ)
 		{
 			Vector2 handPos = player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
-			handPos += velocity / 3;
-			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 20));
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(handPos, Color.Cyan.Additive(), 1, 60, 16, "GlowTrail_2", new(1, 0.5f), EaseFunction.EaseCircularOut, false, 0.5f).WithSkew(0.8f, velocity.ToRotation() - MathHelper.Pi));
+			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
 		}
 	}
 }
 
 public class FingerGunArmManager : ModPlayer
 {
-	public override void Load() => AssetLoader.LoadedTextures.Add("FingerFlame", Mod.Assets.Request<Texture2D>("Content/Underground/Items/FingerGun/FingerGun_Flame", AssetRequestMode.ImmediateLoad));
-
 	private static bool IsFingerGunHeld(Player player) => player.HeldItem.type == ModContent.ItemType<FingerGun>();
 
 	public override void PostUpdate()
 	{
 		if(IsFingerGunHeld(Player))
 		{
-			Player.GetModPlayer<ExtraDrawOnPlayer>().DrawDict.Add(FireHandDraw, ExtraDrawOnPlayer.DrawType.Additive);
-
 			if (Player.ItemAnimationActive)
 			{
 				float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
@@ -87,7 +103,7 @@ public class FingerGunArmManager : ModPlayer
 					Player.ChangeDir(signDirection);
 
 				float armRot = Player.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
-				Player.CompositeArmStretchAmount armStretch = Player.CompositeArmStretchAmount.Full;
+				Player.CompositeArmStretchAmount armStretch;
 
 				armStretch = animProgress switch
 				{
@@ -97,7 +113,7 @@ public class FingerGunArmManager : ModPlayer
 					_ => Player.CompositeArmStretchAmount.ThreeQuarters
 				};
 
-				armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCubicOut, EaseFunction.EaseSine]).Ease(animProgress) - 0.5f);
+				armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCircularOut, EaseFunction.EaseSine, EaseFunction.EaseCircularIn]).Ease(animProgress) - 0.5f);
 
 				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
 				Player.SetCompositeArmFront(true, armStretch, armRot);
@@ -111,31 +127,6 @@ public class FingerGunArmManager : ModPlayer
 		{
 			drawInfo.drawPlayer.handon = EquipLoader.GetEquipSlot(SpiritReforgedMod.Instance, "FingerGun", EquipType.HandsOn);
 			drawInfo.cHandOn = -1;
-		}
-	}
-
-	private void FireHandDraw(SpriteBatch spriteBatch)
-	{
-		if(IsFingerGunHeld(Player) && !Player.dead && Player.active)
-		{
-			int curFrame = (int)(12 * Main.GlobalTimeWrappedHourly % 4);
-			Texture2D flameTex = AssetLoader.LoadedTextures["FingerFlame"].Value;
-
-			Rectangle flameDrawRect = flameTex.Bounds;
-			flameDrawRect.Height /= 4;
-			flameDrawRect.Y = flameDrawRect.Height * curFrame;
-
-			Vector2 handPos = (Player.HandPosition ?? Player.MountedCenter) - Main.screenPosition;
-			if (Player.compositeFrontArm.enabled)
-				handPos = Player.GetFrontHandPosition(Player.compositeFrontArm.stretch, Player.compositeFrontArm.rotation) - Main.screenPosition;
-
-			Vector2 flameOrigin = flameDrawRect.Size() / 2;
-			flameOrigin.Y += flameDrawRect.Height / 4;
-
-			Color flameColor = Color.White;
-			flameColor *= EaseFunction.EaseQuadIn.Ease(Player.statMana / (float)Player.statManaMax2) * 0.9f;
-
-			Main.EntitySpriteDraw(flameTex, handPos, flameDrawRect, flameColor, 0, flameOrigin, 1f, SpriteEffects.None);
 		}
 	}
 }

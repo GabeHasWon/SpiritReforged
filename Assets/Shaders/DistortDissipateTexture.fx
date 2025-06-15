@@ -6,19 +6,32 @@ sampler textureSampler = sampler_state
     AddressU = wrap;
     AddressV = clamp;
 };
-texture perlinNoise;
+texture noise;
 sampler noiseSampler = sampler_state
 {
-    Texture = (perlinNoise);
+    Texture = (noise);
+    AddressU = wrap;
+    AddressV = wrap;
+};
+texture secondaryNoise;
+sampler secondaryNoiseSampler = sampler_state
+{
+    Texture = (secondaryNoise);
     AddressU = wrap;
     AddressV = wrap;
 };
 
 float Progress;
 float uTime;
-float4 uColor;
-float xMod;
-float yMod;
+float dissolve;
+float intensity;
+
+float4 primaryColor;
+float4 secondaryColor;
+float4 tertiaryColor;
+float colorLerpExp;
+
+float2 coordMods;
 float distortion;
 float texExponent;
 
@@ -49,22 +62,44 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-float GetAbsDistance(float inputCoordinate)
+
+float EaseOutIn(float input, float power)
 {
-    return abs(inputCoordinate - 0.5f) * 2;
+    power = max(power, 0.001f);
+    if (input < 0.5f)
+        return pow(2 * input, power) / 2;
+    
+    return pow(2 * (input - 0.5f), 1 / power) + 0.5f;
+}
+
+float4 ColorLerp3(float amount)
+{
+    if (amount < 0.5f)
+        return lerp(tertiaryColor, secondaryColor, EaseOutIn(amount * 2, 1));
+
+    return lerp(secondaryColor, primaryColor, EaseOutIn((amount - 0.5f) * 2, 1));
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
     
-    float2 noiseCoords = float2(input.TextureCoordinates.x * xMod, input.TextureCoordinates.y * yMod);
+    float2 noiseCoords = float2(input.TextureCoordinates.x * coordMods.x, input.TextureCoordinates.y * coordMods.y);
     float noiseFactor = 2 * (tex2D(noiseSampler, noiseCoords) - 0.5f);
     float2 texCoords = float2(input.TextureCoordinates.x + (distortion * noiseFactor), input.TextureCoordinates.y + (distortion * noiseFactor));
     
-    float strength = pow(tex2D(textureSampler, texCoords).r, texExponent);
+    float baseTexStrength = tex2D(textureSampler, texCoords).r;
+    if (baseTexStrength <= 0.05f)
+        return float4(0, 0, 0, 0);
     
-    return color * strength * uColor;
+    float strength = pow(baseTexStrength, texExponent);
+    
+    float dissolveNoiseStrength = (1 - pow(tex2D(secondaryNoiseSampler, noiseCoords).r, 0.5f)) * dissolve;
+    float dissolveYStrength = input.TextureCoordinates.y * dissolve;
+    
+    strength = smoothstep(min(dissolveNoiseStrength + dissolveYStrength, 1), 1, pow(strength, 0.5f)) * pow(strength, 0.5f);
+    
+    return color * strength * ColorLerp3(pow(strength, colorLerpExp)) * intensity;
 }
 
 technique BasicColorDrawing
