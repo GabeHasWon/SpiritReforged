@@ -36,7 +36,7 @@ DamageSources: {
 GameTips: {
 	ReforgedTip0: 常备食物，以备不时之需！
 	ReforgedTip1: 蝴蝶偶尔会藏在地下小树林里。
-	ReforgedTip2: 善用图钉！在大地图的左下角查看大头钉库存。
+	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
 	ReforgedTip3: 捕虫网无法捕获平原动物。
 	ReforgedTip4: 背包。你现在有更多空间了。
 	ReforgedTip5: 深邃如墨的海洋中有着许多有用的东西。
