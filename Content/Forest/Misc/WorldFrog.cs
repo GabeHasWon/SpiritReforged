@@ -285,9 +285,7 @@ internal class UpdaterSystem : ModSystem
 	[Ver("0.1.2")]
 	private static void PatchUp(out string report)
 	{
-		WorldMethods.Generate(PotsMicropass.CreateBoulder, (int)(PotsMicropass.WorldMultiplier * 8), out _);
 		WorldMethods.Generate(PotsMicropass.CreatePicnic, (int)(PotsMicropass.WorldMultiplier * 3), out _, WickerBaskets.PicnicArea);
-
 		report = "CavesAndClubs";
 	}
 }

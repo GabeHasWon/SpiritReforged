@@ -17,7 +17,7 @@ public class StargrassTree : ModTree
 		SpecialGroupMaximumSaturationValue = 1f
 	};
 
-	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<StargrassTile>()];
+	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassMowed>()];
 	public override int CreateDust() => DustID.WoodFurniture;
 	public override int TreeLeaf() => GoreID.TreeLeaf_Normal;
 	public override int DropWood() => ItemID.Wood;
