@@ -42,6 +42,8 @@ public class RollingPot : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
+	public override void AddMapData() => AddMapEntry(new Color(180, 90, 95), Language.GetText("Mods.SpiritReforged.Items.RollingPotItem.DisplayName"));
+
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		if (Autoloader.IsRubble(Type) || WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
