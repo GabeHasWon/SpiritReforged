@@ -21,6 +21,7 @@ internal class IceMannequinInventory : MannequinInventory
 		AccType.Add(ItemID.BlizzardinaBottle, 0.1f);
 		AccType.Add(ItemID.FlurryBoots, 0.2f);
 		AccType.Add(ItemID.Compass, 0.05f);
+		AccType.Add(ItemID.HandWarmer, 0.1f);
 
 		if (CrossMod.Thorium.Enabled)
 		{

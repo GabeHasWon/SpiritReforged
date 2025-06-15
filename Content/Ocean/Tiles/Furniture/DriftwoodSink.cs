@@ -5,5 +5,5 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodSink : SinkTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<Driftwood>();
+	public override int CoreMaterial => AutoContent.ItemType<Driftwood>();
 }

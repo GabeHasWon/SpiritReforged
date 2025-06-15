@@ -110,10 +110,7 @@ internal class CanyonEntrance : CaveEntrance
 			}
 		}
 
-		static bool CanFillWalls(int x, int y)
-		{
-			return Main.tile[x, y].WallType is not WallID.CrimstoneUnsafe or WallID.EbonstoneUnsafe;
-		}
+		static bool CanFillWalls(int x, int y) => Main.tile[x, y].WallType is not WallID.CrimstoneUnsafe or WallID.EbonstoneUnsafe;
 	}
 
 	/// <summary>

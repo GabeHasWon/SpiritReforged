@@ -12,7 +12,7 @@ public class CoarseBomb : ModItem
 		Item.shoot = ModContent.ProjectileType<CoarseBombProjectile>();
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.Bomb).AddIngredient(ItemMethods.AutoItemType<SavannaDirt>(), 25).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.Bomb).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 25).Register();
 }
 
 public class CoarseBombProjectile : SpreadBomb

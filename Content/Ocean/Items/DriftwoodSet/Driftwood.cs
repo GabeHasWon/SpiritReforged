@@ -27,7 +27,7 @@ public class SmallDriftwoodItem : ModItem
 		return false;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 10).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 10).Register();
 }
 
 public class SmallDriftwoodTile : ModTile
@@ -82,7 +82,7 @@ public class MediumDriftwoodItem : ModItem
 		return false;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 20).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 20).Register();
 }
 
 public class MediumDriftwoodTile : ModTile
@@ -137,7 +137,7 @@ public class LargeDriftwoodItem : ModItem
 		return false;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<Driftwood>(), 25).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 25).Register();
 }
 
 public class LargeDriftwoodTile : ModTile

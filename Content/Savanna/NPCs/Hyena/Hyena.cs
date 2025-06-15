@@ -3,6 +3,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -37,14 +38,14 @@ public class Hyena : ModNPC
 
 	public static readonly SoundStyle Laugh = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Laugh")
 	{
-		Volume = 1.25f,
+		Volume = 0.15f,
 		PitchVariance = 0.4f,
 		MaxInstances = 2
 	};
 
 	public static readonly SoundStyle Bark = new("SpiritReforged/Assets/SFX/Ambient/Hyena_Bark")
 	{
-		Volume = 0.18f,
+		Volume = 0.05f,
 		PitchVariance = 0.4f
 	};
 
@@ -58,8 +59,7 @@ public class Hyena : ModNPC
 	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/Hyena_Hit")
 	{
 		Volume = 0.75f,
-		Pitch = -0.05f,
-		PitchVariance = 0.4f,
+		PitchRange = (-0.45f, -0.35f),
 		MaxInstances = 2
 	};
 
@@ -499,8 +499,9 @@ public class Hyena : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddCommon<RawMeat>(3);
+		npcLoot.AddCommon<RawMeat>(5);
 		npcLoot.AddCommon(ItemID.Leather, 2, 3, 5);
+		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}
 
 	public override void OnKill()

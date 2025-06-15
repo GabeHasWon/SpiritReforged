@@ -1691,12 +1691,12 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	DisplayName: Oganesson Bobber
+	DisplayName: Oganesson Moss Fishing Bobber
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	DisplayName: Radon Bobber
+	DisplayName: Radon Moss Fishing Bobber
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1757,6 +1757,11 @@ Bowlder: {
 	Tooltip: Charged strikes release a deadly bowlder
 }
 
+BoStaff: {
+	DisplayName: Bo Staff
+	Tooltip: Dealing continuous damage builds combo
+}
+
 Blasphemer: {
 	DisplayName: Blasphemer
 	Tooltip: Charged strikes erupt into a fiery geyser
@@ -1774,6 +1779,26 @@ ZenithPotsItem: {
 
 ZenithPotsPaleItem: {
 	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: Otherworldly Music Box (Savanna Day)
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: Otherworldly Music Box (Savanna Night)
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: Otherworldly Music Box (Duststorm)
+	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	DisplayName: Savanna Torch
 	Tooltip: ""
 }
 
@@ -1822,6 +1847,11 @@ ElephantKite: {
 	Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
+CartographyTableItem: {
+	DisplayName: Cartography Table
+	Tooltip: Allows you to share your map with other players
+}
+
 PurityBonsaiItem: {
 	DisplayName: Willow Bonsai
 	Tooltip: ""
@@ -1867,6 +1897,11 @@ TopazBonsaiItem: {
 	Tooltip: ""
 }
 
+AmberBonsaiItem: {
+	DisplayName: Amber Bonsai
+	Tooltip: ""
+}
+
 JinxBow: {
 	DisplayName: Jinxbow
 	Tooltip:
@@ -1876,12 +1911,72 @@ JinxBow: {
 		'''
 }
 
-FingerGun: {
-	DisplayName: Finger Blaster
+ExplosiveRum: {
+	DisplayName: Explosive Rum
+	Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	DisplayName: Flarepowder
+	Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	DisplayName: Vexpowder
 	Tooltip:
 		'''
-		Ignores some enemy defense
-		Increased fire rate at higher mana
-		'Bang!'
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
 		'''
+}
+
+VexpowderRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	DisplayName: Breakaway Chair
+	Tooltip: Breaks on impact
+}
+
+AncientMarksmanHood: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	Tooltip: ""
+}
+
+RollingPotItem: {
+	DisplayName: Rolling Pot
+	Tooltip: ""
+}
+
+MossSlimeBannerItem.DisplayName: Moss Slime Banner
+
+InvisibleLure: {
+	DisplayName: Invisible Lure
+	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	DisplayName: Sharpshooter's Glove
+	Tooltip:
+		'''
+		Increases ranged damage at a distance
+		Consecutive shots at this range deal increased damage
+		'''
+}
+
+BonsaiPot: {
+	DisplayName: Bonsai Pot
+	Tooltip: Used to craft decorative bonsai
 }

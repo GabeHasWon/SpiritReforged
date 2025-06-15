@@ -22,6 +22,6 @@ public class TitleMusicBoxItem : ModItem
 	}
 
 	public override void SetDefaults() => Item.DefaultToMusicBox(ModContent.TileType<TitleMusicBox>(), 0);
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemMethods.AutoItemType<OceanDepthsBox>()).AddIngredient(ItemMethods.AutoItemType<SavannaMusicBox>())
-			.AddIngredient(ItemMethods.AutoItemType<SavannaNightMusicBox>()).AddIngredient(ItemMethods.AutoItemType<SavannaSandstormMusicBox>()).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<OceanDepthsBox>()).AddIngredient(AutoContent.ItemType<SavannaMusicBox>())
+			.AddIngredient(AutoContent.ItemType<SavannaNightMusicBox>()).AddIngredient(AutoContent.ItemType<SavannaSandstormMusicBox>()).Register();
 }

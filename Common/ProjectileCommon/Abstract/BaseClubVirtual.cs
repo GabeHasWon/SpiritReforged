@@ -78,10 +78,12 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			ChargeComplete(owner);
 
-			if (!Main.dedServ)
-				SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+			if (!Main.dedServ && _parameters.HasIndicator)
+			{
+				SoundEngine.PlaySound(DefaultReady, Projectile.Center);
+				_flickerTime = MAX_FLICKERTIME;
+			}
 
-			_flickerTime = MAX_FLICKERTIME;
 			_hasFlickered = true;
 			Projectile.netUpdate = true;
 		}
@@ -111,6 +113,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		{
 			SetAIState(AIStates.POST_SMASH);
 			OnSmash(Projectile.Center);
+
 			if (!Main.dedServ)
 			{
 				float volume = Clamp(EaseQuadOut.Ease(Charge), 0.66f, 1f);
@@ -151,6 +154,10 @@ public abstract partial class BaseClubProj : ModProjectile
 			Projectile.Kill();
 
 		BaseRotation += Lerp(-0.05f, 0.05f, EaseQuadIn.Ease(lingerProgress)) * (1 + Charge / 2);
+	}
+
+	public void KillAndStopAnimation()
+	{
 	}
 
 	/// <summary>

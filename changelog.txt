@@ -1,11 +1,31 @@
-v0.1.1.1
+v0.1.1.2
 
-- Prevented Helpful Looking Frog from appearing in worlds generated with the latest version of the mod
-- Fixed a crash when loading a world on a dedicated server
-- Updated Chinese localization
-- Fixed use of an invalid localization key for a particular item...
-- Allowed Radon and Oganesson moss to be used with Extractinators
-- Changed Shockhammer shockwaves to deal melee damage
-- Fixed the player animating incorrectly when placing food on Silver Platters
-- Fixed an issue preventing teleportation between pylons in multiplayer
-- Made Wayfarer gear craftable when using Spirit Classic
+ Highlights: Crossmod Compatibility, New Music, Bugfixes
+
+Crossmod Compatibility:
+- Added Mod of Redemption elemental damage to nearly all Spirit Reforged Weapons
+- Added MoR's NPC categorization functionality to Spirit Reforged enemies
+- Added the following Mod of Redemption Items and Accessories to underground cabin mannequins: Leather Sheath, Durable Bow String, Shell Necklace, Common Guard Helms, Common Guard Plate Mail, Common Guard Greaves
+- Changed Safekeeper's Ring death animation to function more consistently with modded NPCs. 
+	Modders are now allowed to opt out of the death animation when adding compatibility for NPCs with the "AddUndead" call
+- Added mod call "HasBackpack" to check whether the player has any backpack item equipped
+- Added mod call "SetSavannaArea" to force the Savanna location during worldgen
+
+New Music:
+- Added Otherworldly Savanna Day, Savanna Night, and Duststorm tracks (and their music boxes)
+
+Bugfixes:
+- Added Dunce Crab bestiary entry + minor AI change to support it
+- Fixed typo in Wheezer bestiary entry
+- Fixed particles at specific layers drawing incorrectly with reversed gravity
+- Corrected back arm rotation when holding a club
+- Fixed Bomb Cannon-fired bombs sometimes being invisible and not having custom effects sync correctly in multiplayer
+- Changed the Potstiary UI to toggle inversely with the inventory
+- Added map icons to World NPCs
+- Allowed purity and hallowed Savanna grasses to be mowed using the Lawn Mower
+- Fixed Savanna Water Fountain preventing pylon use in multiplayer
+- Corrected long Helium and Argon moss item drops when harvested using Landscaping Shears
+- Fixed Potstiary visual artifacts when zoomed in
+- Made Leather Cloak craftable at a Loom and increased Leather requirement from 6 to 8
+- Reduced Hyena laugh and bark volumes substantially
+- Made Drywood and Drywood Workbench trigger their respective achievements properly

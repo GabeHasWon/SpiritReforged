@@ -96,12 +96,9 @@ public class StuffedPots : PotTile, ILootTile
 		}
 	}
 
-	public LootTable AddLoot(int objectStyle)
+	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		var loot = new LootTable();
 		loot.Add(ItemDropRule.Common(ItemID.Glowstick, 1, 10, 25));
 		loot.Add(ItemDropRule.Common(ItemID.StrangeBrew, 1, 2, 8));
-
-		return loot;
 	}
 }

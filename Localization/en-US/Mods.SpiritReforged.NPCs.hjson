@@ -1,3 +1,53 @@
+VanillaDialogue: {
+	Guide: {
+		WorldNPC: You might run into other explorers as you wander the world. If you do, maybe you can help each other out!
+		Ecotone: If the climate is right, the region between the Desert and Jungle can be home to a vast Savanna. I've always wanted to see it!
+		Savanna: The leather from the animals here could craft you some pretty neat gear, kid.
+		Kelp: Don't eat the seaweed.
+	}
+
+	ArmsDealer: {
+		Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
+		Placeholder: placeholder
+	}
+
+	Stylist: {
+		Savanna1: It's wicked hard to maintain my hairstyle in this climate.
+		Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+	}
+
+	TravellingMerchant: {
+		Cartographer1: I often run into a wayward cartographer on my travels. I swear, she gives me a run for my money!
+		Cartographer2: Oh, it's {0}! She gave me directions last month before falling right into a ditch.
+		Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
+	}
+
+	Demolitionist: {
+		HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
+		Placeholder: placeholder
+	}
+
+	Nurse: {
+		Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
+		Savanna: No, I'm not a vet! Now get those animals out of here.
+	}
+
+	PartyGirl: {
+		Duststorm: Aw, it's not party weather. Maybe we can have a kickback instead!
+		Savanna: All this open space is perfect for a party! Ooh, maybe a dayger!
+	}
+
+	Golfer: {
+		Duststorm: It's all this dust's fault that I'm playing below par!
+		Savanna: Everything here is a hazard! My balls keep getting stuck in the bushes and sand...and the trees!
+	}
+
+	Zoologist: {
+		Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
+		Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
+	}
+}
+
 Crinoid: {
 	DisplayName: Crinoid
 	Entry: These curious critters are closely related to starfish. They feed off of whatever sinks down to the bottom of the sea.
@@ -182,7 +232,7 @@ Cartographer: {
 					'''
 				2:
 					'''
-					So a while ago I was seeing how quickly I could run from jungle bats, right? And the boom, right over here on the map, the air gets real dusty. A savanna sprawls out in front of me. What a sight!
+					So a while ago I was seeing how quickly I could run from jungle bats, right? And then boom, right over here on the map, the air gets real dusty. A savanna sprawls out in front of me. What a sight!
 					And just for the record, I found out that I can run REAL quick when I need to.
 					'''
 			}
@@ -355,6 +405,7 @@ PotterySlime: {
 	}
 
 	Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
+	Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
 }
 
 StompableGnome.DisplayName: Stompable Gnome
@@ -389,3 +440,17 @@ WorldFrog: {
 		CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
 	}
 }
+
+MossSlime: {
+	DisplayName: Moss Slime
+	Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+}
+
+KryptonMossSlime.DisplayName: Krypton Moss Slime
+LavaMossSlime.DisplayName: Lava Moss Slime
+NeonMossSlime.DisplayName: Neon Moss Slime
+XenonMossSlime.DisplayName: Xenon Moss Slime
+ArgonMossSlime.DisplayName: Argon Moss Slime
+HeliumMossSlime.DisplayName: Helium Moss Slime
+OganessonMossSlime.DisplayName: Oganesson Moss Slime
+RadonMossSlime.DisplayName: Radon Moss Slime

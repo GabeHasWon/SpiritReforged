@@ -16,13 +16,23 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
+using System.Runtime.CompilerServices;
 
 namespace SpiritReforged;
 
 public partial class SpiritReforgedMod : Mod
 {
 	public const string ModName = "SpiritReforged";
+
 	public static SpiritReforgedMod Instance { get; private set; }
+
+	/// <summary>
+	/// Gets if Otherworld Music is turned on. <see cref="Main.swapMusic"/> is private for some reason.
+	/// </summary>
+	public static bool SwapMusic => GetSwapMusic(null);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
+	private static extern ref bool GetSwapMusic(Main main);
 
 	public SpiritReforgedMod()
 	{

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
-using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 
 namespace SpiritReforged;
@@ -31,6 +31,16 @@ public partial class SpiritReforgedMod : Mod
 					{
 						return SavannaEcotone.SavannaArea;
 					}
+				case "SetSavannaArea":
+					{
+						if (!WorldGen.generatingWorld)
+							throw new Exception("SavannaArea is unused outside of worldgen. Are you sure you're using this right?");
+
+						if (args.Length == 2 && args[1] is Rectangle rectangle)
+							return SavannaEcotone.SavannaArea = rectangle;
+						else
+							throw new ArgumentException("SetSavannaArea parameters should be two elements long: (\"SetSavannaArea\", rectangle)!");
+					}
 				case "AddPotionVat":
 					{
 						return PotionColorDatabase.ParseNewPotion(args[1..]);
@@ -38,12 +48,29 @@ public partial class SpiritReforgedMod : Mod
 				case "HasBackpack":
 					{
 						if (args[1] is not Player player)
-							throw new ArgumentException("args[1] should be a Player!");
+							throw new ArgumentException("HasBackpack parameter 1 should be a Player!");
 
 						if (args.Length > 2)
-							throw new ArgumentException("args should be 2 elements long (\"HasBackpack\", player)!");
+							throw new ArgumentException("HasBackpack parameters should be 2 elements long: (\"HasBackpack\", player)!");
 
 						return player.GetModPlayer<BackpackPlayer>().backpack.ModItem is BackpackItem;
+					}
+				case "AddPotstiaryRecord":
+					{
+						return RecordHandler.ManualAddRecord(args[1..]);
+					}
+				case "PotDiscovered":
+					{
+						if (args.Length > 3)
+							throw new ArgumentException("PotDiscovered parameters should be 3 elements long: (\"PotDiscovered\", string, player)");
+
+						if (args[1] is not string key)
+							throw new ArgumentException("PotDiscovered parameter 1 should be a string.");
+
+						if (args[2] is not Player player)
+							throw new ArgumentException("PotDiscovered parameter 2 should be a Player.");
+
+						return player.GetModPlayer<RecordPlayer>().IsValidated(key);
 					}
 				default:
 					{

@@ -74,6 +74,8 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "supPerlin", new Vector2(1.5f, 1.25f)), TrailLayer.UnderProjectile));
 	}
 
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.CadetBlue;
+
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		if (CheckAIState(AIStates.CHARGING))

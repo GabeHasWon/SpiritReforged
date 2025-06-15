@@ -34,5 +34,5 @@ public class ZenithPots : PotTile, ILootTile
 		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.TreasureSparkle;
 	}
 
-	public LootTable AddLoot(int objectStyle) => ModContent.GetInstance<Pots>().AddLoot(objectStyle);
+	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
 }

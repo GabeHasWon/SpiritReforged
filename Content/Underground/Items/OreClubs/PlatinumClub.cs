@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 
 namespace SpiritReforged.Content.Underground.Items.OreClubs;

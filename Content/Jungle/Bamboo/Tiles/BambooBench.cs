@@ -5,5 +5,5 @@ namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
 public class BambooBench : SofaTile
 {
-	public override int CoreMaterial => ItemMethods.AutoItemType<StrippedBamboo>();
+	public override int CoreMaterial => AutoContent.ItemType<StrippedBamboo>();
 }

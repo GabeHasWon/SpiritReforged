@@ -29,6 +29,23 @@ internal static class ProjectileExtensions
 		}
 	}
 
+	public static void PlotTileCut(this Projectile projectile, float distance, float width)
+	{
+		var owner = Main.player[projectile.owner];
+
+		DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
+		var cut = new Utils.TileActionAttempt(DelegateMethods.CutTiles);
+		var endPoint = owner.MountedCenter + owner.DirectionTo(projectile.Center) * distance;
+
+		Utils.PlotTileLine(owner.MountedCenter, endPoint, width, cut);
+
+		//Additional line plotted between the projectile's current and last position, to catch instances where it moves super fast
+		var startCenter = Vector2.Lerp(projectile.position, owner.MountedCenter, 0.5f);
+		var oldCenter = Vector2.Lerp(projectile.oldPosition, owner.MountedCenter, 0.5f);
+
+		Utils.PlotTileLine(startCenter, oldCenter, width, cut);
+	}
+
 	/// <summary>
 	/// Draws the projectile similar to how vanilla would by default.
 	/// </summary>
@@ -115,6 +132,15 @@ internal static class ProjectileExtensions
 			maxFrame ??= Main.projFrames[projectile.type];
 			if (projectile.frame >= maxFrame)
 				projectile.frame = loopFrame;
+		}
+	}
+
+	public static void UpdateFrame(this Projectile projectile, byte ticksPerFrame)
+	{
+		if (++projectile.frameCounter >= ticksPerFrame)
+		{
+			projectile.frameCounter = 0;
+			projectile.frame = ++projectile.frame % Main.projFrames[projectile.type];
 		}
 	}
 

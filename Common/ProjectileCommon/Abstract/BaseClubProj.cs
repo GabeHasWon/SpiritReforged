@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
@@ -10,6 +11,7 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 {
+	public record struct ClubParameters(bool HasIndicator = true, Color ChargeColor = default);
 	internal const int MAX_FLICKERTIME = 20;
 
 	internal readonly Vector2 Size = textureSize;
@@ -33,12 +35,14 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	protected int _swingTimer;
 	protected int _windupTimer;
 	protected int _flickerTime;
+	protected ClubParameters _parameters;
 
 	private bool _hasFlickered = false;
 
 	/// <summary><inheritdoc cref="ModProjectile.DisplayName"/><para/>
 	/// Automatically attempts to use the associated item localization. </summary>
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items." + Name.Replace("Proj", string.Empty) + ".DisplayName");
+
 	/// <summary><inheritdoc cref="ModProjectile.Texture"/><para/>
 	/// Automatically attempts to use the associated item texture. </summary>
 	public override string Texture
@@ -74,6 +78,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		//Projectile.ownerHitCheck = true;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
+		_parameters = new(true);
 
 		MoRHelper.SetHammerBonus(Projectile);
 		SafeSetDefaults();
@@ -146,7 +151,10 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		SafeAI();
 
 		if (Owner.dead)
+		{
 			Projectile.Kill();
+			return;
+		}
 
 		Owner.heldProj = Projectile.whoAmI;
 		Owner.direction = Math.Sign(Projectile.direction);
@@ -154,7 +162,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		if (AllowUseTurn && Projectile.owner == Main.myPlayer)
 		{
 			int newDir = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
-			Projectile.velocity.X = newDir == 0 ? Owner.direction : newDir;
+			Projectile.velocity.X = (newDir == 0) ? Owner.direction : newDir;
 
 			if (newDir != Owner.direction)
 				Projectile.netUpdate = true;
@@ -219,8 +227,9 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 			{
 				Texture2D flash = TextureColorCache.ColorSolid(texture, Color.White);
 				float alpha = EaseQuadIn.Ease(EaseSine.Ease(_flickerTime / (float)MAX_FLICKERTIME));
+				var color = Color.Lerp(_parameters.ChargeColor, Color.White, alpha * alpha).Additive();
 
-				Main.EntitySpriteDraw(flash, drawPos, frame, Color.White * alpha, Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
+				Main.EntitySpriteDraw(flash, drawPos, frame, color * alpha * 2, Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
 			}
 		}
 

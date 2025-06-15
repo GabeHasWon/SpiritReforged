@@ -24,6 +24,8 @@ Misc: {
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {
@@ -44,4 +46,9 @@ GameTips: {
 	ReforgedTip7: Talos Nuvem sempre crescem sob nuvens.
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
+}
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
 }
