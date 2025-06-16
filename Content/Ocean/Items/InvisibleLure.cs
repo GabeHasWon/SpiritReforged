@@ -47,10 +47,10 @@ public class InvisibleLureEntity : FishLureEntity
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (!Main.LocalPlayer.CanSeeInvisibleBlocks)
-			return;
-
-		var drawPosition = Center - Main.screenPosition + new Vector2(0, SolidCollision ? 0 : Sin(30f));
-		spriteBatch.Draw(Texture.Value, drawPosition, null, Color.White, GetRotation() * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
+		if (Main.LocalPlayer.CanSeeInvisibleBlocks || Main.SceneMetrics.EchoMonolith)
+		{
+			var drawPosition = Center - Main.screenPosition + new Vector2(0, SolidCollision ? 0 : Sin(30f));
+			spriteBatch.Draw(Texture.Value, drawPosition, null, Color.White, GetRotation() * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
+		}
 	}
 }
