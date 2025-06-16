@@ -1743,7 +1743,7 @@ Macuahuitl: {
 }
 
 BassSlapper: {
-	DisplayName: 低音连打鲈
+	DisplayName: 低音鲈打
 	Tooltip: 完全蓄力会快速释放连续打击
 }
 
