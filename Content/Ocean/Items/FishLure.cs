@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.FloatingItem;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
@@ -26,7 +27,17 @@ public class FishLure : FloatingItem
 		return false;
 	}
 
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<InvisibleLure>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<InvisibleLure>();
+
+		PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
+		{
+			if (Main.rand.NextBool(15))
+				rewardItems.Add(new Item(Type, Main.rand.Next(1, 4)));
+		};
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 14;
