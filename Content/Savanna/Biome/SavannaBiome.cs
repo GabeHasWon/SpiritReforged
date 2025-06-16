@@ -33,6 +33,8 @@ public class SavannaBiome : ModBiome
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SavannaBGStyle>();
 	public override string BackgroundPath => MapBackground;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SavannaMapBG";
+	public override int BiomeTorchItemType => ModContent.ItemType<SavannaTorchItem>();
+	public override int BiomeCampfireItemType => Mod.Find<ModItem>("SavannaCampfireItem").Type;
 
 	public override bool IsBiomeActive(Player player)
 	{
