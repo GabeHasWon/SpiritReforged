@@ -25,7 +25,7 @@ DoubleJumpPotionBuff: {
 
 FlightPotionBuff: {
 	DisplayName: 翱翔
-	Description: 增加25%飞行时间
+	Description: 飞行时间增加25%
 }
 
 BottleMountBuff: {
