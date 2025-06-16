@@ -36,7 +36,7 @@ internal class PotsMicropass : Micropass
 	{
 		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(3))
 		{
-			int placed = ModContent.TileType<RollingPot>();
+			int placed = ModContent.TileType<RollingPots>();
 
 			WorldGen.PlaceTile(i - 1, j, placed, true, style: 1);
 			return Main.tile[i, j].TileType == placed; //Skips orig
@@ -237,7 +237,7 @@ internal class PotsMicropass : Micropass
 		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
 			return false;
 
-		int type = ModContent.TileType<RollingPot>();
+		int type = ModContent.TileType<RollingPots>();
 		Placer.Check(x, y, type).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;

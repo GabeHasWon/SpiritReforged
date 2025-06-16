@@ -1955,7 +1955,7 @@ AncientMarksmanPlate: {
 	Tooltip: ""
 }
 
-RollingPotItem: {
+RollingPotsItem: {
 	DisplayName: Rolling Pot
 	Tooltip: ""
 }
