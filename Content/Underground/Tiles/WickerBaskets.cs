@@ -1,3 +1,4 @@
+using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -39,7 +40,7 @@ public class WickerBaskets : PotTile, ILootTile
 
 	public override void AddObjectData()
 	{
-		DustType = DustID.PalmWood;
+		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.PalmWood;
 		Main.tileOreFinderPriority[Type] = 575;
 
 		base.AddObjectData();

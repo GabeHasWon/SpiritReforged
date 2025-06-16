@@ -96,7 +96,7 @@ internal class PotsMicropass : Micropass
 		Generate(CreateAether, (int)(scale * 3), out _);
 		Generate(CreateUpsideDown, (int)(scale * 4), out _);
 		Generate(CreateBoulder, (int)(scale * 15), out _);
-		Generate(CreatePicnic, (int)(scale * 3), out _, WickerBaskets.PicnicArea);
+		Generate(CreatePicnic, (int)(scale * 2), out _, WickerBaskets.PicnicArea);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
