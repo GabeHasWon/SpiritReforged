@@ -24,6 +24,7 @@ public class DissipatingImage : Particle
 	private readonly float _maxDistortion;
 	private readonly Vector2 _noiseStretch = new (1);
 	private readonly Vector2 _texExponent = new(2, 1);
+	private readonly Vector2 _scrollOffset = new(Main.rand.NextFloat(), Main.rand.NextFloat());
 
 	private float _opacity;
 
@@ -79,16 +80,17 @@ public class DissipatingImage : Particle
 
 			effect.Parameters["Progress"].SetValue(Progress);
 			effect.Parameters["uTexture"].SetValue(asset.Value);
-			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
 			effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
 			effect.Parameters["coordMods"].SetValue(_noiseStretch);
-			effect.Parameters["intensity"].SetValue(EaseFunction.EaseCubicOut.Ease(1 - Progress) * Intensity);
+			effect.Parameters["scroll"].SetValue(_scrollOffset + new Vector2(Progress));
+			effect.Parameters["intensity"].SetValue(Intensity);
 
 			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadOut.Ease(Progress));
 			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
 
 			effect.Parameters["pixellate"].SetValue(Pixellate);
-			effect.Parameters["pixelDimensions"].SetValue(size / 1.25f);
+			effect.Parameters["pixelDimensions"].SetValue(size / 1.5f);
 
 			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 			effect.Parameters["texExponent"].SetValue(texExponent);

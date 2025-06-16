@@ -37,6 +37,7 @@ float texExponent;
 
 bool pixellate;
 float2 pixelDimensions;
+float2 scroll;
 
 struct VertexShaderInput
 {
@@ -80,7 +81,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     if (pixellate)
         baseCoords = round(baseCoords * pixelDimensions) / pixelDimensions;
     
-    float2 noiseCoords = float2(baseCoords.x * coordMods.x, baseCoords.y * coordMods.y);
+    float2 noiseCoords = float2((baseCoords.x + scroll.x) * coordMods.x, (baseCoords.y + scroll.y) * coordMods.y);
     float noiseFactor = 2 * (tex2D(noiseSampler, noiseCoords) - 0.5f);
     float2 texCoords = float2(baseCoords.x + (distortion * noiseFactor), baseCoords.y + (distortion * noiseFactor));
     
@@ -90,19 +91,21 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float strength = pow(baseTexStrength, texExponent);
     
-    float dissolveNoiseStrength = (1 - pow(tex2D(secondaryNoiseSampler, noiseCoords).r, 0.5f)) * dissolve;
-    float dissolveYStrength = baseCoords.y * dissolve;
+    float dissolveNoiseStrength = (1 - tex2D(secondaryNoiseSampler, noiseCoords).r) * dissolve;
+    float dissolveYStrength = lerp(0, pow(input.TextureCoordinates.y, 0.66f), pow(dissolve, 0.5f));
+    float dissolveXStrength = lerp(0, pow((1 - abs(baseCoords.x - 0.5f) * 2), 0.66f), pow(dissolve, 0.5f));
+    float dissolvePosBase = dissolveYStrength + dissolveXStrength;
     
-    strength = smoothstep(min(dissolveNoiseStrength + dissolveYStrength + pow(dissolve, 2), 1), 1, pow(strength, 0.5f)) * pow(strength, 0.5f);
+    strength = smoothstep(min((dissolveNoiseStrength + dissolvePosBase + pow(dissolve, 4)) / 2, 1), 1, pow(strength, 0.33f)) * pow(strength, 0.66f);
     
-    return color * strength * ColorLerp3(pow(strength, colorLerpExp) * pow(1 - dissolve, 0.5f)) * intensity;
+    return color * strength * ColorLerp3(pow(strength * (1 - dissolve), colorLerpExp)) * intensity;
 }
 
 technique BasicColorDrawing
 {
     pass DefaultPS
 	{
-        VertexShader = compile vs_2_0 MainVS();
-        PixelShader = compile ps_2_0 MainPS();
+        VertexShader = compile vs_3_0 MainVS();
+        PixelShader = compile ps_3_0 MainPS();
     }
 };

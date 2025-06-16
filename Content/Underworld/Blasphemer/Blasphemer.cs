@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
@@ -78,7 +79,7 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 	public void DoTrailCreation(TrailManager tM)
 	{
-		float trailDist = 78 * MeleeSizeModifier;
+		float trailDist = 90 * MeleeSizeModifier;
 		float trailWidth = 60 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
 		float rotOffset = -PiOver4 / 4;
@@ -109,15 +110,17 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 			SecondaryColor = Color.Red.Additive(150),
 			TrailLength = trailLength,
 			Intensity = 1.75f,
-			UseLightColor = false
+			UseLightColor = false,
+			DissolveThreshold = 0.99f
 		};
 
 		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(4, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
 
-		flameTrailParameters.Distance /= 2;
-		flameTrailParameters.Width *= 0.75f;
-		flameTrailParameters.TrailLength *= 0.5f;
-		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(2, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
+		parameters.Distance /= 2;
+		parameters.Width *= 0.75f;
+		parameters.TrailLength *= 0.33f;
+
+		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
 	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.OrangeRed;
@@ -137,47 +140,6 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		TrailManager.TryTrailKill(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
-		DoShockwaveCircle(Projectile.Bottom - Vector2.UnitY * 8, 280, PiOver2, 0.4f);
-
-		//black smoke particles
-		for (int i = 0; i < 16; i++)
-		{
-			Vector2 smokePos = Projectile.Bottom + Vector2.UnitX * Main.rand.NextFloat(-10, 10);
-
-			float easedProgress = EaseQuadOut.Ease(i / 16f);
-			float scale = Lerp(0.12f, 0.03f, easedProgress) * TotalScale;
-
-			float speed = Lerp(0.5f, 3.5f, easedProgress);
-			int lifeTime = (int)(Lerp(30, 40, easedProgress) + Main.rand.Next(-5, 6));
-
-			ParticleHandler.SpawnParticle(new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.Black * 0.66f, scale, EaseCircularIn, lifeTime));
-		}
-
-		//Sine movement ember particles
-		for (int i = 0; i < 12; i++)
-		{
-			float maxOffset = 40 * TotalScale;
-			float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
-			Vector2 dustPos = Projectile.Bottom + Vector2.UnitX * offset;
-			float velocity = Lerp(4, 1, EaseCircularIn.Ease(Math.Abs(offset) / maxOffset)) * Main.rand.NextFloat(0.25f, 1);
-			if (FullCharge)
-				velocity *= 1.33f;
-
-			static void ParticleDelegate(Particle p, Vector2 initialVel, float timeOffset, float rotationAmount, float numCycles)
-			{
-				float sineProgress = EaseQuadOut.Ease(p.Progress);
-
-				p.Velocity = initialVel.RotatedBy(rotationAmount * (float)Math.Sin(TwoPi * (timeOffset + sineProgress) * numCycles)) * (1 - p.Progress);
-			}
-
-			float timeOffset = Main.rand.NextFloat();
-			float rotationAmount = Main.rand.NextFloat(PiOver4);
-			float numCycles = Main.rand.NextFloat(0.5f, 2);
-
-			ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 80), 3,
-				p => ParticleDelegate(p, velocity * -Vector2.UnitY, timeOffset, rotationAmount, numCycles)));
-		}
-
 		if (FullCharge)
 		{
 			if (Projectile.owner == Main.myPlayer)
@@ -196,6 +158,18 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 			SoundEngine.PlaySound(Main.rand.Next([Impact1, Impact2]), position);
 		}
+
+		else if (Projectile.owner == Main.myPlayer)
+		{
+			Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * Projectile.direction, ModContent.ProjectileType<Firespike>(),
+				(int)(Projectile.damage * DamageScaling * 0.5f), Projectile.knockBack * KnockbackScaling * 0.1f, Projectile.owner, 0);
+
+			for (int i = 0; i < 20; i++)
+				Dust.NewDustDirect(Projectile.position - new Vector2(0, 10), Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f));
+
+			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 1 - 0.4f, Volume = 1, MaxInstances = 3 }, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.Item34 with { MaxInstances = 3 }, Projectile.Center);
+		}
 	}
 
 	public override void SafeAI()
@@ -210,6 +184,19 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 				ParticleHandler.SpawnParticle(new EmberParticle(center, velocity / 2, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f), 60, 5));
 			}
+		}
+
+		if(CheckAIState(AIStates.SWINGING))
+		{
+			if (!Main.rand.NextBool(3))
+				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
+												   -Vector2.UnitY / 3,
+												   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
+												   1.25f,
+												   0,
+												   Main.rand.NextFloat(0.06f, 0.15f),
+												   EaseQuadIn,
+												   30) { ColorLerpExponent = 2 });
 		}
 	}
 

@@ -182,10 +182,11 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
 				Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
-				var fireCloud = new SmokeCloud(cloudPos, velocity, Color.Yellow.Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60), false)
+				var fireCloud = new SmokeCloud(cloudPos, velocity, Color.Yellow.Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 40), false)
 				{
 					SecondaryColor = Color.Red.Additive(),
 					TertiaryColor = Color.DarkRed.Additive(),
+					ColorLerpExponent = 0.8f,
 					Intensity = 0.2f
 				};
 
@@ -216,7 +217,13 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		TrailManager.ManualTrailSpawn(Projectile);
 	}
 
-	public virtual void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.Torch, Projectile.velocity * 0.5f).noGravity = !Main.rand.NextBool(8);
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (Main.rand.NextBool())
+			target.AddBuff(BuffID.OnFire, 120);
+	}
+
+	public virtual void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.Torch, Projectile.velocity * 0.5f).noGravity = true;
 
 	public override void OnKill(int timeLeft)
 	{
@@ -233,7 +240,14 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 		if(this is not VexpowderBlueDust)
 			for(int i = 0; i < 5; i++)
-				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(2) - Vector2.UnitY, [Colors[0].Additive(60), Colors[1].Additive(60), Colors[2].Additive(60)], 0.75f, 0, Main.rand.NextFloat(0.02f, 0.08f), EaseFunction.EaseQuadOut, Main.rand.Next(10, 30)) { ColorLerpExponent = 2 });
+				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
+												   Main.rand.NextVector2Unit() * Main.rand.NextFloat(2) - Vector2.UnitY * Main.rand.NextFloat(1, 2),
+												   [Colors[0].Additive(60), Colors[1].Additive(60), Colors[2].Additive(60)],
+												   0.75f,
+												   0,
+												   Main.rand.NextFloat(0.02f, 0.1f),
+												   EaseFunction.EaseQuadOut,
+												   Main.rand.Next(10, 35)) { ColorLerpExponent = 1.2f });
 
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();

@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -42,8 +43,16 @@ class Firespike : ModProjectile, IDrawOverTiles
 		{
 			if (Main.rand.NextBool(10))
 			{
-				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-12, 12), 0);
-				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.WallOfFleshGoatMountFlames, new ParticleOrchestraSettings() { PositionInWorld = position });
+				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-20, 20), 0);
+				for(int i = 0; i < 3; i++)
+					ParticleHandler.SpawnParticle(new FireParticle(position,
+													   -Vector2.UnitY / 3,
+													   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
+													   0.5f,
+													   0,
+													   0.1f,
+													   EaseQuadIn,
+													   50) { ColorLerpExponent = 3 });
 			}
 
 			if (Main.rand.NextBool(30))
@@ -51,7 +60,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(2f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.3f), 200, 5));
+				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.3f), 100, 5));
 			}
 		}
 		else
@@ -61,7 +70,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1f, 5f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.5f), 200, 5));
+				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.5f), 100, 5));
 
 				for (int i = 0; i < 2; i++)
 					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f), Scale: Main.rand.NextFloat(0.5f));
@@ -77,6 +86,63 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.OrangeRed.Additive(), 0.9f, 170, 15, "supPerlin", Vector2.One).WithSkew(0.8f, PiOver2));
 			ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center - Vector2.UnitY * 10, 0, Color.Goldenrod.Additive(), 1f, 14));
+
+			//black smoke particles
+			for (int i = 0; i < 16; i++)
+			{
+				Vector2 smokePos = Projectile.Bottom + Vector2.UnitX * Main.rand.NextFloat(-10, 10);
+
+				float easedProgress = EaseQuadOut.Ease(i / 16f);
+				float scale = Lerp(0.2f, 0.07f, easedProgress);
+
+				float speed = Lerp(0.5f, 2f, easedProgress);
+				int lifeTime = (int)(Lerp(20, 40, easedProgress) + Main.rand.Next(-5, 6));
+
+				var smokeCloud = new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.Gray, scale, EaseQuadIn, lifeTime)
+				{
+					SecondaryColor = Color.DarkSlateGray,
+					TertiaryColor = Color.Black,
+					ColorLerpExponent = 2,
+					Intensity = 0.33f,
+					Layer = ParticleLayer.BelowProjectile
+				};
+				ParticleHandler.SpawnParticle(smokeCloud);
+			}
+
+			//Sine movement ember particles
+			for (int i = 0; i < 5; i++)
+			{
+				float maxOffset = 40;
+				float offset = Main.rand.NextFloat(-maxOffset, maxOffset);
+				Vector2 dustPos = Projectile.Bottom + Vector2.UnitX * offset;
+				float velocity = Lerp(4, 1, EaseCircularIn.Ease(Math.Abs(offset) / maxOffset)) * Main.rand.NextFloat(0.25f, 1);
+
+				static void ParticleDelegate(Particle p, Vector2 initialVel, float timeOffset, float rotationAmount, float numCycles)
+				{
+					float sineProgress = EaseQuadOut.Ease(p.Progress);
+
+					p.Velocity = initialVel.RotatedBy(rotationAmount * (float)Math.Sin(TwoPi * (timeOffset + sineProgress) * numCycles)) * (1 - p.Progress);
+				}
+
+				float timeOffset = Main.rand.NextFloat();
+				float rotationAmount = Main.rand.NextFloat(PiOver4);
+				float numCycles = Main.rand.NextFloat(0.5f, 2);
+
+				ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 80), 3,
+					p => ParticleDelegate(p, velocity * -Vector2.UnitY, timeOffset, rotationAmount, numCycles)));
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
+												   Main.rand.NextVector2Unit() * Main.rand.NextFloat(5),
+												   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
+												   1.25f,
+												   Main.rand.NextFloatDirection(),
+												   Main.rand.NextFloat(0.06f, 0.15f),
+												   EaseQuadOut,
+												   50) { ColorLerpExponent = 2 });
+			}
 		}
 
 		if (Main.myPlayer == Projectile.owner && Projectile.timeLeft == LingerTime + GeyserTime / 2 && CanSplit)
@@ -149,7 +215,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 	{
 		float timeLeftProgress = (Projectile.timeLeft - LingerTime) / (float)GeyserTime;
 
-		float scaleX = 1f - EaseQuadIn.Ease(1 - timeLeftProgress);
+		float scaleX = 1f - EaseCircularIn.Ease(1 - timeLeftProgress);
 		float scaleY = 1f - timeLeftProgress / 2;
 		float intensity = EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress));
 		var size = new Vector2(360 * scaleY, 80 * scaleX) * Projectile.scale;
@@ -171,9 +237,9 @@ class Firespike : ModProjectile, IDrawOverTiles
 	private static void DrawFire(Vector2 center, Vector2 size, float intensity)
 	{
 		Effect effect = AssetLoader.LoadedShaders["FireStream"];
-		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0).ToVector4());
-		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0).ToVector4());
-		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33).ToVector4());
+		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0, 150).ToVector4());
+		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0, 150).ToVector4());
+		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33, 150).ToVector4());
 
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
 		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
@@ -187,12 +253,12 @@ class Firespike : ModProjectile, IDrawOverTiles
 		effect.Parameters["distortScroll"].SetValue(new Vector2(scrollSpeed * globalTimer) / 2);
 
 		effect.Parameters["intensity"].SetValue(2.5f * intensity);
-		effect.Parameters["fadePower"].SetValue(2);
+		effect.Parameters["fadePower"].SetValue(1);
 		effect.Parameters["tapering"].SetValue(0.33f);
 
 		var position = center - Main.screenPosition - Vector2.UnitY * size.X / 2;
 		effect.Parameters["pixelDimensions"].SetValue(size / 2);
-		effect.Parameters["numColors"].SetValue(7);
+		effect.Parameters["numColors"].SetValue(10);
 
 		var square = new SquarePrimitive
 		{
