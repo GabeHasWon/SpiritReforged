@@ -68,7 +68,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 		DustType = -1;
 		
 		if (!Autoloader.IsRubble(Type))
-			WayfarerGlobalTile.PotTypes.Add(Type);
+			WayfarerBonus.PotTypes.Add(Type);
 
 		AddObjectData();
 		AddMapData();

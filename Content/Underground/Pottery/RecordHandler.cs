@@ -60,6 +60,25 @@ public class RecordHandler : ModSystem
 					ActionByType.TryAdd(type, loot.AddLoot); //Automatically register a loot table if applicable
 			}
 		}
+
+		TileEvents.OnKillTile += KillTile;
+	}
+
+	private static void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly)
+	{
+		const int maxDistance = 800;
+
+		if (effectOnly || fail)
+			return;
+
+		if (Matching(i, j, out string name))
+		{
+			var world = new Vector2(i, j).ToWorldCoordinates();
+			var p = Main.player[Player.FindClosest(world, 16, 16)];
+
+			if (p.DistanceSQ(world) < maxDistance * maxDistance)
+				p.GetModPlayer<RecordPlayer>().Validate(name);
+		}
 	}
 
 	public static bool ManualAddRecord(object[] args)
@@ -142,24 +161,4 @@ internal class RecordPlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag) => tag[nameof(_validated)] = _validated;
 	public override void LoadData(TagCompound tag) => _validated = tag.GetList<string>(nameof(_validated));
-}
-
-internal class RecordGlobalTile : GlobalTile
-{
-	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
-	{
-		const int maxDistance = 800;
-
-		if (effectOnly || fail)
-			return;
-
-		if (RecordHandler.Matching(i, j, out string name))
-		{
-			var world = new Vector2(i, j).ToWorldCoordinates();
-			var p = Main.player[Player.FindClosest(world, 16, 16)];
-
-			if (p.DistanceSQ(world) < maxDistance * maxDistance)
-				p.GetModPlayer<RecordPlayer>().Validate(name);
-		}
-	}
 }

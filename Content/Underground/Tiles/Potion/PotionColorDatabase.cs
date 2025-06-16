@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Forest.Misc.Remedy;
+using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
