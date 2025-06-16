@@ -1,4 +1,5 @@
 using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 
@@ -14,7 +15,7 @@ public class SavannaGrass : GrassTile
 		base.SetStaticDefaults();
 
 		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassMowed>();
-		RegisterItemDrop(Mod.Find<ModItem>("SavannaDirtItem").Type);
+		RegisterItemDrop(AutoContent.ItemType<SavannaDirt>());
 		AddMapEntry(MapColor);
 		this.Merge(ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassCrimson>());
 	}
@@ -53,7 +54,7 @@ public class SavannaGrass : GrassTile
 			}
 		}
 
-		if (Main.rand.NextBool(45) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+		if (Main.rand.NextBool(5) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
 			Placer.GrowVine(i, j + 1, ModContent.TileType<SavannaVine>());
 
 		bool GrassAny()
@@ -74,7 +75,7 @@ public class SavannaGrass : GrassTile
 		}
 	}
 
-	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != Mod.Find<ModItem>("SavannaDirtItem").Type;
+	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.ItemType<SavannaDirt>();
 
 	public override void Convert(int i, int j, int conversionType)
 	{
@@ -103,6 +104,14 @@ public class SavannaGrassCorrupt : SavannaGrass
 		SpiritSets.Mowable[Type] = -1;
 		TileID.Sets.Corrupt[Type] = true;
 		TileID.Sets.AddCorruptionTile(Type, 20);
+	}
+
+	public override void RandomUpdate(int i, int j)
+	{
+		base.RandomUpdate(i, j);
+
+		if (SpreadHelper.Spread(i, j, TileID.CorruptGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
+			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
 	}
 
 	protected override void GrowTiles(int i, int j)
@@ -139,6 +148,14 @@ public class SavannaGrassCrimson : SavannaGrass
 		TileID.Sets.Crimson[Type] = true;
 	}
 
+	public override void RandomUpdate(int i, int j)
+	{
+		base.RandomUpdate(i, j);
+
+		if (SpreadHelper.Spread(i, j, TileID.CrimsonGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
+			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
+	}
+
 	protected override void GrowTiles(int i, int j)
 	{
 		var above = Framing.GetTileSafely(i, j - 1);
@@ -171,6 +188,14 @@ public class SavannaGrassHallow : SavannaGrass
 		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassHallowMowed>();
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 20;
+	}
+
+	public override void RandomUpdate(int i, int j)
+	{
+		base.RandomUpdate(i, j);
+
+		if (SpreadHelper.Spread(i, j, TileID.HallowedGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
+			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
 	}
 
 	protected override void GrowTiles(int i, int j)
