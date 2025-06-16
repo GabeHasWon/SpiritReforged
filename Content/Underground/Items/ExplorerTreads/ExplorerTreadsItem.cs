@@ -1,7 +1,9 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 
@@ -9,6 +11,12 @@ namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 [FromClassic("ExplorerTreads")]
 public class ExplorerTreadsItem : EquippableItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 10));
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = 28;

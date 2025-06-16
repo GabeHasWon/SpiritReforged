@@ -10,6 +10,8 @@ using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.BoulderClub;
 
@@ -17,7 +19,12 @@ public class Bowlder : ClubItem
 {
 	internal override float DamageScaling => 1.3f;
 
-	public override void SetStaticDefaults() => MoRHelper.AddElement(Item, MoRHelper.Earth, true);
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrate, ItemDropRule.Common(Type, 20));
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 20));
+		MoRHelper.AddElement(Item, MoRHelper.Earth, true);
+	}
 	public override void SafeSetDefaults()
 	{
 		Item.damage = 45;
