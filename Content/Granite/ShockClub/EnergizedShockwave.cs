@@ -61,7 +61,7 @@ public class EnergizedShockwave : ModProjectile
 
 		int heightMod = 2;
 		Vector2 basePos = Projectile.Center + Vector2.UnitY * (Projectile.height - heightMod) * 0.5f;
-		if(Main.rand.NextFloat() < EaseFunction.EaseQuadOut.Ease(Projectile.timeLeft / (float)timeLeftMax))
+		if (Main.rand.NextFloat() < EaseFunction.EaseQuadOut.Ease(Projectile.timeLeft / (float)timeLeftMax))
 		{
 			Vector2 spawnPos = basePos + Vector2.UnitX * Main.rand.NextFloat(-1, 1) * Projectile.width;
 			static void DelegateAction(Particle p) => p.Velocity *= 0.8f;

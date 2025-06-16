@@ -10,7 +10,7 @@ namespace SpiritReforged.Content.Forest.Misc.ChairClub;
 
 class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 {
-	public BreakawayChairProj() : base(new Vector2(24)) { }
+	public BreakawayChairProj() : base(new Vector2(30, 34)) { }
 
 	public override float WindupTimeRatio => 0.8f;
 
@@ -30,24 +30,16 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 
 	public void DoTrailCreation(TrailManager tM)
 	{
-		float trailDist = 26 * MeleeSizeModifier;
-		float trailWidth = 8 * MeleeSizeModifier;
+		float trailDist = 30 * MeleeSizeModifier;
+		float trailWidth = 20 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
-		float rotOffset = 0;
-
-		if (FullCharge)
-		{
-			trailDist *= 1.1f;
-			trailWidth *= 1.1f;
-			angleRangeMod = 1.2f;
-			rotOffset = -MathHelper.PiOver4 / 2;
-		}
+		float rotOffset = -MathHelper.PiOver4 / 2;
 
 		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth)
 		{
 			Color = Color.White,
 			SecondaryColor = Color.LightGray,
-			TrailLength = 0.33f,
+			TrailLength = 0.25f,
 			Intensity = 0.5f,
 		};
 
