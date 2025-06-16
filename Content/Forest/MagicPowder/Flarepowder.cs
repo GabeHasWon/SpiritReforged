@@ -104,7 +104,7 @@ public class Flarepowder : ModItem
 
 		for (int i = 0; i < 8; i++)
 		{
-			var vel = (velocity * Main.rand.NextFloat(0.4f, 1)).RotatedByRandom(0.4f);
+			var vel = (velocity * Main.rand.NextFloat(0.4f, 0.8f)).RotatedByRandom(0.4f);
 			Projectile.NewProjectile(source, position, vel, type, damage, knockback, player.whoAmI);
 		}
 
@@ -117,7 +117,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 	public const int TimeLeftMax = 60 * 3;
 
 	/// <summary> Must have 3 elements. </summary>
-	public virtual Color[] Colors => [new Color(216, 67, 40), Color.OrangeRed, Color.Goldenrod];
+	public virtual Color[] Colors => [Color.Yellow, Color.Red, Color.DarkRed];
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
 
 	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/Impact_Hard")
@@ -148,7 +148,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
-		randomTimeLeft = (0.25f, 0.4f);
+		randomTimeLeft = (0.15f, 0.3f);
 	}
 
 	public override void AI()
@@ -179,22 +179,26 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f) * 1.33f;
 
 				if(Main.rand.NextBool())
-					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
+					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
-				var fireCloud = new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, Color.Yellow.Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60));
-				fireCloud.SecondaryColor = Color.Red.Additive();
-				fireCloud.TertiaryColor = Color.DarkRed.Additive();
-				fireCloud.ColorLerpExponent = 1.2f;
-				fireCloud.Intensity = 0.2f;
-				fireCloud.UseLightColor = false;
+				Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
+				var fireCloud = new SmokeCloud(cloudPos, velocity, Color.Yellow.Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60), false)
+				{
+					SecondaryColor = Color.Red.Additive(),
+					TertiaryColor = Color.DarkRed.Additive(),
+					Intensity = 0.2f
+				};
+
 				ParticleHandler.SpawnParticle(fireCloud);
 
-				var smokeCloud = new SmokeCloud(fireCloud.Position, fireCloud.Velocity, Color.Gray, fireCloud.Scale * 1.25f, EaseFunction.EaseCubicOut, Main.rand.Next(60, 90));
-				smokeCloud.SecondaryColor = Color.DarkSlateGray;
-				smokeCloud.TertiaryColor = Color.Black;
-				smokeCloud.ColorLerpExponent = 2f;
-				smokeCloud.Intensity = 0.33f;
-				smokeCloud.Layer = ParticleLayer.BelowProjectile;
+				var smokeCloud = new SmokeCloud(fireCloud.Position, fireCloud.Velocity, Color.Gray, fireCloud.Scale * 1.25f, EaseFunction.EaseCubicOut, Main.rand.Next(60, 90)) 
+				{
+					SecondaryColor = Color.DarkSlateGray,
+					TertiaryColor = Color.Black,
+					ColorLerpExponent = 2,
+					Intensity = 0.33f,
+					Layer = ParticleLayer.BelowProjectile
+				};
 				ParticleHandler.SpawnParticle(smokeCloud);
 			}
 		}
@@ -226,6 +230,10 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		var circle2 = new TexturedPulseCircle(Projectile.Center, (Color.White * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
 		circle2.Angle = angle;
 		ParticleHandler.SpawnParticle(circle2);
+
+		if(this is not VexpowderBlueDust)
+			for(int i = 0; i < 5; i++)
+				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(2) - Vector2.UnitY, [Colors[0].Additive(60), Colors[1].Additive(60), Colors[2].Additive(60)], 0.75f, 0, Main.rand.NextFloat(0.02f, 0.08f), EaseFunction.EaseQuadOut, Main.rand.Next(10, 30)) { ColorLerpExponent = 2 });
 
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();

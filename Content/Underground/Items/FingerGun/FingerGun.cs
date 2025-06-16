@@ -57,15 +57,14 @@ public class FingerGun : ModItem
 		{
 			Vector2 handPos = player.HandPosition.Value;
 
-			int type = Main.rand.Next(1, 3);
-
-			var fire = new DissipatingImage(handPos + Vector2.UnitX * player.direction * 3, Color.LightCyan.Additive(), 0, Main.rand.NextFloat(0.01f, 0.025f), Main.rand.NextFloat(0.06f, 0.1f), "Fire" + type, new(0.1f, 0.1f), new(2, 1), Main.rand.Next(10, 40));
-			fire.Velocity = -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2;
-			fire.SecondaryColor = Color.Cyan.Additive();
-			fire.TertiaryColor = Color.DarkGreen.Additive();
-			fire.DissolveAmount = 1;
-			fire.Intensity = manaPercentage * manaPercentage;
-			fire.UseLightColor = false;
+			var fire = new FireParticle(handPos + Vector2.UnitX * player.direction * 3,
+							   -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2,
+							   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
+							   manaPercentage * manaPercentage,
+							   0,
+							   Main.rand.NextFloat(0.01f, 0.025f),
+							   EaseFunction.EaseCircularIn,
+							   Main.rand.Next(10, 40));
 			fire.Layer = ParticleLayer.AbovePlayer;
 
 			ParticleHandler.SpawnParticle(fire);

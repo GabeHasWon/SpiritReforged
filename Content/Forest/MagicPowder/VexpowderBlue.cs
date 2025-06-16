@@ -38,7 +38,7 @@ internal class VexpowderBlueDust : FlarepowderDust
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
-		randomTimeLeft = (0.2f, 0.4f);
+		//randomTimeLeft = (0.2f, 0.4f);
 	}
 
 	public override void OnClientSpawn(bool doDustSpawn)
@@ -47,19 +47,31 @@ internal class VexpowderBlueDust : FlarepowderDust
 
 		for (int i = 0; i < 4; i++)
 		{
-			float mag = Main.rand.NextFloat();
-			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.4f) * 1.33f;
+			float mag = Main.rand.NextFloat(0.33f, 1);
+			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f) * 1.33f;
 
-			if(Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.375f, Colors[0], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
+			if (Main.rand.NextBool())
+				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[0], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
-			var fireCloud = new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, Colors[0].Additive(), Main.rand.NextFloat(0.05f, 0.1f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60));
-			fireCloud.SecondaryColor = Colors[1].Additive();
-			fireCloud.TertiaryColor = Colors[2].Additive();
-			fireCloud.ColorLerpExponent = 0.8f;
-			fireCloud.Intensity = 0.3f;
-			fireCloud.UseLightColor = false;
+			Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
+			var fireCloud = new SmokeCloud(cloudPos, velocity, Colors[0].Additive(), Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60), false)
+			{
+				SecondaryColor = Colors[1].Additive(),
+				TertiaryColor = Colors[2].Additive(),
+				Intensity = 0.2f
+			};
+
 			ParticleHandler.SpawnParticle(fireCloud);
+
+			var smokeCloud = new SmokeCloud(fireCloud.Position, fireCloud.Velocity, Color.Lerp(Color.Gray, Colors[0], 0.66f), fireCloud.Scale * 1.25f, EaseFunction.EaseCubicOut, Main.rand.Next(60, 90))
+			{
+				SecondaryColor = Color.Lerp(Color.DarkSlateGray, Colors[1], 0.66f),
+				TertiaryColor = Color.Lerp(Color.Black, Colors[2], 0.66f),
+				ColorLerpExponent = 2,
+				Intensity = 0.33f,
+				Layer = ParticleLayer.BelowProjectile
+			};
+			ParticleHandler.SpawnParticle(smokeCloud);
 		}
 	}
 

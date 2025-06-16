@@ -35,6 +35,9 @@ float2 coordMods;
 float distortion;
 float texExponent;
 
+bool pixellate;
+float2 pixelDimensions;
+
 struct VertexShaderInput
 {
 	float2 TextureCoordinates : TEXCOORD0;
@@ -62,31 +65,24 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-
-float EaseOutIn(float input, float power)
-{
-    power = max(power, 0.001f);
-    if (input < 0.5f)
-        return pow(2 * input, power) / 2;
-    
-    return pow(2 * (input - 0.5f), 1 / power) + 0.5f;
-}
-
 float4 ColorLerp3(float amount)
 {
     if (amount < 0.5f)
-        return lerp(tertiaryColor, secondaryColor, EaseOutIn(amount * 2, 1));
+        return lerp(tertiaryColor, secondaryColor, amount * 2);
 
-    return lerp(secondaryColor, primaryColor, EaseOutIn((amount - 0.5f) * 2, 1));
+    return lerp(secondaryColor, primaryColor, (amount - 0.5f) * 2);
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
+    float2 baseCoords = input.TextureCoordinates;
+    if (pixellate)
+        baseCoords = round(baseCoords * pixelDimensions) / pixelDimensions;
     
-    float2 noiseCoords = float2(input.TextureCoordinates.x * coordMods.x, input.TextureCoordinates.y * coordMods.y);
+    float2 noiseCoords = float2(baseCoords.x * coordMods.x, baseCoords.y * coordMods.y);
     float noiseFactor = 2 * (tex2D(noiseSampler, noiseCoords) - 0.5f);
-    float2 texCoords = float2(input.TextureCoordinates.x + (distortion * noiseFactor), input.TextureCoordinates.y + (distortion * noiseFactor));
+    float2 texCoords = float2(baseCoords.x + (distortion * noiseFactor), baseCoords.y + (distortion * noiseFactor));
     
     float baseTexStrength = tex2D(textureSampler, texCoords).r;
     if (baseTexStrength <= 0.05f)
@@ -95,11 +91,11 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float strength = pow(baseTexStrength, texExponent);
     
     float dissolveNoiseStrength = (1 - pow(tex2D(secondaryNoiseSampler, noiseCoords).r, 0.5f)) * dissolve;
-    float dissolveYStrength = input.TextureCoordinates.y * dissolve;
+    float dissolveYStrength = baseCoords.y * dissolve;
     
-    strength = smoothstep(min(dissolveNoiseStrength + dissolveYStrength, 1), 1, pow(strength, 0.5f)) * pow(strength, 0.5f);
+    strength = smoothstep(min(dissolveNoiseStrength + dissolveYStrength + pow(dissolve, 2), 1), 1, pow(strength, 0.5f)) * pow(strength, 0.5f);
     
-    return color * strength * ColorLerp3(pow(strength, colorLerpExp)) * intensity;
+    return color * strength * ColorLerp3(pow(strength, colorLerpExp) * pow(1 - dissolve, 0.5f)) * intensity;
 }
 
 technique BasicColorDrawing

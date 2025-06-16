@@ -18,6 +18,7 @@ public class DissipatingImage : Particle
 	public float DissolveAmount { get; set; } = 0;
 
 	public bool UseLightColor { get; set; }
+	public bool Pixellate { get; set; }
 
 	private readonly string _texture;
 	private readonly float _maxDistortion;
@@ -69,6 +70,8 @@ public class DissipatingImage : Particle
 		else
 		{
 			Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
+			Vector2 size = Scale * asset.Size() * _scaleMod;
+
 			effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
 			effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
 			effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
@@ -84,6 +87,9 @@ public class DissipatingImage : Particle
 			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadOut.Ease(Progress));
 			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
 
+			effect.Parameters["pixellate"].SetValue(Pixellate);
+			effect.Parameters["pixelDimensions"].SetValue(size / 1.25f);
+
 			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 			effect.Parameters["texExponent"].SetValue(texExponent);
 
@@ -94,8 +100,8 @@ public class DissipatingImage : Particle
 			var square = new SquarePrimitive
 			{
 				Color = lightColor,
-				Height = Scale * asset.Height() * _scaleMod,
-				Length = Scale * asset.Width() * _scaleMod,
+				Height = size.Y,
+				Length = size.X,
 				Position = Position - Main.screenPosition,
 				Rotation = Rotation,
 			};

@@ -32,13 +32,15 @@ public class SmokeCircleParticle : Particle
 		float progress = TimeActive / (float)_maxTime;
 
 		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-		effect.Parameters["uColor"].SetValue(((TimeActive < 3) ? Color * 1.5f : Color).ToVector4());
+		effect.Parameters["PrimaryColor"].SetValue(((TimeActive < 3) ? Color * 1.5f : Color).ToVector4());
+		effect.Parameters["SecondaryColor"].SetValue(((TimeActive < 3) ? Color * 1.5f : Color).ToVector4());
+		effect.Parameters["TertiaryColor"].SetValue(((TimeActive < 3) ? Color * 1.5f : Color).ToVector4());
 		effect.Parameters["uTexture"].SetValue(tex);
-		effect.Parameters["perlinNoise"].SetValue(TextureAssets.Extra[193].Value);
+		effect.Parameters["noise"].SetValue(TextureAssets.Extra[193].Value);
 		effect.Parameters["Progress"].SetValue(progress);
-		effect.Parameters["xMod"].SetValue(1f);
-		effect.Parameters["yMod"].SetValue(1f);
+		effect.Parameters["coordMods"].SetValue(Vector2.One);
 		effect.Parameters["distortion"].SetValue(progress);
+		effect.Parameters["dissolve"].SetValue(0);
 		effect.Parameters["texExponent"].SetValue(.25f);
 
 		var square = new Common.PrimitiveRendering.PrimitiveShape.SquarePrimitive
