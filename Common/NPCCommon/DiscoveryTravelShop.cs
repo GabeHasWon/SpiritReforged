@@ -12,7 +12,7 @@ internal class DiscoveryTravelShop : GlobalNPC
 		if (!Main.rand.NextBool(2))
 			return;
 
-		int[] types = [ModContent.ItemType<Blunderbuss>(), ModContent.ItemType<SafekeeperRing>(), ModContent.ItemType<ButterflyStaff>(), ModContent.ItemType<PearlString>()];
+		int[] types = [ModContent.ItemType<Blunderbuss>(), ModContent.ItemType<SafekeeperRing>(), ModContent.ItemType<PearlString>()];
 
 		shop[nextSlot] = types[Main.rand.Next(types.Length)]; //Select one discovery item
 		nextSlot++;
