@@ -74,6 +74,15 @@ public class ExplosiveRumProj : ModProjectile
 
 			for (int i = 0; i < 10; i++)
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Glass, 0, 0, 0, Color.SeaGreen);
+
+			for (int i = 0; i < 20; i++)
+			{
+				var velocity = Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(5f);
+
+				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, Scale : 1.5f);
+				dust.velocity = velocity;
+				dust.noGravity = !Main.rand.NextBool(5);
+			}
 		}
 
 		if (Projectile.owner == Main.myPlayer)

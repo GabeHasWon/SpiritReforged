@@ -176,7 +176,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33).ToVector4());
 
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
-		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["SwirlNoise"].Value);
 
 		effect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.5f));
 		effect.Parameters["distortStretch"].SetValue(new Vector2(3, 1));
