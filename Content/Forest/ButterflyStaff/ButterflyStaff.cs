@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
@@ -11,13 +12,14 @@ public class ButterflyStaff : ModItem
 	{
 		MoRHelper.AddElement(Item, MoRHelper.Arcane);
 		MoRHelper.AddElement(Item, MoRHelper.Nature, true);
+		DiscoveryHelper.RegisterPickup(Type, SoundID.Item29 with { Pitch = .25f });
 	}
 	public override void SetDefaults()
 	{
 		Item.damage = 14;
 		Item.width = 40;
 		Item.height = 40;
-		Item.value = Item.sellPrice(0, 2, 25, 0);
+		Item.value = Item.buyPrice(0, 10, 0, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.mana = 10;
 		Item.knockBack = 1;

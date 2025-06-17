@@ -74,6 +74,6 @@ public class Tubeworm : ModNPC
 		if (!config.VentCritters)
 			return 0;
 
-		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? .77f : 0;
+		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? 2.5f : 0;
 	}
 }
