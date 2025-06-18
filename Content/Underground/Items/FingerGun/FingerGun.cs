@@ -62,10 +62,9 @@ public class FingerGun : ModItem
 							   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
 							   manaPercentage * manaPercentage,
 							   0,
-							   Main.rand.NextFloat(0.01f, 0.025f),
+							   Main.rand.NextFloat(0.01f, 0.035f),
 							   EaseFunction.EaseCircularIn,
 							   Main.rand.Next(10, 40));
-			fire.Layer = ParticleLayer.AbovePlayer;
 
 			ParticleHandler.SpawnParticle(fire);
 		}
@@ -73,6 +72,7 @@ public class FingerGun : ModItem
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
+		float manaPercentage = player.statMana / (float)player.statManaMax2;
 		velocity = velocity.RotatedByRandom(MathHelper.Pi / 32);
 		velocity *= Main.rand.NextFloat(0.9f, 1.2f) * 1.33f;
 		position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation);
@@ -81,6 +81,16 @@ public class FingerGun : ModItem
 		{
 			Vector2 handPos = player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
 			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
+
+			for (int i = 0; i < 5; i++)
+				ParticleHandler.SpawnParticle(new FireParticle(handPos,
+												   Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2), 
+												   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
+												   manaPercentage * manaPercentage,
+												   0,
+												   Main.rand.NextFloat(0.01f, 0.035f),
+												   EaseFunction.EaseCircularIn,
+												   Main.rand.Next(10, 40)));
 		}
 	}
 }

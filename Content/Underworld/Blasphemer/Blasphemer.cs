@@ -83,42 +83,22 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		float trailWidth = 60 * MeleeSizeModifier;
 		float angleRangeMod = 1f;
 		float rotOffset = -PiOver4 / 4;
-		float trailLength = 0.75f;
 
 		if (FullCharge)
 		{
-			trailDist *= 1.2f;
-			trailWidth *= 1.2f;
+			trailWidth *= 1.1f;
 			angleRangeMod = 1.2f;
-			trailLength = 1;
 		}
 
 		SwingTrailParameters parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 0.95f, trailWidth * 0.9f)
 		{
 			Color = Color.DarkGray,
 			SecondaryColor = Color.Black,
-			TrailLength = 0.45f,
+			TrailLength = FullCharge ? 0.45f : 0.35f,
 			Intensity = 1.5f,
-			UseLightColor = true
+			UseLightColor = true,
+			DissolveThreshold = 0.95f
 		};
-
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
-
-		SwingTrailParameters flameTrailParameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist, trailWidth)
-		{
-			Color = Color.Yellow.Additive(200),
-			SecondaryColor = Color.Red.Additive(150),
-			TrailLength = trailLength,
-			Intensity = 1.75f,
-			UseLightColor = false,
-			DissolveThreshold = 0.99f
-		};
-
-		tM.CreateCustomTrail(new SwingTrail(Projectile, flameTrailParameters, GetSwingProgressStatic, s => SwingTrail.FireSwingShaderParams(s, new Vector2(4, 0.4f) / 1.5f), TrailLayer.UnderProjectile));
-
-		parameters.Distance /= 2;
-		parameters.Width *= 0.75f;
-		parameters.TrailLength *= 0.33f;
 
 		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
@@ -188,15 +168,15 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 		if(CheckAIState(AIStates.SWINGING))
 		{
-			if (!Main.rand.NextBool(3))
-				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
-												   -Vector2.UnitY / 3,
-												   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
-												   1.25f,
-												   0,
-												   Main.rand.NextFloat(0.06f, 0.15f),
-												   EaseQuadIn,
-												   30) { ColorLerpExponent = 2 });
+			for(int i = 0; i < (FullCharge ? 3 : 2); i++)
+				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center + Main.rand.NextVector2Circular(10, 10),
+													-Vector2.UnitY + Main.rand.NextVector2Unit() + Owner.velocity / 2,
+													[new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)],
+													1.25f,
+													Main.rand.NextFloatDirection(),
+													Main.rand.NextFloat(0.08f, 0.13f) * TotalScale * (FullCharge ? 1.25f : 1),
+													EaseQuadIn,
+													(int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f))) { ColorLerpExponent = 2 });
 		}
 	}
 

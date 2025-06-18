@@ -80,13 +80,13 @@ public class DissipatingImage : Particle
 
 			effect.Parameters["Progress"].SetValue(Progress);
 			effect.Parameters["uTexture"].SetValue(asset.Value);
-			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
 			effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
 			effect.Parameters["coordMods"].SetValue(_noiseStretch);
-			effect.Parameters["scroll"].SetValue(_scrollOffset + new Vector2(Progress));
+			effect.Parameters["scroll"].SetValue(_scrollOffset);
 			effect.Parameters["intensity"].SetValue(Intensity);
 
-			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadOut.Ease(Progress));
+			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseCubicOut.Ease(Progress));
 			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
 
 			effect.Parameters["pixellate"].SetValue(Pixellate);

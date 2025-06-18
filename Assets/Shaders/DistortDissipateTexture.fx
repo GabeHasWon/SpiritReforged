@@ -98,7 +98,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     strength = smoothstep(min((dissolveNoiseStrength + dissolvePosBase + pow(dissolve, 4)) / 2, 1), 1, pow(strength, 0.33f)) * pow(strength, 0.66f);
     
-    return color * strength * ColorLerp3(pow(strength * (1 - dissolve), colorLerpExp)) * intensity;
+    return color * strength * ColorLerp3(pow(strength * pow(1 - dissolve, 0.5f), colorLerpExp)) * intensity;
 }
 
 technique BasicColorDrawing

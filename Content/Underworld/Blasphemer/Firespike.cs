@@ -41,18 +41,18 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 		if (Lingering)
 		{
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(7))
 			{
 				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-20, 20), 0);
-				for(int i = 0; i < 3; i++)
-					ParticleHandler.SpawnParticle(new FireParticle(position,
-													   -Vector2.UnitY / 3,
-													   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
-													   0.5f,
-													   0,
-													   0.1f,
+				for(int i = 0; i < Main.rand.Next(1, 4); i++)
+					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 6,
+													   -Vector2.UnitY * Main.rand.NextFloat(0.25f),
+													   [new Color(255, 200, 0, 120), new Color(255, 115, 0, 120), new Color(200, 3, 33, 120)],
+													   0.75f,
+													   Main.rand.NextFloat(-0.4f, 0.4f),
+													   Main.rand.NextFloat(0.05f, 0.125f),
 													   EaseQuadIn,
-													   50) { ColorLerpExponent = 3 });
+													   Main.rand.Next(10, 60)) { ColorLerpExponent = 2.5f });
 			}
 
 			if (Main.rand.NextBool(30))
@@ -136,7 +136,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 			{
 				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
 												   Main.rand.NextVector2Unit() * Main.rand.NextFloat(5),
-												   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150)],
+												   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150) * 0.75f],
 												   1.25f,
 												   Main.rand.NextFloatDirection(),
 												   Main.rand.NextFloat(0.06f, 0.15f),
@@ -215,15 +215,15 @@ class Firespike : ModProjectile, IDrawOverTiles
 	{
 		float timeLeftProgress = (Projectile.timeLeft - LingerTime) / (float)GeyserTime;
 
-		float scaleX = 1f - EaseCircularIn.Ease(1 - timeLeftProgress);
-		float scaleY = 1f - timeLeftProgress / 2;
+		float scaleX = 1f;
+		float scaleY = EaseOutBack().Ease(EaseSine.Ease(timeLeftProgress));
 		float intensity = EaseQuadOut.Ease(EaseCircularOut.Ease(timeLeftProgress));
-		var size = new Vector2(360 * scaleY, 80 * scaleX) * Projectile.scale;
+		var size = new Vector2(300 * scaleY, 80 * scaleX) * Projectile.scale;
 
 		const int patchLingerTime = 50;
 		float fade = (Projectile.timeLeft - (LingerTime + GeyserTime - patchLingerTime)) / (float)patchLingerTime;
 
-		DrawFire(Projectile.Center, new Vector2(80 * Math.Min(fade + 0.5f, 1f), 60) * Projectile.scale, fade); //Lingering fire patch
+		//DrawFire(Projectile.Center, new Vector2(80 * Math.Min(fade + 0.5f, 1f), 60) * Projectile.scale, fade); //Lingering fire patch
 		DrawFire(Projectile.Center, size, intensity);
 
 		var glow = AssetLoader.LoadedTextures["Extra_49"].Value;
@@ -253,11 +253,11 @@ class Firespike : ModProjectile, IDrawOverTiles
 		effect.Parameters["distortScroll"].SetValue(new Vector2(scrollSpeed * globalTimer) / 2);
 
 		effect.Parameters["intensity"].SetValue(2.5f * intensity);
-		effect.Parameters["fadePower"].SetValue(1);
-		effect.Parameters["tapering"].SetValue(0.33f);
+		effect.Parameters["fadePower"].SetValue(0.33f);
+		effect.Parameters["tapering"].SetValue(0.5f);
 
 		var position = center - Main.screenPosition - Vector2.UnitY * size.X / 2;
-		effect.Parameters["pixelDimensions"].SetValue(size / 2);
+		effect.Parameters["pixelDimensions"].SetValue(size / 2.5f);
 		effect.Parameters["numColors"].SetValue(10);
 
 		var square = new SquarePrimitive
