@@ -1,3 +1,4 @@
+using SpiritReforged.Common.MathHelpers;
 using System.IO;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -101,7 +102,7 @@ public abstract partial class BaseClubProj : ModProjectile
 	{
 		float swingProgress = GetSwingProgress;
 
-		bool validTile = Collision.SolidTiles(Projectile.position, Projectile.width, Projectile.height, true);
+		bool validTile = CollisionChecks.Tiles(Projectile.Hitbox, CollisionChecks.AnySolid);
 		BaseScale = 1;
 
 		_swingTimer++;

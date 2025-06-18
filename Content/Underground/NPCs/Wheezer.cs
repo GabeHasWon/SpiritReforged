@@ -101,7 +101,7 @@ public class Wheezer : ModNPC
 
 		NPC.TargetClosest((State)Animation is State.Walk or State.Idle);
 		var target = Main.player[NPC.target];
-		bool canHit = target.DistanceSQ(NPC.Center) < idleDistance * idleDistance && CollisionCheckHelper.CanReachFromGround(NPC, target, 50);
+		bool canHit = target.DistanceSQ(NPC.Center) < idleDistance * idleDistance && CollisionChecks.CanReachFromGround(NPC, target, 50);
 
 		if (!TrySleeping(canHit))
 			WalkingBehaviour(canHit);
