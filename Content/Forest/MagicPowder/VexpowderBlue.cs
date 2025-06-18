@@ -7,6 +7,12 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class VexpowderBlue : Flarepowder
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<VexpowderRed>();
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -14,9 +20,14 @@ public class VexpowderBlue : Flarepowder
 		Item.damage = 10;
 		Item.crit = 2;
 		Item.shootSpeed = 6.2f;
+		Item.value = Item.sellPrice(copper: 7);
 	}
 
-	public override void AddRecipes() => CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.VileMushroom).Register();
+	public override void AddRecipes()
+	{
+		CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.VileMushroom).Register();
+		CreateRecipe(25).AddIngredient(ModContent.ItemType<Flarepowder>(), 25).AddIngredient(ItemID.VilePowder, 5).Register();
+	}
 }
 
 internal class VexpowderBlueDust : FlarepowderDust

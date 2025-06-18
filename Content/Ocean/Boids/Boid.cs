@@ -1,5 +1,6 @@
 namespace SpiritReforged.Content.Ocean.Boids;
 
+/// <summary> The blueprint for a group of <see cref="BoidObject"/>s. Does not represent individual groups as they exist in the world. </summary>
 internal class Boid(float maxFlockSize = 60, float weight = 1, params int[] types)
 {
 	protected readonly List<BoidObject> Objects = [];

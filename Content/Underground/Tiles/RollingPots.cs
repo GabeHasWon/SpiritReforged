@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
@@ -9,7 +10,7 @@ using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class RollingPot : PotTile, ILootTile
+public class RollingPots : PotTile, ILootTile
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
@@ -42,6 +43,8 @@ public class RollingPot : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
+	public override void AddMapData() => AddMapEntry(new Color(180, 90, 95), Language.GetText("Mods.SpiritReforged.Items.RollingPotItem.DisplayName"));
+
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		if (Autoloader.IsRubble(Type) || WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
@@ -58,10 +61,12 @@ public class RollingPot : PotTile, ILootTile
 
 internal class PotBoulder : ModProjectile
 {
-	public ref float Style => ref Projectile.ai[0];
+	public ref float Style => ref Projectile.ai[1];
 
 	public override LocalizedText DisplayName => Language.GetText(Pots.NameKey);
-	public override string Texture => ModContent.GetInstance<RollingPot>().Texture;
+	public override string Texture => ModContent.GetInstance<RollingPots>().Texture;
+
+	private bool _landed;
 
 	public override void SetDefaults() => Projectile.CloneDefaults(ProjectileID.Boulder);
 	public override void OnKill(int timeLeft)
@@ -89,7 +94,7 @@ internal class PotBoulder : ModProjectile
 			});
 
 			var table = new LootTable();
-			ModContent.GetInstance<RollingPot>().AddLoot(0, table);
+			ModContent.GetInstance<RollingPots>().AddLoot(0, table);
 			table.Resolve(Projectile.getRect(), Main.player[Player.FindClosest(Projectile.position, Projectile.width, Projectile.height)]);
 
 			if (Main.rand.NextBool(50))
@@ -99,24 +104,27 @@ internal class PotBoulder : ModProjectile
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
-		int direction = Math.Sign(Projectile.velocity.X);
-		if (Collision.SolidCollision(Projectile.position + new Vector2(direction, -2), Projectile.width, Projectile.height))
+		if (Projectile.velocity.Y == 0 && Projectile.velocity.X == 0)
 		{
-			return true;
-		}
-		else
-		{
-			if (oldVelocity.Y > 2)
-				SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.5f }, Projectile.Center);
+			bool value = _landed;
+			if (!_landed)
+			{
+				_landed = true;
+				Projectile.Bounce(oldVelocity, 0.5f);
+			}
 
-			Projectile.velocity.Y = oldVelocity.Y * -0.2f;
-			return false;
+			return value;
 		}
+
+		if (oldVelocity.Y > 2)
+			SoundEngine.PlaySound(SoundID.Dig with { Pitch = 0.2f }, Projectile.Center);
+
+		return false;
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		FallingPot.Unify4x4Sheet(Projectile.Center, Projectile.GetAlpha(lightColor), ModContent.TileType<RollingPot>(), new Point(4, 2), (int)Style, Projectile.rotation, Projectile.scale);
+		FallingPot.Unify4x4Sheet(Projectile.Center, Projectile.GetAlpha(lightColor), ModContent.TileType<RollingPots>(), new Point(4, 2), (int)Style, Projectile.rotation, Projectile.scale);
 		return false;
 	}
 }

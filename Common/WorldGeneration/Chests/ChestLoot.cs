@@ -38,7 +38,6 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo(1, 0.125f, ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(3, 0.35f, ModContent.ItemType<DoubleJumpPotion>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(25, 50, 0.3f, ModContent.ItemType<Flarepowder>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
-        AddToVanillaChest(new ChestInfo(1, 0.12f, ModContent.ItemType<BoStaff>()), (int)VanillaChestID.Wood, 1);
 
         AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<GildedScarab>()), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
 

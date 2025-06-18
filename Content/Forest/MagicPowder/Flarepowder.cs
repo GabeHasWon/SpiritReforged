@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -66,6 +67,8 @@ public class Flarepowder : ModItem
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
 		}
+
+		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
 	}
 
 	public override void SetDefaults()

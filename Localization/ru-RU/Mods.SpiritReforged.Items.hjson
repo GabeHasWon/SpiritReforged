@@ -1889,6 +1889,11 @@ TopazBonsaiItem: {
 	// Tooltip: ""
 }
 
+AmberBonsaiItem: {
+	// DisplayName: Amber Bonsai
+	// Tooltip: ""
+}
+
 JinxBow: {
 	// DisplayName: Jinxbow
 	/* Tooltip:
@@ -1942,7 +1947,7 @@ AncientMarksmanPlate: {
 	// Tooltip: ""
 }
 
-RollingPotItem: {
+RollingPotsItem: {
 	// DisplayName: Rolling Pot
 	// Tooltip: ""
 }
@@ -1966,4 +1971,9 @@ SharpshooterGlove: {
 BonsaiPot: {
 	// DisplayName: Bonsai Pot
 	// Tooltip: Used to craft decorative bonsai
+}
+
+WickerBasketsItem: {
+	// DisplayName: Wicker Basket
+	// Tooltip: ""
 }

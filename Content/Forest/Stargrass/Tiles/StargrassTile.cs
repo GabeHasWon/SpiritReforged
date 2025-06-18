@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -24,6 +25,9 @@ public class StargrassTile : GrassTile
 
 		Main.tileLighted[Type] = true;
 		TileID.Sets.Conversion.Grass[Type] = true;
+
+		int mowType = ModContent.TileType<StargrassMowed>();
+		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
 
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
@@ -80,16 +84,11 @@ public class StargrassTile : GrassTile
 		return true;
 	}
 
-	public override void RandomUpdate(int i, int j)
-	{
-		base.RandomUpdate(i, j);
-
-		if (Main.rand.NextBool(60) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
-			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
-	}
-
 	public override void GrowPlants(int i, int j)
 	{
+		if (Main.rand.NextBool(5) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
+
 		if (!Main.rand.NextBool(4) || Framing.GetTileSafely(i, j - 1).HasTile)
 			return;
 

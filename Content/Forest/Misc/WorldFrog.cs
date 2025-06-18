@@ -65,7 +65,7 @@ public class WorldFrog : ModNPC
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
-		UpdaterSystem.RunFirstTask(out string report);
+		UpdaterSystem.RunNextTask(out string report);
 		Main.npcChatText = FrogifyText(Language.GetTextValue(LocPath + "Reports." + report + $"_{Main.rand.Next(2)}"));
 
 		_updated = true;
@@ -92,7 +92,7 @@ public class WorldFrog : ModNPC
 		for (int i = 0; i < Main.rand.Next(1, 3); i++)
 			sounds += Language.GetTextValue(LocPath + "Sounds." + Main.rand.Next(2)) + ", ";
 
-		sounds = sounds.Remove(sounds.Length - 2, 2);
+		sounds = sounds[..^2];
 		sounds += " ({0})";
 
 		return sounds.FormatWith(dialogue);
@@ -232,11 +232,11 @@ internal class UpdaterSystem : ModSystem
 
 	/// <summary> Runs the next update task and adjusts <see cref="LastVersion"/> accordingly.<br/>
 	/// <see cref="AnyTask"/> must return true for this to be called safely. </summary>
-	public static void RunFirstTask(out string report)
+	public static void RunNextTask(out string report)
 	{
 		RunningTask = true;
 
-		var task = Tasks.OrderBy(x => x.Key).First();
+		var task = Tasks.OrderBy(x => x.Key).Last();
 		task.Value.Invoke(out string reportKey);
 
 		report = reportKey;
@@ -280,5 +280,13 @@ internal class UpdaterSystem : ModSystem
 
 			return Main.tile[x, y].TileType == type;
 		}
+	}
+
+	[Ver("0.1.2")]
+	private static void PatchUp(out string report)
+	{
+		WorldMethods.Generate(PotsMicropass.CreateBoulder, (int)(PotsMicropass.WorldMultiplier * 7), out _);
+		WorldMethods.Generate(PotsMicropass.CreatePicnic, (int)(PotsMicropass.WorldMultiplier * 2), out _, WickerBaskets.PicnicArea);
+		report = "CavesAndClubs";
 	}
 }

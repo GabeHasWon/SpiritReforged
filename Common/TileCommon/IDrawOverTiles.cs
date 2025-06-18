@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.Visuals.RenderTargets;
+
+namespace SpiritReforged.Common.TileCommon;
 
 /// <summary> Can be applied to projectiles. </summary>
 internal interface IDrawOverTiles
@@ -10,29 +12,24 @@ internal class DrawOverHandler : ModSystem
 {
 	public static event Action PostDrawTilesSolid;
 
+	public static bool Drawing => CacheValue ?? false;
+
 	internal static readonly HashSet<int> DrawTypes = [];
-	public static bool Drawing { get; private set; }
-	internal static RenderTarget2D TileTarget { get; private set; }
-	internal static RenderTarget2D OverlayTarget { get; private set; }
+	private static bool? CacheValue = null;
+	private static readonly HashSet<Projectile> DrawCache = [];
+
+	internal static ModTarget2D TileTarget { get; } = new(StartCache, DrawTileTarget);
+	internal static ModTarget2D OverlayTarget { get; } = new(StartCache, DrawOverlayTarget);
 
 	public override void Load()
 	{
-		Main.QueueMainThreadAction(() =>
-		{
-			var gd = Main.instance.GraphicsDevice;
-
-			TileTarget = new RenderTarget2D(gd, gd.Viewport.Width, gd.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-			OverlayTarget = new RenderTarget2D(gd, gd.Viewport.Width, gd.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-		});
-
-		On_Main.CheckMonoliths += DrawIntoTargets;
 		On_Main.DoDraw_Tiles_Solid += static (orig, self) =>
 		{
 			orig(self);
 			PostDrawTilesSolid?.Invoke();
 		};
 
-		PostDrawTilesSolid += DrawTargets;
+		PostDrawTilesSolid += DrawTargetContents;
 	}
 
 	public override void SetStaticDefaults()
@@ -44,61 +41,39 @@ internal class DrawOverHandler : ModSystem
 		}
 	}
 
-	private static void DrawIntoTargets(On_Main.orig_CheckMonoliths orig)
+	private static bool StartCache()
 	{
-		orig();
+		if (CacheValue is bool value)
+			return value;
 
-		if (Main.gameMenu || Main.dedServ)
-			return;
-
-		HashSet<Projectile> cached = [];
 		foreach (var p in Main.ActiveProjectiles)
 		{
 			if (DrawTypes.Contains(p.type))
-				cached.Add(p);
+				DrawCache.Add(p);
 		}
 
-		if (!(Drawing = cached.Count != 0))
-			return;
-
-		var spriteBatch = Main.spriteBatch;
-		var gd = Main.graphics.GraphicsDevice;
-
-		DrawTileTarget();
-		DrawOverlayTarget();
-
-		void DrawOverlayTarget()
-		{
-			gd.SetRenderTarget(OverlayTarget);
-			gd.Clear(Color.Transparent);
-
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
-
-			foreach (var p in cached)
-				(p.ModProjectile as IDrawOverTiles).DrawOverTiles(Main.spriteBatch);
-
-			spriteBatch.End();
-			gd.SetRenderTarget(null);
-		}
-
-		void DrawTileTarget()
-		{
-			gd.SetRenderTarget(TileTarget);
-			gd.Clear(Color.Transparent);
-
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
-
-			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-			//spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
-
-			spriteBatch.End();
-			gd.SetRenderTarget(null);
-		}
+		return (CacheValue = DrawCache.Count != 0) is true;
 	}
 
-	private static void DrawTargets()
+	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
-		if (!Drawing || OverlayTarget is null || TileTarget is null)
+		spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+		//spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+	}
+
+	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
+	{
+		foreach (var p in DrawCache)
+			(p.ModProjectile as IDrawOverTiles).DrawOverTiles(spriteBatch);
+	}
+
+	private static void DrawTargetContents()
+	{
+		bool drawing = Drawing;
+		DrawCache.Clear();
+		CacheValue = null;
+
+		if (!drawing || OverlayTarget is null || TileTarget is null)
 			return;
 
 		var s = AssetLoader.LoadedShaders["SimpleMultiply"];

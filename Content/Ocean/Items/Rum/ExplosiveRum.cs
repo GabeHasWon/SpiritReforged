@@ -1,9 +1,22 @@
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Ocean.Items.Rum;
 
 public class ExplosiveRum : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MolotovCocktail;
+
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.DD2Bartender,
+		  new NPCShop.Entry(ModContent.ItemType<ExplosiveRum>(), Condition.InBeach)));
+
+		MoRHelper.AddElement(Item, MoRHelper.Explosive);
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 24;
@@ -22,7 +35,7 @@ public class ExplosiveRum : ModItem
 		Item.damage = 13;
 		Item.knockBack = 1.5f;
 		Item.value = Item.sellPrice(0, 0, 0, 50);
-		Item.rare = ItemRarityID.Orange;
+		Item.rare = ItemRarityID.Blue;
 	}
 }
 

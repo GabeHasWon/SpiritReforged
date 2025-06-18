@@ -7,6 +7,7 @@ using Terraria.Utilities;
 using Terraria.GameContent.Bestiary;
 using System.Linq;
 using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Common.EmoteCommon;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -52,6 +53,8 @@ public class Hiker : WorldNPC
 		hiker._info = _info;
 		return newNPC;
 	}
+
+	public override void Load() => AutoEmote.LoadFaceEmote(this, () => NPC.AnyNPCs(ModContent.NPCType<Hiker>()));
 
 	public override void SetStaticDefaults()
 	{

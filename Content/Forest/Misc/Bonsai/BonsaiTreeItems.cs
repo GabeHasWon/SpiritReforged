@@ -57,3 +57,9 @@ public class AmethystBonsaiItem : SakuraBonsaiItem
 	public override int Style => 8;
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<BonsaiPot>()).AddIngredient(ItemID.GemTreeAmethystSeed).Register();
 }
+
+public class AmberBonsaiItem : SakuraBonsaiItem
+{
+	public override int Style => 9;
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<BonsaiPot>()).AddIngredient(ItemID.GemTreeAmberSeed).Register();
+}

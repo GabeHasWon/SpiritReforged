@@ -47,3 +47,8 @@ GameTips: {
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
 }
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
+}
