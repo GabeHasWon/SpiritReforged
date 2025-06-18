@@ -66,8 +66,10 @@ public class ConvertAdjacentSet : GlobalTile
 
 			if (data.AnchorTop != AnchorData.Empty && data.isValidTileAnchor(Framing.GetTileSafely(i, j - 1).TileType) || data.isValidAlternateAnchor(Framing.GetTileSafely(i, j - 1).TileType))
 				return true;
+
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 }

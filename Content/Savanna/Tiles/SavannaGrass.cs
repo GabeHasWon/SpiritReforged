@@ -1,7 +1,7 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
@@ -77,20 +77,11 @@ public class SavannaGrass : GrassTile
 	}
 
 	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.ItemType<SavannaDirt>();
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		int type = conversionType switch
-		{
-			BiomeConversionID.Corruption => ModContent.TileType<SavannaGrassCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<SavannaGrassCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<SavannaGrassHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaGrass>()),
-		};
-
-		if (type != -1)
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType, 
+		ModContent.TileType<SavannaGrassCorrupt>(), 
+		ModContent.TileType<SavannaGrassCrimson>(), 
+		ModContent.TileType<SavannaGrassHallow>(), 
+		ModContent.TileType<SavannaGrass>());
 }
 
 public class SavannaGrassCorrupt : SavannaGrass

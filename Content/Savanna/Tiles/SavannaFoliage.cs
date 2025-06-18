@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
@@ -44,22 +43,11 @@ public class SavannaFoliage : ModTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Corruption => ModContent.TileType<SavannaFoliageCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<SavannaFoliageCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<SavannaFoliageHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaFoliage>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		(BiomeConversionID.Corruption, ModContent.TileType<SavannaFoliageCorrupt>()),
+		(BiomeConversionID.Crimson, ModContent.TileType<SavannaFoliageCrimson>()),
+		(BiomeConversionID.Hallow, ModContent.TileType<SavannaFoliageHallow>()),
+		(ConversionHelper.AnyPurityID, ModContent.TileType<SavannaFoliage>()));
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{

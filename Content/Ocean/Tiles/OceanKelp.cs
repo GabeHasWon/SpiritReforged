@@ -1,8 +1,6 @@
 ﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
@@ -257,22 +255,11 @@ public class OceanKelp : ModTile
 		return sin;
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Hallow => ModContent.TileType<OceanKelpHallowed>(),
-			BiomeConversionID.Crimson => ModContent.TileType<OceanKelpCrimson>(),
-			BiomeConversionID.Corruption => ModContent.TileType<OceanKelpCorrupt>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<OceanKelp>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<OceanKelpCorrupt>(),
+		ModContent.TileType<OceanKelpCrimson>(),
+		ModContent.TileType<OceanKelpHallowed>(),
+		ModContent.TileType<OceanKelp>());
 }
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]

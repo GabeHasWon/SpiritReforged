@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
@@ -184,23 +183,12 @@ public class ElephantGrass : ModTile, ICutAttempt
 		}
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<ElephantGrassCorrupt>(),
+		ModContent.TileType<ElephantGrassCrimson>(),
+		ModContent.TileType<ElephantGrassHallow>(),
+		ModContent.TileType<ElephantGrass>());
 
-		int type = conversionType switch
-		{
-			BiomeConversionID.Corruption => ModContent.TileType<ElephantGrassCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<ElephantGrassHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<ElephantGrass>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
-	
 	public bool OnCutAttempt(int i, int j)
 	{
 		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];

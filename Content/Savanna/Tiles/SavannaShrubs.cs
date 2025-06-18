@@ -1,6 +1,5 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
@@ -40,22 +39,16 @@ public abstract class SavannaShrubsBase : ModTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (!ConvertAdjacentSet.Converting || Autoloader.IsRubble(Type))
-			return;
-
-		int type = conversionType switch
+		if (!Autoloader.IsRubble(Type))
 		{
-			BiomeConversionID.Corruption => ModContent.TileType<SavannaShrubsCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<SavannaShrubsCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<SavannaShrubsHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaShrubs>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
+			ConversionHelper.Simple(i, j, conversionType,
+				ModContent.TileType<SavannaShrubsCorrupt>(),
+				ModContent.TileType<SavannaShrubsCrimson>(),
+				ModContent.TileType<SavannaShrubsHallow>(),
+				ModContent.TileType<SavannaShrubs>());
+		}
 	}
 }
 

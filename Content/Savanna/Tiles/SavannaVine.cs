@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
@@ -42,30 +41,18 @@ public class SavannaVine : ModTile, ISwayTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Corruption => ModContent.TileType<SavannaVineCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<SavannaVineCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<SavannaVineHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<SavannaVine>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<SavannaVineCorrupt>(),
+		ModContent.TileType<SavannaVineCrimson>(),
+		ModContent.TileType<SavannaVineHallow>(),
+		ModContent.TileType<SavannaVine>());
 }
 
 public class SavannaVineCorrupt : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
-		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
 
 		TileID.Sets.AddCorruptionTile(Type);
 		TileID.Sets.Corrupt[Type] = true;
@@ -79,7 +66,7 @@ public class SavannaVineCrimson : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
-		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
 
 		TileID.Sets.AddCrimsonTile(Type);
 		TileID.Sets.Crimson[Type] = true;
@@ -93,7 +80,7 @@ public class SavannaVineHallow : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
-		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<SavannaGrassHallow>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
 
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 1;

@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
@@ -10,6 +9,7 @@ namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 public class AcaciaRootsLarge : ModTile
 {
 	public virtual Point FrameOffset => Point.Zero;
+	protected virtual int[] Anchors => [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaDirt>()];
 
 	public override string Texture => base.Texture.Replace("Large", string.Empty);
 
@@ -38,8 +38,7 @@ public class AcaciaRootsLarge : ModTile
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.Origin = new Point16(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrass>(), 
-			ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
+		TileObjectData.newTile.AnchorValidTiles = Anchors;
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.RandomStyleRange = 4;
 		TileObjectData.addTile(Type);
@@ -61,22 +60,11 @@ public class AcaciaRootsLarge : ModTile
 		return false;
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsLargeHallow>(),
-			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsLargeCrimson>(),
-			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsLargeCorrupt>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsLarge>())
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<AcaciaRootsLargeCorrupt>(),
+		ModContent.TileType<AcaciaRootsLargeCrimson>(),
+		ModContent.TileType<AcaciaRootsLargeHallow>(),
+		ModContent.TileType<AcaciaRootsLarge>());
 }
 
 public class AcaciaRootsSmall : AcaciaRootsLarge
@@ -93,31 +81,22 @@ public class AcaciaRootsSmall : AcaciaRootsLarge
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.Origin = new Point16(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrass>()];
+		TileObjectData.newTile.AnchorValidTiles = Anchors;
 		TileObjectData.newTile.RandomStyleRange = 2;
 		TileObjectData.addTile(Type);
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Hallow => ModContent.TileType<AcaciaRootsSmallHallow>(),
-			BiomeConversionID.Crimson => ModContent.TileType<AcaciaRootsSmallCrimson>(),
-			BiomeConversionID.Corruption => ModContent.TileType<AcaciaRootsSmallCorrupt>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaRootsSmall>())
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<AcaciaRootsSmallCorrupt>(),
+		ModContent.TileType<AcaciaRootsSmallCrimson>(),
+		ModContent.TileType<AcaciaRootsSmallHallow>(),
+		ModContent.TileType<AcaciaRootsSmall>());
 }
 
 public class AcaciaRootsLargeCorrupt : AcaciaRootsLarge
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -127,6 +106,8 @@ public class AcaciaRootsLargeCorrupt : AcaciaRootsLarge
 
 public class AcaciaRootsLargeCrimson : AcaciaRootsLarge
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -136,6 +117,8 @@ public class AcaciaRootsLargeCrimson : AcaciaRootsLarge
 
 public class AcaciaRootsLargeHallow : AcaciaRootsLarge
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -145,6 +128,8 @@ public class AcaciaRootsLargeHallow : AcaciaRootsLarge
 
 public class AcaciaRootsSmallCorrupt : AcaciaRootsSmall
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -154,6 +139,8 @@ public class AcaciaRootsSmallCorrupt : AcaciaRootsSmall
 
 public class AcaciaRootsSmallCrimson : AcaciaRootsSmall
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -163,6 +150,8 @@ public class AcaciaRootsSmallCrimson : AcaciaRootsSmall
 
 public class AcaciaRootsSmallHallow : AcaciaRootsSmall
 {
+	protected override int[] Anchors => [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaDirt>()];
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

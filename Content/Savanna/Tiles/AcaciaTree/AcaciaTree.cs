@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
@@ -225,22 +224,11 @@ public class AcaciaTree : CustomTree
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (!ConvertAdjacentSet.Converting)
-			return;
-
-		int type = conversionType switch
-		{
-			BiomeConversionID.Corruption => ModContent.TileType<AcaciaTreeCorrupt>(),
-			BiomeConversionID.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
-			BiomeConversionID.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
-			_ => ConversionCalls.GetConversionType(conversionType, Type, ModContent.TileType<AcaciaTree>()),
-		};
-
-		if (type != -1 && ConvertAdjacentSet.CheckAnchors(i, j, type))
-			WorldGen.ConvertTile(i, j, type);
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<AcaciaTreeCorrupt>(),
+		ModContent.TileType<AcaciaTreeCrimson>(),
+		ModContent.TileType<AcaciaTreeHallow>(),
+		ModContent.TileType<AcaciaTree>());
 }
 
 public class AcaciaTreeCorrupt : AcaciaTree

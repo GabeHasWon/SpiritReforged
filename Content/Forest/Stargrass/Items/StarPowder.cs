@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -34,35 +35,66 @@ internal class StarPowderProj : ModProjectile
 {
 	public override string Texture => base.Texture[..^"Proj".Length];
 
+	private bool _justSpawned;
+
 	public override void SetDefaults() => Projectile.CloneDefaults(ProjectileID.PurificationPowder);
-
-	public override bool? CanCutTiles() => false;
-
-	public override void OnSpawn(IEntitySource source)
-	{
-		for (int i = 0; i < 20; i++)
-		{
-			var rectDims = new Vector2(50, 50);
-			Vector2 position = new Vector2(Projectile.Center.X - rectDims.X / 2, Projectile.Center.Y - rectDims.Y / 2) + Projectile.velocity * 2;
-			Vector2 velocity = (new Vector2(Projectile.velocity.X, Projectile.velocity.Y) * Main.rand.NextFloat(0.8f, 1.2f)).RotatedByRandom(1f);
-			var dust = Dust.NewDustDirect(position, (int)rectDims.X, (int)rectDims.Y, Main.rand.NextBool(2) ? DustID.BlueTorch : DustID.PurificationPowder,
-				velocity.X, velocity.Y, 0, default, Main.rand.NextFloat(0.7f, 1.1f));
-			dust.noGravity = true;
-			dust.fadeIn = 1.1f;
-			if (dust.type == DustID.PurificationPowder && Main.rand.NextBool(2))
-				dust.color = Color.Goldenrod;
-		}
-	}
-
 	public override void AI()
 	{
-		Point pos = Projectile.position.ToTileCoordinates();
-		Point end = Projectile.BottomRight.ToTileCoordinates();
-
-		for (int i = pos.X; i < end.X; ++i)
+		if (!_justSpawned)
 		{
-			for (int j = pos.Y; j < end.Y; ++j)
-				StargrassConversion.Convert(i, j);
+			for (int i = 0; i < 20; i++)
+			{
+				var rectDims = new Vector2(50, 50);
+				Vector2 position = new Vector2(Projectile.Center.X - rectDims.X / 2, Projectile.Center.Y - rectDims.Y / 2) + Projectile.velocity * 2;
+				Vector2 velocity = (new Vector2(Projectile.velocity.X, Projectile.velocity.Y) * Main.rand.NextFloat(0.8f, 1.2f)).RotatedByRandom(1f);
+				var dust = Dust.NewDustDirect(position, (int)rectDims.X, (int)rectDims.Y, Main.rand.NextBool(2) ? DustID.BlueTorch : DustID.PurificationPowder,
+					velocity.X, velocity.Y, 0, default, Main.rand.NextFloat(0.7f, 1.1f));
+				dust.noGravity = true;
+				dust.fadeIn = 1.1f;
+				if (dust.type == DustID.PurificationPowder && Main.rand.NextBool(2))
+					dust.color = Color.Goldenrod;
+			}
+
+			_justSpawned = true;
 		}
+
+		Point pt = Projectile.Center.ToTileCoordinates();
+		WorldGen.Convert(pt.X, pt.Y, StarConversion.ConversionType, 3);
+	}
+
+	public override bool? CanCutTiles() => false;
+	public override bool? CanDamage() => false;
+}
+
+public class StarConversion : ModBiomeConversion
+{
+	public static int ConversionType { get; private set; }
+
+	private static readonly Dictionary<int, int> Conversions = new()
+	{
+		{ TileID.Grass, ModContent.TileType<StargrassTile>() },
+		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() },
+		{ TileID.Plants, ModContent.TileType<StargrassFlowers>() },
+		{ TileID.Plants2, ModContent.TileType<StargrassFlowers>() }
+	};
+
+	public override void SetStaticDefaults()
+	{
+		ConversionType = Type;
+
+		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
+		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, (i, j, type, conversionType) =>
+		{
+			ushort newType = (ushort)ModContent.TileType<Starflower>();
+			return conversionType == ConversionType && ConversionHelper.DoMultiConversion(i, j, newType);
+		});
+	}
+
+	private static bool ConvertTiles(int i, int j, int type, int conversionType)
+	{
+		if (Conversions.TryGetValue(type, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
+
+		return false;
 	}
 }

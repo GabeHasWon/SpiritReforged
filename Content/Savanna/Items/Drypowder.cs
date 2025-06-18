@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Common.TileCommon.Tree;
-using SpiritReforged.Content.Forest.Stargrass.Tiles;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
+using Terraria.DataStructures;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Content.Savanna.Items;
 
@@ -65,75 +67,133 @@ internal class DrypowderSpray : ModProjectile
 public class SavannaConversion : ModBiomeConversion
 {
 	public static int ConversionType { get; private set; }
+
 	private static readonly Dictionary<int, int> Conversions = new()
 	{
 		{ TileID.Dirt, ModContent.TileType<SavannaDirt>() },
-		{ TileID.Grass, ModContent.TileType<SavannaGrass>() },
-		{ TileID.CorruptGrass, ModContent.TileType<SavannaGrassCorrupt>() },
-		{ TileID.CrimsonGrass, ModContent.TileType<SavannaGrassCrimson>() },
-		{ TileID.HallowedGrass, ModContent.TileType<SavannaGrassHallow>() },
-		{ ModContent.TileType<StargrassTile>(), ModContent.TileType<SavannaGrass>() },
 		{ TileID.Plants, ModContent.TileType<SavannaFoliage>() },
+		{ TileID.Plants2, ModContent.TileType<SavannaFoliage>() },
 		{ TileID.CorruptPlants, ModContent.TileType<SavannaFoliageCorrupt>() },
 		{ TileID.CrimsonPlants, ModContent.TileType<SavannaFoliageCrimson>() },
 		{ TileID.HallowedPlants, ModContent.TileType<SavannaFoliageHallow>() },
-		{ ModContent.TileType<StargrassFlowers>(), ModContent.TileType<SavannaFoliage>() }
+		{ TileID.HallowedPlants2, ModContent.TileType<SavannaFoliageHallow>() },
 	};
 
 	public override void SetStaticDefaults()
 	{
 		ConversionType = Type;
 
-		foreach (int key in Conversions.Keys)
-			TileLoader.RegisterConversion(key, ConversionType, ConvertTiles);
+		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
 
 		WallLoader.RegisterConversion(WallID.DirtUnsafe, ConversionType, ConvertWalls);
+		WallLoader.RegisterConversion(WallID.Dirt, ConversionType, ConvertWalls);
+
+		TileLoader.RegisterConversion(TileID.Grass, ConversionType, ConvertGrass);
+		TileLoader.RegisterConversion(TileID.CorruptGrass, ConversionType, ConvertGrass);
+		TileLoader.RegisterConversion(TileID.CrimsonGrass, ConversionType, ConvertGrass);
+		TileLoader.RegisterConversion(TileID.HallowedGrass, ConversionType, ConvertGrass);
 	}
 
-	public static bool ConvertTiles(int i, int j, int type, int conversionType)
+	private static bool ConvertTiles(int i, int j, int type, int conversionType)
 	{
-		if (Conversions.TryGetValue(type, out int newType) && !ScanUpTree(i, j, newType))
-			WorldGen.ConvertTile(i, j, newType);
-
-		return false;
-	}
-
-	public static bool ConvertWalls(int i, int j, int type, int conversionType)
-	{
-		WorldGen.ConvertWall(i, j, ModContent.WallType<SavannaDirtWall>());
-		return false;
-	}
-
-	/// <summary> Converts vanilla trees using special logic. </summary>
-	private static bool ScanUpTree(int x, int y, int type)
-	{
-		if (!TileID.Sets.IsATreeTrunk[Framing.GetTileSafely(x, --y).TileType])
-			return false;
-
-		int startY = y;
-		int startType = Main.tile[x, y].TileType;
-
-		while (WorldGen.InWorld(x, y) && Main.tile[x, y].TileType == startType)
+		if (Conversions.TryGetValue(type, out int newType))
 		{
-			Main.tile[x, y].ClearTile();
-			y--;
+			WorldGen.ConvertTile(i, j, newType);
+			return true;
 		}
 
-		WorldGen.RangeFrame(x, y, x, startY); //Frame everything to avoid floating branches
-		if (startY - y < 3)
-			return false;
+		return false;
+	}
 
-		WorldGen.ConvertTile(x, startY + 1, type);
+	private static bool ConvertWalls(int i, int j, int type, int conversionType)
+	{
+		int newType = type switch
+		{
+			WallID.DirtUnsafe => SavannaDirtWall.UnsafeType,
+			WallID.Dirt => ModContent.WallType<SavannaDirtWall>(),
+			_ => -1
+		};
 
-		if (type == ModContent.TileType<SavannaGrass>())
-			CustomTree.GrowTree<AcaciaTree>(x, startY);
-		else if (type == ModContent.TileType<SavannaGrassCorrupt>())
-			CustomTree.GrowTree<AcaciaTreeCorrupt>(x, startY);
-		else if (type == ModContent.TileType<SavannaGrassCrimson>())
-			CustomTree.GrowTree<AcaciaTreeCrimson>(x, startY);
-		else if (type == ModContent.TileType<SavannaGrassHallow>())
-			CustomTree.GrowTree<AcaciaTreeHallow>(x, startY);
+		if (newType != -1)
+		{
+			WorldGen.ConvertWall(i, j, newType);
+			return true;
+		}
 
-		return true;
+		return false;
+	}
+
+	private static bool ConvertGrass(int i, int j, int type, int conversionType)
+	{
+		int newType = type switch
+		{
+			TileID.CorruptGrass => ModContent.TileType<SavannaGrassCorrupt>(),
+			TileID.CrimsonGrass => ModContent.TileType<SavannaGrassCrimson>(),
+			TileID.HallowedGrass => ModContent.TileType<SavannaGrassHallow>(),
+			_ => ModContent.TileType<SavannaGrass>()
+		};
+
+		if (ScanUpTree(i, j - 1, out var top))
+		{
+			int height = j - top.Y;
+			var area = new Rectangle(top.X - 1, top.Y, 3, height);
+
+			ClearArea(area, Main.tile[i, j - 1].TileType);
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+				NetMessage.SendTileSquare(-1, area.X, area.Y, area.Width, area.Height);
+
+			WorldGen.ConvertTile(i, j, newType);
+
+			if (newType == ModContent.TileType<SavannaGrass>())
+				CustomTree.GrowTree<AcaciaTree>(i, j - 1);
+			else if (newType == ModContent.TileType<SavannaGrassCorrupt>())
+				CustomTree.GrowTree<AcaciaTreeCorrupt>(i, j - 1);
+			else if (newType == ModContent.TileType<SavannaGrassCrimson>())
+				CustomTree.GrowTree<AcaciaTreeCrimson>(i, j - 1);
+			else if (newType == ModContent.TileType<SavannaGrassHallow>())
+				CustomTree.GrowTree<AcaciaTreeHallow>(i, j - 1);
+		}
+		else
+		{
+			WorldGen.ConvertTile(i, j, newType);
+		}
+
+		return false;
+
+		static void ClearArea(Rectangle area, int type)
+		{
+			for (int x = area.X; x < area.X + area.Width; x++)
+			{
+				for (int y = area.Y; y < area.Y + area.Height; y++)
+				{
+					var tile = Framing.GetTileSafely(x, y);
+
+					if (tile.TileType == type)
+						Framing.GetTileSafely(x, y).ClearTile();
+				}
+			}
+		}
+	}
+
+	private static bool ScanUpTree(int x, int y, out Point16 topCoordinates)
+	{
+		Point16 start = new(x, y);
+		int height = 0;
+
+		while (IsTile(x, y - height))
+			height++;
+
+		topCoordinates = new(x, y - height);
+		return height > 2;
+
+		bool IsTile(int i, int j)
+		{
+			if (!WorldGen.InWorld(i, j))
+				return false;
+
+			int tileType = Main.tile[i, j].TileType;
+			return TileID.Sets.IsATreeTrunk[tileType] && Framing.GetTileSafely(start).TileType == tileType;
+		}
 	}
 }

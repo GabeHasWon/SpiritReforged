@@ -1,11 +1,14 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
@@ -32,12 +35,6 @@ public class StargrassTile : GrassTile
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
-	}
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (conversionType == BiomeConversionID.PurificationPowder)
-			WorldGen.ConvertTile(i, j, TileID.Grass);
 	}
 
 	public override void FloorVisuals(Player player)
@@ -99,4 +96,10 @@ public class StargrassTile : GrassTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.2f, 0.5f);
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		(BiomeConversionID.Corruption, TileID.CorruptGrass),
+		(BiomeConversionID.Crimson, TileID.CrimsonGrass),
+		(BiomeConversionID.Hallow, TileID.HallowedGrass),
+		(BiomeConversionID.PurificationPowder, TileID.Grass),
+		(SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>()));
 }
