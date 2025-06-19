@@ -1,6 +1,7 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Content.Underground.Items.EarthshakerVanity;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.Audio;
@@ -369,6 +370,7 @@ public class Wheezer : ModNPC
 		npcLoot.Add(ItemDropRule.Common(ItemID.DepthMeter, 80));
 		npcLoot.Add(ItemDropRule.Common(ItemID.Compass, 80));
 		npcLoot.Add(ItemDropRule.Common(ItemID.Rally, 20));
+		npcLoot.AddOneFromOptions(80, ModContent.ItemType<EarthshakerHeadgear>(), ModContent.ItemType<EarthshakerBreastplate>(), ModContent.ItemType<EarthshakerTreads>());
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)

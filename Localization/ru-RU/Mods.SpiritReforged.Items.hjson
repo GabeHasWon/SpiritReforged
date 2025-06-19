@@ -1977,3 +1977,28 @@ WickerBasketsItem: {
 	// DisplayName: Wicker Basket
 	// Tooltip: ""
 }
+
+EarthshakerBreastplate: {
+	// DisplayName: Earthshaker Breastplate
+	// Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	// DisplayName: Earthshaker Chestpiece
+	// Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	// DisplayName: Earthshaker Headgear
+	// Tooltip: ""
+}
+
+EarthshakerTreads: {
+	// DisplayName: Earthshaker Treads
+	// Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	// DisplayName: Earthshaker Warmask
+	// Tooltip: ""
+}
