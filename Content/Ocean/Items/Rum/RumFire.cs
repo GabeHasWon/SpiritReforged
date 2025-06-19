@@ -1,4 +1,9 @@
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Content.Particles;
+using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ocean.Items.Rum;
 
@@ -36,12 +41,20 @@ public class RumFire : ModProjectile
 			dust.velocity.Y = -1f;
 		}
 
-		if (Main.rand.NextBool(12))
+		if (Main.rand.NextBool(15))
 		{
-			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Smoke, 0f, 0f, 150, default, 0.5f);
+			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Smoke, 0f, 0f, 150, default, 0.35f);
 			dust.fadeIn = 1.25f;
 			dust.velocity = new Vector2(0f, Main.rand.Next(-2, -1));
 			dust.noLightEmittence = true;
+		}
+
+		if (Main.rand.NextBool(30))
+		{
+			var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
+			var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
+
+			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 5));
 		}
 
 		if (Main.myPlayer == Projectile.owner && Projectile.timeLeft == (int)(TimeLeftMax * 0.75f) && CanSplit)
@@ -96,7 +109,7 @@ public class RumFire : ModProjectile
 		var frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, sizeOffsetY: -2);
 
 		Vector2 position = Projectile.Bottom - Main.screenPosition + new Vector2(0, Projectile.gfxOffY + 2);
-		Main.EntitySpriteDraw(texture, position, frame, Color.White, Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
+		Main.EntitySpriteDraw(texture, position, frame, Color.White * 0.6f, Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
 		return false;
 	}
 
@@ -130,6 +143,15 @@ public class RumExplosion : ModProjectile
 		{
 			Lighting.AddLight(Projectile.Center, RumFire.GlowColor);
 			Projectile.UpdateFrame((byte)(TimeLeftMax / Main.projFrames[Type] + 1));
+
+			if (Main.rand.NextBool(2))
+			{
+				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
+				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
+
+				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 2));
+				ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, Color.DarkGray * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
+			}
 		}
 	}
 
