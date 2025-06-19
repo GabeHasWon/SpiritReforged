@@ -120,6 +120,28 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		TrailManager.TryTrailKill(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
+		//black smoke particles
+		for (int i = 0; i < 16; i++)
+		{
+			Vector2 smokePos = Projectile.Bottom + Vector2.UnitX * Main.rand.NextFloat(-10, 10);
+
+			float easedProgress = EaseQuadOut.Ease(i / 16f);
+			float scale = Lerp(0.2f, 0.1f, easedProgress);
+
+			float speed = Lerp(0.5f, 3f, easedProgress);
+			int lifeTime = (int)(Lerp(30, 50, easedProgress) + Main.rand.Next(-5, 6));
+
+			var smokeCloud = new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.Gray, scale, EaseQuadIn, lifeTime)
+			{
+				SecondaryColor = Color.DarkSlateGray,
+				TertiaryColor = Color.Black,
+				ColorLerpExponent = 2,
+				Intensity = 0.33f,
+				Layer = ParticleLayer.BelowProjectile
+			};
+			ParticleHandler.SpawnParticle(smokeCloud);
+		}
+
 		if (FullCharge)
 		{
 			if (Projectile.owner == Main.myPlayer)
@@ -140,16 +162,7 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		}
 
 		else if (Projectile.owner == Main.myPlayer)
-		{
-			Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * Projectile.direction, ModContent.ProjectileType<Firespike>(),
-				(int)(Projectile.damage * DamageScaling * 0.5f), Projectile.knockBack * KnockbackScaling * 0.1f, Projectile.owner, 0);
-
-			for (int i = 0; i < 20; i++)
-				Dust.NewDustDirect(Projectile.position - new Vector2(0, 10), Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f));
-
-			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 1 - 0.4f, Volume = 1, MaxInstances = 3 }, Projectile.Center);
-			SoundEngine.PlaySound(SoundID.Item34 with { MaxInstances = 3 }, Projectile.Center);
-		}
+			Firespike.EruptFX(Projectile.Bottom, 1);
 	}
 
 	public override void SafeAI()
@@ -174,9 +187,9 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 													[new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)],
 													1.25f,
 													Main.rand.NextFloatDirection(),
-													Main.rand.NextFloat(0.08f, 0.13f) * TotalScale * (FullCharge ? 1.25f : 1),
+													Main.rand.NextFloat(0.09f, 0.15f) * TotalScale * (FullCharge ? 1.25f : 1),
 													EaseQuadIn,
-													(int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f))) { ColorLerpExponent = 2 });
+													(int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f))) { ColorLerpExponent = 2.5f });
 		}
 	}
 

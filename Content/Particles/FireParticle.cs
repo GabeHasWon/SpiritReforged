@@ -8,7 +8,9 @@ public class FireParticle : DissipatingImage
 	private readonly EaseFunction _acceleration;
 	private readonly Vector2 _initialVel;
 
-	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float rotation, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], rotation, scale, Main.rand.NextFloat(0.1f, 0.2f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.15f, 0.4f)), new(1.25f, 0.75f), maxTime)
+	public float FinalScaleMod { get; set; } = 0.5f;
+
+	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float rotation, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], rotation, scale, Main.rand.NextFloat(0.1f, 0.275f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.25f, 0.4f)), new(1.25f, 1f), maxTime)
 	{
 		Velocity = velocity;
 		SecondaryColor = colors[1];
@@ -26,7 +28,7 @@ public class FireParticle : DissipatingImage
 	{
 		base.Update();
 		Velocity = (1 - _acceleration.Ease(Progress)) * Vector2.Lerp(_initialVel, -Vector2.UnitY, EaseFunction.EaseQuadOut.Ease(Progress));
-		_scaleMod = 1 - Progress / 2;
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, _acceleration.Ease(Progress));
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

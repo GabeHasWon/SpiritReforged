@@ -19,6 +19,7 @@ public class DissipatingImage : Particle
 
 	public bool UseLightColor { get; set; }
 	public bool Pixellate { get; set; }
+	public float PixelDivisor { get; set; } = 1.5f;
 
 	private readonly string _texture;
 	private readonly float _maxDistortion;
@@ -90,7 +91,7 @@ public class DissipatingImage : Particle
 			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
 
 			effect.Parameters["pixellate"].SetValue(Pixellate);
-			effect.Parameters["pixelDimensions"].SetValue(size / 1.5f);
+			effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);
 
 			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 			effect.Parameters["texExponent"].SetValue(texExponent);
