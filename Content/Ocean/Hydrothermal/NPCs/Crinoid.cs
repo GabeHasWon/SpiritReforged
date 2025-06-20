@@ -91,6 +91,6 @@ public class Crinoid : ModNPC
 		if (!config.VentCritters)
 			return 0;
 
-		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? .71f : 0;
+		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? 2f : 0;
 	}
 }

@@ -96,7 +96,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 
 			int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
 
-			while (CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1))) //move up until not inside a tile
+			while (CollisionChecks.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1))) //move up until not inside a tile
 			{
 				tilepos.Y--;
 
@@ -104,7 +104,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 					return;
 			}
 
-			while (!CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
+			while (!CollisionChecks.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
 			{
 				tilepos.Y++;
 

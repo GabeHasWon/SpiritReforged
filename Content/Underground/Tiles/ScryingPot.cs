@@ -50,7 +50,7 @@ public class ScryingPot : PotTile, ILootTile
 			var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
 
 			SoundEngine.PlaySound(SoundID.Shatter, pos);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/PotBreak") with { Volume = .16f, PitchRange = (-.4f, 0), }, pos);
+			SoundEngine.PlaySound(BiomePots.Break, pos);
 
 			return false;
 		}
@@ -99,10 +99,8 @@ public class ScryingPot : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
-	{
-		loot.AddOneFromOptions(1, ItemID.NightOwlPotion, ItemID.ShinePotion, ItemID.BiomeSightPotion, ItemID.TrapsightPotion, ItemID.HunterPotion, ItemID.SpelunkerPotion);
-	}
+	public void AddLoot(int objectStyle, ILoot loot) 
+		=> loot.AddOneFromOptions(1, ItemID.NightOwlPotion, ItemID.ShinePotion, ItemID.BiomeSightPotion, ItemID.TrapsightPotion, ItemID.HunterPotion, ItemID.SpelunkerPotion);
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{

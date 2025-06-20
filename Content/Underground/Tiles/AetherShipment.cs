@@ -9,7 +9,6 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
@@ -121,7 +120,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 		if (!fail)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/PotBreak") with { Volume = .12f, PitchRange = (.4f, .8f), }, pos);
+			SoundEngine.PlaySound(BiomePots.Break with { Volume = 0.12f, PitchRange = (0.4f, 0.8f), }, pos);
 		}
 		else
 		{

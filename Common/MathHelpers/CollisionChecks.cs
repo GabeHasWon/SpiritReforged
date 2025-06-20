@@ -1,7 +1,46 @@
 ﻿namespace SpiritReforged.Common.MathHelpers;
 
-public static class CollisionCheckHelper
+public static class CollisionChecks
 {
+	public delegate bool TilesDelegate(int i, int j);
+
+	/// <summary> Used by <see cref="Tiles(int, int, int, int, TilesDelegate)"/>. </summary>
+	public static bool AnySolid(int i, int j)
+	{
+		int type = Main.tile[i, j].TileType;
+		return Main.tileSolid[type] || Main.tileSolidTop[type];
+	}
+
+	/// <inheritdoc cref="Tiles(int, int, int, int, TilesDelegate)"/>
+	public static bool Tiles(Rectangle area, TilesDelegate action) => Tiles(area.X / 16, area.Y / 16, (area.X + area.Width) / 16, (area.Y + area.Height) / 16, action);
+
+	/// <summary> Performs a tile check controlled by the provided delegate. Similar to <see cref="Collision.SolidCollision"/>. </summary>
+	public static bool Tiles(int startX, int startY, int endX, int endY, TilesDelegate action)
+	{
+		if (startX < 0)
+			return true;
+
+		if (endX >= Main.maxTilesX)
+			return true;
+
+		if (startY < 0)
+			return true;
+
+		if (endY >= Main.maxTilesY)
+			return true;
+
+		for (int i = startX; i < endX + 1; i++)
+		{
+			for (int j = startY; j < endY + 1; j++)
+			{
+				if (Main.tile[i, j] is Tile t && t.HasTile && action.Invoke(i, j))
+					return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static bool CheckSolidTilesAndPlatforms(Rectangle range)
 	{
 		int startX = range.X;

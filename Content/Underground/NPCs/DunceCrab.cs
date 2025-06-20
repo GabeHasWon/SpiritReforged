@@ -135,7 +135,7 @@ public class DunceCrab : ModNPC
 		NPC.collideX = false;
 		NPC.collideY = false;
 
-		NPC.velocity = CollisionCheckHelper.NoSlopeCollision(NPC.position, NPC.velocity, NPC.width, NPC.height);
+		NPC.velocity = CollisionChecks.NoSlopeCollision(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
 		if (Collision.LavaCollision(NPC.position, NPC.width, NPC.height)) //Take lava damage
 		{

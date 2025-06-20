@@ -108,7 +108,7 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 				Vector2 spawnPos = GetHeadPosition(16);
 
 				bool spawnInTile = Collision.SolidTiles(spawnPos - new Vector2(16) * MeleeSizeModifier, (int)(32 * MeleeSizeModifier), (int)(32 * MeleeSizeModifier), true);
-				bool ownerLineCheck = CollisionCheckHelper.LineOfSightSolidTop(spawnPos + Vector2.UnitY * 16 * MeleeSizeModifier, owner.MountedCenter);
+				bool ownerLineCheck = CollisionChecks.LineOfSightSolidTop(spawnPos + Vector2.UnitY * 16 * MeleeSizeModifier, owner.MountedCenter);
 
 				bool wasInTile = false;
 				while ((spawnInTile || ownerLineCheck) && spawnPos.Y + 8 > owner.MountedCenter.Y)
