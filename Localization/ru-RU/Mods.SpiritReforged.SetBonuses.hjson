@@ -28,6 +28,6 @@ Wayfarer:
 	'''
 /* Granite:
 	'''
-	Double tap {0} while falling to stomp downward
-	Hitting the ground releases a shockwave that scales with height
+	Double tap {0} to stomp
+	Release a shockwave that scales with height upon collision
 	''' */
