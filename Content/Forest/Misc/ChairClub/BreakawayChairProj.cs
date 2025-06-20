@@ -5,6 +5,9 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.GameContent.UI;
+using Terraria.ID;
+using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.Forest.Misc.ChairClub;
 
@@ -84,8 +87,11 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
 
+		if (target.isLikeATownNPC)
+			EmoteHelper.SyncedEmote(target, 60, EmoteID.EmoteAnger);
+
 		Projectile.Kill();
-		Main.player[Projectile.owner].HeldItem.stack--; //"Break" a stack of the chair
+		Main.player[Projectile.owner].HeldItem.stack--; // "Break" a stack of the chair
 
 		SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 
