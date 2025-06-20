@@ -1,9 +1,7 @@
-using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
-using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ocean.Items.Rum;
 
@@ -17,7 +15,7 @@ public class RumFire : ModProjectile
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(20, 34);
+		Projectile.Size = new(16, 16);
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
 		Projectile.aiStyle = -1;
@@ -25,12 +23,18 @@ public class RumFire : ModProjectile
 		Projectile.timeLeft = TimeLeftMax;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
+		Projectile.Opacity = 0;
 	}
 
 	public override void AI()
 	{
-		if (Projectile.timeLeft == TimeLeftMax) //Just spawned
-			Surface();
+		if (!Projectile.Surface())
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		Projectile.Opacity = Math.Min(Projectile.Opacity + 0.1f, 1);
 
 		if (Main.rand.NextBool(5))
 		{
@@ -67,38 +71,6 @@ public class RumFire : ModProjectile
 		Lighting.AddLight(Projectile.Center, GlowColor);
 	}
 
-	private void Surface()
-	{
-		int surfaceDuration = 0;
-		while (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height, true))
-		{
-			Projectile.position.Y--; //Move up out of solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		surfaceDuration = 0;
-		while (!Collision.SolidCollision(Projectile.position + Vector2.UnitY, Projectile.width, Projectile.height, true))
-		{
-			Projectile.position.Y++; //Move down onto solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		bool TryKill()
-		{
-			if (++surfaceDuration > 40)
-			{
-				Projectile.Kill();
-				return true;
-			}
-
-			return false;
-		}
-	}
-
 	public override bool ShouldUpdatePosition() => false;
 	public override bool PreDraw(ref Color lightColor)
 	{
@@ -107,7 +79,7 @@ public class RumFire : ModProjectile
 		var frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, sizeOffsetY: -2);
 
 		Vector2 position = Projectile.Bottom - Main.screenPosition + new Vector2(0, Projectile.gfxOffY + 2);
-		Main.EntitySpriteDraw(texture, position, frame, Color.White * 0.6f, Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(Color.White), Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
 		return false;
 	}
 

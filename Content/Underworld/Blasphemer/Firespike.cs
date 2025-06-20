@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Dusts;
@@ -36,7 +37,13 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 	public override void AI()
 	{
-		Surface();
+		if (!Projectile.Surface())
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		Projectile.position.Y += 10;
 
 		if (Lingering)
 		{
@@ -84,40 +91,6 @@ class Firespike : ModProjectile, IDrawOverTiles
 			var position = Projectile.Center + new Vector2(Projectile.velocity.X * 40, 0);
 			Projectile.NewProjectile(Projectile.GetSource_FromAI(), position, Projectile.velocity, Type, Projectile.damage, Projectile.knockBack, Projectile.owner, --Projectile.ai[0]);
 		}
-	}
-
-	private void Surface()
-	{
-		int surfaceDuration = 0;
-		while (WorldGen.SolidTile(GetOrigin()))
-		{
-			Projectile.position.Y--; //Move out of solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		
-		while (!WorldGen.SolidTile(GetOrigin()) && !Main.tileSolidTop[Framing.GetTileSafely(GetOrigin()).TileType])
-		{
-			Projectile.position.Y++;
-
-			if (TryKill())
-				return;
-		}
-
-		bool TryKill()
-		{
-			if (++surfaceDuration > 40)
-			{
-				Projectile.Kill();
-				return true;
-			}
-
-			return false;
-		}
-
-		Point GetOrigin() => ((Projectile.Center - Vector2.UnitY * 2) / 16).ToPoint();
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

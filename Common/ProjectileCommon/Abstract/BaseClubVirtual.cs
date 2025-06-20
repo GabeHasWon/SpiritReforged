@@ -102,7 +102,7 @@ public abstract partial class BaseClubProj : ModProjectile
 	{
 		float swingProgress = GetSwingProgress;
 
-		bool validTile = CollisionChecks.Tiles(Projectile.Hitbox, CollisionChecks.AnySolid);
+		bool validTile = CollisionChecks.Tiles(Projectile.Hitbox, CollisionChecks.AnySurface);
 		BaseScale = 1;
 
 		_swingTimer++;

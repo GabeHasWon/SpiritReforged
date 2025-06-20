@@ -86,40 +86,11 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 220, 25, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f, particleRot));
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 280, 20, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f + Main.rand.NextFloat(-0.1f, 0.05f), particleRot + Main.rand.NextFloat(-0.1f, 0.1f)));
 
-			//Find a solid tile with an empty tile above it to spawn the projectile on
-
-			Vector2 spawnPos = particlePos;
-			Point tilepos = spawnPos.ToTileCoordinates();
-			tilepos.Y -= 1;
-			int tilesfrombase = 0;
-			const int maxtilesfrombase = 3;
-
-			int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
-
-			while (CollisionChecks.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1))) //move up until not inside a tile
-			{
-				tilepos.Y--;
-
-				if (++tilesfrombase >= maxtilesfrombase)
-					return;
-			}
-
-			while (!CollisionChecks.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
-			{
-				tilepos.Y++;
-
-				if (++tilesfrombase >= maxtilesfrombase)
-					return;
-			}
-
 			if (Main.myPlayer == Projectile.owner)
 			{
-				spawnPos = tilepos.ToWorldCoordinates();
 				var velocity = Vector2.UnitX * 7 * Owner.direction;
 
-				PreNewProjectile.New(Projectile.GetSource_FromAI("ClubSmash"), spawnPos, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling * 0.75f), (int)(Projectile.knockBack / 2), Projectile.owner,
-					preSpawnAction: delegate (Projectile projectile) { projectile.position.Y -= Projectile.height + 16; });
-
+				Projectile.NewProjectile(Projectile.GetSource_FromAI("ClubSmash"), Projectile.Center, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling * 0.75f), (int)(Projectile.knockBack / 2), Projectile.owner);
 				SoundEngine.PlaySound(MagicCast, Projectile.Center);
 			}
 		}
