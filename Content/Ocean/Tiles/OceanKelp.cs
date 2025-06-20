@@ -1,12 +1,13 @@
-﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class OceanKelp : ModTile, IConvertibleTile
+public class OceanKelp : ModTile
 {
 	private const int ClumpX = 92;
 
@@ -19,6 +20,7 @@ public class OceanKelp : ModTile, IConvertibleTile
 		Main.tileFrameImportant[Type] = true;
 
 		TileID.Sets.NotReallySolid[Type] = true;
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.WaterPlacement = LiquidPlacement.OnlyInFullLiquid;
@@ -253,27 +255,11 @@ public class OceanKelp : ModTile, IConvertibleTile
 		return sin;
 	}
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
-
-		var tile = Main.tile[i, j];
-		int oldType = tile.TileType;
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<OceanKelpHallowed>(),
-			ConversionType.Crimson => ModContent.TileType<OceanKelpCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<OceanKelpCorrupt>(),
-			_ => ModContent.TileType<OceanKelp>(),
-		});
-
-		if (oldType != tile.TileType)
-			TileCorruptor.Convert(new EntitySource_TileUpdate(i, j), type, i, j - 1);
-
-		return true;
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<OceanKelpCorrupt>(),
+		ModContent.TileType<OceanKelpCrimson>(),
+		ModContent.TileType<OceanKelpHallowed>(),
+		ModContent.TileType<OceanKelp>());
 }
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]

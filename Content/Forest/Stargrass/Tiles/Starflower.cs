@@ -1,6 +1,9 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
@@ -37,7 +40,7 @@ public class Starflower : ModTile, ISwayTile
 		TileObjectData.newTile.Origin = new Point16(0, 3);
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 18];
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>(), TileID.Grass];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.addTile(Type);
 
@@ -63,6 +66,12 @@ public class Starflower : ModTile, ISwayTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (.3f, .28f, .1f);
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (conversionType == BiomeConversionID.PurificationPowder || conversionType == SavannaConversion.ConversionType)
+			ConversionHelper.DoMultiConversion(i, j, TileID.Sunflower);
+	}
+
 	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))

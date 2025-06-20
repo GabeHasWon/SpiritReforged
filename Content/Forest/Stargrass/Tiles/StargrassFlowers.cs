@@ -1,4 +1,9 @@
+using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Forest.Stargrass.Items;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
@@ -33,6 +38,7 @@ public class StargrassFlowers : ModTile
 		Main.tileCut[Type] = true;
 		Main.tileLighted[Type] = true;
 
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
@@ -71,4 +77,11 @@ public class StargrassFlowers : ModTile
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
 	}
+
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		(BiomeConversionID.Corruption, TileID.CorruptPlants),
+		(BiomeConversionID.Crimson, TileID.CrimsonPlants),
+		(BiomeConversionID.Hallow, TileID.HallowedPlants),
+		(ConversionHelper.AnyPurityID, TileID.Plants),
+		(SavannaConversion.ConversionType, ModContent.TileType<SavannaFoliage>()));
 }

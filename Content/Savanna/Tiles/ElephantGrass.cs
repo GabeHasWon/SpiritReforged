@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -7,7 +8,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
+public class ElephantGrass : ModTile, ICutAttempt
 {
 	protected virtual Color SubColor => Color.Goldenrod;
 
@@ -23,6 +24,7 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		Main.tileNoFail[Type] = true;
 		Main.tileCut[Type] = true;
 
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -181,23 +183,11 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		}
 	}
 
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
-
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<ElephantGrassHallow>(),
-			ConversionType.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<ElephantGrassCorrupt>(),
-			_ => ModContent.TileType<ElephantGrass>(),
-		});
-
-		return true;
-	}
+	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
+		ModContent.TileType<ElephantGrassCorrupt>(),
+		ModContent.TileType<ElephantGrassCrimson>(),
+		ModContent.TileType<ElephantGrassHallow>(),
+		ModContent.TileType<ElephantGrass>());
 
 	public bool OnCutAttempt(int i, int j)
 	{

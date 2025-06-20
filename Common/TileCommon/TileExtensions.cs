@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Chests;
-using Terraria.DataStructures;
+using System.Linq;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
@@ -206,6 +206,36 @@ public static class TileExtensions
 		{
 			Main.tileMerge[tile.Type][id] = true;
 			Main.tileMerge[id][tile.Type] = true;
+		}
+	}
+
+	/// <summary> Allows <paramref name="types"/> to anchor to this ModTile. </summary>
+	public static void AllowAnchor(this ModTile tile, params int[] types)
+	{
+		foreach (int type in types)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, tile.Type];
+		}
+	}
+
+	/// <inheritdoc cref="AllowAnchor"/>
+	public static void AllowAnchor(int modTileType, params int[] types)
+	{
+		foreach (int type in types)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, modTileType];
+		}
+	}
+
+	/// <inheritdoc cref="AllowAnchor"/>
+	public static void AllowAnchorAlternate(this ModTile tile, params int[] types)
+	{
+		foreach (int type in types)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
+				data.AnchorAlternateTiles = [.. data.AnchorAlternateTiles, tile.Type];
 		}
 	}
 }

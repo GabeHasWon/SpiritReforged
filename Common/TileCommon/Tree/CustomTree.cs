@@ -138,6 +138,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		TileObjectData.newTile.AnchorValidTiles = [TileID.Grass];
 		TileObjectData.newTile.AnchorAlternateTiles = [Type];
 
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 		//TileID.Sets.IsATreeTrunk[Type] = true; //If true, allows torches to be placed on trunks regardless of tileNoAttach
 		TileID.Sets.IsShakeable[Type] = true;
 		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;

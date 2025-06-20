@@ -1,11 +1,12 @@
 ﻿using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public abstract class SavannaShrubsBase : ModTile, IConvertibleTile
+public abstract class SavannaShrubsBase : ModTile
 {
 	protected virtual int[] Anchors => [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaDirt>(), TileID.Sand];
 
@@ -17,6 +18,7 @@ public abstract class SavannaShrubsBase : ModTile, IConvertibleTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 
@@ -37,25 +39,20 @@ public abstract class SavannaShrubsBase : ModTile, IConvertibleTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public virtual bool Convert(IEntitySource source, ConversionType type, int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		Tile tile = Main.tile[i, j];
-		int oldId = tile.TileType;
-
-		tile.TileType = (ushort)(type switch
+		if (!Autoloader.IsRubble(Type))
 		{
-			ConversionType.Hallow => ModContent.TileType<SavannaShrubsHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaShrubsCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaShrubsCorrupt>(),
-			_ => ModContent.TileType<SavannaShrubs>(),
-		});
-
-		return oldId != tile.TileType;
+			ConversionHelper.Simple(i, j, conversionType,
+				ModContent.TileType<SavannaShrubsCorrupt>(),
+				ModContent.TileType<SavannaShrubsCrimson>(),
+				ModContent.TileType<SavannaShrubsHallow>(),
+				ModContent.TileType<SavannaShrubs>());
+		}
 	}
 }
 
-public class SavannaShrubs : SavannaShrubsBase, IConvertibleTile, IAutoloadRubble
+public class SavannaShrubs : SavannaShrubsBase, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<SavannaGrassSeeds>(), IAutoloadRubble.RubbleSize.Small);
 
@@ -87,25 +84,6 @@ public class SavannaShrubs : SavannaShrubsBase, IConvertibleTile, IAutoloadRubbl
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public override bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (Autoloader.IsRubble(Type))
-			return false;
-
-		Tile tile = Main.tile[i, j];
-		int oldId = tile.TileType;
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<SavannaShrubsHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaShrubsCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaShrubsCorrupt>(),
-			_ => ModContent.TileType<SavannaShrubs>(),
-		});
-
-		return oldId != tile.TileType;
-	}
 }
 
 public class SavannaShrubsCorrupt : SavannaShrubsBase
