@@ -52,7 +52,7 @@ internal class GlowmaskAutoloader : ModSystem
 					int slot = EquipLoader.GetEquipSlot(Mod, modItem.Name, equip);
 
 					if (slot != -1 && TryGetGlowmask(modItem.Texture + $"_{equip}", out var mask))
-						GlowmaskEquip.SlotToGlowmask.Add(slot, new(mask, color, autoDraw));
+						GlowmaskEquip.AddGlowmaskBySlot(slot, equip, new(mask, color, autoDraw));
 				}
 			}
 		}

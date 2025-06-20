@@ -4,10 +4,26 @@ namespace SpiritReforged.Common.Visuals.Glowmasks;
 
 internal class GlowmaskEquip : GlobalItem
 {
-	public static Dictionary<int, GlowmaskInfo> SlotToGlowmask = [];
+	public static void AddGlowmaskBySlot(int slot, EquipType type, GlowmaskInfo info)
+	{
+		if (type == EquipType.Head)
+		{
+			GlowmaskHeadLayer.SlotToGlowmask.Add(slot, info);
+		}
+		else if (type == EquipType.Body)
+		{
+			GlowmaskTorsoLayer.SlotToGlowmask.Add(slot, info);
+		}
+		else if (type == EquipType.Legs)
+		{
+			GlowmaskLegsLayer.SlotToGlowmask.Add(slot, info);
+		}
+	}
 
 	private class GlowmaskHeadLayer : PlayerDrawLayer
 	{
+		public static readonly Dictionary<int, GlowmaskInfo> SlotToGlowmask = [];
+
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Head);
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
@@ -27,6 +43,8 @@ internal class GlowmaskEquip : GlobalItem
 
 	private class GlowmaskTorsoLayer : PlayerDrawLayer
 	{
+		public static readonly Dictionary<int, GlowmaskInfo> SlotToGlowmask = [];
+
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Torso);
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
@@ -61,21 +79,18 @@ internal class GlowmaskEquip : GlobalItem
 
 	private class GlowmaskArmsLayer : PlayerDrawLayer
 	{
-		//Add a special case because torso and arms share the same EquipType
-		public static Dictionary<int, Asset<Texture2D>> SlotToArmsTexture = [];
-
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.ArmOverItem);
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			int slot = drawInfo.drawPlayer.body;
 
-			if (!SlotToArmsTexture.TryGetValue(slot, out var asset) || drawInfo.drawPlayer.invis || drawInfo.shadow != 0)
+			if (!GlowmaskTorsoLayer.SlotToGlowmask.TryGetValue(slot, out var value) || drawInfo.drawPlayer.invis || drawInfo.shadow != 0)
 				return;
 
-			var texture = asset.Value;
-			var color = SlotToGlowmask.TryGetValue(slot, out var value) ? value.GetDrawColor?.Invoke(null) ?? Color.White : Color.White;
-			Vector2 bobOff = Main.OffsetsPlayerHeadgear[drawInfo.drawPlayer.bodyFrame.Y / drawInfo.drawPlayer.bodyFrame.Height] * drawInfo.drawPlayer.gravDir;
+			var texture = value.Glowmask.Value;
+			var color = value.GetDrawColor?.Invoke(null) ?? Color.White;
+			var bobOff = Main.OffsetsPlayerHeadgear[drawInfo.drawPlayer.bodyFrame.Y / drawInfo.drawPlayer.bodyFrame.Height] * drawInfo.drawPlayer.gravDir;
 
 			if (drawInfo.drawPlayer.gravDir == -1)
 				bobOff.Y += 4;
@@ -120,6 +135,8 @@ internal class GlowmaskEquip : GlobalItem
 
 	private class GlowmaskLegsLayer : PlayerDrawLayer
 	{
+		public static readonly Dictionary<int, GlowmaskInfo> SlotToGlowmask = [];
+
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Leggings);
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
