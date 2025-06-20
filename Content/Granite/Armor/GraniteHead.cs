@@ -1,12 +1,14 @@
 ﻿using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Granite.Armor;
 
 [AutoloadEquip(EquipType.Head)]
-[FromClassic("GraniteHelm")]
 [AutoloadGlowmask("255,255,255")]
+[FromClassic("GraniteHelm")]
 public class GraniteHead : ModItem
 {
 	/// <returns> Whether the set bonus related to this item is active on <paramref name="player"/>. </returns>
@@ -18,17 +20,18 @@ public class GraniteHead : ModItem
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;
 	private static void DoubleTap(Player player, int keyDir)
 	{
-		if (SetActive(player))
+		if (SetActive(player) && !EnergyPlunge.Stomping(player))
 			EnergyPlunge.Begin(player);
 	}
 
+	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
 	public override void SetDefaults()
 	{
 		Item.width = 28;
 		Item.height = 24;
-		Item.value = 1100;
+		Item.value = Item.sellPrice(silver: 30);
 		Item.rare = ItemRarityID.Green;
-		Item.defense = 9;
+		Item.defense = 5;
 	}
 
 	public override void UpdateEquip(Player player) => Player.jumpSpeed += 1;
@@ -42,12 +45,11 @@ public class GraniteHead : ModItem
 
 		if (EnergyPlunge.Stomping(player))
 		{
+			player.noKnockback = true;
 			player.noFallDmg = true;
-			//player.gravity = 999f;
-			player.maxFallSpeed = 999f;
-			player.immuneNoBlink = true;
+			player.maxFallSpeed = EnergyPlunge.FallSpeed;
 
-			player.velocity.Y += 2f;
+			player.velocity.Y += 2.5f * player.gravDir;
 		}
 	}
 }

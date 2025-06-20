@@ -2012,16 +2012,16 @@ EarthshakerWarmask: {
 }
 
 GraniteBody: {
-	// DisplayName: Granite Body
+	// DisplayName: Kinetic Chestplate
 	// Tooltip: Increases jump height slightly
 }
 
 GraniteHead: {
-	// DisplayName: Granite Head
+	// DisplayName: Kinetic Visor
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
 
 GraniteLegs: {
-	// DisplayName: Granite Legs
+	// DisplayName: Kinetic Greaves
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
