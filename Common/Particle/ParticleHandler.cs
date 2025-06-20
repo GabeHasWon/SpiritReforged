@@ -30,6 +30,9 @@ public static class ParticleHandler
 	private static Dictionary<Type, int> particleTypes;
 	private static Dictionary<int, Texture2D> particleTextures;
 
+	public static int TypeOf<T>() where T : Particle => TypeOf(typeof(T));
+	public static int TypeOf(Type t) => particleTypes[t];
+
 	internal static void RegisterParticles()
 	{
 		particles = new Particle[MaxParticlesAllowed];
@@ -70,7 +73,7 @@ public static class ParticleHandler
 
 		particles[nextVacantIndex] = particle;
 		particle.ID = nextVacantIndex;
-		particle.Type = particleTypes[particle.GetType()];
+		particle.Type = TypeOf(particle.GetType());
 
 		if (nextVacantIndex + 1 < particles.Length && particles[nextVacantIndex + 1] == null)
 			nextVacantIndex++;

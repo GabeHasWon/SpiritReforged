@@ -2010,3 +2010,18 @@ EarthshakerWarmask: {
 	DisplayName: Earthshaker's Warmask
 	Tooltip: ""
 }
+
+GraniteBody: {
+	DisplayName: Granite Body
+	Tooltip: Increases jump height slightly
+}
+
+GraniteHead: {
+	DisplayName: Granite Head
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	DisplayName: Granite Legs
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
