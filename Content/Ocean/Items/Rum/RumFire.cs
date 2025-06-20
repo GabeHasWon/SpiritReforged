@@ -30,9 +30,7 @@ public class RumFire : ModProjectile
 	public override void AI()
 	{
 		if (Projectile.timeLeft == TimeLeftMax) //Just spawned
-		{
 			Surface();
-		}
 
 		if (Main.rand.NextBool(5))
 		{
@@ -142,9 +140,9 @@ public class RumExplosion : ModProjectile
 		if (!Main.dedServ)
 		{
 			Lighting.AddLight(Projectile.Center, RumFire.GlowColor);
-			Projectile.UpdateFrame((byte)(TimeLeftMax / Main.projFrames[Type] + 1));
+            Projectile.UpdateFrame((byte)(TimeLeftMax / Main.projFrames[Type]));
 
-			if (Main.rand.NextBool(2))
+            if (Main.rand.NextBool(2))
 			{
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);

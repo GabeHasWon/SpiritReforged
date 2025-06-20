@@ -19,14 +19,14 @@ public class PulseCircle : Particle
 	public float ZRotation { get; set; } = 0;
 	public bool UseLightColor { get; set; } = false;
 
-	private float _opacity;
+	protected Entity entity;
+	private Vector2 _offset;
 
+	private float _opacity;
 	private readonly float _maxRadius;
-	private readonly Entity _entity;
 	private readonly EaseFunction _easeType;
 	private readonly bool _inversePulse;
 	private readonly Color _bloomColor;
-	private Vector2 _offset = Vector2.Zero;
 	private readonly float _ringWidth;
 	private readonly float _endRingWidth;
 
@@ -43,37 +43,29 @@ public class PulseCircle : Particle
 		_endRingWidth = endRingWidth;
 	}
 
-	public PulseCircle(Entity attatchedEntity, Color ringColor, Color bloomColor, float ringWidth, float maxRadius, int maxTime, EaseFunction MovementStyle = null, Vector2? startingPosition = null, bool inverted = false, float endRingWidth = 0) : this(attatchedEntity.Center, ringColor, bloomColor, ringWidth, maxRadius, maxTime, MovementStyle, inverted, endRingWidth)
-	{
-		_entity = attatchedEntity;
-		Position = _entity.Center;
-		_offset = startingPosition != null ? startingPosition.Value - _entity.Center : Vector2.Zero;
-	}
-
 	public PulseCircle(Vector2 position, Color color, float ringWidth, float maxRadius, int maxTime, EaseFunction MovementStyle = null, bool inverted = false, float endRingWidth = 0) : this(position, color, color * 0.25f, ringWidth, maxRadius, maxTime, MovementStyle, inverted, endRingWidth) { }
-
-	public PulseCircle(Entity attatchedEntity, Color color, float ringWidth, float maxRadius, int maxTime, EaseFunction MovementStyle = null, Vector2? startingPosition = null, bool inverted = false, float endRingWidth = 0) : this(attatchedEntity, color, color * 0.25f, ringWidth, maxRadius, maxTime, MovementStyle, startingPosition, inverted, endRingWidth) { }
 
 	public override void Update()
 	{
-		if (_entity != null)
+		if (entity != null)
 		{
-			if (!_entity.active)
+			if (!entity.active)
 			{
 				Kill();
 				return;
 			}
 
-			_offset += Velocity;
-			Position = _entity.Center + _offset;
+			Position = entity.Center + (_offset += Velocity);
 		}
 		else
+		{
 			Position += Velocity;
+		}
 
-		float Progress = GetProgress();
+		float progress = GetProgress();
 
-		Scale = _maxRadius * Progress;
-		_opacity = Math.Min(3 * (1 - Progress), 1f);
+		Scale = _maxRadius * progress;
+		_opacity = Math.Min(3 * (1 - progress), 1f);
 	}
 
 	private float GetProgress()
@@ -113,10 +105,7 @@ public class PulseCircle : Particle
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect, EffectPassName);
 	}
 
-	internal virtual void EffectExtras(ref Effect curEffect)
-	{
-
-	}
+	internal virtual void EffectExtras(ref Effect curEffect) { }
 
 	public PulseCircle WithSkew(float zRotation, float rotation)
 	{
@@ -128,6 +117,17 @@ public class PulseCircle : Particle
 	public PulseCircle UsesLightColor()
 	{
 		UseLightColor = true;
+		return this;
+	}
+
+	public PulseCircle Attach(Entity entity, bool center = false)
+	{
+		this.entity = entity;
+
+		if (center)
+			Position = entity.Center;
+
+		_offset = Position - entity.Center;
 		return this;
 	}
 
