@@ -7,10 +7,12 @@ float opacity2;
 
 float counter;
 texture noise;
+
 sampler tent = sampler_state
 {
     Texture = (noise);
 };
+
 float2 rotate(float2 coords, float delta)
 {
     float2 ret;
@@ -18,11 +20,13 @@ float2 rotate(float2 coords, float delta)
     ret.y = (coords.x * sin(delta)) + (coords.y * cos(delta));
     return ret;
 }
+
 float lengthSquared(float2 colorvector)
 {
     float ret = (colorvector.x * colorvector.x) + (colorvector.y * colorvector.y);
     return ret;
 }
+
 float4 White(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
@@ -35,6 +39,7 @@ float4 White(float2 coords : TEXCOORD0) : COLOR0
     color = colorMod * color.r * noiseColor.r * noiseColor.r * noiseColor.r * colordist;
     return color;
 }
+
 float4 WhiteTwo(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
@@ -59,6 +64,7 @@ float4 WhiteThree(float2 coords : TEXCOORD0, float4 origcolor : COLOR0) : COLOR0
     color /= 2;
     return origcolor * color;
 }
+
 float4 Comet(float2 coords : TEXCOORD0, float4 origcolor : COLOR0) :COLOR0
 {
     float4 color = tex2D(uImage0, coords);
