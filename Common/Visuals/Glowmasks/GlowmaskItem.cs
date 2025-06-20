@@ -19,7 +19,7 @@ internal class GlowmaskItem : GlobalItem
 	/// This draws the glowmask of the held item, assuming the held item is in <see cref="ItemIdToGlowmask"/>.<br/>
 	/// This should account for all item types and styles; just note it's not 100% tested.
 	/// </summary>
-	internal class GlowmaskItemLayer : PlayerDrawLayer
+	private class GlowmaskItemLayer : PlayerDrawLayer
 	{
 		public override Position GetDefaultPosition() => new Multiple()
 		{

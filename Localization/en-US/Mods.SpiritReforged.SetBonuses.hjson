@@ -27,3 +27,8 @@ Wayfarer:
 	Breaking pots grants a movement speed buff
 	Mining ore grants a mining speed buff
 	'''
+Granite:
+	'''
+	Double tap {0} to stomp
+	Hitting the ground releases a shockwave that scales with height
+	'''
