@@ -27,16 +27,11 @@ public class FishLure : FloatingItem
 		return false;
 	}
 
-	public override void SetStaticDefaults()
+	public override void SetStaticDefaults() => PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
 	{
-		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<InvisibleLure>();
-
-		PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
-		{
-			if (Main.rand.NextBool(15))
-				rewardItems.Add(new Item(Type, Main.rand.Next(1, 4)));
-		};
-	}
+		if (Main.rand.NextBool(15))
+			rewardItems.Add(new Item(Type, Main.rand.Next(1, 4)));
+	};
 
 	public override void SetDefaults()
 	{
@@ -65,7 +60,7 @@ public class FishLure : FloatingItem
 	{
 		if (!Main.dedServ && player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			SimpleEntitySystem.NewEntity(typeof(FishLureEntity), Main.MouseWorld);
+			SimpleEntitySystem.NewEntity<FishLureEntity>(Main.MouseWorld);
 			return true;
 		}
 

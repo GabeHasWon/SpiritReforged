@@ -2,7 +2,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon.TileSway;
-using Terraria;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
@@ -53,18 +52,14 @@ public class SmallBuoy : ModItem
 	{
 		if (!Main.dedServ && player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			SimpleEntitySystem.NewEntity(typeof(SmallBuoyEntity), Main.MouseWorld);
+			SimpleEntitySystem.NewEntity<SmallBuoyEntity>(Main.MouseWorld);
 			return true;
 		}
 
 		return null;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-			.AddRecipeGroup("CopperBars", 1)
-			.AddIngredient(ItemID.Glass, 1)
-			.AddTile(TileID.Anvils)
-			.Register();
+	public override void AddRecipes() => CreateRecipe().AddRecipeGroup("CopperBars").AddIngredient(ItemID.Glass, 1).AddTile(TileID.Anvils).Register();
 }
 
 public class SmallBuoyEntity : SimpleEntity
