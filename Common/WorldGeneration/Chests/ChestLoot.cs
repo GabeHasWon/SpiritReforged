@@ -15,7 +15,6 @@ using SpiritReforged.Content.Forest.MagicPowder;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underworld.Blasphemer;
-using SpiritReforged.Content.Granite.Sharpshooter;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
@@ -48,6 +47,6 @@ public class ChestLoot : ModSystem
 
 		AddToVanillaChest(new ChestInfo(1, 0.3f, ModContent.ItemType<Bowlder>()), (int)VanillaChestID2.Trapped, 1, TileID.Containers2);
 		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<Blasphemer>()), (int)VanillaChestID.ShadowLocked, 1);
-		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
+		//AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
 	}
 }
