@@ -33,6 +33,8 @@ class Firespike : ModProjectile, IDrawOverTiles
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = 20;
 	}
 
 	public override void AI()
