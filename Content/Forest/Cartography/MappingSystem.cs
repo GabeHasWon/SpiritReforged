@@ -8,7 +8,8 @@ namespace SpiritReforged.Content.Forest.Cartography;
 public class MappingSystem : ModSystem
 {
 	/// <summary> Used to record whether a change has actually occured on the server map. </summary>
-	public static bool MapUpdated { get; private set; }
+	[WorldBound]
+	internal static bool MapUpdated;
 
 	/// <summary> The map owned by the server and controlled using <see cref="CartographyTable"/>. </summary>
 	[WorldBound(Manual = true)]
