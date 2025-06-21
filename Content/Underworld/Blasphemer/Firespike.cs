@@ -104,15 +104,19 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 	public override bool ShouldUpdatePosition() => false;
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
-	
+
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f); //Reduce damage with hits
-
 		if (Lingering)
+		{
 			modifiers.DisableKnockback();
+			modifiers.FinalDamage /= 5f;
+		}
 		else
-			target.velocity.Y -= 10f * target.knockBackResist;
+		{
+			target.velocity.Y -= 9f * target.knockBackResist;
+			modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f); //Reduce damage with hits
+		}
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)

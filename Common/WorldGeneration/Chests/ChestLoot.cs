@@ -14,7 +14,6 @@ using SpiritReforged.Content.Underground.Items.Zipline;
 using SpiritReforged.Content.Forest.MagicPowder;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 using SpiritReforged.Content.Forest.Cartography.Maps;
-using SpiritReforged.Content.Forest.Misc.Bo;
 using SpiritReforged.Content.Underworld.Blasphemer;
 using SpiritReforged.Content.Granite.Sharpshooter;
 
