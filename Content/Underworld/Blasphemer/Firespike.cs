@@ -1,14 +1,13 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.GameContent.Drawing;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
@@ -37,7 +36,13 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 	public override void AI()
 	{
-		Surface();
+		if (!Projectile.Surface())
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		Projectile.position.Y += 10;
 
 		if (Lingering)
 		{
@@ -138,40 +143,6 @@ class Firespike : ModProjectile, IDrawOverTiles
 		}
 	}
 
-	private void Surface()
-	{
-		int surfaceDuration = 0;
-		while (WorldGen.SolidTile(GetOrigin()))
-		{
-			Projectile.position.Y--; //Move out of solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		
-		while (!WorldGen.SolidTile(GetOrigin()) && !Main.tileSolidTop[Framing.GetTileSafely(GetOrigin()).TileType])
-		{
-			Projectile.position.Y++;
-
-			if (TryKill())
-				return;
-		}
-
-		bool TryKill()
-		{
-			if (++surfaceDuration > 40)
-			{
-				Projectile.Kill();
-				return true;
-			}
-
-			return false;
-		}
-
-		Point GetOrigin() => ((Projectile.Center - Vector2.UnitY * 2) / 16).ToPoint();
-	}
-
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int heightOffset = Lingering ? 10 : 100;
@@ -227,7 +198,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33, 150).ToVector4());
 
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
-		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		effect.Parameters["distortTexture"].SetValue(AssetLoader.LoadedTextures["SwirlNoise"].Value);
 
 		effect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.5f));
 		effect.Parameters["distortStretch"].SetValue(new Vector2(3, 1));

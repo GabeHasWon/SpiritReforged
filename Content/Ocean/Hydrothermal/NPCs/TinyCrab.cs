@@ -49,6 +49,6 @@ public class TinyCrab : ModNPC
 		if (!config.VentCritters)
 			return 0;
 
-		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? .75f : 0;
+		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? 2.25f : 0;
 	}
 }

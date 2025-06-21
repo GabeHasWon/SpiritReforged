@@ -1955,7 +1955,7 @@ AncientMarksmanPlate: {
 	Tooltip: ""
 }
 
-RollingPotItem: {
+RollingPotsItem: {
 	DisplayName: Rolling Pot
 	Tooltip: ""
 }
@@ -1981,7 +1981,47 @@ BonsaiPot: {
 	Tooltip: Used to craft decorative bonsai
 }
 
-FingerGun: {
-	DisplayName: Finger Gun
+WickerBasketsItem: {
+	DisplayName: Wicker Basket
 	Tooltip: ""
+}
+
+EarthshakerBreastplate: {
+	DisplayName: Earthshaker's Breastplate
+	Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	DisplayName: Earthshaker's Chestpiece
+	Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	DisplayName: Earthshaker's Headgear
+	Tooltip: ""
+}
+
+EarthshakerTreads: {
+	DisplayName: Earthshaker's Treads
+	Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	DisplayName: Earthshaker's Warmask
+	Tooltip: ""
+}
+
+GraniteBody: {
+	DisplayName: Kinetic Chestplate
+	Tooltip: Increases jump height slightly
+}
+
+GraniteHead: {
+	DisplayName: Kinetic Visor
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	DisplayName: Kinetic Greaves
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }

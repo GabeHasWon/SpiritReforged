@@ -26,3 +26,8 @@ Wayfarer:
 	Ломая горшки, вы получаете бонус к скорости передвижения
 	Копая руду, вы получаете бонус к скорости добычи
 	'''
+/* Granite:
+	'''
+	Double tap {0} to stomp
+	Hitting the ground releases a shockwave that scales with height
+	''' */

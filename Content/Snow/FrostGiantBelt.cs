@@ -12,8 +12,8 @@ public class FrostGiantBelt : EquippableItem
 	/// <summary> Checks if <paramref name="player"/> is charging a club projectile. </summary>
 	public static bool ClubCharging(Player player)
 	{
-		foreach(Projectile proj in Main.ActiveProjectiles)
-			if(proj.owner == player.whoAmI && proj.ModProjectile is BaseClubProj clubProj && clubProj.CheckAIState(BaseClubProj.AIStates.CHARGING))
+		foreach (Projectile proj in Main.ActiveProjectiles)
+			if (proj.owner == player.whoAmI && proj.ModProjectile is BaseClubProj clubProj && clubProj.CheckAIState(BaseClubProj.AIStates.CHARGING))
 				return true;
 
 		return false;
@@ -36,7 +36,7 @@ internal class FrostGiantPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		if(Player.HasEquip<FrostGiantBelt>())
+		if (Player.HasEquip<FrostGiantBelt>())
 		{
 			if(FrostGiantBelt.ClubCharging(Player))
 			{

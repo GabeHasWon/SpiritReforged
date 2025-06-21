@@ -129,6 +129,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 	/// <summary> Represents a min to max value range. </summary>
 	public (float, float) randomTimeLeft;
+	private bool _spawned = true;
 
 	public void DoTrailCreation(TrailManager tm)
 	{
@@ -153,8 +154,11 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 	public override void AI()
 	{
-		if (Projectile.timeLeft == TimeLeftMax)
+		if (_spawned)
+		{
 			OnClientSpawn(true);
+			_spawned = false;
+		}
 
 		if (Projectile.velocity.Length() > 1.25f && Main.rand.NextBool(5))
 			SpawnDust(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f));

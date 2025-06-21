@@ -32,7 +32,7 @@ public class FrozenFragment : ModProjectile
 
 		Projectile.rotation = Projectile.velocity.ToRotation();
 
-		if (Projectile.timeLeft == 120)
+		if (Projectile.timeLeft == timeLeftMax)
 		{
 			relativeOffset = Projectile.position - Main.npc[TargetWhoAmI].position;
 			Projectile.frame = Main.rand.Next(Main.projFrames[Type]);

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -24,7 +24,7 @@ public class DissipatingImage : Particle
 
 	public EaseFunction DistortEasing = EaseFunction.EaseQuadIn;
 
-	private readonly string _texture;
+	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
 	private readonly Vector2 _noiseStretch = new (1);
 	private readonly Vector2 _texExponent = new(2, 1);
@@ -39,12 +39,30 @@ public class DissipatingImage : Particle
 		Position = position;
 		Rotation = rotation;
 		Scale = scale;
+		_texture = AssetLoader.LoadedTextures[texture].Value;
+		_maxDistortion = maxDistortion;
+		Color = color;
+		MaxTime = maxTime;
+	}
+
+	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, Vector2 noiseScale, Vector2 textureExponentRange, int maxTime) : this(position, color, rotation, scale, maxDistortion, texture, maxTime)
+	{
+		_noiseStretch = noiseScale;
+		_texExponent = textureExponentRange;
+	}
+
+	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, Texture2D texture, int maxTime)
+	{
+		Position = position;
+		Rotation = rotation;
+		Scale = scale;
 		_texture = texture;
 		_maxDistortion = maxDistortion;
 		Color = color;
 		MaxTime = maxTime;
 	}
-	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, Vector2 noiseScale, Vector2 textureExponentRange, int maxTime) : this(position, color, rotation, scale, maxDistortion, texture, maxTime)
+
+	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, Texture2D texture, Vector2 noiseScale, Vector2 textureExponentRange, int maxTime) : this(position, color, rotation, scale, maxDistortion, texture, maxTime)
 	{
 		_noiseStretch = noiseScale;
 		_texExponent = textureExponentRange;
@@ -69,50 +87,44 @@ public class DissipatingImage : Particle
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
-		if (!AssetLoader.LoadedTextures.TryGetValue(_texture, out Asset<Texture2D> asset))
-			throw new ArgumentNullException(_texture, "Given input does not correspond to a loaded asset.");
+		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
+		Vector2 size = Scale * Texture.Size() * _scaleMod;
 
-		else
+		effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
+		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
+		effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
+		effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
+
+		effect.Parameters["Progress"].SetValue(Progress);
+		effect.Parameters["uTexture"].SetValue(_texture);
+		effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures[DistortNoiseString].Value);
+		effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
+		effect.Parameters["coordMods"].SetValue(_noiseStretch);
+		effect.Parameters["scroll"].SetValue(_scrollOffset);
+		effect.Parameters["intensity"].SetValue(Intensity * MathHelper.Lerp(_opacity, 1, DissolveAmount));
+
+		effect.Parameters["distortion"].SetValue(_maxDistortion * DistortEasing.Ease(Progress));
+		effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
+		effect.Parameters["doDissolve"].SetValue(DissolveAmount > 0);
+
+		effect.Parameters["pixellate"].SetValue(Pixellate);
+		effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);
+
+		float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
+		effect.Parameters["texExponent"].SetValue(texExponent);
+
+		Color lightColor = Color.White;
+		if (UseLightColor)
+			lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
+
+		var square = new SquarePrimitive
 		{
-			Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-			Vector2 size = Scale * asset.Size() * _scaleMod;
-
-			effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
-			effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
-			effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
-			effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
-
-			effect.Parameters["Progress"].SetValue(Progress);
-			effect.Parameters["uTexture"].SetValue(asset.Value);
-			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures[DistortNoiseString].Value);
-			effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
-			effect.Parameters["coordMods"].SetValue(_noiseStretch);
-			effect.Parameters["scroll"].SetValue(_scrollOffset);
-			effect.Parameters["intensity"].SetValue(Intensity * MathHelper.Lerp(_opacity, 1, DissolveAmount));
-
-			effect.Parameters["distortion"].SetValue(_maxDistortion * DistortEasing.Ease(Progress));
-			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
-			effect.Parameters["doDissolve"].SetValue(DissolveAmount > 0);
-
-			effect.Parameters["pixellate"].SetValue(Pixellate);
-			effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);
-
-			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
-			effect.Parameters["texExponent"].SetValue(texExponent);
-
-			Color lightColor = Color.White;
-			if (UseLightColor)
-				lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
-
-			var square = new SquarePrimitive
-			{
-				Color = lightColor,
-				Height = size.Y,
-				Length = size.X,
-				Position = Position - Main.screenPosition,
-				Rotation = Rotation,
-			};
-			PrimitiveRenderer.DrawPrimitiveShape(square, effect);
-		}
+			Color = lightColor,
+			Height = size.Y,
+			Length = size.X,
+			Position = Position - Main.screenPosition,
+			Rotation = Rotation,
+		};
+		PrimitiveRenderer.DrawPrimitiveShape(square, effect);
 	}
 }

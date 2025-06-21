@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 
@@ -9,8 +10,25 @@ namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 public class GoldKillifish : Killifish
 {
 	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
-	public override void OnSpawn(IEntitySource source) { }
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		NPCID.Sets.GoldCrittersCollection.Add(Type);
+	}
 
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+		NPC.rarity = 3;
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.UIInfoProvider = new GoldCritterUICollectionInfoProvider([ModContent.NPCType<Killifish>()], ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type]);
+		bestiaryEntry.AddInfo(this, string.Empty);
+	}
+
+	public override void OnSpawn(IEntitySource source) { }
 	public override void AI()
 	{
 		base.AI();

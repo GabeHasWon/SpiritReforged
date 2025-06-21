@@ -1,72 +1,76 @@
-﻿using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.Easing;
 
 namespace SpiritReforged.Content.Granite.ShockClub;
 
 public class EnergizedShockwave : ModProjectile
 {
-	private float ScaleX
+	public const int TimeLeftMax = 80;
+	public const float maxScaleX = 2.3f;
+	public const float maxScaleY = 1.3f;
+
+	public float ScaleX
 	{
 		get => Projectile.ai[0];
 		set => Projectile.ai[0] = value;
 	}
-	private float ScaleY
+
+	public float ScaleY
 	{
 		get => Projectile.ai[1];
 		set => Projectile.ai[1] = value;
 	}
 
-	private readonly int timeLeftMax = 80;
-
-	private readonly float maxScaleX = 2.3f;
-	private readonly float maxScaleY = 1.3f;
-
 	public override string Texture => AssetLoader.EmptyTexture;
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(20, 100);
+		Projectile.Size = new(16);
 		Projectile.DamageType = DamageClass.Melee;
-		Projectile.aiStyle = 0;
 		Projectile.penetrate = -1;
 		Projectile.ignoreWater = true;
-		Projectile.timeLeft = timeLeftMax;
 		Projectile.friendly = true;
-		Projectile.extraUpdates = 1;
+		Projectile.timeLeft = TimeLeftMax;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
-
-		DrawOriginOffsetY = 8;
+		Projectile.extraUpdates = 1;
 	}
 
 	public override void AI()
 	{
-		if (Projectile.timeLeft == timeLeftMax)
-			ScaleX = maxScaleX; //Just spawned
+		if (Projectile.timeLeft == TimeLeftMax) //Just spawned
+		{
+			if (!Projectile.Surface())
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			ScaleX = maxScaleX;
+		}
 
 		if (ScaleY < maxScaleY)
 			ScaleY += 0.1f;
 
-		ScaleX = MathHelper.Max(0, ScaleX - (float)(maxScaleX / (timeLeftMax + 2)));
-		Projectile.Opacity = Projectile.timeLeft / (float)timeLeftMax;
+		ScaleX = MathHelper.Max(0, ScaleX - (float)(maxScaleX / (TimeLeftMax + 2)));
 
-		Projectile.velocity.Y = 8;
-		Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(0, Projectile.velocity.Y), 0.035f);
+		Projectile.Opacity = Projectile.timeLeft / (float)TimeLeftMax;
+		Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(0, 8), 0.035f);
 
 		Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref Projectile.stepSpeed, ref Projectile.gfxOffY); //Automatically move up 1 tile tall walls
 
 		int heightMod = 2;
-		Vector2 basePos = Projectile.Center + Vector2.UnitY * (Projectile.height - heightMod) * 0.5f;
-		if(Main.rand.NextFloat() < EaseFunction.EaseQuadOut.Ease(Projectile.timeLeft / (float)timeLeftMax))
+		var basePos = Projectile.Center + Vector2.UnitY * (Projectile.height - heightMod) * 0.5f;
+		
+		if (Main.rand.NextFloat() < EaseFunction.EaseQuadOut.Ease(Projectile.timeLeft / (float)TimeLeftMax))
 		{
 			Vector2 spawnPos = basePos + Vector2.UnitX * Main.rand.NextFloat(-1, 1) * Projectile.width;
-			static void DelegateAction(Particle p) => p.Velocity *= 0.8f;
-
-			ParticleHandler.SpawnParticle(new GlowParticle(spawnPos, -Vector2.UnitY * Main.rand.NextFloat(6), new Color(140, 200, 255), Color.Cyan, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 30), 6, DelegateAction));
+			ParticleHandler.SpawnParticle(new GlowParticle(spawnPos, -Vector2.UnitY * Main.rand.NextFloat(6), new Color(140, 200, 255), Color.Cyan, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 30), 6, p => p.Velocity *= 0.8f));
 		}
 
 		Lighting.AddLight(basePos, Color.LightCyan.ToVector3() * Projectile.Opacity);
@@ -74,11 +78,7 @@ public class EnergizedShockwave : ModProjectile
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity) => false;
-	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
-	{
-		fallThrough = false;
-		return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
-	}
+	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac) => !(fallThrough = false);
 
 	public override bool PreDraw(ref Color lightColor)
 	{

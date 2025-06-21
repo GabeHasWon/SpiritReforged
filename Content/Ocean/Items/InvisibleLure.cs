@@ -4,7 +4,6 @@ namespace SpiritReforged.Content.Ocean.Items;
 
 public class InvisibleLure : ModItem
 {
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<FishLure>();
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 14;
@@ -39,6 +38,8 @@ public class InvisibleLure : ModItem
 
 		return null;
 	}
+
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<FishLure>()).AddTile(TileID.WorkBenches).AddCondition(Condition.InGraveyard).Register();
 }
 
 public class InvisibleLureEntity : FishLureEntity
@@ -47,10 +48,10 @@ public class InvisibleLureEntity : FishLureEntity
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (!Main.LocalPlayer.CanSeeInvisibleBlocks)
-			return;
-
-		var drawPosition = Center - Main.screenPosition + new Vector2(0, SolidCollision ? 0 : Sin(30f));
-		spriteBatch.Draw(Texture.Value, drawPosition, null, Color.White, GetRotation() * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
+		if (Main.LocalPlayer.CanSeeInvisibleBlocks || Main.SceneMetrics.EchoMonolith)
+		{
+			var drawPosition = Center - Main.screenPosition + new Vector2(0, SolidCollision ? 0 : Sin(30f));
+			spriteBatch.Draw(Texture.Value, drawPosition, null, Color.White, GetRotation() * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
+		}
 	}
 }

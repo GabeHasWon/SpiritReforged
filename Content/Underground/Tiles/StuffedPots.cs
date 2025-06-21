@@ -16,7 +16,7 @@ public class StuffedPots : PotTile, ILootTile
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 	public override void AddRecord(int type, StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Stuffed");
+		var desc = Language.GetText(TileRecord.DescKey + ".Stuffed");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(5));
 	}
 
@@ -36,7 +36,7 @@ public class StuffedPots : PotTile, ILootTile
 		var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
 
 		SoundEngine.PlaySound(SoundID.Shatter, pos);
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/PotBreak") with { Volume = .16f, PitchRange = (-.4f, 0), }, pos);
+		SoundEngine.PlaySound(BiomePots.Break, pos);
 
 		return true;
 	}
@@ -55,9 +55,9 @@ public class StuffedPots : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 		if (Main.netMode != NetmodeID.MultiplayerClient && !Autoloader.IsRubble(Type) && !Generating)
 		{
+			var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 			var source = new EntitySource_TileBreak(i, j);
 			Projectile.NewProjectile(source, new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.UnitY * -4f, ProjectileID.CoinPortal, 0, 0);
 

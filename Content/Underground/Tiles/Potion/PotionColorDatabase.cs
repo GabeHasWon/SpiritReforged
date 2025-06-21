@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Forest.Misc.Remedy;
+using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
@@ -62,6 +62,7 @@ internal static class PotionColorDatabase
 		{ ModContent.ItemType<RemedyPotion>(), new Color(184, 255, 195) },
 		{ ModContent.ItemType<QuenchPotion>(), new Color(129, 255, 245) },
 		{ ModContent.ItemType<DoubleJumpPotion>(), new Color(147, 132, 207) },
+		{ ModContent.ItemType<FlightPotion>(), Color.SkyBlue },
 	};
 
 	public static void RegisterColor(int item, Color color, bool decorative) 
