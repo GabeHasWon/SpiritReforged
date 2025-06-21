@@ -104,6 +104,12 @@ public class EnergyPlunge : ModProjectile
 		Projectile.rotation = owner.velocity.ToRotation();
 		Projectile.timeLeft = 2;
 
+		if (!owner.active || owner.dead)
+		{
+			Projectile.active = false;
+			return;
+		}
+
 		float odds = Math.Clamp(1f - Math.Abs(owner.velocity.Y / FallSpeed), 0.1f, 1f);
 		if (Main.rand.NextFloat(odds) < 0.05f)
 		{
@@ -120,46 +126,49 @@ public class EnergyPlunge : ModProjectile
 		}
 
 		if (owner.velocity.Y == 0) //Impact
+			Projectile.Kill();
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		var owner = Main.player[Projectile.owner];
+
+		float strength = Math.Max((Projectile.Center.Y - StartHeight) / 200f, 0);
+		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(50) * strength);
+		float knockback = owner.GetKnockback(DamageClass.Melee).ApplyTo(5) * strength;
+
+		float strengthCapped = Math.Min(strength / 1.5f, 1);
+		var center = Projectile.Center + new Vector2(0, owner.height / 2);
+
+		if (!Main.dedServ)
 		{
-			float strength = Math.Max((Projectile.Center.Y - StartHeight) / 200f, 0);
-			int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(50) * strength);
-			float knockback = owner.GetKnockback(DamageClass.Melee).ApplyTo(5) * strength;
-
-			float strengthCapped = Math.Min(strength / 1.5f, 1);
-			var center = Projectile.Center + new Vector2(0, owner.height / 2);
-
-			if (!Main.dedServ)
+			if (Projectile.owner == Main.myPlayer)
 			{
-				if (Projectile.owner == Main.myPlayer)
-				{
-					var modifier = new Terraria.Graphics.CameraModifiers.PunchCameraModifier(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
-					Main.instance.CameraModifiers.Add(modifier);
+				var modifier = new Terraria.Graphics.CameraModifiers.PunchCameraModifier(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
+				Main.instance.CameraModifiers.Add(modifier);
 
-					Projectile.NewProjectile(Projectile.GetSource_Death(), center, Vector2.Zero, ModContent.ProjectileType<EnergyImpact>(), damage, knockback, Projectile.owner, strengthCapped);
-				}
-
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(center + new Vector2(0, 5), Color.Cyan.Additive() * strengthCapped * 0.2f, 1f, 
-					220, 20, "Scorch", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
-
-				for (int i = 0; i < 2; i++)
-				{
-					var lineCol = ((i == 0) ? Color.Cyan : Color.White).Additive();
-					var scale = new Vector2(1, 3) * ((i == 0) ? 1.4f : 1f) * strengthCapped;
-
-					ParticleHandler.SpawnParticle(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15));
-				}
-
-				for (int i = 0; i < 20; i++)
-				{
-					float reach = strengthCapped * 50;
-					Dust.NewDustPerfect(center + new Vector2(reach * Main.rand.NextFloat(-1f, 1f), 0), DustID.Vortex, Vector2.UnitY * -Main.rand.NextFloat(3), Scale: Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
-				}
-
-				SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 1f - strengthCapped - 0.5f, PitchVariance = 0.2f }, Projectile.Center);
-				SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact with { Pitch = 0.2f, PitchVariance = 0.2f }, Projectile.Center);
+				Projectile.NewProjectile(Projectile.GetSource_Death(), center, Vector2.Zero, ModContent.ProjectileType<EnergyImpact>(), damage, knockback, Projectile.owner, strengthCapped);
 			}
 
-			Projectile.Kill();
+			ParticleHandler.SpawnParticle(new TexturedPulseCircle(center + new Vector2(0, 5), Color.Cyan.Additive() * strengthCapped * 0.2f, 1f,
+				220, 20, "Scorch", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
+
+			for (int i = 0; i < 2; i++)
+			{
+				var lineCol = ((i == 0) ? Color.Cyan : Color.White).Additive();
+				var scale = new Vector2(1, 3) * ((i == 0) ? 1.4f : 1f) * strengthCapped;
+
+				ParticleHandler.SpawnParticle(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15));
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				float reach = strengthCapped * 50;
+				Dust.NewDustPerfect(center + new Vector2(reach * Main.rand.NextFloat(-1f, 1f), 0), DustID.Vortex, Vector2.UnitY * -Main.rand.NextFloat(3), Scale: Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
+			}
+
+			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 1f - strengthCapped - 0.5f, PitchVariance = 0.2f }, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact with { Pitch = 0.2f, PitchVariance = 0.2f }, Projectile.Center);
 		}
 	}
 
