@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.TileCommon.Conversion;
 
-internal class ConversionHelper
+public class ConversionHelper
 {
 	public const int AnyPurityID = -8;
 

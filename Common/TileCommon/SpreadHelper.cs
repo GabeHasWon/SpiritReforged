@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.TileCommon;
 
-internal static class SpreadHelper
+public static class SpreadHelper
 {
 	public static bool Spread(int i, int j, int type, int chance, params int[] validAdjacentTypes)
 	{
