@@ -252,9 +252,9 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 												   [Colors[0].Additive(30), Colors[1].Additive(30), Colors[2].Additive(30) * 0.75f],
 												   0.75f,
 												   0,
-												   Main.rand.NextFloat(0.03f, 0.1f),
+												   Main.rand.NextFloat(0.05f, 0.1f),
 												   EaseFunction.EaseQuadOut,
-												   Main.rand.Next(10, 35)) { ColorLerpExponent = 2, FinalScaleMod = 0.33f, PixelDivisor = 1.25f });
+												   Main.rand.Next(10, 35)) { ColorLerpExponent = 2, FinalScaleMod = 0.4f, PixelDivisor = 1.25f });
 
 			var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
 			{

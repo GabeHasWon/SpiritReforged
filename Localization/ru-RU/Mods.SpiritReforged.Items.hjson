@@ -2017,3 +2017,8 @@ GraniteLegs: {
 	// DisplayName: Kinetic Greaves
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
+
+FingerGun: {
+	// DisplayName: Finger Gun
+	// Tooltip: ""
+}

@@ -88,7 +88,7 @@ public class DissipatingImage : Particle
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-		Vector2 size = Scale * Texture.Size() * _scaleMod;
+		Vector2 size = Scale * _texture.Size() * _scaleMod;
 
 		effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
 		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
