@@ -29,7 +29,7 @@ public abstract class MusicBoxTile : ModTile
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(this.AutoItem().type); //Register this drop for all styles
-		AddMapEntry(new Color(200, 200, 200), Language.GetText("ItemName.MusicBox"));
+		AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
 		DustType = -1;
 	}
 

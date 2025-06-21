@@ -50,6 +50,9 @@ public class SimpleEntitySystem : ModSystem
 		return NewEntity(t, position, quiet);
 	}
 
+	/// <inheritdoc cref="NewEntity(int, Vector2, bool)"/>
+	public static SimpleEntity NewEntity<T>(Vector2 position, bool quiet = false) where T : SimpleEntity => NewEntity(typeof(T), position, quiet);
+
 	public static void RemoveEntity(int whoAmI)
 	{
 		Entities[whoAmI] = null;

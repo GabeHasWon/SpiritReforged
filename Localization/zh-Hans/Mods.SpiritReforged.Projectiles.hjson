@@ -44,3 +44,5 @@ BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.Display
 // FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
 // VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 // VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// EnergyImpact.DisplayName: Energy Stomp
+// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"

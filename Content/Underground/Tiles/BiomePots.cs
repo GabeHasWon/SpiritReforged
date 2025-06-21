@@ -23,19 +23,19 @@ public class BiomePots : PotTile, ILootTile
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/PotBreak")
 	{
-		Volume = .16f,
-		PitchRange = (-.4f, 0)
+		Volume = 0.16f,
+		PitchRange = (-0.4f, 0)
 	};
 
 	public static readonly SoundStyle JungleBreak = new("SpiritReforged/Assets/SFX/NPCHit/HardNaturalHit")
 	{
-		Volume = .5f,
-		PitchRange = (0f, .3f)
+		Volume = 0.5f,
+		PitchRange = (0f, 0.3f)
 	};
 
 	public static readonly SoundStyle Squish = new("SpiritReforged/Assets/SFX/NPCDeath/Squish")
 	{
-		Volume = .25f
+		Volume = 0.25f
 	};
 
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)

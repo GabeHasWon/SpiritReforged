@@ -85,6 +85,9 @@ public class StackablePots : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
+		if (WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
 		int x = frameX / (18 * 2);
 		int y = frameY / (18 * 2);
 
