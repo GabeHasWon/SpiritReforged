@@ -152,7 +152,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot));
 
 		for(int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.5f, 0.5f), "ElectricScorch", new(0.4f, 0.4f), new(3, 1.5f), 25));
+			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.3f, 0.3f), "ElectricScorch", new(0.2f, 0.2f), new(4, 1.5f), 25) { SecondaryColor = easedCyan(0.4f), TertiaryColor = easedCyan(0.7f), ColorLerpExponent = 4});
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot + float.Pi / 2));
 

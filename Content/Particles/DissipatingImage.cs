@@ -2,7 +2,6 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -20,6 +19,10 @@ public class DissipatingImage : Particle
 	public bool UseLightColor { get; set; }
 	public bool Pixellate { get; set; }
 	public float PixelDivisor { get; set; } = 1.5f;
+
+	public string DistortNoiseString = "noise";
+
+	public EaseFunction DistortEasing = EaseFunction.EaseQuadIn;
 
 	private readonly string _texture;
 	private readonly float _maxDistortion;
@@ -81,14 +84,15 @@ public class DissipatingImage : Particle
 
 			effect.Parameters["Progress"].SetValue(Progress);
 			effect.Parameters["uTexture"].SetValue(asset.Value);
-			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures[DistortNoiseString].Value);
 			effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
 			effect.Parameters["coordMods"].SetValue(_noiseStretch);
 			effect.Parameters["scroll"].SetValue(_scrollOffset);
-			effect.Parameters["intensity"].SetValue(Intensity);
+			effect.Parameters["intensity"].SetValue(Intensity * MathHelper.Lerp(_opacity, 1, DissolveAmount));
 
-			effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseCubicOut.Ease(Progress));
+			effect.Parameters["distortion"].SetValue(_maxDistortion * DistortEasing.Ease(Progress));
 			effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
+			effect.Parameters["doDissolve"].SetValue(DissolveAmount > 0);
 
 			effect.Parameters["pixellate"].SetValue(Pixellate);
 			effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);

@@ -155,7 +155,6 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 			for (int i = 0; i < 20; i++)
 				Dust.NewDustDirect(Projectile.position - new Vector2(0, 10), Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f));
 
-			ParticleHandler.SpawnParticle(new Shatter(position + Vector2.UnitY * 10, Color.OrangeRed * 0.3f, TotalScale, 30));
 			SoundEngine.PlaySound(SoundID.DD2_BetsysWrathImpact.WithVolumeScale(1.5f), position);
 
 			SoundEngine.PlaySound(Main.rand.Next([Impact1, Impact2]), position);
@@ -202,6 +201,15 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 
 		Main.EntitySpriteDraw(glow, drawPosition, null, Projectile.GetAlpha(Color.White * ease), Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
 		if ((AIStates)AiState is not AIStates.POST_SMASH)
+		{
+			for(int i = 0; i < 6; i++)
+			{
+				Vector2 offset = Vector2.UnitX.RotatedBy(TwoPi * i / 6f) * 2;
+
+				Main.EntitySpriteDraw(glow, drawPosition + offset, null, Projectile.GetAlpha(Color.White.Additive() * ease) * 0.25f, Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
+			}
+
 			Main.EntitySpriteDraw(glow, drawPosition, null, Projectile.GetAlpha(Color.White.Additive() * ease), Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
+		}
 	}
 }

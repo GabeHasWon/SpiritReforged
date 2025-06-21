@@ -10,7 +10,7 @@ public class FireParticle : DissipatingImage
 
 	public float FinalScaleMod { get; set; } = 0.5f;
 
-	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float rotation, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], rotation, scale, Main.rand.NextFloat(0.1f, 0.275f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.25f, 0.4f)), new(1.25f, 1f), maxTime)
+	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float rotation, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], rotation, scale, Main.rand.NextFloat(0.1f, 0.3f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.2f, 0.5f)), new(1.25f, 1f), maxTime)
 	{
 		Velocity = velocity;
 		SecondaryColor = colors[1];
@@ -19,6 +19,8 @@ public class FireParticle : DissipatingImage
 		_initialVel = velocity;
 		_acceleration = acceleration;
 		Layer = ParticleLayer.AbovePlayer;
+		DistortNoiseString = "swirlNoise";
+		DistortEasing = EaseFunction.EaseCubicOut;
 		Pixellate = true;
 
 		DissolveAmount = 1;

@@ -24,6 +24,7 @@ sampler secondaryNoiseSampler = sampler_state
 float Progress;
 float uTime;
 float dissolve;
+bool doDissolve;
 float intensity;
 
 float4 primaryColor;
@@ -96,7 +97,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float dissolveXStrength = lerp(0, pow((1 - abs(baseCoords.x - 0.5f) * 2), 0.66f), pow(dissolve, 0.5f));
     float dissolvePosBase = dissolveYStrength + dissolveXStrength;
     
-    strength = smoothstep(min((dissolveNoiseStrength + dissolvePosBase + pow(dissolve, 6)) / 2, 1), 1, pow(strength, 0.33f)) * pow(strength, 0.66f);
+    if (doDissolve)
+        strength = smoothstep(min((dissolveNoiseStrength + dissolvePosBase + pow(dissolve, 6)) / 2, 1), 1, pow(strength, 0.34f)) * pow(strength, 0.66f);
     
     return color * strength * ColorLerp3(pow(strength * pow(1 - dissolve, 0.33f), colorLerpExp)) * intensity;
 }
