@@ -29,11 +29,13 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-			return false;
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			MappingSystem.SetMap();
+			return true;
+		}
 
-		MappingSystem.SetMap();
-		return true;
+		return false;
 	}
 
 	public override void MouseOver(int i, int j)
