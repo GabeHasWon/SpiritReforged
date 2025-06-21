@@ -108,7 +108,7 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 					ParticleHandler.SpawnParticle(p);
 				}
 
-				for(int i = 0; i < 8; i++)
+				for (int i = 0; i < 8; i++)
 				{
 					float maxOffset = 15;
 					float xOffset = Main.rand.NextFloat(-maxOffset, maxOffset);
@@ -121,7 +121,7 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 				}
 			}
 
-			if(CheckAIState(AIStates.SWINGING))
+			if (CheckAIState(AIStates.SWINGING))
 			{
 				var pos = position + direction;
 				float width = 230 * TotalScale;
@@ -133,8 +133,6 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 				float shineRotation = Main.rand.NextFloatDirection();
 				for(int i = 0; i < 3; i++)
 					ParticleHandler.SpawnParticle(new DissipatingImage(pos, Color.White, shineRotation, 0.12f * TotalScale, 0, "GodrayCircle", new Vector2(0), new Vector2(4f, 1.5f), 18));
-				
-				ParticleHandler.SpawnParticle(new Shatter(position, Color.Silver, TotalScale, 40));
 
 				float numLines = 16;
 				for(int i = 0; i < numLines; i++)
@@ -153,13 +151,13 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
-		if(CheckAIState(AIStates.CHARGING) && !target.noKnockback)
+		if (CheckAIState(AIStates.CHARGING) && !target.noKnockback)
 			target.velocity.Y -= Projectile.knockBack;
 	}
 
 	public override void Charging(Player owner)
 	{
-		if(!_inputHeld)
+		if (!_inputHeld)
 		{
 			TrailManager.TryTrailKill(Projectile);
 			_lingerTimer -= 2;
@@ -172,9 +170,10 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 
 			BaseRotation -= 0.1f * EaseCircularOut.Ease(lingerProgress);
 		}
-
 		else
+		{
 			base.Charging(owner);
+		}
 	}
 
 	internal override void WindupComplete(Player owner)
@@ -229,8 +228,6 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 	{
 		if (GetWindupProgress < 1)
 			return Lerp(HoldAngle_Intial, HoldAngle_Final, EaseCubicInOut.Ease(EaseCircularOut.Ease(progress)));
-
-		//Smoother transition between windup and charge
 		else
 			return Lerp(BaseRotation, HoldAngle_Final, 0.12f);
 	}
@@ -239,13 +236,9 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 	{
 		if (GetWindupProgress < 1)
 			return Lerp(0.3f, 1f, EaseQuarticOut.Ease(progress));
-
-		//Smoother transition between windup and charge
 		else
 			return Lerp(BaseScale, 1, 0.12f);
 	}
-
-	public override void Swinging(Player owner) => base.Swinging(owner);
 
 	internal override bool AllowUseTurn => CheckAIState(AIStates.CHARGING) && GetWindupProgress >= 1 && _inputHeld;
 	internal override bool AllowRelease => _inputHeld;
