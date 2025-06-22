@@ -66,9 +66,10 @@ public class Starflower : ModTile, ISwayTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (.3f, .28f, .1f);
+
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (conversionType == BiomeConversionID.PurificationPowder || conversionType == SavannaConversion.ConversionType)
+		if (ConversionHelper.AnyPurity(conversionType))
 			ConversionHelper.DoMultiConversion(i, j, TileID.Sunflower);
 	}
 
