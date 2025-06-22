@@ -12,17 +12,18 @@ public class DissipatingImage : Particle
 
 	public ParticleLayer Layer { get; set; } = ParticleLayer.AboveProjectile;
 
-	public float ColorLerpExponent { get; set; } = 1;
-	public float Intensity { get; set; } = 1;
-	public float DissolveAmount { get; set; } = 0;
+	public virtual bool UseLightColor { get; set; }
+	public virtual bool Pixellate { get; set; }
 
-	public bool UseLightColor { get; set; }
-	public bool Pixellate { get; set; }
-	public float PixelDivisor { get; set; } = 1.5f;
+	public virtual string DistortNoiseString => "noise";
 
-	public string DistortNoiseString = "noise";
+	public virtual float ColorLerpExponent { get; set; } = 1;
+	public virtual float Intensity { get; set; } = 1;
+	public virtual float DissolveAmount { get; set; } = 0;
+	public virtual float FinalScaleMod { get; set; } = 1.5f;
+	public virtual float PixelDivisor { get; set; } = 1.5f;
 
-	public EaseFunction DistortEasing = EaseFunction.EaseQuadIn;
+	public virtual EaseFunction DistortEasing => EaseFunction.EaseQuadIn;
 
 	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
@@ -68,17 +69,11 @@ public class DissipatingImage : Particle
 		_texExponent = textureExponentRange;
 	}
 
-	public DissipatingImage UsesLightColor()
-	{
-		UseLightColor = true;
-		return this;
-	}
-
 	public override void Update()
 	{
 		_opacity = EaseFunction.EaseQuadOut.Ease(Progress);
 		_opacity = (float)Math.Sin(_opacity * MathHelper.Pi);
-		_scaleMod = 1 + Progress / 2;
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 	}
 
 	public override ParticleLayer DrawLayer => Layer;

@@ -185,7 +185,6 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 													-Vector2.UnitY + Main.rand.NextVector2Unit() + Owner.velocity / 2,
 													[new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)],
 													1.25f,
-													Main.rand.NextFloatDirection(),
 													Main.rand.NextFloat(0.09f, 0.15f) * TotalScale * (FullCharge ? 1.25f : 1),
 													EaseQuadIn,
 													(int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f))) { ColorLerpExponent = 2.5f });

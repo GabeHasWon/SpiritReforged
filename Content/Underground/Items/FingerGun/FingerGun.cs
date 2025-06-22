@@ -61,7 +61,6 @@ public class FingerGun : ModItem
 							   -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2,
 							   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
 							   manaPercentage * manaPercentage,
-							   0,
 							   Main.rand.NextFloat(0.01f, 0.035f),
 							   EaseFunction.EaseCircularIn,
 							   Main.rand.Next(10, 40));
