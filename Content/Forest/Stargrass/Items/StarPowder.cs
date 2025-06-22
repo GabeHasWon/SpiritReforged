@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
@@ -23,7 +24,6 @@ public class StarPowder : ModItem
 		Item.useAnimation = 15;
 		Item.noMelee = true;
 		Item.consumable = true;
-		Item.autoReuse = false;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<StarPowderProj>();
 		Item.shootSpeed = 6f;
@@ -73,7 +73,6 @@ public class StarConversion : ModBiomeConversion
 
 	private static readonly Dictionary<int, int> Conversions = new()
 	{
-		{ TileID.Grass, ModContent.TileType<StargrassTile>() },
 		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() },
 		{ TileID.Plants, ModContent.TileType<StargrassFlowers>() },
 		{ TileID.Plants2, ModContent.TileType<StargrassFlowers>() }
@@ -84,6 +83,7 @@ public class StarConversion : ModBiomeConversion
 		ConversionType = Type;
 
 		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
+
 		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, (i, j, type, conversionType) =>
 		{
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
@@ -93,8 +93,21 @@ public class StarConversion : ModBiomeConversion
 			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
 
-		TileLoader.RegisterConversion(TileID.Vines, ConversionType, ConvertVines);
-		TileLoader.RegisterConversion(TileID.VineFlowers, ConversionType, ConvertVines);
+		TileLoader.RegisterConversion(TileID.Grass, ConversionType, (i, j, type, conversionType) =>
+		{
+			var below = Framing.GetTileSafely(i, j + 1); 
+			if (below.HasTile && below.TileType is TileID.Vines or TileID.VineFlowers) //Convert vines, if any
+			{
+				Main.tile[i, j].TileType = (ushort)ModContent.TileType<StargrassTile>();
+				VineTile.ConvertVines(i, j + 1, ModContent.TileType<StargrassVine>());
+			}
+			else
+			{
+				WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassTile>());
+			}
+
+			return true;
+		});
 	}
 
 	private static bool ConvertTiles(int i, int j, int type, int conversionType)
@@ -103,20 +116,5 @@ public class StarConversion : ModBiomeConversion
 			WorldGen.ConvertTile(i, j, newType);
 
 		return false;
-	}
-
-	private static bool ConvertVines(int i, int j, int type, int conversionType)
-	{
-		if (Framing.GetTileSafely(i, j - 1).TileType == type)
-			return false; //Return if this is not the base of the vine
-
-		int bottom = j;
-		while (WorldGen.InWorld(i, bottom, 2) && Main.tile[i, bottom].TileType == type)
-			bottom++; //Iterate to the bottom of the vine
-
-		int height = bottom - j;
-		ConversionHelper.ConvertTiles(i, j, 1, height, ModContent.TileType<StargrassVine>());
-
-		return true;
 	}
 }

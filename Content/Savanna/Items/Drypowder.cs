@@ -4,7 +4,6 @@ using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
 using Terraria.DataStructures;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Content.Savanna.Items;
 
@@ -25,7 +24,6 @@ public class Drypowder : ModItem
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.UseSound = SoundID.Item1;
 		Item.useTurn = true;
-		Item.autoReuse = true;
 		Item.consumable = true;
 		Item.shoot = ModContent.ProjectileType<DrypowderSpray>();
 		Item.shootSpeed = 5;

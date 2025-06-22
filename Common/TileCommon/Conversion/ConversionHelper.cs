@@ -34,7 +34,7 @@ public class ConversionHelper
 
 		if (frameAndSend)
 		{
-			WorldGen.RangeFrame(i, j, i + width, j + height);
+			WorldGen.RangeFrame(i, j, i + width - 1, j + height - 1);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendTileSquare(-1, i, j, width, height);
