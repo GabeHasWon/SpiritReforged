@@ -70,16 +70,11 @@ public class WickerBaskets : PotTile, ILootTile
 
 	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		if (CrossMod.Thorium.TryFind("Aril", out ModItem aril) && CrossMod.Thorium.TryFind("Cranberry", out ModItem cranberry) && CrossMod.Thorium.TryFind("Fig", out ModItem fig) &&
-		CrossMod.Thorium.TryFind("Lychee", out ModItem lychee) && CrossMod.Thorium.TryFind("Mangosteen", out ModItem mangosteen) && CrossMod.Thorium.TryFind("Persimmon", out ModItem persimmon) &&
-		CrossMod.Thorium.TryFind("Raspberry", out ModItem raspberry) && CrossMod.Thorium.TryFind("Soursop", out ModItem soursop))
-			loot.AddOneFromOptions(2, aril.Type, cranberry.Type, fig.Type, lychee.Type, mangosteen.Type, persimmon.Type, raspberry.Type, soursop.Type);
+		if (CrossMod.Thorium.Enabled && GetThoriumTypes() is int[] types && types.Length > 0)
+			loot.AddOneFromOptions(2, types);
 
-		if (CrossMod.Redemption.Enabled)
-		{
-			if (CrossMod.Redemption.TryFind("Soulshake", out ModItem shake))
-				loot.AddCommon(shake.Type, 4);
-		}
+		if (CrossMod.Redemption.Enabled && CrossMod.Redemption.TryFind("Soulshake", out ModItem shake))
+			loot.AddCommon(shake.Type, 4);
 
 		loot.Add(DropRules.LootPoolDrop.SameStack(1, 1, 3, 1, 1, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit, 
 			ItemID.Lemon, ItemID.Peach, ItemID.Cherry, ItemID.Plum, ItemID.BlackCurrant, ItemID.BloodOrange, ItemID.Mango, 
@@ -90,5 +85,18 @@ public class WickerBaskets : PotTile, ILootTile
 			ItemID.Lemonade, ItemID.PeachSangria, ItemID.PinaColada, ItemID.PrismaticPunch, ItemID.SmoothieofDarkness, ItemID.TropicalSmoothie));
 
 		loot.Add(rule);
+	}
+
+	private static readonly string[] ThoriumNames = ["Aril", "Cranberry", "Fig", "Lychee", "Mangosteen", "Persimmon", "Raspberry", "Soursop"];
+	private static int[] GetThoriumTypes()
+	{
+		HashSet<int> types = [];
+		for (int i = 0; i < ThoriumNames.Length; i++)
+		{
+			if (CrossMod.Thorium.TryFind(ThoriumNames[i], out ModItem item))
+				types.Add(item.Type);
+		}
+
+		return [.. types];
 	}
 }
