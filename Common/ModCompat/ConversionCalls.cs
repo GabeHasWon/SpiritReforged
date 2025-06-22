@@ -43,7 +43,7 @@ internal class ConversionCalls : ILoadable
 		int tileType = SpiritReforgedMod.ConvertToInteger(args[1], "RegisterConversionTile parameter 1 should be an int, short or ushort!");
 		int convertedType = SpiritReforgedMod.ConvertToInteger(args[2], "RegisterConversionTile parameter 2 should be an int, short or ushort!");
 
-		if (HandlersByConversionType.TryGetValue(conversionType, out ConversionHolder holder))
+		if (!HandlersByConversionType.TryGetValue(conversionType, out ConversionHolder holder))
 			holder = new ConversionHolder(conversionType, []);
 
 		holder.TileToTileLookup.Add(tileType, convertedType);
@@ -61,12 +61,13 @@ internal class ConversionCalls : ILoadable
 		if (args[1] is not string name)
 			throw new ArgumentException("RegisterConversionTable parameter 1 should be a string!");
 
-		int anchorType = SpiritReforgedMod.ConvertToInteger(args[0], "AddSavannaTree parameter 2 should be an int, short or ushort!");
+		if (args[2] is not Func<int[]> getTileAnchor)
+			throw new ArgumentException("RegisterConversionTable parameter 2 should be a Func<int[]>!");
 
 		if (args[3] is not Mod mod)
-			throw new ArgumentException("RegisterConversionTable parameter 3 should be a string!");
+			throw new ArgumentException("RegisterConversionTable parameter 3 should be a mod!");
 
-		bool success = mod.AddContent(new AcaciaTreeCrossmod(texturePath, name, anchorType));
+		bool success = mod.AddContent(new AcaciaTreeCrossmod(texturePath, name, getTileAnchor));
 		int type = -1;
 
 		if (success)

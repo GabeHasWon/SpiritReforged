@@ -101,8 +101,7 @@ public class SavannaGrassCorrupt : SavannaGrass
 	{
 		base.RandomUpdate(i, j);
 
-		if (SpreadHelper.Spread(i, j, TileID.CorruptGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
+		SpreadHelper.ConversionSpread(i, j, BiomeConversionID.Corruption);
 	}
 
 	protected override void GrowTiles(int i, int j)
@@ -143,8 +142,7 @@ public class SavannaGrassCrimson : SavannaGrass
 	{
 		base.RandomUpdate(i, j);
 
-		if (SpreadHelper.Spread(i, j, TileID.CrimsonGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
+		SpreadHelper.ConversionSpread(i, j, BiomeConversionID.Crimson);
 	}
 
 	protected override void GrowTiles(int i, int j)
