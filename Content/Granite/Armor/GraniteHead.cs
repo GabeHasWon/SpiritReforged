@@ -24,7 +24,14 @@ public class GraniteHead : ModItem
 			EnergyPlunge.Begin(player);
 	}
 
-	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
+	public override void SetStaticDefaults()
+	{
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteBody>();
+		ItemID.Sets.ShimmerTransformToItem[ItemID.GladiatorHelmet] = ItemID.GladiatorBreastplate; //Shimmer transformation for gladiator armor
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = 28;
