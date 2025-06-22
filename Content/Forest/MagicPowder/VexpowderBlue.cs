@@ -42,7 +42,7 @@ internal class VexpowderBlueDust : FlarepowderDust
 		if (Main.dedServ)
 			return;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			float mag = Main.rand.NextFloat(0.33f, 1);
 			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
