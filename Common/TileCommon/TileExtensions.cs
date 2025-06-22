@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Chests;
-using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
@@ -210,32 +210,43 @@ public static class TileExtensions
 	}
 
 	/// <summary> Allows <paramref name="types"/> to anchor to this ModTile. </summary>
-	public static void AllowAnchor(this ModTile tile, params int[] types)
-	{
-		foreach (int type in types)
-		{
-			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
-				data.AnchorValidTiles = [.. data.AnchorValidTiles, tile.Type];
-		}
-	}
+	public static void AllowAnchor(this ModTile tile, params int[] types) => AllowAnchor(tile.Type, types);
 
 	/// <inheritdoc cref="AllowAnchor"/>
 	public static void AllowAnchor(int modTileType, params int[] types)
 	{
 		foreach (int type in types)
 		{
-			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
 				data.AnchorValidTiles = [.. data.AnchorValidTiles, modTileType];
 		}
 	}
 
-	/// <inheritdoc cref="AllowAnchor"/>
-	public static void AllowAnchorAlternate(this ModTile tile, params int[] types)
+	public static Point16 GetAnchor(int i, int j)
 	{
-		foreach (int type in types)
+		Point16 coords = Point16.Zero;
+
+		if (TileObjectData.GetTileData(Main.tile[i, j].TileType, 0) is TileObjectData data)
 		{
-			if (TileObjectData.GetTileData(type, 0) is TileObjectData data)
-				data.AnchorAlternateTiles = [.. data.AnchorAlternateTiles, tile.Type];
+			if (data.AnchorBottom != AnchorData.Empty && Valid(coords = new(i, j + 1), data))
+				return coords;
+
+			if (data.AnchorLeft != AnchorData.Empty && Valid(coords = new(i - 1, j), data))
+				return coords;
+
+			if (data.AnchorRight != AnchorData.Empty && Valid(coords = new(i + 1, j), data))
+				return coords;
+
+			if (data.AnchorTop != AnchorData.Empty && Valid(coords = new(i, j - 1), data))
+				return coords;
+		}
+
+		return coords;
+
+		static bool Valid(Point16 coords, TileObjectData data)
+		{
+			int type = Framing.GetTileSafely(coords).TileType;
+			return data.isValidTileAnchor(type) || data.isValidAlternateAnchor(type);
 		}
 	}
 }

@@ -1,7 +1,5 @@
-using SpiritReforged.Common;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Forest.Stargrass.Items;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Metadata;
@@ -12,6 +10,16 @@ namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 public class StargrassFlowers : ModTile
 {
 	public const int StyleRange = 27;
+
+	private static readonly Dictionary<int, int> Typed = new() 
+	{ 
+		{ BiomeConversionID.Corruption, TileID.CorruptPlants }, 
+		{ BiomeConversionID.Crimson, TileID.CrimsonPlants }, 
+		{ BiomeConversionID.Hallow, TileID.HallowedPlants },
+		{ BiomeConversionID.Purity, TileID.Plants }, 
+		{ BiomeConversionID.PurificationPowder, TileID.Plants }, 
+		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaFoliage>() }
+	};
 
 	public static Color Glow(object obj)
 	{
@@ -38,7 +46,6 @@ public class StargrassFlowers : ModTile
 		Main.tileCut[Type] = true;
 		Main.tileLighted[Type] = true;
 
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
@@ -51,7 +58,7 @@ public class StargrassFlowers : ModTile
 		TileObjectData.newTile.DrawYOffset = -(TileHeight - 18);
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>(), TileID.CorruptGrass, TileID.CrimsonGrass, TileID.HallowedGrass, TileID.Grass, ModContent.TileType<SavannaGrass>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
 		TileObjectData.addTile(Type);
 
@@ -78,10 +85,9 @@ public class StargrassFlowers : ModTile
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
 	}
 
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		(BiomeConversionID.Corruption, TileID.CorruptPlants),
-		(BiomeConversionID.Crimson, TileID.CrimsonPlants),
-		(BiomeConversionID.Hallow, TileID.HallowedPlants),
-		(ConversionHelper.AnyPurityID, TileID.Plants),
-		(SavannaConversion.ConversionType, ModContent.TileType<SavannaFoliage>()));
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, Typed) is int value && value != -1)
+			WorldGen.ConvertTile(i, j, value);
+	}
 }

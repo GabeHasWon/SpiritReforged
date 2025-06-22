@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
@@ -24,12 +23,11 @@ public class ElephantGrass : ModTile, ICutAttempt
 		Main.tileNoFail[Type] = true;
 		Main.tileCut[Type] = true;
 
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 5;
 
@@ -183,11 +181,11 @@ public class ElephantGrass : ModTile, ICutAttempt
 		}
 	}
 
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		ModContent.TileType<ElephantGrassCorrupt>(),
-		ModContent.TileType<ElephantGrassCrimson>(),
-		ModContent.TileType<ElephantGrassHallow>(),
-		ModContent.TileType<ElephantGrass>());
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<ElephantGrassCorrupt>(), ModContent.TileType<ElephantGrassCrimson>(), ModContent.TileType<ElephantGrassHallow>(), ModContent.TileType<ElephantGrass>()) is int value && value != -1)
+			WorldGen.ConvertTile(i, j, value);
+	}
 
 	public bool OnCutAttempt(int i, int j)
 	{
@@ -207,8 +205,6 @@ public class ElephantGrassCorrupt : ElephantGrass
 		TileID.Sets.Corrupt[Type] = true;
 
 		AddMapEntry(new(109, 106, 174));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
 		DustType = DustID.Corruption;
 	}
 }
@@ -224,8 +220,6 @@ public class ElephantGrassCrimson : ElephantGrass
 		TileID.Sets.Crimson[Type] = true;
 
 		AddMapEntry(new(183, 69, 68));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
 		DustType = DustID.CrimsonPlants;
 	}
 }
@@ -241,8 +235,6 @@ public class ElephantGrassHallow : ElephantGrass
 		TileID.Sets.HallowBiome[Type] = 1;
 
 		AddMapEntry(new(78, 193, 227));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
 		DustType = DustID.HallowedPlants;
 	}
 }

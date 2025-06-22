@@ -76,12 +76,11 @@ public class SavannaGrass : GrassTile
 		}
 	}
 
-	public override bool CanReplace(int i, int j, int tileTypeBeingPlaced) => tileTypeBeingPlaced != AutoContent.ItemType<SavannaDirt>();
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType, 
-		ModContent.TileType<SavannaGrassCorrupt>(), 
-		ModContent.TileType<SavannaGrassCrimson>(), 
-		ModContent.TileType<SavannaGrassHallow>(), 
-		ModContent.TileType<SavannaGrass>());
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrass>()) is int value && value != -1)
+			WorldGen.ConvertTile(i, j, value);
+	}
 }
 
 public class SavannaGrassCorrupt : SavannaGrass
@@ -100,8 +99,7 @@ public class SavannaGrassCorrupt : SavannaGrass
 	public override void RandomUpdate(int i, int j)
 	{
 		base.RandomUpdate(i, j);
-
-		SpreadHelper.ConversionSpread(i, j, BiomeConversionID.Corruption);
+		WorldGen.SpreadInfectionToNearbyTile(i, j, BiomeConversionID.Corruption);
 	}
 
 	protected override void GrowTiles(int i, int j)
@@ -141,8 +139,7 @@ public class SavannaGrassCrimson : SavannaGrass
 	public override void RandomUpdate(int i, int j)
 	{
 		base.RandomUpdate(i, j);
-
-		SpreadHelper.ConversionSpread(i, j, BiomeConversionID.Crimson);
+		WorldGen.SpreadInfectionToNearbyTile(i, j, BiomeConversionID.Crimson);
 	}
 
 	protected override void GrowTiles(int i, int j)
@@ -182,9 +179,7 @@ public class SavannaGrassHallow : SavannaGrass
 	public override void RandomUpdate(int i, int j)
 	{
 		base.RandomUpdate(i, j);
-
-		if (SpreadHelper.Spread(i, j, TileID.HallowedGrass, 4, TileID.Grass) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None); //Try spread normal grass
+		WorldGen.SpreadInfectionToNearbyTile(i, j, BiomeConversionID.Hallow);
 	}
 
 	protected override void GrowTiles(int i, int j)

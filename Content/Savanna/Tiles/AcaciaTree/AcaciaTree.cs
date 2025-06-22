@@ -38,7 +38,8 @@ public class AcaciaTree : CustomTree
 
 	public override void PreAddObjectData()
 	{
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassCorrupt>(), 
+			ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>()];
 
 		AddMapEntry(new Color(120, 80, 75), Language.GetText("MapObject.Tree"));
 		RegisterItemDrop(AutoContent.ItemType<Drywood>());
@@ -224,11 +225,23 @@ public class AcaciaTree : CustomTree
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
 	}
 
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		ModContent.TileType<AcaciaTreeCorrupt>(),
-		ModContent.TileType<AcaciaTreeCrimson>(),
-		ModContent.TileType<AcaciaTreeHallow>(),
-		ModContent.TileType<AcaciaTree>());
+	public override void Convert(int i, int j, int conversionType)
+	{
+		int type = Main.tile[i, j].TileType;
+
+		if (Framing.GetTileSafely(i, j + 1).TileType == type)
+			return; //Return if this is not the base of the tree
+
+		if (ConversionHelper.FindType(conversionType, type, ModContent.TileType<AcaciaTreeCorrupt>(), ModContent.TileType<AcaciaTreeCrimson>(), ModContent.TileType<AcaciaTreeHallow>(), ModContent.TileType<AcaciaTree>()) is int value && value != -1)
+		{
+			int top = j;
+			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == type)
+				top--; //Iterate to the top of the tree
+
+			int height = j - top;
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, value);
+		}
+	}
 }
 
 public class AcaciaTreeCorrupt : AcaciaTree
@@ -236,9 +249,7 @@ public class AcaciaTreeCorrupt : AcaciaTree
 	public override void PreAddObjectData()
 	{
 		base.PreAddObjectData();
-
 		TileID.Sets.Corrupt[Type] = true;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
 	}
 }
 
@@ -247,9 +258,7 @@ public class AcaciaTreeCrimson : AcaciaTree
 	public override void PreAddObjectData()
 	{
 		base.PreAddObjectData();
-
 		TileID.Sets.Crimson[Type] = true;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
 	}
 }
 
@@ -275,9 +284,7 @@ public class AcaciaTreeHallow : AcaciaTree
 	public override void PreAddObjectData()
 	{
 		base.PreAddObjectData();
-
 		TileID.Sets.Hallow[Type] = true;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>()];
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)

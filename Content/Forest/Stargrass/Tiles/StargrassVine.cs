@@ -1,9 +1,6 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon.Conversion;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Savanna.Items;
-using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
 using static Terraria.GameContent.Drawing.TileDrawing;
 
@@ -21,7 +18,6 @@ public class StargrassVine : ModTile, ISwayTile
 		Main.tileNoFail[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.IsVine[Type] = true;
 		TileID.Sets.VineThreads[Type] = true;
 		TileID.Sets.ReplaceTileBreakDown[Type] = true;
@@ -29,7 +25,7 @@ public class StargrassVine : ModTile, ISwayTile
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>(), TileID.CorruptGrass, TileID.CrimsonGrass, TileID.HallowedGrass, TileID.Grass];
 		TileObjectData.newTile.AnchorAlternateTiles = [Type];
 		TileObjectData.addTile(Type);
 
@@ -40,9 +36,21 @@ public class StargrassVine : ModTile, ISwayTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		(BiomeConversionID.Corruption, TileID.CorruptVines),
-		(BiomeConversionID.Crimson, TileID.CrimsonVines),
-		(BiomeConversionID.Hallow, TileID.HallowedVines),
-		(BiomeConversionID.PurificationPowder, TileID.Vines));
+
+	public override void Convert(int i, int j, int conversionType)
+	{
+		int type = Main.tile[i, j].TileType;
+		if (Framing.GetTileSafely(i, j - 1).TileType == type)
+			return; //Return if this is not the base of the vine
+
+		if (ConversionHelper.FindType(conversionType, type, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines, TileID.Vines) is int value && value != -1)
+		{
+			int bottom = j;
+			while (WorldGen.InWorld(i, bottom, 2) && Main.tile[i, bottom].TileType == type)
+				bottom++; //Iterate to the bottom of the vine
+
+			int height = bottom - j;
+			ConversionHelper.ConvertTiles(i, j, 1, height, value);
+		}
+	}
 }
