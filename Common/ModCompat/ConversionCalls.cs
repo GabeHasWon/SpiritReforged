@@ -44,7 +44,10 @@ internal class ConversionCalls : ILoadable
 		int convertedType = SpiritReforgedMod.ConvertToInteger(args[2], "RegisterConversionTile parameter 2 should be an int, short or ushort!");
 
 		if (!HandlersByConversionType.TryGetValue(conversionType, out ConversionHolder holder))
+		{
 			holder = new ConversionHolder(conversionType, []);
+			HandlersByConversionType.Add(conversionType, holder);
+		}
 
 		holder.TileToTileLookup.Add(tileType, convertedType);
 		return true;

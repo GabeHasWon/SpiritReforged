@@ -21,13 +21,21 @@ public class ConversionHelper
 	public static bool Simple(int i, int j, int conversionType, params (int, int)[] conversionToType)
 	{
 		bool value = false;
-		foreach (var pair in conversionToType)
+
+		if (conversionType < BiomeConversionID.Count)
 		{
-			if (conversionType == pair.Item1 || pair.Item1 == AnyPurityID && AnyPurity(conversionType))
+			foreach (var pair in conversionToType)
 			{
-				value = DoSimpleConversion(i, j, pair.Item2, conversionType);
-				break;
+				if (conversionType == pair.Item1 || pair.Item1 == AnyPurityID && AnyPurity(conversionType))
+				{
+					value = DoSimpleConversion(i, j, pair.Item2, conversionType);
+					break;
+				}
 			}
+		}
+		else
+		{
+			DoSimpleConversion(i, j, -1, conversionType);
 		}
 
 		return value;
