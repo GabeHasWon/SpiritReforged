@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -69,6 +70,17 @@ public class WickerBaskets : PotTile, ILootTile
 
 	public void AddLoot(int objectStyle, ILoot loot)
 	{
+		if (CrossMod.Thorium.TryFind("Aril", out ModItem aril) && CrossMod.Thorium.TryFind("Cranberry", out ModItem cranberry) && CrossMod.Thorium.TryFind("Fig", out ModItem fig) &&
+		CrossMod.Thorium.TryFind("Lychee", out ModItem lychee) && CrossMod.Thorium.TryFind("Mangosteen", out ModItem mangosteen) && CrossMod.Thorium.TryFind("Persimmon", out ModItem persimmon) &&
+		CrossMod.Thorium.TryFind("Raspberry", out ModItem raspberry) && CrossMod.Thorium.TryFind("Soursop", out ModItem soursop))
+			loot.AddOneFromOptions(2, aril.Type, cranberry.Type, fig.Type, lychee.Type, mangosteen.Type, persimmon.Type, raspberry.Type, soursop.Type);
+
+		if (CrossMod.Redemption.Enabled)
+		{
+			if (CrossMod.Redemption.TryFind("Soulshake", out ModItem shake))
+				loot.AddCommon(shake.Type, 4);
+		}
+
 		loot.Add(DropRules.LootPoolDrop.SameStack(1, 1, 3, 1, 1, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit, 
 			ItemID.Lemon, ItemID.Peach, ItemID.Cherry, ItemID.Plum, ItemID.BlackCurrant, ItemID.BloodOrange, ItemID.Mango, 
 			ItemID.Pineapple, ItemID.Banana, ItemID.Pomegranate, ItemID.SpicyPepper, ModContent.ItemType<Caryocar>(), ModContent.ItemType<CustardApple>()));
