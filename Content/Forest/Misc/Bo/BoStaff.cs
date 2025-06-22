@@ -71,7 +71,7 @@ public class BoStaff : ModItem
 		return false;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 8).AddRecipeGroup(RecipeGroupID.Wood, 15).AddTile(TileID.Anvils).Register();
+	//public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 8).AddRecipeGroup(RecipeGroupID.Wood, 15).AddTile(TileID.Anvils).Register();
 }
 
 public class BoStaffSwing : ModProjectile, IManualTrailProjectile

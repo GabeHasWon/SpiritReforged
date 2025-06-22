@@ -31,16 +31,16 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	private bool _isDoingEmpoweredShot = false;
 	private bool _hasDoneEmpoweredShot = false;
 
-	private int _empoweredShotTarget = -1;
+	public int EmpoweredShotTarget { get; set; } = -1;
 
 	private Vector2 _storedPosition = Vector2.Zero;
 	private Vector2 _storedOffset = Vector2.Zero;
 
 	private ArrowData _selectedArrow;
 
-	private ref float AiTimer => ref Projectile.ai[0];
-	private ref float BounceTimer => ref Projectile.ai[1];
-	private ref float StoredRotation => ref Projectile.ai[2];
+	public ref float AiTimer => ref Projectile.ai[0];
+	public ref float BounceTimer => ref Projectile.ai[1];
+	public ref float StoredRotation => ref Projectile.ai[2];
 
 	public float MarkCooldown { get; set; } = 0;
 
@@ -69,8 +69,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	public override void AI()
 	{
-		if (_isDoingEmpoweredShot)
-			EmpoweredShotBehavior(Main.player[Projectile.owner], Main.npc[_empoweredShotTarget]);
+		if (EmpoweredShotTarget != -1) //Has a target
+			EmpoweredShotBehavior(Main.player[Projectile.owner], Main.npc[EmpoweredShotTarget]);
 		else
 			base.AI();
 
@@ -81,13 +81,10 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	public void EmpoweredShotBehavior(Player player, NPC target)
 	{
-		void EndAttack()
+		if (!_isDoingEmpoweredShot)
 		{
-			_isDoingEmpoweredShot = false;
-			_hasDoneEmpoweredShot = false;
-			AiTimer = FIRE_TIME;
-			_empoweredShotTarget = -1;
-			Projectile.netUpdate = true;
+			DoEmpoweredShot(target);
+			_isDoingEmpoweredShot = true;
 		}
 
 		if (!target.active)
@@ -117,12 +114,12 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		if (AiTimer <= 0)
 		{
 			AiTimer = FIRE_TIME + COOLDOWN_TIME;
+			BounceTimer = COOLDOWN_TIME;
 
 			Vector2 arrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation + MathHelper.PiOver2 * targetDirection) * _selectedArrow.shootSpeed;
 
-			BounceTimer = COOLDOWN_TIME;
-
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner, target.whoAmI);
+			if (Projectile.owner == Main.myPlayer) //Only ever spawn projectiles on the owning client
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner, target.whoAmI);
 
 			Vector2 visualArrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation) * _selectedArrow.shootSpeed;
 			_storedOffset -= visualArrowVelocity;
@@ -146,7 +143,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 					p.Kill();
 
 				float easedProgress = EaseFunction.EaseQuadOut.Ease(1 - p.Progress);
-				p.Position = owner.Center + (Vector2.UnitX.RotatedBy(owner.rotation) * 10) + offset.RotatedBy(MathHelper.Pi * easedProgress) * easedProgress;
+				p.Position = owner.Center + Vector2.UnitX.RotatedBy(owner.rotation) * 10 + offset.RotatedBy(MathHelper.Pi * easedProgress) * easedProgress;
 			}
 
 			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.MediumPurple.Additive(), scale, lifeTime, 1, p => DelegateAction(p, Projectile, offset)));
@@ -154,8 +151,17 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		}
 
 		//Only end attack if the bounce timer is 0 after already firing, making it function as a cooldown before returning to normal behavior
-		if(_hasDoneEmpoweredShot && BounceTimer == 0)
+		if (_hasDoneEmpoweredShot && BounceTimer == 0)
 			EndAttack();
+
+		void EndAttack()
+		{
+			_isDoingEmpoweredShot = false;
+			_hasDoneEmpoweredShot = false;
+			AiTimer = FIRE_TIME;
+			EmpoweredShotTarget = -1;
+			Projectile.netUpdate = true;
+		}
 	}
 
 	public override void IdleMovement(Player player)
@@ -175,7 +181,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		_storedPosition = Vector2.Lerp(Projectile.Center, desiredPos, lockOnSpeed) - Projectile.Size / 2;
 		Projectile.position = _storedPosition;
 
-		Vector2 oldPosDifference = (Projectile.position - Projectile.oldPosition);
+		Vector2 oldPosDifference = Projectile.position - Projectile.oldPosition;
 		oldPosDifference.Y *= player.direction;
 
 		StoredRotation = StoredRotation.AngleLerp(rotationOffset + oldPosDifference.X * 0.06f + oldPosDifference.Y * 0.1f, 0.2f);
@@ -204,33 +210,43 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 			BounceTimer = COOLDOWN_TIME;
 
-			PreNewProjectile.New(Projectile.GetSource_FromThis(), Projectile.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner, preSpawnAction: p => 
-			{
-				p.DamageType = DamageClass.Summon; 
-
-				//Can't really change the static projectile id set of minion shots, so this is the only way to make whip effects work (why is this still the case with summon damage class existing)
-				p.minion = true;
-				p.GetGlobalProjectile<JinxBowShot>().IsJinxbowShot = true;
-			});
+			if (Projectile.owner == Main.myPlayer)
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner);
 
 			_storedOffset -= arrowVelocity;
 
-			if(!Main.dedServ)
+			if (!Main.dedServ)
 			{
 				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1.25f }, Projectile.Center);
-
 				ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center + arrowVelocity * 2f, arrowVelocity * 0.3f, _selectedArrow.brightColor.Additive() * 0.66f, new(0.66f, 3f), 10, 1));
 			}
 		}
 	}
 
-	public void DoEmpoweredShot(NPC target)
+	/// <summary> Handles initial empowered shot visuals and effects. Does <b>NOT</b> set <see cref="EmpoweredShotTarget"/>. </summary>
+	private void DoEmpoweredShot(NPC target)
 	{
-		_isDoingEmpoweredShot = true;
-		_empoweredShotTarget = target.whoAmI;
 		AiTimer = FIRE_TIME;
 		BounceTimer = 0;
-		Projectile.netUpdate = true;
+
+		if (!Main.dedServ)
+		{
+			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(0.75f, 3), 12, 1));
+			ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 20));
+
+			for (int i = 0; i < 10; i++)
+			{
+				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 4);
+				float scale = Main.rand.NextFloat(0.3f, 0.7f);
+				int lifeTime = Main.rand.Next(12, 40);
+				static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+			}
+
+			ParticleHandler.SpawnParticle(new TexturedPulseCircle(target.Center, Color.MediumPurple.Additive(50), 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
+		}
 	}
 
 	private void SetArrowData(Player player)
@@ -283,7 +299,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	public static void JinxArrowRing(Vector2 spawnPos, Vector2 velocity, float size, float rotation, float skew = 0.8f)
 	{
 		Color particleColor = Color.MediumPurple.Additive(50);
-		Particle p = new TexturedPulseCircle(spawnPos, particleColor, 0.8f, size, 16, "swirlNoise", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(skew, rotation);
+		Particle p = new TexturedPulseCircle(spawnPos, particleColor, 0.8f, size, 16, "swirlNoise2", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(skew, rotation);
 		p.Velocity = velocity;
 		ParticleHandler.SpawnParticle(p);
 	}
@@ -344,7 +360,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				Main.EntitySpriteDraw(arrowSolid, arrowPos, drawRect, glowColor * EaseFunction.EaseCubicIn.Ease(1 - shootProgress), Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None);
 
 				//During empowered shot, do a blur star at the arrow's head
-				if(_isDoingEmpoweredShot)
+				if (_isDoingEmpoweredShot)
 				{
 					var arrowHead = arrowPos + Vector2.UnitX.RotatedBy(Projectile.rotation) * (arrowTex.Height - 5);
 					var starScale = new Vector2(3 * easedCharge, 1) * 0.075f;
@@ -362,21 +378,6 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		return false;
 	}
 
-	public override void SendExtraAI(BinaryWriter writer)
-	{
-		writer.Write(_isDoingEmpoweredShot);
-		writer.Write(_hasDoneEmpoweredShot);
-		writer.Write((short)_empoweredShotTarget);
-		writer.WritePackedVector2(_storedOffset);
-		writer.WritePackedVector2(_storedPosition);
-	}
-
-	public override void ReceiveExtraAI(BinaryReader reader)
-	{
-		_isDoingEmpoweredShot = reader.ReadBoolean();
-		_hasDoneEmpoweredShot = reader.ReadBoolean();
-		_empoweredShotTarget = reader.ReadInt16();
-		_storedOffset = reader.ReadPackedVector2();
-		_storedPosition = reader.ReadPackedVector2();
-	}
+	public override void SendExtraAI(BinaryWriter writer) => writer.Write((short)EmpoweredShotTarget);
+	public override void ReceiveExtraAI(BinaryReader reader) => EmpoweredShotTarget = reader.ReadInt16();
 }

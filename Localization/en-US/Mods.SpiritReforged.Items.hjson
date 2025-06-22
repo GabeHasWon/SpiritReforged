@@ -1849,7 +1849,11 @@ ElephantKite: {
 
 CartographyTableItem: {
 	DisplayName: Cartography Table
-	Tooltip: Allows you to share your map with other players
+	Tooltip:
+		'''
+		Allows you to share your map with other players
+		Interact to post your findings
+		'''
 }
 
 PurityBonsaiItem: {

@@ -54,7 +54,7 @@ public class SavannaGrass : GrassTile
 			}
 		}
 
-		if (Main.rand.NextBool(5) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
 			Placer.GrowVine(i, j + 1, ModContent.TileType<SavannaVine>());
 
 		bool GrassAny()
@@ -127,6 +127,9 @@ public class SavannaGrassCorrupt : SavannaGrass
 				Placer.PlaceTile<SavannaFoliageCorrupt>(i, j - 1).Send();
 		}
 
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<SavannaVineCorrupt>());
+
 		bool GrassAny()
 		{
 			int type = ModContent.TileType<ElephantGrassCorrupt>();
@@ -168,6 +171,9 @@ public class SavannaGrassCrimson : SavannaGrass
 			else if (Main.rand.NextBool(15))
 				Placer.PlaceTile<SavannaFoliageCrimson>(i, j - 1).Send();
 		}
+
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<SavannaVineCrimson>());
 
 		bool GrassAny()
 		{
@@ -213,6 +219,9 @@ public class SavannaGrassHallow : SavannaGrass
 			if (Main.rand.NextBool(1400) && WorldGen.PlaceTile(i, j - 1, TileID.DyePlants, true, style: 2))
 				NetMessage.SendTileSquare(-1, i, j - 1, TileChangeType.None);
 		}
+
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<SavannaVineHallow>());
 
 		bool GrassAny()
 		{

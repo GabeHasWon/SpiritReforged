@@ -16,6 +16,7 @@ namespace SpiritReforged.Content.Granite.Sharpshooter;
 public class SharpshooterGlove : EquippableItem
 {
 	public const int EffectiveDistance = 480;
+	public override bool IsLoadingEnabled(Mod mod) => false;
 
 	public override void SetDefaults()
 	{
@@ -56,6 +57,7 @@ internal class SharpshooterPlayer : ModPlayer
 			CooldownByNPC[index] = 1;
 	}
 
+	public override bool IsLoadingEnabled(Mod mod) => false;
 	public override void Load() => On_Main.DrawNPC += DrawReticle;
 	private static void DrawReticle(On_Main.orig_DrawNPC orig, Main self, int iNPCIndex, bool behindTiles)
 	{

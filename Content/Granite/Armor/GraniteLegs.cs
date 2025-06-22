@@ -8,7 +8,14 @@ namespace SpiritReforged.Content.Granite.Armor;
 [AutoloadGlowmask("255,255,255")]
 public class GraniteLegs : ModItem
 {
-	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
+	public override void SetStaticDefaults()
+	{
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteHead>();
+		ItemID.Sets.ShimmerTransformToItem[ItemID.GladiatorLeggings] = ItemID.GladiatorHelmet;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = 28;
