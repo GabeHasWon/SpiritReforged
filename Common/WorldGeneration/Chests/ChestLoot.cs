@@ -14,9 +14,8 @@ using SpiritReforged.Content.Underground.Items.Zipline;
 using SpiritReforged.Content.Forest.MagicPowder;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 using SpiritReforged.Content.Forest.Cartography.Maps;
-using SpiritReforged.Content.Forest.Misc.Bo;
 using SpiritReforged.Content.Underworld.Blasphemer;
-using SpiritReforged.Content.Granite.Sharpshooter;
+using SpiritReforged.Content.Underground.Items.FingerGun;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
@@ -32,7 +31,7 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo(1, 0.5f, ModContent.ItemType<DyeCrateItem>()), (int)VanillaChestID.Ivy, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<DyeCrateItem>()), (int)VanillaChestID.Jungle, 1);
 
-		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<ZiplineGun>(), ModContent.ItemType<ExplorerTreadsItem>()), (int)VanillaChestID.Gold, 1);
+		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<ZiplineGun>(), ModContent.ItemType<ExplorerTreadsItem>(), ModContent.ItemType<FingerGun>()), (int)VanillaChestID.Gold, 1);
 
 		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<RogueCrest>(), ModContent.ItemType<CraneFeather>()), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.125f, ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()), (int)VanillaChestID.Wood, 1);
@@ -49,6 +48,6 @@ public class ChestLoot : ModSystem
 
 		AddToVanillaChest(new ChestInfo(1, 0.3f, ModContent.ItemType<Bowlder>()), (int)VanillaChestID2.Trapped, 1, TileID.Containers2);
 		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<Blasphemer>()), (int)VanillaChestID.ShadowLocked, 1);
-		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
+		//AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
 	}
 }

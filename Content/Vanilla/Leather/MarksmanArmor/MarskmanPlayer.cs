@@ -113,7 +113,13 @@ internal class MarksmanPlayer : ModPlayer
 		}
 
 		for(int i = 0; i < 4; i++)
-			ParticleHandler.SpawnParticle(new FireParticle(position, Main.rand.NextVector2Circular(2, 2), [Color.LightGoldenrodYellow.Additive(), Color.Goldenrod.Additive(), Color.Orange.Additive()], 1.5f, 0, Main.rand.NextFloat(0.07f, 0.12f), EaseFunction.EaseQuadIn, Main.rand.Next(20, 40)) { FinalScaleMod = 0.25f });
+		{
+			Color[] fireColors = [Color.LightGoldenrodYellow.Additive(), Color.Goldenrod.Additive(), Color.Orange.Additive()];
+			float scale = Main.rand.NextFloat(0.07f, 0.12f);
+			Vector2 velocity = Main.rand.NextVector2Circular(2, 2);
+			int maxTime = Main.rand.Next(20, 40);
+			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, fireColors, 1.5f, scale, EaseFunction.EaseQuadIn, maxTime) { FinalScaleMod = 0.25f });
+		}
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.White, .5f, 80, 20, "Extra_49",
 				new Vector2(1), EaseFunction.EaseCubicOut));

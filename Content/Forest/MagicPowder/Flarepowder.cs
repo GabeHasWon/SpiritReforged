@@ -149,7 +149,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
-		randomTimeLeft = (0.15f, 0.3f);
+		randomTimeLeft = (0.1f, 0.3f);
 	}
 
 	public override void AI()
@@ -197,7 +197,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 				ParticleHandler.SpawnParticle(fireCloud);
 
-				var smokeCloud = new SmokeCloud(fireCloud.Position, velocity, Color.Gray, fireCloud.Scale * 1.5f, EaseFunction.EaseCubicOut, Main.rand.Next(40, 60))
+				var smokeCloud = new SmokeCloud(fireCloud.Position, velocity * 1.25f, Color.Gray, fireCloud.Scale * 1.5f, EaseFunction.EaseCubicOut, Main.rand.Next(40, 60))
 				{
 					SecondaryColor = Color.DarkSlateGray,
 					TertiaryColor = Color.Black,

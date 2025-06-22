@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -69,6 +70,12 @@ public class WickerBaskets : PotTile, ILootTile
 
 	public void AddLoot(int objectStyle, ILoot loot)
 	{
+		if (CrossMod.Thorium.Enabled && GetThoriumTypes() is int[] types && types.Length > 0)
+			loot.AddOneFromOptions(2, types);
+
+		if (CrossMod.Redemption.Enabled && CrossMod.Redemption.TryFind("Soulshake", out ModItem shake))
+			loot.AddCommon(shake.Type, 4);
+
 		loot.Add(DropRules.LootPoolDrop.SameStack(1, 1, 3, 1, 1, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit, 
 			ItemID.Lemon, ItemID.Peach, ItemID.Cherry, ItemID.Plum, ItemID.BlackCurrant, ItemID.BloodOrange, ItemID.Mango, 
 			ItemID.Pineapple, ItemID.Banana, ItemID.Pomegranate, ItemID.SpicyPepper, ModContent.ItemType<Caryocar>(), ModContent.ItemType<CustardApple>()));
@@ -78,5 +85,18 @@ public class WickerBaskets : PotTile, ILootTile
 			ItemID.Lemonade, ItemID.PeachSangria, ItemID.PinaColada, ItemID.PrismaticPunch, ItemID.SmoothieofDarkness, ItemID.TropicalSmoothie));
 
 		loot.Add(rule);
+	}
+
+	private static readonly string[] ThoriumNames = ["Aril", "Cranberry", "Fig", "Lychee", "Mangosteen", "Persimmon", "Raspberry", "Soursop"];
+	private static int[] GetThoriumTypes()
+	{
+		HashSet<int> types = [];
+		for (int i = 0; i < ThoriumNames.Length; i++)
+		{
+			if (CrossMod.Thorium.TryFind(ThoriumNames[i], out ModItem item))
+				types.Add(item.Type);
+		}
+
+		return [.. types];
 	}
 }

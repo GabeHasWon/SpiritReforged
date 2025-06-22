@@ -8,9 +8,14 @@ public class FireParticle : DissipatingImage
 	private readonly EaseFunction _acceleration;
 	private readonly Vector2 _initialVel;
 
-	public float FinalScaleMod { get; set; } = 0.5f;
+	public override float FinalScaleMod => 0.5f;
+	public override string DistortNoiseString => "swirlNoise";
+	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
+	public override bool Pixellate => true;
+	public override float DissolveAmount => 1;
+	public override EaseFunction DistortEasing => EaseFunction.EaseCubicOut;
 
-	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float rotation, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], rotation, scale, Main.rand.NextFloat(0.1f, 0.3f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.2f, 0.5f)), new(1.25f, 1f), maxTime)
+	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], Main.rand.NextFloatDirection(), scale, Main.rand.NextFloat(0.1f, 0.3f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.2f, 0.5f)), new(1.25f, 1f), maxTime)
 	{
 		Velocity = velocity;
 		SecondaryColor = colors[1];
@@ -18,19 +23,12 @@ public class FireParticle : DissipatingImage
 		Intensity = intensity;
 		_initialVel = velocity;
 		_acceleration = acceleration;
-		Layer = ParticleLayer.AbovePlayer;
-		DistortNoiseString = "swirlNoise";
-		DistortEasing = EaseFunction.EaseCubicOut;
-		Pixellate = true;
-
-		DissolveAmount = 1;
 	}
 
 	public override void Update()
 	{
 		base.Update();
 		Velocity = (1 - _acceleration.Ease(Progress)) * Vector2.Lerp(_initialVel, -Vector2.UnitY, EaseFunction.EaseQuadOut.Ease(Progress));
-		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, _acceleration.Ease(Progress));
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

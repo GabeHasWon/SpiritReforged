@@ -32,6 +32,8 @@ class Firespike : ModProjectile, IDrawOverTiles
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
+		Projectile.usesLocalNPCImmunity = true;
+		Projectile.localNPCHitCooldown = 20;
 	}
 
 	public override void AI()
@@ -50,14 +52,18 @@ class Firespike : ModProjectile, IDrawOverTiles
 			{
 				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0) - Vector2.UnitY * 6;
 				for(int i = 0; i < Main.rand.Next(1, 4); i++)
-					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4,
-													   -Vector2.UnitY * Main.rand.NextFloat(0.25f),
-													   [new Color(255, 200, 0, 90), new Color(255, 115, 0, 90), new Color(200, 3, 33, 90)],
-													   0.75f,
-													   Main.rand.NextFloatDirection(),
-													   Main.rand.NextFloat(0.05f, 0.125f),
-													   EaseQuadIn,
-													   Main.rand.Next(30, 60)) { ColorLerpExponent = 2.5f, FinalScaleMod = 0, PixelDivisor = 1.25f });
+				{
+					int maxTime = Main.rand.Next(30, 60);
+					Color[] colors = [new Color(255, 200, 0, 90), new Color(255, 115, 0, 90), new Color(200, 3, 33, 90)];
+					Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.25f);
+					float scale = Main.rand.NextFloat(0.05f, 0.125f);
+					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 0.75f, scale, EaseQuadIn, maxTime)
+					{ 
+						ColorLerpExponent = 2.5f, 
+						FinalScaleMod = 0,
+						PixelDivisor = 1.25f 
+					});
+				}
 			}
 
 			if (Main.rand.NextBool(30))
@@ -132,14 +138,10 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 		for (int i = 0; i < 8; i++)
 		{
-			ParticleHandler.SpawnParticle(new FireParticle(center,
-											   Main.rand.NextVector2Unit() * Main.rand.NextFloat(5),
-											   [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150) * 0.75f],
-											   1.25f,
-											   Main.rand.NextFloatDirection(),
-											   Main.rand.NextFloat(0.06f, 0.15f),
-											   EaseQuadOut,
-											   50) { ColorLerpExponent = 2 });
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5);
+			Color[] colors = [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150) * 0.75f];
+			float scale = Main.rand.NextFloat(0.06f, 0.15f);
+			ParticleHandler.SpawnParticle(new FireParticle(center, velocity, colors, 1.25f, scale, EaseQuadOut, 50) { ColorLerpExponent = 2 });
 		}
 	}
 
@@ -154,15 +156,19 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 	public override bool ShouldUpdatePosition() => false;
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
-	
+
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f); //Reduce damage with hits
-
 		if (Lingering)
+		{
 			modifiers.DisableKnockback();
+			modifiers.FinalDamage /= 5f;
+		}
 		else
-			target.velocity.Y -= 10f * target.knockBackResist;
+		{
+			target.velocity.Y -= 9f * target.knockBackResist;
+			modifiers.FinalDamage *= Math.Max(0.2f, 1f - Projectile.numHits / 8f); //Reduce damage with hits
+		}
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
