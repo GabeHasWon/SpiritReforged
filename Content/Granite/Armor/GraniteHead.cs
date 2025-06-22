@@ -13,7 +13,7 @@ public class GraniteHead : ModItem
 {
 	/// <returns> Whether the set bonus related to this item is active on <paramref name="player"/>. </returns>
 	public static bool SetActive(Player player) => player.active
-		&& player.armor[0].type == ModContent.ItemType<GraniteHead>()
+		&& (player.armor[0].type == ModContent.ItemType<GraniteHead>() || player.armor[0].type == ItemID.UltrabrightHelmet || player.armor[0].type == ItemID.NightVisionHelmet)
 		&& player.armor[1].type == ModContent.ItemType<GraniteBody>()
 		&& player.armor[2].type == ModContent.ItemType<GraniteLegs>();
 
@@ -43,7 +43,8 @@ public class GraniteHead : ModItem
 
 	public override void UpdateEquip(Player player) => Player.jumpSpeed += 1;
 	public override void ArmorSetShadows(Player player) => player.armorEffectDrawShadow = true;
-	public override bool IsArmorSet(Item head, Item body, Item legs) => body.type == ModContent.ItemType<GraniteBody>() && legs.type == ModContent.ItemType<GraniteLegs>();
+	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == Type || head.type == ItemID.UltrabrightHelmet || head.type == ItemID.NightVisionHelmet) &&
+																	body.type == ModContent.ItemType<GraniteBody>() && legs.type == ModContent.ItemType<GraniteLegs>();
 
 	public override void UpdateArmorSet(Player player)
 	{
