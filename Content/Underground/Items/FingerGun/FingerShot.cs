@@ -9,6 +9,12 @@ namespace SpiritReforged.Content.Underground.Items.FingerGun;
 
 public class FingerShot : ModProjectile
 {
+	private bool PopulatedOldPositions
+	{
+		get => Projectile.ai[0] == 1;
+		set => Projectile.ai[0] = value ? 1 : 0;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
@@ -28,14 +34,16 @@ public class FingerShot : ModProjectile
 		Projectile.friendly = true;
 	}
 
-	public override void OnSpawn(IEntitySource source)
-	{
-		for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
-			Projectile.oldPos[i] = Projectile.position;
-	}
-
 	public override void AI()
 	{
+		if (!PopulatedOldPositions)
+		{
+			for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Projectile.type]; i++)
+				Projectile.oldPos[i] = Projectile.position;
+
+			PopulatedOldPositions = true;
+		}
+
 		Projectile.velocity *= 0.93f;
 		Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
 		Projectile.scale = 0.5f * Projectile.timeLeft / 60f;

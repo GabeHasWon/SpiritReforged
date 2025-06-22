@@ -175,14 +175,14 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.frame = Main.rand.Next(Main.projFrames[Type]);
 		Projectile.scale = Main.rand.NextFloat(0.5f, 1f);
 
-		if (doDustSpawn)
+		if (doDustSpawn && !Main.dedServ)
 		{
 			for (int i = 0; i < 3; i++)
 			{
 				float mag = Main.rand.NextFloat(0.33f, 1);
 				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.3f);
 
-				if(Main.rand.NextBool(3))
+				if (Main.rand.NextBool(3))
 					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
 				Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
@@ -233,40 +233,45 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 	public override void OnKill(int timeLeft)
 	{
-		const int explosion = 80;
-		float angle = Main.rand.NextFloat(MathHelper.Pi);
-
-		var circle = new TexturedPulseCircle(Projectile.Center, (Color.OrangeRed * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-		circle.Angle = angle;
-		ParticleHandler.SpawnParticle(circle);
-
-		var circle2 = new TexturedPulseCircle(Projectile.Center, (Color.LightGoldenrodYellow * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-		circle2.Angle = angle;
-		ParticleHandler.SpawnParticle(circle2);
-
-		if(this is not VexpowderBlueDust)
+		if (!Main.dedServ)
 		{
-			for (int i = 0; i < 3; i++)
-				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
-												   Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2),
-												   [Colors[0].Additive(30), Colors[1].Additive(30), Colors[2].Additive(30) * 0.75f],
-												   0.75f,
-												   0,
-												   Main.rand.NextFloat(0.05f, 0.1f),
-												   EaseFunction.EaseQuadOut,
-												   Main.rand.Next(10, 35)) { ColorLerpExponent = 2, FinalScaleMod = 0.4f, PixelDivisor = 1.25f });
+			float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-			var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
+			var circle = new TexturedPulseCircle(Projectile.Center, (Color.OrangeRed * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
+			circle.Angle = angle;
+			ParticleHandler.SpawnParticle(circle);
+
+			var circle2 = new TexturedPulseCircle(Projectile.Center, (Color.LightGoldenrodYellow * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
+			circle2.Angle = angle;
+			ParticleHandler.SpawnParticle(circle2);
+
+			if (this is not VexpowderBlueDust)
 			{
-				SecondaryColor = Color.DarkSlateGray,
-				TertiaryColor = Color.Black,
-				ColorLerpExponent = 2,
-				Intensity = 0.6f,
-				Layer = ParticleLayer.BelowProjectile,
-				Pixellate = true
-			};
-			ParticleHandler.SpawnParticle(smokeCloud);
+				for (int i = 0; i < 3; i++)
+					ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center,
+						Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2),
+						[Colors[0].Additive(30), Colors[1].Additive(30), Colors[2].Additive(30) * 0.75f],
+						0.75f,
+						0,
+						Main.rand.NextFloat(0.05f, 0.1f),
+						EaseFunction.EaseQuadOut,
+						Main.rand.Next(10, 35))
+					{ ColorLerpExponent = 2, FinalScaleMod = 0.4f, PixelDivisor = 1.25f });
+
+				var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
+				{
+					SecondaryColor = Color.DarkSlateGray,
+					TertiaryColor = Color.Black,
+					ColorLerpExponent = 2,
+					Intensity = 0.6f,
+					Layer = ParticleLayer.BelowProjectile,
+					Pixellate = true
+				};
+				ParticleHandler.SpawnParticle(smokeCloud);
+			}
 		}
+
+		const int explosion = 80;
 
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();

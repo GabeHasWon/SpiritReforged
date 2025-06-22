@@ -2027,6 +2027,11 @@ GraniteLegs: {
 }
 
 FingerGun: {
-	// DisplayName: Finger Gun
-	// Tooltip: ""
+	// DisplayName: Finger Blaster
+	/* Tooltip:
+		'''
+		Ignores some enemy defense
+		Fires faster at higher mana
+		'Pew pew!'
+		''' */
 }

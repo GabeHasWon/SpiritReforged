@@ -35,15 +35,12 @@ internal class VexpowderBlueDust : FlarepowderDust
 {
 	public override Color[] Colors => [Color.Violet, Color.BlueViolet, Color.DarkViolet];
 
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-		//randomTimeLeft = (0.2f, 0.4f);
-	}
-
 	public override void OnClientSpawn(bool doDustSpawn)
 	{
 		base.OnClientSpawn(false);
+
+		if (Main.dedServ)
+			return;
 
 		for (int i = 0; i < 4; i++)
 		{

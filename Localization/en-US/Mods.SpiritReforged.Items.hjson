@@ -2028,7 +2028,7 @@ GraniteLegs: {
 
 FingerGun: {
 	DisplayName: Finger Blaster
-	Tooltip: 
+	Tooltip:
 		'''
 		Ignores some enemy defense
 		Fires faster at higher mana

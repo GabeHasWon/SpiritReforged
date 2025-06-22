@@ -6,6 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
@@ -58,13 +59,13 @@ public class FingerGun : ModItem
 			Vector2 handPos = player.HandPosition.Value;
 
 			var fire = new FireParticle(handPos + Vector2.UnitX * player.direction * 3,
-							   -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2,
-							   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
-							   manaPercentage * manaPercentage,
-							   0,
-							   Main.rand.NextFloat(0.01f, 0.035f),
-							   EaseFunction.EaseCircularIn,
-							   Main.rand.Next(10, 40));
+				-Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2,
+				[Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
+				manaPercentage * manaPercentage,
+				0,
+				Main.rand.NextFloat(0.01f, 0.035f),
+				EaseFunction.EaseCircularIn,
+				Main.rand.Next(10, 40));
 
 			ParticleHandler.SpawnParticle(fire);
 		}
@@ -72,26 +73,9 @@ public class FingerGun : ModItem
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		float manaPercentage = player.statMana / (float)player.statManaMax2;
 		velocity = velocity.RotatedByRandom(MathHelper.Pi / 32);
 		velocity *= Main.rand.NextFloat(0.9f, 1.2f) * 1.33f;
 		position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation);
-
-		if (!Main.dedServ)
-		{
-			Vector2 handPos = player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
-			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
-
-			for (int i = 0; i < 5; i++)
-				ParticleHandler.SpawnParticle(new FireParticle(handPos,
-												   Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2), 
-												   [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
-												   manaPercentage * manaPercentage,
-												   0,
-												   Main.rand.NextFloat(0.01f, 0.035f),
-												   EaseFunction.EaseCircularIn,
-												   Main.rand.Next(10, 40)));
-		}
 	}
 }
 
@@ -101,17 +85,44 @@ public class FingerGunArmManager : ModPlayer
 
 	public override void PostUpdate()
 	{
-		if(IsFingerGunHeld(Player))
+		if (IsFingerGunHeld(Player))
 		{
 			if (Player.ItemAnimationActive)
 			{
-				float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
+				// This gets either the current player's mouse or the latest netsynced version. This is the most consistent way to get another player's mouse,
+				// and tends to look almost 1:1 unless you really stare at it.
+				Vector2 mouse = Main.myPlayer == Player.whoAmI ? Main.MouseWorld : PlayerMouseHandler.MouseByWhoAmI[Player.whoAmI];
 
-				int signDirection = Math.Sign(Player.DirectionTo(Main.MouseWorld).X);
+				if (Player.ItemAnimationJustStarted) // Spawn these here instead of in ModifyShootStats since this runs on all clients
+				{
+					Vector2 velocity = Player.DirectionTo(mouse) * Player.HeldItem.shootSpeed;
+					Vector2 handPos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
+					ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
+					float manaPercentage = Player.statMana / (float)Player.statManaMax2;
+
+					Main.NewText(manaPercentage);
+
+					for (int i = 0; i < 5; i++)
+						ParticleHandler.SpawnParticle(new FireParticle(handPos,
+							Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2),
+							[Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
+							manaPercentage * manaPercentage,
+							0,
+							Main.rand.NextFloat(0.01f, 0.035f),
+							EaseFunction.EaseCircularIn,
+							Main.rand.Next(10, 40)));
+				}
+
+				if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
+					new PlayerMouseHandler.ShareMouseData((byte)Player.whoAmI, Main.MouseWorld).Send();
+
+				float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
+				int signDirection = Math.Sign(mouse.X - Player.Center.X);
+
 				if (signDirection != Player.direction && signDirection != 0)
 					Player.ChangeDir(signDirection);
 
-				float armRot = Player.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
+				float armRot = Player.AngleTo(mouse) - MathHelper.PiOver2;
 				Player.CompositeArmStretchAmount armStretch;
 
 				armStretch = animProgress switch
@@ -124,15 +135,15 @@ public class FingerGunArmManager : ModPlayer
 
 				armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCircularOut, EaseFunction.EaseSine, EaseFunction.EaseCircularIn]).Ease(animProgress) - 0.5f);
 
-				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
 				Player.SetCompositeArmFront(true, armStretch, armRot);
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
 			}
 		}
 	}
 
 	public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 	{
-		if(IsFingerGunHeld(drawInfo.drawPlayer))
+		if (IsFingerGunHeld(drawInfo.drawPlayer))
 		{
 			drawInfo.drawPlayer.handon = EquipLoader.GetEquipSlot(SpiritReforgedMod.Instance, "FingerGun", EquipType.HandsOn);
 			drawInfo.cHandOn = -1;
