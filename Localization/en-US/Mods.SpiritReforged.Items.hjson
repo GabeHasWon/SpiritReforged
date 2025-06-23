@@ -2031,6 +2031,8 @@ GraniteLegs: {
 }
 
 HardlightVisor: {
-	DisplayName: Hard Light Visor
+	DisplayName: Hardlight Visor
 	Tooltip: ""
+	AltDisplayName: Hard Light Visor
+	AltTooltip: "'Not to be confused with Hardlight Visor'"
 }
