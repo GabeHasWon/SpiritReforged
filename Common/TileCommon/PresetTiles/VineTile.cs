@@ -31,7 +31,7 @@ public abstract class VineTile : ModTile, ISwayTile
 		PreAddObjectData();
 
 		if (TileObjectData.newTile.AnchorValidTiles is int[] array && array.Length > 0)
-			VineConverter.TileToVine.TryAdd(array[0], Type);
+			ConvertAdjacent.TileToVine.TryAdd(array[0], Type);
 
 		TileObjectData.addTile(Type);
 	}
@@ -53,19 +53,5 @@ public abstract class VineTile : ModTile, ISwayTile
 
 		int height = bottom - j;
 		ConversionHelper.ConvertTiles(i, j, 1, height, newType);
-	}
-}
-
-public class VineConverter : GlobalTile
-{
-	/// <summary> Handles automatic one-to-one conversion in <see cref="TileFrame"/>, like vanilla vines do. </summary>
-	public static readonly Dictionary<int, int> TileToVine = [];
-
-	public override bool TileFrame(int i, int j, int type, ref bool resetFrame, ref bool noBreak)
-	{
-		if (TileID.Sets.IsVine[type] && TileToVine.TryGetValue(Framing.GetTileSafely(i, j - 1).TileType, out int value))
-			VineTile.ConvertVines(i, j, value);
-
-		return true;
 	}
 }

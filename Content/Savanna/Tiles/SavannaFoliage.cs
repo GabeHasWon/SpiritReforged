@@ -39,13 +39,13 @@ public class SavannaFoliage : ModTile
 		HitSound = SoundID.Grass;
 	}
 
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public override void Convert(int i, int j, int conversionType)
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<SavannaFoliageCorrupt>(), ModContent.TileType<SavannaFoliageCrimson>(), ModContent.TileType<SavannaFoliageHallow>(), ModContent.TileType<SavannaFoliage>()) is int value && value != -1)
-			WorldGen.ConvertTile(i, j, value);
+		ConvertAdjacent.CommonPlant(i, j);
+		return true;
 	}
+
+	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{

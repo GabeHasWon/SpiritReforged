@@ -1,8 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
-using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -72,22 +70,17 @@ public class StarConversion : ModBiomeConversion
 {
 	public static int ConversionType { get; private set; }
 
-	private static readonly Dictionary<int, int> Plants = new()
+	private static readonly Dictionary<int, int> Conversions = new()
 	{
-		{ TileID.Plants, ModContent.TileType<StargrassFlowers>() },
-		{ TileID.Plants2, ModContent.TileType<StargrassFlowers>() }
+		{ TileID.Grass, ModContent.TileType<StargrassTile>() },
+		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() }
 	};
 
 	public override void SetStaticDefaults()
 	{
 		ConversionType = Type;
 
-		TileLoader.RegisterConversion(TileID.GolfGrass, ConversionType, static (i, j, type, conversionType) =>
-		{
-			WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassMowed>());
-			return true;
-		});
-
+		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertAction);
 		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, static (i, j, type, conversionType) =>
 		{
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
@@ -96,20 +89,16 @@ public class StarConversion : ModBiomeConversion
 			TileExtensions.GetTopLeft(ref i, ref j);
 			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
+	}
 
-		TileLoader.RegisterConversion(TileID.Grass, ConversionType, static (i, j, type, conversionType) =>
+	private static bool ConvertAction(int i, int j, int type, int conversionType)
+	{
+		if (Conversions.TryGetValue(type, out int value))
 		{
-			var above = Framing.GetTileSafely(i, j - 1);
-
-			if (Plants.TryGetValue(above.TileType, out int value))
-			{
-				above.TileType = (ushort)value;
-				WorldGen.Reframe(i, j - 1, true);
-			}
-
-			WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassTile>());
-
+			WorldGen.ConvertTile(i, j, value);
 			return true;
-		});
+		}
+
+		return false;
 	}
 }

@@ -9,15 +9,6 @@ public class StargrassFlowers : ModTile
 {
 	public const int StyleRange = 27;
 
-	private static readonly Dictionary<int, int> Typed = new() 
-	{ 
-		{ BiomeConversionID.Corruption, TileID.CorruptPlants }, 
-		{ BiomeConversionID.Crimson, TileID.CrimsonPlants }, 
-		{ BiomeConversionID.Hallow, TileID.HallowedPlants },
-		{ BiomeConversionID.Purity, TileID.Plants }, 
-		{ BiomeConversionID.PurificationPowder, TileID.Plants }
-	};
-
 	public static Color Glow(object obj)
 	{
 		const float MinBrightness = 0.4f;
@@ -64,8 +55,13 @@ public class StargrassFlowers : ModTile
 		HitSound = SoundID.Grass;
 	}
 
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConvertAdjacent.CommonPlant(i, j);
+		return true;
+	}
 
+	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
@@ -80,11 +76,5 @@ public class StargrassFlowers : ModTile
 
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
-	}
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.Grass) is int value && value != -1)
-			WorldGen.ConvertTile(i, j, value);
 	}
 }
