@@ -7,15 +7,12 @@ namespace SpiritReforged.Common.TileCommon.Conversion;
 public class ConvertAdjacent : GlobalTile
 {
 	public delegate bool FrameDelegate(int i, int j);
-
 	private static readonly Dictionary<int, HashSet<FrameDelegate>> DelegatesByType = [];
-	/// <summary> Handles automatic one-to-one conversion in <see cref="TileFrame"/>, like vanilla vines do. </summary>
-	public static readonly Dictionary<int, int> TileToVine = [];
 
-	public override void Load()
+	public override void SetStaticDefaults()
 	{
-		AddFrameActions(CommonPlant, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
-		AddFrameActions(CommonVine, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
+		AddFrameActions(CommonPlants, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
+		AddFrameActions(CommonVines, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
 	}
 
 	/// <summary> Allows binding additional actions to <paramref name="type"/> when framed. Commonly used for conversion by anchor type. </summary>
@@ -49,36 +46,32 @@ public class ConvertAdjacent : GlobalTile
 	}
 
 	#region actions
-	/// <summary> Allows several plants to convert interchangeably between eachother when framed. </summary>
-	internal static bool CommonPlant(int i, int j)
+	public static readonly Dictionary<int, int> Conversions = new()
 	{
-		var below = Framing.GetTileSafely(i, j + 1);
+		{ TileID.CorruptGrass, TileID.CorruptPlants },
+		{ TileID.CrimsonGrass, TileID.CrimsonPlants },
+		{ TileID.HallowedGrass, TileID.HallowedPlants },
+		{ TileID.Grass, TileID.Plants },
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaFoliageCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaFoliageCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaFoliageHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaFoliage>() },
+		{ ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassFlowers>() }
+	};
 
+	/// <summary> Handles automatic one-to-one conversion in <see cref="TileFrame"/>, like vanilla vines do. </summary>
+	public static readonly Dictionary<int, int> TileToVine = [];
+
+	/// <summary> Allows several plants to convert interchangeably between eachother when framed. </summary>
+	internal static bool CommonPlants(int i, int j)
+	{
 		int type = Main.tile[i, j].TileType;
-		int newType = type;
 
-		newType = below.TileType switch
+		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
 		{
-			TileID.CorruptGrass => TileID.CorruptPlants,
-			TileID.CrimsonGrass => TileID.CrimsonPlants,
-			TileID.HallowedGrass => TileID.HallowedPlants,
-			TileID.Grass => TileID.Plants,
-			_ => newType
-		};
+			if (newType == TileID.HallowedPlants && type == TileID.HallowedPlants2 || newType == TileID.Plants && type == TileID.Plants2)
+				return false; //Prevents `Plants2` from converting into `Plants` spontaneously
 
-		if (below.TileType == ModContent.TileType<SavannaGrassCorrupt>())
-			newType = ModContent.TileType<SavannaFoliageCorrupt>();
-		else if (below.TileType == ModContent.TileType<SavannaGrassCrimson>())
-			newType = ModContent.TileType<SavannaFoliageCrimson>();
-		else if (below.TileType == ModContent.TileType<SavannaGrassHallow>())
-			newType = ModContent.TileType<SavannaFoliageHallow>();
-		else if (below.TileType == ModContent.TileType<SavannaGrass>())
-			newType = ModContent.TileType<SavannaFoliage>();
-		else if (below.TileType == ModContent.TileType<StargrassTile>())
-			newType = ModContent.TileType<StargrassFlowers>();
-
-		if (type != newType)
-		{
 			Main.tile[i, j].TileType = (ushort)newType;
 			WorldGen.Reframe(i, j);
 
@@ -89,7 +82,7 @@ public class ConvertAdjacent : GlobalTile
 	}
 
 	/// <summary> Allows several vines to convert interchangeably between eachother when framed. </summary>
-	internal static bool CommonVine(int i, int j)
+	internal static bool CommonVines(int i, int j)
 	{
 		int type = Main.tile[i, j].TileType;
 

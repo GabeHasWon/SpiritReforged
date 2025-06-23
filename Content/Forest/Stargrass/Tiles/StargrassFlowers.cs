@@ -57,7 +57,7 @@ public class StargrassFlowers : ModTile
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		ConvertAdjacent.CommonPlant(i, j);
+		ConvertAdjacent.CommonPlants(i, j);
 		return true;
 	}
 
