@@ -2029,3 +2029,8 @@ GraniteLegs: {
 	// DisplayName: Kinetic Greaves
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
+
+FlaskOfFrost: {
+	// DisplayName: Flask of Frost
+	// Tooltip: Melee and whip attacks freeze enemies
+}

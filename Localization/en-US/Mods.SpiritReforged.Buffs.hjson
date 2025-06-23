@@ -112,3 +112,8 @@ JinxMark: {
 	DisplayName: Jinx Mark
 	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
 }
+
+FlaskOfFrost_Buff: {
+	DisplayName: Weapon Imbue: Freezing
+	Description: Melee attacks freeze enemies
+}
