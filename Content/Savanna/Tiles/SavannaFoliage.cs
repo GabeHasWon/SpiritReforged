@@ -1,15 +1,15 @@
 ﻿using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
+using static SpiritReforged.Common.TileCommon.Conversion.ConvertAdjacent;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaFoliage : ModTile
+public class SavannaFoliage : ModTile, IFrameAction
 {
 	public const int StyleRange = 15;
 
-	protected virtual Color MapColor => new(104, 156, 7);
-	protected virtual int Dust => DustID.JunglePlants;
+	public virtual FrameDelegate FrameAction => CommonPlants;
 
 	public override void SetStaticDefaults()
 	{
@@ -24,25 +24,28 @@ public class SavannaFoliage : ModTile
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
+		DustType = -1;
+		HitSound = SoundID.Grass;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateWidth = 16;
 		TileObjectData.newTile.CoordinateHeights = [TileHeight];
 		TileObjectData.newTile.DrawYOffset = -(TileHeight - 18);
-		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
-		TileObjectData.addTile(Type);
 
-		AddMapEntry(MapColor);
-		DustType = Dust;
-		HitSound = SoundID.Grass;
+		PreAddObjectData();
+
+		TileObjectData.addTile(Type);
 	}
 
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	public virtual void PreAddObjectData()
 	{
-		ConvertAdjacent.CommonPlants(i, j);
-		return true;
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
+
+		DustType = DustID.JunglePlants;
+		AddMapEntry(new(104, 156, 7));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
@@ -59,18 +62,33 @@ public class SavannaFoliage : ModTile
 
 public class SavannaFoliageCorrupt : SavannaFoliage
 {
-	protected override Color MapColor => new(109, 106, 174);
-	protected override int Dust => DustID.Corruption;
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+
+		DustType = DustID.Corruption;
+		AddMapEntry(new(109, 106, 174));
+	}
 }
 
 public class SavannaFoliageCrimson : SavannaFoliage
 {
-	protected override Color MapColor => new(183, 69, 68);
-	protected override int Dust => DustID.CrimsonPlants;
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+
+		DustType = DustID.CrimsonPlants;
+		AddMapEntry(new(183, 69, 68));
+	}
 }
 
 public class SavannaFoliageHallow : SavannaFoliage
 {
-	protected override Color MapColor => new(78, 193, 227);
-	protected override int Dust => DustID.HallowedPlants;
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
+
+		DustType = DustID.HallowedPlants;
+		AddMapEntry(new(78, 193, 227));
+	}
 }

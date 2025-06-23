@@ -1,13 +1,16 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.Metadata;
+using static SpiritReforged.Common.TileCommon.Conversion.ConvertAdjacent;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassFlowers Glow")]
-public class StargrassFlowers : ModTile
+public class StargrassFlowers : ModTile, IFrameAction
 {
 	public const int StyleRange = 27;
+
+	public virtual FrameDelegate FrameAction => CommonPlants;
 
 	public static Color Glow(object obj)
 	{
@@ -53,12 +56,6 @@ public class StargrassFlowers : ModTile
 		AddMapEntry(new Color(20, 190, 130));
 		DustType = DustID.Grass;
 		HitSound = SoundID.Grass;
-	}
-
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-	{
-		ConvertAdjacent.CommonPlants(i, j);
-		return true;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
