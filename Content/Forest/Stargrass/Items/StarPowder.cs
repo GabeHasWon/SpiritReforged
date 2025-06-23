@@ -2,6 +2,7 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
+using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -71,9 +72,8 @@ public class StarConversion : ModBiomeConversion
 {
 	public static int ConversionType { get; private set; }
 
-	private static readonly Dictionary<int, int> Conversions = new()
+	private static readonly Dictionary<int, int> Plants = new()
 	{
-		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() },
 		{ TileID.Plants, ModContent.TileType<StargrassFlowers>() },
 		{ TileID.Plants2, ModContent.TileType<StargrassFlowers>() }
 	};
@@ -82,9 +82,13 @@ public class StarConversion : ModBiomeConversion
 	{
 		ConversionType = Type;
 
-		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
+		TileLoader.RegisterConversion(TileID.GolfGrass, ConversionType, static (i, j, type, conversionType) =>
+		{
+			WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassMowed>());
+			return true;
+		});
 
-		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, (i, j, type, conversionType) =>
+		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, static (i, j, type, conversionType) =>
 		{
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
 				return false; //Return if this is not the base of the flower
@@ -93,28 +97,19 @@ public class StarConversion : ModBiomeConversion
 			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
 
-		TileLoader.RegisterConversion(TileID.Grass, ConversionType, (i, j, type, conversionType) =>
+		TileLoader.RegisterConversion(TileID.Grass, ConversionType, static (i, j, type, conversionType) =>
 		{
-			var below = Framing.GetTileSafely(i, j + 1); 
-			if (below.HasTile && below.TileType is TileID.Vines or TileID.VineFlowers) //Convert vines, if any
+			var above = Framing.GetTileSafely(i, j - 1);
+
+			if (Plants.TryGetValue(above.TileType, out int value))
 			{
-				Main.tile[i, j].TileType = (ushort)ModContent.TileType<StargrassTile>();
-				VineTile.ConvertVines(i, j + 1, ModContent.TileType<StargrassVine>());
+				above.TileType = (ushort)value;
+				WorldGen.Reframe(i, j - 1, true);
 			}
-			else
-			{
-				WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassTile>());
-			}
+
+			WorldGen.ConvertTile(i, j, ModContent.TileType<StargrassTile>());
 
 			return true;
 		});
-	}
-
-	private static bool ConvertTiles(int i, int j, int type, int conversionType)
-	{
-		if (Conversions.TryGetValue(type, out int newType))
-			WorldGen.ConvertTile(i, j, newType);
-
-		return false;
 	}
 }

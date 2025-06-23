@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.Tree;
+﻿using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
@@ -66,22 +65,25 @@ public class SavannaConversion : ModBiomeConversion
 {
 	public static int ConversionType { get; private set; }
 
-	private static readonly Dictionary<int, int> Conversions = new()
+	private static readonly Dictionary<int, int> Plants = new()
 	{
-		{ TileID.Dirt, ModContent.TileType<SavannaDirt>() },
 		{ TileID.Plants, ModContent.TileType<SavannaFoliage>() },
 		{ TileID.Plants2, ModContent.TileType<SavannaFoliage>() },
 		{ TileID.CorruptPlants, ModContent.TileType<SavannaFoliageCorrupt>() },
 		{ TileID.CrimsonPlants, ModContent.TileType<SavannaFoliageCrimson>() },
 		{ TileID.HallowedPlants, ModContent.TileType<SavannaFoliageHallow>() },
-		{ TileID.HallowedPlants2, ModContent.TileType<SavannaFoliageHallow>() },
+		{ TileID.HallowedPlants2, ModContent.TileType<SavannaFoliageHallow>() }
 	};
 
 	public override void SetStaticDefaults()
 	{
 		ConversionType = Type;
 
-		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
+		TileLoader.RegisterConversion(TileID.Dirt, ConversionType, static (i, j, type, conversionType) =>
+		{
+			WorldGen.ConvertTile(i, j, ModContent.TileType<SavannaDirt>());
+			return true;
+		});
 
 		WallLoader.RegisterConversion(WallID.DirtUnsafe, ConversionType, ConvertWalls);
 		WallLoader.RegisterConversion(WallID.Dirt, ConversionType, ConvertWalls);
@@ -90,17 +92,6 @@ public class SavannaConversion : ModBiomeConversion
 		TileLoader.RegisterConversion(TileID.CorruptGrass, ConversionType, ConvertGrass);
 		TileLoader.RegisterConversion(TileID.CrimsonGrass, ConversionType, ConvertGrass);
 		TileLoader.RegisterConversion(TileID.HallowedGrass, ConversionType, ConvertGrass);
-	}
-
-	private static bool ConvertTiles(int i, int j, int type, int conversionType)
-	{
-		if (Conversions.TryGetValue(type, out int newType))
-		{
-			WorldGen.ConvertTile(i, j, newType);
-			return true;
-		}
-
-		return false;
 	}
 
 	private static bool ConvertWalls(int i, int j, int type, int conversionType)
@@ -154,10 +145,18 @@ public class SavannaConversion : ModBiomeConversion
 		}
 		else
 		{
+			var above = Framing.GetTileSafely(i, j - 1);
+
+			if (Plants.TryGetValue(above.TileType, out int value))
+			{
+				above.TileType = (ushort)value;
+				WorldGen.Reframe(i, j - 1, true);
+			}
+
 			WorldGen.ConvertTile(i, j, newType);
 		}
 
-		return false;
+		return true;
 
 		static void ClearArea(Rectangle area, int type)
 		{

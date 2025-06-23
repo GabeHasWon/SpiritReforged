@@ -1,30 +1,17 @@
 ﻿using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 public class SavannaVine : VineTile
 {
-	public override void SetStaticDefaults()
+	public override void PreAddObjectData()
 	{
-		base.SetStaticDefaults();
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
-		TileObjectData.newTile.AnchorAlternateTiles = [Type];
-
-		PreAddObjectData();
-
-		TileObjectData.addTile(Type);
-
+		AddMapEntry(new Color(24, 135, 28));
 		DustType = DustID.JunglePlants;
-		HitSound = SoundID.Grass;
 	}
-
-	public override void PreAddObjectData() => AddMapEntry(new Color(24, 135, 28));
 
 	public override void Convert(int i, int j, int conversionType)
 	{
@@ -37,6 +24,8 @@ public class SavannaVineCorrupt : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+
 		TileID.Sets.AddCorruptionTile(Type);
 		TileID.Sets.Corrupt[Type] = true;
 
@@ -49,6 +38,8 @@ public class SavannaVineCrimson : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+
 		TileID.Sets.AddCrimsonTile(Type);
 		TileID.Sets.Crimson[Type] = true;
 
@@ -61,6 +52,8 @@ public class SavannaVineHallow : SavannaVine
 {
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
+
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 1;
 

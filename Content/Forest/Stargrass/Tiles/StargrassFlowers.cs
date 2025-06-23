@@ -1,7 +1,5 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Savanna.Items;
-using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
@@ -17,8 +15,7 @@ public class StargrassFlowers : ModTile
 		{ BiomeConversionID.Crimson, TileID.CrimsonPlants }, 
 		{ BiomeConversionID.Hallow, TileID.HallowedPlants },
 		{ BiomeConversionID.Purity, TileID.Plants }, 
-		{ BiomeConversionID.PurificationPowder, TileID.Plants }, 
-		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaFoliage>() }
+		{ BiomeConversionID.PurificationPowder, TileID.Plants }
 	};
 
 	public static Color Glow(object obj)
@@ -58,7 +55,7 @@ public class StargrassFlowers : ModTile
 		TileObjectData.newTile.DrawYOffset = -(TileHeight - 18);
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>(), TileID.CorruptGrass, TileID.CrimsonGrass, TileID.HallowedGrass, TileID.Grass, ModContent.TileType<SavannaGrass>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
 		TileObjectData.addTile(Type);
 
@@ -87,7 +84,7 @@ public class StargrassFlowers : ModTile
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, Typed) is int value && value != -1)
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.Grass) is int value && value != -1)
 			WorldGen.ConvertTile(i, j, value);
 	}
 }
