@@ -2021,3 +2021,8 @@ GraniteLegs: {
 	// DisplayName: Kinetic Greaves
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
+
+HardlightVisor: {
+	// DisplayName: Hardlight Visor
+	// Tooltip: ""
+}

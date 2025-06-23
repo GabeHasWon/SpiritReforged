@@ -2029,3 +2029,8 @@ GraniteLegs: {
 	DisplayName: Kinetic Greaves
 	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
+
+HardlightVisor: {
+	DisplayName: Hard Light Visor
+	Tooltip: ""
+}
