@@ -6,10 +6,17 @@ namespace SpiritReforged.Common.PlayerCommon;
 
 internal static class PlayerExtensions
 {
-	public static bool HasEquip(this Player player, Item item) => item.ModItem is EquippableItem && player.GetModPlayer<ItemEquipPlayer>().equips[item.Name];
-	public static bool HasEquip(this Player player, ModItem item) => item is EquippableItem && player.GetModPlayer<ItemEquipPlayer>().equips[item.Name];
-	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<ItemEquipPlayer>().equips[ModContent.GetInstance<TItem>().Name];
+	public static bool HasEquip(this Player player, Item item) => item.ModItem is EquippableItem && player.GetModPlayer<EquipsPlayer>().equips[item.Name];
+	public static bool HasEquip(this Player player, ModItem item) => item is EquippableItem && player.GetModPlayer<EquipsPlayer>().equips[item.Name];
+	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<EquipsPlayer>().equips[ModContent.GetInstance<TItem>().Name];
 	public static bool HasEquip(this Player player, int itemId) => HasEquip(player, ContentSamples.ItemsByType[itemId]);
+
+	/// <summary> Checks whether the set bonus related to this item is active on <paramref name="player"/>.<br/>
+	/// <paramref name="ofType"/> must be of the instance that overrides <see cref="ModItem.IsArmorSet"/>. </summary>
+	public static bool WearingSet(this Player player, int ofType) => ItemLoader.GetItem(ofType).IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
+
+	/// <inheritdoc cref="WearingSet(Player, int)"/>
+	public static bool WearingSet<T>(this Player player) where T : ModItem => ModContent.GetInstance<T>().IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
 
 	/// <summary> Checks whether the player is in the corruption, crimson, or hallow. </summary>
 	public static bool ZoneEvil(this Player player) => player.ZoneCorrupt || player.ZoneCrimson || player.ZoneHallow;
