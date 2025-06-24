@@ -123,23 +123,6 @@ internal class ButterflyMicropass : Micropass
 
 	public static void PlaceButterflyGrove(Point origin)
 	{
-		//TODO: trees (and grass ig) can generate on top of the cavern. if a cave genned with space above it, those trees would grow!
-		//      don't rly wanna fix this bcuz its funny imo, but can do if desired
-		//TODO: is checking far top/bottom tiles and placing them for waterfall necesarry? assess
-		//TODO: is consistent cherry tree placement desirable? relies completely on randomness rn. roll for certain amount of trees
-		//      to be placed like the waterfalls? spread them apart from each other?
-		//TODO: guarantee stump generation after enough fails? place pedestal in center of structure, like enchanted sword shrine?
-		//      a lot of work for almost no payoff, since it not genning feels like an extreme statistical anomaly. current gen is just
-		//      rly condusive for it to be placed right
-		//TODO: vines can generate outside of the structure. can fix, but should i bother? could create some interesting
-		//      divergent visual if left in... but idk...
-		//TODO: waterfalls can generate facing the outside of the structure, same thoughts on this as above
-
-		//TODO: if vines spawn in the air, they dont get their frames set properly! ahhh! aaaaaahhhhhhh! 
-		//TODO: sakuga trees are very frequently replaced with normal trees on worldgen
-		//      addendum: ive greatly reduced the chance of this happening by moving when the trees are genned, but ive still
-		//      seen it happen exactly once to one tree. fixed! 
-
 		ShapeData slimeShapeData = new ShapeData();
 		ShapeData sideCarversShapeData = new ShapeData();
 		Point point = new Point(origin.X, origin.Y + 20);
@@ -164,70 +147,9 @@ internal class ButterflyMicropass : Micropass
 			new Actions.ClearTile(frameNeighbors: true).Output(slimeShapeData)
 		));
 
-		#region Set Dressing
-		// Place grass along the inner outline of the cavern shape
-		WorldUtils.Gen(point, new ModShapes.InnerOutline(slimeShapeData), Actions.Chain(
-			new Actions.SetTile(TileID.Grass),
-			new Actions.SetFrames(frameNeighbors: true)
-		));
-		// Place waterfalls around the upper half of the cavern
-		int waterfallCap = WorldGen.genRand.Next(1, 3);
-		int waterfallAmt = 0;
-		WorldUtils.Gen(point, new ModShapes.InnerOutline(slimeShapeData), Actions.Chain(
-			new Modifiers.OnlyTiles(TileID.Grass),
-			new Modifiers.RectangleMask(-40, 40, -40, 0),
-			new Actions.Custom((i, j, args) =>
-			{
-				if (WorldGen.genRand.NextBool(10))
-				{
-					if (waterfallAmt >= waterfallCap)
-						return true;
+		DecorateGrove(point, slimeShapeData);
 
-					// Doing all our validation here, checking for two things...
-					// 1. If the block to the left/right is air (so we know what direction to face the waterfall in)
-					// 2. If there is no liquid where the water will be (to prevent duplicates)
-					if (!Main.tile[i + 1, j].HasTile && Main.tile[i - 1, j].LiquidAmount == 0)
-					{
-						PlaceWaterfall(i, j, true);
-						waterfallAmt++;
-					}
-					else if (!Main.tile[i - 1, j].HasTile && Main.tile[i + 1, j].LiquidAmount == 0)
-					{
-						PlaceWaterfall(i, j, false);
-						waterfallAmt++;
-					}
-				}
-				
-				return true;
-			})
-		));
-		// Place Flower wall on all cavern shape coordinates. Place flower vines 1 tile below all grass tiles of the cavern
-		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
-			new Actions.PlaceWall(WallID.Flower),
-			new Modifiers.RectangleMask(-40, 40, -40, -5),
-			new Modifiers.OnlyTiles(TileID.Grass),
-			new Modifiers.Offset(0, 1),
-			new ActionVines(0, 12, 382)
-		));
-		// Place grass and flowers above grass tiles in the cavern
-		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
-			new Modifiers.Offset(0, -1),
-			new Modifiers.OnlyTiles(TileID.Grass),
-			new Modifiers.Offset(0, -1),
-			new ActionGrass()
-			));
-		// Place Sakura trees on the ground wherever applicable 
-		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
-			new Modifiers.OnlyTiles(TileID.Grass),
-			new Actions.Custom((i, j, args) => {
-				if (WorldGen.genRand.NextBool())
-					WorldGen.GrowTreeWithSettings(i, j, WorldGen.GrowTreeSettings.Profiles.VanityTree_Sakura);
-				return true;
-			})
-		));
-		#endregion
-
-		#region Butterfly Stump
+		// Place the Butterfly Stump on the ground wherever applicable 
 		bool placedStump = false;
 		int placedStumpAttempts = 0;
 		while (!placedStump)
@@ -259,7 +181,74 @@ internal class ButterflyMicropass : Micropass
 		{
 			SpiritReforgedMod.Instance.Logger.Info("Generator exceeded maximum tries for structure: Butterfly Shrine Stump");
 		}
-		#endregion
+	}
+
+	public static void DecorateGrove(Point point, ShapeData slimeShapeData)
+	{
+		// Place grass along the inner outline of the cavern shape
+		WorldUtils.Gen(point, new ModShapes.InnerOutline(slimeShapeData), Actions.Chain(
+			new Actions.SetTile(TileID.Grass),
+			new Actions.SetFrames(frameNeighbors: true)
+		));
+
+		// Place waterfalls around the upper half of the cavern
+		int waterfallCap = WorldGen.genRand.Next(1, 3);
+		int waterfallAmt = 0;
+		WorldUtils.Gen(point, new ModShapes.InnerOutline(slimeShapeData), Actions.Chain(
+			new Modifiers.OnlyTiles(TileID.Grass),
+			new Modifiers.RectangleMask(-40, 40, -40, 0),
+			new Actions.Custom((i, j, args) =>
+			{
+				if (WorldGen.genRand.NextBool(10))
+				{
+					if (waterfallAmt >= waterfallCap)
+						return true;
+
+					// Doing all our validation here, checking for two things...
+					// 1. If the block to the left/right is air (so we know what direction to face the waterfall in)
+					// 2. If there is no liquid where the water will be (to prevent duplicates)
+					if (!Main.tile[i + 1, j].HasTile && Main.tile[i - 1, j].LiquidAmount == 0)
+					{
+						PlaceWaterfall(i, j, true);
+						waterfallAmt++;
+					}
+					else if (!Main.tile[i - 1, j].HasTile && Main.tile[i + 1, j].LiquidAmount == 0)
+					{
+						PlaceWaterfall(i, j, false);
+						waterfallAmt++;
+					}
+				}
+
+				return true;
+			})
+		));
+
+		// Place Flower wall on all cavern shape coordinates. Place flower vines 1 tile below all grass tiles of the cavern
+		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
+			new Actions.PlaceWall(WallID.Flower),
+			new Modifiers.RectangleMask(-40, 40, -40, -5),
+			new Modifiers.OnlyTiles(TileID.Grass),
+			new Modifiers.Offset(0, 1),
+			new ActionVines(0, 12, 382)
+		));
+
+		// Place grass and flowers above grass tiles in the cavern
+		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
+			new Modifiers.Offset(0, -1),
+			new Modifiers.OnlyTiles(TileID.Grass),
+			new Modifiers.Offset(0, -1),
+			new ActionGrass()
+			));
+
+		// Place Sakura trees on the ground wherever applicable 
+		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
+			new Modifiers.OnlyTiles(TileID.Grass),
+			new Actions.Custom((i, j, args) => {
+				if (WorldGen.genRand.NextBool())
+					WorldGen.GrowTreeWithSettings(i, j, WorldGen.GrowTreeSettings.Profiles.VanityTree_Sakura);
+				return true;
+			})
+		));
 	}
 
 	public static void PlaceWaterfall(int x, int y, bool leftIndent)
