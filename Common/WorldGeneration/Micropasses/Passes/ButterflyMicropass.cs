@@ -51,7 +51,7 @@ internal class ButterflyMicropass : Micropass
 			if (GenVars.structures.CanPlace(new Rectangle(position.X, position.Y, size.X, size.Y), 4))
 			{
 				var blacklist = new QuickConversion.BiomeType[] { QuickConversion.BiomeType.Jungle, QuickConversion.BiomeType.Mushroom, QuickConversion.BiomeType.Desert, QuickConversion.BiomeType.Ice };
-				if (!StructureTools.SpawnConvertedStructure(position, size, structureName, blacklist))
+				if (!StructureTools.SpawnConvertedStructure(position, size, structureName, out _, blacklist))
 				{
 					i--;
 					continue;
