@@ -4,6 +4,7 @@ using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Common.TileCommon.Conversion;
 
+/// <summary> Automatically defines a set in <see cref="ConversionHandler.SetByName"/>. </summary>
 public interface ISetConversion
 {
 	public ConversionHandler.Set ConversionSet { get; }
@@ -61,6 +62,11 @@ public class ConversionHandler : GlobalTile
 		}
 	}
 
+	/// <summary> Outputs the set value associated with <paramref name="name"/> and <paramref name="key"/>.<para/>
+	/// For example, '<see cref="nameof(SavannaGrass)"/>, <see cref="BiomeConversionID.Corruption"/>' would output the type of <see cref="SavannaGrassCorrupt"/>. </summary>
+	/// <param name="name"> The name used to identify the set. This is usually the internal name of the first tile associated with it. </param>
+	/// <param name="key"> The key identifier for this set. This could either be a <see cref="BiomeConversionID"/> or a TileID depending on the nature of the conversion. </param>
+	/// <param name="value"> The value resulting from both prior identifiers. </param>
 	public static bool FindSet(string name, int key, out int value)
 	{
 		value = 0;
