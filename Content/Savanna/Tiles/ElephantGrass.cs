@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -9,6 +8,14 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrass : ModTile, ICutAttempt
 {
+	public static readonly Dictionary<int, int> Conversions = new()
+	{
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<ElephantGrassCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<ElephantGrassCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<ElephantGrassHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<ElephantGrass>() },
+	};
+
 	protected virtual Color SubColor => Color.Goldenrod;
 
 	/// <returns> Whether this <see cref="ElephantGrass"/> tile uses its short alternate style. </returns>
@@ -25,9 +32,11 @@ public class ElephantGrass : ModTile, ICutAttempt
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
+		DustType = DustID.JungleGrass;
+		HitSound = SoundID.Grass;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 5;
 
@@ -35,16 +44,15 @@ public class ElephantGrass : ModTile, ICutAttempt
 		TileObjectData.newAlternate.RandomStyleRange = 3;
 
 		PreAddObjectData();
+
 		TileObjectData.addAlternate(5);
 		TileObjectData.addTile(Type);
-
-		HitSound = SoundID.Grass;
 	}
 
 	public virtual void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
 		AddMapEntry(new(104, 156, 70));
-		DustType = DustID.JungleGrass;
 	}
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
@@ -181,16 +189,22 @@ public class ElephantGrass : ModTile, ICutAttempt
 		}
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<ElephantGrassCorrupt>(), ModContent.TileType<ElephantGrassCrimson>(), ModContent.TileType<ElephantGrassHallow>(), ModContent.TileType<ElephantGrass>()) is int value && value != -1)
-			WorldGen.ConvertTile(i, j, value);
-	}
-
 	public bool OnCutAttempt(int i, int j)
 	{
 		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];
 		return p.HeldItem.type is ItemID.Sickle or ItemID.LawnMower; //Only allow this tile to be cut using a sickle or lawnmower
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		FrameConvert(i, j, Main.tile[i, j].TileType);
+		return true;
+	}
+
+	public static void FrameConvert(int i, int j, int type)
+	{
+		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
+			WorldGen.ConvertTile(i, j, newType);
 	}
 }
 
@@ -201,6 +215,8 @@ public class ElephantGrassCorrupt : ElephantGrass
 
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+
 		TileID.Sets.AddCorruptionTile(Type);
 		TileID.Sets.Corrupt[Type] = true;
 
@@ -216,6 +232,8 @@ public class ElephantGrassCrimson : ElephantGrass
 
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+
 		TileID.Sets.AddCrimsonTile(Type);
 		TileID.Sets.Crimson[Type] = true;
 
@@ -231,6 +249,8 @@ public class ElephantGrassHallow : ElephantGrass
 
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
+
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 1;
 

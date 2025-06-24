@@ -1,15 +1,12 @@
 ﻿using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
-using static SpiritReforged.Common.TileCommon.Conversion.ConvertAdjacent;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaFoliage : ModTile, IFrameAction
+public class SavannaFoliage : ModTile
 {
 	public const int StyleRange = 15;
-
-	public virtual FrameDelegate FrameAction => CommonPlants;
 
 	public override void SetStaticDefaults()
 	{
@@ -24,7 +21,7 @@ public class SavannaFoliage : ModTile, IFrameAction
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
-		DustType = -1;
+		DustType = DustID.JunglePlants;
 		HitSound = SoundID.Grass;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -43,13 +40,10 @@ public class SavannaFoliage : ModTile, IFrameAction
 	public virtual void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
-
-		DustType = DustID.JunglePlants;
 		AddMapEntry(new(104, 156, 7));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HeldItem.type == ItemID.Sickle)
@@ -57,6 +51,12 @@ public class SavannaFoliage : ModTile, IFrameAction
 
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(1, 3));
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConvertAdjacent.CommonPlants(i, j, Main.tile[i, j].TileType);
+		return true;
 	}
 }
 

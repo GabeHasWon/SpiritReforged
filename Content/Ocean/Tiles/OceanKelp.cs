@@ -10,6 +10,14 @@ public class OceanKelp : ModTile
 {
 	private const int ClumpX = 92;
 
+	public static readonly Dictionary<int, int> Conversions = new()
+	{
+		{ TileID.Ebonsand, ModContent.TileType<OceanKelpCorrupt>() },
+		{ TileID.Crimsand, ModContent.TileType<OceanKelpCrimson>() },
+		{ TileID.Pearlsand, ModContent.TileType<OceanKelpHallowed>() },
+		{ TileID.Sand, ModContent.TileType<OceanKelp>() },
+	};
+
 	private readonly static int[] ClumpOffsets = [0, -8, 8];
 
 	public override void SetStaticDefaults()
@@ -250,21 +258,22 @@ public class OceanKelp : ModTile
 		return sin;
 	}
 
-	public override void Convert(int i, int j, int conversionType)
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		int type = Main.tile[i, j].TileType;
+		FrameConvert(i, j, Main.tile[i, j].TileType);
+		return true;
+	}
 
-		if (Framing.GetTileSafely(i, j + 1).TileType == type)
-			return; //Return if this is not the base of the stalk
-
-		if (ConversionHelper.FindType(conversionType, type, ModContent.TileType<OceanKelpCorrupt>(), ModContent.TileType<OceanKelpCrimson>(), ModContent.TileType<OceanKelpHallowed>(), ModContent.TileType<OceanKelp>()) is int value && value != -1)
+	public static void FrameConvert(int i, int j, int type)
+	{
+		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
 		{
 			int top = j;
 			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == type)
 				top--; //Iterate to the top of the stalk
 
 			int height = j - top;
-			ConversionHelper.ConvertTiles(i, top + 1, 1, height, value);
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
 		}
 	}
 }

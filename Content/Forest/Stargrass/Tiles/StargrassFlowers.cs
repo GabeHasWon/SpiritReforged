@@ -1,16 +1,13 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.Metadata;
-using static SpiritReforged.Common.TileCommon.Conversion.ConvertAdjacent;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassFlowers Glow")]
-public class StargrassFlowers : ModTile, IFrameAction
+public class StargrassFlowers : ModTile
 {
 	public const int StyleRange = 27;
-
-	public virtual FrameDelegate FrameAction => CommonPlants;
 
 	public static Color Glow(object obj)
 	{
@@ -73,5 +70,11 @@ public class StargrassFlowers : ModTile, IFrameAction
 
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConvertAdjacent.CommonPlants(i, j, Main.tile[i, j].TileType);
+		return true;
 	}
 }

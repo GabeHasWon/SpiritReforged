@@ -1,33 +1,21 @@
 ﻿using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
-using static SpiritReforged.Common.TileCommon.Conversion.ConvertAdjacent;
 
 namespace SpiritReforged.Common.TileCommon.Conversion;
 
-/// <summary> Denotes additional behaviour for <see cref="GlobalTile.TileFrame"/> using <see cref="FrameAction"/>.<br/>
+/// <summary> Controls additional behaviour for <see cref="GlobalTile.TileFrame"/> using <see cref="FrameAction"/>.<br/>
 /// A common use case is for conversion based on strict tile conditions, like plants, which convert from anchors.<para/>
 /// Delegates can be registered manually to any type using <see cref="AddFrameAction"/>. </summary>
-public interface IFrameAction
-{
-	public FrameDelegate FrameAction { get; }
-}
-
 public class ConvertAdjacent : GlobalTile
 {
-	public delegate bool FrameDelegate(int i, int j);
+	public delegate bool FrameDelegate(int i, int j, int type);
 	private static readonly Dictionary<int, HashSet<FrameDelegate>> DelegatesByType = [];
 
 	public override void SetStaticDefaults()
 	{
 		AddFrameActions(CommonPlants, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
 		AddFrameActions(CommonVines, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
-
-		foreach (var modTile in ModContent.GetContent<ModTile>())
-		{
-			if (modTile is IFrameAction i)
-				AddFrameAction(modTile.Type, i.FrameAction);
-		}
 	}
 
 	/// <summary> Allows binding additional actions to <paramref name="type"/> when framed. Commonly used for conversion by anchor type. </summary>
@@ -47,16 +35,16 @@ public class ConvertAdjacent : GlobalTile
 	public override bool TileFrame(int i, int j, int type, ref bool resetFrame, ref bool noBreak)
 	{
 		if (DelegatesByType.TryGetValue(type, out var actions))
-			InvokeAll(actions, i, j);
+			InvokeAll(actions, i, j, type);
 
 		return true;
 	}
 
-	private static void InvokeAll(IEnumerable<FrameDelegate> actions, int i, int j)
+	private static void InvokeAll(IEnumerable<FrameDelegate> actions, int i, int j, int type)
 	{
 		foreach (var action in actions)
 		{
-			if (action.Invoke(i, j))
+			if (action.Invoke(i, j, type))
 				return;
 		}
 	}
@@ -82,10 +70,8 @@ public class ConvertAdjacent : GlobalTile
 
 	/// <summary> Allows several plants to convert interchangeably between eachother when framed.<para/>
 	/// See <see cref="Conversions"/> if you need a tile type to be included. </summary>
-	internal static bool CommonPlants(int i, int j)
+	internal static bool CommonPlants(int i, int j, int type)
 	{
-		int type = Main.tile[i, j].TileType;
-
 		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
 		{
 			if (newType == TileID.HallowedPlants && type == TileID.HallowedPlants2 || newType == TileID.Plants && type == TileID.Plants2)
@@ -101,10 +87,8 @@ public class ConvertAdjacent : GlobalTile
 	}
 
 	/// <summary> Allows several vines to convert interchangeably between eachother when framed. </summary>
-	internal static bool CommonVines(int i, int j)
+	internal static bool CommonVines(int i, int j, int type)
 	{
-		int type = Main.tile[i, j].TileType;
-
 		if (TileID.Sets.IsVine[type] && TileToVine.TryGetValue(Framing.GetTileSafely(i, j - 1).TileType, out int value))
 		{
 			VineTile.ConvertVines(i, j, value);
@@ -114,4 +98,32 @@ public class ConvertAdjacent : GlobalTile
 		return false;
 	}
 	#endregion
+
+	public static bool RegisterFrameFunction(object[] args) //Used for mod call
+	{
+		if (args.Length != 2)
+			throw new ArgumentException("args must be 2 elements long (int/int[] tileType(s), Func<int, int, int, bool> function)!");
+
+		int[] tileTypes = [];
+		if (args[0] is int or short or ushort)
+		{
+			tileTypes = [(int)args[0]];
+		}
+		else if (args[0] is int[] or short[] or ushort[])
+		{
+			tileTypes = (int[])args[0];
+		}
+
+		if (args[1] is Func<int, int, int, bool> function)
+		{
+			foreach (int tileType in tileTypes)
+				AddFrameAction(tileType, new FrameDelegate(function));
+		}
+		else
+		{
+			throw new ArgumentException("RegisterFrameFunction must be a Func<int, int, int, bool>!");
+		}
+
+		return true;
+	}
 }
