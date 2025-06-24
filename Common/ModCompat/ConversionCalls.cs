@@ -93,6 +93,6 @@ internal class ConversionCalls : ILoadable
 		return fallbackId;
 	}
 
-	public void Load(Mod mod) {}
+	public void Load(Mod mod) { }
 	public void Unload() => HandlersByConversionType.Clear();
 }

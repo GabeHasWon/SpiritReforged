@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -11,6 +10,14 @@ public class OceanKelp : ModTile
 {
 	private const int ClumpX = 92;
 
+	public static readonly Dictionary<int, int> Conversions = new()
+	{
+		{ TileID.Ebonsand, ModContent.TileType<OceanKelpCorrupt>() },
+		{ TileID.Crimsand, ModContent.TileType<OceanKelpCrimson>() },
+		{ TileID.Pearlsand, ModContent.TileType<OceanKelpHallowed>() },
+		{ TileID.Sand, ModContent.TileType<OceanKelp>() },
+	};
+
 	private readonly static int[] ClumpOffsets = [0, -8, 8];
 
 	public override void SetStaticDefaults()
@@ -20,17 +27,13 @@ public class OceanKelp : ModTile
 		Main.tileFrameImportant[Type] = true;
 
 		TileID.Sets.NotReallySolid[Type] = true;
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.WaterPlacement = LiquidPlacement.OnlyInFullLiquid;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
 
-		// Anchors accept all variants as otherwise the custom anchoring is too inconsistent.
-		// The anchors, however, do automatically change the kelp, so it works out.
 		TileObjectData.newTile.AnchorValidTiles = [TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
-		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<OceanKelp>(), ModContent.TileType<OceanKelpCorrupt>(), 
-			ModContent.TileType<OceanKelpCrimson>(), ModContent.TileType<OceanKelpHallowed>()];
+		TileObjectData.newTile.AnchorAlternateTiles = [Type];
 
 		PreAddObjectData();
 		TileObjectData.addTile(Type);
@@ -255,11 +258,24 @@ public class OceanKelp : ModTile
 		return sin;
 	}
 
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		ModContent.TileType<OceanKelpCorrupt>(),
-		ModContent.TileType<OceanKelpCrimson>(),
-		ModContent.TileType<OceanKelpHallowed>(),
-		ModContent.TileType<OceanKelp>());
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		FrameConvert(i, j, Main.tile[i, j].TileType);
+		return true;
+	}
+
+	public static void FrameConvert(int i, int j, int type)
+	{
+		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
+		{
+			int top = j;
+			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == type)
+				top--; //Iterate to the top of the stalk
+
+			int height = j - top;
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
+		}
+	}
 }
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]

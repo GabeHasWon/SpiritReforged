@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Pottery;
@@ -84,6 +85,10 @@ public partial class SpiritReforgedMod : Mod
 				case "AddSavannaTree":
 					{
 						return ConversionCalls.AddSavannaTree(args[1..]);
+					}
+				case "RegisterFrameFunction":
+					{
+						return ConvertAdjacent.RegisterFrameFunction(args[1..]);
 					}
 				default:
 					{

@@ -1,6 +1,4 @@
 ﻿using RubbleAutoloader;
-using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
@@ -8,7 +6,19 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 
 public abstract class SavannaShrubsBase : ModTile
 {
-	protected virtual int[] Anchors => [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaDirt>(), TileID.Sand];
+	public static readonly Dictionary<int, int> Conversions = new()
+	{
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaShrubsCorrupt>() },
+		{ TileID.Ebonsand, ModContent.TileType<SavannaShrubsCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaShrubsCrimson>() },
+		{ TileID.Crimsand, ModContent.TileType<SavannaShrubsCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaShrubsHallow>() },
+		{ ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaShrubsHallow>() },
+		{ TileID.Pearlsand, ModContent.TileType<SavannaShrubsHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaShrubs>() },
+		{ ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaShrubs>() },
+		{ TileID.Sand, ModContent.TileType<SavannaShrubs>() },
+	};
 
 	public override void SetStaticDefaults()
 	{
@@ -18,9 +28,11 @@ public abstract class SavannaShrubsBase : ModTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
 
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
+
+		DustType = DustID.JunglePlants;
+		HitSound = SoundID.Grass;
 
 		const int height = 44;
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -28,75 +40,71 @@ public abstract class SavannaShrubsBase : ModTile
 		TileObjectData.newTile.CoordinateHeights = [height];
 		TileObjectData.newTile.DrawYOffset = -(height - 18 - 4); //4 pixels are reserved for the tile space below
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = Anchors;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 11;
-		TileObjectData.addTile(Type);
 
+		PreAddObjectData();
+
+		TileObjectData.addTile(Type);
+	}
+
+	public virtual void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaDirt>(), TileID.Sand];
 		AddMapEntry(new Color(104, 156, 7));
-		DustType = DustID.Grass;
-		HitSound = SoundID.Grass;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-	public override void Convert(int i, int j, int conversionType)
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		if (!Autoloader.IsRubble(Type))
-		{
-			ConversionHelper.Simple(i, j, conversionType,
-				ModContent.TileType<SavannaShrubsCorrupt>(),
-				ModContent.TileType<SavannaShrubsCrimson>(),
-				ModContent.TileType<SavannaShrubsHallow>(),
-				ModContent.TileType<SavannaShrubs>());
-		}
+			FrameConvert(i, j, Main.tile[i, j].TileType);
+
+		return true;
+	}
+
+	public static void FrameConvert(int i, int j, int type)
+	{
+		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
+			WorldGen.ConvertTile(i, j, newType);
 	}
 }
 
 public class SavannaShrubs : SavannaShrubsBase, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<SavannaGrassSeeds>(), IAutoloadRubble.RubbleSize.Small);
-
-	public override void SetStaticDefaults()
-	{
-		Main.tileSolid[Type] = false;
-		Main.tileMergeDirt[Type] = false;
-		Main.tileBlockLight[Type] = false;
-		Main.tileFrameImportant[Type] = true;
-		Main.tileNoFail[Type] = true;
-
-		TileID.Sets.BreakableWhenPlacing[Type] = true;
-		TileID.Sets.SwaysInWindBasic[Type] = true;
-
-		const int height = 44;
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.CoordinateWidth = 56;
-		TileObjectData.newTile.CoordinateHeights = [height];
-		TileObjectData.newTile.DrawYOffset = -(height - 18 - 4); //4 pixels are reserved for the tile space below
-		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = Anchors;
-		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.RandomStyleRange = 11;
-		TileObjectData.addTile(Type);
-
-		AddMapEntry(new Color(50, 92, 19));
-		DustType = DustID.Grass;
-		HitSound = SoundID.Grass;
-	}
-
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
 }
 
 public class SavannaShrubsCorrupt : SavannaShrubsBase
 {
-	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCorrupt>(), TileID.Ebonsand];
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaDirt>(), TileID.Ebonsand];
+
+		DustType = DustID.Corruption;
+		AddMapEntry(new(109, 106, 174));
+	}
 }
 
 public class SavannaShrubsCrimson : SavannaShrubsBase
 {
-	protected override int[] Anchors => [ModContent.TileType<SavannaGrassCrimson>(), TileID.Crimsand];
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaDirt>(), TileID.Crimsand];
+
+		DustType = DustID.CrimsonPlants;
+		AddMapEntry(new(183, 69, 68));
+	}
 }
 
 public class SavannaShrubsHallow : SavannaShrubsBase
 {
-	protected override int[] Anchors => [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>(), TileID.Pearlsand];
+	public override void PreAddObjectData()
+	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaDirt>(), TileID.Pearlsand];
+
+		DustType = DustID.HallowedPlants;
+		AddMapEntry(new(78, 193, 227));
+	}
 }

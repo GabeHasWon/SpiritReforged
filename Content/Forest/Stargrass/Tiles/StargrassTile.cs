@@ -15,6 +15,15 @@ namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
 public class StargrassTile : GrassTile
 {
+	private static readonly Dictionary<int, int> Typed = new()
+	{
+		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+		{ BiomeConversionID.Hallow, TileID.HallowedGrass },
+		{ BiomeConversionID.PurificationPowder, TileID.Grass },
+		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	};
+
 	public static Color Glow(object obj) 
 	{
 		var pos = (Point)obj;
@@ -35,6 +44,8 @@ public class StargrassTile : GrassTile
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
+
+		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
 	}
 
 	public override void FloorVisuals(Player player)
@@ -96,10 +107,10 @@ public class StargrassTile : GrassTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.2f, 0.5f);
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		(BiomeConversionID.Corruption, TileID.CorruptGrass),
-		(BiomeConversionID.Crimson, TileID.CrimsonGrass),
-		(BiomeConversionID.Hallow, TileID.HallowedGrass),
-		(BiomeConversionID.PurificationPowder, TileID.Grass),
-		(SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>()));
+
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, Typed) is int value && value != -1)
+			WorldGen.ConvertTile(i, j, value);
+	}
 }

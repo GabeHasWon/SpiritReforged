@@ -1,51 +1,23 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
-using Terraria.DataStructures;
-using static Terraria.GameContent.Drawing.TileDrawing;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaVine : ModTile, ISwayTile
+public class SavannaVine : VineTile
 {
-	public int Style => (int)TileCounterType.Vine;
-
-	public override void SetStaticDefaults()
-	{
-		Main.tileBlockLight[Type] = true;
-		Main.tileCut[Type] = true;
-		Main.tileNoFail[Type] = true;
-		Main.tileLavaDeath[Type] = true;
-
-		SpiritSets.ConvertsByAdjacent[Type] = true;
-		TileID.Sets.IsVine[Type] = true;
-		TileID.Sets.VineThreads[Type] = true;
-		TileID.Sets.ReplaceTileBreakDown[Type] = true;
-
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
-		TileObjectData.newTile.AnchorAlternateTiles = [Type];
-
-		PreAddObjectData();
-		TileObjectData.addTile(Type);
-
-		DustType = DustID.JunglePlants;
-		HitSound = SoundID.Grass;
-	}
-
-	public virtual void PreAddObjectData()
+	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
+
 		AddMapEntry(new Color(24, 135, 28));
+		DustType = DustID.JunglePlants;
 	}
 
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-	public override void Convert(int i, int j, int conversionType) => ConversionHelper.Simple(i, j, conversionType,
-		ModContent.TileType<SavannaVineCorrupt>(),
-		ModContent.TileType<SavannaVineCrimson>(),
-		ModContent.TileType<SavannaVineHallow>(),
-		ModContent.TileType<SavannaVine>());
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<SavannaVineCorrupt>(), ModContent.TileType<SavannaVineCrimson>(), ModContent.TileType<SavannaVineHallow>(), ModContent.TileType<SavannaVine>()) is int value && value != -1)
+			ConvertVines(i, j, value);
+	}
 }
 
 public class SavannaVineCorrupt : SavannaVine

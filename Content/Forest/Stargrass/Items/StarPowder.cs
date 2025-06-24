@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon.Conversion;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
@@ -22,7 +23,6 @@ public class StarPowder : ModItem
 		Item.useAnimation = 15;
 		Item.noMelee = true;
 		Item.consumable = true;
-		Item.autoReuse = false;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<StarPowderProj>();
 		Item.shootSpeed = 6f;
@@ -73,27 +73,31 @@ public class StarConversion : ModBiomeConversion
 	private static readonly Dictionary<int, int> Conversions = new()
 	{
 		{ TileID.Grass, ModContent.TileType<StargrassTile>() },
-		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() },
-		{ TileID.Plants, ModContent.TileType<StargrassFlowers>() },
-		{ TileID.Plants2, ModContent.TileType<StargrassFlowers>() }
+		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() }
 	};
 
 	public override void SetStaticDefaults()
 	{
 		ConversionType = Type;
 
-		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertTiles);
-		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, (i, j, type, conversionType) =>
+		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertAction);
+		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, static (i, j, type, conversionType) =>
 		{
-			ushort newType = (ushort)ModContent.TileType<Starflower>();
-			return conversionType == ConversionType && ConversionHelper.DoMultiConversion(i, j, newType);
+			if (Framing.GetTileSafely(i, j + 1).TileType == type)
+				return false; //Return if this is not the base of the flower
+
+			TileExtensions.GetTopLeft(ref i, ref j);
+			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
 	}
 
-	private static bool ConvertTiles(int i, int j, int type, int conversionType)
+	private static bool ConvertAction(int i, int j, int type, int conversionType)
 	{
-		if (Conversions.TryGetValue(type, out int newType))
-			WorldGen.ConvertTile(i, j, newType);
+		if (Conversions.TryGetValue(type, out int value))
+		{
+			WorldGen.ConvertTile(i, j, value);
+			return true;
+		}
 
 		return false;
 	}

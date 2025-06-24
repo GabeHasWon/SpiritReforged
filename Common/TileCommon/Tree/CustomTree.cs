@@ -138,7 +138,6 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		TileObjectData.newTile.AnchorValidTiles = [TileID.Grass];
 		TileObjectData.newTile.AnchorAlternateTiles = [Type];
 
-		SpiritSets.ConvertsByAdjacent[Type] = true;
 		//TileID.Sets.IsATreeTrunk[Type] = true; //If true, allows torches to be placed on trunks regardless of tileNoAttach
 		TileID.Sets.IsShakeable[Type] = true;
 		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
@@ -262,7 +261,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public void ModifyTarget(ref int x, ref int y)
 	{
-		while (Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type && WorldGen.InWorld(x, y + 1))
+		while (WorldGen.InWorld(x, y + 1) && Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type)
 			y++;
 	}
 }
