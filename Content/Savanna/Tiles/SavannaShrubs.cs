@@ -1,12 +1,13 @@
 ﻿using RubbleAutoloader;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public abstract class SavannaShrubsBase : ModTile
+public abstract class SavannaShrubsBase : ModTile, ISetConversion
 {
-	public static readonly Dictionary<int, int> Conversions = new()
+	public ConversionHandler.Set ConversionSet => new()
 	{
 		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaShrubsCorrupt>() },
 		{ TileID.Ebonsand, ModContent.TileType<SavannaShrubsCorrupt>() },
@@ -66,7 +67,7 @@ public abstract class SavannaShrubsBase : ModTile
 
 	public static void FrameConvert(int i, int j, int type)
 	{
-		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
+		if (ConversionHandler.FindSet(nameof(SavannaShrubs), Framing.GetTileSafely(i, j + 1).TileType, out int newType))
 			WorldGen.ConvertTile(i, j, newType);
 	}
 }

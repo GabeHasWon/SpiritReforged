@@ -13,16 +13,8 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaTree : CustomTree
+public class AcaciaTree : CustomTree, ISetConversion
 {
-	public static readonly Dictionary<int, int> Conversions = new()
-	{
-		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<AcaciaTreeCorrupt>() },
-		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<AcaciaTreeCrimson>() },
-		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<AcaciaTreeHallow>() },
-		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<AcaciaTree>() },
-	};
-
 	/// <summary> All Acacia treetop platforms that exist in the world. </summary>
 	internal static IEnumerable<TreetopPlatform> Platforms
 	{
@@ -34,6 +26,14 @@ public class AcaciaTree : CustomTree
 	}
 
 	public override int TreeHeight => WorldGen.genRand.Next(8, 16);
+
+	public ConversionHandler.Set ConversionSet => new()
+	{
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<AcaciaTreeCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<AcaciaTreeCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<AcaciaTreeHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<AcaciaTree>() },
+	};
 
 	/// <summary> How much acacia tree tops sway in the wind. Used by the client for drawing and platform logic. </summary>
 	public static float GetSway(int i, int j, double factor = 0)
@@ -81,6 +81,21 @@ public class AcaciaTree : CustomTree
 			item.stack *= 2;
 			yield return item;
 		}
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		if (ConversionHandler.FindSet(nameof(AcaciaTree), Framing.GetTileSafely(i, j + 1).TileType, out int newType) && Type != newType)
+		{
+			int top = j;
+			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == Type)
+				top--; //Iterate to the top of the tree
+
+			int height = j - top;
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
+		}
+
+		return true;
 	}
 
 	protected override void OnShakeTree(int i, int j)
@@ -230,25 +245,6 @@ public class AcaciaTree : CustomTree
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
-	}
-
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-	{
-		FrameConvert(i, j, Main.tile[i, j].TileType);
-		return true;
-	}
-
-	public static void FrameConvert(int i, int j, int type)
-	{
-		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
-		{
-			int top = j;
-			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == type)
-				top--; //Iterate to the top of the tree
-
-			int height = j - top;
-			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
-		}
 	}
 }
 

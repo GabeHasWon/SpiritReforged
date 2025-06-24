@@ -6,10 +6,13 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaGrass : GrassTile
+public class SavannaGrass : GrassTile, ISetConversion
 {
 	protected override int DirtType => ModContent.TileType<SavannaDirt>();
 	protected virtual Color MapColor => new(104, 156, 70);
+
+	public ConversionHandler.Set ConversionSet => ConversionHelper.CreateSimple(ModContent.TileType<SavannaGrassCorrupt>(), 
+		ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrass>());
 
 	public override void SetStaticDefaults()
 	{
@@ -78,7 +81,7 @@ public class SavannaGrass : GrassTile
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrass>()) is int value && value != -1)
+		if (ConversionHandler.FindSet(nameof(SavannaGrass), conversionType, out int value))
 			WorldGen.ConvertTile(i, j, value);
 	}
 }

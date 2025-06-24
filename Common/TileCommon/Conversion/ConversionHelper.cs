@@ -1,9 +1,9 @@
-﻿using SpiritReforged.Common.ModCompat;
+﻿using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
 using static Terraria.ID.BiomeConversionID;
 
 namespace SpiritReforged.Common.TileCommon.Conversion;
 
-public class ConversionHelper
+public static class ConversionHelper
 {
 	public static void RegisterConversions(int[] types, int conversionType, TileLoader.ConvertTile action)
 	{
@@ -43,39 +43,23 @@ public class ConversionHelper
 		return true;
 	}
 
-	/// <inheritdoc cref="FindType(int, int, Dictionary{int, int})"/>
+	/// <summary> Creates a basic set using the provided info, keyed by <see cref="BiomeConversionID"/>s. </summary>
 	/// <param name="corruption"> The Corruption tile type. </param>
 	/// <param name="crimson"> The Crimson tile type. </param>
 	/// <param name="hallow"> The Hallowed tile type. </param>
 	/// <param name="purity"> The purity tile type. </param>
 	/// <param name="purificationPowder"> Whether <paramref name="purity"/> is also used when using Purification Powder. </param>
-	public static int FindType(int conversionType, int tileType, int corruption, int crimson, int hallow, int purity, bool purificationPowder = true)
+	public static Set CreateSimple(int corruption, int crimson, int hallow, int purity, bool purificationPowder = true)
 	{
-		Dictionary<int, int> sets = [];
-		sets.Add(Corruption, corruption);
-		sets.Add(Crimson, crimson);
-		sets.Add(Hallow, hallow);
-		sets.Add(Purity, purity);
+		Set set = [];
+		set.Add(Corruption, corruption);
+		set.Add(Crimson, crimson);
+		set.Add(Hallow, hallow);
+		set.Add(Purity, purity);
 
 		if (purificationPowder)
-			sets.Add(PurificationPowder, purity);
+			set.Add(PurificationPowder, purity);
 
-		return FindType(conversionType, tileType, sets);
-	}
-
-	/// <summary> Returns the appropriate tile type for conversion with consideration for <see cref="ConversionCalls"/>. -1 if none exists. </summary>
-	/// <param name="conversionType"> The conversion type, usually passed from <see cref="ModBlockType.Convert"/>. </param>
-	/// <param name="tileType"> The tile type being converted. </param>
-	public static int FindType(int conversionType, int tileType, Dictionary<int, int> sets)
-	{
-		int result = -1;
-
-		if (sets.TryGetValue(conversionType, out int dictValue))
-			result = dictValue;
-
-		if (ConversionCalls.GetConversionType(conversionType, tileType) is int callValue && callValue != -1)
-			result = callValue;
-
-		return result;
+		return set;
 	}
 }
