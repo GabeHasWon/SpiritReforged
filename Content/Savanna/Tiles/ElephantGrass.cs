@@ -11,6 +11,11 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 {
 	protected virtual Color SubColor => Color.Goldenrod;
 
+	public static readonly SoundStyle[] SwishSounds = 
+		[new("SpiritReforged/Assets/SFX/Tile/SavannaGrass1"), 
+		new("SpiritReforged/Assets/SFX/Tile/SavannaGrass2"),
+		new("SpiritReforged/Assets/SFX/Tile/SavannaGrass3")];
+
 	/// <returns> Whether this <see cref="ElephantGrass"/> tile uses its short alternate style. </returns>
 	public static bool IsShortgrass(int i, int j) => TileObjectData.GetTileStyle(Main.tile[i, j]) > 4;
 
@@ -60,8 +65,6 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 
 	public override void NearbyEffects(int i, int j, bool closer) //Play sounds when walking inside of grass patches
 	{
-		const string path = "SpiritReforged/Assets/SFX/Tile/SavannaGrass";
-
 		if (Main.gamePaused)
 			return;
 
@@ -83,7 +86,7 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 				pitch += .4f;
 			}
 
-			var style = new SoundStyle(path + Main.rand.Next(1, 4)) with { MaxInstances = -1, PitchVariance = .2f, Pitch = pitch, Volume = volume };
+			var style = Main.rand.NextFromList(SwishSounds) with { MaxInstances = -1, PitchVariance = 0.2f, Pitch = pitch, Volume = volume };
 			SoundEngine.PlaySound(style, Main.LocalPlayer.Center);
 		}
 	}
