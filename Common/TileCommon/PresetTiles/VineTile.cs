@@ -31,7 +31,7 @@ public abstract class VineTile : ModTile, ISwayTile
 		PreAddObjectData();
 
 		if (TileObjectData.newTile.AnchorValidTiles is int[] array && array.Length > 0)
-			ConversionHandler.AddSet(ConversionHandler.Vines, new() { { array[0], Type } });
+			ConversionHandler.CreateSet(ConversionHandler.Vines, new() { { array[0], Type } });
 
 		TileObjectData.addTile(Type);
 	}

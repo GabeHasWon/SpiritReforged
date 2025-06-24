@@ -4,7 +4,8 @@ using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Common.TileCommon.Conversion;
 
-/// <summary> Automatically defines a set in <see cref="ConversionHandler.SetByName"/>. </summary>
+/// <summary> Automatically defines a set in <see cref="ConversionHandler.SetByName"/>.<br/>
+/// Remember that this tends to create additional uneeded sets for derived types. </summary>
 public interface ISetConversion
 {
 	public ConversionHandler.Set ConversionSet { get; }
@@ -23,7 +24,6 @@ public class ConversionHandler : GlobalTile
 	public const string Plants = "Plants";
 
 	private static readonly Dictionary<int, FrameDelegate> DelegatesByType = [];
-	/// <summary> See <see cref="AddSet(string, Set)"/>. </summary>
 	private static readonly Dictionary<string, Set> SetByName = [];
 
 	public override void SetStaticDefaults()
@@ -34,9 +34,7 @@ public class ConversionHandler : GlobalTile
 				SetByName.Add(modTile.Name, s);
 		}
 
-		AddFrameActions(CommonPlants, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
-
-		SetByName.Add(Plants, new()
+		CreateSet(Plants, new()
 		{
 			{ TileID.CorruptGrass, TileID.CorruptPlants },
 			{ TileID.CrimsonGrass, TileID.CrimsonPlants },
@@ -49,11 +47,13 @@ public class ConversionHandler : GlobalTile
 			{ ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassFlowers>() }
 		});
 
+		AddFrameActions(CommonPlants, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
 		AddFrameActions(CommonVines, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
 	}
 
-	/// <summary> Caches <paramref name="conversions"/> by <paramref name="name"/> to be easily accessed at <see cref="SetByName"/>. </summary>
-	public static void AddSet(string name, Set set)
+	/// <summary> Caches <paramref name="conversions"/> by <paramref name="name"/> to be easily accessed at <see cref="SetByName"/>.<br/>
+	/// If the set already exists, adds the contents of <paramref name="set"/> to the existing set. </summary>
+	public static void CreateSet(string name, Set set)
 	{
 		if (!SetByName.TryAdd(name, set))
 		{

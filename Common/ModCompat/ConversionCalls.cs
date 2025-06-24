@@ -18,7 +18,7 @@ internal static class ConversionCalls
 			if (args[1] is not Dictionary<int, int> dict)
 				throw new ArgumentException("RegisterConversionSet parameter 2 must be an int, ushort, short or Dictionary<int, int>");
 
-			AddSet(name, (Set)dict);
+			CreateSet(name, (Set)dict);
 		}
 		else if (args.Length == 3)
 		{
@@ -31,7 +31,7 @@ internal static class ConversionCalls
 			if (args[2] is not int or ushort or short)
 				throw new ArgumentException("RegisterConversionSet parameter 3 must be an int, ushort or short");
 
-			AddSet(name, new() { { (int)args[1], (int)args[2] } });
+			CreateSet(name, new() { { (int)args[1], (int)args[2] } });
 		}
 		else
 		{
