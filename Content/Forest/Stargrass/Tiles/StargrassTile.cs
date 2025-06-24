@@ -45,7 +45,7 @@ public class StargrassTile : GrassTile
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
 
-		this.AllowAnchor(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
+		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
 	}
 
 	public override void FloorVisuals(Player player)

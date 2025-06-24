@@ -13,7 +13,7 @@ public abstract class GrassTile : ModTile
 		Main.tileBlendAll[Type] = true;
 
 		this.Merge(DirtType, TileID.Grass);
-		this.AllowAnchor(TileID.Sunflower);
+		this.AnchorSelfTo(TileID.Sunflower);
 		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;

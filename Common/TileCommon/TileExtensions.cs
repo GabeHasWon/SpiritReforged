@@ -210,10 +210,10 @@ public static class TileExtensions
 	}
 
 	/// <summary> Allows <paramref name="types"/> to anchor to this ModTile. </summary>
-	public static void AllowAnchor(this ModTile tile, params int[] types) => AllowAnchor(tile.Type, types);
+	public static void AnchorSelfTo(this ModTile tile, params int[] types) => AnchorSelfTo(tile.Type, types);
 
-	/// <inheritdoc cref="AllowAnchor"/>
-	public static void AllowAnchor(int modTileType, params int[] types)
+	/// <inheritdoc cref="AnchorSelfTo"/>
+	public static void AnchorSelfTo(int modTileType, params int[] types)
 	{
 		foreach (int type in types)
 		{
