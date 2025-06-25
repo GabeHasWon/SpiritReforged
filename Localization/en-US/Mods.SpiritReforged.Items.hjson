@@ -2040,6 +2040,11 @@ FingerGun: {
 		'''
 }
 
+FlaskOfFrost: {
+	DisplayName: Flask of Frost
+	Tooltip: Melee and whip attacks freeze enemies
+}
+
 HardlightVisor: {
 	DisplayName: Hardlight Visor
 	Tooltip: ""
