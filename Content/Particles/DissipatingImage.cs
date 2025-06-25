@@ -23,7 +23,7 @@ public class DissipatingImage : Particle
 	public virtual float FinalScaleMod { get; set; } = 1.5f;
 	public virtual float PixelDivisor { get; set; } = 1.5f;
 
-	public virtual EaseFunction DistortEasing => EaseFunction.EaseQuadIn;
+	public virtual EaseFunction DistortEasing { get; set; } = EaseFunction.EaseQuadIn;
 
 	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;

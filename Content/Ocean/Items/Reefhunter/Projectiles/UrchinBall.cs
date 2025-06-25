@@ -230,7 +230,11 @@ public class UrchinBall : ModProjectile, ITrailProjectile
 			}
 		}
 
-		ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, OrangeVFXColor(70), 0f, 0.125f, Main.rand.NextFloat(0.1f, 0.2f), "Scorch", new(0.5f, 0.5f), new(4, 0.5f), 30) { DistortEasing = EaseFunction.EaseQuadInOut, Intensity = 1.5f});
+		ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, OrangeVFXColor(70), 0f, 0.125f, Main.rand.NextFloat(0.1f, 0.2f), "Scorch", new(0.5f, 0.5f), new(4, 0.5f), 30) 
+		{ 
+			DistortEasing = EaseFunction.EaseQuadInOut, 
+			Intensity = 1.5f
+		});
 
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { PitchVariance = 0.2f, Volume = .8f, MaxInstances = 2 }, Projectile.Center);
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Generic") with { PitchVariance = 0.2f, Volume = .5f, MaxInstances = 2 }, Projectile.Center);

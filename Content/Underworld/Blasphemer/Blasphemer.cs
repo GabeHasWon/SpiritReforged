@@ -181,13 +181,18 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 		if(CheckAIState(AIStates.SWINGING))
 		{
 			for(int i = 0; i < (FullCharge ? 3 : 2); i++)
-				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center + Main.rand.NextVector2Circular(10, 10),
-													-Vector2.UnitY + Main.rand.NextVector2Unit() + Owner.velocity / 2,
-													[new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)],
-													1.25f,
-													Main.rand.NextFloat(0.09f, 0.15f) * TotalScale * (FullCharge ? 1.25f : 1),
-													EaseQuadIn,
-													(int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f))) { ColorLerpExponent = 2.5f });
+			{
+				Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(10, 10);
+				Vector2 velocity = -Vector2.UnitY + Main.rand.NextVector2Unit() + Owner.velocity / 2;
+				Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)];
+				float scale = Main.rand.NextFloat(0.09f, 0.15f) * TotalScale * (FullCharge ? 1.25f : 1);
+				int maxTime = (int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f));
+
+				ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseQuadIn, maxTime) 
+				{ 
+					ColorLerpExponent = 2.5f 
+				});
+			}
 		}
 	}
 

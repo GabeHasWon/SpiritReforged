@@ -58,14 +58,13 @@ public class FingerGun : ModItem
 		{
 			Vector2 handPos = player.HandPosition.Value;
 
-			var fire = new FireParticle(handPos + Vector2.UnitX * player.direction * 3,
-				-Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2,
-				[Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
-				manaPercentage * manaPercentage,
-				0,
-				Main.rand.NextFloat(0.01f, 0.035f),
-				EaseFunction.EaseCircularIn,
-				Main.rand.Next(10, 40));
+			Vector2 position = handPos + Vector2.UnitX * player.direction * 3;
+			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.9f, 1.1f) / 2;
+			Color[] colors = [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()];
+			float scale = Main.rand.NextFloat(0.01f, 0.035f);
+			int maxTime = Main.rand.Next(10, 40);
+
+			var fire = new FireParticle(position, velocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
 
 			ParticleHandler.SpawnParticle(fire);
 		}
@@ -103,14 +102,15 @@ public class FingerGunArmManager : ModPlayer
 					Main.NewText(manaPercentage);
 
 					for (int i = 0; i < 5; i++)
-						ParticleHandler.SpawnParticle(new FireParticle(handPos,
-							Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2),
-							[Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()],
-							manaPercentage * manaPercentage,
-							0,
-							Main.rand.NextFloat(0.01f, 0.035f),
-							EaseFunction.EaseCircularIn,
-							Main.rand.Next(10, 40)));
+					{
+						Vector2 particleVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2);
+						Color[] colors = [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()];
+						float scale = Main.rand.NextFloat(0.01f, 0.035f);
+						int maxTime = Main.rand.Next(10, 40);
+
+						var fire = new FireParticle(handPos, particleVelocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
+						ParticleHandler.SpawnParticle(fire);
+					}
 				}
 
 				if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
