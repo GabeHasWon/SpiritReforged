@@ -31,7 +31,7 @@ public class ConversionHandler : GlobalTile
 		foreach (var modTile in ModContent.GetContent<ModTile>())
 		{
 			if (modTile is ISetConversion i && i.ConversionSet is Set s)
-				SetByName.Add(modTile.Name, s);
+				CreateSet(modTile.Name, s);
 		}
 
 		CreateSet(Plants, new()
