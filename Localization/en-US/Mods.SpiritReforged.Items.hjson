@@ -2030,7 +2030,6 @@ GraniteLegs: {
 	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
 
-
 FingerGun: {
 	DisplayName: Finger Blaster
 	Tooltip:
@@ -2046,5 +2045,4 @@ HardlightVisor: {
 	Tooltip: ""
 	AltDisplayName: Hard Light Visor
 	AltTooltip: "'Not to be confused with Hardlight Visor'"
-
 }

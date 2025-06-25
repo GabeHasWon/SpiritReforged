@@ -99,8 +99,6 @@ public class FingerGunArmManager : ModPlayer
 					ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
 					float manaPercentage = Player.statMana / (float)Player.statManaMax2;
 
-					Main.NewText(manaPercentage);
-
 					for (int i = 0; i < 5; i++)
 					{
 						Vector2 particleVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2);
