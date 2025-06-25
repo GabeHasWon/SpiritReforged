@@ -64,7 +64,10 @@ public class FingerGun : ModItem
 			float scale = Main.rand.NextFloat(0.01f, 0.035f);
 			int maxTime = Main.rand.Next(10, 40);
 
-			var fire = new FireParticle(position, velocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
+			var fire = new FireParticle(position, velocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime)
+			{
+				Rotation = 0
+			};
 
 			ParticleHandler.SpawnParticle(fire);
 		}
