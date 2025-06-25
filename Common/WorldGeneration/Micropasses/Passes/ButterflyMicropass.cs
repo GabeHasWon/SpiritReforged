@@ -49,12 +49,9 @@ internal class ButterflyMicropass : Micropass
 			if (GenVars.structures.CanPlace(new Rectangle(position.X, position.Y, size.X, size.Y), 4))
 			{
 				var blacklist = new QuickConversion.BiomeType[] { QuickConversion.BiomeType.Jungle, QuickConversion.BiomeType.Mushroom, QuickConversion.BiomeType.Desert, QuickConversion.BiomeType.Ice };
-<<<<<<< fishing-cove-loot
-				if (!StructureTools.SpawnConvertedStructure(position, size, structureName, out _, blacklist))
-=======
 				var biome = QuickConversion.FindConversionBiome(position, size);
+	
 				if (blacklist.Contains(biome))
->>>>>>> misc-update
 				{
 					i--;
 					continue;
