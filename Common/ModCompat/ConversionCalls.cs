@@ -25,13 +25,10 @@ internal static class ConversionCalls
 			if (args[0] is not string name)
 				throw new ArgumentException("RegisterConversionSet parameter 1 must be a string!");
 
-			if (args[1] is not int or ushort or short)
-				throw new ArgumentException("RegisterConversionSet parameter 2 must be an int, ushort, short or Dictionary<int, int>");
+			int a = SpiritReforgedMod.ConvertToInteger(args[1], "RegisterConversionSet parameter 2 must be an int, ushort, short or Dictionary<int, int>");
+			int b = SpiritReforgedMod.ConvertToInteger(args[2], "RegisterConversionSet parameter 3 must be an int, ushort or short");
 
-			if (args[2] is not int or ushort or short)
-				throw new ArgumentException("RegisterConversionSet parameter 3 must be an int, ushort or short");
-
-			CreateSet(name, new() { { (int)args[1], (int)args[2] } });
+			CreateSet(name, new() { { a, b } });
 		}
 		else
 		{
