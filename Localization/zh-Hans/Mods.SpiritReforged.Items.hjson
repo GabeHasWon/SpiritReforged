@@ -2030,12 +2030,9 @@ GraniteLegs: {
 	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
 
-FingerGun: {
-	// DisplayName: Finger Blaster
-	/* Tooltip:
-		'''
-		Ignores some enemy defense
-		Fires faster at higher mana
-		'Pew pew!'
-		''' */
+HardlightVisor: {
+	// DisplayName: Hardlight Visor
+	// Tooltip: ""
+	// AltDisplayName: Hard Light Visor
+	// AltTooltip: "'Not to be confused with Hardlight Visor'"
 }
