@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.PresetTiles;
+﻿using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
@@ -11,12 +10,6 @@ public class SavannaVine : VineTile
 
 		AddMapEntry(new Color(24, 135, 28));
 		DustType = DustID.JunglePlants;
-	}
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<SavannaVineCorrupt>(), ModContent.TileType<SavannaVineCrimson>(), ModContent.TileType<SavannaVineHallow>(), ModContent.TileType<SavannaVine>()) is int value && value != -1)
-			ConvertVines(i, j, value);
 	}
 }
 

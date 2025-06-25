@@ -6,19 +6,18 @@ using Terraria.GameContent.Drawing;
 namespace SpiritReforged.Content.Ocean.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class OceanKelp : ModTile
+public class OceanKelp : ModTile, ISetConversion
 {
 	private const int ClumpX = 92;
+	private readonly static int[] ClumpOffsets = [0, -8, 8];
 
-	public static readonly Dictionary<int, int> Conversions = new()
+	public ConversionHandler.Set ConversionSet => new()
 	{
 		{ TileID.Ebonsand, ModContent.TileType<OceanKelpCorrupt>() },
 		{ TileID.Crimsand, ModContent.TileType<OceanKelpCrimson>() },
 		{ TileID.Pearlsand, ModContent.TileType<OceanKelpHallowed>() },
 		{ TileID.Sand, ModContent.TileType<OceanKelp>() },
 	};
-
-	private readonly static int[] ClumpOffsets = [0, -8, 8];
 
 	public override void SetStaticDefaults()
 	{
@@ -120,7 +119,7 @@ public class OceanKelp : ModTile
 	{
 		if (above.TileType != type) // Prioritize using the top texture if the tile above isn't kelp
 		{
-			if (tile.TileFrameY >= 36 && tile.TileFrameY <= 54)
+			if (tile.TileFrameY is >= 36 and <= 54)
 				return;
 
 			tile.TileFrameY = (short)(Main.rand.Next(2) * 18);
@@ -180,6 +179,21 @@ public class OceanKelp : ModTile
 			Vector2 pos = new Vector2(i * 16, j * 16) + new Vector2(2 + Main.rand.Next(12), Main.rand.Next(16));
 			Dust.NewDustPerfect(pos, 34, new Vector2(Main.rand.NextFloat(-0.08f, 0.08f), Main.rand.NextFloat(-0.2f, -0.02f)));
 		}
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		if (ConversionHandler.FindSet(nameof(OceanKelp), Framing.GetTileSafely(i, j + 1).TileType, out int newType) && Type != newType)
+		{
+			int top = j;
+			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == Type)
+				top--; //Iterate to the top of the stalk
+
+			int height = j - top;
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
+		}
+
+		return true;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -256,25 +270,6 @@ public class OceanKelp : ModTile
 			sin *= (y - j) / 4f;
 
 		return sin;
-	}
-
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-	{
-		FrameConvert(i, j, Main.tile[i, j].TileType);
-		return true;
-	}
-
-	public static void FrameConvert(int i, int j, int type)
-	{
-		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
-		{
-			int top = j;
-			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == type)
-				top--; //Iterate to the top of the stalk
-
-			int height = j - top;
-			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
-		}
 	}
 }
 

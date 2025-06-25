@@ -74,21 +74,13 @@ public partial class SpiritReforgedMod : Mod
 
 						return player.GetModPlayer<RecordPlayer>().IsValidated(key);
 					}
-				case "RegisterConversionTable":
+				case "RegisterConversionSet":
 					{
-						return ConversionCalls.RegisterConversionTable(args[1..]);
-					}
-				case "RegisterConversionTile":
-					{
-						return ConversionCalls.RegisterConversionTile(args[1..]);
+						return ConversionCalls.RegisterConversionSet(args[1..]);
 					}
 				case "AddSavannaTree":
 					{
 						return ConversionCalls.AddSavannaTree(args[1..]);
-					}
-				case "RegisterFrameFunction":
-					{
-						return ConvertAdjacent.RegisterFrameFunction(args[1..]);
 					}
 				default:
 					{

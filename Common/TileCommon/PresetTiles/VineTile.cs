@@ -31,7 +31,7 @@ public abstract class VineTile : ModTile, ISwayTile
 		PreAddObjectData();
 
 		if (TileObjectData.newTile.AnchorValidTiles is int[] array && array.Length > 0)
-			ConvertAdjacent.TileToVine.TryAdd(array[0], Type);
+			ConversionHandler.CreateSet(ConversionHandler.Vines, new() { { array[0], Type } });
 
 		TileObjectData.addTile(Type);
 	}
@@ -39,6 +39,12 @@ public abstract class VineTile : ModTile, ISwayTile
 	public virtual void PreAddObjectData() { }
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConversionHandler.CommonVines(i, j, Type);
+		return true;
+	}
 
 	public static void ConvertVines(int i, int j, int newType)
 	{

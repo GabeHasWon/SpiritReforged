@@ -55,7 +55,7 @@ public class SavannaFoliage : ModTile
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		ConvertAdjacent.CommonPlants(i, j, Main.tile[i, j].TileType);
+		ConversionHandler.CommonPlants(i, j, Type);
 		return true;
 	}
 }

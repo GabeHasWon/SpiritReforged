@@ -4,7 +4,6 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Items;
@@ -13,9 +12,9 @@ using SpiritReforged.Content.Savanna.Tiles;
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
-public class StargrassTile : GrassTile
+public class StargrassTile : GrassTile, ISetConversion
 {
-	private static readonly Dictionary<int, int> Typed = new()
+	public virtual ConversionHandler.Set ConversionSet => new()
 	{
 		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
 		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
@@ -82,11 +81,15 @@ public class StargrassTile : GrassTile
 		}
 	}
 
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHandler.FindSet(nameof(StargrassTile), conversionType, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
+	}
+
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		var flags = OpenTools.GetOpenings(i, j, false, false, true);
-
-		if (flags == OpenFlags.None) //Surrounded by solid tiles
+		if (!WorldGen.TileIsExposedToAir(i, j))
 			Main.tile[i, j].TileType = TileID.Grass;
 
 		return true;
@@ -107,10 +110,4 @@ public class StargrassTile : GrassTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.2f, 0.5f);
-
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, Typed) is int value && value != -1)
-			WorldGen.ConvertTile(i, j, value);
-	}
 }

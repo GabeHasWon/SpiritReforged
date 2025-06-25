@@ -1,55 +1,40 @@
-﻿using MonoMod.Utils;
-using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
+﻿using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
+using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
 
 namespace SpiritReforged.Common.ModCompat;
 
-internal class ConversionCalls : ILoadable
+internal static class ConversionCalls
 {
-	public readonly record struct ConversionHolder(int Type, Dictionary<int, int> TileToTileLookup);
-
-	internal static Dictionary<int, ConversionHolder> HandlersByConversionType = [];
-
-	public static bool RegisterConversionTable(object[] args)
+	public static bool RegisterConversionSet(object[] args)
 	{
-		if (args.Length != 2)
-			throw new ArgumentException("args should be 2 elements long (int conversionType, Dictionary<int, int> tileToTileConversion)!");
+		if (args.Length is not 2 and not 3)
+			throw new ArgumentException("args must be at least 2 elements long (string name, Dictionary<int, int> pairs) or (string name, int keyType, int resultType)!");
 
-		int conversionType = SpiritReforgedMod.ConvertToInteger(args[0], "RegisterConversionTable parameter 0 should be an int, short or ushort!");
-
-		if (conversionType < BiomeConversionID.Count)
-			throw new ArgumentException("Vanilla conversions aren't supported by this call.");
-
-		if (args[1] is not Dictionary<int, int> tileToTileLookup)
-			throw new ArgumentException("RegisterConversionTable parameter 1 should be a Dictionary<int, int>!");
-
-		if (HandlersByConversionType.TryGetValue(conversionType, out var holder))
-			holder.TileToTileLookup.AddRange(tileToTileLookup);
-		else
-			HandlersByConversionType.Add(conversionType, new ConversionHolder(conversionType, tileToTileLookup));
-
-		return true;
-	}
-
-	public static bool RegisterConversionTile(object[] args)
-	{
-		if (args.Length != 3)
-			throw new ArgumentException("args should be 3 elements long (int conversionType, int tileType, int convertedType)!");
-
-		int conversionType = SpiritReforgedMod.ConvertToInteger(args[0], "RegisterConversionTile parameter 0 should be an int, short or ushort!");
-
-		if (conversionType < BiomeConversionID.Count)
-			throw new ArgumentException("Vanilla conversions aren't supported by this call.");
-
-		int tileType = SpiritReforgedMod.ConvertToInteger(args[1], "RegisterConversionTile parameter 1 should be an int, short or ushort!");
-		int convertedType = SpiritReforgedMod.ConvertToInteger(args[2], "RegisterConversionTile parameter 2 should be an int, short or ushort!");
-
-		if (!HandlersByConversionType.TryGetValue(conversionType, out ConversionHolder holder))
+		if (args.Length == 2)
 		{
-			holder = new ConversionHolder(conversionType, []);
-			HandlersByConversionType.Add(conversionType, holder);
+			if (args[0] is not string name)
+				throw new ArgumentException("RegisterConversionSet parameter 1 must be a string!");
+
+			if (args[1] is not Dictionary<int, int> dict)
+				throw new ArgumentException("RegisterConversionSet parameter 2 must be an int, ushort, short or Dictionary<int, int>");
+
+			CreateSet(name, (Set)dict);
+		}
+		else if (args.Length == 3)
+		{
+			if (args[0] is not string name)
+				throw new ArgumentException("RegisterConversionSet parameter 1 must be a string!");
+
+			int a = SpiritReforgedMod.ConvertToInteger(args[1], "RegisterConversionSet parameter 2 must be an int, ushort, short or Dictionary<int, int>");
+			int b = SpiritReforgedMod.ConvertToInteger(args[2], "RegisterConversionSet parameter 3 must be an int, ushort or short");
+
+			CreateSet(name, new() { { a, b } });
+		}
+		else
+		{
+			throw new ArgumentException("args must be at least 2 elements long (string name, Dictionary<int, int> pairs) or (string name, int keyType, int resultType)!");
 		}
 
-		holder.TileToTileLookup.Add(tileType, convertedType);
 		return true;
 	}
 
@@ -78,21 +63,4 @@ internal class ConversionCalls : ILoadable
 
 		return (success, type);
 	}
-
-	/// <summary>
-	/// Gets the registered conversion type based on the conversion ID and the tile ID.
-	/// </summary>
-	/// <param name="conversionType">Conversion ID to use. Vanilla IDs are not to be added crossmod.</param>
-	/// <param name="tileType">Tile ID to convert.</param>
-	/// <returns>Converted tile ID. <paramref name="fallbackId"/> if none are found.</returns>
-	public static int GetConversionType(int conversionType, int tileType, int fallbackId = -1)
-	{
-		if (HandlersByConversionType.TryGetValue(conversionType, out ConversionHolder holder) && holder.TileToTileLookup.TryGetValue(tileType, out int newType))
-			return newType;
-
-		return fallbackId;
-	}
-
-	public void Load(Mod mod) { }
-	public void Unload() => HandlersByConversionType.Clear();
 }

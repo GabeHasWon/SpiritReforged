@@ -1,9 +1,7 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Savanna.Items;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;

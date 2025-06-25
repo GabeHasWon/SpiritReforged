@@ -5,8 +5,11 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaRootsSmall : AcaciaRootsLarge
+public class AcaciaRootsSmall : AcaciaRootsLarge, ISetConversion
 {
+	public override ConversionHandler.Set ConversionSet => ConversionHelper.CreateSimple(ModContent.TileType<AcaciaRootsSmallCorrupt>(),
+		ModContent.TileType<AcaciaRootsSmallCrimson>(), ModContent.TileType<AcaciaRootsSmallHallow>(), ModContent.TileType<AcaciaRootsSmall>());
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -35,10 +38,10 @@ public class AcaciaRootsSmall : AcaciaRootsLarge
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (ConversionHelper.FindType(conversionType, Main.tile[i, j].TileType, ModContent.TileType<AcaciaRootsSmallCorrupt>(), ModContent.TileType<AcaciaRootsSmallCrimson>(), ModContent.TileType<AcaciaRootsSmallHallow>(), ModContent.TileType<AcaciaRootsSmall>()) is int value && value != -1)
+		if (ConversionHandler.FindSet(nameof(AcaciaRootsSmall), conversionType, out int newType) && Type != newType)
 		{
 			TileExtensions.GetTopLeft(ref i, ref j);
-			ConversionHelper.ConvertTiles(i, j, 2, 1, value);
+			ConversionHelper.ConvertTiles(i, j, 2, 1, newType);
 		}
 	}
 }

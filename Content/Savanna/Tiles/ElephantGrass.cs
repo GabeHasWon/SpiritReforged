@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -6,17 +7,17 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class ElephantGrass : ModTile, ICutAttempt
+public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 {
-	public static readonly Dictionary<int, int> Conversions = new()
+	protected virtual Color SubColor => Color.Goldenrod;
+
+	public ConversionHandler.Set ConversionSet => new()
 	{
 		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<ElephantGrassCorrupt>() },
 		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<ElephantGrassCrimson>() },
 		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<ElephantGrassHallow>() },
-		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<ElephantGrass>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<ElephantGrass>() }
 	};
-
-	protected virtual Color SubColor => Color.Goldenrod;
 
 	/// <returns> Whether this <see cref="ElephantGrass"/> tile uses its short alternate style. </returns>
 	public static bool IsShortgrass(int i, int j) => TileObjectData.GetTileStyle(Main.tile[i, j]) > 4;
@@ -110,6 +111,14 @@ public class ElephantGrass : ModTile, ICutAttempt
 		bool GrassSurrounding() => Framing.GetTileSafely(i - 1, j).TileType == Type && Framing.GetTileSafely(i + 1, j).TileType == Type;
 	}
 
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		if (ConversionHandler.FindSet(nameof(ElephantGrass), Framing.GetTileSafely(i, j + 1).TileType, out int newType) && Type != newType)
+			WorldGen.ConvertTile(i, j, newType);
+
+		return true;
+	}
+
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) //Imitates wind sway drawing but with unique dimensions
 	{
 		const int height = 3; //Pseudo tile height
@@ -193,18 +202,6 @@ public class ElephantGrass : ModTile, ICutAttempt
 	{
 		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];
 		return p.HeldItem.type is ItemID.Sickle or ItemID.LawnMower; //Only allow this tile to be cut using a sickle or lawnmower
-	}
-
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-	{
-		FrameConvert(i, j, Main.tile[i, j].TileType);
-		return true;
-	}
-
-	public static void FrameConvert(int i, int j, int type)
-	{
-		if (Conversions.TryGetValue(Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)
-			WorldGen.ConvertTile(i, j, newType);
 	}
 }
 
