@@ -51,9 +51,9 @@ internal static class StructureTools
 	/// <param name="structureName">Path to the structure to spawn.</param>
 	/// <param name="invalidBiomes">Invalid places to place the structure.</param>
 	/// <returns>Whether the structure was placed or not.</returns>
-	public static bool SpawnConvertedStructure(Point16 position, Point16 size, string structureName, params QuickConversion.BiomeType[] invalidBiomes)
+	public static bool SpawnConvertedStructure(Point16 position, Point16 size, string structureName, out QuickConversion.BiomeType biome, params QuickConversion.BiomeType[] invalidBiomes)
 	{
-		var biome = QuickConversion.FindConversionBiome(position, size);
+		biome = QuickConversion.FindConversionBiome(position, size);
 
 		if (invalidBiomes.Contains(biome))
 			return false;

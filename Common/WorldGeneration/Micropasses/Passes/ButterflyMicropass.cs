@@ -50,6 +50,7 @@ internal class ButterflyMicropass : Micropass
 			{
 				var blacklist = new QuickConversion.BiomeType[] { QuickConversion.BiomeType.Jungle, QuickConversion.BiomeType.Mushroom, QuickConversion.BiomeType.Desert, QuickConversion.BiomeType.Ice };
 				var biome = QuickConversion.FindConversionBiome(position, size);
+	
 				if (blacklist.Contains(biome))
 				{
 					i--;
