@@ -208,4 +208,45 @@ public static class TileExtensions
 			Main.tileMerge[id][tile.Type] = true;
 		}
 	}
+
+	/// <summary> Allows <paramref name="types"/> to anchor to this ModTile. </summary>
+	public static void AnchorSelfTo(this ModTile tile, params int[] types) => AnchorSelfTo(tile.Type, types);
+
+	/// <inheritdoc cref="AnchorSelfTo"/>
+	public static void AnchorSelfTo(int modTileType, params int[] types)
+	{
+		foreach (int type in types)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, modTileType];
+		}
+	}
+
+	public static Point16 GetAnchor(int i, int j)
+	{
+		Point16 coords = Point16.Zero;
+
+		if (TileObjectData.GetTileData(Main.tile[i, j].TileType, 0) is TileObjectData data)
+		{
+			if (data.AnchorBottom != AnchorData.Empty && Valid(coords = new(i, j + 1), data))
+				return coords;
+
+			if (data.AnchorLeft != AnchorData.Empty && Valid(coords = new(i - 1, j), data))
+				return coords;
+
+			if (data.AnchorRight != AnchorData.Empty && Valid(coords = new(i + 1, j), data))
+				return coords;
+
+			if (data.AnchorTop != AnchorData.Empty && Valid(coords = new(i, j - 1), data))
+				return coords;
+		}
+
+		return coords;
+
+		static bool Valid(Point16 coords, TileObjectData data)
+		{
+			int type = Framing.GetTileSafely(coords).TileType;
+			return data.isValidTileAnchor(type) || data.isValidAlternateAnchor(type);
+		}
+	}
 }

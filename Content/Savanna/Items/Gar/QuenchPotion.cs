@@ -11,30 +11,28 @@ public class QuenchPotion : ModItem
 	#region detours
 	public override void Load()
 	{
-		On_Player.QuickBuff += FocusQuenchPotion;
+		BuffPlayer.QuickBuff += FocusQuenchPotion;
 		BuffPlayer.ModifyBuffTime += QuenchifyBuff;
 	}
 
 	/// <summary> Forces this potion to be used before all others with quick buff. </summary>
-	private static void FocusQuenchPotion(On_Player.orig_QuickBuff orig, Player self)
+	private static void FocusQuenchPotion(Player player)
 	{
-		if (!self.cursed && !self.CCed && !self.dead && !self.HasBuff(BuffType) && self.CountBuffs() < Player.MaxBuffs)
+		if (!player.cursed && !player.CCed && !player.dead && !player.HasBuff(BuffType) && player.CountBuffs() < Player.MaxBuffs)
 		{
-			int itemIndex = self.FindItemInInventoryOrOpenVoidBag(ModContent.ItemType<QuenchPotion>(), out bool inVoidBag);
+			int itemIndex = player.FindItemInInventoryOrOpenVoidBag(ModContent.ItemType<QuenchPotion>(), out bool inVoidBag);
 
 			if (itemIndex > 0)
 			{
-				var item = inVoidBag ? self.bank4.item[itemIndex] : self.inventory[itemIndex];
+				var item = inVoidBag ? player.bank4.item[itemIndex] : player.inventory[itemIndex];
 
-				ItemLoader.UseItem(item, self);
-				self.AddBuff(item.buffType, item.buffTime);
+				ItemLoader.UseItem(item, player);
+				player.AddBuff(item.buffType, item.buffTime);
 
-				if (item.consumable && ItemLoader.ConsumeItem(item, self) && --item.stack <= 0)
+				if (item.consumable && ItemLoader.ConsumeItem(item, player) && --item.stack <= 0)
 					item.TurnToAir();
 			}
 		}
-
-		orig(self);
 	}
 
 	/// <summary> Improves buff times with <see cref="QuenchPotion_Buff"/>. </summary>

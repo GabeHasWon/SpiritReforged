@@ -56,4 +56,6 @@ public class LightBurst : Particle
 	}
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+
+	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 }
