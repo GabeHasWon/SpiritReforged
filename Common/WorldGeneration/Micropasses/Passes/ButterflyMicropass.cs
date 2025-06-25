@@ -22,7 +22,7 @@ internal class ButterflyMicropass : Micropass
 
 		for (int i = 0; i < repeats; i++)
 		{
-			Point16 size = new Point16(35, 35); // 35 chosen as an approximation of how big one cavern usually is
+			Point16 size = new(35, 35); // 35 chosen as an approximation of how big one cavern usually is
 			Point16 position = Point16.Zero;
 
 			int tries = 0;
@@ -56,7 +56,7 @@ internal class ButterflyMicropass : Micropass
 					continue;
 				}
 
-				PlaceButterflyGrove(new Point(position.X + (size.X / 2), position.Y));
+				PlaceButterflyGrove(new Point(position.X + size.X / 2, position.Y));
 				GenVars.structures.AddProtectedStructure(new Rectangle(position.X, position.Y, size.X, size.Y), 4);
 				ButterflySystem.ButterflyZones.Add(new Rectangle(position.X, position.Y, size.X, size.Y));
 				StructureTools.ClearActuators(position.X, position.Y, size.X, size.Y);
@@ -123,9 +123,9 @@ internal class ButterflyMicropass : Micropass
 
 	public static void PlaceButterflyGrove(Point origin)
 	{
-		ShapeData slimeShapeData = new ShapeData();
-		ShapeData sideCarversShapeData = new ShapeData();
-		Point point = new Point(origin.X, origin.Y + 20);
+		ShapeData slimeShapeData = new();
+		ShapeData sideCarversShapeData = new();
+		Point point = new(origin.X, origin.Y + 20);
 		float xScale = 0.8f + WorldGen.genRand.NextFloat() * 0.25f; // Randomize the width of the shrine area
 
 		// Create a masking layer for the cavern, so the walls tilt inwards while going up
@@ -135,6 +135,7 @@ internal class ButterflyMicropass : Micropass
 			new Modifiers.Offset(maskOffset, -10),
 			new Actions.Blank().Output(sideCarversShapeData)
 		));
+
 		WorldUtils.Gen(point, new Shapes.Circle(15), Actions.Chain(
 			new Modifiers.Offset(-maskOffset, -10),
 			new Actions.Blank().Output(sideCarversShapeData)
@@ -163,6 +164,7 @@ internal class ButterflyMicropass : Micropass
 			WorldGen.PlaceTile(randomX, randomY, ModContent.TileType<ButterflyStump>(), mute: true, forced: false, -1);
 			placedStump = Main.tile[randomX, randomY].TileType == ModContent.TileType<ButterflyStump>();
 		}
+
 		// If the former doesn't work, increase the range we search for a spot at
 		if (placedStumpAttempts < 15000)
 		{
@@ -238,7 +240,7 @@ internal class ButterflyMicropass : Micropass
 			new Modifiers.OnlyTiles(TileID.Grass),
 			new Modifiers.Offset(0, -1),
 			new ActionGrass()
-			));
+		));
 
 		// Place Sakura trees on the ground wherever applicable 
 		WorldUtils.Gen(point, new ModShapes.All(slimeShapeData), Actions.Chain(
@@ -258,16 +260,15 @@ internal class ButterflyMicropass : Micropass
 		// Making an array with all the points we want to check for blocks before placing water
 		// The X is always positive so we can left/rightshift it later based on waterfall direction
 		Point[] tileCheckOffsets =
-		{
-				new Point(2, -1), // far top
-                new Point(1, -1), // middle top
-                new Point(0, -1), // near top
-                new Point(2, 0),  // far middle
-                new Point(2, 1),  // far bottom
-                new Point(1, 1),  // middle bottom
-                new Point(0, 1)   // near bottom
-
-            };
+		[
+			new(2, -1), // far top
+            new(1, -1), // middle top
+            new(0, -1), // near top
+            new(2, 0),  // far middle
+            new(2, 1),  // far bottom
+            new(1, 1),  // middle bottom
+            new(0, 1)   // near bottom
+        ];
 
 		// Iterate through our array and take care of any blocks that need taking care of
 		Tile tile;
@@ -291,8 +292,10 @@ internal class ButterflyMicropass : Micropass
 		int waterHorizOffset = leftIndent ? -1 : 1;
 		waterHorizOffset += x;
 		tile = Main.tile[waterHorizOffset, y];
+
 		if (tile.HasTile)
 			tile.HasTile = false;
+
 		tile.LiquidType = LiquidID.Water;
 		tile.LiquidAmount = 255;
 		tile.WallType = WallID.Flower;
