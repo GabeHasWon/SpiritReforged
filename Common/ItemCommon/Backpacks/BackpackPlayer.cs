@@ -1,5 +1,7 @@
-﻿using SpiritReforged.Common.Multiplayer;
+﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.Multiplayer;
 using System.IO;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
@@ -24,6 +26,61 @@ internal class BackpackPlayer : ModPlayer
 	private bool _hadBackpack = false;
 	private BackpackState _state = BackpackState.None;
 	private BackpackState _oldState = BackpackState.None;
+
+	#region detours
+	public override void Load()
+	{
+		On_Player.QuickBuff_PickBestFoodItem += SelectFoodFromPack;
+		On_Player.QuickHeal_GetItemToUse += SelectHealingFromPack;
+	}
+
+	private static Item SelectFoodFromPack(On_Player.orig_QuickBuff_PickBestFoodItem orig, Player self)
+	{
+		var result = orig(self);
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			Item item = BuffPlayer.SortByPriority(i.items, self).LastOrDefault();
+
+			if (!item.IsAir && item.buffTime > 0 && item.buffType != 0 && !HasBetterFoodBuff(self, item.buffType, item.buffTime))
+				return item;
+		}
+
+		return result;
+
+		static bool HasBetterFoodBuff(Player p, int compareType, int compareTime)
+		{
+			int bestTime = 0;
+			int bestPriority = 0;
+
+			for (int i = 0; i < Player.MaxBuffs; i++)
+			{
+				if (p.buffTime[i] > 0 && BuffPlayer.FindFoodPriority(p.buffType[i]) is int newPriority && newPriority > bestPriority && p.buffTime[i] > bestTime)
+				{
+					bestTime = p.buffTime[i] + 1;
+					bestPriority = newPriority;
+				}
+			}
+
+			return bestPriority >= BuffPlayer.FindFoodPriority(compareType) || bestTime > compareTime;
+		}
+	}
+
+	private static Item SelectHealingFromPack(On_Player.orig_QuickHeal_GetItemToUse orig, Player self)
+	{
+		var result = orig(self);
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			Item item = BuffPlayer.SortByPriority(i.items, self, true).LastOrDefault();
+
+			if (!item.IsAir && item.potion && item.healLife > 0)
+				return item;
+		}
+
+		return result;
+	}
+	#endregion
 
 	public override void UpdateEquips()
 	{

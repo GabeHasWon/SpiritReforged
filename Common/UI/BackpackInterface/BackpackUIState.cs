@@ -8,6 +8,8 @@ namespace SpiritReforged.Common.UI.BackpackInterface;
 
 internal class BackpackUIState : AutoUIState
 {
+	internal static bool HasPotionSlotMod { get; private set; }
+
 	private BackpackUISlot _functionalSlot;
 	private BackpackUISlot _vanitySlot;
 	private BackpackUISlot _dyeSlot;
@@ -17,6 +19,7 @@ internal class BackpackUIState : AutoUIState
 
 	public override void OnInitialize()
 	{
+		HasPotionSlotMod = ModLoader.HasMod("PotionSlots");
 		Width = Height = StyleDimension.Fill;
 
 		_functionalSlot = new BackpackUISlot(false);
@@ -39,9 +42,7 @@ internal class BackpackUIState : AutoUIState
 	private static void TryOpenUI(On_Main.orig_DrawInventory orig, Main self)
 	{
 		orig(self);
-
-		if (Main.playerInventory)
-			UISystem.SetActive<BackpackUIState>();
+		UISystem.SetActive<BackpackUIState>();
 	}
 
 	public override void Update(GameTime gameTime)
@@ -99,12 +100,7 @@ internal class BackpackUIState : AutoUIState
 		if (!clear)
 		{
 			const float spacing = 33.5f;
-			int baseX = 571;
-
-			if (ModLoader.HasMod("PotionSlots"))
-			{
-				baseX += 38;
-			}
+			int baseX = HasPotionSlotMod ? 609 : 571;
 
 			int xOff = 0, yOff = 0;
 
@@ -131,9 +127,7 @@ internal class BackpackUIState : AutoUIState
 					Height = StyleDimension.FromPixels(32)
 				};
 
-				yOff++;
-
-				if (yOff >= 4)
+				if (++yOff >= 4)
 				{
 					xOff++;
 					yOff = 0;
