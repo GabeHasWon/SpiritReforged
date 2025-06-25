@@ -214,7 +214,6 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		{
 			if (CrossMod.Thorium.TryFind("InspirationGem", out ModItem inspirationGem) && CrossMod.Thorium.TryFind("AstralWave", out ModItem astralWave))
 				loot.AddOneFromOptions(1, inspirationGem.Type, astralWave.Type);
-
 		}
 	}
 }

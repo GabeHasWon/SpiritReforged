@@ -64,7 +64,10 @@ internal class DrawOverHandler : ModSystem
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
 	{
 		foreach (var p in DrawCache)
-			(p.ModProjectile as IDrawOverTiles).DrawOverTiles(spriteBatch);
+		{
+			if (p.ModProjectile is IDrawOverTiles t)
+				t.DrawOverTiles(spriteBatch);
+		}
 	}
 
 	private static void DrawTargetContents()

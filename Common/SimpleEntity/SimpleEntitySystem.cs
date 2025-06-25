@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Terraria.GameContent.Drawing;
 using Terraria.ModLoader.IO;
 
@@ -66,6 +67,7 @@ public class SimpleEntitySystem : ModSystem
 		Textures = new Asset<Texture2D>[MaxEntities];
 
 		foreach (Type type in SpiritReforgedMod.Instance.Code.GetTypes())
+		{
 			if (type.IsSubclassOf(typeof(SimpleEntity)) && !type.IsAbstract)
 			{
 				int myType = Types.Count;
@@ -76,6 +78,7 @@ public class SimpleEntitySystem : ModSystem
 				instance.Load();
 				Templates[myType] = instance;
 			}
+		}
 
 		Array.Resize(ref Textures, Types.Count);
 		Array.Resize(ref Templates, Types.Count);
@@ -123,8 +126,8 @@ public class SimpleEntitySystem : ModSystem
 
 				TagCompound tag = [];
 
-				tag["x"] = (int)entity.position.X;
-				tag["y"] = (int)entity.position.Y;
+				tag["x"] = (int)entity.Center.X;
+				tag["y"] = (int)entity.Center.Y;
 				tag["name"] = entity.GetType().Name;
 
 				list.Add(tag);
@@ -149,6 +152,34 @@ public class SimpleEntitySystem : ModSystem
 			var position = new Vector2(tagInList.GetInt("x"), tagInList.GetInt("y"));
 			string name = tagInList.GetString("name");
 			NewEntity(Types.FirstOrDefault(x => x.Key.Name == name).Value, position);
+		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		var entities = Entities.Where(x => x is not null);
+		writer.Write((byte)entities.Count());
+
+		foreach (var entity in entities)
+		{
+			writer.Write((int)entity.Center.X);
+			writer.Write((int)entity.Center.Y);
+			writer.Write((byte)entity.Type);
+		}
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		ClearWorld();
+		byte count = reader.ReadByte();
+
+		for (int i = 0; i < count; i++)
+		{
+			int x = reader.ReadInt32();
+			int y = reader.ReadInt32();
+			byte type = reader.ReadByte();
+
+			NewEntity(type, new Vector2(x, y), true);
 		}
 	}
 }

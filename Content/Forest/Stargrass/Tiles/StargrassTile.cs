@@ -97,7 +97,7 @@ public class StargrassTile : GrassTile, ISetConversion
 
 	public override void GrowPlants(int i, int j)
 	{
-		if (Main.rand.NextBool(5) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
 			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
 
 		if (!Main.rand.NextBool(4) || Framing.GetTileSafely(i, j - 1).HasTile)

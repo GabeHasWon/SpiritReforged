@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
@@ -54,14 +55,12 @@ public class Flarepowder : ModItem
 	{
 		Item.ResearchUnlockCount = 99;
 
-		int frame = Name switch
+		PowderTypes.Add(Type, Name switch
 		{
 			nameof(VexpowderBlue) => 1,
 			nameof(VexpowderRed) => 2,
 			_ => 0
-		};
-
-		PowderTypes.Add(Type, frame);
+		});
 		
 		if (!IsDerived)
 		{
@@ -103,7 +102,7 @@ public class Flarepowder : ModItem
 
 		for (int i = 0; i < 8; i++)
 		{
-			var vel = (velocity * Main.rand.NextFloat(0.1f, 1f)).RotatedByRandom(0.8f);
+			var vel = (velocity * Main.rand.NextFloat(0.4f, 0.8f)).RotatedByRandom(0.4f);
 			Projectile.NewProjectile(source, position, vel, type, damage, knockback, player.whoAmI);
 		}
 
@@ -115,8 +114,9 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 {
 	public const int TimeLeftMax = 60 * 3;
 
-	/// <summary> Must have 3 elements. </summary>
-	public virtual Color[] Colors => [new Color(216, 67, 40), Color.OrangeRed, Color.Goldenrod];
+	/// <summary> Must have 5 elements. Normally a gradient from light to dark. </summary>
+	public virtual Color[] Colors => [Color.LightGoldenrodYellow, Color.Yellow, Color.Orange, Color.OrangeRed, Color.DarkRed];
+
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
 
 	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/Impact_Hard")
@@ -128,14 +128,15 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 	/// <summary> Represents a min to max value range. </summary>
 	public (float, float) randomTimeLeft;
+	private bool _spawned = true;
 
-	public void DoTrailCreation(TrailManager tm)
+	public virtual void DoTrailCreation(TrailManager tm)
 	{
 		float scale = Projectile.scale;
 
-		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[1].Additive()), new RoundCap(), new DefaultTrailPosition(), 10 * scale, 20 * scale);
-		tm.CreateTrail(Projectile, new LightColorTrail(new Color(87, 35, 88) * 0.6f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 15 * scale, 50 * scale);
-		tm.CreateTrail(Projectile, new StandardColorTrail(Color.White.Additive()), new RoundCap(), new DefaultTrailPosition(), 5 * scale, 10 * scale);
+		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[3].Additive()), new RoundCap(), new DefaultTrailPosition(), 10 * scale, 20 * scale);
+		tm.CreateTrail(Projectile, new LightColorTrail(new Color(130, 26, 12) * 0.6f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 15 * scale, 50 * scale);
+		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[0].Additive()), new RoundCap(), new DefaultTrailPosition(), 5 * scale, 10 * scale);
 	}
 
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
@@ -147,13 +148,16 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
-		randomTimeLeft = (0.35f, 0.6f);
+		randomTimeLeft = (0.1f, 0.3f);
 	}
 
 	public override void AI()
 	{
-		if (Projectile.timeLeft == TimeLeftMax)
+		if (_spawned)
+		{
 			OnClientSpawn(true);
+			_spawned = false;
+		}
 
 		if (Projectile.velocity.Length() > 1.25f && Main.rand.NextBool(5))
 			SpawnDust(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f));
@@ -170,16 +174,38 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		Projectile.frame = Main.rand.Next(Main.projFrames[Type]);
 		Projectile.scale = Main.rand.NextFloat(0.5f, 1f);
 
-		if (doDustSpawn)
+		if (doDustSpawn && !Main.dedServ)
 		{
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 3; i++)
 			{
-				float mag = Main.rand.NextFloat();
-				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
-				var color = Color.Lerp(Color.Black, new Color(255, 242, 200), mag) * 0.9f;
+				float mag = Main.rand.NextFloat(0.33f, 1);
+				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.3f);
 
-				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Color.OrangeRed, Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 200)));
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10, velocity, color, Main.rand.NextFloat(0.05f, 0.1f), Common.Easing.EaseBuilder.EaseCircularInOut, Main.rand.Next(20, 60)));
+				if (Main.rand.NextBool(3))
+					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[3], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
+
+				Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
+				var fireCloud = new SmokeCloud(cloudPos, velocity, Colors[1].Additive(80), Main.rand.NextFloat(0.05f, 0.075f), EaseFunction.EaseQuadOut, Main.rand.Next(20, 30), false)
+				{
+					SecondaryColor = Color.Lerp(Colors[3], Colors[4], 0.5f).Additive(80),
+					TertiaryColor = Colors[4].Additive(80),
+					ColorLerpExponent = 0.5f,
+					Intensity = 0.25f,
+					Pixellate = true
+				};
+
+				ParticleHandler.SpawnParticle(fireCloud);
+
+				var smokeCloud = new SmokeCloud(fireCloud.Position, velocity * 1.25f, Color.Gray, fireCloud.Scale * 1.5f, EaseFunction.EaseCubicOut, Main.rand.Next(40, 60))
+				{
+					SecondaryColor = Color.DarkSlateGray,
+					TertiaryColor = Color.Black,
+					ColorLerpExponent = 2,
+					Intensity = 0.33f,
+					Layer = ParticleLayer.BelowProjectile,
+					Pixellate = true
+				};
+				ParticleHandler.SpawnParticle(smokeCloud);
 			}
 		}
 
@@ -196,31 +222,65 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 		TrailManager.ManualTrailSpawn(Projectile);
 	}
 
-	public virtual void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.Torch, Projectile.velocity * 0.5f).noGravity = !Main.rand.NextBool(8);
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (Main.rand.NextBool())
+			target.AddBuff(BuffID.OnFire, 120);
+	}
+
+	public virtual void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.Torch, Projectile.velocity * 0.5f).noGravity = true;
 
 	public override void OnKill(int timeLeft)
 	{
 		const int explosion = 80;
-		float angle = Main.rand.NextFloat(MathHelper.Pi);
-
-		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[1] * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-		circle.Angle = angle;
-		ParticleHandler.SpawnParticle(circle);
-
-		var circle2 = new TexturedPulseCircle(Projectile.Center, (Color.White * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-		circle2.Angle = angle;
-		ParticleHandler.SpawnParticle(circle2);
 
 		Projectile.Resize(explosion, explosion);
 		Projectile.Damage();
 
-		PlayDeathSound();
+		if (!Main.dedServ)
+			DoDeathEffects();
 	}
 
-	public virtual void PlayDeathSound()
+	public virtual void DoDeathEffects()
 	{
 		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.5f, 1f), Volume = 0.35f, MaxInstances = 5 }, Projectile.Center);
 		SoundEngine.PlaySound(Impact, Projectile.Center);
+
+		float angle = Main.rand.NextFloat(MathHelper.Pi);
+
+		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[3] * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+		circle.Angle = angle;
+		ParticleHandler.SpawnParticle(circle);
+
+		var circle2 = new TexturedPulseCircle(Projectile.Center, (Colors[0] * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+		circle2.Angle = angle;
+		ParticleHandler.SpawnParticle(circle2);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2);
+			Color[] colors = [Colors[1].Additive(30), Colors[3].Additive(30), Colors[4].Additive(30) * 0.75f];
+
+			float scale = Main.rand.NextFloat(0.05f, 0.1f);
+			int maxTime = Main.rand.Next(15, 35);
+
+			ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, velocity, colors, 0.75f, scale, EaseFunction.EaseQuadOut, maxTime)
+			{
+				ColorLerpExponent = 2,
+				FinalScaleMod = 0.33f
+			});
+		}
+
+		var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
+		{
+			SecondaryColor = Color.DarkSlateGray,
+			TertiaryColor = Color.Black,
+			ColorLerpExponent = 2,
+			Intensity = 0.6f,
+			Layer = ParticleLayer.BelowProjectile,
+			Pixellate = true
+		};
+		ParticleHandler.SpawnParticle(smokeCloud);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -230,7 +290,7 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 
 		for (int i = 0; i < 3; i++)
 		{
-			Color tint = (i == 2) ? Color.White : ((i == 1) ? Colors[2] : Colors[1]);
+			Color tint = (i == 2) ? Color.White : ((i == 1) ? Colors[3] : Colors[1]);
 			Color color = Projectile.GetAlpha(tint).Additive();
 			float scale = Projectile.scale * (1f - i / 5f);
 

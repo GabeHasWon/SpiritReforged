@@ -6,7 +6,6 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.UI;
-using Terraria.ID;
 using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.Forest.Misc.ChairClub;
@@ -27,7 +26,6 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 	public override void SafeSetDefaults()
 	{
 		Projectile.penetrate = 1;
-		Projectile.hostile = true;
 		_parameters.HasIndicator = false;
 	}
 
@@ -50,8 +48,7 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 	}
 
 	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
-
-	public override bool CanHitPlayer(Player target) => target.whoAmI != Projectile.owner;
+	public override bool? CanHitNPC(NPC target) => target.isLikeATownNPC ? true : null;
 	internal override bool CanCollide(float progress) => false;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

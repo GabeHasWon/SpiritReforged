@@ -190,7 +190,7 @@ public static class Placer
 			while (Main.tile[i, j + 1].HasTile && Main.tile[i, j + 1].TileType == type)
 				j++; //Move to the bottom of the vine
 
-			for (int x = 0; x < maxLength; x++)
+			for (int y = 0; y < maxLength; y++)
 			{
 				if (Main.tile[i, j].HasTile && Main.tile[i, j].TileType == type)
 					j--; //Move to the next available tile above
@@ -201,7 +201,7 @@ public static class Placer
 			while (Main.tile[i, j - 1].HasTile && Main.tile[i, j - 1].TileType == type)
 				j--; //Move to the top of the vine
 
-			for (int x = 0; x < maxLength; x++)
+			for (int y = 0; y < maxLength; y++)
 			{
 				if (Main.tile[i, j].HasTile && Main.tile[i, j].TileType == type)
 					j++; //Move to the next available tile below

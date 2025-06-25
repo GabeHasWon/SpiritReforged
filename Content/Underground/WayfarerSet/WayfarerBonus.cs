@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
@@ -28,7 +29,7 @@ internal class WayfarerBonus : ILoadable
 		var world = new Vector2(i, j).ToWorldCoordinates();
 		var player = Main.player[Player.FindClosest(world, 16, 16)];
 
-		if (WayfarerHead.SetActive(player) && player.DistanceSQ(world) < maxDistance * maxDistance)
+		if (player.WearingSet<WayfarerHead>() && player.DistanceSQ(world) < maxDistance * maxDistance)
 		{
 			if (PotTypes.Contains(type))
 				GrantBuffCommon(player, ModContent.BuffType<ExplorerPot>());

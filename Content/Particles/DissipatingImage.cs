@@ -7,12 +7,29 @@ namespace SpiritReforged.Content.Particles;
 
 public class DissipatingImage : Particle
 {
-	public bool UseLightColor { get; set; }
+	public Color? SecondaryColor { get; set; } = null;
+	public Color? TertiaryColor { get; set; } = null;
+
+	public ParticleLayer Layer { get; set; } = ParticleLayer.AboveProjectile;
+
+	public virtual bool UseLightColor { get; set; }
+	public virtual bool Pixellate { get; set; }
+
+	public virtual string DistortNoiseString => "noise";
+
+	public virtual float ColorLerpExponent { get; set; } = 1;
+	public virtual float Intensity { get; set; } = 1;
+	public virtual float DissolveAmount { get; set; } = 0;
+	public virtual float FinalScaleMod { get; set; } = 1.5f;
+	public virtual float PixelDivisor { get; set; } = 1.5f;
+
+	public virtual EaseFunction DistortEasing { get; set; } = EaseFunction.EaseQuadIn;
 
 	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
 	private readonly Vector2 _noiseStretch = new (1);
 	private readonly Vector2 _texExponent = new(2, 1);
+	private readonly Vector2 _scrollOffset = new(Main.rand.NextFloat(), Main.rand.NextFloat());
 
 	private float _opacity;
 
@@ -52,33 +69,41 @@ public class DissipatingImage : Particle
 		_texExponent = textureExponentRange;
 	}
 
-	public DissipatingImage UsesLightColor()
-	{
-		UseLightColor = true;
-		return this;
-	}
-
 	public override void Update()
 	{
 		_opacity = EaseFunction.EaseQuadOut.Ease(Progress);
 		_opacity = (float)Math.Sin(_opacity * MathHelper.Pi);
-		_scaleMod = 1 + Progress / 2;
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AboveProjectile;
+	public override ParticleLayer DrawLayer => Layer;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-		effect.Parameters["uColor"].SetValue(Color.ToVector4());
-		effect.Parameters["uTexture"].SetValue(_texture);
-		effect.Parameters["perlinNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		Vector2 size = Scale * _texture.Size() * _scaleMod;
+
+		effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
+		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
+		effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
+		effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
+
 		effect.Parameters["Progress"].SetValue(Progress);
-		effect.Parameters["xMod"].SetValue(_noiseStretch.X);
-		effect.Parameters["yMod"].SetValue(_noiseStretch.Y);
-		effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadIn.Ease(Progress));
+		effect.Parameters["uTexture"].SetValue(_texture);
+		effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures[DistortNoiseString].Value);
+		effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
+		effect.Parameters["coordMods"].SetValue(_noiseStretch);
+		effect.Parameters["scroll"].SetValue(_scrollOffset);
+		effect.Parameters["intensity"].SetValue(Intensity * MathHelper.Lerp(_opacity, 1, DissolveAmount));
+
+		effect.Parameters["distortion"].SetValue(_maxDistortion * DistortEasing.Ease(Progress));
+		effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
+		effect.Parameters["doDissolve"].SetValue(DissolveAmount > 0);
+
+		effect.Parameters["pixellate"].SetValue(Pixellate);
+		effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);
 
 		float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 		effect.Parameters["texExponent"].SetValue(texExponent);
@@ -89,9 +114,9 @@ public class DissipatingImage : Particle
 
 		var square = new SquarePrimitive
 		{
-			Color = lightColor * _opacity,
-			Height = Scale * _texture.Height * _scaleMod,
-			Length = Scale * _texture.Width * _scaleMod,
+			Color = lightColor,
+			Height = size.Y,
+			Length = size.X,
 			Position = Position - Main.screenPosition,
 			Rotation = Rotation,
 		};
