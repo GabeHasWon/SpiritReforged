@@ -52,7 +52,7 @@ internal class SnowLibrary : ILoadable
 				WorldGen.PlaceTile(x, y, TileID.Platforms, style: style);
 
 				if (WorldGen.genRand.NextFloat() < 0.66f)
-					WorldGen.PlaceTile(x, y - 1, TileID.Books, style: WorldGen.genRand.Next(5));
+					WorldGen.PlaceTile(x, y - 1, ModContent.TileType<FrozenBooks>(), style: WorldGen.genRand.Next(FrozenBooks.Styles - 1));
 				else
 					safe.Add(new Point(x, y - 1));
 			}
@@ -63,8 +63,8 @@ internal class SnowLibrary : ILoadable
 
 		foreach (var pt in safe.OrderBy(x => WorldGen.genRand.Next(safe.Count))) //Place a tome in a random empty location
 		{
-			int type = ModContent.TileType<FrostbiteTile>();
-			WorldGen.PlaceTile(pt.X, pt.Y, type);
+			int type = ModContent.TileType<FrozenBooks>();
+			WorldGen.PlaceTile(pt.X, pt.Y, ModContent.TileType<FrozenBooks>(), style: FrozenBooks.Styles - 1);
 
 			if (Framing.GetTileSafely(pt).TileType == type)
 			{
