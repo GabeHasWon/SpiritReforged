@@ -1,20 +1,8 @@
-﻿using System.Linq;
-
-namespace SpiritReforged.Common.TileCommon.PresetTiles;
+﻿namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class GrassTile : ModTile
 {
 	protected virtual int DirtType => TileID.Dirt;
-
-	protected void AllowAnchor(params int[] types)
-	{
-		foreach (int type in types)
-		{
-			var data = TileObjectData.GetTileData(type, 0);
-			if (data != null)
-				data.AnchorValidTiles = data.AnchorValidTiles.Concat([Type]).ToArray();
-		}
-	}
 
 	/// <summary><inheritdoc/>
 	/// <para/>Also automatically controls common grass tile settings. </summary>
@@ -25,7 +13,7 @@ public abstract class GrassTile : ModTile
 		Main.tileBlendAll[Type] = true;
 
 		this.Merge(DirtType, TileID.Grass);
-		AllowAnchor(TileID.Sunflower);
+		this.AnchorSelfTo(TileID.Sunflower);
 		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.Metadata;
 
@@ -55,7 +56,6 @@ public class StargrassFlowers : ModTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
-
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
@@ -70,5 +70,11 @@ public class StargrassFlowers : ModTile
 
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConversionHandler.CommonPlants(i, j, Type);
+		return true;
 	}
 }

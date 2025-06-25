@@ -1,5 +1,7 @@
-﻿using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
@@ -7,6 +9,15 @@ namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
 public class StargrassMowed : StargrassTile
 {
+	public override ConversionHandler.Set ConversionSet => new()
+	{
+		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+		{ BiomeConversionID.Hallow, TileID.GolfGrassHallowed },
+		{ BiomeConversionID.PurificationPowder, TileID.GolfGrass },
+		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	};
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -15,13 +26,13 @@ public class StargrassMowed : StargrassTile
 
 	public override void Convert(int i, int j, int conversionType)
 	{
-		if (conversionType == BiomeConversionID.PurificationPowder)
-			WorldGen.ConvertTile(i, j, TileID.GolfGrass);
+		if (ConversionHandler.FindSet(nameof(StargrassMowed), conversionType, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		if (OpenTools.GetOpenings(i, j, false, false, true) == OpenFlags.None) //Surrounded by solid tiles
+		if (!WorldGen.TileIsExposedToAir(i, j))
 			Main.tile[i, j].TileType = TileID.GolfGrass;
 
 		return true;

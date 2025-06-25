@@ -4,6 +4,8 @@ namespace SpiritReforged.Content.Savanna.Walls;
 
 public class SavannaDirtWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
+	public static int UnsafeType { get; private set; }
+
 	public void AddItemRecipes(ModItem item)
 	{
 		var mod = SpiritReforgedMod.Instance; //Mod is null here, so get the instance manually
@@ -26,7 +28,10 @@ public class SavannaDirtWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 
 		var entryColor = new Color(98, 39, 5);
 		AddMapEntry(entryColor);
-		Mod.Find<ModWall>(Name + "Unsafe").AddMapEntry(entryColor); //Set the unsafe wall's map entry
+
+		var wall = Mod.Find<ModWall>(Name + "Unsafe");
+		UnsafeType = wall.Type;
+		wall.AddMapEntry(entryColor); //Set the unsafe wall's map entry
 	}
 
 	public override bool WallFrame(int i, int j, bool randomizeFrame, ref int style, ref int frameNumber)
