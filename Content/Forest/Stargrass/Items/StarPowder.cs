@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
+using SpiritReforged.Content.Savanna.Items;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -68,7 +69,7 @@ internal class StarPowderProj : ModProjectile
 
 public class StarConversion : ModBiomeConversion
 {
-	public static int ConversionType { get; private set; }
+	public static int ConversionType => ModContent.GetInstance<StarConversion>().Type;
 
 	private static readonly Dictionary<int, int> Conversions = new()
 	{
@@ -78,8 +79,6 @@ public class StarConversion : ModBiomeConversion
 
 	public override void SetStaticDefaults()
 	{
-		ConversionType = Type;
-
 		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertAction);
 		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, static (i, j, type, conversionType) =>
 		{

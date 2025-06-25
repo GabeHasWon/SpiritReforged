@@ -64,7 +64,7 @@ internal class DrypowderSpray : ModProjectile
 
 public class SavannaConversion : ModBiomeConversion
 {
-	public static int ConversionType { get; private set; }
+	public static int ConversionType => ModContent.GetInstance<SavannaConversion>().Type;
 
 	private static readonly Dictionary<int, int> Plants = new()
 	{
@@ -78,8 +78,6 @@ public class SavannaConversion : ModBiomeConversion
 
 	public override void SetStaticDefaults()
 	{
-		ConversionType = Type;
-
 		TileLoader.RegisterConversion(TileID.Dirt, ConversionType, static (i, j, type, conversionType) =>
 		{
 			WorldGen.ConvertTile(i, j, ModContent.TileType<SavannaDirt>());
