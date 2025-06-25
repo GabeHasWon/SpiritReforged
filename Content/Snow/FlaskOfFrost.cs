@@ -46,7 +46,7 @@ public class FlaskOfFrost : ModItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToFood(26, 32, BuffType, Item.flaskTime, true);
-		Item.rare = ItemRarityID.Blue;
+		Item.rare = ItemRarityID.LightRed;
 		Item.value = Item.sellPrice(silver: 2);
 	}
 
