@@ -1,6 +1,4 @@
-﻿using Terraria.GameContent.UI;
-
-namespace SpiritReforged.Common.NPCCommon;
+﻿namespace SpiritReforged.Common.NPCCommon;
 
 public static class NPCHelper
 {

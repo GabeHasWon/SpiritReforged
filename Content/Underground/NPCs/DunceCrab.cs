@@ -8,7 +8,6 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
-using Terraria.ID;
 
 namespace SpiritReforged.Content.Underground.NPCs;
 

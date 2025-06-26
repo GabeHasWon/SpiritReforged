@@ -13,7 +13,7 @@ public class DiverZombie : ReplaceNPC
 	{
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.Zombies[Type] = true;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Skeleton;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
 
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);

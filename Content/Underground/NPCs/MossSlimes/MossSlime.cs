@@ -36,7 +36,7 @@ internal class MossSlime : ModNPC
 			BackSpritesById.Add(Type, ModContent.Request<Texture2D>(path + "_Back"));
 		}
 
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.ShimmerSlime;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.ShimmerSlime;
 
 		SpawnTilesById.Add(Type, TileTypes);
 
