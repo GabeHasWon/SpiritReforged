@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -70,6 +71,7 @@ public class EnergyPlunge : ModProjectile
 	public override string Texture => AssetLoader.EmptyTexture;
 	public ref float StartHeight => ref Projectile.ai[0];
 
+	public static bool CanStomp(Player player) => player.WearingSet<GraniteBody>() && !(player.mount.Active && player.mount.CanFly()) && !player.pulley;
 	public static bool Stomping(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<EnergyPlunge>()] > 0;
 	public static void Begin(Player player)
 	{
@@ -104,7 +106,7 @@ public class EnergyPlunge : ModProjectile
 		Projectile.rotation = owner.velocity.ToRotation();
 		Projectile.timeLeft = 2;
 
-		if (!owner.active || owner.dead)
+		if (!owner.active || owner.dead || !CanStomp(owner))
 		{
 			Projectile.active = false;
 			return;

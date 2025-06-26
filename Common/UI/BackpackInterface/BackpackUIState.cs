@@ -42,7 +42,9 @@ internal class BackpackUIState : AutoUIState
 	private static void TryOpenUI(On_Main.orig_DrawInventory orig, Main self)
 	{
 		orig(self);
-		UISystem.SetActive<BackpackUIState>();
+
+		if (Main.playerInventory)
+			UISystem.SetActive<BackpackUIState>();
 	}
 
 	public override void Update(GameTime gameTime)

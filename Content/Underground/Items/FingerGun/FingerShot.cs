@@ -3,7 +3,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Items.FingerGun;
 
@@ -17,8 +16,8 @@ public class FingerShot : ModProjectile
 
 	public override void SetStaticDefaults()
 	{
-		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 8;
-		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+		ProjectileID.Sets.TrailCacheLength[Type] = 8;
+		ProjectileID.Sets.TrailingMode[Type] = 2;
 	}
 
 	public override void SetDefaults()
@@ -52,7 +51,7 @@ public class FingerShot : ModProjectile
 		if (Main.dedServ)
 			return;
 
-		if(Main.rand.NextBool(8))
+		if (Main.rand.NextBool(8))
 		{
 			Vector2 velocity = Vector2.Normalize(Projectile.velocity) * 2 * (Projectile.timeLeft / 60f);
 			Color color = Color.DarkCyan * (Projectile.timeLeft / 60f);

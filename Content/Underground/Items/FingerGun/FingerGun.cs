@@ -6,7 +6,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
@@ -87,59 +86,56 @@ public class FingerGunArmManager : ModPlayer
 
 	public override void PostUpdate()
 	{
-		if (IsFingerGunHeld(Player))
+		if (!IsFingerGunHeld(Player) || !Player.ItemAnimationActive)
+			return;
+
+		// This gets either the current player's mouse or the latest netsynced version. This is the most consistent way to get another player's mouse,
+		// and tends to look almost 1:1 unless you really stare at it.
+		Vector2 mouse = Main.myPlayer == Player.whoAmI ? Main.MouseWorld : PlayerMouseHandler.MouseByWhoAmI[Player.whoAmI];
+
+		if (Player.ItemAnimationJustStarted) // Spawn these here instead of in ModifyShootStats since this runs on all clients
 		{
-			if (Player.ItemAnimationActive)
+			Vector2 velocity = Player.DirectionTo(mouse) * Player.HeldItem.shootSpeed;
+			Vector2 handPos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
+			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
+			float manaPercentage = Player.statMana / (float)Player.statManaMax2;
+
+			for (int i = 0; i < 5; i++)
 			{
-				// This gets either the current player's mouse or the latest netsynced version. This is the most consistent way to get another player's mouse,
-				// and tends to look almost 1:1 unless you really stare at it.
-				Vector2 mouse = Main.myPlayer == Player.whoAmI ? Main.MouseWorld : PlayerMouseHandler.MouseByWhoAmI[Player.whoAmI];
+				Vector2 particleVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2);
+				Color[] colors = [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()];
+				float scale = Main.rand.NextFloat(0.01f, 0.035f);
+				int maxTime = Main.rand.Next(10, 40);
 
-				if (Player.ItemAnimationJustStarted) // Spawn these here instead of in ModifyShootStats since this runs on all clients
-				{
-					Vector2 velocity = Player.DirectionTo(mouse) * Player.HeldItem.shootSpeed;
-					Vector2 handPos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
-					ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
-					float manaPercentage = Player.statMana / (float)Player.statManaMax2;
-
-					for (int i = 0; i < 5; i++)
-					{
-						Vector2 particleVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat() - Vector2.UnitY * Main.rand.NextFloat(2);
-						Color[] colors = [Color.LightCyan.Additive(), Color.Cyan.Additive(), Color.DarkGreen.Additive()];
-						float scale = Main.rand.NextFloat(0.01f, 0.035f);
-						int maxTime = Main.rand.Next(10, 40);
-
-						var fire = new FireParticle(handPos, particleVelocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
-						ParticleHandler.SpawnParticle(fire);
-					}
-				}
-
-				if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
-					new PlayerMouseHandler.ShareMouseData((byte)Player.whoAmI, Main.MouseWorld).Send();
-
-				float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
-				int signDirection = Math.Sign(mouse.X - Player.Center.X);
-
-				if (signDirection != Player.direction && signDirection != 0)
-					Player.ChangeDir(signDirection);
-
-				float armRot = Player.AngleTo(mouse) - MathHelper.PiOver2;
-				Player.CompositeArmStretchAmount armStretch;
-
-				armStretch = animProgress switch
-				{
-					< 0.25f => Player.CompositeArmStretchAmount.Full,
-					< 0.5f => Player.CompositeArmStretchAmount.ThreeQuarters,
-					< 0.75f => Player.CompositeArmStretchAmount.Quarter,
-					_ => Player.CompositeArmStretchAmount.ThreeQuarters
-				};
-
-				armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCircularOut, EaseFunction.EaseSine, EaseFunction.EaseCircularIn]).Ease(animProgress) - 0.5f);
-
-				Player.SetCompositeArmFront(true, armStretch, armRot);
-				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
+				var fire = new FireParticle(handPos, particleVelocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
+				ParticleHandler.SpawnParticle(fire);
 			}
 		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
+			new PlayerMouseHandler.ShareMouseData((byte)Player.whoAmI, Main.MouseWorld).Send();
+
+		float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
+		int signDirection = Math.Sign(mouse.X - Player.Center.X);
+
+		if (signDirection != Player.direction && signDirection != 0)
+			Player.ChangeDir(signDirection);
+
+		float armRot = Player.AngleTo(mouse) - MathHelper.PiOver2;
+		Player.CompositeArmStretchAmount armStretch;
+
+		armStretch = animProgress switch
+		{
+			< 0.25f => Player.CompositeArmStretchAmount.Full,
+			< 0.5f => Player.CompositeArmStretchAmount.ThreeQuarters,
+			< 0.75f => Player.CompositeArmStretchAmount.Quarter,
+			_ => Player.CompositeArmStretchAmount.ThreeQuarters
+		};
+
+		armRot += Player.direction * (EaseFunction.CompoundEase([EaseFunction.EaseCircularOut, EaseFunction.EaseSine, EaseFunction.EaseCircularIn]).Ease(animProgress) - 0.5f);
+
+		Player.SetCompositeArmFront(true, armStretch, armRot);
+		Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 0);
 	}
 
 	public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)

@@ -4,7 +4,7 @@ using Terraria.GameContent.Biomes.CaveHouse;
 
 namespace SpiritReforged.Content.Snow.Frostbite;
 
-internal class SnowLibrary : ILoadable
+internal class IceLibrary : ILoadable
 {
 	/// <summary> The maximum number of <b>guaranteed</b> Frostbite tomes in this world. </summary>
 	public static int GenCountMax => WorldGen.GetWorldSize() == WorldGen.WorldSize.Large ? 2 : 1;
@@ -48,11 +48,12 @@ internal class SnowLibrary : ILoadable
 			for (int j = 0; j < size.Y; j++)
 			{
 				int y = originY + j * 2;
+				int bookStyle = WorldGen.genRand.Next(FrozenBooks.Styles - 1);
 
-				WorldGen.PlaceTile(x, y, TileID.Platforms, style: style);
+				WorldGen.PlaceTile(x, y, (bookStyle > 5) ? ModContent.TileType<FrostedPlatform>() : TileID.Platforms, style: (bookStyle > 5) ? 0 : style);
 
 				if (WorldGen.genRand.NextFloat() < 0.66f)
-					WorldGen.PlaceTile(x, y - 1, ModContent.TileType<FrozenBooks>(), style: WorldGen.genRand.Next(FrozenBooks.Styles - 1));
+					WorldGen.PlaceTile(x, y - 1, ModContent.TileType<FrozenBooks>(), style: bookStyle);
 				else
 					safe.Add(new Point(x, y - 1));
 			}
@@ -63,6 +64,8 @@ internal class SnowLibrary : ILoadable
 
 		foreach (var pt in safe.OrderBy(x => WorldGen.genRand.Next(safe.Count))) //Place a tome in a random empty location
 		{
+			WorldGen.PlaceTile(pt.X, pt.Y + 1, ModContent.TileType<FrostedPlatform>());
+
 			int type = ModContent.TileType<FrozenBooks>();
 			WorldGen.PlaceTile(pt.X, pt.Y, ModContent.TileType<FrozenBooks>(), style: FrozenBooks.Styles - 1);
 

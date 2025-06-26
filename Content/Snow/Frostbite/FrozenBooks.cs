@@ -8,7 +8,7 @@ namespace SpiritReforged.Content.Snow.Frostbite;
 public class FrozenBooks : ModTile
 {
 	public const int Styles = 10;
-	public static bool IsTome(int i, int j) => Main.tile[i, j].TileFrameX >= 18 * (Styles - 1);
+	public static bool IsTome(int i, int j) => Main.tile[i, j].TileFrameX == 18 * 4 && Main.tile[i, j].TileFrameY > 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -20,7 +20,7 @@ public class FrozenBooks : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.StyleWrapLimit = Styles;
+		TileObjectData.newTile.StyleWrapLimit = 5;
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ItemID.Book, 0, 1, 2, 3, 4, 5, 6, 7, 8);
@@ -51,14 +51,14 @@ public class FrozenBooks : ModTile
 	{
 		const int maxDistance = 160;
 
-		if (IsTome(i, j))
+		if (closer && IsTome(i, j))
 		{
 			WindSoundPlayer.StartSound(new Vector2(i, j).ToWorldCoordinates());
 
 			var world = new Vector2(i, j).ToWorldCoordinates();
 			float distance = Main.LocalPlayer.Distance(world);
 
-			if (closer && !Main.gamePaused && distance < maxDistance)
+			if (!Main.gamePaused && distance < maxDistance)
 				DoVisuals(world, Math.Min(1f - distance / maxDistance, .35f));
 		}
 	}

@@ -12,7 +12,7 @@ public class GraniteBody : ModItem
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;
 	private static void DoubleTap(Player player, int keyDir)
 	{
-		if (player.WearingSet<GraniteBody>() && !EnergyPlunge.Stomping(player) && !(player.mount.Active && player.mount.CanFly()))
+		if (!EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
 			EnergyPlunge.Begin(player);
 	}
 
@@ -37,7 +37,7 @@ public class GraniteBody : ModItem
 	public override void ArmorSetShadows(Player player) => player.armorEffectDrawShadow = true;
 	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == ModContent.ItemType<GraniteHead>() || head.type is ItemID.UltrabrightHelmet or ItemID.NightVisionHelmet) && body.type == Type && legs.type == ModContent.ItemType<GraniteLegs>();
 
-	public override void UpdateArmorSet(Player player) //Normally set effects would go into the head armor class, but that's not possible here due to alternative helmet functionality
+	public override void UpdateArmorSet(Player player) //Normally set effects would go into the head armor class, but that's not possible here due to the alternative helmet functionality
 	{
 		string tapDir = Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.UP" : "Key.DOWN");
 		player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Granite", tapDir);
