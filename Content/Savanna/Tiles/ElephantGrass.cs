@@ -10,7 +10,6 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 {
 	public const int FullFrameHeight = 54;
-	public const int Styles = 8;
 
 	public ConversionHandler.Set ConversionSet => new()
 	{
