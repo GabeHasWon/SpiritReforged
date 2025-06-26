@@ -9,7 +9,8 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 {
-	protected virtual Color SubColor => Color.Goldenrod;
+	public const int FullFrameHeight = 54;
+	public const int Styles = 8;
 
 	public ConversionHandler.Set ConversionSet => new()
 	{
@@ -166,13 +167,11 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
-		float seed = (frame.X / 18f + i) * .8f % 1f;
-
-		offset += new Vector2(MathHelper.Lerp(-2, 2, seed), 2);
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
-		var effects = ((int)(seed * 2) % 2 == 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		var effects = (i % 3 == 0) ? default : SpriteEffects.FlipHorizontally;
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + offset + new Vector2(0, 2);
 
-		spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + offset, source, color, rotation, origin, 1, effects, 0f);
+		spriteBatch.Draw(texture, position, source, color, rotation, origin, 1, effects, 0f);
 	}
 
 	public virtual void DrawBack(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin, Point frame)
@@ -180,25 +179,11 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
-		var data = Main.tile[i, j].SafelyGetData();
-		int amount = i % 2 + 1;
+		var source = new Rectangle(frame.X, frame.Y + FullFrameHeight, 16, 16);
+		var effects = (i % 3 == 0) ? SpriteEffects.FlipHorizontally : default;
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + offset + new Vector2(0, 2);
 
-		for (int x = 0; x < amount; x++)
-		{
-			float seed = (frame.X / 18f + i + x * .25f) * 1.3f % 1f;
-
-			rotation += seed * .25f;
-			offset += new Vector2(MathHelper.Lerp(-2, 2, seed), 2);
-
-			int baseOffset = IsShortgrass(i, j) ? 5 : 0;
-			int frameX = (baseOffset + (int)MathHelper.Lerp(0, data.RandomStyleRange, seed)) * 18;
-
-			var source = new Rectangle(frameX, frame.Y, 16, 16);
-			var effects = ((int)(seed * 2) % 2 == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			var subColor = Color.Lerp(Color.White, SubColor, .9f + (float)Math.Sin(i / 8f) * .3f);
-
-			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + offset, source, color.MultiplyRGB(subColor), rotation * .4f, origin, 1, effects, 0f);
-		}
+		spriteBatch.Draw(texture, position, source, color, rotation * 0.5f, origin, 1, effects, 0f);
 	}
 
 	public bool OnCutAttempt(int i, int j)
@@ -211,8 +196,6 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassCorrupt : ElephantGrass
 {
-	protected override Color SubColor => Color.Gray;
-
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
@@ -228,8 +211,6 @@ public class ElephantGrassCorrupt : ElephantGrass
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassCrimson : ElephantGrass
 {
-	protected override Color SubColor => new(190, 165, 0);
-
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
@@ -245,8 +226,6 @@ public class ElephantGrassCrimson : ElephantGrass
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassHallow : ElephantGrass
 {
-	protected override Color SubColor => Color.LightPink;
-
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];

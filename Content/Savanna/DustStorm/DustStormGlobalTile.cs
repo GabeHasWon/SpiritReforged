@@ -7,7 +7,7 @@ public class DustStormGlobalTile : GlobalTile
 {
 	public override void NearbyEffects(int i, int j, int type, bool closer)
 	{
-		if (!closer || !Main.LocalPlayer.GetModPlayer<DustStormPlayer>().ZoneDustStorm || !WorldGen.InWorld(i, j - 1))
+		if (!closer || Main.gamePaused || !Duststorm.Happening || !WorldGen.InWorld(i, j - 1))
 			return;
 
 		var tileAbove = Main.tile[i, j - 1];
@@ -16,7 +16,7 @@ public class DustStormGlobalTile : GlobalTile
 		{
 			float wind = Main.rand.NextFloat(Main.windSpeedCurrent);
 
-			if (Main.rand.NextBool(50))
+			if (Main.rand.NextBool(30))
 			{
 				var dust = Dust.NewDustDirect(new Vector2(i, j - 1) * 16, 32, 32, ModContent.DustType<SavannaCloud>(), 0, 0, 0, GetTint(Color.SandyBrown) * Main.rand.NextFloat(1.2f, 1.6f), Main.rand.NextFloat(.5f, 2f));
 				dust.velocity = new Vector2(wind * 5, Math.Abs(wind) * -.25f);
