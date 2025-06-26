@@ -54,15 +54,15 @@ class Firespike : ModProjectile, IDrawOverTiles
 				{
 					var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0);
 					int maxTime = Main.rand.Next(30, 50);
-					Color[] colors = [new Color(255, 200, 0, 40), new Color(255, 115, 0, 70), new Color(200, 3, 33, 100)];
+					Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 110), new Color(200, 3, 33, 120)];
 					Vector2 velocity = -Vector2.UnitY * EaseCubicIn.Ease(Main.rand.NextFloat());
 					float scale = Main.rand.NextFloat(0.025f, 0.075f);
-					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 0.75f, scale, EaseQuadIn, maxTime)
+					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 1f, scale, EaseQuadIn, maxTime)
 					{ 
-						ColorLerpExponent = 1.75f, 
+						ColorLerpExponent = 2f, 
 						FinalScaleMod = 2.5f,
 						Rotation = Main.rand.NextFloat(-0.3f, 0.3f),
-						DistortEasing = EaseQuadIn,
+						DistortEasing = EaseCubicIn,
 						PixelDivisor = 2
 					});
 				}
