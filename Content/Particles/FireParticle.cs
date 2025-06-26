@@ -8,12 +8,12 @@ public class FireParticle : DissipatingImage
 	private readonly EaseFunction _acceleration;
 	private readonly Vector2 _initialVel;
 
-	public override float FinalScaleMod => 0.5f;
+	public override float FinalScaleMod { get; set; } = 0.5f;
 	public override string DistortNoiseString => "swirlNoise";
 	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
-	public override bool Pixellate => true;
-	public override float DissolveAmount => 1;
-	public override EaseFunction DistortEasing => EaseFunction.EaseCubicOut;
+	public override bool Pixellate { get; set; } = true;
+	public override float DissolveAmount { get; set; } = 1;
+	public override EaseFunction DistortEasing { get; set; } = EaseFunction.EaseCubicOut;
 
 	public FireParticle(Vector2 position, Vector2 velocity, Color[] colors, float intensity, float scale, EaseFunction acceleration, int maxTime) : base(position, colors[0], Main.rand.NextFloatDirection(), scale, Main.rand.NextFloat(0.1f, 0.3f), "Fire" + Main.rand.Next(1, 3), new(Main.rand.NextFloat(0.2f, 0.5f)), new(1.25f, 1f), maxTime)
 	{

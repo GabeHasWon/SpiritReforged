@@ -60,16 +60,23 @@ public class DissipatingSmoke : Particle
 		{
 			var color = (i > 0) ? Color.Gray : Color.Lerp(Color, endColor, Progress);
 
-			effect.Parameters["uColor"].SetValue(color.ToVector4());
+			effect.Parameters["primaryColor"].SetValue(color.ToVector4());
+			effect.Parameters["secondaryColor"].SetValue(color.ToVector4());
+			effect.Parameters["tertiaryColor"].SetValue(color.ToVector4());
 			effect.Parameters["uTexture"].SetValue(value);
-			effect.Parameters["perlinNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+			effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
 			effect.Parameters["Progress"].SetValue(Progress);
-			effect.Parameters["xMod"].SetValue(_noiseStretch.X);
-			effect.Parameters["yMod"].SetValue(_noiseStretch.Y);
+			effect.Parameters["coordMods"].SetValue(_noiseStretch);
 			effect.Parameters["distortion"].SetValue(.4f * EaseFunction.EaseQuadIn.Ease(Progress));
 
 			float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, opacity);
 			effect.Parameters["texExponent"].SetValue(texExponent);
+
+			effect.Parameters["pixellate"].SetValue(false);
+			effect.Parameters["dissolve"].SetValue(0);
+			effect.Parameters["doDissolve"].SetValue(false);
+			effect.Parameters["scroll"].SetValue(Vector2.Zero);
+			effect.Parameters["colorLerpExp"].SetValue(1);
 
 			var lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
 			float scaleMod = (1 + Progress / 2) * ((i > 0) ? .5f : 1f);

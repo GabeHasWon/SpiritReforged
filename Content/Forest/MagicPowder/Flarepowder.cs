@@ -262,16 +262,18 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 			Color[] colors = [Colors[1].Additive(30), Colors[3].Additive(30), Colors[4].Additive(30) * 0.75f];
 
 			float scale = Main.rand.NextFloat(0.05f, 0.1f);
-			int maxTime = Main.rand.Next(15, 35);
+			int maxTime = Main.rand.Next(20, 30);
 
-			ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, velocity, colors, 0.75f, scale, EaseFunction.EaseQuadOut, maxTime)
+			ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, velocity, colors, 0.75f, scale, EaseFunction.EaseQuadIn, maxTime)
 			{
-				ColorLerpExponent = 2,
-				FinalScaleMod = 0.33f
+				ColorLerpExponent = 3,
+				FinalScaleMod = 0.33f,
+				PixelDivisor = 1,
+				Rotation = Main.rand.NextFloat(-0.1f, 0.1f)
 			});
 		}
 
-		var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
+		var smokeCloud = new SmokeCloud(Projectile.Center, -Vector2.UnitY * 2, Color.Gray, Main.rand.NextFloat(0.04f, 0.06f), EaseFunction.EaseCubicOut, Main.rand.Next(20, 40))
 		{
 			SecondaryColor = Color.DarkSlateGray,
 			TertiaryColor = Color.Black,

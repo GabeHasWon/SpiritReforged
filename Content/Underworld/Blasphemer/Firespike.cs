@@ -48,20 +48,22 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 		if (Lingering)
 		{
-			if (Main.rand.NextBool(4))
+			if (Main.rand.NextBool(3))
 			{
-				var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0) - Vector2.UnitY * 6;
-				for(int i = 0; i < Main.rand.Next(1, 4); i++)
+				for(int i = 0; i < Main.rand.Next(1, 3); i++)
 				{
-					int maxTime = Main.rand.Next(30, 60);
-					Color[] colors = [new Color(255, 200, 0, 90), new Color(255, 115, 0, 90), new Color(200, 3, 33, 90)];
-					Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.25f);
-					float scale = Main.rand.NextFloat(0.05f, 0.125f);
+					var position = Projectile.Center + new Vector2(Main.rand.NextFloat(-25, 25), 0);
+					int maxTime = Main.rand.Next(30, 50);
+					Color[] colors = [new Color(255, 200, 0, 40), new Color(255, 115, 0, 70), new Color(200, 3, 33, 100)];
+					Vector2 velocity = -Vector2.UnitY * EaseCubicIn.Ease(Main.rand.NextFloat());
+					float scale = Main.rand.NextFloat(0.025f, 0.075f);
 					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 0.75f, scale, EaseQuadIn, maxTime)
 					{ 
-						ColorLerpExponent = 2.5f, 
-						FinalScaleMod = 0,
-						PixelDivisor = 1.25f 
+						ColorLerpExponent = 1.75f, 
+						FinalScaleMod = 2.5f,
+						Rotation = Main.rand.NextFloat(-0.3f, 0.3f),
+						DistortEasing = EaseQuadIn,
+						PixelDivisor = 2
 					});
 				}
 			}
@@ -136,12 +138,12 @@ class Firespike : ModProjectile, IDrawOverTiles
 				p => ParticleDelegate(p, velocity * -Vector2.UnitY, timeOffset, rotationAmount, numCycles)));
 		}
 
-		for (int i = 0; i < 8; i++)
+		for (int i = 0; i < 12; i++)
 		{
-			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(5);
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 4);
 			Color[] colors = [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150) * 0.75f];
-			float scale = Main.rand.NextFloat(0.06f, 0.15f);
-			ParticleHandler.SpawnParticle(new FireParticle(center, velocity, colors, 1.25f, scale, EaseQuadOut, 50) { ColorLerpExponent = 2 });
+			float scale = Main.rand.NextFloat(0.06f, 0.16f);
+			ParticleHandler.SpawnParticle(new FireParticle(center, velocity, colors, 1.25f, scale, EaseQuadOut, Main.rand.Next(30, 60)) { ColorLerpExponent = 2, PixelDivisor = 2 });
 		}
 	}
 
