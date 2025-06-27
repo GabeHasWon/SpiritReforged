@@ -46,7 +46,7 @@ internal class CustomCaves : ModSystem
 
 	private static void OverrideGenMound(On_WorldGen.orig_Mountinater orig, int i, int j)
 	{
-		var type = CaveEntranceType.Canyon;// (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
+		var type = (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
 		TypeByPosition.Add(new(i, j), type);
 
 		if (type == CaveEntranceType.Vanilla)
