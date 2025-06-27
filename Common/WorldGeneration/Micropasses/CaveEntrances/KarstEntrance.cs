@@ -57,9 +57,9 @@ internal class KarstEntrance : CaveEntrance
 		}
 	}
 
-	public override bool ModifyOpening(ref int x, ref int y, bool isCavinator)
+	public override bool ModifyOpening(ref int x, ref int y, bool isOpening)
 	{
-		if (isCavinator)
+		if (!isOpening)
 			x += WorldGen.genRand.NextBool() ? WorldGen.genRand.Next(-20, -16) : WorldGen.genRand.Next(15, 21);
 
 		for (int i = x - 40; i < x + 40; ++i)
@@ -77,10 +77,10 @@ internal class KarstEntrance : CaveEntrance
 			}
 		}
 
-		if (isCavinator)
+		if (!isOpening)
 			Cavinator(x, y, WorldGen.genRand.Next(40, 50));
 
-		return !isCavinator;
+		return isOpening;
 	}
 
 	public static void Cavinator(int i, int j, int steps)
@@ -164,10 +164,18 @@ internal class KarstEntrance : CaveEntrance
 					if (!tile.HasTile)
 						continue;
 
-					if (tile.TileType == TileID.Mud)
+					if (tile.TileType == TileID.Mud && originalBiome == QuickConversion.BiomeType.Jungle)
 						tile.TileType = TileID.JungleGrass;
-					else if (tile.TileType == TileID.Dirt)
-						tile.TileType = TileID.Grass;
+					else if (tile.TileType == TileID.Dirt && originalBiome == QuickConversion.BiomeType.Purity)
+					{
+						tile.TileType = originalBiome switch
+						{
+							QuickConversion.BiomeType.Purity => TileID.Grass,
+							QuickConversion.BiomeType.Corruption => TileID.CorruptGrass,
+							QuickConversion.BiomeType.Crimson => TileID.CrimsonGrass,
+							_ => TileID.Dirt
+						};
+					}
 				}
 			}
 		}

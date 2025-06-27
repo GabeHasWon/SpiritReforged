@@ -145,9 +145,9 @@ internal class CanyonEntrance : CaveEntrance
 		}
 	}
 
-	public override bool ModifyOpening(ref int x, ref int y, bool isCavinator)
+	public override bool ModifyOpening(ref int x, ref int y, bool isOpening)
 	{
-		if (isCavinator)
+		if (isOpening)
 			return false;
 
 		Generate(x, y); // Replace to KILL the ug desert (and all other structures that may impede)
