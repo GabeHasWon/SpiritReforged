@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using System.Linq;
 using Terraria.GameContent.Drawing;
 
@@ -76,6 +77,9 @@ internal class GlowmaskTile : GlobalTile
 
 				TileLoader.SetAnimationFrame(typeCache, i, j, ref addFrameX, ref addFrameY);
 				var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + addFrameY, 16, 16);
+
+				if (typeCache == ModContent.TileType<StargrassFlowers>())
+					source.Height = StargrassFlowers.TileHeight; //Hardcode the proper frame height until this system becomes more modular
 
 				glowSourceRect = source;
 			}

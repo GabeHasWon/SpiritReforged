@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
-using System.ComponentModel.Design.Serialization;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
 
@@ -27,7 +26,7 @@ public class JinxMarkNPC : GlobalNPC
 			return;
 
 		//If the npc is killed by the projectile, prevent further code from being run and reset cooldowns
-		if(damageDone > npc.life)
+		if (damageDone > npc.life)
 		{
 			ClearMarkBuff(npc);
 			ResetBowCooldown();

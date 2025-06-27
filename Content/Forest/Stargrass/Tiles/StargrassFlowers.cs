@@ -8,6 +8,7 @@ namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 public class StargrassFlowers : ModTile
 {
 	public const int StyleRange = 27;
+	public const int TileHeight = 24;
 
 	public static Color Glow(object obj)
 	{
@@ -26,8 +27,6 @@ public class StargrassFlowers : ModTile
 
 	public override void SetStaticDefaults()
 	{
-		const int TileHeight = 24;
-
 		Main.tileSolid[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
