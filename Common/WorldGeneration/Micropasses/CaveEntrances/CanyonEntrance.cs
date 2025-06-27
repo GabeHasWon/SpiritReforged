@@ -83,7 +83,7 @@ internal class CanyonEntrance : CaveEntrance
 
 		(ushort wallDirt, ushort wallStone) = biome switch
 		{
-			QuickConversion.BiomeType.Jungle => (WallID.MudUnsafe, WallID.JungleUnsafe2),
+			QuickConversion.BiomeType.Jungle => (WallID.MudUnsafe, WallID.MudUnsafe),
 			QuickConversion.BiomeType.Ice => (WallID.IceUnsafe, WallID.IceUnsafe),
 			QuickConversion.BiomeType.Corruption => (WallID.CorruptGrassUnsafe, WallID.DirtUnsafe1),
 			QuickConversion.BiomeType.Crimson => (WallID.CrimsonGrassUnsafe, WallID.DirtUnsafe1),
