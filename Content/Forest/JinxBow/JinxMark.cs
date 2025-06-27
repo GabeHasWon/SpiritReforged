@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
+using System.ComponentModel.Design.Serialization;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
 
@@ -21,25 +22,65 @@ public class JinxMarkNPC : GlobalNPC
 
 	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 	{
-		if (!npc.HasBuff<JinxMark>() || projectile.DamageType != DamageClass.Ranged)
+		//Stop if the npc doesn't have the mark
+		if (!npc.HasBuff<JinxMark>())
 			return;
 
+		//If the npc is killed by the projectile, prevent further code from being run and reset cooldowns
+		if(damageDone > npc.life)
+		{
+			ClearMarkBuff(npc);
+			ResetBowCooldown();
+
+			return;
+		}
+
+		//Finally, stop if the projectile isn't a ranged projectile or if the owner doesn't have a jinxbow active
 		var owner = Main.player[projectile.owner];
-		owner.ClearBuff(ModContent.BuffType<JinxMark>());
-
-		if (owner.ownedProjectileCounts[ModContent.ProjectileType<JinxBowMinion>()] < 1)
+		if (projectile.DamageType != DamageClass.Ranged || owner.ownedProjectileCounts[ModContent.ProjectileType<JinxBowMinion>()] < 1)
 			return;
 
+		ClearMarkBuff(npc);
+
+		//Iterate through projectiles to find the owner's jinxbow, then set its target
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.ModProjectile is not JinxBowMinion jinxBow || proj.owner != projectile.owner)
+				continue;
+
+			jinxBow.EmpoweredShotTarget = npc.whoAmI; //Queue up a target
+			proj.netUpdate = true;
+
+			break;
+		}
+	}
+
+	private static void ClearMarkBuff(NPC npc)
+	{
+		int buffIndex = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
+		npc.DelBuff(buffIndex);
+	}
+
+	private static void ResetBowCooldown()
+	{
 		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
 			if (proj.ModProjectile is not JinxBowMinion jinxBow)
 				continue;
 
-			jinxBow.EmpoweredShotTarget = npc.whoAmI; //Queue up a target
-			projectile.netUpdate = true;
+			jinxBow.MarkCooldown = 0;
+			proj.netUpdate = true;
 
 			break;
 		}
+	}
+
+	public override void OnKill(NPC npc)
+	{
+		if (!npc.HasBuff<JinxMark>())
+			return;
+
+		ResetBowCooldown();
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Draw the mark icon
@@ -55,7 +96,7 @@ public class JinxMarkNPC : GlobalNPC
 		int time = (index == -1) ? 0 : npc.buffTime[index];
 		var compoundSineEase = EaseFunction.CompoundEase([EaseFunction.EaseQuadIn, EaseFunction.EaseSine, EaseFunction.EaseCircularOut, EaseFunction.EaseQuadOut]);
 		float buffTimeProgress = time / (float)maxBuffTime;
-		var color = Color.White.Additive() * compoundSineEase.Ease(buffTimeProgress);
+		var color = Color.White.Additive(150) * compoundSineEase.Ease(buffTimeProgress);
 		float scale = MathHelper.Lerp(0.8f, 1.1f, compoundSineEase.Ease(buffTimeProgress));
 		scale += (EaseFunction.EaseSine.Ease(Main.GlobalTimeWrappedHourly * 1.4f % 1) - 0.5f) * 0.03f;
 

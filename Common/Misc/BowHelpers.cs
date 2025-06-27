@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.Misc;
 
 public static class BowHelpers
 {
-	public static void FindAmmo(Player owner, int ammoID, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel)
+	public static void FindAmmo(Player owner, int ammoID, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel, int skipAmount = 0)
 	{
 		const int ammoInventoryStart = 54;
 		const int ammoInventoryEnd = 58;
@@ -14,6 +14,8 @@ public static class BowHelpers
 		ammoDamage = null;
 		ammoKB = null;
 		ammoVel = null;
+
+		int trySkip = 0;
 
 		for (int i = ammoInventoryStart; i < ammoInventoryEnd; i++)
 		{
@@ -24,7 +26,11 @@ public static class BowHelpers
 				ammoDamage = selectedItem.damage;
 				ammoKB = selectedItem.knockBack;
 				ammoVel = selectedItem.shootSpeed;
-				return;
+
+				if (trySkip >= skipAmount)
+					return;
+
+				trySkip++;
 			}
 		}
 
@@ -37,7 +43,11 @@ public static class BowHelpers
 				ammoDamage = selectedItem.damage;
 				ammoKB = selectedItem.knockBack;
 				ammoVel = selectedItem.shootSpeed;
-				return;
+
+				if (trySkip >= skipAmount)
+					return;
+
+				trySkip++;
 			}
 		}
 	}
