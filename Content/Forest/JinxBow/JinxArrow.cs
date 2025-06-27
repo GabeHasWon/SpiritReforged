@@ -60,7 +60,7 @@ public class JinxArrow : ModProjectile
 	private void SpawnFX(NPC stuckNPC)
 	{
 		Color particleColor = JinxBowMinion.JinxbowCyan;
-		Vector2 startArrowParticlePos = Projectile.Center - Projectile.velocity * 3f;
+		Vector2 startArrowParticlePos = Projectile.Center - Projectile.velocity * 5f;
 
 		SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Pitch = 1.25f }, Projectile.Center);
 		ParticleHandler.SpawnParticle(new ImpactLinePrim(startArrowParticlePos, Projectile.velocity / 2, particleColor, new(0.75f, 3), 16, 1, stuckNPC));

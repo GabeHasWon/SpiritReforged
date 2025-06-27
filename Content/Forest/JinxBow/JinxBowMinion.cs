@@ -96,11 +96,12 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		}
 
 		//Aim diagonally upwards in direction of target rather than directly at target
-		int targetDirection = player.DirectionTo(target.Center).X > 0 ? 1 : -1;
+		int targetDirection = Projectile.DirectionTo(target.Center).X > 0 ? 1 : -1;
 
-		float desiredRotation = -MathHelper.PiOver4;
-		if (targetDirection < 0)
-			desiredRotation -= MathHelper.PiOver2;
+		//point to aim at
+		var middlePoint = new Vector2(MathHelper.Lerp(Projectile.Center.X, target.Center.X, 0.5f), Math.Min(Projectile.Center.Y, target.Center.Y) - 200);
+
+		float desiredRotation = Projectile.AngleTo(middlePoint);
 
 		StoredRotation = StoredRotation.AngleLerp(desiredRotation, 0.3f);
 		Projectile.rotation = StoredRotation;
@@ -118,7 +119,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			AiTimer = FIRE_TIME + COOLDOWN_TIME;
 			BounceTimer = COOLDOWN_TIME;
 
-			Vector2 arrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation + MathHelper.PiOver2 * targetDirection) * _selectedArrow.shootSpeed;
+			Vector2 arrowVelocity = middlePoint.DirectionTo(target.Center) * _selectedArrow.shootSpeed;
 
 			if (Projectile.owner == Main.myPlayer) //Only ever spawn projectiles on the owning client
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner, target.whoAmI);
