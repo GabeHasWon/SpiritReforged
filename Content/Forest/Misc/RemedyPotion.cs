@@ -110,20 +110,22 @@ public class RemedyPotion : ModItem
 	{
 		const float iconScale = 1.3f;
 
-		if (line.Mod != "Terraria" || line.Name != "Tooltip1")
-			return true;
-
-		int counter = 0;
-		foreach (int buff in RemedyPotionBuff.ImmuneTypes)
+		if (line.Mod == "Terraria" && line.Name == "Tooltip1")
 		{
-			var texture = TextureAssets.Buff[buff].Value;
-			var origin = new Vector2(0, texture.Height / 2);
+			int counter = 0;
+			foreach (int buff in RemedyPotionBuff.ImmuneTypes)
+			{
+				var texture = TextureAssets.Buff[buff].Value;
+				var origin = new Vector2(0, texture.Height / 2);
 
-			Main.spriteBatch.Draw(texture, new Vector2(line.X + 24 * iconScale * counter, line.Y + 12), null, Color.White, 0, origin, Main.inventoryScale * iconScale, default, 0);
-			counter++;
+				Main.spriteBatch.Draw(texture, new Vector2(line.X + 24 * iconScale * counter, line.Y + 12), null, Color.White, 0, origin, Main.inventoryScale * iconScale, default, 0);
+				counter++;
+			}
+
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BottledWater).AddIngredient(ItemID.Waterleaf)
