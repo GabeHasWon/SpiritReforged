@@ -143,7 +143,8 @@ internal class KarstEntrance : CaveEntrance
 
 						for (int x = k - 4; x < k + 5; ++x)
 							for (int y = l - 4; y < l + 5; ++y)
-								grassArea.Add(new Point16(x, y));
+								if (originalBiome == QuickConversion.BiomeType.Jungle || y < Main.worldSurface + 30 + noise.GetNoise(k + x, l) * 15)
+									grassArea.Add(new Point16(x, y));
 					}
 				}
 			}
@@ -166,7 +167,7 @@ internal class KarstEntrance : CaveEntrance
 
 					if (tile.TileType == TileID.Mud && originalBiome == QuickConversion.BiomeType.Jungle)
 						tile.TileType = TileID.JungleGrass;
-					else if (tile.TileType == TileID.Dirt && originalBiome == QuickConversion.BiomeType.Purity)
+					else if (tile.TileType == TileID.Dirt)
 					{
 						tile.TileType = originalBiome switch
 						{
@@ -189,6 +190,8 @@ internal class KarstEntrance : CaveEntrance
 		QuickConversion.BiomeType.Purity => (WallID.FlowerUnsafe, WallID.GrassUnsafe),
 		QuickConversion.BiomeType.Jungle => (WallID.JungleUnsafe, WallID.MudUnsafe),
 		QuickConversion.BiomeType.Ice => (WallID.SnowWallUnsafe, WallID.IceUnsafe),
+		QuickConversion.BiomeType.Corruption => (WallID.DirtUnsafe1, WallID.CorruptGrassUnsafe),
+		QuickConversion.BiomeType.Crimson => (WallID.DirtUnsafe1, WallID.CrimsonGrassUnsafe),
 		_ => (WallID.DirtUnsafe, WallID.DirtUnsafe2)
 	};
 }

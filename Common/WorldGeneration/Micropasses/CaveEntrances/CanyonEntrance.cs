@@ -18,34 +18,30 @@ internal class CanyonEntrance : CaveEntrance
 			y = (int)Main.worldSurface - 80;
 
 		int dif = (int)Main.worldSurface - y;
-		int depth = Math.Max(80, dif);
+		int depth = Math.Max(140, dif);
 
-		if (depth >= 80)
-		{
-			int tileY = WorldMethods.FindGround(x, y);
-			Tile checkType = Main.tile[x, tileY];
-
-			skipMe = CreateMound(x, y, dif + 10, checkType);
-		}
+		if (depth >= 140)
+			skipMe = CreateMound(x, y, dif + 10);
 
 		if (!skipMe)
 			DigCavern(x, y, depth + 5);
 	}
 
-	private static bool CreateMound(int x, int y, int depth, Tile referenceTile)
+	private static bool CreateMound(int x, int y, int depth)
 	{
-		ushort type = referenceTile.TileType switch
+		QuickConversion.BiomeType biome = QuickConversion.FindConversionBiome(new Point16(x - 40, y - 40), new Point16(80, 80));
+
+		if (biome == QuickConversion.BiomeType.Desert)
+			return true;
+
+		ushort type = biome switch
 		{
-			TileID.Mud or TileID.JungleGrass => TileID.Mud,
-			TileID.SnowBlock or TileID.IceBlock => TileID.SnowBlock,
-			TileID.Sand or TileID.Sandstone or TileID.HardenedSand => TileID.Sand,
-			TileID.Crimsand or TileID.Crimstone or TileID.CrimsonGrass => TileID.Crimstone,
-			TileID.Ebonstone or TileID.Ebonsand or TileID.CorruptGrass => TileID.Ebonstone,
+			QuickConversion.BiomeType.Jungle => TileID.Mud,
+			QuickConversion.BiomeType.Ice => TileID.SnowBlock,
+			QuickConversion.BiomeType.Crimson => TileID.Crimstone,
+			QuickConversion.BiomeType.Corruption => TileID.Ebonstone,
 			_ => TileID.Dirt,
 		};
-
-		if (type == TileID.Sand)
-			return true;
 
 		var mound = new Shapes.Mound(WorldGen.genRand.Next(26, 36), depth);
 		WorldUtils.Gen(new Point(x, y + depth), mound, Actions.Chain(new Modifiers.Blotches(), new Actions.PlaceTile(type)));
@@ -55,13 +51,14 @@ internal class CanyonEntrance : CaveEntrance
 	public static void DigCavern(int x, int y, int depth)
 	{
 		int tileY = WorldMethods.FindGround(x, y);
-		Tile checkType = Main.tile[x, tileY];
+		QuickConversion.BiomeType biome = QuickConversion.FindConversionBiome(new Point16(x - 40, tileY - 40), new Point16(80, 80));
 
-		(ushort wallDirt, ushort wallStone) = checkType.TileType switch
+		(ushort wallDirt, ushort wallStone) = biome switch
 		{
-			TileID.Mud or TileID.JungleGrass => (WallID.MudUnsafe, WallID.JungleUnsafe),
-			TileID.SnowBlock or TileID.IceBlock => (WallID.SnowWallUnsafe, WallID.IceUnsafe),
-			TileID.Sand or TileID.Sandstone or TileID.HardenedSand => (WallID.HardenedSand, WallID.HardenedSand),
+			QuickConversion.BiomeType.Jungle => (WallID.MudUnsafe, WallID.JungleUnsafe),
+			QuickConversion.BiomeType.Ice => (WallID.SnowWallUnsafe, WallID.IceUnsafe),
+			QuickConversion.BiomeType.Corruption => (WallID.CorruptGrassUnsafe, WallID.DirtUnsafe1),
+			QuickConversion.BiomeType.Crimson => (WallID.CrimsonGrassUnsafe, WallID.DirtUnsafe1),
 			_ => (WallID.DirtUnsafe, WallID.GrassUnsafe),
 		};
 
@@ -100,7 +97,7 @@ internal class CanyonEntrance : CaveEntrance
 
 				if (i > useX - wallLeftEdge && i < useX + wallRightEdge)
 					tile.Clear(TileDataType.Wall);
-				else if ((tile.HasTile || withinTiles) && j > y + 15 && CanFillWalls(i, j))
+				else if ((tile.HasTile || withinTiles) && j > y + 15)
 				{
 					float noise = wallNoise.GetNoise(i, j);
 
@@ -111,8 +108,6 @@ internal class CanyonEntrance : CaveEntrance
 				}
 			}
 		}
-
-		static bool CanFillWalls(int x, int y) => Main.tile[x, y].WallType is not WallID.CrimstoneUnsafe or WallID.EbonstoneUnsafe;
 	}
 
 	/// <summary>

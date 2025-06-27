@@ -20,7 +20,7 @@ internal class QuickConversion
 	public static BiomeType FindConversionBiome(Point16 position, Point16 size, Dictionary<BiomeType, float> biases = null)
 	{
 		Dictionary<BiomeType, float> biomeCounts = new() { { BiomeType.Purity, 0 }, { BiomeType.Jungle, 0 }, { BiomeType.Ice, 0 }, { BiomeType.Mushroom, 0 }, 
-			{ BiomeType.Desert, 0 } };
+			{ BiomeType.Desert, 0 }, { BiomeType.Corruption, 0 }, { BiomeType.Crimson, 0 } };
 
 		// Remnants jungles are much more rocky and muddy, making it harder to detect with our normal values
 		int jungleStep = CrossMod.Remnants.Enabled ? 2 : 1;
@@ -36,7 +36,7 @@ internal class QuickConversion
 
 				if (tile.TileType is TileID.JungleGrass or TileID.JungleVines or TileID.JunglePlants)
 					biomeCounts[BiomeType.Jungle] += jungleStep;
-				else if (tile.TileType is TileID.Dirt or TileID.Stone or TileID.ClayBlock)
+				else if (tile.TileType is TileID.Grass or TileID.Stone or TileID.ClayBlock)
 					biomeCounts[BiomeType.Purity]++;
 				else if (tile.TileType is TileID.SnowBlock or TileID.IceBlock)
 					biomeCounts[BiomeType.Ice]++;
@@ -44,6 +44,10 @@ internal class QuickConversion
 					biomeCounts[BiomeType.Desert]++;
 				else if (tile.TileType is TileID.MushroomBlock or TileID.MushroomGrass or TileID.MushroomVines)
 					biomeCounts[BiomeType.Mushroom] += 3;
+				else if (tile.TileType is TileID.Ebonsand or TileID.Ebonstone or TileID.CorruptGrass)
+					biomeCounts[BiomeType.Corruption]++;
+				else if (tile.TileType is TileID.Crimsand or TileID.Crimstone or TileID.CrimsonGrass)
+					biomeCounts[BiomeType.Crimson]++;
 			}
 		}
 
