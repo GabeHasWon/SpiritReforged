@@ -10,7 +10,11 @@ public class Crinoid : ModNPC
 {
 	private byte _pickedType;
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 6;
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 6;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+	}
 
 	public override void SetDefaults()
 	{
@@ -25,7 +29,6 @@ public class Crinoid : ModNPC
 		NPC.knockBackResist = 0f;
 		NPC.aiStyle = -1;
 		NPC.npcSlots = 0;
-		AIType = NPCID.WebbedStylist;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -91,6 +94,6 @@ public class Crinoid : ModNPC
 		if (!config.VentCritters)
 			return 0;
 
-		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? .71f : 0;
+		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? 2f : 0;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
@@ -13,7 +13,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class AcaciaTree : CustomTree, IConvertibleTile
+public class AcaciaTree : CustomTree, ISetConversion
 {
 	/// <summary> All Acacia treetop platforms that exist in the world. </summary>
 	internal static IEnumerable<TreetopPlatform> Platforms
@@ -26,6 +26,14 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 	}
 
 	public override int TreeHeight => WorldGen.genRand.Next(8, 16);
+
+	public ConversionHandler.Set ConversionSet => new()
+	{
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<AcaciaTreeCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<AcaciaTreeCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<AcaciaTreeHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<AcaciaTree>() },
+	};
 
 	/// <summary> How much acacia tree tops sway in the wind. Used by the client for drawing and platform logic. </summary>
 	public static float GetSway(int i, int j, double factor = 0)
@@ -73,6 +81,21 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 			item.stack *= 2;
 			yield return item;
 		}
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		if (ConversionHandler.FindSet(nameof(AcaciaTree), Framing.GetTileSafely(i, j + 1).TileType, out int newType) && Type != newType)
+		{
+			int top = j;
+			while (WorldGen.InWorld(i, top, 2) && Main.tile[i, top].TileType == Type)
+				top--; //Iterate to the top of the tree
+
+			int height = j - top;
+			ConversionHelper.ConvertTiles(i, top + 1, 1, height, newType);
+		}
+
+		return true;
 	}
 
 	protected override void OnShakeTree(int i, int j)
@@ -223,28 +246,6 @@ public class AcaciaTree : CustomTree, IConvertibleTile
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
 	}
-
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false; //Only rely on the anchor tile source (TileUpdate) for conversions
-
-		int oldType = Main.tile[i, j].TileType;
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<AcaciaTreeHallow>(),
-			ConversionType.Crimson => ModContent.TileType<AcaciaTreeCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<AcaciaTreeCorrupt>(),
-			_ => ModContent.TileType<AcaciaTree>(),
-		});
-
-		if (Main.tile[i, j - 1].TileType == oldType) //Convert the entire tree from the base
-			TileCorruptor.Convert(new EntitySource_TileUpdate(i, j), type, i, j - 1);
-
-		return true;
-	}
 }
 
 public class AcaciaTreeCorrupt : AcaciaTree
@@ -253,8 +254,8 @@ public class AcaciaTreeCorrupt : AcaciaTree
 	{
 		base.PreAddObjectData();
 
-		TileID.Sets.Corrupt[Type] = true;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+		TileID.Sets.Corrupt[Type] = true;
 	}
 }
 
@@ -264,8 +265,25 @@ public class AcaciaTreeCrimson : AcaciaTree
 	{
 		base.PreAddObjectData();
 
-		TileID.Sets.Crimson[Type] = true;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+		TileID.Sets.Crimson[Type] = true;
+	}
+}
+
+[Autoload(false)]
+public class AcaciaTreeCrossmod(string texture, string name, Func<int[]> anchor) : AcaciaTree
+{
+	public override string Texture => _texture + _name;
+	public override string Name => _name;
+
+	private readonly string _texture = texture;
+	private readonly string _name = name;
+	private readonly Func<int[]> _anchor = anchor;
+
+	public override void PreAddObjectData()
+	{
+		base.PreAddObjectData();
+		TileObjectData.newTile.AnchorValidTiles = _anchor.Invoke();
 	}
 }
 
@@ -275,8 +293,8 @@ public class AcaciaTreeHallow : AcaciaTree
 	{
 		base.PreAddObjectData();
 
-		TileID.Sets.Hallow[Type] = true;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>()];
+		TileID.Sets.Hallow[Type] = true;
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
@@ -285,7 +303,7 @@ public class AcaciaTreeHallow : AcaciaTree
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = GetSway(i, j) * .08f;
+		float rotation = GetSway(i, j) * 0.08f;
 
 		if (IsTreeTop(i, j)) //Draw treetops
 		{

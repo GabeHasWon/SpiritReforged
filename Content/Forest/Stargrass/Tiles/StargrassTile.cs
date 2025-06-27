@@ -1,16 +1,28 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
-public class StargrassTile : GrassTile
+public class StargrassTile : GrassTile, ISetConversion
 {
+	public virtual ConversionHandler.Set ConversionSet => new()
+	{
+		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+		{ BiomeConversionID.Hallow, TileID.HallowedGrass },
+		{ BiomeConversionID.PurificationPowder, TileID.Grass },
+		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	};
+
 	public static Color Glow(object obj) 
 	{
 		var pos = (Point)obj;
@@ -25,15 +37,14 @@ public class StargrassTile : GrassTile
 		Main.tileLighted[Type] = true;
 		TileID.Sets.Conversion.Grass[Type] = true;
 
+		int mowType = ModContent.TileType<StargrassMowed>();
+		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
+
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
-	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (conversionType == BiomeConversionID.PurificationPowder)
-			WorldGen.ConvertTile(i, j, TileID.Grass);
+		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
 	}
 
 	public override void FloorVisuals(Player player)
@@ -70,26 +81,25 @@ public class StargrassTile : GrassTile
 		}
 	}
 
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHandler.FindSet(nameof(StargrassTile), conversionType, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
+	}
+
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		var flags = OpenTools.GetOpenings(i, j, false, false, true);
-
-		if (flags == OpenFlags.None) //Surrounded by solid tiles
+		if (!WorldGen.TileIsExposedToAir(i, j))
 			Main.tile[i, j].TileType = TileID.Grass;
 
 		return true;
 	}
 
-	public override void RandomUpdate(int i, int j)
-	{
-		base.RandomUpdate(i, j);
-
-		if (Main.rand.NextBool(60) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
-			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
-	}
-
 	public override void GrowPlants(int i, int j)
 	{
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
+
 		if (!Main.rand.NextBool(4) || Framing.GetTileSafely(i, j - 1).HasTile)
 			return;
 

@@ -11,7 +11,7 @@ public class SavannaSandSlime : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 3;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.ShimmerSlime;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.ShimmerSlime;
 
 		MoRHelper.AddElement(NPC, MoRHelper.Earth);
 		MoRHelper.AddElement(NPC, MoRHelper.Water);

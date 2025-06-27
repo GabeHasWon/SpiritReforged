@@ -15,7 +15,7 @@ ToucanMinion.DisplayName: Toucan Minion
 TumblerPet.DisplayName: Tumbler Pet
 SunOrb.DisplayName: Sun Orb
 SunStaffHeld.DisplayName: Sun Staff
-WheatgrassSeedProjectile.DisplayName: Wheatgrass Seed
+WheatgrassSeed.DisplayName: Wheatgrass Seed
 RoyalKhopeshHeld.DisplayName: Royal Khopesh
 Zipline.DisplayName: Zipline
 RogueKnifeMinion.DisplayName: Rusted Knife
@@ -44,3 +44,6 @@ RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
 FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
 VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Energy Stomp
+EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Finger Shot

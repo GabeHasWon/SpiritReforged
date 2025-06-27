@@ -24,6 +24,7 @@ Misc: {
 	NoStock: Нет в наличии
 	GraveText: <wavy>Старая, выцветшая надпись... Что здесь было написано?
 	MenuButton: Использовать стиль меню
+	// UnchangedMap: Map has no changes.
 	// ShareMap: Map has been shared.
 	// ShareAndUpdateMap: Map has been shared & updated.
 }
@@ -46,4 +47,9 @@ GameTips: {
 	ReforgedTip7: Облачный стебель всегда растёт под облаками.
 	ReforgedTip8: На вершины акаций можно забраться, если нужна высота.
 	ReforgedTip9: Вещи иногда всплывают на поверхность океана — заглядывайте время от времени!
+}
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
 }

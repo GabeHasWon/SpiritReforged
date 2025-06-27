@@ -308,7 +308,7 @@ public class SunOrb : ModProjectile
 
 		//Subtle swirly noise around the main orb- unneccessary flourish but I like it
 		float time = AiTimer / 60f;
-		effect.Parameters["noiseTexture"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		effect.Parameters["noiseTexture"].SetValue(AssetLoader.LoadedTextures["SwirlNoise"].Value);
 		effect.Parameters["scroll"].SetValue(new Vector2(-time / 6, -time / 2));
 		effect.Parameters["textureStretch"].SetValue(new Vector2(1, 0.5f));
 

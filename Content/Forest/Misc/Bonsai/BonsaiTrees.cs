@@ -1,12 +1,17 @@
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.DrawPreviewHook;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Misc.Bonsai;
 
+[AutoloadGlowmask("255,255,255")]
 public class BonsaiTrees : ModTile, IDrawPreview
 {
 	public const int FrameWidth = 60;
+	public const int FrameHeight = 72;
 
 	public override void SetStaticDefaults()
 	{
@@ -32,6 +37,36 @@ public class BonsaiTrees : ModTile, IDrawPreview
 		AddMapEntry(new Color(140, 140, 140), CreateMapEntryName());
 	}
 
+	public override void NearbyEffects(int i, int j, bool closer)
+	{
+		const int fluff = 8;
+
+		if (closer && !Main.gamePaused && Main.tile[i, j].TileFrameY is short frameY && frameY > FrameHeight * 2 && TileObjectData.IsTopLeft(i, j) && Main.rand.NextBool(8))
+		{
+			Color color = (frameY / FrameHeight) switch
+			{
+				3 => Color.Red,
+				4 => Color.White,
+				5 => Color.Green,
+				6 => Color.Blue,
+				7 => Color.Blue,
+				8 => Color.Purple,
+				_ => Color.Goldenrod
+			};
+
+			int width = 48 - fluff * 2;
+			int height = 38;
+			var position = new Vector2(i, j) * 16 + new Vector2(fluff);
+
+			float scale = Main.rand.NextFloat(0.2f, 0.7f);
+			int timeLeft = Main.rand.Next(15, 30);
+
+			var rectangle = Main.rand.NextVector2FromRectangle(new((int)position.X, (int)position.Y, width, height));
+
+			ParticleHandler.SpawnParticle(new EmberParticle(rectangle, Vector2.Zero, color, scale, timeLeft, 3));
+		}
+	}
+
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
@@ -43,9 +78,10 @@ public class BonsaiTrees : ModTile, IDrawPreview
 		int offsetX = (frame.X % FrameWidth == 0) ? -2 : ((frame.X % FrameWidth == 40) ? 2 : 0);
 
 		var source = new Rectangle(frame.X, frame.Y, 18, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offsetX, 0);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offsetX, 2);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position, source, color * 3, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return false;
 	}
 

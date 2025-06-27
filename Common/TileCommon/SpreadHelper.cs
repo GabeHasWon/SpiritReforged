@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.TileCommon;
 
-internal static class SpreadHelper
+public static class SpreadHelper
 {
 	public static bool Spread(int i, int j, int type, int chance, params int[] validAdjacentTypes)
 	{
@@ -17,7 +17,8 @@ internal static class SpreadHelper
 			Framing.GetTileSafely(p.X, p.Y).TileType = (ushort)type;
 
 			if (Main.netMode == NetmodeID.Server)
-				NetMessage.SendTileSquare(-1, p.X, p.Y, 1, TileChangeType.None);
+				NetMessage.SendTileSquare(-1, p.X, p.Y);
+
 			return true;
 		}
 
@@ -30,19 +31,9 @@ internal static class SpreadHelper
 		for (int k = -1; k < 2; ++k)
 			for (int l = -1; l < 2; ++l)
 				if (!(l == 0 && k == 0) && Framing.GetTileSafely(i + k, j + l).HasTile && types.Contains(Framing.GetTileSafely(i + k, j + l).TileType))
-					if (!requiresAir || OpenToAir(i + k, j + l))
+					if (!requiresAir || WorldGen.TileIsExposedToAir(i + k, j + l))
 						p.Add(new Point(i + k, j + l));
 
 		return p;
-	}
-
-	public static bool OpenToAir(int i, int j)
-	{
-		for (int k = -1; k < 2; ++k)
-			for (int l = -1; l < 2; ++l)
-				if (!(l == 0 && k == 0) && !WorldGen.SolidOrSlopedTile(i + k, j + l))
-					return true;
-
-		return false;
 	}
 }

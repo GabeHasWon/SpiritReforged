@@ -23,7 +23,7 @@ public class Magmastone : ModTile, IAutoloadTileItem
 	/// <param name="i"> The X tile coordinate. </param>
 	/// <param name="j"> The Y tile coordinate. </param>
 	/// <returns> Whether the point was successfully added. </returns>
-	public static bool AddGlowPoint(int i, int j) => glowPoints.TryAdd(new Point16(i, j), HydrothermalVent.eruptDuration * GlowDecayRate + 1);
+	public static bool AddGlowPoint(int i, int j) => glowPoints.TryAdd(new Point16(i, j), HydrothermalVent.EruptDuration * GlowDecayRate + 1);
 
 	/// <summary> Toggles a non-duration based glow point for the local client. Can be synced using <see cref="MessageType.MagmaGlowPoint"/> in multiplayer. </summary>
 	/// <param name="i"> The X tile coordinate. </param>

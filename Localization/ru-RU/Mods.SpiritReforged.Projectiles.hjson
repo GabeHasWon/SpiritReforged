@@ -15,7 +15,7 @@ ToucanMinion.DisplayName: Тукан-спутник
 TumblerPet.DisplayName: Питомец-акробат
 SunOrb.DisplayName: Солнечный шар
 SunStaffHeld.DisplayName: Солнечный посох
-WheatgrassSeedProjectile.DisplayName: Семя пырея
+WheatgrassSeed.DisplayName: Семя пырея
 RoyalKhopeshHeld.DisplayName: Королевский хопеш
 Zipline.DisplayName: Канатная дорога
 RogueKnifeMinion.DisplayName: Ржавый нож
@@ -44,3 +44,6 @@ BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.Display
 // FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
 // VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 // VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// EnergyImpact.DisplayName: Energy Stomp
+// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+// FingerShot.DisplayName: Finger Shot

@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Content.Underground.NPCs;
-using static AssGen.Assets;
 
 namespace SpiritReforged.Common.ModCompat;
 

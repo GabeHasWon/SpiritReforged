@@ -62,5 +62,5 @@ internal class CustomCaves : ModSystem
 	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) => 
-		tasks.Add(new PassLegacy("Reset Custom Cave Info", (_, _) => TypeByPosition.Clear()));
+		tasks.Insert(0, new PassLegacy("Reset Custom Cave Info", (_, _) => TypeByPosition.Clear()));
 }

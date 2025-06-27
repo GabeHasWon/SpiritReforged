@@ -8,29 +8,33 @@ namespace SpiritReforged.Content.Forest.Cartography;
 public class MappingSystem : ModSystem
 {
 	/// <summary> Used to record whether a change has actually occured on the server map. </summary>
-	public static bool MapUpdated { get; private set; }
+	[WorldBound]
+	internal static bool MapUpdated;
+
+	/// <summary> The map owned by the server and controlled using <see cref="CartographyTable"/>. </summary>
 	[WorldBound(Manual = true)]
-	internal static WorldMap RecordedMap;
+	internal static WorldMap RecordedMap = null;
 
 	/// <summary> Syncs your map with the server. Should only be called on multiplayer clients. </summary>
 	public static void SetMap()
 	{
-		EnqueueMap(Main.Map);
+		EnqueueMap(Main.Map, RecordedMap);
+
+		if (SyncMapData.Queue.Count == 0) //Player has no data to send
+		{
+			Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UnchangedMap"), new Color(255, 240, 20));
+			MapUpdated = false; //Reset MapUpdated, just in case
+
+			return;
+		}
+
 		while (SyncMapData.Queue.Count > 0)
 		{
 			new SyncMapData().Send();
 		}
-
-		if (!MapUpdated) //Specify that the player only shared their map and didn't update
-		{
-			Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.ShareMap"), new Color(255, 240, 20));
-		}
-
-		new NotifyMapData().Send();
-		MapUpdated = false;
 	}
 
-	internal static void EnqueueMap(WorldMap map)
+	internal static void EnqueueMap(WorldMap map, WorldMap comparison)
 	{
 		for (int x = 0; x < map.MaxWidth; x++)
 		{
@@ -38,8 +42,10 @@ public class MappingSystem : ModSystem
 			{
 				var t = map[x, y];
 
-				if (t.Light != 0)
-					SyncMapData.Queue.Enqueue(new((ushort)x, (ushort)y, t));
+				if (t.Light == 0 || comparison is WorldMap cMap && cMap[x, y].Light >= t.Light)
+					continue; //Avoid sending redundant data by referencing the opposite map
+
+				SyncMapData.Queue.Enqueue(new((ushort)x, (ushort)y, t));
 			}
 		}
 	}
@@ -54,7 +60,11 @@ public class MappingSystem : ModSystem
 			public readonly MapTile Tile = Tile;
 		}
 
-		private const int CountLimit = 150;
+		/// <summary> The total number of bytes sent in one iteration (a single tile). </summary>
+		private const byte SequenceSize = 8;
+		/// <summary> The total number of iterations allowed for a single packet. </summary>
+		private const int CountLimit = ushort.MaxValue / SequenceSize - 1;
+
 		public static readonly Queue<QueueData> Queue = [];
 
 		public SyncMapData() { }
@@ -75,40 +85,44 @@ public class MappingSystem : ModSystem
 
 				var t = MapTile.Create(type, light, color);
 
-				if (Main.netMode == NetmodeID.Server)
-				{
-					RecordedMap ??= new(Main.maxTilesX, Main.maxTilesY);
+				//Set the server-owned map on ALL sides to protect against synchronizing redundant data in the future
+				RecordedMap ??= new(Main.maxTilesX, Main.maxTilesY);
 
-					if (light > RecordedMap[x, y].Light)
-						RecordedMap.SetTile(x, y, ref t); //Never dim the server map light levels
-				}
-				else
-				{
+				//Never dim the server map light levels
+				if (light > RecordedMap[x, y].Light)
+					RecordedMap.SetTile(x, y, ref t);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
 					Main.Map.SetTile(x, y, ref t);
-				}
 			}
 
 			if (final)
 			{
-				if (MapUpdated && Main.netMode == NetmodeID.Server)
+				if (Main.netMode == NetmodeID.Server)
 				{
-					EnqueueMap(RecordedMap);
+					EnqueueMap(RecordedMap, null);
 					while (Queue.Count > 0)
 					{
 						new SyncMapData().Send(toClient: whoAmI); //Relay back to the initiator
 					}
+
+					new NotifyMapData().Send(ignoreClient: whoAmI);
 				}
-				else if (Main.netMode == NetmodeID.MultiplayerClient)
+				else
 				{
 					Main.refreshMap = true;
-					Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.ShareAndUpdateMap"), new Color(255, 240, 20));
+
+					string key = "Mods.SpiritReforged.Misc." + (MapUpdated ? "ShareAndUpdateMap" : "ShareMap");
+					Main.NewText(Language.GetTextValue(key), new Color(255, 240, 20));
+
+					MapUpdated = false;
 				}
 			}
 		}
 
 		public override void OnSend(ModPacket modPacket)
 		{
-			ushort count = (ushort)Math.Min(CountLimit, Queue.Count); //Restricts packet size to avoid hitting the limit
+			ushort count = (ushort)Math.Min(Queue.Count, CountLimit); //Restricts packet size to avoid hitting the limit
 			ushort currentCount = 0;
 
 			modPacket.Write(count);
@@ -132,7 +146,7 @@ public class MappingSystem : ModSystem
 		}
 	}
 
-	/// <summary> Notifies everybody of updated map data on the server. </summary>
+	/// <summary> Simply notifies everybody of updated map data on the server. </summary>
 	internal class NotifyMapData : PacketData
 	{
 		public NotifyMapData() { }
@@ -140,7 +154,10 @@ public class MappingSystem : ModSystem
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
 			if (Main.netMode == NetmodeID.Server)
-				new NotifyMapData().Send(ignoreClient: whoAmI);
+			{
+				new NotifyMapData().Send();
+				return;
+			}
 
 			MapUpdated = true;
 		}

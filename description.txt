@@ -12,11 +12,11 @@ Spirit Reforged is the latest and main project developed by Team Spirit, also re
 
 Spirit Reforged is a [c/ffc163:standalone] project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
-Our brand new update, Caves and Clubs (v0.1.1) brings you a new subclass: clubs, new underground worldgen, new enemies, weapons, NPCs, and more! Here are the stats at a glance:
+Our brand new update, the Catch-up Patch (v0.1.2) brings you lots of new content, bugfixes, and more! Here are the stats at a glance:
 
-- 312 Items
+- 361 Items, including tons of new weapons and gear
 - 1 New Minibiome: The Savanna
-- 33 Enemies and NPCs, including 2 new wandering World NPCs to encounter
+- 42 Enemies and NPCs, including 2 new wandering World NPCs to encounter
 - Numerous microbiomes, microstructures, and discoveries scattered across the world
 
 We hope you enjoy Spirit Reforged and join Team Spirit on our next adventure.

@@ -1,9 +1,9 @@
-﻿using SpiritReforged.Content.Underground.NPCs;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Underground.Tiles.Potion;
 using System.Linq;
 using Terraria.WorldBuilding;
-using SpiritReforged.Content.Underground.Tiles.Potion;
-using SpiritReforged.Common.TileCommon;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -11,8 +11,18 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 internal class PotsMicropass : Micropass
 {
 	private delegate bool GenDelegate(int x, int y);
+
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
+
+	public static float WorldMultiplier
+	{
+		get
+		{
+			float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
+			return worldScale + (worldScale - 1);
+		}
+	}
 
 	public override string WorldGenName => "Pots";
 
@@ -26,7 +36,7 @@ internal class PotsMicropass : Micropass
 	{
 		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(3))
 		{
-			int placed = ModContent.TileType<RollingPot>();
+			int placed = ModContent.TileType<RollingPots>();
 
 			WorldGen.PlaceTile(i - 1, j, placed, true, style: 1);
 			return Main.tile[i, j].TileType == placed; //Skips orig
@@ -75,8 +85,7 @@ internal class PotsMicropass : Micropass
 
 	public static void RunMultipliedTask(float multiplier)
 	{
-		float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
-		float scale = (worldScale + (worldScale - 1)) * multiplier;
+		float scale = WorldMultiplier * multiplier;
 
 		Generate(CreateOrnate, (int)(scale * 5), out _);
 		Generate(CreatePotion, (int)(scale * 46), out _);
@@ -87,6 +96,7 @@ internal class PotsMicropass : Micropass
 		Generate(CreateAether, (int)(scale * 3), out _);
 		Generate(CreateUpsideDown, (int)(scale * 4), out _);
 		Generate(CreateBoulder, (int)(scale * 15), out _);
+		Generate(CreatePicnic, (int)(scale * 2), out _, WickerBaskets.PicnicArea);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
@@ -227,7 +237,21 @@ internal class PotsMicropass : Micropass
 		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
 			return false;
 
-		int type = ModContent.TileType<RollingPot>();
+		int type = ModContent.TileType<RollingPots>();
+		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreatePicnic(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		int type = ModContent.TileType<WickerBaskets>();
+		if (!TileID.Sets.Grass[Main.tile[x, y + 1].TileType] || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
+			return false;
+
 		Placer.Check(x, y, type).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;

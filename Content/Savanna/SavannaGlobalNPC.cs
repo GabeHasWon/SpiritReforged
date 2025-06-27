@@ -12,7 +12,7 @@ public class SavannaGlobalNPC : GlobalNPC
 {
 	public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 	{
-		if (npc.type == NPCID.Dryad && (Main.LocalPlayer.ZoneDesert || Main.LocalPlayer.InModBiome<SavannaBiome>()))
+		if (npc.type == NPCID.Dryad && (Main.LocalPlayer.ZoneDesert || Main.LocalPlayer.InModBiome<SavannaBiome>() || Main.LocalPlayer.ZoneJungle))
 		{
 			var grassSeeds = items.FirstOrDefault(x => x != null && x.type == ItemID.GrassSeeds);
 

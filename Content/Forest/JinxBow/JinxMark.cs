@@ -1,10 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Particles;
-using System.IO;
-using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
 
@@ -21,96 +17,88 @@ public class JinxMark : ModBuff
 
 public class JinxMarkNPC : GlobalNPC
 {
-	public override bool InstancePerEntity => true;
-
-	private static Asset<Texture2D> icon;
-
-	private int _storedPlayer;
-
-	public void SetMark(NPC npc, Projectile projectile)
-	{
-		_storedPlayer = projectile.owner;
-		if (!npc.HasBuff<JinxMark>())
-			npc.AddBuff(ModContent.BuffType<JinxMark>(), (int)(JinxBowMinion.MARK_COOLDOWN * JinxBowMinion.MARK_LINGER_RATIO));
-
-		else
-		{
-			int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
-			if (index > -1)
-				npc.buffTime[index] = JinxBowMinion.MARK_COOLDOWN;
-		}
-	}
+	private static readonly Asset<Texture2D> Icon = DrawHelpers.RequestLocal(typeof(JinxMarkNPC), "JinxMark", false);
 
 	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 	{
-		Player markPlayer = Main.player[_storedPlayer];
-		bool playerHasBow = markPlayer.ownedProjectileCounts[ModContent.ProjectileType<JinxBowMinion>()] == 1;
-		bool isSameOwner = projectile.owner == _storedPlayer;
-		if (npc.HasBuff<JinxMark>() && projectile.DamageType == DamageClass.Ranged && playerHasBow && isSameOwner)
+		//Stop if the npc doesn't have the mark
+		if (!npc.HasBuff<JinxMark>())
+			return;
+
+		//If the npc is killed by the projectile, prevent further code from being run and reset cooldowns
+		if (damageDone > npc.life)
 		{
-			int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
-			if (index > -1)
-				npc.DelBuff(index);
+			ClearMarkBuff(npc);
+			ResetBowCooldown();
 
-			foreach(Projectile proj in Main.ActiveProjectiles)
-			{
-				if(proj.owner == _storedPlayer)
-				{
-					if(proj.ModProjectile is JinxBowMinion jinxBow)
-					{
-						jinxBow.DoEmpoweredShot(npc);
+			return;
+		}
 
-						if(!Main.dedServ)
-						{
-							ParticleHandler.SpawnParticle(new ImpactLinePrim(npc.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(0.75f, 3), 12, 1));
-							ParticleHandler.SpawnParticle(new LightBurst(npc.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 20));
+		//Finally, stop if the projectile isn't a ranged projectile or if the owner doesn't have a jinxbow active
+		var owner = Main.player[projectile.owner];
+		if (projectile.DamageType != DamageClass.Ranged || owner.ownedProjectileCounts[ModContent.ProjectileType<JinxBowMinion>()] < 1)
+			return;
 
-							for (int i = 0; i < 10; i++)
-							{
-								Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 4);
-								float scale = Main.rand.NextFloat(0.3f, 0.7f);
-								int lifeTime = Main.rand.Next(12, 40);
-								static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+		ClearMarkBuff(npc);
 
-								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
-								ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
-							}
+		//Iterate through projectiles to find the owner's jinxbow, then set its target
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.ModProjectile is not JinxBowMinion jinxBow || proj.owner != projectile.owner)
+				continue;
 
-							ParticleHandler.SpawnParticle(new TexturedPulseCircle(npc.Center, Color.MediumPurple.Additive(50), 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
-						}
+			jinxBow.EmpoweredShotTarget = npc.whoAmI; //Queue up a target
+			proj.netUpdate = true;
 
-						break;
-					}
-				}
-			}
-
-			npc.netUpdate = true;
+			break;
 		}
 	}
 
-	public override void Load() => icon = DrawHelpers.RequestLocal(GetType(), "JinxMark", false);
+	private static void ClearMarkBuff(NPC npc)
+	{
+		int buffIndex = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
+		npc.DelBuff(buffIndex);
+	}
+
+	private static void ResetBowCooldown()
+	{
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.ModProjectile is not JinxBowMinion jinxBow)
+				continue;
+
+			jinxBow.MarkCooldown = 0;
+			proj.netUpdate = true;
+
+			break;
+		}
+	}
+
+	public override void OnKill(NPC npc)
+	{
+		if (!npc.HasBuff<JinxMark>())
+			return;
+
+		ResetBowCooldown();
+	}
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Draw the mark icon
 	{
-		if (!npc.dontTakeDamage && npc.HasBuff<JinxMark>())
-		{
-			const int maxBuffTime = (int)(JinxBowMinion.MARK_COOLDOWN * JinxBowMinion.MARK_LINGER_RATIO);
+		if (npc.dontTakeDamage || !npc.HasBuff<JinxMark>())
+			return;
 
-			var source = icon.Frame();
+		const int maxBuffTime = (int)(JinxBowMinion.MARK_COOLDOWN * JinxBowMinion.MARK_LINGER_RATIO);
 
-			int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
-			int time = (index == -1) ? 0 : npc.buffTime[index];
-			var compoundSineEase = EaseFunction.CompoundEase([EaseFunction.EaseQuadIn, EaseFunction.EaseSine, EaseFunction.EaseCircularOut, EaseFunction.EaseQuadOut]);
-			float buffTimeProgress = time / (float)maxBuffTime;
-			var color = Color.White.Additive() * compoundSineEase.Ease(buffTimeProgress);
-			float scale = MathHelper.Lerp(0.8f, 1.1f, compoundSineEase.Ease(buffTimeProgress));
-			scale += (EaseFunction.EaseSine.Ease((Main.GlobalTimeWrappedHourly * 1.4f) % 1) - 0.5f) * 0.03f;
+		var source = Icon.Frame();
 
-			spriteBatch.Draw(icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, 0, source.Size() / 2, scale, default, 0);
-		}
+		int index = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
+		int time = (index == -1) ? 0 : npc.buffTime[index];
+		var compoundSineEase = EaseFunction.CompoundEase([EaseFunction.EaseQuadIn, EaseFunction.EaseSine, EaseFunction.EaseCircularOut, EaseFunction.EaseQuadOut]);
+		float buffTimeProgress = time / (float)maxBuffTime;
+		var color = Color.White.Additive(150) * compoundSineEase.Ease(buffTimeProgress);
+		float scale = MathHelper.Lerp(0.8f, 1.1f, compoundSineEase.Ease(buffTimeProgress));
+		scale += (EaseFunction.EaseSine.Ease(Main.GlobalTimeWrappedHourly * 1.4f % 1) - 0.5f) * 0.03f;
+
+		spriteBatch.Draw(Icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, 0, source.Size() / 2, scale, default, 0);
 	}
-
-	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) => binaryWriter.Write((short)_storedPlayer);
-
-	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) => _storedPlayer = binaryReader.ReadInt16();
 }

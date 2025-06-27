@@ -6,6 +6,8 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.UI;
 using System.Collections.ObjectModel;
+using SpiritReforged.Common.ItemCommon;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.Zipline;
 
@@ -199,6 +201,12 @@ public class ZiplineGun : ModItem
 				Main.spriteBatch.Draw(texture, position - Main.screenPosition, source, color, start.AngleTo(end), source.Size() / 2, scale, default, 0);
 			}
 		}
+	}
+
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 10));
 	}
 
 	public override void SetDefaults()

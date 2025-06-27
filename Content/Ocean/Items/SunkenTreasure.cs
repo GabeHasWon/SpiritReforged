@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Ocean.Items.Rum;
+using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
@@ -15,7 +16,11 @@ public class SunkenTreasure : FloatingItem
 	public override float Weight => base.Weight * 0.9f;
 	public override float Bouyancy => base.Bouyancy * 1.08f;
 
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 10;
+	public override void SetStaticDefaults()
+	{
+		Item.ResearchUnlockCount = 10;
+		PlayerEvents.AddAnglerQuestReward(Type, 50);
+	}
 
 	public override void SetDefaults()
 	{

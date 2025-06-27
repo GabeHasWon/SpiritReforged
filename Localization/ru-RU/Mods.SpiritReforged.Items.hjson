@@ -1841,7 +1841,11 @@ ElephantKite: {
 
 CartographyTableItem: {
 	// DisplayName: Cartography Table
-	// Tooltip: Allows you to share your map with other players
+	/* Tooltip:
+		'''
+		Allows you to share your map with other players
+		Interact to post your findings
+		''' */
 }
 
 PurityBonsaiItem: {
@@ -1886,6 +1890,11 @@ SapphireBonsaiItem: {
 
 TopazBonsaiItem: {
 	// DisplayName: Topaz Bonsai
+	// Tooltip: ""
+}
+
+AmberBonsaiItem: {
+	// DisplayName: Amber Bonsai
 	// Tooltip: ""
 }
 
@@ -1942,7 +1951,7 @@ AncientMarksmanPlate: {
 	// Tooltip: ""
 }
 
-RollingPotItem: {
+RollingPotsItem: {
 	// DisplayName: Rolling Pot
 	// Tooltip: ""
 }
@@ -1966,6 +1975,73 @@ SharpshooterGlove: {
 BonsaiPot: {
 	// DisplayName: Bonsai Pot
 	// Tooltip: Used to craft decorative bonsai
+}
+
+WickerBasketsItem: {
+	// DisplayName: Wicker Basket
+	// Tooltip: ""
+}
+
+EarthshakerBreastplate: {
+	// DisplayName: Earthshaker's Breastplate
+	// Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	// DisplayName: Earthshaker's Chestpiece
+	// Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	// DisplayName: Earthshaker's Headgear
+	// Tooltip: ""
+}
+
+EarthshakerTreads: {
+	// DisplayName: Earthshaker's Treads
+	// Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	// DisplayName: Earthshaker's Warmask
+	// Tooltip: ""
+}
+
+GraniteBody: {
+	// DisplayName: Kinetic Chestplate
+	// Tooltip: Increases jump height slightly
+}
+
+GraniteHead: {
+	// DisplayName: Kinetic Visor
+	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	// DisplayName: Kinetic Greaves
+	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+FingerGun: {
+	// DisplayName: Finger Blaster
+	/* Tooltip:
+		'''
+		Ignores some enemy defense
+		Fires faster at higher mana
+		'Pew pew!'
+		''' */
+}
+
+FlaskOfFrost: {
+	// DisplayName: Flask of Frost
+	// Tooltip: Melee and Whip attacks freeze enemies
+}
+
+HardlightVisor: {
+	// DisplayName: Hardlight Visor
+	// Tooltip: ""
+	// AltDisplayName: Hard Light Visor
+	// AltTooltip: "'Not to be confused with Hardlight Visor'"
 }
 
 PolishedAmberItem: {

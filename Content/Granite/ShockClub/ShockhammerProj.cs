@@ -86,40 +86,11 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 220, 25, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f, particleRot));
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 280, 20, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f + Main.rand.NextFloat(-0.1f, 0.05f), particleRot + Main.rand.NextFloat(-0.1f, 0.1f)));
 
-			//Find a solid tile with an empty tile above it to spawn the projectile on
-
-			Vector2 spawnPos = particlePos;
-			Point tilepos = spawnPos.ToTileCoordinates();
-			tilepos.Y -= 1;
-			int tilesfrombase = 0;
-			const int maxtilesfrombase = 3;
-
-			int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
-
-			while (CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1))) //move up until not inside a tile
-			{
-				tilepos.Y--;
-
-				if (++tilesfrombase >= maxtilesfrombase)
-					return;
-			}
-
-			while (!CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
-			{
-				tilepos.Y++;
-
-				if (++tilesfrombase >= maxtilesfrombase)
-					return;
-			}
-
 			if (Main.myPlayer == Projectile.owner)
 			{
-				spawnPos = tilepos.ToWorldCoordinates();
-				var velocity = Vector2.UnitX * 12 * Owner.direction;
+				var velocity = Vector2.UnitX * 7 * Owner.direction;
 
-				PreNewProjectile.New(Projectile.GetSource_FromAI("ClubSmash"), spawnPos, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling), Projectile.knockBack, Projectile.owner,
-					preSpawnAction: delegate (Projectile projectile) { projectile.position.Y -= Projectile.height + 16; });
-
+				Projectile.NewProjectile(Projectile.GetSource_FromAI("ClubSmash"), Projectile.Center, velocity, ModContent.ProjectileType<EnergizedShockwave>(), (int)(Projectile.damage * DamageScaling * 0.75f), (int)(Projectile.knockBack / 2), Projectile.owner);
 				SoundEngine.PlaySound(MagicCast, Projectile.Center);
 			}
 		}
@@ -152,7 +123,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot));
 
 		for(int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.5f, 0.5f), "ElectricScorch", new(0.4f, 0.4f), new(3, 1.5f), 25));
+			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.3f, 0.3f), "ElectricScorch", new(0.2f, 0.2f), new(4, 1.5f), 25) { SecondaryColor = easedCyan(0.4f), TertiaryColor = easedCyan(0.7f), ColorLerpExponent = 4});
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot + float.Pi / 2));
 

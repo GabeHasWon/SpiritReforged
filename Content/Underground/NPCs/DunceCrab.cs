@@ -2,12 +2,12 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Items.EarthshakerVanity;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
-using Terraria.ID;
 
 namespace SpiritReforged.Content.Underground.NPCs;
 
@@ -135,7 +135,7 @@ public class DunceCrab : ModNPC
 		NPC.collideX = false;
 		NPC.collideY = false;
 
-		NPC.velocity = CollisionCheckHelper.NoSlopeCollision(NPC.position, NPC.velocity, NPC.width, NPC.height);
+		NPC.velocity = CollisionChecks.NoSlopeCollision(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
 		if (Collision.LavaCollision(NPC.position, NPC.width, NPC.height)) //Take lava damage
 		{
@@ -417,6 +417,7 @@ public class DunceCrab : ModNPC
 		npcLoot.AddCommon(ItemID.DepthMeter, 28);
 		npcLoot.AddCommon(ItemID.Compass, 32);
 		npcLoot.AddCommon(ItemID.Rally, 25);
+		npcLoot.AddOneFromOptions(80, ModContent.ItemType<EarthshakerWarmask>(), ModContent.ItemType<EarthshakerChestpiece>(), ModContent.ItemType<EarthshakerTreads>());
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_style);

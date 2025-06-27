@@ -1,19 +1,19 @@
 ﻿namespace SpiritReforged.Common.ItemCommon.Abstract;
 
-/// <summary>Automatically provides equip flags for items in <see cref="ItemEquipPlayer.equips"/>.
+/// <summary>Automatically provides equip flags for items in <see cref="EquipsPlayer.equips"/>.
 /// <br/>See <see cref="PlayerCommon.PlayerExtensions"/> for additional helpers. </summary>
 public abstract class EquippableItem : ModItem
 {
 	public sealed override void UpdateEquip(Player player)
 	{
-		player.GetModPlayer<ItemEquipPlayer>().equips[Name] = true;
+		player.GetModPlayer<EquipsPlayer>().equips[Name] = true;
 		UpdateEquippable(player);
 	}
 
 	public virtual void UpdateEquippable(Player player) { }
 }
 
-public class ItemEquipPlayer : ModPlayer
+public class EquipsPlayer : ModPlayer
 {
 	/// <summary> Tracks the internal names of <see cref="EquippableItem"/>s and whether they are currently equipped. </summary>
 	public readonly Dictionary<string, bool> equips = [];

@@ -4,14 +4,16 @@ using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
 
-public class TileEvents : ILoadable
+public class TileEvents : GlobalTile
 {
 	public delegate void PreDrawDelegate(bool solidLayer, bool forRenderTarget, bool intoRenderTargets);
 	public delegate void PlaceTileDelegate(int i, int j, int type);
+	public delegate void KillTileDelegate(int i, int j, int type, ref bool fail, ref bool effectOnly);
 	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
 
 	public static event PreDrawDelegate PreDrawTiles;
 	public static event PlaceTileDelegate PlaceTile;
+	public static event KillTileDelegate OnKillTile;
 
 	/// <summary> Exposes <see cref="TileLoader.TileFrame"/> resetFrame from the last invocation.<br/>
 	/// A common use case for this is in <see cref="ModTile.PostTileFrame"/>, where it's not normally available. </summary>
@@ -39,7 +41,15 @@ public class TileEvents : ILoadable
 			action.Invoke(i, j, type);
 	};
 
-	public void Load(Mod mod)
+	/// <summary> Subscribes to <see cref="OnKillTile"/> and conditionally invokes <paramref name="action"/> according to <paramref name="tileType"/>. </summary>
+	public static void AddKillTileAction(int tileType, KillTileDelegate action) => OnKillTile += (int i, int j, int type, ref bool fail, ref bool effectOnly) =>
+	{
+		if (type == tileType)
+			action.Invoke(i, j, type, ref fail, ref effectOnly);
+	};
+
+	#region custom hooks
+	public override void Load()
 	{
 		On_TileDrawing.PreDrawTiles += PreDrawTilesDetour;
 		On_WorldGen.PlaceTile += PlaceTileDetour;
@@ -68,8 +78,11 @@ public class TileEvents : ILoadable
 		ResetFrame = resetFrame;
 		return orig(i, j, type, ref resetFrame, ref noBreak);
 	}
+	#endregion
 
-	public void Unload()
+	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem) => OnKillTile?.Invoke(i, j, type, ref fail, ref effectOnly);
+
+	public override void Unload()
 	{
 		TileFrameHook?.Undo();
 		TileFrameHook = null;

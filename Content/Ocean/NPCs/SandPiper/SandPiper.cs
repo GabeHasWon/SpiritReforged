@@ -19,7 +19,7 @@ public class SandPiper : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Shimmerfly;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
 	public override void SetDefaults()

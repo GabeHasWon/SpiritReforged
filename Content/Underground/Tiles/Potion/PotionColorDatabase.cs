@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Forest.Misc.Remedy;
+using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
@@ -62,6 +62,7 @@ internal static class PotionColorDatabase
 		{ ModContent.ItemType<RemedyPotion>(), new Color(184, 255, 195) },
 		{ ModContent.ItemType<QuenchPotion>(), new Color(129, 255, 245) },
 		{ ModContent.ItemType<DoubleJumpPotion>(), new Color(147, 132, 207) },
+		{ ModContent.ItemType<FlightPotion>(), Color.SkyBlue },
 	};
 
 	public static void RegisterColor(int item, Color color, bool decorative) 
@@ -79,14 +80,7 @@ internal static class PotionColorDatabase
 
 		int value;
 
-		if (args[0] is int intVal)
-			value = intVal;
-		else if (args[0] is short shortVal)
-			value = shortVal;
-		else if (args[0] is ushort ushortVal)
-			value = ushortVal;
-		else
-			throw new ArgumentException("AddPotionVat parameter 0 should be an int, short or ushort!");
+		value = SpiritReforgedMod.ConvertToInteger(args[0], "AddPotionVat parameter 0 should be an int, short or ushort!");
 
 		if (args[1] is not Color color)
 			throw new ArgumentException("AddPotionVat parameter 1 should be a Color!");

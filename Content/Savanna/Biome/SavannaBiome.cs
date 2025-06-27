@@ -15,16 +15,26 @@ public class SavannaBiome : ModBiome
 		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
-	public override void SetStaticDefaults() => NPCHappinessHelper.SetAverage<SavannaBiome>(ModContent.GetInstance<JungleBiome>(), ModContent.GetInstance<DesertBiome>());
+	public override void SetStaticDefaults()
+	{
+		NPCHappinessHelper.SetAverage<SavannaBiome>(ModContent.GetInstance<JungleBiome>(), ModContent.GetInstance<DesertBiome>());
+
+		NPCHappiness.Get(NPCID.BestiaryGirl).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.ArmsDealer).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Stylist).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.GoldBird).SetBiomeAffection(this, AffectionLevel.Dislike);
+	}
 
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
-	public override float GetWeight(Player player) => .75f;
+	public override float GetWeight(Player player) => 0.75f;
 
 	public override int Music => GetMusic();
 	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SavannaWaterStyle>();
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SavannaBGStyle>();
 	public override string BackgroundPath => MapBackground;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SavannaMapBG";
+	public override int BiomeTorchItemType => ModContent.ItemType<SavannaTorchItem>();
+	public override int BiomeCampfireItemType => Mod.Find<ModItem>("SavannaCampfireItem").Type;
 
 	public override bool IsBiomeActive(Player player)
 	{

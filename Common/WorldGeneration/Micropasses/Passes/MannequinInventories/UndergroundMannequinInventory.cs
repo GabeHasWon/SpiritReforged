@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Underground.Items.ExplorerTreads;
 using SpiritReforged.Content.Underground.WayfarerSet;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
@@ -19,8 +20,8 @@ internal class UndergroundMannequinInventory : MannequinInventory
 		AccType = new(WorldGen.genRand);
 		AccType.Add(ItemID.Aglet, 0.5f);
 		AccType.Add(ItemID.HermesBoots, 0.1f);
+		AccType.Add(ModContent.ItemType<ExplorerTreadsItem>(), 0.1f);
 		AccType.Add(ItemID.FartinaJar, 0.01f);
-		AccType.Add(ItemID.FrogLeg, 0.3f);
 		AccType.Add(ItemID.ClimbingClaws, 0.25f);
 		AccType.Add(ItemID.ShoeSpikes, 0.25f);
 		AccType.Add(ItemID.BandofRegeneration, 0.4f);
@@ -33,9 +34,6 @@ internal class UndergroundMannequinInventory : MannequinInventory
 
 			if (CrossMod.Thorium.TryFind("LeatherSheath", out ModItem leatherSheath))
 				AccType.Add(leatherSheath.Type, 0.3f);
-
-			if (CrossMod.Thorium.TryFind("DartPouch", out ModItem dartPouch))
-				AccType.Add(dartPouch.Type, 0.2f);
 
 			if (CrossMod.Thorium.TryFind("Wreath", out ModItem wreath))
 				AccType.Add(wreath.Type, 0.1f);

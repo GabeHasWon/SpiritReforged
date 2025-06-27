@@ -15,7 +15,7 @@ ToucanMinion.DisplayName: Lacaio Tucano
 TumblerPet.DisplayName: Mascote Tumbler
 SunOrb.DisplayName: Orbe Solar
 SunStaffHeld.DisplayName: Cajado Solar
-WheatgrassSeedProjectile.DisplayName: Semente de Grama de Trigo
+WheatgrassSeed.DisplayName: Semente de Grama de Trigo
 RoyalKhopeshHeld.DisplayName: Khopesh Real
 Zipline.DisplayName: Tirolesa
 RogueKnifeMinion.DisplayName: Faca Enferrujada
@@ -44,3 +44,6 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
 // VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 // VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// EnergyImpact.DisplayName: Energy Stomp
+// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+// FingerShot.DisplayName: Finger Shot

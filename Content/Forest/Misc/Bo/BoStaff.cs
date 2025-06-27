@@ -40,7 +40,7 @@ public class BoStaff : ModItem
 		if (player.altFunctionUse == 2)
 			return 1.8f;
 
-		return (HitCombo == 2) ? 0.38f : 1f;
+		return (HitCombo == 2) ? 0.55f : 1f;
 	}
 
 	public override bool AltFunctionUse(Player player) => false; //Makes the alt attack inaccessible
@@ -70,6 +70,8 @@ public class BoStaff : ModItem
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, _swingArc, 0, (int)style);
 		return false;
 	}
+
+	//public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 8).AddRecipeGroup(RecipeGroupID.Wood, 15).AddTile(TileID.Anvils).Register();
 }
 
 public class BoStaffSwing : ModProjectile, IManualTrailProjectile
@@ -95,7 +97,8 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				return (Counter < SwingTime / 2) ? EaseFunction.EaseCircularIn.Ease(progress) : progress;
 			}
 
-			return EaseFunction.EaseCircularInOut.Ease(MathHelper.Min((float)Counter / (SwingTime * 0.7f), 1));
+			float mult = Math.Abs(SwingArc) / 4f * 0.7f;
+			return EaseFunction.EaseCircularInOut.Ease(MathHelper.Min((float)Counter / (SwingTime * mult), 1));
 		}
 	}
 
@@ -157,7 +160,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 		Projectile.extraUpdates = 1;
-		Projectile.scale = 0;
+		Projectile.scale = 0.5f;
 	}
 
 	public override void AI()
@@ -166,11 +169,13 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
 		int direction = (Projectile.velocity.X > 0) ? 1 : -1;
 
-		Projectile.scale = MathHelper.Min(Projectile.scale + 0.1f, _meleeScale);
+		Projectile.scale = MathHelper.Min(Projectile.scale + 0.05f, _meleeScale);
 
 		if (ActivelySpinning)
 		{
-			if (!owner.channel)
+			const int spinLimit = 180;
+
+			if (!owner.channel || Counter > spinLimit)
 			{
 				_released = true;
 				Counter = 0; //Causes ClientSpawn to be called again
@@ -275,10 +280,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		}
 
 		_meleeScale = owner.GetAdjustedItemScale(owner.HeldItem);
-		Projectile.localNPCHitCooldown = ActivelySpinning ? 20 : -1;
-
-		if (!(ActivelySpinning || UseStyle is Style.Jab))
-			Projectile.scale = _meleeScale;
+		Projectile.localNPCHitCooldown = ActivelySpinning ? 25 : -1;
 	}
 
 	public override void OnKill(int timeLeft)

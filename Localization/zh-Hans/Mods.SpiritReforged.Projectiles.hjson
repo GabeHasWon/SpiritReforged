@@ -15,7 +15,7 @@ ToucanMinion.DisplayName: 巨嘴鸟仆从
 TumblerPet.DisplayName: 翻滚怪宠物
 SunOrb.DisplayName: 太阳球
 SunStaffHeld.DisplayName: 太阳法杖
-WheatgrassSeedProjectile.DisplayName: 麦草种子
+WheatgrassSeed.DisplayName: 麦草种子
 RoyalKhopeshHeld.DisplayName: 皇家弯刀
 Zipline.DisplayName: 飞索
 RogueKnifeMinion.DisplayName: 生锈的刀
@@ -44,3 +44,6 @@ BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.Display
 // FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
 // VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
 // VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// EnergyImpact.DisplayName: Energy Stomp
+// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+// FingerShot.DisplayName: Finger Shot

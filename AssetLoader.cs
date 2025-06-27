@@ -13,7 +13,8 @@ internal static class AssetLoader
 	public static BasicEffect BasicShaderEffect;
 	public static IDictionary<string, Asset<Texture2D>> LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
 	public static IDictionary<string, Effect> LoadedShaders = new Dictionary<string, Effect>();
-	public static string EmptyTexture => "SpiritReforged/Assets/Textures/Empty";
+
+	public static string EmptyTexture => "Terraria/Images/NPC_0";
 
 	public static void Load(Mod mod)
 	{
@@ -43,23 +44,32 @@ internal static class AssetLoader
 		{
 			//Loading textures
 			string textureDirectory = assetsDirectory + "Textures/";
-			if(kvp.Key.Contains(textureDirectory) && kvp.Key.Contains(".rawimg"))
+			if (kvp.Key.Contains(textureDirectory) && kvp.Key.Contains(".rawimg"))
 			{
 				string texturePath = RemoveExtension(kvp.Key, ".rawimg");
 				string textureKey = RemoveDirectory(texturePath, textureDirectory);
+
 				LoadedTextures.Add(textureKey, mod.Assets.Request<Texture2D>(texturePath, AssetRequestMode.ImmediateLoad));
 			}
 
+			//Loading shaders
 			string shaderDirectory = assetsDirectory + "Shaders/";
-			if(kvp.Key.Contains(shaderDirectory) && kvp.Key.Contains(".xnb"))
+			if (kvp.Key.Contains(shaderDirectory) && kvp.Key.Contains(".xnb"))
 			{
 				string shaderPath = RemoveExtension(kvp.Key, ".xnb");
 				string shaderKey = RemoveDirectory(shaderPath, shaderDirectory);
+
 				LoadedShaders.Add(shaderKey, mod.Assets.Request<Effect>(shaderPath, AssetRequestMode.ImmediateLoad).Value);
 			}
 		}
 
 		VertexTrailManager = new TrailManager();
+
+		//Register some vanilla textures under our own system for convenience
+		LoadedTextures.Add("FlameTrail", TextureAssets.Extra[189]);
+		LoadedTextures.Add("SwirlNoise", TextureAssets.Extra[193]);
+		LoadedTextures.Add("EnergyTrail", TextureAssets.Extra[194]);
+		LoadedTextures.Add("GlowTrail_2", TextureAssets.Extra[197]);
 	}
 
 	/// <summary>
@@ -68,7 +78,7 @@ internal static class AssetLoader
 	/// <param name="input"></param>
 	/// <param name="extensionType"></param>
 	/// <returns></returns>
-	private static string RemoveExtension(string input, string extensionType) => input.Remove(input.Length - extensionType.Length, extensionType.Length);
+	private static string RemoveExtension(string input, string extensionType) => input[..^extensionType.Length];
 
 	/// <summary>
 	/// Removes the directories from the string used for the key- turning "Assets/Textures/Bloom" to "Bloom"

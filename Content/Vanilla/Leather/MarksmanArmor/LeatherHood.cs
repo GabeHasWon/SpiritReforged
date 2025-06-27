@@ -1,3 +1,4 @@
+using SpiritReforged.Content.Forest.MagicPowder;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
@@ -5,6 +6,8 @@ namespace SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 [AutoloadEquip(EquipType.Head)]
 public class LeatherHood : ModItem
 {
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AncientMarksmanHood>();
+
 	public override void SetDefaults()
 	{
 		Item.width = 22;

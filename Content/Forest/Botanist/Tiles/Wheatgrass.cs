@@ -7,6 +7,8 @@ namespace SpiritReforged.Content.Forest.Botanist.Tiles;
 
 public class Wheatgrass : ModTile, ISwayTile
 {
+	public const int Styles = 9;
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
@@ -38,23 +40,17 @@ public class Wheatgrass : ModTile, ISwayTile
 
 	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
-		var tile = Framing.GetTileSafely(i, j);
+		var t = Main.tile[i, j];
 		var texture = TextureAssets.Tile[Type].Value;
+		int sourceHeight = (t.TileFrameY == 18) ? 18 : 16;
 
-		for (int d = 2; d >= 0; d--)
+		for (int x = 0; x < 3; x++)
 		{
-			int frameX = (tile.TileFrameX + 18 * d) % (18 * 6);
-			var source = new Rectangle(frameX, tile.TileFrameY, 16, (tile.TileFrameY == 0) ? 16 : 18);
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2((float)Math.Sin(d * d + tile.TileFrameX) * 8f, 0);
-			var color = Lighting.GetColor(i, j).MultiplyRGB(Color.Lerp(Color.White, Color.Black, d * .25f % .5f));
+			var position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(-4 + x * 4, 0);
+			var source = new Rectangle((t.TileFrameX + 54 * x) % (18 * Styles), t.TileFrameY, 16, sourceHeight);
+			var effects = ((i + x) % 2 == 0) ? SpriteEffects.FlipHorizontally : default;
 
-			if (tile.TileFrameY != 0)
-			{
-				spriteBatch.Draw(texture, position + offset, source with { X = frameX % (18 * 3) + 18 * 6 },
-					color, rotation * 1.25f, origin, 1, SpriteEffects.None, 0);
-			}
-
-			spriteBatch.Draw(texture, position + offset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(texture, position + offset, source, Lighting.GetColor(i, j), rotation, origin, 1, effects, 0);
 		}
 	}
 

@@ -25,7 +25,7 @@ public class HydrothermalVentPlume : ModProjectile
 	{
 		Projectile.ignoreWater = true;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = Tiles.HydrothermalVent.eruptDuration;
+		Projectile.timeLeft = Tiles.HydrothermalVent.EruptDuration;
 	}
 
 	public override void AI()

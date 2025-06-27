@@ -106,7 +106,7 @@ public class CatalogueEntry : UIElement
 		var elements = parent.Children.Where(x => x is CatalogueEntry).Cast<CatalogueEntry>();
 
 		foreach (var e in elements)
-			DrawBack(spriteBatch, GetCenter(e), e);
+			DrawBack(spriteBatch, e.GetDimensions().Center(), e);
 
 		spriteBatch.End();
 
@@ -116,15 +116,13 @@ public class CatalogueEntry : UIElement
 		spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, DepthStencilState.None, Overflow, null, Main.UIScaleMatrix);
 
 		foreach (var e in elements)
-			e.DrawTile(spriteBatch, GetCenter(e), Scale);
+			e.DrawTile(spriteBatch, e.GetDimensions().Center(), Scale);
 
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.AnisotropicClamp, null, Overflow, null, Main.UIScaleMatrix);
 
 		foreach (var e in elements)
-			DrawFront(spriteBatch, GetCenter(e), e);
-
-		static Vector2 GetCenter(UIElement e) => e.GetDimensions().Center().ToPoint().ToVector2(); //Round to avoid tearing
+			DrawFront(spriteBatch, e.GetDimensions().Center(), e);
 	}
 
 	protected static void DrawBack(SpriteBatch spriteBatch, Vector2 center, CatalogueEntry entry)
