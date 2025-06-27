@@ -31,6 +31,9 @@ public class JinxBowShot : GlobalProjectile
 		//Additionally applies to projectiles spawned from projectiles spawned by arrows, like holy arrow stars recursively spawning
 		if (source is EntitySource_Parent { Entity: Projectile parent })
 		{
+			if (projectile.type == ModContent.ProjectileType<JinxArrow>())
+				return;
+
 			if (parent.ModProjectile is JinxBowMinion)
 			{
 				_parentIndex = parent.whoAmI;
@@ -119,7 +122,7 @@ public class JinxBowShot : GlobalProjectile
 		Main.instance.LoadProjectile(ProjectileID.HallowBossRainbowStreak);
 
 		var defaultTexture = TextureAssets.Projectile[projectile.type].Value;
-		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.MediumPurple);
+		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.Cyan);
 		var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
 
 		for (int i = TrailLength - 1; i >= 0; i--)
@@ -131,7 +134,7 @@ public class JinxBowShot : GlobalProjectile
 			var position = _oldPositions[i] - Main.screenPosition;
 			var scale = new Vector2(.5f * lerp, 1) * projectile.scale;
 
-			Color brightestPurpleLerp = Color.Lerp(brightest, Color.MediumPurple.Additive(50), 0.33f).Additive(100);
+			Color brightestPurpleLerp = Color.Lerp(brightest, Color.Cyan.Additive(50), 0.33f).Additive(100);
 			if (i == 0)
 			{
 				color = Color.White with { A = 200 };

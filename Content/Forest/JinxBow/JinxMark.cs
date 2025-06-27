@@ -25,10 +25,12 @@ public class JinxMarkNPC : GlobalNPC
 			return;
 
 		var owner = Main.player[projectile.owner];
-		owner.ClearBuff(ModContent.BuffType<JinxMark>());
 
 		if (owner.ownedProjectileCounts[ModContent.ProjectileType<JinxBowMinion>()] < 1)
 			return;
+
+		int buffIndex = npc.FindBuffIndex(ModContent.BuffType<JinxMark>());
+		npc.DelBuff(buffIndex);
 
 		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
@@ -55,7 +57,7 @@ public class JinxMarkNPC : GlobalNPC
 		int time = (index == -1) ? 0 : npc.buffTime[index];
 		var compoundSineEase = EaseFunction.CompoundEase([EaseFunction.EaseQuadIn, EaseFunction.EaseSine, EaseFunction.EaseCircularOut, EaseFunction.EaseQuadOut]);
 		float buffTimeProgress = time / (float)maxBuffTime;
-		var color = Color.White.Additive() * compoundSineEase.Ease(buffTimeProgress);
+		var color = Color.White.Additive(150) * compoundSineEase.Ease(buffTimeProgress);
 		float scale = MathHelper.Lerp(0.8f, 1.1f, compoundSineEase.Ease(buffTimeProgress));
 		scale += (EaseFunction.EaseSine.Ease(Main.GlobalTimeWrappedHourly * 1.4f % 1) - 0.5f) * 0.03f;
 

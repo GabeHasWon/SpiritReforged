@@ -19,6 +19,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	private const int FIRE_TIME = 60;
 	private const int COOLDOWN_TIME = 30;
 
+	public static Color JinxbowCyan = Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(100);
+
 	private struct ArrowData()
 	{
 		public int type;
@@ -132,22 +134,22 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		}
 
 		//Glow particles swirl in on arrow
-		if (!_hasDoneEmpoweredShot && !Main.dedServ && AiTimer % 4 == 0 && AiTimer > 20)
+		if (!_hasDoneEmpoweredShot && !Main.dedServ && AiTimer % 3 == 0 && AiTimer > 30)
 		{
 			float scale = Main.rand.NextFloat(0.3f, 0.7f);
-			int lifeTime = Main.rand.Next(15, 20);
-			Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(20, 36);
+			int lifeTime = Main.rand.Next(20, 30);
+			Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(50, 60);
 			static void DelegateAction(Particle p, Projectile owner, Vector2 offset)
 			{
 				if (!owner.active)
 					p.Kill();
 
-				float easedProgress = EaseFunction.EaseQuadOut.Ease(1 - p.Progress);
-				p.Position = owner.Center + Vector2.UnitX.RotatedBy(owner.rotation) * 10 + offset.RotatedBy(MathHelper.Pi * easedProgress) * easedProgress;
+				float easedProgress = EaseFunction.EaseQuadIn.Ease(1 - p.Progress);
+				p.Position = owner.Center + offset.RotatedBy(MathHelper.Pi * easedProgress * 0.66f) * easedProgress;
 			}
 
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.MediumPurple.Additive(), scale, lifeTime, 1, p => DelegateAction(p, Projectile, offset)));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.White.Additive(), scale, lifeTime, 1, p => DelegateAction(p, Projectile, offset)));
+			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.Cyan.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
+			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
 		}
 
 		//Only end attack if the bounce timer is 0 after already firing, making it function as a cooldown before returning to normal behavior
@@ -231,8 +233,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 		if (!Main.dedServ)
 		{
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, Color.MediumPurple.Additive(), new(0.75f, 3), 12, 1));
-			ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.MediumPurple.Additive(), 0.66f, 20));
+			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, JinxbowCyan, new(0.75f, 3), 12, 1));
+			ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), JinxbowCyan, 0.66f, 20));
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -241,11 +243,11 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				int lifeTime = Main.rand.Next(12, 40);
 				static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.MediumPurple.Additive(), scale, lifeTime, 1, DelegateAction));
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Cyan.Additive(), scale, lifeTime, 1, DelegateAction));
 				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
 			}
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(target.Center, Color.MediumPurple.Additive(50), 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
+			ParticleHandler.SpawnParticle(new TexturedPulseCircle(target.Center, JinxbowCyan, 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
 		}
 	}
 
@@ -276,7 +278,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		{
 			_selectedArrow.damage = (int)(_selectedArrow.damage * 1.33f);
 			_selectedArrow.type = ModContent.ProjectileType<JinxArrow>();
-			_selectedArrow.brightColor = Color.MediumPurple;
+			_selectedArrow.brightColor = JinxbowCyan;
 		}
 	}
 
@@ -286,7 +288,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		SoundEngine.PlaySound(SoundID.Item125 with { Pitch = 1.25f }, Projectile.Center);
 
 		//Visuals from arrow fire position
-		Color particleColor = Color.MediumPurple.Additive(50);
+		Color particleColor = JinxbowCyan;
 		Vector2 particleSpawn = Projectile.Center + visualArrowVelocity;
 		float ringRotation = visualArrowVelocity.ToRotation() + MathHelper.Pi;
 
@@ -298,7 +300,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	public static void JinxArrowRing(Vector2 spawnPos, Vector2 velocity, float size, float rotation, float skew = 0.8f)
 	{
-		Color particleColor = Color.MediumPurple.Additive(50);
+		Color particleColor = JinxbowCyan;
 		Particle p = new TexturedPulseCircle(spawnPos, particleColor, 0.8f, size, 16, "swirlNoise2", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(skew, rotation);
 		p.Velocity = velocity;
 		ParticleHandler.SpawnParticle(p);
@@ -323,7 +325,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			if ((_targetNPC != null || _isDoingEmpoweredShot) && AiTimer < FIRE_TIME)
 			{
 				Texture2D arrowTex = TextureAssets.Projectile[_selectedArrow.type].Value;
-				Texture2D arrowSolid = TextureColorCache.ColorSolid(arrowTex, Color.Lavender);
+				Texture2D arrowSolid = TextureColorCache.ColorSolid(arrowTex, Color.LightCyan);
 
 				Vector2 arrowPos = stringCenter;
 				arrowPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
@@ -332,7 +334,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 				Color solidColor = Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge;
 				Color glowColor = _selectedArrow.brightColor;
-				glowColor = Color.Lerp(glowColor, Color.Lavender, 0.33f).Additive(100);
+				glowColor = Color.Lerp(glowColor, Color.LightCyan, 0.33f).Additive(100);
 				glowColor *= EaseFunction.EaseQuadOut.Ease(easedCharge);
 
 				Rectangle drawRect = arrowTex.Bounds;
@@ -356,16 +358,21 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				}
 
 				//Draw solid arrow and white flash above the arrow when spawned in
-				Main.EntitySpriteDraw(arrowTex, arrowPos, drawRect, Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
+				Color arrowColor = Projectile.GetAlpha(nonRefLightColor);
+				if (_isDoingEmpoweredShot)
+					arrowColor = Color.White.Additive(200) * easedCharge;
+
+				Main.EntitySpriteDraw(arrowTex, arrowPos, drawRect, arrowColor * easedCharge, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
 				Main.EntitySpriteDraw(arrowSolid, arrowPos, drawRect, glowColor * EaseFunction.EaseCubicIn.Ease(1 - shootProgress), Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None);
 
 				//During empowered shot, do a blur star at the arrow's head
 				if (_isDoingEmpoweredShot)
 				{
 					var arrowHead = arrowPos + Vector2.UnitX.RotatedBy(Projectile.rotation) * (arrowTex.Height - 5);
-					var starScale = new Vector2(3 * easedCharge, 1) * 0.075f;
-					Color starColor = glowColor.Additive() * EaseFunction.EaseQuadIn.Ease(shootProgress);
+					var starScale = new Vector2(2 * easedCharge, 1) * 0.07f;
+					Color starColor = glowColor.Additive() * shootProgress;
 
+					Main.EntitySpriteDraw(starTex, arrowHead, null, starColor, 0, starTex.Size() / 2, starScale, SpriteEffects.None);
 					Main.EntitySpriteDraw(starTex, arrowHead, null, starColor * 0.66f, 0, starTex.Size() / 2, starScale, SpriteEffects.None);
 					Main.EntitySpriteDraw(starTex, arrowHead, null, starColor, 0, starTex.Size() / 2, starScale / 2, SpriteEffects.None);
 				}
