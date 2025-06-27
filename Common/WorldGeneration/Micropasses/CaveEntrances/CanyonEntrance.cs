@@ -39,6 +39,8 @@ internal class CanyonEntrance : CaveEntrance
 			TileID.Mud or TileID.JungleGrass => TileID.Mud,
 			TileID.SnowBlock or TileID.IceBlock => TileID.SnowBlock,
 			TileID.Sand or TileID.Sandstone or TileID.HardenedSand => TileID.Sand,
+			TileID.Crimsand or TileID.Crimstone or TileID.CrimsonGrass => TileID.Crimstone,
+			TileID.Ebonstone or TileID.Ebonsand or TileID.CorruptGrass => TileID.Ebonstone,
 			_ => TileID.Dirt,
 		};
 
@@ -119,7 +121,7 @@ internal class CanyonEntrance : CaveEntrance
 	/// <param name="x"></param>
 	/// <param name="y"></param>
 	/// <param name="depth"></param>
-	public void WindingCavern(int x, int y, int depth)
+	public static void WindingCavern(int x, int y, int depth)
 	{
 		FastNoiseLite diggingNoise = new(WorldGen._genRandSeed);
 		diggingNoise.SetFrequency(0.1f);

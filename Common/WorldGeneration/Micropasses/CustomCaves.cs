@@ -46,7 +46,7 @@ internal class CustomCaves : ModSystem
 
 	private static void OverrideGenMound(On_WorldGen.orig_Mountinater orig, int i, int j)
 	{
-		var type = (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
+		var type = CaveEntranceType.Karst;// (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
 		TypeByPosition.Add(new(i, j), type);
 
 		if (type == CaveEntranceType.Vanilla)
@@ -62,5 +62,5 @@ internal class CustomCaves : ModSystem
 	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight) => 
-		tasks.Add(new PassLegacy("Reset Custom Cave Info", (_, _) => TypeByPosition.Clear()));
+		tasks.Insert(0, new PassLegacy("Reset Custom Cave Info", (_, _) => TypeByPosition.Clear()));
 }

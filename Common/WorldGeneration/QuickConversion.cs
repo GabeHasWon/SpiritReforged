@@ -12,12 +12,14 @@ internal class QuickConversion
 		Jungle,
 		Ice,
 		Mushroom,
-		Desert
+		Desert,
+		Corruption,
+		Crimson,
 	}
 
-	public static BiomeType FindConversionBiome(Point16 position, Point16 size)
+	public static BiomeType FindConversionBiome(Point16 position, Point16 size, Dictionary<BiomeType, float> biases = null)
 	{
-		Dictionary<BiomeType, int> biomeCounts = new() { { BiomeType.Purity, 0 }, { BiomeType.Jungle, 0 }, { BiomeType.Ice, 0 }, { BiomeType.Mushroom, 0 }, 
+		Dictionary<BiomeType, float> biomeCounts = new() { { BiomeType.Purity, 0 }, { BiomeType.Jungle, 0 }, { BiomeType.Ice, 0 }, { BiomeType.Mushroom, 0 }, 
 			{ BiomeType.Desert, 0 } };
 
 		// Remnants jungles are much more rocky and muddy, making it harder to detect with our normal values
@@ -45,8 +47,16 @@ internal class QuickConversion
 			}
 		}
 
-		BiomeType biome = biomeCounts.MaxBy(x => x.Value).Key;
-		return biome;
+		if (biases is null)
+		{
+			BiomeType biome = biomeCounts.MaxBy(x => x.Value).Key;
+			return biome;
+		}
+		else
+		{
+			BiomeType biome = biomeCounts.MaxBy(x => x.Value * (biases.TryGetValue(x.Key, out float value) ? value : 1f)).Key;
+			return biome;
+		}
 	}
 
 	public static void SimpleConvert(List<TileCondition> conditions, BiomeType convertTo, bool growGrassIfApplicable)
@@ -55,14 +65,17 @@ internal class QuickConversion
 		HashSet<Point16> checkedWood = [];
 
 		int grassType = -1;
-		int dirtType = -1;
 
 		if (convertTo == BiomeType.Jungle)
-			(grassType, dirtType) = (TileID.JungleGrass, TileID.Mud);
+			grassType = TileID.JungleGrass;
 		else if (convertTo == BiomeType.Mushroom)
-			(grassType, dirtType) = (TileID.MushroomGrass, TileID.Mud);
+			grassType = TileID.MushroomGrass;
 		else if (convertTo == BiomeType.Purity)
-			(grassType, dirtType) = (TileID.Grass, TileID.Dirt);
+			grassType = TileID.Grass;
+		else if (convertTo == BiomeType.Corruption)
+			grassType = TileID.CorruptGrass;
+		else if (convertTo == BiomeType.Crimson)
+			grassType = TileID.CrimsonGrass;
 
 		foreach (var condition in conditions)
 		{
@@ -80,6 +93,8 @@ internal class QuickConversion
 						BiomeType.Jungle or BiomeType.Mushroom => TileID.Mud,
 						BiomeType.Ice => TileID.IceBlock,
 						BiomeType.Desert => TileID.Sandstone,
+						BiomeType.Corruption => TileID.Ebonstone,
+						BiomeType.Crimson => TileID.Crimstone,
 						_ => -1
 					};
 
@@ -88,17 +103,8 @@ internal class QuickConversion
 				}
 				else if (TileID.Sets.Grass[tile.TileType])
 				{
-					int conv = convertTo switch
-					{
-						BiomeType.Purity => TileID.Grass,
-						BiomeType.Jungle => TileID.JungleGrass,
-						BiomeType.Ice => TileID.IceBlock,
-						BiomeType.Desert => TileID.Sandstone,
-						_ => -1
-					};
-
-					if (conv != -1)
-						turnId = conv;
+					if (grassType != -1)
+						turnId = grassType;
 				}
 
 				if (ConvertWood(condition.Position, convertTo, out int newId, out int newWallId, checkedWood))
@@ -114,8 +120,8 @@ internal class QuickConversion
 				{
 					tile.TileType = (ushort)turnId;
 
-					if (grassType != -1 && tile.TileType is TileID.Dirt or TileID.Mud 
-						&& OpenTools.GetOpenings(condition.Position.X, condition.Position.Y, false, false) != OpenFlags.None && growGrassIfApplicable)
+					if (grassType != -1 && tile.TileType is TileID.Dirt or TileID.Mud && WorldGen.TileIsExposedToAir(condition.Position.X, condition.Position.Y) 
+						&& growGrassIfApplicable)
 						grasses.Add(condition.Position);
 				}
 
@@ -149,6 +155,8 @@ internal class QuickConversion
 				BiomeType.Ice => WallID.BorealWood,
 				BiomeType.Jungle => WallID.RichMaogany,
 				BiomeType.Mushroom => WallID.MushroomUnsafe,
+				BiomeType.Corruption => WallID.Ebonwood,
+				BiomeType.Crimson => WallID.Shadewood,
 				BiomeType.Purity or _ => WallID.Wood,
 			};
 		}
@@ -160,6 +168,8 @@ internal class QuickConversion
 				BiomeType.Ice => WallID.BorealWoodFence,
 				BiomeType.Jungle => WallID.RichMahoganyFence,
 				BiomeType.Mushroom => WallID.WroughtIronFence,
+				BiomeType.Crimson => WallID.ShadewoodFence,
+				BiomeType.Corruption => WallID.EbonwoodFence,
 				BiomeType.Purity or _ => WallID.WoodenFence,
 			};
 		}
@@ -172,10 +182,12 @@ internal class QuickConversion
 				BiomeType.Ice => TileID.BorealWood,
 				BiomeType.Jungle => TileID.RichMahogany,
 				BiomeType.Mushroom => TileID.MushroomBlock,
+				BiomeType.Crimson => TileID.Shadewood,
+				BiomeType.Corruption => TileID.Ebonwood,
 				BiomeType.Purity or _ => TileID.WoodBlock,
 			};
 		}
-		else if (tile.TileType == TileID.Platforms && tile.TileFrameY is 0 or 36 or 306 or 324 or 342)
+		else if (tile.TileType == TileID.Platforms && tile.TileFrameY is 0 or 18 or 36 or 90 or 306 or 324 or 342)
 		{
 			int frameY = convertTo switch
 			{
@@ -184,6 +196,8 @@ internal class QuickConversion
 				BiomeType.Mushroom => 324,
 				BiomeType.Ice => 342,
 				BiomeType.Purity => 0,
+				BiomeType.Corruption => 18,
+				BiomeType.Crimson => 90,
 				_ => -1,
 			};
 
@@ -197,7 +211,8 @@ internal class QuickConversion
 				BiomeType.Ice => TileID.BorealBeam,
 				BiomeType.Jungle => TileID.RichMahoganyBeam,
 				BiomeType.Mushroom => TileID.MushroomBeam,
-				BiomeType.Desert or BiomeType.Purity or _ => TileID.WoodenBeam,
+				BiomeType.Desert => TileID.SandstoneColumn,
+				BiomeType.Purity or _ => TileID.WoodenBeam,
 			};
 		}
 		else if (tile.TileType == TileID.Chairs)
@@ -210,6 +225,8 @@ internal class QuickConversion
 				BiomeType.Ice => 1200,
 				BiomeType.Desert => 1160,
 				BiomeType.Purity => 0,
+				BiomeType.Crimson => 440,
+				BiomeType.Corruption => 80,
 				_ => -1,
 			};
 
@@ -242,6 +259,8 @@ internal class QuickConversion
 				BiomeType.Ice => 828,
 				BiomeType.Desert => 792,
 				BiomeType.Purity => 0,
+				BiomeType.Corruption => 72,
+				BiomeType.Crimson => 432,
 				_ => -1,
 			};
 
@@ -264,6 +283,8 @@ internal class QuickConversion
 							BiomeType.Jungle => 288,
 							BiomeType.Ice => 648,
 							BiomeType.Desert => 720,
+							BiomeType.Corruption => 108,
+							BiomeType.Crimson => 144,
 							_ => 0
 						};
 
