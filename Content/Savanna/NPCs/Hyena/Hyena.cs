@@ -3,6 +3,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -500,6 +501,7 @@ public class Hyena : ModNPC
 	{
 		npcLoot.AddCommon<RawMeat>(5);
 		npcLoot.AddCommon(ItemID.Leather, 2, 3, 5);
+		npcLoot.AddOneFromOptions(200, ModContent.ItemType<AncientMarksmanHood>(), ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	}
 
 	public override void OnKill()

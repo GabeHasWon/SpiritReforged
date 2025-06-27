@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.ItemCommon;
+using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.Utilities;
@@ -27,8 +28,8 @@ public abstract class MusicBoxTile : ModTile
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.addTile(Type);
 
-		RegisterItemDrop(Mod.Find<ModItem>(Name + "Item").Type); //Register this drop for all styles
-		AddMapEntry(new Color(200, 200, 200), Language.GetText("ItemName.MusicBox"));
+		RegisterItemDrop(this.AutoItem().type); //Register this drop for all styles
+		AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
 		DustType = -1;
 	}
 
@@ -58,7 +59,7 @@ public abstract class MusicBoxTile : ModTile
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = Mod.Find<ModItem>(Name + "Item").Type;
+		player.cursorItemIconID = this.AutoItem().type;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

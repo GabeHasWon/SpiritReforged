@@ -1691,12 +1691,12 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	// DisplayName: Oganesson Bobber
+	// DisplayName: Oganesson Moss Fishing Bobber
 	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	// DisplayName: Radon Bobber
+	// DisplayName: Radon Moss Fishing Bobber
 	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1757,6 +1757,11 @@ Bowlder: {
 	// Tooltip: Charged strikes release a deadly bowlder
 }
 
+BoStaff: {
+	// DisplayName: Bo Staff
+	// Tooltip: Dealing continuous damage builds combo
+}
+
 Blasphemer: {
 	// DisplayName: Blasphemer
 	// Tooltip: Charged strikes erupt into a fiery geyser
@@ -1795,4 +1800,254 @@ SavannaSandstormOtherworldMusicBoxItem: {
 SavannaTorchItem: {
 	// DisplayName: Savanna Torch
 	// Tooltip: ""
+}
+
+FlaskBlue: {
+	// DisplayName: Blue Moss Flask
+	// Tooltip: Spreads moss on impact
+}
+
+FlaskBrown: {
+	// DisplayName: Brown Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskGreen: {
+	// DisplayName: Green Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskLava: {
+	// DisplayName: Lava Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskPurple: {
+	// DisplayName: Purple Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskRed: {
+	// DisplayName: Red Moss Flask
+	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+TitleMusicBoxItem: {
+	// DisplayName: Music Box (Spirit Title)
+	// Tooltip: ""
+}
+
+Drypowder: {
+	// DisplayName: Drypowder
+	// Tooltip: Spreads the savanna
+}
+
+ElephantKite: {
+	// DisplayName: Elephant Kite
+	// Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	// DisplayName: Cartography Table
+	/* Tooltip:
+		'''
+		Allows you to share your map with other players
+		Interact to post your findings
+		''' */
+}
+
+PurityBonsaiItem: {
+	// DisplayName: Willow Bonsai
+	// Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	// DisplayName: Ruby Bonsai
+	// Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	// DisplayName: Sakura Bonsai
+	// Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	// DisplayName: Yellow Willow Bonsai
+	// Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	// DisplayName: Amethyst Bonsai
+	// Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	// DisplayName: Diamond Bonsai
+	// Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	// DisplayName: Emerald Bonsai
+	// Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	// DisplayName: Sapphire Bonsai
+	// Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	// DisplayName: Topaz Bonsai
+	// Tooltip: ""
+}
+
+AmberBonsaiItem: {
+	// DisplayName: Amber Bonsai
+	// Tooltip: ""
+}
+
+JinxBow: {
+	// DisplayName: Jinxbow
+	/* Tooltip:
+		'''
+		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
+		''' */
+}
+
+ExplosiveRum: {
+	// DisplayName: Explosive Rum
+	// Tooltip: "'Oh, there it is!'"
+}
+
+Flarepowder: {
+	// DisplayName: Flarepowder
+	// Tooltip: Releases a spread of drifting magic powder
+}
+
+VexpowderBlue: {
+	// DisplayName: Vexpowder
+	/* Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		Confuses hit enemies
+		''' */
+}
+
+VexpowderRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	// DisplayName: Breakaway Chair
+	// Tooltip: Breaks on impact
+}
+
+AncientMarksmanHood: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	// Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	// Tooltip: ""
+}
+
+RollingPotsItem: {
+	// DisplayName: Rolling Pot
+	// Tooltip: ""
+}
+
+// MossSlimeBannerItem.DisplayName: Moss Slime Banner
+
+InvisibleLure: {
+	// DisplayName: Invisible Lure
+	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	// DisplayName: Sharpshooter's Glove
+	/* Tooltip:
+		'''
+		Increases ranged damage at a distance
+		Consecutive shots at this range deal increased damage
+		''' */
+}
+
+BonsaiPot: {
+	// DisplayName: Bonsai Pot
+	// Tooltip: Used to craft decorative bonsai
+}
+
+WickerBasketsItem: {
+	// DisplayName: Wicker Basket
+	// Tooltip: ""
+}
+
+EarthshakerBreastplate: {
+	// DisplayName: Earthshaker's Breastplate
+	// Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	// DisplayName: Earthshaker's Chestpiece
+	// Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	// DisplayName: Earthshaker's Headgear
+	// Tooltip: ""
+}
+
+EarthshakerTreads: {
+	// DisplayName: Earthshaker's Treads
+	// Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	// DisplayName: Earthshaker's Warmask
+	// Tooltip: ""
+}
+
+GraniteBody: {
+	// DisplayName: Kinetic Chestplate
+	// Tooltip: Increases jump height slightly
+}
+
+GraniteHead: {
+	// DisplayName: Kinetic Visor
+	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	// DisplayName: Kinetic Greaves
+	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+FingerGun: {
+	// DisplayName: Finger Blaster
+	/* Tooltip:
+		'''
+		Ignores some enemy defense
+		Fires faster at higher mana
+		'Pew pew!'
+		''' */
+}
+
+FlaskOfFrost: {
+	// DisplayName: Flask of Frost
+	// Tooltip: Melee and Whip attacks freeze enemies
+}
+
+HardlightVisor: {
+	// DisplayName: Hardlight Visor
+	// Tooltip: ""
+	// AltDisplayName: Hard Light Visor
+	// AltTooltip: "'Not to be confused with Hardlight Visor'"
 }

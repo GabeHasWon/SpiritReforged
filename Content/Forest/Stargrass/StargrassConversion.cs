@@ -3,7 +3,7 @@ using SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass;
 
-/// <summary> Includes <see cref="Convert"/> helper for common Stargrass tile conversion. </summary>
+/// <summary> Includes <see cref="Convert"/> helper for common Stargrass tile conversion. Used during worldgen. </summary>
 internal static class StargrassConversion
 {
 	private static bool IsVine(Tile tile) => tile.TileType is TileID.Vines or TileID.VineFlowers;

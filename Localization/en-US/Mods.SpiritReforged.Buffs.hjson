@@ -107,3 +107,13 @@ ExplorerMine: {
 	DisplayName: Explorer's Vigor
 	Description: Keep digging!
 }
+
+JinxMark: {
+	DisplayName: Jinx Mark
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Weapon Imbue: Freezing
+	Description: Melee attacks freeze enemies
+}

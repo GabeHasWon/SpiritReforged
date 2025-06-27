@@ -83,7 +83,6 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 
 		float minDist = Parameters.Distance;
 		float maxDist = Parameters.GetMaxDist;
-		float opacityMod = EaseCubicIn.Ease(DissolveProgress);
 		float minWidth = Parameters.Width;
 		float maxWidth = Parameters.GetMaxWidth;
 
@@ -97,11 +96,11 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 			MaxWidth = maxWidth,
 			AngleRange = new Vector2(Parameters.Radians / 2 * Direction, -Parameters.Radians / 2 * Direction) * -1,
 			DirectionUnit = (Direction * Parameters.Rotation).ToRotationVector2().RotatedBy(Direction < 0 ? MathHelper.Pi : 0),
-			Color = Color.White * opacityMod,
+			Color = Color.White,
 			UseLightColor = Parameters.UseLightColor,
 			DistanceEase = Parameters.DistanceEasing,
 			SlashProgress = _swingProgress,
-			RectangleCount = 40
+			RectangleCount = 70
 		};
 
 		PrimitiveRenderer.DrawPrimitiveShape(slash, effect, EffectPass);
@@ -119,7 +118,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 		effect.Parameters["fadeStrength"].SetValue(0.5f);
 
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity);
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
 
 		return effect;
 	}
@@ -140,8 +139,32 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 
 		effect.Parameters["timer"].SetValue(0.5f * Main.GlobalTimeWrappedHourly / coordMods.X);
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity);
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
 		swingTrail.EffectPass = "NoiseStreakPass";
+
+		return effect;
+	}
+
+	public static Effect FireSwingShaderParams(SwingTrail swingTrail, Vector2 coordMods)
+	{
+		Effect effect;
+		effect = AssetLoader.LoadedShaders["SwingTrails"];
+		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
+		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
+		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
+
+		effect.Parameters["coordMods"].SetValue(coordMods);
+		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * swingTrail.DissolveProgress);
+		effect.Parameters["taperStrength"].SetValue(0.85f);
+		effect.Parameters["fadeStrength"].SetValue(0.75f + 6 * EaseCubicOut.Ease(1 - swingTrail.DissolveProgress));
+		effect.Parameters["textureExponent"].SetValue(Vector2.Lerp(new Vector2(0.5f, 3), Vector2.Zero, EaseCircularIn.Ease(1 - swingTrail.DissolveProgress)));
+
+		float globalTimer = (Main.GlobalTimeWrappedHourly / coordMods.X);
+		float scrollSpeed = MathHelper.Lerp(-2f, 0f, EaseQuadOut.Ease(1 - swingTrail.DissolveProgress));
+		effect.Parameters["timer"].SetValue(scrollSpeed * globalTimer);
+		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
+		swingTrail.EffectPass = "FlameTrailPass";
 
 		return effect;
 	}

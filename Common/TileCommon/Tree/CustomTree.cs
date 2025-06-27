@@ -261,7 +261,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public void ModifyTarget(ref int x, ref int y)
 	{
-		while (Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type && WorldGen.InWorld(x, y + 1))
+		while (WorldGen.InWorld(x, y + 1) && Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type)
 			y++;
 	}
 }

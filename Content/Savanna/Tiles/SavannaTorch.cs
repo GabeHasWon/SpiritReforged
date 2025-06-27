@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 
 public class SavannaTorch : TorchTile
 {
+	public override Vector3 Light => ModContent.GetInstance<SavannaTorchItem>().Light;
 	public override float GetTorchLuck(Player player)
 	{
 		float value = -0.5f;
@@ -25,5 +26,7 @@ public class SavannaTorch : TorchTile
 public class SavannaTorchItem : TorchItem
 {
 	public override int TileType => ModContent.TileType<SavannaTorch>();
+	public override Vector3 Light => (Color.Orange * 1.1f).ToVector3();
+
 	public override void AddRecipes() => CreateRecipe(3).AddIngredient(ItemID.Gel).AddIngredient(AutoContent.ItemType<Drywood>()).Register();
 }

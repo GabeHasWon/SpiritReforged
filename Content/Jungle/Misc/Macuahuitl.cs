@@ -43,6 +43,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	public MacuahuitlProj() : base(new Vector2(82)) { }
 
 	public bool ChargeStrike => FullCharge && CheckAIState(AIStates.SWINGING);
+
 	public override float WindupTimeRatio => 0.8f;
 
 	public void DoTrailCreation(TrailManager tM)
@@ -99,6 +100,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 	{
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
+		_parameters.ChargeColor = Color.Pink;
 	}
 
 	internal override void ChargeComplete(Player owner) => TrailManager.ManualTrailSpawn(Projectile);
@@ -202,8 +204,8 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 			float dirUnit = target.AngleFrom(Owner.Center);
 
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.5f, 0.5f), "Fire", new(0.4f, 0.4f), new(3, 1.5f), 25) { UseLightColor = true });
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.5f, 0.5f), "Fire", new(0.4f, 0.4f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
 
 			for (int i = 0; i < 3; i++)
 			{

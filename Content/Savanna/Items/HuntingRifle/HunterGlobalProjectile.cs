@@ -45,17 +45,17 @@ public class HunterGlobalProjectile : GlobalProjectile
 		if (!firedFromHuntingRifle)
 			return true;
 
-		Main.instance.LoadProjectile(873); //Ensure these textures are loaded before drawing
-		Main.instance.LoadProjectile(686);
+		Main.instance.LoadProjectile(ProjectileID.HallowBossRainbowStreak); //Ensure these textures are loaded before drawing
+		Main.instance.LoadProjectile(ProjectileID.DD2BetsyFireball);
 
 		var defaultTexture = TextureAssets.Projectile[projectile.type].Value;
 
 		for (int i = 0; i < trailLength; i++)
 		{
-			var texture = TextureAssets.Projectile[873].Value;
+			var texture = TextureAssets.Projectile[ProjectileID.HallowBossRainbowStreak].Value;
 
 			float lerp = 1f - i / (float)(trailLength - 1);
-			var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
+			var brightest = TextureColorCache.GetDarkestColor(defaultTexture);
 			var color = (Color.Lerp(brightest.MultiplyRGBA(Color.Black * .5f), brightest, lerp) with { A = 0 }) * lerp;
 			var position = projectile.Center - Main.screenPosition - projectile.velocity * i;
 			var scale = new Vector2(.5f * lerp, 1f) * projectile.scale;
@@ -63,7 +63,7 @@ public class HunterGlobalProjectile : GlobalProjectile
 			if (i == 0)
 			{
 				color = Color.White with { A = 0 };
-				texture = TextureAssets.Projectile[686].Value;
+				texture = TextureAssets.Projectile[ProjectileID.DD2BetsyFireball].Value;
 				scale = new Vector2(MathHelper.Max(.1f, .25f), 1f) * projectile.scale * .45f;
 			}
 

@@ -37,7 +37,9 @@ public static class NPCHelper
 	}
 
 	public static void ImmuneTo<T>(ModNPC npc, params int[] buffs) where T : ModBuff => ImmuneTo(npc, [.. new List<int>(buffs) { ModContent.BuffType<T>() }]);
-	public static void ImmuneTo<T1, T2>(ModNPC npc, params int[] buffs) where T1 : ModBuff where T2 : ModBuff => ImmuneTo(npc, [.. new List<int>(buffs) { ModContent.BuffType<T1>(), ModContent.BuffType<T2>() }]);
+
+	public static void ImmuneTo<T1, T2>(ModNPC npc, params int[] buffs) where T1 : ModBuff where T2 : ModBuff 
+		=> ImmuneTo(npc, [.. new List<int>(buffs) { ModContent.BuffType<T1>(), ModContent.BuffType<T2>() }]);
 
 	public static void ImmuneTo<T1, T2, T3>(ModNPC npc, params int[] buffs) where T1 : ModBuff where T2 : ModBuff where T3 : ModBuff
 		=> ImmuneTo(npc, [.. new List<int>(buffs) { ModContent.BuffType<T1>(), ModContent.BuffType<T2>(), ModContent.BuffType<T3>() }]);

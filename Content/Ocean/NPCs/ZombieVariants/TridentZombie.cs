@@ -12,8 +12,8 @@ public class TridentZombie : ReplaceNPC
 
 	public override void StaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.ArmedZombie];
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.BoneThrowingSkeleton;
+		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.ArmedZombie];
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.BoneThrowingSkeleton;
 		NPCID.Sets.Zombies[Type] = true;
 
 		MoRHelper.AddElement(NPC, MoRHelper.Water);

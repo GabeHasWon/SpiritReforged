@@ -24,6 +24,9 @@ Misc: {
 	NoStock: Out of stock
 	GraveText: <wavy>The text is old and faded; you can't quite make out what it says.
 	MenuButton: Use menu style
+	UnchangedMap: Map has no changes.
+	ShareMap: Map has been shared.
+	ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {
@@ -44,4 +47,9 @@ GameTips: {
 	ReforgedTip7: Cloudstalk always grows under clouds.
 	ReforgedTip8: The top of Acacia trees can be stood on if you need some height.
 	ReforgedTip9: Items randomly float atop the ocean; check in once in a while!
+}
+
+Emotes: {
+	CartographerEmote.Command: cartographer
+	HikerEmote.Command: hikeremote
 }

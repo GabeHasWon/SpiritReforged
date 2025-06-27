@@ -12,11 +12,7 @@ public class StackablePots : ModTile
 	/// <summary> Tile coordinates to offset. </summary>
 	[WorldBound]
 	private static readonly Dictionary<Point16, Point16> Offsets = [];
-
-	public const string PotTexture = "Terraria/Images/Tiles_28";
-	public const string NameKey = "MapObject.Pot";
-
-	public override string Texture => PotTexture;
+	public override string Texture => Pots.PotTexture;
 
 	/// <summary> Returns final coordinates from <see cref="TileExtensions.GetTopLeft"/>. </summary>
 	private static Point16 Get(int i, int j)
@@ -46,7 +42,7 @@ public class StackablePots : ModTile
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(146, 76, 77), Language.GetText(NameKey));
+		AddMapEntry(new Color(146, 76, 77), Language.GetText(Pots.NameKey));
 		DustType = -1;
 	}
 
@@ -89,6 +85,9 @@ public class StackablePots : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
+		if (WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
 		int x = frameX / (18 * 2);
 		int y = frameY / (18 * 2);
 
@@ -126,8 +125,8 @@ internal class FallingPot : ModProjectile
 {
 	public ref float Style => ref Projectile.ai[0];
 
-	public override LocalizedText DisplayName => Language.GetText(StackablePots.NameKey);
-	public override string Texture => StackablePots.PotTexture;
+	public override LocalizedText DisplayName => Language.GetText(Pots.NameKey);
+	public override string Texture => Pots.PotTexture;
 
 	public override void SetDefaults()
 	{
@@ -177,15 +176,21 @@ internal class FallingPot : ModProjectile
 		t.TileFrameY = oldY;
 	}
 
-	public override bool PreDraw(ref Color lightColor) //Splices tile sheet graphics together
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Unify4x4Sheet(Projectile.Center, Projectile.GetAlpha(lightColor), TileID.Pots, new Point(6, 74), (int)Style, Projectile.rotation, Projectile.scale);
+		return false;
+	}
+
+	public static void Unify4x4Sheet(Vector2 center, Color color, int tileType, Point numFrames, int styleX = 0, float rotation = 0, float scale = 1)
 	{
 		const int tileFrame = 18;
 
-		const int framesX = 6;
-		const int framesY = 74;
+		int framesX = numFrames.X;
+		int framesY = numFrames.Y;
 
-		var texture = TextureAssets.Projectile[Type].Value;
-		var source = texture.Frame(framesX, framesY, (int)Style % (framesX / 2) * 2, (int)Style / (framesX / 2) * 2); //All tile frames
+		var texture = TextureAssets.Tile[tileType].Value;
+		var source = texture.Frame(framesX, framesY, styleX % (framesX / 2) * 2, styleX / (framesX / 2) * 2); //All tile frames
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -198,9 +203,7 @@ internal class FallingPot : ModProjectile
 				_ => new Vector2(16, 16)
 			};
 
-			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, newSource, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, default);
+			Main.EntitySpriteDraw(texture, center - Main.screenPosition, newSource, color, rotation, origin, scale, default);
 		}
-
-		return false;
 	}
 }

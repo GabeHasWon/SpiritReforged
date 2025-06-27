@@ -6,7 +6,11 @@ namespace SpiritReforged.Content.Ocean.Hydrothermal.NPCs;
 [AutoloadCritter]
 public class TinyCrab : ModNPC
 {
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 4;
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 4;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+	}
 
 	public override void SetDefaults()
 	{
@@ -18,14 +22,12 @@ public class TinyCrab : ModNPC
 		NPC.lifeMax = 5;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 67;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Snail;
 		NPC.npcSlots = 0;
-		AIType = NPCID.Bunny;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Ocean");
-
 	public override void FindFrame(int frameHeight)
 	{
 		NPC.frameCounter += 0.15f;
@@ -36,7 +38,7 @@ public class TinyCrab : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+		if (NPC.life <= 0 && !Main.dedServ)
 		{
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("TinyCrabGore").Type, 1f);
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("TinyCrabGore").Type, Main.rand.NextFloat(.5f, .7f));
@@ -49,6 +51,6 @@ public class TinyCrab : ModNPC
 		if (!config.VentCritters)
 			return 0;
 
-		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? .75f : 0;
+		return spawnInfo.Water && spawnInfo.SpawnTileType == ModContent.TileType<Gravel>() && NPC.CountNPCS(Type) < 10 ? 2.25f : 0;
 	}
 }

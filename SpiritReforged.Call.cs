@@ -1,4 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Pottery;
@@ -72,6 +74,14 @@ public partial class SpiritReforgedMod : Mod
 
 						return player.GetModPlayer<RecordPlayer>().IsValidated(key);
 					}
+				case "RegisterConversionSet":
+					{
+						return ConversionCalls.RegisterConversionSet(args[1..]);
+					}
+				case "AddSavannaTree":
+					{
+						return ConversionCalls.AddSavannaTree(args[1..]);
+					}
 				default:
 					{
 						Logger.Error($"Call Error: Context '{context}' is invalid.");
@@ -85,5 +95,20 @@ public partial class SpiritReforgedMod : Mod
 		}
 
 		return null;
+	}
+
+	internal static int ConvertToInteger(object arg, string errorMessage)
+	{
+		int value;
+		if (arg is int intVal)
+			value = intVal;
+		else if (arg is short shortVal)
+			value = shortVal;
+		else if (arg is ushort ushortVal)
+			value = ushortVal;
+		else
+			throw new ArgumentException(errorMessage);
+
+		return value;
 	}
 }

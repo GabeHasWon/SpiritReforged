@@ -1,9 +1,10 @@
-﻿using SpiritReforged.Common.TileCommon.Tree;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
-using SpiritReforged.Common.WorldGeneration.Seeds;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
@@ -18,6 +19,8 @@ namespace SpiritReforged.Content.Savanna.Ecotone;
 
 internal class SavannaEcotone : EcotoneBase
 {
+	private delegate bool OnAttempt(int i, int j);
+
 	[WorldBound]
 	public static Rectangle SavannaArea;
 	private static int Steps = 0;
@@ -241,8 +244,9 @@ internal class SavannaEcotone : EcotoneBase
 		if (SavannaArea.IsEmpty)
 			return;
 
-		const int chanceMax = 90; //Maximum odds to generate a tree
 		const int minimumTreeSpace = 7;
+
+		int chanceMax = CrossMod.Remnants.Enabled ? 40 : 90; // Maximum odds to generate a tree - lower in Remnants
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaObjects");
 		HashSet<int> treeSpacing = [];
@@ -272,7 +276,9 @@ internal class SavannaEcotone : EcotoneBase
 			static bool HoleGen(int i, int j)
 			{
 				HashSet<int> soft = [TileID.Dirt, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.Sand, ModContent.TileType<SavannaDirt>()];
-				return soft.Contains(Main.tile[i, j].TileType);
+
+				return soft.Contains(Main.tile[i, j].TileType) && Collision.SolidCollision(new Vector2((i - 28) * 16, j * 16), 32, 64)
+					&& Collision.SolidCollision(new Vector2((i + 26) * 16, j * 16), 32, 32);
 			}
 		}
 
@@ -297,23 +303,26 @@ internal class SavannaEcotone : EcotoneBase
 				if (flags == OpenFlags.None)
 					continue;
 
-				if (tile.TileType == TileID.Stone && WorldGen.genRand.NextBool()) //Place stone piles on stone
+				if (tile.HasTile)
 				{
-					if (WorldGen.genRand.NextBool(3))
-						WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SavannaRockLarge>(), true, style: WorldGen.genRand.Next(3));
-					else
-						WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SavannaRockSmall>(), true, style: WorldGen.genRand.Next(3));
-				}
+					if (tile.TileType == TileID.Stone && WorldGen.genRand.NextBool()) //Place stone piles on stone
+					{
+						if (WorldGen.genRand.NextBool(3))
+							WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SavannaRockLarge>(), true, style: WorldGen.genRand.Next(3));
+						else
+							WorldGen.PlaceTile(i, j - 1, ModContent.TileType<SavannaRockSmall>(), true, style: WorldGen.genRand.Next(3));
+					}
 
-				if (tile.TileType == ModContent.TileType<SavannaDirt>())
-				{
-					tile.TileType = (ushort)ModContent.TileType<SavannaGrass>(); //Grow grass on dirt
+					if (tile.TileType == ModContent.TileType<SavannaDirt>())
+					{
+						tile.TileType = (ushort)ModContent.TileType<SavannaGrass>(); //Grow grass on dirt
 
-					if (flags.HasFlag(OpenFlags.Above))
-						grassTop.Add(new Point16(i, j));
+						if (flags.HasFlag(OpenFlags.Above))
+							grassTop.Add(new Point16(i, j));
 
-					if (tile.WallType == ModContent.WallType<SavannaDirtWall>())
-						tile.Clear(TileDataType.Wall); //Clear walls again, but specifically for savanna dirt
+						if (tile.WallType == ModContent.WallType<SavannaDirtWall>())
+							tile.Clear(TileDataType.Wall); //Clear walls again, but specifically for savanna dirt
+					}
 				}
 
 				if (WorldGen.genRand.NextBool(120)) //Rare bones
@@ -324,6 +333,7 @@ internal class SavannaEcotone : EcotoneBase
 			Campsite();
 
 		int treeOdds = chanceMax;
+
 		foreach (var p in grassTop)
 		{
 			(int i, int j) = (p.X, p.Y - 1);
@@ -515,7 +525,6 @@ internal class SavannaEcotone : EcotoneBase
 		return factor;
 	}
 
-	private delegate bool OnAttempt(int i, int j);
 	private static bool IterateGen(int tries, OnAttempt isValid, out int x, out int y, string structureName = default)
 	{
 		for (int t = 0; t < tries; t++)

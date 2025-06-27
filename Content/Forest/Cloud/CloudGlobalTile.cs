@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using System.Linq;
 
@@ -16,6 +17,9 @@ internal class CloudGlobalTile : GlobalTile
 			TileID.Cloud => 0.005f,
 			_ => 0
 		};
+
+		if (CrossMod.Remnants.Enabled)
+			chance *= 0.05f; // Much, much rarer in the cloud-heavy Remnants
 
 		if (WorldGen.SolidOrSlopedTile(i, j + 1) || Main.rand.NextFloat() >= chance)
 			return;

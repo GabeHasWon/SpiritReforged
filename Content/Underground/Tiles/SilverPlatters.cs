@@ -1,4 +1,5 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Particles;
@@ -94,6 +95,12 @@ public class SilverPlatters : PotTile, ILootTile
 
 	public void AddLoot(int objectStyle, ILoot loot)
 	{
+		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("GarlicBread", out ModItem bread) && CrossMod.Thorium.TryFind("Takoyaki", out ModItem takoyaki))
+			loot.AddOneFromOptions(2, bread.Type, takoyaki.Type);
+
+		if (CrossMod.Redemption.Enabled && CrossMod.Redemption.TryFind("StarliteDonut", out ModItem donut))
+			loot.AddCommon(donut.Type, 3);
+
 		loot.AddOneFromOptions(1, ItemID.RoastedBird, ItemID.BunnyStew, ItemID.CookedFish, ItemID.GrilledSquirrel, ItemID.SauteedFrogLegs,
 			ModContent.ItemType<CookedMeat>(), ModContent.ItemType<FishChips>(), ModContent.ItemType<HoneySalmon>());
 

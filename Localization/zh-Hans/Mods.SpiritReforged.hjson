@@ -24,6 +24,9 @@ Misc: {
 	NoStock: 无库存
 	GraveText: <wavy>其上文字年久失色；令你难以辨认。
 	MenuButton: 使用菜单样式
+	// UnchangedMap: Map has no changes.
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
 }
 
 DamageSources: {
@@ -44,4 +47,9 @@ GameTips: {
 	ReforgedTip7: 云茎只生长在云层之下。
 	ReforgedTip8: 需要高度时，可站上金合欢树顶。
 	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
+}
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hikeremote
 }

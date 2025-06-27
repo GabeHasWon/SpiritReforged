@@ -1,3 +1,4 @@
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Ocean.Items;
 
@@ -5,7 +6,8 @@ namespace SpiritReforged.Content.Ocean.Tiles;
 
 public class PirateChest : ChestTile
 {
-	//public override bool IsLoadingEnabled(Mod mod) => SpiritClassic.Enabled; //IAutoloadTileItem expects this to always be loaded
+	public override void StaticItemDefaults(ModItem item) => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Pirate, new NPCShop.Entry(Type)));
+	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 5);
 
 	public override void StaticDefaults()
 	{

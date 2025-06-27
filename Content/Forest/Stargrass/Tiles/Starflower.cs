@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
@@ -63,6 +64,21 @@ public class Starflower : ModTile, ISwayTile
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (.3f, .28f, .1f);
+
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (conversionType is BiomeConversionID.Purity or BiomeConversionID.PurificationPowder)
+		{
+			int type = Main.tile[i, j].TileType;
+
+			if (Framing.GetTileSafely(i, j + 1).TileType == type)
+				return; //Return if this is not the base of the flower
+
+			TileExtensions.GetTopLeft(ref i, ref j);
+			ConversionHelper.ConvertTiles(i, j, 2, 4, TileID.Sunflower);
+		}
+	}
+
 	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))

@@ -21,7 +21,6 @@ public class HangingCloudstalk : ModTile, ISwayTile, IAutoloadTileItem
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
-		Main.tileLighted[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2Top);
 		TileObjectData.newTile.Width = 2;
@@ -43,6 +42,4 @@ public class HangingCloudstalk : ModTile, ISwayTile, IAutoloadTileItem
 
 		SpiritClassic.AddItemReplacement("HangingCloudstalk", this.AutoItem().type);
 	}
-
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.2f, 0.2f, 0.4f);
 }

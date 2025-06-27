@@ -10,6 +10,7 @@ namespace SpiritReforged.Content.Underground.Tiles;
 /// <summary> A stand-in for vanilla pot tiles, used to contain custom data. </summary>
 public class Pots : PotTile, ILootTile
 {
+	public const string NameKey = "MapObject.Pot";
 	public const string PotTexture = "Terraria/Images/Tiles_28";
 
 	public override string Texture => PotTexture;

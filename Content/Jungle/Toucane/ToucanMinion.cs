@@ -125,7 +125,7 @@ public class ToucanMinion : BaseMinion
 		bool canstartrest = true; //dont start resting if rest position is too far from the base desired position
 
 		int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
-		while (CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1))) //move up until not inside a tile
+		while (CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y, 16, 16), CollisionChecks.AnySurface)) //move up until not inside a tile
 		{
 			tilepos.Y--;
 			if (++tilesfrombase >= maxtilesfrombase)
@@ -135,7 +135,7 @@ public class ToucanMinion : BaseMinion
 			}
 		}
 
-		while (!CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y + 1, 1, 1))) //move down until just above a tile
+		while (!CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y + 1, 16, 16), CollisionChecks.AnySurface)) //move down until just above a tile
 		{
 			tilepos.Y++;
 			if (++tilesfrombase >= maxtilesfrombase)
@@ -154,7 +154,7 @@ public class ToucanMinion : BaseMinion
 				Projectile.tileCollide = false;
 				Projectile.AccelFlyingMovement(targetCenter, 0.15f, 0.1f, 15);
 				//check if close enough to and above the rest spot, and not inside a tile, if so, start resting
-				if (Projectile.Distance(targetCenter) < 10 && Projectile.Center.Y < targetCenter.Y && canstartrest && !CollisionCheckHelper.CheckSolidTilesAndPlatforms(new Rectangle(startX, tilepos.Y, 1, 1)) && AiTimer > 30)
+				if (Projectile.Distance(targetCenter) < 10 && Projectile.Center.Y < targetCenter.Y && canstartrest && !CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y, 16, 16), CollisionChecks.AnySurface) && AiTimer > 30)
 				{
 					AiTimer = 0;
 					AiState = STATE_RESTING;

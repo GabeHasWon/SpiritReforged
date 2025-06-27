@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -35,6 +36,7 @@ public class BombCannon : ModItem
 	{
 		ItemEvents.CreateItemDefaults(item => item.ammo = ItemID.Bomb, AmmoBombIDs);
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
+		MoRHelper.AddElement(Item, MoRHelper.Explosive, true);
 	}
 
 	public override void SetDefaults()
@@ -144,7 +146,7 @@ internal class BombCannonHeld : ModProjectile
 				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
 				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, (White * .3f).Additive(), new Vector2(1, 2) * .7f, 10, Projectile));
 
-				ParticleHandler.SpawnParticle(new PulseCircle(Projectile, Red, .1f, 50, 15, EaseQuadOut, start));
+				ParticleHandler.SpawnParticle(new PulseCircle(start, Red, 0.1f, 50, 15, EaseQuadOut).Attach(Projectile));
 			}
 
 			Charge = Math.Min(Charge + 1, ChargeTimeMax);

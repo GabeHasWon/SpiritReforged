@@ -1,53 +1,56 @@
-﻿using Terraria.GameContent.Events;
+﻿using SpiritReforged.Common.WorldGeneration;
+using Terraria.GameContent.Events;
 using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Savanna.DustStorm;
 
 public class DustStormScene : ModSceneEffect
 {
-	private bool wasDustStorm;
-
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Duststorm" + (SpiritReforgedMod.SwapMusic ? "Otherworld" : ""));
 
-	public override bool IsSceneEffectActive(Player player) => player.GetModPlayer<DustStormPlayer>().ZoneDustStorm || wasDustStorm;
+	public override bool IsSceneEffectActive(Player player) => player.GetModPlayer<DustStormPlayer>().ZoneDustStorm;
 
 	public override void SpecialVisuals(Player player, bool isActive)
 	{
-		const string sandstorm = "Sandstorm";
-		var mPlayer = player.GetModPlayer<DustStormPlayer>();
-
-		if (mPlayer.ZoneDustStorm)
+		if (player.whoAmI == Main.myPlayer && isActive || Duststorm.Happening)
 		{
-			float intensity = .35f;
+			Duststorm.Happening = isActive;
+			Duststorm.Update();
+		}
+	}
+}
 
-			if (!Filters.Scene[sandstorm].IsActive()) //Initialize
+public static class Duststorm
+{
+	[WorldBound]
+	internal static bool Happening;
+
+	private static bool EffectsUp;
+
+	public static void Update()
+	{
+		if (Happening)
+		{
+			Sandstorm.Severity = MathHelper.Lerp(Sandstorm.Severity, 0.35f, 0.05f);
+			Main.LocalPlayer.ZoneSandstorm = false;
+
+			if (!EffectsUp)
 			{
-				//Severity has a value even if it isn't being used. Doing this prevents snapping to high-severity sandstorm vfx upon entering a dust storm zone
-				if (!Filters.Scene[sandstorm].IsInUse())
-					Sandstorm.Severity = intensity;
+				var center = Main.LocalPlayer.Center;
 
-				var center = player.Center;
-
-				SkyManager.Instance.Activate(sandstorm, center);
-
-				if (!Main.raining)
-					Filters.Scene.Activate(sandstorm, center); //Prevents rain when active
-
-				Overlays.Scene.Activate(sandstorm, center); //Might have no effect?
+				SkyManager.Instance.Activate("Sandstorm", center);
+				Filters.Scene.Activate("Sandstorm", center);
+				Overlays.Scene.Activate("Sandstorm", center);
 			}
-
-			Sandstorm.Severity = MathHelper.Max(Sandstorm.Severity - .01f, intensity); //Transition into a calmer severity if necessary
-			player.ZoneSandstorm = false;
 		}
-
-		if (!mPlayer.ZoneDustStorm && wasDustStorm && Filters.Scene[sandstorm].IsActive() && !player.ZoneSandstorm)
+		else if (EffectsUp && !Main.LocalPlayer.ZoneSandstorm) //ZoneSandstorm check specifically prevents sandstorm visuals from fading out, then in when entering the desert
 		{
-			SkyManager.Instance.Deactivate(sandstorm);
-			Filters.Scene.Deactivate(sandstorm);
-			Overlays.Scene.Deactivate(sandstorm);
+			SkyManager.Instance.Deactivate("Sandstorm");
+			Filters.Scene.Deactivate("Sandstorm");
+			Overlays.Scene.Deactivate("Sandstorm");
 		}
 
-		wasDustStorm = player.GetModPlayer<DustStormPlayer>().ZoneDustStorm;
+		EffectsUp = Filters.Scene["Sandstorm"].Active;
 	}
 }

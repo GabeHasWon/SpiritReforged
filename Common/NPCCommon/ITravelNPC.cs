@@ -49,26 +49,28 @@ internal class TravelFlags : ModSystem
 			if (vDatabase.Count == 0)
 				PopulateDatabase();
 
-			int[] visitors = vDatabase.Where(x => x.Value.Invoke()).Select(x => x.Key).ToArray();
+			int[] visitors = [.. vDatabase.Where(x => x.Value.Invoke()).Select(x => x.Key)];
 			if (visitors.Length != 0)
 			{
 				int type = visitors[Main.rand.Next(visitors.Length)];
 				if (NPC.AnyNPCs(type))
 					return; //Don't spawn a duplicate
 
-				var position = GetSpawnPosition();
-				var npc = NPC.NewNPCDirect(Entity.GetSource_TownSpawn(), position, type);
+				if (TryGetSpawnPosition(out var position))
+				{
+					var npc = NPC.NewNPCDirect(Entity.GetSource_TownSpawn(), position, type);
 
-				if (Main.netMode == NetmodeID.SinglePlayer)
-					Main.NewText(Language.GetTextValue("Announcement.HasArrived", npc.FullName), 50, 125);
-				else if (Main.netMode == NetmodeID.Server)
-					ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasArrived", npc.GetFullNetName()), new Color(50, 125, 255));
+					if (Main.netMode == NetmodeID.SinglePlayer)
+						Main.NewText(Language.GetTextValue("Announcement.HasArrived", npc.FullName), 50, 125);
+					else if (Main.netMode == NetmodeID.Server)
+						ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasArrived", npc.GetFullNetName()), new Color(50, 125, 255));
 
-				TravelerSpawned = true;
+					TravelerSpawned = true;
+				}
 			}
 		}
 
-		static Vector2 GetSpawnPosition()
+		static bool TryGetSpawnPosition(out Vector2 position)
 		{
 			List<NPC> townNPCs = [];
 			foreach (var npc in Main.ActiveNPCs)
@@ -77,10 +79,14 @@ internal class TravelFlags : ModSystem
 					townNPCs.Add(npc);
 			}
 
-			if (townNPCs.Count == 0)
-				return new Vector2(Main.spawnTileX, Main.spawnTileY - 1).ToWorldCoordinates();
+			if (townNPCs.Count >= 2)
+			{
+				position = townNPCs[Main.rand.Next(townNPCs.Count)].Center;
+				return true;
+			}
 
-			return townNPCs[Main.rand.Next(townNPCs.Count)].Center;
+			position = new Vector2(Main.spawnTileX, Main.spawnTileY - 1).ToWorldCoordinates();
+			return false;
 		}
 	}
 

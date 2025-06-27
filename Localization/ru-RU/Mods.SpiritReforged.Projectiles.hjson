@@ -15,7 +15,7 @@ ToucanMinion.DisplayName: Тукан-спутник
 TumblerPet.DisplayName: Питомец-акробат
 SunOrb.DisplayName: Солнечный шар
 SunStaffHeld.DisplayName: Солнечный посох
-WheatgrassSeedProjectile.DisplayName: Семя пырея
+WheatgrassSeed.DisplayName: Семя пырея
 RoyalKhopeshHeld.DisplayName: Королевский хопеш
 Zipline.DisplayName: Канатная дорога
 RogueKnifeMinion.DisplayName: Ржавый нож
@@ -36,3 +36,14 @@ RollingBowlder.DisplayName: Катящаяся булыга
 Firespike.DisplayName: Огнешип
 CannonBomb.DisplayName: Выстрел бомбопушки
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+// JinxArrow.DisplayName: Jinx Arrow
+// JinxBowMinion.DisplayName: Jinx Bow Minion
+// RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+// FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+// VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+// EnergyImpact.DisplayName: Energy Stomp
+// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+// FingerShot.DisplayName: Finger Shot

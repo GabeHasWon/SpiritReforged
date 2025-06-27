@@ -21,10 +21,12 @@ Records: {
 	UpsideDown: `Ошибка вычисления`
 	Worm: При уничтожении вываливается множество червей.
 	Platter: Готовая вкусняшка, бери просто так. Кто оставил это тут?
+	// WickerBasket: A picnic, just for you!
 	Aether: Дарует приятные улучшения.
 	Stuffed: Какое странное место для торговца. Прямо напрашиваются на беспокойство.
 	Scrying: Открывает большую часть карты после уничтожения.
 	Biome: Содержит куда больше полезных предметов, чем обычные горшки.
+	// Boulder: Rolls along the ground when disturbed.
 }
 
 SunkenTreasureTile.MapEntry: Затонувшее сокровище
@@ -46,3 +48,4 @@ OreCarts.MapEntry: Вагонетка
 PotionVats.MapEntry: Чан для зелий
 ObsidianShroom.MapEntry: Обсидиановый гриб
 Starflower.MapEntry: Звёздоцвет
+// BonsaiTrees.MapEntry: Bonsai

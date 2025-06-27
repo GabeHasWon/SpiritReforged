@@ -1,7 +1,5 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -103,6 +101,8 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	}
 
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Gold;
+
 	public override void OnSwingStart()
 	{
 		TrailManager.TryTrailKill(Projectile);
@@ -194,7 +194,6 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 		Direction = -1;
 		ResetData();
 		Projectile.ResetLocalNPCHitImmunity();
-		//TrailManager.TryTrailKill(Projectile);
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -221,7 +220,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 			p = new TexturedPulseCircle(pos, LightGold, DarkGold, 1, width, Main.rand.Next(15, 20), "Star2", new Vector2(2, 1), EaseQuadOut, false, 0.3f).WithSkew(.75f, rotation);
 			ParticleHandler.SpawnParticle(p.UsesLightColor());
 
-			if(Direction == -1)
+			if (Direction == -1)
 			{
 				Vector2 velocity = -Vector2.UnitY.RotatedByRandom(PiOver4);
 				velocity *= Main.rand.NextFloat(3, 5) * TotalScale * 2;
@@ -247,7 +246,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	internal override void SafeModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if(Direction == -1)
+		if (Direction == -1)
 		{
 			modifiers.FinalDamage *= 1.33f;
 			modifiers.Knockback *= 1.25f;

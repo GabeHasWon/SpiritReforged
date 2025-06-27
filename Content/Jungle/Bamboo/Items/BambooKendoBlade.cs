@@ -1,5 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
 using Terraria.Audio;
@@ -32,6 +34,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 		Item.useTurn = true;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)
@@ -133,6 +136,7 @@ public class KendoBladeSwing : ModProjectile
 		Projectile.scale = MathHelper.Min(Projectile.scale + .075f, 1); //Fade in
 	}
 
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;
@@ -184,6 +188,8 @@ public class KendoBladeSwing : ModProjectile
 
 		Main.EntitySpriteDraw(new DrawData(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), .75f, effects, 0));
 	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
 }
 
 public class KendoBladeLunge : ModProjectile

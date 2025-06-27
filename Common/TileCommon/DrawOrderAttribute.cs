@@ -14,7 +14,7 @@ namespace SpiritReforged.Common.TileCommon;
 /// </summary>
 /// <param name="layers"></param>
 [AttributeUsage(AttributeTargets.Class)]
-internal class DrawOrderAttribute(params Layer[] layers) : Attribute
+public class DrawOrderAttribute(params Layer[] layers) : Attribute
 {
 	public Layer[] Layers { get; private set; }  = layers;
 

@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.ProjectileCommon;
+﻿using SpiritReforged.Common.MathHelpers;
+
+namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions
 {
@@ -27,6 +29,50 @@ internal static class ProjectileExtensions
 			projectile.shimmerWet = false;
 			projectile.wet = false;
 		}
+	}
+
+	/// <summary> Helps <paramref name="projectile"/> surface through full solid and platform tiles. </summary>
+	/// <param name="maxPixels"> The maximum number of pixels this projectile can move through before failure. </param>
+	public static bool Surface(this Projectile projectile, int maxPixels = 40)
+	{
+		int surfaceDuration = 0;
+		while (CollisionChecks.Tiles(projectile.Hitbox, CollisionChecks.SolidOrPlatform))
+		{
+			projectile.position.Y--; //Move up out of solid tiles
+
+			if (Invalid())
+				return false;
+		}
+
+		surfaceDuration = 0;
+		while (!CollisionChecks.Tiles(projectile.Hitbox with { Y = projectile.Hitbox.Y + 1 }, CollisionChecks.SolidOrPlatform))
+		{
+			projectile.position.Y++; //Move down onto solid tiles
+
+			if (Invalid())
+				return false;
+		}
+
+		return true;
+
+		bool Invalid() => ++surfaceDuration > maxPixels;
+	}
+
+	public static void PlotTileCut(this Projectile projectile, float distance, float width)
+	{
+		var owner = Main.player[projectile.owner];
+
+		DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
+		var cut = new Utils.TileActionAttempt(DelegateMethods.CutTiles);
+		var endPoint = owner.MountedCenter + owner.DirectionTo(projectile.Center) * distance;
+
+		Utils.PlotTileLine(owner.MountedCenter, endPoint, width, cut);
+
+		//Additional line plotted between the projectile's current and last position, to catch instances where it moves super fast
+		var startCenter = Vector2.Lerp(projectile.position, owner.MountedCenter, 0.5f);
+		var oldCenter = Vector2.Lerp(projectile.oldPosition, owner.MountedCenter, 0.5f);
+
+		Utils.PlotTileLine(startCenter, oldCenter, width, cut);
 	}
 
 	/// <summary>
@@ -115,6 +161,15 @@ internal static class ProjectileExtensions
 			maxFrame ??= Main.projFrames[projectile.type];
 			if (projectile.frame >= maxFrame)
 				projectile.frame = loopFrame;
+		}
+	}
+
+	public static void UpdateFrame(this Projectile projectile, byte ticksPerFrame)
+	{
+		if (++projectile.frameCounter >= ticksPerFrame)
+		{
+			projectile.frameCounter = 0;
+			projectile.frame = ++projectile.frame % Main.projFrames[projectile.type];
 		}
 	}
 
