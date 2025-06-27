@@ -253,7 +253,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	private void SetArrowData(Player player)
 	{
-		BowHelpers.FindAmmo(player, AmmoID.Arrow, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel);
+		BowHelpers.FindAmmo(player, AmmoID.Arrow, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel, 1);
 		int type = projToFire ?? ProjectileID.WoodenArrowFriendly;
 		float speed = 10 + ammoVel ?? 0;
 		float knockBack = Projectile.knockBack + (ammoKB ?? 0);
