@@ -4,6 +4,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Ocean.Items;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -13,17 +14,22 @@ namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
 public class HydrothermalVent : ModTile
 {
+	public const int CooldownMax = (int)(Main.dayLength / 2);
+	public const int EruptDuration = 600;
+
+	public static readonly SoundStyle[] EruptionSounds =
+		[new("SpiritReforged/Assets/SFX/Tile/StoneCrack1") { PitchVariance = 0.6f },
+		new("SpiritReforged/Assets/SFX/Tile/StoneCrack2") { PitchVariance = 0.6f }];
+
 	/// <summary> Cooldowns for all <see cref="HydrothermalVent"/> tiles in the world. Never read on multiplayer clients. </summary>
 	private static readonly Dictionary<Point16, int> cooldowns = [];
-	private const int cooldownMax = (int)(Main.dayLength / 2);
-	internal const int eruptDuration = 600;
 
 	/// <summary> Precise texture top positions for all tile styles, used for visuals. </summary>
 	private static readonly Point[] tops = [new Point(16, 16), new Point(16, 16), new Point(16, 24), new Point(12, 4), new Point(20, 4), new Point(16, 16), new Point(16, 16), new Point(16, 16)];
 
 	public override void Load() => On_Wiring.UpdateMech += UpdateCooldowns;
 
-	private void UpdateCooldowns(On_Wiring.orig_UpdateMech orig)
+	private static void UpdateCooldowns(On_Wiring.orig_UpdateMech orig)
 	{
 		orig();
 
@@ -46,7 +52,7 @@ public class HydrothermalVent : ModTile
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y Coordinate.</param>
 	/// <returns> Whether the given position is valid. </returns>
-	private bool IsValid(int i, int j) => TileObjectData.IsTopLeft(i, j) && Framing.GetTileSafely(i, j).TileType == Type;
+	private static bool IsValid(int i, int j) => TileObjectData.IsTopLeft(i, j) && Framing.GetTileSafely(i, j).TileType == ModContent.TileType<HydrothermalVent>();
 
 	public override void SetStaticDefaults()
 	{
@@ -85,11 +91,21 @@ public class HydrothermalVent : ModTile
 		if (Main.rand.NextBool(5)) //Passive smoke effects
 		{
 			var velocity = new Vector2(0, -Main.rand.NextFloat(2f, 2.5f));
+			var smoke = new SmokeCloud(position, velocity, new Color(40, 40, 50), Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(50, 120), false)
+			{
+				SecondaryColor = Color.SlateGray,
+				TertiaryColor = Color.Black,
+				ColorLerpExponent = 0.5f,
+				Intensity = 0.25f,
+				Pixellate = true,
+				PixelDivisor = 4
+			};
 
-			ParticleHandler.SpawnParticle(new DissipatingSmoke(position, velocity,
-				new Color(40, 40, 50), Color.SlateGray, Main.rand.NextFloat(.005f, .06f), 150)
-			{ squash = true });
+			ParticleHandler.SpawnParticle(smoke);
 		}
+
+		if (Main.rand.NextBool(12))
+			ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(4), -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.35f), 60));
 
 		if (Main.rand.NextBool()) //Passive ash effects
 		{
@@ -125,19 +141,18 @@ public class HydrothermalVent : ModTile
 	}
 
 	public override void RandomUpdate(int i, int j) => TryErupt(i, j);
-
-	private bool TryErupt(int i, int j)
+	private static bool TryErupt(int i, int j)
 	{
 		TileExtensions.GetTopLeft(ref i, ref j);
 
 		var pt = new Point16(i, j);
 		if (IsValid(i, j) && !cooldowns.ContainsKey(pt))
-			cooldowns.Add(pt, cooldownMax); //Initialize cooldown counters on the server/singleplayer
+			cooldowns.Add(pt, CooldownMax); //Initialize cooldown counters on the server/singleplayer
 
 		if (cooldowns[pt] == 0 && WorldGen.PlayerLOS(i, j))
 		{
 			Erupt(i, j);
-			cooldowns[pt] = cooldownMax;
+			cooldowns[pt] = CooldownMax;
 
 			if (Main.netMode != NetmodeID.SinglePlayer) //Sync vent eruption in multiplayer
 				new EruptionData(new Point16(i, j)).Send();
@@ -159,14 +174,12 @@ public class HydrothermalVent : ModTile
 
 		if (!Main.dedServ)
 		{
-			var player = Main.LocalPlayer;
-
 			for (int k = 0; k <= 20; k++)
 				Dust.NewDustPerfect(position, ModContent.DustType<Dusts.BoneDust>(), new Vector2(0, 6).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1));
 			for (int k = 0; k <= 20; k++)
 				Dust.NewDustPerfect(position, ModContent.DustType<Dusts.FireClubDust>(), new Vector2(0, 6).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1));
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack" + Main.rand.Next(1, 3)) { PitchVariance = .6f }, position);
+			SoundEngine.PlaySound(Main.rand.Next(EruptionSounds), position);
 			SoundEngine.PlaySound(SoundID.Drown with { Pitch = -.5f, PitchVariance = .25f, Volume = 1.5f }, position);
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Yellow, 0.75f, 200, 20, "supPerlin",
@@ -176,9 +189,21 @@ public class HydrothermalVent : ModTile
 				new Vector2(4, 0.75f), EaseFunction.EaseCubicOut).WithSkew(0.75f, MathHelper.Pi - MathHelper.PiOver2));
 
 			for (int x = 0; x < 5; x++) //Large initial smoke plume
-				ParticleHandler.SpawnParticle(new DissipatingSmoke(position + Main.rand.NextVector2Unit() * 25f, -Vector2.UnitY,
-					new Color(40, 40, 50), Color.Black, Main.rand.NextFloat(.05f, .3f), 150));
+			{
+				var smoke = new SmokeCloud(position, -Vector2.UnitY, new Color(40, 40, 50), Main.rand.NextFloat(0.15f, 0.25f), EaseFunction.EaseQuadOut, 150, false)
+				{
+					SecondaryColor = Color.SlateGray,
+					TertiaryColor = Color.Black,
+					ColorLerpExponent = 0.5f,
+					Intensity = 0.25f,
+					Pixellate = true,
+					PixelDivisor = 4
+				};
 
+				ParticleHandler.SpawnParticle(smoke);
+			}
+
+			var player = Main.LocalPlayer;
 			if (Collision.WetCollision(player.position, player.width, player.height))
 				player.SimpleShakeScreen(2, 3, 90, 16 * 10);
 
