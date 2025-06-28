@@ -115,5 +115,5 @@ JinxMark: {
 
 FlaskOfFrost_Buff: {
 	DisplayName: Weapon Imbue: Freezing
-	Description: Melee attacks freeze enemies
+	Description: Melee and Whip attacks freeze enemies
 }
