@@ -1,50 +1,50 @@
 VanillaDialogue: {
 	Guide: {
-		// WorldNPC: You might run into other explorers as you wander the world. If you do, maybe you can help each other out!
-		// Ecotone: If the climate is right, the region between the Desert and Jungle can be home to a vast Savanna. I've always wanted to see it!
-		// Savanna: The leather from the animals here could craft you some pretty neat gear, kid.
-		// Kelp: Don't eat the seaweed.
+		WorldNPC: 在探索世界时，你可能会遇到其他冒险者。如果遇到了，或许你们可以互相帮助！
+		Ecotone: 如果气候适宜，沙漠和丛林之间的交界地带会形成广袤的稀树平原。我一直想亲眼看看！
+		Savanna: 这里的动物皮革能给你做些超酷的装备，年轻人。
+		Kelp: 别吃海藻。
 	}
 
 	ArmsDealer: {
-		// Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
-		// Placeholder: placeholder
+		Savanna1: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
+		Placeholder: placeholder
 	}
 
 	Stylist: {
-		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+		Savanna1: 在这种气候里保持发型简直要命。
+		Duststorm1: 要是再让我从别人头发里挑沙子，我就……
 	}
 
 	TravellingMerchant: {
-		// Cartographer1: I often run into a wayward cartographer on my travels. I swear, she gives me a run for my money!
-		// Cartographer2: Oh, it's {0}! She gave me directions last month before falling right into a ditch.
-		// Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
+		Cartographer1: 我常在路上遇到个迷路的制图师。说真的，她给我的生意添了不少乱子！
+		Cartographer2: 噢，是{0}！上个月她给我指完路就栽进沟里了。
+		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
 	}
 
 	Demolitionist: {
-		// HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
-		// Placeholder: placeholder
+		HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
+		Placeholder: placeholder
 	}
 
 	Nurse: {
-		// Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
-		// Savanna: No, I'm not a vet! Now get those animals out of here.
+		Duststorm: 别让外面的沙尘刮伤你！这可不归我管。
+		Savanna: 我不是兽医！快把这些动物弄出去。
 	}
 
 	PartyGirl: {
-		// Duststorm: Aw, it's not party weather. Maybe we can have a kickback instead!
-		// Savanna: All this open space is perfect for a party! Ooh, maybe a dayger!
+		Duststorm: 唉，这天气没法开派对。要不咱们搞个小聚会？
+		Savanna: 这么开阔的地方最适合派对了！唔，或许可以办个日间狂欢！
 	}
 
 	Golfer: {
-		// Duststorm: It's all this dust's fault that I'm playing below par!
-		// Savanna: Everything here is a hazard! My balls keep getting stuck in the bushes and sand...and the trees!
+		Duststorm: 都怪这些沙尘害我打不出标准杆！
+		Savanna: 这儿到处都是障碍！我的球老是卡进灌木丛、沙地……还有树上！
 	}
 
 	Zoologist: {
-		// Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
-		// Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
+		Savanna1: 天呐——这里简直完美！你快来看看这些可爱的小动物！
+		Savanna2: 什么？！那些鬣狗咬你了？但它们明明那么呆萌！
 	}
 }
 
@@ -442,15 +442,15 @@ WorldFrog: {
 }
 
 MossSlime: {
-	// DisplayName: Moss Slime
-	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+	DisplayName: 苔藓史莱姆
+	Entry: 一群奇特的史莱姆，身上不知为何长满了苔藓。它们种类繁多，不过似乎只会长荧光苔藓，出于……一些原因。或许是天然光源？
 }
 
-// KryptonMossSlime.DisplayName: Krypton Moss Slime
-// LavaMossSlime.DisplayName: Lava Moss Slime
-// NeonMossSlime.DisplayName: Neon Moss Slime
-// XenonMossSlime.DisplayName: Xenon Moss Slime
-// ArgonMossSlime.DisplayName: Argon Moss Slime
-// HeliumMossSlime.DisplayName: Helium Moss Slime
-// OganessonMossSlime.DisplayName: Oganesson Moss Slime
-// RadonMossSlime.DisplayName: Radon Moss Slime
+KryptonMossSlime.DisplayName: 氪苔藓史莱姆
+LavaMossSlime.DisplayName: 熔岩苔藓史莱姆
+NeonMossSlime.DisplayName: 氖苔藓史莱姆
+XenonMossSlime.DisplayName: 氙苔藓史莱姆
+ArgonMossSlime.DisplayName: 氩苔藓史莱姆
+HeliumMossSlime.DisplayName: 氦苔藓史莱姆
+OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
+RadonMossSlime.DisplayName: 氡苔藓史莱姆
