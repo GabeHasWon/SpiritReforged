@@ -1691,12 +1691,12 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	DisplayName: 「气奥」浮标
+	DisplayName: 「气奥」苔藓钓鱼浮标
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	DisplayName: 氡浮标
+	DisplayName: 氡苔藓钓鱼浮标
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1758,8 +1758,8 @@ Bowlder: {
 }
 
 BoStaff: {
-	// DisplayName: Bo Staff
-	// Tooltip: Dealing continuous damage builds combo
+	DisplayName: 长棍法杖
+	Tooltip: 连击造成连续伤害
 }
 
 Blasphemer: {
@@ -1803,172 +1803,172 @@ SavannaTorchItem: {
 }
 
 FlaskBlue: {
-	// DisplayName: Blue Moss Flask
-	// Tooltip: Spreads moss on impact
+	DisplayName: 蓝色苔藓烧瓶
+	Tooltip: 碰撞时扩散苔藓
 }
 
 FlaskBrown: {
-	// DisplayName: Brown Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: 棕色苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
-	// DisplayName: Green Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: 绿色苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
-	// DisplayName: Lava Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: 熔岩苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
-	// DisplayName: Purple Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: 紫色岩藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
-	// DisplayName: Red Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: 红色岩藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 TitleMusicBoxItem: {
-	// DisplayName: Music Box (Spirit Title)
-	// Tooltip: ""
+	DisplayName: 音乐盒（魂灵主界面）
+	Tooltip: ""
 }
 
 Drypowder: {
-	// DisplayName: Drypowder
-	// Tooltip: Spreads the savanna
+	DisplayName: 旱之尘
+	Tooltip: 扩散稀树平原
 }
 
 ElephantKite: {
-	// DisplayName: Elephant Kite
-	// Tooltip: "{$CommonItemTooltip.Kite}"
+	DisplayName: 大象风筝
+	Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
 CartographyTableItem: {
-	// DisplayName: Cartography Table
-	/* Tooltip:
+	DisplayName: 制图桌
+	Tooltip:
 		'''
-		Allows you to share your map with other players
-		Interact to post your findings
-		''' */
+		允许你向其他玩家分享你的地图
+		互动以公布你的发现
+		'''
 }
 
 PurityBonsaiItem: {
-	// DisplayName: Willow Bonsai
-	// Tooltip: ""
+	DisplayName: 柳树盆栽
+	Tooltip: ""
 }
 
 RubyBonsaiItem: {
-	// DisplayName: Ruby Bonsai
-	// Tooltip: ""
+	DisplayName: 红玉盆栽
+	Tooltip: ""
 }
 
 SakuraBonsaiItem: {
-	// DisplayName: Sakura Bonsai
-	// Tooltip: ""
+	DisplayName: 樱花盆栽
+	Tooltip: ""
 }
 
 WillowBonsaiItem: {
-	// DisplayName: Yellow Willow Bonsai
-	// Tooltip: ""
+	DisplayName: 黄柳树盆栽
+	Tooltip: ""
 }
 
 AmethystBonsaiItem: {
-	// DisplayName: Amethyst Bonsai
-	// Tooltip: ""
+	DisplayName: 紫晶盆栽
+	Tooltip: ""
 }
 
 DiamondBonsaiItem: {
-	// DisplayName: Diamond Bonsai
-	// Tooltip: ""
+	DisplayName: 钻石盆栽
+	Tooltip: ""
 }
 
 EmeraldBonsaiItem: {
-	// DisplayName: Emerald Bonsai
-	// Tooltip: ""
+	DisplayName: 翡翠盆栽
+	Tooltip: ""
 }
 
 SapphireBonsaiItem: {
-	// DisplayName: Sapphire Bonsai
-	// Tooltip: ""
+	DisplayName: 蓝宝石盆栽
+	Tooltip: ""
 }
 
 TopazBonsaiItem: {
-	// DisplayName: Topaz Bonsai
-	// Tooltip: ""
+	DisplayName: 黄玉盆栽
+	Tooltip: ""
 }
 
 AmberBonsaiItem: {
-	// DisplayName: Amber Bonsai
-	// Tooltip: ""
+	DisplayName: 琥珀盆栽
+	Tooltip: ""
 }
 
 JinxBow: {
-	// DisplayName: Jinxbow
-	/* Tooltip:
+	DisplayName: 厄劫弓
+	Tooltip:
 		'''
-		Fires arrows at enemies without consuming ammo and occasionally marks them
-		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
-		''' */
+		发射消耗弹药的箭矢，偶尔会标记敌人
+		使用远程攻击打击被标记的敌人会释放一支强大的魔法箭
+		'''
 }
 
 ExplosiveRum: {
-	// DisplayName: Explosive Rum
-	// Tooltip: "'Oh, there it is!'"
+	DisplayName: 爆炸性朗姆酒
+	Tooltip: “哦，在这！”
 }
 
 Flarepowder: {
-	// DisplayName: Flarepowder
-	// Tooltip: Releases a spread of drifting magic powder
+	DisplayName: 闪耀之尘
+	Tooltip: 释放一团漂浮的魔法粉尘
 }
 
 VexpowderBlue: {
-	// DisplayName: Vexpowder
-	/* Tooltip:
+	DisplayName: 苦恼之尘
+	Tooltip:
 		'''
 		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
-		Confuses hit enemies
-		''' */
+		困惑被击中的敌人
+		'''
 }
 
 VexpowderRed: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }
 
 BreakawayChair: {
-	// DisplayName: Breakaway Chair
-	// Tooltip: Breaks on impact
+	DisplayName: 逃生椅
+	Tooltip: 碰撞时损坏
 }
 
 AncientMarksmanHood: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
-	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
-	// Tooltip: ""
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
-	// Tooltip: ""
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	Tooltip: ""
 }
 
 RollingPotsItem: {
-	// DisplayName: Rolling Pot
-	// Tooltip: ""
+	DisplayName: 滚动罐子
+	Tooltip: ""
 }
 
-// MossSlimeBannerItem.DisplayName: Moss Slime Banner
+MossSlimeBannerItem.DisplayName: 苔藓史莱姆旗
 
 InvisibleLure: {
-	// DisplayName: Invisible Lure
-	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+	DisplayName: 隐形鱼饵
+	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
@@ -1981,73 +1981,73 @@ SharpshooterGlove: {
 }
 
 BonsaiPot: {
-	// DisplayName: Bonsai Pot
-	// Tooltip: Used to craft decorative bonsai
+	DisplayName: 盆栽用盆
+	Tooltip: 用于制作装饰性盆栽
 }
 
 WickerBasketsItem: {
-	// DisplayName: Wicker Basket
-	// Tooltip: ""
+	DisplayName: 柳条筐
+	Tooltip: ""
 }
 
 EarthshakerBreastplate: {
-	// DisplayName: Earthshaker's Breastplate
-	// Tooltip: ""
+	DisplayName: 撼地者胸甲
+	Tooltip: ""
 }
 
 EarthshakerChestpiece: {
-	// DisplayName: Earthshaker's Chestpiece
-	// Tooltip: ""
+	DisplayName: 撼地者胸件
+	Tooltip: ""
 }
 
 EarthshakerHeadgear: {
-	// DisplayName: Earthshaker's Headgear
-	// Tooltip: ""
+	DisplayName: 撼地者头饰
+	Tooltip: ""
 }
 
 EarthshakerTreads: {
-	// DisplayName: Earthshaker's Treads
-	// Tooltip: ""
+	DisplayName: 撼地者之靴
+	Tooltip: ""
 }
 
 EarthshakerWarmask: {
-	// DisplayName: Earthshaker's Warmask
-	// Tooltip: ""
+	DisplayName: 撼地者战面
+	Tooltip: ""
 }
 
 GraniteBody: {
-	// DisplayName: Kinetic Chestplate
-	// Tooltip: Increases jump height slightly
+	DisplayName: 动能胸甲
+	Tooltip: 小幅度增加跳跃高度
 }
 
 GraniteHead: {
-	// DisplayName: Kinetic Visor
-	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	DisplayName: 动能面甲
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
 
 GraniteLegs: {
-	// DisplayName: Kinetic Greaves
-	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	DisplayName: 动能护胫
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
 }
 
 FingerGun: {
-	// DisplayName: Finger Blaster
-	/* Tooltip:
+	DisplayName: 手指冲击波
+	Tooltip:
 		'''
-		Ignores some enemy defense
-		Fires faster at higher mana
-		'Pew pew!'
-		''' */
+		无视敌人些许防御力
+		魔力值越高，发射速度越快
+		“咻咻！”
+		'''
 }
 
 FlaskOfFrost: {
-	// DisplayName: Flask of Frost
-	// Tooltip: Melee and Whip attacks freeze enemies
+	DisplayName: 冰霜瓶
+	Tooltip: 近战和鞭子攻击会冻结敌人
 }
 
 HardlightVisor: {
-	// DisplayName: Hardlight Visor
-	// Tooltip: ""
-	// AltDisplayName: Hard Light Visor
-	// AltTooltip: "'Not to be confused with Hardlight Visor'"
+	DisplayName: 强光面甲
+	Tooltip: ""
+	AltDisplayName: 硬光面甲
+	AltTooltip: "“请勿与强光面甲混淆”"
 }
