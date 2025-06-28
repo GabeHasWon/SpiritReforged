@@ -2031,7 +2031,7 @@ GraniteLegs: {
 }
 
 FingerGun: {
-	DisplayName: 指尖冲击波
+	DisplayName: 手指冲击波
 	Tooltip:
 		'''
 		无视敌人些许防御力
