@@ -3,6 +3,11 @@ Biomes: {
 		DisplayName: Savanna
 		TownNPCDialogueName: the Savanna
 	}
+
+	SaltBiome: {
+		DisplayName: Salt Flats
+		TownNPCDialogueName: the Salt Flats
+	}
 }
 
 SlotContexts.Backpack: Pack

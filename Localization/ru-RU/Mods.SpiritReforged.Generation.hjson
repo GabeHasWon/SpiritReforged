@@ -7,6 +7,7 @@ PopulateOcean: Оживление подводного мира
 Gravel: Рассыпание гравия
 SavannaTerrain: Формирование саванных плато
 SavannaObjects: Наполнение саванны
+// SaltFlats: Adding salt
 Ecotones: Рассчёты под эко-тоны
 Caves: Украшение пещер
 NeonMosses: Выращивание мха

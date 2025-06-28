@@ -3,6 +3,11 @@ Biomes: {
 		DisplayName: 稀树平原
 		TownNPCDialogueName: 稀树平原
 	}
+
+	SaltBiome: {
+		// DisplayName: Salt Flats
+		// TownNPCDialogueName: the Salt Flats
+	}
 }
 
 SlotContexts.Backpack: 背包
