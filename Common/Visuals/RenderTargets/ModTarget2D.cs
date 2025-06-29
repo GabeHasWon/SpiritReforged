@@ -12,12 +12,18 @@ public class ModTarget2D : ILoadable
 
 	private readonly Func<bool> _activeCondition;
 	private readonly Action<SpriteBatch> _drawAction;
+	private readonly bool _prepare;
 
 	protected ModTarget2D() { } //Include an empty constructor so that ILoadable can function
-	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null)
+
+	/// <param name="activeCondition"></param>
+	/// <param name="drawAction"></param>
+	/// <param name="prepare"> Whether <see cref="Prepare"/> should be called. This logic should be handled manually in <paramref name="drawAction"/> otherwise. </param>
+	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null, bool prepare = true)
 	{
 		_activeCondition = activeCondition;
 		_drawAction = drawAction;
+		_prepare = prepare;
 
 		Register();
 	}
@@ -40,8 +46,18 @@ public class ModTarget2D : ILoadable
 	/// Check <see cref="Active"/> before calling this method. </summary>
 	public virtual void Prepare(SpriteBatch spriteBatch) //You don't normally need to override this
 	{
-		if (!IsDerived && _drawAction is null)
-			return; //Return because DrawInto was never overridden, and therefore draws nothing
+		if (!IsDerived)
+		{
+			if (_drawAction is null)
+			{
+				return; //Return because DrawInto was never overridden, and therefore draws nothing
+			}
+			else if (!_prepare)
+			{
+				DrawInto(spriteBatch);
+				return;
+			}
+		}
 
 		var gd = Main.graphics.GraphicsDevice;
 

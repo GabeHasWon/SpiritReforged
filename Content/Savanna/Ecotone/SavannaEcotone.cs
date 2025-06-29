@@ -28,25 +28,7 @@ internal class SavannaEcotone : EcotoneBase
 	protected override void InternalLoad()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
-		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
-		On_WorldGen.PlaceTile += PreventLargePiles;
 		On_WorldGen.PlacePot += ConvertPot;
-	}
-
-	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
-	{
-		if (WorldGen.generatingWorld && type == TileID.SmallPiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, X, Y, type);
-	}
-
-	private static bool PreventLargePiles(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
-	{
-		if (WorldGen.generatingWorld && Type == TileID.LargePiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, Type, mute, forced, plr, style);
 	}
 
 	private static bool PreventPalmTreeGrowth(On_WorldGen.orig_GrowPalmTree orig, int i, int y)
@@ -227,7 +209,9 @@ internal class SavannaEcotone : EcotoneBase
 
 		SavannaArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
 		SavannaArea.Inflate(2, 2);
-		StopLava.AddArea(SavannaArea);
+
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava));
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Piles));
 
 		static int HighestSurfacePoint(int x)
 		{
