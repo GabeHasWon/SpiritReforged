@@ -34,7 +34,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SaltSeed>())
 		{
-			int spawn = Main.maxTilesX / 2; //DEBUG
+			int spawn = Main.maxTilesX / 2;
 			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
 
 			if (valid.Any())
