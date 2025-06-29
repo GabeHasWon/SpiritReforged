@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.GameContent.Personalities;
 
-namespace SpiritReforged.Content.SaltFlats;
+namespace SpiritReforged.Content.SaltFlats.Biome;
 
 public class SaltBiome : ModBiome
 {
@@ -16,6 +16,7 @@ public class SaltBiome : ModBiome
 	}
 
 	public override void SetStaticDefaults() => NPCHappinessHelper.SetAverage<SaltBiome>(ModContent.GetInstance<SnowBiome>(), ModContent.GetInstance<DesertBiome>());
+	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SaltWaterStyle>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
 	public override int Music => GetMusic();
 

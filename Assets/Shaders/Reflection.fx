@@ -19,21 +19,20 @@ sampler tile
 };
 
 float reflectionHeight;
-float2 noiseStrength;
-float2 noiseMult;
+float2 distortStrength;
+float2 distortMult;
 float fade;
 
 float4 MainPS(float2 coords : TEXCOORD0, float4 ocolor : COLOR0) : COLOR0
 {
-    float4 finalColor = tex2D(uImage0, coords);
     float4 mapColor = tex2D(map, coords);
-    float4 distortColor = tex2D(distortion, coords * noiseMult);
+    float4 distortColor = tex2D(distortion, coords * distortMult);
     float4 tileColor = tex2D(tile, coords);
     
     mapColor *= tileColor.a; //Strictly adhere to tile bounds
 
     float reflectionY = ((1 - mapColor.g) * 255) / reflectionHeight;
-    float4 reflectedColor = tex2D(uImage0, coords - float2(0, reflectionY) + float2(distortColor.x * noiseStrength.x, distortColor.y * noiseStrength.y) * max(pow(1 - mapColor.g, fade), 0));
+    float4 reflectedColor = tex2D(uImage0, coords - float2(0, reflectionY) + float2(distortColor.x * distortStrength.x, distortColor.y * distortStrength.y) * max(pow(1 - mapColor.g, fade), 0));
 
     return reflectedColor * ocolor * pow(mapColor.g, fade);
 }

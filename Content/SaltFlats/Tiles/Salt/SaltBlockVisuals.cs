@@ -1,43 +1,15 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.SaltFlats.Tiles;
+namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
-public class SaltBlock : ModTile
+public class SaltBlockVisuals : ILoadable
 {
-	public override void SetStaticDefaults()
-	{
-		Main.tileSolid[Type] = true;
-		Main.tileMergeDirt[Type] = true;
-		Main.tileBlockLight[Type] = false;
-
-		TileID.Sets.ChecksForMerge[Type] = true;
-
-		AddMapEntry(new Color(230, 220, 220));
-		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand);
-
-		DustType = DustID.Pearlsand;
-		MineResist = 0.5f;
-	}
-
-	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;
-
-	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-	{
-		SaltReflection.ReflectionPoints.Add(new(i, j));
-		return true;
-	}
-
-	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
-		=> WorldGen.TileMergeAttempt(-2, TileID.SnowBlock, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
-}
-
-public class SaltReflection : ILoadable
-{
-	public static readonly Asset<Texture2D> GradientMap = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SaltReflection), "GradientMap"));
+	public static readonly Asset<Texture2D> GradientMap = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "GradientMap"));
 
 	public static bool Drawing { get; private set; }
 	public static readonly HashSet<Point16> ReflectionPoints = [];
@@ -141,7 +113,6 @@ public class SaltReflection : ILoadable
 		//Draw the actual contents
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
-		//spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Rasterizer, null, transformationMatrix);
 		DrawBG(Main.instance);
 		DrawNPCs(Main.instance);
 
@@ -163,15 +134,16 @@ public class SaltReflection : ILoadable
 		s.Parameters["mapTexture"].SetValue(MapTarget);
 		s.Parameters["distortionTexture"].SetValue(AssetLoader.LoadedTextures["supPerlin"].Value);
 		s.Parameters["tileTexture"].SetValue(TileTarget);
-		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4f);
-		s.Parameters["fade"].SetValue(3f);
-		
-		s.Parameters["noiseMult"].SetValue(new Vector2(1));
-		s.Parameters["noiseStrength"].SetValue(new Vector2(0.5f, 0));
+
+		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
+		s.Parameters["fade"].SetValue(2f);
+		s.Parameters["distortMult"].SetValue(new Vector2(1));
+		s.Parameters["distortStrength"].SetValue(new Vector2(0.3f, 0));
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, new Color(255, 190, 200, 220) * 0.8f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		Color tint = new Color(255, 190, 200, 220) * 0.8f;
+		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 
 		Drawing = false;

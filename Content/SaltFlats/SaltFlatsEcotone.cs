@@ -1,6 +1,7 @@
-﻿using SpiritReforged.Common.WorldGeneration.Ecotones;
+﻿using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
-using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.Linq;
 using Terraria.GameContent.Generation;
 using Terraria.WorldBuilding;
@@ -9,8 +10,33 @@ namespace SpiritReforged.Content.SaltFlats;
 
 internal class SaltFlatsEcotone : EcotoneBase
 {
+	[WorldBound]
+	public static Rectangle SaltArea;
+
 	public static int AverageY { get; private set; }
 	private static FastNoiseLite Noise;
+
+	protected override void InternalLoad()
+	{
+		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
+		On_WorldGen.PlaceTile += PreventLargePiles;
+	}
+
+	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
+	{
+		if (WorldGen.generatingWorld && type == TileID.SmallPiles && SaltArea.Contains(new Point(i, j)))
+			return false; //Skips orig
+
+		return orig(i, j, X, Y, type);
+	}
+
+	private static bool PreventLargePiles(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
+	{
+		if (WorldGen.generatingWorld && Type == TileID.LargePiles && SaltArea.Contains(new Point(i, j)))
+			return false; //Skips orig
+
+		return orig(i, j, Type, mute, forced, plr, style);
+	}
 
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
@@ -58,26 +84,31 @@ internal class SaltFlatsEcotone : EcotoneBase
 		int xLeft = bounds.Item1;
 		int xRight = bounds.Item2;
 
-		Noise = new FastNoiseLite(WorldGen.genRand.Next());
-		Noise.SetFrequency(0.08f);
+		int yLeft = EcotoneSurfaceMapping.TotalSurfaceY[(short)xLeft];
+		int yRight = EcotoneSurfaceMapping.TotalSurfaceY[(short)xRight];
 
-		AverageY = (int)MathHelper.Lerp(EcotoneSurfaceMapping.TotalSurfaceY[(short)xLeft], EcotoneSurfaceMapping.TotalSurfaceY[(short)xRight], 0.5f);
-		int depth = 40;
+		Noise = new FastNoiseLite(WorldGen.genRand.Next());
+		Noise.SetFrequency(0.03f);
+
+		AverageY = (int)MathHelper.Lerp(yLeft, yRight, 0.5f);
 
 		for (int x = xLeft; x < xRight; x++)
 		{
+			int depth = Math.Min((int)(Math.Sin((float)(x - xLeft) / (xRight - xLeft) * MathHelper.Pi) * 250), 50 + (int)(Noise.GetNoise(x, 300) * 10));
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
 
 			while (y < AverageY + depth)
-				SetTile(x, y++);
+				SetTile(x, y++, GetSurfaceY(x, y));
 		}
+
+		SaltArea = new Rectangle(xLeft, yLeft - 10, xRight - xLeft, yRight - yLeft + 20);
 	};
 
-	private static void SetTile(int x, int y)
+	private static void SetTile(int x, int y, int baseLine)
 	{
 		var t = Main.tile[x, y];
 
-		if (y < GetSurfaceY(x, y))
+		if (y < baseLine)
 		{
 			t.ClearEverything();
 		}
