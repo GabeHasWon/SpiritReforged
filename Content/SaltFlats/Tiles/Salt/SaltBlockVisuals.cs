@@ -3,6 +3,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
+using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -113,8 +114,11 @@ public class SaltBlockVisuals : ILoadable
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
 		DrawBG(Main.instance);
+
+		spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 		spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-		spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition, Color.White);
+		spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+
 		DrawNPCs(Main.instance);
 
 		spriteBatch.End();
@@ -137,13 +141,13 @@ public class SaltBlockVisuals : ILoadable
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 
 		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
-		s.Parameters["fade"].SetValue(2f);
+		s.Parameters["fade"].SetValue(3f);
 		s.Parameters["distortMult"].SetValue(new Vector2(1));
 		s.Parameters["distortStrength"].SetValue(new Vector2(0.3f, 0));
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = new Color(255, 190, 200, 220) * 0.8f;
+		Color tint = new Color(255, 190, 200, 220) * 0.9f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 
