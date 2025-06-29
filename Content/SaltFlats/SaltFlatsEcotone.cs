@@ -79,6 +79,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (!CanGenerate(entries, out var bounds))
 			return;
 
+		const float baseCurveStrength = 2;
+		const int baseDepth = 18;
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		int xLeft = bounds.Item1;
@@ -97,11 +99,16 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		for (int x = xLeft; x < xRight; x++)
 		{
-			int depth = Math.Min((int)(Math.Sin((float)(x - xLeft) / (xRight - xLeft) * MathHelper.Pi) * 250), 50 + (int)(Noise.GetNoise(x, 300) * 10));
+			int depth = Math.Min((int)(Math.Sin((float)(x - xLeft) / (xRight - xLeft) * MathHelper.Pi) * (baseCurveStrength * baseDepth)), baseDepth + (int)(Noise.GetNoise(x, 600) * 8));
+			int liningDepth = (int)((8 + (int)(Noise.GetNoise(x, 500) * 6)) * ((float)depth / baseDepth));
+
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
 
-			while (y < AverageY + depth)
-				SetTile(x, y++, GetSurfaceY(x, y));
+			while (y < AverageY + depth + liningDepth)
+			{
+				int type = (y < AverageY + depth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
+				SetTile(x, y++, GetSurfaceY(x, y), type, type == ModContent.TileType<SaltBlockReflective>());
+			}
 		}
 
 		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
@@ -139,12 +146,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 				if (y >= depth)
 					Main.tile[x, y].WallType = WallID.None;
 				else
-					Main.tile[x, y++].ClearEverything();
+					Main.tile[x, y].ClearEverything();
+
+				y++;
 			}
 		}
 	}
 
-	private static void SetTile(int x, int y, int baseLine)
+	private static void SetTile(int x, int y, int baseLine, int type, bool clearWall = true)
 	{
 		var t = Main.tile[x, y];
 
@@ -155,9 +164,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 		else
 		{
 			t.HasTile = true;
-			t.TileType = (ushort)ModContent.TileType<SaltBlock>();
+			t.TileType = (ushort)type;
 
-			t.WallType = WallID.None;
+			if (clearWall)
+				t.WallType = WallID.None;
 		}
 	}
 

@@ -3,7 +3,6 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
-using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -80,7 +79,7 @@ public class SaltBlockVisuals : ILoadable
 
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
-		var texture = TextureAssets.Tile[ModContent.TileType<SaltBlock>()].Value;
+		var texture = TextureAssets.Tile[ModContent.TileType<SaltBlockReflective>()].Value;
 
 		foreach (var pt in ReflectionPoints)
 		{

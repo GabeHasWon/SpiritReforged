@@ -13,6 +13,7 @@ internal class TileMerger : ILoadable
 	public void Load(Mod mod)
 	{
 		Add(TileID.Sand, "Sand");
+		Add(TileID.Dirt, "Dirt");
 		All = [.. TextureByType.Keys];
 
 		static void Add(int type, string name) => TextureByType.Add(type, ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(TileMerger), "Textures/" + name + "Merge")));
@@ -141,22 +142,22 @@ internal class TileMerger : ILoadable
 
 		up = down = left = right = false;
 
-		if (upTile.TileType == mergeType && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
+		if (upTile.HasTile && upTile.TileType == mergeType && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
 		{
 			up = true;
 		}
 
-		if (downTile.TileType == mergeType && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
+		if (downTile.HasTile && downTile.TileType == mergeType && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
 		{
 			down = true;
 		}
 
-		if (leftTile.TileType == mergeType && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
+		if (leftTile.HasTile && leftTile.TileType == mergeType && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
 		{
 			left = true;
 		}
 
-		if (rightTile.TileType == mergeType && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
+		if (rightTile.HasTile && rightTile.TileType == mergeType && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
 		{
 			right = true;
 		}
