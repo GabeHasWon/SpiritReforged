@@ -90,7 +90,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
-		AverageY = (int)MathHelper.Lerp(yLeft, yRight, 0.5f);
+		AverageY = Math.Max(yLeft, yRight) + 1; //(int)MathHelper.Lerp(yLeft, yRight, 0.5f);
+
+		for (int i = 0; i < 2; i++)
+			HillBorder((i == 0) ? xLeft : xRight, i == 0);
 
 		for (int x = xLeft; x < xRight; x++)
 		{
@@ -101,8 +104,45 @@ internal class SaltFlatsEcotone : EcotoneBase
 				SetTile(x, y++, GetSurfaceY(x, y));
 		}
 
-		SaltArea = new Rectangle(xLeft, yLeft - 10, xRight - xLeft, yRight - yLeft + 20);
+		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
 	};
+
+	private static void HillBorder(int xCoord, bool left)
+	{
+		const int length = 20;
+
+		if (left)
+		{
+			for (int x = xCoord; x > xCoord - length; x--)
+			{
+				int y = (int)(Main.worldSurface * 0.35); //Sky height
+				int depth = (int)MathHelper.Lerp(GetSurfaceY(x, y), EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord - length)], -(float)(x - xCoord) / length);
+
+				Clear(x, y, depth);
+			}
+		}
+		else
+		{
+			for (int x = xCoord; x < xCoord + length; x++)
+			{
+				int y = (int)(Main.worldSurface * 0.35); //Sky height
+				int depth = (int)MathHelper.Lerp(GetSurfaceY(x, y), EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + length)], (float)(x - xCoord) / length);
+
+				Clear(x, y, depth);
+			}
+		}
+
+		static void Clear(int x, int y, int depth)
+		{
+			while (y < depth + 3)
+			{
+				if (y >= depth)
+					Main.tile[x, y].WallType = WallID.None;
+				else
+					Main.tile[x, y++].ClearEverything();
+			}
+		}
+	}
 
 	private static void SetTile(int x, int y, int baseLine)
 	{

@@ -1,4 +1,3 @@
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
@@ -53,7 +52,7 @@ public class SaltBlockVisuals : ILoadable
 			int i = pt.X;
 			int j = pt.Y;
 
-			if (WorldGen.SolidOrSlopedTile(i, j - 1))
+			if (ReflectionPoints.Contains(new(i, j - 1)) && WorldGen.SolidOrSlopedTile(i, j - 1))
 				continue;
 
 			var t = Main.tile[i, j];
@@ -114,6 +113,8 @@ public class SaltBlockVisuals : ILoadable
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
 		DrawBG(Main.instance);
+		spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+		spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition, Color.White);
 		DrawNPCs(Main.instance);
 
 		spriteBatch.End();
