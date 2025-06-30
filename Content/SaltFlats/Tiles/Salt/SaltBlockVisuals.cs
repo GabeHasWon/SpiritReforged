@@ -62,7 +62,7 @@ public class SaltBlockVisuals : ILoadable
 				spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), null, Color.White, 0, Vector2.Zero, 1, default, 0);
 				continue;
 			}
-			else if (t.Slope != SlopeType.Solid)
+			else if (t.Slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight)
 			{
 				for (int x = 0; x < 8; x++)
 				{

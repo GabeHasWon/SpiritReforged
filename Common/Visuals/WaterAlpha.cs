@@ -5,14 +5,17 @@ using Terraria.Graphics;
 namespace SpiritReforged.Common.Visuals;
 
 /// <summary> Modifies liquid alpha in high light levels. </summary>
-internal class WaterAlpha : ILoadable
+public class WaterAlpha : ILoadable
 {
+	public delegate bool WaterColorDelegate(int x, int y, ref VertexColors colors, bool isPartial);
+
+	public static event WaterColorDelegate OnWaterColor;
 	private static bool IsLiquid;
 
 	public void Load(Mod mod)
 	{
 		On_LiquidRenderer.DrawNormalLiquids += CheckLiquid;
-		On_TileDrawing.DrawPartialLiquid += On_TileDrawing_DrawPartialLiquid;
+		On_TileDrawing.DrawPartialLiquid += DrawPartialLiquid;
 		On_Lighting.GetCornerColors += ModifyWater;
 	}
 
@@ -23,7 +26,7 @@ internal class WaterAlpha : ILoadable
 		IsLiquid = false;
 	}
 
-	private static void On_TileDrawing_DrawPartialLiquid(On_TileDrawing.orig_DrawPartialLiquid orig, TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int liquidType, ref VertexColors colors)
+	private static void DrawPartialLiquid(On_TileDrawing.orig_DrawPartialLiquid orig, TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int liquidType, ref VertexColors colors)
 	{
 		ModifyColors((int)position.X, (int)position.Y, ref colors, true);
 		orig(self, behindBlocks, tileCache, ref position, ref liquidSize, liquidType, ref colors);
@@ -39,9 +42,6 @@ internal class WaterAlpha : ILoadable
 
 	private static void ModifyColors(int x, int y, ref VertexColors colors, bool isPartial = false)
 	{
-		//if (!Main.LocalPlayer.ZoneBeach)
-		//	return; //Only apply to the ocean
-
 		float totalStrength = Main.LocalPlayer.ZoneBeach ? 1f : .75f;
 
 		if (isPartial)
@@ -54,6 +54,9 @@ internal class WaterAlpha : ILoadable
 			x /= 16;
 			y /= 16;
 		}
+
+		if (OnWaterColor?.Invoke(x, y, ref colors, isPartial) ?? false)
+			return;
 
 		Clamp(ref colors.TopLeftColor, x, y);
 		Clamp(ref colors.TopRightColor, x + 1, y);

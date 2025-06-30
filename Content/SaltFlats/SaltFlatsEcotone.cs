@@ -70,7 +70,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		const float baseCurveStrength = 5;
 		const int baseDepth = 18;
-		const float islandMargin = 0.25f;
+		const float islandMargin = 0.15f;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
@@ -112,7 +112,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 				int surface = GetSurfaceY(x, y);
 
-				if (surface == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(40))
+				if (surface == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
 					islands.Add(new(x, y - 1)); //Add an island position for later
 
 				SetTile(x, y++, surface, type, type == ModContent.TileType<SaltBlockReflective>());
@@ -127,13 +127,15 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void AddIslands(IEnumerable<Point16> coords)
 	{
+		ushort[] skipTiles = [(ushort)ModContent.TileType<SaltBlockReflective>(), (ushort)ModContent.TileType<SaltBlockDull>()];
+
 		foreach (var c in coords)
 		{
-			int halfWidth = WorldGen.genRand.Next(3, 9);
+			int halfWidth = WorldGen.genRand.Next(2, 11);
 			ShapeData data = new();
 
-			WorldUtils.Gen(new(c.X, c.Y + 1), new Shapes.Slime(halfWidth, 1, 0.25), Actions.Chain(new Modifiers.SkipTiles((ushort)ModContent.TileType<SaltBlockReflective>()), new Actions.PlaceTile((ushort)ModContent.TileType<SaltBlockDull>())).Output(data));
-			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Actions.SetFrames(true), new Modifiers.Dither(), new Modifiers.IsTouchingAir(), new Actions.Smooth()));
+			WorldUtils.Gen(new(c.X, c.Y + 1), new Shapes.Slime(halfWidth, 1, 0.25), Actions.Chain(new Modifiers.SkipTiles(skipTiles), new Actions.PlaceTile((ushort)ModContent.TileType<SaltBlockDull>())).Output(data));
+			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Actions.SetFrames(true), new Modifiers.Dither(0.2), new Modifiers.IsTouchingAir(), new Actions.Smooth()));
 			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Expand(1), new Modifiers.Dither(0.9), new Actions.Custom((i, j, args) =>
 			{
 				Placer.PlaceTile<Saltwort>(i, j);
