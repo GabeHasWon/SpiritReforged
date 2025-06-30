@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
@@ -112,9 +113,14 @@ public class SaltBlockVisuals : ILoadable
 		//Draw the actual contents
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
+		Main.tileBatch.Begin();
+		Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
+		Main.tileBatch.End();
+
 		DrawBG(Main.instance);
 
 		spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+		//spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
 		spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 		spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
@@ -146,7 +152,7 @@ public class SaltBlockVisuals : ILoadable
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = new Color(255, 190, 200, 220) * 0.9f;
+		Color tint = Main.ColorOfTheSkies.Additive(220) * 0.9f; //(Main.LocalPlayer.InModBiome<SaltBiome>() ? new Color(255, 190, 200, 220) : Main.ColorOfTheSkies.Additive(220)) * 0.9f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

@@ -48,7 +48,9 @@ public class SaltBlockDull : SaltBlock
 		if (!Main.gamePaused && (int)player.velocity.X != 0 && Main.rand.NextBool(4))
 		{
 			var velocity = player.velocity * 0.2f + Vector2.UnitY * -0.5f;
-			var smoke = new SmokeCloud(player.Bottom, velocity, Color.White * 0.8f, Main.rand.NextFloat(0.02f, 0.1f), Common.Easing.EaseFunction.EaseCircularOut, 60)
+			var position = player.Bottom + new Vector2(0, 6 * player.gravDir);
+
+			var smoke = new SmokeCloud(position, velocity, Color.White * 0.8f, Main.rand.NextFloat(0.02f, 0.05f), Common.Easing.EaseFunction.EaseCircularOut, 60)
 			{
 				Pixellate = true,
 				PixelDivisor = 5,
