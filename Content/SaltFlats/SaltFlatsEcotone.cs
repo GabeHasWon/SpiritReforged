@@ -30,13 +30,13 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
 	{
 		const int offX = EcotoneSurfaceMapping.TransitionLength * 2 + 1; //Removes forest patches on the left side
+
 		bounds = (0, 0);
+		int spawn = Main.maxTilesX / 2;
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SaltSeed>())
 		{
-			int spawn = Main.maxTilesX / 2;
 			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
-
 			if (valid.Any())
 			{
 				var e = valid.First();
@@ -49,7 +49,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 		}
 		else
 		{
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Snow") && Math.Abs(x.Start.Y - x.End.Y) < 120);
+			//Uniquely, salt flats cannot normally generate over spawn
+			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Snow") && !(x.Start.X < spawn && x.End.X > spawn) && Math.Abs(x.Start.Y - x.End.Y) < 120);
 			if (!validEntries.Any())
 				return false;
 
