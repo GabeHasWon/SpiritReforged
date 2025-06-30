@@ -48,16 +48,3 @@ ReforgedServerConfig: {
 		Tooltip: Determina quantos itens flutuantes podem estar ativos no mundo ao mesmo tempo.
 	}
 }
-
-Details: {
-	// Tooltip: ""
-	// Background.Label: Background
-	// Tiles.Label: Tiles
-	// Water.Label: Water
-	// NPCs.Label: N P Cs
-	// Gores.Label: Gores
-	// Dusts.Label: Dusts
-	// Items.Label: Items
-	// Projectiles.Label: Projectiles
-	// Players.Label: Players
-}

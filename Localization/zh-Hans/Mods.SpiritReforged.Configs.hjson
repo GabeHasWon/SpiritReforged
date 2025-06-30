@@ -48,16 +48,3 @@ ReforgedServerConfig: {
 		Tooltip: 影响一个世界内同时可以有多少漂浮物。
 	}
 }
-
-Details: {
-	// Tooltip: ""
-	// Background.Label: Background
-	// Tiles.Label: Tiles
-	// Water.Label: Water
-	// NPCs.Label: N P Cs
-	// Gores.Label: Gores
-	// Dusts.Label: Dusts
-	// Items.Label: Items
-	// Projectiles.Label: Projectiles
-	// Players.Label: Players
-}
