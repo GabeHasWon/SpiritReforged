@@ -42,7 +42,7 @@ public class WaterAlpha : ILoadable
 
 	private static void ModifyColors(int x, int y, ref VertexColors colors, bool isPartial = false)
 	{
-		float totalStrength = Main.LocalPlayer.ZoneBeach ? 1f : .75f;
+		float totalStrength = Main.LocalPlayer.ZoneBeach ? 1f : 0.75f;
 
 		if (isPartial)
 		{
@@ -58,23 +58,26 @@ public class WaterAlpha : ILoadable
 		if (OnWaterColor?.Invoke(x, y, ref colors, isPartial) ?? false)
 			return;
 
-		Clamp(ref colors.TopLeftColor, x, y);
-		Clamp(ref colors.TopRightColor, x + 1, y);
-		Clamp(ref colors.BottomLeftColor, x, y + 1);
-		Clamp(ref colors.BottomRightColor, x + 1, y + 1);
+		float str = 0.72f * totalStrength;
+		float waveStr = 0.35f * totalStrength;
+
+		ColorClamp(ref colors.TopLeftColor, x, y, str, waveStr);
+		ColorClamp(ref colors.TopRightColor, x + 1, y, str, waveStr);
+		ColorClamp(ref colors.BottomLeftColor, x, y + 1, str, waveStr);
+		ColorClamp(ref colors.BottomRightColor, x + 1, y + 1, str, waveStr);
+	}
+
+	public static void ColorClamp(ref Color color, int x, int y, float totalStrength, float waveStrength)
+	{
+		color.A = Math.Min(color.A, GetAlpha(x, y));
 
 		byte GetAlpha(int x, int y)
 		{
-			float strength = .72f * totalStrength;
-			float waveStr = .35f * totalStrength;
-
 			float waveUnit = (float)((1f + Math.Sin(Main.timeForVisualEffects / 100f + (x + y) / 3)) / 2f);
-			float brightness = MathHelper.Clamp(Lighting.Brightness(x, y) * (1f - waveUnit * waveStr) - (1f - strength), 0, 1);
+			float brightness = MathHelper.Clamp(Lighting.Brightness(x, y) * (1f - waveUnit * waveStrength) - (1f - totalStrength), 0, 1);
 
 			return (byte)((1f - brightness) * 255f);
 		}
-
-		void Clamp(ref Color color, int x, int y) => color.A = Math.Min(color.A, GetAlpha(x, y));
 	}
 
 	public void Unload() { }

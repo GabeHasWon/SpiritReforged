@@ -34,7 +34,7 @@ internal class SaltFlatsTileCounts : ModSystem
 
 	public static bool InSaltFlats => ModContent.GetInstance<SaltFlatsTileCounts>().saltCount >= 200;
 
-	public override void SetStaticDefaults() => SaltTypes = [ModContent.TileType<SaltBlock>()];
+	public override void SetStaticDefaults() => SaltTypes = [ModContent.TileType<SaltBlockReflective>(), ModContent.TileType<SaltBlockDull>()];
 
 	public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 	{

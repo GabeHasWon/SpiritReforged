@@ -53,7 +53,7 @@ public class SaltBlockVisuals : ILoadable
 			int i = pt.X;
 			int j = pt.Y;
 
-			if (ReflectionPoints.Contains(new(i, j - 1)) && WorldGen.SolidOrSlopedTile(i, j - 1))
+			if (ReflectionPoints.Contains(new(i, j - 1)))
 				continue;
 
 			var t = Main.tile[i, j];
