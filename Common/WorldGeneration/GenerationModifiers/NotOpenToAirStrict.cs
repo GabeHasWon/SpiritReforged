@@ -15,7 +15,7 @@ public class NotOpenOrWalled() : GenAction
 		return UnitApply(origin, x, y, args);
 	}
 
-	private static bool TileIsExposedToOpenAir(int x, int y)
+	public static bool TileIsExposedToOpenAir(int x, int y)
 	{
 		if (!WorldGen.InWorld(x, y, 2))
 			return false;
