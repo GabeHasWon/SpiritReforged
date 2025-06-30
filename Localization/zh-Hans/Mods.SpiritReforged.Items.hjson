@@ -2049,5 +2049,5 @@ HardlightVisor: {
 	DisplayName: 强光面甲
 	Tooltip: ""
 	AltDisplayName: 硬光面甲
-	AltTooltip: "“请勿与强光面甲混淆”"
+	AltTooltip: “请勿与强光面甲混淆”
 }
