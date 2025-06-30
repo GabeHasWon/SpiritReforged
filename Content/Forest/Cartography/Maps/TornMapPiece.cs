@@ -1,7 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Cartography.Maps;
@@ -35,6 +37,10 @@ public class TornMapPiece : ModItem
 
 	public override bool? UseItem(Player player)
 	{
+		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
+		var rooms = ZigguratMicropass.GenerateBase(pos.X, pos.Y);
+		ZigguratMicropass.PopulateRooms(rooms);
+		return true;
 		const int Radius = 170;
 
 		if (Main.myPlayer == player.whoAmI && !Main.dedServ)
