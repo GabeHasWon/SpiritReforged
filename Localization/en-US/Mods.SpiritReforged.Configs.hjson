@@ -1,5 +1,5 @@
-ReforgeClientConfig: {
-	DisplayName: Reforge Client Config
+ReforgedClientConfig: {
+	DisplayName: Reforged Client Config
 
 	OceanShape: {
 		Label: Ocean Shape
@@ -11,12 +11,12 @@ ReforgeClientConfig: {
 			'''
 	}
 
-	SurfaceWaterTransparency: {
-		Label: Surface Water Transparency
+	ReflectionDetail: {
+		Label: Reflection Detail
 		Tooltip:
 			'''
-			Allows for transparent ocean water when on
-			This does not affect any other biome
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
 			'''
 	}
 }
@@ -47,4 +47,17 @@ ReforgedServerConfig: {
 		Label: Floating Item Cap
 		Tooltip: Determines how many floating items can be active in the world at one time.
 	}
+}
+
+Details: {
+	Tooltip: ""
+	Background.Label: Background
+	Tiles.Label: Tiles
+	Water.Label: Water
+	NPCs.Label: N P Cs
+	Gores.Label: Gores
+	Dusts.Label: Dusts
+	Items.Label: Items
+	Projectiles.Label: Projectiles
+	Players.Label: Players
 }

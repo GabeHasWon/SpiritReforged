@@ -42,6 +42,15 @@ public class ModTarget2D : ILoadable
 		Targets.Add(this);
 	}
 
+	/// <summary> Resizes <see cref="Target"/> to <paramref name="size"/>. Automatically queued on the main thread. </summary>
+	public void Resize(Vector2 size) => Main.QueueMainThreadAction(() =>
+	{
+		var gd = Main.instance.GraphicsDevice;
+
+		Target.Dispose();
+		Target = new RenderTarget2D(gd, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+	});
+
 	/// <summary> Draws the contents of <see cref="DrawInto(SpriteBatch)"/> and automatically handles <paramref name="spriteBatch"/> modes.<br/>
 	/// Check <see cref="Active"/> before calling this method. </summary>
 	public virtual void Prepare(SpriteBatch spriteBatch) //You don't normally need to override this

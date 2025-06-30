@@ -6,7 +6,6 @@ using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Content.Ocean.Items;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Utilities;
-using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Ocean;
@@ -22,7 +21,7 @@ public class OceanGeneration : ModSystem
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-        if (ModContent.GetInstance<ReforgeClientConfig>().OceanShape != OceanShape.Default)
+        if (ModContent.GetInstance<ReforgedClientConfig>().OceanShape != OceanShape.Default)
         {
             int beachIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Beaches")); //Replace beach gen
             if (beachIndex != -1)
@@ -462,7 +461,7 @@ public class OceanGeneration : ModSystem
 	/// <param name="tilesFromInnerEdge"></param>
 	private static float GetOceanSlope(int tilesFromInnerEdge)
 	{
-		OceanShape shape = ModContent.GetInstance<ReforgeClientConfig>().OceanShape;
+		OceanShape shape = ModContent.GetInstance<ReforgedClientConfig>().OceanShape;
 
 		if (shape == OceanShape.SlantedSine)
 		{
