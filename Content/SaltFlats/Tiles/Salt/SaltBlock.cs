@@ -78,7 +78,9 @@ public class SaltBlockReflective : SaltBlock
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		SaltBlockVisuals.ReflectionPoints.Add(new(i, j));
+		if (SaltBlockVisuals.Enabled)
+			SaltBlockVisuals.ReflectionPoints.Add(new(i, j));
+
 		return true;
 	}
 }
