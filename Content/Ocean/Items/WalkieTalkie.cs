@@ -1,0 +1,160 @@
+﻿using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
+using Terraria.Audio;
+
+namespace SpiritReforged.Content.Ocean.Items;
+
+public class WalkieTalkie : ModItem
+{
+	public static readonly SoundStyle Static = new("SpiritReforged/Assets/SFX/Item/RadioStatic")
+	{
+		Volume = 0.7f,
+		PitchVariance = 0.15f
+	};
+
+	[WorldBound]
+	internal static bool Paging;
+	internal static bool DidCompleteQuest;
+
+	#region detours
+	public override void Load()
+	{
+		On_Player.Update += ForceChatText;
+		On_Main.GUIChatDrawInner += PreventQuestCompletion;
+		On_Lang.AnglerQuestChat += ModifyQuestDialogue;
+	}
+
+	/// <summary> Forces NPC dialogue to persist even when the player is out of range of the NPC. </summary>
+	private static void ForceChatText(On_Player.orig_Update orig, Player self, int i)
+	{
+		if (Paging)
+		{
+			int oldTalkNPC = self.talkNPC;
+			string oldChatText = Main.npcChatText;
+			int oldChatCornerItem = Main.npcChatCornerItem;
+
+			orig(self, i);
+
+			self.SetTalkNPC(oldTalkNPC);
+			Main.npcChatText = oldChatText;
+			Main.npcChatCornerItem = oldChatCornerItem;
+
+			if (Main.LocalPlayer.controlInv || Main.npcChatText == string.Empty || Main.LocalPlayer.TalkNPC?.type != NPCID.Angler)
+				Paging = false;
+
+			return;
+		}
+
+		orig(self, i);
+	}
+
+	/// <summary> Prevents angler quest completion when paging by pretending the player has already completed it. </summary>
+	private static void PreventQuestCompletion(On_Main.orig_GUIChatDrawInner orig, Main self)
+	{
+		if (Paging)
+		{
+			DidCompleteQuest = Main.anglerQuestFinished;
+			Main.anglerQuestFinished = true;
+
+			orig(self);
+
+			Main.anglerQuestFinished = DidCompleteQuest;
+			DrawIcon(new Vector2(Main.screenWidth / 2 - 250, 110));
+
+			return;
+		}
+
+		orig(self);
+	}
+
+	private static void DrawIcon(Vector2 position)
+	{
+		var sb = Main.spriteBatch;
+		var icon = TextureAssets.Item[ModContent.ItemType<WalkieTalkie>()].Value;
+		var outline = TextureColorCache.ColorSolid(icon, Color.White);
+
+		for (int i = 0; i < 4; i++)
+		{
+			Vector2 offset = i switch
+			{
+				1 => new(0, -2),
+				2 => new(2, 0),
+				3 => new(0, 2),
+				_ => new(-2, 0)
+			};
+
+			sb.Draw(outline, position + offset, null, Color.Black * 0.25f, 0, icon.Size() / 2, 1, default, 0);
+		}
+
+		sb.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, 1, default, 0);
+	}
+
+	/// <summary> Prevents quest completion dialogue from <see cref="PreventQuestCompletion"/>. </summary>
+	private string ModifyQuestDialogue(On_Lang.orig_AnglerQuestChat orig, bool turnIn)
+	{
+		string value = orig(turnIn);
+
+		if (Paging && !DidCompleteQuest)
+		{
+			int id = Main.npcChatCornerItem = Main.anglerQuestItemNetIDs[Main.anglerQuest];
+			value = Language.GetTextValueWith("AnglerQuestText.Quest_" + ItemID.Search.GetName(id), Lang.CreateDialogSubstitutionObject());
+
+			if (Main.LocalPlayer.HasItem(id))
+			{
+				value = value.Insert(value.LastIndexOf('\n'), $"\n{Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Angler.Pager0")}\n");
+			}
+			else if (Main.rand.NextBool())
+			{
+				value = value.Insert(value.LastIndexOf('\n'), $"\n{Language.GetTextValue("Mods.SpiritReforged.NPCs.VanillaDialogue.Angler.Pager1")}\n");
+			}
+		}
+
+		return value;
+	}
+	#endregion
+
+	public override void SetStaticDefaults() => PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
+	{
+		if (player.anglerQuestsFinished == 3) //Guaranteed on the 3rd completed quest
+			rewardItems.Add(new Item(Type));
+	};
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 32;
+		Item.useAnimation = Item.useTime = 10;
+		Item.maxStack = 1;
+		Item.autoReuse = false;
+		Item.useTurn = true;
+		Item.rare = ItemRarityID.Green;
+		Item.useStyle = ItemUseStyleID.HiddenAnimation;
+		Item.noUseGraphic = true;
+		Item.value = Item.sellPrice(silver: 10);
+	}
+
+	public override bool? UseItem(Player player)
+	{
+		if (!Main.dedServ && player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
+		{
+			SoundEngine.PlaySound(SoundID.Mech, player.Center);
+
+			if (NPC.FindFirstNPC(NPCID.Angler) is int whoAmI && whoAmI != -1)
+			{
+				player.SetTalkNPC(whoAmI);
+				Main.npcChatText = Main.npc[whoAmI].GetChat();
+
+				Paging = true;
+				SoundEngine.PlaySound(Static, player.Center);
+				
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return null;
+	}
+}
