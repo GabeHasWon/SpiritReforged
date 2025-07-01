@@ -6,6 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -51,6 +52,25 @@ public class Flarepowder : ModItem
 		orig(ref drawinfo);
 	}
 
+	/// <summary> Drops <see cref="Flarepowder"/> from all pots in addition to normal items. </summary>
+	private static void AddPotLoot(int i, int j, int type, ref bool fail, ref bool effectOnly)
+	{
+		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
+			return;
+
+		int chance = (i < Main.rockLayer) ? 17 : 0;
+		if (chance > 0 && Main.rand.NextBool(chance))
+		{
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<Flarepowder>(), Main.rand.Next(10, 21));
+		}
+
+		bool IsTopLeft()
+		{
+			var tile = Main.tile[i, j];
+			return tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
+		}
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 99;
@@ -65,6 +85,7 @@ public class Flarepowder : ModItem
 		if (!IsDerived)
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
+			TileEvents.AddKillTileAction(TileID.Pots, AddPotLoot);
 		}
 
 		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
