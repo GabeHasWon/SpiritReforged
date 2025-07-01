@@ -62,7 +62,7 @@ public class SaltBlockVisuals : ILoadable
 
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
-		var texture = GradientMap.Value;
+		var gradient = GradientMap.Value;
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -72,25 +72,26 @@ public class SaltBlockVisuals : ILoadable
 			if (ReflectionPoints.Contains(new(i, j - 1)))
 				continue;
 
-			var t = Main.tile[i, j];
+			Rectangle source = new(0, 0, gradient.Width, gradient.Height);
+			Tile t = Main.tile[i, j];
+
 			if (t.IsHalfBlock)
 			{
-				spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), null, Color.White, 0, Vector2.Zero, 1, default, 0);
+				spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), source, Color.White, 0, Vector2.Zero, 1, default, 0);
 				continue;
 			}
 			else if (t.Slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight)
 			{
 				for (int x = 0; x < 8; x++)
 				{
-					//Does not account for upside-down slopes
 					Vector2 position = (t.Slope == SlopeType.SlopeDownLeft) ? new(2 * x, 2 * x) : new(2 * (7 - x), 2 * x);
-					spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + position, new Rectangle(0, 0, 2, texture.Height), Color.White, 0, Vector2.Zero, 1, default, 0);
+					spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, 1, default, 0);
 				}
 
 				continue;
 			}
 
-			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, default, 0);
+			spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition, source, Color.White, 0, Vector2.Zero, 1, default, 0);
 		}
 	}
 
@@ -138,7 +139,6 @@ public class SaltBlockVisuals : ILoadable
 			DrawBG(Main.instance);
 
 			spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
-			//spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
 			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 			spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 		}

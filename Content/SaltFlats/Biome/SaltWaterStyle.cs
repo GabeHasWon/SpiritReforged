@@ -8,16 +8,20 @@ namespace SpiritReforged.Content.SaltFlats.Biome;
 
 public class SaltWaterStyle : ModWaterStyle
 {
+	public static readonly Asset<Texture2D> RainTexture = DrawHelpers.RequestLocal(typeof(SaltWaterStyle), "SaltRain", false);
+
+	public static int StyleSlot { get; private set; }
+	public override void SetStaticDefaults() => StyleSlot = Slot;
+
 	#region visuals
 	public static ModTarget2D WaterTarget { get; } = new(IsActive, DrawAndHandleWaterTarget);
 	public static ModTarget2D OverlayTarget { get; } = new(IsActive, DrawOverlayTarget);
 
-	public static int StyleSlot { get; private set; }
+	
 	private static Vector2 Origin;
 
 	public static bool IsActive() => Main.waterStyle == StyleSlot;
 
-	public override void SetStaticDefaults() => StyleSlot = Slot;
 	public override void Load()
 	{
 		WaterAlpha.OnWaterColor += ColorWater;
@@ -46,6 +50,9 @@ public class SaltWaterStyle : ModWaterStyle
 			{
 				var position = Origin + new Vector2(noise.Width * scale * (x - scroll), noise.Height * scale * (y - scroll));
 				spriteBatch.Draw(noise, position - screenPos, null, (Color.White * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
+
+				var position2 = Origin + new Vector2(noise.Width * scale * (x + scroll), noise.Height * scale * (y + scroll));
+				spriteBatch.Draw(noise, position2 - screenPos, null, (Color.White * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
 			}
 		}
 	}
@@ -69,24 +76,24 @@ public class SaltWaterStyle : ModWaterStyle
 	{
 		if (IsActive())
 		{
-			const float alpha = 0.7f;
 			const int size = 400 * 2; //Relates to the draw dimensions of the noise texture
 
 			Origin = new Vector2((int)(Main.screenPosition.X / size), (int)(Main.screenPosition.Y / size)) * size;
 			Color tint = Color.LightPink;
 
-			colors.BottomLeftColor = (colors.BottomLeftColor.MultiplyRGB(tint) * alpha).Additive(230);
-			colors.BottomRightColor = (colors.BottomRightColor.MultiplyRGB(tint) * alpha).Additive(230);
+			//Apply vertex colors
+			colors.BottomLeftColor = colors.BottomLeftColor.MultiplyRGB(tint);
+			colors.BottomRightColor = colors.BottomRightColor.MultiplyRGB(tint);
 
 			if (Framing.GetTileSafely(x, y - 1).LiquidAmount == 0)
 			{
-				colors.TopLeftColor = (colors.TopLeftColor.MultiplyRGB(tint) * 1.5f * alpha).Additive(230);
-				colors.TopRightColor = (colors.TopRightColor.MultiplyRGB(tint) * 1.5f * alpha).Additive(230);
+				colors.TopLeftColor = colors.TopLeftColor.MultiplyRGB(tint) * 1.5f;
+				colors.TopRightColor = colors.TopRightColor.MultiplyRGB(tint) * 1.5f;
 			}
 			else
 			{
-				colors.TopLeftColor = (colors.TopLeftColor.MultiplyRGB(tint) * alpha).Additive(230);
-				colors.TopRightColor = (colors.TopRightColor.MultiplyRGB(tint) * alpha).Additive(230);
+				colors.TopLeftColor = colors.TopLeftColor.MultiplyRGB(tint);
+				colors.TopRightColor = colors.TopRightColor.MultiplyRGB(tint);
 			}
 
 			return true;
@@ -99,5 +106,6 @@ public class SaltWaterStyle : ModWaterStyle
 	public override int ChooseWaterfallStyle() => ModContent.GetInstance<SaltWaterfallStyle>().Slot;
 	public override int GetSplashDust() => DustID.Water;
 	public override int GetDropletGore() => GoreID.WaterDrip;
-	public override Color BiomeHairColor() => Color.White;
+	public override Asset<Texture2D> GetRainTexture() => RainTexture;
+	public override Color BiomeHairColor() => Color.Pink;
 }
