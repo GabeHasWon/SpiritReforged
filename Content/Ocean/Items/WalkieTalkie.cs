@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
+using System.Linq;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Ocean.Items;
@@ -156,5 +157,19 @@ public class WalkieTalkie : ModItem
 		}
 
 		return null;
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		if (!NPC.AnyNPCs(NPCID.Angler)) //Display whether the angler exists
+		{
+			int index = tooltips.IndexOf(tooltips.FirstOrDefault(x => x.Mod == "Terraria" && x.Name == "Tooltip0"));
+			TooltipLine tooltip = new(Mod, "Deactivated", Language.GetTextValue("Mods.SpiritReforged.Items.WalkieTalkie.Disabled"));
+
+			if (index == -1)
+				tooltips.Add(tooltip);
+			else
+				tooltips.Insert(index + 1, tooltip);
+		}
 	}
 }
