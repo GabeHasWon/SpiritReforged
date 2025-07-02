@@ -55,7 +55,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 	public override bool IsTreeTop(int i, int j)
 	{
-		if (ModContent.GetModTile(Main.tile[i, j].TileType) is not AcaciaTree || ModContent.GetModTile(Main.tile[i, j - 1].TileType) is AcaciaTree)
+		if (!WorldGen.InWorld(i, j) || ModContent.GetModTile(Main.tile[i, j].TileType) is not AcaciaTree || ModContent.GetModTile(Main.tile[i, j - 1].TileType) is AcaciaTree)
 			return false;
 
 		return Main.tile[i, j].TileFrameX <= FrameSize * 5;
