@@ -5,80 +5,37 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration;
 
-public class WorldMethods
+public static class WorldMethods
 {
 	/// <summary> Whether the world is being generated or <see cref="UpdaterSystem"/> is running a generation task. </summary>
 	public static bool Generating => WorldGen.generatingWorld || UpdaterSystem.RunningTask;
 
-	internal static int FindNearestBelow(int x, int y)
+	/// <summary> Scans up, then down for the nearest surface tile. </summary>
+	/// <returns> Whether the coordinates are within world bounds. </returns>
+	public static bool FindGround(int i, ref int j)
 	{
-		while (!WorldGen.SolidTile(x, y))
-			y++;
-
-		return y - 1;
-	}
-
-	internal static int FindNearestAbove(int x, int y)
-	{
-		while (!WorldGen.SolidTile(x, y))
+		const int padding = 20;
+		while (j > padding && WorldGen.SolidOrSlopedTile(i, j - 1))
 		{
-			y--;
-
-			if (y < 10)
-				return 10;
+			if (--j == padding) //Move up
+				return false;
 		}
 
-		return y;
-	}
-
-	/// <summary> Scans up, then down for the nearest surface tile. </summary>
-	public static int FindGround(int i, ref int j)
-	{
-		while (j > 20 && WorldGen.SolidOrSlopedTile(i, j - 1))
-			j--; //Up
-
-		while (j < Main.maxTilesY - 20 && !WorldGen.SolidOrSlopedTile(i, j))
-			j++; //Down
-
-		return j;
-	}
-
-	/// <summary> Scans up, then down for the nearest surface tile. </summary>
-	public static int FindGround(int i, int j)
-	{
-		while (j > 20 && WorldGen.SolidOrSlopedTile(i, j - 1))
-			j--; //Up
-
-		while (j < Main.maxTilesY - 20 && !WorldGen.SolidOrSlopedTile(i, j))
-			j++; //Down
-
-		return j;
-	}
-
-	/// <summary> Scans up, then down for the nearest surface tile. Breaks if near any world edge and returns false. </summary>
-	public static bool SafeFindGround(int i, ref int j)
-	{
-		while (WorldGen.SolidOrSlopedTile(i, j - 1))
+		while (j < Main.maxTilesY - padding && !WorldGen.SolidOrSlopedTile(i, j))
 		{
-			if (!WorldGen.InWorld(i, j, 5))
-			{
+			if (++j == Main.maxTilesY - padding) //Move down
 				return false;
-			}
-
-			j--; //Up
-		}
-
-		while (!WorldGen.SolidOrSlopedTile(i, j))
-		{
-			if (!WorldGen.InWorld(i, j, 5))
-			{
-				return false;
-			}
-
-			j++; //Down
 		}
 
 		return true;
+	}
+
+	/// <summary><inheritdoc cref="FindGround(int, ref int)"/></summary>
+	/// <returns> The final coordinate Y. </returns>
+	public static int FindGround(int i, int j)
+	{
+		FindGround(i, ref j);
+		return j;
 	}
 
 	public static void CragSpike(int X, int Y, int length, int height, ushort type2, float slope, float sloperight)
@@ -95,7 +52,7 @@ public class WorldMethods
 			{
 				Tile tile2 = Main.tile[I, Y + level];
 				tile2.HasTile = true;
-				Main.tile[I, (Y + level)].TileType = type2;
+				Main.tile[I, Y + level].TileType = type2;
 			}
 		}
 	}
@@ -150,26 +107,19 @@ public class WorldMethods
 		return true;
 	}
 
-	public static bool AdjacentOpening(int x, int y)
-	{
-		for (int i = x - 1; i < x + 2; ++i)
-			for (int j = y - 1; j < y + 2; ++j)
-				if (!WorldGen.SolidTile(i, j) && (i != x || j != y))
-					return true;
-		return false;
-	}
-
+	public static readonly int[] CloudTypes = [TileID.Cloud, TileID.RainCloud, TileID.SnowCloud];
 	public static bool CloudsBelow(int x, int y, out int addY)
 	{
 		const int scanDistance = 30;
-		HashSet<int> types = [TileID.Cloud, TileID.RainCloud, TileID.SnowCloud];
 
 		for (int i = 0; i < scanDistance; i++)
-			if (Main.tile[x, y + i].HasTile && types.Contains(Main.tile[x, y + i].TileType))
+		{
+			if (Main.tile[x, y + i].HasTile && CloudTypes.Contains(Main.tile[x, y + i].TileType))
 			{
 				addY = scanDistance;
 				return true;
 			}
+		}
 
 		addY = 0;
 		return false;
@@ -230,5 +180,89 @@ public class WorldMethods
 		}
 
 		generated = currentCount;
+	}
+
+	public static void ApplyTileArea(GenDelegate del, Rectangle area)
+	{
+		for (int x = area.X; x < area.X + area.Width; x++)
+			for (int y = area.Y; y < area.Y + area.Height; y++)
+				del.Invoke(x, y);
+	}
+
+	public static void ApplyTileArea(GenDelegate del, int startX, int endX, int startY, int endY) => ApplyTileArea(del, new Rectangle(startX, startY, endX - startX, endY - startY));
+
+	/// <summary> Calls <paramref name="del"/> for each connected air tile originating from the given coordinates. Using <paramref name="limit"/> is recommended. </summary>
+	/// <param name="limit"> An optional limit on how far to scan. </param>
+	public static void ApplyOpenArea(GenDelegate del, int i, int j, Rectangle limit = default)
+	{
+		if (limit != default) //Adjust limit to adhere to world bounds if necessary
+		{
+			limit.X = Math.Clamp(limit.X, 20, Main.maxTilesX - 20);
+			limit.Y = Math.Clamp(limit.Y, 20, Main.maxTilesY - 20);
+
+			if (limit.BottomLeft().X > Main.maxTilesX - 20)
+				limit.Width = Main.maxTilesX - 20 - limit.X;
+
+			if (limit.BottomLeft().Y > Main.maxTilesY - 20)
+				limit.Height = Main.maxTilesY - 20 - limit.Y;
+		}
+
+		HashSet<Point16> points = [];
+
+		ScanX(i, j); //Start the feedback loop
+
+		foreach (var pt in points)
+			del.Invoke(pt.X, pt.Y);
+
+		bool ScanX(int x, int y)
+		{
+			bool any = false;
+
+			for (int s = 0; s < 2; s++)
+			{
+				int _x = x;
+				int _y = y;
+
+				while (Contained(_x, _y) && !Main.tile[_x, _y].HasTile)
+				{
+					any |= points.Add(new(x, y));
+
+					if (any)
+						ScanY(_x, _y);
+
+					_x += (s == 0) ? 1 : -1;
+				}
+			}
+
+			return any;
+		}
+
+		bool ScanY(int x, int y)
+		{
+			bool any = false;
+
+			for (int s = 0; s < 2; s++)
+			{
+				int _x = x;
+				int _y = y;
+
+				while (Contained(_x, _y) && !Main.tile[_x, _y].HasTile)
+				{
+					any |= points.Add(new(x, y));
+
+					if (any)
+						ScanX(_x, _y);
+
+					_y += (s == 0) ? 1 : -1;
+				}
+			}
+
+			return any;
+		}
+
+		bool Contained(int x, int y)
+		{
+			return limit == default || limit.Contains(x, y);
+		}
 	}
 }
