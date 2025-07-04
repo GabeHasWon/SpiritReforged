@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Pottery;
@@ -81,6 +82,16 @@ public partial class SpiritReforgedMod : Mod
 				case "AddSavannaTree":
 					{
 						return ConversionCalls.AddSavannaTree(args[1..]);
+					}
+				case "PlayerBotanist":
+					{
+						if (args.Length != 2)
+							throw new ArgumentException("PlayerBotanist parameters should be 2 elements long: (\"PlayerBotanist\", Player)");
+
+						if (args[1] is not Player player)
+							throw new ArgumentException("PlayerBotanist parameter 1 should be a Player.");
+
+						return BotanistHat.SetActive(args[1] as Player);
 					}
 				default:
 					{

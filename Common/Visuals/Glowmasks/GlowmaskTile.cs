@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using System.Linq;
 using Terraria.GameContent.Drawing;

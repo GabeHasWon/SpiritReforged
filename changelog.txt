@@ -1,2 +1,10 @@
-v0.1.2
-Full changelogs here: https://docs.google.com/document/d/1hQy9bllCJ50X96P9DW9_8_b8U2pj4RlAgaPc6Rxo-wk/edit?usp=sharing
+v0.1.2.1
+- Updated Chinese localization
+- Fixed Acacia platforms causing timeouts when trying to sync in multiplayer
+- Added Flarepowder to surface and underground pot drop pools
+- Fixed tooltip inconsistencies for Radon and Oganesson mosses
+- Added Potion of Return as a decorative Potion Vat potion with the color, in RGB, 129, 111, 179
+- Fixed herbs not showing as their full stage with the Botanist armor set's highlight
+- Changed Botanist highlight to green for visibility
+- Added basic wind sway to Botanist armor set highlights (but not push)
+- Added "PlayerBotanist" Mod Call to allow for crossmod herb highlighting
