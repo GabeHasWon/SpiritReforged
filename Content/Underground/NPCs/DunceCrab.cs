@@ -171,7 +171,7 @@ public class DunceCrab : ModNPC
 	{
 		if (NPC.collideY || NPC.velocity.Y == 0)
 		{
-			if ((State)Animation != State.Flail)
+			if ((State)Animation != State.Flail && !Main.dedServ)
 			{
 				Collision.HitTiles(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
@@ -184,6 +184,12 @@ public class DunceCrab : ModNPC
 
 			ChangeState(State.Flail);
 			NPC.velocity = Vector2.Zero;
+
+			if (!Collision.SolidCollision(NPC.BottomLeft, NPC.width, 8)) // Fall if not actually embedded
+			{
+				ChangeState(State.Fall);
+				NPC.velocity.Y = 0.1f;
+			}
 		}
 		else
 		{

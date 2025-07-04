@@ -34,7 +34,12 @@ public class BombCannon : ModItem
 
 	public override void SetStaticDefaults()
 	{
-		ItemEvents.CreateItemDefaults(item => item.ammo = ItemID.Bomb, AmmoBombIDs);
+		ItemEvents.CreateItemDefaults(item =>
+		{
+			item.ammo = ItemID.Bomb;
+			item.notAmmo = true;
+		}, AmmoBombIDs);
+
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
 		MoRHelper.AddElement(Item, MoRHelper.Explosive, true);
 	}
