@@ -58,3 +58,10 @@ Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hikeremote
 }
+
+InfoDisplays: {
+	ScryingLensInfoDisplay: {
+		DisplayName: Scrying Lens
+		ShowingShimmer: Showing shimmer tooltips
+	}
+}

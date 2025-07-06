@@ -1,0 +1,40 @@
+﻿using System.Linq;
+using Terraria.DataStructures;
+
+namespace SpiritReforged.Common.NPCCommon;
+
+internal class SlimeItemDatabase : GlobalNPC
+{
+	public readonly struct ConditionalLoot(Func<NPC, bool> condition, float chance, int item)
+	{
+		public readonly Func<NPC, bool> Condition = condition;
+		public readonly int Item = item;
+		public readonly float Chance = chance;
+	}
+
+	private static readonly List<ConditionalLoot> LootToAdd = [];
+
+	public static Func<NPC, bool> MatchId(params int[] types) => (npc) => types.Contains(npc.netID);
+	public static Func<NPC, bool> MatchId(int type) => (npc) => type == npc.netID;
+
+	public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.type is NPCID.BlueSlime; // All other slimes are netID variants
+
+	/// <summary>
+	/// Adds the given loot to the database. This should only be run in <see cref="ModType.SetStaticDefaults"/>.
+	/// </summary>
+	/// <param name="loot">Loot to add.</param>
+	public static void AddLoot(ConditionalLoot loot) => LootToAdd.Add(loot);
+
+	public override void OnSpawn(NPC npc, IEntitySource source)
+	{
+		foreach (var loot in LootToAdd)
+		{
+			if (loot.Condition(npc) && Main.rand.NextFloat() < loot.Chance)
+			{
+				npc.ai[1] = loot.Item;
+				npc.netUpdate = true;
+				return;
+			}
+		}
+	}
+}
