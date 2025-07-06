@@ -38,9 +38,8 @@ public class TornMapPiece : ModItem
 	public override bool? UseItem(Player player)
 	{
 		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		//var rooms = ZigguratMicropass.GenerateBase(pos.X, pos.Y);
-		var rooms = ZigguratMicropass.GenerateRooms(pos.X, pos.Y, new Terraria.WorldBuilding.ShapeData());
-		ZigguratMicropass.HorizontalConnectRooms(rooms);
+		ZigguratMicropass.GenerateZiggurat(pos.X, pos.Y);
+
 		return true;
 		const int Radius = 170;
 
