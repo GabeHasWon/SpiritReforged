@@ -7,6 +7,7 @@ using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Savanna.Items.Tools;
+using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Utilities;
@@ -109,6 +110,8 @@ public class AcaciaTree : CustomTree, ISetConversion
 		drop.Add(AutoContent.ItemType<Drywood>(), .8f);
 		drop.Add(ModContent.ItemType<LivingBaobabWand>(), .033f);
 		drop.Add(ModContent.ItemType<LivingBaobabLeafWand>(), .03f);
+		drop.Add(ModContent.NPCType<Sparrow>(), .1f);
+		drop.Add(NPCID.Bird, .1f);
 		drop.Add(ItemID.Acorn, .7f);
 
 		var position = new Vector2(i, j - 3) * 16;
