@@ -21,7 +21,7 @@ internal class Ledger : ModItem
 
 		c.EmitDelegate((int npcShop) => // This is only used to trick the game into showing the price.
 		{
-			if (Main.LocalPlayer.GetModPlayer<LedgerPlayer>().Enabled)
+			if (!Main.gameMenu && Main.LocalPlayer.GetModPlayer<LedgerPlayer>().Enabled)
 				return 1;
 
 			return npcShop;
