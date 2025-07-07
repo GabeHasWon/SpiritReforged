@@ -73,7 +73,7 @@ internal class ScryingLens : ModItem
 
 	public override void SetStaticDefaults()
 	{
-		SlimeItemDatabase.AddLoot(new SlimeItemDatabase.ConditionalLoot(SlimeItemDatabase.MatchId(NPCID.BlackSlime, NPCID.YellowSlime, NPCID.RedSlime), 0.01f, Type));
+		SlimeItemDatabase.AddLoot(new SlimeItemDatabase.ConditionalItem(SlimeItemDatabase.MatchId(NPCID.BlackSlime, NPCID.YellowSlime, NPCID.RedSlime), 0.01f, Type));
 		NPCLootDatabase.AddLoot(new NPCLootDatabase.ConditionalLoot(NPCLootDatabase.MatchId(NPCID.ShimmerSlime), ItemDropRule.Common(Type, 60)));
 	}
 
@@ -90,14 +90,12 @@ internal class ScryingPlayer : ModPlayer
 {
 	public bool Enabled = false;
 
-	public override void ResetInfoAccessories() => Enabled = true;
+	public override void ResetInfoAccessories() => Enabled = false;
 
 	public override void RefreshInfoAccessoriesFromTeamPlayers(Player otherPlayer)
 	{
 		if (otherPlayer.GetModPlayer<ScryingPlayer>().Enabled)
-		{
 			Enabled = true;
-		}
 	}
 }
 
@@ -149,7 +147,7 @@ internal class ScryingItem : GlobalItem
 			// Draw icon
 			var icon = TextureAssets.Item[ModContent.ItemType<ScryingLens>()].Value;
 			var position = new Vector2(line.X, line.Y) + new Vector2(10, 10 + (float)Math.Sin(Main.timeForVisualEffects / 80f) * 2f);
-			Main.spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, Math.Max(icon.Width, icon.Height) / 38f, default, 0);
+			Main.spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, Math.Max(icon.Width, icon.Height) / 64f, default, 0);
 
 			// Draw text
 			line.X += 16;

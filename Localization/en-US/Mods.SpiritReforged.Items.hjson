@@ -2085,6 +2085,16 @@ WalkieTalkie: {
 
 ScryingLens: {
 	DisplayName: Scrying Lens
-	Tooltip: "Allows you to see Shimmer transmutations "
+	Tooltip: Allows you to see Shimmer transmutations
 	ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
+}
+
+Ledger: {
+	DisplayName: Ledger
+	Tooltip: Allows you to see coin prices anywhere
+}
+
+MysticalCodex: {
+	DisplayName: Mystical Codex
+	Tooltip: ""
 }
