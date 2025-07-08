@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -10,7 +11,6 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.WorldBuilding;
-using static SpiritReforged.Content.Underground.Moss.Oganesson.OganessonPlants;
 
 namespace SpiritReforged.Content.SaltFlats;
 
@@ -90,7 +90,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Noise.SetFrequency(0.03f);
 
 		//Select the lowest of both neighboring biomes
-		AverageY = Math.Max(yLeft, yRight) + 1; //(int)MathHelper.Lerp(yLeft, yRight, 0.5f);
+		AverageY = Math.Max(yLeft, yRight) + 1;
 
 		for (int i = 0; i < 2; i++)
 			HillBorder((i == 0) ? xLeft : xRight, i == 0);
@@ -115,13 +115,12 @@ internal class SaltFlatsEcotone : EcotoneBase
 					continue;
 				}
 
-				int surface = GetSurfaceY(x, y);
+				int surface = GetSurfaceY(x);
 
 				if (surface == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
 					islands.Add(new(x, y - 1)); //Add an island position for later
 
 				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates
-															   //yMax++; //Continue looping down as long as there are empty tiles
 				{
 					const int fillLimit = 20;
 					WorldMethods.ApplyOpenArea(static (x, y) =>
@@ -163,7 +162,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static void HillBorder(int xCoord, bool left) //Linearly smooths neighboring biome heights to match the salt flat. Could be improved
 	{
 		int side = left ? -1 : 1;
-		int length = (GetSurfaceY(xCoord, 0) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) / 2;
+		int length = (GetSurfaceY(xCoord) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) / 2;
 
 		if (length < 2)
 			return;
@@ -184,7 +183,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 		void Clear(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			int depth = (int)MathHelper.Lerp(GetSurfaceY(x, y), end, (float)(x - xCoord) / length * side);
+			float progress = (float)(x - xCoord) / length * side;
+
+			int depth = (int)MathHelper.Lerp(GetSurfaceY(x), end, EaseFunction.EaseCubicInOut.Ease(progress));
 
 			while (y < depth)
 			{
@@ -237,5 +238,5 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	/// <summary> Gets a terrain Y value based on <see cref="AverageY"/>. </summary>
-	private static int GetSurfaceY(int x, int y) => AverageY + (int)(Noise.GetNoise(x, 600) * 2);
+	private static int GetSurfaceY(int x) => AverageY + (int)(Noise.GetNoise(x, 600) * 2);
 }
