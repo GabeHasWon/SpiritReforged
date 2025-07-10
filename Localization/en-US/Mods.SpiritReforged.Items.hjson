@@ -2076,3 +2076,9 @@ RedSandstoneBrickCrackedItem: {
 	DisplayName: Cracked Red Sandstone Brick
 	Tooltip: "'Still structurally sound!'"
 }
+
+WalkieTalkie: {
+	DisplayName: Walkie-Talkie
+	Tooltip: Allows you to talk to the Angler anywhere
+	Disabled: No one's around to respond...
+}

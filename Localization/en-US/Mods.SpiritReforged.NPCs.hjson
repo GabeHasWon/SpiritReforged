@@ -46,6 +46,11 @@ VanillaDialogue: {
 		Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
 		Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
 	}
+
+	Angler: {
+		Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
+		Pager1: Remember to bring me the fish IN PERSON.
+	}
 }
 
 Crinoid: {

@@ -1,23 +1,23 @@
-ReforgeClientConfig: {
-	DisplayName: Configuração do Cliente do Reforged
+ReforgedClientConfig: {
+	// DisplayName: Reforged Client Config
 
 	OceanShape: {
-		Label: Forma do Oceano
-		Tooltip:
+		// Label: Ocean Shape
+		/* Tooltip:
 			'''
-			Modifica a geração do oceano de algumas maneiras
-			O padrão é a geração Piecewise_V
-			A geração Piecewise_V é recomendada para jogatinas com o Espírito
-			'''
+			Modifies the Ocean generation in certain ways
+			Defaults to a Piecewise_V generation
+			The Piecewise_V generation is recommended for Spirit playthroughs
+			''' */
 	}
 
-	SurfaceWaterTransparency: {
-		Label: Transparência da Água da Superfície
-		Tooltip:
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
 			'''
-			Permite que a água do oceano seja transparente quando ativado
-			Isso não afeta nenhum outro bioma
-			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
 	}
 }
 

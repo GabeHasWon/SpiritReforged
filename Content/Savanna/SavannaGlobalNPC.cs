@@ -51,7 +51,10 @@ public class SavannaGlobalNPC : GlobalNPC
 				pool[NPCID.Vulture] = .009f; //Vultures can sometimes spawn, as a treat
 
 				if (Main.dayTime)
+				{
 					pool[NPCID.Bird] = .07f;
+					pool[NPCID.Grebe] = .03f;
+				}
 
 				return;
 			}
@@ -72,7 +75,11 @@ public class SavannaGlobalNPC : GlobalNPC
 			else if (!spawnInfo.Player.GetModPlayer<DustStorm.DustStormPlayer>().ZoneDustStorm)
 			{
 				pool[NPCID.Pinky] = .007f;
-				pool[NPCID.Bird] = .05f;
+				pool[NPCID.Bird] = .06f;
+				pool[NPCID.Grebe] = .03f;
+				pool[NPCID.OrangeDragonfly] = .04f;
+				pool[NPCID.YellowDragonfly] = .04f;
+				pool[NPCID.Scorpion] = .02f;
 			}
 
 			float odds = spawnInfo.Player.GetModPlayer<DustStorm.DustStormPlayer>().ZoneDustStorm ? .22f : .12f;
@@ -134,7 +141,7 @@ public class SavannaGlobalNPC : GlobalNPC
 
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
-		if ((npc.type == NPCID.Vulture || npc.type == NPCID.Bird || npc.type == ModContent.NPCType<Sparrow>()) && source is EntitySource_SpawnNPC)
+		if ((npc.type == NPCID.Vulture || npc.type == NPCID.Grebe || npc.type == NPCID.Bird || npc.type == ModContent.NPCType<Sparrow>()) && source is EntitySource_SpawnNPC)
 		{
 			//Move to an acacia treetop within 40 tiles when naturally spawned
 			var nearby = Tiles.AcaciaTree.AcaciaTree.Platforms.Where(x => x.Distance(npc.Center) < 16 * 40).OrderBy(x => x.Distance(npc.Center)).FirstOrDefault();

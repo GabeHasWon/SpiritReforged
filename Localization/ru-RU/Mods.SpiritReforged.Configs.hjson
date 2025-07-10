@@ -1,23 +1,23 @@
-ReforgeClientConfig: {
-	DisplayName: Клиентская конфигурация
+ReforgedClientConfig: {
+	// DisplayName: Reforged Client Config
 
 	OceanShape: {
-		Label: Генерация океана
-		Tooltip:
+		// Label: Ocean Shape
+		/* Tooltip:
 			'''
-			Изменяет генерацию океана различными способами
-			По умолчанию используется схема "Составная V"
-			Рекомендуется для прохождений с модом Spirit
-			'''
+			Modifies the Ocean generation in certain ways
+			Defaults to a Piecewise_V generation
+			The Piecewise_V generation is recommended for Spirit playthroughs
+			''' */
 	}
 
-	SurfaceWaterTransparency: {
-		Label: Прозрачность воды в океане
-		Tooltip:
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
 			'''
-			Позволяет сделать воду в океане прозрачной
-			Не влияет на другие биомы
-			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
 	}
 }
 
