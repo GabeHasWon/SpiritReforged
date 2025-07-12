@@ -2090,3 +2090,8 @@ MysticalCodex: {
 	// DisplayName: Mystical Codex
 	// Tooltip: ""
 }
+
+CommonPotsSavannaItem: {
+	// DisplayName: Savanna Pot
+	// Tooltip: ""
+}

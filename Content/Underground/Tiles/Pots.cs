@@ -167,18 +167,13 @@ public class Pots : PotTile, ILootTile
 
 		loot.Add(new OneFromRulesRule(1, [.. branch]));
 
-		int TorchType()
+		int TorchType() => styleName switch
 		{
-			int result = styleName switch
-			{
-				"PotCorruption" => ItemID.CorruptTorch,
-				"PotCrimson" => ItemID.CrimsonTorch,
-				"PotJungle" => ItemID.JungleTorch,
-				"PotDesert" => ItemID.DesertTorch,
-				_ => ItemID.Torch
-			};
-
-			return result;
-		}
+			"PotCorruption" => ItemID.CorruptTorch,
+			"PotCrimson" => ItemID.CrimsonTorch,
+			"PotJungle" => ItemID.JungleTorch,
+			"PotDesert" => ItemID.DesertTorch,
+			_ => ItemID.Torch
+		};
 	}
 }
