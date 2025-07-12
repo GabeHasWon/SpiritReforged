@@ -1,10 +1,6 @@
-v0.1.2.1
-- Updated Chinese localization
-- Fixed Acacia platforms causing timeouts when trying to sync in multiplayer
-- Added Flarepowder to surface and underground pot drop pools
-- Fixed tooltip inconsistencies for Radon and Oganesson mosses
-- Added Potion of Return as a decorative Potion Vat potion with the color, in RGB, 129, 111, 179
-- Fixed herbs not showing as their full stage with the Botanist armor set's highlight
-- Changed Botanist highlight to green for visibility
-- Added basic wind sway to Botanist armor set highlights (but not push)
-- Added "PlayerBotanist" Mod Call to allow for crossmod herb highlighting
+v0.1.2.2
+- Made all bombs not show up as ammo, not go into ammo slots
+- Fixed Finger Blaster issue in mp
+- Fixed Dunce Crabs embedding into air if the ground under them is mined out
+- Fixed Dunce Crabs being desynced by a server issue
+- Stopped ShareMouseData packet from noting sync in mp, spamming log

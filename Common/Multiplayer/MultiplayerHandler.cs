@@ -28,7 +28,9 @@ internal class MultiplayerHandler : ILoadable
 
 		if (PacketTypes.TryGetValue(id, out var data))
 		{
-			SpiritReforgedMod.Instance.Logger.Debug("[Synchronization] Reading incoming: " + data.GetType().Name);
+			if (data.Log)
+				SpiritReforgedMod.Instance.Logger.Debug("[Synchronization] Reading incoming: " + data.GetType().Name);
+
 			data.OnReceive(reader, whoAmI);
 		}
 		else

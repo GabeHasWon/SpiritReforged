@@ -7,6 +7,11 @@ namespace SpiritReforged.Common.Multiplayer;
 /// Must include a parameterless constructor for initialization purposes. </summary>
 internal abstract class PacketData
 {
+	/// <summary>
+	/// Whether this packet will be logged. True by default.
+	/// </summary>
+	public virtual bool Log => true;
+
 	/// <summary> This must be called after creating a new packet instance in order for it to be sent. </summary>
 	public void Send(int toClient = -1, int ignoreClient = -1)
 	{

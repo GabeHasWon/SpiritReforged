@@ -8,6 +8,7 @@ public class MudBomb : ModItem
 	{
 		Item.CloneDefaults(ItemID.DirtBomb);
 		Item.shoot = ModContent.ProjectileType<MudBombProjectile>();
+		Item.notAmmo = true;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.Bomb).AddIngredient(ItemID.MudBlock, 25).Register();
