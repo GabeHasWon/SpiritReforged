@@ -27,8 +27,8 @@ Wayfarer:
 	打破罐子时会获得移动速度增益
 	挖掘矿石时会获得挖掘速度增益
 	'''
-/* Granite:
+Granite:
 	'''
-	Double tap {0} to stomp
-	Hitting the ground releases a shockwave that scales with height
-	''' */
+	双击{0}键进行践踏
+	撞击地面时会释放随高度变化的冲击波
+	'''

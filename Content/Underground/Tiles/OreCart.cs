@@ -83,6 +83,9 @@ public class OreCarts : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
+		if (Main.dedServ)
+			return;
+
 		int style = frameX / FrameWidth;
 		EffectsByStyle(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 48, 32), Vector2.Zero, style);
 	}
