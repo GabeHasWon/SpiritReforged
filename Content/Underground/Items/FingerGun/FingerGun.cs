@@ -93,7 +93,7 @@ public class FingerGunArmManager : ModPlayer
 		// and tends to look almost 1:1 unless you really stare at it.
 		Vector2 mouse = Main.myPlayer == Player.whoAmI ? Main.MouseWorld : PlayerMouseHandler.MouseByWhoAmI[Player.whoAmI];
 
-		if (Player.ItemAnimationJustStarted) // Spawn these here instead of in ModifyShootStats since this runs on all clients
+		if (Player.ItemAnimationJustStarted && !Main.dedServ) // Spawn these here instead of in ModifyShootStats since this runs on all clients
 		{
 			Vector2 velocity = Player.DirectionTo(mouse) * Player.HeldItem.shootSpeed;
 			Vector2 handPos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
