@@ -46,6 +46,9 @@ internal class SavannaEcotone : EcotoneBase
 		{
 			type = (ushort)ModContent.TileType<CommonPots>();
 			style = WorldGen.genRand.Next(6, 9);
+
+			WorldGen.PlaceTile(x, y, type, true, style: style);
+			return Main.tile[x, y].TileType == type; //Skips orig
 		}
 
 		return orig(x, y, type, style);

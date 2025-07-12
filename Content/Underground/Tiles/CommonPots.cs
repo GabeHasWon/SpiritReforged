@@ -72,20 +72,23 @@ public class CommonPots : PotTile, ILootTile
 		WorldGen.CheckPot(i, j);
 		t.TileFrameY = oldFrameY;
 
-		if (style == 1)
+		if (TileObjectData.IsTopLeft(i, j))
 		{
-			for (int g = 1; g < 5; g++)
+			if (style == 1)
 			{
-				int goreType = Mod.Find<ModGore>("Granite" + g).Type;
-				Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+				for (int g = 1; g < 5; g++)
+				{
+					int goreType = Mod.Find<ModGore>("Granite" + g).Type;
+					Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+				}
 			}
-		}
-		else if (style == 2)
-		{
-			for (int g = 1; g < 4; g++)
+			else if (style == 2)
 			{
-				int goreType = Mod.Find<ModGore>("Savanna" + g).Type;
-				Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+				for (int g = 1; g < 4; g++)
+				{
+					int goreType = Mod.Find<ModGore>("Savanna" + g).Type;
+					Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+				}
 			}
 		}
 	}
