@@ -33,7 +33,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
 	{
-		const int offX = EcotoneSurfaceMapping.TransitionLength * 2 + 1; //Removes forest patches on the left side
+		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 
 		bounds = (0, 0);
 		int spawn = Main.maxTilesX / 2;
@@ -111,33 +111,33 @@ internal class SaltFlatsEcotone : EcotoneBase
 			while (y < yMax)
 			{
 				int type = (y < AverageY + depth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
-
 				if (WorldMethods.CloudsBelow(x, y, out int addY))
 				{
 					y += addY;
 					continue;
 				}
 
-				int surface = GetSurfaceY(x);
-
-				if (surface == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
+				if (GetSurfaceY(x) == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
 					islands.Add(new(x, y - 1)); //Add an island position for later
 
 				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates
 				{
-					const int fillLimit = 20;
-					WorldMethods.ApplyOpenArea(static (x, y) =>
+					const int fillLimit = 30;
+					WorldMethods.ApplyOpenArea((i, j) =>
 					{
-						var t = Main.tile[x, y];
-						t.HasTile = true;
-						t.TileType = (ushort)ModContent.TileType<SaltBlockDull>();
-						t.Slope = SlopeType.Solid;
+						if (j > GetSurfaceY(i) && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f)
+						{
+							var t = Main.tile[i, j];
+							t.HasTile = true;
+							t.TileType = (ushort)ModContent.TileType<SaltBlockDull>();
+							t.Slope = SlopeType.Solid;
+						}
 
 						return false;
 					}, x, y, new Rectangle(x - fillLimit / 2, y - fillLimit / 2, fillLimit, fillLimit));
 				}
 
-				SetTile(x, y++, surface, type, type == ModContent.TileType<SaltBlockReflective>());
+				SetTile(x, y++, GetSurfaceY(x), type, type == ModContent.TileType<SaltBlockReflective>());
 			}
 		}
 
@@ -165,7 +165,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static void HillBorder(int xCoord, bool left) //Smooths neighboring biome heights using an ease function
 	{
 		int side = left ? -1 : 1;
-		int length = (GetSurfaceY(xCoord) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) / 2;
+		int length = (int)((GetSurfaceY(xCoord) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) * WorldGen.genRand.NextFloat(0.6f, 0.9f));
 
 		if (length < 2)
 			return;
@@ -188,7 +188,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
 			float progress = (float)(x - xCoord) / length * side;
 
-			int depth = (int)MathHelper.Lerp(GetSurfaceY(x), end, EaseFunction.EaseCubicInOut.Ease(progress));
+			int depth = (int)MathHelper.Lerp(GetSurfaceY(x), end, EaseFunction.EaseCircularInOut.Ease(progress));
 
 			while (y < depth)
 			{
