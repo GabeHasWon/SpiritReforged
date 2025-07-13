@@ -1,35 +1,15 @@
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
 public class RadonMossItem : OganessonMossItem
 {
-	public override bool? UseItem(Player player)
+	public override int GetPlaceType(int tileType) => tileType switch
 	{
-		var tile = player.TargetTile();
-		if (tile.TileType == TileID.Stone)
-		{
-			TryPlace(ModContent.TileType<RadonMoss>());
-			return true;
-		}
-		else if (tile.TileType == TileID.GrayBrick)
-		{
-			TryPlace(ModContent.TileType<RadonMossGrayBrick>());
-			return true;
-		}
+		TileID.GrayBrick => ModContent.TileType<RadonMossGrayBrick>(),
+		TileID.Stone => ModContent.TileType<RadonMoss>(),
+		_ => -1
+	};
 
-		return null;
-
-		static void TryPlace(int type)
-		{
-			WorldGen.PlaceTile(Player.tileTargetX, Player.tileTargetY, type, forced: true);
-			var t = Main.tile[Player.tileTargetX, Player.tileTargetY];
-
-			if (t.TileType == type && Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendTileSquare(-1, Player.tileTargetX, Player.tileTargetY);
-		}
-	}
-
-	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, .252f, .228f, .03f);
+	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, 0.252f, 0.228f, 0.03f);
 }

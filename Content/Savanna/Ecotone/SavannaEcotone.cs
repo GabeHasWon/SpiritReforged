@@ -9,6 +9,7 @@ using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -42,7 +43,13 @@ internal class SavannaEcotone : EcotoneBase
 	private static bool ConvertPot(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
 	{
 		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(x, y)))
-			style = WorldGen.genRand.Next(7, 10); //Jungle pots
+		{
+			type = (ushort)ModContent.TileType<CommonPots>();
+			style = WorldGen.genRand.Next(6, 9);
+
+			WorldGen.PlaceTile(x, y, type, true, style: style);
+			return Main.tile[x, y].TileType == type; //Skips orig
+		}
 
 		return orig(x, y, type, style);
 	}
@@ -279,6 +286,7 @@ internal class SavannaEcotone : EcotoneBase
 		}
 
 		for (int i = SavannaArea.Left; i < SavannaArea.Right; ++i)
+		{
 			for (int j = SavannaArea.Top - 1; j < SavannaArea.Bottom; ++j)
 			{
 				OpenFlags flags = OpenTools.GetOpenings(i, j, false, false, true);
@@ -312,6 +320,7 @@ internal class SavannaEcotone : EcotoneBase
 				if (WorldGen.genRand.NextBool(120)) //Rare bones
 					WorldGen.PlaceTile(i, j - 1, TileID.LargePiles2, true, style: WorldGen.genRand.Next(52, 55));
 			}
+		}
 
 		if (WorldGen.genRand.NextBool(3))
 			Campsite();
@@ -333,7 +342,9 @@ internal class SavannaEcotone : EcotoneBase
 					treeOdds = chanceMax;
 				}
 				else
+				{
 					treeOdds = Math.Max(treeOdds - 1, 2); //Decrease the odds every time a tree fails to generate
+				}
 			}
 		}
 	}

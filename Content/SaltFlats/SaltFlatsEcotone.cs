@@ -15,6 +15,8 @@ namespace SpiritReforged.Content.SaltFlats;
 
 internal class SaltFlatsEcotone : EcotoneBase
 {
+	public const int SurfaceNoiseLength = 2;
+
 	[WorldBound]
 	public static Rectangle SaltArea;
 
@@ -199,6 +201,12 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (y < baseLine)
 		{
 			t.ClearEverything();
+
+			if (y == AverageY)
+			{
+				t.LiquidAmount = 255;
+				t.LiquidType = LiquidID.Water;
+			}
 		}
 		else
 		{
@@ -212,5 +220,5 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	/// <summary> Gets a terrain Y value based on <see cref="AverageY"/>. </summary>
-	private static int GetSurfaceY(int x, int y) => AverageY + (int)(Noise.GetNoise(x, 600) * 2);
+	private static int GetSurfaceY(int x, int y) => AverageY + (int)(Noise.GetNoise(x, 600) * SurfaceNoiseLength);
 }

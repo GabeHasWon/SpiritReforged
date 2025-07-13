@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -11,6 +12,9 @@ public class SaltBlockVisuals : ILoadable
 {
 	public static readonly Asset<Texture2D> GradientMap = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "GradientMap"));
 
+	public static bool Enabled => Lighting.NotRetro && Detail > 0;
+	public static int Detail => ModContent.GetInstance<ReforgedClientConfig>().ReflectionDetail;
+
 	public static bool Drawing { get; private set; }
 	public static readonly HashSet<Point16> ReflectionPoints = [];
 
@@ -20,6 +24,18 @@ public class SaltBlockVisuals : ILoadable
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawPlayers_AfterProjectiles")]
 	private static extern void DrawPlayers_AfterProjectiles(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawPlayers_BehindNPCs")]
+	private static extern void DrawPlayers_BehindNPCs(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawProjectiles")]
+	private static extern void DrawProjectiles(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawDust")]
+	private static extern void DrawDust(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawGore")]
+	private static extern void DrawGore(Main main);
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawNPCs")]
 	private static extern void DrawNPCs(Main main, bool behindTiles = false);
@@ -46,35 +62,36 @@ public class SaltBlockVisuals : ILoadable
 
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
-		var texture = GradientMap.Value;
+		var gradient = GradientMap.Value;
 
 		foreach (var pt in ReflectionPoints)
 		{
 			int i = pt.X;
 			int j = pt.Y;
 
-			if (ReflectionPoints.Contains(new(i, j - 1)) && WorldGen.SolidOrSlopedTile(i, j - 1))
+			if (ReflectionPoints.Contains(new(i, j - 1)))
 				continue;
 
-			var t = Main.tile[i, j];
+			Rectangle source = new(0, 0, gradient.Width, gradient.Height);
+			Tile t = Main.tile[i, j];
+
 			if (t.IsHalfBlock)
 			{
-				spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), null, Color.White, 0, Vector2.Zero, 1, default, 0);
+				spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), source, Color.White, 0, Vector2.Zero, 1, default, 0);
 				continue;
 			}
 			else if (t.Slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight)
 			{
 				for (int x = 0; x < 8; x++)
 				{
-					//Does not account for upside-down slopes
 					Vector2 position = (t.Slope == SlopeType.SlopeDownLeft) ? new(2 * x, 2 * x) : new(2 * (7 - x), 2 * x);
-					spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + position, new Rectangle(0, 0, 2, texture.Height), Color.White, 0, Vector2.Zero, 1, default, 0);
+					spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, 1, default, 0);
 				}
 
 				continue;
 			}
 
-			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, default, 0);
+			spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition, source, Color.White, 0, Vector2.Zero, 1, default, 0);
 		}
 	}
 
@@ -113,22 +130,44 @@ public class SaltBlockVisuals : ILoadable
 		//Draw the actual contents
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
-		Main.tileBatch.Begin();
-		Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
-		Main.tileBatch.End();
+		if (Detail > 1)
+		{
+			Main.tileBatch.Begin();
+			Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
+			Main.tileBatch.End();
 
-		DrawBG(Main.instance);
+			DrawBG(Main.instance);
 
-		spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
-		//spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
-		spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-		spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+			spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+			spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+		}
 
 		DrawNPCs(Main.instance);
 
+		if (Detail > 2)
+		{
+			DrawGore(Main.instance);
+			Main.instance.DrawItems();
+		}
+
 		spriteBatch.End();
 
+		if (Detail > 2)
+		{
+			DrawDust(Main.instance);
+			DrawProjectiles(Main.instance);
+		}
+
+		DrawPlayers_BehindNPCs(Main.instance);
 		DrawPlayers_AfterProjectiles(Main.instance);
+
+		if (Detail > 1)
+		{
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
+			spriteBatch.End();
+		}
 
 		gd.SetRenderTarget(null);
 
@@ -140,19 +179,23 @@ public class SaltBlockVisuals : ILoadable
 		if (!Drawing || ReflectionTarget.Target is null || MapTarget.Target is null || TileTarget.Target is null)
 			return;
 
+		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"];
+		var n = AssetLoader.LoadedTextures["supPerlin"].Value;
+
 		s.Parameters["mapTexture"].SetValue(MapTarget);
-		s.Parameters["distortionTexture"].SetValue(AssetLoader.LoadedTextures["supPerlin"].Value);
+		s.Parameters["distortionTexture"].SetValue(n);
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 
 		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
-		s.Parameters["fade"].SetValue(3f);
-		s.Parameters["distortMult"].SetValue(new Vector2(1));
-		s.Parameters["distortStrength"].SetValue(new Vector2(0.3f, 0));
+		s.Parameters["fade"].SetValue(lowDetail ? 10f : 3f);
+		s.Parameters["distortionScale"].SetValue(new Vector2((float)n.Width / Main.screenWidth, (float)n.Height / Main.screenHeight));
+		s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
+		s.Parameters["distortionPower"].SetValue(1);
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = Main.ColorOfTheSkies.Additive(220) * 0.9f; //(Main.LocalPlayer.InModBiome<SaltBiome>() ? new Color(255, 190, 200, 220) : Main.ColorOfTheSkies.Additive(220)) * 0.9f;
+		Color tint = lowDetail ? Color.Black * 0.5f : Main.ColorOfTheSkies.Additive(220) * 0.9f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

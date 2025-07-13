@@ -53,10 +53,11 @@ public readonly struct LootTable() : ILoot
 	{
 		if (RecordHandler.ActionByType.TryGetValue(type, out var action))
 		{
-			Tile t = new(); //Fabricate a tile. If this method is called in KillMultiTile, the tile at (i, j) is unusable
+			Tile t = new(); //Fabricate a temporary tile
 			t.TileFrameX = (short)frameX;
 			t.TileFrameY = (short)frameY;
 			t.TileType = type;
+			t.HasTile = true; //HasTile must be true for GetTileStyle to work
 
 			var data = TileObjectData.GetTileData(t); //data can be null here
 			Point size = new(data?.Width ?? 2, data?.Height ?? 2);
