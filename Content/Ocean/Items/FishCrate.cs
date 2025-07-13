@@ -1,6 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.FloatingItem;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Desert.Tiles.CactiVariants;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ocean.Items;
@@ -19,13 +20,14 @@ public class FishCrate : FloatingItem
 		Item.height = 20;
 		Item.rare = ItemRarityID.Blue;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.createTile = ModContent.TileType<FishCrateTile>();
+		//Item.createTile = ModContent.TileType<FishCrateTile>();
 		Item.maxStack = Item.CommonMaxStack;
 		Item.autoReuse = true;
 		Item.useAnimation = 15;
 		Item.useTime = 10;
 		Item.consumable = true;
 		Item.value = Item.sellPrice(gold: 1);
+		Item.createTile = ModContent.TileType<BunnyEarCacti>();
 	}
 
 	public override bool CanRightClick() => true;
