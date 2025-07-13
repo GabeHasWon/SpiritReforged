@@ -50,7 +50,7 @@ public class WalkieTalkie : ModItem
 		orig(self, i);
 	}
 
-	/// <summary> Prevents angler quest completion when paging by pretending the player has already completed it. </summary>
+	/// <summary> Prevents angler quest completion when paging by pretending the player has already completed it, in addition to drawing a custom text icon using <see cref="DrawIcon(Vector2)"/>. </summary>
 	private static void PreventQuestCompletion(On_Main.orig_GUIChatDrawInner orig, Main self)
 	{
 		if (Paging)

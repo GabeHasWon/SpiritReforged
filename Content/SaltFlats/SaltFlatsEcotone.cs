@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
@@ -161,7 +162,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		}
 	}
 
-	private static void HillBorder(int xCoord, bool left) //Linearly smooths neighboring biome heights to match the salt flat. Could be improved
+	private static void HillBorder(int xCoord, bool left) //Smooths neighboring biome heights using an ease function
 	{
 		int side = left ? -1 : 1;
 		int length = (GetSurfaceY(xCoord) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) / 2;
@@ -241,7 +242,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		bool CanPlace()
 		{
 			int type = t.TileType;
-			return TileID.Sets.GeneralPlacementTiles[type] || type == TileID.Ebonstone || type == TileID.Crimstone;
+			return (TileID.Sets.GeneralPlacementTiles[type] || type == TileID.Ebonstone || type == TileID.Crimstone) && !SpiritSets.DungeonWall[t.WallType];
 		}
 	}
 
