@@ -162,6 +162,13 @@ public class SaltBlockVisuals : ILoadable
 		DrawPlayers_BehindNPCs(Main.instance);
 		DrawPlayers_AfterProjectiles(Main.instance);
 
+		if (Detail > 1)
+		{
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
+			spriteBatch.End();
+		}
+
 		gd.SetRenderTarget(null);
 
 		Main.GameViewMatrix.Zoom = storedZoom;
@@ -174,15 +181,17 @@ public class SaltBlockVisuals : ILoadable
 
 		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"];
+		var n = AssetLoader.LoadedTextures["supPerlin"].Value;
 
 		s.Parameters["mapTexture"].SetValue(MapTarget);
-		s.Parameters["distortionTexture"].SetValue(AssetLoader.LoadedTextures["supPerlin"].Value);
+		s.Parameters["distortionTexture"].SetValue(n);
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 
 		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
 		s.Parameters["fade"].SetValue(lowDetail ? 10f : 3f);
-		s.Parameters["distortMult"].SetValue(new Vector2(1));
-		s.Parameters["distortStrength"].SetValue(new Vector2(0.3f, 0));
+		s.Parameters["distortionScale"].SetValue(new Vector2((float)n.Width / Main.screenWidth, (float)n.Height / Main.screenHeight));
+		s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
+		s.Parameters["distortionPower"].SetValue(1);
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 

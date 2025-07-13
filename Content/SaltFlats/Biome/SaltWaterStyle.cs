@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria;
 using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -42,7 +43,7 @@ public class SaltWaterStyle : ModWaterStyle
 		var screenPos = Main.screenPosition;
 
 		float scroll = (float)Main.timeForVisualEffects / 4000f % 1;
-		float opacity = 0.9f + (float)Math.Sin(Main.timeForVisualEffects / 100f) * 0.2f;
+		float opacity = 0.9f + (float)Math.Sin(Main.timeForVisualEffects / 100f) * 0.3f;
 
 		for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
 		{
@@ -79,22 +80,21 @@ public class SaltWaterStyle : ModWaterStyle
 			const int size = 400 * 2; //Relates to the draw dimensions of the noise texture
 
 			Origin = new Vector2((int)(Main.screenPosition.X / size), (int)(Main.screenPosition.Y / size)) * size;
-			Color tint = Color.LightPink;
 
 			//Apply vertex colors
-			colors.BottomLeftColor = colors.BottomLeftColor.MultiplyRGB(tint);
-			colors.BottomRightColor = colors.BottomRightColor.MultiplyRGB(tint);
-
 			if (Framing.GetTileSafely(x, y - 1).LiquidAmount == 0)
 			{
-				colors.TopLeftColor = colors.TopLeftColor.MultiplyRGB(tint) * 1.5f;
-				colors.TopRightColor = colors.TopRightColor.MultiplyRGB(tint) * 1.5f;
+				colors.TopLeftColor *= 1.5f;
+				colors.TopRightColor *= 1.5f;
 			}
-			else
-			{
-				colors.TopLeftColor = colors.TopLeftColor.MultiplyRGB(tint);
-				colors.TopRightColor = colors.TopRightColor.MultiplyRGB(tint);
-			}
+
+			float str = 0.1f;
+			float waveStr = 0.2f;
+
+			WaterAlpha.ColorClamp(ref colors.TopLeftColor, x, y, str, waveStr);
+			WaterAlpha.ColorClamp(ref colors.TopRightColor, x + 1, y, str, waveStr);
+			WaterAlpha.ColorClamp(ref colors.BottomLeftColor, x, y + 1, str, waveStr);
+			WaterAlpha.ColorClamp(ref colors.BottomRightColor, x + 1, y + 1, str, waveStr);
 
 			return true;
 		}
