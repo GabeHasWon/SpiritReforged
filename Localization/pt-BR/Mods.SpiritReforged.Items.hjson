@@ -2082,3 +2082,24 @@ WalkieTalkie: {
 	// Tooltip: Allows you to talk to the Angler anywhere
 	// Disabled: No one's around to respond...
 }
+
+ScryingLens: {
+	// DisplayName: Scrying Lens
+	// Tooltip: Allows you to see Shimmer transmutations
+	// ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
+}
+
+Ledger: {
+	// DisplayName: Ledger
+	// Tooltip: Allows you to see coin prices anywhere
+}
+
+MysticalCodex: {
+	// DisplayName: Mystical Codex
+	// Tooltip: ""
+}
+
+CommonPotsSavannaItem: {
+	// DisplayName: Savanna Pot
+	// Tooltip: ""
+}

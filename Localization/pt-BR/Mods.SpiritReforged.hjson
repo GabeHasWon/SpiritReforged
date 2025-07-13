@@ -56,5 +56,17 @@ GameTips: {
 
 Emotes: {
 	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	// HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	ScryingLensInfoDisplay: {
+		// DisplayName: Scrying Lens
+		// ShowingShimmer: Showing shimmer tooltips
+	}
+
+	LedgerInfoDisplay: {
+		// DisplayName: Ledger
+		// ShowingShimmer: Showing price tooltips
+	}
 }

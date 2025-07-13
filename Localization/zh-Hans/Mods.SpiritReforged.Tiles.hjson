@@ -21,12 +21,12 @@ Records: {
 	UpsideDown: `生产错误`
 	Worm: 被破坏时会掉出各种蠕虫。
 	Platter: 一份热腾腾的饭菜，随时可取。是谁落在这儿的呢？
-	// WickerBasket: A picnic, just for you!
+	WickerBasket: 一份野餐，只为你！
 	Aether: 提供各种实用又闪亮的升级物品。
 	Stuffed: 在这种地方遇到商人真奇怪，他们简直是自找麻烦。
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
-	// Boulder: Rolls along the ground when disturbed.
+	Boulder: 受到扰动时会沿着地面滚动。
 }
 
 SunkenTreasureTile.MapEntry: 沉没的宝藏
@@ -48,4 +48,4 @@ OreCarts.MapEntry: 矿车
 PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
 Starflower.MapEntry: 星状花
-// BonsaiTrees.MapEntry: Bonsai
+BonsaiTrees.MapEntry: 盆栽
