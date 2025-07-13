@@ -13,6 +13,7 @@ public abstract class ShiningAmber : ModTile
 		Main.tileMergeDirt[Type] = true;
 		Main.tileBlockLight[Type] = false;
 		Main.tileLighted[Type] = true;
+		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(Color.Orange);
 		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
