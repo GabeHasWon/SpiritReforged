@@ -8,9 +8,9 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.SaltFlats;
@@ -28,10 +28,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Pyramids") is int index && index != -1)
-			tasks.Insert(index, new PassLegacy("Salt Flats", BaseGeneration(entries)));
+			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(out (int, int) bounds)
 	{
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 
@@ -40,36 +40,30 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SaltSeed>())
 		{
-			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
-			if (valid.Any())
+			var entry = EcotoneSurfaceMapping.FindWhere(x => x.Start.X < spawn && x.End.X > spawn);
+			if (entry != null)
 			{
-				var e = valid.First();
-				bounds = (e.Start.X - offX, e.End.X);
-
+				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
-
-			return false;
 		}
 		else
 		{
 			//Uniquely, salt flats cannot normally generate over spawn
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Snow") && !(x.Start.X < spawn && x.End.X > spawn) && Math.Abs(x.Start.Y - x.End.Y) < 120);
-			if (!validEntries.Any())
-				return false;
-
-			var entry = validEntries.ElementAt(WorldGen.genRand.Next(validEntries.Count()));
-			if (entry is null)
-				return false;
-
-			bounds = (entry.Start.X - offX, entry.End.X);
-			return true;
+			var entry = EcotoneSurfaceMapping.FindWhere("Desert", "Snow", x => !(x.Start.X < spawn && x.End.X > spawn));
+			if (entry != null)
+			{
+				bounds = (entry.Start.X - offX, entry.End.X);
+				return true;
+			}
 		}
+
+		return false;
 	}
 
-	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
+	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds))
+		if (!CanGenerate(out var bounds))
 			return;
 
 		//The strength of the sine for dull salt padding
@@ -145,7 +139,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
 
 		AddIslands(islands);
-	};
+	}
 
 	private static void AddIslands(IEnumerable<Point16> coords)
 	{

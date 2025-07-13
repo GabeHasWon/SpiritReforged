@@ -9,10 +9,10 @@ internal abstract class EcotoneBase : ILoadable
 	public void Load(Mod mod)
 	{
 		Ecotones.Add(this);
-		InternalLoad();
+		Load();
 	}
 
-	protected virtual void InternalLoad() { }
+	protected virtual void Load() { }
 	public void Unload() { }
 	public abstract void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries);
 }
