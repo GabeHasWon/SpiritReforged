@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -6,9 +8,9 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.SaltFlats;
@@ -26,52 +28,49 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Pyramids") is int index && index != -1)
-			tasks.Insert(index, new PassLegacy("Salt Flats", BaseGeneration(entries)));
+			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(out (int, int) bounds)
 	{
-		const int offX = EcotoneSurfaceMapping.TransitionLength * 2 + 1; //Removes forest patches on the left side
+		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 
 		bounds = (0, 0);
 		int spawn = Main.maxTilesX / 2;
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SaltSeed>())
 		{
-			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
-			if (valid.Any())
+			var entry = EcotoneSurfaceMapping.FindWhere(x => x.Start.X < spawn && x.End.X > spawn);
+			if (entry != null)
 			{
-				var e = valid.First();
-				bounds = (e.Start.X - offX, e.End.X);
-
+				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
-
-			return false;
 		}
 		else
 		{
 			//Uniquely, salt flats cannot normally generate over spawn
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Snow") && !(x.Start.X < spawn && x.End.X > spawn) && Math.Abs(x.Start.Y - x.End.Y) < 120);
-			if (!validEntries.Any())
-				return false;
-
-			var entry = validEntries.ElementAt(WorldGen.genRand.Next(validEntries.Count()));
-			if (entry is null)
-				return false;
-
-			bounds = (entry.Start.X - offX, entry.End.X);
-			return true;
+			var entry = EcotoneSurfaceMapping.FindWhere("Desert", "Snow", x => !(x.Start.X < spawn && x.End.X > spawn));
+			if (entry != null)
+			{
+				bounds = (entry.Start.X - offX, entry.End.X);
+				return true;
+			}
 		}
+
+		return false;
 	}
 
-	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
+	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds))
+		if (!CanGenerate(out var bounds))
 			return;
 
+		//The strength of the sine for dull salt padding
 		const float baseCurveStrength = 5;
-		const int baseDepth = 18;
+		//The base depth of reflective salt padding
+		const int baseDepth = 22;
+		//The percentage of space surrounding the salt flats that islands can occupy
 		const float islandMargin = 0.15f;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
@@ -88,7 +87,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Noise.SetFrequency(0.03f);
 
 		//Select the lowest of both neighboring biomes
-		AverageY = Math.Max(yLeft, yRight) + 1; //(int)MathHelper.Lerp(yLeft, yRight, 0.5f);
+		AverageY = Math.Max(yLeft, yRight) + 1;
 
 		for (int i = 0; i < 2; i++)
 			HillBorder((i == 0) ? xLeft : xRight, i == 0);
@@ -101,23 +100,38 @@ internal class SaltFlatsEcotone : EcotoneBase
 			int liningDepth = (int)((8 + (int)(Noise.GetNoise(x, 500) * 6)) * ((float)depth / baseDepth));
 
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
+			int yMax = AverageY + depth + liningDepth;
 
-			while (y < AverageY + depth + liningDepth)
+			while (y < yMax)
 			{
 				int type = (y < AverageY + depth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
-
 				if (WorldMethods.CloudsBelow(x, y, out int addY))
 				{
 					y += addY;
 					continue;
 				}
 
-				int surface = GetSurfaceY(x, y);
-
-				if (surface == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
+				if (GetSurfaceY(x) == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
 					islands.Add(new(x, y - 1)); //Add an island position for later
 
-				SetTile(x, y++, surface, type, type == ModContent.TileType<SaltBlockReflective>());
+				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates
+				{
+					const int fillLimit = 30;
+					WorldMethods.ApplyOpenArea((i, j) =>
+					{
+						if (j > GetSurfaceY(i) && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f)
+						{
+							var t = Main.tile[i, j];
+							t.HasTile = true;
+							t.TileType = (ushort)ModContent.TileType<SaltBlockDull>();
+							t.Slope = SlopeType.Solid;
+						}
+
+						return false;
+					}, x, y, new Rectangle(x - fillLimit / 2, y - fillLimit / 2, fillLimit, fillLimit));
+				}
+
+				SetTile(x, y++, GetSurfaceY(x), type, type == ModContent.TileType<SaltBlockReflective>());
 			}
 		}
 
@@ -125,7 +139,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
 
 		AddIslands(islands);
-	};
+	}
 
 	private static void AddIslands(IEnumerable<Point16> coords)
 	{
@@ -138,42 +152,39 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			WorldUtils.Gen(new(c.X, c.Y + 1), new Shapes.Slime(halfWidth, 1, 0.25), Actions.Chain(new Modifiers.SkipTiles(skipTiles), new Actions.PlaceTile((ushort)ModContent.TileType<SaltBlockDull>())).Output(data));
 			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Actions.SetFrames(true), new Modifiers.Dither(0.2), new Modifiers.IsTouchingAir(), new Actions.Smooth()));
-			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Expand(1), new Modifiers.Dither(0.9), new Actions.Custom((i, j, args) =>
-			{
-				Placer.PlaceTile<Saltwort>(i, j);
-				return true;
-			})));
+			WorldUtils.Gen(new(c.X, c.Y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Expand(1), new Modifiers.Dither(0.9), new Actions.Custom((i, j, args) => Placer.PlaceTile<Saltwort>(i, j).success)));
 		}
 	}
 
-	private static void HillBorder(int xCoord, bool left) //Linearly smooths neighboring biome heights to match the salt flat. Could be improved
+	private static void HillBorder(int xCoord, bool left) //Smooths neighboring biome heights using an ease function
 	{
-		const int length = 25;
+		int side = left ? -1 : 1;
+		int length = (int)((GetSurfaceY(xCoord) - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) * WorldGen.genRand.NextFloat(0.6f, 0.9f));
+
+		if (length < 2)
+			return;
+
+		int end = EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + length * side)];
 
 		if (left)
 		{
 			for (int x = xCoord; x > xCoord - length; x--)
-			{
-				int y = (int)(Main.worldSurface * 0.35); //Sky height
-				int depth = (int)MathHelper.Lerp(GetSurfaceY(x, y), EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord - length)], -(float)(x - xCoord) / length);
-
-				Clear(x, y, depth);
-			}
+				Clear(x);
 		}
 		else
 		{
 			for (int x = xCoord; x < xCoord + length; x++)
-			{
-				int y = (int)(Main.worldSurface * 0.35); //Sky height
-				int depth = (int)MathHelper.Lerp(GetSurfaceY(x, y), EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + length)], (float)(x - xCoord) / length);
-
-				Clear(x, y, depth);
-			}
+				Clear(x);
 		}
 
-		static void Clear(int x, int y, int depth)
+		void Clear(int x)
 		{
-			while (y < depth + 3)
+			int y = (int)(Main.worldSurface * 0.35); //Sky height
+			float progress = (float)(x - xCoord) / length * side;
+
+			int depth = (int)MathHelper.Lerp(GetSurfaceY(x), end, EaseFunction.EaseCircularInOut.Ease(progress));
+
+			while (y < depth)
 			{
 				if (WorldMethods.CloudsBelow(x, y, out int addY))
 				{
@@ -181,10 +192,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 					continue;
 				}
 
-				if (y >= depth)
-					Main.tile[x, y].WallType = WallID.None;
-				else
-					Main.tile[x, y].ClearEverything();
+				Main.tile[x, y].ClearEverything();
+
+				//Clear walls in an expanded area
+				WorldMethods.ApplyTileArea(static (x, y) =>
+				{
+					Framing.GetTileSafely(x, y).WallType = WallID.None;
+					return false;
+				}, x - 1, y - 1, x + 1, y + 1);
 
 				y++;
 			}
@@ -195,7 +210,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	{
 		var t = Main.tile[x, y];
 
-		if (!TileID.Sets.GeneralPlacementTiles[t.TileType])
+		if (!CanPlace())
 			return;
 
 		if (y < baseLine)
@@ -217,8 +232,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 			if (clearWall)
 				t.WallType = WallID.None;
 		}
+
+		bool CanPlace()
+		{
+			int type = t.TileType;
+			return (TileID.Sets.GeneralPlacementTiles[type] || type == TileID.Ebonstone || type == TileID.Crimstone) && !SpiritSets.DungeonWall[t.WallType];
+		}
 	}
 
 	/// <summary> Gets a terrain Y value based on <see cref="AverageY"/>. </summary>
-	private static int GetSurfaceY(int x, int y) => AverageY + (int)(Noise.GetNoise(x, 600) * SurfaceNoiseLength);
+	private static int GetSurfaceY(int x) => AverageY + (int)(Noise.GetNoise(x, 600) * SurfaceNoiseLength);
 }

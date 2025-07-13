@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using Terraria.GameContent.Generation;
-using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
@@ -23,62 +21,84 @@ internal class EcotoneSurfaceMapping : ModSystem
 	}
 
 	public const int TransitionLength = 20;
+	public static bool Mapped => Entries.Count != 0;
 
-	internal static readonly HashSet<Point> TotalSurfacePoints = [];
 	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
+	private static List<EcotoneEntry> Entries = [];
 
-	private List<EcotoneEntry> Entries = [];
+	public override void ClearWorld()
+	{
+		TotalSurfaceY.Clear();
+		Entries.Clear();
+	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-		int mapIndex = tasks.FindIndex(x => x.Name == "Corruption");
-
-		if (mapIndex == -1)
-			return;
-
-		foreach (var ecotone in EcotoneBase.Ecotones)
-			ecotone.AddTasks(tasks, Entries);
-
-		tasks.Insert(mapIndex + 1, new PassLegacy("Map Ecotones", MapEcotones));
-
-//#if DEBUG
-//		tasks.Add(new PassLegacy("Ecotone Debug", (progress, config) =>
-//		{
-//			foreach (var item in Entries)
-//			{
-//				for (int x = item.Start.X; x < item.End.X; ++x)
-//				{
-//					for (int nY = 90; nY < 100; ++nY)
-//						WorldGen.PlaceTile(x, nY, item.Definition.DisplayId, true, true);
-//				}
-//			}
-//		}));
-//#endif
+		if (tasks.FindIndex(x => x.Name == "Corruption") is int index && index != -1)
+		{
+			foreach (var ecotone in EcotoneBase.Ecotones)
+				ecotone.AddTasks(tasks, Entries);
+		}
 	}
 
-	private void MapEcotones(GenerationProgress progress, GameConfiguration configuration)
+	/// <summary> Clears cached coordinates within the provided horizontal range and adjusts the range based on cleared ecotones. </summary>
+	private static void ClearRange(ref int start, ref int end)
 	{
-		const int StartX = 250;
+		if (start <= 0 && end >= Main.maxTilesX) //Avoid extra computations
+		{
+			Entries.Clear();
+			TotalSurfaceY.Clear();
 
-		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Ecotones");
+			return;
+		}
 
-		Entries.Clear();
-		TotalSurfacePoints.Clear();
-		TotalSurfaceY.Clear();
+		int _start = start;
+		int _end = end;
+
+		var entryRemovals = Entries.Where(x => x.SurfacePoints.Any(z => z.X >= _start && z.X <= _end)).ToHashSet();
+
+		foreach (var item in entryRemovals)
+		{
+			if (item.Start.X < start)
+				_start = start = item.Start.X;
+
+			if (item.End.X > end)
+				_end = end = item.End.X;
+
+			Entries.Remove(item);
+		}
+
+		var dictRemovals = TotalSurfaceY.Keys.Where(x => x >= _start && x <= _end).ToHashSet();
+
+		foreach (short item in dictRemovals)
+			TotalSurfaceY.Remove(item);
+	}
+
+	/// <summary> Maps ecotones spanning the entire world. Mapping should normally be done before finding an ecotone spawn location. </summary>
+	public static void MapEcotones() => MapEcotones(0, Main.maxTilesX);
+	/// <summary> Maps ecotones within the provided bounds. Mapping should normally be done before finding an ecotone spawn location. </summary>
+	public static void MapEcotones(int start, int end)
+	{
+		const int Fluff = 250;
+
+		ClearRange(ref start, ref end);
+
+		start = Math.Max(start, Fluff);
+		end = Math.Min(end, Main.maxTilesX - Fluff);
 
 		int transitionCount = 0;
 		EcotoneEntry entry = null;
 
-		for (int x = StartX; x < Main.maxTilesX - StartX; ++x)
+		for (int x = start; x < end; ++x)
 		{
 			int y = 80;
 
-			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out int addY))
-				y++;
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; //Skip over clouds
 
 			if (entry is null)
 			{
-				entry = new EcotoneEntry(new Point(StartX, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+				entry = new EcotoneEntry(new Point(Fluff, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
 				entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 			}
 
@@ -86,7 +106,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 				transitionCount++;
 
 			if (transitionCount > TransitionLength && EcotoneEdgeDefinitions.TryGetEcotoneByTile(Main.tile[x, y].TileType, out var def) && def.Name != entry.Definition.Name)
-			{ 
+			{
 				EcotoneEdgeDefinition old = entry.Definition;
 				entry.End = new Point(x, y);
 				entry.Right = def;
@@ -94,22 +114,46 @@ internal class EcotoneSurfaceMapping : ModSystem
 
 				if (x <= GenVars.leftBeachEnd || x >= GenVars.rightBeachStart)
 					def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-				
+
 				entry = new EcotoneEntry(new Point(x, y), def);
 				entry.Left = old;
 				transitionCount = 0;
 			}
 
-			entry.SurfacePoints.Add(new Point(x, y));
-			TotalSurfacePoints.Add(new Point(x, y));
-			TotalSurfaceY.Add((short)x, (short)y);
+			MapPoint(x, y, entry);
 
-			if (x == Main.maxTilesX - StartX - 1)
+			if (x == Main.maxTilesX - Fluff - 1)
 				entry.End = new Point(x, y);
 		}
 
 		entry.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 		Entries.Add(entry);
-		Entries = new(Entries.OrderBy(x => x.Start.X));
+		Entries = [.. Entries.OrderBy(x => x.Start.X)];
+
+		static void MapPoint(int x, int y, EcotoneEntry entry)
+		{
+			entry.SurfacePoints.Add(new Point(x, y));
+			TotalSurfaceY.Add((short)x, (short)y);
+		}
 	}
+
+	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="predicate"/>.<para/>
+	/// Automatically remaps ecotones. </summary>
+	public static EcotoneEntry FindWhere(Func<EcotoneEntry, bool> predicate)
+	{
+		MapEcotones();
+
+		if (Entries.Where(predicate) is IEnumerable<EcotoneEntry> validEntries && validEntries.Any())
+		{
+			if (validEntries.OrderBy(x => Math.Abs(x.Start.X - x.End.X)).Last() is EcotoneEntry entry)
+				return entry;
+		}
+
+		return null;
+	}
+
+	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="defA"/> and <paramref name="defB"/>, in addition to some common conditions.<para/>
+	/// Automatically remaps ecotones. </summary>
+	public static EcotoneEntry FindWhere(string defA, string defB, Func<EcotoneEntry, bool> extraPredicate = null) => FindWhere(x => x.SurroundedBy(defA, defB)
+	&& extraPredicate?.Invoke(x) == true && Math.Abs(x.Start.Y - x.End.Y) < 120 && x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface);
 }

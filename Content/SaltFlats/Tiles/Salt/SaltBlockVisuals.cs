@@ -12,6 +12,7 @@ public class SaltBlockVisuals : ILoadable
 {
 	public static readonly Asset<Texture2D> GradientMap = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "GradientMap"));
 
+	/// <summary> Whether reflection detail is high enough to calculate. </summary>
 	public static bool Enabled => Lighting.NotRetro && Detail > 0;
 	public static int Detail => ModContent.GetInstance<ReforgedClientConfig>().ReflectionDetail;
 
@@ -62,7 +63,7 @@ public class SaltBlockVisuals : ILoadable
 
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
-		var gradient = GradientMap.Value;
+		var gradient = GradientMap.Value; //Map shader reflection depth and opacity in separate channels (TODO)
 
 		foreach (var pt in ReflectionPoints)
 		{

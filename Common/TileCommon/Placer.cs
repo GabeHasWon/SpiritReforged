@@ -6,6 +6,7 @@ namespace SpiritReforged.Common.TileCommon;
 
 public struct PlaceAttempt(bool success)
 {
+	/// <summary> Whether the last chained step has succeeded. </summary>
 	public bool success = success;
 	/// <summary> Can only be safely used if <see cref="success"/> is true. </summary>
 	public TileObject data;
