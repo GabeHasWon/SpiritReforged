@@ -9,6 +9,7 @@ public static class WorldMethods
 {
 	/// <summary> Whether the world is being generated or <see cref="UpdaterSystem"/> is running a generation task. </summary>
 	public static bool Generating => WorldGen.generatingWorld || UpdaterSystem.RunningTask;
+	public static readonly HashSet<int> CloudTypes = [TileID.Cloud, TileID.RainCloud, TileID.SnowCloud];
 
 	/// <summary> Scans up, then down for the nearest surface tile. </summary>
 	/// <returns> Whether the coordinates are within world bounds. </returns>
@@ -107,7 +108,6 @@ public static class WorldMethods
 		return true;
 	}
 
-	public static readonly int[] CloudTypes = [TileID.Cloud, TileID.RainCloud, TileID.SnowCloud];
 	public static bool CloudsBelow(int x, int y, out int addY)
 	{
 		const int scanDistance = 30;
