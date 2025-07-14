@@ -11,6 +11,9 @@ internal static class PlayerExtensions
 	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<EquipsPlayer>().equips[ModContent.GetInstance<TItem>().Name];
 	public static bool HasEquip(this Player player, int itemId) => HasEquip(player, ContentSamples.ItemsByType[itemId]);
 
+	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoPlayer>().info[itemName];
+	public static bool HasInfoItem<TItem>(this Player player) where TItem : InfoItem => player.GetModPlayer<InfoPlayer>().info[ModContent.GetInstance<TItem>().Name];
+
 	/// <summary> Checks whether the set bonus related to this item is active on <paramref name="player"/>.<br/>
 	/// <paramref name="ofType"/> must be of the instance that overrides <see cref="ModItem.IsArmorSet"/>. </summary>
 	public static bool WearingSet(this Player player, int ofType) => ItemLoader.GetItem(ofType).IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
