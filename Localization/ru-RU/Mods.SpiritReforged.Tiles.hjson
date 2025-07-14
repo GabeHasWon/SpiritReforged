@@ -49,4 +49,4 @@ PotionVats.MapEntry: Чан для зелий
 ObsidianShroom.MapEntry: Обсидиановый гриб
 Starflower.MapEntry: Звёздоцвет
 // BonsaiTrees.MapEntry: Bonsai
-// BunnyEarCacti.MapEntry: Mods.SpiritReforged.Tiles.BunnyEarCacti.MapEntry
+// BunnyEarCacti.MapEntry: "{ItemName.Cactus}"

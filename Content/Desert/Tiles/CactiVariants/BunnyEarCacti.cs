@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using System.Linq;
-using System.Web;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -43,19 +43,52 @@ internal class BunnyEarCacti : ModTile
 		{
 			BunnyEarCactiTE.Segment segment = bunny.Segments[k];
 			Rectangle src = new(0, 34 * segment.Style, 30, 32);
-			Vector2 position = new Vector2(i + segment.XOffset, j - segment.Layer * 2) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
+			Vector2 position = new Vector2(i + segment.XOffset, j - segment.Layer * 1.5f) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
 
 			if (segment.Alt)
 				position += new Vector2(-MathF.Sign(segment.XOffset) * 4, 16);
 
 			Point16 tilePos = (position + Main.screenPosition - TileExtensions.TileOffset).ToTileCoordinates16();
 			Color color = Lighting.GetColor(tilePos.X, tilePos.Y);
-			float baseRot = Main.instance.TilesRenderer.GetWindCycle(tilePos.X, tilePos.Y, TileSwaySystem.Instance.TreeWindCounter) * MathF.Min(segment.Layer / 3f, 1);
+			float baseRot = Main.instance.TilesRenderer.GetWindCycle(tilePos.X, tilePos.Y, TileSwaySystem.Instance.TreeWindCounter) * MathF.Min(segment.Layer / 2f, 1);
 			position.X += baseRot * 2f;
-			spriteBatch.Draw(tex, position + src.Size() / 2f, src, color, segment.Rotation + baseRot * 0.05f, src.Size() / 2f, new Vector2(1, 1), SpriteEffects.None, 0);
+			float rotation = segment.Rotation + baseRot * 0.05f;
+			Vector2 origin = src.Size() / 2f;
+			spriteBatch.Draw(tex, position + origin, src, color, rotation, origin, 1, SpriteEffects.None, 0);
+
+			if (segment.MiniTops != -1)
+				DrawTops(position, tex, segment, spriteBatch, rotation, origin, new Point16(tilePos.X, tilePos.Y - segment.Layer));
 		}
 
 		return false;
+	}
+
+	private void DrawTops(Vector2 position, Texture2D tex, BunnyEarCactiTE.Segment segment, SpriteBatch batch, float rotation, Vector2 origin, Point16 basePos)
+	{
+		int style = segment.MiniTops / 2;
+		int count = segment.MiniTops / 6 + 1;
+		var src = new Rectangle(32, 16 * style, 16, 16);
+
+		batch.Draw(tex, position + origin + (rotation - MathHelper.PiOver2).ToRotationVector2() * 22, src, Color.White, rotation, src.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+		if (count == 2)
+		{
+			float noise = NoiseSystem.PerlinStatic(basePos.X, basePos.Y);
+			style += (int)(noise * 30);
+			style %= 6;
+			src = new Rectangle(32, 16 * style, 16, 16);
+
+			if (noise >= 0.5f)
+			{
+				Vector2 secondTopPos = position + origin + (rotation - MathHelper.PiOver4).ToRotationVector2() * 20;
+				batch.Draw(tex, secondTopPos, src, Color.White, rotation + 1, src.Size() / 2f, 1f, SpriteEffects.None, 0);
+			}
+			else
+			{
+				Vector2 secondTopPos = position + origin + (rotation - MathHelper.PiOver4 * 3).ToRotationVector2() * 20;
+				batch.Draw(tex, secondTopPos, src, Color.White, rotation - 1, src.Size() / 2f, 1f, SpriteEffects.None, 0);
+			}
+		}
 	}
 
 	public class BunnyEarCactiTE : ModTileEntity
@@ -68,7 +101,7 @@ internal class BunnyEarCacti : ModTile
 		/// <param name="Layer"></param>
 		/// <param name="Top"></param>
 		/// <param name="Alt"></param>
-		public readonly record struct Segment(int Style, int XOffset, float Length, float Rotation, int Layer, bool Top, bool Alt);
+		public readonly record struct Segment(int Style, int XOffset, float Length, float Rotation, int Layer, bool Top, bool Alt, int MiniTops);
 
 		public List<Segment> Segments = [];
 		public List<Segment> Tops = [];
@@ -82,8 +115,8 @@ internal class BunnyEarCacti : ModTile
 		{
 			if (Segments.Count < 1)
 			{
-				Segments.Add(new Segment(Main.rand.NextBool(2) ? 2 : 5, 0, 1f, 0, 0, false, false));
-				Max = WorldGen.genRand.Next(3, 7);
+				Segments.Add(new Segment(Main.rand.NextBool(2) ? 2 : 5, 0, 1f, 0, 0, false, false, -1));
+				Max = Main.drunkWorld ? WorldGen.genRand.Next(2, 15) : WorldGen.genRand.Next(2, 4);
 				Layer++;
 			}
 
@@ -91,10 +124,8 @@ internal class BunnyEarCacti : ModTile
 			{
 				Tops.Clear();
 
-				if (AnchorId >= Segments.Count)
-				{
+				if (AnchorId >= Segments.Count) // Recalculate anchor ID if it was broken
 					AnchorId = Segments.IndexOf(Segments.Where(x => !x.Alt).MaxBy(x => x.Layer));
-				}
 
 				Segment segment = Segments[AnchorId];
 				int baseOffset = segment.XOffset;
@@ -136,9 +167,7 @@ internal class BunnyEarCacti : ModTile
 			float rotation = WorldGen.genRand.NextFloat(alt ? MathHelper.PiOver4 * 0.4f : 0f, MathHelper.PiOver4 * 0.7f);
 
 			if (top)
-			{
 				WorldGen.genRand.NextFloat(MathHelper.PiOver2 * -0.67f, MathHelper.PiOver2 * 0.67f);
-			}
 			else
 			{
 				if (xOffset == anchor.XOffset)
@@ -150,7 +179,8 @@ internal class BunnyEarCacti : ModTile
 					rotation *= 2;
 			}
 
-			var mainTop = new Segment(style, xOffset, WorldGen.genRand.NextFloat(1.1f, 1.5f), rotation, Layer, top, alt);
+			bool canHaveMini = top || xOffset != anchor.XOffset && WorldGen.genRand.NextBool(3);
+			var mainTop = new Segment(style, xOffset, WorldGen.genRand.NextFloat(1.1f, 1.5f), rotation, Layer, top, alt, canHaveMini ? WorldGen.genRand.Next(0, 12) : -1);
 
 			Tile tile = Main.tile[placePos];
 
@@ -172,7 +202,7 @@ internal class BunnyEarCacti : ModTile
 
 		private static int GetRandomDirection()
 		{
-			if (WorldGen.genRand.NextBool(4))
+			if (WorldGen.genRand.NextBool(6))
 				return 0;
 
 			return WorldGen.genRand.NextBool() ? -1 : 1;
@@ -210,6 +240,7 @@ internal class BunnyEarCacti : ModTile
 				segTag.Add("layer", (byte)Segments[i].Layer);
 				segTag.Add("top", Segments[i].Top);
 				segTag.Add("alt", Segments[i].Alt);
+				segTag.Add("miniTops", (byte)Segments[i].MiniTops);
 				tag.Add("segments" + i, segTag);
 			}
 		}
@@ -225,7 +256,7 @@ internal class BunnyEarCacti : ModTile
 			{
 				TagCompound s = tag.GetCompound("segments" + i);
 				Segments.Add(new Segment(s.GetByte("style"), s.GetByte("xOff"), s.GetFloat("length"), s.GetFloat("rot"), s.GetByte("layer"), s.GetBool("top"), 
-					s.GetBool("alt")));
+					s.GetBool("alt"), s.GetByte("miniTops")));
 			}
 		}
 	}
