@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Particles;

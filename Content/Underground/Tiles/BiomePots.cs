@@ -1,7 +1,7 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;

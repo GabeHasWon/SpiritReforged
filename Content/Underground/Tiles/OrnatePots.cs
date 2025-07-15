@@ -7,7 +7,7 @@ using Terraria.GameContent.ItemDropRules;
 using SpiritReforged.Common.ItemCommon;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
-using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon.Loot;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 

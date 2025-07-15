@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.WayfarerSet;
 using Terraria.DataStructures;

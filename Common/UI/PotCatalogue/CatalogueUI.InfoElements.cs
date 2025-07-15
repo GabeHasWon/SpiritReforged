@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.Misc.ILootTile;
+using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
 
@@ -69,7 +68,7 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (RecordHandler.GetLootPool(Selected.record.type) is LootDelegate action)
+		if (GetLootPool(Selected.record.type) is LootDelegate action)
 		{
 			var tableInst = new LootTable();
 			action.Invoke(new(Selected.record.styles[0]), tableInst);

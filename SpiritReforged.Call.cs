@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
@@ -63,7 +64,7 @@ public partial class SpiritReforgedMod : Mod
 					}
 				case "ModifyPotLoot":
 					{
-						return RecordHandler.ManualModifyLoot(args[1..]);
+						return ILootTile.ManualModifyLoot(args[1..]);
 					}
 				case "PotDiscovered":
 					{

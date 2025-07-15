@@ -1,7 +1,7 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Particles;

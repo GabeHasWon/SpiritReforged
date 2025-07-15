@@ -2,6 +2,7 @@ using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
@@ -57,7 +58,7 @@ public class RollingPots : PotTile, ILootTile
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, ModContent.ProjectileType<PotBoulder>(), damage, 5, ai0: style);
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => RecordHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
+	public void AddLoot(ILootTile.Context context, ILoot loot) => ILootTile.GetLootPool(ModContent.TileType<Pots>())?.Invoke(context, loot);
 }
 
 internal class PotBoulder : ModProjectile

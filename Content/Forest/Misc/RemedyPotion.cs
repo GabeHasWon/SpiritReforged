@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 
@@ -20,7 +20,7 @@ public class RemedyPotion : ModItem
 		Item.ResearchUnlockCount = 20;
 
 		//Register pot loot
-		RecordHandler.AddActionByType(static (context, loot) =>
+		ILootTile.RegisterLoot(static (context, loot) =>
 		{
 			int i = context.Coordinates.Y;
 			int chance = (i >= Main.UnderworldLayer || context.Simulated) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));

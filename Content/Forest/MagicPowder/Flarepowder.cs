@@ -6,9 +6,9 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using Terraria.Audio;
@@ -69,7 +69,7 @@ public class Flarepowder : ModItem
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
 
 			//Register pot loot
-			RecordHandler.AddActionByType(static (context, loot) =>
+			ILootTile.RegisterLoot(static (context, loot) =>
 			{
 				int chance = (context.Coordinates.Y < Main.rockLayer) ? 17 : 0;
 				

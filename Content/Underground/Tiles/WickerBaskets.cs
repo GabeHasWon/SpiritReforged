@@ -1,7 +1,7 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using SpiritReforged.Content.Savanna.Items.Food;

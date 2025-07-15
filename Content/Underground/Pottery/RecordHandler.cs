@@ -1,10 +1,8 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
-using static SpiritReforged.Common.Misc.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -16,43 +14,6 @@ public interface IRecordTile : INamedStyles
 public class RecordHandler : ModSystem
 {
 	public static readonly HashSet<TileRecord> Records = [];
-
-	#region loot
-	/// <summary> Stores delegate loot methods by tile type. </summary>
-	private static readonly Dictionary<int, LootDelegate> ActionByType = [];
-
-	public static LootDelegate GetLootPool(int tileType)
-	{
-		if (ActionByType.TryGetValue(tileType, out var pool))
-			return pool;
-
-		if (TileLoader.GetTile(tileType) is ILootTile t) //If the delegate wasn't registered yet due to load order, register it now. This is most likely an issue when using calls
-		{
-			LootDelegate del = t.AddLoot;
-
-			ActionByType.Add(tileType, del);
-			return del;
-		}
-
-		return null;
-	}
-
-	/// <summary> Shorthand for calling <see cref="GetLootPool"/> and invoking the result. </summary>
-	public static void InvokeLootPool(int tileType, Context context, ILoot loot)
-	{
-		if (ActionByType.TryGetValue(tileType, out var pool))
-			pool.Invoke(context, loot);
-	}
-
-	public static void AddActionByType(LootDelegate action, params int[] types)
-	{
-		foreach (int type in types)
-		{
-			if (!ActionByType.TryAdd(type, action))
-				ActionByType[type] += action;
-		}
-	}
-	#endregion
 
 	/// <summary> Checks whether the tile at the given coordinates corresponds to a record. </summary>
 	public static bool Matching(int i, int j, out string name)
@@ -95,7 +56,7 @@ public class RecordHandler : ModSystem
 				r.AddRecord(type, group);
 
 			if (TileLoader.GetTile(type) is ILootTile loot)
-				AddActionByType(loot.AddLoot, type); //Automatically register a loot table if applicable
+				ILootTile.RegisterLoot(loot.AddLoot, type); //Automatically register a loot table if applicable
 		}
 
 		TileEvents.OnKillTile += ValidateRecord;
@@ -118,7 +79,6 @@ public class RecordHandler : ModSystem
 		}
 	}
 
-	#region call
 	public static bool ManualAddRecord(object[] args)
 	{
 		if (args.Length < 3)
@@ -153,7 +113,7 @@ public class RecordHandler : ModSystem
 		}
 
 		if (args.Length > 5) //Add a loot pool
-			ParseLootAction(type, args[5]);
+			ILootTile.ParseLootAction(type, args[5]);
 
 		if (args.Length > 6 && args[6] is LocalizedText desc)
 			e.AddDescription(desc);
@@ -164,42 +124,6 @@ public class RecordHandler : ModSystem
 		Records.Add(e);
 		return true;
 	}
-
-	public static bool ManualModifyLoot(object[] args)
-	{
-		if (args.Length < 2)
-			throw new ArgumentException("ModifyPotLoot requires 2 parameters.");
-
-		if (args[0] is not int type)
-			throw new ArgumentException("ModifyPotLoot parameter 1 should be an int.");
-
-		if (!ParseLootAction(type, args[1]))
-			throw new ArgumentException("ModifyPotLoot parameter 2 should be a bool, Action<int, ILoot>, or Action<int, Point16, ILoot>.");
-
-		return true;
-	}
-
-	private static bool ParseLootAction(int type, object arg)
-	{
-		if (arg is bool hasBasicLoot && hasBasicLoot)
-		{
-			AddActionByType(GetLootPool(ModContent.TileType<Pots>()), type);
-			return true;
-		}
-		else if (arg is Action<int, ILoot> dele)
-		{
-			AddActionByType((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
-			return true;
-		}
-		else if (arg is Action<int, Point16, ILoot> dele2)
-		{
-			AddActionByType((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
-			return true;
-		}
-
-		return false;
-	}
-	#endregion
 }
 
 internal sealed class RecordPlayer : ModPlayer

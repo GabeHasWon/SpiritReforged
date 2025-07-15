@@ -1,6 +1,3 @@
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Underground.Pottery;
-using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Common.Misc;
@@ -38,46 +35,6 @@ public readonly struct LootTable() : ILoot
 			LootTableHandler.ResolvePlayerRule(rule, player);
 
 		LootTableHandler.ForcedItemRegion = Rectangle.Empty;
-	}
-}
-
-/// <summary> Facilitates a tile with an <see cref="ILoot"/> drop table.<br/>
-/// Does not drop items automatically unless used alongside <see cref="PotTile"/>. See <see cref="LootTable.Resolve"/>. </summary>
-public interface ILootTile
-{
-	public delegate void LootDelegate(Context context, ILoot loot);
-	public readonly record struct Context(int Style, Point16 Coordinates = default)
-	{
-		public readonly bool Simulated => Coordinates == default;
-	}
-
-	public void AddLoot(Context context, ILoot loot);
-
-	/// <summary> Calls <see cref="LootTable.Resolve(Rectangle, Player)"/> using tile data from the given coordinates. </summary>
-	public static bool Resolve(int i, int j, ushort type, int frameX, int frameY)
-	{
-		if (RecordHandler.GetLootPool(type) is LootDelegate action)
-		{
-			Tile t = new(); //if this method is called in KillMultiTile the tile at (i, j) is unusable
-			t.TileFrameX = (short)frameX;
-			t.TileFrameY = (short)frameY;
-			t.TileType = type;
-			t.HasTile = true;
-
-			var data = TileObjectData.GetTileData(t); //data can be null here
-			Point size = new(data?.Width ?? 2, data?.Height ?? 2);
-
-			var loot = new LootTable();
-			action.Invoke(new(TileObjectData.GetTileStyle(t), new(i, j)), loot);
-
-			var spawn = new Vector2(i, j).ToWorldCoordinates(size.X * 8, size.Y * 8);
-			var p = Main.player[Player.FindClosest(spawn, 0, 0)];
-
-			loot.Resolve(new Rectangle(i * 16, j * 16, size.X * 16, size.Y * 16), p);
-			return true;
-		}
-
-		return false;
 	}
 }
 
