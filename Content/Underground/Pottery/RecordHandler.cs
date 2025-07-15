@@ -21,7 +21,21 @@ public class RecordHandler : ModSystem
 	/// <summary> Stores delegate loot methods by tile type. </summary>
 	private static readonly Dictionary<int, LootDelegate> ActionByType = [];
 
-	public static LootDelegate GetLootPool(int tileType) => ActionByType.TryGetValue(tileType, out var pool) ? pool : null;
+	public static LootDelegate GetLootPool(int tileType)
+	{
+		if (ActionByType.TryGetValue(tileType, out var pool))
+			return pool;
+
+		if (TileLoader.GetTile(tileType) is ILootTile t) //If the delegate wasn't registered yet due to load order, register it now. This is most likely an issue when using calls
+		{
+			LootDelegate del = t.AddLoot;
+
+			ActionByType.Add(tileType, del);
+			return del;
+		}
+
+		return null;
+	}
 
 	/// <summary> Shorthand for calling <see cref="GetLootPool"/> and invoking the result. </summary>
 	public static void InvokeLootPool(int tileType, Context context, ILoot loot)
@@ -104,21 +118,22 @@ public class RecordHandler : ModSystem
 		}
 	}
 
+	#region call
 	public static bool ManualAddRecord(object[] args)
 	{
 		if (args.Length < 3)
 			throw new ArgumentException("AddPotstiaryRecord requires at least 3 parameters.");
 
 		if (args[0] is not int or ushort)
-			throw new ArgumentException("AddPotstiaryRecord parameter 0 should be an int or ushort.");
+			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int or ushort.");
 
 		int type = (int)args[0];
 
 		if (args[1] is not int[] styles)
-			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int[].");
+			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be an int[].");
 
 		if (args[2] is not string name)
-			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be a string.");
+			throw new ArgumentException("AddPotstiaryRecord parameter 3 should be a string.");
 
 		var e = new TileRecord(name, type, styles);
 
@@ -138,20 +153,7 @@ public class RecordHandler : ModSystem
 		}
 
 		if (args.Length > 5) //Add a loot pool
-		{
-			if (args[5] is bool hasBasicLoot && hasBasicLoot)
-			{
-				ActionByType.Add(type, ModContent.GetInstance<Pots>().AddLoot);
-			}
-			else if (args[5] is Action<int, ILoot> dele)
-			{
-				ActionByType.Add(type, (context, loot) => dele.Invoke(context.Style, loot)); //Nest delegates to avoid using a .dll reference for ILootTile.Context
-			}
-			else if (args[5] is Action<int, Point16, ILoot> dele2)
-			{
-				ActionByType.Add(type, (context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot));
-			}
-		}
+			ParseLootAction(type, args[5]);
 
 		if (args.Length > 6 && args[6] is LocalizedText desc)
 			e.AddDescription(desc);
@@ -162,6 +164,42 @@ public class RecordHandler : ModSystem
 		Records.Add(e);
 		return true;
 	}
+
+	public static bool ManualModifyLoot(object[] args)
+	{
+		if (args.Length < 2)
+			throw new ArgumentException("ModifyPotLoot requires 2 parameters.");
+
+		if (args[0] is not int type)
+			throw new ArgumentException("ModifyPotLoot parameter 1 should be an int.");
+
+		if (!ParseLootAction(type, args[1]))
+			throw new ArgumentException("ModifyPotLoot parameter 2 should be a bool, Action<int, ILoot>, or Action<int, Point16, ILoot>.");
+
+		return true;
+	}
+
+	private static bool ParseLootAction(int type, object arg)
+	{
+		if (arg is bool hasBasicLoot && hasBasicLoot)
+		{
+			AddActionByType(GetLootPool(ModContent.TileType<Pots>()), type);
+			return true;
+		}
+		else if (arg is Action<int, ILoot> dele)
+		{
+			AddActionByType((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
+			return true;
+		}
+		else if (arg is Action<int, Point16, ILoot> dele2)
+		{
+			AddActionByType((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
+			return true;
+		}
+
+		return false;
+	}
+	#endregion
 }
 
 internal sealed class RecordPlayer : ModPlayer

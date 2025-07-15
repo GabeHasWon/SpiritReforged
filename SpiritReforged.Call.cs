@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Savanna.Ecotone;
@@ -61,6 +60,10 @@ public partial class SpiritReforgedMod : Mod
 				case "AddPotstiaryRecord":
 					{
 						return RecordHandler.ManualAddRecord(args[1..]);
+					}
+				case "ModifyPotLoot":
+					{
+						return RecordHandler.ManualModifyLoot(args[1..]);
 					}
 				case "PotDiscovered":
 					{
