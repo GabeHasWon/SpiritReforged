@@ -60,13 +60,13 @@ Emotes: {
 }
 
 InfoDisplays: {
-	ScryingLensInfoDisplay: {
-		// DisplayName: Scrying Lens
-		// ShowingShimmer: Showing shimmer tooltips
-	}
-
 	LedgerInfoDisplay: {
 		// DisplayName: Ledger
-		// ShowingShimmer: Showing price tooltips
+		// Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		// DisplayName: Shimmersight
+		// Description: Showing shimmer tooltips
 	}
 }

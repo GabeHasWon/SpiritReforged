@@ -1,6 +1,8 @@
-﻿namespace SpiritReforged.Content.Aether.Items;
+﻿using SpiritReforged.Common.ItemCommon.Abstract;
 
-internal class MysticalCodex : ModItem
+namespace SpiritReforged.Content.Aether.Items;
+
+public class MysticalCodex : ModItem
 {
 	public override void SetDefaults()
 	{
@@ -10,13 +12,11 @@ internal class MysticalCodex : ModItem
 
 	public override void UpdateInfoAccessory(Player player)
 	{
-		player.GetModPlayer<LedgerPlayer>().Enabled = true;
-		player.GetModPlayer<ScryingPlayer>().Enabled = true;
+		var info = player.GetModPlayer<InfoPlayer>().info;
+
+		info[ModContent.GetInstance<ScryingLens>().Name] = true;
+		info[ModContent.GetInstance<Ledger>().Name] = true;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-		.AddIngredient<Ledger>()
-		.AddIngredient<ScryingLens>()
-		.AddTile(TileID.TinkerersWorkbench)
-		.Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient<Ledger>().AddIngredient<ScryingLens>().AddTile(TileID.TinkerersWorkbench).Register();
 }
