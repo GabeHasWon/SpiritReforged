@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
@@ -125,9 +126,9 @@ public class Pots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
-		string styleName = StyleDatabase.GetName(Type, (byte)objectStyle);
+		string styleName = StyleDatabase.GetName(Type, (byte)context.Style);
 
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 

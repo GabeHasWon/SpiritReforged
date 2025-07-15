@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
@@ -56,7 +57,7 @@ public class RollingPots : PotTile, ILootTile
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, ModContent.ProjectileType<PotBoulder>(), damage, 5, ai0: style);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
+	public void AddLoot(ILootTile.Context context, ILoot loot) => RecordHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
 }
 
 internal class PotBoulder : ModProjectile
@@ -94,7 +95,7 @@ internal class PotBoulder : ModProjectile
 			});
 
 			var table = new LootTable();
-			ModContent.GetInstance<RollingPots>().AddLoot(0, table);
+			ModContent.GetInstance<RollingPots>().AddLoot(new((int)Style, Projectile.Center.ToTileCoordinates16()), table);
 			table.Resolve(Projectile.getRect(), Main.player[Player.FindClosest(Projectile.position, Projectile.width, Projectile.height)]);
 
 			if (Main.rand.NextBool(50))

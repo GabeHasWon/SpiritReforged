@@ -1,8 +1,8 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Underground.Pottery;
-using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.WayfarerSet;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
@@ -99,7 +99,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 			return;
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
-			LootTable.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
+			ILootTile.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
 
 		if (!Main.dedServ)
 			DeathEffects(i, j, frameX, frameY);

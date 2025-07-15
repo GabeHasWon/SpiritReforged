@@ -1,7 +1,10 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using static SpiritReforged.Common.Misc.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -12,8 +15,30 @@ public interface IRecordTile : INamedStyles
 
 public class RecordHandler : ModSystem
 {
-	public static readonly Dictionary<int, Action<int, ILoot>> ActionByType = [];
 	public static readonly HashSet<TileRecord> Records = [];
+
+	#region loot
+	/// <summary> Stores delegate loot methods by tile type. </summary>
+	private static readonly Dictionary<int, LootDelegate> ActionByType = [];
+
+	public static LootDelegate GetLootPool(int tileType) => ActionByType.TryGetValue(tileType, out var pool) ? pool : null;
+
+	/// <summary> Shorthand for calling <see cref="GetLootPool"/> and invoking the result. </summary>
+	public static void InvokeLootPool(int tileType, Context context, ILoot loot)
+	{
+		if (ActionByType.TryGetValue(tileType, out var pool))
+			pool.Invoke(context, loot);
+	}
+
+	public static void AddActionByType(LootDelegate action, params int[] types)
+	{
+		foreach (int type in types)
+		{
+			if (!ActionByType.TryAdd(type, action))
+				ActionByType[type] += action;
+		}
+	}
+	#endregion
 
 	/// <summary> Checks whether the tile at the given coordinates corresponds to a record. </summary>
 	public static bool Matching(int i, int j, out string name)
@@ -53,18 +78,16 @@ public class RecordHandler : ModSystem
 				continue;
 
 			foreach (var group in StyleDatabase.Groups[type])
-			{
 				r.AddRecord(type, group);
 
-				if (TileLoader.GetTile(type) is ILootTile loot)
-					ActionByType.TryAdd(type, loot.AddLoot); //Automatically register a loot table if applicable
-			}
+			if (TileLoader.GetTile(type) is ILootTile loot)
+				AddActionByType(loot.AddLoot, type); //Automatically register a loot table if applicable
 		}
 
-		TileEvents.OnKillTile += KillTile;
+		TileEvents.OnKillTile += ValidateRecord;
 	}
 
-	private static void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly)
+	private static void ValidateRecord(int i, int j, int type, ref bool fail, ref bool effectOnly)
 	{
 		const int maxDistance = 800;
 
@@ -122,7 +145,11 @@ public class RecordHandler : ModSystem
 			}
 			else if (args[5] is Action<int, ILoot> dele)
 			{
-				ActionByType.Add(type, dele);
+				ActionByType.Add(type, (context, loot) => dele.Invoke(context.Style, loot)); //Nest delegates to avoid using a .dll reference for ILootTile.Context
+			}
+			else if (args[5] is Action<int, Point16, ILoot> dele2)
+			{
+				ActionByType.Add(type, (context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot));
 			}
 		}
 
@@ -137,7 +164,7 @@ public class RecordHandler : ModSystem
 	}
 }
 
-internal class RecordPlayer : ModPlayer
+internal sealed class RecordPlayer : ModPlayer
 {
 	/// <summary> The list of unlocked entries saved per player. </summary>
 	private IList<string> _validated = [];

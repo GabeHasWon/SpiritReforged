@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -68,7 +69,7 @@ public class WickerBaskets : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && GetThoriumTypes() is int[] types && types.Length > 0)
 			loot.AddOneFromOptions(2, types);

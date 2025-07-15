@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Pottery;
+using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -18,26 +18,16 @@ public class RemedyPotion : ModItem
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 20;
-		TileEvents.AddKillTileAction(TileID.Pots, AddPotLoot);
-	}
 
-	/// <summary> Drops <see cref="RemedyPotion"/>s from all pots in addition to normal items. Odds vary by depth. </summary>
-	private static void AddPotLoot(int i, int j, int type, ref bool fail, ref bool effectOnly)
-	{
-		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
-			return;
-
-		int chance = (i >= Main.UnderworldLayer) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));
-		if (chance > 0 && Main.rand.NextBool(chance))
+		//Register pot loot
+		RecordHandler.AddActionByType(static (context, loot) =>
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<RemedyPotion>());
-		}
+			int i = context.Coordinates.Y;
+			int chance = (i >= Main.UnderworldLayer || context.Simulated) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));
 
-		bool IsTopLeft()
-		{
-			var tile = Main.tile[i, j];
-			return tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
-		}
+			if (chance > 0)
+				loot.AddCommon(ModContent.ItemType<RemedyPotion>(), chance);
+		}, TileID.Pots, ModContent.TileType<Pots>());
 	}
 
 	public override void SetDefaults()

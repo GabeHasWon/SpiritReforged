@@ -1,5 +1,6 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -139,7 +140,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 				Item.NewItem(new EntitySource_TileBreak(i, j), position, new Item(type, stack), noGrabDelay: true);
 			});
 
-			LootTable.Resolve(i, j, Type, frameX, frameY);
+			ILootTile.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -176,7 +177,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 			source, color, rotation, origin, 1, SpriteEffects.None, 0);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
 		loot.Add(ItemDropRule.NotScalingWithLuckWithNumerator(ItemID.WhoopieCushion, 100, 15));
 		loot.AddCommon(ItemID.CanOfWorms, 1, 1, 2);
