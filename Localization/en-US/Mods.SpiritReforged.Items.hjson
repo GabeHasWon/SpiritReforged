@@ -2103,3 +2103,12 @@ CommonPotsSavannaItem: {
 	DisplayName: Savanna Pot
 	Tooltip: ""
 }
+
+Magazine: {
+	DisplayName: Magazine
+	Tooltip:
+		'''
+		Double tap {0} while holding a ranged weapon to swap ammo types
+		Works while in the inventory
+		'''
+}
