@@ -27,24 +27,25 @@ public class WalkieTalkie : ModItem
 	}
 
 	/// <summary> Forces NPC dialogue to persist even when the player is out of range of the NPC. </summary>
-	private static void ForceChatText(On_Player.orig_Update orig, Player self, int i)
+	private static void ForceChatText(On_Player.orig_Update orig, Player self, int i) //IL 12445 //CS 2965
 	{
 		if (Paging)
 		{
-			int oldTalkNPC = self.talkNPC;
-			string oldChatText = Main.npcChatText;
-			int oldChatCornerItem = Main.npcChatCornerItem;
+			if (self.talkNPC != -1)
+			{
+				var npc = Main.npc[self.talkNPC];
+				Vector2 oldPosition = npc.position;
+				npc.position = self.Center;
 
-			orig(self, i);
+				orig(self, i);
 
-			self.SetTalkNPC(oldTalkNPC);
-			Main.npcChatText = oldChatText;
-			Main.npcChatCornerItem = oldChatCornerItem;
-
-			if (Main.LocalPlayer.controlInv || Main.npcChatText == string.Empty || Main.LocalPlayer.TalkNPC?.type != NPCID.Angler)
+				npc.position = oldPosition;
+				return;
+			}
+			else
+			{
 				Paging = false;
-
-			return;
+			}
 		}
 
 		orig(self, i);
