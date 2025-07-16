@@ -17,7 +17,7 @@ VanillaDialogue: {
 	}
 
 	TravellingMerchant: {
-		Cartographer1: 我常在路上遇到个迷路的制图师。说真的，她给我的生意添了不少乱子！
+		Cartographer1: 我常在路上遇到个迷路的绘图师。说真的，她给我的生意添了不少乱子！
 		Cartographer2: 噢，是{0}！上个月她给我指完路就栽进沟里了。
 		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
 	}
