@@ -1,51 +1,51 @@
 Records: {
 	CoinPortal:
 		'''
-		Всегда содержит портал с монетками.
+		Всегда содержит портал с монетами.
 
 		Удачная находка!
 		'''
 	Common:
 		'''
-		Обычный горшок, который иногда содержит полезные штучки.
+		Обычный горшок, в котором иногда попадаются полезные предметы.
 
 		Чем глубже под землей, тем больше ценность.
 		'''
 	Zenith:
 		'''
-		Обычный горшок, который иногда содержит полезные штучки... этот вообще безвкусный.
+		Обычный горшок, в котором иногда попадаются полезные предметы... этот, к тому же, чересчур вычурный.
 
 		Чем глубже под землей, тем больше ценность.
 		'''
-	Potion: Содержит крепкий напиток.
-	UpsideDown: `Ошибка вычисления`
-	Worm: При уничтожении вываливается множество червей.
-	Platter: Готовая вкусняшка, бери просто так. Кто оставил это тут?
-	// WickerBasket: A picnic, just for you!
-	Aether: Дарует приятные улучшения.
-	Stuffed: Какое странное место для торговца. Прямо напрашиваются на беспокойство.
-	Scrying: Открывает большую часть карты после уничтожения.
-	Biome: Содержит куда больше полезных предметов, чем обычные горшки.
-	// Boulder: Rolls along the ground when disturbed.
+	Potion: Содержит мощное зелье.
+	UpsideDown: ‟Ошибка при производстве‟
+	Worm: При разрушении выползают множество червей.
+	Platter: Горячее блюдо, готовое к употреблению. Кто же мог его оставить?
+	WickerBasket: Пикник — специально для вас!
+	Aether: Даёт разнообразные полезные и сверкающие улучшения.
+	Stuffed: Какое странное место для торговца. Похоже, он только и ждёт, чтобы его побеспокоили.
+	Scrying: При разрушении открывает некоторую часть карты.
+	Biome: Содержит больше разнообразной добычи, чем обычные горшки.
+	Boulder: Катится по земле, если его задеть.
 }
 
-SunkenTreasureTile.MapEntry: Затонувшее сокровище
-HydrothermalVent.MapEntry: Гидротермальный источник
+SunkenTreasureTile.MapEntry: "{$Items.SunkenTreasure.DisplayName}"
+HydrothermalVent.MapEntry: Гидротермальное жерло
 CoralMapEntry: Коралл
-KelpMapEntry: Ламинария
-GarInAJar_Tile.MapEntry: Щука в банке
-CloudstalkTile.MapEntry: Облачный стебель
-SmallDriftwoodTile.MapEntry: Маленький коряг
-MediumDriftwoodTile.MapEntry: Средний коряг
-LargeDriftwoodTile.MapEntry: Большой коряг
-BambooBirdCage.MapEntry: Бамбуковая клетка
-KoiTotemTile.MapEntry: Тотем кои
-HerosMemorialStatue.MapEntry: Памятник героя
-TermiteJar_Tile.MapEntry: Банка с термитами
-GarInAJarTile.MapEntry: Щука в банке
-KillieFishbowlTile.MapEntry: Аквариум с килли рыбкой
+KelpMapEntry: "{$Items.Kelp.DisplayName}"
+GarInAJar_Tile.MapEntry: "{$Items.GarInAJar.DisplayName}"
+CloudstalkTile.MapEntry: "{$Items.Cloudstalk.DisplayName}"
+SmallDriftwoodTile.MapEntry: "{$Items.SmallDriftwoodItem.DisplayName}"
+MediumDriftwoodTile.MapEntry: "{$Items.MediumDriftwoodItem.DisplayName}"
+LargeDriftwoodTile.MapEntry: "{$Items.LargeDriftwoodItem.DisplayName}"
+BambooBirdCage.MapEntry: "{$Items.BambooBirdCageItem.DisplayName}"
+KoiTotemTile.MapEntry: "{$Items.KoiTotem.DisplayName}"
+HerosMemorialStatue.MapEntry: "{$Items.HerosMemorialStatueItem.DisplayName}"
+TermiteJar_Tile.MapEntry: "{$Items.TermiteJar.DisplayName}"
+GarInAJarTile.MapEntry: "{$Items.GarInAJar.DisplayName}"
+KillieFishbowlTile.MapEntry: "{$Items.KillieFishbowl.DisplayName}"
 OreCarts.MapEntry: Вагонетка
 PotionVats.MapEntry: Чан для зелий
 ObsidianShroom.MapEntry: Обсидиановый гриб
 Starflower.MapEntry: Звёздоцвет
-// BonsaiTrees.MapEntry: Bonsai
+BonsaiTrees.MapEntry: Бонсай

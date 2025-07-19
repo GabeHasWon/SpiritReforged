@@ -5,45 +5,45 @@ UrchinSpike.DisplayName: Игла морского ежа
 JellyfishBolt.DisplayName: Электрический разряд
 JellyfishMinion.DisplayName: Маленькая медуза
 ReefWrathProj.DisplayName: Коралловая ярость
-JellyfishPet.DisplayName: Питомец-медуза
-FairyMinion.DisplayName: Фея-спутник
+JellyfishPet.DisplayName: Ручная медуза
+FairyMinion.DisplayName: Фея-миньон
 FairyProj.DisplayName: Магический заряд
 StarPowderProj.DisplayName: Звёздная пыль
-ButterflyMinion.DisplayName: Эфирноя бабочка
+ButterflyMinion.DisplayName: Эфирная бабочка
 ToucanFeather.DisplayName: Перо тукана
-ToucanMinion.DisplayName: Тукан-спутник
-TumblerPet.DisplayName: Питомец-акробат
+ToucanMinion.DisplayName: Тукан-миньон
+TumblerPet.DisplayName: Ручное перекати-поле
 SunOrb.DisplayName: Солнечный шар
 SunStaffHeld.DisplayName: Солнечный посох
-WheatgrassSeed.DisplayName: Семя пырея
+WheatgrassSeed.DisplayName: Семена пырея
 RoyalKhopeshHeld.DisplayName: Королевский хопеш
-Zipline.DisplayName: Канатная дорога
+Zipline.DisplayName: Рельсовая дорога
 RogueKnifeMinion.DisplayName: Ржавый нож
-CactusWallProj.DisplayName: Стена из кактуса
+CactusWallProj.DisplayName: Кактусовая стена
 SkullSentryEye.DisplayName: Глаз черепа-часового
 SkullSentryMucus.DisplayName: Слизь черепа-часового
 SkullSentrySentry.DisplayName: Череп плотоядки
-ZiplineProj.DisplayName: Канатный снаряд
+ZiplineProj.DisplayName: Снаряд рельсовой дороги
 FallingBaobabFruit.DisplayName: Падающий плод баобаба
 RollingCart.DisplayName: Катящаяся вагонетка
-RadonMossBobber.DisplayName: Поплавок из радонового мха
-OganessonMossBobber.DisplayName: Поплавок из оганессонового мха
+RadonMossBobber.DisplayName: Поплавок с радоновым мхом
+OganessonMossBobber.DisplayName: Поплавок с огнессоновым мхом
 BuffAura.DisplayName: Аура баффа
 WheezerCloud.DisplayName: Ядовитый газ
 Shockwave.DisplayName: Ударная волна
 EnergizedShockwave.DisplayName: Энергитическая ударная волна
-RollingBowlder.DisplayName: Катящаяся булыга
+RollingBowlder.DisplayName: Катящийся булыжник
 Firespike.DisplayName: Огнешип
 CannonBomb.DisplayName: Выстрел бомбопушки
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-// DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
-// JinxArrow.DisplayName: Jinx Arrow
-// JinxBowMinion.DisplayName: Jinx Bow Minion
-// RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-// RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-// FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
-// VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-// VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-// EnergyImpact.DisplayName: Energy Stomp
-// EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
-// FingerShot.DisplayName: Finger Shot
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: Стрела сглаза
+JinxBowMinion.DisplayName: Миньон лука сглаза
+RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Энергетический удар
+EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Пальцевыстрел
