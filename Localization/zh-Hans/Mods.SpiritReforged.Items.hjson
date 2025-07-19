@@ -251,7 +251,7 @@ DiverLegs: {
 }
 
 SailorCap: {
-	DisplayName: 船长帽
+	DisplayName: 水手帽
 	Tooltip: “请上船！”
 }
 
