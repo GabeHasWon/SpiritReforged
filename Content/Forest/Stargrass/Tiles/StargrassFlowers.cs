@@ -1,29 +1,16 @@
 using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassFlowers Glow")]
-public class StargrassFlowers : ModTile
+[AutoloadGlowmask("255,255,255", false)]
+public class StargrassFlowers : ModTile, ISwayTile
 {
 	public const int StyleRange = 27;
 	public const int TileHeight = 24;
-
-	public static Color Glow(object obj)
-	{
-		const float MinBrightness = 0.4f;
-		const float MaxDist = 140 * 140;
-
-		var pos = (Point)obj;
-		float dist = Main.player[Player.FindClosest(new Vector2(pos.X, pos.Y) * 16, 16, 16)].DistanceSQ(new Vector2(pos.X, pos.Y) * 16 + new Vector2(8));
-		float strength = MinBrightness;
-
-		if (dist < MaxDist)
-			strength = MathHelper.Lerp(MinBrightness, 1f, 1 - dist / MaxDist);
-
-		return StargrassTile.Glow(pos) * strength;
-	}
 
 	public override void SetStaticDefaults()
 	{
@@ -75,5 +62,40 @@ public class StargrassFlowers : ModTile
 	{
 		ConversionHandler.CommonPlants(i, j, Type);
 		return true;
+	}
+
+	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	{
+		var tile = Framing.GetTileSafely(i, j);
+		int type = tile.TileType;
+		var data = TileObjectData.GetTileData(tile);
+
+		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
+		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, TileHeight);
+		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
+
+		spriteBatch.Draw(TextureAssets.Tile[type].Value, drawPos + offset + dataOffset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);
+
+		var glowmask = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
+		spriteBatch.Draw(glowmask, drawPos + offset + dataOffset, source, GetGlow(new(i, j)), rotation, origin, 1, default, 0);
+
+		static Color GetGlow(Point16 coords)
+		{
+			const float maxDistance = 140 * 140;
+
+			float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
+			return StargrassTile.Glow(new Point(coords.X, coords.Y)) * MathHelper.Clamp(1f - distance / maxDistance, 0.4f, 1f);
+		}
+	}
+
+	public float Physics(Point16 coords)
+	{
+		var data = TileObjectData.GetTileData(Framing.GetTileSafely(coords));
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(coords.X, coords.Y, TileSwaySystem.Instance.GrassWindCounter);
+
+		if (!WorldGen.InAPlaceWithWind(coords.X, coords.Y, data.Width, data.Height))
+			rotation = 0f;
+
+		return rotation + Main.instance.TilesRenderer.GetWindGridPush(coords.X, coords.Y, 20, 0.35f) * 1.5f;
 	}
 }
