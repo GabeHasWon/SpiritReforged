@@ -85,4 +85,12 @@ internal static class MiscExtensions
 
 	public static void AccelFlyingMovement(this Entity ent, Vector2 desiredPosition, float accelSpeed, float deccelSpeed, float maxSpeed = -1) => AccelFlyingMovement(ent, desiredPosition, new Vector2(accelSpeed), new Vector2(deccelSpeed), (maxSpeed >= 0) ? new Vector2(maxSpeed) : null);
 
+	/// <summary> Adds <paramref name="options"/> and distributes <paramref name="weight"/> evenly. </summary>
+	public static void AddRange<T>(this WeightedRandom<T> r, double weight = 1, params T[] options)
+	{
+		double finalWeight = weight / options.Length;
+
+		foreach (var type in options)
+			r.Add(type, finalWeight);
+	}
 }
