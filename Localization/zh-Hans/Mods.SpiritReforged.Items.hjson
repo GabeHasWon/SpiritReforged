@@ -251,7 +251,7 @@ DiverLegs: {
 }
 
 SailorCap: {
-	DisplayName: 船长帽
+	DisplayName: 水手帽
 	Tooltip: “请上船！”
 }
 
@@ -375,7 +375,7 @@ FloatingDriftwood: {
 }
 
 FishCrate: {
-	DisplayName: 包装宝匣
+	DisplayName: 包装匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -508,7 +508,7 @@ BaobabFruit: {
 }
 
 SavannaGrassSeeds: {
-	DisplayName: 稀树平原草种
+	DisplayName: 稀树平原草种子
 	Tooltip: ""
 }
 
