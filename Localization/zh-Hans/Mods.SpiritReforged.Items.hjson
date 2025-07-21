@@ -901,7 +901,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（沙尘暴）
+	DisplayName: 音乐盒（尘暴）
 }
 
 FishLure: {
@@ -1793,7 +1793,7 @@ OtherworldSavannaNightMusicBoxItem: {
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（沙尘暴）
+	DisplayName: 异界音乐盒（尘暴）
 	Tooltip: ""
 }
 
