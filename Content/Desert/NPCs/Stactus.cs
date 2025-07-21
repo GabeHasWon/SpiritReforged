@@ -17,6 +17,8 @@ namespace SpiritReforged.Content.Desert.NPCs;
 internal class Stactus : ModNPC, IDeathCount
 {
 	public const int SpawnTimeMax = 120;
+
+	public static HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab];
 	private static readonly Asset<Texture2D> Face = DrawHelpers.RequestLocal(typeof(Stactus), "Stactus_Face", false);
 
 	public enum SegmentType : byte
@@ -48,8 +50,6 @@ internal class Stactus : ModNPC, IDeathCount
 	}
 
 	public bool Falling { get; private set; }
-
-	public static HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab];
 	private float _sine;
 
 	/// <summary> Spawns a stack of Stactus at <paramref name="fromNPC"/>, representing the first in the stack. </summary>

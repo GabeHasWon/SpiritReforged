@@ -3,6 +3,7 @@
 /// <summary> Detours <see cref="NPC.ExcludedFromDeathTally"/> and <see cref="NPC.IsNPCValidForBestiaryKillCredit"/>. </summary>
 internal interface IDeathCount
 {
+	/// <summary> Whether this NPC's death should be recorded for banner drop and bestiary purposes. </summary>
 	public bool TallyDeath(NPC npc);
 }
 
