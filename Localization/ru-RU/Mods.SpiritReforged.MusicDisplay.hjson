@@ -5,13 +5,13 @@ Moonbird: Moonbird
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Колыхающаяся прерия (Тема пыльной бури)
+	DisplayName: Drifting Prairie (тема пыльной бури)
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
 	DisplayName: Саванна
-	Author: "{$BySalvati}, {$Sbubby}"
+	Author: "{$BySalvati} и {$Sbubby}"
 }
 
 SavannaNight: {
@@ -25,16 +25,16 @@ DeepOcean: {
 }
 
 SavannaOtherworld: {
-	DisplayName: Тема дневной саванны
+	DisplayName: День в саванне — Потусторонняя
 	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	DisplayName: Тема ночной саванны
+	DisplayName: Ночь в саванне — Потусторонняя
 	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	DisplayName: Тема пыльной бури
+	DisplayName: Пыльная буря — Потусторонняя
 	Author: "{$By} jakedastardly"
 }
