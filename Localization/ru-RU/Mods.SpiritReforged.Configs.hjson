@@ -19,6 +19,11 @@ ReforgedClientConfig: {
 			Higher values mean more detail and a greater resulting performance cost
 			''' */
 	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
+	}
 }
 
 OceanShape: {
