@@ -140,6 +140,8 @@ public class SaltBlockVisuals : ILoadable
 			DrawBG(Main.instance);
 
 			spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+			DrawNPCs(Main.instance, true);
+
 			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 			spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 		}

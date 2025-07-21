@@ -459,3 +459,8 @@ ArgonMossSlime.DisplayName: 氩苔藓史莱姆
 HeliumMossSlime.DisplayName: 氦苔藓史莱姆
 OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
 RadonMossSlime.DisplayName: 氡苔藓史莱姆
+
+Stactus: {
+	// DisplayName: Stactus
+	// Entry: ""
+}
