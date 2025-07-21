@@ -222,7 +222,7 @@ Cartographer: {
 			Savanna: {
 				0:
 					'''
-					There we go, pin's on the house. I was up to the usual. Taking my morning walk and visiously punching trees to get apples. After punching a couple of trees, 
+					There we go, pin's on the house. I was up to the usual: taking my morning walk and viciously punching trees to get apples. After punching a couple of trees, 
 					I look up. Somehow, a whole prairie snuck up on me. I went back to punching trees after a few moments.
 					'''
 				1:
@@ -239,7 +239,7 @@ Cartographer: {
 
 			Hive: {
 				0: Pin goes...here. On the low, I don't recommend that jungle place. It's ROUGH. But when you see one of those big hives, there's honey nearby. And that's a treat worth many stings.
-				1: There you go! Um...I'll be real. Sometimees you'll strike liquid gold and it's STILL not worth investing in. Nasty bees... keep it hike, not business.
+				1: There you go! Um...I'll be real. Sometimes you'll strike liquid gold and it's STILL not worth investing in. Nasty bees... keep it hike, not business.
 				2: If you take a look right... here, you'll find something you may be interested in. I'll keep this short though, stingers hurt. Be prepared.
 			}
 
@@ -277,7 +277,7 @@ Cartographer: {
 
 			WulfrumBunker: {
 				0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				1: This was were my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
+				1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
 				2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
 			}
 
