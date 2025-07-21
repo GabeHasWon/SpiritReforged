@@ -1,6 +1,4 @@
-v0.1.2.2
-- Made all bombs not show up as ammo, not go into ammo slots
-- Fixed Finger Blaster issue in mp
-- Fixed Dunce Crabs embedding into air if the ground under them is mined out
-- Fixed Dunce Crabs being desynced by a server issue
-- Stopped ShareMouseData packet from noting sync in mp, spamming log
+v0.1.2.3
+- Updated Russian (thanks nexorchik) and Chinese (thanks Linnnnnnnnnna, both on GitHub) localization
+- Fixed Rolling Pot display name on map (and anything that uses that localization)
+- Restricted baobab fruit growth in close proximity
