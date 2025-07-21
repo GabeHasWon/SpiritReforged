@@ -214,7 +214,7 @@ internal class SavannaEcotone : EcotoneBase
 		static int HighestSurfacePoint(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out int addY))
+			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out _))
 				y++;
 
 			return y;

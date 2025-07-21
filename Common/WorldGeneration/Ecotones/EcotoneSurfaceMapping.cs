@@ -155,5 +155,5 @@ internal class EcotoneSurfaceMapping : ModSystem
 	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="defA"/> and <paramref name="defB"/>, in addition to some common conditions.<para/>
 	/// Automatically remaps ecotones. </summary>
 	public static EcotoneEntry FindWhere(string defA, string defB, Func<EcotoneEntry, bool> extraPredicate = null) => FindWhere(x => x.SurroundedBy(defA, defB)
-	&& extraPredicate?.Invoke(x) == true && Math.Abs(x.Start.Y - x.End.Y) < 120 && x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface);
+	&& extraPredicate?.Invoke(x) != false && Math.Abs(x.Start.Y - x.End.Y) < 120 && x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface);
 }
