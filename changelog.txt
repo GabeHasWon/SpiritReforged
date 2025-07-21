@@ -2,3 +2,4 @@ v0.1.2.3
 - Updated Russian (thanks nexorchik) and Chinese (thanks Linnnnnnnnnna, both on GitHub) localization
 - Fixed Rolling Pot display name on map (and anything that uses that localization)
 - Restricted baobab fruit growth in close proximity
+- Fixes some Cartographer typos
