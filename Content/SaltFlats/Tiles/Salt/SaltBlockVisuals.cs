@@ -19,6 +19,9 @@ public class SaltBlockVisuals : ILoadable
 	public static bool Drawing { get; private set; }
 	public static readonly HashSet<Point16> ReflectionPoints = [];
 
+	/// <summary> Whether screen dimensions are beyond 1920x1080- bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
+	private static bool HighResolution;
+
 	public static ModTarget2D MapTarget { get; } = new(CanDraw, DrawMapTarget);
 	public static ModTarget2D TileTarget { get; } = new(CanDraw, DrawTileTarget);
 	public static ModTarget2D ReflectionTarget { get; } = new(CanDraw, DrawAndHandleReflectionTarget, false);
@@ -48,6 +51,8 @@ public class SaltBlockVisuals : ILoadable
 	{
 		DrawOverHandler.PostDrawTilesSolid += DrawFullReflection;
 		TileEvents.AddPreDrawAction(true, ReflectionPoints.Clear);
+
+		TargetSetup.OnResizeRendertargets += () => HighResolution = Main.screenWidth > 1920 || Main.screenHeight > 1080;
 	}
 
 	private static bool CanDraw()
@@ -63,7 +68,7 @@ public class SaltBlockVisuals : ILoadable
 
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
-		var gradient = GradientMap.Value; //Map shader reflection depth and opacity in separate channels (TODO)
+		var gradient = GradientMap.Value;
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -139,11 +144,16 @@ public class SaltBlockVisuals : ILoadable
 
 			DrawBG(Main.instance);
 
-			spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+			if (!HighResolution)
+				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+
 			DrawNPCs(Main.instance, true);
 
-			spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-			spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+			if (!HighResolution)
+			{
+				spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+			}
 		}
 
 		DrawNPCs(Main.instance);
