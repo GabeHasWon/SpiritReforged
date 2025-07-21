@@ -1641,7 +1641,7 @@ DunceCrabBannerItem.DisplayName: 笨蟹旗
 WheezerBannerItem.DisplayName: 响尾兽旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽
+	DisplayName: 响尾兽雕像
 	Tooltip: ""
 }
 
