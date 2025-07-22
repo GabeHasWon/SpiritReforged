@@ -5,7 +5,7 @@ Moonbird: Moonbird
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: 漂移草原（主题曲：沙尘暴）
+	DisplayName: 漂移草原（主题曲：尘暴）
 	Author: "{$By} {$Sbubby}"
 }
 
@@ -35,6 +35,6 @@ SavannaOtherworldNight: {
 }
 
 DuststormOtherworld: {
-	DisplayName: 异界沙尘暴
+	DisplayName: 异界尘暴
 	Author: "{$By} jakedastardly"
 }
