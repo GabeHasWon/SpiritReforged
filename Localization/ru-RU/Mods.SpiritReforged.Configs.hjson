@@ -1,22 +1,14 @@
-ReforgeClientConfig: {
+ReforgedClientConfig: {
 	DisplayName: Клиентская конфигурация Reforge
 
 	OceanShape: {
-		// Label: Ocean Shape
-		/* Tooltip:
+		Label: Генерация океана
+		Tooltip:
 			'''
 			Определяет способ генерации океана.
 			По умолчанию используется генерация типа «Кусочная_V».
 			Генерация «Кусочная_V» рекомендуется для прохождений с модом Spirit.
 			'''
-	}
-
-	SurfaceWaterTransparency: {
-		Label: Прозрачность воды в океане
-		Tooltip:
-			'''
-			При включении этой настройки делает воду в океане прозрачной.
-			Не влияет на другие биомы.
 	}
 
 	ReflectionDetail: {
