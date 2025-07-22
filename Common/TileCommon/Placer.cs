@@ -17,6 +17,13 @@ public struct PlaceAttempt(bool success)
 /// <summary> Includes helper methods related to placing tiles. </summary>
 public static class Placer
 {
+	public static int HerbRadius => WorldGen.GetWorldSize() switch
+	{
+		1 => 45,
+		2 => 61,
+		_ => 31
+	};
+
 	private static readonly Point16[] CardinalDirections = [new Point16(0, -1), new Point16(-1, 0), new Point16(1, 0), new Point16(0, 1)];
 
 	private static readonly int[] Replaceable = [TileID.Plants, TileID.Plants2, TileID.JunglePlants, TileID.JunglePlants2, 
@@ -164,17 +171,7 @@ public static class Placer
 
 	/// <summary> Checks the surrounding area for herbs of <paramref name="type"/>.</summary>
 	/// <returns> true if fewer than 4 herbs are in range. </returns>
-	public static bool CanPlaceHerb(int i, int j, int type)
-	{
-		int radius = WorldGen.GetWorldSize() switch
-		{
-			1 => 45,
-			2 => 61,
-			_ => 31
-		};
-
-		return WorldGen.CountNearBlocksTypes(i, j, radius, 4, type) < 4;
-	}
+	public static bool CanPlaceHerb(int i, int j, int type) => WorldGen.CountNearBlocksTypes(i, j, HerbRadius, 4, type) < 4;
 
 	/// <summary> Tries to place or extend a vine at the given coordinates. </summary>
 	/// <param name="i"> The tile's X coordinate. </param>
