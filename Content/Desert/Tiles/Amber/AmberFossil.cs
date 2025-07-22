@@ -29,7 +29,7 @@ public class AmberFossil : ShiningAmber
 		result.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Fireflies));
 		result.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
 		result.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
-		result.AddRange(0.01f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
+		result.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
 
 		return result;
 	}
