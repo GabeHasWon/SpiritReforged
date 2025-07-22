@@ -16,4 +16,7 @@ class ReforgedClientConfig : ModConfig
 	[Slider]
 	[DefaultValue(2)]
 	public int ReflectionDetail { get; set; }
+
+	[DefaultValue(true)]
+	public bool AmbientSounds { get; set; }
 }
