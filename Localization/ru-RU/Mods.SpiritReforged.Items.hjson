@@ -1758,8 +1758,8 @@ Bowlder: {
 }
 
 BoStaff: {
-	// DisplayName: Bo Staff
-	// Tooltip: Dealing continuous damage builds combo
+	DisplayName: Бо
+	Tooltip: Наносит непрерывный урон, проводя комбинации атак
 }
 
 Blasphemer: {
