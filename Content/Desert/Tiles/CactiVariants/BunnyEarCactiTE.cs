@@ -150,7 +150,7 @@ internal partial class BunnyEarCacti
 			int topLeftX = i - tileData.Origin.X;
 			int topLeftY = j - tileData.Origin.Y;
 
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			if (Main.netMode == NetmodeID.MultiplayerClient && !Main.gameMenu)
 			{
 				NetMessage.SendTileSquare(Main.myPlayer, topLeftX, topLeftY, tileData.Width, tileData.Height);
 				NetMessage.SendData(MessageID.TileEntityPlacement, number: topLeftX, number2: topLeftY, number3: Type);

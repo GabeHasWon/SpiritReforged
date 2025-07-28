@@ -1,25 +1,45 @@
 ﻿using System.Linq;
 using Terraria.DataStructures;
 using Terraria.IO;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
+/// <summary>
+/// Maps all deserts to <see cref="DesertInstances"/>.
+/// </summary>
 internal class DesertMapping : Micropass
 {
-	public readonly record struct DesertInstance(int Index, int BiomeConversionType, Rectangle Bounds);
+	public readonly record struct DesertInstance(int Index, int BiomeConversionType, Rectangle Bounds, HashSet<Point16> Tiles);
 
 	public override string WorldGenName => "Map Deserts";
 
 	public static int ArbitraryYCutoff => (int)Main.worldSurface + 50;
 
-	public static Dictionary<int, DesertInstance> instances = [];
+	public static Dictionary<int, DesertInstance> DesertInstances = [];
+
+	public static bool TryGetDesert(int x, int y, out DesertInstance desert)
+	{
+		desert = default;
+
+		foreach (var instance in DesertInstances)
+		{
+			if (instance.Value.Tiles.Contains(new Point16(x, y)))
+			{
+				desert = instance.Value;
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Floating Islands");
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		instances.Clear();
+		DesertInstances.Clear();
 		HashSet<Point16> totalPoints = [];
 
 		for (int i = WorldGen.beachDistance; i < Main.maxTilesX - WorldGen.beachDistance; ++i)
@@ -96,8 +116,13 @@ internal class DesertMapping : Micropass
 
 		var bounds = new Rectangle((int)edges.X, (int)edges.Y, (int)(edges.Z - edges.X), (int)(edges.W - edges.Y));
 		int max = counts.MaxBy(x => x.Value).Key;
+		HashSet<Point16> positions = [];
 
-		instances.Add(instances.Count, new DesertInstance(instances.Count, max, bounds));
+		for (int x = bounds.Left; x < bounds.Right; ++x)
+			for (int y = bounds.Top; y < bounds.Bottom; ++y)
+				positions.Add(new Point16(x, y));
+
+		DesertInstances.Add(DesertInstances.Count, new DesertInstance(DesertInstances.Count, max, bounds, positions));
 
 		foreach (Point16 pos in traversalPoints)
 			totalPoints.Add(pos);
@@ -108,6 +133,55 @@ internal class DesertMapping : Micropass
 		{
 			if (!totalPoints.Contains(pos) && !traversalPoints.Contains(pos) && pos.Y < ArbitraryYCutoff)
 				cachedNext.Add(pos);
+		}
+	}
+}
+
+public class DesertInstanceSaving : ModSystem
+{
+	public override void SaveWorldData(TagCompound tag)
+	{
+		if (DesertMapping.DesertInstances.Count > 0)
+		{
+			int count = 0;
+			tag.Add("count", DesertMapping.DesertInstances.Count);
+
+			foreach (var item in DesertMapping.DesertInstances)
+			{
+				TagCompound instance = [];
+				instance.Add("key", item.Key);
+				instance.Add("convType", item.Value.BiomeConversionType);
+				instance.Add("x", item.Value.Bounds.X);
+				instance.Add("y", item.Value.Bounds.Y);
+				instance.Add("width", item.Value.Bounds.Width);
+				instance.Add("height", item.Value.Bounds.Height);
+
+				tag.Add("instance" + count, instance);
+				count++;
+			}
+		}
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		DesertMapping.DesertInstances.Clear();
+
+		if (tag.TryGet("count", out int count))
+		{
+			for (int i = 0; i < count; i++)
+			{
+				TagCompound t = tag.GetCompound("instance" + i);
+				int key = t.GetInt("key");
+				var bounds = new Rectangle(t.GetInt("x"), t.GetInt("y"), t.GetInt("width"), t.GetInt("height"));
+				HashSet<Point16> positions = [];
+
+				for (int x = bounds.Left; x < bounds.Right; ++x)
+					for (int y = bounds.Top; y < bounds.Bottom; ++y)
+						positions.Add(new Point16(x, y));
+
+				DesertMapping.DesertInstance inst = new(key, t.GetInt("convType"), bounds, positions);
+				DesertMapping.DesertInstances.Add(key, inst);
+			}
 		}
 	}
 }
