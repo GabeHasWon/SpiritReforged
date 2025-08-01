@@ -17,6 +17,7 @@ public class Earrings : ModItem
 	public override void UpdateArmorSet(Player player)
 	{
 		player.GetModPlayer<AfterimagePlayer>().setActive = true;
+		player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Sundancer");
 	}
 
 	public override void UpdateEquip(Player player)

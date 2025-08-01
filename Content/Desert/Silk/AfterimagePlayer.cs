@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-using Terraria;
+using SpiritReforged.Content.Underground.WayfarerSet;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
@@ -13,19 +14,23 @@ public class AfterimagePlayer : ModPlayer
 {
 	public const int ManaThreshold = 30;
 
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
+	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
+
 	public bool setActive = false;
 	private int _manaCounter;
+	private byte _duplicateDelay;
 
 	#region drawing and visuals
 	private const int TrailLength = 8;
 
-	public Vector2 AfterPosition => _positionCache[29 - TrailLength];
+	public Vector2 ImagePosition => _positionCache[29 - TrailLength];
 	private readonly Vector2[] _positionCache = new Vector2[30];
 
 	public override void Load() => On_LegacyPlayerRenderer.DrawPlayerFull += static (orig, self, camera, player) =>
 	{
 		if (player.GetModPlayer<AfterimagePlayer>().setActive)
-			DrawAfterimage(Main.spriteBatch, self, camera, player, player.GetModPlayer<AfterimagePlayer>().AfterPosition);
+			DrawAfterimage(Main.spriteBatch, self, camera, player, player.GetModPlayer<AfterimagePlayer>().ImagePosition);
 
 		orig(self, camera, player);
 	};
@@ -35,64 +40,90 @@ public class AfterimagePlayer : ModPlayer
 		sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		Lighting.AddLight(position, new Vector3(0.5f, 0.3f, 0.05f));
+		float scale = 1f + MathHelper.Clamp(1f - drawPlayer.position.DistanceSQ(position) / 100, 0, 1) * 0.05f;
 
 		for (int a = 0; a < TrailLength; a++)
-			self.DrawPlayer(camera, drawPlayer, drawPlayer.GetModPlayer<AfterimagePlayer>()._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+			self.DrawPlayer(camera, drawPlayer, drawPlayer.GetModPlayer<AfterimagePlayer>()._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, scale);
 
 		for (int i = 0; i < 3; i++)
-			self.DrawPlayer(camera, drawPlayer, position, drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 0, 1);
+			self.DrawPlayer(camera, drawPlayer, position, drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 0, scale);
 
 		var glow = TextureAssets.Extra[98].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float wave = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 20f) * 0.5f;
-		var scale = new Vector2(0.5f + wave * 0.4f, 1 - wave * 0.4f) * 1.2f;
-		var glowPosition = position + new Vector2(drawPlayer.width / 2, 8) - Main.screenPosition;
+		var glowScale = new Vector2(0.5f + wave * 0.4f, 1 - wave * 0.4f) * 1.2f;
+		var glowPosition = position + drawPlayer.Size / 2 - new Vector2(0, 12).RotatedBy(drawPlayer.fullRotation) - Main.screenPosition;
 
 		sb.Draw(bloom, glowPosition, null, Color.Orange, 0, bloom.Size() / 2, 0.3f, default, 0);
 
-		sb.Draw(glow, glowPosition, null, Color.Orange * 0.5f, 0, glow.Size() / 2, scale * 1.3f, default, 0);
-		sb.Draw(glow, glowPosition, null, Color.Goldenrod, 0, glow.Size() / 2, scale, default, 0);
-		sb.Draw(glow, glowPosition, null, Color.White, 0, glow.Size() / 2, scale * 0.7f, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.Orange * 0.5f, 0, glow.Size() / 2, glowScale * 1.3f, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.Goldenrod, 0, glow.Size() / 2, glowScale, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.White, 0, glow.Size() / 2, glowScale * 0.7f, default, 0);
 
 		float angled = MathHelper.PiOver2;
-		sb.Draw(glow, glowPosition, null, Color.Orange * 0.5f, angled, glow.Size() / 2, scale * 1.3f, default, 0);
-		sb.Draw(glow, glowPosition, null, Color.Goldenrod, angled, glow.Size() / 2, scale, default, 0);
-		sb.Draw(glow, glowPosition, null, Color.White, angled, glow.Size() / 2, scale * 0.7f, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.Orange * 0.5f, angled, glow.Size() / 2, glowScale * 1.3f, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.Goldenrod, angled, glow.Size() / 2, glowScale, default, 0);
+		sb.Draw(glow, glowPosition, null, Color.White, angled, glow.Size() / 2, glowScale * 0.7f, default, 0);
 
 		sb.End();
 	}
 
 	public override void PostUpdateEquips()
 	{
-		if (setActive && Main.rand.NextBool(5) && Player.position != AfterPosition)
+		if (setActive)
 		{
-			float strength = Main.rand.NextFloat();
-			var position = Main.rand.NextVector2FromRectangle(new((int)AfterPosition.X, (int)AfterPosition.Y, Player.width, Player.height));
-			var velocity = AfterPosition.DirectionTo(Player.position) * strength * 3;
+			if (Main.rand.NextBool(5) && Player.position != ImagePosition)
+			{
+				float strength = Main.rand.NextFloat();
+				var position = Main.rand.NextVector2FromRectangle(new((int)ImagePosition.X, (int)ImagePosition.Y, Player.width, Player.height));
+				var velocity = ImagePosition.DirectionTo(Player.position) * strength * 3;
 
-			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), MathHelper.Lerp(0.5f, 2, strength), 20, 1) { emitLight = false });
+				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), MathHelper.Lerp(0.5f, 2, strength), 20, 1) { emitLight = false });
+			}
+
+			for (int i = _positionCache.Length - 1; i > 0; i--)
+				_positionCache[i] = _positionCache[i - 1];
+
+			_positionCache[0] = Player.position;
 		}
-
-		for (int i = _positionCache.Length - 1; i > 0; i--)
-			_positionCache[i] = _positionCache[i - 1];
-
-		_positionCache[0] = Player.position;
 	}
 	#endregion
 
-	public override void ResetEffects() => setActive = false;
+	public override void ResetEffects()
+	{
+		setActive = false;
+
+		if (Main.myPlayer == Player.whoAmI && _duplicateDelay > 0 && --_duplicateDelay == 1)
+		{
+			SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 0.8f }, ImagePosition);
+			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.2f, Pitch = 0.5f }, ImagePosition);
+
+			Vector2 lineScale = new(0.5f, 1);
+			var glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3);
+				float scale = Main.rand.NextFloat(0.4f, 1);
+
+				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
+				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.White.Additive(), scale * 0.7f, 30, 3));
+			}
+
+			Vector2 oldPosition = Player.position;
+			Player.position = ImagePosition; //Briefly adjust the player position so that projectiles appear at the afterimage instead
+
+			ItemCheck_Shoot(Player, Player.whoAmI, Player.HeldItem, Player.HeldItem.damage);
+
+			Player.position = oldPosition;
+		}
+	}
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (setActive && _manaCounter >= ManaThreshold)
-		{
-			Vector2 newPosition = position + (AfterPosition - Player.position);
-			Projectile.NewProjectile(source, newPosition, velocity, type, damage, knockback);
-
-			SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 0.8f }, AfterPosition);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Ambient/PositiveOutcome") with { Pitch = 0.5f, PitchVariance = 0.2f }, AfterPosition);
-		}
+		if (setActive && item.DamageType.CountsAsClass(DamageClass.Magic) && _manaCounter == 0)
+			_duplicateDelay = 20;
 
 		return true;
 	}
