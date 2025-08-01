@@ -1,9 +1,7 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
-using SpiritReforged.Content.Underground.WayfarerSet;
 using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -15,6 +13,8 @@ namespace SpiritReforged.Content.Desert.Silk;
 public class AfterimagePlayer : ModPlayer
 {
 	public const int ManaThreshold = 30;
+
+	public static readonly SoundStyle Magic = new("SpiritReforged/Assets/SFX/Projectile/MagicJingle");
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
 	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
@@ -28,6 +28,7 @@ public class AfterimagePlayer : ModPlayer
 
 	public Vector2 ImagePosition => _positionCache[29 - TrailLength];
 	private readonly Vector2[] _positionCache = new Vector2[30];
+	private float _manaEase;
 
 	public override void Load() => On_LegacyPlayerRenderer.DrawPlayerFull += static (orig, self, camera, player) =>
 	{
@@ -42,7 +43,7 @@ public class AfterimagePlayer : ModPlayer
 		sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		var afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
-		float manaStrength = (afterimager._duplicateDelay > 0) ? 1 : ((float)afterimager._manaCounter / ManaThreshold);
+		float manaStrength = (afterimager._duplicateDelay > 0) ? 1 : (afterimager._manaEase / ManaThreshold);
 		float mult = MathHelper.Clamp(drawPlayer.position.DistanceSQ(position) / 1000f, 0, 1) * manaStrength;
 
 		Lighting.AddLight(position, new Vector3(0.5f, 0.3f, 0.05f) * mult);
@@ -88,6 +89,8 @@ public class AfterimagePlayer : ModPlayer
 				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), MathHelper.Lerp(0.5f, 2, strength) * manaStrength, 20, 1) { emitLight = false });
 			}
 
+			_manaEase = MathHelper.Lerp(_manaEase, _manaCounter, 0.1f);
+
 			//Update old positions
 			for (int i = _positionCache.Length - 1; i > 0; i--)
 				_positionCache[i] = _positionCache[i - 1];
@@ -105,12 +108,12 @@ public class AfterimagePlayer : ModPlayer
 		{
 			SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 0.8f }, ImagePosition);
 			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.2f, Pitch = 0.5f }, ImagePosition);
+			SoundEngine.PlaySound(Magic with { Volume = 0.05f, Pitch = 0.3f, PitchVariance = 0.1f }, ImagePosition);
 
-			Vector2 lineScale = new(0.5f, 1);
 			var glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
 			var ease = Bomb.EffectEase;
 			var stretch = Vector2.One;
-			float angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi);
+			float angle = Main.rand.NextFloat(MathHelper.Pi);
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
 			{
@@ -122,9 +125,20 @@ public class AfterimagePlayer : ModPlayer
 				Angle = angle
 			});
 
-			for (int i = 0; i < 5; i++)
+			Vector2 lineScale = new(0.8f, 2.5f);
+
+			for (int i = 0; i < 8; i++)
 			{
-				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3);
+				Vector2 velocity = Vector2.UnitX.RotatedBy(i / 2 * MathHelper.PiOver2) * 2;
+				Color color = ((i % 2 == 0) ? Color.Orange : Color.White).Additive();
+				float scale = (i % 2 == 0) ? 1 : 0.7f;
+
+				ParticleHandler.SpawnParticle(new ImpactLine(glowPos, velocity, color, lineScale * scale, 20));
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 3);
 				float scale = Main.rand.NextFloat(0.4f, 1);
 
 				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
@@ -142,7 +156,7 @@ public class AfterimagePlayer : ModPlayer
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (setActive && item.DamageType.CountsAsClass(DamageClass.Magic) && _manaCounter == 0)
+		if (setActive && !item.channel && item.DamageType.CountsAsClass(DamageClass.Magic) && _manaCounter == 0)
 			_duplicateDelay = 20;
 
 		return true;
