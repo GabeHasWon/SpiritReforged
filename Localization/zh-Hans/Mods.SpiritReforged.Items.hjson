@@ -2105,3 +2105,18 @@ CommonPotsSavannaItem: {
 }
 
 // StactusBannerItem.DisplayName: Stactus Banner
+
+Earrings: {
+	// DisplayName: Earrings
+	// Tooltip: ""
+}
+
+SilkSirwal: {
+	// DisplayName: Silk Sirwal
+	// Tooltip: ""
+}
+
+SilkTop: {
+	// DisplayName: Silk Top
+	// Tooltip: ""
+}
