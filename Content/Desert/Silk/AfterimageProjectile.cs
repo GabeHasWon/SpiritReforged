@@ -11,11 +11,11 @@ namespace SpiritReforged.Content.Desert.Silk;
 public class AfterimageProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
-	private bool _afterimage;
+	public bool Afterimage { get; private set; }
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
 	{
-		if (_afterimage)
+		if (Afterimage)
 		{
 			var star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
@@ -37,7 +37,7 @@ public class AfterimageProjectile : GlobalProjectile
 	{
 		if (source is EntitySource_ItemUse_WithAmmo && Main.player[projectile.owner].GetModPlayer<AfterimagePlayer>().CreatedDuplicate)
 		{
-			_afterimage = true;
+			Afterimage = true;
 			projectile.netUpdate = true;
 
 			CreateTrail(projectile);
@@ -57,7 +57,7 @@ public class AfterimageProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
-		if (_afterimage)
+		if (Afterimage)
 		{
 			if (Main.rand.NextBool(8))
 			{
@@ -82,13 +82,13 @@ public class AfterimageProjectile : GlobalProjectile
 
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		if (_afterimage)
-			bitWriter.WriteBit(_afterimage);
+		if (Afterimage)
+			bitWriter.WriteBit(Afterimage);
 	}
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
-		if (_afterimage = bitReader.ReadBit())
+		if (Afterimage = bitReader.ReadBit())
 			CreateTrail(projectile);
 	}
 }
