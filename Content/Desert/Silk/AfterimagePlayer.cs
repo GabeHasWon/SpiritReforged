@@ -19,6 +19,8 @@ public class AfterimagePlayer : ModPlayer
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
 	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
 
+	public bool CreatedDuplicate => _duplicateDelay == 1;
+
 	public bool setActive = false;
 	private int _manaCounter;
 	private byte _duplicateDelay;
@@ -104,47 +106,53 @@ public class AfterimagePlayer : ModPlayer
 	{
 		setActive = false;
 
-		if (Main.myPlayer == Player.whoAmI && _duplicateDelay > 0 && --_duplicateDelay == 1)
+		if (_duplicateDelay > 0 && --_duplicateDelay == 1)
+			FireDuplicate(); //_duplicateDelay is only incremented locally
+	}
+
+	private void FireDuplicate()
+	{
+		SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 0.8f }, ImagePosition);
+		SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.2f, Pitch = 0.5f }, ImagePosition);
+		SoundEngine.PlaySound(Magic with { Volume = 0.05f, Pitch = 0.3f, PitchVariance = 0.1f }, ImagePosition);
+
+		var glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
+		var ease = Bomb.EffectEase;
+		var stretch = Vector2.One;
+		float angle = Main.rand.NextFloat(MathHelper.Pi);
+
+		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
 		{
-			SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 0.8f }, ImagePosition);
-			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.2f, Pitch = 0.5f }, ImagePosition);
-			SoundEngine.PlaySound(Magic with { Volume = 0.05f, Pitch = 0.3f, PitchVariance = 0.1f }, ImagePosition);
+			Angle = angle
+		});
 
-			var glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
-			var ease = Bomb.EffectEase;
-			var stretch = Vector2.One;
-			float angle = Main.rand.NextFloat(MathHelper.Pi);
+		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 180, 20, "Smoke", stretch, ease)
+		{
+			Angle = angle
+		});
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
-			{
-				Angle = angle
-			});
+		Vector2 lineScale = new(0.8f, 2.5f);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 180, 20, "Smoke", stretch, ease)
-			{
-				Angle = angle
-			});
+		for (int i = 0; i < 8; i++)
+		{
+			Vector2 velocity = Vector2.UnitX.RotatedBy(i / 2 * MathHelper.PiOver2) * 2;
+			Color color = ((i % 2 == 0) ? Color.Orange : Color.White).Additive();
+			float scale = (i % 2 == 0) ? 1 : 0.7f;
 
-			Vector2 lineScale = new(0.8f, 2.5f);
+			ParticleHandler.SpawnParticle(new ImpactLine(glowPos, velocity, color, lineScale * scale, 20));
+		}
 
-			for (int i = 0; i < 8; i++)
-			{
-				Vector2 velocity = Vector2.UnitX.RotatedBy(i / 2 * MathHelper.PiOver2) * 2;
-				Color color = ((i % 2 == 0) ? Color.Orange : Color.White).Additive();
-				float scale = (i % 2 == 0) ? 1 : 0.7f;
+		for (int i = 0; i < 8; i++)
+		{
+			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 3);
+			float scale = Main.rand.NextFloat(0.4f, 1);
 
-				ParticleHandler.SpawnParticle(new ImpactLine(glowPos, velocity, color, lineScale * scale, 20));
-			}
+			ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
+			ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.White.Additive(), scale * 0.7f, 30, 3));
+		}
 
-			for (int i = 0; i < 8; i++)
-			{
-				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 3);
-				float scale = Main.rand.NextFloat(0.4f, 1);
-
-				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
-				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.White.Additive(), scale * 0.7f, 30, 3));
-			}
-
+		if (Player.whoAmI == Main.myPlayer)
+		{
 			Vector2 oldPosition = Player.position;
 			Player.position = ImagePosition; //Briefly adjust the player position so that projectiles appear at the afterimage instead
 
