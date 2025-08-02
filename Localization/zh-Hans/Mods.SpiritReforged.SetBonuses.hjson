@@ -32,3 +32,8 @@ Granite:
 	双击{0}键进行践踏
 	撞击地面时会释放随高度变化的冲击波
 	'''
+/* Sundancer:
+	'''
+	An afterimage follows you with a half second delay
+	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
+	''' */

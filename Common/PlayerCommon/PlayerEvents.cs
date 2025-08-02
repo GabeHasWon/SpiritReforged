@@ -8,6 +8,7 @@ public class PlayerEvents : ModPlayer
 
 	public static event Action<Player> OnKill;
 	public static event AnglerQuestDelegate OnAnglerQuestReward;
+	public static event Action<Player> OnPostUpdateRunSpeeds;
 
 	/// <summary> Subscribes to <see cref="OnAnglerQuestReward"/> with reward chances based on the provided info. </summary>
 	/// <param name="item"> The item to add as a reward. </param>
@@ -24,4 +25,5 @@ public class PlayerEvents : ModPlayer
 
 	public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) => OnKill?.Invoke(Player);
 	public override void AnglerQuestReward(float rareMultiplier, List<Item> rewardItems) => OnAnglerQuestReward?.Invoke(Player, rareMultiplier, rewardItems);
+	public override void PostUpdateRunSpeeds() => OnPostUpdateRunSpeeds?.Invoke(Player);
 }

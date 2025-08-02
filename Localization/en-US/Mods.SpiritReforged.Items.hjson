@@ -2105,3 +2105,22 @@ CommonPotsSavannaItem: {
 }
 
 StactusBannerItem.DisplayName: Stactus Banner
+
+Earrings: {
+	DisplayName: Sundancer Earrings
+	Tooltip:
+		'''
+		Increases maximum mana by 20
+		7% increased magic damage
+		'''
+}
+
+SilkSirwal: {
+	DisplayName: Sundancer Sirwal
+	Tooltip: Increases movement speed and acceleration on the ground
+}
+
+SilkTop: {
+	DisplayName: Sundancer Top
+	Tooltip: 7% increased magic damage
+}

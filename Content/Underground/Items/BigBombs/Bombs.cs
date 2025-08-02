@@ -13,6 +13,7 @@ namespace SpiritReforged.Content.Underground.Items.BigBombs;
 public class Bomb : BombProjectile, ILargeExplosive
 {
 	public const int CommonSize = 32;
+	public static readonly PolynomialEase EffectEase = new((x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 
 	public virtual int OriginalType => ProjectileID.Bomb;
 	public override LocalizedText DisplayName => Language.GetText("ProjectileName.Bomb");
@@ -57,7 +58,7 @@ public class Bomb : BombProjectile, ILargeExplosive
 
 		SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-		var ease = new PolynomialEase((float x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+		var ease = EffectEase;
 		var stretch = Vector2.One;
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
