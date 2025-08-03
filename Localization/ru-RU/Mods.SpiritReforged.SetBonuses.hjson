@@ -31,3 +31,8 @@ Granite:
 	Дважды нажмите клавишу {0}, чтобы устремиться вниз
 	Удар о землю создаёт ударную волну, сила которой зависит от высоты падения    
 	'''
+/* Sundancer:
+	'''
+	An afterimage follows you with a half second delay
+	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
+	''' */

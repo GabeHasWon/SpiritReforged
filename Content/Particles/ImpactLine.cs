@@ -39,7 +39,9 @@ public class ImpactLine : Particle
 	{
 		float opacity = EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseSine.Ease(Progress));
 		Color = _color * opacity;
-		Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+
+		if (Velocity != Vector2.Zero)
+			Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
 
 		if (!NoLight)
 			Lighting.AddLight(Position, Color.ToVector3() / 2f);
