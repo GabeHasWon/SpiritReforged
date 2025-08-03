@@ -88,7 +88,9 @@ public class AfterimageProjectile : GlobalProjectile
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
-		if (Afterimage = bitReader.ReadBit())
+		bool oldValue = Afterimage;
+
+		if (Afterimage = bitReader.ReadBit() && !oldValue)
 			CreateTrail(projectile);
 	}
 }

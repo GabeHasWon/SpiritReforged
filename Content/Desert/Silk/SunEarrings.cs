@@ -1,7 +1,7 @@
 namespace SpiritReforged.Content.Desert.Silk;
 
 [AutoloadEquip(EquipType.Head, EquipType.Front)]
-public class Earrings : ModItem
+public class SunEarrings : ModItem
 {
 	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
 	public override void SetDefaults()
