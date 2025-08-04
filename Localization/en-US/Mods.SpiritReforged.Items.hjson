@@ -2124,3 +2124,12 @@ SilkTop: {
 	DisplayName: Sundancer Top
 	Tooltip: 7% increased magic damage
 }
+
+CeremonialDagger: {
+	DisplayName: Ceremonial Dagger
+	Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		'''
+}
