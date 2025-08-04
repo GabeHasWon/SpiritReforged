@@ -40,7 +40,7 @@ public class CeremonialDagger : ModItem
 	{
 		float oldSwingArc = _swingArc;
 		while (oldSwingArc == _swingArc) //Never select the same arc twice
-			_swingArc = Main.rand.NextFromList(5f, -5f, 0f);
+			_swingArc = Main.rand.NextFromList(4.2f, -4.2f, 0f);
 
 		if (_swingArc == 0)
 			velocity = velocity.RotatedByRandom(0.5f);
@@ -60,6 +60,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 	public override LocalizedText DisplayName => ModContent.GetInstance<CeremonialDagger>().DisplayName;
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
+	public static readonly SoundStyle Slice = new("SpiritReforged/Assets/SFX/Projectile/Slice");
 
 	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30);
 
@@ -81,7 +82,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 			owner.heldProj = Projectile.whoAmI;
 
 			owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
-			SwingArc = 6;
+			SwingArc = 5;
 
 			if (Counter % 10 == 0)
 				SoundEngine.PlaySound(SoundID.Item1 with { MaxInstances = 3 }, Projectile.Center);
@@ -176,7 +177,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		float offset = Math.Max(20 * (0.5f - Progress * 2) * (Stab ? 1 : 0), -10);
-		DrawHeld(lightColor, new Vector2(0, TextureAssets.Projectile[Type].Value.Height) + new Vector2(-offset, offset), Projectile.rotation);
+		DrawHeld(lightColor, new Vector2(2, TextureAssets.Projectile[Type].Value.Height - 2) + new Vector2(-offset, offset), Projectile.rotation);
 
 		int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
 		var effects = (direction == -1) ? SpriteEffects.FlipVertically : default;
@@ -186,6 +187,9 @@ public class CeremonialDaggerSwing : SwungProjectile
 		{
 			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), config.Reach + 10, effects: effects);
 			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), config.Reach + 10, effects: effects);
+
+			if (AltFunction && Progress > 0.2f)
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, config.Reach + 10, effects: effects);
 		}
 
 		if (AltFunction)
