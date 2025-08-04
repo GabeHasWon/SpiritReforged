@@ -91,7 +91,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 				Counter = 0;
 				Projectile.ai[0] = 2;
 
-				SoundEngine.PlaySound(RogueKnifeMinion.BigSwing, Projectile.Center);
+				SoundEngine.PlaySound(RogueKnifeMinion.BigSwing with { Volume = 0.7f, Pitch = 0.3f, PitchVariance = 0.1f }, Projectile.Center);
 			}
 
 			return;
@@ -117,6 +117,14 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 			owner.SetCompositeArmFront(true, amount, armRotation);
 			Projectile.Center = owner.GetFrontHandPosition(amount, armRotation);
+		}
+
+		if (AltFunction && Main.rand.NextBool())
+		{
+			var dust = Dust.NewDustPerfect(Projectile.Center + new Vector2(34, -34).RotatedBy(Projectile.rotation) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.GoldFlame, null, 150, default, 1f - Progress);
+			dust.noGravity = true;
+			dust.velocity = (Vector2.UnitX * Main.rand.NextFloat(3)).RotatedBy(Projectile.rotation);
+			dust.noLightEmittence = true;
 		}
 	}
 
@@ -154,6 +162,9 @@ public class CeremonialDaggerSwing : SwungProjectile
 			{
 				modifiers.SetCrit();
 				target.DelBuff(target.FindBuffIndex(BuffID.Bleeding));
+
+				for (int i = 0; i < 10; i++)
+					Dust.NewDustPerfect(target.Hitbox.ClosestPointInRect(Projectile.Center) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
 			}
 			else
 			{
@@ -174,7 +185,24 @@ public class CeremonialDaggerSwing : SwungProjectile
 		if (!Stab && !Flourishing)
 		{
 			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), config.Reach + 10, effects: effects);
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), config.Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), config.Reach + 10, effects: effects);
+		}
+
+		if (AltFunction)
+		{
+			const float starScale = 0.3f;
+
+			Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
+			var star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
+			var glow = AssetLoader.LoadedTextures["Bloom"].Value;
+
+			float mult = Flourishing ? (Counter - 10) / 10f :  1f - Counter / 15f;
+			var position = Projectile.Center + new Vector2(34, -34).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			Main.EntitySpriteDraw(glow, position, null, lightColor.MultiplyRGB(Color.Goldenrod).Additive() * mult * 0.4f, 0, glow.Size() / 2, new Vector2(3, 0.3f) * Projectile.scale * 0.5f * starScale, default);
+			Main.EntitySpriteDraw(glow, position, null, lightColor.MultiplyRGB(Color.Gold).Additive() * mult * 0.5f, 0, glow.Size() / 2, Projectile.scale * 0.5f * starScale, default);
+			Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.Goldenrod).Additive() * mult, 0, star.Size() / 2, Projectile.scale * starScale, default);
+			Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * mult, 0, star.Size() / 2, Projectile.scale * 0.8f * starScale, default);
 		}
 
 		return false;
