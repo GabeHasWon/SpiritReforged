@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Forest.RoguesCrest;
@@ -38,12 +39,28 @@ public class CeremonialDagger : ModItem
 	public override bool AltFunctionUse(Player player) => true;
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		float oldSwingArc = _swingArc;
-		while (oldSwingArc == _swingArc) //Never select the same arc twice
-			_swingArc = Main.rand.NextFromList(4.2f, -4.2f, 0f);
+		const float secondaryArc = 5;
 
-		if (_swingArc == 0)
-			velocity = velocity.RotatedByRandom(0.5f);
+		if (player.altFunctionUse == 0) //Primary function
+		{
+			if (_swingArc == secondaryArc) //Primary attacks following a secondary are always uppercuts
+			{
+				_swingArc = -4.2f;
+			}
+			else
+			{
+				float oldSwingArc = _swingArc;
+				while (oldSwingArc == _swingArc) //Never select the same arc twice
+					_swingArc = Main.rand.NextFromList(4.2f, -4.2f, 0f);
+
+				if (_swingArc == 0)
+					velocity = velocity.RotatedByRandom(0.5f);
+			}
+		}
+		else //Secondary function
+		{
+			_swingArc = secondaryArc;
+		}
 
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
 		return false;
@@ -60,7 +77,6 @@ public class CeremonialDaggerSwing : SwungProjectile
 	public override LocalizedText DisplayName => ModContent.GetInstance<CeremonialDagger>().DisplayName;
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
-	public static readonly SoundStyle Slice = new("SpiritReforged/Assets/SFX/Projectile/Slice");
 
 	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30);
 
@@ -72,17 +88,18 @@ public class CeremonialDaggerSwing : SwungProjectile
 			var owner = Main.player[Projectile.owner];
 
 			Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
-			Projectile.rotation = Counter / 2f * Projectile.direction;
+			Projectile.rotation = Counter / 2f * -Projectile.direction;
 
 			float armRotation = MathHelper.PiOver2 * Projectile.direction;
 			float tossHeight = EaseFunction.EaseCubicOut.Ease(Counter / (float)flourishTime) * 60;
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, armRotation) - new Vector2(0, tossHeight);
+			Player.CompositeArmStretchAmount stretch = (Counter < 16) ? Player.CompositeArmStretchAmount.ThreeQuarters : Player.CompositeArmStretchAmount.Full;
 
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+			Projectile.Center = owner.GetFrontHandPosition(stretch, armRotation) - new Vector2(0, tossHeight);
+
+			owner.SetCompositeArmFront(true, stretch, armRotation);
 			owner.heldProj = Projectile.whoAmI;
 
 			owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
-			SwingArc = 5;
 
 			if (Counter % 10 == 0)
 				SoundEngine.PlaySound(SoundID.Item1 with { MaxInstances = 3 }, Projectile.Center);
@@ -93,6 +110,9 @@ public class CeremonialDaggerSwing : SwungProjectile
 				Projectile.ai[0] = 2;
 
 				SoundEngine.PlaySound(RogueKnifeMinion.BigSwing with { Volume = 0.7f, Pitch = 0.3f, PitchVariance = 0.1f }, Projectile.Center);
+
+				for (int i = 0; i < 3; i++)
+					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center + new Vector2(34, -34).RotatedBy(Projectile.rotation), Main.rand.NextVector2Unit(), Color.Yellow, 1, 10));
 			}
 
 			return;
@@ -162,13 +182,17 @@ public class CeremonialDaggerSwing : SwungProjectile
 			if (target.HasBuff(BuffID.Bleeding))
 			{
 				modifiers.SetCrit();
-				target.DelBuff(target.FindBuffIndex(BuffID.Bleeding));
+				target.RemoveBuff(BuffID.Bleeding);
+				Vector2 hitPos = target.Hitbox.ClosestPointInRect(Projectile.Center);
 
 				for (int i = 0; i < 10; i++)
-					Dust.NewDustPerfect(target.Hitbox.ClosestPointInRect(Projectile.Center) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+					Dust.NewDustPerfect(hitPos + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+
+				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, Pitch = 0.7f }, Projectile.Center);
 			}
 			else
 			{
+				modifiers.Knockback += 1;
 				modifiers.DisableCrit();
 			}
 		}
