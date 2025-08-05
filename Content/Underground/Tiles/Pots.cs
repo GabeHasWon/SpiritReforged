@@ -8,7 +8,8 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. </summary>
+/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. <para/>
+/// The loot table registered through this type is used for display in the Potstiary, and never actually rolls. </summary>
 public class Pots : PotTile, ILootTile
 {
 	public const string NameKey = "MapObject.Pot";

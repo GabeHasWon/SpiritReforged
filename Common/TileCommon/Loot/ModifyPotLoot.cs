@@ -3,7 +3,7 @@
 namespace SpiritReforged.Common.TileCommon.Loot;
 
 /// <summary> Modifies vanilla pots to use additional <see cref="LootTable"/> drops. </summary>
-internal sealed class ModifyPotLoot : ILoadable
+internal class ModifyPotLoot : ILoadable
 {
 	public void Load(Mod mod) => On_WorldGen.SpawnThingsFromPot += ModifyLoot;
 	private static void ModifyLoot(On_WorldGen.orig_SpawnThingsFromPot orig, int i, int j, int x2, int y2, int style)
