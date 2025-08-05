@@ -62,10 +62,6 @@ public partial class SpiritReforgedMod : Mod
 					{
 						return RecordHandler.ManualAddRecord(args[1..]);
 					}
-				case "ModifyPotLoot":
-					{
-						return ILootTile.ManualModifyLoot(args[1..]);
-					}
 				case "PotDiscovered":
 					{
 						if (args.Length > 3)

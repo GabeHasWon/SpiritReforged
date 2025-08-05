@@ -100,7 +100,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 			return;
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
-			ILootTile.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
+			TileLootHandler.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
 
 		if (!Main.dedServ)
 			DeathEffects(i, j, frameX, frameY);

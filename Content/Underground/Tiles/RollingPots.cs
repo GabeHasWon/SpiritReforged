@@ -58,7 +58,7 @@ public class RollingPots : PotTile, ILootTile
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, ModContent.ProjectileType<PotBoulder>(), damage, 5, ai0: style);
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => ILootTile.GetLootPool(ModContent.TileType<Pots>())?.Invoke(context, loot);
+	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
 }
 
 internal class PotBoulder : ModProjectile

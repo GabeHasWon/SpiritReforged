@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.DataStructures;
+using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Common.TileCommon.Loot;
 
@@ -15,27 +15,20 @@ public interface ILootTile
 	}
 
 	public void AddLoot(Context context, ILoot loot);
+}
 
-	#region database
+public class TileLootHandler : ILoadable
+{
 	/// <summary> Stores delegate loot methods by tile type. </summary>
 	private static readonly Dictionary<int, LootDelegate> ActionByType = [];
 
-	public static LootDelegate GetLootPool(int tileType)
+	public static void InvokeLootPool(int tileType, Context context, ILoot loot)
 	{
-		if (ActionByType.TryGetValue(tileType, out var pool))
-			return pool;
-
-		if (TileLoader.GetTile(tileType) is ILootTile t) //If the delegate wasn't registered yet due to load order, register it now. This is most likely an issue when using calls
-		{
-			LootDelegate del = t.AddLoot;
-
-			ActionByType.Add(tileType, del);
-			return del;
-		}
-
-		return null;
+		if (TryGetLootPool(tileType, out LootDelegate action))
+			action.Invoke(context, loot);
 	}
 
+	public static bool TryGetLootPool(int tileType, out LootDelegate pool) => ActionByType.TryGetValue(tileType, out pool);
 	public static void RegisterLoot(LootDelegate action, params int[] types)
 	{
 		foreach (int type in types)
@@ -48,7 +41,7 @@ public interface ILootTile
 	/// <summary> Calls <see cref="LootTable.Resolve(Rectangle, Player)"/> using tile data from the given coordinates. </summary>
 	public static bool Resolve(int i, int j, ushort type, int frameX, int frameY)
 	{
-		if (GetLootPool(type) is LootDelegate action)
+		if (TryGetLootPool(type, out LootDelegate action))
 		{
 			Tile t = new(); //if this method is called in KillMultiTile the tile at (i, j) is unusable
 			t.TileFrameX = (short)frameX;
@@ -71,42 +64,16 @@ public interface ILootTile
 
 		return false;
 	}
-	#endregion
 
-	#region call
-	public static bool ManualModifyLoot(object[] args)
+	/// <summary> Automatically registers loot delegates by <see cref="ILootTile"/> types. </summary>
+	public void Load(Mod mod) => SpiritReforgedMod.OnLoad += static () =>
 	{
-		if (args.Length < 2)
-			throw new ArgumentException("ModifyPotLoot requires 2 parameters.");
-
-		if (args[0] is not int type)
-			throw new ArgumentException("ModifyPotLoot parameter 1 should be an int.");
-
-		if (!ParseLootAction(type, args[1]))
-			throw new ArgumentException("ModifyPotLoot parameter 2 should be a bool, Action<int, ILoot>, or Action<int, Point16, ILoot>.");
-
-		return true;
-	}
-
-	public static bool ParseLootAction(int type, object arg)
-	{
-		if (arg is bool hasBasicLoot && hasBasicLoot)
+		foreach (var t in SpiritReforgedMod.Instance.GetContent<ModTile>())
 		{
-			RegisterLoot(GetLootPool(ModContent.TileType<Pots>()), type);
-			return true;
+			if (t is ILootTile i)
+				RegisterLoot(i.AddLoot, t.Type);
 		}
-		else if (arg is Action<int, ILoot> dele)
-		{
-			RegisterLoot((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
-			return true;
-		}
-		else if (arg is Action<int, Point16, ILoot> dele2)
-		{
-			RegisterLoot((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
-			return true;
-		}
+	};
 
-		return false;
-	}
-	#endregion
+	public void Unload() { }
 }

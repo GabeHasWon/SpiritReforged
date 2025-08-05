@@ -20,10 +20,10 @@ public class RemedyPotion : ModItem
 		Item.ResearchUnlockCount = 20;
 
 		//Register pot loot
-		ILootTile.RegisterLoot(static (context, loot) =>
+		TileLootHandler.RegisterLoot(static (context, loot) =>
 		{
-			int i = context.Coordinates.Y;
-			int chance = (i >= Main.UnderworldLayer || context.Simulated) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));
+			int y = context.Coordinates.Y;
+			int chance = (y >= Main.UnderworldLayer || context.Simulated) ? 33 : ((y >= Main.rockLayer) ? 38 : ((y >= Main.worldSurface) ? 31 : 0));
 
 			if (chance > 0)
 				loot.AddCommon(ModContent.ItemType<RemedyPotion>(), chance);

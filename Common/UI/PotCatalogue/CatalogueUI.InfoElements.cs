@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ItemDropRules;
 using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
@@ -68,7 +69,7 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (GetLootPool(Selected.record.type) is LootDelegate action)
+		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootDelegate action))
 		{
 			var tableInst = new LootTable();
 			action.Invoke(new(Selected.record.styles[0]), tableInst);

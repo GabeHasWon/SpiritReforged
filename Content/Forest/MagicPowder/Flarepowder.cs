@@ -69,10 +69,10 @@ public class Flarepowder : ModItem
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
 
 			//Register pot loot
-			ILootTile.RegisterLoot(static (context, loot) =>
+			TileLootHandler.RegisterLoot(static (context, loot) =>
 			{
 				int chance = (context.Coordinates.Y < Main.rockLayer) ? 17 : 0;
-				
+
 				if (chance > 0)
 					loot.AddCommon(ModContent.ItemType<Flarepowder>(), chance, 10, 20);
 			}, TileID.Pots, ModContent.TileType<Pots>());

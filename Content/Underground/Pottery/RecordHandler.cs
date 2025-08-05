@@ -2,7 +2,9 @@
 using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -54,9 +56,6 @@ public class RecordHandler : ModSystem
 
 			foreach (var group in StyleDatabase.Groups[type])
 				r.AddRecord(type, group);
-
-			if (TileLoader.GetTile(type) is ILootTile loot)
-				ILootTile.RegisterLoot(loot.AddLoot, type); //Automatically register a loot table if applicable
 		}
 
 		TileEvents.OnKillTile += ValidateRecord;
@@ -113,7 +112,7 @@ public class RecordHandler : ModSystem
 		}
 
 		if (args.Length > 5) //Add a loot pool
-			ILootTile.ParseLootAction(type, args[5]);
+			ParseLootAction(type, args[5]);
 
 		if (args.Length > 6 && args[6] is LocalizedText desc)
 			e.AddDescription(desc);
@@ -123,6 +122,31 @@ public class RecordHandler : ModSystem
 
 		Records.Add(e);
 		return true;
+
+		static bool ParseLootAction(int type, object arg)
+		{
+			if (arg is bool hasBasicLoot && hasBasicLoot)
+			{
+				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootDelegate pool);
+
+				if (result)
+					TileLootHandler.RegisterLoot(pool, type);
+
+				return result;
+			}
+			else if (arg is Action<int, ILoot> dele)
+			{
+				TileLootHandler.RegisterLoot((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
+				return true;
+			}
+			else if (arg is Action<int, Point16, ILoot> dele2)
+			{
+				TileLootHandler.RegisterLoot((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
 

@@ -73,7 +73,7 @@ public class SilverPlatters : PotTile, ILootTile
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			for (int x = 0; x < 2; x++) //Roll twice
-				ILootTile.Resolve(i, j, Type, frameX, frameY);
+				TileLootHandler.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)

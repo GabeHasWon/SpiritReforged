@@ -34,6 +34,9 @@ public partial class SpiritReforgedMod : Mod
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
 	private static extern ref bool GetSwapMusic(Main main);
 
+	public static event Action OnLoad;
+	public static event Action OnUnload;
+
 	public SpiritReforgedMod()
 	{
 		GoreAutoloadingEnabled = true;
@@ -44,6 +47,9 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Load()
 	{
+		OnLoad?.Invoke();
+		OnLoad = null;
+
 		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
@@ -59,6 +65,9 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Unload()
 	{
+		OnUnload?.Invoke();
+		OnUnload = null;
+
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		AssetLoader.Unload();

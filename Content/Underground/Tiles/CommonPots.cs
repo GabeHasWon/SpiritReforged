@@ -71,5 +71,5 @@ public class CommonPots : PotTile, ILootTile
 		return true;
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => ILootTile.GetLootPool(ModContent.TileType<Pots>())?.Invoke(context, loot);
+	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
 }
