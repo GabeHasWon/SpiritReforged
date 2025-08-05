@@ -1,6 +1,7 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
@@ -72,7 +73,7 @@ public class SilverPlatters : PotTile, ILootTile
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			for (int x = 0; x < 2; x++) //Roll twice
-				LootTable.Resolve(i, j, Type, frameX, frameY);
+				TileLootHandler.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -93,7 +94,7 @@ public class SilverPlatters : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("GarlicBread", out ModItem bread) && CrossMod.Thorium.TryFind("Takoyaki", out ModItem takoyaki))
 			loot.AddOneFromOptions(2, bread.Type, takoyaki.Type);

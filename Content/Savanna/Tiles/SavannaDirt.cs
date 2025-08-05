@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.CheckItemUse;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;

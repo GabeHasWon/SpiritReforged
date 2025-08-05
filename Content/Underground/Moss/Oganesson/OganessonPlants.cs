@@ -1,5 +1,4 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.CheckItemUse;
 using SpiritReforged.Content.Dusts;
 using System.Linq;
 using Terraria.DataStructures;

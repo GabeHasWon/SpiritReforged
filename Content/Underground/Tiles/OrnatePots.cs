@@ -7,6 +7,7 @@ using Terraria.GameContent.ItemDropRules;
 using SpiritReforged.Common.ItemCommon;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
+using SpiritReforged.Common.TileCommon.Loot;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -80,7 +81,7 @@ public class OrnatePots : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
 		loot.Add(ItemDropRule.Common(ItemID.LuckPotion, 2, 1, 2));
 		loot.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 1, 3));
