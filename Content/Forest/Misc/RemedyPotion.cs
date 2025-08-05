@@ -27,7 +27,7 @@ public class RemedyPotion : ModItem
 		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
 			return;
 
-		int chance = (i >= Main.UnderworldLayer) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));
+		int chance = (j >= Main.UnderworldLayer) ? 33 : ((j >= Main.rockLayer) ? 38 : ((j >= Main.worldSurface) ? 31 : 0));
 		if (chance > 0 && Main.rand.NextBool(chance))
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<RemedyPotion>());
