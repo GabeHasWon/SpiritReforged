@@ -1,6 +1,7 @@
-﻿using Terraria.Audio;
+﻿using SpiritReforged.Common.NPCCommon;
+using Terraria.Audio;
 
-namespace SpiritReforged.Common.NPCCommon;
+namespace SpiritReforged.Common.Ambience;
 
 internal class BannerSound : ILoadable
 {
@@ -14,7 +15,7 @@ internal class BannerSound : ILoadable
 
 		int bannerItem = Item.NPCtoBanner(npc.BannerID());
 
-		if (NPC.killCount[bannerItem] % ItemID.Sets.KillsToBanner[bannerItem] == 0)
+		if (bannerItem > 0 && NPC.killCount[bannerItem] % ItemID.Sets.KillsToBanner[bannerItem] == 0)
 			SoundEngine.PlaySound(SoundEffect, npc.Center);
 	}
 
