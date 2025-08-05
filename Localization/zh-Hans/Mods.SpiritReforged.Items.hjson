@@ -251,7 +251,7 @@ DiverLegs: {
 }
 
 SailorCap: {
-	DisplayName: 船长帽
+	DisplayName: 水手帽
 	Tooltip: “请上船！”
 }
 
@@ -375,7 +375,7 @@ FloatingDriftwood: {
 }
 
 FishCrate: {
-	DisplayName: 包装宝匣
+	DisplayName: 包装匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -508,7 +508,7 @@ BaobabFruit: {
 }
 
 SavannaGrassSeeds: {
-	DisplayName: 稀树平原草种
+	DisplayName: 稀树平原草种子
 	Tooltip: ""
 }
 
@@ -901,7 +901,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（沙尘暴）
+	DisplayName: 音乐盒（尘暴）
 }
 
 FishLure: {
@@ -1641,7 +1641,7 @@ DunceCrabBannerItem.DisplayName: 笨蟹旗
 WheezerBannerItem.DisplayName: 响尾兽旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽
+	DisplayName: 响尾兽雕像
 	Tooltip: ""
 }
 
@@ -1793,7 +1793,7 @@ OtherworldSavannaNightMusicBoxItem: {
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（沙尘暴）
+	DisplayName: 异界音乐盒（尘暴）
 	Tooltip: ""
 }
 

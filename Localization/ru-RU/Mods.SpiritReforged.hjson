@@ -1,7 +1,7 @@
 Biomes: {
 	SavannaBiome: {
 		DisplayName: Саванна
-		TownNPCDialogueName: саванну
+		TownNPCDialogueName: Саванна
 	}
 }
 
@@ -10,46 +10,46 @@ SlotContexts.Backpack: Рюкзак
 Conditions: {
 	InSavanna: В саванне
 	PeevedTumbler: Когда блестит
-	Discovered: Обнаружено
-	Submerged: Под водой
+	Discovered: Когда обнаружен
+	Submerged: Полностью погружённый в воду
 }
 
 Misc: {
 	Pins: {
-		Move: Переместить метку
-		Obtained: Эта метка уже у вас
-		UseItem: ПКМ, чтобы добавить эту метку в коллекцию
+		Move: Переместить булавку
+		Obtained: Эта булавка уже у вас
+		UseItem: Нажмите ПКМ, чтобы добавить эту булавку в коллекцию
 	}
 
 	NoStock: Нет в наличии
-	GraveText: <wavy>Старая, выцветшая надпись... Что здесь было написано?
-	MenuButton: Использовать стиль меню
-	// UnchangedMap: Map has no changes.
-	// ShareMap: Map has been shared.
-	// ShareAndUpdateMap: Map has been shared & updated.
+	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
+	MenuButton: Использовать тему меню
+	UnchangedMap: Карта не изменена.
+	ShareMap: Карта отправлена.
+	ShareAndUpdateMap: Карта отправлена и обновлена.
 }
 
 DamageSources: {
 	Impaling: {
-		0: "{0} был пронзён."
-		1: "{0} оказался нанизан."
+		0: Игрок {0} был пронзён насквозь.
+		1: Игрок {0} был насажен на кол.
 	}
 }
 
 GameTips: {
-	ReforgedTip0: Всегда носите с собой еду. Никогда не знаешь, когда она пригодится!
-	ReforgedTip1: Иногда бабочки прячутся в подземных рощах.
-	ReforgedTip2: Метки полезны! Проверьте инвентарь значков в левом нижнем углу карты.
+	ReforgedTip0: Всегда носите с собой еду — никогда не знаешь, когда она пригодится!
+	ReforgedTip1: Изредка в подземных рощах можно встретить бабочек.
+	ReforgedTip2: Булавки очень полезны! Проверьте свой инвентарь булавок в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
-	ReforgedTip4: Рюкзаки. Теперь у вас больше места.
-	ReforgedTip5: Мрачная бездна океана скрывает множество даров.
-	ReforgedTip6: Звёздная трава приносит утешение в ночной темноте.
-	ReforgedTip7: Облачный стебель всегда растёт под облаками.
-	ReforgedTip8: На вершины акаций можно забраться, если нужна высота.
-	ReforgedTip9: Вещи иногда всплывают на поверхность океана — заглядывайте время от времени!
+	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей.
+	ReforgedTip5: В чернильной пустоте океана сокрыто множество сокровищ.
+	ReforgedTip6: Звёздная трава дарит приятное облегчение в ночной темноте.
+	ReforgedTip7: Облачник всегда растёт под облаками.
+	ReforgedTip8: На верхушки акаций можно встать, если вам нужно забраться повыше.
+	ReforgedTip9: Время от времени на поверхность океана всплывают случайные предметы — проверяйте почаще!
 }
 
 Emotes: {
-	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	CartographerEmote.Command: cartographer
+	HikerEmote.Command: hikeremote
 }

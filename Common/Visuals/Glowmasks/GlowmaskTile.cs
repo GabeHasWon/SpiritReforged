@@ -79,9 +79,6 @@ internal class GlowmaskTile : GlobalTile
 				TileLoader.SetAnimationFrame(typeCache, i, j, ref addFrameX, ref addFrameY);
 				var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + addFrameY, 16, 16);
 
-				if (typeCache == ModContent.TileType<StargrassFlowers>())
-					source.Height = StargrassFlowers.TileHeight; //Hardcode the proper frame height until this system becomes more modular
-
 				glowSourceRect = source;
 			}
 		}
