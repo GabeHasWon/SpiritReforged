@@ -67,37 +67,6 @@ public class CatalogueEntry : UIElement
 			DrawAll(spriteBatch, Parent);
 			DrewBatch = true;
 		}
-
-		/*const float scale = 1;
-
-		base.DrawSelf(spriteBatch);
-
-		var center = GetDimensions().Center().ToPoint().ToVector2(); //Round to avoid tearing
-		var backColor = IsMouseHovering ? Color.LightGray : Color.White;
-
-		if (newAndShiny)
-		{
-			var pulseColor = Color.Lerp(Color.LightGray, Color.White, .5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) / 2f);
-			spriteBatch.Draw(CatalogueUI.Back.Value, center, null, pulseColor, 0, CatalogueUI.Back.Size() / 2, scale, default, 0);
-
-			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			spriteBatch.Draw(bloom, center, null, Color.SlateBlue.Additive() * .5f, 0, bloom.Size() / 2, .5f, default, 0);
-		}
-		else
-		{
-			spriteBatch.Draw(CatalogueUI.Back.Value, center, null, backColor, 0, CatalogueUI.Back.Size() / 2, scale, default, 0);
-		}
-
-		DrawTile(spriteBatch, center, scale);
-		spriteBatch.Draw(CatalogueUI.Front.Value, center, null, Color.White, 0, CatalogueUI.Front.Size() / 2, scale, default, 0);
-
-		if (IsMouseHovering)
-		{
-			spriteBatch.Draw(CatalogueUI.Selection.Value, center, null, Color.White, 0, CatalogueUI.Front.Size() / 2, scale, default, 0);
-
-			if (Main.mouseLeft && Main.mouseLeftRelease)
-				UISystem.GetState<CatalogueUI>().Select(this);
-		}*/
 	}
 
 	#region batch methods
@@ -106,7 +75,7 @@ public class CatalogueEntry : UIElement
 		var elements = parent.Children.Where(x => x is CatalogueEntry).Cast<CatalogueEntry>();
 
 		foreach (var e in elements)
-			DrawBack(spriteBatch, e.GetDimensions().Center(), e);
+			DrawBack(spriteBatch, e.GetDimensions().Center().ToPoint().ToVector2(), e);
 
 		spriteBatch.End();
 
@@ -116,13 +85,13 @@ public class CatalogueEntry : UIElement
 		spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, DepthStencilState.None, Overflow, null, Main.UIScaleMatrix);
 
 		foreach (var e in elements)
-			e.DrawTile(spriteBatch, e.GetDimensions().Center(), Scale);
+			e.DrawTile(spriteBatch, e.GetDimensions().Center().ToPoint().ToVector2(), Scale);
 
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.AnisotropicClamp, null, Overflow, null, Main.UIScaleMatrix);
 
 		foreach (var e in elements)
-			DrawFront(spriteBatch, e.GetDimensions().Center(), e);
+			DrawFront(spriteBatch, e.GetDimensions().Center().ToPoint().ToVector2(), e);
 	}
 
 	protected static void DrawBack(SpriteBatch spriteBatch, Vector2 center, CatalogueEntry entry)

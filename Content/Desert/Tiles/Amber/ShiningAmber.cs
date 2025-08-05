@@ -13,6 +13,7 @@ public abstract class ShiningAmber : ModTile
 		Main.tileMergeDirt[Type] = true;
 		Main.tileBlockLight[Type] = false;
 		Main.tileLighted[Type] = true;
+		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(Color.Orange);
 		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
@@ -22,7 +23,7 @@ public abstract class ShiningAmber : ModTile
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.1f, 0.06f, 0.01f);
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.03f, 0.005f);
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{

@@ -9,6 +9,7 @@ using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -25,28 +26,10 @@ internal class SavannaEcotone : EcotoneBase
 	public static Rectangle SavannaArea;
 	private static int Steps = 0;
 
-	protected override void InternalLoad()
+	protected override void Load()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
-		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
-		On_WorldGen.PlaceTile += PreventLargePiles;
 		On_WorldGen.PlacePot += ConvertPot;
-	}
-
-	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
-	{
-		if (WorldGen.generatingWorld && type == TileID.SmallPiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, X, Y, type);
-	}
-
-	private static bool PreventLargePiles(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
-	{
-		if (WorldGen.generatingWorld && Type == TileID.LargePiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, Type, mute, forced, plr, style);
 	}
 
 	private static bool PreventPalmTreeGrowth(On_WorldGen.orig_GrowPalmTree orig, int i, int y)
@@ -60,7 +43,13 @@ internal class SavannaEcotone : EcotoneBase
 	private static bool ConvertPot(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
 	{
 		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(x, y)))
-			style = WorldGen.genRand.Next(7, 10); //Jungle pots
+		{
+			type = (ushort)ModContent.TileType<CommonPots>();
+			style = WorldGen.genRand.Next(6, 9);
+
+			WorldGen.PlaceTile(x, y, type, true, style: style);
+			return Main.tile[x, y].TileType == type; //Skips orig
+		}
 
 		return orig(x, y, type, style);
 	}
@@ -73,51 +62,42 @@ internal class SavannaEcotone : EcotoneBase
 		if (pyramidIndex == -1 || grassIndex == -1)
 			return;
 
-		tasks.Insert(pyramidIndex, new PassLegacy("Savanna", BaseGeneration(entries)));
+		tasks.Insert(pyramidIndex, new PassLegacy("Savanna", BaseGeneration));
 		tasks.Insert(grassIndex, new PassLegacy("Populate Savanna", PopulateSavanna));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(out (int, int) bounds)
 	{
-		static bool NotOcean(EcotoneSurfaceMapping.EcotoneEntry e) => e.Start.X > GenVars.leftBeachEnd
-			&& e.End.X > GenVars.leftBeachEnd && e.Start.X < GenVars.rightBeachStart && e.End.X < GenVars.rightBeachStart; //Don't generate next to the ocean
-
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SavannaSeed>())
 		{
 			int spawn = Main.maxTilesX / 2;
-			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
+			var entry = EcotoneSurfaceMapping.FindWhere(x => x.Start.X < spawn && x.End.X > spawn);
 
-			if (valid.Any())
+			if (entry != null)
 			{
-				var e = valid.First();
-				bounds = (e.Start.X - offX, e.End.X);
-
+				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
-
-			return false;
 		}
 		else
 		{
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Jungle") && Math.Abs(x.Start.Y - x.End.Y) < 120 && NotOcean(x));
-			if (!validEntries.Any())
-				return false;
-
-			var entry = validEntries.ElementAt(WorldGen.genRand.Next(validEntries.Count()));
-			if (entry is null)
-				return false;
-
-			bounds = (entry.Start.X - offX, entry.End.X);
-			return true;
+			var entry = EcotoneSurfaceMapping.FindWhere("Desert", "Jungle");
+			if (entry != null)
+			{
+				bounds = (entry.Start.X - offX, entry.End.X);
+				return true;
+			}
 		}
+
+		return false;
 	}
 
-	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
+	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds))
+		if (!CanGenerate(out var bounds))
 			return;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
@@ -227,17 +207,19 @@ internal class SavannaEcotone : EcotoneBase
 
 		SavannaArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
 		SavannaArea.Inflate(2, 2);
-		StopLava.AddArea(SavannaArea);
+
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava));
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Piles));
 
 		static int HighestSurfacePoint(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out int addY))
+			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out _))
 				y++;
 
 			return y;
 		}
-	};
+	}
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -295,6 +277,7 @@ internal class SavannaEcotone : EcotoneBase
 		}
 
 		for (int i = SavannaArea.Left; i < SavannaArea.Right; ++i)
+		{
 			for (int j = SavannaArea.Top - 1; j < SavannaArea.Bottom; ++j)
 			{
 				OpenFlags flags = OpenTools.GetOpenings(i, j, false, false, true);
@@ -328,6 +311,7 @@ internal class SavannaEcotone : EcotoneBase
 				if (WorldGen.genRand.NextBool(120)) //Rare bones
 					WorldGen.PlaceTile(i, j - 1, TileID.LargePiles2, true, style: WorldGen.genRand.Next(52, 55));
 			}
+		}
 
 		if (WorldGen.genRand.NextBool(3))
 			Campsite();
@@ -349,7 +333,9 @@ internal class SavannaEcotone : EcotoneBase
 					treeOdds = chanceMax;
 				}
 				else
+				{
 					treeOdds = Math.Max(treeOdds - 1, 2); //Decrease the odds every time a tree fails to generate
+				}
 			}
 		}
 	}

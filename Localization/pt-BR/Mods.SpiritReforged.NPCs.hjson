@@ -46,6 +46,11 @@ VanillaDialogue: {
 		// Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
 		// Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
 	}
+
+	Angler: {
+		// Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
+		// Pager1: Remember to bring me the fish IN PERSON.
+	}
 }
 
 Crinoid: {
@@ -277,7 +282,7 @@ Cartographer: {
 
 			WulfrumBunker: {
 				// 0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				// 1: This was were my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
+				// 1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
 				// 2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
 			}
 
@@ -454,3 +459,8 @@ MossSlime: {
 // HeliumMossSlime.DisplayName: Helium Moss Slime
 // OganessonMossSlime.DisplayName: Oganesson Moss Slime
 // RadonMossSlime.DisplayName: Radon Moss Slime
+
+Stactus: {
+	// DisplayName: Stactus
+	// Entry: ""
+}

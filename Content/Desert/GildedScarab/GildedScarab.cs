@@ -1,11 +1,18 @@
-﻿using SpiritReforged.Common.ItemCommon.Abstract;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.GildedScarab;
 
 public class GildedScarab : EquippableItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
+	}
 	public override void SetDefaults()
 	{
 		Item.width = 34;

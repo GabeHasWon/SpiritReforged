@@ -1,2 +1,5 @@
-v0.1.2
-Full changelogs here: https://docs.google.com/document/d/1hQy9bllCJ50X96P9DW9_8_b8U2pj4RlAgaPc6Rxo-wk/edit?usp=sharing
+v0.1.2.3
+- Updated Russian (thanks nexorchik) and Chinese (thanks Linnnnnnnnnna, both on GitHub) localization
+- Fixed Rolling Pot display name on map (and anything that uses that localization)
+- Restricted baobab fruit growth in close proximity
+- Fixed some Cartographer typos

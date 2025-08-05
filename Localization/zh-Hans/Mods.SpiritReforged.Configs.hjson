@@ -1,23 +1,28 @@
-ReforgeClientConfig: {
-	DisplayName: 魂灵新魄客户端配置
+ReforgedClientConfig: {
+	// DisplayName: Reforged Client Config
 
 	OceanShape: {
-		Label: 海洋：海洋生成形状
-		Tooltip:
+		// Label: Ocean Shape
+		/* Tooltip:
 			'''
-			以某些方式修改海洋生成
-			默认为分段_V生成
-			仅推荐在游玩魂灵模组时使用分段_V生成
-			'''
+			Modifies the Ocean generation in certain ways
+			Defaults to a Piecewise_V generation
+			The Piecewise_V generation is recommended for Spirit playthroughs
+			''' */
 	}
 
-	SurfaceWaterTransparency: {
-		Label: 海洋：海水透明度
-		Tooltip:
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
 			'''
-			启用后，允许海水透明
-			不会影响任其他生物群落
-			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
+	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
 	}
 }
 

@@ -1,9 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace SpiritReforged.Content.Particles;
 

@@ -7,8 +7,10 @@ PopulateOcean: Preenchendo o oceano
 Gravel: Colocando cascalho
 SavannaTerrain: Criando platôs
 SavannaObjects: Preenchendo a savana
+// SaltFlats: Adding salt
 // Ecotones: Mapping ecotones
 // Caves: Decorating caves
+// DesertExtras: Hiding secrets in the sands
 // NeonMosses: Glowing moss
 // Pottery: Stashing pots
 

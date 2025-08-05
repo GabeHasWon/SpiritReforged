@@ -7,8 +7,10 @@ PopulateOcean: 正在填充海盐
 Gravel: 正在放置砾石
 SavannaTerrain: 正在创造高原
 SavannaObjects: 正在填充稀树平原
+// SaltFlats: Adding salt
 Ecotones: 正在绘制生态区地图
 Caves: 正在装饰洞穴
+// DesertExtras: Hiding secrets in the sands
 NeonMosses: 正在生长苔藓
 Pottery: 正在储藏罐子
 

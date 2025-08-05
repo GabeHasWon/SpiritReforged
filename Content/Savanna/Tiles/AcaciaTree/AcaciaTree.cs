@@ -7,6 +7,7 @@ using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Savanna.Items.Tools;
+using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Utilities;
@@ -55,7 +56,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 	public override bool IsTreeTop(int i, int j)
 	{
-		if (ModContent.GetModTile(Main.tile[i, j].TileType) is not AcaciaTree || ModContent.GetModTile(Main.tile[i, j - 1].TileType) is AcaciaTree)
+		if (!WorldGen.InWorld(i, j) || ModContent.GetModTile(Main.tile[i, j].TileType) is not AcaciaTree || ModContent.GetModTile(Main.tile[i, j - 1].TileType) is AcaciaTree)
 			return false;
 
 		return Main.tile[i, j].TileFrameX <= FrameSize * 5;
@@ -109,6 +110,8 @@ public class AcaciaTree : CustomTree, ISetConversion
 		drop.Add(AutoContent.ItemType<Drywood>(), .8f);
 		drop.Add(ModContent.ItemType<LivingBaobabWand>(), .033f);
 		drop.Add(ModContent.ItemType<LivingBaobabLeafWand>(), .03f);
+		drop.Add(ModContent.NPCType<Sparrow>(), .1f);
+		drop.Add(NPCID.Bird, .1f);
 		drop.Add(ItemID.Acorn, .7f);
 
 		var position = new Vector2(i, j - 3) * 16;

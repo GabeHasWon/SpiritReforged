@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Content.Desert.Tiles.Amber;
-
-namespace SpiritReforged.Common.Misc;
+﻿namespace SpiritReforged.Common.Misc;
 
 internal class Recipes : ModSystem
 {

@@ -75,16 +75,16 @@ public static class TileExtensions
 		DrawSloped(i, j, texture, Lighting.GetColor(i, j), TileOffset);
 	}
 
-	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 offset, bool overrideFrame = false)
+	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 offset, Point overrideFrame = default)
 	{
 		Tile tile = Main.tile[i, j];
 		int frameX = tile.TileFrameX;
 		int frameY = tile.TileFrameY;
 
-		if (overrideFrame)
+		if (overrideFrame != Point.Zero)
 		{
-			frameX = 0;
-			frameY = 0;
+			frameX = overrideFrame.X;
+			frameY = overrideFrame.Y;
 		}
 
 		int width = 16;

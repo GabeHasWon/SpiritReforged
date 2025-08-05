@@ -5,14 +5,17 @@ using Terraria.Graphics;
 namespace SpiritReforged.Common.Visuals;
 
 /// <summary> Modifies liquid alpha in high light levels. </summary>
-internal class WaterAlpha : ILoadable
+public class WaterAlpha : ILoadable
 {
+	public delegate bool WaterColorDelegate(int x, int y, ref VertexColors colors, bool isPartial);
+
+	public static event WaterColorDelegate OnWaterColor;
 	private static bool IsLiquid;
 
 	public void Load(Mod mod)
 	{
 		On_LiquidRenderer.DrawNormalLiquids += CheckLiquid;
-		On_TileDrawing.DrawPartialLiquid += On_TileDrawing_DrawPartialLiquid;
+		On_TileDrawing.DrawPartialLiquid += DrawPartialLiquid;
 		On_Lighting.GetCornerColors += ModifyWater;
 	}
 
@@ -23,7 +26,7 @@ internal class WaterAlpha : ILoadable
 		IsLiquid = false;
 	}
 
-	private static void On_TileDrawing_DrawPartialLiquid(On_TileDrawing.orig_DrawPartialLiquid orig, TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int liquidType, ref VertexColors colors)
+	private static void DrawPartialLiquid(On_TileDrawing.orig_DrawPartialLiquid orig, TileDrawing self, bool behindBlocks, Tile tileCache, ref Vector2 position, ref Rectangle liquidSize, int liquidType, ref VertexColors colors)
 	{
 		ModifyColors((int)position.X, (int)position.Y, ref colors, true);
 		orig(self, behindBlocks, tileCache, ref position, ref liquidSize, liquidType, ref colors);
@@ -39,10 +42,7 @@ internal class WaterAlpha : ILoadable
 
 	private static void ModifyColors(int x, int y, ref VertexColors colors, bool isPartial = false)
 	{
-		//if (!Main.LocalPlayer.ZoneBeach)
-		//	return; //Only apply to the ocean
-
-		float totalStrength = Main.LocalPlayer.ZoneBeach ? 1f : .75f;
+		float totalStrength = Main.LocalPlayer.ZoneBeach ? 1f : 0.75f;
 
 		if (isPartial)
 		{
@@ -55,23 +55,29 @@ internal class WaterAlpha : ILoadable
 			y /= 16;
 		}
 
-		Clamp(ref colors.TopLeftColor, x, y);
-		Clamp(ref colors.TopRightColor, x + 1, y);
-		Clamp(ref colors.BottomLeftColor, x, y + 1);
-		Clamp(ref colors.BottomRightColor, x + 1, y + 1);
+		if (OnWaterColor?.Invoke(x, y, ref colors, isPartial) ?? false)
+			return;
+
+		float str = 0.72f * totalStrength;
+		float waveStr = 0.35f * totalStrength;
+
+		ColorClamp(ref colors.TopLeftColor, x, y, str, waveStr);
+		ColorClamp(ref colors.TopRightColor, x + 1, y, str, waveStr);
+		ColorClamp(ref colors.BottomLeftColor, x, y + 1, str, waveStr);
+		ColorClamp(ref colors.BottomRightColor, x + 1, y + 1, str, waveStr);
+	}
+
+	public static void ColorClamp(ref Color color, int x, int y, float totalStrength, float waveStrength)
+	{
+		color.A = Math.Min(color.A, GetAlpha(x, y));
 
 		byte GetAlpha(int x, int y)
 		{
-			float strength = .72f * totalStrength;
-			float waveStr = .35f * totalStrength;
-
 			float waveUnit = (float)((1f + Math.Sin(Main.timeForVisualEffects / 100f + (x + y) / 3)) / 2f);
-			float brightness = MathHelper.Clamp(Lighting.Brightness(x, y) * (1f - waveUnit * waveStr) - (1f - strength), 0, 1);
+			float brightness = MathHelper.Clamp(Lighting.Brightness(x, y) * (1f - waveUnit * waveStrength) - (1f - totalStrength), 0, 1);
 
 			return (byte)((1f - brightness) * 255f);
 		}
-
-		void Clamp(ref Color color, int x, int y) => color.A = Math.Min(color.A, GetAlpha(x, y));
 	}
 
 	public void Unload() { }

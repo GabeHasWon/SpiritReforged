@@ -3,6 +3,11 @@ Biomes: {
 		DisplayName: 稀树平原
 		TownNPCDialogueName: 稀树平原
 	}
+
+	SaltBiome: {
+		// DisplayName: Salt Flats
+		// TownNPCDialogueName: the Salt Flats
+	}
 }
 
 SlotContexts.Backpack: 背包
@@ -24,9 +29,9 @@ Misc: {
 	NoStock: 无库存
 	GraveText: <wavy>其上文字年久失色；令你难以辨认。
 	MenuButton: 使用菜单样式
-	// UnchangedMap: Map has no changes.
-	// ShareMap: Map has been shared.
-	// ShareAndUpdateMap: Map has been shared & updated.
+	UnchangedMap: 地图无变化。
+	ShareMap: 地图已分享。
+	ShareAndUpdateMap: 地图已分享 & 更新。
 }
 
 DamageSources: {
@@ -38,7 +43,7 @@ DamageSources: {
 
 GameTips: {
 	ReforgedTip0: 常备食物，以备不时之需！
-	ReforgedTip1: 蝴蝶偶尔会藏在地下小树林里。
+	ReforgedTip1: 蝴蝶偶尔会藏在地下树丛里。
 	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
 	ReforgedTip3: 捕虫网无法捕获平原动物。
 	ReforgedTip4: 背包。你现在有更多空间了。
@@ -51,5 +56,17 @@ GameTips: {
 
 Emotes: {
 	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	// HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		// DisplayName: Ledger
+		// Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		// DisplayName: Shimmersight
+		// Description: Showing shimmer tooltips
+	}
 }
