@@ -1,4 +1,4 @@
-﻿VanillaDialogue: {
+VanillaDialogue: {
 	Guide: {
 		WorldNPC: Путешествуя по миру, ты можешь повстречать и других исследователей. Если встретишь — возможно, вы сможете помочь друг другу!
 		Ecotone: Если климат будет подходящим, на границе между пустыней и джунглями может раскинуться обширная саванна. Всегда мечтал её увидеть!
@@ -462,5 +462,10 @@ RadonMossSlime.DisplayName: Радоновый мшистый слизень
 
 Stactus: {
 	// DisplayName: Stactus
+	// Entry: ""
+}
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
 	// Entry: ""
 }

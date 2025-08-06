@@ -2124,3 +2124,8 @@ SilkTop: {
 	// DisplayName: Sundancer Top
 	// Tooltip: 7% increased magic damage
 }
+
+DivingBeetleItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	// Tooltip: ""
+}
