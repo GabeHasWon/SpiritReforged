@@ -464,3 +464,8 @@ Stactus: {
 	DisplayName: Stactus
 	Entry: ""
 }
+
+DivingBeetle: {
+	DisplayName: Diving Beetle
+	Entry: ""
+}
