@@ -10,10 +10,12 @@ public class TileEvents : GlobalTile
 	public delegate void PlaceTileDelegate(int i, int j, int type);
 	public delegate void KillTileDelegate(int i, int j, int type, ref bool fail, ref bool effectOnly);
 	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
+	public delegate void NearbyDelegate(int i, int j, int type, bool closer);
 
 	public static event PreDrawDelegate PreDrawTiles;
 	public static event PlaceTileDelegate PlaceTile;
 	public static event KillTileDelegate OnKillTile;
+	public static event NearbyDelegate OnNearby;
 
 	/// <summary> Exposes <see cref="TileLoader.TileFrame"/> resetFrame from the last invocation.<br/>
 	/// A common use case for this is in <see cref="ModTile.PostTileFrame"/>, where it's not normally available. </summary>
@@ -81,6 +83,7 @@ public class TileEvents : GlobalTile
 	#endregion
 
 	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem) => OnKillTile?.Invoke(i, j, type, ref fail, ref effectOnly);
+	public override void NearbyEffects(int i, int j, int type, bool closer) => OnNearby?.Invoke(i, j, type, closer);
 
 	public override void Unload()
 	{
