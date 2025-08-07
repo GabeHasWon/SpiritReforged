@@ -117,3 +117,8 @@ FlaskOfFrost_Buff: {
 	DisplayName: 武器灌注：冻结
 	Description: 近战和鞭子攻击会冻结敌人
 }
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}

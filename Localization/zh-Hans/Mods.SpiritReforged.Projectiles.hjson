@@ -47,3 +47,4 @@ VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.Display
 EnergyImpact.DisplayName: 能量践踏
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: 手指射击
+// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
