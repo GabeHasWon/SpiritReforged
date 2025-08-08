@@ -60,7 +60,6 @@ internal class ButterflyMicropass : Micropass
 				PlaceButterflyGrove(new Point(position.X + size.X / 2, position.Y));
 				GenVars.structures.AddProtectedStructure(new Rectangle(position.X, position.Y, size.X, size.Y), 4);
 				ButterflySystem.ButterflyZones.Add(new Rectangle(position.X, position.Y, size.X, size.Y));
-				StructureTools.ClearActuators(position.X, position.Y, size.X, size.Y);
 
 				var origin = new Point(position.X + size.X / 2, position.Y + 8); //Centered position
 				bool foundClearing = WorldUtils.Find(origin, Searches.Chain(new Searches.Up(1000), new Conditions.IsSolid().AreaOr(1, 50).Not()), out var top);
