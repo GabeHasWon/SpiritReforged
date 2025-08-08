@@ -2126,11 +2126,11 @@ SilkTop: {
 }
 
 SaltBlockDullItem: {
-	// DisplayName: Salt Block Dull Item
+	// DisplayName: Dull Salt Block
 	// Tooltip: ""
 }
 
 SaltBlockReflectiveItem: {
-	// DisplayName: Salt Block Reflective Item
-	// Tooltip: ""
+	// DisplayName: Salt Block
+	// Tooltip: "'Smooth and reflective'"
 }
