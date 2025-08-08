@@ -2124,3 +2124,13 @@ SilkTop: {
 	// DisplayName: Sundancer Top
 	// Tooltip: 7% increased magic damage
 }
+
+SaltBlockDullItem: {
+	// DisplayName: Salt Block Dull Item
+	// Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	// DisplayName: Salt Block Reflective Item
+	// Tooltip: ""
+}
