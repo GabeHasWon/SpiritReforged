@@ -6,7 +6,7 @@ using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
-namespace SpiritReforged.Content.Desert.Tiles;
+namespace SpiritReforged.Content.Desert.Oasis;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class Glowflower : ModTile, ISwayTile
@@ -47,10 +47,10 @@ public class Glowflower : ModTile, ISwayTile
 	{
 		if (closer)
 		{
-			if (!Main.gamePaused && Main.rand.NextBool(80))
+			if (!Main.gamePaused && Main.rand.NextBool(100))
 			{
 				var position = new Vector2(i, j).ToWorldCoordinates();
-				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Yellow, Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
+				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
 				{
 					p.Velocity = p.Velocity.RotatedByRandom(0.3f);
 
