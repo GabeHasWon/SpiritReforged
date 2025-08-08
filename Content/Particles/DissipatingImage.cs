@@ -31,9 +31,8 @@ public class DissipatingImage : Particle
 	private readonly Vector2 _texExponent = new(2, 1);
 	private readonly Vector2 _scrollOffset = new(Main.rand.NextFloat(), Main.rand.NextFloat());
 
-	private float _opacity;
-
-	internal float _scaleMod = 1;
+	protected float _opacity;
+	protected float _scaleMod = 1;
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, int maxTime)
 	{
@@ -80,6 +79,8 @@ public class DissipatingImage : Particle
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
+	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y) : Color.White;
+
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
@@ -108,13 +109,9 @@ public class DissipatingImage : Particle
 		float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 		effect.Parameters["texExponent"].SetValue(texExponent);
 
-		Color lightColor = Color.White;
-		if (UseLightColor)
-			lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
-
 		var square = new SquarePrimitive
 		{
-			Color = lightColor,
+			Color = GetLightColor(),
 			Height = size.Y,
 			Length = size.X,
 			Position = Position - Main.screenPosition,

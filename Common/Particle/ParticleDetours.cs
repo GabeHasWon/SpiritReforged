@@ -10,6 +10,7 @@ public static class ParticleDetours
 		On_Main.DrawNPCs += AboveNPC;
 		On_Main.DrawInfernoRings += AbovePlayer;
 		On_Main.DoDraw_Tiles_NonSolid += BelowSolid;
+		On_Main.DoDraw_WallsAndBlacks += BelowWall;
 	}
 
 	private static void AbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -39,7 +40,13 @@ public static class ParticleDetours
 	private static void BelowSolid(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
 		orig(self);
-		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolids);
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
+	}
+
+	private static void BelowWall(On_Main.orig_DoDraw_WallsAndBlacks orig, Main self)
+	{
+		orig(self);
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
 	}
 
 	public static void Unload()

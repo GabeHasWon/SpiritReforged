@@ -1,11 +1,16 @@
-﻿using SpiritReforged.Content.Savanna.Biome;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Savanna.Biome;
 using System.Linq;
 
 namespace SpiritReforged.Content.Savanna.DustStorm;
 
-public class DustStormGlobalTile : GlobalTile
+[Autoload(Side = ModSide.Client)]
+public class DustStormWind : ILoadable
 {
-	public override void NearbyEffects(int i, int j, int type, bool closer)
+	public void Load(Mod mod) => TileEvents.OnNearby += SpawnWind;
+	public void Unload() { }
+
+	private static void SpawnWind(int i, int j, int type, bool closer)
 	{
 		if (!closer || Main.gamePaused || !Duststorm.Happening || !WorldGen.InWorld(i, j - 1))
 			return;
