@@ -4,14 +4,14 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class UndergroundOasisMicropass : Micropass
+internal class OasisMicropass : Micropass
 {
 	public override string WorldGenName => "Underground Oasis";
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
 		afterIndex = true;
-		return passes.FindIndex(genpass => genpass.Name.Equals("Micro Biomes")); //Full Desert, Micro Biomes
+		return passes.FindIndex(genpass => genpass.Name.Equals("Micro Biomes"));
 	}
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)

@@ -12,9 +12,9 @@ namespace SpiritReforged.Content.Desert.Oasis;
 public class UndergroundOasisBiome : Microbiome
 {
 	//Preface with basic relevant checks so linq isn't constantly running in the background
-	public static bool InUndergroundOasis(Player p) => (p.ZoneDirtLayerHeight || p.ZoneRockLayerHeight) && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
+	public static bool InUndergroundOasis(Player p) => p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
 
-	public static readonly Point16 Size = new(80, 50);
+	public static readonly Point16 Size = new(50, 40);
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
 	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;

@@ -10,8 +10,6 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class PotsMicropass : Micropass
 {
-	private delegate bool GenDelegate(int x, int y);
-
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
 

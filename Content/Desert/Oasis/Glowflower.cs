@@ -50,7 +50,7 @@ public class Glowflower : ModTile, ISwayTile
 			if (!Main.gamePaused && Main.rand.NextBool(100))
 			{
 				var position = new Vector2(i, j).ToWorldCoordinates();
-				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
+				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Lerp(Color.GreenYellow, Color.Goldenrod, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
 				{
 					p.Velocity = p.Velocity.RotatedByRandom(0.3f);
 

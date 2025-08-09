@@ -193,7 +193,7 @@ public class SaltBlockVisuals : ILoadable
 			return;
 
 		bool lowDetail = Detail == 1;
-		var s = AssetLoader.LoadedShaders["Reflection"];
+		var s = AssetLoader.LoadedShaders["Reflection"].Value;
 		var n = AssetLoader.LoadedTextures["supPerlin"].Value;
 
 		s.Parameters["mapTexture"].SetValue(MapTarget);

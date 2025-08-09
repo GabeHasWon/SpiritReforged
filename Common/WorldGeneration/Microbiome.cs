@@ -71,8 +71,7 @@ public class MicrobiomeSystem : ModSystem
 
 	public override void ClearWorld()
 	{
-		if (!WorldGen.generatingWorld)
-			Microbiomes.Clear();
+		Microbiomes.Clear();
 	}
 
 	public override void NetSend(BinaryWriter writer)
