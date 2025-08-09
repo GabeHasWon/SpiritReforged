@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Forest.ButterflyStaff;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
@@ -8,6 +9,7 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 internal class ButterflyMicropass : Micropass
 {
 	public override string WorldGenName => "Butterfly Shrines";
+	private static readonly ushort[] Ignore = [TileID.LivingWood, TileID.LeafBlock, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick];
 
 	// Remnants will take care of our butterfly shrines on their end at some point, change in the future
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Sunflowers"));
@@ -64,13 +66,26 @@ internal class ButterflyMicropass : Micropass
 
 				if (foundClearing) //Generate a shaft like sword shrines do
 				{
-					var data = new ShapeData();
-					ushort[] ignore = [TileID.LivingWood, TileID.LeafBlock, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick];
+					ShapeData data = new();
+					Point shaftOrigin = new(origin.X, top.Y + 10);
+					int shaftHeight = origin.Y - top.Y - 9;
 
-					//Fill sand-type walls
-					WorldUtils.Gen(new Point(origin.X - 1, top.Y + 10), new Shapes.Rectangle(3, origin.Y - top.Y - 9), Actions.Chain(new Modifiers.Blotches(2, 0.2), new Modifiers.OnlyTiles(TileID.Sand, TileID.HardenedSand, TileID.Sandstone), new Actions.PlaceWall(WallID.HardenedSand)));
+					//Sand wall fill
+					WorldUtils.Gen(new(shaftOrigin.X - 1, shaftOrigin.Y - 1), new Shapes.Rectangle(3, shaftHeight + 2), Actions.Chain(
+						new Modifiers.Blotches(2, 0.2),
+						new Modifiers.OnlyTiles(TileID.Sand, TileID.HardenedSand, TileID.Sandstone),
+						new Actions.PlaceWall(WallID.HardenedSand)
+					));
 
-					WorldUtils.Gen(new Point(origin.X, top.Y + 10), new Shapes.Rectangle(1, origin.Y - top.Y - 9), Actions.Chain(new Modifiers.Blotches(2, 0.2), new Modifiers.SkipTiles(ignore), new Actions.ClearTile().Output(data), new Modifiers.Expand(1), new Modifiers.OnlyTiles(53), new Actions.SetTile(397).Output(data)));
+					WorldUtils.Gen(shaftOrigin, new Shapes.Rectangle(1, shaftHeight), Actions.Chain(
+						new Modifiers.Blotches(2, 0.2), 
+						new Modifiers.SkipTiles(Ignore), 
+						new Actions.ClearTile().Output(data), 
+						new Modifiers.Expand(1), 
+						new Modifiers.OnlyTiles(TileID.Sand), 
+						new Actions.SetTileKeepWall(TileID.HardenedSand).Output(data)
+					));
+
 					WorldUtils.Gen(new Point(origin.X, top.Y + 10), new ModShapes.All(data), new Actions.SetFrames(frameNeighbors: true));
 				}
 			}

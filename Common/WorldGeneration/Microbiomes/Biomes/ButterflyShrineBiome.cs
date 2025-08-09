@@ -1,15 +1,14 @@
-﻿using SpiritReforged.Common.WorldGeneration;
+﻿using SpiritReforged.Content.Forest.ButterflyStaff;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Forest.ButterflyStaff;
+namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class ButterflyShrineBiome : Microbiome
 {
-	/// <summary> An approximation of how big one cavern usually is. </summary>
-	public static readonly Point16 Size = new(35);
+	public static readonly Point16 Size = new(35); //An approximation of how big one cavern usually is
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
 	public override void WorldLoad(TagCompound tag)
@@ -87,7 +86,6 @@ public class ButterflyShrineBiome : Microbiome
 
 		// If the former doesn't work, increase the range we search for a spot at
 		if (placedStumpAttempts < 15000)
-		{
 			while (!placedStump)
 			{
 				placedStumpAttempts++;
@@ -97,11 +95,8 @@ public class ButterflyShrineBiome : Microbiome
 				WorldGen.PlaceTile(randomX, randomY, ModContent.TileType<ButterflyStump>(), mute: true, forced: false, -1);
 				placedStump = Main.tile[randomX, randomY].TileType == ModContent.TileType<ButterflyStump>();
 			}
-		}
 		else if (placedStumpAttempts >= 15000) // If everything fails, give up and log as an error
-		{
 			SpiritReforgedMod.Instance.Logger.Info("Generator exceeded maximum tries for structure: Butterfly Shrine Stump");
-		}
 
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, Size.X, Size.Y), 4);
 	}

@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Desert.Oasis;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using System.Linq;
 using Terraria.WorldBuilding;
 

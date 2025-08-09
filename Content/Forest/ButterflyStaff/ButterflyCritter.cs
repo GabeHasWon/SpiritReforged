@@ -1,5 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 

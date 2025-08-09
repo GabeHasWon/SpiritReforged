@@ -2,12 +2,12 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Desert.Oasis;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Desert.Oasis;
+namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
@@ -85,11 +85,9 @@ public class UndergroundOasisBiome : Microbiome
 		WorldUtils.Gen(origin, new ModShapes.All(clearingShape), Actions.Chain(
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
-				if (WorldGen.genRand.NextBool((palmCount == 0) ? 5 : 15) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
-				{
+				if (WorldGen.genRand.NextBool(palmCount == 0 ? 5 : 15) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
 					if (CreatePalmTree(i, j, WorldGen.genRand.Next(8, 16)))
 						palmCount++;
-				}
 
 				return true;
 			})
@@ -102,7 +100,6 @@ public class UndergroundOasisBiome : Microbiome
 					return false;
 
 				if (Main.tile[i, j].LiquidAmount > 100)
-				{
 					if (WorldGen.genRand.NextBool(3))
 					{
 						WorldGen.PlaceCatTail(i, j);
@@ -111,18 +108,13 @@ public class UndergroundOasisBiome : Microbiome
 						for (int h = 0; h < height; h++)
 							WorldGen.GrowCatTail(i, j);
 					}
-				}
 				else
 				{
 					if (WorldGen.genRand.NextBool(3))
-					{
 						WorldGen.PlaceOasisPlant(i, j);
-					}
 
-					if (WorldGen.genRand.NextBool(7))
-					{
+					if (WorldGen.genRand.NextBool(4))
 						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
-					}
 
 					if (WorldGen.genRand.NextBool(2))
 					{
@@ -188,13 +180,11 @@ public class UndergroundOasisBiome : Microbiome
 
 		ShapeData shape = new();
 		foreach (var pt in points)
-		{
 			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
 				new Actions.SetTileKeepWall(TileID.Sandstone),
 				new Modifiers.Expand(1),
 				new Actions.PlaceWall(WallID.Sandstone)
 			).Output(shape));
-		}
 	}
 
 	private static void CarveLake(Point origin)

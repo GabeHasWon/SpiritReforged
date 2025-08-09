@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.WorldGeneration;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;

@@ -1,4 +1,6 @@
-﻿using Terraria.Graphics.Effects;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Desert.Oasis;
 
@@ -32,5 +34,22 @@ public class UndergroundOasisScene : ModSceneEffect
 		{
 			Filters.Scene.Deactivate("Solar");
 		}
+	}
+}
+
+public class UndergroundOasisBackground : ModUndergroundBackgroundStyle, IWaterStyle
+{
+	public override void FillTextureArray(int[] textureSlots)
+	{
+		/*textureSlots[0] = 0;
+		textureSlots[1] = 1;
+		textureSlots[2] = 2;
+		textureSlots[3] = 3;*/
+	}
+
+	public void ForceWaterStyle(ref int style)
+	{
+		if (style == WaterStyleID.UndergroundDesert && UndergroundOasisBiome.InUndergroundOasis(Main.LocalPlayer))
+			style = WaterStyleID.Desert;
 	}
 }

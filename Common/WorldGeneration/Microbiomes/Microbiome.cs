@@ -3,7 +3,7 @@ using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
-namespace SpiritReforged.Common.WorldGeneration;
+namespace SpiritReforged.Common.WorldGeneration.Microbiomes;
 
 /// <summary> Can be used to contain data for individually-generated biome instances. </summary>
 public abstract class Microbiome : ILoadable
@@ -120,9 +120,7 @@ public class MicrobiomeSystem : ModSystem
 		}
 
 		if (list.Count != 0)
-		{
 			tag["microbiomes"] = list;
-		}
 	}
 
 	public override void LoadWorldData(TagCompound tag)
@@ -141,9 +139,7 @@ public class MicrobiomeSystem : ModSystem
 				Microbiomes.Add(inst);
 			}
 			else
-			{
 				SpiritReforgedMod.Instance.Logger.Info($"Microbiome '{name}' was not present in the dictionary.");
-			}
 		}
 
 		PostLoadMicrobiomes?.Invoke();
