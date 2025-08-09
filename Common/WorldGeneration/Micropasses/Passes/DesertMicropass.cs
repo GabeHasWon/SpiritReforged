@@ -21,7 +21,9 @@ internal class DesertMicropass : Micropass
 
 		int generated = 0;
 		int maxAmount = 10 * (WorldGen.GetWorldSize() + 1);
-		Rectangle region = new(GenVars.desertHiveLeft, GenVars.desertHiveHigh, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - GenVars.desertHiveHigh);
+
+		int top = (int)(Main.worldSurface * 1.2f);
+		Rectangle region = new(GenVars.desertHiveLeft, top, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - top);
 		
 		for (int a = 0; a < 200; a++)
 		{
