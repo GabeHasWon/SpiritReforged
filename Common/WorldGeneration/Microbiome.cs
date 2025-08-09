@@ -69,21 +69,33 @@ public class MicrobiomeSystem : ModSystem
 	/// Prefer <see cref="Microbiome.Create{T}(Point16)"/> as it automatically registers an instance to <see cref="Microbiomes"/>. </summary>
 	public static T GetInstance<T>() where T : Microbiome => (T)BiomeByName[typeof(T).Name].Clone();
 
-	public override void ClearWorld()
-	{
-		Microbiomes.Clear();
-	}
+	public override void ClearWorld() => Microbiomes.Clear();
 
 	public override void NetSend(BinaryWriter writer)
 	{
+		writer.Write((ushort)Microbiomes.Count);
+
 		foreach (var b in Microbiomes)
+		{
+			writer.Write(b.Name);
 			b.NetSend(writer);
+		}
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		foreach (var b in Microbiomes)
-			b.NetReceive(reader);
+		Microbiomes.Clear();
+		ushort count = reader.ReadUInt16();
+
+		for (int i = 0; i < count; i++)
+		{
+			string name = reader.ReadString();
+
+			var biome = BiomeByName[name].Clone();
+			biome.NetReceive(reader);
+
+			Microbiomes.Add(biome); //Repopulate Microbiomes based on data provided by the server
+		}
 	}
 
 	public override void SaveWorldData(TagCompound tag)
