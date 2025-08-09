@@ -1,7 +1,11 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.Multiplayer;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.WorldGeneration;
+
+/// <summary> Can be used to contain data for individually-generated biome instances. </summary>
 public abstract class Microbiome : ILoadable
 {
 	public virtual string Name => GetType().Name;
@@ -35,6 +39,9 @@ public abstract class Microbiome : ILoadable
 
 	public virtual void WorldLoad(TagCompound tag) => Position = tag.Get<Point16>(nameof(Position));
 
+	public virtual void NetSend(BinaryWriter writer) => writer.WritePoint16(Position);
+	public virtual void NetReceive(BinaryReader reader) => Position = reader.ReadPoint16();
+
 	public void Load(Mod mod)
 	{
 		MicrobiomeSystem.AddDefinition(this);
@@ -66,6 +73,18 @@ public class MicrobiomeSystem : ModSystem
 	{
 		if (!WorldGen.generatingWorld)
 			Microbiomes.Clear();
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		foreach (var b in Microbiomes)
+			b.NetSend(writer);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		foreach (var b in Microbiomes)
+			b.NetReceive(reader);
 	}
 
 	public override void SaveWorldData(TagCompound tag)

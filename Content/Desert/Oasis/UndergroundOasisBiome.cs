@@ -1,4 +1,5 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
@@ -10,10 +11,21 @@ namespace SpiritReforged.Content.Desert.Oasis;
 
 public class UndergroundOasisBiome : Microbiome
 {
-	public static bool InUndergroundOasis(Player p) => MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
+	//Preface with basic relevant checks so linq isn't constantly running in the background
+	public static bool InUndergroundOasis(Player p) => (p.ZoneDirtLayerHeight || p.ZoneRockLayerHeight) && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
 
 	public static readonly Point16 Size = new(80, 50);
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
+
+	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;
+	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
+	{
+		if (InUndergroundOasis(player))
+		{
+			spawnRate *= 5;
+			maxSpawns = 0;
+		}
+	}
 
 	#region worldgen
 	protected override void OnPlace(Point16 point)
