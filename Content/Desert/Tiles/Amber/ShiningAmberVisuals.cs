@@ -53,7 +53,7 @@ public class ShiningAmberVisuals : ILoadable
 		if (!Drawing || TileTarget.Target is null || OverlayTarget.Target is null)
 			return;
 
-		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
+		var s = AssetLoader.LoadedShaders["SimpleMultiply"].Value;
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 		s.Parameters["lightness"].SetValue(100);
 

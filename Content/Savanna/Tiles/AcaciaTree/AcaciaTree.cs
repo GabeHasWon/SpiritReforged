@@ -187,7 +187,7 @@ public class AcaciaTree : CustomTree, ISetConversion
             new(botLeft + new Vector3(310, 0, 0), color, new Vector2(1, 1)),
 		];
 
-		Effect effect = AssetLoader.LoadedShaders["ShadowFade"];
+		Effect effect = AssetLoader.LoadedShaders["ShadowFade"].Value;
 		var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 		Matrix view = Main.GameViewMatrix.TransformationMatrix;
 		Matrix renderMatrix = view * projection;

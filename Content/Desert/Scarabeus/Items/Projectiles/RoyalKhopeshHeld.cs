@@ -395,7 +395,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	private static void SetSandtrailParams(out Effect effect, float progress, float swingProgress)
 	{
-		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"];
+		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"].Value;
 		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
 		effect.Parameters["baseColorDark"].SetValue(SAND_DARK.ToVector4());
 		effect.Parameters["baseColorLight"].SetValue(SAND_LIGHT.ToVector4());
@@ -415,7 +415,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	private static void SetRedtrailParams(out Effect effect, float progress, float swingProgress)
 	{
-		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"];
+		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"].Value;
 		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noiseCrystal"].Value);
 		effect.Parameters["baseColorDark"].SetValue(RUBY_DARK.ToVector4());
 		effect.Parameters["baseColorLight"].SetValue(RUBY_LIGHT.ToVector4());

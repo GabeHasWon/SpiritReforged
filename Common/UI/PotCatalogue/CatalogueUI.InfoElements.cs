@@ -111,7 +111,7 @@ public partial class CatalogueUI : AutoUIState
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
-			var shader = AssetLoader.LoadedShaders["Rainbow"];
+			var shader = AssetLoader.LoadedShaders["Rainbow"].Value;
 			var texture = StarLight.Value;
 
 			for (int i = 0; i < count; i++)

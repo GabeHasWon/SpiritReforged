@@ -13,7 +13,7 @@ public enum TrailLayer
 public class TrailManager
 {
 	private readonly List<BaseTrail> _trails = [];
-	private readonly Effect _effect = AssetLoader.LoadedShaders["trailShaders"];
+	private readonly Effect _effect = AssetLoader.LoadedShaders["trailShaders"].Value;
 
 	private BasicEffect _basicEffect = AssetLoader.BasicShaderEffect; //Not readonly due to thread queue
 

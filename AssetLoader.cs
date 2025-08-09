@@ -12,7 +12,7 @@ internal static class AssetLoader
 
 	public static BasicEffect BasicShaderEffect;
 	public static IDictionary<string, Asset<Texture2D>> LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
-	public static IDictionary<string, Effect> LoadedShaders = new Dictionary<string, Effect>();
+	public static IDictionary<string, Asset<Effect>> LoadedShaders = new Dictionary<string, Asset<Effect>>();
 
 	public static string EmptyTexture => "Terraria/Images/NPC_0";
 
@@ -59,7 +59,7 @@ internal static class AssetLoader
 				string shaderPath = RemoveExtension(kvp.Key, ".xnb");
 				string shaderKey = RemoveDirectory(shaderPath, shaderDirectory);
 
-				LoadedShaders.Add(shaderKey, mod.Assets.Request<Effect>(shaderPath, AssetRequestMode.ImmediateLoad).Value);
+				LoadedShaders.Add(shaderKey, mod.Assets.Request<Effect>(shaderPath, AssetRequestMode.ImmediateLoad));
 			}
 		}
 
@@ -96,6 +96,6 @@ internal static class AssetLoader
 		VertexTrailManager = null;
 		BasicShaderEffect = null;
 		LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
-		LoadedShaders = new Dictionary<string, Effect>();
+		LoadedShaders = new Dictionary<string, Asset<Effect>>();
 	}
 }
