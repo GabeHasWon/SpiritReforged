@@ -35,7 +35,7 @@ public class AfterimageProjectile : GlobalProjectile
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (source is EntitySource_ItemUse_WithAmmo && Main.player[projectile.owner].GetModPlayer<AfterimagePlayer>().CreatedDuplicate)
+		if (source is EntitySource_ItemUse_WithAmmo && AfterimagePlayer.Duplicate)
 		{
 			Afterimage = true;
 			projectile.netUpdate = true;
