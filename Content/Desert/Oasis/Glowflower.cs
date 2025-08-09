@@ -1,8 +1,11 @@
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
@@ -13,6 +16,20 @@ public class Glowflower : ModTile, ISwayTile
 {
 	public const int StyleRange = 3;
 	public const int TileHeight = 22;
+
+	public override void Load() => TileEvents.OnRandomUpdate += Regrow;
+	/// <summary> Causes Glowflower to regrow inside of underground oasis microbiomes. </summary>
+	private static void Regrow(int i, int j, int type)
+	{
+		if (type == TileID.Sand && j > Main.worldSurface && WorldGen.genRand.NextBool(10) && WorldGen.InWorld(i, j - 1) && !Main.tile[i, j - 1].HasTile)
+		{
+			Point pt = new(i, j);
+			int tileType = ModContent.TileType<Glowflower>();
+
+			if (Placer.CanPlaceHerb(i, j, tileType) && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(pt)))
+				Placer.PlaceTile(i, j - 1, tileType).Send();
+		}
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -38,7 +55,7 @@ public class Glowflower : ModTile, ISwayTile
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(20, 190, 130));
+		AddMapEntry(new Color(200, 150, 50));
 		DustType = DustID.Firefly;
 		HitSound = SoundID.Grass;
 	}
