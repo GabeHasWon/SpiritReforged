@@ -19,12 +19,13 @@ public class UndergroundOasisBiome : Microbiome
 	protected override void OnPlace(Point16 point)
 	{
 		var origin = point.ToPoint();
-		Point radius = new(WorldGen.genRand.Next(30, 40), WorldGen.genRand.Next(25, 35));
+		Point radius = new(WorldGen.genRand.Next(30, 35), WorldGen.genRand.Next(45, 70));
 		ShapeData shape = new();
 
 		//Base material
 		WorldUtils.Gen(new Point(origin.X, origin.Y), new Shapes.Circle(radius.X, 10), Actions.Chain(
 			new Modifiers.Blotches(2, 0.4),
+			new Modifiers.SkipTiles(TileID.Sand),
 			new Actions.SetTileKeepWall(TileID.Sandstone)
 		).Output(shape));
 
@@ -34,9 +35,13 @@ public class UndergroundOasisBiome : Microbiome
 		));
 
 		//Clearing shape
-		WorldUtils.Gen(origin, new Shapes.Mound(radius.X, radius.Y), Actions.Chain(
+		WorldUtils.Gen(origin, new Shapes.Mound(radius.X, radius.Y / 2), Actions.Chain(
+			new Modifiers.RectangleMask(-(radius.X - 5), radius.X - 5, -radius.Y, radius.Y),
+			new Modifiers.Blotches(),
 			new Actions.ClearTile(frameNeighbors: true)
 		).Output(shape));
+
+		WorldUtils.Gen(origin, new ModShapes.All(shape), new Actions.Smooth());
 
 		WorldUtils.Gen(new Point(origin.X, origin.Y - 12), new ModShapes.All(shape), Actions.Chain(
 			new Modifiers.OnlyTiles(TileID.Sand),
@@ -54,9 +59,11 @@ public class UndergroundOasisBiome : Microbiome
 		Point lakeOrigin = new(origin.X + Main.rand.Next(-deviation, deviation), origin.Y);
 		CarveLake(lakeOrigin);
 
-		PlaceStalactites(new Rectangle(origin.X - radius.X / 2, origin.Y - 5, radius.X, 10), WorldGen.genRand.Next(4, 8));
+		PlaceStalactites(origin, radius.X, WorldGen.genRand.Next(4, 8));
 		Decorate(origin, shape);
 		PlaceLightShaft(origin);
+
+		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 4);
 	}
 
 	private static void Decorate(Point origin, ShapeData clearingShape)
@@ -65,13 +72,27 @@ public class UndergroundOasisBiome : Microbiome
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
 				j--;
-				if (Main.tile[i, j].LiquidAmount > 100 || Main.tile[i, j].HasTile || Main.tile[i, j - 1].HasTile)
+				if (Main.tile[i, j].HasTile || Main.tile[i, j - 1].HasTile)
 					return false;
 
-				if (WorldGen.genRand.NextBool(7))
+				if (Main.tile[i, j].LiquidAmount > 100)
 				{
-					int type = ModContent.TileType<Glowflower>();
-					Placer.PlaceTile(i, j, type);
+					if (WorldGen.genRand.NextBool(3))
+					{
+						WorldGen.PlaceCatTail(i, j);
+					}
+				}
+				else
+				{
+					if (WorldGen.genRand.NextBool(3))
+					{
+						WorldGen.PlaceOasisPlant(i, j);
+					}
+
+					if (WorldGen.genRand.NextBool(5))
+					{
+						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
+					}
 				}
 
 				return true;
@@ -99,13 +120,15 @@ public class UndergroundOasisBiome : Microbiome
 		SimpleEntitySystem.NewEntity<LightShaft>(new Vector2(x, y).ToWorldCoordinates(), true);
 	}
 
-	private static void PlaceStalactites(Rectangle area, int count)
+	private static void PlaceStalactites(Point origin, int radius, int count)
 	{
+		int maxAttempts = 10 * count;
+		int attempts = 0;
 		HashSet<Point> points = [];
 
 		for (int i = 0; i < count; i++)
 		{
-			var point = Main.rand.NextVector2FromRectangle(area).ToPoint();
+			var point = new Point(origin.X + Main.rand.Next(4, radius) * Main.rand.Next([-1, 1]), origin.Y);
 			int x = point.X;
 			int y = point.Y;
 
@@ -113,30 +136,39 @@ public class UndergroundOasisBiome : Microbiome
 				y--;
 
 			if (Main.tile[x, y].TileType != TileID.Sandstone)
+			{
+				if (++attempts < maxAttempts)
+					i--;
+
 				continue;
+			}
 
 			points.Add(new(x, y));
 		}
 
+		ShapeData shape = new();
 		foreach (var pt in points)
 		{
 			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
 				new Actions.SetTileKeepWall(TileID.Sandstone),
 				new Modifiers.Expand(1),
 				new Actions.PlaceWall(WallID.Sandstone)
-			));
+			).Output(shape));
 		}
 	}
 
 	private static void CarveLake(Point origin)
 	{
 		WorldMethods.FindGround(origin.X, ref origin.Y);
+		ShapeData shape = new();
 
-		WorldUtils.Gen(origin, new Shapes.Circle(WorldGen.genRand.Next(5, 11), WorldGen.genRand.Next(3, 6)), Actions.Chain(
+		WorldUtils.Gen(origin, new Shapes.Circle(WorldGen.genRand.Next(6, 11), WorldGen.genRand.Next(3, 6)), Actions.Chain(
 			new Modifiers.IsSolid(),
 			new Actions.ClearTile(),
 			new Actions.SetLiquid(LiquidID.Water)
-		));
+		).Output(shape));
+
+		WorldUtils.Gen(origin, new ModShapes.OuterOutline(shape), new Actions.Smooth());
 
 		Vector2 size = new(50);
 		WorldDetours.Regions.Add(new(new Rectangle(origin.X - (int)(size.X / 2), origin.Y - (int)(size.Y / 2), (int)size.X, (int)size.Y), WorldDetours.Context.Lava));

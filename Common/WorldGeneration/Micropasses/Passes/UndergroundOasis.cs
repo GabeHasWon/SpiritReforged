@@ -11,13 +11,13 @@ internal class UndergroundOasisMicropass : Micropass
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
 		afterIndex = true;
-		return passes.FindIndex(genpass => genpass.Name.Equals("Micro Biomes")); //Full Desert
+		return passes.FindIndex(genpass => genpass.Name.Equals("Micro Biomes")); //Full Desert, Micro Biomes
 	}
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
 	{
 		const int maxAttempts = 200;
-		const int area = 40;
+		const int area = 50;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.DesertExtras");
 
@@ -42,7 +42,7 @@ internal class UndergroundOasisMicropass : Micropass
 			Dictionary<ushort, int> typeToCount = [];
 			WorldUtils.Gen(pt - new Point(area / 2, area / 2), new Shapes.Rectangle(area, area), new Actions.TileScanner(TileID.Sand, TileID.Sandstone, TileID.HardenedSand).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] + typeToCount[TileID.Sandstone] + typeToCount[TileID.HardenedSand] < area * area * 0.7f)
+			if (typeToCount[TileID.Sand] + typeToCount[TileID.Sandstone] + typeToCount[TileID.HardenedSand] < area * area * 0.5f)
 			{
 				if (++attempts < maxAttempts)
 					i--;

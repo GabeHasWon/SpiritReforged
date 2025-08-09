@@ -3,7 +3,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-[Obsolete("Regions are handled by EtherealGrove instead")] //Keep temporarily for legacy data loading
+[Obsolete("Regions are handled by ButterflyShrineBiome instead")] //Keep temporarily for legacy data loading
 internal class ButterflySystem : ModSystem
 {
 	//public static HashSet<Rectangle> ButterflyZones = [];
