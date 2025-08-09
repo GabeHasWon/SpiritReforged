@@ -80,31 +80,15 @@ public class UndergroundOasisBiome : Microbiome
 
 	private static void Decorate(Point origin, ShapeData clearingShape)
 	{
+		int palmCount = 0;
+
 		WorldUtils.Gen(origin, new ModShapes.All(clearingShape), Actions.Chain(
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
-				j--;
-				if (Main.tile[i, j].HasTile || Main.tile[i, j - 1].HasTile)
-					return false;
-
-				if (Main.tile[i, j].LiquidAmount > 100)
+				if (WorldGen.genRand.NextBool((palmCount == 0) ? 5 : 15) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
 				{
-					if (WorldGen.genRand.NextBool(3))
-					{
-						WorldGen.PlaceCatTail(i, j);
-					}
-				}
-				else
-				{
-					if (WorldGen.genRand.NextBool(3))
-					{
-						WorldGen.PlaceOasisPlant(i, j);
-					}
-
-					if (WorldGen.genRand.NextBool(5))
-					{
-						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
-					}
+					if (CreatePalmTree(i, j, WorldGen.genRand.Next(8, 16)))
+						palmCount++;
 				}
 
 				return true;
@@ -114,8 +98,42 @@ public class UndergroundOasisBiome : Microbiome
 		WorldUtils.Gen(origin, new ModShapes.All(clearingShape), Actions.Chain(
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
-				if (WorldGen.genRand.NextBool(3))
-					WorldGen.GrowPalmTree(i, j);
+				if (Main.tile[i, j].Slope != SlopeType.Solid || Main.tile[i, --j].HasTile)
+					return false;
+
+				if (Main.tile[i, j].LiquidAmount > 100)
+				{
+					if (WorldGen.genRand.NextBool(3))
+					{
+						WorldGen.PlaceCatTail(i, j);
+
+						int height = Main.rand.Next(3, 6);
+						for (int h = 0; h < height; h++)
+							WorldGen.GrowCatTail(i, j);
+					}
+				}
+				else
+				{
+					if (WorldGen.genRand.NextBool(3))
+					{
+						WorldGen.PlaceOasisPlant(i, j);
+					}
+
+					if (WorldGen.genRand.NextBool(7))
+					{
+						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
+					}
+
+					if (WorldGen.genRand.NextBool(2))
+					{
+						var t = Main.tile[i, j];
+
+						t.ResetToType(TileID.SeaOats);
+						t.HasTile = true;
+						t.TileFrameX = (short)(18 * Main.rand.Next(15));
+					}
+				}
+
 				return true;
 			})
 		));
@@ -126,10 +144,20 @@ public class UndergroundOasisBiome : Microbiome
 		int x = point.X;
 		int y = point.Y;
 
-		while (WorldGen.InWorld(x, y, 2) && !WorldGen.SolidTile(x, y))
-			y--;
+		int count = WorldGen.genRand.Next(1, 4);
+		HashSet<int> lastX = [];
 
-		SimpleEntitySystem.NewEntity<LightShaft>(new Vector2(x, y).ToWorldCoordinates(), true);
+		for (int i = 0; i < count; i++)
+		{
+			while (WorldGen.InWorld(x, y, 2) && !WorldGen.SolidTile(x, y))
+				y--;
+
+			if (lastX.Add(x)) //Prevents duplicates
+				SimpleEntitySystem.NewEntity<LightShaft>(new Vector2(x, y).ToWorldCoordinates(), true);
+
+			x = point.X + Main.rand.Next(-10, 10);
+			y = point.Y;
+		}
 	}
 
 	private static void PlaceStalactites(Point origin, int radius, int count)
@@ -184,6 +212,61 @@ public class UndergroundOasisBiome : Microbiome
 
 		Vector2 size = new(50);
 		WorldDetours.Regions.Add(new(new Rectangle(origin.X - (int)(size.X / 2), origin.Y - (int)(size.Y / 2), (int)size.X, (int)size.Y), WorldDetours.Context.Lava));
+	}
+
+	/// <summary> Creates a palm tree of <paramref name="height"/> starting from the given coordinates and does <b>not</b> sync it. </summary>
+	public static bool CreatePalmTree(int i, int j, int height)
+	{
+		if (!WorldGen.EmptyTileCheck(i - 1, i + 1, j - height - 1, j - 1, TileID.Saplings))
+			return false;
+
+		var r = WorldGen.genRand;
+		Tile tile;
+
+		int frameYNum = r.Next(-8, 9) * 2;
+		short frameYCache = 0;
+
+		for (int y = 0; y < height; y++)
+		{
+			tile = Main.tile[i, j - y];
+			if (y == 0)
+			{
+				tile.HasTile = true;
+				tile.TileType = TileID.PalmTree;
+				tile.TileFrameX = 66;
+				tile.TileFrameY = 0;
+
+				continue;
+			}
+
+			if (y == height - 1)
+			{
+				tile.HasTile = true;
+				tile.TileType = TileID.PalmTree;
+				tile.TileFrameX = (short)(22 * r.Next(4, 7));
+				tile.TileFrameY = frameYCache;
+
+				continue;
+			}
+
+			if (frameYCache != frameYNum)
+			{
+				double num5 = (double)y / height;
+				if (!(num5 < 0.25) && (num5 < 0.5 && r.NextBool(13) || num5 < 0.7 && r.NextBool(9) || !(num5 < 0.95) || !r.NextBool(5)|| true))
+				{
+					short num6 = (short)Math.Sign(frameYNum);
+					frameYCache = (short)(frameYCache + (short)(num6 * 2));
+				}
+			}
+
+			tile.HasTile = true;
+			tile.TileType = TileID.PalmTree;
+			tile.TileFrameX = (short)(22 * r.Next(0, 3));
+			tile.TileFrameY = frameYCache;
+		}
+
+		WorldGen.RangeFrame(i - 2, j - height - 1, i + 2, j + 1);
+		return true;
 	}
 	#endregion
 }
