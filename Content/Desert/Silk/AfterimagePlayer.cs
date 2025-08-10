@@ -19,7 +19,8 @@ public class AfterimagePlayer : ModPlayer
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
 	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
 
-	public bool CreatedDuplicate => _duplicateDelay == 1;
+	/// <summary> Whether a duplicate projectile was created on the local client. </summary>
+	public static bool Duplicate { get; private set; }
 
 	public bool setActive = false;
 	private int _manaCounter;
@@ -153,13 +154,21 @@ public class AfterimagePlayer : ModPlayer
 
 		if (Player.whoAmI == Main.myPlayer)
 		{
+			Duplicate = true;
 			Vector2 oldPosition = Player.position;
 			Player.position = ImagePosition; //Briefly adjust the player position so that projectiles appear at the afterimage instead
 
 			ItemCheck_Shoot(Player, Player.whoAmI, Player.HeldItem, Player.HeldItem.damage);
 
 			Player.position = oldPosition;
+			Duplicate = false;
 		}
+	}
+
+	public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		if (Duplicate)
+			ProjectileEdits.ChangeStats(item, ref position, ref velocity, ref type, ref damage, ref knockback);
 	}
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

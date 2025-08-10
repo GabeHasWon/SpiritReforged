@@ -2,6 +2,8 @@ using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
@@ -51,13 +53,14 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var thisZone = ButterflySystem.ButterflyZones.Where(x => x.Contains(new Point(i, j))).FirstOrDefault();
+		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyShrineBiome e && e.Rectangle.Contains(new Point(i, j)));
+		bool removedAny = false;
 
-		if (thisZone != default)
-		{
-			ButterflySystem.ButterflyZones.Remove(thisZone); //Remove the zone associated with this stump if it is destroyed
-			NetMessage.SendData(MessageID.WorldData); // and sync it
-		}
+		foreach (var biome in overlap)
+			removedAny |= MicrobiomeSystem.Microbiomes.Remove(biome); //Remove any overlapping microbiomes if it is destroyed
+
+		if (removedAny && Main.netMode == NetmodeID.Server)
+			NetMessage.SendData(MessageID.WorldData); //Sync the changes
 	}
 
 	public override void MouseOver(int i, int j)
