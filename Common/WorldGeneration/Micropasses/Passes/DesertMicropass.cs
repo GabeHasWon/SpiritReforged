@@ -37,7 +37,7 @@ internal class DesertMicropass : Micropass
 
 				WorldGen.OreRunner(i, j - 3, scale + 4, WorldGen.genRand.Next(1, 8), TileID.Sand);
 				WorldGen.OreRunner(i, j, scale, WorldGen.genRand.Next(1, 8), (ushort)ModContent.TileType<PolishedAmber>());
-				AddFossils(i, j, WorldGen.genRand.Next(scale / 2, (int)(scale * 1.5f)), scale);
+				AddFossils(i, j, scale / 2, scale);
 
 				if (++generated >= maxAmount)
 					break;
