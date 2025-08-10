@@ -35,6 +35,8 @@ public abstract class SaltBlock : ModTile, IAutoloadTileItem
 
 public class SaltBlockDull : SaltBlock, IAutoloadTileItem
 {
+	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), nameof(SaltBlock));
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -74,14 +76,11 @@ public class SaltBlockDull : SaltBlock, IAutoloadTileItem
 
 public class SaltBlockReflective : SaltBlock
 {
-	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), nameof(SaltBlock));
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 		AddMapEntry(new Color(230, 220, 220));
 	}
-
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
