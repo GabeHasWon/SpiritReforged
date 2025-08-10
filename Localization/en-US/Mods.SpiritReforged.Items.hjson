@@ -2133,3 +2133,18 @@ CeremonialDagger: {
 		<right> deals critical damage to bleeding enemies
 		'''
 }
+
+Thornball: {
+	DisplayName: Thornball
+	Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+}
+
+SaltBlockDullItem: {
+	DisplayName: Dull Salt Block
+	Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	DisplayName: Salt Block
+	Tooltip: "'Smooth and reflective'"
+}

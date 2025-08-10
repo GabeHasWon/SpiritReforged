@@ -345,6 +345,8 @@ internal class Stactus : ModNPC, IDeathCount
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => Falling ? false : null;
 
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+
 	#region hide
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
 	{

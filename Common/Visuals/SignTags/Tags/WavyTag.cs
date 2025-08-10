@@ -37,7 +37,7 @@ internal class WavyTag : SignTag
 
 	public override bool Draw(Rectangle panel, string[] text, int numLines, ref Color color)
 	{
-		var effect = AssetLoader.LoadedShaders["Ripple"];
+		var effect = AssetLoader.LoadedShaders["Ripple"].Value;
 		effect.Parameters["progress"].SetValue((float)(Main.timeForVisualEffects / 10f % MathHelper.TwoPi));
 		effect.Parameters["strength"].SetValue(.001f * _strength);
 		effect.Parameters["length"].SetValue(.001f * _length);

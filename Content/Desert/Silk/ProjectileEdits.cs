@@ -1,11 +1,18 @@
 ﻿using ILLogger;
 using MonoMod.Cil;
+using SpiritReforged.Content.Ocean.Items.Reefhunter;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
 
 namespace SpiritReforged.Content.Desert.Silk;
 
 internal sealed class ProjectileEdits : ILoadable
 {
+	public delegate void ModifyShootStatsDelegate(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback);
+	private static Dictionary<int, ModifyShootStatsDelegate> DelegateByItem = null;
+
+	#region detours
 	public void Load(Mod mod) => IL_Projectile.AI_047_MagnetSphere += AllowAfterimage;
+	public void Unload() { }
 
 	/// <summary> Allows two Magnet Sphere projectiles to exist simultaneously. </summary>
 	private static void AllowAfterimage(ILContext il)
@@ -41,6 +48,23 @@ internal sealed class ProjectileEdits : ILoadable
 
 		static bool IsAfterimage(Projectile p) => p.TryGetGlobalProjectile(out AfterimageProjectile ap) && ap.Afterimage;
 	}
+	#endregion
 
-	public void Unload() { }
+	/// <summary> Compensates for logic failures when firing specific duplicated projectiles. </summary>
+	public static void ChangeStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		if (DelegateByItem == null)
+			PopulateDelegates_Deferred();
+
+		if (DelegateByItem.TryGetValue(item.type, out var action))
+			action.Invoke(item, ref position, ref velocity, ref type, ref damage, ref knockback);
+	}
+
+	private static void PopulateDelegates_Deferred()
+	{
+		DelegateByItem = [];
+
+		DelegateByItem.Add(ModContent.ItemType<UrchinStaff>(), static (Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) =>
+		type = ModContent.ProjectileType<UrchinBall>());
+	}
 }

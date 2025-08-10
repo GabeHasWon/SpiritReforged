@@ -117,3 +117,8 @@ FlaskOfFrost_Buff: {
 	DisplayName: Смазанное оружие: Заморозка
 	Description: Атаки ближнего боя, а также хлысты замораживают врагов
 }
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}

@@ -63,7 +63,7 @@ public class SaltWaterStyle : ModWaterStyle
 		if (!IsActive() || OverlayTarget.Target is null || WaterTarget.Target is null)
 			return;
 
-		var s = AssetLoader.LoadedShaders["SimpleMultiply"];
+		var s = AssetLoader.LoadedShaders["SimpleMultiply"].Value;
 		s.Parameters["tileTexture"].SetValue(WaterTarget);
 		s.Parameters["lightness"].SetValue(3);
 

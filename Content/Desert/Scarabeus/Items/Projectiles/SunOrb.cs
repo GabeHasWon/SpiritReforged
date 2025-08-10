@@ -257,7 +257,7 @@ public class SunOrb : ModProjectile
 	//Beware: Hyper specific shader parameter setting with 1 billion different easings below!
 	private void DrawBigRay(Color rayColor, Color darkRayColor)
 	{
-		Effect effect = AssetLoader.LoadedShaders["LightRay"];
+		Effect effect = AssetLoader.LoadedShaders["LightRay"].Value;
 		GetRayDimensions(out float rayHeight, out float rayWidth, out float rayDist);
 
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["FlameTrail"].Value);
@@ -300,7 +300,7 @@ public class SunOrb : ModProjectile
 
 	private void DrawSun(Color lightColor, Color darkRayColor)
 	{ 
-		Effect effect = AssetLoader.LoadedShaders["SunOrb"];
+		Effect effect = AssetLoader.LoadedShaders["SunOrb"].Value;
 		effect.Parameters["lightColor"].SetValue(lightColor.ToVector4());
 		effect.Parameters["darkColor"].SetValue(darkRayColor.ToVector4());
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["Extra_49"].Value);

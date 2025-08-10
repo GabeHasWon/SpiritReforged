@@ -126,7 +126,7 @@ public abstract class MotionNoiseCone : Particle
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
-		Effect effect = AssetLoader.LoadedShaders["MotionNoiseCone"];
+		Effect effect = AssetLoader.LoadedShaders["MotionNoiseCone"].Value;
 		Texture2D texture = AssetLoader.LoadedTextures["vnoise"].Value;
 		effect.Parameters["uTexture"].SetValue(texture);
 

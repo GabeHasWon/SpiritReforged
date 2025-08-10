@@ -60,7 +60,7 @@ public class GlowTileHandler : ILoadable
 
 		var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 		Matrix view = Main.GameViewMatrix.TransformationMatrix;
-		Effect effect = AssetLoader.LoadedShaders["ShadowFade"];
+		Effect effect = AssetLoader.LoadedShaders["ShadowFade"].Value;
 
 		foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 		{
