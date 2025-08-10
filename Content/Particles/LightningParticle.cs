@@ -31,7 +31,7 @@ public class LightningParticle : Particle
 		float rotation = (_endPosition - Position).ToRotation();
 		var drawColor = Color.Lerp(Color.White, Color, EaseFunction.EaseQuadIn.Ease(Progress)).Additive();
 
-		Effect beamEffect = AssetLoader.LoadedShaders["Lightning"];
+		Effect beamEffect = AssetLoader.LoadedShaders["Lightning"].Value;
 		beamEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["Lightning"].Value);
 		beamEffect.Parameters["perlinNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
 		beamEffect.Parameters["Progress"].SetValue(Progress);

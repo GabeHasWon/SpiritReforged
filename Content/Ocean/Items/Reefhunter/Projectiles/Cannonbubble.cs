@@ -96,7 +96,7 @@ public class Cannonbubble : ModProjectile
 			Rotation = MathHelper.TwoPi + MathHelper.PiOver2 + Projectile.rotation
 		});
 
-		Effect bubbleEffect = AssetLoader.LoadedShaders["TextureMap"];
+		Effect bubbleEffect = AssetLoader.LoadedShaders["TextureMap"].Value;
 		bubbleEffect.Parameters["uTexture"].SetValue(outline);
 		bubbleEffect.Parameters["rotation"].SetValue(MathHelper.TwoPi + Projectile.rotation);
 		PrimitiveRenderer.DrawPrimitiveShapeBatched(bubbleTrail.ToArray(), bubbleEffect);
