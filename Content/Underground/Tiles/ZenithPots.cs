@@ -1,4 +1,5 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using static SpiritReforged.Common.TileCommon.StyleDatabase;
@@ -34,5 +35,5 @@ public class ZenithPots : PotTile, ILootTile
 		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.TreasureSparkle;
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
+	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
 }

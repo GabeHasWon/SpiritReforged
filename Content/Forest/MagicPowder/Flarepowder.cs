@@ -6,9 +6,10 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -17,7 +18,7 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class Flarepowder : ModItem
 {
-	private static readonly Asset<Texture2D> HeldTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld"));
+	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
 	public bool IsDerived => GetType() != typeof(Flarepowder);
@@ -52,25 +53,6 @@ public class Flarepowder : ModItem
 		orig(ref drawinfo);
 	}
 
-	/// <summary> Drops <see cref="Flarepowder"/> from all pots in addition to normal items. </summary>
-	private static void AddPotLoot(int i, int j, int type, ref bool fail, ref bool effectOnly)
-	{
-		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
-			return;
-
-		int chance = (i < Main.rockLayer) ? 17 : 0;
-		if (chance > 0 && Main.rand.NextBool(chance))
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<Flarepowder>(), Main.rand.Next(10, 21));
-		}
-
-		bool IsTopLeft()
-		{
-			var tile = Main.tile[i, j];
-			return tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
-		}
-	}
-
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 99;
@@ -85,7 +67,15 @@ public class Flarepowder : ModItem
 		if (!IsDerived)
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
-			TileEvents.AddKillTileAction(TileID.Pots, AddPotLoot);
+
+			//Register pot loot
+			TileLootHandler.RegisterLoot(static (context, loot) =>
+			{
+				int chance = (context.Coordinates.Y < Main.rockLayer) ? 17 : 0;
+
+				if (chance > 0)
+					loot.AddCommon(ModContent.ItemType<Flarepowder>(), chance, 10, 20);
+			}, TileID.Pots, ModContent.TileType<Pots>());
 		}
 
 		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
