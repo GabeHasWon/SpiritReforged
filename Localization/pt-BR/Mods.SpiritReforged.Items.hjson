@@ -2148,3 +2148,8 @@ SaltBlockReflectiveItem: {
 	// DisplayName: Salt Block
 	// Tooltip: "'Smooth and reflective'"
 }
+
+NeedleTrapItem: {
+	// DisplayName: Needle Trap
+	// Tooltip: ""
+}
