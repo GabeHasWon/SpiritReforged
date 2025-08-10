@@ -117,3 +117,8 @@ FlaskOfFrost_Buff: {
 	// DisplayName: Weapon Imbue: Freezing
 	// Description: Melee and Whip attacks freeze enemies
 }
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
