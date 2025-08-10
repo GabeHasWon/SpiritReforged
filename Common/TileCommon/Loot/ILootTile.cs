@@ -59,6 +59,8 @@ public class TileLootHandler : ILoadable
 			var p = Main.player[Player.FindClosest(spawn, 0, 0)];
 
 			loot.Resolve(new Rectangle(i * 16, j * 16, size.X * 16, size.Y * 16), p);
+			t.HasTile = false; //Deactivate the tile just to be safe
+
 			return true;
 		}
 
