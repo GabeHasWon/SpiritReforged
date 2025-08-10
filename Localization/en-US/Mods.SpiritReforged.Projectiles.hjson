@@ -48,3 +48,4 @@ EnergyImpact.DisplayName: Energy Stomp
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Finger Shot
 NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"

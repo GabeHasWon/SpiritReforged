@@ -2125,6 +2125,20 @@ SilkTop: {
 	// Tooltip: 7% increased magic damage
 }
 
+CeremonialDagger: {
+	// DisplayName: Ceremonial Dagger
+	/* Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		''' */
+}
+
+Thornball: {
+	// DisplayName: Thornball
+	// Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+}
+
 SaltBlockDullItem: {
 	// DisplayName: Dull Salt Block
 	// Tooltip: ""

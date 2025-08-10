@@ -11,6 +11,8 @@ public abstract class Micropass : ILoadable
 	public abstract string WorldGenName { get; }
 
 	public abstract void Run(GenerationProgress progress, GameConfiguration config);
+
+	/// <param name="afterIndex"> Whether the task will be inserted <b>after</b> the given index. True by default. </param>
 	public abstract int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex);
 
 	public virtual void Load(Mod mod) { }

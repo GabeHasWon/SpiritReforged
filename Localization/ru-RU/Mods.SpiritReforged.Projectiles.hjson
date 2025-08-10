@@ -48,3 +48,4 @@ EnergyImpact.DisplayName: Энергетический удар
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Пальцевыстрел
 // NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
