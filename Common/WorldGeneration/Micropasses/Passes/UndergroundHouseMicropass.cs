@@ -36,7 +36,7 @@ internal class UndergroundHouseMicropass : ModSystem
 	{
 		orig(self, context, structures);
 
-		if (self.Type != HouseType.Wood && self.Type != HouseType.Ice)
+		if (self.Type is not HouseType.Wood and not HouseType.Ice and not HouseType.Desert)
 			return;
 
 		bool hasPlaced = false;
@@ -53,7 +53,7 @@ internal class UndergroundHouseMicropass : ModSystem
 				skipFlags |= AddedHouseFlags.Sign;
 			}
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.Mannequin) && WorldGen.genRand.NextBool(4) 
+			if (!skipFlags.HasFlag(AddedHouseFlags.Mannequin) && WorldGen.genRand.NextBool(1) 
 				&& PlaceDecorInRoom(room, y, WorldGen.genRand.NextBool() ? TileID.Womannequin : TileID.Mannequin, Main.rand.Next(2)))
 			{
 				hasPlaced = true;
