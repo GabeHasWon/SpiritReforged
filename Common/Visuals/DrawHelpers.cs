@@ -67,6 +67,6 @@ public static class DrawHelpers
 
 	/// <summary> Requests the texture of <paramref name="name"/> is the namespace of <paramref name="type"/>. </summary>
 	public static Asset<Texture2D> RequestLocal(Type type, string name, bool immediate = false) => ModContent.Request<Texture2D>(RequestLocal(type, name), immediate ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
-	/// <inheritdoc cref="RequestLocal(Type, string, bool)"/>
+	/// <summary> Gets the string key for a texture resulting from the given arguments. See the overload for <see cref="Texture2D"/>. </summary>
 	public static string RequestLocal(Type type, string name) => (type.Namespace + '.' + name).Replace('.', '/');
 }

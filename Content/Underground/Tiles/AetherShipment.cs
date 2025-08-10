@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Particles;
@@ -199,7 +200,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
 		loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.AegisFruit, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
 

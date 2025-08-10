@@ -1,4 +1,5 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -103,9 +104,9 @@ public class CommonPots : PotTile, ILootTile
 
 	public void AddLoot(int objectStyle, ILoot loot)
 	{
-		ModContent.GetInstance<Pots>().AddLoot(0, loot);
+        TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
 
-		if (objectStyle / 3 == 2) //Savanna
+        if (objectStyle / 3 == 2) //Savanna
 		{
 			foreach (IItemDropRule item in loot.Get())
 			{

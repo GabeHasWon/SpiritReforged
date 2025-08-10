@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
@@ -7,7 +8,8 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. </summary>
+/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. <para/>
+/// The loot table registered through this type is used for display in the Potstiary, and never actually rolls. </summary>
 public class Pots : PotTile, ILootTile
 {
 	public const string NameKey = "MapObject.Pot";
@@ -125,9 +127,9 @@ public class Pots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILootTile.Context context, ILoot loot)
 	{
-		string styleName = StyleDatabase.GetName(Type, (byte)objectStyle);
+		string styleName = StyleDatabase.GetName(Type, (byte)context.Style);
 
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
