@@ -42,6 +42,7 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 			SpawnSpike(Wiring.GetProjectileSource(i, j), new(i, j));
 	}
 
+	public override bool IsTileDangerous(int i, int j, Player player) => true;
 	private static void SpawnSpike(IEntitySource source, Point16 tileCoords) => Projectile.NewProjectile(source, tileCoords.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), 30, 0);
 }
 
