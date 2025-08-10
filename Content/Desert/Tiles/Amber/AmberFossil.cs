@@ -14,6 +14,7 @@ namespace SpiritReforged.Content.Desert.Tiles.Amber;
 public class AmberFossil : ShiningAmber
 {
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(PolishedAmber));
+	private static WeightedRandom<int> RandomItem;
 
 	public static int GetContainedItem(int i, int j)
 	{
@@ -21,25 +22,12 @@ public class AmberFossil : ShiningAmber
 		return (id == -1) ? 0 : (TileEntity.ByID[id] as FossilEntity).itemType;
 	}
 
-	private static int SelectItem()
-	{
-		var result = new WeightedRandom<int>();
-
-		result.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Dragonflies));
-		result.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Fireflies));
-		result.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
-		result.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
-		result.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
-
-		return result;
-	}
-
 	private static void PlaceEntity(int i, int j)
 	{
 		if (ModContent.GetInstance<FossilEntity>().Find(i, j) != -1)
 			return; //An entity already exists here
 
-		int itemType = SelectItem();
+		int itemType = RandomItem;
 		int id = ModContent.GetInstance<FossilEntity>().Place(i, j);
 
 		((FossilEntity)TileEntity.ByID[id]).itemType = itemType;
@@ -52,6 +40,14 @@ public class AmberFossil : ShiningAmber
 	{
 		base.SetStaticDefaults();
 		RegisterItemDrop(AutoContent.ItemType<PolishedAmber>());
+
+		RandomItem = new();
+
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Dragonflies));
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Fireflies));
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
+		RandomItem.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
+		RandomItem.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
