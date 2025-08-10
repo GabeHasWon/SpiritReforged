@@ -100,6 +100,7 @@ public class UndergroundOasisBiome : Microbiome
 					return false;
 
 				if (Main.tile[i, j].LiquidAmount > 100)
+				{
 					if (WorldGen.genRand.NextBool(3))
 					{
 						WorldGen.PlaceCatTail(i, j);
@@ -108,6 +109,7 @@ public class UndergroundOasisBiome : Microbiome
 						for (int h = 0; h < height; h++)
 							WorldGen.GrowCatTail(i, j);
 					}
+				}
 				else
 				{
 					if (WorldGen.genRand.NextBool(3))
