@@ -47,3 +47,4 @@ VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.Display
 EnergyImpact.DisplayName: Энергетический удар
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Пальцевыстрел
+// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
