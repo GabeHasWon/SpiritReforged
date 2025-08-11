@@ -73,7 +73,7 @@ public class UndergroundOasisBiome : Microbiome
 
 		PlaceStalactites(origin, radius.X, WorldGen.genRand.Next(4, 8));
 		Decorate(origin, shape);
-		PlaceLightShaft(origin);
+		PlaceLightShafts(origin);
 
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 4);
 	}
@@ -133,7 +133,7 @@ public class UndergroundOasisBiome : Microbiome
 		));
 	}
 
-	private static void PlaceLightShaft(Point point)
+	private static void PlaceLightShafts(Point point)
 	{
 		int x = point.X;
 		int y = point.Y;
@@ -177,16 +177,15 @@ public class UndergroundOasisBiome : Microbiome
 				continue;
 			}
 
-			points.Add(new(x, y));
+			points.Add(new(x, y - 2));
 		}
 
-		ShapeData shape = new();
 		foreach (var pt in points)
 			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
 				new Actions.SetTileKeepWall(TileID.Sandstone),
 				new Modifiers.Expand(1),
 				new Actions.PlaceWall(WallID.Sandstone)
-			).Output(shape));
+			));
 	}
 
 	private static void CarveLake(Point origin)

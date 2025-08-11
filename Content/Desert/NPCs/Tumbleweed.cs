@@ -6,7 +6,12 @@ namespace SpiritReforged.Content.Desert.NPCs;
 
 public class Tumbleweed : ModNPC
 {
-	public override void SetStaticDefaults() => NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers() { Hide = true });
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers() { Hide = true });
+		Main.npcFrameCount[Type] = 3;
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(26);
@@ -63,6 +68,17 @@ public class Tumbleweed : ModNPC
 	}
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => false;
+	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = Rectangle.Empty;
+
+	public override void FindFrame(int frameHeight)
+	{
+		if (NPC.frameCounter == 0)
+			NPC.frameCounter = Main.rand.NextBool(100) ? 3 : Main.rand.Next(1, 3);
+
+		NPC.frame.Y = ((int)NPC.frameCounter - 1) * frameHeight;
+		NPC.frame.Height = frameHeight - 2;
+	}
+
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		var texture = TextureAssets.Npc[Type].Value;
