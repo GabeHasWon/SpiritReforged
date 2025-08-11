@@ -136,7 +136,7 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: 罐中雀鳝
+	DisplayName: 雀鳝罐
 }
 
 GarItem: {
@@ -905,7 +905,7 @@ SavannaSandstormMusicBoxItem: {
 }
 
 FishLure: {
-	DisplayName: 鱼饵
+	DisplayName: 鱼诱
 	Tooltip:
 		'''
 		{$ItemTooltip.CoralTorch}
