@@ -8,6 +8,9 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class NeedleTrap : ModTile, IAutoloadTileItem
 {
+	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
+	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
+
 	public override void SetStaticDefaults()
 	{
 		TileID.Sets.DrawsWalls[Type] = true;
@@ -69,14 +72,17 @@ public class NeedleTrapProj : ModProjectile
 		if (_origin == default) //Just spawned
 		{
 			_origin = Projectile.Center;
-			SoundEngine.PlaySound(SoundID.Mech with { Volume = 0.5f, Pitch = -0.2f }, Projectile.Center);
+			SoundEngine.PlaySound(NeedleTrap.Extend, Projectile.Center);
 		}
 
 		float progress = GetProgress();
-		float ease = (progress > 0.5f) ? EaseFunction.EaseCubicOut.Ease((1f - progress) * 2) : EaseFunction.EaseCubicIn.Ease(GetProgress(90));
-		int distance = (progress < 0.15f) ? 16 : 14;
+		float ease = (progress > 0.9f) ? (1f - (progress - 0.9f) / 0.1f) : EaseFunction.EaseCubicIn.Ease(GetProgress(90));
+		int distance = (progress is < 0.15f or > 0.85f) ? 16 : 14;
 
 		Projectile.Center = _origin - new Vector2(0, ease * distance);
+
+		if (Projectile.timeLeft == 10)
+			SoundEngine.PlaySound(NeedleTrap.Retract, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
