@@ -1,7 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
+using Terraria.GameContent.Events;
 
 namespace SpiritReforged.Content.Desert;
 
@@ -26,25 +28,24 @@ public class DesertWind : ILoadable
 			if (Main.rand.NextBool((int)(2000 * odds)))
 			{
 				var position = new Vector2(i, j + 2) * 16;
-				var velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(1, 3), 0.2f);
+				var velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(2, 4), 0.2f);
+
+				if (Sandstorm.Happening)
+					velocity *= 2;
+
 				int timeLeft = Main.rand.Next(250, 500);
 
 				var color = TileMaterial.FindMaterial(type).Color;
 				var hsl = Main.rgbToHsl(color);
 
-				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, Main.hslToRgb(hsl with { X = hsl.X - 0.05f, Z = hsl.Z - 0.1f }) * 0.5f, 1f, EaseFunction.EaseCircularOut, timeLeft + 10)
+				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, Main.hslToRgb(hsl with { X = hsl.X - 0.05f }) * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
 				{
 					TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.05f, Y = 0.3f, Z = hsl.Z - 0.2f })
 				});
 
-				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, color * 0.5f, 0.7f, EaseFunction.EaseCircularOut, timeLeft)
+				for (int x = 0; x < 3; x++)
 				{
-					TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f })
-				});
-
-				for (int x = 0; x < 2; x++)
-				{
-					ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, color * 0.7f, 0.5f, EaseFunction.EaseCircularOut, timeLeft)
+					ParticleHandler.SpawnParticle(new DesertCloud(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f), velocity * Main.rand.NextFloat(), color * 0.4f, Main.rand.NextFloat(0.8f, 1f), EaseFunction.EaseCircularOut, timeLeft)
 					{
 						TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f })
 					});
@@ -84,15 +85,17 @@ public class DesertCloud : DissipatingImage
 
 	public override void Update()
 	{
-		base.Update();
+		_opacity = EaseFunction.EaseCircularOut.Ease(Progress);
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 
 		Velocity = (1 - _acceleration.Ease(Progress)) * _initialVel;
+		Velocity.Y -= 0.1f;
 
 		var size = new Vector2(50, 25) * Scale;
 		if (Collision.SolidCollision(Position - size / 2, (int)size.X, (int)size.Y))
 			Velocity.Y -= 0.15f;
 	}
 
-	public override Color GetLightColor() => Lighting.GetColor((int)Position.X / 16, (int)(Position.Y - 400 * Scale) / 16);
+	public override Color GetLightColor() => Lighting.GetColor((int)Position.X / 16, (int)(Position.Y - 400 * Scale) / 16) * _opacity;
 	public override ParticleLayer DrawLayer => ParticleLayer.BelowWall;
 }
