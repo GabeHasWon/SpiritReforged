@@ -3,23 +3,21 @@ using Terraria.GameContent.Biomes.CaveHouse;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
 
-public abstract class MannequinInventory : ILoadable
+public abstract class MannequinInventory : ModSystem
 {
-	internal static Dictionary<HouseType, MannequinInventory> InventoryByBiome = new();
+	internal static Dictionary<HouseType, MannequinInventory> InventoryByBiome = [];
 
 	public abstract HouseType Biome { get; }
 
-	public void Load(Mod mod)
+	public override void Load()
 	{
 		InventoryByBiome.Add(Biome, this);
 		Setup();
 	}
 
+	public override void PostSetupContent() => Setup();
+
 	public abstract void Setup();
 
 	public abstract void SetMannequin(Point16 position);
-
-	public void Unload()
-	{
-	}
 }

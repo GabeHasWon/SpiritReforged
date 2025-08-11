@@ -35,7 +35,7 @@ internal class IceMannequinInventory : MannequinInventory
 		Item[] inv = [new(ItemID.EskimoHood), new(ItemID.EskimoCoat), new(ItemID.EskimoPants),
 			new(), new(), new(), new(), new()];
 
-		float chance = Main.rand.NextFloat();
+		float chance = WorldGen.genRand.NextFloat();
 
 		if (chance < .10f)
 		{
