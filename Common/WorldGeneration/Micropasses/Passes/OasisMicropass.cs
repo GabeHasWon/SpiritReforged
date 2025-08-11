@@ -26,13 +26,13 @@ internal class OasisMicropass : Micropass
 		int amount = 3 * (WorldGen.GetWorldSize() + 1);
 		Rectangle region = new(GenVars.desertHiveLeft, (int)Main.worldSurface + 40, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - GenVars.desertHiveHigh);
 
-		HashSet<UndergroundOasisBiome> biomes = [];
+		HashSet<Rectangle> biomesRectangles = [];
 
 		for (int i = 0; i < amount; i++)
 		{
 			var pt = Main.rand.NextVector2FromRectangle(region).ToPoint();
 
-			if (!GenVars.structures.CanPlace(new Rectangle(pt.X - area / 2, pt.Y - area / 2, area, area), 4) || biomes.Any(x => x.Rectangle.Contains(pt)))
+			if (!GenVars.structures.CanPlace(new Rectangle(pt.X - area / 2, pt.Y - area / 2, area, area), 4) || biomesRectangles.Any(x => x.Contains(pt)))
 			{
 				if (++attempts < maxAttempts)
 					i--;
@@ -51,7 +51,11 @@ internal class OasisMicropass : Micropass
 				continue;
 			}
 
-			biomes.Add(Microbiome.Create<UndergroundOasisBiome>(new(pt)));
+			var biome = Microbiome.Create<UndergroundOasisBiome>(new(pt));
+			var rectangle = biome.Rectangle;
+			rectangle.Inflate(100, 100);
+
+			biomesRectangles.Add(rectangle);
 		}
 	}
 }

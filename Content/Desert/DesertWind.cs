@@ -20,7 +20,7 @@ public class DesertWind : ILoadable
 
 		var tileAbove = Main.tile[i, j - 1];
 
-		if (SandTypes.Contains(type) && !WorldGen.SolidTile(tileAbove) && tileAbove.WallType == WallID.None)
+		if (SandTypes.Contains(type) && !WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount == 0 && tileAbove.WallType == WallID.None)
 		{
 			float odds = MathHelper.Lerp(1, 0.25f, Math.Abs(Main.windSpeedCurrent));
 			if (Main.rand.NextBool((int)(2000 * odds)))
