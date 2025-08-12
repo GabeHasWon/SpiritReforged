@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -9,8 +8,6 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public abstract class SaltBlock : ModTile, IAutoloadTileItem
 {
-	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), "SaltBlock");
-
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)
 	{
 		Volume = 0.5f,
@@ -23,8 +20,7 @@ public abstract class SaltBlock : ModTile, IAutoloadTileItem
 		Main.tileBlockLight[Type] = false;
 
 		TileID.Sets.ChecksForMerge[Type] = true;
-
-		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, ModContent.TileType<SaltBlockReflective>());
+		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
 
 		DustType = DustID.Pearlsand;
 		MineResist = 0.5f;
@@ -40,10 +36,9 @@ public class SaltBlockDull : SaltBlock
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-
-		Main.tileBlendAll[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		this.Merge(ModContent.TileType<SaltBlockReflective>());
 		AddMapEntry(new Color(180, 170, 170));
 	}
 
@@ -90,4 +85,7 @@ public class SaltBlockReflective : SaltBlock
 
 		return true;
 	}
+
+	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
+		=> WorldGen.TileMergeAttempt(-2, ModContent.TileType<SaltBlockDull>(), ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
 }

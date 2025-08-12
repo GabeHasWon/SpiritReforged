@@ -1,6 +1,8 @@
 using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
@@ -18,6 +20,7 @@ public class SaltBlockVisuals : ILoadable
 
 	/// <summary> Whether screen dimensions are beyond 1920x1080- bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
 	private static bool HighResolution;
+	private static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "SaltBlockReflectiveMap", false);
 
 	#region gradient
 	public static Texture2D DistanceMap { get; private set; }
@@ -30,15 +33,18 @@ public class SaltBlockVisuals : ILoadable
 		if (DistanceMap != null)
 			return DistanceMap;
 
-		const int taper = 2;
+		const int taper = 2; //Opacity taper downscaled
 
 		var data = new Color[width * height];
 		for (int i = 0; i < data.Length; i++)
 		{
 			int y = i / width;
 
-			float strength = 1f - (float)y / height;
-			data[i] = new Color(0, strength, strength * Math.Min((float)y / taper, 1), 1);
+			float pixelStrength = 1f - (float)y / 255; //Divide by a full band rather than 'height' to avoid distorting the reflection Y
+			float fadeStrength = 1f - (float)y / height;
+			float taperOpacity = Math.Min((float)y / taper, 1);
+
+			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 2f, 0, 1)) * taperOpacity, 1); //Green: reflected pixels - Blue: static opacity
 		}
 
 		var textureToCache = new Texture2D(Main.graphics.GraphicsDevice, width, height);
@@ -96,7 +102,7 @@ public class SaltBlockVisuals : ILoadable
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
 		const float scale = 2;
-		var gradient = GetDistanceGradient(8, 255);
+		var gradient = GetDistanceGradient(8, 180);
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -132,7 +138,7 @@ public class SaltBlockVisuals : ILoadable
 	/// <summary> Draws the tile textures that we want to appear reflective into <see cref="TileTarget"/>. </summary>
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
-		var texture = TextureAssets.Tile[ModContent.TileType<SaltBlockReflective>()].Value;
+		var texture = TileMap.Value;
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -224,7 +230,7 @@ public class SaltBlockVisuals : ILoadable
 
 		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"].Value;
-		var n = AssetLoader.LoadedTextures["supPerlin"].Value;
+		var n = AssetLoader.LoadedTextures["perlinNoiseSoft"].Value;
 
 		s.Parameters["mapTexture"].SetValue(MapTarget);
 		s.Parameters["distortionTexture"].SetValue(n);
@@ -238,7 +244,7 @@ public class SaltBlockVisuals : ILoadable
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = lowDetail ? Color.Black * 0.5f : Main.ColorOfTheSkies.Additive(220) * 0.9f;
+		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(220) * 0.8f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 
