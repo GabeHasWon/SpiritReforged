@@ -69,7 +69,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		//The strength of the sine for dull salt padding
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
-		const int baseDepth = 22;
+		const int baseDepth = 35;
 		//The percentage of space surrounding the salt flats that islands can occupy
 		const float islandMargin = 0.15f;
 
@@ -114,17 +114,20 @@ internal class SaltFlatsEcotone : EcotoneBase
 				if (GetSurfaceY(x) == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50))
 					islands.Add(new(x, y - 1)); //Add an island position for later
 
-				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates
+				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates - fill
 				{
 					const int fillLimit = 30;
 					WorldMethods.ApplyOpenArea((i, j) =>
 					{
-						if (j > GetSurfaceY(i) && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f)
+						if (j > GetSurfaceY(i) && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f) //Do a distance check for a naturally rounded fill shape
 						{
 							var t = Main.tile[i, j];
-							t.HasTile = true;
-							t.TileType = (ushort)ModContent.TileType<SaltBlockDull>();
-							t.Slope = SlopeType.Solid;
+							if (CanPlace(t))
+							{
+								t.HasTile = true;
+								t.TileType = (ushort)ModContent.TileType<SaltBlockDull>();
+								t.Slope = SlopeType.Solid;
+							}
 						}
 
 						return false;
@@ -210,7 +213,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	{
 		var t = Main.tile[x, y];
 
-		if (!CanPlace())
+		if (!CanPlace(t))
 			return;
 
 		if (y < baseLine)
@@ -232,12 +235,12 @@ internal class SaltFlatsEcotone : EcotoneBase
 			if (clearWall)
 				t.WallType = WallID.None;
 		}
+	}
 
-		bool CanPlace()
-		{
-			int type = t.TileType;
-			return (TileID.Sets.GeneralPlacementTiles[type] || type == TileID.Ebonstone || type == TileID.Crimstone) && !SpiritSets.DungeonWall[t.WallType];
-		}
+	private static bool CanPlace(Tile t)
+	{
+		int type = t.TileType;
+		return (TileID.Sets.GeneralPlacementTiles[type] || type == TileID.Ebonstone || type == TileID.Crimstone) && !SpiritSets.DungeonWall[t.WallType];
 	}
 
 	/// <summary> Gets a terrain Y value based on <see cref="AverageY"/>. </summary>

@@ -464,3 +464,10 @@ Stactus: {
 	// DisplayName: Stactus
 	// Entry: ""
 }
+
+// Tumbleweed.DisplayName: Tumbleweed
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
+	// Entry: ""
+}

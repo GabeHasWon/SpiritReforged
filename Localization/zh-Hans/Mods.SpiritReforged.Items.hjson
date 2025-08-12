@@ -901,7 +901,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（沙尘暴）
+	DisplayName: 音乐盒（尘暴）
 }
 
 FishLure: {
@@ -1641,7 +1641,7 @@ DunceCrabBannerItem.DisplayName: 笨蟹旗
 WheezerBannerItem.DisplayName: 响尾兽旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽
+	DisplayName: 响尾兽雕像
 	Tooltip: ""
 }
 
@@ -1793,7 +1793,7 @@ OtherworldSavannaNightMusicBoxItem: {
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（沙尘暴）
+	DisplayName: 异界音乐盒（尘暴）
 	Tooltip: ""
 }
 
@@ -2123,4 +2123,38 @@ SilkSirwal: {
 SilkTop: {
 	// DisplayName: Sundancer Top
 	// Tooltip: 7% increased magic damage
+}
+
+CeremonialDagger: {
+	// DisplayName: Ceremonial Dagger
+	/* Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		''' */
+}
+
+Thornball: {
+	// DisplayName: Thornball
+	// Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+}
+
+SaltBlockDullItem: {
+	// DisplayName: Dull Salt Block
+	// Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	// DisplayName: Salt Block
+	// Tooltip: "'Smooth and reflective'"
+}
+
+NeedleTrapItem: {
+	// DisplayName: Needle Trap
+	// Tooltip: ""
+}
+
+DivingBeetleItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	// Tooltip: ""
 }

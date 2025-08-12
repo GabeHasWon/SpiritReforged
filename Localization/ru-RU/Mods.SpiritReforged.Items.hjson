@@ -1758,8 +1758,8 @@ Bowlder: {
 }
 
 BoStaff: {
-	// DisplayName: Bo Staff
-	// Tooltip: Dealing continuous damage builds combo
+	DisplayName: Бо
+	Tooltip: Наносит непрерывный урон, проводя комбинации атак
 }
 
 Blasphemer: {
@@ -2123,4 +2123,38 @@ SilkSirwal: {
 SilkTop: {
 	// DisplayName: Sundancer Top
 	// Tooltip: 7% increased magic damage
+}
+
+CeremonialDagger: {
+	// DisplayName: Ceremonial Dagger
+	/* Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		''' */
+}
+
+Thornball: {
+	// DisplayName: Thornball
+	// Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+}
+
+SaltBlockDullItem: {
+	// DisplayName: Dull Salt Block
+	// Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	// DisplayName: Salt Block
+	// Tooltip: "'Smooth and reflective'"
+}
+
+NeedleTrapItem: {
+	// DisplayName: Needle Trap
+	// Tooltip: ""
+}
+
+DivingBeetleItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	// Tooltip: ""
 }

@@ -11,14 +11,14 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.Utilities;
 
-namespace SpiritReforged.Content.Desert.NPCs;
+namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
 [AutoloadBanner]
 internal class Stactus : ModNPC, IDeathCount
 {
 	public const int SpawnTimeMax = 120;
 
-	public static HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab];
+	public static readonly HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab];
 	private static readonly Asset<Texture2D> Face = DrawHelpers.RequestLocal(typeof(Stactus), "Stactus_Face", false);
 
 	public enum SegmentType : byte
@@ -344,6 +344,8 @@ internal class Stactus : ModNPC, IDeathCount
 	}
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => Falling ? false : null;
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
 
 	#region hide
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)

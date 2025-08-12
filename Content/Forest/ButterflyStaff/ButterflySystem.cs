@@ -1,35 +1,38 @@
-﻿using System.IO;
-using System.Linq;
-using Terraria.DataStructures;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
+[Obsolete("Regions are handled by ButterflyShrineBiome instead")] //Keep temporarily for legacy data loading
 internal class ButterflySystem : ModSystem
 {
-	public static HashSet<Rectangle> ButterflyZones = [];
+	//public static HashSet<Rectangle> ButterflyZones = [];
 
-	public override void ClearWorld() => ButterflyZones.Clear();
+	//public override void ClearWorld() => ButterflyZones.Clear();
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		if (ButterflyZones.Count != 0)
-			tag[nameof(ButterflyZones)] = ButterflyZones.ToList();
+		//if (ButterflyZones.Count != 0)
+		//	tag[nameof(ButterflyZones)] = ButterflyZones.ToList();
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
-		var list = tag.GetList<Rectangle>(nameof(ButterflyZones));
-		ButterflyZones = [.. list];
+		var list = tag.GetList<Rectangle>("ButterflyZones");
+		/*ButterflyZones = [.. list];
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			foreach (var rect in ButterflyZones)
 				Populate(rect);
-		}
+		}*/
+
+		foreach (var rect in list) //When legacy data is loaded, register a microbiome using the shiny new system instead
+			Microbiome.Create<ButterflyShrineBiome>(rect.Center().ToPoint16(), false);
 	}
 
-	/// <summary> Spawns butterfly NPCs within <paramref name="rect"/>. </summary>
+	/*/// <summary> Spawns butterfly NPCs within <paramref name="rect"/>. </summary>
 	private static void Populate(Rectangle rect)
 	{
 		const int tries = 20;
@@ -69,5 +72,5 @@ internal class ButterflySystem : ModSystem
 
 		for (int i = 0; i < count; ++i)
 			ButterflyZones.Add(new(reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16(), reader.ReadInt16()));
-	}
+	}*/
 }

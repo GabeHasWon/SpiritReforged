@@ -10,6 +10,7 @@ public class PolishedAmber : ShiningAmber, IAutoloadTileItem
 	{
 		item.CreateRecipe(10).AddIngredient(ItemID.Amber).AddTile(TileID.WorkBenches).Register();
 		Recipe.Create(ItemID.Amber).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(ItemID.SpelunkerPotion).AddIngredient(ItemID.BottledWater, 1).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 2).AddIngredient(ItemID.Blinkroot, 1).AddIngredient(ItemID.Daybloom, 1).AddTile(TileID.Bottles).Register();
 	}
 
 	public override void SetStaticDefaults()

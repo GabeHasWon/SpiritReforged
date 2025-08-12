@@ -92,7 +92,7 @@ public class EnergizedShockwave : ModProjectile
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Main.EntitySpriteDraw(bloom, center + Vector2.UnitY * (Projectile.height / 2) - Main.screenPosition, null, Color.LightBlue.Additive() * .4f, 0, bloom.Size() / 2, ScaleX * .25f, SpriteEffects.None, 0);
 
-		Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"];
+		Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
 		var blurLine = new SquarePrimitive()
 		{
 			Position = center + Vector2.UnitY * (Projectile.height / 2) - Main.screenPosition,

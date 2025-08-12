@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.TileCommon.CheckItemUse;
-using SpiritReforged.Content.Forest.Botanist.Items;
+﻿using SpiritReforged.Content.Forest.Botanist.Items;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;

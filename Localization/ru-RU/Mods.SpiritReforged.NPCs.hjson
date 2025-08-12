@@ -1,4 +1,4 @@
-﻿VanillaDialogue: {
+VanillaDialogue: {
 	Guide: {
 		WorldNPC: Путешествуя по миру, ты можешь повстречать и других исследователей. Если встретишь — возможно, вы сможете помочь друг другу!
 		Ecotone: Если климат будет подходящим, на границе между пустыней и джунглями может раскинуться обширная саванна. Всегда мечтал её увидеть!
@@ -410,7 +410,7 @@ PotterySlime: {
 	}
 
 	Entry: Хотите верьте, хотите нет, но этот слизень — известный во всём мире гончар. Вы наблюдаете за настоящим мастером!
-	// Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
+	Census.SpawnCondition: Разбивайте редкие горшки [i:SpiritReforged/BiomePotsCavernItem] в пещерах
 }
 
 StompableGnome.DisplayName: Топтаный гном
@@ -462,5 +462,12 @@ RadonMossSlime.DisplayName: Радоновый мшистый слизень
 
 Stactus: {
 	// DisplayName: Stactus
+	// Entry: ""
+}
+
+// Tumbleweed.DisplayName: Tumbleweed
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
 	// Entry: ""
 }

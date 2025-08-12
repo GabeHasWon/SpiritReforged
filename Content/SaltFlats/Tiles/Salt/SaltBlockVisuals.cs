@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -10,8 +11,6 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public class SaltBlockVisuals : ILoadable
 {
-	public static readonly Asset<Texture2D> GradientMap = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "GradientMap"));
-
 	/// <summary> Whether reflection detail is high enough to calculate. </summary>
 	public static bool Enabled => Lighting.NotRetro && Detail > 0;
 	public static int Detail => ModContent.GetInstance<ReforgedClientConfig>().ReflectionDetail;
@@ -21,6 +20,39 @@ public class SaltBlockVisuals : ILoadable
 
 	/// <summary> Whether screen dimensions are beyond 1920x1080- bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
 	private static bool HighResolution;
+	private static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "SaltBlockReflectiveMap", false);
+
+	#region gradient
+	public static Texture2D DistanceMap { get; private set; }
+
+	/// <summary> Gets a gradient texture for shader mapping. </summary>
+	/// <param name="width"> The pre-upscaled width of the texture. </param>
+	/// <param name="height"> The pre-upscaled height of the texture.</param>
+	public static Texture2D GetDistanceGradient(int width, int height)
+	{
+		if (DistanceMap != null)
+			return DistanceMap;
+
+		const int taper = 2; //Opacity taper downscaled
+
+		var data = new Color[width * height];
+		for (int i = 0; i < data.Length; i++)
+		{
+			int y = i / width;
+
+			float pixelStrength = 1f - (float)y / 255; //Divide by a full band rather than 'height' to avoid distorting the reflection Y
+			float fadeStrength = 1f - (float)y / height;
+			float taperOpacity = Math.Min((float)y / taper, 1);
+
+			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 2f, 0, 1)) * taperOpacity, 1); //Green: reflected pixels - Blue: static opacity
+		}
+
+		var textureToCache = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+		textureToCache.SetData(data);
+
+		return DistanceMap = textureToCache;
+	}
+	#endregion
 
 	public static ModTarget2D MapTarget { get; } = new(CanDraw, DrawMapTarget);
 	public static ModTarget2D TileTarget { get; } = new(CanDraw, DrawTileTarget);
@@ -52,7 +84,7 @@ public class SaltBlockVisuals : ILoadable
 		DrawOverHandler.PostDrawTilesSolid += DrawFullReflection;
 		TileEvents.AddPreDrawAction(true, ReflectionPoints.Clear);
 
-		TargetSetup.OnResizeRendertargets += () => HighResolution = Main.screenWidth > 1920 || Main.screenHeight > 1080;
+		TargetSetup.OnResizeRendertargets += static () => HighResolution = Main.screenWidth > 1920 || Main.screenHeight > 1080;
 	}
 
 	private static bool CanDraw()
@@ -66,9 +98,11 @@ public class SaltBlockVisuals : ILoadable
 		return false;
 	}
 
+	/// <summary> Draws gradients at <see cref="ReflectionPoints"/> into <see cref="MapTarget"/>, which tells our shader which pixels to reflect and at what opacity. </summary>
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
-		var gradient = GradientMap.Value;
+		const float scale = 2;
+		var gradient = GetDistanceGradient(8, 180);
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -83,27 +117,28 @@ public class SaltBlockVisuals : ILoadable
 
 			if (t.IsHalfBlock)
 			{
-				spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), source, Color.White, 0, Vector2.Zero, 1, default, 0);
+				spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), source, Color.White, 0, Vector2.Zero, scale, default, 0);
 				continue;
 			}
 			else if (t.Slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight)
 			{
 				for (int x = 0; x < 8; x++)
 				{
-					Vector2 position = (t.Slope == SlopeType.SlopeDownLeft) ? new(2 * x, 2 * x) : new(2 * (7 - x), 2 * x);
-					spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, 1, default, 0);
+					var position = (t.Slope == SlopeType.SlopeDownLeft) ? new Vector2(x, x) * 2 : new Vector2(6 - x, x) * 2;
+					spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, scale, default, 0);
 				}
 
 				continue;
 			}
 
-			spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition, source, Color.White, 0, Vector2.Zero, 1, default, 0);
+			spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition, source, Color.White, 0, Vector2.Zero, scale, default, 0);
 		}
 	}
 
+	/// <summary> Draws the tile textures that we want to appear reflective into <see cref="TileTarget"/>. </summary>
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
-		var texture = TextureAssets.Tile[ModContent.TileType<SaltBlockReflective>()].Value;
+		var texture = TileMap.Value;
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -123,6 +158,7 @@ public class SaltBlockVisuals : ILoadable
 		}
 	}
 
+	/// <summary> Draws the objects that we want to reflect into <see cref="ReflectionTarget"/>. </summary>
 	private static void DrawAndHandleReflectionTarget(SpriteBatch spriteBatch)
 	{
 		var gd = Main.graphics.GraphicsDevice;
@@ -193,8 +229,8 @@ public class SaltBlockVisuals : ILoadable
 			return;
 
 		bool lowDetail = Detail == 1;
-		var s = AssetLoader.LoadedShaders["Reflection"];
-		var n = AssetLoader.LoadedTextures["supPerlin"].Value;
+		var s = AssetLoader.LoadedShaders["Reflection"].Value;
+		var n = AssetLoader.LoadedTextures["perlinNoiseSoft"].Value;
 
 		s.Parameters["mapTexture"].SetValue(MapTarget);
 		s.Parameters["distortionTexture"].SetValue(n);
@@ -208,7 +244,7 @@ public class SaltBlockVisuals : ILoadable
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = lowDetail ? Color.Black * 0.5f : Main.ColorOfTheSkies.Additive(220) * 0.9f;
+		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(220) * 0.8f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

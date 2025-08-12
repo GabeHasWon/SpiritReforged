@@ -109,7 +109,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 	public static Effect BasicSwingShaderParams(SwingTrail swingTrail)
 	{
 		Effect effect;
-		effect = AssetLoader.LoadedShaders["SwingTrails"];
+		effect = AssetLoader.LoadedShaders["SwingTrails"].Value;
 		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
 
@@ -126,7 +126,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 	public static Effect NoiseSwingShaderParams(SwingTrail swingTrail, string texturePath, Vector2 coordMods)
 	{
 		Effect effect;
-		effect = AssetLoader.LoadedShaders["SwingTrails"];
+		effect = AssetLoader.LoadedShaders["SwingTrails"].Value;
 		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures[texturePath].Value);
 		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
@@ -148,7 +148,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 	public static Effect FireSwingShaderParams(SwingTrail swingTrail, Vector2 coordMods)
 	{
 		Effect effect;
-		effect = AssetLoader.LoadedShaders["SwingTrails"];
+		effect = AssetLoader.LoadedShaders["SwingTrails"].Value;
 		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
 		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());

@@ -1,7 +1,8 @@
-﻿using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
-using SpiritReforged.Content.Underground.Tiles;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon.Loot;
+using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ItemDropRules;
+using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
 
@@ -68,10 +69,10 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (RecordHandler.ActionByType.TryGetValue(Selected.record.type, out var action))
+		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootDelegate action))
 		{
 			var tableInst = new LootTable();
-			action.Invoke(Selected.record.styles[0], tableInst);
+			action.Invoke(new(Selected.record.styles[0]), tableInst);
 
 			List<DropRateInfo> list = [];
 			DropRateInfoChainFeed ratesInfo = new(1f);
@@ -111,7 +112,7 @@ public partial class CatalogueUI : AutoUIState
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
-			var shader = AssetLoader.LoadedShaders["Rainbow"];
+			var shader = AssetLoader.LoadedShaders["Rainbow"].Value;
 			var texture = StarLight.Value;
 
 			for (int i = 0; i < count; i++)

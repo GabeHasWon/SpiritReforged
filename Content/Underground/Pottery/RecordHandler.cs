@@ -1,7 +1,10 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -12,7 +15,6 @@ public interface IRecordTile : INamedStyles
 
 public class RecordHandler : ModSystem
 {
-	public static readonly Dictionary<int, Action<int, ILoot>> ActionByType = [];
 	public static readonly HashSet<TileRecord> Records = [];
 
 	/// <summary> Checks whether the tile at the given coordinates corresponds to a record. </summary>
@@ -53,18 +55,13 @@ public class RecordHandler : ModSystem
 				continue;
 
 			foreach (var group in StyleDatabase.Groups[type])
-			{
 				r.AddRecord(type, group);
-
-				if (TileLoader.GetTile(type) is ILootTile loot)
-					ActionByType.TryAdd(type, loot.AddLoot); //Automatically register a loot table if applicable
-			}
 		}
 
-		TileEvents.OnKillTile += KillTile;
+		TileEvents.OnKillTile += ValidateRecord;
 	}
 
-	private static void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly)
+	private static void ValidateRecord(int i, int j, int type, ref bool fail, ref bool effectOnly)
 	{
 		const int maxDistance = 800;
 
@@ -87,15 +84,15 @@ public class RecordHandler : ModSystem
 			throw new ArgumentException("AddPotstiaryRecord requires at least 3 parameters.");
 
 		if (args[0] is not int or ushort)
-			throw new ArgumentException("AddPotstiaryRecord parameter 0 should be an int or ushort.");
+			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int or ushort.");
 
 		int type = (int)args[0];
 
 		if (args[1] is not int[] styles)
-			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int[].");
+			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be an int[].");
 
 		if (args[2] is not string name)
-			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be a string.");
+			throw new ArgumentException("AddPotstiaryRecord parameter 3 should be a string.");
 
 		var e = new TileRecord(name, type, styles);
 
@@ -115,16 +112,7 @@ public class RecordHandler : ModSystem
 		}
 
 		if (args.Length > 5) //Add a loot pool
-		{
-			if (args[5] is bool hasBasicLoot && hasBasicLoot)
-			{
-				ActionByType.Add(type, ModContent.GetInstance<Pots>().AddLoot);
-			}
-			else if (args[5] is Action<int, ILoot> dele)
-			{
-				ActionByType.Add(type, dele);
-			}
-		}
+			ParseLootAction(type, args[5]);
 
 		if (args.Length > 6 && args[6] is LocalizedText desc)
 			e.AddDescription(desc);
@@ -134,10 +122,35 @@ public class RecordHandler : ModSystem
 
 		Records.Add(e);
 		return true;
+
+		static bool ParseLootAction(int type, object arg)
+		{
+			if (arg is bool hasBasicLoot && hasBasicLoot)
+			{
+				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootDelegate pool);
+
+				if (result)
+					TileLootHandler.RegisterLoot(pool, type);
+
+				return result;
+			}
+			else if (arg is Action<int, ILoot> dele)
+			{
+				TileLootHandler.RegisterLoot((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
+				return true;
+			}
+			else if (arg is Action<int, Point16, ILoot> dele2)
+			{
+				TileLootHandler.RegisterLoot((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
 
-internal class RecordPlayer : ModPlayer
+internal sealed class RecordPlayer : ModPlayer
 {
 	/// <summary> The list of unlocked entries saved per player. </summary>
 	private IList<string> _validated = [];
