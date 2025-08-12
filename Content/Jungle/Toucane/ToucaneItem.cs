@@ -29,7 +29,7 @@ public class ToucaneItem : ModItem
 		Item.useAnimation = 30;
 		Item.DamageType = DamageClass.Summon;
 		Item.noMelee = true;
-		Item.shoot = ModContent.ProjectileType<ToucanMinion>();
+		Item.shoot = Main.zenithWorld ? ModContent.ProjectileType<ToucaneMinion>() : ModContent.ProjectileType<ToucanMinion>();
 		Item.UseSound = SoundID.Item44;
 		Item.autoReuse = true;
 	}
@@ -38,6 +38,7 @@ public class ToucaneItem : ModItem
 	{
 		position = Main.MouseWorld;
 		Projectile.NewProjectile(source, position, Main.rand.NextVector2Circular(3, 3), type, damage, knockback, player.whoAmI);
+
 		return false;
 	}
 }

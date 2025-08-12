@@ -122,3 +122,8 @@ Slowed: {
 	// DisplayName: Slowed
 	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
 }
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
+}

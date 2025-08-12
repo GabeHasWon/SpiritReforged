@@ -49,3 +49,4 @@ EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.Displa
 FingerShot.DisplayName: 手指射击
 // NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
 // ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
