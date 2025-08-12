@@ -42,7 +42,7 @@ public class SunDropper : ModItem
 		return null;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
+	public override void AddRecipes() => CreateRecipe(8)
 		.AddIngredient(ItemID.EmptyDropper, 8)
 		.AddIngredient(AutoContent.ItemType<PolishedAmber>())
 		.AddTile(TileID.CrystalBall)
