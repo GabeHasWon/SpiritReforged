@@ -69,7 +69,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		//The strength of the sine for dull salt padding
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
-		const int baseDepth = 22;
+		const int baseDepth = 35;
 		//The percentage of space surrounding the salt flats that islands can occupy
 		const float islandMargin = 0.15f;
 
