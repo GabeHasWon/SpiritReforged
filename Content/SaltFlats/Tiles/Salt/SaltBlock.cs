@@ -9,6 +9,8 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public abstract class SaltBlock : ModTile, IAutoloadTileItem
 {
+	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), "SaltBlock");
+
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)
 	{
 		Volume = 0.5f,
@@ -33,10 +35,8 @@ public abstract class SaltBlock : ModTile, IAutoloadTileItem
 		=> WorldGen.TileMergeAttempt(-2, TileID.IceBlock, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
 }
 
-public class SaltBlockDull : SaltBlock, IAutoloadTileItem
+public class SaltBlockDull : SaltBlock
 {
-	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), nameof(SaltBlock));
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -50,7 +50,7 @@ public class SaltBlockDull : SaltBlock, IAutoloadTileItem
 	public override void RandomUpdate(int i, int j)
 	{
 		if (Main.rand.NextBool(4))
-			Placer.PlaceTile<Saltwort>(i, j - 1).Send();
+			Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
 	}
 
 	public override void FloorVisuals(Player player)
