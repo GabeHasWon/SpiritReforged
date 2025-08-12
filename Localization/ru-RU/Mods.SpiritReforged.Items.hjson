@@ -2158,3 +2158,8 @@ DivingBeetleItem: {
 	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
 	// Tooltip: ""
 }
+
+SunDropper: {
+	// DisplayName: Sunlight Dropper
+	// Tooltip: Applies to solid tiles
+}
