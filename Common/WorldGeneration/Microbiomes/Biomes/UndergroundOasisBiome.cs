@@ -118,6 +118,9 @@ public class UndergroundOasisBiome : Microbiome
 					if (WorldGen.genRand.NextBool(4))
 						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
 
+					if (WorldGen.genRand.NextBool(8))
+						Placer.PlaceTile(i, j, ModContent.TileType<PineapplePlant>());
+
 					if (WorldGen.genRand.NextBool(2))
 					{
 						var t = Main.tile[i, j];
