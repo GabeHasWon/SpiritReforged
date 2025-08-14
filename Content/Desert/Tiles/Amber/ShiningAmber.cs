@@ -38,31 +38,13 @@ public abstract class ShiningAmber : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		CustomDraw(i, j, spriteBatch);
+		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out _))
+			return false;
+
 		ShiningAmberVisuals.ReflectionPoints.Add(new Point16(i, j));
 
+		TileExtensions.DrawSingleTile(i, j, true, TileExtensions.TileOffset);
+		TileMerger.DrawMerge(spriteBatch, i, j, color, TileExtensions.TileOffset, TileID.Sand);
 		return false;
-	}
-
-	public static void CustomDraw(int i, int j, SpriteBatch spriteBatch, bool intoRenderTarget = false)
-	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out var texture))
-			return;
-
-		Tile tile = Main.tile[i, j];
-		Vector2 offset = intoRenderTarget ? Vector2.Zero : TileExtensions.TileOffset;
-
-		if (tile.Slope != SlopeType.Solid || tile.IsHalfBlock)
-		{
-			TileExtensions.DrawSloped(i, j, texture, color, offset);
-			TileMerger.DrawMerge(spriteBatch, i, j, intoRenderTarget ? Color.Black : color, offset, TileID.Sand);
-
-			return;
-		}
-
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
-		spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + (intoRenderTarget ? Vector2.Zero : TileExtensions.TileOffset), source, color, 0, Vector2.Zero, 1, default, 0);
-
-		TileMerger.DrawMerge(spriteBatch, i, j, intoRenderTarget ? Color.Black : color, offset, TileID.Sand);
 	}
 }

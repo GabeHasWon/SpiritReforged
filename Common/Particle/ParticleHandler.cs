@@ -141,16 +141,14 @@ public static class ParticleHandler
 		}
 	}
 
-	internal static void DrawAllParticles(SpriteBatch spriteBatch, ParticleLayer drawLayer)
+	internal static void DrawAllParticles(SpriteBatch spriteBatch, ParticleLayer drawLayer) => DrawAllParticles(spriteBatch, (p) => p.DrawLayer == drawLayer);
+	internal static void DrawAllParticles(SpriteBatch spriteBatch, Func<Particle, bool> func)
 	{
 		var batchedNonpremultiplyParticles = new List<Particle>();
 
 		foreach (Particle particle in particles)
 		{
-			if (particle == null)
-				continue;
-
-			if(particle.DrawLayer == drawLayer)
+			if (particle != null && func.Invoke(particle))
 			{
 				switch (particle.DrawType)
 				{
@@ -159,7 +157,7 @@ public static class ParticleHandler
 						break;
 
 					case ParticleDrawType.DefaultAdditive:
-						spriteBatch.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, null, particle.Color.Additive(), particle.Rotation, particle.Origin + particleTextures[particle.Type].Size()/2, particle.Scale, SpriteEffects.None, 0f);
+						spriteBatch.Draw(particleTextures[particle.Type], particle.Position - Main.screenPosition, null, particle.Color.Additive(), particle.Rotation, particle.Origin + particleTextures[particle.Type].Size() / 2, particle.Scale, SpriteEffects.None, 0f);
 						break;
 
 					case ParticleDrawType.Custom:

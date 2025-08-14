@@ -1,5 +1,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using Terraria.DataStructures;
 
@@ -27,7 +28,10 @@ public class ShiningAmberVisuals : ILoadable
 	private static void DrawTileTarget(SpriteBatch spriteBatch)
 	{
 		foreach (var pt in ReflectionPoints)
-			ShiningAmber.CustomDraw(pt.X, pt.Y, spriteBatch, true);
+		{
+			TileExtensions.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
+			TileMerger.DrawMerge(spriteBatch, pt.X, pt.Y, Color.Black, Vector2.Zero, TileID.Sand);
+		}
 	}
 
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
