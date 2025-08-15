@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.NPCCommon;
+﻿
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
 using System.IO;
 using Terraria.GameContent.Bestiary;
 
@@ -11,14 +13,29 @@ public class DivingBeetle : ModNPC
 	/// <summary> A randomly-selected location to control passive swimming velocity. </summary>
 	private Vector2 _targetPosition;
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 3;
+	public override void SetStaticDefaults()
+	{
+		CreateItemDefaults();
+		Main.npcFrameCount[Type] = 3;
+	}
 	public override void SetDefaults()
 	{
+
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.npcSlots = 0.1f;
 		NPC.noGravity = true;
 	}
+
+	public virtual void CreateItemDefaults() => 
+		ItemEvents.CreateItemDefaults(
+		this.AutoItemType(), 
+		item =>
+		{
+			item.value = Item.sellPrice(0, 0, 0, 45);
+			item.bait = 18;
+		}
+	);
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
 

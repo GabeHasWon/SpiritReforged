@@ -8,7 +8,6 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 [AutoloadCritter]
-[AutoloadBanner]
 public class Killifish : ModNPC
 {
 	private ref float YMovement => ref NPC.ai[0]; // Y Movement (adapted from vanilla)
@@ -29,11 +28,7 @@ public class Killifish : ModNPC
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
-	public virtual void CreateItemDefaults()
-	{
-		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
-		ItemEvents.CreateItemDefaults(this.AutoItemType("Banner"), item => item.value = Item.sellPrice(0, 0, 2, 0));
-	}
+	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
 
 	public override void SetDefaults()
 	{
