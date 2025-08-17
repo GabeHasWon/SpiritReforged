@@ -1,12 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Multiplayer;
+using System;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-/// <summary> A tile entity who can store a single item, saved on unload. See <see cref="SingleSlotData"/> for syncing. </summary>
+/// <summary> A tile entity who can store a single item, saved on unload. See <see cref="TileEntityData"/> for syncing. </summary>
 public abstract class SingleSlotEntity : ModTileEntity
 {
 	/// <summary> Whether <see cref="Player.PlayDroppedItemAnimation"/> should be called in <see cref="OnInteract"/>. Defaults to true. </summary>
@@ -52,7 +53,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 			}
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
-				new SingleSlotData((short)ID, item).Send();
+				new TileEntityData((short)ID).Send();
 		}
 
 		return success;
@@ -70,7 +71,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 		item.TurnToAir();
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			new SingleSlotData((short)ID, item).Send();
+			new TileEntityData((short)ID).Send();
 	}
 
 	public virtual bool CanAddItem(Item item) => true;
@@ -111,35 +112,29 @@ public abstract class SingleSlotEntity : ModTileEntity
 	public override void LoadData(TagCompound tag) => item = tag.Get<Item>(nameof(item));
 }
 
-/// <summary> Sends <see cref="SingleSlotEntity.item"/> by tile entity ID. </summary>
-internal class SingleSlotData : PacketData
+/// <summary> Syncs a tile entity by ID. </summary>
+internal class TileEntityData : PacketData
 {
 	private readonly short _id;
-	private readonly Item _item;
 
-	public SingleSlotData() { }
-	public SingleSlotData(short tileEntityID, Item item)
-	{
-		_id = tileEntityID;
-		_item = item;
-	}
+	public TileEntityData() { }
+	public TileEntityData(short tileEntityID) => _id = tileEntityID;
 
 	public override void OnReceive(BinaryReader reader, int whoAmI)
 	{
-		short index = reader.ReadInt16();
-		Item item = ItemIO.Receive(reader);
+		short id = reader.ReadInt16();
 
 		if (Main.netMode == NetmodeID.Server) //Relay to other clients
-			new SingleSlotData(index, item).Send(ignoreClient: whoAmI);
+			new TileEntityData(id).Send(ignoreClient: whoAmI);
 
-		if (TileEntity.ByID[index] is SingleSlotEntity slot)
-			slot.item = item;
+		if (TileEntity.ByID.TryGetValue(id, out var value))
+			value.NetReceive(reader);
 	}
 
 	public override void OnSend(ModPacket modPacket)
 	{
 		modPacket.Write(_id);
-		ItemIO.Send(_item, modPacket);
+		TileEntity.ByID[_id].NetSend(modPacket);
 	}
 }
 

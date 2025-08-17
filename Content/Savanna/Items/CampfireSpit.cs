@@ -136,7 +136,7 @@ public class CampfireSlot : SingleSlotEntity
 			}
 
 			if (Main.netMode == NetmodeID.Server)
-				new SingleSlotData((short)ID, item).Send();
+				new TileEntityData((short)ID).Send();
 		}
 
 		bool CampfireLit() => Framing.GetTileSafely(Position).TileFrameY < 18 * 2;
