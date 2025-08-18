@@ -370,5 +370,5 @@ internal class PotsMicropass : Micropass
 	}
 
 	/// <summary> Checks whether the below tile is contained in <see cref="CommonBlacklist"/>. </summary>
-	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidType != LiquidID.Shimmer;
+	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100;
 }
