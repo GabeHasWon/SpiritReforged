@@ -47,9 +47,8 @@ public class UndergroundOasisBackground : ModUndergroundBackgroundStyle, IWaterS
 	public override void Load() => On_Main.DrawBackground += DrawOpenBackground;
 	private static void DrawOpenBackground(On_Main.orig_DrawBackground orig, Main self)
 	{
-		//const int roundWidth = 128; //160 - 32
-		//const int roundHeight = 96;
-		const float scrollSpeed = 0.137f;
+		const int roundWidth = 40; //160 - 32
+		const int roundHeight = 24;
 
 		orig(self);
 
@@ -58,16 +57,17 @@ public class UndergroundOasisBackground : ModUndergroundBackgroundStyle, IWaterS
 			var sb = Main.spriteBatch;
 			var background = OpenBackground1.Value;
 			var subBackground = OpenBackground2.Value;
+			float parallax = 1f - Main.caveParallax;
 
 			foreach (var area in UndergroundOasisBiome.OasisAreas)
 			{
 				var worldCoords = area.Center.ToWorldCoordinates();
-				var roundedPos = worldCoords; //new Vector2((int)(worldCoords.X / roundWidth) * roundWidth, (int)(worldCoords.Y / roundHeight) * roundHeight);
+				var roundedPos = new Vector2((int)(worldCoords.X / roundWidth) * roundWidth, (int)(worldCoords.Y / roundHeight) * roundHeight);
 
-				Vector2 scroll = new((Main.screenPosition.X - roundedPos.X) * Main.caveParallax * scrollSpeed, 0);
+				Vector2 scroll = new((Main.screenPosition.X - roundedPos.X) * parallax, 0);
 				Vector2 instantParallax = new(MathHelper.Clamp((Main.LocalPlayer.Center.X - roundedPos.X) * 0.03f, -16, 16), 0);
 
-				var center = roundedPos + scroll + new Vector2(120, -100);
+				var center = roundedPos + scroll + new Vector2(16 + 110, 32 - 130);
 
 				sb.Draw(TextureAssets.MagicPixel.Value, center + instantParallax - Main.screenPosition + TileExtensions.TileOffset, subBackground.Bounds, new Color(0.02f, 0.025f, 0.025f), 0, subBackground.Size() / 2, 1, default, 0);
 
