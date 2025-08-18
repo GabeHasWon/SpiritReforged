@@ -1,8 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ModLoader.IO;
@@ -89,6 +92,22 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				new TileEntityData((short)slot.ID).Send();
+
+			OnUpdate(new Vector2(i, j).ToWorldCoordinates(16, 16));
+		}
+	}
+
+	internal static void OnUpdate(Vector2 worldCoords)
+	{
+		if (!Main.dedServ)
+		{
+			SoundEngine.PlaySound(SaltBlock.Break with { Pitch = 0.5f }, worldCoords);
+			ParticleHandler.SpawnParticle(new SmokeCloud(worldCoords, -Vector2.UnitY, Color.White, 0.2f, Common.Easing.EaseFunction.EaseCubicOut, 60)
+			{
+				TertiaryColor = Color.Pink,
+				Pixellate = true,
+				PixelDivisor = 3
+			});
 		}
 	}
 
@@ -140,5 +159,9 @@ public class OsmosifierSlot : SingleSlotEntity
 	}
 
 	public override void NetSend(BinaryWriter writer) => ItemIO.Send(item, writer, true);
-	public override void NetReceive(BinaryReader reader) => item = ItemIO.Receive(reader, true);
+	public override void NetReceive(BinaryReader reader)
+	{
+		item = ItemIO.Receive(reader, true);
+		Osmosifier.OnUpdate(Position.ToWorldCoordinates(16, 16));
+	}
 }
