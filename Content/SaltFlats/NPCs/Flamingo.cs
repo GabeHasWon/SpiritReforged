@@ -1,6 +1,7 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 
@@ -51,7 +52,7 @@ public class Flamingo : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 	public override void OnSpawn(IEntitySource source)
 	{
-		const float distance = 100 * 100;
+		const float distance = 100;
 		_pink = Main.rand.NextBool(3);
 
 		if (Main.rand.NextBool(15)) //Randomly spawn in a flying state
@@ -106,7 +107,8 @@ public class Flamingo : ModNPC
 			if (NPC.collideX)
 				TargetSpeed = -TargetSpeed;
 
-			NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, inRange ? -3 : 3, 0.02f);
+			float acceleration = (Counter < 30) ? 0.1f : 0.02f;
+			NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, inRange ? -5 : 5, acceleration);
 			NPC.noGravity = true;
 
 			NPC.EncourageDespawn(120);
@@ -148,7 +150,7 @@ public class Flamingo : ModNPC
 					float oldTargetSpeed = TargetSpeed;
 					int direction = Main.rand.NextFromList(-1, 0, 1);
 
-					TargetSpeed = (direction != 0 && GetNearest() is NPC flamingo) ? Math.Sign(flamingo.Center.X - NPC.Center.X) : direction * Main.rand.NextFloat(0.8f, 1.5f);
+					TargetSpeed = (direction != 0 && GetNearby() is NPC[] flamingos && flamingos.Length != 0) ? Math.Sign(flamingos[0].Center.X - NPC.Center.X) : direction * Main.rand.NextFloat(0.8f, 1.5f);
 
 					if (TargetSpeed != oldTargetSpeed)
 						NPC.netUpdate = true;
@@ -172,6 +174,12 @@ public class Flamingo : ModNPC
 						NPC.netUpdate = true;
 					}
 				}
+
+				if (PlayerInRange(180) && Main.player[NPC.target].ItemAnimationActive && Main.player[NPC.target].HeldItem.damage != 0) //Fly away if a damaging item is used nearby
+				{
+					ChangeAnimationState(State.Flamingosis);
+					TargetSpeed = ((NPC.Center.X < Main.player[NPC.target].Center.X) ? -1 : 1) * 6;
+				}
 			}
 		}
 
@@ -182,22 +190,16 @@ public class Flamingo : ModNPC
 		Counter++;
 	}
 
-	private NPC GetNearest()
+	private NPC[] GetNearby(bool includeSelf = false)
 	{
-		float distance = 1000 * 1000;
-		NPC value = null;
-
+		List<NPC> value = [];
 		foreach (var npc in Main.ActiveNPCs)
 		{
-			float distanceSQ = npc.DistanceSQ(NPC.Center);
-			if (npc.whoAmI != NPC.whoAmI && npc.type == Type && distanceSQ < distance * distance)
-			{
-				distance = distanceSQ;
-				value = npc;
-			}
+			if ((includeSelf || npc.whoAmI != NPC.whoAmI) && npc.type == Type)
+				value.Add(npc);
 		}
 
-		return value;
+		return [.. value.OrderBy(x => x.DistanceSQ(NPC.Center))];
 	}
 
 	private bool PlayerInRange(int distance)
@@ -229,7 +231,7 @@ public class Flamingo : ModNPC
 				for (int i = 1; i < 4; i++)
 				{
 					int type = Mod.Find<ModGore>((_pink ? "FlamingoPink" : "FlamingoRed") + i).Type;
-					Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(.3f), type);
+					Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(0.3f), type);
 				}
 			}
 		}
@@ -239,8 +241,14 @@ public class Flamingo : ModNPC
 			NPC.TargetClosest();
 			if (NPC.HasPlayerTarget)
 			{
-				ChangeAnimationState(State.Flamingosis);
-				TargetSpeed = ((NPC.Center.X < Main.player[NPC.target].Center.X) ? -1 : 1) * 5;
+				foreach (var npc in GetNearby(true))
+				{
+					if (npc.DistanceSQ(NPC.Center) < 200 * 200 && npc.ModNPC is Flamingo flamingo)
+					{
+						flamingo.ChangeAnimationState(State.Flamingosis);
+						flamingo.TargetSpeed = ((NPC.Center.X < Main.player[NPC.target].Center.X) ? -1 : 1) * 6;
+					}
+				}
 			}
 		}
 	}
