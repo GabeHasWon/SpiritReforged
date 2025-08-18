@@ -247,7 +247,9 @@ internal class PotsMicropass : Micropass
 		y--;
 
 		int type = ModContent.TileType<WickerBaskets>();
-		if (!TileID.Sets.Grass[Main.tile[x, y + 1].TileType] || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
+		int tileType = Main.tile[x, y + 1].TileType;
+
+		if (!TileID.Sets.Grass[tileType] || tileType == TileID.CrimsonGrass || tileType == TileID.CorruptGrass || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
 			return false;
 
 		Placer.Check(x, y, type).IsClear().Place();
