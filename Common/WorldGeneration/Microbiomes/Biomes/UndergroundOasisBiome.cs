@@ -1,5 +1,6 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Oasis;
@@ -11,13 +12,30 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
-	//Preface with basic relevant checks so linq isn't constantly running in the background
-	public static bool InUndergroundOasis(Player p) => p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
+	public static bool InUndergroundOasis(Player p)
+	{
+		const string flagType = "UndergroundOasis";
+
+		if (p.CheckFlag(flagType) is bool flag)
+			return flag;
+
+		//Preface with basic relevant checks so linq isn't constantly running in the background
+		bool result = p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
+		p.SetFlag(flagType, result); //Cache the result to avoid checking against this logic more than once per tick
+
+		return result;
+	}
 
 	public static readonly Point16 Size = new(50, 40);
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
-	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;
+	#region detours
+	public override void Load()
+	{
+		NPCEvents.OnEditSpawnRate += ReduceSpawns;
+		PlayerEvents.OnPostUpdateEquips += HealInSprings;
+	}
+
 	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
 	{
 		if (InUndergroundOasis(player))
@@ -26,6 +44,13 @@ public class UndergroundOasisBiome : Microbiome
 			maxSpawns = 0;
 		}
 	}
+
+	private static void HealInSprings(Player player)
+	{
+		if (player.wet && InUndergroundOasis(player))
+			player.AddBuff(BuffID.Regeneration, 180);
+	}
+	#endregion
 
 	#region worldgen
 	protected override void OnPlace(Point16 point)
