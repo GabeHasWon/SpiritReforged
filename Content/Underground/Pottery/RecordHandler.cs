@@ -4,7 +4,6 @@ using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
-using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -127,7 +126,7 @@ public class RecordHandler : ModSystem
 		{
 			if (arg is bool hasBasicLoot && hasBasicLoot)
 			{
-				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootDelegate pool);
+				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out ILootTile.LootDelegate pool);
 
 				if (result)
 					TileLootHandler.RegisterLoot(pool, type);

@@ -12,13 +12,12 @@ public class StoneStupas : PotTile, ILootTile
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] } };
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.StoneBlock, 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+		.AddRecipeGroup("ClayAndMud", 3)
+		.AddIngredient(ItemID.StoneBlock, 3)
+		.AddTile(ModContent.TileType<PotteryWheel>())
+		.AddCondition(condition)
+		.Register();
 
 	public override void AddObjectData()
 	{

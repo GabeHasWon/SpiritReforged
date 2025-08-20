@@ -1,4 +1,3 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -6,7 +5,7 @@ using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
+using SpiritReforged.Common.TileCommon;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -21,31 +20,29 @@ public class CommonPots : PotTile, ILootTile
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		int wheel = ModContent.TileType<PotteryWheel>();
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
+		int type = ModContent.TileType<PotteryWheel>();
 
 		switch (group.name)
 		{
 			case "CommonPotsMushroom":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "CommonPotsGranite":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "CommonPotsSavanna":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
 	}
 
 	public override bool CreateDust(int i, int j, ref int type)
 	{
-		if (!Autoloader.IsRubble(Type))
+		if (!IsRubble)
 		{
 			type = GetStyle(Main.tile[i, j]) switch
 			{
@@ -61,7 +58,7 @@ public class CommonPots : PotTile, ILootTile
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || Autoloader.IsRubble(Type))
+		if (effectOnly || fail || IsRubble)
 			return;
 
 		//Do vanilla pot break effects
