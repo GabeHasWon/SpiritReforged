@@ -1,4 +1,3 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
@@ -21,19 +20,21 @@ public class StoneStupas : PotTile, ILootTile
 
 	public override void AddObjectData()
 	{
-		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.Stone;
+		DustType = IsRubble ? -1 : DustID.Stone;
 		base.AddObjectData();
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || Autoloader.IsRubble(Type) || !TileObjectData.IsTopLeft(i, j))
+		if (effectOnly || fail || IsRubble || !TileObjectData.IsTopLeft(i, j))
 			return;
 
 		for (int g = 1; g < 7; g++)
 		{
 			int goreType = Mod.Find<ModGore>("Stupa" + g).Type;
-			Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+			var position = Main.rand.NextVector2FromRectangle(new(i * 16, j * 16, 32, 32));
+
+			Gore.NewGore(new EntitySource_TileBreak(i, j), position, Vector2.Zero, goreType);
 		}
 	}
 
