@@ -2,7 +2,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration;
@@ -13,26 +12,22 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
+public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
 	private const int FullHeight = 36;
-	private static Color GlowColor => Main.DiscoColor;//Color.Lerp(Color.Magenta, Color.CadetBlue, (float)(Math.Sin(Main.timeForVisualEffects / 40f) / 2f) + .5f);
+	private static Color GlowColor => Main.DiscoColor; //Color.Lerp(Color.Magenta, Color.CadetBlue, (float)(Math.Sin(Main.timeForVisualEffects / 40f) / 2f) + .5f);
 
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Aether");
+		var desc = Language.GetText(TileRecord.DescKey + ".Aether");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(6));
 	}
 
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddIngredient(ItemID.StoneBlock, 5)
-		.AddIngredient(ItemID.ShimmerTorch)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+		.AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.StoneBlock, 5).AddIngredient(ItemID.ShimmerTorch)
+		.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -197,7 +192,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.AegisFruit, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
 

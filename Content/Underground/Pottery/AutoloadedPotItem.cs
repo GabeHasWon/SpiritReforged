@@ -1,21 +1,20 @@
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
-using Terraria.ModLoader;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
 /// <summary> Specialised pot item template for <see cref="PotteryWheel"/>. </summary>
 /// <param name="baseName"> The internal name of the tile this item places. </param>
-public sealed class AutoloadedPotItem(string baseName, StyleGroup group, AutoloadedPotItem.RecipeDelegate recipe = null) : ModItem
+public sealed class AutoloadedPotItem(string baseName, StyleDatabase.StyleGroup group, AutoloadedPotItem.RecipeDelegate recipe = null) : ModItem
 {
-	public delegate void RecipeDelegate(ModItem modItem, StyleGroup group, Condition condition);
+	public delegate void RecipeDelegate(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition);
 
 	protected override bool CloneNewInstances => true;
 	public override string Name => _group.name + "Item";
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), _group.name);
 
 	private string _baseName = baseName;
-	private StyleGroup _group = group;
+	private StyleDatabase.StyleGroup _group = group;
 
 	private ModTile Tile => Mod.Find<ModTile>(_baseName);
 

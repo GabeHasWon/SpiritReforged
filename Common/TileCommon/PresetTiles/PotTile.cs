@@ -1,8 +1,6 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.WayfarerSet;
@@ -16,16 +14,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => default; //Effectively creates no connection with the Rubblemaker item
 	public abstract Dictionary<string, int[]> TileStyles { get; }
-	public Dictionary<string, int[]> Styles
-	{
-		get
-		{
-			if (Autoloader.IsRubble(Type))
-				return [];
-			else
-				return TileStyles;
-		}
-	}
+	public Dictionary<string, int[]> Styles => IsRubble ? [] : TileStyles;
 
 	/// <summary> Whether this type is an autoloaded rubble tile. </summary>
 	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble"); //Autoloader.IsRubble is unusuable before before loading is complete
@@ -50,10 +39,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 
 	/// <summary> Allows you to override the recipe of a pot item created in <see cref="AutoloadFromGroup"/>. </summary>
 	public virtual void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+		.AddRecipeGroup("ClayAndMud", 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	/// <summary> <inheritdoc cref="ModBlockType.SetStaticDefaults"/><para/>
 	/// Automatically sets common pot data by type. See <see cref="AddObjectData"/> and <see cref="AddMapData"/>
@@ -96,7 +82,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || WorldMethods.Generating)
+		if (IsRubble || WorldMethods.Generating)
 			return;
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)

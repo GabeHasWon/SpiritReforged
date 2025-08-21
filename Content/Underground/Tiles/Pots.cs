@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
@@ -10,7 +10,7 @@ namespace SpiritReforged.Content.Underground.Tiles;
 
 /// <summary> A stand-in for vanilla pot tiles, used to contain custom data. <para/>
 /// The loot table registered through this type is used for display in the Potstiary, and never actually rolls. </summary>
-public class Pots : PotTile, ILootTile
+public class Pots : PotTile, ILootable
 {
 	public const string NameKey = "MapObject.Pot";
 	public const string PotTexture = "Terraria/Images/Tiles_28";
@@ -125,10 +125,12 @@ public class Pots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-		string styleName = StyleDatabase.GetName(Type, (byte)context.Style);
+		if (loot is not TileLootTable t || !t.Simulated)
+			return; //Only allow this drop table when simulated because it is not currently correct
 
+		string styleName = StyleDatabase.GetName(Type, (byte)t.Style);
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
 		if (styleName == "PotsDungeon")

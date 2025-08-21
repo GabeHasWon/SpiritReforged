@@ -1,13 +1,12 @@
-using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Underground.Pottery;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using System.Linq;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Underground.Pottery;
+using System.Linq;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
 
@@ -128,7 +127,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(24, 24);

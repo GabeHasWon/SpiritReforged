@@ -1,11 +1,11 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class ZenithPots : PotTile, ILootTile
+public class ZenithPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new()
 	{
@@ -31,5 +31,9 @@ public class ZenithPots : PotTile, ILootTile
 		DustType = IsRubble ? -1 : DustID.TreasureSparkle;
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
+	public void AddLoot(ILoot loot)
+	{
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
+	}
 }

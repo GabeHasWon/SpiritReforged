@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;
@@ -13,7 +13,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Underground.Tiles;
 
 [AutoloadGlowmask("200,200,200")]
-public class BiomePots : PotTile, ILootTile
+public class BiomePots : PotTile, ILootable
 {
 	/// <summary> Mirrors <see cref="Styles"/>. </summary>
 	public enum Style : int
@@ -88,7 +88,6 @@ public class BiomePots : PotTile, ILootTile
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
-
 		switch (group.name)
 		{
 			case "BiomePotsCavern":
@@ -367,9 +366,9 @@ public class BiomePots : PotTile, ILootTile
 		Vector2 GetRandom(float distance = 15f) => center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(distance);
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-		var style = GetStyle(context.Style / 3 * 36);
+		var style = GetStyle((loot is TileLootTable t) ? t.Style / 3 * 36 : 0);
 
 		if (style is Style.Dungeon)
 			loot.AddCommon(ItemID.GoldenKey, 10);

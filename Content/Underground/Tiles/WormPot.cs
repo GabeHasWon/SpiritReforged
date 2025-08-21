@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration;
@@ -14,7 +14,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
+public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
@@ -24,13 +24,8 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddIngredient(ItemID.DirtBlock, 5)
-		.AddIngredient(ItemID.Worm)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3)
+		.AddIngredient(ItemID.DirtBlock, 5).AddIngredient(ItemID.Worm).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -174,7 +169,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 			source, color, rotation, origin, 1, SpriteEffects.None, 0);
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.Add(ItemDropRule.NotScalingWithLuckWithNumerator(ItemID.WhoopieCushion, 100, 15));
 		loot.AddCommon(ItemID.CanOfWorms, 1, 1, 2);

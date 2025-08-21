@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
@@ -10,7 +10,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class OrnatePots : PotTile, ILootTile
+public class OrnatePots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
@@ -21,11 +21,7 @@ public class OrnatePots : PotTile, ILootTile
 	}
 
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddRecipeGroup("GoldBars", 2)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+		.AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("GoldBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void SetStaticDefaults()
 	{
@@ -52,9 +48,9 @@ public class OrnatePots : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 		if (!IsRubble && Main.netMode != NetmodeID.MultiplayerClient && !WorldMethods.Generating)
 		{
+			var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 			var source = new EntitySource_TileBreak(i, j);
 			Projectile.NewProjectile(source, new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.UnitY * -4f, ProjectileID.CoinPortal, 0, 0);
 
@@ -79,7 +75,7 @@ public class OrnatePots : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.Add(ItemDropRule.Common(ItemID.LuckPotion, 2, 1, 2));
 		loot.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 1, 3));

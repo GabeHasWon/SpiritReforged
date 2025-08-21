@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -12,7 +12,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class WickerBaskets : PotTile, ILootTile
+public class WickerBaskets : PotTile, ILootable
 {
 	/// <summary> The area that <see cref="WickerBaskets"/> start generating within. </summary>
 	public static Rectangle PicnicArea
@@ -31,12 +31,8 @@ public class WickerBaskets : PotTile, ILootTile
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4));
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 3)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3)
+		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -67,7 +63,7 @@ public class WickerBaskets : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && GetThoriumTypes() is int[] types && types.Length > 0)
 			loot.AddOneFromOptions(2, types);

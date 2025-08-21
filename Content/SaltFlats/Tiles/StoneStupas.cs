@@ -1,13 +1,13 @@
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class StoneStupas : PotTile, ILootTile
+public class StoneStupas : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] } };
 
@@ -38,5 +38,9 @@ public class StoneStupas : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
+	public void AddLoot(ILoot loot)
+	{
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
+	}
 }

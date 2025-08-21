@@ -1,7 +1,7 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
@@ -13,7 +13,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverPlatters : PotTile, ILootTile
+public class SilverPlatters : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
@@ -23,11 +23,7 @@ public class SilverPlatters : PotTile, ILootTile
 	}
 
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3)
-		.AddRecipeGroup("SilverBars", 2)
-		.AddTile(ModContent.TileType<PotteryWheel>())
-		.AddCondition(condition)
-		.Register();
+		.AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("SilverBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -92,7 +88,7 @@ public class SilverPlatters : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("GarlicBread", out ModItem bread) && CrossMod.Thorium.TryFind("Takoyaki", out ModItem takoyaki))
 			loot.AddOneFromOptions(2, bread.Type, takoyaki.Type);

@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.TileCommon.Loot;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
 
@@ -69,15 +68,15 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootDelegate action))
+		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootTable.LootDelegate action))
 		{
-			var tableInst = new LootTable();
-			action.Invoke(new(Selected.record.styles[0]), tableInst);
+			var loot = new TileLootTable(Selected.record.styles[0]);
+			action.Invoke(loot);
 
 			List<DropRateInfo> list = [];
 			DropRateInfoChainFeed ratesInfo = new(1f);
 
-			foreach (IItemDropRule item in tableInst.Get())
+			foreach (IItemDropRule item in loot.Get())
 				item.ReportDroprates(list, ratesInfo);
 
 			foreach (var rateInfo in list)
