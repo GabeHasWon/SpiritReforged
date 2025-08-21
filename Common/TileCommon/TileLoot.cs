@@ -1,35 +1,24 @@
 ﻿using SpiritReforged.Common.Misc;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
-namespace SpiritReforged.Common.TileCommon.Loot;
+namespace SpiritReforged.Common.TileCommon;
 
-/// <summary> Facilitates a tile with an <see cref="ILoot"/> drop table.<br/>
-/// Does not drop items automatically. See <see cref="LootTable.Resolve"/>. </summary>
-public interface ILootTile
+/// <summary> Provides additional <see cref="LootTable"/> context specifically for tiles. </summary>
+public class TileLootTable(int style, Point16 coordinates = default) : LootTable
 {
-	public delegate void LootDelegate(Context context, ILoot loot);
-	public readonly record struct Context(int Style, Point16 Coordinates = default)
-	{
-		public readonly bool Simulated => Coordinates == default;
-	}
+	public bool Simulated => Coordinates == default;
 
-	public void AddLoot(Context context, ILoot loot);
+	public int Style = style;
+	public Point16 Coordinates = coordinates;
 }
 
 public class TileLootHandler : ILoadable
 {
 	/// <summary> Stores delegate loot methods by tile type. </summary>
-	private static readonly Dictionary<int, LootDelegate> ActionByType = [];
+	private static readonly Dictionary<int, LootTable.LootDelegate> ActionByType = [];
 
-	public static void InvokeLootPool(int tileType, Context context, ILoot loot)
-	{
-		if (TryGetLootPool(tileType, out LootDelegate action))
-			action.Invoke(context, loot);
-	}
-
-	public static bool TryGetLootPool(int tileType, out LootDelegate pool) => ActionByType.TryGetValue(tileType, out pool);
-	public static void RegisterLoot(LootDelegate action, params int[] types)
+	public static bool TryGetLootPool(int tileType, out LootTable.LootDelegate pool) => ActionByType.TryGetValue(tileType, out pool);
+	public static void RegisterLoot(LootTable.LootDelegate action, params int[] types)
 	{
 		foreach (int type in types)
 		{
@@ -41,7 +30,7 @@ public class TileLootHandler : ILoadable
 	/// <summary> Calls <see cref="LootTable.Resolve(Rectangle, Player)"/> using tile data from the given coordinates. </summary>
 	public static bool Resolve(int i, int j, ushort type, int frameX, int frameY)
 	{
-		if (TryGetLootPool(type, out LootDelegate action))
+		if (TryGetLootPool(type, out LootTable.LootDelegate action))
 		{
 			Tile t = new(); //if this method is called in KillMultiTile the tile at (i, j) is unusable
 			t.TileFrameX = (short)frameX;
@@ -52,8 +41,8 @@ public class TileLootHandler : ILoadable
 			var data = TileObjectData.GetTileData(t); //data can be null here
 			Point size = new(data?.Width ?? 2, data?.Height ?? 2);
 
-			var loot = new LootTable();
-			action.Invoke(new(TileObjectData.GetTileStyle(t), new(i, j)), loot);
+			var loot = new TileLootTable(TileObjectData.GetTileStyle(t), new(i, j));
+			action.Invoke(loot);
 
 			var spawn = new Vector2(i, j).ToWorldCoordinates(size.X * 8, size.Y * 8);
 			var p = Main.player[Player.FindClosest(spawn, 0, 0)];
@@ -72,7 +61,7 @@ public class TileLootHandler : ILoadable
 	{
 		foreach (var t in SpiritReforgedMod.Instance.GetContent<ModTile>())
 		{
-			if (t is ILootTile i)
+			if (t is ILootable i)
 				RegisterLoot(i.AddLoot, t.Type);
 		}
 	};

@@ -3,8 +3,9 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Common.Misc;
 
 /// <summary> A self-contained loot table. </summary>
-public readonly struct LootTable() : ILoot
+public class LootTable : ILoot
 {
+	public delegate void LootDelegate(ILoot loot);
 	public readonly List<IItemDropRule> rules = [];
 
 	public IItemDropRule Add(IItemDropRule entry)
@@ -36,6 +37,11 @@ public readonly struct LootTable() : ILoot
 
 		LootTableHandler.ForcedItemRegion = Rectangle.Empty;
 	}
+}
+
+public interface ILootable
+{
+	public void AddLoot(ILoot loot);
 }
 
 public sealed class LootTableHandler : ILoadable

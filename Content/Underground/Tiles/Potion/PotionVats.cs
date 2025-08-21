@@ -1,14 +1,12 @@
-using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Underground.Pottery;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Underground.Pottery;
 using System.Linq;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
 
@@ -34,39 +32,36 @@ public class PotionVats : PotTile, ICutAttempt
 		return (id == -1) ? null : (VatSlot)TileEntity.ByID[id];
 	}
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Potion");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4));
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
 		switch (group.name)
 		{
 			case "PotionVatsAntique":
 				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup("GoldBars", 2)
-					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 				break;
 
 			case "PotionVatsCloning":
 				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup(RecipeGroupID.IronBar, 2)
-					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 				break;
 
 			case "PotionVatsAlchemy":
 				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Glass).AddRecipeGroup("CopperBars", 2)
-					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+					.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 				break;
 		}
 	}
 
 	public override void AddObjectData()
 	{
-		Main.tileCut[Type] = !Autoloader.IsRubble(Type);
+		Main.tileCut[Type] = !IsRubble;
 		Main.tileSpelunker[Type] = true;
 		Main.tileOreFinderPriority[Type] = 575;
 
@@ -82,7 +77,7 @@ public class PotionVats : PotTile, ICutAttempt
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.Glass;
+		DustType = IsRubble ? -1 : DustID.Glass;
 		FluidTexture = ModContent.Request<Texture2D>(Texture + "_Fluid");
 	}
 
@@ -90,7 +85,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (!effectOnly && Autoloader.IsRubble(Type))
+		if (!effectOnly && IsRubble)
 		{
 			if (Entity(i, j) is VatSlot slot && !slot.item.IsAir)
 			{
@@ -110,7 +105,7 @@ public class PotionVats : PotTile, ICutAttempt
 			return;
 		}
 
-		if (effectOnly || !fail || Generating)
+		if (effectOnly || !fail || WorldMethods.Generating)
 			return;
 
 		fail = AdjustFrame(i, j);
@@ -132,7 +127,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(24, 24);
@@ -172,7 +167,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || WorldGen.generatingWorld)
+		if (IsRubble || WorldGen.generatingWorld)
 			return;
 
 		WorldGen.PlaceTile(i + 1, j + 4, ModContent.TileType<PotionVatsBroken>(), true, style: frameY / 90);
@@ -235,7 +230,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override void MouseOver(int i, int j)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 		{
 			Player player = Main.LocalPlayer;
 			player.noThrow = 2;
@@ -246,7 +241,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 	public override bool RightClick(int i, int j)
 	{
-		if (Autoloader.IsRubble(Type) && Entity(i, j) is VatSlot entity)
+		if (IsRubble && Entity(i, j) is VatSlot entity)
 		{
 			entity.OnInteract(Main.LocalPlayer);
 			return true;

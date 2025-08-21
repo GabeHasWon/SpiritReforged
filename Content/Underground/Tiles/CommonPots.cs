@@ -1,16 +1,13 @@
-using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon.Loot;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
-using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class CommonPots : PotTile, ILootTile
+public class CommonPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new()
 	{
@@ -21,20 +18,17 @@ public class CommonPots : PotTile, ILootTile
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		int wheel = ModContent.TileType<PotteryWheel>();
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
+		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
 		{
 			case "CommonPotsMushroom":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "CommonPotsGranite":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "CommonPotsSavanna":
@@ -45,7 +39,7 @@ public class CommonPots : PotTile, ILootTile
 
 	public override bool CreateDust(int i, int j, ref int type)
 	{
-		if (!Autoloader.IsRubble(Type))
+		if (!IsRubble)
 		{
 			type = GetStyle(Main.tile[i, j]) switch
 			{
@@ -61,17 +55,13 @@ public class CommonPots : PotTile, ILootTile
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || Autoloader.IsRubble(Type))
+		if (effectOnly || fail || IsRubble)
 			return;
 
-		//Do vanilla pot break effects
-		var t = Main.tile[i, j];
-		short oldFrameY = t.TileFrameY;
-		int style = GetStyle(t);
+		var tile = Main.tile[i, j];
+		int style = GetStyle(tile);
 
-		t.TileFrameY = (GetStyle(t) == 0) ? t.TileFrameX : (short)2000; //2000 means no additional gores or effects
-		WorldGen.CheckPot(i, j);
-		t.TileFrameY = oldFrameY;
+		FallingPot.BreakPot(i, j, (style == 0) ? tile.TileFrameX / 36 * 3 : 2000 / 16);
 
 		if (TileObjectData.IsTopLeft(i, j))
 		{
@@ -102,23 +92,9 @@ public class CommonPots : PotTile, ILootTile
 		return true;
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-        TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
-
-        if (context.Style / 3 == 2) //Savanna
-		{
-			foreach (IItemDropRule item in loot.Get())
-			{
-				if (item is OneFromRulesRule chain)
-				{
-					foreach (var c in chain.options)
-					{
-						if (c is CommonDrop drop && drop.itemId == ItemID.Torch)
-							drop.itemId = ModContent.ItemType<SavannaTorchItem>(); //Replace the default torch
-					}
-				}
-			}
-		}
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
 	}
 }
