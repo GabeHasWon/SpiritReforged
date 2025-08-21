@@ -1,12 +1,12 @@
-using RubbleAutoloader;
-using SpiritReforged.Common.TileCommon.Loot;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class CommonPots : PotTile, ILootTile
+public class CommonPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new()
 	{
@@ -16,27 +16,24 @@ public class CommonPots : PotTile, ILootTile
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		int wheel = ModContent.TileType<PotteryWheel>();
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
+		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
 		{
 			case "CommonPotsMushroom":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "CommonPotsGranite":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
 	}
 
 	public override bool CreateDust(int i, int j, ref int type)
 	{
-		if (!Autoloader.IsRubble(Type))
+		if (!IsRubble)
 		{
 			type = GetStyle(Main.tile[i, j]) switch
 			{
@@ -51,25 +48,38 @@ public class CommonPots : PotTile, ILootTile
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || Autoloader.IsRubble(Type))
+		if (effectOnly || fail || IsRubble)
 			return;
 
-		//Do vanilla pot break effects
-		var t = Main.tile[i, j];
-		short oldFrameY = t.TileFrameY;
+		var tile = Main.tile[i, j];
+		int style = GetStyle(tile);
 
-		t.TileFrameY = (GetStyle(t) == 0) ? t.TileFrameX : (short)2000; //2000 means no additional gores or effects
-		WorldGen.CheckPot(i, j);
-		t.TileFrameY = oldFrameY;
+		FallingPot.BreakPot(i, j, (style == 0) ? tile.TileFrameX / 36 * 3 : 2000 / 16);
+
+		if (TileObjectData.IsTopLeft(i, j))
+		{
+			if (style == 1)
+			{
+				for (int g = 1; g < 5; g++)
+				{
+					int goreType = Mod.Find<ModGore>("Granite" + g).Type;
+					Gore.NewGore(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, Vector2.Zero, goreType);
+				}
+			}
+		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		if (GetStyle(Main.tile[i, j]) == 0)
-			Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), Color.Blue.ToVector3() * .8f);
+			Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), Color.Blue.ToVector3() * 0.8f);
 
 		return true;
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot) => TileLootHandler.InvokeLootPool(ModContent.TileType<Pots>(), context, loot);
+	public void AddLoot(ILoot loot)
+	{
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
+	}
 }
