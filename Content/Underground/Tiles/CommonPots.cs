@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -32,7 +33,7 @@ public class CommonPots : PotTile, ILootable
 				break;
 
 			case "CommonPotsSavanna":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
 	}
