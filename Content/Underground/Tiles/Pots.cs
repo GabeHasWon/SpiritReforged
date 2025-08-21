@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
@@ -37,6 +38,9 @@ public class Pots : PotTile, ILootable
 			return groups;
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SpawnThingsFromPot")]
+	public static extern void SpawnThingsFromPot(WorldGen worldGen, int i, int j, int x2, int y2, int style);
 
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
