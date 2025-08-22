@@ -29,7 +29,7 @@ public class UndergroundOasisScene : ModSceneEffect
 				Filters.Scene["Solar"].GetShader().UseTargetPosition(player.Center);
 				float progress = MathHelper.Lerp(0f, 1f, _effectIntensity);
 				Filters.Scene["Solar"].GetShader().UseProgress(progress);
-				Filters.Scene["Solar"].GetShader().UseIntensity(1.2f);
+				Filters.Scene["Solar"].GetShader().UseIntensity(1f);
 			}
 		}
 		else if (Filters.Scene["Solar"].IsActive())

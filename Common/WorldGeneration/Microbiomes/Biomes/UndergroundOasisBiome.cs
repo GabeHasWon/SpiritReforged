@@ -1,5 +1,6 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Oasis;
@@ -19,19 +20,21 @@ public class UndergroundOasisBiome : Microbiome
 
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
+	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;
 	public override void Load()
 	{
 		NPCEvents.OnEditSpawnRate += ReduceSpawns;
-		MicrobiomeSystem.PopulateMicrobiomes += static () =>
-		{
-			OasisAreas.Clear();
-			foreach (var b in MicrobiomeSystem.Microbiomes)
-			{
-				if (b is UndergroundOasisBiome oasis)
-					OasisAreas.Add(oasis.Rectangle);
-			}
-		};
-	}
+		PlayerEvents.OnPostUpdateEquips += HealInSprings;
+        MicrobiomeSystem.PopulateMicrobiomes += static () =>
+        {
+            OasisAreas.Clear();
+            foreach (var b in MicrobiomeSystem.Microbiomes)
+            {
+                if (b is UndergroundOasisBiome oasis)
+                    OasisAreas.Add(oasis.Rectangle);
+            }
+        };
+    }
 
 	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
 	{
@@ -41,6 +44,13 @@ public class UndergroundOasisBiome : Microbiome
 			maxSpawns = 0;
 		}
 	}
+
+	private static void HealInSprings(Player player)
+	{
+		if (player.wet && InUndergroundOasis(player))
+			player.AddBuff(BuffID.Regeneration, 180);
+	}
+	#endregion
 
 	#region worldgen
 	protected override void OnPlace(Point16 point)
