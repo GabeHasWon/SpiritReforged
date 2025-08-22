@@ -14,7 +14,7 @@ public class GoldDivingBeetle : DivingBeetle, IGoldCritter
 		item =>
 		{
 			item.value = Item.sellPrice(0, 10, 0, 0);
-			item.bait = 36;
+			item.bait = 50;
 		}
 	);
 }
