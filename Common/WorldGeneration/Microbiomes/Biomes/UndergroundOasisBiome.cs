@@ -20,7 +20,7 @@ public class UndergroundOasisBiome : Microbiome
 
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
-	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;
+	#region detours
 	public override void Load()
 	{
 		NPCEvents.OnEditSpawnRate += ReduceSpawns;
