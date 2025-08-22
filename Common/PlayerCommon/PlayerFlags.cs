@@ -14,9 +14,9 @@ public class PlayerFlags : ModPlayer
 
 	public bool? CheckFlag(string name)
 	{
-		if (Flags.TryGetValue(name, out _))
+		if (Flags.TryGetValue(name, out bool? flag))
 		{
-			return Flags[name];
+			return flag;
 		}
 		else
 		{
