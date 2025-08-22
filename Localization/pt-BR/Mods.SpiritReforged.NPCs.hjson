@@ -6,14 +6,11 @@ VanillaDialogue: {
 		// Kelp: Don't eat the seaweed.
 	}
 
-	ArmsDealer: {
-		// Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
-		// Placeholder: placeholder
-	}
+	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
 
 	Stylist: {
-		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		// Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
 	}
 
-	Demolitionist: {
-		// HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
-		// Placeholder: placeholder
-	}
+	// Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
 
 	Nurse: {
 		// Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
