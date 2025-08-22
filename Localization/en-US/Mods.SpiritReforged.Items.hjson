@@ -2159,6 +2159,11 @@ DivingBeetleItem: {
 	Tooltip: ""
 }
 
+SunDropper: {
+	DisplayName: Magic Sunlight Dropper
+	Tooltip: Applies to solid tiles
+}
+
 OsmosifierItem: {
 	DisplayName: Osmosifier
 	Tooltip: Passively produces salt blocks when placed in water
