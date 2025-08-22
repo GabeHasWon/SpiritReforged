@@ -73,7 +73,7 @@ public class ModTarget2D : ILoadable
 		gd.SetRenderTarget(Target);
 		gd.Clear(Color.Transparent);
 
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.Default, Main.Rasterizer, null);
 		DrawInto(spriteBatch);
 
 		spriteBatch.End();

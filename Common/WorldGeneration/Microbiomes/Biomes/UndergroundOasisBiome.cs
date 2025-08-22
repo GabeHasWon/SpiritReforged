@@ -12,29 +12,29 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
-	public static bool InUndergroundOasis(Player p)
-	{
-		const string flagType = "UndergroundOasis";
-
-		if (p.CheckFlag(flagType) is bool flag)
-			return flag;
-
-		//Preface with basic relevant checks so linq isn't constantly running in the background
-		bool result = p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
-		p.SetFlag(flagType, result); //Cache the result to avoid checking against this logic more than once per tick
-
-		return result;
-	}
+	//Preface with basic relevant checks so linq isn't constantly running in the background
+	public static bool InUndergroundOasis(Player p) => p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && OasisAreas.Any(x => x.Contains(p.Center.ToTileCoordinates()));
 
 	public static readonly Point16 Size = new(50, 40);
+	public static readonly HashSet<Rectangle> OasisAreas = [];
+
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
-	#region detours
+	public override void Load() => NPCEvents.OnEditSpawnRate += ReduceSpawns;
 	public override void Load()
 	{
 		NPCEvents.OnEditSpawnRate += ReduceSpawns;
 		PlayerEvents.OnPostUpdateEquips += HealInSprings;
-	}
+        MicrobiomeSystem.PopulateMicrobiomes += static () =>
+        {
+            OasisAreas.Clear();
+            foreach (var b in MicrobiomeSystem.Microbiomes)
+            {
+                if (b is UndergroundOasisBiome oasis)
+                    OasisAreas.Add(oasis.Rectangle);
+            }
+        };
+    }
 
 	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
 	{

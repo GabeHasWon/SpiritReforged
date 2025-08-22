@@ -71,7 +71,7 @@ internal class SavannaEcotone : EcotoneBase
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SavannaSeed>())
+		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed)
 		{
 			int spawn = Main.maxTilesX / 2;
 			var entry = EcotoneSurfaceMapping.FindWhere(x => x.Start.X < spawn && x.End.X > spawn);
