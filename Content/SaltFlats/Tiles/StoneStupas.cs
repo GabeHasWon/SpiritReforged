@@ -23,7 +23,7 @@ public class StoneStupas : PotTile, ILootable
 	public override void AddObjectData()
 	{
 		DustType = IsRubble ? -1 : DustID.Stone;
-		HitSound = IsRubble ? null : Break;
+		HitSound = IsRubble ? SoundID.Dig : Break;
 
 		base.AddObjectData();
 	}
