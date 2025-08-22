@@ -1,10 +1,9 @@
-﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
-using static SpiritReforged.Common.TileCommon.Loot.ILootTile;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -127,7 +126,7 @@ public class RecordHandler : ModSystem
 		{
 			if (arg is bool hasBasicLoot && hasBasicLoot)
 			{
-				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootDelegate pool);
+				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool);
 
 				if (result)
 					TileLootHandler.RegisterLoot(pool, type);
@@ -136,12 +135,22 @@ public class RecordHandler : ModSystem
 			}
 			else if (arg is Action<int, ILoot> dele)
 			{
-				TileLootHandler.RegisterLoot((context, loot) => dele.Invoke(context.Style, loot), type); //Nest delegates to avoid using a .dll reference because of ILootTile.Context
+				TileLootHandler.RegisterLoot((loot) =>
+				{
+					if (loot is TileLootTable t)
+						dele.Invoke(t.Style, loot);
+				}); //Nest delegates to avoid using a .dll reference
+
 				return true;
 			}
 			else if (arg is Action<int, Point16, ILoot> dele2)
 			{
-				TileLootHandler.RegisterLoot((context, loot) => dele2.Invoke(context.Style, context.Coordinates, loot), type);
+				TileLootHandler.RegisterLoot((loot) =>
+				{
+					if (loot is TileLootTable t)
+						dele2.Invoke(t.Style, t.Coordinates, loot);
+				});
+
 				return true;
 			}
 

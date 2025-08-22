@@ -58,7 +58,8 @@ public abstract class Microbiome : ILoadable
 
 public class MicrobiomeSystem : ModSystem
 {
-	public static event Action PostLoadMicrobiomes;
+	/// <summary> Invoked directly after <see cref="Microbiomes"/> is populated, which can happen during world load or after microbiomes are synced in multiplayer. </summary>
+	public static event Action PopulateMicrobiomes;
 
 	/// <summary> Default microbiome definitions by name, added during load. Instances should not be used directly but instead cloned using <see cref="Microbiome.Clone"/>. </summary>
 	private static readonly Dictionary<string, Microbiome> BiomeByName = [];
@@ -96,6 +97,8 @@ public class MicrobiomeSystem : ModSystem
 
 			Microbiomes.Add(biome); //Repopulate Microbiomes based on data provided by the server
 		}
+
+		PopulateMicrobiomes?.Invoke();
 	}
 
 	public override void SaveWorldData(TagCompound tag)
@@ -139,9 +142,11 @@ public class MicrobiomeSystem : ModSystem
 				Microbiomes.Add(inst);
 			}
 			else
+			{
 				SpiritReforgedMod.Instance.Logger.Info($"Microbiome '{name}' was not present in the dictionary.");
+			}
 		}
 
-		PostLoadMicrobiomes?.Invoke();
+		PopulateMicrobiomes?.Invoke();
 	}
 }

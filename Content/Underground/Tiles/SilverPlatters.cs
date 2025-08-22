@@ -1,35 +1,29 @@
-using RubbleAutoloader;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon.Loot;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverPlatters : PotTile, ILootTile
+public class SilverPlatters : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Platter");
+		var desc = Language.GetText(TileRecord.DescKey + ".Platter");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("SilverBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+		.AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("SilverBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -43,7 +37,7 @@ public class SilverPlatters : PotTile, ILootTile
 	{
 		const int distance = 200;
 
-		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || Autoloader.IsRubble(Type))
+		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || IsRubble)
 			return;
 
 		var world = new Vector2(i, j) * 16;
@@ -61,7 +55,7 @@ public class SilverPlatters : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || Generating)
+		if (IsRubble || WorldMethods.Generating)
 			return;
 
 		var center = new Vector2(i, j).ToWorldCoordinates(16, 16);
@@ -94,7 +88,7 @@ public class SilverPlatters : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("GarlicBread", out ModItem bread) && CrossMod.Thorium.TryFind("Takoyaki", out ModItem takoyaki))
 			loot.AddOneFromOptions(2, bread.Type, takoyaki.Type);

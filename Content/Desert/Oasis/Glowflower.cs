@@ -22,12 +22,12 @@ public class Glowflower : ModTile, ISwayTile
 	/// <summary> Causes Glowflower to regrow inside of underground oasis microbiomes. </summary>
 	private static void Regrow(int i, int j, int type)
 	{
-		if (type == TileID.Sand && j > Main.worldSurface && WorldGen.genRand.NextBool(10) && WorldGen.InWorld(i, j - 1) && !Main.tile[i, j - 1].HasTile && Main.tile[i, j - 1].LiquidAmount < 100)
+		if (type == TileID.Sand && j > Main.worldSurface && Main.rand.NextBool(10) && WorldGen.InWorld(i, j - 1) && !Main.tile[i, j - 1].HasTile && Main.tile[i, j - 1].LiquidAmount < 100)
 		{
 			Point pt = new(i, j);
 			int tileType = ModContent.TileType<Glowflower>();
 
-			if (Placer.CanPlaceHerb(i, j, tileType) && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(pt)))
+			if (Placer.CanPlaceHerb(i, j, tileType) && UndergroundOasisBiome.OasisAreas.Any(x => x.Contains(pt)))
 				Placer.PlaceTile(i, j - 1, tileType).Send();
 		}
 	}
@@ -40,7 +40,6 @@ public class Glowflower : ModTile, ISwayTile
 		Main.tileCut[Type] = true;
 		Main.tileLighted[Type] = true;
 
-		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);

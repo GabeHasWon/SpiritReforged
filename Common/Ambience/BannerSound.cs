@@ -10,7 +10,7 @@ internal class BannerSound : ILoadable
 	public void Load(Mod mod) => NPCEvents.OnNPCLoot += PlayerBannerSound;
 	private static void PlayerBannerSound(NPC npc)
 	{
-		if (Main.dedServ || npc.ExcludedFromDeathTally())
+		if (Main.dedServ || !npc.GetWereThereAnyInteractions() || npc.ExcludedFromDeathTally())
 			return;
 
 		int bannerType = Item.NPCtoBanner(npc.BannerID());

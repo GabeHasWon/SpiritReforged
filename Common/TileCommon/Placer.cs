@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.WorldGeneration;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Common.TileCommon;
 
@@ -24,6 +25,8 @@ public static class Placer
 		_ => 31
 	};
 
+	/// <summary> Picks between <see cref="WorldGen.genRand"/> and <see cref="Main.rand"/> depending on <see cref="WorldGen.generatingWorld"/>. </summary>
+	public static UnifiedRandom Rand => WorldGen.generatingWorld ? WorldGen.genRand : Main.rand;
 	private static readonly Point16[] CardinalDirections = [new Point16(0, -1), new Point16(-1, 0), new Point16(1, 0), new Point16(0, 1)];
 
 	private static readonly int[] Replaceable = [TileID.Plants, TileID.Plants2, TileID.JunglePlants, TileID.JunglePlants2, 
@@ -68,7 +71,7 @@ public static class Placer
 		if (data is null)
 			style = 0;
 		else if (style == -1)
-			style = Main.rand.Next(data.RandomStyleRange);
+			style = Rand.Next(data.RandomStyleRange);
 
 		if (TileObject.CanPlace(i, j, type, style, 0, out var objectData))
 		{
@@ -112,7 +115,7 @@ public static class Placer
 		if (a.success && TileObject.Place(a.data) && Framing.GetTileSafely(a.Coords).TileType == a.data.type)
 			return a;
 
-		return a;
+		return a with { success = false };
 	}
 
 	/// <summary> Calls <see cref="TileObjectData.CallPostPlacementPlayerHook"/> for this attempt, and outputs entity of T. </summary>

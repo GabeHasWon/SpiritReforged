@@ -182,6 +182,29 @@ public static class WorldMethods
 		generated = currentCount;
 	}
 
+	/// <summary> Iterates over every location within <paramref name="area"/> and calls <paramref name="del"/> for each. </summary>
+	public static void GenerateSquared(GenDelegate del, out int generated, Rectangle area = default)
+	{
+		generated = 0;
+
+		if (area == default) //Default area
+		{
+			int top = (int)GenVars.worldSurfaceHigh;
+			int left = 20;
+
+			area = new(left, top, Main.maxTilesX - left - 20, Main.maxTilesY - top - 20);
+		}
+
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
+			{
+				if (del(x, y))
+					generated++;
+			}
+		}
+	}
+
 	public static void ApplyTileArea(GenDelegate del, Rectangle area)
 	{
 		for (int x = area.X; x < area.X + area.Width; x++)

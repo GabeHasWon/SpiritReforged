@@ -173,7 +173,7 @@ public class AfterimagePlayer : ModPlayer
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (setActive && !item.channel && item.DamageType.CountsAsClass(DamageClass.Magic) && _manaCounter == 0)
+		if (setActive && !item.channel && item.DamageType.CountsAsClass(DamageClass.Magic) && item.mana != 0 && _manaCounter == 0)
 			_duplicateDelay = 20;
 
 		return true;
