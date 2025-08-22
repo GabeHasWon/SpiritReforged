@@ -2158,3 +2158,13 @@ DivingBeetleItem: {
 	DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
 	Tooltip: ""
 }
+
+GoldDivingBeetleItem: {
+	DisplayName: Gold Diving Beetle
+	Tooltip: ""
+}
+
+StoneStupasItem: {
+	DisplayName: Stone Stupa
+	Tooltip: ""
+}

@@ -474,5 +474,10 @@ DivingBeetle: {
 
 Flamingo: {
 	DisplayName: Flamingo
+  Entry: ""
+}
+
+GoldDivingBeetle: {
+	DisplayName: Gold Diving Beetle
 	Entry: ""
 }

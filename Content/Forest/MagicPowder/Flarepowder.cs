@@ -6,7 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.TileCommon.Loot;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
@@ -68,10 +68,9 @@ public class Flarepowder : ModItem
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
 
-			//Register pot loot
-			TileLootHandler.RegisterLoot(static (context, loot) =>
+			TileLootHandler.RegisterLoot(static (loot) =>
 			{
-				int chance = (context.Coordinates.Y < Main.rockLayer) ? 17 : 0;
+				int chance = (loot is TileLootTable t && t.Coordinates.Y < Main.rockLayer) ? 17 : 0;
 
 				if (chance > 0)
 					loot.AddCommon(ModContent.ItemType<Flarepowder>(), chance, 10, 20);

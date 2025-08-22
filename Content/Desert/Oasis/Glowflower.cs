@@ -27,7 +27,7 @@ public class Glowflower : ModTile, ISwayTile
 			Point pt = new(i, j);
 			int tileType = ModContent.TileType<Glowflower>();
 
-			if (Placer.CanPlaceHerb(i, j, tileType) && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(pt)))
+			if (Placer.CanPlaceHerb(i, j, tileType) && UndergroundOasisBiome.OasisAreas.Any(x => x.Contains(pt)))
 				Placer.PlaceTile(i, j - 1, tileType).Send();
 		}
 	}

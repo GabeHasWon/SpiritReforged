@@ -1,47 +1,41 @@
-using RubbleAutoloader;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
-using SpiritReforged.Common.ItemCommon;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
-using SpiritReforged.Common.TileCommon.Loot;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class OrnatePots : PotTile, ILootTile
+public class OrnatePots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
 		RecordHandler.Records.Add(record.AddRating(5).AddDescription(Language.GetText(TileRecord.DescKey + ".CoinPortal")));
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("GoldBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+		.AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("GoldBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
 		Main.tileOreFinderPriority[Type] = 575;
-		DustType = DustID.Gold;
+		DustType = IsRubble ? -1 : DustID.Gold;
 	}
 
 	public override void AddMapData() => AddMapEntry(new Color(180, 180, 77), Language.GetText("Mods.SpiritReforged.Items.OrnatePotsItem.DisplayName"));
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (!fail && !Autoloader.IsRubble(Type))
+		if (!fail && !IsRubble)
 		{
 			var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
 			SoundEngine.PlaySound(SoundID.Shatter, pos);
@@ -54,9 +48,9 @@ public class OrnatePots : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
-		if (!Autoloader.IsRubble(Type) && Main.netMode != NetmodeID.MultiplayerClient && !Generating)
+		if (!IsRubble && Main.netMode != NetmodeID.MultiplayerClient && !WorldMethods.Generating)
 		{
+			var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 			var source = new EntitySource_TileBreak(i, j);
 			Projectile.NewProjectile(source, new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.UnitY * -4f, ProjectileID.CoinPortal, 0, 0);
 
@@ -81,7 +75,7 @@ public class OrnatePots : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(ILootTile.Context context, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.Add(ItemDropRule.Common(ItemID.LuckPotion, 2, 1, 2));
 		loot.Add(ItemDropRule.Common(ItemID.HealingPotion, 1, 1, 3));
