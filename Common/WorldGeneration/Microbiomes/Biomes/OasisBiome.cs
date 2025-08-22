@@ -14,7 +14,6 @@ public class OasisBiome : Microbiome
 		if (p.CheckFlag(flagType) is bool flag)
 			return flag;
 
-		//Preface with basic relevant checks so linq isn't constantly running in the background
 		bool result = p.ZoneDesert && p.ZoneOverworldHeight && MicrobiomeSystem.Microbiomes.Any(x => x is OasisBiome o && o.Rectangle.Contains(p.Center.ToTileCoordinates()));
 		p.SetFlag(flagType, result); //Cache the result to avoid checking against this logic more than once per tick
 
