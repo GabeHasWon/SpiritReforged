@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
-
-namespace SpiritReforged.Common.TileCommon.Loot;
+﻿namespace SpiritReforged.Common.TileCommon;
 
 /// <summary> Modifies vanilla pots to use additional <see cref="LootTable"/> drops. </summary>
 internal class ModifyPotLoot : ILoadable

@@ -471,3 +471,8 @@ DivingBeetle: {
 	// DisplayName: Diving Beetle
 	// Entry: ""
 }
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: ""
+}

@@ -21,6 +21,9 @@ internal static class PlayerExtensions
 	/// <inheritdoc cref="WearingSet(Player, int)"/>
 	public static bool WearingSet<T>(this Player player) where T : ModItem => ModContent.GetInstance<T>().IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
 
+	public static void SetFlag(this Player player, string name, bool? value = true) => player.GetModPlayer<PlayerFlags>().SetFlag(name, value);
+	public static bool? CheckFlag(this Player player, string name) => player.GetModPlayer<PlayerFlags>().CheckFlag(name);
+
 	/// <summary> Checks whether the player is in the corruption, crimson, or hallow. </summary>
 	public static bool ZoneEvil(this Player player) => player.ZoneCorrupt || player.ZoneCrimson || player.ZoneHallow;
 	/// <inheritdoc cref="CollisionPlayer.FallThrough"/>
