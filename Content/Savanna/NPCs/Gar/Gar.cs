@@ -8,7 +8,6 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.Savanna.NPCs.Gar;
 
 [AutoloadCritter]
-[AutoloadBanner]
 public class Gar : ModNPC
 {
 	public ref float YMovement => ref NPC.ai[0]; // Y Movement (adapted from vanilla)
@@ -29,14 +28,11 @@ public class Gar : ModNPC
 		Main.npcCatchable[Type] = true;
 
 		NPCID.Sets.CountsAsCritter[Type] = true;
+		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
-	public virtual void CreateItemDefaults()
-	{
-		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 5, 37));
-		ItemEvents.CreateItemDefaults(this.AutoItemType("Banner"), item => item.value = Item.sellPrice(0, 0, 2, 0));
-	}
+	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 5, 37));
 
 	public override void SetDefaults()
 	{

@@ -6,14 +6,11 @@ VanillaDialogue: {
 		Kelp: Не ешь морские водоросли.
 	}
 
-	ArmsDealer: {
-		Savanna1: В этих краях полно крупной дичи. Даже такой, как ты, сумеет в неё попасть.
-		Placeholder: placeholder
-	}
+	ArmsDealer.Savanna: В этих краях полно крупной дичи. Даже такой, как ты, сумеет в неё попасть.
 
 	Stylist: {
-		Savanna1: В таком климате чертовски трудно поддерживать причёску в порядке.
-		Duststorm1: Если мне ещё хоть раз придётся выковыривать песок из чьих-то волос — клянусь, я...
+		Savanna: В таком климате чертовски трудно поддерживать причёску в порядке.
+		Duststorm: Если мне ещё хоть раз придётся выковыривать песок из чьих-то волос — клянусь, я...
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		Discoveries: Порой в своих путешествиях я натыкаюсь на редкие диковинки. Может, и ты их найдёшь, если будешь внимателен.
 	}
 
-	Demolitionist: {
-		HasBoomshroom: Что у тебя там? Гриб, который делает ВЗРЫВ ещё МОЩНЕЕ? Обожаю матушку-природу!
-		Placeholder: placeholder
-	}
+	Demolitionist.HasBoomshroom: Что у тебя там? Гриб, который делает ВЗРЫВ ещё МОЩНЕЕ? Обожаю матушку-природу!
 
 	Nurse: {
 		Duststorm: Смотри не поранься там об эту пыль! Мне за такое не платят.
@@ -462,12 +456,22 @@ RadonMossSlime.DisplayName: Радоновый мшистый слизень
 
 Stactus: {
 	// DisplayName: Stactus
-	// Entry: ""
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
 // Tumbleweed.DisplayName: Tumbleweed
 
+Flamingo: {
+	// DisplayName: Flamingo
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
 DivingBeetle: {
 	// DisplayName: Diving Beetle
-	// Entry: ""
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
 }

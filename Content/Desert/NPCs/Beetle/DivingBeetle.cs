@@ -1,8 +1,9 @@
-﻿using SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
 using System.IO;
 using Terraria.GameContent.Bestiary;
 
-namespace SpiritReforged.Content.Desert.NPCs;
+namespace SpiritReforged.Content.Desert.NPCs.Beetle;
 
 [AutoloadCritter]
 public class DivingBeetle : ModNPC
@@ -11,14 +12,33 @@ public class DivingBeetle : ModNPC
 	/// <summary> A randomly-selected location to control passive swimming velocity. </summary>
 	private Vector2 _targetPosition;
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 3;
+	public override void SetStaticDefaults()
+	{
+		CreateItemDefaults();
+
+		Main.npcFrameCount[Type] = 3;
+		NPCID.Sets.CountsAsCritter[Type] = true;
+		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
+		NPC.Size = new(10);
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.npcSlots = 0.1f;
 		NPC.noGravity = true;
 	}
+
+	public virtual void CreateItemDefaults() => 
+		ItemEvents.CreateItemDefaults(
+		this.AutoItemType(), 
+		item =>
+		{
+			item.value = Item.sellPrice(0, 0, 0, 45);
+			item.bait = 18;
+		}
+	);
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
 
@@ -44,9 +64,7 @@ public class DivingBeetle : ModNPC
 				NPC.netUpdate = true;
 			}
 			else
-			{
 				Counter = retargetInterval / 2; //Reduce the time to retarget otherwise
-			}
 		}
 
 		var velocityTarget = NPC.DirectionTo(_targetPosition) * 2;
@@ -80,5 +98,5 @@ public class DivingBeetle : ModNPC
 	public override void ReceiveExtraAI(BinaryReader reader) => _targetPosition = reader.ReadPackedVector2();
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.ZoneDesert && spawnInfo.SpawnTileY < Main.worldSurface && !spawnInfo.Invasion && spawnInfo.Water 
-		? (spawnInfo.PlayerInTown ? 0.5f : 0.25f) : 0;
+		? spawnInfo.PlayerInTown ? 0.5f : 0.25f : 0;
 }

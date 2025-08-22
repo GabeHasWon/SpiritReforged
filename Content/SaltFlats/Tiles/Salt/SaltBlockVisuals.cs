@@ -21,6 +21,7 @@ public class SaltBlockVisuals : ILoadable
 	/// <summary> Whether screen dimensions are beyond 1920x1080- bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
 	private static bool HighResolution;
 	private static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "SaltBlockReflectiveMap", false);
+	public static readonly Asset<Texture2D> Noise = Main.Assets.Request<Texture2D>("Images/Misc/noise");
 
 	#region gradient
 	public static Texture2D DistanceMap { get; private set; }
@@ -84,7 +85,7 @@ public class SaltBlockVisuals : ILoadable
 		DrawOverHandler.PostDrawTilesSolid += DrawFullReflection;
 		TileEvents.AddPreDrawAction(true, ReflectionPoints.Clear);
 
-		TargetSetup.OnResizeRendertargets += static () => HighResolution = Main.screenWidth > 1920 || Main.screenHeight > 1080;
+		TargetSetup.OnResizeRendertargets += static () => HighResolution = Main.graphics.GraphicsDevice.Viewport.Width > 1920 || Main.graphics.GraphicsDevice.Viewport.Height > 1080;
 	}
 
 	private static bool CanDraw()
@@ -162,7 +163,6 @@ public class SaltBlockVisuals : ILoadable
 	private static void DrawAndHandleReflectionTarget(SpriteBatch spriteBatch)
 	{
 		var gd = Main.graphics.GraphicsDevice;
-
 		var storedZoom = Main.GameViewMatrix.Zoom;
 		Main.GameViewMatrix.Zoom = Vector2.One;
 
@@ -230,7 +230,7 @@ public class SaltBlockVisuals : ILoadable
 
 		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"].Value;
-		var n = AssetLoader.LoadedTextures["perlinNoiseSoft"].Value;
+		var n = Noise.Value;
 
 		s.Parameters["mapTexture"].SetValue(MapTarget);
 		s.Parameters["distortionTexture"].SetValue(n);
@@ -242,9 +242,9 @@ public class SaltBlockVisuals : ILoadable
 		s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
 		s.Parameters["distortionPower"].SetValue(1);
 
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(220) * 0.8f;
+		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(230) * 0.8f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

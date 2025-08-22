@@ -258,7 +258,7 @@ internal class Stactus : ModNPC, IDeathCount
 		}
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
 	public override int SpawnNPC(int tileX, int tileY)
 	{
 		var spawn = new Vector2(tileX, tileY).ToWorldCoordinates();

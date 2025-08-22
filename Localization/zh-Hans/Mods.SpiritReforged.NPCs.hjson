@@ -6,14 +6,11 @@ VanillaDialogue: {
 		Kelp: 别吃海藻。
 	}
 
-	ArmsDealer: {
-		Savanna1: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
-		Placeholder: placeholder
-	}
+	ArmsDealer.Savanna: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
 
 	Stylist: {
-		Savanna1: 在这种气候里保持发型简直要命。
-		Duststorm1: 要是再让我从别人头发里挑沙子，我就……
+		Savanna: 在这种气候里保持发型简直要命。
+		Duststorm: 要是再让我从别人头发里挑沙子，我就……
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
 	}
 
-	Demolitionist: {
-		HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
-		Placeholder: placeholder
-	}
+	Demolitionist.HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
 
 	Nurse: {
 		Duststorm: 别让外面的沙尘刮伤你！这可不归我管。
@@ -462,12 +456,22 @@ RadonMossSlime.DisplayName: 氡苔藓史莱姆
 
 Stactus: {
 	// DisplayName: Stactus
-	// Entry: ""
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
 // Tumbleweed.DisplayName: Tumbleweed
 
+Flamingo: {
+	// DisplayName: Flamingo
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
 DivingBeetle: {
 	// DisplayName: Diving Beetle
-	// Entry: ""
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
 }
