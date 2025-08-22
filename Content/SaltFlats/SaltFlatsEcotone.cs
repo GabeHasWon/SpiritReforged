@@ -1,10 +1,12 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
+using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.Linq;
 using Terraria.GameContent.Generation;
@@ -170,6 +172,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 						if (firstLayer && (x - startX == extraWidth || x - startX == fullWidth - extraWidth))
 							tile.IsHalfBlock = true; //Prevents the Smooth World genpass from interfering later
 					}
+
+					if (firstLayer && WorldGen.genRand.NextBool(3))
+						Placer.PlaceTile<StoneStupas>(x - 1, y - 1);
 				}
 			}
 		}

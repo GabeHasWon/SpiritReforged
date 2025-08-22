@@ -16,7 +16,8 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 	public abstract Dictionary<string, int[]> TileStyles { get; }
 	public Dictionary<string, int[]> Styles => IsRubble ? [] : TileStyles;
 
-	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble");
+	/// <summary> Whether this type is an autoloaded rubble tile. </summary>
+	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble"); //Autoloader.IsRubble is unusuable before before loading is complete
 
 	/// <inheritdoc cref="ModType.Load"/>
 	public virtual void Load(Mod mod) { }

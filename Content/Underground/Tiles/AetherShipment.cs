@@ -1,4 +1,3 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -53,7 +52,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 	{
 		const int distance = 200;
 
-		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || Autoloader.IsRubble(Type))
+		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || IsRubble)
 			return;
 
 		var world = new Vector2(i, j) * 16;
@@ -74,7 +73,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || !fail || Autoloader.IsRubble(Type) || WorldMethods.Generating)
+		if (effectOnly || !fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		fail = AdjustFrame(i, j);
@@ -107,7 +106,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);

@@ -138,8 +138,8 @@ public class PotionVats : PotTile, ICutAttempt
 		}
 		else
 		{
-			SoundEngine.PlaySound(SoundID.Shatter with { Pitch = .9f }, pos);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/PotBreak") with { Volume = .10f, Pitch = 1f, }, pos);
+			SoundEngine.PlaySound(SoundID.Shatter with { Pitch = 0.9f }, pos);
+			SoundEngine.PlaySound(BiomePots.Break with { Volume = 0.10f, Pitch = 1f }, pos);
 		}
 
 		return false;
