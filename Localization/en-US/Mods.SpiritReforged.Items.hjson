@@ -2159,6 +2159,11 @@ DivingBeetleItem: {
 	Tooltip: ""
 }
 
+OsmosifierItem: {
+	DisplayName: Osmosifier
+	Tooltip: Passively produces salt blocks when placed in water
+}
+
 GoldDivingBeetleItem: {
 	DisplayName: Gold Diving Beetle
 	Tooltip: ""
