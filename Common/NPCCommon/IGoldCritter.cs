@@ -31,11 +31,8 @@ public class GoldCritterNPC : GlobalNPC
 
 	public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
-		if (NPCTypes.TryGetValue(npc.type, out int[] ids) && ids.Length > 0 && npc.ModNPC is ModNPC modNPC)
-		{
+		if (NPCTypes.TryGetValue(npc.type, out int[] ids) && ids.Length > 0)
 			bestiaryEntry.UIInfoProvider = new GoldCritterUICollectionInfoProvider(ids, ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[npc.type]);
-			bestiaryEntry.AddInfo(modNPC, string.Empty);
-		}
 	}
 
 	public override void AI(NPC npc)

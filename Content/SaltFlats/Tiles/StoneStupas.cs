@@ -1,9 +1,10 @@
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
-using Terraria.DataStructures;
 using SpiritReforged.Content.Underground.Tiles;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Misc;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
@@ -11,12 +12,19 @@ public class StoneStupas : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] } };
 
+	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/StoneStupaShatter", 2)
+	{
+		PitchVariance = 0.2f
+	};
+
 	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
 		.AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.StoneBlock, 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
 		DustType = IsRubble ? -1 : DustID.Stone;
+		HitSound = IsRubble ? null : Break;
+
 		base.AddObjectData();
 	}
 

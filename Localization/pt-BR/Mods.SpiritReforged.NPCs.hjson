@@ -462,22 +462,22 @@ MossSlime: {
 
 Stactus: {
 	// DisplayName: Stactus
-	// Entry: ""
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
 // Tumbleweed.DisplayName: Tumbleweed
 
-DivingBeetle: {
-	// DisplayName: Diving Beetle
-	// Entry: ""
-}
-
 Flamingo: {
 	// DisplayName: Flamingo
-	// Entry: ""
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
 }
 
 GoldDivingBeetle: {
 	// DisplayName: Gold Diving Beetle
-	// Entry: ""
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
 }
