@@ -11,6 +11,9 @@ public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		TileID.Sets.GeneralPlacementTiles[Type] = false;
+		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+
 		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.Sand);
 		AddMapEntry(new Color(174, 74, 48));
 

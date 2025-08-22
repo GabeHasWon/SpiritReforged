@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Content.Desert.Tiles;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+using SpiritReforged.Content.Desert.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.IO;
@@ -39,7 +41,7 @@ internal class ZigguratMicropass : Micropass
 
 	private static int Spacing => 18;
 
-	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Water Chests");
+	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Full Desert"); //"Water Chests" "Full Desert"
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
@@ -50,7 +52,8 @@ internal class ZigguratMicropass : Micropass
 			return; // ?? big hole where the desert is?
 
 		(x, y) = (foundPos.X, foundPos.Y);
-		GenerateZiggurat(x, y);
+		//GenerateZiggurat(x, y);
+		Microbiome.Create<ZigguratBiome>(new(x, y));
 	}
 
 	internal static void GenerateZiggurat(int x, int y)
@@ -137,7 +140,9 @@ internal class ZigguratMicropass : Micropass
 				placeX -= width / 2;
 
 				ShapeData roomData = new();
-				WorldUtils.Gen(new Point(placeX, placeY), new Shapes.Rectangle(width, height), new Actions.PlaceWall(WallID.Sandstone).Output(roomData));
+				WorldUtils.Gen(new Point(placeX, placeY), new Shapes.Rectangle(width, height), Actions.Chain(
+					new Actions.ClearTile(),
+					new Actions.PlaceWall(WallID.Sandstone).Output(roomData)));
 				rooms.Add(new PlacedRoom(new Rectangle(placeX, placeY, width, height), RoomVariant.Empty, new Point16(repeat, layer + 1), []));
 
 				foreach (var point in roomData.GetData())
