@@ -173,8 +173,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 							tile.IsHalfBlock = true; //Prevents the Smooth World genpass from interfering later
 					}
 
-					if (firstLayer && WorldGen.genRand.NextBool(3))
-						Placer.PlaceTile<StoneStupas>(x - 1, y - 1);
+					if (firstLayer && WorldGen.genRand.NextBool(6))
+						Placer.PlaceTile<StoneStupas>(x - 1, y - 1, WorldGen.genRand.Next(0, 12));
 				}
 			}
 		}
