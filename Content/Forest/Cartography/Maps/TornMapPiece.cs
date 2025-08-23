@@ -37,10 +37,6 @@ public class TornMapPiece : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		ZigguratMicropass.GenerateZiggurat(pos.X, pos.Y);
-
-		return true;
 		const int Radius = 170;
 
 		if (Main.myPlayer == player.whoAmI && !Main.dedServ)

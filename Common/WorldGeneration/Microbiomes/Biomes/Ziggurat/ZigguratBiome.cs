@@ -120,18 +120,30 @@ public class ZigguratBiome : Microbiome
 			else
 			{
 				int skip = WorldGen.genRand.Next(i + 1);
+
 				for (int x = 0; x <= i; x++)
 				{
-					if (x == skip)
-						continue;
-
 					float progress = (float)x / i;
 					var r = new BasicRoom(bound);
 
-					Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
+					if (i == orderedBounds.Length - 1 && x == 0) //Final layer
+					{
+						r = new TreasureRoom(bound);
+						progress = WorldGen.genRand.NextFloat();
+					}
+					else if (x == skip)
+					{
+						continue;
+					}
 
-					r.SetOrigin(origin).Create();
-					rooms.Add(r);
+					Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
+					r.SetOrigin(origin);
+
+					if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //If we don't care about rooms occasionally intersecting, remove this check
+					{
+						r.Create();
+						rooms.Add(r);
+					}
 				}
 			}
 		}

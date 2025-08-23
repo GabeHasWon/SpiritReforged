@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.TileCommon;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -25,7 +25,17 @@ public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origi
 
 	/// <summary> Called after all possible hallways linking ziggurat rooms are placed.<para/>
 	/// Should be used to safely place furniture and check for consumed links in <see cref="GenRoom.Links"/>. </summary>
-	public virtual void PostPlaceHallways() { }
+	public virtual void PostPlaceHallways()
+	{
+		for (int x = Bounds.Left; x < Bounds.Right; x++)
+		{
+			for (int y = Bounds.Top; y < Bounds.Bottom; y++)
+			{
+				if (WorldGen.genRand.NextBool(20) && WorldGen.SolidTile(x, y - 1))
+					Placer.PlaceTile(x, y, TileID.Banners, WorldGen.genRand.Next(4, 8));
+			}
+		}
+	}
 
 	protected virtual void AddLinks()
 	{
@@ -40,19 +50,25 @@ public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origi
 public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 {
 	private Link _firstLink;
+	private int _exitSide;
 
 	protected override void Initialize(out Point size) => size = new(_bounds.Width / 2 + 1, _bounds.Height - 4);
 
 	public override void Create()
 	{
 		const int scanDistance = 10;
-
-		base.Create();
 		int bottom = Bounds.Bottom - 2;
 
 		if (WorldGen.genRand.NextBool() && Clear(new(_bounds.Left, bottom), new Searches.Left(scanDistance)))
-			ZigguratBiome.BlockOut(new(Bounds.Left, bottom), new(_bounds.Left, bottom), 3);
+			_exitSide = -1;
 		else if (Clear(new(_bounds.Right, bottom), new Searches.Right(scanDistance)))
+			_exitSide = 1;
+
+		base.Create();
+
+		if (_exitSide == -1)
+			ZigguratBiome.BlockOut(new(Bounds.Left, bottom), new(_bounds.Left, bottom), 3);
+		else if (_exitSide == 1)
 			ZigguratBiome.BlockOut(new(Bounds.Right, bottom), new(_bounds.Right, bottom), 3);
 
 		//Center indent
@@ -66,14 +82,22 @@ public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(
 
 	public override void PostPlaceHallways()
 	{
-		if (Links.Count == 1) //If the only link wasn't consumed
-		{
-			var origin = _firstLink.Location;
-			WorldUtils.Gen(origin, new Shapes.Tail(8, new(10, 15)), new Actions.ClearTile());
-		}
 	}
 
-	protected override void AddLinks() => Links.Add(_firstLink = new(new(Bounds.Center.X, Bounds.Bottom), Bottom));
+	protected override void AddLinks()
+	{
+		Links.Add(_firstLink = new(new(Bounds.Center.X, Bounds.Bottom), Bottom));
+
+		if (_exitSide == 1)
+			Links.Add(new(new(Bounds.Left, Bounds.Bottom - 2), Left));
+		else if (_exitSide == -1)
+			Links.Add(new(new(Bounds.Right, Bounds.Bottom - 2), Right));
+	}
+}
+
+public class TreasureRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+{
+	protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5 - 1, 20);
 }
 
 /*public class Connector(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
