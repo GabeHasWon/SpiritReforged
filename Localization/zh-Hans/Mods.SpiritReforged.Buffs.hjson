@@ -44,7 +44,7 @@ Impaled: {
 }
 
 KoiTotemBuff: {
-	DisplayName: 锦鲤之灵
+	DisplayName: 锦鲤图腾
 	Description: 渔力增加
 }
 
@@ -74,7 +74,7 @@ Frozen: {
 }
 
 GildedScarabBuff: {
-	DisplayName: 圣甲虫盾
+	DisplayName: 甲虫护盾
 	Description: 防御力增加{0}
 }
 
