@@ -1,8 +1,8 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Oasis;
 using System.Linq;
 using Terraria.DataStructures;
@@ -185,8 +185,8 @@ public class UndergroundOasisBiome : Microbiome
 			while (WorldGen.InWorld(x, y, 2) && !WorldGen.SolidTile(x, y))
 				y--;
 
-			if (lastX.Add(x)) //Prevents duplicates
-				SimpleEntitySystem.NewEntity<LightShaft>(new Vector2(x, y).ToWorldCoordinates(), true);
+			if (lastX.Add(x))
+				Placer.PlaceTile<LightShaft>(x, y + 1);
 
 			x = point.X + Main.rand.Next(-10, 10);
 			y = point.Y;

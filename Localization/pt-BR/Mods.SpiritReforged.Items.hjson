@@ -2161,7 +2161,7 @@ DivingBeetleItem: {
 
 SunDropper: {
 	// DisplayName: Magic Sunlight Dropper
-	// Tooltip: Applies to solid tiles
+	// Tooltip: ""
 }
 
 OsmosifierItem: {
