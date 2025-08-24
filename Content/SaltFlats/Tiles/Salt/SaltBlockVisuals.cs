@@ -45,7 +45,7 @@ public class SaltBlockVisuals : ILoadable
 			float fadeStrength = 1f - (float)y / height;
 			float taperOpacity = Math.Min((float)y / taper, 1);
 
-			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 2f, 0, 1)) * taperOpacity, 1); //Green: reflected pixels - Blue: static opacity
+			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 1.7f, 0, 1)) * taperOpacity, 1); //Green: reflected pixels - Blue: static opacity
 		}
 
 		var textureToCache = new Texture2D(Main.graphics.GraphicsDevice, width, height);
@@ -172,12 +172,12 @@ public class SaltBlockVisuals : ILoadable
 		//Draw the actual contents
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
+		Main.tileBatch.Begin();
+		Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
+		Main.tileBatch.End();
+
 		if (Detail > 1)
 		{
-			Main.tileBatch.Begin();
-			Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
-			Main.tileBatch.End();
-
 			DrawBG(Main.instance);
 
 			if (!HighResolution)
@@ -228,7 +228,6 @@ public class SaltBlockVisuals : ILoadable
 		if (!Drawing || ReflectionTarget.Target is null || MapTarget.Target is null || TileTarget.Target is null)
 			return;
 
-		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"].Value;
 		var n = Noise.Value;
 
@@ -237,14 +236,14 @@ public class SaltBlockVisuals : ILoadable
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 
 		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
-		s.Parameters["fade"].SetValue(lowDetail ? 10f : 3f);
+		s.Parameters["fade"].SetValue(3f);
 		s.Parameters["distortionScale"].SetValue(new Vector2((float)n.Width / Main.screenWidth, (float)n.Height / Main.screenHeight));
 		s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
 		s.Parameters["distortionPower"].SetValue(1);
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(230) * 0.8f;
+		Color tint = Color.White.Additive(230) * 0.9f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

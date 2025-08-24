@@ -18,6 +18,12 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class Flarepowder : ModItem
 {
+	public static readonly SoundStyle Cast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast")
+	{
+		PitchRange = (0.5f, 1f),
+		MaxInstances = 2
+	};
+
 	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
@@ -108,7 +114,7 @@ public class Flarepowder : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/MagicCast1") with { PitchRange = (0.5f, 1f), MaxInstances = 2 }, player.Center);
+		SoundEngine.PlaySound(Cast, player.Center);
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -152,10 +158,10 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 	public override void SetDefaults()
 	{
+		Projectile.Size = new(8);
 		Projectile.DamageType = DamageClass.Magic;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
-		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
 		randomTimeLeft = (0.1f, 0.3f);

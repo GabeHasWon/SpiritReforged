@@ -1,10 +1,8 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
-using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
@@ -14,7 +12,7 @@ namespace SpiritReforged.Content.Granite.ShockClub;
 
 class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 {
-	public static readonly SoundStyle MagicCast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast1")
+	public static readonly SoundStyle MagicCast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast")
 	{
 		Pitch = 0.5f,
 		Volume = 1.5f
