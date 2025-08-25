@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Desert.Tiles;
+﻿using ReLogic.Utilities;
+using SpiritReforged.Content.Desert.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
@@ -27,6 +28,7 @@ public class ZigguratBiome : Microbiome
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
+		Sandify(bounds, 2);
 		CreateHallways(rooms);
 	}
 
@@ -58,19 +60,20 @@ public class ZigguratBiome : Microbiome
 			));
 
 			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall(WallID.SandstoneEcho));
-
 			Rectangle bound = new(topLeft.X, topLeft.Y, width, height);
+
 			bounds.Add(bound);
 			center.Y += height;
 
 			CreateHalo(bound);
 		}
 
-		//Weathering
+		//Add weathering around some edges of the shape
 		ShapeData shape = new();
+		ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
 
 		WorldUtils.Gen(area.Location, new Shapes.Rectangle(area.Width, area.Height), Actions.Chain(
-			new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+			new Modifiers.OnlyTiles(brick),
 			new Actions.Blank()
 		).Output(shape));
 
@@ -84,16 +87,63 @@ public class ZigguratBiome : Microbiome
 		static void CreateHalo(Rectangle bounds)
 		{
 			const int width = 5;
+			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
 
 			WorldUtils.Gen(new(bounds.X, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
 				new Actions.ClearTile(),
-				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
+				new Actions.PlaceTile(brick)
 			));
 
 			WorldUtils.Gen(new(bounds.X + bounds.Width - width, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
 				new Actions.ClearTile(),
-				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
+				new Actions.PlaceTile(brick)
 			));
+		}
+	}
+
+	/// <summary> Randomly adds large sandy spots starting from a select item in <paramref name="bounds"/>. </summary>
+	private static void Sandify(List<Rectangle> bounds, int count)
+	{
+		const int scanArea = 3;
+		int successes = 0;
+
+		for (int a = 0; a < 20; a++)
+		{
+			var b = bounds[WorldGen.genRand.Next(2, bounds.Count)];
+			var origin = new Vector2(WorldGen.genRand.Next([b.Left, b.Right]), WorldGen.genRand.Next([b.Top, b.Bottom]));
+
+			Dictionary<ushort, int> typeToCount = [];
+			WorldUtils.Gen(new((int)origin.X - scanArea, (int)origin.Y - scanArea), new Shapes.Circle(scanArea), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
+
+			if (typeToCount[TileID.Sand] < scanArea * scanArea * 0.25f)
+				continue; //Check if origin is close to sand
+
+			int spotCount = WorldGen.genRand.Next(4, 8);
+			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
+
+			for (int y = 0; y < spotCount; y++)
+			{
+				var location = (origin + WorldGen.genRand.NextVector2Unit() * WorldGen.genRand.NextFloat(5, 26)).ToPoint();
+
+				WorldUtils.Gen(location, new Shapes.Circle(WorldGen.genRand.Next(5, 16)), Actions.Chain(
+					new Modifiers.Blotches(),
+					new Modifiers.OnlyTiles(brick),
+					new Actions.Custom(static (i, j, args) =>
+					{
+						ushort type = WorldGen.TileIsExposedToAir(i, j) ? TileID.Sandstone : TileID.Sand;
+						Main.tile[i, j].ResetToType(type);
+
+						if (type == TileID.Sandstone && WorldGen.genRand.NextBool(12))
+							WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
+
+						return true;
+					}),
+					new Actions.PlaceWall(WallID.HardenedSand)
+				));
+			}
+
+			if (++successes >= count)
+				break;
 		}
 	}
 
@@ -112,8 +162,8 @@ public class ZigguratBiome : Microbiome
 
 			if (i == 0)
 			{
-				var r = new EntranceRoom(bound);
-				r.SetOrigin(new(bound.Center.X, bound.Bottom - r.Bounds.Height / 2 - 3)).Create();
+				var r = new ZigguratRooms.EntranceRoom(bound);
+				r.SetOrigin(new(bound.Center.X, bound.Bottom - r.Bounds.Height / 2 - 2)).Create();
 
 				rooms.Add(r);
 			}
@@ -125,12 +175,19 @@ public class ZigguratBiome : Microbiome
 				for (int x = 0; x <= totalCount; x++)
 				{
 					float progress = (float)x / totalCount;
-					var r = new BasicRoom(bound);
+					var r = new ZigguratRooms.BasicRoom(bound);
 
-					if (i == orderedBounds.Length - 1 && x == 0) //Final layer
+					if (i == orderedBounds.Length - 1) //Final layer
 					{
-						r = new TreasureRoom(bound);
-						progress = WorldGen.genRand.NextFloat();
+						if (x == 0)
+						{
+							r = new ZigguratRooms.TreasureRoom(bound);
+							progress = WorldGen.genRand.NextFloat();
+						}
+						else if (WorldGen.genRand.NextBool())
+						{
+							r = new ZigguratRooms.SandyRoom(bound);
+						}
 					}
 					else if (x == skip)
 					{
@@ -138,6 +195,11 @@ public class ZigguratBiome : Microbiome
 					}
 
 					Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
+					if (Framing.GetTileSafely(origin).TileType == TileID.Sand)
+					{
+						r = new ZigguratRooms.SandyRoom(bound);
+					}
+					
 					r.SetOrigin(origin);
 
 					if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //If we don't care about rooms occasionally intersecting, remove this check
@@ -163,7 +225,7 @@ public class ZigguratBiome : Microbiome
 
 		foreach (var r in rooms)
 		{
-			if (r is BasicRoom b)
+			if (r is ZigguratRooms.BasicRoom b)
 				b.PostPlaceHallways();
 		}
 
