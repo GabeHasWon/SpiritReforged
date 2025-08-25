@@ -25,17 +25,13 @@ public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origi
 
 	/// <summary> Called after all possible hallways linking ziggurat rooms are placed.<para/>
 	/// Should be used to safely place furniture and check for consumed links in <see cref="GenRoom.Links"/>. </summary>
-	public virtual void PostPlaceHallways()
+	public virtual void PostPlaceHallways() => WorldMethods.GenerateSquared(static (i, j) =>
 	{
-		for (int x = Bounds.Left; x < Bounds.Right; x++)
-		{
-			for (int y = Bounds.Top; y < Bounds.Bottom; y++)
-			{
-				if (WorldGen.genRand.NextBool(20) && WorldGen.SolidTile(x, y - 1))
-					Placer.PlaceTile(x, y, TileID.Banners, WorldGen.genRand.Next(4, 8));
-			}
-		}
-	}
+		if (WorldGen.genRand.NextBool(25) && WorldGen.SolidTile(i, j - 1))
+			return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
+
+		return false;
+	}, out _, Bounds);
 
 	protected virtual void AddLinks()
 	{
@@ -49,7 +45,6 @@ public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origi
 
 public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 {
-	private Link _firstLink;
 	private int _exitSide;
 
 	protected override void Initialize(out Point size) => size = new(_bounds.Width / 2 + 1, _bounds.Height - 4);
@@ -59,6 +54,7 @@ public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(
 		const int scanDistance = 10;
 		int bottom = Bounds.Bottom - 2;
 
+		//Find a clear exit side
 		if (WorldGen.genRand.NextBool() && Clear(new(_bounds.Left, bottom), new Searches.Left(scanDistance)))
 			_exitSide = -1;
 		else if (Clear(new(_bounds.Right, bottom), new Searches.Right(scanDistance)))
@@ -73,20 +69,29 @@ public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(
 
 		//Center indent
 		int tailSquared = Bounds.Width / 6;
-		WorldUtils.Gen(new(Bounds.Center.X - tailSquared, Bounds.Bottom), new Shapes.Tail(tailSquared, new(0, tailSquared / 2 + 1)), new Actions.ClearTile());
+		WorldUtils.Gen(new(Bounds.Center.X - tailSquared - 1, Bounds.Bottom), new Shapes.Tail(tailSquared, new(0, tailSquared / 2 + 1)), new Actions.ClearTile());
 		WorldUtils.Gen(new(Bounds.Center.X + tailSquared, Bounds.Bottom), new Shapes.Tail(tailSquared, new(0, tailSquared / 2 + 1)), new Actions.ClearTile());
 		WorldUtils.Gen(new(Bounds.Center.X, Bounds.Bottom), new Shapes.Rectangle(new(-tailSquared, 0, tailSquared * 2, tailSquared / 2 + 1)), new Actions.ClearTile());
 
+		PlaceColumn(new(Bounds.Center.X - tailSquared - 1, Bounds.Bottom + 2));
+		PlaceColumn(new(Bounds.Center.X + tailSquared, Bounds.Bottom + 2));
+
 		static bool Clear(Point origin, GenSearch search) => WorldUtils.Find(origin, Searches.Chain(search, new Conditions.IsSolid().AreaOr(3, 3).Not()), out _);
+
+		static void PlaceColumn(Point origin)
+		{
+			while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidTile(origin))
+			{
+				WorldGen.PlaceTile(origin.X, origin.Y--, TileID.SandstoneColumn, true);
+			}
+		}
 	}
 
-	public override void PostPlaceHallways()
-	{
-	}
+	public override void PostPlaceHallways() { }
 
 	protected override void AddLinks()
 	{
-		Links.Add(_firstLink = new(new(Bounds.Center.X, Bounds.Bottom), Bottom));
+		Links.Add(new(new(Bounds.Center.X, Bounds.Bottom), Bottom));
 
 		if (_exitSide == 1)
 			Links.Add(new(new(Bounds.Left, Bounds.Bottom - 2), Left));
@@ -98,6 +103,39 @@ public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(
 public class TreasureRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 {
 	protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5 - 1, 20);
+
+	public override void PostPlaceHallways()
+	{
+		WorldMethods.GenerateSquared(static (i, j) =>
+		{
+			if (WorldGen.genRand.NextBool(10) && WorldGen.SolidTile(i, j + 1))
+			{
+				PlaceCoinPile(i, j);
+				return true;
+			}
+
+			return false;
+		}, out _, Bounds);
+
+		static void PlaceCoinPile(int i, int j)
+		{
+			int num4 = WorldGen.genRand.Next(1, 4);
+			int num5 = (WorldGen.genRand.Next() % 2 == 0) ? 4 : (-(WorldGen.genRand.Next(6, 10) >> 1));
+
+			for (int k = 0; k < num4; k++)
+			{
+				int num6 = WorldGen.genRand.Next(1, 3);
+				for (int l = 0; l < num6; l++)
+				{
+					int x = i + num5 - k;
+					int y = j - l;
+
+					if (!Main.tile[x, y].HasTile)
+						WorldGen.PlaceTile(x, y, TileID.GoldCoinPile, mute: true);
+				}
+			}
+		}
+	}
 }
 
 /*public class Connector(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
