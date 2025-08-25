@@ -2,7 +2,6 @@
 using MonoMod.Cil;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.PlayerCommon;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Aether.Items;
@@ -11,7 +10,7 @@ public class Ledger : InfoItem
 {
 	public override void Load()
 	{
-		AutoloadInfoDisplay();
+		base.Load();
 		IL_Main.MouseText_DrawItemTooltip += HackyForceShop;
 	}
 
@@ -19,15 +18,15 @@ public class Ledger : InfoItem
 	{
 		ILCursor c = new(il);
 
-		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<Main>("get_" + nameof(Main.npcShop))))
+		if (!c.TryGotoNext(MoveType.After, static x => x.MatchCall<Main>("get_" + nameof(Main.npcShop))))
 		{
 			SpiritReforgedMod.Instance.LogIL("Ledger Shop Workaround", "Method 'Main.get_npcShop' not found.");
 			return;
 		}
 
-		c.EmitDelegate((int npcShop) => // This is only used to trick the game into showing the price.
+		c.EmitDelegate(static (int npcShop) => // This is only used to trick the game into showing the price.
 		{
-			if (!Main.gameMenu && Main.LocalPlayer.HasInfoItem<Ledger>())
+			if (!Main.gameMenu && !GetDisplay<Ledger>().Hidden)
 				return 1;
 
 			return npcShop;
