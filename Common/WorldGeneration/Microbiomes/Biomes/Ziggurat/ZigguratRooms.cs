@@ -5,20 +5,17 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origin)
 {
-	protected Rectangle _bounds = bounds;
+	protected readonly Rectangle _bounds = bounds;
 
-	protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.Next([6, 8]), 14);
+	protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.Next([6, 8, 10]), 14);
 
 	public override void Create()
 	{
-		const int curveHeight = 4;
+		const int curveHeight = 3;
 		Rectangle rectangleBounds = new(Bounds.Left, Bounds.Top + curveHeight, Bounds.Width, Bounds.Height - curveHeight);
 
 		WorldUtils.Gen(new(rectangleBounds.Left, rectangleBounds.Top), new Shapes.Rectangle(rectangleBounds.Width, rectangleBounds.Height), new Actions.ClearTile());
-		WorldUtils.Gen(new(Origin.X, rectangleBounds.Top - 1), new Shapes.Mound((int)(rectangleBounds.Width * 0.75f), curveHeight), Actions.Chain(
-			new Modifiers.RectangleMask(-rectangleBounds.Width / 2, rectangleBounds.Width / 2, -curveHeight, curveHeight),
-			new Actions.ClearTile()
-		));
+		WorldUtils.Gen(new(rectangleBounds.X, rectangleBounds.Y - 1), new GenTypes.Curve(rectangleBounds.Width, curveHeight), new Actions.ClearTile());
 
 		AddLinks();
 	}

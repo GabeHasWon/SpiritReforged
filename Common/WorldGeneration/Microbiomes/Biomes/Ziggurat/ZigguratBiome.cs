@@ -8,9 +8,9 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 public class ZigguratBiome : Microbiome
 {
 	/// <summary> The maximum width of the biome. </summary>
-	public const int Width = 200;
+	public const int Width = 180;
 	/// <summary> The maximum height of the biome. </summary>
-	public const int Height = 100;
+	public const int Height = 90;
 
 	public const int HallwayWidth = 4;
 
@@ -21,7 +21,7 @@ public class ZigguratBiome : Microbiome
 	{
 		Rectangle area = new(point.X - Width / 2, point.Y - Height / 2, Width, Height);
 
-		CreateShape(area, 5, 0.3f, 1.5f, out var bounds);
+		CreateShape(area, 4, 0.25f, 1.3f, out var bounds);
 		TotalBounds = [.. bounds];
 
 		AddRooms(bounds, out var rooms);
@@ -120,10 +120,11 @@ public class ZigguratBiome : Microbiome
 			else
 			{
 				int skip = WorldGen.genRand.Next(i + 1);
+				int totalCount = i + 1;
 
-				for (int x = 0; x <= i; x++)
+				for (int x = 0; x <= totalCount; x++)
 				{
-					float progress = (float)x / i;
+					float progress = (float)x / totalCount;
 					var r = new BasicRoom(bound);
 
 					if (i == orderedBounds.Length - 1 && x == 0) //Final layer
@@ -176,8 +177,8 @@ public class ZigguratBiome : Microbiome
 					{
 						a.Links.Remove(start);
 
-						if (WorldGen.genRand.NextBool())
-							b.Links.Remove(end); //Allow the end link to branch out an additional time with a 50% chance
+						if (WorldGen.genRand.NextBool(4))
+							b.Links.Remove(end); //Allow the end link to branch out an additional time with a 75% chance
 
 						return true;
 					}
@@ -195,10 +196,13 @@ public class ZigguratBiome : Microbiome
 
 		for (int a = 0; a < 2; a++)
 		{
+			//A safe distance from the starting link
 			var entrance = new Point(start.X + startLink.Direction.X * HallwayWidth, start.Y + startLink.Direction.Y * HallwayWidth);
+			//A safe distance from the ending link
 			var exit = new Point(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
 
-			var down = (a == 1) ? new Point(entrance.X, end.Y) : new Point(entrance.X + (end.Y - start.Y) * startLink.Direction.X, end.Y); //Straight or diagonal down given enough space
+			bool sloped = a == 0;
+			var down = sloped ? new Point(entrance.X + (end.Y - start.Y) * startLink.Direction.X, end.Y) : new Point(entrance.X, end.Y); //Straight or diagonal down given enough space
 
 			if (!Intersecting(entrance, down, exit) && Contains(entrance) && Contains(down))
 			{
@@ -207,6 +211,12 @@ public class ZigguratBiome : Microbiome
 
 				BlockOut(down, exit, HallwayWidth);
 				BlockOut(exit, end, HallwayWidth);
+
+				if (!sloped) //Avoid placing platforms at sloped entrances
+				{
+					var shelf = (entrance.Y < down.Y) ? entrance : down;
+					WorldUtils.Gen(new(shelf.X - 2, shelf.Y + 2), new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
+				}
 
 				return true;
 			}
