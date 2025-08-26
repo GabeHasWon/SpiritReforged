@@ -83,10 +83,10 @@ internal class VexpowderBlueDust : FlarepowderDust
 	public override void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.PurpleCrystalShard, Projectile.velocity * 0.5f).noGravity = true;
 	public override void DoDeathEffects()
 	{
-		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Volume = 0.4f, PitchRange = (1f, 1.5f), MaxInstances = 5 }, Projectile.Center);
-		SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.2f, Pitch = 0.9f }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Volume = 0.3f, PitchRange = (1f, 1.5f), MaxInstances = 5 }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.08f, Pitch = 0.9f }, Projectile.Center);
 
-		SoundEngine.PlaySound(Impact with { Volume = 0.3f, Pitch = 0.9f }, Projectile.Center);
+		SoundEngine.PlaySound(Impact with { Volume = 0.15f, Pitch = 0.9f }, Projectile.Center);
 
 		float angle = Main.rand.NextFloat(MathHelper.Pi);
 
