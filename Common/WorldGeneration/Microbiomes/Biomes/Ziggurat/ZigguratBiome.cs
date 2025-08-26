@@ -1,4 +1,5 @@
-﻿using ReLogic.Utilities;
+﻿using Microsoft.CodeAnalysis;
+using ReLogic.Utilities;
 using SpiritReforged.Content.Desert.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
@@ -104,43 +105,38 @@ public class ZigguratBiome : Microbiome
 	/// <summary> Randomly adds large sandy spots starting from a select item in <paramref name="bounds"/>. </summary>
 	private static void Sandify(List<Rectangle> bounds, int count)
 	{
-		const int scanArea = 3;
+		const int scanRadius = 3;
 		int successes = 0;
 
 		for (int a = 0; a < 20; a++)
 		{
 			var b = bounds[WorldGen.genRand.Next(2, bounds.Count)];
-			var origin = new Vector2(WorldGen.genRand.Next([b.Left, b.Right]), WorldGen.genRand.Next([b.Top, b.Bottom]));
+			var origin = new Vector2(WorldGen.genRand.Next([b.Left, b.Right]), WorldGen.genRand.Next([b.Top, b.Bottom])).ToPoint();
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(new((int)origin.X - scanArea, (int)origin.Y - scanArea), new Shapes.Circle(scanArea), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
+			WorldUtils.Gen(new(origin.X - scanRadius, origin.Y - scanRadius), new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanArea * scanArea * 0.25f)
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.25f)
 				continue; //Check if origin is close to sand
 
 			int spotCount = WorldGen.genRand.Next(4, 8);
 			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
 
-			for (int y = 0; y < spotCount; y++)
-			{
-				var location = (origin + WorldGen.genRand.NextVector2Unit() * WorldGen.genRand.NextFloat(5, 26)).ToPoint();
+			WorldUtils.Gen(origin, new GenTypes.Splatter(15, WorldGen.genRand.Next(4, 9), 34), Actions.Chain(
+				new Modifiers.Blotches(),
+				new Modifiers.OnlyTiles(brick),
+				new Actions.Custom(static (i, j, args) =>
+				{
+					ushort type = WorldGen.TileIsExposedToAir(i, j) ? TileID.Sandstone : TileID.Sand;
+					Main.tile[i, j].ResetToType(type);
 
-				WorldUtils.Gen(location, new Shapes.Circle(WorldGen.genRand.Next(5, 16)), Actions.Chain(
-					new Modifiers.Blotches(),
-					new Modifiers.OnlyTiles(brick),
-					new Actions.Custom(static (i, j, args) =>
-					{
-						ushort type = WorldGen.TileIsExposedToAir(i, j) ? TileID.Sandstone : TileID.Sand;
-						Main.tile[i, j].ResetToType(type);
+					if (type == TileID.Sandstone && WorldGen.genRand.NextBool(12))
+						WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
 
-						if (type == TileID.Sandstone && WorldGen.genRand.NextBool(12))
-							WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
-
-						return true;
-					}),
-					new Actions.PlaceWall(WallID.HardenedSand)
-				));
-			}
+					return true;
+				}),
+				new Actions.PlaceWall(WallID.HardenedSand)
+			));
 
 			if (++successes >= count)
 				break;
@@ -277,7 +273,7 @@ public class ZigguratBiome : Microbiome
 				if (!sloped) //Avoid placing platforms at sloped entrances
 				{
 					var shelf = (entrance.Y < down.Y) ? entrance : down;
-					WorldUtils.Gen(new(shelf.X - 2, shelf.Y + 2), new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
+					WorldUtils.Gen(new(shelf.X - 2, shelf.Y + 3), new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
 				}
 
 				return true;

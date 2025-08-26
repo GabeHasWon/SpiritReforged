@@ -9,16 +9,33 @@ internal class ZigguratMicropass : Micropass
 {
 	public override string WorldGenName => "Ziggurat";
 
-	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Full Desert"); //"Water Chests" "Full Desert"
+	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids"); //"Water Chests" "Full Desert"
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		int x = WorldGen.genRand.Next(GenVars.UndergroundDesertLocation.Left, GenVars.UndergroundDesertLocation.Right);
-		int y = GenVars.UndergroundDesertLocation.Y - 40;
+		const int scanRadius = 5;
+		const int range = ZigguratBiome.Width / 2;
 
-		if (!WorldUtils.Find(new Point(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
-			return; // ?? big hole where the desert is?
+		Rectangle loc = GenVars.UndergroundDesertLocation;
+		for (int a = 0; a < 100; a++)
+		{
+			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 10));
+			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 10), loc.Right);
 
-		(x, y) = (foundPos.X, foundPos.Y);
-		Microbiome.Create<ZigguratBiome>(new(x, y + ZigguratBiome.Height / 4));
+			int x = WorldGen.genRand.Next([rangeLeft, rangeRight]);
+			int y = loc.Y - 40;
+
+			if (!WorldUtils.Find(new(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
+				return; // ?? big hole where the desert is?
+
+			Dictionary<ushort, int> typeToCount = [];
+			WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
+
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f)
+				continue; //Check if origin is close to sand
+
+			(x, y) = (foundPos.X, foundPos.Y);
+			Microbiome.Create<ZigguratBiome>(new(x, y + (int)(ZigguratBiome.Height * 0.4f)));
+			break;
+		}
 	}
 }
