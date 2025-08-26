@@ -29,8 +29,14 @@ public class ZigguratBiome : Microbiome
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
-		Sandify(bounds, 2);
 		CreateHallways(rooms);
+		Sandify(bounds, 2);
+
+		foreach (var r in rooms)
+		{
+			if (r is ZigguratRooms.BasicRoom b)
+				b.FinalPass();
+		}
 	}
 
 	/// <summary> </summary>
@@ -156,56 +162,59 @@ public class ZigguratBiome : Microbiome
 			var bound = orderedBounds[i];
 			Rectangle innerBounds = new(bound.X + paddedWidth, bound.Y + paddedHeight, bound.Width - paddedWidth * 2, bound.Height - paddedHeight * 2);
 
-			if (i == 0)
-			{
-				var r = new ZigguratRooms.EntranceRoom(bound);
-				r.SetOrigin(new(bound.Center.X, bound.Bottom - r.Bounds.Height / 2 - 2)).Create();
+			int totalCount = i + 1;
+			int numSkips = 0;
 
-				rooms.Add(r);
-			}
-			else
+			for (int x = 0; x <= totalCount; x++)
 			{
-				int skip = WorldGen.genRand.Next(i + 1);
-				int totalCount = i + 1;
+				float progress = (float)x / totalCount;
+				ZigguratRooms.BasicRoom r = SelectRoom(i + 1, bound, ref progress, numSkips);
 
-				for (int x = 0; x <= totalCount; x++)
+				if (r is null)
 				{
-					float progress = (float)x / totalCount;
-					var r = new ZigguratRooms.BasicRoom(bound);
+					numSkips++;
+					continue; //Skip
+				}
 
-					if (i == orderedBounds.Length - 1) //Final layer
-					{
-						if (x == 0)
-						{
-							r = new ZigguratRooms.TreasureRoom(bound);
-							progress = WorldGen.genRand.NextFloat();
-						}
-						else if (WorldGen.genRand.NextBool())
-						{
-							r = new ZigguratRooms.SandyRoom(bound);
-						}
-					}
-					else if (x == skip)
-					{
-						continue;
-					}
+				Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
+				r.SetOrigin(origin);
 
-					Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
-					if (Framing.GetTileSafely(origin).TileType == TileID.Sand)
-					{
-						r = new ZigguratRooms.SandyRoom(bound);
-					}
-					
-					r.SetOrigin(origin);
-
-					if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //If we don't care about rooms occasionally intersecting, remove this check
-					{
-						r.Create();
-						rooms.Add(r);
-					}
+				if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //If we don't care about rooms occasionally intersecting, remove this check
+				{
+					r.Create();
+					rooms.Add(r);
 				}
 			}
 		}
+	}
+
+	/// <summary> Chooses the type of room to generate. </summary>
+	/// <param name="layer"> The layer this room is being selected for, indexed by one. </param>
+	/// <param name="bound"> The bounds of the layer to generate within. </param>
+	/// <param name="progress"> Indicates the room number relative to the total that generate on a particular layer. This value influences the final vertical coordinate. </param>
+	/// <param name="skips"> The number of skips that have happened in this layer. Returning null here causes a skip. </param>
+	private static ZigguratRooms.BasicRoom SelectRoom(int layer, Rectangle bound, ref float progress, int skips)
+	{
+		int numLayers = TotalBounds.Count;
+		var r = new ZigguratRooms.BasicRoom(bound);
+
+		if (layer == numLayers && progress == 0) //Final layer
+		{
+			r = new ZigguratRooms.TreasureRoom(bound);
+			progress = WorldGen.genRand.NextFloat();
+		}
+		else if (layer == 2 && progress == 0 && WorldGen.genRand.NextBool(6))
+		{
+			r = new ZigguratRooms.DigsiteRoom(bound);
+		}
+		else if (layer == 1)
+		{
+			r = new ZigguratRooms.EntranceRoom(bound);
+		}
+		else if (skips == 0 && WorldGen.genRand.NextBool(4))
+			return null; //Randomly cause a skip
+
+		return r;
 	}
 
 	private static void CreateHallways(IEnumerable<GenRoom> rooms)
@@ -217,12 +226,6 @@ public class ZigguratBiome : Microbiome
 				if (start != end && TryLink(start, end))
 					break;
 			}
-		}
-
-		foreach (var r in rooms)
-		{
-			if (r is ZigguratRooms.BasicRoom b)
-				b.PostPlaceHallways();
 		}
 
 		static bool TryLink(GenRoom a, GenRoom b)

@@ -22,9 +22,9 @@ public static class ZigguratRooms
 			AddLinks();
 		}
 
-		/// <summary> Called after all possible hallways linking ziggurat rooms are placed.<para/>
+		/// <summary> Called after all possible hallways linking ziggurat rooms are placed and the structure is 'sandified'.<para/>
 		/// Should be used to safely place furniture and check for consumed links in <see cref="GenRoom.Links"/>. </summary>
-		public virtual void PostPlaceHallways() => WorldMethods.GenerateSquared(static (i, j) =>
+		public virtual void FinalPass() => WorldMethods.GenerateSquared(static (i, j) =>
 		{
 			if (WorldGen.genRand.NextBool(25) && WorldGen.SolidTile(i, j - 1))
 				return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
@@ -42,11 +42,11 @@ public static class ZigguratRooms
 		}
 	}
 
-	public class SandyRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	/*public class SandyRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 	{
-		public override void PostPlaceHallways()
+		public override void FinalPass()
 		{
-			base.PostPlaceHallways();
+			base.FinalPass();
 
 			WorldMethods.Generate(static (i, j) =>
 			{
@@ -62,6 +62,33 @@ public static class ZigguratRooms
 				return false;
 			}, 9, out _, Bounds, 10);
 		}
+	}*/
+
+	public class DigsiteRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	{
+		public override void FinalPass()
+		{
+			base.FinalPass();
+
+			WorldMethods.GenerateSquared((i, j) =>
+			{
+				var tile = Main.tile[i, j];
+
+				if ((i == Bounds.Left + 3 || i == Bounds.Right - 4) && !tile.HasTile)
+					WorldGen.PlaceTile(i, j, TileID.WoodenBeam, true);
+
+				if (i == Bounds.Left + 4 && !tile.HasTile)
+					WorldGen.PlaceTile(i, j, TileID.Rope, true);
+
+				if (j == Bounds.Top + 5)
+					WorldGen.PlaceTile(i, j, TileID.Platforms, true);
+
+				if (WorldGen.SolidTile(i - 1, j + 1, true) && WorldGen.genRand.NextBool(15))
+					WorldGen.PlaceTile(i - 1, j, TileID.Campfire, true);
+
+				return false;
+			}, out _, Bounds);
+		}
 	}
 
 	public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
@@ -72,14 +99,9 @@ public static class ZigguratRooms
 
 		public override void Create()
 		{
-			const int scanDistance = 10;
 			int bottom = Bounds.Bottom - 2;
 
-			//Find a clear exit side
-			if (WorldGen.genRand.NextBool() && Clear(new(_bounds.Left, bottom), new Searches.Left(scanDistance)))
-				_exitSide = -1;
-			else if (Clear(new(_bounds.Right, bottom), new Searches.Right(scanDistance)))
-				_exitSide = 1;
+			_exitSide = WorldGen.genRand.Next([-1, 1]);
 
 			base.Create();
 
@@ -97,8 +119,6 @@ public static class ZigguratRooms
 			PlaceColumn(new(Bounds.Center.X - tailSquared - 1, Bounds.Bottom + 1));
 			PlaceColumn(new(Bounds.Center.X + tailSquared, Bounds.Bottom + 1));
 
-			static bool Clear(Point origin, GenSearch search) => WorldUtils.Find(origin, Searches.Chain(search, new Conditions.IsSolid().AreaOr(3, 3).Not()), out _);
-
 			static void PlaceColumn(Point origin)
 			{
 				while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidTile(origin))
@@ -106,7 +126,7 @@ public static class ZigguratRooms
 			}
 		}
 
-		public override void PostPlaceHallways() { }
+		public override void FinalPass() { }
 
 		protected override void AddLinks()
 		{
@@ -123,7 +143,7 @@ public static class ZigguratRooms
 	{
 		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5 - 1, 20);
 
-		public override void PostPlaceHallways()
+		public override void FinalPass()
 		{
 			WorldMethods.GenerateSquared(static (i, j) =>
 			{

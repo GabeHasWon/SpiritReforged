@@ -28,10 +28,10 @@ internal class ZigguratMicropass : Micropass
 				return; // ?? big hole where the desert is?
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
+			WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand, TileID.Sandstone).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f)
-				continue; //Check if origin is close to sand
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.Sandstone] > scanRadius * scanRadius * 0.1f)
+				continue;
 
 			(x, y) = (foundPos.X, foundPos.Y);
 			Microbiome.Create<ZigguratBiome>(new(x, y + (int)(ZigguratBiome.Height * 0.4f)));

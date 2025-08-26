@@ -1,7 +1,4 @@
-﻿using ReLogic.Utilities;
-using SpiritReforged.Content.Desert.Tiles;
-using System;
-using Terraria.WorldBuilding;
+﻿using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration;
 
@@ -84,7 +81,7 @@ public static class GenTypes
 				float strength = _random.NextFloat();
 				int finalRadius = (int)(_radius * strength);
 
-				if (finalRadius == 0)
+				if (finalRadius < 2)
 					continue;
 
 				var location = origin + (_random.NextVector2Unit() * (_distance * (1f - strength))).ToPoint();
