@@ -15,6 +15,12 @@ public class Bomb : BombProjectile, ILargeExplosive
 	public const int CommonSize = 32;
 	public static readonly PolynomialEase EffectEase = new((x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 
+	public static readonly SoundStyle Explosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Shrapnel")
+	{
+		Volume = 0.7f,
+		PitchVariance = 0.1f
+	};
+
 	public virtual int OriginalType => ProjectileID.Bomb;
 	public override LocalizedText DisplayName => Language.GetText("ProjectileName.Bomb");
 
@@ -56,8 +62,7 @@ public class Bomb : BombProjectile, ILargeExplosive
 		if (Main.dedServ)
 			return;
 
-		SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
-		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+		SoundEngine.PlaySound(Explosion, Projectile.Center);
 		var ease = EffectEase;
 		var stretch = Vector2.One;
 
