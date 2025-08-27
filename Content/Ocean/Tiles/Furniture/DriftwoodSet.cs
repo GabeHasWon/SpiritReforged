@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -11,15 +12,14 @@ public class DriftwoodSet : FurnitureSet
 	public override string Name => "Driftwood";
 	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), Color.Orange.ToVector3() / 255f, DustID.t_BorealWood, true);
 	public override bool Autoload(FurnitureTile tile) => tile is not SofaTile and not ChestTile;
-}
 
-public class DriftwoodWorkBench : WorkBenchTile
-{
-	public override IFurnitureData Info => new BasicInfo(this.AutoModItem(), AutoContent.ItemType<Driftwood>());
-	public override void StaticDefaults()
+	public override void OnPostSetupContent()
 	{
-		base.StaticDefaults();
-		SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", this.AutoItemType());
+		var mod = SpiritReforgedMod.Instance;
+		int workbenchType = mod.Find<ModItem>("DriftwoodWorkBenchItem").Type;
+
+		SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", workbenchType);
+		SpiritSets.Workbench[workbenchType] = true;
 	}
 }
 

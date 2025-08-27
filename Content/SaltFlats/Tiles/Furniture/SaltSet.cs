@@ -1,14 +1,22 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
 
 public class SaltSet : FurnitureSet
 {
 	public override string Name => "Salt";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.5f, 0.5f, 0.5f), DustID.Pearlsand);
+	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f), DustID.Pearlsand);
+
+	public override void OnPostSetupContent()
+	{
+		var mod = SpiritReforgedMod.Instance;
+		SpiritSets.Workbench[mod.Find<ModItem>("SaltWorkBenchItem").Type] = true;
+	}
 }
 
 public class SaltClock : ClockTile
@@ -30,4 +38,10 @@ public class SaltClock : ClockTile
 			frame = ++frame % 5;
 		}
 	}
+}
+
+public class SaltChandelier : ChandelierTile
+{
+	public override IFurnitureData Info => new LightedInfo(this.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f));
+	public override float Physics(Point16 topLeft) => 0;
 }

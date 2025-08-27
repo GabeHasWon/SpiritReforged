@@ -26,12 +26,14 @@ public abstract class FurnitureSet : ILoadable
 			}
 		}
 
-		Load();
+		SpiritReforgedMod.OnSetupContent += OnPostSetupContent;
+		OnLoad();
 	}
 
 	/// <returns> Whether this instance can be added to mod content. </returns>
 	public virtual bool Autoload(FurnitureTile tile) => true;
-	public virtual void Load() { }
+	public virtual void OnPostSetupContent() { }
+	public virtual void OnLoad() { }
 	public void Unload() { }
 
 	#region types

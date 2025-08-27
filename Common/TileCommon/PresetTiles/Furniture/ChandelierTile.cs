@@ -66,7 +66,18 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	public virtual float Physics(Point16 topLeft)
+	{
+		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.Instance.SunflowerWindCounter);
+
+		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
+			rotation = 0f;
+
+		return rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 60, 1.26f, 3, true);
+	}
+
+	public virtual void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
 			return;
@@ -92,14 +103,12 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 				float shakeY = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
 				var shakeOffset = new Vector2(shakeX, shakeY);
 
-				spriteBatch.Draw(glowTexture, position + shakeOffset, source, 
-					new Color(100, 100, 100, 0), rotation, origin, 1, SpriteEffects.None, 0f);
+				spriteBatch.Draw(glowTexture, position + shakeOffset, source, new Color(100, 100, 100, 0), rotation, origin, 1, SpriteEffects.None, 0f);
 			}
 		}
 		else
 		{
-			spriteBatch.Draw(glowTexture, position, source, Color.White, 
-				rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(glowTexture, position, source, Color.White, rotation, origin, 1, SpriteEffects.None, 0);
 		}
 	}
 }

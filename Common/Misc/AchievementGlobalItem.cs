@@ -1,15 +1,10 @@
-﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Ocean.Tiles.Furniture;
-using SpiritReforged.Content.Savanna.Tiles;
-using SpiritReforged.Content.Savanna.Tiles.Furniture;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Terraria.Achievements;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Misc;
 
-internal class AchievementModifications : GlobalItem
+internal sealed class AchievementModifications : GlobalItem
 {
 	// God forbid this game is normal. Because of how achievements are programmed, namely a lot of delegates, and how mod loading works,
 	// I didn't want to directly modify the achivements (since they're saved as json and/or into achievements.dat at some point) which
@@ -21,8 +16,7 @@ internal class AchievementModifications : GlobalItem
 
 	public override bool OnPickup(Item item, Player player)
 	{
-		// Add the TIMBER achievement when picking up Drywood
-		if (item.type == AutoContent.ItemType<Drywood>())
+		if (SpiritSets.Timber[item.type])
 			CompleteAchievement(Main.Achievements.GetAchievement("TIMBER"));
 
 		return true;
@@ -30,9 +24,8 @@ internal class AchievementModifications : GlobalItem
 
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
-		// Add the BENCHED achievement to crafting any Reforged workbench
-		//if (context is RecipeItemCreationContext && (item.type == TileToItem<DriftwoodWorkBench>() || item.type == TileToItem<DrywoodWorkBench>()))
-		//	CompleteAchievement(Main.Achievements.GetAchievement("BENCHED")); //DEBUG
+		if (context is RecipeItemCreationContext && SpiritSets.Workbench[item.type])
+			CompleteAchievement(Main.Achievements.GetAchievement("BENCHED"));
 	}
 
 	private static void CompleteAchievement(Achievement achievement)
@@ -45,8 +38,6 @@ internal class AchievementModifications : GlobalItem
 
 		CallComplete(achievement, null);
 	}
-
-	private static int TileToItem<T>() where T : ModTile, IAutoloadTileItem => ModContent.GetInstance<T>().AutoItem().type;
 
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_completedCount")]
 	static extern ref int GetCount(Achievement achievement);
