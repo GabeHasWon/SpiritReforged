@@ -11,12 +11,8 @@ public abstract class SofaTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 5)
-			.AddIngredient(ItemID.Silk, 2)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 5).AddIngredient(ItemID.Silk, 2).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -62,7 +58,7 @@ public abstract class SofaTile : FurnitureTile
 		if (WithinRange(i, j, player))
 		{
 			player.noThrow = 2;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 			player.cursorItemIconEnabled = true;
 		}
 	}

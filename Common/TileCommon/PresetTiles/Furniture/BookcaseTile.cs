@@ -8,12 +8,8 @@ public abstract class BookcaseTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 20)
-			.AddIngredient(ItemID.Book, 10)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 20).AddIngredient(ItemID.Book, 10).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -23,7 +19,7 @@ public abstract class BookcaseTile : FurnitureTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-		TileObjectData.newTile.Origin = new Point16(2, 3);
+		TileObjectData.newTile.Origin = new Point16(1, 3);
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 18];
 		TileObjectData.addTile(Type);
 

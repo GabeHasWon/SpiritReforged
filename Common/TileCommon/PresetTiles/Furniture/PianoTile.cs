@@ -8,13 +8,8 @@ public abstract class PianoTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(ItemID.Bone, 4)
-			.AddIngredient(CoreMaterial, 15)
-			.AddIngredient(ItemID.Book)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(ItemID.Bone, 4).AddIngredient(Info.Material, 15).AddIngredient(ItemID.Book).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()

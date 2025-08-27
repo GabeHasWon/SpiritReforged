@@ -18,12 +18,8 @@ public abstract class BedTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 15)
-			.AddIngredient(ItemID.Silk, 5)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 15).AddIngredient(ItemID.Silk, 5).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -111,7 +107,7 @@ public abstract class BedTile : FurnitureTile
 		{
 			player.noThrow = 2;
 			player.cursorItemIconEnabled = true;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 		}
 		else if (player.IsWithinSnappngRangeToTile(i, j, PlayerSleepingHelper.BedSleepingMaxDistance))
 		{

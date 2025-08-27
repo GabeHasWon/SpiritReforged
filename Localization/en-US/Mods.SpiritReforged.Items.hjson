@@ -2178,3 +2178,98 @@ StoneStupasItem: {
 	DisplayName: Stone Stupa
 	Tooltip: ""
 }
+
+SaltChestItem: {
+	DisplayName: Salt Chest
+	Tooltip: ""
+}
+
+SaltDresserItem: {
+	DisplayName: Salt Dresser
+	Tooltip: ""
+}
+
+SaltBathtubItem: {
+	DisplayName: Salt Bathtub
+	Tooltip: ""
+}
+
+SaltBedItem: {
+	DisplayName: Salt Bed
+	Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	DisplayName: Salt Bookcase
+	Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	DisplayName: Salt Candelabra
+	Tooltip: ""
+}
+
+SaltChandelierItem: {
+	DisplayName: Salt Chandelier
+	Tooltip: ""
+}
+
+SaltClockItem: {
+	DisplayName: Salt Clock
+	Tooltip: ""
+}
+
+SaltDoorItem: {
+	DisplayName: Salt Door
+	Tooltip: ""
+}
+
+SaltLampItem: {
+	DisplayName: Salt Lamp
+	Tooltip: ""
+}
+
+SaltLanternItem: {
+	DisplayName: Salt Lantern
+	Tooltip: ""
+}
+
+SaltPianoItem: {
+	DisplayName: Salt Piano
+	Tooltip: ""
+}
+
+SaltSinkItem: {
+	DisplayName: Salt Sink
+	Tooltip: ""
+}
+
+SaltSofaItem: {
+	DisplayName: Salt Sofa
+	Tooltip: ""
+}
+
+SaltTableItem: {
+	DisplayName: Salt Table
+	Tooltip: ""
+}
+
+SaltToiletItem: {
+	DisplayName: Salt Toilet
+	Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	DisplayName: Salt Work Bench
+	Tooltip: ""
+}
+
+SaltCandleItem: {
+	DisplayName: Salt Candle
+	Tooltip: ""
+}
+
+SaltChairItem: {
+	DisplayName: Salt Chair
+	Tooltip: ""
+}

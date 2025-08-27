@@ -10,15 +10,12 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 6)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 6).AddTile(TileID.WorkBenches).Register();
 	}
 
 	/// <summary> Functions like <see cref="ModType.Load"/> and handles open door autoloading. </summary>
-	public override void Load() => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, ModItem.Type));
+	public override void Load() => SpiritReforgedMod.OnLoad += () => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, Info.Item.Type));
 
 	public override void StaticDefaults()
 	{
@@ -68,7 +65,7 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = ModItem.Type;
+		player.cursorItemIconID = Info.Item.Type;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

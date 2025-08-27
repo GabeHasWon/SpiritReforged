@@ -31,8 +31,8 @@ internal class AchievementModifications : GlobalItem
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
 		// Add the BENCHED achievement to crafting any Reforged workbench
-		if (context is RecipeItemCreationContext && (item.type == TileToItem<DriftwoodWorkBench>() || item.type == TileToItem<DrywoodWorkBench>()))
-			CompleteAchievement(Main.Achievements.GetAchievement("BENCHED"));
+		//if (context is RecipeItemCreationContext && (item.type == TileToItem<DriftwoodWorkBench>() || item.type == TileToItem<DrywoodWorkBench>()))
+		//	CompleteAchievement(Main.Achievements.GetAchievement("BENCHED")); //DEBUG
 	}
 
 	private static void CompleteAchievement(Achievement achievement)

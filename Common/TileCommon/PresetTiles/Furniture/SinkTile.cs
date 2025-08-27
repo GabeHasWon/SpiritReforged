@@ -8,12 +8,8 @@ public abstract class SinkTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 6)
-			.AddIngredient(ItemID.WaterBucket)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 6).AddIngredient(ItemID.WaterBucket).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
