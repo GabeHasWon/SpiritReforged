@@ -32,7 +32,7 @@ public abstract class BathtubTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Bathtub"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Bathtub"));
 		AdjTiles = [TileID.Bathtubs];
 		DustType = -1;
 	}

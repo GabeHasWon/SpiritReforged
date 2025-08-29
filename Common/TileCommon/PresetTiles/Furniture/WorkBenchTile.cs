@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
@@ -29,8 +30,10 @@ public abstract class WorkBenchTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.WorkBench"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.WorkBench"));
 		AdjTiles = [TileID.WorkBenches];
 		DustType = -1;
+
+		AchievementModifications.ConfirmWorkBench((short)Info.Item.Type);
 	}
 }

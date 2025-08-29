@@ -25,7 +25,7 @@ public abstract class CandleTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Candle"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Candle"));
 		AdjTiles = [TileID.Candles];
 		DustType = -1;
 	}

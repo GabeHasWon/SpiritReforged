@@ -41,7 +41,7 @@ public abstract class DresserTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), MapEntry);
+		AddMapEntry(CommonColor, MapEntry);
 		AdjTiles = [TileID.Dressers];
 		DustType = -1;
 	}

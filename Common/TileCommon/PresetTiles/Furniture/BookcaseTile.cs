@@ -24,7 +24,7 @@ public abstract class BookcaseTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Bookcase"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Bookcase"));
 		AdjTiles = [TileID.Bookcases];
 		DustType = -1;
 	}

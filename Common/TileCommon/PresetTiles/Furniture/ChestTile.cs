@@ -45,7 +45,7 @@ public abstract class ChestTile : FurnitureTile
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), MapEntry);
+		AddMapEntry(CommonColor, MapEntry);
 		AdjTiles = [TileID.Containers];
 		DustType = (Info is BasicInfo i) ? i.DustType : -1;
 	}

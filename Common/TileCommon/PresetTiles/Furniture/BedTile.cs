@@ -47,7 +47,7 @@ public abstract class BedTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Bed"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Bed"));
 		AdjTiles = [TileID.Beds];
 		DustType = -1;
 	}

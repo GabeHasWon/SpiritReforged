@@ -53,7 +53,7 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Door"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}
@@ -171,7 +171,7 @@ public sealed class AutoloadedDoorOpen(string name, string texture, int itemDrop
 
 		RegisterItemDrop(itemDrop); //Prevents inconsistent item drops based on style
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.OpenDoor];
 		DustType = -1;
 	}

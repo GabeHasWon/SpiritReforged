@@ -23,7 +23,7 @@ public abstract class SinkTile : FurnitureTile
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Sink"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Sink"));
 		AdjTiles = [TileID.Sinks];
 		DustType = -1;
 	}

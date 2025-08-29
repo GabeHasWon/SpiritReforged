@@ -14,6 +14,8 @@ public abstract class FurnitureTile : ModTile, IAutoloadTileItem
 
 	public virtual IFurnitureData Info => new BasicInfo(this.AutoModItem(), ItemID.None);
 
+	public static readonly Color CommonColor = new(190, 140, 110);
+
 	public virtual void StaticItemDefaults(ModItem item) { }
 	public virtual void SetItemDefaults(ModItem item) { }
 	public virtual void AddItemRecipes(ModItem item) { }

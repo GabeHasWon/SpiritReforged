@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: 干木沙发
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: 干木梳妆台
 	Tooltip: ""

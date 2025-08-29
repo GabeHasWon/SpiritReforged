@@ -30,7 +30,7 @@ public abstract class LanternTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Lantern"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Lantern"));
 		AdjTiles = [TileID.HangingLanterns];
 		DustType = -1;
 	}

@@ -6,6 +6,8 @@ using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.TileCommon;
 
+/// <summary> Autoloads a complete array of furniture tiles based on <see cref="GetInfo"/>.<para/>
+/// <see cref="Autoload"/> can be used to selectively disable items. Items with missing textures or conflicting internal names are automatically omitted. </summary>
 public abstract class FurnitureSet : ILoadable
 {
 	public abstract string Name { get; }
@@ -31,7 +33,7 @@ public abstract class FurnitureSet : ILoadable
 	}
 
 	/// <returns> Whether this instance can be added to mod content. </returns>
-	public virtual bool Autoload(FurnitureTile tile) => true;
+	public virtual bool Autoload(FurnitureTile tile) => ModContent.RequestIfExists<Texture2D>(DrawHelpers.RequestLocal(GetType(), tile.Name), out _);
 	public virtual void OnPostSetupContent() { }
 	public virtual void OnLoad() { }
 	public void Unload() { }
@@ -133,6 +135,18 @@ public abstract class FurnitureSet : ILoadable
 		public override IFurnitureData Info => _set.GetInfo(this);
 	}
 
+	public sealed class AutoBarrelTile(FurnitureSet set) : BarrelTile
+	{
+		public const string Suffix = "Barrel";
+
+		private readonly FurnitureSet _set = set;
+		private readonly string _name = set.Name + Suffix;
+
+		public override string Name => _name;
+		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
+		public override IFurnitureData Info => _set.GetInfo(this);
+	}
+
 	public sealed class AutoClockTile(FurnitureSet set) : ClockTile
 	{
 		public const string Suffix = "Clock";
@@ -220,6 +234,18 @@ public abstract class FurnitureSet : ILoadable
 	public sealed class AutoSofaTile(FurnitureSet set) : SofaTile
 	{
 		public const string Suffix = "Sofa";
+
+		private readonly FurnitureSet _set = set;
+		private readonly string _name = set.Name + Suffix;
+
+		public override string Name => _name;
+		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
+		public override IFurnitureData Info => _set.GetInfo(this);
+	}
+
+	public sealed class AutoBenchTile(FurnitureSet set) : BenchTile
+	{
+		public const string Suffix = "Bench";
 
 		private readonly FurnitureSet _set = set;
 		private readonly string _name = set.Name + Suffix;

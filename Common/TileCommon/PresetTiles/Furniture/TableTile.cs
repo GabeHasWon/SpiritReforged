@@ -29,7 +29,7 @@ public abstract class TableTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Table"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Table"));
 		AdjTiles = [TileID.Tables];
 		DustType = -1;
 	}

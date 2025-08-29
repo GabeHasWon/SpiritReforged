@@ -32,7 +32,7 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Chandelier"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Chandelier"));
 		AdjTiles = [TileID.Chandeliers];
 		DustType = -1;
 	}

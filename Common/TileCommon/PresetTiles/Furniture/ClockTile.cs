@@ -28,7 +28,7 @@ public abstract class ClockTile : FurnitureTile
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 18];
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.GrandfatherClock"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.GrandfatherClock"));
 		AdjTiles = [TileID.GrandfatherClocks];
 		DustType = -1;
 	}

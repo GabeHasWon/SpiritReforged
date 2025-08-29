@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: Sofá de Madeira Seca
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: Cômoda de Madeira Seca
 	Tooltip: ""

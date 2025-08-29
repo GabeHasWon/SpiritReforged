@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
@@ -10,17 +9,11 @@ public class DrywoodSet : FurnitureSet
 {
 	public override string Name => "Drywood";
 	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<Drywood>(), Color.Orange.ToVector3() / 255f, DustID.t_PearlWood);
-
-	public override void OnPostSetupContent()
-	{
-		var mod = SpiritReforgedMod.Instance;
-		SpiritSets.Workbench[mod.Find<ModItem>("DrywoodWorkBenchItem").Type] = true;
-	}
 }
 
 public class DrywoodChair : ChairTile
 {
-	public override IFurnitureData Info => new BasicInfo(this.AutoModItem(), AutoContent.ItemType<Drywood>());
+	public override IFurnitureData Info => ModContent.GetInstance<DrywoodSet>().GetInfo(this);
 	public override void StaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;

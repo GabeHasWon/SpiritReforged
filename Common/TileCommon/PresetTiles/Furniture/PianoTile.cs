@@ -24,7 +24,7 @@ public abstract class PianoTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Piano"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Piano"));
 		AdjTiles = [TileID.Pianos];
 		DustType = -1;
 	}

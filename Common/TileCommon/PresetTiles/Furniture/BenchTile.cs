@@ -3,13 +3,13 @@ using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class SofaTile : FurnitureTile
+public abstract class BenchTile : FurnitureTile
 {
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 60);
 	public override void AddItemRecipes(ModItem item)
 	{
 		if (Info.Material != ItemID.None)
-			item.CreateRecipe().AddIngredient(Info.Material, 5).AddIngredient(ItemID.Silk, 2).AddTile(TileID.Sawmill).Register();
+			item.CreateRecipe().AddIngredient(Info.Material, 8).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -30,7 +30,7 @@ public abstract class SofaTile : FurnitureTile
 		TileID.Sets.HasOutlines[Type] = true;
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(CommonColor, Language.GetText("ItemName.Sofa"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Bench"));
 		AdjTiles = [TileID.Benches];
 		DustType = -1;
 	}

@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -11,18 +10,12 @@ public class SaltSet : FurnitureSet
 {
 	public override string Name => "Salt";
 	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f), DustID.Pearlsand);
-
-	public override void OnPostSetupContent()
-	{
-		var mod = SpiritReforgedMod.Instance;
-		SpiritSets.Workbench[mod.Find<ModItem>("SaltWorkBenchItem").Type] = true;
-	}
 }
 
 public class SaltClock : ClockTile
 {
 	private const int FrameHeight = 90;
-	public override IFurnitureData Info => new BasicInfo(this.AutoModItem(), AutoContent.ItemType<SaltBlockDull>());
+	public override IFurnitureData Info => ModContent.GetInstance<SaltSet>().GetInfo(this);
 
 	public override void StaticDefaults()
 	{
@@ -42,6 +35,6 @@ public class SaltClock : ClockTile
 
 public class SaltChandelier : ChandelierTile
 {
-	public override IFurnitureData Info => new LightedInfo(this.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f));
+	public override IFurnitureData Info => ModContent.GetInstance<SaltSet>().GetInfo(this);
 	public override float Physics(Point16 topLeft) => 0;
 }
