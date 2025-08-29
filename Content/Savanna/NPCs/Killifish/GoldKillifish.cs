@@ -35,6 +35,5 @@ public class GoldKillifish : Killifish, IGoldCritter
 		}
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<RawFish>(2);
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.Water ? (spawnInfo.PlayerInTown ? 0.01f : 0.0025f) : 0f;
 }
