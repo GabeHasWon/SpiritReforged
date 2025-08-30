@@ -43,15 +43,18 @@ public class Bomb : BombProjectile, ILargeExplosive
 		base.AI();
 
 		if (!DealingDamage)
-		{
-			float oldScale = Projectile.scale; //Resize logic
-			Projectile.scale = Math.Min(Projectile.scale + .1f, 1);
+			Rescale(Math.Min(Projectile.scale + 0.1f, 1)); //Resize logic
+	}
 
-			if (Projectile.scale != oldScale)
-			{
-				int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
-				Projectile.Resize(size, size);
-			}
+	public void Rescale(float value)
+	{
+		float oldScale = Projectile.scale;
+		Projectile.scale = value;
+
+		if (Projectile.scale != oldScale)
+		{
+			int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
+			Projectile.Resize(size, size);
 		}
 	}
 
@@ -297,6 +300,9 @@ public class BombScarab : Bomb
 	{
 		if (CheckStuck(Projectile.getRect()))
 		{
+			if (Projectile.scale < 1)
+				Rescale(1);
+
 			Projectile.velocity = Vector2.Zero;
 			Projectile.rotation = Projectile.AngleFrom(Main.player[Projectile.owner].Center) - MathHelper.PiOver2;
 
