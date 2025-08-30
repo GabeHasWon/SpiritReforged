@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Content.Ocean.Items;
-using SpiritReforged.Content.Ocean.Tiles;
 using SpiritReforged.Content.Savanna.NPCs.Gar;
 using SpiritReforged.Content.Savanna.NPCs.Killifish;
 
@@ -19,11 +18,13 @@ public class Sushi : FoodItem
 
 	public override void AddRecipes()
 	{
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ItemID.RedSnapper, 1).AddTile(TileID.CookingPots).Register();
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ItemID.Salmon, 1).AddTile(TileID.CookingPots).Register();
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ItemID.Trout, 1).AddTile(TileID.CookingPots).Register();
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ItemID.AtlanticCod, 1).AddTile(TileID.CookingPots).Register();
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(AutoContent.ItemType<Killifish>(), 1).AddTile(TileID.CookingPots).Register();
-		CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(AutoContent.ItemType<Gar>(), 1).AddTile(TileID.CookingPots).Register();
+		AddRecipe(ItemID.RedSnapper);
+		AddRecipe(ItemID.Salmon);
+		AddRecipe(ItemID.Trout);
+		AddRecipe(ItemID.AtlanticCod);
+		AddRecipe(AutoContent.ItemType<Killifish>());
+		AddRecipe(AutoContent.ItemType<Gar>());
+
+		void AddRecipe(int ingredient) => CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ingredient).AddTile(TileID.CookingPots).Register();
 	}
 }

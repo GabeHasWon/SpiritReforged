@@ -1,7 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Savanna.Biome;
-using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
