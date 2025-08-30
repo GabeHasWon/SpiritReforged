@@ -161,9 +161,12 @@ public class UndergroundOasisBiome : Microbiome
 					{
 						var t = Main.tile[i, j];
 
-						t.ResetToType(TileID.SeaOats);
-						t.HasTile = true;
-						t.TileFrameX = (short)(18 * Main.rand.Next(15));
+						if (!t.HasTile)
+						{
+							t.ResetToType(TileID.SeaOats);
+							t.HasTile = true;
+							t.TileFrameX = (short)(18 * Main.rand.Next(15));
+						}
 					}
 				}
 
@@ -220,11 +223,7 @@ public class UndergroundOasisBiome : Microbiome
 		}
 
 		foreach (var pt in points)
-			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
-				new Actions.SetTileKeepWall(TileID.Sandstone),
-				new Modifiers.Expand(1),
-				new Actions.PlaceWall(WallID.Sandstone)
-			));
+			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
 	}
 
 	private static void CarveLake(Point origin)
