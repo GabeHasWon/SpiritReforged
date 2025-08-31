@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using System.IO;
@@ -34,7 +35,12 @@ public class Flamingo : ModNPC
 	private float _acceleration = 0.025f;
 	private bool _pink;
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 12; //Rows
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 12; //Rows
+		NPCID.Sets.CountsAsCritter[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(20, 40);
@@ -273,17 +279,15 @@ public class Flamingo : ModNPC
 		var texture = TextureAssets.Npc[Type].Value;
 		var source = NPC.frame with { Width = NPC.frame.Width - 2, Height = NPC.frame.Height - 2 }; //Remove padding
 		var position = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY - (source.Height - NPC.height) / 2 + 2);
-
 		var effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		var color = NPC.GetAlpha(NPC.GetNPCColorTintedByBuffs(drawColor));
 
-		Main.EntitySpriteDraw(texture, position, source, color, NPC.rotation, source.Size() / 2, NPC.scale, effects);
+		Main.EntitySpriteDraw(texture, position, source, NPC.DrawColor(drawColor), NPC.rotation, source.Size() / 2, NPC.scale, effects);
 		return false;
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Invasion || spawnInfo.Water || !spawnInfo.Player.InModBiome<SaltBiome>())
+		if (!spawnInfo.Common() || spawnInfo.Water || !spawnInfo.Player.InModBiome<SaltBiome>() || !SaltFlatsTileCounts.SaltTypes.Contains(spawnInfo.SpawnTileType))
 			return 0;
 
 		return 0.2f;
