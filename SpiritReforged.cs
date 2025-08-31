@@ -29,8 +29,12 @@ public partial class SpiritReforgedMod : Mod
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
 	private static extern ref bool GetSwapMusic(Main main);
 
+	/// <summary> Called after all other systems are loaded. </summary>
 	public static event Action OnLoad;
+	/// <summary> Called after all other systems are unloaded. </summary>
 	public static event Action OnUnload;
+	/// <summary> Called after all other system content has been set up. </summary>
+	public static event Action OnSetupContent;
 
 	public SpiritReforgedMod()
 	{
@@ -56,6 +60,12 @@ public partial class SpiritReforgedMod : Mod
 
 		ParticleHandler.RegisterParticles();
 		ParticleDetours.Initialize();
+	}
+
+	public override void PostSetupContent()
+	{
+		OnSetupContent?.Invoke();
+		OnSetupContent = null;
 	}
 
 	public override void Unload()

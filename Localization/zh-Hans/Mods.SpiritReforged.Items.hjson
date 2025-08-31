@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: 干木沙发
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: 干木梳妆台
 	Tooltip: ""
@@ -2179,6 +2174,101 @@ StoneStupasItem: {
 	// Tooltip: ""
 }
 
+SaltChestItem: {
+	// DisplayName: Salt Chest
+	// Tooltip: ""
+}
+
+SaltDresserItem: {
+	// DisplayName: Salt Dresser
+	// Tooltip: ""
+}
+
+SaltBathtubItem: {
+	// DisplayName: Salt Bathtub
+	// Tooltip: ""
+}
+
+SaltBedItem: {
+	// DisplayName: Salt Bed
+	// Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	// DisplayName: Salt Bookcase
+	// Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	// DisplayName: Salt Candelabra
+	// Tooltip: ""
+}
+
+SaltChandelierItem: {
+	// DisplayName: Salt Chandelier
+	// Tooltip: ""
+}
+
+SaltClockItem: {
+	// DisplayName: Salt Clock
+	// Tooltip: ""
+}
+
+SaltDoorItem: {
+	// DisplayName: Salt Door
+	// Tooltip: ""
+}
+
+SaltLampItem: {
+	// DisplayName: Salt Lamp
+	// Tooltip: ""
+}
+
+SaltLanternItem: {
+	// DisplayName: Salt Lantern
+	// Tooltip: ""
+}
+
+SaltPianoItem: {
+	// DisplayName: Salt Piano
+	// Tooltip: ""
+}
+
+SaltSinkItem: {
+	// DisplayName: Salt Sink
+	// Tooltip: ""
+}
+
+SaltSofaItem: {
+	// DisplayName: Salt Sofa
+	// Tooltip: ""
+}
+
+SaltTableItem: {
+	// DisplayName: Salt Table
+	// Tooltip: ""
+}
+
+SaltToiletItem: {
+	// DisplayName: Salt Toilet
+	// Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	// DisplayName: Salt Work Bench
+	// Tooltip: ""
+}
+
+SaltCandleItem: {
+	// DisplayName: Salt Candle
+	// Tooltip: ""
+}
+
+SaltChairItem: {
+	// DisplayName: Salt Chair
+	// Tooltip: ""
+}
+
 OtherworldlyRadioItem: {
 	// DisplayName: Otherworldly Radio
 	/* Tooltip:
@@ -2186,9 +2276,4 @@ OtherworldlyRadioItem: {
 		Right click to toggle Otherworld music
 		'Charmingly old-fashioned'
 		''' */
-}
-
-OtherworldlyRadioItemOff: {
-	// DisplayName: Otherworldly Radio (Off)
-	// Tooltip: "{$OtherworldlyRadioItem.Tooltip}"
 }

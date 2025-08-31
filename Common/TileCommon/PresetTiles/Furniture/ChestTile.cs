@@ -8,7 +8,7 @@ public abstract class ChestTile : FurnitureTile
 {
 	private static readonly Dictionary<int, int> KeyLookup = [];
 
-	public virtual LocalizedText MapEntry => ModItem.DisplayName;
+	public virtual LocalizedText MapEntry => Info.Item.DisplayName;
 
 	/// <summary> Registers a key to use on this chest when locked. </summary>
 	public void MakeLocked(int keyItemType) => KeyLookup.Add(Type, keyItemType);
@@ -17,12 +17,8 @@ public abstract class ChestTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 8)
-			.AddRecipeGroup(RecipeGroupID.IronBar, 2)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 8).AddRecipeGroup(RecipeGroupID.IronBar, 2).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
@@ -49,9 +45,9 @@ public abstract class ChestTile : FurnitureTile
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), MapEntry);
+		AddMapEntry(CommonColor, MapEntry);
 		AdjTiles = [TileID.Containers];
-		DustType = -1;
+		DustType = (Info is BasicInfo i) ? i.DustType : -1;
 	}
 
 	public virtual string MapChestName(string name, int i, int j)
@@ -163,7 +159,7 @@ public abstract class ChestTile : FurnitureTile
 			player.cursorItemIconText = Main.chest[chest].name.Length > 0 ? Main.chest[chest].name : defaultName;
 			if (player.cursorItemIconText == defaultName)
 			{
-				player.cursorItemIconID = (IsLockedChest(i, j) && KeyLookup.TryGetValue(Type, out int key)) ? key : ModItem.Type;
+				player.cursorItemIconID = (IsLockedChest(i, j) && KeyLookup.TryGetValue(Type, out int key)) ? key : Info.Item.Type;
 				player.cursorItemIconText = string.Empty;
 			}
 		}

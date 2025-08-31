@@ -9,13 +9,8 @@ public abstract class ClockTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddRecipeGroup(RecipeGroupID.IronBar, 3)
-			.AddIngredient(ItemID.Glass, 6)
-			.AddIngredient(CoreMaterial, 10)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 3).AddIngredient(ItemID.Glass, 6).AddIngredient(Info.Material, 10).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -33,7 +28,7 @@ public abstract class ClockTile : FurnitureTile
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 18];
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.GrandfatherClock"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.GrandfatherClock"));
 		AdjTiles = [TileID.GrandfatherClocks];
 		DustType = -1;
 	}
@@ -83,6 +78,6 @@ public abstract class ClockTile : FurnitureTile
 		Player Player = Main.LocalPlayer;
 		Player.noThrow = 2;
 		Player.cursorItemIconEnabled = true;
-		Player.cursorItemIconID = ModItem.Type;
+		Player.cursorItemIconID = Info.Item.Type;
 	}
 }
