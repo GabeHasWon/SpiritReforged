@@ -2187,8 +2187,3 @@ OtherworldlyRadioItem: {
 		'Charmingly old-fashioned'
 		'''
 }
-
-OtherworldlyRadioItemOff: {
-	DisplayName: Otherworldly Radio (Off)
-	Tooltip: "{$OtherworldlyRadioItem.Tooltip}"
-}
