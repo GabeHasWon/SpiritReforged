@@ -1,8 +1,7 @@
-﻿using SpiritReforged.Common.Music;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.Audio;
 
-namespace SpiritReforged.Common.Misc;
+namespace SpiritReforged.Common.Music;
 
 internal class MusicLayering : ModSystem
 {
@@ -51,7 +50,6 @@ internal class MusicLayering : ModSystem
 			IAudioTrack track = self.AudioTracks[slot];
 
 			if (!track.IsPlaying)
-			{
 				if (self.MusicReplayDelay == 0)
 				{
 					if (Main.SettingMusicReplayDelayEnabled)
@@ -61,11 +59,8 @@ internal class MusicLayering : ModSystem
 					track.SetVariable(MusicID.Sets.SkipsVolumeRemap[slot] ? "VolumeDirect" : "Volume", layer.Fade);
 					track.Play();
 				}
-			}
 			else
-			{
 				track.SetVariable(MusicID.Sets.SkipsVolumeRemap[slot] ? "VolumeDirect" : "Volume", layer.Fade);
-			}
 		}
 	}
 }
