@@ -2178,3 +2178,12 @@ StoneStupasItem: {
 	DisplayName: Stone Stupa
 	Tooltip: ""
 }
+
+OtherworldlyRadioItem: {
+	DisplayName: Otherworldly Radio
+	Tooltip:
+		'''
+		Right click to toggle Otherworld music
+		'Charmingly old-fashioned'
+		'''
+}
