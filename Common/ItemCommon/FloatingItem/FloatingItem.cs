@@ -8,7 +8,10 @@ public abstract class FloatingItem : ModItem
 
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
-		if (Item.wet && !Item.shimmerWet)
+		if (Item.shimmerWet)
+			return;
+
+		if (Item.wet) //Float
 		{
 			gravity = Bouyancy;
 			Item.velocity.Y = Math.Max(Item.velocity.Y, Bouyancy * 7);
@@ -17,8 +20,10 @@ public abstract class FloatingItem : ModItem
 				gravity = Weight;
 		}
 		else
+		{
 			gravity = Weight;
+		}
 	}
 
-	public override void GrabRange(Player player, ref int grabRange) => grabRange = (int)(grabRange * .66f);
+	public override void GrabRange(Player player, ref int grabRange) => grabRange = (int)(grabRange * 0.66f);
 }

@@ -2268,3 +2268,12 @@ SaltChairItem: {
 	// DisplayName: Salt Chair
 	// Tooltip: ""
 }
+
+OtherworldlyRadioItem: {
+	// DisplayName: Otherworldly Radio
+	/* Tooltip:
+		'''
+		Right click to toggle Otherworld music
+		'Charmingly old-fashioned'
+		''' */
+}

@@ -175,7 +175,7 @@ Nigiri: {
 }
 
 HoneySalmon: {
-	DisplayName: Honey-Glazed Salmon
+	DisplayName: Honey-Glazed Fillet
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -2267,4 +2267,13 @@ SaltCandleItem: {
 SaltChairItem: {
 	DisplayName: Salt Chair
 	Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	DisplayName: Otherworldly Radio
+	Tooltip:
+		'''
+		Right click to toggle Otherworld music
+		'Charmingly old-fashioned'
+		'''
 }

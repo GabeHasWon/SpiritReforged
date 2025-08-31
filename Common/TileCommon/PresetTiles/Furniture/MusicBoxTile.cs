@@ -33,14 +33,19 @@ public abstract class MusicBoxTile : ModTile
 		DustType = -1;
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) //Spawn music notes
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => SpawnMusicNoteVFX(i, j, null);
+
+	internal static void SpawnMusicNoteVFX(int i, int j, bool? defaultOnCheck)
 	{
 		bool chance = (int)Main.timeForVisualEffects % 7 == 0 && Main.rand.NextBool(3);
+
 		if (Lighting.UpdateEveryFrame && new FastRandom(Main.TileFrameSeed).WithModifier(i, j).Next(4) != 0 || !chance)
 			return;
 
 		var tile = Framing.GetTileSafely(i, j);
-		if (!TileDrawing.IsVisible(tile) || tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0)
+		bool defaultIsOff = tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0;
+
+		if (!TileDrawing.IsVisible(tile) || (!defaultOnCheck ?? defaultIsOff))
 			return;
 
 		int goreType = Main.rand.Next(570, 573);
@@ -48,7 +53,6 @@ public abstract class MusicBoxTile : ModTile
 		var velocity = new Vector2(Main.WindForVisuals * 2f, -0.5f) * new Vector2(Random(), Random());
 		var gore = Gore.NewGoreDirect(new EntitySource_TileUpdate(i, j), position, velocity, goreType, .8f);
 		gore.position.X -= gore.Width / 2;
-
 		return;
 
 		static float Random() => Main.rand.NextFloat(.5f, 1.5f);

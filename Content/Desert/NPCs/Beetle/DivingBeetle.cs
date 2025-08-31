@@ -19,6 +19,7 @@ public class DivingBeetle : ModNPC
 		Main.npcFrameCount[Type] = 3;
 		NPCID.Sets.CountsAsCritter[Type] = true;
 		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
 	public override void SetDefaults()
@@ -33,7 +34,7 @@ public class DivingBeetle : ModNPC
 	public virtual void CreateItemDefaults() => 
 		ItemEvents.CreateItemDefaults(
 		this.AutoItemType(), 
-		item =>
+		static item =>
 		{
 			item.value = Item.sellPrice(0, 0, 0, 45);
 			item.bait = 18;

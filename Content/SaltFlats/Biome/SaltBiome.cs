@@ -29,7 +29,7 @@ public class SaltBiome : ModBiome
 
 internal class SaltFlatsTileCounts : ModSystem
 {
-	internal static int[] SaltTypes;
+	internal static HashSet<int> SaltTypes;
 	public int saltCount;
 
 	public static bool InSaltFlats => ModContent.GetInstance<SaltFlatsTileCounts>().saltCount >= 200;

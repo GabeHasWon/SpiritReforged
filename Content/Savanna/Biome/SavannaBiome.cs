@@ -11,7 +11,7 @@ public class SavannaBiome : ModBiome
 		if (Main.LocalPlayer.ZoneGraveyard || Main.bloodMoon)
 			return -1;
 
-		string name = SpiritReforgedMod.SwapMusic ? "SavannaOtherworld" : "Savanna";
+		string name = Main.swapMusic ? "SavannaOtherworld" : "Savanna";
 		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
