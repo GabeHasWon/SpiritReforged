@@ -2273,7 +2273,7 @@ OtherworldlyRadioItem: {
 	// DisplayName: Otherworldly Radio
 	/* Tooltip:
 		'''
-		Right click to toggle Otherworld music
+		<right> to toggle Otherworld music
 		'Charmingly old-fashioned'
 		''' */
 }

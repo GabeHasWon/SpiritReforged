@@ -10,9 +10,8 @@ public class OtherworldlyRadioItem : ModItem
 {
 	public override void SetStaticDefaults()
 	{
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.PartyGirl, new NPCShop.Entry(Type)));
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static shop => shop.NpcType == NPCID.PartyGirl, new NPCShop.Entry(Type)));
 		Main.RegisterItemAnimation(Type, new DrawAnimationVertical(2, 2) { NotActuallyAnimating = true });
-		Item.ResearchUnlockCount = 1;
 	}
 
 	public override void SetDefaults()
@@ -25,18 +24,15 @@ public class OtherworldlyRadioItem : ModItem
 		Item.maxStack = 1;
 	}
 
+	public override bool ConsumeItem(Player player) => false;
 	public override bool CanRightClick() => true;
-
-	public override void RightClick(Player player)
-	{
-		Main.swapMusic = !Main.swapMusic;
-		Item.stack++;
-	}
+	public override void RightClick(Player player) => Main.swapMusic = !Main.swapMusic;
 
 	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
 		frame.Y = (frame.Height + 2) * (Main.swapMusic ? 0 : 1);
 		spriteBatch.Draw(TextureAssets.Item[Type].Value, position, frame, Item.GetAlpha(drawColor), 0, origin, scale, default, 0);
+
 		return false;
 	}
 }
@@ -65,11 +61,11 @@ public class OtherworldlyRadioPlaced : ModTile
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(142, 92, 79), this.GetLocalization("MapEntry"));
+		AddMapEntry(new Color(142, 92, 79), CreateMapEntryName());
 		RegisterItemDrop(ModContent.ItemType<OtherworldlyRadioItem>());
 
 		AdjTiles = [TileID.MusicBoxes];
-		DustType = DustID.WoodFurniture;
+		DustType = -1;
 	}
 
 	public override bool RightClick(int i, int j)
@@ -79,7 +75,20 @@ public class OtherworldlyRadioPlaced : ModTile
 		return true;
 	}
 
+	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
+	{
+		if (visible && Main.swapMusic && tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0 && MusicBoxTile.SpawnNote)
+			MusicBoxTile.SpawnMusicNote(i, j);
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<OtherworldlyRadioItem>();
+	}
+
 	public override void HitWire(int i, int j) => Main.swapMusic = !Main.swapMusic;
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => MusicBoxTile.SpawnMusicNoteVFX(i, j, Main.swapMusic);
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 }

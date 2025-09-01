@@ -49,4 +49,4 @@ PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
 Starflower.MapEntry: 星状花
 BonsaiTrees.MapEntry: 盆栽
-// OtherworldlyRadioPlaced.MapEntry: Mods.SpiritReforged.Tiles.OtherworldlyRadioPlaced.MapEntry
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
