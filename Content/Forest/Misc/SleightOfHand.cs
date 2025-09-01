@@ -60,12 +60,12 @@ public class SleightOfHand : EquippableItem
 				SwapTo(ammoItems[0].type);
 			}
 		}
-	}
 
-	private static void SwapTo(int type)
-	{
-		SwapTime = 1;
-		SwapItemType = type;
+		static void SwapTo(int type)
+		{
+			SwapTime = 1;
+			SwapItemType = type;
+		}
 	}
 
 	private static void DrawIndicator()
@@ -74,13 +74,13 @@ public class SleightOfHand : EquippableItem
 			return;
 
 		var sb = Main.spriteBatch;
-		var center = Main.LocalPlayer.Center - new Vector2((float)Math.Sin(Math.Max(SwapTime - 0.75f, 0) * 20) * 10, 50) - Main.screenPosition;
+		var center = Main.LocalPlayer.Center - new Vector2((float)Math.Sin(Math.Max(SwapTime - 0.75f, 0) * 20) * 15, 50) - Main.screenPosition;
 		float scale = 1 + Math.Max(SwapTime - 0.9f, 0) * 10;
 
 		var texture = TextureAssets.Item[SwapItemType].Value;
 		var outline = TextureColorCache.ColorSolid(texture, Color.White);
 
-		DrawHelpers.DrawOutline(sb, outline, center, Color.White * SwapTime);
+		DrawHelpers.DrawOutline(sb, outline, center, Color.Black * SwapTime * 0.5f);
 		sb.Draw(texture, center, null, Color.White * EaseFunction.EaseQuinticOut.Ease(SwapTime), 0, texture.Size() / 2, scale, default, 0);
 	}
 
