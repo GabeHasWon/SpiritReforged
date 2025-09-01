@@ -11,11 +11,8 @@ public abstract class ChairTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 4)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 4).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
@@ -42,7 +39,7 @@ public abstract class ChairTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Chair"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Chair"));
 		AdjTiles = [TileID.Chairs];
 		DustType = -1;
 	}
@@ -68,7 +65,7 @@ public abstract class ChairTile : FurnitureTile
 		if (WithinRange(i, j, player))
 		{
 			player.noThrow = 2;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 			player.cursorItemIconEnabled = true;
 
 			if (Framing.GetTileSafely(i, j).TileFrameX / TileObjectData.GetTileData(Type, 0).CoordinateFullWidth < 1)

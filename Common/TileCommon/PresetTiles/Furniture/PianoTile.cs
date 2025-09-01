@@ -8,13 +8,8 @@ public abstract class PianoTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(ItemID.Bone, 4)
-			.AddIngredient(CoreMaterial, 15)
-			.AddIngredient(ItemID.Book)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(ItemID.Bone, 4).AddIngredient(Info.Material, 15).AddIngredient(ItemID.Book).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -29,7 +24,7 @@ public abstract class PianoTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Piano"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Piano"));
 		AdjTiles = [TileID.Pianos];
 		DustType = -1;
 	}

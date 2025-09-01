@@ -1,6 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Content.Ocean.NPCs.SandPiper;
 using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -26,7 +27,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 	public override void SetStaticDefaults()
 	{
 		BirdTypes = [ItemID.Cardinal, ItemID.BlueJay, ItemID.GoldBird, ItemID.Bird, ItemID.Seagull, 
-			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>()];
+			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>(), AutoContent.ItemType<SandPiper>()];
 
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;

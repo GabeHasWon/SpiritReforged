@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Chests;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
@@ -6,6 +7,21 @@ namespace SpiritReforged.Common.TileCommon;
 
 public static class TileExtensions
 {
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawSingleTile")]
+	private static extern void DrawSingleTile(TileDrawing drawing, TileDrawInfo drawData, bool solidLayer, int waterStyleOverride, Vector2 screenPosition, Vector2 screenOffset, int tileX, int tileY);
+
+	public static void DrawSingleTile(int i, int j, bool solidLayer = true, Vector2? screenOffset = null)
+	{
+		screenOffset ??= TileOffset;
+
+		TileDrawing renderer = Main.instance.TilesRenderer;
+		Vector2 unscaledPosition = Main.Camera.UnscaledPosition;
+		TileDrawInfo data = new();
+
+		renderer.GetTileDrawData(i, j, data.tileCache, data.typeCache, ref data.tileFrameX, ref data.tileFrameY, out data.tileWidth, out data.tileHeight, out data.tileTop, out data.halfBrickHeight, out data.addFrX, out data.addFrY, out data.tileSpriteEffect, out data.glowTexture, out data.glowSourceRect, out data.glowColor);
+		DrawSingleTile(renderer, data, solidLayer, -1, unscaledPosition, screenOffset.Value, i, j);
+	}
+
 	/// <summary> Gets common visual info related to the tile at the given coordinates, such as painted color. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate.</param>

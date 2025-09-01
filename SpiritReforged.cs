@@ -26,13 +26,15 @@ public partial class SpiritReforgedMod : Mod
 
 	public static SpiritReforgedMod Instance { get; private set; }
 
-	/// <summary>
-	/// Gets if Otherworld Music is turned on. <see cref="Main.swapMusic"/> is private for some reason.
-	/// </summary>
-	public static bool SwapMusic => GetSwapMusic(null);
-
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
 	private static extern ref bool GetSwapMusic(Main main);
+
+	/// <summary> Called after all other systems are loaded. </summary>
+	public static event Action OnLoad;
+	/// <summary> Called after all other systems are unloaded. </summary>
+	public static event Action OnUnload;
+	/// <summary> Called after all other system content has been set up. </summary>
+	public static event Action OnSetupContent;
 
 	public SpiritReforgedMod()
 	{
@@ -44,6 +46,9 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Load()
 	{
+		OnLoad?.Invoke();
+		OnLoad = null;
+
 		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
@@ -57,8 +62,17 @@ public partial class SpiritReforgedMod : Mod
 		ParticleDetours.Initialize();
 	}
 
+	public override void PostSetupContent()
+	{
+		OnSetupContent?.Invoke();
+		OnSetupContent = null;
+	}
+
 	public override void Unload()
 	{
+		OnUnload?.Invoke();
+		OnUnload = null;
+
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		AssetLoader.Unload();

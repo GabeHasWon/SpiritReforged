@@ -1,5 +1,5 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -13,7 +13,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Underground.Tiles;
 
 [AutoloadGlowmask("200,200,200")]
-public class BiomePots : PotTile, ILootTile
+public class BiomePots : PotTile, ILootable
 {
 	/// <summary> Mirrors <see cref="Styles"/>. </summary>
 	public enum Style : int
@@ -85,60 +85,57 @@ public class BiomePots : PotTile, ILootTile
 		_ => 1.25f
 	};
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		int wheel = ModContent.TileType<PotteryWheel>();
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
+		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
 		{
 			case "BiomePotsCavern":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsIce":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.IceBlock, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.IceBlock, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsJungle":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RichMahogany, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RichMahogany, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsDungeon":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Bone, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Bone, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsHell":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Obsidian, 2).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Obsidian, 2).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsCorruption":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RottenChunk).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RottenChunk).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsSpider":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Cobweb, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Cobweb, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsCrimson":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Vertebrae).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Vertebrae).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsMarble":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Marble, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Marble, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsDesert":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Sandstone, 2).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Sandstone, 2).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsMushroom":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.GlowingMushroom).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "BiomePotsGranite":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
 	}
@@ -149,7 +146,7 @@ public class BiomePots : PotTile, ILootTile
 	{
 		const int distance = 200;
 
-		if (!closer || Autoloader.IsRubble(Type))
+		if (!closer || IsRubble)
 			return;
 
 		var world = new Vector2(i, j) * 16;
@@ -166,7 +163,7 @@ public class BiomePots : PotTile, ILootTile
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (!fail && !Autoloader.IsRubble(Type))
+		if (!fail && !IsRubble)
 		{
 			var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
 
@@ -205,7 +202,7 @@ public class BiomePots : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (WorldGen.generatingWorld || Autoloader.IsRubble(Type))
+		if (WorldGen.generatingWorld || IsRubble)
 			return; //Particularly important for not incrementing Remaining
 
 		var style = GetStyle(frameY);
@@ -222,7 +219,7 @@ public class BiomePots : PotTile, ILootTile
 		{
 			#region loot
 			var p = Main.player[Player.FindClosest(center, 0, 0)];
-			LootTable.Resolve(i, j, Type, frameX, frameY);
+			TileLootHandler.Resolve(i, j, Type, frameX, frameY);
 
 			ItemMethods.SplitCoins((int)(CalculateCoinValue() * GetValue(style)), delegate (int type, int stack)
 			{
@@ -369,9 +366,9 @@ public class BiomePots : PotTile, ILootTile
 		Vector2 GetRandom(float distance = 15f) => center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(distance);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-		var style = GetStyle(objectStyle / 3 * 36);
+		var style = GetStyle((loot is TileLootTable t) ? t.Style / 3 * 36 : 0);
 
 		if (style is Style.Dungeon)
 			loot.AddCommon(ItemID.GoldenKey, 10);

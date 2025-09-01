@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: Sofá de Madeira Seca
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: Cômoda de Madeira Seca
 	Tooltip: ""
@@ -2104,8 +2099,187 @@ CommonPotsSavannaItem: {
 	// Tooltip: ""
 }
 
-Magazine: {
-	// DisplayName: Magazine
+// StactusBannerItem.DisplayName: Stactus Banner
+
+SunEarrings: {
+	// DisplayName: Sundancer Earrings
+	/* Tooltip:
+		'''
+		Increases maximum mana by 20
+		7% increased magic damage
+		''' */
+}
+
+SilkSirwal: {
+	// DisplayName: Sundancer Sirwal
+	// Tooltip: Increases movement speed and acceleration on the ground
+}
+
+SilkTop: {
+	// DisplayName: Sundancer Top
+	// Tooltip: 7% increased magic damage
+}
+
+CeremonialDagger: {
+	// DisplayName: Ceremonial Dagger
+	/* Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		''' */
+}
+
+Thornball: {
+	// DisplayName: Thornball
+	// Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+}
+
+SaltBlockDullItem: {
+	// DisplayName: Dull Salt Block
+	// Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	// DisplayName: Salt Block
+	// Tooltip: "'Smooth and reflective'"
+}
+
+NeedleTrapItem: {
+	// DisplayName: Needle Trap
+	// Tooltip: ""
+}
+
+DivingBeetleItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	// Tooltip: ""
+}
+
+SunDropper: {
+	// DisplayName: Magic Sunlight Dropper
+	// Tooltip: ""
+}
+
+OsmosifierItem: {
+	// DisplayName: Osmosifier
+	// Tooltip: Passively produces salt blocks when placed in water
+}
+
+GoldDivingBeetleItem: {
+	// DisplayName: Gold Diving Beetle
+	// Tooltip: ""
+}
+
+StoneStupasItem: {
+	// DisplayName: Stone Stupa
+	// Tooltip: ""
+}
+
+SaltChestItem: {
+	// DisplayName: Salt Chest
+	// Tooltip: ""
+}
+
+SaltDresserItem: {
+	// DisplayName: Salt Dresser
+	// Tooltip: ""
+}
+
+SaltBathtubItem: {
+	// DisplayName: Salt Bathtub
+	// Tooltip: ""
+}
+
+SaltBedItem: {
+	// DisplayName: Salt Bed
+	// Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	// DisplayName: Salt Bookcase
+	// Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	// DisplayName: Salt Candelabra
+	// Tooltip: ""
+}
+
+SaltChandelierItem: {
+	// DisplayName: Salt Chandelier
+	// Tooltip: ""
+}
+
+SaltClockItem: {
+	// DisplayName: Salt Clock
+	// Tooltip: ""
+}
+
+SaltDoorItem: {
+	// DisplayName: Salt Door
+	// Tooltip: ""
+}
+
+SaltLampItem: {
+	// DisplayName: Salt Lamp
+	// Tooltip: ""
+}
+
+SaltLanternItem: {
+	// DisplayName: Salt Lantern
+	// Tooltip: ""
+}
+
+SaltPianoItem: {
+	// DisplayName: Salt Piano
+	// Tooltip: ""
+}
+
+SaltSinkItem: {
+	// DisplayName: Salt Sink
+	// Tooltip: ""
+}
+
+SaltSofaItem: {
+	// DisplayName: Salt Sofa
+	// Tooltip: ""
+}
+
+SaltTableItem: {
+	// DisplayName: Salt Table
+	// Tooltip: ""
+}
+
+SaltToiletItem: {
+	// DisplayName: Salt Toilet
+	// Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	// DisplayName: Salt Work Bench
+	// Tooltip: ""
+}
+
+SaltCandleItem: {
+	// DisplayName: Salt Candle
+	// Tooltip: ""
+}
+
+SaltChairItem: {
+	// DisplayName: Salt Chair
+	// Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	// DisplayName: Otherworldly Radio
+	/* Tooltip:
+		'''
+		<right> to toggle Otherworld music
+		'Charmingly old-fashioned'
+		''' */
+}
+
+SleightOfHand: {
+	// DisplayName: Sleight of Hand
 	/* Tooltip:
 		'''
 		Double tap {0} while holding a ranged weapon to swap ammo types

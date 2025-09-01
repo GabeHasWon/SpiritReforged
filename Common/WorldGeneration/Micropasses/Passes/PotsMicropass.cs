@@ -10,8 +10,6 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class PotsMicropass : Micropass
 {
-	private delegate bool GenDelegate(int x, int y);
-
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
 
@@ -249,7 +247,9 @@ internal class PotsMicropass : Micropass
 		y--;
 
 		int type = ModContent.TileType<WickerBaskets>();
-		if (!TileID.Sets.Grass[Main.tile[x, y + 1].TileType] || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
+		int tileType = Main.tile[x, y + 1].TileType;
+
+		if (!TileID.Sets.Grass[tileType] || tileType == TileID.CrimsonGrass || tileType == TileID.CorruptGrass || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
 			return false;
 
 		Placer.Check(x, y, type).IsClear().Place();
@@ -370,5 +370,5 @@ internal class PotsMicropass : Micropass
 	}
 
 	/// <summary> Checks whether the below tile is contained in <see cref="CommonBlacklist"/>. </summary>
-	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidType != LiquidID.Shimmer;
+	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100;
 }

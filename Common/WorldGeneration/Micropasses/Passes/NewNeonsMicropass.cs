@@ -42,7 +42,7 @@ internal class NewNeonsMicropass : Micropass
 	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.NeonMosses");
 
-		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<NeonSeed>())
+		if (SecretSeedSystem.WorldSecretSeed is NeonSeed)
 			GenerateAllMosses();
 
 		for (int i = 40; i < Main.maxTilesX - 40; i++) //Grow long moss plants for our modded types

@@ -1,14 +1,17 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. </summary>
-public class Pots : PotTile, ILootTile
+/// <summary> A stand-in for vanilla pot tiles, used to contain custom data. <para/>
+/// The loot table registered through this type is used for display in the Potstiary, and never actually rolls. </summary>
+public class Pots : PotTile, ILootable
 {
 	public const string NameKey = "MapObject.Pot";
 	public const string PotTexture = "Terraria/Images/Tiles_28";
@@ -36,6 +39,9 @@ public class Pots : PotTile, ILootTile
 		}
 	}
 
+	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SpawnThingsFromPot")]
+	public static extern void SpawnThingsFromPot(WorldGen worldGen, int i, int j, int x2, int y2, int style);
+
 	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		if (group.name == "PotsCrimson")
@@ -52,60 +58,58 @@ public class Pots : PotTile, ILootTile
 		}
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		int wheel = ModContent.TileType<PotteryWheel>();
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
+		int type = ModContent.TileType<PotteryWheel>();
 
 		switch (group.name)
 		{
 			case "PotsCavern":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsIce":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.IceBlock, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.IceBlock, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsJungle":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RichMahogany, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RichMahogany, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsDungeon":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Bone, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Bone, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsHell":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Obsidian, 2).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Obsidian, 2).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsCorruption":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RottenChunk).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.RottenChunk).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsSpider":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Cobweb, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Cobweb, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsCrimson":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Vertebrae).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Vertebrae).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsPyramid":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsTemple":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.LihzahrdBrick).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.LihzahrdBrick).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsMarble":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Marble, 3).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Marble, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 
 			case "PotsDesert":
-				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Sandstone, 2).AddTile(wheel).AddCondition(dicovered, function).Register();
+				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Sandstone, 2).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
 	}
@@ -125,10 +129,12 @@ public class Pots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-		string styleName = StyleDatabase.GetName(Type, (byte)objectStyle);
+		if (loot is not TileLootTable t || !t.Simulated)
+			return; //Only allow this drop table when simulated because it is not currently correct
 
+		string styleName = StyleDatabase.GetName(Type, (byte)t.Style);
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
 		if (styleName == "PotsDungeon")

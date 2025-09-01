@@ -10,12 +10,8 @@ public abstract class CandleTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 4)
-			.AddIngredient(ItemID.Torch)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 4).AddIngredient(ItemID.Torch).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
@@ -29,7 +25,7 @@ public abstract class CandleTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Candle"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Candle"));
 		AdjTiles = [TileID.Candles];
 		DustType = -1;
 	}
@@ -45,7 +41,7 @@ public abstract class CandleTile : FurnitureTile
 		Player Player = Main.LocalPlayer;
 		Player.noThrow = 2;
 		Player.cursorItemIconEnabled = true;
-		Player.cursorItemIconID = ModItem.Type;
+		Player.cursorItemIconID = Info.Item.Type;
 	}
 
 	public override void HitWire(int i, int j)
@@ -58,11 +54,13 @@ public abstract class CandleTile : FurnitureTile
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
-		var tile = Framing.GetTileSafely(i, j);
-		var color = Color.Orange * .75f;
+		var tile = Main.tile[i, j];
 
-		if (tile.TileFrameX < 18)
-			(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+		if (tile.TileFrameX == 18 && tile.TileFrameY == 0)
+		{
+			var color = (Info is LightedInfo l) ? l.Light : Color.Orange.ToVector3() / 255f;
+			(r, g, b) = (color.X, color.Y, color.Z);
+		}
 	}
 
 	public virtual bool BlurGlowmask => true;
@@ -78,7 +76,7 @@ public abstract class CandleTile : FurnitureTile
 		int height = data.CoordinateHeights[tile.TileFrameY / data.CoordinateFullHeight];
 		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height);
 
-		if (BlurGlowmask)
+		if (Info is LightedInfo l && l.Blur)
 		{
 			ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (uint)i);
 			for (int c = 0; c < 7; c++) //Draw our glowmask with a randomized position

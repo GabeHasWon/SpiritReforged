@@ -1,5 +1,5 @@
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.TileCommon.CheckItemUse;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
 using Terraria.Audio;

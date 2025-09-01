@@ -6,14 +6,11 @@ VanillaDialogue: {
 		// Kelp: Don't eat the seaweed.
 	}
 
-	ArmsDealer: {
-		// Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
-		// Placeholder: placeholder
-	}
+	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
 
 	Stylist: {
-		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		// Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
 	}
 
-	Demolitionist: {
-		// HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
-		// Placeholder: placeholder
-	}
+	// Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
 
 	Nurse: {
 		// Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
@@ -282,7 +276,7 @@ Cartographer: {
 
 			WulfrumBunker: {
 				// 0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				// 1: This was were my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
+				// 1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
 				// 2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
 			}
 
@@ -459,3 +453,25 @@ MossSlime: {
 // HeliumMossSlime.DisplayName: Helium Moss Slime
 // OganessonMossSlime.DisplayName: Oganesson Moss Slime
 // RadonMossSlime.DisplayName: Radon Moss Slime
+
+Stactus: {
+	// DisplayName: Stactus
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+}
+
+// Tumbleweed.DisplayName: Tumbleweed
+
+Flamingo: {
+	// DisplayName: Flamingo
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+}

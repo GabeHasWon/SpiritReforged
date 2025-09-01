@@ -6,8 +6,26 @@ namespace SpiritReforged.Common.ItemCommon.Abstract;
 /// <summary> Used for info accessories like the Radar. Autoloads an <see cref="InfoDisplay"/> instance in <see cref="Load"/> and provides handled equip flags in <see cref="InfoPlayer"/>. </summary>
 public abstract class InfoItem : ModItem
 {
+	public readonly struct DisplayItem(InfoDisplay InfoDisplay)
+	{
+		private readonly InfoDisplay _diplay = InfoDisplay;
+
+		public readonly bool Active => InfoDisplayLoader.Active(_diplay);
+		public readonly bool Hidden => !Active || Main.LocalPlayer.hideInfo[_diplay.Type];
+	}
+
+	private static readonly Dictionary<string, DisplayItem> DisplayByName = [];
+	public static DisplayItem GetDisplay<T>() where T : ModItem => DisplayByName[ModContent.GetInstance<T>().Name];
+
 	/// <summary> Autoloads an info display based on this item. </summary>
-	protected void AutoloadInfoDisplay() => Mod.AddContent(new AutoloadedInfoDisplay(GetType().Namespace + '/' + Name));
+	protected void AutoloadInfoDisplay()
+	{
+		var value = new AutoloadedInfoDisplay(GetType().Namespace + '/' + Name);
+		Mod.AddContent(value);
+
+		DisplayByName.Add(Name, new(value));
+	}
+
 	public override void Load() => AutoloadInfoDisplay();
 
 	public override void SetDefaults() => Item.CloneDefaults(ItemID.Radar);
@@ -16,7 +34,7 @@ public abstract class InfoItem : ModItem
 
 internal class InfoPlayer : ModPlayer
 {
-	public readonly Dictionary<string, bool> info = [];
+	internal readonly Dictionary<string, bool> info = [];
 
 	public override void Initialize()
 	{

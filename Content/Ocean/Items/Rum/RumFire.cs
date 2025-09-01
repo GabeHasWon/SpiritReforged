@@ -30,7 +30,7 @@ public class RumFire : ModProjectile
 
 	public override void AI()
 	{
-		if (!Projectile.Surface())
+		if (!Projectile.Surface() || Projectile.wet)
 		{
 			Projectile.Kill();
 			return;

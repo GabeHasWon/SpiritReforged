@@ -1,20 +1,20 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class StuffedPots : PotTile, ILootTile
+public class StuffedPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Stuffed");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(5));
@@ -30,7 +30,7 @@ public class StuffedPots : PotTile, ILootTile
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (fail || Autoloader.IsRubble(Type))
+		if (fail || IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
@@ -55,7 +55,7 @@ public class StuffedPots : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient && !Autoloader.IsRubble(Type) && !Generating)
+		if (Main.netMode != NetmodeID.MultiplayerClient && !IsRubble && !WorldMethods.Generating)
 		{
 			var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
 			var source = new EntitySource_TileBreak(i, j);
@@ -96,7 +96,7 @@ public class StuffedPots : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.Add(ItemDropRule.Common(ItemID.Glowstick, 1, 10, 25));
 		loot.Add(ItemDropRule.Common(ItemID.StrangeBrew, 1, 2, 8));

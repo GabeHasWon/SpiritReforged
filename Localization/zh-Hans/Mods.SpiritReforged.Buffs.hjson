@@ -44,7 +44,7 @@ Impaled: {
 }
 
 KoiTotemBuff: {
-	DisplayName: 锦鲤之灵
+	DisplayName: 锦鲤图腾
 	Description: 渔力增加
 }
 
@@ -74,7 +74,7 @@ Frozen: {
 }
 
 GildedScarabBuff: {
-	DisplayName: 圣甲虫盾
+	DisplayName: 甲虫护盾
 	Description: 防御力增加{0}
 }
 
@@ -116,4 +116,14 @@ JinxMark: {
 FlaskOfFrost_Buff: {
 	DisplayName: 武器灌注：冻结
 	Description: 近战和鞭子攻击会冻结敌人
+}
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
 }

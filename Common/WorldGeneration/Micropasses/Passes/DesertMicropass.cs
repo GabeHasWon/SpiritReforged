@@ -21,7 +21,9 @@ internal class DesertMicropass : Micropass
 
 		int generated = 0;
 		int maxAmount = 10 * (WorldGen.GetWorldSize() + 1);
-		Rectangle region = new(GenVars.desertHiveLeft, GenVars.desertHiveHigh, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - GenVars.desertHiveHigh);
+
+		int top = (int)(Main.worldSurface * 1.2f);
+		Rectangle region = new(GenVars.desertHiveLeft, top, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - top);
 		
 		for (int a = 0; a < 200; a++)
 		{
@@ -35,7 +37,7 @@ internal class DesertMicropass : Micropass
 
 				WorldGen.OreRunner(i, j - 3, scale + 4, WorldGen.genRand.Next(1, 8), TileID.Sand);
 				WorldGen.OreRunner(i, j, scale, WorldGen.genRand.Next(1, 8), (ushort)ModContent.TileType<PolishedAmber>());
-				AddFossils(i, j, WorldGen.genRand.Next(scale / 2, (int)(scale * 1.5f)), scale);
+				AddFossils(i, j, scale / 2, scale);
 
 				if (++generated >= maxAmount)
 					break;

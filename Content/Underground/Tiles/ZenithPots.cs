@@ -1,11 +1,11 @@
-using RubbleAutoloader;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Underground.Pottery;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class ZenithPots : PotTile, ILootTile
+public class ZenithPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new()
 	{
@@ -13,26 +13,27 @@ public class ZenithPots : PotTile, ILootTile
 		{ "Pale", [3, 4, 5] }
 	};
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
 		RecordHandler.Records.Add(record.AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Zenith")).Hide());
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
+	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
 	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = RecordedOrProgressed;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
+		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition.Description, RecordedOrProgressed).Register();
 		bool RecordedOrProgressed() => Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(group.name) || NPC.downedMoonlord;
 	}
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		DustType = Autoloader.IsRubble(Type) ? -1 : DustID.TreasureSparkle;
+		DustType = IsRubble ? -1 : DustID.TreasureSparkle;
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
+	public void AddLoot(ILoot loot)
+	{
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
+	}
 }

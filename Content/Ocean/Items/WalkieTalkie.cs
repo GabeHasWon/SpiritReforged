@@ -24,6 +24,7 @@ public class WalkieTalkie : ModItem
 		On_Player.Update += ForceChatText;
 		On_Main.GUIChatDrawInner += PreventQuestCompletion;
 		On_Lang.AnglerQuestChat += ModifyQuestDialogue;
+		On_ShopHelper.GetShoppingSettings += RemoveHappinessReport;
 	}
 
 	/// <summary> Forces NPC dialogue to persist even when the player is out of range of the NPC. </summary>
@@ -34,12 +35,17 @@ public class WalkieTalkie : ModItem
 			if (self.talkNPC != -1)
 			{
 				var npc = Main.npc[self.talkNPC];
+
 				Vector2 oldPosition = npc.position;
+				string happinessReport = Main.LocalPlayer.currentShoppingSettings.HappinessReport;
+
 				npc.position = self.Center;
+				Main.LocalPlayer.currentShoppingSettings.HappinessReport = string.Empty;
 
 				orig(self, i);
 
 				npc.position = oldPosition;
+				Main.LocalPlayer.currentShoppingSettings.HappinessReport = happinessReport;
 				return;
 			}
 			else
@@ -102,6 +108,16 @@ public class WalkieTalkie : ModItem
 
 		return value;
 	}
+
+	private static ShoppingSettings RemoveHappinessReport(On_ShopHelper.orig_GetShoppingSettings orig, ShopHelper self, Player player, NPC npc)
+	{
+		var value = orig(self, player, npc);
+
+		if (Paging)
+			value.HappinessReport = string.Empty;
+
+		return value;
+	}
 	#endregion
 
 	public override void SetStaticDefaults() => PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
@@ -131,10 +147,10 @@ public class WalkieTalkie : ModItem
 
 			if (NPC.FindFirstNPC(NPCID.Angler) is int whoAmI && whoAmI != -1)
 			{
+				Paging = true;
 				player.SetTalkNPC(whoAmI);
 				Main.npcChatText = Main.npc[whoAmI].GetChat();
 
-				Paging = true;
 				SoundEngine.PlaySound(Static, player.Center);
 				
 				return true;

@@ -38,7 +38,7 @@ CannonBomb.DisplayName: 炸弹大炮
 BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
 DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
 JinxArrow.DisplayName: 厄劫箭
-JinxBowMinion.DisplayName: 厄劫弓随从
+JinxBowMinion.DisplayName: 厄劫弓仆从
 RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
 RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
 FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
@@ -47,3 +47,6 @@ VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.Display
 EnergyImpact.DisplayName: 能量践踏
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: 手指射击
+// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"

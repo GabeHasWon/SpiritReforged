@@ -1,20 +1,20 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class RollingPots : PotTile, ILootTile
+public class RollingPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Boulder");
 		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
@@ -22,14 +22,12 @@ public class RollingPots : PotTile, ILootTile
 
 	public override void AddObjectData()
 	{
-		bool rubble = Autoloader.IsRubble(Type);
-
 		Main.tileOreFinderPriority[Type] = 575;
-		Main.tileNoFail[Type] = !rubble;
+		Main.tileNoFail[Type] = !IsRubble;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 
-		if (rubble)
+		if (IsRubble)
 			TileObjectData.newTile.RandomStyleRange = 2;
 		else
 			HitSound = null;
@@ -43,11 +41,11 @@ public class RollingPots : PotTile, ILootTile
 		TileObjectData.addTile(Type);
 	}
 
-	public override void AddMapData() => AddMapEntry(new Color(180, 90, 95), Language.GetText("Mods.SpiritReforged.Items.RollingPotItem.DisplayName"));
+	public override void AddMapData() => AddMapEntry(new Color(180, 90, 95), Language.GetText("Mods.SpiritReforged.Items.RollingPotsItem.DisplayName"));
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
+		if (IsRubble || WorldMethods.Generating || Main.netMode == NetmodeID.MultiplayerClient)
 			return;
 
 		int style = frameX / 32;
@@ -56,7 +54,11 @@ public class RollingPots : PotTile, ILootTile
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, ModContent.ProjectileType<PotBoulder>(), damage, 5, ai0: style);
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot) => ModContent.GetInstance<Pots>().AddLoot(objectStyle, loot);
+	public void AddLoot(ILoot loot)
+	{
+		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+			dele.Invoke(loot);
+	}
 }
 
 internal class PotBoulder : ModProjectile
@@ -93,9 +95,11 @@ internal class PotBoulder : ModProjectile
 				Item.NewItem(Projectile.GetSource_Death(), Projectile.Center, new Item(type, stack), noGrabDelay: true);
 			});
 
-			var table = new LootTable();
-			ModContent.GetInstance<RollingPots>().AddLoot(0, table);
-			table.Resolve(Projectile.getRect(), Main.player[Player.FindClosest(Projectile.position, Projectile.width, Projectile.height)]);
+			var tileCoords = Projectile.Center.ToTileCoordinates();
+			FallingPot.BreakPot(tileCoords.X, tileCoords.Y, 2000 / 16);
+			//var table = new TileLootTable((int)Style, Projectile.Center.ToTileCoordinates16());
+			//ModContent.GetInstance<RollingPots>().AddLoot(table);
+			//table.Resolve(Projectile.getRect(), Main.player[Player.FindClosest(Projectile.position, Projectile.width, Projectile.height)]);
 
 			if (Main.rand.NextBool(50))
 				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.UnitY * -4f, ProjectileID.CoinPortal, 0, 0);

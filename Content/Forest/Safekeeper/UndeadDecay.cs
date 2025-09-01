@@ -120,7 +120,7 @@ internal class UndeadDecay : ModProjectile
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-		var effect = AssetLoader.LoadedShaders["NoiseFade"];
+		var effect = AssetLoader.LoadedShaders["NoiseFade"].Value;
 
 		foreach (var projectile in ToDraw) //Draw all shader-affected NPCs
 		{

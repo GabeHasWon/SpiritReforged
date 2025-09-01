@@ -117,3 +117,13 @@ FlaskOfFrost_Buff: {
 	DisplayName: Weapon Imbue: Freezing
 	Description: Melee and Whip attacks freeze enemies
 }
+
+Slowed: {
+	DisplayName: Slowed
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Toucane
+	Description: The toucane fights for you?
+}

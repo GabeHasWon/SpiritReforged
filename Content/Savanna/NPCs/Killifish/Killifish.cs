@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
-using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -8,7 +7,6 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 [AutoloadCritter]
-[AutoloadBanner]
 public class Killifish : ModNPC
 {
 	private ref float YMovement => ref NPC.ai[0]; // Y Movement (adapted from vanilla)
@@ -26,14 +24,11 @@ public class Killifish : ModNPC
 		Main.npcCatchable[Type] = true;
 
 		NPCID.Sets.CountsAsCritter[Type] = true;
+		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
-	public virtual void CreateItemDefaults()
-	{
-		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
-		ItemEvents.CreateItemDefaults(this.AutoItemType("Banner"), item => item.value = Item.sellPrice(0, 0, 2, 0));
-	}
+	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
 
 	public override void SetDefaults()
 	{
@@ -328,6 +323,5 @@ public class Killifish : ModNPC
 		}
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<RawFish>(3);
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.Water ? (spawnInfo.PlayerInTown ? 0.75f : 0.18f) : 0f;
 }

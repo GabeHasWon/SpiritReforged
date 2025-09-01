@@ -6,14 +6,11 @@ VanillaDialogue: {
 		Kelp: Don't eat the seaweed.
 	}
 
-	ArmsDealer: {
-		Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
-		Placeholder: placeholder
-	}
+	ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
 
 	Stylist: {
-		Savanna1: It's wicked hard to maintain my hairstyle in this climate.
-		Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+		Savanna: It's wicked hard to maintain my hairstyle in this climate.
+		Duststorm: If I have to pick out sand from one more person's hair, I swear...
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
 	}
 
-	Demolitionist: {
-		HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
-		Placeholder: placeholder
-	}
+	Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
 
 	Nurse: {
 		Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
@@ -227,7 +221,7 @@ Cartographer: {
 			Savanna: {
 				0:
 					'''
-					There we go, pin's on the house. I was up to the usual. Taking my morning walk and visiously punching trees to get apples. After punching a couple of trees, 
+					There we go, pin's on the house. I was up to the usual: taking my morning walk and viciously punching trees to get apples. After punching a couple of trees, 
 					I look up. Somehow, a whole prairie snuck up on me. I went back to punching trees after a few moments.
 					'''
 				1:
@@ -244,7 +238,7 @@ Cartographer: {
 
 			Hive: {
 				0: Pin goes...here. On the low, I don't recommend that jungle place. It's ROUGH. But when you see one of those big hives, there's honey nearby. And that's a treat worth many stings.
-				1: There you go! Um...I'll be real. Sometimees you'll strike liquid gold and it's STILL not worth investing in. Nasty bees... keep it hike, not business.
+				1: There you go! Um...I'll be real. Sometimes you'll strike liquid gold and it's STILL not worth investing in. Nasty bees... keep it hike, not business.
 				2: If you take a look right... here, you'll find something you may be interested in. I'll keep this short though, stingers hurt. Be prepared.
 			}
 
@@ -282,7 +276,7 @@ Cartographer: {
 
 			WulfrumBunker: {
 				0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				1: This was were my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
+				1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
 				2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
 			}
 
@@ -311,7 +305,7 @@ Hiker: {
 	Dialogue: {
 		Hungry: {
 			Asking: {
-				0: Hey there stranger, care to share in some snacking? If you can lend me a {0} then I may have somthing nice for you too.
+				0: Hey there stranger, care to share in some snacking? If you can lend me a {0} then I may have something nice for you too.
 				1: You ever leave the house, and THEN realize you're hungry? I wish I didn't... could you spare me a {0}?
 				2: A long uphill hike really takes it out of you. I'm so beat, I could go for some {0}... help a guy out?
 				3: I went through my last protein bar a whole fourty-five minutes ago, I'm on my last legs here. Could you spare one of your {0}?
@@ -459,3 +453,25 @@ ArgonMossSlime.DisplayName: Argon Moss Slime
 HeliumMossSlime.DisplayName: Helium Moss Slime
 OganessonMossSlime.DisplayName: Oganesson Moss Slime
 RadonMossSlime.DisplayName: Radon Moss Slime
+
+Stactus: {
+	DisplayName: Stactus
+	Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+}
+
+Tumbleweed.DisplayName: Tumbleweed
+
+Flamingo: {
+	DisplayName: Flamingo
+	Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
+DivingBeetle: {
+	DisplayName: Diving Beetle
+	Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	DisplayName: Gold Diving Beetle
+	Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+}

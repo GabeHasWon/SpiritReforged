@@ -4,10 +4,13 @@ namespace SpiritReforged.Common.PlayerCommon;
 
 public class PlayerEvents : ModPlayer
 {
+	public delegate void PlayerDelegate(Player player);
 	public delegate void AnglerQuestDelegate(Player player, float rareMultiplier, List<Item> rewardItems);
 
-	public static event Action<Player> OnKill;
+	public static event PlayerDelegate OnKill;
 	public static event AnglerQuestDelegate OnAnglerQuestReward;
+	public static event PlayerDelegate OnPostUpdateRunSpeeds;
+	public static event PlayerDelegate OnPostUpdateEquips;
 
 	/// <summary> Subscribes to <see cref="OnAnglerQuestReward"/> with reward chances based on the provided info. </summary>
 	/// <param name="item"> The item to add as a reward. </param>
@@ -24,4 +27,6 @@ public class PlayerEvents : ModPlayer
 
 	public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource) => OnKill?.Invoke(Player);
 	public override void AnglerQuestReward(float rareMultiplier, List<Item> rewardItems) => OnAnglerQuestReward?.Invoke(Player, rareMultiplier, rewardItems);
+	public override void PostUpdateRunSpeeds() => OnPostUpdateRunSpeeds?.Invoke(Player);
+	public override void PostUpdateEquips() => OnPostUpdateEquips?.Invoke(Player);
 }

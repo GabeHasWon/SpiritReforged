@@ -1,14 +1,14 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.Utilities;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 //Though this is technically a furniture helper, don't use FurnitureTile because it autoloads an item
 public abstract class MusicBoxTile : ModTile
 {
+	/// <summary> Denotes the common random chance for music note gores to spawn. </summary>
+	public static bool SpawnNote => (int)Main.timeForVisualEffects % 7 == 0 && Main.rand.NextBool(3);
 	public abstract string MusicPath { get; }
 
 	/// <summary> Functions like <see cref="ModType.Load"/> and handles item autoloading. </summary>
@@ -28,30 +28,28 @@ public abstract class MusicBoxTile : ModTile
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.addTile(Type);
 
-		RegisterItemDrop(this.AutoItem().type); //Register this drop for all styles
+		RegisterItemDrop(this.AutoItemType()); //Register this drop for all styles
 		AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
 		DustType = -1;
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) //Spawn music notes
+	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
-		bool chance = (int)Main.timeForVisualEffects % 7 == 0 && Main.rand.NextBool(3);
-		if (Lighting.UpdateEveryFrame && new FastRandom(Main.TileFrameSeed).WithModifier(i, j).Next(4) != 0 || !chance)
-			return;
+		if (visible && tile.TileFrameX == 36 && tile.TileFrameY % 36 == 0 && SpawnNote)
+			SpawnMusicNote(i, j);
+	}
 
-		var tile = Framing.GetTileSafely(i, j);
-		if (!TileDrawing.IsVisible(tile) || tile.TileFrameX != 36 || tile.TileFrameY % 36 != 0)
-			return;
-
+	/// <summary> Spawns a music note gore relative to the tile at the  given coordinates. </summary>
+	public static void SpawnMusicNote(int i, int j)
+	{
 		int goreType = Main.rand.Next(570, 573);
 		var position = new Vector2(i, j) * 16 + new Vector2(8, -8);
 		var velocity = new Vector2(Main.WindForVisuals * 2f, -0.5f) * new Vector2(Random(), Random());
-		var gore = Gore.NewGoreDirect(new EntitySource_TileUpdate(i, j), position, velocity, goreType, .8f);
+
+		var gore = Gore.NewGoreDirect(new EntitySource_TileUpdate(i, j), position, velocity, goreType, 0.8f);
 		gore.position.X -= gore.Width / 2;
 
-		return;
-
-		static float Random() => Main.rand.NextFloat(.5f, 1.5f);
+		static float Random() => Main.rand.NextFloat(0.5f, 1.5f);
 	}
 
 	public override void MouseOver(int i, int j)
@@ -59,7 +57,7 @@ public abstract class MusicBoxTile : ModTile
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = this.AutoItem().type;
+		player.cursorItemIconID = this.AutoItemType();
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

@@ -1,36 +1,36 @@
 EmpoweredSwim: {
-	DisplayName: Водная грация
-	Description: Теперь вода эта ваша стихия
+	DisplayName: Усиленное плавание
+	Description: Вы чувствуете себя гораздо быстрее в воде
 }
 
 MantarayBuff: {
-	DisplayName: Спасательный скат
-	Description: Быстрый, как морской бриз!
+	DisplayName: Скат-спасатель
+	Description: Стремительный, как волна!
 }
 
 JellyfishMinion_Buff: {
 	DisplayName: Медуза
-	Description: Миленькая, упругая медуза сражается за вас!
+	Description: Миленькая, и упругая медуза сражается за вас!
 }
 
 JellyfishPet_Buff: {
 	DisplayName: Дружелюбная медуза
-	Description: Эта медуза просто обожает путешествовать вместе с вами!
+	Description: Эта энергичная медуза обожает сопровождать вас повсюду!
 }
 
 DoubleJumpPotionBuff: {
-	DisplayName: Зефирный прыжок
-	Description: Временно даёт двойной прыжок
+	DisplayName: Бризовый прыжок
+	Description: Даёт временный двойной прыжок
 }
 
 FlightPotionBuff: {
 	DisplayName: Парение
-	Description: Увеличивает время полёта на 25%
+	Description: Время полёта увеличено на 25%
 }
 
 BottleMountBuff: {
 	DisplayName: Плот
-	Description: Посылаем сигнал бедствия...
+	Description: Посылает сигнал бедствия
 }
 
 FairyMinion_Buff: {
@@ -40,12 +40,12 @@ FairyMinion_Buff: {
 
 Impaled: {
 	DisplayName: Пронзён
-	Description: Ай.. больно в ноге!
+	Description: Вас пронзили пикой. Ай!
 }
 
 KoiTotemBuff: {
 	DisplayName: Тотем кои
-	Description: Увеличивает мастерство рыбалки
+	Description: Навык рыбной ловли увеличен
 }
 
 ButterflyMinion_Buff: {
@@ -59,28 +59,28 @@ ToucanMinion_Buff: {
 }
 
 QuenchPotion_Buff: {
-	DisplayName: Жажда
-	Description: Другие зелья длятся на 25% дольше
+	DisplayName: Пресыщение
+	Description: Длительность действия остальных зелий увеличена на 25%
 }
 
 TumblerPet_Buff: {
-	DisplayName: Дружелюбное перекати-поле
+	DisplayName: Сомнительное перекати-поле
 	Description: Это игривое перекати-поле не отстаёт ни на шаг!
 }
 
 Frozen: {
-	DisplayName: Обморожение
-	Description: Снижает скорость передвижения врагов
+	DisplayName: "{$BuffName.Frozen}"
+	Description: Скорость передвижения врагов снижена
 }
 
 GildedScarabBuff: {
-	DisplayName: Золотой скарабей
-	Description: Увеличивает защиту на {0}
+	DisplayName: Скарабейный щит
+	Description: Защита увеличена на {0} ед.
 }
 
 PoolNoodleBubbleBuff: {
-	DisplayName: Пузырьковая тайна
-	Description: Древний кодекс знаний Spirit раскрылся перед вами... Грядёт битва с Тёмной Звездой, но готовы ли вы к ней?
+	DisplayName: Пузырь нудла
+	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Тёмной Сталью, Падшей звездой!
 }
 
 ExplorerSpeed: {
@@ -89,31 +89,41 @@ ExplorerSpeed: {
 }
 
 RemedyPotionBuff: {
-	DisplayName: Целебный эффект
-	Description: Дает иммунитет к некоторым вредным эффектам
+	DisplayName: Исцеление
+	Description: Невосприимчивость к некоторым негативным эффектам
 }
 
 OpenWounds: {
 	DisplayName: Открытые раны
-	Description: Вы уязвимы к кровотечению
+	Description: Вы подвержены кровотечению
 }
 
 ExplorerPot: {
 	DisplayName: Трепет исследователя
-	Description: Вы жаждете большего!
+	Description: Вы жаждите большего!
 }
 
 ExplorerMine: {
-	DisplayName: Силы исследователя
+	DisplayName: Сила исследователя
 	Description: Продолжайте копать!
 }
 
 JinxMark: {
-	// DisplayName: Jinx Mark
-	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	DisplayName: Метка сглаза
+	Description: ""
 }
 
 FlaskOfFrost_Buff: {
-	// DisplayName: Weapon Imbue: Freezing
-	// Description: Melee and Whip attacks freeze enemies
+	DisplayName: Смазанное оружие: Заморозка
+	Description: Атаки ближнего боя, а также хлысты замораживают врагов
+}
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
 }

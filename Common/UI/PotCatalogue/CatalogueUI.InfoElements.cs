@@ -1,6 +1,6 @@
-﻿using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
-using SpiritReforged.Content.Underground.Tiles;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -68,15 +68,15 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (RecordHandler.ActionByType.TryGetValue(Selected.record.type, out var action))
+		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootTable.LootDelegate action))
 		{
-			var tableInst = new LootTable();
-			action.Invoke(Selected.record.styles[0], tableInst);
+			var loot = new TileLootTable(Selected.record.styles[0]);
+			action.Invoke(loot);
 
 			List<DropRateInfo> list = [];
 			DropRateInfoChainFeed ratesInfo = new(1f);
 
-			foreach (IItemDropRule item in tableInst.Get())
+			foreach (IItemDropRule item in loot.Get())
 				item.ReportDroprates(list, ratesInfo);
 
 			foreach (var rateInfo in list)
@@ -111,7 +111,7 @@ public partial class CatalogueUI : AutoUIState
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
-			var shader = AssetLoader.LoadedShaders["Rainbow"];
+			var shader = AssetLoader.LoadedShaders["Rainbow"].Value;
 			var texture = StarLight.Value;
 
 			for (int i = 0; i < count; i++)

@@ -9,6 +9,7 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -17,7 +18,13 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class Flarepowder : ModItem
 {
-	private static readonly Asset<Texture2D> HeldTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld"));
+	public static readonly SoundStyle Cast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast")
+	{
+		PitchRange = (0.5f, 1f),
+		MaxInstances = 2
+	};
+
+	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
 	public bool IsDerived => GetType() != typeof(Flarepowder);
@@ -52,25 +59,6 @@ public class Flarepowder : ModItem
 		orig(ref drawinfo);
 	}
 
-	/// <summary> Drops <see cref="Flarepowder"/> from all pots in addition to normal items. </summary>
-	private static void AddPotLoot(int i, int j, int type, ref bool fail, ref bool effectOnly)
-	{
-		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
-			return;
-
-		int chance = (i < Main.rockLayer) ? 17 : 0;
-		if (chance > 0 && Main.rand.NextBool(chance))
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<Flarepowder>(), Main.rand.Next(10, 21));
-		}
-
-		bool IsTopLeft()
-		{
-			var tile = Main.tile[i, j];
-			return tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
-		}
-	}
-
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 99;
@@ -85,7 +73,14 @@ public class Flarepowder : ModItem
 		if (!IsDerived)
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
-			TileEvents.AddKillTileAction(TileID.Pots, AddPotLoot);
+
+			TileLootHandler.RegisterLoot(static (loot) =>
+			{
+				int chance = (loot is TileLootTable t && t.Coordinates.Y < Main.rockLayer) ? 17 : 0;
+
+				if (chance > 0)
+					loot.AddCommon(ModContent.ItemType<Flarepowder>(), chance, 10, 20);
+			}, TileID.Pots, ModContent.TileType<Pots>());
 		}
 
 		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
@@ -119,7 +114,7 @@ public class Flarepowder : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/MagicCast1") with { PitchRange = (0.5f, 1f), MaxInstances = 2 }, player.Center);
+		SoundEngine.PlaySound(Cast, player.Center);
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -163,10 +158,10 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 	public override void SetDefaults()
 	{
+		Projectile.Size = new(8);
 		Projectile.DamageType = DamageClass.Magic;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
-		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
 		randomTimeLeft = (0.1f, 0.3f);

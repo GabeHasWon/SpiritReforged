@@ -13,22 +13,15 @@ namespace SpiritReforged.Content.Forest.JinxBow;
 
 public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 {
+	private readonly record struct ArrowData(int Type, int Damage, float Knockback, float ShootSpeed, Color BrightColor);
+
 	public const int MARK_COOLDOWN = 600;
 	public const float MARK_LINGER_RATIO = 0.5f;
 
 	private const int FIRE_TIME = 60;
 	private const int COOLDOWN_TIME = 30;
 
-	public static Color JinxbowCyan = Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(100);
-
-	private struct ArrowData()
-	{
-		public int type;
-		public int damage;
-		public float knockBack;
-		public float shootSpeed;
-		public Color brightColor;
-	}
+	public static readonly Color JinxbowCyan = Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(100);
 
 	private bool _isDoingEmpoweredShot = false;
 	private bool _hasDoneEmpoweredShot = false;
@@ -60,11 +53,12 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	public override bool PreAI()
 	{
-		Player mp = Main.player[Projectile.owner];
-		if (mp.HasEquip<JinxBow>())
+		Player owner = Main.player[Projectile.owner];
+		if (owner.HasEquip<JinxBow>())
 			Projectile.timeLeft = 2;
 
-		SetArrowData(mp);
+		if (_selectedArrow == default)
+			SetArrowData(owner);
 
 		return true;
 	}
@@ -119,12 +113,12 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			AiTimer = FIRE_TIME + COOLDOWN_TIME;
 			BounceTimer = COOLDOWN_TIME;
 
-			Vector2 arrowVelocity = middlePoint.DirectionTo(target.Center) * _selectedArrow.shootSpeed;
+			Vector2 arrowVelocity = middlePoint.DirectionTo(target.Center) * _selectedArrow.ShootSpeed;
 
 			if (Projectile.owner == Main.myPlayer) //Only ever spawn projectiles on the owning client
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner, target.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, arrowVelocity, _selectedArrow.Type, _selectedArrow.Damage, _selectedArrow.Knockback, Projectile.owner, target.whoAmI);
 
-			Vector2 visualArrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation) * _selectedArrow.shootSpeed;
+			Vector2 visualArrowVelocity = Vector2.UnitX.RotatedBy(desiredRotation) * _selectedArrow.ShootSpeed;
 			_storedOffset -= visualArrowVelocity;
 
 			if (!Main.dedServ)
@@ -208,20 +202,21 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		{
 			AiTimer = FIRE_TIME + COOLDOWN_TIME;
 
-			float ticksFromTarget = Projectile.Distance(target.Center) / _selectedArrow.shootSpeed;
-			Vector2 arrowVelocity = Projectile.DirectionTo(target.Center + target.velocity * ticksFromTarget / 2) * _selectedArrow.shootSpeed;
+			float ticksFromTarget = Projectile.Distance(target.Center) / _selectedArrow.ShootSpeed;
+			Vector2 arrowVelocity = Projectile.DirectionTo(target.Center + target.velocity * ticksFromTarget / 2) * _selectedArrow.ShootSpeed;
 
 			BounceTimer = COOLDOWN_TIME;
 
 			if (Projectile.owner == Main.myPlayer)
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, arrowVelocity, _selectedArrow.type, _selectedArrow.damage, _selectedArrow.knockBack, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, arrowVelocity, _selectedArrow.Type, _selectedArrow.Damage, _selectedArrow.Knockback, Projectile.owner);
 
 			_storedOffset -= arrowVelocity;
+			_selectedArrow = default;
 
 			if (!Main.dedServ)
 			{
 				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1.25f }, Projectile.Center);
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center + arrowVelocity * 2f, arrowVelocity * 0.3f, _selectedArrow.brightColor.Additive() * 0.66f, new(0.66f, 3f), 10, 1));
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center + arrowVelocity * 2f, arrowVelocity * 0.3f, _selectedArrow.BrightColor.Additive() * 0.66f, new(0.66f, 3f), 10, 1));
 			}
 		}
 	}
@@ -254,33 +249,31 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	private void SetArrowData(Player player)
 	{
-		BowHelpers.FindAmmo(player, AmmoID.Arrow, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel, 1);
-		int type = projToFire ?? ProjectileID.WoodenArrowFriendly;
-		float speed = 10 + ammoVel ?? 0;
-		float knockBack = Projectile.knockBack + (ammoKB ?? 0);
-		int damage = Projectile.damage + (ammoDamage ?? 0);
+		BowHelpers.FindAmmo(player, AmmoID.Arrow, out int type, out int damage, out float knockback, out float speed, 1);
 
-		_selectedArrow = new()
-		{
-			type = type,
-			damage = damage,
-			shootSpeed = speed,
-			knockBack = knockBack
-		};
+		if (type == ProjectileID.None)
+			type = ProjectileID.WoodenArrowFriendly;
 
-		if (!Main.dedServ)
-		{
-			Main.instance.LoadProjectile(type);
-			Texture2D arrowTex = TextureAssets.Projectile[type].Value;
-			_selectedArrow.brightColor = TextureColorCache.GetBrightestColor(arrowTex);
-		}
+		speed += 10;
+		knockback += Projectile.knockBack;
+		damage += Projectile.damage;
+		Color color = default;
 
 		if (_isDoingEmpoweredShot)
 		{
-			_selectedArrow.damage = (int)(_selectedArrow.damage * 1.33f);
-			_selectedArrow.type = ModContent.ProjectileType<JinxArrow>();
-			_selectedArrow.brightColor = JinxbowCyan;
+			damage = (int)(damage * 1.33f);
+			type = ModContent.ProjectileType<JinxArrow>();
+			color = JinxbowCyan;
 		}
+		else if (!Main.dedServ)
+		{
+			Main.instance.LoadProjectile(type);
+
+			Texture2D arrowTex = TextureAssets.Projectile[type].Value;
+			color = TextureColorCache.GetBrightestColor(arrowTex);
+		}
+
+		_selectedArrow = new(type, damage, knockback, speed, color);
 	}
 
 	private void EmpoweredShotFX(Vector2 visualArrowVelocity)
@@ -325,7 +318,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		{
 			if ((_targetNPC != null || _isDoingEmpoweredShot) && AiTimer < FIRE_TIME)
 			{
-				Texture2D arrowTex = TextureAssets.Projectile[_selectedArrow.type].Value;
+				Texture2D arrowTex = TextureAssets.Projectile[_selectedArrow.Type].Value;
 				Texture2D arrowSolid = TextureColorCache.ColorSolid(arrowTex, Color.LightCyan);
 
 				Vector2 arrowPos = stringCenter;
@@ -334,7 +327,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				var arrowOrigin = new Vector2(arrowTex.Width / 2, arrowTex.Height);
 
 				Color solidColor = Projectile.GetAlpha(nonRefLightColor).Additive(200) * easedCharge;
-				Color glowColor = _selectedArrow.brightColor;
+				Color glowColor = _selectedArrow.BrightColor;
 				glowColor = Color.Lerp(glowColor, Color.LightCyan, 0.33f).Additive(100);
 				glowColor *= EaseFunction.EaseQuadOut.Ease(easedCharge);
 
