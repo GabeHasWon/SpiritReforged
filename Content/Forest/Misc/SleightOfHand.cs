@@ -1,15 +1,19 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
+using Terraria.UI;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
 [FromClassic("AssassinMagazine")]
 public class SleightOfHand : EquippableItem
 {
+	private static readonly Asset<Texture2D> PopupTexture = DrawHelpers.RequestLocal(typeof(SleightOfHand), "SleightOfHand_Popup", false);
+
 	private static float SwapTime;
 	private static int SwapItemType;
 
@@ -18,7 +22,8 @@ public class SleightOfHand : EquippableItem
 		DoubleTapPlayer.OnDoubleTap += CycleAmmo;
 		On_Main.DrawInterface_14_EntityHealthBars += static (orig, self) =>
 		{
-			SwapTime = Math.Max(SwapTime - 0.03f, 0);
+			if (!Main.gamePaused)
+				SwapTime = Math.Max(SwapTime - 0.03f, 0);
 
 			DrawIndicator();
 			orig(self);
@@ -56,7 +61,10 @@ public class SleightOfHand : EquippableItem
 						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, ammoPos[i]);
 				}
 
-				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1, Volume = 0.7f });
+				//Play sounds
+				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1, Volume = 0.4f });
+				SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 1, Volume = 0.5f });
+
 				SwapTo(ammoItems[0].type);
 			}
 		}
@@ -73,15 +81,31 @@ public class SleightOfHand : EquippableItem
 		if (SwapTime == 0)
 			return;
 
-		var sb = Main.spriteBatch;
-		var center = Main.LocalPlayer.Center - new Vector2((float)Math.Sin(Math.Max(SwapTime - 0.75f, 0) * 20) * 15, 50) - Main.screenPosition;
-		float scale = 1 + Math.Max(SwapTime - 0.9f, 0) * 10;
+		Main.instance.LoadItem(SwapItemType);
 
+		var sb = Main.spriteBatch;
+		var center = Main.LocalPlayer.Center - new Vector2(0, 50 - SwapTime * 8) - Main.screenPosition;
+		float rotation = (EaseFunction.EaseCubicIn.Ease(SwapTime) - 0.2f) * 2;
+
+		var back = PopupTexture.Value;
 		var texture = TextureAssets.Item[SwapItemType].Value;
 		var outline = TextureColorCache.ColorSolid(texture, Color.White);
 
-		DrawHelpers.DrawOutline(sb, outline, center, Color.Black * SwapTime * 0.5f);
-		sb.Draw(texture, center, null, Color.White * EaseFunction.EaseQuinticOut.Ease(SwapTime), 0, texture.Size() / 2, scale, default, 0);
+		var currentWhite = Color.White;
+		var currentSource = texture.Frame();
+		ItemSlot.DrawItem_GetColorAndScale(new Item(SwapItemType), 1, ref currentWhite, 20, ref currentSource, out _, out float itemScale);
+
+		var squashScale = new Vector2(EaseFunction.EaseQuinticOut.Ease(SwapTime), 1) * (1 + Math.Max(SwapTime - 0.9f, 0) * 10);
+
+		DrawHelpers.DrawOutline(sb, back, center, Color.White, (offset) => sb.Draw(back, center + offset, null, Color.Red.Additive() * SwapTime, rotation, back.Size() / 2, squashScale, default, 0));
+
+		sb.Draw(back, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(SwapTime), rotation, back.Size() / 2, squashScale, default, 0);
+		sb.Draw(texture, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(SwapTime), rotation, texture.Size() / 2, squashScale * itemScale, default, 0);
+
+		Texture2D pulse = TextureAssets.Extra[98].Value;
+		Vector2 pulseScale = new(0.2f, 1 + (1f - SwapTime));
+		sb.Draw(pulse, center, null, Color.Red.Additive() * EaseFunction.EaseQuinticIn.Ease(SwapTime), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 2, default, 0);
+		sb.Draw(pulse, center, null, Color.White.Additive() * EaseFunction.EaseQuinticIn.Ease(SwapTime), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 1.5f, default, 0);
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -90,8 +114,8 @@ public class SleightOfHand : EquippableItem
 		{
 			if (line.Mod == "Terraria" && line.Name == "Tooltip0")
 			{
-				string down = !Main.ReversedUpDownArmorSetBonuses ? "UP" : "DOWN";
-				line.Text = line.Text.Replace("{0}", down);
+				string up = Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.DOWN" : "Key.UP");
+				line.Text = line.Text.Replace("{0}", up);
 
 				return;
 			}
