@@ -2277,3 +2277,12 @@ OtherworldlyRadioItem: {
 		'Charmingly old-fashioned'
 		'''
 }
+
+SleightOfHand: {
+	DisplayName: Sleight of Hand
+	Tooltip:
+		'''
+		Double tap {0} while holding a ranged weapon to swap ammo types
+		Works while in the inventory
+		'''
+}
