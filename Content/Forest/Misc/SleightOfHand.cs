@@ -5,6 +5,7 @@ using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
+using Terraria.GameContent.UI;
 using Terraria.UI;
 
 namespace SpiritReforged.Content.Forest.Misc;
@@ -12,100 +13,118 @@ namespace SpiritReforged.Content.Forest.Misc;
 [FromClassic("AssassinMagazine")]
 public class SleightOfHand : EquippableItem
 {
-	private static readonly Asset<Texture2D> PopupTexture = DrawHelpers.RequestLocal(typeof(SleightOfHand), "SleightOfHand_Popup", false);
-
-	private static float SwapTime;
-	private static int SwapItemType;
-
-	public override void Load()
+	private class Indicator : ILoadable
 	{
-		DoubleTapPlayer.OnDoubleTap += CycleAmmo;
-		On_Main.DrawInterface_14_EntityHealthBars += static (orig, self) =>
-		{
-			if (!Main.gamePaused)
-				SwapTime = Math.Max(SwapTime - 0.03f, 0);
+		public const int Duration = 50;
 
-			DrawIndicator();
+		public float Progress => (float)_timeLeft / Duration;
+
+		private readonly int _itemType;
+		private readonly Color _primaryColor;
+		private readonly Vector2 _offset;
+
+		private int _timeLeft;
+
+		#region handling
+		private static readonly Asset<Texture2D> PopupTexture = DrawHelpers.RequestLocal(typeof(SleightOfHand), "SleightOfHand_Popup", false);
+		public static readonly List<Indicator> Indicators = [];
+
+		public void Load(Mod mod) => On_Main.DrawInterface_14_EntityHealthBars += static (orig, self) =>
+		{
+			for (int i = Indicators.Count - 1; i >= 0; i--)
+			{
+				Indicators[i].Draw(Main.spriteBatch);
+
+				if (!Main.gamePaused && --Indicators[i]._timeLeft <= 0)
+					Indicators.RemoveAt(i);
+			}
+
 			orig(self);
 		};
+
+		public void Unload() { }
+		#endregion
+
+		public Indicator() { }
+		public Indicator(int itemType, Color color, Vector2 offset = default) : base()
+		{
+			_itemType = itemType;
+			_primaryColor = color;
+			_offset = offset;
+			_timeLeft = Duration;
+		}
+
+		private void Draw(SpriteBatch sb)
+		{
+			Main.instance.LoadItem(_itemType);
+
+			var center = Main.LocalPlayer.Center - new Vector2(0, 50 - Progress * 14) - Main.screenPosition + _offset;
+			float rotation = EaseFunction.EaseCubicIn.Ease(Progress) - 0.2f;
+			var squashScale = new Vector2(EaseFunction.EaseQuinticOut.Ease(Progress), 1) * (1 + Math.Max(Progress - 0.9f, 0) * 10);
+
+			var back = PopupTexture.Value;
+			var item = TextureAssets.Item[_itemType].Value;
+
+			var currentWhite = Color.White;
+			var currentSource = item.Frame();
+			ItemSlot.DrawItem_GetColorAndScale(new Item(_itemType), 1, ref currentWhite, 20, ref currentSource, out _, out float itemScale);
+
+			DrawHelpers.DrawOutline(sb, back, center, Color.White, (offset) => sb.Draw(back, center + offset, null, _primaryColor.Additive() * Progress, rotation, back.Size() / 2, squashScale, default, 0));
+
+			sb.Draw(back, center, null, Color.Lerp(Color.Gray, Color.White, Progress) * EaseFunction.EaseCubicOut.Ease(Progress), rotation, back.Size() / 2, squashScale, default, 0);
+			sb.Draw(item, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(Progress), rotation, item.Size() / 2, squashScale * itemScale, default, 0);
+
+			Texture2D pulse = TextureAssets.Extra[98].Value;
+			Texture2D wave = TextureAssets.GlowMask[239].Value;
+
+			sb.Draw(wave, center, null, _primaryColor.Additive() * EaseFunction.EaseCircularIn.Ease(Progress) * 0.5f, MathHelper.PiOver2, wave.Size() / 2, 1f - Progress, default, 0);
+
+			Vector2 pulseScale = new(0.2f, 1 + (1f - Progress));
+			sb.Draw(pulse, center, null, _primaryColor.Additive() * EaseFunction.EaseQuinticIn.Ease(Progress), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 2, default, 0);
+			sb.Draw(pulse, center, null, Color.White.Additive() * EaseFunction.EaseQuinticIn.Ease(Progress), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 1.5f, default, 0);
+		}
 	}
 
+	public override void Load() => DoubleTapPlayer.OnDoubleTap += CycleAmmo;
 	private static void CycleAmmo(Player player, int keyDir)
 	{
-		if (keyDir == 1 && player.HeldItem.useAmmo > AmmoID.None && (player.HasEquip<SleightOfHand>() || player.HasItem(ModContent.ItemType<SleightOfHand>())))
-		{
-			var ammoItems = new List<Item>();
-			var ammoPos = new List<int>();
-
-			for (int i = Main.InventoryAmmoSlotsStart; i < Main.InventoryAmmoSlotsStart + Main.InventoryAmmoSlotsCount; i++)
-			{
-				if (!player.inventory[i].IsAir && player.inventory[i].ammo == player.HeldItem.useAmmo)
-				{
-					ammoItems.Add(player.inventory[i]);
-					ammoPos.Add(i);
-				}
-			}
-
-			if (ammoItems.Count > 1)
-			{
-				//Shift the top item to the bottom
-				var temp = ammoItems[0];
-				ammoItems.RemoveAt(0);
-				ammoItems.Add(temp);
-
-				//Move the items around accordingly and trigger sync messages
-				for (int i = 0; i < ammoItems.Count; i++)
-				{
-					player.inventory[ammoPos[i]] = ammoItems[i];
-					if (Main.netMode == NetmodeID.MultiplayerClient)
-						NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, ammoPos[i]);
-				}
-
-				//Play sounds
-				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1, Volume = 0.4f });
-				SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 1, Volume = 0.5f });
-
-				SwapTo(ammoItems[0].type);
-			}
-		}
-
-		static void SwapTo(int type)
-		{
-			SwapTime = 1;
-			SwapItemType = type;
-		}
-	}
-
-	private static void DrawIndicator()
-	{
-		if (SwapTime == 0)
+		if (keyDir != 1 || player.HeldItem.useAmmo == AmmoID.None || !player.HasEquip<SleightOfHand>() && !player.HasItem(ModContent.ItemType<SleightOfHand>()))
 			return;
 
-		Main.instance.LoadItem(SwapItemType);
+		var ammoItems = new List<Item>();
+		var ammoPos = new List<int>();
 
-		var sb = Main.spriteBatch;
-		var center = Main.LocalPlayer.Center - new Vector2(0, 50 - SwapTime * 8) - Main.screenPosition;
-		float rotation = (EaseFunction.EaseCubicIn.Ease(SwapTime) - 0.2f) * 2;
+		for (int i = Main.InventoryAmmoSlotsStart; i < Main.InventoryAmmoSlotsStart + Main.InventoryAmmoSlotsCount; i++)
+		{
+			if (!player.inventory[i].IsAir && player.inventory[i].ammo == player.HeldItem.useAmmo)
+			{
+				ammoItems.Add(player.inventory[i]);
+				ammoPos.Add(i);
+			}
+		}
 
-		var back = PopupTexture.Value;
-		var texture = TextureAssets.Item[SwapItemType].Value;
-		var outline = TextureColorCache.ColorSolid(texture, Color.White);
+		if (ammoItems.Count > 1)
+		{
+			//Shift the top item to the bottom
+			var temp = ammoItems[0];
+			ammoItems.RemoveAt(0);
+			ammoItems.Add(temp);
 
-		var currentWhite = Color.White;
-		var currentSource = texture.Frame();
-		ItemSlot.DrawItem_GetColorAndScale(new Item(SwapItemType), 1, ref currentWhite, 20, ref currentSource, out _, out float itemScale);
+			//Move the items around accordingly and trigger sync messages
+			for (int i = 0; i < ammoItems.Count; i++)
+			{
+				player.inventory[ammoPos[i]] = ammoItems[i];
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					NetMessage.SendData(MessageID.SyncEquipment, -1, -1, null, player.whoAmI, ammoPos[i]);
+			}
 
-		var squashScale = new Vector2(EaseFunction.EaseQuinticOut.Ease(SwapTime), 1) * (1 + Math.Max(SwapTime - 0.9f, 0) * 10);
+			//Play sounds
+			SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1, Volume = 0.4f });
+			SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 1, Volume = 0.5f });
 
-		DrawHelpers.DrawOutline(sb, back, center, Color.White, (offset) => sb.Draw(back, center + offset, null, Color.Red.Additive() * SwapTime, rotation, back.Size() / 2, squashScale, default, 0));
-
-		sb.Draw(back, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(SwapTime), rotation, back.Size() / 2, squashScale, default, 0);
-		sb.Draw(texture, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(SwapTime), rotation, texture.Size() / 2, squashScale * itemScale, default, 0);
-
-		Texture2D pulse = TextureAssets.Extra[98].Value;
-		Vector2 pulseScale = new(0.2f, 1 + (1f - SwapTime));
-		sb.Draw(pulse, center, null, Color.Red.Additive() * EaseFunction.EaseQuinticIn.Ease(SwapTime), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 2, default, 0);
-		sb.Draw(pulse, center, null, Color.White.Additive() * EaseFunction.EaseQuinticIn.Ease(SwapTime), MathHelper.PiOver2, pulse.Size() / 2, pulseScale * 1.5f, default, 0);
+			Indicator.Indicators.Clear(); //Remove old indicators
+			Indicator.Indicators.Add(new(ammoItems[0].type, ItemRarity.GetColor(ammoItems[0].rare)));
+		}
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
