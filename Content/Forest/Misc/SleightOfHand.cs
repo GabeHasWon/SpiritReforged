@@ -3,13 +3,12 @@ using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
-using System.Linq;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
 [FromClassic("AssassinMagazine")]
-public class Magazine : EquippableItem
+public class SleightOfHand : EquippableItem
 {
 	private static float SwapTime;
 	private static int SwapItemType;
@@ -28,7 +27,7 @@ public class Magazine : EquippableItem
 
 	private static void CycleAmmo(Player player, int keyDir)
 	{
-		if (keyDir == 1 && player.HeldItem.useAmmo > AmmoID.None && (player.HasEquip<Magazine>() || player.HasItem(ModContent.ItemType<Magazine>())))
+		if (keyDir == 1 && player.HeldItem.useAmmo > AmmoID.None && (player.HasEquip<SleightOfHand>() || player.HasItem(ModContent.ItemType<SleightOfHand>())))
 		{
 			var ammoItems = new List<Item>();
 			var ammoPos = new List<int>();
