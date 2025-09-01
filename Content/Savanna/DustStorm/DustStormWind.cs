@@ -1,6 +1,6 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Savanna.Biome;
-using System.Linq;
 
 namespace SpiritReforged.Content.Savanna.DustStorm;
 
@@ -17,7 +17,7 @@ public class DustStormWind : ILoadable
 
 		var tileAbove = Main.tile[i, j - 1];
 
-		if ((SavannaTileCounts.SavannaTypes.Contains(type) || type == TileID.Sand) && !WorldGen.SolidTile(tileAbove)) //Spawn our dusts
+		if ((SceneTileCounter.GetSurvey<SavannaBiome>().tileTypes.Contains(type) || type == TileID.Sand) && !WorldGen.SolidTile(tileAbove)) //Spawn our dusts
 		{
 			float wind = Main.rand.NextFloat(Main.windSpeedCurrent);
 

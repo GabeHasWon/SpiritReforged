@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Personalities;
 
@@ -23,6 +25,9 @@ public class SavannaBiome : ModBiome
 		NPCHappiness.Get(NPCID.ArmsDealer).SetBiomeAffection(this, AffectionLevel.Like);
 		NPCHappiness.Get(NPCID.Stylist).SetBiomeAffection(this, AffectionLevel.Dislike);
 		NPCHappiness.Get(NPCID.GoldBird).SetBiomeAffection(this, AffectionLevel.Dislike);
+
+		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), 
+			ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassHallowMowed>()], 400));
 	}
 
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
@@ -34,30 +39,11 @@ public class SavannaBiome : ModBiome
 	public override string BackgroundPath => MapBackground;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SavannaMapBG";
 	public override int BiomeTorchItemType => ModContent.ItemType<SavannaTorchItem>();
-	public override int BiomeCampfireItemType => Mod.Find<ModItem>("SavannaCampfireItem").Type;
+	public override int BiomeCampfireItemType => AutoContent.ItemType<SavannaCampfire>();
 
 	public override bool IsBiomeActive(Player player)
 	{
 		bool surface = player.ZoneSkyHeight || player.ZoneOverworldHeight;
-		return SavannaTileCounts.InSavanna && surface;
-	}
-}
-
-internal class SavannaTileCounts : ModSystem
-{
-	internal static int[] SavannaTypes;
-	public int savannaCount;
-
-	public static bool InSavanna => ModContent.GetInstance<SavannaTileCounts>().savannaCount >= 400;
-
-	public override void SetStaticDefaults() => SavannaTypes = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), 
-		ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassHallowMowed>()];
-
-	public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
-	{
-		savannaCount = 0;
-
-		foreach (int type in SavannaTypes)
-			savannaCount += tileCounts[type];
+		return SceneTileCounter.SurveyByType[Type].Success && surface;
 	}
 }
