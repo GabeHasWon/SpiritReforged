@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
@@ -127,6 +128,15 @@ public class SleightOfHand : EquippableItem
 		}
 	}
 
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.ArmsDealer, new NPCShop.Entry(Type)));
+	public override void SetDefaults()
+	{
+		Item.Size = new(32);
+		Item.value = Item.buyPrice(0, 5, 0, 0);
+		Item.rare = ItemRarityID.Green;
+		Item.accessory = true;
+	}
+
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		foreach (TooltipLine line in tooltips)
@@ -139,13 +149,5 @@ public class SleightOfHand : EquippableItem
 				return;
 			}
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.Size = new(32);
-		Item.value = Item.buyPrice(0, 5, 0, 0);
-		Item.rare = ItemRarityID.Green;
-		Item.accessory = true;
 	}
 }
