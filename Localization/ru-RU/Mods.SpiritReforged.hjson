@@ -17,6 +17,7 @@ Conditions: {
 	PeevedTumbler: Когда блестит
 	Discovered: Когда обнаружен
 	Submerged: Полностью погружённый в воду
+	// InSaltFlats: In Salt Flats
 }
 
 Misc: {
