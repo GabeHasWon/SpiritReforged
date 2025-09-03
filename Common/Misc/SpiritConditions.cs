@@ -7,4 +7,5 @@ internal static class SpiritConditions
 	// This is because otherwise the condition used will capture an invalid LocalPlayer instance, causing a null ref.
 	
 	public static Condition InSavanna => new("Mods.SpiritReforged.Conditions.InSavanna", () => Main.LocalPlayer.InModBiome<Content.Savanna.Biome.SavannaBiome>());
+	public static Condition InSaltFlats => new("Mods.SpiritReforged.Conditions.InSaltFlats", () => Main.LocalPlayer.InModBiome<Content.SaltFlats.Biome.SaltBiome>());
 }
