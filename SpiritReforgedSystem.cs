@@ -8,7 +8,7 @@ public class SpiritReforgedSystem : ModSystem
 	public static event Action OnLoad;
 	/// <summary> Called after all other systems are unloaded. </summary>
 	public static event Action OnUnload;
-	/// <summary> Called after all other system content has been set up. </summary>
+	/// <summary> Called after all other content has been set up. </summary>
 	public static event Action OnSetupContent;
 
 	public override void PreUpdateItems()

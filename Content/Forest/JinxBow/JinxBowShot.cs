@@ -164,7 +164,7 @@ public class JinxBowShot : GlobalProjectile
 
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		binaryWriter.Write(IsJinxbowShot);
+		bitWriter.WriteBit(IsJinxbowShot);
 
 		if (IsJinxbowShot)
 			binaryWriter.Write(_parentIndex);
@@ -172,7 +172,7 @@ public class JinxBowShot : GlobalProjectile
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
-		bool isJinxbowShot = binaryReader.ReadBoolean();
+		bool isJinxbowShot = bitReader.ReadBit();
 
 		if (isJinxbowShot)
 		{

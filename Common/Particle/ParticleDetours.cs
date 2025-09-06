@@ -2,9 +2,9 @@
 
 namespace SpiritReforged.Common.Particle;
 
-public static class ParticleDetours
+internal class ParticleDetours : ILoadable
 {
-	public static void Initialize()
+	public void Load(Mod mod)
 	{
 		On_Main.DrawProjectiles += AtProjectile;
 		On_Main.DrawNPCs += AboveNPC;
@@ -16,10 +16,14 @@ public static class ParticleDetours
 	private static void AbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
 	{
 		orig(self);
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
-		Main.spriteBatch.RestartToDefault();
+		
+		if (ParticleHandler.Particles.Length != 0) //Avoid restarting the SpriteBatch if there's nothing to draw
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
+			Main.spriteBatch.RestartToDefault();
+		}
 	}
 
 	private static void AboveNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
@@ -30,10 +34,18 @@ public static class ParticleDetours
 
 	private static void AtProjectile(On_Main.orig_DrawProjectiles orig, Main self)
 	{
+		if (ParticleHandler.Particles.Length == 0)
+		{
+			orig(self);
+			return;
+		}
+
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowProjectile);
 		Main.spriteBatch.End();
+
 		orig(self);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveProjectile);
 	}
 
@@ -49,10 +61,5 @@ public static class ParticleDetours
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
 	}
 
-	public static void Unload()
-	{
-		On_Main.DrawProjectiles -= AtProjectile;
-		On_Main.DrawNPCs -= AboveNPC;
-		On_Main.DrawInfernoRings -= AbovePlayer;
-	}
+	public void Unload() { }
 }
