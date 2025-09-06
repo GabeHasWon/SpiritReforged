@@ -56,7 +56,7 @@ public class RollingPots : PotTile, ILootable
 
 	public void AddLoot(ILoot loot)
 	{
-		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+		if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
 			dele.Invoke(loot);
 	}
 }

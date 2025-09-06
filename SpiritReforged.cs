@@ -16,7 +16,6 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
-using System.Runtime.CompilerServices;
 
 namespace SpiritReforged;
 
@@ -25,17 +24,6 @@ public partial class SpiritReforgedMod : Mod
 	public const string ModName = "SpiritReforged";
 
 	public static SpiritReforgedMod Instance { get; private set; }
-
-	/// <summary>
-	/// Gets if Otherworld Music is turned on. <see cref="Main.swapMusic"/> is private for some reason.
-	/// </summary>
-	public static bool SwapMusic => GetSwapMusic(null);
-
-	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
-	private static extern ref bool GetSwapMusic(Main main);
-
-	public static event Action OnLoad;
-	public static event Action OnUnload;
 
 	public SpiritReforgedMod()
 	{
@@ -47,9 +35,6 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Load()
 	{
-		OnLoad?.Invoke();
-		OnLoad = null;
-
 		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
@@ -65,9 +50,6 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Unload()
 	{
-		OnUnload?.Invoke();
-		OnUnload = null;
-
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		AssetLoader.Unload();

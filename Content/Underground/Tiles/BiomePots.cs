@@ -219,7 +219,7 @@ public class BiomePots : PotTile, ILootable
 		{
 			#region loot
 			var p = Main.player[Player.FindClosest(center, 0, 0)];
-			TileLootHandler.Resolve(i, j, Type, frameX, frameY);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 
 			ItemMethods.SplitCoins((int)(CalculateCoinValue() * GetValue(style)), delegate (int type, int stack)
 			{

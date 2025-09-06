@@ -68,7 +68,7 @@ public class Flarepowder : ModItem
 		{
 			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
 
-			TileLootHandler.RegisterLoot(static (loot) =>
+			TileLootSystem.RegisterLoot(static (loot) =>
 			{
 				int chance = (loot is TileLootTable t && t.Coordinates.Y < Main.rockLayer) ? 17 : 0;
 
