@@ -16,7 +16,6 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
-using System.Runtime.CompilerServices;
 
 namespace SpiritReforged;
 
@@ -25,16 +24,6 @@ public partial class SpiritReforgedMod : Mod
 	public const string ModName = "SpiritReforged";
 
 	public static SpiritReforgedMod Instance { get; private set; }
-
-	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
-	private static extern ref bool GetSwapMusic(Main main);
-
-	/// <summary> Called after all other systems are loaded. </summary>
-	public static event Action OnLoad;
-	/// <summary> Called after all other systems are unloaded. </summary>
-	public static event Action OnUnload;
-	/// <summary> Called after all other system content has been set up. </summary>
-	public static event Action OnSetupContent;
 
 	public SpiritReforgedMod()
 	{
@@ -46,9 +35,6 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Load()
 	{
-		OnLoad?.Invoke();
-		OnLoad = null;
-
 		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
@@ -62,17 +48,8 @@ public partial class SpiritReforgedMod : Mod
 		ParticleDetours.Initialize();
 	}
 
-	public override void PostSetupContent()
-	{
-		OnSetupContent?.Invoke();
-		OnSetupContent = null;
-	}
-
 	public override void Unload()
 	{
-		OnUnload?.Invoke();
-		OnUnload = null;
-
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		AssetLoader.Unload();

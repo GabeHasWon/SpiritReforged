@@ -10,6 +10,7 @@ public class SaltSet : FurnitureSet
 {
 	public override string Name => "Salt";
 	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f), DustID.Pearlsand);
+	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Clock, Types.Chandelier);
 }
 
 public class SaltClock : ClockTile

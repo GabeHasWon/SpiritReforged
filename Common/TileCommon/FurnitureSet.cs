@@ -2,49 +2,87 @@
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using System.Reflection;
-using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.TileCommon;
 
 /// <summary> Autoloads a complete array of furniture tiles based on <see cref="GetInfo"/>.<para/>
-/// <see cref="Autoload"/> can be used to selectively disable items. Items with missing textures or conflicting internal names are automatically omitted. </summary>
+/// <see cref="Autoload"/> can be used to selectively disable items. </summary>
 public abstract class FurnitureSet : ILoadable
 {
+	public enum Types
+	{
+		Bathtub,
+		Bed,
+		Bookcase,
+		Candelabra,
+		Candle,
+		Chair,
+		Chandelier,
+		Chest,
+		Barrel,
+		Clock,
+		Door,
+		Dresser,
+		Lamp,
+		Lantern,
+		Piano,
+		Sink,
+		Sofa,
+		Bench,
+		Table,
+		Toilet,
+		WorkBench
+	}
+
 	public abstract string Name { get; }
 	public virtual FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => default;
 
 	public void Load(Mod mod)
 	{
-		var loadable = AssemblyManager.GetLoadableTypes(GetType().Assembly);
-
 		foreach (var t in typeof(FurnitureSet).GetNestedTypes(BindingFlags.Instance | BindingFlags.Public))
 		{
 			if (typeof(FurnitureTile).IsAssignableFrom(t))
 			{
-				var instance = (FurnitureTile)Activator.CreateInstance(t, [this]);
+				var instance = (FurnitureTile)Activator.CreateInstance(t, this);
 
-				if (!loadable.Any(x => x.Name == instance.Name) && Autoload(instance))
+				if (Autoload(instance))
 					mod.AddContent(instance);
 			}
 		}
 
-		SpiritReforgedMod.OnSetupContent += OnPostSetupContent;
+		SpiritReforgedSystem.OnSetupContent += OnPostSetupContent;
 		OnLoad();
 	}
 
-	/// <returns> Whether this instance can be added to mod content. </returns>
-	public virtual bool Autoload(FurnitureTile tile) => ModContent.RequestIfExists<Texture2D>(DrawHelpers.RequestLocal(GetType(), tile.Name), out _);
+	/// <returns> Whether this instance can be added to mod content. Use methods like <see cref="Including"/> and <see cref="Excluding"/> to simplify the process. </returns>
+	public virtual bool Autoload(FurnitureTile tile) => true;
 	public virtual void OnPostSetupContent() { }
 	public virtual void OnLoad() { }
 	public void Unload() { }
 
+	#region enum
+	public static bool Excluding(FurnitureTile tile, params Types[] values)
+	{
+		var c = GetEnumValue(tile);
+		return !values.Contains(c);
+	}
+
+	public static bool Including(FurnitureTile tile, params Types[] values)
+	{
+		var c = GetEnumValue(tile);
+		return values.Contains(c);
+	}
+
+	private static Types GetEnumValue(FurnitureTile tile) => (Types)tile.GetType().GetField("EnumValue", BindingFlags.Static | BindingFlags.Public).GetValue(null);
+	#endregion
+
 	#region types
 	public sealed class AutoBathtubTile(FurnitureSet set) : BathtubTile
 	{
-		public const string Suffix = "Bathtub";
+		public const Types EnumValue = Types.Bathtub;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -53,10 +91,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoBedTile(FurnitureSet set) : BedTile
 	{
-		public const string Suffix = "Bed";
+		public const Types EnumValue = Types.Bed;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -65,10 +103,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoBookcaseTile(FurnitureSet set) : BookcaseTile
 	{
-		public const string Suffix = "Bookcase";
+		public const Types EnumValue = Types.Bookcase;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -77,10 +115,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoCandelabraTile(FurnitureSet set) : CandelabraTile
 	{
-		public const string Suffix = "Candelabra";
+		public const Types EnumValue = Types.Candelabra;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -89,10 +127,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoCandleTile(FurnitureSet set) : CandleTile
 	{
-		public const string Suffix = "Candle";
+		public const Types EnumValue = Types.Candle;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -101,10 +139,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoChairTile(FurnitureSet set) : ChairTile
 	{
-		public const string Suffix = "Chair";
+		public const Types EnumValue = Types.Chair;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -113,10 +151,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoChandelierTile(FurnitureSet set) : ChandelierTile
 	{
-		public const string Suffix = "Chandelier";
+		public const Types EnumValue = Types.Chandelier;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -125,10 +163,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoChestTile(FurnitureSet set) : ChestTile
 	{
-		public const string Suffix = "Chest";
+		public const Types EnumValue = Types.Chest;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -137,10 +175,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoBarrelTile(FurnitureSet set) : BarrelTile
 	{
-		public const string Suffix = "Barrel";
+		public const Types EnumValue = Types.Barrel;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -149,10 +187,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoClockTile(FurnitureSet set) : ClockTile
 	{
-		public const string Suffix = "Clock";
+		public const Types EnumValue = Types.Clock;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -161,10 +199,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoDoorTile(FurnitureSet set) : DoorTile
 	{
-		public const string Suffix = "Door";
+		public const Types EnumValue = Types.Door;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -173,10 +211,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoDresserTile(FurnitureSet set) : DresserTile
 	{
-		public const string Suffix = "Dresser";
+		public const Types EnumValue = Types.Dresser;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -185,10 +223,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoLampTile(FurnitureSet set) : LampTile
 	{
-		public const string Suffix = "Lamp";
+		public const Types EnumValue = Types.Lamp;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -197,10 +235,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoLanternTile(FurnitureSet set) : LanternTile
 	{
-		public const string Suffix = "Lantern";
+		public const Types EnumValue = Types.Lantern;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -209,10 +247,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoPianoTile(FurnitureSet set) : PianoTile
 	{
-		public const string Suffix = "Piano";
+		public const Types EnumValue = Types.Piano;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -221,10 +259,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoSinkTile(FurnitureSet set) : SinkTile
 	{
-		public const string Suffix = "Sink";
+		public const Types EnumValue = Types.Sink;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -233,10 +271,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoSofaTile(FurnitureSet set) : SofaTile
 	{
-		public const string Suffix = "Sofa";
+		public const Types EnumValue = Types.Sofa;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -245,10 +283,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoBenchTile(FurnitureSet set) : BenchTile
 	{
-		public const string Suffix = "Bench";
+		public const Types EnumValue = Types.Bench;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -257,10 +295,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoTableTile(FurnitureSet set) : TableTile
 	{
-		public const string Suffix = "Table";
+		public const Types EnumValue = Types.Table;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -269,10 +307,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoToiletTile(FurnitureSet set) : ToiletTile
 	{
-		public const string Suffix = "Toilet";
+		public const Types EnumValue = Types.Toilet;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);
@@ -281,10 +319,10 @@ public abstract class FurnitureSet : ILoadable
 
 	public sealed class AutoWorkBenchTile(FurnitureSet set) : WorkBenchTile
 	{
-		public const string Suffix = "WorkBench";
+		public const Types EnumValue = Types.WorkBench;
 
 		private readonly FurnitureSet _set = set;
-		private readonly string _name = set.Name + Suffix;
+		private readonly string _name = set.Name + Enum.GetName(EnumValue);
 
 		public override string Name => _name;
 		public override string Texture => DrawHelpers.RequestLocal(_set.GetType(), Name);

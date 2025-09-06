@@ -71,7 +71,7 @@ public class ScryingPot : PotTile, ILootable
 				Item.NewItem(new EntitySource_TileBreak(i, j), spawn, new Item(type, stack), noGrabDelay: true);
 			});
 
-			TileLootHandler.Resolve(i, j, Type, frameX, frameY);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)

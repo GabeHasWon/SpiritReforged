@@ -15,7 +15,7 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 	}
 
 	/// <summary> Functions like <see cref="ModType.Load"/> and handles open door autoloading. </summary>
-	public override void Load() => SpiritReforgedMod.OnLoad += () => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, Info.Item.Type));
+	public override void Load() => SpiritReforgedSystem.OnLoad += () => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, Info.Item.Type));
 
 	public override void StaticDefaults()
 	{

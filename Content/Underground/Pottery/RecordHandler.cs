@@ -126,16 +126,16 @@ public class RecordHandler : ModSystem
 		{
 			if (arg is bool hasBasicLoot && hasBasicLoot)
 			{
-				bool result = TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool);
+				bool result = TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool);
 
 				if (result)
-					TileLootHandler.RegisterLoot(pool, type);
+					TileLootSystem.RegisterLoot(pool, type);
 
 				return result;
 			}
 			else if (arg is Action<int, ILoot> dele)
 			{
-				TileLootHandler.RegisterLoot((loot) =>
+				TileLootSystem.RegisterLoot((loot) =>
 				{
 					if (loot is TileLootTable t)
 						dele.Invoke(t.Style, loot);
@@ -145,7 +145,7 @@ public class RecordHandler : ModSystem
 			}
 			else if (arg is Action<int, Point16, ILoot> dele2)
 			{
-				TileLootHandler.RegisterLoot((loot) =>
+				TileLootSystem.RegisterLoot((loot) =>
 				{
 					if (loot is TileLootTable t)
 						dele2.Invoke(t.Style, t.Coordinates, loot);

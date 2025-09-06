@@ -68,7 +68,7 @@ public partial class CatalogueUI : AutoUIState
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (TileLootHandler.TryGetLootPool(Selected.record.type, out LootTable.LootDelegate action))
+		if (TileLootSystem.TryGetLootPool(Selected.record.type, out LootTable.LootDelegate action))
 		{
 			var loot = new TileLootTable(Selected.record.styles[0]);
 			action.Invoke(loot);

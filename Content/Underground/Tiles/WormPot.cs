@@ -132,7 +132,7 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 				Item.NewItem(new EntitySource_TileBreak(i, j), position, new Item(type, stack), noGrabDelay: true);
 			});
 
-			TileLootHandler.Resolve(i, j, Type, frameX, frameY);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
