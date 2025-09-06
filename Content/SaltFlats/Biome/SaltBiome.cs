@@ -23,6 +23,7 @@ public class SaltBiome : ModBiome
 	}
 
 	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SaltWaterStyle>();
+	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
 	public override int Music => GetMusic();
 
