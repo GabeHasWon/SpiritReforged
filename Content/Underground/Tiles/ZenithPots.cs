@@ -1,7 +1,8 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Underground.Pottery;
+using SpiritReforged.Common.UI.PotCatalogue;
+using System.Linq;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -13,16 +14,20 @@ public class ZenithPots : PotTile, ILootable
 		{ "Pale", [3, 4, 5] }
 	};
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
-		RecordHandler.Records.Add(record.AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Zenith")).Hide());
-	}
+		return record.AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Zenith")).SetCondition(FoundAll).Hide();
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
-	{
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition.Description, RecordedOrProgressed).Register();
-		bool RecordedOrProgressed() => Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(group.name) || NPC.downedMoonlord;
+		bool FoundAll()
+		{
+			var global = Main.LocalPlayer.GetModPlayer<RecordPlayer>();
+
+			if (global.IsValidated(group.name))
+				return true;
+
+			return RecordHandler.Records.All(static x => x.type == ModContent.TileType<ZenithPots>() || x.Condition.IsMet());
+		}
 	}
 
 	public override void SetStaticDefaults()

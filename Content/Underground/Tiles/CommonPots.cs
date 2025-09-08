@@ -19,7 +19,7 @@ public class CommonPots : PotTile, ILootable
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)

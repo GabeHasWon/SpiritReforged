@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Underground.Pottery;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
@@ -42,23 +43,28 @@ public class Pots : PotTile, ILootable
 	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SpawnThingsFromPot")]
 	public static extern void SpawnThingsFromPot(WorldGen worldGen, int i, int j, int x2, int y2, int style);
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
+		var record = base.AddRecord(type, group);
 		if (group.name == "PotsCrimson")
 		{
-			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => !WorldGen.crimson)); //Conditionally hide some entries
+			record = new TileRecord(group.name, type, group.styles).SetCondition(AnyEvil).Hide(() => !WorldGen.crimson); //Conditionally hide some entries
 		}
 		else if (group.name == "PotsCorruption")
 		{
-			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => WorldGen.crimson));
+			record = new TileRecord(group.name, type, group.styles).SetCondition(AnyEvil).Hide(() => WorldGen.crimson);
 		}
-		else
+
+		return record;
+
+		static bool AnyEvil()
 		{
-			base.AddRecord(type, group);
+			var global = Main.LocalPlayer.GetModPlayer<RecordPlayer>();
+			return global.IsValidated("PotsCorruption") || global.IsValidated("PotsCrimson");
 		}
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 
@@ -134,7 +140,7 @@ public class Pots : PotTile, ILootable
 		if (loot is not TileLootTable t || !t.Simulated)
 			return; //Only allow this drop table when simulated because it is not currently correct
 
-		string styleName = StyleDatabase.GetName(Type, (byte)t.Style);
+		string styleName = NamedStyles.GetName(Type, (byte)t.Style);
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
 		if (styleName == "PotsDungeon")

@@ -5,16 +5,14 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
-namespace SpiritReforged.Content.Underground.Pottery;
+namespace SpiritReforged.Common.UI.PotCatalogue;
 
-public interface IRecordTile : INamedStyles
-{
-	public void AddRecord(int type, StyleDatabase.StyleGroup group) => RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles));
-}
-
-public class RecordHandler : ModSystem
+public class RecordHandler : ILoadable
 {
 	public static readonly HashSet<TileRecord> Records = [];
+
+	public void Load(Mod mod) => TileEvents.OnKillTile += ValidateRecord;
+	public void Unload() { }
 
 	/// <summary> Checks whether the tile at the given coordinates corresponds to a record. </summary>
 	public static bool Matching(int i, int j, out string name)
@@ -40,24 +38,10 @@ public class RecordHandler : ModSystem
 		{
 			var t = Main.tile[i, j];
 			//Vanilla pots can't use GetTileStyle because they don't have object data
-			int style = (t.TileType is TileID.Pots) ? t.TileFrameX / 36 + t.TileFrameY / 36 * 3 : TileObjectData.GetTileStyle(t);
+			int style = t.TileType is TileID.Pots ? t.TileFrameX / 36 + t.TileFrameY / 36 * 3 : TileObjectData.GetTileStyle(t);
 
 			return record.styles.Contains(style);
 		}
-	}
-
-	public override void SetStaticDefaults()
-	{
-		foreach (int type in StyleDatabase.Groups.Keys)
-		{
-			if (TileLoader.GetTile(type) is not IRecordTile r)
-				continue;
-
-			foreach (var group in StyleDatabase.Groups[type])
-				r.AddRecord(type, group);
-		}
-
-		TileEvents.OnKillTile += ValidateRecord;
 	}
 
 	private static void ValidateRecord(int i, int j, int type, ref bool fail, ref bool effectOnly)
@@ -99,16 +83,10 @@ public class RecordHandler : ModSystem
 			e.AddRating(rating);
 
 		if (args.Length > 4) //Hidden
-		{
 			if (args[4] is bool hidden && hidden)
-			{
 				e.Hide();
-			}
 			else if (args[4] is Func<bool> hiddenFunc)
-			{
 				e.Hide(hiddenFunc);
-			}
-		}
 
 		if (args.Length > 5) //Add a loot pool
 			ParseLootAction(type, args[5]);
@@ -162,7 +140,7 @@ public class RecordHandler : ModSystem
 internal sealed class RecordPlayer : ModPlayer
 {
 	/// <summary> The list of unlocked entries saved per player. </summary>
-	private IList<string> _validated = [];
+	private HashSet<string> _validated = [];
 	/// <summary> The list of entries newly discovered by the player. Not saved. </summary>
 	private readonly HashSet<string> _newAndShiny = [];
 
@@ -181,6 +159,6 @@ internal sealed class RecordPlayer : ModPlayer
 	/// <returns> Whether the entry of <paramref name="name"/> is unlocked for this player. </returns>
 	public bool IsValidated(string name) => _validated.Contains(name);
 
-	public override void SaveData(TagCompound tag) => tag[nameof(_validated)] = _validated;
-	public override void LoadData(TagCompound tag) => _validated = tag.GetList<string>(nameof(_validated));
+	public override void SaveData(TagCompound tag) => tag[nameof(_validated)] = _validated.ToList();
+	public override void LoadData(TagCompound tag) => _validated = [.. tag.GetList<string>(nameof(_validated))];
 }
