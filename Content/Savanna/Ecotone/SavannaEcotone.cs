@@ -73,23 +73,16 @@ internal class SavannaEcotone : EcotoneBase
 
 		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed)
 		{
-			int spawn = Main.maxTilesX / 2;
-			var entry = EcotoneSurfaceMapping.FindWhere(x => x.Start.X < spawn && x.End.X > spawn);
-
-			if (entry != null)
+			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{
 				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
 		}
-		else
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry)
 		{
-			var entry = EcotoneSurfaceMapping.FindWhere("Desert", "Jungle");
-			if (entry != null)
-			{
-				bounds = (entry.Start.X - offX, entry.End.X);
-				return true;
-			}
+			bounds = (entry.Start.X - offX, entry.End.X);
+			return true;
 		}
 
 		return false;

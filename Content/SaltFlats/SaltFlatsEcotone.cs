@@ -17,7 +17,10 @@ namespace SpiritReforged.Content.SaltFlats;
 
 internal class SaltFlatsEcotone : EcotoneBase
 {
-	public const int SurfaceNoiseLength = 2;
+	private readonly record struct IslandInfo(int X, int Y, int Width)
+	{
+		public readonly bool Contains(Point point) => new Rectangle(X - Width / 2, Y - 1, Width, 3).Contains(point);
+	}
 
 	[WorldBound]
 	public static Rectangle SaltArea;
@@ -34,26 +37,23 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static bool CanGenerate(out (int, int) bounds)
 	{
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
-
 		bounds = (0, 0);
-		int spawn = Main.maxTilesX / 2;
 
 		if (SecretSeedSystem.WorldSecretSeed is SaltSeed)
 		{
-			if (EcotoneSurfaceMapping.FindWhere(OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
+			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{
 				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere("Desert", "Snow", x => !OverSpawn(x)) is EcotoneSurfaceMapping.EcotoneEntry entry) //Uniquely, salt flats cannot normally generate over spawn
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
-			return true;
+			return true; //Uniquely, salt flats cannot normally generate over spawn
 		}
 
 		return false;
-		bool OverSpawn(EcotoneSurfaceMapping.EcotoneEntry x) => x.Start.X < spawn && x.End.X > spawn;
 	}
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
@@ -65,12 +65,12 @@ internal class SaltFlatsEcotone : EcotoneBase
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
 		const int baseDepth = 35;
-		//The percentage of space surrounding the salt flats that islands can occupy
-		const float islandMargin = 0.25f;
+		//The number of blocks lining the biome that will be replaced with dull salt
+		const int dullLiningWidth = 5;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
-		List<Rectangle> islands = [];
+		List<IslandInfo> islands = [];
 		int xLeft = bounds.Item1;
 		int xRight = bounds.Item2;
 
@@ -81,34 +81,39 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
-		//Select the lowest of both neighboring biomes
-		AverageY = Math.Max(yLeft, yRight) + 1;
+		AverageY = Math.Max(yLeft, yRight) + 1; //Select the lowest of both neighboring biomes
 
 		for (int i = 0; i < 2; i++)
 			HillBorder((i == 0) ? xLeft : xRight, i == 0);
 
 		for (int x = xLeft; x < xRight; x++)
 		{
-			int xProgress = x - xLeft;
+			float xProgress = (float)(x - xLeft) / fullWidth;
 
-			int diminishedDepth = Math.Min(baseDepth, (int)(fullWidth * 0.75f)); //Causes reduced biome depth if it doesn't generate wide enough
-			int depth = Math.Min((int)(Math.Sin((float)xProgress / fullWidth * MathHelper.Pi) * (baseCurveStrength * diminishedDepth)), diminishedDepth + (int)(Noise.GetNoise(x, 600) * 8));
-			int liningDepth = (int)((8 + (int)(Noise.GetNoise(x, 500) * 6)) /* * ((float)depth / baseDepth)*/);
+			int diminishedDepth = Math.Min(baseDepth, (int)(fullWidth * 0.75f)); //Causes reduced depth if the biome doesn't generate wide enough
+			float ease = (float)Math.Sin(xProgress * MathHelper.Pi);
+
+			int finalDepth = Math.Min((int)(ease * (baseCurveStrength * diminishedDepth)), diminishedDepth + (int)(Noise.GetNoise(x, 600) * 8));
+			int liningDepth = 8 + (int)(Noise.GetNoise(x, 500) * 6);
 
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			int yMax = AverageY + depth + liningDepth;
+			int yMax = AverageY + finalDepth + liningDepth;
 
 			while (y < yMax)
 			{
-				int type = (y < AverageY + depth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
+				bool isLining = x < xLeft + dullLiningWidth || x > xRight - dullLiningWidth;
+				int type = (!isLining && y < AverageY + finalDepth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
+
 				if (WorldMethods.CloudsBelow(x, y, out int addY))
 				{
 					y += addY;
 					continue;
 				}
 
-				if (GetSurfaceY(x) == y && (xProgress < fullWidth * islandMargin || xProgress > fullWidth * (1f - islandMargin)) && WorldGen.genRand.NextBool(50) && !islands.Any(i => i.Contains(new Point(x, y))))
-					islands.Add(new(x, y, WorldGen.genRand.Next(14, 21), 3)); //Add island data for later
+				if (!isLining)
+				{
+					MapIsland(new(x, y), xProgress, ref islands);
+				}
 
 				if (y == yMax - 1 && !Main.tile[x, y].HasTile) //The final vertical coordinates - fill
 				{
@@ -130,55 +135,66 @@ internal class SaltFlatsEcotone : EcotoneBase
 					}, x, y, new Rectangle(x - fillLimit / 2, y - fillLimit / 2, fillLimit, fillLimit));
 				}
 
-				SetTile(x, y++, GetSurfaceY(x), type, type == ModContent.TileType<SaltBlockReflective>());
+				SetTile(x, y++, isLining ? (GetSurfaceY(x) - 1) : GetSurfaceY(x), type, type == ModContent.TileType<SaltBlockReflective>());
 			}
 		}
 
-		AddIslands(islands);
+		foreach (var a in islands)
+			GenerateIsland(a);
 
 		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
 	}
 
-	private static void AddIslands(IEnumerable<Rectangle> areas)
+	#region features
+	/// <param name="coordinates"> The current tile coordinates. </param>
+	/// <param name="surfaceProgress"> The progress of the x coordinate along the full width of the biome represented as a range from 0 to 1. </param>
+	/// <param name="islands"> The current island data. </param>
+	private static void MapIsland(Point coordinates, float surfaceProgress, ref List<IslandInfo> islands)
 	{
-		const int extraWidth = 4;
+		//The percentage of space relative to the center of the biome that islands can not occupy
+		const float middle = 0.7f;
 
-		foreach (var a in areas)
-		{
-			int fullWidth = a.Width;
+		int x = coordinates.X;
+		int y = coordinates.Y;
 
-			int startX = a.X - fullWidth / 2;
-			int startY = a.Y - 1;
+		float doubleProgress = (surfaceProgress > 0.5f) ? ((surfaceProgress - 0.5f) / 0.5f) : ((0.5f - surfaceProgress) * 2);
 
-			for (int x = startX; x < startX + fullWidth; x++)
-			{
-				for (int y = startY; y < startY + 3; y++)
-				{
-					bool firstLayer = y == startY;
-					var tile = Main.tile[x, y];
-					int type = firstLayer ? ModContent.TileType<SaltBlockDull>() : ModContent.TileType<SaltBlockReflective>();
-
-					if (!IsSafe(tile))
-						continue;
-
-					tile.ClearTile();
-
-					if (!firstLayer || x - startX >= extraWidth && x - startX <= fullWidth - extraWidth)
-					{
-						tile.TileType = (ushort)type;
-						tile.HasTile = true;
-
-						if (firstLayer && (x - startX == extraWidth || x - startX == fullWidth - extraWidth))
-							tile.IsHalfBlock = true; //Prevents the Smooth World genpass from interfering later
-					}
-
-					if (firstLayer && WorldGen.genRand.NextBool(6))
-						Placer.PlaceTile<StoneStupas>(x - 1, y - 1, WorldGen.genRand.Next(0, 12));
-				}
-			}
-		}
+		if (GetSurfaceY(x) == y && doubleProgress > middle && WorldGen.genRand.NextBool(7) && !islands.Any(i => i.Contains(new Point(x, y))))
+			islands.Add(new(x, y, WorldGen.genRand.Next(10, 25))); //Add island data for later
 	}
+
+	private static void GenerateIsland(IslandInfo info)
+	{
+		ShapeData data = new();
+		int halfWidth = info.Width / 2;
+
+		WorldUtils.Gen(new(info.X, info.Y), new Shapes.Circle(halfWidth, WorldGen.genRand.Next(1, 4)), Actions.Chain(
+			new Modifiers.SkipTiles((ushort)ModContent.TileType<SaltBlockReflective>()),
+			new Modifiers.RectangleMask(-halfWidth, halfWidth, -2, 2),
+			new Actions.SetTile((ushort)ModContent.TileType<SaltBlockDull>())
+		).Output(data));
+
+		WorldUtils.Gen(new(info.X, info.Y), new ModShapes.InnerOutline(data), new Actions.Smooth());
+		WorldUtils.Gen(new(info.X, info.Y), new ModShapes.All(data), new Actions.Custom(static (x, y, args) =>
+		{
+			if (!WorldGen.SolidTile(x, y - 1))
+			{
+				bool success = false;
+
+				if (WorldGen.genRand.NextBool(6))
+					success |= Placer.PlaceTile<StoneStupas>(x - 1, y - 1, WorldGen.genRand.Next(0, 12)).success;
+
+				if (WorldGen.genRand.NextBool(3))
+					success |= Placer.PlaceTile<Saltwort>(x, y - 1).success;
+
+				return success;
+			}
+
+			return false;
+		}));
+	}
+	#endregion
 
 	private static void HillBorder(int xCoord, bool left) //Smooths neighboring biome heights using an ease function
 	{
@@ -272,5 +288,5 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	/// <summary> Gets a terrain Y value based on <see cref="AverageY"/>. </summary>
-	private static int GetSurfaceY(int x) => AverageY + (int)(Noise.GetNoise(x, 600) * SurfaceNoiseLength);
+	private static int GetSurfaceY(int x) => AverageY /*+ (int)(Noise.GetNoise(x / 5f, 600) * 2)*/;
 }

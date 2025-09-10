@@ -152,8 +152,13 @@ internal class EcotoneSurfaceMapping : ModSystem
 		return null;
 	}
 
-	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="defA"/> and <paramref name="defB"/>, in addition to some common conditions.<para/>
-	/// Automatically remaps ecotones. </summary>
-	public static EcotoneEntry FindWhere(string defA, string defB, Func<EcotoneEntry, bool> extraPredicate = null) => FindWhere(x => x.SurroundedBy(defA, defB)
-	&& extraPredicate?.Invoke(x) != false && Math.Abs(x.Start.Y - x.End.Y) < 120 && x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface);
+	/// <summary> Returns whether both the start and end Y coordinates of <paramref name="x"/> are on the surface. </summary>
+	public static bool OnSurface(EcotoneEntry x) => x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface;
+
+	/// <summary> Returns whether <paramref name="x"/> is overlapping the center of the world. </summary>
+	public static bool OverSpawn(EcotoneEntry x)
+	{
+		int spawn = Main.maxTilesX / 2;
+		return x.Start.X < spawn && x.End.X > spawn;
+	}
 }
