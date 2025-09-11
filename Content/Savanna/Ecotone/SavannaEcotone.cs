@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
@@ -29,7 +30,7 @@ internal class SavannaEcotone : EcotoneBase
 	protected override void Load()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
-		On_WorldGen.PlacePot += ConvertPot;
+		TileEvents.OnPlacePot += ConvertPot;
 	}
 
 	private static bool PreventPalmTreeGrowth(On_WorldGen.orig_GrowPalmTree orig, int i, int y)
@@ -40,7 +41,7 @@ internal class SavannaEcotone : EcotoneBase
 		return orig(i, y);
 	}
 
-	private static bool ConvertPot(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
+	private static bool ConvertPot(int x, int y, ushort type, int style)
 	{
 		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(x, y)))
 		{
@@ -48,10 +49,10 @@ internal class SavannaEcotone : EcotoneBase
 			style = WorldGen.genRand.Next(6, 9);
 
 			WorldGen.PlaceTile(x, y, type, true, style: style);
-			return Main.tile[x, y].TileType == type; //Skips orig
+			return false;
 		}
 
-		return orig(x, y, type, style);
+		return true;
 	}
 
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)

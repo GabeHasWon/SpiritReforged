@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
@@ -28,23 +29,29 @@ public class StoneStupas : PotTile, ILootable
 		base.AddObjectData();
 	}
 
-	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (effectOnly || fail || IsRubble)
+		if (IsRubble || WorldMethods.Generating)
 			return;
 
-		if (TileObjectData.IsTopLeft(i, j))
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-				Pots.SpawnThingsFromPot(default, i, j, i, j, 0);
+			Pots.SpawnThingsFromPot(default, i, j, i, j, 0);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
+		}
 
-			for (int g = 1; g < 7; g++)
-			{
-				int goreType = Mod.Find<ModGore>("Stupa" + g).Type;
-				var position = Main.rand.NextVector2FromRectangle(new(i * 16, j * 16, 32, 32));
+		if (!Main.dedServ)
+			DeathEffects(i, j, frameX, frameY);
+	}
 
-				Gore.NewGore(new EntitySource_TileBreak(i, j), position, Vector2.Zero, goreType);
-			}
+	public override void DeathEffects(int i, int j, int frameX, int frameY)
+	{
+		for (int g = 1; g < 7; g++)
+		{
+			int goreType = Mod.Find<ModGore>("Stupa" + g).Type;
+			var position = Main.rand.NextVector2FromRectangle(new(i * 16, j * 16, 32, 32));
+
+			Gore.NewGore(new EntitySource_TileBreak(i, j), position, Vector2.Zero, goreType);
 		}
 	}
 

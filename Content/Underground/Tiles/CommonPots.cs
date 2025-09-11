@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
@@ -56,7 +57,7 @@ public class CommonPots : PotTile, ILootable
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || IsRubble)
+		if (effectOnly || fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		var tile = Main.tile[i, j];

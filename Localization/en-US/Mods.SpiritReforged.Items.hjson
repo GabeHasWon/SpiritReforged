@@ -2286,3 +2286,8 @@ SleightOfHand: {
 		Works while in the inventory
 		'''
 }
+
+SaltWallItem: {
+	DisplayName: Salt Wall
+	Tooltip: ""
+}

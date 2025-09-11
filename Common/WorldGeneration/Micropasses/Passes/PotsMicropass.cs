@@ -26,7 +26,7 @@ internal class PotsMicropass : Micropass
 
 	public override void Load(Mod mod)
 	{
-		On_WorldGen.PlacePot += PotConversion;
+		TileEvents.OnPlacePot += PotConversion;
 		On_WorldGen.PlaceTile += PotBoulderConversion;
 	}
 
@@ -45,7 +45,7 @@ internal class PotsMicropass : Micropass
 
 	/// <summary> 50% chance to replace regular pots placed on mushroom grass.<br/>
 	/// 100% chance to replace regular pots placed on granite. </summary>
-	private static bool PotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
+	private static bool PotConversion(int x, int y, ushort type, int style)
 	{
 		if (WorldGen.generatingWorld)
 		{
@@ -56,17 +56,17 @@ internal class PotsMicropass : Micropass
 				if (WorldGen.genRand.NextBool())
 				{
 					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next(3));
-					return false; //Skips orig
+					return false;
 				}
 			}
 			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
 				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
-				return false; //Skips orig
+				return false;
 			}
 		}
 
-		return orig(x, y, type, style);
+		return true;
 	}
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
