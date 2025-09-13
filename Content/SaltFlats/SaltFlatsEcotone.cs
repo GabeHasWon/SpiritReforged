@@ -19,7 +19,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 {
 	private readonly record struct IslandInfo(int X, int Y, int Width)
 	{
-		public readonly bool Contains(Point point) => new Rectangle(X - Width / 2, Y - 1, Width, 3).Contains(point);
+		public readonly Rectangle Area => new(X - Width / 2, Y - 1, Width, 3);
 	}
 
 	private readonly record struct CaveInfo(int X, int Y, int Radius)
@@ -60,7 +60,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static bool CanGenerate(out (int, int) bounds)
 	{
-		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
+		const int offX = EcotoneSurfaceMapping.TransitionLength + 2; //Removes forest patches on the left side
 		bounds = (0, 0);
 
 		if (SecretSeedSystem.WorldSecretSeed is SaltSeed)
@@ -89,8 +89,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
 		const int baseDepth = 35;
-		//The number of blocks lining the biome that will be replaced with dull salt
-		//const int dullLiningWidth = 5;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
@@ -106,6 +104,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
+		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
 		AverageY = (int)MathHelper.Lerp(yLeft, yRight, 0.5f); //Select the average of both neighboring biomes
 
 		for (int x = xLeft; x < xRight; x++)
@@ -124,7 +123,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			while (y < yMax)
 			{
-				bool isLining = IsLining(x, y, xProgress, (float)(y - AverageY) / yMax);
+				bool isLining = IsLining(x, y, (float)(y - AverageY) / yMax);
+				int surfaceLine = FindSurfaceLine(x, y, yLeft, yRight, isLining);
 				int type = (!isLining && y < AverageY + reflectiveDepth) ? ModContent.TileType<SaltBlockReflective>() : ModContent.TileType<SaltBlockDull>();
 
 				if (WorldMethods.CloudsBelow(x, y, out int addY))
@@ -133,7 +133,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 					continue;
 				}
 
-				if (!isLining)
+				if (!isLining && y == surfaceLine)
 				{
 					MapIsland(new(x, y), xProgress, ref islands);
 				}
@@ -150,7 +150,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 						const int fillLimit = 30;
 						WorldMethods.ApplyOpenArea((i, j) =>
 						{
-							if (j > AverageY && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f) //Do a distance check for a naturally rounded fill shape
+							if (j > surfaceLine && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f) //Do a distance check for a naturally rounded fill shape
 							{
 								var t = Main.tile[i, j];
 								if (IsSafe(t))
@@ -166,8 +166,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 					}
 				}
 
-				int baseLine = isLining ? (AverageY + (int)(Noise.GetNoise(x / 3f, 600) * 2) - 1) : AverageY;
-				SetTile(x, y++, baseLine, type, type == ModContent.TileType<SaltBlockReflective>());
+				SetTile(x, y++, surfaceLine, type, type == ModContent.TileType<SaltBlockReflective>());
 			}
 		}
 
@@ -177,22 +176,48 @@ internal class SaltFlatsEcotone : EcotoneBase
 		foreach (var c in caves)
 			GenerateCave(c);
 
-		//EaseBorder(new(xLeft + 50, AverageY), new(xLeft, yLeft));
-		//EaseBorder(new(xRight - 50, AverageY), new(xRight, yRight));
-
-		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
 	}
 
-	private static bool IsLining(int x, int y, float surfaceProgress, float depthProgress)
+	private static bool IsLining(int x, int y, float depthProgress)
 	{
+		//The percentage of space surrounding the biome that will be considered 'lining'
 		const float liningWidth = 0.1f;
 
-		float sine = EaseFunction.EaseSine.Ease((surfaceProgress - liningWidth) / (1 - liningWidth * 2));
-		bool pastLiningWidth = surfaceProgress is < liningWidth or > (1 - liningWidth);
-		bool pastEaseHeight = depthProgress > sine;
+		float progress = (float)(x - SaltArea.Left) / SaltArea.Width;
+		float sine = EaseFunction.EaseSine.Ease((progress - liningWidth) / (1 - liningWidth * 2));
+		bool pastLiningWidth = progress is < liningWidth or > (1 - liningWidth);
+		bool pastEaseHeight = depthProgress > sine / 3;
 
 		return pastLiningWidth || pastEaseHeight;
+	}
+
+	private static int FindSurfaceLine(int x, int y, int yLeft, int yRight, bool isLining)
+	{
+		//The number of tiles around the biome that can ease into surrounding elevation
+		const int mergeDistance = 20;
+
+		int line = AverageY;
+		int xStart = x - SaltArea.Left;
+
+		if (xStart < mergeDistance || xStart > SaltArea.Width - mergeDistance) //Merging
+		{
+			float floatingLine;
+
+			if (xStart < mergeDistance)
+				floatingLine = MathHelper.Lerp(yLeft, AverageY, (float)xStart / mergeDistance);
+			else
+				floatingLine = MathHelper.Lerp(AverageY, yRight, (float)(xStart - (SaltArea.Width - mergeDistance)) / mergeDistance);
+
+			floatingLine += (int)(Noise.GetNoise(x, 600) * 2);
+			line = (int)floatingLine;
+		}
+		else if (isLining) //Lining
+		{
+			line = AverageY + (int)(Noise.GetNoise(x / 2f, 600) * 2.5f) - 1;
+		}
+
+		return line;
 	}
 
 	#region features
@@ -210,8 +235,13 @@ internal class SaltFlatsEcotone : EcotoneBase
 		float doubleProgress = (surfaceProgress > 0.5f) ? ((surfaceProgress - 0.5f) / 0.5f) : ((0.5f - surfaceProgress) * 2);
 		int chance = (int)Math.Max((1f - doubleProgress) * 100, 1);
 
-		if (AverageY == y && doubleProgress > middle && WorldGen.genRand.NextBool(chance) && !islands.Any(i => i.Contains(new Point(x, y))))
-			islands.Add(new(x, y, WorldGen.genRand.Next(10, 25))); //Add island data for later
+		if (doubleProgress > middle && WorldGen.genRand.NextBool(chance) && !islands.Any(i => i.Area.Contains(new Point(x, y))))
+		{
+			IslandInfo info = new(x, y, WorldGen.genRand.Next(10, 25));
+
+			if (AreaSafe(info.Area))
+				islands.Add(info); //Add island data for later
+		}
 	}
 
 	private static void MapCave(Point coordinates, ref List<CaveInfo> caves)
@@ -226,20 +256,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			if (AreaSafe(info.Area))
 				caves.Add(info);
-		}
-
-		static bool AreaSafe(Rectangle area)
-		{
-			for (int x = area.Left; x < area.Right; x++)
-			{
-				for (int y = area.Top; y < area.Bottom; y++)
-				{
-					if (!WorldGen.InWorld(x, y, 8) || !IsSafe(Main.tile[x, y]))
-						return false;
-				}
-			}
-
-			return true;
 		}
 	}
 
@@ -282,30 +298,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldUtils.Gen(origin, new ModShapes.InnerOutline(outlineData), new Actions.Custom(AddDecorations));
 	}
 
-	private static void EaseBorder(Point start, Point end)
-	{
-		const int steps = 5;
-
-		for (int i = 0; i < steps; i++)
-		{
-			var position = Vector2.Lerp(start.ToVector2(), end.ToVector2(), i / (float)(steps - 1));
-			GenerateBowl(position.ToPoint(), 10);
-		}
-	}
-
-	private static void GenerateBowl(Point origin, int radius)
-	{
-		const float height = 2;
-
-		origin.Y += (int)(radius * height / 2);
-		ShapeData data = new();
-
-		WorldUtils.Gen(origin, new Shapes.Slime(radius, 1, height), Actions.Chain(
-			new Modifiers.Flip(false, true),
-			new Actions.SetTileKeepWall((ushort)ModContent.TileType<SaltBlockDull>())
-		).Output(data));
-	}
-
 	private static bool AddDecorations(int x, int y, object[] args)
 	{
 		if (!WorldGen.SolidTile(x, y - 1))
@@ -329,63 +321,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 		return false;
 	}
 	#endregion
-
-	private static void HillBorder(int xCoord, bool left) //Smooths neighboring biome heights using an ease function
-	{
-		int side = left ? -1 : 1;
-		int length = (int)((AverageY - EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + side)]) * WorldGen.genRand.NextFloat(0.6f, 0.9f));
-
-		if (length < 2)
-			return;
-
-		int end = EcotoneSurfaceMapping.TotalSurfaceY[(short)(xCoord + length * side)];
-
-		if (left)
-		{
-			for (int x = xCoord; x > xCoord - length; x--)
-				Clear(x);
-		}
-		else
-		{
-			for (int x = xCoord; x < xCoord + length; x++)
-				Clear(x);
-		}
-
-		void Clear(int x)
-		{
-			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			float progress = (float)(x - xCoord) / length * side;
-
-			int depth = (int)MathHelper.Lerp(AverageY, end, EaseFunction.EaseCircularInOut.Ease(progress));
-
-			while (y < depth)
-			{
-				if (WorldMethods.CloudsBelow(x, y, out int addY))
-				{
-					y += addY;
-					continue;
-				}
-
-				var tile = Main.tile[x, y];
-				if (IsSafe(tile))
-				{
-					tile.ClearEverything();
-
-					//Clear walls in an expanded area
-					WorldMethods.ApplyTileArea(static (x, y) =>
-					{
-						var tile = Framing.GetTileSafely(x, y);
-						if (IsSafe(tile))
-							tile.WallType = WallID.None;
-
-						return false;
-					}, x - 1, y - 1, x + 1, y + 1);
-				}
-
-				y++;
-			}
-		}
-	}
 
 	private static void SetTile(int x, int y, int baseLine, int type, bool clearWall = true)
 	{
@@ -413,6 +348,20 @@ internal class SaltFlatsEcotone : EcotoneBase
 			if (clearWall)
 				t.WallType = WallID.None;
 		}
+	}
+
+	private static bool AreaSafe(Rectangle area)
+	{
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
+			{
+				if (!WorldGen.InWorld(x, y, 8) || !IsSafe(Main.tile[x, y]))
+					return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static bool IsSafe(Tile t)
