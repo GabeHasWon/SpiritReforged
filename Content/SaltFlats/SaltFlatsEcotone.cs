@@ -22,6 +22,11 @@ internal class SaltFlatsEcotone : EcotoneBase
 		public readonly bool Contains(Point point) => new Rectangle(X - Width / 2, Y - 1, Width, 3).Contains(point);
 	}
 
+	private readonly record struct CaveInfo(int X, int Y, int Radius)
+	{
+		public readonly Rectangle Area => new(X - Radius / 2, Y - Radius / 2, Radius, Radius);
+	}
+
 	[WorldBound]
 	public static Rectangle SaltArea;
 
@@ -90,7 +95,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		List<IslandInfo> islands = [];
-		List<Point> caves = [];
+		List<CaveInfo> caves = [];
 		int xLeft = bounds.Item1;
 		int xRight = bounds.Item2;
 
@@ -138,8 +143,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 				if (y == yMax - 1) //The final vertical coordinates - fill
 				{
-					if (depthNoise < 0 && WorldGen.genRand.NextBool(10))
-						caves.Add(new(x, y)); //Occasionally generate caves in crests
+					if (depthNoise < 0)
+					{
+						MapCave(new(x, y), ref caves); //Occasionally map caves in crests
+					}
 
 					if (!Main.tile[x, y].HasTile)
 					{
@@ -170,7 +177,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			GenerateIsland(a);
 
 		foreach (var c in caves)
-			GenerateCave(c, WorldGen.genRand.Next(3, 9));
+			GenerateCave(c);
 
 		SaltArea = new Rectangle(xLeft, yLeft - 10, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + 20);
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
@@ -195,6 +202,35 @@ internal class SaltFlatsEcotone : EcotoneBase
 			islands.Add(new(x, y, WorldGen.genRand.Next(10, 25))); //Add island data for later
 	}
 
+	private static void MapCave(Point coordinates, ref List<CaveInfo> caves)
+	{
+		if (WorldGen.genRand.NextBool(10))
+		{
+			int x = coordinates.X;
+			int y = coordinates.Y;
+
+			int radius = WorldGen.genRand.Next(3, 9);
+			CaveInfo info = new(x, y, radius);
+
+			if (AreaSafe(info.Area))
+				caves.Add(info);
+		}
+
+		static bool AreaSafe(Rectangle area)
+		{
+			for (int x = area.Left; x < area.Right; x++)
+			{
+				for (int y = area.Top; y < area.Bottom; y++)
+				{
+					if (!WorldGen.InWorld(x, y, 8) || !IsSafe(Main.tile[x, y]))
+						return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
 	private static void GenerateIsland(IslandInfo info)
 	{
 		ShapeData data = new();
@@ -210,13 +246,15 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldUtils.Gen(new(info.X, info.Y), new ModShapes.All(data), new Actions.Custom(AddDecorations));
 	}
 
-	private static void GenerateCave(Point origin, int radius)
+	private static void GenerateCave(CaveInfo info)
 	{
+		Point origin = new(info.X, info.Y);
+
 		ShapeData data = new();
 		ShapeData outlineData = new();
 		ushort saltWall = SpiritReforgedMod.Instance.Find<ModWall>("SaltWallUnsafe").Type;
 
-		WorldUtils.Gen(origin, new Shapes.Slime(radius, WorldGen.genRand.NextFloat(0.5f, 1), WorldGen.genRand.NextFloat(0.5f, 1)), Actions.Chain(
+		WorldUtils.Gen(origin, new Shapes.Slime(info.Radius, WorldGen.genRand.NextFloat(0.5f, 1), WorldGen.genRand.NextFloat(0.5f, 1)), Actions.Chain(
 			new Actions.ClearTile()
 		).Output(data));
 
