@@ -13,6 +13,7 @@ public class Thornball : ModItem
 		Item.damage = 10;
 		Item.knockBack = 2;
 		Item.value = Item.sellPrice(copper: 20);
+		Item.UseSound = SoundID.Item1;
 	}
 }
 
@@ -21,12 +22,10 @@ public class ThornballThrown : ModProjectile
 	public const int TimeLeftMax = 300;
 	public override string Texture => ModContent.GetInstance<Thornball>().Texture;
 
-	public override void SetStaticDefaults() => ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
 	public override void SetDefaults()
 	{
 		Projectile.CloneDefaults(ProjectileID.SpikyBall);
 		Projectile.Size = new Vector2(8);
-		Projectile.hide = true;
 		Projectile.penetrate = 5;
 		Projectile.timeLeft = TimeLeftMax;
 	}
@@ -72,13 +71,12 @@ public class ThornballThrown : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var texture = TextureAssets.Projectile[Type].Value;
+		var position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 
-		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), 
-			null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);
+		Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);
 
 		return false;
 	}
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 }
 
 /// <summary> Debuff that slows knockback-susceptible NPCs by 25% with no other effects. </summary>
