@@ -14,6 +14,7 @@ public class SaltStalactite : ModTile
 		TileID.Sets.DrawTileInSolidLayer[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
+		TileObjectData.newTile.Origin = Point16.Zero;
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.DrawYOffset = -2;

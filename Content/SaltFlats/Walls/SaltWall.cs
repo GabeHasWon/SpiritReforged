@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.SaltFlats.Walls;
 
 public class SaltWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
+	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("SaltWallUnsafe").Type;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		int salt = AutoContent.ItemType<SaltBlockDull>();
@@ -22,7 +24,7 @@ public class SaltWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 
 		var entryColor = new Color(100, 90, 90);
 		AddMapEntry(entryColor);
-		Mod.Find<ModWall>(Name + "Unsafe").AddMapEntry(entryColor); //Set the unsafe wall's map entry
+		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
