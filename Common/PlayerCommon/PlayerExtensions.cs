@@ -6,10 +6,7 @@ namespace SpiritReforged.Common.PlayerCommon;
 
 internal static class PlayerExtensions
 {
-	public static bool HasEquip(this Player player, Item item) => item.ModItem is EquippableItem && player.GetModPlayer<EquipsPlayer>().equips[item.Name];
-	public static bool HasEquip(this Player player, ModItem item) => item is EquippableItem && player.GetModPlayer<EquipsPlayer>().equips[item.Name];
-	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<EquipsPlayer>().equips[ModContent.GetInstance<TItem>().Name];
-	public static bool HasEquip(this Player player, int itemId) => HasEquip(player, ContentSamples.ItemsByType[itemId]);
+	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<TItem>().Name) == true;
 
 	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoPlayer>().info[itemName];
 	public static bool HasInfoItem<TItem>(this Player player) where TItem : InfoItem => player.HasInfoItem(ModContent.GetInstance<TItem>().Name);

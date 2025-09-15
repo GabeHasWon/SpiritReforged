@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.ItemDropRules;
@@ -13,9 +12,10 @@ public class ScryingLens : InfoItem
 {
 	public static int ItemType { get; private set; }
 
+	#region detour
 	public override void Load()
 	{
-		AutoloadInfoDisplay();
+		base.Load();
 		On_Main.DrawNPC_SlimeItem += ModifyScryingLensSlimeItem;
 	}
 
@@ -74,11 +74,13 @@ public class ScryingLens : InfoItem
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value; // Then draw a soft glow and the actual glowmask
 			sb.Draw(bloom, position, null, Color.Pink.Additive(0) * 0.4f, rotation, bloom.Size() / 2f, scale * 0.3f, SpriteEffects.None, 0f);
 			sb.Draw(GlowmaskItem.ItemIdToGlowmask[ItemType].Glowmask.Value, position, src, Color.Lerp(npcColor, Color.White, 1f) * 1f, rotation, src.Size() / 2f, scale, SpriteEffects.None, 0f);
+			
 			return;
 		}
 
 		orig(npc, typeCache, npcColor, addedRotation);
 	}
+	#endregion
 
 	public override void SetStaticDefaults()
 	{
@@ -95,7 +97,7 @@ internal class ScryingItem : GlobalItem
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
-		if (Main.LocalPlayer.HasInfoItem<ScryingLens>() && GetTransformId(item) is int transform && transform != -1)
+		if (!InfoItem.GetDisplay<ScryingLens>().Hidden && GetTransformId(item) is int transform && transform != -1)
 		{
 			string text = Language.GetTextValue("Mods.SpiritReforged.Items.ScryingLens.ShimmerLine", transform, Lang.GetItemName(transform));
 			tooltips.Add(new TooltipLine(Mod, LineName, text) { OverrideColor = GetShimmerGradient() });

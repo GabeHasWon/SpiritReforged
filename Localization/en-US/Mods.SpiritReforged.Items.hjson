@@ -175,7 +175,7 @@ Nigiri: {
 }
 
 HoneySalmon: {
-	DisplayName: Honey-Glazed Salmon
+	DisplayName: Honey-Glazed Fillet
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -662,11 +662,6 @@ DrywoodChairItem: {
 
 DrywoodClockItem: {
 	DisplayName: Drywood Clock
-	Tooltip: ""
-}
-
-DrywoodCouchItem: {
-	DisplayName: Drywood Couch
 	Tooltip: ""
 }
 
@@ -2161,7 +2156,7 @@ DivingBeetleItem: {
 
 SunDropper: {
 	DisplayName: Magic Sunlight Dropper
-	Tooltip: Applies to solid tiles
+	Tooltip: ""
 }
 
 OsmosifierItem: {
@@ -2178,3 +2173,137 @@ StoneStupasItem: {
 	DisplayName: Stone Stupa
 	Tooltip: ""
 }
+
+SaltChestItem: {
+	DisplayName: Salt Chest
+	Tooltip: ""
+}
+
+SaltDresserItem: {
+	DisplayName: Salt Dresser
+	Tooltip: ""
+}
+
+SaltBathtubItem: {
+	DisplayName: Salt Bathtub
+	Tooltip: ""
+}
+
+SaltBedItem: {
+	DisplayName: Salt Bed
+	Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	DisplayName: Salt Bookcase
+	Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	DisplayName: Salt Candelabra
+	Tooltip: ""
+}
+
+SaltChandelierItem: {
+	DisplayName: Salt Chandelier
+	Tooltip: ""
+}
+
+SaltClockItem: {
+	DisplayName: Salt Clock
+	Tooltip: ""
+}
+
+SaltDoorItem: {
+	DisplayName: Salt Door
+	Tooltip: ""
+}
+
+SaltLampItem: {
+	DisplayName: Salt Lamp
+	Tooltip: ""
+}
+
+SaltLanternItem: {
+	DisplayName: Salt Lantern
+	Tooltip: ""
+}
+
+SaltPianoItem: {
+	DisplayName: Salt Piano
+	Tooltip: ""
+}
+
+SaltSinkItem: {
+	DisplayName: Salt Sink
+	Tooltip: ""
+}
+
+SaltSofaItem: {
+	DisplayName: Salt Sofa
+	Tooltip: ""
+}
+
+SaltTableItem: {
+	DisplayName: Salt Table
+	Tooltip: ""
+}
+
+SaltToiletItem: {
+	DisplayName: Salt Toilet
+	Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	DisplayName: Salt Work Bench
+	Tooltip: ""
+}
+
+SaltCandleItem: {
+	DisplayName: Salt Candle
+	Tooltip: ""
+}
+
+SaltChairItem: {
+	DisplayName: Salt Chair
+	Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	DisplayName: Otherworldly Radio
+	Tooltip:
+		'''
+		<right> to toggle Otherworld music
+		'Charmingly old-fashioned'
+		'''
+}
+
+SleightOfHand: {
+	DisplayName: Sleight of Hand
+	Tooltip:
+		'''
+		Double tap {0} while holding a ranged weapon to swap ammo types
+		Works while in the inventory
+		'''
+}
+
+RuinedSandstonePillarItem: {
+	DisplayName: Ruined Sandstone Pillar
+	Tooltip: ""
+}
+
+GlidingItem: {
+	DisplayName: Gliding
+	Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	DisplayName: Vicious Flamingo
+	Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	DisplayName: Salt Wall
+	Tooltip: ""
+}
+

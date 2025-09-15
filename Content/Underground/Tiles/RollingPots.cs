@@ -3,8 +3,8 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
-using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -14,10 +14,10 @@ public class RollingPots : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Boulder");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3);
 	}
 
 	public override void AddObjectData()
@@ -56,7 +56,7 @@ public class RollingPots : PotTile, ILootable
 
 	public void AddLoot(ILoot loot)
 	{
-		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+		if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
 			dele.Invoke(loot);
 	}
 }

@@ -11,6 +11,39 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public class SaltBlockVisuals : ILoadable
 {
+	private static class Gradient
+	{
+		private static Texture2D DistanceMap;
+
+		/// <summary> Gets a gradient texture for shader mapping. </summary>
+		/// <param name="width"> The pre-upscaled width of the texture. </param>
+		/// <param name="height"> The pre-upscaled height of the texture.</param>
+		public static Texture2D CreateTilemap(int width, int height)
+		{
+			if (DistanceMap != null)
+				return DistanceMap;
+
+			const int taper = 2; //Opacity taper downscaled
+
+			var data = new Color[width * height];
+			for (int i = 0; i < data.Length; i++)
+			{
+				int y = i / width;
+
+				float pixelStrength = 1f - (float)y / 255; //Divide by a full band rather than 'height' to avoid distorting the reflection Y
+				float fadeStrength = 1f - (float)y / height;
+				float taperOpacity = Math.Min((float)y / taper, 1);
+
+				data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 1.7f, 0, 1)) * taperOpacity); //Green: reflected pixels - Blue: static opacity
+			}
+
+			var textureToCache = new Texture2D(Main.graphics.GraphicsDevice, width, height);
+			textureToCache.SetData(data);
+
+			return DistanceMap = textureToCache;
+		}
+	}
+
 	/// <summary> Whether reflection detail is high enough to calculate. </summary>
 	public static bool Enabled => Lighting.NotRetro && Detail > 0;
 	public static int Detail => ModContent.GetInstance<ReforgedClientConfig>().ReflectionDetail;
@@ -18,42 +51,11 @@ public class SaltBlockVisuals : ILoadable
 	public static bool Drawing { get; private set; }
 	public static readonly HashSet<Point16> ReflectionPoints = [];
 
-	/// <summary> Whether screen dimensions are beyond 1920x1080- bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
-	private static bool HighResolution;
-	private static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "SaltBlockReflectiveMap", false);
+	/// <summary> Whether screen dimensions are beyond 1920x1080.<br/>Included in a bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
+	public static bool HighResolution { get; private set; }
+
+	public static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockVisuals), "SaltBlockReflectiveMap", false);
 	public static readonly Asset<Texture2D> Noise = Main.Assets.Request<Texture2D>("Images/Misc/noise");
-
-	#region gradient
-	public static Texture2D DistanceMap { get; private set; }
-
-	/// <summary> Gets a gradient texture for shader mapping. </summary>
-	/// <param name="width"> The pre-upscaled width of the texture. </param>
-	/// <param name="height"> The pre-upscaled height of the texture.</param>
-	public static Texture2D GetDistanceGradient(int width, int height)
-	{
-		if (DistanceMap != null)
-			return DistanceMap;
-
-		const int taper = 2; //Opacity taper downscaled
-
-		var data = new Color[width * height];
-		for (int i = 0; i < data.Length; i++)
-		{
-			int y = i / width;
-
-			float pixelStrength = 1f - (float)y / 255; //Divide by a full band rather than 'height' to avoid distorting the reflection Y
-			float fadeStrength = 1f - (float)y / height;
-			float taperOpacity = Math.Min((float)y / taper, 1);
-
-			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 2f, 0, 1)) * taperOpacity, 1); //Green: reflected pixels - Blue: static opacity
-		}
-
-		var textureToCache = new Texture2D(Main.graphics.GraphicsDevice, width, height);
-		textureToCache.SetData(data);
-
-		return DistanceMap = textureToCache;
-	}
-	#endregion
 
 	public static ModTarget2D MapTarget { get; } = new(CanDraw, DrawMapTarget);
 	public static ModTarget2D TileTarget { get; } = new(CanDraw, DrawTileTarget);
@@ -103,7 +105,7 @@ public class SaltBlockVisuals : ILoadable
 	private static void DrawMapTarget(SpriteBatch spriteBatch)
 	{
 		const float scale = 2;
-		var gradient = GetDistanceGradient(8, 180);
+		var gradient = Gradient.CreateTilemap(8, 180);
 
 		foreach (var pt in ReflectionPoints)
 		{
@@ -172,12 +174,12 @@ public class SaltBlockVisuals : ILoadable
 		//Draw the actual contents
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
+		Main.tileBatch.Begin();
+		Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
+		Main.tileBatch.End();
+
 		if (Detail > 1)
 		{
-			Main.tileBatch.Begin();
-			Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
-			Main.tileBatch.End();
-
 			DrawBG(Main.instance);
 
 			if (!HighResolution)
@@ -228,7 +230,6 @@ public class SaltBlockVisuals : ILoadable
 		if (!Drawing || ReflectionTarget.Target is null || MapTarget.Target is null || TileTarget.Target is null)
 			return;
 
-		bool lowDetail = Detail == 1;
 		var s = AssetLoader.LoadedShaders["Reflection"].Value;
 		var n = Noise.Value;
 
@@ -237,14 +238,14 @@ public class SaltBlockVisuals : ILoadable
 		s.Parameters["tileTexture"].SetValue(TileTarget);
 
 		s.Parameters["reflectionHeight"].SetValue(ReflectionTarget.Target.Height / 4);
-		s.Parameters["fade"].SetValue(lowDetail ? 10f : 3f);
+		s.Parameters["fade"].SetValue(3f);
 		s.Parameters["distortionScale"].SetValue(new Vector2((float)n.Width / Main.screenWidth, (float)n.Height / Main.screenHeight));
 		s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
 		s.Parameters["distortionPower"].SetValue(1);
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-		Color tint = lowDetail ? Color.Black * 0.5f : Color.White.Additive(230) * 0.8f;
+		Color tint = Color.White.Additive(230) * 0.9f;
 		Main.spriteBatch.Draw(ReflectionTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		Main.spriteBatch.End();
 

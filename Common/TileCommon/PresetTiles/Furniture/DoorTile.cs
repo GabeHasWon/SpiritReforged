@@ -10,15 +10,12 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 6)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 6).AddTile(TileID.WorkBenches).Register();
 	}
 
 	/// <summary> Functions like <see cref="ModType.Load"/> and handles open door autoloading. </summary>
-	public override void Load() => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, ModItem.Type));
+	public override void Load() => SpiritReforgedSystem.OnLoad += () => Mod.AddContent(new AutoloadedDoorOpen(Name + "Open", Texture, Info.Item.Type));
 
 	public override void StaticDefaults()
 	{
@@ -56,7 +53,7 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Door"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}
@@ -68,7 +65,7 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = ModItem.Type;
+		player.cursorItemIconID = Info.Item.Type;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -174,7 +171,7 @@ public sealed class AutoloadedDoorOpen(string name, string texture, int itemDrop
 
 		RegisterItemDrop(itemDrop); //Prevents inconsistent item drops based on style
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.OpenDoor];
 		DustType = -1;
 	}

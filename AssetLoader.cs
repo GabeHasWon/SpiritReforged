@@ -1,11 +1,10 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering;
-using static Terraria.ModLoader.Core.TmodFile;
 using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader.Core;
 using SpiritReforged;
 
-internal static class AssetLoader
+internal sealed class AssetLoader : ILoadable
 {
 	public static TrailManager VertexTrailManager;
 	public static BlendState NonPremultipliedAlphaFix;
@@ -16,7 +15,7 @@ internal static class AssetLoader
 
 	public static string EmptyTexture => "Terraria/Images/NPC_0";
 
-	public static void Load(Mod mod)
+	public void Load(Mod mod)
 	{
 		if (Main.dedServ) //dont do this on the server because it will DIE
 			return;
@@ -38,9 +37,9 @@ internal static class AssetLoader
 		};
 
 		var tmodfile = (TmodFile)typeof(SpiritReforgedMod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(SpiritReforgedMod.Instance);
-		var files = (IDictionary<string, FileEntry>)typeof(TmodFile).GetField("files", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(tmodfile);
+		var files = (IDictionary<string, TmodFile.FileEntry>)typeof(TmodFile).GetField("files", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(tmodfile);
 		string assetsDirectory = "Assets/";
-		foreach (KeyValuePair<string, FileEntry> kvp in files.Where(x => x.Key.Contains(assetsDirectory)))
+		foreach (KeyValuePair<string, TmodFile.FileEntry> kvp in files.Where(x => x.Key.Contains(assetsDirectory)))
 		{
 			//Loading textures
 			string textureDirectory = assetsDirectory + "Textures/";
@@ -88,7 +87,7 @@ internal static class AssetLoader
 	/// <returns></returns>
 	private static string RemoveDirectory(string input, string directory) => input.Remove(0, directory.Length);
 
-	public static void Unload()
+	public void Unload()
 	{
 		if (Main.dedServ)
 			return;

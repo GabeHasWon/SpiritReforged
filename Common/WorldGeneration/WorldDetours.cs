@@ -49,6 +49,8 @@ public class WorldDetours : ModSystem
 			if (a.Context == Context.Lava)
 				StopLavaInArea(a.Area);
 		}
+
+		Regions.Clear();
 	}
 
 	/// <summary> Counteracts auto water conversion in the "Final Cleanup" Genpass. </summary>

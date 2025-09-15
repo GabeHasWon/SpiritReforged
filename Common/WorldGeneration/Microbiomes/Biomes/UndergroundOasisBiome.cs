@@ -1,8 +1,8 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Oasis;
 using System.Linq;
 using Terraria.DataStructures;
@@ -161,9 +161,12 @@ public class UndergroundOasisBiome : Microbiome
 					{
 						var t = Main.tile[i, j];
 
-						t.ResetToType(TileID.SeaOats);
-						t.HasTile = true;
-						t.TileFrameX = (short)(18 * Main.rand.Next(15));
+						if (!t.HasTile)
+						{
+							t.ResetToType(TileID.SeaOats);
+							t.HasTile = true;
+							t.TileFrameX = (short)(18 * Main.rand.Next(15));
+						}
 					}
 				}
 
@@ -185,8 +188,8 @@ public class UndergroundOasisBiome : Microbiome
 			while (WorldGen.InWorld(x, y, 2) && !WorldGen.SolidTile(x, y))
 				y--;
 
-			if (lastX.Add(x)) //Prevents duplicates
-				SimpleEntitySystem.NewEntity<LightShaft>(new Vector2(x, y).ToWorldCoordinates(), true);
+			if (lastX.Add(x))
+				Placer.PlaceTile<LightShaft>(x, y + 1);
 
 			x = point.X + Main.rand.Next(-10, 10);
 			y = point.Y;
@@ -220,11 +223,7 @@ public class UndergroundOasisBiome : Microbiome
 		}
 
 		foreach (var pt in points)
-			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
-				new Actions.SetTileKeepWall(TileID.Sandstone),
-				new Modifiers.Expand(1),
-				new Actions.PlaceWall(WallID.Sandstone)
-			));
+			WorldUtils.Gen(pt, new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
 	}
 
 	private static void CarveLake(Point origin)

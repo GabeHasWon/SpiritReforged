@@ -49,3 +49,4 @@ PotionVats.MapEntry: Potion Vat
 ObsidianShroom.MapEntry: Obsidian Shroom
 Starflower.MapEntry: Starflower
 BonsaiTrees.MapEntry: Bonsai
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"

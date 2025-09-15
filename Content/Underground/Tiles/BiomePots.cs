@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Underground.NPCs;
@@ -38,22 +39,6 @@ public class BiomePots : PotTile, ILootable
 		Volume = 0.25f
 	};
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
-	{
-		var record = new TileRecord(group.name, type, group.styles).AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Biome"));
-
-		if (group.name == "BiomePotsCrimson")
-		{
-			record.Hide(() => !WorldGen.crimson); //Conditionally hide some entries
-		}
-		else if (group.name == "BiomePotsCorruption")
-		{
-			record.Hide(() => WorldGen.crimson);
-		}
-
-		RecordHandler.Records.Add(record);
-	}
-
 	public override Dictionary<string, int[]> TileStyles => new()
 	{
 		{ "Cavern", [0, 1, 2] },
@@ -66,8 +51,30 @@ public class BiomePots : PotTile, ILootable
 		{ "Marble", [21, 22, 23] },
 		{ "Hell", [24, 25, 26] },
 		{ "Mushroom", [27, 28, 29] },
-        { "Granite", [30, 31, 32] }
-    };
+		{ "Granite", [30, 31, 32] }
+	};
+
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
+	{
+		var record = new TileRecord(group.name, type, group.styles).AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Biome"));
+
+		if (group.name == "BiomePotsCrimson")
+		{
+			record.SetCondition(AnyEvil).Hide(() => !WorldGen.crimson); //Conditionally hide some entries
+		}
+		else if (group.name == "BiomePotsCorruption")
+		{
+			record.SetCondition(AnyEvil).Hide(() => WorldGen.crimson);
+		}
+
+		return record;
+
+		static bool AnyEvil()
+		{
+			var global = Main.LocalPlayer.GetModPlayer<RecordPlayer>();
+			return global.IsValidated("BiomePotsCorruption") || global.IsValidated("BiomePotsCrimson");
+		}
+	}
 
 	/// <summary> Gets the <see cref="Style"/> associated with the given frame. </summary>
 	private static Style GetStyle(int frameY) => (Style)(frameY / 36);
@@ -85,7 +92,7 @@ public class BiomePots : PotTile, ILootable
 		_ => 1.25f
 	};
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
@@ -219,7 +226,7 @@ public class BiomePots : PotTile, ILootable
 		{
 			#region loot
 			var p = Main.player[Player.FindClosest(center, 0, 0)];
-			TileLootHandler.Resolve(i, j, Type, frameX, frameY);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 
 			ItemMethods.SplitCoins((int)(CalculateCoinValue() * GetValue(style)), delegate (int type, int stack)
 			{

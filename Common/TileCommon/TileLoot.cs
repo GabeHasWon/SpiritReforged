@@ -12,7 +12,7 @@ public class TileLootTable(int style, Point16 coordinates = default) : LootTable
 	public Point16 Coordinates = coordinates;
 }
 
-public class TileLootHandler : ILoadable
+public class TileLootSystem : ModSystem
 {
 	/// <summary> Stores delegate loot methods by tile type. </summary>
 	private static readonly Dictionary<int, LootTable.LootDelegate> ActionByType = [];
@@ -56,15 +56,12 @@ public class TileLootHandler : ILoadable
 		return false;
 	}
 
-	/// <summary> Automatically registers loot delegates by <see cref="ILootTile"/> types. </summary>
-	public void Load(Mod mod) => SpiritReforgedMod.OnLoad += static () =>
+	public override void SetStaticDefaults()
 	{
 		foreach (var t in SpiritReforgedMod.Instance.GetContent<ModTile>())
 		{
 			if (t is ILootable i)
 				RegisterLoot(i.AddLoot, t.Type);
 		}
-	};
-
-	public void Unload() { }
+	}
 }

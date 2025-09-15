@@ -5,9 +5,7 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class PaintingTile : FurnitureTile
 {
-	public virtual int TileHeight => 2;
-
-	public virtual int TileWidth => 2;
+	public virtual Point TileSize => new(2, 2);
 
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 2);
 
@@ -20,14 +18,16 @@ public abstract class PaintingTile : FurnitureTile
 		TileID.Sets.FramesOnKillWall[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-		TileObjectData.newTile.Height = TileHeight;
-		TileObjectData.newTile.Width = TileWidth;
-		TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, TileHeight).ToArray();
+		TileObjectData.newTile.Height = TileSize.Y;
+		TileObjectData.newTile.Width = TileSize.X;
+		TileObjectData.newTile.CoordinateHeights = [.. Enumerable.Repeat(16, TileSize.Y)];
+		TileObjectData.newTile.Origin = new(TileSize.X - 2, TileSize.Y - 2);
 
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.AnchorTop = AnchorData.Empty;
 		TileObjectData.newTile.AnchorWall = true;
 		TileObjectData.addTile(Type);
+
 		DustType = DustID.WoodFurniture;
 		AddMapEntry(new Color(23, 23, 23), Language.GetText("MapObject.Painting"));
 	}

@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.NPCCommon;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.NPCs;
@@ -40,6 +41,7 @@ public class Tumbleweed : ModNPC
 		if (NPC.collideY)
 		{
 			NPC.velocity.Y -= Math.Abs(NPC.velocity.X);
+			SoundEngine.PlaySound(SoundID.NPCHit11 with { Volume = 0.5f }, NPC.Center);
 		}
 
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);

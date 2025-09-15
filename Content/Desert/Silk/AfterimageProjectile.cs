@@ -80,12 +80,7 @@ public class AfterimageProjectile : GlobalProjectile
 		}
 	}
 
-	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
-	{
-		if (Afterimage)
-			bitWriter.WriteBit(Afterimage);
-	}
-
+	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => bitWriter.WriteBit(Afterimage);
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
 		bool oldValue = Afterimage;

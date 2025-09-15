@@ -4,21 +4,16 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.PrimitiveRendering;
 
-public static class TrailDetours
+public sealed class TrailDetours : ILoadable
 {
-	public static void Initialize()
+	public void Load(Mod mod)
 	{
 		On_Projectile.NewProjectile_IEntitySource_float_float_float_float_int_int_float_int_float_float_float += Projectile_NewProjectile;
 		On_Main.DrawCachedProjs += Main_DrawCachedProjs;
 		On_Main.DrawProjectiles += Main_DrawProjectiles;
 	}
 
-	public static void Unload()
-	{
-		On_Projectile.NewProjectile_IEntitySource_float_float_float_float_int_int_float_int_float_float_float -= Projectile_NewProjectile;
-		On_Main.DrawCachedProjs -= Main_DrawCachedProjs;
-		On_Main.DrawProjectiles -= Main_DrawProjectiles;
-	}
+	public void Unload() { }
 
 	private static void Main_DrawCachedProjs(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 	{

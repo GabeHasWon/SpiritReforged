@@ -1,5 +1,6 @@
 ﻿namespace SpiritReforged.Common.PlayerCommon;
 
+/// <summary> Handles dynamic nullable flags keyed by string. Flags are reset by <see cref="ModPlayer.ResetEffects"/> and <see cref="ModPlayer.UpdateDead"/>. </summary>
 public class PlayerFlags : ModPlayer
 {
 	private readonly Dictionary<string, bool?> Flags = [];
@@ -10,6 +11,7 @@ public class PlayerFlags : ModPlayer
 			Flags[name] = null;
 	}
 
+	public override void UpdateDead() => ResetEffects();
 	public override void PostSavePlayer() => Flags.Clear();
 
 	public bool? CheckFlag(string name)

@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.UI;
@@ -53,7 +52,7 @@ public class CatalogueEntry : UIElement
 
 		if (newAndShiny)
 		{
-			Main.LocalPlayer.GetModPlayer<RecordPlayer>().RemoveNew(record.name);
+			Main.LocalPlayer.GetModPlayer<RecordPlayer>().RemoveNew(record.DisplayName.Value);
 			newAndShiny = false;
 		}
 	}

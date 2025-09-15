@@ -19,7 +19,7 @@ public class SilkSirwal : EquippableItem
 
 		PlayerEvents.OnPostUpdateRunSpeeds += static (p) =>
 		{
-			if (p.HasEquip<SilkSirwal>() && p.velocity.Y == 0) //Only apply while grounded
+			if (p.HasEquip<SilkSirwal>() && !p.mount.Active && p.velocity.Y == 0) //Only apply while grounded
 				p.runAcceleration += 0.2f;
 		};
 	}

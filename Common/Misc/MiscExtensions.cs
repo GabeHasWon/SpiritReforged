@@ -93,4 +93,7 @@ internal static class MiscExtensions
 		foreach (var type in options)
 			r.Add(type, finalWeight);
 	}
+
+	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
+	public static bool Common(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
 }

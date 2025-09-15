@@ -136,7 +136,7 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: 罐中雀鳝
+	DisplayName: 雀鳝罐
 }
 
 GarItem: {
@@ -261,27 +261,27 @@ StrippedBambooItem: {
 }
 
 BambooBarrelItem: {
-	DisplayName: 条纹竹桶
+	DisplayName: 竹桶
 	Tooltip: ""
 }
 
 BambooBenchItem: {
-	DisplayName: 条纹竹长凳
+	DisplayName: 竹长椅
 	Tooltip: ""
 }
 
 BambooBirdCageItem: {
-	DisplayName: 条纹竹鸟笼
+	DisplayName: 竹鸟笼
 	Tooltip: 右键可将一些鸟锁在里面
 }
 
 BambooPikeItem: {
-	DisplayName: 条纹竹刺
+	DisplayName: 竹刺
 	Tooltip: ""
 }
 
 BambooPotItem: {
-	DisplayName: 条纹竹罐
+	DisplayName: 竹罐
 	Tooltip: ""
 }
 
@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: 干木沙发
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: 干木梳妆台
 	Tooltip: ""
@@ -741,7 +736,7 @@ DriftwoodBedItem: {
 }
 
 DriftwoodBenchItem: {
-	DisplayName: 浮木长凳
+	DisplayName: 浮木长椅
 	Tooltip: ""
 }
 
@@ -905,7 +900,7 @@ SavannaSandstormMusicBoxItem: {
 }
 
 FishLure: {
-	DisplayName: 鱼饵
+	DisplayName: 鱼诱
 	Tooltip:
 		'''
 		{$ItemTooltip.CoralTorch}
@@ -1044,12 +1039,12 @@ LeatherPlate: {
 }
 
 ExplorerTreadsItem: {
-	DisplayName: 探险家的靴子
+	DisplayName: 探险家之靴
 	Tooltip:
 		'''
-		每损失10%生命值便会增加5%移动速度
-		50%几率闪避陷阱和危险
-		“让神庙探险变为公园散步”
+		每损失10%生命值，便会增加5%移动速度
+		有50%几率闪避陷阱和危险源
+		“让探索神庙就像在公园里散步一样”
 		'''
 }
 
@@ -1872,7 +1867,7 @@ SakuraBonsaiItem: {
 }
 
 WillowBonsaiItem: {
-	DisplayName: 黄柳树盆栽
+	DisplayName: 黄柳盆栽
 	Tooltip: ""
 }
 
@@ -1967,7 +1962,7 @@ RollingPotsItem: {
 MossSlimeBannerItem.DisplayName: 苔藓史莱姆旗
 
 InvisibleLure: {
-	DisplayName: 隐形鱼饵
+	DisplayName: 隐形鱼诱
 	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
 
@@ -2161,7 +2156,7 @@ DivingBeetleItem: {
 
 SunDropper: {
 	// DisplayName: Magic Sunlight Dropper
-	// Tooltip: Applies to solid tiles
+	// Tooltip: ""
 }
 
 OsmosifierItem: {
@@ -2176,5 +2171,138 @@ GoldDivingBeetleItem: {
 
 StoneStupasItem: {
 	// DisplayName: Stone Stupa
+	// Tooltip: ""
+}
+
+SaltChestItem: {
+	// DisplayName: Salt Chest
+	// Tooltip: ""
+}
+
+SaltDresserItem: {
+	// DisplayName: Salt Dresser
+	// Tooltip: ""
+}
+
+SaltBathtubItem: {
+	// DisplayName: Salt Bathtub
+	// Tooltip: ""
+}
+
+SaltBedItem: {
+	// DisplayName: Salt Bed
+	// Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	// DisplayName: Salt Bookcase
+	// Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	// DisplayName: Salt Candelabra
+	// Tooltip: ""
+}
+
+SaltChandelierItem: {
+	// DisplayName: Salt Chandelier
+	// Tooltip: ""
+}
+
+SaltClockItem: {
+	// DisplayName: Salt Clock
+	// Tooltip: ""
+}
+
+SaltDoorItem: {
+	// DisplayName: Salt Door
+	// Tooltip: ""
+}
+
+SaltLampItem: {
+	// DisplayName: Salt Lamp
+	// Tooltip: ""
+}
+
+SaltLanternItem: {
+	// DisplayName: Salt Lantern
+	// Tooltip: ""
+}
+
+SaltPianoItem: {
+	// DisplayName: Salt Piano
+	// Tooltip: ""
+}
+
+SaltSinkItem: {
+	// DisplayName: Salt Sink
+	// Tooltip: ""
+}
+
+SaltSofaItem: {
+	// DisplayName: Salt Sofa
+	// Tooltip: ""
+}
+
+SaltTableItem: {
+	// DisplayName: Salt Table
+	// Tooltip: ""
+}
+
+SaltToiletItem: {
+	// DisplayName: Salt Toilet
+	// Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	// DisplayName: Salt Work Bench
+	// Tooltip: ""
+}
+
+SaltCandleItem: {
+	// DisplayName: Salt Candle
+	// Tooltip: ""
+}
+
+SaltChairItem: {
+	// DisplayName: Salt Chair
+	// Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	// DisplayName: Otherworldly Radio
+	/* Tooltip:
+		'''
+		<right> to toggle Otherworld music
+		'Charmingly old-fashioned'
+		''' */
+}
+
+SleightOfHand: {
+	// DisplayName: Sleight of Hand
+	/* Tooltip:
+		'''
+		Double tap {0} while holding a ranged weapon to swap ammo types
+		Works while in the inventory
+		''' */
+}
+
+RuinedSandstonePillarItem: {
+	// DisplayName: Ruined Sandstone Pillar
+	// Tooltip: ""
+}
+
+GlidingItem: {
+	// DisplayName: Gliding
+	// Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	// DisplayName: Vicious Flamingo
+	// Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	// DisplayName: Salt Wall
 	// Tooltip: ""
 }

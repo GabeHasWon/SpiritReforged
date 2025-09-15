@@ -83,23 +83,22 @@ internal class VexpowderBlueDust : FlarepowderDust
 	public override void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.PurpleCrystalShard, Projectile.velocity * 0.5f).noGravity = true;
 	public override void DoDeathEffects()
 	{
-		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (1f, 1.5f), Volume = 0.6f, MaxInstances = 5 }, Projectile.Center);
-		SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 0.9f }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Volume = 0.3f, PitchRange = (1f, 1.5f), MaxInstances = 5 }, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Volume = 0.08f, Pitch = 0.9f }, Projectile.Center);
 
-		SoundEngine.PlaySound(Impact with { Pitch = 0.9f, Volume = 0.4f }, Projectile.Center);
+		SoundEngine.PlaySound(Impact with { Volume = 0.15f, Pitch = 0.9f }, Projectile.Center);
 
 		float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[3] * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[3] * 0.5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle.Angle = angle;
 		ParticleHandler.SpawnParticle(circle);
 
-		var circle2 = new TexturedPulseCircle(Projectile.Center, (Colors[0] * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+		var circle2 = new TexturedPulseCircle(Projectile.Center, (Colors[0] * 0.5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle2.Angle = angle;
 		ParticleHandler.SpawnParticle(circle2);
 
-		var lineScale = new Vector2(1f, 2f) * Projectile.scale * Main.rand.NextFloat(0.5f, 1.1f);
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Colors[2].Additive() * 0.5f, lineScale, 15));
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Color.White.Additive() * 0.5f, lineScale * 0.5f, 15));
+		ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center, Vector2.Zero, Colors[2].Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.4f, 15, 0.1f));
+		ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center, Vector2.Zero, Color.White.Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.2f, 15));
 	}
 }

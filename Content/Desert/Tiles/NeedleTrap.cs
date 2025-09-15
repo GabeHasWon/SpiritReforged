@@ -64,6 +64,7 @@ public class NeedleTrapProj : ModProjectile
 		Projectile.timeLeft = TimeLeftMax;
 		Projectile.tileCollide = true;
 		Projectile.ignoreWater = true;
+		Projectile.penetrate = -1;
 		Projectile.hide = true;
 	}
 

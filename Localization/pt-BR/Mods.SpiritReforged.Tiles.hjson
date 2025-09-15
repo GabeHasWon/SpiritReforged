@@ -49,3 +49,4 @@ KillieFishbowlTile.MapEntry: Aquário de Killie
 // ObsidianShroom.MapEntry: Obsidian Shroom
 // Starflower.MapEntry: Starflower
 // BonsaiTrees.MapEntry: Bonsai
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"

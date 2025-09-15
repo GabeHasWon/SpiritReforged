@@ -6,17 +6,14 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class DresserTile : FurnitureTile
 {
-	public virtual LocalizedText MapEntry => ModItem.DisplayName;
+	public virtual LocalizedText MapEntry => Info.Item.DisplayName;
 
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 1);
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 16)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 16).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -44,7 +41,7 @@ public abstract class DresserTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), MapEntry);
+		AddMapEntry(CommonColor, MapEntry);
 		AdjTiles = [TileID.Dressers];
 		DustType = -1;
 	}
@@ -156,7 +153,7 @@ public abstract class DresserTile : FurnitureTile
 
 	public override void MouseOver(int i, int j)
 	{
-		int icon = (Main.tile[i, j].TileFrameY > 0) ? ItemID.FamiliarShirt : ModItem.Type;
+		int icon = (Main.tile[i, j].TileFrameY > 0) ? ItemID.FamiliarShirt : Info.Item.Type;
 
 		TileExtensions.GetTopLeft(ref i, ref j);
 

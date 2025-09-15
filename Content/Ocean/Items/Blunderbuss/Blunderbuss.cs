@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -7,7 +8,18 @@ namespace SpiritReforged.Content.Ocean.Items.Blunderbuss;
 
 public class Blunderbuss : ModItem
 {
-	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, new SoundStyle("SpiritReforged/Assets/SFX/Item/Ring") { Pitch = -.5f });
+	public static readonly SoundStyle Fire = new("SpiritReforged/Assets/SFX/Item/Cannon_1")
+	{
+		PitchVariance = 0.35f
+	};
+
+	public static readonly SoundStyle Fire2 = new("SpiritReforged/Assets/SFX/Item/Cannon_2")
+	{
+		Volume = 0.75f,
+		Pitch = 0.5f
+	};
+
+	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, new("SpiritReforged/Assets/SFX/Item/Ring") { Pitch = -0.5f });
 
 	public override void SetDefaults()
     {
@@ -15,7 +27,7 @@ public class Blunderbuss : ModItem
         Item.damage = 5;
         Item.knockBack = 3.5f;
         Item.useAnimation = Item.useTime = 80;
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Cannon_1") with { PitchVariance = .35f };
+		Item.UseSound = Fire;
         Item.noMelee = true;
         Item.noUseGraphic = true;
         Item.autoReuse = true;
@@ -39,7 +51,7 @@ public class Blunderbuss : ModItem
         var unit = Vector2.Normalize(velocity);
 		float fxDistance = 30;
 
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Cannon_2") with { Volume = .75f, Pitch = .5f }, position);
+		SoundEngine.PlaySound(Fire2, position);
 
 		for (int i = 0; i < 10; i++)
             Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(12f), 
@@ -75,7 +87,14 @@ public class Blunderbuss : ModItem
 
 public class BlunderbussProj : ModProjectile
 {
-    public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
+	public static readonly SoundStyle Click = new("SpiritReforged/Assets/SFX/Item/ClickClack")
+	{
+		Volume = 0.25f,
+		Pitch = -0.5f
+	};
+	private static readonly Asset<Texture2D> FlashTexture = DrawHelpers.RequestLocal(typeof(Blunderbuss), "Blunderbuss_Flash", false);
+
+	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);
 
 	public override void SetDefaults()
@@ -102,7 +121,7 @@ public class BlunderbussProj : ModProjectile
 		};
 
 		if (Projectile.timeLeft == 45)
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ClickClack") with { Volume = .25f, Pitch = -.5f }, Projectile.Center);
+			SoundEngine.PlaySound(Click, Projectile.Center);
 		else if (Projectile.timeLeft == 20)
 			SoundEngine.PlaySound(SoundID.Unlock with { Volume = .5f, Pitch = -.2f }, Projectile.Center);
 
@@ -155,7 +174,7 @@ public class BlunderbussProj : ModProjectile
 
     private void DrawMuzzleFlash()
     {
-        var texture = ModContent.Request<Texture2D>(Texture + "_Flash").Value;
+        var texture = FlashTexture.Value;
 		var pos = Projectile.Center - Main.screenPosition + (Vector2.UnitX * (TextureAssets.Projectile[Type].Width() - Projectile.width / 2 - 4)).RotatedBy(Projectile.velocity.ToRotation());
 		int frame = (int)((Main.player[Projectile.owner].itemTimeMax - Projectile.timeLeft) / 2f);
 		var source = texture.Frame(1, 6, 0, frame, 0, -2);

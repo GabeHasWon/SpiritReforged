@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Savanna.Biome;
-using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -334,6 +333,5 @@ public class Gar : ModNPC
 		}
 	}
 	
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<RawFish>(3);
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.Water ? (spawnInfo.PlayerInTown ? 0.8f : 0.2f) : 0f;
 }
