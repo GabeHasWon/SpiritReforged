@@ -83,7 +83,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		//The strength of the sine for dull salt padding
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
-		const int baseDepth = 35;
+		const int baseDepth = 30;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
@@ -104,7 +104,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		for (int x = xLeft; x < xRight; x++)
 		{
 			float xProgress = (float)(x - xLeft) / fullWidth;
-			float ease = (float)Math.Sin(xProgress * MathHelper.Pi); //Causes tapering around the edges of the biome
+			float ease = EaseFunction.EaseSine.Ease(xProgress); //Causes tapering around the edges of the biome
 
 			int depthNoise = (int)(Noise.GetNoise(x, 600) * 8);
 			int reflectiveDepth = Math.Min((int)(ease * (baseCurveStrength * baseDepth)), baseDepth + depthNoise);
@@ -182,7 +182,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static int FindSurfaceLine(int x, int y, int yLeft, int yRight, bool isLining)
 	{
 		//The number of tiles around the biome that can ease into surrounding elevation
-		const int mergeDistance = 20;
+		const int mergeDistance = 30;
+		//The number of visible steps for merging
+		const float steps = 5;
 
 		float surfaceNoise = Noise.GetNoise(x, 100) * 2;
 		int xStart = x - SaltArea.Left;
@@ -192,9 +194,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			float floatingLine;
 
 			if (xStart < mergeDistance)
-				floatingLine = MathHelper.Lerp(yLeft, AverageY, (float)xStart / mergeDistance);
+				floatingLine = MathHelper.Lerp(yLeft, AverageY, (int)(xStart / steps) * steps / mergeDistance);
 			else
-				floatingLine = MathHelper.Lerp(AverageY, yRight, (float)(xStart - (SaltArea.Width - mergeDistance)) / mergeDistance);
+				floatingLine = MathHelper.Lerp(AverageY, yRight, (int)((xStart - (SaltArea.Width - mergeDistance)) / steps) * steps / mergeDistance);
 
 			return (int)(floatingLine + surfaceNoise);
 		}
@@ -217,10 +219,21 @@ internal class SaltFlatsEcotone : EcotoneBase
 		var tile = Main.tile[i, j];
 		if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
 		{
-			if (!Main.tile[i, j - 1].HasTile && (!Main.tile[i - 1, j].HasTile || !Main.tile[i + 1, j].HasTile))
+			bool leftEmpty = !WorldGen.SolidTile(i - 1, j);
+			bool rightEmpty = !WorldGen.SolidTile(i + 1, j);
+
+			if (!Main.tile[i, j - 1].HasTile && (leftEmpty || rightEmpty))
 			{
-				if (WorldGen.genRand.NextBool(4) || Main.tile[i, j + 1].TileType == ModContent.TileType<SaltBlockReflective>())
+				tile.Clear(Terraria.DataStructures.TileDataType.Slope);
+				if (WorldGen.genRand.NextBool(4))
+				{
 					tile.IsHalfBlock = true;
+				}
+				else
+				{
+					SlopeType slope = leftEmpty ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
+					tile.Slope = slope;
+				}
 
 				return false;
 			}
