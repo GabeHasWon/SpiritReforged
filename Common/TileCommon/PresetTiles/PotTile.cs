@@ -1,6 +1,7 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.WayfarerSet;
@@ -10,35 +11,36 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 /// <summary> Helper for building pot tiles automatically registered in the Potstiary.<br/>
 /// Automatically calls <see cref="LootTable.Resolve"/> if this tile implements <see cref="ILootTile"/>. </summary>
-public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
+public abstract class PotTile : ModTile, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => default; //Effectively creates no connection with the Rubblemaker item
 	public abstract Dictionary<string, int[]> TileStyles { get; }
 	public Dictionary<string, int[]> Styles => IsRubble ? [] : TileStyles;
 
 	/// <summary> Whether this type is an autoloaded rubble tile. </summary>
-	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble"); //Autoloader.IsRubble is unusuable before before loading is complete
+	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble"); //Autoloader.IsRubble is unusuable before loading is complete
 
-	/// <inheritdoc cref="ModType.Load"/>
-	public virtual void Load(Mod mod) { }
-	public sealed override void Load()
+	public override void Load() => SpiritReforgedSystem.OnLoad += AutoloadFromGroup;
+	public virtual void AutoloadFromGroup()
 	{
-		if (!IsRubble)
+		foreach (string name in Styles.Keys)
 		{
-			StyleDatabase.OnPopulateStyleGroups += AutoloadFromGroup;
-			Load(Mod);
+			string finalName = Name + name;
+			NamedStyles.StyleGroup group = new(finalName, Styles[name]);
+
+			NamedStyles.AddStyle(Type, group);
+
+			TileRecord record = AddRecord(Type, group);
+			RecordHandler.Records.Add(record);
+
+			Mod.AddContent(new AutoloadedPotItem(Name + "Rubble", group, record.Condition, AddItemRecipes));
 		}
 	}
 
-	public virtual void AddRecord(int type, StyleDatabase.StyleGroup group) => RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles));
-	public virtual void AutoloadFromGroup()
-	{
-		foreach (var c in StyleDatabase.Groups[Type])
-			Mod.AddContent(new AutoloadedPotItem(Name + "Rubble", c, AddItemRecipes));
-	}
+	public virtual TileRecord AddRecord(int type, NamedStyles.StyleGroup group) => new(group.name, type, group.styles);
 
 	/// <summary> Allows you to override the recipe of a pot item created in <see cref="AutoloadFromGroup"/>. </summary>
-	public virtual void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+	public virtual void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe()
 		.AddRecipeGroup("ClayAndMud", 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	/// <summary> <inheritdoc cref="ModBlockType.SetStaticDefaults"/><para/>
@@ -86,7 +88,7 @@ public abstract class PotTile : ModTile, IRecordTile, IAutoloadRubble
 			return;
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
-			TileLootHandler.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY); //Resolves the loot table, if any
 
 		if (!Main.dedServ)
 			DeathEffects(i, j, frameX, frameY);

@@ -12,11 +12,7 @@ global using Terraria.ObjectData;
 global using System.Collections.Generic;
 global using NPCUtils;
 
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
-using System.Runtime.CompilerServices;
 
 namespace SpiritReforged;
 
@@ -26,60 +22,23 @@ public partial class SpiritReforgedMod : Mod
 
 	public static SpiritReforgedMod Instance { get; private set; }
 
-	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
-	private static extern ref bool GetSwapMusic(Main main);
-
-	/// <summary> Called after all other systems are loaded. </summary>
-	public static event Action OnLoad;
-	/// <summary> Called after all other systems are unloaded. </summary>
-	public static event Action OnUnload;
-	/// <summary> Called after all other system content has been set up. </summary>
-	public static event Action OnSetupContent;
-
 	public SpiritReforgedMod()
 	{
-		GoreAutoloadingEnabled = true;
 		Instance = this;
-
 		PreAddContent.AddContentHook(this);
 	}
 
 	public override void Load()
 	{
-		OnLoad?.Invoke();
-		OnLoad = null;
-
-		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
-
-		TrailDetours.Initialize();
-
-		AssetLoader.Load(this);
-
-		ParticleHandler.RegisterParticles();
-		ParticleDetours.Initialize();
-	}
-
-	public override void PostSetupContent()
-	{
-		OnSetupContent?.Invoke();
-		OnSetupContent = null;
 	}
 
 	public override void Unload()
 	{
-		OnUnload?.Invoke();
-		OnUnload = null;
-
 		NPCUtils.NPCUtils.UnloadMod(this);
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
-		AssetLoader.Unload();
-		TrailDetours.Unload();
-
-		ParticleHandler.Unload();
-		ParticleDetours.Unload();
 	}
 
 	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerHandler.HandlePacket(reader, whoAmI);

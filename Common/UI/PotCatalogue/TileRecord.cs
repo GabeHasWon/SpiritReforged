@@ -1,21 +1,26 @@
-﻿namespace SpiritReforged.Content.Underground.Pottery;
+﻿namespace SpiritReforged.Common.UI.PotCatalogue;
 
 /// <summary> Records details for tile bestiary purposes. </summary>
 public struct TileRecord
 {
-	/// <summary> The default path localization key for <see cref="description"/>. </summary>
+	/// <summary> The default path localization key for <see cref="Description"/>. </summary>
 	public const string DescKey = "Mods.SpiritReforged.Tiles.Records";
 
-	/// <summary> The value used for internal reference. For the front-facing name, see <see cref="name"/>. </summary>
+	/// <summary> Localized text "Discovered". Normally used in tandem with <see cref="RecordedPot"/> to create a condition. </summary>
+	public static LocalizedText Discovered => Language.GetText("Mods.SpiritReforged.Conditions.Discovered");
+
+	/// <summary> The value used for internal reference. For the front-facing name, see <see cref="DisplayName"/>. </summary>
 	public readonly string key;
 	public readonly int type;
 	public readonly int[] styles;
 
-	public string name;
-	public string description = Language.GetTextValue(DescKey + ".Common");
+	public LocalizedText DisplayName { get; private set; }
+	public LocalizedText Description { get; private set; }
 
 	public Func<bool> hidden;
 	public byte rating = 1;
+
+	public Condition Condition { get; private set; }
 
 	public TileRecord(string nameKey, int tileType, params int[] tileStyles)
 	{
@@ -24,8 +29,9 @@ public struct TileRecord
 		styles = tileStyles;
 
 		string modName = TileLoader.GetTile(tileType).Mod.Name;
-		name = Language.GetTextValue($"Mods.{modName}.Items.{key}Item.DisplayName");
-		description = Language.GetTextValue(DescKey + ".Common");
+		DisplayName = Language.GetText($"Mods.{modName}.Items.{key}Item.DisplayName");
+		Description = Language.GetText(DescKey + ".Common");
+		Condition = new(Discovered, () => Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(nameKey));
 	}
 
 	/// <summary> Hides this record until discovered. </summary>
@@ -42,6 +48,18 @@ public struct TileRecord
 		return this;
 	}
 
+	public TileRecord SetCondition(Func<bool> predicate)
+	{
+		Condition = new(Condition.Description, predicate);
+		return this;
+	}
+
+	public TileRecord SetCondition(Condition value)
+	{
+		Condition = value;
+		return this;
+	}
+
 	public TileRecord AddRating(byte value)
 	{
 		rating = value;
@@ -50,13 +68,13 @@ public struct TileRecord
 
 	public TileRecord AddDisplayName(LocalizedText text)
 	{
-		name = text.Value;
+		DisplayName = text;
 		return this;
 	}
 
 	public TileRecord AddDescription(LocalizedText text)
 	{
-		description = text.Value;
+		Description = text;
 		return this;
 	}
 
@@ -77,7 +95,7 @@ public struct TileRecord
 		int height = data.Height;
 
 		if (wrapLimit == 0)
-			wrapLimit = (data.RandomStyleRange == 0) ? 2000 : data.RandomStyleRange;
+			wrapLimit = data.RandomStyleRange == 0 ? 2000 : data.RandomStyleRange;
 
 		for (int x = 0; x < Math.Min(width, maxSize); x++)
 		{

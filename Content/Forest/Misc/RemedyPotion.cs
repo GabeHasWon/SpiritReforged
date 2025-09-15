@@ -19,7 +19,7 @@ public class RemedyPotion : ModItem
 	{
 		Item.ResearchUnlockCount = 20;
 
-		TileLootHandler.RegisterLoot(static (loot) =>
+		TileLootSystem.RegisterLoot(static (loot) =>
 		{
 			if (loot is TileLootTable t)
 			{

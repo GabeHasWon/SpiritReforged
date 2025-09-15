@@ -4,7 +4,7 @@ using System.Reflection;
 using Terraria.ModLoader.Core;
 using SpiritReforged;
 
-internal static class AssetLoader
+internal sealed class AssetLoader : ILoadable
 {
 	public static TrailManager VertexTrailManager;
 	public static BlendState NonPremultipliedAlphaFix;
@@ -15,7 +15,7 @@ internal static class AssetLoader
 
 	public static string EmptyTexture => "Terraria/Images/NPC_0";
 
-	public static void Load(Mod mod)
+	public void Load(Mod mod)
 	{
 		if (Main.dedServ) //dont do this on the server because it will DIE
 			return;
@@ -87,7 +87,7 @@ internal static class AssetLoader
 	/// <returns></returns>
 	private static string RemoveDirectory(string input, string directory) => input.Remove(0, directory.Length);
 
-	public static void Unload()
+	public void Unload()
 	{
 		if (Main.dedServ)
 			return;

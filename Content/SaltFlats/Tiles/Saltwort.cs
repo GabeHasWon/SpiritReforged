@@ -23,7 +23,7 @@ public class Saltwort : ModTile, ISwayTile
 		TileObjectData.newTile.WaterDeath = false;
 		TileObjectData.newTile.CoordinatePadding = 2;
 		TileObjectData.newTile.CoordinateWidth = 16;
-		TileObjectData.newTile.CoordinateHeights = [20];
+		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SaltBlockDull>()];
@@ -39,13 +39,13 @@ public class Saltwort : ModTile, ISwayTile
 	{
 		var t = Main.tile[i, j];
 		var texture = TextureAssets.Tile[Type].Value;
-		var position = new Vector2(i, j) * 16 - Main.screenPosition - new Vector2(0, 2);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition;
 		var source = new Rectangle(t.TileFrameX, 0, 16, 20);
 
 		var leftTile = Framing.GetTileSafely(i - 1, j);
 		if (leftTile.HasTile && leftTile.TileType == Type) //Scan the left tile for drawing an additional layer
 		{
-			spriteBatch.Draw(texture, position + offset - new Vector2(8, 0), source, Lighting.GetColor(i, j).MultiplyRGB(new(0.8f, 0.7f, 0.5f)), rotation, origin, 1, default, 0);
+			spriteBatch.Draw(texture, position + offset - new Vector2(8, 0), source, Lighting.GetColor(i, j).MultiplyRGB(new(0.8f, 0.7f, 0.5f)) * 0.7f, rotation, origin, 1, default, 0);
 		}
 
 		spriteBatch.Draw(texture, position + offset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);

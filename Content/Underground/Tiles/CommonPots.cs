@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.DataStructures;
@@ -19,7 +20,7 @@ public class CommonPots : PotTile, ILootable
 
 	private static int GetStyle(Tile t) => t.TileFrameY / 36;
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
@@ -56,7 +57,7 @@ public class CommonPots : PotTile, ILootable
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || fail || IsRubble)
+		if (effectOnly || fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		var tile = Main.tile[i, j];
@@ -95,7 +96,7 @@ public class CommonPots : PotTile, ILootable
 
 	public void AddLoot(ILoot loot)
 	{
-		if (TileLootHandler.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
+		if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
 			dele.Invoke(loot);
 	}
 }

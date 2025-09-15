@@ -19,7 +19,7 @@ public class AutoloadTileItemHandler : ILoadable
 {
 	public static void AutoloadItem(ModTile item) => SpiritReforgedMod.Instance.AddContent(new AutoloadedTileItem(item.Name + "Item", item.Texture + "Item", (IAutoloadTileItem)item));
 
-	public void Load(Mod mod) => SpiritReforgedMod.OnLoad += static () =>
+	public void Load(Mod mod) => SpiritReforgedSystem.OnLoad += static () =>
 	{
 		List<ModTile> types = [.. ModContent.GetContent<ModTile>().Where(x => x is IAutoloadTileItem)];
 

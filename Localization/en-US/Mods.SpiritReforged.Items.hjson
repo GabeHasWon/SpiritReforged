@@ -2301,3 +2301,9 @@ ViciousFlamingoItem: {
 	DisplayName: Vicious Flamingo
 	Tooltip: "'Tix A. Lun'"
 }
+
+SaltWallItem: {
+	DisplayName: Salt Wall
+	Tooltip: ""
+}
+
