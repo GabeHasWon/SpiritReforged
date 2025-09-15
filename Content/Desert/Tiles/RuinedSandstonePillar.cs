@@ -6,6 +6,7 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 {
+	private static readonly HashSet<int> MergeTypes = [ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>()];
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(ItemID.SmoothSandstone).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
@@ -25,7 +26,10 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
 	{
-		if (j % 2 == 0)
-			Main.tile[i, j].TileFrameY += 90;
+		const int rowHeight = 90;
+		bool merging = MergeTypes.Contains(Framing.GetTileSafely(i, j - 1).TileType);
+
+		if (merging || j % 2 == 0)
+			Main.tile[i, j].TileFrameY += (short)(merging ? (rowHeight * 2) : rowHeight);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
+using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
@@ -30,13 +31,11 @@ public class ZigguratBiome : Microbiome
 		TotalRooms = [.. rooms];
 
 		CreateHallways(rooms);
-		Sandify(bounds, 2);
 
 		foreach (var r in rooms)
-		{
-			if (r is ZigguratRooms.BasicRoom b)
-				b.FinalPass();
-		}
+			r.Create();
+
+		Sandify(bounds, 2);
 	}
 
 	/// <summary> </summary>
@@ -128,7 +127,7 @@ public class ZigguratBiome : Microbiome
 			int spotCount = WorldGen.genRand.Next(4, 8);
 			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
 
-			WorldUtils.Gen(origin, new GenTypes.Splatter(15, WorldGen.genRand.Next(4, 9), 34), Actions.Chain(
+			WorldUtils.Gen(origin, new GenTypes.Splatter(15, 10, 40), Actions.Chain(
 				new Modifiers.Blotches(),
 				new Modifiers.OnlyTiles(brick),
 				new Actions.Custom(static (i, j, args) =>
@@ -136,8 +135,20 @@ public class ZigguratBiome : Microbiome
 					ushort type = WorldGen.TileIsExposedToAir(i, j) ? TileID.Sandstone : TileID.Sand;
 					Main.tile[i, j].ResetToType(type);
 
-					if (type == TileID.Sandstone && WorldGen.genRand.NextBool(12))
-						WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(3, 6), new Vector2D(0, WorldGen.genRand.Next(4, 16))), new Actions.SetTileKeepWall(TileID.Sandstone));
+					if (type == TileID.Sandstone)
+					{
+						if (WorldGen.genRand.NextBool(12))
+						{
+							WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
+								new Modifiers.IsNotSolid(),
+								new Actions.SetTileKeepWall(TileID.Sandstone)
+							));
+						}
+						else if (WorldGen.genRand.NextBool(7))
+						{
+							WorldGen.PlaceTile(i, j + 1, ModContent.TileType<LightShaft>(), true);
+						}
+					}
 
 					return true;
 				}),
@@ -168,6 +179,10 @@ public class ZigguratBiome : Microbiome
 			for (int x = 0; x <= totalCount; x++)
 			{
 				float progress = (float)x / totalCount;
+
+				if (totalCount == 1)
+					progress = 0.5f;
+
 				ZigguratRooms.BasicRoom r = SelectRoom(i + 1, bound, ref progress, numSkips);
 
 				if (r is null)
@@ -176,14 +191,12 @@ public class ZigguratBiome : Microbiome
 					continue; //Skip
 				}
 
-				Point origin = new((int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress), innerBounds.Bottom - r.Bounds.Height / 2);
+				int originX = (int)MathHelper.Lerp(innerBounds.Left + r.Bounds.Width / 2, innerBounds.Right - r.Bounds.Width / 2, progress);
+				Point origin = new(originX, innerBounds.Bottom - r.Bounds.Height / 2);
 				r.SetOrigin(origin);
 
-				if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //If we don't care about rooms occasionally intersecting, remove this check
-				{
-					r.Create();
+				if (!rooms.Any(x => x.Intersects(r.Bounds, 2))) //Check if rooms would intersect
 					rooms.Add(r);
-				}
 			}
 		}
 	}
@@ -202,10 +215,6 @@ public class ZigguratBiome : Microbiome
 		{
 			r = new ZigguratRooms.TreasureRoom(bound);
 			progress = WorldGen.genRand.NextFloat();
-		}
-		else if (layer == 2 && progress == 0 && WorldGen.genRand.NextBool(6))
-		{
-			r = new ZigguratRooms.DigsiteRoom(bound);
 		}
 		else if (layer == 1)
 		{
@@ -237,9 +246,7 @@ public class ZigguratBiome : Microbiome
 					if (AddHallway(start, end))
 					{
 						a.Links.Remove(start);
-
-						if (WorldGen.genRand.NextBool(4))
-							b.Links.Remove(end); //Allow the end link to branch out an additional time with a 75% chance
+						//b.Links.Remove(end);
 
 						return true;
 					}
@@ -263,7 +270,7 @@ public class ZigguratBiome : Microbiome
 			var exit = new Point(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
 
 			bool sloped = a == 0;
-			var down = sloped ? new Point(entrance.X + (end.Y - start.Y) * startLink.Direction.X, end.Y) : new Point(entrance.X, end.Y); //Straight or diagonal down given enough space
+			var down = sloped ? new Point(entrance.X + Math.Abs(end.Y - start.Y) * startLink.Direction.X, end.Y) : new Point(entrance.X, end.Y); //Straight or diagonal down given enough space
 
 			if (!Intersecting(entrance, down, exit) && Contains(entrance) && Contains(down))
 			{
@@ -275,8 +282,11 @@ public class ZigguratBiome : Microbiome
 
 				if (!sloped) //Avoid placing platforms at sloped entrances
 				{
-					var shelf = (entrance.Y < down.Y) ? entrance : down;
-					WorldUtils.Gen(new(shelf.X - 2, shelf.Y + 3), new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
+					for (int i = 0; i < 2; i++)
+					{
+						var shelf = ((i == 0) ? entrance : down) + new Point(-2, 3);
+						WorldUtils.Gen(shelf, new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
+					}
 				}
 
 				return true;
@@ -324,7 +334,10 @@ public class ZigguratBiome : Microbiome
 
 			ShapeData shape = new();
 
-			WorldUtils.Gen(origin, new Shapes.Rectangle(width, width), new Actions.ClearTile(true).Output(shape));
+			WorldUtils.Gen(origin, new Shapes.Rectangle(width, width), Actions.Chain(
+				new Actions.ClearTile(true).Output(shape),
+				new Actions.SetLiquid(0, 0)
+			));
 			WorldUtils.Gen(origin, new ModShapes.OuterOutline(shape), new Actions.Smooth());
 		}
 	}

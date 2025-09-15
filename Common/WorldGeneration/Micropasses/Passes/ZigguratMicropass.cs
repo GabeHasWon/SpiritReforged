@@ -12,11 +12,11 @@ internal class ZigguratMicropass : Micropass
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids"); //"Water Chests" "Full Desert"
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		const int scanRadius = 5;
+		const int scanRadius = 10;
 		const int range = ZigguratBiome.Width / 2;
 
 		Rectangle loc = GenVars.UndergroundDesertLocation;
-		for (int a = 0; a < 100; a++)
+		for (int a = 0; a < 300; a++)
 		{
 			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 10));
 			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 10), loc.Right);
@@ -28,13 +28,13 @@ internal class ZigguratMicropass : Micropass
 				return; // ?? big hole where the desert is?
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand, TileID.Sandstone).Output(typeToCount));
+			WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.Sandstone] > scanRadius * scanRadius * 0.1f)
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.4f || typeToCount[TileID.SandstoneBrick] > 10)
 				continue;
 
 			(x, y) = (foundPos.X, foundPos.Y);
-			Microbiome.Create<ZigguratBiome>(new(x, y + (int)(ZigguratBiome.Height * 0.4f)));
+			Microbiome.Create<ZigguratBiome>(new(x, y + (int)(ZigguratBiome.Height * 0.3f)));
 			break;
 		}
 	}

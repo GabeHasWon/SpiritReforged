@@ -22,7 +22,7 @@ public class RedSandstoneBrickWall : ModWall, IAutoloadUnsafeWall, IAutoloadWall
 		Main.wallHouse[Type] = true;
 		DustType = DustID.DynastyShingle_Red;
 
-		var entryColor = new Color(134, 34, 8);
+		var entryColor = new Color(150, 50, 20);
 		AddMapEntry(entryColor);
 		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}
