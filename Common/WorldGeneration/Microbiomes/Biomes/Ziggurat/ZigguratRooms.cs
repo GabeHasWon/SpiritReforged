@@ -24,6 +24,9 @@ public static class ZigguratRooms
 		{
 			CarveOut();
 
+			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
+
 			//Add decorations
 			WorldMethods.GenerateSquared(static (i, j) =>
 			{
@@ -52,6 +55,18 @@ public static class ZigguratRooms
 
 				return false;
 			}));
+		}
+
+		/// <summary> Places upward-expanding <see cref="RuinedSandstonePillar"/> tiles. </summary>
+		public static void PlaceColumn(Point origin, int width)
+		{
+			while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(origin)))
+			{
+				for (int x = 0; x < width; x++)
+					WorldGen.PlaceTile(origin.X - width / 2 + x, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
+
+				origin.Y--;
+			}
 		}
 	}
 
@@ -95,22 +110,11 @@ public static class ZigguratRooms
 			WorldUtils.Gen(new(_outerBounds.Left, Bounds.Bottom - 8), new Shapes.Rectangle(_outerBounds.Width, 8), new Actions.ClearTile());
 			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - 4), new Shapes.Rectangle(Bounds.Width + 4, 4), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
 
-			PlaceColumn(new(Bounds.Left - 2, Bounds.Bottom - 1));
-			PlaceColumn(new(Bounds.Right + 2, Bounds.Bottom - 1));
+			PlaceColumn(new(Bounds.Left - 2, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 2, Bounds.Bottom - 1), 2);
 
-			PlaceColumn(new(Bounds.Left + 6, Bounds.Bottom - 1));
-			PlaceColumn(new(Bounds.Right - 6, Bounds.Bottom - 1));
-
-			static void PlaceColumn(Point origin)
-			{
-				while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(origin)))
-				{
-					WorldGen.PlaceTile(origin.X, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
-					WorldGen.PlaceTile(origin.X - 1, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
-
-					origin.Y--;
-				}
-			}
+			PlaceColumn(new(Bounds.Left + 6, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right - 6, Bounds.Bottom - 1), 2);
 		}
 	}
 
@@ -134,36 +138,25 @@ public static class ZigguratRooms
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>())
 			));
 
+			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
+
+			PlaceColumn(new(Bounds.Left + 10, Bounds.Bottom - 4), 2);
+			PlaceColumn(new(Bounds.Right - 11, Bounds.Bottom - 4), 2);
+
+			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+
 			//Fill with coin piles
-			/*WorldMethods.GenerateSquared(static (i, j) =>
+			WorldMethods.GenerateSquared((i, j) =>
 			{
-				if (WorldGen.genRand.NextBool(10) && WorldGen.SolidTile(i, j + 1))
-				{
-					PlaceCoinPile(i, j);
-					return true;
-				}
+				float noise = Noise.NoiseSystem.PerlinStatic(i, j) + 2;
+
+				if (Bounds.Height - (j - Bounds.Top) < noise && !WorldGen.SolidTile3(i, j))
+					WorldGen.PlaceTile(i, j, TileID.GoldCoinPile, true);
 
 				return false;
 			}, out _, Bounds);
-
-			static void PlaceCoinPile(int i, int j)
-			{
-				int num4 = WorldGen.genRand.Next(1, 4);
-				int num5 = (WorldGen.genRand.Next() % 2 == 0) ? 4 : (-(WorldGen.genRand.Next(6, 10) >> 1));
-
-				for (int k = 0; k < num4; k++)
-				{
-					int num6 = WorldGen.genRand.Next(1, 3);
-					for (int l = 0; l < num6; l++)
-					{
-						int x = i + num5 - k;
-						int y = j - l;
-
-						if (!Main.tile[x, y].HasTile)
-							WorldGen.PlaceTile(x, y, TileID.GoldCoinPile, mute: true);
-					}
-				}
-			}*/
 		}
 	}
 }

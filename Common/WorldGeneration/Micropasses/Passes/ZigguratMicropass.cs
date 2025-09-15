@@ -9,7 +9,7 @@ internal class ZigguratMicropass : Micropass
 {
 	public override string WorldGenName => "Ziggurat";
 
-	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids"); //"Water Chests" "Full Desert"
+	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids") - 1;
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		const int scanRadius = 10;
@@ -18,8 +18,8 @@ internal class ZigguratMicropass : Micropass
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		for (int a = 0; a < 300; a++)
 		{
-			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 10));
-			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 10), loc.Right);
+			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 20));
+			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 20), loc.Right);
 
 			int x = WorldGen.genRand.Next([rangeLeft, rangeRight]);
 			int y = loc.Y - 40;

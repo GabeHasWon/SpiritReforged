@@ -27,7 +27,7 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
 	{
 		const int rowHeight = 90;
-		bool merging = MergeTypes.Contains(Framing.GetTileSafely(i, j - 1).TileType);
+		bool merging = MergeTypes.Contains(Framing.GetTileSafely(i, j - 1).TileType) || MergeTypes.Contains(Framing.GetTileSafely(i, j + 1).TileType);
 
 		if (merging || j % 2 == 0)
 			Main.tile[i, j].TileFrameY += (short)(merging ? (rowHeight * 2) : rowHeight);

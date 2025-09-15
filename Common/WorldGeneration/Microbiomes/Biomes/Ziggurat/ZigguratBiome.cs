@@ -35,7 +35,7 @@ public class ZigguratBiome : Microbiome
 		foreach (var r in rooms)
 			r.Create();
 
-		Sandify(bounds, 2);
+		Sandify(bounds);
 	}
 
 	/// <summary> </summary>
@@ -107,56 +107,78 @@ public class ZigguratBiome : Microbiome
 		}
 	}
 
-	/// <summary> Randomly adds large sandy spots starting from a select item in <paramref name="bounds"/>. </summary>
-	private static void Sandify(List<Rectangle> bounds, int count)
+	/// <summary> Randomly adds weathering. </summary>
+	private static void Sandify(List<Rectangle> bounds)
 	{
-		const int scanRadius = 3;
-		int successes = 0;
-
-		for (int a = 0; a < 20; a++)
+		foreach (Rectangle b in bounds)
 		{
-			var b = bounds[WorldGen.genRand.Next(2, bounds.Count)];
-			var origin = new Vector2(WorldGen.genRand.Next([b.Left, b.Right]), WorldGen.genRand.Next([b.Top, b.Bottom])).ToPoint();
-
-			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(new(origin.X - scanRadius, origin.Y - scanRadius), new Shapes.Circle(scanRadius), new Actions.TileScanner(TileID.Sand).Output(typeToCount));
-
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.25f)
-				continue; //Check if origin is close to sand
-
-			int spotCount = WorldGen.genRand.Next(4, 8);
-			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
-
-			WorldUtils.Gen(origin, new GenTypes.Splatter(15, 10, 40), Actions.Chain(
-				new Modifiers.Blotches(),
-				new Modifiers.OnlyTiles(brick),
-				new Actions.Custom(static (i, j, args) =>
+			WorldMethods.GenerateSquared(static (i, j) =>
+			{
+				var tile = Main.tile[i, j];
+				if (WorldGen.genRand.NextBool(50) && tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile3(i, j - 1))
 				{
-					ushort type = WorldGen.TileIsExposedToAir(i, j) ? TileID.Sandstone : TileID.Sand;
-					Main.tile[i, j].ResetToType(type);
+					ShapeData shape = new();
+					int size = WorldGen.genRand.Next(2, 5);
 
-					if (type == TileID.Sandstone)
-					{
-						if (WorldGen.genRand.NextBool(12))
+					WorldUtils.Gen(new(i, j), new Shapes.Mound(size, size), Actions.Chain(
+						new Modifiers.Flip(false, true),
+						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+						new Actions.Custom((x, y, args) =>
 						{
-							WorldUtils.Gen(new(i, j), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
-								new Modifiers.IsNotSolid(),
-								new Actions.SetTileKeepWall(TileID.Sandstone)
-							));
-						}
-						else if (WorldGen.genRand.NextBool(7))
+							if (y == j)
+							{
+								Main.tile[x, y].ClearTile();
+							}
+							else
+							{
+								ushort type = WorldGen.SolidTile3(x, y + 1) ? TileID.Sand : TileID.HardenedSand;
+								Main.tile[x, y].ResetToType(type);
+							}
+
+							return false;
+						})
+					).Output(shape));
+
+					WorldUtils.Gen(new(i, j), new ModShapes.OuterOutline(shape), Actions.Chain(
+						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+						new Modifiers.Dither(),
+						new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
+					));
+				}
+
+				if (WorldGen.genRand.NextBool(80) && tile.HasTile && tile.TileType == TileID.Sand)
+				{
+					WorldUtils.Gen(new(i, j), new GenTypes.Splatter(8, 10, 20), Actions.Chain(
+						new Modifiers.Blotches(),
+						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>(), (ushort)ModContent.TileType<RedSandstoneBrickCracked>()),
+						new Actions.Custom(static (x, y, args) =>
 						{
-							WorldGen.PlaceTile(i, j + 1, ModContent.TileType<LightShaft>(), true);
-						}
-					}
+							ushort type = WorldGen.TileIsExposedToAir(x, y) ? TileID.Sandstone : TileID.Sand;
+							Main.tile[x, y].ResetToType(type);
 
-					return true;
-				}),
-				new Actions.PlaceWall(WallID.HardenedSand)
-			));
+							if (type == TileID.Sandstone)
+							{
+								if (WorldGen.genRand.NextBool(12))
+								{
+									WorldUtils.Gen(new(x, y), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
+										new Modifiers.IsNotSolid(),
+										new Actions.SetTileKeepWall(TileID.Sandstone)
+									));
+								}
+								else if (WorldGen.genRand.NextBool(7))
+								{
+									WorldGen.PlaceTile(x, y + 1, ModContent.TileType<LightShaft>(), true);
+								}
+							}
 
-			if (++successes >= count)
-				break;
+							return true;
+						}),
+						new Actions.PlaceWall(WallID.HardenedSand)
+					));
+				}
+
+				return false;
+			}, out _, b);
 		}
 	}
 
