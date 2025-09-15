@@ -11,7 +11,7 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
-		Main.tileBlockLight[Type] = true;
+		Main.tileBlockLight[Type] = false;
 
 		TileID.Sets.IsBeam[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
