@@ -2306,3 +2306,8 @@ SaltWallItem: {
 	// DisplayName: Salt Wall
 	// Tooltip: ""
 }
+
+RedSandstoneBrickWallItem: {
+	// DisplayName: Red Sandstone Brick Wall
+	// Tooltip: ""
+}

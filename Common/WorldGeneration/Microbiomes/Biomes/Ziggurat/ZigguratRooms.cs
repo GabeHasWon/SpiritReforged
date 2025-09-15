@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Desert.Tiles;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -116,13 +117,17 @@ public static class ZigguratRooms
 			WorldUtils.Gen(new(Bounds.Center.X + tailSquared, Bounds.Bottom), new Shapes.Tail(tailSquared, new(0, tailSquared / 2 + 1)), new Actions.ClearTile());
 			WorldUtils.Gen(new(Bounds.Center.X, Bounds.Bottom), new Shapes.Rectangle(new(-tailSquared, 0, tailSquared * 2, tailSquared / 2 + 1)), new Actions.ClearTile());
 
-			PlaceColumn(new(Bounds.Center.X - tailSquared - 1, Bounds.Bottom + 1));
+			PlaceColumn(new(Bounds.Center.X - tailSquared, Bounds.Bottom + 1));
 			PlaceColumn(new(Bounds.Center.X + tailSquared, Bounds.Bottom + 1));
 
 			static void PlaceColumn(Point origin)
 			{
 				while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidTile(origin))
-					WorldGen.PlaceTile(origin.X, origin.Y--, TileID.SandstoneColumn, true);
+				{
+					WorldGen.PlaceTile(origin.X, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
+					WorldGen.PlaceTile(origin.X - 1, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
+					origin.Y--;
+				}
 			}
 		}
 
