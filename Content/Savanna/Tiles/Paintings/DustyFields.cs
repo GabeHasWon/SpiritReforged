@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Savanna.Items;
 
@@ -7,8 +6,7 @@ namespace SpiritReforged.Content.Savanna.Tiles.Paintings;
 
 public class DustyFields : PaintingTile
 {
-	public override int TileHeight => 3;
-	public override int TileWidth => 3;
+	public override Point TileSize => new(3, 3);
 
 	public override void AddItemRecipes(ModItem item) 
 	{

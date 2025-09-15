@@ -17,6 +17,7 @@ Conditions: {
 	PeevedTumbler: 当闪烁时
 	Discovered: 发现
 	Submerged: 水下
+	// InSaltFlats: In Salt Flats
 }
 
 Misc: {

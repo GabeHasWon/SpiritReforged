@@ -2287,7 +2287,23 @@ SleightOfHand: {
 		'''
 }
 
+RuinedSandstonePillarItem: {
+	DisplayName: Ruined Sandstone Pillar
+	Tooltip: ""
+}
+
+GlidingItem: {
+	DisplayName: Gliding
+	Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	DisplayName: Vicious Flamingo
+	Tooltip: "'Tix A. Lun'"
+}
+
 SaltWallItem: {
 	DisplayName: Salt Wall
 	Tooltip: ""
 }
+
