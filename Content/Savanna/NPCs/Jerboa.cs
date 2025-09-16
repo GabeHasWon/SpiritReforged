@@ -1,5 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Savanna.Biome;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs;
@@ -16,17 +17,13 @@ public class Jerboa : ModNPC
 		Run
 	}
 
-	public State AnimationState
-	{
-		get => (State)NPC.ai[0];
-		set => NPC.ai[0] = (int)value;
-	}
-
-	public ref float Counter => ref NPC.ai[1]; //Used to change behaviour at intervals
-	public ref float TargetSpeed => ref NPC.ai[2]; //Stores a direction to lerp to over time
+	public ref float Counter => ref NPC.ai[0]; //Used to change behaviour at intervals
+	public ref float TargetSpeed => ref NPC.ai[1]; //Stores a direction to lerp to over time
 
 	private static readonly int[] endFrames = [1, 11, 13, 6, 10];
 
+	public State AnimationState = State.Idle;
+	private State _lastAnimationState;
 	private bool _didHop = false;
 
 	public override void SetStaticDefaults()
@@ -59,6 +56,7 @@ public class Jerboa : ModNPC
 
 		if (AnimationState is State.Hop)
 		{
+			bool wasIdle = _lastAnimationState == State.Idle;
 			if (NPC.velocity.Y == 0)
 			{
 				if (_didHop)
@@ -66,11 +64,14 @@ public class Jerboa : ModNPC
 					ChangeAnimationState(State.Idle);
 					_didHop = false;
 
-					NPC.velocity.X = TargetSpeed = 0;
+					if (wasIdle)
+					{
+						NPC.velocity.X = TargetSpeed = 0; //Stop upon landing
+					}
 				}
 				else
 				{
-					NPC.velocity.X = 0;
+					NPC.velocity.X *= 0.9f;
 				}
 
 				if ((int)NPC.frameCounter >= 2 && !_didHop)
@@ -100,14 +101,14 @@ public class Jerboa : ModNPC
 		{
 			if (AnimationState == State.Idle && PlayerInRange(200) && (int)Main.player[NPC.target].velocity.X != 0)
 			{
-				TargetSpeed = (Main.player[NPC.target].Center.X > NPC.Center.X ? -1 : 1) * 2.5f;
+				TargetSpeed = (Main.player[NPC.target].Center.X > NPC.Center.X ? -1 : 1) * 3f;
 			}
 			else if (Main.netMode != NetmodeID.MultiplayerClient && Counter % 80 == 0)
 			{
 				float oldTargetSpeed = TargetSpeed;
 				int direction = Main.rand.NextFromList(-1, 0, 1);
 
-				TargetSpeed = direction * Main.rand.NextFloat(1.2f, 2.5f);
+				TargetSpeed = direction * Main.rand.NextFloat(2f, 3f);
 
 				if (TargetSpeed != oldTargetSpeed)
 					NPC.netUpdate = true;
@@ -118,7 +119,15 @@ public class Jerboa : ModNPC
 
 			if (state is State.Run)
 			{
-				Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+				if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(35))
+				{
+					ChangeAnimationState(State.Hop);
+					NPC.netUpdate = true;
+				}
+				else
+				{
+					Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+				}
 			}
 			else
 			{
@@ -126,7 +135,7 @@ public class Jerboa : ModNPC
 				{
 					ChangeAnimationState(State.Hop);
 
-					TargetSpeed = Main.rand.NextFromList(-1, 1) * Main.rand.NextFloat(3f, 5f);
+					TargetSpeed = Main.rand.NextFromList(-1, 1) * Main.rand.NextFloat(2f, 3f);
 					NPC.netUpdate = true;
 				}
 
@@ -149,6 +158,8 @@ public class Jerboa : ModNPC
 	{
 		if (AnimationState != toState)
 		{
+			_lastAnimationState = AnimationState;
+
 			NPC.frameCounter = 0;
 			Counter = 0;
 			AnimationState = toState;
@@ -186,6 +197,13 @@ public class Jerboa : ModNPC
 			NPC.frameCounter %= endFrames[(int)AnimationState];
 
 		NPC.frame.Y = (int)Math.Min(endFrames[(int)AnimationState] - 1, NPC.frameCounter) * frameHeight;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		int state = reader.ReadByte();
+		ChangeAnimationState((State)state);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
