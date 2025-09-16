@@ -65,7 +65,7 @@ public class ZigguratBiome : Microbiome
 				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
 			));
 
-			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall(WallID.SandstoneEcho));
+			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall(WallID.Sandstone));
 			Rectangle bound = new(topLeft.X, topLeft.Y, width, height);
 
 			bounds.Add(bound);

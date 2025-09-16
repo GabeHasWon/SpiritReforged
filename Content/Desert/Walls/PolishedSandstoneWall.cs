@@ -4,17 +4,17 @@ using SpiritReforged.Content.Desert.Tiles;
 
 namespace SpiritReforged.Content.Desert.Walls;
 
-public class RedSandstoneBrickWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
-	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type;
+	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("PolishedSandstoneWallUnsafe").Type;
 
 	public void AddItemRecipes(ModItem item)
 	{
-		int brick = AutoContent.ItemType<RedSandstoneBrick>();
+		int pillar = AutoContent.ItemType<RuinedSandstonePillar>();
 		int type = item.Type;
 
-		item.CreateRecipe(4).AddIngredient(brick).AddTile(TileID.WorkBenches).Register();
-		Recipe.Create(brick).AddIngredient(type, 4).AddTile(TileID.WorkBenches).Register();
+		item.CreateRecipe(4).AddIngredient(pillar).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(pillar).AddIngredient(type, 4).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void SetStaticDefaults()
@@ -22,7 +22,7 @@ public class RedSandstoneBrickWall : ModWall, IAutoloadUnsafeWall, IAutoloadWall
 		Main.wallHouse[Type] = true;
 		DustType = DustID.DynastyShingle_Red;
 
-		var entryColor = new Color(150, 70, 40);
+		var entryColor = new Color(154, 90, 28);
 		AddMapEntry(entryColor);
 		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}

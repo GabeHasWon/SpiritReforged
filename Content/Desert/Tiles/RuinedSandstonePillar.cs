@@ -32,4 +32,15 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 		if (merging || j % 2 == 0)
 			Main.tile[i, j].TileFrameY += (short)(merging ? (rowHeight * 2) : rowHeight);
 	}
+
+	public static void SetupMerge(int myType, ref int up, ref int down)
+	{
+		int type = ModContent.TileType<RuinedSandstonePillar>();
+
+		if (up == type)
+			up = myType;
+
+		if (down == type)
+			down = myType;
+	}
 }

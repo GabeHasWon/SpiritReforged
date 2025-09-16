@@ -39,6 +39,9 @@ public class ChainSegment(ChainVertex vertex1, ChainVertex vertex2, float length
 
 	public void Draw(SpriteBatch sB, Texture2D texture, float scale, Color color = default)
 	{
+		if (color == default)
+			color = Color.White;
+
 		var lightColor = Lighting.GetColor(Vertex2.Position.ToTileCoordinates(), color);
 		sB.Draw(texture, Vertex2.Position - Main.screenPosition, null, lightColor, Rotation() + MathHelper.PiOver2, texture.Size() / 2f, scale, SpriteEffects.None, 0);
 	}

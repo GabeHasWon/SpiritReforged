@@ -2311,3 +2311,8 @@ RedSandstoneBrickWallItem: {
 	// DisplayName: Red Sandstone Brick Wall
 	// Tooltip: ""
 }
+
+PolishedSandstoneWallItem: {
+	// DisplayName: Polished Sandstone Wall
+	// Tooltip: ""
+}
