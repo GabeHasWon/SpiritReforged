@@ -2306,3 +2306,13 @@ SaltWallItem: {
 	// DisplayName: Salt Wall
 	// Tooltip: ""
 }
+
+JerboaItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	// Tooltip: ""
+}
+
+JarboaItem: {
+	// DisplayName: Jarboa
+	// Tooltip: ""
+}
