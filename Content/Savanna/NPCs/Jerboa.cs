@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
@@ -28,6 +29,11 @@ public class Jerboa : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		//Add critter item defaults
+		ItemEvents.CreateItemDefaults(
+			this.AutoItemType(),
+			static item => item.value = Item.sellPrice(0, 0, 0, 45));
+
 		Main.npcFrameCount[Type] = 13; //Rows
 
 		Main.npcCatchable[Type] = true;

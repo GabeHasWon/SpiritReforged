@@ -2311,3 +2311,8 @@ JerboaItem: {
 	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
 	Tooltip: ""
 }
+
+JarboaItem: {
+	DisplayName: Jarboa
+	Tooltip: ""
+}
