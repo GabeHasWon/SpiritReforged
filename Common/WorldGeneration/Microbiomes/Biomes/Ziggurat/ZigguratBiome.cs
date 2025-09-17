@@ -24,7 +24,7 @@ public class ZigguratBiome : Microbiome
 	{
 		Rectangle area = new(point.X - Width / 2, point.Y - Height / 2, Width, Height);
 
-		CreateShape(area, 4, 0.25f, 1.3f, out var bounds);
+		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
 		AddRooms(bounds, out var rooms);
@@ -38,14 +38,17 @@ public class ZigguratBiome : Microbiome
 		Sandify(bounds);
 	}
 
-	/// <summary> </summary>
+	/// <summary> Creates the basic shape of the ziggurat. </summary>
 	/// <param name="area"> The total area the structure can occupy. </param>
 	/// <param name="layers"> The number of distinct layers in the structure. </param>
-	/// <param name="minWidth"> A gradual width multiplier for the top layer. </param>
-	/// <param name="finalHeight"> A height multiplier for the bottom layer. </param>
 	/// <param name="bounds"></param>
-	private static void CreateShape(Rectangle area, int layers, float minWidth, float finalHeight, out List<Rectangle> bounds)
+	private static void CreateShape(Rectangle area, int layers, out List<Rectangle> bounds)
 	{
+		//A gradual width multiplier starting from the top layer
+		const float minWidth = 0.25f;
+		//A height multiplier strictly for the bottom layer
+		const float finalHeight = 1.3f;
+
 		int finalLayerHeight = (int)(area.Height / layers * finalHeight);
 		int commonLayerHeight = (area.Height - finalLayerHeight) / (layers - 1);
 		bounds = [];
@@ -58,6 +61,10 @@ public class ZigguratBiome : Microbiome
 
 			int width = (int)MathHelper.Lerp(area.Width * minWidth, area.Width, y / (layers - 1f));
 			int height = finalLayer ? finalLayerHeight : commonLayerHeight;
+
+			if (y == 0) //Force starting height
+				width = height + 10;
+
 			var topLeft = center - new Point(width / 2, commonLayerHeight / 2);
 
 			WorldUtils.Gen(topLeft, new Shapes.Rectangle(width, height), Actions.Chain(
@@ -101,6 +108,16 @@ public class ZigguratBiome : Microbiome
 			));
 
 			WorldUtils.Gen(new(bounds.X + bounds.Width - width, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
+				new Actions.ClearTile(),
+				new Actions.PlaceTile(brick)
+			));
+
+			WorldUtils.Gen(new(bounds.X + 10, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
+				new Actions.ClearTile(),
+				new Actions.PlaceTile(brick)
+			));
+
+			WorldUtils.Gen(new(bounds.X + bounds.Width - width - 10, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
 				new Actions.ClearTile(),
 				new Actions.PlaceTile(brick)
 			));
