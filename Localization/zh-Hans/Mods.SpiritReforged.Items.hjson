@@ -2307,6 +2307,16 @@ SaltWallItem: {
 	// Tooltip: ""
 }
 
+JerboaItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	// Tooltip: ""
+}
+
+JarboaItem: {
+	// DisplayName: Jarboa
+	// Tooltip: ""
+}
+
 RedSandstoneBrickWallItem: {
 	// DisplayName: Red Sandstone Brick Wall
 	// Tooltip: ""
