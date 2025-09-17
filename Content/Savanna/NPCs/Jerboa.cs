@@ -184,8 +184,16 @@ public class Jerboa : ModNPC
 	{
 		if (!Main.dedServ)
 		{
-			for (int i = 0; i < ((NPC.life <= 0) ? 20 : 3); i++)
+			bool dead = NPC.life <= 0;
+
+			for (int i = 0; i < (dead ? 20 : 3); i++)
 				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Blood, Scale: Main.rand.NextFloat(0.8f, 2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
+
+			if (dead)
+			{
+				for (int i = 1; i < 3; i++)
+					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Jerboa" + i).Type, 1f);
+			}
 		}
 	}
 
