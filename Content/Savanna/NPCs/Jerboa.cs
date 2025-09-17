@@ -1,5 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
 using Terraria.GameContent.Bestiary;
@@ -203,6 +205,14 @@ public class Jerboa : ModNPC
 			NPC.frameCounter %= endFrames[(int)AnimationState];
 
 		NPC.frame.Y = (int)Math.Min(endFrames[(int)AnimationState] - 1, NPC.frameCounter) * frameHeight;
+	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		if (!spawnInfo.Common() || spawnInfo.Water || !spawnInfo.Player.InModBiome<SavannaBiome>() || !SceneTileCounter.GetSurvey<SaltBiome>().tileTypes.Contains(spawnInfo.SpawnTileType))
+			return 0;
+
+		return 0.2f;
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
