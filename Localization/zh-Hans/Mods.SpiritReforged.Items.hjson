@@ -1940,7 +1940,7 @@ VexpowderRed: {
 }
 
 BreakawayChair: {
-	DisplayName: 逃生椅
+	DisplayName: 便携可拆椅
 	Tooltip: 碰撞时损坏
 }
 
