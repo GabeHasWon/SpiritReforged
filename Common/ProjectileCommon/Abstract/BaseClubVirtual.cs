@@ -157,10 +157,6 @@ public abstract partial class BaseClubProj : ModProjectile
 		BaseRotation += Lerp(-0.05f, 0.05f, EaseQuadIn.Ease(lingerProgress)) * (1 + Charge / 2);
 	}
 
-	public void KillAndStopAnimation()
-	{
-	}
-
 	/// <summary>
 	/// Determines the rate at which the projectile's scale grows during the default charging + windup behavior.<br />
 	/// Override to change how the scale interpolates without overriding the rest of the behavior.

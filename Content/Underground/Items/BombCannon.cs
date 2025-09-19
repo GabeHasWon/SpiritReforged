@@ -8,6 +8,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
@@ -248,7 +249,7 @@ internal class BombCannonHeld : ModProjectile
 	}
 }
 
-internal class CannonBomb : BombProjectile, ITrailProjectile
+internal class CannonBomb : BombProjectile
 {
 	/// <summary> The original projectile this one is mimicking the sprite and behavior of. </summary>
 	public int CopyProj
@@ -268,20 +269,19 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 		Projectile.DamageType = DamageClass.Ranged;
 	}
 
-	public virtual void DoTrailCreation(TrailManager tM)
+	public virtual void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float baseWidth = 40;
 		float baseLength = 240;
 
 		ITrailCap tCap = new RoundCap();
-		ITrailPosition tPos = new DefaultTrailPosition();
+		ITrailPosition tPos = new EntityTrailPosition(Projectile);
 		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
 
-		tM.CreateTrail(Projectile, new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 2, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 1.5f, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, baseWidth, baseLength, tShader); 
-
-		tM.CreateTrail(Projectile, new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, baseWidth, baseLength, new DefaultShader());
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 2, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 1.5f, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, new DefaultShader(), baseWidth, baseLength));
 	}
 
 	public override void AI()
@@ -291,6 +291,9 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 			bouncy = BombCannon.BouncyBombProjIDs.Contains(CopyProj);
 			sticky = BombCannon.StickyBombProjIDs.Contains(CopyProj);
 
+			if (!Main.dedServ)
+				CreateTrail(TrailSystem.ProjectileRenderer);
+
 			_justSpawned = true;
 		}
 
@@ -298,7 +301,7 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 		base.AI();
 
 		if (Projectile.velocity == Vector2.Zero && Projectile.oldVelocity == Vector2.Zero)
-			TrailManager.TryTrailKill(Projectile);
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 	}
 
 	public override void StartExplosion() => Projectile.ResetLocalNPCHitImmunity();
@@ -337,10 +340,10 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 			//Create a new trail to prevent the vertex strip from freaking out over movements in opposite directions
 			if (rotationDifference > PiOver2 * 1.5f)
 			{
-				TrailManager.TryTrailKill(Projectile);
+				TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 
 				if (Projectile.velocity.Length() > 1)
-					TrailManager.ManualTrailSpawn(Projectile);
+					CreateTrail(TrailSystem.ProjectileRenderer);
 			}
 
 			return false;
@@ -452,20 +455,19 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 
 internal class BigCannonBomb : CannonBomb
 {
-	public override void DoTrailCreation(TrailManager tM)
+	public override void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float baseWidth = 60;
 		float baseLength = 360;
 
 		ITrailCap tCap = new RoundCap();
-		ITrailPosition tPos = new DefaultTrailPosition();
+		ITrailPosition tPos = new EntityTrailPosition(Projectile);
 		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
 
-		tM.CreateTrail(Projectile, new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 2, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 1.5f, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, baseWidth, baseLength, tShader);
-
-		tM.CreateTrail(Projectile, new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, baseWidth, baseLength, new DefaultShader());
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 2, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 1.5f, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, new DefaultShader(), baseWidth, baseLength));
 	}
 
 	public override void SetDefaults()

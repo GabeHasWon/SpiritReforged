@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
@@ -10,10 +9,11 @@ using Terraria.Audio;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Ocean.Items.BassClub;
 
-class BassSlapperProj : BaseClubProj, IManualTrailProjectile
+class BassSlapperProj : BaseClubProj
 {
 	private const int MAX_SLAMS = 3;
 
@@ -29,7 +29,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 	public override float SwingPhaseThreshold => 0.3f;
 	public override float SwingShrinkThreshold => 0.6f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 64 * MeleeSizeModifier;
 		float trailWidth = 50 * MeleeSizeModifier;
@@ -51,7 +51,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 0.75f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 
 		parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 0.8f, trailWidth)
 		{
@@ -61,12 +61,14 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 1f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		if (_numSlams == 0)
 			for (int i = 0; i < 6; i++)
 				Projectile.oldRot[i] = Projectile.rotation;
@@ -99,7 +101,8 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 	public override void OnSmash(Vector2 position)
 	{
 		++_numSlams;
-		TrailManager.TryTrailKill(Projectile);
+
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(6);
