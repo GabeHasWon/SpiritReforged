@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+﻿namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public abstract class GenRoom
 {
@@ -11,6 +9,7 @@ public abstract class GenRoom
 
 	public readonly record struct Link(Point Location, Point Direction);
 
+	/// <summary> The boundaries of this room. </summary>
 	public Rectangle Bounds => new(Origin.X - Size.X / 2, Origin.Y - Size.Y / 2, Size.X, Size.Y);
 
 	public Point Origin { get; private set; }

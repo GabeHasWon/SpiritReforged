@@ -105,9 +105,19 @@ public static class ZigguratRooms
 
 		public override void Create()
 		{
+			const int entranceHeight = 8;
+
 			base.Create();
 
-			WorldUtils.Gen(new(_outerBounds.Left, Bounds.Bottom - 8), new Shapes.Rectangle(_outerBounds.Width, 8), new Actions.ClearTile());
+			bool leftClear = WorldMethods.AreaCount(_outerBounds.Left - 1, Bounds.Bottom - entranceHeight, 1, entranceHeight, false) <= 4;
+			bool rightClear = WorldMethods.AreaCount(_outerBounds.Right, Bounds.Bottom - entranceHeight, 1, entranceHeight, false) <= 4;
+
+			if (leftClear)
+				WorldUtils.Gen(new(_outerBounds.Left, Bounds.Bottom - entranceHeight), new Shapes.Rectangle(5, entranceHeight), new Actions.ClearTile());
+
+			if (rightClear)
+				WorldUtils.Gen(new(Bounds.Right, Bounds.Bottom - entranceHeight), new Shapes.Rectangle(5, entranceHeight), new Actions.ClearTile());
+
 			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - 4), new Shapes.Rectangle(Bounds.Width + 4, 4), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
 
 			PlaceColumn(new(Bounds.Left - 2, Bounds.Bottom - 1), 2);

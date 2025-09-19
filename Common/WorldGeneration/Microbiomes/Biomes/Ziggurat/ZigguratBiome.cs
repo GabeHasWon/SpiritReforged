@@ -131,6 +131,7 @@ public class ZigguratBiome : Microbiome
 		{
 			WorldMethods.GenerateSquared(static (i, j) =>
 			{
+				//Floor indentations
 				var tile = Main.tile[i, j];
 				if (WorldGen.genRand.NextBool(50) && tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile3(i, j - 1))
 				{
@@ -142,9 +143,13 @@ public class ZigguratBiome : Microbiome
 						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
 						new Actions.Custom((x, y, args) =>
 						{
-							if (y == j)
+							if (Framing.GetTileSafely(x, y - 1).TileType == ModContent.TileType<RuinedSandstonePillar>())
 							{
-								Main.tile[x, y].ClearTile();
+								//Take no action if there's a pillar tile above
+							}
+							else if (y == j && !WorldGen.SolidTile3(x, y - 1))
+							{
+								Main.tile[x, y].ClearTile(); //Clear indentation surface tiles if there's no tile above
 							}
 							else
 							{
@@ -163,6 +168,7 @@ public class ZigguratBiome : Microbiome
 					));
 				}
 
+				//Large sand splatters
 				if (WorldGen.genRand.NextBool(80) && tile.HasTile && tile.TileType == TileID.Sand)
 				{
 					WorldUtils.Gen(new(i, j), new GenTypes.Splatter(8, 10, 20), Actions.Chain(
