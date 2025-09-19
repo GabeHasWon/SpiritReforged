@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+﻿namespace SpiritReforged.Common.PrimitiveRendering.Trails;
 
 public abstract class BaseTrail
 {

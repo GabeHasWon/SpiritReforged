@@ -1,4 +1,5 @@
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.PrimitiveRendering;
 using System.IO;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;

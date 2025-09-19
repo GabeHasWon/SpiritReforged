@@ -63,7 +63,6 @@ class ShockhammerProj : BaseClubProj
 		parameters.Intensity *= 2 * MathHelper.Lerp(Charge, 1, 0.25f);
 
 		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "EnergyTrail", new Vector2(1, 0.2f))));
-
 	}
 
 	public override void OnSmash(Vector2 position)

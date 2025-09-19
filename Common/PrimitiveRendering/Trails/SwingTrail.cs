@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 
 namespace SpiritReforged.Common.PrimitiveRendering.Trails;
 
