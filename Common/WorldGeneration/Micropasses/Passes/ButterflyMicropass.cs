@@ -42,7 +42,7 @@ internal class ButterflyMicropass : Micropass
 				if (blacklist.Contains(biome))
 					continue;
 
-				Microbiome.Create<ButterflyShrineBiome>(new(pt.X + size.X / 2, pt.Y));
+				Microbiome.Create<ButterflyShrineBiome>(new Point(pt.X + size.X / 2, pt.Y));
 
 				var origin = new Point(pt.X + size.X / 2, pt.Y + 8); //Centered position
 				bool foundClearing = WorldUtils.Find(origin, Searches.Chain(new Searches.Up(1000), new Conditions.IsSolid().AreaOr(1, 50).Not()), out var top);

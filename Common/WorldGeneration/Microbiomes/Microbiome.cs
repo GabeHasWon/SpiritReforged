@@ -27,6 +27,9 @@ public abstract class Microbiome : ILoadable
 		return inst;
 	}
 
+	/// <inheritdoc cref="Create{T}(Point16, bool)"/>
+	public static T Create<T>(Point point, bool place = true) where T : Microbiome => Create<T>(new Point16(point.X, point.Y), place);
+
 	protected abstract void OnPlace(Point16 point);
 
 	/// <summary> Can be used to save custom data related to this microbiome <b>instance</b>. <para/>
