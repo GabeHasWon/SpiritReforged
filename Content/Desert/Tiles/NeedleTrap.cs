@@ -56,6 +56,8 @@ public class NeedleTrapProj : ModProjectile
 
 	private float GetProgress(int substract = 0) => MathHelper.Clamp(1f - (float)(Projectile.timeLeft - substract) / (TimeLeftMax - substract), 0, 1);
 
+	public override void SetStaticDefaults() => ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(12);

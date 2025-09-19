@@ -30,11 +30,12 @@ public class ZigguratBiome : Microbiome
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
-		CreateHallways(rooms);
+		CreateHallways(rooms, AddHallway);
 
 		foreach (var r in rooms)
 			r.Create();
 
+		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
 	}
 
@@ -134,39 +135,7 @@ public class ZigguratBiome : Microbiome
 				//Floor indentations
 				var tile = Main.tile[i, j];
 				if (WorldGen.genRand.NextBool(50) && tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile3(i, j - 1))
-				{
-					ShapeData shape = new();
-					int size = WorldGen.genRand.Next(2, 5);
-
-					WorldUtils.Gen(new(i, j), new Shapes.Mound(size, size), Actions.Chain(
-						new Modifiers.Flip(false, true),
-						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
-						new Actions.Custom((x, y, args) =>
-						{
-							if (Framing.GetTileSafely(x, y - 1).TileType == ModContent.TileType<RuinedSandstonePillar>())
-							{
-								//Take no action if there's a pillar tile above
-							}
-							else if (y == j && !WorldGen.SolidTile3(x, y - 1))
-							{
-								Main.tile[x, y].ClearTile(); //Clear indentation surface tiles if there's no tile above
-							}
-							else
-							{
-								ushort type = WorldGen.SolidTile3(x, y + 1) ? TileID.Sand : TileID.HardenedSand;
-								Main.tile[x, y].ResetToType(type);
-							}
-
-							return false;
-						})
-					).Output(shape));
-
-					WorldUtils.Gen(new(i, j), new ModShapes.OuterOutline(shape), Actions.Chain(
-						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
-						new Modifiers.Dither(),
-						new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
-					));
-				}
+					CreateFloorDivot(i, j);
 
 				//Large sand splatters
 				if (WorldGen.genRand.NextBool(80) && tile.HasTile && tile.TileType == TileID.Sand)
@@ -202,6 +171,42 @@ public class ZigguratBiome : Microbiome
 
 				return false;
 			}, out _, b);
+		}
+
+		static void CreateFloorDivot(int i, int j) //Creates a decorative sandy indentation
+		{
+			ShapeData shape = new();
+			Point coords = new(i, j);
+			int size = WorldGen.genRand.Next(2, 5);
+
+			WorldUtils.Gen(coords, new Shapes.Mound(size, size), Actions.Chain(
+				new Modifiers.Flip(false, true),
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Actions.Custom((x, y, args) =>
+				{
+					if (Framing.GetTileSafely(x, y - 1).TileType == ModContent.TileType<RuinedSandstonePillar>())
+					{
+						//Take no action if there's a pillar tile above
+					}
+					else if (y == j && !WorldGen.SolidTile3(x, y - 1))
+					{
+						Main.tile[x, y].ClearTile(); //Clear indentation surface tiles if there's no tile above
+					}
+					else
+					{
+						ushort type = WorldGen.SolidTile3(x, y + 1) ? TileID.Sand : TileID.HardenedSand;
+						Main.tile[x, y].ResetToType(type);
+					}
+
+					return false;
+				})
+			).Output(shape));
+
+			WorldUtils.Gen(coords, new ModShapes.OuterOutline(shape), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
+			));
 		}
 	}
 
@@ -266,33 +271,39 @@ public class ZigguratBiome : Microbiome
 			r = new ZigguratRooms.EntranceRoom(bound);
 		}
 		else if (skips == 0 && WorldGen.genRand.NextBool(4))
+		{
 			return null; //Randomly cause a skip
+		}
 
 		return r;
 	}
 
-	private static void CreateHallways(IEnumerable<GenRoom> rooms)
+	private static void CreateHallways(IEnumerable<GenRoom> rooms, Func<GenRoom.Link, GenRoom.Link, bool> condition)
 	{
-		foreach (var start in rooms.OrderBy(static x => x.Origin.Y))
+		PairRooms(rooms.OrderBy(static x => x.Origin.Y));
+
+		void PairRooms(IOrderedEnumerable<GenRoom> rooms)
 		{
-			foreach (var end in rooms.OrderBy(static x => x.Origin.Y))
+			foreach (var start in rooms)
 			{
-				if (start != end && TryLink(start, end))
-					break;
+				foreach (var end in rooms)
+				{
+					if (start != end && PairLinks(start, end))
+						break;
+				}
 			}
 		}
 
-		static bool TryLink(GenRoom a, GenRoom b)
+		bool PairLinks(GenRoom a, GenRoom b)
 		{
 			foreach (var start in a.Links)
 			{
 				foreach (var end in b.Links)
 				{
-					if (AddHallway(start, end))
+					if (condition.Invoke(start, end))
 					{
 						a.Links.Remove(start);
 						//b.Links.Remove(end);
-
 						return true;
 					}
 				}
@@ -302,6 +313,24 @@ public class ZigguratBiome : Microbiome
 		}
 	}
 
+	/// <summary> Creates a ruined passageway outlining <paramref name="startLink"/> and <paramref name="endLink"/>. </summary>
+	private static bool AddPassageway(GenRoom.Link startLink, GenRoom.Link endLink)
+	{
+		var start = startLink.Location;
+		var end = endLink.Location;
+
+		//A safe distance from the starting link
+		var entrance = new Point(start.X + startLink.Direction.X * HallwayWidth, start.Y + startLink.Direction.Y * HallwayWidth);
+		//A safe distance from the ending link
+		var exit = new Point(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
+
+		CrunchOut(start, entrance, 3, true);
+		CrunchOut(end, exit, 3, true);
+
+		return true;
+	}
+
+	/// <summary> Attempts to create a hallway spanning <paramref name="startLink"/> and <paramref name="endLink"/>. </summary>
 	private static bool AddHallway(GenRoom.Link startLink, GenRoom.Link endLink)
 	{
 		var start = startLink.Location;
@@ -384,6 +413,39 @@ public class ZigguratBiome : Microbiome
 				new Actions.SetLiquid(0, 0)
 			));
 			WorldUtils.Gen(origin, new ModShapes.OuterOutline(shape), new Actions.Smooth());
+		}
+	}
+
+	/// <summary> Clears red sandstone bricks between <paramref name="start"/> and <paramref name="end"/> according to <paramref name="carve"/> and <paramref name="width"/>. </summary>
+	public static void CrunchOut(Point start, Point end, int width, bool carve)
+	{
+		ShapeData shape = new();
+		Point direction = end - start;
+
+		if (direction == Point.Zero)
+			return;
+
+		if (carve)
+		{
+			WorldUtils.Gen(start, new Shapes.Tail(width, direction.ToVector2D()), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(),
+				new Actions.ClearTile()
+			).Output(shape));
+
+			WorldUtils.Gen(start, new ModShapes.OuterOutline(shape), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
+			));
+		}
+		else
+		{
+			WorldUtils.Gen(start, new Shapes.Tail(width, direction.ToVector2D()), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
+			).Output(shape));
 		}
 	}
 

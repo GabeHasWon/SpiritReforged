@@ -1,4 +1,6 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -36,13 +38,18 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 		}
 	}
 
+	public static readonly SoundStyle DebrisLoud = new("SpiritReforged/Assets/SFX/Ambient/FallingDebris2");
 	public static readonly SoundStyle DebrisQuiet = new("SpiritReforged/Assets/SFX/Ambient/FallingDebris1")
 	{
 		PitchVariance = 0.5f,
 		MaxInstances = 3
 	};
 
-	public static readonly SoundStyle DebrisLoud = new("SpiritReforged/Assets/SFX/Ambient/FallingDebris2");
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		MineResist = 0.5f;
+	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
