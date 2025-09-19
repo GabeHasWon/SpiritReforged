@@ -1,9 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
-using static SpiritReforged.Common.Easing.EaseFunction;
 
-namespace SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+namespace SpiritReforged.Common.PrimitiveRendering.Trails;
 
 public struct SwingTrailParameters(float radians, float rotation, float distance, float width)
 {
@@ -25,12 +23,12 @@ public struct SwingTrailParameters(float radians, float rotation, float distance
 	public float? MaxDistance = null;
 	public float? MaxWidth = null;
 
-	public EaseFunction DistanceEasing = Linear;
+	public EaseFunction DistanceEasing = EaseFunction.Linear;
 
 	public bool UseLightColor = true;
 }
 
-public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, Func<Projectile, float> SwingProgress, Func<SwingTrail, Effect> ShaderParams, TrailLayer layer = TrailLayer.UnderProjectile) : BaseTrail(projectile, layer)
+public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, Func<Projectile, float> SwingProgress, Func<SwingTrail, Effect> ShaderParams) : BaseTrail
 {
 	private const int TIMELEFT_MAX = 30;
 
@@ -51,24 +49,23 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 
 	private float _swingProgress;
 
-	public override void Dissolve()
+	protected override void OnDissolve()
 	{
 		_timeLeft--;
 
 		if (_timeLeft == 0)
-			Dead = true;
+			CanBeDisposed = true;
 	}
 
-	public override void Update()
+	protected override void OnUpdate()
 	{
 		_swingProgress = SwingProgress(Projectile);
 		_center = Owner.MountedCenter;
-		MyProjectile = Projectile;
 
 		if (_swingProgress > Parameters.DissolveThreshold)
 		{
 			_timeLeft -= 5;
-			StartDissolve();
+			Dissolve();
 		}
 	}
 
@@ -76,7 +73,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 
 	public override void Draw(Effect effect, BasicEffect _, GraphicsDevice device)
 	{
-		if (Dead || _timeLeft <= 1) 
+		if (CanBeDisposed || _timeLeft <= 1) 
 			return;
 
 		effect = ShaderParams(this);
@@ -103,6 +100,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 			RectangleCount = 70
 		};
 
+		device.RasterizerState = RasterizerState.CullNone;
 		PrimitiveRenderer.DrawPrimitiveShape(slash, effect, EffectPass);
 	}
 
@@ -113,12 +111,12 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 		effect.Parameters["baseColorLight"].SetValue(swingTrail.Parameters.Color.ToVector4());
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
 
-		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * EaseQuadIn.Ease(swingTrail.DissolveProgress));
+		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * EaseFunction.EaseQuadIn.Ease(swingTrail.DissolveProgress));
 		effect.Parameters["taperStrength"].SetValue(0.25f);
 		effect.Parameters["fadeStrength"].SetValue(0.5f);
 
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseFunction.EaseCubicIn.Ease(swingTrail.DissolveProgress));
 
 		return effect;
 	}
@@ -132,14 +130,14 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 		effect.Parameters["baseColorDark"].SetValue(swingTrail.Parameters.GetSecondaryColor.ToVector4());
 
 		effect.Parameters["coordMods"].SetValue(coordMods);
-		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * EaseQuadIn.Ease(swingTrail.DissolveProgress));
+		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * EaseFunction.EaseQuadIn.Ease(swingTrail.DissolveProgress));
 		effect.Parameters["taperStrength"].SetValue(0.5f);
 		effect.Parameters["fadeStrength"].SetValue(3);
 		effect.Parameters["textureExponent"].SetValue(new Vector2(0.6f, 3));
 
 		effect.Parameters["timer"].SetValue(0.5f * Main.GlobalTimeWrappedHourly / coordMods.X);
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseFunction.EaseCubicIn.Ease(swingTrail.DissolveProgress));
 		swingTrail.EffectPass = "NoiseStreakPass";
 
 		return effect;
@@ -156,14 +154,14 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 		effect.Parameters["coordMods"].SetValue(coordMods);
 		effect.Parameters["trailLength"].SetValue(swingTrail.Parameters.TrailLength * swingTrail.DissolveProgress);
 		effect.Parameters["taperStrength"].SetValue(0.85f);
-		effect.Parameters["fadeStrength"].SetValue(0.75f + 6 * EaseCubicOut.Ease(1 - swingTrail.DissolveProgress));
-		effect.Parameters["textureExponent"].SetValue(Vector2.Lerp(new Vector2(0.5f, 3), Vector2.Zero, EaseCircularIn.Ease(1 - swingTrail.DissolveProgress)));
+		effect.Parameters["fadeStrength"].SetValue(0.75f + 6 * EaseFunction.EaseCubicOut.Ease(1 - swingTrail.DissolveProgress));
+		effect.Parameters["textureExponent"].SetValue(Vector2.Lerp(new Vector2(0.5f, 3), Vector2.Zero, EaseFunction.EaseCircularIn.Ease(1 - swingTrail.DissolveProgress)));
 
 		float globalTimer = (Main.GlobalTimeWrappedHourly / coordMods.X);
-		float scrollSpeed = MathHelper.Lerp(-2f, 0f, EaseQuadOut.Ease(1 - swingTrail.DissolveProgress));
+		float scrollSpeed = MathHelper.Lerp(-2f, 0f, EaseFunction.EaseQuadOut.Ease(1 - swingTrail.DissolveProgress));
 		effect.Parameters["timer"].SetValue(scrollSpeed * globalTimer);
 		effect.Parameters["progress"].SetValue(swingTrail.GetSwingProgress());
-		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseCubicIn.Ease(swingTrail.DissolveProgress));
+		effect.Parameters["intensity"].SetValue(swingTrail.Parameters.Intensity * EaseFunction.EaseCubicIn.Ease(swingTrail.DissolveProgress));
 		swingTrail.EffectPass = "FlameTrailPass";
 
 		return effect;

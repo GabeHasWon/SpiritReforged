@@ -1,17 +1,16 @@
 using MonoMod.Cil;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Ocean.Items.KoiTotem;
 
 public class KoiTotemBuff : ModBuff
 {
 	public static float CursorOpacity { get; private set; }
-	private static Asset<Texture2D> CursorTexture;
+	private static readonly Asset<Texture2D> CursorTexture = DrawHelpers.RequestLocal(typeof(KoiTotemBuff), "Cursor_Plus", false);
 
 	#region detours
 	public override void Load()
 	{
-		CursorTexture = ModContent.Request<Texture2D>(Texture.Remove(Texture.Length - Name.Length) + "Cursor_Plus");
-
 		IL_Player.GetItem_FillIntoOccupiedSlot += RemovePickupSound;
 		On_Player.ItemCheck_CheckFishingBobber_PickAndConsumeBait += CheckBait;
 		On_Main.DrawInterface_40_InteractItemIcon += DrawPlusIcon;
@@ -31,7 +30,7 @@ public class KoiTotemBuff : ModBuff
 	{
 		orig(self);
 
-		if (CursorOpacity > 0 && Main.LocalPlayer.cursorItemIconID > 0)
+		if (CursorOpacity > 0 && Main.LocalPlayer.cursorItemIconID > ItemID.None)
 		{
 			var pos = Main.MouseScreen + new Vector2(6) + TextureAssets.Item[Main.LocalPlayer.cursorItemIconID].Size();
 			Main.spriteBatch.Draw(CursorTexture.Value, pos, null, Color.White * CursorOpacity * 2, 0, Vector2.Zero, Main.cursorScale, SpriteEffects.None, 0f);

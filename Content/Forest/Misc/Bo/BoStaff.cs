@@ -1,7 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -74,7 +74,7 @@ public class BoStaff : ModItem
 	//public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 8).AddRecipeGroup(RecipeGroupID.Wood, 15).AddTile(TileID.Anvils).Register();
 }
 
-public class BoStaffSwing : ModProjectile, IManualTrailProjectile
+public class BoStaffSwing : ModProjectile
 {
 	public const float MaxReach = 70;
 
@@ -120,7 +120,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 
 	public Vector2 GetEnd(int subtract = 0, float rotate = 0) => Projectile.position + (Vector2.UnitX * (Reach - subtract)).RotatedBy(Projectile.rotation - rotate * Projectile.direction);
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float rotation = Projectile.velocity.ToRotation();
 		if (Projectile.direction == -1)
@@ -144,7 +144,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				DissolveThreshold = (UseStyle is Style.Spin) ? 1f : 0.9f
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
 		}
 	}
 
@@ -181,7 +181,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 				Counter = 0; //Causes ClientSpawn to be called again
 
 				if (!Main.dedServ)
-					TrailManager.TryTrailKill(Projectile);
+					TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 			}
 
 			if (Main.rand.NextBool())
@@ -245,7 +245,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 		{
 			_collided = true;
 
-			TrailManager.TryTrailKill(Projectile);
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 			Collision.HitTiles(GetEnd(20), Vector2.Zero, Projectile.width, Projectile.height);
 
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.5f }, GetEnd());
@@ -270,7 +270,7 @@ public class BoStaffSwing : ModProjectile, IManualTrailProjectile
 	{
 		if (!Main.dedServ)
 		{
-			TrailManager.ManualTrailSpawn(Projectile);
+			CreateTrail(TrailSystem.ProjectileRenderer);
 
 			if (UseStyle is Style.Jab)
 			{
