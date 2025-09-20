@@ -480,3 +480,8 @@ Jerboa: {
 	// DisplayName: Jerboa
 	// Entry: ""
 }
+
+Grub: {
+	// DisplayName: Scarab Larva
+	// Entry: ""
+}
