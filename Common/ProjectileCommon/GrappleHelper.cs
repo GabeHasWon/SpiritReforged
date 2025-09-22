@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.SimpleEntity;
+using SpiritReforged.Content.Desert.Tiles.Chains;
 
 namespace SpiritReforged.Common.ProjectileCommon;
 
@@ -10,9 +11,9 @@ public sealed class GrappleHelper : ModSystem
 		bool success = false;
 		if (!success)
 		{
-			foreach (Projectile p in Main.ActiveProjectiles)
+			foreach (ChainObject o in ChainObjectSystem.Objects)
 			{
-				if (p.ModProjectile is IGrappleable grappleable && (success |= grappleable.CanGrapple(self)))
+				if (success |= o.CanGrapple(self))
 					break;
 			}
 		}
