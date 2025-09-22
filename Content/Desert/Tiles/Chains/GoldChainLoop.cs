@@ -50,6 +50,8 @@ public class GoldChainLoop : ChainLoop
 		}
 	}
 
+	public override void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
+
 	public override void PostDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, Rectangle frame, Vector2 position, Color color, bool validPlacement, SpriteEffects spriteEffects)
 	{
 		Texture2D chainTexture = GoldChainObject.Chain.Value;

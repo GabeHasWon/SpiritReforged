@@ -101,7 +101,7 @@ public class ChainObject : IGrappleable
 		Vector2 result = Vector2.Zero;
 		foreach (Player p in Main.ActivePlayers)
 		{
-			if (p.Hitbox.Intersects(Hitbox))
+			if (p.Hitbox.Intersects(Hitbox) && p.grapCount == 0)
 				result += p.velocity;
 		}
 
@@ -118,6 +118,11 @@ public class ChainObject : IGrappleable
 	{
 		if (hook.Hitbox.Intersects(Hitbox))
 		{
+			Player owner = Main.player[hook.owner];
+
+			if (owner.grapCount == 0)
+				_lastDelta += hook.velocity * 0.5f; //Punch the chain when initially grappled
+
 			hook.Center = Position;
 			GrappleHelper.Latch(hook);
 

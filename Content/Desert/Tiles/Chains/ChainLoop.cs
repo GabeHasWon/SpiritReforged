@@ -9,6 +9,7 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 {
 	public static byte GetSegmentCount() => (byte)(1 + Math.Abs(Player.FlexibleWandCycleOffset) % 6);
 
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
