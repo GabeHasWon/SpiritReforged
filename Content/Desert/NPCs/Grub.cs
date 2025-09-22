@@ -76,9 +76,6 @@ public class Grub : ModNPC
 
 				SoundEngine.PlaySound(SoundID.Critter with { Pitch = 0.5f, PitchVariance = 0.1f }, NPC.Center);
 				ChangeAnimationState(State.Jump);
-
-				AssetLoader.VertexTrailManager.CreateCustomTrail(new VertexTrail());
-				//AssetLoader.VertexTrailManager.CreateTrail(NPC, new LightColorTrail(new Color(87, 35, 88) * 0.3f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 30, 100);
 			}
 		}
 		else
