@@ -12,6 +12,7 @@ public class ChainObject : IGrappleable
 	public const float Drag = 0.9f;
 
 	public static readonly SoundStyle Rattle = new("SpiritReforged/Assets/SFX/Tile/ChainRattle");
+	public static readonly SoundStyle Link = new("SpiritReforged/Assets/SFX/Tile/ChainLink", 4);
 
 	public virtual Texture2D Texture => TextureAssets.Chain40.Value;
 	public Rectangle Hitbox => new((int)Position.X - 8, (int)Position.Y - 8, 16, 16);

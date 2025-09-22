@@ -9,6 +9,26 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 {
 	public static byte GetSegmentCount() => (byte)(1 + Math.Abs(Player.FlexibleWandCycleOffset) % 6);
 
+	public override void Load()
+	{
+		if (GetType() == typeof(ChainLoop)) //Check if derived so we don't duplicate static detours
+			On_Player.UpdateControlHolds += PlaySwapIndicator;
+	}
+
+	private static void PlaySwapIndicator(On_Player.orig_UpdateControlHolds orig, Player player)
+	{
+		int oldOffset = Player.FlexibleWandCycleOffset;
+		orig(player);
+
+		if (player.whoAmI == Main.myPlayer && Player.FlexibleWandCycleOffset != oldOffset)
+		{
+			int tileType = player.HeldItem.createTile;
+
+			if (tileType != ItemID.None && TileLoader.GetTile(tileType) is ChainLoop)
+				SoundEngine.PlaySound(ChainObject.Link with { Pitch = GetSegmentCount() / 6f * 0.3f });
+		}
+	}
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{
