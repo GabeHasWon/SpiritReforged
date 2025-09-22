@@ -2329,7 +2329,7 @@ PolishedSandstoneWallItem: {
 
 ChainLoopItem: {
 	DisplayName: Chain Loop
-	Tooltip: Press Up/Down to adjust the length
+	Tooltip: Press Up/Down to adjust chain length
 }
 
 GoldChainLoopItem: {

@@ -2329,10 +2329,10 @@ PolishedSandstoneWallItem: {
 
 ChainLoopItem: {
 	// DisplayName: Chain Loop
-	// Tooltip: Press Up/Down to adjust the length
+	// Tooltip: Press Up/Down to adjust chain length
 }
 
 GoldChainLoopItem: {
-	// DisplayName: Gold Chain Loop Item
-	// Tooltip: ""
+	// DisplayName: Gold Chain Loop
+	// Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
 }

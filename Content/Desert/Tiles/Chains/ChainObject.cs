@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.VerletChains;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles.Chains;
@@ -9,6 +10,8 @@ public class ChainObject : IGrappleable
 	public const float Gravity = 0.3f;
 	public const float GroundBounce = 0.5f;
 	public const float Drag = 0.9f;
+
+	public static readonly SoundStyle Rattle = new("SpiritReforged/Assets/SFX/Tile/ChainRattle");
 
 	public virtual Texture2D Texture => TextureAssets.Chain40.Value;
 	public Rectangle Hitbox => new((int)Position.X - 8, (int)Position.Y - 8, 16, 16);

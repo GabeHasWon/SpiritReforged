@@ -1,12 +1,13 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles.Chains;
 
 public class ChainLoop : ModTile, IAutoloadTileItem
 {
-	public static byte GetSegmentCount() => (byte)(1 + Player.FlexibleWandCycleOffset % 6);
+	public static byte GetSegmentCount() => (byte)(1 + Math.Abs(Player.FlexibleWandCycleOffset) % 6);
 
 	public override void SetStaticDefaults()
 	{
@@ -52,6 +53,8 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			new ChainObjectSystem.PlacementData(coords, count, Type).Send();
+
+		SoundEngine.PlaySound(ChainObject.Rattle with { Pitch = 0.5f, PitchVariance = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
