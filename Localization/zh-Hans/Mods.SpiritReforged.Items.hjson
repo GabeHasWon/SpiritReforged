@@ -1013,7 +1013,7 @@ SparrowItem: {
 }
 
 Blunderbuss: {
-	DisplayName: 火铳
+	DisplayName: 喇叭型前膛枪
 	Tooltip: 发射大量子弹
 }
 
