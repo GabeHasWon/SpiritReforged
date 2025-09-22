@@ -2326,3 +2326,8 @@ PolishedSandstoneWallItem: {
 	// DisplayName: Polished Sandstone Wall
 	// Tooltip: ""
 }
+
+ChainLoopItem: {
+	// DisplayName: Chain Loop
+	// Tooltip: ""
+}
