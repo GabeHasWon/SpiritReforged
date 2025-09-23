@@ -2080,18 +2080,18 @@ WalkieTalkie: {
 
 ScryingLens: {
 	DisplayName: Scrying Lens
-	Tooltip: Allows you to see Shimmer transmutations
+	Tooltip: Displays Shimmer transmutations
 	ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
 }
 
 Ledger: {
 	DisplayName: Ledger
-	Tooltip: Allows you to see coin prices anywhere
+	Tooltip: Displays item coin prices
 }
 
 MysticalCodex: {
 	DisplayName: Mystical Codex
-	Tooltip: ""
+	Tooltip: "Displays item coin prices and Shimmer transmutations"
 }
 
 CommonPotsSavannaItem: {
@@ -2131,7 +2131,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+	Tooltip: Sticks to tiles
 }
 
 SaltBlockDullItem: {
