@@ -133,6 +133,13 @@ public class ChainObject : IGrappleable
 		return false;
 	}
 
+	/// <summary> Checks whether this object is on the local player's screen. </summary>
+	public bool OnScreen()
+	{
+		Rectangle screen = new((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight);
+		return screen.Intersects(Hitbox);
+	}
+
 	public virtual void OnKill()
 	{
 		if (!Main.dedServ && chain != null)

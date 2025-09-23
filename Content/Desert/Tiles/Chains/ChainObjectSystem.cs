@@ -62,7 +62,12 @@ public sealed class ChainObjectSystem : ModSystem
 	public override void PostUpdateProjectiles()
 	{
 		foreach (Point16 coords in ObjectByCoords.Keys)
-			ObjectByCoords[coords].Update();
+		{
+			ChainObject chain = ObjectByCoords[coords];
+
+			if (chain.OnScreen())
+				chain.Update();
+		}
 	}
 
 	public override void PostDrawTiles()
@@ -72,7 +77,12 @@ public sealed class ChainObjectSystem : ModSystem
 			Main.spriteBatch.BeginDefault();
 
 			foreach (Point16 coords in ObjectByCoords.Keys)
-				ObjectByCoords[coords].Draw(Main.spriteBatch);
+			{
+				ChainObject chain = ObjectByCoords[coords];
+
+				if (chain.OnScreen())
+					chain.Draw(Main.spriteBatch);
+			}
 
 			Main.spriteBatch.End();
 		}

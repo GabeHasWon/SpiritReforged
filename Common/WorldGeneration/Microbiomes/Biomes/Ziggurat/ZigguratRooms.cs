@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Walls;
 using Terraria.WorldBuilding;
 
@@ -32,6 +33,9 @@ public static class ZigguratRooms
 			{
 				if (WorldGen.genRand.NextBool(25) && WorldGen.SolidTile(i, j - 1))
 					return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
+
+				if (WorldGen.genRand.NextBool(38) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 
 				return false;
 			}, out _, Bounds);
