@@ -2091,7 +2091,7 @@ Ledger: {
 
 MysticalCodex: {
 	DisplayName: Mystical Codex
-	Tooltip: "Displays item coin prices and Shimmer transmutations"
+	Tooltip: Displays item coin prices and Shimmer transmutations
 }
 
 CommonPotsSavannaItem: {
