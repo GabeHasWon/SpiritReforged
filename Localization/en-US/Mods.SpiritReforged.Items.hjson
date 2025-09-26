@@ -2401,3 +2401,8 @@ TrellisTwoShadewoodItem: {
 	DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
+
+SaltPlatformItem: {
+	DisplayName: Salt Platform
+	Tooltip: ""
+}
