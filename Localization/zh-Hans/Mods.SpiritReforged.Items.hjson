@@ -2334,70 +2334,70 @@ SwordStandItem: {
 
 TrellisItem: {
 	// DisplayName: Trellis
-	// Tooltip: ""
+	// Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
 }
 
 TrellisBorealItem: {
 	// DisplayName: Boreal Wood Trellis
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisEbonwoodItem: {
 	// DisplayName: Ebonwood Trellis
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisMahoganyItem: {
 	// DisplayName: Rich Mahogany Trellis
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	// DisplayName: Palm Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisPearlwoodItem: {
 	// DisplayName: Pearlwood Trellis
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisShadewoodItem: {
 	// DisplayName: Shadewood Trellis
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
-	// Tooltip: ""
-}
-
-TrellisPalmItem: {
-	// DisplayName: Trellis Palm Item
-	// Tooltip: ""
-}
-
-TrellisTwoPalmItem: {
-	// DisplayName: Trellis Two Palm Item
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
