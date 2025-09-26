@@ -71,6 +71,24 @@ internal sealed class AssetLoader : ILoadable
 		LoadedTextures.Add("GlowTrail_2", TextureAssets.Extra[197]);
 	}
 
+	/// <summary> Requests and/or registers the texture of <paramref name="fullPath"/>. </summary>
+	/// <param name="name"> The name used to identify the texture. </param>
+	/// <param name="fullPath"> The full path of the texture to request. </param>
+	public static Asset<Texture2D> GetTexture(string name, string fullPath)
+	{
+		if (LoadedTextures.TryGetValue(name, out var asset))
+		{
+			return asset;
+		}
+		else
+		{
+			var newAsset = ModContent.Request<Texture2D>(fullPath);
+			LoadedTextures.Add(name, newAsset);
+
+			return newAsset;
+		}
+	}
+
 	/// <summary>
 	/// Removes the extension of the file- turns "Assets/Textures/Bloom.png" to "Assets/Textures/Bloom", for example
 	/// </summary>

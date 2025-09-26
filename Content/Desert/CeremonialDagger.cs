@@ -1,9 +1,12 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -11,10 +14,20 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert;
 
-public class CeremonialDagger : ModItem
+public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 {
+	public Asset<Texture2D> StandTexture
+	{
+		get
+		{
+			const string name = "CeremonialDagger_Stand";
+			return AssetLoader.GetTexture(name, DrawHelpers.RequestLocal(typeof(CeremonialDagger), name));
+		}
+	}
+
 	private float _swingArc;
 
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
 	public override void SetDefaults()
 	{
 		Item.damage = 18;

@@ -2326,3 +2326,78 @@ PolishedSandstoneWallItem: {
 	// DisplayName: Polished Sandstone Wall
 	// Tooltip: ""
 }
+
+SwordStandItem: {
+	// DisplayName: Sword Stand
+	// Tooltip: Allows some weapons to be displayed using <right>
+}
+
+TrellisItem: {
+	// DisplayName: Trellis
+	// Tooltip: ""
+}
+
+TrellisBorealItem: {
+	// DisplayName: Boreal Wood Trellis
+	// Tooltip: ""
+}
+
+TrellisEbonwoodItem: {
+	// DisplayName: Ebonwood Trellis
+	// Tooltip: ""
+}
+
+TrellisMahoganyItem: {
+	// DisplayName: Rich Mahogany Trellis
+	// Tooltip: ""
+}
+
+TrellisPearlwoodItem: {
+	// DisplayName: Pearlwood Trellis
+	// Tooltip: ""
+}
+
+TrellisShadewoodItem: {
+	// DisplayName: Shadewood Trellis
+	// Tooltip: ""
+}
+
+TrellisTwoItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisTwoBorealItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisTwoEbonwoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisTwoMahoganyItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisTwoPearlwoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisTwoShadewoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	// Tooltip: ""
+}
+
+TrellisPalmItem: {
+	// DisplayName: Trellis Palm Item
+	// Tooltip: ""
+}
+
+TrellisTwoPalmItem: {
+	// DisplayName: Trellis Two Palm Item
+	// Tooltip: ""
+}
