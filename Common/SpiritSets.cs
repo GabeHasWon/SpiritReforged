@@ -6,7 +6,8 @@ public static class SpiritSets
 	internal static SetFactory TileFactory = new(TileLoader.TileCount, "SpiritTiles");
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
 
-	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand. </summary>
+	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
+	/// Added in <see cref="Content.Desert.Tiles.SwordStand.RegisterIsSword"/>. </summary>
 	public static readonly bool[] IsSword = ItemFactory.CreateBoolSet();
 
 	/// <summary> Whether this type should grant the "Timber" achievement. </summary>

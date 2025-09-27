@@ -9,9 +9,12 @@ namespace SpiritReforged.Content.Desert.Tiles;
 public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTileItem
 {
 	/// <summary> Indicates that a special texture should be used when placed on a <see cref="SwordStand"/>.<para/>
-	/// This does <b>NOT</b> automatically register a type to <see cref="SpiritSets.IsSword"/>. </summary>
+	/// This automatically registers a type to <see cref="SpiritSets.IsSword"/> in <see cref="RegisterIsSword"/>. </summary>
 	public interface ISwordStandTexture
 	{
+		public static readonly Dictionary<int, Asset<Texture2D>> TextureByType = [];
+
+		/// <summary> The texture to use, cached in <see cref="TextureByType"/>. </summary>
 		public Asset<Texture2D> StandTexture { get; }
 	}
 
@@ -30,15 +33,36 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTi
 			Vector2 position = topLeft.ToWorldCoordinates(24, 12) - Main.screenPosition + TileExtensions.TileOffset;
 			Color lightColor = Lighting.GetColor(new Point(topLeft.X + 1, topLeft.Y));
 
-			if (item.ModItem is ISwordStandTexture p)
+			if (ISwordStandTexture.TextureByType.TryGetValue(item.type, out var asset))
 			{
-				Texture2D texture = p.StandTexture.Value;
+				Texture2D texture = asset.Value;
 				spriteBatch.Draw(texture, position, null, lightColor, 0, texture.Size() / 2, 1, SpriteEffects.None, 0);
 			}
 			else
 			{
 				Texture2D texture = TextureAssets.Item[item.type].Value;
 				spriteBatch.Draw(texture, position, null, lightColor, MathHelper.PiOver4, texture.Size() / 2, 1, SpriteEffects.None, 0);
+			}
+		}
+	}
+
+	private void RegisterIsSword()
+	{
+		//Register vanilla items as swords
+		for (int type = 0; type < ItemID.Count; type++)
+		{
+			Item item = ContentSamples.ItemsByType[type];
+			if (item.DamageType.CountsAsClass(DamageClass.Melee) && !item.noMelee && item.pick == 0 && item.axe == 0 && item.hammer == 0)
+				SpiritSets.IsSword[type] = true;
+		}
+
+		//Register ISwordStandTexture members as IsSword
+		foreach (ModItem item in Mod.GetContent<ModItem>())
+		{
+			if (item is ISwordStandTexture s)
+			{
+				SpiritSets.IsSword[item.Type] = true;
+				ISwordStandTexture.TextureByType.Add(item.Type, s.StandTexture);
 			}
 		}
 	}
@@ -72,13 +96,7 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTi
 		AddMapEntry(new Color(140, 140, 140), name);
 		DustType = -1;
 
-		//Register vanilla items as swords
-		for (int type = 0; type < ItemID.Count; type++)
-		{
-			Item item = ContentSamples.ItemsByType[type];
-			if (item.DamageType.CountsAsClass(DamageClass.Melee) && !item.noMelee && item.pick == 0 && item.axe == 0 && item.hammer == 0)
-				SpiritSets.IsSword[type] = true;
-		}
+		RegisterIsSword();
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
