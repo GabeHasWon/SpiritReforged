@@ -21,7 +21,7 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(entity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 

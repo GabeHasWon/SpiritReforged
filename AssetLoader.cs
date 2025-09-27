@@ -4,9 +4,9 @@ using System.Reflection;
 using Terraria.ModLoader.Core;
 using SpiritReforged;
 
+[Autoload(Side = ModSide.Client)]
 internal sealed class AssetLoader : ILoadable
 {
-	public static TrailManager VertexTrailManager;
 	public static BlendState NonPremultipliedAlphaFix;
 
 	public static BasicEffect BasicShaderEffect;
@@ -17,9 +17,6 @@ internal sealed class AssetLoader : ILoadable
 
 	public void Load(Mod mod)
 	{
-		if (Main.dedServ) //dont do this on the server because it will DIE
-			return;
-
 		ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection);
 		Main.QueueMainThreadAction(() => BasicShaderEffect = new BasicEffect(Main.graphics.GraphicsDevice)
 		{
@@ -62,8 +59,6 @@ internal sealed class AssetLoader : ILoadable
 			}
 		}
 
-		VertexTrailManager = new TrailManager();
-
 		//Register some vanilla textures under our own system for convenience
 		LoadedTextures.Add("FlameTrail", TextureAssets.Extra[189]);
 		LoadedTextures.Add("SwirlNoise", TextureAssets.Extra[193]);
@@ -103,14 +98,10 @@ internal sealed class AssetLoader : ILoadable
 	/// <param name="input"></param>
 	/// <param name="directory"></param>
 	/// <returns></returns>
-	private static string RemoveDirectory(string input, string directory) => input.Remove(0, directory.Length);
+	private static string RemoveDirectory(string input, string directory) => input[directory.Length..];
 
 	public void Unload()
 	{
-		if (Main.dedServ)
-			return;
-
-		VertexTrailManager = null;
 		BasicShaderEffect = null;
 		LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
 		LoadedShaders = new Dictionary<string, Asset<Effect>>();
