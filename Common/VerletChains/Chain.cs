@@ -79,11 +79,13 @@ public class Chain
 	public void Draw(SpriteBatch sB, Texture2D texture, Texture2D headTexture = null, Texture2D tailTexture = null, float scale = 1)
 	{
 		foreach (var segment in Segments)
+		{
 			if (segment == Segments.Last() && headTexture != null)
-				segment.Draw(sB, headTexture, scale);
+				segment.Draw(sB, headTexture, headTexture.Frame(), scale);
 			else if (segment == Segments.First() && tailTexture != null)
-				segment.Draw(sB, tailTexture, scale);
+				segment.Draw(sB, tailTexture, tailTexture.Frame(), scale);
 			else
-				segment.Draw(sB, texture, scale);
+				segment.Draw(sB, texture, texture.Frame(), scale);
+		}
 	}
 }
