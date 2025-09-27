@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using System.Linq;
 
-namespace SpiritReforged.Common.PrimitiveRendering;
+namespace SpiritReforged.Common.PrimitiveRendering.Trails;
 
 public class VertexTrail : BaseTrail
 {
@@ -21,7 +21,7 @@ public class VertexTrail : BaseTrail
 	private readonly float _originalMaxLength;
 	private readonly float _originalWidth;
 
-	public VertexTrail(Projectile projectile, ITrailColor type, ITrailCap cap, ITrailPosition position, ITrailShader shader, TrailLayer layer, float widthAtFront, float maxLength, float dissolveSpeed) : base(projectile, layer)
+	public VertexTrail(ITrailColor type, ITrailCap cap, ITrailPosition position, ITrailShader shader, float widthAtFront, float maxLength, float dissolveSpeed = -1)
 	{
 		_trailCap = cap;
 		_trailColor = type;
@@ -36,22 +36,23 @@ public class VertexTrail : BaseTrail
 		_points = [];
 	}
 
-	public override void Dissolve()
+	protected override void OnDissolve()
 	{
 		_maxLength -= DissolveSpeed;
 		_widthStart = _maxLength / _originalMaxLength * _originalWidth;
+
 		if (_maxLength <= 0f)
 		{
-			Dead = true;
+			CanBeDisposed = true;
 			return;
 		}
 
 		TrimToLength(_maxLength);
 	}
 
-	public override void Update()
+	protected override void OnUpdate()
 	{
-		Vector2 thisPoint = _trailPosition.GetNextTrailPosition(MyProjectile);
+		Vector2 thisPoint = _trailPosition.GetNextTrailPosition();
 
 		if (_points.Count == 0)
 		{
@@ -64,13 +65,9 @@ public class VertexTrail : BaseTrail
 
 		//If adding the next point is too much
 		if (_currentLength + distance > _maxLength)
-		{
 			TrimToLength(_maxLength);
-		}
 		else
-		{
 			_currentLength += distance;
-		}
 	}
 
 	private void TrimToLength(float length)
@@ -110,25 +107,17 @@ public class VertexTrail : BaseTrail
 
 	public override void Draw(Effect effect, BasicEffect effect2, GraphicsDevice device)
 	{
-		if (Dead || _points.Count <= 1)
+		if (CanBeDisposed || _points.Count <= 1)
 			return;
 
 		//calculate trail's length
 		float trailLength = 0f;
 		for (int i = 1; i < _points.Count; i++)
-		{
 			trailLength += Vector2.Distance(_points[i - 1], _points[i]);
-		}
 
 		//Create vertice array, needs to be equal to the number of quads * 6 (each quad has two tris, which are 3 vertices)
 		int currentIndex = 0;
 		var vertices = new VertexPositionColorTexture[(_points.Count - 1) * 6 + _trailCap.ExtraTris * 3];
-
-		//method to make it look less horrible
-		void AddVertex(Vector2 position, Color color, Vector2 uv)
-		{
-			vertices[currentIndex++] = new VertexPositionColorTexture(new Vector3(position - Main.screenPosition, 0f), color, uv);
-		}
 
 		float currentDistance = 0f;
 		float halfWidth = _widthStart * 0.5f;
@@ -176,6 +165,9 @@ public class VertexTrail : BaseTrail
 		//apply this trail's shader pass and draw
 		_trailShader.ApplyShader(effect, this, _points);
 		device.DrawUserPrimitives(PrimitiveType.TriangleList, vertices, 0, (_points.Count - 1) * 2 + _trailCap.ExtraTris);
+
+		//method to make it look less horrible
+		void AddVertex(Vector2 position, Color color, Vector2 uv) => vertices[currentIndex++] = new VertexPositionColorTexture(new Vector3(position - Main.screenPosition, 0f), color, uv);
 	}
 
 	//Helper methods
@@ -185,14 +177,10 @@ public class VertexTrail : BaseTrail
 			return points[0];
 
 		if (index == 0)
-		{
 			return Clockwise90(Vector2.Normalize(points[1] - points[0]));
-		}
 
 		if (index == points.Count - 1)
-		{
 			return Clockwise90(Vector2.Normalize(points[index] - points[index - 1]));
-		}
 
 		return Clockwise90(Vector2.Normalize(points[index + 1] - points[index - 1]));
 	}
