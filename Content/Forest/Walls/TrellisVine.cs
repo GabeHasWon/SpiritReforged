@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Forest.Walls;
 
 public class TrellisVine : ModTile
 {
+	public const int StyleRange = 7;
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileNoFail[Type] = true;
@@ -18,12 +20,27 @@ public class TrellisVine : ModTile
 		TileObjectData.newTile.Origin = Point16.Zero;
 		TileObjectData.newTile.CoordinateWidth = 24;
 		TileObjectData.newTile.CoordinateHeights = [22];
-		TileObjectData.newTile.RandomStyleRange = 5;
+		TileObjectData.newTile.RandomStyleRange = StyleRange;
+		TileObjectData.newTile.StyleWrapLimit = StyleRange;
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(90, 165, 100));
 		HitSound = SoundID.Grass with { Pitch = 0.2f, PitchVariance = 0.1f };
 		DustType = DustID.Grass;
+	}
+
+	public override bool CreateDust(int i, int j, ref int type)
+	{
+		int style = TileObjectData.GetTileStyle(Main.tile[i, j]) / StyleRange;
+		type = style switch
+		{
+			1 => DustID.CorruptPlants,
+			2 => DustID.CrimsonPlants,
+			3 => DustID.HallowedPlants,
+			_ => DustID.Grass
+		};
+
+		return true;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

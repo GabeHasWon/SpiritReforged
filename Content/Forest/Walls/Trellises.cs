@@ -25,16 +25,49 @@ public class Trellis : ModWall, IAutoloadWallItem, ICheckItemUse
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (Main.rand.NextBool(9) && WorldGen.CountNearBlocksTypes(i, j, 1, 1, ModContent.TileType<TrellisVine>()) == 1)
-			Placer.PlaceTile(i, j, Type).Send();
+		if (FindVine(i, j, out Tile tile))
+		{
+			int minRange = TileObjectData.GetTileStyle(tile) / TrellisVine.StyleRange * TrellisVine.StyleRange;
+			int style = Main.rand.Next(minRange, minRange + TrellisVine.StyleRange);
+
+			Placer.PlaceTile(i, j, ModContent.TileType<TrellisVine>(), style).Send();
+		}
+
+		static bool FindVine(int i, int j, out Tile tile)
+		{
+			for (int x = i - 1; x < i + 1; x++)
+			{
+				for (int y = j - 1; y < j + 1; y++)
+				{
+					var t = Main.tile[x, y];
+					if (t.TileType == ModContent.TileType<TrellisVine>())
+					{
+						tile = t;
+						return true;
+					}
+				}
+			}
+
+			tile = default;
+			return false;
+		}
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 	public bool? CheckItemUse(int type, int i, int j)
 	{
-		if (type == ItemID.GrassSeeds)
+		if (type is ItemID.GrassSeeds or ItemID.CrimsonSeeds or ItemID.CorruptSeeds or ItemID.HallowedSeeds)
 		{
-			Placer.PlaceTile<TrellisVine>(i, j).Send();
+			int minRange = type switch
+			{
+				ItemID.CorruptSeeds => 1,
+				ItemID.CrimsonSeeds => 2,
+				ItemID.HallowedSeeds => 3,
+				_ => 0
+			} * TrellisVine.StyleRange;
+
+			int style = WorldGen.genRand.Next(minRange, minRange + TrellisVine.StyleRange);
+			Placer.PlaceTile<TrellisVine>(i, j, style).Send();
 			return true;
 		}
 

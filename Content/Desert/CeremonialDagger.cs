@@ -16,14 +16,7 @@ namespace SpiritReforged.Content.Desert;
 
 public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 {
-	public Asset<Texture2D> StandTexture
-	{
-		get
-		{
-			const string name = "CeremonialDagger_Stand";
-			return AssetLoader.GetTexture(name, DrawHelpers.RequestLocal(typeof(CeremonialDagger), name));
-		}
-	}
+	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "CeremonialDagger_Stand", false);
 
 	private float _swingArc;
 

@@ -6,14 +6,17 @@ namespace SpiritReforged.Content.Particles;
 public class SteamParticle : Particle
 {
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
+	public override ParticleLayer DrawLayer => _layer;
 
-	public SteamParticle(Vector2 position, Vector2 velocity, float scale, int timeLeft = 60)
+	private readonly ParticleLayer _layer;
+
+	public SteamParticle(Vector2 position, Vector2 velocity, float scale, int timeLeft = 60, ParticleLayer layer = ParticleLayer.BelowSolid)
 	{
 		Position = position;
 		Velocity = velocity;
 		Scale = scale;
 		MaxTime = timeLeft;
+		_layer = layer;
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

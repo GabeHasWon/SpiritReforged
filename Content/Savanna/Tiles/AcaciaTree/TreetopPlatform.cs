@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
@@ -6,7 +7,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class TreetopPlatform : SimpleEntity
+public class TreetopPlatform : SimpleEntity, IGrappleable
 {
 	public override string TexturePath => AssetLoader.EmptyTexture;
 	public Point16? TreePosition { get; private set; }
@@ -55,6 +56,25 @@ public class TreetopPlatform : SimpleEntity
 			player.gfxOffY = 0;
 		}
 	}
+
+	public bool CanGrapple(Projectile hook)
+	{
+		if (hook.type != ProjectileID.SquirrelHook) //Only allow the Squirrel Hook to grapple platforms
+			return false;
+
+		const int height = 4;
+		var hitbox = new Rectangle(Hitbox.X, Hitbox.Y + height + 16, Hitbox.Width, height); //Adjust the hitbox to be more grapple friendly
+
+		if (hook.getRect().Intersects(hitbox) && !Collision.SolidCollision(hook.position, hook.width, hook.height))
+		{
+			hook.Center = new Vector2(hook.Center.X, hitbox.Center.Y);
+			GrappleHelper.Latch(hook);
+
+			return true;
+		}
+
+		return false;
+	}
 }
 
 internal class AcaciaPlatformPlayer : ModPlayer
@@ -83,49 +103,10 @@ internal class AcaciaPlatformDetours : ILoadable
 
 	public void Load(Mod mod)
 	{
-		On_Projectile.AI_007_GrapplingHooks += CheckGrappling;
 		On_NPC.UpdateCollision += CheckNPCCollision;
 		TileSwaySystem.PreUpdateWind += PreserveWindCounter;
 	}
-
-	private static void CheckGrappling(On_Projectile.orig_AI_007_GrapplingHooks orig, Projectile self)
-	{
-		if (self.type != ProjectileID.SquirrelHook) //Only allow the Squirrel Hook to grapple platforms
-		{
-			orig(self);
-			return;
-		}
-
-		foreach (var p in AcaciaTree.Platforms)
-		{
-			const int height = 4;
-			var hitbox = new Rectangle(p.Hitbox.X, p.Hitbox.Y + height + 16, p.Hitbox.Width, height); //Adjust the hitbox to be more grapple friendly
-
-			if (self.getRect().Intersects(hitbox) && !Collision.SolidCollision(self.Bottom, self.width, 8))
-			{
-				self.Center = new Vector2(self.Center.X, hitbox.Center.Y);
-				Latch(self);
-			}
-		}
-
-		orig(self);
-
-		static void Latch(Projectile p)
-		{
-			var owner = Main.player[p.owner];
-
-			p.ai[0] = 2f;
-			p.velocity *= 0;
-			p.netUpdate = true;
-
-			owner.grappling[0] = p.whoAmI;
-			owner.grapCount++;
-			owner.GrappleMovement();
-
-			if (Main.netMode != NetmodeID.SinglePlayer && p.owner == Main.myPlayer)
-				NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, p.owner);
-		}
-	}
+	public void Unload() { }
 
 	private static void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
 	{
@@ -140,6 +121,4 @@ internal class AcaciaPlatformDetours : ILoadable
 	}
 
 	private void PreserveWindCounter() => OldTreeWindCounter = TileSwaySystem.Instance.TreeWindCounter;
-
-	public void Unload() { }
 }
