@@ -295,6 +295,7 @@ internal class SavannaEcotone : EcotoneBase
 		}
 
 		for (int i = SavannaArea.Left; i < SavannaArea.Right; ++i)
+		{
 			for (int j = SavannaArea.Top - 1; j < SavannaArea.Bottom; ++j)
 			{
 				OpenFlags flags = OpenTools.GetOpenings(i, j, false, false, true);
@@ -328,6 +329,7 @@ internal class SavannaEcotone : EcotoneBase
 				if (WorldGen.genRand.NextBool(120)) //Rare bones
 					WorldGen.PlaceTile(i, j - 1, TileID.LargePiles2, true, style: WorldGen.genRand.Next(52, 55));
 			}
+		}
 
 		if (WorldGen.genRand.NextBool(3))
 			Campsite();
