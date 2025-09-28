@@ -2426,3 +2426,8 @@ LapisWorkBenchItem: {
 	// DisplayName: Lapis Work Bench
 	// Tooltip: ""
 }
+
+LapisPlatformItem: {
+	// DisplayName: Lapis Platform
+	// Tooltip: ""
+}
