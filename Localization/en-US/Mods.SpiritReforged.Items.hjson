@@ -2331,3 +2331,98 @@ CarvedLapisItem: {
 	DisplayName: Carved Lapis
 	Tooltip: ""
 }
+
+LapisChestItem: {
+	DisplayName: Lapis Chest
+	Tooltip: ""
+}
+
+LapisDresserItem: {
+	DisplayName: Lapis Dresser
+	Tooltip: ""
+}
+
+LapisCandleItem: {
+	DisplayName: Lapis Candle
+	Tooltip: ""
+}
+
+LapisBathtubItem: {
+	DisplayName: Lapis Bathtub
+	Tooltip: ""
+}
+
+LapisBedItem: {
+	DisplayName: Lapis Bed
+	Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	DisplayName: Lapis Bookcase
+	Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	DisplayName: Lapis Candelabra
+	Tooltip: ""
+}
+
+LapisChairItem: {
+	DisplayName: Lapis Chair
+	Tooltip: ""
+}
+
+LapisChandelierItem: {
+	DisplayName: Lapis Chandelier
+	Tooltip: ""
+}
+
+LapisClockItem: {
+	DisplayName: Lapis Clock
+	Tooltip: ""
+}
+
+LapisDoorItem: {
+	DisplayName: Lapis Door
+	Tooltip: ""
+}
+
+LapisLampItem: {
+	DisplayName: Lapis Lamp
+	Tooltip: ""
+}
+
+LapisLanternItem: {
+	DisplayName: Lapis Lantern
+	Tooltip: ""
+}
+
+LapisPianoItem: {
+	DisplayName: Lapis Piano
+	Tooltip: ""
+}
+
+LapisSinkItem: {
+	DisplayName: Lapis Sink
+	Tooltip: ""
+}
+
+LapisSofaItem: {
+	DisplayName: Lapis Sofa
+	Tooltip: ""
+}
+
+LapisTableItem: {
+	DisplayName: Lapis Table
+	Tooltip: ""
+}
+
+LapisToiletItem: {
+	DisplayName: Lapis Toilet
+	Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	DisplayName: Lapis Work Bench
+	Tooltip: ""
+}
