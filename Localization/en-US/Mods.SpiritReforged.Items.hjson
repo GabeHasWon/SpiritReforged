@@ -2411,3 +2411,8 @@ GoldChainLoopItem: {
 	DisplayName: Gold Chain Loop
 	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
 }
+
+SaltPlatformItem: {
+	DisplayName: Salt Platform
+	Tooltip: ""
+}
