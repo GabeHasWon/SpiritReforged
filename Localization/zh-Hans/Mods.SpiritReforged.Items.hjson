@@ -2400,7 +2400,8 @@ TrellisTwoPearlwoodItem: {
 TrellisTwoShadewoodItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
-=======
+}
+
 ChainLoopItem: {
 	// DisplayName: Chain Loop
 	// Tooltip: Press Up/Down while placing to adjust chain length
