@@ -44,7 +44,7 @@ public class DeadTree : CustomTree
 			var source = new Rectangle(196, 20 + (size.Y + 2) * frameY, size.X, size.Y);
 			var origin = new Vector2(source.Width / 2, source.Height);
 
-			spriteBatch.Draw(texture, position + new Vector2(9, 3), source, color, rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(texture, position + new Vector2(7, 0), source, color, rotation, origin, 1, SpriteEffects.None, 0);
 		}
 		else //Draw branches
 		{
