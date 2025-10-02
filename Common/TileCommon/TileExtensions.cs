@@ -250,6 +250,9 @@ public static class TileExtensions
 	/// <returns>The tile data.</returns>
 	public static TileObjectData SafelyGetData(this Tile tile) => TileObjectData.GetTileData(tile);
 
+	/// <summary> Returns whether <see cref="Tile.HasTile"/> and <see cref="Tile.TileType"/> equals <paramref name="type"/>. </summary>
+	public static bool HasTileType(this Tile tile, int type) => tile.HasTile && tile.TileType == type;
+
 	/// <summary>
 	/// Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>.
 	/// </summary>

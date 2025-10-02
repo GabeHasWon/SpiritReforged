@@ -56,7 +56,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 	public override SegmentType FindSegment(int i, int j)
 	{
-		if (Main.tile[i, j].TileFrameX <= FrameSize * 5)
+		if (Main.tile[i, j].TileFrameX > FrameSize * 5)
 			return SegmentType.Bare;
 
 		int type = Framing.GetTileSafely(i, j - 1).TileType;

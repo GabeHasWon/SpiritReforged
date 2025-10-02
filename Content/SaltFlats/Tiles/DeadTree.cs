@@ -22,11 +22,58 @@ public class DeadTree : CustomTree
 
 	public override SegmentType FindSegment(int i, int j)
 	{
-		if (Main.tile[i, j].TileFrameX > FrameSize)
+		if (Main.tile[i, j].TileFrameX > FrameSize * 6)
 			return SegmentType.Bare;
 
 		int type = Framing.GetTileSafely(i, j - 1).TileType;
 		return (type != Type) ? SegmentType.LeafyTop : SegmentType.Default;
+	}
+
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		if (!effectOnly)
+		{
+			if (!fail) //Switch to the 'chopped' frame
+				Framing.GetTileSafely(i, j + 1).TileFrameX = (short)(WorldGen.genRand.Next(10, 12) * FrameSize);
+			else
+				ShakeTree(i, j);
+		}
+	}
+
+	protected override void OnShakeTree(int i, int j)
+	{
+		if (Main.rand.NextBool(3))
+		{
+			Vector2 position = new Vector2(i, j - 3) * 16;
+			Item.NewItem(null, new Rectangle((int)position.X, (int)position.Y, 16, 16), AutoContent.ItemType<Drywood>(), Main.rand.Next(3, 11));
+		}
+
+		GrowEffects(i, j, true);
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		Tile tile = Main.tile[i, j];
+		Tile right = Framing.GetTileSafely(i + 1, j);
+		Tile left = Framing.GetTileSafely(i - 1, j);
+		Tile top = Framing.GetTileSafely(i, j - 1);
+		Tile bottom = Framing.GetTileSafely(i, j + 1);
+
+		if (top.HasTileType(Type) || bottom.HasTileType(Type))
+		{
+			if (left.TileType == Type && right.TileType == Type)
+				tile.TileFrameX = 14 * FrameSize;
+			else if (right.TileType == Type)
+				tile.TileFrameX = 12 * FrameSize;
+			else if (left.TileType == Type)
+				tile.TileFrameX = 13 * FrameSize;
+		}
+		else if (!left.HasTileType(Type) && !right.HasTileType(Type) && tile.TileFrameX >= FrameSize * 15)
+		{
+			WorldGen.KillTile(i, j);
+		}
+
+		return base.TileFrame(i, j, ref resetFrame, ref noBreak);
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
@@ -45,7 +92,7 @@ public class DeadTree : CustomTree
 			var source = new Rectangle(196, 20 + (size.Y + 2) * frameY, size.X, size.Y);
 			var origin = new Vector2(source.Width / 2, source.Height);
 
-			spriteBatch.Draw(texture, position + new Vector2(7, 0), source, color, rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(texture, position + new Vector2(7, 2), source, color, rotation, origin, 1, SpriteEffects.None, 0);
 		}
 		else //Draw branches
 		{
@@ -56,7 +103,7 @@ public class DeadTree : CustomTree
 			var source = new Rectangle((size.X + 2) * frameX, 20 + (size.Y + 2) * frameY, size.X, size.Y);
 			var origin = new Vector2((frameX == 0) ? source.Width : 0, 80);
 
-			position += new Vector2(6 * ((frameX == 0) ? -1 : 1), 8); //Directional offset
+			position += new Vector2(4 * ((frameX == 0) ? -1 : 1), 8); //Directional offset
 
 			spriteBatch.Draw(texture, position + new Vector2(10, 0), source, color, rotation, origin, 1, SpriteEffects.None, 0);
 		}
@@ -70,18 +117,33 @@ public class DeadTree : CustomTree
 		for (int h = 0; h < height; h++)
 		{
 			int style = WorldGen.genRand.NextFromList(0, 1);
+			short offset = TreeExtensions.GetPalmOffset(j, variance, height, ref xOff);
 
-			WorldGen.PlaceTile(i, j - h, Type, true);
-			Tile tile = Framing.GetTileSafely(i, j - h);
+			PlaceSegment(i, j - h, (short)(style * FrameSize), offset);
 
-			if (tile.HasTile && tile.TileType == Type)
+			if (h == 0)
 			{
-				tile.TileFrameX = (short)(style * FrameSize);
-				tile.TileFrameY = TreeExtensions.GetPalmOffset(j, variance, height, ref xOff);
+				if (WorldGen.genRand.NextBool())
+					PlaceSegment(i - 1, j, (short)(WorldGen.genRand.NextFromList(15, 17, 19) * FrameSize), offset);
+
+				if (WorldGen.genRand.NextBool())
+					PlaceSegment(i + 1, j, (short)(WorldGen.genRand.NextFromList(16, 18, 20) * FrameSize), offset);
 			}
 		}
 
+		WorldGen.SquareTileFrame(i, j);
+
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j + 1 - height, 1, height, TileChangeType.None);
+			NetMessage.SendTileSquare(-1, i - 1, j + 1 - height, 3, height, TileChangeType.None);
+
+		static void PlaceSegment(int i, int j, short frameX, short frameY)
+		{
+			int type = ModContent.TileType<DeadTree>();
+			if (Placer.PlaceTile(i, j, type).success)
+			{
+				Main.tile[i, j].TileFrameX = frameX;
+				Main.tile[i, j].TileFrameY = frameY;
+			}
+		}
 	}
 }

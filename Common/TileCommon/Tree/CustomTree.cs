@@ -195,10 +195,13 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (!fail) //Switch to the 'chopped' frame
-			Framing.GetTileSafely(i, j + 1).TileFrameX = (short)(WorldGen.genRand.Next(9, 12) * FrameSize);
-		else
-			ShakeTree(i, j);
+		if (!effectOnly)
+		{
+			if (!fail) //Switch to the 'chopped' frame
+				Framing.GetTileSafely(i, j + 1).TileFrameX = (short)(WorldGen.genRand.Next(9, 12) * FrameSize);
+			else
+				ShakeTree(i, j);
+		}
 	}
 
 	public sealed override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -217,8 +220,8 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
-		Tile t = Main.tile[i, j];
-		Rectangle source = new(t.TileFrameX % (FrameSize * 12), 0, FrameSize - 2, FrameSize - 4);
+		Tile tile = Main.tile[i, j];
+		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
 		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
