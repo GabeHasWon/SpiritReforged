@@ -49,8 +49,17 @@ internal class Stactus : ModNPC, IDeathCount
 		set => NPC.ai[2] = value;
 	}
 
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/Squish")
+	{
+		Volume = 0.75f,
+		Pitch = 0.6f,
+		PitchVariance = 0.3f,
+		MaxInstances = 0
+	};
+
 	public bool Falling { get; private set; }
 	private float _sine;
+	private bool collisionSoundPlayed = false;
 
 	/// <summary> Spawns a stack of Stactus at <paramref name="fromNPC"/>, representing the first in the stack. </summary>
 	public static void SpawnStack(NPC fromNPC, int height)
@@ -245,6 +254,13 @@ internal class Stactus : ModNPC, IDeathCount
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
+				// Play a 'bounce' sound once for the initial fall.
+				if (!collisionSoundPlayed)
+				{
+					SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.75f }, NPC.Center);
+					collisionSoundPlayed = true;
+				}
+
 				//Take continuous damage in contact with the ground but don't display it
 				var hit = NPC.CalculateHitInfo(20, 1, damageVariation: true) with { HideCombatText = true };
 				NPC.StrikeNPC(hit);
@@ -326,7 +342,8 @@ internal class Stactus : ModNPC, IDeathCount
 			if (Main.rand.NextBool())
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Stactus6").Type);
 
-			SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.5f }, NPC.Center);
+			SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.5f }, NPC.Center);
+			SoundEngine.PlaySound(Death, NPC.Center);
 		}
 	}
 
