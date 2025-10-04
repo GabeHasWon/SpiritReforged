@@ -4,6 +4,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs;
@@ -192,6 +193,8 @@ public class Jerboa : ModNPC
 
 			if (dead)
 			{
+				SoundEngine.PlaySound(SoundID.NPCDeath4, NPC.Center);
+
 				for (int i = 1; i < 3; i++)
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Jerboa" + i).Type, 1f);
 			}
