@@ -24,6 +24,13 @@ public class Grub : ModNPC
 	public State AnimationState = State.Idle;
 	private bool _isPouncing;
 
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/BugDeath")
+	{
+		Volume = 0.75f,
+		PitchVariance = 0.2f,
+		MaxInstances = 0
+	};
+
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers() { Velocity = 1 });
@@ -35,8 +42,7 @@ public class Grub : ModNPC
 		NPC.Size = new Vector2(16);
 		NPC.lifeMax = 30;
 		NPC.damage = 8;
-		NPC.HitSound = SoundID.NPCHit1;
-		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.HitSound = SoundID.NPCHit45;
 		NPC.knockBackResist = 1f;
 		AIType = -1;
 	}
@@ -130,11 +136,13 @@ public class Grub : ModNPC
 		{
 			bool dead = NPC.life <= 0;
 
-			for (int i = 0; i < (dead ? 20 : 3); i++)
-				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.GreenBlood, Scale: Main.rand.NextFloat(0.8f, 2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
+			for (int i = 0; i < (dead ? 20 : 5); i++)
+				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.GreenMoss, Scale: Main.rand.NextFloat(0.5f, 1.2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
 
 			if (dead)
 			{
+				SoundEngine.PlaySound(Death, NPC.Center);
+
 				for (int i = 1; i < 3; i++)
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Grub" + i).Type, 1f);
 			}
