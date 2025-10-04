@@ -77,13 +77,14 @@ internal class SavannaEcotone : EcotoneBase
 		tasks.Insert(grassIndex, new PassLegacy("Populate Savanna", PopulateSavanna));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds, out int conversionType)
 	{
 		static bool NotOcean(EcotoneSurfaceMapping.EcotoneEntry e) => e.Start.X > GenVars.leftBeachEnd
 			&& e.End.X > GenVars.leftBeachEnd && e.Start.X < GenVars.rightBeachStart && e.End.X < GenVars.rightBeachStart; //Don't generate next to the ocean
 
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
+		conversionType = BiomeConversionID.Purity;
 
 		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SavannaSeed>())
 		{
@@ -111,13 +112,14 @@ internal class SavannaEcotone : EcotoneBase
 				return false;
 
 			bounds = (entry.Start.X - offX, entry.End.X);
+			conversionType = entry.CorruptionType;
 			return true;
 		}
 	}
 
 	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
 	{
-		if (!CanGenerate(entries, out var bounds))
+		if (!CanGenerate(entries, out var bounds, out int conversionType))
 			return;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
@@ -169,7 +171,7 @@ internal class SavannaEcotone : EcotoneBase
 
 				if (depth >= 0)
 				{
-					if (depth < 15 || tile.WallType == WallID.None)
+					if ((depth < 15 || tile.WallType == WallID.None) && !CorrWall(tile.WallType))
 						tile.HasTile = true;
 
 					if (tile.HasTile && !validIds.Contains(tile.TileType) && !TileID.Sets.Ore[tile.TileType])
@@ -183,17 +185,23 @@ internal class SavannaEcotone : EcotoneBase
 
 					tile.TileType = (ushort)GetType();
 
-					if (depth > 1) //Convert walls
+					int wall = tile.WallType;
+
+					// Skip corrupt walls
+					if (!CorrWall(wall) || depth == 0)
 					{
-						if (tile.TileType is TileID.Sand or TileID.HardenedSand)
-							tile.WallType = WallID.HardenedSand;
-						else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
-							tile.WallType = WallID.Sandstone;
-						else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
-							tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						if (depth > 1) //Convert walls
+						{
+							if (tile.TileType is TileID.Sand or TileID.HardenedSand)
+								tile.WallType = WallID.HardenedSand;
+							else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
+								tile.WallType = WallID.Sandstone;
+							else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
+								tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						}
+						else
+							tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 					}
-					else
-						tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 				}
 				else
 					tile.Clear(TileDataType.All);
@@ -238,6 +246,8 @@ internal class SavannaEcotone : EcotoneBase
 			return y;
 		}
 	};
+
+	private static bool CorrWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall];
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{

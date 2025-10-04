@@ -15,6 +15,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 		public EcotoneEdgeDefinition Definition = definition;
 		public EcotoneEdgeDefinition Left;
 		public EcotoneEdgeDefinition Right;
+		public int CorruptionType = BiomeConversionID.Purity;
 
 		public bool TileFits(int i, int j) => Definition.ValidIds.Contains(Main.tile[i, j].TileType);
 		public bool SurroundedBy(string one, string two) => Left.Name == one && Right.Name == two || Left.Name == two && Right.Name == one;
@@ -28,6 +29,11 @@ internal class EcotoneSurfaceMapping : ModSystem
 	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
 
 	private List<EcotoneEntry> Entries = [];
+
+	public override void SetStaticDefaults()
+	{
+
+	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
@@ -68,6 +74,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 
 		int transitionCount = 0;
 		EcotoneEntry entry = null;
+		int conversionType = BiomeConversionID.Purity;
 
 		for (int x = StartX; x < Main.maxTilesX - StartX; ++x)
 		{
@@ -86,18 +93,35 @@ internal class EcotoneSurfaceMapping : ModSystem
 				transitionCount++;
 
 			if (transitionCount > TransitionLength && EcotoneEdgeDefinitions.TryGetEcotoneByTile(Main.tile[x, y].TileType, out var def) && def.Name != entry.Definition.Name)
-			{ 
-				EcotoneEdgeDefinition old = entry.Definition;
-				entry.End = new Point(x, y);
-				entry.Right = def;
-				Entries.Add(entry);
+			{
+				if (def.Name == "Corruption")
+					conversionType = BiomeConversionID.Corruption;
+				else if (def.Name == "Crimson")
+					conversionType = BiomeConversionID.Crimson;
+				else if (def.Name == "Hallow")
+					conversionType = BiomeConversionID.Hallow;
+				else
+				{
+					EcotoneEdgeDefinition old = entry.Definition;
+					entry.End = new Point(x, y);
+					entry.Right = def;
+					Entries.Add(entry);
 
-				if (x <= GenVars.leftBeachEnd || x >= GenVars.rightBeachStart)
-					def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-				
-				entry = new EcotoneEntry(new Point(x, y), def);
-				entry.Left = old;
-				transitionCount = 0;
+					if (x <= GenVars.leftBeachEnd || x >= GenVars.rightBeachStart)
+						def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+
+					entry = new EcotoneEntry(new Point(x, y), def);
+					entry.Left = old;
+					entry.CorruptionType = conversionType;
+					transitionCount = 0;
+
+					if (conversionType != BiomeConversionID.Purity && def.Name != "Forest")
+					{
+						int i = 0;
+					}
+
+					conversionType = BiomeConversionID.Purity;
+				}
 			}
 
 			entry.SurfacePoints.Add(new Point(x, y));
@@ -110,6 +134,6 @@ internal class EcotoneSurfaceMapping : ModSystem
 
 		entry.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 		Entries.Add(entry);
-		Entries = new(Entries.OrderBy(x => x.Start.X));
+		Entries = [.. Entries.OrderBy(x => x.Start.X)];
 	}
 }
