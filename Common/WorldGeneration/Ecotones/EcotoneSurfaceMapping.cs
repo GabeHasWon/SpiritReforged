@@ -1,4 +1,10 @@
-﻿using System.Linq;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -25,15 +31,107 @@ internal class EcotoneSurfaceMapping : ModSystem
 
 	public const int TransitionLength = 20;
 
+	private static ILHook _modifyCorruptionHook = null;
+
 	internal static readonly HashSet<Point> TotalSurfacePoints = [];
 	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
+	internal static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
+
+	/// <summary>
+	/// For some reason, the Corruption pass *really* spams "area replacement" code. So this just accounts for that.
+	/// </summary>
+	internal static readonly HashSet<int> SkipCorruptAreaScanXs = [];
 
 	private List<EcotoneEntry> Entries = [];
 
 	public override void SetStaticDefaults()
 	{
+		var passes = GetVanillaGenPasses(null);
+		var corruptionPass = passes.First(x => x.Value.Name == "Corruption").Value;
 
+		if (corruptionPass is PassLegacy pass)
+			_modifyCorruptionHook = new ILHook(GetUnderlyingMethod(pass).GetMethodInfo(), GetCorruptionAreaInfo);
 	}
+
+	private void GetCorruptionAreaInfo(ILContext il)
+	{
+		ILCursor c = new(il);
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<WorldGen>(nameof(WorldGen.CrimStart))))
+			return;
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchLdsfld<Main>(nameof(Main.worldSurface))))
+			return;
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchStloc(22)))
+			return;
+
+		c.Emit(OpCodes.Ldloc_S, (byte)20); // left x
+		c.Emit(OpCodes.Ldloc_S, (byte)21); // right x
+		c.Emit(OpCodes.Ldloc_S, (byte)22); // bottom y
+		c.Emit(OpCodes.Ldc_I4_1); // false, for crimson
+		c.EmitDelegate(AddCorruptArea);
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<WorldGen>(nameof(WorldGen.ChasmRunner))))
+			return;
+
+		for (int i = 0; i < 2; ++i)
+			if (!c.TryGotoNext(x => x.MatchLdsfld<Main>(nameof(Main.worldSurface))))
+				return;
+
+		c.Emit(OpCodes.Ldloc_S, (byte)48); // left x
+		c.Emit(OpCodes.Ldloc_S, (byte)49); // right x
+		c.Emit(OpCodes.Ldloc_S, (byte)51); // bottom y
+		c.Emit(OpCodes.Ldc_I4_0); // true, for corruption
+		c.EmitDelegate(AddCorruptArea);
+	}
+
+	public static void AddCorruptArea(int leftX, int rightX, float bottomY, bool crimson)
+	{
+		if (SkipCorruptAreaScanXs.Contains(leftX) || SkipCorruptAreaScanXs.Contains(rightX))
+			return;
+
+		SkipCorruptAreaScanXs.Add(leftX);
+		SkipCorruptAreaScanXs.Add(rightX);
+
+		int topY = (int)GenVars.worldSurfaceLow;
+		int convId = crimson ? BiomeConversionID.Crimson : BiomeConversionID.Corruption;
+
+		CorruptAreas.TryAdd(convId, []);
+
+		for (int i = leftX; i < rightX; ++i)
+		{
+			for (int j = topY; j < bottomY; ++j)
+			{
+				Point16 pos = new(i, j);
+
+				if (!CorruptAreas[convId].ContainsKey(pos))
+				{
+					float chance = 1f;
+
+					chance = Math.Min(chance, Utils.GetLerpValue(leftX, leftX + 30, i, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(rightX, rightX - 30, i, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(topY, topY + 30, j, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(bottomY, bottomY - 30, j, true));
+
+					if (chance != 0)
+						CorruptAreas[convId].Add(pos, chance);
+				}
+			}
+		}
+	}
+
+	public override void Unload()
+	{
+		_modifyCorruptionHook.Dispose();
+		_modifyCorruptionHook = null;
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_method")]
+	private extern static ref WorldGenLegacyMethod GetUnderlyingMethod(PassLegacy pass);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "_vanillaGenPasses")]
+	private extern static ref Dictionary<string, GenPass> GetVanillaGenPasses(WorldGen gen);
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
@@ -45,7 +143,9 @@ internal class EcotoneSurfaceMapping : ModSystem
 		foreach (var ecotone in EcotoneBase.Ecotones)
 			ecotone.AddTasks(tasks, Entries);
 
+		tasks.Insert(mapIndex - 2, new PassLegacy("Reset Corruption Mapping", ResetCorruptionMapping));
 		tasks.Insert(mapIndex + 1, new PassLegacy("Map Ecotones", MapEcotones));
+		tasks.Insert(tasks.Count - 2, new PassLegacy("Re-Corrupt Areas", ReCorruptAreas));
 
 //#if DEBUG
 //		tasks.Add(new PassLegacy("Ecotone Debug", (progress, config) =>
@@ -60,6 +160,20 @@ internal class EcotoneSurfaceMapping : ModSystem
 //			}
 //		}));
 //#endif
+	}
+
+	private void ResetCorruptionMapping(GenerationProgress progress, GameConfiguration configuration)
+	{
+		CorruptAreas.Clear();
+		SkipCorruptAreaScanXs.Clear();
+	}
+
+	private void ReCorruptAreas(GenerationProgress progress, GameConfiguration configuration)
+	{
+		foreach (int key in CorruptAreas.Keys)
+			foreach ((Point16 point, float chance) in CorruptAreas[key])
+				if (WorldGen.genRand.NextFloat() < chance)
+					WorldGen.Convert(point.X, point.Y, key, 0);
 	}
 
 	private void MapEcotones(GenerationProgress progress, GameConfiguration configuration)
@@ -114,12 +228,6 @@ internal class EcotoneSurfaceMapping : ModSystem
 					entry.Left = old;
 					entry.CorruptionType = conversionType;
 					transitionCount = 0;
-
-					if (conversionType != BiomeConversionID.Purity && def.Name != "Forest")
-					{
-						int i = 0;
-					}
-
 					conversionType = BiomeConversionID.Purity;
 				}
 			}
