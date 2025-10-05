@@ -73,51 +73,35 @@ internal class SavannaEcotone : EcotoneBase
 		if (pyramidIndex == -1 || grassIndex == -1)
 			return;
 
-		tasks.Insert(pyramidIndex, new PassLegacy("Savanna", BaseGeneration(entries)));
+		tasks.Insert(pyramidIndex, new PassLegacy("Savanna", BaseGeneration));
 		tasks.Insert(grassIndex, new PassLegacy("Populate Savanna", PopulateSavanna));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(out (int, int) bounds)
 	{
-		static bool NotOcean(EcotoneSurfaceMapping.EcotoneEntry e) => e.Start.X > GenVars.leftBeachEnd
-			&& e.End.X > GenVars.leftBeachEnd && e.Start.X < GenVars.rightBeachStart && e.End.X < GenVars.rightBeachStart; //Don't generate next to the ocean
-
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SavannaSeed>())
+		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed)
 		{
-			int spawn = Main.maxTilesX / 2;
-			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
-
-			if (valid.Any())
+			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{
-				var e = valid.First();
-				bounds = (e.Start.X - offX, e.End.X);
-
+				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
-
-			return false;
 		}
-		else
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry)
 		{
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Jungle") && Math.Abs(x.Start.Y - x.End.Y) < 120 && NotOcean(x));
-			if (!validEntries.Any())
-				return false;
-
-			var entry = validEntries.ElementAt(WorldGen.genRand.Next(validEntries.Count()));
-			if (entry is null)
-				return false;
-
 			bounds = (entry.Start.X - offX, entry.End.X);
 			return true;
 		}
+
+		return false;
 	}
 
-	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
+	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds))
+		if (!CanGenerate(out var bounds))
 			return;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
@@ -237,7 +221,7 @@ internal class SavannaEcotone : EcotoneBase
 
 			return y;
 		}
-	};
+	}
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{
