@@ -42,6 +42,11 @@ internal class EcotoneSurfaceMapping : ModSystem
 	/// </summary>
 	internal static readonly HashSet<int> SkipCorruptAreaScanXs = [];
 
+	/// <summary>
+	/// Stores the "crimson entrances" generated for future use, if desired.
+	/// </summary>
+	internal static readonly HashSet<Point16> CrimsonOpenings = [];
+
 	private List<EcotoneEntry> Entries = [];
 
 	public override void SetStaticDefaults()
@@ -51,6 +56,15 @@ internal class EcotoneSurfaceMapping : ModSystem
 
 		if (corruptionPass is PassLegacy pass)
 			_modifyCorruptionHook = new ILHook(GetUnderlyingMethod(pass).GetMethodInfo(), GetCorruptionAreaInfo);
+
+		On_WorldGen.CrimStart += LogCrimsonOpening;
+	}
+
+	private void LogCrimsonOpening(On_WorldGen.orig_CrimStart orig, int i, int j)
+	{
+		orig(i, j);
+
+		CrimsonOpenings.Add(new Point16(i, j));
 	}
 
 	private void GetCorruptionAreaInfo(ILContext il)
@@ -166,6 +180,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 	{
 		CorruptAreas.Clear();
 		SkipCorruptAreaScanXs.Clear();
+		CrimsonOpenings.Clear();
 	}
 
 	private void ReCorruptAreas(GenerationProgress progress, GameConfiguration configuration)
