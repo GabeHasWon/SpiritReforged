@@ -2,12 +2,12 @@ namespace SpiritReforged.Content.SaltFlats.Biome;
 
 public class SaltBGStyle : ModSurfaceBackgroundStyle
 {
-	public override int ChooseMiddleTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SaltBackgroundMid");
-	public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SaltBackgroundFar");
+	//public override int ChooseMiddleTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SaltBackgroundMid");
+	//public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SaltBackgroundFar");
 
 	public override int ChooseCloseTexture(ref float scale, ref double parallax, ref float a, ref float b)
 	{
-		b -= 400;
+		b -= 350;
 		return BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SaltBackgroundNear");
 	}
 

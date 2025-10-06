@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: Ancient Diver's Plate
+	DisplayName: Rusted Diver's Plate
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: Ancient Diver's Helmet
+	DisplayName: Rusted Diver's Helmet
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: Ancient Diver's Pants
+	DisplayName: Rusted Diver's Pants
 	Tooltip: ""
 }
 
