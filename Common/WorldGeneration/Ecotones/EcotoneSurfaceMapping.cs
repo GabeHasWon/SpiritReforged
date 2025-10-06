@@ -2,6 +2,10 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -30,6 +34,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 	public static bool Mapped => Entries.Count != 0;
 
 	private static ILHook _modifyCorruptionHook = null;
+	private static List<EcotoneEntry> Entries = [];
 
 	internal static readonly HashSet<Point> TotalSurfacePoints = [];
 	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
@@ -155,6 +160,9 @@ internal class EcotoneSurfaceMapping : ModSystem
 		{
 			foreach (var ecotone in EcotoneBase.Ecotones)
 				ecotone.AddTasks(tasks, Entries);
+
+			tasks.Insert(index - 2, new PassLegacy("Reset Corruption Mapping", ResetCorruptionMapping));
+			tasks.Insert(tasks.Count - 2, new PassLegacy("Re-Corrupt Areas", ReCorruptAreas));
 		}
 	}
 
@@ -185,9 +193,7 @@ internal class EcotoneSurfaceMapping : ModSystem
 			Entries.Remove(item);
 		}
 
-		tasks.Insert(mapIndex - 2, new PassLegacy("Reset Corruption Mapping", ResetCorruptionMapping));
-		tasks.Insert(mapIndex + 1, new PassLegacy("Map Ecotones", MapEcotones));
-		tasks.Insert(tasks.Count - 2, new PassLegacy("Re-Corrupt Areas", ReCorruptAreas));
+		var dictRemovals = TotalSurfaceY.Keys.Where(x => x >= _start && x <= _end).ToHashSet();
 
 		foreach (short item in dictRemovals)
 			TotalSurfaceY.Remove(item);
@@ -208,9 +214,9 @@ internal class EcotoneSurfaceMapping : ModSystem
 					WorldGen.Convert(point.X, point.Y, key, 0);
 	}
 
-	private void MapEcotones(GenerationProgress progress, GameConfiguration configuration)
 	/// <summary> Maps ecotones spanning the entire world. Mapping should normally be done before finding an ecotone spawn location. </summary>
 	public static void MapEcotones() => MapEcotones(0, Main.maxTilesX);
+
 	/// <summary> Maps ecotones within the provided bounds. Mapping should normally be done before finding an ecotone spawn location. </summary>
 	public static void MapEcotones(int start, int end)
 	{

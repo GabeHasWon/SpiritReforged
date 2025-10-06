@@ -78,11 +78,9 @@ internal class SavannaEcotone : EcotoneBase
 	}
 
 	private static bool CanGenerate(out (int, int) bounds)
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds, out int conversionType)
 	{
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
-		conversionType = BiomeConversionID.Purity;
 
 		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed)
 		{
@@ -95,7 +93,6 @@ internal class SavannaEcotone : EcotoneBase
 		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
-			conversionType = entry.CorruptionType;
 			return true;
 		}
 
@@ -104,7 +101,7 @@ internal class SavannaEcotone : EcotoneBase
 
 	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds, out int conversionType))
+		if (!CanGenerate(out var bounds))
 			return;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
@@ -225,7 +222,8 @@ internal class SavannaEcotone : EcotoneBase
 		static int HighestSurfacePoint(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out int addY))
+
+			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out _))
 				y++;
 
 			return y;
