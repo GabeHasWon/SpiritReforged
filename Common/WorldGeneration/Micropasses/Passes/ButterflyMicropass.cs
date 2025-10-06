@@ -19,13 +19,17 @@ internal class ButterflyMicropass : Micropass
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Butterfly");
 		int repeats = Main.maxTilesX / WorldGen.WorldSizeSmallX; // 1 shrine in small and medium worlds, 2 in large
+		int overallTries = 0;
 
 		for (int i = 0; i < repeats; i++)
 		{
+			if (overallTries > 15000)
+				break;
+
 			Point16 size = new(35, 35); // 35 chosen as an approximation of how big one cavern usually is
 			Point16 position = Point16.Zero;
-
 			int tries = 0;
+
 			while (tries < maxTries)
 			{
 				int third = Main.maxTilesX / 3;
@@ -46,9 +50,15 @@ internal class ButterflyMicropass : Micropass
 				return; //Failed
 			}
 
+			overallTries++;
+
 			if (GenVars.structures.CanPlace(new Rectangle(position.X, position.Y, size.X, size.Y), 4))
 			{
-				var blacklist = new QuickConversion.BiomeType[] { QuickConversion.BiomeType.Jungle, QuickConversion.BiomeType.Mushroom, QuickConversion.BiomeType.Desert, QuickConversion.BiomeType.Ice };
+				HashSet<QuickConversion.BiomeType> blacklist = [QuickConversion.BiomeType.Jungle, QuickConversion.BiomeType.Mushroom, QuickConversion.BiomeType.Ice];
+
+				if (!WorldGen.remixWorldGen)
+					blacklist.Add(QuickConversion.BiomeType.Desert);
+
 				var biome = QuickConversion.FindConversionBiome(position, size);
 	
 				if (blacklist.Contains(biome))
