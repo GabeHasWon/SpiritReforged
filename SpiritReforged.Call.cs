@@ -3,6 +3,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 
@@ -28,6 +29,13 @@ public partial class SpiritReforgedMod : Mod
 				case "AddUndead":
 					{
 						return UndeadNPC.AddCustomUndead(args[1..]);
+					}
+				case "AddEvil":
+					{
+						if (args[1] is not int type)
+							throw new ArgumentException("AddEvil parameter 1 should be an int.");
+
+						return MahakalaMaskBlue.EvilNPCTypes.Add(type);
 					}
 				case "GetSavannaArea":
 					{

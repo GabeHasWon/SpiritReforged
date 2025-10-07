@@ -13,7 +13,6 @@ public class NPCEvents : GlobalNPC
 	public static event SetBestiaryDelegate OnSetBestiary;
 
 	public override void Load() => On_NPC.NPCLoot += NPCLoot;
-
 	private static void NPCLoot(On_NPC.orig_NPCLoot orig, NPC self)
 	{
 		orig(self);
@@ -21,6 +20,5 @@ public class NPCEvents : GlobalNPC
 	}
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns) => OnEditSpawnRate?.Invoke(player, ref spawnRate, ref maxSpawns);
-
 	public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry) => OnSetBestiary?.Invoke(npc, database, bestiaryEntry);
 }

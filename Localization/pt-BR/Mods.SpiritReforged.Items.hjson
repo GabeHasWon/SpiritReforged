@@ -2416,3 +2416,13 @@ SaltPlatformItem: {
 	// DisplayName: Salt Platform
 	// Tooltip: ""
 }
+
+MahakalaMaskBlue: {
+	// DisplayName: Mahakala Mask
+	// Tooltip: ""
+}
+
+MahakalaMaskRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	// Tooltip: ""
+}
