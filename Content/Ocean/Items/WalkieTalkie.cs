@@ -120,11 +120,18 @@ public class WalkieTalkie : ModItem
 	}
 	#endregion
 
-	public override void SetStaticDefaults() => PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
+	public override void SetStaticDefaults()
 	{
-		if (player.anglerQuestsFinished == 3) //Guaranteed on the 3rd completed quest
-			rewardItems.Add(new Item(Type));
-	};
+		PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
+		{
+			if (player.anglerQuestsFinished == 3) //Guaranteed on the 3rd completed quest
+				rewardItems.Add(new Item(Type));
+
+		};
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.GoldenBugNet;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.GoldenBugNet] = Type;
+	}
 
 	public override void SetDefaults()
 	{
