@@ -72,6 +72,7 @@ public static class WorldMethods
 		}
 	}
 
+	/// <summary> Gets the number of solid and non-solid tiles in the provided area. </summary>
 	public static int AreaCount(int left, int top, int width, int height, bool countNonSolid)
 	{
 		int count = 0; 

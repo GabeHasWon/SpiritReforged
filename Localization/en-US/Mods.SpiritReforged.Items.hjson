@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: Ancient Diver's Plate
+	DisplayName: Rusted Diver's Plate
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: Ancient Diver's Helmet
+	DisplayName: Rusted Diver's Helmet
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: Ancient Diver's Pants
+	DisplayName: Rusted Diver's Pants
 	Tooltip: ""
 }
 
@@ -2429,5 +2429,95 @@ LapisWorkBenchItem: {
 
 LapisPlatformItem: {
 	DisplayName: Lapis Platform
+	Tooltip: ""
+}
+
+SwordStandItem: {
+	DisplayName: Sword Stand
+	Tooltip: Allows some weapons to be displayed using <right>
+}
+
+TrellisItem: {
+	DisplayName: Trellis
+	Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
+}
+
+TrellisBorealItem: {
+	DisplayName: Boreal Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	DisplayName: Ebonwood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	DisplayName: Rich Mahogany Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	DisplayName: Palm Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	DisplayName: Pearlwood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	DisplayName: Shadewood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	DisplayName: Chain Loop
+	Tooltip: Press Up/Down while placing to adjust chain length
+}
+
+GoldChainLoopItem: {
+	DisplayName: Gold Chain Loop
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	DisplayName: Salt Platform
 	Tooltip: ""
 }

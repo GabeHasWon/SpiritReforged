@@ -1,11 +1,10 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
@@ -44,7 +43,7 @@ public class Blasphemer : ClubItem
 }
 
 [AutoloadGlowmask("255,255,255", false)]
-class BlasphemerProj : BaseClubProj, IManualTrailProjectile
+class BlasphemerProj : BaseClubProj
 {
 	public static readonly SoundStyle Impact1 = new("SpiritReforged/Assets/SFX/Item/FieryMaceImpact_1")
 	{
@@ -77,7 +76,7 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 	public override float WindupTimeRatio => 0.8f;
 	public override float SwingShrinkThreshold => 0.65f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 90 * MeleeSizeModifier;
 		float trailWidth = 60 * MeleeSizeModifier;
@@ -100,24 +99,25 @@ class BlasphemerProj : BaseClubProj, IManualTrailProjectile
 			DissolveThreshold = 0.95f
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
 	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.OrangeRed;
 
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (Main.dedServ)
+			return;
+
+		CreateTrail(TrailSystem.ProjectileRenderer);
 
 		if (FullCharge)
-		{
 			SoundEngine.PlaySound(Main.rand.Next([Swing1, Swing2]), Projectile.Center);
-		}
 	}
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		//black smoke particles

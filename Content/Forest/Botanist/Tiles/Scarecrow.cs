@@ -31,7 +31,7 @@ public class Scarecrow : SingleSlotTile<ScarecrowSlot>, IAutoloadTileItem, ISway
 		TileObjectData.newTile.DrawYOffset = -4;
 		TileObjectData.newTile.Origin = new(0, 2);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 1, 0);
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(entity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 		TileObjectData.newTile.StyleHorizontal = true;
 

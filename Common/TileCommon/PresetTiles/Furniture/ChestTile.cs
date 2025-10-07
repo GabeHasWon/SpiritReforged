@@ -176,7 +176,7 @@ public abstract class ChestTile : FurnitureTile
 		if (player.cursorItemIconText == string.Empty)
 		{
 			player.cursorItemIconEnabled = false;
-			player.cursorItemIconID = 0;
+			player.cursorItemIconID = ItemID.None;
 		}
 	}
 }

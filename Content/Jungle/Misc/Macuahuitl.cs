@@ -1,13 +1,13 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+﻿using SpiritReforged.Common.BuffCommon.Stacking;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.BuffCommon.Stacking;
-using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.ModCompat;
 using Terraria.Audio;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Jungle.Misc;
@@ -38,7 +38,7 @@ public class Macuahuitl : ClubItem
 	}
 }
 
-class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
+class MacuahuitlProj : BaseClubProj
 {
 	public MacuahuitlProj() : base(new Vector2(82)) { }
 
@@ -46,7 +46,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	public override float WindupTimeRatio => 0.8f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 76 * MeleeSizeModifier;
 		float trailWidth = 30 * MeleeSizeModifier;
@@ -71,7 +71,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 				Intensity = 0.5f,
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 		}
 		else //The trail created when ChargeComplete is called
 		{
@@ -84,7 +84,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 				DissolveThreshold = 1f
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(1f)), TrailLayer.UnderProjectile));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(1f))));
 		}
 	}
 
@@ -103,10 +103,12 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 		_parameters.ChargeColor = Color.Pink;
 	}
 
-	internal override void ChargeComplete(Player owner) => TrailManager.ManualTrailSpawn(Projectile);
+	internal override void ChargeComplete(Player owner) => CreateTrail(TrailSystem.ProjectileRenderer);
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		Projectile.ResetLocalNPCHitImmunity();
 	}
 
@@ -121,7 +123,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		if (FullCharge)

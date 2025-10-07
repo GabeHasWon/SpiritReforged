@@ -47,10 +47,10 @@ public class SilverPlatters : PotTile, ILootable
 		if (strength < 1)
 		{
 			var spawn = Main.rand.NextVector2FromRectangle(new Rectangle(i * 16, (j + 2) * 16, 32, 2));
-			float scale = Main.rand.NextFloat(2f, 4f);
+			float scale = Main.rand.NextFloat(1f, 2f);
 			var velocity = (Vector2.UnitY * -1.5f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f) / 3);
 
-			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 40) { Color = Color.White * (1f - strength) * .15f });
+			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 40) { Color = Color.White * (1f - strength) * 0.3f });
 		}
 	}
 
@@ -60,7 +60,6 @@ public class SilverPlatters : PotTile, ILootable
 			return;
 
 		var center = new Vector2(i, j).ToWorldCoordinates(16, 16);
-		var t = Main.tile[i, j];
 		WorldGen.PlaceTile(i, j + 1, ModContent.TileType<SilverFoodPlatter>(), true, style: frameX / 36);
 
 		TileEntity.PlaceEntityNet(i, j + 1, ModContent.TileEntityType<PlatterSlot>());
@@ -79,7 +78,7 @@ public class SilverPlatters : PotTile, ILootable
 			for (int x = 0; x < 15; x++)
 			{
 				var spawn = Main.rand.NextVector2FromRectangle(new Rectangle(i * 16, (j + 2) * 16, 32, 2));
-				ParticleHandler.SpawnParticle(new SteamParticle(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(2f, 3f), 40) { Color = Color.White * .5f });
+				ParticleHandler.SpawnParticle(new SteamParticle(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(1f, 2f), 40) { Color = Color.White * 0.5f });
 
 				var d = Dust.NewDustDirect(new Vector2(i, j + 1) * 16, 32, 16, DustID.TreasureSparkle, Scale: Main.rand.NextFloat(.5f, 1f));
 				d.velocity = Vector2.UnitY * -Main.rand.NextFloat();
