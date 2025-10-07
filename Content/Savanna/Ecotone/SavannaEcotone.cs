@@ -153,7 +153,7 @@ internal class SavannaEcotone : EcotoneBase
 
 				if (depth >= 0)
 				{
-					if (depth < 15 || tile.WallType == WallID.None)
+					if ((depth < 15 || tile.WallType == WallID.None) && !CorrWall(tile.WallType))
 						tile.HasTile = true;
 
 					if (tile.HasTile && !validIds.Contains(tile.TileType) && !TileID.Sets.Ore[tile.TileType])
@@ -167,17 +167,23 @@ internal class SavannaEcotone : EcotoneBase
 
 					tile.TileType = (ushort)GetType();
 
-					if (depth > 1) //Convert walls
+					int wall = tile.WallType;
+
+					// Skip corrupt walls
+					if (!CorrWall(wall) || depth == 0)
 					{
-						if (tile.TileType is TileID.Sand or TileID.HardenedSand)
-							tile.WallType = WallID.HardenedSand;
-						else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
-							tile.WallType = WallID.Sandstone;
-						else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
-							tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						if (depth > 1) //Convert walls
+						{
+							if (tile.TileType is TileID.Sand or TileID.HardenedSand)
+								tile.WallType = WallID.HardenedSand;
+							else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
+								tile.WallType = WallID.Sandstone;
+							else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
+								tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						}
+						else
+							tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 					}
-					else
-						tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 				}
 				else
 					tile.Clear(TileDataType.All);
@@ -216,12 +222,15 @@ internal class SavannaEcotone : EcotoneBase
 		static int HighestSurfacePoint(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out int addY))
+
+			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out _))
 				y++;
 
 			return y;
 		}
 	}
+
+	private static bool CorrWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall];
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{

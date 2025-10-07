@@ -40,6 +40,7 @@ public class EcotoneEdgeDefinitions : ILoadable
 		AddEcotone(new EcotoneEdgeDefinition(TileID.ChlorophyteBrick, "Jungle", TileID.JungleGrass));
 		AddEcotone(new EcotoneEdgeDefinition(TileID.DemoniteBrick, "Corruption", TileID.CorruptGrass, TileID.Ebonsand, TileID.Ebonstone, TileID.CorruptIce, TileID.CorruptJungleGrass));
 		AddEcotone(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Crimson", TileID.CrimsonGrass, TileID.Crimsand, TileID.Crimstone, TileID.FleshIce, TileID.CrimsonJungleGrass));
+		AddEcotone(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Hallow", TileID.HallowedGrass, TileID.Pearlsand, TileID.Pearlstone, TileID.HallowedIce));
 	}
 
 	public void Unload()
