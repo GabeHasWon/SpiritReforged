@@ -206,5 +206,8 @@ public class ScryingLens : InfoItem
 
 		SlimeItemDatabase.AddLoot(new SlimeItemDatabase.ConditionalItem(SlimeItemDatabase.MatchId(NPCID.BlackSlime, NPCID.YellowSlime, NPCID.RedSlime), 0.01f, Type));
 		NPCLootDatabase.AddLoot(new NPCLootDatabase.ConditionalLoot(NPCLootDatabase.MatchId(NPCID.ShimmerSlime), ItemDropRule.Common(Type, 60)));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MetalDetector;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.MetalDetector] = Type;
 	}
 }
