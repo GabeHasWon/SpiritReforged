@@ -2419,10 +2419,10 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	// DisplayName: Mahakala Mask
-	// Tooltip: ""
+	// Tooltip: Reduces damage taken from corrupt enemies
 }
 
 MahakalaMaskRed: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
-	// Tooltip: ""
+	// Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
 }

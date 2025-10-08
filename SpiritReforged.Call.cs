@@ -35,7 +35,7 @@ public partial class SpiritReforgedMod : Mod
 						if (args[1] is not int type)
 							throw new ArgumentException("AddEvil parameter 1 should be an int.");
 
-						return MahakalaMaskBlue.EvilNPCTypes.Add(type);
+						return MahakalaMaskBlue.MahakalaPlayer.EvilNPCTypes.Add(type);
 					}
 				case "GetSavannaArea":
 					{
