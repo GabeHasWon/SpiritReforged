@@ -884,7 +884,7 @@ WheatgrassSeedPouch: {
 	DisplayName: Wheatgrass Seed Pouch
 	Tooltip:
 		'''
-		Throws a spread of seeds which grow wheatgrass on grass
+		Scatters seeds which sprout into wheatgrass
 		'Shakes and swishes in your hand'
 		'''
 }
