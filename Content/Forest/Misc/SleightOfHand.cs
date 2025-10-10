@@ -87,9 +87,10 @@ public class SleightOfHand : EquippableItem
 	}
 
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += CycleAmmo;
+
 	private static void CycleAmmo(Player player, int keyDir)
 	{
-		if (keyDir != 1 || player.HeldItem.useAmmo == AmmoID.None || !player.HasEquip<SleightOfHand>() && !player.HasItem(ModContent.ItemType<SleightOfHand>()))
+		if (keyDir != 1 || player.HeldItem.useAmmo == AmmoID.None || !player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<SleightOfHand>().Name) is true)
 			return;
 
 		var ammoItems = new List<Item>();
@@ -129,6 +130,7 @@ public class SleightOfHand : EquippableItem
 	}
 
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.ArmsDealer, new NPCShop.Entry(Type)));
+
 	public override void SetDefaults()
 	{
 		Item.Size = new(32);

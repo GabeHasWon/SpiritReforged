@@ -478,10 +478,10 @@ GoldDivingBeetle: {
 
 Jerboa: {
 	DisplayName: Jerboa
-	Entry: "This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass."
+	Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
 }
 
 Grub: {
 	DisplayName: Scarab Larva
-	Entry: "Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!"
+	Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
 }
