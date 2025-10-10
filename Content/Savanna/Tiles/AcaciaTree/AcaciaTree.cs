@@ -42,7 +42,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 		if (factor == 0)
 			factor = TileSwaySystem.Instance.TreeWindCounter;
 
-		return Main.instance.TilesRenderer.GetWindCycle(i, j, factor) * .4f;
+		return Main.instance.TilesRenderer.GetWindCycle(i, j, factor) * 0.4f;
 	}
 
 	public override void PreAddObjectData()
@@ -54,17 +54,18 @@ public class AcaciaTree : CustomTree, ISetConversion
 		DustType = DustID.WoodFurniture;
 	}
 
-	public override bool IsTreeTop(int i, int j)
+	public override SegmentType FindSegment(int i, int j)
 	{
-		if (!WorldGen.InWorld(i, j) || ModContent.GetModTile(Main.tile[i, j].TileType) is not AcaciaTree || ModContent.GetModTile(Main.tile[i, j - 1].TileType) is AcaciaTree)
-			return false;
+		if (Main.tile[i, j].TileFrameX > FrameSize * 5)
+			return SegmentType.Bare;
 
-		return Main.tile[i, j].TileFrameX <= FrameSize * 5;
+		int type = Framing.GetTileSafely(i, j - 1).TileType;
+		return (type != Type) ? SegmentType.LeafyTop : SegmentType.Default;
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer) //Spawn platforms
 	{
-		if (closer || !IsTreeTop(i, j))
+		if (closer || FindSegment(i, j) is not SegmentType.LeafyTop)
 			return;
 
 		var pt = new Point16(i, j);
@@ -128,9 +129,9 @@ public class AcaciaTree : CustomTree, ISetConversion
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = GetSway(i, j) * .08f;
+		float rotation = GetSway(i, j) * 0.08f;
 
-		if (IsTreeTop(i, j)) //Draw treetops
+		if (FindSegment(i, j) is SegmentType.LeafyTop) //Draw treetops
 		{
 			int frameY = Framing.GetTileSafely(i, j).TileFrameX / FrameSize % 2;
 
@@ -143,7 +144,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 		}
 		else //Draw branches
 		{
-			int frameX = (Noise(new Vector2(i, j)) > 0) ? 1 : 0;
+			int frameX = Random(i, j, 0, 2);
 			int frameY = Framing.GetTileSafely(i, j).TileFrameX / FrameSize % 3;
 
 			Point size = new(32, 52);
@@ -237,12 +238,12 @@ public class AcaciaTree : CustomTree, ISetConversion
 			int style = WorldGen.genRand.NextBool(6) ? 1 : 0; //Rare segments
 
 			WorldGen.PlaceTile(i, j - h, Type, true);
-			var tile = Framing.GetTileSafely(i, j - h);
+			Tile tile = Framing.GetTileSafely(i, j - h);
 
 			if (tile.HasTile && tile.TileType == Type)
 			{
-				Framing.GetTileSafely(i, j - h).TileFrameX = (short)(style * FrameSize * 3 + WorldGen.genRand.Next(3) * FrameSize);
-				Framing.GetTileSafely(i, j - h).TileFrameY = TreeExtensions.GetPalmOffset(j, variance, height, ref xOff);
+				tile.TileFrameX = (short)(style * FrameSize * 3 + WorldGen.genRand.Next(3) * FrameSize);
+				tile.TileFrameY = TreeExtensions.GetPalmOffset(j, variance, height, ref xOff);
 			}
 		}
 
@@ -308,7 +309,7 @@ public class AcaciaTreeHallow : AcaciaTree
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
 		float rotation = GetSway(i, j) * 0.08f;
 
-		if (IsTreeTop(i, j)) //Draw treetops
+		if (FindSegment(i, j) is SegmentType.LeafyTop) //Draw treetops
 		{
 			int frameX = i % 8;
 			int frameY = Framing.GetTileSafely(i, j).TileFrameX / FrameSize % 2;
@@ -322,7 +323,7 @@ public class AcaciaTreeHallow : AcaciaTree
 		}
 		else //Draw branches
 		{
-			int frameX = ((Noise(new Vector2(i, j)) > 0) ? 1 : 0) + j % 8 * 2;
+			int frameX = Random(i, j, 0, 2) + j % 8 * 2;
 			int frameY = Framing.GetTileSafely(i, j).TileFrameX / FrameSize % 3;
 
 			bool flip = frameX % 2 == 0;
