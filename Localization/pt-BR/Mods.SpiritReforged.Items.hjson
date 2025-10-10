@@ -2276,6 +2276,9 @@ OtherworldlyRadioItem: {
 		<right> to toggle Otherworld music
 		'Charmingly old-fashioned'
 		''' */
+	// TunedToNormal: (Standard Frequency)
+	// TunedToOtherworld: (Odd Frequency)
+	// MusicDisplay: "[i:576] You're listening to:"
 }
 
 SleightOfHand: {
