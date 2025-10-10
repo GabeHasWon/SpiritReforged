@@ -82,7 +82,7 @@ public class Flamingo : ModNPC
 		const float distance = 100;
 		_pink = Main.rand.NextBool(3);
 
-		if (Main.rand.NextBool(15)) //Randomly spawn in a flying state
+		if (Main.rand.NextBool(12)) //Randomly spawn in a flying state
 		{
 			NPC.TargetClosest();
 			if (NPC.HasPlayerTarget)
