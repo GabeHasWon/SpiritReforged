@@ -3,6 +3,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 
