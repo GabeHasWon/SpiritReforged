@@ -14,9 +14,6 @@ public class OtherworldlyRadioItem : ModItem
 	{
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static shop => shop.NpcType == NPCID.PartyGirl, new NPCShop.Entry(Type)));
 		Main.RegisterItemAnimation(Type, new DrawAnimationVertical(2, 2) { NotActuallyAnimating = true });
-		this.GetLocalization("TunedToNormal");
-		this.GetLocalization("TunedToOtherworld");
-		this.GetLocalization("MusicDisplay");
 	}
 
 	public override void SetDefaults()
