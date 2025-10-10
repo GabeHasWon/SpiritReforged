@@ -57,15 +57,14 @@ public class DeadTree : CustomTree
 		Tile right = Framing.GetTileSafely(i + 1, j);
 		Tile left = Framing.GetTileSafely(i - 1, j);
 		Tile top = Framing.GetTileSafely(i, j - 1);
-		Tile bottom = Framing.GetTileSafely(i, j + 1);
 
-		if (top.HasTileType(Type) || bottom.HasTileType(Type))
+		if (top.HasTileType(Type))
 		{
-			if (left.TileType == Type && right.TileType == Type)
+			if (left.HasTileType(Type) && right.HasTileType(Type))
 				tile.TileFrameX = 14 * FrameSize;
-			else if (right.TileType == Type)
+			else if (right.HasTileType(Type))
 				tile.TileFrameX = 12 * FrameSize;
-			else if (left.TileType == Type)
+			else if (left.HasTileType(Type))
 				tile.TileFrameX = 13 * FrameSize;
 		}
 		else if (!left.HasTileType(Type) && !right.HasTileType(Type) && tile.TileFrameX >= FrameSize * 15)

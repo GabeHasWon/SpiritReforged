@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -219,10 +220,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 		var tile = Main.tile[i, j];
 		if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
 		{
-			bool leftEmpty = !WorldGen.SolidTile(i - 1, j);
-			bool rightEmpty = !WorldGen.SolidTile(i + 1, j);
+			bool leftEmpty = !WorldGen.SolidTile3(i - 1, j);
+			bool rightEmpty = !WorldGen.SolidTile3(i + 1, j);
 
-			if (!Main.tile[i, j - 1].HasTile && (leftEmpty || rightEmpty))
+			if (!Main.tile[i, j - 1].HasTile && (leftEmpty || rightEmpty)) //Slopes
 			{
 				tile.Clear(Terraria.DataStructures.TileDataType.Slope);
 				if (WorldGen.genRand.NextBool(4))
@@ -245,6 +246,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 				if (WorldGen.genRand.NextBool(2))
 					Placer.PlaceTile<Saltwort>(i, j - 1);
+
+				if (WorldGen.genRand.NextBool(30))
+				{
+					int type = ModContent.TileType<DeadTree>();
+
+					if (!Framing.GetTileSafely(i - 1, j).HasTileType(type) && !Framing.GetTileSafely(i + 1, j).HasTileType(type))
+						CustomTree.GrowTree<DeadTree>(i, j - 1);
+				}
 			}
 
 			if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(6))

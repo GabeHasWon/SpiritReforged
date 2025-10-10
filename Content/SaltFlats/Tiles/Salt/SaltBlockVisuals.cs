@@ -172,7 +172,7 @@ public class SaltBlockVisuals : ILoadable
 		gd.Clear(Color.Transparent);
 
 		//Draw the actual contents
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+		spriteBatch.BeginDefault();
 
 		Main.tileBatch.Begin();
 		Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
@@ -191,6 +191,13 @@ public class SaltBlockVisuals : ILoadable
 			{
 				spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+
+				if (Detail > 1)
+				{
+					spriteBatch.End();
+					Main.instance.TilesRenderer.PostDrawTiles(false, false, false);
+					spriteBatch.BeginDefault();
+				}
 			}
 		}
 
