@@ -13,6 +13,7 @@ public class NPCEvents : GlobalNPC
 	public static event SetBestiaryDelegate OnSetBestiary;
 
 	public override void Load() => On_NPC.NPCLoot += NPCLoot;
+
 	private static void NPCLoot(On_NPC.orig_NPCLoot orig, NPC self)
 	{
 		orig(self);

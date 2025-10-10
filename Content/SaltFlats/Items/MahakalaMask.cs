@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
 
 namespace SpiritReforged.Content.SaltFlats.Items;
@@ -8,18 +9,13 @@ public class MahakalaMaskBlue : ModItem
 {
 	public class MahakalaPlayer : ModPlayer
 	{
-		public static readonly HashSet<int> EvilNPCTypes = [NPCID.CorruptBunny, NPCID.CorruptGoldfish, NPCID.Corruptor, NPCID.CorruptPenguin, NPCID.CorruptSlime,
-		NPCID.BigMimicCorruption, NPCID.DesertGhoulCorruption, NPCID.PigronCorruption, NPCID.SandsharkCorrupt, NPCID.Crimera, NPCID.Crimslime, NPCID.CrimsonAxe,
-		NPCID.CursedHammer, NPCID.CrimsonBunny, NPCID.CrimsonGoldfish, NPCID.CrimsonPenguin, NPCID.BigCrimera, NPCID.BigCrimslime, NPCID.BigMimicCrimson,
-		NPCID.DesertGhoulCrimson, NPCID.LittleCrimera, NPCID.PigronCrimson, NPCID.SandsharkCrimson];
-
 		public bool hasMask;
 
 		public override void ResetEffects() => hasMask = false;
 
 		public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
 		{
-			if (hasMask && EvilNPCTypes.Contains(npc.type))
+			if (hasMask && SpiritSets.IsCorrupt[npc.type])
 				modifiers.IncomingDamageMultiplier *= 0.8f;
 		}
 

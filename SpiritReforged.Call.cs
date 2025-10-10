@@ -30,13 +30,6 @@ public partial class SpiritReforgedMod : Mod
 					{
 						return UndeadNPC.AddCustomUndead(args[1..]);
 					}
-				case "AddEvil":
-					{
-						if (args[1] is not int type)
-							throw new ArgumentException("AddEvil parameter 1 should be an int.");
-
-						return MahakalaMaskBlue.MahakalaPlayer.EvilNPCTypes.Add(type);
-					}
 				case "GetSavannaArea":
 					{
 						return SavannaEcotone.SavannaArea;
