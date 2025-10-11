@@ -101,6 +101,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 		SaltArea = new Rectangle(xLeft, Math.Min(yLeft, yRight) - 5, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + baseDepth + 20);
 		AverageY = (int)MathHelper.Lerp(yLeft, yRight, 0.5f); //Select the average of both neighboring biomes
 
+		SaltFlatsSystem.SurfaceHeight = AverageY - WorldGen.genRand.Next(-3, 9);
+
 		for (int x = xLeft; x < xRight; x++)
 		{
 			float xProgress = (float)(x - xLeft) / fullWidth;
