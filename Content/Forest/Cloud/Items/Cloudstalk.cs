@@ -71,9 +71,9 @@ public class CloudstalkTile : HerbTile
 		AddMapEntry(new Color(178, 234, 234), name);
 
 		DustType = DustID.Cloud;
+		HerbType = ModContent.ItemType<Cloudstalk>();
+		SeedType = ModContent.ItemType<CloudstalkSeed>();
 	}
-
-	public override IEnumerable<Item> GetItemDrops(int i, int j) => GetYield(i, j, ModContent.ItemType<Cloudstalk>(), ModContent.ItemType<CloudstalkSeed>());
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{

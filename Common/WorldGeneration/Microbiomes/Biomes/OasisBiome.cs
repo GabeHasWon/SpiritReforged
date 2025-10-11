@@ -44,7 +44,7 @@ public class OasisBiome : Microbiome
 		{
 			int index = GenVars.numOasis - 1;
 			if (index < GenVars.oasisPosition.Length)
-				Create<OasisBiome>(new(GenVars.oasisPosition[index]), false);
+				Create<OasisBiome>(GenVars.oasisPosition[index], false);
 		}
 
 		return value;

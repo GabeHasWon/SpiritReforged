@@ -1,8 +1,10 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged.Content.Forest.Misc.OtherworldlyRadio;
 
@@ -22,6 +24,44 @@ public class OtherworldlyRadioItem : ModItem
 		Item.value = Item.sellPrice(gold: 3);
 		Item.rare = ItemRarityID.Blue;
 		Item.maxStack = 1;
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		if (tooltips.FindIndex(x => x.Name == "ItemName") is int index and not -1)
+		{
+			tooltips[index].Text += " ";
+			
+			if (!Main.swapMusic)
+				tooltips[index].Text += this.GetLocalization("TunedToNormal").Value;
+			else
+				tooltips[index].Text += this.GetLocalization("TunedToOtherworld").Value;
+		}
+
+		if (CrossMod.MusicDisplay.Enabled)
+		{
+			object[] info = (object[])CrossMod.MusicDisplay.Instance.Call("GetMusicInfo", (short)Main.curMusic);
+			var name = (LocalizedText)info[0];
+			var author = (LocalizedText)info[1];
+			string text = this.GetLocalization("MusicDisplay").Value;
+
+			tooltips.Add(new TooltipLine(Mod, "MusicDisplayInfo", text) { OverrideColor = Color.LightGray });
+			tooltips.Add(new TooltipLine(Mod, "MusicDisplayName", name.Value));
+			tooltips.Add(new TooltipLine(Mod, "MusicDisplayAuthor", author.Value));
+		}
+	}
+
+	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+	{
+		if (line.Name == "MusicDisplayName")
+		{
+			var font = FontAssets.DeathText.Value;
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, line.Text, new Vector2(line.X, line.Y), Color.White, 0f, Vector2.Zero, new Vector2(0.5f));
+			yOffset += 4;
+			return false;
+		}
+
+		return true;
 	}
 
 	public override bool ConsumeItem(Player player) => false;

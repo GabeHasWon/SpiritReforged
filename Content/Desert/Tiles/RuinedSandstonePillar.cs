@@ -11,7 +11,7 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
-		Main.tileBlockLight[Type] = true;
+		Main.tileBlockLight[Type] = false;
 
 		TileID.Sets.IsBeam[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
@@ -25,7 +25,20 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
 	{
+		const short rowHeight = 90;
+
 		if (j % 2 == 0)
-			Main.tile[i, j].TileFrameY += 90;
+			Main.tile[i, j].TileFrameY += rowHeight;
+	}
+
+	public static void SetupMerge(int myType, ref int up, ref int down)
+	{
+		int type = ModContent.TileType<RuinedSandstonePillar>();
+
+		if (up == type)
+			up = myType;
+
+		if (down == type)
+			down = myType;
 	}
 }

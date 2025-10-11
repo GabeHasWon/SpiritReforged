@@ -38,7 +38,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 		TileObjectData.newTile.StyleHorizontal = false;
 		TileObjectData.newTile.Origin = new Point16(0, 1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 1, 0);
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(entity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.addTile(Type);
 

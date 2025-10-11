@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: Ancient Diver's Plate
+	DisplayName: Rusted Diver's Plate
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: Ancient Diver's Helmet
+	DisplayName: Rusted Diver's Helmet
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: Ancient Diver's Pants
+	DisplayName: Rusted Diver's Pants
 	Tooltip: ""
 }
 
@@ -884,7 +884,7 @@ WheatgrassSeedPouch: {
 	DisplayName: Wheatgrass Seed Pouch
 	Tooltip:
 		'''
-		Throws a spread of seeds which grow wheatgrass on grass
+		Scatters seeds which sprout into wheatgrass
 		'Shakes and swishes in your hand'
 		'''
 }
@@ -2080,18 +2080,18 @@ WalkieTalkie: {
 
 ScryingLens: {
 	DisplayName: Scrying Lens
-	Tooltip: Allows you to see Shimmer transmutations
+	Tooltip: Displays Shimmer transmutations
 	ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
 }
 
 Ledger: {
 	DisplayName: Ledger
-	Tooltip: Allows you to see coin prices anywhere
+	Tooltip: Displays item coin prices
 }
 
 MysticalCodex: {
 	DisplayName: Mystical Codex
-	Tooltip: ""
+	Tooltip: Displays item coin prices and Shimmer transmutations
 }
 
 CommonPotsSavannaItem: {
@@ -2131,7 +2131,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles, damaging and slowing enemies on contact
+	Tooltip: Sticks to tiles
 }
 
 SaltBlockDullItem: {
@@ -2276,6 +2276,9 @@ OtherworldlyRadioItem: {
 		<right> to toggle Otherworld music
 		'Charmingly old-fashioned'
 		'''
+	TunedToNormal: (Standard Frequency)
+	TunedToOtherworld: (Odd Frequency)
+	MusicDisplay: "[i:576] You're listening to:"
 }
 
 SleightOfHand: {
@@ -2304,5 +2307,235 @@ ViciousFlamingoItem: {
 
 SaltWallItem: {
 	DisplayName: Salt Wall
+	Tooltip: ""
+}
+
+JerboaItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	Tooltip: ""
+}
+
+JarboaItem: {
+	DisplayName: Jarboa
+	Tooltip: ""
+}
+
+RedSandstoneBrickWallItem: {
+	DisplayName: Red Sandstone Brick Wall
+	Tooltip: ""
+}
+
+PolishedSandstoneWallItem: {
+	DisplayName: Polished Sandstone Wall
+	Tooltip: ""
+}
+
+CarvedLapisItem: {
+	DisplayName: Carved Lapis
+	Tooltip: ""
+}
+
+LapisChestItem: {
+	DisplayName: Lapis Chest
+	Tooltip: ""
+}
+
+LapisDresserItem: {
+	DisplayName: Lapis Dresser
+	Tooltip: ""
+}
+
+LapisCandleItem: {
+	DisplayName: Lapis Candle
+	Tooltip: ""
+}
+
+LapisBathtubItem: {
+	DisplayName: Lapis Bathtub
+	Tooltip: ""
+}
+
+LapisBedItem: {
+	DisplayName: Lapis Bed
+	Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	DisplayName: Lapis Bookcase
+	Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	DisplayName: Lapis Candelabra
+	Tooltip: ""
+}
+
+LapisChairItem: {
+	DisplayName: Lapis Chair
+	Tooltip: ""
+}
+
+LapisChandelierItem: {
+	DisplayName: Lapis Chandelier
+	Tooltip: ""
+}
+
+LapisClockItem: {
+	DisplayName: Lapis Clock
+	Tooltip: ""
+}
+
+LapisDoorItem: {
+	DisplayName: Lapis Door
+	Tooltip: ""
+}
+
+LapisLampItem: {
+	DisplayName: Lapis Lamp
+	Tooltip: ""
+}
+
+LapisLanternItem: {
+	DisplayName: Lapis Lantern
+	Tooltip: ""
+}
+
+LapisPianoItem: {
+	DisplayName: Lapis Piano
+	Tooltip: ""
+}
+
+LapisSinkItem: {
+	DisplayName: Lapis Sink
+	Tooltip: ""
+}
+
+LapisSofaItem: {
+	DisplayName: Lapis Sofa
+	Tooltip: ""
+}
+
+LapisTableItem: {
+	DisplayName: Lapis Table
+	Tooltip: ""
+}
+
+LapisToiletItem: {
+	DisplayName: Lapis Toilet
+	Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	DisplayName: Lapis Work Bench
+	Tooltip: ""
+}
+
+LapisPlatformItem: {
+	DisplayName: Lapis Platform
+	Tooltip: ""
+}
+
+SwordStandItem: {
+	DisplayName: Sword Stand
+	Tooltip: Allows some weapons to be displayed using <right>
+}
+
+TrellisItem: {
+	DisplayName: Trellis
+	Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
+}
+
+TrellisBorealItem: {
+	DisplayName: Boreal Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	DisplayName: Ebonwood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	DisplayName: Rich Mahogany Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	DisplayName: Palm Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	DisplayName: Pearlwood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	DisplayName: Shadewood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	DisplayName: Chain Loop
+	Tooltip: Press Up/Down while placing to adjust chain length
+}
+
+GoldChainLoopItem: {
+	DisplayName: Gold Chain Loop
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	DisplayName: Salt Platform
+	Tooltip: ""
+}
+
+MahakalaMaskBlue: {
+	DisplayName: Mahakala Mask
+	Tooltip: Reduces damage taken from corrupt enemies
+}
+
+MahakalaMaskRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+}
+
+RedSandstoneSlabItem: {
+	DisplayName: Red Sandstone Slab
 	Tooltip: ""
 }

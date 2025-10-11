@@ -475,3 +475,13 @@ GoldDivingBeetle: {
 	DisplayName: Gold Diving Beetle
 	Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
 }
+
+Jerboa: {
+	DisplayName: Jerboa
+	Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
+}
+
+Grub: {
+	DisplayName: Scarab Larva
+	Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
+}

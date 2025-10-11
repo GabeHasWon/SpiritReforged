@@ -8,7 +8,12 @@ namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 public class DrywoodSet : FurnitureSet
 {
 	public override string Name => "Drywood";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<Drywood>(), Color.Orange.ToVector3(), DustID.t_PearlWood);
+	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile)
+	{
+		bool blurry = tile is not ChandelierTile and not LanternTile;
+		return new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<Drywood>(), Color.Orange.ToVector3(), DustID.t_PearlWood, blurry);
+	}
+
 	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Chair);
 }
 

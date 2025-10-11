@@ -56,7 +56,7 @@ public abstract class CandleTile : FurnitureTile
 	{
 		var tile = Main.tile[i, j];
 
-		if (tile.TileFrameX == 18 && tile.TileFrameY == 0)
+		if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 		{
 			var color = (Info is LightedInfo l) ? l.Light : Color.Orange.ToVector3() / 255f;
 			(r, g, b) = (color.X, color.Y, color.Z);

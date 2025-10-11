@@ -1,4 +1,5 @@
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.PrimitiveRendering;
 using System.IO;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
@@ -155,10 +156,6 @@ public abstract partial class BaseClubProj : ModProjectile
 			Projectile.Kill();
 
 		BaseRotation += Lerp(-0.05f, 0.05f, EaseQuadIn.Ease(lingerProgress)) * (1 + Charge / 2);
-	}
-
-	public void KillAndStopAnimation()
-	{
 	}
 
 	/// <summary>

@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.DataStructures;
@@ -17,6 +19,7 @@ public class AfterimageProjectile : GlobalProjectile
 	{
 		if (Afterimage)
 		{
+			var sb = Main.spriteBatch;
 			var star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
@@ -24,10 +27,10 @@ public class AfterimageProjectile : GlobalProjectile
 			float rotation = (float)Main.timeForVisualEffects / 30f + projectile.whoAmI;
 			float opacity = 0.5f;
 
-			Main.spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, Color.Gold.Additive() * 0.8f * opacity, 0, bloom.Size() / 2, 0.3f, default, 0);
-			Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.OrangeRed * 0.5f * opacity, rotation, star.Size() / 2, scale * 1.2f, default, 0);
-			Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.Goldenrod.Additive() * 0.8f * opacity, rotation, star.Size() / 2, scale, default, 0);
-			Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive() * opacity, rotation, star.Size() / 2, scale * 0.7f, default, 0);
+			sb.Draw(bloom, projectile.Center - Main.screenPosition, null, Color.Gold.Additive() * 0.8f * opacity, 0, bloom.Size() / 2, 0.3f, default, 0);
+			sb.Draw(star, projectile.Center - Main.screenPosition, null, Color.OrangeRed * 0.5f * opacity, rotation, star.Size() / 2, scale * 1.2f, default, 0);
+			sb.Draw(star, projectile.Center - Main.screenPosition, null, Color.Goldenrod.Additive() * 0.8f * opacity, rotation, star.Size() / 2, scale, default, 0);
+			sb.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive() * opacity, rotation, star.Size() / 2, scale * 0.7f, default, 0);
 		}
 
 		return true;
@@ -50,9 +53,10 @@ public class AfterimageProjectile : GlobalProjectile
 			return;
 
 		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One * 2);
+		ITrailPosition position = new EntityTrailPosition(p);
 
-		AssetLoader.VertexTrailManager.CreateTrail(p, new StandardColorTrail(Color.Goldenrod.Additive()), new RoundCap(), new DefaultTrailPosition(), 20, 80, tShader);
-		AssetLoader.VertexTrailManager.CreateTrail(p, new LightColorTrail(Color.Goldenrod.Additive() * 0.8f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 25, 120, new DefaultShader());
+		TrailSystem.ProjectileRenderer.CreateTrail(p, new VertexTrail(new StandardColorTrail(Color.Goldenrod.Additive()), new RoundCap(), position, tShader, 20, 80));
+		TrailSystem.ProjectileRenderer.CreateTrail(p, new VertexTrail(new LightColorTrail(Color.Goldenrod.Additive() * 0.8f, Color.Transparent), new RoundCap(), position, new DefaultShader(), 25, 120));
 	}
 
 	public override void AI(Projectile projectile)

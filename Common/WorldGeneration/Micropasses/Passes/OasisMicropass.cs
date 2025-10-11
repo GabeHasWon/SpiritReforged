@@ -51,7 +51,7 @@ internal class OasisMicropass : Micropass
 				continue;
 			}
 
-			var biome = Microbiome.Create<UndergroundOasisBiome>(new(pt));
+			var biome = Microbiome.Create<UndergroundOasisBiome>(pt);
 			var rectangle = biome.Rectangle;
 			rectangle.Inflate(100, 100);
 

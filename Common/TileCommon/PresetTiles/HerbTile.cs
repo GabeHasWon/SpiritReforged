@@ -16,6 +16,9 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	private const int FrameWidth = 18; // A constant for readability and to kick out those magic numbers
 	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
+	public int SeedType { get; protected set; }
+	public int HerbType { get; protected set; }
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -79,20 +82,16 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	public virtual bool CanBeHarvested(int i, int j) => Main.tile[i, j].HasTile && GetStage(i, j) == PlantStage.Grown;
 	public bool? CheckItemUse(int type, int i, int j)
 	{
-		if (type is ItemID.StaffofRegrowth or ItemID.AcornAxe)
+		if (type is ItemID.StaffofRegrowth or ItemID.AcornAxe && ModContent.GetModTile(Main.tile[i, j].TileType) is HerbTile herb && herb.CanBeHarvested(i, j))
 		{
-			if (ModContent.GetModTile(Main.tile[i, j].TileType) is HerbTile herb && herb.CanBeHarvested(i, j))
-			{
-				WorldGen.KillTile(i, j);
-				return true;
-			}
+			WorldGen.KillTile(i, j);
+			return true;
 		}
 
 		return null;
 	}
 
-	/// <summary> Gets the normal quantities of <paramref name="herbType"/> and <paramref name="seedType"/> affected by things like Staff of Regrowth. </summary>
-	public static IEnumerable<Item> GetYield(int i, int j, int herbType, int seedType)
+	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
 		PlantStage stage = GetStage(i, j);
 
@@ -124,7 +123,15 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 			herbStack += 1;
 		}
 
-		return [new Item(herbType, herbStack), new Item(seedType, seedStack)];
+		List<Item> result = [];
+
+		if (herbStack != 0)
+			result.Add(new Item(HerbType, herbStack));
+
+		if (seedStack != 0)
+			result.Add(new Item(SeedType, seedStack));
+
+		return result;
 	}
 
 	public override void RandomUpdate(int i, int j)

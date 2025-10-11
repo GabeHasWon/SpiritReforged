@@ -3,6 +3,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using System.IO;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 
@@ -35,6 +36,26 @@ public class Flamingo : ModNPC
 	private float _acceleration = 0.025f;
 	private bool _pink;
 
+	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/Flamingo_Hit")
+	{
+		Volume = 0.95f,
+		PitchRange = (-0.15f, 0f),
+		MaxInstances = 5
+	};
+
+	public static readonly SoundStyle Idle = new("SpiritReforged/Assets/SFX/Ambient/Flamingo_Idle")
+	{
+		Volume = 0.75f,
+		PitchVariance = 0.3f
+	};
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/Flamingo_Death")
+	{
+		Volume = 0.9f,
+		PitchVariance = 0.1f,
+		MaxInstances = 0
+	};
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 12; //Rows
@@ -61,7 +82,7 @@ public class Flamingo : ModNPC
 		const float distance = 100;
 		_pink = Main.rand.NextBool(3);
 
-		if (Main.rand.NextBool(15)) //Randomly spawn in a flying state
+		if (Main.rand.NextBool(12)) //Randomly spawn in a flying state
 		{
 			NPC.TargetClosest();
 			if (NPC.HasPlayerTarget)
@@ -151,6 +172,10 @@ public class Flamingo : ModNPC
 			}
 			else
 			{
+				// Idle Chirp, not synced
+				if (Main.rand.NextBool(1000))
+					SoundEngine.PlaySound(Idle, NPC.Center);
+
 				if (Counter % 200 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 				{
 					float oldTargetSpeed = TargetSpeed;
@@ -234,12 +259,17 @@ public class Flamingo : ModNPC
 
 			if (dead)
 			{
+
 				for (int i = 1; i < 4; i++)
 				{
 					int type = Mod.Find<ModGore>((_pink ? "FlamingoPink" : "FlamingoRed") + i).Type;
 					Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity * Main.rand.NextFloat(0.3f), type);
 				}
+
+				SoundEngine.PlaySound(Death, NPC.Center);
 			}
+
+			SoundEngine.PlaySound(Hit, NPC.Center);
 		}
 
 		if (!dead)

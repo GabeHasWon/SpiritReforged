@@ -24,6 +24,7 @@ public abstract class CandelabraTile : FurnitureTile
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
+		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);

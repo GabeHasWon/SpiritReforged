@@ -72,13 +72,14 @@ public static class WorldMethods
 		}
 	}
 
-	public static int AreaCount(int i, int j, int width, int height, bool countNonSolid)
+	/// <summary> Gets the number of solid and non-solid tiles in the provided area. </summary>
+	public static int AreaCount(int left, int top, int width, int height, bool countNonSolid)
 	{
 		int count = 0; 
 
-		for (int x = i; x < i + width; ++x)
+		for (int x = left; x < left + width; ++x)
 		{
-			for (int y = j; y < j + height; ++y)
+			for (int y = top; y < top + height; ++y)
 			{
 				Tile tile = Framing.GetTileSafely(x, y);
 

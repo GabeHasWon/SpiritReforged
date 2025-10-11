@@ -8,6 +8,11 @@ Biomes: {
 		// DisplayName: Salt Flats
 		// TownNPCDialogueName: the Salt Flats
 	}
+
+	ZigguratBiome: {
+		// DisplayName: Ziggurat
+		// TownNPCDialogueName: the Ziggurat
+	}
 }
 
 SlotContexts.Backpack: Рюкзак

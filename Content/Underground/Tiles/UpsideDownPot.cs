@@ -1,4 +1,5 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
@@ -81,7 +82,19 @@ public class PotHead : ModItem
 			self.immuneAlpha = 255;
 	}
 
-	public override void SetStaticDefaults() => EquipSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
+	public override void SetStaticDefaults()
+	{
+		EquipSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
+
+		if (CrossMod.Fables.Enabled)
+		{
+			if (CrossMod.Fables.TryFind("PeculiarPot", out ModItem peculiarPot))
+			{
+				ItemID.Sets.ShimmerTransformToItem[Type] = peculiarPot.Type;
+				ItemID.Sets.ShimmerTransformToItem[peculiarPot.Type] = Type;
+			}
+		}
+	}
 	public override void SetDefaults()
 	{
 		Item.Size = new(24);

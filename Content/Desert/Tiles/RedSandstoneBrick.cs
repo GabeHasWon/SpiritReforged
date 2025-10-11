@@ -11,6 +11,9 @@ public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		TileID.Sets.GeneralPlacementTiles[Type] = false;
+		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+
 		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.Sand);
 		AddMapEntry(new Color(174, 74, 48));
 
@@ -19,4 +22,5 @@ public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, TileID.Sand);
+	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight) => RuinedSandstonePillar.SetupMerge(Type, ref up, ref down);
 }

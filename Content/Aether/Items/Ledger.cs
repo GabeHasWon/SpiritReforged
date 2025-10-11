@@ -37,5 +37,8 @@ public class Ledger : InfoItem
 	{
 		NPCLootDatabase.AddLoot(new NPCLootDatabase.ConditionalLoot(NPCLootDatabase.MatchId(NPCID.Demon), ItemDropRule.Common(Type, 50)));
 		NPCLootDatabase.AddLoot(new NPCLootDatabase.ConditionalLoot(NPCLootDatabase.MatchId(NPCID.VoodooDemon), ItemDropRule.Common(Type, 20)));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.DemonScythe;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.DemonScythe] = Type;
 	}
 }
