@@ -42,14 +42,17 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		var data = TileObjectData.GetTileData(Type, 0);
 		int width = data.CoordinateFullWidth;
 
-		j -= Framing.GetTileSafely(i, j).TileFrameY / 18; //Move to the multitile's top
+		TileExtensions.GetTopLeft(ref i, ref j);
 
-		for (int h = 0; h < 2; h++)
+		for (int x = i; x < i + 3; x++)
 		{
-			var tile = Framing.GetTileSafely(i, j + h);
-			tile.TileFrameX += (short)((tile.TileFrameX < width) ? width : -width);
+			for (int y = j; y < j + 3; y++)
+			{
+				var tile = Framing.GetTileSafely(x, y);
+				tile.TileFrameX += (short)((tile.TileFrameX < width) ? width : -width);
 
-			Wiring.SkipWire(i, j + h);
+				Wiring.SkipWire(x, y);
+			}
 		}
 
 		NetMessage.SendTileSquare(-1, i, j, data.Width, data.Height);
