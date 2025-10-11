@@ -2534,3 +2534,8 @@ MahakalaMaskRed: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
 	// Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
 }
+
+RedSandstoneSlabItem: {
+	// DisplayName: Red Sandstone Slab
+	// Tooltip: ""
+}
