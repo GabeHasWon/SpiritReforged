@@ -85,13 +85,13 @@ public abstract class CandleTile : FurnitureTile
 				float shakeY = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
 				var offset = new Vector2(shakeX, shakeY);
 
-				var position = new Vector2(i, j) * 16 - Main.screenPosition + offset + TileExtensions.TileOffset;
+				var position = new Vector2(i, j) * 16 - Main.screenPosition + offset + TileExtensions.TileOffset + new Vector2(data.DrawXOffset, data.DrawYOffset);
 				spriteBatch.Draw(texture, position, source, new Color(100, 100, 100, 0), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 			}
 		}
 		else
 		{
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(data.DrawXOffset, data.DrawYOffset);
 			spriteBatch.Draw(texture, position, source, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}
 	}

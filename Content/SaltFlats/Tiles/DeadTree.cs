@@ -75,8 +75,27 @@ public class DeadTree : CustomTree
 		return base.TileFrame(i, j, ref resetFrame, ref noBreak);
 	}
 
+	public override void DrawTreeBody(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+			return;
+
+		Tile tile = Main.tile[i, j];
+		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
+
+		if (Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<SaltBlockDull>())
+			source.Y += 20; //Salt frames
+
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
+
+		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		return;
+	}
+
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
+		const int frameHeight = 40; //The total height of all trunk frames
+
 		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
@@ -86,9 +105,9 @@ public class DeadTree : CustomTree
 
 		if (FindSegment(i, j) is SegmentType.LeafyTop) //Draw treetops
 		{
-			Point size = new(210, 156);
+			Point size = new(210, 156); //The size of a single frame, exclusing padding
 			int frameY = tileFrameX % 5;
-			var source = new Rectangle(196, 20 + (size.Y + 2) * frameY, size.X, size.Y);
+			var source = new Rectangle(196, frameHeight + (size.Y + 2) * frameY, size.X, size.Y);
 			var origin = new Vector2(source.Width / 2, source.Height);
 
 			spriteBatch.Draw(texture, position + new Vector2(7, 2), source, color, rotation, origin, 1, SpriteEffects.None, 0);
@@ -98,8 +117,8 @@ public class DeadTree : CustomTree
 			int frameX = Random(i, j, 0, 2);
 			int frameY = tileFrameX % 3;
 
-			Point size = new(96, 98);
-			var source = new Rectangle((size.X + 2) * frameX, 20 + (size.Y + 2) * frameY, size.X, size.Y);
+			Point size = new(96, 98);  //The size of a single frame, exclusing padding
+			var source = new Rectangle((size.X + 2) * frameX, frameHeight + (size.Y + 2) * frameY, size.X, size.Y);
 			var origin = new Vector2((frameX == 0) ? source.Width : 0, 80);
 
 			position += new Vector2(4 * ((frameX == 0) ? -1 : 1), 8); //Directional offset
