@@ -173,7 +173,7 @@ public class Flamingo : ModNPC
 			else
 			{
 				// Idle Chirp, not synced
-				if (Main.rand.NextBool(300))
+				if (Main.rand.NextBool(1000))
 					SoundEngine.PlaySound(Idle, NPC.Center);
 
 				if (Counter % 200 == 0 && Main.netMode != NetmodeID.MultiplayerClient)

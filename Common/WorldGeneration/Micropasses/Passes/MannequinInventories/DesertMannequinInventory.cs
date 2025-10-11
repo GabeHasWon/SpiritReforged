@@ -105,7 +105,7 @@ internal class DesertMannequinInventory : MannequinInventory
 			DesertSet.CowboyVanity => ItemID.CowboyHat,
 			DesertSet.Sundancer => ModContent.ItemType<SunEarrings>(),
 			DesertSet.Thorium_Sandstone => CrossMod.Thorium.TryFind("SandStoneHelmet", out ModItem sandstoneHelm) ? sandstoneHelm.Type : ItemID.AncientIronHelmet,
-			DesertSet.Fables_Prowler => CrossMod.Thorium.TryFind("DesertProwlerHat", out ModItem prowlerHat) ? prowlerHat.Type : ItemID.AncientIronHelmet,
+			DesertSet.Fables_Prowler => CrossMod.Fables.TryFind("DesertProwlerHat", out ModItem prowlerHat) ? prowlerHat.Type : ItemID.AncientIronHelmet,
 			_ => throw new ArgumentException("set (Head) wasn't a valid value somehow. Uh oh?"),
 		};
 
@@ -115,7 +115,7 @@ internal class DesertMannequinInventory : MannequinInventory
 			DesertSet.CowboyVanity => ItemID.CowboyJacket,
 			DesertSet.Sundancer => ModContent.ItemType<SilkTop>(),
 			DesertSet.Thorium_Sandstone => CrossMod.Thorium.TryFind("SandStoneMail", out ModItem sandstoneBody) ? sandstoneBody.Type : ItemID.CopperChainmail,
-			DesertSet.Fables_Prowler => CrossMod.Thorium.TryFind("DesertProwlerShirt", out ModItem prowlerShirt) ? prowlerShirt.Type : ItemID.CopperChainmail,
+			DesertSet.Fables_Prowler => CrossMod.Fables.TryFind("DesertProwlerShirt", out ModItem prowlerShirt) ? prowlerShirt.Type : ItemID.CopperChainmail,
 			_ => throw new ArgumentException("set (Body) wasn't a valid value somehow. Uh oh?"),
 		};
 
@@ -125,7 +125,7 @@ internal class DesertMannequinInventory : MannequinInventory
 			DesertSet.CowboyVanity => ItemID.CowboyPants,
 			DesertSet.Sundancer => ModContent.ItemType<SilkSirwal>(),
 			DesertSet.Thorium_Sandstone => CrossMod.Thorium.TryFind("SandStoneGreaves", out ModItem sandstoneLegs) ? sandstoneLegs.Type : ItemID.CopperGreaves,
-			DesertSet.Fables_Prowler => CrossMod.Thorium.TryFind("DesertProwlerPants", out ModItem prowlerPants) ? prowlerPants.Type : ItemID.CopperGreaves,
+			DesertSet.Fables_Prowler => CrossMod.Fables.TryFind("DesertProwlerPants", out ModItem prowlerPants) ? prowlerPants.Type : ItemID.CopperGreaves,
 			_ => throw new ArgumentException("set (Body) wasn't a valid value somehow. Uh oh?"),
 		};
 	}
