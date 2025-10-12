@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -9,7 +10,7 @@ public class GoldChainLoop : ChainLoop
 {
 	public class GoldChainObject(Point16 anchor, byte segments) : ChainObject(anchor, segments)
 	{
-		public static readonly Asset<Texture2D> Censer = DrawHelpers.RequestLocal(typeof(ChainLoop), "Censer", false);
+		public static readonly Asset<Texture2D> CenserObject = DrawHelpers.RequestLocal(typeof(ChainLoop), "Censer", false);
 		public static readonly Asset<Texture2D> Chain = DrawHelpers.RequestLocal(typeof(ChainLoop), "GoldChain", true);
 
 		public override Texture2D Texture => Chain.Value;
@@ -17,22 +18,14 @@ public class GoldChainLoop : ChainLoop
 		public override void Update()
 		{
 			base.Update();
-
-			if (Main.rand.NextBool(3))
-			{
-				var spawn = Main.rand.NextVector2FromRectangle(Hitbox);
-				float scale = Main.rand.NextFloat(0.5f, 1.5f);
-				var velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f) / 3);
-
-				ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 60, ParticleLayer.AbovePlayer) { Color = Color.White * 0.2f });
-			}
+			Censer.EmitSmoke(Hitbox);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			base.Draw(spriteBatch);
 
-			var texture = Censer.Value;
+			var texture = CenserObject.Value;
 			float rotation = ((chain == null) ? 0 : chain.EndRotation) + MathHelper.PiOver2;
 
 			Main.EntitySpriteDraw(texture, Position - Main.screenPosition, null, Lighting.GetColor(Position.ToTileCoordinates()), rotation, texture.Size() / 2, 1, default);
@@ -50,7 +43,7 @@ public class GoldChainLoop : ChainLoop
 		}
 	}
 
-	public override void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
+	public override void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddIngredient(AutoContent.ItemType<Censer>()).AddTile(TileID.Anvils).Register();
 
 	public override void PostDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, Rectangle frame, Vector2 position, Color color, bool validPlacement, SpriteEffects spriteEffects)
 	{
@@ -67,7 +60,7 @@ public class GoldChainLoop : ChainLoop
 
 			if (y == segments - 1)
 			{
-				Texture2D censerTexture = GoldChainObject.Censer.Value;
+				Texture2D censerTexture = GoldChainObject.CenserObject.Value;
 				spriteBatch.Draw(censerTexture, position, null, color, 0, censerTexture.Size() / 2, 1, default, 0);
 			}
 		}
