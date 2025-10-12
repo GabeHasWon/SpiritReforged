@@ -11,7 +11,9 @@ namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 public class TreetopPlatform : SimpleEntity, IGrappleable
 {
 	public override string TexturePath => AssetLoader.EmptyTexture;
+
 	public Point16? TreePosition { get; private set; }
+	public double lastWindCounter;
 
 	public override void Load()
 	{
@@ -39,7 +41,7 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 		float rotation = AcaciaTree.GetSway(pos.X, pos.Y);
 
 		//The difference in rotation from last tick, used to control how much the entity displaces horizontally
-		float diff = rotation - AcaciaTree.GetSway(pos.X, pos.Y, ModContent.GetInstance<AcaciaPlatformDetours>().OldTreeWindCounter);
+		float diff = rotation - AcaciaTree.GetSway(pos.X, pos.Y, lastWindCounter);
 		//Scalar based on the entity's distance from platform center
 		float strength = (entity.Center.X - Center.X) / (width * .5f);
 		//How much the entity is displaced by the previous factors
@@ -56,6 +58,8 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 			player.Rotate(rotation * .07f, new Vector2(player.width * .5f, player.height));
 			player.gfxOffY = 0;
 		}
+
+		lastWindCounter = TileSwaySystem.TreeWindCounter;
 	}
 
 	public bool CanGrapple(Projectile hook)
@@ -78,8 +82,26 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 	}
 }
 
-internal class AcaciaPlatformPlayer : ModPlayer
+internal class TreetopCollisionPlayer : ModPlayer
 {
+	public override void Load() => On_NPC.UpdateCollision += CheckNPCCollision;
+	private static void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
+	{
+		if (!self.noGravity)
+		{
+			foreach (var p in AcaciaTree.Platforms)
+			{
+				if (self.getRect().Intersects(p.Hitbox) && self.velocity.Y >= 0)
+				{
+					p.UpdateStanding(self);
+					break;
+				}
+			}
+		}
+
+		orig(self);
+	}
+
 	public override void PreUpdateMovement()
 	{
 		foreach (var p in AcaciaTree.Platforms)
@@ -96,30 +118,4 @@ internal class AcaciaPlatformPlayer : ModPlayer
 			}
 		}
 	}
-}
-
-internal class AcaciaPlatformDetours : ILoadable
-{
-	public double OldTreeWindCounter { get; private set; }
-
-	public void Load(Mod mod)
-	{
-		On_NPC.UpdateCollision += CheckNPCCollision;
-		TileSwaySystem.PreUpdateWind += PreserveWindCounter;
-	}
-	public void Unload() { }
-
-	private static void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
-	{
-		if (!self.noGravity)
-		{
-			foreach (var p in AcaciaTree.Platforms)
-				if (self.getRect().Intersects(p.Hitbox) && self.velocity.Y >= 0)
-					p.UpdateStanding(self);
-		}
-
-		orig(self);
-	}
-
-	private void PreserveWindCounter() => OldTreeWindCounter = TileSwaySystem.Instance.TreeWindCounter;
 }

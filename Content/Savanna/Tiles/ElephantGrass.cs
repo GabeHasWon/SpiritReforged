@@ -153,7 +153,7 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 
 		static float Physics(Point16 topLeft)
 		{
-			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, ModContent.GetInstance<TileSwaySystem>().GrassWindCounter * 2.25f);
+			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.GrassWindCounter * 2.25f);
 			if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, 1, height))
 				rotation = 0f;
 

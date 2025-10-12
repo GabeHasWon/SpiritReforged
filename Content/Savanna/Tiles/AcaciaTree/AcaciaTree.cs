@@ -40,7 +40,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 	public static float GetSway(int i, int j, double factor = 0)
 	{
 		if (factor == 0)
-			factor = TileSwaySystem.Instance.TreeWindCounter;
+			factor = TileSwaySystem.TreeWindCounter;
 
 		return Main.instance.TilesRenderer.GetWindCycle(i, j, factor) * 0.4f;
 	}

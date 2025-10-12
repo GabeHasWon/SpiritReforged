@@ -22,7 +22,7 @@ public class SaltBGStyle : ModSurfaceBackgroundStyle
 		{
 			ILCursor c = new(il);
 
-			c.EmitDelegate(() =>
+			c.EmitDelegate(static () =>
 			{
 				CloudMovementOffsetX += 0.2f * Main.windSpeedCurrent;
 				CloudMovementOffsetX %= 2048; // Needs to be looped, otherwise the textures run out
@@ -89,9 +89,6 @@ public class SaltBGStyle : ModSurfaceBackgroundStyle
 	private static extern ref int GetBGTopY(Main main);
 
 	public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, Path + "SaltBackgroundFar");
-	public override int ChooseMiddleTexture() => -1;
-	public override int ChooseCloseTexture(ref float scale, ref double p, ref float a, ref float b) => -1;
-
 	public override void ModifyFarFades(float[] fades, float transitionSpeed)
 	{
 		for (int i = 0; i < fades.Length; i++)

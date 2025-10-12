@@ -78,7 +78,7 @@ public class Scarecrow : SingleSlotTile<ScarecrowSlot>, IAutoloadTileItem, ISway
 	public float Physics(Point16 topLeft)
 	{
 		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.Instance.TreeWindCounter);
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.TreeWindCounter);
 
 		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
 			rotation = 0f;
@@ -148,7 +148,7 @@ public class ScarecrowSlot : SingleSlotEntity
 		int direction = -1;
 
 		if (TileLoader.GetTile(ModContent.TileType<Scarecrow>()) is ISwayTile sway && TileObjectData.GetTileData(Framing.GetTileSafely(Position)) != null)
-			rotation = sway.Physics(Position) * .12f;
+			rotation = sway.Physics(Position) * 0.12f;
 
 		if (TileObjectData.GetTileStyle(Framing.GetTileSafely(Position)) == 1)
 			direction = 1;

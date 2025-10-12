@@ -100,7 +100,7 @@ public class DeadTree : CustomTree
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.Instance.TreeWindCounter) * 0.05f;
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter) * 0.05f;
 		int tileFrameX = i;
 
 		if (FindSegment(i, j) is SegmentType.LeafyTop) //Draw treetops
