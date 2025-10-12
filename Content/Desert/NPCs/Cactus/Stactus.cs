@@ -274,7 +274,7 @@ internal class Stactus : ModNPC, IDeathCount
 		}
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || spawnInfo.Player.ZoneSandstorm || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
 	public override int SpawnNPC(int tileX, int tileY)
 	{
 		var spawn = new Vector2(tileX, tileY).ToWorldCoordinates();
@@ -404,7 +404,8 @@ internal class Stactus : ModNPC, IDeathCount
 		return WorldGen.SolidOrSlopedTile(t) ? t : new();
 	}
 
-	private static void SpawnSmoke(Vector2 position, Vector2 velocity, float scale, int duration, Color color, Color tertiaryColor, EaseFunction ease) => ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, color, scale, ease, duration)
+	private static void SpawnSmoke(Vector2 position, Vector2 velocity, float scale, int duration, Color color, Color tertiaryColor, EaseFunction ease) 
+		=> ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, color, scale, ease, duration)
 	{
 		Pixellate = true,
 		PixelDivisor = 4,
