@@ -2539,3 +2539,8 @@ RedSandstoneSlabItem: {
 	DisplayName: Red Sandstone Slab
 	Tooltip: ""
 }
+
+CenserItem: {
+	DisplayName: Censer
+	Tooltip: ""
+}

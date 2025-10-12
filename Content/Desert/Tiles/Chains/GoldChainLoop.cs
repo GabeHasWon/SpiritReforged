@@ -1,7 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles.Chains;
