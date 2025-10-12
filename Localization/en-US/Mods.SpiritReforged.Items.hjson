@@ -2544,3 +2544,8 @@ CenserItem: {
 	DisplayName: Censer
 	Tooltip: ""
 }
+
+CarvedLapisWallItem: {
+	DisplayName: Carved Lapis Wall
+	Tooltip: ""
+}
