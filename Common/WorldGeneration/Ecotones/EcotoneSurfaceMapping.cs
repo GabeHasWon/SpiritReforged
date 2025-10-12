@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -12,7 +11,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
-internal class EcotoneSurfaceMapping : ModSystem
+public class EcotoneSurfaceMapping : ModSystem
 {
 	public class EcotoneEntry(Point start, EcotoneEdgeDefinition definition)
 	{
@@ -33,12 +32,13 @@ internal class EcotoneSurfaceMapping : ModSystem
 	public const int TransitionLength = 20;
 	public static bool Mapped => Entries.Count != 0;
 
-	private static ILHook _modifyCorruptionHook = null;
-	private static List<EcotoneEntry> Entries = [];
+	public static readonly HashSet<Point> TotalSurfacePoints = [];
+	public static readonly Dictionary<short, short> TotalSurfaceY = [];
+	public static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
 
-	internal static readonly HashSet<Point> TotalSurfacePoints = [];
-	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
-	internal static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
+	public static List<EcotoneEntry> Entries { get; internal set; }
+
+	private static ILHook _modifyCorruptionHook = null;
 
 	/// <summary>
 	/// For some reason, the Corruption pass *really* spams "area replacement" code. So this just accounts for that.
