@@ -162,15 +162,24 @@ public partial class ZigguratBiome : Microbiome
 							{
 								if (WorldGen.genRand.NextBool(12))
 								{
-									WorldUtils.Gen(new(x, y), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 16))), Actions.Chain(
+									WorldUtils.Gen(new(x, y), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 9))), Actions.Chain(
 										new Modifiers.IsNotSolid(),
-										new Actions.SetTileKeepWall(TileID.Sandstone)
+										new Actions.SetTileKeepWall(TileID.Sandstone),
+										new Modifiers.Expand(2),
+										new Modifiers.OnlyTiles((ushort)ModContent.TileType<RuinedSandstonePillar>()),
+										new Actions.ClearTile()
 									));
 								}
-								else if (WorldGen.genRand.NextBool(7))
+								else if (WorldGen.genRand.NextBool(10))
 								{
 									WorldGen.PlaceTile(x, y + 1, ModContent.TileType<LightShaft>(), true);
 								}
+
+								WorldUtils.Gen(new(x, y), new Shapes.Circle(WorldGen.genRand.Next(5, 12)), Actions.Chain(
+									new Modifiers.RadialDither(3, 6),
+									new Modifiers.OnlyWalls(WallID.Sandstone, (ushort)RedSandstoneBrickWall.UnsafeType),
+									new Actions.PlaceWall(WallID.HardenedSand)
+								));
 							}
 
 							return true;
@@ -249,8 +258,15 @@ public partial class ZigguratBiome : Microbiome
 			{
 				WorldUtils.Gen(new(b.Left + 2, b.Bottom - 2), new Shapes.Rectangle(b.Width - 4, 1), new Actions.Custom(static (i, j, args) =>
 				{
-					if (WorldGen.TileIsExposedToAir(i, j) && !Main.tile[i, j - 1].HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
-						Main.tile[i, j].ResetToType((ushort)ModContent.TileType<CarvedLapis>());
+					Tile tile = Main.tile[i, j];
+					Tile belowTile = Main.tile[i, j + 1];
+					Tile aboveTile = Main.tile[i, j - 1];
+
+					if (WorldGen.TileIsExposedToAir(i, j) && !aboveTile.HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
+					{
+						tile.ResetToType((ushort)ModContent.TileType<CarvedLapis>());
+						belowTile.ResetToType((ushort)ModContent.TileType<RedSandstoneBrick>());
+					}
 
 					return false;
 				}));
