@@ -2549,3 +2549,13 @@ CarvedLapisWallItem: {
 	// DisplayName: Carved Lapis Wall
 	// Tooltip: ""
 }
+
+BronzePotsItem: {
+	// DisplayName: Bronze Pot
+	// Tooltip: ""
+}
+
+LapisPotsItem: {
+	// DisplayName: Lapis Pot
+	// Tooltip: ""
+}

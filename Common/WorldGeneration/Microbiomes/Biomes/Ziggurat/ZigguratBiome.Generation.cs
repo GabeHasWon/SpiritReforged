@@ -1,7 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
@@ -27,6 +30,12 @@ public partial class ZigguratBiome : Microbiome
 		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
+		foreach (var b in bounds)
+		{
+			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots));
+			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Piles));
+		}
+
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
@@ -37,6 +46,7 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
+		AddNeutralDecorations(bounds);
 	}
 
 	/// <summary> Creates the basic shape of the ziggurat. </summary>
@@ -145,7 +155,7 @@ public partial class ZigguratBiome : Microbiome
 						new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>(), (ushort)ModContent.TileType<RedSandstoneBrickCracked>()),
 						new Actions.Custom(static (x, y, args) =>
 						{
-							ushort type = WorldGen.TileIsExposedToAir(x, y) ? TileID.Sandstone : TileID.Sand;
+							ushort type = (WorldGen.TileIsExposedToAir(x, y) || NoiseSystem.PerlinStatic(x, y) < 0f) ? TileID.Sandstone : TileID.Sand;
 							Main.tile[x, y].ResetToType(type);
 
 							if (type == TileID.Sandstone)
@@ -207,6 +217,44 @@ public partial class ZigguratBiome : Microbiome
 				new Modifiers.Dither(),
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			));
+		}
+	}
+
+	private static void AddNeutralDecorations(List<Rectangle> bounds)
+	{
+		foreach (var b in bounds)
+		{
+			bool isBottomFloor = b == bounds[^1];
+
+			WorldMethods.GenerateSquared((i, j) =>
+			{
+				if (!WorldGen.SolidTile(i, j))
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
+						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType;
+
+					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(12))
+					{
+						int type = isBottomFloor ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
+						return Placer.PlaceTile(i, j, type).success;
+					}
+				}
+
+				return false;
+			}, out _, b);
+
+			if (isBottomFloor)
+			{
+				WorldUtils.Gen(new(b.Left + 2, b.Bottom - 2), new Shapes.Rectangle(b.Width - 4, 1), new Actions.Custom(static (i, j, args) =>
+				{
+					if (WorldGen.TileIsExposedToAir(i, j) && !Main.tile[i, j - 1].HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
+						Main.tile[i, j].ResetToType((ushort)ModContent.TileType<CarvedLapis>());
+
+					return false;
+				}));
+			}
 		}
 	}
 
@@ -412,6 +460,7 @@ public partial class ZigguratBiome : Microbiome
 				new Actions.ClearTile(true).Output(shape),
 				new Actions.SetLiquid(0, 0)
 			));
+
 			WorldUtils.Gen(origin, new ModShapes.OuterOutline(shape), new Actions.Smooth());
 		}
 	}

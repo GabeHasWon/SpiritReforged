@@ -34,7 +34,7 @@ public static class ZigguratRooms
 				if (WorldGen.genRand.NextBool(25) && WorldGen.SolidTile(i, j - 1))
 					return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
 
-				if (WorldGen.genRand.NextBool(38) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+				if (WorldGen.genRand.NextBool(45) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 
 				return false;
@@ -134,7 +134,7 @@ public static class ZigguratRooms
 
 	public class TreasureRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5 - 1, 20);
+		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5, 20);
 
 		public override void AddLinks()
 		{
@@ -158,8 +158,8 @@ public static class ZigguratRooms
 			PlaceColumn(new(Bounds.Left + 10, Bounds.Bottom - 4), 2);
 			PlaceColumn(new(Bounds.Right - 11, Bounds.Bottom - 4), 2);
 
-			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
-			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
 
 			//Fill with coin piles
 			WorldMethods.GenerateSquared((i, j) =>

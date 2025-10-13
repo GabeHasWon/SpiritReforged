@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.TileCommon;
+using System.Linq;
 
 namespace SpiritReforged.Common.WorldGeneration;
 
@@ -9,10 +10,12 @@ public class WorldDetours : ModSystem
 
 	public enum Context
 	{
-		/// <summary> Prevents piles from generating. </summary>
+		/// <summary> Prevents vanilla piles from generating. </summary>
 		Piles,
 		/// <summary> Converts lava to water. </summary>
-		Lava
+		Lava,
+		/// <summary> Prevents vanilla pots from generating. </summary>
+		Pots
 	}
 
 	[WorldBound]
@@ -24,6 +27,7 @@ public class WorldDetours : ModSystem
 	{
 		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
 		On_WorldGen.PlaceTile += PreventLargePiles;
+		TileEvents.OnPlacePot += PreventPots;
 	}
 
 	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
@@ -41,6 +45,8 @@ public class WorldDetours : ModSystem
 
 		return orig(i, j, Type, mute, forced, plr, style);
 	}
+
+	private static bool PreventPots(int i, int j, ushort type, int style) => !WorldGen.generatingWorld || !AnyContains(i, j, Context.Pots);
 
 	public override void PostWorldGen()
 	{
