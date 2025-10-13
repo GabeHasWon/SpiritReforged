@@ -3,14 +3,14 @@ using SpiritReforged.Common.TileCommon;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
-public class LapisPlatform : ModTile, IAutoloadTileItem
+public class BronzePlatform : ModTile, IAutoloadTileItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
-		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<CarvedLapis>()).Register();
+		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<BronzePlating>()).Register();
 
 		//Allow platform items to be crafted back into base materials
-		Recipe.Create(AutoContent.ItemType<CarvedLapis>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(AutoContent.ItemType<BronzePlating>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void SetStaticDefaults()
@@ -38,7 +38,7 @@ public class LapisPlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
-		DustType = DustID.Cobalt;
+		DustType = DustID.Copper;
 		AdjTiles = [TileID.Platforms];
 
 		this.AutoItem().ResearchUnlockCount = 200;

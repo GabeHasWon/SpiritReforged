@@ -2584,3 +2584,8 @@ BronzePlatingWallItem: {
 	DisplayName: Bronze Plating Wall
 	Tooltip: ""
 }
+
+BronzePlatformItem: {
+	DisplayName: Bronze Platform
+	Tooltip: ""
+}
