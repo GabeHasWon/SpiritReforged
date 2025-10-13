@@ -1,14 +1,15 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Walls;
 
 namespace SpiritReforged.Content.Desert.Walls;
 
-public class BronzeGrate : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class BronzeGrate : Trellis, IAutoloadUnsafeWall
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("BronzeGrateUnsafe").Type;
 
-	public void AddItemRecipes(ModItem item)
+	public override void AddItemRecipes(ModItem item)
 	{
 		int plating = AutoContent.ItemType<BronzePlating>();
 		int type = item.Type;
@@ -29,6 +30,4 @@ public class BronzeGrate : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 		Main.wallLight[UnsafeType] = true;
 		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}
-
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 }
