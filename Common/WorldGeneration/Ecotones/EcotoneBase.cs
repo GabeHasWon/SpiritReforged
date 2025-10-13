@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
-internal abstract class EcotoneBase : ILoadable
+public abstract class EcotoneBase : ILoadable
 {
 	public static readonly List<EcotoneBase> Ecotones = [];
 
