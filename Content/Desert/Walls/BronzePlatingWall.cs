@@ -4,8 +4,10 @@ using SpiritReforged.Content.Desert.Tiles;
 
 namespace SpiritReforged.Content.Desert.Walls;
 
-public class BronzePlatingWall : ModWall, IAutoloadWallItem
+public class BronzePlatingWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
+	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("BronzePlatingWallUnsafe").Type;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		int plating = AutoContent.ItemType<BronzePlating>();
@@ -20,7 +22,9 @@ public class BronzePlatingWall : ModWall, IAutoloadWallItem
 		Main.wallHouse[Type] = true;
 		DustType = DustID.Copper;
 
-		AddMapEntry(new Color(170, 80, 50));
+		var entryColor = new Color(150, 40, 30);
+		AddMapEntry(entryColor);
+		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

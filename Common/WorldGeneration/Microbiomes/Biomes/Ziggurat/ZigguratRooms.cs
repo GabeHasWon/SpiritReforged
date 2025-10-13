@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Walls;
+using System.Linq;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -17,7 +18,7 @@ public static class ZigguratRooms
 
 		public override void AddLinks()
 		{
-			Links.Add(new(new(Bounds.Left, Bounds.Bottom - 2), Left));
+			Links.Add(new(new(Bounds.Left - 1, Bounds.Bottom - 2), Left));
 			Links.Add(new(new(Bounds.Right, Bounds.Bottom - 2), Right));
 		}
 
@@ -141,15 +142,69 @@ public static class ZigguratRooms
 		}
 	}
 
+	public class StorageRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	{
+		public override void Create()
+		{
+			const int overhangWidth = 6;
+			const int overhangDropWidth = 3;
+
+			bool leftOpen = Links.Any(static x => x.consumed && x.Direction == Left);
+			bool rightOpen = Links.Any(static x => x.consumed && x.Direction == Right);
+
+			CarveOut();
+
+			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
+
+			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top - 1), new Shapes.Rectangle(Bounds.Width + 2, Bounds.Height + 2), new Actions.PlaceWall((ushort)BronzePlatingWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Bottom - 4), new Shapes.Rectangle(Bounds.Width + 2, 4), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+
+			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom - 6), new Shapes.Rectangle(Bounds.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
+
+			if (leftOpen)
+			{
+				WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
+				WorldUtils.Gen(new(Bounds.Left + overhangWidth - overhangDropWidth, Bounds.Bottom - 4), new Shapes.Rectangle(overhangDropWidth, 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
+
+				PlaceColumn(new(Bounds.Left + overhangWidth - 1 - overhangDropWidth / 2, Bounds.Bottom - 1), 1);
+			}
+			
+			if (rightOpen)
+			{
+				WorldUtils.Gen(new(Bounds.Right - overhangWidth, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
+				WorldUtils.Gen(new(Bounds.Right - overhangWidth, Bounds.Bottom - 4), new Shapes.Rectangle(overhangDropWidth, 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
+
+				PlaceColumn(new(Bounds.Right - overhangWidth + overhangDropWidth / 2, Bounds.Bottom - 1), 1);
+			}
+
+			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom), new Shapes.Rectangle(Bounds.Width, 1), new Actions.Custom(static (i, j, args) =>
+			{
+				Tile tile = Main.tile[i, j];
+				Tile aboveTile = Main.tile[i, j - 1];
+
+				if (!aboveTile.HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
+					tile.ResetToType((ushort)ModContent.TileType<BronzePlating>());
+
+				return false;
+			})); //Bronze flooring
+
+			WorldMethods.GenerateSquared(static (i, j) =>
+			{
+				if (WorldGen.genRand.NextBool(3) && !WorldGen.SolidTile(i, j) && WorldGen.SolidTile(i, j + 1))
+				{
+					int type = WorldGen.genRand.NextBool(7) ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
+					Placer.Check(i, j, type).IsClear().Place();
+				}
+
+				return false;
+			}, out _, Bounds); //Add decorations
+		}
+	}
+
 	public class TreasureRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
 	{
 		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5, 20);
-
-		public override void AddLinks()
-		{
-			Links.Add(new(new(Bounds.Left, Bounds.Bottom - 2), Left));
-			Links.Add(new(new(Bounds.Right, Bounds.Bottom - 2), Right));
-		}
 
 		public override void Create()
 		{

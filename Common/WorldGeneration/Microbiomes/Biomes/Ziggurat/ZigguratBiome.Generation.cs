@@ -7,6 +7,7 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -48,6 +49,9 @@ public partial class ZigguratBiome : Microbiome
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
 		AddNeutralDecorations(bounds);
+
+		TotalBounds = null;
+		TotalRooms = null;
 	}
 
 	/// <summary> Creates the basic shape of the ziggurat. </summary>
@@ -303,7 +307,7 @@ public partial class ZigguratBiome : Microbiome
 
 				ZigguratRooms.BasicRoom r = SelectRoom(i + 1, bound, ref progress, numSkips);
 
-				if (r is null)
+				if (r == null)
 				{
 					numSkips++;
 					continue; //Skip
@@ -327,7 +331,12 @@ public partial class ZigguratBiome : Microbiome
 	private static ZigguratRooms.BasicRoom SelectRoom(int layer, Rectangle bound, ref float progress, int skips)
 	{
 		int numLayers = TotalBounds.Count;
-		var r = new ZigguratRooms.BasicRoom(bound);
+
+		WeightedRandom<ZigguratRooms.BasicRoom> selection = new();
+		selection.Add(new ZigguratRooms.BasicRoom(bound));
+		selection.Add(new ZigguratRooms.StorageRoom(bound), 0.25f);
+
+		ZigguratRooms.BasicRoom r = selection;
 
 		if (layer == numLayers && progress == 0) //Final layer
 		{
@@ -364,20 +373,23 @@ public partial class ZigguratBiome : Microbiome
 
 		bool PairLinks(GenRoom a, GenRoom b)
 		{
+			bool value = false;
+
 			foreach (var start in a.Links)
 			{
 				foreach (var end in b.Links)
 				{
 					if (condition.Invoke(start, end))
 					{
-						a.Links.Remove(start);
-						//b.Links.Remove(end);
-						return true;
+						start.consumed = true;
+						end.consumed = true;
+
+						value |= true;
 					}
 				}
 			}
 
-			return false;
+			return value;
 		}
 	}
 
@@ -392,8 +404,10 @@ public partial class ZigguratBiome : Microbiome
 		//A safe distance from the ending link
 		var exit = new Point(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
 
-		CrunchOut(start, entrance, 3, true);
-		CrunchOut(end, exit, 3, true);
+		if (!startLink.consumed)
+			CrunchOut(start, entrance, 3, true);
+		if (!endLink.consumed)
+			CrunchOut(end, exit, 3, true);
 
 		return true;
 	}
@@ -407,9 +421,9 @@ public partial class ZigguratBiome : Microbiome
 		for (int a = 0; a < 2; a++)
 		{
 			//A safe distance from the starting link
-			var entrance = new Point(start.X + startLink.Direction.X * HallwayWidth, start.Y + startLink.Direction.Y * HallwayWidth);
+			Point entrance = new(start.X + startLink.Direction.X * HallwayWidth, start.Y + startLink.Direction.Y * HallwayWidth);
 			//A safe distance from the ending link
-			var exit = new Point(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
+			Point exit = new(end.X + endLink.Direction.X * HallwayWidth, end.Y + endLink.Direction.Y * HallwayWidth);
 
 			bool sloped = a == 0;
 			var down = sloped ? new Point(entrance.X + Math.Abs(end.Y - start.Y) * startLink.Direction.X, end.Y) : new Point(entrance.X, end.Y); //Straight or diagonal down given enough space
@@ -472,8 +486,10 @@ public partial class ZigguratBiome : Microbiome
 		for (int i = 0; i <= length; i++)
 		{
 			var intermediate = Vector2.Lerp(startCoords, endCoords, (float)i / length);
-			Point origin = new((int)(intermediate.X - width / 2), (int)(intermediate.Y - width / 2));
+			if (intermediate.HasNaNs())
+				break;
 
+			Point origin = new((int)(intermediate.X - width / 2), (int)(intermediate.Y - width / 2));
 			ShapeData shape = new();
 
 			WorldUtils.Gen(origin, new Shapes.Rectangle(width, width), Actions.Chain(
