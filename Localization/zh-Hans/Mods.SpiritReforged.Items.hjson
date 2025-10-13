@@ -2574,3 +2574,13 @@ BronzeGrateItem: {
 	// DisplayName: Bronze Grate
 	// Tooltip: ""
 }
+
+BronzePlatingItem: {
+	// DisplayName: Bronze Plating
+	// Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	// DisplayName: Bronze Plating Wall
+	// Tooltip: ""
+}

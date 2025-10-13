@@ -15,7 +15,7 @@ public class BronzePots : PotTile, ILootable
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
 	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe()
-		.AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
+		.AddRecipeGroup("ClayAndMud", 3).AddIngredient(AutoContent.ItemType<BronzePlating>(), 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void SetStaticDefaults()
 	{
