@@ -31,10 +31,7 @@ public static class ZigguratRooms
 			//Add decorations
 			WorldMethods.GenerateSquared(static (i, j) =>
 			{
-				if (WorldGen.genRand.NextBool(25) && WorldGen.SolidTile(i, j - 1))
-					return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
-
-				if (WorldGen.genRand.NextBool(45) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+				if (WorldGen.genRand.NextBool(50) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 
 				return false;
@@ -122,13 +119,25 @@ public static class ZigguratRooms
 			if (rightClear)
 				WorldUtils.Gen(new(Bounds.Right, Bounds.Bottom - entranceHeight), new Shapes.Rectangle(5, entranceHeight), new Actions.ClearTile());
 
+			int columnMiddleLeft = Bounds.Left + 6;
+			int columnMiddleRight = Bounds.Right - 6;
+			Rectangle grateArea = new(Bounds.Left + 6, Bounds.Center.Y - entranceHeight / 2 + 1, columnMiddleRight - columnMiddleLeft, entranceHeight);
+
 			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - 4), new Shapes.Rectangle(Bounds.Width + 4, 4), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+
+			WorldUtils.Gen(grateArea.Location, new Shapes.Rectangle(grateArea.Width, grateArea.Height), new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType));
+			WorldUtils.Gen(WorldGen.genRand.NextVector2FromRectangle(grateArea).ToPoint(), new Shapes.Circle(WorldGen.genRand.Next(2, 5)), Actions.Chain(
+				new Modifiers.RadialDither(2, 3),
+				new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
+				new Actions.ClearWall()));
+
+			WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<RuinedSandstonePillar>()));
 
 			PlaceColumn(new(Bounds.Left - 2, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 2, Bounds.Bottom - 1), 2);
 
-			PlaceColumn(new(Bounds.Left + 6, Bounds.Bottom - 1), 2);
-			PlaceColumn(new(Bounds.Right - 6, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(columnMiddleLeft, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(columnMiddleRight, Bounds.Bottom - 1), 2);
 		}
 	}
 

@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WallCommon;
+using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Walls;
 
@@ -161,6 +162,21 @@ public class TrellisShadewood : Trellis
 	public override void AddEntry()
 	{
 		DustType = DustID.Shadewood;
+		AddMapEntry(new Color(54, 62, 70));
+	}
+}
+
+public class TrellisDrywood : Trellis
+{
+	public override void AddItemRecipes(ModItem item)
+	{
+		item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<Drywood>()).AddTile(TileID.Sawmill).Register();
+		item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<TrellisTwoDrywood>(), 4).AddTile(TileID.Sawmill).Register();
+	}
+
+	public override void AddEntry()
+	{
+		DustType = DustID.Pearlwood;
 		AddMapEntry(new Color(54, 62, 70));
 	}
 }

@@ -30,6 +30,7 @@ public partial class ZigguratBiome : Microbiome
 		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
+		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
 		foreach (var b in bounds)
 		{
 			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots));
@@ -235,26 +236,7 @@ public partial class ZigguratBiome : Microbiome
 		{
 			bool isBottomFloor = b == bounds[^1];
 
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				if (!WorldGen.SolidTile(i, j))
-				{
-					Tile tile = Main.tile[i, j];
-
-					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
-						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType;
-
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(12))
-					{
-						int type = isBottomFloor ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
-						return Placer.PlaceTile(i, j, type).success;
-					}
-				}
-
-				return false;
-			}, out _, b);
-
-			if (isBottomFloor)
+			if (isBottomFloor) //Add a thin lapis floor
 			{
 				WorldUtils.Gen(new(b.Left + 2, b.Bottom - 2), new Shapes.Rectangle(b.Width - 4, 1), new Actions.Custom(static (i, j, args) =>
 				{
@@ -271,6 +253,28 @@ public partial class ZigguratBiome : Microbiome
 					return false;
 				}));
 			}
+
+			WorldMethods.GenerateSquared((i, j) =>
+			{
+				if (!WorldGen.SolidTile(i, j))
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
+						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType;
+
+					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30))
+						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
+
+					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(12))
+					{
+						int type = isBottomFloor ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
+						return Placer.PlaceTile(i, j, type).success;
+					}
+				}
+
+				return false;
+			}, out _, b);
 		}
 	}
 

@@ -2559,3 +2559,18 @@ LapisPotsItem: {
 	DisplayName: Lapis Pot
 	Tooltip: ""
 }
+
+TrellisDrywoodItem: {
+	DisplayName: Drywood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: Bronze Grate
+	Tooltip: ""
+}

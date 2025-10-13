@@ -15,7 +15,9 @@ public class WorldDetours : ModSystem
 		/// <summary> Converts lava to water. </summary>
 		Lava,
 		/// <summary> Prevents vanilla pots from generating. </summary>
-		Pots
+		Pots,
+		/// <summary> Prevents vanilla wall fill from happening. </summary>
+		Walls
 	}
 
 	[WorldBound]
@@ -28,6 +30,7 @@ public class WorldDetours : ModSystem
 		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
 		On_WorldGen.PlaceTile += PreventLargePiles;
 		TileEvents.OnPlacePot += PreventPots;
+		On_WorldGen.FillWallHolesInSpot += PreventWallFill;
 	}
 
 	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
@@ -47,6 +50,14 @@ public class WorldDetours : ModSystem
 	}
 
 	private static bool PreventPots(int i, int j, ushort type, int style) => !WorldGen.generatingWorld || !AnyContains(i, j, Context.Pots);
+
+	private static bool PreventWallFill(On_WorldGen.orig_FillWallHolesInSpot orig, int x, int y, int threshold)
+	{
+		if (AnyContains(x, y, Context.Walls))
+			return false;
+
+		return orig(x, y, threshold);
+	}
 
 	public override void PostWorldGen()
 	{
