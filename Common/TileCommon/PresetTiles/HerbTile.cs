@@ -80,7 +80,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	public override bool IsTileSpelunkable(int i, int j) => GetStage(i, j) is PlantStage.Grown;
 
 	public virtual bool CanBeHarvested(int i, int j) => Main.tile[i, j].HasTile && GetStage(i, j) == PlantStage.Grown;
-	public bool? CheckItemUse(int type, int i, int j)
+	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
 		if (type is ItemID.StaffofRegrowth or ItemID.AcornAxe && ModContent.GetModTile(Main.tile[i, j].TileType) is HerbTile herb && herb.CanBeHarvested(i, j))
 		{

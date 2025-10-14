@@ -55,9 +55,9 @@ public class Trellis : ModWall, IAutoloadWallItem, ICheckItemUse
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
-	public bool? CheckItemUse(int type, int i, int j)
+	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
-		if (type is ItemID.GrassSeeds or ItemID.CrimsonSeeds or ItemID.CorruptSeeds or ItemID.HallowedSeeds)
+		if (player.whoAmI == Main.myPlayer && type is ItemID.GrassSeeds or ItemID.CrimsonSeeds or ItemID.CorruptSeeds or ItemID.HallowedSeeds)
 		{
 			int minRange = type switch
 			{
@@ -65,10 +65,14 @@ public class Trellis : ModWall, IAutoloadWallItem, ICheckItemUse
 				ItemID.CrimsonSeeds => 2,
 				ItemID.HallowedSeeds => 3,
 				_ => 0
-			} * TrellisVine.StyleRange;
+			};
 
-			int style = WorldGen.genRand.Next(minRange, minRange + TrellisVine.StyleRange);
+			if (minRange == 0 && player.ZoneDesert)
+				minRange = 4;
+
+			int style = WorldGen.genRand.Next(minRange * TrellisVine.StyleRange, minRange * TrellisVine.StyleRange + TrellisVine.StyleRange);
 			Placer.PlaceTile<TrellisVine>(i, j, style).Send();
+
 			return true;
 		}
 
