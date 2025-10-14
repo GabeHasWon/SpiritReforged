@@ -5,6 +5,7 @@ using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
 using Terraria.WorldBuilding;
+using static SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat.ZigguratRooms.EntranceRoom;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -99,11 +100,21 @@ public static class ZigguratRooms
 		}
 	}*/
 
-	public class EntranceRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	public class EntranceRoom(Rectangle bounds, StyleID style, Point origin = default) : BasicRoom(bounds, origin)
 	{
+		public enum StyleID
+		{
+			Blank,
+			Large,
+			Split,
+			Count
+		}
+
+		public readonly StyleID style = style;
+
 		protected override void Initialize(out Point size) => size = new(_outerBounds.Width - 10, _outerBounds.Height - 4);
 
-		public override void AddLinks() => Links.Add(new(new(Bounds.Center.X, Bounds.Bottom + 2), Bottom));
+		public override void AddLinks() => Links.Add(new(new(Bounds.Center.X, Bounds.Bottom), Bottom));
 
 		public override void Create()
 		{
@@ -122,17 +133,41 @@ public static class ZigguratRooms
 
 			int columnMiddleLeft = Bounds.Left + 6;
 			int columnMiddleRight = Bounds.Right - 6;
-			Rectangle grateArea = new(Bounds.Left + 6, Bounds.Center.Y - entranceHeight / 2 + 1, columnMiddleRight - columnMiddleLeft, entranceHeight);
 
-			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - 4), new Shapes.Rectangle(Bounds.Width + 4, 4), new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - 3), new Shapes.Rectangle(Bounds.Width + 4, 3), Actions.Chain(
+				new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType),
+				new Modifiers.Expand(1),
+				new Modifiers.Dither(),
+				new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType)));
 
-			WorldUtils.Gen(grateArea.Location, new Shapes.Rectangle(grateArea.Width, grateArea.Height), new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType));
-			WorldUtils.Gen(WorldGen.genRand.NextVector2FromRectangle(grateArea).ToPoint(), new Shapes.Circle(WorldGen.genRand.Next(2, 5)), Actions.Chain(
-				new Modifiers.RadialDither(2, 3),
-				new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
-				new Actions.ClearWall()));
+			if (style == StyleID.Large)
+			{
+				const int grateHeight = 8;
+				Rectangle grateArea = new(columnMiddleLeft, Bounds.Center.Y - grateHeight / 2 + 1, columnMiddleRight - columnMiddleLeft, grateHeight);
 
-			WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<RuinedSandstonePillar>()));
+				WorldUtils.Gen(grateArea.Location, new Shapes.Rectangle(grateArea.Width, grateArea.Height), new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType));
+				WorldUtils.Gen(WorldGen.genRand.NextVector2FromRectangle(grateArea).ToPoint(), new Shapes.Circle(WorldGen.genRand.Next(2, 5)), Actions.Chain(
+					new Modifiers.RadialDither(2, 3),
+					new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
+					new Actions.ClearWall()));
+
+				WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<RuinedSandstonePillar>()));
+			}
+			else if (style == StyleID.Split)
+			{
+				const int grateHeight = 10;
+				for (int i = 0; i < 2; i++)
+				{
+					Rectangle grateArea = (i == 0) ? new(Bounds.Left, Bounds.Center.Y - grateHeight / 2 + 1, columnMiddleLeft - Bounds.Left, grateHeight)
+						: new(columnMiddleRight, Bounds.Center.Y - grateHeight / 2 + 1, Bounds.Right - columnMiddleRight, grateHeight);
+
+					WorldUtils.Gen(grateArea.Location, new Shapes.Rectangle(grateArea.Width, grateArea.Height), new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType));
+					WorldUtils.Gen(WorldGen.genRand.NextVector2FromRectangle(grateArea).ToPoint(), new Shapes.Circle(WorldGen.genRand.Next(2, 5)), Actions.Chain(
+						new Modifiers.RadialDither(2, 3),
+						new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
+						new Actions.ClearWall()));
+				}
+			}
 
 			PlaceColumn(new(Bounds.Left - 2, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 2, Bounds.Bottom - 1), 2);
@@ -191,7 +226,7 @@ public static class ZigguratRooms
 
 			WorldMethods.GenerateSquared(static (i, j) =>
 			{
-				if (WorldGen.genRand.NextBool(3) && !WorldGen.SolidTile(i, j) && WorldGen.SolidTile(i, j + 1))
+				if (WorldGen.genRand.NextBool(3) && !WorldGen.SolidTile(i, j) && WorldGen.SolidTile2(i, j + 1))
 				{
 					int type = WorldGen.genRand.NextBool(7) ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
 					Placer.Check(i, j, type).IsClear().Place();

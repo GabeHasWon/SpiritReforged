@@ -7,7 +7,6 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -208,11 +207,7 @@ public partial class ZigguratBiome : Microbiome
 				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
 				new Actions.Custom((x, y, args) =>
 				{
-					if (Framing.GetTileSafely(x, y - 1).TileType == ModContent.TileType<RuinedSandstonePillar>())
-					{
-						//Take no action if there's a pillar tile above
-					}
-					else if (y == j && !WorldGen.SolidTile3(x, y - 1))
+					if (y == j && !Framing.GetTileSafely(x, y - 1).HasTile)
 					{
 						Main.tile[x, y].ClearTile(); //Clear indentation surface tiles if there's no tile above
 					}
@@ -332,27 +327,31 @@ public partial class ZigguratBiome : Microbiome
 	{
 		int numLayers = TotalBounds.Count;
 
-		WeightedRandom<ZigguratRooms.BasicRoom> selection = new();
-		selection.Add(new ZigguratRooms.BasicRoom(bound));
-		selection.Add(new ZigguratRooms.StorageRoom(bound), 0.25f);
-
-		ZigguratRooms.BasicRoom r = selection;
+		ZigguratRooms.BasicRoom selection;
+		if (WorldGen.genRand.NextBool(4))
+		{
+			selection = new ZigguratRooms.StorageRoom(bound);
+		}
+		else
+		{
+			selection = new ZigguratRooms.BasicRoom(bound);
+		}
 
 		if (layer == numLayers && progress == 0) //Final layer
 		{
-			r = new ZigguratRooms.TreasureRoom(bound);
+			selection = new ZigguratRooms.TreasureRoom(bound);
 			progress = WorldGen.genRand.NextFloat();
 		}
 		else if (layer == 1)
 		{
-			r = new ZigguratRooms.EntranceRoom(bound);
+			selection = new ZigguratRooms.EntranceRoom(bound, (ZigguratRooms.EntranceRoom.StyleID)WorldGen.genRand.Next((int)ZigguratRooms.EntranceRoom.StyleID.Count));
 		}
 		else if (skips == 0 && WorldGen.genRand.NextBool(4))
 		{
 			return null; //Randomly cause a skip
 		}
 
-		return r;
+		return selection;
 	}
 
 	private static void CreateHallways(IEnumerable<GenRoom> rooms, Func<GenRoom.Link, GenRoom.Link, bool> condition)
@@ -441,7 +440,7 @@ public partial class ZigguratBiome : Microbiome
 					for (int i = 0; i < 2; i++)
 					{
 						var shelf = ((i == 0) ? entrance : down) + new Point(-2, 3);
-						WorldUtils.Gen(shelf, new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile(TileID.Platforms, 42));
+						WorldUtils.Gen(shelf, new Shapes.Rectangle(HallwayWidth, 1), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 					}
 				}
 
