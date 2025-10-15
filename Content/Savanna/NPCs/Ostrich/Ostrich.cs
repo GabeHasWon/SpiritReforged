@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -381,7 +382,7 @@ public class Ostrich : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Invasion)
+		if (!spawnInfo.Common())
 			return 0;
 
 		int x = spawnInfo.SpawnTileX;

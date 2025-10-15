@@ -44,12 +44,14 @@ public class BuffAura : ModProjectile
 				p.AddBuff(buffType, buffTime);
 		}
 
-		if (Main.rand.NextBool(9))
+		if (Main.rand.NextBool(9) && !Main.dedServ)
 		{
 			var spawn = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(Projectile.width / 2);
 
 			ParticleHandler.SpawnParticle(new BubbleParticle(spawn, Vector2.UnitY * -.3f, Main.rand.NextFloat(.35f), 60)
-			{ Color = VatSlot.GetColorFromPotion(PotionType) * 0.7f });
+			{ 
+				Color = VatSlot.GetColorFromPotion(PotionType) * 0.7f 
+			});
 		}
 	}
 

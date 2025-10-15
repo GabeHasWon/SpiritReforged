@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon.TileSway;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Common.TileCommon;

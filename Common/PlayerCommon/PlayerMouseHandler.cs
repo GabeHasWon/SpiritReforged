@@ -7,6 +7,8 @@ internal class PlayerMouseHandler
 {
 	internal class ShareMouseData : PacketData
 	{
+		public override bool Log => false;
+
 		private readonly byte _playerWho;
 		private readonly Vector2 _mouse;
 

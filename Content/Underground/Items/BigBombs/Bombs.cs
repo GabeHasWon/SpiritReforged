@@ -13,6 +13,13 @@ namespace SpiritReforged.Content.Underground.Items.BigBombs;
 public class Bomb : BombProjectile, ILargeExplosive
 {
 	public const int CommonSize = 32;
+	public static readonly PolynomialEase EffectEase = new((x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+
+	public static readonly SoundStyle Explosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Shrapnel")
+	{
+		Volume = 0.7f,
+		PitchVariance = 0.1f
+	};
 
 	public virtual int OriginalType => ProjectileID.Bomb;
 	public override LocalizedText DisplayName => Language.GetText("ProjectileName.Bomb");
@@ -36,15 +43,18 @@ public class Bomb : BombProjectile, ILargeExplosive
 		base.AI();
 
 		if (!DealingDamage)
-		{
-			float oldScale = Projectile.scale; //Resize logic
-			Projectile.scale = Math.Min(Projectile.scale + .1f, 1);
+			Rescale(Math.Min(Projectile.scale + 0.1f, 1)); //Resize logic
+	}
 
-			if (Projectile.scale != oldScale)
-			{
-				int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
-				Projectile.Resize(size, size);
-			}
+	public void Rescale(float value)
+	{
+		float oldScale = Projectile.scale;
+		Projectile.scale = value;
+
+		if (Projectile.scale != oldScale)
+		{
+			int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
+			Projectile.Resize(size, size);
 		}
 	}
 
@@ -55,9 +65,8 @@ public class Bomb : BombProjectile, ILargeExplosive
 		if (Main.dedServ)
 			return;
 
-		SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
-		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-		var ease = new PolynomialEase((float x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+		SoundEngine.PlaySound(Explosion, Projectile.Center);
+		var ease = EffectEase;
 		var stretch = Vector2.One;
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
@@ -291,6 +300,9 @@ public class BombScarab : Bomb
 	{
 		if (CheckStuck(Projectile.getRect()))
 		{
+			if (Projectile.scale < 1)
+				Rescale(1);
+
 			Projectile.velocity = Vector2.Zero;
 			Projectile.rotation = Projectile.AngleFrom(Main.player[Projectile.owner].Center) - MathHelper.PiOver2;
 

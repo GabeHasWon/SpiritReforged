@@ -136,7 +136,7 @@ public class CampfireSlot : SingleSlotEntity
 			}
 
 			if (Main.netMode == NetmodeID.Server)
-				new SingleSlotData((short)ID, item).Send();
+				new TileEntityData((short)ID).Send();
 		}
 
 		bool CampfireLit() => Framing.GetTileSafely(Position).TileFrameY < 18 * 2;
@@ -171,7 +171,6 @@ public class RoastGlobalTile : GlobalTile
 			{ ItemID.Squirrel, ItemID.GrilledSquirrel },
 			{ ItemID.SquirrelRed, ItemID.GrilledSquirrel },
 			{ AutoContent.ItemType<Sparrow>(), ItemID.RoastedBird },
-			{ ModContent.ItemType<RawFish>(), ItemID.CookedFish },
 			{ ItemID.Bass, ItemID.CookedFish }, 
 			{ ItemID.Trout, ItemID.CookedFish }, 
 			{ ItemID.AtlanticCod, ItemID.CookedFish }

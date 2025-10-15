@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using Microsoft.CodeAnalysis;
+using SpiritReforged.Common.Misc;
 using System.Linq;
 
 namespace SpiritReforged.Common.Visuals;
@@ -7,41 +8,26 @@ namespace SpiritReforged.Common.Visuals;
 [Autoload(Side = ModSide.Client)]
 internal class TextureColorCache
 {
-	private static readonly Dictionary<Texture2D, Color> BrightestColorCache = [];
-	private static readonly Dictionary<Texture2D, Color> DarkestColorCache = [];
+	private static readonly Dictionary<Texture2D, Color[]> ColorCache = [];
 	private static readonly Dictionary<Texture2D, Texture2D> SolidTextureCache = [];
 
-	public static Color GetBrightestColor(Texture2D texture)
+	public static Color[] GetColors(Texture2D texture)
 	{
-		if (BrightestColorCache.TryGetValue(texture, out Color value))
+		if (ColorCache.TryGetValue(texture, out Color[] value))
 			return value;
 
 		var data = new Color[texture.Width * texture.Height];
 		texture.GetData(data);
-		var brightest = data.OrderByDescending(x => x.ToVector3().Length()).FirstOrDefault();
 
-		if (brightest == default)
-			brightest = Color.White;
+		//Orders colors from darkest to brightest, and excludes fully transparent pixels
+		data = [.. data.OrderBy(x => x.ToVector3().Length()).Where(x => x != Color.Transparent)];
 
-		BrightestColorCache.Add(texture, brightest);
-		return brightest;
+		ColorCache.Add(texture, data);
+		return data;
 	}
 
-	public static Color GetDarkestColor(Texture2D texture)
-	{
-		if (DarkestColorCache.TryGetValue(texture, out Color value))
-			return value;
-
-		var data = new Color[texture.Width * texture.Height];
-		texture.GetData(data);
-		var darkest = data.OrderBy(x => x.ToVector3().Length()).FirstOrDefault(x => x != default);
-
-		if (darkest == default)
-			darkest = Color.White;
-
-		DarkestColorCache.Add(texture, darkest);
-		return darkest;
-	}
+	public static Color GetBrightestColor(Texture2D texture) => GetColors(texture)[^1];
+	public static Color GetDarkestColor(Texture2D texture) => GetColors(texture)[0];
 
 	public static Texture2D ColorSolid(Texture2D texture, Color color)
 	{

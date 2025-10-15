@@ -9,6 +9,7 @@ public class CoarseBombSticky : ModItem
 	{
 		Item.CloneDefaults(ItemID.DirtBomb);
 		Item.shoot = ModContent.ProjectileType<CoarseBombStickyProjectile>();
+		Item.notAmmo = true;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StickyBomb).AddIngredient(AutoContent.ItemType<SavannaDirt>(), 25).Register();

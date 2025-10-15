@@ -14,12 +14,12 @@ public class VanillaNPCDialogue : GlobalNPC
 	{
 		Player player = Main.LocalPlayer;
 
-		SetChat(ref chat, npc.type == NPCID.ArmsDealer && player.InModBiome<SavannaBiome>() && Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "ArmsDealer.Savanna1"));
+		SetChat(ref chat, npc.type == NPCID.ArmsDealer && player.InModBiome<SavannaBiome>() && Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "ArmsDealer.Savanna"));
 
 		if (npc.type == NPCID.Stylist && player.InModBiome<SavannaBiome>())
 		{
-			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Stylist.Savanna1"));
-			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Stylist.Duststorm1"));
+			SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Stylist.Savanna"));
+			SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Stylist.Duststorm"));
 		}
 
 		if (npc.type == NPCID.Nurse && player.InModBiome<SavannaBiome>())

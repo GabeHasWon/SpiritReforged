@@ -1,24 +1,30 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
-public abstract class SaltBlock : ModTile
+public abstract class SaltBlock : ModTile, IAutoloadTileItem
 {
+	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.3f
+	};
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = false;
 
 		TileID.Sets.ChecksForMerge[Type] = true;
-
-		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, ModContent.TileType<SaltBlockReflective>());
+		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
 
 		DustType = DustID.Pearlsand;
 		MineResist = 0.5f;
+		HitSound = Break;
 	}
 
 	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
@@ -30,17 +36,16 @@ public class SaltBlockDull : SaltBlock
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-
-		Main.tileBlendAll[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		this.Merge(ModContent.TileType<SaltBlockReflective>());
 		AddMapEntry(new Color(180, 170, 170));
 	}
 
 	public override void RandomUpdate(int i, int j)
 	{
 		if (Main.rand.NextBool(4))
-			Placer.PlaceTile<Saltwort>(i, j - 1).Send();
+			Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
 	}
 
 	public override void FloorVisuals(Player player)
@@ -66,14 +71,11 @@ public class SaltBlockDull : SaltBlock
 
 public class SaltBlockReflective : SaltBlock
 {
-	public override string Texture => DrawHelpers.RequestLocal(typeof(SaltBlock), nameof(SaltBlock));
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 		AddMapEntry(new Color(230, 220, 220));
 	}
-
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -83,4 +85,7 @@ public class SaltBlockReflective : SaltBlock
 
 		return true;
 	}
+
+	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
+		=> WorldGen.TileMergeAttempt(-2, ModContent.TileType<SaltBlockDull>(), ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
 }

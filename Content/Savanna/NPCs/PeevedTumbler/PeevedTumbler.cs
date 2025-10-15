@@ -13,6 +13,13 @@ namespace SpiritReforged.Content.Savanna.NPCs.PeevedTumbler;
 [AutoloadBanner]
 public class PeevedTumbler : ModNPC
 {
+	private class HasItem : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info) => info.npc.ModNPC is PeevedTumbler tumblr && tumblr._hasItem;
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.PeevedTumbler");
+	}
+
 	public ref float Counter => ref NPC.ai[0];
 
 	private bool _hasItem;
@@ -22,10 +29,8 @@ public class PeevedTumbler : ModNPC
 		NPCID.Sets.TrailCacheLength[Type] = 5;
 		NPCID.Sets.TrailingMode[Type] = 3;
 
-		MoRHelper.AddElement(NPC, MoRHelper.Earth);
-		MoRHelper.AddElement(NPC, MoRHelper.Wind);
-		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Hot);
-		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Inorganic);
+		MoRHelper.AddElement(NPC, false, MoRHelper.Earth, MoRHelper.Wind);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Hot, MoRHelper.NPCType_Inorganic);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sandstorm");
@@ -170,12 +175,5 @@ public class PeevedTumbler : ModNPC
 			return .16f;
 
 		return 0;
-	}
-
-	private class HasItem : IItemDropRuleCondition, IProvideItemConditionDescription
-	{
-		public bool CanDrop(DropAttemptInfo info) => info.npc.ModNPC is PeevedTumbler tumblr && tumblr._hasItem;
-		public bool CanShowItemDropInUI() => true;
-		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.PeevedTumbler");
 	}
 }

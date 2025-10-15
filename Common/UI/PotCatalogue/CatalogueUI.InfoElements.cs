@@ -1,6 +1,6 @@
-﻿using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
-using SpiritReforged.Content.Underground.Tiles;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -62,21 +62,21 @@ public partial class CatalogueUI : AutoUIState
 		//Description & star rating
 		info = new CatalogueInfo();
 		info.Width.Pixels = width;
-		info.Height.Set(32 + UIHelper.GetTextHeight(Selected.record.description, (int)info.Width.Pixels), 0);
+		info.Height.Set(32 + UIHelper.GetTextHeight(Selected.record.Description.Value, (int)info.Width.Pixels), 0);
 		info.Action += DescInfo_Action;
 
 		_info.AddEntry(info);
 
 		//Loot tables for registered types
-		if (RecordHandler.ActionByType.TryGetValue(Selected.record.type, out var action))
+		if (TileLootSystem.TryGetLootPool(Selected.record.type, out LootTable.LootDelegate action))
 		{
-			var tableInst = new LootTable();
-			action.Invoke(Selected.record.styles[0], tableInst);
+			var loot = new TileLootTable(Selected.record.styles[0]);
+			action.Invoke(loot);
 
 			List<DropRateInfo> list = [];
 			DropRateInfoChainFeed ratesInfo = new(1f);
 
-			foreach (IItemDropRule item in tableInst.Get())
+			foreach (IItemDropRule item in loot.Get())
 				item.ReportDroprates(list, ratesInfo);
 
 			foreach (var rateInfo in list)
@@ -92,7 +92,7 @@ public partial class CatalogueUI : AutoUIState
 
 	private bool NameInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
 	{
-		string name = Selected.record.name;
+		string name = Selected.record.DisplayName.Value;
 		var namePos = bounds.Center();
 
 		Utils.DrawBorderString(spriteBatch, name, namePos, Main.MouseTextColorReal, .9f, .5f, .5f);
@@ -111,7 +111,7 @@ public partial class CatalogueUI : AutoUIState
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
-			var shader = AssetLoader.LoadedShaders["Rainbow"];
+			var shader = AssetLoader.LoadedShaders["Rainbow"].Value;
 			var texture = StarLight.Value;
 
 			for (int i = 0; i < count; i++)
@@ -147,7 +147,7 @@ public partial class CatalogueUI : AutoUIState
 
 		//Draw description
 		float height = 0;
-		string desc = Selected.record.description;
+		string desc = Selected.record.Description.Value;
 		string[] wrappingText = UIHelper.WrapText(desc, bounds.Width);
 
 		for (int i = 0; i < wrappingText.Length; i++)

@@ -1,9 +1,10 @@
 using RubbleAutoloader;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Underground.Pottery;
+using SpiritReforged.Common.UI.PotCatalogue;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
+using static SpiritReforged.Common.TileCommon.NamedStyles;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Content.Underground.Tiles;
@@ -12,10 +13,10 @@ public class UpsideDownPot : PotTile
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0] } };
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override TileRecord AddRecord(int type, StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
-		RecordHandler.Records.Add(record.AddRating(5).AddDescription(Language.GetText(TileRecord.DescKey + ".UpsideDown")));
+		return record.AddRating(5).AddDescription(Language.GetText(TileRecord.DescKey + ".UpsideDown"));
 	}
 
 	public override void AddObjectData()
@@ -81,7 +82,19 @@ public class PotHead : ModItem
 			self.immuneAlpha = 255;
 	}
 
-	public override void SetStaticDefaults() => EquipSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
+	public override void SetStaticDefaults()
+	{
+		EquipSlot = EquipLoader.GetEquipSlot(Mod, Name, EquipType.Head);
+
+		if (CrossMod.Fables.Enabled)
+		{
+			if (CrossMod.Fables.TryFind("PeculiarPot", out ModItem peculiarPot))
+			{
+				ItemID.Sets.ShimmerTransformToItem[Type] = peculiarPot.Type;
+				ItemID.Sets.ShimmerTransformToItem[peculiarPot.Type] = Type;
+			}
+		}
+	}
 	public override void SetDefaults()
 	{
 		Item.Size = new(24);

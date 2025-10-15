@@ -171,7 +171,7 @@ public class DunceCrab : ModNPC
 	{
 		if (NPC.collideY || NPC.velocity.Y == 0)
 		{
-			if ((State)Animation != State.Flail)
+			if ((State)Animation != State.Flail && !Main.dedServ)
 			{
 				Collision.HitTiles(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
@@ -184,6 +184,12 @@ public class DunceCrab : ModNPC
 
 			ChangeState(State.Flail);
 			NPC.velocity = Vector2.Zero;
+
+			if (!CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.AnySurface)) // Fall if not actually embedded
+			{
+				ChangeState(State.Fall);
+				NPC.velocity.Y = 0.1f;
+			}
 		}
 		else
 		{
@@ -201,7 +207,7 @@ public class DunceCrab : ModNPC
 		int distanceX = (int)Math.Abs(NPC.Center.X - target.Center.X);
 		bool eatingMoss = EatingMoss();
 
-		if ((Side)Surface is Side.Down && (target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target)) || eatingMoss)
+		if ((Side)Surface is Side.Down && target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target) || eatingMoss)
 		{
 			ChangeState(State.Hide);
 			NPC.rotation = MathHelper.Pi;

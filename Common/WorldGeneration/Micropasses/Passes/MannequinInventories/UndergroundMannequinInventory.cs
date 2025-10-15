@@ -57,7 +57,7 @@ internal class UndergroundMannequinInventory : MannequinInventory
 		Item[] inv = [new(ModContent.ItemType<WayfarerHead>()), new(ModContent.ItemType<WayfarerBody>()), new(ModContent.ItemType<WayfarerLegs>()),
 			new(), new(), new(), new(), new()];
 
-		float chance = Main.rand.NextFloat();
+		float chance = WorldGen.genRand.NextFloat();
 
 		if (chance < .10f)
 		{
@@ -76,7 +76,7 @@ internal class UndergroundMannequinInventory : MannequinInventory
 		{
 			if (chance < .1f)
 			{
-				if (Main.rand.NextBool(2))
+				if (WorldGen.genRand.NextBool(2))
 				{
 					if (CrossMod.Redemption.TryFind("CommonGuardHelm1", out ModItem commonHelm1))
 						inv[0] = new(commonHelm1.Type);

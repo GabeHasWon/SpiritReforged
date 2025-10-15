@@ -156,19 +156,19 @@ internal class FallingPot : ModProjectile
 		ParticleHandler.SpawnParticle(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 
 		var pos = Projectile.Center.ToTileCoordinates();
-		BreakPot(pos.X, pos.Y);
+		BreakPot(pos.X, pos.Y, (int)Style);
 	}
 
 	/// <summary> Mimics pot break effects. </summary>
-	private void BreakPot(int i, int j)
+	public static void BreakPot(int i, int j, int style = 0)
 	{
 		var t = Framing.GetTileSafely(i, j);
 
 		short oldX = t.TileFrameX;
 		short oldY = t.TileFrameY;
 
-		t.TileFrameX = (short)(Style % 3 * 36);
-		t.TileFrameY = (short)(Style / 3 * 36);
+		t.TileFrameX = (short)(style % 3 * 36);
+		t.TileFrameY = (short)(style / 3 * 36);
 
 		WorldGen.CheckPot(i, j); //Trick this method by modifying tile frame to match the correct pot type
 

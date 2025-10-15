@@ -1,23 +1,35 @@
-﻿using Terraria.WorldBuilding;
-using Terraria.IO;
-using Terraria.GameContent.Generation;
-using SpiritReforged.Content.Ocean.Tiles;
-using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Content.Ocean.Items;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Ocean.Items;
+using SpiritReforged.Content.Ocean.Tiles;
+using Terraria.GameContent.Generation;
+using Terraria.IO;
 using Terraria.Utilities;
+using Terraria.WorldBuilding;
 using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Ocean;
 
-public class OceanGeneration : ModSystem
+public partial class OceanGeneration : ModSystem
 {
+	public enum OceanShape
+	{
+		Default = 0, //vanilla worldgen
+		SlantedSine, //Yuyu's initial sketch
+		Piecewise, //Musicano's original sketch
+		Piecewise_M, //Musicano's sketch with Sal/Yuyu's cubic modification
+		Piecewise_V, //My heavily modified piecewise with variable height
+	}
+
 	private static float PiecewiseVScale = 1f;
 	private static float PiecewiseVMountFactor = 1f;
 
 	private static int _roughTimer = 0;
 	private static float _rough = 0f;
-	private static (Rectangle, Rectangle) _oceanInfos = (new Rectangle(), new Rectangle());
+
+	private static Rectangle _leftOcean;
+	private static Rectangle _rightOcean;
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
@@ -43,42 +55,7 @@ public class OceanGeneration : ModSystem
 	{
 		//Basic Shape
 		progress.Message = Language.GetText("LegacyWorldGen.22").Value;
-
 		int dungeonSide = Main.dungeonX < Main.maxTilesX / 2 ? -1 : 1;
-
-		void GenSingleOceanSingleStep(int oceanTop, int placeX, ref int tilesFromInnerEdge)
-		{
-			tilesFromInnerEdge++;
-
-			float depth = GetOceanSlope(tilesFromInnerEdge);
-			depth += OceanSlopeRoughness();
-
-			int thickness = WorldGen.genRand.Next(20, 28); //Sand lining is a bit thicker than vanilla
-			bool passedTile = false;
-
-			for (int placeY = 0; placeY < oceanTop + depth + thickness; placeY++)
-			{
-				bool liq = PlaceTileOrLiquid(placeX, placeY, oceanTop, depth);
-
-				if (!passedTile && !Framing.GetTileSafely(placeX, placeY + 1).HasTile)
-				{
-					if (!liq)
-						thickness++;
-				}
-				else
-					passedTile = true;
-			}
-		}
-
-		void CheckOceanHeight(ref int height)
-		{
-			float depth = GetOceanSlope(250);
-
-			do
-			{
-				height--;
-			} while (height + depth + 20 > Main.worldSurface + 50);
-		}
 
 		for (int side = 0; side < 2; side++)
 		{
@@ -100,13 +77,12 @@ public class OceanGeneration : ModSystem
 
 				GenVars.shellStartXLeft = GenVars.leftBeachEnd - 30 - WorldGen.genRand.Next(15, 30);
 				GenVars.shellStartYLeft = oceanTop;
-				CheckOceanHeight(ref oceanTop);
 
 				oceanTop += WorldGen.genRand.Next(1, 5);
 				for (int placeX = initialWidth - 1; placeX >= worldEdge; placeX--)
 					GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
 
-				_oceanInfos.Item1 = new Rectangle(worldEdge, oceanTop - 5, initialWidth, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+				_leftOcean = new Rectangle(worldEdge, oceanTop - 5, initialWidth, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
 			}
 			else
 			{
@@ -119,13 +95,38 @@ public class OceanGeneration : ModSystem
 
 				GenVars.shellStartXRight = GenVars.rightBeachStart + 30 + WorldGen.genRand.Next(15, 30);
 				GenVars.shellStartYRight = oceanTop;
-				CheckOceanHeight(ref oceanTop);
 
 				oceanTop += WorldGen.genRand.Next(1, 5);
 				for (int placeX = worldEdge; placeX < initialWidth; placeX++) //repeat X loop
 					GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
 
-				_oceanInfos.Item2 = new Rectangle(worldEdge, oceanTop - 5, initialWidth - worldEdge, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+				_rightOcean = new Rectangle(worldEdge, oceanTop - 5, initialWidth - worldEdge, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+			}
+		}
+
+		static void GenSingleOceanSingleStep(int oceanTop, int placeX, ref int tilesFromInnerEdge)
+		{
+			tilesFromInnerEdge++;
+
+			float depth = GetOceanSlope(tilesFromInnerEdge);
+			depth += OceanSlopeRoughness();
+
+			int thickness = WorldGen.genRand.Next(20, 28); //Sand lining is a bit thicker than vanilla
+			bool passedTile = false;
+
+			for (int placeY = 0; placeY < oceanTop + depth + thickness; placeY++)
+			{
+				bool liq = PlaceTileOrLiquid(placeX, placeY, oceanTop, depth);
+
+				if (!passedTile && !Framing.GetTileSafely(placeX, placeY + 1).HasTile)
+				{
+					if (!liq)
+						thickness++;
+				}
+				else
+				{
+					passedTile = true;
+				}
 			}
 		}
 	}
@@ -136,236 +137,168 @@ public class OceanGeneration : ModSystem
 
 		PlaceOceanPendant();
 
-		if (_oceanInfos.Item1 == Rectangle.Empty || _oceanInfos.Item2 == Rectangle.Empty)
+		if (_leftOcean == Rectangle.Empty || _rightOcean == Rectangle.Empty)
 		{
-			_oceanInfos.Item1 = new Rectangle(40, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
-			_oceanInfos.Item2 = new Rectangle(Main.maxTilesX - 40 - WorldGen.beachDistance, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
+			_leftOcean = new Rectangle(40, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
+			_rightOcean = new Rectangle(Main.maxTilesX - 40 - WorldGen.beachDistance, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
 		}
 
-		PlaceWaterChests(_oceanInfos.Item1, _oceanInfos.Item2);
-
-		PopulateOcean(_oceanInfos.Item1, 0);
-		PopulateOcean(_oceanInfos.Item2, 1);
-	}
-
-	private static void PopulateOcean(Rectangle bounds, int side)
-	{
-		if (CrossMod.Classic.Enabled)
-			PlacePirateChest(side == 0 ? bounds.Right : bounds.Left, side);
-
-		PlaceSunkenTreasure(side == 0 ? bounds.Right : bounds.Left, side);
-
-		for (int i = bounds.Left; i < bounds.Right; ++i)
+		for (int i = 0; i < 2; i++)
 		{
-			for (int j = bounds.Top; j < bounds.Bottom; ++j)
-			{
-				if (Framing.GetTileSafely(i, j - 1).LiquidAmount < 155 || Framing.GetTileSafely(i, j).LiquidAmount > 0)
-					continue; //Quick validity check
+			Rectangle area = (i == 0) ? _leftOcean : _rightOcean;
 
-				int tilesFromInnerEdge = bounds.Right - i;
-				if (side == 1)
-					tilesFromInnerEdge = i - bounds.Left;
+			GenPirateChest(area); //See OceanGeneration.Classic
 
-				int coralChance = 0;
-				if (tilesFromInnerEdge < 133) //First slope (I hope)
-					coralChance = 15;
-				else if (tilesFromInnerEdge < 161)
-					coralChance = 27;
-
-				//Coral multitiles
-				if (coralChance > 0 && WorldGen.genRand.NextBool((int)(coralChance * 1.25f)) && TryPlaceSubmerged(i, j, ModContent.TileType<Coral3x3>()))
-					continue;
-
-				if (coralChance > 0 && WorldGen.genRand.NextBool(coralChance) && TryPlaceSubmerged(i, j, ModContent.TileType<Coral2x2>(), WorldGen.genRand.Next(3)))
-					continue;
-
-				if (coralChance > 0 && WorldGen.genRand.NextBool((int)(coralChance * 1.75f)) && TryPlaceSubmerged(i, j, ModContent.TileType<Coral1x2>()))
-					continue;
-
-				//Decor multitiles
-				int kelpChance = tilesFromInnerEdge < 100 ? 14 : 35; //Higher on first slope, then less common
-				if (kelpChance > 0 && WorldGen.genRand.NextBool(kelpChance) && TryPlaceSubmerged(i, j, ModContent.TileType<OceanDecor2x3>(), WorldGen.genRand.Next(2)))
-					continue;
-
-				if (kelpChance > 0 && WorldGen.genRand.NextBool(kelpChance) && TryPlaceSubmerged(i, j, ModContent.TileType<OceanDecor2x2>(), WorldGen.genRand.Next(4)))
-					continue;
-
-				if (kelpChance > 0 && WorldGen.genRand.NextBool(kelpChance) && TryPlaceSubmerged(i, j, ModContent.TileType<OceanDecor1x2>(), WorldGen.genRand.Next(3)))
-					continue;
-
-				//Growing kelp
-				if (WorldGen.genRand.NextBool(3, 6) && tilesFromInnerEdge < 133 && Main.tile[i, j].TileType == TileID.Sand && !Main.tile[i, j - 1].HasTile)
-					GrowKelp(i, j - 1);
-			}
+			WorldMethods.Generate(CreateWaterChests, WorldGen.genRand.Next(1, 4), out _, area, 50);
+			WorldMethods.Generate(CreateSunkenTreasure, WorldGen.genRand.Next(2, 4), out _, area, 100);
+			WorldMethods.GenerateSquared(CreateDeco, out _, area);
 		}
 	}
 
-	/// <summary> Places <paramref name="type"/> above the given coordinates if completely submerged. </summary>
-	private static bool TryPlaceSubmerged(int i, int j, int type, int style = 0)
+	/// <summary> Places additional water chests in the inner ocean. </summary>
+	public static bool CreateWaterChests(int i, int j)
 	{
-		var data = TileObjectData.GetTileData(type, style);
+		const int curveLength = 120;
 
-		if (data != null && WorldMethods.Submerged(i, j - data.Height, data.Width, data.Height))
+		if (!FindSurface(i, ref j) || TilesFromEdge(i) is int inner && inner > curveLength)
+			return false;
+
+		if (WorldMethods.AreaClear(i, j - 1, 2, 2) && WorldMethods.Submerged(i, j - 1, 2, 2) && GenVars.structures.CanPlace(new Rectangle(i, j - 1, 2, 2)))
 		{
-			WorldGen.PlaceObject(i, j - 1, type, true, style);
+			WorldGen.KillTile(i, j + 1, false, false, true);
+			WorldGen.KillTile(i + 1, j + 1, false, false, true);
+
+			WorldGen.PlaceTile(i, j + 1, TileID.Sand, true, false);
+			WorldGen.PlaceTile(i + 1, j + 1, TileID.Sand, true, false);
+
+			int contain = WorldGen.genRand.NextFromList(new short[5] { 863, 186, 277, 187, 4404 });
+			WorldGen.AddBuriedChest(i + 1, j, contain, Style: (int)Common.WorldGeneration.Chests.VanillaChestID.Water);
+
 			return true;
 		}
 
 		return false;
 	}
 
-	private static void GrowKelp(int i, int j)
+	private static bool CreateSunkenTreasure(int i, int j)
 	{
-		//Occasionally solidify ground slopes
-		if (WorldGen.genRand.NextBool(3))
+		if (!FindSurface(i, ref j) || TilesFromEdge(i) is int inner && inner < 100)
+			return false;
+
+		if (WorldMethods.AreaClear(i - 1, j - 1, 3, 2))
 		{
-			Framing.GetTileSafely(i, j + 1).Slope = SlopeType.Solid;
-			Framing.GetTileSafely(i, j + 1).IsHalfBlock = false;
+			int type = ModContent.TileType<SunkenTreasureTile>();
+			WorldGen.PlaceTile(i, j, type, true);
+
+			if (Main.tile[i, j].TileType == type)
+				return true;
 		}
 
-		int height = WorldGen.genRand.Next(4, 14);
-
-		for (int y = j; y > j - height; --y)
-		{
-			if (Main.tile[i, y].LiquidAmount < 255)
-				break;
-
-			WorldGen.PlaceTile(i, y, ModContent.TileType<OceanKelp>());
-
-			if (y > j - height / 2)
-			{
-				Tile tile = Main.tile[i, y];
-				tile.TileFrameY += 198;
-			}
-		}
+		return false;
 	}
 
-	private static void PlaceSunkenTreasure(int innerEdge, int side)
+	private static bool CreateDeco(int i, int j)
 	{
-		const int maxTries = 100;
-		int countMax = WorldGen.genRand.Next(2, 4);
-		int count = 0;
+		if (!ValidCoords(i, j))
+			return false;
 
-		for (int t = 0; t < maxTries; t++)
+		int tilesFromEdge = TilesFromEdge(i);
+
+		//Coral multitiles
+		int coralChance = (tilesFromEdge < 133) ? 15 : ((tilesFromEdge < 161) ? 27 : 0); //First slope (I hope)
+		if (coralChance > 0)
 		{
-			int sunkenX = innerEdge - WorldGen.genRand.Next(133, innerEdge - 40);
-			if (side == 1)
-				sunkenX = innerEdge + WorldGen.genRand.Next(133, Main.maxTilesX - innerEdge - 40);
+			if (WorldGen.genRand.NextBool((int)(coralChance * 1.25f)) && Placer.Check(i, j, ModContent.TileType<Coral3x3>()).IsClear().Place().success)
+				return true;
 
-			var pos = new Point(sunkenX, (int)(Main.maxTilesY * 0.35f / 16f));
+			if (WorldGen.genRand.NextBool(coralChance) && Placer.Check(i, j, ModContent.TileType<Coral2x2>()).IsClear().Place().success)
+				return true;
 
-			if (!ScanDown(pos.X, ref pos.Y))
-				continue;
+			if (WorldGen.genRand.NextBool((int)(coralChance * 1.75f)) && Placer.Check(i, j, ModContent.TileType<Coral1x2>()).IsClear().Place().success)
+				return true;
+		}
 
-			if (WorldMethods.AreaClear(pos.X - 1, pos.Y - 2, 3, 2))
+		//Decor multitiles
+		int decorChance = (tilesFromEdge < 100) ? 14 : 35; //Higher on first slope, then less common
+		if (decorChance > 0)
+		{
+			if (WorldGen.genRand.NextBool(decorChance) && Placer.Check(i, j, ModContent.TileType<OceanDecor2x3>()).IsClear().Place().success)
+				return true;
+
+			if (WorldGen.genRand.NextBool(decorChance) && Placer.Check(i, j, ModContent.TileType<OceanDecor2x2>()).IsClear().Place().success)
+				return true;
+
+			if (WorldGen.genRand.NextBool(decorChance) && Placer.Check(i, j, ModContent.TileType<OceanDecor1x2>()).IsClear().Place().success)
+				return true;
+		}
+
+		//Kelp
+		if (tilesFromEdge < 133 && WorldGen.genRand.NextBool(3, 6))
+		{
+			if (WorldGen.genRand.NextBool(3)) //Occasionally solidify ground slopes
 			{
-				int type = ModContent.TileType<SunkenTreasureTile>();
-				WorldGen.PlaceTile(pos.X, pos.Y - 1, type, true);
+				Framing.GetTileSafely(i, j + 1).Clear(Terraria.DataStructures.TileDataType.Slope);
+			}
 
-				if (Main.tile[pos.X, pos.Y - 1].TileType == type && ++count >= countMax)
+			int height = WorldGen.genRand.Next(4, 14);
+			for (int h = 0; h < height; h++)
+			{
+				var t = Main.tile[i, j - h];
+
+				if (t.HasTile || t.LiquidAmount < 255)
 					break;
+
+				int type = ModContent.TileType<OceanKelp>();
+				WorldGen.PlaceTile(i, j - h, type);
+
+				if (h < height / 2 && t.TileType == type)
+					t.TileFrameY += 198;
 			}
 		}
+
+		return true;
 	}
 
-	public static void PlacePirateChest(int innerEdge, int side)
+	private static void PlaceOceanPendant()
 	{
-		const int maxTries = 200;
+		const int attempts = 500;
 
-		if (!CrossMod.Classic.TryFind("DuelistLegacy", out ModItem duelist) || !CrossMod.Classic.TryFind("LadyLuck", out ModItem ladyLuck))
-			return;
-
-		for (int t = 0; t < maxTries; t++)
+		for (int a = 0; a < attempts; a++)
 		{
-			int x = innerEdge - WorldGen.genRand.Next(100, innerEdge - 60);
-			if (side == 1)
-				x = innerEdge + WorldGen.genRand.Next(100, Main.maxTilesX - innerEdge - 60);
-
-			int y = (int)(Main.maxTilesY * 0.35f / 16f);
-
-			if (!ScanDown(x, ref y))
-				continue;
-
-			if (WorldMethods.AreaClear(x, y - 2, 2, 2) && GenVars.structures.CanPlace(new Rectangle(x, y - 2, 2, 2)))
-			{
-				for (int w = 0; w < 4; w++)
-				{
-					int i = x + w % 2;
-					int j = y + w / 2;
-
-					WorldGen.KillTile(i, j, false, noItem: true);
-					WorldGen.PlaceTile(i, j, TileID.HardenedSand, true);
-				}
-
-				PlaceChest(x, y - 1, ModContent.TileType<PirateChest>(),
-					[
-						(side == 0 ? ladyLuck.Type : duelist.Type, 1)
-					],
-					[
-						(ItemID.GoldCoin, WorldGen.genRand.Next(12, 30)), (ItemID.Diamond, WorldGen.genRand.Next(12, 30)), (ItemID.GoldCrown, 1), (ItemID.GoldDust, WorldGen.genRand.Next(1, 3)),
-						(ItemID.GoldChest, 1), (ItemID.GoldenChair, 1), (ItemID.GoldChandelier, 1), (ItemID.GoldenPlatform, WorldGen.genRand.Next(12, 18)), (ItemID.GoldenSink, 1), (ItemID.GoldenSofa, 1),
-						(ItemID.GoldenTable, 1), (ItemID.GoldenToilet, 1), (ItemID.GoldenWorkbench, 1), (ItemID.GoldenPiano, 1), (ItemID.GoldenLantern, 1), (ItemID.GoldenLamp, 1), (ItemID.GoldenDresser, 1),
-						(ItemID.GoldenDoor, 1), (ItemID.GoldenCrate, 1), (ItemID.GoldenClock, 1), (ItemID.GoldenChest, 1), (ItemID.GoldenCandle, WorldGen.genRand.Next(2, 4)), (ItemID.GoldenBookcase, 1),
-						(ItemID.TitaniumBar, BarStack()), (ItemID.PalladiumBar, BarStack()), (ItemID.OrichalcumBar, BarStack())
-					],
-					true, WorldGen.genRand, WorldGen.genRand.Next(15, 21), 1, true, 2, 2);
-
-				break;
-			}
-		}
-
-		static int BarStack() => WorldGen.genRand.Next(3, 7);
-	}
-
-	/// <summary> Places additional water chests in the inner ocean. </summary>
-	/// <param name="leftBounds"> The left ocean bounds. </param>
-	/// <param name="rightBounds"> The right ocean bounds. </param>
-	public static void PlaceWaterChests(Rectangle leftBounds, Rectangle rightBounds)
-	{
-		const int maxTries = 100;
-
-		int count = 0;
-		int countMax = WorldGen.genRand.Next(3, 6);
-
-		for (int i = 0; i < maxTries; i++)
-		{
-			int x = GetBound();
-			int y = (int)(Main.maxTilesY * 0.35f / 16f);
-
-			if (!ScanDown(x, ref y))
-				continue;
-
-			if (WorldMethods.AreaClear(x, y - 2, 2, 2) && WorldMethods.Submerged(x, y - 2, 2, 2) && GenVars.structures.CanPlace(new Rectangle(x, y - 2, 2, 2)))
-			{
-				for (int w = 0; w < 2; w++)
-				{
-					WorldGen.KillTile(x + w, y, false, false, true);
-					WorldGen.PlaceTile(x + w, y, TileID.Sand, true, false);
-				}
-
-				int contain = WorldGen.genRand.NextFromList(new short[5] { 863, 186, 277, 187, 4404 });
-				WorldGen.AddBuriedChest(x, y - 1, contain, Style: (int)Common.WorldGeneration.Chests.VanillaChestID.Water);
-
-				if (++count >= countMax)
-					break;
-			}
-		}
-
-		int GetBound()
-		{
-			const int length = 120;
-
+			int x = WorldGen.genRand.Next(40, WorldGen.oceanDistance);
 			if (WorldGen.genRand.NextBool())
+				x = WorldGen.genRand.Next(Main.maxTilesX - WorldGen.oceanDistance, Main.maxTilesX - 40);
+
+			int y = WorldGen.genRand.Next((int)(Main.maxTilesY * 0.35f / 16f), (int)WorldGen.oceanLevel);
+
+			if (!FindSurface(x, ref y))
+				continue;
+
+			if (Framing.GetTileSafely(x, y).LiquidType == LiquidID.Water && Framing.GetTileSafely(x, y).LiquidAmount == 255)
 			{
-				int start = rightBounds.Left;
-				return WorldGen.genRand.Next(start, Math.Min(start + length, Main.maxTilesX - 20));
-			}
-			else
-			{
-				int end = leftBounds.Right;
-				return WorldGen.genRand.Next(Math.Max(end - length, 20), end);
+				int type = ModContent.TileType<Items.Reefhunter.OceanPendant.OceanPendantTile>();
+
+				WorldGen.PlaceObject(x, y, type);
+				if (Framing.GetTileSafely(x, y).TileType == type)
+					break;
 			}
 		}
+	}
+
+	#region general helpers
+	private static bool RightSide(int x) => x > Main.maxTilesX / 2;
+	private static int TilesFromEdge(int x) => RightSide(x) ? (x - _rightOcean.Left) : (_leftOcean.Right - x);
+	private static bool ValidCoords(int i, int j) => Main.tile[i, j].LiquidAmount == 255 && !Main.tile[i, j].HasTile && Main.tile[i, j + 1].HasTile && Main.tile[i, j + 1].TileType == TileID.Sand;
+
+	private static bool FindSurface(int i, ref int j)
+	{
+		WorldMethods.FindGround(i, ref j);
+		Point pt = new(i, --j);
+
+		if (!ValidCoords(i, j) || !_leftOcean.Contains(pt) && !_rightOcean.Contains(pt))
+			return false;
+
+		return true;
 	}
 
 	public static bool PlaceChest(int x, int y, int type, (int, int)[] mainItems, (int, int)[] subItems, bool noTypeRepeat = true, UnifiedRandom r = null, int subItemLength = 6, int style = 0, bool overRide = false, int width = 2, int height = 2)
@@ -389,10 +322,10 @@ public class OceanGeneration : ModSystem
 
 			for (int i = 0; i < subItemLength; ++i)
 			{
-			repeat:
+				repeat:
 				if (reps > 50)
 				{
-                    SpiritReforgedMod.Instance.Logger.Info("WARNING: Attempted to repeat item placement too often. Report to dev. [SpiritReforged]");
+					SpiritReforgedMod.Instance.Logger.Info("WARNING: Attempted to repeat item placement too often. Report to dev. [SpiritReforged]");
 					break;
 				}
 
@@ -414,6 +347,7 @@ public class OceanGeneration : ModSystem
 
 		return false;
 	}
+	#endregion
 
 	private static float OceanSlopeRoughness()
 	{
@@ -531,57 +465,10 @@ public class OceanGeneration : ModSystem
 
 				int j;
 				for (j = 0; !Main.tile[i, j].HasTile; j++)
-				{
-				}
+				{ }
 
 				WorldGen.oceanCave(i, j);
 			}
 		}
-	}
-
-	private static void PlaceOceanPendant()
-	{
-		while (true)
-		{
-			int x = WorldGen.genRand.Next(40, WorldGen.oceanDistance);
-			if (WorldGen.genRand.NextBool())
-				x = WorldGen.genRand.Next(Main.maxTilesX - WorldGen.oceanDistance, Main.maxTilesX - 40);
-
-			int y = WorldGen.genRand.Next((int)(Main.maxTilesY * 0.35f / 16f), (int)WorldGen.oceanLevel);
-
-			if (!ScanDown(x, ref y))
-				continue;
-
-			y--;
-			if (Framing.GetTileSafely(x, y).LiquidType == LiquidID.Water && Framing.GetTileSafely(x, y).LiquidAmount >= 255)
-			{
-				int type = ModContent.TileType<Items.Reefhunter.OceanPendant.OceanPendantTile>();
-
-				WorldGen.PlaceObject(x, y, type);
-				if (Framing.GetTileSafely(x, y).TileType == type)
-					break;
-			}
-		}
-	}
-
-	/// <summary> Moves down to the next solid tile. </summary>
-	/// <returns> Whether the final coordinates are safely in world bounds. </returns>
-	private static bool ScanDown(int x, ref int y)
-	{
-		const int fluff = 10;
-
-		while (WorldGen.InWorld(x, y, fluff) && !WorldGen.SolidTile(x, y))
-			y++;
-
-		return WorldGen.InWorld(x, y, fluff);
-	}
-
-	public enum OceanShape
-	{
-		Default = 0, //vanilla worldgen
-		SlantedSine, //Yuyu's initial sketch
-		Piecewise, //Musicano's original sketch
-		Piecewise_M, //Musicano's sketch with Sal/Yuyu's cubic modification
-		Piecewise_V, //My heavily modified piecewise with variable height
 	}
 }

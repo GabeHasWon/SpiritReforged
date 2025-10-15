@@ -6,6 +6,7 @@ using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.ModLoader.IO;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Desert.Tiles.Amber;
 
@@ -13,7 +14,7 @@ namespace SpiritReforged.Content.Desert.Tiles.Amber;
 public class AmberFossil : ShiningAmber
 {
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(PolishedAmber));
-	public static int[] AmberItemTypes { get; private set; }
+	private static WeightedRandom<int> RandomItem;
 
 	public static int GetContainedItem(int i, int j)
 	{
@@ -26,7 +27,7 @@ public class AmberFossil : ShiningAmber
 		if (ModContent.GetInstance<FossilEntity>().Find(i, j) != -1)
 			return; //An entity already exists here
 
-		int itemType = WorldGen.genRand.Next(AmberItemTypes);
+		int itemType = RandomItem;
 		int id = ModContent.GetInstance<FossilEntity>().Place(i, j);
 
 		((FossilEntity)TileEntity.ByID[id]).itemType = itemType;
@@ -38,9 +39,15 @@ public class AmberFossil : ShiningAmber
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-
 		RegisterItemDrop(AutoContent.ItemType<PolishedAmber>());
-		AmberItemTypes = [ItemID.Frog, ItemID.BlueDragonfly, ItemID.RedDragonfly, ItemID.Grasshopper, .. Recipes.GetTypesFromGroup(RecipeGroupID.Fireflies)];
+
+		RandomItem = new();
+
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Dragonflies));
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Fireflies));
+		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
+		RandomItem.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
+		RandomItem.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)

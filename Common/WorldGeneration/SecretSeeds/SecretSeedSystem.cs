@@ -21,7 +21,7 @@ internal class SecretSeedSystem : ModSystem
 
 	private static readonly Dictionary<string, SecretSeed> SecretSeeds = [];
 
-	public static SecretSeed GetSeed<T>() where T : SecretSeed => SecretSeeds.Values.Where(x => x is T).FirstOrDefault();
+	//public static SecretSeed GetSeed<T>() where T : SecretSeed => SecretSeeds.Values.Where(x => x is T).FirstOrDefault();
 	public static void RegisterSeed(SecretSeed seed) => SecretSeeds.Add(seed.Name, seed);
 
 	public override void Load()
@@ -41,11 +41,13 @@ internal class SecretSeedSystem : ModSystem
 		WorldSecretSeed = null;
 
 		foreach (string key in SecretSeeds.Keys)
+		{
 			if (CompareFromArray(SecretSeeds[key]))
 			{
 				WorldSecretSeed = SecretSeeds[key];
 				break;
 			}
+		}
 
 		bool CompareFromArray(SecretSeed s)
 		{

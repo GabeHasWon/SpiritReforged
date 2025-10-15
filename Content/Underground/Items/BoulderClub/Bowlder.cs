@@ -1,16 +1,16 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.MathHelpers;
 using System.IO;
-using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
-using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Common.ItemCommon;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.BoulderClub;
@@ -40,7 +40,7 @@ public class Bowlder : ClubItem
 	}
 }
 
-class BowlderProj : BaseClubProj, IManualTrailProjectile
+class BowlderProj : BaseClubProj
 {
 	public const float SHOOT_SPEED = 8;
 
@@ -53,7 +53,7 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 
 	public override void SafeSetStaticDefaults() => Main.projFrames[Type] = 2;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 60 * MeleeSizeModifier;
 		float trailWidth = 40 * MeleeSizeModifier;
@@ -68,13 +68,15 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 				Intensity = 0.5f,
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 		}
 	}
 
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		if (FullCharge && Main.myPlayer == Owner.whoAmI)
 		{
 			StoredShotTrajectory = Owner.GetArcVel(Main.MouseWorld, 0.5f, SHOOT_SPEED);
@@ -177,7 +179,7 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 	internal override bool CanCollide(float progress) => !FullCharge;
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(8);

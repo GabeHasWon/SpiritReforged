@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Content.Savanna.Tiles;
+﻿using SpiritReforged.Common.TileCommon;
+
+namespace SpiritReforged.Content.Savanna.Tiles;
 
 internal class LivingBaobabLeaf : ModTile
 {
@@ -16,7 +18,9 @@ internal class LivingBaobabLeaf : ModTile
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (Main.rand.NextBool(50)) //Randomly grow hanging baobab fruit
+		const int cap = 10;
+
+		if (Main.rand.NextBool(50) && WorldGen.CountNearBlocksTypes(i, j, Placer.HerbRadius, cap, ModContent.TileType<HangingBaobabFruit>()) < cap) //Randomly grow hanging baobab fruit
 			HangingBaobabFruit.GrowVine(i, ++j);
 	}
 }

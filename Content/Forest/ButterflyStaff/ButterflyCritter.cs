@@ -1,4 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
@@ -196,14 +198,20 @@ public class ButterflyCritter : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		var coord = new Point(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
-		foreach (var zone in ButterflySystem.ButterflyZones)
+		if (!spawnInfo.Invasion && !spawnInfo.Water)
 		{
-			if (zone.Contains(coord))
-				return .75f; //Commonly spawn butterflies in the zone
+			var coord = new Point(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
+			foreach (var biome in MicrobiomeSystem.Microbiomes)
+			{
+				if (biome is not ButterflyShrineBiome e)
+					continue;
 
-			if (coord.Y < zone.Y && Math.Abs(coord.X - zone.Center.X) < zone.Width)
-				return Main.dayTime ? .047f : .08f; //Rarely spawn butterflies anywhere above the zone
+				if (e.Rectangle.Contains(coord))
+					return 0.8f; //Commonly spawn butterflies in the zone
+
+				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Rectangle.Width)
+					return Main.dayTime ? 0.047f : 0.08f; //Rarely spawn butterflies anywhere above the zone
+			}
 		}
 
 		return 0;

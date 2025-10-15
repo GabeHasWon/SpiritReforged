@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Ocean.Items;
@@ -22,7 +23,8 @@ public class PirateChest : ChestTile
 
 		AddMapEntry(new Color(161, 115, 54), MapEntry, MapChestName);
 		AddMapEntry(new Color(87, 64, 31), MapEntry, MapChestName);
-		MakeLocked(ModContent.ItemType<PirateKey>());
+
+		MakeLocked(CrossMod.Classic.Enabled ? ModContent.ItemType<PirateKey>() : ItemID.GoldenKey);
 	}
 
 	public override ushort GetMapOption(int i, int j) => (ushort)(IsLockedChest(i, j) ? 1 : 0);

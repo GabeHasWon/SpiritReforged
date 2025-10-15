@@ -6,7 +6,7 @@ public class DoubleTapPlayer : ModPlayer
 	public delegate void DoubleTapDelegate(Player player, int keyDir);
 	public static event DoubleTapDelegate OnDoubleTap;
 
-	public const int UpTapThreshold = 14;
+	public const int UpTapThreshold = 17;
 
 	public int lastTapUpTimer = 0;
 	public bool controlUpLast = false;

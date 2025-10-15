@@ -12,6 +12,13 @@ public class Termite : ModNPC
 	public ref float TermiteTimeLeft => ref NPC.ai[2];
 	public bool OnTree { get => NPC.ai[3] == 1; set => NPC.ai[3] = value ? 1 : 0; }
 
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/BugDeath")
+	{
+		Volume = 0.5f,
+		Pitch = 0.3f,
+		MaxInstances = 0
+	};
+
 	public override void SetStaticDefaults()
 	{
 		ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
@@ -35,6 +42,7 @@ public class Termite : ModNPC
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = .45f;
 		NPC.aiStyle = 66;
 		NPC.npcSlots = 0;
@@ -51,7 +59,7 @@ public class Termite : ModNPC
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("TermiteGore").Type, NPC.scale);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/BugDeath"), NPC.Center);
+			SoundEngine.PlaySound(Death, NPC.Center);
 
 			for (int k = 0; k < 5; k++)
 				Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Scarecrow, 1.05f * hit.HitDirection, -1.95f, 0, new Color(), 0.6f);

@@ -6,6 +6,7 @@ public class ClayBombSticky : ModItem
 	{
 		Item.CloneDefaults(ItemID.DirtBomb);
 		Item.shoot = ModContent.ProjectileType<ClayBombStickyProjectile>();
+		Item.notAmmo = true;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StickyBomb).AddIngredient(ItemID.ClayBlock, 25).Register();

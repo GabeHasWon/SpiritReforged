@@ -200,7 +200,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 
 	private static void DrawFire(Vector2 center, Vector2 size, float intensity)
 	{
-		Effect effect = AssetLoader.LoadedShaders["FireStream"];
+		Effect effect = AssetLoader.LoadedShaders["FireStream"].Value;
 		effect.Parameters["lightColor"].SetValue(new Color(255, 200, 0, 150).ToVector4());
 		effect.Parameters["midColor"].SetValue(new Color(255, 115, 0, 150).ToVector4());
 		effect.Parameters["darkColor"].SetValue(new Color(200, 3, 33, 150).ToVector4());

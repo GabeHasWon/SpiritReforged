@@ -177,7 +177,7 @@ public class EnergyPlunge : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var owner = Main.player[Projectile.owner];
-		var effect = AssetLoader.LoadedShaders["StarjinxNoise"];
+		var effect = AssetLoader.LoadedShaders["StarjinxNoise"].Value;
 		float rotation = Projectile.rotation + ((owner.gravDir < 0f) ? MathHelper.Pi : 0);
 
 		float opacity = Projectile.Opacity * Math.Min(owner.velocity.Y / FallSpeed, 1) * 0.8f;

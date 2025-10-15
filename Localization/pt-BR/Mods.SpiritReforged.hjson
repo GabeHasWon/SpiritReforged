@@ -8,6 +8,11 @@ Biomes: {
 		// DisplayName: Salt Flats
 		// TownNPCDialogueName: the Salt Flats
 	}
+
+	ZigguratBiome: {
+		// DisplayName: Ziggurat
+		// TownNPCDialogueName: the Ziggurat
+	}
 }
 
 SlotContexts.Backpack: Mochila
@@ -17,6 +22,7 @@ Conditions: {
 	// PeevedTumbler: When sparkling
 	// Discovered: Discovery
 	// Submerged: Submerged
+	// InSaltFlats: In Salt Flats
 }
 
 Misc: {
@@ -56,5 +62,17 @@ GameTips: {
 
 Emotes: {
 	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	// HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		// DisplayName: Ledger
+		// Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		// DisplayName: Shimmersight
+		// Description: Showing shimmer tooltips
+	}
 }

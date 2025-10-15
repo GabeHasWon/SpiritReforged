@@ -12,7 +12,7 @@ public class GraniteBody : ModItem
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;
 	private static void DoubleTap(Player player, int keyDir)
 	{
-		if (!EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
+		if (keyDir == 0 && !EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
 			EnergyPlunge.Begin(player);
 	}
 

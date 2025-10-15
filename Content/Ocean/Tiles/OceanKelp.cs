@@ -139,14 +139,14 @@ public class OceanKelp : ModTile, ISetConversion
 	{
 		Tile tile = Main.tile[i, j];
 
-		if (tile.TileFrameY <= 18 && Main.rand.NextBool(10)) // Grow cut tops
+		if (tile.TileFrameY <= 18 && Main.rand.NextBool(10) && UnderLimit(i, j)) // Grow cut tops
 		{
 			tile.TileFrameY += 36;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				NetMessage.SendTileSquare(-1, i, j);
 		}
-		else if (tile.TileFrameY > 18 && Main.rand.NextBool(35) && !Main.tile[i, j - 1].HasTile) // Grow kelp itself
+		else if (tile.TileFrameY > 18 && Main.rand.NextBool(35) && !Main.tile[i, j - 1].HasTile && UnderLimit(i, j)) // Grow kelp itself
 		{
 			WorldGen.PlaceTile(i, j - 1, Type, true);
 
@@ -158,13 +158,21 @@ public class OceanKelp : ModTile, ISetConversion
 		{
 			bool canAddClump = Main.tile[i, j + 1].TileType != Type || GetClumpNumber(i, j + 1) != GetClumpNumber(i, j);
 
-			if (canAddClump && tile.TileFrameY < 198 * 2)
+			if (canAddClump && tile.TileFrameY < 198 * 2 && UnderLimit(i, j))
 			{
 				tile.TileFrameY += 198;
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 					NetMessage.SendTileSquare(-1, i, j);
 			}
+		}
+
+		static bool UnderLimit(int i, int j)
+		{
+			const int radius = 8;
+			const int count = 30;
+
+			return WorldGen.CountNearBlocksTypes(i, j, radius, 4, count) < count;
 		}
 	}
 

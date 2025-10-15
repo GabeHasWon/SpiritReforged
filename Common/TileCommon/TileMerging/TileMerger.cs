@@ -1,8 +1,9 @@
 ﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.Tiles;
 
 namespace SpiritReforged.Common.TileCommon.TileMerging;
 
-internal class TileMerger : ILoadable
+internal class TileMerger : ModSystem
 {
 	private const int FullFrameWidth = 108;
 
@@ -10,16 +11,21 @@ internal class TileMerger : ILoadable
 	public static int[] All { get; private set; }
 	private static readonly Dictionary<int, Asset<Texture2D>> TextureByType = [];
 
-	public void Load(Mod mod)
+	public override void SetStaticDefaults()
 	{
 		Add(TileID.Sand, "Sand");
 		Add(TileID.Dirt, "Dirt");
-		All = [.. TextureByType.Keys];
+		AddRange("RedSandstone", ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
+		All = [.. TextureByType.Keys]; //Must be last
 
 		static void Add(int type, string name) => TextureByType.Add(type, ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(TileMerger), "Textures/" + name + "Merge")));
-	}
 
-	public void Unload() { }
+		static void AddRange(string name, params int[] types)
+		{
+			foreach (int type in types)
+				Add(type, name);
+		}
+	}
 
 	/// <summary> Draws merge overlays according to <paramref name="types"/>. </summary>
 	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, params int[] types) => DrawMerge(spriteBatch, i, j, Lighting.GetColor(i, j), TileExtensions.TileOffset, types);

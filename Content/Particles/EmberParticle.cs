@@ -8,6 +8,8 @@ public class EmberParticle : Particle
 {
 	private const float FADETIME = 0.3f;
 
+	public bool emitLight = true;
+
 	private readonly Color _startColor;
 	private readonly Color _endColor;
 	private ParticleLayer _drawLayer = ParticleLayer.BelowProjectile;
@@ -49,7 +51,8 @@ public class EmberParticle : Particle
 		else if (TimeActive > MaxTime - fadeintime)
 			Color *= (MaxTime - TimeActive) / fadeintime;
 
-		Lighting.AddLight(Position, Color.ToVector3() * Scale * 0.5f);
+		if (emitLight)
+			Lighting.AddLight(Position, Color.ToVector3() * Scale * 0.5f);
 
 		Velocity = Velocity.RotatedByRandom(0.1f);
 		Velocity *= 0.99f;

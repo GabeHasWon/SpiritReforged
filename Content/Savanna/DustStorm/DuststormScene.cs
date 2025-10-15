@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Savanna.DustStorm;
 public class DustStormScene : ModSceneEffect
 {
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
-	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Duststorm" + (SpiritReforgedMod.SwapMusic ? "Otherworld" : ""));
+	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Duststorm" + (Main.swapMusic ? "Otherworld" : ""));
 
 	public override bool IsSceneEffectActive(Player player) => player.GetModPlayer<DustStormPlayer>().ZoneDustStorm;
 

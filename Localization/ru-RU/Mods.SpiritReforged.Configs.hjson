@@ -1,14 +1,14 @@
 ReforgedClientConfig: {
-	// DisplayName: Reforged Client Config
+	DisplayName: Клиентская конфигурация Reforge
 
 	OceanShape: {
-		// Label: Ocean Shape
-		/* Tooltip:
+		Label: Генерация океана
+		Tooltip:
 			'''
-			Modifies the Ocean generation in certain ways
-			Defaults to a Piecewise_V generation
-			The Piecewise_V generation is recommended for Spirit playthroughs
-			''' */
+			Определяет способ генерации океана.
+			По умолчанию используется генерация типа «Кусочная_V».
+			Генерация «Кусочная_V» рекомендуется для прохождений с модом Spirit.
+			'''
 	}
 
 	ReflectionDetail: {
@@ -19,27 +19,31 @@ ReforgedClientConfig: {
 			Higher values mean more detail and a greater resulting performance cost
 			''' */
 	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
+	}
 }
 
 OceanShape: {
 	Tooltip: ""
 	Default.Label: Стандартная
-	SlantedSine.Label: Синусоидная
-	Piecewise.Label: Составная
-	Piecewise_M.Label: Составная M
-	Piecewise_V.Label: Составная V
+	SlantedSine.Label: Наклонная синусоида
+	Piecewise.Label: Кусочная
+	Piecewise_M.Label: Кусочная_M
+	Piecewise_V.Label: Кусочная_V
 }
 
 ReforgedServerConfig: {
-	DisplayName: Серверная конфигурация
+	DisplayName: Серверная конфигурация Reforge
 
 	VentCritters: {
-		Label: Обитатели гидротермальных источников
+		Label: Живность возле гидротермальных источников
 		Tooltip:
 			'''
-			Включает появление различных существ вокруг гидротермальных источников
-			Эти существа не влияют на скорость появления врагов,
-			но учитываются в общем лимите существ в мире
+			При включении этой настройки вокруг гидротермальных источников появляется живность.
+			Она не влияет на частоту появления обычных врагов, но учитывается в общем лимите существ в мире.
 			'''
 	}
 

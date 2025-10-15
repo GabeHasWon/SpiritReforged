@@ -5,18 +5,11 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class SofaTile : FurnitureTile
 {
-	private static bool WithinRange(int i, int j, Player player) => player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);
-
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 60);
-
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 5)
-			.AddIngredient(ItemID.Silk, 2)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 5).AddIngredient(ItemID.Silk, 2).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -37,17 +30,16 @@ public abstract class SofaTile : FurnitureTile
 		TileID.Sets.HasOutlines[Type] = true;
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Bench"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Sofa"));
 		AdjTiles = [TileID.Benches];
 		DustType = -1;
 	}
 
-	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => WithinRange(i, j, settings.player);
-
+	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance);
 	public override bool RightClick(int i, int j)
 	{
 		Player player = Main.LocalPlayer;
-		if (WithinRange(i, j, player))
+		if (player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance))
 		{
 			player.GamepadEnableGrappleCooldown();
 			player.sitting.SitDown(player, i, j);
@@ -59,10 +51,10 @@ public abstract class SofaTile : FurnitureTile
 	public override void MouseOver(int i, int j)
 	{
 		Player player = Main.LocalPlayer;
-		if (WithinRange(i, j, player))
+		if (player.IsWithinSnappngRangeToTile(i, j, PlayerSittingHelper.ChairSittingMaxDistance))
 		{
 			player.noThrow = 2;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 			player.cursorItemIconEnabled = true;
 		}
 	}

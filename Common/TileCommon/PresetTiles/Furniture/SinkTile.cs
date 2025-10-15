@@ -8,12 +8,8 @@ public abstract class SinkTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 6)
-			.AddIngredient(ItemID.WaterBucket)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 6).AddIngredient(ItemID.WaterBucket).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
@@ -27,7 +23,7 @@ public abstract class SinkTile : FurnitureTile
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Sink"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Sink"));
 		AdjTiles = [TileID.Sinks];
 		DustType = -1;
 	}

@@ -1,34 +1,30 @@
-using RubbleAutoloader;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverPlatters : PotTile, ILootTile
+public class SilverPlatters : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
-	public override void AddRecord(int type, StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Platter");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
+		var desc = Language.GetText(TileRecord.DescKey + ".Platter");
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3);
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("SilverBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+		.AddRecipeGroup("ClayAndMud", 3).AddRecipeGroup("SilverBars", 2).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -42,7 +38,7 @@ public class SilverPlatters : PotTile, ILootTile
 	{
 		const int distance = 200;
 
-		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || Autoloader.IsRubble(Type))
+		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || IsRubble)
 			return;
 
 		var world = new Vector2(i, j) * 16;
@@ -51,20 +47,19 @@ public class SilverPlatters : PotTile, ILootTile
 		if (strength < 1)
 		{
 			var spawn = Main.rand.NextVector2FromRectangle(new Rectangle(i * 16, (j + 2) * 16, 32, 2));
-			float scale = Main.rand.NextFloat(2f, 4f);
+			float scale = Main.rand.NextFloat(1f, 2f);
 			var velocity = (Vector2.UnitY * -1.5f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f) / 3);
 
-			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 40) { Color = Color.White * (1f - strength) * .15f });
+			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 40) { Color = Color.White * (1f - strength) * 0.3f });
 		}
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || Generating)
+		if (IsRubble || WorldMethods.Generating)
 			return;
 
 		var center = new Vector2(i, j).ToWorldCoordinates(16, 16);
-		var t = Main.tile[i, j];
 		WorldGen.PlaceTile(i, j + 1, ModContent.TileType<SilverFoodPlatter>(), true, style: frameX / 36);
 
 		TileEntity.PlaceEntityNet(i, j + 1, ModContent.TileEntityType<PlatterSlot>());
@@ -72,7 +67,7 @@ public class SilverPlatters : PotTile, ILootTile
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			for (int x = 0; x < 2; x++) //Roll twice
-				LootTable.Resolve(i, j, Type, frameX, frameY);
+				TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -83,7 +78,7 @@ public class SilverPlatters : PotTile, ILootTile
 			for (int x = 0; x < 15; x++)
 			{
 				var spawn = Main.rand.NextVector2FromRectangle(new Rectangle(i * 16, (j + 2) * 16, 32, 2));
-				ParticleHandler.SpawnParticle(new SteamParticle(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(2f, 3f), 40) { Color = Color.White * .5f });
+				ParticleHandler.SpawnParticle(new SteamParticle(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(1f, 2f), 40) { Color = Color.White * 0.5f });
 
 				var d = Dust.NewDustDirect(new Vector2(i, j + 1) * 16, 32, 16, DustID.TreasureSparkle, Scale: Main.rand.NextFloat(.5f, 1f));
 				d.velocity = Vector2.UnitY * -Main.rand.NextFloat();
@@ -93,7 +88,7 @@ public class SilverPlatters : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("GarlicBread", out ModItem bread) && CrossMod.Thorium.TryFind("Takoyaki", out ModItem takoyaki))
 			loot.AddOneFromOptions(2, bread.Type, takoyaki.Type);

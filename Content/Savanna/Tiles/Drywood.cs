@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
@@ -19,6 +20,7 @@ public class Drywood : ModTile, IAutoloadTileItem
 		//Set item static defaults
 		var item = this.AutoItem();
 
+		SpiritSets.Timber[item.type] = true;
 		ItemID.Sets.ShimmerTransformToItem[item.type] = ItemID.Wood;
 		Recipes.AddToGroup(RecipeGroupID.Wood, item.type);
 		item.ResearchUnlockCount = 100;

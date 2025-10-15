@@ -10,6 +10,7 @@ public class AmberFossilSafe : AmberFossil, IAutoloadTileItem
 	{
 		StartRecipe().AddRecipeGroup(RecipeGroupID.Fireflies).Register();
 		StartRecipe().AddRecipeGroup(RecipeGroupID.Dragonflies).Register();
+		StartRecipe().AddRecipeGroup(RecipeGroupID.Butterflies).Register();
 		StartRecipe().AddIngredient(ItemID.Grasshopper).Register();
 		StartRecipe().AddIngredient(ItemID.Frog).Register();
 

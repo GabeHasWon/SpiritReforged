@@ -84,7 +84,7 @@ public abstract class SaplingTile<T> : SaplingTile where T : CustomTree
 	}
 }
 
-public static class CustomSapling
+public sealed class CustomSapling : ILoadable
 {
 	/// <summary> Stores custom saplings and their associated tree types. </summary>
 	public static readonly Dictionary<ushort, ushort> SaplingToCustomTree = [];
@@ -92,8 +92,9 @@ public static class CustomSapling
 	public static readonly HashSet<ushort> CustomAnchorTypes = [];
 
 	/// <summary> Autoloads <see cref="CustomModTree"/>s for each <see cref="SaplingTile{T}"/> in the mod. Ensure that this is called after all required tiles are loaded. </summary>
-	public static void Autoload(Mod mod)
+	public void Load(Mod mod) => SpiritReforgedSystem.OnLoad += static () =>
 	{
+		Mod mod = SpiritReforgedMod.Instance;
 		foreach (var c in mod.GetContent<SaplingTile>().ToArray())
 		{
 			//Use reflection because we can't infer generic type here
@@ -105,5 +106,7 @@ public static class CustomSapling
 					CustomAnchorTypes.Add((ushort)type);
 			}
 		}
-	}
+	};
+
+	public void Unload() { }
 }

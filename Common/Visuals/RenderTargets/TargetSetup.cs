@@ -6,6 +6,7 @@ internal class TargetSetup : ILoadable
 {
 	/// <summary> Called with <see cref="On_Main.CheckMonoliths"/>. </summary>
 	public static event Action DrawIntoRendertargets;
+	public static event Action OnResizeRendertargets;
 
 	public void Load(Mod mod)
 	{
@@ -32,6 +33,8 @@ internal class TargetSetup : ILoadable
 
 	private static void ResizeAll(Vector2 obj)
 	{
+		OnResizeRendertargets?.Invoke();
+
 		foreach (var t in ModTarget2D.Targets)
 		{
 			var viewport = Main.instance.GraphicsDevice.Viewport;

@@ -70,6 +70,9 @@ public class ZiplineProj : ModProjectile
 
 	public static void DeathEffects(Vector2 position)
 	{
+		if (Main.dedServ)
+			return;
+
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.Goldenrod * .75f).Additive(), 1, 100, 30, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.White * .5f).Additive(), 1, 100, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
 
