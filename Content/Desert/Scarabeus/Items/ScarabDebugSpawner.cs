@@ -1,11 +1,8 @@
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+using SpiritReforged.Content.Desert.Scarabeus.Boss;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Items;
 
-public class ScarabIdol : ModItem
+public class ScarabDebugSpawner : ModItem
 {
 
 	public override void SetDefaults()
@@ -24,12 +21,12 @@ public class ScarabIdol : ModItem
 		Item.UseSound = SoundID.Item43;
 	}
 
-	public override bool CanUseItem(Player player) => !NPC.AnyNPCs(ModContent.NPCType<Scarabeus>()) && player.ZoneDesert && Main.dayTime;
+	public override bool CanUseItem(Player player) => !NPC.AnyNPCs(ModContent.NPCType<ScarabeusBoss>()) && player.ZoneDesert && Main.dayTime;
 
 	public override bool? UseItem(Player player)
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
-			NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<Scarabeus>());
+			NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<ScarabeusBoss>());
 
 		/*else if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer)
 		{

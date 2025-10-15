@@ -454,3 +454,8 @@ ArgonMossSlime.DisplayName: Argon Moss Slime
 HeliumMossSlime.DisplayName: Helium Moss Slime
 OganessonMossSlime.DisplayName: Oganesson Moss Slime
 RadonMossSlime.DisplayName: Radon Moss Slime
+
+ScarabeusBoss: {
+	DisplayName: Scarabeus Boss
+	Entry: ""
+}

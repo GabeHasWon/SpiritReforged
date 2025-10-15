@@ -2076,3 +2076,8 @@ RedSandstoneBrickCrackedItem: {
 	DisplayName: Cracked Red Sandstone Brick
 	Tooltip: "'Still structurally sound!'"
 }
+
+ScarabDebugSpawner: {
+	DisplayName: Scarab Debug Spawner
+	Tooltip: ""
+}
