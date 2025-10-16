@@ -47,6 +47,8 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 		DustType = -1;
 		AdjTiles = [TileID.Torches];
+
+		this.AutoItem().ResearchUnlockCount = 5;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
@@ -97,9 +99,9 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 	{
 		if (Main.tile[i, j].TileFrameY != 0)
 		{
-			if (Main.rand.NextBool(3))
+			if (Main.rand.NextBool())
 			{
-				var dust = Dust.NewDustDirect(new Vector2(i, j).ToWorldCoordinates(0, -4), 16, 2, DustID.Torch, Scale: Main.rand.NextFloat(1, 2));
+				var dust = Dust.NewDustDirect(new Vector2(i, j).ToWorldCoordinates(0, -4), 16, 2, DustID.Torch, Scale: Main.rand.NextFloat(1, 3));
 				dust.noGravity = true;
 				dust.velocity.Y = -Main.rand.NextFloat(3);
 				dust.fadeIn = 1;
@@ -129,8 +131,14 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		var tile = Main.tile[i, j];
 		if (TileDrawing.IsVisible(tile) && Main.tile[i, j].TileFrameY != 0)
 		{
-			DrawFlame(spriteBatch, (int)((Main.timeForVisualEffects + j * 0.1f) / 5f) % 5, i, j, Color.White.Additive(50));
-			DrawFlame(spriteBatch, (int)((Main.timeForVisualEffects + j * 0.1f) / 5f) % 5, i, j, Color.White.Additive(50));
+			Texture2D texture = TextureAssets.Flames[0].Value;
+			Rectangle source = new(0, 0, 22, 22);
+			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 4) - Main.screenPosition + TileExtensions.TileOffset;
+
+			spriteBatch.Draw(texture, position, source, Color.White.Additive(50), 0, source.Size() / 2, 1.3f, SpriteEffects.None, 0);
+
+			DrawFlame(spriteBatch, (int)((Main.timeForVisualEffects + j * 0.1f) / 6f) % 5, i, j, Color.White.Additive(50) * 0.5f);
+			DrawFlame(spriteBatch, (int)((Main.timeForVisualEffects + j * 0.1f) / 6f) % 5, i, j, Color.White.Additive(50) * 0.5f);
 		}
 
 		static void DrawFlame(SpriteBatch spriteBatch, int frame, int i, int j, Color color)
