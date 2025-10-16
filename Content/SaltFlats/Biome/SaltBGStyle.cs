@@ -86,7 +86,7 @@ public class SaltBGStyle : ModSurfaceBackgroundStyle
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "bgTopY")]
-	private static extern ref int GetBGTopY(Main main);
+	internal static extern ref int GetBGTopY(Main main);
 
 	public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, Path + "SaltBackgroundFar");
 	public override void ModifyFarFades(float[] fades, float transitionSpeed)

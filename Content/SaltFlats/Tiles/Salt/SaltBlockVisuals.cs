@@ -4,6 +4,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Biome;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 
@@ -81,6 +82,9 @@ public class SaltBlockVisuals : ILoadable
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawBG")]
 	private static extern void DrawBG(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawStarsInBackground")]
+	private static extern void DrawStarsInBackground(Main main, Main.SceneArea sceneArea, bool artificial);
 
 	public void Load(Mod mod)
 	{
@@ -180,6 +184,13 @@ public class SaltBlockVisuals : ILoadable
 
 		if (Detail > 1)
 		{
+			Main.SceneArea sceneArea = default;
+			sceneArea.bgTopY = SaltBGStyle.GetBGTopY(Main.instance);
+			sceneArea.totalHeight = Main.screenHeight;
+			sceneArea.totalWidth = Main.screenWidth;
+			sceneArea.SceneLocalScreenPositionOffset = Vector2.Zero;
+
+			DrawStarsInBackground(Main.instance, sceneArea, false);
 			DrawBG(Main.instance);
 
 			if (!HighResolution)
