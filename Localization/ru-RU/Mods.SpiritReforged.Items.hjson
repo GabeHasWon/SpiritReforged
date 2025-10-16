@@ -2549,3 +2549,8 @@ CarvedLapisWallItem: {
 	// DisplayName: Carved Lapis Wall
 	// Tooltip: ""
 }
+
+ZigguratTorchItem: {
+	// DisplayName: Ziggurat Torch
+	// Tooltip: ""
+}
