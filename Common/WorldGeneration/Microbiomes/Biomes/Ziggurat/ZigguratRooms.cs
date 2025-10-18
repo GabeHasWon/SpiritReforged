@@ -106,8 +106,7 @@ public static class ZigguratRooms
 		{
 			Blank,
 			Large,
-			Split,
-			Count
+			Split
 		}
 
 		public readonly StyleID style = style;

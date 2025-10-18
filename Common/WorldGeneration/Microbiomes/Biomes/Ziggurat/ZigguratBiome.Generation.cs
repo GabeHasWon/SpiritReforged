@@ -344,7 +344,12 @@ public partial class ZigguratBiome : Microbiome
 		}
 		else if (layer == 1)
 		{
-			selection = new ZigguratRooms.EntranceRoom(bound, (ZigguratRooms.EntranceRoom.StyleID)WorldGen.genRand.Next((int)ZigguratRooms.EntranceRoom.StyleID.Count));
+			ZigguratRooms.EntranceRoom.StyleID style = WorldGen.genRand.NextFromList(ZigguratRooms.EntranceRoom.StyleID.Large, ZigguratRooms.EntranceRoom.StyleID.Split);
+
+			if (WorldGen.genRand.NextBool())
+				style = ZigguratRooms.EntranceRoom.StyleID.Blank;
+
+			selection = new ZigguratRooms.EntranceRoom(bound, style);
 		}
 		else if (skips == 0 && WorldGen.genRand.NextBool(4))
 		{
