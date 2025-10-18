@@ -2589,3 +2589,8 @@ BronzePlatformItem: {
 	DisplayName: Bronze Platform
 	Tooltip: ""
 }
+
+ZigguratTorchItem: {
+	DisplayName: Ziggurat Torch
+	Tooltip: ""
+}
