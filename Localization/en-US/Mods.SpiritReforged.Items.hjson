@@ -2554,3 +2554,8 @@ ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
 	Tooltip: ""
 }
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: Foreground Red Sandstone Brick Wall
+	Tooltip: ""
+}

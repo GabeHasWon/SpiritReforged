@@ -29,4 +29,7 @@ public static class SpiritSets
 
 	/// <summary> Whether this type is a dungeon wall variant. </summary>
 	public static readonly bool[] DungeonWall = WallFactory.CreateBoolSet(WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe, WallID.BlueDungeonUnsafe, WallID.GreenDungeonSlabUnsafe, WallID.GreenDungeonTileUnsafe, WallID.GreenDungeonUnsafe, WallID.PinkDungeonSlabUnsafe, WallID.PinkDungeonTileUnsafe, WallID.PinkDungeonUnsafe);
+
+	/// <summary> Whether this type blocks light. </summary>
+	public static readonly bool[] WallBlocksLight = WallFactory.CreateBoolSet();
 }
