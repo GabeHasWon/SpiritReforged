@@ -23,6 +23,12 @@ public class RedSandstoneBrickForegroundWall : ModWall, IAutoloadWallItem, IAuto
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 
+	public override bool WallFrame(int i, int j, bool randomizeFrame, ref int style, ref int frameNumber)
+	{
+		ForegroundWallLoader.SpecialWallFraming(i, j, frameNumber);
+		return false;
+	}
+
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		ForegroundWallLoader.AddPoint(i, j);

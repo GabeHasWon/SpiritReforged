@@ -1,9 +1,17 @@
-﻿using Terraria.Graphics;
+﻿using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
+using Terraria.Graphics;
 
 namespace SpiritReforged.Common.WallCommon;
 
 public static class WallMethods
 {
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "wallFrameLookup")]
+	private static extern ref Point16[][] WallFrameLookup(Framing framing);
+
+	public static Point16[][] FrameLookup => WallFrameLookup(default);
+	public static Rectangle GetWallFrame(Tile tile) => new(tile.WallFrameX, tile.WallFrameY + Main.wallFrame[tile.WallType] * 180, 32, 32);
+
 	public static void DrawSingleWall(int i, int j)
 	{
 		var tile = Main.tile[i, j];
