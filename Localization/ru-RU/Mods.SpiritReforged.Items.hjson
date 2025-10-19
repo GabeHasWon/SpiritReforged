@@ -2554,3 +2554,13 @@ ZigguratTorchItem: {
 	// DisplayName: Ziggurat Torch
 	// Tooltip: ""
 }
+
+SaltFlatsNightMusicBoxItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Flats Night Music Box Item
+}
+
+SaltFlatsMusicBoxItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Flats Music Box Item
+}
