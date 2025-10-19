@@ -2554,3 +2554,8 @@ ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
 	Tooltip: ""
 }
+
+SaltPylonItem: {
+	DisplayName: Salt Flats Pylon
+	Tooltip: ""
+}
