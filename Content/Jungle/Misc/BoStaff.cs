@@ -1,10 +1,11 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -18,6 +19,8 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 	internal static int HitCombo;
 
 	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "BoStaffSwing", false);
+
+	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.DD2_JavelinThrowersAttack with { Pitch = -0.2f });
 
 	public override void SetDefaults()
 	{
@@ -66,7 +69,9 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 			fullArc = MathHelper.TwoPi;
 		}
 		else if (HitCombo == 2)
+		{
 			fullArc += 3;
+		}
 
 		_swingArc = _swingArc == fullArc ? -fullArc : fullArc;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, _swingArc, 0, (int)style);
@@ -285,10 +290,10 @@ public class BoStaffSwing : ModProjectile
 			Projectile.Kill();
 	}
 
-	/// <returns> Whether a tile collision has occurred. </returns>
+	/// <returns> Whether tile collision has occurred. </returns>
 	private bool UpdateCollision()
 	{
-		if (UseStyle is Style.Spin && _released && !_collided && Counter > 10 && SolidCollision()) //One-time hit effects
+		if (UseStyle is Style.Spin && _released && !_collided && Counter > SwingTime / 2 && SolidCollision()) //One-time hit effects
 		{
 			_collided = true;
 

@@ -4,7 +4,7 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 
-namespace SpiritReforged.Content.Desert.Tiles;
+namespace SpiritReforged.Content.Forest.Misc;
 
 public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTileItem
 {
@@ -58,13 +58,11 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTi
 
 		//Register ISwordStandTexture members as IsSword
 		foreach (ModItem item in Mod.GetContent<ModItem>())
-		{
 			if (item is ISwordStandTexture s)
 			{
 				SpiritSets.IsSword[item.Type] = true;
 				ISwordStandTexture.TextureByType.Add(item.Type, s.StandTexture);
 			}
-		}
 	}
 
 	public override void SetStaticDefaults()
