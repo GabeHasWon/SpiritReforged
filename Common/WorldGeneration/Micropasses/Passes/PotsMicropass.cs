@@ -288,29 +288,29 @@ internal class PotsMicropass : Micropass
 		int style = -1;
 
 		if (wall is WallID.Dirt or WallID.GrassUnsafe || tile is TileID.Dirt or TileID.Stone or TileID.ClayBlock or TileID.WoodBlock or TileID.Granite && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Cavern);
+			style = GetStyleRange(BiomePots.Style.Cavern);
 
 		if (wall is WallID.SnowWallUnsafe || tile is TileID.SnowBlock or TileID.IceBlock or TileID.BreakableIce && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Ice);
+			style = GetStyleRange(BiomePots.Style.Ice);
 		else if (wall is WallID.Sandstone or WallID.HardenedSand)
-			style = GetRange(BiomePots.Style.Desert);
+			style = GetStyleRange(BiomePots.Style.Desert);
 		else if (wall is WallID.MudUnsafe || tile is TileID.JungleGrass && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Jungle);
+			style = GetStyleRange(BiomePots.Style.Jungle);
 		else if (tile is TileID.CorruptGrass or TileID.Ebonstone or TileID.Demonite && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Corruption);
+			style = GetStyleRange(BiomePots.Style.Corruption);
 		else if (tile is TileID.CrimsonGrass or TileID.Crimstone or TileID.Crimtane && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Crimson);
+			style = GetStyleRange(BiomePots.Style.Crimson);
 		else if (tile is TileID.Marble)
-			style = GetRange(BiomePots.Style.Marble);
+			style = GetStyleRange(BiomePots.Style.Marble);
 		else if (tile is TileID.MushroomGrass)
-			style = GetRange(BiomePots.Style.Mushroom);
+			style = GetStyleRange(BiomePots.Style.Mushroom);
 		else if (tile is TileID.Granite)
-			style = GetRange(BiomePots.Style.Granite);
+			style = GetStyleRange(BiomePots.Style.Granite);
 
 		if (y > Main.UnderworldLayer)
-			style = GetRange(BiomePots.Style.Hell);
+			style = GetStyleRange(BiomePots.Style.Hell);
 		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick && Main.wallDungeon[wall])
-			style = GetRange(BiomePots.Style.Dungeon);
+			style = GetStyleRange(BiomePots.Style.Dungeon);
 
 		if (style != -1)
 		{
@@ -321,12 +321,12 @@ internal class PotsMicropass : Micropass
 		}
 
 		return false;
+	}
 
-		static int GetRange(BiomePots.Style value)
-		{
-			int v = (int)value * 3;
-			return WorldGen.genRand.Next(v, v + 3);
-		}
+	public static int GetStyleRange(BiomePots.Style value)
+	{
+		int v = (int)value * 3;
+		return WorldGen.genRand.Next(v, v + 3);
 	}
 
 	public static bool CreateStack(int x, int y)

@@ -1,12 +1,15 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -30,13 +33,6 @@ public partial class ZigguratBiome : Microbiome
 		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
-		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
-		foreach (var b in bounds)
-		{
-			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots));
-			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Piles));
-		}
-
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
@@ -48,6 +44,13 @@ public partial class ZigguratBiome : Microbiome
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
 		AddNeutralDecorations(bounds);
+
+		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
+		foreach (var b in bounds)
+		{
+			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots));
+			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Piles));
+		}
 
 		TotalBounds = null;
 		TotalRooms = null;
@@ -231,28 +234,14 @@ public partial class ZigguratBiome : Microbiome
 
 	private static void AddNeutralDecorations(List<Rectangle> bounds)
 	{
+		WeightedRandom<int> potWeight = new();
+		potWeight.Add(ModContent.TileType<BronzePots>());
+		potWeight.Add(ModContent.TileType<LapisPots>(), 0.1f);
+		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
+		potWeight.Add(TileID.Pots);
+
 		foreach (var b in bounds)
 		{
-			bool isBottomFloor = b == bounds[^1];
-
-			if (isBottomFloor) //Add a thin lapis floor
-			{
-				WorldUtils.Gen(new(b.Left + 2, b.Bottom - 2), new Shapes.Rectangle(b.Width - 4, 1), new Actions.Custom(static (i, j, args) =>
-				{
-					Tile tile = Main.tile[i, j];
-					Tile belowTile = Main.tile[i, j + 1];
-					Tile aboveTile = Main.tile[i, j - 1];
-
-					if (WorldGen.TileIsExposedToAir(i, j) && !aboveTile.HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
-					{
-						tile.ResetToType((ushort)ModContent.TileType<CarvedLapis>());
-						belowTile.ResetToType((ushort)ModContent.TileType<RedSandstoneBrick>());
-					}
-
-					return false;
-				}));
-			}
-
 			WorldMethods.GenerateSquared((i, j) =>
 			{
 				if (!WorldGen.SolidTile(i, j))
@@ -260,15 +249,23 @@ public partial class ZigguratBiome : Microbiome
 					Tile tile = Main.tile[i, j];
 
 					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
-						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType;
+						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
 
 					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30))
 						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
 
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(12))
+					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10))
 					{
-						int type = isBottomFloor ? ModContent.TileType<LapisPots>() : ModContent.TileType<BronzePots>();
-						return Placer.PlaceTile(i, j, type).success;
+						int type = potWeight;
+						int style = -1;
+
+						if (type == ModContent.TileType<BiomePots>())
+							style = PotsMicropass.GetStyleRange(BiomePots.Style.Desert);
+
+						if (type == TileID.Pots)
+							return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
+
+						return Placer.PlaceTile(i, j, type, style).success;
 					}
 				}
 

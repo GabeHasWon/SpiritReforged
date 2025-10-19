@@ -244,6 +244,8 @@ public static class ZigguratRooms
 		{
 			base.Create();
 
+			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom), new Shapes.Rectangle(Bounds.Width, 1), new Actions.SetTile((ushort)ModContent.TileType<CarvedLapis>()));
+
 			int width = (int)(Bounds.Width / 1.5f);
 			WorldUtils.Gen(new Point(Bounds.Center.X, Bounds.Bottom), new Shapes.Tail(width, new(0, -width)), Actions.Chain(
 				new Modifiers.RectangleMask(-width - 1, width + 1, -3, 0),
