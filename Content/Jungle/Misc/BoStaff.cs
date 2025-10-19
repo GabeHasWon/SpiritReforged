@@ -3,17 +3,21 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc.Bo;
+namespace SpiritReforged.Content.Jungle.Misc;
 
-public class BoStaff : ModItem
+public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 {
 	private float _swingArc;
 	/// <summary> Hit combo counter used by Bo for the owning client only. </summary>
 	internal static int HitCombo;
+
+	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "BoStaffSwing", false);
 
 	public override void SetDefaults()
 	{
@@ -40,7 +44,7 @@ public class BoStaff : ModItem
 		if (player.altFunctionUse == 2)
 			return 1.8f;
 
-		return (HitCombo == 2) ? 0.55f : 1f;
+		return HitCombo == 2 ? 0.55f : 1f;
 	}
 
 	public override bool AltFunctionUse(Player player) => false; //Makes the alt attack inaccessible
@@ -62,20 +66,59 @@ public class BoStaff : ModItem
 			fullArc = MathHelper.TwoPi;
 		}
 		else if (HitCombo == 2)
-		{
 			fullArc += 3;
-		}
 
-		_swingArc = (_swingArc == fullArc) ? -fullArc : fullArc;
+		_swingArc = _swingArc == fullArc ? -fullArc : fullArc;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, _swingArc, 0, (int)style);
 		return false;
 	}
-
-	//public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.IronBar, 8).AddRecipeGroup(RecipeGroupID.Wood, 15).AddTile(TileID.Anvils).Register();
 }
 
 public class BoStaffSwing : ModProjectile
 {
+	private class BoNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, float taperExponent, int detatchTime = -1) : MotionNoiseCone(entity, basePosition, velocity, width, length, rotation, maxTime, detatchTime)
+	{
+		internal override bool UseLightColor => true;
+		private readonly float _taperExponent = taperExponent;
+		internal override float GetScroll() => 1.5f * (EaseFunction.EaseCircularOut.Ease(Progress) + TimeActive / 60f);
+
+		internal override Color BrightColor => Color.PaleVioletRed;
+		internal override Color DarkColor => new(168, 83, 72);
+
+		internal override void DissipationStyle(ref float dissipationProgress, ref float finalExponent, ref float xCoordExponent)
+		{
+			dissipationProgress = EaseFunction.EaseQuadIn.Ease(Progress);
+			finalExponent = 3f;
+			xCoordExponent = 1.2f;
+		}
+
+		internal override float ColorLerpExponent => 1.5f;
+
+		internal override int NumColors => 8;
+
+		internal override float FinalIntensity => 2f;
+
+		internal override void TaperStyle(ref float totalTapering, ref float taperExponent)
+		{
+			totalTapering = 1;
+			taperExponent = _taperExponent;
+		}
+
+		internal override void TextureExponent(ref float minExponent, ref float maxExponent, ref float lerpExponent)
+		{
+			minExponent = 0.01f;
+			maxExponent = 40f;
+			lerpExponent = 2.25f;
+		}
+
+		internal override void XDistanceFade(ref float centeredPosition, ref float exponent)
+		{
+			float easedProgress = EaseFunction.EaseQuadIn.Ease(Progress);
+			centeredPosition = MathHelper.Lerp(0.15f, 0.5f, easedProgress);
+			exponent = MathHelper.Lerp(2.5f, 4f, easedProgress);
+		}
+	}
+
 	public const float MaxReach = 70;
 
 	public enum Style : byte
@@ -94,16 +137,15 @@ public class BoStaffSwing : ModProjectile
 			if (ActivelySpinning)
 			{
 				float progress = (float)Counter / SwingTime * spinSpeed % 1;
-				return (Counter < SwingTime / 2) ? EaseFunction.EaseCircularIn.Ease(progress) : progress;
+				return Counter < SwingTime / 2 ? EaseFunction.EaseCircularIn.Ease(progress) : progress;
 			}
 
-			float mult = Math.Abs(SwingArc) / 4f * 0.7f;
-			return EaseFunction.EaseCircularInOut.Ease(MathHelper.Min((float)Counter / (SwingTime * mult), 1));
+			return EaseFunction.EaseCircularInOut.Ease((float)Counter / SwingTime);
 		}
 	}
 
 	/// <summary> The damage distance in pixels. </summary>
-	public float Reach => MaxReach * ((UseStyle is Style.Jab) ? EaseFunction.EaseCircularOut.Ease((float)Counter / SwingTime * 1.6f) : 1);
+	public float Reach => MaxReach * EaseFunction.EaseCircularOut.Ease(Math.Min((float)Counter * 1.1f / SwingTime, 1));
 	public float SwingTime => Main.player[Projectile.owner].itemTimeMax * (Projectile.extraUpdates + 1);
 	public bool ActivelySpinning => UseStyle is Style.Spin && !_released;
 
@@ -129,23 +171,30 @@ public class BoStaffSwing : ModProjectile
 			rotation += MathHelper.Pi;
 		}
 
-		for (int i = 0; i < 2; i++)
+		Color color = new(168, 83, 72);
+		float trailWidth = 60;
+		float trailDist = MaxReach - trailWidth / 2;
+
+		SwingTrailParameters altParameters = new(SwingArc, rotation, trailDist, trailWidth * 1.1f)
 		{
-			float trailWidth = (i == 0) ? 80 : 30;
-			float trailDist = Reach * (ActivelySpinning ? 0.7f : 1) - trailWidth / 2;
-			float intensity = (i == 0) ? 0.25f : 0.3f;
+			Color = Color.PaleVioletRed,
+			SecondaryColor = color,
+			TrailLength = 0.2f,
+			Intensity = 1,
+			DissolveThreshold = UseStyle is Style.Spin ? 1f : 0.9f
+		};
 
-			SwingTrailParameters parameters = new(SwingArc, rotation, trailDist, trailWidth)
-			{
-				Color = Color.White,
-				SecondaryColor = Color.MediumVioletRed,
-				TrailLength = 0.25f,
-				Intensity = intensity,
-				DissolveThreshold = (UseStyle is Style.Spin) ? 1f : 0.9f
-			};
+		SwingTrailParameters parameters = new(SwingArc, rotation, trailDist, trailWidth)
+		{
+			Color = color,
+			SecondaryColor = Color.Black,
+			TrailLength = 0.2f,
+			Intensity = 1,
+			DissolveThreshold = UseStyle is Style.Spin ? 1f : 0.9f
+		};
 
-			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
-		}
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, altParameters, p => Ease, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
 	}
 
 	public override void SetDefaults()
@@ -166,8 +215,8 @@ public class BoStaffSwing : ModProjectile
 	public override void AI()
 	{
 		var owner = Main.player[Projectile.owner];
-		float progress = (Projectile.direction == -1) ? (1f - Ease) : Ease;
-		int direction = (Projectile.velocity.X > 0) ? 1 : -1;
+		float progress = Projectile.direction == -1 ? 1f - Ease : Ease;
+		int direction = Projectile.velocity.X > 0 ? 1 : -1;
 
 		Projectile.scale = MathHelper.Min(Projectile.scale + 0.05f, _meleeScale);
 
@@ -206,7 +255,6 @@ public class BoStaffSwing : ModProjectile
 		Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
 
 		if (UseStyle is Style.Jab)
-		{
 			stretch = (int)((float)Counter / SwingTime * 4f) switch
 			{
 				2 => Player.CompositeArmStretchAmount.Quarter,
@@ -214,7 +262,6 @@ public class BoStaffSwing : ModProjectile
 				4 => Player.CompositeArmStretchAmount.Full,
 				_ => Player.CompositeArmStretchAmount.None
 			};
-		}
 
 		if (!UpdateCollision())
 			Projectile.rotation = Projectile.velocity.ToRotation() - SwingArc / 2 + SwingArc * progress;
@@ -238,7 +285,7 @@ public class BoStaffSwing : ModProjectile
 			Projectile.Kill();
 	}
 
-	/// <returns> Whether collision has occurred. </returns>
+	/// <returns> Whether a tile collision has occurred. </returns>
 	private bool UpdateCollision()
 	{
 		if (UseStyle is Style.Spin && _released && !_collided && Counter > 10 && SolidCollision()) //One-time hit effects
@@ -248,7 +295,7 @@ public class BoStaffSwing : ModProjectile
 			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 			Collision.HitTiles(GetEnd(20), Vector2.Zero, Projectile.width, Projectile.height);
 
-			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = -0.5f }, GetEnd());
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = 0.5f }, GetEnd());
 
 			for (int i = 0; i < 12; i++)
 				Dust.NewDustPerfect(GetEnd(20), DustID.t_LivingWood, (Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(1f), Scale: Main.rand.NextFloat(0.9f, 1.1f)).noGravity = Main.rand.NextBool();
@@ -288,7 +335,7 @@ public class BoStaffSwing : ModProjectile
 		if (Main.myPlayer == Projectile.owner)
 		{
 			if (UseStyle is not Style.Jab)
-				BoStaff.HitCombo = (Projectile.numHits == 0 || UseStyle is Style.Spin) ? 0 : BoStaff.HitCombo + 1;
+				BoStaff.HitCombo = Projectile.numHits == 0 || UseStyle is Style.Spin ? 0 : BoStaff.HitCombo + 1;
 
 			var owner = Main.player[Projectile.owner];
 			if (UseStyle is Style.Jab && owner.controlUseTile)
@@ -299,23 +346,24 @@ public class BoStaffSwing : ModProjectile
 		}
 	}
 
-	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = (target.Center.X - Projectile.Center.X < 0) ? -1 : 1;
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = target.Center.X - Projectile.Center.X < 0 ? -1 : 1;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		var position = target.Hitbox.ClosestPointInRect(GetEnd());
+		Color color = new(168, 83, 72);
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			var velocity = (Projectile.DirectionTo(position) * Main.rand.NextFloat(5f, 10f)).RotatedByRandom(1.5f);
 
-			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.White * 0.25f, new Vector2(0.5f, 0.6f) * Main.rand.NextFloat(0.5f, 1.5f),
+			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, color * 2, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.1f, 1.5f),
 				Main.rand.Next(15, 20), 0.8f) { UseLightColor = true, NoLight = true });
 		}
 
 		if (UseStyle is Style.Jab)
 		{
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Gray, 0.7f, 140, 20, "supPerlin", Vector2.One, EaseBuilder.EaseCubicOut).WithSkew(0.8f, Projectile.rotation).UsesLightColor());
+			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Gray, 0.7f, 140, 20, "supPerlin", Vector2.One, EaseFunction.EaseCubicOut).WithSkew(0.8f, Projectile.rotation).UsesLightColor());
 
 			SoundEngine.PlaySound(SoundID.DrumCymbal1 with { Pitch = 0.9f, Volume = 0.2f }, position);
 			SoundEngine.PlaySound(SoundID.DrumTamaSnare, position);
@@ -324,7 +372,10 @@ public class BoStaffSwing : ModProjectile
 		}
 		else
 		{
-			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Pitch = 0.25f }, position);
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Pitch = 0.9f }, position);
+
+			Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2 * (Math.Sign(SwingArc) * Projectile.direction));
+			ParticleHandler.SpawnParticle(new BoNoiseCone(null, position, velocity * 5f, 200, 100, velocity.ToRotation(), 20, 0.8f));
 		}
 	}
 
@@ -342,13 +393,11 @@ public class BoStaffSwing : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		int cutoff = (ActivelySpinning || UseStyle is Style.Jab) ? 0 : 30;
-
 		var texture = TextureAssets.Projectile[Type].Value;
-		var frame = new Rectangle(cutoff, 0, texture.Width - cutoff, texture.Height);
-		var origin = ActivelySpinning ? frame.Size() / 2 : new Vector2((1f - (float)Reach / MaxReach) * texture.Width + 10, frame.Height / 2);
+		Rectangle source = texture.Frame();
+		Vector2 origin = new(source.Width - (float)Reach, source.Height / 2);
 
-		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
+		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, source, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, SpriteEffects.None);
 		return false;
 	}
 }
