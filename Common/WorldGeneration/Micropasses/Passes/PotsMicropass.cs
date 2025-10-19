@@ -282,7 +282,7 @@ internal class PotsMicropass : Micropass
 		int tile = Main.tile[x, y + 1].TileType;
 		int wall = Main.tile[x, y].WallType;
 
-		if (Main.tile[x, y].LiquidType is LiquidID.Shimmer || !AreaClear(x, y - 1, 2, 2, true))
+		if (Main.tile[x, y].LiquidType is LiquidID.Shimmer || !AreaClear(x, y - 1, 2, 2, true) || WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots))
 			return false; //Never generate in shimmer or over other tiles
 
 		int style = -1;
@@ -369,6 +369,6 @@ internal class PotsMicropass : Micropass
 		static bool WoodenPlatform(Tile t) => t.TileType == TileID.Platforms && t.TileFrameY == 0;
 	}
 
-	/// <summary> Checks whether the below tile is contained in <see cref="CommonBlacklist"/>. </summary>
-	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100;
+	/// <summary> Checks whether a pot can be placed at the given coordinates. </summary>
+	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots);
 }

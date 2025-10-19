@@ -76,7 +76,7 @@ internal class GravelMicropass : Micropass
 
 		for (int i = 0; i < rockCount; i++)
 		{
-			int offX = x + (Main.rand.NextBool() ? -WorldGen.genRand.Next(2, 5) : WorldGen.genRand.Next(2, 5));
+			int offX = x + WorldGen.genRand.NextFromList(-2, -5, 2, 5);
 			int offY = y;
 
 			WorldMethods.FindGround(offX, ref offY);

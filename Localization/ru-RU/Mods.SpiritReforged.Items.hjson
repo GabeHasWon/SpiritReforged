@@ -2550,6 +2550,46 @@ CarvedLapisWallItem: {
 	// Tooltip: ""
 }
 
+BronzePotsItem: {
+	// DisplayName: Bronze Pot
+	// Tooltip: ""
+}
+
+LapisPotsItem: {
+	// DisplayName: Lapis Pot
+	// Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	// DisplayName: Drywood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	// DisplayName: Bronze Grate
+	// Tooltip: ""
+}
+
+BronzePlatingItem: {
+	// DisplayName: Bronze Plating
+	// Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	// DisplayName: Bronze Plating Wall
+	// Tooltip: ""
+}
+
+BronzePlatformItem: {
+	// DisplayName: Bronze Platform
+	// Tooltip: ""
+}
+
 ZigguratTorchItem: {
 	// DisplayName: Ziggurat Torch
 	// Tooltip: ""
