@@ -2559,3 +2559,13 @@ SaltPylonItem: {
 	DisplayName: Salt Flats Pylon
 	Tooltip: ""
 }
+
+SaltFlatsNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats Night)
+}
+
+SaltFlatsMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats)
+}
