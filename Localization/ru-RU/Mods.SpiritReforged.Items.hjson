@@ -2555,6 +2555,11 @@ ZigguratTorchItem: {
 	// Tooltip: ""
 }
 
+RedSandstoneBrickForegroundWallItem: {
+	// DisplayName: Foreground Red Sandstone Brick Wall
+	// Tooltip: ""
+}
+
 SaltPylonItem: {
 	// DisplayName: Salt Flats Pylon
 	// Tooltip: ""
