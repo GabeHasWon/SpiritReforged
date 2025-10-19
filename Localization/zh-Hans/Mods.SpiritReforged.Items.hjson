@@ -2555,12 +2555,17 @@ ZigguratTorchItem: {
 	// Tooltip: ""
 }
 
+SaltPylonItem: {
+	// DisplayName: Salt Flats Pylon
+	// Tooltip: ""
+}
+
 SaltFlatsNightMusicBoxItem: {
 	// Tooltip: ""
-	// DisplayName: Salt Flats Night Music Box Item
+	// DisplayName: Music Box (Salt Flats Night)
 }
 
 SaltFlatsMusicBoxItem: {
 	// Tooltip: ""
-	// DisplayName: Salt Flats Music Box Item
+	// DisplayName: Music Box (Salt Flats)
 }
