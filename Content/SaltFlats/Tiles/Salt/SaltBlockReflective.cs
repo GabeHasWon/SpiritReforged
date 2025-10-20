@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -63,8 +64,6 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				Reflections.DrawBG(Main.instance);
-
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 
@@ -162,7 +161,7 @@ public class SaltBlockReflective : SaltBlock
 			s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
 			s.Parameters["fade"].SetValue(3f);
 			s.Parameters["distortionScale"].SetValue(Vector2.One);
-			s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
+			s.Parameters["distortionStrength"].SetValue(Vector2.Zero);
 			s.Parameters["distortionPower"].SetValue(1);
 
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
