@@ -2554,3 +2554,13 @@ ZigguratTorchItem: {
 	// DisplayName: Ziggurat Torch
 	// Tooltip: ""
 }
+
+SwordStandMahoganyItem: {
+	// DisplayName: Mahogany Sword Stand
+	// Tooltip: ""
+}
+
+SwordStandSandstoneItem: {
+	// DisplayName: Sandstone Sword Stand
+	// Tooltip: ""
+}

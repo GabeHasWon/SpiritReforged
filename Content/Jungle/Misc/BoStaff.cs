@@ -5,7 +5,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Misc;
+using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
