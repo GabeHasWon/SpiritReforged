@@ -5,6 +5,7 @@ using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
@@ -251,10 +252,10 @@ public partial class ZigguratBiome : Microbiome
 					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
 						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
 
-					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30))
+					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place banners
 						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
 
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10))
+					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
 					{
 						int type = potWeight;
 						int style = -1;
@@ -266,6 +267,17 @@ public partial class ZigguratBiome : Microbiome
 							return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
 
 						return Placer.PlaceTile(i, j, type, style).success;
+					}
+
+					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(18)) //Place furniture
+					{
+						LapisSet set = ModContent.GetInstance<LapisSet>();
+						FurnitureSet.Types[] types = Enum.GetValues<FurnitureSet.Types>();
+
+						if (set.TryGetTileType(WorldGen.genRand.Next(types), out int tileType))
+							return Placer.Check(i, j, tileType).IsClear().Place().success;
+
+						return false;
 					}
 				}
 
