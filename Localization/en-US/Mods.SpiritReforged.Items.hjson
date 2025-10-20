@@ -2550,6 +2550,46 @@ CarvedLapisWallItem: {
 	Tooltip: ""
 }
 
+BronzePotsItem: {
+	DisplayName: Bronze Pot
+	Tooltip: ""
+}
+
+LapisPotsItem: {
+	DisplayName: Lapis Pot
+	Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	DisplayName: Drywood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: Bronze Grate
+	Tooltip: ""
+}
+
+BronzePlatingItem: {
+	DisplayName: Bronze Plating
+	Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	DisplayName: Bronze Plating Wall
+	Tooltip: ""
+}
+
+BronzePlatformItem: {
+	DisplayName: Bronze Platform
+	Tooltip: ""
+}
+
 ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
 	Tooltip: ""
@@ -2557,10 +2597,30 @@ ZigguratTorchItem: {
 
 SwordStandMahoganyItem: {
 	DisplayName: Mahogany Sword Stand
-	Tooltip: ""
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
 SwordStandSandstoneItem: {
 	DisplayName: Sandstone Sword Stand
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: Foreground Red Sandstone Brick Wall
 	Tooltip: ""
+}
+
+SaltPylonItem: {
+	DisplayName: Salt Flats Pylon
+	Tooltip: ""
+}
+
+SaltFlatsNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats Night)
+}
+
+SaltFlatsMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats)
 }

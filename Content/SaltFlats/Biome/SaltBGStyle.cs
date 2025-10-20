@@ -67,7 +67,7 @@ public class SaltBGStyle : ModSurfaceBackgroundStyle
 		OldBgTopY = bgTopY;
 
 		float screenCenterY = Main.screenPosition.Y + Main.screenHeight / 2f;
-		float dif = SaltFlatsSystem.SurfaceHeight * 16 - screenCenterY;
+		float dif = ((SaltFlatsSystem.SurfaceHeight == 0) ? (float)(Main.worldSurface * 0.67f) : SaltFlatsSystem.SurfaceHeight) * 16 - screenCenterY;
 		bgTopY = (int)(dif - dif * 0.8f);
 
 		int textureSlot = current.ChooseFarTexture();

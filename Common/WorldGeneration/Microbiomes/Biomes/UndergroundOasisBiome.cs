@@ -141,7 +141,7 @@ public class UndergroundOasisBiome : Microbiome
 					{
 						WorldGen.PlaceCatTail(i, j);
 
-						int height = Main.rand.Next(3, 6);
+						int height = WorldGen.genRand.Next(3, 6);
 						for (int h = 0; h < height; h++)
 							WorldGen.GrowCatTail(i, j);
 					}
@@ -191,7 +191,7 @@ public class UndergroundOasisBiome : Microbiome
 			if (lastX.Add(x))
 				Placer.PlaceTile<LightShaft>(x, y + 1);
 
-			x = point.X + Main.rand.Next(-10, 10);
+			x = point.X + WorldGen.genRand.Next(-10, 10);
 			y = point.Y;
 		}
 	}
@@ -204,7 +204,7 @@ public class UndergroundOasisBiome : Microbiome
 
 		for (int i = 0; i < count; i++)
 		{
-			var point = new Point(origin.X + Main.rand.Next(4, radius) * Main.rand.Next([-1, 1]), origin.Y);
+			var point = new Point(origin.X + WorldGen.genRand.Next(4, radius) * WorldGen.genRand.Next([-1, 1]), origin.Y);
 			int x = point.X;
 			int y = point.Y;
 
