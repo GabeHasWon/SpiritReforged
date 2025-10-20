@@ -84,7 +84,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		//The strength of the sine for dull salt padding
 		const float baseCurveStrength = 5;
 		//The base depth of reflective salt padding
-		const int baseDepth = 30;
+		const int baseDepth = 22;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
