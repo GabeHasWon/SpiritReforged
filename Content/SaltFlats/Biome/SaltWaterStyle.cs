@@ -2,7 +2,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using Terraria;
 using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
