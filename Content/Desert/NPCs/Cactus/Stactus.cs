@@ -14,12 +14,12 @@ using Terraria.ModLoader.Utilities;
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
 [AutoloadBanner]
-internal class Stactus : ModNPC, IDeathCount
+public class Stactus : ModNPC, IDeathCount
 {
-	public const int SpawnTimeMax = 120;
+	public readonly record struct Parameters(int DustType, int SpawnTime);
 
 	public static readonly HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab];
-	private static readonly Asset<Texture2D> Face = DrawHelpers.RequestLocal(typeof(Stactus), "Stactus_Face", false);
+	private static readonly Dictionary<int, Asset<Texture2D>> Faces = [];
 
 	public enum SegmentType : byte
 	{
@@ -28,7 +28,7 @@ internal class Stactus : ModNPC, IDeathCount
 		Top
 	}
 
-	public NPC ParentNPC => Parent > -1 ? Main.npc[Parent] : null;
+	public NPC ParentNPC => (Parent > -1) ? Main.npc[Parent] : null;
 
 	/// <summary> The index of NPC this one is stacked atop. </summary>
 	public int Parent
@@ -57,22 +57,25 @@ internal class Stactus : ModNPC, IDeathCount
 		MaxInstances = 0
 	};
 
-	public bool Falling { get; private set; }
+	public bool Falling { get; protected set; }
+	public Parameters Params { get; protected set; }
+
+	private byte _style;
 	private float _sine;
-	private bool collisionSoundPlayed = false;
+	private bool _collisionSoundPlayed = false;
 
 	/// <summary> Spawns a stack of Stactus at <paramref name="fromNPC"/>, representing the first in the stack. </summary>
-	public static void SpawnStack(NPC fromNPC, int height)
+	public void SpawnStack(int height)
 	{
-		int parent = fromNPC.whoAmI;
+		int parent = NPC.whoAmI;
 
 		for (int i = 1; i < height; i++)
 		{
 			//The only segment that can't be calculated locally after spawn is SegmentType.Top, so do it all here for continuity
-			var segment = (i == 0) ? SegmentType.Base : ((i == height - 1) ? SegmentType.Top : SegmentType.Middle);
+			SegmentType segment = (i == 0) ? SegmentType.Base : ((i == height - 1) ? SegmentType.Top : SegmentType.Middle);
 			var source = (parent != -1) ? Main.npc[parent].GetSource_FromThis() : new EntitySource_SpawnNPC();
 
-			var npc = NPC.NewNPCDirect(source, fromNPC.Center, ModContent.NPCType<Stactus>(), 0, parent, (int)segment, SpawnTimeMax);
+			var npc = NPC.NewNPCDirect(source, NPC.Center, NPC.type, 0, parent, (int)segment, Params.SpawnTime);
 			npc.velocity.Y = (i + 1) * -1.5f;
 
 			parent = npc.whoAmI;
@@ -82,12 +85,17 @@ internal class Stactus : ModNPC, IDeathCount
 		}
 	}
 
+	/// <summary> The face texture associated with this NPC type. </summary>
+	public Texture2D FaceTexture => Faces[Type].Value;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+
+		Faces.Add(Type, DrawHelpers.RequestLocal(typeof(Stactus), Name + "_Face", false));
 	}
 
 	public override void SetDefaults()
@@ -101,13 +109,21 @@ internal class Stactus : ModNPC, IDeathCount
 		NPC.value = 80;
 		NPC.Opacity = NPC.IsABestiaryIconDummy ? 1 : 0;
 		NPC.dontCountMe = true;
+
+		Params = new(DustID.OasisCactus, 120);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
 
+	public override void OnSpawn(IEntitySource source)
+	{
+		if (Segment == SegmentType.Top)
+			_style = (byte)Main.rand.Next(6); //Select a random style
+	}
+
 	public override void AI()
 	{
-		if (++SpawnTime < SpawnTimeMax)
+		if (++SpawnTime < Params.SpawnTime)
 		{
 			NPC.dontTakeDamage = true;
 			SpawnBehaviour();
@@ -147,7 +163,7 @@ internal class Stactus : ModNPC, IDeathCount
 			}
 
 			float sway = (float)Math.Sin((_sine + NPC.whoAmI * 25f) / 10f) * 4;
-			var origin = ParentNPC.Center - new Vector2(sway * Math.Clamp((SpawnTime - SpawnTimeMax - 50) / 30f, 0, 1), NPC.height);
+			var origin = ParentNPC.Center - new Vector2(sway * Math.Clamp((SpawnTime - Params.SpawnTime - 50) / 30f, 0, 1), NPC.height);
 			bool belowOrigin = NPC.Center.Y > origin.Y;
 
 			NPC.Center = belowOrigin ? origin : NPC.Center;
@@ -163,7 +179,7 @@ internal class Stactus : ModNPC, IDeathCount
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, speed, 0.05f);
 
-			if (NPC.velocity.Y == 0 && Math.Abs(NPC.velocity.X) > 0.1f && Main.rand.NextBool(10) && SandyTypes.Contains(GetSurfaceTile().TileType))
+			if (Math.Abs(NPC.velocity.X) > 0.1f && Main.rand.NextBool(10) && SandyTypes.Contains(GetSurfaceTile().TileType))
 				SpawnSmoke(NPC.Bottom, -NPC.velocity, Main.rand.NextFloat(0.05f, 0.1f), 60, EaseFunction.EaseCubicIn, GetSurfaceTile());
 
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
@@ -181,11 +197,11 @@ internal class Stactus : ModNPC, IDeathCount
 			if (Main.rand.NextBool(5))
 				SpawnDust(Vector2.UnitY * -Main.rand.NextFloat(2), 150).noGravity = Main.rand.NextBool();
 
-			if (SpawnTime > SpawnTimeMax / 3 && Main.rand.NextBool(15))
-				SpawnSmoke(NPC.Bottom, -Vector2.UnitY, SpawnTime / (float)SpawnTimeMax * 0.17f, 90, EaseFunction.EaseCubicIn, GetSurfaceTile());
+			if (SpawnTime > Params.SpawnTime / 3 && Main.rand.NextBool(15))
+				SpawnSmoke(NPC.Bottom, -Vector2.UnitY, SpawnTime / (float)Params.SpawnTime * 0.17f, 90, EaseFunction.EaseCubicIn, GetSurfaceTile());
 		}
 
-		if (SpawnTime == SpawnTimeMax - 1)
+		if (SpawnTime == Params.SpawnTime - 1)
 		{
 			if (!Main.dedServ)
 			{
@@ -211,7 +227,7 @@ internal class Stactus : ModNPC, IDeathCount
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				SpawnStack(NPC, Main.rand.Next(3, 6) + (Main.expertMode ? 1 : 0));
+				SpawnStack(Main.rand.Next(3, 6) + (Main.expertMode ? 1 : 0));
 
 				NPC.velocity.Y = -3;
 				NPC.netUpdate = true;
@@ -255,10 +271,10 @@ internal class Stactus : ModNPC, IDeathCount
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				// Play a 'bounce' sound once for the initial fall.
-				if (!collisionSoundPlayed)
+				if (!_collisionSoundPlayed)
 				{
 					SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.75f }, NPC.Center);
-					collisionSoundPlayed = true;
+					_collisionSoundPlayed = true;
 				}
 
 				//Take continuous damage in contact with the ground but don't display it
@@ -299,7 +315,6 @@ internal class Stactus : ModNPC, IDeathCount
 
 	public override void FindFrame(int frameHeight)
 	{
-		_sine++;
 		NPC.frame.Y = frameHeight * Segment switch
 		{
 			SegmentType.Base => 3,
@@ -307,6 +322,12 @@ internal class Stactus : ModNPC, IDeathCount
 			SegmentType.Top => 0,
 			_ => 1
 		};
+
+		int frameWidth = (NPC.frame.Width = 50) + 2;
+		NPC.frame.Height = frameHeight - 2;
+
+		NPC.frame.X = frameWidth * _style;
+		_sine++;
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
@@ -314,7 +335,7 @@ internal class Stactus : ModNPC, IDeathCount
 		if (!Main.dedServ)
 		{
 			for (int i = 0; i < 3; i++)
-				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.OasisCactus, Scale: Main.rand.NextFloat(1f, 1.2f)).noGravity = Main.rand.NextBool();
+				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, Params.DustType, Scale: Main.rand.NextFloat(1f, 1.2f)).noGravity = Main.rand.NextBool();
 
 			if (!Falling)
 				SoundEngine.PlaySound(SoundID.NPCHit1, NPC.Center);
@@ -330,17 +351,34 @@ internal class Stactus : ModNPC, IDeathCount
 		{
 			if (Segment is SegmentType.Top)
 			{
-				for (int i = 1; i < 8; i++)
-					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("StactusTop" + i).Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + "Top" + Main.rand.Next(1, 3)).Type);
+				
+				if (_style != 0)
+				{
+					string flowerName = Name + "Flower" + _style switch
+					{
+						2 => "Pink",
+						3 => "Blue",
+						4 => "White",
+						5 => "Plum",
+						_ => "Red"
+					};
+
+					for (int i = 1; i < 4; i++)
+						Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(flowerName + i).Type);
+				}
 			}
 			else
 			{
 				for (int i = 0; i < 2; i++)
-					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Stactus" + Main.rand.Next(1, 6)).Type);
+					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + Main.rand.Next(1, 6)).Type);
 			}
 
-			if (Main.rand.NextBool())
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Stactus6").Type);
+			for (int i = 6; i < 9; i++)
+			{
+				if (Main.rand.NextBool())
+					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + i).Type);
+			}
 
 			SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.5f }, NPC.Center);
 			SoundEngine.PlaySound(Death, NPC.Center);
@@ -367,12 +405,12 @@ internal class Stactus : ModNPC, IDeathCount
 	#region hide
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
 	{
-		if (SpawnTime < SpawnTimeMax)
+		if (SpawnTime < Params.SpawnTime)
 			boundingBox = Rectangle.Empty; //Hide the bounding box when spawning in
 	}
 
-	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => SpawnTime >= SpawnTimeMax;
-	public override bool CanHitNPC(NPC target) => SpawnTime >= SpawnTimeMax;
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => SpawnTime >= Params.SpawnTime;
+	public override bool CanHitNPC(NPC target) => SpawnTime >= Params.SpawnTime;
 	#endregion
 
 	#region helpers
@@ -400,7 +438,7 @@ internal class Stactus : ModNPC, IDeathCount
 
 	private Tile GetSurfaceTile()
 	{
-		var t = Framing.GetTileSafely(NPC.Bottom);
+		var t = Framing.GetTileSafely(NPC.Bottom + Vector2.UnitY * 8);
 		return WorldGen.SolidOrSlopedTile(t) ? t : new();
 	}
 
@@ -428,23 +466,20 @@ internal class Stactus : ModNPC, IDeathCount
 	{
 		var texture = TextureAssets.Npc[Type].Value;
 		var center = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY);
-		var source = NPC.frame with { Height = NPC.frame.Height - 2 };
+		var source = NPC.frame;
 		var origin = new Vector2(source.Width / 2, source.Height / 2 + 6);
 		var color = NPC.GetAlpha(drawColor);
 
 		if (NPC.IsABestiaryIconDummy) //Draw the Bestiary entry
 		{
-			source = texture.Frame(1, Main.npcFrameCount[Type], 0, 3, sizeOffsetY: -2);
 			int frameHeight = texture.Height / Main.npcFrameCount[Type];
-
 			center.Y -= 6;
 
 			Main.EntitySpriteDraw(texture, center, source, color, NPC.rotation, origin, NPC.scale, default);
 			Main.EntitySpriteDraw(texture, center - new Vector2(GetSway(1), NPC.height), source with { Y = source.Y - frameHeight }, color, NPC.rotation, origin, NPC.scale, default);
 			Main.EntitySpriteDraw(texture, center - new Vector2(GetSway(2), NPC.height * 2), source with { Y = source.Y - frameHeight * 3 }, color, NPC.rotation, origin, NPC.scale, default);
 
-			source = Face.Frame(1, 2, 0, (int)(_sine % 300) / 285, sizeOffsetY: -2);
-			Main.EntitySpriteDraw(Face.Value, center - new Vector2(GetSway(2), NPC.height * 2 - 4), source, color, NPC.rotation, source.Size() / 2, NPC.scale, default);
+			DrawFace(center - new Vector2(GetSway(2), NPC.height * 2), color);
 
 			return false;
 		}
@@ -452,20 +487,34 @@ internal class Stactus : ModNPC, IDeathCount
 		Main.EntitySpriteDraw(texture, center, source, color, NPC.rotation, origin, NPC.scale, default);
 
 		if (Segment is SegmentType.Top)
-		{
-			source = Face.Frame(1, 2, 0, (int)(NPC.localAI[0] % 300) / 285, sizeOffsetY: -2);
-			float turn = Math.Clamp((Main.player[NPC.target].Center.X - NPC.Center.X) / 50f, -4, 4);
-
-			Main.EntitySpriteDraw(Face.Value, center + new Vector2((int)turn, 4), source, color, NPC.rotation, source.Size() / 2, NPC.scale, default);
-		}
+			DrawFace(center, color);
 
 		return false;
 
 		float GetSway(int index) => (float)Math.Sin((_sine + index * 25f) / 10f) * 2;
 	}
 
-	public override void SendExtraAI(BinaryWriter writer) => writer.Write(Falling);
-	public override void ReceiveExtraAI(BinaryReader reader) => Falling = reader.ReadBoolean();
+	private void DrawFace(Vector2 center, Color color)
+	{
+		Rectangle source = FaceTexture.Frame(1, 2, 0, (int)(_sine % 300) / 285, sizeOffsetY: -2);
+
+		Vector2 target = NPC.IsABestiaryIconDummy ? Main.MouseScreen : Main.player[NPC.target].Center;
+		float turn = (int)(Math.Clamp((target.X - NPC.Center.X) / 50f, -4, 4) / 2) * 2;
+
+		Main.EntitySpriteDraw(FaceTexture, center + Vector2.UnitX * turn, source, color, NPC.rotation, source.Size() / 2, NPC.scale, default);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(Falling);
+		writer.Write(_style);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Falling = reader.ReadBoolean();
+		_style = reader.ReadByte();
+	}
 
 	public bool TallyDeath(NPC npc) => (npc.ModNPC as Stactus).Segment is SegmentType.Top; //Only ever tally the head
 }

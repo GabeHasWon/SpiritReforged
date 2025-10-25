@@ -2614,3 +2614,6 @@ SaltFlatsMusicBoxItem: {
 	Tooltip: ""
 	DisplayName: Music Box (Salt Flats)
 }
+
+StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
+StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
