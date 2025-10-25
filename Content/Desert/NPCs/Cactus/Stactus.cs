@@ -188,7 +188,7 @@ public class Stactus : ModNPC, IDeathCount
 		NPC.behindTiles = Segment != SegmentType.Top;
 	}
 
-	private void SpawnBehaviour()
+	public virtual void SpawnBehaviour()
 	{
 		Parent = -1;
 
@@ -257,7 +257,7 @@ public class Stactus : ModNPC, IDeathCount
 		}
 	}
 
-	private void FallBehaviour()
+	public virtual void FallBehaviour()
 	{
 		NPC.rotation += NPC.velocity.X * 0.05f;
 
@@ -268,15 +268,15 @@ public class Stactus : ModNPC, IDeathCount
 		{
 			NPC.velocity.Y *= -0.9f;
 
+			// Play a 'bounce' sound once for the initial fall.
+			if (!_collisionSoundPlayed)
+			{
+				SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.75f }, NPC.Center);
+				_collisionSoundPlayed = true;
+			}
+
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				// Play a 'bounce' sound once for the initial fall.
-				if (!_collisionSoundPlayed)
-				{
-					SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = 0.75f }, NPC.Center);
-					_collisionSoundPlayed = true;
-				}
-
 				//Take continuous damage in contact with the ground but don't display it
 				var hit = NPC.CalculateHitInfo(20, 1, damageVariation: true) with { HideCombatText = true };
 				NPC.StrikeNPC(hit);
