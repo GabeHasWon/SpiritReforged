@@ -269,21 +269,31 @@ public partial class ZigguratBiome : Microbiome
 						return Placer.PlaceTile(i, j, type, style).success;
 					}
 
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(18)) //Place furniture
-					{
-						LapisSet set = ModContent.GetInstance<LapisSet>();
-						FurnitureSet.Types[] types = Enum.GetValues<FurnitureSet.Types>();
-
-						if (set.TryGetTileType(WorldGen.genRand.Next(types), out int tileType))
-							return Placer.Check(i, j, tileType).IsClear().Place().success;
-
-						return false;
-					}
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(18))
+						PlaceFurniture(i, j);
 				}
 
 				return false;
 			}, out _, b);
 		}
+	}
+
+	private static bool PlaceFurniture(int i, int j)
+	{
+		LapisSet set = ModContent.GetInstance<LapisSet>();
+		FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+
+		if (set.TryGetTileType(type, out int tileType))
+		{
+			int style = -1;
+
+			if (type is FurnitureSet.Types.Candle or FurnitureSet.Types.Chandelier or FurnitureSet.Types.Lamp or FurnitureSet.Types.Lantern)
+				style = 1; //Off states
+
+			return Placer.Check(i, j, tileType, style).IsClear().Place().success;
+		}
+
+		return false;
 	}
 
 	private static void AddRooms(IEnumerable<Rectangle> bounds, out List<GenRoom> rooms)
