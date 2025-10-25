@@ -150,7 +150,7 @@ public static class ZigguratRooms
 					new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
 					new Actions.ClearWall()));
 
-				WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<RuinedSandstonePillar>()));
+				WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 			}
 			else if (style == StyleID.Split)
 			{
@@ -165,6 +165,8 @@ public static class ZigguratRooms
 						new Modifiers.RadialDither(2, 3),
 						new Modifiers.OnlyWalls((ushort)BronzeGrate.UnsafeType),
 						new Actions.ClearWall()));
+
+					WorldUtils.Gen(new(grateArea.X, grateArea.Y + grateArea.Height), new Shapes.Rectangle(grateArea.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 				}
 			}
 
