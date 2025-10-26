@@ -1,13 +1,124 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
 public class CarvedLapis : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sapphire).AddTile(TileID.WorkBenches).Register();
+	public class LapisGridOverlay : TileGridOverlay
+	{
+		public readonly ModTarget2D normalTarget;
+		protected Texture2D _distanceMap;
 
+		public LapisGridOverlay() => normalTarget = new(() => CanDraw, RenderNormalTarget);
+
+		public Texture2D CreateTilemap(int width, int height)
+		{
+			if (_distanceMap != null)
+				return _distanceMap;
+
+			return _distanceMap = Reflections.CreateTilemap(width, height);
+		}
+
+		public override void RenderOverlayTarget(SpriteBatch spriteBatch)
+		{
+			GraphicsDevice gd = Main.graphics.GraphicsDevice;
+			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
+			Main.GameViewMatrix.Zoom = Vector2.One;
+
+			gd.SetRenderTarget(overlayTarget);
+			gd.Clear(Color.Transparent);
+
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.Default, Main.Rasterizer, null);
+
+			Reflections.DrawNPCs(Main.instance, true);
+			Reflections.DrawNPCs(Main.instance, false);
+
+			spriteBatch.End();
+
+			Reflections.DrawPlayers_BehindNPCs(Main.instance);
+			Reflections.DrawPlayers_AfterProjectiles(Main.instance);
+
+			gd.SetRenderTarget(null);
+			Main.GameViewMatrix.Zoom = storedZoom;
+		}
+
+		public virtual void RenderNormalTarget(SpriteBatch spriteBatch)
+		{
+			const float scale = 2;
+			var gradient = CreateTilemap(8, 24);
+
+			foreach (var pt in _grid)
+			{
+				int i = pt.X;
+				int j = pt.Y;
+
+				if (!_grid.Contains(new(i, j - 1)))
+				{
+					Rectangle source = new(0, 0, gradient.Width, gradient.Height);
+					Tile t = Main.tile[i, j];
+
+					if (t.IsHalfBlock)
+					{
+						spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 8), source, Color.White, 0, Vector2.Zero, scale, default, 0);
+						continue;
+					}
+					else if (t.Slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight)
+					{
+						for (int x = 0; x < 8; x++)
+						{
+							var position = t.Slope == SlopeType.SlopeDownLeft ? new Vector2(x, x) * 2 : new Vector2(6 - x, x) * 2;
+							spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, scale, default, 0);
+						}
+
+						continue;
+					}
+
+					spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition, source, Color.White, 0, Vector2.Zero, scale, default, 0);
+				}
+
+				TileMerger.DrawMerge(spriteBatch, i, j, Color.Black, Vector2.Zero, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
+			}
+		}
+
+		protected override void DrawContents(SpriteBatch spriteBatch)
+		{
+			Effect s = AssetLoader.LoadedShaders["Reflection"].Value;
+			Texture2D n = AssetLoader.LoadedTextures["waterNoise"].Value;
+			Color tint = Color.SlateBlue.Additive(230) * 0.6f;
+
+			s.Parameters["mapTexture"].SetValue(normalTarget);
+			s.Parameters["distortionTexture"].SetValue(n);
+			s.Parameters["tileTexture"].SetValue(tileTarget);
+
+			s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
+			s.Parameters["fade"].SetValue(15f);
+			s.Parameters["distortionScale"].SetValue(Vector2.One);
+			s.Parameters["distortionStrength"].SetValue(Vector2.Zero);
+			s.Parameters["distortionPower"].SetValue(1);
+
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
+			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+			spriteBatch.End();
+		}
+	}
+
+	private static LapisGridOverlay Overlay;
+
+	public override void Load()
+	{
+		if (Overlay == null)
+		{
+			Overlay = new();
+			DrawOverHandler.PostDrawTilesSolid += Overlay.Draw;
+		}
+	}
+
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sapphire).AddTile(TileID.WorkBenches).Register();
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -24,4 +135,11 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (Reflections.Enabled)
+			Overlay.AddToGrid(i, j);
+
+		return true;
+	}
 }

@@ -2,6 +2,7 @@
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -53,10 +54,19 @@ internal class ZigguratMicropass : Micropass
 
 		for (int x = left; x < right; x++)
 		{
-			float targetY = WorldMethods.FindGround(x, y) - (duneHeight + noise.GetNoise(x, 100) * duneHeight) * EaseFunction.EaseSine.Ease((float)(x - left) / (right - left));
-			y = (int)MathHelper.Lerp(y, targetY, 0.3f);
+			int groundY = WorldMethods.FindGround(x, y);
 
-			FillColumn(x, y, TileID.Sand);
+			if (CanCreateColumn(x, groundY))
+			{
+				float targetY = groundY - (duneHeight + noise.GetNoise(x, 100) * duneHeight) * EaseFunction.EaseSine.Ease((float)(x - left) / (right - left));
+				y = (int)MathHelper.Lerp(y, targetY, 0.3f);
+
+				FillColumn(x, y, TileID.Sand);
+			}
+			else
+			{
+				left = x;
+			}
 		}
 
 		void FillColumn(int x, int top, ushort tileType)
@@ -76,5 +86,7 @@ internal class ZigguratMicropass : Micropass
 					tile.ResetToType(tileType);
 			}
 		}
+
+		static bool CanCreateColumn(int x, int y) => Main.tile[x, y].TileType != ModContent.TileType<SaltBlockReflective>() && Main.tile[x, y].TileType != ModContent.TileType<SaltBlockDull>();
 	}
 }

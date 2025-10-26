@@ -34,11 +34,30 @@ public abstract class FurnitureSet : ILoadable
 		WorkBench
 	}
 
+	/// <summary> The mod this instance was registered through. </summary>
+	public Mod Mod { get; private set; }
 	public abstract string Name { get; }
 	public virtual FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => default;
 
+	/// <summary> Gets the tile type associated with the given <see cref="Type"/>. Throws exceptions on failure. </summary>
+	public int GetTileType(Types type) => Mod.Find<ModTile>(Name + type.ToString()).Type;
+
+	/// <summary> Tries to get the tile type associated with the given <see cref="Type"/>. </summary>
+	public bool TryGetTileType(Types type, out int tileType)
+	{
+		tileType = -1;
+		string fullName = Name + type.ToString();
+
+		if (Mod.TryFind(fullName, out ModTile value))
+			tileType = value.Type;
+
+		return tileType != -1;
+	}
+
 	public void Load(Mod mod)
 	{
+		Mod = mod;
+
 		foreach (var t in typeof(FurnitureSet).GetNestedTypes(BindingFlags.Instance | BindingFlags.Public))
 		{
 			if (typeof(FurnitureTile).IsAssignableFrom(t))

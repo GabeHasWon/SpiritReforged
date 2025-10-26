@@ -23,7 +23,7 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 
 		this.Merge(TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
 		AddMapEntry(new Color(138, 79, 45));
-		MineResist = .5f;
+		MineResist = 0.5f;
 
 		this.AutoItem().ResearchUnlockCount = 100;
 	}
@@ -46,27 +46,31 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		}
 	}
 
-	public bool? CheckItemUse(int type, int i, int j)
+	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
-		switch (type)
+		if (player.whoAmI == Main.myPlayer)
 		{
-			case ItemID.StaffofRegrowth:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
-				break;
-			case ItemID.CorruptSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCorrupt>(), forced: true);
-				break;
-			case ItemID.CrimsonSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCrimson>(), forced: true);
-				break;
-			case ItemID.HallowedSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassHallow>(), forced: true);
-				break;
-			default:
-				return null;
+			switch (type)
+			{
+				case ItemID.StaffofRegrowth:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
+					break;
+				case ItemID.CorruptSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCorrupt>(), forced: true);
+					break;
+				case ItemID.CrimsonSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCrimson>(), forced: true);
+					break;
+				case ItemID.HallowedSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassHallow>(), forced: true);
+					break;
+				default:
+					return null;
+			}
+
+			NetMessage.SendTileSquare(-1, i, j);
 		}
 
-		NetMessage.SendTileSquare(-1, i, j);
 		return true;
 	}
 }

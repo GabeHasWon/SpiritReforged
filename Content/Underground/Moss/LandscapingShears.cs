@@ -141,7 +141,7 @@ internal class LandscaperTile : GlobalTile
 	}
 
 	/// <summary> Drops the item associated with a tile and doesn't kill it. </summary>
-	private static bool? HitCheck(int itemType, int i, int j)
+	private static bool? HitCheck(int itemType, Player player, int i, int j)
 	{
 		if (itemType == ModContent.ItemType<LandscapingShears>())
 		{
@@ -170,7 +170,7 @@ internal class LandscaperTile : GlobalTile
 	}
 
 	/// <summary> Kills a tile. </summary>
-	private static bool? CutCheck(int itemType, int i, int j)
+	private static bool? CutCheck(int itemType, Player player, int i, int j)
 	{
 		if (itemType == ModContent.ItemType<LandscapingShears>())
 		{

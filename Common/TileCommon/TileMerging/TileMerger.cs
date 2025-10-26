@@ -148,22 +148,22 @@ internal class TileMerger : ModSystem
 
 		up = down = left = right = false;
 
-		if (upTile.HasTile && upTile.TileType == mergeType && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
+		if (upTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
 		{
 			up = true;
 		}
 
-		if (downTile.HasTile && downTile.TileType == mergeType && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
+		if (downTile.HasTileType(mergeType) && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
 		{
 			down = true;
 		}
 
-		if (leftTile.HasTile && leftTile.TileType == mergeType && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
+		if (leftTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
 		{
 			left = true;
 		}
 
-		if (rightTile.HasTile && rightTile.TileType == mergeType && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
+		if (rightTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
 		{
 			right = true;
 		}

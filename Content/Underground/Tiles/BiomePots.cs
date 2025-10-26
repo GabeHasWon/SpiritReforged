@@ -39,20 +39,19 @@ public class BiomePots : PotTile, ILootable
 		Volume = 0.25f
 	};
 
-	public override Dictionary<string, int[]> TileStyles => new()
+	public override Dictionary<string, int[]> TileStyles
 	{
-		{ "Cavern", [0, 1, 2] },
-		{ "Ice", [3, 4, 5] },
-		{ "Desert", [6, 7, 8] },
-		{ "Jungle", [9, 10, 11] },
-		{ "Dungeon", [12, 13, 14] },
-		{ "Corruption", [15, 16, 17] },
-		{ "Crimson", [18, 19, 20] },
-		{ "Marble", [21, 22, 23] },
-		{ "Hell", [24, 25, 26] },
-		{ "Mushroom", [27, 28, 29] },
-		{ "Granite", [30, 31, 32] }
-	};
+		get
+		{
+			Dictionary<string, int[]> dict = [];
+			int start = 0;
+
+			foreach (string name in Enum.GetNames<Style>())
+				dict.Add(name, [start++, start++, start++]);
+
+			return dict;
+		}
+	}
 
 	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
@@ -470,7 +469,7 @@ public class BiomePots : PotTile, ILootable
 				Style.Marble => ItemID.YellowTorch,
 				Style.Hell => ItemID.DemonTorch,
 				Style.Mushroom => ItemID.MushroomTorch,
-				_ => ItemID.UltrabrightTorch
+				_ => ItemID.SpelunkerGlowstick
 			};
 
 			return result;
