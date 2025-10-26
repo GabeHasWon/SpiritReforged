@@ -5,11 +5,13 @@ using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -260,6 +262,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(6))
 				Placer.PlaceTile<SaltStalactite>(i, j + 1);
+
+			if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(30))
+				Placer.PlaceTile(i, j + 1, TileID.DyePlants, 7);
 		}
 
 		return false;
