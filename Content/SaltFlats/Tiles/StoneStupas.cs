@@ -45,7 +45,7 @@ public class StoneStupas : PotTile, ILootable
 				}
 
 				if (fairyCount < 4)
-					pool[NPCID.FairyCritterBlue] = 20.005f;
+					pool[NPCID.FairyCritterBlue] = 0.05f;
 			}
 		}
 	}
