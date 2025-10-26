@@ -2,7 +2,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
@@ -22,6 +21,7 @@ public class BambooBarrel : ChestTile
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.BasicChest[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
+		TileID.Sets.IsAContainer[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(0, 1);
