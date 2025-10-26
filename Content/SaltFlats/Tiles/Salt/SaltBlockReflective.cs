@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Biome;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -63,6 +64,13 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
+				Main.SceneArea sceneArea = default;
+				sceneArea.bgTopY = SaltBGStyle.GetBGTopY(Main.instance);
+				sceneArea.totalHeight = Main.screenHeight;
+				sceneArea.totalWidth = Main.screenWidth;
+				sceneArea.SceneLocalScreenPositionOffset = Vector2.Zero;
+
+				Reflections.DrawStarsInBackground(Main.instance, sceneArea, false);
 				Reflections.DrawBG(Main.instance);
 
 				if (!Reflections.HighResolution)
