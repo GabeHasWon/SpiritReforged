@@ -12,7 +12,6 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
-	//Preface with basic relevant checks so linq isn't constantly running in the background
 	public static bool InUndergroundOasis(Player p)
 	{
 		const string flagType = "UndergroundOasis";
@@ -20,6 +19,7 @@ public class UndergroundOasisBiome : Microbiome
 		if (p.CheckFlag(flagType) is bool flag)
 			return flag;
 
+		//Preface with basic relevant checks so linq isn't constantly running in the background
 		bool result = p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && OasisAreas.Any(x => x.Contains(p.Center.ToTileCoordinates()));
 		p.SetFlag(flagType, result); //Cache the result to avoid checking against this logic more than once per tick
 

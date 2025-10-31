@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
