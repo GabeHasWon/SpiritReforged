@@ -11,6 +11,45 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class StoneStupas : PotTile, ILootable
 {
+	private class StoneStupaFairySpawnNPC : GlobalNPC
+	{
+		public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+		{
+			bool hasStupa = false;
+			
+			for (int i = spawnInfo.SpawnTileX - 2; i < spawnInfo.SpawnTileX + 2; ++i)
+			{
+				for (int j = spawnInfo.SpawnTileY - 2; j < spawnInfo.SpawnTileY + 2; ++j)
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (tile.TileType == ModContent.TileType<StoneStupas>() && tile.HasTile)
+					{
+						hasStupa = true;
+						break;
+					}
+				}
+
+				if (hasStupa) 
+					break;
+			}
+
+			if (hasStupa)
+			{
+				int fairyCount = 0;
+
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.type is NPCID.FairyCritterBlue or NPCID.FairyCritterGreen or NPCID.FairyCritterPink)
+						fairyCount++;
+				}
+
+				if (fairyCount < 4)
+					pool[NPCID.FairyCritterBlue] = 0.05f;
+			}
+		}
+	}
+
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] } };
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/StoneStupaShatter", 2)

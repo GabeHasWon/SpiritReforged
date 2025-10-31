@@ -2595,6 +2595,16 @@ ZigguratTorchItem: {
 	// Tooltip: ""
 }
 
+SwordStandMahoganyItem: {
+	// DisplayName: Mahogany Sword Stand
+	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	// DisplayName: Sandstone Sword Stand
+	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
 RedSandstoneBrickForegroundWallItem: {
 	// DisplayName: Foreground Red Sandstone Brick Wall
 	// Tooltip: ""

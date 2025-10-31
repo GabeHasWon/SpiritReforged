@@ -4,9 +4,9 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 
-namespace SpiritReforged.Content.Desert.Tiles;
+namespace SpiritReforged.Content.Forest.Stand;
 
-public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>, IAutoloadTileItem
+public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 {
 	/// <summary> Indicates that a special texture should be used when placed on a <see cref="SwordStand"/>.<para/>
 	/// This automatically registers a type to <see cref="SpiritSets.IsSword"/> in <see cref="RegisterIsSword"/>. </summary>

@@ -6,7 +6,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;

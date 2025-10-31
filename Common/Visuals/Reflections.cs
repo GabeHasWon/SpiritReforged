@@ -34,6 +34,9 @@ public sealed class Reflections : ILoadable
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawBG")]
 	internal static extern void DrawBG(Main main);
 
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawStarsInBackground")]
+	internal static extern void DrawStarsInBackground(Main main, Main.SceneArea sceneArea, bool artificial);
+
 	/// <summary> Gets a gradient texture for shader mapping. </summary>
 	/// <param name="width"> The pre-upscaled width of the texture. </param>
 	/// <param name="height"> The pre-upscaled height of the texture.</param>
