@@ -5,12 +5,13 @@ using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
 using Terraria.WorldBuilding;
-using static SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat.ZigguratRooms.EntranceRoom;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public static class ZigguratRooms
 {
+	private static Point WithNoise(this Point pt) => pt + new Point(0, (int)(Noise.NoiseSystem.PerlinStatic(pt.X, pt.Y) * 2));
+
 	public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origin)
 	{
 		protected readonly Rectangle _outerBounds = bounds;
@@ -19,8 +20,11 @@ public static class ZigguratRooms
 
 		public override void AddLinks()
 		{
-			Links.Add(new(new(Bounds.Left - 1, Bounds.Bottom - 2), Left));
-			Links.Add(new(new(Bounds.Right, Bounds.Bottom - 2), Right));
+			Point left = new(Bounds.Left - 1, Bounds.Bottom - 2);
+			Point right = new(Bounds.Right, Bounds.Bottom - 2);
+
+			Links.Add(new(left.WithNoise(), Left));
+			Links.Add(new(right.WithNoise(), Right));
 		}
 
 		public override void Create()
@@ -36,11 +40,14 @@ public static class ZigguratRooms
 				if (WorldGen.genRand.NextBool(50) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 
+				if (WorldGen.genRand.NextBool(10) && WorldGen.SolidTile(i, j) && !WorldGen.SolidTile(i, j - 1))
+					LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
+
 				return false;
 			}, out _, Bounds);
 		}
 
-		public void CarveOut()
+		public void CarveOut(float noiseStrength = 2)
 		{
 			const int curveHeight = 3;
 			WorldUtils.Gen(Bounds.Location, new Shapes.Rectangle(Bounds.Width, Bounds.Height), new Actions.Custom((x, y, args) =>
@@ -48,7 +55,7 @@ public static class ZigguratRooms
 				float progress = (x - Bounds.Left) / (Bounds.Width - 1f);
 				int curve = (int)((1f - EaseFunction.EaseSine.Ease(progress)) * curveHeight);
 
-				if (y - Bounds.Top > curve)
+				if (y - Bounds.Top > curve && y - Bounds.Bottom < Noise.NoiseSystem.PerlinStatic(x, y) * noiseStrength)
 				{
 					WorldUtils.ClearTile(x, y);
 					Main.tile[x, y].LiquidAmount = 0;
@@ -61,14 +68,41 @@ public static class ZigguratRooms
 		}
 
 		/// <summary> Places upward-expanding <see cref="RuinedSandstonePillar"/> tiles. </summary>
-		public static void PlaceColumn(Point origin, int width)
+		public void PlaceColumn(Point origin, int width, int height = 0)
 		{
-			while (WorldGen.InWorld(origin.X, origin.Y, 2) && !WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(origin)))
+			bool setGround = false;
+			int count = 0;
+
+			if (height == 0)
+				height = Bounds.Height;
+
+			while (count++ < height && WorldGen.InWorld(origin.X, origin.Y, 2))
 			{
 				for (int x = 0; x < width; x++)
-					WorldGen.PlaceTile(origin.X - width / 2 + x, origin.Y, ModContent.TileType<RuinedSandstonePillar>(), true);
+				{
+					int i = origin.X - width / 2 + x;
+					int j = origin.Y;
+
+					if (!WorldGen.SolidOrSlopedTile(i, j))
+						WorldGen.PlaceTile(i, j, ModContent.TileType<RuinedSandstonePillar>(), true);
+
+					if (!setGround)
+						WorldGen.PlaceTile(i, j + 1, ModContent.TileType<RedSandstoneBrick>(), true);
+				}
 
 				origin.Y--;
+				setGround = true;
+			}
+		}
+
+		public static void LaySpikeStrip(Point origin, int width)
+		{
+			int halfWidth = width / 2;
+			int y = origin.Y;
+
+			for (int x = origin.X - halfWidth; x < origin.X + halfWidth; x++)
+			{
+				Framing.GetTileSafely(new Point(x, y).WithNoise()).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
 			}
 		}
 	}
@@ -100,7 +134,7 @@ public static class ZigguratRooms
 		}
 	}*/
 
-	public class EntranceRoom(Rectangle bounds, StyleID style, Point origin = default) : BasicRoom(bounds, origin)
+	public class EntranceRoom(Rectangle bounds, EntranceRoom.StyleID style, Point origin = default) : BasicRoom(bounds, origin)
 	{
 		public enum StyleID
 		{
@@ -183,7 +217,6 @@ public static class ZigguratRooms
 		public override void Create()
 		{
 			const int overhangWidth = 6;
-			const int overhangDropWidth = 3;
 
 			bool leftOpen = Links.Any(static x => x.consumed && x.Direction == Left);
 			bool rightOpen = Links.Any(static x => x.consumed && x.Direction == Right);
@@ -201,17 +234,11 @@ public static class ZigguratRooms
 			if (leftOpen)
 			{
 				WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-				WorldUtils.Gen(new(Bounds.Left + overhangWidth - overhangDropWidth, Bounds.Bottom - 4), new Shapes.Rectangle(overhangDropWidth, 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-
-				PlaceColumn(new(Bounds.Left + overhangWidth - 1 - overhangDropWidth / 2, Bounds.Bottom - 1), 1);
 			}
 			
 			if (rightOpen)
 			{
 				WorldUtils.Gen(new(Bounds.Right - overhangWidth, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-				WorldUtils.Gen(new(Bounds.Right - overhangWidth, Bounds.Bottom - 4), new Shapes.Rectangle(overhangDropWidth, 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-
-				PlaceColumn(new(Bounds.Right - overhangWidth + overhangDropWidth / 2, Bounds.Bottom - 1), 1);
 			}
 
 			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom), new Shapes.Rectangle(Bounds.Width, 1), new Actions.Custom(static (i, j, args) =>

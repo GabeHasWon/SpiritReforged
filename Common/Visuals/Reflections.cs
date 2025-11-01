@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Runtime.CompilerServices;
 
@@ -43,18 +42,23 @@ public sealed class Reflections : ILoadable
 	/// <param name="height"> The pre-upscaled height of the texture.</param>
 	public static Texture2D CreateTilemap(int width, int height)
 	{
-		const int taper = 2; //Opacity taper downscaled
+		const int maximum_height = 255 * 3;
+		const int taper = 10; //Opacity taper downscaled
 
 		var data = new Color[width * height];
 		for (int i = 0; i < data.Length; i++)
 		{
 			int y = i / width;
 
-			float pixelStrength = 1f - (float)y / 255; //Divide by a full band rather than 'height' to avoid distorting the reflection Y
-			float fadeStrength = 1f - (float)y / height;
-			float taperOpacity = Math.Min((float)y / taper, 1);
+			float strengthR = Math.Clamp((float)y / 255, 0, 1);
+			float strengthG = Math.Clamp((float)y / 255 - 1, 0, 1);
+			float strengthB = Math.Clamp((float)y / 255 - 2, 0, 1);
+			float opacity = Math.Min((float)y / taper, 1);
 
-			data[i] = new Color(0, pixelStrength, EaseFunction.EaseCubicOut.Ease(Math.Clamp(fadeStrength * 1.7f, 0, 1)) * taperOpacity); //Green: reflected pixels - Blue: static opacity
+			if (y > taper)
+				opacity = 1f - Math.Max((float)(y - (maximum_height - taper)) / taper, 0);
+
+			data[i] = new Color(1f - strengthR, 1f - strengthG, 1f - strengthB, opacity);
 		}
 
 		var texture = new Texture2D(Main.graphics.GraphicsDevice, width, height);

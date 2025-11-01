@@ -1,11 +1,10 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.GameContent.Events;
 
-namespace SpiritReforged.Content.Desert;
+namespace SpiritReforged.Content.Desert.Biome;
 
 [Autoload(Side = ModSide.Client)]
 public class DesertWind : ILoadable
@@ -44,12 +43,10 @@ public class DesertWind : ILoadable
 				});
 
 				for (int x = 0; x < 3; x++)
-				{
 					ParticleHandler.SpawnParticle(new DesertCloud(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f), velocity * Main.rand.NextFloat(), color * 0.4f, Main.rand.NextFloat(0.8f, 1f), EaseFunction.EaseCircularOut, timeLeft)
 					{
 						TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f })
 					});
-				}
 			}
 
 			if (Main.rand.NextBool((int)(800 * odds)))

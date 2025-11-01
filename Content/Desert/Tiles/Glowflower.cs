@@ -2,7 +2,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
@@ -10,7 +9,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
-namespace SpiritReforged.Content.Desert.Oasis;
+namespace SpiritReforged.Content.Desert.Tiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class Glowflower : ModTile, ISwayTile
@@ -63,7 +62,6 @@ public class Glowflower : ModTile, ISwayTile
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
 		if (closer)
-		{
 			if (!Main.gamePaused && Main.rand.NextBool(100))
 			{
 				var position = new Vector2(i, j).ToWorldCoordinates();
@@ -77,11 +75,8 @@ public class Glowflower : ModTile, ISwayTile
 						p.Velocity.Y -= 0.05f;
 				}));
 			}
-		}
 		else
-		{
 			Main.SceneMetrics.HasSunflower = true;
-		}
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

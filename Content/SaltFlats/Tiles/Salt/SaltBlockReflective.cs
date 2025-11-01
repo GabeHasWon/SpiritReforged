@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
@@ -20,7 +21,7 @@ public class SaltBlockReflective : SaltBlock
 		/// <param name="height"> The pre-upscaled height of the texture.</param>
 		public Texture2D CreateTilemap(int width, int height)
 		{
-			if (_distanceMap != null)
+			if (_distanceMap != null && _distanceMap.Width == width && _distanceMap.Height == height)
 				return _distanceMap;
 
 			return _distanceMap = Reflections.CreateTilemap(width, height);
@@ -64,15 +65,6 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				Main.SceneArea sceneArea = default;
-				sceneArea.bgTopY = SaltBGStyle.GetBGTopY(Main.instance);
-				sceneArea.totalHeight = Main.screenHeight;
-				sceneArea.totalWidth = Main.screenWidth;
-				sceneArea.SceneLocalScreenPositionOffset = Vector2.Zero;
-
-				Reflections.DrawStarsInBackground(Main.instance, sceneArea, false);
-				Reflections.DrawBG(Main.instance);
-
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 
@@ -124,8 +116,8 @@ public class SaltBlockReflective : SaltBlock
 
 		public virtual void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
-			const float scale = 2;
-			var gradient = CreateTilemap(8, 180);
+			Vector2 scale = Vector2.One;
+			var gradient = CreateTilemap(16, 255 * 3);
 
 			foreach (var pt in _grid)
 			{
@@ -161,21 +153,15 @@ public class SaltBlockReflective : SaltBlock
 		protected override void DrawContents(SpriteBatch spriteBatch)
 		{
 			var s = AssetLoader.LoadedShaders["Reflection"].Value;
-			var n = AssetLoader.LoadedTextures["waterNoise"].Value;
 
-			s.Parameters["mapTexture"].SetValue(normalTarget);
-			s.Parameters["distortionTexture"].SetValue(n);
+			s.Parameters["normalTexture"].SetValue(normalTarget);
 			s.Parameters["tileTexture"].SetValue(tileTarget);
-
-			s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
-			s.Parameters["fade"].SetValue(3f);
-			s.Parameters["distortionScale"].SetValue(Vector2.One);
-			s.Parameters["distortionStrength"].SetValue(new Vector2(0.3f));
-			s.Parameters["distortionPower"].SetValue(1);
+			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
+			ShaderHelpers.SetEffectMatrices(ref s);
 
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-			Color tint = Color.White.Additive(230) * 0.9f;
+			Color tint = Color.White * 0.9f;
 			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 			spriteBatch.End();
 		}
