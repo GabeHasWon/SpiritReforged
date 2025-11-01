@@ -179,7 +179,7 @@ public class Stactus : ModNPC, IDeathCount
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, speed, 0.05f);
 
-			if (Math.Abs(NPC.velocity.X) > 0.1f && Main.rand.NextBool(10) && SandyTypes.Contains(GetSurfaceTile().TileType))
+			if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 0.1f && Main.rand.NextBool(10) && SandyTypes.Contains(GetSurfaceTile().TileType))
 				SpawnSmoke(NPC.Bottom, -NPC.velocity, Main.rand.NextFloat(0.05f, 0.1f), 60, EaseFunction.EaseCubicIn, GetSurfaceTile());
 
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
