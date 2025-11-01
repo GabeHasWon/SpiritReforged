@@ -37,10 +37,24 @@ internal class SaltFlatsSystem : ModSystem
 		if (Main.gameMenu)
 			return;
 
+		float opacity = 1f;
+
+		if (Main.dayTime)
+			return;
+		else
+		{
+			if (Main.time < 1600)
+				opacity = (float)(Main.time / 1600f);
+			else if (Main.time > Main.nightLength - 1600)
+				opacity = (float)Utils.GetLerpValue(Main.nightLength, Main.nightLength - 1600, Main.time);
+		}
+
 		_starOpacity = MathHelper.Lerp(_starOpacity, Main.LocalPlayer.InModBiome<SaltBiome>() ? 1 : 0, 0.05f);
 
 		if (_starOpacity < 0.01f)
 			return;
+
+		float finalOpacity = _starOpacity * opacity;
 
 		if (_stars.Count == 0)
 		{
@@ -52,13 +66,13 @@ internal class SaltFlatsSystem : ModSystem
 			}
 		}
 
-		Main.spriteBatch.Draw(_galaxyTex.Value, new Vector2(-300), null, Color.White with { A = 0 } * _starOpacity * 0.3f, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(_galaxyTex.Value, new Vector2(-300), null, Color.White with { A = 0 } * finalOpacity * 0.3f, 0, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
 		foreach (Star star in _stars)
 		{
 			Vector2 position = star.Position / 1200f * new Vector2(sceneArea.totalWidth, sceneArea.totalHeight)
 				+ new Vector2(0f, sceneArea.bgTopY) + sceneArea.SceneLocalScreenPositionOffset;
-			var color = Color.Lerp(Color.White, Color.DarkGray, Utils.GetLerpValue(2f, 0.4f, star.Scale, true)) * _starOpacity;
+			var color = Color.Lerp(Color.White, Color.DarkGray, Utils.GetLerpValue(2f, 0.4f, star.Scale, true)) * finalOpacity;
 			Rectangle src = new(0, 44 * star.Frame, 40, 40);
 			float sine = 1 + MathF.Sin(Main.GameUpdateCount * 0.02f) * 0.1f;
 
