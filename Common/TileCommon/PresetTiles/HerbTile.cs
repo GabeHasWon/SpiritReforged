@@ -13,11 +13,11 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		Grown
 	}
 
-	private const int FrameWidth = 18; // A constant for readability and to kick out those magic numbers
 	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
 	public int SeedType { get; protected set; }
 	public int HerbType { get; protected set; }
+	public int FrameWidth { get; protected set; } = 18;
 
 	public override void SetStaticDefaults()
 	{
@@ -141,7 +141,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 
 		if (stage == PlantStage.Planted && Main.rand.NextBool()) //Grow only if just planted
 		{
-			tile.TileFrameX += FrameWidth;
+			tile.TileFrameX += (short)FrameWidth;
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendTileSquare(-1, i, j, 1);
@@ -149,14 +149,14 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	}
 
 	/// <summary> Gets the <see cref="PlantStage"/> of the herb at the given coordinates. </summary>
-	public static PlantStage GetStage(int i, int j)
+	public PlantStage GetStage(int i, int j)
 	{
 		Tile tile = Framing.GetTileSafely(i, j);
 		return (PlantStage)(tile.TileFrameX / FrameWidth);
 	}
 
 	/// <summary> Sets the <see cref="PlantStage"/> of the herb at the given coordinates. </summary>
-	public static void SetStage(int i, int j, PlantStage stage)
+	public void SetStage(int i, int j, PlantStage stage)
 	{
 		Tile tile = Framing.GetTileSafely(i, j);
 		tile.TileFrameX = (short)(FrameWidth * (int)stage);

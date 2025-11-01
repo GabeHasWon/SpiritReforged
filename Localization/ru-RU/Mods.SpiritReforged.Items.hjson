@@ -2624,3 +2624,8 @@ SaltFlatsMusicBoxItem: {
 	// Tooltip: ""
 	// DisplayName: Music Box (Salt Flats)
 }
+
+PineappleSeeds: {
+	// DisplayName: Pineapple Seeds
+	// Tooltip: ""
+}

@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Multiplayer;
 using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -59,7 +60,7 @@ public abstract class Microbiome : ILoadable
 	public Microbiome Clone() => (Microbiome)MemberwiseClone();
 }
 
-public class MicrobiomeSystem : ModSystem
+public sealed class MicrobiomeSystem : ModSystem
 {
 	/// <summary> Invoked directly after <see cref="Microbiomes"/> is populated, which can happen during world load or after microbiomes are synced in multiplayer. </summary>
 	public static event Action PopulateMicrobiomes;

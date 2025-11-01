@@ -4,7 +4,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using Terraria.Graphics.Effects;
 
-namespace SpiritReforged.Content.Desert.Oasis;
+namespace SpiritReforged.Content.Desert.Biome;
 
 public class UndergroundOasisScene : ModSceneEffect
 {
@@ -25,7 +25,7 @@ public class UndergroundOasisScene : ModSceneEffect
 		orig(self);
 
 		Player player = Main.LocalPlayer;
-		if (player.Center.Y / 16 > Main.worldSurface && Main.undergroundBackground == ModContent.GetInstance<UndergroundDesertBackground>().Slot)
+		if (player.Center.Y / 16 > Main.worldSurface && Main.undergroundBackground == ModContent.GetInstance<UndergroundDesertScene.UndergroundDesertBackground>().Slot)
 		{
 			var sb = Main.spriteBatch;
 			var background = OpenBackground1.Value;
@@ -56,16 +56,14 @@ public class UndergroundOasisScene : ModSceneEffect
 			topLeft -= texture.Size() / 2;
 
 			for (int x = 0; x < texture.Width / sliceScale; x++)
-			{
 				for (int y = 0; y < texture.Height / sliceScale; y++)
 				{
 					var offset = new Vector2(x, y) * sliceScale;
 					Vector3 light = Lighting.GetSubLight(topLeft + offset) * 0.9f;
 					Rectangle source = new((int)offset.X, (int)offset.Y, sliceScale, sliceScale);
 
-					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileExtensions.TileOffset, source, (tint is Color finalTint) ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
+					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileExtensions.TileOffset, source, tint is Color finalTint ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
 				}
-			}
 		}
 	}
 
@@ -75,11 +73,8 @@ public class UndergroundOasisScene : ModSceneEffect
 		_effectIntensity = isActive ? Math.Min(_effectIntensity + 0.05f, 1) : Math.Max(_effectIntensity - 0.05f, 0);
 
 		if (_effectIntensity > 0f) //Give the screen a warm tint
-		{
 			if (!Filters.Scene["Solar"].IsActive())
-			{
 				Filters.Scene.Activate("Solar");
-			}
 			else
 			{
 				Filters.Scene["Solar"].GetShader().UseTargetPosition(player.Center);
@@ -87,15 +82,10 @@ public class UndergroundOasisScene : ModSceneEffect
 				Filters.Scene["Solar"].GetShader().UseProgress(progress);
 				Filters.Scene["Solar"].GetShader().UseIntensity(1f);
 			}
-		}
 		else if (Filters.Scene["Solar"].IsActive())
-		{
 			Filters.Scene.Deactivate("Solar");
-		}
 
 		if (isActive)
-		{
 			Main.LocalPlayer.GetModPlayer<FountainPlayer>().SetFountain(WaterStyleID.Desert);
-		}
 	}
 }
