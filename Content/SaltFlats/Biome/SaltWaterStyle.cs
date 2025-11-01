@@ -2,7 +2,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using Terraria;
 using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -29,11 +28,7 @@ public class SaltWaterStyle : ModWaterStyle
 		DrawOverHandler.PostDrawTilesSolid += DrawShine;
 	}
 
-	private static void DrawAndHandleWaterTarget(SpriteBatch spriteBatch)
-	{
-		//spriteBatch.Draw(Main.instance.backWaterTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
-		spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
-	}
+	private static void DrawAndHandleWaterTarget(SpriteBatch spriteBatch) => spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
 
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
 	{
@@ -43,7 +38,7 @@ public class SaltWaterStyle : ModWaterStyle
 		var screenPos = Main.screenPosition;
 
 		float scroll = (float)Main.timeForVisualEffects / 4000f % 1;
-		float opacity = 0.9f + (float)Math.Sin(Main.timeForVisualEffects / 100f) * 0.3f;
+		float opacity = 0.4f;
 
 		for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
 		{
@@ -81,22 +76,7 @@ public class SaltWaterStyle : ModWaterStyle
 
 			Origin = new Vector2((int)(Main.screenPosition.X / size), (int)(Main.screenPosition.Y / size)) * size;
 
-			//Apply vertex colors
-			if (Framing.GetTileSafely(x, y - 1).LiquidAmount == 0)
-			{
-				colors.TopLeftColor *= 1.5f;
-				colors.TopRightColor *= 1.5f;
-			}
-
-			float str = 0.1f;
-			float waveStr = 0.2f;
-
-			WaterAlpha.ColorClamp(ref colors.TopLeftColor, x, y, str, waveStr);
-			WaterAlpha.ColorClamp(ref colors.TopRightColor, x + 1, y, str, waveStr);
-			WaterAlpha.ColorClamp(ref colors.BottomLeftColor, x, y + 1, str, waveStr);
-			WaterAlpha.ColorClamp(ref colors.BottomRightColor, x + 1, y + 1, str, waveStr);
-
-			return true;
+			return false;
 		}
 
 		return false;
@@ -107,5 +87,5 @@ public class SaltWaterStyle : ModWaterStyle
 	public override int GetSplashDust() => DustID.Water;
 	public override int GetDropletGore() => GoreID.WaterDrip;
 	public override Asset<Texture2D> GetRainTexture() => RainTexture;
-	public override Color BiomeHairColor() => Color.Pink;
+	public override Color BiomeHairColor() => new(145, 145, 255);
 }

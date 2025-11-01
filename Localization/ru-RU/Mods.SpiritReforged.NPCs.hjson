@@ -485,3 +485,13 @@ Grub: {
 	// DisplayName: Scarab Larva
 	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
 }
+
+StactusCorrupt: {
+	// DisplayName: Corrupt Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
+}
+
+StactusCrimson: {
+	// DisplayName: Rose Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
+}
