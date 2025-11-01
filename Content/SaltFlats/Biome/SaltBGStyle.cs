@@ -1,110 +1,72 @@
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using System.Runtime.CompilerServices;
-using System.Reflection;
+using SpiritReforged.Common.Visuals;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
 
-public class SaltBGStyle : ModSurfaceBackgroundStyle
+public class SaltBGStyle : CustomSurfaceBackgroundStyle
 {
-	private const string Path = "Assets/Textures/Backgrounds/";
+	private static readonly Asset<Texture2D> FarMountains = ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/Backgrounds/SaltBackgroundFar_Mountains");
+	private static readonly Asset<Texture2D> FarClouds = ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/Backgrounds/SaltBackgroundFar_Clouds");
 
-	private static ILHook ILDrawFarBG = null;
-	private static int OldBgTopY = 0;
-	private static float CloudMovementOffsetX = 0;
+	private static float MiddleOffset;
 
-	public override void Load()
+	public override int MiddleTexture => -1;
+	public override int CloseTexture => -1;
+
+	public override bool Draw(SpriteBatch spriteBatch, LayerType layer)
 	{
-		var info = typeof(SurfaceBackgroundStylesLoader).GetMethod(nameof(SurfaceBackgroundStylesLoader.DrawFarTexture));
-
-		ILDrawFarBG = new(info, il =>
+		if (layer == LayerType.Far)
 		{
-			ILCursor c = new(il);
-
-			c.EmitDelegate(static () =>
+			int slot = FarTexture;
+			if (slot >= 0 && slot < TextureAssets.Background.Length)
 			{
-				CloudMovementOffsetX += 0.2f * Main.windSpeedCurrent;
-				CloudMovementOffsetX %= 2048; // Needs to be looped, otherwise the textures run out
-			});
+				Texture2D texture = LoadBackground(slot);
+				Texture2D cloudTexture = FarClouds.Value;
+				Texture2D mountainTexture = FarMountains.Value;
 
-			if (!c.TryGotoNext(MoveType.After, x => x.MatchCallvirt<Main>(nameof(Main.LoadBackground))))
-				return;
+				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
+				Rectangle bounds = GetBounds(slot);
+				int loops = BackgroundStyleHelper.BackgroundLoops;
 
-			const BindingFlags InstanceFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-			const BindingFlags StaticFlags = BindingFlags.NonPublic | BindingFlags.Static;
+				float screenCenterY = Main.screenPosition.Y + Main.screenHeight / 2f;
+				float dif = ((SaltFlatsSystem.SurfaceHeight == 0) ? (float)(Main.worldSurface * 0.67f) : SaltFlatsSystem.SurfaceHeight) * 16 - screenCenterY;
+				BackgroundStyleHelper.BackgroundTopY = (int)(dif - dif * 0.8f);
 
-			c.Emit(OpCodes.Ldloc_S, (byte)1);
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset, 0), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, loops + 1);
+				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset, -670), bounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
+				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
-			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.instance)));
-			c.Emit(OpCodes.Ldfld, typeof(Main).GetField("bgLoops", InstanceFlags));
-
-			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.instance)));
-			c.Emit(OpCodes.Ldfld, typeof(Main).GetField("bgStartX", InstanceFlags));
-
-			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("bgWidthScaled", StaticFlags));
-			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("ColorOfSurfaceBackgroundsModified", StaticFlags));
-			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("bgScale", StaticFlags));
-			c.EmitDelegate(DrawBefore);
-		});
-	}
-
-	private static void DrawBefore(ModSurfaceBackgroundStyle current, int bgLoops, int bgStartX, int bgWidthScaled, Color color, float bgScale)
-	{
-		ref int bgTopY = ref GetBGTopY(Main.instance);
-
-		if (current is not SaltBGStyle)
-		{
-			if (OldBgTopY != -1)
-			{
-				bgTopY = OldBgTopY;
-				OldBgTopY = -1;
+				if (!Main.gamePaused) //Move out of a drawing method
+				{
+					MiddleOffset += 0.4f * Main.windSpeedCurrent;
+					MiddleOffset %= 2048; // Needs to be looped, otherwise the textures run out
+				}
 			}
-
-			return;
 		}
 
-		OldBgTopY = bgTopY;
-
-		float screenCenterY = Main.screenPosition.Y + Main.screenHeight / 2f;
-		float dif = ((SaltFlatsSystem.SurfaceHeight == 0) ? (float)(Main.worldSurface * 0.67f) : SaltFlatsSystem.SurfaceHeight) * 16 - screenCenterY;
-		bgTopY = (int)(dif - dif * 0.8f);
-
-		int textureSlot = current.ChooseFarTexture();
-		if (textureSlot >= 0 && textureSlot < TextureAssets.Background.Length)
-		{
-			Main.instance.LoadBackground(textureSlot);
-			Texture2D tex = TextureAssets.Background[BackgroundTextureLoader.GetBackgroundSlot(SpiritReforgedMod.Instance, Path + "SaltBackgroundMid")].Value;
-
-			for (int i = -2; i < bgLoops + 1; i++)
-			{
-				Vector2 pos = new(bgStartX + bgWidthScaled * i + CloudMovementOffsetX, GetBGTopY(Main.instance));
-				Rectangle src = new(0, 0, Main.backgroundWidth[textureSlot], Main.backgroundHeight[textureSlot]);
-				Main.spriteBatch.Draw(tex, pos, src, color, 0f, default, bgScale, SpriteEffects.None, 0f);
-			}
-		}
+		return false;
 	}
 
-	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "bgTopY")]
-	internal static extern ref int GetBGTopY(Main main);
-
-	public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, Path + "SaltBackgroundFar");
-	public override void ModifyFarFades(float[] fades, float transitionSpeed)
+	/// <summary> Draws Cloud. </summary>
+	/// <param name="cloud">The cloud to draw.</param>
+	/// <param name="color">The color to draw the cloud in.</param>
+	/// <param name="yOffset">The vertical offset of the cloud.</param>
+	/// <param name="index">The index of the cloud in <see cref="Main.cloud"/> if applicable.</param>
+	public static void DrawForegroudCloud(Cloud cloud, Color color, float yOffset, SpriteEffects effects = default, int index = -1)
 	{
-		for (int i = 0; i < fades.Length; i++)
+		Texture2D texture = TextureAssets.Cloud[cloud.type].Value;
+		Vector2 position = new(cloud.position.X + texture.Width * 0.5f, yOffset + texture.Height * 0.5f);
+		Rectangle sourceRectangle = new(0, 0, texture.Width, texture.Height);
+		float rotation = cloud.rotation;
+		Vector2 origin = texture.Size() / 2;
+		float scale = cloud.scale;
+		DrawData drawData = new(texture, position, sourceRectangle, color, rotation, origin, scale, effects);
+
+		ModCloud modCloud = cloud.ModCloud;
+		if (modCloud == null || index == -1 || modCloud.Draw(Main.spriteBatch, cloud, index, ref drawData))
 		{
-			if (i == Slot)
-			{
-				fades[i] += transitionSpeed;
-				if (fades[i] > 1f)
-					fades[i] = 1f;
-			}
-			else
-			{
-				fades[i] -= transitionSpeed;
-				if (fades[i] < 0f)
-					fades[i] = 0f;
-			}
+			drawData.Draw(Main.spriteBatch);
 		}
 	}
 }

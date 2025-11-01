@@ -1,15 +1,12 @@
 sampler uImage0 : register(s0);
 
-texture mapTexture;
-sampler map
-{
-    Texture = (mapTexture);
-};
+matrix WorldViewProjection;
+float totalHeight;
 
-texture distortionTexture;
-sampler distortion
+texture normalTexture;
+sampler normal
 {
-    Texture = (distortionTexture);
+    Texture = (normalTexture);
 };
 
 texture tileTexture;
@@ -18,24 +15,45 @@ sampler tile
     Texture = (tileTexture);
 };
 
-float reflectionHeight;
-float2 distortionScale;
-float2 distortionStrength;
-float distortionPower;
-float fade;
-
-float4 MainPS(float2 coords : TEXCOORD0, float4 ocolor : COLOR0) : COLOR0
+struct VertexShaderInput
 {
-    float4 mapColor = tex2D(map, coords);
-    float4 distortionColor = tex2D(distortion, coords % distortionScale);
+    float2 TextureCoordinates : TEXCOORD0;
+    float4 Position : POSITION0;
+    float4 Color : COLOR0;
+};
+
+struct VertexShaderOutput
+{
+    float2 TextureCoordinates : TEXCOORD0;
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR0;
+};
+
+VertexShaderOutput MainVS(in VertexShaderInput input)
+{
+    VertexShaderOutput output = (VertexShaderOutput) 0;
+    float4 pos = mul(input.Position, WorldViewProjection);
+    output.Position = pos;
+    
+    output.Color = input.Color;
+
+    output.TextureCoordinates = input.TextureCoordinates;
+
+    return output;
+};
+
+float4 MainPS(VertexShaderOutput input) : COLOR0
+{
+    float2 coords = input.TextureCoordinates;
+    float4 mapColor = tex2D(normal, coords);
     float4 tileColor = tex2D(tile, coords);
     
     mapColor *= tileColor.a; //Strictly adhere to tile bounds
 
-    float reflectionY = ((1 - mapColor.g) * 255) / reflectionHeight;
-    float4 reflectedColor = tex2D(uImage0, coords - float2(0, reflectionY) + float2(distortionColor.x * distortionStrength.x, distortionColor.y * distortionStrength.y) * max(pow(1 - mapColor.g, fade * distortionPower), 0));
+    float reflectionY = (1 - ((mapColor.r + mapColor.g + mapColor.b) / 3)) / totalHeight;
+    float4 reflectedColor = tex2D(uImage0, coords - float2(0, reflectionY));
 
-    return reflectedColor * ocolor * pow(mapColor.b, fade);
+    return reflectedColor * input.Color * mapColor.w;
 }
 
 technique BasicColorDrawing

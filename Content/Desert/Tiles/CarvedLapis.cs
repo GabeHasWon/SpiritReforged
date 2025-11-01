@@ -87,23 +87,26 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		protected override void DrawContents(SpriteBatch spriteBatch)
 		{
-			Effect s = AssetLoader.LoadedShaders["Reflection"].Value;
-			Texture2D n = AssetLoader.LoadedTextures["waterNoise"].Value;
-			Color tint = Color.SlateBlue.Additive(230) * 0.6f;
+			if (normalTarget.Target != null && tileTarget.Target != null && overlayTarget.Target != null)
+			{
+				Effect s = AssetLoader.LoadedShaders["Reflection"].Value;
+				Texture2D n = AssetLoader.LoadedTextures["waterNoise"].Value;
+				Color tint = Color.SlateBlue.Additive(230) * 0.6f;
 
-			s.Parameters["mapTexture"].SetValue(normalTarget);
-			s.Parameters["distortionTexture"].SetValue(n);
-			s.Parameters["tileTexture"].SetValue(tileTarget);
+				s.Parameters["mapTexture"].SetValue(normalTarget);
+				s.Parameters["distortionTexture"].SetValue(n);
+				s.Parameters["tileTexture"].SetValue(tileTarget);
 
-			s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
-			s.Parameters["fade"].SetValue(15f);
-			s.Parameters["distortionScale"].SetValue(Vector2.One);
-			s.Parameters["distortionStrength"].SetValue(Vector2.Zero);
-			s.Parameters["distortionPower"].SetValue(1);
+				s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
+				s.Parameters["fade"].SetValue(15f);
+				s.Parameters["distortionScale"].SetValue(Vector2.One);
+				s.Parameters["distortionStrength"].SetValue(Vector2.Zero);
+				s.Parameters["distortionPower"].SetValue(1);
 
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
-			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-			spriteBatch.End();
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
+				spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+				spriteBatch.End();
+			}
 		}
 	}
 
