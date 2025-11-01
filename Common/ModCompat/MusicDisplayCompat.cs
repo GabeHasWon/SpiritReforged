@@ -22,5 +22,8 @@ internal class MusicDisplayCompat : ModSystem
 		AddMusic("SavannaOtherworld");
 		AddMusic("SavannaOtherworldNight");
 		AddMusic("DuststormOtherworld");
+		AddMusic("Ziggurat");
+		AddMusic("Salt");
+		AddMusic("SaltNight");
 	}
 }
