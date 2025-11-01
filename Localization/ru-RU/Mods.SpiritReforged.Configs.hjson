@@ -23,11 +23,31 @@ ReforgeClientConfig: {
 
 OceanShape: {
 	Tooltip: ""
-	Default.Label: Стандартная
-	SlantedSine.Label: Наклонная синусоида
-	Piecewise.Label: Кусочная
-	Piecewise_M.Label: Кусочная_M
-	Piecewise_V.Label: Кусочная_V
+
+	Default: {
+		Label: Стандартная
+		// Tooltip: ""
+	}
+
+	SlantedSine: {
+		Label: Наклонная синусоида
+		// Tooltip: ""
+	}
+
+	Piecewise: {
+		Label: Кусочная
+		// Tooltip: ""
+	}
+
+	Piecewise_M: {
+		Label: Кусочная_M
+		// Tooltip: ""
+	}
+
+	Piecewise_V: {
+		Label: Кусочная_V
+		// Tooltip: ""
+	}
 }
 
 ReforgedServerConfig: {

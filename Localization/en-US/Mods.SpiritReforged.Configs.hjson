@@ -23,11 +23,31 @@ ReforgeClientConfig: {
 
 OceanShape: {
 	Tooltip: ""
-	Default.Label: Default
-	SlantedSine.Label: Slanted Sine
-	Piecewise.Label: Piecewise
-	Piecewise_M.Label: Piecewise_ M
-	Piecewise_V.Label: Piecewise_ V
+
+	Default: {
+		Label: Default
+		Tooltip: ""
+	}
+
+	SlantedSine: {
+		Label: Slanted Sine
+		Tooltip: ""
+	}
+
+	Piecewise: {
+		Label: Piecewise
+		Tooltip: ""
+	}
+
+	Piecewise_M: {
+		Label: Piecewise_ M
+		Tooltip: ""
+	}
+
+	Piecewise_V: {
+		Label: Piecewise_ V
+		Tooltip: ""
+	}
 }
 
 ReforgedServerConfig: {

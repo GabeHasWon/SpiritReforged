@@ -36,7 +36,7 @@ public class EcotoneSurfaceMapping : ModSystem
 	public static readonly Dictionary<short, short> TotalSurfaceY = [];
 	public static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
 
-	public static List<EcotoneEntry> Entries { get; internal set; }
+	public static List<EcotoneEntry> Entries { get; internal set; } = new();
 
 	private static ILHook _modifyCorruptionHook = null;
 
