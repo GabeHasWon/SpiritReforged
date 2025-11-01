@@ -2625,5 +2625,10 @@ SaltFlatsMusicBoxItem: {
 	// DisplayName: Music Box (Salt Flats)
 }
 
+PineappleSeeds: {
+	// DisplayName: Pineapple Seeds
+	// Tooltip: ""
+}
+
 // StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
 // StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
