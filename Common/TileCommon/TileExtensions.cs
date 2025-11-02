@@ -253,9 +253,7 @@ public static class TileExtensions
 	/// <summary> Returns whether <see cref="Tile.HasTile"/> and <see cref="Tile.TileType"/> equals <paramref name="type"/>. </summary>
 	public static bool HasTileType(this Tile tile, int type) => tile.HasTile && tile.TileType == type;
 
-	/// <summary>
-	/// Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>.
-	/// </summary>
+	/// <summary> Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>. </summary>
 	/// <param name="tile">The tile to merge with.</param>
 	/// <param name="otherIds">All other tiles to merge with.</param>
 	public static void Merge(this ModTile tile, params int[] otherIds)
@@ -264,6 +262,16 @@ public static class TileExtensions
 		{
 			Main.tileMerge[tile.Type][id] = true;
 			Main.tileMerge[id][tile.Type] = true;
+		}
+	}
+
+	/// <inheritdoc cref="Merge(ModTile, int[])"/>
+	public static void Merge(int thisId, params int[] otherIds)
+	{
+		foreach (int id in otherIds)
+		{
+			Main.tileMerge[thisId][id] = true;
+			Main.tileMerge[id][thisId] = true;
 		}
 	}
 

@@ -3,7 +3,7 @@ using SpiritReforged.Content.Desert.Tiles;
 
 namespace SpiritReforged.Common.TileCommon.TileMerging;
 
-internal class TileMerger : ModSystem
+public sealed class TileMerger : ModSystem
 {
 	private const int FullFrameWidth = 108;
 
