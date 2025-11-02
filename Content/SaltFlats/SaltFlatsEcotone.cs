@@ -258,10 +258,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 				if (!WorldGen.SolidTile(i, j - 1))
 				{
-					if (WorldGen.genRand.NextBool(6))
+					if (aboveTile.LiquidAmount < 20 && WorldGen.genRand.NextBool(6))
 						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 12));
 
-					if (WorldGen.genRand.NextBool(2))
+					if (aboveTile.LiquidAmount < 20 && WorldGen.genRand.NextBool(2))
 						Placer.PlaceTile<Saltwort>(i, j - 1);
 
 					Vector2 pt = new(i, j - 1);
