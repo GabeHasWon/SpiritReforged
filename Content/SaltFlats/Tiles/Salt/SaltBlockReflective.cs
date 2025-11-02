@@ -3,7 +3,6 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.SaltFlats.Biome;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
