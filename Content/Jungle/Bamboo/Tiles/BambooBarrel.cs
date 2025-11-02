@@ -19,6 +19,7 @@ public class BambooBarrel : BarrelTile
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.BasicChest[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
+		TileID.Sets.IsAContainer[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(0, 1);

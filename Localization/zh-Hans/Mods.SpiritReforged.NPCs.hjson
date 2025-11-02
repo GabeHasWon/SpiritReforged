@@ -14,7 +14,7 @@ VanillaDialogue: {
 	}
 
 	TravellingMerchant: {
-		Cartographer1: 我常在路上遇到个迷路的绘图师。说真的，她给我的生意添了不少乱子！
+		Cartographer1: 我常在路上遇到个迷路的制图师。说真的，她给我的生意添了不少乱子！
 		Cartographer2: 噢，是{0}！上个月她给我指完路就栽进沟里了。
 		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
 	}
@@ -168,7 +168,7 @@ SavannaJungleSlime: {
 }
 
 Cartographer: {
-	DisplayName: 绘图师
+	DisplayName: 制图师
 	Buttons.Map: 地图
 
 	Names: {
@@ -290,7 +290,7 @@ Cartographer: {
 		}
 	}
 
-	Entry: 这位绘图师是个奇妙的矛盾体，既满怀探索热忱，又笨拙得令人扶额。他踏足的那些地方……怎么说呢，几乎无人涉足。对他而言，安全可比新奇重要得多。
+	Entry: 这位制图师是个奇妙的矛盾体，既满怀探索热忱，又笨拙得令人扶额。他踏足的那些地方……怎么说呢，几乎无人涉足。对他而言，安全可比新奇重要得多。
 }
 
 Hiker: {
