@@ -18,7 +18,7 @@ public class SaltBlockDull : SaltBlock
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (Main.rand.NextBool(4))
+		if (Main.rand.NextBool(4) && Framing.GetTileSafely(i, j - 1).LiquidAmount < 20)
 			Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
 	}
 
