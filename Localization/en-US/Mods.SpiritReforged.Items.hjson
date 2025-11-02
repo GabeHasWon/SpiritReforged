@@ -994,7 +994,7 @@ RogueCrest: {
 		'''
 		Summons a rusted sword to fight for you
 		This sword does not take up minion slots
-		Occasionally inflicts Open Wounds, causing enemies to bleed when struck with melee or whip attacks
+		Occasionally inflicts Open Wounds, causing enemies to bleed when struck with melee attacks
 		'''
 }
 
