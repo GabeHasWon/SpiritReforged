@@ -243,30 +243,29 @@ internal class SaltFlatsEcotone : EcotoneBase
 				if (!aboveTile.HasTile && (leftEmpty || rightEmpty)) //Slopes
 				{
 					tile.Clear(TileDataType.Slope);
+
 					if (WorldGen.genRand.NextBool(4))
-					{
 						tile.IsHalfBlock = true;
-					}
 					else
-					{
-						SlopeType slope = leftEmpty ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
-						tile.Slope = slope;
-					}
+						tile.Slope = leftEmpty ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
 
 					return false;
 				}
 
-				if (!WorldGen.SolidTile(i, j - 1))
+				if (!WorldGen.SolidTile(i, j - 1) && aboveTile.LiquidAmount < 20)
 				{
-					if (aboveTile.LiquidAmount < 20 && WorldGen.genRand.NextBool(6))
+					if (WorldGen.genRand.NextBool(6))
 						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 12));
 
-					if (aboveTile.LiquidAmount < 20 && WorldGen.genRand.NextBool(2))
+					if (WorldGen.genRand.NextBool(2))
 						Placer.PlaceTile<Saltwort>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(12))
+						Placer.PlaceTile<SaltwortTall>(i, j - 1);
 
 					Vector2 pt = new(i, j - 1);
 
-					if (aboveTile.WallType == WallID.None && aboveTile.LiquidAmount == 0 && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
+					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
 						treePoints.Add(pt);
 				}
 

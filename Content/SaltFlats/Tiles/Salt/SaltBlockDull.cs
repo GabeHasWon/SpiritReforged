@@ -2,6 +2,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Content.Particles;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -18,8 +19,14 @@ public class SaltBlockDull : SaltBlock
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (Main.rand.NextBool(4) && Framing.GetTileSafely(i, j - 1).LiquidAmount < 20)
-			Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
+		if (Framing.GetTileSafely(i, j - 1).LiquidAmount < 20)
+		{
+			if (Main.rand.NextBool(4))
+				Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
+
+			if (Main.rand.NextBool(8))
+				Placer.Check(i, j - 1, ModContent.TileType<SaltwortTall>()).IsClear().Place().Send();
+		}
 	}
 
 	public override void FloorVisuals(Player player)
@@ -37,6 +44,20 @@ public class SaltBlockDull : SaltBlock
 			};
 
 			ParticleHandler.SpawnParticle(smoke);
+		}
+	}
+
+	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
+	{
+		var t = Main.tile[i, j];
+
+		if (Main.rand.NextBool(15) && t.TileFrameX is 18 or 36 or 54 && t.TileFrameY is 18) //Plain center frames
+		{
+			Point16 result = new(126, 216);
+			int random = Main.rand.Next(4);
+
+			t.TileFrameX = (short)(result.X + 18 * random);
+			t.TileFrameY = result.Y;
 		}
 	}
 
