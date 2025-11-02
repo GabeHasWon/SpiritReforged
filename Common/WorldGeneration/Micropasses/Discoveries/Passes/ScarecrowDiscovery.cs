@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Content.Forest.Botanist.Tiles;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -37,6 +36,9 @@ internal class ScarecrowDiscovery : Discovery
 			int y = WorldGen.remixWorldGen ? WorldGen.genRand.Next((int)(Main.maxTilesY / 1.5f), Main.maxTilesY - 200) : (int)(Main.worldSurface * .5f);
 
 			WorldMethods.FindGround(x, ref y);
+
+			if (y >= Main.maxTilesY - 20)
+				continue;
 
 			var tile = Main.tile[x, y];
 			if (tile.TileType == TileID.Dirt && tile.LiquidAmount == 0)
