@@ -112,6 +112,9 @@ public class EcotoneSurfaceMapping : ModSystem
 		if (SkipCorruptAreaScanXs.Contains(leftX) || SkipCorruptAreaScanXs.Contains(rightX))
 			return;
 
+		if (bottomY == 0)
+			bottomY = (int)Main.worldSurface;
+
 		SkipCorruptAreaScanXs.Add(leftX);
 		SkipCorruptAreaScanXs.Add(rightX);
 
