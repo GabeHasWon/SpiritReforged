@@ -18,7 +18,7 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		public Texture2D CreateTilemap(int width, int height)
 		{
-			if (_distanceMap != null)
+			if (_distanceMap != null && _distanceMap.Width == width && _distanceMap.Height == height)
 				return _distanceMap;
 
 			return _distanceMap = Reflections.CreateTilemap(width, height);
@@ -49,8 +49,8 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		public virtual void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
-			const float scale = 2;
-			var gradient = CreateTilemap(8, 24);
+			const float scale = 1;
+			var gradient = CreateTilemap(16, 16 * 3);
 
 			foreach (var pt in _grid)
 			{

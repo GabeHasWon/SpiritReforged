@@ -102,13 +102,6 @@ public class SaltBlockReflective : SaltBlock
 			Reflections.DrawPlayers_BehindNPCs(Main.instance);
 			Reflections.DrawPlayers_AfterProjectiles(Main.instance);
 
-			if (Reflections.Detail > 1)
-			{
-				spriteBatch.BeginDefault();
-				spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
-				spriteBatch.End();
-			}
-
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;
 		}
