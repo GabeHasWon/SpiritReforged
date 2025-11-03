@@ -10,7 +10,11 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public static class ZigguratRooms
 {
-	private static Point WithNoise(this Point pt) => pt + new Point(0, (int)(Noise.NoiseSystem.PerlinStatic(pt.X, pt.Y) * 2));
+	private static Point WithNoise(this Point pt)
+	{
+		const float divider = 15;
+		return pt + new Point(0, (int)Noise.NoiseSystem.PerlinStatic(pt.X / divider, pt.Y / divider));
+	}
 
 	public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origin)
 	{
@@ -40,9 +44,6 @@ public static class ZigguratRooms
 				if (WorldGen.genRand.NextBool(50) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 
-				if (WorldGen.genRand.NextBool(10) && WorldGen.SolidTile(i, j) && !WorldGen.SolidTile(i, j - 1))
-					LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
-
 				return false;
 			}, out _, Bounds);
 		}
@@ -50,7 +51,7 @@ public static class ZigguratRooms
 		public void CarveOut(float noiseStrength = 2)
 		{
 			const int curveHeight = 3;
-			WorldUtils.Gen(Bounds.Location, new Shapes.Rectangle(Bounds.Width, Bounds.Height), new Actions.Custom((x, y, args) =>
+			WorldUtils.Gen(Bounds.Location, new Shapes.Rectangle(Bounds.Width, Bounds.Height + 1), new Actions.Custom((x, y, args) =>
 			{
 				float progress = (x - Bounds.Left) / (Bounds.Width - 1f);
 				int curve = (int)((1f - EaseFunction.EaseSine.Ease(progress)) * curveHeight);
@@ -92,17 +93,6 @@ public static class ZigguratRooms
 
 				origin.Y--;
 				setGround = true;
-			}
-		}
-
-		public static void LaySpikeStrip(Point origin, int width)
-		{
-			int halfWidth = width / 2;
-			int y = origin.Y;
-
-			for (int x = origin.X - halfWidth; x < origin.X + halfWidth; x++)
-			{
-				Framing.GetTileSafely(new Point(x, y).WithNoise()).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
 			}
 		}
 	}

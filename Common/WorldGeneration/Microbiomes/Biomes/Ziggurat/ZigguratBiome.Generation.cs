@@ -269,12 +269,29 @@ public partial class ZigguratBiome : Microbiome
 						return Placer.PlaceTile(i, j, type, style).success;
 					}
 
-					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(18))
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(10))
 						PlaceFurniture(i, j);
+				}
+				else
+				{
+					if (WorldGen.genRand.NextBool(30))
+						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
 				}
 
 				return false;
 			}, out _, b);
+		}
+	}
+
+	public static void LaySpikeStrip(Point origin, int width)
+	{
+		int halfWidth = width / 2;
+		int y = origin.Y;
+
+		for (int x = origin.X - halfWidth; x < origin.X + halfWidth; x++)
+		{
+			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
 		}
 	}
 
@@ -283,14 +300,39 @@ public partial class ZigguratBiome : Microbiome
 		LapisSet set = ModContent.GetInstance<LapisSet>();
 		FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
 
-		if (set.TryGetTileType(type, out int tileType))
+		if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out int tileType))
 		{
 			int style = -1;
 
-			if (type is FurnitureSet.Types.Candle or FurnitureSet.Types.Chandelier or FurnitureSet.Types.Lamp or FurnitureSet.Types.Lantern)
+			if (type is FurnitureSet.Types.Candle or FurnitureSet.Types.Chandelier or FurnitureSet.Types.Lamp or FurnitureSet.Types.Lantern or FurnitureSet.Types.Candelabra)
 				style = 1; //Off states
 
-			return Placer.Check(i, j, tileType, style).IsClear().Place().success;
+			if (type is FurnitureSet.Types.Table or FurnitureSet.Types.Chair) //Place an organized table and chair set
+			{
+				int tableType = set.GetTileType(FurnitureSet.Types.Table);
+
+				if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
+				{
+					int chairType = set.GetTileType(FurnitureSet.Types.Chair);
+					FurnitureSet.Types lightSetType = WorldGen.genRand.NextFromList(FurnitureSet.Types.Candle, FurnitureSet.Types.Candelabra);
+					int lightType = set.GetTileType(lightSetType);
+
+					Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
+					Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
+					
+					if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && lightSetType is FurnitureSet.Types.Candle) //Candle style fix
+					{
+						Main.tile[i, j - 2].TileFrameX = 18;
+						Main.tile[i, j - 2].TileFrameY = 0;
+					}
+
+					return true;
+				}
+			}
+			else
+			{
+				return Placer.Check(i, j, tileType, style).IsClear().Place().success;
+			}
 		}
 
 		return false;
