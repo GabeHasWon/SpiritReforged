@@ -2,7 +2,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
 
@@ -22,35 +21,15 @@ public class SaltWaterStyle : ModWaterStyle
 
 	public static bool IsActive() => Main.waterStyle == StyleSlot;
 
-	public override void Load()
-	{
-		WaterAlpha.OnWaterColor += ColorWater;
-		DrawOverHandler.PostDrawTilesSolid += DrawShine;
-	}
+	public override void Load() => DrawOverHandler.PostDrawTilesSolid += DrawShine;
 
 	private static void DrawAndHandleWaterTarget(SpriteBatch spriteBatch) => spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
-
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
 	{
-		const float scale = 2;
-
-		var noise = AssetLoader.LoadedTextures["waterNoise"].Value;
-		var screenPos = Main.screenPosition;
-
 		float scroll = (float)Main.timeForVisualEffects / 4000f % 1;
-		float opacity = 0.4f;
 
-		for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
-		{
-			for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y++)
-			{
-				var position = Origin + new Vector2(noise.Width * scale * (x - scroll), noise.Height * scale * (y - scroll));
-				spriteBatch.Draw(noise, position - screenPos, null, (Color.White * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
-
-				var position2 = Origin + new Vector2(noise.Width * scale * (x + scroll), noise.Height * scale * (y + scroll));
-				spriteBatch.Draw(noise, position2 - screenPos, null, (Color.White * opacity).Additive(), 0, Vector2.Zero, scale, default, 0);
-			}
-		}
+		DrawCaustics(spriteBatch, ref Origin, new(2), Color.White * 0.4f, new Vector2(scroll));
+		DrawCaustics(spriteBatch, ref Origin, new(2), Color.White * 0.4f, new Vector2(-scroll));
 	}
 
 	private static void DrawShine()
@@ -68,18 +47,25 @@ public class SaltWaterStyle : ModWaterStyle
 		Main.spriteBatch.End();
 	}
 
-	private static bool ColorWater(int x, int y, ref VertexColors colors, bool isPartial)
+	/// <summary> Draws screen-wide causics with the given arguments. </summary>
+	public static void DrawCaustics(SpriteBatch spriteBatch, ref Vector2 origin, Vector2 scale, Color color, Vector2 offset = default)
 	{
-		if (IsActive())
+		var noise = AssetLoader.LoadedTextures["waterNoise"].Value;
+		var screenPos = Main.screenPosition;
+
+		float width = noise.Width * scale.X;
+		float height = noise.Height * scale.Y;
+
+		for (int x = -1; x < Main.screenWidth / width + 1f; x++)
 		{
-			const int size = 400 * 2; //Relates to the draw dimensions of the noise texture
-
-			Origin = new Vector2((int)(Main.screenPosition.X / size), (int)(Main.screenPosition.Y / size)) * size;
-
-			return false;
+			for (int y = -1; y < Main.screenHeight / height + 1f; y++)
+			{
+				var position2 = origin + new Vector2(noise.Width * scale.X * (x + offset.X), noise.Height * scale.Y * (y + offset.Y));
+				spriteBatch.Draw(noise, position2 - screenPos, null, color.Additive(), 0, Vector2.Zero, scale, default, 0);
+			}
 		}
 
-		return false;
+		origin = new Vector2((int)(Main.screenPosition.X / width), (int)(Main.screenPosition.Y / height)) * new Vector2(width, height);
 	}
 	#endregion
 

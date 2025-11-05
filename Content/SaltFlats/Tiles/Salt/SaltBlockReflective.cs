@@ -3,15 +3,20 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Biome;
+using Terraria.DataStructures;
+using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public class SaltBlockReflective : SaltBlock
 {
-	public class SaltGridOverlay : TileGridOverlay
+	public sealed class SaltGridOverlay : TileGridOverlay
 	{
+		private static Vector2 Origin;
+
 		public readonly ModTarget2D normalTarget;
-		protected Texture2D _distanceMap;
+		private Texture2D _distanceMap;
 
 		public SaltGridOverlay() => normalTarget = new(() => CanDraw, RenderNormalTarget);
 
@@ -59,8 +64,17 @@ public class SaltBlockReflective : SaltBlock
 			spriteBatch.BeginDefault();
 
 			Main.tileBatch.Begin();
-			Main.instance.DrawSimpleSurfaceBackground(Main.screenPosition, Main.screenWidth, Main.screenHeight);
+			DrawSimpleGradient(new Color(129, 118, 225) * 0.8f, new(147, 160, 255), new(210, 190, 220));
 			Main.tileBatch.End();
+
+			foreach (Cloud c in Main.cloud)
+			{
+				if (c.active)
+				{
+					float num11 = c.position.Y * ((float)Main.screenHeight / 600f) + 200f;
+					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, num11);
+				}
+			}
 
 			if (Reflections.Detail > 1)
 			{
@@ -91,6 +105,7 @@ public class SaltBlockReflective : SaltBlock
 				Main.instance.DrawItems();
 			}
 
+			SaltWaterStyle.DrawCaustics(spriteBatch, ref Origin, new(2, 1.5f), Main.ColorOfTheSkies * 0.13f);
 			spriteBatch.End();
 
 			if (Reflections.Detail > 2)
@@ -106,7 +121,7 @@ public class SaltBlockReflective : SaltBlock
 			Main.GameViewMatrix.Zoom = storedZoom;
 		}
 
-		public virtual void RenderNormalTarget(SpriteBatch spriteBatch)
+		public void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
 			Vector2 scale = Vector2.One;
 			var gradient = CreateTilemap(16, 255 * 3);
@@ -156,6 +171,59 @@ public class SaltBlockReflective : SaltBlock
 			Color tint = Color.White * 0.9f;
 			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 			spriteBatch.End();
+		}
+
+		/// <summary> Adapted from <see cref="Main.DrawSimpleSurfaceBackground"/>. </summary>
+		private static void DrawSimpleGradient(params Color[] colors)
+		{
+			int samples = colors.Length - 1;
+
+			float areaWidth = Main.screenWidth;
+			float areaHeight = Main.screenHeight;
+			float divHeight = areaHeight / samples;
+
+			var skyColor = Main.ColorOfTheSkies.ToVector4();
+
+			for (int i = 0; i < samples; i++)
+			{
+				Color startColor = colors[i];
+				Color endColor = colors[i + 1];
+
+				Color topColor = new(startColor.ToVector4() * skyColor);
+				Color bottomColor = new(endColor.ToVector4() * skyColor);
+
+				VertexColors vertexColors = new()
+				{
+					TopLeftColor = topColor,
+					TopRightColor = topColor,
+					BottomLeftColor = bottomColor,
+					BottomRightColor = bottomColor
+				};
+
+				Main.tileBatch.Draw(TextureAssets.BlackTile.Value, new Vector4(0f, divHeight * i, areaWidth, divHeight), vertexColors);
+			}
+		}
+
+		/// <summary> Draws Cloud. </summary>
+		/// <param name="cloud">The cloud to draw.</param>
+		/// <param name="color">The color to draw the cloud in.</param>
+		/// <param name="yOffset">The vertical offset of the cloud.</param>
+		/// <param name="index">The index of the cloud in <see cref="Main.cloud"/> if applicable.</param>
+		public static void DrawForegroudCloud(Cloud cloud, Color color, float yOffset, SpriteEffects effects = default, int index = -1)
+		{
+			Texture2D texture = TextureAssets.Cloud[cloud.type].Value;
+			Vector2 position = new(cloud.position.X + texture.Width * 0.5f, yOffset + texture.Height * 0.5f);
+			Rectangle sourceRectangle = new(0, 0, texture.Width, texture.Height);
+			float rotation = cloud.rotation;
+			Vector2 origin = texture.Size() / 2;
+			float scale = cloud.scale;
+			DrawData drawData = new(texture, position, sourceRectangle, color, rotation, origin, scale, effects);
+
+			ModCloud modCloud = cloud.ModCloud;
+			if (modCloud == null || index == -1 || modCloud.Draw(Main.spriteBatch, cloud, index, ref drawData))
+			{
+				drawData.Draw(Main.spriteBatch);
+			}
 		}
 	}
 
