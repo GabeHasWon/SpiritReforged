@@ -99,6 +99,17 @@ internal class BackpackUIState : AutoUIState
 		foreach (var item in removals)
 			RemoveChild(item);
 
+		Item[] items = [];
+
+		// Set items if we have any to add, so we can update the controller linking properly
+		if (!clear)
+		{
+			var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
+			items = (mPlayer.backpack.ModItem as BackpackItem).items;
+		}
+
+		BackpackUIControllerSupport.GeneratePage(items.Length);
+
 		if (!clear)
 		{
 			const float spacing = 33.5f;
@@ -116,10 +127,7 @@ internal class BackpackUIState : AutoUIState
 				ShadowColor = Color.Transparent
 			});
 
-			var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
-			var items = (mPlayer.backpack.ModItem as BackpackItem).items;
-
-			for (int i = 0; i < items.Length; ++i) //Add backpack storage slots
+			for (int i = 0; i < items.Length; ++i) // Add backpack storage slots
 			{
 				var newSlot = new PackInventorySlot(items, i)
 				{
@@ -138,5 +146,11 @@ internal class BackpackUIState : AutoUIState
 				Append(newSlot);
 			}
 		}
+	}
+
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		base.Draw(spriteBatch);
+		BackpackUIControllerSupport.SetLinkNodes(Children);
 	}
 }
