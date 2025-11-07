@@ -495,3 +495,5 @@ StactusCrimson: {
 	DisplayName: Rose Stactus
 	Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
 }
+
+Wisp.DisplayName: Wisp
