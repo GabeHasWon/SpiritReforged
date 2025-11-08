@@ -1,4 +1,6 @@
-﻿using Terraria.GameInput;
+﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using System.Diagnostics;
+using Terraria.GameInput;
 using Terraria.UI;
 using Terraria.UI.Gamepad;
 
@@ -9,17 +11,27 @@ internal class BackpackUIControllerSupport : ILoadable
 	/// <summary>
 	/// Static ID for the backpack IDs.
 	/// </summary>
-	public const int BackpackIdStart = 15000;
+	public const int BackpackIdStart = 16000;
 
 	/// <summary>
 	/// Static ID for the backpack <see cref="UILinkPage"/>.
 	/// </summary>
-	public const int BackpackPageIndex = 15000;
+	public const int BackpackPageIndex = 16000;
 
 	/// <summary>
 	/// Helper ID for the vanilla ammo <see cref="UILinkPage"/>.
 	/// </summary>
 	public const int AmmoPageIndex = 2;
+
+	/// <summary>
+	/// Inclusive lower bound for the ammo slots.
+	/// </summary>
+	public const int AmmoSlotMin = 54;
+
+	/// <summary>
+	/// Exclusive upper bound for the ammo slot.
+	/// </summary>
+	public const int AmmoSlotMax = 58;
 
 	public void Load(Mod mod) => GeneratePage(0);
 
@@ -50,6 +62,12 @@ internal class BackpackUIControllerSupport : ILoadable
 		// Ammo page index points to itself if backpack isn't active
 		UILinkPointNavigator.Pages[AmmoPageIndex].PageOnRight = slotCount != 0 ? BackpackPageIndex : AmmoPageIndex;
 
+		for (int i = AmmoSlotMin; i < AmmoSlotMax; ++i)
+		{
+			int adj = i - AmmoSlotMin;
+			UILinkPointNavigator.Points[i].Right = slotCount != 0 ? BackpackIdStart + adj : (adj + 1) * 10;
+		}
+		
 		// Do nothing if there are no slots
 		if (slotCount == 0)
 			return;
@@ -65,13 +83,13 @@ internal class BackpackUIControllerSupport : ILoadable
 				continue;
 
 			UILinkPoint link = new UILinkPoint(l, enabled: true, -3, -4, l - 1, l + 1);
-			link.OnSpecialInteracts += DetermineSpecialInteract;
+			link.OnSpecialInteracts += () => DetermineBackpackSlotInstruction(Main.LocalPlayer, l - BackpackIdStart);
 			backpackPage.LinkMap.Add(l, link);
 		}
 
 		// Add link points & map left edge to ammo slots
 		for (int i = 0; i < Math.Min(4, slotCount); ++i)
-			backpackPage.LinkMap[BackpackIdStart + i].Left = 50 + i;
+			backpackPage.LinkMap[BackpackIdStart + i].Left = 54 + i;
 
 		// Top/bottom map to ???
 		backpackPage.LinkMap[BackpackIdStart].Up = -1;
@@ -87,6 +105,24 @@ internal class BackpackUIControllerSupport : ILoadable
 
 		foreach (KeyValuePair<int, UILinkPoint> points in backpackPage.LinkMap)
 			UILinkPointNavigator.Points.TryAdd(points.Key, points.Value);
+	}
+
+	internal static string DetermineBackpackSlotInstruction(Player player, int slot)
+	{
+		BackpackPlayer plr = player.GetModPlayer<BackpackPlayer>();
+		
+		if (plr.backpack.ModItem is not BackpackItem backpack)
+			return "";
+
+		var items = backpack.items;
+
+		if (slot >= items.Length)
+			return "";
+
+		if (Main.mouseItem.type > ItemID.None)
+			return !items[slot].IsAir ? Lang.misc[66].Value : Lang.misc[65].Value;
+
+		return !items[slot].IsAir ? Lang.misc[65].Value : "";
 	}
 
 	/// <summary>
@@ -107,6 +143,7 @@ internal class BackpackUIControllerSupport : ILoadable
 
 			Vector2 slotPos = packSlot.GetDimensions().Center();
 			UILinkPointNavigator.SetPosition(id, slotPos + new Vector2(20f) * Main.inventoryScale);
+			packSlot.Selected = UILinkPointNavigator.CurrentPoint == id;
 			id++;
 		}
 	}
