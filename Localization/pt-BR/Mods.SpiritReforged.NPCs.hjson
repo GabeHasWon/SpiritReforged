@@ -496,4 +496,7 @@ StactusCrimson: {
 	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
 }
 
-// Wisp.DisplayName: Wisp
+Wisp: {
+	// DisplayName: Wisp
+	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+}
