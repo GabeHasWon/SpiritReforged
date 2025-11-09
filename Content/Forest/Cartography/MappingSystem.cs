@@ -33,8 +33,6 @@ public sealed class MappingSystem : ModSystem
 		if (Main.netMode == NetmodeID.SinglePlayer)
 			return false;
 
-		Main.NewText("Sync request: " + requestingClient);
-
 		Task.Run(async () =>
 		{
 			if (Main.netMode == NetmodeID.Server)
@@ -43,7 +41,6 @@ public sealed class MappingSystem : ModSystem
 				SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
 
 			await SyncMapData.SendQueuedDataAsync(requestingClient);
-			new NotifyMapData().Send(ignoreClient: requestingClient);
 		});
 		return true;
 	}
@@ -214,15 +211,11 @@ public sealed class MappingSystem : ModSystem
 		// - consider more than just light level for syncing?
 		public static void EnqueueMapData(WorldMap? map, WorldMap? comparisonMap)
 		{
-			Main.NewText($"Enqueueing map data map(null={map is null}) comparisonMap(null={comparisonMap is null})");
-
 			if (map is null)
 				return;
 
 			int width = Main.maxTilesX;
 			int height = Main.maxTilesY;
-
-			Main.NewText("Processing chunks...");
 
 			// Process in chunks.  The actual data does not need to be sent in
 			// fixed chunks, but it's preferred for efficient packing.
@@ -300,22 +293,27 @@ public sealed class MappingSystem : ModSystem
 				}
 			}
 
-			Main.NewText($"Got {packets.Count} packets (+ commit)...");
-
 			packets.Add(new CommitMapData());
 		}
 
 		public static async Task SendQueuedDataAsync(int requestingClient = -1)
 		{
-			Main.NewText("Sending queued packets (staggered 100ms)...");
+			if (packets.Count == 0)
+			{
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UnchangedMap"), new Color(255, 240, 20));
+					MapUpdated = false;
+				}
+
+				return;
+			}
 
 			foreach (var packetData in packets)
 			{
 				packetData.Send(ignoreClient: requestingClient);
 				await Task.Delay(100);
 			}
-
-			Main.NewText("Packets sent.");
 
 			packets.Clear();
 		}
@@ -329,6 +327,7 @@ public sealed class MappingSystem : ModSystem
 			if (Main.netMode == NetmodeID.Server)
 			{
 				Sync(requestingClient: whoAmI);
+				new NotifyMapData().Send(ignoreClient: whoAmI);
 			}
 			else
 			{
