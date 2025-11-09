@@ -453,12 +453,6 @@ ArgonMossSlime.DisplayName: Аргоновый мшистый слизень
 HeliumMossSlime.DisplayName: Гелиевый мшистый слизень
 OganessonMossSlime.DisplayName: Оганессоновый мшистый слизень
 RadonMossSlime.DisplayName: Радоновый мшистый слизень
-
-Stactus: {
-	// DisplayName: Stactus
-	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
-}
-
 // Tumbleweed.DisplayName: Tumbleweed
 
 Flamingo: {
@@ -486,32 +480,22 @@ Grub: {
 	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
 }
 
-StactusCorrupt: {
-	// DisplayName: Corrupt Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
-}
-
-StactusCrimson: {
-	// DisplayName: Rose Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
+DesertStactus: {
+	// DisplayName: Stactus
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
 CorruptStactus: {
 	// DisplayName: Corrupt Stactus
-	// Entry: ""
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
 	// DisplayName: Crimson Stactus
-	// Entry: ""
-}
-
-DesertStactus: {
-	// DisplayName: Desert Stactus
-	// Entry: ""
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
 	// DisplayName: Hallowed Stactus
-	// Entry: ""
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }

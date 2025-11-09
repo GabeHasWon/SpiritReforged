@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Personalities;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -24,6 +26,7 @@ public class SaltBiome : ModBiome
 
 	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SaltWaterStyle>();
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
+	public override int BiomeTorchItemType => ModContent.ItemType<SaltFlatsTorchItem>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
 	public override int Music => GetMusic();
 
