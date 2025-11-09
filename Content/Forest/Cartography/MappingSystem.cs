@@ -3,7 +3,9 @@
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.WorldGeneration;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Terraria.Map;
 
 namespace SpiritReforged.Content.Forest.Cartography;
@@ -31,13 +33,18 @@ public sealed class MappingSystem : ModSystem
 		if (Main.netMode == NetmodeID.SinglePlayer)
 			return false;
 
-		if (Main.netMode == NetmodeID.Server)
-			SyncMapData.EnqueueMapData(RecordedMap, null);
-		else
-			SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
+		Main.NewText("Sync request: " + requestingClient);
 
-		SyncMapData.SendQueuedData(requestingClient);
-		new NotifyMapData().Send(ignoreClient: requestingClient);
+		Task.Run(() =>
+		{
+			if (Main.netMode == NetmodeID.Server)
+				SyncMapData.EnqueueMapData(RecordedMap, null);
+			else
+				SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
+
+			SyncMapData.SendQueuedData(requestingClient);
+			new NotifyMapData().Send(ignoreClient: requestingClient);
+		});
 		return true;
 	}
 
@@ -103,15 +110,18 @@ public sealed class MappingSystem : ModSystem
 
 				case DeltaMode.Chunk:
 					{
-						ushort x = (ushort)(reader.ReadByte() * chunk_width);
-						ushort y = (ushort)(reader.ReadByte() * chunk_height);
+						using var input = new DeflateStream(reader.BaseStream, CompressionMode.Decompress, leaveOpen: true);
+						using var r = new BinaryReader(input);
+
+						ushort x = (ushort)(r.ReadByte() * chunk_width);
+						ushort y = (ushort)(r.ReadByte() * chunk_height);
 
 						for (int dy = 0; dy < chunk_height; dy++)
 						for (int dx = 0; dx < chunk_width; dx++)
 						{
 							ushort tx = (ushort)(x + dx);
 							ushort ty = (ushort)(y + dy);
-							MapTile tile = ReadTile(reader);
+							MapTile tile = ReadTile(r);
 							UpdateTile(tx, ty, tile);
 						}
 
@@ -162,14 +172,17 @@ public sealed class MappingSystem : ModSystem
 
 				case DeltaMode.Chunk:
 					{
-						packet.Write(ChunkX);
-						packet.Write(ChunkY);
+						using var output = new DeflateStream(packet.BaseStream, CompressionMode.Compress, leaveOpen: true);
+						using var writer = new BinaryWriter(output);
+
+						writer.Write(ChunkX);
+						writer.Write(ChunkY);
 
 						for (int dy = 0; dy < chunk_height; dy++)
 						for (int dx = 0; dx < chunk_width; dx++)
 						{
 							MapTile tile = GetChunkTile(ChunkData, dx, dy);
-							WriteTile(packet, tile);
+							WriteTile(writer, tile);
 						}
 
 						break;
@@ -177,11 +190,11 @@ public sealed class MappingSystem : ModSystem
 			}
 		}
 
-		private static void WriteTile(ModPacket packet, MapTile tile)
+		private static void WriteTile(BinaryWriter w, MapTile tile)
 		{
-			packet.Write(tile.Type);
-			packet.Write(tile.Light);
-			packet.Write(tile.Color);
+			w.Write(tile.Type);
+			w.Write(tile.Light);
+			w.Write(tile.Color);
 		}
 
 		// Potential improvements:
@@ -190,11 +203,15 @@ public sealed class MappingSystem : ModSystem
 		// - consider more than just light level for syncing?
 		public static void EnqueueMapData(WorldMap? map, WorldMap? comparisonMap)
 		{
+			Main.NewText($"Enqueueing map data map(null={map is null}( comparisonMap(null={comparisonMap is null})");
+
 			if (map is null)
 				return;
 
 			int width = Main.maxTilesX;
 			int height = Main.maxTilesY;
+
+			Main.NewText("Processing chunks...");
 
 			// Process in chunks.  The actual data does not need to be sent in
 			// fixed chunks, but it's preferred for efficient packing.
@@ -274,13 +291,20 @@ public sealed class MappingSystem : ModSystem
 				}
 			}
 
+			Main.NewText($"Got {packets.Count} packets (+ commit)...");
+
 			packets.Add(new CommitMapData());
 		}
 
 		public static void SendQueuedData(int requestingClient = -1)
 		{
+			Main.NewText("Sending queued packets...");
+
+			// TODO: Stagger?
 			foreach (var packetData in packets)
 				packetData.Send(ignoreClient: requestingClient);
+
+			Main.NewText("Packets sent.");
 
 			packets.Clear();
 		}
