@@ -1,11 +1,18 @@
+#nullable enable
+
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.WorldGeneration;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Terraria.Map;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
-public class MappingSystem : ModSystem
+/// <summary>
+/// Keeps a record of the map data as its seen by the server and allows for
+/// syncing that data across clients.
+/// </summary>
+public sealed class MappingSystem : ModSystem
 {
 	/// <summary> Used to record whether a change has actually occured on the server map. </summary>
 	[WorldBound]
@@ -13,144 +20,301 @@ public class MappingSystem : ModSystem
 
 	/// <summary> The map owned by the server and controlled using <see cref="CartographyTable"/>. </summary>
 	[WorldBound(Manual = true)]
-	internal static WorldMap RecordedMap = null;
+	internal static WorldMap? RecordedMap;
 
-	/// <summary> Syncs your map with the server. Should only be called on multiplayer clients. </summary>
-	public static void SetMap()
+	/// <summary>
+	/// Requests the server to send updated map data to the client and then sends
+	///	over any changes made by the client.
+	/// </summary>
+	public static bool Sync(int requestingClient = -1)
 	{
-		EnqueueMap(Main.Map, RecordedMap);
+		if (Main.netMode == NetmodeID.SinglePlayer)
+			return false;
 
-		if (SyncMapData.Queue.Count == 0) //Player has no data to send
-		{
-			Main.NewText(Language.GetTextValue("Mods.SpiritReforged.Misc.UnchangedMap"), new Color(255, 240, 20));
-			MapUpdated = false; //Reset MapUpdated, just in case
+		if (Main.netMode == NetmodeID.Server)
+			SyncMapData.EnqueueMapData(RecordedMap, null);
+		else
+			SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
 
-			return;
-		}
-
-		while (SyncMapData.Queue.Count > 0)
-		{
-			new SyncMapData().Send();
-		}
-	}
-
-	internal static void EnqueueMap(WorldMap map, WorldMap comparison)
-	{
-		for (int x = 0; x < map.MaxWidth; x++)
-		{
-			for (int y = 0; y < map.MaxHeight; y++)
-			{
-				var t = map[x, y];
-
-				if (t.Light == 0 || comparison is WorldMap cMap && cMap[x, y].Light >= t.Light)
-					continue; //Avoid sending redundant data by referencing the opposite map
-
-				SyncMapData.Queue.Enqueue(new((ushort)x, (ushort)y, t));
-			}
-		}
+		SyncMapData.SendQueuedData(requestingClient);
+		new NotifyMapData().Send(ignoreClient: requestingClient);
+		return true;
 	}
 
 	/// <summary> Sends <see cref="RecordedMap"/> data between client and server. </summary>
-	internal class SyncMapData : PacketData
+	internal sealed class SyncMapData : PacketData
 	{
-		public readonly record struct QueueData(ushort X, ushort Y, MapTile Tile)
+		public readonly record struct SparseEntry(ushort X, ushort Y, MapTile Tile);
+
+		public enum DeltaMode : byte
 		{
-			public readonly ushort X = X;
-			public readonly ushort Y = Y;
-			public readonly MapTile Tile = Tile;
+			// Sparse list of points, for when few tiles need updating.
+			Sparse = 0,
+
+			// Small, unfixed rectangular areas smaller than chunks which don't
+			// need compression.
+			Rectangle = 1,
+
+			// Larger, fixed-sized chunks.
+			Chunk = 2,
 		}
 
-		/// <summary> The total number of bytes sent in one iteration (a single tile). </summary>
-		private const byte SequenceSize = 8;
-		/// <summary> The total number of iterations allowed for a single packet. </summary>
-		private const int CountLimit = ushort.MaxValue / SequenceSize - 1;
+		// Same as tile section dimensions.
+		private const byte chunk_width = 200;
+		private const byte chunk_height = 150;
+		private const ushort chunk_area = chunk_width * chunk_height;
 
-		public static readonly Queue<QueueData> Queue = [];
+		private static readonly List<PacketData> packets = [];
 
-		public SyncMapData() { }
+		public DeltaMode Mode { get; set; }
+
+		public Rectangle Area { get; set; }
+
+		public byte ChunkX { get; }
+
+		public byte ChunkY { get; }
+
+		public Queue<SparseEntry> SparseEntries { get; private set; } = [];
+
+		// row-major: y * width + x
+		// interate y first for cache coherence, then x
+		public MapTile[] ChunkData { get; private set; } = [];
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static MapTile GetChunkTile(MapTile[] data, int x, int y)
+			=> data[y * chunk_width + x];
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			ushort count = reader.ReadUInt16();
-			bool final = count < CountLimit;
+			RecordedMap ??= new WorldMap(Main.maxTilesX, Main.maxTilesY);
 
-			for (int i = 0; i < count; i++)
+			Mode = (DeltaMode)reader.ReadByte();
+
+			switch (Mode)
 			{
-				ushort x = reader.ReadUInt16();
-				ushort y = reader.ReadUInt16();
-
-				ushort type = reader.ReadUInt16();
-				byte light = reader.ReadByte();
-				byte color = reader.ReadByte();
-
-				var t = MapTile.Create(type, light, color);
-
-				//Set the server-owned map on ALL sides to protect against synchronizing redundant data in the future
-				RecordedMap ??= new(Main.maxTilesX, Main.maxTilesY);
-
-				//Never dim the server map light levels
-				if (light > RecordedMap[x, y].Light)
-					RecordedMap.SetTile(x, y, ref t);
-
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-					Main.Map.SetTile(x, y, ref t);
-			}
-
-			if (final)
-			{
-				if (Main.netMode == NetmodeID.Server)
-				{
-					EnqueueMap(RecordedMap, null);
-					while (Queue.Count > 0)
+				case DeltaMode.Sparse:
 					{
-						new SyncMapData().Send(toClient: whoAmI); //Relay back to the initiator
+						int count = reader.ReadUInt16();
+						for (int i = 0; i < count; i++)
+						{
+							ushort x = reader.ReadUInt16();
+							ushort y = reader.ReadUInt16();
+							MapTile tile = ReadTile(reader);
+							UpdateTile(x, y, tile);
+						}
+
+						break;
 					}
 
-					new NotifyMapData().Send(ignoreClient: whoAmI);
-				}
-				else
-				{
-					Main.refreshMap = true;
+				case DeltaMode.Rectangle:
+					{
+						ushort x = reader.ReadUInt16();
+						ushort y = reader.ReadUInt16();
+						byte w = reader.ReadByte();
+						byte h = reader.ReadByte();
 
-					string key = "Mods.SpiritReforged.Misc." + (MapUpdated ? "ShareAndUpdateMap" : "ShareMap");
-					Main.NewText(Language.GetTextValue(key), new Color(255, 240, 20));
+						for (int dy = 0; dy < h; dy++)
+						for (int dx = 0; dx < w; dx++)
+						{
+							ushort tx = (ushort)(x + dx);
+							ushort ty = (ushort)(y + dy);
+							MapTile tile = ReadTile(reader);
+							UpdateTile(tx, ty, tile);
+						}
 
-					MapUpdated = false;
-				}
+						break;
+					}
+
+				case DeltaMode.Chunk:
+					{
+						ushort x = (ushort)(reader.ReadByte() * chunk_width);
+						ushort y = (ushort)(reader.ReadByte() * chunk_height);
+
+						for (int dy = 0; dy < chunk_height; dy++)
+						for (int dx = 0; dx < chunk_width; dx++)
+						{
+							ushort tx = (ushort)(x + dx);
+							ushort ty = (ushort)(y + dy);
+							MapTile tile = ReadTile(reader);
+							UpdateTile(tx, ty, tile);
+						}
+
+						break;
+					}
 			}
 		}
 
-		public override void OnSend(ModPacket modPacket)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static MapTile ReadTile(BinaryReader r)
 		{
-			ushort count = (ushort)Math.Min(Queue.Count, CountLimit); //Restricts packet size to avoid hitting the limit
-			ushort currentCount = 0;
+			ushort type = r.ReadUInt16();
+			byte light = r.ReadByte();
+			byte color = r.ReadByte();
+			return MapTile.Create(type, light, color);
+		}
 
-			modPacket.Write(count);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void UpdateTile(ushort x, ushort y, MapTile tile)
+		{
+			// Never dim server light levels.
+			if (tile.Light > RecordedMap![x, y].Light)
+				RecordedMap.Update(x, y, tile.Light);
 
-			foreach (var data in Queue)
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				Main.Map.SetTile(x, y, ref tile);
+		}
+
+		public override void OnSend(ModPacket packet)
+		{
+			packet.Write((byte)Mode);
+
+			switch (Mode)
 			{
-				if (++currentCount > count)
-					break;
+				case DeltaMode.Sparse:
+					{
+						packet.Write((ushort)SparseEntries.Count);
 
-				modPacket.Write(data.X);
-				modPacket.Write(data.Y);
+						foreach (var entry in SparseEntries)
+						{
+							packet.Write(entry.X);
+							packet.Write(entry.Y);
+							WriteTile(packet, entry.Tile);
+						}
 
-				var t = data.Tile;
-				modPacket.Write(t.Type);
-				modPacket.Write(t.Light);
-				modPacket.Write(t.Color);
+						break;
+					}
+
+				case DeltaMode.Rectangle:
+					{
+						packet.Write((ushort)Area.X);
+						packet.Write((ushort)Area.Y);
+						packet.Write((byte)Area.Width);
+						packet.Write((byte)Area.Height);
+
+						for (int dy = 0; dy < Area.Height; dy++)
+						for (int dx = 0; dx < Area.Width; dx++)
+						{
+							MapTile tile = GetChunkTile(ChunkData, dy, dx);
+							WriteTile(packet, tile);
+						}
+
+						break;
+					}
+
+				case DeltaMode.Chunk:
+					{
+						packet.Write(ChunkX);
+						packet.Write(ChunkY);
+
+						for (int dy = 0; dy < chunk_height; dy++)
+						for (int dx = 0; dx < chunk_width; dx++)
+						{
+							MapTile tile = GetChunkTile(ChunkData, dx, dy);
+							WriteTile(packet, tile);
+						}
+
+						break;
+					}
 			}
+		}
 
-			for (int i = 0; i < count; i++)
-				Queue.Dequeue();
+		private static void WriteTile(ModPacket packet, MapTile tile)
+		{
+			packet.Write(tile.Type);
+			packet.Write(tile.Light);
+			packet.Write(tile.Color);
+		}
+
+		// Potential improvements:
+		// - offload sparse list to a static field that gets re-used each time
+		//   instead of allocating (fixed chunk_area),
+		// - look into keeping a sparse list for multiple chunks if there is
+		//   more sparse data,
+		// - consider more than just light level for syncing?
+		public static void EnqueueMapData(WorldMap? map, WorldMap? comparisonMap)
+		{
+			if (map is null)
+				return;
+
+			int width = Main.maxTilesX;
+			int height = Main.maxTilesY;
+
+			// Process in chunks.  The actual data does not need to be sent in
+			// fixed chunks, but it's preferred for efficient packing.
+			for (int cy = 0; cy < height; cy += chunk_height)
+			for (int cx = 0; cx < width; cx += chunk_width)
+				{
+					var chunkRect = new Rectangle(
+						cx,
+						cy,
+						Math.Min(chunk_width, width - cx),
+						Math.Min(chunk_height, height - cy)
+					);
+
+					bool changed = false;
+					int diffCount = 0;
+					var sparse = new List<SparseEntry>();
+
+					for (int dy = 0; dy < chunkRect.Height; dy++)
+					for (int dx = 0; dx < chunkRect.Width; dx++)
+					{
+						ushort tx = (ushort)(chunkRect.X + dx);
+						ushort ty = (ushort)(chunkRect.Y + dy);
+						MapTile currentTile = map[tx, ty];
+						MapTile? compareTile = comparisonMap?[tx, ty];
+
+						if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
+						{
+							changed = true;
+							diffCount++;
+							sparse.Add(new SparseEntry(tx, ty, currentTile));
+						}
+					}
+
+					if (!changed)
+						continue;
+
+					// TODO: Look into each value and tweak for efficiency?
+				}
+
+			packets.Add(new CommitMapData());
+		}
+
+		public static void SendQueuedData(int requestingClient = -1)
+		{
+			foreach (var packetData in packets)
+				packetData.Send(ignoreClient: requestingClient);
+
+			packets.Clear();
 		}
 	}
 
-	/// <summary> Simply notifies everybody of updated map data on the server. </summary>
-	internal class NotifyMapData : PacketData
+	/// <summary> Marks the end of a stream of map syncing packets and commits the data. </summary>
+	internal sealed class CommitMapData : PacketData
 	{
-		public NotifyMapData() { }
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				Sync(requestingClient: whoAmI);
+			}
+			else
+			{
+				Main.refreshMap = true;
 
+				string key = "Mods.SpiritReforged.Misc." + (MapUpdated ? "ShareAndUpdateMap" : "ShareMap");
+				Main.NewText(Language.GetTextValue(key), new Color(255, 240, 20));
+
+				MapUpdated = false;
+			}
+		}
+
+		public override void OnSend(ModPacket modPacket) { }
+	}
+
+	/// <summary> Simply notifies everybody of updated map data on the server. </summary>
+	internal sealed class NotifyMapData : PacketData
+	{
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
 			if (Main.netMode == NetmodeID.Server)
