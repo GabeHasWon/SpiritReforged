@@ -35,14 +35,14 @@ public sealed class MappingSystem : ModSystem
 
 		Main.NewText("Sync request: " + requestingClient);
 
-		Task.Run(() =>
+		Task.Run(async () =>
 		{
 			if (Main.netMode == NetmodeID.Server)
 				SyncMapData.EnqueueMapData(RecordedMap, null);
 			else
 				SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
 
-			SyncMapData.SendQueuedData(requestingClient);
+			await SyncMapData.SendQueuedDataAsync(requestingClient);
 			new NotifyMapData().Send(ignoreClient: requestingClient);
 		});
 		return true;
@@ -90,18 +90,21 @@ public sealed class MappingSystem : ModSystem
 		{
 			RecordedMap ??= new WorldMap(Main.maxTilesX, Main.maxTilesY);
 
-			Mode = (DeltaMode)reader.ReadByte();
+			using var input = new DeflateStream(reader.BaseStream, CompressionMode.Decompress, leaveOpen: true);
+			using var r = new BinaryReader(input);
+
+			Mode = (DeltaMode)r.ReadByte();
 
 			switch (Mode)
 			{
 				case DeltaMode.Sparse:
 					{
-						int count = reader.ReadUInt16();
+						int count = r.ReadUInt16();
 						for (int i = 0; i < count; i++)
 						{
-							ushort x = reader.ReadUInt16();
-							ushort y = reader.ReadUInt16();
-							MapTile tile = ReadTile(reader);
+							ushort x = r.ReadUInt16();
+							ushort y = r.ReadUInt16();
+							MapTile tile = ReadTile(r);
 							UpdateTile(x, y, tile);
 						}
 
@@ -110,9 +113,6 @@ public sealed class MappingSystem : ModSystem
 
 				case DeltaMode.Chunk:
 					{
-						using var input = new DeflateStream(reader.BaseStream, CompressionMode.Decompress, leaveOpen: true);
-						using var r = new BinaryReader(input);
-
 						ushort x = (ushort)(r.ReadByte() * chunk_width);
 						ushort y = (ushort)(r.ReadByte() * chunk_height);
 
@@ -144,7 +144,7 @@ public sealed class MappingSystem : ModSystem
 		{
 			// Never dim server light levels.
 			if (tile.Light > RecordedMap![x, y].Light)
-				RecordedMap.Update(x, y, tile.Light);
+				RecordedMap.SetTile(x, y, ref tile);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				Main.Map.SetTile(x, y, ref tile);
@@ -152,19 +152,22 @@ public sealed class MappingSystem : ModSystem
 
 		public override void OnSend(ModPacket packet)
 		{
-			packet.Write((byte)Mode);
+			using var output = new DeflateStream(packet.BaseStream, CompressionMode.Compress, leaveOpen: true);
+			using var writer = new BinaryWriter(output);
+
+			writer.Write((byte)Mode);
 
 			switch (Mode)
 			{
 				case DeltaMode.Sparse:
 					{
-						packet.Write((ushort)SparseEntries.Count);
+						writer.Write((ushort)SparseEntries.Count);
 
 						foreach (var entry in SparseEntries)
 						{
-							packet.Write(entry.X);
-							packet.Write(entry.Y);
-							WriteTile(packet, entry.Tile);
+							writer.Write(entry.X);
+							writer.Write(entry.Y);
+							WriteTile(writer, entry.Tile);
 						}
 
 						break;
@@ -172,9 +175,6 @@ public sealed class MappingSystem : ModSystem
 
 				case DeltaMode.Chunk:
 					{
-						using var output = new DeflateStream(packet.BaseStream, CompressionMode.Compress, leaveOpen: true);
-						using var writer = new BinaryWriter(output);
-
 						writer.Write(ChunkX);
 						writer.Write(ChunkY);
 
@@ -188,6 +188,9 @@ public sealed class MappingSystem : ModSystem
 						break;
 					}
 			}
+
+			writer.Flush();
+			output.Flush();
 		}
 
 		private static void WriteTile(BinaryWriter w, MapTile tile)
@@ -203,7 +206,7 @@ public sealed class MappingSystem : ModSystem
 		// - consider more than just light level for syncing?
 		public static void EnqueueMapData(WorldMap? map, WorldMap? comparisonMap)
 		{
-			Main.NewText($"Enqueueing map data map(null={map is null}( comparisonMap(null={comparisonMap is null})");
+			Main.NewText($"Enqueueing map data map(null={map is null}) comparisonMap(null={comparisonMap is null})");
 
 			if (map is null)
 				return;
@@ -216,78 +219,76 @@ public sealed class MappingSystem : ModSystem
 			// Process in chunks.  The actual data does not need to be sent in
 			// fixed chunks, but it's preferred for efficient packing.
 			for (int cy = 0; cy < height; cy += chunk_height)
+			for (int cx = 0; cx < width; cx += chunk_width)
 			{
 				var sparse = new List<SparseEntry>(capacity: chunk_area);
 				var chunk = new MapTile[chunk_area];
 
-				for (int cx = 0; cx < width; cx += chunk_width)
+				var chunkRect = new Rectangle(
+					cx,
+					cy,
+					Math.Min(chunk_width, width - cx),
+					Math.Min(chunk_height, height - cy)
+				);
+
+				bool changed = false;
+				int diffCount = 0;
+
+				for (int dy = 0; dy < chunkRect.Height; dy++)
+				for (int dx = 0; dx < chunkRect.Width; dx++)
 				{
-					var chunkRect = new Rectangle(
-						cx,
-						cy,
-						Math.Min(chunk_width, width - cx),
-						Math.Min(chunk_height, height - cy)
-					);
+					ushort tx = (ushort)(chunkRect.X + dx);
+					ushort ty = (ushort)(chunkRect.Y + dy);
+					MapTile currentTile = map[tx, ty];
+					MapTile? compareTile = comparisonMap?[tx, ty];
 
-					bool changed = false;
-					int diffCount = 0;
-
-					for (int dy = 0; dy < chunkRect.Height; dy++)
-					for (int dx = 0; dx < chunkRect.Width; dx++)
+					if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
 					{
-						ushort tx = (ushort)(chunkRect.X + dx);
-						ushort ty = (ushort)(chunkRect.Y + dy);
-						MapTile currentTile = map[tx, ty];
-						MapTile? compareTile = comparisonMap?[tx, ty];
-
-						if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
-						{
-							changed = true;
-							diffCount++;
-							sparse.Add(new SparseEntry(tx, ty, currentTile));
-							GetChunkTile(chunk, dx, dy) = currentTile;
-						}
+						changed = true;
+						diffCount++;
+						sparse.Add(new SparseEntry(tx, ty, currentTile));
+						GetChunkTile(chunk, dx, dy) = currentTile;
 					}
+				}
 
-					// If there were not changes then discard and move on to
-					// the next chunk.
-					if (!changed)
-						continue;
+				// If there were not changes then discard and move on to
+				// the next chunk.
+				if (!changed)
+					continue;
 
-					// Now we actually decide how the delta will be represented.
-					// TODO: Look into the values and tweak for efficiency?
+				// Now we actually decide how the delta will be represented.
+				// TODO: Look into the values and tweak for efficiency?
 
-					// Sparse size:
-					// 1 + 2 + (2 + 2 + 2 + 1 + 1)n
+				// Sparse size:
+				// 1 + 2 + (2 + 2 + 2 + 1 + 1)n
 
-					// Chunk
-					// 1 + 2 + (2 + 1 + 1)(200 * 150)
+				// Chunk
+				// 1 + 2 + (2 + 1 + 1)(200 * 150)
 
-					// These values meet at 15000 differences.
+				// These values meet at 15000 differences.
 
-					if (diffCount <= 15000)
+				if (diffCount <= 15000)
+				{
+					var packetData = new SyncMapData
 					{
-						var packetData = new SyncMapData
-						{
-							Mode = DeltaMode.Sparse,
-							ChunkX = 0,
-							ChunkY = 0,
-							SparseEntries = sparse
-						};
-						packets.Add(packetData);
+						Mode = DeltaMode.Sparse,
+						ChunkX = 0,
+						ChunkY = 0,
+						SparseEntries = sparse
+					};
+					packets.Add(packetData);
 
-					}
-					else
+				}
+				else
+				{
+					var packetData = new SyncMapData
 					{
-						var packetData = new SyncMapData
-						{
-							Mode = DeltaMode.Chunk,
-							ChunkX = (byte)(cx / chunk_width),
-							ChunkY = (byte)(cy / chunk_height),
-							ChunkData = chunk
-						};
-						packets.Add(packetData);
-					}
+						Mode = DeltaMode.Chunk,
+						ChunkX = (byte)(cx / chunk_width),
+						ChunkY = (byte)(cy / chunk_height),
+						ChunkData = chunk
+					};
+					packets.Add(packetData);
 				}
 			}
 
@@ -296,13 +297,15 @@ public sealed class MappingSystem : ModSystem
 			packets.Add(new CommitMapData());
 		}
 
-		public static void SendQueuedData(int requestingClient = -1)
+		public static async Task SendQueuedDataAsync(int requestingClient = -1)
 		{
-			Main.NewText("Sending queued packets...");
+			Main.NewText("Sending queued packets (staggered 100ms)...");
 
-			// TODO: Stagger?
 			foreach (var packetData in packets)
+			{
 				packetData.Send(ignoreClient: requestingClient);
+				await Task.Delay(100);
+			}
 
 			Main.NewText("Packets sent.");
 
