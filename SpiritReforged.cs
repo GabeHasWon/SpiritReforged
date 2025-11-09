@@ -38,7 +38,7 @@ public partial class SpiritReforgedMod : Mod
 		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
-		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
+		NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
 
 		TrailDetours.Initialize();
 
@@ -50,8 +50,6 @@ public partial class SpiritReforgedMod : Mod
 
 	public override void Unload()
 	{
-		NPCUtils.NPCUtils.UnloadMod(this);
-		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		AssetLoader.Unload();
 		TrailDetours.Unload();
 
