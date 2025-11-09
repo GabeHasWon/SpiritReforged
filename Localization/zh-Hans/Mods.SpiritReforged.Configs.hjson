@@ -28,11 +28,31 @@ ReforgedClientConfig: {
 
 OceanShape: {
 	Tooltip: ""
-	Default.Label: 默认
-	SlantedSine.Label: 倾斜正弦
-	Piecewise.Label: 分段
-	Piecewise_M.Label: 分段_ M
-	Piecewise_V.Label: 分段_ V
+
+	Default: {
+		Label: 默认
+		// Tooltip: ""
+	}
+
+	SlantedSine: {
+		Label: 倾斜正弦
+		// Tooltip: ""
+	}
+
+	Piecewise: {
+		Label: 分段
+		// Tooltip: ""
+	}
+
+	Piecewise_M: {
+		Label: 分段_ M
+		// Tooltip: ""
+	}
+
+	Piecewise_V: {
+		Label: 分段_ V
+		// Tooltip: ""
+	}
 }
 
 ReforgedServerConfig: {

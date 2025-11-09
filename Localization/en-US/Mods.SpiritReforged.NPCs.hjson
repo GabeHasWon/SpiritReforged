@@ -495,3 +495,8 @@ StactusCrimson: {
 	DisplayName: Rose Stactus
 	Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
 }
+
+BrineShrimp: {
+	DisplayName: Brine Shrimp
+	Entry: ""
+}

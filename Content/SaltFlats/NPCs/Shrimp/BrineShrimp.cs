@@ -17,6 +17,8 @@ public class BrineShrimp : ModNPC
 		Panic
 	}
 
+	const float MaxSpeed = 1.2f * 1.2f;
+
 	private BehaviourState State
 	{
 		get => (BehaviourState)NPC.ai[0];
@@ -47,8 +49,8 @@ public class BrineShrimp : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.width = 16;
-		NPC.height = 16;
+		NPC.width = 12;
+		NPC.height = 12;
 		NPC.damage = 0;
 		NPC.defense = 0;
 		NPC.lifeMax = 5;
@@ -74,14 +76,12 @@ public class BrineShrimp : ModNPC
 
 	private void WaterBehaviour()
 	{
-		const float MaxSpeed = 1.2f * 1.2f;
-
 		NPC.TargetClosest();
 		var target = Main.player[NPC.target];
 
 		Timer++;
 
-		if (target.DistanceSQ(NPC.Center) < 60 * 60)
+		if (target.DistanceSQ(NPC.Center) < 120 * 120)
 			State = BehaviourState.Panic;
 
 		if (State == BehaviourState.Idle)
@@ -94,93 +94,57 @@ public class BrineShrimp : ModNPC
 		}
 		else if (State == BehaviourState.Swimming)
 		{
-			if (NPC.velocity.LengthSquared() > MaxSpeed)
-				NPC.velocity *= 0.98f;
-
-			float adjTimer = Timer % 60;
-
-			if (adjTimer == 45)
-			{
-				if (Direction == Vector2.Zero)
-					Direction = new Vector2(3, 0).RotatedByRandom(MathHelper.TwoPi);
-				else
-					Direction = Direction.RotatedByRandom(0.3f);
-
-				NPC.velocity = Direction;
-			}
-
-			if (!Collision.WetCollision(NPC.position + NPC.velocity * 4, NPC.width, NPC.height))
+			Direction = Vector2.Normalize(Direction) * 3;
+			SwimMovement();
+		}
+		else if (State == BehaviourState.Panic)
+		{
+			Direction = NPC.DirectionFrom(target.Center) * 4;
+			SwimMovement(15);
 		}
 	}
 
-	public static bool WetCollision(Vector2 Position, int Width, int Height)
+	private void SwimMovement(int interval = 60)
 	{
-		Vector2 vector = new Vector2(Position.X + (float)(Width / 2), Position.Y + (float)(Height / 2));
+		if (NPC.velocity.LengthSquared() > MaxSpeed)
+			NPC.velocity *= 0.98f;
 
-		int num = 10;
-		int num2 = Height / 2;
-		if (num > Width)
-			num = Width;
+		float adjTimer = Timer % 60;
 
-		if (num2 > Height)
-			num2 = Height;
+		if (NPC.velocity.X == 0)
+			Direction = new Vector2(Direction.X * -1, Direction.Y);
 
-		vector = new Vector2(vector.X - (float)(num / 2), vector.Y - (float)(num2 / 2));
-		int value = (int)(Position.X / 16f) - 1;
-		int right = (int)((Position.X + (float)Width) / 16f) + 2;
-		int y = (int)(Position.Y / 16f) - 1;
-		int bottom = (int)((Position.Y + (float)Height) / 16f) + 2;
-		int x = Utils.Clamp(value, 0, Main.maxTilesX - 1);
-		right = Utils.Clamp(right, 0, Main.maxTilesX - 1);
-		y = Utils.Clamp(y, 0, Main.maxTilesY - 1);
-		bottom = Utils.Clamp(bottom, 0, Main.maxTilesY - 1);
-		Vector2 vector2 = default(Vector2);
+		if (NPC.velocity.Y == 0)
+			Direction = new Vector2(Direction.X, Direction.Y * -1);
 
-		for (int i = x; i < right; i++)
+		// this hit detection needs rewrite, will do tomorrow - gabe
+		if (adjTimer == interval)
 		{
-			for (int j = y; j < bottom; j++)
-			{
-				if (Main.tile[i, j].LiquidAmount == 0)
-				{
-					vector2.X = i * 16;
-					vector2.Y = j * 16;
-					int num4 = 16;
-					float num5 = 256 / 32f;
-					vector2.Y += num5 * 2f;
-					num4 -= (int)(num5 * 2f);
+			if (Direction == Vector2.Zero)
+				Direction = new Vector2(3, 0).RotatedByRandom(MathHelper.TwoPi);
+			else
+				Direction = Direction.RotatedByRandom(0.3f);
 
-					if (vector.X + num > vector2.X && vector.X < vector2.X + 16f && vector.Y + num2 > vector2.Y && vector.Y < vector2.Y + num4)
-					{
-						return true;
-					}
-				}
-				else
-				{
-					if (!Main.tile[i, j].HasTile || Main.tile[i, j].Slope == SlopeType.Solid || j <= 0 || Main.tile[i, j - 1] == null || Main.tile[i, j - 1].LiquidAmount <= 0)
-						continue;
-
-					vector2.X = i * 16;
-					vector2.Y = j * 16;
-					int num6 = 16;
-					if (vector.X + (float)num > vector2.X && vector.X < vector2.X + 16f && vector.Y + (float)num2 > vector2.Y && vector.Y < vector2.Y + (float)num6)
-					{
-						if (Main.tile[i, j - 1].honey())
-							honey = true;
-						else if (Main.tile[i, j - 1].shimmer())
-							shimmer = true;
-
-						return true;
-					}
-				}
-			}
+			NPC.velocity = Direction;
 		}
 
-		return false;
+		Vector2 futurePos = NPC.position + Direction * 4;
+
+		if (Collision.SolidCollision(futurePos, NPC.width, NPC.height))
+		{
+			Direction *= -1;
+			NPC.velocity = Direction;
+			NPC.position += Direction;
+		}
 	}
 
 	private void DryBehaviour()
 	{
+		if (NPC.velocity.Y == 0)
+			NPC.velocity.X *= 0.9f;
 
+		NPC.velocity.Y += 0.2f;
+		Direction = new Vector2(0, 3).RotatedByRandom(0.2f);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -191,6 +155,7 @@ public class BrineShrimp : ModNPC
 		spriteBatch.Draw(TextureAssets.Npc[NPC.type].Value, pos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
 		return false;
 	}
+
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
