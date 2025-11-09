@@ -217,8 +217,6 @@ public class RoastGlobalTile : GlobalTile
 
 		if (Entity(i, j) is CampfireSlot slot)
 		{
-			fail = true;
-
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				TileExtensions.GetTopLeft(ref i, ref j);
