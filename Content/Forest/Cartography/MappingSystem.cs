@@ -225,9 +225,10 @@ public sealed class MappingSystem : ModSystem
 			packet.Write(tile.Color);
 		}
 
+		private static readonly List<SparseEntry> sparse = new(capacity: chunk_area);
+		private static readonly MapTile[] chunk = new MapTile[chunk_area];
+
 		// Potential improvements:
-		// - offload sparse list to a static field that gets re-used each time
-		//   instead of allocating (fixed chunk_area),
 		// - look into keeping a sparse list for multiple chunks if there is
 		//   more sparse data,
 		// - consider more than just light level for syncing?
@@ -242,7 +243,16 @@ public sealed class MappingSystem : ModSystem
 			// Process in chunks.  The actual data does not need to be sent in
 			// fixed chunks, but it's preferred for efficient packing.
 			for (int cy = 0; cy < height; cy += chunk_height)
-			for (int cx = 0; cx < width; cx += chunk_width)
+			{
+				// TODO: Is it worth while to clear instead of just
+				//       re-allocating (particularly for the chunk array)?
+				//       Furthermore, the total size of the array is
+				//       90000 bytes, which is totally stack-allocatable
+				//		 (albeit inadvisable).
+				sparse.Clear();
+				Array.Clear(chunk);
+
+				for (int cx = 0; cx < width; cx += chunk_width)
 				{
 					var chunkRect = new Rectangle(
 						cx,
@@ -253,29 +263,29 @@ public sealed class MappingSystem : ModSystem
 
 					bool changed = false;
 					int diffCount = 0;
-					var sparse = new List<SparseEntry>();
 
 					for (int dy = 0; dy < chunkRect.Height; dy++)
-					for (int dx = 0; dx < chunkRect.Width; dx++)
-					{
-						ushort tx = (ushort)(chunkRect.X + dx);
-						ushort ty = (ushort)(chunkRect.Y + dy);
-						MapTile currentTile = map[tx, ty];
-						MapTile? compareTile = comparisonMap?[tx, ty];
-
-						if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
+						for (int dx = 0; dx < chunkRect.Width; dx++)
 						{
-							changed = true;
-							diffCount++;
-							sparse.Add(new SparseEntry(tx, ty, currentTile));
+							ushort tx = (ushort)(chunkRect.X + dx);
+							ushort ty = (ushort)(chunkRect.Y + dy);
+							MapTile currentTile = map[tx, ty];
+							MapTile? compareTile = comparisonMap?[tx, ty];
+
+							if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
+							{
+								changed = true;
+								diffCount++;
+								sparse.Add(new SparseEntry(tx, ty, currentTile));
+							}
 						}
-					}
 
 					if (!changed)
 						continue;
 
 					// TODO: Look into each value and tweak for efficiency?
 				}
+			}
 
 			packets.Add(new CommitMapData());
 		}
