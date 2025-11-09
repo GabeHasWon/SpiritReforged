@@ -90,7 +90,11 @@ public sealed class MappingSystem : ModSystem
 		{
 			RecordedMap ??= new WorldMap(Main.maxTilesX, Main.maxTilesY);
 
-			using var input = new DeflateStream(reader.BaseStream, CompressionMode.Decompress, leaveOpen: true);
+			ushort compressedLength = reader.ReadUInt16();
+			byte[] compressed = reader.ReadBytes(compressedLength);
+
+			using var ms = new MemoryStream(compressed);
+			using var input = new DeflateStream(ms, CompressionMode.Decompress);
 			using var r = new BinaryReader(input);
 
 			Mode = (DeltaMode)r.ReadByte();
@@ -117,13 +121,13 @@ public sealed class MappingSystem : ModSystem
 						ushort y = (ushort)(r.ReadByte() * chunk_height);
 
 						for (int dy = 0; dy < chunk_height; dy++)
-						for (int dx = 0; dx < chunk_width; dx++)
-						{
-							ushort tx = (ushort)(x + dx);
-							ushort ty = (ushort)(y + dy);
-							MapTile tile = ReadTile(r);
-							UpdateTile(tx, ty, tile);
-						}
+							for (int dx = 0; dx < chunk_width; dx++)
+							{
+								ushort tx = (ushort)(x + dx);
+								ushort ty = (ushort)(y + dy);
+								MapTile tile = ReadTile(r);
+								UpdateTile(tx, ty, tile);
+							}
 
 						break;
 					}
@@ -152,45 +156,49 @@ public sealed class MappingSystem : ModSystem
 
 		public override void OnSend(ModPacket packet)
 		{
-			using var output = new DeflateStream(packet.BaseStream, CompressionMode.Compress, leaveOpen: true);
-			using var writer = new BinaryWriter(output);
+			using var ms = new MemoryStream();
 
-			writer.Write((byte)Mode);
-
-			switch (Mode)
+			using (var output = new DeflateStream(ms, CompressionMode.Compress, leaveOpen: true))
+			using (var writer = new BinaryWriter(output))
 			{
-				case DeltaMode.Sparse:
-					{
-						writer.Write((ushort)SparseEntries.Count);
+				writer.Write((byte)Mode);
 
-						foreach (var entry in SparseEntries)
+				switch (Mode)
+				{
+					case DeltaMode.Sparse:
 						{
-							writer.Write(entry.X);
-							writer.Write(entry.Y);
-							WriteTile(writer, entry.Tile);
+							writer.Write((ushort)SparseEntries.Count);
+
+							foreach (var entry in SparseEntries)
+							{
+								writer.Write(entry.X);
+								writer.Write(entry.Y);
+								WriteTile(writer, entry.Tile);
+							}
+
+							break;
 						}
 
-						break;
-					}
-
-				case DeltaMode.Chunk:
-					{
-						writer.Write(ChunkX);
-						writer.Write(ChunkY);
-
-						for (int dy = 0; dy < chunk_height; dy++)
-						for (int dx = 0; dx < chunk_width; dx++)
+					case DeltaMode.Chunk:
 						{
-							MapTile tile = GetChunkTile(ChunkData, dx, dy);
-							WriteTile(writer, tile);
-						}
+							writer.Write(ChunkX);
+							writer.Write(ChunkY);
 
-						break;
-					}
+							for (int dy = 0; dy < chunk_height; dy++)
+								for (int dx = 0; dx < chunk_width; dx++)
+								{
+									MapTile tile = GetChunkTile(ChunkData, dx, dy);
+									WriteTile(writer, tile);
+								}
+
+							break;
+						}
+				}
 			}
 
-			writer.Flush();
-			output.Flush();
+			byte[] compressed = ms.ToArray();
+			packet.Write((ushort)compressed.Length);
+			packet.Write(compressed);
 		}
 
 		private static void WriteTile(BinaryWriter w, MapTile tile)
