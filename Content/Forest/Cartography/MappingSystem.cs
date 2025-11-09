@@ -51,12 +51,9 @@ public sealed class MappingSystem : ModSystem
 			// Sparse list of points, for when few tiles need updating.
 			Sparse = 0,
 
-			// Small, unfixed rectangular areas smaller than chunks which don't
-			// need compression.
-			Rectangle = 1,
-
-			// Larger, fixed-sized chunks.
-			Chunk = 2,
+			// Larger, fixed-sized rectangles which encode base coordinates
+			// followed by a continguous block of data for the area.
+			Chunk = 1,
 		}
 
 		// Same as tile section dimensions.
@@ -66,15 +63,13 @@ public sealed class MappingSystem : ModSystem
 
 		private static readonly List<PacketData> packets = [];
 
-		public DeltaMode Mode { get; set; }
+		public DeltaMode Mode { get; private set; }
 
-		public Rectangle Area { get; set; }
+		public byte ChunkX { get; private set; }
 
-		public byte ChunkX { get; }
+		public byte ChunkY { get; private set; }
 
-		public byte ChunkY { get; }
-
-		public Queue<SparseEntry> SparseEntries { get; private set; } = [];
+		public List<SparseEntry> SparseEntries { get; private set; } = [];
 
 		// row-major: y * width + x
 		// interate y first for cache coherence, then x
@@ -101,25 +96,6 @@ public sealed class MappingSystem : ModSystem
 							ushort y = reader.ReadUInt16();
 							MapTile tile = ReadTile(reader);
 							UpdateTile(x, y, tile);
-						}
-
-						break;
-					}
-
-				case DeltaMode.Rectangle:
-					{
-						ushort x = reader.ReadUInt16();
-						ushort y = reader.ReadUInt16();
-						byte w = reader.ReadByte();
-						byte h = reader.ReadByte();
-
-						for (int dy = 0; dy < h; dy++)
-						for (int dx = 0; dx < w; dx++)
-						{
-							ushort tx = (ushort)(x + dx);
-							ushort ty = (ushort)(y + dy);
-							MapTile tile = ReadTile(reader);
-							UpdateTile(tx, ty, tile);
 						}
 
 						break;
@@ -184,23 +160,6 @@ public sealed class MappingSystem : ModSystem
 						break;
 					}
 
-				case DeltaMode.Rectangle:
-					{
-						packet.Write((ushort)Area.X);
-						packet.Write((ushort)Area.Y);
-						packet.Write((byte)Area.Width);
-						packet.Write((byte)Area.Height);
-
-						for (int dy = 0; dy < Area.Height; dy++)
-						for (int dx = 0; dx < Area.Width; dx++)
-						{
-							MapTile tile = GetChunkTile(ChunkData, dy, dx);
-							WriteTile(packet, tile);
-						}
-
-						break;
-					}
-
 				case DeltaMode.Chunk:
 					{
 						packet.Write(ChunkX);
@@ -257,26 +216,61 @@ public sealed class MappingSystem : ModSystem
 					int diffCount = 0;
 
 					for (int dy = 0; dy < chunkRect.Height; dy++)
-						for (int dx = 0; dx < chunkRect.Width; dx++)
+					for (int dx = 0; dx < chunkRect.Width; dx++)
+					{
+						ushort tx = (ushort)(chunkRect.X + dx);
+						ushort ty = (ushort)(chunkRect.Y + dy);
+						MapTile currentTile = map[tx, ty];
+						MapTile? compareTile = comparisonMap?[tx, ty];
+
+						if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
 						{
-							ushort tx = (ushort)(chunkRect.X + dx);
-							ushort ty = (ushort)(chunkRect.Y + dy);
-							MapTile currentTile = map[tx, ty];
-							MapTile? compareTile = comparisonMap?[tx, ty];
-
-							if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
-							{
-								changed = true;
-								diffCount++;
-								sparse.Add(new SparseEntry(tx, ty, currentTile));
-								GetChunkTile(chunk, dx, dy) = currentTile;
-							}
+							changed = true;
+							diffCount++;
+							sparse.Add(new SparseEntry(tx, ty, currentTile));
+							GetChunkTile(chunk, dx, dy) = currentTile;
 						}
+					}
 
+					// If there were not changes then discard and move on to
+					// the next chunk.
 					if (!changed)
 						continue;
 
-					// TODO: Look into each value and tweak for efficiency?
+					// Now we actually decide how the delta will be represented.
+					// TODO: Look into the values and tweak for efficiency?
+
+					// Sparse size:
+					// 1 + 2 + (2 + 2 + 2 + 1 + 1)n
+
+					// Chunk
+					// 1 + 2 + (2 + 1 + 1)(200 * 150)
+
+					// These values meet at 15000 differences.
+
+					if (diffCount <= 15000)
+					{
+						var packetData = new SyncMapData
+						{
+							Mode = DeltaMode.Sparse,
+							ChunkX = 0,
+							ChunkY = 0,
+							SparseEntries = sparse
+						};
+						packets.Add(packetData);
+
+					}
+					else
+					{
+						var packetData = new SyncMapData
+						{
+							Mode = DeltaMode.Chunk,
+							ChunkX = (byte)(cx / chunk_width),
+							ChunkY = (byte)(cy / chunk_height),
+							ChunkData = chunk
+						};
+						packets.Add(packetData);
+					}
 				}
 			}
 
