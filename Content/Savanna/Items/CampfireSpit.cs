@@ -225,17 +225,17 @@ public class RoastGlobalTile : GlobalTile
 
 		if (Entity(i, j) is CampfireSlot slot)
 		{
+			TileExtensions.GetTopLeft(ref i, ref j);
+
+			slot.Kill(i, j);
+
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
-
 				var pos = new Vector2(i, j).ToWorldCoordinates() + new Vector2(16);
 				Item.NewItem(new EntitySource_TileBreak(i, j), pos, ModContent.ItemType<CampfireSpit>());
 
 				if (!slot.item.IsAir)
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, slot.item);
-
-				slot.Kill(i, j);
 			}
 		}
 	}
