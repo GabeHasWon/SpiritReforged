@@ -495,3 +495,23 @@ StactusCrimson: {
 	// DisplayName: Rose Stactus
 	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
 }
+
+CorruptStactus: {
+	// DisplayName: Corrupt Stactus
+	// Entry: ""
+}
+
+CrimsonStactus: {
+	// DisplayName: Crimson Stactus
+	// Entry: ""
+}
+
+DesertStactus: {
+	// DisplayName: Desert Stactus
+	// Entry: ""
+}
+
+HallowedStactus: {
+	// DisplayName: Hallowed Stactus
+	// Entry: ""
+}

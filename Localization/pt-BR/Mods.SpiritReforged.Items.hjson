@@ -2632,3 +2632,6 @@ PineappleSeeds: {
 
 // StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
 // StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
