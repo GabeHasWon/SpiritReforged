@@ -65,10 +65,11 @@ public class CampfireSpit : ModItem
 				TileExtensions.GetTopLeft(ref i, ref j);
 
 				int type = ModContent.TileEntityType<CampfireSlot>();
-				TileEntity.PlaceEntityNet(i, j, type);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 					NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: type);
+				else
+					ModContent.GetInstance<CampfireSlot>().Place(i, j);
 
 				if (--Item.stack <= 0)
 					Item.TurnToAir(); //Consume
@@ -99,7 +100,14 @@ public class CampfireSlot : SingleSlotEntity
 			return false;
 
 		TileExtensions.GetTopLeft(ref i, ref j);
-		PlaceEntityNet(i, j, ModContent.TileEntityType<CampfireSlot>());
+
+		// Generally will only be called during generation so the multiplayer
+		// client path will never be hit, but if a mod calls it then we don't
+		// know when or how (so it's safer to account for it).
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: ModContent.TileEntityType<CampfireSlot>());
+		else
+			ModContent.GetInstance<CampfireSlot>().Place(i, j);
 
 		if (ByPosition[new Point16(i, j)] is CampfireSlot slot)
 			slot.item = new Item(ModContent.ItemType<CookedMeat>());
