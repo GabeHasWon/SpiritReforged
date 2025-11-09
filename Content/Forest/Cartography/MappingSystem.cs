@@ -81,8 +81,8 @@ public sealed class MappingSystem : ModSystem
 		public MapTile[] ChunkData { get; private set; } = [];
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static MapTile GetChunkTile(MapTile[] data, int x, int y)
-			=> data[y * chunk_width + x];
+		private static ref MapTile GetChunkTile(MapTile[] data, int x, int y)
+			=> ref data[y * chunk_width + x];
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
@@ -225,9 +225,6 @@ public sealed class MappingSystem : ModSystem
 			packet.Write(tile.Color);
 		}
 
-		private static readonly List<SparseEntry> sparse = new(capacity: chunk_area);
-		private static readonly MapTile[] chunk = new MapTile[chunk_area];
-
 		// Potential improvements:
 		// - look into keeping a sparse list for multiple chunks if there is
 		//   more sparse data,
@@ -244,13 +241,8 @@ public sealed class MappingSystem : ModSystem
 			// fixed chunks, but it's preferred for efficient packing.
 			for (int cy = 0; cy < height; cy += chunk_height)
 			{
-				// TODO: Is it worth while to clear instead of just
-				//       re-allocating (particularly for the chunk array)?
-				//       Furthermore, the total size of the array is
-				//       90000 bytes, which is totally stack-allocatable
-				//		 (albeit inadvisable).
-				sparse.Clear();
-				Array.Clear(chunk);
+				var sparse = new List<SparseEntry>(capacity: chunk_area);
+				var chunk = new MapTile[chunk_area];
 
 				for (int cx = 0; cx < width; cx += chunk_width)
 				{
@@ -277,6 +269,7 @@ public sealed class MappingSystem : ModSystem
 								changed = true;
 								diffCount++;
 								sparse.Add(new SparseEntry(tx, ty, currentTile));
+								GetChunkTile(chunk, dx, dy) = currentTile;
 							}
 						}
 
