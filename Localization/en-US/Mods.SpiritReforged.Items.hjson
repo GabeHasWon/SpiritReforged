@@ -2646,3 +2646,8 @@ GoldenBrineShrimpItem: {
 CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
 CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
 DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
+
+SaltFlatsTorchItem: {
+	DisplayName: Salt Torch
+	Tooltip: ""
+}
