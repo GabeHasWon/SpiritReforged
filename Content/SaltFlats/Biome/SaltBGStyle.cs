@@ -1,5 +1,4 @@
 using SpiritReforged.Common.Visuals;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
 
@@ -46,27 +45,5 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		}
 
 		return false;
-	}
-
-	/// <summary> Draws Cloud. </summary>
-	/// <param name="cloud">The cloud to draw.</param>
-	/// <param name="color">The color to draw the cloud in.</param>
-	/// <param name="yOffset">The vertical offset of the cloud.</param>
-	/// <param name="index">The index of the cloud in <see cref="Main.cloud"/> if applicable.</param>
-	public static void DrawForegroudCloud(Cloud cloud, Color color, float yOffset, SpriteEffects effects = default, int index = -1)
-	{
-		Texture2D texture = TextureAssets.Cloud[cloud.type].Value;
-		Vector2 position = new(cloud.position.X + texture.Width * 0.5f, yOffset + texture.Height * 0.5f);
-		Rectangle sourceRectangle = new(0, 0, texture.Width, texture.Height);
-		float rotation = cloud.rotation;
-		Vector2 origin = texture.Size() / 2;
-		float scale = cloud.scale;
-		DrawData drawData = new(texture, position, sourceRectangle, color, rotation, origin, scale, effects);
-
-		ModCloud modCloud = cloud.ModCloud;
-		if (modCloud == null || index == -1 || modCloud.Draw(Main.spriteBatch, cloud, index, ref drawData))
-		{
-			drawData.Draw(Main.spriteBatch);
-		}
 	}
 }

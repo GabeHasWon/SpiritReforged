@@ -120,7 +120,7 @@ OceanPendant: {
 }
 
 ReefSpear: {
-	DisplayName: 珊瑚三叉戟
+	DisplayName: 珊瑚穿刺者
 	Tooltip: 右键投掷三叉戟，增加主攻击造成的伤害
 }
 
@@ -1008,7 +1008,7 @@ SparrowItem: {
 }
 
 Blunderbuss: {
-	DisplayName: 火铳
+	DisplayName: 喇叭型前膛枪
 	Tooltip: 发射大量子弹
 }
 
@@ -1935,7 +1935,7 @@ VexpowderRed: {
 }
 
 BreakawayChair: {
-	DisplayName: 逃生椅
+	DisplayName: 便携可拆椅
 	Tooltip: 碰撞时损坏
 }
 
@@ -2642,3 +2642,7 @@ GoldenBrineShrimpItem: {
 	// DisplayName: Golden Brine Shrimp
 	// Tooltip: ""
 }
+
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item

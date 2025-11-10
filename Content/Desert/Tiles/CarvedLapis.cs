@@ -18,7 +18,7 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		public Texture2D CreateTilemap(int width, int height)
 		{
-			if (_distanceMap != null)
+			if (_distanceMap != null && _distanceMap.Width == width && _distanceMap.Height == height)
 				return _distanceMap;
 
 			return _distanceMap = Reflections.CreateTilemap(width, height);
@@ -49,8 +49,8 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		public virtual void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
-			const float scale = 2;
-			var gradient = CreateTilemap(8, 24);
+			const float scale = 1;
+			var gradient = CreateTilemap(16, 16 * 3);
 
 			foreach (var pt in _grid)
 			{
@@ -90,18 +90,11 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 			if (normalTarget.Target != null && tileTarget.Target != null && overlayTarget.Target != null)
 			{
 				Effect s = AssetLoader.LoadedShaders["Reflection"].Value;
-				Texture2D n = AssetLoader.LoadedTextures["waterNoise"].Value;
 				Color tint = Color.SlateBlue.Additive(230) * 0.6f;
 
-				s.Parameters["mapTexture"].SetValue(normalTarget);
-				s.Parameters["distortionTexture"].SetValue(n);
+				s.Parameters["normalTexture"].SetValue(normalTarget);
 				s.Parameters["tileTexture"].SetValue(tileTarget);
-
-				s.Parameters["reflectionHeight"].SetValue(overlayTarget.Target.Height / 4);
-				s.Parameters["fade"].SetValue(15f);
-				s.Parameters["distortionScale"].SetValue(Vector2.One);
-				s.Parameters["distortionStrength"].SetValue(Vector2.Zero);
-				s.Parameters["distortionPower"].SetValue(1);
+				s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 				spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);

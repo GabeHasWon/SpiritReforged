@@ -26,6 +26,7 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, AnchorDataOffsets.width, AnchorDataOffsets.count);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.Origin = new Point16(1, 0);

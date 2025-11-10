@@ -42,7 +42,6 @@ public sealed class Reflections : ILoadable
 	/// <param name="height"> The pre-upscaled height of the texture.</param>
 	public static Texture2D CreateTilemap(int width, int height)
 	{
-		const int maximum_height = 255 * 3;
 		const int taper = 10; //Opacity taper downscaled
 
 		var data = new Color[width * height];
@@ -56,7 +55,7 @@ public sealed class Reflections : ILoadable
 			float opacity = Math.Min((float)y / taper, 1);
 
 			if (y > taper)
-				opacity = 1f - Math.Max((float)(y - (maximum_height - taper)) / taper, 0);
+				opacity = 1f - Math.Max((float)(y - (height - taper)) / taper, 0);
 
 			data[i] = new Color(1f - strengthR, 1f - strengthG, 1f - strengthB, opacity);
 		}

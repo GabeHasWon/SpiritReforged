@@ -1,6 +1,7 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Content.Ocean;
+using SpiritReforged.Content.Savanna.Biome;
 using Terraria.Audio;
 using Terraria.GameContent.Events;
 
@@ -16,6 +17,8 @@ internal class AmbientSounds : ModSystem
 	public static readonly SoundStyle DesertWind = new(Path + nameof(DesertWind), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle CaveAmbience = new(Path + nameof(CaveAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle UnderwaterAmbience = new(Path + nameof(UnderwaterAmbience), SoundType.Ambient) { IsLooped = true };
+	public static readonly SoundStyle ZigguratAmbience = new(Path + nameof(ZigguratAmbience), SoundType.Ambient) { IsLooped = true };
+	public static readonly SoundStyle SavannaNightAmbience = new(Path + nameof(SavannaNightAmbience), SoundType.Ambient) { IsLooped = true };
 
 	public static event Action OnUpdateAmbience;
 
@@ -30,10 +33,16 @@ internal class AmbientSounds : ModSystem
 
 		var player = Main.LocalPlayer;
 
-		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime;
+		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
+		UpdateSingleSound(SavannaNightAmbience, .002f, savannaNight);
+
+		bool ziggurat = player.InModBiome<Content.Desert.Biome.ZigguratBiome>();
+		UpdateSingleSound(ZigguratAmbience, 0.0002f, ziggurat);
+
+		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime && !savannaNight;
 		UpdateSingleSound(NighttimeAmbience, 0.005f, nightTimeCondition);
 
-		bool desertWind = player.ZoneDesert && player.ZoneOverworldHeight && !Sandstorm.Happening && !Main.raining && !player.ZoneBeach;
+		bool desertWind = player.ZoneDesert && player.ZoneOverworldHeight && !Sandstorm.Happening && !Main.raining && !player.ZoneBeach && !ziggurat;
 		UpdateSingleSound(DesertWind, 0.005f, desertWind);
 
 		bool caveAmbience = player.ZoneRockLayerHeight;
@@ -45,7 +54,7 @@ internal class AmbientSounds : ModSystem
 
 	private static void UpdateSingleSound(SoundStyle style, float lerpFactor, bool condition, float maxVolume = 1)
 	{
-		const float cutoff = 0.01f;
+		const float cutoff = 0.03f;
 		string key = style.SoundPath;
 
 		if (condition)
