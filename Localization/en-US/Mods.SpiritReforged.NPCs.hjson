@@ -502,7 +502,7 @@ HallowedStactus: {
 
 BrineShrimp: {
 	DisplayName: Brine Shrimp
-	Entry: These tiny shrimp are the primary food source of flamingos, and the reason their feathers turn pink. Prefers to swim upside down
+	Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
 }
 
 GoldenBrineShrimp: {
