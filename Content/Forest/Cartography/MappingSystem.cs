@@ -2,10 +2,12 @@
 
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.WorldGeneration;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Terraria.Map;
 
@@ -24,6 +26,11 @@ public sealed class MappingSystem : ModSystem
 	/// <summary> The map owned by the server and controlled using <see cref="CartographyTable"/>. </summary>
 	[WorldBound(Manual = true)]
 	internal static WorldMap? RecordedMap;
+
+	private const int max_decompress_tasks = 4;
+	private static readonly ConcurrentQueue<(byte[] compressed, int whoAmI)> pending_packets = [];
+	private static readonly SemaphoreSlim decompress_semaphore = new(0, max_decompress_tasks);
+	private static int activeWorkers;
 
 	// Number of asynchronously processed packets we're waiting on before
 	// we can consume a commit packet.
@@ -83,6 +90,12 @@ public sealed class MappingSystem : ModSystem
 		}
 	}
 
+	public override void Unload()
+	{
+		pending_packets.Clear();
+		decompress_semaphore.Dispose();
+	}
+
 	/// <summary> Sends <see cref="RecordedMap"/> data between client and server. </summary>
 	internal sealed class SyncMapData : PacketData
 	{
@@ -134,53 +147,100 @@ public sealed class MappingSystem : ModSystem
 
 			// Run the decompression asynchronously to avoid blocking the main
 			// thread!
-			Task.Run(() =>
+			pending_packets.Enqueue((compressed, whoAmI));
+			StartDecompressWorker();
+		}
+
+		private static void StartDecompressWorker()
+		{
+			if (Interlocked.CompareExchange(ref activeWorkers, 1, 0) == 0)
+				Task.Run(ProcessDecompressQueueAsync);
+		}
+
+		private static async Task ProcessDecompressQueueAsync()
+		{
+			try
 			{
-				using var ms = new MemoryStream(compressed);
-				using var input = new DeflateStream(ms, CompressionMode.Decompress);
-				using var r = new BinaryReader(input);
+				var tasks = new List<Task>();
 
-				Mode = (DeltaMode)r.ReadByte();
-
-				switch (Mode)
+				while (pending_packets.TryDequeue(out var item))
 				{
-					case DeltaMode.Sparse:
+					await decompress_semaphore.WaitAsync();
+
+					var task = Task.Run(() =>
+					{
+						try
 						{
-							int count = r.ReadUInt16();
-							for (int i = 0; i < count; i++)
-							{
-								ushort x = r.ReadUInt16();
-								ushort y = r.ReadUInt16();
-								MapTile tile = ReadTile(r);
-								UpdateTile(x, y, tile);
-							}
-
-							break;
+							DecompressAndApply(item.compressed);
 						}
-
-					case DeltaMode.Chunk:
+						finally
 						{
-							ushort x = (ushort)(r.ReadByte() * chunk_width);
-							ushort y = (ushort)(r.ReadByte() * chunk_height);
-
-							for (int dy = 0; dy < chunk_height; dy++)
-								for (int dx = 0; dx < chunk_width; dx++)
-								{
-									ushort tx = (ushort)(x + dx);
-									ushort ty = (ushort)(y + dy);
-									MapTile tile = ReadTile(r);
-									UpdateTile(tx, ty, tile);
-								}
-
-							break;
+							decompress_semaphore.Release();
 						}
+					});
+
+					tasks.Add(task);
+
+					await Task.Yield();
 				}
 
-				// Now that we're done, we can decrement.
-				unhandledPacketCount--;
+				await Task.WhenAll(tasks);
+			}
+			finally
+			{
+				Interlocked.Exchange(ref activeWorkers, 0);
 
-				Debug.Assert(unhandledPacketCount >= 0);
-			});
+				if (!pending_packets.IsEmpty)
+					StartDecompressWorker();
+			}
+		}
+
+		private static void DecompressAndApply(byte[] compressed)
+		{
+			using var ms = new MemoryStream(compressed);
+			using var input = new DeflateStream(ms, CompressionMode.Decompress);
+			using var r = new BinaryReader(input);
+
+			var mode = (DeltaMode)r.ReadByte();
+
+			switch (mode)
+			{
+				case DeltaMode.Sparse:
+					{
+						int count = r.ReadUInt16();
+						for (int i = 0; i < count; i++)
+						{
+							ushort x = r.ReadUInt16();
+							ushort y = r.ReadUInt16();
+							MapTile tile = ReadTile(r);
+							UpdateTile(x, y, tile);
+						}
+
+						break;
+					}
+
+				case DeltaMode.Chunk:
+					{
+						ushort x = (ushort)(r.ReadByte() * chunk_width);
+						ushort y = (ushort)(r.ReadByte() * chunk_height);
+
+						for (int dy = 0; dy < chunk_height; dy++)
+							for (int dx = 0; dx < chunk_width; dx++)
+							{
+								ushort tx = (ushort)(x + dx);
+								ushort ty = (ushort)(y + dy);
+								MapTile tile = ReadTile(r);
+								UpdateTile(tx, ty, tile);
+							}
+
+						break;
+					}
+			}
+
+			// Now that we're done, we can decrement.
+			Interlocked.Decrement(ref unhandledPacketCount);
+
+			Debug.Assert(unhandledPacketCount >= 0);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
