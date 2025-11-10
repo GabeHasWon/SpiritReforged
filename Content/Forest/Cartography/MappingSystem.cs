@@ -36,7 +36,7 @@ public sealed class MappingSystem : ModSystem
 	private static int unhandledPacketCount;
 
 	// Whether we need to handle a commit packet this frame.
-	private static volatile int handleCommit;
+	private static volatile int handleCommit = -2;
 
 	/// <summary>
 	/// Syncs map data from a multiplayer client to the server.
