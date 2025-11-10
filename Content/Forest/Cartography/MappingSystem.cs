@@ -33,22 +33,17 @@ public sealed class MappingSystem : ModSystem
 	private static volatile int handleCommit;
 
 	/// <summary>
-	/// Requests the server to send updated map data to the client and then sends
-	///	over any changes made by the client.
+	/// Syncs map data from a multiplayer client to the server.
 	/// </summary>
-	public static bool Sync(int requestingClient = -1)
+	public static bool Sync()
 	{
-		if (Main.netMode == NetmodeID.SinglePlayer)
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 			return false;
 
 		Task.Run(async () =>
 		{
-			if (Main.netMode == NetmodeID.Server)
-				SyncMapData.EnqueueMapData(RecordedMap, null);
-			else
-				SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
-
-			await SyncMapData.SendQueuedDataAsync(requestingClient);
+			SyncMapData.EnqueueMapData(Main.Map, RecordedMap);
+			await SyncMapData.SendQueuedDataAsync();
 		});
 		return true;
 	}
@@ -66,8 +61,16 @@ public sealed class MappingSystem : ModSystem
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			Sync(requestingClient: whoAmI);
-			new NotifyMapData().Send(ignoreClient: whoAmI);
+			Task.Run(async () =>
+			{
+				SyncMapData.EnqueueMapData(RecordedMap, null);
+
+				// Relay updated map data back to the initiator.
+				await SyncMapData.SendQueuedDataAsync(toClient: whoAmI);
+
+				// Notify all other clients of the updated map data.
+				new NotifyMapData().Send(ignoreClient: whoAmI);
+			});
 		}
 		else
 		{
@@ -193,7 +196,7 @@ public sealed class MappingSystem : ModSystem
 		private static void UpdateTile(ushort x, ushort y, MapTile tile)
 		{
 			// Never dim server light levels.
-			if (tile.Light >= RecordedMap![x, y].Light)
+			if (tile.Light > RecordedMap![x, y].Light)
 				RecordedMap.SetTile(x, y, ref tile);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -292,7 +295,7 @@ public sealed class MappingSystem : ModSystem
 					MapTile currentTile = map[tx, ty];
 					MapTile? compareTile = comparisonMap?[tx, ty];
 
-					if (!compareTile.HasValue || currentTile.Light >= compareTile?.Light)
+					if (!compareTile.HasValue || currentTile.Light > compareTile?.Light)
 					{
 						changed = true;
 						diffCount++;
@@ -345,8 +348,10 @@ public sealed class MappingSystem : ModSystem
 			packets.Add(new CommitMapData());
 		}
 
-		public static async Task SendQueuedDataAsync(int requestingClient = -1)
+		public static async Task SendQueuedDataAsync(int toClient = -1)
 		{
+			Main.NewText($"Send request: {packets.Count} packets queued.", Color.LightGreen);
+
 			if (packets.Count == 0)
 			{
 				if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -358,11 +363,14 @@ public sealed class MappingSystem : ModSystem
 				return;
 			}
 
+			Main.NewText("Sending map data...", Color.LightGreen);
+
 			foreach (var packetData in packets)
 			{
-				packetData.Send(ignoreClient: requestingClient);
-				await Task.Delay(100);
+				packetData.Send(toClient: toClient);
 			}
+
+			Main.NewText("Map data sent.", Color.LightGreen);
 
 			packets.Clear();
 		}
