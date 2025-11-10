@@ -411,8 +411,6 @@ public sealed class MappingSystem : ModSystem
 
 		public static async Task SendQueuedDataAsync(int toClient = -1)
 		{
-			Main.NewText($"Send request: {packets.Count} packets queued!", Color.LightGreen);
-
 			if (packets.Count == 0)
 			{
 				if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -424,14 +422,10 @@ public sealed class MappingSystem : ModSystem
 				return;
 			}
 
-			Main.NewText("Sending map data...", Color.LightGreen);
-
 			foreach (var packetData in packets)
 			{
 				packetData.Send(toClient: toClient);
 			}
-
-			Main.NewText("Map data sent.", Color.LightGreen);
 
 			packets.Clear();
 		}
