@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
 using Terraria.DataStructures;
@@ -29,6 +30,8 @@ public class Gar : ModNPC
 		NPCID.Sets.CountsAsCritter[Type] = true;
 		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+
+		Recipes.AddToGroup(RecipeGroupID.FishForDinner, this.AutoItemType());
 	}
 
 	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 5, 37));

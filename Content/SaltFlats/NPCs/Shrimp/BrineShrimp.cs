@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
@@ -8,7 +7,7 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;
 
 [AutoloadCritter]
-public class BrineShrimp : ModNPC
+public class BrineShrimp : ModNPC, ItemEvents.IQuickRecipeNPC
 {
 	private enum BehaviourState : byte
 	{
@@ -27,17 +26,15 @@ public class BrineShrimp : ModNPC
 
 	private ref float Timer => ref NPC.ai[1];
 
-	private Vector2 Direction
-	{
-		get => new(NPC.ai[2], NPC.ai[3]);
-		set => (NPC.ai[2], NPC.ai[3]) = (value.X, value.Y);
-	}
+	private ref float IdleTime => ref NPC.ai[2];
+
+	public virtual void AddRecipes() => Recipe.Create(ItemID.CookedShrimp, 1).AddIngredient(this.AutoItemType(), 3).Register();
 
 	public override void SetStaticDefaults()
 	{
 		CreateItemDefaults();
 
-		Main.npcFrameCount[Type] = 12;
+		Main.npcFrameCount[Type] = 4;
 		Main.npcCatchable[Type] = true;
 
 		NPCID.Sets.CountsAsCritter[Type] = true;
@@ -49,8 +46,8 @@ public class BrineShrimp : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.width = 12;
-		NPC.height = 12;
+		NPC.width = 8;
+		NPC.height = 8;
 		NPC.damage = 0;
 		NPC.defense = 0;
 		NPC.lifeMax = 5;
@@ -61,7 +58,7 @@ public class BrineShrimp : ModNPC
 		NPC.noGravity = true;
 		NPC.npcSlots = 0;
 		NPC.dontCountMe = true;
-		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
+		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
@@ -76,7 +73,7 @@ public class BrineShrimp : ModNPC
 
 	private void WaterBehaviour()
 	{
-		NPC.TargetClosest();
+		NPC.target = Player.FindClosest(NPC.position, NPC.width, NPC.height);
 		var target = Main.player[NPC.target];
 
 		Timer++;
@@ -89,52 +86,76 @@ public class BrineShrimp : ModNPC
 			if (NPC.velocity.LengthSquared() > MaxSpeed)
 				NPC.velocity *= 0.98f;
 
-			if (Timer > 120)
+			if (Timer > IdleTime)
 				State = BehaviourState.Swimming;
 		}
 		else if (State == BehaviourState.Swimming)
-		{
-			Direction = Vector2.Normalize(Direction) * 3;
-			SwimMovement();
-		}
+			SwimMovement(false);
 		else if (State == BehaviourState.Panic)
 		{
-			Direction = NPC.DirectionFrom(target.Center) * 4;
-			SwimMovement(15);
+			SwimMovement(true);
+
+			if (target.DistanceSQ(NPC.Center) > 120 * 120)
+				State = BehaviourState.Swimming;
 		}
+
+		NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
 	}
 
-	private void SwimMovement(int interval = 60)
+	private void SwimMovement(bool beingChased)
 	{
 		if (NPC.velocity.LengthSquared() > MaxSpeed)
 			NPC.velocity *= 0.98f;
 
-		float adjTimer = Timer % 60;
+		int interval = beingChased ? 15 : 90;
+		float swimSpeed = beingChased ? 5 : 3f;
+
+		float adjTimer = Timer % (interval + 1);
 
 		if (NPC.velocity.X == 0)
-			Direction = new Vector2(Direction.X * -1, Direction.Y);
-
-		if (NPC.velocity.Y == 0)
-			Direction = new Vector2(Direction.X, Direction.Y * -1);
-
-		// this hit detection needs rewrite, will do tomorrow - gabe
-		if (adjTimer == interval)
 		{
-			if (Direction == Vector2.Zero)
-				Direction = new Vector2(3, 0).RotatedByRandom(MathHelper.TwoPi);
-			else
-				Direction = Direction.RotatedByRandom(0.3f);
+			NPC.velocity.X = -NPC.oldVelocity.X;
 
-			NPC.velocity = Direction;
+			if (NPC.velocity.X == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.velocity.X = Main.rand.NextFloat(-0.2f, 0.2f);
+				NPC.netUpdate = true;
+			}
 		}
 
-		Vector2 futurePos = NPC.position + Direction * 4;
-
-		if (Collision.SolidCollision(futurePos, NPC.width, NPC.height))
+		if (NPC.velocity.Y == 0)
 		{
-			Direction *= -1;
-			NPC.velocity = Direction;
-			NPC.position += Direction;
+			NPC.velocity.Y = -NPC.oldVelocity.Y;
+
+			if (NPC.velocity.Y == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.velocity.Y = Main.rand.NextFloat(-0.2f, 0.2f);
+				NPC.netUpdate = true;
+			}
+		}
+
+		Point tilePos = NPC.Center.ToTileCoordinates();
+		tilePos.Y--;
+		Tile tile = Main.tile[tilePos];
+
+		// Stop the shrimp from hopping out of the water
+		if ((tile.HasTile && Main.tileSolid[tile.TileType] || tile.LiquidAmount < 150) && NPC.velocity.Y < 0)
+			NPC.velocity.Y *= 0.80f;
+
+		if (adjTimer == interval && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			if (Main.rand.NextBool(3))
+			{
+				State = BehaviourState.Idle;
+				Timer = 0;
+			}
+			else
+			{
+				Vector2 dir = beingChased ? Main.player[NPC.target].DirectionTo(NPC.Center) : NPC.velocity;
+				NPC.velocity = dir.SafeNormalize(Vector2.Zero).RotatedByRandom(0.7f) * swimSpeed;
+			}
+
+			NPC.netUpdate = true;
 		}
 	}
 
@@ -144,7 +165,17 @@ public class BrineShrimp : ModNPC
 			NPC.velocity.X *= 0.9f;
 
 		NPC.velocity.Y += 0.2f;
-		Direction = new Vector2(0, 3).RotatedByRandom(0.2f);
+
+		if (Timer++ > 180 && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			NPC.velocity.Y = -2;
+			NPC.velocity.X = Main.rand.NextFloat(-2, 2);
+			NPC.netUpdate = true;
+
+			Timer = 0;
+		}
+
+		NPC.rotation = NPC.velocity.X * 0.08f + MathHelper.PiOver2;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -156,19 +187,14 @@ public class BrineShrimp : ModNPC
 		return false;
 	}
 
-
-	public override void SendExtraAI(BinaryWriter writer)
-	{
-		writer.Write(NPC.scale);
-	}
-
-	public override void ReceiveExtraAI(BinaryReader reader)
-	{
-		NPC.scale = reader.ReadSingle();
-	}
-
 	public override void FindFrame(int frameHeight)
 	{
+		NPC.frameCounter += 0.08f;
+
+		if (State != BehaviourState.Panic)
+			NPC.frame.Y = (int)(NPC.frameCounter % 2) * frameHeight + frameHeight * 2;
+		else
+			NPC.frame.Y = (int)(NPC.frameCounter % 2) * frameHeight;
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
@@ -180,10 +206,6 @@ public class BrineShrimp : ModNPC
 		{
 			short type = Main.rand.NextBool() ? DustID.PinkSlime : DustID.Blood;
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, type, 2f * hit.HitDirection, -2f, 0, default, Main.rand.NextFloat(0.75f, 0.95f));
-		}
-
-		if (NPC.life <= 0)
-		{
 		}
 	}
 	

@@ -2634,6 +2634,11 @@ PineappleSeeds: {
 // StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
 
 BrineShrimpItem: {
-	// DisplayName: Brine Shrimp Item
+	// DisplayName: Brine Shrimp
+	// Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	// DisplayName: Golden Brine Shrimp
 	// Tooltip: ""
 }
