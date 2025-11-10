@@ -2,6 +2,7 @@
 
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.WorldGeneration;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.CompilerServices;
@@ -24,6 +25,13 @@ public sealed class MappingSystem : ModSystem
 	[WorldBound(Manual = true)]
 	internal static WorldMap? RecordedMap;
 
+	// Number of asynchronously processed packets we're waiting on before
+	// we can consume a commit packet.
+	private static int unhandledPacketCount;
+
+	// Whether we need to handle a commit packet this frame.
+	private static volatile int handleCommit;
+
 	/// <summary>
 	/// Requests the server to send updated map data to the client and then sends
 	///	over any changes made by the client.
@@ -43,6 +51,33 @@ public sealed class MappingSystem : ModSystem
 			await SyncMapData.SendQueuedDataAsync(requestingClient);
 		});
 		return true;
+	}
+
+	// Arbitrary update hook ran on multiplayer clients and the server.
+	public override void PreUpdateDusts()
+	{
+		// Probably won't ever matter, but important to immediately cache the
+		// value here since it's volatile.
+		int whoAmI = handleCommit;
+		if (whoAmI == -2)
+			return;
+
+		handleCommit = -2;
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			Sync(requestingClient: whoAmI);
+			new NotifyMapData().Send(ignoreClient: whoAmI);
+		}
+		else
+		{
+			Main.refreshMap = true;
+
+			string key = "Mods.SpiritReforged.Misc." + (MapUpdated ? "ShareAndUpdateMap" : "ShareMap");
+			Main.NewText(Language.GetTextValue(key), new Color(255, 240, 20));
+
+			MapUpdated = false;
+		}
 	}
 
 	/// <summary> Sends <see cref="RecordedMap"/> data between client and server. </summary>
@@ -90,45 +125,59 @@ public sealed class MappingSystem : ModSystem
 			ushort compressedLength = reader.ReadUInt16();
 			byte[] compressed = reader.ReadBytes(compressedLength);
 
-			using var ms = new MemoryStream(compressed);
-			using var input = new DeflateStream(ms, CompressionMode.Decompress);
-			using var r = new BinaryReader(input);
+			// Record the incoming packet so the commit packet won't handle its
+			// command until after we're done processing.
+			unhandledPacketCount++;
 
-			Mode = (DeltaMode)r.ReadByte();
-
-			switch (Mode)
+			// Run the decompression asynchronously to avoid blocking the main
+			// thread!
+			Task.Run(() =>
 			{
-				case DeltaMode.Sparse:
-					{
-						int count = r.ReadUInt16();
-						for (int i = 0; i < count; i++)
+				using var ms = new MemoryStream(compressed);
+				using var input = new DeflateStream(ms, CompressionMode.Decompress);
+				using var r = new BinaryReader(input);
+
+				Mode = (DeltaMode)r.ReadByte();
+
+				switch (Mode)
+				{
+					case DeltaMode.Sparse:
 						{
-							ushort x = r.ReadUInt16();
-							ushort y = r.ReadUInt16();
-							MapTile tile = ReadTile(r);
-							UpdateTile(x, y, tile);
-						}
-
-						break;
-					}
-
-				case DeltaMode.Chunk:
-					{
-						ushort x = (ushort)(r.ReadByte() * chunk_width);
-						ushort y = (ushort)(r.ReadByte() * chunk_height);
-
-						for (int dy = 0; dy < chunk_height; dy++)
-							for (int dx = 0; dx < chunk_width; dx++)
+							int count = r.ReadUInt16();
+							for (int i = 0; i < count; i++)
 							{
-								ushort tx = (ushort)(x + dx);
-								ushort ty = (ushort)(y + dy);
+								ushort x = r.ReadUInt16();
+								ushort y = r.ReadUInt16();
 								MapTile tile = ReadTile(r);
-								UpdateTile(tx, ty, tile);
+								UpdateTile(x, y, tile);
 							}
 
-						break;
-					}
-			}
+							break;
+						}
+
+					case DeltaMode.Chunk:
+						{
+							ushort x = (ushort)(r.ReadByte() * chunk_width);
+							ushort y = (ushort)(r.ReadByte() * chunk_height);
+
+							for (int dy = 0; dy < chunk_height; dy++)
+								for (int dx = 0; dx < chunk_width; dx++)
+								{
+									ushort tx = (ushort)(x + dx);
+									ushort ty = (ushort)(y + dy);
+									MapTile tile = ReadTile(r);
+									UpdateTile(tx, ty, tile);
+								}
+
+							break;
+						}
+				}
+
+				// Now that we're done, we can decrement.
+				unhandledPacketCount--;
+
+				Debug.Assert(unhandledPacketCount >= 0);
+			});
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -324,20 +373,18 @@ public sealed class MappingSystem : ModSystem
 	{
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			if (Main.netMode == NetmodeID.Server)
+			// We can't execute immediately since packets may not be finished
+			// processing.
+			Task.Run(async () =>
 			{
-				Sync(requestingClient: whoAmI);
-				new NotifyMapData().Send(ignoreClient: whoAmI);
-			}
-			else
-			{
-				Main.refreshMap = true;
+				// Wait until we hit zero packets.
+				while (unhandledPacketCount > 0)
+					await Task.Delay(100);
 
-				string key = "Mods.SpiritReforged.Misc." + (MapUpdated ? "ShareAndUpdateMap" : "ShareMap");
-				Main.NewText(Language.GetTextValue(key), new Color(255, 240, 20));
-
-				MapUpdated = false;
-			}
+				// Actual logic should be handled on the main thread so we'll
+				// mark the commit as needing to be handled.
+				handleCommit = whoAmI;
+			});
 		}
 
 		public override void OnSend(ModPacket modPacket) { }
