@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 using Terraria.GameContent.Bestiary;
@@ -6,7 +7,7 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;
 
 [AutoloadCritter]
-public class GoldenBrineShrimp : BrineShrimp
+public class GoldenBrineShrimp : BrineShrimp, IGoldCritter
 {
 	public override void AddRecipes() => Recipe.Create(ItemID.GoldenDelight, 1).AddIngredient(this.AutoItemType()).Register();
 	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 5, 0, 0));
