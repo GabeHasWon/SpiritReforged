@@ -403,6 +403,9 @@ public sealed class MappingSystem : ModSystem
 				}
 			}
 
+			if (packets.Count == 0)
+				return;
+
 			packets.Add(new CommitMapData());
 		}
 
