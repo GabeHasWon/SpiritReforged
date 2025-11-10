@@ -496,6 +496,16 @@ StactusCrimson: {
 	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
 }
 
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: These simple shrimp are the primary delicacy of the flamingo, and the sole reason the bird is pink. Prefers to idle upside down.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}
+
 CorruptStactus: {
 	// DisplayName: Corrupt Stactus
 	// Entry: ""

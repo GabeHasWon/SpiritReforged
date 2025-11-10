@@ -500,3 +500,13 @@ HallowedStactus: {
 	DisplayName: Hallowed Stactus
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
+
+BrineShrimp: {
+	DisplayName: Brine Shrimp
+	Entry: These tiny shrimp are the primary food source of flamingos, and the reason their feathers turn pink. Prefers to swim upside down
+}
+
+GoldenBrineShrimp: {
+	DisplayName: Golden Brine Shrimp
+	Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}
