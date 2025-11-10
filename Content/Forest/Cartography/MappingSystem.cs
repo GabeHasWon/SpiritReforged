@@ -395,13 +395,22 @@ public sealed class MappingSystem : ModSystem
 	{
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			if (Main.netMode == NetmodeID.Server)
+			// We can't execute immediately since packets may not be finished
+			// processing.
+			Task.Run(async () =>
 			{
-				new NotifyMapData().Send();
-				return;
-			}
+				// Wait until we hit zero packets.
+				while (unhandledPacketCount > 0)
+					await Task.Delay(100);
 
-			MapUpdated = true;
+				if (Main.netMode == NetmodeID.Server)
+				{
+					new NotifyMapData().Send();
+					return;
+				}
+
+				MapUpdated = true;
+			});
 		}
 
 		public override void OnSend(ModPacket modPacket) { }
