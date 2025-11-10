@@ -151,14 +151,36 @@ public sealed class MappingSystem : ModSystem
 
 		private static void StartDecompressWorker()
 		{
-			if (Interlocked.CompareExchange(ref activeWorkers, 1, 0) == 0)
-				Task.Run(ProcessDecompressQueueAsync);
+			while (true)
+			{
+				int current = activeWorkers;
+				if (current >= max_workers)
+					break;
+
+				if (Interlocked.CompareExchange(ref activeWorkers, current + 1, current) == current)
+					Task.Run(ProcessDecompressQueueAsync);
+			}
 		}
 
 		private static async Task ProcessDecompressQueueAsync()
 		{
 			try
 			{
+				while (true)
+				{
+					if (!pending_packets.TryDequeue(out var item))
+					{
+						await Task.Delay(10);
+
+						if (pending_packets.IsEmpty)
+							break;
+
+						continue;
+					}
+
+					DecompressAndApply(item.compressed);
+				}
+
 				while (pending_packets.TryDequeue(out var item))
 					DecompressAndApply(item.compressed);
 			}
