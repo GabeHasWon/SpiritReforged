@@ -27,9 +27,8 @@ public sealed class MappingSystem : ModSystem
 	[WorldBound(Manual = true)]
 	internal static WorldMap? RecordedMap;
 
-	private const int max_decompress_tasks = 4;
 	private static readonly ConcurrentQueue<(byte[] compressed, int whoAmI)> pending_packets = [];
-	private static readonly SemaphoreSlim decompress_semaphore = new(0, max_decompress_tasks);
+	private const int max_workers = 4;
 	private static int activeWorkers;
 
 	// Number of asynchronously processed packets we're waiting on before
@@ -93,7 +92,6 @@ public sealed class MappingSystem : ModSystem
 	public override void Unload()
 	{
 		pending_packets.Clear();
-		decompress_semaphore.Dispose();
 	}
 
 	/// <summary> Sends <see cref="RecordedMap"/> data between client and server. </summary>
@@ -161,30 +159,8 @@ public sealed class MappingSystem : ModSystem
 		{
 			try
 			{
-				var tasks = new List<Task>();
-
 				while (pending_packets.TryDequeue(out var item))
-				{
-					await decompress_semaphore.WaitAsync();
-
-					var task = Task.Run(() =>
-					{
-						try
-						{
-							DecompressAndApply(item.compressed);
-						}
-						finally
-						{
-							decompress_semaphore.Release();
-						}
-					});
-
-					tasks.Add(task);
-
-					await Task.Yield();
-				}
-
-				await Task.WhenAll(tasks);
+					DecompressAndApply(item.compressed);
 			}
 			finally
 			{
@@ -410,7 +386,7 @@ public sealed class MappingSystem : ModSystem
 
 		public static async Task SendQueuedDataAsync(int toClient = -1)
 		{
-			Main.NewText($"Send request: {packets.Count} packets queued.", Color.LightGreen);
+			Main.NewText($"Send request: {packets.Count} packets queued!", Color.LightGreen);
 
 			if (packets.Count == 0)
 			{
