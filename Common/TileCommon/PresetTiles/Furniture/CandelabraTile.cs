@@ -22,6 +22,7 @@ public abstract class CandelabraTile : FurnitureTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.newTile.DrawYOffset = 2;

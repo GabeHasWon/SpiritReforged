@@ -2,6 +2,7 @@
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System;
 using System.Linq;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -144,12 +145,17 @@ internal class PotteryStructureMicropass : Micropass
 		for (int i = 0; i < 200; i++)
 		{
 			var random = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+
 			while (WorldGen.InWorld(random.X, random.Y, 20) && !WorldGen.SolidTile(random.X, random.Y + 1) && !Main.tileSolidTop[Framing.GetTileSafely(random.X, random.Y + 1).TileType])
 				random.Y++;
+
 			if (WorldGen.SolidOrSlopedTile(random.X, random.Y))
 				continue;
 
 			int type = selection;
+
+			if (type == ModContent.TileType<ScryingPot>() && CrossMod.Remnants.Enabled && !RemnantsScryingPotPlacementAllowed(random))
+				continue;
 
 			if (type == ModContent.TileType<PotionVats>())
 			{
@@ -169,5 +175,40 @@ internal class PotteryStructureMicropass : Micropass
 				WorldGen.PlaceTile(random.X, random.Y, type, true, style: WorldGen.genRand.Next(range));
 			}
 		}
+	}
+
+	/// <summary>
+	/// Method used to stop Scrying pots from spawning in Remnants' Labyrinth, which should be obscured when possible.
+	/// </summary>
+	private static bool RemnantsScryingPotPlacementAllowed(Point random)
+	{
+		HashSet<int> walls = [];
+
+		if (CrossMod.Remnants.TryFind("LabyrinthBrickWall", out ModWall brickWall))
+			walls.Add(brickWall.Type);
+
+		if (CrossMod.Remnants.TryFind("LabyrinthTileWall", out ModWall tileWall))
+			walls.Add(tileWall.Type);//whisperingmaze
+
+		if (CrossMod.Remnants.TryFind("whisperingmaze", out ModWall mazeWall))
+			walls.Add(mazeWall.Type);
+
+		if (walls.Count == 0)
+			return true;
+
+		const int Range = 40;
+
+		for (int i = random.X - Range; i < random.X + Range; ++i)
+		{
+			for (int j = random.Y - Range; j < random.Y + Range; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (walls.Contains(tile.WallType))
+					return false;
+			}
+		}
+
+		return true;
 	}
 }
