@@ -144,7 +144,7 @@ public sealed class MappingSystem : ModSystem
 		private static void UpdateTile(ushort x, ushort y, MapTile tile)
 		{
 			// Never dim server light levels.
-			if (tile.Light > RecordedMap![x, y].Light)
+			if (tile.Light >= RecordedMap![x, y].Light)
 				RecordedMap.SetTile(x, y, ref tile);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
