@@ -1,8 +1,10 @@
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Desert.DragonFossil;
 
@@ -11,6 +13,9 @@ public class Dragonsong : ModItem
 	[AutoloadGlowmask("255,255,255", false)]
 	public class DragonsongHeld : ModProjectile
 	{
+		public ref float Counter => ref Projectile.ai[0];
+		private Vector2 MuzzlePosition => Projectile.Center + Vector2.Normalize(Projectile.velocity) * 30;
+
 		public override LocalizedText DisplayName => ModContent.GetInstance<Dragonsong>().DisplayName;
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 4;
@@ -27,22 +32,75 @@ public class Dragonsong : ModItem
 			Player owner = Main.player[Projectile.owner];
 			int timeLeftMax = owner.itemAnimationMax;
 
-			Projectile.timeLeft = Math.Min(Projectile.timeLeft, timeLeftMax);
+			if (owner.channel)
+			{
+				Projectile.timeLeft = timeLeftMax;
+				owner.itemAnimation = owner.itemTime = timeLeftMax;
+				int rate = Math.Max(timeLeftMax - (int)(Counter / timeLeftMax * 5), 8);
 
-			if (Projectile.timeLeft > timeLeftMax - 8)
-				holdDistance -= 4;
+				if (Counter++ % rate == 0)
+				{
+					Projectile.frame = 0;
+
+					if (owner.whoAmI == Main.myPlayer)
+					{
+						Vector2 oldVelocity = Projectile.velocity;
+						Projectile.velocity = owner.DirectionTo(Main.MouseWorld) * oldVelocity.Length();
+
+						if (Projectile.velocity != oldVelocity)
+							Projectile.netUpdate = true;
+
+						Shoot(Projectile.GetSource_FromAI(), Projectile.velocity, Projectile.Center, owner);
+
+						if (!Main.dedServ)
+							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.UnitY * -Main.rand.NextFloat(3, 5), Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+							{
+								TertiaryColor = Color.PaleVioletRed,
+								Pixellate = true,
+								PixelDivisor = 3,
+								Layer = ParticleLayer.AbovePlayer
+							});
+					}
+				}
+			}
+			else if (Main.rand.NextBool())
+			{
+				ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.UnitY * -Main.rand.NextFloat(3, 5), Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+				{
+					TertiaryColor = Color.PaleVioletRed,
+					Pixellate = true,
+					PixelDivisor = 3,
+					Layer = ParticleLayer.AbovePlayer
+				});
+			}
+
+			Projectile.UpdateFrame(10, 3);
 
 			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 5 * -Projectile.direction).RotatedBy(rotation);
 
-			Projectile.direction = Projectile.spriteDirection = owner.direction;
-			Projectile.UpdateFrame(22, 3, 3);
-
+			owner.direction = Projectile.direction = Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
 			Projectile.Center = owner.RotatedRelativePoint(position);
 			Projectile.rotation = rotation;
 
 			owner.heldProj = Projectile.whoAmI;
 			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
 			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
+		}
+
+		private void Shoot(IEntitySource source, Vector2 velocity, Vector2 position, Player player)
+		{
+			const int muzzleLength = 50;
+
+			SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Pitch = 0.5f }, position);
+			Vector2 muzzleOffset = Vector2.Normalize(velocity) * muzzleLength;
+
+			if (Collision.CanHit(position, 2, 2, position + muzzleOffset, 2, 2))
+				position += muzzleOffset;
+
+			player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _);
+
+			for (int i = 0; i < Main.rand.Next(3, 6); i++)
+				Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1)).RotatedByRandom(0.5f), type, Projectile.damage, Projectile.knockBack, player.whoAmI);
 		}
 
 		public override bool ShouldUpdatePosition() => false;
@@ -57,9 +115,17 @@ public class Dragonsong : ModItem
 			var frame = texture.Frame(1, Main.projFrames[Type], 0, Math.Min(Projectile.frame, Main.projFrames[Type] - 1), 0, -2);
 			var effects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
+			Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
+			float intensity = 1f - Projectile.frame / (Main.projFrames[Type] - 1f);
+			float opacity = Math.Min(Counter / 200f * intensity, 1);
+			Vector2 starScale = new Vector2(1, 0.5f) * intensity;
+
+			Main.EntitySpriteDraw(star, MuzzlePosition - Main.screenPosition, null, Color.OrangeRed.Additive() * opacity, 0, star.Size() / 2, starScale, default);
+			Main.EntitySpriteDraw(star, MuzzlePosition - Main.screenPosition, null, Color.White.Additive() * opacity, 0, star.Size() / 2, starScale * 0.5f, default);
+
 			Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, frame.Size() / 2, Projectile.scale, effects);
 			Main.EntitySpriteDraw(GlowmaskProjectile.ProjIdToGlowmask[Type].Glowmask.Value, position, frame, Projectile.GetAlpha(Color.White), Projectile.rotation, frame.Size() / 2, Projectile.scale, effects);
-			
+
 			return false;
 		}
 	}
@@ -71,6 +137,7 @@ public class Dragonsong : ModItem
 			Main.projFrames[Type] = 4;
 			ProjectileID.Sets.TrailingMode[Type] = 0;
 			ProjectileID.Sets.TrailCacheLength[Type] = 8;
+			ProjectileID.Sets.DontCancelChannelOnKill[Type] = true;
 		}
 
 		public override void SetDefaults()
@@ -125,18 +192,19 @@ public class Dragonsong : ModItem
 		Item.width = 44;
 		Item.height = 48;
 		Item.DamageType = DamageClass.Ranged;
-		Item.ammo = AmmoID.Gel;
-		Item.damage = 14;
+		Item.useAmmo = AmmoID.Gel;
+		Item.damage = 18;
 		Item.knockBack = 3;
-		Item.useTime = Item.useAnimation = 20;
+		Item.useTime = Item.useAnimation = 35;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.value = Item.sellPrice(0, 1, 0, 0);
 		Item.rare = ItemRarityID.Blue;
-		Item.autoReuse = true;
 		Item.shoot = ModContent.ProjectileType<DragonFireball>();
 		Item.shootSpeed = 8f;
+		Item.autoReuse = true;
+		Item.channel = true;
 		Item.UseSound = SoundID.DD2_BallistaTowerShot with { Pitch = 0.9f, Volume = 0.5f };
 	}
 
@@ -144,21 +212,7 @@ public class Dragonsong : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		const int muzzleLength = 50;
-
-		int heldType = ModContent.ProjectileType<DragonsongHeld>();
-		if (player.ownedProjectileCounts[heldType] == 0)
-			Projectile.NewProjectile(source, position, Vector2.Normalize(velocity), heldType, 0, 0, player.whoAmI);
-
-		SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Pitch = 0.5f }, position);
-		Vector2 muzzleOffset = Vector2.Normalize(velocity) * muzzleLength;
-
-		if (Collision.CanHit(position, 2, 2, position + muzzleOffset, 2, 2))
-			position += muzzleOffset;
-
-		for (int i = 0; i < 3; i++)
-			Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1)).RotatedByRandom(0.5f), type, damage, knockback, player.whoAmI);
-
+		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<DragonsongHeld>(), damage, knockback, player.whoAmI);
 		return false;
 	}
 
@@ -175,9 +229,9 @@ public class Dragonsong : ModItem
 					LocalPosition = Main.MouseScreen,
 					Scale = Vector2.One,
 					Velocity = (Vector2.UnitY * -Main.rand.NextFloat(2)).RotatedByRandom(1),
-					AccelerationPerFrame = Vector2.UnitY * 0.1f,
-					ScaleVelocity = -new Vector2(0.01f),
-					RotationVelocity = 0.05f
+					AccelerationPerFrame = Vector2.UnitY * 0.08f,
+					ScaleVelocity = -new Vector2(0.005f),
+					RotationVelocity = 0.04f
 				});
 		}
 	}
