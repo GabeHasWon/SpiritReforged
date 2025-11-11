@@ -453,12 +453,6 @@ ArgonMossSlime.DisplayName: 氩苔藓史莱姆
 HeliumMossSlime.DisplayName: 氦苔藓史莱姆
 OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
 RadonMossSlime.DisplayName: 氡苔藓史莱姆
-
-Stactus: {
-	// DisplayName: Stactus
-	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
-}
-
 // Tumbleweed.DisplayName: Tumbleweed
 
 Flamingo: {
@@ -486,12 +480,32 @@ Grub: {
 	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
 }
 
-StactusCorrupt: {
-	// DisplayName: Corrupt Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
+DesertStactus: {
+	// DisplayName: Stactus
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
-StactusCrimson: {
-	// DisplayName: Rose Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.Stactus.Entry}"
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: These simple shrimp are the primary delicacy of the flamingo, and the sole reason the bird is pink. Prefers to idle upside down.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}
+
+CorruptStactus: {
+	// DisplayName: Corrupt Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	// DisplayName: Crimson Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	// DisplayName: Hallowed Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
