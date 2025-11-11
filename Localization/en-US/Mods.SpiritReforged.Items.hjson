@@ -2642,8 +2642,8 @@ Dragonsong: {
 		'''
 }
 
-LittleDragon: {
-	DisplayName: Little Dragon
+TinyDragon: {
+	DisplayName: Tiny Dragon
 	Tooltip: "'Last of its kind'"
 }
 

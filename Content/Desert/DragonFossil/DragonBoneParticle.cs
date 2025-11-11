@@ -6,8 +6,8 @@ namespace SpiritReforged.Content.Desert.DragonFossil;
 public class DragonBoneParticle(int style) : ABasicParticle
 {
 	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(DragonBoneParticle), "DragonBoneParticle", false);
-	private readonly int _style = style;
-	private int _timeActive;
+	protected readonly int _style = style;
+	protected int _timeActive;
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{

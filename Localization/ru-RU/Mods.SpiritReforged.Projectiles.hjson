@@ -53,5 +53,6 @@ FingerShot.DisplayName: Пальцевыстрел
 // PhysicsChain.DisplayName: Chain
 // GoldPhysicsChain.DisplayName: Gold Physics Chain
 // CactusSpine.DisplayName: Cactus Spine
-// LittleDragonPet.DisplayName: Little Dragon Pet
+// TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
 // DragonFireball.DisplayName: Dragon Fireball
+// PileOfConsequencesPet.DisplayName: Consequences
