@@ -2651,3 +2651,8 @@ SaltFlatsTorchItem: {
 	DisplayName: Salt Torch
 	Tooltip: ""
 }
+
+ZigguratMusicBoxItem: {
+	DisplayName: Music Box (Ziggurat)
+	Tooltip: ""
+}
