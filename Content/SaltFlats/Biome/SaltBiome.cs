@@ -21,6 +21,13 @@ public class SaltBiome : ModBiome
 	public override void SetStaticDefaults()
 	{
 		NPCHappinessHelper.SetAverage<SaltBiome>(ModContent.GetInstance<SnowBiome>(), ModContent.GetInstance<DesertBiome>());
+
+		NPCHappiness.Get(NPCID.Wizard).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Painter).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Truffle).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Mechanic).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Steampunker).SetBiomeAffection(this, AffectionLevel.Dislike);
+
 		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SaltBlockReflective>(), ModContent.TileType<SaltBlockDull>()], 200));
 	}
 
