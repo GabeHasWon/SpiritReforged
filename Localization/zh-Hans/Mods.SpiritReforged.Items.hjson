@@ -2654,7 +2654,7 @@ AncientBannerItem: {
 
 TallSandstoneShelfItem: {
 	// DisplayName: Tall Sandstone Shelf
-  // Tooltip: ""
+	// Tooltip: ""
 }
 
 SaltFlatsTorchItem: {

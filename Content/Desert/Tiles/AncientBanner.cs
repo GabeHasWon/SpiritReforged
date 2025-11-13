@@ -34,6 +34,4 @@ public class AncientBanner : ModTile, ISwayTile, IAutoloadTileItem
 		RegisterItemDrop(this.AutoItemType());
 		DustType = -1;
 	}
-
-	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) => offsetY = 2;
 }

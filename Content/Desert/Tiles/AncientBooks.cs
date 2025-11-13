@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Content.Desert.Tiles;
+﻿using SpiritReforged.Content.Forest.Cartography.Maps;
+
+namespace SpiritReforged.Content.Desert.Tiles;
 
 public class AncientBooks : ModTile
 {
@@ -10,9 +12,10 @@ public class AncientBooks : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.RandomStyleRange = 4;
+		TileObjectData.newTile.RandomStyleRange = 5;
 		TileObjectData.addTile(Type);
 
+		RegisterItemDrop(ModContent.ItemType<TornMapPiece>(), 4);
 		DustType = DustID.Dirt;
 	}
 }
