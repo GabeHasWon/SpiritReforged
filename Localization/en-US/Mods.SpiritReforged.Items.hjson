@@ -2640,3 +2640,8 @@ AncientBannerItem: {
 	DisplayName: Ancient Banner Item
 	Tooltip: ""
 }
+
+TallSandstoneShelfItem: {
+	DisplayName: Tall Sandstone Shelf
+	Tooltip: ""
+}
