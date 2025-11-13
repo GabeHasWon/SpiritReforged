@@ -10,7 +10,6 @@ public class AncientBooks : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.StyleWrapLimit = 0;
 		TileObjectData.newTile.RandomStyleRange = 4;
 		TileObjectData.addTile(Type);
 

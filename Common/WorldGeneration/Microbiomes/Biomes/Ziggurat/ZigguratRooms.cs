@@ -304,7 +304,7 @@ public static class ZigguratRooms
 					new Actions.Custom((i, j, args) =>
 					{
 						if (!WorldGen.SolidOrSlopedTile(i, j - 1) && WorldGen.genRand.NextBool(4))
-							WorldGen.PlaceTile(i, j - 1, ModContent.TileType<AncientBooks>(), true);
+							Placer.PlaceTile<AncientBooks>(i, j - 1);
 
 						return true;
 					})
