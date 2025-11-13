@@ -127,3 +127,8 @@ ToucaneMinion_Buff: {
 	// DisplayName: Toucane
 	// Description: The toucane fights for you?
 }
+
+TinyDragonPet_Buff: {
+	// DisplayName: Tiny Dragon
+	// Description: A little dragon is following you
+}
