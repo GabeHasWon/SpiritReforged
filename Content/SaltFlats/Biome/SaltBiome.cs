@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Personalities;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -19,11 +21,19 @@ public class SaltBiome : ModBiome
 	public override void SetStaticDefaults()
 	{
 		NPCHappinessHelper.SetAverage<SaltBiome>(ModContent.GetInstance<SnowBiome>(), ModContent.GetInstance<DesertBiome>());
+
+		NPCHappiness.Get(NPCID.Wizard).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Painter).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Truffle).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Mechanic).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Steampunker).SetBiomeAffection(this, AffectionLevel.Dislike);
+
 		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SaltBlockReflective>(), ModContent.TileType<SaltBlockDull>()], 200));
 	}
 
 	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SaltWaterStyle>();
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
+	public override int BiomeTorchItemType => ModContent.ItemType<SaltFlatsTorchItem>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
 	public override int Music => GetMusic();
 

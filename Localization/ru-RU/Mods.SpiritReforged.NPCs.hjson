@@ -499,3 +499,13 @@ HallowedStactus: {
 	// DisplayName: Hallowed Stactus
 	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
+
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}

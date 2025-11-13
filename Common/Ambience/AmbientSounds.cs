@@ -18,6 +18,7 @@ internal class AmbientSounds : ModSystem
 	public static readonly SoundStyle CaveAmbience = new(Path + nameof(CaveAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle UnderwaterAmbience = new(Path + nameof(UnderwaterAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle ZigguratAmbience = new(Path + nameof(ZigguratAmbience), SoundType.Ambient) { IsLooped = true };
+	public static readonly SoundStyle SavannaDayAmbience = new(Path + nameof(SavannaDayAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle SavannaNightAmbience = new(Path + nameof(SavannaNightAmbience), SoundType.Ambient) { IsLooped = true };
 
 	public static event Action OnUpdateAmbience;
@@ -32,6 +33,9 @@ internal class AmbientSounds : ModSystem
 			return;
 
 		var player = Main.LocalPlayer;
+
+		bool savannaDay = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight;
+		UpdateSingleSound(SavannaDayAmbience, .002f, savannaDay);
 
 		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
 		UpdateSingleSound(SavannaNightAmbience, .002f, savannaNight);
