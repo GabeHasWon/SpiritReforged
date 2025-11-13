@@ -2637,7 +2637,7 @@ PineappleSeeds: {
 // DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
 
 AncientBannerItem: {
-	// DisplayName: Ancient Banner Item
+	// DisplayName: Ancient Banner
 	// Tooltip: ""
 }
 

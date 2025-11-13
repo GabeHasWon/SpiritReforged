@@ -10,15 +10,16 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public static class ZigguratRooms
 {
-	private static Point WithNoise(this Point pt)
+	public struct RoomNoise(float smoothing)
 	{
-		const float divider = 15;
-		return pt + new Point(0, (int)Noise.NoiseSystem.PerlinStatic(pt.X / divider, pt.Y / divider));
+		public readonly float Get(int x, int y) => Noise.NoiseSystem.PerlinStatic(x / smoothing, y / smoothing) * 2f;
+		public readonly Point Modified(Point pt) => pt + new Point(0, (int)Get(pt.X, pt.Y));
 	}
 
-	public class BasicRoom(Rectangle bounds, Point origin = default) : GenRoom(origin)
+	public class BasicRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : GenRoom(origin)
 	{
 		protected readonly Rectangle _outerBounds = bounds;
+		protected readonly RoomNoise _noise = noise;
 
 		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.Next([8, 10]), 14);
 
@@ -27,8 +28,8 @@ public static class ZigguratRooms
 			Point left = new(Bounds.Left - 1, Bounds.Bottom - 2);
 			Point right = new(Bounds.Right, Bounds.Bottom - 2);
 
-			Links.Add(new(left.WithNoise(), Left));
-			Links.Add(new(right.WithNoise(), Right));
+			Links.Add(new(_noise.Modified(left), Left));
+			Links.Add(new(_noise.Modified(right), Right));
 		}
 
 		public override void Create()
@@ -37,18 +38,9 @@ public static class ZigguratRooms
 
 			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
-
-			//Add decorations
-			WorldMethods.GenerateSquared(static (i, j) =>
-			{
-				if (WorldGen.genRand.NextBool(50) && WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
-					ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
-
-				return false;
-			}, out _, Bounds);
 		}
 
-		public void CarveOut(float noiseStrength = 2)
+		public void CarveOut()
 		{
 			const int curveHeight = 3;
 			WorldUtils.Gen(Bounds.Location, new Shapes.Rectangle(Bounds.Width, Bounds.Height + 1), new Actions.Custom((x, y, args) =>
@@ -56,7 +48,7 @@ public static class ZigguratRooms
 				float progress = (x - Bounds.Left) / (Bounds.Width - 1f);
 				int curve = (int)((1f - EaseFunction.EaseSine.Ease(progress)) * curveHeight);
 
-				if (y - Bounds.Top > curve && y - Bounds.Bottom < Noise.NoiseSystem.PerlinStatic(x, y) * noiseStrength)
+				if (y - Bounds.Top > curve && y - Bounds.Bottom < _noise.Get(x, y))
 				{
 					WorldUtils.ClearTile(x, y);
 					Main.tile[x, y].LiquidAmount = 0;
@@ -124,7 +116,7 @@ public static class ZigguratRooms
 		}
 	}*/
 
-	public class EntranceRoom(Rectangle bounds, EntranceRoom.StyleID style, Point origin = default) : BasicRoom(bounds, origin)
+	public class EntranceRoom(Rectangle bounds, EntranceRoom.StyleID style, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
 		public enum StyleID
 		{
@@ -202,7 +194,7 @@ public static class ZigguratRooms
 		}
 	}
 
-	public class StorageRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	public class StorageRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
 		public override void Create()
 		{
@@ -255,7 +247,7 @@ public static class ZigguratRooms
 		}
 	}
 
-	public class TreasureRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
+	public class TreasureRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
 		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5, 20);
 
@@ -290,6 +282,34 @@ public static class ZigguratRooms
 
 				return false;
 			}, out _, Bounds);
+		}
+	}
+
+	public class LibraryRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
+	{
+		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.NextFromList(6, 8), 14);
+
+		public override void Create()
+		{
+			base.Create();
+
+			int count = WorldGen.genRand.Next(4, 7);
+			for (int i = 0; i < count; i++)
+			{
+				int width = WorldGen.genRand.Next(3, 5);
+				int height = WorldGen.genRand.Next(3, 9);
+
+				WorldUtils.Gen(new Point(WorldGen.genRand.Next(Bounds.Left, Bounds.Right - width), Bounds.Bottom - height + 1), new Shapes.Rectangle(width, height), Actions.Chain(
+					new Actions.PlaceTile((ushort)ModContent.TileType<TallSandstoneShelf>()),
+					new Actions.Custom((i, j, args) =>
+					{
+						if (!WorldGen.SolidOrSlopedTile(i, j - 1) && WorldGen.genRand.NextBool(4))
+							WorldGen.PlaceTile(i, j - 1, ModContent.TileType<AncientBooks>(), true);
+
+						return true;
+					})
+				));
+			}
 		}
 	}
 }
