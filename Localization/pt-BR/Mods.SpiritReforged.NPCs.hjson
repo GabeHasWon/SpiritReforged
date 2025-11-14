@@ -485,16 +485,6 @@ DesertStactus: {
 	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
 }
 
-BrineShrimp: {
-	// DisplayName: Brine Shrimp
-	// Entry: These simple shrimp are the primary delicacy of the flamingo, and the sole reason the bird is pink. Prefers to idle upside down.
-}
-
-GoldenBrineShrimp: {
-	// DisplayName: Golden Brine Shrimp
-	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
-}
-
 CorruptStactus: {
 	// DisplayName: Corrupt Stactus
 	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
@@ -508,4 +498,14 @@ CrimsonStactus: {
 HallowedStactus: {
 	// DisplayName: Hallowed Stactus
 	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }

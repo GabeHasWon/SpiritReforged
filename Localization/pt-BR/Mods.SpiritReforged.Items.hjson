@@ -2667,6 +2667,6 @@ GoldenBrineShrimpItem: {
 // DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
 
 SaltFlatsTorchItem: {
-	// DisplayName: Salt Flats Torch Item
+	// DisplayName: Salt Torch
 	// Tooltip: ""
 }
