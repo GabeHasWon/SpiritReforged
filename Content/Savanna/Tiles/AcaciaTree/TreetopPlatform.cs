@@ -28,7 +28,8 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 		//Use a position convenient to acacia treetops
 		Center = tilePos.ToVector2() * 16 + new Vector2(8, -112) + TreeExtensions.GetPalmTreeOffset(tilePos.X, tilePos.Y);
 
-		if (!Framing.GetTileSafely(TreePosition.Value).HasTileType(ModContent.TileType<AcaciaTree>()) || ModContent.GetInstance<AcaciaTree>().FindSegment(TreePosition.Value.X, TreePosition.Value.Y) is not CustomTree.SegmentType.LeafyTop)
+		Tile tile = Framing.GetTileSafely(TreePosition.Value);
+		if (!tile.HasTile || TileLoader.GetTile(tile.TileType) is not AcaciaTree || ModContent.GetInstance<AcaciaTree>().FindSegment(TreePosition.Value.X, TreePosition.Value.Y) is not CustomTree.SegmentType.LeafyTop)
 			Kill();
 	}
 
