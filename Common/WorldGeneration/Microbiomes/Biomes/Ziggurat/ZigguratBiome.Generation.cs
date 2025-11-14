@@ -249,7 +249,7 @@ public partial class ZigguratBiome : Microbiome
 				{
 					Tile tile = Main.tile[i, j];
 
-					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
+					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
 						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
 
 					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place banners
