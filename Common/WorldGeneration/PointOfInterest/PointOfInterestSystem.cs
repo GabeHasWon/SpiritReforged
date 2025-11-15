@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.ModCompat;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
@@ -17,6 +16,8 @@ public enum InterestType : byte
 	Curiosity,
 	BloodAltar, //Thorium Mod exclusive
 	WulfrumBunker, //Fables Mod exclusive
+	SaltFlat,
+	Ziggurat,
 	Count
 }
 

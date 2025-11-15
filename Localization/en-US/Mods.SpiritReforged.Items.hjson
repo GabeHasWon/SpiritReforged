@@ -2666,3 +2666,13 @@ ZigguratMusicBoxItem: {
 	DisplayName: Music Box (Ziggurat)
 	Tooltip: ""
 }
+
+PinSaltFlat: {
+	DisplayName: Salt Flat Pin
+	Tooltip: ""
+}
+
+PinZiggurat: {
+	DisplayName: Ziggurat Pin
+	Tooltip: ""
+}
