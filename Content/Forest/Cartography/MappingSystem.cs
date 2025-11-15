@@ -27,8 +27,8 @@ public sealed class MappingSystem : ModSystem
 	[WorldBound(Manual = true)]
 	internal static WorldMap? RecordedMap;
 
-	private static readonly ConcurrentQueue<(byte[] compressed, int whoAmI)> pending_packets = [];
-	private const int max_workers = 4;
+	private static readonly ConcurrentQueue<(byte[] compressed, int whoAmI)> pendingPackets = [];
+	private const int MAX_WORKERS = 4;
 	private static int activeWorkers;
 
 	// Number of asynchronously processed packets we're waiting on before
@@ -91,7 +91,7 @@ public sealed class MappingSystem : ModSystem
 
 	public override void Unload()
 	{
-		pending_packets.Clear();
+		pendingPackets.Clear();
 	}
 
 	/// <summary> Sends <see cref="RecordedMap"/> data between client and server. </summary>
@@ -145,7 +145,7 @@ public sealed class MappingSystem : ModSystem
 
 			// Run the decompression asynchronously to avoid blocking the main
 			// thread!
-			pending_packets.Enqueue((compressed, whoAmI));
+			pendingPackets.Enqueue((compressed, whoAmI));
 			StartDecompressWorker();
 		}
 
@@ -154,7 +154,7 @@ public sealed class MappingSystem : ModSystem
 			while (true)
 			{
 				int current = activeWorkers;
-				if (current >= max_workers)
+				if (current >= MAX_WORKERS)
 					break;
 
 				if (Interlocked.CompareExchange(ref activeWorkers, current + 1, current) == current)
@@ -168,11 +168,11 @@ public sealed class MappingSystem : ModSystem
 			{
 				while (true)
 				{
-					if (!pending_packets.TryDequeue(out var item))
+					if (!pendingPackets.TryDequeue(out var item))
 					{
 						await Task.Delay(10);
 
-						if (pending_packets.IsEmpty)
+						if (pendingPackets.IsEmpty)
 							break;
 
 						continue;
@@ -181,14 +181,14 @@ public sealed class MappingSystem : ModSystem
 					DecompressAndApply(item.compressed);
 				}
 
-				while (pending_packets.TryDequeue(out var item))
+				while (pendingPackets.TryDequeue(out var item))
 					DecompressAndApply(item.compressed);
 			}
 			finally
 			{
 				Interlocked.Exchange(ref activeWorkers, 0);
 
-				if (!pending_packets.IsEmpty)
+				if (!pendingPackets.IsEmpty)
 					StartDecompressWorker();
 			}
 		}
@@ -223,6 +223,7 @@ public sealed class MappingSystem : ModSystem
 						ushort y = (ushort)(r.ReadByte() * chunk_height);
 
 						for (int dy = 0; dy < chunk_height; dy++)
+						{
 							for (int dx = 0; dx < chunk_width; dx++)
 							{
 								ushort tx = (ushort)(x + dx);
@@ -230,6 +231,7 @@ public sealed class MappingSystem : ModSystem
 								MapTile tile = ReadTile(r);
 								UpdateTile(tx, ty, tile);
 							}
+						}
 
 						break;
 					}
@@ -266,40 +268,44 @@ public sealed class MappingSystem : ModSystem
 			using var ms = new MemoryStream();
 
 			using (var output = new DeflateStream(ms, CompressionMode.Compress, leaveOpen: true))
-			using (var writer = new BinaryWriter(output))
 			{
-				writer.Write((byte)Mode);
-
-				switch (Mode)
+				using (var writer = new BinaryWriter(output))
 				{
-					case DeltaMode.Sparse:
-						{
-							writer.Write((ushort)SparseEntries.Count);
+					writer.Write((byte)Mode);
 
-							foreach (var entry in SparseEntries)
+					switch (Mode)
+					{
+						case DeltaMode.Sparse:
 							{
-								writer.Write(entry.X);
-								writer.Write(entry.Y);
-								WriteTile(writer, entry.Tile);
-							}
+								writer.Write((ushort)SparseEntries.Count);
 
-							break;
-						}
-
-					case DeltaMode.Chunk:
-						{
-							writer.Write(ChunkX);
-							writer.Write(ChunkY);
-
-							for (int dy = 0; dy < chunk_height; dy++)
-								for (int dx = 0; dx < chunk_width; dx++)
+								foreach (var entry in SparseEntries)
 								{
-									MapTile tile = GetChunkTile(ChunkData, dx, dy);
-									WriteTile(writer, tile);
+									writer.Write(entry.X);
+									writer.Write(entry.Y);
+									WriteTile(writer, entry.Tile);
 								}
 
-							break;
-						}
+								break;
+							}
+
+						case DeltaMode.Chunk:
+							{
+								writer.Write(ChunkX);
+								writer.Write(ChunkY);
+
+								for (int dy = 0; dy < chunk_height; dy++)
+								{
+									for (int dx = 0; dx < chunk_width; dx++)
+									{
+										MapTile tile = GetChunkTile(ChunkData, dx, dy);
+										WriteTile(writer, tile);
+									}
+								}
+
+								break;
+							}
+					}
 				}
 			}
 
@@ -330,76 +336,80 @@ public sealed class MappingSystem : ModSystem
 			// Process in chunks.  The actual data does not need to be sent in
 			// fixed chunks, but it's preferred for efficient packing.
 			for (int cy = 0; cy < height; cy += chunk_height)
-			for (int cx = 0; cx < width; cx += chunk_width)
 			{
-				var sparse = new List<SparseEntry>(capacity: chunk_area);
-				var chunk = new MapTile[chunk_area];
-
-				var chunkRect = new Rectangle(
-					cx,
-					cy,
-					Math.Min(chunk_width, width - cx),
-					Math.Min(chunk_height, height - cy)
-				);
-
-				bool changed = false;
-				int diffCount = 0;
-
-				for (int dy = 0; dy < chunkRect.Height; dy++)
-				for (int dx = 0; dx < chunkRect.Width; dx++)
+				for (int cx = 0; cx < width; cx += chunk_width)
 				{
-					ushort tx = (ushort)(chunkRect.X + dx);
-					ushort ty = (ushort)(chunkRect.Y + dy);
-					MapTile currentTile = map[tx, ty];
-					MapTile? compareTile = comparisonMap?[tx, ty];
+					var sparse = new List<SparseEntry>(capacity: chunk_area);
+					var chunk = new MapTile[chunk_area];
 
-					if (!compareTile.HasValue || currentTile.Light > compareTile?.Light)
+					var chunkRect = new Rectangle(
+						cx,
+						cy,
+						Math.Min(chunk_width, width - cx),
+						Math.Min(chunk_height, height - cy)
+					);
+
+					bool changed = false;
+					int diffCount = 0;
+
+					for (int dy = 0; dy < chunkRect.Height; dy++)
 					{
-						changed = true;
-						diffCount++;
-						sparse.Add(new SparseEntry(tx, ty, currentTile));
-						GetChunkTile(chunk, dx, dy) = currentTile;
+						for (int dx = 0; dx < chunkRect.Width; dx++)
+						{
+							ushort tx = (ushort)(chunkRect.X + dx);
+							ushort ty = (ushort)(chunkRect.Y + dy);
+							MapTile currentTile = map[tx, ty];
+							MapTile? compareTile = comparisonMap?[tx, ty];
+
+							if (!compareTile.HasValue || currentTile.Light > compareTile?.Light)
+							{
+								changed = true;
+								diffCount++;
+								sparse.Add(new SparseEntry(tx, ty, currentTile));
+								GetChunkTile(chunk, dx, dy) = currentTile;
+							}
+						}
 					}
-				}
 
-				// If there were not changes then discard and move on to
-				// the next chunk.
-				if (!changed)
-					continue;
+					// If there were not changes then discard and move on to
+					// the next chunk.
+					if (!changed)
+						continue;
 
-				// Now we actually decide how the delta will be represented.
-				// TODO: Look into the values and tweak for efficiency?
+					// Now we actually decide how the delta will be represented.
+					// TODO: Look into the values and tweak for efficiency?
 
-				// Sparse size:
-				// 1 + 2 + (2 + 2 + 2 + 1 + 1)n
+					// Sparse size:
+					// 1 + 2 + (2 + 2 + 2 + 1 + 1)n
 
-				// Chunk
-				// 1 + 2 + (2 + 1 + 1)(200 * 150)
+					// Chunk
+					// 1 + 2 + (2 + 1 + 1)(200 * 150)
 
-				// These values meet at 15000 differences.
+					// These values meet at 15000 differences.
 
-				if (diffCount <= 15000)
-				{
-					var packetData = new SyncMapData
+					if (diffCount <= 15000)
 					{
-						Mode = DeltaMode.Sparse,
-						ChunkX = 0,
-						ChunkY = 0,
-						SparseEntries = sparse
-					};
-					packets.Add(packetData);
+						var packetData = new SyncMapData
+						{
+							Mode = DeltaMode.Sparse,
+							ChunkX = 0,
+							ChunkY = 0,
+							SparseEntries = sparse
+						};
+						packets.Add(packetData);
 
-				}
-				else
-				{
-					var packetData = new SyncMapData
+					}
+					else
 					{
-						Mode = DeltaMode.Chunk,
-						ChunkX = (byte)(cx / chunk_width),
-						ChunkY = (byte)(cy / chunk_height),
-						ChunkData = chunk
-					};
-					packets.Add(packetData);
+						var packetData = new SyncMapData
+						{
+							Mode = DeltaMode.Chunk,
+							ChunkX = (byte)(cx / chunk_width),
+							ChunkY = (byte)(cy / chunk_height),
+							ChunkData = chunk
+						};
+						packets.Add(packetData);
+					}
 				}
 			}
 
