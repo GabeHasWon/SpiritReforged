@@ -86,12 +86,11 @@ public class Cartographer : WorldNPC, ITravelNPC
 	{
 		const int Radius = 60;
 
-		InterestType type;// = InterestType.SaltFlat;
+		InterestType type;
 
 		do
 			type = (InterestType)Main.rand.Next((int)InterestType.Count);
 		while (!PointOfInterestSystem.HasInterestType(type));
-			//type = (InterestType)Main.rand.Next((int)InterestType.Count);
 
 		var item = new Item(GetPinType(type));
 		string pinName = item.ModItem.Name;
