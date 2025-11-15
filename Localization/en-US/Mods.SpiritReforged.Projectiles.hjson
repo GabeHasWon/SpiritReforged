@@ -53,3 +53,4 @@ ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.Displ
 PhysicsChain.DisplayName: Chain
 GoldPhysicsChain.DisplayName: Gold Physics Chain
 CactusSpine.DisplayName: Cactus Spine
+EnergyLaser.DisplayName: Energy Laser

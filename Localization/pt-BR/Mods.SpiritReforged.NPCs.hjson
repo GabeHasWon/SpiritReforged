@@ -521,3 +521,8 @@ GoldenBrineShrimp: {
 	// DisplayName: Golden Brine Shrimp
 	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }
+
+Wisp: {
+	// DisplayName: Wisp
+	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+}
