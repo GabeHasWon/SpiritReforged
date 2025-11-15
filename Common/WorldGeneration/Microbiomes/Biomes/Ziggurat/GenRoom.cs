@@ -51,9 +51,19 @@ public abstract class GenRoom
 		return this;
 	}
 
+	public bool Intersects(Point point, int padding = 0)
+	{
+		Rectangle bounds = Bounds;
+		bounds.Inflate(padding, padding);
+
+		return bounds.Contains(point);
+	}
+
 	public bool Intersects(Rectangle area, int padding = 0)
 	{
-		area.Inflate(padding, padding);
-		return area.Intersects(Bounds);
+		Rectangle bounds = Bounds;
+		bounds.Inflate(padding, padding);
+
+		return bounds.Intersects(area);
 	}
 }

@@ -249,11 +249,14 @@ public partial class ZigguratBiome : Microbiome
 				{
 					Tile tile = Main.tile[i, j];
 
-					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Bounds.Contains(new Point(i, j))))
+					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
 						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
 
 					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place banners
 						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
+
+					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place large banners
+						return Placer.PlaceTile(i, j, ModContent.TileType<AncientBanner>()).success;
 
 					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
 					{
@@ -387,20 +390,21 @@ public partial class ZigguratBiome : Microbiome
 	private static ZigguratRooms.BasicRoom SelectRoom(int layer, Rectangle bound, ref float progress, int skips)
 	{
 		int numLayers = TotalBounds.Count;
-
+		ZigguratRooms.RoomNoise noise = new(3);
 		ZigguratRooms.BasicRoom selection;
+
 		if (WorldGen.genRand.NextBool(4))
 		{
-			selection = new ZigguratRooms.StorageRoom(bound);
+			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise));
 		}
 		else
 		{
-			selection = new ZigguratRooms.BasicRoom(bound);
+			selection = new ZigguratRooms.BasicRoom(bound, noise);
 		}
 
 		if (layer == numLayers && progress == 0) //Final layer
 		{
-			selection = new ZigguratRooms.TreasureRoom(bound);
+			selection = new ZigguratRooms.TreasureRoom(bound, noise);
 			progress = WorldGen.genRand.NextFloat();
 		}
 		else if (layer == 1)
@@ -410,7 +414,7 @@ public partial class ZigguratBiome : Microbiome
 			if (WorldGen.genRand.NextBool())
 				style = ZigguratRooms.EntranceRoom.StyleID.Blank;
 
-			selection = new ZigguratRooms.EntranceRoom(bound, style);
+			selection = new ZigguratRooms.EntranceRoom(bound, style, noise);
 		}
 		else if (skips == 0 && WorldGen.genRand.NextBool(4))
 		{
