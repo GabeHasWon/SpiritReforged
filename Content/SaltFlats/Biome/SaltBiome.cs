@@ -2,7 +2,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Personalities;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -7,6 +8,7 @@ using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
@@ -44,7 +46,7 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
-		AddNeutralDecorations(bounds);
+		AddNeutralDecorations(rooms);
 
 		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
 		foreach (var b in bounds)
@@ -233,7 +235,7 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static void AddNeutralDecorations(List<Rectangle> bounds)
+	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
 		WeightedRandom<int> potWeight = new();
 		potWeight.Add(ModContent.TileType<BronzePots>());
@@ -241,8 +243,40 @@ public partial class ZigguratBiome : Microbiome
 		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
 		potWeight.Add(TileID.Pots);
 
-		foreach (var b in bounds)
+		int maxChestCount = Main.maxTilesX / 2100;
+		PriorityQueue<Point16, float> furniturePositions = new();
+		bool placedBast = false;
+
+		foreach (var room in rooms)
 		{
+			GenRoom roomCopyForDelegateUse = room;
+			Rectangle b = room.Bounds;
+			b.Inflate(2, 2);
+
+			if (roomCopyForDelegateUse is ZigguratRooms.TreasureRoom)
+			{
+				WorldMethods.GenerateSquared((i, j) =>
+				{
+					if (!WorldGen.SolidTile(i, j))
+					{
+						Tile tile = Main.tile[i, j];
+
+						if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(4) && !placedBast)
+						{
+							bool success = Placer.Check(i, j, TileID.CatBast, Main.rand.Next(2)).IsClear().Place().success;
+
+							if (success)
+							{
+								placedBast = true;
+								return true;
+							}
+						}
+					}
+
+					return false;
+				}, out _, b);
+			}
+
 			WorldMethods.GenerateSquared((i, j) =>
 			{
 				if (!WorldGen.SolidTile(i, j))
@@ -272,8 +306,14 @@ public partial class ZigguratBiome : Microbiome
 						return Placer.PlaceTile(i, j, type, style).success;
 					}
 
-					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(10))
-						PlaceFurniture(i, j);
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(7))
+					{
+						if (roomCopyForDelegateUse is not ZigguratRooms.TreasureRoom)
+						{
+							furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+							return true;
+						}
+					}
 				}
 				else
 				{
@@ -283,6 +323,19 @@ public partial class ZigguratBiome : Microbiome
 
 				return false;
 			}, out _, b);
+		}
+
+		int count = 0;
+
+		while (furniturePositions.Count > 0)
+		{
+			Point16 pos = furniturePositions.Dequeue();
+
+			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
+			{
+				maxChestCount--;
+				count++;
+			}
 		}
 	}
 
@@ -298,12 +351,22 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static bool PlaceFurniture(int i, int j)
+	private static bool PlaceFurniture(int i, int j, FurnitureSet.Types forceType = FurnitureSet.Types.None)
 	{
 		LapisSet set = ModContent.GetInstance<LapisSet>();
-		FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+		FurnitureSet.Types type;
 
-		if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out int tileType))
+		if (forceType == FurnitureSet.Types.None)
+		{
+			do
+			{
+				type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+			} while (type is FurnitureSet.Types.Chest or FurnitureSet.Types.None);
+		}
+		else
+			type = forceType;
+
+		if (set.TryGetTileType(type, out int tileType))
 		{
 			int style = -1;
 
@@ -334,11 +397,51 @@ public partial class ZigguratBiome : Microbiome
 			}
 			else
 			{
-				return Placer.Check(i, j, tileType, style).IsClear().Place().success;
+				bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
+
+				if (type == FurnitureSet.Types.Chest)
+				{
+					int chest = Chest.CreateChest(i, j - 1);
+
+					if (chest != -1)
+						PopulateChest(Main.chest[chest]);
+				}
+
+				return success;
 			}
 		}
 
 		return false;
+	}
+
+	private static void PopulateChest(Chest chest)
+	{
+		int[] main = [ItemID.AncientChisel, ItemID.SandBoots];
+		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
+			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..1)];
+		
+		PriorityQueue<(int, Range), float> miscQueue = new();
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
+
+		chest.item[0] = new Item(WorldGen.genRand.Next(main));
+
+		var (type, stack) = WorldGen.genRand.Next(secondary);
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
+
+		int miscCount = WorldGen.genRand.Next(3, 5);
+
+		for (int i = 0; i < miscCount; ++i)
+		{
+			var (miscType, miscStack) = miscQueue.Dequeue();
+			chest.item[2 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+		}
 	}
 
 	private static void AddRooms(IEnumerable<Rectangle> bounds, out List<GenRoom> rooms)
