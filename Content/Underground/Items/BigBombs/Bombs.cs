@@ -13,7 +13,7 @@ namespace SpiritReforged.Content.Underground.Items.BigBombs;
 public class Bomb : BombProjectile, ILargeExplosive
 {
 	public const int CommonSize = 32;
-	public static readonly PolynomialEase EffectEase = new((x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+	public static readonly PolynomialEase EffectEase = new(static (x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 
 	public static readonly SoundStyle Explosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Shrapnel")
 	{

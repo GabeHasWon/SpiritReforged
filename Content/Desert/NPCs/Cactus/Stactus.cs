@@ -10,12 +10,27 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
 public abstract class Stactus : ModNPC, IDeathCount
 {
+	private class IsPrickly : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info)
+		{
+			if (info.npc.ModNPC is Stactus stactus)
+				return stactus.Segment is SegmentType.Head && stactus._style < stactus.parameters.Crowns.Length && stactus.parameters.Crowns[stactus._style] == "PricklyPears";
+
+			return false;
+		}
+
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.IsPrickly");
+	}
+
 	public readonly record struct Parameters(int DustType, int SpawnTime, string[] Crowns);
 
 	public static readonly HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
@@ -418,7 +433,15 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => falling ? false : null;
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+
+		LeadingConditionRule rule = new(new IsPrickly());
+		rule.OnSuccess(ItemDropRule.Common(ItemID.PinkPricklyPear));
+
+		npcLoot.Add(rule);
+	}
 
 	#region hide
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)

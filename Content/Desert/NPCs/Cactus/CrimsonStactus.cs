@@ -32,7 +32,7 @@ public class CrimsonStactus : Stactus
 				NPC.netUpdate = true;
 
 				for (int i = 0; i < 5; i++)
-					Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - NPC.velocity, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 2.2f), ModContent.ProjectileType<CactusSpine>(), NPC.damage, 1);
+					Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - NPC.velocity, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 2.2f), ModContent.ProjectileType<CactusSpine>(), NPC.damage, 1, ai0: Main.rand.Next(0, 3));
 			}
 		}
 	}
