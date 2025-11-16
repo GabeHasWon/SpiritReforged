@@ -13,6 +13,11 @@ public class Dragonsong : ModItem
 	[AutoloadGlowmask("255,255,255", false)]
 	public class DragonsongHeld : ModProjectile
 	{
+		public static readonly SoundStyle Fire = new("SpiritReforged/Assets/SFX/Item/DragonFire", 3)
+		{
+			PitchVariance = 0.2f
+		};
+
 		public ref float Counter => ref Projectile.ai[0];
 		private Vector2 MuzzlePosition => Projectile.Center + Vector2.Normalize(Projectile.velocity) * 30;
 
@@ -32,13 +37,24 @@ public class Dragonsong : ModItem
 			Player owner = Main.player[Projectile.owner];
 			int timeLeftMax = owner.itemAnimationMax;
 
+			Projectile.UpdateFrame(10, 3);
+
+			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 5 * -Projectile.direction).RotatedBy(rotation);
+
+			owner.direction = Projectile.direction = Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
+			Projectile.Center = owner.RotatedRelativePoint(position);
+			Projectile.rotation = rotation;
+
+			owner.heldProj = Projectile.whoAmI;
+			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
+			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
+
 			if (owner.channel)
 			{
 				Projectile.timeLeft = timeLeftMax;
 				owner.itemAnimation = owner.itemTime = timeLeftMax;
-				int rate = Math.Max(timeLeftMax - (int)(Counter / timeLeftMax * 5), 8);
 
-				if (Counter++ % rate == 0)
+				if (Counter++ % timeLeftMax == 0)
 				{
 					Projectile.frame = 0;
 
@@ -51,16 +67,16 @@ public class Dragonsong : ModItem
 							Projectile.netUpdate = true;
 
 						Shoot(Projectile.GetSource_FromAI(), Projectile.velocity, Projectile.Center, owner);
-
-						if (!Main.dedServ)
-							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.UnitY * -Main.rand.NextFloat(3, 5), Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
-							{
-								TertiaryColor = Color.PaleVioletRed,
-								Pixellate = true,
-								PixelDivisor = 3,
-								Layer = ParticleLayer.AbovePlayer
-							});
 					}
+
+					if (!Main.dedServ)
+						ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.Normalize(Projectile.velocity) * 1.5f, Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+						{
+							TertiaryColor = Color.PaleVioletRed,
+							Pixellate = true,
+							PixelDivisor = 3,
+							Layer = ParticleLayer.AbovePlayer
+						});
 				}
 			}
 			else if (Main.rand.NextBool())
@@ -73,34 +89,20 @@ public class Dragonsong : ModItem
 					Layer = ParticleLayer.AbovePlayer
 				});
 			}
-
-			Projectile.UpdateFrame(10, 3);
-
-			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 5 * -Projectile.direction).RotatedBy(rotation);
-
-			owner.direction = Projectile.direction = Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
-			Projectile.Center = owner.RotatedRelativePoint(position);
-			Projectile.rotation = rotation;
-
-			owner.heldProj = Projectile.whoAmI;
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
-			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f + 0.4f * owner.direction);
 		}
 
 		private void Shoot(IEntitySource source, Vector2 velocity, Vector2 position, Player player)
 		{
-			const int muzzleLength = 50;
+			Vector2 muzzlePosition = MuzzlePosition;
 
-			SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Pitch = 0.5f }, position);
-			Vector2 muzzleOffset = Vector2.Normalize(velocity) * muzzleLength;
-
-			if (Collision.CanHit(position, 2, 2, position + muzzleOffset, 2, 2))
-				position += muzzleOffset;
+			if (Collision.CanHit(position, 2, 2, muzzlePosition, 2, 2))
+				position = muzzlePosition;
 
 			player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _);
-
-			for (int i = 0; i < Main.rand.Next(3, 6); i++)
-				Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1)).RotatedByRandom(0.5f), type, Projectile.damage, Projectile.knockBack, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity, type, Projectile.damage, Projectile.knockBack, player.whoAmI);
+			
+			if (!Main.dedServ)
+				SoundEngine.PlaySound(Fire, position);
 		}
 
 		public override bool ShouldUpdatePosition() => false;
@@ -166,6 +168,15 @@ public class Dragonsong : ModItem
 			Projectile.UpdateFrame(32, 0);
 		}
 
+		public override void OnKill(int timeLeft)
+		{
+			if (timeLeft > 0)
+			{
+				for (int i = 0; i < 10; i++)
+					ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), 1, 30));
+			}
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D texture = TextureAssets.Projectile[Type].Value;
@@ -193,9 +204,9 @@ public class Dragonsong : ModItem
 		Item.height = 48;
 		Item.DamageType = DamageClass.Ranged;
 		Item.useAmmo = AmmoID.Gel;
-		Item.damage = 18;
+		Item.damage = 30;
 		Item.knockBack = 3;
-		Item.useTime = Item.useAnimation = 35;
+		Item.useTime = Item.useAnimation = 40;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
