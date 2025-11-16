@@ -2676,3 +2676,8 @@ PinZiggurat: {
 	// DisplayName: Ziggurat Pin
 	// Tooltip: ""
 }
+
+BangleOfStrength: {
+	// DisplayName: Bangle of Strength
+	// Tooltip: Periodically empowers melee damage
+}
