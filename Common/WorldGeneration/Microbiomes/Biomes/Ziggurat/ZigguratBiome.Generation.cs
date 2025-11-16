@@ -325,17 +325,12 @@ public partial class ZigguratBiome : Microbiome
 			}, out _, b);
 		}
 
-		int count = 0;
-
 		while (furniturePositions.Count > 0)
 		{
 			Point16 pos = furniturePositions.Dequeue();
 
 			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
-			{
 				maxChestCount--;
-				count++;
-			}
 		}
 	}
 
