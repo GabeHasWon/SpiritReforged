@@ -2,7 +2,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Personalities;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -28,13 +27,13 @@ public class SaltBiome : ModBiome
 		NPCHappiness.Get(NPCID.Mechanic).SetBiomeAffection(this, AffectionLevel.Dislike);
 		NPCHappiness.Get(NPCID.Steampunker).SetBiomeAffection(this, AffectionLevel.Dislike);
 
-		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SaltBlockReflective>(), ModContent.TileType<SaltBlockDull>()], 200));
+		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SaltBlockReflective>(), ModContent.TileType<SaltBlockDull>()], 900));
 	}
 
 	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SaltWaterStyle>();
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
 	public override int BiomeTorchItemType => ModContent.ItemType<SaltFlatsTorchItem>();
-	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 	public override int Music => GetMusic();
 
 	public override bool IsBiomeActive(Player player)

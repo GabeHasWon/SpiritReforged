@@ -327,9 +327,13 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldUtils.Gen(origin, new Shapes.Slime(info.Radius, widthScale, heightScale), Actions.Chain(
 			new Modifiers.Flip(false, true),
 			new Actions.ClearTile(),
-			new Modifiers.Blotches(),
-			new Actions.ClearWall()
+			new Modifiers.Blotches()
 		).Output(data));
+
+		WorldUtils.Gen(origin, new ModShapes.All(data), Actions.Chain(
+			new Modifiers.Expand(2),
+			new Actions.ClearWall()
+		));
 
 		WorldUtils.Gen(origin, new ModShapes.All(data), Actions.Chain(
 			new Modifiers.Offset(0, 2),
@@ -339,6 +343,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldUtils.Gen(origin, new ModShapes.OuterOutline(data), Actions.Chain(
 			new Modifiers.Blotches(),
 			new Modifiers.RectangleMask(-(info.Radius + 4), info.Radius + 4, 0, info.Radius + 4),
+			new Modifiers.Expand(1),
 			new Actions.SetTileKeepWall((ushort)ModContent.TileType<SaltBlockDull>())
 		));
 	}
