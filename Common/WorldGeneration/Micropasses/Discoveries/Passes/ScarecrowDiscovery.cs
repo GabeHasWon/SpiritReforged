@@ -1,5 +1,5 @@
-﻿using SpiritReforged.Content.Forest.Botanist.Tiles;
-using System.Linq;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Forest.Botanist.Tiles;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -13,6 +13,10 @@ internal class ScarecrowDiscovery : Discovery
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, List<Discovery> discoveries, ref bool afterIndex)
 	{
 		afterIndex = false;
+
+		if (CrossMod.Remnants.Enabled)
+			return passes.FindIndex(genpass => genpass.Name.Equals("Jungle Trees"));
+
 		return passes.FindIndex(genpass => genpass.Name.Equals("Smooth World"));
 	}
 
