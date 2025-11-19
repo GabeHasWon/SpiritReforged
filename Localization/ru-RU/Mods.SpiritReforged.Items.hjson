@@ -2676,3 +2676,8 @@ PinZiggurat: {
 	// DisplayName: Ziggurat Pin
 	// Tooltip: ""
 }
+
+PaleHiveItem: {
+	// DisplayName: Pale Hive Item
+	// Tooltip: ""
+}

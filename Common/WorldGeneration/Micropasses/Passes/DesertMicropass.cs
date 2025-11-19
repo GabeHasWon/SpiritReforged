@@ -1,4 +1,7 @@
-﻿using SpiritReforged.Content.Desert.Tiles.Amber;
+﻿using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Amber;
+using SpiritReforged.Content.Desert.Walls;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -41,6 +44,49 @@ internal class DesertMicropass : Micropass
 
 				if (++generated >= maxAmount)
 					break;
+			}
+		}
+
+		generated = 0;
+
+		for (int a = 0; a < 50; a++)
+		{
+			var coords = WorldGen.genRand.NextVector2FromRectangle(region);
+			int i = (int)coords.X;
+			int j = (int)coords.Y;
+
+			if (Main.tile[i, j].TileType == TileID.Sand)
+			{
+				FastNoiseLite noise = new(WorldGen.genRand.Next());
+				noise.SetFrequency(0.1f);
+
+				CreateScarabNest(i, j, WorldGen.genRand.Next(30, 80), WorldGen.genRand.Next(30, 80), noise, 120, -0.25f);
+
+				if (++generated >= maxAmount)
+					break;
+			}
+		}
+	}
+
+	private static void CreateScarabNest(int i, int j, int width, int height, FastNoiseLite noise, float outerThickness, float thickness = 0)
+	{
+		for (int x = i - width / 2; x < i + width / 2; x++)
+		{
+			for (int y = j - height / 2; y < j + height / 2; y++)
+			{
+				float noiseValue = noise.GetNoise(x, y);
+				float distance = Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j));
+				float distanceLimit = width * height * (0.1f + noiseValue * 0.05f);
+
+				if (distance > distanceLimit)
+					continue;
+
+				Tile tile = Main.tile[x, y];
+				tile.ClearTile();
+				tile.WallType = (ushort)ModContent.WallType<SilkWall>();
+
+				if (noiseValue < thickness || distance > distanceLimit - outerThickness)
+					tile.ResetToType((ushort)ModContent.TileType<PaleHive>());
 			}
 		}
 	}
