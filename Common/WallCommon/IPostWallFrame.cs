@@ -1,5 +1,6 @@
 ﻿namespace SpiritReforged.Common.WallCommon;
 
+/// <summary> Implements <see cref="PostWallFrame"/>, Called after <see cref="ModWall.WallFrame"/>.</summary>
 public interface IPostWallFrame
 {
 	public void PostWallFrame(int i, int j, bool resetFrame);

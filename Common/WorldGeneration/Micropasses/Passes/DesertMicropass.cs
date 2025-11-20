@@ -3,6 +3,7 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Amber;
 using SpiritReforged.Content.Desert.Walls;
 using Terraria.WorldBuilding;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
@@ -70,9 +71,13 @@ internal class DesertMicropass : Micropass
 
 	private static void CreateScarabNest(int i, int j, int width, int height, FastNoiseLite noise, float outerThickness, float thickness = 0)
 	{
-		for (int x = i - width / 2; x < i + width / 2; x++)
+		int halfWidth = width / 2;
+		int halfHeight = height / 2;
+		Rectangle area = new(i - halfWidth, j - halfHeight, width, height);
+
+		for (int x = area.Left; x < area.Right; x++)
 		{
-			for (int y = j - height / 2; y < j + height / 2; y++)
+			for (int y = j - area.Top; y < area.Bottom; y++)
 			{
 				float noiseValue = noise.GetNoise(x, y);
 				float distance = Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j));
@@ -88,6 +93,27 @@ internal class DesertMicropass : Micropass
 				if (noiseValue < thickness || distance > distanceLimit - outerThickness)
 					tile.ResetToType((ushort)ModContent.TileType<PaleHive>());
 			}
+		}
+
+		int blobCount = WorldGen.genRand.Next(1, 8);
+		for (int x = 0; x < blobCount; x++)
+		{
+			ShapeData data = new();
+			var pt = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+			int size = WorldGen.genRand.Next(5, 12);
+
+			WorldUtils.Gen(pt, new Shapes.Slime(size, 1.0, 1.0), Actions.Chain(
+				new Modifiers.Blotches(),
+				new Actions.Clear(),
+				new Modifiers.RadialDither(size, 3),
+				new Actions.PlaceWall((ushort)ModContent.WallType<SilkWall>())
+			).Output(data));
+
+			WorldUtils.Gen(pt, new ModShapes.OuterOutline(data), Actions.Chain(
+				new Modifiers.Blotches(), 
+				new Modifiers.IsSolid(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<PaleHive>())
+			));
 		}
 	}
 
