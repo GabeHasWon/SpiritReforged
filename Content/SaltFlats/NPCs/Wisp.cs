@@ -236,15 +236,16 @@ public class Wisp : ModNPC
 				if (!Main.dedServ && !_isHostile)
 				{
 					_trails = null;
-					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.OrangeRed, 0.5f, 100, 20, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
+					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.OrangeRed.Additive(100), 1f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
+					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.White.Additive(), 0.5f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
 
 					for (int i = 0; i < 3; i++)
-						_twirlParticleRenderer.Add(new PrettySparkleParticle()
+						Main.ParticleSystem_World_OverPlayers.Add(new PrettySparkleParticle()
 						{
-							LocalPosition = NPC.Center - Main.screenPosition,
+							LocalPosition = NPC.Center,
 							ColorTint = Color.OrangeRed,
 							Scale = Vector2.One,
-							TimeToLive = 20
+							TimeToLive = 40
 						});
 				}
 
@@ -268,15 +269,14 @@ public class Wisp : ModNPC
 				Player target = Main.player[NPC.target];
 				Vector2 direction = NPC.DirectionTo(target.Center);
 
-				if (Main.netMode != NetmodeID.MultiplayerClient)
+				if (Main.zenithWorld && Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, direction, ModContent.ProjectileType<EnergyLaser>(), NPC.damage, 1, -1, 0, NPC.whoAmI);
-
-				NPC.velocity -= direction * 10;
 			}
 
 			if (_counter > hostileThreshold + 400)
 				NPC.velocity.Y -= 0.2f;
 
+			NPC.velocity *= 0.985f; //Natural hostile velocity
 			_counter++;
 		}
 
