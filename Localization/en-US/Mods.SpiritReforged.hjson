@@ -23,6 +23,7 @@ Conditions: {
 	Discovered: Discovery
 	Submerged: Submerged
 	InSaltFlats: In Salt Flats
+	IsPrickly: When prickly
 }
 
 Misc: {

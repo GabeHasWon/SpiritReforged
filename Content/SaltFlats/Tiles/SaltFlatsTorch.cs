@@ -10,6 +10,14 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 public class SaltFlatsTorch : TorchTile
 {
 	public override Vector3 Light => ModContent.GetInstance<SaltFlatsTorchItem>().Light;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		DustType = DustID.WhiteTorch;
+	}
+
 	public override float GetTorchLuck(Player player)
 	{
 		float value = -0.5f;

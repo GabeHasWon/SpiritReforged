@@ -10,12 +10,27 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
 public abstract class Stactus : ModNPC, IDeathCount
 {
+	private class IsPrickly : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info)
+		{
+			if (info.npc.ModNPC is Stactus stactus)
+				return stactus.Segment is SegmentType.Head && stactus._style < stactus.parameters.Crowns.Length && stactus.parameters.Crowns[stactus._style] == "PricklyPears";
+
+			return false;
+		}
+
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.IsPrickly");
+	}
+
 	public readonly record struct Parameters(int DustType, int SpawnTime, string[] Crowns);
 
 	public static readonly HashSet<int> SandyTypes = [TileID.Sand, TileID.Sandstone, TileID.HardenedSand, TileID.SandstoneBrick, TileID.SandStoneSlab, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
@@ -164,8 +179,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 				}
 			}
 
-			float sway = (float)Math.Sin((PassiveCounter + NPC.whoAmI * 25f) / 10f) * 4;
-			var origin = ParentNPC.Center - new Vector2(sway * Math.Clamp((SpawnTime - parameters.SpawnTime - 50) / 30f, 0, 1), NPC.height);
+			var origin = ParentNPC.Center - new Vector2(GetSine(NPC.whoAmI) * Math.Clamp((SpawnTime - parameters.SpawnTime - 50) / 30f, 0, 1), NPC.height);
 			bool belowOrigin = NPC.Center.Y > origin.Y;
 
 			NPC.Center = belowOrigin ? origin : NPC.Center;
@@ -334,7 +348,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 		}
 		else
 		{
-			NPC.frameCounter = (NPC.frameCounter + 0.2f) % Main.npcFrameCount[Type];
+			NPC.frameCounter = (NPC.frameCounter + 0.15f) % Main.npcFrameCount[Type];
 			NPC.frame.Y = (int)NPC.frameCounter * frameHeight;
 		}
 
@@ -418,7 +432,15 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => falling ? false : null;
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+
+		LeadingConditionRule rule = new(new IsPrickly());
+		rule.OnSuccess(ItemDropRule.Common(ItemID.PinkPricklyPear));
+
+		npcLoot.Add(rule);
+	}
 
 	#region hide
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
@@ -492,15 +514,17 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 		SpawnSmoke(position, velocity * (material.Lightness + 0.25f), scale, duration, material.Color, Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f }), ease);
 	}
+
+	private float GetSine(float index = 0) => (float)Math.Sin((PassiveCounter + index * 25f) / 10f) * 4;
 	#endregion
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		var texture = TextureAssets.Npc[Type].Value;
-		var center = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY);
-		var source = NPC.frame;
-		var origin = source.Size() / 2;
-		var color = NPC.GetAlpha(drawColor);
+		Texture2D texture = TextureAssets.Npc[Type].Value;
+		Vector2 center = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY);
+		Rectangle source = NPC.frame;
+		Vector2 origin = source.Size() / 2;
+		Color color = NPC.DrawColor(drawColor);
 
 		if (NPC.IsABestiaryIconDummy) //Draw the Bestiary entry
 		{
@@ -508,10 +532,10 @@ public abstract class Stactus : ModNPC, IDeathCount
 			center.Y -= 6;
 
 			Main.EntitySpriteDraw(texture, center, source, color, NPC.rotation, origin, NPC.scale, default);
-			Main.EntitySpriteDraw(texture, center - new Vector2(GetSway(1), NPC.height), source with { Y = source.Y - frameHeight }, color, NPC.rotation, origin, NPC.scale, default);
-			Main.EntitySpriteDraw(texture, center - new Vector2(GetSway(2), NPC.height * 2), source with { Y = source.Y - frameHeight * 3 }, color, NPC.rotation, origin, NPC.scale, default);
+			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(1), NPC.height), source with { Y = source.Y - frameHeight }, color, NPC.rotation, origin, NPC.scale, default);
+			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(2), NPC.height * 2), source with { Y = source.Y - frameHeight * 3 }, color, NPC.rotation, origin, NPC.scale, default);
 
-			DrawFace(center - new Vector2(GetSway(2), NPC.height * 2), color);
+			DrawFace(center - new Vector2(GetSine(2), NPC.height * 2), color);
 
 			return false;
 		}
@@ -522,8 +546,6 @@ public abstract class Stactus : ModNPC, IDeathCount
 			DrawFace(center, color);
 
 		return false;
-
-		float GetSway(int index) => (float)Math.Sin((PassiveCounter + index * 25f) / 10f) * 2;
 	}
 
 	private void DrawFace(Vector2 center, Color color)

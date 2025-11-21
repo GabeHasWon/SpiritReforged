@@ -3,6 +3,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
+[AutoloadBanner]
 public class HallowedStactus : Stactus
 {
 	public override void SetDefaults()

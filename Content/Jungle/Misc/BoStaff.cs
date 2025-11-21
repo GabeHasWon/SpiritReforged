@@ -30,8 +30,8 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.value = Item.sellPrice(silver: 3);
-		Item.rare = ItemRarityID.White;
+		Item.value = Item.sellPrice(silver: 37);
+		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<BoStaffSwing>();
 		Item.shootSpeed = 1f;

@@ -2666,7 +2666,34 @@ GoldenBrineShrimpItem: {
 // CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
 // DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
 
+AncientBannerItem: {
+	// DisplayName: Ancient Banner
+	// Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	// DisplayName: Tall Sandstone Shelf
+	// Tooltip: ""
+}
+
 SaltFlatsTorchItem: {
 	// DisplayName: Salt Torch
 	// Tooltip: ""
 }
+
+ZigguratMusicBoxItem: {
+	// DisplayName: Music Box (Ziggurat)
+	// Tooltip: ""
+}
+
+PinSaltFlat: {
+	// DisplayName: Salt Flat Pin
+	// Tooltip: ""
+}
+
+PinZiggurat: {
+	// DisplayName: Ziggurat Pin
+	// Tooltip: ""
+}
+
+// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner Item
