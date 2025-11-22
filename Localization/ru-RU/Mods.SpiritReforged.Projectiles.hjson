@@ -53,3 +53,4 @@ FingerShot.DisplayName: Пальцевыстрел
 // PhysicsChain.DisplayName: Chain
 // GoldPhysicsChain.DisplayName: Gold Physics Chain
 // CactusSpine.DisplayName: Cactus Spine
+// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"

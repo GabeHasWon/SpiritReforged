@@ -2677,4 +2677,9 @@ PinZiggurat: {
 	// Tooltip: ""
 }
 
+BangleOfStrength: {
+	// DisplayName: Bangle of Strength
+	// Tooltip: Periodically empowers melee damage
+}
+
 // HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner Item
