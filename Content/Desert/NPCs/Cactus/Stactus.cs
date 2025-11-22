@@ -524,7 +524,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 		Vector2 center = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY);
 		Rectangle source = NPC.frame;
 		Vector2 origin = source.Size() / 2;
-		Color color = NPC.GetColor(drawColor);
+		Color color = NPC.DrawColor(drawColor);
 
 		if (NPC.IsABestiaryIconDummy) //Draw the Bestiary entry
 		{
