@@ -2632,3 +2632,54 @@ PineappleSeeds: {
 
 // StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
 // StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
+
+BrineShrimpItem: {
+	// DisplayName: Brine Shrimp
+	// Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	// DisplayName: Golden Brine Shrimp
+	// Tooltip: ""
+}
+
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
+
+AncientBannerItem: {
+	// DisplayName: Ancient Banner
+	// Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	// DisplayName: Tall Sandstone Shelf
+	// Tooltip: ""
+}
+
+SaltFlatsTorchItem: {
+	// DisplayName: Salt Torch
+	// Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	// DisplayName: Music Box (Ziggurat)
+	// Tooltip: ""
+}
+
+PinSaltFlat: {
+	// DisplayName: Salt Flat Pin
+	// Tooltip: ""
+}
+
+PinZiggurat: {
+	// DisplayName: Ziggurat Pin
+	// Tooltip: ""
+}
+
+BangleOfStrength: {
+	// DisplayName: Bangle of Strength
+	// Tooltip: Periodically empowers melee damage
+}
+
+// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner Item

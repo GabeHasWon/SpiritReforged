@@ -52,16 +52,11 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		if (TileObjectData.IsTopLeft(i, j))
-		{
-			var bottomLeft = Main.tile[i, j + 1];
-			var bottomRight = Main.tile[i + 1, j + 1];
+		var bottomLeft = Main.tile[i, j + 1];
+		var bottomRight = Main.tile[i + 1, j + 1];
 
-			bool activate = bottomLeft.LiquidType == LiquidID.Water && bottomLeft.LiquidAmount > 100 && bottomRight.LiquidType == LiquidID.Water && bottomRight.LiquidAmount > 100;
-			UpdateFrame(i, j, activate);
-
-			return false;
-		}
+		bool activate = bottomLeft.LiquidType == LiquidID.Water && bottomLeft.LiquidAmount > 100 && bottomRight.LiquidType == LiquidID.Water && bottomRight.LiquidAmount > 100;
+		UpdateFrame(i, j, activate);
 
 		return true;
 

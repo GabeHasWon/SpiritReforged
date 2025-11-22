@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Ocean.Tiles;
 
@@ -5,6 +6,8 @@ namespace SpiritReforged.Content.Ocean.Items.DriftwoodSet;
 
 public class DriftwoodSword : ModItem
 {
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+
 	public override void SetDefaults()
 	{
 		Item.width = 30;

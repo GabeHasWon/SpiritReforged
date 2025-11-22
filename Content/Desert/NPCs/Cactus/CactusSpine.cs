@@ -1,19 +1,21 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
-using SpiritReforged.Common.ProjectileCommon;
-using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
 public class CactusSpine : ModProjectile
 {
+	public const int NumColumns = 4;
+
 	private bool _spawned = true;
+	public ref float Frame => ref Projectile.ai[0];
 
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 20;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
+		Main.projFrames[Type] = 3; //Rows
 	}
 
 	public override void SetDefaults()
@@ -41,23 +43,16 @@ public class CactusSpine : ModProjectile
 		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 	}
 
-	public void PostHitPlayer(Player target)
-	{
-		Projectile.tileCollide = false;
-		Projectile.alpha = 0;
-
-		if (!Main.dedServ)
-		{
-			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile, 12);
-			SoundEngine.PlaySound(Ocean.Items.Reefhunter.Projectiles.UrchinSpike.Impact, Projectile.Center);
-		}
-	}
-
 	public override bool PreDraw(ref Color lightColor)
 	{
-		Projectile.QuickDraw();
-		Projectile.QuickDrawTrail(baseOpacity: 0.25f);
+		Projectile.frame = (int)Frame;
 
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		int column = Projectile.frame / Main.projFrames[Type];
+		int row = Projectile.frame % Main.projFrames[Type];
+		Rectangle source = texture.Frame(NumColumns, Main.projFrames[Type], column, row, -2, -2);
+
+		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), source, Projectile.GetAlpha(lightColor), Projectile.rotation, source.Size() / 2, Projectile.scale, default);
 		return false;
 	}
 }

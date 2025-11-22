@@ -90,7 +90,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 
 		do
 			type = (InterestType)Main.rand.Next((int)InterestType.Count);
-			while (!PointOfInterestSystem.HasInterestType(type));
+		while (!PointOfInterestSystem.HasInterestType(type));
 
 		var item = new Item(GetPinType(type));
 		string pinName = item.ModItem.Name;
@@ -132,6 +132,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 				InterestType.Savanna => ModContent.ItemType<PinSavanna>(),
 				InterestType.Hive => ModContent.ItemType<PinHive>(),
 				InterestType.Curiosity => ModContent.ItemType<PinCuriosity>(),
+				InterestType.SaltFlat => ModContent.ItemType<PinSaltFlat>(),
+				InterestType.Ziggurat => ModContent.ItemType<PinZiggurat>(),
 				_ => Main.rand.Next([.. ModContent.GetContent<PinItem>()]).Type //Random
 			};
 

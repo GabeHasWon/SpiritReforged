@@ -2,6 +2,13 @@
 
 namespace SpiritReforged.Common.NPCCommon;
 
+/// <summary>
+/// Automatically applies the following things to the ID associated with the NPC:<br/>
+/// Adds the ID to <see cref="NPCID.Sets.GoldCrittersCollection"/>;<br/>
+/// Sets <see cref="NPC.rarity"/> = 3; in SetDefaults<br/>
+/// Sets the NPC's <see cref="BestiaryEntry.UIInfoProvider"/> to a <see cref="GoldCritterUICollectionInfoProvider"/>;<br/>
+/// And spawns <see cref="DustID.GoldCoin"/> dust randomly for the critter.
+/// </summary>
 public interface IGoldCritter
 {
 	public int[] NormalPersistentIDs => [];
