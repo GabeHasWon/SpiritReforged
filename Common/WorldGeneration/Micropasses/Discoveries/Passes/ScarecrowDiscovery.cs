@@ -38,9 +38,6 @@ internal class ScarecrowDiscovery : Discovery
 
 			WorldMethods.FindGround(x, ref y);
 
-			if (y >= Main.maxTilesY - 20)
-				continue;
-
 			var tile = Main.tile[x, y];
 			if (tile.TileType == TileID.Dirt && tile.LiquidAmount == 0)
 			{
