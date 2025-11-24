@@ -44,12 +44,12 @@ internal class SaltMenuTheme : ModMenu
 	{
 		//Lots of colors, so much customizability... woah
 		outlineColor = Color.White;                       //Glowing white outline
-		underlineColor = new Color(168, 0, 36);           //Dark red underline
+		underlineColor = new Color(30, 0, 240);           //Dark red underline
 		shadowColor = new Color(255, 255, 152, 25);
 
 		sFillColor = new Color(255, 255, 255);            //S is still white inside
-		sGradientTopColor = new Color(136, 238, 255, 92); //Gradient between faint blue at the top and white at the top
-		sGradientBottomColor = new Color(255, 255, 255);
+		sGradientTopColor = new Color(57, 186, 255, 92); //Gradient between faint blue at the top and white at the top
+		sGradientBottomColor = new Color(200, 245, 255);
 		sOutlineGlowColor = new Color(255, 255, 255);     //Glowing white outline
 
 		fillColorBase = new Color(40, 190, 255);          // Deep azure fill
