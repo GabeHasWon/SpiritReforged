@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 
@@ -11,12 +12,20 @@ public abstract class SaltBlock : ModTile, IAutoloadTileItem
 		PitchVariance = 0.3f
 	};
 
+	void IAutoloadTileItem.AddItemRecipes(ModItem item) => Recipe.Create(ItemID.PurificationPowder, 2).AddIngredient(item.Type, 3).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = false;
 
 		TileID.Sets.ChecksForMerge[Type] = true;
+		TileID.Sets.CorruptBiome[Type] = -2;
+		TileID.Sets.CrimsonBiome[Type] = -2;
+
+		SpiritSets.NegativeTileCorruption.Add(Type, 5);
+		SpiritSets.TileBlocksInfectionSpread.Add(Type, 5);
+
 		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
 
 		DustType = DustID.Pearlsand;

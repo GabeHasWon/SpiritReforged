@@ -2643,9 +2643,10 @@ GoldenBrineShrimpItem: {
 	// Tooltip: ""
 }
 
-// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
-// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
-// DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
 
 AncientBannerItem: {
 	// DisplayName: Ancient Banner
@@ -2681,5 +2682,3 @@ BangleOfStrength: {
 	// DisplayName: Bangle of Strength
 	// Tooltip: Periodically empowers melee damage
 }
-
-// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner Item

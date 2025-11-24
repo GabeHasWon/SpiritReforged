@@ -246,6 +246,7 @@ public partial class ZigguratBiome : Microbiome
 		int maxChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
 		bool placedBast = false;
+		bool placedTatteredMap = false;
 
 		foreach (var room in rooms)
 		{
@@ -253,29 +254,11 @@ public partial class ZigguratBiome : Microbiome
 			Rectangle b = room.Bounds;
 			b.Inflate(2, 2);
 
-			if (roomCopyForDelegateUse is ZigguratRooms.TreasureRoom)
-			{
-				WorldMethods.GenerateSquared((i, j) =>
-				{
-					if (!WorldGen.SolidTile(i, j))
-					{
-						Tile tile = Main.tile[i, j];
+			if (!placedBast)
+				placedBast = PlaceIndividual<ZigguratRooms.TreasureRoom>(roomCopyForDelegateUse, b, TileID.CatBast, Main.rand.Next(2));
 
-						if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(4) && !placedBast)
-						{
-							bool success = Placer.Check(i, j, TileID.CatBast, Main.rand.Next(2)).IsClear().Place().success;
-
-							if (success)
-							{
-								placedBast = true;
-								return true;
-							}
-						}
-					}
-
-					return false;
-				}, out _, b);
-			}
+			if (!placedTatteredMap)
+				placedTatteredMap = PlaceIndividual<ZigguratRooms.LibraryRoom>(roomCopyForDelegateUse, b, ModContent.TileType<TatteredMapWall>(), -1, false);
 
 			WorldMethods.GenerateSquared((i, j) =>
 			{
@@ -332,6 +315,38 @@ public partial class ZigguratBiome : Microbiome
 			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
 				maxChestCount--;
 		}
+	}
+
+	private static bool PlaceIndividual<T>(GenRoom roomCopyForDelegateUse, Rectangle bounds, int tileId, int style = -1, bool onFloor = true) where T : GenRoom
+	{
+		bool succeeded = false;
+
+		if (roomCopyForDelegateUse is T)
+		{
+			WorldMethods.GenerateSquared((i, j) =>
+			{
+				if (!WorldGen.SolidTile(i, j))
+				{
+					Tile tile = Main.tile[i, j];
+					bool spaced = !onFloor || WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1);
+
+					if (spaced && WorldGen.genRand.NextBool(4) && !succeeded)
+					{
+						bool success = Placer.Check(i, j, tileId, style).IsClear().Place().success;
+
+						if (success)
+						{
+							succeeded = true;
+							return true;
+						}
+					}
+				}
+
+				return false;
+			}, out _, bounds);
+		}
+
+		return succeeded;
 	}
 
 	public static void LaySpikeStrip(Point origin, int width)

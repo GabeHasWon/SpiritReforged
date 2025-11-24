@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -6,6 +7,7 @@ using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
@@ -50,7 +52,7 @@ public class StoneStupas : PotTile, ILootable
 		}
 	}
 
-	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] } };
+	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/StoneStupaShatter", 2)
 	{
@@ -64,7 +66,7 @@ public class StoneStupas : PotTile, ILootable
 	{
 		DustType = IsRubble ? -1 : DustID.Stone;
 		HitSound = IsRubble ? SoundID.Dig : Break;
-
+		
 		base.AddObjectData();
 	}
 
@@ -96,7 +98,30 @@ public class StoneStupas : PotTile, ILootable
 
 	public void AddLoot(ILoot loot)
 	{
-		if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))
-			dele.Invoke(loot);
+		List<IItemDropRule> branch = [];
+
+		List<int> potions = [ItemID.IronskinPotion, ItemID.ShinePotion, ItemID.NightOwlPotion, ItemID.SwiftnessPotion,
+			ItemID.MiningPotion, ItemID.CalmingPotion, ItemID.BuilderPotion, ItemID.RecallPotion, ItemID.ArcheryPotion,
+			ItemID.GillsPotion, ItemID.HunterPotion, ItemID.TrapsightPotion, ItemID.FeatherfallPotion, ItemID.WaterWalkingPotion,
+			ItemID.GravitationPotion, ItemID.InvisibilityPotion, ItemID.ThornsPotion, ItemID.HeartreachPotion, ItemID.FlipperPotion,
+			ItemID.ManaRegenerationPotion, ItemID.ObsidianSkinPotion, ItemID.MagicPowerPotion, ItemID.BattlePotion, ItemID.TitanPotion];
+
+		branch.Add(ItemDropRule.OneFromOptions(15, [.. potions]));
+		branch.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.Multiplayer), ItemID.WormholePotion, 30));
+		branch.Add(ItemDropRule.Common(ModContent.ItemType<SaltFlatsTorchItem>(), 3, 5, 15));
+
+		if (Main.hardMode)
+			branch.Add(ItemDropRule.OneFromOptions(4, ItemID.UnholyArrow, ItemID.Grenade, (WorldGen.SavedOreTiers.Silver == TileID.Silver) ? ItemID.SilverBullet : ItemID.TungstenBullet));
+		else
+			branch.Add(DropRules.LootPoolDrop.SameStack(10, 20, 1, 8, 3, ItemID.WoodenArrow, ItemID.Shuriken));
+
+		branch.Add(ItemDropRule.Common(Main.hardMode ? ItemID.HealingPotion : ItemID.LesserHealingPotion));
+		branch.Add(ItemDropRule.Common(ItemID.Bomb, 8, 1, 4));
+
+		if (!Main.hardMode)
+			branch.Add(ItemDropRule.Common(ItemID.Rope, 4, 20, 40));
+
+		// Always least one of any item, but sometimes more
+		loot.Add(new AlwaysAtleastOneSuccessDropRule([.. branch]));
 	}
 }
