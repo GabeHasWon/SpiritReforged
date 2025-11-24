@@ -1,4 +1,5 @@
-﻿using Terraria.WorldBuilding;
+﻿using SpiritReforged.Common.TileCommon;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
@@ -31,19 +32,14 @@ internal class NewStatuesMicropass : Micropass
 			int y = WorldGen.genRand.Next((int)Main.worldSurface, Main.UnderworldLayer - 20);
 
 			WorldMethods.FindGround(x, ref y);
+			Tile aboveTile = Framing.GetTileSafely(x, y - 1);
 
-			if (y > Main.UnderworldLayer || y < (int)Main.worldSurface || WorldGen.oceanDepths(x, y))
+			if (y > Main.UnderworldLayer || y < (int)Main.worldSurface || WorldGen.oceanDepths(x, y) || aboveTile.LiquidAmount > 150)
 				continue;
 
 			int type = Statues[Math.Clamp(statues / numPerType, 0, Statues.Count - 1)];
-			if (CreateStatue(x, y - 1, type) && ++statues >= maxStatues)
+			if (Placer.PlaceTile(x, y - 1, type).success && ++statues >= maxStatues)
 				break;
 		}
-	}
-
-	private static bool CreateStatue(int x, int y, int type)
-	{
-		WorldGen.PlaceTile(x, y, type, true);
-		return Main.tile[x, y].TileType == type;
 	}
 }

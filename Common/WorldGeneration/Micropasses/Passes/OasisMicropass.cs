@@ -30,7 +30,7 @@ internal class OasisMicropass : Micropass
 
 		for (int i = 0; i < amount; i++)
 		{
-			var pt = Main.rand.NextVector2FromRectangle(region).ToPoint();
+			var pt = WorldGen.genRand.NextVector2FromRectangle(region).ToPoint();
 
 			if (!GenVars.structures.CanPlace(new Rectangle(pt.X - area / 2, pt.Y - area / 2, area, area), 4) || biomesRectangles.Any(x => x.Contains(pt)))
 			{

@@ -23,6 +23,7 @@ Conditions: {
 	Discovered: Когда обнаружен
 	Submerged: Полностью погружённый в воду
 	// InSaltFlats: In Salt Flats
+	// IsPrickly: When prickly
 }
 
 Misc: {

@@ -3,7 +3,8 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert;
-using SpiritReforged.Content.Desert.Oasis;
+using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Jungle.Pineapple;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
@@ -12,7 +13,6 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
-	//Preface with basic relevant checks so linq isn't constantly running in the background
 	public static bool InUndergroundOasis(Player p)
 	{
 		const string flagType = "UndergroundOasis";
@@ -20,6 +20,7 @@ public class UndergroundOasisBiome : Microbiome
 		if (p.CheckFlag(flagType) is bool flag)
 			return flag;
 
+		//Preface with basic relevant checks so linq isn't constantly running in the background
 		bool result = p.Center.Y / 16 > Main.worldSurface && p.ZoneDesert && OasisAreas.Any(x => x.Contains(p.Center.ToTileCoordinates()));
 		p.SetFlag(flagType, result); //Cache the result to avoid checking against this logic more than once per tick
 
@@ -141,7 +142,7 @@ public class UndergroundOasisBiome : Microbiome
 					{
 						WorldGen.PlaceCatTail(i, j);
 
-						int height = Main.rand.Next(3, 6);
+						int height = WorldGen.genRand.Next(3, 6);
 						for (int h = 0; h < height; h++)
 							WorldGen.GrowCatTail(i, j);
 					}
@@ -191,7 +192,7 @@ public class UndergroundOasisBiome : Microbiome
 			if (lastX.Add(x))
 				Placer.PlaceTile<LightShaft>(x, y + 1);
 
-			x = point.X + Main.rand.Next(-10, 10);
+			x = point.X + WorldGen.genRand.Next(-10, 10);
 			y = point.Y;
 		}
 	}
@@ -204,7 +205,7 @@ public class UndergroundOasisBiome : Microbiome
 
 		for (int i = 0; i < count; i++)
 		{
-			var point = new Point(origin.X + Main.rand.Next(4, radius) * Main.rand.Next([-1, 1]), origin.Y);
+			var point = new Point(origin.X + WorldGen.genRand.Next(4, radius) * WorldGen.genRand.Next([-1, 1]), origin.Y);
 			int x = point.X;
 			int y = point.Y;
 

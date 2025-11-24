@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common;
+﻿using SpiritReforged.Content.Forest.Misc;
+
+namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public static class SpiritSets
@@ -9,7 +11,7 @@ public static class SpiritSets
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
 
 	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
-	/// Added in <see cref="Content.Desert.Tiles.SwordStand.RegisterIsSword"/>. </summary>
+	/// Added in <see cref="SwordStand.RegisterIsSword"/>. </summary>
 	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet();
 
 	/// <summary> Whether this type should grant the "Timber" achievement. </summary>
@@ -29,4 +31,7 @@ public static class SpiritSets
 
 	/// <summary> Whether this type is a dungeon wall variant. </summary>
 	public static readonly bool[] DungeonWall = WallFactory.CreateBoolSet(WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe, WallID.BlueDungeonUnsafe, WallID.GreenDungeonSlabUnsafe, WallID.GreenDungeonTileUnsafe, WallID.GreenDungeonUnsafe, WallID.PinkDungeonSlabUnsafe, WallID.PinkDungeonTileUnsafe, WallID.PinkDungeonUnsafe);
+
+	/// <summary> Whether this type blocks light. </summary>
+	public static readonly bool[] WallBlocksLight = WallFactory.CreateBoolSet();
 }

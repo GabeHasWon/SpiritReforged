@@ -7,12 +7,19 @@ public abstract class GenRoom
 	public static readonly Point Top = new(0, -1);
 	public static readonly Point Bottom = new(0, 1);
 
-	public readonly record struct Link(Point Location, Point Direction);
+	public sealed class Link(Point location, Point direction)
+	{
+		public readonly Point Location = location;
+		public readonly Point Direction = direction;
+
+		public bool consumed;
+	}
 
 	/// <summary> The boundaries of this room. </summary>
 	public Rectangle Bounds => new(Origin.X - Size.X / 2, Origin.Y - Size.Y / 2, Size.X, Size.Y);
 
 	public Point Origin { get; private set; }
+	/// <summary> Stores all links associated with this room. </summary>
 	public readonly HashSet<Link> Links;
 	private readonly Point Size;
 
@@ -44,9 +51,19 @@ public abstract class GenRoom
 		return this;
 	}
 
+	public bool Intersects(Point point, int padding = 0)
+	{
+		Rectangle bounds = Bounds;
+		bounds.Inflate(padding, padding);
+
+		return bounds.Contains(point);
+	}
+
 	public bool Intersects(Rectangle area, int padding = 0)
 	{
-		area.Inflate(padding, padding);
-		return area.Intersects(Bounds);
+		Rectangle bounds = Bounds;
+		bounds.Inflate(padding, padding);
+
+		return bounds.Intersects(area);
 	}
 }

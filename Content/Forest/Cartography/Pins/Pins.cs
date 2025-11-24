@@ -34,3 +34,7 @@ public class PinWulfrum : PinItem
 {
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Fables.Enabled;
 }
+
+public class PinSaltFlat : PinItem;
+
+public class PinZiggurat : PinItem;

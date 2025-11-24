@@ -10,6 +10,8 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -18,7 +20,7 @@ namespace SpiritReforged.Content.SaltFlats;
 
 internal class SaltFlatsEcotone : EcotoneBase
 {
-	private readonly record struct CaveInfo(int X, int Y, int Radius)
+	private readonly record struct FeatureInfo(int X, int Y, int Radius)
 	{
 		public readonly Rectangle Area => new(X - Radius / 2, Y - Radius / 2, Radius, Radius);
 	}
@@ -88,7 +90,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
-		List<CaveInfo> caves = [];
+		List<FeatureInfo> caves = [];
+		List<FeatureInfo> lakes = [];
 		int xLeft = bounds.Item1;
 		int xRight = bounds.Item2;
 
@@ -128,11 +131,16 @@ internal class SaltFlatsEcotone : EcotoneBase
 					continue;
 				}
 
+				if (y == surfaceLine && isLining && WorldGen.genRand.NextBool(50))
+				{
+					MapFeature(new(x, y), WorldGen.genRand.Next(6, 12), ref lakes); //Occasionally map lakes on the surface
+				}
+
 				if (y == yMax - 1) //The final vertical coordinates - fill
 				{
-					if (depthNoise < 0)
+					if (depthNoise < 0 && xProgress > 0.05f && xProgress < 0.95f && WorldGen.genRand.NextBool(10))
 					{
-						MapCave(new(x, y), ref caves); //Occasionally map caves in crests
+						MapFeature(new(x, y), WorldGen.genRand.Next(3, 9), ref caves); //Occasionally map caves in crests
 					}
 
 					if (!Main.tile[x, y].HasTile)
@@ -164,11 +172,15 @@ internal class SaltFlatsEcotone : EcotoneBase
 		foreach (var c in caves)
 			GenerateCave(c);
 
+		foreach (var l in lakes)
+			GenerateLake(l);
+
 		Decorate();
 
 		WorldDetours.Regions.Add(new(SaltArea, WorldDetours.Context.Piles));
 	}
 
+	/// <summary> Whether the provided coordinates are included in the horizontal or vertical biome lining. </summary>
 	private static bool IsLining(int x, int y, float depthProgress)
 	{
 		//The percentage of space surrounding the biome that will be considered 'lining'
@@ -186,8 +198,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 	{
 		//The number of tiles around the biome that can ease into surrounding elevation
 		const int mergeDistance = 30;
-		//The number of visible steps for merging
-		const float steps = 5;
 
 		float surfaceNoise = Noise.GetNoise(x, 100) * 2;
 		int xStart = x - SaltArea.Left;
@@ -197,9 +207,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			float floatingLine;
 
 			if (xStart < mergeDistance)
-				floatingLine = MathHelper.Lerp(yLeft, AverageY, (int)(xStart / steps) * steps / mergeDistance);
+				floatingLine = MathHelper.Lerp(yLeft, AverageY, (float)xStart / mergeDistance);
 			else
-				floatingLine = MathHelper.Lerp(AverageY, yRight, (int)((xStart - (SaltArea.Width - mergeDistance)) / steps) * steps / mergeDistance);
+				floatingLine = MathHelper.Lerp(AverageY, yRight, (float)(xStart - (SaltArea.Width - mergeDistance)) / mergeDistance);
 
 			return (int)(floatingLine + surfaceNoise);
 		}
@@ -207,7 +217,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		{
 			return (int)(AverageY + surfaceNoise) - 1;
 		}
-		else //Center
+		else //Center fill
 		{
 			float surfaceProgress = (float)(x - SaltArea.Left) / SaltArea.Width;
 			float doubleProgress = Math.Max(EaseFunction.EaseSine.Ease(surfaceProgress * 3), 0);
@@ -217,70 +227,70 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	#region features
-	private static void Decorate() => WorldMethods.GenerateSquared(static (i, j) =>
+	private static void Decorate()
 	{
-		var tile = Main.tile[i, j];
-		if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
+		HashSet<Vector2> treePoints = [];
+
+		WorldMethods.GenerateSquared((i, j) =>
 		{
-			bool leftEmpty = !WorldGen.SolidTile3(i - 1, j);
-			bool rightEmpty = !WorldGen.SolidTile3(i + 1, j);
-
-			if (!Main.tile[i, j - 1].HasTile && (leftEmpty || rightEmpty)) //Slopes
+			var tile = Main.tile[i, j];
+			if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
 			{
-				tile.Clear(Terraria.DataStructures.TileDataType.Slope);
-				if (WorldGen.genRand.NextBool(4))
+				bool leftEmpty = !WorldGen.SolidTile3(i - 1, j);
+				bool rightEmpty = !WorldGen.SolidTile3(i + 1, j);
+				Tile aboveTile = Main.tile[i, j - 1];
+
+				if (!aboveTile.HasTile && (leftEmpty || rightEmpty)) //Slopes
 				{
-					tile.IsHalfBlock = true;
-				}
-				else
-				{
-					SlopeType slope = leftEmpty ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
-					tile.Slope = slope;
+					tile.Clear(TileDataType.Slope);
+
+					if (WorldGen.genRand.NextBool(4))
+						tile.IsHalfBlock = true;
+					else
+						tile.Slope = leftEmpty ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
+
+					return false;
 				}
 
-				return false;
+				if (!WorldGen.SolidTile(i, j - 1) && aboveTile.LiquidAmount < 20)
+				{
+					if (WorldGen.genRand.NextBool(6))
+						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 12));
+
+					if (WorldGen.genRand.NextBool(2))
+						Placer.PlaceTile<Saltwort>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(12))
+						Placer.PlaceTile<SaltwortTall>(i, j - 1);
+
+					Vector2 pt = new(i, j - 1);
+
+					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
+						treePoints.Add(pt);
+				}
+
+				if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(6))
+					Placer.PlaceTile<SaltStalactite>(i, j + 1);
+
+				if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(30))
+					Placer.PlaceTile(i, j + 1, TileID.DyePlants, 7);
 			}
 
-			if (!WorldGen.SolidTile(i, j - 1))
-			{
-				if (WorldGen.genRand.NextBool(6))
-					Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 12));
-
-				if (WorldGen.genRand.NextBool(2))
-					Placer.PlaceTile<Saltwort>(i, j - 1);
-
-				if (WorldGen.genRand.NextBool(30))
-				{
-					int type = ModContent.TileType<DeadTree>();
-
-					if (!Framing.GetTileSafely(i - 1, j).HasTileType(type) && !Framing.GetTileSafely(i + 1, j).HasTileType(type))
-						CustomTree.GrowTree<DeadTree>(i, j - 1);
-				}
-			}
-
-			if (!WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(6))
-				Placer.PlaceTile<SaltStalactite>(i, j + 1);
-		}
-
-		return false;
-	}, out _, SaltArea);
-
-	private static void MapCave(Point coordinates, ref List<CaveInfo> caves)
-	{
-		if (WorldGen.genRand.NextBool(10))
-		{
-			int x = coordinates.X;
-			int y = coordinates.Y;
-
-			int radius = WorldGen.genRand.Next(3, 9);
-			CaveInfo info = new(x, y, radius);
-
-			if (AreaSafe(info.Area))
-				caves.Add(info);
-		}
+			return false;
+		}, out _, SaltArea);
 	}
 
-	private static void GenerateCave(CaveInfo info)
+	private static void MapFeature(Point coordinates, int radius, ref List<FeatureInfo> features)
+	{
+		int x = coordinates.X;
+		int y = coordinates.Y;
+		FeatureInfo info = new(x, y, radius);
+
+		if (AreaSafe(info.Area))
+			features.Add(info);
+	}
+
+	private static void GenerateCave(FeatureInfo info)
 	{
 		Point origin = new(info.X, info.Y);
 
@@ -298,6 +308,43 @@ internal class SaltFlatsEcotone : EcotoneBase
 		WorldUtils.Gen(origin, new ModShapes.All(data), Actions.Chain(
 			new Modifiers.Expand(1),
 			new Actions.PlaceWall((ushort)SaltWall.UnsafeType)
+		));
+	}
+
+	private static void GenerateLake(FeatureInfo info)
+	{
+		Point origin = new(info.X, info.Y);
+		ShapeData data = new();
+
+		float widthScale = WorldGen.genRand.NextFloat(0.5f, 1);
+		float heightScale = WorldGen.genRand.NextFloat(0.7f, 1);
+
+		WorldUtils.Gen(origin - new Point(0, 4), new Shapes.Circle((int)(info.Radius * Math.Min(widthScale, heightScale))), Actions.Chain(
+			new Actions.ClearTile(),
+			new Actions.ClearWall()
+		));
+
+		WorldUtils.Gen(origin, new Shapes.Slime(info.Radius, widthScale, heightScale), Actions.Chain(
+			new Modifiers.Flip(false, true),
+			new Actions.ClearTile(),
+			new Modifiers.Blotches()
+		).Output(data));
+
+		WorldUtils.Gen(origin, new ModShapes.All(data), Actions.Chain(
+			new Modifiers.Expand(2),
+			new Actions.ClearWall()
+		));
+
+		WorldUtils.Gen(origin, new ModShapes.All(data), Actions.Chain(
+			new Modifiers.Offset(0, 2),
+			new Actions.SetLiquid()
+		));
+
+		WorldUtils.Gen(origin, new ModShapes.OuterOutline(data), Actions.Chain(
+			new Modifiers.Blotches(),
+			new Modifiers.RectangleMask(-(info.Radius + 4), info.Radius + 4, 0, info.Radius + 4),
+			new Modifiers.Expand(1),
+			new Actions.SetTileKeepWall((ushort)ModContent.TileType<SaltBlockDull>())
 		));
 	}
 	#endregion

@@ -2549,3 +2549,136 @@ CarvedLapisWallItem: {
 	DisplayName: Carved Lapis Wall
 	Tooltip: ""
 }
+
+BronzePotsItem: {
+	DisplayName: Bronze Pot
+	Tooltip: ""
+}
+
+LapisPotsItem: {
+	DisplayName: Lapis Pot
+	Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	DisplayName: Drywood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: Bronze Grate
+	Tooltip: ""
+}
+
+BronzePlatingItem: {
+	DisplayName: Bronze Plating
+	Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	DisplayName: Bronze Plating Wall
+	Tooltip: ""
+}
+
+BronzePlatformItem: {
+	DisplayName: Bronze Platform
+	Tooltip: ""
+}
+
+ZigguratTorchItem: {
+	DisplayName: Ziggurat Torch
+	Tooltip: ""
+}
+
+SwordStandMahoganyItem: {
+	DisplayName: Mahogany Sword Stand
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	DisplayName: Sandstone Sword Stand
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: Foreground Red Sandstone Brick Wall
+	Tooltip: ""
+}
+
+SaltPylonItem: {
+	DisplayName: Salt Flats Pylon
+	Tooltip: ""
+}
+
+SaltFlatsNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats Night)
+}
+
+SaltFlatsMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Music Box (Salt Flats)
+}
+
+PineappleSeeds: {
+	DisplayName: Pineapple Seeds
+	Tooltip: ""
+}
+
+StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
+StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
+
+BrineShrimpItem: {
+	DisplayName: Brine Shrimp
+	Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	DisplayName: Golden Brine Shrimp
+	Tooltip: ""
+}
+
+CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner 
+CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner 
+DesertStactusBannerItem.DisplayName: Desert Stactus Banner 
+HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
+
+AncientBannerItem: {
+	DisplayName: Ancient Banner
+	Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	DisplayName: Tall Sandstone Shelf
+	Tooltip: ""
+}
+
+SaltFlatsTorchItem: {
+	DisplayName: Salt Torch
+	Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	DisplayName: Music Box (Ziggurat)
+	Tooltip: ""
+}
+
+PinSaltFlat: {
+	DisplayName: Salt Flat Pin
+	Tooltip: ""
+}
+
+PinZiggurat: {
+	DisplayName: Ziggurat Pin
+	Tooltip: ""
+}
+
+BangleOfStrength: {
+	DisplayName: Bangle of Strength
+	Tooltip: Periodically empowers melee damage
+}

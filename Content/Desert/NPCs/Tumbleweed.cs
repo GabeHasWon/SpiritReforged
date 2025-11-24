@@ -38,7 +38,7 @@ public class Tumbleweed : ModNPC
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Main.windSpeedCurrent * 3, 0.05f);
 		NPC.velocity.Y = Math.Min(NPC.velocity.Y + 0.1f, 5);
 
-		if (NPC.collideY)
+		if (NPC.velocity.Y > 1 && NPC.collideY)
 		{
 			NPC.velocity.Y -= Math.Abs(NPC.velocity.X);
 			SoundEngine.PlaySound(SoundID.NPCHit11 with { Volume = 0.5f }, NPC.Center);
