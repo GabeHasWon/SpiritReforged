@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Content.Desert.Tiles.Amber;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Desert.DragonFossil;
+using SpiritReforged.Content.Desert.Tiles.Amber;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -24,7 +26,8 @@ internal class DesertMicropass : Micropass
 
 		int top = (int)(Main.worldSurface * 1.2f);
 		Rectangle region = new(GenVars.desertHiveLeft, top, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - top);
-		
+		bool addedDragon = false;
+
 		for (int a = 0; a < 200; a++)
 		{
 			var coords = WorldGen.genRand.NextVector2FromRectangle(region);
@@ -37,6 +40,13 @@ internal class DesertMicropass : Micropass
 
 				WorldGen.OreRunner(i, j - 3, scale + 4, WorldGen.genRand.Next(1, 8), TileID.Sand);
 				WorldGen.OreRunner(i, j, scale, WorldGen.genRand.Next(1, 8), (ushort)ModContent.TileType<PolishedAmber>());
+
+				if (!addedDragon && AmberFossil.PlaceEntity(i, j) is FossilEntity e)
+				{
+					e.itemType = ModContent.ItemType<TinyDragon>();
+					addedDragon = true;
+				}
+
 				AddFossils(i, j, scale / 2, scale);
 
 				if (++generated >= maxAmount)
@@ -52,7 +62,7 @@ internal class DesertMicropass : Micropass
 		{
 			var coords = (new Vector2(i, j) + WorldGen.genRand.NextVector2Unit() * WorldGen.genRand.Next(scale)).ToPoint();
 			
-			if (Framing.GetTileSafely(coords).TileType == ModContent.TileType<PolishedAmber>())
+			if (Framing.GetTileSafely(coords).HasTileType(ModContent.TileType<PolishedAmber>()))
 				Framing.GetTileSafely(coords).TileType = (ushort)ModContent.TileType<AmberFossil>();
 		}
 	}

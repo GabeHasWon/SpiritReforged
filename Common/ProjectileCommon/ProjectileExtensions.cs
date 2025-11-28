@@ -151,9 +151,7 @@ internal static class ProjectileExtensions
 		if (framespersecond == 0)
 			return;
 
-		projectile.frameCounter++;
-
-		if (projectile.frameCounter > 60 / framespersecond)
+		if (++projectile.frameCounter > 60 / framespersecond)
 		{
 			projectile.frameCounter = 0;
 			projectile.frame++;
