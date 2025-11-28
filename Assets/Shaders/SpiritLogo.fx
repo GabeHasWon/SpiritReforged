@@ -176,8 +176,8 @@ float4 getPirit(float2 uv, float2 sUv, float2 sOffset)
      //Get shadow and dark underline
     float2 darkUnderlineUv = piritUv - float2(0, 2 / textureResolution.y); //2 pixels offset for the dark outline under the letters
     float2 shadowUv = piritUv - float2(0, 10 / textureResolution.y); //10 pixels below for the shadow
-    float4 darkUnderline = tex2D(piritTex, darkUnderlineUv) * darkUnderlineColor;
-    float4 shadow = tex2D(piritTex, shadowUv) * shadowColor;
+    float4 darkUnderline = tex2D(piritTex, darkUnderlineUv).a * darkUnderlineColor;
+    float4 shadow = tex2D(piritTex, shadowUv).a * shadowColor;
     
     //Get the distance to the center of the S (Multiplication needed to get uniform squish)
     float distToS = length(sUv * float2(textureResolution.x / textureResolution.y, 1)) * 0.75;
@@ -224,7 +224,7 @@ float4 getReforged(float2 uv)
     float2 darkUnderlineUv = reforgedUv - float2(0, 2 / textureResolution.y); //2 pixels offset for the dark outline under the letters
     float4 darkUnderline = tex2D(reforgedTex, darkUnderlineUv) * darkUnderlineColor;
     float2 shadowUv = reforgedUv - float2(0, 6 / textureResolution.y); //6 pixels below for the shadow (Makesi t look like reforged is hovering closer to the "wall"
-    float4 shadow = tex2D(reforgedTex, shadowUv) * shadowColor;
+    float4 shadow = tex2D(reforgedTex, shadowUv).a * shadowColor;
     
     float4 returnValue = float4(0, 0, 0, reforged.a);
     returnValue = alphaBlend(shadow, returnValue);
@@ -242,8 +242,8 @@ float4 getS(float2 uv)
     //Get shadow and dark underline
     float2 darkUnderlineUv = uv - float2(0, 2 / textureResolution.y); //2 pixels offset for the dark outline under the S
     float2 shadowUv = uv - float2(0, 10 / textureResolution.y); //10 pixels below for the shadow
-    float4 darkUnderline = tex2D(sTex, darkUnderlineUv) * darkUnderlineColor;
-    float4 shadow = tex2D(sTex, shadowUv) * shadowColor;
+    float4 darkUnderline = tex2D(sTex, darkUnderlineUv).a * darkUnderlineColor;
+    float4 shadow = tex2D(sTex, shadowUv).a * shadowColor;
     
     //We start by adding in the shadow and the dark underline 
     float4 returnValue = float4(0, 0, 0, s.a);

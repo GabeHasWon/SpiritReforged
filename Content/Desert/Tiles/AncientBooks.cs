@@ -9,6 +9,7 @@ public class AncientBooks : ModTile
 		Main.tileNoFail[Type] = true;
 		Main.tileSolid[Type] = false;
 		Main.tileFrameImportant[Type] = true;
+		TileID.Sets.CanDropFromRightClick[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.StyleHorizontal = true;
@@ -17,5 +18,16 @@ public class AncientBooks : ModTile
 
 		RegisterItemDrop(ModContent.ItemType<TornMapPiece>(), 4);
 		DustType = DustID.Dirt;
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		if (Main.tile[i, j].TileFrameX == 18 * 4)
+		{
+			Player player = Main.LocalPlayer;
+			player.noThrow = 2;
+			player.cursorItemIconEnabled = true;
+			player.cursorItemIconID = ModContent.ItemType<TornMapPiece>();
+		}
 	}
 }

@@ -56,3 +56,5 @@ FingerShot.DisplayName: Пальцевыстрел
 // TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
 // DragonFireball.DisplayName: Dragon Fireball
 // PileOfConsequencesPet.DisplayName: Consequences
+// EnergyLaser.DisplayName: Energy Laser
+// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
