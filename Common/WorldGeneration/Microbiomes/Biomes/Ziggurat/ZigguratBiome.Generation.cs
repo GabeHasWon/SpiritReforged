@@ -11,7 +11,6 @@ using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
-using System.Threading.Channels;
 using Terraria.DataStructures;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -306,7 +305,12 @@ public partial class ZigguratBiome : Microbiome
 					return false;
 				}, 0);
 
-			if (room is ZigguratRooms.TreasureRoom)
+			if (room is ZigguratRooms.LibraryRoom)
+			{
+				decorator.Enqueue(ModContent.TileType<TatteredMapWall>(), 1);
+				decorator.Enqueue(ModContent.TileType<TatteredMapWallSmall>(), 1);
+			}
+			else if (room is ZigguratRooms.TreasureRoom)
 			{
 				decorator.Enqueue(TileID.CatBast, 1);
 			}
