@@ -1,15 +1,10 @@
-v0.1.2.4
-- Modified Stargrass glow visuals
-- Sand Pipers can now be placed in Bamboo Bird Cages
-- Fixed an issue with Remedy Potions not dropping from Pots properly
-- Improved how custom pots drop loot
-- Fixed an issue with the Jinx Bow occasionally causing audio issues
-- Improved ocean world generation, preventing one side of the world's oceans from being generated at an incorrect height
-- Added in safety check for Scarecrow Discovery, Butterfly Shrine pass
-- Stopped Scrying Pot from spawning in Remnants' Labyrinth
-- Updated NPCUtils reference, stopping crash on unload in certain conditions
-- Fixed an issue where chests were not being treated as containers
-- Fixed a bug with Stargrass generation
-- Improved how ecotones are delineated and generated
-- Savannas (and in the future, other ecotones if desired) can now spawn "over" evil biomes, which are then converted accordingly
-    This also makes them much more likely to appear
+v0.1.2.5
+- Fixed a conflict between Spirit and Remnants leading to crashes during the Scarecrow microstructure generation step
+- Improved Cartography Table multiplayer loading and syncing (thanks to tomat!)
+- Fixed a tooltip error in the Rogue's Crest
+- Fixed issues with the Campfire Spit occasionally causing crashes
+- Fixed a desync issue with Hydrothermal Vents in multiplayer
+- Added text to Scarecrow discovery step
+- TEMPORARY: The "Enchanted Swords" step from Remnants will NOT run when Reforged is active
+	This is to stop a common softlock, and was recommended by wombat (Remnant's dev)
+	This will only apply to Remnants v2.0.9 and will not apply to newer versions

@@ -11,6 +11,7 @@ SavannaObjects: Preenchendo a savana
 // Caves: Decorating caves
 // NeonMosses: Glowing moss
 // Pottery: Stashing pots
+// Scarecrow: Scaring birds
 
 Signs: {
 	Underground: {
