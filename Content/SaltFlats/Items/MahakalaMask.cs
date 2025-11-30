@@ -8,7 +8,6 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.SaltFlats.Items;
 
 [AutoloadEquip(EquipType.Head)]
-[AutoloadGlowmask("255,255,255")]
 public class MahakalaMaskBlue : ModItem
 {
 	public class MahakalaPlayer : ModPlayer
@@ -118,7 +117,6 @@ public class MahakalaMaskBlue : ModItem
 }
 
 [AutoloadEquip(EquipType.Head)]
-[AutoloadGlowmask("255,255,255")]
 public class MahakalaMaskRed : MahakalaMaskBlue
 {
 	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddRecipeGroup("Salt", 10).AddIngredient(ItemID.Ruby).AddTile(TileID.Anvils)
