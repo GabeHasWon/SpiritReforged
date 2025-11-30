@@ -2716,3 +2716,8 @@ ScarabAltarItem: {
 	DisplayName: Ancient Altar
 	Tooltip: ""
 }
+
+RedSandstoneBrickCrackedWallItem: {
+	DisplayName: Cracked Red Sandstone Brick Wall
+	Tooltip: ""
+}

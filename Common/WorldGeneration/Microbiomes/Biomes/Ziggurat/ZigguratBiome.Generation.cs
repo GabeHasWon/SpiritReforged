@@ -258,7 +258,10 @@ public partial class ZigguratBiome : Microbiome
 					Tile tile = Main.tile[i, j];
 
 					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
-						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
+					{
+						int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
+						tile.WallType = (ushort)type; //Add unsafe walls to hallways
+					}
 				}
 
 				return false;
@@ -328,7 +331,7 @@ public partial class ZigguratBiome : Microbiome
 				}, 0)
 				.Enqueue((i, j) =>
 				{
-					if (WorldGen.genRand.NextBool(40))
+					if (WorldGen.genRand.NextBool(50))
 					{
 						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
 						return true;

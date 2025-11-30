@@ -12,7 +12,8 @@ public class ScarabAltar : ModTile, IAutoloadTileItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style4x2);
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+		TileObjectData.newTile.Width = 4;
 		TileObjectData.newTile.Height = 3;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
 		TileObjectData.newTile.Origin = new(2, 2);
