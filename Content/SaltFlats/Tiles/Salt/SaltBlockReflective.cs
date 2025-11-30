@@ -71,8 +71,8 @@ public class SaltBlockReflective : SaltBlock
 			{
 				if (c.active)
 				{
-					float num11 = c.position.Y * ((float)Main.screenHeight / 600f) + 200f;
-					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, num11);
+					float offset = c.position.Y * (Main.screenHeight / 600f) + 200f;
+					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, offset);
 				}
 			}
 
