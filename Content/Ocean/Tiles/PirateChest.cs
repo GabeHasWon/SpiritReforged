@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -7,7 +8,6 @@ namespace SpiritReforged.Content.Ocean.Tiles;
 
 public class PirateChest : ChestTile
 {
-	public override void StaticItemDefaults(ModItem item) => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Pirate, new NPCShop.Entry(Type)));
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 5);
 
 	public override void StaticDefaults()
@@ -25,6 +25,7 @@ public class PirateChest : ChestTile
 		AddMapEntry(new Color(87, 64, 31), MapEntry, MapChestName);
 
 		MakeLocked(CrossMod.Classic.Enabled ? ModContent.ItemType<PirateKey>() : ItemID.GoldenKey);
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Pirate, new NPCShop.Entry(this.AutoItemType())));
 	}
 
 	public override ushort GetMapOption(int i, int j) => (ushort)(IsLockedChest(i, j) ? 1 : 0);
