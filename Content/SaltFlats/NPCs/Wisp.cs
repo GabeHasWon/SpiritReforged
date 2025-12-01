@@ -192,6 +192,8 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
+	public override void SetStaticDefaults() => NPCID.Sets.CountsAsCritter[Type] = true;
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new(20);

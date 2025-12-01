@@ -3,8 +3,11 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.Graphics;
+using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -77,6 +80,10 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
+				// DrawDepthRange seems to determine the "closeness" (minDepth) and "farness" (maxDepth) that it'll draw at - this affects stuff like
+				// the Lantern Night lanterns. I used the max range the vanilla game uses, which should be fine. This note is in case there's issues.
+				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
+
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 
