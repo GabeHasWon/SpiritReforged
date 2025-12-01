@@ -22,18 +22,21 @@ public class AmberFossil : ShiningAmber
 		return (id == -1) ? 0 : (TileEntity.ByID[id] as FossilEntity).itemType;
 	}
 
-	private static void PlaceEntity(int i, int j)
+	public static FossilEntity PlaceEntity(int i, int j)
 	{
 		if (ModContent.GetInstance<FossilEntity>().Find(i, j) != -1)
-			return; //An entity already exists here
+			return null; //An entity already exists here
 
 		int itemType = RandomItem;
 		int id = ModContent.GetInstance<FossilEntity>().Place(i, j);
 
-		((FossilEntity)TileEntity.ByID[id]).itemType = itemType;
+		var entity = (FossilEntity)TileEntity.ByID[id];
+		entity.itemType = itemType;
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			new FossilData((short)i, (short)j, itemType).Send();
+
+		return entity;
 	}
 
 	public override void SetStaticDefaults()

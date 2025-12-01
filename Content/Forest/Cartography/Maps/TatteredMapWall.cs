@@ -1,3 +1,4 @@
+using SpiritReforged.Common.TileCommon.PresetTiles;
 using System.Linq;
 
 namespace SpiritReforged.Content.Forest.Cartography.Maps;
@@ -18,7 +19,7 @@ public class TatteredMapWall : ModTile
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(23, 23, 23), Language.GetText("MapObject.Painting"));
+		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Painting"));
 		RegisterItemDrop(ModContent.ItemType<TatteredMap>());
 		DustType = -1;
 	}

@@ -36,6 +36,7 @@ public partial class ZigguratBiome : Microbiome
 		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
+		CreateAltar(bounds[0]);
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
@@ -46,6 +47,7 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
+		SwitchWalls(bounds);
 		AddNeutralDecorations(rooms);
 
 		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
@@ -145,6 +147,16 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
+	private static void CreateAltar(Rectangle topBound)
+	{
+		var origin = (topBound.Top() - new Vector2(0, 1)).ToPoint();
+		int i = origin.X;
+		int j = origin.Y;
+
+		WorldMethods.FindGround(i, ref j);
+		WorldGen.PlaceTile(i, j - 1, ModContent.TileType<ScarabAltar>(), true);
+	}
+
 	/// <summary> Randomly adds weathering. </summary>
 	private static void Sandify(List<Rectangle> bounds)
 	{
@@ -235,6 +247,28 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
+	private static void SwitchWalls(List<Rectangle> areas)
+	{
+		foreach (Rectangle area in areas)
+		{
+			WorldMethods.GenerateSquared((i, j) =>
+			{
+				if (!WorldGen.SolidTile(i, j))
+				{
+					Tile tile = Main.tile[i, j];
+
+					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
+					{
+						int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
+						tile.WallType = (ushort)type; //Add unsafe walls to hallways
+					}
+				}
+
+				return false;
+			}, out _, area);
+		}
+	}
+
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
 		WeightedRandom<int> potWeight = new();
@@ -245,53 +279,18 @@ public partial class ZigguratBiome : Microbiome
 
 		int maxChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
-		bool placedBast = false;
 
 		foreach (var room in rooms)
 		{
-			GenRoom roomCopyForDelegateUse = room;
-			Rectangle b = room.Bounds;
-			b.Inflate(2, 2);
+			Rectangle bounds = room.Bounds;
+			bounds.Inflate(2, 2);
 
-			if (roomCopyForDelegateUse is ZigguratRooms.TreasureRoom)
-			{
-				WorldMethods.GenerateSquared((i, j) =>
+			var decorator = new Decorator(bounds)
+				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
+				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
+				.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2))
+				.Enqueue((i, j) =>
 				{
-					if (!WorldGen.SolidTile(i, j))
-					{
-						Tile tile = Main.tile[i, j];
-
-						if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(4) && !placedBast)
-						{
-							bool success = Placer.Check(i, j, TileID.CatBast, Main.rand.Next(2)).IsClear().Place().success;
-
-							if (success)
-							{
-								placedBast = true;
-								return true;
-							}
-						}
-					}
-
-					return false;
-				}, out _, b);
-			}
-
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				if (!WorldGen.SolidTile(i, j))
-				{
-					Tile tile = Main.tile[i, j];
-
-					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
-						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
-
-					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place banners
-						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
-
-					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place large banners
-						return Placer.PlaceTile(i, j, ModContent.TileType<AncientBanner>()).success;
-
 					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
 					{
 						int type = potWeight;
@@ -306,23 +305,43 @@ public partial class ZigguratBiome : Microbiome
 						return Placer.PlaceTile(i, j, type, style).success;
 					}
 
+					return false;
+				}, 0);
+
+			if (room is ZigguratRooms.LibraryRoom)
+			{
+				decorator.Enqueue(ModContent.TileType<TatteredMapWall>(), 1);
+				decorator.Enqueue(ModContent.TileType<TatteredMapWallSmall>(), 1);
+			}
+			else if (room is ZigguratRooms.TreasureRoom)
+			{
+				decorator.Enqueue(TileID.CatBast, 1);
+			}
+			else
+			{
+				decorator.Enqueue((i, j) =>
+				{
 					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(7))
 					{
-						if (roomCopyForDelegateUse is not ZigguratRooms.TreasureRoom)
-						{
-							furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
-							return true;
-						}
+						furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+						return true;
 					}
-				}
-				else
-				{
-					if (WorldGen.genRand.NextBool(30))
-						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
-				}
 
-				return false;
-			}, out _, b);
+					return false;
+				}, 0)
+				.Enqueue((i, j) =>
+				{
+					if (WorldGen.genRand.NextBool(50))
+					{
+						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
+						return true;
+					}
+
+					return false;
+				}, 0);
+			}
+
+			decorator.Run();
 		}
 
 		while (furniturePositions.Count > 0)
