@@ -2633,6 +2633,25 @@ PineappleSeeds: {
 StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
 StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
 
+Dragonsong: {
+	DisplayName: Dragonsong
+	Tooltip:
+		'''
+		50% chance to save ammo
+		'You are a terrible person'
+		'''
+}
+
+TinyDragon: {
+	DisplayName: Tiny Dragon
+	Tooltip: "'Last of its kind'"
+}
+
+PileOfConsequences: {
+	DisplayName: Pile of Consequences
+	Tooltip: "'You know what you did.'"
+}
+
 BrineShrimpItem: {
 	DisplayName: Brine Shrimp
 	Tooltip: ""
@@ -2681,4 +2700,24 @@ PinZiggurat: {
 BangleOfStrength: {
 	DisplayName: Bangle of Strength
 	Tooltip: Periodically empowers melee damage
+}
+
+ScarabTabletOneItem: {
+	DisplayName: Scarabeus Tablet
+	Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem.DisplayName}"
+	Tooltip: ""
+}
+
+ScarabAltarItem: {
+	DisplayName: Ancient Altar
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	DisplayName: Cracked Red Sandstone Brick Wall
+	Tooltip: ""
 }

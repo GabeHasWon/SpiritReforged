@@ -3,7 +3,6 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 
@@ -71,8 +70,8 @@ public class SaltBlockReflective : SaltBlock
 			{
 				if (c.active)
 				{
-					float num11 = c.position.Y * ((float)Main.screenHeight / 600f) + 200f;
-					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, num11);
+					float offset = c.position.Y * (Main.screenHeight / 600f) + 200f;
+					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, offset);
 				}
 			}
 
@@ -105,7 +104,6 @@ public class SaltBlockReflective : SaltBlock
 				Main.instance.DrawItems();
 			}
 
-			SaltWaterStyle.DrawCaustics(spriteBatch, ref Origin, new(2, 1.5f), Main.ColorOfTheSkies * 0.13f);
 			spriteBatch.End();
 
 			if (Reflections.Detail > 2)
@@ -146,7 +144,7 @@ public class SaltBlockReflective : SaltBlock
 				{
 					for (int x = 0; x < 8; x++)
 					{
-						var position = t.Slope == SlopeType.SlopeDownLeft ? new Vector2(x, x) * 2 : new Vector2(6 - x, x) * 2;
+						Vector2 position = (t.Slope == SlopeType.SlopeDownLeft) ? new Vector2(x, x) * 2 : new Vector2(7 - x, x) * 2;
 						spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, scale, default, 0);
 					}
 

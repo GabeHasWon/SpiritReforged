@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Gar;
