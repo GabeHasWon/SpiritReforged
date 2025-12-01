@@ -20,6 +20,9 @@ public class RedSandstoneBrickCrackedWall : ModWall, IAutoloadUnsafeWall, IAutol
 	public override void SetStaticDefaults()
 	{
 		Main.wallHouse[Type] = true;
+		Main.wallBlend[Type] = ModContent.WallType<RedSandstoneBrickWall>();
+		Main.wallBlend[UnsafeType] = ModContent.WallType<RedSandstoneBrickWall>();
+
 		DustType = DustID.DynastyShingle_Red;
 
 		Color entryColor = new(150, 70, 40);
