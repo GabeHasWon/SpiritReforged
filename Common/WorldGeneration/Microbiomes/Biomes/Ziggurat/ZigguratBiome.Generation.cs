@@ -353,38 +353,6 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static bool PlaceIndividual<T>(GenRoom roomCopyForDelegateUse, Rectangle bounds, int tileId, int style = -1, bool onFloor = true) where T : GenRoom
-	{
-		bool succeeded = false;
-
-		if (roomCopyForDelegateUse is T)
-		{
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				if (!WorldGen.SolidTile(i, j))
-				{
-					Tile tile = Main.tile[i, j];
-					bool spaced = !onFloor || WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1);
-
-					if (spaced && WorldGen.genRand.NextBool(4) && !succeeded)
-					{
-						bool success = Placer.Check(i, j, tileId, style).IsClear().Place().success;
-
-						if (success)
-						{
-							succeeded = true;
-							return true;
-						}
-					}
-				}
-
-				return false;
-			}, out _, bounds);
-		}
-
-		return succeeded;
-	}
-
 	public static void LaySpikeStrip(Point origin, int width)
 	{
 		int halfWidth = width / 2;
