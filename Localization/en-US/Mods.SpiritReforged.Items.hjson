@@ -2703,12 +2703,12 @@ BangleOfStrength: {
 }
 
 ScarabTabletOneItem: {
-	DisplayName: Scarabeus Tablet
+	DisplayName: Crested Idol
 	Tooltip: ""
 }
 
 ScarabTabletTwoItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem.DisplayName}"
+	DisplayName: Winged Sun
 	Tooltip: ""
 }
 
@@ -2720,4 +2720,9 @@ ScarabAltarItem: {
 RedSandstoneBrickCrackedWallItem: {
 	DisplayName: Cracked Red Sandstone Brick Wall
 	Tooltip: ""
+}
+
+AncientBooksItem: {
+	DisplayName: Ancient Book
+	Tooltip: "'Rendered unreadable by time'"
 }
