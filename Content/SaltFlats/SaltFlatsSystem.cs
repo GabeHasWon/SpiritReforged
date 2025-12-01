@@ -149,7 +149,7 @@ internal class SaltFlatsSystem : ModSystem
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, bgShader);
 
-			Vector2 galaxyScale = new Vector2(1, Math.Max(1, Main.screenWidth / (float)(_galaxyTex.Value.Width)));
+			Vector2 galaxyScale = new Vector2(Math.Max(1, Main.screenWidth / (float)(_galaxyTex.Value.Width)), 1);
 			Main.spriteBatch.Draw(_galaxyTex.Value, new Vector2(-300), null, Color.White * nightSkyOpacity, 0, Vector2.Zero, galaxyScale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
