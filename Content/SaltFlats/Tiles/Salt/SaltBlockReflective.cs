@@ -78,8 +78,6 @@ public class SaltBlockReflective : SaltBlock
 				}
 			}
 
-			LanternNight.GenuineLanterns = true;
-
 			if (Reflections.Detail > 1)
 			{
 				// DrawDepthRange seems to determine the "closeness" (minDepth) and "farness" (maxDepth) that it'll draw at - this affects stuff like
