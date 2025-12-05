@@ -2728,3 +2728,8 @@ AncientBooksItem: {
 }
 
 // GraverobberBannerItem.DisplayName: Graverobber Banner
+
+GiantBag: {
+	// DisplayName: Giant Bag
+	// Tooltip: ""
+}

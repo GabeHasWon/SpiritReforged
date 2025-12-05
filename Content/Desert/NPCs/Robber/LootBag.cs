@@ -10,15 +10,19 @@ public class LootBag : ModNPC
 {
 	public sealed class CoinParticle : Particle
 	{
+		public enum CoinType { Copper, Silver, Gold, Platinum }
+
 		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
+		public readonly CoinType Coin;
 		private bool _colliding;
 
-		public CoinParticle(Vector2 position, Vector2 velocity, int maxTime)
+		public CoinParticle(Vector2 position, Vector2 velocity, int maxTime, CoinType coin = default)
 		{
 			Position = position;
 			Velocity = velocity;
 			MaxTime = maxTime;
+			Coin = coin;
 
 			Color = Color.White;
 			Scale = 1;
@@ -56,10 +60,10 @@ public class LootBag : ModNPC
 
 		public override void CustomDraw(SpriteBatch spriteBatch)
 		{
-			Texture2D texture = TextureAssets.Coin[0].Value;
+			Texture2D texture = TextureAssets.Coin[(int)Coin].Value;
 			int frame = _colliding ? 2 : ((int)(TimeActive / 4f) % 8);
 			Rectangle source = texture.Frame(1, 8, 0, frame, 0, -2);
-			float opacity = 1f - (TimeActive - (MaxTime - 30)) / 30f;
+			float opacity = Math.Clamp(1f - (TimeActive - (MaxTime - 30)) / 30f, 0, 1);
 
 			spriteBatch.Draw(texture, Position - Main.screenPosition, source, Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color) * opacity, Rotation, source.Size() / 2, Scale, default, 0);
 		}
@@ -124,7 +128,7 @@ public class LootBag : ModNPC
 			NPC.rotation -= 0.5f;
 
 			if (Main.rand.NextBool(20))
-				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200));
+				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200, (CoinParticle.CoinType)Main.rand.Next(3)));
 
 			if (Main.rand.NextBool(8))
 				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.CopperCoin).velocity = NPC.velocity * Main.rand.NextFloat(0.5f);
@@ -140,11 +144,11 @@ public class LootBag : ModNPC
 			for (int i = 0; i < (dead ? 5 : 3); i++)
 				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.CopperCoin, Scale: Main.rand.NextFloat(0.5f, 1.2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
 
-			for (int i = 0; i < (dead ? 5 : 3); i++)
+			for (int i = 0; i < (dead ? 7 : 3); i++)
 			{
 				float intensity = hit.Knockback + 5;
 				Vector2 velocity = (new Vector2(hit.HitDirection * intensity, -intensity) * Main.rand.NextFloat(0.5f, 1)).RotateRandom(1f);
-				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), velocity, 200));
+				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), velocity, 200, (CoinParticle.CoinType)Main.rand.Next(3)));
 			}
 
 			if (dead)
@@ -182,5 +186,16 @@ public class LootBag : ModNPC
 
 		Main.EntitySpriteDraw(texture, position, source, NPC.DrawColor(drawColor), NPC.rotation, source.Size() / 2, NPC.scale, effects);
 		return false;
+	}
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon(ItemID.Amethyst, 2, 1, 3);
+		npcLoot.AddCommon(ItemID.Topaz, 2, 1, 3);
+		npcLoot.AddCommon(ItemID.Sapphire, 3, 1, 3);
+		npcLoot.AddCommon(ItemID.Emerald, 3, 1, 2);
+		npcLoot.AddCommon(ItemID.Ruby, 3, 1, 2);
+		npcLoot.AddCommon(ItemID.Amber, 4, 1, 2);
+		npcLoot.AddCommon(ItemID.Diamond, 4, 1, 2);
 	}
 }

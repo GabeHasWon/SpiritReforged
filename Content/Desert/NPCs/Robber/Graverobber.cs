@@ -1,5 +1,8 @@
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.Biome;
+using SpiritReforged.Content.Desert.Tiles;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -10,6 +13,42 @@ namespace SpiritReforged.Content.Desert.NPCs.Robber;
 [AutoloadGlowmask("255,255,255", false)]
 public class Graverobber : ModNPC
 {
+	private class DroppedBag(Vector2 position, int direction)
+	{
+		public Rectangle Hitbox
+		{
+			get
+			{
+				const int size = 32;
+				return new((int)_position.X - size / 2, (int)_position.Y - size / 2, size, size);
+			}
+		}
+
+		private readonly int _direction = direction;
+		private Vector2 _position = position;
+		private Vector2 _velocity;
+
+		public void Update()
+		{
+			if (CollisionChecks.Tiles(Hitbox, CollisionChecks.SolidOrPlatform))
+				_velocity = Vector2.Zero;
+			else
+				_velocity.Y = Math.Min(_velocity.Y + 0.5f, 4);
+
+			_position += _velocity;
+		}
+
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			int type = ModContent.NPCType<LootBag>();
+			Texture2D texture = TextureAssets.Npc[type].Value;
+			Rectangle source = texture.Frame(1, Main.npcFrameCount[type], 0, 2, 0, -2);
+			SpriteEffects effects = (_direction == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+			spriteBatch.Draw(texture, _position - Main.screenPosition, source, Lighting.GetColor(_position.ToTileCoordinates()), 0, source.Size() / 2, 1, effects, 0);
+		}
+	}
+
 	public enum State : byte { Idle, Walk, Jump }
 
 	/// <summary> Used to change behaviour at intervals. </summary>
@@ -21,8 +60,11 @@ public class Graverobber : ModNPC
 	/// <summary> The end frame of the NPC animation mod 3. </summary>
 	public int EndFrame => endFrames[(int)AnimationState % endFrames.Length];
 
-	private static readonly int[] endFrames = [4, 7, 3];
-	private State AnimationState = State.Idle;
+	public State AnimationState { get; private set; } = State.Idle;
+
+	private static readonly int[] endFrames = [6, 7, 3];
+	private bool _alerted;
+	private DroppedBag _bag;
 
 	public override void SetStaticDefaults()
 	{
@@ -33,11 +75,12 @@ public class Graverobber : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new(32);
-		NPC.lifeMax = 80;
-		NPC.damage = 8;
+		NPC.lifeMax = 120;
+		NPC.defense = 5;
+		NPC.damage = 12;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.knockBackResist = 1f;
+		NPC.knockBackResist = 0.5f;
 		AIType = -1;
 	}
 
@@ -53,28 +96,41 @@ public class Graverobber : ModNPC
 	{
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, TargetSpeed, 0.1f);
 
-		if (PlayerInRange(400))
-		{
-			TargetSpeed = ((Main.player[NPC.target].Center.X > NPC.Center.X) ? 1 : -1) * 2f;
-		}
-		else if (Main.netMode != NetmodeID.MultiplayerClient && Counter % 80 == 0)
-		{
-			float oldTargetSpeed = TargetSpeed;
-			int direction = Main.rand.NextFromList(-1, 0, 1);
-
-			TargetSpeed = direction * Main.rand.NextFloat(1f, 2f);
-
-			if (TargetSpeed != oldTargetSpeed)
-				NPC.netUpdate = true;
-		}
-
 		if (AnimationState is State.Idle)
 		{
-			if (TargetSpeed != 0)
+			if (PlayerInRange(200))
+				_alerted = true;
+
+			if (_alerted && NPC.frameCounter >= EndFrame)
+			{
 				ChangeAnimationState(State.Walk);
+				_bag = null;
+			}
+			else
+			{
+				int direction = -NPC.direction;
+				_bag ??= new(NPC.Center + new Vector2(direction * 40, 0), direction);
+				_bag.Update();
+			}
 		}
 		else
 		{
+			if (PlayerInRange(400))
+			{
+				Player target = Main.player[NPC.target];
+				TargetSpeed = Math.Sign(target.Center.X - NPC.Center.X) * 2f;
+			}
+			else if (Main.netMode != NetmodeID.MultiplayerClient && Counter % 80 == 0)
+			{
+				float oldTargetSpeed = TargetSpeed;
+				int direction = Main.rand.NextFromList(-1, 0, 1);
+
+				TargetSpeed = direction * Main.rand.NextFloat(1f, 2f);
+
+				if (TargetSpeed != oldTargetSpeed)
+					NPC.netUpdate = true;
+			}
+
 			ChangeAnimationState((NPC.velocity.Y != 0) ? State.Jump : State.Walk);
 
 			if (AnimationState is State.Walk)
@@ -136,23 +192,34 @@ public class Graverobber : ModNPC
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendData(MessageID.SyncNPC, number: whoAmI);
 		}
+
+		if (!_alerted && AnimationState is State.Idle)
+			_alerted = true;
 	}
 
 	public override void FindFrame(int frameHeight)
 	{
-		float frameRate = (AnimationState == State.Walk) ? Math.Min(Math.Abs(NPC.velocity.X) / 5f, 0.2f) : 0.2f; //Rate depends on movement speed
+		bool canLoop = AnimationState is State.Walk;
+		float frameRate = (AnimationState is State.Walk) ? Math.Min(Math.Abs(NPC.velocity.X) / 5f, 0.2f) : 0.15f; //Rate depends on movement speed
 
 		NPC.frame.Width = 68;
 		NPC.frame.X = NPC.frame.Width * ((int)AnimationState + (int)(3 * VisualStyle));
-		NPC.frameCounter = (NPC.frameCounter + frameRate) % EndFrame;
+		NPC.frameCounter += frameRate;
 
-		if (AnimationState is State.Jump)
-			NPC.frameCounter = Math.Min(NPC.frameCounter, (NPC.velocity.Y > 0) ? 2 : 1);
+		if (canLoop)
+			NPC.frameCounter %= endFrames[(int)AnimationState];
+
+		if (!_alerted && AnimationState is State.Idle)
+			NPC.frameCounter %= 2; //Mod the animation until alerted
+		else if (AnimationState is State.Jump)
+			NPC.frameCounter = Math.Min(NPC.frameCounter, (NPC.velocity.Y > 0) ? 2 : 1); //Stagger the animation with logic cues
 		else if (AnimationState is State.Walk && Math.Abs(NPC.velocity.X) < 0.1f)
 			NPC.frameCounter = 0; //Stop the animation
 
 		NPC.frame.Y = (int)Math.Min(EndFrame - 1, NPC.frameCounter) * frameHeight;
 	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.Player.InModBiome<ZigguratBiome>() && spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>()) ? 0.1f : 0;
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -172,6 +239,17 @@ public class Graverobber : ModNPC
 
 		Main.EntitySpriteDraw(texture, position, source, NPC.DrawColor(drawColor), NPC.rotation, source.Size() / 2, NPC.scale, effects);
 		Main.EntitySpriteDraw(glowmask, position, source, NPC.DrawColor(Color.White), NPC.rotation, source.Size() / 2, NPC.scale, effects);
+
+		if (AnimationState is State.Idle)
+		{
+			if (_alerted)
+			{
+				source = new(396, 348, 10, 14);
+				Main.EntitySpriteDraw(texture, position - new Vector2(0, 10), source, NPC.DrawColor(drawColor), NPC.rotation, source.Size() / 2, NPC.scale, effects);
+			}
+
+			_bag?.Draw(spriteBatch);
+		}
 
 		return false;
 	}
