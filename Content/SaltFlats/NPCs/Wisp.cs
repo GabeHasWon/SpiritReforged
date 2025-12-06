@@ -192,6 +192,8 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
+	public override void SetStaticDefaults() => NPCID.Sets.CountsAsCritter[Type] = true;
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new(20);
@@ -258,6 +260,10 @@ public class Wisp : ModNPC
 			{
 				NPC.velocity *= 0.95f;
 			}
+		}
+		else if (Main.bloodMoon)
+		{
+			_counter++; //Automatically anger during blood moons
 		}
 
 		if (_isHostile)
@@ -388,7 +394,20 @@ public class Wisp : ModNPC
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_isHostile);
 	public override void ReceiveExtraAI(BinaryReader reader) => _isHostile = reader.ReadBoolean();
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!Main.dayTime && spawnInfo.SpawnTileType == ModContent.TileType<SaltBlockReflective>()) ? 0.1f : 0;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		if (!Main.dayTime && spawnInfo.SpawnTileType == ModContent.TileType<SaltBlockReflective>())
+		{
+			float phase = 1f - Main.moonPhase / 4f;
+
+			if (Main.moonPhase > 4)
+				phase = (Main.moonPhase - 4) / 4f;
+
+			return phase * 0.4f;
+		}
+
+		return 0;
+	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{

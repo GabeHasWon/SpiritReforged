@@ -8,6 +8,8 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public class SaltBlockDull : SaltBlock
 {
+
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

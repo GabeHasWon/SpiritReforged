@@ -102,6 +102,7 @@ public partial class ZigguratBiome : Microbiome
 			center.Y += height;
 
 			CreateHalo(bound);
+			CreateDithering(bound);
 		}
 
 		//Add weathering around some edges of the shape
@@ -143,6 +144,16 @@ public partial class ZigguratBiome : Microbiome
 			WorldUtils.Gen(new(bounds.X + bounds.Width - width - 10, bounds.Y - 2), new Shapes.Rectangle(width, 2), Actions.Chain(
 				new Actions.ClearTile(),
 				new Actions.PlaceTile(brick)
+			));
+		}
+
+		static void CreateDithering(Rectangle bounds)
+		{
+			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
+
+			WorldUtils.Gen(new(bounds.Left, bounds.Bottom), new Shapes.Rectangle(bounds.Width, 2), Actions.Chain(
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall(brick)
 			));
 		}
 	}

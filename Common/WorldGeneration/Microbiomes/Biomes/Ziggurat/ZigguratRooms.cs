@@ -35,7 +35,24 @@ public static class ZigguratRooms
 		{
 			const int tertiaryHeight = 2;
 
-			CarveOut();
+			CarveOut(out ShapeData data);
+
+			WorldUtils.Gen(Bounds.Location, new ModShapes.OuterOutline(data), Actions.Chain(
+				new Modifiers.RectangleMask(-WorldGen.genRand.Next(2), Bounds.Width + 1, -1, Bounds.Height - 1),
+				new Modifiers.IsTouchingAir(),
+				new Modifiers.IsSolid(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneSlab>())
+			));
+
+			if (WorldGen.genRand.NextBool())
+			{
+				WorldUtils.Gen(Bounds.Location, new ModShapes.All(data), Actions.Chain(
+					new Modifiers.Offset(0, 1),
+					new Modifiers.Dither(),
+					new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+					new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneSlab>())
+				));
+			}
 
 			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
@@ -53,9 +70,11 @@ public static class ZigguratRooms
 				new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)));
 		}
 
-		public void CarveOut()
+		public void CarveOut(out ShapeData data)
 		{
 			const int curveHeight = 3;
+
+			ShapeData newData = new();
 			WorldUtils.Gen(Bounds.Location, new Shapes.Rectangle(Bounds.Width, Bounds.Height + 1), new Actions.Custom((x, y, args) =>
 			{
 				float progress = (x - Bounds.Left) / (Bounds.Width - 1f);
@@ -70,7 +89,9 @@ public static class ZigguratRooms
 				}
 
 				return false;
-			}));
+			}).Output(newData));
+
+			data = newData;
 		}
 
 		/// <summary> Places upward-expanding <see cref="RuinedSandstonePillar"/> tiles. </summary>
@@ -88,9 +109,12 @@ public static class ZigguratRooms
 				{
 					int i = origin.X - width / 2 + x;
 					int j = origin.Y;
+					Tile tile = Main.tile[i, j];
 
 					if (!WorldGen.SolidOrSlopedTile(i, j))
 						WorldGen.PlaceTile(i, j, ModContent.TileType<RuinedSandstonePillar>(), true);
+					else
+						tile.Slope = SlopeType.Solid;
 
 					if (!setGround)
 						WorldGen.PlaceTile(i, j + 1, ModContent.TileType<RedSandstoneBrick>(), true);
@@ -218,7 +242,7 @@ public static class ZigguratRooms
 			bool leftOpen = Links.Any(static x => x.consumed && x.Direction == Left);
 			bool rightOpen = Links.Any(static x => x.consumed && x.Direction == Right);
 
-			CarveOut();
+			CarveOut(out _);
 
 			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);

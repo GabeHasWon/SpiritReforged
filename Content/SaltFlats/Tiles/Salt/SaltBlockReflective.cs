@@ -3,9 +3,11 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.SaltFlats.Biome;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.Graphics;
+using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -78,6 +80,10 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
+				// DrawDepthRange seems to determine the "closeness" (minDepth) and "farness" (maxDepth) that it'll draw at - this affects stuff like
+				// the Lantern Night lanterns. I used the max range the vanilla game uses, which should be fine. This note is in case there's issues.
+				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
+
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 
@@ -105,7 +111,6 @@ public class SaltBlockReflective : SaltBlock
 				Main.instance.DrawItems();
 			}
 
-			SaltWaterStyle.DrawCaustics(spriteBatch, ref Origin, new(2, 1.5f), Main.ColorOfTheSkies * 0.13f);
 			spriteBatch.End();
 
 			if (Reflections.Detail > 2)
@@ -146,7 +151,7 @@ public class SaltBlockReflective : SaltBlock
 				{
 					for (int x = 0; x < 8; x++)
 					{
-						var position = t.Slope == SlopeType.SlopeDownLeft ? new Vector2(x, x) * 2 : new Vector2(6 - x, x) * 2;
+						Vector2 position = (t.Slope == SlopeType.SlopeDownLeft) ? new Vector2(x, x) * 2 : new Vector2(7 - x, x) * 2;
 						spriteBatch.Draw(gradient, new Vector2(i, j) * 16 - Main.screenPosition + position, source with { Width = 2 }, Color.White, 0, Vector2.Zero, scale, default, 0);
 					}
 
