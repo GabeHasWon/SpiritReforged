@@ -51,4 +51,14 @@ internal static class ItemMethods
 
 		Main.EntitySpriteDraw(texture, position, frame, item.GetAlpha(light), rotation, frame.Size() / 2f, scale, default, 0);
 	}
+
+	/// <summary> Removes the equip texture associated with the provided item. </summary>
+	public static void HideEquipSlot(int slot, Asset<Texture2D>[] array) => array[slot] = AssetLoader.GetTexture("Empty", AssetLoader.EmptyTexture);
+
+	/// <inheritdoc cref="HideEquipSlot(int, Asset{Texture2D}[])"/>
+	public static void HideEquipSlot(int type, EquipType equipType, Asset<Texture2D>[] array)
+	{
+		ModItem modItem = ItemLoader.GetItem(type);
+		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
+	}
 }

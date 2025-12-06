@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
-internal abstract class BackpackItem : ModItem
+public abstract class BackpackItem : ModItem
 {
 	protected override bool CloneNewInstances => true;
 

@@ -2726,3 +2726,10 @@ AncientBooksItem: {
 	// DisplayName: Ancient Book
 	// Tooltip: "'Rendered unreadable by time'"
 }
+
+// GraverobberBannerItem.DisplayName: Graverobber Banner
+
+GiantBag: {
+	// DisplayName: Giant Bag
+	// Tooltip: ""
+}
