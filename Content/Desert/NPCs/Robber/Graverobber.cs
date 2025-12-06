@@ -3,6 +3,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.Biome;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Backpacks;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -222,6 +223,8 @@ public class Graverobber : ModNPC
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.Player.InModBiome<ZigguratBiome>() && spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>()) ? 0.1f : 0;
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
 	public override void ReceiveExtraAI(BinaryReader reader)
