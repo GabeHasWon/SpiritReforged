@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Items.Killifish;
@@ -5,6 +6,8 @@ namespace SpiritReforged.Content.Savanna.Items.Killifish;
 [AutoloadEquip(EquipType.Head)]
 public class KillieFishbowl : ModItem
 {
+	public override void SetStaticDefaults() => ItemMethods.HideEquipSlot(Type, EquipType.Head, TextureAssets.ArmorHead);
+
 	public override void SetDefaults()
 	{
 		Item.width = 32;
@@ -110,7 +113,7 @@ internal class KillieFishbowlLayer : PlayerDrawLayer
 
 	private static Asset<Texture2D> Texture;
 
-	public override void Load() => Texture = ModContent.Request<Texture2D>(ModContent.GetInstance<KillieFishbowl>().Texture + "_Head2");
+	public override void Load() => Texture = ModContent.Request<Texture2D>(ModContent.GetInstance<KillieFishbowl>().Texture + "_Head");
 	public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FaceAcc);
 
 	protected override void Draw(ref PlayerDrawSet drawInfo)

@@ -81,7 +81,9 @@ public class Graverobber : ModNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.5f;
+
 		AIType = -1;
+		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");

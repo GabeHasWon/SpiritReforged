@@ -13,7 +13,7 @@ internal sealed class AssetLoader : ILoadable
 	public static IDictionary<string, Asset<Texture2D>> LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
 	public static IDictionary<string, Asset<Effect>> LoadedShaders = new Dictionary<string, Asset<Effect>>();
 
-	public static string EmptyTexture => "Terraria/Images/NPC_0";
+	public const string EmptyTexture = "Terraria/Images/NPC_0";
 
 	public void Load(Mod mod)
 	{
