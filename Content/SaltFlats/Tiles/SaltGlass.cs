@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class SaltGlass : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup(AutoContent.ItemType<SaltBlockDull>(), 2).AddTile(TileID.Furnaces).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>(), 2).AddTile(TileID.Furnaces).Register();
 
 	public override void SetStaticDefaults()
 	{
