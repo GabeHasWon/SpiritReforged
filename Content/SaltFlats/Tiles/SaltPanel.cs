@@ -18,4 +18,6 @@ public class SaltPanel : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Asphalt;
 	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
 }
