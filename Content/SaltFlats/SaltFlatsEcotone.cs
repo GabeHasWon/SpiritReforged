@@ -260,6 +260,21 @@ internal class SaltFlatsEcotone : EcotoneBase
 					if (WorldGen.genRand.NextBool(2))
 						Placer.PlaceTile<Saltwort>(i, j - 1);
 
+					if (WorldGen.genRand.NextBool(7))
+						Placer.PlaceTile<SaltDebrisTiny>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(7))
+						Placer.PlaceTile<SaltDebrisSmall>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(9))
+						Placer.PlaceTile<SaltDebrisMedium>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(12))
+						Placer.PlaceTile<SaltDebrisLarge>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(20))
+						Placer.PlaceTile<Rowboat>(i, j - 1);
+
 					if (WorldGen.genRand.NextBool(12))
 						Placer.PlaceTile<SaltwortTall>(i, j - 1);
 

@@ -3,9 +3,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
-using Terraria.GameContent.Events;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 
@@ -15,8 +13,6 @@ public class SaltBlockReflective : SaltBlock
 {
 	public sealed class SaltGridOverlay : TileGridOverlay
 	{
-		private static Vector2 Origin;
-
 		public readonly ModTarget2D normalTarget;
 		private Texture2D _distanceMap;
 

@@ -2726,3 +2726,38 @@ AncientBooksItem: {
 	// DisplayName: Ancient Book
 	// Tooltip: "'Rendered unreadable by time'"
 }
+
+SaltGlassWallItem: {
+	// DisplayName: Salt Glass Wall
+	// Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	// DisplayName: Salt Panel Wall
+	// Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	// DisplayName: Salt Plate Wall
+	// Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	// DisplayName: Salt Fireplace
+	// Tooltip: ""
+}
+
+SaltGlassItem: {
+	// DisplayName: Salt Glass
+	// Tooltip: ""
+}
+
+SaltPanelItem: {
+	// DisplayName: Salt Panel
+	// Tooltip: ""
+}
+
+SaltPlateItem: {
+	// DisplayName: Salt Plate
+	// Tooltip: ""
+}
