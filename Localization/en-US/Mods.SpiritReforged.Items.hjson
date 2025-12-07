@@ -2727,6 +2727,61 @@ AncientBooksItem: {
 	Tooltip: "'Rendered unreadable by time'"
 }
 
+SaltGlassWallItem: {
+	DisplayName: Salt Glass Wall
+	Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	DisplayName: Salt Panel Wall
+	Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	DisplayName: Salt Plate Wall
+	Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	DisplayName: Salt Fireplace
+	Tooltip: ""
+}
+
+SaltGlassItem: {
+	DisplayName: Salt Glass
+	Tooltip: ""
+}
+
+SaltPanelItem: {
+	DisplayName: Salt Panel
+	Tooltip: ""
+}
+
+SaltPlateItem: {
+	DisplayName: Salt Plate
+	Tooltip: ""
+}
+
+SaltCrate: {
+	DisplayName: Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	DisplayName: Brine Crate
+	Tooltip: ""
+}
+
+SaltCrateRestored: {
+	DisplayName: Restored Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: Restored Brine Crate
+	Tooltip: ""
+}
+
 GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
