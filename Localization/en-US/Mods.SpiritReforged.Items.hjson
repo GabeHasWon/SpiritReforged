@@ -2785,8 +2785,8 @@ SaltCrateHardmodeRestored: {
 GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
-	DisplayName: Giant Bag
-  Tooltip: ""
+	DisplayName: Loot Bag
+	Tooltip: ""
 }
 
 CrackedSandstoneItem: {

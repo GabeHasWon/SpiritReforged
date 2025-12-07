@@ -33,26 +33,29 @@ public class LootBag : ModNPC
 			const int hitboxSize = 8;
 
 			Rectangle hitbox = new((int)Position.X - hitboxSize / 2, (int)Position.Y - hitboxSize / 2, hitboxSize, hitboxSize);
-			_colliding = CollisionChecks.Tiles(hitbox, CollisionChecks.SolidOrPlatform);
+			Point roundedPosition = Position.ToTileCoordinates();
 
-			if (_colliding)
+			if (CollisionChecks.Tiles(hitbox with { Y = hitbox.Y - hitbox.Height }, CollisionChecks.SolidOrPlatform)) //Colliding above
 			{
-				Rotation = MathHelper.PiOver2;
-				Point roundedPosition = Position.ToTileCoordinates();
+				Velocity.Y = Math.Max(0, Velocity.Y);
+			}
+			else if (CollisionChecks.Tiles(new(roundedPosition.X * 16, roundedPosition.Y * 16, hitboxSize, hitboxSize), CollisionChecks.SolidOrPlatform)) //Colliding on the rounded location
+			{
+				_colliding = true;
 
-				if (CollisionChecks.Tiles(new(roundedPosition.X * 16, roundedPosition.Y * 16, hitboxSize, hitboxSize), CollisionChecks.SolidOrPlatform))
+				if (Velocity != Vector2.Zero)
 				{
-					if (Velocity != Vector2.Zero)
-					{
-						SoundEngine.PlaySound(SoundID.CoinPickup with { PitchVariance = 0.5f }, Position);
-					} //First time collision
+					SoundEngine.PlaySound(SoundID.CoinPickup with { PitchVariance = 0.5f }, Position);
+				} //First time collision
 
-					Position.Y = roundedPosition.Y * 16;
-					Velocity = Vector2.Zero;
-				}
+				Position.Y = roundedPosition.Y * 16;
+				Velocity = Vector2.Zero;
+				Rotation = MathHelper.PiOver2;
 			}
 			else
 			{
+				_colliding = false;
+
 				Rotation += Velocity.X * 0.1f;
 				Velocity.Y += 0.2f;
 			}

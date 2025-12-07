@@ -14,7 +14,7 @@ namespace SpiritReforged.Content.Desert.NPCs.Robber;
 [AutoloadGlowmask("255,255,255", false)]
 public class Graverobber : ModNPC
 {
-	private class DroppedBag(Vector2 position, int direction)
+	private class DroppedBag(Vector2 position)
 	{
 		public Rectangle Hitbox
 		{
@@ -25,7 +25,6 @@ public class Graverobber : ModNPC
 			}
 		}
 
-		private readonly int _direction = direction;
 		private Vector2 _position = position;
 		private Vector2 _velocity;
 
@@ -41,10 +40,12 @@ public class Graverobber : ModNPC
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
+			const int direction = -1;
+
 			int type = ModContent.NPCType<LootBag>();
 			Texture2D texture = TextureAssets.Npc[type].Value;
 			Rectangle source = texture.Frame(1, Main.npcFrameCount[type], 0, 2, 0, -2);
-			SpriteEffects effects = (_direction == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			SpriteEffects effects = (direction == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 			spriteBatch.Draw(texture, _position - Main.screenPosition, source, Lighting.GetColor(_position.ToTileCoordinates()), 0, source.Size() / 2, 1, effects, 0);
 		}
@@ -111,8 +112,7 @@ public class Graverobber : ModNPC
 			}
 			else
 			{
-				int direction = -NPC.direction;
-				_bag ??= new(NPC.Center + new Vector2(direction * 40, 0), direction);
+				_bag ??= new(NPC.Center + new Vector2(NPC.direction * -40, 0));
 				_bag.Update();
 			}
 		}
@@ -222,7 +222,20 @@ public class Graverobber : ModNPC
 		NPC.frame.Y = (int)Math.Min(EndFrame - 1, NPC.frameCounter) * frameHeight;
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.Player.InModBiome<ZigguratBiome>() && spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>()) ? 0.1f : 0;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		Player player = spawnInfo.Player;
+		int aboveWallType = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1).WallType;
+
+		if ((player.ZoneDesert || player.ZoneUndergroundDesert) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>())
+			&& aboveWallType != WallID.None && !Main.wallHouse[aboveWallType])
+			return 0.1f;
+
+		if (player.ZonePurity && !player.ZoneUnderworldHeight && player.Center.Y / 16 > Main.worldSurface)
+			return 0.03f;
+
+		return 0;
+	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
 

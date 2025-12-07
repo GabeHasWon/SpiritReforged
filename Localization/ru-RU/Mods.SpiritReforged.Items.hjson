@@ -2779,17 +2779,17 @@ SaltCrateRestored: {
 
 SaltCrateHardmodeRestored: {
 	// DisplayName: Restored Brine Crate
- 	// Tooltip: ""
+	// Tooltip: ""
 }
 
 // GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
-	// DisplayName: Giant Bag
-  // Tooltip: ""
+	// DisplayName: Loot Bag
+	// Tooltip: ""
 }
 
 CrackedSandstoneItem: {
-	// DisplayName: Cracked Sandstone Item
+	// DisplayName: Cracked Sandstone
 	// Tooltip: ""
 }
