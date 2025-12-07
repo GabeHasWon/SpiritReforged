@@ -2726,3 +2726,8 @@ AncientBooksItem: {
 	DisplayName: Ancient Book
 	Tooltip: "'Rendered unreadable by time'"
 }
+
+CrackedSandstoneItem: {
+	DisplayName: Cracked Sandstone
+	Tooltip: ""
+}

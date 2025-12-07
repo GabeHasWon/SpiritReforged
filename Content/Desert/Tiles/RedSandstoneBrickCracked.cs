@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -44,6 +43,8 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 		PitchVariance = 0.5f,
 		MaxInstances = 3
 	};
+
+	public override void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddTile(TileID.HeavyWorkBench).Register();
 
 	public override void SetStaticDefaults()
 	{
