@@ -526,3 +526,10 @@ Wisp: {
 	DisplayName: Wisp
 	Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
 }
+
+Graverobber: {
+	DisplayName: Graverobber
+	Entry: ""
+}
+
+LootBag.DisplayName: Loot Bag
