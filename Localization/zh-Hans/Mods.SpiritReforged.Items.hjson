@@ -2731,5 +2731,10 @@ AncientBooksItem: {
 
 GiantBag: {
 	// DisplayName: Giant Bag
+  // Tooltip: ""
+}
+
+CrackedSandstoneItem: {
+	// DisplayName: Cracked Sandstone Item
 	// Tooltip: ""
 }

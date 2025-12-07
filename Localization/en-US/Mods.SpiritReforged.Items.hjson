@@ -2731,5 +2731,10 @@ GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Giant Bag
+  Tooltip: ""
+}
+
+CrackedSandstoneItem: {
+	DisplayName: Cracked Sandstone
 	Tooltip: ""
 }

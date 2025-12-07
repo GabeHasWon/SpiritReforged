@@ -18,16 +18,18 @@ public abstract class SofaTile : FurnitureTile
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
+		TileID.Sets.CanBeSatOnForNPCs[Type] = true;
+		TileID.Sets.CanBeSatOnForPlayers[Type] = true;
+		TileID.Sets.DisableSmartCursor[Type] = true;
+		TileID.Sets.HasOutlines[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.Width = 3;
 		TileObjectData.newTile.Height = 2;
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
-		TileID.Sets.CanBeSatOnForNPCs[Type] = true;
-		TileID.Sets.CanBeSatOnForPlayers[Type] = true;
-		TileID.Sets.DisableSmartCursor[Type] = true;
-		TileID.Sets.HasOutlines[Type] = true;
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
 		AddMapEntry(CommonColor, Language.GetText("ItemName.Sofa"));
