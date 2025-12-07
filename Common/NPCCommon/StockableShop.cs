@@ -7,34 +7,26 @@ internal class StockableShopPlayer : ModPlayer
 {
 	public override void Load() => TimeUtils.JustTurnedDay += Reset;
 	
-	private void Reset() => StockableShop.ResetAllStock();
+	private static void Reset() => StockableShop.ResetAllStock();
 
 	public override void PostBuyItem(NPC vendor, Item[] shopInventory, Item item)
 	{
-		if (item.TryGetGlobalItem(out StockableItem sItem) && sItem.stockable)
+		item.GetStock(out bool stocked);
+
+		if (stocked)
 			item.TryReduceStock();
 	}
 
-	public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item)
-	{
-		if (item.TryGetGlobalItem(out StockableItem sItem) && sItem.stockable)
-			return item.GetStock() != 0;
-
-		return true;
-	}
+	public override bool CanBuyItem(NPC vendor, Item[] shopInventory, Item item) => item.GetStock(out bool stocked) != 0 || !stocked;
 }
 
 internal class StockableItem : GlobalItem
 {
-	public override bool InstancePerEntity => true;
-
-	public bool stockable;
-
 	public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		if (item.isAShopItem && stockable && item.GetStock() == 0)
+		if (item.isAShopItem && item.GetStock(out bool stocked) == 0 && stocked)
 		{
-			spriteBatch.Draw(TextureAssets.Item[item.type].Value, position, frame, drawColor * .5f, 0, origin, scale, default, 0);
+			spriteBatch.Draw(TextureAssets.Item[item.type].Value, position, frame, drawColor * 0.5f, 0, origin, scale, default, 0);
 			return false;
 		}
 
@@ -43,18 +35,18 @@ internal class StockableItem : GlobalItem
 
 	public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		if (item.isAShopItem && stockable)
+		if (item.isAShopItem)
 		{
-			int value = item.GetStock();
+			int value = item.GetStock(out bool stocked);
 
-			if (value > 0)
+			if (stocked && value > 0)
 				Utils.DrawBorderString(spriteBatch, value.ToString(), position - frame.Size() / 2, Main.MouseTextColorReal, Main.inventoryScale);
 		}
 	}
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
-		if (item.isAShopItem && stockable && item.GetStock() == 0)
+		if (item.isAShopItem && item.GetStock(out bool stocked) == 0 && stocked)
 		{
 			var shopTip = tooltips.Where(x => x.Name == "Price").FirstOrDefault();
 
@@ -71,15 +63,19 @@ internal static class StockableShop
 {
 	public class StockData
 	{
-		public StockData(int minCapacity, int maxCapacity)
+		public StockData(int minCapacity, int maxCapacity, int npcType)
 		{
 			capacityMin = minCapacity;
 			capacityMax = maxCapacity;
 			value = Capacity;
+
+			this.npcType = npcType;
 		}
 
 		public StockData(int value) => this.value = capacityMin = capacityMax = value;
 
+		/// <summary> The NPC type associated with this stock. </summary>
+		public readonly int npcType;
 		/// <summary> The current, depletable stock counter. </summary>
 		public int value;
 		private readonly int capacityMin, capacityMax;
@@ -106,12 +102,18 @@ internal static class StockableShop
 	}
 
 	/// <summary> Attempts to get this item's stock value. </summary>
-	public static int GetStock(this Item item)
+	/// <param name="item"></param>
+	/// <param name="stocked"> Whether the item is actually stocked in this context. </param>
+	public static int GetStock(this Item item, out bool stocked)
 	{
 		int key = item.type;
+		stocked = false;
 
 		if (stockLookup.TryGetValue(key, out StockData stock))
+		{
+			stocked = Main.LocalPlayer.TalkNPC is NPC npc && npc.type == stock.npcType;
 			return stock.value;
+		}
 
 		return 0;
 	}
@@ -119,13 +121,8 @@ internal static class StockableShop
 	/// <summary> Adds <paramref name="itemType"/> to this shop with a maximum of <paramref name="stock"/>. </summary>
 	public static NPCShop AddLimited(this NPCShop shop, int itemType, int stock, params Condition[] condition)
 	{
-		var item = new Item(itemType);
-
-		if (item.TryGetGlobalItem(out StockableItem sItem))
-		{
-			sItem.stockable = true;
-			stockLookup.Add(itemType, new StockData(stock));
-		}
+		Item item = new(itemType);
+		stockLookup.Add(itemType, new StockData(stock));
 
 		return shop.Add(item, condition);
 	}
@@ -140,13 +137,8 @@ internal static class StockableShop
 	/// <summary> Adds <paramref name="itemType"/> to this shop with a maximum selected randomly between <paramref name="minCapacity"/> and <paramref name="maxCapacity"/>. </summary>
 	public static NPCShop AddLimited(this NPCShop shop, int itemType, int minCapacity, int maxCapacity, params Condition[] condition)
 	{
-		var item = new Item(itemType);
-
-		if (item.TryGetGlobalItem(out StockableItem sItem))
-		{
-			sItem.stockable = true;
-			stockLookup.Add(itemType, new StockData(minCapacity, maxCapacity));
-		}
+		Item item = new(itemType);
+		stockLookup.Add(itemType, new StockData(minCapacity, maxCapacity, shop.NpcType));
 
 		return shop.Add(item, condition);
 	}
