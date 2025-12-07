@@ -1,24 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
-using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
-namespace SpiritReforged.Content.SaltFlats.Items;
+namespace SpiritReforged.Content.SaltFlats.Items.Crates;
 
-public class SaltCrate : ModItem
+public class SaltCrateRestored : ModItem
 {
-	public sealed class SaltFishingPlayer : ModPlayer
-	{
-		public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition)
-		{
-			if (Player.InModBiome<SaltBiome>() && attempt.crate)
-				itemDrop = Main.hardMode ? ModContent.ItemType<SaltCrateHardmode>() : ModContent.ItemType<SaltCrate>();
-		}
-	}
-
-	public class SaltCrateTile : ModTile
+	public class SaltCrateRestoredTile : ModTile
 	{
 		public override void SetStaticDefaults()
 		{
@@ -41,7 +30,7 @@ public class SaltCrate : ModItem
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 10;
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateTile>());
+		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateRestoredTile>());
 		Item.rare = ItemRarityID.Green;
 	}
 

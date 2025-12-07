@@ -2761,3 +2761,23 @@ SaltPlateItem: {
 	DisplayName: Salt Plate
 	Tooltip: ""
 }
+
+SaltCrate: {
+	DisplayName: Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	DisplayName: Brine Crate
+	Tooltip: ""
+}
+
+SaltCrateRestored: {
+	DisplayName: Restored Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: Restored Brine Crate
+	Tooltip: ""
+}

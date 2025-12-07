@@ -3,11 +3,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 
-namespace SpiritReforged.Content.SaltFlats.Items;
+namespace SpiritReforged.Content.SaltFlats.Items.Crates;
 
-public class SaltCrateHardmode : ModItem
+public class SaltCrateHardmodeRestored : ModItem
 {
-	public class SaltCrateHardmodeTile : SaltCrate.SaltCrateTile;
+	public class SaltCrateHardmodeRestoredTile : SaltCrateHardmode.SaltCrateHardmodeTile;
 
 	public override void SetStaticDefaults()
 	{
@@ -17,7 +17,7 @@ public class SaltCrateHardmode : ModItem
 	
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateHardmodeTile>());
+		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateHardmodeRestoredTile>());
 		Item.rare = ItemRarityID.Green;
 	}
 
