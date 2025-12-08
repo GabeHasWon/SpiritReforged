@@ -9,11 +9,14 @@ public class SpiritSets : ModSystem
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
 
 	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
-	/// Added in <see cref="SwordStand.RegisterIsSword"/>. </summary>
+	/// Added in <see cref="Content.Forest.Stand.SwordStand.RegisterIsSword"/>. </summary>
 	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet();
 
 	/// <summary> Whether this type should grant the "Timber" achievement. </summary>
 	public static readonly bool[] Timber = ItemFactory.CreateBoolSet();
+
+	/// <summary> The type that this item will transform into when Shimmered, according to <see cref="Content.Aether.Items.ScryingLens"/>. </summary>
+	public static readonly int[] ShimmerDisplayResult = ItemFactory.CreateNamedSet(nameof(ShimmerDisplayResult)).Description("The Shimmer item type that Scrying Lens will display").RegisterIntSet();
 
 	/// <summary> Whether this NPC is associated with the Corruption or Crimson biomes. </summary>
 	public static readonly bool[] IsCorrupt = NPCFactory.CreateNamedSet(nameof(IsCorrupt)).Description("Whether this NPC is associated with the Corruption or Crimson biomes")

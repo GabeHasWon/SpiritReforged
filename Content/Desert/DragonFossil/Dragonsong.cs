@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -196,7 +197,11 @@ public class Dragonsong : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
+		SpiritSets.ShimmerDisplayResult[Type] = ModContent.ItemType<TinyDragon>();
+	}
 
 	public override void SetDefaults()
 	{

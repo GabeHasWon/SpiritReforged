@@ -13,7 +13,7 @@ public class SaltBlockDull : SaltBlock
 		base.SetStaticDefaults();
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(ModContent.TileType<SaltBlockReflective>());
+		this.Merge(ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
 		AddMapEntry(new Color(180, 170, 170));
 	}
 
