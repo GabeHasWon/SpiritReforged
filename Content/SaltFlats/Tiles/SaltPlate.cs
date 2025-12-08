@@ -16,6 +16,7 @@ public class SaltPlate : ModTile, IAutoloadTileItem
 		TileID.Sets.CorruptBiome[Type] = -2;
 		TileID.Sets.CrimsonBiome[Type] = -2;
 
+		AddMapEntry(new Color(180, 170, 170));
 		DustType = DustID.Pearlsand;
 	}
 }

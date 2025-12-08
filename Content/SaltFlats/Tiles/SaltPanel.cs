@@ -16,6 +16,7 @@ public class SaltPanel : ModTile, IAutoloadTileItem
 		TileID.Sets.CorruptBiome[Type] = -2;
 		TileID.Sets.CrimsonBiome[Type] = -2;
 
+		AddMapEntry(new Color(40, 40, 40));
 		DustType = DustID.Asphalt;
 	}
 
