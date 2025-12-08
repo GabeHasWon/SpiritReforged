@@ -42,7 +42,7 @@ public class SaltCrate : ModItem
 
 		public virtual bool? CheckItemUse(int type, Player player, int i, int j)
 		{
-			if (type is ItemID.PaintScraper or ItemID.SpectrePaintScraper)
+			if (RestoredType != Type && type is ItemID.PaintScraper or ItemID.SpectrePaintScraper)
 			{
 				TileExtensions.GetTopLeft(ref i, ref j);
 
@@ -70,7 +70,9 @@ public class SaltCrate : ModItem
 	}
 
 	public override bool CanRightClick() => true;
-	public override void ModifyItemLoot(ItemLoot itemLoot)
+	public override void ModifyItemLoot(ItemLoot itemLoot) => ModifyLoot(itemLoot);
+
+	public static void ModifyLoot(ItemLoot itemLoot)
 	{
 		int[] dropOptions = [ModContent.ItemType<MahakalaMaskBlue>(),
 			ModContent.ItemType<MahakalaMaskRed>(),
@@ -79,6 +81,8 @@ public class SaltCrate : ModItem
 			ItemID.WaterWalkingBoots];
 
 		IItemDropRule main = ItemDropRule.OneFromOptions(1, dropOptions);
+
+		itemLoot.AddCommon(ItemID.LawnFlamingo, 5);
 
 		CrateHelper.HardmodeBiomeCrate(itemLoot, main,
 			ItemDropRule.NotScalingWithLuck(AutoContent.ItemType<SaltBlockDull>(), 3, 20, 50),
