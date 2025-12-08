@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class SaltPanel : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>()).AddTile(TileID.Furnaces).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>()).AddTile(TileID.WorkBenches).Register();
 
 	public override void SetStaticDefaults()
 	{

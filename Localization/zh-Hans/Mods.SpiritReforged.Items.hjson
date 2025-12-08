@@ -2786,7 +2786,7 @@ SaltCrateHardmodeRestored: {
 
 GiantBag: {
 	// DisplayName: Loot Bag
-	// Tooltip: ""
+	// Tooltip: "{$CommonTooltips.Backpack}"
 }
 
 CrackedSandstoneItem: {

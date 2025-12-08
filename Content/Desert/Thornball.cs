@@ -12,7 +12,7 @@ public class Thornball : ModItem
 		Item.noUseGraphic = true;
 		Item.damage = 10;
 		Item.knockBack = 2;
-		Item.value = Item.sellPrice(copper: 20);
+		Item.value = Item.sellPrice(copper: 5);
 		Item.UseSound = SoundID.Item1;
 	}
 }

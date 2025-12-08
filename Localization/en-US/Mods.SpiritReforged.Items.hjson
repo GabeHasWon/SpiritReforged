@@ -1,7 +1,7 @@
 CommonTooltips: {
 	Backpack:
 		'''
-		Holds 4 items
+		Holds {0} items
 		You must empty this before taking it off
 		'''
 	Shimmerable: "{0} Transforms in shimmer"
@@ -2786,7 +2786,7 @@ GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Loot Bag
-	Tooltip: ""
+	Tooltip: "{$CommonTooltips.Backpack}"
 }
 
 CrackedSandstoneItem: {

@@ -528,12 +528,12 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 		if (NPC.IsABestiaryIconDummy) //Draw the Bestiary entry
 		{
-			int frameHeight = texture.Height / Main.npcFrameCount[Type];
+			int frameWidth = NPC.frame.Width + 2; //NPC frame width plus padding
 			center.Y -= 6;
 
-			Main.EntitySpriteDraw(texture, center, source, color, NPC.rotation, origin, NPC.scale, default);
-			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(1), NPC.height), source with { Y = source.Y - frameHeight }, color, NPC.rotation, origin, NPC.scale, default);
-			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(2), NPC.height * 2), source with { Y = source.Y - frameHeight * 3 }, color, NPC.rotation, origin, NPC.scale, default);
+			Main.EntitySpriteDraw(texture, center, source with { X = source.X + frameWidth * 2 }, color, NPC.rotation, origin, NPC.scale, default);
+			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(1), NPC.height), source, color, NPC.rotation, origin, NPC.scale, default);
+			Main.EntitySpriteDraw(texture, center - new Vector2(GetSine(2), NPC.height * 2), new(frameWidth * 3, 0, NPC.frame.Width, NPC.frame.Height), color, NPC.rotation, origin, NPC.scale, default);
 
 			DrawFace(center - new Vector2(GetSine(2), NPC.height * 2), color);
 
@@ -552,7 +552,9 @@ public abstract class Stactus : ModNPC, IDeathCount
 	{
 		int frame = 0;
 
-		if (_painTime > 0)
+		if (NPC.IsABestiaryIconDummy)
+			frame = 0;
+		else if (_painTime > 0)
 			frame = 2;
 		else if (SpawnTime < parameters.SpawnTime + 50)
 			frame = 1;

@@ -13,6 +13,8 @@ public abstract class BackpackItem : ModItem
 	/// <summary> How many slots this backpack has. </summary>
 	protected abstract int SlotCap { get; }
 
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCap);
+
 	public override ModItem Clone(Item newEntity)
 	{
 		ModItem clone = base.Clone(newEntity);
