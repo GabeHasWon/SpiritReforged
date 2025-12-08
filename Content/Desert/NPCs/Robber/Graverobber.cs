@@ -86,6 +86,9 @@ public class Graverobber : ModNPC
 
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
+
+		if (NPC.IsABestiaryIconDummy)
+			AnimationState = State.Walk;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
@@ -118,6 +121,9 @@ public class Graverobber : ModNPC
 		}
 		else
 		{
+			if (VisualStyle == 0)
+				Lighting.AddLight(NPC.Center, TorchID.Torch);
+
 			if (PlayerInRange(400))
 			{
 				Player target = Main.player[NPC.target];
@@ -231,7 +237,7 @@ public class Graverobber : ModNPC
 			&& aboveWallType != WallID.None && !Main.wallHouse[aboveWallType])
 			return 0.1f;
 
-		if (player.ZonePurity && !player.ZoneUnderworldHeight && player.Center.Y / 16 > Main.worldSurface)
+		if (player.ZonePurity && spawnInfo.SpawnTileY > Main.worldSurface && spawnInfo.SpawnTileY < Main.UnderworldLayer)
 			return 0.03f;
 
 		return 0;
