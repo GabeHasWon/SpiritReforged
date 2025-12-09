@@ -1,12 +1,11 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class SaltPlate : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>()).AddTile(TileID.WorkBenches).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltPanel>()).AddTile(TileID.WorkBenches).Register();
 
 	public override void SetStaticDefaults()
 	{

@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
@@ -9,7 +8,7 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
 public class SaltSet : FurnitureSet
 {
 	public override string Name => "Salt";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltBlockDull>(), new(0.7f, 0.7f, 0.8f), DustID.Pearlsand);
+	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltPanel>(), new(0.7f, 0.7f, 0.8f), DustID.Pearlsand);
 	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Clock, Types.Chandelier);
 }
 

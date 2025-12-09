@@ -2677,7 +2677,7 @@ TallSandstoneShelfItem: {
 	// Tooltip: ""
 }
 
-SaltFlatsTorchItem: {
+SaltTorchItem: {
 	// DisplayName: Salt Torch
 	// Tooltip: ""
 }
@@ -2791,5 +2791,10 @@ GiantBag: {
 
 CrackedSandstoneItem: {
 	// DisplayName: Cracked Sandstone
+	// Tooltip: ""
+}
+
+SaltTorchItem: {
+	// DisplayName: Salt Torch Item
 	// Tooltip: ""
 }

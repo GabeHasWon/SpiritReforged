@@ -17,7 +17,7 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 
 	private static bool OnFire(int i, int j) => Main.tile[i, j].TileFrameY < fullFrameHeight;
 
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>(), 14).AddIngredient(ModContent.ItemType<SaltFlatsTorchItem>(), 5).AddTile(TileID.WorkBenches).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>(), 14).AddIngredient(ModContent.ItemType<SaltTorchItem>(), 5).AddTile(TileID.WorkBenches).Register();
 
 	public override void SetStaticDefaults()
 	{

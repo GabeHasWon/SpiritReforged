@@ -108,7 +108,7 @@ public class StoneStupas : PotTile, ILootable
 
 		branch.Add(ItemDropRule.OneFromOptions(15, [.. potions]));
 		branch.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.Multiplayer), ItemID.WormholePotion, 30));
-		branch.Add(ItemDropRule.Common(ModContent.ItemType<SaltFlatsTorchItem>(), 3, 5, 15));
+		branch.Add(ItemDropRule.Common(ModContent.ItemType<SaltTorchItem>(), 3, 5, 15));
 
 		if (Main.hardMode)
 			branch.Add(ItemDropRule.OneFromOptions(4, ItemID.UnholyArrow, ItemID.Grenade, (WorldGen.SavedOreTiers.Silver == TileID.Silver) ? ItemID.SilverBullet : ItemID.TungstenBullet));
