@@ -1,23 +1,11 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public sealed class StoneReliquary : ChestTile
+public sealed class StoneReliquary : ChestTile, ICustomContainer
 {
-	public override void Load() => On_Player.IsInInteractionRangeToMultiTileHitbox += On_Player_IsInInteractionRangeToMultiTileHitbox;
-
-	private static bool On_Player_IsInInteractionRangeToMultiTileHitbox(On_Player.orig_IsInInteractionRangeToMultiTileHitbox orig, Player self, int chestPointX, int chestPointY)
-	{
-		bool value = orig(self, chestPointX, chestPointY);
-
-		if (Main.tile[chestPointX, chestPointY].TileType == AutoContent.ItemType<StoneReliquary>())
-			value = true;
-
-		return value;
-	}
-
 	public override void AddObjectData()
 	{
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
