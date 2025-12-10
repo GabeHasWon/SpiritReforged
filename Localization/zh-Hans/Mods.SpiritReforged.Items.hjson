@@ -2794,7 +2794,7 @@ CrackedSandstoneItem: {
 	// Tooltip: ""
 }
 
-SaltTorchItem: {
-	// DisplayName: Salt Torch Item
+StoneReliquaryItem: {
+	// DisplayName: Stone Reliquary
 	// Tooltip: ""
 }

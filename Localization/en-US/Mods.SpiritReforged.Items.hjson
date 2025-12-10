@@ -2793,3 +2793,8 @@ CrackedSandstoneItem: {
 	DisplayName: Cracked Sandstone
 	Tooltip: ""
 }
+
+StoneReliquaryItem: {
+	DisplayName: Stone Reliquary
+	Tooltip: ""
+}
