@@ -108,7 +108,7 @@ public class MahakalaMaskBlue : ModItem
 		Item.Size = new(20);
 		Item.defense = 2;
 		Item.rare = ItemRarityID.Blue;
-		Item.value = Item.sellPrice(silver: 50);
+		Item.value = Item.sellPrice(silver: 25);
 	}
 
 	public override void UpdateEquip(Player player) => player.GetModPlayer<MahakalaPlayer>().hasMask = true;
