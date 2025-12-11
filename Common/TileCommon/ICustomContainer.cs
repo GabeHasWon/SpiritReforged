@@ -20,7 +20,7 @@ public interface ICustomContainer
 			if (TileLoader.GetTile(tile.TileType) is ModTile modTile && modTile is ICustomContainer)
 			{
 				Rectangle dimensions = GetDimensions(chestPointX, chestPointY);
-				dimensions.Inflate(Player.tileRangeX * 32, Player.tileRangeY * 32);
+				dimensions.Inflate(Player.tileRangeX * 16, Player.tileRangeY * 16);
 
 				if (dimensions.Intersects(self.Hitbox))
 					value = true;

@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using System.Linq;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
@@ -16,5 +17,31 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(Chest.AfterPlacement_Hook, -1, 0, false);
 		TileObjectData.newTile.AnchorInvalidTiles = [127];
 		TileObjectData.addTile(Type);
+
+		TileID.Sets.BasicChest[Type] = false;
+	}
+
+	public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
+	{
+		const int fullFrameHeight = 72;
+
+		if (HasChest(i, j, out Chest chest))
+			frameYOffset = fullFrameHeight * chest.frame;
+	}
+
+	//Prevents this multitile chest from being destroyed when full
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged) => !HasChest(i, j, out Chest chest) || chest.item.All(x => x is not Item item || item.type == ItemID.None || item.stack == 0);
+
+	private static bool HasChest(int i, int j, out Chest chest)
+	{
+		TileExtensions.GetTopLeft(ref i, ref j);
+		if (Chest.FindChest(i, j) is int search && search != -1)
+		{
+			chest = Main.chest[search];
+			return true;
+		}
+
+		chest = null;
+		return false;
 	}
 }

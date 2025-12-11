@@ -231,16 +231,20 @@ internal class SaltFlatsEcotone : EcotoneBase
 	{
 		HashSet<Vector2> treePoints = [];
 
+		new Decorator(SaltArea)
+			.Enqueue(PlaceReliquary, Math.Max(SaltArea.Width / 150, 1))
+			.Run();
+
 		WorldMethods.GenerateSquared((i, j) =>
 		{
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 			if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
 			{
 				bool leftEmpty = !WorldGen.SolidTile3(i - 1, j);
 				bool rightEmpty = !WorldGen.SolidTile3(i + 1, j);
 				Tile aboveTile = Main.tile[i, j - 1];
 
-				if (!aboveTile.HasTile && (leftEmpty || rightEmpty)) //Slopes
+				if (!WorldGen.SolidOrSlopedTile(aboveTile) && (leftEmpty || rightEmpty)) //Slopes
 				{
 					tile.Clear(TileDataType.Slope);
 
@@ -293,6 +297,22 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			return false;
 		}, out _, SaltArea);
+	}
+
+	private static bool PlaceReliquary(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		Tile belowTile = Main.tile[i, j + 1];
+
+		if (!WorldGen.SolidTile(tile) && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+		{
+			int type = ModContent.TileType<StoneReliquary>();
+
+			WorldGen.PlaceTile(i, j, type, true);
+			return Main.tile[i, j].HasTileType(type);
+		}
+
+		return false;
 	}
 
 	private static void MapFeature(Point coordinates, int radius, ref List<FeatureInfo> features)
