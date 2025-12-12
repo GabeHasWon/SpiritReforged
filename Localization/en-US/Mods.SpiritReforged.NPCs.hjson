@@ -539,3 +539,8 @@ Graverobber: {
 }
 
 LootBag.DisplayName: Loot Bag
+
+ScarabeusBoss: {
+	DisplayName: Scarabeus Boss
+	Entry: ""
+}

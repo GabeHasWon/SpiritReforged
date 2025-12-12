@@ -2803,3 +2803,8 @@ SaltFlatsFountainItem: {
 	DisplayName: Salt Flats Fountain
 	Tooltip: ""
 }
+
+ScarabDebugSpawner: {
+	DisplayName: Scarab Debug Spawner
+	Tooltip: ""
+}

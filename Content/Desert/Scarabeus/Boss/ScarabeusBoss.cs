@@ -1,9 +1,8 @@
 ﻿using System.IO;
-using System.Linq;
-using Terraria.Audio;
-using Terraria.GameContent.Events;
 using Terraria.GameContent.Bestiary;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.Easing;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 
@@ -11,27 +10,30 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 [AutoloadGlowmask("255, 255, 255", false)]
 public class ScarabeusBoss : ModNPC
 {
-	public float AiTimer { get => NPC.ai[0]; set => NPC.ai[0] = value; }
+	public float AITimer { get => NPC.ai[0]; set => NPC.ai[0] = value; }
 	public float CurrentPattern { get => NPC.ai[1]; set => NPC.ai[1] = value; }
+
+	private Point _curFrame;
 
 	private enum AIPatterns
 	{
+		Walking,
+		Leap,
 		RollDash,
 		GroundedSlam,
 		Dig,
-		Leap,
 		BounceGroundPound,
 		FlyingDash,
 		ChainGroundPound,
 		DigErupt,
-		Sunbeams,
-		KamikazeScarabs
+		FlyingSlam,
+		ScarabSwarm
 	}
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = 22;
-		NPCID.Sets.TrailCacheLength[NPC.type] = 5;
+		Main.npcFrameCount[NPC.type] = 4;
+		NPCID.Sets.TrailCacheLength[NPC.type] = 4;
 		NPCID.Sets.TrailingMode[NPC.type] = 0;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -80,18 +82,406 @@ public class ScarabeusBoss : ModNPC
 		NPC.TargetClosest(true);
 		Player player = Main.player[NPC.target];
 
-		switch (CurrentPattern)
+		switch ((AIPatterns)CurrentPattern)
 		{
+			case AIPatterns.Walking:
+				Walking(player);
+				break;
 
+			case AIPatterns.Leap:
+				Leap(player);
+				break;
+
+			case AIPatterns.RollDash:
+				RollDash(player);
+				break;
+
+			case AIPatterns.GroundedSlam:
+				GroundSlam(player);
+				break;
+
+			case AIPatterns.BounceGroundPound:
+				BounceGroundPound(player);
+				break;
+
+			case AIPatterns.Dig:
+				Dig(player);
+				break;
 		}
 	}
 
-	private void RollDash()
+	private void Walking(Player player)
 	{
+		int maxWalkTime = 180;
 
+		NPC.spriteDirection = NPC.direction;
+		NPC.knockBackResist = 0.7f;
+		AITimer++;
+		_curFrame.Y = 0;
+		CheckPlatform(player);
+
+		//Check if grounded
+		if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+		{
+			//Only move if too far from the player, try to move away a little bit if too close
+
+			if(Math.Abs(NPC.position.X - player.position.X) > 120 && Math.Abs(NPC.velocity.X) < 12)
+				NPC.velocity.X += Math.Sign(NPC.DirectionTo(player.position).X) * 0.1f;
+		}
+
+		StepUp(player);
+
+		/*
+		 * Todo:
+		 * Make it change to horn swipe if player sticks too close too long
+		 * Leap if too far or can't traverse terrain and a leap would reach the player (Pits, height differences)
+		 * Dig if too far or can't traverse terrain and a leap wouldn't reach player (Collision)
+		 */
+
+		if (AITimer > maxWalkTime)
+			NextAttack(player);
 	}
 
-	#region utilities
+	private int _jumpState = 0;
+
+	private bool HasJumped => _jumpState == 1;
+	private bool HasLanded => _jumpState == 2;
+
+	private void Leap(Player player)
+	{
+		const int windupTime = 60;
+		const int restTime = 45;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.knockBackResist = 0f;
+		CheckPlatform(player);
+
+		if (!HasJumped && !HasLanded)
+		{
+			_curFrame.Y = 0;
+
+			//Check if grounded
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			{
+				AITimer++;
+				//Slow down for a bit, then calculate mortar velocity to jump towards player
+				//Increase velocity if too far to reach player
+
+				if (AITimer < windupTime)
+					NPC.velocity.X *= 0.9f;
+
+				if (AITimer == windupTime)
+				{
+					NPC.velocity = NPC.GetArcVel(player.Center + player.velocity * 6, 0.4f, 12, true);
+					_jumpState++;
+					SyncNPC();
+				}
+			}
+		}
+
+		else if (!HasLanded)
+		{
+			_curFrame.Y = 2;
+
+			if(NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0)
+			{
+				_jumpState++;
+				//vfx and sfx and shockwaves here
+				SyncNPC();
+			}
+		}
+
+		else
+		{
+			AITimer++;
+
+			if (AITimer > restTime)
+				NextAttack(player);
+		}
+
+		/*
+		 * Todo:
+		 * Leap towards player's current position with some prediction, phase through some tiles but avoid phasing through a wall, create shockwave on impact
+		 */
+	}
+
+	private void RollDash(Player player)
+	{
+		const int windupTime = 60;
+		const int dashTime = 30;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.noTileCollide = false;
+		NPC.noGravity = false;
+		NPC.knockBackResist = 0f;
+		CheckPlatform(player);
+		_curFrame.Y = 1;
+		AITimer++;
+
+		if(AITimer < windupTime)
+		{
+			float windupProgress = EaseFunction.EaseCubicOut.Ease(AITimer / windupTime);
+			NPC.velocity.X = NPC.direction * (1 - windupProgress);
+			NPC.rotation += windupProgress * 0.08f;
+		}
+
+		if(AITimer == windupTime)
+		{
+			NPC.velocity.X = -NPC.direction * 10;
+			//sfx and vfx here
+		}
+
+		if(AITimer > windupTime)
+		{
+			NPC.rotation += 0.08f;
+			//sfx here
+		}
+
+		if(AITimer >= windupTime + dashTime)
+		{
+			//end attack
+			NextAttack(player);
+			NPC.rotation = 0;
+		}
+	}
+
+	private void GroundSlam(Player player)
+	{
+		const int windupTime = 60;
+		const int restTime = 45;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.noTileCollide = false;
+		NPC.noGravity = false;
+		NPC.knockBackResist = 0f;
+		CheckPlatform(player);
+		AITimer++;
+
+		if(AITimer < windupTime)
+		{
+			_curFrame.Y = 3;
+
+		}
+
+		if(AITimer == windupTime)
+		{
+			_curFrame.Y = 0;
+			//projectiles and sfx here
+		}
+
+		if(AITimer > windupTime + restTime)
+		{
+			NextAttack(player);
+			//end attack
+		}
+	}
+
+	private int _timesBounced = 0;
+	private void BounceGroundPound(Player player)
+	{
+		const int maxBounces = 3;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.noTileCollide = false;
+		NPC.noGravity = false;
+		NPC.knockBackResist = 0.2f;
+		CheckPlatform(player);
+		_curFrame.Y = 1;
+
+		if(_timesBounced < maxBounces)
+		{
+			//Check if grounded
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			{
+				_timesBounced++;
+				NPC.velocity.Y = -20;
+			}
+
+			else
+			{
+				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.1f);
+
+				if(NPC.velocity.Y < 12)
+					NPC.velocity.Y += 0.08f;
+
+				NPC.rotation += NPC.velocity.X / 160;
+			}
+		}
+
+		else if (_timesBounced == maxBounces)
+		{
+			AITimer++;
+
+			if(AITimer < 120)
+			{
+				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.1f);
+
+				if (NPC.velocity.Y < -4)
+					NPC.velocity.Y += 0.08f;
+
+				NPC.rotation += NPC.velocity.X / 160;
+			}
+
+			else if (AITimer < 200)
+			{
+				_curFrame.Y = 2;
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -1, 0.1f);
+				NPC.rotation = 0;
+			}
+
+			else if (AITimer == 200)
+			{
+				NPC.velocity.Y = 16;
+				//
+			}
+
+			if(AITimer > 200 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			{
+				//vfx and sfx and projs here
+
+				_timesBounced++; //use the variable to track the final ground pound too
+			}
+		}
+
+		else //rest before next attack
+		{
+			AITimer++;
+
+			if (AITimer > 90)
+				NextAttack(player);
+		}
+	}
+
+	private bool _inGround = false;
+	private void Dig(Player player)
+	{
+		const int digStartTime = 60;
+		const int undergroundTime = 180;
+		const int airTime = 90;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.noTileCollide = false;
+		NPC.noGravity = false;
+		NPC.knockBackResist = 0f;
+		AITimer++;
+		_curFrame.Y = 2;
+
+		if(AITimer < digStartTime)
+		{
+			//dig into ground anim here
+			NPC.velocity = Vector2.Zero;
+			NPC.position.Y += 0.5f;
+			NPC.alpha += (255 / digStartTime);
+		}
+
+		else if(AITimer == digStartTime)
+		{
+			//temp for hiding boss
+			_inGround = true;
+			NPC.alpha = 0;
+			NPC.position = player.Center;
+		}
+
+		else if(AITimer < undergroundTime + digStartTime)
+		{
+			//set npc's position to tiles under player, moving around left and right, before settling on a position
+			//particles spawn from the tile where the npc is located
+
+			NPC.position = player.Center;
+		}
+
+		else if(AITimer == undergroundTime + digStartTime)
+		{
+			//pop out of ground here
+			_inGround = false;
+			NPC.rotation = MathHelper.PiOver4;
+			NPC.velocity.Y = -10;
+		}
+
+		else if (AITimer < undergroundTime + digStartTime + airTime)
+		{
+			NPC.velocity.Y += 0.08f;
+
+		}
+
+		else
+		{
+			NextAttack(player, AIPatterns.BounceGroundPound);
+		}
+	}
+
+	private void NextAttack(Player player, AIPatterns? pattern = null)
+	{
+		_inGround = false;
+		_jumpState = 0;
+		_timesBounced = 0;
+
+		if(pattern != null)
+		{
+			CurrentPattern = (float)pattern.Value;
+			SyncNPC();
+			return;
+		}
+
+		List<AIPatterns> availablePatterns = [];
+
+		//phase check here to determine what attacks to add
+		availablePatterns.AddRange([AIPatterns.Walking, AIPatterns.RollDash, AIPatterns.Dig, AIPatterns.BounceGroundPound, AIPatterns.Leap]);
+
+		//Prune the current attack and attacks that shouldn't be used
+		List<AIPatterns> temp = [];
+
+		for(int i = 0; i < availablePatterns.ToArray().Length; i++)
+		{
+			if(pattern.HasValue)
+				if (availablePatterns[i] == pattern.Value)
+					continue;
+
+			else if (!IsAttackValid(player, availablePatterns[i]))
+				continue;
+
+			temp.Add(availablePatterns[i]);
+		}
+
+		availablePatterns = temp;
+
+		//Set a random attack from the remainders
+		CurrentPattern = (float)availablePatterns[Main.rand.Next(0, availablePatterns.Count)];
+		SyncNPC();
+	}
+
+	/// <summary>
+	/// Checks if the given attack is viable for random selection, given the current position of the boss and terrain around it
+	/// </summary>
+	/// <param name="pattern"></param>
+	/// <returns></returns>
+	private bool IsAttackValid(Player player, AIPatterns pattern)
+	{
+		bool isValid = true;
+		switch(pattern)
+		{
+			case AIPatterns.Leap:
+				isValid = NPC.Distance(player.Center) > 160;
+				break;
+
+			case AIPatterns.RollDash:
+				isValid = Math.Abs(NPC.Center.Y - player.Center.Y) < 64 && Math.Abs(NPC.Center.X - player.Center.X) > 48;
+				break;
+
+			case AIPatterns.GroundedSlam:
+				isValid = Collision.SolidTiles(NPC.BottomLeft - Vector2.UnitX * NPC.width, NPC.width / 4, 3, false);
+				break;
+
+			case AIPatterns.Dig:
+				isValid =  Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false);
+				break;
+		}
+
+		return isValid;
+	}
+
 	private void CheckPlatform(Player player)
 	{
 		bool onplatform = true;
@@ -108,87 +498,6 @@ public class ScarabeusBoss : ModNPC
 			NPC.noTileCollide = false;
 	}
 
-	private void CheckPit(float velmult = 1.7f, bool boostsxvel = true) //quirky lazy bad code but it works mostly and making the boss not break on vanilla random worldgen is tiring
-	{
-		if (NPC.velocity.Y != 0)
-			return;
-
-		bool pit = true;
-		int pitwidth = 0;
-		int width = 5;
-		int height = 8;
-		for (int j = 1; j <= width; j++)
-		{
-			for (int i = 1; i <= height; i++)
-			{
-				Tile forwardtile = Framing.GetTileSafely(new Point((int)(NPC.Center.X / 16) + NPC.spriteDirection * j, (int)(NPC.Center.Y / 16) + i));
-				if (WorldGen.SolidTile(forwardtile) || WorldGen.SolidTile2(forwardtile) || WorldGen.SolidTile3(forwardtile))
-				{
-					pit = false;
-					break;
-				}
-			}
-
-			if (!pit)
-				break;
-
-			pitwidth++;
-		}
-
-		if (pit && pitwidth <= width * 2)
-		{
-			NPC.velocity.Y -= pitwidth * velmult;
-			if (boostsxvel)
-				NPC.velocity.X = NPC.spriteDirection * pitwidth * velmult;
-		}
-		else if (pit)
-			NPC.velocity.X *= -1f;
-	}
-
-	private void UpdateFrame(int speed, int minframe, int maxframe, bool usesspeed = false) //method of updating the frame without copy pasting this every time animation is needed
-	{
-		timer++;
-		float timeperframe = usesspeed ? 5f / Math.Abs(NPC.velocity.X) * speed : speed;
-		if (timer >= timeperframe)
-		{
-			frame++;
-			timer = 0;
-		}
-
-		if (frame >= maxframe)
-			frame = minframe;
-
-		if (frame < minframe)
-			frame = minframe;
-	}
-
-	private void SyncNPC()
-	{
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, NPC.whoAmI);
-	}
-
-	private void NextAttack(bool skipto4 = false) //reset most variables and netupdate to sync the boss in multiplayer
-	{
-		trailBehind = false;
-		if (skipto4)
-			CurrentPattern = 4;
-		else
-			CurrentPattern++;
-		AiTimer = 0;
-		NPC.ai[2] = 0;
-		NPC.rotation = 0;
-		NPC.noTileCollide = false;
-		NPC.noGravity = false;
-		hasjumped = false;
-		NPC.behindTiles = false;
-		NPC.knockBackResist = 0f;
-		BaseVel = Vector2.UnitX;
-		statictarget[0] = Vector2.Zero;
-		statictarget[1] = Vector2.Zero;
-		SyncNPC();
-	}
-
 	private void StepUp(Player player)
 	{
 		bool flag15 = true; //copy pasted collision step code from zombies
@@ -201,7 +510,35 @@ public class ScarabeusBoss : ModNPC
 		if (NPC.velocity.Y >= 0f)
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY, 1, flag15, 1);
 	}
-	#endregion
+
+	private void UpdateFrame(int speed, int minframe, int maxframe, bool usesspeed = false) //method of updating the frame without copy pasting this every time animation is needed
+	{
+
+	}
+
+	private void SyncNPC()
+	{
+		if (Main.netMode != NetmodeID.SinglePlayer)
+			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, NPC.whoAmI);
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		if (_inGround)
+			return false;
+
+		Texture2D bossTex = TextureAssets.Npc[NPC.type].Value;
+		int verticalFrames = Main.npcFrameCount[NPC.type];
+		const int horizontalFrames = 2;
+		var frameSize = new Point(bossTex.Width / horizontalFrames, bossTex.Height / verticalFrames);
+
+		var drawFrame = new Rectangle(_curFrame.X * frameSize.X, _curFrame.Y * frameSize.Y, frameSize.X, frameSize.Y);
+		var flip = (NPC.direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+		Main.EntitySpriteDraw(bossTex, NPC.Center - Main.screenPosition, drawFrame, NPC.GetAlpha(drawColor), NPC.rotation, drawFrame.Size() / 2, NPC.scale, flip);
+
+		return false;
+	}
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
@@ -215,26 +552,6 @@ public class ScarabeusBoss : ModNPC
 	{
 		NPC.velocity.Y = 1;
 		return base.SpawnNPC(tileX, tileY);
-	}
-
-	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => canHitPlayer;
-	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-	{
-		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-		spriteBatch.Draw(TextureAssets.Npc[NPC.type].Value, NPC.Center - screenPos + new Vector2(-10 * NPC.spriteDirection, NPC.gfxOffY - 16 + extraYoff).RotatedBy(NPC.rotation), NPC.frame,
-						 drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0);
-		if (trailBehind)
-		{
-			Vector2 drawOrigin = NPC.frame.Size() / 2;
-			for (int k = 0; k < NPC.oldPos.Length; k++)
-			{
-				Vector2 drawPos = NPC.oldPos[k] - screenPos + new Vector2(NPC.width / 2, NPC.height / 2) + new Vector2(-10 * NPC.spriteDirection, NPC.gfxOffY - 16 + extraYoff).RotatedBy(NPC.rotation);
-				Color color = NPC.GetAlpha(drawColor) * (float)((NPC.oldPos.Length - k) / (float)NPC.oldPos.Length / 2);
-				spriteBatch.Draw(TextureAssets.Npc[NPC.type].Value, drawPos, NPC.frame, color, NPC.rotation, drawOrigin, NPC.scale, effects, 0f);
-			}
-		}
-
-		return false;
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
@@ -260,13 +577,6 @@ public class ScarabeusBoss : ModNPC
 	{
 		modifiers.Knockback *= 0.7f;
 
-		if (Main.player[projectile.owner].HeldItem.type == ItemID.Minishark)
-		{
-			//shadow nerfing minishark on scarab because meme balance weapon
-			modifiers.Knockback *= 0.5f;
-			modifiers.FinalDamage *= 0.6f;
-		}
-
 		if (!Main.player[projectile.owner].ZoneDesert)
 			modifiers.FinalDamage /= 3;
 	}
@@ -275,28 +585,6 @@ public class ScarabeusBoss : ModNPC
 	{
 		if (!player.ZoneDesert)
 			modifiers.FinalDamage /= 3;
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (NPC.IsABestiaryIconDummy)
-		{
-			if (frame < 18)
-				frame = 18;
-
-			NPC.frameCounter += 1;
-
-			if (NPC.frameCounter > 4)
-			{
-				frame++;
-				NPC.frameCounter = 0;
-			}
-
-			if (frame > 21)
-				frame = 18;
-		}
-
-		NPC.frame.Y = frameHeight * frame;
 	}
 
 	public override bool PreKill()
