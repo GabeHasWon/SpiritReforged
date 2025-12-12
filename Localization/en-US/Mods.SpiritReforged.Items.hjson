@@ -2798,3 +2798,8 @@ SaltFlatsCampfireItem: {
 	DisplayName: Salt Campfire
 	Tooltip: "{$ItemTooltip.Campfire}"
 }
+
+SaltFlatsFountainItem: {
+	DisplayName: Salt Flats Fountain
+	Tooltip: ""
+}

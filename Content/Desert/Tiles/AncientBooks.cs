@@ -26,7 +26,7 @@ public class AncientBooks : ModTile, IAutoloadTileItem
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
 		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.RandomStyleRange = 5;
+		TileObjectData.newTile.RandomStyleRange = 4;
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.addTile(Type);
 
