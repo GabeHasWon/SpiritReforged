@@ -2793,3 +2793,8 @@ CrackedSandstoneItem: {
 	// DisplayName: Cracked Sandstone
 	// Tooltip: ""
 }
+
+SaltFlatsCampfireItem: {
+	// DisplayName: Salt Campfire
+	// Tooltip: "{$ItemTooltip.Campfire}"
+}
