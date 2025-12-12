@@ -6,7 +6,15 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 {
-	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Sandstone).AddTile(TileID.Furnaces).Register();
+	public virtual void AddItemRecipes(ModItem item)
+	{
+		int pillar = AutoContent.ItemType<RuinedSandstonePillar>();
+
+		item.CreateRecipe().AddIngredient(ItemID.Sandstone).AddTile(TileID.Furnaces).Register();
+
+		Recipe.Create(pillar).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
+		item.CreateRecipe(2).AddIngredient(pillar).AddTile(TileID.WorkBenches).Register();
+	}
 
 	public override void SetStaticDefaults()
 	{

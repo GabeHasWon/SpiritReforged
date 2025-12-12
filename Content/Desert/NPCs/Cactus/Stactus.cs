@@ -313,6 +313,12 @@ public abstract class Stactus : ModNPC, IDeathCount
 		}
 	}
 
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		if ((Main.expertMode || Main.masterMode) && Main.rand.NextBool(6))
+			target.AddBuff(BuffID.Bleeding, 60 * 30);
+	}
+
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
 	public override int SpawnNPC(int tileX, int tileY)
 	{

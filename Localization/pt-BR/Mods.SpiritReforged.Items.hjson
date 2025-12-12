@@ -2793,8 +2793,3 @@ CrackedSandstoneItem: {
 	// DisplayName: Cracked Sandstone
 	// Tooltip: ""
 }
-
-SaltTorchItem: {
-	// DisplayName: Salt Torch Item
-	// Tooltip: ""
-}

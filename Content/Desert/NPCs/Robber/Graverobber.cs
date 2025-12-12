@@ -5,6 +5,7 @@ using SpiritReforged.Content.Desert.Biome;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.Backpacks;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 
@@ -82,7 +83,7 @@ public class Graverobber : ModNPC
 		NPC.damage = 12;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.knockBackResist = 0.5f;
+		NPC.knockBackResist = 0.55f;
 
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
@@ -184,6 +185,8 @@ public class Graverobber : ModNPC
 
 			if (dead)
 			{
+				SoundEngine.PlaySound(SoundID.DD2_GoblinHurt with { Pitch = 0.5f }, NPC.Center);
+
 				for (int i = 1; i < 6; i++)
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Graverobber" + i).Type, 1f);
 
@@ -235,7 +238,7 @@ public class Graverobber : ModNPC
 
 		if ((player.ZoneDesert || player.ZoneUndergroundDesert) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>())
 			&& aboveWallType != WallID.None && !Main.wallHouse[aboveWallType])
-			return 0.1f;
+			return 0.15f;
 
 		if (player.ZonePurity && spawnInfo.SpawnTileY > Main.worldSurface && spawnInfo.SpawnTileY < Main.UnderworldLayer)
 			return 0.03f;
@@ -243,7 +246,15 @@ public class Graverobber : ModNPC
 		return 0;
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
+
+		if (VisualStyle == 0)
+			npcLoot.AddCommon(ItemID.MagicLantern, 20);
+
+		npcLoot.AddCommon(ItemID.GravediggerShovel, 30);
+	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
 	public override void ReceiveExtraAI(BinaryReader reader)

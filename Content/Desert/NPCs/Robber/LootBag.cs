@@ -1,13 +1,25 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.NPCs.Robber;
 
 public class LootBag : ModNPC
 {
+	public class InZiggurat : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info) => info.player.InModBiome<Biome.ZigguratBiome>();
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.InZiggurat");
+	}
+
 	public sealed class CoinParticle : Particle
 	{
 		public enum CoinType { Copper, Silver, Gold, Platinum }
@@ -200,5 +212,10 @@ public class LootBag : ModNPC
 		npcLoot.AddCommon(ItemID.Ruby, 3, 1, 2);
 		npcLoot.AddCommon(ItemID.Amber, 4, 1, 2);
 		npcLoot.AddCommon(ItemID.Diamond, 4, 1, 2);
+
+		LeadingConditionRule rule = new(new InZiggurat());
+		rule.OnSuccess(ItemDropRule.Common(AutoContent.ItemType<CarvedLapis>(), 1, 10, 35));
+
+		npcLoot.Add(rule);
 	}
 }

@@ -1,11 +1,21 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
 public class AncientBooks : ModTile, IAutoloadTileItem
 {
+	public void StaticItemDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 2, 3, 5));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 3, 5));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.Book] = Type;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileNoFail[Type] = true;

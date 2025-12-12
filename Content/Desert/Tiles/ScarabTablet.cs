@@ -9,13 +9,13 @@ public class ScarabTablet : ModTile
 {
 	public class ScarabTabletOneItem : ModItem
 	{
-		public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 12).AddTile(TileID.WorkBenches).Register();
+		public void StaticItemDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<ScarabTabletTwoItem>();
 		public override void SetDefaults() => Item.DefaultToPlaceableTile(ModContent.TileType<ScarabTablet>(), 0);
 	}
 
 	public class ScarabTabletTwoItem : ModItem
 	{
-		public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 12).AddTile(TileID.WorkBenches).Register();
+		public void StaticItemDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<ScarabTabletOneItem>();
 		public override void SetDefaults() => Item.DefaultToPlaceableTile(ModContent.TileType<ScarabTablet>(), 1);
 	}
 

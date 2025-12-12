@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.ID;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
@@ -25,7 +26,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		PitchVariance = 0.2f
 	};
 
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddIngredient(ModContent.ItemType<SavannaTorchItem>(), 5).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddIngredient(ItemID.Torch, 1).Register();
 
 	public override void SetStaticDefaults()
 	{
