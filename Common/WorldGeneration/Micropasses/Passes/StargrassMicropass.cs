@@ -1,5 +1,5 @@
 ﻿using Terraria.WorldBuilding;
-using SpiritReforged.Content.Forest.Stargrass;
+using SpiritReforged.Content.Forest.Stargrass.Items;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
@@ -11,48 +11,36 @@ internal class StargrassMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
 	{
+		const int attempts = 300;
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Stargrass");
 
 		float worldSize = Main.maxTilesX / 4200f;
+		int count = 0;
+		int maxCount = (int)(4 * worldSize);
 
-		for (int i = 0; i < 4 * worldSize; i++)
+		for (int a = 0; a < attempts; a++)
 		{
+			bool failed = false;
 			int x = WorldGen.genRand.Next(100, Main.maxTilesX - 100);
 			int y = WorldGen.remixWorldGen ? WorldGen.genRand.Next(Main.maxTilesY / 2, Main.maxTilesY - 200) : (int)(Main.worldSurface * 0.35f);
-			bool fail = false;
 
 			while (!Main.tile[x, y].HasTile || Main.tile[x, y].TileType != TileID.Grass)
 			{
-				y++;
-
-				if (y > Main.worldSurface)
+				if (++y > Main.worldSurface)
 				{
-					fail = true;
+					failed = true;
 					break;
 				}
 			}
 
-			if (fail)
-			{
-				i--;
+			if (failed)
 				continue;
-			}
 
-			SpreadStargrass(x, y);
-		}
-	}
+			int size = WorldGen.genRand.Next(30, 61);
+			WorldGen.Convert(x, y, StarConversion.ConversionType, size);
 
-	private static void SpreadStargrass(int x, int y)
-	{
-		int size = WorldGen.genRand.Next(12, 20);
-
-		for (int i = x - size; i < x + size; ++i)
-		{
-			for (int j = y - size; j < y + size; ++j)
-			{
-				if (Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < size * size)
-					StargrassConversion.Convert(i, j);
-			}
+			if (++count > maxCount)
+				break;
 		}
 	}
 }

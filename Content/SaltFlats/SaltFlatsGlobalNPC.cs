@@ -1,23 +1,10 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Content.SaltFlats.Biome;
-using SpiritReforged.Content.SaltFlats.Tiles.Paintings;
+﻿using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Biome;
 
 namespace SpiritReforged.Content.SaltFlats;
 
 public class SaltFlatsGlobalNPC : GlobalNPC
 {
-
-	public override void ModifyShop(NPCShop shop)
-	{
-		if (shop.NpcType == NPCID.Painter)
-		{
-			shop.Add(Mod.Find<ModItem>(nameof(Gliding) + "Item").Type, Condition.TimeDay, SpiritConditions.InSaltFlats);
-			shop.Add(Mod.Find<ModItem>(nameof(ViciousFlamingo) + "Item").Type, Condition.TimeNight, SpiritConditions.InSaltFlats);
-		}
-	}
-
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 	{
 		if (spawnInfo.Invasion)

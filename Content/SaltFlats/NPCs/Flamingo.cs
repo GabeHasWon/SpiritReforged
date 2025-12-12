@@ -72,6 +72,7 @@ public class Flamingo : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.5f;
 		NPC.direction = 1; //Don't start at 0
+
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -132,7 +133,10 @@ public class Flamingo : ModNPC
 			}
 
 			if (NPC.collideX)
+			{
 				TargetSpeed = -TargetSpeed;
+				NPC.velocity.X = -NPC.velocity.X;
+			}
 
 			float acceleration = (Counter < 30) ? 0.1f : 0.02f;
 			NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, inRange ? -5 : 5, acceleration);
@@ -173,7 +177,7 @@ public class Flamingo : ModNPC
 			else
 			{
 				// Idle Chirp, not synced
-				if (Main.rand.NextBool(1000))
+				if (Main.rand.NextBool(1500))
 					SoundEngine.PlaySound(Idle, NPC.Center);
 
 				if (Counter % 200 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
@@ -204,6 +208,9 @@ public class Flamingo : ModNPC
 						ChangeAnimationState(State.Lower);
 						NPC.netUpdate = true;
 					}
+
+					if (state is State.IdleReset)
+						_frameRate = 0.12f;
 				}
 
 				if (PlayerInRange(180) && Main.player[NPC.target].ItemAnimationActive && Main.player[NPC.target].HeldItem.damage != 0) //Fly away if a damaging item is used nearby

@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.DragonFossil;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -22,18 +23,21 @@ public class AmberFossil : ShiningAmber
 		return (id == -1) ? 0 : (TileEntity.ByID[id] as FossilEntity).itemType;
 	}
 
-	private static void PlaceEntity(int i, int j)
+	public static FossilEntity PlaceEntity(int i, int j)
 	{
 		if (ModContent.GetInstance<FossilEntity>().Find(i, j) != -1)
-			return; //An entity already exists here
+			return null; //An entity already exists here
 
 		int itemType = RandomItem;
 		int id = ModContent.GetInstance<FossilEntity>().Place(i, j);
 
-		((FossilEntity)TileEntity.ByID[id]).itemType = itemType;
+		var entity = (FossilEntity)TileEntity.ByID[id];
+		entity.itemType = itemType;
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			new FossilData((short)i, (short)j, itemType).Send();
+
+		return entity;
 	}
 
 	public override void SetStaticDefaults()
@@ -48,6 +52,7 @@ public class AmberFossil : ShiningAmber
 		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
 		RandomItem.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
 		RandomItem.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
+		RandomItem.AddRange(0.04f, ModContent.ItemType<TinyDragon>());
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)

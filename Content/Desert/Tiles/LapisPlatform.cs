@@ -38,7 +38,7 @@ public class LapisPlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
-		DustType = DustID.WoodFurniture;
+		DustType = DustID.Cobalt;
 		AdjTiles = [TileID.Platforms];
 
 		this.AutoItem().ResearchUnlockCount = 200;

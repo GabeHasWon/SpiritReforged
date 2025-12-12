@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
@@ -7,6 +8,7 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class Censer : ModTile, IAutoloadTileItem
 {
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("GoldBars", 3).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{
 		Main.tileTable[Type] = true;

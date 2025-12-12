@@ -33,18 +33,25 @@ public class TileEvents : GlobalTile
 	private static Hook TileFrameHook = null;
 
 	/// <summary> Subscribes to <see cref="OnPreDrawTiles"/> and conditionally invokes <paramref name="action"/> according to <paramref name="inSolidLayer"/>. </summary>
-	public static void AddPreDrawAction(bool inSolidLayer, Action action) => OnPreDrawTiles += (solidLayer, forRenderTargets, intoRenderTargets) =>
+	/// <returns> The delegate created for the operation. </returns>
+	public static PreDrawDelegate AddPreDrawAction(bool inSolidLayer, Action action)
 	{
-		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
-
-		if (flag)
+		PreDrawDelegate value;
+		OnPreDrawTiles += value = (solidLayer, forRenderTargets, intoRenderTargets) =>
 		{
-			if (inSolidLayer && solidLayer)
-				action.Invoke();
-			else if (!inSolidLayer && !solidLayer)
-				action.Invoke();
-		}
-	};
+			bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
+
+			if (flag)
+			{
+				if (inSolidLayer && solidLayer)
+					action.Invoke();
+				else if (!inSolidLayer && !solidLayer)
+					action.Invoke();
+			}
+		};
+
+		return value;
+	}
 
 	/// <summary> Subscribes to <see cref="OnPlaceTile"/> and conditionally invokes <paramref name="action"/> according to <paramref name="tileType"/>. </summary>
 	public static void AddPlaceTileAction(int tileType, TileDelegate action) => OnPlaceTile += (i, j, type) =>

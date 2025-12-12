@@ -13,7 +13,8 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		Grown
 	}
 
-	private const int FrameWidth = 18; // A constant for readability and to kick out those magic numbers
+	public int GetFrameWidth(int i, int j) => TileObjectData.GetTileData(Main.tile[i, j])?.CoordinateFullWidth ?? 18;
+
 	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
 	public int SeedType { get; protected set; }
@@ -80,7 +81,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	public override bool IsTileSpelunkable(int i, int j) => GetStage(i, j) is PlantStage.Grown;
 
 	public virtual bool CanBeHarvested(int i, int j) => Main.tile[i, j].HasTile && GetStage(i, j) == PlantStage.Grown;
-	public bool? CheckItemUse(int type, int i, int j)
+	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
 		if (type is ItemID.StaffofRegrowth or ItemID.AcornAxe && ModContent.GetModTile(Main.tile[i, j].TileType) is HerbTile herb && herb.CanBeHarvested(i, j))
 		{
@@ -141,7 +142,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 
 		if (stage == PlantStage.Planted && Main.rand.NextBool()) //Grow only if just planted
 		{
-			tile.TileFrameX += FrameWidth;
+			tile.TileFrameX += (short)GetFrameWidth(i, j);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendTileSquare(-1, i, j, 1);
@@ -149,16 +150,16 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	}
 
 	/// <summary> Gets the <see cref="PlantStage"/> of the herb at the given coordinates. </summary>
-	public static PlantStage GetStage(int i, int j)
+	public PlantStage GetStage(int i, int j)
 	{
 		Tile tile = Framing.GetTileSafely(i, j);
-		return (PlantStage)(tile.TileFrameX / FrameWidth);
+		return (PlantStage)(tile.TileFrameX / GetFrameWidth(i, j));
 	}
 
 	/// <summary> Sets the <see cref="PlantStage"/> of the herb at the given coordinates. </summary>
-	public static void SetStage(int i, int j, PlantStage stage)
+	public void SetStage(int i, int j, PlantStage stage)
 	{
 		Tile tile = Framing.GetTileSafely(i, j);
-		tile.TileFrameX = (short)(FrameWidth * (int)stage);
+		tile.TileFrameX = (short)(GetFrameWidth(i, j) * (int)stage);
 	}
 }

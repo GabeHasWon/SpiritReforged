@@ -89,7 +89,7 @@ public abstract class TorchTile : ModTile
 	{
 		if (visible && Main.rand.NextBool(40) && tileFrameX < 66)
 		{
-			var dust = Dust.NewDustDirect(new Vector2(i * 16 + 4, j * 16), 4, 4, DustID.Torch, 0f, 0f, 100);
+			var dust = Dust.NewDustDirect(new Vector2(i * 16 + 4, j * 16), 4, 4, DustType, 0f, 0f, 100);
 			dust.noGravity = !Main.rand.NextBool(3);
 			dust.velocity *= 0.3f;
 			dust.velocity.Y -= 1.5f;

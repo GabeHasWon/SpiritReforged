@@ -17,12 +17,17 @@ public class Pots : PotTile, ILootable
 	public const string NameKey = "MapObject.Pot";
 	public const string PotTexture = "Terraria/Images/Tiles_28";
 
+	public enum Style : int
+	{
+		Cavern, Ice, Jungle, Dungeon, Hell, Corruption, Spider, Crimson, Pyramid, Temple, Marble, Desert
+	}
+
 	public override string Texture => PotTexture;
 	public override Dictionary<string, int[]> TileStyles
 	{
 		get
 		{
-			string[] names = ["Cavern", "Ice", "Jungle", "Dungeon", "Hell", "Corruption", "Spider", "Crimson", "Pyramid", "Temple", "Marble", "Desert"];
+			string[] names = Enum.GetNames<Style>();
 			Dictionary<string, int[]> groups = [];
 
 			groups.Add(names[0], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);

@@ -10,12 +10,12 @@ internal interface ICheckItemUse
 	/// <param name="i"> The selected tile's X position. </param>
 	/// <param name="j"> The selected tile's Y position. </param>
 	/// <returns> Whether the item of 'type' did something when used. Return null for vanilla effects. </returns>
-	public bool? CheckItemUse(int type, int i, int j);
+	public bool? CheckItemUse(int type, Player player, int i, int j);
 }
 
 internal sealed class CheckItem : GlobalItem
 {
-	public delegate bool? ItemUseDelegate(int itemType, int i, int j);
+	public delegate bool? ItemUseDelegate(int itemType, Player player, int i, int j);
 	private static readonly Dictionary<int, ItemUseDelegate> TileToAction = [];
 	private static readonly Dictionary<int, ItemUseDelegate> WallToAction = [];
 
@@ -45,12 +45,12 @@ internal sealed class CheckItem : GlobalItem
 		if (tile.HasTile) //Check tiles
 		{
 			if (player.InInteractionRange(target.X, target.Y, TileReachCheckSettings.Simple) && TileToAction.TryGetValue(tile.TileType, out var check))
-				return check.Invoke(item.type, target.X, target.Y);
+				return check.Invoke(item.type, player, target.X, target.Y);
 		}
 		else if (tile.WallType != WallID.None) //Check walls
 		{
 			if (player.InInteractionRange(target.X, target.Y, TileReachCheckSettings.Simple) && WallToAction.TryGetValue(tile.WallType, out var check))
-				return check.Invoke(item.type, target.X, target.Y);
+				return check.Invoke(item.type, player, target.X, target.Y);
 		}
 
 		return null;

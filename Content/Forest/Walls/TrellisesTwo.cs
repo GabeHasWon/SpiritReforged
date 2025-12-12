@@ -36,3 +36,8 @@ public class TrellisTwoShadewood : TrellisShadewood
 {
 	public override void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<TrellisShadewood>(), 4).AddTile(TileID.Sawmill).Register();
 }
+
+public class TrellisTwoDrywood : TrellisDrywood
+{
+	public override void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<TrellisDrywood>(), 4).AddTile(TileID.Sawmill).Register();
+}

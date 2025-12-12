@@ -38,3 +38,18 @@ DuststormOtherworld: {
 	DisplayName: Пыльная буря — Потусторонняя
 	Author: "{$By} jakedastardly"
 }
+
+Ziggurat: {
+	// DisplayName: Ziggurat
+	// Author: "{$By} {$Moonbird} {$Salvati}"
+}
+
+Salt: {
+	// DisplayName: Salt Flats
+	// Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	// DisplayName: Salt Flats (Night)
+	// Author: "{$By} {$Sbubby}"
+}

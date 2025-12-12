@@ -6,7 +6,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -30,7 +30,7 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.value = Item.sellPrice(silver: 3);
+		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<CeremonialDaggerSwing>();

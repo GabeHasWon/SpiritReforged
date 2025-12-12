@@ -15,6 +15,8 @@ public class TrellisVine : ModTile
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 
+		TileID.Sets.FramesOnKillWall[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3Wall);
 		TileObjectData.newTile.Width = TileObjectData.newTile.Height = 1;
 		TileObjectData.newTile.Origin = Point16.Zero;

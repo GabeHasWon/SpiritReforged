@@ -23,6 +23,7 @@ public abstract class LampTile : FurnitureTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.Origin = new Point16(0, 2);
 		TileObjectData.newTile.Height = 3;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];

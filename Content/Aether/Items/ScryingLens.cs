@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon.Abstract;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
@@ -36,6 +37,9 @@ public class ScryingLens : InfoItem
 		public static int GetTransformId(Item item)
 		{
 			int type = item.type;
+
+			if (SpiritSets.ShimmerDisplayResult[type] is int displayResult && displayResult != -1)
+				return displayResult;
 
 			if (ItemID.Sets.ShimmerCountsAsItem[type] is int countsAs && countsAs != -1)
 				type = countsAs;

@@ -82,10 +82,6 @@ public class DeadTree : CustomTree
 
 		Tile tile = Main.tile[i, j];
 		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
-
-		if (Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<SaltBlockDull>())
-			source.Y += 20; //Salt frames
-
 		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
@@ -94,7 +90,7 @@ public class DeadTree : CustomTree
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
-		const int frameHeight = 40; //The total height of all trunk frames
+		const int frameHeight = 20; //The total height of all trunk frames
 
 		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;

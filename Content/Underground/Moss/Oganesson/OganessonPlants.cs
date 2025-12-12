@@ -69,7 +69,7 @@ public class OganessonPlants : ModTile, ICheckItemUse
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = Main.rand.Next(1, 3);
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.3f, 0.3f, 0.3f);
 
-	public virtual bool? CheckItemUse(int type, int i, int j)
+	public virtual bool? CheckItemUse(int type, Player player, int i, int j)
 	{
 		if (type is ItemID.PaintScraper or ItemID.SpectrePaintScraper || type == ModContent.ItemType<LandscapingShears>())
 		{

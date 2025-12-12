@@ -22,6 +22,7 @@ public abstract class CandleTile : FurnitureTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleOnTable1x1);
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -73,7 +74,10 @@ public abstract class CandleTile : FurnitureTile
 
 		var texture = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
 		var data = TileObjectData.GetTileData(tile);
-		int height = data.CoordinateHeights[tile.TileFrameY / data.CoordinateFullHeight];
+
+		int coordHeight = tile.TileFrameY / data.CoordinateFullHeight;
+		int height = (coordHeight < data.CoordinateHeights.Length) ? data.CoordinateHeights[coordHeight] : 1;
+
 		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height);
 
 		if (Info is LightedInfo l && l.Blur)
