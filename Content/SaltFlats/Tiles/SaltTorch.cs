@@ -15,7 +15,7 @@ public class SaltTorch : TorchTile
 	{
 		base.SetStaticDefaults();
 
-		DustType = DustID.WhiteTorch;
+		DustType = DustID.PurpleTorch;
 	}
 
 	public override float GetTorchLuck(Player player)

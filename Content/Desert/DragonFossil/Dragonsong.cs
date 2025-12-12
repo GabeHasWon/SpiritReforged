@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -207,6 +208,8 @@ public class Dragonsong : ModItem
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
 		SpiritSets.ShimmerDisplayResult[Type] = ModContent.ItemType<TinyDragon>();
+
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
 	}
 
 	public override void SetDefaults()

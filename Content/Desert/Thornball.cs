@@ -1,11 +1,16 @@
-﻿using SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert;
 
 public class Thornball : ModItem
 {
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 99;
+	public override void SetStaticDefaults()
+	{
+		Item.ResearchUnlockCount = 99;
+		MoRHelper.AddElement(Item, MoRHelper.Nature, true);
+	}
 	public override void SetDefaults()
 	{
 		Item.DefaultToThrownWeapon(ModContent.ProjectileType<ThornballThrown>(), 20, 7, true);

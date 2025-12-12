@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -121,6 +122,8 @@ public abstract class Stactus : ModNPC, IDeathCount
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
 		Faces.Add(Type, DrawHelpers.RequestLocal(GetType(), Name + "Faces", false));
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Plantlike);
 	}
 
 	public override void SetDefaults()

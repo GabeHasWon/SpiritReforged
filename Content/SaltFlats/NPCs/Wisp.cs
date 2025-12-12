@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -192,7 +193,12 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
-	public override void SetStaticDefaults() => NPCID.Sets.CountsAsCritter[Type] = true;
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.CountsAsCritter[Type] = true;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
+	}
 
 	public override void SetDefaults()
 	{
