@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.WorldGeneration;
 
-public readonly struct Decorator(Rectangle bounds)
+public readonly struct Decorator(Rectangle bounds, WorldMethods.GenDelegate commonDelegate = null)
 {
 	private readonly record struct ObjectInfo(WorldMethods.GenDelegate Condition, int Count)
 	{
@@ -10,6 +10,7 @@ public readonly struct Decorator(Rectangle bounds)
 	}
 
 	public readonly Rectangle bounds = bounds;
+	private readonly WorldMethods.GenDelegate _commonDelegate = commonDelegate;
 	private readonly HashSet<ObjectInfo> _objects = [];
 
 	/// <summary> Queues a task to randomly run within <see cref="bounds"/>. </summary>
@@ -39,11 +40,13 @@ public readonly struct Decorator(Rectangle bounds)
 	public readonly void Run()
 	{
 		HashSet<ObjectInfo> objects = _objects;
+		WorldMethods.GenDelegate del = _commonDelegate;
+
 		WorldMethods.GenerateSquared((i, j) =>
 		{
 			foreach (ObjectInfo item in objects)
 			{
-				if (item.NoCount && item.Condition.Invoke(i, j))
+				if (item.NoCount && del?.Invoke(i, j) != false && item.Condition.Invoke(i, j))
 					return true;
 			}
 
@@ -53,7 +56,7 @@ public readonly struct Decorator(Rectangle bounds)
 		foreach (ObjectInfo item in objects)
 		{
 			if (!item.NoCount)
-				WorldMethods.Generate(item.Condition.Invoke, item.Count, out _, bounds);
+				WorldMethods.Generate((i, j) => del?.Invoke(i, j) != false && item.Condition.Invoke(i, j), item.Count, out _, bounds);
 		}
 	}
 }

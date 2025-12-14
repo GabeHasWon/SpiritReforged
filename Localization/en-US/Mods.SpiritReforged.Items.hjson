@@ -2794,6 +2794,11 @@ CrackedSandstoneItem: {
 	Tooltip: ""
 }
 
+StoneReliquaryItem: {
+	DisplayName: Stone Reliquary
+  Tooltip: ""
+}
+
 SaltFlatsCampfireItem: {
 	DisplayName: Salt Campfire
 	Tooltip: "{$ItemTooltip.Campfire}"
