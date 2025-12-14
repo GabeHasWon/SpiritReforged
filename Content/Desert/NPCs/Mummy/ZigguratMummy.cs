@@ -1,20 +1,29 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Biome;
+using SpiritReforged.Content.Desert.Tiles;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.NPCs.Mummy;
 
+[AutoloadBanner]
 internal class ZigguratMummy : ModNPC
 {
+	private class TrapSpawnedRule(bool isTrapped) : IItemDropRuleCondition
+	{
+		public bool CanDrop(DropAttemptInfo info) => isTrapped == (info.npc.ai[1] == 1 && info.npc.type == ModContent.NPCType<ZigguratMummy>());
+		public bool CanShowItemDropInUI() => !isTrapped; // Only the default drops will appear instead of having duplicates
+		public string GetConditionDescription() => "";
+	}
+
 	private static readonly Asset<Texture2D> Alt = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(ZigguratMummy), "ZigguratMummy_Alt"));
 
 	private ref float Variant => ref NPC.ai[0];
 
-	public override void SetStaticDefaults()
-	{
-		Main.npcFrameCount[Type] = 15;
-	}
+	private bool TrapSpawned => NPC.ai[1] == 1;
+
+	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 15;
 
 	public override void SetDefaults()
 	{
@@ -105,9 +114,23 @@ internal class ZigguratMummy : ModNPC
 		}
 	}
 
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() 
+		|| spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>() ? 0.005f : 0;
+	   
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		LeadingConditionRule isTrapSpawned = new(new TrapSpawnedRule(true));
+		isTrapSpawned.OnSuccess(ItemDropRule.OneFromOptions(4, ItemID.FastClock, ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants));
+		LeadingConditionRule notTrapSpawned = new(new TrapSpawnedRule(false));
+		notTrapSpawned.OnFailedConditions(ItemDropRule.OneFromOptions(20, ItemID.FastClock, ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants));
+		npcLoot.Add(isTrapSpawned);
+		npcLoot.Add(notTrapSpawned);
+	}
+
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		Texture2D tex = (Variant == 1 ? TextureAssets.Npc[Type] : Alt).Value;
+		bool isVariant = NPC.IsABestiaryIconDummy ? Main.GameUpdateCount % 600 < 300 : Variant == 1;
+		Texture2D tex = (isVariant ? TextureAssets.Npc[Type] : Alt).Value;
 		Rectangle rect = NPC.frame;
 		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		Vector2 position = NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY);
@@ -115,7 +138,7 @@ internal class ZigguratMummy : ModNPC
 		rect.Y *= frameHeight;
 		rect.Height = frameHeight + 2;
 
-		if (Variant == 1)
+		if (isVariant)
 			position.Y -= 6;
 
 		Main.EntitySpriteDraw(tex, position, rect, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effects, 0);

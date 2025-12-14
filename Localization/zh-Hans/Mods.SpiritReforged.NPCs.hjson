@@ -528,6 +528,6 @@ Wisp: {
 }
 
 ZigguratMummy: {
-	// DisplayName: Ziggurat Mummy
-	// Entry: ""
+	// DisplayName: Decrepit Mummy
+	// Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
 }
