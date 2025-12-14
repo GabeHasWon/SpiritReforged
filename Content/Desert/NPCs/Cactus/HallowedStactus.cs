@@ -22,5 +22,5 @@ public class HallowedStactus : Stactus
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + "Head3").Type);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!spawnInfo.Player.ZoneDesert || !spawnInfo.Player.ZoneHallow || spawnInfo.SpawnTileType != TileID.Pearlsand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!spawnInfo.Player.ZoneDesert || !spawnInfo.Player.ZoneHallow || spawnInfo.SpawnTileType != TileID.Pearlsand) ? 0 : SpawnCondition.OverworldHallow.Chance * 0.8f;
 }

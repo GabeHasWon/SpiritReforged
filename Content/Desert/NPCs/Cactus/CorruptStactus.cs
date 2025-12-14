@@ -45,5 +45,5 @@ public class CorruptStactus : Stactus
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>(Name + "Head3").Type);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!spawnInfo.Player.ZoneDesert || !spawnInfo.Player.ZoneCorrupt || spawnInfo.SpawnTileType != TileID.Ebonsand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!spawnInfo.Player.ZoneDesert || !spawnInfo.Player.ZoneCorrupt || spawnInfo.SpawnTileType != TileID.Ebonsand) ? 0 : SpawnCondition.Corruption.Chance * 0.8f;
 }

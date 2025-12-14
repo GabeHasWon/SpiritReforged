@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -121,6 +122,8 @@ public abstract class Stactus : ModNPC, IDeathCount
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
 		Faces.Add(Type, DrawHelpers.RequestLocal(GetType(), Name + "Faces", false));
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Plantlike);
 	}
 
 	public override void SetDefaults()
@@ -311,6 +314,12 @@ public abstract class Stactus : ModNPC, IDeathCount
 				NPC.netUpdate = true;
 			}
 		}
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		if ((Main.expertMode || Main.masterMode) && Main.rand.NextBool(6))
+			target.AddBuff(BuffID.Bleeding, 60 * 30);
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;

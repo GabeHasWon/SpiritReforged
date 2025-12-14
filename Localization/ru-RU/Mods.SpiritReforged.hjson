@@ -24,6 +24,7 @@ Conditions: {
 	Submerged: Полностью погружённый в воду
 	// InSaltFlats: In Salt Flats
 	// IsPrickly: When prickly
+	// InZiggurat: In the Ziggurat
 }
 
 Misc: {

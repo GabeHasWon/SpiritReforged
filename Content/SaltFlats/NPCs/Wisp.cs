@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -192,7 +193,12 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
-	public override void SetStaticDefaults() => NPCID.Sets.CountsAsCritter[Type] = true;
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.CountsAsCritter[Type] = true;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
+	}
 
 	public override void SetDefaults()
 	{
@@ -201,9 +207,9 @@ public class Wisp : ModNPC
 		NPC.noGravity = true;
 		NPC.lifeMax = 30;
 		NPC.catchItem = 0;
-		NPC.value = 100;
-		NPC.HitSound = SoundID.NPCHit1 with { Pitch = 0.25f };
-		NPC.DeathSound = SoundID.NPCDeath1 with { Pitch = 0.5f };
+		NPC.value = 110;
+		NPC.HitSound = SoundID.LiquidsHoneyLava with { Volume = 6f };
+		NPC.DeathSound = SoundID.Item118 with { Pitch = 1.2f, Volume = 1.75f };
 		NPC.scale = Main.rand.NextFloat(0.75f, 1.25f);
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
@@ -237,6 +243,8 @@ public class Wisp : ModNPC
 			{
 				if (!Main.dedServ && !_isHostile)
 				{
+					SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot with { PitchVariance = 0.5f }, NPC.Center);
+
 					_trails = null;
 					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.OrangeRed.Additive(100), 1f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
 					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.White.Additive(), 0.5f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
@@ -411,7 +419,7 @@ public class Wisp : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		Color coreColor = _isHostile ? Color.Red : Color.Cyan;
+		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
 		Lighting.AddLight(NPC.Center, coreColor.ToVector3());
 
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;

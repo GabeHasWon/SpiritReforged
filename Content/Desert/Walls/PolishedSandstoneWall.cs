@@ -8,15 +8,6 @@ public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, IAutoloadWall
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("PolishedSandstoneWallUnsafe").Type;
 
-	public void AddItemRecipes(ModItem item)
-	{
-		int pillar = AutoContent.ItemType<RuinedSandstonePillar>();
-		int type = item.Type;
-
-		item.CreateRecipe(4).AddIngredient(pillar).AddTile(TileID.WorkBenches).Register();
-		Recipe.Create(pillar).AddIngredient(type, 4).AddTile(TileID.WorkBenches).Register();
-	}
-
 	public override void SetStaticDefaults()
 	{
 		Main.wallHouse[Type] = true;
