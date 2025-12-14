@@ -7,6 +7,12 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public sealed class StoneReliquary : ChestTile, ICustomContainer
 {
+	public override void StaticDefaults()
+	{
+		base.StaticDefaults();
+		DustType = DustID.Stone;
+	}
+
 	public override void AddObjectData()
 	{
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
@@ -30,9 +36,15 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer
 	}
 
 	//Prevents this multitile chest from being destroyed when full
-	public override bool CanKillTile(int i, int j, ref bool blockDamaged) => !HasChest(i, j, out Chest chest) || chest.item.All(x => x is not Item item || item.type == ItemID.None || item.stack == 0);
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+	{
+		if (HasChest(i, j, out Chest chest))
+			return chest.item.All(x => x is not Item item || item.type == ItemID.None || item.stack == 0);
 
-	private static bool HasChest(int i, int j, out Chest chest)
+		return true;
+	}
+
+	public static bool HasChest(int i, int j, out Chest chest)
 	{
 		TileExtensions.GetTopLeft(ref i, ref j);
 		if (Chest.FindChest(i, j) is int search && search != -1)

@@ -10,6 +10,7 @@ public interface ICustomContainer
 		{
 			On_Player.IsInInteractionRangeToMultiTileHitbox += ModifyInteractionRange;
 			On_TileDrawing.CacheSpecialDraws_Part2 += PreventContainerAnimation;
+			On_WorldGen.IsAContainer += ForceIsAContainer;
 		}
 
 		private static bool ModifyInteractionRange(On_Player.orig_IsInInteractionRangeToMultiTileHitbox orig, Player self, int chestPointX, int chestPointY)
@@ -47,6 +48,16 @@ public interface ICustomContainer
 				return; //Skip orig
 
 			orig(self, tileX, tileY, drawData, skipDraw);
+		}
+
+		private static bool ForceIsAContainer(On_WorldGen.orig_IsAContainer orig, Tile t)
+		{
+			bool value = orig(t);
+
+			if (TileLoader.GetTile(t.TileType) is ICustomContainer)
+				return true;
+
+			return value;
 		}
 
 		public void Unload() { }
