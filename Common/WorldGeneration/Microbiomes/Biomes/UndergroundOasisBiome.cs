@@ -45,6 +45,8 @@ public class UndergroundOasisBiome : Microbiome
 	{
 		NPCEvents.OnEditSpawnRate += ReduceSpawns;
 		PlayerEvents.OnPostUpdateEquips += HealInSprings;
+		PlayerEvents.OnPostUpdateEquips += HappyInOasis;
+
         MicrobiomeSystem.PopulateMicrobiomes += static () =>
         {
             OasisAreas.Clear();
@@ -54,6 +56,12 @@ public class UndergroundOasisBiome : Microbiome
                     OasisAreas.Add(oasis.Rectangle);
             }
         };
+	}
+
+	private void HappyInOasis(Player player)
+	{
+		if (InUndergroundOasis(player))
+			player.AddBuff(BuffID.Sunflower, 2);
 	}
 
 	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
