@@ -1,7 +1,7 @@
 CommonTooltips: {
 	Backpack:
 		'''
-		Holds 4 items
+		Holds {0} items
 		You must empty this before taking it off
 		'''
 	Shimmerable: "{0} Transforms in shimmer"
@@ -2677,7 +2677,7 @@ TallSandstoneShelfItem: {
 	Tooltip: ""
 }
 
-SaltFlatsTorchItem: {
+SaltTorchItem: {
 	DisplayName: Salt Torch
 	Tooltip: ""
 }
@@ -2728,3 +2728,85 @@ AncientBooksItem: {
 }
 
 ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
+
+SaltGlassWallItem: {
+	DisplayName: Salt Glass Wall
+	Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	DisplayName: Salt Panel Wall
+	Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	DisplayName: Salt Plate Wall
+	Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	DisplayName: Salt Fireplace
+	Tooltip: ""
+}
+
+SaltGlassItem: {
+	DisplayName: Salt Glass
+	Tooltip: ""
+}
+
+SaltPanelItem: {
+	DisplayName: Salt Panel
+	Tooltip: ""
+}
+
+SaltPlateItem: {
+	DisplayName: Salt Plate
+	Tooltip: ""
+}
+
+SaltCrate: {
+	DisplayName: Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	DisplayName: Brine Crate
+	Tooltip: ""
+}
+
+SaltCrateRestored: {
+	DisplayName: Restored Salted Crate
+	Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: Restored Brine Crate
+	Tooltip: ""
+}
+
+GraverobberBannerItem.DisplayName: Graverobber Banner
+
+GiantBag: {
+	DisplayName: Loot Bag
+	Tooltip: "{$CommonTooltips.Backpack}"
+}
+
+CrackedSandstoneItem: {
+	DisplayName: Cracked Sandstone
+	Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	DisplayName: Stone Reliquary
+  Tooltip: ""
+}
+
+SaltFlatsCampfireItem: {
+	DisplayName: Salt Campfire
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFlatsFountainItem: {
+	DisplayName: Salt Flats Fountain
+	Tooltip: ""
+}

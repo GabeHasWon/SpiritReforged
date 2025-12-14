@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class RedSandstoneSlab : ModTile, IAutoloadTileItem
 {
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddTile(TileID.HeavyWorkBench).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;

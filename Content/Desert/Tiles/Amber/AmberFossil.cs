@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.DragonFossil;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -51,6 +52,7 @@ public class AmberFossil : ShiningAmber
 		RandomItem.AddRange(1f, Recipes.GetTypesFromGroup(RecipeGroupID.Butterflies));
 		RandomItem.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
 		RandomItem.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
+		RandomItem.AddRange(0.04f, ModContent.ItemType<TinyDragon>());
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)

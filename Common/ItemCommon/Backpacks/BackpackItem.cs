@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
-internal abstract class BackpackItem : ModItem
+public abstract class BackpackItem : ModItem
 {
 	protected override bool CloneNewInstances => true;
 
@@ -12,6 +12,8 @@ internal abstract class BackpackItem : ModItem
 
 	/// <summary> How many slots this backpack has. </summary>
 	protected abstract int SlotCap { get; }
+
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCap);
 
 	public override ModItem Clone(Item newEntity)
 	{

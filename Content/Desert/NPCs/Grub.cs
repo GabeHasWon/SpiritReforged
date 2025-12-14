@@ -1,6 +1,4 @@
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;

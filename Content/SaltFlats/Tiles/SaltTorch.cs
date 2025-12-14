@@ -7,15 +7,15 @@ using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltFlatsTorch : TorchTile
+public class SaltTorch : TorchTile
 {
-	public override Vector3 Light => ModContent.GetInstance<SaltFlatsTorchItem>().Light;
+	public override Vector3 Light => ModContent.GetInstance<SaltTorchItem>().Light;
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
-		DustType = DustID.WhiteTorch;
+		DustType = DustID.PurpleTorch;
 	}
 
 	public override float GetTorchLuck(Player player)
@@ -33,10 +33,10 @@ public class SaltFlatsTorch : TorchTile
 	}
 }
 
-public class SaltFlatsTorchItem : TorchItem
+public class SaltTorchItem : TorchItem
 {
-	public override int TileType => ModContent.TileType<SaltFlatsTorch>();
+	public override int TileType => ModContent.TileType<SaltTorch>();
 	public override Vector3 Light => (Color.MediumPurple * 1.1f).ToVector3();
 
-	public override void AddRecipes() => CreateRecipe(3).AddIngredient(ItemID.Gel).AddIngredient(AutoContent.ItemType<Drywood>()).AddIngredient(AutoContent.ItemType<SaltBlockDull>()).Register();
+	public override void AddRecipes() => CreateRecipe(3).AddIngredient(ItemID.Gel).AddIngredient(AutoContent.ItemType<Drywood>()).AddRecipeGroup("Salt").Register();
 }

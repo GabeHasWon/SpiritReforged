@@ -1,4 +1,6 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -168,6 +170,12 @@ public class Dragonsong : ModItem
 			Projectile.UpdateFrame(32, 0);
 		}
 
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if(Main.rand.NextBool(3))
+				target.AddBuff(BuffID.OnFire, 180);
+		}
+
 		public override void OnKill(int timeLeft)
 		{
 			if (timeLeft > 0)
@@ -196,7 +204,13 @@ public class Dragonsong : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
+		SpiritSets.ShimmerDisplayResult[Type] = ModContent.ItemType<TinyDragon>();
+
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
+	}
 
 	public override void SetDefaults()
 	{
@@ -210,8 +224,8 @@ public class Dragonsong : ModItem
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
-		Item.value = Item.sellPrice(0, 1, 0, 0);
-		Item.rare = ItemRarityID.Blue;
+		Item.value = Item.sellPrice(0, 1, 50, 0);
+		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<DragonFireball>();
 		Item.shootSpeed = 8f;
 		Item.autoReuse = true;

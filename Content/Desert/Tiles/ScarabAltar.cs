@@ -26,7 +26,7 @@ public class ScarabAltar : ModTile, IAutoloadTileItem
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
-		if (TileObjectData.IsTopLeft(i, j) && Main.rand.NextBool(10))
+		if (TileObjectData.IsTopLeft(i, j) && Main.rand.NextBool(10) && Lighting.Brightness(i + 1, j) > 0.4f)
 		{
 			var dust = Dust.NewDustDirect(new Vector2(i, j) * 16, 64, 16, DustID.GoldCoin);
 			dust.noGravity = true;

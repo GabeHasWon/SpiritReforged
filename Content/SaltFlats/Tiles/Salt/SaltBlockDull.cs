@@ -8,14 +8,12 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public class SaltBlockDull : SaltBlock
 {
-
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(ModContent.TileType<SaltBlockReflective>());
+		this.Merge(ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
 		AddMapEntry(new Color(180, 170, 170));
 	}
 

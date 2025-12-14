@@ -112,6 +112,6 @@ public class BangleOfStrength : EquippableItem
 	{
 		Item.DefaultToAccessory();
 		Item.rare = ItemRarityID.Blue;
-		Item.value = Item.sellPrice(gold: 1, silver: 75);
+		Item.value = Item.sellPrice(silver: 90);
 	}
 }

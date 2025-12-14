@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Content.SaltFlats.Biome;
-using SpiritReforged.Content.Savanna.Biome;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -7,6 +6,7 @@ internal class SaltMenuTheme : ModMenu
 {
 	public override ModSurfaceBackgroundStyle MenuBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/TitleTheme");
+	public override string DisplayName => Language.GetTextValue("Mods.SpiritReforged.Biomes.SaltBiome.DisplayName");
 
 	public override void OnSelected() => SpiritLogo.Reset();
 

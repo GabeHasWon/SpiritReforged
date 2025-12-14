@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class TallSandstoneShelf : ModTile, IAutoloadTileItem
 {
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 10).AddIngredient(AutoContent.ItemType<AncientBooks>()).AddTile(TileID.Sawmill).Register();
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolidTop[Type] = true;
