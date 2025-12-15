@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using System;
 using System.IO;
 using Terraria.DataStructures;
@@ -240,6 +242,9 @@ public class ScarabeusBoss : ModNPC
 
 		else
 		{
+			NPC.velocity.X = 0;
+			_curFrame.Y = 0;
+
 			AITimer++;
 
 			if (AITimer > restTime)
@@ -357,7 +362,7 @@ public class ScarabeusBoss : ModNPC
 				if(NPC.velocity.Y < 12)
 					NPC.velocity.Y += 0.08f;
 
-				NPC.rotation += NPC.velocity.X / 160;
+				NPC.rotation += NPC.velocity.X / 120;
 			}
 		}
 
@@ -375,7 +380,7 @@ public class ScarabeusBoss : ModNPC
 				if (NPC.velocity.Y < -4)
 					NPC.velocity.Y += 0.08f;
 
-				NPC.rotation += NPC.velocity.X / 160;
+				NPC.rotation += NPC.velocity.X / 120;
 
 				if (AITimer > 30)
 					NPC.velocity.X *= 0.9f;
@@ -405,6 +410,7 @@ public class ScarabeusBoss : ModNPC
 
 		else //rest before next attack
 		{
+			_curFrame.Y = 0;
 			NPC.rotation = 0;
 			AITimer++;
 
@@ -429,7 +435,7 @@ public class ScarabeusBoss : ModNPC
 
 		if(AITimer < digStartTime)
 		{
-			//dig into ground anim here
+			//dig into ground anim here, placeholder rn
 			NPC.velocity = Vector2.Zero;
 			NPC.position.Y += 0.5f;
 			NPC.alpha += (255 / digStartTime);
@@ -440,7 +446,7 @@ public class ScarabeusBoss : ModNPC
 			//temp for hiding boss
 			_inGround = true;
 			NPC.alpha = 0;
-			NPC.position = player.Center;
+			NPC.Center = FindGroundFromPosition(player.Center);
 		}
 
 		else if(AITimer < undergroundTime + digStartTime)
@@ -448,7 +454,23 @@ public class ScarabeusBoss : ModNPC
 			//set npc's position to tiles under player, moving around left and right, before settling on a position
 			//particles spawn from the tile where the npc is located
 
-			NPC.Center = player.Center;
+			NPC.noGravity = true;
+			NPC.noTileCollide = true;
+			NPC.velocity.X = (float)Math.Sin(AITimer * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(player.Center).X;
+			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
+
+			if(Main.rand.NextBool(4) && !Main.dedServ)
+			{
+				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, Color.LightGoldenrodYellow, Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30) 
+				{ 
+					Pixellate = true, 
+					DissolveAmount = 1, 
+					SecondaryColor = Color.SandyBrown,
+					TertiaryColor = Color.SaddleBrown,
+					PixelDivisor = 3,
+					ColorLerpExponent = 0.5f
+				});
+			}
 		}
 
 		else if(AITimer == undergroundTime + digStartTime)
@@ -461,8 +483,10 @@ public class ScarabeusBoss : ModNPC
 
 		else if (AITimer < undergroundTime + digStartTime + airTime)
 		{
-			NPC.velocity.Y += 0.02f;
+			NPC.noGravity = false;
+			NPC.noTileCollide = false;
 
+			//curl anim here
 		}
 
 		else
@@ -545,6 +569,31 @@ public class ScarabeusBoss : ModNPC
 		return isValid;
 	}
 
+	/// <summary>
+	/// From a given input, translates the input to the surfacemost tile on the ground <br/>
+	/// If the given input is inside the ground, instead moves upwards until reaching the surface
+	/// </summary>
+	/// <param name="input"></param>
+	/// <returns></returns>
+	private static Vector2 FindGroundFromPosition(Vector2 input)
+	{
+		Point tile = input.ToTileCoordinates();
+
+		while (!Collision.SolidTiles(tile.ToWorldCoordinates(), 1, 1))
+		{
+			tile.Y += 1;
+		}
+
+		while (Collision.SolidTiles(tile.ToWorldCoordinates(), 1, 1))
+		{
+			tile.Y -= 1;
+		}
+
+		tile.Y += 1;
+
+		return tile.ToWorldCoordinates();
+	}
+
 	private void CheckPlatform(Player player)
 	{
 		bool onplatform = true;
@@ -572,11 +621,6 @@ public class ScarabeusBoss : ModNPC
 
 		if (NPC.velocity.Y >= 0f)
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY, 1, flag15, 1);
-	}
-
-	private void UpdateFrame(int speed, int minframe, int maxframe, bool usesspeed = false) //method of updating the frame without copy pasting this every time animation is needed
-	{
-
 	}
 
 	private void SyncNPC()
