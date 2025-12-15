@@ -1,8 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -309,15 +312,31 @@ public static class ZigguratRooms
 			PlaceColumn(new(Bounds.Right - 11, Bounds.Bottom - 4), 2);
 
 			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Left + 10, Bounds.Top), new Shapes.Rectangle(Bounds.Right - Bounds.Left - 12, Bounds.Height), Actions.Chain(
+				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickCrackedWall>()), new Modifiers.Dither(0.4f), new Actions.PlaceWall(WallID.Sandstone)));
 			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
+
+			int chestX = Bounds.Center.X + Main.rand.Next(-2, 3);
+			int chestY = Bounds.Center.Y;
+			WorldMethods.FindGround(chestX, ref chestY);
+			LapisSet set = ModContent.GetInstance<LapisSet>();
+			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)set.GetTileType(FurnitureSet.Types.Chest), false, 0);
+
+			if (chestIndex != -1)
+				ZigguratBiome.PopulateChest(Main.chest[chestIndex]);
+
+			WeightedRandom<int> coinStashRandom = new(WorldGen.genRand);
+			coinStashRandom.Add(16, 0.1f);
+			coinStashRandom.Add(17, 0.5f);
+			coinStashRandom.Add(18, 0.4f);
 
 			//Fill with coin piles
 			WorldMethods.GenerateSquared((i, j) =>
 			{
 				float noise = Noise.NoiseSystem.PerlinStatic(i, j) + 2;
 
-				if (Bounds.Height - (j - Bounds.Top) < noise && !WorldGen.SolidTile3(i, j))
-					WorldGen.PlaceTile(i, j, TileID.GoldCoinPile, true);
+				if (!Main.tile[i, j].HasTile && WorldGen.SolidTile3(i, j + 1) && WorldGen.genRand.NextBool(4))
+					WorldMethods.PlaceSmallPile(i, j, 1, coinStashRandom.Get());
 
 				return false;
 			}, out _, Bounds);

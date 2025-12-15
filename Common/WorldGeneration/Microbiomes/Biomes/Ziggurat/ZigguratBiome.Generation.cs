@@ -299,7 +299,6 @@ public partial class ZigguratBiome : Microbiome
 			var decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
 				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
-				.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2))
 				.Enqueue((i, j) =>
 				{
 					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
@@ -327,6 +326,7 @@ public partial class ZigguratBiome : Microbiome
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
 				decorator.Enqueue(TileID.CatBast, 1);
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
 			}
 			else
 			{
@@ -351,6 +351,9 @@ public partial class ZigguratBiome : Microbiome
 					return false;
 				}, 0);
 			}
+
+			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2));
 
 			decorator.Run();
 		}
@@ -439,7 +442,7 @@ public partial class ZigguratBiome : Microbiome
 		return false;
 	}
 
-	private static void PopulateChest(Chest chest)
+	internal static void PopulateChest(Chest chest)
 	{
 		int[] main = [ItemID.AncientChisel, ItemID.SandBoots];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
