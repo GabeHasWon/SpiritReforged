@@ -41,6 +41,9 @@ public class Dragonsong : ModItem
 
 			Projectile.UpdateFrame(10, 3);
 
+			if (Counter % timeLeftMax < timeLeftMax / 3)
+				holdDistance -= (int)((timeLeftMax - Counter % timeLeftMax) * 0.25f);
+
 			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 5 * -Projectile.direction).RotatedBy(rotation);
 
 			owner.direction = Projectile.direction = Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
@@ -72,13 +75,24 @@ public class Dragonsong : ModItem
 					}
 
 					if (!Main.dedServ)
-						ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.Normalize(Projectile.velocity) * 1.5f, Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+					{
+						SoundEngine.PlaySound(Fire with { Pitch = 0.2f, Volume = 0.5f }, position);
+						SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 0.8f, PitchVariance = 0.2f, Volume = 0.2f }, position);
+
+						for (int i = 0; i < 3; i++)
 						{
-							TertiaryColor = Color.PaleVioletRed,
-							Pixellate = true,
-							PixelDivisor = 3,
-							Layer = ParticleLayer.AbovePlayer
-						});
+							Vector2 velocity = (Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(2f, 5f)).RotatedByRandom(1);
+							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, velocity, Color.Yellow, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
+							{
+								TertiaryColor = Color.OrangeRed,
+								Pixellate = true,
+								PixelDivisor = 2,
+								Intensity = 3f,
+								ColorLerpExponent = 1.5f,
+								Layer = ParticleLayer.AbovePlayer
+							});
+						}
+					}
 				}
 			}
 			else if (Main.rand.NextBool())
@@ -103,12 +117,6 @@ public class Dragonsong : ModItem
 			if (player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _))
 			{
 				Projectile.NewProjectile(source, position, velocity, type, Projectile.damage, Projectile.knockBack, player.whoAmI);
-
-				if (!Main.dedServ)
-				{
-					SoundEngine.PlaySound(Fire with { Pitch = 0.2f, Volume = 0.5f }, position);
-					SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 0.4f, Volume = 0.3f }, position);
-				}
 			}
 			else
 			{

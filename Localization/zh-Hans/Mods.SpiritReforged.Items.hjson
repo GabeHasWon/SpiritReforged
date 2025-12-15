@@ -2796,7 +2796,7 @@ CrackedSandstoneItem: {
 
 StoneReliquaryItem: {
 	// DisplayName: Stone Reliquary
-  // Tooltip: ""
+	// Tooltip: ""
 }
 
 SaltFlatsCampfireItem: {
