@@ -1,8 +1,10 @@
-﻿using System.IO;
-using Terraria.GameContent.Bestiary;
-using SpiritReforged.Common.Visuals.Glowmasks;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using System;
+using System.IO;
+using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 
@@ -17,6 +19,7 @@ public class ScarabeusBoss : ModNPC
 
 	private enum AIPatterns
 	{
+		SpawnAnimation,
 		Walking,
 		Leap,
 		RollDash,
@@ -53,7 +56,7 @@ public class ScarabeusBoss : ModNPC
 		NPC.defense = 10;
 		NPC.lifeMax = 1750;
 		NPC.aiStyle = -1;
-		Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/ScarabeusBoss");
+		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		NPC.boss = true;
 		NPC.npcSlots = 15f;
 		NPC.HitSound = SoundID.NPCHit31;
@@ -84,6 +87,10 @@ public class ScarabeusBoss : ModNPC
 
 		switch ((AIPatterns)CurrentPattern)
 		{
+			case AIPatterns.SpawnAnimation:
+				SpawnAnimation(player);
+				break;
+
 			case AIPatterns.Walking:
 				Walking(player);
 				break;
@@ -110,9 +117,36 @@ public class ScarabeusBoss : ModNPC
 		}
 	}
 
+	private void SpawnAnimation(Player player)
+	{
+		const int undergroundTime = 120;
+		const int roarTime = 120;
+
+		/*Todo: 
+		 * foreground scarab particles fly across the screen from bottom left to top right
+		 * screenshake
+		 * ground beneath player starts emitting particles
+		 * scarab bursts out of ground and roars
+		*/
+
+		AITimer++;
+
+		if(AITimer == undergroundTime)
+		{
+			NPC.Center = player.Center;
+			NPC.noTileCollide = false;
+			NPC.noGravity = false;
+			NPC.velocity.Y = -6;
+			_curFrame.Y = 0;
+		}
+
+		if(AITimer >= undergroundTime + roarTime)
+			NextAttack(player, AIPatterns.Walking);
+	}
+
 	private void Walking(Player player)
 	{
-		int maxWalkTime = 180;
+		int maxWalkTime = 360;
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.knockBackResist = 0.7f;
@@ -121,13 +155,18 @@ public class ScarabeusBoss : ModNPC
 		CheckPlatform(player);
 
 		//Check if grounded
-		if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+		if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 		{
 			//Only move if too far from the player, try to move away a little bit if too close
 
-			if(Math.Abs(NPC.position.X - player.position.X) > 120 && Math.Abs(NPC.velocity.X) < 12)
+			if(Math.Abs(NPC.position.X - player.position.X) > 100 && Math.Abs(NPC.velocity.X) < 12)
 				NPC.velocity.X += Math.Sign(NPC.DirectionTo(player.position).X) * 0.1f;
+
+			if(Math.Abs(NPC.position.X - player.position.X) < 100)
+				NPC.velocity.X -= Math.Sign(NPC.DirectionTo(player.position).X) * 0.3f;
 		}
+
+		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
 
 		StepUp(player);
 
@@ -161,7 +200,7 @@ public class ScarabeusBoss : ModNPC
 			_curFrame.Y = 0;
 
 			//Check if grounded
-			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 			{
 				AITimer++;
 				//Slow down for a bit, then calculate mortar velocity to jump towards player
@@ -172,7 +211,9 @@ public class ScarabeusBoss : ModNPC
 
 				if (AITimer == windupTime)
 				{
-					NPC.velocity = NPC.GetArcVel(player.Center + player.velocity * 6, 0.4f, 12, true);
+					Vector2 desiredPos = player.Center + player.velocity * 6 + (NPC.direction * 112 * Vector2.UnitX);
+					NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 12, true);
+					NPC.noTileCollide = true;
 					_jumpState++;
 					SyncNPC();
 				}
@@ -183,11 +224,17 @@ public class ScarabeusBoss : ModNPC
 		{
 			_curFrame.Y = 2;
 
-			if(NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0)
+			if (NPC.velocity.Y < 0)
+				NPC.noTileCollide = true;
+			else
+				NPC.noTileCollide = false;
+
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0)
 			{
 				_jumpState++;
 				//vfx and sfx and shockwaves here
 				SyncNPC();
+				AITimer = 0;
 			}
 		}
 
@@ -207,8 +254,8 @@ public class ScarabeusBoss : ModNPC
 
 	private void RollDash(Player player)
 	{
-		const int windupTime = 60;
-		const int dashTime = 30;
+		const int windupTime = 80;
+		const int dashTime = 50;
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
@@ -221,33 +268,38 @@ public class ScarabeusBoss : ModNPC
 		if(AITimer < windupTime)
 		{
 			float windupProgress = EaseFunction.EaseCubicOut.Ease(AITimer / windupTime);
-			NPC.velocity.X = NPC.direction * (1 - windupProgress);
-			NPC.rotation += windupProgress * 0.08f;
+			NPC.velocity.X = NPC.direction * (1 - windupProgress) * -8;
+			NPC.rotation += windupProgress * 0.3f;
 		}
 
 		if(AITimer == windupTime)
 		{
-			NPC.velocity.X = -NPC.direction * 10;
+			NPC.velocity.X = NPC.direction * 36;
 			//sfx and vfx here
 		}
 
 		if(AITimer > windupTime)
 		{
 			NPC.rotation += 0.08f;
+			NPC.velocity.X *= 0.96f;
 			//sfx here
+
+			if (NPC.collideX)
+				NextAttack(player, AIPatterns.BounceGroundPound);
 		}
 
 		if(AITimer >= windupTime + dashTime)
 		{
 			//end attack
-			NextAttack(player);
+			NPC.velocity.X /= 2;
+			NextAttack(player, AIPatterns.Walking);
 			NPC.rotation = 0;
 		}
 	}
 
 	private void GroundSlam(Player player)
 	{
-		const int windupTime = 60;
+		const int windupTime = 80;
 		const int restTime = 45;
 
 		NPC.spriteDirection = NPC.direction;
@@ -260,7 +312,7 @@ public class ScarabeusBoss : ModNPC
 		if(AITimer < windupTime)
 		{
 			_curFrame.Y = 3;
-
+			NPC.velocity *= 0.7f;
 		}
 
 		if(AITimer == windupTime)
@@ -291,16 +343,16 @@ public class ScarabeusBoss : ModNPC
 		if(_timesBounced < maxBounces)
 		{
 			//Check if grounded
-			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 			{
 				_timesBounced++;
-				NPC.velocity.Y = -20;
+				NPC.velocity.Y = -16;
 			}
 
 			else
 			{
 				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.1f);
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
 
 				if(NPC.velocity.Y < 12)
 					NPC.velocity.Y += 0.08f;
@@ -312,32 +364,38 @@ public class ScarabeusBoss : ModNPC
 		else if (_timesBounced == maxBounces)
 		{
 			AITimer++;
+			_curFrame.Y = 2;
 
-			if(AITimer < 120)
+			if (AITimer < 40)
 			{
+				_curFrame.Y = 1;
 				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.1f);
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
 
 				if (NPC.velocity.Y < -4)
 					NPC.velocity.Y += 0.08f;
 
 				NPC.rotation += NPC.velocity.X / 160;
+
+				if (AITimer > 30)
+					NPC.velocity.X *= 0.9f;
 			}
 
-			else if (AITimer < 200)
+			else if (AITimer < 70)
 			{
-				_curFrame.Y = 2;
-				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -1, 0.1f);
-				NPC.rotation = 0;
+				NPC.velocity.X = 0;
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -3, 0.1f);
+				NPC.rotation = -MathHelper.PiOver2;
 			}
 
-			else if (AITimer == 200)
+			else if (AITimer == 70)
 			{
 				NPC.velocity.Y = 16;
+				NPC.rotation = MathHelper.PiOver2;
 				//
 			}
 
-			if(AITimer > 200 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y == 0)
+			if(AITimer > 70 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 			{
 				//vfx and sfx and projs here
 
@@ -347,19 +405,20 @@ public class ScarabeusBoss : ModNPC
 
 		else //rest before next attack
 		{
+			NPC.rotation = 0;
 			AITimer++;
 
-			if (AITimer > 90)
+			if (AITimer > 150)
 				NextAttack(player);
 		}
 	}
 
-	private bool _inGround = false;
+	private bool _inGround = true;
 	private void Dig(Player player)
 	{
 		const int digStartTime = 60;
 		const int undergroundTime = 180;
-		const int airTime = 90;
+		const int airTime = 40;
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
@@ -389,7 +448,7 @@ public class ScarabeusBoss : ModNPC
 			//set npc's position to tiles under player, moving around left and right, before settling on a position
 			//particles spawn from the tile where the npc is located
 
-			NPC.position = player.Center;
+			NPC.Center = player.Center;
 		}
 
 		else if(AITimer == undergroundTime + digStartTime)
@@ -397,12 +456,12 @@ public class ScarabeusBoss : ModNPC
 			//pop out of ground here
 			_inGround = false;
 			NPC.rotation = MathHelper.PiOver4;
-			NPC.velocity.Y = -10;
+			NPC.velocity.Y = -16;
 		}
 
 		else if (AITimer < undergroundTime + digStartTime + airTime)
 		{
-			NPC.velocity.Y += 0.08f;
+			NPC.velocity.Y += 0.02f;
 
 		}
 
@@ -417,6 +476,8 @@ public class ScarabeusBoss : ModNPC
 		_inGround = false;
 		_jumpState = 0;
 		_timesBounced = 0;
+		AITimer = 0;
+		NPC.rotation = 0;
 
 		if(pattern != null)
 		{
@@ -428,16 +489,15 @@ public class ScarabeusBoss : ModNPC
 		List<AIPatterns> availablePatterns = [];
 
 		//phase check here to determine what attacks to add
-		availablePatterns.AddRange([AIPatterns.Walking, AIPatterns.RollDash, AIPatterns.Dig, AIPatterns.BounceGroundPound, AIPatterns.Leap]);
+		availablePatterns.AddRange([AIPatterns.Walking, AIPatterns.RollDash, AIPatterns.Dig, AIPatterns.Leap, AIPatterns.GroundedSlam]);
 
 		//Prune the current attack and attacks that shouldn't be used
 		List<AIPatterns> temp = [];
 
 		for(int i = 0; i < availablePatterns.ToArray().Length; i++)
 		{
-			if(pattern.HasValue)
-				if (availablePatterns[i] == pattern.Value)
-					continue;
+			if (availablePatterns[i] == (AIPatterns)CurrentPattern)
+				continue;
 
 			else if (!IsAttackValid(player, availablePatterns[i]))
 				continue;
@@ -471,11 +531,14 @@ public class ScarabeusBoss : ModNPC
 				break;
 
 			case AIPatterns.GroundedSlam:
-				isValid = Collision.SolidTiles(NPC.BottomLeft - Vector2.UnitX * NPC.width, NPC.width / 4, 3, false);
+				isValid = Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false);
 				break;
 
 			case AIPatterns.Dig:
 				isValid =  Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false);
+				if ((AIPatterns)CurrentPattern == AIPatterns.BounceGroundPound)
+					isValid = false;
+
 				break;
 		}
 
