@@ -19,6 +19,11 @@ public class ScarabeusBoss : ModNPC
 
 	private Point _curFrame;
 
+	private bool _contactDmgEnabled = false;
+	private bool _inGround = true;
+
+	private int _jumpState = 0;
+
 	private enum AIPatterns
 	{
 		SpawnAnimation,
@@ -86,6 +91,7 @@ public class ScarabeusBoss : ModNPC
 	{
 		NPC.TargetClosest(true);
 		Player player = Main.player[NPC.target];
+		_contactDmgEnabled = false;
 
 		switch ((AIPatterns)CurrentPattern)
 		{
@@ -183,15 +189,13 @@ public class ScarabeusBoss : ModNPC
 			NextAttack(player);
 	}
 
-	private int _jumpState = 0;
-
-	private bool HasJumped => _jumpState == 1;
-	private bool HasLanded => _jumpState == 2;
-
 	private void Leap(Player player)
 	{
 		const int windupTime = 60;
 		const int restTime = 45;
+
+		bool HasJumped = _jumpState == 1;
+		bool HasLanded = _jumpState == 2;
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.knockBackResist = 0f;
@@ -225,6 +229,7 @@ public class ScarabeusBoss : ModNPC
 		else if (!HasLanded)
 		{
 			_curFrame.Y = 2;
+			_contactDmgEnabled = true;
 
 			if (NPC.velocity.Y < 0)
 				NPC.noTileCollide = true;
@@ -285,6 +290,7 @@ public class ScarabeusBoss : ModNPC
 
 		if(AITimer > windupTime)
 		{
+			_contactDmgEnabled = true;
 			NPC.rotation += 0.08f;
 			NPC.velocity.X *= 0.96f;
 			//sfx here
@@ -322,6 +328,7 @@ public class ScarabeusBoss : ModNPC
 
 		if(AITimer == windupTime)
 		{
+			_contactDmgEnabled = true;
 			_curFrame.Y = 0;
 			//projectiles and sfx here
 		}
@@ -333,7 +340,6 @@ public class ScarabeusBoss : ModNPC
 		}
 	}
 
-	private int _timesBounced = 0;
 	private void BounceGroundPound(Player player)
 	{
 		const int maxBounces = 3;
@@ -345,12 +351,14 @@ public class ScarabeusBoss : ModNPC
 		CheckPlatform(player);
 		_curFrame.Y = 1;
 
-		if(_timesBounced < maxBounces)
+		if(_jumpState < maxBounces)
 		{
+			_contactDmgEnabled = true;
+
 			//Check if grounded
 			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 			{
-				_timesBounced++;
+				_jumpState++;
 				NPC.velocity.Y = -16;
 			}
 
@@ -366,10 +374,11 @@ public class ScarabeusBoss : ModNPC
 			}
 		}
 
-		else if (_timesBounced == maxBounces)
+		else if (_jumpState == maxBounces)
 		{
 			AITimer++;
 			_curFrame.Y = 2;
+			_contactDmgEnabled = true;
 
 			if (AITimer < 40)
 			{
@@ -404,7 +413,7 @@ public class ScarabeusBoss : ModNPC
 			{
 				//vfx and sfx and projs here
 
-				_timesBounced++; //use the variable to track the final ground pound too
+				_jumpState++; //use the variable to track the final ground pound too
 			}
 		}
 
@@ -419,7 +428,6 @@ public class ScarabeusBoss : ModNPC
 		}
 	}
 
-	private bool _inGround = true;
 	private void Dig(Player player)
 	{
 		const int digStartTime = 60;
@@ -485,6 +493,7 @@ public class ScarabeusBoss : ModNPC
 		{
 			NPC.noGravity = false;
 			NPC.noTileCollide = false;
+			_contactDmgEnabled = true;
 
 			//curl anim here
 		}
@@ -499,7 +508,6 @@ public class ScarabeusBoss : ModNPC
 	{
 		_inGround = false;
 		_jumpState = 0;
-		_timesBounced = 0;
 		AITimer = 0;
 		NPC.rotation = 0;
 
@@ -628,6 +636,8 @@ public class ScarabeusBoss : ModNPC
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, NPC.whoAmI);
 	}
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => _contactDmgEnabled;
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
