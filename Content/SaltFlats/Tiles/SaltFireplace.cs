@@ -110,7 +110,7 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 		if (OnFire(i, j))
 		{
 			float pulse = Main.rand.Next(28, 42) * 0.005f + (270 - Main.mouseTextColor) / 700f;
-			(r, g, b) = (0.7f + pulse, 0.7f + pulse, 0.8f + pulse);
+			(r, g, b) = (0.75f + pulse, 0.75f + pulse, 0.95f + pulse);
 		}
 	}
 
