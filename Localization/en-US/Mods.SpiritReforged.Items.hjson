@@ -2815,3 +2815,5 @@ SaltskipperQuestFish: {
 	DisplayName: Saltskipper
 	Tooltip: ""
 }
+
+WispBannerItem.DisplayName: Wisp Banner

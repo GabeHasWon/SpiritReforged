@@ -15,6 +15,7 @@ using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.SaltFlats.NPCs;
 
+[AutoloadBanner]
 public class Wisp : ModNPC
 {
 	public class TwirlyParticle(NPC parent, Color tint) : ABasicParticle
