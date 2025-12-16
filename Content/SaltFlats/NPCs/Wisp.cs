@@ -206,6 +206,7 @@ public class Wisp : ModNPC
 		NPC.Size = new(20);
 		NPC.aiStyle = NPCAIStyleID.Butterfly;
 		NPC.noGravity = true;
+		NPC.chaseable = false;
 		NPC.lifeMax = 30;
 		NPC.catchItem = 0;
 		NPC.value = 110;
