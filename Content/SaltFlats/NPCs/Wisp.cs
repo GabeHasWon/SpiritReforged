@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -192,7 +193,12 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
-	public override void SetStaticDefaults() => NPCID.Sets.CountsAsCritter[Type] = true;
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.CountsAsCritter[Type] = true;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
+	}
 
 	public override void SetDefaults()
 	{
@@ -288,8 +294,16 @@ public class Wisp : ModNPC
 			_counter++;
 		}
 
-		if (Main.dayTime && NPC.position.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.05f) <= 0)
-			NPC.active = false; //Vanish during the day
+		if (Main.dayTime && NPC.Center.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.05f) <= 0)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.active = false; //Vanish during the day
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+			}
+		}
 
 		if (!HoveringOverSurface(10))
 			NPC.velocity.Y += 0.1f;
@@ -323,70 +337,67 @@ public class Wisp : ModNPC
 
 	public override void FindFrame(int frameHeight)
 	{
-		if (!Main.dedServ)
-		{
-			if (Main.rand.NextBool(10))
-				_twirlParticleRenderer.Add(new TwirlyParticle(NPC, _isHostile ? Color.Red : Color.Cyan)
-				{
-					LocalPosition = NPC.Center + new Vector2(Main.rand.NextFloat(22f, 30f), 0).RotatedByRandom(1),
-					Scale = Vector2.One * Main.rand.NextFloat(0.2f, 0.3f),
-					TimeToLive = 100,
-					RotationVelocity = 0.1f
-				});
+		if (Main.dedServ)
+			return;
 
-			_twirlParticleRenderer.Update();
-
-			if (NPC.IsABestiaryIconDummy) //Bestiary shenanigans
+		if (Main.rand.NextBool(10))
+			_twirlParticleRenderer.Add(new TwirlyParticle(NPC, _isHostile ? Color.Red : Color.Cyan)
 			{
-				if (NPC.Hitbox.Contains(Main.MouseScreen.ToPoint()))
-				{
-					if (++_counter == 5)
-						for (int i = 0; i < 3; i++)
-							_twirlParticleRenderer.Add(new PrettySparkleParticle()
-							{
-								LocalPosition = NPC.Center,
-								ColorTint = Color.OrangeRed,
-								Scale = Vector2.One,
-								TimeToLive = 20
-							});
+				LocalPosition = NPC.Center + new Vector2(Main.rand.NextFloat(22f, 30f), 0).RotatedByRandom(1),
+				Scale = Vector2.One * Main.rand.NextFloat(0.2f, 0.3f),
+				TimeToLive = 100,
+				RotationVelocity = 0.1f
+			});
 
-					if (_counter >= 10)
-						_isHostile = true;
-				}
-				else if (_isHostile)
-				{
-					if (--_counter == 5)
-						for (int i = 0; i < 3; i++)
-							_twirlParticleRenderer.Add(new PrettySparkleParticle()
-							{
-								LocalPosition = NPC.Center,
-								ColorTint = Color.OrangeRed,
-								Scale = Vector2.One,
-								TimeToLive = 20
-							});
+		_twirlParticleRenderer.Update();
 
-					if (_counter <= 0)
-						_isHostile = false;
-				}
+		if (NPC.IsABestiaryIconDummy) //Bestiary shenanigans
+		{
+			if (NPC.Hitbox.Contains(Main.MouseScreen.ToPoint()))
+			{
+				if (++_counter == 5)
+					for (int i = 0; i < 3; i++)
+						_twirlParticleRenderer.Add(new PrettySparkleParticle()
+						{
+							LocalPosition = NPC.Center,
+							ColorTint = Color.OrangeRed,
+							Scale = Vector2.One,
+							TimeToLive = 20
+						});
+
+				if (_counter >= 10)
+					_isHostile = true;
+			}
+			else if (_isHostile)
+			{
+				if (--_counter == 5)
+					for (int i = 0; i < 3; i++)
+						_twirlParticleRenderer.Add(new PrettySparkleParticle()
+						{
+							LocalPosition = NPC.Center,
+							ColorTint = Color.OrangeRed,
+							Scale = Vector2.One,
+							TimeToLive = 20
+						});
+
+				if (_counter <= 0)
+					_isHostile = false;
 			}
 		}
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		if (!Main.dedServ)
+		if (!Main.dedServ && NPC.life <= 0)
 		{
-			if (NPC.life <= 0)
-			{
-				for (int i = 0; i < 2; i++)
-					ParticleHandler.SpawnParticle(new EmberParticle(NPC.Center, -Vector2.UnitY, Color.PaleVioletRed, 1, 30));
+			for (int i = 0; i < 2; i++)
+				ParticleHandler.SpawnParticle(new EmberParticle(NPC.Center, -Vector2.UnitY, Color.PaleVioletRed, 1, 30));
 
-				for (int i = 0; i < 20; i++)
-				{
-					var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, _isHostile ? DustID.RedTorch : DustID.BlueCrystalShard, Scale: 1.5f);
-					dust.noGravity = true;
-					dust.velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3);
-				}
+			for (int i = 0; i < 20; i++)
+			{
+				var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, _isHostile ? DustID.RedTorch : DustID.BlueCrystalShard, Scale: 1.5f);
+				dust.noGravity = true;
+				dust.velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3);
 			}
 		}
 

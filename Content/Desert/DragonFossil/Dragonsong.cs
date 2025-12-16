@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -40,6 +41,9 @@ public class Dragonsong : ModItem
 
 			Projectile.UpdateFrame(10, 3);
 
+			if (Counter % timeLeftMax < timeLeftMax / 3)
+				holdDistance -= (int)((timeLeftMax - Counter % timeLeftMax) * 0.25f);
+
 			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 5 * -Projectile.direction).RotatedBy(rotation);
 
 			owner.direction = Projectile.direction = Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
@@ -71,13 +75,24 @@ public class Dragonsong : ModItem
 					}
 
 					if (!Main.dedServ)
-						ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.Normalize(Projectile.velocity) * 1.5f, Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+					{
+						SoundEngine.PlaySound(Fire with { Pitch = 0.2f, Volume = 0.5f }, position);
+						SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 0.8f, PitchVariance = 0.2f, Volume = 0.2f }, position);
+
+						for (int i = 0; i < 3; i++)
 						{
-							TertiaryColor = Color.PaleVioletRed,
-							Pixellate = true,
-							PixelDivisor = 3,
-							Layer = ParticleLayer.AbovePlayer
-						});
+							Vector2 velocity = (Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(2f, 5f)).RotatedByRandom(1);
+							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, velocity, Color.Yellow, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
+							{
+								TertiaryColor = Color.OrangeRed,
+								Pixellate = true,
+								PixelDivisor = 2,
+								Intensity = 3f,
+								ColorLerpExponent = 1.5f,
+								Layer = ParticleLayer.AbovePlayer
+							});
+						}
+					}
 				}
 			}
 			else if (Main.rand.NextBool())
@@ -99,11 +114,14 @@ public class Dragonsong : ModItem
 			if (Collision.CanHit(position, 2, 2, muzzlePosition, 2, 2))
 				position = muzzlePosition;
 
-			player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _);
-			Projectile.NewProjectile(source, position, velocity, type, Projectile.damage, Projectile.knockBack, player.whoAmI);
-			
-			if (!Main.dedServ)
-				SoundEngine.PlaySound(Fire, position);
+			if (player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _))
+			{
+				Projectile.NewProjectile(source, position, velocity, type, Projectile.damage, Projectile.knockBack, player.whoAmI);
+			}
+			else
+			{
+				player.channel = false;
+			}
 		}
 
 		public override bool ShouldUpdatePosition() => false;
@@ -121,7 +139,7 @@ public class Dragonsong : ModItem
 			Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 			float intensity = 1f - Projectile.frame / (Main.projFrames[Type] - 1f);
 			float opacity = Math.Min(Counter / 200f * intensity, 1);
-			Vector2 starScale = new Vector2(1, 0.5f) * intensity;
+			Vector2 starScale = new Vector2(1, 0.5f) * intensity * 1.5f;
 
 			Main.EntitySpriteDraw(star, MuzzlePosition - Main.screenPosition, null, Color.OrangeRed.Additive() * opacity, 0, star.Size() / 2, starScale, default);
 			Main.EntitySpriteDraw(star, MuzzlePosition - Main.screenPosition, null, Color.White.Additive() * opacity, 0, star.Size() / 2, starScale * 0.5f, default);
@@ -150,8 +168,7 @@ public class Dragonsong : ModItem
 			Projectile.friendly = true;
 			Projectile.extraUpdates = 1;
 			Projectile.penetrate = 3;
-			Projectile.timeLeft = 40;
-			Projectile.scale = Main.rand.NextFloat(0.5f, 1.5f);
+			Projectile.timeLeft = 60;
 		}
 
 		public override void AI()
@@ -161,7 +178,7 @@ public class Dragonsong : ModItem
 			else if (Projectile.scale < 1.5f)
 				Projectile.scale += 0.025f;
 
-			if (Main.rand.NextBool(15))
+			if (!Main.dedServ && Main.rand.NextBool(15))
 				ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
 
 			Projectile.velocity *= 0.98f;
@@ -171,8 +188,14 @@ public class Dragonsong : ModItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if(Main.rand.NextBool(3))
+			if (Main.rand.NextBool(3))
 				target.AddBuff(BuffID.OnFire, 180);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Vector2 velocity = (Projectile.velocity * Main.rand.NextFloat(0.2f, 1)).RotatedByRandom(0.3);
+				ParticleHandler.SpawnParticle(new DragonEmber(Projectile.Center, velocity, 1, 40));
+			}
 		}
 
 		public override void OnKill(int timeLeft)
@@ -207,6 +230,8 @@ public class Dragonsong : ModItem
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PileOfConsequences>();
 		SpiritSets.ShimmerDisplayResult[Type] = ModContent.ItemType<TinyDragon>();
+
+		MoRHelper.AddElement(Item, MoRHelper.Fire, true);
 	}
 
 	public override void SetDefaults()
@@ -227,7 +252,6 @@ public class Dragonsong : ModItem
 		Item.shootSpeed = 8f;
 		Item.autoReuse = true;
 		Item.channel = true;
-		Item.UseSound = SoundID.DD2_BallistaTowerShot with { Pitch = 0.9f, Volume = 0.5f };
 	}
 
 	public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() >= 0.5f;

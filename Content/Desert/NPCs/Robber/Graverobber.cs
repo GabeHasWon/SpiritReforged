@@ -1,4 +1,5 @@
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.Biome;
@@ -73,6 +74,8 @@ public class Graverobber : ModNPC
 	{
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers() { Velocity = 1 });
 		Main.npcFrameCount[Type] = 7; //Rows
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
 	}
 
 	public override void SetDefaults()

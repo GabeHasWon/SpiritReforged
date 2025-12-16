@@ -34,6 +34,16 @@ public abstract class ChestTile : FurnitureTile
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.IsAContainer[Type] = true;
 
+		AddObjectData();
+
+		AddMapEntry(CommonColor, MapEntry);
+		AdjTiles = [TileID.Containers];
+		DustType = (Info is BasicInfo i) ? i.DustType : -1;
+	}
+
+	/// <summary> Adds the chest tile object data. </summary>
+	public virtual void AddObjectData()
+	{
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(0, 1);
 		TileObjectData.newTile.Height = 2;
@@ -45,10 +55,6 @@ public abstract class ChestTile : FurnitureTile
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
-
-		AddMapEntry(CommonColor, MapEntry);
-		AdjTiles = [TileID.Containers];
-		DustType = (Info is BasicInfo i) ? i.DustType : -1;
 	}
 
 	public virtual string MapChestName(string name, int i, int j)
