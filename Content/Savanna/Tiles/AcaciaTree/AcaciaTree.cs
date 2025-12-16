@@ -259,6 +259,7 @@ public class AcaciaTreeCorrupt : AcaciaTree
 		base.PreAddObjectData();
 
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+		RegisterItemDrop(ItemID.Ebonwood);
 		TileID.Sets.Corrupt[Type] = true;
 	}
 }
@@ -270,6 +271,7 @@ public class AcaciaTreeCrimson : AcaciaTree
 		base.PreAddObjectData();
 
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+		RegisterItemDrop(ItemID.Shadewood);
 		TileID.Sets.Crimson[Type] = true;
 	}
 }
