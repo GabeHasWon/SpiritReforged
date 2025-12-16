@@ -277,7 +277,7 @@ public class AcaciaTreeCrimson : AcaciaTree
 		TileID.Sets.Crimson[Type] = true;
 	}
 
-	protected override void OnGrowEffects(int i, int j, int height, int goreType) => base.OnGrowEffects(i, j, height, GoreID.TreeLead_Crimson);
+	protected override void OnGrowEffects(int i, int j, int height, int goreType) => base.OnGrowEffects(i, j, height, GoreID.TreeLeaf_Crimson);
 }
 
 [Autoload(false)]
