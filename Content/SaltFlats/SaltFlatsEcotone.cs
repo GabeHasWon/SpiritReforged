@@ -326,7 +326,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void PopulateChest(Chest chest)
 	{
-		int[] main = [ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>()];
+		int[] main = [ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>(), ModContent.ItemType<BoStaff>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 
 		PriorityQueue<(int, Range), float> miscQueue = new();
