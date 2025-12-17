@@ -2,9 +2,9 @@
 
 namespace SpiritReforged.Content.Desert.Walls;
 
-public class SilkWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadWallItem
+public class PaleHiveWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadWallItem
 {
-	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>(nameof(SilkWall) + "Unsafe").Type;
+	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>(nameof(PaleHiveWall) + "Unsafe").Type;
 
 	public override void SetStaticDefaults()
 	{
@@ -22,7 +22,7 @@ public class SilkWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadW
 		if (Main.rand.NextBool(15) && t.WallFrameX is 36 or 72 or 108 && t.WallFrameY is 36) //Plain center frames
 		{
 			Point result = new(324, 152);
-			int random = Main.rand.Next(3);
+			int random = Main.rand.Next(4);
 
 			t.WallFrameX = result.X + 36 * random;
 			t.WallFrameY = result.Y;

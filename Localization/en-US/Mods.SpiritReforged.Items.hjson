@@ -2678,6 +2678,16 @@ PinZiggurat: {
 }
 
 PaleHiveItem: {
-	DisplayName: Pale Hive Item
+	DisplayName: Pale Hive
+	Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	DisplayName: Pale Hive Wall
+	Tooltip: ""
+}
+
+SilkWallItem: {
+	DisplayName: Silk Wall
 	Tooltip: ""
 }

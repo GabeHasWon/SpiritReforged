@@ -3,7 +3,6 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Amber;
 using SpiritReforged.Content.Desert.Walls;
 using Terraria.WorldBuilding;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
