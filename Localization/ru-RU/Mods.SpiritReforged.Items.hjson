@@ -2633,6 +2633,25 @@ PineappleSeeds: {
 // StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
 // StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
 
+Dragonsong: {
+	// DisplayName: Dragonsong
+	/* Tooltip:
+		'''
+		50% chance to save ammo
+		'You are a terrible person'
+		''' */
+}
+
+TinyDragon: {
+	// DisplayName: Tiny Dragon
+	// Tooltip: "'Last of its kind'"
+}
+
+PileOfConsequences: {
+	// DisplayName: Pile of Consequences
+	// Tooltip: "'You know what you did.'"
+}
+
 BrineShrimpItem: {
 	// DisplayName: Brine Shrimp
 	// Tooltip: ""
@@ -2643,9 +2662,10 @@ GoldenBrineShrimpItem: {
 	// Tooltip: ""
 }
 
-// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner Item
-// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner Item
-// DesertStactusBannerItem.DisplayName: Desert Stactus Banner Item
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
 
 AncientBannerItem: {
 	// DisplayName: Ancient Banner
@@ -2657,7 +2677,7 @@ TallSandstoneShelfItem: {
 	// Tooltip: ""
 }
 
-SaltFlatsTorchItem: {
+SaltTorchItem: {
 	// DisplayName: Salt Torch
 	// Tooltip: ""
 }
@@ -2676,6 +2696,127 @@ PinZiggurat: {
 	// DisplayName: Ziggurat Pin
 	// Tooltip: ""
 }
+
+BangleOfStrength: {
+	// DisplayName: Bangle of Strength
+	// Tooltip: Periodically empowers melee damage
+}
+
+ScarabTabletOneItem: {
+	// DisplayName: Crested Idol
+	// Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	// DisplayName: Winged Sun
+	// Tooltip: ""
+}
+
+ScarabAltarItem: {
+	// DisplayName: Ancient Altar
+	// Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	// DisplayName: Cracked Red Sandstone Brick Wall
+	// Tooltip: ""
+}
+
+AncientBooksItem: {
+	// DisplayName: Ancient Book
+	// Tooltip: "'Rendered unreadable by time'"
+}
+
+SaltGlassWallItem: {
+	// DisplayName: Salt Glass Wall
+	// Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	// DisplayName: Salt Panel Wall
+	// Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	// DisplayName: Salt Plate Wall
+	// Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	// DisplayName: Salt Fireplace
+	// Tooltip: ""
+}
+
+SaltGlassItem: {
+	// DisplayName: Salt Glass
+	// Tooltip: ""
+}
+
+SaltPanelItem: {
+	// DisplayName: Salt Panel
+	// Tooltip: ""
+}
+
+SaltPlateItem: {
+	// DisplayName: Salt Plate
+	// Tooltip: ""
+}
+
+SaltCrate: {
+	// DisplayName: Salted Crate
+	// Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	// DisplayName: Brine Crate
+	// Tooltip: ""
+}
+
+SaltCrateRestored: {
+	// DisplayName: Restored Salted Crate
+	// Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	// DisplayName: Restored Brine Crate
+	// Tooltip: ""
+}
+
+// GraverobberBannerItem.DisplayName: Graverobber Banner
+
+GiantBag: {
+	// DisplayName: Loot Bag
+	// Tooltip: "{$CommonTooltips.Backpack}"
+}
+
+CrackedSandstoneItem: {
+	// DisplayName: Cracked Sandstone
+	// Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	// DisplayName: Stone Reliquary
+	// Tooltip: ""
+}
+
+SaltFlatsCampfireItem: {
+	// DisplayName: Salt Campfire
+	// Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFlatsFountainItem: {
+	// DisplayName: Salt Flats Fountain
+	// Tooltip: ""
+}
+
+SaltskipperQuestFish: {
+	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
+	// CatchLocation: Salt Flats
+	// DisplayName: Saltskipper
+	// Tooltip: ""
+}
+
+// WispBannerItem.DisplayName: Wisp Banner
 
 PaleHiveItem: {
 	// DisplayName: Pale Hive

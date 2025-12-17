@@ -11,6 +11,7 @@ public abstract class FurnitureSet : ILoadable
 {
 	public enum Types
 	{
+		None = -1,
 		Bathtub,
 		Bed,
 		Bookcase,

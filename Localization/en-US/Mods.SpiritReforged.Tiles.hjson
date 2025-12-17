@@ -51,3 +51,4 @@ Starflower.MapEntry: Starflower
 BonsaiTrees.MapEntry: Bonsai
 OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
 SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
+ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"

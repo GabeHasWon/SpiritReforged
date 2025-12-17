@@ -72,6 +72,7 @@ public class Flamingo : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.5f;
 		NPC.direction = 1; //Don't start at 0
+
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -176,7 +177,7 @@ public class Flamingo : ModNPC
 			else
 			{
 				// Idle Chirp, not synced
-				if (Main.rand.NextBool(1000))
+				if (Main.rand.NextBool(1500))
 					SoundEngine.PlaySound(Idle, NPC.Center);
 
 				if (Counter % 200 == 0 && Main.netMode != NetmodeID.MultiplayerClient)

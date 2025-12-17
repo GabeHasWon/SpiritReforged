@@ -34,10 +34,11 @@ public class ToucanMinion : BaseMinion
 
 	private int _featherShotFrameTime;
 
-	public ToucanMinion() : base(700, 1200, new Vector2(40, 40)) { }
+	public ToucanMinion() : base(700, 800, new(30)) { }
 
 	public override void AbstractSetStaticDefaults()
 	{
+
 		Main.projFrames[Type] = 8;
 		ProjectileID.Sets.TrailCacheLength[Type] = 8;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
@@ -119,15 +120,14 @@ public class ToucanMinion : BaseMinion
 		Projectile.direction = Projectile.spriteDirection = Projectile.Center.X < player.MountedCenter.X ? -1 : 1;
 		Vector2 targetCenter = player.MountedCenter - new Vector2(50 * (IndexOfType + 1) * player.direction, 0);
 		//take the base desired homing position, and try to find the lowest solid tile for the minion to rest at from it
-		Point tilepos = targetCenter.ToTileCoordinates();
+		Rectangle hitbox = new((int)targetCenter.X - 8, (int)targetCenter.Y - 8, 16, 16);
 		int tilesfrombase = 0;
-		int maxtilesfrombase = 15;
+		const int maxtilesfrombase = 15;
 		bool canstartrest = true; //dont start resting if rest position is too far from the base desired position
 
-		int startX = tilepos.X + (Projectile.direction > 0 ? -1 : 0);
-		while (CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y, 16, 16), CollisionChecks.AnySurface)) //move up until not inside a tile
+		while (CollisionChecks.Tiles(hitbox, CollisionChecks.AnySurface)) //move up until not inside a tile
 		{
-			tilepos.Y--;
+			hitbox.Y -= 16;
 			if (++tilesfrombase >= maxtilesfrombase)
 			{
 				canstartrest = false;
@@ -135,9 +135,9 @@ public class ToucanMinion : BaseMinion
 			}
 		}
 
-		while (!CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y + 1, 16, 16), CollisionChecks.AnySurface)) //move down until just above a tile
+		while (!CollisionChecks.Tiles(new Rectangle(hitbox.X, hitbox.Y + 16, hitbox.Width, hitbox.Height), CollisionChecks.AnySurface)) //move down until just above a tile
 		{
-			tilepos.Y++;
+			hitbox.Y += 16;
 			if (++tilesfrombase >= maxtilesfrombase)
 			{
 				canstartrest = false;
@@ -146,7 +146,7 @@ public class ToucanMinion : BaseMinion
 		}
 
 		if (AiState == STATE_RESTING || AiState == STATE_HOVERTORESTSPOT && canstartrest) //if not too far, or too far but already resting, set the desired position to the lowest non solid tile
-			targetCenter = tilepos.ToWorldCoordinates();
+			targetCenter = hitbox.Center();
 
 		switch (AiState)
 		{
@@ -154,7 +154,7 @@ public class ToucanMinion : BaseMinion
 				Projectile.tileCollide = false;
 				Projectile.AccelFlyingMovement(targetCenter, 0.15f, 0.1f, 15);
 				//check if close enough to and above the rest spot, and not inside a tile, if so, start resting
-				if (Projectile.Distance(targetCenter) < 10 && Projectile.Center.Y < targetCenter.Y && canstartrest && !CollisionChecks.Tiles(new Rectangle(startX, tilepos.Y, 16, 16), CollisionChecks.AnySurface) && AiTimer > 30)
+				if (Projectile.Distance(targetCenter) < 10 && Projectile.Center.Y < targetCenter.Y && canstartrest && !CollisionChecks.Tiles(hitbox, CollisionChecks.AnySurface) && AiTimer > 30)
 				{
 					AiTimer = 0;
 					AiState = STATE_RESTING;

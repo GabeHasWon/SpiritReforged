@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using System.Collections.ObjectModel;
 
 namespace SpiritReforged.Common.Particle;
 

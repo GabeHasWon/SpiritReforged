@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -45,6 +44,8 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 		MaxInstances = 3
 	};
 
+	public override void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddTile(TileID.HeavyWorkBench).Register();
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -53,12 +54,15 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (closer && !Main.gamePaused && Main.GameUpdateCount % 10 < 2 && Main.rand.NextBool(550) && Main.LocalPlayer.velocity.X != 0 && !WorldGen.SolidOrSlopedTile(i, j + 1))
+		if (!Main.dedServ && closer && !Main.gamePaused && Main.GameUpdateCount % 10 < 2 && Main.rand.NextBool(550) && Main.LocalPlayer.velocity.X != 0 && !WorldGen.SolidOrSlopedTile(i, j + 1))
 			ParticleHandler.SpawnParticle(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (!fail)
 		{
 			var source = new EntitySource_TileBreak(i, j);

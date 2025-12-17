@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class RedSandstoneSlab : ModTile, IAutoloadTileItem
 {
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddTile(TileID.HeavyWorkBench).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -30,6 +32,10 @@ public class RedSandstoneSlab : ModTile, IAutoloadTileItem
 		const short rowHeight = 90;
 
 		Tile tile = Main.tile[i, j];
+
+		if (tile.IsHalfBlock || tile.Slope != SlopeType.Solid)
+			return;
+
 		int frameX = tile.TileFrameX;
 		int frameY = tile.TileFrameY % rowHeight;
 		int section = (j + (i + 1) / 2) % 3;

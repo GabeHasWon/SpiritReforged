@@ -46,7 +46,10 @@ public class ExplosiveRum : ModItem
 public class ExplosiveRumProj : ModProjectile
 {
 	public override LocalizedText DisplayName => ModContent.GetInstance<ExplosiveRum>().DisplayName;
-	public static readonly SoundStyle Boom = new("SpiritReforged/Assets/SFX/Item/Rumboom");
+	public static readonly SoundStyle Boom = new("SpiritReforged/Assets/SFX/Item/Rumboom")
+	{
+		PitchVariance = 0.25f
+	};
 
 	public override void SetDefaults()
 	{

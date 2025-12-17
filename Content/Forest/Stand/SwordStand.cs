@@ -52,9 +52,12 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 		for (int type = 0; type < ItemID.Count; type++)
 		{
 			Item item = ContentSamples.ItemsByType[type];
+
 			if (item.DamageType.CountsAsClass(DamageClass.Melee) && !item.noMelee && item.pick == 0 && item.axe == 0 && item.hammer == 0)
 				SpiritSets.IsSword[type] = true;
 		}
+
+		SpiritSets.IsSword[ItemID.Zenith] = true;
 
 		//Register ISwordStandTexture members as IsSword
 		foreach (ModItem item in Mod.GetContent<ModItem>())

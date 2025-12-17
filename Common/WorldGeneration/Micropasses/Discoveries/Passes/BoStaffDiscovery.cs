@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿/*using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Jungle.Misc;
 using Terraria.DataStructures;
@@ -39,4 +39,4 @@ internal class BoStaffDiscovery : Discovery
 			}
 		}
 	}
-}
+}*/

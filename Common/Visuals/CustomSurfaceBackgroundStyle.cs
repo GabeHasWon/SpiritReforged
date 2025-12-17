@@ -74,6 +74,14 @@ public abstract class CustomSurfaceBackgroundStyle : ModSurfaceBackgroundStyle
 			}
 		}
 	}
+
+	public static void RestartSpritebatch(Effect effect = null)
+	{
+		Main.spriteBatch.End();
+		Matrix transformationMatrix = Main.BackgroundViewMatrix.TransformationMatrix;
+		transformationMatrix.Translation -= Main.BackgroundViewMatrix.ZoomMatrix.Translation * new Vector3(1f, Main.BackgroundViewMatrix.Effects.HasFlag(SpriteEffects.FlipVertically) ? (-1f) : 1f, 1f);
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, effect, transformationMatrix);
+	}
 	#endregion
 }
 

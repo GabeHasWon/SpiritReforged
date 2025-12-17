@@ -45,6 +45,12 @@ VanillaDialogue: {
 		// Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
 		// Pager1: Remember to bring me the fish IN PERSON.
 	}
+
+	// Wizard.SaltFlats: The rocks around these parts would make for a perfect crystal ball!
+	// Painter.SaltFlats: I've never seen a more beautiful landscape! I could paint here for the rest of my life.
+	// Cyborg.SaltFlats: It.. it burns.
+	// Mechanic.SaltFlats: Ugh! All this salt is corroding my gear. Get me out of here!
+	// Truffle.SaltFlats: This place is deeply uncomfortable for our kind. I feel so dry...
 }
 
 Crinoid: {
@@ -521,3 +527,15 @@ GoldenBrineShrimp: {
 	// DisplayName: Golden Brine Shrimp
 	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }
+
+Wisp: {
+	// DisplayName: Wisp
+	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+}
+
+Graverobber: {
+	// DisplayName: Graverobber
+	// Entry: ""
+}
+
+// LootBag.DisplayName: Loot Bag

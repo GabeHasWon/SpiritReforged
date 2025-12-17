@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -7,6 +8,7 @@ using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
@@ -34,6 +36,7 @@ public partial class ZigguratBiome : Microbiome
 		CreateShape(area, 4, out var bounds);
 		TotalBounds = [.. bounds];
 
+		CreateAltar(bounds[0]);
 		AddRooms(bounds, out var rooms);
 		TotalRooms = [.. rooms];
 
@@ -44,7 +47,8 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
-		AddNeutralDecorations(bounds);
+		SwitchWalls(bounds);
+		AddNeutralDecorations(rooms);
 
 		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
 		foreach (var b in bounds)
@@ -98,6 +102,7 @@ public partial class ZigguratBiome : Microbiome
 			center.Y += height;
 
 			CreateHalo(bound);
+			CreateDithering(bound);
 		}
 
 		//Add weathering around some edges of the shape
@@ -141,6 +146,26 @@ public partial class ZigguratBiome : Microbiome
 				new Actions.PlaceTile(brick)
 			));
 		}
+
+		static void CreateDithering(Rectangle bounds)
+		{
+			ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
+
+			WorldUtils.Gen(new(bounds.Left, bounds.Bottom), new Shapes.Rectangle(bounds.Width, 2), Actions.Chain(
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall(brick)
+			));
+		}
+	}
+
+	private static void CreateAltar(Rectangle topBound)
+	{
+		var origin = (topBound.Top() - new Vector2(0, 1)).ToPoint();
+		int i = origin.X;
+		int j = origin.Y;
+
+		WorldMethods.FindGround(i, ref j);
+		WorldGen.PlaceTile(i, j - 1, ModContent.TileType<ScarabAltar>(), true);
 	}
 
 	/// <summary> Randomly adds weathering. </summary>
@@ -233,15 +258,9 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static void AddNeutralDecorations(List<Rectangle> bounds)
+	private static void SwitchWalls(List<Rectangle> areas)
 	{
-		WeightedRandom<int> potWeight = new();
-		potWeight.Add(ModContent.TileType<BronzePots>());
-		potWeight.Add(ModContent.TileType<LapisPots>(), 0.1f);
-		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
-		potWeight.Add(TileID.Pots);
-
-		foreach (var b in bounds)
+		foreach (Rectangle area in areas)
 		{
 			WorldMethods.GenerateSquared((i, j) =>
 			{
@@ -250,14 +269,39 @@ public partial class ZigguratBiome : Microbiome
 					Tile tile = Main.tile[i, j];
 
 					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
-						tile.WallType = (ushort)RedSandstoneBrickWall.UnsafeType; //Add unsafe walls to hallways
+					{
+						int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
+						tile.WallType = (ushort)type; //Add unsafe walls to hallways
+					}
+				}
 
-					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place banners
-						return Placer.PlaceTile(i, j, TileID.Banners, WorldGen.genRand.Next(4, 8)).success;
+				return false;
+			}, out _, area);
+		}
+	}
 
-					if (WorldGen.SolidTile(i, j - 1) && WorldGen.genRand.NextBool(30)) //Place large banners
-						return Placer.PlaceTile(i, j, ModContent.TileType<AncientBanner>()).success;
+	private static void AddNeutralDecorations(List<GenRoom> rooms)
+	{
+		WeightedRandom<int> potWeight = new();
+		potWeight.Add(ModContent.TileType<BronzePots>());
+		potWeight.Add(ModContent.TileType<LapisPots>(), 0.1f);
+		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
+		potWeight.Add(TileID.Pots);
 
+		int maxChestCount = Main.maxTilesX / 2100;
+		PriorityQueue<Point16, float> furniturePositions = new();
+
+		foreach (var room in rooms)
+		{
+			Rectangle bounds = room.Bounds;
+			bounds.Inflate(2, 2);
+
+			var decorator = new Decorator(bounds)
+				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
+				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
+				.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2))
+				.Enqueue((i, j) =>
+				{
 					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
 					{
 						int type = potWeight;
@@ -272,17 +316,51 @@ public partial class ZigguratBiome : Microbiome
 						return Placer.PlaceTile(i, j, type, style).success;
 					}
 
-					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(10))
-						PlaceFurniture(i, j);
-				}
-				else
-				{
-					if (WorldGen.genRand.NextBool(30))
-						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
-				}
+					return false;
+				}, 0);
 
-				return false;
-			}, out _, b);
+			if (room is ZigguratRooms.LibraryRoom)
+			{
+				decorator.Enqueue(ModContent.TileType<TatteredMapWall>(), 1);
+				decorator.Enqueue(ModContent.TileType<TatteredMapWallSmall>(), 1);
+			}
+			else if (room is ZigguratRooms.TreasureRoom)
+			{
+				decorator.Enqueue(TileID.CatBast, 1);
+			}
+			else
+			{
+				decorator.Enqueue((i, j) =>
+				{
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(7))
+					{
+						furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+						return true;
+					}
+
+					return false;
+				}, 0)
+				.Enqueue((i, j) =>
+				{
+					if (WorldGen.genRand.NextBool(50))
+					{
+						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
+						return true;
+					}
+
+					return false;
+				}, 0);
+			}
+
+			decorator.Run();
+		}
+
+		while (furniturePositions.Count > 0)
+		{
+			Point16 pos = furniturePositions.Dequeue();
+
+			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
+				maxChestCount--;
 		}
 	}
 
@@ -298,12 +376,22 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static bool PlaceFurniture(int i, int j)
+	private static bool PlaceFurniture(int i, int j, FurnitureSet.Types forceType = FurnitureSet.Types.None)
 	{
 		LapisSet set = ModContent.GetInstance<LapisSet>();
-		FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+		FurnitureSet.Types type;
 
-		if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out int tileType))
+		if (forceType == FurnitureSet.Types.None)
+		{
+			do
+			{
+				type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+			} while (type is FurnitureSet.Types.Chest or FurnitureSet.Types.None);
+		}
+		else
+			type = forceType;
+
+		if (set.TryGetTileType(type, out int tileType))
 		{
 			int style = -1;
 
@@ -334,11 +422,51 @@ public partial class ZigguratBiome : Microbiome
 			}
 			else
 			{
-				return Placer.Check(i, j, tileType, style).IsClear().Place().success;
+				bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
+
+				if (type == FurnitureSet.Types.Chest)
+				{
+					int chest = Chest.CreateChest(i, j - 1);
+
+					if (chest != -1)
+						PopulateChest(Main.chest[chest]);
+				}
+
+				return success;
 			}
 		}
 
 		return false;
+	}
+
+	private static void PopulateChest(Chest chest)
+	{
+		int[] main = [ItemID.AncientChisel, ItemID.SandBoots];
+		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
+			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..1)];
+		
+		PriorityQueue<(int, Range), float> miscQueue = new();
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
+
+		chest.item[0] = new Item(WorldGen.genRand.Next(main));
+
+		var (type, stack) = WorldGen.genRand.Next(secondary);
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
+
+		int miscCount = WorldGen.genRand.Next(3, 5);
+
+		for (int i = 0; i < miscCount; ++i)
+		{
+			var (miscType, miscStack) = miscQueue.Dequeue();
+			chest.item[2 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+		}
 	}
 
 	private static void AddRooms(IEnumerable<Rectangle> bounds, out List<GenRoom> rooms)

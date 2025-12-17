@@ -143,6 +143,8 @@ public class RumExplosion : ModProjectile
 		}
 	}
 
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
+
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var texture = TextureAssets.Projectile[Projectile.type].Value;

@@ -7,6 +7,9 @@ using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
+using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
@@ -42,7 +45,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			if (ground.HasTile && ground.TileType == ModContent.TileType<SaltBlockDull>())
 			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<StoneStupas>(), true, style: WorldGen.genRand.Next(0, 12));
+				WorldGen.PlaceTile(x, y, ModContent.TileType<StoneStupas>(), true, style: WorldGen.genRand.Next(0, 3));
 				return false;
 			}
 		}
@@ -229,18 +232,22 @@ internal class SaltFlatsEcotone : EcotoneBase
 	#region features
 	private static void Decorate()
 	{
-		HashSet<Vector2> treePoints = [];
+		new Decorator(SaltArea)
+			.Enqueue(PlaceReliquary, Math.Max(SaltArea.Width / 150, 1))
+			.Enqueue(PlaceSaltwortPatch, Math.Max(SaltArea.Width / 80, 1))
+			.Run();
 
+		HashSet<Vector2> treePoints = [];
 		WorldMethods.GenerateSquared((i, j) =>
 		{
-			var tile = Main.tile[i, j];
+			Tile tile = Main.tile[i, j];
 			if (tile.HasTile && tile.TileType == ModContent.TileType<SaltBlockDull>())
 			{
 				bool leftEmpty = !WorldGen.SolidTile3(i - 1, j);
 				bool rightEmpty = !WorldGen.SolidTile3(i + 1, j);
 				Tile aboveTile = Main.tile[i, j - 1];
 
-				if (!aboveTile.HasTile && (leftEmpty || rightEmpty)) //Slopes
+				if (!WorldGen.SolidOrSlopedTile(aboveTile) && !aboveTile.HasTileType(ModContent.TileType<StoneReliquary>()) && (leftEmpty || rightEmpty)) //Slopes
 				{
 					tile.Clear(TileDataType.Slope);
 
@@ -255,13 +262,22 @@ internal class SaltFlatsEcotone : EcotoneBase
 				if (!WorldGen.SolidTile(i, j - 1) && aboveTile.LiquidAmount < 20)
 				{
 					if (WorldGen.genRand.NextBool(6))
-						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 12));
-
-					if (WorldGen.genRand.NextBool(2))
-						Placer.PlaceTile<Saltwort>(i, j - 1);
+						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 3));
 
 					if (WorldGen.genRand.NextBool(12))
-						Placer.PlaceTile<SaltwortTall>(i, j - 1);
+						Placer.PlaceTile<SaltDebrisTiny>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(12))
+						Placer.PlaceTile<SaltDebrisSmall>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(15))
+						Placer.PlaceTile<SaltDebrisMedium>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(18))
+						Placer.PlaceTile<SaltDebrisLarge>(i, j - 1);
+
+					if (WorldGen.genRand.NextBool(24))
+						Placer.PlaceTile<Rowboat>(i, j - 1);
 
 					Vector2 pt = new(i, j - 1);
 
@@ -278,6 +294,86 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			return false;
 		}, out _, SaltArea);
+	}
+
+	private static bool PlaceReliquary(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		Tile belowTile = Main.tile[i, j + 1];
+
+		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+		{
+			int type = ModContent.TileType<StoneReliquary>();
+			bool result = Placer.PlaceTile(i, j, type).success;
+
+			if (result)
+			{
+				TileExtensions.GetTopLeft(ref i, ref j);
+				if (Chest.CreateChest(i, j) is int search && search != -1)
+				{
+					PopulateChest(Main.chest[search]);
+					return true;
+				}
+
+				return false;
+			}
+
+			return false;
+		}
+
+		return false;
+	}
+
+	private static void PopulateChest(Chest chest)
+	{
+		int[] main = [ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>(), ModContent.ItemType<BoStaff>()];
+		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), (ModContent.ItemType<TornMapPiece>(), 1..2)];
+
+		PriorityQueue<(int, Range), float> miscQueue = new();
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
+
+		chest.item[0] = new Item(WorldGen.genRand.Next(main));
+
+		var (type, stack) = WorldGen.genRand.Next(secondary);
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
+
+		int miscCount = WorldGen.genRand.Next(3, 5);
+
+		for (int i = 0; i < miscCount; ++i)
+		{
+			var (miscType, miscStack) = miscQueue.Dequeue();
+			chest.item[2 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+		}
+	}
+
+	private static bool PlaceSaltwortPatch(int i, int j)
+	{
+		int halfSize = WorldGen.genRand.Next(5, 16);
+		bool anySuccess = false;
+
+		for (int x = i - halfSize; x < i + halfSize; x++)
+		{
+			WorldMethods.FindGround(x, ref j);
+			j--;
+
+			Tile tile = Main.tile[x, j];
+			Tile belowTile = Main.tile[x, j + 1];
+
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+			{
+				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
+				anySuccess |= Placer.PlaceTile(x, j, type).success;
+			}
+		}
+
+		return anySuccess;
 	}
 
 	private static void MapFeature(Point coordinates, int radius, ref List<FeatureInfo> features)
