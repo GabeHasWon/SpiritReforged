@@ -9,6 +9,8 @@ public class SilkWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadW
 	public override void SetStaticDefaults()
 	{
 		Main.wallHouse[Type] = true;
+		Main.wallBlend[Type] = ModContent.WallType<PaleHiveWall>();
+		Main.wallBlend[UnsafeType] = ModContent.WallType<PaleHiveWall>();
 		DustType = DustID.Silk;
 
 		var entryColor = new Color(80, 80, 60);

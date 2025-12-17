@@ -2824,11 +2824,11 @@ PaleHiveItem: {
 }
 
 PaleHiveWallItem: {
-	// DisplayName: Pale Hive Wall Item
+	// DisplayName: Pale Hive Wall
 	// Tooltip: ""
 }
 
 SilkWallItem: {
-	// DisplayName: Silk Wall Item
+	// DisplayName: Silk Wall
 	// Tooltip: ""
 }
