@@ -13,6 +13,7 @@ public class PaleHiveWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutol
 
 		var entryColor = new Color(80, 80, 60);
 		AddMapEntry(entryColor);
+		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 	}
 
 	public void PostWallFrame(int i, int j, bool resetFrame)

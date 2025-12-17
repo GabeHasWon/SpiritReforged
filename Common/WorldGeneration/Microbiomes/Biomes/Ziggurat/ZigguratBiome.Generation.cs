@@ -47,6 +47,7 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
+		Infest(bounds[^1]);
 		SwitchWalls(bounds);
 		AddNeutralDecorations(rooms);
 

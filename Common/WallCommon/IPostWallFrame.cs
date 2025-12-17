@@ -14,7 +14,7 @@ public sealed class PostWallFrameLoader : ILoadable
 	{
 		orig(i, j, resetFrame);
 
-		if (WallLoader.GetWall(Main.tile[i, j].WallType) is IPostWallFrame iPost)
+		if ( WallLoader.GetWall(Framing.GetTileSafely(i, j).WallType) is IPostWallFrame iPost)
 			iPost.PostWallFrame(i, j, resetFrame);
 	}
 
