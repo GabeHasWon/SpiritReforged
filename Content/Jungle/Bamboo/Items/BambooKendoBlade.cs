@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
@@ -14,7 +15,11 @@ public class BambooKendoBlade : ModItem, IDashSword
 	private float swingArc;
 	private static Asset<Texture2D> HeldTexture;
 
-	public override void SetStaticDefaults() => HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+	public override void SetStaticDefaults()
+	{
+		HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+		SpiritSets.IsSword[Type] = true;
+	}
 
 	public override void SetDefaults()
 	{

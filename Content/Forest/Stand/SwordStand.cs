@@ -57,8 +57,6 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 				SpiritSets.IsSword[type] = true;
 		}
 
-		SpiritSets.IsSword[ItemID.Zenith] = true;
-
 		//Register ISwordStandTexture members as IsSword
 		foreach (ModItem item in Mod.GetContent<ModItem>())
 		{
