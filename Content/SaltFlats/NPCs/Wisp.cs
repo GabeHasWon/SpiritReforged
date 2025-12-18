@@ -5,6 +5,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -194,11 +195,7 @@ public class Wisp : ModNPC
 	private int _counter;
 	private bool _isHostile;
 
-	public override void SetStaticDefaults()
-	{
-		NPCID.Sets.CountsAsCritter[Type] = true;
-		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
-	}
+	public override void SetStaticDefaults() => MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
 
 	public override void SetDefaults()
 	{
@@ -387,6 +384,15 @@ public class Wisp : ModNPC
 		}
 	}
 
+	public override bool? CanBeHitByItem(Player player, Item item) => (player.dontHurtCritters && !_isHostile) ? false : null;
+	public override bool? CanBeHitByProjectile(Projectile projectile)
+	{
+		if (projectile.BelongsToPlayer())
+			return (Main.player[projectile.owner].dontHurtCritters && !_isHostile) ? false : null;
+		else
+			return projectile.friendly;
+	}
+
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (!Main.dedServ && NPC.life <= 0)
@@ -408,6 +414,7 @@ public class Wisp : ModNPC
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_isHostile);
 	public override void ReceiveExtraAI(BinaryReader reader) => _isHostile = reader.ReadBoolean();
+
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
 		if (!Main.dayTime && spawnInfo.SpawnTileType == ModContent.TileType<SaltBlockReflective>())
