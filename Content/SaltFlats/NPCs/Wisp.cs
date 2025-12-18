@@ -197,7 +197,6 @@ public class Wisp : ModNPC
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.CountsAsCritter[Type] = true;
-
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
 	}
 
@@ -208,7 +207,6 @@ public class Wisp : ModNPC
 		NPC.noGravity = true;
 		NPC.chaseable = false;
 		NPC.lifeMax = 30;
-		NPC.catchItem = 0;
 		NPC.value = 110;
 		NPC.HitSound = SoundID.LiquidsHoneyLava with { Volume = 6f };
 		NPC.DeathSound = SoundID.Item118 with { Pitch = 1.2f, Volume = 1.75f };
@@ -262,6 +260,7 @@ public class Wisp : ModNPC
 				}
 
 				NPC.damage = 10;
+				NPC.chaseable = true;
 				NPC.aiStyle = NPCAIStyleID.Bat;
 
 				_isHostile = true;
