@@ -2644,7 +2644,11 @@ Dragonsong: {
 
 TinyDragon: {
 	DisplayName: Tiny Dragon
-	Tooltip: "'Last of its kind'"
+	Tooltip:
+		'''
+		Summons a tiny dragon to follow you around
+		"'Last of its kind'"
+		'''
 }
 
 PileOfConsequences: {
