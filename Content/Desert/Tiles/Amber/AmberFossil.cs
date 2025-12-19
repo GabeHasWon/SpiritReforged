@@ -1,6 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.DragonFossil;
 using System.IO;
@@ -83,7 +84,14 @@ public class AmberFossil : ShiningAmber
 		var position = new Vector2(i, j).ToWorldCoordinates() - Main.screenPosition;
 		float rotation = (i + j) * 0.25f % MathHelper.TwoPi;
 
-		spriteBatch.Draw(texture, position, null, Lighting.GetColor(i, j) * 0.4f, rotation, texture.Size() / 2, 1, default, 0);
+		Color color = Lighting.GetColor(i, j);
+
+		if (Main.LocalPlayer.findTreasure)
+			color = TileExtensions.GetSpelunkerTint(color);
+		else
+			color *= 0.4f;
+
+		spriteBatch.Draw(texture, position, null, color, rotation, texture.Size() / 2, 1, default, 0);
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
