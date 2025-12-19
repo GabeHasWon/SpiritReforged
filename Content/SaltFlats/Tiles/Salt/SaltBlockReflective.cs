@@ -23,7 +23,7 @@ public class SaltBlockReflective : SaltBlock
 		/// <param name="height"> The pre-upscaled height of the texture.</param>
 		public Texture2D CreateTilemap(int width, int height)
 		{
-			if (_distanceMap != null && _distanceMap.Width == width && _distanceMap.Height == height)
+			if (_distanceMap != null)
 				return _distanceMap;
 
 			return _distanceMap = Reflections.CreateTilemap(width, height);
@@ -169,7 +169,7 @@ public class SaltBlockReflective : SaltBlock
 
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-			Color tint = Color.White * 0.9f;
+			Color tint = Color.White * 0.8f;
 			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 			spriteBatch.End();
 		}
