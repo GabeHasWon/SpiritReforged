@@ -21,6 +21,7 @@ public class ScarabeusBoss : ModNPC
 
 	private bool _contactDmgEnabled = false;
 	private bool _inGround = true;
+	private bool _hasPhaseChanged = false;
 
 	private int _jumpState = 0;
 
@@ -33,10 +34,10 @@ public class ScarabeusBoss : ModNPC
 		GroundedSlam,
 		Dig,
 		BounceGroundPound,
+		FlyHover,
 		FlyingDash,
 		ChainGroundPound,
 		DigErupt,
-		FlyingSlam,
 		ScarabSwarm
 	}
 
@@ -93,6 +94,22 @@ public class ScarabeusBoss : ModNPC
 		Player player = Main.player[NPC.target];
 		_contactDmgEnabled = false;
 
+		_curFrame.X = 0;
+		if (NPC.life < NPC.lifeMax / 2)
+		{
+			_curFrame.X = 1;
+			if(!_hasPhaseChanged)
+			{
+				NextAttack(player, AIPatterns.FlyHover);
+				_hasPhaseChanged = true;
+			}
+		}
+
+		PatternSelect(player);
+	}
+
+	private void PatternSelect(Player player)
+	{
 		switch ((AIPatterns)CurrentPattern)
 		{
 			case AIPatterns.SpawnAnimation:
@@ -121,6 +138,26 @@ public class ScarabeusBoss : ModNPC
 
 			case AIPatterns.Dig:
 				Dig(player);
+				break;
+
+			case AIPatterns.FlyHover:
+				FlyHover(player);
+				break;
+
+			case AIPatterns.FlyingDash:
+				FlyDash(player);
+				break;
+
+			case AIPatterns.ChainGroundPound:
+				ChainGroundPound(player);
+				break;
+
+			case AIPatterns.DigErupt:
+				DigErupt(player);
+				break;
+
+			case AIPatterns.ScarabSwarm:
+				ScarabSwarm(player);
 				break;
 		}
 	}
@@ -310,7 +347,7 @@ public class ScarabeusBoss : ModNPC
 
 	private void GroundSlam(Player player)
 	{
-		const int windupTime = 80;
+		const int windupTime = 120;
 		const int restTime = 45;
 
 		NPC.spriteDirection = NPC.direction;
@@ -331,6 +368,12 @@ public class ScarabeusBoss : ModNPC
 			_contactDmgEnabled = true;
 			_curFrame.Y = 0;
 			//projectiles and sfx here
+
+			if(Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				Vector2 center = FindGroundFromPosition(NPC.Center + NPC.direction * Vector2.UnitX * 50);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), center, Vector2.Zero, ModContent.ProjectileType<SlamShockwave>(), NPC.damage / 2, 16, Main.myPlayer, NPC.direction);
+			}
 		}
 
 		if(AITimer > windupTime + restTime)
@@ -347,7 +390,7 @@ public class ScarabeusBoss : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
-		NPC.knockBackResist = 0.2f;
+		NPC.knockBackResist = 0.5f;
 		CheckPlatform(player);
 		_curFrame.Y = 1;
 
@@ -414,6 +457,11 @@ public class ScarabeusBoss : ModNPC
 				//vfx and sfx and projs here
 
 				_jumpState++; //use the variable to track the final ground pound too
+
+				for(int i = -3; i <= 3; i++)
+				{
+
+				}
 			}
 		}
 
@@ -476,7 +524,8 @@ public class ScarabeusBoss : ModNPC
 					SecondaryColor = Color.SandyBrown,
 					TertiaryColor = Color.SaddleBrown,
 					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f
+					ColorLerpExponent = 0.5f,
+					Layer = ParticleLayer.BelowSolid
 				});
 			}
 		}
@@ -504,6 +553,316 @@ public class ScarabeusBoss : ModNPC
 		}
 	}
 
+	private void FlyHover(Player player)
+	{
+		const int hoverTime = 120;
+
+		NPC.noTileCollide = true;
+		NPC.noGravity = true;
+		NPC.knockBackResist = 0.7f;
+		AITimer++;
+
+		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
+
+		//Vertical movement
+		if (heightAboveGround < 64)
+			NPC.velocity.Y += 0.1f;
+
+		else if (Math.Abs(NPC.position.Y - player.position.Y) > 80)
+			NPC.velocity.Y -= 0.175f * Math.Sign(NPC.Center.Y - player.Center.Y);
+
+		else
+			NPC.velocity.Y *= 0.9f;
+
+		//Horizontal movement
+
+		if (NPC.Center.X < player.Center.X)
+		{
+			if (NPC.velocity.X < 0)
+			{
+				NPC.velocity.X *= 0.95f;
+				NPC.velocity.X += 0.033f;
+			}
+
+			else
+			{
+				NPC.velocity.X += 0.1f;
+			}
+		}
+
+		else
+		{
+			if (NPC.velocity.X > 0)
+			{
+				NPC.velocity.X *= 0.95f;
+				NPC.velocity.X -= 0.033f;
+			}
+
+			else
+			{
+				NPC.velocity.X -= 0.1f;
+			}
+		}
+
+		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
+		NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
+
+		if (AITimer > hoverTime)
+			NextAttack(player);
+	}
+
+	private void FlyDash(Player player)
+	{
+		const int prepTime = 45;
+		const int dashTime = 40;
+
+		NPC.noTileCollide = true;
+		NPC.noGravity = true;
+		NPC.knockBackResist = 0f;
+		AITimer++;
+
+		if(AITimer < prepTime)
+		{
+			//vertical
+
+			if (Math.Abs(NPC.position.Y - player.position.Y) > 32)
+				NPC.velocity.Y -= 0.25f * Math.Sign(NPC.Center.Y - player.Center.Y);
+
+			else
+				NPC.velocity.Y *= 0.9f;
+
+			//horizontal
+
+			float desiredPos = player.Center.X - 132 * (NPC.Center.X < player.Center.X ? 1 : -1);
+
+			if (Math.Abs(NPC.Center.X - desiredPos) > 48)
+			{
+				if (NPC.Center.X < desiredPos)
+					NPC.velocity.X += 0.2f;
+
+				else
+					NPC.velocity.X -= 0.2f;
+			}
+
+			else
+				NPC.velocity.X *= 0.9f;
+
+			NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
+			NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
+		}
+
+		if(AITimer == prepTime)
+		{
+			NPC.velocity.X = (NPC.Center.X > player.Center.X ? -1 : 1) * 20;
+			// fx here
+		}
+
+		if(AITimer > prepTime)
+		{
+			NPC.velocity.X *= 0.925f;
+		}
+
+		if (AITimer > prepTime + dashTime)
+			NextAttack(player);
+	}
+
+	private void ChainGroundPound(Player player)
+	{
+		const int maxBounces = 2;
+		const int maxPounds = 3;
+
+		NPC.spriteDirection = NPC.direction;
+		NPC.noTileCollide = false;
+		NPC.noGravity = false;
+		NPC.knockBackResist = 0.3f;
+		CheckPlatform(player);
+		_curFrame.Y = 1;
+		_curFrame.X = 0;
+
+		if (_jumpState < maxBounces)
+		{
+			_contactDmgEnabled = true;
+
+			//Check if grounded
+			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
+			{
+				_jumpState++;
+				NPC.velocity.Y = -16;
+			}
+
+			else
+			{
+				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
+
+				if (NPC.velocity.Y < 12)
+					NPC.velocity.Y += 0.08f;
+
+				NPC.rotation += NPC.velocity.X / 120;
+			}
+		}
+
+		else if (_jumpState is >= maxBounces and < (maxBounces + maxPounds))
+		{
+			AITimer++;
+			_curFrame.Y = 2;
+			_contactDmgEnabled = true;
+
+			if (AITimer < 40)
+			{
+				_curFrame.Y = 1;
+				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
+
+				if (NPC.velocity.Y < -4)
+					NPC.velocity.Y += 0.08f;
+
+				NPC.rotation += NPC.velocity.X / 120;
+
+				if (AITimer > 30)
+					NPC.velocity.X *= 0.9f;
+			}
+
+			else if (AITimer < 70)
+			{
+				NPC.velocity.X = 0;
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -3, 0.1f);
+				NPC.rotation = -MathHelper.PiOver2;
+			}
+
+			else if (AITimer == 70)
+			{
+				NPC.velocity.Y = 16;
+				NPC.rotation = MathHelper.PiOver2;
+				//
+			}
+
+			if (AITimer > 70 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
+			{
+				//vfx and sfx and projs here
+
+				_jumpState++; //use the variable to track the final ground pound too
+
+				for (int i = -1; i <= 1; i++)
+				{
+					if (i == 0)
+						continue;
+
+				}
+
+				NPC.velocity.Y = -16;
+				AITimer = 0;
+			}
+		}
+
+		else //rest before next attack
+		{
+			_curFrame.Y = 0;
+			NPC.rotation = 0;
+			AITimer++;
+
+			if (AITimer > 150)
+				NextAttack(player);
+		}
+	}
+
+	private void DigErupt(Player player)
+	{
+		const int undergroundTime = 180;
+		const int numEruptions = 3;
+		const int restTime = 40;
+
+		NPC.noTileCollide = true;
+		NPC.noGravity = true;
+
+		if(_jumpState == 0)
+		{
+			_jumpState++;
+			NPC.velocity = new Vector2(12 * NPC.direction, -12);
+			SyncNPC();
+		}
+
+		if(!_inGround && _jumpState == 1)
+		{
+			NPC.velocity.Y += 0.4f;
+			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 12);
+
+			if(Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
+			{
+				_inGround = true;
+				NPC.velocity = Vector2.Zero;
+				//fx here
+			}
+		}
+
+		if(_inGround)
+		{
+			AITimer++;
+
+			NPC.velocity.X = (float)Math.Sin(AITimer * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(player.Center).X;
+			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
+
+			if (Main.rand.NextBool(4) && !Main.dedServ)
+			{
+				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, Color.LightGoldenrodYellow, Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30)
+				{
+					Pixellate = true,
+					DissolveAmount = 1,
+					SecondaryColor = Color.SandyBrown,
+					TertiaryColor = Color.SaddleBrown,
+					PixelDivisor = 3,
+					ColorLerpExponent = 0.5f,
+					Layer = ParticleLayer.BelowSolid
+				});
+			}
+
+			if (AITimer % (undergroundTime / (numEruptions + 1)) == 0)
+			{
+				//projectile here
+			}
+
+			if(AITimer > undergroundTime)
+			{
+				_inGround = false;
+				NPC.velocity.Y = -12;
+				AITimer = 0;
+
+				//fx here
+			}
+		}
+
+		if(_jumpState == 2)
+		{
+			AITimer++;
+			NPC.velocity.Y *= 0.9f;
+
+			if(AITimer > restTime)
+				NextAttack(player);
+		}
+	}
+
+	private void ScarabSwarm(Player player)
+	{
+		const int numSwarms = 4;
+		const int attackTime = 180;
+
+		if(AITimer++ == 0)
+		{
+			NPC.velocity.Y = -6;
+			//fx here?
+		}
+
+		NPC.velocity.Y *= 0.9f;
+
+		if(AITimer % (attackTime / numSwarms) == 0)
+		{
+			//proj here
+		}
+
+		if(AITimer > attackTime)
+			NextAttack(player);
+	}
+
 	private void NextAttack(Player player, AIPatterns? pattern = null)
 	{
 		_inGround = false;
@@ -520,8 +879,23 @@ public class ScarabeusBoss : ModNPC
 
 		List<AIPatterns> availablePatterns = [];
 
-		//phase check here to determine what attacks to add
-		availablePatterns.AddRange([AIPatterns.Walking, AIPatterns.RollDash, AIPatterns.Dig, AIPatterns.Leap, AIPatterns.GroundedSlam]);
+		AIPatterns[] phase1standard = [AIPatterns.Walking, AIPatterns.Leap];
+		AIPatterns[] phase1strong = [AIPatterns.Dig, AIPatterns.GroundedSlam, AIPatterns.RollDash];
+
+		AIPatterns[] phase2standard = [AIPatterns.FlyHover, AIPatterns.FlyingDash];
+		AIPatterns[] phase2strong = [AIPatterns.ChainGroundPound, AIPatterns.DigErupt, AIPatterns.ScarabSwarm];
+
+		if(!_hasPhaseChanged)
+		{
+			availablePatterns.AddRange(phase1standard);
+			availablePatterns.AddRange(phase1strong);
+		}
+
+		else
+		{
+			availablePatterns.AddRange(phase2standard);
+			availablePatterns.AddRange(phase2strong);
+		}
 
 		//Prune the current attack and attacks that shouldn't be used
 		List<AIPatterns> temp = [];
