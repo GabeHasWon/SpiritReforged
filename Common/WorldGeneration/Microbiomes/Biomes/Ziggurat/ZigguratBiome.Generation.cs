@@ -445,17 +445,21 @@ public partial class ZigguratBiome : Microbiome
 	{
 		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<BangleOfStrength>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
-			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..1)];
+			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 		
 		PriorityQueue<(int, Range), float> miscQueue = new();
-		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..41), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TeleportationPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThornsPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ShinePotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.BattlePotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 

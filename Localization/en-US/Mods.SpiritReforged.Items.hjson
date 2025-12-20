@@ -2692,7 +2692,7 @@ ZigguratMusicBoxItem: {
 }
 
 PinSaltFlat: {
-	DisplayName: Salt Flat Pin
+	DisplayName: Salt Flats Pin
 	Tooltip: ""
 }
 

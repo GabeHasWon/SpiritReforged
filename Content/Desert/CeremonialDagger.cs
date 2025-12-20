@@ -11,6 +11,7 @@ using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using SpiritReforged.Content.Desert.Bangle;
 
 namespace SpiritReforged.Content.Desert;
 
@@ -20,7 +21,11 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 
 	private float _swingArc;
 
-	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+	public override void SetStaticDefaults()
+	{
+		SpiritSets.IsSword[Type] = true;
+		//ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WindshearScepter>();
+	}
 	public override void SetDefaults()
 	{
 		Item.damage = 18;

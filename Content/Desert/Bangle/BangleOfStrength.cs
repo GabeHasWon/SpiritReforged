@@ -108,6 +108,8 @@ public class BangleOfStrength : EquippableItem
 		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetIndex ? null : false;
 	}
 
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GildedScarab.GildedScarab>();
+
 	public override void SetDefaults()
 	{
 		Item.DefaultToAccessory();
