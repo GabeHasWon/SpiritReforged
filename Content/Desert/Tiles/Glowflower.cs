@@ -75,8 +75,8 @@ public class Glowflower : ModTile, ISwayTile
 						p.Velocity.Y -= 0.05f;
 				}));
 			}
-		else
-			Main.SceneMetrics.HasSunflower = true;
+		//else // Don't use this as the range is too high
+		//	Main.SceneMetrics.HasSunflower = true;
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
