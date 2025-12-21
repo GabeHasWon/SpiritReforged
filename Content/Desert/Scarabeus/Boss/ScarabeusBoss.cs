@@ -1,12 +1,16 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 
@@ -236,6 +240,7 @@ public class ScarabeusBoss : ModNPC
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.knockBackResist = 0f;
+		NPC.noGravity = false;
 		CheckPlatform(player);
 
 		if (!HasJumped && !HasLanded)
@@ -371,7 +376,7 @@ public class ScarabeusBoss : ModNPC
 
 			if(Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				Vector2 center = FindGroundFromPosition(NPC.Center + NPC.direction * Vector2.UnitX * 50);
+				Vector2 center = FindGroundFromPosition(NPC.Center + NPC.direction * Vector2.UnitX * 320 - Vector2.UnitY * 320);
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), center, Vector2.Zero, ModContent.ProjectileType<SlamShockwave>(), NPC.damage / 2, 16, Main.myPlayer, NPC.direction);
 			}
 		}
@@ -389,7 +394,7 @@ public class ScarabeusBoss : ModNPC
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
-		NPC.noGravity = false;
+		NPC.noGravity = true;
 		NPC.knockBackResist = 0.5f;
 		CheckPlatform(player);
 		_curFrame.Y = 1;
@@ -403,6 +408,9 @@ public class ScarabeusBoss : ModNPC
 			{
 				_jumpState++;
 				NPC.velocity.Y = -16;
+
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15));
 			}
 
 			else
@@ -415,6 +423,8 @@ public class ScarabeusBoss : ModNPC
 
 				NPC.rotation += NPC.velocity.X / 120;
 			}
+
+			NPC.velocity.Y += 0.38f;
 		}
 
 		else if (_jumpState == maxBounces)
@@ -442,13 +452,13 @@ public class ScarabeusBoss : ModNPC
 			{
 				NPC.velocity.X = 0;
 				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -3, 0.1f);
-				NPC.rotation = -MathHelper.PiOver2;
+				NPC.rotation = -MathHelper.PiOver2 * NPC.direction;
 			}
 
 			else if (AITimer == 70)
 			{
 				NPC.velocity.Y = 16;
-				NPC.rotation = MathHelper.PiOver2;
+				NPC.rotation = MathHelper.PiOver2 * NPC.direction;
 				//
 			}
 
@@ -462,7 +472,12 @@ public class ScarabeusBoss : ModNPC
 				{
 
 				}
+
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15));
 			}
+
+			NPC.velocity.Y += 0.38f;
 		}
 
 		else //rest before next attack
@@ -555,7 +570,7 @@ public class ScarabeusBoss : ModNPC
 
 	private void FlyHover(Player player)
 	{
-		const int hoverTime = 120;
+		const int hoverTime = 180;
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
@@ -565,14 +580,16 @@ public class ScarabeusBoss : ModNPC
 		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
 
 		//Vertical movement
-		if (heightAboveGround < 64)
-			NPC.velocity.Y += 0.1f;
+		if (heightAboveGround < 128)
+			NPC.velocity.Y -= 0.1f;
 
-		else if (Math.Abs(NPC.position.Y - player.position.Y) > 80)
+		else if (Math.Abs(NPC.position.Y - player.position.Y) > 160)
 			NPC.velocity.Y -= 0.175f * Math.Sign(NPC.Center.Y - player.Center.Y);
 
 		else
 			NPC.velocity.Y *= 0.9f;
+
+		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * AITimer / hoverTime) / 10;
 
 		//Horizontal movement
 
@@ -580,8 +597,8 @@ public class ScarabeusBoss : ModNPC
 		{
 			if (NPC.velocity.X < 0)
 			{
-				NPC.velocity.X *= 0.95f;
-				NPC.velocity.X += 0.033f;
+				NPC.velocity.X *= 0.975f;
+				NPC.velocity.X += 0.025f;
 			}
 
 			else
@@ -594,8 +611,8 @@ public class ScarabeusBoss : ModNPC
 		{
 			if (NPC.velocity.X > 0)
 			{
-				NPC.velocity.X *= 0.95f;
-				NPC.velocity.X -= 0.033f;
+				NPC.velocity.X *= 0.975f;
+				NPC.velocity.X -= 0.025f;
 			}
 
 			else
@@ -613,8 +630,8 @@ public class ScarabeusBoss : ModNPC
 
 	private void FlyDash(Player player)
 	{
-		const int prepTime = 45;
-		const int dashTime = 40;
+		const int prepTime = 90;
+		const int dashTime = 50;
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
@@ -630,6 +647,8 @@ public class ScarabeusBoss : ModNPC
 
 			else
 				NPC.velocity.Y *= 0.9f;
+
+			NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * AITimer / prepTime) / 10;
 
 			//horizontal
 
@@ -647,19 +666,24 @@ public class ScarabeusBoss : ModNPC
 			else
 				NPC.velocity.X *= 0.9f;
 
+			float windupThreshold = 0.66f;
+			if (AITimer > prepTime * windupThreshold)
+				NPC.velocity.X -= NPC.direction * MathHelper.Lerp(0.25f, 1f, EaseFunction.EaseQuadOut.Ease((AITimer - prepTime * windupThreshold) / (prepTime * (1 - windupThreshold))));
+
 			NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
 			NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
 		}
 
 		if(AITimer == prepTime)
 		{
-			NPC.velocity.X = (NPC.Center.X > player.Center.X ? -1 : 1) * 20;
+			NPC.velocity.X = (NPC.Center.X > player.Center.X ? -1 : 1) * 28;
 			// fx here
 		}
 
 		if(AITimer > prepTime)
 		{
-			NPC.velocity.X *= 0.925f;
+			NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+			NPC.velocity.X = MathHelper.Lerp(28 * NPC.direction, 0, EaseFunction.EaseQuadOut.Ease((AITimer - prepTime) / dashTime));
 		}
 
 		if (AITimer > prepTime + dashTime)
@@ -673,8 +697,8 @@ public class ScarabeusBoss : ModNPC
 
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
-		NPC.noGravity = false;
-		NPC.knockBackResist = 0.3f;
+		NPC.noGravity = true; //for some godforsaken reason this also force caps an npc's downwards velocity to 10
+		NPC.knockBackResist = 0.2f;
 		CheckPlatform(player);
 		_curFrame.Y = 1;
 		_curFrame.X = 0;
@@ -688,6 +712,9 @@ public class ScarabeusBoss : ModNPC
 			{
 				_jumpState++;
 				NPC.velocity.Y = -16;
+
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15));
 			}
 
 			else
@@ -700,44 +727,50 @@ public class ScarabeusBoss : ModNPC
 
 				NPC.rotation += NPC.velocity.X / 120;
 			}
+
+			NPC.velocity.Y += 0.38f;
 		}
 
 		else if (_jumpState is >= maxBounces and < (maxBounces + maxPounds))
 		{
+			NPC.knockBackResist = 0f;
 			AITimer++;
 			_curFrame.Y = 2;
 			_contactDmgEnabled = true;
 
-			if (AITimer < 40)
+			if (AITimer < 25)
 			{
-				_curFrame.Y = 1;
-				float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+				float desiredVel = (NPC.Center.X < player.Center.X) ? 24 : -24;
 				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
+
+				if(_jumpState == maxBounces)
+				{
+					_curFrame.Y = 1;
+					NPC.rotation += NPC.velocity.X / 120;
+				}
 
 				if (NPC.velocity.Y < -4)
 					NPC.velocity.Y += 0.08f;
 
-				NPC.rotation += NPC.velocity.X / 120;
-
-				if (AITimer > 30)
+				if (AITimer > 20)
 					NPC.velocity.X *= 0.9f;
 			}
 
-			else if (AITimer < 70)
+			else if (AITimer < 40)
 			{
 				NPC.velocity.X = 0;
-				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -3, 0.1f);
-				NPC.rotation = -MathHelper.PiOver2;
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -6, 0.3f);
+				NPC.rotation = -MathHelper.PiOver2 * NPC.direction;
 			}
 
-			else if (AITimer == 70)
+			else if (AITimer == 40)
 			{
 				NPC.velocity.Y = 16;
-				NPC.rotation = MathHelper.PiOver2;
+				NPC.rotation = MathHelper.PiOver2 * NPC.direction;
 				//
 			}
 
-			if (AITimer > 70 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
+			if (AITimer > 40 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 			{
 				//vfx and sfx and projs here
 
@@ -750,18 +783,29 @@ public class ScarabeusBoss : ModNPC
 
 				}
 
-				NPC.velocity.Y = -16;
+				if (_jumpState < maxBounces + maxPounds)
+					NPC.velocity.Y = -16;
+				else
+					NPC.velocity.Y = -5;
+
 				AITimer = 0;
+
+				if(Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 4, 3, 20));
 			}
+
+			NPC.velocity.Y += 0.38f;
 		}
 
 		else //rest before next attack
 		{
+			NPC.noGravity = false;
+			NPC.knockBackResist = 0.3f;
 			_curFrame.Y = 0;
 			NPC.rotation = 0;
 			AITimer++;
 
-			if (AITimer > 150)
+			if (AITimer > 120)
 				NextAttack(player);
 		}
 	}
@@ -774,23 +818,28 @@ public class ScarabeusBoss : ModNPC
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
+		NPC.knockBackResist = 0f;
 
 		if(_jumpState == 0)
 		{
 			_jumpState++;
-			NPC.velocity = new Vector2(12 * NPC.direction, -12);
+			NPC.velocity = new Vector2(6 * NPC.direction, -12);
 			SyncNPC();
 		}
 
 		if(!_inGround && _jumpState == 1)
 		{
 			NPC.velocity.Y += 0.4f;
-			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 12);
+			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 24);
 
 			if(Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
 			{
 				_inGround = true;
 				NPC.velocity = Vector2.Zero;
+
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 4, 3, 20));
+
 				//fx here
 			}
 		}
@@ -819,22 +868,27 @@ public class ScarabeusBoss : ModNPC
 			if (AITimer % (undergroundTime / (numEruptions + 1)) == 0)
 			{
 				//projectile here
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 20));
 			}
 
 			if(AITimer > undergroundTime)
 			{
 				_inGround = false;
-				NPC.velocity.Y = -12;
+				NPC.velocity.Y = -15;
 				AITimer = 0;
+				_jumpState++;
 
 				//fx here
+				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 4, 3, 20));
 			}
 		}
 
 		if(_jumpState == 2)
 		{
 			AITimer++;
-			NPC.velocity.Y *= 0.9f;
+			NPC.velocity.Y *= 0.95f;
 
 			if(AITimer > restTime)
 				NextAttack(player);
@@ -843,23 +897,60 @@ public class ScarabeusBoss : ModNPC
 
 	private void ScarabSwarm(Player player)
 	{
-		const int numSwarms = 4;
-		const int attackTime = 180;
+		//durations of each segment
+		const int attackStartTime = 40;
+		const int swarmLength = 120;
+		const int flashBoomChargeup = 60;
+		const int restTime = 30;
 
+		//short form calculations using durations of each segment
+		int flashChargeStart = attackStartTime + swarmLength;
+		int flashExplostionTime = attackStartTime + swarmLength + flashBoomChargeup;
+		int attackEndTime = attackStartTime + swarmLength + flashBoomChargeup + restTime;
+
+		NPC.noGravity = true;
+		NPC.noTileCollide = true;
+		NPC.knockBackResist = 0f;
+
+		//attack start
 		if(AITimer++ == 0)
 		{
 			NPC.velocity.Y = -6;
+			NPC.velocity.X /= 2;
 			//fx here?
+
 		}
 
-		NPC.velocity.Y *= 0.9f;
+		NPC.velocity *= 0.95f;
+		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * 3 * AITimer / attackEndTime) / 10;
 
-		if(AITimer % (attackTime / numSwarms) == 0)
+		if(AITimer == attackStartTime)
 		{
 			//proj here
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.LightGoldenrodYellow, 1, 2400, 30, "GlowTrail", new Vector2(1, 1), EaseFunction.EaseCircularOut, true, 0.33f));
+			}
 		}
 
-		if(AITimer > attackTime)
+		if(AITimer > flashChargeStart && AITimer < flashExplostionTime)
+		{
+			//vfx here
+		}
+
+		if(AITimer == flashExplostionTime)
+		{
+
+			if(Main.netMode != NetmodeID.Server)
+			{
+				for (int i = 0; i < 3; i++)
+					ParticleHandler.SpawnParticle(new DissipatingImage(NPC.Center, Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.66f, 0, "GodrayCircle", Vector2.Zero, new Vector2(3, 1.4f), 15));
+
+			}
+		}
+
+		if(AITimer > attackEndTime)
 			NextAttack(player);
 	}
 
@@ -945,6 +1036,11 @@ public class ScarabeusBoss : ModNPC
 				if ((AIPatterns)CurrentPattern == AIPatterns.BounceGroundPound)
 					isValid = false;
 
+				break;
+
+			case AIPatterns.ChainGroundPound:
+			case AIPatterns.DigErupt:
+				isValid = !Collision.SolidTiles(NPC.position, NPC.width, NPC.height);
 				break;
 		}
 

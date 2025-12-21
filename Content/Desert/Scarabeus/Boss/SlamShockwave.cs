@@ -1,3 +1,5 @@
+using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 
@@ -15,7 +17,7 @@ public class SlamShockwave : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(160, 64);
+		Projectile.Size = new(640, 320);
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
@@ -40,17 +42,30 @@ public class SlamShockwave : ModProjectile
 	{
 		Effect shockwaveEffect = AssetLoader.LoadedShaders["GroundShockwave"].Value;
 
-		float topOffset = Projectile.height * TOP_OFFSET_RATIO * -Projectile.ai[0];
+		shockwaveEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
+		shockwaveEffect.Parameters["textureStretch"].SetValue(new Vector2(4, 0.33f));
+		shockwaveEffect.Parameters["pixelDimensions"].SetValue(new Vector2(Projectile.width, Projectile.height) / 4);
+
+		shockwaveEffect.Parameters["uColor"].SetValue(Color.LightGoldenrodYellow.ToVector4());
+		shockwaveEffect.Parameters["uColor2"].SetValue(Color.SandyBrown.ToVector4());
+		shockwaveEffect.Parameters["uColor3"].SetValue(Color.SaddleBrown.ToVector4());
+
+		shockwaveEffect.Parameters["finalIntensityMod"].SetValue(1.5f);
+		shockwaveEffect.Parameters["numColors"].SetValue(16);
+		shockwaveEffect.Parameters["scroll"].SetValue(new Vector2(Projectile.ai[0] * Projectile.timeLeft / 120f, Projectile.timeLeft / 120f));
+		shockwaveEffect.Parameters["progress"].SetValue(1 - EaseFunction.EaseCircularIn.Ease(Projectile.timeLeft / 60f));
+
+		float topOffset = Projectile.height * TOP_OFFSET_RATIO * Projectile.ai[0] * 1.5f;
 
 		var square = new SquarePrimitive
 		{
-			Color = Color.White,
+			Color = lightColor * EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularOut.Ease(Projectile.timeLeft / 60f)),
 			Length = Projectile.width,
 			Height = Projectile.height,
 			BottomPosOffset = -topOffset
 		};
 
-		square.SetTopPosition(Projectile.Top + Vector2.UnitX * topOffset);
+		square.SetTopPosition(-Main.screenPosition + Projectile.Top + Vector2.UnitX * topOffset - Vector2.UnitY * 120);
 
 		PrimitiveRenderer.DrawPrimitiveShape(square, shockwaveEffect);
 

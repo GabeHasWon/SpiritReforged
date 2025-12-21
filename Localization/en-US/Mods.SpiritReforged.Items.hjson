@@ -2808,3 +2808,15 @@ ScarabDebugSpawner: {
 	DisplayName: Scarab Debug Spawner
 	Tooltip: ""
 }
+
+SaltskipperQuestFish: {
+	Description: Mods.SpiritReforged.Items.SaltskipperQuestFish.Description
+	CatchLocation: Mods.SpiritReforged.Items.SaltskipperQuestFish.CatchLocation
+	DisplayName: Saltskipper Quest Fish
+	Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	DisplayName: Stone Reliquary Item
+	Tooltip: ""
+}
