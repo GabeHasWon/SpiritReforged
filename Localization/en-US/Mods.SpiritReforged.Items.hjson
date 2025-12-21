@@ -2644,7 +2644,11 @@ Dragonsong: {
 
 TinyDragon: {
 	DisplayName: Tiny Dragon
-	Tooltip: "'Last of its kind'"
+	Tooltip:
+		'''
+		Summons a tiny dragon to follow you around
+		"'Last of its kind'"
+		'''
 }
 
 PileOfConsequences: {
@@ -2688,7 +2692,7 @@ ZigguratMusicBoxItem: {
 }
 
 PinSaltFlat: {
-	DisplayName: Salt Flat Pin
+	DisplayName: Salt Flats Pin
 	Tooltip: ""
 }
 
@@ -2794,6 +2798,11 @@ CrackedSandstoneItem: {
 	Tooltip: ""
 }
 
+StoneReliquaryItem: {
+	DisplayName: Stone Reliquary
+	Tooltip: ""
+}
+
 SaltFlatsCampfireItem: {
 	DisplayName: Salt Campfire
 	Tooltip: "{$ItemTooltip.Campfire}"
@@ -2803,3 +2812,12 @@ SaltFlatsFountainItem: {
 	DisplayName: Salt Flats Fountain
 	Tooltip: ""
 }
+
+SaltskipperQuestFish: {
+	Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
+	CatchLocation: Salt Flats
+	DisplayName: Saltskipper
+	Tooltip: ""
+}
+
+WispBannerItem.DisplayName: Wisp Banner

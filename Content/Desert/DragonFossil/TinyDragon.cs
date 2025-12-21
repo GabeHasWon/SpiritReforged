@@ -47,7 +47,11 @@ public class TinyDragonPet : ModProjectile
 			.WithCode(DelegateMethods.CharacterPreview.Float);
 	}
 
-	public override void SetDefaults() => Projectile.Size = new Vector2(24);
+	public override void SetDefaults()
+	{
+		Projectile.Size = new Vector2(24);
+		Projectile.tileCollide = false;
+	}
 
 	public override void AI()
 	{

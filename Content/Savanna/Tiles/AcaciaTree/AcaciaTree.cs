@@ -207,7 +207,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 		}
 	}
 
-	protected override void OnGrowEffects(int i, int j, int height)
+	protected override void OnGrowEffects(int i, int j, int height, int goreType = GoreID.TreeLeaf_Palm)
 	{
 		for (int h = 0; h < height; h++)
 		{
@@ -224,7 +224,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 			for (int g = 0; g < loops; g++)
 				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range), 
-					Main.rand.NextVector2Unit(), GoreID.TreeLeaf_Palm, .7f + Main.rand.NextFloat() * .6f);
+					Main.rand.NextVector2Unit(), goreType, 0.7f + Main.rand.NextFloat() * 0.6f);
 		}
 	}
 
@@ -259,8 +259,11 @@ public class AcaciaTreeCorrupt : AcaciaTree
 		base.PreAddObjectData();
 
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+		RegisterItemDrop(ItemID.Ebonwood);
 		TileID.Sets.Corrupt[Type] = true;
 	}
+
+	protected override void OnGrowEffects(int i, int j, int height, int goreType) => base.OnGrowEffects(i, j, height, GoreID.TreeLeaf_Corruption);
 }
 
 public class AcaciaTreeCrimson : AcaciaTree
@@ -270,8 +273,11 @@ public class AcaciaTreeCrimson : AcaciaTree
 		base.PreAddObjectData();
 
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+		RegisterItemDrop(ItemID.Shadewood);
 		TileID.Sets.Crimson[Type] = true;
 	}
+
+	protected override void OnGrowEffects(int i, int j, int height, int goreType) => base.OnGrowEffects(i, j, height, GoreID.TreeLeaf_Crimson);
 }
 
 [Autoload(false)]
@@ -300,6 +306,8 @@ public class AcaciaTreeHallow : AcaciaTree
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassHallowMowed>()];
 		TileID.Sets.Hallow[Type] = true;
 	}
+
+	protected override void OnGrowEffects(int i, int j, int height, int goreType) => base.OnGrowEffects(i, j, height, GoreID.TreeLeaf_Hallow);
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{

@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Content.Desert.GildedScarab;
-using SpiritReforged.Content.Forest.ArcaneNecklace;
+﻿using SpiritReforged.Content.Forest.ArcaneNecklace;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Forest.RoguesCrest;
@@ -38,8 +37,6 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo(1, 0.125f, ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(3, 0.35f, ModContent.ItemType<DoubleJumpPotion>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(25, 50, 0.3f, ModContent.ItemType<Flarepowder>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
-
-        AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<GildedScarab>()), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
 
 		AddToVanillaChest(new ChestInfo(2, 0.3f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(2, 0.25f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Ivy, Main.rand.Next(1, 4));

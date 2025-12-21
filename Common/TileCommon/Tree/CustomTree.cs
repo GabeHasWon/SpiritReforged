@@ -181,7 +181,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 	}
 
 	/// <summary> Used to create effects when the tree is grown, such as leaves. Doubles for shake effects by default. </summary>
-	protected virtual void OnGrowEffects(int i, int j, int height) { }
+	protected virtual void OnGrowEffects(int i, int j, int height, int goreType = GoreID.TreeLeaf_Normal) { }
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{

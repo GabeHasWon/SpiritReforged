@@ -57,9 +57,12 @@ public class EmberParticle : Particle
 		Velocity = Velocity.RotatedByRandom(0.1f);
 		Velocity *= 0.99f;
 
-		oldPositions[0] = Position;
-		for(int i = oldPositions.Length - 1; i > 0; i--)
-			oldPositions[i] = oldPositions[i - 1];
+		if (oldPositions.Length != 0)
+		{
+			oldPositions[0] = Position;
+			for (int i = oldPositions.Length - 1; i > 0; i--)
+				oldPositions[i] = oldPositions[i - 1];
+		}
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

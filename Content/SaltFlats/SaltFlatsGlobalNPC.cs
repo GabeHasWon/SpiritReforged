@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.SaltFlats.Biome;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 namespace SpiritReforged.Content.SaltFlats;
@@ -7,7 +8,7 @@ public class SaltFlatsGlobalNPC : GlobalNPC
 {
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Invasion)
+		if (!spawnInfo.Common())
 			return;
 
 		if (spawnInfo.Player.InModBiome<SaltBiome>())

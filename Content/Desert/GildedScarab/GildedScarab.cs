@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Content.Desert.Bangle;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
@@ -12,6 +13,8 @@ public class GildedScarab : EquippableItem
 	{
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<BangleOfStrength>();
 	}
 	public override void SetDefaults()
 	{

@@ -87,7 +87,7 @@ public class WalkieTalkie : ModItem
 	}
 
 	/// <summary> Prevents quest completion dialogue from <see cref="PreventQuestCompletion"/>. </summary>
-	private string ModifyQuestDialogue(On_Lang.orig_AnglerQuestChat orig, bool turnIn)
+	private static string ModifyQuestDialogue(On_Lang.orig_AnglerQuestChat orig, bool turnIn)
 	{
 		string value = orig(turnIn);
 
@@ -126,7 +126,6 @@ public class WalkieTalkie : ModItem
 		{
 			if (player.anglerQuestsFinished == 3) //Guaranteed on the 3rd completed quest
 				rewardItems.Add(new Item(Type));
-
 		};
 
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.GoldenBugNet;

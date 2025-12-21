@@ -6,6 +6,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Amber;
+using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Jungle.Pineapple;
 using System.Linq;
 using Terraria.DataStructures;
@@ -114,10 +115,17 @@ public class UndergroundOasisBiome : Microbiome
 		));
 
 		//Clearing walls
+		ShapeData clearingShape = new();
 		WorldUtils.Gen(new Point(origin.X, origin.Y + 2), new Shapes.HalfCircle((int)(radius.X * 0.75f)), Actions.Chain(
 			new Modifiers.IsNotSolid(),
 			new Modifiers.Blotches(3),
 			new Actions.ClearWall()
+		).Output(clearingShape));
+
+		WorldUtils.Gen(new Point(origin.X, origin.Y + 2), new ModShapes.OuterOutline(clearingShape), Actions.Chain(
+			new Modifiers.Blotches(),
+			new Modifiers.OnlyWalls(WallID.Sandstone, WallID.HardenedSand),
+			new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)
 		));
 
 		int deviation = radius.X / 2;
