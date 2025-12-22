@@ -27,3 +27,15 @@ Hiker: {
 	Flavor: Походы — его страсть, и у него есть всё необходимое для приключений.
 	Description: Начинает с 60 факелами, 30 светящимися палочками и 150 верёвками на самом высоком холме.
 }
+
+Caveman: {
+	// DisplayName: Caveman
+	// Flavor: The simple life proves productive. One word sums it up: Ug.
+	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	// DisplayName: Disentombed
+	// Flavor: Three thousand years have passed...my reign will return. I will return.
+	// Description: Spawns with the mummy vanity in the Ziggurat.
+}

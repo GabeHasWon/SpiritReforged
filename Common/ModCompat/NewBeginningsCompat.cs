@@ -1,16 +1,19 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
+using SpiritReforged.Content.Forest.WoodClub;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
+using SpiritReforged.Content.Vanilla.Leather.HideTunic;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
 
@@ -32,6 +35,8 @@ internal class NewBeginningsCompat : ModSystem
 			AddRecluse();
 			AddHunter();
 			AddHiker();
+			AddCaveman();
+			AddDisentombed();
 		});
 
 		void AddDiver()
@@ -39,9 +44,8 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<DiverHead>(), ModContent.ItemType<DiverBody>(), ModContent.ItemType<DiverLegs>(),
 				new int[] { ItemID.Flipper, ModContent.ItemType<OceanPendant>() });
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindBeachSpawnPoint);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Diver"), "ReforgedDiver",
-				"Mods.SpiritReforged.Origins.Diver", Array.Empty<(int, int)>(), equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindBeachSpawnPoint);
+			beginnings.Call("ShortAddOrigin", GetIcon("Diver"), "ReforgedDiver", "Mods.SpiritReforged.Origins.Diver", Array.Empty<(int, int)>(), equip, misc, dele);
 		}
 
 		void AddBotanist()
@@ -49,19 +53,17 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<BotanistHat>(), ModContent.ItemType<BotanistBody>(), ModContent.ItemType<BotanistLegs>(),
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ItemID.Sickle);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindScarecrowSpawnPoint);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Botanist"), "ReforgedBotanist",
-				"Mods.SpiritReforged.Origins.Botanist", new (int, int)[] { (ItemID.HerbBag, 3) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindScarecrowSpawnPoint);
+			beginnings.Call("ShortAddOrigin", GetIcon("Botanist"), "ReforgedBotanist", "Mods.SpiritReforged.Origins.Botanist", new (int, int)[] { (ItemID.HerbBag, 3) }, equip, misc, dele);
 		}
 
 		void AddRecluse()
 		{
 			object equip = beginnings.Call("EquipData", ItemID.AnglerHat, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindRecluseSpawn);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Recluse"), "ReforgedRecluse",
-				"Mods.SpiritReforged.Origins.Recluse", new (int, int)[] { (ItemID.FiberglassFishingPole, 1), (ItemID.MasterBait, 2), 
-					(ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindRecluseSpawn);
+			beginnings.Call("ShortAddOrigin", GetIcon("Recluse"), "ReforgedRecluse", "Mods.SpiritReforged.Origins.Recluse", new (int, int)[] { (ItemID.FiberglassFishingPole, 1), 
+				(ItemID.MasterBait, 2), (ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25) }, equip, misc, dele);
 		}
 
 		void AddHunter()
@@ -69,21 +71,99 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<SafariHat>(), ModContent.ItemType<SafariVest>(), ModContent.ItemType<SafariShorts>(), 
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<HuntingRifle>());
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindHunterSpawn);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Hunter"), "ReforgedHunter",
-				"Mods.SpiritReforged.Origins.Hunter", new (int, int)[] { (ItemID.MusketBall, 60) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindHunterSpawn);
+			beginnings.Call("ShortAddOrigin", GetIcon("Hunter"), "ReforgedHunter", "Mods.SpiritReforged.Origins.Hunter", new (int, int)[] { (ItemID.MusketBall, 60) }, equip, misc, dele);
 		}
 
 		void AddHiker()
 		{
 			object equip = beginnings.Call("EquipData", ItemID.None, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindHighestSurface, 
-				(Action<Player>)AddHikerBackpack);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Hiker"), "ReforgedHiker",
+			object dele = GenerateDelegateData(() => true, list => { }, () => true, FindHighestSurface, AddHikerBackpack);
+			beginnings.Call("ShortAddOrigin", GetIcon("Hiker"), "ReforgedHiker",
 				"Mods.SpiritReforged.Origins.Hiker", new (int, int)[] { (ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60) }, equip, misc, dele);
 		}
+
+		void AddCaveman()
+		{
+			object equip = beginnings.Call("EquipData", ItemID.None, ModContent.ItemType<HideTunic>(), ItemID.None, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<WoodenClub>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnUnderground);
+			beginnings.Call("ShortAddOrigin", GetIcon("Caveman"), "ReforgedCaveman", "Mods.SpiritReforged.Origins.Caveman", Array.Empty<(int, int)>(), equip, misc, dele);
+		}
+
+		void AddDisentombed()
+		{
+			object equip = beginnings.Call("EquipData", ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1);
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInZiggurat);
+			beginnings.Call("ShortAddOrigin", GetIcon("Disentombed"), "ReforgedDisentombed", "Mods.SpiritReforged.Origins.Disentombed", Array.Empty<(int, int)>(), equip, misc, dele);
+		}
 	}
+
+	private Point16 SpawnInZiggurat()
+	{
+		if (!PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition.TryGetValue(InterestType.Ziggurat, out HashSet<Point16> ziggurats))
+			return Point16.NegativeOne;
+
+		Point16 pos = WorldGen.genRand.Next([.. ziggurats]);
+		Point16 spawn;
+		Tile tile;
+
+		do
+		{
+			spawn = new Point16(pos.X + WorldGen.genRand.Next(-100, 300), pos.Y + WorldGen.genRand.Next(-200, 200));
+			tile = Main.tile[spawn];
+		} while (tile.HasTile || !(tile.WallType == ModContent.WallType<RedSandstoneBrickCrackedWall>() || tile.WallType == ModContent.WallType<RedSandstoneBrickWall>())
+			|| Collision.SolidCollision(spawn.ToWorldCoordinates() - new Vector2(36), 72, 72) || !Collision.SolidCollision(spawn.ToWorldCoordinates() + new Vector2(-18, 36), 36, 16));
+
+		return spawn;
+	}
+
+	private static Point16 SpawnUnderground()
+	{
+		for (int i = 0; i < 30000; ++i)
+		{
+			Point16 point = new(WorldGen.genRand.Next(WorldGen.beachDistance * 2, Main.maxTilesX - WorldGen.beachDistance * 2), 
+				WorldGen.genRand.Next((int)Main.worldSurface + 100, (int)Main.worldSurface + 400));
+
+			if (Collision.SolidCollision(point.ToWorldCoordinates() - new Vector2(36), 72, 72))
+				continue;
+
+			if (!Collision.SolidCollision(point.ToWorldCoordinates() + new Vector2(-18, 36), 36, 16))
+				continue;
+
+			const int Range = 70;
+
+			int stoneCount = 150;
+
+			for (int x = point.X - Range; x < point.X + Range; ++x)
+			{
+				for (int y = point.Y - Range; y < point.Y + Range; ++y)
+				{
+					Tile tile = Main.tile[x, y];
+
+					if (tile.HasTile && tile.TileType is TileID.Stone or TileID.Dirt or TileID.Granite or TileID.Marble or TileID.MushroomGrass)
+						stoneCount--;
+					else if (tile.HasTile && tile.TileType is TileID.JungleGrass or TileID.CorruptGrass or TileID.CrimsonGrass or TileID.Ash)
+						stoneCount++;
+				}
+			}
+
+			if (stoneCount > 0)
+				continue;
+
+			return point;
+		}
+
+		return Point16.NegativeOne;
+	}
+
+	public static object GetDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen , Func<bool> hasCustomSpawn, Func<Point16> actualSpawn) 
+		=> ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn);
+
+	public static object GenerateDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen, Func<bool> hasCustomSpawn, Func<Point16> actualSpawn,
+		Action<Player> modifyCreation) => ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn, modifyCreation);
 
 	private Point16 FindHighestSurface()
 	{

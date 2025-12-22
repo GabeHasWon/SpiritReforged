@@ -27,3 +27,15 @@ Hiker: {
 	Flavor: Exploração alimenta o prazer, e ele tem os suprimentos para isso.
 	Description: Começa com 60 Tochas, 30 Bastões Luminosos, 150 Cordas no topo da colina mais alta.
 }
+
+Caveman: {
+	// DisplayName: Caveman
+	// Flavor: The simple life proves productive. One word sums it up: Ug.
+	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	// DisplayName: Disentombed
+	// Flavor: Three thousand years have passed...my reign will return. I will return.
+	// Description: Spawns with the mummy vanity in the Ziggurat.
+}
