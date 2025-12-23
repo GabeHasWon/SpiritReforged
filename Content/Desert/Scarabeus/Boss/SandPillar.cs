@@ -26,28 +26,37 @@ public class SandPillar : ModProjectile
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = MAX_TIMELEFT + (int)SpawnDelay;
+		Projectile.timeLeft = MAX_TIMELEFT;
 	}
 
 	public override void AI()
 	{
+		if(AITimer == 0)
+			Projectile.timeLeft += (int)SpawnDelay;
+
 		if (AITimer++ == SpawnDelay)
 			OnSpawn();
 
 		if(AITimer > SpawnDelay)
 		{
-			if(Main.netMode != NetmodeID.Server && Main.rand.NextBool(3))
+			if(Main.netMode != NetmodeID.Server)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(16), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.2f), EaseFunction.EaseCircularOut, 30)
+				for(int i = 0; i < 1; i++)
 				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f,
-					Layer = ParticleLayer.BelowSolid
-				});
+					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(8, 24), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+					{
+						Pixellate = true,
+						DissolveAmount = 1,
+						SecondaryColor = Color.SandyBrown,
+						TertiaryColor = Color.SaddleBrown,
+						PixelDivisor = 3,
+						ColorLerpExponent = 0.33f,
+						Layer = ParticleLayer.BelowSolid
+					});
+				}
+
+				if(Main.rand.NextBool())
+					Dust.NewDust(Projectile.BottomLeft, Projectile.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-6, -12), 0, default, Main.rand.NextFloat(0.5f, 1.3f));
 			}
 		}
 	}
@@ -58,14 +67,14 @@ public class SandPillar : ModProjectile
 		{
 			for (int i = 0; i < 6; i++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(6), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.2f), EaseFunction.EaseCubicOut, 30)
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom + Main.rand.NextFloat(-64, 64) * Vector2.UnitX, -Vector2.UnitY * Main.rand.NextFloat(2, 6), Color.Beige, Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
 					SecondaryColor = Color.SandyBrown,
 					TertiaryColor = Color.SaddleBrown,
 					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f,
+					ColorLerpExponent = 0.75f,
 					Layer = ParticleLayer.BelowSolid
 				});
 			}

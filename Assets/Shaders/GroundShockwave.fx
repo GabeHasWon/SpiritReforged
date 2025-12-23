@@ -21,6 +21,7 @@ int numColors;
 
 float2 scroll;
 float progress;
+float direction;
 
 
 struct VertexShaderInput
@@ -50,7 +51,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-const float verticalFade = 0.1f;
+const float verticalFade = 0.3f;
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 baseCoords = input.TextureCoordinates;
@@ -66,14 +67,22 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     //fade out at horizontal edges
     strength *= pow(1 - (2 * abs(baseCoords.x - 0.5f)), 0.125f);
     
-    float flipYCoord = 1 - baseCoords.y;
+    float flipYCoord = (1 - baseCoords.y);
+    
     float fadeThreshold = progress - verticalFade;
+    if (direction > 0)
+        fadeThreshold *= baseCoords.x;
+    else if (direction < 0)
+        fadeThreshold *= (1 - baseCoords.x);
+    
     if (flipYCoord > fadeThreshold)
     {
-        strength *= max(1 - ((flipYCoord - fadeThreshold) / verticalFade), 0);
+        float smoothStepFade = smoothstep(fadeThreshold, fadeThreshold + verticalFade, flipYCoord);
+        strength *= 1 - smoothStepFade;
+        strength = pow(strength, lerp(1, 2, smoothStepFade));
     }
     
-    float colorStrength = pow(strength, 0.66f);
+    float colorStrength = pow(strength, 0.5f);
     colorStrength = round(colorStrength * numColors) / numColors;
     
     float4 finalColor = uColor;
