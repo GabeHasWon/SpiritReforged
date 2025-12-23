@@ -2,6 +2,8 @@
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Biome;
 using SpiritReforged.Content.Desert.Tiles;
+using Terraria.Audio;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 
@@ -19,6 +21,11 @@ internal class ZigguratMummy : ModNPC
 
 	private static readonly Asset<Texture2D> Alt = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(ZigguratMummy), "ZigguratMummy_Alt"));
 
+	public static readonly SoundStyle MummyMoan = Main.rand.NextBool() ? SoundID.Zombie3 : SoundID.Zombie4 with
+	{
+		Pitch = 0.5f,
+		PitchVariance = 0.25f
+	};
 	private ref float Variant => ref NPC.ai[0];
 
 	private bool TrapSpawned => NPC.ai[1] == 1;
@@ -29,7 +36,7 @@ internal class ZigguratMummy : ModNPC
 	{
 		NPC.CloneDefaults(NPCID.Mummy);
 		NPC.lifeMax = 80;
-		NPC.damage = 20;
+		NPC.damage = 28;
 		NPC.aiStyle = -1;
 
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
@@ -37,7 +44,7 @@ internal class ZigguratMummy : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(80, 90, 110, 150);
+		NPC.lifeMax = ModeUtils.ByMode(80, 90, 120, 180);
 		NPC.damage = ModeUtils.ByMode(20, 37, 40, 60);
 	}
 
@@ -46,7 +53,7 @@ internal class ZigguratMummy : ModNPC
 	public override void AI()
 	{
 		const float JumpSpeed = 5f;
-		const float MoveSpeed = 1f;
+		float MoveSpeed = MathHelper.Lerp(1f, 2f, (1f - NPC.life / (float)NPC.lifeMax));
 
 		if (Variant == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
@@ -79,19 +86,27 @@ internal class ZigguratMummy : ModNPC
 				NPC.velocity.Y = -JumpSpeed;
 		}
 
+		if (Main.rand.NextBool(1000))
+			SoundEngine.PlaySound(MummyMoan, NPC.Center);
+
 		NPC.spriteDirection = NPC.direction = Math.Sign(NPC.velocity.X);
 	}
 
 	public override void FindFrame(int frameHeight)
 	{
+		float frameMultiplier = MathHelper.Lerp(0.2f, 0.5f, (1f - NPC.life / (float)NPC.lifeMax));
+
 		NPC.frameCounter++;
-		NPC.frame.Y = (int)(NPC.frameCounter * 0.2f % Main.npcFrameCount[Type]);
+		NPC.frame.Y = (int)(NPC.frameCounter * frameMultiplier % Main.npcFrameCount[Type]);
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		for (int i = 0; i < 2; ++i)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Pearlsand);
+		{
+			int dust = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Pearlsand);
+			Main.dust[dust].noGravity = true;
+		}
 
 		if (NPC.life > 0)
 			return;
@@ -101,6 +116,9 @@ internal class ZigguratMummy : ModNPC
 
 		if (!Main.dedServ)
 		{
+			Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, GoreID.Smoke1);
+			Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, GoreID.Smoke2);
+
 			for (int i = 0; i < 3; ++i)
 				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, NPC.velocity, Mod.Find<ModGore>("MummyGore_" + i).Type);
 
