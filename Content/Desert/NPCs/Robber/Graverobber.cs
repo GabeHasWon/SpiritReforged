@@ -9,6 +9,7 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.UI;
 
 namespace SpiritReforged.Content.Desert.NPCs.Robber;
 
@@ -54,6 +55,13 @@ public class Graverobber : ModNPC
 	}
 
 	public enum State : byte { Idle, Walk, Jump }
+
+	public static readonly SoundStyle GoblinSurprise = new("SpiritReforged/Assets/SFX/Ambient/GoblinSurprise")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.4f,
+		MaxInstances = 2
+	};
 
 	/// <summary> Used to change behaviour at intervals. </summary>
 	public ref float Counter => ref NPC.ai[0];
@@ -114,6 +122,9 @@ public class Graverobber : ModNPC
 
 			if (_alerted && NPC.frameCounter >= EndFrame)
 			{
+				SoundEngine.PlaySound(GoblinSurprise with { Pitch = 0.5f }, NPC.Center);
+				EmoteBubble.NewBubble(EmoteID.EmotionAnger, new WorldUIAnchor(NPC), 30);
+
 				ChangeAnimationState(State.Walk);
 				_bag = null;
 			}
@@ -183,13 +194,14 @@ public class Graverobber : ModNPC
 		bool dead = NPC.life <= 0;
 		if (!Main.dedServ)
 		{
+			if (Main.rand.NextBool(2))
+				SoundEngine.PlaySound(SoundID.DD2_GoblinHurt with { PitchVariance = 0.5f }, NPC.Center);
+
 			for (int i = 0; i < (dead ? 20 : 5); i++)
 				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Blood, Scale: Main.rand.NextFloat(0.5f, 1.2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
 
 			if (dead)
 			{
-				SoundEngine.PlaySound(SoundID.DD2_GoblinHurt with { Pitch = 0.5f }, NPC.Center);
-
 				for (int i = 1; i < 6; i++)
 					Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Graverobber" + i).Type, 1f);
 
