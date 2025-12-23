@@ -395,6 +395,8 @@ public class Wisp : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
+		SoundEngine.PlaySound(SoundID.NPCHit7 with { PitchVariance = 0.5f }, NPC.Center);
+
 		if (!Main.dedServ && NPC.life <= 0)
 		{
 			for (int i = 0; i < 2; i++)

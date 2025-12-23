@@ -132,6 +132,12 @@ internal class ZigguratMummy : ModNPC
 		}
 	}
 
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		if ((Main.expertMode || Main.masterMode) && Main.rand.NextBool(8))
+			target.AddBuff(BuffID.Slow, 60 * 15);
+	}
+
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() 
 		|| spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>() ? 0.005f : 0;
 	   
