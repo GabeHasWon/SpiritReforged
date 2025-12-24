@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using System.IO;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.NPCs.Beetle;
@@ -11,6 +12,13 @@ public class DivingBeetle : ModNPC
 	public ref float Counter => ref NPC.ai[0];
 	/// <summary> A randomly-selected location to control passive swimming velocity. </summary>
 	private Vector2 _targetPosition;
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/BugDeath")
+	{
+		Volume = 0.5f,
+		Pitch = 0.7f,
+		MaxInstances = 0
+	};
 
 	public override void SetStaticDefaults()
 	{
@@ -28,6 +36,8 @@ public class DivingBeetle : ModNPC
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.npcSlots = 0.1f;
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = Death;
 		NPC.noGravity = true;
 	}
 
@@ -84,6 +94,12 @@ public class DivingBeetle : ModNPC
 
 		NPC.frameCounter = (NPC.frameCounter + rate) % Main.npcFrameCount[Type];
 		NPC.frame.Y = (int)NPC.frameCounter * frameHeight;
+	}
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		for (int k = 0; k < 5; k++)
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Scarecrow, 1.05f * hit.HitDirection, -1.95f, 0, new Color(), 0.6f);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
