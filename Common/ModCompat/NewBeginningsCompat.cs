@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
@@ -13,6 +14,8 @@ using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
+using SpiritReforged.Content.SaltFlats.Items;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -41,6 +44,7 @@ internal class NewBeginningsCompat : ModSystem
 			AddCaveman();
 			AddDisentombed();
 			AddWorshipper();
+			AddPurifier();
 		});
 
 		void AddDiver()
@@ -82,7 +86,7 @@ internal class NewBeginningsCompat : ModSystem
 		{
 			object equip = beginnings.Call("EquipData", ItemID.None, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = GenerateDelegateData(() => true, list => { }, () => true, FindHighestSurface, AddHikerBackpack);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindHighestSurface, AddHikerBackpack);
 			AddOrigin("Hiker", [(ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60)], equip, misc, dele);
 		}
 
@@ -110,8 +114,43 @@ internal class NewBeginningsCompat : ModSystem
 			AddOrigin("Worshipper", [], equip, misc, dele);
 		}
 
+		void AddPurifier()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<MahakalaMaskBlue>(), ItemID.None, ItemID.None, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<BoStaff>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, TrySpawnInSaltFlats, player =>
+			{
+				if (Main.rand.NextBool()) // Randomize mask on creation
+					player.armor[0] = new Item(ModContent.ItemType<MahakalaMaskRed>());
+			});
+
+			AddOrigin("Purifier", [], equip, misc, dele);
+		}
+
 		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
 			=> beginnings.Call("ShortAddOrigin", GetIcon(name), "Reforged" + name, "Mods.SpiritReforged.Origins." + name, inventory, equipData, miscData, delegateData);
+	}
+
+	private static Point16 TrySpawnInSaltFlats()
+	{
+		List<Point16> points = new(500);
+
+		for (int i = WorldGen.beachDistance; i < Main.maxTilesX - WorldGen.beachDistance; ++i)
+		{
+			for (int j = (int)(Main.worldSurface * 0.35); j < Main.worldSurface; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && (tile.TileType == ModContent.TileType<SaltBlockDull>() || tile.TileType == ModContent.TileType<SaltBlockReflective>()) && 
+					!Collision.SolidCollision(new Vector2(i, j - 3) * 16, 54, 54) && Main.tile[i, j - 2].WallType == WallID.None)
+					points.Add(new Point16(i, j - 3));
+			}
+		}
+
+		if (points.Count == 0)
+			return Point16.NegativeOne;
+
+		return WorldGen.genRand.Next(points);
 	}
 
 	private static Point16 SpawnInOasis()
@@ -184,7 +223,7 @@ internal class NewBeginningsCompat : ModSystem
 	public static object GetDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen , Func<bool> hasCustomSpawn, Func<Point16> actualSpawn) 
 		=> ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn);
 
-	public static object GenerateDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen, Func<bool> hasCustomSpawn, Func<Point16> actualSpawn,
+	public static object GetDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen, Func<bool> hasCustomSpawn, Func<Point16> actualSpawn,
 		Action<Player> modifyCreation) => ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn, modifyCreation);
 
 	private Point16 FindHighestSurface()
