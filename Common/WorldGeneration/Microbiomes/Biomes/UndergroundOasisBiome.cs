@@ -10,6 +10,7 @@ using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Jungle.Pineapple;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -19,6 +20,26 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 public class UndergroundOasisBiome : Microbiome
 {
+	internal class UndergroundOasisBiomeTracker : ModSystem
+	{
+		[WorldBound]
+		public static readonly HashSet<Point16> Oases = [];
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			Point16[] info = tag.Get<Point16[]>("oases");
+			Oases.Clear();
+
+			if (info is null)
+				return;
+
+			foreach (var position in info)
+				Oases.Add(position);
+		}
+
+		public override void SaveWorldData(TagCompound tag) => tag.Add("oases", Oases.ToArray());
+	}
+
 	private static WeightedRandom<int> MainWaterItem = null!;
 	private static WeightedRandom<(int type, Range stackRange, Func<bool>? canPlace)> RandomItem = null!;
 
@@ -137,6 +158,7 @@ public class UndergroundOasisBiome : Microbiome
 		PlaceLightShafts(origin);
 
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 4);
+		UndergroundOasisBiomeTracker.Oases.Add(new Point16(origin.X, origin.Y));
 
 		MainWaterItem = null!;
 		RandomItem = null!;

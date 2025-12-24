@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
@@ -8,6 +10,7 @@ using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Forest.WoodClub;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
+using SpiritReforged.Content.Ocean.Items.Reefhunter;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
@@ -37,6 +40,7 @@ internal class NewBeginningsCompat : ModSystem
 			AddHiker();
 			AddCaveman();
 			AddDisentombed();
+			AddWorshipper();
 		});
 
 		void AddDiver()
@@ -45,7 +49,7 @@ internal class NewBeginningsCompat : ModSystem
 				new int[] { ItemID.Flipper, ModContent.ItemType<OceanPendant>() });
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GetDelegateData(() => true, list => { }, () => true, FindBeachSpawnPoint);
-			beginnings.Call("ShortAddOrigin", GetIcon("Diver"), "ReforgedDiver", "Mods.SpiritReforged.Origins.Diver", Array.Empty<(int, int)>(), equip, misc, dele);
+			AddOrigin("Diver", [], equip, misc, dele);
 		}
 
 		void AddBotanist()
@@ -54,7 +58,7 @@ internal class NewBeginningsCompat : ModSystem
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ItemID.Sickle);
 			object dele = GetDelegateData(() => true, list => { }, () => true, FindScarecrowSpawnPoint);
-			beginnings.Call("ShortAddOrigin", GetIcon("Botanist"), "ReforgedBotanist", "Mods.SpiritReforged.Origins.Botanist", new (int, int)[] { (ItemID.HerbBag, 3) }, equip, misc, dele);
+			AddOrigin("Botanist", [(ItemID.HerbBag, 3)], equip, misc, dele);
 		}
 
 		void AddRecluse()
@@ -62,8 +66,7 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.AnglerHat, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GetDelegateData(() => true, list => { }, () => true, FindRecluseSpawn);
-			beginnings.Call("ShortAddOrigin", GetIcon("Recluse"), "ReforgedRecluse", "Mods.SpiritReforged.Origins.Recluse", new (int, int)[] { (ItemID.FiberglassFishingPole, 1), 
-				(ItemID.MasterBait, 2), (ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25) }, equip, misc, dele);
+			AddOrigin("Recluse", [(ItemID.FiberglassFishingPole, 1), (ItemID.MasterBait, 2), (ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25)], equip, misc, dele);
 		}
 
 		void AddHunter()
@@ -72,7 +75,7 @@ internal class NewBeginningsCompat : ModSystem
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<HuntingRifle>());
 			object dele = GetDelegateData(() => true, list => { }, () => true, FindHunterSpawn);
-			beginnings.Call("ShortAddOrigin", GetIcon("Hunter"), "ReforgedHunter", "Mods.SpiritReforged.Origins.Hunter", new (int, int)[] { (ItemID.MusketBall, 60) }, equip, misc, dele);
+			AddOrigin("Hunter", [(ItemID.MusketBall, 60)], equip, misc, dele);
 		}
 
 		void AddHiker()
@@ -80,8 +83,7 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.None, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GenerateDelegateData(() => true, list => { }, () => true, FindHighestSurface, AddHikerBackpack);
-			beginnings.Call("ShortAddOrigin", GetIcon("Hiker"), "ReforgedHiker",
-				"Mods.SpiritReforged.Origins.Hiker", new (int, int)[] { (ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60) }, equip, misc, dele);
+			AddOrigin("Hiker", [(ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60)], equip, misc, dele);
 		}
 
 		void AddCaveman()
@@ -89,7 +91,7 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.None, ModContent.ItemType<HideTunic>(), ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<WoodenClub>());
 			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnUnderground);
-			beginnings.Call("ShortAddOrigin", GetIcon("Caveman"), "ReforgedCaveman", "Mods.SpiritReforged.Origins.Caveman", Array.Empty<(int, int)>(), equip, misc, dele);
+			AddOrigin("Caveman", [], equip, misc, dele);
 		}
 
 		void AddDisentombed()
@@ -97,11 +99,31 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInZiggurat);
-			beginnings.Call("ShortAddOrigin", GetIcon("Disentombed"), "ReforgedDisentombed", "Mods.SpiritReforged.Origins.Disentombed", Array.Empty<(int, int)>(), equip, misc, dele);
+			AddOrigin("Disentombed", [], equip, misc, dele);
 		}
+
+		void AddWorshipper()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<SunEarrings>(), ModContent.ItemType<SilkTop>(), ModContent.ItemType<SilkSirwal>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<UrchinStaff>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInOasis);
+			AddOrigin("Worshipper", [], equip, misc, dele);
+		}
+
+		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
+			=> beginnings.Call("ShortAddOrigin", GetIcon(name), "Reforged" + name, "Mods.SpiritReforged.Origins." + name, inventory, equipData, miscData, delegateData);
 	}
 
-	private Point16 SpawnInZiggurat()
+	private static Point16 SpawnInOasis()
+	{
+		if (UndergroundOasisBiome.UndergroundOasisBiomeTracker.Oases is not { Count: >0 } areas)
+			return Point16.NegativeOne;
+
+		Point16 pos = WorldGen.genRand.Next([.. areas]);
+		return pos;
+	}
+
+	private static Point16 SpawnInZiggurat()
 	{
 		if (!PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition.TryGetValue(InterestType.Ziggurat, out HashSet<Point16> ziggurats))
 			return Point16.NegativeOne;

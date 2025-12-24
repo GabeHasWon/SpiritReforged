@@ -39,3 +39,9 @@ Disentombed: {
 	Flavor: Three thousand years have passed...my reign will return. I will return.
 	Description: Spawns with the mummy vanity in the Ziggurat.
 }
+
+Worshipper: {
+	DisplayName: Worshipper
+	Flavor: Cursed to pray to the sun yet never see it.
+	Description: Spawns with the Sundancer armor set and a Windshear Staff in an underground Oasis.
+}
