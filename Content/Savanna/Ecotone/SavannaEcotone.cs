@@ -43,6 +43,28 @@ internal class SavannaEcotone : EcotoneBase
 
 	private static bool ConvertPot(int x, int y, ushort type, int style)
 	{
+		// 2.1.1.1895394183
+		if (EcotoneSurfaceMapping.CorruptAreas.FirstOrDefault(v => v.Value.ContainsKey(new Point16(x, y))) is { } area)
+		{
+			if (area.Key == BiomeConversionID.Corruption)
+			{
+				type = TileID.Pots;
+				style = WorldGen.genRand.Next(16, 20);
+			}
+			else if (area.Key == BiomeConversionID.Crimson)
+			{
+				type = TileID.Pots;
+				style = WorldGen.genRand.Next(23, 26);
+			}
+			else
+				return true;
+
+			TileEvents.SkipPlacePotCheck = true;
+			WorldGen.PlacePot(x, y, type, style);
+			TileEvents.SkipPlacePotCheck = false;
+			return false;
+		}
+
 		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(x, y)))
 		{
 			type = (ushort)ModContent.TileType<CommonPots>();

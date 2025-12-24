@@ -27,6 +27,11 @@ public class TileEvents : GlobalTile
 	public static event NearbyDelegate OnNearby;
 	public static event PlacePotDelegate OnPlacePot;
 
+	/// <summary>
+	/// Used to avoid recursion when using <see cref="WorldGen.PlacePot(int, int, ushort, int)"/> in an <see cref="OnPlacePot"/> call.
+	/// </summary>
+	internal static bool SkipPlacePotCheck = false;
+
 	/// <summary> Exposes <see cref="TileLoader.TileFrame"/> resetFrame from the last invocation.<br/>
 	/// A common use case for this is in <see cref="ModTile.PostTileFrame"/>, where it's not normally available. </summary>
 	public static bool ResetFrame { get; private set; }
@@ -95,7 +100,7 @@ public class TileEvents : GlobalTile
 
 	private static bool PlacePotDetour(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
 	{
-		if (OnPlacePot != null)
+		if (OnPlacePot != null && !SkipPlacePotCheck)
 		{
 			var enumerator = OnPlacePot.GetInvocationList().GetEnumerator();
 			while (enumerator.MoveNext())
