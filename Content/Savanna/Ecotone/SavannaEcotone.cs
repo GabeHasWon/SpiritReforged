@@ -43,7 +43,6 @@ internal class SavannaEcotone : EcotoneBase
 
 	private static bool ConvertPot(int x, int y, ushort type, int style)
 	{
-		// 2.1.1.1895394183
 		if (EcotoneSurfaceMapping.CorruptAreas.FirstOrDefault(v => v.Value.ContainsKey(new Point16(x, y))) is { } area)
 		{
 			if (area.Key == BiomeConversionID.Corruption)
