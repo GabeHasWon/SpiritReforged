@@ -68,14 +68,15 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
 		Point16 coords = new(i, j);
-		byte count = GetSegmentCount();
+		byte count = WorldGen.gen ? (byte)WorldGen.genRand.Next(2, 6) : GetSegmentCount();
 
 		ChainObjectSystem.AddObject(Find(coords, count));
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			new ChainObjectSystem.PlacementData(coords, count, Type).Send();
 
-		SoundEngine.PlaySound(ChainObject.Rattle with { Pitch = 0.5f, PitchVariance = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
+		if (!WorldGen.gen)
+			SoundEngine.PlaySound(ChainObject.Rattle with { Pitch = 0.5f, PitchVariance = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

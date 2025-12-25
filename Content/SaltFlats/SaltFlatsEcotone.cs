@@ -106,7 +106,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		SaltArea = new Rectangle(xLeft, Math.Min(yLeft, yRight) - 5, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + baseDepth + 20);
 		SaltFlatsSystem.SurfaceHeight = (int)MathHelper.Lerp(yLeft, yRight, 0.5f) - WorldGen.genRand.Next(-3, 9);
 
-		int steps = Math.Min(SaltArea.Width / 200, 3);
+		int steps = Math.Clamp(SaltArea.Width / 200, 1, 3);
 		int finalLength = (xRight - xLeft) / steps;
 
 		for (int i = 0; i < steps; i++)

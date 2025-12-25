@@ -287,6 +287,9 @@ public static class WorldMethods
 		bool Contained(int x, int y) => limit == default || limit.Contains(x, y);
 	}
 
+	/// <summary>
+	/// Places a small pile consistently and easily. Supercedes the less functional <see cref="WorldGen.PlaceSmallPile(int, int, int, int, ushort)"/>.
+	/// </summary>
 	public static void PlaceSmallPile(int i, int j, int row, int column, int type = TileID.SmallPiles)
 	{
 		ModifySmallPileTile(Main.tile[i, j], row, column, type);
