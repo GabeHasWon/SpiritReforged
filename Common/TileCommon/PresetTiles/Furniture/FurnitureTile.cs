@@ -10,7 +10,6 @@ public abstract class FurnitureTile : ModTile, IAutoloadTileItem
 		public ModItem Item { get; }
 		public int Material { get; }
 		public SoundStyle? HitSound { get; }
-		public int DustType { get; }
 	}
 
 	public readonly record struct BasicInfo(ModItem Item, int Material, int DustType = -1, SoundStyle? HitSound = null) : IFurnitureData;
@@ -32,9 +31,6 @@ public abstract class FurnitureTile : ModTile, IAutoloadTileItem
 		HitSound = Info.HitSound ?? SoundID.Dig;
 
 		StaticDefaults();
-
-		if (Info.DustType != -1)
-			DustType = Info.DustType;
 	}
 
 	/// <inheritdoc cref="ModBlockType.SetStaticDefaults"/>
