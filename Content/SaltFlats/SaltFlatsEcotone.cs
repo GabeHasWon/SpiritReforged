@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using SpiritReforged.Common;
+﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
@@ -8,7 +7,6 @@ using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
-using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Tiles;
@@ -57,7 +55,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Beaches") is int index && index != -1)
+		{
 			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
+		}
 	}
 
 	private static bool CanGenerate(out (int, int) bounds)
@@ -174,11 +174,13 @@ internal class SaltFlatsEcotone : EcotoneBase
 					if (!Main.tile[x, y].HasTile)
 					{
 						const int fillLimit = 30;
+
 						WorldMethods.ApplyOpenArea((i, j) =>
 						{
 							if (j > surfaceLine && Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j)) < fillLimit * fillLimit * 0.1f) //Do a distance check for a naturally rounded fill shape
 							{
 								var t = Main.tile[i, j];
+
 								if (IsSafe(t))
 								{
 									t.HasTile = true;
@@ -392,7 +394,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 			Tile tile = Main.tile[x, j];
 			Tile belowTile = Main.tile[x, j + 1];
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>())
+				&& (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;

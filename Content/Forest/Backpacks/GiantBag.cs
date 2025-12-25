@@ -43,7 +43,7 @@ public class GiantBag : BackpackItem
 	{
 		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(GiantBag), "GiantBag_Front", false);
 
-		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Shield);
+		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Head);
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
 			if (drawInfo.drawPlayer.front == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Front))

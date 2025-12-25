@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -100,6 +101,7 @@ public class SaltBlockReflective : SaltBlock
 			}
 
 			Reflections.DrawNPCs(Main.instance, false);
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
 
 			if (Reflections.Detail > 2)
 			{
