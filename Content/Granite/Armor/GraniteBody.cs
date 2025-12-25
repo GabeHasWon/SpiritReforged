@@ -35,7 +35,8 @@ public class GraniteBody : ModItem
 
 	public override void UpdateEquip(Player player) => Player.jumpSpeed += 1;
 	public override void ArmorSetShadows(Player player) => player.armorEffectDrawShadow = true;
-	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == ModContent.ItemType<GraniteHead>() || head.type is ItemID.UltrabrightHelmet or ItemID.NightVisionHelmet) && body.type == Type && legs.type == ModContent.ItemType<GraniteLegs>();
+	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == ModContent.ItemType<GraniteHead>() || head.type is ItemID.UltrabrightHelmet or ItemID.NightVisionHelmet) 
+		&& body.type == Type && legs.type == ModContent.ItemType<GraniteLegs>();
 
 	public override void UpdateArmorSet(Player player) //Normally set effects would go into the head armor class, but that's not possible here due to the alternative helmet functionality
 	{
