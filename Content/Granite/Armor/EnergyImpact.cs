@@ -112,6 +112,9 @@ public class EnergyPlunge : ModProjectile
 			return;
 		}
 
+		if (StartHeight < Projectile.Center.Y - 12 * 16) // Give i-frames only when the player has fallen far enough
+			owner.SetImmuneTimeForAllTypes(30);
+
 		float odds = Math.Clamp(1f - Math.Abs(owner.velocity.Y / FallSpeed), 0.1f, 1f);
 		if (Main.rand.NextFloat(odds) < 0.05f)
 		{

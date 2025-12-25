@@ -266,9 +266,10 @@ public class Graverobber : ModNPC
 		npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
 
 		if (VisualStyle == 0)
-			npcLoot.AddCommon(ItemID.MagicLantern, 20);
+			npcLoot.AddCommon(ItemID.MagicLantern, 15);
 
-		npcLoot.AddCommon(ItemID.GravediggerShovel, 30);
+		npcLoot.AddCommon(ItemID.GravediggerShovel, 20);
+		npcLoot.AddCommon(ItemID.MetalDetector, 20);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);
