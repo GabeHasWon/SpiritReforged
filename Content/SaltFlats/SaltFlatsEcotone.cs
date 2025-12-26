@@ -102,7 +102,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Beaches") is int index && index != -1)
+		{
 			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
+		}
 	}
 
 	private static bool CanGenerate(out (int, int) bounds)
@@ -151,7 +153,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		SaltArea = new Rectangle(xLeft, Math.Min(yLeft, yRight) - 5, Math.Abs(xRight - xLeft), Math.Abs(yRight - yLeft) + baseDepth + 20);
 		SaltFlatsSystem.SurfaceHeight = (int)MathHelper.Lerp(yLeft, yRight, 0.5f) - WorldGen.genRand.Next(-3, 9);
 
-		int steps = Math.Min(SaltArea.Width / 200, 3);
+		int steps = Math.Clamp(SaltArea.Width / 200, 1, 3);
 		int finalLength = (xRight - xLeft) / steps;
 
 		for (int i = 0; i < steps; i++)
@@ -390,7 +392,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 			Tile tile = Main.tile[x, j];
 			Tile belowTile = Main.tile[x, j + 1];
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>())
+				&& (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;

@@ -8,6 +8,7 @@ using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Bangle;
 using SpiritReforged.Content.Desert.GildedScarab;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Cartography.Maps;
@@ -298,7 +299,7 @@ public partial class ZigguratBiome : Microbiome
 			Rectangle bounds = room.Bounds;
 			bounds.Inflate(2, 2);
 
-			var decorator = new Decorator(bounds)
+			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
 				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
 				.Enqueue((i, j) =>
@@ -319,6 +320,9 @@ public partial class ZigguratBiome : Microbiome
 
 					return false;
 				}, 0);
+
+			if (WorldGen.genRand.NextBool(3))
+				decorator.Enqueue(PlaceCenser, 1);
 
 			if (room is ZigguratRooms.LibraryRoom)
 			{
@@ -367,6 +371,17 @@ public partial class ZigguratBiome : Microbiome
 			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
 				maxChestCount--;
 		}
+	}
+
+	private static bool PlaceCenser(int i, int j)
+	{
+		if (WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+		{
+			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
+			return true;
+		}
+
+		return false;
 	}
 
 	public static void LaySpikeStrip(Point origin, int width)
