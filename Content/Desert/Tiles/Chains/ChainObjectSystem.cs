@@ -144,14 +144,7 @@ public sealed class ChainObjectSystem : ModSystem
 		{
 			Point16 coords = item.Get<Point16>("anchor");
 			byte segments = item.GetByte("segments");
-
 			int tileType = Framing.GetTileSafely(coords).TileType;
-
-			if (TileLoader.GetTile(tileType) is not ChainLoop)
-			{
-				coords = new Point16(coords.X, coords.Y + 1);
-				tileType = Framing.GetTileSafely(coords.X, coords.Y).TileType;
-			}
 
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)
 				AddObject(loop.Find(coords, segments));

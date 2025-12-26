@@ -1,12 +1,10 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -73,26 +71,6 @@ public static class ZigguratRooms
 				new Modifiers.Dither(0.8),
 				new Modifiers.OnlyWalls(WallID.Sandstone),
 				new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)));
-
-			if (WorldGen.genRand.NextBool(3))
-			{
-				PlaceCenser();
-
-				if (WorldGen.genRand.NextBool(3))
-					PlaceCenser();
-			}
-		}
-
-		private void PlaceCenser()
-		{
-			Point center = Bounds.Center;
-			center.X = WorldGen.genRand.Next(Bounds.X + 3, Bounds.Right - 3);
-
-			while (!WorldGen.SolidTile(center.X, center.Y))
-				center.Y--;
-
-			WorldGen.PlaceTile(center.X, center.Y + 1, ModContent.TileType<GoldChainLoop>(), true);
-			ModContent.GetInstance<GoldChainLoop>().PlaceInWorld(center.X, center.Y, null);
 		}
 
 		public void CarveOut(out ShapeData data)

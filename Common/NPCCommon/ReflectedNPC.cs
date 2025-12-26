@@ -1,17 +1,15 @@
-﻿namespace SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.Visuals;
 
+namespace SpiritReforged.Common.NPCCommon;
+
+/// <summary> Handles custom NPC reflection drawing. </summary>
 internal class ReflectedNPC : GlobalNPC
 {
-	internal static bool ReflectingNPCs = false;
-
 	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (!ReflectingNPCs)
+		if (!Reflections.DrawingReflection)
 			return true;
 
-		if (npc.type is NPCID.Vampire or NPCID.VampireBat)
-			return false;
-
-		return true;
+		return npc.type is not (NPCID.Vampire or NPCID.VampireBat);
 	}
 }

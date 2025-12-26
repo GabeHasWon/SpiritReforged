@@ -1,5 +1,4 @@
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
@@ -59,7 +58,7 @@ public class SaltBlockReflective : SaltBlock
 			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
 			Main.GameViewMatrix.Zoom = Vector2.One;
 
-			ReflectedNPC.ReflectingNPCs = true;
+			Reflections.DrawingReflection = true;
 
 			gd.SetRenderTarget(overlayTarget);
 			gd.Clear(Color.Transparent);
@@ -126,7 +125,7 @@ public class SaltBlockReflective : SaltBlock
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;
 
-			ReflectedNPC.ReflectingNPCs = false;
+			Reflections.DrawingReflection = false;
 		}
 
 		public void RenderNormalTarget(SpriteBatch spriteBatch)
