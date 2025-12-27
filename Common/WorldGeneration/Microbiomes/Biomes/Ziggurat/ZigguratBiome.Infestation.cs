@@ -15,7 +15,9 @@ public partial class ZigguratBiome : Microbiome
 				FastNoiseLite noise = new(WorldGen.genRand.Next());
 				noise.SetFrequency(0.1f);
 
-				CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, 60, -0.25f);
+				if (WorldGen.SolidTile(i, j))
+					CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, 60, -0.25f);
+
 				return true;
 			}, 3, out _, rect);
 		}
@@ -42,10 +44,13 @@ public partial class ZigguratBiome : Microbiome
 				bool hasTile = WorldGen.SolidOrSlopedTile(tile);
 
 				tile.ClearTile();
-				tile.WallType = (distance > distanceLimit - outerThickness - 2) ? (ushort)RedSandstoneBrickCrackedWall.UnsafeType : (ushort)PaleHiveWall.UnsafeType;
+				tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
 
 				if (hasTile && (noiseValue < thickness || distance > distanceLimit - outerThickness))
-					tile.ResetToType((ushort)ModContent.TileType<PaleHive>());
+				{
+					ushort type = (ushort)((noiseValue < -0.6f) ? ModContent.TileType<InfectedHive>() : ModContent.TileType<PaleHive>());
+					tile.ResetToType(type);
+				}
 			}
 		}
 	}

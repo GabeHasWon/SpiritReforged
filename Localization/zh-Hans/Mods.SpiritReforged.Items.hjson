@@ -2834,8 +2834,3 @@ PaleHiveWallItem: {
 	// DisplayName: Pale Hive Wall
 	// Tooltip: ""
 }
-
-SilkWallItem: {
-	// DisplayName: Silk Wall
-	// Tooltip: ""
-}
