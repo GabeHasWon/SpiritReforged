@@ -50,6 +50,7 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
+		Infest(bounds[^1]);
 		SwitchWalls(bounds);
 		AddNeutralDecorations(rooms);
 
@@ -375,7 +376,7 @@ public partial class ZigguratBiome : Microbiome
 
 	private static bool PlaceCenser(int i, int j)
 	{
-		if (WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 		{
 			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
 			return true;

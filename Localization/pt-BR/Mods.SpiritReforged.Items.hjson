@@ -2824,3 +2824,13 @@ SaltskipperQuestFish: {
 
 // WispBannerItem.DisplayName: Wisp Banner
 // DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner Item
+
+PaleHiveItem: {
+	// DisplayName: Pale Hive
+	// Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	// DisplayName: Pale Hive Wall
+	// Tooltip: ""
+}
