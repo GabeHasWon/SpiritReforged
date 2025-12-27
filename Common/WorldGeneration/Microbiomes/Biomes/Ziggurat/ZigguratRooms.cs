@@ -129,33 +129,6 @@ public static class ZigguratRooms
 		}
 	}
 
-	/*public class DigsiteRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
-	{
-		public override void FinalPass()
-		{
-			base.FinalPass();
-
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				var tile = Main.tile[i, j];
-
-				if ((i == Bounds.Left + 3 || i == Bounds.Right - 4) && !tile.HasTile)
-					WorldGen.PlaceTile(i, j, TileID.WoodenBeam, true);
-
-				if (i == Bounds.Left + 4 && !tile.HasTile)
-					WorldGen.PlaceTile(i, j, TileID.Rope, true);
-
-				if (j == Bounds.Top + 5)
-					WorldGen.PlaceTile(i, j, TileID.Platforms, true);
-
-				if (WorldGen.SolidTile(i - 1, j + 1, true) && WorldGen.genRand.NextBool(15))
-					WorldGen.PlaceTile(i - 1, j, TileID.Campfire, true);
-
-				return false;
-			}, out _, Bounds);
-		}
-	}*/
-
 	public class EntranceRoom(Rectangle bounds, EntranceRoom.StyleID style, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
 		public enum StyleID
@@ -286,6 +259,38 @@ public static class ZigguratRooms
 
 				return false;
 			}, out _, Bounds); //Add decorations
+		}
+	}
+
+	public class BurialRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
+	{
+		protected override void Initialize(out Point size) => size = new(9 * WorldGen.genRand.Next(1, 4), 8);
+
+		public override void Create()
+		{
+			CarveOut(out _);
+
+			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
+
+			int count = Bounds.Width / 9;
+			int y = Bounds.Bottom - 1;
+
+			for (int c = 0; c < count; c++)
+			{
+				int x = Bounds.Left + Bounds.Width / count / 2 + Bounds.Width / count * c;
+				Rectangle windowArea = new(x - 2, y - 6, 5, 6);
+
+				WorldUtils.Gen(new(windowArea.Left, windowArea.Bottom), new Shapes.Rectangle(windowArea.Width, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneSlab>()));
+
+				if (Placer.PlaceTile<DustyTomb>(x, y - 1).success)
+				{
+					WorldUtils.Gen(windowArea.Location, new Shapes.Rectangle(windowArea.Width, windowArea.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType));
+
+					PlaceColumn(new(x - 2, y - 1), 1);
+					PlaceColumn(new(x + 2, y - 1), 1);
+				}
+			}
 		}
 	}
 

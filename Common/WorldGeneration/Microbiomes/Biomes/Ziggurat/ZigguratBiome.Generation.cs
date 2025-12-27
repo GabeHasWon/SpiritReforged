@@ -547,7 +547,7 @@ public partial class ZigguratBiome : Microbiome
 
 		if (WorldGen.genRand.NextBool(4))
 		{
-			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise));
+			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise), new ZigguratRooms.BurialRoom(bound, noise));
 		}
 		else
 		{
