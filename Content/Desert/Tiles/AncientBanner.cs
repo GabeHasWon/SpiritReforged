@@ -30,7 +30,7 @@ public class AncientBanner : ModTile, ISwayTile, IAutoloadTileItem
 		TileObjectData.newTile.RandomStyleRange = 5;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(150, 80, 60), Language.GetText("ItemName.Banners"));
+		AddMapEntry(new Color(70, 70, 150), Language.GetText("MapObject.Banner"));
 		RegisterItemDrop(this.AutoItemType());
 		DustType = -1;
 	}
