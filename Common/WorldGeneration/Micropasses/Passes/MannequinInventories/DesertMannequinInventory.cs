@@ -28,7 +28,6 @@ internal class DesertMannequinInventory : MannequinInventory
 	{
 		AccType = new(WorldGen.genRand);
 		AccType.Add(ItemID.SandBoots, 0.3f);
-		AccType.Add(ModContent.ItemType<GildedScarab>(), 0.2f);
 		AccType.Add(ModContent.ItemType<LeatherCloakItem>(), 0.4f);
 		AccType.Add(ItemID.SandstorminaBottle, 0.1f);
 

@@ -2644,7 +2644,11 @@ Dragonsong: {
 
 TinyDragon: {
 	// DisplayName: Tiny Dragon
-	// Tooltip: "'Last of its kind'"
+	/* Tooltip:
+		'''
+		Summons a tiny dragon to follow you around
+		"'Last of its kind'"
+		''' */
 }
 
 PileOfConsequences: {
@@ -2688,7 +2692,7 @@ ZigguratMusicBoxItem: {
 }
 
 PinSaltFlat: {
-	// DisplayName: Salt Flat Pin
+	// DisplayName: Salt Flats Pin
 	// Tooltip: ""
 }
 
@@ -2726,6 +2730,8 @@ AncientBooksItem: {
 	// DisplayName: Ancient Book
 	// Tooltip: "'Rendered unreadable by time'"
 }
+
+// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
 
 SaltGlassWallItem: {
 	// DisplayName: Salt Glass Wall
@@ -2817,6 +2823,7 @@ SaltskipperQuestFish: {
 }
 
 // WispBannerItem.DisplayName: Wisp Banner
+// DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner Item
 
 PaleHiveItem: {
 	// DisplayName: Pale Hive

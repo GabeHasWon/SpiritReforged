@@ -65,6 +65,7 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 
 	/// <summary> Finds a <see cref="ChainObject"/> to be associated with this tile. </summary>
 	public virtual ChainObject Find(Point16 coords, byte segments) => new(coords, segments);
+
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
 		Point16 coords = new(i, j);
@@ -75,7 +76,8 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			new ChainObjectSystem.PlacementData(coords, count, Type).Send();
 
-		SoundEngine.PlaySound(ChainObject.Rattle with { Pitch = 0.5f, PitchVariance = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
+		if (!WorldGen.gen)
+			SoundEngine.PlaySound(ChainObject.Rattle with { Pitch = 0.5f, PitchVariance = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)

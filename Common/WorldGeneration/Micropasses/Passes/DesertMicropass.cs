@@ -34,7 +34,7 @@ internal class DesertMicropass : Micropass
 			int i = (int)coords.X;
 			int j = (int)coords.Y;
 
-			if (Main.tile[i, j].TileType == TileID.Sand)
+			if (Main.tile[i, j].TileType == TileID.HardenedSand)
 			{
 				int scale = WorldGen.genRand.Next(DefaultPatchScale / 2, DefaultPatchScale * 2);
 

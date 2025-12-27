@@ -533,6 +533,11 @@ Wisp: {
 	Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
 }
 
+DecrepitMummy: {
+	DisplayName: Decrepit Mummy
+	Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
+}
+
 Graverobber: {
 	DisplayName: Graverobber
 	Entry: ""

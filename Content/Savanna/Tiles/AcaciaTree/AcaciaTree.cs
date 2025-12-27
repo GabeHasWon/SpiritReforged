@@ -224,7 +224,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 			for (int g = 0; g < loops; g++)
 				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range), 
-					Main.rand.NextVector2Unit(), goreType, .7f + Main.rand.NextFloat() * .6f);
+					Main.rand.NextVector2Unit(), goreType, 0.7f + Main.rand.NextFloat() * 0.6f);
 		}
 	}
 

@@ -76,7 +76,7 @@ public class SaltCrate : ModItem
 	{
 		int[] dropOptions = [ModContent.ItemType<MahakalaMaskBlue>(),
 			ModContent.ItemType<MahakalaMaskRed>(),
-			ItemID.AnkletoftheWind,
+			ModContent.ItemType<BoStaff>(),
 			ItemID.CloudinaBottle,
 			ItemID.WaterWalkingBoots];
 
@@ -84,7 +84,7 @@ public class SaltCrate : ModItem
 
 		itemLoot.AddCommon(ItemID.LawnFlamingo, 5);
 
-		CrateHelper.HardmodeBiomeCrate(itemLoot, main,
+		CrateHelper.BiomeCrate(itemLoot, main,
 			ItemDropRule.NotScalingWithLuck(AutoContent.ItemType<SaltBlockDull>(), 3, 20, 50),
 			ItemDropRule.NotScalingWithLuck(AutoContent.ItemType<Drywood>(), 3, 20, 50));
 	}

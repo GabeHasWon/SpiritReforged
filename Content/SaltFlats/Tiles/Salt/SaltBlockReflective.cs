@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -23,7 +24,7 @@ public class SaltBlockReflective : SaltBlock
 		/// <param name="height"> The pre-upscaled height of the texture.</param>
 		public Texture2D CreateTilemap(int width, int height)
 		{
-			if (_distanceMap != null && _distanceMap.Width == width && _distanceMap.Height == height)
+			if (_distanceMap != null)
 				return _distanceMap;
 
 			return _distanceMap = Reflections.CreateTilemap(width, height);
@@ -56,6 +57,8 @@ public class SaltBlockReflective : SaltBlock
 			GraphicsDevice gd = Main.graphics.GraphicsDevice;
 			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
 			Main.GameViewMatrix.Zoom = Vector2.One;
+
+			Reflections.DrawingReflection = true;
 
 			gd.SetRenderTarget(overlayTarget);
 			gd.Clear(Color.Transparent);
@@ -100,6 +103,7 @@ public class SaltBlockReflective : SaltBlock
 			}
 
 			Reflections.DrawNPCs(Main.instance, false);
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
 
 			if (Reflections.Detail > 2)
 			{
@@ -120,6 +124,8 @@ public class SaltBlockReflective : SaltBlock
 
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;
+
+			Reflections.DrawingReflection = false;
 		}
 
 		public void RenderNormalTarget(SpriteBatch spriteBatch)
@@ -169,7 +175,7 @@ public class SaltBlockReflective : SaltBlock
 
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-			Color tint = Color.White * 0.9f;
+			Color tint = Color.White * 0.8f;
 			spriteBatch.Draw(overlayTarget, Vector2.Zero, null, tint, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 			spriteBatch.End();
 		}

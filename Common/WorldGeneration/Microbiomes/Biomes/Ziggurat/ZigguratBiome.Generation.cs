@@ -5,7 +5,10 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
+using SpiritReforged.Content.Desert.Bangle;
+using SpiritReforged.Content.Desert.GildedScarab;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Cartography.Maps;
@@ -297,10 +300,9 @@ public partial class ZigguratBiome : Microbiome
 			Rectangle bounds = room.Bounds;
 			bounds.Inflate(2, 2);
 
-			var decorator = new Decorator(bounds)
+			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
 				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
-				.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2))
 				.Enqueue((i, j) =>
 				{
 					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
@@ -320,6 +322,9 @@ public partial class ZigguratBiome : Microbiome
 					return false;
 				}, 0);
 
+			if (WorldGen.genRand.NextBool(3))
+				decorator.Enqueue(PlaceCenser, 1);
+
 			if (room is ZigguratRooms.LibraryRoom)
 			{
 				decorator.Enqueue(ModContent.TileType<TatteredMapWall>(), 1);
@@ -328,6 +333,7 @@ public partial class ZigguratBiome : Microbiome
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
 				decorator.Enqueue(TileID.CatBast, 1);
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
 			}
 			else
 			{
@@ -353,6 +359,9 @@ public partial class ZigguratBiome : Microbiome
 				}, 0);
 			}
 
+			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2));
+
 			decorator.Run();
 		}
 
@@ -363,6 +372,17 @@ public partial class ZigguratBiome : Microbiome
 			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
 				maxChestCount--;
 		}
+	}
+
+	private static bool PlaceCenser(int i, int j)
+	{
+		if (WorldGen.SolidTile(i, j - 1) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+		{
+			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
+			return true;
+		}
+
+		return false;
 	}
 
 	public static void LaySpikeStrip(Point origin, int width)
@@ -440,21 +460,25 @@ public partial class ZigguratBiome : Microbiome
 		return false;
 	}
 
-	private static void PopulateChest(Chest chest)
+	internal static void PopulateChest(Chest chest)
 	{
-		int[] main = [ItemID.AncientChisel, ItemID.SandBoots];
+		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<BangleOfStrength>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
-			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..1)];
+			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 		
 		PriorityQueue<(int, Range), float> miscQueue = new();
-		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TeleportationPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThornsPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ShinePotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.BattlePotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
@@ -524,7 +548,7 @@ public partial class ZigguratBiome : Microbiome
 
 		if (WorldGen.genRand.NextBool(4))
 		{
-			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise));
+			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise), new ZigguratRooms.BurialRoom(bound, noise));
 		}
 		else
 		{

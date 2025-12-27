@@ -38,9 +38,12 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					BackgroundStyleHelper.BackgroundTopY = 130;
 				}
 
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset, 0), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, loops + 1);
+				float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
+				float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
+
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, loops + 1);
 				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset, -670), bounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -670 - softParallaxY), bounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
 				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
 				if (SaltFlatsSystem.nightSkyOpacity > 0f)

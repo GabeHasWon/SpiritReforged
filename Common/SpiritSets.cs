@@ -10,7 +10,9 @@ public class SpiritSets : ModSystem
 
 	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
 	/// Added in <see cref="Content.Forest.Stand.SwordStand.RegisterIsSword"/>. </summary>
-	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet();
+	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet(ItemID.Zenith, ItemID.TerraBlade,
+		ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.Arkhalis, ItemID.Terragrim, ItemID.TheHorsemansBlade, ItemID.BloodyMachete, ItemID.Swordfish,
+		ItemID.ObsidianSwordfish, ItemID.JoustingLance, ItemID.HallowJoustingLance, ItemID.ShadowJoustingLance, ItemID.PiercingStarlight);
 
 	/// <summary> Whether this type should grant the "Timber" achievement. </summary>
 	public static readonly bool[] Timber = ItemFactory.CreateBoolSet();

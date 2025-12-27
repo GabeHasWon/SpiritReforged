@@ -1,18 +1,27 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Amber;
+using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Jungle.Pineapple;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
+#nullable enable
+
 public class UndergroundOasisBiome : Microbiome
 {
+	private static WeightedRandom<int> MainWaterItem = null!;
+	private static WeightedRandom<(int type, Range stackRange, Func<bool>? canPlace)> RandomItem = null!;
+
 	public static bool InUndergroundOasis(Player p)
 	{
 		const string flagType = "UndergroundOasis";
@@ -37,6 +46,8 @@ public class UndergroundOasisBiome : Microbiome
 	{
 		NPCEvents.OnEditSpawnRate += ReduceSpawns;
 		PlayerEvents.OnPostUpdateEquips += HealInSprings;
+		PlayerEvents.OnPostUpdateEquips += HappyInOasis;
+
         MicrobiomeSystem.PopulateMicrobiomes += static () =>
         {
             OasisAreas.Clear();
@@ -46,7 +57,13 @@ public class UndergroundOasisBiome : Microbiome
                     OasisAreas.Add(oasis.Rectangle);
             }
         };
-    }
+	}
+
+	private void HappyInOasis(Player player)
+	{
+		if (InUndergroundOasis(player))
+			player.AddBuff(BuffID.Sunflower, 2);
+	}
 
 	private static void ReduceSpawns(Player player, ref int spawnRate, ref int maxSpawns)
 	{
@@ -98,10 +115,17 @@ public class UndergroundOasisBiome : Microbiome
 		));
 
 		//Clearing walls
+		ShapeData clearingShape = new();
 		WorldUtils.Gen(new Point(origin.X, origin.Y + 2), new Shapes.HalfCircle((int)(radius.X * 0.75f)), Actions.Chain(
 			new Modifiers.IsNotSolid(),
 			new Modifiers.Blotches(3),
 			new Actions.ClearWall()
+		).Output(clearingShape));
+
+		WorldUtils.Gen(new Point(origin.X, origin.Y + 2), new ModShapes.OuterOutline(clearingShape), Actions.Chain(
+			new Modifiers.Blotches(),
+			new Modifiers.OnlyWalls(WallID.Sandstone, WallID.HardenedSand),
+			new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)
 		));
 
 		int deviation = radius.X / 2;
@@ -113,6 +137,9 @@ public class UndergroundOasisBiome : Microbiome
 		PlaceLightShafts(origin);
 
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 4);
+
+		MainWaterItem = null!;
+		RandomItem = null!;
 	}
 
 	private static void Decorate(Point origin, ShapeData clearingShape)
@@ -242,6 +269,79 @@ public class UndergroundOasisBiome : Microbiome
 
 		Vector2 size = new(50);
 		WorldDetours.Regions.Add(new(new Rectangle(origin.X - (int)(size.X / 2), origin.Y - (int)(size.Y / 2), (int)size.X, (int)size.Y), WorldDetours.Context.Lava));
+
+		if (WorldGen.genRand.NextBool(3))
+			return;
+
+		if (MainWaterItem is null) 
+		{
+			MainWaterItem = new(WorldGen.genRand);
+			MainWaterItem.Add(ItemID.FloatingTube, 1);
+			MainWaterItem.Add(ItemID.BreathingReed, 0.8);
+			MainWaterItem.Add(ItemID.Flipper, 1);
+			MainWaterItem.Add(ItemID.Trident, 1);
+			MainWaterItem.Add(ItemID.WaterWalkingBoots, 1);
+			MainWaterItem.Add(ItemID.MagicConch, 1.5);
+			MainWaterItem.Add(ItemID.AncientChisel, 1);
+			MainWaterItem.Add(ItemID.MysticCoilSnake, 1);
+			MainWaterItem.Add(ItemID.SandBoots, 1);
+		}
+
+		if (RandomItem is null) 
+		{
+			RandomItem = new(WorldGen.genRand);
+			RandomItem.Add((TileLoader.GetTile(ModContent.TileType<PolishedAmber>()).AutoItemType(), 3..6, null), 1);
+			RandomItem.Add((ItemID.IronBar, 5..14, static () => GenVars.iron == TileID.Iron), 1);
+			RandomItem.Add((ItemID.LeadBar, 5..14, static () => GenVars.iron == TileID.Lead), 1);
+			RandomItem.Add((ItemID.SilverBar, 5..14, static () => GenVars.silver == TileID.Silver), 1);
+			RandomItem.Add((ItemID.TungstenBar, 5..14, static () => GenVars.silver == TileID.Tungsten), 1);
+			RandomItem.Add((ItemID.RegenerationPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.GillsPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.NightOwlPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.SwiftnessPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.ShinePotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.ArcheryPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.HunterPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.MiningPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.TrapsightPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.RecallPotion, 2..4, null), 1);
+			RandomItem.Add((ItemID.Extractinator, 1..1, null), 1);
+			RandomItem.Add((ItemID.Bomb, 10..19, null), 1);
+			RandomItem.Add((ItemID.ThrowingKnife, 8..15, null), 1.5f);
+			RandomItem.Add((ItemID.Shuriken, 8..15, null), 1.5f);
+			RandomItem.Add((ItemID.WoodenArrow, 5..12, null), 2f);
+		}
+
+		// Try a few times
+		for (int i = 0; i < 3; ++i)
+		{
+			int chestX = origin.X + Main.rand.Next(-2, 3);
+			WorldMethods.FindGround(chestX, ref origin.Y);
+			int chestIndex = WorldGen.PlaceChest(chestX, origin.Y - 1, TileID.Containers, false, 17);
+
+			if (chestIndex != -1)
+			{
+				Chest chest = Main.chest[chestIndex];
+				chest.item[0] = new(MainWaterItem.Get());
+				chest.item[0].Prefix(-1);
+
+				int miscLength = WorldGen.genRand.Next(6, 9);
+				HashSet<int> takenRandomIds = [];
+
+				for (int j = 1; j < miscLength; ++j)
+				{
+					var (type, stackRange, canPlace) = RandomItem.Get();
+
+					while (takenRandomIds.Contains(type) || canPlace?.Invoke() == false)
+						(type, stackRange, canPlace) = RandomItem.Get();
+
+					chest.item[j] = new(type, WorldGen.genRand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
+					takenRandomIds.Add(type);
+				}
+
+				break;
+			}
+		}
 	}
 
 	/// <summary> Creates a palm tree of <paramref name="height"/> starting from the given coordinates and does <b>not</b> sync it. </summary>

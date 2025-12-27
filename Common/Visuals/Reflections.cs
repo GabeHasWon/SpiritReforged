@@ -12,6 +12,8 @@ public sealed class Reflections : ILoadable
 
 	/// <summary> Whether screen dimensions are beyond 1920x1080.<br/>Included in a bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
 	public static bool HighResolution { get; private set; }
+	/// <summary> Whether any reflection is being drawn. </summary>
+	public static bool DrawingReflection { get; set; }
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawPlayers_AfterProjectiles")]
 	internal static extern void DrawPlayers_AfterProjectiles(Main main);
@@ -45,7 +47,7 @@ public sealed class Reflections : ILoadable
 	/// <param name="height"> The pre-upscaled height of the texture.</param>
 	public static Texture2D CreateTilemap(int width, int height)
 	{
-		const int taper = 10; //Opacity taper downscaled
+		const int taper = 5; //Opacity taper downscaled
 
 		var data = new Color[width * height];
 		for (int i = 0; i < data.Length; i++)
