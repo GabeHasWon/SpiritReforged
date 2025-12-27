@@ -56,7 +56,7 @@ public class CommonPots : PotTile, ILootable
 
 		FallingPot.BreakPot(i, j, (style == 0) ? tile.TileFrameX / 36 * 3 : 2000 / 16);
 
-		if (TileObjectData.IsTopLeft(i, j))
+		if (TileObjectData.IsTopLeft(i, j) && !Main.dedServ)
 		{
 			if (style == 1)
 			{
