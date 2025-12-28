@@ -16,7 +16,7 @@ public class InfectedHive : ModTile
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(TileID.Sand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<PaleHive>());
+		this.Merge(TileID.Sand, ModContent.TileType<CrackedSandstone>(), ModContent.TileType<PaleHive>());
 		AddMapEntry(new Color(180, 180, 180));
 
 		DustType = DustID.Silk;

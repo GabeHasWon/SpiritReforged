@@ -20,5 +20,5 @@ public class CrackedSandstone : ModTile, IAutoloadTileItem
 		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, TileID.Sand);
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, TileID.Sand, ModContent.TileType<PaleHive>(), ModContent.TileType<InfectedHive>());
 }

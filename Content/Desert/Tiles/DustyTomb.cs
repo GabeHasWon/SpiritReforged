@@ -98,7 +98,7 @@ public class DustyTomb : ModTile
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				var npc = NPC.NewNPCDirect(new EntitySource_TileUpdate(i, j), origin.ToWorldCoordinates(), ModContent.NPCType<DecrepitMummy>());
+				var npc = NPC.NewNPCDirect(new EntitySource_TileUpdate(i, j), origin.ToWorldCoordinates(8, 16), ModContent.NPCType<DecrepitMummy>());
 				npc.SpawnedFromStatue = true;
 				npc.netUpdate = true;
 			}

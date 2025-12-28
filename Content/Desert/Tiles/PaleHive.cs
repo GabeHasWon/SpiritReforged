@@ -15,7 +15,7 @@ public class PaleHive : ModTile, IAutoloadTileItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(TileID.Sand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
+		this.Merge(TileID.Sand, ModContent.TileType<CrackedSandstone>());
 		AddMapEntry(new Color(180, 180, 180));
 
 		DustType = DustID.Silk;

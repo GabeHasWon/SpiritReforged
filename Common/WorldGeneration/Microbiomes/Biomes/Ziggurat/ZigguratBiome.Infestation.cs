@@ -6,21 +6,21 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public partial class ZigguratBiome : Microbiome
 {
-	private static void Infest(params Rectangle[] bounds)
+	private static void Infest(int count, Rectangle bound)
 	{
-		foreach (Rectangle rect in bounds)
+		if (count == 0)
+			return;
+
+		WorldMethods.Generate(static (i, j) =>
 		{
-			WorldMethods.Generate(static (i, j) =>
-			{
-				FastNoiseLite noise = new(WorldGen.genRand.Next());
-				noise.SetFrequency(0.1f);
+			FastNoiseLite noise = new(WorldGen.genRand.Next());
+			noise.SetFrequency(0.1f);
 
-				if (WorldGen.SolidTile(i, j))
-					CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, 60, -0.25f);
+			if (WorldGen.SolidTile(i, j))
+				CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, 60, -0.25f);
 
-				return true;
-			}, 3, out _, rect);
-		}
+			return true;
+		}, count, out _, bound);
 	}
 
 	public static void CreateScarabNest(int i, int j, int width, int height, FastNoiseLite noise, float outerThickness, float thickness = 0)
@@ -44,12 +44,22 @@ public partial class ZigguratBiome : Microbiome
 				bool hasTile = WorldGen.SolidOrSlopedTile(tile);
 
 				tile.ClearTile();
-				tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
+				
+				if (tile.WallType != WallID.None)
+					tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
 
 				if (hasTile && (noiseValue < thickness || distance > distanceLimit - outerThickness))
 				{
-					ushort type = (ushort)((noiseValue < -0.6f) ? ModContent.TileType<InfectedHive>() : ModContent.TileType<PaleHive>());
-					tile.ResetToType(type);
+					int type = ModContent.TileType<PaleHive>();
+
+					if (distance > distanceLimit - outerThickness * 0.5f)
+						type = ModContent.TileType<CrackedSandstone>();
+					else if (noiseValue < -0.8f)
+						type = ModContent.TileType<InfectedSlime>();
+					else if (noiseValue < -0.7f)
+						type = ModContent.TileType<InfectedHive>();
+
+					tile.ResetToType((ushort)type);
 				}
 			}
 		}
