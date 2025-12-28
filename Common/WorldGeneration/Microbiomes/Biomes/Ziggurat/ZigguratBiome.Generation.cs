@@ -306,24 +306,7 @@ public partial class ZigguratBiome : Microbiome
 			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
 				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
-				.Enqueue((i, j) =>
-				{
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
-					{
-						int type = potWeight;
-						int style = -1;
-
-						if (type == ModContent.TileType<BiomePots>())
-							style = PotsMicropass.GetStyleRange(BiomePots.Style.Desert);
-
-						if (type == TileID.Pots)
-							return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
-
-						return Placer.PlaceTile(i, j, type, style).success;
-					}
-
-					return false;
-				}, 0);
+				.Enqueue(PlacePot, 0);
 
 			if (WorldGen.genRand.NextBool(3))
 				decorator.Enqueue(PlaceCenser, 1);
@@ -350,20 +333,11 @@ public partial class ZigguratBiome : Microbiome
 
 					return false;
 				}, 0)
-				.Enqueue((i, j) =>
-				{
-					if (WorldGen.genRand.NextBool(50))
-					{
-						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
-						return true;
-					}
-
-					return false;
-				}, 0);
+				.Enqueue(LaySpikeStrip, 1);
 			}
 
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
-				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2));
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, WorldGen.genRand.Next(0, 2));
 
 			decorator.Run();
 		}
@@ -388,16 +362,49 @@ public partial class ZigguratBiome : Microbiome
 		return false;
 	}
 
-	public static void LaySpikeStrip(Point origin, int width)
+	private static bool PlacePot(int i, int j)
 	{
-		int halfWidth = width / 2;
-		int y = origin.Y;
-
-		for (int x = origin.X - halfWidth; x < origin.X + halfWidth; x++)
+		if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
 		{
-			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
-				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+			int type = WorldGen.genRand.NextFromList(ModContent.TileType<BronzePots>(), TileID.Pots);
+
+			if (WorldGen.genRand.NextBool(10))
+				type = ModContent.TileType<LapisPots>();
+			else if (WorldGen.genRand.NextBool(5))
+				type = ModContent.TileType<BiomePots>();
+
+			int style = -1;
+
+			if (type == ModContent.TileType<BiomePots>())
+				style = PotsMicropass.GetStyleRange(BiomePots.Style.Desert);
+
+			if (type == TileID.Pots)
+				return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
+
+			return Placer.PlaceTile(i, j, type, style).success;
 		}
+
+		return false;
+	}
+
+	private static bool LaySpikeStrip(int i, int j)
+	{
+		if (WorldGen.genRand.NextBool(50))
+		{
+			int width = WorldGen.genRand.Next(3, 6);
+			int halfWidth = width / 2;
+			int y = j;
+
+			for (int x = i - halfWidth; x < i + halfWidth; x++)
+			{
+				if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+					Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static bool PlaceFurniture(int i, int j, FurnitureSet.Types forceType = FurnitureSet.Types.None)
