@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.WorldGeneration.Noise;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Walls;
 
@@ -63,5 +64,17 @@ public partial class ZigguratBiome : Microbiome
 				}
 			}
 		}
+
+		WorldMethods.Generate(GrowVine, WorldGen.genRand.Next(5, 16), out _, area);
+	}
+
+	private static bool GrowVine(int i, int j)
+	{
+		bool result = false;
+
+		for (int c = 0; c < WorldGen.genRand.Next(1, 5); c++)
+			result |= Placer.GrowVine(i, j, ModContent.TileType<GooeyVine>(), 5);
+
+		return result;
 	}
 }
