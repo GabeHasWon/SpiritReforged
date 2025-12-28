@@ -55,9 +55,9 @@ public partial class ZigguratBiome : Microbiome
 					if (distance > distanceLimit - outerThickness * 0.5f)
 						type = ModContent.TileType<CrackedSandstone>();
 					else if (noiseValue < -0.8f)
-						type = ModContent.TileType<InfectedSlime>();
+						type = ModContent.TileType<GooBlock>();
 					else if (noiseValue < -0.7f)
-						type = ModContent.TileType<InfectedHive>();
+						type = ModContent.TileType<GooeyHive>();
 
 					tile.ResetToType((ushort)type);
 				}

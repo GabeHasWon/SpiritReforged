@@ -6,7 +6,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
-public class InfectedHive : ModTile
+public class GooeyHive : ModTile
 {
 	public override void SetStaticDefaults()
 	{

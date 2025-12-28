@@ -3,7 +3,7 @@ using SpiritReforged.Common.TileCommon.TileMerging;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
-public class InfectedSlime : ModTile
+public class GooBlock : ModTile, IAutoloadTileItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -13,7 +13,7 @@ public class InfectedSlime : ModTile
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(ModContent.TileType<PaleHive>(), ModContent.TileType<InfectedHive>());
+		this.Merge(ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
 		AddMapEntry(new Color(220, 115, 25));
 
 		DustType = DustID.OrangeStainedGlass;
@@ -31,5 +31,5 @@ public class InfectedSlime : ModTile
 		}
 	}
 
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<PaleHive>(), ModContent.TileType<InfectedHive>());
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
 }
