@@ -292,7 +292,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		Tile tile = Main.tile[i, j];
 		Tile belowTile = Main.tile[i, j + 1];
 
-		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 120 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
 		{
 			int type = ModContent.TileType<StoneReliquary>();
 			bool result = Placer.PlaceTile(i, j, type).success;
