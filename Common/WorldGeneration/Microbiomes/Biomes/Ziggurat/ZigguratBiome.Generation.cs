@@ -51,7 +51,7 @@ public partial class ZigguratBiome : Microbiome
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
 
-		for (int i = 1; i < bounds.Count; i++)
+		for (int i = 2; i < bounds.Count; i++)
 			Infest(WorldGen.genRand.Next(3), bounds[i]);
 
 		SwitchWalls(bounds);
