@@ -2615,12 +2615,12 @@ SaltPylonItem: {
 	Tooltip: ""
 }
 
-SaltFlatsNightMusicBoxItem: {
+SaltNightMusicBoxItem: {
 	Tooltip: ""
 	DisplayName: Music Box (Salt Flats Night)
 }
 
-SaltFlatsMusicBoxItem: {
+SaltMusicBoxItem: {
 	Tooltip: ""
 	DisplayName: Music Box (Salt Flats)
 }
@@ -2805,12 +2805,12 @@ StoneReliquaryItem: {
 	Tooltip: ""
 }
 
-SaltFlatsCampfireItem: {
+SaltCampfireItem: {
 	DisplayName: Salt Campfire
 	Tooltip: "{$ItemTooltip.Campfire}"
 }
 
-SaltFlatsFountainItem: {
+SaltFountainItem: {
 	DisplayName: Salt Flats Fountain
 	Tooltip: ""
 }

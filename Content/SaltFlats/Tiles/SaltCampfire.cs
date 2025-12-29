@@ -1,5 +1,4 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.SaltFlats.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -8,7 +7,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltFlatsCampfire : ModTile, IAutoloadTileItem
+public class SaltCampfire : ModTile, IAutoloadTileItem
 {
 	private static Asset<Texture2D> glowTexture;
 	private const int fullFrameHeight = 18 * 2;
