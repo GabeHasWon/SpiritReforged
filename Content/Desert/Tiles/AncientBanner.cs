@@ -24,10 +24,16 @@ public class AncientBanner : ModTile, ISwayTile, IAutoloadTileItem
 		TileObjectData.newTile.Width = 2;
 		TileObjectData.newTile.Height = 3;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
-		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, 2, 0);
+		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 5;
+
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.Platform, TileObjectData.newTile.Width, 0);
+		TileObjectData.newAlternate.DrawYOffset = -8;
+
+		TileObjectData.addAlternate(0);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(70, 70, 150), Language.GetText("MapObject.Banner"));
