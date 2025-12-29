@@ -240,7 +240,7 @@ internal static class TileFraming
 			frameY = 18;
 		}
 
-		if (frameY != 0 && frameX != 0)
+		if (frameX != 0 || frameY != 0)
 		{
 			t.TileFrameX = frameX;
 			t.TileFrameY = frameY;
