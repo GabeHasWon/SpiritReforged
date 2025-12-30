@@ -19,13 +19,28 @@ public class SaltBlockDull : SaltBlock
 
 	public override void RandomUpdate(int i, int j)
 	{
-		if (Framing.GetTileSafely(i, j - 1).LiquidAmount < 20)
+		Tile above = Framing.GetTileSafely(i, j - 1);
+
+		if (above.LiquidAmount < 20)
 		{
 			if (Main.rand.NextBool(4))
 				Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
 
 			if (Main.rand.NextBool(8))
 				Placer.Check(i, j - 1, ModContent.TileType<SaltwortTall>()).IsClear().Place().Send();
+
+			if (Main.rand.NextBool(4) && (above.HasTileType(ModContent.TileType<Saltwort>()) || above.HasTileType(ModContent.TileType<SaltwortTall>())))
+			{
+				Tile tile = Main.tile[i, j];
+				Point16 result = new(126, 252);
+				int random = Main.rand.Next(4);
+
+				tile.TileFrameX = (short)(result.X + 18 * random);
+				tile.TileFrameY = result.Y;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					NetMessage.SendTileSquare(-1, i, j);
+			}
 		}
 	}
 
@@ -49,15 +64,16 @@ public class SaltBlockDull : SaltBlock
 
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
 	{
-		var t = Main.tile[i, j];
+		const int loop = 4; //The number of horizontal frames
+		Tile tile = Main.tile[i, j];
 
-		if (Main.rand.NextBool(15) && t.TileFrameX is 18 or 36 or 54 && t.TileFrameY is 18) //Plain center frames
+		if (Main.rand.NextBool(10) && tile.TileFrameX is 18 or 36 or 54 && tile.TileFrameY is 18) //Plain center frames
 		{
 			Point16 result = new(126, 216);
-			int random = Main.rand.Next(4);
+			int random = Main.rand.Next(8);
 
-			t.TileFrameX = (short)(result.X + 18 * random);
-			t.TileFrameY = result.Y;
+			tile.TileFrameX = (short)(result.X + 18 * (random % loop));
+			tile.TileFrameY = (short)(result.Y + 18 * (random / loop));
 		}
 	}
 

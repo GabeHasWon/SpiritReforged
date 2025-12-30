@@ -289,12 +289,6 @@ public partial class ZigguratBiome : Microbiome
 
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
-		WeightedRandom<int> potWeight = new();
-		potWeight.Add(ModContent.TileType<BronzePots>());
-		potWeight.Add(ModContent.TileType<LapisPots>(), 0.1f);
-		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
-		potWeight.Add(TileID.Pots);
-
 		int maxChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
 
