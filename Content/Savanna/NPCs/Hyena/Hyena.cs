@@ -95,6 +95,7 @@ public class Hyena : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = .41f;
 		NPC.direction = 1; //Don't start at 0
+
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
