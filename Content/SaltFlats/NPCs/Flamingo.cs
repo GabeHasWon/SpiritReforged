@@ -64,15 +64,14 @@ public class Flamingo : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.CloneDefaults(NPCID.Bunny);
 		NPC.Size = new Vector2(20, 40);
 		NPC.lifeMax = 50;
 		NPC.value = 44f;
+		NPC.damage = 0;
 		NPC.chaseable = false;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.5f;
-		NPC.aiStyle = -1;
 		NPC.direction = 1; //Don't start at 0
 
 		AIType = -1;

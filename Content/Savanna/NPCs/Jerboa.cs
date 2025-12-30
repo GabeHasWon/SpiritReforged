@@ -48,11 +48,14 @@ public class Jerboa : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.CloneDefaults(NPCID.Bunny);
 		NPC.Size = new Vector2(16);
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.aiStyle = -1;
+		NPC.npcSlots = 0.25f;
+		NPC.dontCountMe = true;
+		NPC.damage = 0;
+		NPC.defense = 0;
+		NPC.lifeMax = 5;
 
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];

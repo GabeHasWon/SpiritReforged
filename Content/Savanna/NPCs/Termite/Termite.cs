@@ -43,12 +43,13 @@ public class Termite : ModNPC
 		NPC.dontCountMe = true;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 66;
-		NPC.npcSlots = 0;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.CritterWorm;
+		NPC.npcSlots = 0.1f;
 		NPC.noGravity = false;
-		AIType = NPCID.Grubby;
 		NPC.dontTakeDamageFromHostiles = false;
+
+		AIType = NPCID.Grubby;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
 

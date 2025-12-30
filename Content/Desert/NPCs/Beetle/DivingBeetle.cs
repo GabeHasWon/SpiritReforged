@@ -33,6 +33,8 @@ public class DivingBeetle : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new(10);
+		NPC.damage = 0;
+		NPC.defense = 0;
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.npcSlots = 0.1f;
