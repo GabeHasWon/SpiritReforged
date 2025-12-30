@@ -42,6 +42,9 @@ public sealed class Reflections : ILoadable
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "bgParallax")]
 	internal static extern ref double GetBgParallax(Main main);
 
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawBlack")]
+	internal static extern void DrawBlack(Main main, bool force = false);
+
 	/// <summary> Gets a gradient texture for shader mapping. </summary>
 	/// <param name="width"> The pre-upscaled width of the texture. </param>
 	/// <param name="height"> The pre-upscaled height of the texture.</param>

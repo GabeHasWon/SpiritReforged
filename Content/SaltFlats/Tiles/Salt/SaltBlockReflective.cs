@@ -84,7 +84,10 @@ public class SaltBlockReflective : SaltBlock
 				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
 
 				if (!Reflections.HighResolution)
+				{
+					//Reflections.DrawBlack(Main.instance, true);
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+				}
 
 				Reflections.DrawNPCs(Main.instance, true);
 
