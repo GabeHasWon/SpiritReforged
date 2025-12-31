@@ -190,10 +190,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			if (progress > info.TransitionLength && progress < info.Area.Width - info.TransitionLength)
 			{
-				if (WorldGen.genRand.NextBool(20))
-					caveOrigins.Add(new(x, y - WorldGen.genRand.Next(liningDepth)));
-				if ((progress < info.OuterLength || progress > info.Area.Width - info.OuterLength) && WorldGen.genRand.NextBool(50))
-					lakeOrigins.Add(new(x, y - liningDepth - reflectiveDepth));
+				AddObject(x, y - WorldGen.genRand.Next(liningDepth), WorldGen.genRand.NextBool(20), ref caveOrigins);
+				AddObject(x, y - liningDepth - reflectiveDepth, (progress < info.OuterLength || progress > info.Area.Width - info.OuterLength) && WorldGen.genRand.NextBool(50), ref lakeOrigins);
 			}
 		}
 
@@ -202,6 +200,12 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		foreach (Point o in lakeOrigins)
 			CreateLake(o, WorldGen.genRand.Next(6, 10));
+
+		static void AddObject(int x, int y, bool condition, ref List<Point> list) //Improves readability
+		{
+			if (condition)
+				list.Add(new(x, y));
+		}
 	}
 
 	#region features
