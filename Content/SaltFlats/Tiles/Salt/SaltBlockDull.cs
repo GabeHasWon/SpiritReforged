@@ -23,13 +23,13 @@ public class SaltBlockDull : SaltBlock
 
 		if (above.LiquidAmount < 20)
 		{
-			if (Main.rand.NextBool(4))
+			if (Main.rand.NextBool(16))
 				Placer.Check(i, j - 1, ModContent.TileType<Saltwort>()).IsClear().Place().Send();
 
-			if (Main.rand.NextBool(8))
+			if (Main.rand.NextBool(32))
 				Placer.Check(i, j - 1, ModContent.TileType<SaltwortTall>()).IsClear().Place().Send();
 
-			if (Main.rand.NextBool(4) && (above.HasTileType(ModContent.TileType<Saltwort>()) || above.HasTileType(ModContent.TileType<SaltwortTall>())))
+			if (Main.rand.NextBool(8) && (above.HasTileType(ModContent.TileType<Saltwort>()) || above.HasTileType(ModContent.TileType<SaltwortTall>())))
 			{
 				Tile tile = Main.tile[i, j];
 				Point16 result = new(126, 252);
