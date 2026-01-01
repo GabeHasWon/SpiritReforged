@@ -2839,3 +2839,8 @@ GooBlockItem: {
 	// DisplayName: Goo Block
 	// Tooltip: ""
 }
+
+WindshearScepter: {
+	// DisplayName: Windshear Scepter
+	// Tooltip: ""
+}

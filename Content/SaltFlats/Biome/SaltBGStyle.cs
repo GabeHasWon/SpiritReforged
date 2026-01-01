@@ -43,13 +43,16 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, loops + 1);
 				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -670 - softParallaxY), bounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
+
+				int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
+				Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, - softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
 				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
 				if (SaltFlatsSystem.nightSkyOpacity > 0f)
 				{
 					Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
-					Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
 					bgShader.Parameters["WorldViewProjection"].SetValue(Main.BackgroundViewMatrix.TransformationMatrix * projection);
 					bgShader.Parameters["viewMatrix"].SetValue(projection);
