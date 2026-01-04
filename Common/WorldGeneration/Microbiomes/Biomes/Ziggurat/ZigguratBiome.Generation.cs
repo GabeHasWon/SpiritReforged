@@ -11,6 +11,7 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Desert.Windshear;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
@@ -466,7 +467,7 @@ public partial class ZigguratBiome : Microbiome
 
 	internal static void PopulateChest(Chest chest)
 	{
-		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<BangleOfStrength>()];
+		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
 			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 		
