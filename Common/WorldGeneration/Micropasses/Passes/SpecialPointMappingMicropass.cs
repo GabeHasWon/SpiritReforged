@@ -2,6 +2,7 @@
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.ButterflyStaff;
 using SpiritReforged.Content.Forest.Safekeeper;
@@ -74,8 +75,9 @@ internal class SpecialPointMappingMicropass : Micropass
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.WulfrumBunker);
 					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !PointOfInterestSystem.HasInterestType(InterestType.SaltFlat))
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.SaltFlat);
-					else if (tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !PointOfInterestSystem.HasInterestType(InterestType.Ziggurat))
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.Ziggurat);
+					else if ((tile.TileType == ModContent.TileType<RedSandstoneBrick>() || tile.WallType == ModContent.WallType<RedSandstoneBrickWall>())
+						&& !PointOfInterestSystem.HasInterestType(InterestType.Ziggurat))
+						PointOfInterestSystem.AddPoint(new(i + 100, j), InterestType.Ziggurat);
 					else
 					{
 						HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), 
