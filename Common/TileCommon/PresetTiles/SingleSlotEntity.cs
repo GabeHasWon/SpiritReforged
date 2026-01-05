@@ -1,6 +1,4 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Multiplayer;
-using System;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -116,8 +114,6 @@ public abstract class SingleSlotEntity : ModTileEntity
 public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEntity
 {
 	public int ItemType => (this is IAutoloadTileItem) ? this.AutoItem().type : ItemID.None;
-
-	public override void SetStaticDefaults() => entity = ModContent.GetInstance<T>();
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{

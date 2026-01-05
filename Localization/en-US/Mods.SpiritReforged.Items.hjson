@@ -2844,3 +2844,8 @@ WindshearScepter: {
 	DisplayName: Windshear Scepter
 	Tooltip: ""
 }
+
+SaltTallGateItem: {
+	DisplayName: Salt Tall Gate
+	Tooltip: ""
+}
