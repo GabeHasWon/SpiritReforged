@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltFlatsNightMusicBox : MusicBoxTile
+public class SaltNightMusicBox : MusicBoxTile
 {
 	public override string MusicPath => "Assets/Music/SaltNight";
 }

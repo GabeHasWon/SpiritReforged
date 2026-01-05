@@ -38,8 +38,8 @@ public class Jerboa : ModNPC
 			static item => item.value = Item.sellPrice(0, 0, 0, 45));
 
 		Main.npcFrameCount[Type] = 13; //Rows
-
 		Main.npcCatchable[Type] = true;
+
 		NPCID.Sets.CountsAsCritter[Type] = true;
 		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
@@ -49,11 +49,14 @@ public class Jerboa : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(16);
-		NPC.lifeMax = 5;
-		NPC.chaseable = false;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.knockBackResist = 1f;
+		NPC.npcSlots = 0.25f;
+		NPC.dontCountMe = true;
+		NPC.damage = 0;
+		NPC.defense = 0;
+		NPC.lifeMax = 5;
+
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}

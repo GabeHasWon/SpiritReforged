@@ -50,7 +50,7 @@ public sealed class ChainObjectSystem : ModSystem
 	[WorldBound]
 	private static readonly Dictionary<Point16, ChainObject> ObjectByCoords = [];
 
-	public static void AddObject(ChainObject value) => ObjectByCoords.Add(value.anchor, value);
+	public static bool AddObject(ChainObject value) => ObjectByCoords.TryAdd(value.anchor, value);
 	public static bool RemoveObject(Point16 coordinate)
 	{
 		if (ObjectByCoords.TryGetValue(coordinate, out ChainObject value))
@@ -144,7 +144,6 @@ public sealed class ChainObjectSystem : ModSystem
 		{
 			Point16 coords = item.Get<Point16>("anchor");
 			byte segments = item.GetByte("segments");
-
 			int tileType = Framing.GetTileSafely(coords).TileType;
 
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)

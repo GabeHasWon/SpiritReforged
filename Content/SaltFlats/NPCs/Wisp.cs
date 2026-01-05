@@ -190,6 +190,16 @@ public class Wisp : ModNPC
 		}
 	}
 
+	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/WispHit")
+	{
+		PitchVariance = 0.25f
+	};
+
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/WispDeath")
+	{
+		PitchVariance = 0.25f
+	};
+
 	private readonly ParticleRenderer _twirlParticleRenderer = new();
 	private VertexTrail[] _trails;
 	private int _counter;
@@ -205,8 +215,8 @@ public class Wisp : ModNPC
 		NPC.chaseable = false;
 		NPC.lifeMax = 30;
 		NPC.value = 110;
-		NPC.HitSound = SoundID.LiquidsHoneyLava with { Volume = 6f };
-		NPC.DeathSound = SoundID.Item118 with { Pitch = 1.2f, Volume = 1.75f };
+		NPC.HitSound = Hit;
+		NPC.DeathSound = Death;
 		NPC.scale = Main.rand.NextFloat(0.75f, 1.25f);
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
@@ -395,6 +405,8 @@ public class Wisp : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
+		SoundEngine.PlaySound(SoundID.NPCHit7 with { PitchVariance = 0.5f }, NPC.Center);
+
 		if (!Main.dedServ && NPC.life <= 0)
 		{
 			for (int i = 0; i < 2; i++)

@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -57,6 +58,8 @@ public class SaltBlockReflective : SaltBlock
 			Vector2 storedZoom = Main.GameViewMatrix.Zoom;
 			Main.GameViewMatrix.Zoom = Vector2.One;
 
+			Reflections.DrawingReflection = true;
+
 			gd.SetRenderTarget(overlayTarget);
 			gd.Clear(Color.Transparent);
 			spriteBatch.BeginDefault();
@@ -81,7 +84,10 @@ public class SaltBlockReflective : SaltBlock
 				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
 
 				if (!Reflections.HighResolution)
+				{
+					//Reflections.DrawBlack(Main.instance, true);
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+				}
 
 				Reflections.DrawNPCs(Main.instance, true);
 
@@ -100,6 +106,7 @@ public class SaltBlockReflective : SaltBlock
 			}
 
 			Reflections.DrawNPCs(Main.instance, false);
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
 
 			if (Reflections.Detail > 2)
 			{
@@ -120,6 +127,8 @@ public class SaltBlockReflective : SaltBlock
 
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;
+
+			Reflections.DrawingReflection = false;
 		}
 
 		public void RenderNormalTarget(SpriteBatch spriteBatch)

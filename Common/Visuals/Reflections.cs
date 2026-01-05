@@ -12,6 +12,8 @@ public sealed class Reflections : ILoadable
 
 	/// <summary> Whether screen dimensions are beyond 1920x1080.<br/>Included in a bandaid fix for tiles not reflecting correctly on high resolutions. </summary>
 	public static bool HighResolution { get; private set; }
+	/// <summary> Whether any reflection is being drawn. </summary>
+	public static bool DrawingReflection { get; set; }
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawPlayers_AfterProjectiles")]
 	internal static extern void DrawPlayers_AfterProjectiles(Main main);
@@ -39,6 +41,9 @@ public sealed class Reflections : ILoadable
 
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "bgParallax")]
 	internal static extern ref double GetBgParallax(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawBlack")]
+	internal static extern void DrawBlack(Main main, bool force = false);
 
 	/// <summary> Gets a gradient texture for shader mapping. </summary>
 	/// <param name="width"> The pre-upscaled width of the texture. </param>

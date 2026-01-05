@@ -16,6 +16,7 @@ public sealed class TileMerger : ModSystem
 		Add(TileID.Sand, "Sand");
 		Add(TileID.Dirt, "Dirt");
 		AddRange("RedSandstone", ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
+		AddRange("Hive", ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
 		All = [.. TextureByType.Keys]; //Must be last
 
 		static void Add(int type, string name) => TextureByType.Add(type, ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(TileMerger), "Textures/" + name + "Merge")));

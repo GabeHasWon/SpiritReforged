@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
@@ -8,7 +9,7 @@ using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltFlatsFountain : ModTile, IAutoloadTileItem
+public class SaltFountain : ModTile, IAutoloadTileItem
 {
 	private const int FrameHeight = 72;
 
@@ -34,9 +35,8 @@ public class SaltFlatsFountain : ModTile, IAutoloadTileItem
 		AnimationFrameHeight = FrameHeight;
 		AdjTiles = [TileID.WaterFountain];
 
-		int itemId = Mod.Find<ModItem>("SaltFlatsFountainItem").Type;
-		RegisterItemDrop(itemId);
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(itemId)));
+		RegisterItemDrop(this.AutoItemType());
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(this.AutoItemType())));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

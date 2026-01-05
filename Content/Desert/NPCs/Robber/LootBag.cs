@@ -2,10 +2,8 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
