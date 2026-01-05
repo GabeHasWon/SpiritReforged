@@ -5,6 +5,7 @@ using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Desert.Windshear;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
@@ -109,7 +110,7 @@ internal class NewBeginningsCompat : ModSystem
 		void AddWorshipper()
 		{
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<SunEarrings>(), ModContent.ItemType<SilkTop>(), ModContent.ItemType<SilkSirwal>(), Array.Empty<int>());
-			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<UrchinStaff>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<WindshearScepter>());
 			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInOasis);
 			AddOrigin("Worshipper", [], equip, misc, dele);
 		}
