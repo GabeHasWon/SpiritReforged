@@ -28,16 +28,18 @@ public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutolo
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.OpenDoorID[Type] = ModContent.TileType<SaltTallGateOpen>();
+		TileID.Sets.DontDrawTileSliced[Type] = true; //Allows lowermost frame height to be applied
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 2;
 		TileObjectData.newTile.Height = 4;
-		TileObjectData.newTile.CoordinateHeights = [18, 16, 16, 18];
+		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 20];
 		TileObjectData.newTile.Origin = new Point16(1, 3);
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.UsesCustomCanPlace = true;
 		TileObjectData.newTile.LavaDeath = false;
+		TileObjectData.newTile.DrawYOffset = -2;
 		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 
 		TileObjectData.addTile(Type);
@@ -89,12 +91,13 @@ public class SaltTallGateOpen : EntityTile<SaltTallGateEntity>, ICustomDoor
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 2;
 		TileObjectData.newTile.Height = 4;
-		TileObjectData.newTile.CoordinateHeights = [18, 16, 16, 18];
+		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 20];
 		TileObjectData.newTile.Origin = new Point16(1, 3);
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
 		TileObjectData.newTile.UsesCustomCanPlace = true;
 		TileObjectData.newTile.LavaDeath = false;
+		TileObjectData.newTile.DrawYOffset = -2;
 		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 
 		TileObjectData.addTile(Type);
@@ -179,6 +182,11 @@ public class SaltTallGateEntity : ModTileEntity, IEntityUpdate
 		else if (frame != 0 && lastFrame == 0) //Just opened
 		{
 			SoundEngine.PlaySound(SoundID.Item101 with { Pitch = 1 }, area.Center());
+			SoundEngine.PlaySound(SoundID.AbigailUpgrade with { Pitch = 1 }, area.Center());
+		}
+		else if (frame != 7 && lastFrame == 7) //Just started closing
+		{
+			SoundEngine.PlaySound(SoundID.Item101 with { Pitch = 0.8f, Volume = 0.5f }, area.Center());
 			SoundEngine.PlaySound(SoundID.AbigailUpgrade with { Pitch = 1 }, area.Center());
 		}
 	}
