@@ -66,10 +66,10 @@ public static class ZigguratRooms
 				WorldGen.PlaceTile(Bounds.Right - 2, Bounds.Bottom - 3, ModContent.TileType<ZigguratTorch>());
 
 			WorldUtils.Gen(new(Bounds.Left - 2, Bounds.Bottom - (tertiaryHeight - 1)), new Shapes.Rectangle(Bounds.Width + 4, tertiaryHeight), Actions.Chain(
+				new Modifiers.OnlyWalls(WallID.Sandstone),
 				new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType),
 				new Modifiers.Expand(1),
 				new Modifiers.Dither(0.8),
-				new Modifiers.OnlyWalls(WallID.Sandstone),
 				new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)));
 		}
 
@@ -304,11 +304,14 @@ public static class ZigguratRooms
 
 			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom), new Shapes.Rectangle(Bounds.Width, 1), new Actions.SetTile((ushort)ModContent.TileType<CarvedLapis>()));
 
-			int width = (int)(Bounds.Width / 1.5f);
-			WorldUtils.Gen(new Point(Bounds.Center.X, Bounds.Bottom), new Shapes.Tail(width, new(0, -width)), Actions.Chain(
-				new Modifiers.RectangleMask(-width - 1, width + 1, -3, 0),
+			int platformWidth = (int)(Bounds.Width / 1.5f);
+			WorldUtils.Gen(new Point(Bounds.Center.X, Bounds.Bottom), new Shapes.Tail(platformWidth, new(0, -platformWidth)), Actions.Chain(
+				new Modifiers.RectangleMask(-platformWidth - 1, platformWidth + 1, -3, 0),
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>())
 			));
+
+			int lapisPlatformWidth = platformWidth - 11;
+			WorldUtils.Gen(new(Bounds.Center.X - lapisPlatformWidth / 2 - 1, Bounds.Bottom - 3), new Shapes.Rectangle(lapisPlatformWidth, 1), new Actions.SetTile((ushort)ModContent.TileType<CarvedLapis>()));
 
 			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
@@ -318,7 +321,10 @@ public static class ZigguratRooms
 
 			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
 			WorldUtils.Gen(new(Bounds.Left + 10, Bounds.Top), new Shapes.Rectangle(Bounds.Right - Bounds.Left - 12, Bounds.Height), Actions.Chain(
-				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickCrackedWall>()), new Modifiers.Dither(0.4f), new Actions.PlaceWall(WallID.Sandstone)));
+				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickCrackedWall>()),
+				new Modifiers.Dither(0.4f),
+				new Actions.PlaceWall(WallID.Sandstone)));
+
 			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
 
 			int chestX = Bounds.Center.X + WorldGen.genRand.Next(-2, 3);
@@ -330,21 +336,17 @@ public static class ZigguratRooms
 			if (chestIndex != -1)
 				ZigguratBiome.PopulateChest(Main.chest[chestIndex]);
 
-			WeightedRandom<int> coinStashRandom = new(WorldGen.genRand);
-			coinStashRandom.Add(16, 0.1f);
-			coinStashRandom.Add(17, 0.5f);
-			coinStashRandom.Add(18, 0.4f);
-
+			//Add platform furniture
+			Rectangle platformBounds = new(Bounds.X + 10, Bounds.Y, Bounds.Width - 20, Bounds.Height);
+			WorldMethods.Generate(ZigguratBiome.PlaceRandomFurniture, 5, out _, platformBounds, 500);
 			//Fill with coin piles
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				float noise = Noise.NoiseSystem.PerlinStatic(i, j) + 2;
+			WorldMethods.Generate(PlaceCoinPile, WorldGen.genRand.Next(3, 6), out _, Bounds, 100);
+		}
 
-				if (!Main.tile[i, j].HasTile && WorldGen.SolidTile3(i, j + 1) && WorldGen.genRand.NextBool(3))
-					WorldGen.PlaceObject(i, j, WorldGen.genRand.NextBool(3) ? ModContent.TileType<ZigguratPiles2x2>() : ModContent.TileType<ZigguratPiles2x1>(), true, WorldGen.genRand.Next(2));
-
-				return false;
-			}, out _, Bounds);
+		private static bool PlaceCoinPile(int i, int j)
+		{
+			int type = WorldGen.genRand.NextBool(3) ? ModContent.TileType<ZigguratPiles2x2>() : ModContent.TileType<ZigguratPiles2x1>();
+			return Placer.Check(i, j, type).IsClear().Place().success;
 		}
 	}
 

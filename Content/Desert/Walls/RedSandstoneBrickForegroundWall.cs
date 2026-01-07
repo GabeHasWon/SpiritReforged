@@ -4,21 +4,17 @@ using SpiritReforged.Common.WallCommon;
 
 namespace SpiritReforged.Content.Desert.Walls;
 
-public class RedSandstoneBrickForegroundWall : ModWall, IAutoloadWallItem, IAutoloadUnsafeWall
+public class RedSandstoneBrickForegroundWall : ModWall, IAutoloadWallItem
 {
-	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("RedSandstoneBrickForegroundWallUnsafe").Type;
-
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<RedSandstoneBrickWall>(), 4).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
 
 	public override void SetStaticDefaults()
 	{
 		SpiritSets.WallBlocksLight[Type] = true;
-		Main.wallHouse[Type] = true;
+		Main.wallHouse[Type] = false;
 		DustType = DustID.DynastyShingle_Red;
 
-		Color entryColor = new(150, 70, 40);
-		AddMapEntry(entryColor);
-		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
+		AddMapEntry(new(150, 70, 40));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
