@@ -67,6 +67,7 @@ public class Flamingo : ModNPC
 		NPC.Size = new Vector2(20, 40);
 		NPC.lifeMax = 50;
 		NPC.value = 44f;
+		NPC.damage = 0;
 		NPC.chaseable = false;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;

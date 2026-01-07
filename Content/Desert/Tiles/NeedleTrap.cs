@@ -41,6 +41,20 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 		}
 	}
 
+	public override bool Slope(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+
+		tile.Slope = tile.Slope switch
+		{
+			SlopeType.Solid => SlopeType.SlopeDownLeft,
+			SlopeType.SlopeDownLeft => SlopeType.SlopeDownRight,
+			_ => SlopeType.Solid,
+		};
+
+		return false;
+	}
+
 	public override void HitWire(int i, int j) //Allow this trap to be triggered using wire in addition to being stepped on
 	{
 		if (Wiring.CheckMech(i, j, NeedleTrapProj.TimeLeftMax))
@@ -48,10 +62,12 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	}
 
 	public override bool IsTileDangerous(int i, int j, Player player) => true;
+
 	private static void SpawnSpike(IEntitySource source, Point16 tileCoords)
 	{
 		Vector2 position = tileCoords.ToWorldCoordinates(8, Framing.GetTileSafely(tileCoords).IsHalfBlock ? 16 : 8);
-		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), 30, 0);
+		SlopeType type = Main.tile[tileCoords].Slope;
+		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), 30, 0, -1, (float)type);
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
@@ -61,6 +77,10 @@ public class NeedleTrapProj : ModProjectile
 {
 	public const int TimeLeftMax = 100;
 	private Vector2 _origin;
+
+	private SlopeType Slope => (SlopeType)Projectile.ai[0];
+	private ref float Angle => ref Projectile.ai[1];
+	private ref float ExtensionModifier => ref Projectile.ai[2];
 
 	private float GetProgress(int substract = 0) => MathHelper.Clamp(1f - (float)(Projectile.timeLeft - substract) / (TimeLeftMax - substract), 0, 1);
 
@@ -72,7 +92,7 @@ public class NeedleTrapProj : ModProjectile
 		Projectile.friendly = true;
 		Projectile.hostile = true;
 		Projectile.timeLeft = TimeLeftMax;
-		Projectile.tileCollide = true;
+		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.penetrate = -1;
 		Projectile.hide = true;
@@ -82,6 +102,14 @@ public class NeedleTrapProj : ModProjectile
 	{
 		if (_origin == default) //Just spawned
 		{
+			Angle = Slope switch
+			{
+				SlopeType.SlopeDownLeft => MathHelper.PiOver4,
+				SlopeType.SlopeDownRight => -MathHelper.PiOver4,
+				_ => 0
+			};
+
+			ExtensionModifier = Slope != SlopeType.Solid ? 0.5f : 1;
 			_origin = Projectile.Center;
 			SoundEngine.PlaySound(NeedleTrap.Extend, Projectile.Center);
 		}
@@ -90,7 +118,8 @@ public class NeedleTrapProj : ModProjectile
 		float ease = (progress > 0.9f) ? (1f - (progress - 0.9f) / 0.1f) : EaseFunction.EaseCubicIn.Ease(GetProgress(90));
 		int distance = (progress is < 0.15f or > 0.85f) ? 16 : 14;
 
-		Projectile.Center = _origin - new Vector2(0, ease * distance);
+		Projectile.Center = _origin - new Vector2(0, ease * distance * ExtensionModifier).RotatedBy(Angle);
+		Projectile.rotation = Angle;
 
 		if (Projectile.timeLeft == 10)
 			SoundEngine.PlaySound(NeedleTrap.Retract, Projectile.Center);
@@ -99,10 +128,11 @@ public class NeedleTrapProj : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var texture = TextureAssets.Projectile[Type].Value;
-		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);
+		Vector2 pos = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
+		Main.EntitySpriteDraw(texture, pos, null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);
 
 		return false;
 	}
 
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> bP, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 }

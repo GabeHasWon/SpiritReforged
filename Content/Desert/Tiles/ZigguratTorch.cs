@@ -86,7 +86,8 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		if (!closer && Main.tile[i, j].TileFrameY == 0)
 		{
 			var worldCoords = new Vector2(i, j).ToWorldCoordinates();
-			if (Main.LocalPlayer.Distance(worldCoords) < 16 * 3)
+
+			if (Main.LocalPlayer.Distance(worldCoords) < 16 * 3 && Wiring.CheckMech(i, j, 180))
 			{
 				HitWire(i, j);
 

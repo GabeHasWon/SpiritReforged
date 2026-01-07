@@ -2615,12 +2615,12 @@ SaltPylonItem: {
 	// Tooltip: ""
 }
 
-SaltFlatsNightMusicBoxItem: {
+SaltNightMusicBoxItem: {
 	// Tooltip: ""
 	// DisplayName: Music Box (Salt Flats Night)
 }
 
-SaltFlatsMusicBoxItem: {
+SaltMusicBoxItem: {
 	// Tooltip: ""
 	// DisplayName: Music Box (Salt Flats)
 }
@@ -2644,7 +2644,11 @@ Dragonsong: {
 
 TinyDragon: {
 	// DisplayName: Tiny Dragon
-	// Tooltip: "'Last of its kind'"
+	/* Tooltip:
+		'''
+		Summons a tiny dragon to follow you around
+		"'Last of its kind'"
+		''' */
 }
 
 PileOfConsequences: {
@@ -2688,7 +2692,7 @@ ZigguratMusicBoxItem: {
 }
 
 PinSaltFlat: {
-	// DisplayName: Salt Flat Pin
+	// DisplayName: Salt Flats Pin
 	// Tooltip: ""
 }
 
@@ -2726,6 +2730,8 @@ AncientBooksItem: {
 	// DisplayName: Ancient Book
 	// Tooltip: "'Rendered unreadable by time'"
 }
+
+// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
 
 SaltGlassWallItem: {
 	// DisplayName: Salt Glass Wall
@@ -2794,12 +2800,17 @@ CrackedSandstoneItem: {
 	// Tooltip: ""
 }
 
-SaltFlatsCampfireItem: {
+StoneReliquaryItem: {
+	// DisplayName: Stone Reliquary
+	// Tooltip: ""
+}
+
+SaltCampfireItem: {
 	// DisplayName: Salt Campfire
 	// Tooltip: "{$ItemTooltip.Campfire}"
 }
 
-SaltFlatsFountainItem: {
+SaltFountainItem: {
 	// DisplayName: Salt Flats Fountain
 	// Tooltip: ""
 }
@@ -2810,9 +2821,37 @@ ScarabDebugSpawner: {
 }
 
 SaltskipperQuestFish: {
-	// Description: Mods.SpiritReforged.Items.SaltskipperQuestFish.Description
-	// CatchLocation: Mods.SpiritReforged.Items.SaltskipperQuestFish.CatchLocation
-	// DisplayName: Saltskipper Quest Fish
+	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
+	// CatchLocation: Salt Flats
+	// DisplayName: Saltskipper
+	// Tooltip: ""
+}
+
+// WispBannerItem.DisplayName: Wisp Banner
+// DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner
+
+PaleHiveItem: {
+	// DisplayName: Pale Hive
+	// Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	// DisplayName: Pale Hive Wall
+	// Tooltip: ""
+}
+
+GooBlockItem: {
+	// DisplayName: Goo Block
+	// Tooltip: ""
+}
+
+WindshearScepter: {
+	// DisplayName: Windshear Scepter
+	// Tooltip: ""
+}
+
+SaltTallGateItem: {
+	// DisplayName: Salt Tall Gate
 	// Tooltip: ""
 }
 

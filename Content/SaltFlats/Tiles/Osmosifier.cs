@@ -52,18 +52,23 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
+		CheckConditions(i, j);
+		return true;
+	}
+
+	/// <summary> Checks whether this tile is submerged. </summary>
+	private static void CheckConditions(int i, int j)
+	{
+		TileExtensions.GetTopLeft(ref i, ref j);
+
 		var bottomLeft = Main.tile[i, j + 1];
 		var bottomRight = Main.tile[i + 1, j + 1];
 
 		bool activate = bottomLeft.LiquidType == LiquidID.Water && bottomLeft.LiquidAmount > 100 && bottomRight.LiquidType == LiquidID.Water && bottomRight.LiquidAmount > 100;
 		UpdateFrame(i, j, activate);
 
-		return true;
-
 		static void UpdateFrame(int i, int j, bool activate)
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
-
 			for (int x = 0; x < 2; x++)
 			{
 				for (int y = 0; y < 2; y++)
@@ -80,6 +85,8 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 
 	public override void RandomUpdate(int i, int j)
 	{
+		CheckConditions(i, j);
+
 		if (Main.tile[i, j].TileFrameY >= FrameHeight && Entity(i, j) is OsmosifierSlot slot)
 		{
 			int stack = slot.item.stack;

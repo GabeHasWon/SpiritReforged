@@ -5,9 +5,13 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
+using SpiritReforged.Content.Desert.Bangle;
+using SpiritReforged.Content.Desert.GildedScarab;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Chains;
 using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Desert.Windshear;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
@@ -47,6 +51,10 @@ public partial class ZigguratBiome : Microbiome
 
 		CreateHallways(rooms, AddPassageway);
 		Sandify(bounds);
+
+		for (int i = 2; i < bounds.Count; i++)
+			Infest(WorldGen.genRand.Next(3), bounds[i]);
+
 		SwitchWalls(bounds);
 		AddNeutralDecorations(rooms);
 
@@ -282,12 +290,6 @@ public partial class ZigguratBiome : Microbiome
 
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
-		WeightedRandom<int> potWeight = new();
-		potWeight.Add(ModContent.TileType<BronzePots>());
-		potWeight.Add(ModContent.TileType<LapisPots>(), 0.1f);
-		potWeight.Add(ModContent.TileType<BiomePots>(), 0.2f);
-		potWeight.Add(TileID.Pots);
-
 		int maxChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
 
@@ -296,28 +298,13 @@ public partial class ZigguratBiome : Microbiome
 			Rectangle bounds = room.Bounds;
 			bounds.Inflate(2, 2);
 
-			var decorator = new Decorator(bounds)
+			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
 				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
-				.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 80f, WorldGen.genRand.Next(0, 2))
-				.Enqueue((i, j) =>
-				{
-					if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
-					{
-						int type = potWeight;
-						int style = -1;
+				.Enqueue(PlacePot, 0);
 
-						if (type == ModContent.TileType<BiomePots>())
-							style = PotsMicropass.GetStyleRange(BiomePots.Style.Desert);
-
-						if (type == TileID.Pots)
-							return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
-
-						return Placer.PlaceTile(i, j, type, style).success;
-					}
-
-					return false;
-				}, 0);
+			if (WorldGen.genRand.NextBool(3))
+				decorator.Enqueue(PlaceCenser, 1);
 
 			if (room is ZigguratRooms.LibraryRoom)
 			{
@@ -327,6 +314,7 @@ public partial class ZigguratBiome : Microbiome
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
 				decorator.Enqueue(TileID.CatBast, 1);
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
 			}
 			else
 			{
@@ -340,17 +328,11 @@ public partial class ZigguratBiome : Microbiome
 
 					return false;
 				}, 0)
-				.Enqueue((i, j) =>
-				{
-					if (WorldGen.genRand.NextBool(50))
-					{
-						LaySpikeStrip(new(i, j), WorldGen.genRand.Next(3, 6));
-						return true;
-					}
-
-					return false;
-				}, 0);
+				.Enqueue(LaySpikeStrip, 1);
 			}
+
+			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, WorldGen.genRand.Next(0, 2));
 
 			decorator.Run();
 		}
@@ -364,16 +346,60 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	public static void LaySpikeStrip(Point origin, int width)
+	private static bool PlaceCenser(int i, int j)
 	{
-		int halfWidth = width / 2;
-		int y = origin.Y;
-
-		for (int x = origin.X - halfWidth; x < origin.X + halfWidth; x++)
+		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 		{
-			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
-				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
+			return true;
 		}
+
+		return false;
+	}
+
+	private static bool PlacePot(int i, int j)
+	{
+		if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
+		{
+			int type = WorldGen.genRand.NextFromList(ModContent.TileType<BronzePots>(), TileID.Pots);
+
+			if (WorldGen.genRand.NextBool(10))
+				type = ModContent.TileType<LapisPots>();
+			else if (WorldGen.genRand.NextBool(5))
+				type = ModContent.TileType<BiomePots>();
+
+			int style = -1;
+
+			if (type == ModContent.TileType<BiomePots>())
+				style = PotsMicropass.GetStyleRange(BiomePots.Style.Desert);
+
+			if (type == TileID.Pots)
+				return WorldGen.PlacePot(i, j, style: (ushort)WorldGen.genRand.Next(34, 37));
+
+			return Placer.PlaceTile(i, j, type, style).success;
+		}
+
+		return false;
+	}
+
+	private static bool LaySpikeStrip(int i, int j)
+	{
+		if (WorldGen.genRand.NextBool(50))
+		{
+			int width = WorldGen.genRand.Next(3, 6);
+			int halfWidth = width / 2;
+			int y = j;
+
+			for (int x = i - halfWidth; x < i + halfWidth; x++)
+			{
+				if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+					Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static bool PlaceFurniture(int i, int j, FurnitureSet.Types forceType = FurnitureSet.Types.None)
@@ -439,21 +465,25 @@ public partial class ZigguratBiome : Microbiome
 		return false;
 	}
 
-	private static void PopulateChest(Chest chest)
+	internal static void PopulateChest(Chest chest)
 	{
-		int[] main = [ItemID.AncientChisel, ItemID.SandBoots];
+		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
-			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..1)];
+			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 		
 		PriorityQueue<(int, Range), float> miscQueue = new();
-		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.TeleportationPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThornsPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ShinePotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.BattlePotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
@@ -523,7 +553,7 @@ public partial class ZigguratBiome : Microbiome
 
 		if (WorldGen.genRand.NextBool(4))
 		{
-			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise));
+			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise), new ZigguratRooms.BurialRoom(bound, noise));
 		}
 		else
 		{

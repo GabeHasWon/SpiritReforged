@@ -4,6 +4,7 @@ public class ZigguratBiome : ModBiome
 {
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Ziggurat");
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/ZigguratMapBG";
 
 	public override bool IsBiomeActive(Player player)
 	{

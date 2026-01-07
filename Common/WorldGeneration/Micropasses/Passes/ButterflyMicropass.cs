@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
@@ -9,7 +10,9 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 internal class ButterflyMicropass : Micropass
 {
 	public override string WorldGenName => "Butterfly Shrines";
-	private static readonly ushort[] Ignore = [TileID.LivingWood, TileID.LeafBlock, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick];
+
+	private static readonly ushort[] Ignore = [TileID.LivingWood, TileID.LeafBlock, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick, 
+		(ushort)ModContent.TileType<SaltBlockDull>(), (ushort)ModContent.TileType<SaltBlockReflective>()];
 
 	// Remnants will take care of our butterfly shrines on their end at some point, change in the future
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Sunflowers"));

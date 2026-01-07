@@ -34,6 +34,7 @@ public class SaltBiome : ModBiome
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SaltBGStyle>();
 	public override int BiomeTorchItemType => ModContent.ItemType<SaltTorchItem>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SaltFlatsMapBG";
 	public override int Music => GetMusic();
 
 	public override bool IsBiomeActive(Player player)

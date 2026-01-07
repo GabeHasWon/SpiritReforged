@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;

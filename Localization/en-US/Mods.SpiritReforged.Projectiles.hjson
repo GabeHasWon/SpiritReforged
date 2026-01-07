@@ -60,3 +60,4 @@ EnergyLaser.DisplayName: Energy Laser
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
 SandPillar.DisplayName: Sand Pillar
 SlamShockwave.DisplayName: Slam Shockwave
+WindBlast.DisplayName: Wind Blast

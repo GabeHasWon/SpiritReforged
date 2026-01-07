@@ -10,7 +10,7 @@ using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Jungle.Misc;
+namespace SpiritReforged.Content.SaltFlats.Items;
 
 public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 {
@@ -24,7 +24,7 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 
 	public override void SetDefaults()
 	{
-		Item.damage = 10;
+		Item.damage = 8;
 		Item.knockBack = 6;
 		Item.useTime = Item.useAnimation = 28;
 		Item.DamageType = DamageClass.Melee;
@@ -69,9 +69,7 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 			fullArc = MathHelper.TwoPi;
 		}
 		else if (HitCombo == 2)
-		{
 			fullArc += 3;
-		}
 
 		_swingArc = _swingArc == fullArc ? -fullArc : fullArc;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, _swingArc, 0, (int)style);
@@ -363,7 +361,8 @@ public class BoStaffSwing : ModProjectile
 			var velocity = (Projectile.DirectionTo(position) * Main.rand.NextFloat(5f, 10f)).RotatedByRandom(1.5f);
 
 			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, color * 2, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.1f, 1.5f),
-				Main.rand.Next(15, 20), 0.8f) { UseLightColor = true, NoLight = true });
+				Main.rand.Next(15, 20), 0.8f)
+			{ UseLightColor = true, NoLight = true });
 		}
 
 		if (UseStyle is Style.Jab)

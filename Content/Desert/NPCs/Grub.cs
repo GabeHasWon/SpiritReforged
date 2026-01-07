@@ -1,4 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Walls;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -173,6 +175,12 @@ public class Grub : ModNPC
 	{
 		int state = reader.ReadByte();
 		ChangeAnimationState((State)state);
+	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		int type = spawnInfo.SpawnTileType;
+		return ((type == ModContent.TileType<PaleHive>() || type == ModContent.TileType<GooeyHive>()) && Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].WallType == PaleHiveWall.UnsafeType) ? 0.2f : 0;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

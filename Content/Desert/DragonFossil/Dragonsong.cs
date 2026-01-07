@@ -21,7 +21,7 @@ public class Dragonsong : ModItem
 		};
 
 		public ref float Counter => ref Projectile.ai[0];
-		private Vector2 MuzzlePosition => Projectile.Center + Vector2.Normalize(Projectile.velocity) * 30;
+		private Vector2 MuzzlePosition => Projectile.Center + Vector2.Normalize(Projectile.velocity) * 36;
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<Dragonsong>().DisplayName;
 
@@ -77,18 +77,17 @@ public class Dragonsong : ModItem
 					if (!Main.dedServ)
 					{
 						SoundEngine.PlaySound(Fire with { Pitch = 0.2f, Volume = 0.5f }, position);
-						SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 0.8f, PitchVariance = 0.2f, Volume = 0.2f }, position);
+						SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = 0.8f, PitchVariance = 0.2f, Volume = 0.5f }, position);
 
 						for (int i = 0; i < 3; i++)
 						{
 							Vector2 velocity = (Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(2f, 5f)).RotatedByRandom(1);
-							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, velocity, Color.Yellow, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
+							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, velocity, Color.Gray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
 							{
 								TertiaryColor = Color.OrangeRed,
 								Pixellate = true,
 								PixelDivisor = 2,
-								Intensity = 3f,
-								ColorLerpExponent = 1.5f,
+								Intensity = 2f,
 								Layer = ParticleLayer.AbovePlayer
 							});
 						}
@@ -116,7 +115,8 @@ public class Dragonsong : ModItem
 
 			if (player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _))
 			{
-				Projectile.NewProjectile(source, position, velocity, type, Projectile.damage, Projectile.knockBack, player.whoAmI);
+				for (int i = 0; i < 5; i++)
+					Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1f)).RotatedByRandom(0.5f), type, Projectile.damage, Projectile.knockBack, player.whoAmI);
 			}
 			else
 			{
@@ -168,22 +168,21 @@ public class Dragonsong : ModItem
 			Projectile.friendly = true;
 			Projectile.extraUpdates = 1;
 			Projectile.penetrate = 3;
-			Projectile.timeLeft = 60;
+			Projectile.timeLeft = 50;
+			Projectile.scale = Main.rand.NextFloat(0.8f, 1.5f);
 		}
 
 		public override void AI()
 		{
 			if (Projectile.timeLeft < 10)
 				Projectile.scale *= 0.9f;
-			else if (Projectile.scale < 1.5f)
-				Projectile.scale += 0.025f;
 
 			if (!Main.dedServ && Main.rand.NextBool(15))
 				ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
 
-			Projectile.velocity *= 0.98f;
+			Projectile.velocity *= 0.985f;
 			Projectile.rotation = Projectile.velocity.ToRotation();
-			Projectile.UpdateFrame(32, 0);
+			Projectile.UpdateFrame(20, 0);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

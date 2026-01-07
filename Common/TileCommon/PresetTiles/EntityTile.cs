@@ -8,12 +8,11 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 public abstract class EntityTile<T> : ModTile where T : ModTileEntity
 {
 	/// <summary> The <b>template</b> instance of the associated tile entity. if instanced data is required, use <see cref="Entity"/> instead. </summary>
-	protected T entity;
+	public T LocalEntity => ModContent.GetInstance<T>();
 
-	public PlacementHook Hook => new(entity.Hook_AfterPlacement, -1, 0, false);
-	public override void SetStaticDefaults() => entity = ModContent.GetInstance<T>();
+	public PlacementHook Hook => new(LocalEntity.Hook_AfterPlacement, -1, 0, false);
 
-	/// <returns> Whether the multitile at the given position has a tile entity. </returns>
+	/// <summary> Gets the tile entity instance at the given position, null if none. </summary>
 	public T Entity(int i, int j)
 	{
 		if (Main.tile[i, j].TileType != Type)

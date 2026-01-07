@@ -1,8 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Desert.Tiles.Chains;
+using SpiritReforged.Content.Desert.Tiles.Furniture;
 using SpiritReforged.Content.Desert.Walls;
 using System.Linq;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
@@ -125,33 +128,6 @@ public static class ZigguratRooms
 			}
 		}
 	}
-
-	/*public class DigsiteRoom(Rectangle bounds, Point origin = default) : BasicRoom(bounds, origin)
-	{
-		public override void FinalPass()
-		{
-			base.FinalPass();
-
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				var tile = Main.tile[i, j];
-
-				if ((i == Bounds.Left + 3 || i == Bounds.Right - 4) && !tile.HasTile)
-					WorldGen.PlaceTile(i, j, TileID.WoodenBeam, true);
-
-				if (i == Bounds.Left + 4 && !tile.HasTile)
-					WorldGen.PlaceTile(i, j, TileID.Rope, true);
-
-				if (j == Bounds.Top + 5)
-					WorldGen.PlaceTile(i, j, TileID.Platforms, true);
-
-				if (WorldGen.SolidTile(i - 1, j + 1, true) && WorldGen.genRand.NextBool(15))
-					WorldGen.PlaceTile(i - 1, j, TileID.Campfire, true);
-
-				return false;
-			}, out _, Bounds);
-		}
-	}*/
 
 	public class EntranceRoom(Rectangle bounds, EntranceRoom.StyleID style, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
@@ -286,6 +262,38 @@ public static class ZigguratRooms
 		}
 	}
 
+	public class BurialRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
+	{
+		protected override void Initialize(out Point size) => size = new(9 * WorldGen.genRand.Next(1, 4), 8);
+
+		public override void Create()
+		{
+			CarveOut(out _);
+
+			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
+			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
+
+			int count = Bounds.Width / 9;
+			int y = Bounds.Bottom - 1;
+
+			for (int c = 0; c < count; c++)
+			{
+				int x = Bounds.Left + Bounds.Width / count / 2 + Bounds.Width / count * c;
+				Rectangle windowArea = new(x - 2, y - 6, 5, 6);
+
+				WorldUtils.Gen(new(windowArea.Left, windowArea.Bottom), new Shapes.Rectangle(windowArea.Width, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneSlab>()));
+
+				if (Placer.PlaceTile<DustyTomb>(x, y - 1).success)
+				{
+					WorldUtils.Gen(windowArea.Location, new Shapes.Rectangle(windowArea.Width, windowArea.Height), new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType));
+
+					PlaceColumn(new(x - 2, y - 1), 1);
+					PlaceColumn(new(x + 2, y - 1), 1);
+				}
+			}
+		}
+	}
+
 	public class TreasureRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
 		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5, 20);
@@ -309,15 +317,31 @@ public static class ZigguratRooms
 			PlaceColumn(new(Bounds.Right - 11, Bounds.Bottom - 4), 2);
 
 			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
+			WorldUtils.Gen(new(Bounds.Left + 10, Bounds.Top), new Shapes.Rectangle(Bounds.Right - Bounds.Left - 12, Bounds.Height), Actions.Chain(
+				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickCrackedWall>()), new Modifiers.Dither(0.4f), new Actions.PlaceWall(WallID.Sandstone)));
 			WorldUtils.Gen(new(Bounds.Right - 11, Bounds.Top), new Shapes.Rectangle(12, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
+
+			int chestX = Bounds.Center.X + WorldGen.genRand.Next(-2, 3);
+			int chestY = Bounds.Center.Y;
+			WorldMethods.FindGround(chestX, ref chestY);
+			LapisSet set = ModContent.GetInstance<LapisSet>();
+			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)set.GetTileType(FurnitureSet.Types.Chest), false, 0);
+
+			if (chestIndex != -1)
+				ZigguratBiome.PopulateChest(Main.chest[chestIndex]);
+
+			WeightedRandom<int> coinStashRandom = new(WorldGen.genRand);
+			coinStashRandom.Add(16, 0.1f);
+			coinStashRandom.Add(17, 0.5f);
+			coinStashRandom.Add(18, 0.4f);
 
 			//Fill with coin piles
 			WorldMethods.GenerateSquared((i, j) =>
 			{
 				float noise = Noise.NoiseSystem.PerlinStatic(i, j) + 2;
 
-				if (Bounds.Height - (j - Bounds.Top) < noise && !WorldGen.SolidTile3(i, j))
-					WorldGen.PlaceTile(i, j, TileID.GoldCoinPile, true);
+				if (!Main.tile[i, j].HasTile && WorldGen.SolidTile3(i, j + 1) && WorldGen.genRand.NextBool(3))
+					WorldGen.PlaceObject(i, j, WorldGen.genRand.NextBool(3) ? ModContent.TileType<ZigguratPiles2x2>() : ModContent.TileType<ZigguratPiles2x1>(), true, WorldGen.genRand.Next(2));
 
 				return false;
 			}, out _, Bounds);
