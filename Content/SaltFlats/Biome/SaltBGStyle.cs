@@ -28,6 +28,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
 				Rectangle bounds = GetBounds(slot);
 				int loops = BackgroundStyleHelper.BackgroundLoops;
+				int cloudLoops = loops + 1;
 
 				float screenCenterY = Main.screenPosition.Y + Main.screenHeight / 2f;
 				float dif = ((SaltFlatsSystem.SurfaceHeight == 0) ? (float)(Main.worldSurface * 0.67f) : SaltFlatsSystem.SurfaceHeight) * 16 - screenCenterY;
@@ -41,12 +42,12 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
 				float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
 
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, loops + 1);
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
 				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
 				int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
 				Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, - softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, loops + 1);
+				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, - softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
 				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
 				if (SaltFlatsSystem.nightSkyOpacity > 0f)

@@ -184,7 +184,7 @@ public class SaltBlockReflective : SaltBlock
 		}
 
 		/// <summary> Adapted from <see cref="Main.DrawSimpleSurfaceBackground"/>. </summary>
-		private static void DrawSimpleGradient(params Color[] colors)
+		public static void DrawSimpleGradient(params Color[] colors)
 		{
 			int samples = colors.Length - 1;
 
