@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.UI.BackpackInterface;
+using SpiritReforged.Common.UI.Misc;
 using System.IO;
 using Terraria.ModLoader.IO;
+using Terraria.UI;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
@@ -38,6 +40,21 @@ public abstract class BackpackItem : ModItem
 	public virtual void Defaults() { }
 	public override bool CanRightClick() => true;
 	public override bool ConsumeItem(Player player) => false; //Prevent RightClick from destroying the item
+
+	/// <summary> Controls which <see cref="BasicItemSlot"/>s are added by this backpack as UI elements. </summary>
+	/// <param name="number"> the index of <see cref="items"/>. </param>
+	/// <param name="position"> the default position of this element. </param>
+	public virtual BasicItemSlot SetupSlot(int number, Vector2 position)
+	{
+		var pixelDimension = StyleDimension.FromPixels(32);
+		return new PackInventorySlot(items, number)
+		{
+			Left = new StyleDimension(position.X, 0),
+			Top = new StyleDimension(position.Y, 0),
+			Width = pixelDimension,
+			Height = pixelDimension
+		};
+	}
 
 	public override void RightClick(Player player) //Attempt to swap this backpack into the backpack slot
 	{
