@@ -2849,3 +2849,8 @@ SaltTallGateItem: {
 	DisplayName: Salt Tall Gate
 	Tooltip: ""
 }
+
+EnlilStatueItem: {
+	DisplayName: Enlil Statue
+	Tooltip: Increases vertical mobility when interacted with
+}

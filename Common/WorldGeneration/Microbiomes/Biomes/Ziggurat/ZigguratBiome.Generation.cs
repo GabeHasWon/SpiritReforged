@@ -290,7 +290,7 @@ public partial class ZigguratBiome : Microbiome
 			}
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
-				decorator.Enqueue(TileID.CatBast, 1);
+				decorator.Enqueue(ModContent.TileType<EnlilStatue>(), 1);
 				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
 			}
 			else
