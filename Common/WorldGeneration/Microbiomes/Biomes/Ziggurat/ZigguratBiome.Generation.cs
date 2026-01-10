@@ -5,19 +5,18 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
-using SpiritReforged.Content.Desert.Bangle;
-using SpiritReforged.Content.Desert.GildedScarab;
-using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Tiles.Chains;
-using SpiritReforged.Content.Desert.Tiles.Furniture;
-using SpiritReforged.Content.Desert.Walls;
-using SpiritReforged.Content.Desert.Windshear;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Ziggurat;
+using SpiritReforged.Content.Ziggurat.Scarab;
+using SpiritReforged.Content.Ziggurat.Walls;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
+using SpiritReforged.Content.Ziggurat.Windshear;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 

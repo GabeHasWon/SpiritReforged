@@ -1,8 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
-using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.ButterflyStaff;
 using SpiritReforged.Content.Forest.Safekeeper;
@@ -10,6 +8,8 @@ using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 using static SpiritReforged.Common.ModCompat.CrossMod;

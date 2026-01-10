@@ -11,6 +11,7 @@ public class Thornball : ModItem
 		Item.ResearchUnlockCount = 99;
 		MoRHelper.AddElement(Item, MoRHelper.Nature, true);
 	}
+
 	public override void SetDefaults()
 	{
 		Item.DefaultToThrownWeapon(ModContent.ProjectileType<ThornballThrown>(), 20, 7, true);

@@ -15,7 +15,7 @@ public static class GenTypes
 		}
 	}
 
-	public class Send() : GenAction
+	public class Send : GenAction
 	{
 		public override bool Apply(Point origin, int x, int y, params object[] args)
 		{

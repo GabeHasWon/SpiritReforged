@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Content.Desert.Walls;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.WallCommon;

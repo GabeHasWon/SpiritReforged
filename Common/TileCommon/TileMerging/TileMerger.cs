@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles;
 
 namespace SpiritReforged.Common.TileCommon.TileMerging;
 

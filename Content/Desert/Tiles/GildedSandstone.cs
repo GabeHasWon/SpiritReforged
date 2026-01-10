@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Desert.Tiles;
 
 public class GildedSandstone : ModTile, IAutoloadTileItem
 {
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Sandstone, 20).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
