@@ -304,8 +304,10 @@ public partial class ZigguratBiome : Microbiome
 					}
 
 					return false;
-				}, 0)
-				.Enqueue(LaySpikeStrip, 1);
+				}, 0);
+
+				if (WorldGen.genRand.NextBool(3))
+					decorator.Enqueue(LaySpikeStrip, 1);
 			}
 
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
@@ -368,22 +370,21 @@ public partial class ZigguratBiome : Microbiome
 
 	private static bool LaySpikeStrip(int i, int j)
 	{
-		if (WorldGen.genRand.NextBool(50))
+		bool success = false;
+		int width = WorldGen.genRand.Next(3, 6);
+		int halfWidth = width / 2;
+		int y = j;
+
+		for (int x = i - halfWidth; x < i + halfWidth; x++)
 		{
-			int width = WorldGen.genRand.Next(3, 6);
-			int halfWidth = width / 2;
-			int y = j;
-
-			for (int x = i - halfWidth; x < i + halfWidth; x++)
+			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
 			{
-				if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
-					Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+				success = true;
 			}
-
-			return true;
 		}
 
-		return false;
+		return success;
 	}
 
 	/// <summary> Places a random lapis furniture tile, excluding chests. </summary>
