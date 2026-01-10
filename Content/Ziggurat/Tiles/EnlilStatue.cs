@@ -4,7 +4,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 
-namespace SpiritReforged.Content.Desert.Tiles;
+namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class EnlilStatue : ModTile, IAutoloadTileItem
 {
