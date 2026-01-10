@@ -3,7 +3,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
-using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
@@ -11,7 +10,12 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 {
 	public class EnlilBuff : ModBuff
 	{
-		public override void SetStaticDefaults() => Main.pvpBuff[Type] = true;
+		public override void SetStaticDefaults()
+		{
+			Main.buffNoTimeDisplay[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.jumpSpeedBoost += 0.8f;
@@ -20,7 +24,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		}
 	}
 
-	public static float GetOpacity(int x, int y) => 1f - Math.Clamp(Main.LocalPlayer.Distance(new Vector2(x, y).ToWorldCoordinates(16, 32)) / 100f, 0, 1);
+	public static float GetOpacity(int x, int y) => 1f - Math.Clamp(Main.LocalPlayer.Distance(new Vector2(x, y).ToWorldCoordinates(16, 32)) / 1200f, 0, 1);
 
 	public override void SetStaticDefaults()
 	{
@@ -45,20 +49,12 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		RegisterItemDrop(this.AutoItemType());
 	}
 
-	public override bool RightClick(int i, int j)
+	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		Main.LocalPlayer.AddBuff(ModContent.BuffType<EnlilBuff>(), 60 * 60 * 3);
-		SoundEngine.PlaySound(SoundID.AbigailUpgrade, new Vector2(i, j).ToWorldCoordinates());
+		if (!closer)
+			return;
 
-		return true;
-	}
-
-	public override void MouseOver(int i, int j)
-	{
-		Player player = Main.LocalPlayer;
-		player.cursorItemIconEnabled = true;
-		player.noThrow = 2;
-		player.cursorItemIconID = this.AutoItemType();
+		Main.LocalPlayer.AddBuff(ModContent.BuffType<EnlilBuff>(), 6);
 	}
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
