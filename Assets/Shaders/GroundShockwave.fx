@@ -62,24 +62,41 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     //combine 2 different samplings of noise
     float strength = (tex2D(textureSampler, texCoordsA).r + tex2D(textureSampler, texCoordsB).r) / 2;
-    strength = pow(strength, lerp(3, 0.33f, baseCoords.y));
-    
-    //fade out at horizontal edges
-    strength *= pow(1 - (2 * abs(baseCoords.x - 0.5f)), 0.125f);
+    strength = pow(strength, lerp(5, 0.15f, baseCoords.y));
     
     float flipYCoord = (1 - baseCoords.y);
+    float fadeXCoords = (direction > 0) ? baseCoords.x : (1 - baseCoords.x);
     
-    float fadeThreshold = progress - verticalFade;
-    if (direction > 0)
-        fadeThreshold *= baseCoords.x;
-    else if (direction < 0)
-        fadeThreshold *= (1 - baseCoords.x);
+    float fadeThreshold = pow(progress, lerp(0.25f, 3, fadeXCoords));
+    fadeThreshold *= pow(fadeXCoords, 0.7f);
+    float fadeDist = verticalFade * progress;
     
-    if (flipYCoord > fadeThreshold)
+    //fade out at top
+    if (flipYCoord > max(fadeThreshold - fadeDist, 0))
     {
-        float smoothStepFade = smoothstep(fadeThreshold, fadeThreshold + verticalFade, flipYCoord);
+        float smoothStepFade = smoothstep(max(fadeThreshold - fadeDist, 0), fadeThreshold, flipYCoord);
         strength *= 1 - smoothStepFade;
         strength = pow(strength, lerp(1, 2, smoothStepFade));
+    }
+    
+    //fade out at horizontal edge
+    if (fadeXCoords > 0.9f)
+    {
+        float smoothStepFade = smoothstep(0.9f, 1, fadeXCoords);
+        strength *= 1 - smoothStepFade;
+        strength = pow(strength, lerp(1, 2, smoothStepFade));
+    }
+    
+    //fade out from bottom
+    float bottomFadeThreshold = pow(max(progress - 0.75f, 0) * 4, lerp(0.25f, 2.5f, fadeXCoords));
+    strength = pow(strength, lerp(1, 4, bottomFadeThreshold));
+    
+    if (flipYCoord < bottomFadeThreshold)
+    {
+        float vertFade2 = lerp(verticalFade, 0, bottomFadeThreshold);
+        float smoothStepFade = 1 - smoothstep(max(bottomFadeThreshold - vertFade2, 0), bottomFadeThreshold, flipYCoord);
+        strength = pow(strength, lerp(1, 4, smoothStepFade));
+        strength *= 1 - smoothStepFade;
     }
     
     float colorStrength = pow(strength, 0.5f);
@@ -87,12 +104,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float4 finalColor = uColor;
     
-    if(strength < 0.5f)
+    if (strength < 0.5f)
         finalColor = lerp(uColor3, uColor2, colorStrength * 2);
     else
         finalColor = lerp(uColor2, uColor, (colorStrength - 0.5f) * 2);
     
-    return input.Color * finalColor * strength * finalIntensityMod;
+    return input.Color * finalColor * finalIntensityMod * pow(strength, 0.5f);
 }
 
 technique BasicColorDrawing

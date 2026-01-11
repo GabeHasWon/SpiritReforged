@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
@@ -34,18 +35,20 @@ public class DesertWind : ILoadable
 
 				int timeLeft = Main.rand.Next(250, 500);
 
-				var color = TileMaterial.FindMaterial(type).Color;
+				var color = Color.Beige * 0.6f;
 				var hsl = Main.rgbToHsl(color);
 
-				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, Main.hslToRgb(hsl with { X = hsl.X - 0.05f }) * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
+				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, Color.Beige * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
 				{
-					TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.05f, Y = 0.3f, Z = hsl.Z - 0.2f })
+					SecondaryColor = Color.SaddleBrown.Additive(20) * 0.3f,
+					TertiaryColor = Color.Transparent,
 				});
 
 				for (int x = 0; x < 3; x++)
 					ParticleHandler.SpawnParticle(new DesertCloud(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f), velocity * Main.rand.NextFloat(), color * 0.4f, Main.rand.NextFloat(0.8f, 1f), EaseFunction.EaseCircularOut, timeLeft)
 					{
-						TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f })
+						SecondaryColor = Color.SaddleBrown.Additive(20) * 0.2f,
+						TertiaryColor = Color.Transparent
 					});
 			}
 

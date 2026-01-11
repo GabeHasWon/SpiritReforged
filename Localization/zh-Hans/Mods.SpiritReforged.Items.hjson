@@ -2801,7 +2801,7 @@ CrackedSandstoneItem: {
 }
 
 StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary
+	// DisplayName: Stone Reliquary Item
 	// Tooltip: ""
 }
 
@@ -2821,9 +2821,9 @@ ScarabDebugSpawner: {
 }
 
 SaltskipperQuestFish: {
-	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
-	// CatchLocation: Salt Flats
-	// DisplayName: Saltskipper
+	// Description: Mods.SpiritReforged.Items.SaltskipperQuestFish.Description
+	// CatchLocation: Mods.SpiritReforged.Items.SaltskipperQuestFish.CatchLocation
+	// DisplayName: Saltskipper Quest Fish
 	// Tooltip: ""
 }
 
@@ -2852,10 +2852,5 @@ WindshearScepter: {
 
 SaltTallGateItem: {
 	// DisplayName: Salt Tall Gate
-	// Tooltip: ""
-}
-
-StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary Item
 	// Tooltip: ""
 }

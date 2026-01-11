@@ -61,8 +61,8 @@ public class ScarabeusBoss : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.width = 64;
-		NPC.height = 64;
+		NPC.width = 110;
+		NPC.height = 110;
 		NPC.value = 30000;
 		NPC.damage = 40;
 		NPC.defense = 10;
@@ -94,7 +94,7 @@ public class ScarabeusBoss : ModNPC
 
 	public override void AI()
 	{
-		NPC.TargetClosest(true);
+		NPC.TargetClosest(CurrentPattern != (float)AIPatterns.GroundedSlam);
 		Player player = Main.player[NPC.target];
 		_contactDmgEnabled = false;
 
@@ -180,13 +180,30 @@ public class ScarabeusBoss : ModNPC
 
 		AITimer++;
 
+		if(AITimer == 1 && !Main.dedServ)
+		{
+			if(Main.LocalPlayer.Distance(player.Center) < 800)
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitX, 1, 3, undergroundTime / 2));
+
+			for(int i = 0; i < 64; i++)
+			{
+				Vector2 scarabPos = player.Center;
+				bool backgroundScarab = Main.rand.NextBool();
+				int spawnDelayRange = (int)(undergroundTime * (backgroundScarab ? 0.25f : 0.66f));
+				int spawnDelayStatic = backgroundScarab ? 0 : undergroundTime / 3;
+				scarabPos += new Vector2(-Main.rand.NextFloat(900, 1400), Main.rand.NextFloat(400, 800)) * (backgroundScarab ? 0.8f : 1.2f);
+				ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.7f), 1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
+			}
+		}
+
 		if(AITimer == undergroundTime)
 		{
-			NPC.Center = player.Center;
+			NPC.Center = FindGroundFromPosition(player.Center);
 			NPC.noTileCollide = false;
 			NPC.noGravity = false;
-			NPC.velocity.Y = -6;
+			NPC.velocity.Y = -12;
 			_curFrame.Y = 0;
+			_inGround = false;
 		}
 
 		if(AITimer >= undergroundTime + roarTime)
@@ -352,7 +369,7 @@ public class ScarabeusBoss : ModNPC
 
 	private void GroundSlam(Player player)
 	{
-		const int windupTime = 120;
+		const int windupTime = 60;
 		const int restTime = 45;
 
 		NPC.spriteDirection = NPC.direction;
@@ -395,7 +412,7 @@ public class ScarabeusBoss : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
 		NPC.noGravity = true;
-		NPC.knockBackResist = 0.5f;
+		NPC.knockBackResist = 0f;
 		CheckPlatform(player);
 		_curFrame.Y = 1;
 
@@ -460,6 +477,7 @@ public class ScarabeusBoss : ModNPC
 				NPC.velocity.Y = 16;
 				NPC.rotation = MathHelper.PiOver2 * NPC.direction;
 				//
+
 			}
 
 			if(AITimer > 70 && NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
@@ -483,7 +501,7 @@ public class ScarabeusBoss : ModNPC
 				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15));
 			}
-
+			
 			NPC.velocity.Y += 0.38f;
 		}
 
@@ -535,21 +553,37 @@ public class ScarabeusBoss : ModNPC
 
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
-			NPC.velocity.X = (float)Math.Sin(AITimer * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(player.Center).X;
+
+			float desiredVel = (NPC.Center.X < player.Center.X) ? 16 : -16;
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
 			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
 
-			if(Main.rand.NextBool(4) && !Main.dedServ)
+			if(!Main.dedServ)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, Color.LightGoldenrodYellow, Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30) 
-				{ 
-					Pixellate = true, 
-					DissolveAmount = 1, 
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f,
-					Layer = ParticleLayer.BelowSolid
-				});
+				for (int i = 0; i < Main.rand.Next(4); i++)
+				{
+					Vector2 particlePos = NPC.Center - Vector2.UnitY * 32;
+					particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
+
+					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(6, 12);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, Color.Beige, Main.rand.NextFloat(0.06f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(20, 30))
+					{
+						Pixellate = true,
+						DissolveAmount = 1,
+						SecondaryColor = Color.SandyBrown,
+						TertiaryColor = Color.SaddleBrown,
+						PixelDivisor = 3,
+						ColorLerpExponent = 0.25f,
+						Layer = ParticleLayer.BelowSolid
+					});
+				}
+
+				if(Main.rand.NextBool(3))
+					Dust.NewDust(NPC.position - Vector2.UnitY * 8, NPC.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.5f, 0.9f));
+
+				if(Main.rand.NextBool(12))
+					BouncingTileWave(6, 4, 30, Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX + NPC.velocity / 2);
 			}
 		}
 
@@ -559,6 +593,8 @@ public class ScarabeusBoss : ModNPC
 			_inGround = false;
 			NPC.rotation = MathHelper.PiOver4;
 			NPC.velocity.Y = -16;
+
+			BouncingTileWave(12, 12f, 40);
 		}
 
 		else if (AITimer < undergroundTime + digStartTime + airTime)
@@ -707,7 +743,7 @@ public class ScarabeusBoss : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		NPC.noTileCollide = false;
 		NPC.noGravity = true; //for some godforsaken reason this also force caps an npc's downwards velocity to 10
-		NPC.knockBackResist = 0.2f;
+		NPC.knockBackResist = 0f;
 		CheckPlatform(player);
 		_curFrame.Y = 1;
 		_curFrame.X = 0;
@@ -1087,6 +1123,26 @@ public class ScarabeusBoss : ModNPC
 		return tile.ToWorldCoordinates();
 	}
 
+	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
+	{
+		for (int j = -1; j <= 1; j += 2)
+		{
+			BouncingTileWave(j, numTiles, maxHeight, totalTime, offset);
+		}
+
+		ParticleHandler.SpawnParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
+	}
+
+	private void BouncingTileWave(int direction, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
+	{
+		for (float i = 0; i < numTiles; i++)
+		{
+			float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));
+			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
+			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
+		}
+	}
+
 	private void CheckPlatform(Player player)
 	{
 		bool onplatform = true;
@@ -1134,10 +1190,32 @@ public class ScarabeusBoss : ModNPC
 		const int horizontalFrames = 2;
 		var frameSize = new Point(bossTex.Width / horizontalFrames, bossTex.Height / verticalFrames);
 
-		var drawFrame = new Rectangle(_curFrame.X * frameSize.X, _curFrame.Y * frameSize.Y, frameSize.X, frameSize.Y);
+		var drawFrame = new Rectangle(_curFrame.X * frameSize.X + 2, _curFrame.Y * frameSize.Y + 2, frameSize.X - 4, frameSize.Y - 2);
+		var frameOrigin = drawFrame.Size() / 2;
 		var flip = (NPC.direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		switch (_curFrame.Y)
+		{
+			case 0:
+				frameOrigin = new Vector2(68, 100);
+				break;
 
-		Main.EntitySpriteDraw(bossTex, NPC.Center - Main.screenPosition, drawFrame, NPC.GetAlpha(drawColor), NPC.rotation, drawFrame.Size() / 2, NPC.scale, flip);
+			case 1:
+				frameOrigin = new Vector2(50, 112);
+				break;
+
+			case 2:
+				frameOrigin = new Vector2(68, 100);
+				break;
+
+			case 3:
+				frameOrigin = new Vector2(68, 100);
+				break;
+		}
+
+		if (NPC.direction < 0)
+			frameOrigin.X = drawFrame.Width - frameOrigin.X;
+
+		Main.EntitySpriteDraw(bossTex, NPC.Center - Main.screenPosition, drawFrame, NPC.GetAlpha(drawColor), NPC.rotation, frameOrigin, NPC.scale, flip);
 
 		return false;
 	}

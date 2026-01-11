@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using System.Linq;
 
 namespace SpiritReforged.Common.Particle;
 
@@ -8,6 +9,7 @@ public enum ParticleLayer
 	AboveProjectile,
 	AboveNPC,
 	AbovePlayer,
+	AboveSolid,
 	BelowSolid,
 	BelowWall
 }
@@ -23,9 +25,10 @@ public enum ParticleDrawType
 
 public class ParticleHandler : ILoadable
 {
-	private static readonly int MaxParticlesAllowed = 500;
+	private static readonly int MaxParticlesAllowed = 1000;
 
 	internal static Particle[] Particles;
+	internal static IDictionary<Particle, int> QueuedParticles;
 	private static int nextVacantIndex;
 	private static int activeParticles;
 	private static Dictionary<Type, int> particleTypes;
@@ -37,6 +40,7 @@ public class ParticleHandler : ILoadable
 	public void Load(Mod mod)
 	{
 		Particles = new Particle[MaxParticlesAllowed];
+		QueuedParticles = new Dictionary<Particle, int>();
 		particleTypes = [];
 		particleTextures = [];
 
@@ -62,6 +66,7 @@ public class ParticleHandler : ILoadable
 	public void Unload()
 	{
 		Particles = null;
+		QueuedParticles = null;
 		particleTypes = null;
 		particleTextures = null;
 	}
@@ -86,6 +91,14 @@ public class ParticleHandler : ILoadable
 					nextVacantIndex = i;
 
 		activeParticles++;
+	}
+
+	public static void SpawnQueuedParticle(Particle particle, int delay)
+	{
+		if (Main.netMode == NetmodeID.Server || activeParticles == MaxParticlesAllowed)
+			return;
+
+		QueuedParticles.Add(particle, delay);
 	}
 
 	public static void SpawnParticle(int type, Vector2 position, Vector2 velocity, Vector2 origin = default, float rotation = 0f, float scale = 1f)
@@ -141,6 +154,20 @@ public class ParticleHandler : ILoadable
 			if (particle.TimeActive > particle.MaxTime && particle.MaxTime > 0)
 				particle.Kill();
 		}
+
+		var tempDict = new Dictionary<Particle, int>();
+		foreach(Particle key in QueuedParticles.Keys)
+		{
+			if (QueuedParticles[key] <= 0)
+			{
+				SpawnParticle(key);
+				continue;
+			}
+
+			tempDict.Add(key, QueuedParticles[key] - 1);
+		}
+
+		QueuedParticles = tempDict;
 	}
 
 	internal static void DrawAllParticles(SpriteBatch spriteBatch, ParticleLayer drawLayer) => DrawAllParticles(spriteBatch, (p) => p.DrawLayer == drawLayer);
