@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.SimpleEntity;
-using SpiritReforged.Content.Desert.Tiles.Chains;
+using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 
 namespace SpiritReforged.Common.ProjectileCommon;
 

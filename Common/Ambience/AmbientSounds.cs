@@ -40,7 +40,7 @@ internal class AmbientSounds : ModSystem
 		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
 		UpdateSingleSound(SavannaNightAmbience, .002f, savannaNight);
 
-		bool ziggurat = player.InModBiome<Content.Desert.Biome.ZigguratBiome>();
+		bool ziggurat = player.InModBiome<Content.Ziggurat.Biome.ZigguratBiome>();
 		UpdateSingleSound(ZigguratAmbience, 0.0002f, ziggurat);
 
 		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime && !savannaNight;

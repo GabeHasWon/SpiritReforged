@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Content.Desert.GildedScarab;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
 using Terraria.DataStructures;

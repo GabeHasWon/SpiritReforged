@@ -1,11 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Tiles.Chains;
-using SpiritReforged.Content.Desert.Tiles.Furniture;
-using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
+using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
