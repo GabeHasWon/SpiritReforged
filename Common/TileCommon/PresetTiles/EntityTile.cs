@@ -13,20 +13,27 @@ public abstract class EntityTile<T> : ModTile where T : ModTileEntity
 	public PlacementHook Hook => new(LocalEntity.Hook_AfterPlacement, -1, 0, false);
 
 	/// <summary> Gets the tile entity instance at the given position, null if none. </summary>
-	public T Entity(int i, int j)
+	public T Entity(int i, int j, bool findTopLeft = true)
 	{
 		if (Main.tile[i, j].TileType != Type)
 			return null;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
-		int id = ModContent.GetInstance<T>().Find(i, j);
+		if (findTopLeft)
+			TileExtensions.GetTopLeft(ref i, ref j);
 
+		int id = ModContent.GetInstance<T>().Find(i, j);
 		return (id == -1) ? null : (T)TileEntity.ByID[id];
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
 		if (!effectOnly && !fail && Entity(i, j) is T entity)
+			entity.Kill(i, j);
+	}
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		if (Entity(i, j) is T entity)
 			entity.Kill(i, j);
 	}
 }

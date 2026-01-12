@@ -223,7 +223,7 @@ internal class ZigguratMicropass : Micropass
 		Decorator decorator = new(decoArea);
 
 		if (WorldGen.genRand.NextBool(3))
-			decorator.Enqueue(AddFlag, 1);
+			decorator.Enqueue(AddFlagpole, 1);
 
 		decorator.Run();
 
@@ -277,8 +277,8 @@ internal class ZigguratMicropass : Micropass
 			WorldUtils.Gen(pillarPosition, new Shapes.Rectangle(1, area.Height), Actions.Chain(
 				new Modifiers.IsNotSolid(),
 				new Actions.PlaceTile((ushort)ModContent.TileType<RuinedSandstonePillar>()),
-				new Modifiers.RectangleMask(0, 1, 0, 5), //NEEDS TESTING
-				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()) //NEEDS TESTING
+				new Modifiers.RectangleMask(0, 1, 0, 5),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>())
 			));
 		}
 
@@ -373,9 +373,10 @@ internal class ZigguratMicropass : Micropass
 		}
 	}
 
-	private static bool AddFlag(int x, int y)
+	private static bool AddFlagpole(int x, int y)
 	{
 		int height = WorldGen.genRand.Next(1, 4);
+		int flagDepth = Math.Min(WorldGen.genRand.Next(0, 2), height - 1);
 		bool result = false;
 
 		if (Main.tile[x, y].WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
@@ -385,8 +386,13 @@ internal class ZigguratMicropass : Micropass
 				PlaceAttempt attempt = Placer.PlaceTile<FlagRing>(x, y - i);
 				result |= attempt.success;
 
-				if (i == height - 1)
-					attempt.PostPlacement(out FlagRing.FlagRingEntity _);
+				if (i == height - 1 - flagDepth)
+				{
+					Main.tile[x, y - i].TileFrameY = FlagRing.SlopeFrame;
+
+					FlagRing.FlagRingEntity entity = ModContent.GetInstance<FlagRing.FlagRingEntity>();
+					entity.Hook_AfterPlacement(x, y - i, entity.Type, 0, 0, 0);
+				}
 			}
 		}
 
