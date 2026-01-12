@@ -2856,6 +2856,6 @@ EnlilStatueItem: {
 }
 
 FlagRingItem: {
-	// DisplayName: Flag Ring Item
-	// Tooltip: ""
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
 }

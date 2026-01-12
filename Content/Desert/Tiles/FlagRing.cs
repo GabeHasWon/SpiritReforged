@@ -95,6 +95,8 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 	public const int SlopeFrame = 18;
 	public static readonly Asset<Texture2D> FlagTrail = DrawHelpers.RequestLocal<FlagRing>("FlagTrail", false);
 
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(5).AddRecipeGroup("CopperBars").AddIngredient(ItemID.Silk).AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
