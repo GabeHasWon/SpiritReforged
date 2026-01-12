@@ -128,7 +128,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		SaltFlatsSystem.SurfaceHeight = area.Center.Y - 3;
+		SaltFlatsSystem.SurfaceHeight = area.Center.Y - WorldGen.genRand.Next(-3, 9);
 		Decorate(area);
 
 		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
