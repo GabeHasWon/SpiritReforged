@@ -41,7 +41,7 @@ DuststormOtherworld: {
 
 Ziggurat: {
 	DisplayName: Ziggurat
-	Author: "{$By} {$Moonbird} {$Salvati}"
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
