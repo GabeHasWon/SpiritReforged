@@ -51,8 +51,9 @@ internal class ZigguratMicropass : Micropass
 			break;
 		}
 
-		int ruinsWidth = (int)(ZigguratBiome.Width / 1.5f);
-		WorldMethods.Generate(GenerateRuins, 3 * (Main.maxTilesX / WorldGen.WorldSizeSmallX), out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
+		int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
+		int ruinsWidth = (int)(ZigguratBiome.Width / 1.5f) * worldScalar;
+		WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
 	}
 
 	public static void CreateDunes(Rectangle area)
@@ -305,7 +306,8 @@ internal class ZigguratMicropass : Micropass
 
 		areas.RemoveAll(NotInSandOrSandstone);
 		int segments = areas.Count;
-		
+		Decorator decorator = new(result);
+
 		if (segments != 0)
 		{
 			var shapeData = Enumerable.Repeat(new ShapeData(), segments).ToArray();
@@ -337,11 +339,13 @@ internal class ZigguratMicropass : Micropass
 				));
 			}
 
-			int tombCount = Math.Min(segments, 2); //Add decorations
-			new Decorator(result)
-				.Enqueue(ModContent.TileType<DustyTomb>(), WorldGen.genRand.Next(tombCount))
-				.Run();
+			decorator.Enqueue(ModContent.TileType<DustyTomb>(), WorldGen.genRand.Next(Math.Min(segments, 2)));
 		}
+
+		if (WorldGen.genRand.NextBool())
+			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
+
+		decorator.Run();
 
 		static bool NotInSandOrSandstone(Rectangle rectangle)
 		{

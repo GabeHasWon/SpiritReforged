@@ -45,7 +45,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 				const int segments = 8;
 				int length = FlagTrail.Value.Height;
 
-				chain = new Chain(length / segments - 2, segments + 1, Position.ToWorldCoordinates(), new ChainPhysics(), stiffness: 2);
+				chain = new Chain(length / segments - 3, segments + 1, Position.ToWorldCoordinates(), new ChainPhysics(), stiffness: 2);
 			}
 
 			float wind = Main.WindForVisuals;

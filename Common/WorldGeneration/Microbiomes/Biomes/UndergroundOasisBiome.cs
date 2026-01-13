@@ -134,7 +134,7 @@ public class UndergroundOasisBiome : Microbiome
 		Decorate(origin, shape);
 		PlaceLightShafts(origin);
 
-		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 4);
+		//GenVars.structures.AddProtectedStructure(new Rectangle(origin.X - Size.X / 2, origin.Y - Size.Y / 2, Size.X, Size.Y), 2);
 
 		MainWaterItem = null!;
 		RandomItem = null!;

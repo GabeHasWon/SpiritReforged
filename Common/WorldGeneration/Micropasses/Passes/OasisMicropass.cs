@@ -81,6 +81,10 @@ internal class OasisMicropass : Micropass
 		if (WorldGen.SolidOrSlopedTile(x, y) || !WorldUtils.Find(new(x, y), new Searches.Down(30).Conditions(new Conditions.IsSolid()), out Point foundPos) || foundPos.Y - y < suspension)
 			return false;
 
+		Rectangle structureAreaEstimate = new(foundPos.X - 10, foundPos.Y - 20, 20, 20);
+		if (!GenVars.structures.CanPlace(structureAreaEstimate))
+			return false;
+
 		Rectangle region = CreateRuin(foundPos.X, foundPos.Y - 10, WorldGen.genRand.Next(2, 5));
 
 		GenVars.structures.AddProtectedStructure(region);
@@ -113,16 +117,12 @@ internal class OasisMicropass : Micropass
 				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickWall>())
 			).Output(shapeData[c]));
 
-			ShapeData windowData = new();
 			WorldUtils.Gen(a.Location, new ModShapes.All(shapeData[c]), Actions.Chain(
 				new Modifiers.RectangleMask(3, a.Width - 3 - 1, 0, a.Height - 3),
-				new Actions.PlaceWall((ushort)ModContent.WallType<BronzeGrate>())
-			).Output(windowData)); //Add windows
-
-			WorldUtils.Gen(a.Location, new ModShapes.All(windowData), Actions.Chain(
+				new Actions.PlaceWall((ushort)ModContent.WallType<BronzeGrate>()),
 				new Modifiers.Dither(WorldGen.genRand.NextFloat(0.9f)),
 				new Actions.ClearWall()
-			).Output(windowData)); //Add window dithering
+			)); //Add windows with dithering
 
 			for (int p = 0; p < 2; p++)
 			{
