@@ -122,9 +122,7 @@ internal class ZigguratMicropass : Micropass
 		Rectangle region = CreateRuin(foundPos.X, foundPos.Y - 10, WorldGen.genRand.Next(2, 5));
 		if (WorldGen.genRand.NextBool())
 		{
-			Point basementPos = new(foundPos.X, foundPos.Y + 30);
-			WorldMethods.FindGround(basementPos.X, ref basementPos.Y);
-
+			Point basementPos = new(foundPos.X, foundPos.Y);
 			CreateHiddenRuin(new(basementPos.X - 4, basementPos.Y, 8, 16));
 		} //Add a hidden room underground
 
@@ -192,9 +190,11 @@ internal class ZigguratMicropass : Micropass
 		{
 			Rectangle a = areas[c];
 			WorldUtils.Gen(a.Location, new ModShapes.OuterOutline(shapeData[c]), Actions.Chain(
-				new Modifiers.SkipWalls(skipWallTypes), 
-				new Modifiers.IsNotSolid(), 
-				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>())
+				new Modifiers.SkipWalls(skipWallTypes),
+				new Modifiers.IsNotSolid(),
+				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(0.8),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			));
 
 			for (int p = -1; p < a.Width + 1; p++)
@@ -211,13 +211,15 @@ internal class ZigguratMicropass : Micropass
 
 				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
 					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>());
+
+				result.Height = Math.Max(result.Height, lowestY - result.Top); //Adjust resulting bounds
 			}
 		}
 
 		foreach (Rectangle a in areas)
 		{
-			if (WorldGen.genRand.NextBool(3))
-				AddHole(a with { Height = 2 });
+			for (int c = 0; c < WorldGen.genRand.Next(3); c++)
+				AddHole(a);
 		} //Add random holes
 
 		result.Inflate(2, 2);
@@ -364,23 +366,36 @@ internal class ZigguratMicropass : Micropass
 		}
 	}
 
-	/// <summary> Adds a hole to a random location in <paramref name="area"/>. </summary>
-	private static void AddHole(Rectangle area)
+	/// <summary> Adds a hole to a random bordering location of <paramref name="area"/>. </summary>
+	public static void AddHole(Rectangle area)
 	{
 		ShapeData data = new();
+		int radius = area.Width * area.Height;
 		var position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+
+		for (int a = 0; a < 100; a++)
+		{
+			position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+			if (WorldGen.SolidOrSlopedTile(position.X, position.Y))
+				break;
+		}
 
 		WorldUtils.Gen(position, new Shapes.Circle(WorldGen.genRand.Next(1, 4)), Actions.Chain(
 			new Modifiers.SkipTiles(TileID.Sand),
+			new Modifiers.Blotches(),
 			new Actions.Clear(),
 			new Modifiers.Expand(WorldGen.genRand.Next(1, 3)),
 			new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
-			new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>()),
-			new Modifiers.Dither(),
-			new Actions.ClearTile()
+			new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 		).Output(data));
 
-		WorldUtils.Gen(position, new ModShapes.OuterOutline(data), new Actions.Custom(PlaceFloorSand));
+		WorldUtils.Gen(position, new ModShapes.OuterOutline(data), Actions.Chain(
+			new Actions.Custom(PlaceFloorSand),
+			new Modifiers.Expand(1),
+			new Modifiers.Blotches(),
+			new Modifiers.OnlyWalls(WallID.Sandstone),
+			new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)
+		));
 
 		static bool PlaceFloorSand(int x, int y, object args)
 		{

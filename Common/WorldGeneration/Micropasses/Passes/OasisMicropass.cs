@@ -61,15 +61,10 @@ internal class OasisMicropass : Micropass
 			rectangle.Inflate(100, 100);
 
 			biomesRectangles.Add(rectangle);
-			int ruinCount = WorldGen.genRand.Next(3);
+			int ruinCount = WorldGen.genRand.Next(4);
 
 			if (ruinCount > 0)
-			{
-				Rectangle ruinsArea = biome.Rectangle with { Y = biome.Rectangle.Y - 20 };
-				ruinsArea.Inflate(10, 10);
-
-				WorldMethods.Generate(GenerateRuins, ruinCount, out _, ruinsArea, 50);
-			}
+				WorldMethods.Generate(GenerateRuins, ruinCount, out _, rectangle, 50);
 		}
 	}
 
@@ -77,15 +72,17 @@ internal class OasisMicropass : Micropass
 	#region ruins
 	private static bool GenerateRuins(int x, int y)
 	{
-		const int suspension = 8; //Force the structure to be suspended a minimum number of tiles
-		if (WorldGen.SolidOrSlopedTile(x, y) || !WorldUtils.Find(new(x, y), new Searches.Down(30).Conditions(new Conditions.IsSolid()), out Point foundPos) || foundPos.Y - y < suspension)
+		const int suspension = 8; //Forces the structure to be suspended a minimum number of tiles
+		if (WorldGen.SolidOrSlopedTile(x, y) || !WorldUtils.Find(new(x, y), new Searches.Down(10).Conditions(new Conditions.IsSolid()), out Point foundPos))
 			return false;
 
+		foundPos.Y -= suspension;
 		Rectangle structureAreaEstimate = new(foundPos.X - 10, foundPos.Y - 20, 20, 20);
-		if (!GenVars.structures.CanPlace(structureAreaEstimate))
+
+		if (!GenVars.structures.CanPlace(structureAreaEstimate) || !GenVars.UndergroundDesertLocation.Contains(foundPos))
 			return false;
 
-		Rectangle region = CreateRuin(foundPos.X, foundPos.Y - 10, WorldGen.genRand.Next(2, 5));
+		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, WorldGen.genRand.Next(2, 5));
 
 		GenVars.structures.AddProtectedStructure(region);
 		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls));
@@ -138,8 +135,10 @@ internal class OasisMicropass : Micropass
 		{
 			Rectangle a = areas[c];
 			WorldUtils.Gen(a.Location, new ModShapes.OuterOutline(shapeData[c]), Actions.Chain(
-				new Modifiers.SkipWalls(skipWallTypes), 
-				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>())
+				new Modifiers.SkipWalls(skipWallTypes),
+				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Modifiers.Dither(0.8),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			));
 
 			for (int p = -1; p < a.Width + 1; p++)
@@ -148,16 +147,26 @@ internal class OasisMicropass : Micropass
 				int tileType = (p < 1 || p >= a.Width - 1) ? ModContent.TileType<RuinedSandstonePillar>() : -1;
 				int wallType = (p < 0 || p >= a.Width) ? WallID.None : RedSandstoneBrickCrackedWall.UnsafeType;
 				float ease = 1f - EaseBuilder.EaseSine.Ease((p + 1f) / (float)(a.Width + 1f));
+				int limitY = (tileType == -1) ? Math.Max((int)(ease * 15), 1) : 0;
 
-				DropPillar(p + a.X, a.Bottom + 1, tileType, wallType, out int lowestY, (tileType == -1) ? Math.Max((int)(ease * 15), 1) : 0);
+				DropPillar(p + a.X, a.Bottom + 1, tileType, wallType, out int lowestY, limitY);
 
 				Point basePosition = new(p + a.X, lowestY + 1);
 				Tile tile = Framing.GetTileSafely(basePosition);
+
+				if (!isTile && tile.WallType == WallID.None)
+					tile.WallType = (ushort)ModContent.WallType<BronzeGrate>();
 
 				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
 					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>());
 			}
 		}
+
+		foreach (Rectangle a in areas)
+		{
+			for (int c = 0; c < WorldGen.genRand.Next(3); c++)
+				ZigguratMicropass.AddHole(a);
+		} //Add random holes
 
 		result.Inflate(2, 2);
 		new Decorator(result)
