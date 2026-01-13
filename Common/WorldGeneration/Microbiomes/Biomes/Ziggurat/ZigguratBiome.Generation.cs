@@ -276,7 +276,7 @@ public partial class ZigguratBiome : Microbiome
 
 			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
-				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
+				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 7))
 				.Enqueue(PlacePot, 0);
 
 			if (WorldGen.genRand.NextBool(3))
