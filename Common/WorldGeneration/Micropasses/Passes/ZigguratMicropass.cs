@@ -5,6 +5,7 @@ using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
@@ -195,7 +196,7 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>()),
 				new Modifiers.Dither(0.8),
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
-			));
+			)); //Add tile outlines that are non-invasive to rooms
 
 			for (int p = -1; p < a.Width + 1; p++)
 			{
@@ -210,7 +211,7 @@ internal class ZigguratMicropass : Micropass
 				Tile tile = Framing.GetTileSafely(basePosition);
 
 				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
-					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>());
+					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>()); //Add pillar foundations
 
 				result.Height = Math.Max(result.Height, lowestY - result.Top); //Adjust resulting bounds
 			}
@@ -229,6 +230,7 @@ internal class ZigguratMicropass : Micropass
 			decorator.Enqueue(AddFlagpole, 1);
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
+		decorator.Enqueue(SprinklePots, segments * 2);
 		decorator.Run();
 
 		return result;
@@ -299,14 +301,14 @@ internal class ZigguratMicropass : Micropass
 			));
 		}
 
-		WorldUtils.Gen(area.Location, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
+		WorldUtils.Gen(area.Location, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>())); //Add tile outlines that are non-invasive to rooms
 		WorldUtils.Gen(area.Location + new Point(2, -2), new Shapes.Rectangle(area.Width - 4, 2), new Actions.ClearTile());
 
 		//Begin an optional extension of the room
 		CreateArray(new(area.Center.X - 4, area.Bottom - 8, 8, 8), GetRandomDirections(WorldGen.genRand.Next(5)), out List<Rectangle> areas);
-		Rectangle result = Maximize(areas);
-
 		areas.RemoveAll(NotInSandOrSandstone);
+
+		Rectangle result = Maximize(areas);
 		int segments = areas.Count;
 		Decorator decorator = new(result);
 
@@ -338,15 +340,18 @@ internal class ZigguratMicropass : Micropass
 				WorldUtils.Gen(a.Location, new ModShapes.OuterOutline(shapeData[c]), Actions.Chain(
 					new Modifiers.SkipWalls(skipWallTypes),
 					new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>())
-				));
+				)); //Add tile outlines that are non-invasive to rooms
 			}
 
-			decorator.Enqueue(ModContent.TileType<DustyTomb>(), WorldGen.genRand.Next(Math.Min(segments, 2)));
+			int tombCount = WorldGen.genRand.Next(Math.Min(segments, 2));
+			if (tombCount > 0)
+				decorator.Enqueue(ModContent.TileType<DustyTomb>(), tombCount);
 		}
 
 		if (WorldGen.genRand.NextBool())
 			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
 
+		decorator.Enqueue(SprinklePots, segments * 2);
 		decorator.Run();
 
 		static bool NotInSandOrSandstone(Rectangle rectangle)
@@ -366,19 +371,22 @@ internal class ZigguratMicropass : Micropass
 		}
 	}
 
-	/// <summary> Adds a hole to a random bordering location of <paramref name="area"/>. </summary>
-	public static void AddHole(Rectangle area)
+	/// <summary> Adds a hole to a random <b>SOLID</b> bordering location of <paramref name="area"/>. </summary>
+	public static bool AddHole(Rectangle area, int attempts = 100)
 	{
 		ShapeData data = new();
 		int radius = area.Width * area.Height;
-		var position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+		Point position = Point.Zero;
 
-		for (int a = 0; a < 100; a++)
+		for (int a = 0; a < attempts; a++)
 		{
 			position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
 			if (WorldGen.SolidOrSlopedTile(position.X, position.Y))
 				break;
 		}
+
+		if (!WorldGen.SolidOrSlopedTile(position.X, position.Y) || attempts < 1)
+			return false;
 
 		WorldUtils.Gen(position, new Shapes.Circle(WorldGen.genRand.Next(1, 4)), Actions.Chain(
 			new Modifiers.SkipTiles(TileID.Sand),
@@ -396,6 +404,8 @@ internal class ZigguratMicropass : Micropass
 			new Modifiers.OnlyWalls(WallID.Sandstone),
 			new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType)
 		));
+
+		return true;
 
 		static bool PlaceFloorSand(int x, int y, object args)
 		{
@@ -437,6 +447,21 @@ internal class ZigguratMicropass : Micropass
 		}
 
 		return result;
+	}
+
+	public static bool SprinklePots(int x, int y)
+	{
+		Tile tile = Main.tile[x, y];
+
+		if (tile.WallType != WallID.None && WorldGen.SolidTile(x, y + 1))
+		{
+			if (WorldGen.genRand.NextFloat() < 0.7f) //Add a branch for vanilla pots because traditional tile placement methods don't work
+				return WorldGen.PlacePot(x, y, 28, WorldGen.genRand.Next(34, 37));
+			else
+				return Placer.PlaceTile(x, y, ModContent.TileType<BiomePots>(), PotsMicropass.GetStyleRange(BiomePots.Style.Desert)).success;
+		}
+
+		return false;
 	}
 
 	private static bool SprinkleSandDunes(int x, int y)

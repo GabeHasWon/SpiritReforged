@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
@@ -170,6 +171,7 @@ internal class OasisMicropass : Micropass
 
 		result.Inflate(2, 2);
 		new Decorator(result)
+			.Enqueue(ZigguratMicropass.SprinklePots, segments * 2)
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
 			.Run();
 

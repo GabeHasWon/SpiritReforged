@@ -276,7 +276,7 @@ public partial class ZigguratBiome : Microbiome
 
 			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
-				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
+				.Enqueue(TileID.Banners, 1 / 20f, new(static () => WorldGen.genRand.Next(4, 8)))
 				.Enqueue(PlacePot, 0);
 
 			if (WorldGen.genRand.NextBool(3))
@@ -290,7 +290,7 @@ public partial class ZigguratBiome : Microbiome
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
 				decorator.Enqueue(ModContent.TileType<EnlilStatue>(), 1);
-				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, new(static () => WorldGen.genRand.Next(2)));
 			}
 			else
 			{
@@ -310,7 +310,7 @@ public partial class ZigguratBiome : Microbiome
 			}
 
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
-				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, WorldGen.genRand.Next(0, 2));
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, new(static () => WorldGen.genRand.Next(2)));
 
 			decorator.Run();
 		}
