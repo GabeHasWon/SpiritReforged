@@ -99,7 +99,8 @@ public abstract class Stactus : ModNPC, IDeathCount
 				segment = SegmentType.Head;
 
 			var source = (parent != -1) ? Main.npc[parent].GetSource_FromThis() : new EntitySource_SpawnNPC();
-			var npc = NPC.NewNPCDirect(source, NPC.Center, NPC.type, 0, parent, (int)segment, parameters.SpawnTime);
+			int startIndex = (segment == SegmentType.Head) ? 0 : 30; //Ensures the head is drawn after all other segments in a stack
+			var npc = NPC.NewNPCDirect(source, NPC.Center, NPC.type, startIndex, parent, (int)segment, parameters.SpawnTime);
 			npc.velocity.Y = (i + 1) * -1.5f;
 
 			if (npc.ModNPC is Stactus stactus)
@@ -138,6 +139,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 		NPC.value = 80;
 		NPC.Opacity = NPC.IsABestiaryIconDummy ? 1 : 0;
 		NPC.dontCountMe = true;
+		NPC.behindTiles = true;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
@@ -186,6 +188,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 			var origin = ParentNPC.Center - new Vector2(GetSine(NPC.whoAmI) * Math.Clamp((SpawnTime - parameters.SpawnTime - 50) / 30f, 0, 1), NPC.height);
 			bool belowOrigin = NPC.Center.Y > origin.Y;
 
+			NPC.gfxOffY = ParentNPC.gfxOffY;
 			NPC.Center = belowOrigin ? origin : NPC.Center;
 
 			if (belowOrigin && NPC.velocity.Y > 0)
@@ -205,7 +208,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 		}
 
-		NPC.behindTiles = Segment != SegmentType.Head;
+		NPC.noTileCollide = !(Segment == SegmentType.Base || falling);
 		_painTime = Math.Max(_painTime - 1, 0);
 	}
 
@@ -259,6 +262,8 @@ public abstract class Stactus : ModNPC, IDeathCount
 				NPC.velocity.Y = -3;
 				NPC.netUpdate = true;
 			}
+
+			Segment = SegmentType.Base;
 		}
 
 		Dust SpawnDust(Vector2 velocity, int alpha) //Spawns dust based on surface tile type

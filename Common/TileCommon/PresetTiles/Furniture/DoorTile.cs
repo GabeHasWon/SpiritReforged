@@ -1,10 +1,9 @@
-using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class DoorTile : FurnitureTile, IDrawPreview
+public abstract class DoorTile : FurnitureTile
 {
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 40);
 
@@ -70,38 +69,54 @@ public abstract class DoorTile : FurnitureTile, IDrawPreview
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
-			return false;
+		DrawWithFrameOffset(i, j, spriteBatch, new(18 * 4 - Main.tile[i, j].TileFrameX, 0));
+		return false;
+	}
 
-		var t = Main.tile[i, j];
-		var source = new Rectangle(18 * 4, t.TileFrameY, 16, (t.TileFrameY > 18) ? 18 : 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
+	{
+		frame.X += 18 * 4;
+		return true;
+	}
+
+	public static void DrawWithFrameOffset(int i, int j, SpriteBatch spriteBatch, Point offset)
+	{
+		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+			return;
+
+		Tile t = Main.tile[i, j];
+		int frameHeight = GetFrameHeight(t);
+
+		Rectangle source = new(offset.X + t.TileFrameX, offset.Y + t.TileFrameY, 16, frameHeight);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 		if (Main.InSmartCursorHighlightArea(i, j, out bool actuallySelected))
-			spriteBatch.Draw(TextureAssets.HighlightMask[Type].Value, position, source, 
-				actuallySelected ? Color.Yellow : Color.Gray, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-		return false;
+			spriteBatch.Draw(TextureAssets.HighlightMask[t.TileType].Value, position, source, actuallySelected ? Color.Yellow : Color.Gray, 0, Vector2.Zero, 1, default, 0);
 	}
 
-	public virtual void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)
+	private static int GetFrameHeight(Tile tile)
 	{
-		(int i, int j) = (op.Coordinates.X, op.Coordinates.Y);
-		var texture = TextureAssets.Tile[Type].Value;
-		var lightOffset = Lighting.LegacyEngine.Mode > 1 && Main.GameZoomTarget == 1 ? Vector2.Zero : Vector2.One * 12;
+		int result = 16;
 
-		for (int frameY = 0; frameY < 3; frameY++)
+		if (TileObjectData.GetTileData(tile) is TileObjectData data)
 		{
-			(int x, int y) = (i, j + frameY);
-			var color = ((op[0, frameY + 1] == 1) ? Color.White : Color.Red * .7f) * .5f;
+			int fullHeight = 0;
 
-			var source = new Rectangle(18 * 4, frameY * 18, 16, (frameY == 2) ? 18 : 16);
-			var drawPos = (new Vector2(x, y + 1) + lightOffset) * 16 - Main.screenPosition;
+			for (int c = 0; c < data.CoordinateHeights.Length; c++)
+			{
+				int height = data.CoordinateHeights[c];
 
-			spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+				fullHeight += height;
+				result = height;
+
+				if (fullHeight >= tile.TileFrameY)
+					break;
+			}
 		}
+
+		return result;
 	}
 }
 

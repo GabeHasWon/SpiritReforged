@@ -75,6 +75,7 @@ public abstract class SwungProjectile : ModProjectile
 		return value;
 	}
 
+	public override bool ShouldUpdatePosition() => false;
 	public override void CutTiles() => Projectile.PlotTileCut(config.Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
@@ -126,7 +127,7 @@ public abstract class SwungProjectile : ModProjectile
 	{
 		var texture = TextureAssets.Projectile[Type];
 		float visCounter = MathHelper.Min(Counter / (SwingTime / 2), 1);
-		var frame = texture.Frame(1, Main.projFrames[Type], 0, (int)(visCounter * (Main.projFrames[Type] - 1)), 0, -2);
+		var frame = texture.Frame(1, Main.projFrames[Type], 0, (int)(visCounter * (Main.projFrames[Type] - 1)), 0, (Main.projFrames[Type] > 1) ? -2 : 0);
 		var position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 
 		Main.EntitySpriteDraw(texture.Value, position, frame, color, rotation, origin, Projectile.scale, effects);

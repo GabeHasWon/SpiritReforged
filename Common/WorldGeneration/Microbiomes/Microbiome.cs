@@ -70,7 +70,7 @@ public sealed class MicrobiomeSystem : ModSystem
 
 	public static void AddDefinition(Microbiome biome) => BiomeByName.Add(biome.Name, biome);
 	/// <summary> Gets a cloned instance from <see cref="BiomeByName"/>. <para/>
-	/// Prefer <see cref="Microbiome.Create{T}(Point16)"/> as it automatically registers an instance to <see cref="Microbiomes"/>. </summary>
+	/// Prefer <see cref="Microbiome.Create"/> as it automatically registers an instance to <see cref="Microbiomes"/>. </summary>
 	public static T GetInstance<T>() where T : Microbiome => (T)BiomeByName[typeof(T).Name].Clone();
 
 	public override void ClearWorld() => Microbiomes.Clear();

@@ -5,9 +5,8 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Tiles.Amber;
-using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Jungle.Pineapple;
+using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Utilities;
@@ -16,7 +15,6 @@ using Terraria.WorldBuilding;
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 #nullable enable
-
 public class UndergroundOasisBiome : Microbiome
 {
 	private static WeightedRandom<int> MainWaterItem = null!;

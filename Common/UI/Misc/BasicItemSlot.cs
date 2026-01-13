@@ -1,11 +1,10 @@
-﻿using Terraria.UI;
-using Terraria.GameContent.UI.Elements;
-using Terraria.UI.Gamepad;
+﻿using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
 
 namespace SpiritReforged.Common.UI.Misc;
 
 /// <summary> Behaves like <see cref="UIItemSlot"/> but with improved ease of use. </summary>
-internal class BasicItemSlot : UIElement
+public class BasicItemSlot : UIElement
 {
 	public float Scale { get; private set; }
 
@@ -13,7 +12,7 @@ internal class BasicItemSlot : UIElement
 	protected readonly int _index;
 	protected readonly int _context;
 
-	public BasicItemSlot(Item item, int context = ItemSlot.Context.ChestItem, float scale = .85f)
+	public BasicItemSlot(Item item, int context = ItemSlot.Context.ChestItem, float scale = 0.85f)
 	{
 		_items = [item];
 		_index = 0;
@@ -23,7 +22,7 @@ internal class BasicItemSlot : UIElement
 		Width = Height = new StyleDimension(52 * Scale, 0f);
 	}
 
-	public BasicItemSlot(Item[] items, int index, int context = ItemSlot.Context.ChestItem, float scale = .85f)
+	public BasicItemSlot(Item[] items, int index, int context = ItemSlot.Context.ChestItem, float scale = 0.85f)
 	{
 		_items = items;
 		_index = index;

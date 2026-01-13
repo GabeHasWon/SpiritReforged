@@ -5,18 +5,18 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
-using SpiritReforged.Content.Desert.Bangle;
-using SpiritReforged.Content.Desert.GildedScarab;
-using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Tiles.Chains;
-using SpiritReforged.Content.Desert.Tiles.Furniture;
-using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Ziggurat;
+using SpiritReforged.Content.Ziggurat.Scarab;
+using SpiritReforged.Content.Ziggurat.Walls;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
+using SpiritReforged.Content.Ziggurat.Windshear;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -54,7 +54,6 @@ public partial class ZigguratBiome : Microbiome
 		for (int i = 2; i < bounds.Count; i++)
 			Infest(WorldGen.genRand.Next(3), bounds[i]);
 
-		SwitchWalls(bounds);
 		AddNeutralDecorations(rooms);
 
 		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
@@ -265,28 +264,6 @@ public partial class ZigguratBiome : Microbiome
 		}
 	}
 
-	private static void SwitchWalls(List<Rectangle> areas)
-	{
-		foreach (Rectangle area in areas)
-		{
-			WorldMethods.GenerateSquared((i, j) =>
-			{
-				if (!WorldGen.SolidTile(i, j))
-				{
-					Tile tile = Main.tile[i, j];
-
-					if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
-					{
-						int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
-						tile.WallType = (ushort)type; //Add unsafe walls to hallways
-					}
-				}
-
-				return false;
-			}, out _, area);
-		}
-	}
-
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
 		int maxChestCount = Main.maxTilesX / 2100;
@@ -299,7 +276,7 @@ public partial class ZigguratBiome : Microbiome
 
 			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
-				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 8))
+				.Enqueue(TileID.Banners, 1 / 20f, WorldGen.genRand.Next(4, 7))
 				.Enqueue(PlacePot, 0);
 
 			if (WorldGen.genRand.NextBool(3))
@@ -312,7 +289,7 @@ public partial class ZigguratBiome : Microbiome
 			}
 			else if (room is ZigguratRooms.TreasureRoom)
 			{
-				decorator.Enqueue(TileID.CatBast, 1);
+				decorator.Enqueue(ModContent.TileType<EnlilStatue>(), 1);
 				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1, WorldGen.genRand.Next(2));
 			}
 			else
@@ -326,8 +303,10 @@ public partial class ZigguratBiome : Microbiome
 					}
 
 					return false;
-				}, 0)
-				.Enqueue(LaySpikeStrip, 1);
+				}, 0);
+
+				if (WorldGen.genRand.NextBool(3))
+					decorator.Enqueue(LaySpikeStrip, 1);
 			}
 
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
@@ -340,20 +319,41 @@ public partial class ZigguratBiome : Microbiome
 		{
 			Point16 pos = furniturePositions.Dequeue();
 
-			if (PlaceFurniture(pos.X, pos.Y, maxChestCount > 0 ? FurnitureSet.Types.Chest : FurnitureSet.Types.None))
+			if (maxChestCount > 0)
+			{
+				PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest);
 				maxChestCount--;
+			}
+			else
+			{
+				PlaceRandomFurniture(pos.X, pos.Y);
+			}
 		}
 	}
 
 	private static bool PlaceCenser(int i, int j)
 	{
-		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+		int space = GetSpace(i, j, 7);
+		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && space > 2 && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 		{
-			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), (byte)WorldGen.genRand.Next(3, 7)));
+			byte segments = (byte)Math.Min(WorldGen.genRand.Next(3, 7), space - 1);
+			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), segments));
 			return true;
 		}
 
 		return false;
+
+		static int GetSpace(int x, int y, int limit = 0)
+		{
+			int result = 1;
+			while (WorldGen.InWorld(x, y, 20) && !WorldGen.SolidOrSlopedTile(x, y) && (limit == 0 || result < limit))
+			{
+				y++;
+				result++;
+			}
+
+			return result;
+		}
 	}
 
 	private static bool PlacePot(int i, int j)
@@ -383,38 +383,47 @@ public partial class ZigguratBiome : Microbiome
 
 	private static bool LaySpikeStrip(int i, int j)
 	{
-		if (WorldGen.genRand.NextBool(50))
+		bool success = false;
+		int width = WorldGen.genRand.Next(3, 6);
+		int halfWidth = width / 2;
+		int y = j;
+
+		for (int x = i - halfWidth; x < i + halfWidth; x++)
 		{
-			int width = WorldGen.genRand.Next(3, 6);
-			int halfWidth = width / 2;
-			int y = j;
-
-			for (int x = i - halfWidth; x < i + halfWidth; x++)
+			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
 			{
-				if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
-					Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
+				success = true;
 			}
-
-			return true;
 		}
 
-		return false;
+		return success;
 	}
 
-	private static bool PlaceFurniture(int i, int j, FurnitureSet.Types forceType = FurnitureSet.Types.None)
+	/// <summary> Places a random lapis furniture tile, excluding chests. </summary>
+	/// <param name="i"> The X coordinate. </param>
+	/// <param name="j"> The Y coordinate. </param>
+	/// <returns> Whether the tile was successfully placed. </returns>
+	public static bool PlaceRandomFurniture(int i, int j)
 	{
 		LapisSet set = ModContent.GetInstance<LapisSet>();
-		FurnitureSet.Types type;
 
-		if (forceType == FurnitureSet.Types.None)
+		while (true)
 		{
-			do
-			{
-				type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
-			} while (type is FurnitureSet.Types.Chest or FurnitureSet.Types.None);
+			FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+
+			if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out _))
+				return PlaceFurniture(i, j, type);
 		}
-		else
-			type = forceType;
+	}
+
+	/// <summary> Places a lapis furniture item at the provided coordinates. </summary>
+	/// <param name="i"> The X coordinate. </param>
+	/// <param name="j"> The Y coordinate. </param>
+	/// <param name="type"> The furniture type to place. </param>
+	public static bool PlaceFurniture(int i, int j, FurnitureSet.Types type)
+	{
+		LapisSet set = ModContent.GetInstance<LapisSet>();
 
 		if (set.TryGetTileType(type, out int tileType))
 		{
@@ -466,7 +475,7 @@ public partial class ZigguratBiome : Microbiome
 
 	internal static void PopulateChest(Chest chest)
 	{
-		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<BangleOfStrength>()];
+		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
 		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
 			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
 		
@@ -671,6 +680,12 @@ public partial class ZigguratBiome : Microbiome
 					}
 				}
 
+				int width = Math.Abs(startLink.Location.X - endLink.Location.X);
+				int height = Math.Abs(startLink.Location.Y - endLink.Location.Y);
+
+				if (width <= 10 && height <= 2 && WorldGen.genRand.NextBool()) //Add foreground walls
+					WorldMethods.GenerateSquared(AddForegroundWalls, out _, new(Math.Min(start.X, end.X) - 2, Math.Min(start.Y, end.Y) - 3, width + 4, height + 6));
+
 				return true;
 			}
 		}
@@ -720,11 +735,38 @@ public partial class ZigguratBiome : Microbiome
 
 			WorldUtils.Gen(origin, new Shapes.Rectangle(width, width), Actions.Chain(
 				new Actions.ClearTile(true).Output(shape),
-				new Actions.SetLiquid(0, 0)
+				new Actions.SetLiquid(0, 0),
+				new Actions.Custom(BlockOutWalls)
 			));
 
 			WorldUtils.Gen(origin, new ModShapes.OuterOutline(shape), new Actions.Smooth());
 		}
+	}
+
+	private static bool BlockOutWalls(int i, int j, object args)
+	{
+		Tile tile = Main.tile[i, j];
+		if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
+		{
+			int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
+			tile.WallType = (ushort)type; //Add unsafe walls to hallways
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool AddForegroundWalls(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		if (!TotalRooms.Any(x => x.Intersects(new Point(i, j), 2)))
+		{
+			tile.WallType = (ushort)ModContent.WallType<RedSandstoneBrickForegroundWall>(); //Add unsafe walls to hallways
+			return true;
+		}
+
+		return false;
 	}
 
 	/// <summary> Clears red sandstone bricks between <paramref name="start"/> and <paramref name="end"/> according to <paramref name="carve"/> and <paramref name="width"/>. </summary>

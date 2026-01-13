@@ -203,7 +203,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		static void AddObject(int x, int y, bool condition, ref List<Point> list) //Improves readability
 		{
-			if (condition)
+			if (condition && IsSafe(Main.tile[x, y]))
 				list.Add(new(x, y));
 		}
 	}
