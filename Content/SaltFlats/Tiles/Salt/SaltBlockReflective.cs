@@ -65,7 +65,7 @@ public class SaltBlockReflective : SaltBlock
 			spriteBatch.BeginDefault();
 
 			Main.tileBatch.Begin();
-			DrawSimpleGradient(new Color(129, 118, 225) * 0.8f, new(147, 160, 255), new(210, 190, 220));
+			DrawSimpleGradient(new Color(14, 24, 227), new(177, 192, 240), new(79, 108, 255)); 
 			Main.tileBatch.End();
 
 			foreach (Cloud c in Main.cloud)
@@ -73,7 +73,7 @@ public class SaltBlockReflective : SaltBlock
 				if (c.active)
 				{
 					float offset = c.position.Y * (Main.screenHeight / 600f) + 200f;
-					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.3f, offset);
+					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.75f, offset);
 				}
 			}
 
