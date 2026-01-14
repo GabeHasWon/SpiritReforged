@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Ziggurat.Biome;
-using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;

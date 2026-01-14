@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.Desert.Biome;
 using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Ziggurat.Biome;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;

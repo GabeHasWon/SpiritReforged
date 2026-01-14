@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Walls;
+﻿using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Desert.Biome;
+namespace SpiritReforged.Content.Ziggurat.Biome;
 
 internal class EditZigguratSpawnsNPC : GlobalNPC
 {
@@ -32,15 +32,13 @@ internal class EditZigguratSpawnsNPC : GlobalNPC
 		Point16 bottomRight = rectangle.BottomRight().ToTileCoordinates16();
 
 		for (int i = topLeft.X - 3; i < bottomRight.X + 4; ++i)
-		{
 			for (int j = topLeft.Y - 3; j < bottomRight.Y + 4; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
-				if ((TileTypes.Contains(tile.TileType) && tile.HasTile) || WallTypes.Contains(tile.WallType))
+				if (TileTypes.Contains(tile.TileType) && tile.HasTile || WallTypes.Contains(tile.WallType))
 					return true;
 			}
-		}
 
 		return false;
 	}
