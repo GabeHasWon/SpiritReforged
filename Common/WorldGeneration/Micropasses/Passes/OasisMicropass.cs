@@ -86,8 +86,7 @@ internal class OasisMicropass : Micropass
 		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, WorldGen.genRand.Next(2, 5));
 
 		GenVars.structures.AddProtectedStructure(region);
-		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls));
-		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Piles));
+		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));
 
 		return true;
 	}

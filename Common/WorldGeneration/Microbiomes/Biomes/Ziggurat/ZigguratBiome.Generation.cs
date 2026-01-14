@@ -58,10 +58,7 @@ public partial class ZigguratBiome : Microbiome
 
 		WorldDetours.Regions.Add(new(bounds[0], WorldDetours.Context.Walls));
 		foreach (var b in bounds)
-		{
-			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots));
-			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Piles));
-		}
+			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots | WorldDetours.Context.Piles));
 
 		TotalBounds = null;
 		TotalRooms = null;

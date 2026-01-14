@@ -229,8 +229,7 @@ internal class SavannaEcotone : EcotoneBase
 		SavannaArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
 		SavannaArea.Inflate(2, 2);
 
-		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava));
-		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Piles));
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava | WorldDetours.Context.Piles));
 
 		static int HighestSurfacePoint(int x)
 		{

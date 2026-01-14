@@ -124,12 +124,13 @@ internal class ZigguratMicropass : Micropass
 		if (WorldGen.genRand.NextBool())
 		{
 			Point basementPos = new(foundPos.X, foundPos.Y);
-			CreateHiddenRuin(new(basementPos.X - 4, basementPos.Y, 8, 16));
+			Rectangle hiddenRegion = CreateHiddenRuin(new(basementPos.X - 4, basementPos.Y, 8, 16));
+
+			WorldDetours.Regions.Add(new(hiddenRegion, WorldDetours.Context.Lava | WorldDetours.Context.Piles));
 		} //Add a hidden room underground
 
 		GenVars.structures.AddProtectedStructure(region);
-		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls));
-		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Piles));
+		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));
 
 		for (int c = 0; c < WorldGen.genRand.Next(1, 6); c++)
 		{
@@ -275,7 +276,7 @@ internal class ZigguratMicropass : Micropass
 		}
 	}
 
-	public static void CreateHiddenRuin(Rectangle area)
+	public static Rectangle CreateHiddenRuin(Rectangle area)
 	{
 		ShapeData data = new(); //Create the initial secret room
 		WorldUtils.Gen(area.Location, new Shapes.Rectangle(area.Width, area.Height), Actions.Chain(
@@ -353,6 +354,8 @@ internal class ZigguratMicropass : Micropass
 
 		decorator.Enqueue(SprinklePots, segments * 2);
 		decorator.Run();
+
+		return result;
 
 		static bool NotInSandOrSandstone(Rectangle rectangle)
 		{
