@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
@@ -34,7 +35,14 @@ internal class DecrepitMummy : ModNPC
 	public float LifeProgress => 1f - NPC.life / (float)NPC.lifeMax;
 	public ref float Style => ref NPC.ai[0];
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 15;
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 15;
+		PersistentNPCSystem.PersistentTypes.Add(Type);
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+	}
 
 	public override void SetDefaults()
 	{
