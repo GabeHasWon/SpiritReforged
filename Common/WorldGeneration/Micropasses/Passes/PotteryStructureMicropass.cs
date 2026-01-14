@@ -33,7 +33,7 @@ internal class PotteryStructureMicropass : Micropass
 		for (int t = 0; t < maxTries; t++)
 		{
 			int x = WorldGen.genRand.Next(xPadding, Main.maxTilesX - xPadding);
-			int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, Main.UnderworldLayer - 20);
+			int y = WorldGen.genRand.Next((int)Main.worldSurface + 80, Main.UnderworldLayer - 20);
 
 			WorldMethods.FindGround(x, ref y);
 

@@ -22,6 +22,7 @@ public class ScarabAltar : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(124, 24, 28), CreateMapEntryName());
 		DustType = -1;
+		MinPick = 55;
 	}
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)

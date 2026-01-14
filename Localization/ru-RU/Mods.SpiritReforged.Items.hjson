@@ -2854,3 +2854,8 @@ EnlilStatueItem: {
 	// DisplayName: Enlil Statue
 	// Tooltip: Increases vertical mobility when interacted with
 }
+
+FlagRingItem: {
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
+}
