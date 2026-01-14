@@ -13,6 +13,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
@@ -452,6 +453,12 @@ public abstract class Stactus : ModNPC, IDeathCount
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("CactusFruit", out ModItem cactusFruit))
+				npcLoot.AddCommon(cactusFruit.Type, 10);
+		}
 
 		LeadingConditionRule rule = new(new IsPrickly());
 		rule.OnSuccess(ItemDropRule.Common(ItemID.PinkPricklyPear));
