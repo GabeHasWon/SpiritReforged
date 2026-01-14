@@ -228,7 +228,7 @@ internal class ZigguratMicropass : Micropass
 		Decorator decorator = new(result); //Add decorations
 
 		if (WorldGen.genRand.NextBool())
-			decorator.Enqueue(AddFlagpole, 1);
+			decorator.Enqueue(AddFlagpole, WorldGen.genRand.Next(1, 3));
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
 		decorator.Enqueue(SprinklePots, segments * 2);
@@ -428,7 +428,7 @@ internal class ZigguratMicropass : Micropass
 
 	private static bool AddFlagpole(int x, int y)
 	{
-		int height = WorldGen.genRand.Next(1, 4);
+		int height = WorldGen.genRand.Next(2, 6);
 		int flagDepth = Math.Min(WorldGen.genRand.Next(0, 2), height - 1);
 		bool result = false;
 
