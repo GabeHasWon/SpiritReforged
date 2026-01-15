@@ -2859,3 +2859,18 @@ FlagRingItem: {
 	DisplayName: Flagpole
 	Tooltip: Can be hammered to add flags
 }
+
+CobbledBrickWallItem: {
+	DisplayName: Cobbled Brick Wall
+	Tooltip: ""
+}
+
+CobbledBrickItem: {
+	DisplayName: Cobbled Brick
+	Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	DisplayName: Bronze Grate Door
+	Tooltip: ""
+}
