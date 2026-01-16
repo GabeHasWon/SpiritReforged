@@ -13,6 +13,11 @@ public class ZigguratPiles2x1 : ModTile, IAutoloadRubble
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+		Main.tileNoFail[Type] = true;
+
+		TileID.Sets.ReplaceTileBreakUp[Type] = true;
+		TileID.Sets.DoesntGetReplacedWithTileReplacement[Type] = false;
+		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];

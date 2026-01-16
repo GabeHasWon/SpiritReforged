@@ -13,6 +13,11 @@ public class ZigguratPiles2x2 : ModTile, IAutoloadRubble
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+		Main.tileNoFail[Type] = true;
+
+		TileID.Sets.ReplaceTileBreakUp[Type] = true;
+		TileID.Sets.DoesntGetReplacedWithTileReplacement[Type] = false;
+		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(0, 1);
@@ -23,6 +28,8 @@ public class ZigguratPiles2x2 : ModTile, IAutoloadRubble
 		AddMapEntry(new Color(191, 138, 67));
 		DustType = DustID.Gold;
 	}
+
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem) => fail = false;
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{

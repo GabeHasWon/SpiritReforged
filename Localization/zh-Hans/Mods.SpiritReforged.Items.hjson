@@ -2861,16 +2861,16 @@ FlagRingItem: {
 }
 
 CobbledBrickWallItem: {
-	// DisplayName: Cobbled Brick Wall Item
+	// DisplayName: Cobbled Brick Wall
 	// Tooltip: ""
 }
 
 CobbledBrickItem: {
-	// DisplayName: Cobbled Brick Item
+	// DisplayName: Cobbled Brick
 	// Tooltip: ""
 }
 
 BronzeGrateDoorItem: {
-	// DisplayName: Bronze Grate Door Item
+	// DisplayName: Bronze Grate Door
 	// Tooltip: ""
 }
