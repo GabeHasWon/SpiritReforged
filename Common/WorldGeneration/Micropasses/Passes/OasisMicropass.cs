@@ -3,7 +3,6 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
@@ -109,14 +108,14 @@ internal class OasisMicropass : Micropass
 			Rectangle a = areas[c];
 			WorldUtils.Gen(a.Location, new Shapes.Rectangle(a.Width, a.Height), Actions.Chain(
 				new Actions.ClearTile(), 
-				new Actions.PlaceWall((ushort)ModContent.WallType<PolishedSandstoneWall>()), 
+				new Actions.PlaceWall((ushort)PolishedSandstoneWall.UnsafeType), 
 				new Modifiers.RectangleMask(2, a.Width - 2 - 1, 0, a.Height), 
-				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickWall>())
+				new Actions.PlaceWall((ushort)RedSandstoneBrickWall.UnsafeType)
 			).Output(shapeData[c]));
 
 			WorldUtils.Gen(a.Location, new ModShapes.All(shapeData[c]), Actions.Chain(
 				new Modifiers.RectangleMask(3, a.Width - 3 - 1, 0, a.Height - 3),
-				new Actions.PlaceWall((ushort)ModContent.WallType<BronzeGrate>()),
+				new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType),
 				new Modifiers.Dither(WorldGen.genRand.NextFloat(0.9f)),
 				new Actions.ClearWall()
 			)); //Add windows with dithering
@@ -139,7 +138,7 @@ internal class OasisMicropass : Micropass
 				new Actions.SetTile((ushort)ModContent.TileType<RedSandstoneBrick>()),
 				new Modifiers.Dither(0.8),
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
-			));
+			)); //Add tile outlines that are non-invasive to rooms
 
 			for (int p = -1; p < a.Width + 1; p++)
 			{
@@ -155,18 +154,12 @@ internal class OasisMicropass : Micropass
 				Tile tile = Framing.GetTileSafely(basePosition);
 
 				if (!isTile && tile.WallType == WallID.None)
-					tile.WallType = (ushort)ModContent.WallType<BronzeGrate>();
+					tile.WallType = (ushort)BronzeGrate.UnsafeType;
 
 				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
 					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>());
 			}
 		}
-
-		foreach (Rectangle a in areas)
-		{
-			for (int c = 0; c < WorldGen.genRand.Next(3); c++)
-				ZigguratMicropass.AddHole(a);
-		} //Add random holes
 
 		result.Inflate(2, 2);
 		new Decorator(result)
