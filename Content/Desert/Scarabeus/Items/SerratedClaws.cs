@@ -8,6 +8,9 @@ public class SerratedClaws : ModItem
 	public class SerratedClawsPlayer : ModPlayer
 	{
 		internal float animationTimer = 0;
+		internal bool hasClaws = false;
+
+		public override void ResetEffects() => hasClaws = false;
 
 		public override void PostUpdateEquips()
 		{
@@ -18,6 +21,15 @@ public class SerratedClaws : ModItem
 			}
 
 			animationTimer += 0.6f;
+		}
+
+		public override void FrameEffects() //This way, players can be seen wearing backpacks in the selection screen
+		{
+			if (hasClaws)
+			{
+				Player.handon = EquipLoader.GetEquipSlot(Mod, HandsOnName, EquipType.HandsOn);
+				Player.handoff = EquipLoader.GetEquipSlot(Mod, HandsOffName, EquipType.HandsOff);
+			}
 		}
 	}
 
@@ -66,10 +78,19 @@ public class SerratedClaws : ModItem
 		}
 	}
 
+	public const string HandsOnName = "SpiritReforged:SerratedHandsOn";
+	public const string HandsOffName = "SpiritReforged:SerratedHandsOff";
+
+	public override void Load()
+	{
+		EquipLoader.AddEquipTexture(Mod, Texture + "_Hands", EquipType.HandsOn, this, HandsOnName);
+		EquipLoader.AddEquipTexture(Mod, Texture + "_Hands", EquipType.HandsOff, this, HandsOffName);
+	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 3;
-		Item.Size = new Vector2(32, 28);
+		Item.Size = new Vector2(34, 28);
 		Item.useTime = Item.useAnimation = 6;
 		Item.knockBack = 0.2f;
 		Item.DamageType = DamageClass.Melee;
@@ -94,11 +115,13 @@ public class SerratedClaws : ModItem
 
 	public override void HoldItem(Player player)
 	{
+		player.GetModPlayer<SerratedClawsPlayer>().hasClaws = true;
+
 		if (!player.channel)
 			return;
 
 		float rotation = player.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
-		float animationTimer = player.GetModPlayer<SerratedClawsPlayer>().animationTimer * 1.25f;
+		float animationTimer = player.GetModPlayer<SerratedClawsPlayer>().animationTimer * 0.9f;
 		
 		player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation + MathF.Sin(animationTimer) * 0.65f);
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation + MathF.Cos(animationTimer) * 0.65f);
