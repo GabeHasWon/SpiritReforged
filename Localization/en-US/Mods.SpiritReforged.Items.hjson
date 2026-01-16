@@ -2857,7 +2857,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Serrated Claws
-  Tooltip: ""
+	Tooltip: ""
 }
 
 FlagRingItem: {

@@ -163,7 +163,7 @@ internal class OasisMicropass : Micropass
 
 		result.Inflate(2, 2);
 		new Decorator(result)
-			.Enqueue(ZigguratMicropass.SprinklePots, segments * 2)
+			.Enqueue(ZigguratMicropass.PlacePot, segments * 2)
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
 			.Run();
 
