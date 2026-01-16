@@ -34,6 +34,7 @@ public class SilkTop : ModItem
 	public override void AddRecipes() => CreateRecipe()
 		.AddIngredient(ItemID.Silk, 10)
 		.AddRecipeGroup("GoldBars", 3)
+		.AddIngredient(ItemID.Amber, 5)
 		.AddTile(TileID.Anvils)
 		.Register();
 }

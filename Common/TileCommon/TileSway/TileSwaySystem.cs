@@ -5,6 +5,7 @@ namespace SpiritReforged.Common.TileCommon.TileSway;
 
 internal class TileSwaySystem : ModSystem
 {
+	public static event Action OnUpdateTileDrawing;
 	private static readonly Dictionary<int, int> TileSwayTypes = [];
 
 	public static double TreeWindCounter { get; private set; }
@@ -40,6 +41,8 @@ internal class TileSwaySystem : ModSystem
 			TreeWindCounter += 0.0041666666666666666 + 0.0041666666666666666 * num * 2.0;
 			GrassWindCounter += 0.0055555555555555558 + 0.0055555555555555558 * num * 4.0;
 			SunflowerWindCounter += 0.002380952380952 + 0.0023809523809523810 * num * 5.0;
+
+			OnUpdateTileDrawing?.Invoke();
 		}
 	}
 

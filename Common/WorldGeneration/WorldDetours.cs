@@ -8,6 +8,7 @@ public class WorldDetours : ModSystem
 {
 	public readonly record struct Region(Rectangle Area, Context Context);
 
+	[Flags]
 	public enum Context
 	{
 		/// <summary> Prevents vanilla piles from generating. </summary>
@@ -23,7 +24,7 @@ public class WorldDetours : ModSystem
 	[WorldBound]
 	public static readonly HashSet<Region> Regions = [];
 
-	public static bool AnyContains(int i, int j, Context context) => Regions.Any(x => x.Area.Contains(i, j) && x.Context == context);
+	public static bool AnyContains(int i, int j, Context context) => Regions.Any(x => x.Area.Contains(i, j) && x.Context.HasFlag(context));
 
 	public override void Load()
 	{

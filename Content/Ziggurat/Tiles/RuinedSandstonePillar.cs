@@ -20,6 +20,9 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Dirt;
 		this.AutoItem().ResearchUnlockCount = 100;
+
+		for (int type = 0; type < TileLoader.TileCount; type++)
+			Main.tileMerge[type][Type] |= Main.tileSolid[type]; //Have everything merge with this type
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
@@ -30,6 +33,14 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 		if (j % 2 == 0)
 			Main.tile[i, j].TileFrameY += rowHeight;
 	}
+
+	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
+	{
+		if (left != -1 && Main.tileSolid[left] && !Main.tileNoAttach[left])
+			left = Type;
+		if (right != -1 && Main.tileSolid[right] && !Main.tileNoAttach[right])
+			right = Type;
+	} //Merge with valid tiles to the left and right
 
 	public static void SetupMerge(int myType, ref int up, ref int down)
 	{

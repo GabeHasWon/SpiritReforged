@@ -127,7 +127,7 @@ internal class CanyonEntrance : CaveEntrance
 						runners.Add(new Point16(i, j));
 				}
 
-				if ((tile.HasTile && !WorldGen.TileIsExposedToAir(i, j) || withinTiles) && j > y + 8 + wallNoise.GetNoise(i, j) * 6)
+				if ((tile.HasTile && !WorldGen.TileIsExposedToAir(i, j) || withinTiles) && j > y + 8 + wallNoise.GetNoise(i, j) * 6 && j < (Main.worldSurface + WorldGen.genRand.Next(5, 10)))
 				{
 					float noise = wallNoise.GetNoise(i, j);
 

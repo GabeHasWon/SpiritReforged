@@ -2859,3 +2859,23 @@ SerratedClaws: {
 	// DisplayName: Serrated Claws
 	// Tooltip: ""
 }
+
+FlagRingItem: {
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
+}
+
+CobbledBrickWallItem: {
+	// DisplayName: Cobbled Brick Wall Item
+	// Tooltip: ""
+}
+
+CobbledBrickItem: {
+	// DisplayName: Cobbled Brick Item
+	// Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	// DisplayName: Bronze Grate Door Item
+	// Tooltip: ""
+}
