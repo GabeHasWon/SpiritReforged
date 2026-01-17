@@ -1,7 +1,13 @@
 ﻿using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ziggurat.Tiles;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Common.TileCommon.TileMerging;
+
+/* todo
+	- very inefficient, restarting sb multiple times inside loop
+	- opt for bitmasks for framing checks? o(1) lut
+ */
 
 public sealed class TileMerger : ModSystem
 {
@@ -32,17 +38,88 @@ public sealed class TileMerger : ModSystem
 	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, params int[] types) => DrawMerge(spriteBatch, i, j, Lighting.GetColor(i, j), TileExtensions.TileOffset, types);
 	/// <summary><inheritdoc cref="DrawMerge(SpriteBatch, int, int, int[])"/>
 	/// <br/>See the overload for a simpler method approach. </summary>
-	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, Color color, Vector2 offset, params int[] types)
-	{
-		int frameNumber = Main.tile[i, j].Get<TileWallWireStateData>().TileFrameNumber;
+    public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, Color color, Vector2 offset, params int[] types)
+    {
+        Tile tile = Main.tile[i, j];
+        int frameNumber = tile.Get<TileWallWireStateData>().TileFrameNumber;
 
-		foreach (int type in types)
-		{
-			if (!TryFindFrame(i, j, type, out var frame) || !TextureByType.TryGetValue(type, out var textureAsset))
+        Matrix matrix = Main.drawToScreen ? Main.GameViewMatrix.TransformationMatrix : Matrix.Identity;
+
+        foreach (int type in types)
+        {
+            if (!TryFindFrame(i, j, type, out Point frame) || !TextureByType.TryGetValue(type, out Asset<Texture2D> textureAsset))
+                continue;
+
+            int paint = GetSourcePaint(i, j, type);
+            bool painted = paint > 0;
+
+            if (painted)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(
+                    SpriteSortMode.Immediate, 
+                    BlendState.AlphaBlend, 
+                    Main.DefaultSamplerState, 
+                    DepthStencilState.None, 
+                    RasterizerState.CullNone, 
+                    null, 
+                    matrix
+                );
+
+                GameShaders.Armor.GetSecondaryShader(paint, Main.LocalPlayer).Apply(null);
+            }
+
+            Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + offset;
+            spriteBatch.Draw(
+                textureAsset.Value, 
+                position, 
+                new Rectangle(frame.X + frameNumber * FullFrameWidth, frame.Y, 16, 16), 
+                color
+            );
+
+            if (!painted)
 				continue;
+            
+            spriteBatch.End();
+			spriteBatch.Begin(
+				SpriteSortMode.Deferred, 
+				BlendState.AlphaBlend, 
+				Main.DefaultSamplerState, 
+				DepthStencilState.None, 
+				RasterizerState.CullNone, 
+				null, 
+				matrix
+			);
+		}
+	}
 
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + offset;
-			spriteBatch.Draw(textureAsset.Value, position, new Rectangle(frame.X + frameNumber * FullFrameWidth, frame.Y, 16, 16), color);
+	private static int GetSourcePaint(int i, int j, int mergeType)
+	{
+		var center = Main.tile[i, j];
+
+		if (CanMergeWith(center, Main.tile[i, j - 1], mergeType, isUp: true)) 
+			return Main.tile[i, j - 1].TileColor;
+		
+		if (CanMergeWith(center, Main.tile[i, j + 1], mergeType, isUp: false)) 
+			return Main.tile[i, j + 1].TileColor;
+		
+		if (CanMergeWith(center, Main.tile[i - 1, j], mergeType, isUp: false)) 
+			return Main.tile[i - 1, j].TileColor;
+		
+		if (CanMergeWith(center, Main.tile[i + 1, j], mergeType, isUp: false)) 
+			return Main.tile[i + 1, j].TileColor;
+
+		return 0;
+		
+		static bool CanMergeWith(Tile center, Tile neighbor, int mergeType, bool isUp)
+		{
+			if (!neighbor.HasTileType(mergeType))
+				return false;
+		
+			if (isUp) 
+				return !center.IsHalfBlock && (center.BottomSlope || center.Slope == SlopeType.Solid) && (neighbor.TopSlope || neighbor.Slope == SlopeType.Solid);
+        
+			return !center.IsHalfBlock;
 		}
 	}
 
