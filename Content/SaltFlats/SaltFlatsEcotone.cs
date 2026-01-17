@@ -9,6 +9,7 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.SaltFlats.Items;
+using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
@@ -291,10 +292,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 			return false;
 		}, out _, area);
 
-		new Decorator(area)
-			.Enqueue(PlaceReliquary, Math.Max(area.Width / 150, 1))
-			.Enqueue(PlaceSaltwortPatch, Math.Max(area.Width / 80, 1))
-			.Run();
+		int ruinCount = Math.Min(area.Width / 50, 3);
+		Decorator decorator = new(area);
+		decorator.Enqueue(PlaceReliquary, Math.Max(area.Width / 150, 1)).Enqueue(PlaceSaltwortPatch, Math.Max(area.Width / 80, 1));
+
+		if (ruinCount > 0)
+			decorator.Enqueue(CreateRuin, ruinCount);
+
+		decorator.Run();
 	}
 
 	private static bool PlaceReliquary(int i, int j)
@@ -429,6 +434,104 @@ internal class SaltFlatsEcotone : EcotoneBase
 			new Modifiers.Expand(1),
 			new Actions.SetTileKeepWall((ushort)ModContent.TileType<SaltBlockDull>())
 		));
+	}
+
+	private static bool CreateRuin(int x, int y)
+	{
+		const int scanRadius = 5;
+
+		if (WorldGen.SolidOrSlopedTile(x, y) || Main.tile[x, y].WallType != WallID.None || !WorldUtils.Find(new(x, y), new Searches.Down(30).Conditions(new Conditions.IsSolid()), out Point foundPos))
+			return false;
+
+		int width = WorldGen.genRand.Next(3, 7) * 2;
+		int height = width;
+		Rectangle area = new(foundPos.X - width / 2, foundPos.Y - height, width, height);
+
+		if (!GenVars.structures.CanPlace(area, 0))
+			return false;
+
+		ushort[] saltTypes = [(ushort)ModContent.TileType<SaltBlockDull>(), (ushort)ModContent.TileType<SaltBlockReflective>()];
+		Dictionary<ushort, int> typeToCount = [];
+		WorldUtils.Gen(foundPos, new Shapes.Circle(scanRadius), new Actions.TileScanner(saltTypes).Output(typeToCount));
+
+		if (typeToCount[saltTypes[1]] == 0 && typeToCount[saltTypes[0]] > scanRadius * scanRadius)
+		{
+			ShapeData data = new();
+			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), -height, width, height)), Actions.Chain(
+				new Actions.Clear(),
+				new Actions.PlaceWall((ushort)CobbledBrickWall.UnsafeType),
+				new Modifiers.RectangleMask(-(width / 2) + 2, width / 2 - 3, -(height / 2), 0),
+				new Actions.PlaceWall(WallID.RainbowStainedGlass)
+			).Output(data)); //Add stained glass windows
+
+			WorldUtils.Gen(foundPos, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
+
+			WorldUtils.Gen(foundPos, new ModShapes.All(data), Actions.Chain(
+				new Modifiers.Expand(1),
+				new Modifiers.RectangleMask(-(width / 2) - 2, width / 2 + 2, -height - 2, -4),
+				new Actions.RemoveWall(),
+				new Modifiers.Blotches(),
+				new Actions.Clear()
+			)); //Add weathering
+
+			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), 1, width, 1)), Actions.Chain(
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()),
+				new Modifiers.Expand(0, 5),
+				new Modifiers.Offset(0, 5),
+				new Modifiers.IsNotSolid(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>())
+			)); //Add a foundation to merge into uneven terrain
+
+			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), -height, width, height)), Actions.Chain(
+				new Modifiers.Expand(10, 4),
+				new Modifiers.OnlyTiles(saltTypes[0]),
+				new Modifiers.IsTouchingAir(),
+				new Modifiers.Offset(0, -1),
+				new Modifiers.RadialDither(5, 10),
+				new Actions.PlaceWall(WallID.WroughtIronFence)
+			)); //Add fences nearby
+
+			Decorator decorator = new(area);
+			decorator.Enqueue(ModContent.TileType<SaltCrateRestored.SaltCrateRestoredTile>(), 0.1f).Enqueue(ModContent.TileType<StoneStupas>(), 0.1f);
+
+			if (WorldGen.genRand.NextBool())
+				decorator.Enqueue(PlaceBell, 1);
+
+			decorator.Run();
+
+			GenVars.structures.AddProtectedStructure(area);
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool PlaceBell(int x, int y)
+	{
+		if (WorldMethods.AreaClear(x, y - 1, 1, 2, true))
+		{
+			PlaceWalls(x - 1, y);
+			PlaceWalls(x + 1, y);
+
+			for (int c = -1; c < 2; c++)
+				WorldGen.PlaceTile(x + c, y, ModContent.TileType<CobbledBrick>(), true);
+
+			return Placer.PlaceTile(x, y + 1, ModContent.TileType<CalmingBell>()).success;
+		}
+
+		return false;
+
+		static void PlaceWalls(int x, int y)
+		{
+			for (int c = 1; c < 10; c++)
+			{
+				Tile tile = Framing.GetTileSafely(x, y + c);
+				if (tile.WallType != WallID.None || WorldGen.SolidOrSlopedTile(tile))
+					break;
+
+				tile.WallType = WallID.WroughtIronFence;
+			} //Place a series of connecting walls
+		}
 	}
 	#endregion
 
