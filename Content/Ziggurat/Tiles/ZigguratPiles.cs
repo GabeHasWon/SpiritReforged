@@ -15,7 +15,9 @@ public abstract class ZigguratPile : ModTile, IAutoloadRubble
 		Main.tileLavaDeath[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.ReplaceTileBreakUp[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
+		TileID.Sets.DoesntGetReplacedWithTileReplacement[Type] = false;
 
 		AddMapEntry(new Color(191, 138, 67));
 		DustType = DustID.Gold;

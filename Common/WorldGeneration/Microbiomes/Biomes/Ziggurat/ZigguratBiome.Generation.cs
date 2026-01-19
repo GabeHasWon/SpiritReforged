@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using ReLogic.Utilities;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -9,14 +10,15 @@ using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat;
 using SpiritReforged.Content.Ziggurat.Scarab;
-using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles.Chains;
+using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
+using SpiritReforged.Content.Ziggurat.Walls;
+using SpiritReforged.Content.Ziggurat.Windshear;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
-using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
-using SpiritReforged.Content.Ziggurat.Windshear;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -472,10 +474,30 @@ public partial class ZigguratBiome : Microbiome
 
 	internal static void PopulateChest(Chest chest)
 	{
-		int[] main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
-		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), 
-			(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25), (ModContent.ItemType<TornMapPiece>(), 1..2)];
-		
+		List<int> main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
+
+		WeightedRandom<(int, Range)> secondary = new();
+		secondary.Add((ItemID.Amethyst, 6..12));
+		secondary.Add((ItemID.Topaz, 5..11));
+		secondary.Add((ItemID.Sapphire, 3..8));
+		secondary.Add((ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25));
+		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
+
+		if (CrossMod.Fables.CheckFind("CeilingChisel", out ModItem chisel))
+			secondary.Add((chisel.Type, 1..1), 0.05f);
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("Opal", out ModItem opal))
+				secondary.Add((opal.Type, 4..8));
+
+			if (CrossMod.Thorium.TryFind("Aquamarine", out ModItem aquamarine))
+				secondary.Add((aquamarine.Type, 4..8));
+		}
+
+		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
+			secondary.Add((aquamarineVerdant.Type, 4..8));
+
 		PriorityQueue<(int, Range), float> miscQueue = new();
 		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
@@ -492,7 +514,7 @@ public partial class ZigguratBiome : Microbiome
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
-		var (type, stack) = WorldGen.genRand.Next(secondary);
+		var (type, stack) = secondary.Get();
 		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
 
 		int miscCount = WorldGen.genRand.Next(3, 5);

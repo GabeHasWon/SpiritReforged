@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using Terraria.DataStructures;
 
