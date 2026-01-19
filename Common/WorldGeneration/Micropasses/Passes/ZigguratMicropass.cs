@@ -231,7 +231,8 @@ internal class ZigguratMicropass : Micropass
 			decorator.Enqueue(AddFlagpole, WorldGen.genRand.Next(1, 3));
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
-		decorator.Enqueue(SprinklePots, segments * 2);
+		decorator.Enqueue(PlacePot, segments * 2);
+		decorator.Enqueue(PlaceDoor, 1);
 		decorator.Run();
 
 		return result;
@@ -352,7 +353,7 @@ internal class ZigguratMicropass : Micropass
 		if (WorldGen.genRand.NextBool())
 			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
 
-		decorator.Enqueue(SprinklePots, segments * 2);
+		decorator.Enqueue(PlacePot, segments * 2);
 		decorator.Run();
 
 		return result;
@@ -452,7 +453,7 @@ internal class ZigguratMicropass : Micropass
 		return result;
 	}
 
-	public static bool SprinklePots(int x, int y)
+	public static bool PlacePot(int x, int y)
 	{
 		Tile tile = Main.tile[x, y];
 
@@ -465,6 +466,44 @@ internal class ZigguratMicropass : Micropass
 		}
 
 		return false;
+	}
+
+	public static bool PlaceDoor(int x, int y)
+	{
+		if (Main.tile[x, y].TileType != TileID.Sand && SolidRange(new(x, y - 5, 1, 5)))
+		{
+			for (int i = 0; i < 3; i++)
+				Framing.GetTileSafely(x, y + i).ClearTile();
+
+			if (Placer.PlaceTile(x, y + 2, ModContent.TileType<BronzeGrateDoor>()).success)
+			{
+				WorldUtils.Gen(new(x - 1, y), new Shapes.Rectangle(3, 3), Actions.Chain(
+					new Modifiers.OnlyTiles((ushort)ModContent.TileType<RuinedSandstonePillar>()),
+					new Actions.ClearTile()
+				));
+
+				WorldUtils.Gen(new(x - 1, y + 3), new Shapes.Rectangle(3, 1), Actions.Chain(
+					new Modifiers.IsNotSolid(),
+					new Actions.SetTileKeepWall((ushort)ModContent.TileType<BronzePlatform>())
+				));
+
+				return true;
+			}
+		}
+
+		return false;
+
+		static bool SolidRange(Rectangle area)
+		{
+			bool solid = true;
+			for (int x = area.Left; x < area.Right; x++)
+			{
+				for (int y = area.Top; y < area.Bottom; y++)
+					solid &= WorldGen.SolidTile(x, y);
+			}
+
+			return solid;
+		}
 	}
 
 	private static bool SprinkleSandDunes(int x, int y)

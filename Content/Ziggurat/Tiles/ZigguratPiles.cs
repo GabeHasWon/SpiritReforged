@@ -4,9 +4,9 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ZigguratPiles2x2 : ModTile, IAutoloadRubble
+public abstract class ZigguratPile : ModTile, IAutoloadRubble
 {
-	public IAutoloadRubble.RubbleData Data => new(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), IAutoloadRubble.RubbleSize.Medium);
+	public abstract IAutoloadRubble.RubbleData Data { get; }
 
 	public override void SetStaticDefaults()
 	{
@@ -33,7 +33,7 @@ public class ZigguratPiles2x2 : ModTile, IAutoloadRubble
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
-		if (Autoloader.IsRubble(Main.tile[i, j].TileType))
+		if (Autoloader.IsRubble(Type))
 			yield break;
 
 		if (Main.rand.NextBool(4))
@@ -44,5 +44,36 @@ public class ZigguratPiles2x2 : ModTile, IAutoloadRubble
 			yield return new Item(ItemID.Ruby, Main.rand.Next(1, 3));
 
 		yield return new Item(ItemID.GoldCoin, Main.rand.Next(2, 5));
+	}
+}
+
+public class ZigguratPiles2x1 : ZigguratPile, IAutoloadRubble
+{
+	public override IAutoloadRubble.RubbleData Data => new(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), IAutoloadRubble.RubbleSize.Small);
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
+		TileObjectData.newTile.CoordinateHeights = [16, 18];
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
+		TileObjectData.addTile(Type);
+	}
+}
+
+public class ZigguratPiles2x2 : ZigguratPile
+{
+	public override IAutoloadRubble.RubbleData Data => new(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), IAutoloadRubble.RubbleSize.Medium);
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+		TileObjectData.newTile.Origin = new Point16(0, 1);
+		TileObjectData.newTile.CoordinateHeights = [16, 18];
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
+		TileObjectData.addTile(Type);
 	}
 }

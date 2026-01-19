@@ -15,6 +15,8 @@ public class EcotoneSurfaceMapping : ModSystem
 {
 	public class EcotoneEntry(Point start, EcotoneEdgeDefinition definition)
 	{
+		public int Width => End.X - Start.X;
+
 		public Point Start = start;
 		public Point End;
 		public HashSet<Point> SurfacePoints = [];
@@ -152,8 +154,6 @@ public class EcotoneSurfaceMapping : ModSystem
 		_modifyCorruptionHook = null;
 	}
 
-	
-
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
 		if (tasks.FindIndex(x => x.Name == "Corruption") is int index && index != -1)
@@ -211,7 +211,7 @@ public class EcotoneSurfaceMapping : ModSystem
 		foreach (int key in CorruptAreas.Keys)
 			foreach ((Point16 point, float chance) in CorruptAreas[key])
 				if (WorldGen.genRand.NextFloat() < chance)
-					WorldGen.Convert(point.X, point.Y, key, 0);
+					WorldGen.Convert(point.X, point.Y, key, 0, true, true);
 	}
 
 	/// <summary> Maps ecotones spanning the entire world. Mapping should normally be done before finding an ecotone spawn location. </summary>
@@ -240,7 +240,7 @@ public class EcotoneSurfaceMapping : ModSystem
 
 			if (entry is null)
 			{
-				entry = new EcotoneEntry(new Point(Fluff, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+				entry = new EcotoneEntry(new Point(WorldGen.beachDistance + 20, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
 				entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 			}
 
@@ -262,7 +262,7 @@ public class EcotoneSurfaceMapping : ModSystem
 					entry.Right = def;
 					Entries.Add(entry);
 
-					if (x <= GenVars.leftBeachEnd || x >= GenVars.rightBeachStart)
+					if (x <= WorldGen.beachDistance + 20 || x >= Main.maxTilesX - WorldGen.beachDistance - 20)
 						def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 
 					entry = new EcotoneEntry(new Point(x, y), def);
@@ -275,7 +275,7 @@ public class EcotoneSurfaceMapping : ModSystem
 
 			MapPoint(x, y, entry);
 
-			if (x == Main.maxTilesX - Fluff - 1)
+			if (x == Main.maxTilesX - WorldGen.beachDistance - 20)
 				entry.End = new Point(x, y);
 		}
 
