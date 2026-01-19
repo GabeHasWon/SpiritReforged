@@ -40,6 +40,8 @@ public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
 		return value * ((1.2f - Lighting.Brightness(x, y)) / 1.2f);
 	}
 
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
+
 	public override void SetStaticDefaults()
     {
         Main.tileFrameImportant[Type] = true;
@@ -84,8 +86,6 @@ public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
 
 	public static void OnUse(int i, int j)
 	{
-		Main.LocalPlayer.AddBuff(BuffID.Calm, 60 * 60 * 3);
-
 		if (!Main.dedServ)
 		{
 			TileSwayHelper.SetWindTime(i, j, Vector2.UnitX * 5);
@@ -96,22 +96,27 @@ public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
 			SoundEngine.PlaySound(SoundID.GuitarEm with { Pitch = -0.5f }, worldPos);
 			SoundEngine.PlaySound(SoundID.Item80 with { Pitch = 0.1f }, worldPos);
 
-			ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
-			ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
+			if (!Main.LocalPlayer.HasBuff(BuffID.Calm))
+			{
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
 
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)
-			{
-				Rotation = MathHelper.PiOver2
-			});
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.White.Additive(), new(0.5f, 3), 10, 0)
-			{
-				Rotation = MathHelper.PiOver2
-			});
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)
+				{
+					Rotation = MathHelper.PiOver2
+				});
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.White.Additive(), new(0.5f, 3), 10, 0)
+				{
+					Rotation = MathHelper.PiOver2
+				});
+			}
 
 			for (int x = 0; x < 4; x++)
 				ParticleHandler.SpawnParticle(new EmberParticle(worldPos, Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f), Color.Cyan, Color.IndianRed, Main.rand.NextFloat(0.25f, 0.5f), Main.rand.Next(60, 80), 5));
 		}
+
+		Main.LocalPlayer.AddBuff(BuffID.Calm, 60 * 60 * 3);
 	}
 
     public override void MouseOver(int i, int j)
