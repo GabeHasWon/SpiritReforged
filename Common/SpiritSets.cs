@@ -25,7 +25,7 @@ public class SpiritSets : ModSystem
 		.RegisterBoolSet(NPCID.CorruptBunny, NPCID.CorruptGoldfish, NPCID.Corruptor, NPCID.CorruptPenguin, NPCID.CorruptSlime, NPCID.BigMimicCorruption, NPCID.DesertGhoulCorruption, 
 		NPCID.PigronCorruption, NPCID.SandsharkCorrupt, NPCID.Crimera, NPCID.Crimslime, NPCID.CrimsonAxe, NPCID.CursedHammer, NPCID.CrimsonBunny, NPCID.CrimsonGoldfish, 
 		NPCID.CrimsonPenguin, NPCID.BigMimicCrimson, NPCID.DesertGhoulCrimson, NPCID.PigronCrimson, NPCID.SandsharkCrimson, NPCID.EaterofSouls, NPCID.VileSpit,
-		NPCID.VileSpitEaterOfWorlds, NPCID.DevourerBody, NPCID.DevourerHead, NPCID.DevourerTail);
+		NPCID.VileSpitEaterOfWorlds, NPCID.DevourerBody, NPCID.DevourerHead, NPCID.DevourerTail, NPCID.FaceMonster);
 
 	/// <summary> Whether this type converts into the provided type when mowed with a lawnmower. </summary>
 	public static readonly int[] Mowable = TileFactory.CreateIntSet();
