@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Walls;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.ButterflyStaff;
 using SpiritReforged.Content.Forest.Safekeeper;
@@ -10,6 +10,9 @@ using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Walls;
+using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 using static SpiritReforged.Common.ModCompat.CrossMod;
@@ -84,6 +87,10 @@ internal class SpecialPointMappingMicropass : Micropass
 							ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
 
 						if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
+							PointOfInterestSystem.AddPoint(new(i, j), InterestType.Curiosity);
+
+						if (tile.TileType == ModContent.TileType<AmberFossil>() && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity entity) 
+							&& entity is FossilEntity fossil && fossil.itemType == ModContent.ItemType<TinyDragon>())
 							PointOfInterestSystem.AddPoint(new(i, j), InterestType.Curiosity);
 					}
                 }

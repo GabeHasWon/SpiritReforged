@@ -35,13 +35,13 @@ internal class AmbientSounds : ModSystem
 		var player = Main.LocalPlayer;
 
 		bool savannaDay = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight;
-		UpdateSingleSound(SavannaDayAmbience, .002f, savannaDay);
+		UpdateSingleSound(SavannaDayAmbience, 0.002f, savannaDay);
 
 		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
-		UpdateSingleSound(SavannaNightAmbience, .002f, savannaNight);
+		UpdateSingleSound(SavannaNightAmbience, 0.002f, savannaNight);
 
-		bool ziggurat = player.InModBiome<Content.Desert.Biome.ZigguratBiome>();
-		UpdateSingleSound(ZigguratAmbience, 0.0002f, ziggurat);
+		bool ziggurat = player.InModBiome<Content.Ziggurat.Biome.ZigguratBiome>();
+		UpdateSingleSound(ZigguratAmbience, 0.002f, ziggurat);
 
 		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime && !savannaNight;
 		UpdateSingleSound(NighttimeAmbience, 0.005f, nightTimeCondition);

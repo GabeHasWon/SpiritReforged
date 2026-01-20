@@ -2,7 +2,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Desert.Tiles.Amber;
+using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 

@@ -1,4 +1,6 @@
 ﻿using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Desert.Tiles;
+using SpiritReforged.Content.Ziggurat.Biome;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -58,7 +60,7 @@ public class Tumbleweed : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Player.ZoneDesert && !spawnInfo.Water && Math.Abs(Main.windSpeedCurrent) > 0.3f)
+		if (spawnInfo.Player.ZoneDesert && !spawnInfo.Water && Math.Abs(Main.windSpeedCurrent) > 0.3f && !EditZigguratSpawnsNPC.InZiggurat(spawnInfo))
 		{
 			int playerX = (int)(spawnInfo.Player.Center.X / 16);
 

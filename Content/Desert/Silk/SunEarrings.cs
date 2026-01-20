@@ -34,6 +34,7 @@ public class SunEarrings : ModItem
 
 	public override void AddRecipes() => CreateRecipe()
 		.AddRecipeGroup("GoldBars", 2)
+		.AddIngredient(ItemID.Amber, 2)
 		.AddTile(TileID.Anvils)
 		.Register();
 }

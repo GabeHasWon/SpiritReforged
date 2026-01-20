@@ -8,6 +8,18 @@ namespace SpiritReforged.Content.Forest.Backpacks;
 [AutoloadEquip(EquipType.Back, EquipType.Front)]
 public class GiantBag : BackpackItem
 {
+	public sealed class GiantBagLayerFront : PlayerDrawLayer
+	{
+		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(GiantBag), "GiantBag_Front", false);
+
+		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Head);
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+			if (drawInfo.drawPlayer.front == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Front))
+				GiantBagLayerBack.DrawSelf(ref drawInfo, Texture.Value, drawInfo.cFront);
+		}
+	}
+
 	public sealed class GiantBagLayerBack : PlayerDrawLayer
 	{
 		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(GiantBag), "GiantBag_Back", false);
@@ -36,18 +48,6 @@ public class GiantBag : BackpackItem
 			};
 
 			drawInfo.DrawDataCache.Add(drawData);
-		}
-	}
-
-	public sealed class GiantBagLayerFront : PlayerDrawLayer
-	{
-		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(GiantBag), "GiantBag_Front", false);
-
-		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Head);
-		protected override void Draw(ref PlayerDrawSet drawInfo)
-		{
-			if (drawInfo.drawPlayer.front == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Front))
-				GiantBagLayerBack.DrawSelf(ref drawInfo, Texture.Value, drawInfo.cFront);
 		}
 	}
 

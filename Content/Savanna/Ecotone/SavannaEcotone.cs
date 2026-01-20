@@ -229,8 +229,7 @@ internal class SavannaEcotone : EcotoneBase
 		SavannaArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
 		SavannaArea.Inflate(2, 2);
 
-		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava));
-		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Piles));
+		WorldDetours.Regions.Add(new(SavannaArea, WorldDetours.Context.Lava | WorldDetours.Context.Piles));
 
 		static int HighestSurfacePoint(int x)
 		{
@@ -262,7 +261,9 @@ internal class SavannaEcotone : EcotoneBase
 		bool genBaobabTree = false;
 
 		if (SavannaArea.Width > 150 && Main.rand.NextBool(3)) //Choose objects to gen
+		{
 			genWateringHole = genBaobabTree = true;
+		}
 		else if (SavannaArea.Width > 50)
 		{
 			if (Main.rand.NextBool())
@@ -461,21 +462,25 @@ internal class SavannaEcotone : EcotoneBase
 				continue;
 
 			WorldMethods.FindGround(x, ref y);
+			int type = Framing.GetTileSafely(x, y).TileType;
 
-			int halfWidth = WorldGen.genRand.Next(2, 5);
-			ShapeData data = new();
+			if (type == (ushort)ModContent.TileType<SavannaDirt>() || type == (ushort)ModContent.TileType<SavannaGrass>())
+			{
+				int halfWidth = WorldGen.genRand.Next(2, 5);
+				ShapeData data = new();
 
-			WorldUtils.Gen(new Point(x, y + 1), new Shapes.Mound(halfWidth, 3), Actions.Chain(new Modifiers.Blotches(), new Actions.SetTile(TileID.Stone).Output(data)));
+				WorldUtils.Gen(new Point(x, y + 1), new Shapes.Mound(halfWidth, 3), Actions.Chain(new Modifiers.Blotches(), new Actions.SetTile(TileID.Stone).Output(data)));
 
-			if (WorldGen.genRand.NextBool())
-				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss)));
+				if (WorldGen.genRand.NextBool())
+					WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss)));
 
-			WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), new Actions.Smooth());
-			WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Offset(0, 4), new Modifiers.Blotches(), 
-				new Modifiers.OnlyTiles((ushort)ModContent.TileType<SavannaDirt>()), new Actions.SetTile(TileID.Sand)));
+				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), new Actions.Smooth());
+				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Offset(0, 4), new Modifiers.Blotches(),
+					new Modifiers.OnlyTiles((ushort)ModContent.TileType<SavannaDirt>()), new Actions.SetTile(TileID.Sand)));
 
-			if (++num > numMax)
-				break;
+				if (++num > numMax)
+					break;
+			}
 		}
 	}
 

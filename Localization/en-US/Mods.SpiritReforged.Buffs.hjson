@@ -132,3 +132,8 @@ TinyDragonPet_Buff: {
 	DisplayName: Tiny Dragon
 	Description: A little dragon is following you
 }
+
+EnlilBuff: {
+	DisplayName: Enlil's Aid
+	Description: Increased vertical mobility
+}

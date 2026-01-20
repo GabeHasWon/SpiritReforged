@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert.DragonFossil;
-using SpiritReforged.Content.Desert.Tiles.Amber;
+using SpiritReforged.Content.Desert.Tiles;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;

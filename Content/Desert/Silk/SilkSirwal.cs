@@ -56,6 +56,7 @@ public class SilkSirwal : EquippableItem
 	public override void AddRecipes() => CreateRecipe()
 		.AddIngredient(ItemID.Silk, 10)
 		.AddRecipeGroup("GoldBars", 2)
+		.AddIngredient(ItemID.Amber, 3)
 		.AddTile(TileID.Anvils)
 		.Register();
 }

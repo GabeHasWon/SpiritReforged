@@ -20,11 +20,12 @@ public class SaltWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 	public override void SetStaticDefaults()
 	{
 		Main.wallHouse[Type] = true;
-		DustType = DustID.WoodFurniture;
 
-		var entryColor = new Color(100, 90, 90);
+		Color entryColor = new(100, 90, 90);
 		AddMapEntry(entryColor);
 		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
+
+		DustType = DustID.Pearlsand;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

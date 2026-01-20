@@ -26,6 +26,7 @@ public class Gravel : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(120, 120, 120));
 		DustType = DustID.Asphalt;
 		MineResist = .5f;
+		HitSound = SoundID.Tink;
 
 		Mod.Find<ModItem>(Name + "Item").Item.ResearchUnlockCount = 100;
 	}

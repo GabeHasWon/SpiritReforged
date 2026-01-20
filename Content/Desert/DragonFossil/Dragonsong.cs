@@ -108,6 +108,7 @@ public class Dragonsong : ModItem
 
 		private void Shoot(IEntitySource source, Vector2 velocity, Vector2 position, Player player)
 		{
+			const int numShots = 5;
 			Vector2 muzzlePosition = MuzzlePosition;
 
 			if (Collision.CanHit(position, 2, 2, muzzlePosition, 2, 2))
@@ -115,8 +116,8 @@ public class Dragonsong : ModItem
 
 			if (player.PickAmmo(player.HeldItem, out int type, out _, out _, out _, out _))
 			{
-				for (int i = 0; i < 5; i++)
-					Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1f)).RotatedByRandom(0.5f), type, Projectile.damage, Projectile.knockBack, player.whoAmI);
+				for (int i = 0; i < numShots; i++)
+					Projectile.NewProjectile(source, position, (velocity * Main.rand.NextFloat(0.5f, 1f)).RotatedByRandom(0.5f), type, Projectile.damage / (numShots / 2), Projectile.knockBack, player.whoAmI);
 			}
 			else
 			{
@@ -170,6 +171,8 @@ public class Dragonsong : ModItem
 			Projectile.penetrate = 3;
 			Projectile.timeLeft = 50;
 			Projectile.scale = Main.rand.NextFloat(0.8f, 1.5f);
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
 		}
 
 		public override void AI()

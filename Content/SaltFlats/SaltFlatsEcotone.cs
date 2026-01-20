@@ -86,7 +86,8 @@ internal class SaltFlatsEcotone : EcotoneBase
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry)
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) 
+			&& EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
 			return true; //Uniquely, salt flats cannot normally generate over spawn
@@ -112,6 +113,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		int finalLength = (rightBound - leftBound) / steps;
 		int y = EcotoneSurfaceMapping.TotalSurfaceY[(short)leftBound];
 		Rectangle area = Rectangle.Empty;
+		SaltFlatsSystem.SurfaceHeight = Main.maxTilesY;
 
 		for (int i = 0; i < steps; i++)
 		{
@@ -125,10 +127,14 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			FillSurface(info);
 
+			int surfaceHeight = (int)MathHelper.Lerp(info.Left.Y, info.Right.Y, 0.5f);
+
+			if (SaltFlatsSystem.SurfaceHeight > surfaceHeight + 22)
+				SaltFlatsSystem.SurfaceHeight = surfaceHeight + WorldGen.genRand.Next(22, 25);
+
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		SaltFlatsSystem.SurfaceHeight = area.Center.Y - WorldGen.genRand.Next(-3, 9);
 		Decorate(area);
 
 		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
@@ -203,7 +209,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 		static void AddObject(int x, int y, bool condition, ref List<Point> list) //Improves readability
 		{
-			if (condition)
+			if (condition && IsSafe(Main.tile[x, y]))
 				list.Add(new(x, y));
 		}
 	}
@@ -359,13 +365,16 @@ internal class SaltFlatsEcotone : EcotoneBase
 			j--;
 
 			Tile tile = Main.tile[x, j];
-			Tile belowTile = Main.tile[x, j + 1];
+			Tile belowTile = Framing.GetTileSafely(x, j + 1);
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>())
-				&& (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;
+			}
+			else if (anySuccess)
+			{
+				return true;
 			}
 		}
 

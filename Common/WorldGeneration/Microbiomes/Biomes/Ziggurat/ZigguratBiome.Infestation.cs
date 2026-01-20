@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Noise;
-using SpiritReforged.Content.Desert.Tiles;
-using SpiritReforged.Content.Desert.Walls;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Walls;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -45,9 +45,7 @@ public partial class ZigguratBiome : Microbiome
 				bool hasTile = WorldGen.SolidOrSlopedTile(tile);
 
 				tile.ClearTile();
-				
-				if (tile.WallType != WallID.None)
-					tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
+				tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
 
 				if (hasTile && (noiseValue < thickness || distance > distanceLimit - outerThickness))
 				{
