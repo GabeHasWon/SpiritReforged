@@ -14,7 +14,7 @@ using Terraria.GameContent.ObjectInteractions;
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 [AutoloadGlowmask("255,255,255")]
-public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
+public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 {
 	/// <summary> Used to sync <see cref="CalmingBell"/> use effects by client-side methods. Should only be recieved by multiplayer clients. </summary>
 	internal class BellUseData : PacketData
@@ -48,6 +48,7 @@ public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
         Main.tileNoAttach[Type] = true;
         Main.tileLavaDeath[Type] = false;
         Main.tileNoFail[Type] = true;
+		Main.tileCut[Type] = true; //Further handled by OnCutAttempt
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
@@ -113,13 +114,29 @@ public class CalmingBell : ModTile, ISwayTile, IAutoloadTileItem
 			}
 
 			for (int x = 0; x < 4; x++)
-				ParticleHandler.SpawnParticle(new EmberParticle(worldPos, Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f), Color.Cyan, Color.IndianRed, Main.rand.NextFloat(0.25f, 0.5f), Main.rand.Next(60, 80), 5));
+				ParticleHandler.SpawnParticle(new EmberParticle(worldPos, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f), Color.Cyan, Color.IndianRed, Main.rand.NextFloat(0.25f, 0.5f), Main.rand.Next(60, 80), 5));
 		}
 
 		Main.LocalPlayer.AddBuff(BuffID.Calm, 60 * 60 * 3);
 	}
 
-    public override void MouseOver(int i, int j)
+	public bool OnCutAttempt(int i, int j)
+	{
+		if (!Main.dedServ)
+		{
+			TileSwayHelper.SetWindTime(i, j, Vector2.UnitX * 5);
+
+			Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
+
+			SoundEngine.PlaySound(SoundID.Shatter with { Pitch = -0.5f }, worldPos);
+			SoundEngine.PlaySound(SoundID.GuitarEm with { Pitch = -0.5f }, worldPos);
+			SoundEngine.PlaySound(SoundID.Item80 with { Pitch = 0.1f }, worldPos);
+		}
+
+		return false;
+	}
+
+	public override void MouseOver(int i, int j)
     {
         Player player = Main.LocalPlayer;
         player.noThrow = 2;

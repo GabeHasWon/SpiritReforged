@@ -478,8 +478,16 @@ internal class SaltFlatsEcotone : EcotoneBase
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()),
 				new Modifiers.Expand(0, 5),
 				new Modifiers.Offset(0, 5),
-				new Modifiers.IsNotSolid(),
-				new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>())
+				new Actions.Custom(static (x, y, args) =>
+				{
+					if (!WorldGen.SolidTile(x, y))
+					{
+						Main.tile[x, y].ResetToType((ushort)ModContent.TileType<CobbledBrick>());
+						return true;
+					}
+
+					return false;
+				})
 			)); //Add a foundation to merge into uneven terrain
 
 			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), -height, width, height)), Actions.Chain(
