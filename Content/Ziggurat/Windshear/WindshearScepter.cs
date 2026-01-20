@@ -15,6 +15,7 @@ namespace SpiritReforged.Content.Ziggurat.Windshear;
 [AutoloadGlowmask("255,255,255")]
 public class WindshearScepter : ModItem
 {
+	[Autoload(Side = ModSide.Client)]
 	public sealed class CloudMetaballSystem : ModSystem
 	{
 		private static readonly ModTarget2D CloudTarget = new(static () => CloudParticleRenderer.Particles.Count != 0 || Data.Count != 0, DrawCloudTarget);
@@ -77,7 +78,9 @@ public class WindshearScepter : ModItem
 			base.Update(ref settings);
 
 			if (++_timeSinceSpawn > TimeToLive)
+			{
 				ShouldBeRemovedFromRenderer = true;
+			}
 			else
 			{
 				Velocity *= 0.99f;
@@ -95,7 +98,7 @@ public class WindshearScepter : ModItem
 			Texture2D texture = Texture.Value;
 			Vector2 position = settings.AnchorPosition + LocalPosition;
 			float frame = (float)_timeSinceSpawn / TimeToLive;
-			Rectangle source = texture.Frame(2, 5, _style, (int)(EaseFunction.EaseCubicIn.Ease(frame) * 4f), -2, -2);
+			Rectangle source = texture.Frame(2, 5, _style, (int)(EaseFunction.EaseCubicIn.Ease(frame) * 5f), -2, -2);
 
 			spritebatch.Draw(texture, position, source, Color.White * Opacity, Rotation, source.Size() / 2, Scale, default, 0);
 		}

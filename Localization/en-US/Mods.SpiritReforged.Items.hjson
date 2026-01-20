@@ -2879,3 +2879,18 @@ BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
 	Tooltip: ""
 }
+
+BedouinBreastplate: {
+	DisplayName: Bedouin Breastplate
+	Tooltip: 5% increased damage
+}
+
+BedouinCowl: {
+	DisplayName: Bedouin Cowl
+	Tooltip: 5% increased critical strike chance
+}
+
+BedouinLeggings: {
+	DisplayName: Bedouin Leggings
+	Tooltip: 10% increased movement speed
+}
