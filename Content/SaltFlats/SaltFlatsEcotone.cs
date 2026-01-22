@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common;
+﻿using ReLogic.Utilities;
+using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
@@ -13,6 +14,8 @@ using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
+using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -443,7 +446,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (WorldGen.SolidOrSlopedTile(x, y) || Main.tile[x, y].WallType != WallID.None || !WorldUtils.Find(new(x, y), new Searches.Down(30).Conditions(new Conditions.IsSolid()), out Point foundPos))
 			return false;
 
-		int width = WorldGen.genRand.Next(3, 7) * 2;
+		int width = WorldGen.genRand.Next(3, 5) * 2 - 1;
 		int height = width;
 		Rectangle area = new(foundPos.X - width / 2, foundPos.Y - height, width, height);
 
@@ -457,22 +460,25 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (typeToCount[saltTypes[1]] == 0 && typeToCount[saltTypes[0]] > scanRadius * scanRadius)
 		{
 			ShapeData data = new();
+			bool hasRoof = false;
+
 			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), -height, width, height)), Actions.Chain(
 				new Actions.Clear(),
 				new Actions.PlaceWall((ushort)CobbledBrickWall.UnsafeType),
-				new Modifiers.RectangleMask(-(width / 2) + 2, width / 2 - 3, -(height / 2), 0),
+				new Modifiers.RectangleMask(-(width / 2) + 2, width / 2 - 2, -height, -2),
 				new Actions.PlaceWall(WallID.RainbowStainedGlass)
 			).Output(data)); //Add stained glass windows
 
 			WorldUtils.Gen(foundPos, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
 
-			WorldUtils.Gen(foundPos, new ModShapes.All(data), Actions.Chain(
-				new Modifiers.Expand(1),
-				new Modifiers.RectangleMask(-(width / 2) - 2, width / 2 + 2, -height - 2, -4),
-				new Actions.RemoveWall(),
-				new Modifiers.Blotches(),
-				new Actions.Clear()
-			)); //Add weathering
+			//if (WorldGen.genRand.NextBool())
+			{
+				int roofWidth = width + 3;
+				int roofHeight = roofWidth / 2 - 1;
+
+				CreateRoof(new(foundPos.X - roofWidth / 2, foundPos.Y - height - roofHeight, roofWidth, roofHeight), 4, 2);
+				hasRoof = true;
+			}
 
 			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), 1, width, 1)), Actions.Chain(
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()),
@@ -499,19 +505,142 @@ internal class SaltFlatsEcotone : EcotoneBase
 				new Actions.PlaceWall(WallID.WroughtIronFence)
 			)); //Add fences nearby
 
+			WorldUtils.Gen(foundPos, new ModShapes.All(data), Actions.Chain(
+				new Modifiers.RectangleMask(-(width / 2), width / 2, -height, -2),
+				new Modifiers.Expand(1),
+				new Modifiers.Dither(0.9),
+				new Modifiers.SkipWalls(WallID.RainbowStainedGlass),
+				new Actions.Clear()
+			)); //Add weathering
+
 			Decorator decorator = new(area);
 			decorator.Enqueue(ModContent.TileType<SaltCrateRestored.SaltCrateRestoredTile>(), 0.1f).Enqueue(ModContent.TileType<StoneStupas>(), 0.1f);
 
-			if (WorldGen.genRand.NextBool())
+			if (!hasRoof && WorldGen.genRand.NextBool())
 				decorator.Enqueue(PlaceBell, 1);
 
 			decorator.Run();
 
 			GenVars.structures.AddProtectedStructure(area);
+			WorldDetours.Regions.Add(new(area, WorldDetours.Context.Walls));
+
 			return true;
 		}
 
 		return false;
+	}
+
+	/// <summary> Adds a hole to a random <b>SOLID</b> bordering location of <paramref name="area"/>. </summary>
+	private static bool AddHole(Rectangle area, int attempts = 100)
+	{
+		ShapeData data = new();
+		Point position = Point.Zero;
+
+		for (int a = 0; a < attempts; a++)
+		{
+			position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
+			if (WorldGen.SolidOrSlopedTile(position.X, position.Y))
+				break;
+		}
+
+		if (!WorldGen.SolidOrSlopedTile(position.X, position.Y) || attempts < 1)
+			return false;
+
+		WorldUtils.Gen(position, new Shapes.Circle(WorldGen.genRand.Next(1, 4)), Actions.Chain(
+			new Modifiers.SkipTiles((ushort)ModContent.TileType<SaltBlockDull>()),
+			new Modifiers.Blotches(),
+			new Actions.Clear()
+		).Output(data));
+
+		return true;
+	}
+
+	private static void CreateRoof(Rectangle bounds, int thickness, int length)
+	{
+		bounds.Height -= length; //Automatic height calibration
+
+		int halfThickness = thickness / 2;
+		int halfWidth = bounds.Width / 2;
+
+		//Add Cobbled brick foundation
+		WorldUtils.Gen(new(bounds.Left + 1, bounds.Bottom), new Shapes.Rectangle(2, 4), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
+		WorldUtils.Gen(new(bounds.Right - 2, bounds.Bottom), new Shapes.Rectangle(2, 4), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
+
+		//Add Cobbled brick walls
+		WorldUtils.Gen(new(bounds.Left + 2, bounds.Bottom), new Shapes.Rectangle(1, bounds.Height * 2), Actions.Chain(
+			new Modifiers.Blotches(),
+			new Modifiers.Dither(),
+			new Actions.PlaceWall((ushort)CobbledBrickWall.UnsafeType)
+		));
+		WorldUtils.Gen(new(bounds.Right - 2, bounds.Bottom), new Shapes.Rectangle(1, bounds.Height * 2), Actions.Chain(
+			new Modifiers.Blotches(),
+			new Modifiers.Dither(),
+			new Actions.PlaceWall((ushort)CobbledBrickWall.UnsafeType)
+		));
+
+		if (length >= bounds.Width)
+		{
+			for (int y = 0; y < thickness; y++)
+			{
+				Utils.PlotTileLine(bounds.BottomLeft(), bounds.BottomRight(), thickness, PlaceTile);
+			}
+		}
+		else
+		{
+			for (int y = -halfThickness; y < halfThickness; y++)
+			{
+				Point top = new(bounds.Center.X, bounds.Top + y - 1);
+
+				Point innerLeft = new(bounds.Left + length, Math.Min(bounds.Bottom + y, bounds.Bottom - 1));
+				Point innerRight = new(bounds.Right - length, Math.Min(bounds.Bottom + y, bounds.Bottom - 1));
+				Point outerLeft = new(bounds.Left, Math.Min(bounds.Bottom + y, bounds.Bottom - 1));
+				Point outerRight = new(bounds.Right, Math.Min(bounds.Bottom + y, bounds.Bottom - 1));
+
+				Utils.PlotLine(outerLeft, innerLeft, PlaceTile);
+				Utils.PlotLine(innerLeft, top + new Point(1, -1), PlaceTile);
+				Utils.PlotLine(outerRight, innerRight, PlaceTile);
+				Utils.PlotLine(innerRight, top + new Point(-1, -1), PlaceTile);
+			}
+		}
+
+		int padding = halfWidth;
+		WorldUtils.Gen(bounds.Location - new Point(0, padding), new Shapes.Rectangle(bounds.Width, bounds.Height + padding * 2), new Actions.Custom(WeatherTop));
+		Placer.PlaceTile(bounds.Center.X, bounds.Top + halfThickness - 1, ModContent.TileType<CalmingBell>());
+
+		static bool PlaceTile(int x, int y)
+		{
+			Tile tile = Framing.GetTileSafely(x, y);
+			tile.ResetToType((ushort)ModContent.TileType<BrownShingles>());
+
+			return true;
+		}
+
+		static bool WeatherTop(int x, int y, object args)
+		{
+			Tile tile = Main.tile[x, y];
+			ushort defaultType = (ushort)ModContent.TileType<BrownShingles>();
+			ushort altType = (ushort)ModContent.TileType<WoodenShingles>();
+
+			if (tile.HasTile && tile.TileType == defaultType)
+			{
+				if (!WorldGen.SolidTile(x, y - 1))
+					tile.ResetToType(altType);
+
+				Tile left = Framing.GetTileSafely(x - 1, y);
+				Tile right = Framing.GetTileSafely(x + 1, y);
+				Tile downLeft = Framing.GetTileSafely(x - 1, y + 1);
+				Tile downRight = Framing.GetTileSafely(x + 1, y + 1);
+
+				if (!left.HasTile && downLeft.HasTile && (downLeft.TileType == defaultType || downLeft.TileType == altType))
+					tile.Slope = SlopeType.SlopeDownRight;
+				else if (!right.HasTile && downRight.HasTile && (downRight.TileType == defaultType || downRight.TileType == altType))
+					tile.Slope = SlopeType.SlopeDownLeft;
+
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	private static bool PlaceBell(int x, int y)

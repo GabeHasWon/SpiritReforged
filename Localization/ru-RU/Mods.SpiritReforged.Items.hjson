@@ -2884,3 +2884,13 @@ CalmingBellItem: {
 	// DisplayName: Calming Bell
 	// Tooltip: Right click to reduce enemy spawns
 }
+
+BrownShinglesItem: {
+	// DisplayName: Brown Shingles
+	// Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	// DisplayName: Wooden Shingles
+	// Tooltip: ""
+}

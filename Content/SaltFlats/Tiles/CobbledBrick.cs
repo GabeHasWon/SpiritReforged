@@ -9,7 +9,10 @@ public class CobbledBrick : ModTile, IAutoloadTileItem
 	{
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
+
 		Main.tileMerge[ModContent.TileType<SaltBlockDull>()][Type] = true;
+		Main.tileMerge[Type][ModContent.TileType<WoodenShingles>()] = true;
+		Main.tileMerge[Type][ModContent.TileType<BrownShingles>()] = true;
 
 		TileID.Sets.ChecksForMerge[Type] = true;
 
