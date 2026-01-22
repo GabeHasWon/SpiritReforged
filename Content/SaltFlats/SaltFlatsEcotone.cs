@@ -461,12 +461,13 @@ internal class SaltFlatsEcotone : EcotoneBase
 		{
 			ShapeData data = new();
 			bool hasRoof = false;
+			ushort[] wallTypes = [WallID.BlueStainedGlass, WallID.OrangeStainedGlass, WallID.YellowStainedGlass];
 
 			WorldUtils.Gen(foundPos, new Shapes.Rectangle(new(-(width / 2), -height, width, height)), Actions.Chain(
 				new Actions.Clear(),
 				new Actions.PlaceWall((ushort)CobbledBrickWall.UnsafeType),
 				new Modifiers.RectangleMask(-(width / 2) + 2, width / 2 - 2, -height, -2),
-				new Actions.PlaceWall(WallID.RainbowStainedGlass)
+				new Actions.PlaceWall(wallTypes[WorldGen.genRand.Next(wallTypes.Length)])
 			).Output(data)); //Add stained glass windows
 
 			WorldUtils.Gen(foundPos, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
