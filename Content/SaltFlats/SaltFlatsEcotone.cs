@@ -472,7 +472,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 			WorldUtils.Gen(foundPos, new ModShapes.OuterOutline(data), new Actions.SetTileKeepWall((ushort)ModContent.TileType<CobbledBrick>()));
 
-			//if (WorldGen.genRand.NextBool())
+			if (WorldGen.genRand.NextBool())
 			{
 				int roofWidth = width + 3;
 				int roofHeight = roofWidth / 2 - 1;
@@ -506,13 +506,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 				new Actions.PlaceWall(WallID.WroughtIronFence)
 			)); //Add fences nearby
 
-			WorldUtils.Gen(foundPos, new ModShapes.All(data), Actions.Chain(
-				new Modifiers.RectangleMask(-(width / 2), width / 2, -height, -2),
-				new Modifiers.Expand(1),
-				new Modifiers.Dither(0.9),
-				new Modifiers.SkipWalls(WallID.RainbowStainedGlass),
-				new Actions.Clear()
-			)); //Add weathering
+			List<GenAction> actions = hasRoof ? [new Modifiers.RectangleMask(-(width / 2), width / 2, -height, -2), new Modifiers.Expand(1), new Modifiers.Dither(0.9), new Modifiers.SkipWalls(wallTypes), new Actions.Clear()] 
+				: [new Modifiers.RectangleMask(-(width / 2), width / 2, -height, -4), new Modifiers.Expand(1), new Actions.Clear(), new Modifiers.Dither(0.9), new Modifiers.SkipWalls(wallTypes), new Actions.Clear()];
+			
+			WorldUtils.Gen(foundPos, new ModShapes.All(data), Actions.Chain(actions.ToArray())); //Add weathering
 
 			Decorator decorator = new(area);
 			decorator.Enqueue(ModContent.TileType<SaltCrateRestored.SaltCrateRestoredTile>(), 0.1f).Enqueue(ModContent.TileType<StoneStupas>(), 0.1f);
