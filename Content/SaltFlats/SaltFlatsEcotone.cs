@@ -528,31 +528,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 		return false;
 	}
 
-	/// <summary> Adds a hole to a random <b>SOLID</b> bordering location of <paramref name="area"/>. </summary>
-	private static bool AddHole(Rectangle area, int attempts = 100)
-	{
-		ShapeData data = new();
-		Point position = Point.Zero;
-
-		for (int a = 0; a < attempts; a++)
-		{
-			position = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
-			if (WorldGen.SolidOrSlopedTile(position.X, position.Y))
-				break;
-		}
-
-		if (!WorldGen.SolidOrSlopedTile(position.X, position.Y) || attempts < 1)
-			return false;
-
-		WorldUtils.Gen(position, new Shapes.Circle(WorldGen.genRand.Next(1, 4)), Actions.Chain(
-			new Modifiers.SkipTiles((ushort)ModContent.TileType<SaltBlockDull>()),
-			new Modifiers.Blotches(),
-			new Actions.Clear()
-		).Output(data));
-
-		return true;
-	}
-
 	private static void CreateRoof(Rectangle bounds, int thickness, int length)
 	{
 		bounds.Height -= length; //Automatic height calibration
