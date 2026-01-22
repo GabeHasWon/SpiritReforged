@@ -295,7 +295,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			return false;
 		}, out _, area);
 
-		int ruinCount = Math.Min(area.Width / 50, 3);
+		int ruinCount = Math.Min(area.Width / 50, 2);
 		Decorator decorator = new(area);
 		decorator.Enqueue(PlaceReliquary, Math.Max(area.Width / 150, 1)).Enqueue(PlaceSaltwortPatch, Math.Max(area.Width / 80, 1));
 
