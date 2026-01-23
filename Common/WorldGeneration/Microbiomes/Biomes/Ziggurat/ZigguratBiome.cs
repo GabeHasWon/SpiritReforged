@@ -5,7 +5,8 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
 public partial class ZigguratBiome : Microbiome
 {
-	public static ZigguratBiome Instance { get; private set; }
+	[WorldBound]
+	internal static ZigguratBiome Instance;
 	public Rectangle Area => new(Position.X - Width / 2, Position.Y - Height / 2, Width, Height);
 
 	public override void WorldLoad(TagCompound tag)

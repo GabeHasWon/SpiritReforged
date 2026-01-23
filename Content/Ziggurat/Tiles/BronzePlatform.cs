@@ -40,6 +40,7 @@ public class BronzePlatform : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(179, 146, 107));
 		DustType = DustID.Copper;
 		AdjTiles = [TileID.Platforms];
+		HitSound = SoundID.Tink;
 
 		this.AutoItem().ResearchUnlockCount = 200;
 	}

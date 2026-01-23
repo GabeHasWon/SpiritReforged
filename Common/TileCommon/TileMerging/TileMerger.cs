@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Ziggurat.Tiles;
+﻿using SpiritReforged.Content.Ziggurat.Tiles;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace SpiritReforged.Common.TileCommon.TileMerging;
 
@@ -9,17 +10,34 @@ public sealed class TileMerger : ModSystem
 
 	/// <summary> All possible merge tile types. </summary>
 	public static int[] All { get; private set; }
-	private static readonly Dictionary<int, Asset<Texture2D>> TextureByType = [];
+	private static readonly Dictionary<int, string> _texturePatchByType = [];
+	private static readonly Dictionary<GarbagePaintHackSystem.Key, GarbagePaintHackSystem.RtHolder> _paintCache = [];
+
+	private static readonly Point[] _offsets = [
+		new(-1, -1), new(18, 0),  new(18, 36), new(54, 0),
+		new(0, 18),  new(0, 0),   new(0, 36),  new(90, 0),
+		new(36, 18), new(36, 0),  new(36, 36), new(90, 18),
+		new(54, 18), new(72, 0),  new(72, 18), new(18, 18)
+	];
 
 	public override void SetStaticDefaults()
 	{
+		GarbagePaintHackSystem.ClearRenderTargets += _paintCache.Clear;
+
 		Add(TileID.Sand, "Sand");
 		Add(TileID.Dirt, "Dirt");
 		AddRange("RedSandstone", ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
 		AddRange("Hive", ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
-		All = [.. TextureByType.Keys]; //Must be last
+		All = [.. _texturePatchByType.Keys];
 
-		static void Add(int type, string name) => TextureByType.Add(type, ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(TileMerger), "Textures/" + name + "Merge")));
+		return;
+
+		static void Add(int type, string name)
+		{
+			string path = "SpiritReforged/Common/TileCommon/TileMerging/Textures/" + name + "Merge";
+			_texturePatchByType[type] = path;
+			ModContent.Request<Texture2D>(path);
+		}
 
 		static void AddRange(string name, params int[] types)
 		{
@@ -28,145 +46,135 @@ public sealed class TileMerger : ModSystem
 		}
 	}
 
+	public override void Unload() => GarbagePaintHackSystem.ClearRenderTargets -= _paintCache.Clear;
+
 	/// <summary> Draws merge overlays according to <paramref name="types"/>. </summary>
 	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, params int[] types) => DrawMerge(spriteBatch, i, j, Lighting.GetColor(i, j), TileExtensions.TileOffset, types);
+
 	/// <summary><inheritdoc cref="DrawMerge(SpriteBatch, int, int, int[])"/>
 	/// <br/>See the overload for a simpler method approach. </summary>
 	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, Color color, Vector2 offset, params int[] types)
 	{
-		int frameNumber = Main.tile[i, j].Get<TileWallWireStateData>().TileFrameNumber;
+		Tile tile = Main.tile[i, j];
+		int frameNumber = tile.Get<TileWallWireStateData>().TileFrameNumber;
+		Vector2 pos = new Vector2(i * 16, j * 16) - Main.screenPosition + offset;
 
 		foreach (int type in types)
 		{
-			if (!TryFindFrame(i, j, type, out var frame) || !TextureByType.TryGetValue(type, out var textureAsset))
+			(int mask, int paint) = GetMergeData(i, j, type);
+			if (mask <= 0 || !_texturePatchByType.TryGetValue(type, out string path))
 				continue;
 
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + offset;
-			spriteBatch.Draw(textureAsset.Value, position, new Rectangle(frame.X + frameNumber * FullFrameWidth, frame.Y, 16, 16), color);
+			Texture2D texture = null;
+			Color finalColor = color;
+
+			if (paint > PaintID.None)
+				texture = GarbagePaintHackSystem.TryGetTexturePaintAndRequestIfNotReady(_paintCache, type, paint, path);
+
+			if (texture == null)
+			{
+				texture = ModContent.Request<Texture2D>(path).Value;
+
+				if (paint > PaintID.None)
+					finalColor = finalColor.MultiplyRGBA(WorldGen.paintColor(paint));
+			}
+
+			Point p = _offsets[mask];
+			spriteBatch.Draw(texture, pos, new Rectangle(p.X + frameNumber * FullFrameWidth, p.Y, 16, 16), finalColor);
 		}
 	}
 
-	private static bool TryFindFrame(int i, int j, int type, out Point frame)
+	private static (int mask, int shaderIndex) GetMergeData(int i, int j, int type)
 	{
-		ushort frameX = 0;
-		ushort frameY = 0;
+		Tile center = Main.tile[i, j];
+		int mask = 0;
+		int shaderIdx = 0;
 
-		GetMerge(i, j, type, out bool up, out bool down, out bool left, out bool right);
+		Check(i, j - 1, 1, true);
+		Check(i, j + 1, 2, false);
+		Check(i - 1, j, 4, false);
+		Check(i + 1, j, 8, false);
 
-		if (!up && !down && !left && !right)
-		{
-			frame = Point.Zero;
-			return false;
-		}
+		return (mask, shaderIdx);
 
-		if (up && left && down && right) //All sides
+		void Check(int x, int y, int bit, bool isUp)
 		{
-			frameX = 18;
-			frameY = 18;
+			Tile neighbor = Main.tile[x, y];
+			if (!neighbor.HasTileType(type))
+				return;
+
+			bool canMerge = isUp
+				? !center.IsHalfBlock && (center.BottomSlope || center.Slope == 0) &&
+				  (neighbor.TopSlope || neighbor.Slope == 0)
+				: !center.IsHalfBlock;
+
+			if (canMerge)
+			{
+				mask |= bit;
+				if (shaderIdx == 0)
+					shaderIdx = neighbor.TileColor;
+			}
 		}
-		else if (up && left && right) //Open ends
+	}
+}
+
+/* adapted from: https://github.com/Trivaxy/JadeFables/blob/main/Helpers/DrawHelper.cs */
+
+internal sealed class GarbagePaintHackSystem : ModSystem
+{
+	internal readonly record struct Key(int ThingType, int PaintColor);
+
+	internal class RtHolder(Key key, string texturePath, int copySettingsFrom = -1) : TilePaintSystemV2.ARenderTargetHolder
+	{
+		public Key Key = key;
+		public TreePaintingSettings PaintSettings = TreePaintSystemData.GetTileSettings(copySettingsFrom, 0);
+		public string TexturePath = texturePath;
+
+		public override void Prepare()
 		{
-			frameX = 72;
-			frameY = 0;
-		}
-		else if (left && up && down)
-		{
-			frameX = 90;
-			frameY = 0;
-		}
-		else if (left && right && down)
-		{
-			frameX = 72;
-			frameY = 18;
-		}
-		else if (right && up && down)
-		{
-			frameX = 90;
-			frameY = 18;
-		}
-		else if (up && down) //Opposites
-		{
-			frameX = 54;
-			frameY = 0;
-		}
-		else if (left && right)
-		{
-			frameX = 54;
-			frameY = 18;
-		}
-		else if (up && left) //Inner corners
-		{
-			frameX = 0;
-			frameY = 0;
-		}
-		else if (down && left)
-		{
-			frameX = 0;
-			frameY = 36;
-		}
-		else if (up && right)
-		{
-			frameX = 36;
-			frameY = 0;
-		}
-		else if (down && right)
-		{
-			frameX = 36;
-			frameY = 36;
-		}
-		else if (up) //Sides
-		{
-			frameX = 18;
-			frameY = 0;
-		}
-		else if (down)
-		{
-			frameX = 18;
-			frameY = 36;
-		}
-		else if (left)
-		{
-			frameX = 0;
-			frameY = 18;
-		}
-		else if (right)
-		{
-			frameX = 36;
-			frameY = 18;
+			Asset<Texture2D> asset = ModContent.Request<Texture2D>(TexturePath);
+			asset.Wait?.Invoke();
+			PrepareTextureIfNecessary(asset.Value);
 		}
 
-		frame = new Point(frameX, frameY);
-		return true;
+		public override void PrepareShader() => PrepareShader(Key.PaintColor, PaintSettings);
 	}
 
-	private static void GetMerge(int i, int j, int mergeType, out bool up, out bool down, out bool left, out bool right)
+	private static IList<TilePaintSystemV2.ARenderTargetHolder> _paintSystemRequests;
+
+	public override void Load()
 	{
-		Tile tile = Main.tile[i, j];
-		Tile upTile = Main.tile[i, j - 1];
-		Tile downTile = Main.tile[i, j + 1];
-		Tile leftTile = Main.tile[i - 1, j];
-		Tile rightTile = Main.tile[i + 1, j];
+		FieldInfo field = typeof(TilePaintSystemV2).GetField("_requests", BindingFlags.NonPublic | BindingFlags.Instance);
 
-		up = down = left = right = false;
+		Debug.Assert(field != null);
 
-		if (upTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.BottomSlope || tile.Slope == SlopeType.Solid) && (upTile.TopSlope || upTile.Slope == SlopeType.Solid))
+		_paintSystemRequests = field.GetValue(Main.instance.TilePaintSystem) as IList<TilePaintSystemV2.ARenderTargetHolder>;
+	}
+
+	public static event Action ClearRenderTargets;
+	public override void Unload() => Main.QueueMainThreadAction(() => ClearRenderTargets?.Invoke());
+
+	public static Texture2D TryGetTexturePaintAndRequestIfNotReady(
+		Dictionary<Key, RtHolder> textureDict,
+		int type,
+		int paintColor,
+		string texturePath,
+		int copySettingsFrom = -1)
+	{
+		Key key = new(type, paintColor);
+
+		if (textureDict.TryGetValue(key, out RtHolder holder))
 		{
-			up = true;
+			if (holder.IsReady)
+				return holder.Target;
+		}
+		else
+		{
+			var newHolder = new RtHolder(key, texturePath, copySettingsFrom);
+			textureDict[key] = newHolder;
+			_paintSystemRequests?.Add(newHolder);
 		}
 
-		if (downTile.HasTileType(mergeType) && (!tile.TopSlope || tile.Slope == SlopeType.Solid) && (downTile.BottomSlope || downTile.Slope == SlopeType.Solid))
-		{
-			down = true;
-		}
-
-		if (leftTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.RightSlope || tile.Slope == SlopeType.Solid) && (leftTile.LeftSlope || leftTile.Slope == SlopeType.Solid))
-		{
-			left = true;
-		}
-
-		if (rightTile.HasTileType(mergeType) && !tile.IsHalfBlock && (tile.LeftSlope || tile.Slope == SlopeType.Solid) && (rightTile.RightSlope || rightTile.Slope == SlopeType.Solid))
-		{
-			right = true;
-		}
+		return null;
 	}
 }

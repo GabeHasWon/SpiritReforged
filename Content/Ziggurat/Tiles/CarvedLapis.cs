@@ -128,6 +128,7 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Cobalt;
 		this.AutoItem().ResearchUnlockCount = 100;
+		HitSound = SoundID.Tink;
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());

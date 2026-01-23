@@ -373,13 +373,16 @@ internal class SaltFlatsEcotone : EcotoneBase
 			j--;
 
 			Tile tile = Main.tile[x, j];
-			Tile belowTile = Main.tile[x, j + 1];
+			Tile belowTile = Framing.GetTileSafely(x, j + 1);
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>())
-				&& (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;
+			}
+			else if (anySuccess)
+			{
+				return true;
 			}
 		}
 
