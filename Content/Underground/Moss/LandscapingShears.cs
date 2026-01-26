@@ -9,6 +9,77 @@ namespace SpiritReforged.Content.Underground.Moss;
 
 public class LandscapingShears : ModItem
 {
+	public class LandscapingShearsHeld : ModProjectile
+	{
+		public float Progress => (float)Projectile.timeLeft / AnimationMax;
+
+		public static readonly SoundStyle Clip = new("SpiritReforged/Assets/SFX/Item/Clippers")
+		{
+			PitchVariance = .4f
+		};
+
+		public override LocalizedText DisplayName => ModContent.GetInstance<LandscapingShears>().DisplayName;
+		public override void SetStaticDefaults() => Main.projFrames[Type] = 2;
+
+		public override void SetDefaults()
+		{
+			Projectile.Size = new Vector2(36);
+			Projectile.DamageType = DamageClass.MeleeNoSpeed;
+			Projectile.friendly = true;
+			Projectile.ignoreWater = true;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.scale = 0.8f;
+			Projectile.timeLeft = AnimationMax;
+		}
+
+		public override void AI()
+		{
+			Player owner = Main.player[Projectile.owner];
+
+			int holdDistance = 16 + (int)(Math.Sin(Progress * 3.14f) * 10f);
+			float rotation = Projectile.velocity.ToRotation();
+			Vector2 position = owner.MountedCenter + new Vector2(holdDistance, 0).RotatedBy(rotation);
+
+			Projectile.direction = Projectile.spriteDirection = owner.direction;
+			Projectile.Center = owner.RotatedRelativePoint(position);
+			Projectile.rotation = rotation;
+			Projectile.frame = Math.Min((int)(Progress * 1.8f), 1);
+
+			owner.heldProj = Projectile.whoAmI;
+			owner.itemAnimation = owner.itemTime = 2;
+			owner.ChangeDir((Projectile.velocity.X < 0) ? -1 : 1);
+
+			float armRotation = Projectile.rotation - 1.57f;
+
+			if ((int)(Progress * 10f) == 4)
+				SoundEngine.PlaySound(Clip, Projectile.Center);
+
+			float spread = 1f;
+			if (Projectile.frame == 0)
+			{
+				Projectile.scale = Math.Min(Projectile.scale + 0.04f, 1.05f);
+				spread = 0.2f;
+			}
+
+			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation + spread * owner.direction);
+			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation - spread * owner.direction);
+		}
+
+		public override bool ShouldUpdatePosition() => false;
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			Vector2 position = new((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y));
+			SpriteEffects effects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
+			Rectangle source = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, 0, -2);
+
+			Main.EntitySpriteDraw(texture, position, source, Projectile.GetAlpha(lightColor), Projectile.rotation, source.Size() / 2, Projectile.scale, effects);
+			return false;
+		}
+	}
+
 	public const int AnimationMax = 15;
 
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.BestiaryGirl, new NPCShop.Entry(Type)));
@@ -28,77 +99,6 @@ public class LandscapingShears : ModItem
 		Item.DamageType = DamageClass.MeleeNoSpeed;
 		Item.damage = 10;
 		Item.knockBack = 1;
-	}
-}
-
-internal class LandscapingShearsHeld : ModProjectile
-{
-	public float Progress => (float)Projectile.timeLeft / LandscapingShears.AnimationMax;
-
-	public static readonly SoundStyle Clip = new("SpiritReforged/Assets/SFX/Item/Clippers")
-	{
-		PitchVariance = .4f
-	};
-
-	public override LocalizedText DisplayName => ModContent.GetInstance<LandscapingShears>().DisplayName;
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 2;
-
-	public override void SetDefaults()
-	{
-		Projectile.Size = new Vector2(36);
-		Projectile.DamageType = DamageClass.MeleeNoSpeed;
-		Projectile.friendly = true;
-		Projectile.ignoreWater = true;
-		Projectile.tileCollide = false;
-		Projectile.penetrate = -1;
-		Projectile.scale = 0.8f;
-		Projectile.timeLeft = LandscapingShears.AnimationMax;
-	}
-
-	public override void AI()
-	{
-		var owner = Main.player[Projectile.owner];
-
-		int holdDistance = 16 + (int)(Math.Sin(Progress * 3.14f) * 10f);
-		float rotation = Projectile.velocity.ToRotation();
-		var position = owner.MountedCenter + new Vector2(holdDistance, 0).RotatedBy(rotation);
-
-		Projectile.direction = Projectile.spriteDirection = owner.direction;
-		Projectile.Center = owner.RotatedRelativePoint(position);
-		Projectile.rotation = rotation;
-		Projectile.frame = Math.Min((int)(Progress * 1.8f), 1);
-
-		owner.heldProj = Projectile.whoAmI;
-		owner.direction = (Projectile.velocity.X < 0) ? -1 : 1;
-		owner.itemAnimation = owner.itemTime = 2;
-
-		float armRotation = Projectile.rotation - 1.57f;
-
-		if ((int)(Progress * 10f) == 4)
-			SoundEngine.PlaySound(Clip, Projectile.Center);
-
-		float spread = 1f;
-		if (Projectile.frame == 0)
-		{
-			Projectile.scale = Math.Min(Projectile.scale + 0.04f, 1.05f);
-			spread = 0.2f;
-		}
-
-		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation + spread * owner.direction);
-		owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRotation - spread * owner.direction);
-	}
-
-	public override bool ShouldUpdatePosition() => false;
-
-	public override bool PreDraw(ref Color lightColor)
-	{
-		var texture = TextureAssets.Projectile[Type].Value;
-		var position = new Vector2((int)(Projectile.Center.X - Main.screenPosition.X), (int)(Projectile.Center.Y - Main.screenPosition.Y));
-		var effects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
-		var source = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, 0, -2);
-
-		Main.EntitySpriteDraw(texture, position, source, Projectile.GetAlpha(lightColor), Projectile.rotation, source.Size() / 2, Projectile.scale, effects);
-		return false;
 	}
 }
 
