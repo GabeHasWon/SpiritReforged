@@ -2879,3 +2879,8 @@ BronzeGrateDoorItem: {
 	// DisplayName: Bronze Grate Door
 	// Tooltip: ""
 }
+
+GildedRedSandstoneItem: {
+	// DisplayName: Gilded Red Sandstone Item
+	// Tooltip: ""
+}
