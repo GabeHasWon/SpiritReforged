@@ -10,6 +10,14 @@ sampler textureSampler = sampler_state
     AddressV = wrap;
 };
 
+texture uTexture2;
+sampler textureSampler2 = sampler_state
+{
+    Texture = (uTexture2);
+    AddressU = wrap;
+    AddressV = wrap;
+};
+
 float2 textureStretch;
 float2 pixelDimensions;
 
@@ -58,18 +66,18 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     baseCoords = round(baseCoords * pixelDimensions) / pixelDimensions;
     
     float2 texCoordsA = float2(baseCoords.x + scroll.x, baseCoords.y + scroll.y) * textureStretch;
-    float2 texCoordsB = float2(baseCoords.x + scroll.x, baseCoords.y + scroll.y / 2) * textureStretch / 2;
+    float2 texCoordsB = float2(baseCoords.x + scroll.x, baseCoords.y + scroll.y) * textureStretch;
     
     //combine 2 different samplings of noise
-    float strength = (tex2D(textureSampler, texCoordsA).r + tex2D(textureSampler, texCoordsB).r) / 2;
-    strength = pow(strength, lerp(5, 0.15f, baseCoords.y));
-    
+    float strength = (tex2D(textureSampler, texCoordsA).r + tex2D(textureSampler2, texCoordsB).r) / 2;
     float flipYCoord = (1 - baseCoords.y);
     float fadeXCoords = (direction > 0) ? baseCoords.x : (1 - baseCoords.x);
     
     float fadeThreshold = pow(progress, lerp(0.25f, 3, fadeXCoords));
-    fadeThreshold *= pow(fadeXCoords, 0.7f);
+    fadeThreshold *= lerp(0.2f, 1, fadeXCoords);
     float fadeDist = verticalFade * progress;
+    
+    strength = pow(strength, lerp(3, 0.33f, 1 - (flipYCoord / fadeThreshold)));
     
     //fade out at top
     if (flipYCoord > max(fadeThreshold - fadeDist, 0))
@@ -80,36 +88,24 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     }
     
     //fade out at horizontal edge
-    if (fadeXCoords > 0.9f)
+    if (fadeXCoords > 0.9f * progress)
     {
-        float smoothStepFade = smoothstep(0.9f, 1, fadeXCoords);
+        float smoothStepFade = smoothstep(0.9f * progress, (0.9f * progress) + 0.1f, fadeXCoords);
         strength *= 1 - smoothStepFade;
         strength = pow(strength, lerp(1, 2, smoothStepFade));
     }
     
-    //fade out from bottom
-    float bottomFadeThreshold = pow(max(progress - 0.75f, 0) * 4, lerp(0.25f, 2.5f, fadeXCoords));
-    strength = pow(strength, lerp(1, 4, bottomFadeThreshold));
-    
-    if (flipYCoord < bottomFadeThreshold)
-    {
-        float vertFade2 = lerp(verticalFade, 0, bottomFadeThreshold);
-        float smoothStepFade = 1 - smoothstep(max(bottomFadeThreshold - vertFade2, 0), bottomFadeThreshold, flipYCoord);
-        strength = pow(strength, lerp(1, 4, smoothStepFade));
-        strength *= 1 - smoothStepFade;
-    }
-    
-    float colorStrength = pow(strength, 0.5f);
+    float colorStrength = pow(strength, 0.75f);
     colorStrength = round(colorStrength * numColors) / numColors;
     
     float4 finalColor = uColor;
     
-    if (strength < 0.5f)
+    if (colorStrength < 0.5f)
         finalColor = lerp(uColor3, uColor2, colorStrength * 2);
     else
         finalColor = lerp(uColor2, uColor, (colorStrength - 0.5f) * 2);
     
-    return input.Color * finalColor * finalIntensityMod * pow(strength, 0.5f);
+    return input.Color * finalColor * finalIntensityMod * pow(strength, 0.75f);
 }
 
 technique BasicColorDrawing

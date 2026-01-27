@@ -43,17 +43,18 @@ public class SlamShockwave : ModProjectile
 		Effect shockwaveEffect = Mod.Assets.Request<Effect>("Assets/Shaders/GroundShockwave", AssetRequestMode.ImmediateLoad).Value;
 
 		shockwaveEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
-		shockwaveEffect.Parameters["textureStretch"].SetValue(new Vector2(3, 0.16f) * 1.5f);
+		shockwaveEffect.Parameters["uTexture2"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		shockwaveEffect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.16f) * 1.5f);
 		shockwaveEffect.Parameters["pixelDimensions"].SetValue(new Vector2(Projectile.width, Projectile.height) / 4);
 
-		shockwaveEffect.Parameters["uColor"].SetValue(Color.LightGoldenrodYellow.ToVector4());
-		shockwaveEffect.Parameters["uColor2"].SetValue(Color.SandyBrown.ToVector4());
-		shockwaveEffect.Parameters["uColor3"].SetValue(Color.SaddleBrown.ToVector4());
+		shockwaveEffect.Parameters["uColor"].SetValue(Color.LightYellow.Additive(240).ToVector4());
+		shockwaveEffect.Parameters["uColor2"].SetValue(Color.PaleGoldenrod.Additive(180).ToVector4());
+		shockwaveEffect.Parameters["uColor3"].SetValue(Color.DarkGoldenrod.Additive(120).ToVector4());
 
-		float progress = EaseFunction.EaseCircularOut.Ease(1 - Projectile.timeLeft / (float)MAX_TIMELEFT);
-		shockwaveEffect.Parameters["finalIntensityMod"].SetValue(1.3f);
-		shockwaveEffect.Parameters["numColors"].SetValue(12);
-		shockwaveEffect.Parameters["scroll"].SetValue(new Vector2(-Projectile.ai[0] * progress * 0.66f, -progress * 0.66f));
+		float progress = EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularOut.Ease(1 - Projectile.timeLeft / (float)MAX_TIMELEFT));
+		shockwaveEffect.Parameters["finalIntensityMod"].SetValue(1.5f);
+		shockwaveEffect.Parameters["numColors"].SetValue(180);
+		shockwaveEffect.Parameters["scroll"].SetValue(new Vector2(-Projectile.ai[0] * EaseFunction.EaseCubicIn.Ease(progress) * 0.33f, -EaseFunction.EaseCubicIn.Ease(progress)));
 		shockwaveEffect.Parameters["progress"].SetValue(progress);
 		shockwaveEffect.Parameters["direction"].SetValue(Projectile.ai[0]);
 
