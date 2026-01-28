@@ -140,6 +140,13 @@ internal class OasisMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
+			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
+			if (WorldGen.genRand.NextBool(3))
+				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
+
+			if (WorldGen.genRand.NextBool(3))
+				WorldUtils.Gen(a.Location + new Point(1, a.Height), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add bottom platforms
+
 			for (int p = -1; p < a.Width + 1; p++)
 			{
 				bool isTile = p < 1 || p >= a.Width - 1;
@@ -166,6 +173,7 @@ internal class OasisMicropass : Micropass
 			.Enqueue(ZigguratMicropass.PlacePot, segments * 2)
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
 			.Enqueue(ZigguratMicropass.PlaceDoor, 1)
+			.Enqueue(PlaceTorch, WorldGen.genRand.Next(1, 4))
 			.Run();
 
 		return result;
@@ -179,6 +187,14 @@ internal class OasisMicropass : Micropass
 
 			return result;
 		}
+	}
+
+	private static bool PlaceTorch(int x, int y)
+	{
+		Tile below = Framing.GetTileSafely(x, y + 1);
+		Tile farBelow = Framing.GetTileSafely(x, y + 2);
+
+		return !WorldGen.SolidOrSlopedTile(below) && WorldGen.SolidOrSlopedTile(farBelow) && Placer.PlaceTile<ZigguratTorch>(x, y).success;
 	}
 
 	private static void DropPillar(int x, int y, int tileType, int wallType, out int lowestY, int length = 0)
