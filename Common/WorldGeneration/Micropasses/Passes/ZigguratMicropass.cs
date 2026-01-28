@@ -436,8 +436,8 @@ internal class ZigguratMicropass : Micropass
 
 	private static bool AddFlagpole(int x, int y)
 	{
-		int height = WorldGen.genRand.Next(2, 6);
-		int flagDepth = Math.Min(WorldGen.genRand.Next(0, 2), height - 1);
+		int height = WorldGen.genRand.Next(3, 7);
+		int flagHeight = Math.Max(height - WorldGen.genRand.Next(0, 2), 3);
 		bool result = false;
 
 		if (Main.tile[x, y].WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
@@ -447,7 +447,7 @@ internal class ZigguratMicropass : Micropass
 				PlaceAttempt attempt = Placer.PlaceTile<FlagRing>(x, y - i);
 				result |= attempt.success;
 
-				if (i == height - 1 - flagDepth)
+				if (i == flagHeight - 1)
 				{
 					Main.tile[x, y - i].TileFrameY = FlagRing.SlopeFrame;
 

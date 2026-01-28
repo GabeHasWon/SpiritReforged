@@ -140,13 +140,6 @@ internal class OasisMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
-			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
-			if (WorldGen.genRand.NextBool(3))
-				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
-
-			if (WorldGen.genRand.NextBool(3))
-				WorldUtils.Gen(a.Location + new Point(1, a.Height), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add bottom platforms
-
 			for (int p = -1; p < a.Width + 1; p++)
 			{
 				bool isTile = p < 1 || p >= a.Width - 1;
