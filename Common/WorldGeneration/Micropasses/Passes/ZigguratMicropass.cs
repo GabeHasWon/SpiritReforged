@@ -470,7 +470,7 @@ internal class ZigguratMicropass : Micropass
 
 	public static bool PlaceDoor(int x, int y)
 	{
-		if (Main.tile[x, y].TileType != TileID.Sand && SolidRange(new(x, y - 5, 1, 5)))
+		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && SolidRange(new(x, y - 1, 1, 5)) && !SolidRange(new(x - 1, y, 1, 3)) && !SolidRange(new(x + 1, y, 1, 3)))
 		{
 			for (int i = 0; i < 3; i++)
 				Framing.GetTileSafely(x, y + i).ClearTile();
@@ -484,7 +484,8 @@ internal class ZigguratMicropass : Micropass
 
 				WorldUtils.Gen(new(x - 1, y + 3), new Shapes.Rectangle(3, 1), Actions.Chain(
 					new Modifiers.IsNotSolid(),
-					new Actions.SetTileKeepWall((ushort)ModContent.TileType<BronzePlatform>())
+					new Actions.SetTileKeepWall((ushort)ModContent.TileType<BronzePlatform>()),
+					new Actions.Smooth()
 				));
 
 				return true;

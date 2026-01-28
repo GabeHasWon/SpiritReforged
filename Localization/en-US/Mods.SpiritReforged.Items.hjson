@@ -2884,3 +2884,8 @@ GildedRedSandstoneItem: {
 	DisplayName: Gilded Red Sandstone
 	Tooltip: ""
 }
+
+BronzeGrateBlockItem: {
+	DisplayName: Bronze Grate Block
+	Tooltip: ""
+}
