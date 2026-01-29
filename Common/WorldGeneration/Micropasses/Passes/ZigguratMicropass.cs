@@ -199,6 +199,13 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
+			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
+			if (WorldGen.genRand.NextBool(3))
+				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
+
+			if (WorldGen.genRand.NextBool(3))
+				WorldUtils.Gen(a.Location + new Point(1, a.Height), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add bottom platforms
+
 			for (int p = -1; p < a.Width + 1; p++)
 			{
 				bool isTile = p < 1 || p >= a.Width - 1;
@@ -429,8 +436,8 @@ internal class ZigguratMicropass : Micropass
 
 	private static bool AddFlagpole(int x, int y)
 	{
-		int height = WorldGen.genRand.Next(2, 6);
-		int flagDepth = Math.Min(WorldGen.genRand.Next(0, 2), height - 1);
+		int height = WorldGen.genRand.Next(3, 7);
+		int flagHeight = Math.Max(height - WorldGen.genRand.Next(0, 2), 3);
 		bool result = false;
 
 		if (Main.tile[x, y].WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
@@ -440,7 +447,7 @@ internal class ZigguratMicropass : Micropass
 				PlaceAttempt attempt = Placer.PlaceTile<FlagRing>(x, y - i);
 				result |= attempt.success;
 
-				if (i == height - 1 - flagDepth)
+				if (i == flagHeight - 1)
 				{
 					Main.tile[x, y - i].TileFrameY = FlagRing.SlopeFrame;
 
@@ -470,7 +477,7 @@ internal class ZigguratMicropass : Micropass
 
 	public static bool PlaceDoor(int x, int y)
 	{
-		if (Main.tile[x, y].TileType != TileID.Sand && SolidRange(new(x, y - 5, 1, 5)))
+		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && SolidRange(new(x, y - 1, 1, 5)) && !SolidRange(new(x - 1, y, 1, 3)) && !SolidRange(new(x + 1, y, 1, 3)))
 		{
 			for (int i = 0; i < 3; i++)
 				Framing.GetTileSafely(x, y + i).ClearTile();
@@ -484,7 +491,7 @@ internal class ZigguratMicropass : Micropass
 
 				WorldUtils.Gen(new(x - 1, y + 3), new Shapes.Rectangle(3, 1), Actions.Chain(
 					new Modifiers.IsNotSolid(),
-					new Actions.SetTileKeepWall((ushort)ModContent.TileType<BronzePlatform>())
+					new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>())
 				));
 
 				return true;

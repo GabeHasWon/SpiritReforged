@@ -109,6 +109,7 @@ public class Magmastone : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Asphalt;
 		MineResist = .5f;
+		HitSound = SoundID.Tink;
 
 		Mod.Find<ModItem>(Name + "Item").Item.ResearchUnlockCount = 100;
 	}

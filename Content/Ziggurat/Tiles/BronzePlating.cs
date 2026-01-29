@@ -20,5 +20,6 @@ public class BronzePlating : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Copper;
 		this.AutoItem().ResearchUnlockCount = 100;
+		HitSound = SoundID.Tink;
 	}
 }

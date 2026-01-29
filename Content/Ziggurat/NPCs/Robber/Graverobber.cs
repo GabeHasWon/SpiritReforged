@@ -250,7 +250,7 @@ public class Graverobber : ModNPC
 
 		if ((player.ZoneDesert || player.ZoneUndergroundDesert) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>())
 			&& aboveWallType != WallID.None && !Main.wallHouse[aboveWallType])
-			return 0.28f;
+			return 0.18f;
 
 		return SpawnCondition.Cavern.Chance * 0.05f;
 	}

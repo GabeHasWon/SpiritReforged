@@ -166,7 +166,9 @@ public class HydrothermalVent : ModTile
 	public static void Erupt(int i, int j)
 	{
 		var t = Framing.GetTileSafely(i, j);
-		int fullWidth = TileObjectData.GetTileData(t).CoordinateFullWidth;
+		if (TileObjectData.GetTileData(t) is not { } tileData)
+			return;
+		int fullWidth = tileData.CoordinateFullWidth;
 		var position = new Vector2(i, j) * 16 + tops[t.TileFrameX / fullWidth].ToVector2();
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)

@@ -2880,6 +2880,16 @@ BronzeGrateDoorItem: {
 	// Tooltip: ""
 }
 
+GildedRedSandstoneItem: {
+	// DisplayName: Gilded Red Sandstone
+	// Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	// DisplayName: Bronze Grate Block
+	// Tooltip: ""
+}
+
 BedouinBreastplate: {
 	// DisplayName: Bedouin Breastplate
 	// Tooltip: 5% increased damage

@@ -171,6 +171,12 @@ public partial class ZigguratBiome : Microbiome
 
 		WorldMethods.FindGround(i, ref j);
 		WorldGen.PlaceTile(i, j - 1, ModContent.TileType<ScarabAltar>(), true);
+
+		const int width = 8;
+		WorldUtils.Gen(new(i - width / 2, j), new Shapes.Rectangle(width, 2), Actions.Chain(
+			new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+			new Actions.SetTileKeepWall((ushort)ModContent.TileType<GildedRedSandstone>())
+		));
 	}
 
 	/// <summary> Randomly adds weathering. </summary>

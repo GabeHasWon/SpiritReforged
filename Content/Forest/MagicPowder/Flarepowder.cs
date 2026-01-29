@@ -321,7 +321,7 @@ internal class FlarepowderDust : ModProjectile
 		return false;
 	}
 
-	public override bool? CanCutTiles() => false;
+	public override bool? CanCutTiles() => (Projectile.timeLeft <= 1) ? null : false;
 	public override bool? CanDamage() => (Projectile.timeLeft <= 1) ? null : false;
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((ushort)Projectile.timeLeft);
