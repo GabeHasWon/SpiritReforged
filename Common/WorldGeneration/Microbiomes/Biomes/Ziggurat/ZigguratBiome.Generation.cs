@@ -100,7 +100,7 @@ public partial class ZigguratBiome : Microbiome
 				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
 			));
 
-			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall(WallID.Sandstone));
+			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall((ushort)ModContent.WallType<SandyZigguratWall>()));
 			Rectangle bound = new(topLeft.X, topLeft.Y, width, height);
 
 			bounds.Add(bound);
@@ -221,7 +221,7 @@ public partial class ZigguratBiome : Microbiome
 
 								WorldUtils.Gen(new(x, y), new Shapes.Circle(WorldGen.genRand.Next(5, 12)), Actions.Chain(
 									new Modifiers.RadialDither(3, 6),
-									new Modifiers.OnlyWalls(WallID.Sandstone, (ushort)RedSandstoneBrickWall.UnsafeType),
+									new Modifiers.OnlyWalls((ushort)ModContent.WallType<SandyZigguratWall>(), (ushort)RedSandstoneBrickWall.UnsafeType),
 									new Actions.PlaceWall(WallID.HardenedSand)
 								));
 							}
@@ -771,7 +771,7 @@ public partial class ZigguratBiome : Microbiome
 	private static bool BlockOutWalls(int i, int j, object args)
 	{
 		Tile tile = Main.tile[i, j];
-		if (tile.WallType == WallID.Sandstone && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
+		if (tile.WallType == (ushort)ModContent.WallType<SandyZigguratWall>() && !TotalRooms.Any(x => x.Intersects(new Point(i, j), 1)))
 		{
 			int type = WorldGen.genRand.NextBool(3) ? RedSandstoneBrickCrackedWall.UnsafeType : RedSandstoneBrickWall.UnsafeType;
 			tile.WallType = (ushort)type; //Add unsafe walls to hallways
