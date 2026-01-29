@@ -30,7 +30,7 @@ public class DoubleTapPlayer : ModPlayer
 	public override void SetControls()
 	{
 		if (Player.controlUp && Player.releaseUp)
-			ReadInput(Direction.Left);
+			ReadInput(Direction.Up);
 
 		if (Player.controlRight && Player.releaseRight)
 			ReadInput(Direction.Right);

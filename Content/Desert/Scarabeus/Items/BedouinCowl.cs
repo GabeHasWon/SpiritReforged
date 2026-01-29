@@ -46,8 +46,8 @@ public class BedouinCowl : ModItem
 			{
 				const float density = 20f;
 
-				Main.instance.LoadProjectile(657);
-				Texture2D texture = TextureAssets.Projectile[657].Value;
+				Main.instance.LoadProjectile(ProjectileID.SandnadoHostile);
+				Texture2D texture = TextureAssets.Projectile[ProjectileID.SandnadoHostile].Value;
 				Rectangle source = texture.Frame();
 
 				for (float i = 0; i < (int)density; i++)
@@ -68,19 +68,6 @@ public class BedouinCowl : ModItem
 			Color finalColor = Lighting.GetColor(player.Center.ToTileCoordinates()).MultiplyRGBA(tint) * 0.5f * EaseFunction.EaseSine.Ease(player.GetModPlayer<DashPlayer>().DashProgress);
 
 			return finalColor;
-		}
-	}
-
-	public sealed class VanishPlayer : ModPlayer
-	{
-		public override void HideDrawLayers(PlayerDrawSet drawInfo)
-		{
-
-		}
-
-		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
-		{
-
 		}
 	}
 

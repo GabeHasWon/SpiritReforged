@@ -95,7 +95,7 @@ public sealed class DashPlayer : ModPlayer
 
 			if (Math.Abs(Player.velocity.X) > dashInfo.MaximumSpeed)
 			{
-				Player.velocity.X = Player.velocity.X * dashInfo.Decay;
+				Player.velocity.X *= dashInfo.Decay;
 			}
 			else
 			{
