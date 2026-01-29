@@ -10,9 +10,9 @@ namespace SpiritReforged.Content.Granite.Armor;
 public class GraniteBody : ModItem
 {
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;
-	private static void DoubleTap(Player player, int keyDir)
+	private static void DoubleTap(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (keyDir == 0 && !EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
+		if (direction == DoubleTapPlayer.Direction.Down && !EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
 			EnergyPlunge.Begin(player);
 	}
 

@@ -88,9 +88,9 @@ public class SleightOfHand : EquippableItem
 
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += CycleAmmo;
 
-	private static void CycleAmmo(Player player, int keyDir)
+	private static void CycleAmmo(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (keyDir != 1 || player.HeldItem.useAmmo == AmmoID.None || !player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<SleightOfHand>().Name) is true)
+		if (direction != DoubleTapPlayer.Direction.Down || player.HeldItem.useAmmo == AmmoID.None || !player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<SleightOfHand>().Name) is true)
 			return;
 
 		var ammoItems = new List<Item>();
