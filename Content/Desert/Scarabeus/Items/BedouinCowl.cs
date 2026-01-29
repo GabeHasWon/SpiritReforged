@@ -11,7 +11,7 @@ public class BedouinCowl : ModItem
 {
 	public sealed class BedouinDash : ModDash
 	{
-		public override void SetDefaults(out DashInfo info) => info = new(30, 25, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
+		public override void SetDefaults(out DashInfo info) => info = new(15, 25, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
 
 		public override void DashEffects(Player player)
 		{
@@ -30,6 +30,7 @@ public class BedouinCowl : ModItem
 				}
 			}
 
+			player.opacityForAnimation = (player.GetModPlayer<DashPlayer>().DashProgress > 0.5f) ? 1f : 0.1f;
 			player.noKnockback = true;
 		}
 	}
@@ -40,9 +41,6 @@ public class BedouinCowl : ModItem
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.shadow != 0f)
-				return;
-
 			Player player = drawInfo.drawPlayer;
 			if (player.active && !player.outOfRange && player.GetModPlayer<DashPlayer>().ActiveDash is BedouinDash)
 			{
@@ -73,11 +71,24 @@ public class BedouinCowl : ModItem
 		}
 	}
 
+	public sealed class VanishPlayer : ModPlayer
+	{
+		public override void HideDrawLayers(PlayerDrawSet drawInfo)
+		{
+
+		}
+
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+
+		}
+	}
+
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTapPlayer_OnDoubleTap;
 
 	private static void DoubleTapPlayer_OnDoubleTap(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (player.CheckFlag(nameof(BedouinCowl)) == true && (direction == DoubleTapPlayer.Direction.Left || direction == DoubleTapPlayer.Direction.Right))
+		if (player.CheckFlag("Bedouin") == true && (direction == DoubleTapPlayer.Direction.Left || direction == DoubleTapPlayer.Direction.Right))
 			player.GetModPlayer<DashPlayer>().EnableDash<BedouinDash>();
 	}
 
@@ -91,10 +102,11 @@ public class BedouinCowl : ModItem
 	}
 
 	public override bool IsArmorSet(Item head, Item body, Item legs) => head.type == Type && body.type == ModContent.ItemType<BedouinBreastplate>() && legs.type == ModContent.ItemType<BedouinLeggings>();
-	public override void UpdateArmorSet(Player player) => player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Bedouin");
-	public override void UpdateEquip(Player player)
+	public override void UpdateArmorSet(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) += 5;
-		player.SetFlag(nameof(BedouinCowl));
+		player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Bedouin");
+		player.SetFlag("Bedouin");
 	}
+
+	public override void UpdateEquip(Player player) => player.GetCritChance(DamageClass.Generic) += 5;
 }
