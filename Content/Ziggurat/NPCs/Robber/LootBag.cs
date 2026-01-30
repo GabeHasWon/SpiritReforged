@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
@@ -7,6 +8,7 @@ using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.ModLoader;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.Robber;
 
@@ -205,6 +207,15 @@ public class LootBag : ModNPC
 		npcLoot.AddCommon(ItemID.Ruby, 3, 1, 2);
 		npcLoot.AddCommon(ItemID.Amber, 4, 1, 2);
 		npcLoot.AddCommon(ItemID.Diamond, 4, 1, 2);
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("Opal", out ModItem opal))
+				npcLoot.AddCommon(opal.Type, 3, 1, 2);
+
+			if (CrossMod.Thorium.TryFind("Aquamarine", out ModItem aquamarine))
+				npcLoot.AddCommon(aquamarine.Type, 3, 1, 2);
+		}
 
 		LeadingConditionRule rule = new(new InZiggurat());
 		rule.OnSuccess(ItemDropRule.Common(AutoContent.ItemType<CarvedLapis>(), 1, 10, 35));

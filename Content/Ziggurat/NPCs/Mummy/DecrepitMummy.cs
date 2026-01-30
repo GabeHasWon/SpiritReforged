@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Ziggurat.Biome;
-using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -34,7 +34,14 @@ internal class DecrepitMummy : ModNPC
 	public float LifeProgress => 1f - NPC.life / (float)NPC.lifeMax;
 	public ref float Style => ref NPC.ai[0];
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 15;
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 15;
+		PersistentNPCSystem.PersistentTypes.Add(Type);
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+	}
 
 	public override void SetDefaults()
 	{
@@ -142,14 +149,8 @@ internal class DecrepitMummy : ModNPC
 			target.AddBuff(BuffID.Slow, 60 * 15);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo)
-	{
-		int type = spawnInfo.SpawnTileType;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Common() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
 
-		return ((type == ModContent.TileType<RedSandstoneBrick>() || type == ModContent.TileType<RedSandstoneBrickCracked>() || type == ModContent.TileType<RedSandstoneSlab>()) && 
-			!Main.wallHouse[Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].WallType]) ? 0.005f : 0;
-	}
-	   
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		LeadingConditionRule isTrapSpawned = new(new TrapSpawnedRule(true));

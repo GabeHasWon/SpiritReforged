@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
@@ -66,6 +67,16 @@ public class AmberFossil : EntityTile<FossilEntity>
 		RandomItem.AddRange(1f, ItemID.Grasshopper, ItemID.Frog);
 		RandomItem.AddRange(0.05f, ItemID.GoldFrog, ItemID.GoldDragonfly, ItemID.GoldGrasshopper);
 		RandomItem.AddRange(0.04f, ModContent.ItemType<TinyDragon>());
+
+		if (CrossMod.Fables.CheckFind("StormlionLarvaItem", out ModItem stormlionLarva))
+			RandomItem.Add(stormlionLarva.Type, 0.08f);
+
+		if (CrossMod.Thorium.CheckFind("SpikedBracer", out ModItem bracer))
+			RandomItem.Add(bracer.Type, 0.04f);
+
+		if (CrossMod.Verdant.CheckFind("SnailShellBlockItem", out ModItem snailShell))
+			RandomItem.Add(snailShell.Type, 0.005f);
+
 		#endregion
 	}
 

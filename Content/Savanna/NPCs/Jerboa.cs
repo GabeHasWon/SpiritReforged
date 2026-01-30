@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
 using Terraria.Audio;
@@ -224,10 +223,15 @@ public class Jerboa : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (!spawnInfo.Common() || spawnInfo.Water || !spawnInfo.Player.InModBiome<SavannaBiome>() || !SceneTileCounter.GetSurvey<SaltBiome>().tileTypes.Contains(spawnInfo.SpawnTileType))
-			return 0;
+		if (spawnInfo.Common() && !spawnInfo.Water && spawnInfo.Player.InModBiome<SavannaBiome>())
+		{
+			Tile tile = Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY];
 
-		return 0.2f;
+			if (tile.WallType == WallID.None && SceneTileCounter.GetSurvey<SavannaBiome>().tileTypes.Contains(spawnInfo.SpawnTileType))
+				return 0.2f;
+		}
+
+		return 0;
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)AnimationState);

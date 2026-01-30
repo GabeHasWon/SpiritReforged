@@ -989,7 +989,7 @@ RogueCrest: {
 		'''
 		召唤一把生锈的剑为你而战
 		剑不会占用召唤栏位
-		偶尔会对敌人造成开放性伤口减益，使其在受到近战或鞭子攻击时流血
+		偶尔会对敌人造成开放性伤口减益，使其在受到近战攻击时流血
 		'''
 }
 
@@ -1970,8 +1970,8 @@ SharpshooterGlove: {
 	DisplayName: 神射手手套
 	Tooltip:
 		'''
-		增加在一定距离时的远程伤害
-		增加在此范围内连续射击时造成的伤害
+		在特定距离外时会增加远程伤害
+		在该范围外连续射击时会逐渐增加造成的伤害
 		'''
 }
 
@@ -2853,4 +2853,54 @@ SaltTallGateItem: {
 EnlilStatueItem: {
 	// DisplayName: Enlil Statue
 	// Tooltip: Increases vertical mobility when interacted with
+}
+
+SerratedClaws: {
+	// DisplayName: Serrated Claws
+	// Tooltip: ""
+}
+
+FlagRingItem: {
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
+}
+
+CobbledBrickWallItem: {
+	// DisplayName: Cobbled Brick Wall
+	// Tooltip: ""
+}
+
+CobbledBrickItem: {
+	// DisplayName: Cobbled Brick
+	// Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	// DisplayName: Bronze Grate Door
+	// Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	// DisplayName: Gilded Red Sandstone
+	// Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	// DisplayName: Bronze Grate Block
+	// Tooltip: ""
+}
+
+BedouinBreastplate: {
+	// DisplayName: Bedouin Breastplate
+	// Tooltip: 5% increased damage
+}
+
+BedouinCowl: {
+	// DisplayName: Bedouin Cowl
+	// Tooltip: 5% increased critical strike chance
+}
+
+BedouinLeggings: {
+	// DisplayName: Bedouin Leggings
+	// Tooltip: 10% increased movement speed
 }

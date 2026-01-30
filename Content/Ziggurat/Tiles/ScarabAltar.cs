@@ -12,6 +12,9 @@ public class ScarabAltar : ModTile, IAutoloadTileItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+		TileID.Sets.PreventsTileHammeringIfOnTopOfIt[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 4;
 		TileObjectData.newTile.Height = 3;
@@ -22,6 +25,7 @@ public class ScarabAltar : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(124, 24, 28), CreateMapEntryName());
 		DustType = -1;
+		MinPick = 55;
 	}
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)

@@ -309,7 +309,7 @@ internal class PotsMicropass : Micropass
 
 		if (y > Main.UnderworldLayer)
 			style = GetStyleRange(BiomePots.Style.Hell);
-		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick && Main.wallDungeon[wall])
+		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick && Main.wallDungeon[wall] && y > Main.worldSurface)
 			style = GetStyleRange(BiomePots.Style.Dungeon);
 
 		if (style != -1)

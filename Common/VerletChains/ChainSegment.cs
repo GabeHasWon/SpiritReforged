@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.Visuals;
-
-namespace SpiritReforged.Common.VerletChains;
+﻿namespace SpiritReforged.Common.VerletChains;
 
 public class ChainSegment(ChainVertex vertex1, ChainVertex vertex2, float length)
 {

@@ -6,12 +6,14 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Ziggurat.Biome;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
@@ -327,7 +329,9 @@ public abstract class Stactus : ModNPC, IDeathCount
 			target.AddBuff(BuffID.Bleeding, 60 * 30);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand 
+		|| ZigguratGlobalNPC.InBiome(spawnInfo) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+
 	public override int SpawnNPC(int tileX, int tileY)
 	{
 		var spawn = new Vector2(tileX, tileY).ToWorldCoordinates();
@@ -384,10 +388,10 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 		if (NPC.life <= 0)
 		{
-			if (Segment is SegmentType.Head && GetBase() is NPC b && b.active)
-				(b.ModNPC as Stactus).falling = true;
-			else if (GetHead() is NPC b2 && b2.active)
-				(b2.ModNPC as Stactus)._painTime = 60;
+			if (Segment is SegmentType.Head && GetBase() is NPC b && b.active && b.ModNPC is Stactus stac)
+				stac.falling = true;
+			else if (GetHead() is NPC b2 && b2.active && b2.ModNPC is Stactus stact2s)
+				stact2s._painTime = 60;
 		}
 
 		if (NPC.life > 0 || Main.expertMode && !falling)
@@ -449,6 +453,12 @@ public abstract class Stactus : ModNPC, IDeathCount
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("CactusFruit", out ModItem cactusFruit))
+				npcLoot.AddCommon(cactusFruit.Type, 10);
+		}
 
 		LeadingConditionRule rule = new(new IsPrickly());
 		rule.OnSuccess(ItemDropRule.Common(ItemID.PinkPricklyPear));

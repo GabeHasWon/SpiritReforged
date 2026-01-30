@@ -989,7 +989,7 @@ RogueCrest: {
 		'''
 		Призывает ржавый меч сражаться за вас
 		Этот меч не занимает слоты призываемых миньонов
-		Иногда накладывает дебафф «{$Buffs.OpenWounds.DisplayName}», из-за которого враги истекают кровью при ударах оружием ближнего боя или хлыстом
+		Иногда накладывает дебафф «{$Buffs.OpenWounds.DisplayName}», из-за которого враги истекают кровью при ударах оружием ближнего боя
 		'''
 }
 
@@ -2853,4 +2853,54 @@ SaltTallGateItem: {
 EnlilStatueItem: {
 	// DisplayName: Enlil Statue
 	// Tooltip: Increases vertical mobility when interacted with
+}
+
+SerratedClaws: {
+	// DisplayName: Serrated Claws
+	// Tooltip: ""
+}
+
+FlagRingItem: {
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
+}
+
+CobbledBrickWallItem: {
+	// DisplayName: Cobbled Brick Wall
+	// Tooltip: ""
+}
+
+CobbledBrickItem: {
+	// DisplayName: Cobbled Brick
+	// Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	// DisplayName: Bronze Grate Door
+	// Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	// DisplayName: Gilded Red Sandstone
+	// Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	// DisplayName: Bronze Grate Block
+	// Tooltip: ""
+}
+
+BedouinBreastplate: {
+	// DisplayName: Bedouin Breastplate
+	// Tooltip: 5% increased damage
+}
+
+BedouinCowl: {
+	// DisplayName: Bedouin Cowl
+	// Tooltip: 5% increased critical strike chance
+}
+
+BedouinLeggings: {
+	// DisplayName: Bedouin Leggings
+	// Tooltip: 10% increased movement speed
 }
