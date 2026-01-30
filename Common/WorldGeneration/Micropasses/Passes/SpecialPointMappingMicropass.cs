@@ -1,17 +1,17 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Chests;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
-using SpiritReforged.Content.Forest.ButterflyStaff;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
-using SpiritReforged.Content.Ziggurat.Tiles;
-using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -51,9 +51,11 @@ internal class SpecialPointMappingMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		for (int i = 10; i < Main.maxTilesX - 10; ++i)
+		HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
+
+		for (int i = 10; i < Main.maxTilesX - 20; i++)
 		{
-			for (int j = 10; j < Main.maxTilesY - 10; ++j)
+			for (int j = 10; j < Main.maxTilesY - 20; j++)
 			{
 				Tile tile = Main.tile[i, j];
 
@@ -72,20 +74,12 @@ internal class SpecialPointMappingMicropass : Micropass
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.Savanna);
 					else if (tile.TileType == TileID.LargePiles2 && tile.TileFrameX == 920 && tile.TileFrameY == 0)
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.EnchantedSword);
-                    else if (tile.TileType == ModContent.TileType<ButterflyStump>() && tile.TileFrameX == 0 && tile.TileFrameY == 0)
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.ButterflyShrine);
 					else if (Fables.Enabled && TryGetWulfrumVaultType(out int type) && type == tile.TileType && TileObjectData.IsTopLeft(i, j))
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.WulfrumBunker);
 					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !PointOfInterestSystem.HasInterestType(InterestType.SaltFlat))
 						PointOfInterestSystem.AddPoint(new(i, j), InterestType.SaltFlat);
-					else if ((tile.TileType == ModContent.TileType<RedSandstoneBrick>() || tile.WallType == ModContent.WallType<RedSandstoneBrickWall>())
-						&& !PointOfInterestSystem.HasInterestType(InterestType.Ziggurat))
-						PointOfInterestSystem.AddPoint(new(i + 100, j), InterestType.Ziggurat);
 					else
 					{
-						HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), 
-							ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
-
 						if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
 							PointOfInterestSystem.AddPoint(new(i, j), InterestType.Curiosity);
 
@@ -99,6 +93,14 @@ internal class SpecialPointMappingMicropass : Micropass
 
 		if (Thorium.Enabled && ((Mod)Thorium).Call("GetBloodChamberBounds") is Rectangle bounds)
 			PointOfInterestSystem.AddPoint(bounds.Center().ToPoint16(), InterestType.BloodAltar);
+
+		foreach (Microbiome biome in MicrobiomeSystem.Microbiomes)
+		{
+			if (biome is ButterflyShrineBiome butterflyBiome)
+				PointOfInterestSystem.AddPoint(butterflyBiome.Position, InterestType.ButterflyShrine);
+			else if (biome is ZigguratBiome zigguratBiome)
+				PointOfInterestSystem.AddPoint(zigguratBiome.Position, InterestType.Ziggurat);
+		}
 
 		PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition = PointOfInterestSystem.Instance.PointsOfInterestByPosition;
 		PointOfInterestSystem.Instance.WorldGen_TakenInterestTypes = PointOfInterestSystem.Instance.TakenInterestTypes;

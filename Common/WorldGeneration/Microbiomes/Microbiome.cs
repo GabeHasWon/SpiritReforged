@@ -66,6 +66,7 @@ public sealed class MicrobiomeSystem : ModSystem
 
 	/// <summary> Default microbiome definitions by name, added during load. Instances should not be used directly but instead cloned using <see cref="Microbiome.Clone"/>. </summary>
 	private static readonly Dictionary<string, Microbiome> BiomeByName = [];
+	/// <summary> All Microbiome instances that currently exist in the world. </summary>
 	internal static readonly List<Microbiome> Microbiomes = [];
 
 	public static void AddDefinition(Microbiome biome) => BiomeByName.Add(biome.Name, biome);
