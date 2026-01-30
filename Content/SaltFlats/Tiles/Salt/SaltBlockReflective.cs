@@ -4,6 +4,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
@@ -16,6 +17,8 @@ public class SaltBlockReflective : SaltBlock
 	{
 		public readonly ModTarget2D normalTarget;
 		private Texture2D _distanceMap;
+
+		public static float SaltBackgroundOpacity => Main.bgAlphaFarBackLayer[ModContent.GetInstance<SaltBGStyle>().Slot];
 
 		public SaltGridOverlay() => normalTarget = new(() => CanDraw, RenderNormalTarget);
 
@@ -32,7 +35,7 @@ public class SaltBlockReflective : SaltBlock
 
 		public override void RenderTileTarget(SpriteBatch spriteBatch) => PrepareDefault.Invoke(spriteBatch, tileTarget, () =>
 		{
-			var texture = TileMap.Value;
+			var texture = TileReflectiveMask.Value;
 
 			foreach (var pt in _grid)
 			{
@@ -65,9 +68,15 @@ public class SaltBlockReflective : SaltBlock
 			spriteBatch.BeginDefault();
 
 			Main.tileBatch.Begin();
-			DrawSimpleGradient(new Color(14, 24, 227), new(177, 192, 240), new(79, 108, 255)); 
+
+			float gradientOpacity = 1 - SaltBackgroundOpacity;
+			if (Main.LocalPlayer.gravDir != 1)
+				gradientOpacity = 1;
+
+			DrawSimpleGradient(new Color(14, 24, 227) * gradientOpacity, new Color(105, 152, 255) * gradientOpacity, new Color(130, 160, 255) * gradientOpacity); 
 			Main.tileBatch.End();
 
+			/*
 			foreach (Cloud c in Main.cloud)
 			{
 				if (c.active)
@@ -76,12 +85,13 @@ public class SaltBlockReflective : SaltBlock
 					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.75f, offset);
 				}
 			}
+			*/
 
 			if (Reflections.Detail > 1)
 			{
 				// DrawDepthRange seems to determine the "closeness" (minDepth) and "farness" (maxDepth) that it'll draw at - this affects stuff like
 				// the Lantern Night lanterns. I used the max range the vanilla game uses, which should be fine. This note is in case there's issues.
-				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
+				//SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
 
 				if (!Reflections.HighResolution)
 				{
@@ -111,6 +121,7 @@ public class SaltBlockReflective : SaltBlock
 			if (Reflections.Detail > 2)
 			{
 				Reflections.DrawGore(Main.instance);
+				Reflections.DrawRain();
 				Main.instance.DrawItems();
 			}
 
@@ -169,10 +180,14 @@ public class SaltBlockReflective : SaltBlock
 
 		protected override void DrawContents(SpriteBatch spriteBatch)
 		{
-			var s = AssetLoader.LoadedShaders["Reflection"].Value;
+			var s = AssetLoader.LoadedShaders["SaltReflectionComposite"].Value;
 
 			s.Parameters["normalTexture"].SetValue(normalTarget);
 			s.Parameters["tileTexture"].SetValue(tileTarget);
+			s.Parameters["backgroundSeethroughOpacity"].SetValue(1f);			
+			if (SaltBGStyle.backgroundTarget != null && SaltBGStyle.backgroundTarget.Target != null && !SaltBGStyle.backgroundTarget.Target.IsDisposed)
+				s.Parameters["backgroundComposite"].SetValue(SaltBGStyle.backgroundTarget.Target);
+
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);
 
@@ -237,7 +252,7 @@ public class SaltBlockReflective : SaltBlock
 		}
 	}
 
-	public static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
+	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
 	private static SaltGridOverlay Overlay;
 
 	public override void Load()

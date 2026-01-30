@@ -13,17 +13,19 @@ public class ModTarget2D : ILoadable
 	private readonly Func<bool> _activeCondition;
 	private readonly Action<SpriteBatch> _drawAction;
 	private readonly bool _prepare;
+	private readonly SamplerState _samplerState;
 
 	protected ModTarget2D() { } //Include an empty constructor so that ILoadable can function
 
 	/// <param name="activeCondition"></param>
 	/// <param name="drawAction"></param>
 	/// <param name="prepare"> Whether <see cref="Prepare"/> should be called. This logic should be handled manually in <paramref name="drawAction"/> otherwise. </param>
-	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null, bool prepare = true)
+	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null, bool prepare = true, SamplerState samplerState = null)
 	{
 		_activeCondition = activeCondition;
 		_drawAction = drawAction;
 		_prepare = prepare;
+		_samplerState = samplerState;
 
 		Register();
 	}
@@ -73,7 +75,7 @@ public class ModTarget2D : ILoadable
 		gd.SetRenderTarget(Target);
 		gd.Clear(Color.Transparent);
 
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.Default, Main.Rasterizer, null);
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, _samplerState ?? Main.DefaultSamplerState, DepthStencilState.Default, Main.Rasterizer, null);
 		DrawInto(spriteBatch);
 
 		spriteBatch.End();
