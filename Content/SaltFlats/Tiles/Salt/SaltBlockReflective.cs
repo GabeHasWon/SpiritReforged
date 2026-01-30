@@ -188,6 +188,8 @@ public class SaltBlockReflective : SaltBlock
 			if (SaltBGStyle.backgroundTarget != null && SaltBGStyle.backgroundTarget.Target != null && !SaltBGStyle.backgroundTarget.Target.IsDisposed)
 				s.Parameters["backgroundComposite"].SetValue(SaltBGStyle.backgroundTarget.Target);
 
+			
+			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyColor(1f));
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);
 

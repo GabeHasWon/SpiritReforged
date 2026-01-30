@@ -3,6 +3,7 @@ sampler uImage0 : register(s0);
 matrix WorldViewProjection;
 float totalHeight;
 float backgroundSeethroughOpacity;
+float4 skyColor;
 
 texture normalTexture;
 sampler normal
@@ -66,6 +67,12 @@ float4 alphaBlend(float4 bottomLayer, float4 topLayer)
     return returnColor;
 }
 
+float invlerp(float from, float to, float value)
+{
+    return saturate((value - from) / (to - from));
+}
+
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TextureCoordinates;
@@ -74,8 +81,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     mapColor *= tileMask.a; //Strictly adhere to tile bounds
 
     float reflectionY = (1 - ((mapColor.r + mapColor.g + mapColor.b) / 3)) / totalHeight;
-    float4 reflectedColor = tex2D(uImage0, coords - float2(0, reflectionY));
+    float2 reflectionCoords = coords - float2(0, reflectionY);
+    
+    float4 reflectedColor = tex2D(uImage0, reflectionCoords);
+    reflectedColor.a *= invlerp(0, 0.06, reflectionCoords.y);
+    
     float4 seethroughBackgroundColor = tex2D(bgComposite, coords);
+    seethroughBackgroundColor = alphaBlend(float4(skyColor), seethroughBackgroundColor); //Put an opaque background below the reflective bg in case the player goes so far down that the exposed sky becomes visible
     
     reflectedColor = alphaBlend(seethroughBackgroundColor, reflectedColor);
     

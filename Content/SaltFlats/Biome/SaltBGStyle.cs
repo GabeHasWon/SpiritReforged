@@ -374,6 +374,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Texture2D nightSkyMaskTexture = SkyReflectionMask.Value;
 
 				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
+				color = Color.Lerp(color, new Color(80, 120, 255), MathF.Pow(SaltFlatsSystem.nightSkyOpacity, 2f) * 0.2f);
+
 				Rectangle bounds = GetBounds(slot);
 				int loops = BackgroundStyleHelper.BackgroundLoops;
 				int cloudLoops = loops + 1;

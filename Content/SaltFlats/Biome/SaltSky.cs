@@ -19,6 +19,12 @@ public class SaltSky : AutoloadedSky
 		Main.tileBatch.End();
 	}
 
+	public static Vector4 GetSkyColor(float gradientIndex)
+	{
+		Color[] gradientColor = [new Color(29, 63, 219), Color.Lerp(Color.Pink, new Color(76, 108, 250), SavannaSky.TimeProgress()), Color.Pink];
+		return gradientColor[(int)gradientIndex].ToVector4() * Main.ColorOfTheSkies.ToVector4();
+	}
+
 	public override Color OnTileColor(Color inColor)
 	{
 		float progress = SavannaSky.TimeProgress();
