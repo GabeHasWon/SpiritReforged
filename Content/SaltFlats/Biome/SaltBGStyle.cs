@@ -20,6 +20,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 	private static float MiddleOffset;
 
+	private float ReflectionFadeAwayValue = 0f;
+
 	public static float ReflectedSkyRenderOffset = 200f;
 
 	public override int MiddleTexture => -1;
@@ -352,6 +354,21 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 	public override bool Draw(SpriteBatch spriteBatch, LayerType layer)
 	{
+		bool anyCelestialSkyActive =
+			SkyManager.Instance["Nebula"].IsActive() ||
+			SkyManager.Instance["Stardust"].IsActive() ||
+			SkyManager.Instance["Vortex"].IsActive() ||
+			SkyManager.Instance["Solar"].IsActive() ||
+			SkyManager.Instance["MonolithNebula"].IsActive() ||
+			SkyManager.Instance["MonolithStardust"].IsActive() ||
+			SkyManager.Instance["MonolithVortex"].IsActive() ||
+			SkyManager.Instance["MonolithSolar"].IsActive();
+
+		if (anyCelestialSkyActive)
+			ReflectionFadeAwayValue = MathHelper.Lerp(ReflectionFadeAwayValue, 1f, 0.02f);
+		else
+			ReflectionFadeAwayValue = MathHelper.Lerp(ReflectionFadeAwayValue, 0f, 0.01f);
+
 		if (layer == LayerType.Far)
 		{
 			int slot = FarTexture;
@@ -401,10 +418,10 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 				int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
 				Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
-				
+
 				//If in the gamemenu, just draw the reflection of the background mountain clouds. Otherwise, the mountain cloud reflections draw through the reflection shader
 				if (Main.gameMenu || Main.LocalPlayer.gravDir == -1)
-					DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, - softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
+					DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
 				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 
 				if (!Main.gameMenu && Main.LocalPlayer.gravDir == 1 && skyReflectionsTarget != null && !skyReflectionsTarget.Target.IsDisposed)
@@ -417,12 +434,13 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["reflectionMaskTexture"].SetValue(nightSkyMaskTexture);
 					//height of the horizon on the background texture
 					bgShader.Parameters["reflectionHorizonHeight"].SetValue(205 / 750f);
-					bgShader.Parameters["cloudTargetYOffset"].SetValue(ReflectedSkyRenderOffset / reflectionCanvasSize.Y);					
+					bgShader.Parameters["cloudTargetYOffset"].SetValue(ReflectedSkyRenderOffset / reflectionCanvasSize.Y);
+					bgShader.Parameters["topFadeStrength"].SetValue(ReflectionFadeAwayValue);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
 
 					Vector2 maskScaleRatio = reflectionCanvasSize / nightSkyMaskTexture.Size();
-					maskTransformMatrix = Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y , 0f));
+					maskTransformMatrix = Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y, 0f));
 
 					//Adjust the bg scale by the ratio between the RT we're rendering and the BG size
 					maskTransformMatrix *= Matrix.CreateScale(maskScaleRatio.X, maskScaleRatio.Y, 1);
@@ -431,10 +449,10 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 					bgShader.Parameters["maskTransform"].SetValue(maskTransformMatrix);
 					bgShader.Parameters["maskReverseTransform"].SetValue(Matrix.Invert(maskTransformMatrix));
-					
+
 					spriteBatch.End();
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, bgShader);
-					
+
 					spriteBatch.Draw(skyReflectionsTarget.Target, Vector2.Zero, null, Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
 					RestartSpritebatch(null);
 				}
@@ -446,7 +464,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
 					bgShader.Parameters["WorldViewProjection"].SetValue(Main.BackgroundViewMatrix.TransformationMatrix * projection);
 
-				//	bgShader.Parameters["viewMatrix"].SetValue(projection);
+					//	bgShader.Parameters["viewMatrix"].SetValue(projection);
 					SaltFlatsSystem.SetSkyColor(bgShader);
 					RestartSpritebatch(bgShader);
 					DrawScroll((position, scale) => spriteBatch.Draw(nightSkyMaskTexture, position, bounds, color * SaltFlatsSystem.nightSkyOpacity, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));

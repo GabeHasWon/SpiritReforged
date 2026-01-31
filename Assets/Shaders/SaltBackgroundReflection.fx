@@ -4,6 +4,7 @@ matrix WorldViewProjection;
 float totalHeight;
 float reflectionHorizonHeight;
 float cloudTargetYOffset;
+float topFadeStrength;
 
 texture reflectionMaskTexture;
 sampler reflectionMask
@@ -46,6 +47,11 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
+float invlerp(float from, float to, float value)
+{
+    return saturate((value - from) / (to - from));
+}
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TextureCoordinates;
@@ -63,6 +69,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float4 reflectedColor = tex2D(cloudReflection, flippedCoords);
     reflectedColor *= mask.a * pow(mask.r, 0.5);
+    
+    //Fade the sky near the top based on a value
+    reflectedColor *= lerp(1, invlerp(0.2, 0.48, flippedCoords.y), topFadeStrength);
+    
     return reflectedColor * input.Color;
 }
 
