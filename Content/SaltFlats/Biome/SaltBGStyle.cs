@@ -227,6 +227,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		}
 		#endregion
 
+		SkyManager.Instance.DrawToDepth(Main.spriteBatch, 5f);
+
 		//BG clouds from the background itself
 		Texture2D cloudTexture = FarClouds.Value;
 		Color color = Main.ColorOfTheSkies;

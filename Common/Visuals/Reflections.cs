@@ -15,6 +15,24 @@ public sealed class Reflections : ILoadable
 	/// <summary> Whether any reflection is being drawn. </summary>
 	public static bool DrawingReflection { get; set; }
 
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "CacheNPCDraws")]
+	internal static extern void CacheNPCDraws(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "CacheProjDraws")]
+	internal static extern void CacheProjDraws(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawCachedNPCs")]
+	internal static extern void DrawCachedNPCs(Main main, List<int> npcCache, bool behindTiles);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawCachedProjs")]
+	internal static extern void DrawCachedProjs(Main main, List<int> projectileCache, bool startSpritebatch = true);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawBackGore")]
+	internal static extern void DrawBackGore(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawTileEntities")]
+	internal static extern void DrawTileEntities(Main main, bool solidLayer, bool overRenderTargets, bool intoRenderTargets);
+
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawPlayers_AfterProjectiles")]
 	internal static extern void DrawPlayers_AfterProjectiles(Main main);
 

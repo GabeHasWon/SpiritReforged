@@ -67,6 +67,14 @@ float4 alphaBlend(float4 bottomLayer, float4 topLayer)
     return returnColor;
 }
 
+float4 alphaBlendPremult(float4 bottomLayer, float4 topLayer)
+{
+    float4 returnColor = bottomLayer * (1 - topLayer.a) + topLayer;
+    returnColor.a = saturate(bottomLayer.a + topLayer.a);
+    return returnColor;
+}
+
+
 float invlerp(float from, float to, float value)
 {
     return saturate((value - from) / (to - from));
@@ -89,7 +97,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float4 seethroughBackgroundColor = tex2D(bgComposite, coords);
     seethroughBackgroundColor = alphaBlend(float4(skyColor), seethroughBackgroundColor); //Put an opaque background below the reflective bg in case the player goes so far down that the exposed sky becomes visible
     
-    reflectedColor = alphaBlend(seethroughBackgroundColor, reflectedColor);
+    reflectedColor = alphaBlendPremult(seethroughBackgroundColor, reflectedColor);
     
     return reflectedColor * input.Color * mapColor.a;
 }
