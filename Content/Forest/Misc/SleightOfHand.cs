@@ -12,7 +12,7 @@ using Terraria.UI;
 namespace SpiritReforged.Content.Forest.Misc;
 
 [FromClassic("AssassinMagazine")]
-public class SleightOfHand : EquippableItem
+public class SleightOfHand : ModItem
 {
 	private class Indicator : ILoadable
 	{
@@ -90,7 +90,7 @@ public class SleightOfHand : EquippableItem
 
 	private static void CycleAmmo(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (direction != DoubleTapPlayer.Direction.Down || player.HeldItem.useAmmo == AmmoID.None || !player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<SleightOfHand>().Name) is true)
+		if (direction != DoubleTapPlayer.Direction.Up || player.HeldItem.useAmmo == AmmoID.None || player.CheckFlag(nameof(SleightOfHand)) is not true)
 			return;
 
 		var ammoItems = new List<Item>();
@@ -138,6 +138,9 @@ public class SleightOfHand : EquippableItem
 		Item.rare = ItemRarityID.Green;
 		Item.accessory = true;
 	}
+
+	public override void UpdateEquip(Player player) => player.SetFlag(nameof(SleightOfHand));
+	public override void UpdateInventory(Player player) => player.SetFlag(nameof(SleightOfHand));
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
