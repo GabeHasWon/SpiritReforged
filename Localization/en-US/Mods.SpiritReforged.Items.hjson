@@ -989,7 +989,7 @@ RogueCrest: {
 		'''
 		Summons a rusted sword to fight for you
 		This sword does not take up minion slots
-		Occasionally inflicts Open Wounds, causing enemies to bleed when struck with melee or whip attacks
+		Occasionally inflicts Open Wounds, causing enemies to bleed when struck with melee attacks
 		'''
 }
 
@@ -2893,4 +2893,29 @@ BrownShinglesItem: {
 WoodenShinglesItem: {
 	DisplayName: Wooden Shingles
 	Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	DisplayName: Gilded Red Sandstone
+	Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	DisplayName: Bronze Grate Block
+	Tooltip: ""
+}
+
+BedouinBreastplate: {
+	DisplayName: Bedouin Breastplate
+	Tooltip: 5% increased damage
+}
+
+BedouinCowl: {
+	DisplayName: Bedouin Cowl
+	Tooltip: 5% increased critical strike chance
+}
+
+BedouinLeggings: {
+	DisplayName: Bedouin Leggings
+	Tooltip: 10% increased movement speed
 }

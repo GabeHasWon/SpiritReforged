@@ -129,7 +129,7 @@ internal class OasisMicropass : Micropass
 			}
 		} //Generate all segment walls first and collect ShapeData
 
-		ushort[] skipWallTypes = [(ushort)ModContent.WallType<RedSandstoneBrickWall>(), (ushort)ModContent.WallType<PolishedSandstoneWall>()];
+		ushort[] skipWallTypes = [(ushort)PolishedSandstoneWall.UnsafeType, (ushort)RedSandstoneBrickWall.UnsafeType];
 		for (int c = 0; c < segments; c++)
 		{
 			Rectangle a = areas[c];
@@ -165,6 +165,8 @@ internal class OasisMicropass : Micropass
 		new Decorator(result)
 			.Enqueue(ZigguratMicropass.PlacePot, segments * 2)
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
+			.Enqueue(ZigguratMicropass.PlaceDoor, 1)
+			.Enqueue(PlaceTorch, WorldGen.genRand.Next(1, 4))
 			.Run();
 
 		return result;
@@ -178,6 +180,14 @@ internal class OasisMicropass : Micropass
 
 			return result;
 		}
+	}
+
+	private static bool PlaceTorch(int x, int y)
+	{
+		Tile below = Framing.GetTileSafely(x, y + 1);
+		Tile farBelow = Framing.GetTileSafely(x, y + 2);
+
+		return !WorldGen.SolidOrSlopedTile(below) && WorldGen.SolidOrSlopedTile(farBelow) && Placer.PlaceTile<ZigguratTorch>(x, y).success;
 	}
 
 	private static void DropPillar(int x, int y, int tileType, int wallType, out int lowestY, int length = 0)

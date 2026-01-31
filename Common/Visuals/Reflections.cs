@@ -27,6 +27,18 @@ public sealed class Reflections : ILoadable
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawDust")]
 	internal static extern void DrawDust(Main main);
 
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawRain")]
+	private static extern void DrawRainInternal(Main main);
+
+	internal static void DrawRain()
+	{
+		//Pauses game so the rain doesnt get updated twice 
+		bool cachedPauseState = Main.gamePaused;
+		Main.gamePaused = true;
+		DrawRainInternal(Main.instance);
+		Main.gamePaused = cachedPauseState;
+	}
+
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawGore")]
 	internal static extern void DrawGore(Main main);
 

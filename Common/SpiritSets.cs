@@ -33,8 +33,11 @@ public class SpiritSets : ModSystem
 	/// <summary> Determines the draw height of this basic tile. </summary>
 	public static readonly int[] FrameHeight = TileFactory.CreateIntSet();
 
-	/// <summary> Whether this type blocks infection in a small area, and the square range it does so. </summary>
+	/// <summary> Whether this tile type blocks infection in a small area, and the square range it does so. </summary>
 	public static readonly int[] AntiInfectionStrength = TileFactory.CreateIntSet();
+
+	/// <summary> Whether this tile type allows liquid to pass through unconditionally. </summary>
+	public static readonly bool[] AllowsLiquid = TileFactory.CreateBoolSet();
 
 	/// <summary> Whether this type is a dungeon wall variant. </summary>
 	public static readonly bool[] DungeonWall = WallFactory.CreateBoolSet(WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe, WallID.BlueDungeonUnsafe, 

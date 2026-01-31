@@ -60,7 +60,7 @@ public class Tumbleweed : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Player.ZoneDesert && !spawnInfo.Water && Math.Abs(Main.windSpeedCurrent) > 0.3f && !EditZigguratSpawnsNPC.InZiggurat(spawnInfo))
+		if (spawnInfo.Player.ZoneDesert && !spawnInfo.Water && spawnInfo.SpawnTileType == TileID.Sand && Math.Abs(Main.windSpeedCurrent) > 0.3f && !ZigguratGlobalNPC.InBiome(spawnInfo))
 		{
 			int playerX = (int)(spawnInfo.Player.Center.X / 16);
 
