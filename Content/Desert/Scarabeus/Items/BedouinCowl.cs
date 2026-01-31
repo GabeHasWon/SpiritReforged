@@ -75,8 +75,8 @@ public class BedouinCowl : ModItem
 
 	private static void DoubleTapPlayer_OnDoubleTap(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (player.CheckFlag("Bedouin") == true && (direction == DoubleTapPlayer.Direction.Left || direction == DoubleTapPlayer.Direction.Right))
-			player.GetModPlayer<DashPlayer>().EnableDash<BedouinDash>();
+		if (player.CheckFlag("Bedouin") == true)
+			player.GetModPlayer<DashPlayer>().EnableDash<BedouinDash>(direction);
 	}
 
 	public override void SetDefaults()

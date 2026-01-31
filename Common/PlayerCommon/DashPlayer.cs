@@ -57,8 +57,14 @@ public sealed class DashPlayer : ModPlayer
 	public ModDash.DashInfo dashInfo;
 	public int duration;
 	public int cooldown;
+	private DoubleTapPlayer.Direction _dashDirection;
 
-	public void EnableDash<T>() where T : ModDash => EnableDash(typeof(T).Name);
+	public void EnableDash<T>(DoubleTapPlayer.Direction direction) where T : ModDash
+	{
+		_dashDirection = direction;
+		EnableDash(typeof(T).Name);
+	}
+
 	public void EnableDash(string name)
 	{
 		if (cooldown == 0)
@@ -100,8 +106,19 @@ public sealed class DashPlayer : ModPlayer
 			else
 			{
 				float speed = dashInfo.MaximumSpeed * dashInfo.Easing.Ease(DashProgress);
-				if (Math.Abs(Player.velocity.X) < speed || DashProgress > 0.5f)
-					Player.velocity.X = speed * Player.direction;
+
+				if (_dashDirection is DoubleTapPlayer.Direction.Up or DoubleTapPlayer.Direction.Down)
+				{
+					Player.maxFallSpeed = 999;
+
+					if (Math.Abs(Player.velocity.Y) < speed || DashProgress > 0.5f)
+						Player.velocity.Y = speed * ((_dashDirection == DoubleTapPlayer.Direction.Up) ? -1 : 1);
+				}
+				else
+				{
+					if (Math.Abs(Player.velocity.X) < speed || DashProgress > 0.5f)
+						Player.velocity.X = speed * ((_dashDirection == DoubleTapPlayer.Direction.Left) ? -1 : 1);
+				}
 			}
 
 			ActiveDash.DashEffects(Player);
