@@ -95,13 +95,14 @@ public class SerratedClaws : ModItem
 		Item.knockBack = 0.2f;
 		Item.DamageType = DamageClass.Melee;
 		Item.useTurn = true;
-		Item.rare = ItemRarityID.Green;
+		Item.rare = ItemRarityID.Expert;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.pick = 50;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
 		Item.channel = true;
+		Item.autoReuse = true;
 		Item.shoot = ModContent.ProjectileType<ClawHitbox>();
 
 		MoRHelper.SetSlashBonus(Item);
