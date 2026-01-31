@@ -7,6 +7,10 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 
 internal class ScarecrowDiscovery : Discovery
 {
+	/// <summary> The position of the generated scarecrow tile, cleared after worldgen. </summary>
+	[WorldBound]
+	public static Point Position;
+
 	public override string WorldGenName => "Scarecrow";
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, List<Discovery> discoveries, ref bool afterIndex)
@@ -75,9 +79,14 @@ internal class ScarecrowDiscovery : Discovery
 			FillBelow(x, y, progress);
 
 			if (x == position.X)
+			{
 				ScarecrowSlot.Generate(position.X, y - 1);
+				Position = new(position.X, y - 3);
+			}
 			else
+			{
 				WorldGen.PlaceTile(x, y - 1, ModContent.TileType<Wheatgrass>(), true, style: Main.rand.Next(6));
+			}
 		}
 
 		return true;

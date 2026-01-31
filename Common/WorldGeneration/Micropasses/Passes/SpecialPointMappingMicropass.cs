@@ -52,6 +52,7 @@ internal class SpecialPointMappingMicropass : Micropass
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
+		HashSet<InterestType> placed = [];
 
 		for (int i = 10; i < Main.maxTilesX - 20; i++)
 		{
@@ -62,47 +63,50 @@ internal class SpecialPointMappingMicropass : Micropass
 				if (TileExtensions.TryGetChestID(i, j, out VanillaChestID chestType))
 				{
 					if (chestType == VanillaChestID.Sky)
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.FloatingIsland);
+						Add(i, j, InterestType.FloatingIsland);
 				}
 				else if (tile.HasTile)
 				{
 					if (tile.TileType == TileID.Larva && tile.TileFrameX == 0 && tile.TileFrameY == 0)
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.Hive);
-					else if (tile.LiquidType == LiquidID.Shimmer && tile.LiquidAmount > 0 && !PointOfInterestSystem.HasInterestType(InterestType.Shimmer))
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.Shimmer);
-					else if (tile.TileType == ModContent.TileType<SavannaGrass>() && !PointOfInterestSystem.HasInterestType(InterestType.Savanna))
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.Savanna);
+						Add(i, j, InterestType.Hive);
+					else if (tile.TileType == ModContent.TileType<SavannaGrass>() && !placed.Contains(InterestType.Savanna))
+						Add(i, j, InterestType.Savanna);
 					else if (tile.TileType == TileID.LargePiles2 && tile.TileFrameX == 920 && tile.TileFrameY == 0)
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.EnchantedSword);
+						Add(i, j, InterestType.EnchantedSword);
 					else if (Fables.Enabled && TryGetWulfrumVaultType(out int type) && type == tile.TileType && TileObjectData.IsTopLeft(i, j))
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.WulfrumBunker);
-					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !PointOfInterestSystem.HasInterestType(InterestType.SaltFlat))
-						PointOfInterestSystem.AddPoint(new(i, j), InterestType.SaltFlat);
+						Add(i, j, InterestType.WulfrumBunker);
+					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !placed.Contains(InterestType.SaltFlat))
+						Add(i, j, InterestType.SaltFlat);
 					else
 					{
 						if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
-							PointOfInterestSystem.AddPoint(new(i, j), InterestType.Curiosity);
+							Add(i, j, InterestType.Curiosity);
 
 						if (tile.TileType == ModContent.TileType<AmberFossil>() && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity entity) 
 							&& entity is FossilEntity fossil && fossil.itemType == ModContent.ItemType<TinyDragon>())
-							PointOfInterestSystem.AddPoint(new(i, j), InterestType.Curiosity);
+							Add(i, j, InterestType.Curiosity);
 					}
                 }
 			}
 		}
 
 		if (Thorium.Enabled && ((Mod)Thorium).Call("GetBloodChamberBounds") is Rectangle bounds)
-			PointOfInterestSystem.AddPoint(bounds.Center().ToPoint16(), InterestType.BloodAltar);
+			Add(bounds.Center.X, bounds.Center.Y, InterestType.BloodAltar);
 
 		foreach (Microbiome biome in MicrobiomeSystem.Microbiomes)
 		{
 			if (biome is ButterflyShrineBiome butterflyBiome)
-				PointOfInterestSystem.AddPoint(butterflyBiome.Position, InterestType.ButterflyShrine);
+				Add(butterflyBiome.Position.X, butterflyBiome.Position.Y, InterestType.ButterflyShrine);
 			else if (biome is ZigguratBiome zigguratBiome)
-				PointOfInterestSystem.AddPoint(zigguratBiome.Position, InterestType.Ziggurat);
+				Add(zigguratBiome.Position.X, zigguratBiome.Position.Y, InterestType.Ziggurat);
 		}
 
-		PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition = PointOfInterestSystem.Instance.PointsOfInterestByPosition;
-		PointOfInterestSystem.Instance.WorldGen_TakenInterestTypes = PointOfInterestSystem.Instance.TakenInterestTypes;
+		Add((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, InterestType.Shimmer);
+
+		void Add(int x, int y, InterestType type)
+		{
+			PointOfInterestSystem.InterestByPosition.Add(new(x, y), new(type));
+			placed.Add(type);
+		}
 	}
 }
