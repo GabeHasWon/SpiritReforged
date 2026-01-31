@@ -100,6 +100,8 @@ public class SaltBlockReflective : SaltBlock
 			{
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+
+				DrawOrderSystem.DrawNonsolid();
 				spriteBatch.End();
 
 				if (Reflections.Detail > 2)
@@ -123,6 +125,7 @@ public class SaltBlockReflective : SaltBlock
 				{
 					spriteBatch.BeginDefault();
 					spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+					DrawOrderSystem.DrawSolid();
 					spriteBatch.End();
 				}
 
@@ -157,6 +160,9 @@ public class SaltBlockReflective : SaltBlock
 			}
 
 			Reflections.DrawPlayers_AfterProjectiles(Main.instance);
+			spriteBatch.BeginDefault();
+			DrawOrderSystem.DrawOverPlayers(); 
+			spriteBatch.End();
 
 			if (Reflections.Detail > 2)
 			{
@@ -240,11 +246,18 @@ public class SaltBlockReflective : SaltBlock
 
 			s.Parameters["normalTexture"].SetValue(normalTarget);
 			s.Parameters["tileTexture"].SetValue(tileTarget);
-			s.Parameters["backgroundSeethroughOpacity"].SetValue(1f);			
+			s.Parameters["backgroundSeethroughOpacity"].SetValue(1f);
 			if (SaltBGStyle.backgroundTarget != null && SaltBGStyle.backgroundTarget.Target != null && !SaltBGStyle.backgroundTarget.Target.IsDisposed)
+			{
 				s.Parameters["backgroundComposite"].SetValue(SaltBGStyle.backgroundTarget.Target);
 
-			
+				Matrix mainMatrix = Main.Transform;
+				mainMatrix.Decompose(out Vector3 matrixScale, out Quaternion matrixRotation, out Vector3 matrixTranslation);
+
+				s.Parameters["backgroundCompositeScale"].SetValue(matrixScale);
+				//s.Parameters["backgroundCompositeMatrix"].SetValue(inverse);
+			}
+
 			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyColor(1f));
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);

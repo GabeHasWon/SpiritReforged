@@ -26,6 +26,8 @@ sampler bgComposite
     AddressU = clamp;
     AddressV = clamp;
 };
+float3 backgroundCompositeScale;
+matrix backgroundCompositeMatrix;
 
 texture tileTexture;
 sampler tile
@@ -92,9 +94,10 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float2 reflectionCoords = coords - float2(0, reflectionY);
     
     float4 reflectedColor = tex2D(uImage0, reflectionCoords);
-    reflectedColor.a *= invlerp(0, 0.06, reflectionCoords.y);
+    reflectedColor.argb *= invlerp(0, 0.06, reflectionCoords.y);
     
-    float4 seethroughBackgroundColor = tex2D(bgComposite, coords);
+    float2 bgCompositeCoords = (coords - float2(0.5, 0.5)) * backgroundCompositeScale.xy + float2(0.5, 0.5);
+    float4 seethroughBackgroundColor = tex2D(bgComposite, bgCompositeCoords);
     seethroughBackgroundColor = alphaBlend(float4(skyColor), seethroughBackgroundColor); //Put an opaque background below the reflective bg in case the player goes so far down that the exposed sky becomes visible
     
     reflectedColor = alphaBlendPremult(seethroughBackgroundColor, reflectedColor);

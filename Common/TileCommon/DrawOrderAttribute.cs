@@ -1,6 +1,7 @@
 ﻿using ILLogger;
 using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
@@ -122,6 +123,10 @@ internal class DrawOrderSystem : ModSystem
 				DrawOrderTypes.Add(tile.Type, [Layer.NonSolid]);
 		}
 	}
+
+	internal static void DrawNonsolid() => DrawTilesNonSolid?.Invoke();
+	internal static void DrawSolid() => DrawTilesSolid?.Invoke();
+	internal static void DrawOverPlayers() => PostDrawPlayers?.Invoke();
 }
 
 internal class DrawOrderGlobalTile : GlobalTile
