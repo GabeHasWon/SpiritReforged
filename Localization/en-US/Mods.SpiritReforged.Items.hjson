@@ -2852,7 +2852,7 @@ SaltTallGateItem: {
 
 EnlilStatueItem: {
 	DisplayName: Enlil Statue
-	Tooltip: Increases vertical mobility when interacted with
+	Tooltip: Increases vertical mobility when placed nearby
 }
 
 SerratedClaws: {
@@ -2877,6 +2877,21 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
+	Tooltip: ""
+}
+
+CalmingBellItem: {
+	DisplayName: Calming Bell
+	Tooltip: Right click to reduce enemy spawns
+}
+
+BrownShinglesItem: {
+	DisplayName: Brown Shingles
+	Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	DisplayName: Wooden Shingles
 	Tooltip: ""
 }
 
