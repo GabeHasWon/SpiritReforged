@@ -282,7 +282,10 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 		//Draw to depth 1 which would end before the blizzard fullscreen overlay
 		if (Reflections.Detail > 1)
-			SkyManager.Instance.DrawToDepth(Main.spriteBatch, 1f);
+			SkyManager.Instance.DrawToDepth(Main.spriteBatch,-1f);
+
+		if (Main.shimmerAlpha > 0f)
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, Vector2.Zero, null, Color.Black * Main.shimmerAlpha, 0f, Vector2.Zero, new Vector2(Main.Camera.UnscaledSize.X + (float)(Main.offScreenRange * 2), Main.Camera.UnscaledSize.Y + (float)(Main.offScreenRange * 2)), SpriteEffects.None, 0f);
 	}
 
 	public void SpoofFarBackgroundParameters(float scAdj, double backgroundTopMagicNumber, float bgGlobalScaleMultiplier, int pushBGTopHack)
@@ -354,7 +357,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 	public override bool Draw(SpriteBatch spriteBatch, LayerType layer)
 	{
-		bool anyCelestialSkyActive =
+		bool shouldFadeDownBackground =
 			SkyManager.Instance["Nebula"].IsActive() ||
 			SkyManager.Instance["Stardust"].IsActive() ||
 			SkyManager.Instance["Vortex"].IsActive() ||
@@ -362,9 +365,13 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 			SkyManager.Instance["MonolithNebula"].IsActive() ||
 			SkyManager.Instance["MonolithStardust"].IsActive() ||
 			SkyManager.Instance["MonolithVortex"].IsActive() ||
-			SkyManager.Instance["MonolithSolar"].IsActive();
+			SkyManager.Instance["MonolithSolar"].IsActive() ||
+			SkyManager.Instance["MoonLord"].IsActive() ||
+			SkyManager.Instance["MonolithMoonLord"].IsActive();
 
-		if (anyCelestialSkyActive)
+		shouldFadeDownBackground |= Main.shimmerAlpha > 0;
+
+		if (shouldFadeDownBackground)
 			ReflectionFadeAwayValue = MathHelper.Lerp(ReflectionFadeAwayValue, 1f, 0.02f);
 		else
 			ReflectionFadeAwayValue = MathHelper.Lerp(ReflectionFadeAwayValue, 0f, 0.01f);
@@ -436,6 +443,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["reflectionHorizonHeight"].SetValue(205 / 750f);
 					bgShader.Parameters["cloudTargetYOffset"].SetValue(ReflectedSkyRenderOffset / reflectionCanvasSize.Y);
 					bgShader.Parameters["topFadeStrength"].SetValue(ReflectionFadeAwayValue);
+					bgShader.Parameters["shimmerAlpha"].SetValue(Main.shimmerAlpha);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
 

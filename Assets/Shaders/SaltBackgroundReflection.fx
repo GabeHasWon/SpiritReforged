@@ -5,6 +5,7 @@ float totalHeight;
 float reflectionHorizonHeight;
 float cloudTargetYOffset;
 float topFadeStrength;
+float shimmerAlpha;
 
 texture reflectionMaskTexture;
 sampler reflectionMask
@@ -72,6 +73,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     //Fade the sky near the top based on a value
     reflectedColor *= lerp(1, invlerp(0.2, 0.48, flippedCoords.y), topFadeStrength);
+    
+    reflectedColor = lerp(reflectedColor, float4(0, 0, 0, 1), shimmerAlpha);
     
     return reflectedColor * input.Color;
 }

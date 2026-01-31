@@ -6,6 +6,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 
