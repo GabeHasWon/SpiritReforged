@@ -121,6 +121,9 @@ public sealed class DashPlayer : ModPlayer
 					Player.velocity = DashDirection * speed;
 			}
 
+			if (DashDirection.Y < 0)
+				Player.fallStart = (int)(Player.position.Y / 16); //Reset fall damage calculation if ascending
+
 			ActiveDash.DashEffects(Player);
 		}
 	}
