@@ -13,6 +13,8 @@ public class DoubleTapPlayer : ModPlayer
 	public Dictionary<Direction, int> Counters = [];
 	public Direction lastDirection;
 
+	public static Vector2 ConvertDirection(Direction value) => (-Vector2.UnitY).RotatedBy(MathHelper.PiOver2 * (int)value);
+
 	public override void ResetEffects()
 	{
 		if (Counters.Count == 0)

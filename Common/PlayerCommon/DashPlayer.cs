@@ -51,23 +51,33 @@ public sealed class DashPlayer : ModPlayer
 		}
 	}
 
+	/// <summary> Gets whether this player can initiate a dash. </summary>
+	public bool CanDash => !Player.shimmering && cooldown == 0;
+	/// <summary> Gets the completion progress of the current dash within a range from 0 to 1. </summary>
 	public float DashProgress => 1f - (float)(duration / (float)dashInfo.Duration);
+
 	public ModDash ActiveDash { get; private set; }
+	public Vector2 DashDirection { get; private set; }
 
 	public ModDash.DashInfo dashInfo;
 	public int duration;
 	public int cooldown;
-	private DoubleTapPlayer.Direction _dashDirection;
+
+	public void EnableDash<T>(Vector2 direction) where T : ModDash
+	{
+		DashDirection = direction;
+		EnableDash(typeof(T).Name);
+	}
 
 	public void EnableDash<T>(DoubleTapPlayer.Direction direction) where T : ModDash
 	{
-		_dashDirection = direction;
+		DashDirection = DoubleTapPlayer.ConvertDirection(direction);
 		EnableDash(typeof(T).Name);
 	}
 
 	public void EnableDash(string name)
 	{
-		if (cooldown == 0)
+		if (CanDash)
 		{
 			ActiveDash = ModDash.DashByName[name];
 			ActiveDash.SetDefaults(out dashInfo);
@@ -90,7 +100,7 @@ public sealed class DashPlayer : ModPlayer
 		if (ActiveDash == null)
 			return;
 
-		if (duration < 1)
+		if (duration < 1 || Player.shimmering)
 		{
 			ActiveDash = null;
 		}
@@ -107,18 +117,8 @@ public sealed class DashPlayer : ModPlayer
 			{
 				float speed = dashInfo.MaximumSpeed * dashInfo.Easing.Ease(DashProgress);
 
-				if (_dashDirection is DoubleTapPlayer.Direction.Up or DoubleTapPlayer.Direction.Down)
-				{
-					Player.maxFallSpeed = 999;
-
-					if (Math.Abs(Player.velocity.Y) < speed || DashProgress > 0.5f)
-						Player.velocity.Y = speed * ((_dashDirection == DoubleTapPlayer.Direction.Up) ? -1 : 1);
-				}
-				else
-				{
-					if (Math.Abs(Player.velocity.X) < speed || DashProgress > 0.5f)
-						Player.velocity.X = speed * ((_dashDirection == DoubleTapPlayer.Direction.Left) ? -1 : 1);
-				}
+				if (Player.velocity.Length() < speed || DashProgress > 0.5f)
+					Player.velocity = DashDirection * speed;
 			}
 
 			ActiveDash.DashEffects(Player);

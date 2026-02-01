@@ -95,7 +95,7 @@ public class SerratedClaws : ModItem
 		Item.knockBack = 0.2f;
 		Item.DamageType = DamageClass.Melee;
 		Item.useTurn = true;
-		Item.rare = ItemRarityID.Expert;
+		Item.expert = true;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.pick = 50;

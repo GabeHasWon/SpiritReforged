@@ -30,7 +30,12 @@ public class BedouinCowl : ModItem
 				}
 			}
 
-			player.opacityForAnimation = (player.GetModPlayer<DashPlayer>().DashProgress > 0.5f) ? 1f : 0.1f;
+			DashPlayer dashPlayer = player.GetModPlayer<DashPlayer>();
+
+			if (dashPlayer.DashDirection.Y < 0)
+				dashPlayer.cooldown = dashPlayer.dashInfo.Cooldown * 3; //Increase the dash cooldown if dashing in an upward trajectory
+
+			player.opacityForAnimation = (dashPlayer.DashProgress > 0.5f) ? 1f : 0.1f;
 			player.noKnockback = true;
 		}
 	}
@@ -71,9 +76,9 @@ public class BedouinCowl : ModItem
 		}
 	}
 
-	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTapPlayer_OnDoubleTap;
+	public override void Load() => DoubleTapPlayer.OnDoubleTap += ActivateDash;
 
-	private static void DoubleTapPlayer_OnDoubleTap(Player player, DoubleTapPlayer.Direction direction)
+	private static void ActivateDash(Player player, DoubleTapPlayer.Direction direction)
 	{
 		if (player.CheckFlag("Bedouin") == true)
 			player.GetModPlayer<DashPlayer>().EnableDash<BedouinDash>(direction);
