@@ -1,64 +1,38 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals;
+using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ZigguratTorch : ModTile, IAutoloadTileItem
+public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
 {
-	public const int FrameHeight = 20;
-	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal(typeof(ZigguratTorch), "ZigguratTorch_Flame", false);
+	public const int FrameWidth = 18;
 
-	public static readonly SoundStyle Ignite = new("SpiritReforged/Assets/SFX/Tile/TorchIgnite", 2)
-	{
-		PitchVariance = 0.2f
-	};
-
-	public static readonly SoundStyle Extinguish = new("SpiritReforged/Assets/SFX/Tile/TorchExtinguish", 2)
-	{
-		PitchVariance = 0.2f
-	};
-
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddIngredient(ItemID.Torch, 1).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 4).AddIngredient(ItemID.Torch, 1).Register();
 
 	public override void SetStaticDefaults()
 	{
 		Main.tileLighted[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
-
 		TileID.Sets.HasOutlines[Type] = true;
-		TileID.Sets.FramesOnKillWall[Type] = true;
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.CoordinateHeights = [18];
-		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-		TileObjectData.newTile.AnchorTop = AnchorData.Empty;
-		TileObjectData.newTile.AnchorWall = true;
-
-		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
-		TileObjectData.newAlternate.AnchorWall = false;
-		TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newAlternate.Width, 0);
-
-		TileObjectData.addAlternate(1);
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(174, 110, 48));
 		RegisterItemDrop(this.AutoItemType());
 
 		DustType = -1;
-		AdjTiles = [TileID.Torches];
-
 		this.AutoItem().ResearchUnlockCount = 5;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
+
 	public override void MouseOver(int i, int j)
 	{
 		Player player = Main.LocalPlayer;
@@ -69,7 +43,9 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		SoundEngine.PlaySound(SoundID.Mech, new Vector2(i * 16, j * 16));
+		TileExtensions.GetTopLeft(ref i, ref j);
+
+		SoundEngine.PlaySound(SoundID.Mech, new Vector2(i, j).ToWorldCoordinates());
 		HitWire(i, j);
 
 		return true;
@@ -77,21 +53,29 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override void HitWire(int i, int j)
 	{
-		Tile tile = Main.tile[i, j];
-		tile.TileFrameY = (short)((tile.TileFrameY == 0) ? FrameHeight : 0);
+		bool activated = false;
+		for (int y = 0; y < 2; y++)
+		{
+			Tile tile = Main.tile[i, j + y];
+			tile.TileFrameX = (short)((activated = tile.TileFrameX == 0) ? FrameWidth : 0);
+		}
 
-		var sound = (tile.TileFrameY == 0) ? Extinguish : Ignite;
+		var sound = activated ? ZigguratTorch.Extinguish : ZigguratTorch.Ignite;
 		SoundEngine.PlaySound(sound, new Vector2(i, j).ToWorldCoordinates());
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j);
+			NetMessage.SendTileSquare(-1, i, j, 1, 2);
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer && Main.tile[i, j].TileFrameY == 0)
+		if (closer)
+			return;
+
+		Tile tile = Main.tile[i, j];
+		if (tile.TileFrameY == 0 && tile.TileFrameX == 0)
 		{
-			var worldCoords = new Vector2(i, j).ToWorldCoordinates();
+			Vector2 worldCoords = new Vector2(i, j).ToWorldCoordinates();
 
 			if (Main.LocalPlayer.Distance(worldCoords) < 16 * 3 && Wiring.CheckMech(i, j, 180))
 			{
@@ -105,7 +89,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
-		if (tile.TileFrameY != 0)
+		if (tile.TileFrameX != 0 && tile.TileFrameY == 0)
 		{
 			if (Main.rand.NextBool())
 			{
@@ -127,7 +111,8 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
-		if (Main.tile[i, j].TileFrameY != 0)
+		Tile tile = Main.tile[i, j];
+		if (tile.TileFrameX != 0 && tile.TileFrameY == 0)
 		{
 			float pulse = Main.rand.Next(28, 42) * 0.005f + (270 - Main.mouseTextColor) / 700f;
 			(r, g, b) = (0.9f + pulse, 0.4f + pulse, 0.1f + pulse);
@@ -137,7 +122,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Tile tile = Main.tile[i, j];
-		if (TileDrawing.IsVisible(tile) && tile.TileFrameY != 0)
+		if (TileDrawing.IsVisible(tile) && tile.TileFrameY == 0 && tile.TileFrameX != 0)
 		{
 			Texture2D texture = TextureAssets.Flames[0].Value;
 			Rectangle source = new(0, 0, 22, 22);
@@ -151,7 +136,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 		static void DrawFlame(SpriteBatch spriteBatch, int frame, int i, int j, Color color)
 		{
-			Texture2D texture = Flame.Value;
+			Texture2D texture = ZigguratTorch.Flame.Value;
 			var source = texture.Frame(1, 5, 0, frame, 0, -2);
 			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 2) - Main.screenPosition + TileExtensions.TileOffset;
 

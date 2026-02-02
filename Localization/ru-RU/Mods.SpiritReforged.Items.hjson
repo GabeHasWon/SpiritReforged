@@ -2919,3 +2919,8 @@ BedouinLeggings: {
 	// DisplayName: Bedouin Leggings
 	// Tooltip: 10% increased movement speed
 }
+
+ZigguratTikiTorchItem: {
+	// DisplayName: Ziggurat Tiki Torch
+	// Tooltip: ""
+}
