@@ -51,7 +51,7 @@ NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayN
 ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
 ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
 PhysicsChain.DisplayName: Chain
-GoldPhysicsChain.DisplayName: Gold Physics Chain
+GoldPhysicsChain.DisplayName: Gold Chain
 CactusSpine.DisplayName: Cactus Spine
 TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
 DragonFireball.DisplayName: Dragon Fireball
@@ -59,4 +59,4 @@ PileOfConsequencesPet.DisplayName: Consequences
 EnergyLaser.DisplayName: Energy Laser
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
 WindBlast.DisplayName: Wind Blast
-ClawHitbox.DisplayName: Claw Hitbox
+SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
