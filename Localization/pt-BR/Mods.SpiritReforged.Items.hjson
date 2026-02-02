@@ -2924,3 +2924,13 @@ ZigguratTikiTorchItem: {
 	// DisplayName: Ziggurat Tiki Torch
 	// Tooltip: ""
 }
+
+CricketItem: {
+	// DisplayName: Cricket
+	// Tooltip: ""
+}
+
+GoldCricketItem: {
+	// DisplayName: Gold Cricket
+	// Tooltip: ""
+}
