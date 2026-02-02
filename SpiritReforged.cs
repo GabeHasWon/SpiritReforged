@@ -32,14 +32,8 @@ public partial class SpiritReforgedMod : Mod
 	{
 		RubbleAutoloader.Autoloader.Load(this);
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
-		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
-	}
-
-	public override void Unload()
-	{
-		NPCUtils.NPCUtils.UnloadMod(this);
-		NPCUtils.NPCUtils.UnloadBestiaryHelper();
-	}
+        NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
+    }
 
 	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerHandler.HandlePacket(reader, whoAmI);
 }

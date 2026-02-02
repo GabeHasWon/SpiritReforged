@@ -330,7 +330,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || spawnInfo.SpawnTileType != TileID.Sand 
-		|| EditZigguratSpawnsNPC.InZiggurat(spawnInfo) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
+		|| ZigguratGlobalNPC.InBiome(spawnInfo) ? 0 : SpawnCondition.OverworldDayDesert.Chance * 0.8f;
 
 	public override int SpawnNPC(int tileX, int tileY)
 	{

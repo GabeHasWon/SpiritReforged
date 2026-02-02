@@ -59,8 +59,8 @@ public class DustyTomb : ModTile
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				new TombSpawnData(new(i, j)).Send();
-			else
-				OpenUp(i, j);
+
+			OpenUp(i, j);
 		}
 	}
 

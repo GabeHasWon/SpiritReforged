@@ -23,6 +23,7 @@ internal class SavannaEcotone : EcotoneBase
 {
 	private delegate bool OnAttempt(int i, int j);
 
+	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
 	[WorldBound]
 	public static Rectangle SavannaArea;
 	private static int Steps = 0;

@@ -1,13 +1,14 @@
 ﻿using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 using SpiritReforged.Content.Ocean.Items;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Tiles;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
-using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Ocean;
 
@@ -28,8 +29,12 @@ public partial class OceanGeneration : ModSystem
 	private static int _roughTimer = 0;
 	private static float _rough = 0f;
 
-	private static Rectangle _leftOcean;
-	private static Rectangle _rightOcean;
+	/// <summary> The approximate rectangle bounds of the left ocean side, cleared after worldgen. </summary>
+	[WorldBound]
+	public static Rectangle LeftOcean;
+	/// <summary> The approximate rectangle bounds of the right ocean side, cleared after worldgen. </summary>
+	[WorldBound]
+	public static Rectangle RightOcean;
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
@@ -39,97 +44,96 @@ public partial class OceanGeneration : ModSystem
             if (beachIndex != -1)
                 tasks[beachIndex] = new PassLegacy("Beaches", GenerateOcean);
 
-			int cavesIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Create Ocean Caves")); //Replace ocean cave gen
-			if (cavesIndex != -1)
-				tasks[cavesIndex] = new PassLegacy("Create Ocean Caves", GenerateOceanCaves);
-
 			int chestIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Water Chests")); //Populate the ocean
 			if (chestIndex != -1)
 				tasks.Insert(chestIndex + 1, new PassLegacy("Populate Ocean", GenerateOceanObjects));
 		}
 	}
 
+	#region basic shape
 	/// <summary>Generates the Ocean ("Beaches"). Heavily based on vanilla code.</summary>
-	/// <param name="progress"></param>
 	public static void GenerateOcean(GenerationProgress progress, GameConfiguration config)
 	{
-		//Basic Shape
 		progress.Message = Language.GetText("LegacyWorldGen.22").Value;
-		int dungeonSide = Main.dungeonX < Main.maxTilesX / 2 ? -1 : 1;
 
-		for (int side = 0; side < 2; side++)
+		LeftOcean = GenerateSide(true);
+		RightOcean = GenerateSide(false);
+	}
+
+	private static Rectangle GenerateSide(bool leftSide)
+	{
+		int dungeonSide = (Main.dungeonX < Main.maxTilesX / 2) ? -1 : 1;
+		int worldEdge = leftSide ? 0 : Main.maxTilesX - WorldGen.genRand.Next(125, 200) - 50;
+		int initialWidth = leftSide ? WorldGen.genRand.Next(125, 200) + 50 : Main.maxTilesX; //num468
+		int tilesFromInnerEdge = 0;
+
+		PiecewiseVScale = 1f + WorldGen.genRand.Next(-1000, 2500) * 0.0001f;
+		PiecewiseVMountFactor = WorldGen.genRand.Next(150, 750);
+
+		if (leftSide)
 		{
-			PiecewiseVScale = 1f + WorldGen.genRand.Next(-1000, 2500) * 0.0001f;
-			PiecewiseVMountFactor = WorldGen.genRand.Next(150, 750);
+			if (dungeonSide == 1)
+				initialWidth = 275;
 
-			int worldEdge = side == 0 ? 0 : Main.maxTilesX - WorldGen.genRand.Next(125, 200) - 50;
-			int initialWidth = side == 0 ? WorldGen.genRand.Next(125, 200) + 50 : Main.maxTilesX; //num468
-			int tilesFromInnerEdge = 0;
+			int oceanTop;
+			for (oceanTop = 0; !Main.tile[initialWidth - 1, oceanTop].HasTile; oceanTop++)
+			{ } //Get top of ocean
 
-			if (side == 0)
+			GenVars.shellStartXLeft = GenVars.leftBeachEnd - 30 - WorldGen.genRand.Next(15, 30);
+			GenVars.shellStartYLeft = oceanTop;
+
+			oceanTop += WorldGen.genRand.Next(1, 5);
+			for (int placeX = initialWidth - 1; placeX >= worldEdge; placeX--)
+				GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
+
+			return new Rectangle(worldEdge, oceanTop - 5, initialWidth, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+		}
+		else
+		{
+			if (dungeonSide == -1)
+				worldEdge = Main.maxTilesX - 275;
+
+			int oceanTop;
+			for (oceanTop = 0; !Main.tile[worldEdge - 1, oceanTop].HasTile; oceanTop++)
+			{ } //Get top of ocean
+
+			GenVars.shellStartXRight = GenVars.rightBeachStart + 30 + WorldGen.genRand.Next(15, 30);
+			GenVars.shellStartYRight = oceanTop;
+
+			oceanTop += WorldGen.genRand.Next(1, 5);
+			for (int placeX = worldEdge; placeX < initialWidth; placeX++) //repeat X loop
+				GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
+
+			return new Rectangle(worldEdge, oceanTop - 5, initialWidth - worldEdge, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+		}
+	}
+
+	private static void GenSingleOceanSingleStep(int oceanTop, int placeX, ref int tilesFromInnerEdge)
+	{
+		tilesFromInnerEdge++;
+
+		float depth = GetOceanSlope(tilesFromInnerEdge);
+		depth += OceanSlopeRoughness();
+
+		int thickness = WorldGen.genRand.Next(20, 28); //Sand lining is a bit thicker than vanilla
+		bool passedTile = false;
+
+		for (int placeY = 0; placeY < oceanTop + depth + thickness; placeY++)
+		{
+			bool liq = PlaceTileOrLiquid(placeX, placeY, oceanTop, depth);
+
+			if (!passedTile && !Framing.GetTileSafely(placeX, placeY + 1).HasTile)
 			{
-				if (dungeonSide == 1)
-					initialWidth = 275;
-
-				int oceanTop;
-				for (oceanTop = 0; !Main.tile[initialWidth - 1, oceanTop].HasTile; oceanTop++)
-				{ } //Get top of ocean
-
-				GenVars.shellStartXLeft = GenVars.leftBeachEnd - 30 - WorldGen.genRand.Next(15, 30);
-				GenVars.shellStartYLeft = oceanTop;
-
-				oceanTop += WorldGen.genRand.Next(1, 5);
-				for (int placeX = initialWidth - 1; placeX >= worldEdge; placeX--)
-					GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
-
-				_leftOcean = new Rectangle(worldEdge, oceanTop - 5, initialWidth, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
+				if (!liq)
+					thickness++;
 			}
 			else
 			{
-				if (dungeonSide == -1)
-					worldEdge = Main.maxTilesX - 275;
-
-				int oceanTop;
-				for (oceanTop = 0; !Main.tile[worldEdge - 1, oceanTop].HasTile; oceanTop++)
-				{ } //Get top of ocean
-
-				GenVars.shellStartXRight = GenVars.rightBeachStart + 30 + WorldGen.genRand.Next(15, 30);
-				GenVars.shellStartYRight = oceanTop;
-
-				oceanTop += WorldGen.genRand.Next(1, 5);
-				for (int placeX = worldEdge; placeX < initialWidth; placeX++) //repeat X loop
-					GenSingleOceanSingleStep(oceanTop, placeX, ref tilesFromInnerEdge);
-
-				_rightOcean = new Rectangle(worldEdge, oceanTop - 5, initialWidth - worldEdge, (int)GetOceanSlope(tilesFromInnerEdge) + 20);
-			}
-		}
-
-		static void GenSingleOceanSingleStep(int oceanTop, int placeX, ref int tilesFromInnerEdge)
-		{
-			tilesFromInnerEdge++;
-
-			float depth = GetOceanSlope(tilesFromInnerEdge);
-			depth += OceanSlopeRoughness();
-
-			int thickness = WorldGen.genRand.Next(20, 28); //Sand lining is a bit thicker than vanilla
-			bool passedTile = false;
-
-			for (int placeY = 0; placeY < oceanTop + depth + thickness; placeY++)
-			{
-				bool liq = PlaceTileOrLiquid(placeX, placeY, oceanTop, depth);
-
-				if (!passedTile && !Framing.GetTileSafely(placeX, placeY + 1).HasTile)
-				{
-					if (!liq)
-						thickness++;
-				}
-				else
-				{
-					passedTile = true;
-				}
+				passedTile = true;
 			}
 		}
 	}
+	#endregion
 
 	public static void GenerateOceanObjects(GenerationProgress progress, GameConfiguration config)
 	{
@@ -137,26 +141,27 @@ public partial class OceanGeneration : ModSystem
 
 		PlaceOceanPendant();
 
-		if (_leftOcean == Rectangle.Empty || _rightOcean == Rectangle.Empty)
+		if (LeftOcean == Rectangle.Empty || RightOcean == Rectangle.Empty)
 		{
-			_leftOcean = new Rectangle(40, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
-			_rightOcean = new Rectangle(Main.maxTilesX - 40 - WorldGen.beachDistance, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
-		}
+			LeftOcean = new Rectangle(40, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
+			RightOcean = new Rectangle(Main.maxTilesX - 40 - WorldGen.beachDistance, (int)Main.worldSurface - 200, WorldGen.beachDistance, 200);
+		} //Fallback if the ocean shape didn't generate
 
-		for (int i = 0; i < 2; i++)
+		Rectangle[] regions = [LeftOcean, RightOcean];
+		foreach (Rectangle region in regions)
 		{
-			Rectangle area = (i == 0) ? _leftOcean : _rightOcean;
+			WorldMethods.Generate(GenerateGravel, 5, out _, region);
 
-			GenPirateChest(area); //See OceanGeneration.Classic
+			GenPirateChest(region); //See OceanGeneration.Classic
 
-			WorldMethods.Generate(CreateWaterChests, WorldGen.genRand.Next(1, 4), out _, area, 50);
-			WorldMethods.Generate(CreateSunkenTreasure, WorldGen.genRand.Next(2, 4), out _, area, 100);
-			WorldMethods.GenerateSquared(CreateDeco, out _, area);
+			WorldMethods.Generate(CreateWaterChest, WorldGen.genRand.Next(1, 4), out _, region, 50);
+			WorldMethods.Generate(CreateSunkenTreasure, WorldGen.genRand.Next(2, 4), out _, region, 100);
+			WorldMethods.GenerateSquared(CreateDeco, out _, region);
 		}
 	}
 
 	/// <summary> Places additional water chests in the inner ocean. </summary>
-	public static bool CreateWaterChests(int i, int j)
+	public static bool CreateWaterChest(int i, int j)
 	{
 		const int curveLength = 120;
 
@@ -243,16 +248,20 @@ public partial class OceanGeneration : ModSystem
 			int height = WorldGen.genRand.Next(4, 14);
 			for (int h = 0; h < height; h++)
 			{
-				var t = Main.tile[i, j - h];
-
-				if (t.HasTile || t.LiquidAmount < 255)
-					break;
-
+				Tile tile = Framing.GetTileSafely(i, j - h);
 				int type = ModContent.TileType<OceanKelp>();
+
 				WorldGen.PlaceTile(i, j - h, type);
 
-				if (h < height / 2 && t.TileType == type)
-					t.TileFrameY += 198;
+				if (tile.HasTile && tile.TileType == type)
+				{
+					if (h < height / 2)
+						tile.TileFrameY += 198;
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 
@@ -274,28 +283,95 @@ public partial class OceanGeneration : ModSystem
 			if (!FindSurface(x, ref y))
 				continue;
 
-			if (Framing.GetTileSafely(x, y).LiquidType == LiquidID.Water && Framing.GetTileSafely(x, y).LiquidAmount == 255)
-			{
-				int type = ModContent.TileType<Items.Reefhunter.OceanPendant.OceanPendantTile>();
-
-				WorldGen.PlaceObject(x, y, type);
-				if (Framing.GetTileSafely(x, y).TileType == type)
-					break;
-			}
+			Tile tile = Framing.GetTileSafely(x, y);
+			if (tile.LiquidType == LiquidID.Water && tile.LiquidAmount == 255 && Placer.PlaceTile(x, y, ModContent.TileType<OceanPendantTile>()).success)
+				break;
 		}
 	}
 
+	#region magmastone
+	public static bool GenerateGravel(int x, int y)
+	{
+		if (!WorldGen.InWorld(x, y, 20))
+			return false;
+
+		WorldMethods.FindGround(x, ref y);
+		Tile above = Main.tile[x, y - 1];
+
+		if (above.LiquidType == LiquidID.Water && above.LiquidAmount >= 200)
+		{
+			ShapeData data = new();
+			int radius = WorldGen.genRand.Next(2, 8);
+
+			WorldUtils.Gen(new(x, y), new Shapes.Circle(radius, (int)(radius * 0.75f)), Actions.Chain(
+				new Modifiers.OnlyTiles(TileID.Sand),
+				new Modifiers.Blotches(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<Gravel>())
+			).Output(data));
+
+			WorldUtils.Gen(new(x, y), new ModShapes.OuterOutline(data), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<Gravel>()),
+				new Modifiers.Dither(),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<Magmastone>())
+			));
+
+			WorldUtils.Gen(new(x, y), new ModShapes.OuterOutline(data), Actions.Chain(
+				new Modifiers.Blotches(),
+				new Modifiers.OnlyTiles(TileID.Sand),
+				new Actions.SetTileKeepWall(TileID.HardenedSand)
+			));
+
+			new Decorator(new(x - radius, y - radius, radius * 2, radius * 2))
+				.Enqueue(CreateStack, radius / 2)
+				.Enqueue(ModContent.TileType<GravelPile>(), radius / 2)
+				.Enqueue(ModContent.TileType<GravelStalagmite>(), radius / 3)
+				.Run();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private static bool CreateStack(int x, int y)
+	{
+		WorldMethods.FindGround(x, ref y);
+		PlaceAttempt attempt = Placer.Check(x, --y, ModContent.TileType<HydrothermalVent>()).IsClear();
+
+		if (attempt.success)
+		{
+			int height = WorldGen.genRand.Next(0, 3);
+			WorldUtils.Gen(new(x, y - height + 1), new Shapes.Rectangle(2, height), new Actions.SetTileKeepWall((ushort)ModContent.TileType<Gravel>()));
+
+			attempt.data.yCoord -= height; //Offset by height
+			attempt.Place();
+
+			return true;
+		}
+
+		return false;
+	}
+	#endregion
+
 	#region general helpers
 	private static bool RightSide(int x) => x > Main.maxTilesX / 2;
-	private static int TilesFromEdge(int x) => RightSide(x) ? (x - _rightOcean.Left) : (_leftOcean.Right - x);
-	private static bool ValidCoords(int i, int j) => Main.tile[i, j].LiquidAmount == 255 && !Main.tile[i, j].HasTile && Main.tile[i, j + 1].HasTile && Main.tile[i, j + 1].TileType == TileID.Sand;
+	private static int TilesFromEdge(int x) => RightSide(x) ? (x - RightOcean.Left) : (LeftOcean.Right - x);
+
+	/// <summary> Returns whether the provided coordinates are valid for sandy decoration tiles. </summary>
+	private static bool ValidCoords(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		Tile below = Framing.GetTileSafely(i, j + 1);
+
+		return tile.LiquidAmount == 255 && !tile.HasTile && below.HasTile && below.TileType == TileID.Sand;
+	}
 
 	private static bool FindSurface(int i, ref int j)
 	{
 		WorldMethods.FindGround(i, ref j);
 		Point pt = new(i, --j);
 
-		if (!ValidCoords(i, j) || !_leftOcean.Contains(pt) && !_rightOcean.Contains(pt))
+		if (!ValidCoords(i, j) || !LeftOcean.Contains(pt) && !RightOcean.Contains(pt))
 			return false;
 
 		return true;
@@ -387,7 +463,7 @@ public partial class OceanGeneration : ModSystem
 			tile.HasTile = true;
 		}
 
-		Main.tile[placeX, placeY].WallType = 0;
+		Main.tile[placeX, placeY].WallType = WallID.None;
 		return false;
 	}
 
@@ -448,27 +524,6 @@ public partial class OceanGeneration : ModSystem
 				returnValue = LastSlope(160);
 
 			return -returnValue;
-		}
-	}
-
-	/// <summary>Generates ocean caves like vanilla does but with a guaranteed chance.</summary>
-	public static void GenerateOceanCaves(GenerationProgress progress, GameConfiguration config)
-	{
-		for (int attempt = 0; attempt < 2; attempt++)
-		{
-			if ((attempt != 0 || GenVars.dungeonSide <= 0) && (attempt != 1 || GenVars.dungeonSide >= 0))
-			{
-				progress.Message = Lang.gen[90].Value;
-				int i = WorldGen.genRand.Next(55, 95);
-				if (attempt == 1)
-					i = WorldGen.genRand.Next(Main.maxTilesX - 95, Main.maxTilesX - 55);
-
-				int j;
-				for (j = 0; !Main.tile[i, j].HasTile; j++)
-				{ }
-
-				WorldGen.oceanCave(i, j);
-			}
 		}
 	}
 }

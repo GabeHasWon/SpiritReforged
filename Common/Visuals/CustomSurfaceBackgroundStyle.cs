@@ -75,11 +75,15 @@ public abstract class CustomSurfaceBackgroundStyle : ModSurfaceBackgroundStyle
 		}
 	}
 
-	public static void RestartSpritebatch(Effect effect = null)
+	public static void RestartSpritebatch(Effect effect = null, Vector3? extraTranslation = null)
 	{
 		Main.spriteBatch.End();
 		Matrix transformationMatrix = Main.BackgroundViewMatrix.TransformationMatrix;
 		transformationMatrix.Translation -= Main.BackgroundViewMatrix.ZoomMatrix.Translation * new Vector3(1f, Main.BackgroundViewMatrix.Effects.HasFlag(SpriteEffects.FlipVertically) ? (-1f) : 1f, 1f);
+
+		if (extraTranslation != null)
+			transformationMatrix.Translation += extraTranslation.Value;
+		
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, effect, transformationMatrix);
 	}
 	#endregion
@@ -113,6 +117,15 @@ public static class BackgroundStyleHelper
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "ColorOfSurfaceBackgroundsModified")]
 	private static extern ref Color ColorOfSurfaceBackgroundsModified(Main main);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawStarsInBackground")]
+	public static extern void DrawBackgroundStars(Main main, Main.SceneArea sceneArea, bool artificial);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetBackColor")]
+	public static extern void FillSunAndMoonColor(Main main, Main.InfoToSetBackColor info, out Color sunColor, out Color moonColor);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawSunAndMoon")]
+	public static extern void DrawSunAndMoon(Main main, Main.SceneArea sceneArea, Color moonColor, Color sunColor, float tempMushroomInfluence);
 
 	public static float BackgroundScale
 	{

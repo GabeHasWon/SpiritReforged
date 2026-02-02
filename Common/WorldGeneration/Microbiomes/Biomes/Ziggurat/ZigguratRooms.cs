@@ -319,7 +319,7 @@ public static class ZigguratRooms
 
 			WorldUtils.Gen(new(Bounds.Left - 1, Bounds.Top), new Shapes.Rectangle(11, Bounds.Height), new Actions.PlaceWall((ushort)CarvedLapisWall.UnsafeType));
 			WorldUtils.Gen(new(Bounds.Left + 10, Bounds.Top), new Shapes.Rectangle(Bounds.Right - Bounds.Left - 12, Bounds.Height), Actions.Chain(
-				new Actions.PlaceWall((ushort)ModContent.WallType<RedSandstoneBrickCrackedWall>()),
+				new Actions.PlaceWall((ushort)RedSandstoneBrickCrackedWall.UnsafeType),
 				new Modifiers.Dither(0.4f),
 				new Actions.PlaceWall(WallID.Sandstone)));
 

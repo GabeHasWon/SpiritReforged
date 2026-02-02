@@ -216,6 +216,7 @@ internal class SaltFlatsSystem : ModSystem
 
 		colorTarget = Color.Lerp(colorTarget, new Color(0.2f, 0.04f, 0.1f), eclipseStrength);
 
+		float nightGlowStrength = 0.3f + Main.bgAlphaFarBackLayer[ModContent.GetInstance<SaltBGStyle>().Slot] * 0.6f; //Salt bg intensifies the glow during the night
 		backgroundColor = Color.Lerp(backgroundColor, colorTarget, nightGlowOpacity * 0.3f);
 		tileColor = Color.Lerp(tileColor, colorTarget, nightGlowOpacity * 0.3f);
 	}

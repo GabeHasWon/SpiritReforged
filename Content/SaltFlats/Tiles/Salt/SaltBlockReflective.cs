@@ -4,7 +4,9 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 
@@ -16,6 +18,8 @@ public class SaltBlockReflective : SaltBlock
 	{
 		public readonly ModTarget2D normalTarget;
 		private Texture2D _distanceMap;
+
+		public static float SaltBackgroundOpacity => Main.bgAlphaFarBackLayer[ModContent.GetInstance<SaltBGStyle>().Slot];
 
 		public SaltGridOverlay() => normalTarget = new(() => CanDraw, RenderNormalTarget);
 
@@ -32,7 +36,7 @@ public class SaltBlockReflective : SaltBlock
 
 		public override void RenderTileTarget(SpriteBatch spriteBatch) => PrepareDefault.Invoke(spriteBatch, tileTarget, () =>
 		{
-			var texture = TileMap.Value;
+			var texture = TileReflectiveMask.Value;
 
 			foreach (var pt in _grid)
 			{
@@ -65,73 +69,142 @@ public class SaltBlockReflective : SaltBlock
 			spriteBatch.BeginDefault();
 
 			Main.tileBatch.Begin();
-			DrawSimpleGradient(new Color(14, 24, 227), new(177, 192, 240), new(79, 108, 255)); 
+			float gradientOpacity = 1 - SaltBackgroundOpacity;
+			if (Main.LocalPlayer.gravDir != 1)
+				gradientOpacity = 1;
+			DrawSimpleGradient(new Color(14, 24, 227) * gradientOpacity, new Color(105, 152, 255) * gradientOpacity, new Color(130, 160, 255) * gradientOpacity);
 			Main.tileBatch.End();
 
-			foreach (Cloud c in Main.cloud)
-			{
-				if (c.active)
-				{
-					float offset = c.position.Y * (Main.screenHeight / 600f) + 200f;
-					DrawForegroudCloud(c, c.cloudColor(Main.ColorOfTheSkies) * 0.75f, offset);
-				}
-			}
+			Reflections.CacheNPCDraws(Main.instance);
+
+			if (Reflections.Detail > 2)
+				Reflections.CacheProjDraws(Main.instance);
+		
+			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCsMoonMoon, true); //Draw moonlord
 
 			if (Reflections.Detail > 1)
 			{
-				// DrawDepthRange seems to determine the "closeness" (minDepth) and "farness" (maxDepth) that it'll draw at - this affects stuff like
-				// the Lantern Night lanterns. I used the max range the vanilla game uses, which should be fine. This note is in case there's issues.
-				SkyManager.Instance.DrawDepthRange(spriteBatch, float.MinValue, float.MaxValue);
-
 				if (!Reflections.HighResolution)
 				{
 					//Reflections.DrawBlack(Main.instance, true);
 					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 				}
 
-				Reflections.DrawNPCs(Main.instance, true);
+				if (Reflections.Detail > 2)
+					Reflections.DrawBackGore(Main.instance);
+			}
 
+			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCsBehindNonSolidTiles, true);
+
+			if (Reflections.Detail > 1)
+			{
 				if (!Reflections.HighResolution)
-				{
-					spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
 					spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
-					if (Reflections.Detail > 1)
-					{
-						spriteBatch.End();
-						Main.instance.TilesRenderer.PostDrawTiles(false, false, false);
-						spriteBatch.BeginDefault();
-					}
+				DrawOrderSystem.DrawNonsolid();
+				spriteBatch.End();
+
+				if (Reflections.Detail > 2)
+				{
+					Reflections.DrawTileEntities(Main.instance, false, false, false);
+
+					//spriteBatch.BeginDefault();
+					//This is where DrawWaterfalls would go if we were doing that
+					//spriteBatch.End();
 				}
 			}
+			else
+				spriteBatch.End();
 
-			Reflections.DrawNPCs(Main.instance, false);
-			ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
+			if (!Main.LocalPlayer.detectCreature)
+				DrawNPCsAndProjsBehindTiles(spriteBatch);
 
-			if (Reflections.Detail > 2)
+			if (Reflections.Detail > 1)
 			{
-				Reflections.DrawGore(Main.instance);
-				Main.instance.DrawItems();
+				if (!Reflections.HighResolution)
+				{
+					spriteBatch.BeginDefault();
+					spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+					DrawOrderSystem.DrawSolid();
+					spriteBatch.End();
+				}
+
+				if (Reflections.Detail > 2)
+					Reflections.DrawTileEntities(Main.instance, true, false, false);
 			}
 
+			if (Main.LocalPlayer.detectCreature)
+				DrawNPCsAndProjsBehindTiles(spriteBatch);
+
+			//spriteBatch.BeginDefault();
+			//This is where we would draw the tile hit effects
+			//spriteBatch.End();
+
+			Reflections.DrawPlayers_BehindNPCs(Main.instance);
+
+			if (Reflections.Detail > 2)
+				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCs);
+
+			spriteBatch.BeginDefault(); 
+			Reflections.DrawNPCs(Main.instance, false);
+			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCProjectiles, behindTiles: false);
+			spriteBatch.End();
+
+			if (Reflections.Detail > 1)
+				SystemLoader.PostDrawTiles();
+			
+			if (Reflections.Detail > 2)
+			{
+				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindProjectiles);
+				Reflections.DrawProjectiles(Main.instance);
+			}
+
+			Reflections.DrawPlayers_AfterProjectiles(Main.instance);
+			spriteBatch.BeginDefault();
+			DrawOrderSystem.DrawOverPlayers(); 
 			spriteBatch.End();
 
 			if (Reflections.Detail > 2)
 			{
-				Reflections.DrawDust(Main.instance);
-				Reflections.DrawProjectiles(Main.instance);
+				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverPlayers);
 			}
 
-			Reflections.DrawPlayers_BehindNPCs(Main.instance);
-			Reflections.DrawPlayers_AfterProjectiles(Main.instance);
+			spriteBatch.BeginDefault();
+			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCsOverPlayers, false);
 
+			if (Reflections.Detail > 2)
+			{
+				Main.instance.DrawItems();
+				Reflections.DrawRain();
+				Reflections.DrawGore(Main.instance);
+				ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
+				spriteBatch.End();
+				Reflections.DrawDust(Main.instance);
+				spriteBatch.BeginDefault();
+			}
+
+			if (Reflections.Detail > 2)
+			{
+				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverWiresUI, false);
+			}
+
+			spriteBatch.End();
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;
-
 			Reflections.DrawingReflection = false;
 		}
 
-		public void RenderNormalTarget(SpriteBatch spriteBatch)
+		public void DrawNPCsAndProjsBehindTiles(SpriteBatch spriteBatch)
+		{
+			if (Reflections.Detail > 2)
+				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCsAndTiles);
+
+			spriteBatch.BeginDefault();
+			Reflections.DrawNPCs(Main.instance, true);
+			spriteBatch.End();
+		}
+
+	public void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
 			Vector2 scale = Vector2.One;
 			var gradient = CreateTilemap(16, 255 * 3);
@@ -169,10 +242,23 @@ public class SaltBlockReflective : SaltBlock
 
 		protected override void DrawContents(SpriteBatch spriteBatch)
 		{
-			var s = AssetLoader.LoadedShaders["Reflection"].Value;
+			var s = AssetLoader.LoadedShaders["SaltReflectionComposite"].Value;
 
 			s.Parameters["normalTexture"].SetValue(normalTarget);
 			s.Parameters["tileTexture"].SetValue(tileTarget);
+			s.Parameters["backgroundSeethroughOpacity"].SetValue(1f);
+			if (SaltBGStyle.backgroundTarget != null && SaltBGStyle.backgroundTarget.Target != null && !SaltBGStyle.backgroundTarget.Target.IsDisposed)
+			{
+				s.Parameters["backgroundComposite"].SetValue(SaltBGStyle.backgroundTarget.Target);
+
+				Matrix mainMatrix = Main.Transform;
+				mainMatrix.Decompose(out Vector3 matrixScale, out Quaternion matrixRotation, out Vector3 matrixTranslation);
+
+				s.Parameters["backgroundCompositeScale"].SetValue(matrixScale);
+				//s.Parameters["backgroundCompositeMatrix"].SetValue(inverse);
+			}
+
+			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyColor(1f));
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);
 
@@ -237,7 +323,7 @@ public class SaltBlockReflective : SaltBlock
 		}
 	}
 
-	public static readonly Asset<Texture2D> TileMap = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
+	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
 	private static SaltGridOverlay Overlay;
 
 	public override void Load()

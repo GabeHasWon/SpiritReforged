@@ -1,5 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.Silk;
@@ -19,6 +22,7 @@ using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Leather.HideTunic;
 using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Windshear;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
 
@@ -163,10 +167,12 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInZiggurat()
 	{
-		if (!PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition.TryGetValue(InterestType.Ziggurat, out HashSet<Point16> ziggurats))
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratBiome).ToHashSet();
+
+		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;
 
-		Point16 pos = WorldGen.genRand.Next([.. ziggurats]);
+		Point16 pos = WorldGen.genRand.Next([.. ziggurats]).Position;
 		Point16 spawn;
 		Tile tile;
 
@@ -300,29 +306,8 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 FindScarecrowSpawnPoint()
 	{
-		Point16[] poI = [.. PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition[InterestType.Curiosity]];
-		Point16 pos = WorldGen.genRand.Next(poI);
-
-		while (CantFindScarecrowNearby(pos))
-		{
-			pos = WorldGen.genRand.Next(poI);
-		}
-
-		return pos;
-	}
-
-	private static bool CantFindScarecrowNearby(Point16 pos)
-	{
-		for (int i = pos.X - 60; i < pos.X + 60; ++i)
-		{
-			for (int j = pos.Y - 40; j < pos.Y + 40; ++j)
-			{
-				if (Main.tile[i, j].TileType == ModContent.TileType<Scarecrow>())
-					return false;
-			}
-		}
-
-		return true;
+		Point16 position = new(ScarecrowDiscovery.Position);
+		return (position == Point16.Zero) ? Point16.NegativeOne : position;
 	}
 
 	public static Point16 FindBeachSpawnPoint()

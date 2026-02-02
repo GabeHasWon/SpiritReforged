@@ -1,44 +1,73 @@
 ﻿namespace SpiritReforged.Common.PlayerCommon;
 
-/// <summary> Handles double tap abilities in any direction. </summary>
+/// <summary> Handles double tap abilities in any cardinal direction. </summary>
 public class DoubleTapPlayer : ModPlayer
 {
-	public delegate void DoubleTapDelegate(Player player, int keyDir);
+	public enum Direction { Up, Right, Down, Left }
+
+	public const int TapThreshold = 17;
+
+	public delegate void DoubleTapDelegate(Player player, Direction direction);
 	public static event DoubleTapDelegate OnDoubleTap;
 
-	public const int UpTapThreshold = 17;
+	public Dictionary<Direction, int> Counters = [];
+	public Direction lastDirection;
 
-	public int lastTapUpTimer = 0;
-	public bool controlUpLast = false;
+	public static Vector2 ConvertDirection(Direction value) => (-Vector2.UnitY).RotatedBy(MathHelper.PiOver2 * (int)value);
 
-	public bool UpPress => !Player.controlUp && controlUpLast;
-
-	public override void Load() => On_Player.KeyDoubleTap += DoubleTap;
-	private static void DoubleTap(On_Player.orig_KeyDoubleTap orig, Player self, int keyDir)
+	public override void ResetEffects()
 	{
-		orig(self, keyDir);
+		if (Counters.Count == 0)
+		{
+			Counters.Add(Direction.Up, TapThreshold);
+			Counters.Add(Direction.Right, TapThreshold);
+			Counters.Add(Direction.Down, TapThreshold);
+			Counters.Add(Direction.Left, TapThreshold);
+		}
 
-		if (keyDir == 0)
-			self.GetModPlayer<DoubleTapPlayer>().DoubleTapDown();
+		foreach (Direction direction in Counters.Keys)
+			Counters[direction] = Math.Max(Counters[direction] - 1, 0);
 	}
-
-	public override void ResetEffects() => lastTapUpTimer--;
 
 	public override void SetControls()
 	{
-		if (UpPress)
+		if (Player.controlUp && Player.releaseUp)
+			ReadInput(Direction.Up);
+
+		if (Player.controlRight && Player.releaseRight)
+			ReadInput(Direction.Right);
+
+		if (Player.controlDown && Player.releaseDown)
+			ReadInput(Direction.Down);
+
+		if (Player.controlLeft && Player.releaseLeft)
+			ReadInput(Direction.Left);
+
+		void ReadInput(Direction direction)
 		{
-			lastTapUpTimer = lastTapUpTimer < 0 ? UpTapThreshold : lastTapUpTimer + UpTapThreshold;
-
-			if (lastTapUpTimer > UpTapThreshold)
+			if (lastDirection == direction && Counters[direction] > 0)
 			{
-				OnDoubleTap?.Invoke(Player, !Main.ReversedUpDownArmorSetBonuses ? 1 : 0);
-				lastTapUpTimer = 0;
-			}
-		}
+				DoubleTap(direction);
+				Counters[direction] = 0;
 
-		controlUpLast = Player.controlUp;
+				return;
+			}
+
+			Counters[direction] = TapThreshold;
+			lastDirection = direction;
+		}
 	}
 
-	internal void DoubleTapDown() => OnDoubleTap?.Invoke(Player, Main.ReversedUpDownArmorSetBonuses ? 1 : 0);
+	public void DoubleTap(Direction direction)
+	{
+		if (Main.ReversedUpDownArmorSetBonuses)
+		{
+			if (direction == Direction.Up)
+				direction = Direction.Down;
+			else if (direction == Direction.Down)
+				direction = Direction.Up;
+		}
+
+		OnDoubleTap?.Invoke(Player, direction);
+	}
 }

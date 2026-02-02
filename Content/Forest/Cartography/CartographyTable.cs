@@ -27,16 +27,8 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 		DustType = DustID.WoodFurniture;
 	}
 
-	public override bool RightClick(int i, int j)
-	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			MappingSystem.SetMap();
-			return true;
-		}
-
-		return false;
-	}
+	public override bool RightClick(int i, int j) =>
+		MappingSystem.Sync();
 
 	public override void MouseOver(int i, int j)
 	{
