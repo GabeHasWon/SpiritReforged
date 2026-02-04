@@ -2924,3 +2924,8 @@ ZigguratTikiTorchItem: {
 	DisplayName: Ziggurat Tiki Torch
 	Tooltip: ""
 }
+
+GiantThornWallItem: {
+	DisplayName: Giant Thorn Wall Item
+	Tooltip: ""
+}

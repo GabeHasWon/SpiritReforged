@@ -1,5 +1,4 @@
-﻿using ReLogic.Utilities;
-using SpiritReforged.Common;
+﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
@@ -14,8 +13,6 @@ using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
-using SpiritReforged.Content.Ziggurat.Tiles;
-using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -531,6 +528,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 		return false;
 	}
 
+	/// <summary> Creates a peaked roof based on <paramref name="length"/>. </summary>
+	/// <param name="bounds"> The total bounds the roof encompasses. </param>
+	/// <param name="thickness"> The vertical thickness of the roof. </param>
+	/// <param name="length"> The flat outer length of the roof. </param>
 	private static void CreateRoof(Rectangle bounds, int thickness, int length)
 	{
 		bounds.Height -= length; //Automatic height calibration
