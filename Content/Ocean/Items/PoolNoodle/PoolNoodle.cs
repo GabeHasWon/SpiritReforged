@@ -32,6 +32,7 @@ public class PoolNoodle : ModItem
 		Item.value = Item.sellPrice(silver: 45);
 
 		style = (byte)Main.rand.Next(NumStyles);
+		SetVisualStyle();
 	}
 
 	public override ModItem Clone(Item itemClone)

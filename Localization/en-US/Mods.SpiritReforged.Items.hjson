@@ -2924,3 +2924,13 @@ ZigguratTikiTorchItem: {
 	DisplayName: Ziggurat Tiki Torch
 	Tooltip: ""
 }
+
+WateringCan: {
+	DisplayName: Watering Can
+	Tooltip: ""
+}
+
+WateringCanTwo: {
+	DisplayName: Speed Grow Watering Can
+	Tooltip: Encourages plant growth
+}

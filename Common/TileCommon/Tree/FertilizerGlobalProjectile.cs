@@ -16,17 +16,25 @@ internal class FertilizerGlobalProjectile : GlobalProjectile
 		{
 			for (int y = start.Y; y < end.Y + 1; y++)
 			{
-				if (!WorldGen.InWorld(x, y))
-					continue;
-
-				var t = Main.tile[x, y];
-
-				if (TileLoader.GetTile(t.TileType) is SaplingTile)
-				{
-					CustomTree.GrowTree(x, y);
-					WorldGen.GrowTree(x, y); //Apply to normal ModTree saplings
-				}
+				if (WorldGen.InWorld(x, y) && TileLoader.GetTile(Main.tile[x, y].TileType) is SaplingTile)
+					GrowTree(x, y);
 			}
 		}
+	}
+
+	public static bool GrowTree(int x, int y)
+	{
+		Tile tile = Main.tile[x, y];
+		if (TileLoader.GetTile(tile.TileType) is SaplingTile || TileID.Sets.TreeSapling[tile.TileType])
+		{
+			bool result = false;
+
+			result |= CustomTree.GrowTree(x, y);
+			result |= WorldGen.GrowTree(x, y);
+
+			return result;
+		}
+
+		return false;
 	}
 }

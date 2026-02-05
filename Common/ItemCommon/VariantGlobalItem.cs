@@ -90,8 +90,8 @@ internal class VariantGlobalItem : GlobalItem
 		int frameCount = Main.itemAnimations[type].FrameCount;
 		int frame = (subID == defaultID) ? 0 : subID;
 
-		var texture = ((variantData[type].worldTexture is null || inInventory) ? TextureAssets.Item[type] : variantData[type].worldTexture).Value;
-		var rectangle = texture.Frame(1, frameCount, 0, frame, 0, -2);
+		Texture2D texture = ((variantData[type].worldTexture is null || inInventory) ? TextureAssets.Item[type] : variantData[type].worldTexture).Value;
+		Rectangle rectangle = texture.Frame(1, frameCount, 0, frame, 0, -2);
 		var sizes = variantData[type].sizes;
 
 		if (sizes != null && frame < sizes.Length)
@@ -115,8 +115,8 @@ internal class VariantGlobalItem : GlobalItem
 		if (variantData[item.type].auto && subID == defaultID)
 			subID = (byte)Main.rand.Next(frameCount);
 
-		var texture = (variantData[item.type].worldTexture ?? TextureAssets.Item[item.type]).Value;
-		var source = GetSource(item.type);
+		Texture2D texture = (variantData[item.type].worldTexture ?? TextureAssets.Item[item.type]).Value;
+		Rectangle source = GetSource(item.type);
 
 		spriteBatch.Draw(texture, item.position + item.Size - source.Size() - Main.screenPosition, source, GetAlpha(item, lightColor) ?? lightColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0);
 		return false;
@@ -127,8 +127,8 @@ internal class VariantGlobalItem : GlobalItem
 		if (variantData[item.type].auto)
 			subID = defaultID;
 
-		var texture = TextureAssets.Item[item.type].Value;
-		var source = GetSource(item.type);
+		Texture2D texture = TextureAssets.Item[item.type].Value;
+		Rectangle source = GetSource(item.type);
 
 		//Scale the item according to 'source' instead of 'frame'
 		ItemSlot.DrawItem_GetColorAndScale(item, Main.inventoryScale, ref drawColor, 32, ref source, out _, out scale);
