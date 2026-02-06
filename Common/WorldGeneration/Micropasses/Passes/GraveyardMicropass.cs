@@ -9,7 +9,7 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class GraveyardMicropass : Micropass
 {
-	public enum StructureSize { Small, Medium, Large }
+	private enum StructureSize { Small, Medium, Large }
 
 	public override string WorldGenName => "Graveyard";
 
