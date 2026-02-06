@@ -29,10 +29,10 @@ internal class GraveyardMicropass : Micropass
 
 	public static bool GenerateGraveyard(int x, int y)
 	{
-		const int dimensions = 50;
+		const int dimensions = 60;
 		WorldMethods.FindGround(x, ref y);
 
-		Scale = Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.1f, 0, 1); //Determine graveyard size based on distance from the world center
+		Scale = Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.3f, 0, 1); //Determine graveyard size based on distance from the world center
 		Rectangle region = new(x - dimensions / 2, y - dimensions / 6, dimensions, dimensions / 3);
 
 		if (!GenVars.structures.CanPlace(region, 4))
@@ -53,10 +53,10 @@ internal class GraveyardMicropass : Micropass
 		if ((int)(WorldGen.genRand.Next(5, 9) * Scale) is int graveCount && graveCount > 0)
 			decorator.Enqueue(PlaceGravestone, graveCount);
 
-		//if ((int)(WorldGen.genRand.Next(3, 7) * Scale) is int thornCount && thornCount > 0)
-		//	decorator.Enqueue(GrowThorns, thornCount);
+		if ((int)(WorldGen.genRand.Next(3, 8) * Scale) is int thornCount && thornCount > 0)
+			decorator.Enqueue(GrowThorns, thornCount);
 
-		if ((int)(WorldGen.genRand.Next(3, 7) * Scale) is int fillerCount && fillerCount > 0)
+		if ((int)(WorldGen.genRand.Next(3, 8) * Scale) is int fillerCount && fillerCount > 0)
 		{
 			decorator.Enqueue(PlaceFences, fillerCount);
 			decorator.Enqueue(GrowBushes, fillerCount);
@@ -138,9 +138,7 @@ internal class GraveyardMicropass : Micropass
 				new Modifiers.IsSolid(),
 				new Modifiers.IsTouchingAir(),
 				new Modifiers.Offset(0, -1),
-				new Modifiers.Blotches(2, 0.5),
-				new Modifiers.Dither(),
-				new Modifiers.OnlyWalls(WallID.None),
+				new Modifiers.Blotches(3, 0.5),
 				new Actions.PlaceWall(WallID.GrassUnsafe)
 			));
 
@@ -204,7 +202,6 @@ internal class GraveyardMicropass : Micropass
 
 			WorldUtils.Gen(new(x, y), new Shapes.Slime(radius, 1, 0.4), Actions.Chain(
 				new Modifiers.Flip(false, true),
-				new Modifiers.Blotches(),
 				new Actions.SetTileKeepWall(TileID.Dirt)
 			).Output(data));
 
@@ -219,11 +216,14 @@ internal class GraveyardMicropass : Micropass
 				new Actions.Custom(SmoothTop)
 			));
 
-			int fullWallWidth = radius * 2 - 4;
+			int fullWallWidth = radius * 2 - 6;
 			WorldUtils.Gen(new(x - fullWallWidth / 2, y + 1), new Shapes.Rectangle(fullWallWidth, surfacePos.Y - y + 4), Actions.Chain(
 				new Modifiers.IsTouchingAir(),
 				new Modifiers.Blotches(),
-				new Actions.PlaceWall(WallID.DirtUnsafe4)
+				new Actions.PlaceWall(WallID.GrassUnsafe),
+				new Modifiers.Expand(1),
+				new Modifiers.Dither(),
+				new Actions.PlaceWall(WallID.GrassUnsafe)
 			));
 
 			return true;
@@ -293,24 +293,26 @@ internal class GraveyardMicropass : Micropass
 		WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2) + 1, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.SetTile((ushort)ModContent.TileType<StonePillar>()),
 			new Modifiers.Offset(1, 0),
+			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(WallID.StoneSlab)
 		)); //Left stone pillar
 
 		WorldUtils.Gen(origin, new Shapes.Rectangle(new(topArea.Width / 2 - 3, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.SetTile((ushort)ModContent.TileType<StonePillar>()),
 			new Modifiers.Offset(-1, 0),
+			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(WallID.StoneSlab)
 		)); //Right stone pillar
 
+		Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
+
+		WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, bottomArea.Height * 2), Actions.Chain(
+			new Modifiers.Expand(1),
+			new Actions.SetTileKeepWall(TileID.GrayBrick)
+		)); //Create foundation
+
 		if (size is StructureSize.Large)
 		{
-			Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
-
-			WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, bottomArea.Height * 2), Actions.Chain(
-				new Modifiers.Expand(1),
-				new Actions.SetTileKeepWall(TileID.GrayBrick)
-			));
-
 			WorldUtils.Gen(bottomArea.Location + new Point(1, 0), new Shapes.Rectangle(bottomArea.Width - 2, bottomArea.Height), Actions.Chain(
 				new Actions.Clear(),
 				new Actions.PlaceWall(WallID.StoneSlab)
@@ -377,6 +379,8 @@ internal class GraveyardMicropass : Micropass
 				Utils.PlotLine(bounds.BottomLeft().ToPoint() + new Point(0, y), bounds.Top().ToPoint() + new Point(0, y), attempt);
 				Utils.PlotLine(bounds.BottomRight().ToPoint() + new Point(-1, y), bounds.Top().ToPoint() + new Point(-1, y), attempt);
 			}
+
+			WorldUtils.Gen(bounds.Location, new Shapes.Rectangle(bounds.Width, bounds.Height * 2), new Actions.Smooth());
 		}
 
 		static bool PlaceShingles(int x, int y)

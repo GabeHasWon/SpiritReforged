@@ -11,6 +11,6 @@ public class BonePile : ModTile
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(new Color(150, 140, 110));
-		DustType = DustID.Copper;
+		DustType = DustID.Bone;
 	}
 }
