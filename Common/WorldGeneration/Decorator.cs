@@ -12,7 +12,7 @@ public readonly struct Decorator(Rectangle bounds, WorldMethods.GenDelegate comm
 
 	public readonly Rectangle bounds = bounds;
 	private readonly WorldMethods.GenDelegate _commonDelegate = commonDelegate;
-	private readonly HashSet<ObjectInfo> _objects = [];
+	private readonly List<ObjectInfo> _objects = [];
 
 	/// <summary> Queues a task to randomly run within <see cref="bounds"/>. </summary>
 	/// <param name="tileType"> The tile type to place. </param>
@@ -40,7 +40,7 @@ public readonly struct Decorator(Rectangle bounds, WorldMethods.GenDelegate comm
 
 	public readonly void Run()
 	{
-		HashSet<ObjectInfo> objects = _objects;
+		List<ObjectInfo> objects = _objects;
 		WorldMethods.GenDelegate del = _commonDelegate;
 
 		WorldMethods.GenerateSquared((i, j) =>

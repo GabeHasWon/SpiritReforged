@@ -2926,6 +2926,11 @@ ZigguratTikiTorchItem: {
 }
 
 GiantThornWallItem: {
-	// DisplayName: Giant Thorn Wall Item
+	// DisplayName: Giant Thorn Wall
+	// Tooltip: ""
+}
+
+StonePillarItem: {
+	// DisplayName: Stone Pillar
 	// Tooltip: ""
 }

@@ -17,15 +17,11 @@ internal class GraveyardMicropass : Micropass
 	[WorldBound]
 	public static float Scale;
 
-	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
-	{
-		afterIndex = false;
-		return passes.FindIndex(genpass => genpass.Name.Equals("Piles"));
-	}
+	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Piles"));
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		WorldMethods.Generate(GenerateGraveyard, 1, out int generated, new(20, (int)(Main.worldSurface * 0.35f), Main.maxTilesX - 40, 10));
+		WorldMethods.Generate(GenerateGraveyard, 1, out int generated, new(100, (int)(Main.worldSurface * 0.35f), Main.maxTilesX - 200, 10));
 
 		if (generated == 0)
 			SpiritReforgedMod.Instance.Logger.Info("Generator exceeded maximum tries for structure: " + WorldGenName);
@@ -33,17 +29,17 @@ internal class GraveyardMicropass : Micropass
 
 	public static bool GenerateGraveyard(int x, int y)
 	{
+		const int dimensions = 50;
 		WorldMethods.FindGround(x, ref y);
 
-		Scale = 1; //Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.1f, 0, 1); //Determine graveyard size based on distance from the world center
-		int dimensions = (int)Math.Clamp(30 * Scale, 5, 30);
-		Rectangle region = new(x - dimensions / 2, y - dimensions / 2, dimensions, dimensions);
+		Scale = Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.1f, 0, 1); //Determine graveyard size based on distance from the world center
+		Rectangle region = new(x - dimensions / 2, y - dimensions / 6, dimensions, dimensions / 3);
 
 		if (!GenVars.structures.CanPlace(region, 4))
 			return false;
 
 		Dictionary<ushort, int> typeToCount = [];
-		WorldUtils.Gen(region.Location, new Shapes.Rectangle(dimensions, dimensions), new Actions.TileScanner(TileID.Grass, TileID.Dirt).Output(typeToCount));
+		WorldUtils.Gen(region.Location, new Shapes.Rectangle(region.Width, region.Height), new Actions.TileScanner(TileID.Grass, TileID.Dirt).Output(typeToCount));
 		int totalScan = region.Width * region.Height;
 
 		if (typeToCount[TileID.Grass] + typeToCount[TileID.Dirt] < totalScan * 0.3f || typeToCount[TileID.Grass] < 5)
@@ -51,11 +47,14 @@ internal class GraveyardMicropass : Micropass
 
 		Decorator decorator = new(region);
 
+		if ((int)(3 * Scale) is int platformCount && platformCount > 0)
+			decorator.Enqueue(CreatePlatform, platformCount);
+
 		if ((int)(WorldGen.genRand.Next(5, 9) * Scale) is int graveCount && graveCount > 0)
 			decorator.Enqueue(PlaceGravestone, graveCount);
 
-		if ((int)(WorldGen.genRand.Next(3, 7) * Scale) is int thornCount && thornCount > 0)
-			decorator.Enqueue(GrowThorns, thornCount);
+		//if ((int)(WorldGen.genRand.Next(3, 7) * Scale) is int thornCount && thornCount > 0)
+		//	decorator.Enqueue(GrowThorns, thornCount);
 
 		if ((int)(WorldGen.genRand.Next(3, 7) * Scale) is int fillerCount && fillerCount > 0)
 		{
@@ -115,10 +114,11 @@ internal class GraveyardMicropass : Micropass
 
 		if (WorldGen.SolidTile(surfaceTile) && surfaceTile.TileType is TileID.Grass or TileID.Dirt)
 		{
-			WorldUtils.Gen(new(x, y), new Shapes.Circle(WorldGen.genRand.Next(2, 8)), Actions.Chain(
+			WorldUtils.Gen(new(x, y), new Shapes.Circle(5), Actions.Chain(
 				new Modifiers.IsSolid(),
 				new Modifiers.IsTouchingAir(),
 				new Modifiers.Offset(0, -1),
+				new Modifiers.OnlyWalls(WallID.None),
 				new Actions.PlaceWall(WallID.WroughtIronFence)
 			));
 
@@ -140,6 +140,7 @@ internal class GraveyardMicropass : Micropass
 				new Modifiers.Offset(0, -1),
 				new Modifiers.Blotches(2, 0.5),
 				new Modifiers.Dither(),
+				new Modifiers.OnlyWalls(WallID.None),
 				new Actions.PlaceWall(WallID.GrassUnsafe)
 			));
 
@@ -189,6 +190,73 @@ internal class GraveyardMicropass : Micropass
 		return false;
 	}
 
+	private static bool CreatePlatform(int x, int y)
+	{
+		Tile tile = Main.tile[x, y];
+
+		if (!WorldGen.SolidTile(tile))
+		{
+			if (!WorldUtils.Find(new(x, y), new Searches.Down(12).Conditions(new Conditions.IsSolid()), out Point surfacePos))
+				return false;
+
+			int radius = WorldGen.genRand.Next(6, 13);
+			ShapeData data = new();
+
+			WorldUtils.Gen(new(x, y), new Shapes.Slime(radius, 1, 0.4), Actions.Chain(
+				new Modifiers.Flip(false, true),
+				new Modifiers.Blotches(),
+				new Actions.SetTileKeepWall(TileID.Dirt)
+			).Output(data));
+
+			WorldUtils.Gen(new(x, y), new ModShapes.OuterOutline(data), Actions.Chain(
+				new Modifiers.RectangleMask(-radius - 2, radius + 2, 0, radius),
+				new Modifiers.Dither(),
+				new Actions.ClearTile()
+			));
+
+			WorldUtils.Gen(new(x, y), new ModShapes.InnerOutline(data), Actions.Chain(
+				new Actions.SetTileKeepWall(TileID.Grass),
+				new Actions.Custom(SmoothTop)
+			));
+
+			int fullWallWidth = radius * 2 - 4;
+			WorldUtils.Gen(new(x - fullWallWidth / 2, y + 1), new Shapes.Rectangle(fullWallWidth, surfacePos.Y - y + 4), Actions.Chain(
+				new Modifiers.IsTouchingAir(),
+				new Modifiers.Blotches(),
+				new Actions.PlaceWall(WallID.DirtUnsafe4)
+			));
+
+			return true;
+		}
+
+		return false;
+
+		static bool SmoothTop(int x, int y, object args)
+		{
+			Tile top = Framing.GetTileSafely(x, y - 1);
+			Tile left = Framing.GetTileSafely(x - 1, y);
+			Tile right = Framing.GetTileSafely(x + 1, y);
+			Tile tile = Main.tile[x, y];
+
+			if (!WorldGen.SolidOrSlopedTile(top))
+			{
+				bool leftClear = !WorldGen.SolidOrSlopedTile(left);
+				bool rightClear = !WorldGen.SolidOrSlopedTile(right);
+
+				if (leftClear && rightClear)
+					tile.IsHalfBlock = true;
+				else if (leftClear)
+					tile.Slope = SlopeType.SlopeDownRight;
+				else if (rightClear)
+					tile.Slope = SlopeType.SlopeDownLeft;
+
+				return true;
+			}
+
+			return false;
+		}
+	}
+
 	private static bool CreateMausoleum(int x, int y)
 	{
 		var size = (StructureSize)((Scale - 0.5f) / 0.25f);
@@ -197,11 +265,11 @@ internal class GraveyardMicropass : Micropass
 		y -= 2;
 
 		Point origin = new(x, y);
-		Rectangle topArea = (size is StructureSize.Large) ? new(x - 9, y - 6, 18, 6) : new(x - 7, y - 5, 14, 5);
+		Rectangle topArea = (size is StructureSize.Large) ? new(x - 8, y - 6, 16, 6) : new(x - 7, y - 5, 14, 5);
 		ShapeData data = new();
 
 		WorldUtils.Gen(topArea.Location, new Shapes.Rectangle(topArea.Width, topArea.Height), 
-			new Actions.Clear());
+			new Actions.Clear()); //Clear the top area
 
 		WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2), 0, topArea.Width, 1)), 
 			new Actions.SetTile(TileID.StoneSlab).Output(data)); //Stone slab foundation
@@ -213,11 +281,12 @@ internal class GraveyardMicropass : Micropass
 			new Actions.PlaceWall(WallID.GrayBrick)
 		)); //Bottom gray brick foundation
 
-		WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2), -topArea.Height - 3, topArea.Width, 3)), 
-			new Actions.SetTile((ushort)ModContent.TileType<BrownShingles>())); //Flat shingle roof
-
-		WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2), -topArea.Height, topArea.Width, 1)),
-			new Actions.SetTile(TileID.StoneSlab)); //Stone slab roof base
+		WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2), -topArea.Height - 3, topArea.Width, 3)), Actions.Chain(
+			new Actions.SetTile((ushort)ModContent.TileType<BrownShingles>()),
+			new Modifiers.Offset(0, 1),
+			new Modifiers.SkipTiles((ushort)ModContent.TileType<BrownShingles>()),
+			new Actions.SetTile(TileID.StoneSlab)
+		)); //Flat shingle roof
 
 		CreateTriangleRoof(new(origin.X, origin.Y - topArea.Height - 2), 6, 4);
 
@@ -236,23 +305,27 @@ internal class GraveyardMicropass : Micropass
 		if (size is StructureSize.Large)
 		{
 			Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
-			data = new();
 
-			WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, bottomArea.Height), Actions.Chain(
-				new Actions.Clear(),
-				new Actions.PlaceWall(WallID.StoneSlab)
-			).Output(data)); //Clear basement area
-
-			WorldUtils.Gen(bottomArea.Location, new ModShapes.OuterOutline(data), Actions.Chain(
-				new Modifiers.Expand(0),
+			WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, bottomArea.Height * 2), Actions.Chain(
+				new Modifiers.Expand(1),
 				new Actions.SetTileKeepWall(TileID.GrayBrick)
 			));
 
+			WorldUtils.Gen(bottomArea.Location + new Point(1, 0), new Shapes.Rectangle(bottomArea.Width - 2, bottomArea.Height), Actions.Chain(
+				new Actions.Clear(),
+				new Actions.PlaceWall(WallID.StoneSlab)
+			)); //Clear basement area
+
 			CreateBonePit(origin + new Point(0, 5), 6, 4);
 
-			WorldUtils.Gen(origin, new Shapes.Rectangle(new(-2, -1, 4, 1)), new Actions.PlaceWall(WallID.WroughtIronFence));
-			WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2) + 4, 0, 2, 3)), new Actions.ClearTile());
-			WorldUtils.Gen(origin, new Shapes.Rectangle(new(topArea.Width / 2 - 6, 0, 2, 3)), new Actions.ClearTile());
+			WorldUtils.Gen(origin, new Shapes.Rectangle(new(-2, -1, 4, 1)), 
+				new Actions.PlaceWall(WallID.WroughtIronFence));
+
+			WorldUtils.Gen(origin, new Shapes.Rectangle(new(-(topArea.Width / 2) + 4, 0, 2, 3)), 
+				new Actions.ClearTile()); //Create openings
+
+			WorldUtils.Gen(origin, new Shapes.Rectangle(new(topArea.Width / 2 - 6, 0, 2, 3)), 
+				new Actions.ClearTile());
 		}
 		else
 		{
@@ -272,7 +345,7 @@ internal class GraveyardMicropass : Micropass
 			).Output(data));
 
 			WorldUtils.Gen(bounds.Location, new ModShapes.OuterOutline(data), Actions.Chain(
-				new Modifiers.RectangleMask(-bounds.Width, bounds.Width, 0, bounds.Height),
+				new Modifiers.RectangleMask(-bounds.Width, bounds.Width, 2, bounds.Height),
 				new Actions.SetTileKeepWall(TileID.StoneSlab)
 			));
 
@@ -281,6 +354,13 @@ internal class GraveyardMicropass : Micropass
 				new Modifiers.Blotches(),
 				new Actions.PlaceTile((ushort)ModContent.TileType<BonePile>())
 			));
+
+			Point center = bounds.Center;
+			for (int p = 0; p < 5; p++)
+			{
+				if (Placer.PlaceTile<SkeletonHand>(center.X, center.Y - p).success)
+					break;
+			}
 		}
 
 		static void CreateTriangleRoof(Point origin, int squareSize, int thickness)
@@ -292,7 +372,7 @@ internal class GraveyardMicropass : Micropass
 
 			for (int y = -halfThickness; y < halfThickness; y++)
 			{
-				Utils.TileActionAttempt attempt = (y == halfThickness - 1) ? PlaceSlabs : PlaceShingles;
+				Utils.TileActionAttempt attempt = (y >= halfThickness - 1) ? PlaceSlabs : PlaceShingles;
 
 				Utils.PlotLine(bounds.BottomLeft().ToPoint() + new Point(0, y), bounds.Top().ToPoint() + new Point(0, y), attempt);
 				Utils.PlotLine(bounds.BottomRight().ToPoint() + new Point(-1, y), bounds.Top().ToPoint() + new Point(-1, y), attempt);

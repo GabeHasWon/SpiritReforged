@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Forest.Misc;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
@@ -29,7 +30,8 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 		TileObjectData.newTile.CoordinateWidth = 26;
 		TileObjectData.newTile.CoordinateHeights = [height];
 		TileObjectData.newTile.DrawYOffset = -(height - 18);
-		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
+		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
+		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<BonePile>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.addTile(Type);
