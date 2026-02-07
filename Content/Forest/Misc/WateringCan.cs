@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -112,7 +113,11 @@ public class WateringCan : ModItem
 	public const int NumStyles = 8;
 	public byte style = NumStyles;
 
-	public override void SetStaticDefaults() => VariantGlobalItem.AddVariants(Type, NumStyles, false);
+	public override void SetStaticDefaults()
+	{
+		VariantGlobalItem.AddVariants(Type, NumStyles, false);
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => shop.NpcType == NPCID.Dryad, new NPCShop.Entry(Type, Condition.InRain)));
+	}
 
 	public override void SetDefaults()
 	{

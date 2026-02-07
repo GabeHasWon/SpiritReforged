@@ -44,9 +44,6 @@ public class WateringCanTwo : ModItem
 		Item.noMelee = true;
 		Item.shootSpeed = 1;
 		Item.shoot = ModContent.ProjectileType<WateringCanTwoHeld>();
-
-		style = (Style)Main.rand.Next(NumStyles);
-		SetVisualStyle();
 	}
 
 	public override ModItem Clone(Item itemClone)
@@ -58,9 +55,11 @@ public class WateringCanTwo : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: (byte)style);
+		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai0: (byte)style);
 		return false;
 	}
+
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<WateringCan>()).AddIngredient(ItemID.FallenStar, 5).Register();
 
 	public override void SaveData(TagCompound tag) => tag[nameof(style)] = (byte)style;
 	public override void LoadData(TagCompound tag)

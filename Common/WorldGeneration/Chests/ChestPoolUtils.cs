@@ -40,26 +40,29 @@ public static class ChestPoolUtils
 	}
 
 	// Helper method for adding items to chests
-	private static void AddItemsToChest(IEnumerable<ChestInfo> list, Chest chest, int itemIndex)
+	private static Item[] AddItemsToChest(IEnumerable<ChestInfo> list, Chest chest, int itemIndex)
 	{
+		List<Item> items = [];
 		foreach (ChestInfo chestInfo in list)
 		{
 			chest.item[itemIndex].SetDefaults(chestInfo.itemTypes[Main.rand.Next(chestInfo.itemTypes.Length)]);
 			chest.item[itemIndex].stack = chestInfo.Stack;
 			chest.item[itemIndex].Prefix(-1);
 
+			items.Add(chest.item[itemIndex]);
 			itemIndex++;
 		}
+
+		return items.ToArray();
 	}
 
 	/// <summary>
 	/// Method to greatly reduce the amount of effort needed to make a chest pool. <br />
 	/// Input the chest's pool as a list of structs representing the item pool for each slot, stack for that pool, and chance to be added.
 	/// </summary>
-	public static void PlaceChestItems(List<ChestInfo> list, Chest chest, int startIndex = 0)
+	public static Item[] PlaceChestItems(List<ChestInfo> list, Chest chest, int startIndex = 0)
 	{
 		int itemIndex = startIndex;
-
 		var newList = new List<ChestInfo>();
 
 		foreach (ChestInfo c in list)
@@ -77,7 +80,7 @@ public static class ChestPoolUtils
 				chest.item[i + newList.Count] = chest.item[i].Clone();
 		}
 
-		AddItemsToChest(newList, chest, itemIndex);
+		return AddItemsToChest(newList, chest, itemIndex);
 	}
 
 	public static void PlaceModChestItemsWCheck(List<ChestInfo> list, Chest chest, ref bool[] placedItems)
@@ -106,7 +109,6 @@ public static class ChestPoolUtils
 		}
 
 		AddItemsToChest(list.Skip(1), chest, itemIndex);
-
 	}
 
 	public static void AddToModdedChest(List<ChestInfo> list, int chestType)
@@ -134,21 +136,25 @@ public static class ChestPoolUtils
 
 	/// <inheritdoc cref="AddToVanillaChest(List{ChestInfo}, int, int, ushort)"/>
 	/// <param name="item"> The <see cref="ChestInfo"/> to add. </param>
-	public static void AddToVanillaChest(ChestInfo item, int chestFrame, int index, ushort tileType = TileID.Containers) => AddToVanillaChest(item.ToList(), chestFrame, index, tileType);
+	public static Item[] AddToVanillaChest(ChestInfo item, int chestFrame, int index, ushort tileType = TileID.Containers) => AddToVanillaChest(item.ToList(), chestFrame, index, tileType);
 
 	/// <summary> Adds the given item info to chest inventories. </summary>
 	/// <param name="items"> The <see cref="ChestInfo"/> to add. </param>
 	/// <param name="chestFrame"> The horizontal frame of <paramref name="tileType"/> to consider. See <see cref="VanillaChestID"/> and <see cref="VanillaChestID2"/>. </param>
 	/// <param name="index"> The chest inventory index. </param>
 	/// <param name="tileType"> The chest tile type. </param>
-	public static void AddToVanillaChest(List<ChestInfo> items, int chestFrame, int index = 0, ushort tileType = TileID.Containers)
+	public static Item[] AddToVanillaChest(List<ChestInfo> items, int chestFrame, int index = 0, ushort tileType = TileID.Containers)
 	{
 		chestFrame *= 36;
+		List<Item> result = [];
+
 		for (int chestIndex = 0; chestIndex < Main.chest.Length; chestIndex++)
 		{
 			Chest chest = Main.chest[chestIndex];
 			if (chest != null && Main.tile[chest.x, chest.y].TileType == tileType && Main.tile[chest.x, chest.y].TileFrameX == chestFrame)
-				PlaceChestItems(items, chest, index);
+				result.AddRange(PlaceChestItems(items, chest, index));
 		}
+
+		return result.ToArray();
 	}
 }
