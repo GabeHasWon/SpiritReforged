@@ -7,11 +7,12 @@ namespace SpiritReforged.Common.NPCCommon;
 
 internal class NPCHeadLayer : ModMapLayer
 {
+	// This class solely fixes a weird issue where Main.mapMinimapScale jitters.
 	internal class LastScale : ModPlayer
 	{
 		internal static float LastMinimapScale = 0;
 
-		public override void PreUpdate()
+		public override void PostUpdate()
 		{
 			LastMinimapScale = Main.mapMinimapScale;
 		}

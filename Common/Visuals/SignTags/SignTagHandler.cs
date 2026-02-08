@@ -15,7 +15,7 @@ internal class SignTagHandler : ILoadable
 	private static bool _wasSignHover;
 	/// <summary> All tag data on the currently viewed sign. </summary>
 	private static string _currentTag;
-
+	/// <summary> Used to avoid clipping on the wavy sign tag effect, and reduce the amount of Immediate batching restarts. </summary>
 	private static RenderTarget2D _drawingTarget = null;
 
 	public void Load(Mod mod)
@@ -34,6 +34,8 @@ internal class SignTagHandler : ILoadable
 
 		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370));
 	}
+
+	public void Unload() => Main.RunOnMainThread(() => _drawingTarget?.Dispose());
 
 	private static void TrackSignText(On_Main.orig_DrawMouseOver orig, Main self)
 	{
@@ -299,6 +301,4 @@ internal class SignTagHandler : ILoadable
 		orig(self, gameTime);
 		_wasSignHover = Main.signHover != -1;
 	}
-
-	public void Unload() { }
 }
