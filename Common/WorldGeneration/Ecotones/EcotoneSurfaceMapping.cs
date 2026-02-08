@@ -147,6 +147,9 @@ public class EcotoneSurfaceMapping : ModSystem
 
 	public override void Unload()
 	{
+		if (_modifyCorruptionHook is null)
+			return;
+
 		_modifyCorruptionHook.Dispose();
 		_modifyCorruptionHook = null;
 	}

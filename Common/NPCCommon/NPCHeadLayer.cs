@@ -7,6 +7,16 @@ namespace SpiritReforged.Common.NPCCommon;
 
 internal class NPCHeadLayer : ModMapLayer
 {
+	internal class LastScale : ModPlayer
+	{
+		internal static float LastMinimapScale = 0;
+
+		public override void PreUpdate()
+		{
+			LastMinimapScale = Main.mapMinimapScale;
+		}
+	}
+
 	/// <summary> The types of outlier NPCs that use <see cref="AutoloadHead"/>. </summary>
 	private static readonly HashSet<int> Types = [];
 	private NPCHeadRenderer _renderer;
@@ -36,6 +46,7 @@ internal class NPCHeadLayer : ModMapLayer
 	private void DrawHead(ref string text, NPC npc)
 	{
 		const float scale = 1f;
+
 		int headId = TownNPCProfiles.GetHeadIndexSafe(npc);
 		if (headId == -1)
 			return;
@@ -43,10 +54,14 @@ internal class NPCHeadLayer : ModMapLayer
 		var headTexture = TextureAssets.NpcHead[headId];
 
 		MapUtils.PublicOverlayContext c = MapUtils.Context;
+
 		if (!Main.mapFullscreen)
-			c.mapScale = 1f;
+			c.mapScale = LastScale.LastMinimapScale;
+
+		Main.NewText(c.mapScale);
 
 		var position = MapUtils.TranslateToMap(npc.Center / 16f, c);
+
 		if (c.clippingRect.HasValue && !c.clippingRect.Value.Contains(position.ToPoint()))
 			return;
 
