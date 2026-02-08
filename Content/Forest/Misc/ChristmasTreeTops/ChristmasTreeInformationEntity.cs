@@ -29,7 +29,7 @@ internal class ChristmasTreeInformationEntity : ModTileEntity
 		// Check if position is valid
 		if (ByPosition.TryGetValue(new Point16(x, y), out TileEntity treeEntityTryTwo) && treeEntityTryTwo is ChristmasTreeInformationEntity treeTETwo)
 		{
-			tree = ByPosition[new Point16(x, y)] as ChristmasTreeInformationEntity;
+			tree = treeTETwo;
 			newPosition = new Point16(x, y);
 			return true;
 		}
@@ -77,6 +77,7 @@ internal class ChristmasTreeFunctionality : GlobalTile
 		{
 			Item.NewItem(new EntitySource_TileBreak(x, y), new Vector2(x, y) * 16, tree.Topper);
 			tree.Topper = -1;
+			NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, tree.ID);
 		}
 	}
 
