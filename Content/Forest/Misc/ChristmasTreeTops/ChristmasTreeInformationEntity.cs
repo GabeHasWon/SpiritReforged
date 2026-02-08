@@ -1,0 +1,108 @@
+﻿using SpiritReforged.Common.TileCommon;
+using System.IO;
+using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
+
+namespace SpiritReforged.Content.Forest.Misc.ChristmasTreeTops;
+
+internal class ChristmasTreeInformationEntity : ModTileEntity
+{
+	public short Topper = -1;
+
+	internal static bool TryGetEntity(Point16 pos, out ChristmasTreeInformationEntity tree, out Point16 newPosition)
+	{
+		tree = null;
+		newPosition = pos;
+
+		Tile tile = Main.tile[pos];
+		int x = pos.X;
+		int y = pos.Y;
+
+		if (tile.TileFrameX < 10)
+		{
+			x -= tile.TileFrameX;
+			y -= tile.TileFrameY;
+		}
+
+		x += 2; // Above code mimics vanilla top-left anchor, but this TE is offset by 2 tiles right so it draws over the tree properly
+
+		// Check if position is valid
+		if (ByPosition.TryGetValue(new Point16(x, y), out TileEntity treeEntityTryTwo) && treeEntityTryTwo is ChristmasTreeInformationEntity treeTETwo)
+		{
+			tree = ByPosition[new Point16(x, y)] as ChristmasTreeInformationEntity;
+			newPosition = new Point16(x, y);
+			return true;
+		}
+		else if (ValidCheck(x, y))
+		{
+			ModContent.GetInstance<ChristmasTreeInformationEntity>().Place(x, y);
+			tree = ByPosition[new Point16(x, y)] as ChristmasTreeInformationEntity;
+			newPosition = new Point16(x, y);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public override bool IsTileValidForEntity(int x, int y) => ValidCheck(x, y);
+
+	internal static bool ValidCheck(int x, int y)
+	{
+		Tile tile = Main.tile[x, y];
+		return tile.HasTile && tile.TileType == TileID.ChristmasTree && tile.TileFrameX == 2 && tile.TileFrameY == 0;
+	}
+
+	public override void SaveData(TagCompound tag) => tag.Add("topper", Topper);
+	public override void LoadData(TagCompound tag) => Topper = tag.GetShort("topper");
+
+	public override void NetSend(BinaryWriter writer) => writer.Write(Topper);
+	public override void NetReceive(BinaryReader reader) => Topper = reader.ReadInt16();
+}
+
+internal class ChristmasTreeFunctionality : GlobalTile
+{
+	public override void Load() => On_WorldGen.dropXmasTree += RemoveCustomItemFromTree;
+
+	private void RemoveCustomItemFromTree(On_WorldGen.orig_dropXmasTree orig, int x, int y, int obj)
+	{
+		orig(x, y, obj);
+
+		if (!ChristmasTreeInformationEntity.TryGetEntity(new Point16(x, y), out ChristmasTreeInformationEntity tree, out Point16 newPosition))
+			return;
+
+		x = newPosition.X;
+		y = newPosition.Y;
+
+		if (obj == 0 && tree.Topper != -1)
+		{
+			Item.NewItem(new EntitySource_TileBreak(x, y), new Vector2(x, y) * 16, tree.Topper);
+			tree.Topper = -1;
+		}
+	}
+
+	public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
+	{
+		if (!ChristmasTreeInformationEntity.ValidCheck(i, j) || !TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity te) || te is not ChristmasTreeInformationEntity tree)
+			return;
+
+		if (tree.Topper != -1)
+		{
+			Texture2D tex = TreeTopper.TopperTextures[tree.Topper].Value;
+			spriteBatch.Draw(tex, TileExtensions.DrawPosition(i - 1, j, new Vector2(-5, 0)), Lighting.GetColor(i, j));
+		}
+	}
+
+	public override void KillTile(int i, int j, int type, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		if (!ChristmasTreeInformationEntity.ValidCheck(i, j) || !TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity te) || te is not ChristmasTreeInformationEntity tree)
+			return;
+
+		if (!noItem)
+		{
+			if (tree.Topper != -1)
+				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, tree.Topper);
+		}
+
+		ModContent.GetInstance<ChristmasTreeInformationEntity>().Kill(i, j);
+	}
+}
