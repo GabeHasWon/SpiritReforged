@@ -103,8 +103,11 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 		if (!Main.dedServ)
 		{
-			skyReflectionsTarget?.Target.Dispose();
-			backgroundTarget?.Target.Dispose();
+			Main.QueueMainThreadAction(() =>
+			{
+				skyReflectionsTarget?.Dispose();
+				backgroundTarget?.Dispose();
+			});
 		}
 	}
 
