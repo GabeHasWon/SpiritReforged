@@ -59,6 +59,11 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
+float EaseCircOut(float input)
+{
+    return sqrt(1 - pow(input - 1, 2));
+}
+
 const float verticalFade = 0.3f;
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
@@ -73,11 +78,13 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     float flipYCoord = (1 - baseCoords.y);
     float fadeXCoords = (direction > 0) ? baseCoords.x : (1 - baseCoords.x);
     
-    float fadeThreshold = pow(progress, lerp(0.25f, 3, fadeXCoords));
-    fadeThreshold *= lerp(0.2f, 1, fadeXCoords);
-    float fadeDist = verticalFade * progress;
+    float fadeThreshold = pow(EaseCircOut(progress), 0.5f);
     
-    strength = pow(strength, lerp(3, 0.33f, 1 - (flipYCoord / fadeThreshold)));
+    float fadeDist = verticalFade * fadeThreshold;
+    fadeThreshold *= lerp(0.2f, 1, fadeXCoords);
+    
+    //raise to a higher power the further up the pixel is, makes noise sampling thinner at top and thicker at bottom
+    strength = pow(strength, lerp(4, 0.25f, 1 - (flipYCoord / fadeThreshold)));
     
     //fade out at top
     if (flipYCoord > max(fadeThreshold - fadeDist, 0))
@@ -88,24 +95,23 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     }
     
     //fade out at horizontal edge
-    if (fadeXCoords > 0.9f * progress)
+    float largeEdge = 0.9f;
+    if (fadeXCoords > largeEdge)
     {
-        float smoothStepFade = smoothstep(0.9f * progress, (0.9f * progress) + 0.1f, fadeXCoords);
+        float smoothStepFade = smoothstep(largeEdge, largeEdge + 0.1f, fadeXCoords);
         strength *= 1 - smoothStepFade;
         strength = pow(strength, lerp(1, 2, smoothStepFade));
     }
     
-    float colorStrength = pow(strength, 0.75f);
-    colorStrength = round(colorStrength * numColors) / numColors;
-    
+    //interpolate color
     float4 finalColor = uColor;
     
-    if (colorStrength < 0.5f)
-        finalColor = lerp(uColor3, uColor2, colorStrength * 2);
+    if (strength < 0.5f)
+        finalColor = lerp(uColor3, uColor2, strength * 2);
     else
-        finalColor = lerp(uColor2, uColor, (colorStrength - 0.5f) * 2);
+        finalColor = lerp(uColor2, uColor, (strength - 0.5f) * 2);
     
-    return input.Color * finalColor * finalIntensityMod * pow(strength, 0.75f);
+    return input.Color * finalColor * finalIntensityMod * strength;
 }
 
 technique BasicColorDrawing

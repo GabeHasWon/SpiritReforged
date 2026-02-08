@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 
 public class SlamShockwave : ModProjectile
 {
-	private const int MAX_TIMELEFT = 60;
+	private const int MAX_TIMELEFT = 50;
 
 	private const float TOP_OFFSET_RATIO = 0.25f;
 
@@ -44,17 +44,17 @@ public class SlamShockwave : ModProjectile
 
 		shockwaveEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
 		shockwaveEffect.Parameters["uTexture2"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
-		shockwaveEffect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.16f) * 1.5f);
-		shockwaveEffect.Parameters["pixelDimensions"].SetValue(new Vector2(Projectile.width, Projectile.height) / 4);
+		shockwaveEffect.Parameters["textureStretch"].SetValue(new Vector2(2f, 0.1f) * 2);
+		shockwaveEffect.Parameters["pixelDimensions"].SetValue(new Vector2(Projectile.width, Projectile.height) / 2);
 
-		shockwaveEffect.Parameters["uColor"].SetValue(Color.LightYellow.Additive(240).ToVector4());
-		shockwaveEffect.Parameters["uColor2"].SetValue(Color.PaleGoldenrod.Additive(180).ToVector4());
-		shockwaveEffect.Parameters["uColor3"].SetValue(Color.DarkGoldenrod.Additive(120).ToVector4());
+		shockwaveEffect.Parameters["uColor"].SetValue(Color.White.ToVector4());
+		shockwaveEffect.Parameters["uColor2"].SetValue(Color.LightGray.Additive(150).ToVector4());
+		shockwaveEffect.Parameters["uColor3"].SetValue(Color.Gray.Additive(50).ToVector4());
 
-		float progress = EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularOut.Ease(1 - Projectile.timeLeft / (float)MAX_TIMELEFT));
-		shockwaveEffect.Parameters["finalIntensityMod"].SetValue(1.5f);
-		shockwaveEffect.Parameters["numColors"].SetValue(180);
-		shockwaveEffect.Parameters["scroll"].SetValue(new Vector2(-Projectile.ai[0] * EaseFunction.EaseCubicIn.Ease(progress) * 0.33f, -EaseFunction.EaseCubicIn.Ease(progress)));
+		float progress = (1 - Projectile.timeLeft / (float)MAX_TIMELEFT);
+		shockwaveEffect.Parameters["finalIntensityMod"].SetValue(1.25f);
+		shockwaveEffect.Parameters["numColors"].SetValue(16);
+		shockwaveEffect.Parameters["scroll"].SetValue(new Vector2(0, -EaseFunction.EaseQuadOut.Ease(progress)));
 		shockwaveEffect.Parameters["progress"].SetValue(progress);
 		shockwaveEffect.Parameters["direction"].SetValue(Projectile.ai[0]);
 
