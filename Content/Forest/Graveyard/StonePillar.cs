@@ -3,7 +3,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 public class StonePillar : ModTile, IAutoloadTileItem
 {

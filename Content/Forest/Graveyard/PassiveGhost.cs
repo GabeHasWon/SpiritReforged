@@ -3,7 +3,7 @@ using SpiritReforged.Common.Visuals;
 using System.IO;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 public class PassiveGhost : ModNPC
 {
@@ -22,10 +22,8 @@ public class PassiveGhost : ModNPC
 		{
 			queuedTypes = [];
 			foreach (int type in queuedByNPC.Keys)
-			{
 				if (queuedByNPC[type] = Main.townNPCCanSpawn[type] && !NPC.AnyNPCs(type))
 					queuedTypes.Add(type);
-			}
 		}
 	}
 
@@ -60,7 +58,7 @@ public class PassiveGhost : ModNPC
 			Color alphaColor = npc.GetAlpha(Color.White);
 			Rectangle source = npc.frame;
 			Vector2 position = npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY - (source.Height - npc.height) / 2 + 2);
-			SpriteEffects effects = (npc.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			SpriteEffects effects = npc.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 			Effect effect = AssetLoader.LoadedShaders["GhostShader"].Value;
 			effect.Parameters["dimensions"].SetValue(texture.Size());
@@ -86,10 +84,8 @@ public class PassiveGhost : ModNPC
 		List<int> npcTypes = [];
 
 		for (int type = 0; type < NPCLoader.NPCCount; type++)
-		{
 			if (ContentSamples.NpcsByNetId.TryGetValue(type, out NPC npc) && npc.townNPC)
 				npcTypes.Add(type);
-		}
 
 		GhostNPCTracker = new(npcTypes.ToArray());
 	}
@@ -115,18 +111,14 @@ public class PassiveGhost : ModNPC
 			NPC.netUpdate = true;
 		}
 		else
-		{
 			NPCTypeToCopy = NPCID.BestiaryGirl;
-		}
 	}
 
 	public override void AI()
 	{
 		if (Main.dayTime)
-		{
 			if ((NPC.Opacity -= 1 / 120f) <= 0)
 				NPC.active = false; //Fade out at dawn
-		}
 		else
 		{
 			float desiredOpacity = 1f - Math.Clamp(Main.LocalPlayer.DistanceSQ(NPC.Center) / (100f * 100f), 0, 1);
@@ -161,9 +153,9 @@ public class PassiveGhost : ModNPC
 		if (_showingDialogueBubble)
 		{
 			Texture2D texture = ChatTexture.Value;
-			SpriteEffects effect = (NPC.spriteDirection == 1) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			Vector2 origin = (effect == SpriteEffects.None) ? texture.Bounds.BottomLeft() : texture.Bounds.BottomRight();
-			Vector2 position = ((effect == SpriteEffects.None) ? NPC.Hitbox.TopRight() - new Vector2(7, 0) : NPC.Hitbox.TopLeft() + new Vector2(9, 0)) - screenPos;
+			SpriteEffects effect = NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			Vector2 origin = effect == SpriteEffects.None ? texture.Bounds.BottomLeft() : texture.Bounds.BottomRight();
+			Vector2 position = (effect == SpriteEffects.None ? NPC.Hitbox.TopRight() - new Vector2(7, 0) : NPC.Hitbox.TopLeft() + new Vector2(9, 0)) - screenPos;
 
 			Main.EntitySpriteDraw(texture, position, null, Color.White, 0, origin, 1, effect);
 
@@ -178,7 +170,7 @@ public class PassiveGhost : ModNPC
 		if (!Main.dayTime && !spawnInfo.Water && spawnInfo.EventSafe() && spawnInfo.Player.ZoneGraveyard)
 		{
 			GhostNPCTracker.FindAvailableNPCs(out var queuedTypes);
-			return (queuedTypes.Count == 0) ? 0 : 0.5f;
+			return queuedTypes.Count == 0 ? 0 : 0.5f;
 		}
 
 		return 0;

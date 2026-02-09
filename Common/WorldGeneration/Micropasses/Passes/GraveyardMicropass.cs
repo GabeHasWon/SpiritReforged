@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Forest.Misc;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
+using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using Terraria.IO;
 using Terraria.WorldBuilding;
@@ -50,17 +50,17 @@ internal class GraveyardMicropass : Micropass
 		if ((int)(3 * Scale) is int platformCount && platformCount > 0)
 			decorator.Enqueue(CreatePlatform, platformCount);
 
-		if ((int)(WorldGen.genRand.Next(5, 9) * Scale) is int graveCount && graveCount > 0)
+		if ((int)(9 * Scale) is int graveCount && graveCount > 0)
 			decorator.Enqueue(PlaceGravestone, graveCount);
-
-		if ((int)(WorldGen.genRand.Next(3, 8) * Scale) is int thornCount && thornCount > 0)
-			decorator.Enqueue(GrowThorns, thornCount);
 
 		if ((int)(WorldGen.genRand.Next(3, 8) * Scale) is int fillerCount && fillerCount > 0)
 		{
 			decorator.Enqueue(PlaceFences, fillerCount);
 			decorator.Enqueue(GrowBushes, fillerCount);
 		}
+
+		if ((int)(5 * Scale) is int thornCount && thornCount > 0)
+			decorator.Enqueue(GrowThorns, thornCount);
 
 		if (Scale > 0.5f)
 			decorator.Enqueue(CreateMausoleum, 1);
@@ -83,7 +83,17 @@ internal class GraveyardMicropass : Micropass
 
 		if (WorldGen.SolidTile(surfaceTile) && surfaceTile.TileType is TileID.Grass or TileID.Dirt)
 		{
-			int length = WorldGen.genRand.Next(3, 13);
+			success |= GrowThornBush(x, y, WorldGen.genRand.Next(3, 10), false);
+
+			if (success)
+				GrowThornBush(x, y, WorldGen.genRand.Next(3, 10), true);
+		}
+
+		return success;
+
+		static bool GrowThornBush(int x, int y, int length, bool background)
+		{
+			bool success = false;
 			int type = ModContent.TileType<GiantThorns>();
 			Point position = new(x, y);
 
@@ -94,18 +104,31 @@ internal class GraveyardMicropass : Micropass
 				if (WorldGen.SolidOrSlopedTile(tile))
 					break;
 
-				WorldGen.PlaceTile(position.X, position.Y, type);
+				if (background)
+				{
+					if (tile.WallType == WallID.None)
+					{
+						tile.WallType = (ushort)ModContent.WallType<GiantThornWall>();
 
-				if (!tile.HasTile || tile.TileType != type)
-					break;
+						if (c == 0)
+							Framing.GetTileSafely(x, y + 1).WallType = (ushort)ModContent.WallType<GiantThornWall>();
+					}
+				}
+				else
+				{
+					WorldGen.PlaceTile(position.X, position.Y, type);
+
+					if (!tile.HasTile || tile.TileType != type)
+						break;
+				}
 
 				bool horizontal = WorldGen.genRand.NextBool();
-				position += new Point(horizontal ? WorldGen.genRand.NextFromList(-1, 1) : 0, horizontal ? 0 : WorldGen.genRand.NextFromList(-1, 1));
+				position += new Point(horizontal ? WorldGen.genRand.NextFromList(-1, 1) : 0, horizontal ? 0 : -1);
 				success = true;
 			}
-		}
 
-		return success;
+			return success;
+		}
 	}
 
 	private static bool PlaceFences(int x, int y)

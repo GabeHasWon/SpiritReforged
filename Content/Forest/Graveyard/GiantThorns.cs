@@ -2,7 +2,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid)]
 public class GiantThorns : ModTile

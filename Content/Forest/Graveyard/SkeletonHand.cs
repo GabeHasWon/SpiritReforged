@@ -2,11 +2,10 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Forest.Misc;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
-namespace SpiritReforged.Content.Forest.Safekeeper;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class SkeletonHand : ModTile, IAutoloadRubble
@@ -38,6 +37,7 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 
 		AddMapEntry(new Color(165, 165, 150));
 		RegisterItemDrop(ModContent.ItemType<SafekeeperRing>());
+		DustType = -1;
 	}
 
 	public override void MouseOver(int i, int j)

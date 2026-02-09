@@ -1,7 +1,7 @@
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 [DrawOrder(DrawOrderAttribute.Layer.OverPlayers)]
 public class BonePile : ModTile

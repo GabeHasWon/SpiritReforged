@@ -1,8 +1,6 @@
-﻿using SpiritReforged.Common.WallCommon;
+﻿namespace SpiritReforged.Content.Forest.Walls;
 
-namespace SpiritReforged.Content.Forest.Walls;
-
-public class GiantThornWall : ModWall, IAutoloadWallItem
+public class GiantThornWall : ModWall
 {
 	public override void SetStaticDefaults()
 	{
