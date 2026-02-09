@@ -95,5 +95,5 @@ internal static class MiscExtensions
 	}
 
 	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
-	public static bool Common(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
+	public static bool EventSafe(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
 }

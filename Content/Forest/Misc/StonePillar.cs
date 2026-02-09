@@ -26,15 +26,7 @@ public class StonePillar : ModTile, IAutoloadTileItem
 			Main.tileMerge[type][Type] |= Main.tileSolid[type]; //Have everything merge with this type
 	}
 
-	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
-	{
-		Tile tile = Main.tile[i, j];
-
-		if (tile.TileFrameX is 0 or 18 or 36 && tile.TileFrameY is 90)
-			return false; //Broken frames
-
-		return TileFraming.Gemspark(i, j, resetFrame);
-	}
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
 
 	public override bool Slope(int i, int j)
 	{
@@ -46,16 +38,37 @@ public class StonePillar : ModTile, IAutoloadTileItem
 			tile.TileFrameX = result.X;
 			tile.TileFrameY = result.Y;
 		}
-		else if (tile.TileFrameX is 0 or 36 or 72 && tile.TileFrameY is 54) //Left corners
+		else if (tile.TileFrameX is 0 or 36 or 72 && tile.TileFrameY is 54) //Top left corners
 		{
 			Point16 result = new(0, 90);
 
 			tile.TileFrameX = result.X;
 			tile.TileFrameY = result.Y;
 		}
-		else if (tile.TileFrameX is 18 or 54 or 90 && tile.TileFrameY is 54) //Right corners
+		else if (tile.TileFrameX is 18 or 54 or 90 && tile.TileFrameY is 54) //Top right corners
 		{
 			Point16 result = new(36, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 18 or 36 or 54 && tile.TileFrameY is 36) //Generic bottoms
+		{
+			Point16 result = new(72, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 0 or 36 or 72 && tile.TileFrameY is 72) //Bottom left corners
+		{
+			Point16 result = new(54, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 18 or 54 or 90 && tile.TileFrameY is 72) //Bottom right corners
+		{
+			Point16 result = new(90, 90);
 
 			tile.TileFrameX = result.X;
 			tile.TileFrameY = result.Y;

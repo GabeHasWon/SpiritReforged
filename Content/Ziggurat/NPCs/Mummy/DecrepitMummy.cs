@@ -149,7 +149,7 @@ internal class DecrepitMummy : ModNPC
 			target.AddBuff(BuffID.Slow, 60 * 15);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Common() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.EventSafe() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{

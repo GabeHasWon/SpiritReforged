@@ -9,7 +9,7 @@ public class SaltFlatsGlobalNPC : GlobalNPC
 {
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 	{
-		if (!spawnInfo.Common())
+		if (!spawnInfo.EventSafe())
 			return;
 
 		if (spawnInfo.Player.InModBiome<SaltBiome>())

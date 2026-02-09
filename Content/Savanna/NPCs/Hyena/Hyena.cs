@@ -480,7 +480,7 @@ public class Hyena : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (!spawnInfo.Common())
+		if (!spawnInfo.EventSafe())
 			return 0;
 
 		int x = spawnInfo.SpawnTileX;
