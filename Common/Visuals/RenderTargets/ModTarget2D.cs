@@ -1,7 +1,7 @@
 ﻿namespace SpiritReforged.Common.Visuals.RenderTargets;
 
 /// <summary> Modular <see cref="RenderTarget2D"/> instance handler. Can be used by either creating a derivative or using the provided constructor. </summary>
-public class ModTarget2D : ILoadable
+public class ModTarget2D : ILoadable, IDisposable
 {
 	public static readonly HashSet<ModTarget2D> Targets = [];
 
@@ -95,6 +95,12 @@ public class ModTarget2D : ILoadable
 
 	public virtual void Load() { }
 	public void Unload() { }
+
+	public void Dispose()
+	{
+		Target?.Dispose();
+		GC.SuppressFinalize(this);
+	}
 
 	public static implicit operator RenderTarget2D(ModTarget2D e) => e.Target;
 }
