@@ -6,6 +6,7 @@ namespace SpiritReforged.Content.Forest.Misc;
 [AutoloadCritter]
 public class GoldCricket : Cricket, IGoldCritter
 {
+	public override int[] TypesToReplace => [NPCID.GoldGrasshopper];
 	public int[] NormalPersistentIDs => [ModContent.NPCType<Cricket>()];
 
 	public override void CreateItemDefaults() =>
@@ -17,6 +18,4 @@ public class GoldCricket : Cricket, IGoldCritter
 			item.bait = 50;
 		}
 	);
-
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => base.SpawnChance(spawnInfo) / 100f;
 }
