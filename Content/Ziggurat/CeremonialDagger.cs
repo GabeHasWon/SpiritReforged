@@ -27,7 +27,7 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 	}
 	public override void SetDefaults()
 	{
-		Item.damage = 18;
+		Item.damage = 14;
 		Item.crit = 6;
 		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 25;
