@@ -1,22 +1,32 @@
-using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class HerosMemorialStatue : ModTile, IAutoloadTileItem
+public class HerosMemorialStatue : ModTile
 {
-	void IAutoloadTileItem.SetItemDefaults(ModItem item)
+	public class HerosMemorialStatueItem : ModItem
 	{
-		item.Item.rare = ItemRarityID.Orange;
-		item.Item.Size = new Vector2(30, 48);
+		public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<HerosMemorialStatueMossyItem>();
+		public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StoneBlock, 50).AddTile(TileID.HeavyWorkBench).Register();
+
+		public override void SetDefaults()
+		{
+			Item.DefaultToPlaceableTile(ModContent.TileType<HerosMemorialStatue>(), 0);
+			Item.rare = ItemRarityID.Orange;
+			Item.Size = new Vector2(30, 48);
+		}
 	}
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item)
+	public class HerosMemorialStatueMossyItem : ModItem
 	{
-		item.CreateRecipe()
-			.AddIngredient(ItemID.StoneBlock, 50)
-			.AddTile(TileID.HeavyWorkBench)
-			.Register();
+		public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<HerosMemorialStatueItem>();
+
+		public override void SetDefaults()
+		{
+			Item.DefaultToPlaceableTile(ModContent.TileType<HerosMemorialStatue>(), 1);
+			Item.rare = ItemRarityID.Orange;
+			Item.Size = new Vector2(30, 48);
+		}
 	}
 
 	public override void SetStaticDefaults()
@@ -34,8 +44,10 @@ public class HerosMemorialStatue : ModTile, IAutoloadTileItem
 		TileObjectData.newTile.StyleWrapLimit = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleHorizontal = true;
+
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 

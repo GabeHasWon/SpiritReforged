@@ -308,7 +308,10 @@ internal class GraveyardMicropass : Micropass
 			new Actions.SetTile((ushort)ModContent.TileType<BrownShingles>()),
 			new Modifiers.Offset(0, 1),
 			new Modifiers.SkipTiles((ushort)ModContent.TileType<BrownShingles>()),
-			new Actions.SetTile(TileID.StoneSlab)
+			new Actions.SetTile(TileID.StoneSlab),
+			new Modifiers.Offset(0, -2),
+			new Modifiers.SkipTiles((ushort)ModContent.TileType<BrownShingles>()),
+			new Actions.SetTileKeepWall((ushort)ModContent.TileType<LimeMoss>())
 		)); //Flat shingle roof
 
 		CreateTriangleRoof(new(origin.X, origin.Y - topArea.Height - 2), 6, 4);

@@ -54,6 +54,8 @@ public class PassiveGhost : ModNPC
 			if (npc.ModNPC is not PassiveGhost passiveGhost)
 				continue;
 
+			Main.instance.LoadNPC(passiveGhost.NPCTypeToCopy);
+
 			Texture2D texture = TextureAssets.Npc[passiveGhost.NPCTypeToCopy].Value;
 			Color alphaColor = npc.GetAlpha(Color.White);
 			Rectangle source = npc.frame;
@@ -111,14 +113,20 @@ public class PassiveGhost : ModNPC
 			NPC.netUpdate = true;
 		}
 		else
+		{
 			NPCTypeToCopy = NPCID.BestiaryGirl;
+		}
 	}
 
 	public override void AI()
 	{
 		if (Main.dayTime)
+		{
 			if ((NPC.Opacity -= 1 / 120f) <= 0)
+			{
 				NPC.active = false; //Fade out at dawn
+			}
+		}
 		else
 		{
 			float desiredOpacity = 1f - Math.Clamp(Main.LocalPlayer.DistanceSQ(NPC.Center) / (100f * 100f), 0, 1);

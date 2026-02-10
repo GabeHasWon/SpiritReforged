@@ -11,7 +11,7 @@ public class TileEvents : GlobalTile
 	public delegate void PreDrawDelegate(bool solidLayer, bool forRenderTarget, bool intoRenderTargets);
 	public delegate void KillTileDelegate(int i, int j, int type, ref bool fail, ref bool effectOnly);
 	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
-	public delegate void NearbyDelegate(int i, int j, int type, bool closer);
+	public delegate void NearbyDelegate(int i, int j, int type, bool visual);
 
 	/// <summary> Return false to prevent orig and end the enumeration. </summary>
 	/// <param name="i"> The X coordinate. </param>
