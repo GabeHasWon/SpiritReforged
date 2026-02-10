@@ -547,16 +547,16 @@ Graverobber: {
 // TinyGrub.DisplayName: Tiny Grub
 
 CactusZombie: {
-	// DisplayName: Cactus Zombie
+	// DisplayName: "{$NPCName.Zombie}"
 	// Entry: ""
 }
 
 SunburntZombie: {
-	// DisplayName: Sunburnt Zombie
+	// DisplayName: "{$NPCName.Zombie}"
 	// Entry: ""
 }
 
 VeiledZombie: {
-	// DisplayName: Veiled Zombie
+	// DisplayName: "{$NPCName.Zombie}"
 	// Entry: ""
 }
