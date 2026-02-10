@@ -32,10 +32,19 @@ internal class SignTagHandler : ILoadable
 		On_Sign.TextSign += VerifyEditTag;
 		On_Main.DrawInterface += ResetSignHover;
 
+		if (Main.dedServ)
+			return;
+
 		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370));
 	}
 
-	public void Unload() => Main.RunOnMainThread(() => _drawingTarget?.Dispose());
+	public void Unload()
+	{
+		if (Main.dedServ)
+			return;
+
+		Main.RunOnMainThread(() => _drawingTarget?.Dispose());
+	}
 
 	private static void TrackSignText(On_Main.orig_DrawMouseOver orig, Main self)
 	{

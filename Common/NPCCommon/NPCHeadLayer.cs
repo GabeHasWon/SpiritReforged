@@ -59,8 +59,6 @@ internal class NPCHeadLayer : ModMapLayer
 		if (!Main.mapFullscreen)
 			c.mapScale = LastScale.LastMinimapScale;
 
-		Main.NewText(c.mapScale);
-
 		var position = MapUtils.TranslateToMap(npc.Center / 16f, c);
 
 		if (c.clippingRect.HasValue && !c.clippingRect.Value.Contains(position.ToPoint()))

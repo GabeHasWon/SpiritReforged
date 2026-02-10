@@ -1,4 +1,2 @@
-v0.1.2.6
-- Improved wavy sign text
-- Fixed some of our NPCs having their head icons on the minimap draw incorrectly
-- Fixed unloading error with EcotoneSurfaceMapping
+v0.1.2.8
+- Fixed error on server load/unload
