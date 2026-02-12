@@ -8,7 +8,11 @@ public class Cricket : ModNPC, ISubstitute
 {
 	public virtual int[] TypesToReplace => [NPCID.Grasshopper];
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 2;
+	public override void SetStaticDefaults()
+	{
+		CreateItemDefaults();
+		Main.npcFrameCount[Type] = 2;
+	}
 
 	public override void SetDefaults()
 	{

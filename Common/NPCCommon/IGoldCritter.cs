@@ -6,7 +6,8 @@ namespace SpiritReforged.Common.NPCCommon;
 /// Adding the type to <see cref="NPCID.Sets.GoldCrittersCollection"/><para/>
 /// Setting <see cref="NPC.rarity"/> to 3<para/>
 /// Using <see cref="GoldCritterUICollectionInfoProvider"/> for this NPC's <see cref="BestiaryEntry.UIInfoProvider"/><para/>
-/// Spawning <see cref="DustID.GoldCoin"/> dust randomly and emitting light </summary>
+/// Spawning <see cref="DustID.GoldCoin"/> dust randomly and emitting light<para/>
+/// Spawning <see cref="DustID.GoldCritter_LessOutline"/> on death. </summary>
 public interface IGoldCritter
 {
 	public int[] NormalPersistentIDs => [];
@@ -14,35 +15,19 @@ public interface IGoldCritter
 
 public class GoldCritterNPC : GlobalNPC
 {
-	private static readonly Dictionary<int, int[]> NPCTypes = [];
+	public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.ModNPC is IGoldCritter;
 
-	public override void SetStaticDefaults()
-	{
-		foreach (var npc in Mod.GetContent<ModNPC>())
-		{
-			if (npc is IGoldCritter g)
-			{
-				NPCTypes.Add(npc.Type, g.NormalPersistentIDs);
-				NPCID.Sets.GoldCrittersCollection.Add(npc.Type);
-			}
-		}
-	}
-
-	public override void SetDefaults(NPC npc)
-	{
-		if (!Main.dedServ && NPCTypes.TryGetValue(npc.type, out _))
-			npc.rarity = 3;
-	}
+	public override void SetDefaults(NPC npc) => npc.rarity = 3;
 
 	public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
-		if (NPCTypes.TryGetValue(npc.type, out int[] ids) && ids.Length > 0)
-			bestiaryEntry.UIInfoProvider = new GoldCritterUICollectionInfoProvider(ids, ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[npc.type]);
+		if (npc.ModNPC is IGoldCritter c)
+			bestiaryEntry.UIInfoProvider = new GoldCritterUICollectionInfoProvider(c.NormalPersistentIDs, ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[npc.type]);
 	}
 
 	public override void AI(NPC npc)
 	{
-		if (!Main.dedServ && NPCTypes.TryGetValue(npc.type, out _))
+		if (!Main.dedServ)
 		{
 			Lighting.AddLight((int)(npc.Center.X / 16f), (int)(npc.Center.Y / 16f), 0.1f, 0.1f, 0.1f);
 
@@ -53,5 +38,11 @@ public class GoldCritterNPC : GlobalNPC
 				dust.fadeIn += 0.5f;
 			}
 		}
+	}
+
+	public override void OnKill(NPC npc)
+	{
+		for (int i = 0; i < 8; i++)
+			Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.GoldCritter_LessOutline, npc.velocity.X * 0.3f, npc.velocity.Y * 0.3f);
 	}
 }
