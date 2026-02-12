@@ -560,3 +560,5 @@ VeiledZombie: {
 	// DisplayName: "{$NPCName.Zombie}"
 	// Entry: ""
 }
+// Cricket.DisplayName: Cricket
+// GoldCricket.DisplayName: Gold Cricket

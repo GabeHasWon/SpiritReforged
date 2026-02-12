@@ -1,15 +1,15 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
-using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.NPCs.ZombieVariants;
 
-public class CactusZombie : ReplaceNPC
+public class CactusZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	private float _frameCounter;
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
@@ -52,16 +52,14 @@ public class CactusZombie : ReplaceNPC
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("CactusZombie" + i).Type, 1f);
 	}
 
-	float frameCounter;
-
 	public override void FindFrame(int frameHeight)
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
 
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
@@ -73,5 +71,5 @@ public class CactusZombie : ReplaceNPC
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 3, 8, 14);
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneDesert;
+	public bool CanSubstitute(Player player) => player.ZoneDesert;
 }
