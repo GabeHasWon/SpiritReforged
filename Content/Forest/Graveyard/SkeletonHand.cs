@@ -24,11 +24,10 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 
 		TileID.Sets.CanDropFromRightClick[Type] = true;
 
-		const int height = 30;
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateWidth = 26;
-		TileObjectData.newTile.CoordinateHeights = [height];
-		TileObjectData.newTile.DrawYOffset = -(height - 18);
+		TileObjectData.newTile.CoordinateHeights = [38];
+		TileObjectData.newTile.DrawYOffset = -16;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
 		TileObjectData.newTile.AnchorAlternateTiles = [ModContent.TileType<BonePile>()];
 		TileObjectData.newTile.StyleHorizontal = true;
@@ -50,13 +49,12 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var t = Main.tile[i, j];
-		if (!TileDrawing.IsVisible(t))
+		Tile tile = Main.tile[i, j];
+		if (!TileDrawing.IsVisible(tile) || TileObjectData.GetTileData(tile) is not TileObjectData data)
 			return;
 
-		var data = TileObjectData.GetTileData(t);
-		var source = new Rectangle(t.TileFrameX, t.TileFrameY, data.CoordinateWidth, data.CoordinateFullHeight);
-		var position = new Vector2(i, j) * 16 - new Vector2((source.Width - 16) / 2, source.Height - 16 - 4);
+		Rectangle source = new(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateFullHeight);
+		Vector2 position = new Vector2(i, j) * 16 - new Vector2((source.Width - 16) / 2, source.Height - 16 - 4);
 
 		float lerp = (float)Math.Sin(Main.timeForVisualEffects / 50f) * .25f;
 		float mult = MathHelper.Clamp(1f - Main.LocalPlayer.Distance(new Vector2(i, j) * 16) / 150f, 0, 1);
@@ -64,13 +62,13 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 		spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position - Main.screenPosition + TileExtensions.TileOffset, 
 			source, Color.White * (mult + lerp), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-		if (!Main.gamePaused && mult > .15f && Main.rand.NextBool(5))
+		if (!Main.gamePaused && mult > 0.15f && Main.rand.NextBool(5))
 		{
 			int style = TileObjectData.GetTileStyle(Main.tile[i, j]);
 			var dustPos = position + glowPoints[style].ToVector2() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f);
 
 			ParticleHandler.SpawnParticle(new Particles.GlowParticle(dustPos,
-				Vector2.UnitY * -Main.rand.NextFloat(.5f), Color.White, Color.Orange, .15f, 30, 5));
+				Vector2.UnitY * -Main.rand.NextFloat(0.5f), Color.White, Color.Orange, .15f, 30, 5));
 		}
 	}
 }
