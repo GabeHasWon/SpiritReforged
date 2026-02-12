@@ -237,10 +237,10 @@ internal class ZigguratMicropass : Micropass
 		if (WorldGen.genRand.NextBool())
 			decorator.Enqueue(AddFlagpole, WorldGen.genRand.Next(1, 3));
 
-		decorator.Enqueue(SprinkleSandDunes, 3);
-		decorator.Enqueue(PlacePot, segments * 2);
-		decorator.Enqueue(PlaceDoor, 1);
-		decorator.Run();
+		decorator.Enqueue(SprinkleSandDunes, 3)
+			.Enqueue(PlacePot, segments * 2)
+			.Enqueue(PlaceDoor, 1)
+			.Run(out _);
 
 		return result;
 	}
@@ -360,8 +360,7 @@ internal class ZigguratMicropass : Micropass
 		if (WorldGen.genRand.NextBool())
 			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
 
-		decorator.Enqueue(PlacePot, segments * 2);
-		decorator.Run();
+		decorator.Enqueue(PlacePot, segments * 2).Run(out _);
 
 		return result;
 

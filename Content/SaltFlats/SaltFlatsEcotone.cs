@@ -299,7 +299,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (ruinCount > 0)
 			decorator.Enqueue(CreateRuin, ruinCount);
 
-		decorator.Run();
+		decorator.Run(out _);
 	}
 
 	private static bool PlaceReliquary(int i, int j)
@@ -517,7 +517,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			if (!hasRoof && WorldGen.genRand.NextBool())
 				decorator.Enqueue(PlaceBell, 1);
 
-			decorator.Run();
+			decorator.Run(out _);
 
 			GenVars.structures.AddProtectedStructure(area);
 			WorldDetours.Regions.Add(new(area, WorldDetours.Context.Walls));

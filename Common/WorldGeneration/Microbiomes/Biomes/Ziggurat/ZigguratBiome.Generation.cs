@@ -317,7 +317,7 @@ public partial class ZigguratBiome : Microbiome
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
 				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, new(static () => WorldGen.genRand.Next(2)));
 
-			decorator.Run();
+			decorator.Run(out _);
 		}
 
 		while (furniturePositions.Count > 0)

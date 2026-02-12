@@ -167,7 +167,7 @@ internal class OasisMicropass : Micropass
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
 			.Enqueue(ZigguratMicropass.PlaceDoor, 1)
 			.Enqueue(PlaceTorch, WorldGen.genRand.Next(1, 4))
-			.Run();
+			.Run(out _);
 
 		return result;
 

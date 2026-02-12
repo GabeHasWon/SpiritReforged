@@ -325,7 +325,7 @@ public partial class OceanGeneration : ModSystem
 				.Enqueue(CreateStack, radius / 2)
 				.Enqueue(ModContent.TileType<GravelPile>(), radius / 2)
 				.Enqueue(ModContent.TileType<GravelStalagmite>(), radius / 3)
-				.Run();
+				.Run(out _);
 
 			return true;
 		}
