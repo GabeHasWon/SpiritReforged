@@ -5,12 +5,11 @@ using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class KelpZombie : ReplaceNPC
+public class KelpZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
@@ -78,5 +77,5 @@ public class KelpZombie : ReplaceNPC
 		npcLoot.AddCommon(ModContent.ItemType<Items.Kelp>(), 7, 1, 3);
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }
