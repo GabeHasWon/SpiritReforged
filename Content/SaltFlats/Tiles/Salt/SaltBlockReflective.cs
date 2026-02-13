@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
@@ -98,6 +99,9 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
+				if (CrossMod.Fables.Enabled)
+					CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindNonSolidTiles");
+
 				if (!Reflections.HighResolution)
 					spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
@@ -115,6 +119,9 @@ public class SaltBlockReflective : SaltBlock
 			}
 			else
 				spriteBatch.End();
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindSolidTiles");
 
 			if (!Main.LocalPlayer.detectCreature)
 				DrawNPCsAndProjsBehindTiles(spriteBatch);
@@ -141,6 +148,9 @@ public class SaltBlockReflective : SaltBlock
 			//spriteBatch.End();
 
 			Reflections.DrawPlayers_BehindNPCs(Main.instance);
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawAboveSolidTiles");
 
 			if (Reflections.Detail > 2)
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCs);
