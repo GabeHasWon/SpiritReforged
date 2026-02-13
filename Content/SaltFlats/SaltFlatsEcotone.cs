@@ -50,6 +50,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 		}
 	}
 
+	[WorldBound]
+	public static Rectangle SaltFlatsArea;
+
 	private static FastNoiseLite Noise;
 
 	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
@@ -102,6 +105,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
+		SaltFlatsArea = Rectangle.Empty;
 		if (!CanGenerate(out var bounds))
 			return;
 
@@ -139,9 +143,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		Decorate(area);
-
-		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
+		SaltFlatsArea = area;
+		Decorate(SaltFlatsArea);
+		WorldDetours.Regions.Add(new(SaltFlatsArea, WorldDetours.Context.Piles));
 	}
 
 	private static void FillSurface(SurfaceInfo info)
