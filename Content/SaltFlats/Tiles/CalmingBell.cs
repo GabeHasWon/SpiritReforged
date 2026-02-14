@@ -54,7 +54,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-        TileObjectData.newTile.CoordinateHeights = new[] { 24 };
+        TileObjectData.newTile.CoordinateHeights = new[] { 30 };
         TileObjectData.newTile.CoordinateWidth = 22;
         TileObjectData.newTile.Origin = new Point16(0, 0);
         TileObjectData.newTile.AnchorBottom = AnchorData.Empty;

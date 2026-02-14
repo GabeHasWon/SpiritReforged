@@ -100,7 +100,7 @@ public sealed class DashPlayer : ModPlayer
 		if (ActiveDash == null)
 			return;
 
-		if (duration < 1 || Player.shimmering)
+		if (duration < 1)
 		{
 			ActiveDash = null;
 		}

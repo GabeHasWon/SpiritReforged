@@ -5,12 +5,11 @@ using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class DiverZombie : ReplaceNPC
+public class DiverZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.Zombies[Type] = true;
@@ -117,5 +116,5 @@ public class DiverZombie : ReplaceNPC
 			ModContent.ItemType<Items.Vanity.DiverSet.DiverHead>(), ModContent.ItemType<Items.Vanity.DiverSet.DiverBody>());
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

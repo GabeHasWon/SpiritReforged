@@ -139,7 +139,7 @@ public class EnergyPlunge : ModProjectile
 		var owner = Main.player[Projectile.owner];
 
 		float strength = Math.Max((Projectile.Center.Y - StartHeight) / 200f, 0);
-		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(50) * strength);
+		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(40) * strength);
 		float knockback = owner.GetKnockback(DamageClass.Melee).ApplyTo(5) * strength;
 
 		float strengthCapped = Math.Min(strength / 1.5f, 1);

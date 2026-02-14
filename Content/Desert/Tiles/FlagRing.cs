@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.VerletChains;
 using SpiritReforged.Common.Visuals;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles;
@@ -115,6 +116,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(165, 85, 55));
 		RegisterItemDrop(this.AutoItemType());
 		DustType = -1;
+		HitSound = SoundID.Item37;
 	}
 
 	public override bool Slope(int i, int j)
@@ -135,6 +137,9 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		}
 
 		Vector2 position = new Vector2(i, j).ToWorldCoordinates();
+
+		SoundEngine.PlaySound(SoundID.Item37 with { Pitch = -0.25f }, position);
+
 		for (int g = 0; g < 3; g++)
 		{
 			int type = Main.rand.NextFromList(GoreID.Smoke1, GoreID.Smoke2, GoreID.Smoke3);

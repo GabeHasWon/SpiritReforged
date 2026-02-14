@@ -26,6 +26,7 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
 
 		DustType = DustID.DynastyShingle_Red;
+		HitSound = SoundID.Tink;
 		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
@@ -44,6 +45,9 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	public override bool Slope(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
+		Vector2 position = new Vector2(i, j).ToWorldCoordinates();
+
+		SoundEngine.PlaySound(SoundID.Tink with { Pitch = -0.25f }, position);
 
 		tile.Slope = tile.Slope switch
 		{

@@ -16,7 +16,7 @@ public class Thornball : ModItem
 	{
 		Item.DefaultToThrownWeapon(ModContent.ProjectileType<ThornballThrown>(), 20, 7, true);
 		Item.noUseGraphic = true;
-		Item.damage = 10;
+		Item.damage = 5;
 		Item.knockBack = 2;
 		Item.value = Item.sellPrice(copper: 5);
 		Item.UseSound = SoundID.Item1;

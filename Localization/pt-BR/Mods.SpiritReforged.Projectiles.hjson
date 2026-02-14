@@ -51,7 +51,7 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
 // ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
 // PhysicsChain.DisplayName: Chain
-// GoldPhysicsChain.DisplayName: Gold Physics Chain
+// GoldPhysicsChain.DisplayName: Gold Chain
 // CactusSpine.DisplayName: Cactus Spine
 // TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
 // DragonFireball.DisplayName: Dragon Fireball
@@ -61,6 +61,7 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // SandPillar.DisplayName: Sand Pillar
 // SlamShockwave.DisplayName: Slam Shockwave
 // WindBlast.DisplayName: Wind Blast
+// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 // ClawHitbox.DisplayName: Claw Hitbox
 // DivebombScarab.DisplayName: Divebomb Scarab
 // SwarmScarab.DisplayName: Swarm Scarab

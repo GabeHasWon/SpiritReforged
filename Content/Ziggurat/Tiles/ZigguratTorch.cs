@@ -11,7 +11,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class ZigguratTorch : ModTile, IAutoloadTileItem
 {
-	public const int FrameHeight = 18;
+	public const int FrameHeight = 20;
 	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal(typeof(ZigguratTorch), "ZigguratTorch_Flame", false);
 
 	public static readonly SoundStyle Ignite = new("SpiritReforged/Assets/SFX/Tile/TorchIgnite", 2)
@@ -36,9 +36,17 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		TileID.Sets.FramesOnKillWall[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+		TileObjectData.newTile.CoordinateHeights = [18];
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.AnchorTop = AnchorData.Empty;
 		TileObjectData.newTile.AnchorWall = true;
+
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.AnchorWall = false;
+		TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newAlternate.Width, 0);
+
+		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(174, 110, 48));
@@ -97,7 +105,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
-		if (Main.tile[i, j].TileFrameY != 0)
+		if (tile.TileFrameY != 0)
 		{
 			if (Main.rand.NextBool())
 			{
@@ -128,8 +136,8 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var tile = Main.tile[i, j];
-		if (TileDrawing.IsVisible(tile) && Main.tile[i, j].TileFrameY != 0)
+		Tile tile = Main.tile[i, j];
+		if (TileDrawing.IsVisible(tile) && tile.TileFrameY != 0)
 		{
 			Texture2D texture = TextureAssets.Flames[0].Value;
 			Rectangle source = new(0, 0, 22, 22);
