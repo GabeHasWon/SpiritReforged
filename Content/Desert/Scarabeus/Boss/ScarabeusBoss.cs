@@ -1,12 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.GameContent.Bestiary;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 
@@ -14,8 +10,18 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
 [AutoloadGlowmask("255, 255, 255", false)]
 public partial class ScarabeusBoss : ModNPC
 {
-	public float AITimer { get => NPC.ai[0]; set => NPC.ai[0] = value; }
-	public float CurrentPattern { get => NPC.ai[1]; set => NPC.ai[1] = value; }
+	public ref float AITimer => ref NPC.ai[0];
+	public ref float CurrentPattern => ref NPC.ai[1];
+
+	/// <summary>
+	/// Determines if the boss has been stuck in one place when walking for too long.
+	/// </summary>
+	public ref float DigTimer => ref NPC.ai[2];
+
+	/// <summary>
+	/// Determines if the boss is met with a gap
+	/// </summary>
+	public ref float JumpTimer => ref NPC.ai[3];
 
 	private Vector3 _curFrame;
 
@@ -25,6 +31,7 @@ public partial class ScarabeusBoss : ModNPC
 
 	private int _jumpState = 0;
 	private int _boredomTimer;
+	private bool _escapeJump = false;
 
 	public override void SetStaticDefaults()
 	{
@@ -56,6 +63,7 @@ public partial class ScarabeusBoss : ModNPC
 		NPC.npcSlots = 15f;
 		NPC.HitSound = SoundID.NPCHit31;
 		NPC.DeathSound = SoundID.NPCDeath5;
+		NPC.dontTakeDamage = true;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");

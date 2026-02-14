@@ -101,7 +101,10 @@ public partial class ScarabeusBoss : ModNPC
 		}
 
 		if (AITimer >= swarmTime + roarTime)
+		{
+			NPC.dontTakeDamage = false;
 			NextAttack(player, AIPatterns.Walking);
+		}
 	}
 	#endregion
 
@@ -117,9 +120,32 @@ public partial class ScarabeusBoss : ModNPC
 		CheckPlatform(player);
 		NPC.FaceTarget();
 
+		if (NPC.velocity == Vector2.Zero)
+		{
+			DigTimer++;
+
+			if (DigTimer > 30) // If stuck for a half second, leap
+			{
+				NextAttack(player, AIPatterns.Dig);
+				return;
+			}
+		}
+
 		//Check if grounded
 		if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
 		{
+			if (DetermineGap()) // Jump over gaps if needed
+			{
+				JumpTimer++;
+
+				if (JumpTimer > 15)
+				{
+					_escapeJump = true;
+					NextAttack(player, AIPatterns.Leap);
+					return;
+				}
+			}
+
 			//Only move if too far from the player, try to move away a little bit if too close
 
 			float horizontalDist = Math.Abs(NPC.position.X - player.position.X);
@@ -128,7 +154,6 @@ public partial class ScarabeusBoss : ModNPC
 				NPC.velocity.X += NPC.direction * 0.3f;
 				_boredomTimer = Math.Max(_boredomTimer - 1, 0);
 			}
-
 			else
 			{
 				if (Math.Sign(NPC.velocity.X) == NPC.direction && Math.Abs(NPC.velocity.X) > 2)
@@ -171,6 +196,19 @@ public partial class ScarabeusBoss : ModNPC
 
 		if (AITimer > maxWalkTime)
 			NextAttack(player);
+	}
+
+	/// <summary>
+	/// Determines if this NPC, while moving, is approaching a gap that requires jumping over.
+	/// </summary>
+	private bool DetermineGap()
+	{
+		if (NPC.velocity.X == 0)
+			return false;
+		else if (NPC.velocity.X < 0)
+			return !Collision.SolidCollision(NPC.BottomLeft - new Vector2(NPC.width * 0.6f, 0), (int)(NPC.width * 0.6f), 16);
+
+		return !Collision.SolidCollision(NPC.BottomRight, (int)(NPC.width * 0.6f), 16);
 	}
 
 	public void HornSwipe(Player player)
@@ -244,9 +282,9 @@ public partial class ScarabeusBoss : ModNPC
 
 					if (AITimer == windupTime)
 					{
-						Vector2 desiredPos = player.Center + player.velocity * 6 + (NPC.direction * 112 * Vector2.UnitX);
-						NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 12, true);
-						NPC.noTileCollide = true;
+						Vector2 desiredPos = player.Center + player.velocity * 6 + NPC.direction * 112 * Vector2.UnitX;
+						NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 15, true);
+						//NPC.noTileCollide = true;
 						_jumpState++;
 						SyncNPC();
 					}
@@ -505,7 +543,6 @@ public partial class ScarabeusBoss : ModNPC
 		const int airTime = 40;
 
 		NPC.spriteDirection = NPC.direction;
-		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 		NPC.knockBackResist = 0f;
 		AITimer++;
@@ -524,6 +561,9 @@ public partial class ScarabeusBoss : ModNPC
 			_inGround = true;
 			NPC.alpha = 0;
 			NPC.Center = FindGroundFromPosition(player.Center);
+
+			if (Collision.SolidCollision(player.position - new Vector2(40), player.width + 80, player.height + 30))
+				_escapeJump = true;
 		}
 
 		else if (AITimer < undergroundTime + digStartTime)
@@ -576,13 +616,23 @@ public partial class ScarabeusBoss : ModNPC
 			//pop out of ground here
 			_inGround = false;
 			NPC.rotation = MathHelper.PiOver4;
-			NPC.velocity.Y = -16;
+			NPC.velocity.Y = _escapeJump ? -12 : -16;
+
+			if (_escapeJump && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				NPC.velocity.X = Main.rand.NextBool() ? -9 : 9;
+				SyncNPC();
+			}
+
+			_escapeJump = false;
 		}
 
 		else if (AITimer < undergroundTime + digStartTime + airTime)
 		{
+			if (NPC.noTileCollide && !Collision.SolidCollision(NPC.position, NPC.width, NPC.height)) // Only re-enable collision when not in tiles
+				NPC.noTileCollide = false;
+
 			NPC.noGravity = false;
-			NPC.noTileCollide = false;
 			_contactDmgEnabled = true;
 			NPC.rotation += NPC.direction * 0.125f;
 
@@ -591,6 +641,7 @@ public partial class ScarabeusBoss : ModNPC
 
 		else
 		{
+			NPC.noTileCollide = false;
 			NextAttack(player, AIPatterns.BounceGroundPound);
 		}
 	}
@@ -999,6 +1050,8 @@ public partial class ScarabeusBoss : ModNPC
 		NPC.rotation = 0;
 		_curFrame.Y = 0;
 		_boredomTimer = 0;
+		DigTimer = 0;
+		JumpTimer = 0;
 
 		if (pattern != null)
 		{

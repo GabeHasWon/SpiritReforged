@@ -61,7 +61,7 @@ FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 // SandPillar.DisplayName: Sand Pillar
 // SlamShockwave.DisplayName: Slam Shockwave
 // WindBlast.DisplayName: Wind Blast
-// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 // ClawHitbox.DisplayName: Claw Hitbox
 // DivebombScarab.DisplayName: Divebomb Scarab
 // SwarmScarab.DisplayName: Swarm Scarab
+// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
