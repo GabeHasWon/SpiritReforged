@@ -74,7 +74,7 @@ internal class GraveyardMicropass : Micropass
 		const int dimensions = 60;
 		WorldMethods.FindGround(x, ref y);
 
-		Scale = Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.3f, 0, 1); //Determine graveyard size based on distance from the world center
+		Scale = 1; //Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.3f, 0, 1); //Determine graveyard size based on distance from the world center
 		Rectangle region = new(x - dimensions / 2, y - dimensions / 6, dimensions, dimensions / 3);
 
 		if (!GenVars.structures.CanPlace(region, 4))
@@ -107,7 +107,7 @@ internal class GraveyardMicropass : Micropass
 		if ((int)(3 * Scale) is int platformCount && platformCount > 0)
 			decorator.Enqueue(CreatePlatform, platformCount);
 
-		if ((int)(9 * Scale) is int graveCount && graveCount > 0)
+		if ((int)(10 * Scale) is int graveCount && graveCount > 0)
 			decorator.Enqueue(PlaceGravestone, graveCount);
 
 		if ((int)(WorldGen.genRand.Next(3, 8) * Scale) is int fillerCount && fillerCount > 0)
@@ -235,7 +235,7 @@ internal class GraveyardMicropass : Micropass
 
 	private static bool PlaceGravestone(int x, int y)
 	{
-		if (WorldGen.IsTileNearby(x, y, TileID.Tombstones, 3))
+		if (WorldGen.IsTileNearby(x, y, TileID.Tombstones, 2))
 			return false;
 
 		int style = WorldGen.genRand.Next(6); //Select any non-gold variant
@@ -413,20 +413,33 @@ internal class GraveyardMicropass : Micropass
 		)); //Bottom gray brick foundation
 
 		CreateWholeRoof(topArea);
+		ShapeData pillarData = new();
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(-(topArea.Width / 2) + 1, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.SetTileKeepWall(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
+			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
-		)); //Left stone pillar
+		).Output(pillarData)); //Left stone pillar
+
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
+			new Modifiers.Dither(0.7),
+			new Actions.Custom(ChipTileAction)
+		));
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(topArea.Width / 2 - 3, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.SetTileKeepWall(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
+			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(-1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
-		)); //Right stone pillar
+		).Output(pillarData)); //Right stone pillar
+
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
+			new Modifiers.Dither(0.7),
+			new Actions.Custom(ChipTileAction)
+		));
 
 		Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
 
@@ -476,6 +489,49 @@ internal class GraveyardMicropass : Micropass
 		}
 
 		return true;
+	}
+
+	/*private static void ErodePillar(Rectangle fullArea)
+	{
+		Rectangle affectedArea = new(fullArea.X, WorldGen.genRand.Next(fullArea.Top, fullArea.Bottom), 2, WorldGen.genRand.Next(1, 4));
+		WorldUtils.Gen(affectedArea.Location, new Shapes.Rectangle(affectedArea.Width, affectedArea.Height), new Actions.Custom(ChipTile));
+
+		static bool ChipTile(int x, int y, object args)
+		{
+			Main.tile[x, y].ClearTile();
+
+			for (int l = x - 1; l < x + 2; l++)
+			{
+				for (int t = y - 1; t < y + 2; t++)
+				{
+					Tile tile = Framing.GetTileSafely(l, t);
+
+					if (tile.HasTile && tile.TileType == ModContent.TileType<StonePillar>())
+						StonePillar.ChipTile(l, t);
+				}
+			}
+
+			return true;
+		}
+	}*/
+
+	private static bool ChipTileAction(int x, int y, object args)
+	{
+		Main.tile[x, y].ClearTile();
+		for (int l = x - 1; l < x + 2; l++)
+		{
+			for (int t = y - 1; t < y + 2; t++)
+			{
+				Tile tile = Framing.GetTileSafely(l, t);
+				if (tile.HasTile && tile.TileType == ModContent.TileType<StonePillar>())
+				{
+					StonePillar.ChipTile(l, t);
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private static void CreateWholeRoof(Rectangle area)
