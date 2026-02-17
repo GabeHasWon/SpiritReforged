@@ -74,7 +74,7 @@ internal class GraveyardMicropass : Micropass
 		const int dimensions = 60;
 		WorldMethods.FindGround(x, ref y);
 
-		Scale = 1; //Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.3f, 0, 1); //Determine graveyard size based on distance from the world center
+		Scale = Math.Clamp(Math.Abs(x - Main.maxTilesX / 2f) / (Main.maxTilesX / 2f) * 1.3f, 0, 1); //Determine graveyard size based on distance from the world center
 		Rectangle region = new(x - dimensions / 2, y - dimensions / 6, dimensions, dimensions / 3);
 
 		if (!GenVars.structures.CanPlace(region, 4))
@@ -142,7 +142,7 @@ internal class GraveyardMicropass : Micropass
 		bool success = false;
 		Tile surfaceTile = Framing.GetTileSafely(x, y + 1);
 
-		if (WorldGen.SolidTile(surfaceTile) && surfaceTile.TileType is TileID.Grass or TileID.Dirt)
+		if (WorldGen.SolidTile(surfaceTile) && surfaceTile.TileType is TileID.Grass or TileID.Dirt && WorldMethods.AreaClear(x, y - 2, 1, 3))
 		{
 			success |= GrowThornBush(x, y, WorldGen.genRand.Next(3, 10), false);
 			success |= GrowThornBush(x, y, 6, false);
@@ -416,34 +416,30 @@ internal class GraveyardMicropass : Micropass
 		ShapeData pillarData = new();
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(-(topArea.Width / 2) + 1, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
-			new Actions.SetTileKeepWall(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
+			new Actions.PlaceTile(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
 			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
 		).Output(pillarData)); //Left stone pillar
 
-		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
-			new Modifiers.Dither(0.7),
-			new Actions.Custom(ChipTileAction)
-		));
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData),
+			new Actions.Custom(ChipTileAction));
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(topArea.Width / 2 - 3, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
-			new Actions.SetTileKeepWall(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
+			new Actions.PlaceTile(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
 			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(-1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
 		).Output(pillarData)); //Right stone pillar
 
-		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
-			new Modifiers.Dither(0.7),
-			new Actions.Custom(ChipTileAction)
-		));
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), 
+			new Actions.Custom(ChipTileAction));
 
 		Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
 
-		WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, (int)(bottomArea.Height * 2.5f)), Actions.Chain(
+		WorldUtils.Gen(bottomArea.Location, new Shapes.Rectangle(bottomArea.Width, bottomArea.Height * 3), Actions.Chain(
 			new Modifiers.Expand(1),
 			new Actions.SetTileKeepWall(MausoleumPalette.Types[MausoleumTilePalette.TileBrick])
 		)); //Create foundation
@@ -491,32 +487,11 @@ internal class GraveyardMicropass : Micropass
 		return true;
 	}
 
-	/*private static void ErodePillar(Rectangle fullArea)
-	{
-		Rectangle affectedArea = new(fullArea.X, WorldGen.genRand.Next(fullArea.Top, fullArea.Bottom), 2, WorldGen.genRand.Next(1, 4));
-		WorldUtils.Gen(affectedArea.Location, new Shapes.Rectangle(affectedArea.Width, affectedArea.Height), new Actions.Custom(ChipTile));
-
-		static bool ChipTile(int x, int y, object args)
-		{
-			Main.tile[x, y].ClearTile();
-
-			for (int l = x - 1; l < x + 2; l++)
-			{
-				for (int t = y - 1; t < y + 2; t++)
-				{
-					Tile tile = Framing.GetTileSafely(l, t);
-
-					if (tile.HasTile && tile.TileType == ModContent.TileType<StonePillar>())
-						StonePillar.ChipTile(l, t);
-				}
-			}
-
-			return true;
-		}
-	}*/
-
 	private static bool ChipTileAction(int x, int y, object args)
 	{
+		if (WorldGen.genRand.NextFloat() < 0.7f) //30% chance to succeed
+			return false;
+
 		Main.tile[x, y].ClearTile();
 		for (int l = x - 1; l < x + 2; l++)
 		{

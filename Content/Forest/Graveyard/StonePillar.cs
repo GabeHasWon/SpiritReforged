@@ -51,7 +51,7 @@ public class StonePillar : ModTile, IAutoloadTileItem
 			Tile above = Framing.GetTileSafely(i, j - 1);
 
 			if (tile.TileFrameX < 54 && below.HasTile && below.TileType == Type && (!above.HasTile || below.TileType != Type) || tile.TileFrameX > 36 && above.HasTile && above.TileType == Type && (!below.HasTile || below.TileType != Type))
-				return false; //This tile is chipped
+				return false; //This tile is chipped //Needs to account for single pillar frames
 		}
 
 		Main.tileFrameImportant[Type] = false; //Ensure this type doesn't use frame important saving
@@ -108,6 +108,27 @@ public class StonePillar : ModTile, IAutoloadTileItem
 		else if (tile.TileFrameX is 18 or 54 or 90 && tile.TileFrameY is 72) //Bottom right corners
 		{
 			Point16 result = new(90, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 108 or 126 or 144 && tile.TileFrameY is 0) //Top columns
+		{
+			Point16 result = new(108, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 108 or 126 or 144 && tile.TileFrameY is 54) //Bottom columns
+		{
+			Point16 result = new(126, 90);
+
+			tile.TileFrameX = result.X;
+			tile.TileFrameY = result.Y;
+		}
+		else if (tile.TileFrameX is 162 or 180 or 198 && tile.TileFrameY is 54) //Center columns
+		{
+			Point16 result = new(144, 90);
 
 			tile.TileFrameX = result.X;
 			tile.TileFrameY = result.Y;
