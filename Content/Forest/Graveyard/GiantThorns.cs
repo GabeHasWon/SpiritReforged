@@ -13,6 +13,7 @@ public class GiantThorns : ModTile
 		Main.tileMerge[Type][TileID.Grass] = true;
 		Main.tileNoFail[Type] = true;
 		Main.tileCut[Type] = true;
+		TileID.Sets.TileCutIgnore.IgnoreDontHurtNature[Type] = true;
 
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
