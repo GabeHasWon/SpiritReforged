@@ -5,6 +5,7 @@ using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
+using System.Linq;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -57,12 +58,15 @@ internal class GraveyardMicropass : Micropass
 	/// <summary> The native biome of this graveyard, reset after worldgen. </summary>
 	[WorldBound]
 	public static QuickConversion.BiomeType Biome;
+
 	private static MausoleumTilePalette MausoleumPalette;
+	private static readonly HashSet<Rectangle> Platforms = [];
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Piles"));
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
+		Platforms.Clear();
 		WorldMethods.Generate(GenerateGraveyard, 1, out int generated, new(100, (int)(Main.worldSurface * 0.35f), Main.maxTilesX - 200, 10));
 
 		if (generated == 0)
@@ -302,7 +306,7 @@ internal class GraveyardMicropass : Micropass
 
 		if (!WorldGen.SolidTile(tile))
 		{
-			if (!WorldUtils.Find(new(x, y), new Searches.Down(12).Conditions(new Conditions.IsSolid()), out Point surfacePos))
+			if (!WorldUtils.Find(new(x, y), new Searches.Down(12).Conditions(new Conditions.IsSolid()), out Point surfacePos) && !Platforms.Any(x => x.Contains(surfacePos)))
 				return false;
 
 			int radius = WorldGen.genRand.Next(6, 13);
@@ -320,6 +324,8 @@ internal class GraveyardMicropass : Micropass
 					new Modifiers.SkipTiles(TileID.Sand),
 					new Actions.SetTileKeepWall(TileID.Sandstone)
 				));
+
+				Platforms.Add(new(x - radius, y - radius / 2, radius * 2, radius));
 			}
 			else
 			{
@@ -333,6 +339,8 @@ internal class GraveyardMicropass : Micropass
 					new Modifiers.Dither(),
 					new Actions.ClearTile()
 				));
+
+				Platforms.Add(new(x - radius, (int)(y - radius * 0.4f / 2), radius * 2, (int)(radius * 0.4f)));
 			}
 
 			GenAction outlineAction = Actions.Chain((Biome is QuickConversion.BiomeType.Purity) ? [new Actions.SetTileKeepWall(TileID.Grass), new Actions.Custom(SmoothTop)] : [new Actions.Custom(SmoothTop)]);
@@ -389,7 +397,7 @@ internal class GraveyardMicropass : Micropass
 	#region mausoleum
 	private static bool CreateMausoleum(int x, int y)
 	{
-		if (!WorldUtils.Find(new(x, y), new Searches.Down(12).Conditions(new Conditions.IsSolid()), out Point surfacePos) || !WorldMethods.AreaClear(x, y = surfacePos.Y - 8, 8, 8))
+		if (!WorldUtils.Find(new(x, y), new Searches.Down(12).Conditions(new Conditions.IsSolid()), out Point surfacePos) || !WorldMethods.AreaClear(x, (y = surfacePos.Y) - 8, 8, 8))
 			return false;
 
 		MausoleumPalette = new(Biome);
@@ -489,7 +497,7 @@ internal class GraveyardMicropass : Micropass
 
 	private static bool ChipTileAction(int x, int y, object args)
 	{
-		if (WorldGen.genRand.NextFloat() < 0.7f) //30% chance to succeed
+		if (WorldGen.genRand.NextFloat() < 0.9f) //10% chance to succeed
 			return false;
 
 		Main.tile[x, y].ClearTile();
