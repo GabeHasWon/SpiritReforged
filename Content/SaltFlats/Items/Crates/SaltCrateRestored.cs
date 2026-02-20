@@ -32,6 +32,7 @@ public class SaltCrateRestored : ModItem
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateRestoredTile>());
 		Item.rare = ItemRarityID.Green;
+		Item.value = Item.sellPrice(0, 1, 0, 0);
 	}
 
 	public override bool CanRightClick() => true;

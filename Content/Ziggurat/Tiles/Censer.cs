@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class Censer : ModTile, IAutoloadTileItem
 {
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 30);
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("GoldBars", 3).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{

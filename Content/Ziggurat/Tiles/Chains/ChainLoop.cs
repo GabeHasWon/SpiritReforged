@@ -29,6 +29,7 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 		}
 	}
 
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 80);
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{
