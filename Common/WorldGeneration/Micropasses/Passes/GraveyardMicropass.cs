@@ -425,25 +425,27 @@ internal class GraveyardMicropass : Micropass
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(-(topArea.Width / 2) + 1, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.PlaceTile(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
-			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
 		).Output(pillarData)); //Left stone pillar
 
-		WorldUtils.Gen(bottom, new ModShapes.All(pillarData),
-			new Actions.Custom(ChipTileAction));
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
+			new Modifiers.Dither(0.7),
+			new Actions.Custom(ChipTileAction)
+		));
 
 		WorldUtils.Gen(bottom, new Shapes.Rectangle(new(topArea.Width / 2 - 3, -topArea.Height + 1, 2, topArea.Height - 1)), Actions.Chain(
 			new Actions.PlaceTile(MausoleumPalette.Types[MausoleumTilePalette.TileColumn]),
-			new Actions.Custom(ChipTileAction),
 			new Modifiers.Offset(-1, 0),
 			new Modifiers.Expand(0, 1),
 			new Actions.PlaceWall(MausoleumPalette.Types[MausoleumTilePalette.WallSlab])
 		).Output(pillarData)); //Right stone pillar
 
-		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), 
-			new Actions.Custom(ChipTileAction));
+		WorldUtils.Gen(bottom, new ModShapes.All(pillarData), Actions.Chain(
+			new Modifiers.Dither(0.7),
+			new Actions.Custom(ChipTileAction)
+		));
 
 		Rectangle bottomArea = new(x - (topArea.Width / 2 - 2), y + 2, topArea.Width - 4, 3);
 
@@ -497,9 +499,6 @@ internal class GraveyardMicropass : Micropass
 
 	private static bool ChipTileAction(int x, int y, object args)
 	{
-		if (WorldGen.genRand.NextFloat() < 0.9f) //10% chance to succeed
-			return false;
-
 		Main.tile[x, y].ClearTile();
 		for (int l = x - 1; l < x + 2; l++)
 		{

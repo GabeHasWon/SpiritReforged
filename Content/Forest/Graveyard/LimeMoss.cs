@@ -54,14 +54,14 @@ public class LimeMoss : ModTile
 
 	private static void DrawVine(int i, int j, SpriteBatch spriteBatch, Texture2D texture)
 	{
-		int length = (i + j) % 5;
+		int length = i * j % 5;
 
 		for (int l = 0; l < length; l++)
 		{
 			Rectangle source = new((l == length - 1) ? 72 : 54, new Terraria.Utilities.FastRandom(i + j + l).Next(3) * 18, 16, 16);
 
-			float wind = (float)Math.Sin(Main.timeForVisualEffects / 60f + (i + j + l)) * Main.WindForVisuals;
-			Vector2 position = new Vector2(i, j + l + 1) * 16 - Main.screenPosition + new Vector2(wind * 3, 2);
+			float wind = (float)Math.Sin(Main.timeForVisualEffects / 20f + (i + j + l)) * Main.WindForVisuals;
+			Vector2 position = new Vector2(i, j + l + 1) * 16 - Main.screenPosition + new Vector2(wind, 2);
 
 			spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j + l + 1), 0, Vector2.Zero, 1, default, 0);
 		}

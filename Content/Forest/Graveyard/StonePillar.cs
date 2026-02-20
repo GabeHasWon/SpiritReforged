@@ -71,7 +71,7 @@ public class StonePillar : ModTile, IAutoloadTileItem
 		return false; //Never actually slope this tile
 	}
 
-	/// <summary> Applies custom framing, plas audiovisual effects, and syncs the tile if necessary. </summary>
+	/// <summary> Applies custom framing, plays audiovisual effects, and syncs the tile if necessary. </summary>
 	public static void ChipTile(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
