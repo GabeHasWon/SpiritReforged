@@ -29,6 +29,13 @@ Records: {
 	Boulder: Rolls along the ground when disturbed.
 }
 
+FablesGraves: {
+	SetNames: {
+		Savanna: Savanna Graves
+		SaltFlats: Salt Graves
+	}
+}
+
 SunkenTreasureTile.MapEntry: Sunken Treasure
 HydrothermalVent.MapEntry: Hydrothermal Vent
 CoralMapEntry: Coral
