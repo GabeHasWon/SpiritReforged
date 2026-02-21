@@ -37,27 +37,21 @@ public class SandPillar : ModProjectile
 		if (AITimer++ == SpawnDelay)
 			OnSpawn();
 
-		if (AITimer > SpawnDelay)
+		if (AITimer > SpawnDelay && !Main.dedServ)
 		{
-			if (Main.netMode != NetmodeID.Server)
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(8, 20), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 			{
-				for (int i = 0; i < 1; i++)
-				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(8, 20), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
-					{
-						Pixellate = true,
-						DissolveAmount = 1,
-						SecondaryColor = Color.SandyBrown,
-						TertiaryColor = Color.SaddleBrown,
-						PixelDivisor = 3,
-						ColorLerpExponent = 0.25f,
-						Layer = ParticleLayer.BelowSolid
-					});
-				}
+				Pixellate = true,
+				DissolveAmount = 1,
+				SecondaryColor = Color.SandyBrown,
+				TertiaryColor = Color.SaddleBrown,
+				PixelDivisor = 3,
+				ColorLerpExponent = 0.25f,
+				Layer = ParticleLayer.BelowSolid
+			});
 
-				if (Main.rand.NextBool())
-					Dust.NewDust(Projectile.BottomLeft, Projectile.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-			}
+			if (Main.rand.NextBool())
+				Dust.NewDust(Projectile.BottomLeft, Projectile.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
 		}
 
 		else if (Main.netMode != NetmodeID.Server)

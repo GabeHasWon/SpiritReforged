@@ -63,7 +63,7 @@ public partial class ScarabeusBoss : ModNPC
 		var frameOrigin = _curFrame.X switch
 		{
 			5 => new Vector2(80, 102),
-			_ => new Vector2(100, 100),
+			_ => new Vector2(100, 110),
 		};
 
 		var flip = (NPC.direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
