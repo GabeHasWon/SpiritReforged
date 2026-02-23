@@ -83,7 +83,8 @@ public partial class ScarabeusBoss : ModNPC
 		int verticalFrames = Main.npcFrameCount[NPC.type];
 
 		// Further note: 
-		// 
+		// This, by default, assumes frames of equal size (200 pixels wide, unsure of the height) - there'll be a separate system
+		// to use bespoke sizes, as phase 2 has some frames larger than 200 pixels wide. This is TBD
 		var frameSize = new Point(bossTex.Width / horizontalFrames, _curFrame.Z == -1 ? bossTex.Height / verticalFrames : (int)_curFrame.Z);
 		var drawFrame = new Rectangle((int)_curFrame.X * frameSize.X + 2, (int)_curFrame.Y * frameSize.Y + 2, frameSize.X - 4, frameSize.Y - 2);
 
@@ -94,10 +95,11 @@ public partial class ScarabeusBoss : ModNPC
 		Vector2 drawPosition = overrideCenter ?? NPC.Center - Main.screenPosition;
 		Color useColor = NPC.GetAlpha(drawColor);
 
-		// Draw behind the NPC; Back Carapace
+		// Draw behind the NPC
 
 		if ((AIPatterns)CurrentPattern == AIPatterns.FlyHover)
 		{
+			// Back carapace (WIP)
 			DrawExtra(drawPosition, new Rectangle(76, 2204, 48, 52), drawFrame, useColor);
 		}
 
