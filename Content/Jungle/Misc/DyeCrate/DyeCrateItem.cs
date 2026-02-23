@@ -26,7 +26,7 @@ public class DyeCrateItem : ModItem
 		Range[] ranges = [2..5, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3];
 		int[] idsCommon = [ItemID.BlueBerries, ItemID.CyanHusk, ItemID.RedHusk, ItemID.VioletHusk,
 			ItemID.GreenMushroom, ItemID.LimeKelp, ItemID.OrangeBloodroot, ItemID.PinkPricklyPear, ItemID.PurpleMucos, ItemID.SkyBlueFlower, ItemID.TealMushroom,
-			ItemID.YellowMarigold];
+			ItemID.YellowMarigold, ItemID.BlackInk];
 
 		itemLoot.Add(new DropRules.LootPoolDrop(ranges, 4, 1, 1, idsCommon));
 
