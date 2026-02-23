@@ -40,7 +40,11 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 		return value * ((1.2f - Lighting.Brightness(x, y)) / 1.2f);
 	}
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
+	public void SetItemDefaults(ModItem item)
+	{
+		item.Item.rare = ItemRarityID.Blue;
+		item.Item.value = Item.sellPrice(gold: 1);
+	}
 
 	public override void SetStaticDefaults()
     {
