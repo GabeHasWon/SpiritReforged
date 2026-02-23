@@ -41,7 +41,7 @@ public partial class ScarabeusBoss : ModNPC
 	{
 		Main.npcFrameCount[NPC.type] = 14;
 		NPCID.Sets.TrailCacheLength[NPC.type] = 4;
-		NPCID.Sets.TrailingMode[NPC.type] = 0;
+		NPCID.Sets.TrailingMode[NPC.type] = 3;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
 		{
@@ -55,19 +55,20 @@ public partial class ScarabeusBoss : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.width = 110;
-		NPC.height = 110;
+		NPC.width = 90;
+		NPC.height = 90;
 		NPC.value = 30000;
 		NPC.damage = 40;
 		NPC.defense = 10;
 		NPC.lifeMax = 2550;
 		NPC.aiStyle = -1;
-		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		NPC.boss = true;
 		NPC.npcSlots = 15f;
 		NPC.HitSound = SoundID.NPCHit31;
 		NPC.DeathSound = SoundID.NPCDeath5;
 		NPC.dontTakeDamage = true;
+
+		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
@@ -90,11 +91,10 @@ public partial class ScarabeusBoss : ModNPC
 	public override void AI()
 	{
 		NPC.TargetClosest(false);
+		NPC.behindTiles = false;
+
 		Player player = Main.player[NPC.target];
 		_contactDmgEnabled = false;
-		NPC.behindTiles = true;
-
-		NPCID.Sets.TrailingMode[NPC.type] = 3;
 
 		if (NPC.life < NPC.lifeMax / 2)
 		{
@@ -263,10 +263,12 @@ public partial class ScarabeusBoss : ModNPC
 		npcLoot.Add(notExpertRule);*/
 	}
 
+	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
+
 	private void SpawnGores()
 	{
-		for (int i = 1; i <= 7; i++)
-			Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
+		//for (int i = 1; i <= 7; i++)
+		//	Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
 
 		NPC.position += NPC.Size / 2;
 		NPC.Size = new Vector2(100, 60);
