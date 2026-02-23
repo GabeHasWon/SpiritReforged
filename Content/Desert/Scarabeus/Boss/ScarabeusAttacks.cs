@@ -657,6 +657,10 @@ public partial class ScarabeusBoss : ModNPC
 		NPC.knockBackResist = 0.7f;
 		AITimer++;
 
+		_curFrame.Z = 90;
+
+		AnimateFrame(6, 12, true);
+
 		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
 
 		//Vertical movement

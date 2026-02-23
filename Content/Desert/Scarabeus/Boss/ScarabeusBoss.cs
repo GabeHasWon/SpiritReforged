@@ -23,6 +23,10 @@ public partial class ScarabeusBoss : ModNPC
 	/// </summary>
 	public ref float JumpTimer => ref NPC.ai[3];
 
+	/// <summary>
+	/// The current frame of the boss; x = x frame (0 is the first frame, 1 is the second...), y = y frame (same as x), 
+	/// z = height of current frame (defaults to -1, which uses the) boss's default frame height.
+	/// </summary>
 	private Vector3 _curFrame;
 
 	private bool _contactDmgEnabled = false;
@@ -100,6 +104,8 @@ public partial class ScarabeusBoss : ModNPC
 				_hasPhaseChanged = true;
 			}
 		}
+
+		_curFrame.Y = -1;
 
 		PatternSelect(player);
 	}
