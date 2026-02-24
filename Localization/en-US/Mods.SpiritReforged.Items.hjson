@@ -2592,7 +2592,7 @@ BronzePlatformItem: {
 
 ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
-	Tooltip: "Lights up when nearby"
+	Tooltip: Lights up when nearby
 }
 
 SwordStandMahoganyItem: {
