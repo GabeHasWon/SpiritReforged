@@ -357,6 +357,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 		if (CrossMod.Fables.CheckFind("MirageDust", out ModItem mirage))
 			secondary.Add((mirage.Type, 8..12));
 
+		if (CrossMod.Redemption.CheckFind("TrappedSoulBauble", out ModItem soulBauble))
+			secondary.Add((soulBauble.Type, 1..1), 0.15f);
+
 		PriorityQueue<(int, Range), float> miscQueue = new();
 		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.BiomeSightPotion, 1..2), WorldGen.genRand.NextFloat());

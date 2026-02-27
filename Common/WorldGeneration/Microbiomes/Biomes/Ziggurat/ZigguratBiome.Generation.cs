@@ -505,7 +505,7 @@ public partial class ZigguratBiome : Microbiome
 			("SapphireRing", 0.33f),
 			("TopazRing", 0.33f),
 			("DiamondRing", 0.25f),
-			("EighthPlagueStaff", 0.1f)
+			("EighthPlagueStaff", 0.15f)
 		];
 
 		foreach (var (name, weight) in thoriumLoot)
@@ -513,6 +513,9 @@ public partial class ZigguratBiome : Microbiome
 			if (CrossMod.Thorium.CheckFind(name, out ModItem thorium))
 				secondary.Add((thorium.Type, 1..1), weight);
 		}
+
+		if (CrossMod.Redemption.CheckFind("CorpseWalkerStaff", out ModItem walkerStaff))
+			secondary.Add((walkerStaff.Type, 1..1), 0.15f);
 
 		// Gems
 		WeightedRandom<(int, Range)> gemPool = new();
