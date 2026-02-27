@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -9,6 +10,7 @@ using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.SaltFlats.Items;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ziggurat.Windshear;
@@ -295,7 +297,14 @@ public class WindshearScepter : ModItem
 	}
 
 	private float _swingArc = 1;
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<CeremonialDagger>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<CeremonialDagger>();
+
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
+	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 27;
