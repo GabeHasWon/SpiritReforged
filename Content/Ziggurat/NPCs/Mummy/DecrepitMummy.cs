@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -159,6 +160,8 @@ internal class DecrepitMummy : ModNPC
 		notTrapSpawned.OnFailedConditions(ItemDropRule.OneFromOptions(20, ItemID.FastClock, ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants));
 		npcLoot.Add(isTrapSpawned);
 		npcLoot.Add(notTrapSpawned);
+
+		npcLoot.AddCommon(ModContent.ItemType<CarrotCake>(), 30);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
