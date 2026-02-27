@@ -6,6 +6,7 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.SaltFlats.Items;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
@@ -294,7 +295,7 @@ public class WindshearScepter : ModItem
 	}
 
 	private float _swingArc = 1;
-
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<CeremonialDagger>();
 	public override void SetDefaults()
 	{
 		Item.damage = 27;

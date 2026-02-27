@@ -11,6 +11,7 @@ using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using SpiritReforged.Content.Ziggurat.Windshear;
 
 namespace SpiritReforged.Content.Ziggurat;
 
@@ -23,7 +24,7 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 	public override void SetStaticDefaults()
 	{
 		SpiritSets.IsSword[Type] = true;
-		//ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WindshearScepter>();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WindshearScepter>();
 	}
 	public override void SetDefaults()
 	{
