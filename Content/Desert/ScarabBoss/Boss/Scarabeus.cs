@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -19,7 +20,7 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[0] = value;
 	}
 
-	public int AITimer
+	public int Counter
 	{
 		get => (int)NPC.ai[1];
 		set => NPC.ai[1] = value;
@@ -34,6 +35,7 @@ public partial class Scarabeus : ModNPC
 	public Player Target => Main.player[NPC.target];
 
 	public bool phaseTwo;
+	private Vector2 _dashDirection;
 	private bool _contactDmgEnabled = false;
 	private bool _inGround = true;
 
@@ -78,6 +80,8 @@ public partial class Scarabeus : ModNPC
 			ScarabSwarm
 		];
 
+		Profile = PhaseOneProfile;
+
 		NPC.width = 90;
 		NPC.height = 90;
 		NPC.value = 30000;
@@ -112,10 +116,15 @@ public partial class Scarabeus : ModNPC
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
 			ChangeState(FlyHover);
+			Profile = PhaseTwoProfile;
 			phaseTwo = true;
 		}
 
 		_states[CurrentState].Invoke();
+		Counter++;
+
+		if (!NPC.noGravity)
+			NPC.Step();
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => _contactDmgEnabled;
@@ -212,7 +221,8 @@ public partial class Scarabeus : ModNPC
 
 		_inGround = false;
 		_jumpState = 0;
-		AITimer = 0;
+		_dashDirection = default;
+		Counter = 0;
 		NPC.rotation = 0;
 		_boredomTimer = 0;
 		DigTimer = 0;

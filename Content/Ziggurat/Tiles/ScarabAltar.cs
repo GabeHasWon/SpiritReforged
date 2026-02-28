@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
@@ -423,7 +422,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	public override bool IsTileValidForEntity(int x, int y)
 	{
 		Tile tile = Main.tile[x, y];
-		return tile.HasActuator && tile.TileType == ModContent.TileType<ScarabAltar>() && TileObjectData.IsTopLeft(x, y);
+		return tile.HasTile && tile.TileType == ModContent.TileType<ScarabAltar>() && TileObjectData.IsTopLeft(x, y);
 	}
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
