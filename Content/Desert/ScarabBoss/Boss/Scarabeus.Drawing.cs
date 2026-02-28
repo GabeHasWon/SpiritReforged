@@ -10,10 +10,12 @@ public partial class Scarabeus : ModNPC
 	public readonly record struct VisualProfile
 	{
 		public readonly Asset<Texture2D> Texture;
-		public readonly int[] FrameCount;
 		public readonly int Rows;
+		private readonly int[] FrameCount;
 
 		public int Columns => FrameCount.Length;
+		/// <summary> Safely gets the number of frames in the provided column. </summary>
+		public readonly int GetFrameCount(int column) => (column >= Columns || column < 0) ? 0 : FrameCount[column];
 
 		public VisualProfile(Asset<Texture2D> Texture, int[] FrameCount)
 		{
@@ -23,13 +25,18 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
+	public enum FrameState { Progressed, Stopped, Looped }
+
+	/// <summary> The current visual profile to be used for drawing. Contains frame count and texture information. </summary>
 	public VisualProfile Profile { get; private set; }
 	public static readonly Asset<Texture2D> Glowmask = DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false);
 
 	public Point currentFrame;
 
-	private void UpdateFrame(int column, int framesPerSecond, bool loop = true)
+	private FrameState UpdateFrame(int column, int framesPerSecond, bool loop = true)
 	{
+		FrameState result = FrameState.Progressed;
+
 		if (currentFrame.X != column)
 		{
 			currentFrame.X = column;
@@ -41,12 +48,18 @@ public partial class Scarabeus : ModNPC
 		if (++NPC.frameCounter > 60.0 / Math.Abs(framesPerSecond))
 		{
 			NPC.frameCounter = 0;
+			bool reversed = framesPerSecond < 0;
 
-			if (framesPerSecond < 0) //Reverse the animation
-				currentFrame.Y = loop ? ((currentFrame.Y > 0) ? currentFrame.Y - 1 : Profile.FrameCount[column] - 1) : Math.Max(currentFrame.Y - 1, 0);
+			if (reversed ? currentFrame.Y == 0 : currentFrame.Y == Profile.GetFrameCount(column) - 1)
+				result = loop ? FrameState.Looped : FrameState.Stopped;
+
+			if (reversed) //Reverse the animation
+				currentFrame.Y = loop ? ((currentFrame.Y > 0) ? currentFrame.Y - 1 : Profile.GetFrameCount(column) - 1) : Math.Max(currentFrame.Y - 1, 0);
 			else
-				currentFrame.Y = loop ? ((currentFrame.Y + 1) % Profile.FrameCount[column]) : Math.Min(currentFrame.Y + 1, Profile.FrameCount[column] - 1);
+				currentFrame.Y = loop ? ((currentFrame.Y + 1) % Profile.GetFrameCount(column)) : Math.Min(currentFrame.Y + 1, Profile.GetFrameCount(column) - 1);
 		}
+
+		return result;
 	}
 
 	public override void FindFrame(int frameHeight)

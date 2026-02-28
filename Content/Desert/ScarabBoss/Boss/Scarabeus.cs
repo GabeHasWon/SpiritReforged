@@ -26,20 +26,15 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[1] = value;
 	}
 
-	/// <summary> Determines if the boss has been stuck in one place when walking for too long. </summary>
-	public ref float DigTimer => ref NPC.ai[2];
-
-	/// <summary> Determines if the boss is met with a gap </summary>
-	public ref float JumpTimer => ref NPC.ai[3];
-
 	public Player Target => Main.player[NPC.target];
 
+	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
-	private Vector2 _dashDirection;
-	private bool _contactDmgEnabled = false;
-	private bool _inGround = true;
+	/// <summary> Whether this NPC should deal contact damage. </summary>
+	public bool dealContactDamage = false;
 
-	private int _jumpState = 0;
+	private Vector2 _dashDirection;
+	private bool _inGround = true;
 	private int _boredomTimer;
 	private bool _escapeJump = false;
 
@@ -111,7 +106,7 @@ public partial class Scarabeus : ModNPC
 		NPC.TargetClosest(false);
 		NPC.behindTiles = false;
 
-		_contactDmgEnabled = false;
+		dealContactDamage = false;
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
@@ -127,7 +122,7 @@ public partial class Scarabeus : ModNPC
 			NPC.Step();
 	}
 
-	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => _contactDmgEnabled;
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
@@ -216,22 +211,20 @@ public partial class Scarabeus : ModNPC
 
 	public void ChangeState(int state)
 	{
+		for (int i = 0; i < 4; i++)
+			NPC.ai[i] = 0;
+
 		CurrentState = state;
 		NPC.netUpdate = true;
 
 		_inGround = false;
-		_jumpState = 0;
 		_dashDirection = default;
-		Counter = 0;
 		NPC.rotation = 0;
 		_boredomTimer = 0;
-		DigTimer = 0;
-		JumpTimer = 0;
 		currentFrame.Y = 0;
 	}
 
 	#region helpers
-
 	private Action SelectRandomState()
 	{
 		List<Action> availablePatterns = [];
@@ -335,6 +328,5 @@ public partial class Scarabeus : ModNPC
 		else
 			NPC.noTileCollide = false;
 	}
-
 	#endregion
 }
