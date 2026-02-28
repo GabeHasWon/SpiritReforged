@@ -1,12 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using static Terraria.Player;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class SunStaffHeld : ModProjectile

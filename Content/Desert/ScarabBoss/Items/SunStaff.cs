@@ -1,8 +1,8 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 [AutoloadGlowmask("255,255,255")]
 public class SunStaff : ModItem

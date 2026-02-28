@@ -1,6 +1,6 @@
-using SpiritReforged.Content.Desert.Scarabeus.Boss;
+using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 public class ScarabDebugSpawner : ModItem
 {
@@ -21,12 +21,12 @@ public class ScarabDebugSpawner : ModItem
 		Item.UseSound = SoundID.Item43;
 	}
 
-	public override bool CanUseItem(Player player) => !NPC.AnyNPCs(ModContent.NPCType<ScarabeusBoss>()) && player.ZoneDesert && Main.dayTime;
+	public override bool CanUseItem(Player player) => !NPC.AnyNPCs(ModContent.NPCType<Scarabeus>()) && player.ZoneDesert && Main.dayTime;
 
 	public override bool? UseItem(Player player)
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
-			NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<ScarabeusBoss>());
+			NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<Scarabeus>());
 
 		/*else if (Main.netMode == NetmodeID.MultiplayerClient && player == Main.LocalPlayer)
 		{

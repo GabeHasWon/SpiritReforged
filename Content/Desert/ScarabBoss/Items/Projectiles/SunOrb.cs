@@ -8,7 +8,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using System.IO;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class SunOrb : ModProjectile

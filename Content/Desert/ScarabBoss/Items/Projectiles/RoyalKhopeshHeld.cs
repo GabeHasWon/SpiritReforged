@@ -7,15 +7,12 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using Terraria.Audio;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using Terraria;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.ModCompat;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class RoyalKhopeshHeld : ModProjectile

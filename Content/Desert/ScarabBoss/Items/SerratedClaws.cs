@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ModCompat;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 public class SerratedClaws : ModItem
 {

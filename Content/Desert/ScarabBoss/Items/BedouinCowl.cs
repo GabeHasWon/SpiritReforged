@@ -4,7 +4,7 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Dusts;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 [AutoloadEquip(EquipType.Head)]
 public class BedouinCowl : ModItem

@@ -3,7 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class SlamShockwave : ModProjectile
 {

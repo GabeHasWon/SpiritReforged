@@ -2,9 +2,9 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
-public class DivebombScarab : ModProjectile
+public class SwarmScarab : ModProjectile
 {
 	private const int MAX_TIMELEFT = 40;
 

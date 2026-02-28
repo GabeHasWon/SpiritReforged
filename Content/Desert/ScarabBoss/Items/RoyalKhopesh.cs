@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 public class RoyalKhopesh : ModItem
 {

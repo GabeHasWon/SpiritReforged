@@ -1,10 +1,7 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Boss;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class ScarabParticle : Particle
 {
