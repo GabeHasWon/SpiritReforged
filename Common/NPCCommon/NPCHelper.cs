@@ -23,6 +23,17 @@ public static class NPCHelper
 
 	public static Color DrawColor(this NPC npc, Color drawColor) => npc.GetAlpha(npc.GetNPCColorTintedByBuffs(drawColor));
 
+	public static void Step(this NPC npc)
+	{
+		bool below = npc.HasPlayerTarget && Main.player[npc.target].Center.Y - 32 > npc.position.Y;
+
+		if (below && npc.velocity.Y == 0)
+			Collision.StepDown(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY);
+
+		if (npc.velocity.Y >= 0)
+			Collision.StepUp(ref npc.position, ref npc.velocity, npc.width, npc.height, ref npc.stepSpeed, ref npc.gfxOffY, 1, !below, 1);
+	}
+
 	#region buff immunity
 	public static void BuffImmune(int type, bool whipsToo = false)
 	{

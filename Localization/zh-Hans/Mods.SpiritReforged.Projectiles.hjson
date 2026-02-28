@@ -65,3 +65,5 @@ FingerShot.DisplayName: 手指射击
 // DivebombScarab.DisplayName: Divebomb Scarab
 // SwarmScarab.DisplayName: Swarm Scarab
 // SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+// FloatingGem.DisplayName: Floating Gem
+// BeamOLight.DisplayName: Beam O Light

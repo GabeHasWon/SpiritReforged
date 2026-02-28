@@ -53,11 +53,11 @@ public class Cartographer : WorldNPC, ITravelNPC
 			Main.LocalPlayer.TryOpeningFullscreenMap();
 			Main.mapFullscreenPos = Main.LocalPlayer.Center / 16f;
 
-			MapAnimator.Register(new MapAnimator.Animation()
-				.Add(new MapAnimator.EaseSegment(120, LastPosition.ToVector2(), EaseFunction.EaseCubicInOut)),
-				new MapAnimator.Animation()
-				.Add(new MapAnimator.ZoomSegment(80, 1.5f, EaseFunction.EaseQuarticOut))
-				.Add(new MapAnimator.ZoomSegment(100, 1.5f, 4, EaseFunction.EaseQuarticInOut)));
+			MapAnimator.Register(new AnimationSequence()
+				.Add(new AnimationSequence.EaseSegment(120, Main.mapFullscreenPos, LastPosition.ToVector2(), EaseFunction.EaseCubicInOut)),
+				new AnimationSequence()
+				.Add(new AnimationSequence.ZoomSegment(80, Main.mapFullscreenScale, 1.5f, EaseFunction.EaseQuarticOut))
+				.Add(new AnimationSequence.ZoomSegment(100, 1.5f, 4, EaseFunction.EaseQuarticInOut)));
 
 			ClickedOpenMap = false;
 		}
