@@ -143,7 +143,7 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X - NPC.direction * 0.1f, -5, 5);
 
 				if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(50))
-					ChangeState(Main.rand.NextFromList(Skitter, HornSwipe));
+					ChangeState(HornSwipe);
 			}
 		}
 
@@ -174,24 +174,17 @@ public partial class Scarabeus : ModNPC
 
 	public void HornSwipe()
 	{
-		const int windup_time = 30;
-		const int attack_time = 35;
-
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		CheckPlatform();
 
 		NPC.velocity.X *= 0.5f;
-
-		if (Counter < windup_time)
-			UpdateFrame(2, (int)(3 * 60f / windup_time), false);
-		else
-			UpdateFrame(2, (int)(7 * 60f / attack_time), false);
+		FrameState state = UpdateFrame(2, 12, false);
 
 		if (currentFrame.Y is > 2 and < 7)
 			dealContactDamage = true;
 
-		if (Counter++ >= attack_time + windup_time)
+		if (state == FrameState.Stopped)
 			ChangeState(SelectRandomState());
 	}
 
@@ -217,63 +210,54 @@ public partial class Scarabeus : ModNPC
 
 		ref float jumpState = ref NPC.ai[2];
 
-		bool HasJumped = jumpState == 1;
-		bool HasLanded = jumpState == 2;
-
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		CheckPlatform();
 
-		if (!HasJumped && !HasLanded)
+		switch (jumpState)
 		{
-			//Check if grounded
-			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
-			{
-				//Slow down for a bit, then calculate mortar velocity to jump towards player
-				//Increase velocity if too far to reach player
-
-				if (Counter <= windup_time)
+			case 0: //Prepare for a jump
+				if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0) //Check if grounded
 				{
+					//Slow down for a bit, then calculate mortar velocity to jump towards player
+					//Increase velocity if too far to reach player
+
 					NPC.velocity.X *= 0.8f;
 					UpdateFrame(3, (int)(6 * windup_time / 60f), false);
 					NPC.FaceTarget();
 
-					if (Counter == windup_time)
+					if (Counter > windup_time)
 					{
 						Vector2 desiredPos = Target.Center + Target.velocity * 6 + NPC.direction * 112 * Vector2.UnitX;
 						NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 15, true);
-						//NPC.noTileCollide = true;
+
 						jumpState++;
-						NPC.netUpdate = true;
 					}
 				}
-			}
-		}
-		else if (!HasLanded)
-		{
-			currentFrame = new(4, 5);
-			dealContactDamage = true;
 
-			if (NPC.velocity.Y < 0)
-				NPC.noTileCollide = true;
-			else
-				NPC.noTileCollide = false;
+				break;
 
-			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0)
-			{
-				jumpState++;
-				//vfx and sfx and shockwaves here
-				NPC.netUpdate = true;
-				Counter = 0;
-			}
-		}
-		else
-		{
-			NPC.velocity.X = 0;
-			UpdateFrame(4, (int)(15 * rest_time / 60f), false);
+			case 1: //Jump and land
+				currentFrame = new(0, 2);
+				dealContactDamage = true;
+				NPC.noTileCollide = NPC.velocity.Y < 0;
 
-			if (Counter > rest_time)
-				ChangeState(SelectRandomState());
+				if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0) //Land
+				{
+					Counter = 0;
+					jumpState++;
+					//vfx and sfx and shockwaves here
+				}
+
+				break;
+
+			case 2: //Recover
+				NPC.velocity.X = 0;
+
+				if (UpdateFrame(6, (int)(15 * rest_time / 60f), false) == FrameState.Stopped)
+					ChangeState(SelectRandomState());
+
+				break;
 		}
 
 		/*
@@ -350,17 +334,17 @@ public partial class Scarabeus : ModNPC
 				Dust.NewDust(NPC.BottomLeft, NPC.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
 			}
 		}
-		else if (Counter > windup_time)
+		else if (Counter > windup_time) //Rolling
 		{
-			NPC.Step();
-
+			showTrail = true;
 			dealContactDamage = true;
-			NPC.rotation += 0.2f * NPC.spriteDirection;
+
+			NPC.rotation += 0.3f * NPC.spriteDirection;
 			NPC.velocity.X *= 0.98f;
 			//sfx here
 
-			//if (NPC.collideX)
-			//	ChangeState(BounceGroundPound); //bounce off of surfaces
+			if (NPC.collideX)
+				ChangeState(BounceGroundPound); //bounce off of surfaces
 		}
 	}
 
@@ -512,106 +496,113 @@ public partial class Scarabeus : ModNPC
 
 	public void Dig()
 	{
-		const int dig_start_time = 60;
-		const int underground_time = 180;
-		const int air_time = 40;
+		const int dig_time = 120;
 
-		NPC.behindTiles = true;
-		NPC.noGravity = false;
-		NPC.knockBackResist = 0f;
+		ref float digState = ref NPC.ai[2];
+		NPC.behindTiles = digState > 0;
 
-		if (Counter < dig_start_time)
+		switch (digState)
 		{
-			//dig into ground anim here, placeholder rn
-			NPC.velocity = Vector2.Zero;
-			NPC.position.Y += 0.5f;
-			UpdateFrame(3, 6, false);
-		}
-		else if (Counter == dig_start_time)
-		{
-			//temp for hiding boss
-			NPC.alpha = 255;
-			NPC.Center = FindGroundFromPosition(Target.Center);
-
-			if (Collision.SolidCollision(Target.position - new Vector2(40), Target.width + 80, Target.height + 30))
-				_escapeJump = true;
-		}
-		else if (Counter < underground_time + dig_start_time)
-		{
-			//set npc's position to tiles under player, moving around left and right, before settling on a position
-			//particles spawn from the tile where the npc is located
-
-			NPC.FaceTarget();
-
-			NPC.noGravity = true;
-			NPC.noTileCollide = true;
-
-			float desiredVel = NPC.DirectionTo(Target.Center).X * 8;
-			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, desiredVel, 0.01f);
-			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
-			currentFrame = new(0, 4);
-
-			if (!Main.dedServ)
-			{
-				for (int i = 0; i < Main.rand.Next(4); i++)
+			case 0: //Prepare and leap
+				if (UpdateFrame(3, 12, false) == FrameState.Stopped)
 				{
-					Vector2 particlePos = NPC.Center - Vector2.UnitY * 48;
-					particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
+					NPC.velocity.Y -= 4;
+					NPC.velocity.X = NPC.direction * 4;
 
-					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, new Color(223, 219, 147) * 2f, Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
-					{
-						Pixellate = true,
-						DissolveAmount = 1,
-						Intensity = 0.9f,
-						SecondaryColor = new Color(188, 170, 86) * 1.33f,
-						TertiaryColor = new Color(58, 49, 18) * 0.5f,
-						PixelDivisor = 3,
-						Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-						ColorLerpExponent = 0.5f,
-						Layer = ParticleLayer.BelowSolid
-					});
+					digState++;
+				}
+				else
+				{
+					NPC.velocity.X *= 0.95f;
 				}
 
-				if (Main.rand.NextBool(3))
-					Dust.NewDust(NPC.position - Vector2.UnitY * 8, NPC.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.7f, 1.2f));
+				break;
 
-				if (Counter % 20 == 0)
-					BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX + NPC.velocity / 2);
-			}
-		}
-		else if (Counter == underground_time + dig_start_time)
-		{
-			//pop out of ground here
-			NPC.alpha = 0;
-			NPC.rotation = MathHelper.PiOver4;
-			NPC.velocity.X *= 0.3f;
-			NPC.velocity.Y = _escapeJump ? -12 : -16;
+			case 1: //Fall into the ground
+				currentFrame = new(0, 6);
 
-			if (_escapeJump && Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				//NPC.velocity.X = Main.rand.NextBool() ? -9 : 9;
-				NPC.netUpdate = true;
-			}
+				NPC.rotation = NPC.velocity.Y * 0.04f * NPC.direction;
+				NPC.velocity.Y += 0.5f;
+				NPC.noTileCollide = true;
 
-			_escapeJump = false;
-		}
-		else if (Counter < underground_time + dig_start_time + air_time)
-		{
-			if (NPC.noTileCollide && !Collision.SolidCollision(NPC.position, NPC.width, NPC.height)) // Only re-enable collision when not in tiles
-				NPC.noTileCollide = false;
+				if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8))
+				{
+					digState++; //Disappear into the ground
+					Counter = 0;
+				}
 
-			NPC.noGravity = false;
-			dealContactDamage = true;
-			NPC.rotation += NPC.direction * 0.125f;
+				break;
 
-			//curl anim here
-		}
-		else
-		{
-			NPC.noTileCollide = false;
-			ChangeState(BounceGroundPound);
+			case 2: //Dig
+				NPC.Opacity = 0;
+				NPC.noGravity = true;
+
+				Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 8, 0.1f);
+				NPC.position.Y = groundPosition.Y;
+
+				if (!Main.dedServ) //Digging visuals
+				{
+					for (int i = 0; i < Main.rand.Next(4); i++)
+					{
+						Vector2 particlePos = NPC.Center - Vector2.UnitY * 48;
+						particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
+
+						Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
+
+						ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, new Color(223, 219, 147) * 2f, Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+						{
+							Pixellate = true,
+							DissolveAmount = 1,
+							Intensity = 0.9f,
+							SecondaryColor = new Color(188, 170, 86) * 1.33f,
+							TertiaryColor = new Color(58, 49, 18) * 0.5f,
+							PixelDivisor = 3,
+							Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+							ColorLerpExponent = 0.5f,
+							Layer = ParticleLayer.BelowSolid
+						});
+					}
+
+					if (Main.rand.NextBool(3))
+						Dust.NewDust(NPC.position - Vector2.UnitY * 8, NPC.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.7f, 1.2f));
+
+					if (Counter % 20 == 0)
+						BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
+				}
+
+				if (Counter > dig_time) //Reemerge
+				{
+					Counter = 0;
+					digState++;
+
+					NPC.velocity.Y = -10;
+					NPC.noGravity = false;
+					NPC.FaceTarget();
+				}
+
+				break;
+
+			case 3: //Emerge and land
+				currentFrame = new(0, 4);
+				NPC.rotation += 0.3f * NPC.direction;
+				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
+				NPC.velocity.X *= 0.9f;
+
+				if (Counter > 10)
+				{
+					NPC.noTileCollide = false;
+
+					if (NPC.velocity.Y == 0) //Land
+					{
+						ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
+						currentFrame = new(0, 4);
+
+						return;
+					}
+				}
+
+				break;
 		}
 	}
 	#endregion

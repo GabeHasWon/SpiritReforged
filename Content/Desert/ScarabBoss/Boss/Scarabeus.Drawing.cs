@@ -83,26 +83,29 @@ public partial class Scarabeus : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		Vector2 origin = new(100, 110);
+		Vector2 position = NPC.Center - Main.screenPosition - new Vector2(0, 8);
+		Vector2 origin = new(108, 98);
 
 		if (showTrail)
 		{
+			Color tint = phaseTwo ? Color.Orange : drawColor;
+
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{
-				Color trailColor = NPC.DrawColor(Color.Orange).Additive() * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
-				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2, NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
+				Color trailColor = NPC.DrawColor(tint).Additive() * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
+				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
 			}
 		}
 
-		Main.EntitySpriteDraw(texture, NPC.Center - Main.screenPosition, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
 
 		if (Profile == PhaseTwoProfile)
 		{
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
-			Main.EntitySpriteDraw(Glowmask.Value, NPC.Center - Main.screenPosition, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, NPC.scale, effects);
 
 			DrawHelpers.DrawOutline(spriteBatch, Glowmask.Value, NPC.Center - Main.screenPosition, default, (offset) =>
-				Main.EntitySpriteDraw(Glowmask.Value, NPC.Center - Main.screenPosition + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, NPC.scale, effects));
+				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, NPC.scale, effects));
 		}
 
 		return false;

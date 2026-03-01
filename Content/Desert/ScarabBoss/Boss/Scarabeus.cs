@@ -103,6 +103,7 @@ public partial class Scarabeus : ModNPC
 	{
 		NPC.TargetClosest(false);
 		NPC.behindTiles = false;
+		NPC.ShowNameOnHover = NPC.Opacity != 0;
 
 		dealContactDamage = false;
 		showTrail = false;
@@ -117,7 +118,7 @@ public partial class Scarabeus : ModNPC
 		_states[CurrentState].Invoke();
 		Counter++;
 
-		if (!NPC.noGravity)
+		if (!NPC.noGravity && !NPC.noTileCollide)
 			NPC.Step();
 	}
 
@@ -279,7 +280,7 @@ public partial class Scarabeus : ModNPC
 	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
 	private static Vector2 FindGroundFromPosition(Vector2 input)
 	{
-		const int dimensions = 16;
+		const int dimensions = 8;
 
 		while (!Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
 			input.Y += dimensions;
