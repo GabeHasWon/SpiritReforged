@@ -115,7 +115,6 @@ public partial class Scarabeus : ModNPC
 		ref float jumpTimer = ref NPC.ai[3];
 
 		NPC.knockBackResist = 0.7f;
-		CheckPlatform();
 		NPC.FaceTarget();
 
 		if (NPC.velocity == Vector2.Zero && ++digTimer > 30)
@@ -176,7 +175,6 @@ public partial class Scarabeus : ModNPC
 	{
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
-		CheckPlatform();
 
 		NPC.velocity.X *= 0.5f;
 		FrameState state = UpdateFrame(2, 12, false);
@@ -194,7 +192,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
-		CheckPlatform();
 
 		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
 		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4);
@@ -212,7 +209,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
-		CheckPlatform();
 
 		switch (jumpState)
 		{
@@ -283,8 +279,6 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 
-		CheckPlatform();
-
 		if (dashState == 0) //Prepare for a roll
 		{
 			NPC.FaceTarget();
@@ -349,7 +343,6 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 		NPC.knockBackResist = 0f;
-		CheckPlatform();
 
 		//Flip direction only on first frame
 		if (Counter == 0)
@@ -387,7 +380,6 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = false;
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0f;
-		CheckPlatform();
 
 		if (jumpState < max_bounces)
 		{
@@ -612,8 +604,10 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0.7f;
+		NPC.rotation = NPC.velocity.X * 0.05f;
+		NPC.FaceTarget();
 
-		UpdateFrame(1, 12, true);
+		UpdateFrame(2, 12, true);
 
 		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
 
@@ -819,11 +813,10 @@ public partial class Scarabeus : ModNPC
 				currentFrame = DigFrame;
 			}
 
-			NPC.velocity.Y += 0.4f;
-			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 24);
+			NPC.velocity.Y = Math.Min(NPC.velocity.Y + 0.4f, 24);
 
 			if (currentFrame == DigFrame)
-				NPC.rotation += NPC.velocity.Y * 0.05f * NPC.direction;
+				NPC.rotation += MathHelper.Clamp(NPC.velocity.Y * 0.05f * NPC.direction, -1, 1);
 
 			if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8)) //Disappear into the ground
 			{
@@ -840,8 +833,9 @@ public partial class Scarabeus : ModNPC
 
 		if (groundState == 1) //Dig
 		{
+			Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
 			NPC.velocity.X = (float)Math.Sin(Counter * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(Target.Center).X;
-			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
+			NPC.position.Y = groundPosition.Y;
 
 			if (Main.rand.NextBool(4) && !Main.dedServ)
 			{
@@ -929,7 +923,7 @@ public partial class Scarabeus : ModNPC
 
 		NPC.velocity *= 0.95f;
 		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * 3 * Counter / attackEndTime) / 10;
-		currentFrame = new(0, 1);
+		UpdateFrame(1, 12);
 
 		if (Counter == attack_start_time)
 		{

@@ -28,6 +28,7 @@ public partial class Scarabeus : ModNPC
 	}
 
 	public Player Target => Main.player[NPC.target];
+	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
 
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
@@ -36,7 +37,17 @@ public partial class Scarabeus : ModNPC
 
 	private Action[] _states;
 
-	public override void Load() => PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
+	public override void Load()
+	{
+		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
+		NPCEvents.OnPlatformCollision += PlatformCollision;
+	}
+
+	private static void PlatformCollision(NPC npc, ref bool fall)
+	{
+		if (npc.ModNPC is Scarabeus scarabeus)
+			fall = scarabeus.IgnorePlatforms;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -201,6 +212,8 @@ public partial class Scarabeus : ModNPC
 
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
 
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : null;
+
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
 		NPC.lifeMax = (int)(NPC.lifeMax * (Main.masterMode ? 0.85f : 1.0f) * 0.7143f * balance);
@@ -313,22 +326,6 @@ public partial class Scarabeus : ModNPC
 			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
 			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
 		}
-	}
-
-	private void CheckPlatform()
-	{
-		bool onplatform = true;
-		for (int i = (int)NPC.position.X; i < NPC.position.X + NPC.width; i += NPC.width / 4)
-		{ //check tiles beneath the boss to see if they are all platforms
-			Tile tile = Framing.GetTileSafely(new Point((int)NPC.position.X / 16, (int)(NPC.position.Y + NPC.height + 8) / 16));
-			if (!TileID.Sets.Platforms[tile.TileType])
-				onplatform = false;
-		}
-
-		if (onplatform && NPC.Center.Y < Target.position.Y - 20) //if they are and the player is lower than the boss, temporarily let the boss ignore tiles to go through them
-			NPC.noTileCollide = true;
-		else
-			NPC.noTileCollide = false;
 	}
 	#endregion
 }
