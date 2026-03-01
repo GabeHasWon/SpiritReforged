@@ -61,7 +61,6 @@ public partial class Scarabeus : ModNPC
 	public void Walking()
 	{
 		const int max_walk_time = 360;
-		const int max_boredom = 60;
 
 		ref float digTimer = ref NPC.ai[2];
 		ref float jumpTimer = ref NPC.ai[3];
@@ -70,7 +69,7 @@ public partial class Scarabeus : ModNPC
 		CheckPlatform();
 		NPC.FaceTarget();
 
-		if (NPC.velocity == Vector2.Zero && +digTimer > 30) // If stuck for a half second, leap
+		if (NPC.velocity == Vector2.Zero && ++digTimer > 30)
 		{
 			ChangeState(Dig);
 			return;
@@ -86,36 +85,22 @@ public partial class Scarabeus : ModNPC
 				return;
 			}
 
-			//Only move if too far from the player, try to move away a little bit if too close
-
-			float horizontalDist = Math.Abs(NPC.position.X - Target.position.X);
-			if (horizontalDist > 200 || Counter < 30)
+			float distance = NPC.DistanceSQ(Target.Center);
+			if (distance > 200 * 200)
 			{
-				NPC.velocity.X += NPC.direction * 0.3f;
-				_boredomTimer = Math.Max(_boredomTimer - 1, 0);
+				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X + NPC.direction * 0.3f, -5, 5);
 			}
 			else
 			{
-				if (Math.Sign(NPC.velocity.X) == NPC.direction && Math.Abs(NPC.velocity.X) > 2)
-					NPC.velocity.X -= NPC.direction * 0.1f;
+				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X - NPC.direction * 0.1f, -5, 5);
 
-				if (horizontalDist < 140)
-				{
-					_boredomTimer++;
-
-					if (_boredomTimer > 2 * max_boredom / 3)
-						NPC.velocity.X -= NPC.direction * 0.1f;
-				}
+				if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(50))
+					ChangeState(Main.rand.NextFromList(Skitter, HornSwipe));
 			}
 		}
 
-		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
-
-		float fps = Math.Max(NPC.velocity.X * 2, 8) * NPC.direction;
+		float fps = Math.Min(NPC.velocity.X * 4, 12) * NPC.direction;
 		UpdateFrame(1, (int)fps);
-
-		if (_boredomTimer >= max_boredom)
-			ChangeState(Main.rand.NextFromList(Skitter, HornSwipe));
 
 		/*
 		 * Todo:
@@ -128,9 +113,7 @@ public partial class Scarabeus : ModNPC
 			ChangeState(SelectRandomState());
 	}
 
-	/// <summary>
-	/// Determines if this NPC, while moving, is approaching a gap that requires jumping over.
-	/// </summary>
+	/// <summary> Determines if this NPC, while moving, is approaching a gap that requires jumping over. </summary>
 	private bool DetermineGap()
 	{
 		if (NPC.velocity.X == 0)
@@ -166,17 +149,16 @@ public partial class Scarabeus : ModNPC
 
 	public void Skitter()
 	{
-		const int skitterTime = 40;
+		const int skitter_time = 40;
 
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		CheckPlatform();
 
-		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitterTime));
-		Counter++;
+		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
 		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4);
 
-		if (Counter > skitterTime)
+		if (Counter > skitter_time)
 			ChangeState(SelectRandomState());
 	}
 
@@ -500,7 +482,6 @@ public partial class Scarabeus : ModNPC
 		else if (Counter == dig_start_time)
 		{
 			//temp for hiding boss
-			_inGround = true;
 			NPC.alpha = 255;
 			NPC.Center = FindGroundFromPosition(Target.Center);
 
@@ -555,7 +536,6 @@ public partial class Scarabeus : ModNPC
 		else if (Counter == underground_time + dig_start_time)
 		{
 			//pop out of ground here
-			_inGround = false;
 			NPC.alpha = 0;
 			NPC.rotation = MathHelper.PiOver4;
 			NPC.velocity.X *= 0.3f;
@@ -763,6 +743,7 @@ public partial class Scarabeus : ModNPC
 		const int rest_time = 40;
 
 		ref float jumpState = ref NPC.ai[2];
+		ref float groundState = ref NPC.ai[3];
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
@@ -775,14 +756,14 @@ public partial class Scarabeus : ModNPC
 			NPC.netUpdate = true;
 		}
 
-		if (!_inGround && jumpState == 1)
+		if (groundState == 0 && jumpState == 1)
 		{
 			NPC.velocity.Y += 0.4f;
 			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 24);
 
 			if (Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
 			{
-				_inGround = true;
+				groundState = 1;
 				NPC.Opacity = 0;
 				NPC.velocity = Vector2.Zero;
 
@@ -793,7 +774,7 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		if (_inGround)
+		if (groundState == 1)
 		{
 			NPC.velocity.X = (float)Math.Sin(Counter * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(Target.Center).X;
 			NPC.position.Y = FindGroundFromPosition(NPC.position).Y;
@@ -823,7 +804,7 @@ public partial class Scarabeus : ModNPC
 
 			if (Counter > underground_time)
 			{
-				_inGround = false;
+				groundState = 0;
 				NPC.Opacity = 1;
 				NPC.velocity.Y = -15;
 				Counter = 0;

@@ -34,8 +34,6 @@ public partial class Scarabeus : ModNPC
 	public bool dealContactDamage = false;
 
 	private Vector2 _dashDirection;
-	private bool _inGround = true;
-	private int _boredomTimer;
 	private bool _escapeJump = false;
 
 	private Action[] _states;
@@ -217,10 +215,8 @@ public partial class Scarabeus : ModNPC
 		CurrentState = state;
 		NPC.netUpdate = true;
 
-		_inGround = false;
 		_dashDirection = default;
 		NPC.rotation = 0;
-		_boredomTimer = 0;
 		currentFrame.Y = 0;
 	}
 

@@ -88,7 +88,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 
 				if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
-					entity.Interact(Main.player[Projectile.owner]);
+					entity.Interact();
 			}
 		}
 
@@ -126,8 +126,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public ref float Counter => ref Projectile.ai[1];
 
+		private const int WaitTime = 120;
 		private bool _justSpawned = true;
-		private int _waitTime = 120;
+		private bool _spawnedBoss = false;
 
 		public override void SetDefaults()
 		{
@@ -144,8 +145,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
 
 					var easeAnimation = new AnimationSequence()
-						.Add(new AnimationSequence.EaseSegment(_waitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-						.Add(new AnimationSequence.WaitSegment(TimeLeftMax - _waitTime - 40))
+						.Add(new AnimationSequence.EaseSegment(WaitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+						.Add(new AnimationSequence.WaitSegment(TimeLeftMax - WaitTime - 40))
 						.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 
 					Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
@@ -156,9 +157,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				_justSpawned = false;
 			}
 
-			if (Projectile.timeLeft >= TimeLeftMax - _waitTime)
+			if (Projectile.timeLeft >= TimeLeftMax - WaitTime)
 			{
-				if (Main.rand.NextFloat() < Counter / _waitTime * 0.4f)
+				if (Main.rand.NextFloat() < Counter / WaitTime * 0.4f)
 				{
 					float strength = Main.rand.NextFloat();
 					var color = Color.Lerp(Color.Red, Color.Goldenrod, strength);
@@ -184,7 +185,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				}
 			}
 
-			if (++Counter == _waitTime)
+			if (++Counter >= WaitTime && !_spawnedBoss)
 			{
 				if (!Main.dedServ)
 				{
@@ -194,6 +195,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 				if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
 					NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+
+				_spawnedBoss = true;
 			}
 		}
 
@@ -201,7 +204,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (Projectile.timeLeft > TimeLeftMax - _waitTime)
+			if (Projectile.timeLeft > TimeLeftMax - WaitTime)
 			{
 				Texture2D rayTexture = TextureAssets.Projectile[ProjectileID.MedusaHeadRay].Value;
 				float rayOpacity = 1f - (float)Projectile.timeLeft / TimeLeftMax;
@@ -212,10 +215,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				return false;
 			}
 
-			float progress = EaseFunction.EaseCircularIn.Ease(Projectile.timeLeft / (float)(TimeLeftMax - _waitTime));
+			float progress = EaseFunction.EaseCircularIn.Ease(Projectile.timeLeft / (float)(TimeLeftMax - WaitTime));
 
 			Vector2 center = Projectile.Center;
-			float opacity = Math.Clamp(((float)(TimeLeftMax - _waitTime) - Projectile.timeLeft) * 0.2f, 0, 1);
+			float opacity = Math.Clamp(((float)(TimeLeftMax - WaitTime) - Projectile.timeLeft) * 0.2f, 0, 1);
 
 			Color rainbow = Main.hslToRgb((float)Main.timeForVisualEffects / 10f % 1, 1f, 0.5f);
 			var subColor = Color.Lerp(Color.Lerp(rainbow, Color.Goldenrod, 1f - progress), Color.PaleVioletRed, progress);
@@ -342,6 +345,12 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		return false;
 	}
 
+	public override void PlaceInWorld(int i, int j, Item item)
+	{
+		if (Entity(i, j) is ScarabAltarEntity entity)
+			entity.SetInteractTime();
+	}
+
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		if (Main.tile[i, j].TileFrameY <= 18)
@@ -367,7 +376,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		if (drawingTop && Entity(i, j) is ScarabAltarEntity entity)
 		{
-			float interactProgress = entity.InteractTime / 10f;
+			float interactProgress = entity.InteractTime / (float)ScarabAltarEntity.InteractTimeMax;
 			int frame = (int)((Main.timeForVisualEffects % 300 > frame_duration * 5.9f) ? 0 : Main.timeForVisualEffects % 300 / frame_duration);
 
 			Rectangle topSource = new(46 * frame, 56, 44, 14);
@@ -375,15 +384,19 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			float rotation = (float)Math.Sin(Main.timeForVisualEffects) * 0.2f * interactProgress;
 
 			#region reactive glow
-			Texture2D squareBeam = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
-			Texture2D beam = TextureAssets.Projectile[ProjectileID.MedusaHeadRay].Value;
-			Vector2 beamOrigin = new(beam.Width / 2, beam.Height);
+			float opacity = entity.consumableCount / (float)ScarabAltarEntity.ConsumableCountMax;
+			if (opacity > 0)
+			{
+				Texture2D squareBeam = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
+				Texture2D beam = TextureAssets.Projectile[ProjectileID.MedusaHeadRay].Value;
+				Vector2 beamOrigin = new(beam.Width / 2, beam.Height);
 
-			spriteBatch.Draw(squareBeam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.PaleGoldenrod.Additive() * interactProgress, 0, squareBeam.Size() / 2, new Vector2(0.65f, 0.3f), default, 0);
-			spriteBatch.Draw(squareBeam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.PaleGoldenrod.Additive() * interactProgress, 0, squareBeam.Size() / 2, new Vector2(0.6f, 0.3f), default, 0);
+				spriteBatch.Draw(squareBeam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.PaleGoldenrod.Additive() * interactProgress * opacity, 0, squareBeam.Size() / 2, new Vector2(0.65f, 0.3f), default, 0);
+				spriteBatch.Draw(squareBeam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.PaleGoldenrod.Additive() * interactProgress * opacity, 0, squareBeam.Size() / 2, new Vector2(0.6f, 0.3f), default, 0);
 
-			spriteBatch.Draw(beam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.Goldenrod.Additive() * interactProgress, 0, beamOrigin, new Vector2(1, 0.5f * interactProgress), default, 0);
-			spriteBatch.Draw(beam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.White.Additive() * interactProgress * 0.5f, 0, beamOrigin, new Vector2(0.8f, 0.5f * interactProgress), default, 0);
+				spriteBatch.Draw(beam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.Goldenrod.Additive() * interactProgress * opacity, 0, beamOrigin, new Vector2(1, 0.5f * interactProgress), default, 0);
+				spriteBatch.Draw(beam, new Vector2(i, j).ToWorldCoordinates(32, -entity.InteractTime) - Main.screenPosition, null, Color.White.Additive() * interactProgress * opacity * 0.5f, 0, beamOrigin, new Vector2(0.8f, 0.5f * interactProgress), default, 0);
+			}
 			#endregion
 
 			spriteBatch.Draw(texture, topPosition, topSource, Lighting.GetColor(i, j), rotation, topSource.Size() / 2, 1, default, 0);
@@ -414,6 +427,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 {
+	public const int InteractTimeMax = 10;
 	public const int ConsumableCountMax = 10;
 	public int consumableCount;
 
@@ -442,9 +456,9 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		return Place(i, j);
 	}
 
-	public void Interact(Player player)
+	public void Interact()
 	{
-		InteractTime = 10;
+		SetInteractTime();
 
 		Rectangle area = new(Position.X * 16 + 12, Position.Y * 16, 40, 2);
 		for (int i = 0; i < 8; i++)
@@ -456,6 +470,10 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 
 		SoundEngine.PlaySound(SoundID.Coins with { Pitch = (float)consumableCount / ConsumableCountMax }, area.Center());
 
+		float subVolume = (float)(consumableCount - ConsumableCountMax / 2) / (ConsumableCountMax / 2);
+		if (subVolume > 0)
+			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
+
 		if (++consumableCount >= ConsumableCountMax)
 		{
 			consumableCount = 0;
@@ -464,6 +482,8 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, ModContent.ProjectileType<ScarabAltar.BeamOLight>(), 0, 0, -1, 300);
 		}
 	}
+
+	public void SetInteractTime() => InteractTime = InteractTimeMax;
 
 	public void GlobalUpdate()
 	{
