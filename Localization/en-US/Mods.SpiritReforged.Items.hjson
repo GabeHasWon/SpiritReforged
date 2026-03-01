@@ -2944,3 +2944,18 @@ GoldCricketCageItem: {
 	DisplayName: Gold Cricket Cage
 	Tooltip: ""
 }
+
+CarrotCake: {
+	Tooltip: "{$BuffDescription.WellFed3}"
+	DisplayName: Carrot Cake
+}
+
+AvianRitualMask: {
+	DisplayName: Avian Ritual Mask
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: Bull Ritual Mask
+	Tooltip: ""
+}
