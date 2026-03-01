@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -19,26 +20,20 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[0] = value;
 	}
 
-	public int AITimer
+	public int Counter
 	{
 		get => (int)NPC.ai[1];
 		set => NPC.ai[1] = value;
 	}
 
-	/// <summary> Determines if the boss has been stuck in one place when walking for too long. </summary>
-	public ref float DigTimer => ref NPC.ai[2];
-
-	/// <summary> Determines if the boss is met with a gap </summary>
-	public ref float JumpTimer => ref NPC.ai[3];
-
 	public Player Target => Main.player[NPC.target];
 
+	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
-	private bool _contactDmgEnabled = false;
-	private bool _inGround = true;
+	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
+	public bool dealContactDamage = false;
 
-	private int _jumpState = 0;
-	private int _boredomTimer;
+	private Vector2 _dashDirection;
 	private bool _escapeJump = false;
 
 	private Action[] _states;
@@ -46,7 +41,7 @@ public partial class Scarabeus : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 17; //The highest frame count
-		NPCID.Sets.TrailCacheLength[Type] = 4;
+		NPCID.Sets.TrailCacheLength[Type] = 8;
 		NPCID.Sets.TrailingMode[Type] = 3;
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -78,6 +73,8 @@ public partial class Scarabeus : ModNPC
 			ScarabSwarm
 		];
 
+		Profile = PhaseOneProfile;
+
 		NPC.width = 90;
 		NPC.height = 90;
 		NPC.value = 30000;
@@ -107,18 +104,24 @@ public partial class Scarabeus : ModNPC
 		NPC.TargetClosest(false);
 		NPC.behindTiles = false;
 
-		_contactDmgEnabled = false;
+		dealContactDamage = false;
+		showTrail = false;
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
 			ChangeState(FlyHover);
+			Profile = PhaseTwoProfile;
 			phaseTwo = true;
 		}
 
 		_states[CurrentState].Invoke();
+		Counter++;
+
+		if (!NPC.noGravity)
+			NPC.Step();
 	}
 
-	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => _contactDmgEnabled;
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
@@ -207,21 +210,18 @@ public partial class Scarabeus : ModNPC
 
 	public void ChangeState(int state)
 	{
+		for (int i = 0; i < 4; i++)
+			NPC.ai[i] = 0;
+
 		CurrentState = state;
 		NPC.netUpdate = true;
 
-		_inGround = false;
-		_jumpState = 0;
-		AITimer = 0;
+		_dashDirection = default;
 		NPC.rotation = 0;
-		_boredomTimer = 0;
-		DigTimer = 0;
-		JumpTimer = 0;
 		currentFrame.Y = 0;
 	}
 
 	#region helpers
-
 	private Action SelectRandomState()
 	{
 		List<Action> availablePatterns = [];
@@ -325,6 +325,5 @@ public partial class Scarabeus : ModNPC
 		else
 			NPC.noTileCollide = false;
 	}
-
 	#endregion
 }
