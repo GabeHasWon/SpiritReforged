@@ -142,8 +142,8 @@ public class FingerGunArmManager : ModPlayer
 	{
 		if (IsFingerGunHeld(drawInfo.drawPlayer))
 		{
-			drawInfo.drawPlayer.handon = EquipLoader.GetEquipSlot(SpiritReforgedMod.Instance, "FingerGun", EquipType.HandsOn);
-			drawInfo.cHandOn = -1;
+			drawInfo.drawPlayer.handon = ContentSamples.ItemsByType[ModContent.ItemType<FingerGun>()].handOnSlot;
+			drawInfo.cHandOn = 0;
 		}
 	}
 }
