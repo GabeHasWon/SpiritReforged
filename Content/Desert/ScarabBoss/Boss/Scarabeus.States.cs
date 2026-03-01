@@ -46,7 +46,6 @@ public partial class Scarabeus : ModNPC
 			NPC.noGravity = false;
 			NPC.velocity.Y = -12;
 			NPC.Opacity = 1;
-			_inGround = false;
 		}
 
 		if (Counter >= swarm_time + roar_time)
