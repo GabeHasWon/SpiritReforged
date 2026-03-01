@@ -247,6 +247,13 @@ public partial class Scarabeus : ModNPC
 					Counter = 0;
 					jumpState++;
 					//vfx and sfx and shockwaves here
+
+					if (!Main.dedServ)
+					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(2, 2), 4, 2, 15, -1, "ScarabLanding"));
+
+						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+					}
 				}
 
 				break;
@@ -394,8 +401,12 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.Y = -16;
 				NPC.FaceTarget();
 
-				if (Main.netMode != NetmodeID.Server && Main.LocalPlayer.Distance(NPC.Center) < 800)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15));
+				if (Main.netMode != NetmodeID.Server)
+				{
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15, 800));
+
+					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, 6), NPC.width, 10);
+				}
 			}
 			else
 			{
@@ -663,6 +674,7 @@ public partial class Scarabeus : ModNPC
 
 		UpdateFrame(2, 12);
 		NPC.noTileCollide = true;
+		dealContactDamage = true;
 		bool inRange = NPC.DistanceSQ(Target.Center) < 350 * 350;
 
 		if ((inRange || dashState == 1) && Counter > idle_time)
@@ -699,6 +711,7 @@ public partial class Scarabeus : ModNPC
 		if (Counter > expire_time)
 		{
 			NPC.noTileCollide = false;
+			dealContactDamage = false;
 			ChangeState(FlyHover);
 		}
 	}

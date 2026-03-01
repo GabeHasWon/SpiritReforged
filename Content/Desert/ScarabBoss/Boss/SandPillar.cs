@@ -27,6 +27,8 @@ public class SandPillar : ModProjectile
 		Projectile.timeLeft = MAX_TIMELEFT;
 	}
 
+	public override bool? CanDamage() => AITimer > SpawnDelay ? null : false;
+
 	public override void AI()
 	{
 		if(AITimer == 0)
