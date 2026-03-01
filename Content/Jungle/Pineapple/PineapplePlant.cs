@@ -76,6 +76,8 @@ public class PineapplePlant : HerbTile
 
 		DustType = DustID.JungleGrass;
 		HitSound = SoundID.Grass;
+		SeedType = ModContent.ItemType<PineappleSeeds>();
+		HerbType = ItemID.Pineapple;
 	}
 
 	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) { }
