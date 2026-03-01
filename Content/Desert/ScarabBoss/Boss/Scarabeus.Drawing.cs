@@ -88,11 +88,11 @@ public partial class Scarabeus : ModNPC
 
 		if (showTrail)
 		{
-			Color tint = phaseTwo ? Color.Orange : drawColor;
+			Color color = phaseTwo ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
 
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{
-				Color trailColor = NPC.DrawColor(tint).Additive() * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
+				Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
 				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
 			}
 		}
