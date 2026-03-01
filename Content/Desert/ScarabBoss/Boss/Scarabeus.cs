@@ -279,17 +279,15 @@ public partial class Scarabeus : ModNPC
 	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
 	private static Vector2 FindGroundFromPosition(Vector2 input)
 	{
-		Point tile = input.ToTileCoordinates();
+		const int dimensions = 16;
 
-		while (!Collision.SolidTiles(tile.ToWorldCoordinates(), 1, 1))
-			tile.Y += 1;
+		while (!Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
+			input.Y += dimensions;
 
-		while (Collision.SolidTiles(tile.ToWorldCoordinates(), 1, 1))
-			tile.Y -= 1;
+		while (Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
+			input.Y -= dimensions;
 
-		tile.Y += 1;
-
-		return tile.ToWorldCoordinates();
+		return input + new Vector2(0, dimensions);
 	}
 
 	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)

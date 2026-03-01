@@ -39,19 +39,68 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		if (Counter == swarm_time)
-		{
-			NPC.Center = FindGroundFromPosition(Target.Center);
-			NPC.noTileCollide = false;
-			NPC.noGravity = false;
-			NPC.velocity.Y = -12;
-			NPC.Opacity = 1;
-		}
-
-		if (Counter >= swarm_time + roar_time)
+		if (Counter > swarm_time + roar_time) //End the cinematic
 		{
 			NPC.dontTakeDamage = false;
 			ChangeState(Walking);
+		}
+		else if (Counter > swarm_time) //Emerge
+		{
+			if (NPC.Opacity == 0) //One-time effects
+			{
+				NPC.noTileCollide = false;
+				NPC.noGravity = false;
+				NPC.velocity.Y = -12;
+				NPC.Opacity = 1;
+			}
+
+			if (NPC.velocity.Y == 0) //Landed
+			{
+				NPC.FaceTarget();
+				UpdateFrame(6, 12, false);
+				NPC.rotation = 0;
+			}
+			else
+			{
+				currentFrame = new(0, 4);
+				NPC.rotation += 0.3f * NPC.direction;
+			}
+		}
+		else //Rumbling
+		{
+			if (Counter == 0)
+			{
+				NPC.Center = FindGroundFromPosition(Target.Center) - new Vector2(0, NPC.height / 2);
+				NPC.FaceTarget();
+			}
+
+			if (!Main.dedServ)
+			{
+				Rectangle area = new((int)NPC.BottomLeft.X , (int)NPC.BottomLeft.Y, NPC.width, 2);
+				for (int i = 0; i < Main.rand.Next(4); i++)
+				{
+					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(Main.rand.NextVector2FromRectangle(area), particleVel, new Color(223, 219, 147) * 2f, Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+					{
+						Pixellate = true,
+						DissolveAmount = 1,
+						Intensity = 0.9f,
+						SecondaryColor = new Color(188, 170, 86) * 1.33f,
+						TertiaryColor = new Color(58, 49, 18) * 0.5f,
+						PixelDivisor = 3,
+						Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+						ColorLerpExponent = 0.5f,
+						Layer = ParticleLayer.BelowSolid
+					});
+				}
+
+				if (Main.rand.NextBool(3))
+					Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(area), DustID.Sand, new(0, -4), 0, default, Main.rand.NextFloat(0.7f, 1.2f));
+
+				if (Counter % 20 == 0)
+					BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX + NPC.velocity / 2);
+			}
 		}
 	}
 	#endregion
