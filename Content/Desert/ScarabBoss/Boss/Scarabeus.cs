@@ -13,6 +13,7 @@ public partial class Scarabeus : ModNPC
 {
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
+	private static int PhaseTwoHeadSlot;
 
 	public int CurrentState
 	{
@@ -33,10 +34,9 @@ public partial class Scarabeus : ModNPC
 	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
 	public bool dealContactDamage = false;
 
-	private Vector2 _dashDirection;
-	private bool _escapeJump = false;
-
 	private Action[] _states;
+
+	public override void Load() => PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
 
 	public override void SetStaticDefaults()
 	{
@@ -207,6 +207,13 @@ public partial class Scarabeus : ModNPC
 		NPC.damage = (int)(NPC.damage * 0.626f);
 	}
 
+	public override void BossHeadSlot(ref int index)
+	{
+		int slot = PhaseTwoHeadSlot;
+		if (phaseTwo && slot != -1)
+			index = slot;
+	}
+
 	public void ChangeState(Action state) => ChangeState(Array.IndexOf(_states, state));
 
 	public void ChangeState(int state)
@@ -217,7 +224,6 @@ public partial class Scarabeus : ModNPC
 		CurrentState = state;
 		NPC.netUpdate = true;
 
-		_dashDirection = default;
 		NPC.rotation = 0;
 		currentFrame.Y = 0;
 	}

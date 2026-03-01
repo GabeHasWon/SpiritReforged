@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
@@ -49,7 +48,7 @@ public partial class Scarabeus : ModNPC
 			}
 			else
 			{
-				currentFrame = new(0, 4);
+				currentFrame = DigFrame;
 				NPC.rotation += 0.3f * NPC.direction;
 			}
 		}
@@ -130,7 +129,6 @@ public partial class Scarabeus : ModNPC
 		{
 			if (DetermineGap() && ++jumpTimer > 15) // Jump over gaps if needed
 			{
-				_escapeJump = true;
 				ChangeState(Leap);
 				return;
 			}
@@ -327,7 +325,7 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.X = NPC.direction * 28;
 			NPC.rotation += 0.3f * NPC.spriteDirection;
 
-			currentFrame = new(0, 4);
+			currentFrame = DigFrame;
 			showTrail = true;
 			dealContactDamage = true;
 			//sfx here
@@ -386,7 +384,7 @@ public partial class Scarabeus : ModNPC
 
 		if (jumpState < max_bounces)
 		{
-			currentFrame = new(0, 4);
+			currentFrame = DigFrame;
 			dealContactDamage = true;
 
 			//Check if grounded
@@ -572,7 +570,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 3: //Emerge and land
-				currentFrame = new(0, 4);
+				currentFrame = DigFrame;
 				NPC.rotation += 0.3f * NPC.direction;
 				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
 				NPC.velocity.X *= 0.9f;
@@ -584,7 +582,7 @@ public partial class Scarabeus : ModNPC
 					if (NPC.velocity.Y == 0) //Land
 					{
 						ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
-						currentFrame = new(0, 4);
+						currentFrame = DigFrame;
 
 						return;
 					}
@@ -660,22 +658,26 @@ public partial class Scarabeus : ModNPC
 		const int idle_time = 90;
 		const int dash_time = 30;
 
+		ref float dashRotation = ref NPC.ai[2];
+		ref float dashState = ref NPC.ai[3];
+
 		UpdateFrame(2, 12);
 		NPC.noTileCollide = true;
 		bool inRange = NPC.DistanceSQ(Target.Center) < 350 * 350;
 
-		if ((inRange || _dashDirection != default) && Counter > idle_time)
+		if ((inRange || dashState == 1) && Counter > idle_time)
 		{
-			if (_dashDirection == default)
+			if (dashState == 0)
 			{
-				_dashDirection = NPC.DirectionTo(Target.Center);
+				dashRotation = NPC.AngleTo(Target.Center);
+				dashState = 1;
 				Counter = idle_time + 1;
 			}
 
 			currentFrame = new(0, 2);
 			showTrail = true;
 
-			NPC.velocity = _dashDirection * 18;
+			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
 			NPC.direction = Math.Sign(NPC.velocity.X);
 			NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
 
@@ -710,7 +712,7 @@ public partial class Scarabeus : ModNPC
 
 		if (jumpState > 3) //Final bounce
 		{
-			if (currentFrame == new Point(0, 4)) //One-time effects
+			if (currentFrame == DigFrame) //One-time effects
 			{
 				Profile = PhaseTwoProfile;
 				currentFrame = new(3, Profile.GetFrameCount(3) - 1);
@@ -747,7 +749,7 @@ public partial class Scarabeus : ModNPC
 		else //Fall
 		{
 			if (Profile == PhaseOneProfile)
-				currentFrame = new(0, 4);
+				currentFrame = DigFrame;
 			else if (UpdateFrame(3, 12, false) == FrameState.Stopped)
 				Profile = PhaseOneProfile;
 
@@ -768,7 +770,7 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y += 0.5f;
 			NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
 
-			if (currentFrame == new Point(0, 4))
+			if (currentFrame == DigFrame)
 				NPC.rotation += 0.1f * NPC.direction;
 		}
 
@@ -801,13 +803,13 @@ public partial class Scarabeus : ModNPC
 			if (Profile != PhaseOneProfile && UpdateFrame(3, 12, false) == FrameState.Stopped)
 			{
 				Profile = PhaseOneProfile;
-				currentFrame = new Point(0, 4);
+				currentFrame = DigFrame;
 			}
 
 			NPC.velocity.Y += 0.4f;
 			NPC.velocity.Y = Math.Min(NPC.velocity.Y, 24);
 
-			if (currentFrame == new Point(0, 4))
+			if (currentFrame == DigFrame)
 				NPC.rotation += NPC.velocity.Y * 0.05f * NPC.direction;
 
 			if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8)) //Disappear into the ground

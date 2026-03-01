@@ -170,7 +170,7 @@ public partial class ZigguratBiome : Microbiome
 		int j = origin.Y;
 
 		WorldMethods.FindGround(i, ref j);
-		WorldGen.PlaceTile(i, j - 1, ModContent.TileType<ScarabAltar>(), true);
+		Placer.PlaceTile<ScarabAltar>(i, j -1).PostPlacement(out ScarabAltarEntity _);
 
 		const int width = 8;
 		WorldUtils.Gen(new(i - width / 2, j), new Shapes.Rectangle(width, 2), Actions.Chain(
