@@ -32,6 +32,8 @@ public partial class Scarabeus : ModNPC
 	public static readonly Asset<Texture2D> Glowmask = DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false);
 
 	public Point currentFrame;
+	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
+	public bool showTrail;
 
 	private FrameState UpdateFrame(int column, int framesPerSecond, bool loop = true)
 	{
@@ -83,14 +85,14 @@ public partial class Scarabeus : ModNPC
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 origin = new(100, 110);
 
-		/*if (false)
+		if (showTrail)
 		{
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{
-				Color trailColor = NPC.DrawColor(drawColor) * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
+				Color trailColor = NPC.DrawColor(Color.Orange).Additive() * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
 				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2, NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
 			}
-		}*/
+		}
 
 		Main.EntitySpriteDraw(texture, NPC.Center - Main.screenPosition, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
 

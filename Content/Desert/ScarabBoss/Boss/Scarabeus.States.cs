@@ -633,6 +633,7 @@ public partial class Scarabeus : ModNPC
 		const int dash_time = 30;
 
 		UpdateFrame(2, 12);
+		NPC.noTileCollide = true;
 		bool inRange = NPC.DistanceSQ(Target.Center) < 350 * 350;
 
 		if ((inRange || _dashDirection != default) && Counter > idle_time)
@@ -644,15 +645,16 @@ public partial class Scarabeus : ModNPC
 			}
 
 			currentFrame = new(0, 2);
-			NPC.noTileCollide = true;
+			showTrail = true;
+
 			NPC.velocity = _dashDirection * 18;
 			NPC.direction = Math.Sign(NPC.velocity.X);
 			NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
 
 			if (Counter > idle_time + dash_time)
 			{
-				NPC.noTileCollide = false;
 				ChangeState(FlyHover);
+				NPC.velocity *= 0.4f;
 			}
 		}
 		else
@@ -677,16 +679,16 @@ public partial class Scarabeus : ModNPC
 		const int idle_time = 90;
 
 		ref float jumpState = ref NPC.ai[2];
-		bool inRange = NPC.DistanceSQ(Target.Center) < 250 * 250;
 
-		if (jumpState == 0)
+		if (jumpState == 0) //Line up with Target
 		{
-			Vector2 targetPosition = Target.Center - new Vector2(NPC.direction * 10, 200);
+			float distance = NPC.DistanceSQ(Target.Center);
+			Vector2 targetPosition = Target.Center - new Vector2(0, 200);
 
-			NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * 5, 0.1f);
+			NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * 5, 0.04f * (distance / (200f * 200f)));
 			NPC.rotation = NPC.velocity.X * 0.05f;
 
-			if (inRange && Counter > idle_time)
+			if (distance < 250 * 250 && Counter > idle_time)
 			{
 				Counter = 0;
 				NPC.velocity.Y -= 5;
@@ -695,10 +697,12 @@ public partial class Scarabeus : ModNPC
 
 			UpdateFrame(2, 12);
 
-			NPC.FaceTarget();
+			if (Math.Abs(Target.Center.X - NPC.Center.X) > 50)
+				NPC.FaceTarget();
+
 			NPC.noTileCollide = true;
 		}
-		else
+		else //Fall
 		{
 			if (Profile == PhaseOneProfile)
 				currentFrame = new(0, 4);

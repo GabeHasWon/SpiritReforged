@@ -30,7 +30,7 @@ public partial class Scarabeus : ModNPC
 
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
-	/// <summary> Whether this NPC should deal contact damage. </summary>
+	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
 	public bool dealContactDamage = false;
 
 	private Vector2 _dashDirection;
@@ -41,7 +41,7 @@ public partial class Scarabeus : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 17; //The highest frame count
-		NPCID.Sets.TrailCacheLength[Type] = 4;
+		NPCID.Sets.TrailCacheLength[Type] = 8;
 		NPCID.Sets.TrailingMode[Type] = 3;
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -105,6 +105,7 @@ public partial class Scarabeus : ModNPC
 		NPC.behindTiles = false;
 
 		dealContactDamage = false;
+		showTrail = false;
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
