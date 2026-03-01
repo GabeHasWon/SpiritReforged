@@ -2946,6 +2946,16 @@ GoldCricketCageItem: {
 }
 
 CarrotCake: {
-	// Tooltip: ""
+	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
+}
+
+AvianRitualMask: {
+	// DisplayName: Avian Ritual Mask
+	// Tooltip: ""
+}
+
+BullRitualMask: {
+	// DisplayName: Bull Ritual Mask
+	// Tooltip: ""
 }
