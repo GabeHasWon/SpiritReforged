@@ -34,13 +34,17 @@ public partial class Scarabeus : ModNPC
 	public VisualProfile Profile { get; private set; }
 	public static readonly Asset<Texture2D> Glowmask = DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false);
 
+	/// <summary> The selected frame in the 2D spritesheet.<para/>
+	/// Prefer <see cref="UpdateFrame"/> and <see cref="SetFrame"/> for assignment. </summary>
 	public Point currentFrame;
 	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
 	public bool showTrail;
 
-	private FrameState UpdateFrame(int column, int framesPerSecond, bool loop = true)
+	#region framing methods
+	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
 	{
 		FrameState result = FrameState.Progressed;
+		Profile = profile;
 
 		if (currentFrame.X != column)
 		{
@@ -66,6 +70,27 @@ public partial class Scarabeus : ModNPC
 
 		return result;
 	}
+
+	/*private FrameState UpdateFrame(int column, int startFrame, int framesPerSecond, VisualProfile profile, bool loop = true)
+	{
+		bool reversed = framesPerSecond < 0;
+
+		if (reversed && currentFrame.Y > startFrame)
+			currentFrame.Y = startFrame;
+		else if (!reversed && currentFrame.Y < startFrame)
+			currentFrame.Y = startFrame;
+
+		return UpdateFrame(column, framesPerSecond, profile, loop);
+	}*/
+
+	private void SetFrame(int column, int row, VisualProfile profile)
+	{
+		Profile = profile;
+		currentFrame = new(column, row);
+	}
+
+	private void SetFrame(Point frame, VisualProfile profile) => SetFrame(frame.X, frame.Y, profile);
+	#endregion
 
 	public override void FindFrame(int frameHeight)
 	{

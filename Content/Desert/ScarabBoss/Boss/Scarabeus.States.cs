@@ -40,7 +40,7 @@ public partial class Scarabeus : ModNPC
 			if (NPC.velocity.Y == 0) //Landed
 			{
 				NPC.FaceTarget();
-				UpdateFrame(6, 12, false);
+				UpdateFrame(6, 12, PhaseOneProfile, false);
 				NPC.rotation = 0;
 
 				if (!Main.dedServ)
@@ -48,7 +48,7 @@ public partial class Scarabeus : ModNPC
 			}
 			else
 			{
-				currentFrame = DigFrame;
+				SetFrame(DigFrame, PhaseOneProfile);
 				NPC.rotation += 0.3f * NPC.direction;
 			}
 		}
@@ -147,7 +147,7 @@ public partial class Scarabeus : ModNPC
 		}
 
 		float fps = Math.Min(NPC.velocity.X * 5, 12) * NPC.direction;
-		UpdateFrame(1, (int)fps);
+		UpdateFrame(1, (int)fps, PhaseOneProfile);
 
 		/*
 		 * Todo:
@@ -177,7 +177,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = false;
 
 		NPC.velocity.X *= 0.5f;
-		FrameState state = UpdateFrame(2, 12, false);
+		FrameState state = UpdateFrame(2, 12, PhaseOneProfile, false);
 
 		if (currentFrame.Y is > 2 and < 7)
 			dealContactDamage = true;
@@ -194,7 +194,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = false;
 
 		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
-		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4);
+		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4, PhaseOneProfile);
 
 		if (Counter > skitter_time)
 			ChangeState(SelectRandomState());
@@ -219,7 +219,7 @@ public partial class Scarabeus : ModNPC
 					//Increase velocity if too far to reach player
 
 					NPC.velocity.X *= 0.8f;
-					UpdateFrame(3, (int)(6 * windup_time / 60f), false);
+					UpdateFrame(3, (int)(6 * windup_time / 60f), PhaseOneProfile, false);
 					NPC.FaceTarget();
 
 					if (Counter > windup_time)
@@ -234,7 +234,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: //Jump and land
-				currentFrame = new(0, 2);
+				SetFrame(0, 2, PhaseOneProfile);
 				dealContactDamage = true;
 				NPC.noTileCollide = NPC.velocity.Y < 0;
 
@@ -257,7 +257,7 @@ public partial class Scarabeus : ModNPC
 			case 2: //Recover
 				NPC.velocity.X = 0;
 
-				if (UpdateFrame(6, (int)(15 * rest_time / 60f), false) == FrameState.Stopped)
+				if (UpdateFrame(6, (int)(15 * rest_time / 60f), PhaseOneProfile, false) == FrameState.Stopped)
 					ChangeState(SelectRandomState());
 
 				break;
@@ -283,7 +283,7 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.FaceTarget();
 
-			if (UpdateFrame(3, 12, false) == FrameState.Stopped)
+			if (UpdateFrame(3, 12, PhaseOneProfile, false) == FrameState.Stopped)
 			{
 				dashState++;
 				Counter = 0;
@@ -299,7 +299,7 @@ public partial class Scarabeus : ModNPC
 		}
 		else if (Counter > dash_time) //Skid to a stop
 		{
-			currentFrame = new(0, 1);
+			SetFrame(0, 1, PhaseOneProfile);
 			NPC.rotation = 0;
 			NPC.velocity.X *= 0.94f;
 
@@ -326,7 +326,7 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.X = NPC.direction * 28;
 			NPC.rotation += 0.3f * NPC.spriteDirection;
 
-			currentFrame = DigFrame;
+			SetFrame(DigFrame, PhaseOneProfile);
 			showTrail = true;
 			dealContactDamage = true;
 			//sfx here
@@ -348,7 +348,7 @@ public partial class Scarabeus : ModNPC
 		if (Counter == 0)
 			NPC.FaceTarget();
 
-		UpdateFrame(7, (int)(Profile.GetFrameCount(7) * 60f / duration));
+		UpdateFrame(7, (int)(Profile.GetFrameCount(7) * 60f / duration), PhaseOneProfile);
 
 		if (Counter == (int)(duration * 0.6f))
 		{
@@ -383,7 +383,7 @@ public partial class Scarabeus : ModNPC
 
 		if (jumpState < max_bounces)
 		{
-			currentFrame = DigFrame;
+			SetFrame(DigFrame, PhaseOneProfile);
 			dealContactDamage = true;
 
 			//Check if grounded
@@ -455,7 +455,7 @@ public partial class Scarabeus : ModNPC
 		}
 		else //rest before next attack
 		{
-			UpdateFrame(4, (int)(8 * rest_time / 60f), false);
+			UpdateFrame(4, (int)(8 * rest_time / 60f), PhaseOneProfile, false);
 
 			if (currentFrame.Y < 7)
 				currentFrame.Y = 7;
@@ -493,7 +493,7 @@ public partial class Scarabeus : ModNPC
 		switch (digState)
 		{
 			case 0: //Prepare and leap
-				if (UpdateFrame(3, 12, false) == FrameState.Stopped)
+				if (UpdateFrame(3, 12, PhaseOneProfile, false) == FrameState.Stopped)
 				{
 					NPC.velocity.Y -= 4;
 					NPC.velocity.X = NPC.direction * 4;
@@ -508,7 +508,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: //Fall into the ground
-				currentFrame = new(0, 6);
+				SetFrame(0, 6, PhaseOneProfile);
 
 				NPC.rotation = NPC.velocity.Y * 0.04f * NPC.direction;
 				NPC.velocity.Y += 0.5f;
@@ -573,7 +573,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 3: //Emerge and land
-				currentFrame = DigFrame;
+				SetFrame(DigFrame, PhaseOneProfile);
 				NPC.rotation += 0.3f * NPC.direction;
 				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
 				NPC.velocity.X *= 0.9f;
@@ -585,7 +585,7 @@ public partial class Scarabeus : ModNPC
 					if (NPC.velocity.Y == 0) //Land
 					{
 						ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
-						currentFrame = DigFrame;
+						SetFrame(DigFrame, PhaseOneProfile);
 
 						return;
 					}
@@ -607,7 +607,7 @@ public partial class Scarabeus : ModNPC
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
 
-		UpdateFrame(2, 12, true);
+		UpdateFrame(2, 12, PhaseTwoProfile);
 
 		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
 
@@ -666,7 +666,7 @@ public partial class Scarabeus : ModNPC
 		ref float dashRotation = ref NPC.ai[2];
 		ref float dashState = ref NPC.ai[3];
 
-		UpdateFrame(2, 12);
+		UpdateFrame(2, 12, PhaseTwoProfile);
 		NPC.noTileCollide = true;
 		dealContactDamage = true;
 		bool inRange = NPC.DistanceSQ(Target.Center) < 350 * 350;
@@ -680,7 +680,7 @@ public partial class Scarabeus : ModNPC
 				Counter = idle_time + 1;
 			}
 
-			currentFrame = new(0, 2);
+			SetFrame(0, 2, PhaseTwoProfile);
 			showTrail = true;
 
 			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
@@ -720,15 +720,12 @@ public partial class Scarabeus : ModNPC
 		if (jumpState > 3) //Final bounce
 		{
 			if (currentFrame == DigFrame) //One-time effects
-			{
-				Profile = PhaseTwoProfile;
-				currentFrame = new(3, Profile.GetFrameCount(3) - 1);
-			}
+				SetFrame(3, PhaseTwoProfile.GetFrameCount(3) - 1, PhaseTwoProfile);
 
 			NPC.velocity *= 0.95f;
 			NPC.rotation = 0;
 
-			if (UpdateFrame(3, -12, false) == FrameState.Stopped)
+			if (UpdateFrame(3, -12, PhaseTwoProfile, false) == FrameState.Stopped)
 				ChangeState(FlyHover);
 		}
 		else if (jumpState == 0) //Line up with Target
@@ -746,7 +743,7 @@ public partial class Scarabeus : ModNPC
 				jumpState++;
 			}
 
-			UpdateFrame(2, 12);
+			UpdateFrame(2, 12, PhaseTwoProfile);
 
 			if (Math.Abs(Target.Center.X - NPC.Center.X) > 50)
 				NPC.FaceTarget();
@@ -756,8 +753,8 @@ public partial class Scarabeus : ModNPC
 		else //Fall
 		{
 			if (Profile == PhaseOneProfile)
-				currentFrame = DigFrame;
-			else if (UpdateFrame(3, 12, false) == FrameState.Stopped)
+				SetFrame(DigFrame, PhaseOneProfile);
+			else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
 				Profile = PhaseOneProfile;
 
 			if (NPC.velocity.Y == 0 && Collision.SolidCollision(NPC.position, NPC.width, NPC.height + 2)) //Collide
@@ -807,11 +804,8 @@ public partial class Scarabeus : ModNPC
 
 		if (groundState == 0 && jumpState == 1) //Fall into the ground
 		{
-			if (Profile != PhaseOneProfile && UpdateFrame(3, 12, false) == FrameState.Stopped)
-			{
-				Profile = PhaseOneProfile;
-				currentFrame = DigFrame;
-			}
+			if (Profile != PhaseOneProfile && UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+				SetFrame(DigFrame, PhaseOneProfile);
 
 			NPC.velocity.Y = Math.Min(NPC.velocity.Y + 0.4f, 24);
 
@@ -865,7 +859,7 @@ public partial class Scarabeus : ModNPC
 
 			if (Counter > underground_time) //Reemerge
 			{
-				currentFrame = new Point(0, 2);
+				SetFrame(0, 2, PhaseOneProfile);
 				Counter = 0;
 
 				NPC.FaceTarget();
@@ -923,7 +917,7 @@ public partial class Scarabeus : ModNPC
 
 		NPC.velocity *= 0.95f;
 		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * 3 * Counter / attackEndTime) / 10;
-		UpdateFrame(1, 12);
+		UpdateFrame(1, 12, PhaseTwoProfile);
 
 		if (Counter == attack_start_time)
 		{
