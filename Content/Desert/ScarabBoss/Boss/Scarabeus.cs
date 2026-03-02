@@ -1,9 +1,9 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.Bestiary;
+using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -29,6 +29,7 @@ public partial class Scarabeus : ModNPC
 
 	public Player Target => Main.player[NPC.target];
 	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
+	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
 
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
@@ -73,6 +74,7 @@ public partial class Scarabeus : ModNPC
 			Skitter,
 			HornSwipe,
 			Leap,
+			TraversalLeap,
 			RollDash,
 			GroundedSlam,
 			Dig,
@@ -128,9 +130,6 @@ public partial class Scarabeus : ModNPC
 
 		_states[CurrentState].Invoke();
 		Counter++;
-
-		if (!NPC.noGravity && !NPC.noTileCollide)
-			NPC.Step();
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -240,92 +239,4 @@ public partial class Scarabeus : ModNPC
 		NPC.rotation = 0;
 		currentFrame.Y = 0;
 	}
-
-	#region helpers
-	private Action SelectRandomState()
-	{
-		List<Action> availablePatterns = [];
-
-		Action[] phase1standard = [Walking, Leap];
-		Action[] phase1strong = [Dig, GroundedSlam, RollDash];
-
-		Action[] phase2standard = [FlyHover, FlyingDash];
-		Action[] phase2strong = [ChainGroundPound, LeapDig, ScarabSwarm];
-
-		if (phaseTwo)
-		{
-			availablePatterns.AddRange(phase2standard);
-			availablePatterns.AddRange(phase2strong);
-		}
-		else
-		{
-			availablePatterns.AddRange(phase1standard);
-			availablePatterns.AddRange(phase1strong);
-		}
-
-		//Prune the current attack and attacks that shouldn't be used
-		List<Action> temp = [];
-
-		for (int i = 0; i < availablePatterns.ToArray().Length; i++)
-		{
-			if (availablePatterns[i] != _states[CurrentState] && IsStateValid(availablePatterns[i]))
-				temp.Add(availablePatterns[i]);
-		}
-
-		//Set a random attack from the remainders
-		return Main.rand.NextFromCollection(temp);
-	}
-
-	/// <summary> Checks if the given attack is viable for random selection, given the current position of the boss and terrain around it </summary>
-	private bool IsStateValid(Action state)
-	{
-		if (state == Walking)
-			return CurrentState != Array.IndexOf(_states, Skitter);
-		else if (state == Leap)
-			return NPC.Distance(Target.Center) > 160;
-		else if (state == RollDash)
-			return Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48;
-		else if (state == GroundedSlam)
-			return Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false);
-		else if (state == Dig)
-			return Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false) && CurrentState != Array.IndexOf(_states, BounceGroundPound);
-		else if (state == LeapDig)
-			return !Collision.SolidTiles(NPC.position, NPC.width, NPC.height);
-
-		return true;
-	}
-
-	/// <summary> From a given input, translates the input to the surfacemost tile on the ground. <br/>
-	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
-	private static Vector2 FindGroundFromPosition(Vector2 input)
-	{
-		const int dimensions = 8;
-
-		while (!Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
-			input.Y += dimensions;
-
-		while (Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
-			input.Y -= dimensions;
-
-		return input + new Vector2(0, dimensions);
-	}
-
-	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
-	{
-		for (int j = -1; j <= 1; j += 2)
-			BouncingTileWave(j, numTiles, maxHeight, totalTime, offset);
-
-		ParticleHandler.SpawnParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
-	}
-
-	private void BouncingTileWave(int direction, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
-	{
-		for (float i = 0; i < numTiles; i++)
-		{
-			float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));
-			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
-		}
-	}
-	#endregion
 }

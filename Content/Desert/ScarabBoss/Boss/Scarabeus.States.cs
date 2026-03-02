@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
@@ -37,7 +38,7 @@ public partial class Scarabeus : ModNPC
 				NPC.Opacity = 1;
 			}
 
-			if (NPC.velocity.Y == 0) //Landed
+			if (Grounded) //Landed
 			{
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);
@@ -123,8 +124,7 @@ public partial class Scarabeus : ModNPC
 			return;
 		}
 
-		//Check if grounded
-		if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
+		if (Grounded) //Check if grounded
 		{
 			if (DetermineGap() && ++jumpTimer > 15) // Jump over gaps if needed
 			{
@@ -144,20 +144,15 @@ public partial class Scarabeus : ModNPC
 				if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(50))
 					ChangeState(HornSwipe);
 			}
+
+			NPC.Step();
 		}
 
 		float fps = Math.Min(NPC.velocity.X * 5, 12) * NPC.direction;
 		UpdateFrame(1, (int)fps, PhaseOneProfile);
 
-		/*
-		 * Todo:
-		 * Adjust movement to feel more natural
-		 * Leap if too far or can't traverse terrain and a leap would reach the player (Pits, height differences)
-		 * Dig if too far or can't traverse terrain and a leap wouldn't reach player (Collision)
-		 */
-
 		if (Counter > max_walk_time)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 
 	/// <summary> Determines if this NPC, while moving, is approaching a gap that requires jumping over. </summary>
@@ -183,7 +178,7 @@ public partial class Scarabeus : ModNPC
 			dealContactDamage = true;
 
 		if (state == FrameState.Stopped)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 
 	public void Skitter()
@@ -192,39 +187,38 @@ public partial class Scarabeus : ModNPC
 
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
-
 		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
+		NPC.Step();
+
 		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4, PhaseOneProfile);
 
 		if (Counter > skitter_time)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 
 	public void Leap()
 	{
-		const int rest_time = 45;
-
 		ref float jumpState = ref NPC.ai[2];
 
 		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
+		NPC.GravityMultiplier *= 2;
 
 		switch (jumpState)
 		{
 			case 0: //Prepare for a jump
-				if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0) //Check if grounded
+				if (Grounded) //Check if grounded
 				{
-					//Slow down for a bit, then calculate mortar velocity to jump towards player
-					//Increase velocity if too far to reach player
-
 					NPC.velocity.X *= 0.8f;
 					NPC.FaceTarget();
 
-					if (UpdateFrame(3, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
+					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
 					{
 						Vector2 desiredPos = Target.Center + Target.velocity + NPC.direction * 112 * Vector2.UnitX;
-						NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 15, true);
+						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, 15, true);
+						NPC.noTileCollide = true;
 
+						Counter = 0;
 						jumpState++;
 					}
 				}
@@ -232,23 +226,20 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: //Jump and land
-				bool falling = NPC.velocity.Y > 0;
-				SetFrame(0, falling ? 3 : 2, PhaseOneProfile);
+				SetFrame(0, 2, PhaseOneProfile);
 				dealContactDamage = true;
 
-				NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 * (falling ? -1 : 1);
+				NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
 				NPC.noTileCollide = NPC.velocity.Y < 0;
 
-				if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0) //Land
+				if (Grounded) //Land
 				{
 					NPC.rotation = 0;
-					Counter = 0;
 					jumpState++;
-					//vfx and sfx and shockwaves here
 
 					if (!Main.dedServ)
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(2, 2), 4, 2, 15, -1, "ScarabLanding"));
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
 						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					}
 				}
@@ -256,12 +247,13 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 2: //Recover
-				NPC.velocity.X = 0;
+				NPC.noTileCollide = false;
+				NPC.velocity.X *= 0.9f;
 
-				if (UpdateFrame(6, (int)(15 * rest_time / 60f), PhaseOneProfile, false) == FrameState.Stopped)
+				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
-					ChangeState(SelectRandomState());
+					ChangeState(SelectWeightedState());
 				}
 
 				break;
@@ -271,6 +263,69 @@ public partial class Scarabeus : ModNPC
 		 * Todo:
 		 * Phase through some tiles but avoid phasing through a wall, use primarily for closing vertical gaps, pits, and walls
 		 */
+	}
+
+	public void TraversalLeap()
+	{
+		ref float jumpState = ref NPC.ai[2];
+
+		NPC.knockBackResist = 0f;
+		NPC.noGravity = false;
+		NPC.GravityMultiplier *= 2;
+
+		switch (jumpState)
+		{
+			case 0: //Prepare for a jump
+				if (Grounded) //Check if grounded
+				{
+					NPC.velocity.X *= 0.8f;
+					NPC.FaceTarget();
+
+					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
+					{
+						Vector2 desiredPos = Target.Center;
+						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Max(15, (NPC.Center.Y - desiredPos.Y) / 18f), true);
+						NPC.noTileCollide = true;
+
+						jumpState++;
+					}
+				}
+
+				break;
+
+			case 1: //Jump and land
+				SetFrame(0, 2, PhaseOneProfile);
+				dealContactDamage = true;
+
+				NPC.noTileCollide = NPC.velocity.Y < 0;
+
+				if (Grounded) //Land
+				{
+					Counter = 0;
+					jumpState++;
+					//vfx and sfx and shockwaves here
+
+					if (!Main.dedServ)
+					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
+						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+					}
+				}
+
+				break;
+
+			case 2: //Recover
+				NPC.noTileCollide = false;
+				NPC.velocity.X *= 0.9f;
+
+				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
+				{
+					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
+					ChangeState(SelectWeightedState());
+				}
+
+				break;
+		}
 	}
 
 	public void RollDash()
@@ -285,6 +340,7 @@ public partial class Scarabeus : ModNPC
 
 		if (dashState == 0) //Prepare for a roll
 		{
+			NPC.velocity.X *= 0.8f;
 			NPC.FaceTarget();
 
 			if (UpdateFrame(3, 12, PhaseOneProfile, false) == FrameState.Stopped)
@@ -329,6 +385,7 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.velocity.X = NPC.direction * 28;
 			NPC.rotation += 0.3f * NPC.spriteDirection;
+			NPC.Step();
 
 			SetFrame(DigFrame, PhaseOneProfile);
 			showTrail = true;
@@ -347,6 +404,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 		NPC.knockBackResist = 0f;
+		NPC.velocity.X *= 0.8f;
 
 		if (Counter < 5)
 			NPC.FaceTarget();
@@ -366,7 +424,7 @@ public partial class Scarabeus : ModNPC
 		}
 
 		if (Counter > duration)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 
 	public void BounceGroundPound()
@@ -390,17 +448,16 @@ public partial class Scarabeus : ModNPC
 			dealContactDamage = true;
 
 			//Check if grounded
-			if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y >= 0)
+			if (Grounded)
 			{
 				jumpState++;
 				NPC.velocity.Y = -16;
 				NPC.FaceTarget();
 
-				if (Main.netMode != NetmodeID.Server)
+				if (!Main.dedServ)
 				{
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.UnitY, 2, 3, 15, 800));
-
-					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, 6), NPC.width, 10);
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 2, 3, 15, 800));
+					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 				}
 			}
 			else
@@ -470,7 +527,7 @@ public partial class Scarabeus : ModNPC
 			isGravityAllowed = false;
 
 			if (Counter > final_bounce_track_time + air_pause_time + rest_time)
-				ChangeState(SelectRandomState());
+				ChangeState(SelectWeightedState());
 		}
 
 		if (isGravityAllowed)
@@ -587,7 +644,7 @@ public partial class Scarabeus : ModNPC
 				{
 					NPC.noTileCollide = false;
 
-					if (NPC.velocity.Y == 0) //Land
+					if (Grounded) //Land
 					{
 						ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
 						SetFrame(DigFrame, PhaseOneProfile);
@@ -659,7 +716,7 @@ public partial class Scarabeus : ModNPC
 		NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
 
 		if (Counter > hover_time)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 
 	public void FlyingDash()
@@ -762,7 +819,7 @@ public partial class Scarabeus : ModNPC
 			else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
 				Profile = PhaseOneProfile;
 
-			if (NPC.collideY) //Collide
+			if (Grounded) //Collide
 			{
 				if (!Main.dedServ)
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 9, 15));
@@ -890,7 +947,7 @@ public partial class Scarabeus : ModNPC
 			if (Counter > rest_time)
 			{
 				Profile = PhaseTwoProfile;
-				ChangeState(SelectRandomState());
+				ChangeState(SelectWeightedState());
 			}
 		}
 	}
@@ -950,7 +1007,7 @@ public partial class Scarabeus : ModNPC
 		}
 
 		if (Counter > attackEndTime)
-			ChangeState(SelectRandomState());
+			ChangeState(SelectWeightedState());
 	}
 	#endregion
 }
