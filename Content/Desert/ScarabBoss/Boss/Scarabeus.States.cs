@@ -202,7 +202,6 @@ public partial class Scarabeus : ModNPC
 
 	public void Leap()
 	{
-		const int windup_time = 40;
 		const int rest_time = 45;
 
 		ref float jumpState = ref NPC.ai[2];
@@ -219,12 +218,11 @@ public partial class Scarabeus : ModNPC
 					//Increase velocity if too far to reach player
 
 					NPC.velocity.X *= 0.8f;
-					UpdateFrame(3, (int)(6 * windup_time / 60f), PhaseOneProfile, false);
 					NPC.FaceTarget();
 
-					if (Counter > windup_time)
+					if (UpdateFrame(3, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
 					{
-						Vector2 desiredPos = Target.Center + Target.velocity * 6 + NPC.direction * 112 * Vector2.UnitX;
+						Vector2 desiredPos = Target.Center + Target.velocity + NPC.direction * 112 * Vector2.UnitX;
 						NPC.velocity = NPC.GetArcVel(desiredPos, 0.38f, 15, true);
 
 						jumpState++;
@@ -234,12 +232,16 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: //Jump and land
-				SetFrame(0, 2, PhaseOneProfile);
+				bool falling = NPC.velocity.Y > 0;
+				SetFrame(0, falling ? 3 : 2, PhaseOneProfile);
 				dealContactDamage = true;
+
+				NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 * (falling ? -1 : 1);
 				NPC.noTileCollide = NPC.velocity.Y < 0;
 
 				if (NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 0) //Land
 				{
+					NPC.rotation = 0;
 					Counter = 0;
 					jumpState++;
 					//vfx and sfx and shockwaves here
@@ -247,7 +249,6 @@ public partial class Scarabeus : ModNPC
 					if (!Main.dedServ)
 					{
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(2, 2), 4, 2, 15, -1, "ScarabLanding"));
-
 						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					}
 				}
@@ -258,7 +259,10 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.X = 0;
 
 				if (UpdateFrame(6, (int)(15 * rest_time / 60f), PhaseOneProfile, false) == FrameState.Stopped)
+				{
+					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
 					ChangeState(SelectRandomState());
+				}
 
 				break;
 		}
@@ -299,7 +303,7 @@ public partial class Scarabeus : ModNPC
 		}
 		else if (Counter > dash_time) //Skid to a stop
 		{
-			SetFrame(0, 1, PhaseOneProfile);
+			SetFrame(0, 6, PhaseOneProfile);
 			NPC.rotation = 0;
 			NPC.velocity.X *= 0.94f;
 
@@ -344,8 +348,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = false;
 		NPC.knockBackResist = 0f;
 
-		//Flip direction only on first frame
-		if (Counter == 0)
+		if (Counter < 5)
 			NPC.FaceTarget();
 
 		UpdateFrame(7, (int)(Profile.GetFrameCount(7) * 60f / duration), PhaseOneProfile);
@@ -460,9 +463,11 @@ public partial class Scarabeus : ModNPC
 			if (currentFrame.Y < 7)
 				currentFrame.Y = 7;
 
+			NPC.velocity *= 0.5f;
 			NPC.rotation = 0;
-			isGravityAllowed = false;
 			NPC.noGravity = false;
+
+			isGravityAllowed = false;
 
 			if (Counter > final_bounce_track_time + air_pause_time + rest_time)
 				ChangeState(SelectRandomState());
@@ -508,7 +513,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: //Fall into the ground
-				SetFrame(0, 6, PhaseOneProfile);
+				SetFrame(0, 1, PhaseOneProfile);
 
 				NPC.rotation = NPC.velocity.Y * 0.04f * NPC.direction;
 				NPC.velocity.Y += 0.5f;
