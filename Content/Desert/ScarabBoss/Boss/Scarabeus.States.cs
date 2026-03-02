@@ -762,7 +762,7 @@ public partial class Scarabeus : ModNPC
 			else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
 				Profile = PhaseOneProfile;
 
-			if (NPC.velocity.Y == 0 && Collision.SolidCollision(NPC.position, NPC.width, NPC.height + 2)) //Collide
+			if (NPC.collideY) //Collide
 			{
 				if (!Main.dedServ)
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 9, 15));
