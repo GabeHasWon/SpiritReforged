@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using Microsoft.CodeAnalysis.Text;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
@@ -10,6 +11,7 @@ public partial class Scarabeus : ModNPC
 	public readonly record struct VisualProfile
 	{
 		public readonly Asset<Texture2D> Texture;
+		public readonly Asset<Texture2D> SheenMask;
 		public readonly int Rows;
 		private readonly int[] FrameCount;
 
@@ -17,9 +19,10 @@ public partial class Scarabeus : ModNPC
 		/// <summary> Safely gets the number of frames in the provided column. </summary>
 		public readonly int GetFrameCount(int column) => (column >= Columns || column < 0) ? 0 : FrameCount[column];
 
-		public VisualProfile(Asset<Texture2D> Texture, int[] FrameCount)
+		public VisualProfile(Asset<Texture2D> Texture, Asset<Texture2D> SheenMask, int[] FrameCount)
 		{
 			this.Texture = Texture;
+			this.SheenMask = SheenMask;
 			this.FrameCount = FrameCount;
 			Rows = FrameCount.OrderBy(static x => x).Last();
 		}
@@ -125,7 +128,18 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
+		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+		sheenShader.Parameters["resolution"].SetValue(texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
+		FlipShadersOnOff(spriteBatch, sheenShader, true);
+
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
+
+		FlipShadersOnOff(spriteBatch, null, false);
 
 		if (Profile == PhaseTwoProfile)
 		{
@@ -137,5 +151,26 @@ public partial class Scarabeus : ModNPC
 		}
 
 		return false;
+	}
+
+	public void FlipShadersOnOff(SpriteBatch spriteBatch, Effect effect, bool immediate)
+	{
+		if (NPC.IsABestiaryIconDummy)
+		{
+			RasterizerState priorRasterizer = spriteBatch.GraphicsDevice.RasterizerState;
+			Rectangle priorScissorRectangle = spriteBatch.GraphicsDevice.ScissorRectangle;
+			spriteBatch.End();
+			spriteBatch.GraphicsDevice.RasterizerState = priorRasterizer;
+			spriteBatch.GraphicsDevice.ScissorRectangle = priorScissorRectangle;
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, priorRasterizer, effect, Main.UIScaleMatrix);
+		}
+		else
+		{
+			spriteBatch.End();
+			SpriteSortMode sortMode = SpriteSortMode.Deferred;
+			if (immediate)
+				sortMode = SpriteSortMode.Immediate;
+			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+		}
 	}
 }
