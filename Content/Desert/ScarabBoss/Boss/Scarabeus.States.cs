@@ -82,14 +82,15 @@ public partial class Scarabeus : ModNPC
 				for (int i = 0; i < Main.rand.Next(4); i++)
 				{
 					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
+					Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(Main.rand.NextVector2FromRectangle(area), particleVel, new Color(223, 219, 147) * 2f, Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+					ParticleHandler.SpawnParticle(new SmokeCloud(Main.rand.NextVector2FromRectangle(area), particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
 						Intensity = 0.9f,
-						SecondaryColor = new Color(188, 170, 86) * 1.33f,
-						TertiaryColor = new Color(58, 49, 18) * 0.5f,
+						SecondaryColor = colors[1],
+						TertiaryColor = colors[2],
 						PixelDivisor = 3,
 						Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
 						ColorLerpExponent = 0.5f,
@@ -360,16 +361,17 @@ public partial class Scarabeus : ModNPC
 			if (Math.Sign(NPC.velocity.X) is int newDirection && newDirection != 0)
 				NPC.direction = -newDirection;
 
-			if (Math.Abs(NPC.velocity.X) > 1 && !Main.dedServ && Main.rand.NextBool())
+			if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 1 && Main.rand.NextBool())
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+				Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
+					SecondaryColor = colors[1],
+					TertiaryColor = colors[2],
 					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f
+					ColorLerpExponent = 0.5f
 				});
 
 				Dust.NewDust(NPC.BottomLeft, NPC.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
@@ -592,14 +594,15 @@ public partial class Scarabeus : ModNPC
 						particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
 
 						Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
+						Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
 
-						ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, new Color(223, 219, 147) * 2f, Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+						ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 						{
 							Pixellate = true,
 							DissolveAmount = 1,
 							Intensity = 0.9f,
-							SecondaryColor = new Color(188, 170, 86) * 1.33f,
-							TertiaryColor = new Color(58, 49, 18) * 0.5f,
+							SecondaryColor = colors[1],
+							TertiaryColor = colors[2],
 							PixelDivisor = 3,
 							Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
 							ColorLerpExponent = 0.5f,
@@ -885,12 +888,13 @@ public partial class Scarabeus : ModNPC
 
 			if (Main.rand.NextBool(4) && !Main.dedServ)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, Color.LightGoldenrodYellow, Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30)
+				Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, colors[0], Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30)
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
+					SecondaryColor = colors[1],
+					TertiaryColor = colors[2],
 					PixelDivisor = 3,
 					ColorLerpExponent = 0.5f,
 					Layer = ParticleLayer.BelowSolid

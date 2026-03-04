@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Text;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
