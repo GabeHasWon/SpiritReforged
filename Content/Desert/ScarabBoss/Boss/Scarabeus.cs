@@ -1,9 +1,7 @@
-﻿using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.Bestiary;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -155,20 +153,18 @@ public partial class Scarabeus : ModNPC
 			//for (int i = 1; i <= 7; i++)
 			//	Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
 
-			NPC.position += NPC.Size / 2;
-			NPC.Size = new Vector2(100, 60);
-			NPC.position -= NPC.Size / 2;
+			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
 			for (int i = 0; i < 30; i++)
-				Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
 
 			for (int j = 0; j < 50; j++)
 			{
-				var dust = Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 1f);
+				var dust = Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 1f);
 				dust.velocity *= 5f;
 				dust.noGravity = true;
 
-				Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, .82f).velocity *= 2f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, .82f).velocity *= 2f;
 			}
 		}
 	}

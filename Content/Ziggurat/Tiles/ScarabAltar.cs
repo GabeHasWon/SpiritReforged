@@ -16,11 +16,37 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 {
+	public sealed class LightShaderData(Asset<Effect> shader, string passName) : ScreenShaderData(shader, passName)
+	{
+		public override void Update(GameTime gameTime)
+		{
+			//Taken from sepia dst screenshader
+			float screenPositionInTiles = (Main.screenPosition.Y + Main.screenHeight / 2f) / 16f;
+			//Calculates how much on the surface we are
+			float surfaceValue = 1f - Utils.SmoothStep((float)Main.worldSurface, (float)Main.worldSurface + 30f, screenPositionInTiles);
+			Vector2 midnightDirection = Utils.GetDayTimeAsDirectionIn24HClock(0f);
+
+			//Use the dot product between clock hand directions to find if its night or not and have a smooth transition
+			//Then multiply the "surface value" by it so that during the night , surface is 0 as if we were undeground
+			surfaceValue *= 1 - Utils.SmoothStep(0.2f, 0.4f, Vector2.Dot(midnightDirection, Utils.GetDayTimeAsDirectionIn24HClock()));
+
+			//Lower opacity when on surface at day
+			UseProgress(1 - surfaceValue * 0.7f);
+		}
+
+		public override void Apply()
+		{
+			base.Apply();
+		}
+	}
+
 	#region projectiles
 	public sealed class FloatingGem : ModProjectile
 	{
@@ -130,6 +156,21 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		private bool _justSpawned = true;
 		private bool _spawnedBoss = false;
 
+		public override void Load()
+		{
+			if (!Main.dedServ)
+			{
+				const string name = "SpiritReforged:LightShaderData";
+				Filters.Scene[name] = new Filter(
+					new LightShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/LightFilter"), "LightFilterPass")
+					.UseColor(new Color(100, 100, 100))
+					.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/noiseCrystal"))
+					, EffectPriority.High);
+
+				Filters.Scene[name].Load();
+			}
+		}
+
 		public override void SetDefaults()
 		{
 			Projectile.Size = new(16);
@@ -170,6 +211,22 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			}
 			else
 			{
+				if (!Main.dedServ)
+				{
+					if (Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
+					{
+						var shader = Filters.Scene["SpiritReforged:LightShaderData"].GetShader();
+						float power = Math.Min(Projectile.timeLeft / 20f, 1);
+
+						shader.UseOpacity(power);
+						shader.UseIntensity(power / 3);
+					}
+					else
+					{
+						Filters.Scene.Activate("SpiritReforged:LightShaderData");
+					}
+				}
+
 				if (Main.rand.NextBool(3))
 				{
 					float progress = (float)(Projectile.timeLeft / (float)TimeLeftMax);
@@ -198,6 +255,12 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 				_spawnedBoss = true;
 			}
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			if (!Main.dedServ && Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
+				Filters.Scene.Deactivate("SpiritReforged:LightShaderData");
 		}
 
 		public override bool? CanDamage() => false;
