@@ -115,7 +115,6 @@ public partial class Scarabeus : ModNPC
 		ref float digTimer = ref NPC.ai[2];
 		ref float jumpTimer = ref NPC.ai[3];
 
-		NPC.knockBackResist = 0.7f;
 		NPC.FaceTarget();
 
 		if (NPC.velocity == Vector2.Zero && ++digTimer > 30)
@@ -168,9 +167,7 @@ public partial class Scarabeus : ModNPC
 
 	public void HornSwipe()
 	{
-		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
-
 		NPC.velocity.X *= 0.5f;
 		FrameState state = UpdateFrame(2, 12, PhaseOneProfile, false);
 
@@ -185,7 +182,6 @@ public partial class Scarabeus : ModNPC
 	{
 		const int skitter_time = 40;
 
-		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
 		NPC.Step();
@@ -200,7 +196,6 @@ public partial class Scarabeus : ModNPC
 	{
 		ref float jumpState = ref NPC.ai[2];
 
-		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		NPC.GravityMultiplier *= 2;
 
@@ -269,7 +264,6 @@ public partial class Scarabeus : ModNPC
 	{
 		ref float jumpState = ref NPC.ai[2];
 
-		NPC.knockBackResist = 0f;
 		NPC.noGravity = false;
 		NPC.GravityMultiplier *= 2;
 
@@ -403,7 +397,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
-		NPC.knockBackResist = 0f;
 		NPC.velocity.X *= 0.8f;
 
 		if (Counter < 5)
@@ -440,7 +433,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noTileCollide = false;
 		NPC.noGravity = true;
-		NPC.knockBackResist = 0f;
 
 		if (jumpState < max_bounces)
 		{
@@ -665,7 +657,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
-		NPC.knockBackResist = 0.7f;
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
 
@@ -855,7 +846,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
-		NPC.knockBackResist = 0;
 		NPC.behindTiles = true;
 
 		if (jumpState == 0) //Jump up
@@ -967,7 +957,6 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
-		NPC.knockBackResist = 0f;
 
 		//attack start
 		if (Counter == 0)
