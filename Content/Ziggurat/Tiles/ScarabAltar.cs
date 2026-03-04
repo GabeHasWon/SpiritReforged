@@ -164,7 +164,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				Filters.Scene[name] = new Filter(
 					new LightShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/LightFilter"), "LightFilterPass")
 					.UseColor(new Color(100, 100, 100))
-					.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/noiseCrystal"))
+					.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/noiseCrystal2"))
 					, EffectPriority.High);
 
 				Filters.Scene[name].Load();
@@ -216,10 +216,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					if (Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
 					{
 						var shader = Filters.Scene["SpiritReforged:LightShaderData"].GetShader();
-						float power = Math.Min(Projectile.timeLeft / 20f, 1);
+						float power = Math.Min(((Counter - WaitTime < 20) ? Counter - WaitTime : Projectile.timeLeft) / 20f, 1);
 
 						shader.UseOpacity(power);
-						shader.UseIntensity(power / 3);
+						shader.UseIntensity(power / 2);
 					}
 					else
 					{

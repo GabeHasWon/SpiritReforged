@@ -111,6 +111,9 @@ public partial class Scarabeus : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
+		if (NPC.Opacity == 0)
+			return false;
+
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;

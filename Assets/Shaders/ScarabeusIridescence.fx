@@ -120,7 +120,7 @@ float4 MainPS(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     
     float iridescenceOpacity = sheenOpacityMultiplier + sin(time * 2) * 0.05;
     compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;      
-    return compositedColor;
+    return compositedColor * vertexColor;
 }
 
 technique BasicColorDrawing

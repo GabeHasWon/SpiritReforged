@@ -52,7 +52,7 @@ float3 hslToRGB(float h, float s, float l)
 float4 MainPS(float2 coords : TEXCOORD0) : COLOR0
 {
     float2 uv = coords;
-    float distanceToCenter = length(float2(0.5, 0.5) - uv) * 1.4142;
+    float distanceToCenter = length(float2(0.5, 0.5) - uv) * 1.3;
     
     float darknessMultiplier = uProgress;
     float intensity = uIntensity;
@@ -62,7 +62,7 @@ float4 MainPS(float2 coords : TEXCOORD0) : COLOR0
     float4 noiseColor = tex2D(noiseTex, uv);
 
     float vignette = pow(distanceToCenter, 5) * 10 * intensity;
-    color.rgb *= 1 + hslToRGB(noiseColor.w + (uTime / 10) % 1, 0.5, 0.5) * vignette;
+    color.rgb *= 1 + hslToRGB(noiseColor.r + (uTime / 10) % 1, 0.5, 0.5) * vignette;
     color *= 1 + vignette * (0.2 + 0.8 * darknessMultiplier);
 
     color.a = 1;
