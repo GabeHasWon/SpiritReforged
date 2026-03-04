@@ -27,23 +27,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	{
 		public override void Update(GameTime gameTime)
 		{
-			//Taken from sepia dst screenshader
 			float screenPositionInTiles = (Main.screenPosition.Y + Main.screenHeight / 2f) / 16f;
-			//Calculates how much on the surface we are
+
 			float surfaceValue = 1f - Utils.SmoothStep((float)Main.worldSurface, (float)Main.worldSurface + 30f, screenPositionInTiles);
 			Vector2 midnightDirection = Utils.GetDayTimeAsDirectionIn24HClock(0f);
-
-			//Use the dot product between clock hand directions to find if its night or not and have a smooth transition
-			//Then multiply the "surface value" by it so that during the night , surface is 0 as if we were undeground
 			surfaceValue *= 1 - Utils.SmoothStep(0.2f, 0.4f, Vector2.Dot(midnightDirection, Utils.GetDayTimeAsDirectionIn24HClock()));
 
-			//Lower opacity when on surface at day
 			UseProgress(1 - surfaceValue * 0.7f);
-		}
-
-		public override void Apply()
-		{
-			base.Apply();
 		}
 	}
 
@@ -142,6 +132,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	public sealed class BeamOLight : ModProjectile
 	{
+		public static readonly SoundStyle Anticipation = new("SpiritReforged/Assets/SFX/Tile/DissonantChime");
+
 		public override string Texture => AssetLoader.EmptyTexture;
 
 		public int TimeLeftMax
@@ -196,6 +188,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 				Projectile.timeLeft = TimeLeftMax;
 				_justSpawned = false;
+
+				SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
 			}
 
 			if (Projectile.timeLeft >= TimeLeftMax - WaitTime)
@@ -248,6 +242,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitY, 6, 2, 50));
 					ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, 0, Color.PaleVioletRed, 1, 20) { Velocity = -Vector2.UnitY });
+
+					for (int i = 0; i < 5; i++)
+						ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, -Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(0.2f, 1), Color.Goldenrod, Color.MediumPurple, Main.rand.NextFloat(0.2f, 0.5f), 150, 2));
 				}
 
 				if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
@@ -369,17 +366,20 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out int itemType) ? itemType : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
+		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
 	}
 
 	public override bool RightClick(int i, int j)
 	{
-		if (FindSacrifice(Main.LocalPlayer, out int itemType) && !NPC.AnyNPCs(ModContent.NPCType<Scarabeus>()) && Entity(i, j) is ScarabAltarEntity entity)
+		if (FindSacrifice(Main.LocalPlayer, out Item result) && !NPC.AnyNPCs(ModContent.NPCType<Scarabeus>()) && Entity(i, j) is ScarabAltarEntity entity)
 		{
+			if (--result.stack <= 0)
+				result.TurnToAir(); //Consume an item
+
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
 			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
-				ModContent.ProjectileType<FloatingGem>(), 0, 0, Main.myPlayer, itemType, entity.ID);
+				ModContent.ProjectileType<FloatingGem>(), 0, 0, Main.myPlayer, result.type, entity.ID);
 
 			return true;
 		}
@@ -387,11 +387,11 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		return false;
 	}
 
-	private static bool FindSacrifice(Player player, out int itemType)
+	private static bool FindSacrifice(Player player, out Item result)
 	{
 		if (!player.HeldItem.IsAir && SpiritSets.Gemstone[player.HeldItem.type])
 		{
-			itemType = player.HeldItem.type;
+			result = player.HeldItem;
 			return true;
 		}
 
@@ -399,12 +399,12 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		{
 			if (!item.IsAir && SpiritSets.Gemstone[item.type])
 			{
-				itemType = item.type;
+				result = item;
 				return true;
 			}
 		}
 
-		itemType = ItemID.None;
+		result = new(ItemID.None);
 		return false;
 	}
 

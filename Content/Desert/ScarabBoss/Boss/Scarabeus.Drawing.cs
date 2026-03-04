@@ -169,9 +169,7 @@ public partial class Scarabeus : ModNPC
 		else
 		{
 			spriteBatch.End();
-			SpriteSortMode sortMode = SpriteSortMode.Deferred;
-			if (immediate)
-				sortMode = SpriteSortMode.Immediate;
+			SpriteSortMode sortMode = immediate ? SpriteSortMode.Immediate : SpriteSortMode.Deferred;
 			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 		}
 	}
