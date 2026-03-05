@@ -7,7 +7,7 @@ public class AdornedBow : ModItem
 {
 	public override void SetDefaults()
 	{
-		Item.damage = 28;
+		Item.damage = 15;
 		Item.Size = new Vector2(48, 52);
 		Item.useTime = Item.useAnimation = 120;
 		Item.knockBack = 1f;

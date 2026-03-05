@@ -46,7 +46,7 @@ public class AdornedArrowHandler : GlobalProjectile
 
 			float progress = _flashTimer / 15f;
 
-			Color c = Color.Lerp(Color.LightYellow, Color.Orange, progress).Additive();
+			Color c = Color.Lerp(Color.LightGoldenrodYellow, Color.DarkCyan, 1f - progress).Additive();
 			float scale = 1f * progress;
 
 			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity.RotatedBy(-0.33f), c, scale, 40, 1, p => p.Velocity *= 0.9f));
@@ -73,12 +73,12 @@ public class AdornedArrowHandler : GlobalProjectile
 		Main.instance.LoadProjectile(ProjectileID.HallowBossRainbowStreak);
 
 		var defaultTexture = TextureAssets.Projectile[Projectile.type].Value;
-		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, new Color(255, 150, 255));
+		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.LightSkyBlue);
 		var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
 
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
-		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition, null, Color.DarkOrange with { A = 0 } * 0.33f, Projectile.rotation, bloom.Size() / 2, 0.35f, SpriteEffects.None);
+		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition, null, Color.DarkCyan with { A = 0 } * 0.33f, Projectile.rotation, bloom.Size() / 2, 0.35f, SpriteEffects.None);
 
 		for (int i = TrailLength - 1; i >= 0; i--)
 		{
@@ -88,10 +88,10 @@ public class AdornedArrowHandler : GlobalProjectile
 			var position = _oldPositions[i] - Main.screenPosition;
 			var scale = new Vector2(.5f * lerp, 1) * Projectile.scale;
 
-			Color fadeColor = Color.Lerp(Color.LightYellow, Color.Orange, lerp).Additive(50);
+			Color fadeColor = Color.Lerp(Color.LightSteelBlue, Color.DarkCyan, lerp).Additive(50);
 
 			if (_flashTimer > 0)
-				fadeColor = Color.Lerp(Color.DarkOrange, fadeColor, 1f - _flashTimer / 15f);
+				fadeColor = Color.Lerp(Color.LightYellow, fadeColor, 1f - _flashTimer / 15f);
 
 			if (i == 0)
 			{
@@ -127,7 +127,7 @@ public class AdornedArrowHandler : GlobalProjectile
 
 			float fade = EaseQuinticOut.Ease(_flashTimer / 15f);
 
-			Main.EntitySpriteDraw(star, Projectile.Center - Main.screenPosition, null, Color.Orange with { A = 0 } * fade, TwoPi * fade, star.Size() / 2, 0.25f * fade, SpriteEffects.None);
+			Main.EntitySpriteDraw(star, Projectile.Center - Main.screenPosition, null, Color.Yellow with { A = 0 } * fade, TwoPi * fade, star.Size() / 2, 0.25f * fade, SpriteEffects.None);
 
 			Main.EntitySpriteDraw(star, Projectile.Center - Main.screenPosition, null, Color.White with { A = 0 } * fade, TwoPi * fade, star.Size() / 2, 0.225f * fade, SpriteEffects.None);
 		}
@@ -142,13 +142,19 @@ public class AdornedArrowHandler : GlobalProjectile
 
 			foreach (NPC n in Main.npc.OrderBy(n => projectile.Distance(n.Center))) // loop through closest npcs
 			{
-				bool behindArrow = Math.Sign(projectile.velocity.X) < 0 ? n.Center.X < projectile.Center.X : n.Center.X > projectile.Center.X;
+				bool infrontOfArrow = projectile.rotation + Math.Abs(projectile.DirectionTo(n.Center).ToRotation()) < 1f;
 
-				if (n != target && n.CanBeChasedBy() && n.active && behindArrow && projectile.Distance(n.Center) < 300f && Math.Abs(projectile.DirectionTo(n.Center).ToRotation()) < 1f)
+				Main.NewText(projectile.rotation + " " + Math.Abs(projectile.DirectionTo(n.Center).ToRotation()));
+
+				if (n != target && n.CanBeChasedBy() && n.active && infrontOfArrow && projectile.Distance(n.Center) < 300f)
 				{
 					Vector2 velocity = projectile.DirectionTo(n.Center);
 
-					Projectile.NewProjectile(projectile.GetSource_OnHit(n), projectile.Center + velocity * 50, velocity * 15, ProjectileID.WoodenArrowFriendly, 20, 0f, projectile.owner);
+					PreNewProjectile.New(projectile.GetSource_OnHit(n), n.Center, Vector2.Zero, ModContent.ProjectileType<AdornedFlash>(), 10, 0f, projectile.owner, preSpawnAction: (Projectile p) =>
+					{
+						(p.ModProjectile as AdornedFlash).originalCenter = projectile.Center;
+					});
+
 					count++;
 				}
 
@@ -169,11 +175,11 @@ public class AdornedArrowHandler : GlobalProjectile
 				int lifeTime = Main.rand.Next(25, 50);
 				static void DelegateAction(Particle p) => p.Velocity *= 0.875f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, Color.Orange.Additive(), scale, lifeTime, 1, DelegateAction));
+				ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, Color.Cyan.Additive(), scale, lifeTime, 1, DelegateAction));
 				ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
 			}
 
-			ParticleHandler.SpawnParticle(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), Color.Orange.Additive(), 0.66f, 35));
+			ParticleHandler.SpawnParticle(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow.Additive(), 0.66f, 35));
 			ParticleHandler.SpawnParticle(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), Color.White.Additive() * 0.5f, 0.66f, 35));
 		}
 	}

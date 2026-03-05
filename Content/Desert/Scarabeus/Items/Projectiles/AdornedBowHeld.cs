@@ -13,7 +13,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
+public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 {
 	internal bool _flashed;
 	internal int _flashTimer;
@@ -22,7 +22,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		stringLength = 30;
 		maxDrawback = 10;
 		stringOrigin = new Vector2(5, 25);
-		stringColor = new Color(255, 234, 93);
+		stringColor = Color.LightCyan;
 	}
 
 	protected override void ModifyFiredProj(ref Projectile projectile, bool fullCharge, bool perfectShot)
@@ -58,7 +58,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 			if (!Main.dedServ)
 				SoundEngine.PlaySound(whoosh, projectile.Center);
 
-			Color color = Color.Orange;
+			Color color = Color.LightSteelBlue;
 
 			Vector2 pos = projectile.Center + Projectile.rotation.ToRotationVector2() * 25;
 
@@ -75,8 +75,8 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
 				Projectile.Center + Projectile.rotation.ToRotationVector2() * 10,
-				Color.LightGoldenrodYellow.Additive() * ringOpacity,
-				Color.Lerp(Color.OrangeRed.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
+				Color.LightSteelBlue.Additive() * ringOpacity,
+				Color.Lerp(Color.Orange.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
 				1f,
 				ringSize,
 				ringTime,
@@ -90,8 +90,8 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 			{
 				ParticleHandler.SpawnParticle(new TexturedPulseCircle(
 					Projectile.Center + Projectile.rotation.ToRotationVector2() * 10,
-					Color.LightGoldenrodYellow.Additive() * ringOpacity,
-					Color.Lerp(Color.OrangeRed.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
+					Color.LightSteelBlue.Additive() * ringOpacity,
+					Color.Lerp(Color.Orange.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
 					1f,
 					ringSize * 0.75f,
 					ringTime - 7,
@@ -164,7 +164,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 
 		Vector2 scale = new Vector2(1f, 1f) * Lerp(0, maxSize, perfectShotProgress) * 0.5f;
 		var starOrigin = starTex.Size() / 2;
-		Color starColor = Projectile.GetAlpha(Color.Lerp(Color.LightGoldenrodYellow.Additive(), Color.OrangeRed.Additive(), perfectShotProgress)) * EaseQuadOut.Ease(perfectShotProgress);
+		Color starColor = Projectile.GetAlpha(Color.Lerp(Color.LightSteelBlue.Additive(), Color.LightCyan.Additive(), perfectShotProgress)) * EaseQuadOut.Ease(perfectShotProgress);
 		Main.spriteBatch.Draw(starTex, center, null, starColor, Projectile.rotation, starOrigin, scale, SpriteEffects.None, 0);
 	}
 
@@ -193,8 +193,8 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		effect.Parameters["uTexture"].SetValue(texture);
 		effect.Parameters["scroll"].SetValue(new Vector2(spiral, (Main.GlobalTimeWrappedHourly / 5) - timeOffset));
 
-		effect.Parameters["uColor"].SetValue(Color.LightGoldenrodYellow.Additive(150).ToVector4());
-		effect.Parameters["uColor2"].SetValue(Color.OrangeRed.Additive(150).ToVector4());
+		effect.Parameters["uColor"].SetValue(Color.LightSteelBlue.Additive(150).ToVector4());
+		effect.Parameters["uColor2"].SetValue(Color.LightCyan.Additive(150).ToVector4());
 
 		effect.Parameters["textureStretch"].SetValue(new Vector2(2, 0.3f) * 0.4f);
 		effect.Parameters["texExponentRange"].SetValue(new Vector2(5, 0.1f));
@@ -209,7 +209,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 
 		var square = new SquarePrimitive
 		{
-			Color = Color.LightGoldenrodYellow.Additive() * Projectile.Opacity,
+			Color = Color.LightSteelBlue.Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
 			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,
