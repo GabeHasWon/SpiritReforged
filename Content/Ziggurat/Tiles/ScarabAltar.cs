@@ -9,6 +9,7 @@ using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -132,7 +133,14 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	public sealed class BeamOLight : ModProjectile
 	{
-		public static readonly SoundStyle Anticipation = new("SpiritReforged/Assets/SFX/Tile/DissonantChime");
+		[WorldBound]
+		public static bool Enabled;
+
+		public static readonly SoundStyle Anticipation = new("SpiritReforged/Assets/SFX/Tile/DissonantChime")
+		{ 
+			Pitch = 0.1f, 
+			Volume = 0.25f 
+		};
 
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -171,6 +179,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override void AI()
 		{
+			Enabled = true;
+
 			if (_justSpawned)
 			{
 				if (!Main.dedServ)
@@ -258,6 +268,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		{
 			if (!Main.dedServ && Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
 				Filters.Scene.Deactivate("SpiritReforged:LightShaderData");
+
+			Enabled = false;
 		}
 
 		public override bool? CanDamage() => false;
@@ -371,7 +383,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		if (FindSacrifice(Main.LocalPlayer, out Item result) && !NPC.AnyNPCs(ModContent.NPCType<Scarabeus>()) && Entity(i, j) is ScarabAltarEntity entity)
+		if (FindSacrifice(Main.LocalPlayer, out Item result) && !BeamOLight.Enabled && Entity(i, j) is ScarabAltarEntity entity)
 		{
 			if (--result.stack <= 0)
 				result.TurnToAir(); //Consume an item
