@@ -1,4 +1,3 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -9,14 +8,15 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
-using static Terraria.Main;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-// TODO: Modernize trail rendering
-public class AdornedArrow : ModProjectile//, ITrailProjectile
+public class AdornedArrow : ModProjectile
 {
+	private bool _spawnedTrail;
+
 	public override void SetDefaults()
 	{
 		Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
@@ -26,15 +26,17 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 		Projectile.extraUpdates = 1;
 	}
 
-	/*public void DoTrailCreation(TrailManager trailManager)
-	{
-		float strength = Projectile.ai[0] == 1 ? 1 : 0.5f;
-		float width = Projectile.ai[0] == 1 ? 1 : 0.75f;
-		trailManager.CreateTrail(Projectile, new OpacityUpdatingTrail(Projectile, Color.LightGoldenrodYellow.Additive(), Color.OrangeRed.Additive() * 0.5f * strength), new RoundCap(), new DefaultTrailPosition(), 15 * width, 200 * strength, new DefaultShader());
-	}*/
-
 	public override void AI()
 	{
+		if (!_spawnedTrail && !Main.dedServ)
+		{
+			float strength = (Projectile.ai[0] == 1) ? 1 : 0.5f;
+			float width = (Projectile.ai[0] == 1) ? 1 : 0.75f;
+			TrailSystem.ProjectileRenderer.CreateTrail(Projectile, new VertexTrail(new OpacityUpdatingTrail(Projectile, Color.LightGoldenrodYellow.Additive(), Color.OrangeRed.Additive() * 0.5f * strength), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 15 * width, 200 * strength));
+
+			_spawnedTrail = true;
+		}
+
 		Projectile.rotation = Projectile.velocity.ToRotation() - Pi / 2;
 		Lighting.AddLight(Projectile.position, Color.LightGoldenrodYellow.ToVector3() / 2);
 
@@ -46,14 +48,14 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 		if(Projectile.timeLeft < 50)
 			Projectile.alpha = (int)Min(Projectile.alpha + 6, 255);
 
-		if (rand.NextFloat() < EaseQuadOut.Ease(Projectile.timeLeft / 150f))
+		if (Main.rand.NextFloat() < EaseQuadOut.Ease(Projectile.timeLeft / 150f))
 		{
 			Vector2 particleCenter = Projectile.Center;
-			Vector2 particleVel = Vector2.Normalize(Projectile.velocity) * rand.NextFloat(2);
+			Vector2 particleVel = Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(2);
 			Color lightColor = Color.LightGoldenrodYellow.Additive();
 			Color darkColor = Color.Lerp(Color.LightGoldenrodYellow, Color.OrangeRed, 0.5f).Additive() * 0.5f;
-			float scale = rand.NextFloat(0.3f, 0.4f);
-			int lifeTime = rand.Next(20, 40);
+			float scale = Main.rand.NextFloat(0.3f, 0.4f);
+			int lifeTime = Main.rand.Next(20, 40);
 			static void delegateAction(Particle p) => p.Velocity *= 0.97f;
 
 			ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, lightColor, darkColor, scale, lifeTime, 3, delegateAction));
@@ -63,7 +65,7 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		Projectile.damage = (int)(Projectile.damage * 0.75f); 
-		ParticleHandler.SpawnParticle(new LightBurst(target.Center, rand.NextFloatDirection(), Color.LightGoldenrodYellow.Additive(), 0.6f, 30));
+		ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow.Additive(), 0.6f, 30));
 		float vfxStrength = Projectile.ai[0] == 1 ? 1 : 0.75f;
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(
@@ -77,17 +79,17 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 				new Vector2(2, 1.5f),
 				EaseCircularOut,
 				false,
-				0.6f) { Velocity = Projectile.velocity / 12 }.WithSkew(0.7f, Projectile.rotation + PiOver2 + rand.NextFloat(-0.3f, 0.3f)));
+				0.6f) { Velocity = Projectile.velocity / 12 }.WithSkew(0.7f, Projectile.rotation + PiOver2 + Main.rand.NextFloat(-0.3f, 0.3f)));
 
 		for(int i = 0; i < 6 * vfxStrength; i++)
 		{
 			Vector2 particleCenter = target.Center;
-			particleCenter += Vector2.Normalize(Projectile.velocity).RotatedBy(PiOver2) * rand.NextFloat(-15, 15);
-			Vector2 particleVel = Vector2.Normalize(Projectile.velocity) * rand.NextFloat(0.5f, 3) * vfxStrength;
+			particleCenter += Vector2.Normalize(Projectile.velocity).RotatedBy(PiOver2) * Main.rand.NextFloat(-15, 15);
+			Vector2 particleVel = Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(0.5f, 3) * vfxStrength;
 			Color lightColor = Color.LightGoldenrodYellow.Additive();
 			Color darkColor = Color.Lerp(Color.LightGoldenrodYellow, Color.OrangeRed, 0.5f).Additive() * 0.5f;
-			float scale = rand.NextFloat(0.4f, 0.5f);
-			int lifeTime = (int)(rand.Next(20, 40) * vfxStrength);
+			float scale = Main.rand.NextFloat(0.4f, 0.5f);
+			int lifeTime = (int)(Main.rand.Next(20, 40) * vfxStrength);
 			static void delegateAction(Particle p, float offset)
 			{
 				float progress = (EaseCircularOut.Ease(p.Progress) + offset) * TwoPi * 2;
@@ -95,17 +97,16 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 				p.Velocity *= 0.96f;
 			}
 
-			float cycleOffset = rand.NextFloat();
+			float cycleOffset = Main.rand.NextFloat();
 			ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, lightColor * 0.75f, darkColor * 0.75f, scale, lifeTime, lifeTime / 2, p => delegateAction(p, cycleOffset)));
 		}
 	}
 
 	public override void OnKill(int timeLeft)
 	{
-		if(timeLeft > 0)
+		if (timeLeft > 0)
 		{
-
-			ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, rand.NextFloatDirection(), Color.LightGoldenrodYellow.Additive(), 0.6f, 30));
+			ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow.Additive(), 0.6f, 30));
 			float vfxStrength = Projectile.ai[0] == 1 ? 1 : 0.75f;
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
@@ -124,12 +125,12 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 			for (int i = 0; i < 12 * vfxStrength; i++)
 			{
 				Vector2 particleCenter = Projectile.Center;
-				particleCenter += Vector2.Normalize(Projectile.oldVelocity).RotatedBy(PiOver2) * rand.NextFloat(-15, 15);
-				Vector2 particleVel = Vector2.Normalize(Projectile.oldVelocity) * rand.NextFloat(0.5f, 3) * vfxStrength;
+				particleCenter += Vector2.Normalize(Projectile.oldVelocity).RotatedBy(PiOver2) * Main.rand.NextFloat(-15, 15);
+				Vector2 particleVel = Vector2.Normalize(Projectile.oldVelocity) * Main.rand.NextFloat(0.5f, 3) * vfxStrength;
 				Color lightColor = Color.LightGoldenrodYellow.Additive();
 				Color darkColor = Color.Lerp(Color.LightGoldenrodYellow, Color.OrangeRed, 0.5f).Additive() * 0.5f;
-				float scale = rand.NextFloat(0.4f, 0.5f);
-				int lifeTime = (int)(rand.Next(30, 50) * vfxStrength);
+				float scale = Main.rand.NextFloat(0.4f, 0.5f);
+				int lifeTime = (int)(Main.rand.Next(30, 50) * vfxStrength);
 				static void delegateAction(Particle p, float offset)
 				{
 					float progress = (EaseCircularOut.Ease(p.Progress) + offset) * TwoPi * 2;
@@ -137,7 +138,7 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 					p.Velocity *= 0.96f;
 				}
 
-				float cycleOffset = rand.NextFloat();
+				float cycleOffset = Main.rand.NextFloat();
 				ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, lightColor * 0.75f, darkColor * 0.75f, scale, lifeTime, lifeTime / 2, p => delegateAction(p, cycleOffset)));
 			}
 		}
@@ -156,12 +157,11 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 
 		for (int i = 0; i < 6; i++)
 		{
-			Vector2 offset = Vector2.UnitX.RotatedBy((TwoPi * i / 6) + Projectile.rotation);
-
-			spriteBatch.Draw(glowmaskTex, Projectile.Center + offset - screenPosition, null, color * EaseQuadIn.Ease(Projectile.Opacity) * 0.33f, Projectile.rotation, glowmaskTex.Size()/2, Projectile.scale, SpriteEffects.None, 0);
+			Vector2 offset = Vector2.UnitX.RotatedBy(TwoPi * i / 6 + Projectile.rotation);
+			Main.spriteBatch.Draw(glowmaskTex, Projectile.Center + offset - Main.screenPosition, null, color * EaseQuadIn.Ease(Projectile.Opacity) * 0.33f, Projectile.rotation, glowmaskTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
 
-		spriteBatch.RestartToDefault();
+		Main.spriteBatch.RestartToDefault();
 
 		ConeNoise(10, 1, 0);
 
@@ -198,7 +198,7 @@ public class AdornedArrow : ModProjectile//, ITrailProjectile
 			Color = Color.LightGoldenrodYellow.Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
-			Position = Projectile.Center - screenPosition - 10 * Vector2.Normalize(Projectile.velocity),
+			Position = Projectile.Center - Main.screenPosition - 10 * Vector2.Normalize(Projectile.velocity),
 			Rotation = Projectile.rotation - Pi,
 		};
 
