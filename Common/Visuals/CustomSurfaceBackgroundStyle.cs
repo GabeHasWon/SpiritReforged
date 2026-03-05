@@ -91,6 +91,10 @@ public abstract class CustomSurfaceBackgroundStyle : ModSurfaceBackgroundStyle
 
 public static class BackgroundStyleHelper
 {
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "transformMatrix")]
+	private static extern ref Matrix TransformMatrix(SpriteBatch spriteBatch);
+	public static Matrix GetTransformMatrix(this SpriteBatch spriteBatch) => TransformMatrix(spriteBatch);
+
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "bgScale")]
 	private static extern ref float BGScale(Main main);
 
