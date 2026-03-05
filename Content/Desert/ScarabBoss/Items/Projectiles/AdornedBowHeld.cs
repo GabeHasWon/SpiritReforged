@@ -9,7 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
