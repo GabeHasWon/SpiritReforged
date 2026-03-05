@@ -1,7 +1,7 @@
 using SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
+namespace SpiritReforged.Content.Desert.Scarabeus.Items;
 
 public class AdornedBow : ModItem
 {
