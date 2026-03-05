@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
@@ -165,8 +166,8 @@ public class Graverobber : ModNPC
 				NPC.velocity.Y -= 5; //Jump
 		}
 
-		if (Math.Sign(NPC.velocity.X) is int value && value != 0) //Set direction
-			NPC.direction = NPC.spriteDirection = value;
+		if (Math.Sign(NPC.velocity.X) != NPC.direction)
+			NPC.direction = NPC.spriteDirection = -Math.Sign(NPC.velocity.X);
 
 		Counter++;
 	}

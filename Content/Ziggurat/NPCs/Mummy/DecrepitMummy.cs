@@ -103,7 +103,8 @@ internal class DecrepitMummy : ModNPC
 		if (Main.rand.NextBool(1000))
 			SoundEngine.PlaySound(MummyMoan[Main.rand.Next(MummyMoan.Length)], NPC.Center);
 
-		NPC.spriteDirection = NPC.direction = Math.Sign(NPC.velocity.X);
+		if (Math.Sign(NPC.velocity.X) != direction)
+			NPC.direction = NPC.spriteDirection = Math.Sign(direction);
 	}
 
 	public override void FindFrame(int frameHeight)

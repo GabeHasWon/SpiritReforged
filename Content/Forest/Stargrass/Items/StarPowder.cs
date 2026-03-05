@@ -2,6 +2,9 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Items;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -37,6 +40,7 @@ internal class StarPowderProj : ModProjectile
 	public override string Texture => base.Texture[..^"Proj".Length];
 
 	private bool _justSpawned;
+	private HashSet<Point16> _convertedTiles = []; 
 
 	public override void SetDefaults() => Projectile.CloneDefaults(ProjectileID.PurificationPowder);
 	public override void AI()
@@ -59,8 +63,15 @@ internal class StarPowderProj : ModProjectile
 			_justSpawned = true;
 		}
 
-		Point pt = Projectile.Center.ToTileCoordinates();
-		WorldGen.Convert(pt.X, pt.Y, StarConversion.ConversionType, 3);
+		Point16 pt = Projectile.Center.ToTileCoordinates16();
+
+		if (!_convertedTiles.Contains(pt))
+		{
+			WorldGen.Convert(pt.X, pt.Y, StarConversion.ConversionType, 3, true, true);
+			_convertedTiles.Add(pt);
+
+			Main.NewText(pt);
+		}
 	}
 
 	public override bool? CanCutTiles() => false;
@@ -71,15 +82,8 @@ public class StarConversion : ModBiomeConversion
 {
 	public static int ConversionType => ModContent.GetInstance<StarConversion>().Type;
 
-	private static readonly Dictionary<int, int> Conversions = new()
-	{
-		{ TileID.Grass, ModContent.TileType<StargrassTile>() },
-		{ TileID.GolfGrass, ModContent.TileType<StargrassMowed>() }
-	};
-
 	public override void SetStaticDefaults()
 	{
-		ConversionHelper.RegisterConversions([.. Conversions.Keys], ConversionType, ConvertAction);
 		TileLoader.RegisterConversion(TileID.Sunflower, ConversionType, static (i, j, type, conversionType) =>
 		{
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
@@ -88,16 +92,8 @@ public class StarConversion : ModBiomeConversion
 			TileExtensions.GetTopLeft(ref i, ref j);
 			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
-	}
 
-	private static bool ConvertAction(int i, int j, int type, int conversionType)
-	{
-		if (Conversions.TryGetValue(type, out int value))
-		{
-			WorldGen.ConvertTile(i, j, value);
-			return true;
-		}
-
-		return false;
+		TileLoader.RegisterSimpleConversion(TileID.Grass, Type, ModContent.TileType<StargrassTile>());
+		TileLoader.RegisterSimpleConversion(TileID.GolfGrass, Type, ModContent.TileType<StargrassMowed>());
 	}
 }
