@@ -358,6 +358,20 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 	}
 	#endregion
 
+	public void TestMe()
+	{
+		Vector2 defaultScreenPos = Main.screenPosition;
+		int defaultScreenWidth = Main.screenWidth;
+		int defaultScreenHeight = Main.screenHeight;
+
+		int newScreenWidth = (int)((float)Main.screenWidth / Main.BackgroundViewMatrix.Zoom.X);
+		int newScreenHeight = (int)((float)Main.screenWidth / Main.BackgroundViewMatrix.Zoom.X);
+		Vector2 newScreenPos = Main.screenPosition + Main.BackgroundViewMatrix.Translation;
+
+		Matrix transformationMatrix = Main.BackgroundViewMatrix.TransformationMatrix;
+		transformationMatrix.Translation -= Main.BackgroundViewMatrix.ZoomMatrix.Translation * new Vector3(1f, Main.BackgroundViewMatrix.Effects.HasFlag(SpriteEffects.FlipVertically) ? (-1f) : 1f, 1f);
+	}
+
 	public override bool Draw(SpriteBatch spriteBatch, LayerType layer)
 	{
 		bool shouldFadeDownBackground =
@@ -389,7 +403,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null);
 				spriteBatch.Draw(backgroundTarget.Target, Vector2.Zero, null, Color.White * Main.bgAlphaFarBackLayer[Slot], 0, Vector2.Zero, 1, 0, 0);
-				RestartSpritebatch(null);
+				RestartSpritebatch(null); 
+				TestMe();
 				return false;
 			}
 
@@ -403,7 +418,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Texture2D nightSkyMaskTexture = SkyReflectionMask.Value;
 
 				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
-				color = Color.Lerp(color, new Color(80, 120, 255), MathF.Pow(SaltFlatsSystem.nightSkyOpacity, 2f) * 0.2f);
+				color = Color.Lerp(color, new Color(80, 120, 255), MathF.Pow(SaltFlatsSystem.nightSkyOpacity, 2f) * 0.3f);
 
 				Rectangle bounds = GetBounds(slot);
 				int loops = BackgroundStyleHelper.BackgroundLoops;
@@ -449,10 +464,13 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["shimmerAlpha"].SetValue(Main.shimmerAlpha);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
-
 					Vector2 maskScaleRatio = reflectionCanvasSize / nightSkyMaskTexture.Size();
-					maskTransformMatrix = Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y, 0f));
 
+					maskTransformMatrix *= Matrix.Invert(spriteBatch.GetTransformMatrix());
+
+					//WHAT ARE YOUUUUUU WHY ARE YOU OFFSET WRONG!! IT DOESNT EVEN WORK FOR 4K CUZ THE OFFSET IS TOO BIG OVER THERE!!!
+					maskTransformMatrix *= Matrix.CreateTranslation(8f / reflectionCanvasSize.X, 4f / reflectionCanvasSize.Y, 0f);
+					maskTransformMatrix *= Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y, 0f));
 					//Adjust the bg scale by the ratio between the RT we're rendering and the BG size
 					maskTransformMatrix *= Matrix.CreateScale(maskScaleRatio.X, maskScaleRatio.Y, 1);
 					//Adjust by the background scale itself
@@ -473,7 +491,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
 					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
-					bgShader.Parameters["WorldViewProjection"].SetValue(Main.BackgroundViewMatrix.TransformationMatrix * projection);
+					bgShader.Parameters["WorldViewProjection"].SetValue( Main.BackgroundViewMatrix.TransformationMatrix * projection);
 
 					//	bgShader.Parameters["viewMatrix"].SetValue(projection);
 					SaltFlatsSystem.SetSkyColor(bgShader);
