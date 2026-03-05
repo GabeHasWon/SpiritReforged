@@ -10,7 +10,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedArrow : ModProjectile
