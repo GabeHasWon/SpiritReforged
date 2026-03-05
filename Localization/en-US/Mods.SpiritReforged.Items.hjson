@@ -2964,3 +2964,23 @@ AdornedBow: {
 	DisplayName: Adorned Bow
 	Tooltip: ""
 }
+
+BagOScarabs: {
+	DisplayName: Treasure Bag (Scarabeus)
+	Tooltip: ""
+}
+
+ScarabMask: {
+	DisplayName: Scarabeus Mask
+	Tooltip: ""
+}
+
+ScarabRelic: {
+	DisplayName: Scarabeus Relic
+	Tooltip: ""
+}
+
+ScarabTrophy: {
+	DisplayName: Scarabeus Trophy
+	Tooltip: ""
+}

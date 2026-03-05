@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Content.Forest.Relics;
+using SpiritReforged.Content.Forest.Trophies;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ItemCommon;
 
@@ -60,5 +62,24 @@ internal static class ItemMethods
 	{
 		ModItem modItem = ItemLoader.GetItem(type);
 		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
+	}
+
+	public static void DefaultToTrophy(this Item Item, int style)
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<Trophies>(), style);
+		Item.width = Item.height = 32;
+		Item.rare = ItemRarityID.Blue;
+		Item.value = Item.buyPrice(gold: 1);
+	}
+
+	public static void SetRelicsDefaults(this Item Item, int style)
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<Relics>(), style);
+		Item.width = 30;
+		Item.height = 40;
+		Item.maxStack = Item.CommonMaxStack;
+		Item.rare = ItemRarityID.Master;
+		Item.master = true;
+		Item.value = Item.buyPrice(0, 5);
 	}
 }

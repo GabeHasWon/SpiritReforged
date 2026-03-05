@@ -7,8 +7,6 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 public class RoyalKhopesh : ModItem
 {
-	public override bool IsLoadingEnabled(Mod mod) => false;
-
 	public override void SetDefaults()
 	{
 		Item.damage = 28;
