@@ -1,19 +1,22 @@
-﻿using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.ProjectileCommon;
-using static SpiritReforged.Common.Easing.EaseFunction;
-using static Microsoft.Xna.Framework.MathHelper;
-using SpiritReforged.Common.Visuals.Glowmasks;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
+using Terraria.Graphics.CameraModifiers;
+using static Microsoft.Xna.Framework.MathHelper;
+using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 {
+	internal bool _flashed;
+	internal int _flashTimer;
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
 		stringLength = 30;
@@ -22,24 +25,48 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		stringColor = new Color(255, 234, 93);
 	}
 
-	protected override int? OverrideProjectile(bool fullCharge, bool perfectShot)
-	{
-		if (fullCharge)
-			return ModContent.ProjectileType<AdornedArrow>();
-
-		return null;
-	}
-
 	protected override void ModifyFiredProj(ref Projectile projectile, bool fullCharge, bool perfectShot)
 	{
-		if (perfectShot && projectile.ModProjectile is AdornedArrow arrow)
+		SoundStyle whoosh = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 		{
-			projectile.ai[0] = 1;
-			// TODO: Modernize trail rendering
-			//arrow.DoTrailCreation(AssetLoader.VertexTrailManager);
+			Volume = 0.5f,
+			PitchVariance = 0.15f
+		};
+
+		if (!Main.dedServ)
+			SoundEngine.PlaySound(whoosh, projectile.Center);
+
+		if (perfectShot)
+		{
+			projectile.GetGlobalProjectile<AdornedArrowHandler>().active = true;
+			projectile.velocity *= 1.5f;
+
+			if (Main.myPlayer == projectile.owner)
+			{
+				// Client side screen shake
+				Vector2 dir = projectile.rotation.ToRotationVector2().RotatedByRandom(0.3f);
+
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(projectile.Center, dir * Main.rand.NextFloat(1f, 2f), 2, 1, 10, -1, "AdornedBowChargedShot"));
+			}
+
+			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
+			{
+				Volume = 0.5f,
+				PitchVariance = 0.15f
+			};
+
+			if (!Main.dedServ)
+				SoundEngine.PlaySound(whoosh, projectile.Center);
+
+			Color color = Color.Orange;
+
+			Vector2 pos = projectile.Center + Projectile.rotation.ToRotationVector2() * 25;
+
+			ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), color.Additive(), 0.5f, 35));
+			ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), Color.White.Additive(), 0.5f, 35));
 		}
 
-		if(fullCharge)
+		if (fullCharge)
 		{
 			float ringSize = 70 + (perfectShot ? 30 : 0);
 			int ringTime = 25 + (perfectShot ? 5 : 0);
@@ -77,6 +104,43 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		}
 	}
 
+	public override void PostAI()
+	{
+		if (_flashTimer > 0)
+			_flashTimer--;
+
+		float radius = 2f * Charge / 1f;  // shakes rapidly whilst charging up a shot
+
+		if (Charge == 1f)
+		{
+			if (!_flashed)
+			{
+				SoundStyle charged = new("SpiritReforged/Assets/SFX/Item/ClubReady")
+				{
+					Volume = 0.5f,
+					PitchVariance = 0.15f
+				};
+
+				if (!Main.dedServ)
+					SoundEngine.PlaySound(charged, Projectile.Center);
+
+				_flashTimer = 10;
+				_flashed = true;
+			}
+
+			if (_perfectShotCurTimer > 0) // shakes less whilst the window for a perfect shot closes
+				radius = 2f * _perfectShotCurTimer / _perfectShotMaxTime;
+			else                          // no longer shakes when the perfect shot window is over
+				radius *= 0f;
+		}
+			
+
+		if (_fired) // stop shaking when fired
+			radius *= Projectile.timeLeft / 30f;
+
+		Projectile.Center += Main.rand.NextVector2Circular(radius, radius);
+	}
+
 	public override void PostDraw(Color lightColor)
 	{
 		GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Type, out GlowmaskInfo glowmaskInfo);
@@ -92,10 +156,10 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy((TwoPi * i / numGlow) + Projectile.rotation + Main.GlobalTimeWrappedHourly / 5) * Lerp(4, 2, strength);
 
-			Main.spriteBatch.Draw(glowmaskTex, Projectile.Center + offset - Main.screenPosition, null, color * (EaseCircularIn.Ease(strength) + perfectShotProgress) * (1f / numGlow), Projectile.rotation, glowmaskTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(glowmaskTex, Projectile.Center + new Vector2(0f, Projectile.gfxOffY) + offset - Main.screenPosition, null, color * (EaseCircularIn.Ease(strength) + perfectShotProgress) * (1f / numGlow), Projectile.rotation, glowmaskTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
 
-		var center = Projectile.Center - Main.screenPosition + Projectile.rotation.ToRotationVector2() * 10;
+		var center = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Projectile.rotation.ToRotationVector2() * 10;
 		float maxSize = 0.6f * Projectile.scale;
 
 		Vector2 scale = new Vector2(1f, 1f) * Lerp(0, maxSize, perfectShotProgress) * 0.5f;
@@ -148,7 +212,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 			Color = Color.LightGoldenrodYellow.Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
-			Position = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,
+			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,
 			Rotation = Projectile.rotation + PiOver2,
 		};
 
