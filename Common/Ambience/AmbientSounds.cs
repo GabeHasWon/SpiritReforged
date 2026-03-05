@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Content.Ocean;
 using SpiritReforged.Content.Savanna.Biome;
+using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.Audio;
 using Terraria.GameContent.Events;
 
@@ -34,13 +35,14 @@ internal class AmbientSounds : ModSystem
 
 		var player = Main.LocalPlayer;
 
-		bool savannaDay = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && Main.dayTime;
+		bool inSavanna = !player.ZoneDesert && !player.InModBiome<ZigguratBiome>() && player.InModBiome<SavannaBiome>();
+		bool savannaDay = inSavanna && player.ZoneOverworldHeight && Main.dayTime;
 		UpdateSingleSound(SavannaDayAmbience, 0.002f, savannaDay, 0.9f);
 
-		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
+		bool savannaNight = inSavanna && player.ZoneOverworldHeight && !Main.dayTime;
 		UpdateSingleSound(SavannaNightAmbience, 0.002f, savannaNight, 0.9f);
 
-		bool ziggurat = player.InModBiome<Content.Ziggurat.Biome.ZigguratBiome>();
+		bool ziggurat = player.InModBiome<ZigguratBiome>();
 		UpdateSingleSound(ZigguratAmbience, 0.002f, ziggurat, 0.6f);
 
 		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime && !savannaNight;
