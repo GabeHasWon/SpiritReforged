@@ -210,8 +210,8 @@ public partial class Scarabeus : ModNPC
 
 					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
 					{
-						Vector2 desiredPos = Target.Center + Target.velocity + NPC.direction * 112 * Vector2.UnitX;
-						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, 15, true);
+						Vector2 desiredPos = Target.Center + Target.velocity * 20;
+						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Clamp(NPC.Center.Distance(desiredPos) / 36, 15, 30), true);
 						NPC.noTileCollide = true;
 
 						Counter = 0;
@@ -249,7 +249,8 @@ public partial class Scarabeus : ModNPC
 				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
-					ChangeState(SelectWeightedState());
+					ChangeState(Leap);
+					//ChangeState(SelectWeightedState());
 				}
 
 				break;
@@ -337,8 +338,9 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.velocity.X *= 0.8f;
 			NPC.FaceTarget();
+			UpdateFrame(3, 12, PhaseOneProfile, false);
 
-			if (UpdateFrame(3, 12, PhaseOneProfile, false) == FrameState.Stopped)
+			if (Counter > 50)
 			{
 				dashState++;
 				Counter = 0;
@@ -379,7 +381,7 @@ public partial class Scarabeus : ModNPC
 		}
 		else //Rolling
 		{
-			NPC.velocity.X = NPC.direction * 28;
+			NPC.velocity.X = NPC.direction * 22;
 			NPC.rotation += 0.3f * NPC.spriteDirection;
 			NPC.Step();
 
@@ -827,7 +829,7 @@ public partial class Scarabeus : ModNPC
 			}
 
 			NPC.noTileCollide = false;
-			NPC.velocity.Y += 0.5f;
+			NPC.velocity.Y += 0.6f;
 			NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
 
 			if (currentFrame == DigFrame)
