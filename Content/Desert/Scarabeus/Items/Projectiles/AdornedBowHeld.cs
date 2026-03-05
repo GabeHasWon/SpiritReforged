@@ -35,7 +35,8 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 		if (perfectShot && projectile.ModProjectile is AdornedArrow arrow)
 		{
 			projectile.ai[0] = 1;
-			arrow.DoTrailCreation(AssetLoader.VertexTrailManager);
+			// TODO: Modernize trail rendering
+			//arrow.DoTrailCreation(AssetLoader.VertexTrailManager);
 		}
 
 		if(fullCharge)
@@ -80,7 +81,7 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 	{
 		GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Type, out GlowmaskInfo glowmaskInfo);
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
-		Texture2D starTex = AssetLoader.LoadedTextures["Star"];
+		Texture2D starTex = AssetLoader.LoadedTextures["Star"].Value;
 
 		Color color = Color.White.Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
@@ -123,8 +124,8 @@ public class AdornedBowHeld() : BaseChargeBow(2, 1.5f, 30)
 
 	private void ConeNoise(float spiral, float opacity, int timeOffset, float perfectShotProgress)
 	{
-		Effect effect = AssetLoader.LoadedShaders["SpiralNoiseCone"];
-		Texture2D texture = AssetLoader.LoadedTextures["swirlNoise"];
+		Effect effect = AssetLoader.LoadedShaders["SpiralNoiseCone"].Value;
+		Texture2D texture = AssetLoader.LoadedTextures["swirlNoise"].Value;
 		effect.Parameters["uTexture"].SetValue(texture);
 		effect.Parameters["scroll"].SetValue(new Vector2(spiral, (Main.GlobalTimeWrappedHourly / 5) - timeOffset));
 

@@ -14,7 +14,8 @@ using static Terraria.Main;
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class AdornedArrow : ModProjectile, ITrailProjectile
+// TODO: Modernize trail rendering
+public class AdornedArrow : ModProjectile//, ITrailProjectile
 {
 	public override void SetDefaults()
 	{
@@ -25,12 +26,12 @@ public class AdornedArrow : ModProjectile, ITrailProjectile
 		Projectile.extraUpdates = 1;
 	}
 
-	public void DoTrailCreation(TrailManager trailManager)
+	/*public void DoTrailCreation(TrailManager trailManager)
 	{
 		float strength = Projectile.ai[0] == 1 ? 1 : 0.5f;
 		float width = Projectile.ai[0] == 1 ? 1 : 0.75f;
 		trailManager.CreateTrail(Projectile, new OpacityUpdatingTrail(Projectile, Color.LightGoldenrodYellow.Additive(), Color.OrangeRed.Additive() * 0.5f * strength), new RoundCap(), new DefaultTrailPosition(), 15 * width, 200 * strength, new DefaultShader());
-	}
+	}*/
 
 	public override void AI()
 	{
@@ -172,8 +173,8 @@ public class AdornedArrow : ModProjectile, ITrailProjectile
 		if (Projectile.timeLeft == 150)
 			return;
 
-		Effect effect = AssetLoader.LoadedShaders["SpiralNoiseCone"];
-		Texture2D texture = AssetLoader.LoadedTextures["swirlNoise"];
+		Effect effect = AssetLoader.LoadedShaders["SpiralNoiseCone"].Value;
+		Texture2D texture = AssetLoader.LoadedTextures["swirlNoise"].Value;
 		effect.Parameters["uTexture"].SetValue(texture);
 		float easedProgress = EaseCircularIn.Ease(Projectile.timeLeft / 150f) * 3;
 		effect.Parameters["scroll"].SetValue(new Vector2(spiral, easedProgress - timeOffset));
