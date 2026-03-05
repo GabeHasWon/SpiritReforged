@@ -1,0 +1,75 @@
+ReforgedClientConfig: {
+	// DisplayName: Reforged Client Config
+
+	OceanShape: {
+		// Label: Ocean Shape
+		/* Tooltip:
+			'''
+			Modifies the Ocean generation in certain ways
+			Defaults to a Piecewise_V generation
+			The Piecewise_V generation is recommended for Spirit playthroughs
+			''' */
+	}
+
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
+			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
+	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
+	}
+}
+
+OceanShape: {
+	Tooltip: ""
+
+	Default: {
+		Label: 默认
+		// Tooltip: ""
+	}
+
+	SlantedSine: {
+		Label: 倾斜正弦
+		// Tooltip: ""
+	}
+
+	Piecewise: {
+		Label: 分段
+		// Tooltip: ""
+	}
+
+	Piecewise_M: {
+		Label: 分段_ M
+		// Tooltip: ""
+	}
+
+	Piecewise_V: {
+		Label: 分段_ V
+		// Tooltip: ""
+	}
+}
+
+ReforgedServerConfig: {
+	DisplayName: 魂灵新魄服务器配置
+
+	VentCritters: {
+		Label: 海洋：热液喷口生态系统
+		Tooltip:
+			'''
+			启用后，允许小动物在热液喷口附近生成
+			这些生物不会干扰敌人的正常生成
+			然而，它们确实对最大NPC数量限制有所贡献
+			'''
+	}
+
+	MaxFloatingItemCount: {
+		Label: 漂浮物上限
+		Tooltip: 影响一个世界内同时可以有多少漂浮物。
+	}
+}

@@ -5,14 +5,19 @@ namespace SpiritReforged.Content.Savanna.Ecotone;
 
 internal static class WateringHoleGen
 {
-	internal static Rectangle Area;
-
-	/// <summary> Generates the watering hole at the given tile coordinates. Area data for only ONE watering hole can be stored at a time. </summary>
-	public static void GenerateWateringHole(int i, int j)
+	/// <summary> Generates a watering hole at the given tile coordinates. </summary>
+	/// <param name="i"> The X tile coordinate. </param>
+	/// <param name="j"> The Y tile coordinate. </param>
+	/// <returns> The area of the watering hole. </returns>
+	public static Rectangle GenerateWateringHole(int i, int j)
 	{
 		const int halfDistance = 35;
 
-		DigHole(i, j, WorldGen.genRand.Next(20, 26), WorldGen.genRand.Next(20, 28));
+		int width = WorldGen.genRand.Next(20, 26);
+		var area = new Rectangle(i - width / 2, j, width, WorldGen.genRand.Next(20, 28));
+
+		DigHole(i, j, area.Width, area.Height);
+
 		for (int a = 0; a < 5; a++) //Generate surrounding sand patches
 		{
 			int x = i + WorldGen.genRand.Next(-halfDistance, halfDistance);
@@ -33,18 +38,14 @@ internal static class WateringHoleGen
 				WorldGen.PlaceTile(x, j, ModContent.TileType<SavannaShrubs>(), true, style: WorldGen.genRand.NextFromList(0, 3, 4));
 		}
 
-		return;
+		AddWaterAndClay(area);
+		return area;
 	}
 
-	/// <summary> Fills the previously-defined watering hole area with water and converts the upper, surrounding tiles to clay. <br/>
+	/// <summary> Fills the watering hole area with water and converts the upper, surrounding tiles to clay. <br/>
 	/// Should be used after genpasses that don't interfere with surface water and clay. </summary>
-	/// <returns> Whether the watering hole exists. </returns>
-	public static bool AddWaterAndClay()
+	private static void AddWaterAndClay(Rectangle area)
 	{
-		var area = Area;
-		if (area.IsEmpty)
-			return false;
-
 		for (int x = area.Left; x < area.Right; x++)
 		{
 			for (int y = area.Top; y < area.Bottom; y++)
@@ -62,18 +63,29 @@ internal static class WateringHoleGen
 					}
 
 					if (holeDepth < 8 && WorldGen.genRand.NextBool())
-						ClaySplotch(x, y + 1);
+						SolidSplotch(x, y + 1, TileID.ClayBlock);
+
+					if (holeDepth < 10 && WorldGen.genRand.NextBool())
+					{
+						SolidSplotch(x, y + 1, TileID.Sand);
+						GrowCatTail(x, y);
+					}
 				}
 			}
 		}
-
-		return true;
 	}
 
-	private static Rectangle DigHole(int i, int j, int width, int depth)
+	private static void GrowCatTail(int i, int j)
+	{
+		WorldGen.PlaceCatTail(i, j);
+
+		for (int y = 0; y < 8; y++)
+			WorldGen.GrowCatTail(i, j);
+	}
+
+	private static void DigHole(int i, int j, int width, int depth)
 	{
 		i -= width / 2; //Automatically center
-		Area = new Rectangle(i, j, width, depth);
 
 		for (int x = 0; x < width; x++)
 		{
@@ -100,9 +112,23 @@ internal static class WateringHoleGen
 				Main.tile[i + x - 1, j + y + 1].WallType = WallID.None; //Diagonals
 				Main.tile[i + x + 1, j + y + 1].WallType = WallID.None;
 			}
-		}
 
-		return Area;
+			if (minDepth < depth)
+			{
+				var tile = Framing.GetTileSafely(i + x, j + minDepth);
+
+				if (WorldGen.genRand.NextBool(5) || minDepth > depth - 3)
+				{
+					tile.IsHalfBlock = true;
+					tile.Slope = SlopeType.Solid;
+				}
+				else
+				{
+					var slope = (x > width / 2) ? SlopeType.SlopeDownRight : SlopeType.SlopeDownLeft;
+					tile.Slope = slope;
+				}
+			}
+		}
 	}
 
 	private static bool WaterSafe(int i, int j, bool checkWalls = false)
@@ -116,7 +142,7 @@ internal static class WateringHoleGen
 		return false;
 	}
 
-	private static void ClaySplotch(int i, int j)
+	private static void SolidSplotch(int i, int j, ushort type)
 	{
 		i -= 1;
 
@@ -127,7 +153,7 @@ internal static class WateringHoleGen
 				var t = Main.tile[x, y];
 
 				if (WorldGen.SolidOrSlopedTile(t))
-					t.TileType = TileID.ClayBlock;
+					t.TileType = type;
 			}
 		}
 	}

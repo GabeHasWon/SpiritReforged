@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
@@ -8,16 +9,23 @@ namespace SpiritReforged.Content.Ocean.Items.JellyfishStaff;
 [AutoloadGlowmask("255, 255, 255")]
 public class JellyfishStaff : ModItem
 {
-	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.PinkJellyfish), ItemDropRule.Common(Type, 20)));
+	public override void SetStaticDefaults()
+	{
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.PinkJellyfish), ItemDropRule.Common(Type, 100)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.BlueJellyfish), ItemDropRule.Common(Type, 500)));
+
+		MoRHelper.AddElement(Item, MoRHelper.Thunder);
+		MoRHelper.AddElement(Item, MoRHelper.Water, true);
+	}
 
 	public override void SetDefaults()
 	{
 		Item.width = 52;
 		Item.height = 46;
-		Item.value = Item.sellPrice(0, 0, 25, 0);
+		Item.value = Item.sellPrice(0, 2, 0, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.mana = 10;
-		Item.damage = 16;
+		Item.damage = 12;
 		Item.knockBack = 2.5f;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.useTime = 30;
@@ -26,6 +34,7 @@ public class JellyfishStaff : ModItem
 		Item.noMelee = true;
 		Item.shoot = ModContent.ProjectileType<JellyfishMinion>();
 		Item.UseSound = SoundID.Item44;
+		Item.autoReuse = true;
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => position = Main.MouseWorld;

@@ -2,23 +2,30 @@ using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-[AutoloadMinionBuff()]
+[AutoloadMinionBuff]
 public class ButterflyMinion : BaseMinion
 {
+	private const float Moving = 0;
+	private const float StuckToPlayer = 1;
+
+	private ref float AiState => ref Projectile.ai[0];
+
+	private Vector2 stuckPos = Vector2.Zero;
+
 	public ButterflyMinion() : base(600, 800, new Vector2(16, 16)) { }
+
 	public override void AbstractSetStaticDefaults()
 	{
 		Main.projFrames[Type] = 2;
 		ProjectileID.Sets.TrailCacheLength[Type] = 8;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
 	}
-
-	//public override void SetDefaults() => Projectile.hide = true;
 
 	public override bool PreAI()
 	{
@@ -32,8 +39,7 @@ public class ButterflyMinion : BaseMinion
 					Projectile.velocity += Projectile.DirectionFrom(p.Center) / 20;
 
 			if (Main.rand.NextBool(8) && !Main.dedServ)
-				ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center + Main.rand.NextVector2Circular(4, 4),
-					Projectile.velocity.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(0.2f, 0.4f), Color.LightPink, Color.DeepPink, Main.rand.NextFloat(0.1f, 0.2f), 20));
+				SpawnStarParticle();
 		}
 
 		else
@@ -42,19 +48,29 @@ public class ButterflyMinion : BaseMinion
 		return true;
 	}
 
-	private ref float AiState => ref Projectile.ai[0];
-	private const float Moving = 0;
-	private const float StuckToPlayer = 1;
+	private void SpawnStarParticle() => ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center + Main.rand.NextVector2Circular(4, 4),
+		Projectile.velocity.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(0.2f, 0.4f), Color.LightPink, Color.DeepPink, Main.rand.NextFloat(0.1f, 0.2f), 20));
 
-	private Vector2 stuckPos = Vector2.Zero;
 	public override void IdleMovement(Player player)
 	{
+		// Added HasNaNs check because why not - shouldn't happen in production
+		if (Projectile.position.HasNaNs() || Projectile.DistanceSQ(player.Center) > 1800 * 1800)
+		{
+			Projectile.Center = player.Top - new Vector2(0, 20);
+			stuckPos = Projectile.Center - player.MountedCenter;
+			AiState = StuckToPlayer;
+			Projectile.netUpdate = true;
+
+			for (int i = 0; i < 4; ++i)
+			{
+				SpawnStarParticle();
+			}
+		}
+
 		if (AiState == Moving)
 		{
-			if (Projectile.Distance(player.MountedCenter) > 2000)
-				Projectile.Center = player.MountedCenter;
-
 			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(player.MountedCenter) * 15, 0.04f);
+
 			if (player.Hitbox.Contains(Projectile.Center.ToPoint()))
 			{
 				stuckPos = Projectile.Center - player.MountedCenter;
@@ -63,7 +79,7 @@ public class ButterflyMinion : BaseMinion
 			}
 		}
 		else
-			Projectile.Center = stuckPos + player.MountedCenter;
+			Projectile.Center = stuckPos.RotatedBy(player.fullRotation) + player.MountedCenter;
 	}
 
 	public override bool DoAutoFrameUpdate(ref int framespersecond, ref int startframe, ref int endframe)
@@ -76,10 +92,9 @@ public class ButterflyMinion : BaseMinion
 	{
 		AiState = Moving;
 
-		if (Math.Abs(MathHelper.WrapAngle(Projectile.velocity.ToRotation() - Projectile.AngleTo(target.Center))) < MathHelper.PiOver4) //if close enough in desired angle, accelerate and home accurately
+		if (Math.Abs(MathHelper.WrapAngle(Projectile.velocity.ToRotation() - Projectile.AngleTo(target.Center))) < MathHelper.PiOver2) // If close enough in desired angle, accelerate and home accurately
 			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * 18, 0.1f);
-
-		else //if too much of an angle, circle around
+		else // If too much of an angle, circle around
 		{
 			if (Projectile.velocity.Length() > 8)
 				Projectile.velocity *= 0.97f;
@@ -92,19 +107,20 @@ public class ButterflyMinion : BaseMinion
 	}
 
 	public override bool MinionContactDamage() => AiState != StuckToPlayer; //Don't deal damage when idling
-
 	public override Color? GetAlpha(Color lightColor) => Color.White * Projectile.Opacity;
-
 	public override bool PreDraw(ref Color lightColor) => false;
-
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => overPlayers.Add(index);
 
 	public override void PostDraw(Color lightColor)
 	{
-		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"];
-		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition, null, Color.Pink.Additive() * Projectile.Opacity * 0.6f, 0, bloom.Size() / 2, 0.2f, SpriteEffects.None, 0);
+		if (AiState == StuckToPlayer)
+			Projectile.gfxOffY = Player.gfxOffY;
+
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.Pink.Additive() * Projectile.Opacity * 0.6f, 0, bloom.Size() / 2, 0.2f, SpriteEffects.None, 0);
 
 		float opacity = AiState == Moving ? 0.6f : 0f;
+
 		Projectile.QuickDrawTrail(Main.spriteBatch, opacity, drawColor: Color.White.Additive(50));
 		Projectile.QuickDraw(drawColor: Color.White.Additive(150) * (opacity + 0.4f));
 	}

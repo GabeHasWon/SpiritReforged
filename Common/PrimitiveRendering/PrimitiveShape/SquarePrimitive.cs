@@ -47,7 +47,7 @@ public class SquarePrimitive : IPrimitiveShape
 				Vector2 cornerPos = Position - new Vector2(x * Length / 2, y * Height / 2).RotatedBy(Rotation);
 				cornerPos += offset;
 
-				AddVertexIndex(cornerPos, new Vector2((x + 1) / 2, (y + 1) / 2));
+				AddVertexIndex(cornerPos, new Vector2((-x + 1) / 2, (-y + 1) / 2));
 			}
 		}
 

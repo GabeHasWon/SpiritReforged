@@ -12,9 +12,11 @@ public class BotanistBody : ModItem
 		Item.defense = 1;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-			.AddIngredient(ItemID.Silk, 6)
-			.AddIngredient(ItemID.FallenStar, 5)
-			.AddTile(TileID.Loom)
-			.Register();
+	public override void EquipFrameEffects(Player player, EquipType type)
+	{
+		var bodyVanitySlot = player.armor[11];
+
+		if (bodyVanitySlot.IsAir || bodyVanitySlot.type == Type)
+			player.waist = EquipLoader.GetEquipSlot(Mod, nameof(BotanistBody), EquipType.Waist);
+	}
 }

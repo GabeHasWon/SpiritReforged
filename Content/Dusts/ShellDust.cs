@@ -17,7 +17,7 @@ public class ShellDust : ModDust
 		dust.position += dust.velocity;
         dust.rotation += dust.velocity.X / 8;
 
-        if (Math.Abs(dust.velocity.X) < .5f && ++dust.alpha >= 255 || WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(dust.position)))
+		if (Math.Abs(dust.velocity.X) < .5f && ++dust.alpha >= 255 || WorldGen.SolidOrSlopedTile(Framing.GetTileSafely(dust.position)))
 			dust.active = false;
 
 		return false;

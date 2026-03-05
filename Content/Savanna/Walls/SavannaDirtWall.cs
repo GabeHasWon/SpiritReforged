@@ -2,8 +2,10 @@ using SpiritReforged.Common.WallCommon;
 
 namespace SpiritReforged.Content.Savanna.Walls;
 
-public class SavannaDirtWall : ModWall, IAutoloadWallItem
+public class SavannaDirtWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 {
+	public static int UnsafeType { get; private set; }
+
 	public void AddItemRecipes(ModItem item)
 	{
 		var mod = SpiritReforgedMod.Instance; //Mod is null here, so get the instance manually
@@ -19,7 +21,18 @@ public class SavannaDirtWall : ModWall, IAutoloadWallItem
 			.AddTile(TileID.WorkBenches)
 			.Register();
 	}
-	public override void SetStaticDefaults() => AddMapEntry(new Color(98, 39, 5));
+
+	public override void SetStaticDefaults()
+	{
+		Main.wallHouse[Type] = true;
+
+		var entryColor = new Color(98, 39, 5);
+		AddMapEntry(entryColor);
+
+		var wall = Mod.Find<ModWall>(Name + "Unsafe");
+		UnsafeType = wall.Type;
+		wall.AddMapEntry(entryColor); //Set the unsafe wall's map entry
+	}
 
 	public override bool WallFrame(int i, int j, bool randomizeFrame, ref int style, ref int frameNumber)
 	{
@@ -32,6 +45,7 @@ public class SavannaDirtWall : ModWall, IAutoloadWallItem
 			t.WallFrameY = 4 * 36;
 			return false;
 		}
+
 		return true;
 	}
 }

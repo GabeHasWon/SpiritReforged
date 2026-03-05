@@ -1,12 +1,18 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using RubbleAutoloader;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Forest.Safekeeper;
 
-public class SkeletonHand : ModTile
+[AutoloadGlowmask("255,255,255", false)]
+public class SkeletonHand : ModTile, IAutoloadRubble
 {
-	private static Asset<Texture2D> glowTexture;
 	private static readonly Point[] glowPoints = [new Point(9, 11), new Point(13, 5), new Point(7, 11)]; //Corresponds to different styles
+
+	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<SafekeeperRing>(), IAutoloadRubble.RubbleSize.Small);
 
 	public override void SetStaticDefaults()
 	{
@@ -15,6 +21,8 @@ public class SkeletonHand : ModTile
 		Main.tileMergeDirt[Type] = false;
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
+
+		TileID.Sets.CanDropFromRightClick[Type] = true;
 
 		const int height = 30;
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -28,25 +36,33 @@ public class SkeletonHand : ModTile
 
 		AddMapEntry(new Color(165, 165, 150));
 		RegisterItemDrop(ModContent.ItemType<SafekeeperRing>());
+	}
 
-		glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow");
+	public override void MouseOver(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<SafekeeperRing>();
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var tile = Main.tile[i, j];
+		var t = Main.tile[i, j];
+		if (!TileDrawing.IsVisible(t))
+			return;
 
-		var data = TileObjectData.GetTileData(tile);
-		var zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateFullHeight);
+		var data = TileObjectData.GetTileData(t);
+		var source = new Rectangle(t.TileFrameX, t.TileFrameY, data.CoordinateWidth, data.CoordinateFullHeight);
 		var position = new Vector2(i, j) * 16 - new Vector2((source.Width - 16) / 2, source.Height - 16 - 4);
 
-		float mult = MathHelper.Clamp(1f - Main.LocalPlayer.Distance(new Vector2(i, j) * 16) / 100f, 0, 1);
+		float lerp = (float)Math.Sin(Main.timeForVisualEffects / 50f) * .25f;
+		float mult = MathHelper.Clamp(1f - Main.LocalPlayer.Distance(new Vector2(i, j) * 16) / 150f, 0, 1);
 
-		spriteBatch.Draw(glowTexture.Value, position - Main.screenPosition + zero, 
-			source, Color.White * mult, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position - Main.screenPosition + TileExtensions.TileOffset, 
+			source, Color.White * (mult + lerp), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-		if (!Main.gamePaused && mult > 0 && Main.rand.NextBool(5))
+		if (!Main.gamePaused && mult > .15f && Main.rand.NextBool(5))
 		{
 			int style = TileObjectData.GetTileStyle(Main.tile[i, j]);
 			var dustPos = position + glowPoints[style].ToVector2() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f);

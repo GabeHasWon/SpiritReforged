@@ -1,3 +1,9 @@
+using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -11,20 +17,20 @@ public class BambooKendoBlade : ModItem, IDashSword
 
 	public override void SetStaticDefaults()
 	{
-		if (!Main.dedServ)
-			HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+		HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+		SpiritSets.IsSword[Type] = true;
 	}
 
 	public override void SetDefaults()
 	{
-		Item.damage = 7;
+		Item.damage = 12;
 		Item.crit = 2;
 		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 20;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.value = Item.sellPrice(silver: 18);
+		Item.value = Item.sellPrice(silver: 3);
 		Item.rare = ItemRarityID.White;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<KendoBladeLunge>();
@@ -33,6 +39,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 		Item.useTurn = true;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)
@@ -44,12 +51,12 @@ public class BambooKendoBlade : ModItem, IDashSword
 		}
 	}
 
-	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().hasDashCharge;
+	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse == 2)
-			Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<KendoBladeLunge>(), damage, knockback, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<KendoBladeLunge>(), (int)(damage * 2.25f), knockback, player.whoAmI);
 		else
 		{
 			float oldSwingArc = swingArc;
@@ -70,7 +77,6 @@ public class BambooKendoBlade : ModItem, IDashSword
 		var texture = HeldTexture;
 
 		var frame = texture.Frame(1, 5, 0, 4, 0, -2);
-
 		var center = info.drawPlayer.MountedCenter;
 		var drawPos = new Vector2((int)(center.X - Main.screenPosition.X), (int)(center.Y + 6 * info.drawPlayer.gravDir - Main.screenPosition.Y + info.drawPlayer.gfxOffY));
 
@@ -80,19 +86,15 @@ public class BambooKendoBlade : ModItem, IDashSword
 		info.DrawDataCache.Add(new DrawData(texture.Value, drawPos, frame, color, rotation, new Vector2(30), 1, info.playerEffect, 0));
 	}
 
-	public override void AddRecipes()
-	{
-		Recipe recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<StrippedBamboo>(), 20);
-		recipe.AddTile(TileID.WorkBenches);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
 }
 
 public class KendoBladeSwing : ModProjectile
 {
-	private float SwingTime => Main.player[Projectile.owner].itemTimeMax; //The full duration of the swing
+	/// <summary> Damage distance in pixels. </summary>
+	private const int Reach = 100;
 
+	private float SwingTime => Main.player[Projectile.owner].itemTimeMax; //The full duration of the swing
 	public ref float SwingArc => ref Projectile.ai[0]; //The full arc of the swing in radians
 	public ref float Counter => ref Projectile.ai[1];
 
@@ -105,6 +107,7 @@ public class KendoBladeSwing : ModProjectile
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(18);
+		Projectile.DamageType = DamageClass.Melee;
 		Projectile.friendly = true;
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
@@ -138,10 +141,11 @@ public class KendoBladeSwing : ModProjectile
 		Projectile.scale = MathHelper.Min(Projectile.scale + .075f, 1); //Fade in
 	}
 
+	public override void CutTiles() => Projectile.PlotTileCut(Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		int lineWidth = 30;
-		var endPos = Projectile.Center + (Vector2.UnitX * (70 - lineWidth)).RotatedBy(Projectile.rotation);
+		var endPos = Projectile.Center + (Vector2.UnitX * (Reach - lineWidth)).RotatedBy(Projectile.rotation);
 		float collisionPoint = 0f;
 
 		return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, lineWidth, ref collisionPoint);
@@ -153,7 +157,7 @@ public class KendoBladeSwing : ModProjectile
 		float visCounter = MathHelper.Min((float)Counter / (SwingTime / 2), 1);
 
 		var texture = TextureAssets.Projectile[Type];
-		SpriteEffects effects = Projectile.spriteDirection * swingDir == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
+		var effects = Projectile.spriteDirection * swingDir == -1 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 		var frame = texture.Frame(1, Main.projFrames[Type], 0, (int)(visCounter * (Main.projFrames[Type] - 1)), 0, -2);
 		var origin = new Vector2(4, effects == SpriteEffects.FlipVertically ? 9 : 30); //The handle
 		var position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
@@ -166,15 +170,37 @@ public class KendoBladeSwing : ModProjectile
 			var color = Projectile.GetAlpha(lightColor) * (1f - (float)i / Projectile.oldPos.Length);
 			float rotation = Projectile.rotation - afterimageLength * i / 5f * Projectile.spriteDirection * swingDir;
 
-			Main.EntitySpriteDraw(texture.Value, position, frame, color, rotation, origin, Projectile.scale, effects, 0);
+			Main.EntitySpriteDraw(texture.Value, position, frame, color, rotation, origin, Projectile.scale, effects);
 		}
 
+		DrawSmear(lightColor, effects);
 		return false;
 	}
+
+	private void DrawSmear(Color lightColor, SpriteEffects effects)
+	{
+		Main.instance.LoadProjectile(985);
+		var smear = TextureAssets.Projectile[985].Value;
+		var player = Main.player[Projectile.owner];
+
+		int frame = (int)(Counter / SwingTime * 12f);
+		var source = smear.Frame(1, 4, 0, frame);
+		var color = Projectile.GetAlpha(lightColor) * Math.Min(Counter / SwingTime * 3, 1) * .5f;
+
+		float rotation = Projectile.rotation - SwingArc * .5f * Projectile.spriteDirection;
+		float dist = Reach - 20;
+		var position = player.Center + (Vector2.UnitX * dist).RotatedBy(rotation) - Main.screenPosition;
+
+		Main.EntitySpriteDraw(new DrawData(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), .75f, effects, 0));
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
 }
 
 public class KendoBladeLunge : ModProjectile
 {
+	public static readonly SoundStyle BigSwing = new("SpiritReforged/Assets/SFX/Item/BigSwing");
+
 	public int targetWhoAmI = -1;
 	private Vector2 lastPosition;
 
@@ -185,14 +211,13 @@ public class KendoBladeLunge : ModProjectile
 	public ref float Counter => ref Projectile.ai[0];
 
 	public override string Texture => "SpiritReforged/Content/Jungle/Bamboo/Items/BambooKendoBladeProj";
-
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
-
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(38);
+		Projectile.DamageType = DamageClass.Melee;
 		Projectile.friendly = true;
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
@@ -203,30 +228,13 @@ public class KendoBladeLunge : ModProjectile
 
 	public override void AI()
 	{
-		static float AngleLerp(Player player, float curAngle, float targetAngle, float amount) //Modified Utils.AngleLerp with more control over direction
-		{
-			float angle;
-			if (targetAngle < curAngle)
-			{
-				float num = targetAngle + (float)Math.PI * 2f;
-				angle = MathHelper.Lerp(curAngle, targetAngle, amount);
-			}
-			else
-			{
-				if (!(targetAngle > curAngle))
-					return curAngle;
-
-				float num = targetAngle - (float)Math.PI * 2f;
-				angle = player.direction == -1 ? MathHelper.Lerp(curAngle, num, amount) : MathHelper.Lerp(curAngle, targetAngle, amount);
-			}
-
-			return MathHelper.WrapAngle(angle);
-		}
-
 		var owner = Main.player[Projectile.owner];
+		var mp = owner.GetModPlayer<DashSwordPlayer>();
+		mp.SetDashCooldown(40);
 
 		if (Counter < DashDuration) //Ongoing dash
 		{
+			mp.dashing = true;
 			float quote = Counter / DashDuration;
 
 			if (Counter + 1 == DashDuration)
@@ -252,13 +260,13 @@ public class KendoBladeLunge : ModProjectile
 			owner.armorEffectDrawShadow = true;
 			owner.armorEffectDrawShadowLokis = true;
 
-			if (targetWhoAmI == -1) //Find a target
+			if (Projectile.owner == Main.myPlayer && targetWhoAmI == -1) //Find a target
 			{
 				if (lastPosition == Vector2.Zero)
 					lastPosition = owner.Center;
 
 				float collisionPoint = 0;
-				var crossed = Main.npc.Where(x => (x.CanBeChasedBy(Projectile) || x.type == NPCID.TargetDummy) && Collision.CheckAABBvLineCollision(x.Hitbox.TopLeft(), x.Hitbox.Size(), lastPosition, owner.Center, 15, ref collisionPoint)).OrderBy(x => x.Distance(lastPosition)).FirstOrDefault();
+				var crossed = Main.npc.Where(x => x.CanBeStruck() && Collision.CheckAABBvLineCollision(x.Hitbox.TopLeft(), x.Hitbox.Size(), lastPosition, owner.Center, 15, ref collisionPoint)).OrderBy(x => x.Distance(lastPosition)).FirstOrDefault();
 
 				if (crossed != default)
 					targetWhoAmI = crossed.whoAmI;
@@ -270,6 +278,8 @@ public class KendoBladeLunge : ModProjectile
 			dust.noGravity = true;
 			dust.noLightEmittence = true;
 		}
+		else
+			mp.dashing = false;
 
 		if (Counter > DashDuration + StrikeDelay)
 		{
@@ -301,6 +311,26 @@ public class KendoBladeLunge : ModProjectile
 
 		if (Counter == 1)
 			lastPosition = owner.Center;
+
+		static float AngleLerp(Player player, float curAngle, float targetAngle, float amount) //Modified Utils.AngleLerp with more control over direction
+		{
+			float angle;
+			if (targetAngle < curAngle)
+			{
+				float num = targetAngle + (float)Math.PI * 2f;
+				angle = MathHelper.Lerp(curAngle, targetAngle, amount);
+			}
+			else
+			{
+				if (!(targetAngle > curAngle))
+					return curAngle;
+
+				float num = targetAngle - (float)Math.PI * 2f;
+				angle = player.direction == -1 ? MathHelper.Lerp(curAngle, num, amount) : MathHelper.Lerp(curAngle, targetAngle, amount);
+			}
+
+			return MathHelper.WrapAngle(angle);
+		}
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -314,15 +344,16 @@ public class KendoBladeLunge : ModProjectile
 		}
 
 		SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = .8f }, Projectile.Center);
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BigSwing"), target.Center);
-		//SpiritMod.primitives.CreateTrail(new AnimePrimTrailTwo(target));
+		SoundEngine.PlaySound(BigSwing, target.Center);
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
 		if (CanDamage() is true)
+		{
 			if (targetWhoAmI != -1 && Main.npc[targetWhoAmI] is NPC target && targetHitbox == target.Hitbox)
 				return true;
+		}
 
 		return false;
 	}

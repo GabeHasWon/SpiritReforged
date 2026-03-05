@@ -1,0 +1,22 @@
+using SpiritReforged.Common.TileCommon;
+
+namespace SpiritReforged.Content.SaltFlats.Tiles;
+
+public class SaltGlass : ModTile, IAutoloadTileItem
+{
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("Salt", 2).AddTile(TileID.Furnaces).Register();
+
+	public override void SetStaticDefaults()
+	{
+		Main.tileSolid[Type] = true;
+		Main.tileBlockLight[Type] = false;
+
+		TileID.Sets.CorruptBiome[Type] = -2;
+		TileID.Sets.CrimsonBiome[Type] = -2;
+
+		AddMapEntry(new Color(180, 170, 170));
+		DustType = DustID.Glass;
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
+}

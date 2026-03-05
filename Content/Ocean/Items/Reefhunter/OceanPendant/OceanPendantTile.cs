@@ -2,20 +2,21 @@ using Terraria.DataStructures;
 using SpiritReforged.Content.Ocean.Boids;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Common.TileCommon;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 public class OceanPendantTile : ModTile
 {
 	public static int ItemType => ModContent.ItemType<OceanPendant>();
-	private static CircleBoid circleBoid;
+	private static CircleBoid _circleBoid;
 
 	public override void Load() => BoidManager.OnAddBoids += AddCircleBoid;
 
-	private void AddCircleBoid(int seed)
+	private static void AddCircleBoid(int seed)
 	{
-		circleBoid = new CircleBoid(BoidManager.Lookup(seed - 1), 1, 12, spawnWeight: 0);
-		BoidManager.boids.Add(circleBoid);
+		_circleBoid = new CircleBoid(12, 0, BoidManager.SelectTypes(seed - 1));
+		BoidManager.Boids.Add(_circleBoid);
 	}
 
 	public override void SetStaticDefaults()
@@ -24,6 +25,8 @@ public class OceanPendantTile : ModTile
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 		Main.tileSpelunker[Type] = true;
+
+		TileID.Sets.CanDropFromRightClick[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateHeights = [18];
@@ -42,19 +45,10 @@ public class OceanPendantTile : ModTile
 		player.cursorItemIconID = ItemType;
 	}
 
-	public override bool RightClick(int i, int j)
-	{
-		WorldGen.KillTile(i, j);
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j);
-
-		return true;
-	}
-
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
 		var worldPos = new Vector2(i, j) * 16;
-		circleBoid.Populate(worldPos, 15, 120, worldPos); //Populate our custom boid
+		_circleBoid.Populate(worldPos, 15, 120, worldPos); //Populate our custom boid
 	}
 
 	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
@@ -75,18 +69,17 @@ public class OceanPendantTile : ModTile
 
 	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange, Main.offScreenRange);
 		var worldPos = new Vector2(i, j) * 16 + new Vector2(8);
-		var drawPos = worldPos - Main.screenPosition + zero;
+		var drawPos = worldPos - Main.screenPosition + TileExtensions.TileOffset;
 
 		float rotation = (float)Main.timeForVisualEffects * .01f;
 		float scale = .1f;
 		float distanceMult = Math.Clamp(1f - Main.LocalPlayer.Distance(worldPos) / (16 * 25), 0, 1);
 
-		spriteBatch.Draw(AssetLoader.LoadedTextures["Star2"], drawPos, null, (Color.Yellow with { A = 0 }) * .5f * distanceMult,
+		spriteBatch.Draw(AssetLoader.LoadedTextures["Star2"].Value, drawPos, null, (Color.Yellow with { A = 0 }) * .5f * distanceMult,
 			rotation, AssetLoader.LoadedTextures["Star2"].Size() / 2, scale, SpriteEffects.None, 0);
 
-		spriteBatch.Draw(AssetLoader.LoadedTextures["Star"], drawPos, null, (Color.White with { A = 0 }) * distanceMult,
+		spriteBatch.Draw(AssetLoader.LoadedTextures["Star"].Value, drawPos, null, (Color.White with { A = 0 }) * distanceMult,
 			rotation, AssetLoader.LoadedTextures["Star"].Size() / 2, scale, SpriteEffects.None, 0);
 	}
 }

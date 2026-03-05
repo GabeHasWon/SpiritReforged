@@ -110,7 +110,7 @@ public class SunMoonILEdit : ModSystem
 			cursor.Emit(OpCodes.Brfalse, afterDraw);
 
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
 			MonoModHooks.DumpIL(ModContent.GetInstance<SpiritReforgedMod>(), il);
 			//throw new ILPatchFailureException(SpiritReforgedMod.Instance, il, e);

@@ -1,0 +1,62 @@
+HydrothermalVentPlume.DisplayName: Smoke Plume
+Cannonbubble.DisplayName: Cannonbubble
+UrchinBall.DisplayName: Urchin Ball
+UrchinSpike.DisplayName: Urchin Spike
+JellyfishBolt.DisplayName: Electric Bolt
+JellyfishMinion.DisplayName: Little Jellyfish
+ReefWrathProj.DisplayName: Coral Reef
+JellyfishPet.DisplayName: Jellyfish Pet
+FairyMinion.DisplayName: Fairy Minion
+FairyProj.DisplayName: Magical Bolt
+StarPowderProj.DisplayName: Star Powder
+ButterflyMinion.DisplayName: Butterfly Minion
+ToucanFeather.DisplayName: Toucan Feather
+ToucanMinion.DisplayName: Toucan Minion
+TumblerPet.DisplayName: Tumbler Pet
+SunOrb.DisplayName: Sun Orb
+SunStaffHeld.DisplayName: Sun Staff
+WheatgrassSeed.DisplayName: Wheatgrass Seed
+RoyalKhopeshHeld.DisplayName: Royal Khopesh
+Zipline.DisplayName: Zipline
+RogueKnifeMinion.DisplayName: Rusted Knife
+CactusWallProj.DisplayName: Cactus Wall
+SkullSentryEye.DisplayName: Skull Sentry Eye
+SkullSentryMucus.DisplayName: Skull Sentry Mucus
+SkullSentrySentry.DisplayName: Skull Sentry Sentry
+ZiplineProj.DisplayName: Zipline Proj
+FallingBaobabFruit.DisplayName: Falling Baobab Fruit
+RollingCart.DisplayName: Rolling Cart
+RadonMossBobber.DisplayName: Radon Moss Bobber
+OganessonMossBobber.DisplayName: Oganesson Moss Bobber
+BuffAura.DisplayName: Buff Aura
+WheezerCloud.DisplayName: Poisonous Gas
+Shockwave.DisplayName: Shockwave
+EnergizedShockwave.DisplayName: Energized Shockwave
+RollingBowlder.DisplayName: Rolling Bowlder
+Firespike.DisplayName: Firespike
+CannonBomb.DisplayName: Bomb Cannon Shot
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: Jinx Arrow
+JinxBowMinion.DisplayName: Jinx Bow Minion
+RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Energy Stomp
+EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Finger Shot
+NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: Chain
+GoldPhysicsChain.DisplayName: Gold Chain
+CactusSpine.DisplayName: Cactus Spine
+TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: Dragon Fireball
+PileOfConsequencesPet.DisplayName: Consequences
+EnergyLaser.DisplayName: Energy Laser
+BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+WindBlast.DisplayName: Wind Blast
+SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"

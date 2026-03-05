@@ -1,0 +1,565 @@
+VanillaDialogue: {
+	Guide: {
+		WorldNPC: 在探索世界时，你可能会遇到其他冒险者。如果遇到了，或许你们可以互相帮助！
+		Ecotone: 如果气候适宜，沙漠和丛林之间的交界地带会形成广袤的稀树平原。我一直想亲眼看看！
+		Savanna: 这里的动物皮革能给你做些超酷的装备，年轻人。
+		Kelp: 别吃海藻。
+	}
+
+	ArmsDealer.Savanna: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
+
+	Stylist: {
+		Savanna: 在这种气候里保持发型简直要命。
+		Duststorm: 要是再让我从别人头发里挑沙子，我就……
+	}
+
+	TravellingMerchant: {
+		Cartographer1: 我常在路上遇到个迷路的制图师。说真的，她给我的生意添了不少乱子！
+		Cartographer2: 噢，是{0}！上个月她给我指完路就栽进沟里了。
+		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
+	}
+
+	Demolitionist.HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
+
+	Nurse: {
+		Duststorm: 别让外面的沙尘刮伤你！这可不归我管。
+		Savanna: 我不是兽医！快把这些动物弄出去。
+	}
+
+	PartyGirl: {
+		Duststorm: 唉，这天气没法开派对。要不咱们搞个小聚会？
+		Savanna: 这么开阔的地方最适合派对了！唔，或许可以办个日间狂欢！
+	}
+
+	Golfer: {
+		Duststorm: 都怪这些沙尘害我打不出标准杆！
+		Savanna: 这儿到处都是障碍！我的球老是卡进灌木丛、沙地……还有树上！
+	}
+
+	Zoologist: {
+		Savanna1: 天呐——这里简直完美！你快来看看这些可爱的小动物！
+		Savanna2: 什么？！那些鬣狗咬你了？但它们明明那么呆萌！
+	}
+
+	Angler: {
+		// Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
+		// Pager1: Remember to bring me the fish IN PERSON.
+	}
+
+	// Wizard.SaltFlats: The rocks around these parts would make for a perfect crystal ball!
+	// Painter.SaltFlats: I've never seen a more beautiful landscape! I could paint here for the rest of my life.
+	// Cyborg.SaltFlats: It.. it burns.
+	// Mechanic.SaltFlats: Ugh! All this salt is corroding my gear. Get me out of here!
+	// Truffle.SaltFlats: This place is deeply uncomfortable for our kind. I feel so dry...
+}
+
+Crinoid: {
+	DisplayName: 海百合
+	Entry: 这些稀奇的动物与海星有着密切的亲缘关系。它们以沉入海底的任何东西为食。
+}
+
+Pelican: {
+	DisplayName: 鹈鹕
+	Entry: 一种大型海鸟，有着特殊的喙来捕捉猎物。如果受到惊吓，它会丢下已经抓住的东西，但那样就太残忍了。
+}
+
+TinyCrab: {
+	DisplayName: 苍色蟹
+	Entry: 这些可爱的小生物并不像它们的大型血亲那样具有敌意。生活在较深的水域使它们失去了色素，因为它们接触阳光的机会较少。
+}
+
+Tubeworm: {
+	DisplayName: 管虫
+	Entry: 在发光潮汐的深处，光线无法照射的地方，生活着一些迷人的生物，能够尽情享受从热液喷口渗出的烟雾。
+}
+
+SandPiper: {
+	DisplayName: 矶鹬
+	Entry: 一种勇敢的小鸟，沿着海岸线巡逻，寻找着被海浪冲刷出来的食物。
+}
+
+Gar: {
+	DisplayName: 雀鳝
+	Entry: 雀鳝是敏锐的猎手，通常栖息在淡水水域。在雀鳝活动的水域游泳时要格外小心——它们可能从侧方、前方甚至后方发起攻击。
+}
+
+GoldGar: {
+	DisplayName: 金雀鳝
+	Entry: 只有怪物才会为了美味的鱼子酱而撕开稀有的金雀鳝。只有怪物才会……
+}
+
+OceanSlime: {
+	DisplayName: 椰子史莱姆
+	Entry: 从上方往下看！这些狡猾的史莱姆栖息在岸边，巧妙地伪装成这种熟悉的水果。
+}
+
+DiverZombie: {
+	Entry: 谁会知道那些氧气罐需要装有真正的氧气？
+	DisplayName: 僵尸
+}
+
+KelpZombie: {
+	Entry: 鱼类害怕我，女人害怕我，男人害怕我，小孩害怕我，因为我是亡灵。
+	DisplayName: 僵尸
+}
+
+SailorZombie: {
+	Entry: 尽管它们现在的状态可能并不尽如人意，但它们曾经运营过一艘非常不错的豪华游艇，你应该找个时间去看看。
+	DisplayName: 僵尸
+}
+
+TridentZombie: {
+	Entry: 他们的三叉戟显然对他们的生活没有多大用处。但它仍然很尖，所以要小心。
+	DisplayName: 僵尸
+}
+
+Killifish: {
+	DisplayName: 鳉鱼
+	Entry: 鱼如其名，鳉鱼以一项特质闻名于世——极易死亡。当然，它们也以绚丽斑斓的鳞片著称。
+}
+
+GoldKillifish: {
+	DisplayName: 金鳉鱼
+	Entry: 金光灿灿的鳞片对鳉鱼的困境没有任何帮助。
+}
+
+Termite: {
+	DisplayName: 白蚁
+	Entry: 这些小虫群聚而居，能建造布满复杂隧道的巨型巢穴。它们还格外对稀树平原上那些干燥酥脆的朽木情有独钟。
+}
+
+SavannaSandSlime: {
+	DisplayName: 沙史莱姆
+	Entry: 枝叶稍密，沙土略稀，凶险如故。
+}
+
+PeevedTumbler: {
+	DisplayName: 恼怒翻滚怪
+	Entry: 稀树平原的日子不好过……但也没那么糟。嘿，换你眼里进沙子也得恼怒。
+}
+
+Sparrow: {
+	Entry: 像它生活在森林中的表亲世界名鸟一样，麻雀活得简单纯粹。它们扑棱棱飞过稀树平原，啄食白蚁，沐浴清风。
+	DisplayName: 麻雀
+}
+
+SafariZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 往好处想，若你已是亡灵，那么毒蛇也奈何不了你。
+}
+
+TumbleZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 在那亡灵的躯壳之下，在鲜血、枝蔓与腐朽的层层包裹之中，藏着一个令人动容的故事，一个翻滚怪与僵尸，在最不可能相遇的境遇里，结下了真挚的友谊。
+}
+
+Hyena: {
+	DisplayName: 鬣狗
+	Entry: 鬣狗生性狡黠，结群结队的捕猎，专挑弱小的动物下手。可若是遇上泰拉人，它们只能落荒而逃，无法正面交锋。
+}
+
+Ostrich: {
+	DisplayName: 鸵鸟
+	Entry: 鸵鸟虽不善飞行，却拥有惊人的陆地疾速。所幸它们只把这本领用来刨食蚯蚓，而非追击于你。
+}
+
+ButterflyCritter: {
+	DisplayName: 缥缈幻蝶
+	Entry: 或许当你仰望夜空时，也能在星辰间寻得它们的踪迹。那翩跹舞姿如浮光掠影，恰似其转瞬即逝的形骸。
+}
+
+SavannaJungleSlime: {
+	DisplayName: 丛林史莱姆
+	Entry: 这货刚吞了几朵野花！萌得简直让人下不去手……
+}
+
+Cartographer: {
+	DisplayName: 制图师
+	Buttons.Map: 地图
+
+	Names: {
+		0: Soleana
+		1: Kyra
+		2: Jesse
+		3: '''"Clumsy"'''
+		4: Wynn
+		5: Nessa
+	}
+
+	Dialogue: {
+		0: 地图绘制是一项艰巨的工作。有时记不清位置就……等等。
+		1: 喂，你身上有结实点的纸吗？我的在做铅垂时用完了。
+		2: 天啊……图钉掉在地上可太糟了，尤其是棕色的图纸。
+		3: 有地图吗？借我看看？要保存完好的！
+		4: 找到路是运气，再找到就是好地图的功劳。
+
+		Map: {
+			FloatingIsland: {
+				0: 让我想想……就在这！我发现的可爱小岛。怎么上去的？这么说吧，鹰身女妖能把你带到意想不到的高度。
+				1: 快看这儿！超——级高的地方！之前我胡闹过头，结果居然上天了！好像还藏着宝藏来着……不过当时光顾着琢磨怎么下来，啥都没顾上。
+				2: 快看这个标记！几周前我发现了座天空岛，景致绝妙就是邻居太吵！希望你能找到我没发现的惊喜。
+			}
+
+			EnchantedSword: {
+				0: 快看！就在这……一条窄道尽头，你肯定不信——真有把石中剑！和传说一模一样！可我怂了没敢碰，自知不配啊。
+				1: 啊哈！就是这儿。看着不起眼，地下却埋着把神兵利器。我本来想拿，可我的兜里塞满了稀有蘑菇和测绘纸……
+				2: 到了！不知这剑怎么插进石头的，就像那个……亚瑟王传说？我可不碰来历不明的武器，也许更合适你。
+			}
+
+			Shimmer: {
+				0:
+					'''
+					在哪儿来着……啊，就是这！当时我正摸黑穿行危险洞穴，突然看见前方泛起一片绚丽的粉色微光，美得惊心动魄。
+					知道在自然界这种信号代表什么吗？快逃！所以我溜了。
+					'''
+				1:
+					'''
+					呃……大概在这附近。我从海边回来时摔晕了，醒来发现被小仙灵带到了个诡异的地方……
+					后来记忆很模糊，只记得自己吓得够呛。那些小家伙赶紧把我送走了。
+					'''
+				2:
+					'''
+					图钉在这。见过会发光的水吗？像夜空般闪烁的紫色，简直不像人间之物。
+					千万别喝！喝完身体会产生虚幻感……很难形容，信我就对了。
+					'''
+			}
+
+			Savanna: {
+				0:
+					'''
+					搞定，图钉打好了！我那会儿正例行晨练，一边散步一边恶意捶树摘苹果。
+					我捶了几棵后一抬头，整片草原竟悄无声息地出现在眼前！我愣了几秒，就继续捶我的树去了。
+					'''
+				1:
+					'''
+					看这儿！你有过埋头直走盯着地面的经历吗？千万别学！我有次就这么干，结果眼睁睁看着草地从鲜绿变成病恹恹的灰绿色。
+					一抬头——好家伙！这辈子没见过这么高的草，密得根本钻不进去。所以嘛……我溜了。费那劲干嘛！
+					'''
+				2:
+					'''
+					之前有次测试被丛林蝙蝠追能跑多快，结果“砰！”的一下，就在地图这个位置，突然漫天沙尘。一片热带草原在我的眼前展开！壮观的嘞！
+					顺便说一句，我发现逃命时我能跑得贼快。
+					'''
+			}
+
+			Hive: {
+				0: 图钉打在这儿……说真的，那片丛林我可不推荐去，太要命了！不过要是看到巨型蜂巢，附近准有蜂蜜。虽然得挨几针，但绝对值得！
+				1: 搞定！呃……实话实说，有时候就算撞见液态黄金，也不值得冒险。那些蜜蜂凶得很……远观就行，别较真。
+				2: 看这儿……对，就这！你可能会发现好东西，不过长话短说——带好防蛰装备，被扎了可疼的要命。
+			}
+
+			Curiosity: {
+				0:
+					'''
+					喏，就这儿。你知道我总到处晃悠，看风景还爱自言自语……结果一跟大地来了个亲密接触，啥都不重要了。
+					在这被什么东西绊了个狗吃屎，但我没法告诉你。我气炸了懒得看是啥。
+					'''
+				1:
+					'''
+					大概是……这儿？差不多吧。像我这样到处探索，总能撞见稀奇玩意儿。有时候真能发现好东西。
+					换作是你，我建议赶紧冲过去——天知道会不会被人捷足先登！
+					'''
+				2:
+					'''
+					重点看这片区域。我是个测绘师对吧？专门做标记的……但有时候图钉太多自己也糊涂。
+					比如这个标记，打图钉完就忘为啥钉在那儿了。专门跑过去看一眼，回来又忘了。干脆送你得了——可能是我记性差，但也保不准是什么诅咒玩意儿。
+					'''
+			}
+
+			ButterflyShrine: {
+				0:
+					'''
+					这个位置是重点！那晚寒风刺骨，邪门的妖风直接把我的地图从包里卷了出去。
+					我趴在地上抢救心血，突然看见地上有个针眼大的小洞，泛着紫光！我这种怂包可不敢碰，但你看着就像爱冒险的主儿。
+					'''
+				1:
+					'''
+					地图上这个点！说来你可能不信……你见过那种眼前飘过的闪光点吗？莫名其妙的小亮光？
+					别笑！但我发誓在这见过粉色光蝶！可它们根本不是实体！我试着去抓，结果发现是纯能量体，简直匪夷所思！
+					'''
+				2: 图钉在这儿。我在一天内被好几个坑洞给绊倒了，但发紫光的洞？这辈子头回见。这种邪门玩意儿我可不想沾边，建议绕道走。
+			}
+
+			WulfrumBunker: {
+				0: 希望我没记错……我像往常一样闲逛时，发现树林后藏着一处诡异的绿色机械设施。顶部布满奇怪装置，我还从下面听到了机械嗡鸣声……谢了，我可不想靠近！
+				1: 我的营地原本在那儿！我在长途跋涉后正休息呢，结果一个有着大手的小机器怪抢走了我的包！幸好我休息够了，不然真追不上那家伙。
+				2: 就是这儿！想忘都难。在这里工业设施可不多见——对我来说倒是好事，毕竟我讨厌噪音。尤其当能量场突然出现，然后废料朝我飞来的时候。
+			}
+
+			BloodAltar: {
+				0: 还有……这里！地表测绘只是皮毛，大多怪东西都在地下，不过我都绕着它们走……什么？我只是个测绘师，又不是冒险家！
+				1: 应该是这儿！你看起来是个靠谱的。我曾遇到个能沟通的亡灵，够奇怪了吧？而且他居然卖给我一只……断手。跟着它指引的方向，我找到个阴森的墓室……或许你能发现点啥，反正我是不回去那儿了。
+				2: 准备好迎接挑战了吗？反正我没有。地牢里有个房间弥漫着血腥味……并且房间正中央摆着古怪的祭坛，是的，我没待多久就溜了。
+			}
+
+			SaltFlat: {
+				// 0: Can't forget it! There, right there, is the first time I saw a mirror to the sky. I was looking down, as I tend to do, and BAM! Clouds! First, I was concerned, but it was just a thin layer of water...probably. Make sure it's safe so I don't have to.
+				// 1: Right there! You ever find yourself sliding down the slopes in those snowy areas? Like, with all the ice and such? No? Well, let's say it makes it way harder to tell what's going on in front of you when you do that. Intentionally, of course. This place looks awesome though, I'd recommend once you get the snow off of you.
+				// 2: Usually, a pratfall brings me to a discovery. This time, I was diligent. Shortly after panicking about a surprisingly wet ground, the vista appeared before me. It was stunning. As long as you keep your maps on your hips, you're set for a wonderful time.
+			}
+
+			Ziggurat: {
+				// 0: Hmm...there. I've said this before - I'm a cartographer. I draw maps. So when I see a big, imposing wall of cracking, crumbling red brick, I am unbelievably skilled at determining if it's something I should mess with. I heard buzzing in there. Needless to say, yours for the taking.
+				// 1: Gotcha! Desert makes it easy to remember. Not much to recall there, you know, so seeing smoke rise out of the ground with no explanation? Interesting. You look down and see the facade of a massive structure? Memorable. Have at her. I wasn't going to risk lava or whatever.
+				// 2: Here you are. It's part of my job to find the occasional ruin. No worries, we've got a protocol for a reason. But man, stepping in and almost being pierced through the ground? Gentle reminder that sometimes, I'm an excellent runner.
+			}
+
+			FirstPin: 我已将这个图钉加入了“图钉收藏”，你随时可从地图左下角查看。
+		}
+	}
+
+	Entry: 这位制图师是个奇妙的矛盾体，既满怀探索热忱，又笨拙得令人扶额。他踏足的那些地方……怎么说呢，几乎无人涉足。对他而言，安全可比新奇重要得多。
+}
+
+Hiker: {
+	DisplayName: 旅行者
+
+	Buttons: {
+		Feed: 供给
+		Supplies: 补给
+		Silver: 20银
+	}
+
+	Dialogue: {
+		Hungry: {
+			Asking: {
+				0: 嘿，路过的！愿意分点吃的吗？如果你能分给我个{0}的话，我也有好东西回礼哦~
+				1: 你有过出门才想起没吃饭吗？唉……能分给我个{0}吗？
+				2: 长途登山太耗体力了……我太饿了，我饿得能吞下一头牛，给个{0}救救急？
+				3: 在整整四十五分钟前我就啃完最后一条蛋白棒了，现在腿软得跟面条似的……能匀个{0}吗？
+			}
+
+			Thanks: {
+				0: 谢了兄弟！世上还是好人多啊。这点补给送你，江湖救急！
+				1: 哈哈，活过来了！吃饱了让我觉得充足，这包补给送你！
+				2: 大恩不言谢！老兄，这包免费送你。
+				3: 在长途跋涉后没有什么比吃饭更棒的了！这东西价格不菲，伙计，买一包吧。它是免费的！
+			}
+		}
+
+		Idle: {
+			0: 洞穴探险最棒了……直到被蜘蛛网糊一脸，兴致全无。
+			1: 我的老友以前用闪耀根根代替火把探险，说它更安全。怪人一个，不知现在咋样了。
+			2: 会用图钉吗？超实用！我有个朋友随身带一堆……我最后一次见到她是在“学习如何登上那些浮空岛”。这工作很辛苦，对吧？
+			3: 我有时遇到仙灵指引矿脉，我都假装兴奋，但我根本没带镐子。希望它们能理解我……
+			4: 聪明人都会多带补给……但我背的太多腰快断了。有钱就卖你点，哈哈！
+		}
+
+		Purchase: {
+			0: 哈！轻松多了！宁愿口袋沉也不要腰疼。
+			1: 谢啦！总有人问我“你东西都藏哪了”，但我想说关你啥事！
+			2: 遇见陌生人真好！没什么比做个好买卖更能拉近关系了。
+			3: 背包空间腾出来了吧？我听说，如果你把一堆天使雕像——是的，整尊雕像——放进你的包里，会发生一些疯狂的事情。
+			4: 愉快的交易！我会停下来闻闻花香，但外面有一些疯狂的植物，小心为上！
+		}
+
+		FailPurchase: {
+			0: 抱歉，钱不太够啊！除非……你兜里还有吃的能换？哈哈哈！
+			1: 唉，我的补给还在身边，带够银子再来吧。省你的时省我的力。
+			2: 这可不成啊，伙计。咱这儿不兴讨价还价——就是装备带得多了些……不过嘛，吃的倒是有点紧缺……
+		}
+	}
+
+	Name: {
+		0: Gary
+		1: Shawn
+		2: Geo
+		3: Geoff
+		4: Rocky
+		5: Porter
+	}
+
+	Entry: 这位旅行者天生乐天派，随和的外表下暗藏惊人力量——世上几乎没有他到不了的地方。丛林？小菜一碟。沙漠？冰原洞穴？如履平地。太空？虽然不知道方法……但他迟早会上去的。
+}
+
+HideZombieBig: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 鬣狗必须躲开僵尸，否则连自己的皮都会被扒走。
+}
+
+HideZombieSmall: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 它们这身行头可是死灵时尚圈的最新潮流。
+}
+
+PotterySlime: {
+	DisplayName: 陶艺史莱姆
+
+	Names: {
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
+	}
+
+	Chatter: {
+		0: 哇吧嘟啵嘟？
+		1: 噗哩噗通。噗噜。
+		2: 哇哇。
+	}
+
+	Entry: 信不信由你，这个史莱姆可是世界闻名的陶艺大师——你眼前站着的，正是当代顶尖艺术家！
+	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
+}
+
+StompableGnome.DisplayName: 可被踩头的侏儒
+
+DunceCrab: {
+	DisplayName: 笨蟹
+	Entry: 这种穴居软体动物是探险事故最常见的原因之一，往往令人猝不及防。它以洞穴中常见的苔藓和地衣为食。
+}
+
+Wheezer: {
+	DisplayName: 响尾兽
+	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
+}
+
+WorldFrog: {
+	DisplayName: 看起来有帮助的青蛙
+	Button: 更新世界
+
+	Sounds: {
+		0: 咕嘎——
+		1: 呱呱
+	}
+
+	Dialogue: {
+		0: 若欲探新寻物游，吾有一事相恳求！
+		1: 欲觅新奇未知处？掌中契约已拟就！
+		2: 天机隐现异气流，且莫彷徨且莫愁！
+	}
+
+	Reports: {
+		CavesAndClubs_0: 莫叹空空洞穴幽，百瓮藏宝待君收！
+		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
+	}
+}
+
+MossSlime: {
+	DisplayName: 苔藓史莱姆
+	Entry: 一群奇特的史莱姆，身上不知为何长满了苔藓。它们种类繁多，不过似乎只会长荧光苔藓，出于……一些原因。或许是天然光源？
+}
+
+KryptonMossSlime.DisplayName: 氪苔藓史莱姆
+LavaMossSlime.DisplayName: 熔岩苔藓史莱姆
+NeonMossSlime.DisplayName: 氖苔藓史莱姆
+XenonMossSlime.DisplayName: 氙苔藓史莱姆
+ArgonMossSlime.DisplayName: 氩苔藓史莱姆
+HeliumMossSlime.DisplayName: 氦苔藓史莱姆
+OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
+RadonMossSlime.DisplayName: 氡苔藓史莱姆
+// Tumbleweed.DisplayName: Tumbleweed
+
+Flamingo: {
+	// DisplayName: Flamingo
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+}
+
+Jerboa: {
+	// DisplayName: Jerboa
+	// Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
+}
+
+Grub: {
+	// DisplayName: Scarab Larva
+	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
+}
+
+DesertStactus: {
+	// DisplayName: Stactus
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+}
+
+CorruptStactus: {
+	// DisplayName: Corrupt Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	// DisplayName: Crimson Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	// DisplayName: Hallowed Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}
+
+Wisp: {
+	// DisplayName: Wisp
+	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+}
+
+DecrepitMummy: {
+	// DisplayName: Decrepit Mummy
+	// Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
+}
+
+Graverobber: {
+	// DisplayName: Graverobber
+	// Entry: ""
+}
+
+// LootBag.DisplayName: Loot Bag
+// TinyGrub.DisplayName: Tiny Grub
+
+CactusZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+SunburntZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+VeiledZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+// Cricket.DisplayName: Cricket
+// GoldCricket.DisplayName: Gold Cricket

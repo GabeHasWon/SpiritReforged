@@ -19,26 +19,35 @@ namespace SpiritReforged.Common.PrimitiveRendering;
             return false;
 	}
 
-	public static void SetBasicEffectMatrices(ref BasicEffect effect, Vector2 zoom)
+	public static void SetBasicEffectMatrices(ref BasicEffect effect)
 	{
-		GetWorldViewProjection(zoom, out Matrix view, out Matrix projection);
+		GetWorldViewProjection(out Matrix view, out Matrix projection);
 
 		effect.View = view;
 		effect.Projection = projection;
 	}
 
-	public static void SetEffectMatrices(ref Effect effect)
+	public static void SetEffectMatrices(ref Effect effect, bool useUiMatrix = false)
 	{
-		GetWorldViewProjection(out Matrix view, out Matrix projection);
+		GetWorldViewProjection(out Matrix view, out Matrix projection, useUiMatrix);
 
 		if (effect.HasParameter("WorldViewProjection"))
 			effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 	}
 
-	public static void GetWorldViewProjection(out Matrix view, out Matrix projection) => GetWorldViewProjection(Main.GameViewMatrix.Zoom, out view, out projection);
-
-	public static void GetWorldViewProjection(Vector2 zoom, out Matrix view, out Matrix projection)
+	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false)
 	{
+		view = Main.GameViewMatrix.TransformationMatrix;
+		if (useUiMatrix)
+			view = Main.UIScaleMatrix;
+		GetProjection(out projection);
+	}
+
+	public static void GetProjection(out Matrix projection)
+	{
+		projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+		/*
 		int width = Main.graphics.GraphicsDevice.Viewport.Width;
 		int height = Main.graphics.GraphicsDevice.Viewport.Height;
 
@@ -47,5 +56,6 @@ namespace SpiritReforged.Common.PrimitiveRendering;
 					  Matrix.CreateScale(zoom.X, zoom.Y, 1f);
 
 		projection = Matrix.CreateOrthographic(width, height, 0, 1000);
+		*/
 	}
 }

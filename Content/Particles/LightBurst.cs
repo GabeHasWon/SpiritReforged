@@ -1,16 +1,19 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 
 namespace SpiritReforged.Content.Particles;
 
 public class LightBurst : Particle
 {
+	/// <summary> Whether this particle should actually emit light. </summary>
+	public bool noLight;
 	private float _opacity;
 
 	public LightBurst(Vector2 position, float rotation, Color color, float scale, int maxTime)
 	{
 		Position = position;
-		Color = color;
+		Color = color.Additive();
 		Rotation = rotation;
 		Scale = scale;
 		MaxTime = maxTime;
@@ -20,13 +23,15 @@ public class LightBurst : Particle
 	public override void Update()
 	{
 		_opacity = (float)Math.Sin(EaseFunction.EaseCubicOut.Ease(Progress) * MathHelper.Pi);
-		Lighting.AddLight(Position, Color.ToVector3() * _opacity);
+
+		if (!noLight)
+			Lighting.AddLight(Position, Color.ToVector3() * _opacity);
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
-		Texture2D rayTexture = AssetLoader.LoadedTextures["Ray"];
-		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"];
+		Texture2D rayTexture = AssetLoader.LoadedTextures["Ray"].Value;
+		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 		var center = Position - Main.screenPosition;
 		Color color = Color * _opacity;
 
@@ -45,10 +50,12 @@ public class LightBurst : Particle
 			Main.spriteBatch.Draw(rayTexture, center, null, color * _opacity, rotation + Rotation, origin, rayScale * Scale * _opacity, SpriteEffects.None, 0);
 		}
 
-		Main.spriteBatch.Draw(bloomtexture, center, null, color, 0, bloomtexture.Size()/2, 0.5f * Scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(bloomtexture, center, null, color, 0, bloomtexture.Size() / 2, 0.5f * Scale, SpriteEffects.None, 0);
 		Main.spriteBatch.Draw(bloomtexture, center, null, color * 0.5f * _opacity, 0, bloomtexture.Size() / 2, 0.5f * Scale * _opacity, SpriteEffects.None, 0);
 		Main.spriteBatch.Draw(bloomtexture, center, null, color * 0.5f * _opacity, 0, bloomtexture.Size() / 2, 0.4f * Scale * _opacity, SpriteEffects.None, 0);
 	}
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+
+	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 }

@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.ProjectileCommon;
+﻿using SpiritReforged.Common.MathHelpers;
+
+namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions
 {
@@ -16,6 +18,63 @@ internal static class ProjectileExtensions
 			? projectile.velocity.Y 
 			: -oldVelocity.Y * VelocityKeptRatio);
 
+	/// <summary> Attempt to bounce off of shimmer when in contact. Use this for projectiles with AI styles of 0. </summary>
+	public static void TryShimmerBounce(this Projectile projectile)
+	{
+		if (projectile.shimmerWet && projectile.wetCount == 0)
+		{
+			projectile.velocity.Y = -projectile.velocity.Y;
+
+			projectile.wetCount = 10;
+			projectile.shimmerWet = false;
+			projectile.wet = false;
+		}
+	}
+
+	/// <summary> Helps <paramref name="projectile"/> surface through full solid and platform tiles. </summary>
+	/// <param name="maxPixels"> The maximum number of pixels this projectile can move through before failure. </param>
+	public static bool Surface(this Projectile projectile, int maxPixels = 40)
+	{
+		int surfaceDuration = 0;
+		while (CollisionChecks.Tiles(projectile.Hitbox, CollisionChecks.SolidOrPlatform))
+		{
+			projectile.position.Y--; //Move up out of solid tiles
+
+			if (Invalid())
+				return false;
+		}
+
+		surfaceDuration = 0;
+		while (!CollisionChecks.Tiles(projectile.Hitbox with { Y = projectile.Hitbox.Y + 1 }, CollisionChecks.SolidOrPlatform))
+		{
+			projectile.position.Y++; //Move down onto solid tiles
+
+			if (Invalid())
+				return false;
+		}
+
+		return true;
+
+		bool Invalid() => ++surfaceDuration > maxPixels;
+	}
+
+	public static void PlotTileCut(this Projectile projectile, float distance, float width)
+	{
+		var owner = Main.player[projectile.owner];
+
+		DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
+		var cut = new Utils.TileActionAttempt(DelegateMethods.CutTiles);
+		var endPoint = owner.MountedCenter + owner.DirectionTo(projectile.Center) * distance;
+
+		Utils.PlotTileLine(owner.MountedCenter, endPoint, width, cut);
+
+		//Additional line plotted between the projectile's current and last position, to catch instances where it moves super fast
+		var startCenter = Vector2.Lerp(projectile.position, owner.MountedCenter, 0.5f);
+		var oldCenter = Vector2.Lerp(projectile.oldPosition, owner.MountedCenter, 0.5f);
+
+		Utils.PlotTileLine(startCenter, oldCenter, width, cut);
+	}
+
 	/// <summary>
 	/// Draws the projectile similar to how vanilla would by default.
 	/// </summary>
@@ -29,16 +88,17 @@ internal static class ProjectileExtensions
 	{
 		Texture2D tex = TextureAssets.Projectile[proj.type].Value;
 		Color color = proj.GetAlpha(drawColor ?? Lighting.GetColor((int)proj.Center.X / 16, (int)proj.Center.Y / 16));
+
 		if (drawColor != null)
 			color.A = (byte)(drawColor.Value.A * proj.Opacity);
 
 		effect ??= proj.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		if (batch == null)
-			Main.EntitySpriteDraw(tex, proj.Center - Main.screenPosition, proj.DrawFrame(), color, rot ?? proj.rotation,
+			Main.EntitySpriteDraw(tex, proj.Center - Main.screenPosition + Vector2.UnitY * proj.gfxOffY, proj.DrawFrame(), color, rot ?? proj.rotation,
 				origin ?? proj.DrawFrame().Size() / 2, proj.scale, effect ?? (proj.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
 		else
-			batch.Draw(tex, proj.Center - Main.screenPosition, proj.DrawFrame(), color, rot ?? proj.rotation,
+			batch.Draw(tex, proj.Center - Main.screenPosition + Vector2.UnitY * proj.gfxOffY, proj.DrawFrame(), color, rot ?? proj.rotation,
 				origin ?? proj.DrawFrame().Size() / 2, proj.scale, effect ?? (proj.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
 	}
 
@@ -66,7 +126,7 @@ internal static class ProjectileExtensions
 		{
 			float opacityMod = (ProjectileID.Sets.TrailCacheLength[proj.type] - i) / (float)ProjectileID.Sets.TrailCacheLength[proj.type];
 			opacityMod *= baseOpacity;
-			Vector2 drawPosition = proj.oldPos[i] + proj.Size / 2 - Main.screenPosition;
+			Vector2 drawPosition = proj.oldPos[i] + proj.Size / 2 - Main.screenPosition + Vector2.UnitY * proj.gfxOffY;
 
 			if (batch == null)
 				Main.EntitySpriteDraw(tex, drawPosition, proj.DrawFrame(), color * opacityMod,
@@ -91,9 +151,7 @@ internal static class ProjectileExtensions
 		if (framespersecond == 0)
 			return;
 
-		projectile.frameCounter++;
-
-		if (projectile.frameCounter > 60 / framespersecond)
+		if (++projectile.frameCounter > 60 / framespersecond)
 		{
 			projectile.frameCounter = 0;
 			projectile.frame++;
@@ -103,4 +161,15 @@ internal static class ProjectileExtensions
 				projectile.frame = loopFrame;
 		}
 	}
+
+	public static void UpdateFrame(this Projectile projectile, byte ticksPerFrame)
+	{
+		if (++projectile.frameCounter >= ticksPerFrame)
+		{
+			projectile.frameCounter = 0;
+			projectile.frame = ++projectile.frame % Main.projFrames[projectile.type];
+		}
+	}
+
+	public static bool BelongsToPlayer(this Projectile p) => !(p.npcProj || p.owner == 255 || p.trap);
 }

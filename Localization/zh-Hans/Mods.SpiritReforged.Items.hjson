@@ -1,0 +1,2961 @@
+CommonTooltips: {
+	Backpack:
+		'''
+		可容纳4个物品
+		取下背包前需要清空背包
+		'''
+	Shimmerable: "{0} 在微光中转化"
+}
+
+Kelp: {
+	DisplayName: 海带
+	Tooltip: 必须放置在水中
+}
+
+PirateChestItem: {
+	DisplayName: 海盗箱
+	Tooltip: ""
+}
+
+PirateKey: {
+	DisplayName: 秘密钥匙
+	Tooltip: “海盗一定把财宝藏在了某处……”
+}
+
+RawFish: {
+	DisplayName: 生鱼
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		“能吃……但你确定不先料理一下？”
+		'''
+}
+
+SunkenTreasure: {
+	DisplayName: 沉没的宝藏
+	Tooltip:
+		'''
+		右键打开
+		“或许它仍然充满了宝贵的财富”
+		'''
+}
+
+DriftwoodItem: {
+	DisplayName: 浮木
+	Tooltip: ""
+}
+
+MusselItem: {
+	DisplayName: 贻贝
+	Tooltip: ""
+}
+
+CrinoidItem: {
+	DisplayName: 海百合
+	Tooltip: ""
+}
+
+PelicanItem: {
+	DisplayName: 鹈鹕
+	Tooltip: ""
+}
+
+SandPiperItem: {
+	DisplayName: 矶鹬
+	Tooltip: ""
+}
+
+TinyCrabItem: {
+	DisplayName: 苍色蟹
+	Tooltip: ""
+}
+
+TubewormItem: {
+	DisplayName: 管虫
+	Tooltip: ""
+}
+
+CascadeChestplate: {
+	DisplayName: 珊瑚猎人胸甲
+	Tooltip: 50%击退抗性
+}
+
+CascadeHelmet: {
+	DisplayName: 珊瑚猎人头盔
+	Tooltip: 使你获得水下呼吸能力
+}
+
+CascadeLeggings: {
+	DisplayName: 珊瑚猎人护胫
+	Tooltip: 在水中时增加15%移动速度
+}
+
+JellyfishStaff: {
+	DisplayName: 水母法杖
+	Tooltip: 召唤一只小水母为你而战！
+}
+
+Lifesaver: {
+	DisplayName: 救生圈
+	Tooltip:
+		'''
+		召唤可骑行的蝠鲼坐骑
+		蝠鲼不能在陆地上移动，但可以漂浮在液体上
+		'''
+}
+
+ClawCannon: {
+	DisplayName: 爪炮
+	Tooltip: ""
+}
+
+IridescentScale: {
+	DisplayName: 虹彩鳞片
+	Tooltip: “在水下闪闪发光”
+}
+
+OceanPendant: {
+	DisplayName: 美人鱼的宝藏
+	Tooltip: 大幅度强化水下行动能力
+}
+
+ReefSpear: {
+	DisplayName: 珊瑚穿刺者
+	Tooltip: 右键投掷三叉戟，增加主攻击造成的伤害
+}
+
+SkullSentry: {
+	DisplayName: 食人颅骨
+	Tooltip: 召唤一个被食人虫感染的颅骨，食人虫会向附近的敌人发射红色粘液
+}
+
+UrchinStaff: {
+	DisplayName: 海胆抛射者
+	Tooltip: ""
+}
+
+GarInAJar: {
+	Tooltip: ""
+	DisplayName: 雀鳝罐
+}
+
+GarItem: {
+	DisplayName: 雀鳝
+	Tooltip: ""
+}
+
+SavannaDirtItem: {
+	DisplayName: 粗泥
+	Tooltip: ""
+}
+
+GoldGarItem: {
+	DisplayName: 金雀鳝
+	Tooltip: ""
+}
+
+Sushi: {
+	DisplayName: 寿司
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		使你获得水下呼吸能力
+		“口感冰冷而新鲜！”
+		'''
+}
+
+Nigiri: {
+	DisplayName: 生鱼片寿司
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		使你在水中行动不受阻碍
+		“切的恰到好处”
+		'''
+}
+
+HoneySalmon: {
+	DisplayName: 蜜裹三文鱼
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		“甜味与咸味都恰到好处！”
+		'''
+}
+
+FishChips: {
+	DisplayName: 炸鱼薯条
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+CrystalFish: {
+	DisplayName: 晶化三文鱼
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		强化魔法能力
+		'''
+}
+
+RawMeat: {
+	DisplayName: 生肉
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		 “能吃……但你确定不先料理一下？”
+		'''
+}
+
+CookedMeat: {
+	DisplayName: 熟肉
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		“焙至完美”
+		'''
+}
+
+GoldenCaviar: {
+	DisplayName: 黄金鱼子酱
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed3}
+		“有着精致的光泽”
+		'''
+}
+
+GarBannerItem.DisplayName: 雀鳝旗
+
+CoconutMilk: {
+	DisplayName: 椰汁
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		“不需要杯子！”
+		'''
+}
+
+DiverBody: {
+	DisplayName: 远古潜渊者胸甲
+	Tooltip: ""
+}
+
+DiverHead: {
+	DisplayName: 远古潜渊者头盔
+	Tooltip: ""
+}
+
+DiverLegs: {
+	DisplayName: 远古潜渊者裤
+	Tooltip: ""
+}
+
+SailorCap: {
+	DisplayName: 水手帽
+	Tooltip: “请上船！”
+}
+
+StrippedBambooItem: {
+	DisplayName: 条纹竹
+	Tooltip: ""
+}
+
+BambooBarrelItem: {
+	DisplayName: 竹桶
+	Tooltip: ""
+}
+
+BambooBenchItem: {
+	DisplayName: 竹长椅
+	Tooltip: ""
+}
+
+BambooBirdCageItem: {
+	DisplayName: 竹鸟笼
+	Tooltip: 右键可将一些鸟锁在里面
+}
+
+BambooPikeItem: {
+	DisplayName: 竹刺
+	Tooltip: ""
+}
+
+BambooPotItem: {
+	DisplayName: 竹罐
+	Tooltip: ""
+}
+
+SteamedMussels: {
+	DisplayName: 蒸贻贝
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		“清新宜人”
+		'''
+}
+
+JellyCandle: {
+	DisplayName: 水母蜡烛
+	Tooltip: 召唤漂浮水母跟着你
+}
+
+SmallDriftwoodItem: {
+	DisplayName: 小型浮木
+	Tooltip: “美观”
+}
+
+MediumDriftwoodItem: {
+	DisplayName: 中型浮木
+	Tooltip: “美观”
+}
+
+LargeDriftwoodItem: {
+	DisplayName: 大型浮木
+	Tooltip: “美观”
+}
+
+DriftwoodChestplate: {
+	DisplayName: 浮木胸甲
+	Tooltip: ""
+}
+
+DriftwoodHelmet: {
+	DisplayName: 浮木头盔
+	Tooltip: ""
+}
+
+DriftwoodLeggings: {
+	DisplayName: 浮木护胫
+	Tooltip: ""
+}
+
+DriftwoodPlatformItem: {
+	DisplayName: 浮木平台
+	Tooltip: ""
+}
+
+DriftwoodSword: {
+	DisplayName: 浮木剑
+	Tooltip: ""
+}
+
+DriftwoodWallItem: {
+	DisplayName: 浮木墙
+	Tooltip: ""
+}
+
+Cloudstalk: {
+	DisplayName: 云茎
+	Tooltip: “通常可在高处找到”
+}
+
+CloudstalkSeed: {
+	DisplayName: 云茎种子
+	Tooltip: ""
+}
+
+DoubleJumpPotion: {
+	DisplayName: 西风药水
+	Tooltip: 使你获得临时的二段跳
+}
+
+FlightPotion: {
+	DisplayName: 翱翔药水
+	Tooltip: 增加25%飞行时间
+}
+
+HangingCloudstalkItem: {
+	DisplayName: 吊挂云茎
+	Tooltip: ""
+}
+
+FloatingDriftwood: {
+	DisplayName: 漂浮浮木
+	Tooltip: ""
+}
+
+FishCrate: {
+	DisplayName: 包装匣
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+Ambergris: {
+	DisplayName: 龙涎香
+	Tooltip:
+		'''
+		非常有价值
+		“你不会想知道这是从哪来的”
+		'''
+}
+
+MessageBottle: {
+	DisplayName: 瓶中信
+	Tooltip:
+		'''
+		召唤木筏坐骑
+		在木筏上时增加渔力
+		'''
+}
+
+GoldKillifishItem: {
+	DisplayName: 金鳉鱼
+	Tooltip: ""
+}
+
+KillifishItem: {
+	DisplayName: 鳉鱼
+	Tooltip: ""
+}
+
+KillifishBannerItem.DisplayName: 鳉鱼旗
+
+BambooHalberd: {
+	DisplayName: 竹戟
+	Tooltip: ""
+}
+
+BambooKendoBlade: {
+	DisplayName: 竹剑
+	Tooltip: 右键向前冲刺
+}
+
+KoiTotem: {
+	DisplayName: 锦鲤图腾
+	Tooltip:
+		'''
+		佩戴或放置在附近时增加渔力
+		图腾偶尔会吐出用于重复使用的鱼饵
+		'''
+}
+
+FairyWhistle: {
+	DisplayName: 仙灵哨
+	Tooltip: 召唤保护仙灵环绕在你的身边
+}
+
+TermiteItem: {
+	DisplayName: 白蚁
+	Tooltip: ""
+}
+
+StarPowder: {
+	DisplayName: 星之尘
+	Tooltip: 扔在草地上，用星光为草地注能！
+}
+
+TermiteJar: {
+	DisplayName: 白蚁罐
+	Tooltip: “生态噩梦”
+}
+
+ButterflyStaff: {
+	DisplayName: 缥缈幻蝶杖
+	Tooltip:
+		'''
+		召唤魔法幻蝶为你而战
+		“由完美的樱花形成”
+		'''
+}
+
+PoolNoodle: {
+	DisplayName: 游泳浮条
+	Tooltip:
+		'''
+		3点召唤标记伤害
+		{$CommonItemTooltip.Whips}
+		被标记的敌人在受到召唤物的攻击时有几率发生泡沫爆炸
+		'''
+}
+
+ToucaneItem: {
+	DisplayName: 巨嘴鸟手杖
+	Tooltip: 召唤愤怒的巨嘴鸟为你而战
+}
+
+QuenchPotion: {
+	DisplayName: 解渴药水
+	Tooltip: 延长25%其他药水的持续时间
+}
+
+LivingBaobabLeafWallItem: {
+	DisplayName: 活面包树树叶墙
+	Tooltip: ""
+}
+
+LivingBaobabWallItem: {
+	DisplayName: 活面包树墙
+	Tooltip: ""
+}
+
+LivingBaobabLeafWand: {
+	DisplayName: 活面包树树叶魔棒
+	Tooltip: ""
+}
+
+LivingBaobabWand: {
+	DisplayName: 活面包树魔棒
+	Tooltip: ""
+}
+
+WrithingSticks: {
+	DisplayName: 扭形枝
+	Tooltip: 召唤友善的风滚草跟着你
+}
+
+BaobabFruit: {
+	DisplayName: 面包树果实
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+SavannaGrassSeeds: {
+	DisplayName: 稀树平原草种子
+	Tooltip: ""
+}
+
+LeatherBackpack: {
+	DisplayName: 皮革背包
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“舒适、实用且时尚”
+		'''
+}
+
+Caryocar: {
+	DisplayName: 巴西栗果酱
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+CustardApple: {
+	DisplayName: 南美番荔枝
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+BeachUmbrellaItem: {
+	DisplayName: 遮阳伞
+	Tooltip: ""
+}
+
+BigBuoy: {
+	DisplayName: 大浮标
+	Tooltip: "{$ItemTooltip.CoralTorch}"
+}
+
+SmallBuoy: {
+	DisplayName: 小浮标
+	Tooltip: "{$ItemTooltip.CoralTorch}"
+}
+
+LoungeChairItem: {
+	DisplayName: 躺椅
+	Tooltip: ""
+}
+
+Omelette: {
+	DisplayName: 煎蛋
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		“煎的正好”
+		'''
+}
+
+OstrichEgg: {
+	DisplayName: 鸵鸟蛋
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+DrywoodItem: {
+	DisplayName: 干木
+	Tooltip: ""
+}
+
+DrywoodBow: {
+	DisplayName: 干木弓
+	Tooltip: ""
+}
+
+DrywoodBreastplate: {
+	DisplayName: 干木胸甲
+	Tooltip: ""
+}
+
+DrywoodGreaves: {
+	DisplayName: 干木护胫
+	Tooltip: ""
+}
+
+DrywoodHammer: {
+	DisplayName: 干木锤
+	Tooltip: ""
+}
+
+DrywoodHelmet: {
+	DisplayName: 干木头盔
+	Tooltip: ""
+}
+
+DrywoodSword: {
+	DisplayName: 干木剑
+	Tooltip: ""
+}
+
+HuntingRifle: {
+	DisplayName: 猎枪
+	Tooltip: 对远处的目标和站定不动时造成更多伤害
+}
+
+SafariHat: {
+	DisplayName: 游猎帽
+	Tooltip: ""
+}
+
+SafariShorts: {
+	DisplayName: 游猎短裤
+	Tooltip: ""
+}
+
+SafariVest: {
+	DisplayName: 游猎背心
+	Tooltip: ""
+}
+
+SunStaff: {
+	DisplayName: 日升权杖
+	Tooltip: 将阳光洒在你的面前
+}
+
+SavannaMusicBoxItem: {
+	DisplayName: 音乐盒（稀树平原）
+	Tooltip: ""
+}
+
+DrywoodBathtubItem: {
+	DisplayName: 干木浴缸
+	Tooltip: ""
+}
+
+DrywoodBedItem: {
+	DisplayName: 干木床
+	Tooltip: ""
+}
+
+DrywoodBookcaseItem: {
+	DisplayName: 干木书架
+	Tooltip: ""
+}
+
+DrywoodCandelabraItem: {
+	DisplayName: 干木烛台
+	Tooltip: ""
+}
+
+DrywoodCandleItem: {
+	DisplayName: 干木蜡烛
+	Tooltip: ""
+}
+
+DrywoodChairItem: {
+	DisplayName: 干木椅
+	Tooltip: ""
+}
+
+DrywoodClockItem: {
+	DisplayName: 干木钟
+	Tooltip: ""
+}
+
+DrywoodDresserItem: {
+	DisplayName: 干木梳妆台
+	Tooltip: ""
+}
+
+DrywoodLampItem: {
+	DisplayName: 干木灯
+	Tooltip: ""
+}
+
+DrywoodPianoItem: {
+	DisplayName: 干木钢琴
+	Tooltip: ""
+}
+
+DrywoodSinkItem: {
+	DisplayName: 干木水槽
+	Tooltip: ""
+}
+
+DrywoodTableItem: {
+	DisplayName: 干木桌
+	Tooltip: ""
+}
+
+DrywoodToiletItem: {
+	DisplayName: 干木马桶
+	Tooltip: ""
+}
+
+DrywoodWorkBenchItem: {
+	DisplayName: 干木工作台
+	Tooltip: ""
+}
+
+DrywoodLanternItem: {
+	DisplayName: 干木灯笼
+	Tooltip: ""
+}
+
+DrywoodSofaItem: {
+	DisplayName: 干木沙发
+	Tooltip: ""
+}
+
+DrywoodChestItem: {
+	DisplayName: 干木箱
+	Tooltip: ""
+}
+
+DrywoodDoorItem: {
+	DisplayName: 干木门
+	Tooltip: ""
+}
+
+DriftwoodBarrelItem: {
+	DisplayName: 浮木桶
+	Tooltip: ""
+}
+
+DriftwoodBathtubItem: {
+	DisplayName: 浮木浴缸
+	Tooltip: ""
+}
+
+DriftwoodBedItem: {
+	DisplayName: 浮木床
+	Tooltip: ""
+}
+
+DriftwoodBenchItem: {
+	DisplayName: 浮木长椅
+	Tooltip: ""
+}
+
+DriftwoodBookcaseItem: {
+	DisplayName: 浮木书架
+	Tooltip: ""
+}
+
+DriftwoodCandelabraItem: {
+	DisplayName: 浮木烛台
+	Tooltip: ""
+}
+
+DriftwoodCandleItem: {
+	DisplayName: 浮木蜡烛
+	Tooltip: ""
+}
+
+DriftwoodChairItem: {
+	DisplayName: 浮木椅
+	Tooltip: ""
+}
+
+DriftwoodChandelierItem: {
+	DisplayName: 浮木吊灯
+	Tooltip: ""
+}
+
+DriftwoodClockItem: {
+	DisplayName: 浮木钟
+	Tooltip: ""
+}
+
+DriftwoodDoorItem: {
+	DisplayName: 浮木门
+	Tooltip: ""
+}
+
+DriftwoodDresserItem: {
+	DisplayName: 浮木梳妆台
+	Tooltip: ""
+}
+
+DriftwoodLampItem: {
+	DisplayName: 浮木灯
+	Tooltip: ""
+}
+
+DriftwoodPianoItem: {
+	DisplayName: 浮木钢琴
+	Tooltip: ""
+}
+
+DriftwoodSinkItem: {
+	DisplayName: 浮木水槽
+	Tooltip: ""
+}
+
+DriftwoodTableItem: {
+	DisplayName: 浮木桌
+	Tooltip: ""
+}
+
+DriftwoodToiletItem: {
+	DisplayName: 浮木马桶
+	Tooltip: ""
+}
+
+DriftwoodWorkBenchItem: {
+	DisplayName: 浮木工作台
+	Tooltip: ""
+}
+
+HerosMemorialStatueItem: {
+	DisplayName: 英雄纪念碑
+	Tooltip: 永世长存
+}
+
+DustyFieldsItem: {
+	DisplayName: 扬尘田野
+	Tooltip: "'S. Yaki'"
+}
+
+OrangeSkiesItem: {
+	DisplayName: 橙色天空
+	Tooltip: "'S. Yaki'"
+}
+
+StrongWindsItem: {
+	DisplayName: 强风
+	Tooltip: "'S. Yaki'"
+}
+
+WaningSunItem: {
+	DisplayName: 残阳
+	Tooltip: "'E. Sibellius'"
+}
+
+ScarecrowItem: {
+	DisplayName: 稻草人
+	Tooltip: ""
+}
+
+BotanistBody: {
+	DisplayName: 植物学家围裙
+	Tooltip: ""
+}
+
+BotanistHat: {
+	DisplayName: 向日葵草帽
+	Tooltip: 令你开心
+}
+
+BotanistLegs: {
+	DisplayName: 植物学家慢跑鞋
+	Tooltip: 增加10%移动速度
+}
+
+BeachTowel: {
+	DisplayName: 沙滩浴巾
+	Tooltip: “它能让你保持干燥，但一定不要戴着它跳进水里！”
+}
+
+BikiniBottom: {
+	DisplayName: 比基尼泳裤
+	Tooltip: “当你可以在阳光下自由奔跑时，谁还需要盔甲呢！”
+}
+
+BikiniTop: {
+	DisplayName: 比基尼上衣
+	Tooltip: “不管人们怎么想，它确实不能提供任何形式的防御。”
+}
+
+SwimmingTrunks: {
+	DisplayName: 泳裤
+	Tooltip: “它并没有提供太多的防御，但不可否认的是，它们很时尚。”
+}
+
+TintedGlasses: {
+	DisplayName: 有色眼镜
+	Tooltip: “它们有助于卖相，所以即便是在天黑的时候也最好戴上它们。”
+}
+
+WheatgrassSeedPouch: {
+	DisplayName: 麦草种子袋
+	Tooltip:
+		'''
+		撒下会在草地上长出小麦草的种子
+		“在手中哗啦作响”
+		'''
+}
+
+RoyalKhopesh: {
+	DisplayName: 皇家弯刀
+	Tooltip: ""
+}
+
+SavannaSandstormMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: 音乐盒（尘暴）
+}
+
+FishLure: {
+	DisplayName: 鱼诱
+	Tooltip:
+		'''
+		{$ItemTooltip.CoralTorch}
+		吸引鱼群到附近水域
+		'''
+}
+
+DrywoodPlatformItem: {
+	DisplayName: 干木平台
+	Tooltip: ""
+}
+
+SavannaDirtWallItem: {
+	DisplayName: 粗泥墙
+	Tooltip: ""
+}
+
+GravelItem: {
+	DisplayName: 砾石
+	Tooltip: ""
+}
+
+MagmastoneItem: {
+	DisplayName: 熔岩石
+	Tooltip: ""
+}
+
+SavannaCrateHardmode: {
+	DisplayName: 游猎匣
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SavannaCrate: {
+	DisplayName: 草地匣
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+MineralSlag: {
+	DisplayName: 矿渣
+	Tooltip: 可以通过提炼机进行拆分
+}
+
+HyenaBannerItem.DisplayName: 鬣狗旗
+OstrichBannerItem.DisplayName: 鸵鸟旗
+
+SavannaCampfireItem: {
+	DisplayName: 稀树平原篝火
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SavannaFountainItem: {
+	DisplayName: 稀树平原喷泉
+	Tooltip: ""
+}
+
+DrywoodFenceItem: {
+	DisplayName: 干木栅栏
+	Tooltip: ""
+}
+
+DrywoodWallItem: {
+	DisplayName: 干木墙
+	Tooltip: ""
+}
+
+ZiplineGun: {
+	DisplayName: 轨道枪
+	Tooltip:
+		'''
+		在光标位置创建可承载玩家的轨道
+		左键轨道头以移除单个轨道头，右键移除整个轨道
+		“不要与轨道炮混淆”
+		'''
+	AssistantOn: 右键启用辅助
+	AssistantOff: 右键禁用辅助
+}
+
+FrostbiteItem: {
+	DisplayName: 寒霜
+	Tooltip: 在你的前方变出暴雪
+}
+
+RogueCrest: {
+	DisplayName: 盗贼饰章
+	Tooltip:
+		'''
+		召唤一把生锈的剑为你而战
+		剑不会占用召唤栏位
+		偶尔会对敌人造成开放性伤口减益，使其在受到近战攻击时流血
+		'''
+}
+
+GildedScarab: {
+	DisplayName: 镀金圣甲虫
+	Tooltip:
+		'''
+		受到攻击时会获得一个短暂的防御增益
+		基于受到的伤害获得更高的防御力加成
+		'''
+}
+
+SparrowItem: {
+	DisplayName: 麻雀
+	Tooltip: ""
+}
+
+Blunderbuss: {
+	DisplayName: 喇叭型前膛枪
+	Tooltip: 发射大量子弹
+}
+
+SafekeeperRing: {
+	DisplayName: 保管员戒指
+	Tooltip:
+		'''
+		小幅度增加对亡灵生物的伤害
+		“它散发着诡异的光”
+		'''
+}
+
+PeevedTumblerBannerItem.DisplayName: 恼怒翻滚怪旗
+
+LeatherHood: {
+	DisplayName: 神射手兜帽
+	Tooltip: 增加5%暴击率
+}
+
+LeatherLegs: {
+	DisplayName: 神射手靴
+	Tooltip: ""
+}
+
+LeatherPlate: {
+	DisplayName: 神射手裤
+	Tooltip: ""
+}
+
+ExplorerTreadsItem: {
+	DisplayName: 探险家之靴
+	Tooltip:
+		'''
+		每损失10%生命值，便会增加5%移动速度
+		有50%几率闪避陷阱和危险源
+		“让探索神庙就像在公园里散步一样”
+		'''
+}
+
+LeatherCloakItem: {
+	DisplayName: 皮革披风
+	Tooltip:
+		'''
+		使你免疫来自沙尘暴的强风减益
+		增加5%移动速度和奔跑15%加速度
+		'''
+}
+
+CactusStaff: {
+	DisplayName: 仙人掌法杖
+	Tooltip: 召唤仙人掌墙来保护你
+}
+
+PearlString: {
+	DisplayName: 珍珠串
+	Tooltip:
+		'''
+		击杀敌人会掉落更多钱币
+		“你觉得很幸运”
+		'''
+}
+
+DrywoodChandelierItem: {
+	DisplayName: 干木吊灯
+	Tooltip: ""
+}
+
+DriftwoodLanternItem: {
+	DisplayName: 浮木灯笼
+	Tooltip: ""
+}
+
+DriftwoodFenceItem: {
+	DisplayName: 浮木栅栏
+	Tooltip: ""
+}
+
+ArcaneNecklaceGold: {
+	DisplayName: 奥术项链
+	Tooltip:
+		'''
+		增加20点最大魔力值
+		击中敌人时有几率掉落魔力星
+		'''
+}
+
+ArcaneNecklacePlatinum: {
+	DisplayName: "{$ArcaneNecklaceGold.DisplayName}"
+	Tooltip: "{$ArcaneNecklaceGold.Tooltip}"
+}
+
+PinBlue: {
+	DisplayName: 蓝色图钉
+	Tooltip: ""
+}
+
+PinGreen: {
+	DisplayName: 绿色图钉
+	Tooltip: ""
+}
+
+PinRed: {
+	DisplayName: 红色图钉
+	Tooltip: ""
+}
+
+PinYellow: {
+	DisplayName: 黄色图钉
+	Tooltip: ""
+}
+
+PinHive: {
+	DisplayName: 蜂巢图钉
+	Tooltip: ""
+}
+
+PinButterfly: {
+	DisplayName: 蝴蝶图钉
+	Tooltip: ""
+}
+
+PinFaeling: {
+	DisplayName: 仙灵图钉
+	Tooltip: ""
+}
+
+PinSavanna: {
+	DisplayName: 稀树平原图钉
+	Tooltip: ""
+}
+
+PinCuriosity: {
+	DisplayName: 好奇图钉
+	Tooltip: ""
+}
+
+PinSky: {
+	DisplayName: 天空图钉
+	Tooltip: ""
+}
+
+PinSword: {
+	DisplayName: 剑图钉
+	Tooltip: ""
+}
+
+TornMapPiece: {
+	DisplayName: 地图残片
+	Tooltip: 揭露周围的地图
+}
+
+FashionableBackpack: {
+	DisplayName: 时尚背包
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“时尚且现代，但仍然有效”
+		'''
+}
+
+HikingBackpack: {
+	DisplayName: 徒步背包
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“实用且耐用，最重要的是，舒适”
+		'''
+}
+
+Minipack: {
+	DisplayName: 迷你背包
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“小巧、轻便且超紧凑”
+		'''
+}
+
+PinkPack: {
+	DisplayName: 粉色背包
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“最好的颜色，有用，且在一定距离内有着很高的可见性”
+		'''
+}
+
+PouchPack: {
+	DisplayName: 纸袋
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“简单、舒适且容易倒出”
+		'''
+}
+
+DyeCrateItem: {
+	DisplayName: 染料匣
+	Tooltip:
+		'''
+		{$CommonItemTooltip.RightClickToOpen}
+		“闻起来...居然这么好闻！”
+		'''
+}
+
+SavannaNightMusicBoxItem: {
+	DisplayName: 音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaPylonItem: {
+	DisplayName: 稀树平原晶塔
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CraneFeather: {
+	DisplayName: 鹤羽
+	Tooltip: 增加空中灵活性
+}
+
+TatteredMap: {
+	DisplayName: 破烂地图
+	Tooltip: ""
+}
+
+CrescentMelon: {
+	DisplayName: 新月甜瓜
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		'''
+}
+
+MidnightApple: {
+	DisplayName: 午夜苹果
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		“像夜空一样闪闪发光”
+		'''
+}
+
+NightSky: {
+	DisplayName: 夜空
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		{$ItemTooltip.ManaRegenerationPotion}
+		“尝起来像宇宙”
+		'''
+}
+
+Pearlberry: {
+	DisplayName: 珍珠莓
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		“闪闪发光……”
+		'''
+}
+
+DriftwoodBow: {
+	DisplayName: 浮木弓
+	Tooltip: ""
+}
+
+DriftwoodHammer: {
+	DisplayName: 浮木锤
+	Tooltip: ""
+}
+
+RemedyPotion: {
+	DisplayName: 救济药水
+	Tooltip:
+		'''
+		使你免疫下列效果：
+		[list]
+		'''
+}
+
+CloudstalkBoxItem: {
+	DisplayName: 云茎种植盆
+	Tooltip: ""
+}
+
+OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
+
+OceanDepthsBoxItem: {
+	DisplayName: 音乐盒（海洋深处）
+	Tooltip: ""
+}
+
+OstrichPants: {
+	DisplayName: 鸵鸟裤
+	Tooltip: “几乎栩栩如生！”
+}
+
+CampfireSpit: {
+	DisplayName: 烤火架
+	Tooltip: 可以放置在篝火上
+}
+
+KillieFishbowl: {
+	DisplayName: 鳉鱼鱼缸
+	Tooltip: “也许下次整个更大的碗？”
+}
+
+SparrowCageItem: {
+	DisplayName: 麻雀笼
+	Tooltip: ""
+}
+
+PinBlood: {
+	DisplayName: 血图钉
+	Tooltip: ""
+}
+
+PinWulfrum: {
+	DisplayName: 钨钢图钉
+	Tooltip: ""
+}
+
+WayfarerHead: {
+	DisplayName: 远行者帽
+	Tooltip: 使你免疫黑暗减益
+}
+
+WayfarerBody: {
+	DisplayName: 远行者背包
+	Tooltip: 增加5%移动速度
+}
+
+WayfarerLegs: {
+	DisplayName: 远行者裤
+	Tooltip: 增加7%移动速度
+}
+
+AncientKoiTotem: {
+	DisplayName: 远古锦鲤图腾
+	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+}
+
+BoomShroom: {
+	DisplayName: 爆炸蘑菇
+	Tooltip:
+		'''
+		所有的投掷类爆炸物都会变得更大……以及更强
+		投掷间隔增加
+		'''
+}
+
+ClayBomb: {
+	DisplayName: 粘土炸弹
+	Tooltip: 会散布粘土的小爆炸
+}
+
+ClayBombSticky: {
+	DisplayName: 粘性粘土炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+}
+
+SandBomb: {
+	DisplayName: 沙子炸弹
+	Tooltip: 会散布沙块的小爆炸
+}
+
+SandBombSticky: {
+	DisplayName: 粘性沙子炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+}
+
+CoarseBomb: {
+	DisplayName: 粗泥炸弹
+	Tooltip: 会散布粗泥的小爆炸
+}
+
+CoarseBombSticky: {
+	DisplayName: 粘性粗泥炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+}
+
+MudBomb: {
+	DisplayName: 泥巴炸弹
+	Tooltip: 会散布泥巴的小爆炸
+}
+
+MudBombSticky: {
+	DisplayName: 粘性泥巴炸弹
+	Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+}
+
+HideTunic: {
+	DisplayName: 隐匿束腰外衣
+	Tooltip: 增加25%近战大小和击退
+}
+
+PotteryWheelItem: {
+	DisplayName: 陶轮
+	Tooltip:
+		'''
+		用于制作装饰罐子
+		放置后右键点击以查看可用配方
+		'''
+}
+
+BiomePotsCavernItem: {
+	DisplayName: 洞穴罐子
+	Tooltip: ""
+}
+
+OrnatePotsItem: {
+	DisplayName: 华丽罐子
+	Tooltip: ""
+}
+
+BiomePotsIceItem: {
+	DisplayName: 冰封罐子
+	Tooltip: ""
+}
+
+BiomePotsDesertItem: {
+	DisplayName: 沙漠罐子
+	Tooltip: ""
+}
+
+BiomePotsJungleItem: {
+	DisplayName: 丛林罐子
+	Tooltip: ""
+}
+
+BiomePotsDungeonItem: {
+	DisplayName: 地牢罐子
+	Tooltip: ""
+}
+
+BiomePotsCorruptionItem: {
+	DisplayName: 腐化罐子
+	Tooltip: ""
+}
+
+BiomePotsCrimsonItem: {
+	DisplayName: 猩红罐子
+	Tooltip: ""
+}
+
+BiomePotsMarbleItem: {
+	DisplayName: 大理石罐子
+	Tooltip: ""
+}
+
+BiomePotsHellItem: {
+	DisplayName: 黑曜石罐子
+	Tooltip: ""
+}
+
+BiomePotsMushroomItem: {
+	DisplayName: 蘑菇罐子
+	Tooltip: ""
+}
+
+PotsCavernItem: {
+	DisplayName: 小型洞穴罐子
+	Tooltip: ""
+}
+
+PotsIceItem: {
+	DisplayName: 小型冰封罐子
+	Tooltip: ""
+}
+
+PotsJungleItem: {
+	DisplayName: 小型丛林罐子
+	Tooltip: ""
+}
+
+PotsDungeonItem: {
+	DisplayName: 小型地牢罐子
+	Tooltip: ""
+}
+
+PotsHellItem: {
+	DisplayName: 小型黑曜石罐子
+	Tooltip: ""
+}
+
+PotsCorruptionItem: {
+	DisplayName: 小型腐化罐子
+	Tooltip: ""
+}
+
+PotsSpiderItem: {
+	DisplayName: 小型蜘蛛罐子
+	Tooltip: ""
+}
+
+PotsCrimsonItem: {
+	DisplayName: 小型猩红罐子
+	Tooltip: ""
+}
+
+PotsPyramidItem: {
+	DisplayName: 小型金字塔罐子
+	Tooltip: ""
+}
+
+PotsTempleItem: {
+	DisplayName: 小型神庙罐子
+	Tooltip: ""
+}
+
+PotsMarbleItem: {
+	DisplayName: 小型大理石罐子
+	Tooltip: ""
+}
+
+PotsDesertItem: {
+	DisplayName: 小型沙漠罐子
+	Tooltip: ""
+}
+
+CommonPotsMushroomItem: {
+	DisplayName: 小型蘑菇罐子
+	Tooltip: ""
+}
+
+SilverPlattersItem: {
+	DisplayName: 银制托盘
+	Tooltip: ""
+}
+
+StuffedPotsItem: {
+	DisplayName: 填充罐子
+	Tooltip: ""
+}
+
+WormPotItem: {
+	DisplayName: 蠕虫罐子
+	Tooltip: ""
+}
+
+AetherShipmentItem: {
+	DisplayName: 以太货物
+	Tooltip: ""
+}
+
+PotionVatsAntiqueItem: {
+	DisplayName: 古董药罐
+	Tooltip: ""
+}
+
+PotionVatsCloningItem: {
+	DisplayName: 克隆药罐
+	Tooltip: ""
+}
+
+SilverFoodPlatterItem: {
+	DisplayName: 银制食物托盘
+	Tooltip: 右键将物品放置在托盘上
+}
+
+RadonMossItem: {
+	DisplayName: 氡苔藓
+	Tooltip: "{$ItemTooltip.XenonMoss}"
+}
+
+OganessonMossItem: {
+	DisplayName: 「气奥」苔藓
+	Tooltip: "{$ItemTooltip.XenonMoss}"
+}
+
+RadonMossBrickItem: {
+	DisplayName: 氡苔藓砖
+	Tooltip: ""
+}
+
+RadonMossBrickWallItem: {
+	DisplayName: 氡苔藓砖墙
+	Tooltip: ""
+}
+
+OganessonMossBrickItem: {
+	DisplayName: 「气奥」苔藓砖
+	Tooltip: ""
+}
+
+OganessonMossBrickWallItem: {
+	DisplayName: 「气奥」苔藓砖墙
+	Tooltip: ""
+}
+
+ScryingPotItem: {
+	DisplayName: 占卜罐
+	Tooltip: ""
+}
+
+BombCannon: {
+	DisplayName: 炸弹大炮
+	Tooltip:
+		'''
+		使用炸弹作为弹药
+		大炮发射的炸弹不会破坏五块
+		“一项开创性的发明”
+		'''
+}
+
+PotHead: {
+	DisplayName: 罐子头
+	Tooltip: ""
+}
+
+UpsideDownPotItem: {
+	DisplayName: 倒吊罐
+	Tooltip: ""
+}
+
+PotionVatsAlchemyItem: {
+	DisplayName: 炼金药罐
+	Tooltip: ""
+}
+
+DunceCrabBannerItem.DisplayName: 笨蟹旗
+WheezerBannerItem.DisplayName: 响尾兽旗
+
+WheezerStatueItem: {
+	DisplayName: 响尾兽雕像
+	Tooltip: ""
+}
+
+FlaskArgon: {
+	DisplayName: 氩苔藓烧瓶
+	Tooltip: 碰撞时扩散发光苔藓
+}
+
+FlaskHelium: {
+	DisplayName: 氦苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+FlaskKrypton: {
+	DisplayName: 氪苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+FlaskNeon: {
+	DisplayName: 氖苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+FlaskOganesson: {
+	DisplayName: 「气奥」苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+FlaskRadon: {
+	DisplayName: 氡苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+FlaskXenon: {
+	DisplayName: 氙苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+}
+
+BiomePotsGraniteItem: {
+	DisplayName: 花岗岩罐子
+	Tooltip: ""
+}
+
+CommonPotsGraniteItem: {
+	DisplayName: 小型花岗岩罐子
+	Tooltip: ""
+}
+
+OganessonBobber: {
+	DisplayName: 「气奥」苔藓钓鱼浮标
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+}
+
+RadonBobber: {
+	DisplayName: 氡苔藓钓鱼浮标
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+}
+
+LandscapingShears: {
+	DisplayName: 园艺剪
+	Tooltip: 收割树叶时的产量增加
+}
+
+WoodenClub: {
+	DisplayName: 木棒
+	Tooltip: 蓄力会增加伤害和击退
+}
+
+GoldClub: {
+	DisplayName: 黄金大锤
+	Tooltip: 在挥击的过程中再次使用可以进行蓄力上击
+}
+
+PlatinumClub: {
+	DisplayName: 铂金权杖
+	Tooltip:
+		'''
+		可以向上挥击，将敌人击飞到空中
+		长按进行追击，向下猛砸
+		'''
+}
+
+FrostGiantBelt: {
+	DisplayName: 冰霜大腰带
+	Tooltip:
+		'''
+		蓄力棍棒类武器时增加50%击退抗性
+		蓄力棍棒类武器时会逐渐增加防御力
+		'''
+}
+
+Macuahuitl: {
+	DisplayName: 双刃锯剑
+	Tooltip:
+		'''
+		可快速绕身旋转挥动，造成流血减益
+		蓄力攻击会对流血的敌人造成额外伤害
+		'''
+}
+
+BassSlapper: {
+	DisplayName: 低音鲈打
+	Tooltip: 完全蓄力会快速释放连续打击
+}
+
+Shockhammer: {
+	DisplayName: 冲击锤
+	Tooltip: 完全蓄力会释放一道沿着物块传播的冲击波
+}
+
+Bowlder: {
+	DisplayName: 巨石
+	Tooltip: 蓄力攻击会释放一颗致命巨石
+}
+
+BoStaff: {
+	DisplayName: 长棍法杖
+	Tooltip: 连击造成连续伤害
+}
+
+Blasphemer: {
+	DisplayName: 亵渎者
+	Tooltip: 蓄力攻击会爆发火焰涌泉
+}
+
+Hummus: {
+	DisplayName: 鹰嘴豆泥
+	Tooltip: 温暖可口！
+}
+
+ZenithPotsItem: {
+	DisplayName: 天顶罐子
+	Tooltip: ""
+}
+
+ZenithPotsPaleItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: 异界音乐盒（尘暴）
+	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	DisplayName: 稀树平原火把
+	Tooltip: ""
+}
+
+FlaskBlue: {
+	DisplayName: 蓝色苔藓烧瓶
+	Tooltip: 碰撞时扩散苔藓
+}
+
+FlaskBrown: {
+	DisplayName: 棕色苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskGreen: {
+	DisplayName: 绿色苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskLava: {
+	DisplayName: 熔岩苔藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskPurple: {
+	DisplayName: 紫色岩藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+FlaskRed: {
+	DisplayName: 红色岩藓烧瓶
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+}
+
+TitleMusicBoxItem: {
+	DisplayName: 音乐盒（魂灵主界面）
+	Tooltip: ""
+}
+
+Drypowder: {
+	DisplayName: 旱之尘
+	Tooltip: 扩散稀树平原
+}
+
+ElephantKite: {
+	DisplayName: 大象风筝
+	Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	DisplayName: 制图桌
+	Tooltip:
+		'''
+		允许你向其他玩家分享你的地图
+		互动以公布你的发现
+		'''
+}
+
+PurityBonsaiItem: {
+	DisplayName: 柳树盆栽
+	Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	DisplayName: 红玉盆栽
+	Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	DisplayName: 樱花盆栽
+	Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	DisplayName: 黄柳盆栽
+	Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	DisplayName: 紫晶盆栽
+	Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	DisplayName: 钻石盆栽
+	Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	DisplayName: 翡翠盆栽
+	Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	DisplayName: 蓝宝石盆栽
+	Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	DisplayName: 黄玉盆栽
+	Tooltip: ""
+}
+
+AmberBonsaiItem: {
+	DisplayName: 琥珀盆栽
+	Tooltip: ""
+}
+
+JinxBow: {
+	DisplayName: 厄劫弓
+	Tooltip:
+		'''
+		发射消耗弹药的箭矢，偶尔会标记敌人
+		使用远程攻击打击被标记的敌人会释放一支强大的魔法箭
+		'''
+}
+
+ExplosiveRum: {
+	DisplayName: 爆炸性朗姆酒
+	Tooltip: “哦，在这！”
+}
+
+Flarepowder: {
+	DisplayName: 闪耀之尘
+	Tooltip: 释放一团漂浮的魔法粉尘
+}
+
+VexpowderBlue: {
+	DisplayName: 苦恼之尘
+	Tooltip:
+		'''
+		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		困惑被击中的敌人
+		'''
+}
+
+VexpowderRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	DisplayName: 便携可拆椅
+	Tooltip: 碰撞时损坏
+}
+
+AncientMarksmanHood: {
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	Tooltip: ""
+}
+
+RollingPotsItem: {
+	DisplayName: 滚动罐子
+	Tooltip: ""
+}
+
+MossSlimeBannerItem.DisplayName: 苔藓史莱姆旗
+
+InvisibleLure: {
+	DisplayName: 隐形鱼诱
+	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	DisplayName: 神射手手套
+	Tooltip:
+		'''
+		在特定距离外时会增加远程伤害
+		在该范围外连续射击时会逐渐增加造成的伤害
+		'''
+}
+
+BonsaiPot: {
+	DisplayName: 盆栽用盆
+	Tooltip: 用于制作装饰性盆栽
+}
+
+WickerBasketsItem: {
+	DisplayName: 柳条筐
+	Tooltip: ""
+}
+
+EarthshakerBreastplate: {
+	DisplayName: 撼地者胸甲
+	Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	DisplayName: 撼地者胸件
+	Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	DisplayName: 撼地者头饰
+	Tooltip: ""
+}
+
+EarthshakerTreads: {
+	DisplayName: 撼地者之靴
+	Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	DisplayName: 撼地者战面
+	Tooltip: ""
+}
+
+GraniteBody: {
+	DisplayName: 动能胸甲
+	Tooltip: 小幅度增加跳跃高度
+}
+
+GraniteHead: {
+	DisplayName: 动能面甲
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	DisplayName: 动能护胫
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+FingerGun: {
+	DisplayName: 手指冲击波
+	Tooltip:
+		'''
+		无视敌人些许防御力
+		魔力值越高，发射速度越快
+		“咻咻！”
+		'''
+}
+
+FlaskOfFrost: {
+	DisplayName: 冰霜瓶
+	Tooltip: 近战和鞭子攻击会冻结敌人
+}
+
+HardlightVisor: {
+	DisplayName: 强光面甲
+	Tooltip: ""
+	AltDisplayName: 硬光面甲
+	AltTooltip: “请勿与强光面甲混淆”
+}
+
+PolishedAmberItem: {
+	// DisplayName: Polished Amber
+	// Tooltip: ""
+}
+
+AmberFossilSafeItem: {
+	// DisplayName: Amber Fossil
+	// Tooltip: ""
+}
+
+GildedSandstoneItem: {
+	// DisplayName: Gilded Sandstone
+	// Tooltip: ""
+}
+
+RedSandstoneBrickItem: {
+	// DisplayName: Red Sandstone Brick
+	// Tooltip: ""
+}
+
+RedSandstoneBrickCrackedItem: {
+	// DisplayName: Cracked Red Sandstone Brick
+	// Tooltip: "'Still structurally sound!'"
+}
+
+WalkieTalkie: {
+	// DisplayName: Walkie-Talkie
+	// Tooltip: Allows you to talk to the Angler anywhere
+	// Disabled: No one's around to respond...
+}
+
+ScryingLens: {
+	// DisplayName: Scrying Lens
+	// Tooltip: Displays Shimmer transmutations
+	// ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
+}
+
+Ledger: {
+	// DisplayName: Ledger
+	// Tooltip: Displays item coin prices
+}
+
+MysticalCodex: {
+	// DisplayName: Mystical Codex
+	// Tooltip: Displays item coin prices and Shimmer transmutations
+}
+
+CommonPotsSavannaItem: {
+	// DisplayName: Savanna Pot
+	// Tooltip: ""
+}
+
+// StactusBannerItem.DisplayName: Stactus Banner
+
+SunEarrings: {
+	// DisplayName: Sundancer Earrings
+	/* Tooltip:
+		'''
+		Increases maximum mana by 20
+		7% increased magic damage
+		''' */
+}
+
+SilkSirwal: {
+	// DisplayName: Sundancer Sirwal
+	// Tooltip: Increases movement speed and acceleration on the ground
+}
+
+SilkTop: {
+	// DisplayName: Sundancer Top
+	// Tooltip: 7% increased magic damage
+}
+
+CeremonialDagger: {
+	// DisplayName: Ceremonial Dagger
+	/* Tooltip:
+		'''
+		Deals damage to townsfolk
+		<right> deals critical damage to bleeding enemies
+		''' */
+}
+
+Thornball: {
+	// DisplayName: Thornball
+	// Tooltip: Sticks to tiles
+}
+
+SaltBlockDullItem: {
+	// DisplayName: Dull Salt Block
+	// Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	// DisplayName: Salt Block
+	// Tooltip: "'Smooth and reflective'"
+}
+
+NeedleTrapItem: {
+	// DisplayName: Needle Trap
+	// Tooltip: ""
+}
+
+DivingBeetleItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	// Tooltip: ""
+}
+
+SunDropper: {
+	// DisplayName: Magic Sunlight Dropper
+	// Tooltip: ""
+}
+
+OsmosifierItem: {
+	// DisplayName: Osmosifier
+	// Tooltip: Passively produces salt blocks when placed in water
+}
+
+GoldDivingBeetleItem: {
+	// DisplayName: Gold Diving Beetle
+	// Tooltip: ""
+}
+
+StoneStupasItem: {
+	// DisplayName: Stone Stupa
+	// Tooltip: ""
+}
+
+SaltChestItem: {
+	// DisplayName: Salt Chest
+	// Tooltip: ""
+}
+
+SaltDresserItem: {
+	// DisplayName: Salt Dresser
+	// Tooltip: ""
+}
+
+SaltBathtubItem: {
+	// DisplayName: Salt Bathtub
+	// Tooltip: ""
+}
+
+SaltBedItem: {
+	// DisplayName: Salt Bed
+	// Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	// DisplayName: Salt Bookcase
+	// Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	// DisplayName: Salt Candelabra
+	// Tooltip: ""
+}
+
+SaltChandelierItem: {
+	// DisplayName: Salt Chandelier
+	// Tooltip: ""
+}
+
+SaltClockItem: {
+	// DisplayName: Salt Clock
+	// Tooltip: ""
+}
+
+SaltDoorItem: {
+	// DisplayName: Salt Door
+	// Tooltip: ""
+}
+
+SaltLampItem: {
+	// DisplayName: Salt Lamp
+	// Tooltip: ""
+}
+
+SaltLanternItem: {
+	// DisplayName: Salt Lantern
+	// Tooltip: ""
+}
+
+SaltPianoItem: {
+	// DisplayName: Salt Piano
+	// Tooltip: ""
+}
+
+SaltSinkItem: {
+	// DisplayName: Salt Sink
+	// Tooltip: ""
+}
+
+SaltSofaItem: {
+	// DisplayName: Salt Sofa
+	// Tooltip: ""
+}
+
+SaltTableItem: {
+	// DisplayName: Salt Table
+	// Tooltip: ""
+}
+
+SaltToiletItem: {
+	// DisplayName: Salt Toilet
+	// Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	// DisplayName: Salt Work Bench
+	// Tooltip: ""
+}
+
+SaltCandleItem: {
+	// DisplayName: Salt Candle
+	// Tooltip: ""
+}
+
+SaltChairItem: {
+	// DisplayName: Salt Chair
+	// Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	// DisplayName: Otherworldly Radio
+	/* Tooltip:
+		'''
+		<right> to toggle Otherworld music
+		'Charmingly old-fashioned'
+		''' */
+	// TunedToNormal: (Standard Frequency)
+	// TunedToOtherworld: (Odd Frequency)
+	// MusicDisplay: "[i:576] You're listening to:"
+}
+
+SleightOfHand: {
+	// DisplayName: Sleight of Hand
+	/* Tooltip:
+		'''
+		Double tap {0} while holding a ranged weapon to swap ammo types
+		Works while in the inventory
+		''' */
+}
+
+RuinedSandstonePillarItem: {
+	// DisplayName: Ruined Sandstone Pillar
+	// Tooltip: ""
+}
+
+GlidingItem: {
+	// DisplayName: Gliding
+	// Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	// DisplayName: Vicious Flamingo
+	// Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	// DisplayName: Salt Wall
+	// Tooltip: ""
+}
+
+JerboaItem: {
+	// DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	// Tooltip: ""
+}
+
+JarboaItem: {
+	// DisplayName: Jarboa
+	// Tooltip: ""
+}
+
+RedSandstoneBrickWallItem: {
+	// DisplayName: Red Sandstone Brick Wall
+	// Tooltip: ""
+}
+
+PolishedSandstoneWallItem: {
+	// DisplayName: Polished Sandstone Wall
+	// Tooltip: ""
+}
+
+CarvedLapisItem: {
+	// DisplayName: Carved Lapis
+	// Tooltip: ""
+}
+
+LapisChestItem: {
+	// DisplayName: Lapis Chest
+	// Tooltip: ""
+}
+
+LapisDresserItem: {
+	// DisplayName: Lapis Dresser
+	// Tooltip: ""
+}
+
+LapisCandleItem: {
+	// DisplayName: Lapis Candle
+	// Tooltip: ""
+}
+
+LapisBathtubItem: {
+	// DisplayName: Lapis Bathtub
+	// Tooltip: ""
+}
+
+LapisBedItem: {
+	// DisplayName: Lapis Bed
+	// Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	// DisplayName: Lapis Bookcase
+	// Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	// DisplayName: Lapis Candelabra
+	// Tooltip: ""
+}
+
+LapisChairItem: {
+	// DisplayName: Lapis Chair
+	// Tooltip: ""
+}
+
+LapisChandelierItem: {
+	// DisplayName: Lapis Chandelier
+	// Tooltip: ""
+}
+
+LapisClockItem: {
+	// DisplayName: Lapis Clock
+	// Tooltip: ""
+}
+
+LapisDoorItem: {
+	// DisplayName: Lapis Door
+	// Tooltip: ""
+}
+
+LapisLampItem: {
+	// DisplayName: Lapis Lamp
+	// Tooltip: ""
+}
+
+LapisLanternItem: {
+	// DisplayName: Lapis Lantern
+	// Tooltip: ""
+}
+
+LapisPianoItem: {
+	// DisplayName: Lapis Piano
+	// Tooltip: ""
+}
+
+LapisSinkItem: {
+	// DisplayName: Lapis Sink
+	// Tooltip: ""
+}
+
+LapisSofaItem: {
+	// DisplayName: Lapis Sofa
+	// Tooltip: ""
+}
+
+LapisTableItem: {
+	// DisplayName: Lapis Table
+	// Tooltip: ""
+}
+
+LapisToiletItem: {
+	// DisplayName: Lapis Toilet
+	// Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	// DisplayName: Lapis Work Bench
+	// Tooltip: ""
+}
+
+LapisPlatformItem: {
+	// DisplayName: Lapis Platform
+	// Tooltip: ""
+}
+
+SwordStandItem: {
+	// DisplayName: Sword Stand
+	// Tooltip: Allows some weapons to be displayed using <right>
+}
+
+TrellisItem: {
+	// DisplayName: Trellis
+	// Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
+}
+
+TrellisBorealItem: {
+	// DisplayName: Boreal Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	// DisplayName: Ebonwood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	// DisplayName: Rich Mahogany Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	// DisplayName: Palm Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	// DisplayName: Pearlwood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	// DisplayName: Shadewood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	// DisplayName: Chain Loop
+	// Tooltip: Press Up/Down while placing to adjust chain length
+}
+
+GoldChainLoopItem: {
+	// DisplayName: Gold Chain Loop
+	// Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	// DisplayName: Salt Platform
+	// Tooltip: ""
+}
+
+MahakalaMaskBlue: {
+	// DisplayName: Mahakala Mask
+	// Tooltip: Reduces damage taken from corrupt enemies
+}
+
+MahakalaMaskRed: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+}
+
+RedSandstoneSlabItem: {
+	// DisplayName: Red Sandstone Slab
+	// Tooltip: ""
+}
+
+CenserItem: {
+	// DisplayName: Censer
+	// Tooltip: ""
+}
+
+CarvedLapisWallItem: {
+	// DisplayName: Carved Lapis Wall
+	// Tooltip: ""
+}
+
+BronzePotsItem: {
+	// DisplayName: Bronze Pot
+	// Tooltip: ""
+}
+
+LapisPotsItem: {
+	// DisplayName: Lapis Pot
+	// Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	// DisplayName: Drywood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	// DisplayName: Bronze Grate
+	// Tooltip: ""
+}
+
+BronzePlatingItem: {
+	// DisplayName: Bronze Plating
+	// Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	// DisplayName: Bronze Plating Wall
+	// Tooltip: ""
+}
+
+BronzePlatformItem: {
+	// DisplayName: Bronze Platform
+	// Tooltip: ""
+}
+
+ZigguratTorchItem: {
+	// DisplayName: Ziggurat Torch
+	// Tooltip: Lights up when nearby
+}
+
+SwordStandMahoganyItem: {
+	// DisplayName: Mahogany Sword Stand
+	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	// DisplayName: Sandstone Sword Stand
+	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	// DisplayName: Foreground Red Sandstone Brick Wall
+	// Tooltip: ""
+}
+
+SaltPylonItem: {
+	// DisplayName: Salt Flats Pylon
+	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+SaltNightMusicBoxItem: {
+	// Tooltip: ""
+	// DisplayName: Music Box (Salt Flats Night)
+}
+
+SaltMusicBoxItem: {
+	// Tooltip: ""
+	// DisplayName: Music Box (Salt Flats)
+}
+
+PineappleSeeds: {
+	// DisplayName: Pineapple Seeds
+	// Tooltip: ""
+}
+
+// StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
+// StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
+
+Dragonsong: {
+	// DisplayName: Dragonsong
+	/* Tooltip:
+		'''
+		50% chance to save ammo
+		'You are a terrible person'
+		''' */
+}
+
+TinyDragon: {
+	// DisplayName: Tiny Dragon
+	/* Tooltip:
+		'''
+		Summons a tiny dragon to follow you around
+		"'Last of its kind'"
+		''' */
+}
+
+PileOfConsequences: {
+	// DisplayName: Pile of Consequences
+	// Tooltip: "'You know what you did.'"
+}
+
+BrineShrimpItem: {
+	// DisplayName: Brine Shrimp
+	// Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	// DisplayName: Golden Brine Shrimp
+	// Tooltip: ""
+}
+
+// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
+// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
+// DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
+
+AncientBannerItem: {
+	// DisplayName: Ancient Banner
+	// Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	// DisplayName: Tall Sandstone Shelf
+	// Tooltip: ""
+}
+
+SaltTorchItem: {
+	// DisplayName: Salt Torch
+	// Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	// DisplayName: Music Box (Ziggurat)
+	// Tooltip: ""
+}
+
+PinSaltFlat: {
+	// DisplayName: Salt Flats Pin
+	// Tooltip: ""
+}
+
+PinZiggurat: {
+	// DisplayName: Ziggurat Pin
+	// Tooltip: ""
+}
+
+BangleOfStrength: {
+	// DisplayName: Bangle of Strength
+	// Tooltip: Periodically empowers melee damage
+}
+
+ScarabTabletOneItem: {
+	// DisplayName: Crested Idol
+	// Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	// DisplayName: Winged Sun
+	// Tooltip: ""
+}
+
+ScarabAltarItem: {
+	// DisplayName: Ancient Altar
+	// Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	// DisplayName: Cracked Red Sandstone Brick Wall
+	// Tooltip: ""
+}
+
+AncientBooksItem: {
+	// DisplayName: Ancient Book
+	// Tooltip: "'Rendered unreadable by time'"
+}
+
+// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
+
+SaltGlassWallItem: {
+	// DisplayName: Salt Glass Wall
+	// Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	// DisplayName: Salt Panel Wall
+	// Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	// DisplayName: Salt Plate Wall
+	// Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	// DisplayName: Salt Fireplace
+	// Tooltip: ""
+}
+
+SaltGlassItem: {
+	// DisplayName: Salt Glass
+	// Tooltip: ""
+}
+
+SaltPanelItem: {
+	// DisplayName: Salt Panel
+	// Tooltip: ""
+}
+
+SaltPlateItem: {
+	// DisplayName: Salt Plate
+	// Tooltip: ""
+}
+
+SaltCrate: {
+	// DisplayName: Salted Crate
+	// Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	// DisplayName: Brine Crate
+	// Tooltip: ""
+}
+
+SaltCrateRestored: {
+	// DisplayName: Restored Salted Crate
+	// Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	// DisplayName: Restored Brine Crate
+	// Tooltip: ""
+}
+
+// GraverobberBannerItem.DisplayName: Graverobber Banner
+
+GiantBag: {
+	// DisplayName: Loot Bag
+	// Tooltip: "{$CommonTooltips.Backpack}"
+}
+
+CrackedSandstoneItem: {
+	// DisplayName: Cracked Sandstone
+	// Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	// DisplayName: Stone Reliquary
+	// Tooltip: ""
+}
+
+SaltCampfireItem: {
+	// DisplayName: Salt Campfire
+	// Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFountainItem: {
+	// DisplayName: Salt Flats Fountain
+	// Tooltip: ""
+}
+
+SaltskipperQuestFish: {
+	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
+	// CatchLocation: Salt Flats
+	// DisplayName: Saltskipper
+	// Tooltip: "'Caught in Salt Flats'"
+}
+
+// WispBannerItem.DisplayName: Wisp Banner
+// DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner
+
+PaleHiveItem: {
+	// DisplayName: Pale Hive
+	// Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	// DisplayName: Pale Hive Wall
+	// Tooltip: ""
+}
+
+GooBlockItem: {
+	// DisplayName: Goo Block
+	// Tooltip: ""
+}
+
+WindshearScepter: {
+	// DisplayName: Windshear Scepter
+	// Tooltip: ""
+}
+
+SaltTallGateItem: {
+	// DisplayName: Salt Tall Gate
+	// Tooltip: ""
+}
+
+EnlilStatueItem: {
+	// DisplayName: Enlil Statue
+	// Tooltip: Increases vertical mobility when placed nearby
+}
+
+SerratedClaws: {
+	// DisplayName: Serrated Claws
+	// Tooltip: ""
+}
+
+FlagRingItem: {
+	// DisplayName: Flagpole
+	// Tooltip: Can be hammered to add flags
+}
+
+CobbledBrickWallItem: {
+	// DisplayName: Cobbled Brick Wall
+	// Tooltip: ""
+}
+
+CobbledBrickItem: {
+	// DisplayName: Cobbled Brick
+	// Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	// DisplayName: Bronze Grate Door
+	// Tooltip: ""
+}
+
+CalmingBellItem: {
+	// DisplayName: Calming Bell
+	// Tooltip: Right click to reduce enemy spawns
+}
+
+BrownShinglesItem: {
+	// DisplayName: Brown Shingles
+	// Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	// DisplayName: Wooden Shingles
+	// Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	// DisplayName: Gilded Red Sandstone
+	// Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	// DisplayName: Bronze Grate Block
+	// Tooltip: ""
+}
+
+BedouinBreastplate: {
+	// DisplayName: Bedouin Breastplate
+	// Tooltip: 5% increased damage
+}
+
+BedouinCowl: {
+	// DisplayName: Bedouin Cowl
+	// Tooltip: 5% increased critical strike chance
+}
+
+BedouinLeggings: {
+	// DisplayName: Bedouin Leggings
+	// Tooltip: 10% increased movement speed
+}
+
+ZigguratTikiTorchItem: {
+	// DisplayName: Ziggurat Tiki Torch
+	// Tooltip: ""
+}
+
+CricketItem: {
+	// DisplayName: Cricket
+	// Tooltip: ""
+}
+
+GoldCricketItem: {
+	// DisplayName: Gold Cricket
+	// Tooltip: ""
+}
+
+CricketCageItem: {
+	// DisplayName: Cricket Cage
+	// Tooltip: ""
+}
+
+GoldCricketCageItem: {
+	// DisplayName: Gold Cricket Cage
+	// Tooltip: ""
+}
+
+CarrotCake: {
+	// Tooltip: "{$BuffDescription.WellFed3}"
+	// DisplayName: Carrot Cake
+}
+
+AvianRitualMask: {
+	// DisplayName: Avian Ritual Mask
+	// Tooltip: ""
+}
+
+BullRitualMask: {
+	// DisplayName: Bull Ritual Mask
+	// Tooltip: ""
+}

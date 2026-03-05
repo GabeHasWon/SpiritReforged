@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+﻿using SpiritReforged.Common.Easing;
+
+namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 
 public interface ITrailColor
 {
@@ -10,11 +12,14 @@ public class GradientTrail(Color start, Color end) : ITrailColor
 {
 	private Color _startColour = start;
 	private Color _endColour = end;
+	private EaseFunction _easing = EaseFunction.Linear;
+
+	public GradientTrail(Color start, Color end, EaseFunction easing) : this(start, end) => _easing = easing;
 
 	public Color GetColourAt(float distanceFromStart, float trailLength, List<Vector2> points, Vector2 curPoint)
 	{
 		float progress = distanceFromStart / trailLength;
-		return Color.Lerp(_startColour, _endColour, progress) * (1f - progress);
+		return Color.Lerp(_startColour, _endColour, _easing.Ease(progress)) * (1f - progress);
 	}
 }
 

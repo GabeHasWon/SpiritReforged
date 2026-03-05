@@ -1,34 +1,15 @@
 namespace SpiritReforged.Content.Ocean.Boids;
 
-internal class Boid
+/// <summary> The blueprint for a group of <see cref="BoidObject"/>s. Does not represent individual groups as they exist in the world. </summary>
+internal class Boid(float maxFlockSize = 60, float weight = 1, params int[] types)
 {
 	protected readonly List<BoidObject> Objects = [];
 
-	public int[] TextureLookup { get; }
-
-	public readonly float flockScale;
-	public readonly float maxFish;
-	public readonly float spawnWeight;
+	public readonly HashSet<int> variants = [.. types];
+	public readonly float maxFish = maxFlockSize;
+	public readonly float spawnWeight = weight;
 
 	private const int SimulationDistance = 2500;
-
-	/// <param name="lookup"> The indexes of <see cref="BoidManager.FishTextures"/> this boid uses. </param>
-	public Boid(int[] lookup, float scale = 1, float maxFlockSize = 60, float spawnWeight = 1)
-	{
-		TextureLookup = lookup;
-		flockScale = scale;
-		maxFish = maxFlockSize;
-		this.spawnWeight = spawnWeight;
-	}
-
-	/// <param name="lookup"> The index of <see cref="BoidManager.FishTextures"/> this boid uses. </param>
-	public Boid(int lookup, float scale = 1, float maxFlockSize = 60, float spawnWeight = 1)
-	{
-		TextureLookup = [lookup];
-		flockScale = scale;
-		maxFish = maxFlockSize;
-		this.spawnWeight = spawnWeight;
-	}
 
 	internal void Populate(Vector2 position, int amount, float spread)
 	{

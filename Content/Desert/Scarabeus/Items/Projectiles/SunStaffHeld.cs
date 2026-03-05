@@ -20,6 +20,8 @@ public class SunStaffHeld : ModProjectile
 
 	private bool _stoppedChannel = false;
 
+	public override bool IsLoadingEnabled(Mod mod) => false;
+
 	public override void SetDefaults()
 	{
 		Projectile.width = 46;
@@ -136,8 +138,8 @@ public class SunStaffHeld : ModProjectile
 		Texture2D staffTex = TextureAssets.Projectile[Type].Value;
 		GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Type, out GlowmaskInfo staffGlowAsset);
 		Texture2D staffGlow = staffGlowAsset.Glowmask.Value;
-		Texture2D starTex = AssetLoader.LoadedTextures["Star"];
-		Texture2D bloomTex = AssetLoader.LoadedTextures["Bloom"];
+		Texture2D starTex = AssetLoader.LoadedTextures["Star"].Value;
+		Texture2D bloomTex = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		//Calculations
 		float strength = 0.5f;

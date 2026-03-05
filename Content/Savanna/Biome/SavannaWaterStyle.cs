@@ -5,5 +5,5 @@ public class SavannaWaterStyle : ModWaterStyle
 	public override int ChooseWaterfallStyle() => ModContent.GetInstance<SavannaWaterfallStyle>().Slot;
 	public override int GetSplashDust() => DustID.Water;
 	public override int GetDropletGore() => GoreID.WaterDrip;
-	public override Color BiomeHairColor() => Color.SeaGreen;
+	public override Color BiomeHairColor() => new(185, 175, 40);
 }

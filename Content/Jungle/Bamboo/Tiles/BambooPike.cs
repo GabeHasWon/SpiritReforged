@@ -1,5 +1,5 @@
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Buffs;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
@@ -8,17 +8,9 @@ public class BambooPike : ModTile
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
-		Main.tileMergeDirt[Type] = false;
 		Main.tileBlockLight[Type] = false;
 		Main.tileNoFail[Type] = true;
 		Main.tileFrameImportant[Type] = true;
-
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
-		TileObjectData.newTile.AnchorAlternateTiles = [Type];
-		TileObjectData.newTile.RandomStyleRange = 3;
-		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ModContent.ItemType<BambooPikeItem>());
 		AddMapEntry(new Color(80, 140, 35));
@@ -27,24 +19,29 @@ public class BambooPike : ModTile
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		Tile tile = Framing.GetTileSafely(i, j);
+		var t = Framing.GetTileSafely(i, j);
+		var tUp = Framing.GetTileSafely(i, j - 1);
+		var tDown = Framing.GetTileSafely(i, j + 1);
 
-		bool hasTileAbove = Framing.GetTileSafely(i, j - 1).TileType == Type;
-		bool hasTileBelow = Framing.GetTileSafely(i, j + 1).TileType == Type;
+		bool hasTileAbove = tUp.TileType == Type;
+		bool hasTileBelow = tDown.TileType == Type;
 
-		if (!Framing.GetTileSafely(i, j + 1).HasTile) //Has any tile below
+		if (!tDown.HasTile) //Has any tile below
 		{
 			WorldGen.KillTile(i, j, false, false, false);
 			return false;
 		}
 
+		if (!hasTileAbove && !hasTileBelow && resetFrame)
+			t.TileFrameX = (short)(18 * Main.rand.Next(3));
+
 		if (hasTileAbove) //Pick the appropriate frame depending on tile stack
-			tile.TileFrameY = (short)(18 * (hasTileBelow ? 1 : 2));
+			t.TileFrameY = (short)(18 * (hasTileBelow ? 1 : 2));
 		else
-			tile.TileFrameY = 0;
+			t.TileFrameY = 0;
 
 		if (hasTileBelow) //Inherit the same horizontal tile frame as the rest of the stack
-			tile.TileFrameX = Framing.GetTileSafely(i, j + 1).TileFrameX;
+			t.TileFrameX = tDown.TileFrameX;
 
 		return false;
 	}
@@ -64,7 +61,7 @@ public class BambooPike : ModTile
 		}
 		else if (entity is Player player)
 		{
-			player.Hurt(PlayerDeathReason.ByOther(3), (int)damage, 0);
+			player.Hurt(BambooPikePlayer.GetDeathReason(player), (int)damage, 0);
 			player.AddBuff(ModContent.BuffType<Impaled>(), 500);
 			player.velocity = new Vector2(0, 1);
 		}
@@ -72,14 +69,15 @@ public class BambooPike : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		Tile tile = Framing.GetTileSafely(i, j);
-		Texture2D texture = TextureAssets.Tile[Type].Value;
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+			return false;
 
-		Vector2 offset = Lighting.LegacyEngine.Mode > 1 && Main.GameZoomTarget == 1 ? Vector2.Zero : Vector2.One * 12;
-		Vector2 drawPos = (new Vector2(i, j) + offset) * 16 - Main.screenPosition + new Vector2(tile.TileFrameX / 18 * 2, 2);
+		var t = Main.tile[i, j];
+		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);
+		var naturalOffset = new Vector2(t.TileFrameX / 18 * 2, 2);
+		var drawPos = new Vector2(i, j) * 16 - Main.screenPosition + naturalOffset + TileExtensions.TileOffset;
 
-		spriteBatch.Draw(texture, drawPos, source, Lighting.GetColor(i, j), 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(texture, drawPos, source, color, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
 		return false;
 	}
 }
@@ -93,34 +91,36 @@ public class BambooPikeItem : ModItem
 		Item.value = Item.sellPrice(copper: 5);
 	}
 
-	public override bool CanUseItem(Player player)
+	public override bool CanUseItem(Player player) //Allow pikes to be placed when used on any tile in the stack
 	{
-		//Allow pikes to be placed when used on any tile in the stack
-		var tilePos = new Point((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+		var tilePos = new Point(Player.tileTargetX, Player.tileTargetY);
 
-		if (Framing.GetTileSafely(tilePos).TileType != Item.createTile) //Avoid this custom logic if possible
-			return base.CanUseItem(player);
+		if (Framing.GetTileSafely(tilePos).TileType == Item.createTile)
+		{
+			while (Framing.GetTileSafely(tilePos).TileType == Item.createTile)
+				tilePos.Y--;
 
-		while (Framing.GetTileSafely(tilePos).TileType == Item.createTile)
-			tilePos.Y--;
+			var t = Framing.GetTileSafely(tilePos);
 
-		WorldGen.PlaceTile(tilePos.X, tilePos.Y, Item.createTile);
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, tilePos.X, tilePos.Y, 1);
+			if (WorldGen.SolidOrSlopedTile(t))
+				return true;
 
-		if (Item.stack == 1)
-			Item.TurnToAir();
-		else
-			Item.stack--;
+			WorldGen.PlaceTile(tilePos.X, tilePos.Y, Item.createTile);
 
-		return base.CanUseItem(player);
+			if (t.TileType == Item.createTile) //Success!
+			{
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					NetMessage.SendTileSquare(-1, tilePos.X, tilePos.Y, 1);
+
+				if (Item.stack == 1)
+					Item.TurnToAir();
+				else
+					Item.stack--;
+			}
+		}
+
+		return true;
 	}
 
-	public override void AddRecipes()
-	{
-		Recipe recipe = CreateRecipe();
-		recipe.AddIngredient(ItemID.BambooBlock, 2);
-		recipe.AddTile(TileID.WorkBenches);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BambooBlock, 2).AddTile(TileID.WorkBenches).Register();
 }

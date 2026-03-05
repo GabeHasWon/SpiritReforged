@@ -8,6 +8,8 @@ public class Ambergris : FloatingItem
 	public override float Weight => base.Weight * 0.9f;
 	public override float Bouyancy => base.Bouyancy * 1.08f;
 
+	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
+
 	public override void SetDefaults()
 	{
 		Item.width = 30;

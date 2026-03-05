@@ -1,15 +1,19 @@
-﻿using SpiritReforged.Common.SimpleEntity;
-using SpiritReforged.Common.TileCommon.CustomTree;
+﻿using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.SimpleEntity;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon.Tree;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
-public class TreetopPlatform : SimpleEntity
+public class TreetopPlatform : SimpleEntity, IGrappleable
 {
-	public Point16? TreePosition { get; private set; }
+	public override string TexturePath => AssetLoader.EmptyTexture;
 
-	public override string TexturePath => "Terraria/Images/Projectile_0";
+	public Point16? TreePosition { get; private set; }
+	public double lastWindCounter;
 
 	public override void Load()
 	{
@@ -22,9 +26,10 @@ public class TreetopPlatform : SimpleEntity
 		TreePosition ??= Center.ToPoint16(); //Initialize
 		var tilePos = TreePosition.Value;
 		//Use a position convenient to acacia treetops
-		Center = tilePos.ToVector2() * 16 + new Vector2(8, -112) + TreeHelper.GetPalmTreeOffset(tilePos.X, tilePos.Y);
+		Center = tilePos.ToVector2() * 16 + new Vector2(8, -112) + TreeExtensions.GetPalmTreeOffset(tilePos.X, tilePos.Y);
 
-		if (!ModContent.GetInstance<AcaciaTree>().IsTreeTop(TreePosition.Value.X, TreePosition.Value.Y, true))
+		Tile tile = Framing.GetTileSafely(TreePosition.Value);
+		if (!tile.HasTile || TileLoader.GetTile(tile.TileType) is not AcaciaTree || ModContent.GetInstance<AcaciaTree>().FindSegment(TreePosition.Value.X, TreePosition.Value.Y) is not CustomTree.SegmentType.LeafyTop)
 			Kill();
 	}
 
@@ -37,7 +42,7 @@ public class TreetopPlatform : SimpleEntity
 		float rotation = AcaciaTree.GetSway(pos.X, pos.Y);
 
 		//The difference in rotation from last tick, used to control how much the entity displaces horizontally
-		float diff = rotation - AcaciaTree.GetSway(pos.X, pos.Y, ModContent.GetInstance<AcaciaPlatformDetours>().OldTreeWindCounter);
+		float diff = rotation - AcaciaTree.GetSway(pos.X, pos.Y, lastWindCounter);
 		//Scalar based on the entity's distance from platform center
 		float strength = (entity.Center.X - Center.X) / (width * .5f);
 		//How much the entity is displaced by the previous factors
@@ -51,103 +56,67 @@ public class TreetopPlatform : SimpleEntity
 
 		if (entity is Player player)
 		{
-			player.fullRotation = rotation * .07f;
-			player.fullRotationOrigin = new Vector2(player.width * .5f, player.height);
+			player.Rotate(rotation * .07f, new Vector2(player.width * .5f, player.height));
+			player.gfxOffY = 0;
 		}
+
+		lastWindCounter = TileSwaySystem.TreeWindCounter;
+	}
+
+	public bool CanGrapple(Projectile hook)
+	{
+		if (hook.type != ProjectileID.SquirrelHook) //Only allow the Squirrel Hook to grapple platforms
+			return false;
+
+		const int height = 4;
+		var hitbox = new Rectangle(Hitbox.X, Hitbox.Y + height + 16, Hitbox.Width, height); //Adjust the hitbox to be more grapple friendly
+
+		if (hook.getRect().Intersects(hitbox) && !Collision.SolidCollision(hook.position, hook.width, hook.height))
+		{
+			hook.Center = new Vector2(hook.Center.X, hitbox.Center.Y);
+			GrappleHelper.Latch(hook);
+
+			return true;
+		}
+
+		return false;
 	}
 }
 
-internal class AcaciaPlatformPlayer : ModPlayer
+internal class TreetopCollisionPlayer : ModPlayer
 {
-	private bool wasOnPlatform;
-	private bool pressedDown;
-
-	public override void PreUpdateMovement()
-	{
-		bool onPlatform = false;
-
-		foreach (var p in AcaciaTree.Platforms)
-		{
-			var lowRect = Player.getRect() with { Height = Player.height / 2, Y = (int)Player.position.Y + Player.height / 2 };
-			if (lowRect.Intersects(p.Hitbox) && Player.velocity.Y >= 0)
-			{
-				if (!pressedDown)
-				{
-					p.UpdateStanding(Player);
-
-					if (Player.controlDown)
-						pressedDown = true;
-				}
-				
-				onPlatform = wasOnPlatform = true;
-				break; //It would be redundant to check for other platforms when the player is already on one
-			}
-		}
-
-		if (!onPlatform && wasOnPlatform) //Reset rotation when the player just leaves a platform
-		{
-			Player.fullRotation = 0;
-
-			pressedDown = false;
-			wasOnPlatform = false;
-		}
-	}
-}
-
-internal class AcaciaPlatformDetours : ILoadable
-{
-	public double OldTreeWindCounter { get; private set; }
-
-	public void Load(Mod mod)
-	{
-		On_Projectile.AI_007_GrapplingHooks += CheckGrappling;
-		On_NPC.UpdateCollision += CheckNPCCollision;
-		TileSwaySystem.PreUpdateWind += PreserveWindCounter;
-	}
-
-	private void CheckGrappling(On_Projectile.orig_AI_007_GrapplingHooks orig, Projectile self)
-	{
-		if (self.type != ProjectileID.SquirrelHook) //Only allow the Squirrel Hook to grapple platforms
-		{
-			orig(self);
-			return;
-		}
-
-		foreach (var p in AcaciaTree.Platforms)
-		{
-			if (self.getRect().Intersects(p.Hitbox) && !Collision.SolidCollision(self.Bottom, self.width, 8))
-			{
-				var owner = Main.player[self.owner];
-
-				self.ai[0] = 2f;
-				self.velocity *= 0;
-				self.netUpdate = true;
-
-				owner.grappling[0] = self.whoAmI;
-				owner.grapCount++;
-				owner.GrappleMovement();
-
-				if (Main.netMode != NetmodeID.SinglePlayer && self.owner == Main.myPlayer)
-					NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, self.owner);
-			}
-		}
-
-		orig(self);
-	}
-
-	private void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
+	public override void Load() => On_NPC.UpdateCollision += CheckNPCCollision;
+	private static void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
 	{
 		if (!self.noGravity)
 		{
 			foreach (var p in AcaciaTree.Platforms)
+			{
 				if (self.getRect().Intersects(p.Hitbox) && self.velocity.Y >= 0)
+				{
 					p.UpdateStanding(self);
+					break;
+				}
+			}
 		}
 
 		orig(self);
 	}
 
-	private void PreserveWindCounter() => OldTreeWindCounter = TileSwaySystem.Instance.TreeWindCounter;
+	public override void PreUpdateMovement()
+	{
+		foreach (var p in AcaciaTree.Platforms)
+		{
+			var lowRect = Player.getRect() with { Height = Player.height / 2, Y = (int)Player.position.Y + Player.height / 2 };
+			if (lowRect.Intersects(p.Hitbox) && Player.velocity.Y >= 0 && !Player.FallThrough())
+			{
+				p.UpdateStanding(Player);
 
-	public void Unload() { }
+				if (Player.controlDown)
+					Player.GetModPlayer<CollisionPlayer>().fallThrough = true;
+
+				break; //It would be redundant to check for other platforms when the player is already on one
+			}
+		}
+	}
 }

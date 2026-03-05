@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>RubbleAutoloader</name>
+    </assembly>
+    <members>
+        <member name="T:RubbleAutoloader.Autoloader">
+            <summary> The core of RubbleAutoloader. </summary>
+        </member>
+        <member name="M:RubbleAutoloader.Autoloader.IsRubble(System.Int32)">
+            <returns> Whether <paramref name="type"/> is an autoloaded rubble tile. </returns>
+        </member>
+        <member name="M:RubbleAutoloader.Autoloader.GetRubble``1">
+            <summary> Gets the rubble type associated with the given <see cref="T:Terraria.ModLoader.ModTile"/>. </summary>
+        </member>
+        <member name="M:RubbleAutoloader.Autoloader.Load(Terraria.ModLoader.Mod)">
+            <summary> Initializes rubble autoloading. Must be called directly in <paramref name="mod"/>'s Load method. </summary>
+            <param name="mod"> your mod. </param>
+        </member>
+        <member name="T:RubbleAutoloader.IAutoloadRubble">
+            <summary> Autoloads a rubble variant for this tile. This class must be public for autoloading to work.<br/>
+            Rubbles are stored by type and can be checked using <see cref="M:RubbleAutoloader.Autoloader.IsRubble(System.Int32)"/>. </summary>
+        </member>
+        <member name="T:RubbleAutoloader.IAutoloadRubble.RubbleData">
+            <summary> Data used to define rubble tiles. </summary>
+            <param name="item"> The item drop. </param>
+            <param name="size"> The size (small/medium/large). </param>
+            <param name="styles"> The tile styles to use. null will automatically interpret styles from <see cref="P:Terraria.ObjectData.TileObjectData.RandomStyleRange"/>. </param>
+        </member>
+        <member name="M:RubbleAutoloader.IAutoloadRubble.RubbleData.#ctor(System.Int32,RubbleAutoloader.IAutoloadRubble.RubbleSize,System.Int32[])">
+            <summary> Data used to define rubble tiles. </summary>
+            <param name="item"> The item drop. </param>
+            <param name="size"> The size (small/medium/large). </param>
+            <param name="styles"> The tile styles to use. null will automatically interpret styles from <see cref="P:Terraria.ObjectData.TileObjectData.RandomStyleRange"/>. </param>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleData.item">
+            <summary> The item drop. </summary>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleData.size">
+            <summary> The size (small/medium/large). </summary>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleData.styles">
+            <summary> The tile styles to use. </summary>
+        </member>
+        <member name="T:RubbleAutoloader.IAutoloadRubble.RubbleSize">
+            <summary> Size settings according to <see cref="T:Terraria.GameContent.FlexibleTileWand"/> rubble placement. </summary>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleSize.Small">
+            <summary><see cref="F:Terraria.GameContent.FlexibleTileWand.RubblePlacementSmall"/></summary>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleSize.Medium">
+            <summary><see cref="F:Terraria.GameContent.FlexibleTileWand.RubblePlacementMedium"/></summary>
+        </member>
+        <member name="F:RubbleAutoloader.IAutoloadRubble.RubbleSize.Large">
+            <summary><see cref="F:Terraria.GameContent.FlexibleTileWand.RubblePlacementLarge"/></summary>
+        </member>
+        <member name="P:RubbleAutoloader.IAutoloadRubble.Data">
+            <summary> <see cref="T:RubbleAutoloader.IAutoloadRubble.RubbleData"/> belonging to this rubble type. </summary>
+        </member>
+        <member name="M:RubbleAutoloader.RubbleSystem.Initialize(Terraria.ModLoader.Mod)">
+            <summary> Initializes rubble autoloading. Must be called during loading and after all other content has been loaded. </summary>
+        </member>
+        <member name="T:RubbleAutoloader.RubbleGlobalTile">
+            <summary> Prevents normal item drops for autoloaded rubble tiles. </summary>
+        </member>
+        <member name="M:RubbleAutoloader.RubbleGlobalTile.ValidItem(System.Int32)">
+            <summary> Checks whether the item drop associated with the <see cref="P:RubbleAutoloader.IAutoloadRubble.Data"/> of <paramref name="type"/> is valid.</summary>
+        </member>
+        <member name="M:RubbleAutoloader.TileTypeBuilder.CreateDynamic(System.Object,System.String,System.String,System.Type@)">
+            <summary> Dynamically creates a Type based on <paramref name="sourceObject"/>, specifically for a rubble tile. </summary>
+            <returns> An instance of the type created. </returns>
+        </member>
+    </members>
+</doc>

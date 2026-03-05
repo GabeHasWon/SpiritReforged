@@ -1,0 +1,40 @@
+Cascade:
+	'''
+	Dealing damage to enemies builds up a bubble shield,
+	which at full size grants heavy damage resistance against the next attack,
+	damaging and knocking back nearby enemies
+	'''
+Driftwood:
+	'''
+	Allows the wearer to float on water
+	Increased fishing power
+	'''
+Drywood: Increased movement speed on the surface
+Botanist:
+	'''
+	You gain increased rewards from herbs of all kinds
+	You have a powerful eye for spotting herbs
+	'''
+Marksman:
+	'''
+	Wearing Marksman's Armor builds up concentration
+	While concentrated, your next strike is a critical strike and deals more damage
+	Concentration is disrupted when hurt, but charges faster while standing still
+	'''
+Wayfarer:
+	'''
+	Slain enemies drop more coins
+	Breaking pots grants a movement speed buff
+	Mining ore grants a mining speed buff
+	'''
+Granite:
+	'''
+	Double tap {0} to stomp
+	Hitting the ground releases a shockwave that scales with height
+	'''
+Sundancer:
+	'''
+	An afterimage follows you with a half second delay
+	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
+	'''
+Bedouin: Double tap a direction to dash and envelop yourself in a tornado

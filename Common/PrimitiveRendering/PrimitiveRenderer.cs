@@ -57,17 +57,17 @@ public static class PrimitiveRenderer
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <param name="effect"></param>
-	public static void DrawPrimitiveShape(IPrimitiveShape primitiveShape, Effect effect = null, string shaderPass = null)
+	public static void DrawPrimitiveShape(IPrimitiveShape primitiveShape, Effect effect = null, string shaderPass = null, bool useUiMatrix = false)
 	{
-		ApplyPrimitiveShader(effect, shaderPass);
+		ApplyPrimitiveShader(effect, shaderPass, useUiMatrix);
 		primitiveShape.PrimitiveStructure(out VertexPositionColorTexture[] vertices, out short[] indeces);
 
 		RenderPrimitives(vertices, indeces, primitiveShape.GetPrimitiveType);
 	}
 
-	public static void DrawPrimitiveShapeBatched(IPrimitiveShape[] primitiveShapes, Effect effect = null, string shaderPass = null)
+	public static void DrawPrimitiveShapeBatched(IPrimitiveShape[] primitiveShapes, Effect effect = null, string shaderPass = null, bool useUiMatrix = false)
 	{
-		ApplyPrimitiveShader(effect, shaderPass);
+		ApplyPrimitiveShader(effect, shaderPass, useUiMatrix);
 		foreach (IPrimitiveShape primitiveShape in primitiveShapes)
 		{
 			primitiveShape.PrimitiveStructure(out VertexPositionColorTexture[] vertices, out short[] indeces);
@@ -76,7 +76,7 @@ public static class PrimitiveRenderer
 		}
 	}
 
-	private static void ApplyPrimitiveShader(Effect effect = null, string shaderPass = null)
+	private static void ApplyPrimitiveShader(Effect effect = null, string shaderPass = null, bool useUiMatrix = false)
 	{
 		//If the inputted effect is null, use the static BasicEffect
 		if (effect == null)
@@ -90,7 +90,7 @@ public static class PrimitiveRenderer
 		//Otherwise, set WorldViewProjection of the given effect, and apply all passes
 		else
 		{
-			ShaderHelpers.SetEffectMatrices(ref effect);
+			ShaderHelpers.SetEffectMatrices(ref effect, useUiMatrix);
 			foreach (var pass in effect.CurrentTechnique.Passes.Where(pass => shaderPass == null || pass.Name == shaderPass))
 				pass.Apply();
 		}

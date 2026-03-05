@@ -1,0 +1,139 @@
+EmpoweredSwim: {
+	DisplayName: Усиленное плавание
+	Description: Вы чувствуете себя гораздо быстрее в воде
+}
+
+MantarayBuff: {
+	DisplayName: Скат-спасатель
+	Description: Стремительный, как волна!
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: Медуза
+	Description: Миленькая, и упругая медуза сражается за вас!
+}
+
+JellyfishPet_Buff: {
+	DisplayName: Дружелюбная медуза
+	Description: Эта энергичная медуза обожает сопровождать вас повсюду!
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: Бризовый прыжок
+	Description: Даёт временный двойной прыжок
+}
+
+FlightPotionBuff: {
+	DisplayName: Парение
+	Description: Время полёта увеличено на 25%
+}
+
+BottleMountBuff: {
+	DisplayName: Плот
+	Description: Посылает сигнал бедствия
+}
+
+FairyMinion_Buff: {
+	DisplayName: Феи
+	Description: Эй! Осторожно!
+}
+
+Impaled: {
+	DisplayName: Пронзён
+	Description: Вас пронзили пикой. Ай!
+}
+
+KoiTotemBuff: {
+	DisplayName: Тотем кои
+	Description: Навык рыбной ловли увеличен
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: Эфирная бабочка
+	Description: Эфирная бабочка сражается за вас
+}
+
+ToucanMinion_Buff: {
+	DisplayName: Тукан
+	Description: Тукан сражается за вас
+}
+
+QuenchPotion_Buff: {
+	DisplayName: Пресыщение
+	Description: Длительность действия остальных зелий увеличена на 25%
+}
+
+TumblerPet_Buff: {
+	DisplayName: Сомнительное перекати-поле
+	Description: Это игривое перекати-поле не отстаёт ни на шаг!
+}
+
+Frozen: {
+	DisplayName: "{$BuffName.Frozen}"
+	Description: Скорость передвижения врагов снижена
+}
+
+GildedScarabBuff: {
+	DisplayName: Скарабейный щит
+	Description: Защита увеличена на {0} ед.
+}
+
+PoolNoodleBubbleBuff: {
+	DisplayName: Пузырь нудла
+	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Тёмной Сталью, Падшей звездой!
+}
+
+ExplorerSpeed: {
+	DisplayName: Скорость исследователя
+	Description: Ваша скорость значительно увеличена
+}
+
+RemedyPotionBuff: {
+	DisplayName: Исцеление
+	Description: Невосприимчивость к некоторым негативным эффектам
+}
+
+OpenWounds: {
+	DisplayName: Открытые раны
+	Description: Вы подвержены кровотечению
+}
+
+ExplorerPot: {
+	DisplayName: Трепет исследователя
+	Description: Вы жаждите большего!
+}
+
+ExplorerMine: {
+	DisplayName: Сила исследователя
+	Description: Продолжайте копать!
+}
+
+JinxMark: {
+	DisplayName: Метка сглаза
+	Description: ""
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Смазанное оружие: Заморозка
+	Description: Атаки ближнего боя, а также хлысты замораживают врагов
+}
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
+}
+
+TinyDragonPet_Buff: {
+	// DisplayName: Tiny Dragon
+	// Description: A little dragon is following you
+}
+
+EnlilBuff: {
+	// DisplayName: Enlil's Aid
+	// Description: Increased vertical mobility
+}

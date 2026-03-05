@@ -1,64 +1,70 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using System.IO;
 using Terraria.DataStructures;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Ocean.Items.PoolNoodle;
 
 public class PoolNoodle : ModItem
 {
-	private const int numStyles = 3;
-	private byte style;
+	protected override bool CloneNewInstances => true;
+
+	public const int NumStyles = 3;
+	public byte style = NumStyles;
 
 	public override void SetStaticDefaults()
-		=> Main.RegisterItemAnimation(Type, new DrawAnimationVertical(2, numStyles) { NotActuallyAnimating = true });
+	{
+		VariantGlobalItem.AddVariants(Type, NumStyles, false);
+
+		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 8));
+		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 8));
+
+		MoRHelper.AddElement(Item, MoRHelper.Water, true);
+	}
 
 	public override void SetDefaults()
 	{
 		Item.DefaultToWhip(ModContent.ProjectileType<PoolNoodleProj>(), 14, 0, 4);
 		Item.width = Item.height = 38;
 		Item.rare = ItemRarityID.Blue;
-		Item.value = Item.sellPrice(silver: 30);
-		style = (byte)Main.rand.Next(numStyles);
-	}
+		Item.value = Item.sellPrice(silver: 45);
 
-	protected override bool CloneNewInstances => true;
+		style = (byte)Main.rand.Next(NumStyles);
+	}
 
 	public override ModItem Clone(Item itemClone)
 	{
 		var myClone = (PoolNoodle)base.Clone(itemClone);
 		myClone.style = style;
-
 		return myClone;
 	}
 
 	public override bool MeleePrefix() => true;
-
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: style);
 		return false;
 	}
 
-	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-	{
-		Texture2D texture = TextureAssets.Item[Type].Value;
-		frame = texture.Frame(1, numStyles, 0, style, 0, -2);
-
-		spriteBatch.Draw(texture, position, frame, Item.GetAlpha(drawColor), 0f, origin, scale, SpriteEffects.None, 0f);
-		return false;
-	}
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		Texture2D texture = TextureAssets.Item[Type].Value;
-		Rectangle frame = texture.Frame(1, numStyles, 0, style, 0, -2);
-
-		spriteBatch.Draw(texture, Item.Center - Main.screenPosition, frame, Item.GetAlpha(lightColor), rotation, frame.Size() / 2, scale, SpriteEffects.None, 0f);
-		return false;
-	}
-
 	public override void SaveData(TagCompound tag) => tag[nameof(style)] = style;
-	public override void LoadData(TagCompound tag) => style = tag.Get<byte>(nameof(style));
+	public override void LoadData(TagCompound tag)
+	{
+		style = tag.Get<byte>(nameof(style));
+		SetVisualStyle();
+	}
+
 	public override void NetSend(BinaryWriter writer) => writer.Write(style);
-	public override void NetReceive(BinaryReader reader) => style = reader.ReadByte();
+	public override void NetReceive(BinaryReader reader)
+	{
+		style = reader.ReadByte();
+		SetVisualStyle();
+	}
+
+	private void SetVisualStyle()
+	{
+		if (!Main.dedServ && Item.TryGetGlobalItem(out VariantGlobalItem v))
+			v.subID = style;
+	}
 }

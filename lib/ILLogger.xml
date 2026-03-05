@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ILLogger</name>
+    </assembly>
+    <members>
+        <member name="T:ILLogger.Common.MenuErrorPopup">
+            <summary> Handles popups used to indicate errors as they occur. See <see cref="M:ILLogger.Common.MenuErrorPopup.CreatePopup"/>. </summary>
+        </member>
+        <member name="M:ILLogger.Common.MenuErrorPopup.CreatePopup">
+            <summary> Creates a popup. </summary>
+        </member>
+        <member name="T:ILLogger.Logger">
+            <summary> The Core of ILLogger. </summary>
+        </member>
+        <member name="M:ILLogger.Logger.Load(Terraria.ModLoader.Mod)">
+            <summary> Manually loads required data to <paramref name="mod"/> if <see cref="M:ILLogger.LogUtils.LogIL(Terraria.ModLoader.Mod,System.String,System.String)"/> isn't called first. </summary>
+            <param name="mod"> Your mod. </param>
+        </member>
+        <member name="T:ILLogger.LogUtils">
+            <summary> Includes static helpers related to logging. See <see cref="M:ILLogger.LogUtils.LogIL(Terraria.ModLoader.Mod,System.String,System.String)"/>. </summary>
+        </member>
+        <member name="F:ILLogger.LogUtils.Logs">
+            <summary> All stored logs resulting from <see cref="M:ILLogger.LogUtils.LogIL(Terraria.ModLoader.Mod,System.String,System.String)"/>. </summary>
+        </member>
+        <member name="M:ILLogger.LogUtils.LogIL(Terraria.ModLoader.Mod,System.String,System.String)">
+            <summary> Automatically formats IL logs using <paramref name="title"/> and <paramref name="message"/> and stores them in <see cref="F:ILLogger.LogUtils.Logs"/>. </summary>
+            <param name="mod"> The mod responsible for the log. </param>
+            <param name="title"> The name of this edit. </param>
+            <param name="message"> The message to log. </param>
+        </member>
+        <member name="M:ILLogger.LogUtils.WrapText(System.String,System.Int32)">
+            <summary> Wraps <paramref name="text"/> like <see cref="M:Terraria.Utils.WordwrapString(System.String,ReLogic.Graphics.DynamicSpriteFont,System.Int32,System.Int32,System.Int32@)"/> but with respect for newline. </summary>
+        </member>
+    </members>
+</doc>

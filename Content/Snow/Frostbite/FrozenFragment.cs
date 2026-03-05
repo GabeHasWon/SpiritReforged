@@ -1,22 +1,14 @@
-using System.IO;
-using Terraria.DataStructures;
-
 namespace SpiritReforged.Content.Snow.Frostbite;
 
 public class FrozenFragment : ModProjectile
 {
 	private const int timeLeftMax = 120;
 
+	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Frostbite.DisplayName");
 	private int TargetWhoAmI
 	{
 		get => (int)Projectile.ai[0];
 		set => Projectile.ai[0] = value;
-	}
-
-	private float MaxScale
-	{
-		get => Projectile.ai[1];
-		set => Projectile.ai[1] = value;
 	}
 
 	private Vector2 relativeOffset;
@@ -40,7 +32,7 @@ public class FrozenFragment : ModProjectile
 
 		Projectile.rotation = Projectile.velocity.ToRotation();
 
-		if (Projectile.timeLeft == 120)
+		if (Projectile.timeLeft == timeLeftMax)
 		{
 			relativeOffset = Projectile.position - Main.npc[TargetWhoAmI].position;
 			Projectile.frame = Main.rand.Next(Main.projFrames[Type]);
@@ -51,7 +43,7 @@ public class FrozenFragment : ModProjectile
 		else
 			Projectile.scale = Math.Min(1, Projectile.scale + .1f);
 
-		NPC npc = Main.npc[TargetWhoAmI];
+		var npc = Main.npc[TargetWhoAmI];
 		Projectile.position = npc.position + relativeOffset;
 
 		if (!npc.active)
@@ -70,8 +62,4 @@ public class FrozenFragment : ModProjectile
 		Main.EntitySpriteDraw(texture, position, rect, Projectile.GetAlpha(Color.White), Projectile.rotation, rect.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		return false;
 	}
-
-	public override void SendExtraAI(BinaryWriter writer) => writer.WriteVector2(relativeOffset);
-
-	public override void ReceiveExtraAI(BinaryReader reader) => relativeOffset = reader.ReadVector2();
 }

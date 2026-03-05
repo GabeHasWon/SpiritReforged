@@ -1,0 +1,80 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: 稀树平原
+		TownNPCDialogueName: 稀树平原
+	}
+
+	SaltBiome: {
+		// DisplayName: Salt Flats
+		// TownNPCDialogueName: the Salt Flats
+	}
+
+	ZigguratBiome: {
+		// DisplayName: Ziggurat
+		// TownNPCDialogueName: the Ziggurat
+	}
+}
+
+SlotContexts.Backpack: 背包
+
+Conditions: {
+	InSavanna: 于稀树平原
+	PeevedTumbler: 当闪烁时
+	Discovered: 发现
+	Submerged: 水下
+	// InSaltFlats: In Salt Flats
+	// IsPrickly: When prickly
+	// InZiggurat: In the Ziggurat
+}
+
+Misc: {
+	Pins: {
+		Move: 移动图钉
+		Obtained: 你已拥有这枚图钉
+		UseItem: 右键点击可将这枚图钉添加到你的收藏中
+	}
+
+	NoStock: 无库存
+	GraveText: <wavy>其上文字年久失色；令你难以辨认。
+	MenuButton: 使用菜单样式
+	UnchangedMap: 地图无变化。
+	ShareMap: 地图已分享。
+	ShareAndUpdateMap: 地图已分享 & 更新。
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0}被刺穿了。"
+		1: "{0}被串起来了。"
+	}
+}
+
+GameTips: {
+	ReforgedTip0: 常备食物，以备不时之需！
+	ReforgedTip1: 蝴蝶偶尔会藏在地下树丛里。
+	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
+	ReforgedTip3: 捕虫网无法捕获平原动物。
+	ReforgedTip4: 背包。你现在有更多空间了。
+	ReforgedTip5: 深邃如墨的海洋中有着许多有用的东西。
+	ReforgedTip6: 星草在黑夜中带来一丝慰藉。
+	ReforgedTip7: 云茎只生长在云层之下。
+	ReforgedTip8: 需要高度时，可站上金合欢树顶。
+	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
+}
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		// DisplayName: Ledger
+		// Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		// DisplayName: Shimmersight
+		// Description: Showing shimmer tooltips
+	}
+}

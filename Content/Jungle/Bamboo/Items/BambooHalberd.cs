@@ -1,13 +1,16 @@
+using SpiritReforged.Common.ModCompat;
+
 namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
 public class BambooHalberd : ModItem
 {
+	public override void SetStaticDefaults() => ItemID.Sets.Spears[Type] = true;
 	public override void SetDefaults()
 	{
-		Item.damage = 7;
+		Item.damage = 5;
 		Item.knockBack = 2f;
 		Item.width = Item.height = 24;
-		Item.value = Item.sellPrice(silver: 18);
+		Item.value = Item.sellPrice(silver: 4);
 		Item.rare = ItemRarityID.White;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.useTime = Item.useAnimation = 20;
@@ -21,14 +24,7 @@ public class BambooHalberd : ModItem
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => velocity = velocity.RotatedByRandom(.1f);
-
-	public override void AddRecipes()
-	{
-		Recipe recipe = CreateRecipe();
-		recipe.AddIngredient(ItemID.BambooBlock, 20);
-		recipe.AddTile(TileID.WorkBenches);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BambooBlock, 20).AddTile(TileID.WorkBenches).Register();
 }
 
 public class BambooHalberdProj : ModProjectile
@@ -49,6 +45,8 @@ public class BambooHalberdProj : ModProjectile
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
 		Projectile.ownerHitCheck = true;
+
+		MoRHelper.SetSpearBonus(Projectile);
 	}
 
 	public override void AI()

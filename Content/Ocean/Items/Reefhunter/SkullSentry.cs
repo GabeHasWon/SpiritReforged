@@ -54,14 +54,8 @@ public class SkullSentry : ModItem
 		return !Collision.SolidTilesVersatile(topLeft.X, bottomRight.X, topLeft.Y, bottomRight.Y);
 	}
 
-	public override void AddRecipes()
-	{
-		Recipe recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<IridescentScale>(), 12);
-		recipe.AddIngredient(ItemID.Lens, 3);
-		recipe.AddTile(TileID.Anvils);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<IridescentScale>(), 12)
+		.AddIngredient(ItemID.Lens, 3).AddTile(TileID.Anvils).Register();
 
 	private static bool MouseTooFar(Player player) => player.Distance(Main.MouseWorld) >= MAX_DISTANCE;
 }

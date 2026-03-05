@@ -112,3 +112,20 @@ public class DropRules
 		public bool CanDrop(DropAttemptInfo info) => true;
 	}
 }
+
+public class DropConditions
+{
+	public class Dynamic(Func<bool> condition, string locKey, bool canShowInUI = true) : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info) => condition.Invoke();
+		public bool CanShowItemDropInUI() => canShowInUI;
+		public string GetConditionDescription() => Language.GetTextValue(locKey);
+	}
+
+	public class Standard(Condition condition, bool canShowInUI = true) : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info) => condition.IsMet();
+		public bool CanShowItemDropInUI() => canShowInUI;
+		public string GetConditionDescription() => Language.GetTextValue(condition.Description.Key);
+	}
+}

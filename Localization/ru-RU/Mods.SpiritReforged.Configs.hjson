@@ -1,0 +1,74 @@
+ReforgedClientConfig: {
+	DisplayName: Клиентская конфигурация Reforge
+
+	OceanShape: {
+		Label: Генерация океана
+		Tooltip:
+			'''
+			Определяет способ генерации океана.
+			По умолчанию используется генерация типа «Кусочная_V».
+			Генерация «Кусочная_V» рекомендуется для прохождений с модом Spirit.
+			'''
+	}
+
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
+			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
+	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
+	}
+}
+
+OceanShape: {
+	Tooltip: ""
+
+	Default: {
+		Label: Стандартная
+		// Tooltip: ""
+	}
+
+	SlantedSine: {
+		Label: Наклонная синусоида
+		// Tooltip: ""
+	}
+
+	Piecewise: {
+		Label: Кусочная
+		// Tooltip: ""
+	}
+
+	Piecewise_M: {
+		Label: Кусочная_M
+		// Tooltip: ""
+	}
+
+	Piecewise_V: {
+		Label: Кусочная_V
+		// Tooltip: ""
+	}
+}
+
+ReforgedServerConfig: {
+	DisplayName: Серверная конфигурация Reforge
+
+	VentCritters: {
+		Label: Живность возле гидротермальных источников
+		Tooltip:
+			'''
+			При включении этой настройки вокруг гидротермальных источников появляется живность.
+			Она не влияет на частоту появления обычных врагов, но учитывается в общем лимите существ в мире.
+			'''
+	}
+
+	MaxFloatingItemCount: {
+		Label: Лимит плавающих предметов
+		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно.
+	}
+}

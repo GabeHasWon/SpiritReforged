@@ -1,0 +1,63 @@
+Records: {
+	CoinPortal:
+		'''
+		永远包含一个金币传送门。
+
+		幸运的发现！
+		'''
+	Common:
+		'''
+		常见的罐子，里面有时有一些有用的东西。
+
+		所处位置越深，价值越高。
+		'''
+	Zenith:
+		'''
+		常见的罐子，里面有时有一些有用的东西……但这个罐子华丽得毫无必要。
+
+		所处位置越深，价值越高。
+		'''
+	Potion: 内含强效混合物。
+	UpsideDown: `生产错误`
+	Worm: 被破坏时会掉出各种蠕虫。
+	Platter: 一份热腾腾的饭菜，随时可取。是谁落在这儿的呢？
+	WickerBasket: 一份野餐，只为你！
+	Aether: 提供各种实用又闪亮的升级物品。
+	Stuffed: 在这种地方遇到商人真奇怪，他们简直是自找麻烦。
+	Scrying: 被破坏时能揭示大片地图。
+	Biome: 比常见的罐子包含更多种类的战利品。
+	Boulder: 受到扰动时会沿着地面滚动。
+}
+
+FablesGraves: {
+	SetNames: {
+		// Savanna: Savanna Graves
+		// SaltFlats: Salt Graves
+	}
+}
+
+SunkenTreasureTile.MapEntry: 沉没的宝藏
+HydrothermalVent.MapEntry: 热液喷口
+CoralMapEntry: 珊瑚
+KelpMapEntry: 海带
+GarInAJar_Tile.MapEntry: 罐中雀鳝
+CloudstalkTile.MapEntry: 云茎
+SmallDriftwoodTile.MapEntry: 小型浮木
+MediumDriftwoodTile.MapEntry: 中型浮木
+LargeDriftwoodTile.MapEntry: 大型浮木
+BambooBirdCage.MapEntry: 条纹竹鸟笼
+KoiTotemTile.MapEntry: 锦鲤图腾
+HerosMemorialStatue.MapEntry: 英雄纪念碑
+TermiteJar_Tile.MapEntry: 白蚁罐
+GarInAJarTile.MapEntry: 罐中雀鳝
+KillieFishbowlTile.MapEntry: 鳉鱼鱼缸
+OreCarts.MapEntry: 矿车
+PotionVats.MapEntry: 药罐
+ObsidianShroom.MapEntry: 黑曜石蘑菇
+Starflower.MapEntry: 星状花
+BonsaiTrees.MapEntry: 盆栽
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
+// SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
+// ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
+// DustyTomb.MapEntry: Dusty Tomb
+// EnlilStatue.MapEntry: Enlil Statue

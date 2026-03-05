@@ -1,10 +1,12 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
-using static SpiritReforged.Common.Misc.ReforgedMultiplayer;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
 
+[FromClassic("BuoyItem")]
 public class SmallBuoy : ModItem
 {
 	private static bool WaterBelow()
@@ -48,33 +50,16 @@ public class SmallBuoy : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		if (player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
+		if (!Main.dedServ && player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			int type = SimpleEntitySystem.types[typeof(SmallBuoyEntity)];
-			var position = Main.MouseWorld;
-
-			SimpleEntitySystem.NewEntity(type, position);
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-			{
-				ModPacket packet = SpiritReforgedMod.Instance.GetPacket(MessageType.SpawnSimpleEntity, 2);
-				packet.Write(type);
-				packet.WriteVector2(position);
-				packet.Send();
-			}
-
+			SimpleEntitySystem.NewEntity<SmallBuoyEntity>(Main.MouseWorld);
 			return true;
 		}
 
 		return null;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-			.AddRecipeGroup(RecipeGroupID.IronBar, 3)
-			.AddIngredient(ItemID.Wire, 5)
-			.AddIngredient(ItemID.Glass, 5)
-			.AddTile(TileID.Anvils)
-			.Register();
+	public override void AddRecipes() => CreateRecipe().AddRecipeGroup("CopperBars").AddIngredient(ItemID.Glass, 1).AddTile(TileID.Anvils).Register();
 }
 
 public class SmallBuoyEntity : SimpleEntity
@@ -82,6 +67,9 @@ public class SmallBuoyEntity : SimpleEntity
 	private static Asset<Texture2D> GlowTexture;
 
 	public virtual Texture2D Glowmask => GlowTexture.Value;
+	protected virtual int ItemType => ModContent.ItemType<SmallBuoy>();
+
+	private bool solidCollision;
 
 	public override void Load()
 	{
@@ -95,9 +83,11 @@ public class SmallBuoyEntity : SimpleEntity
 
 	public override void Update()
 	{
+		solidCollision = Collision.SolidCollision(position, width, height - 18);
+
 		if (Collision.WetCollision(position, width, height + 8))
 			velocity.Y -= .05f;
-		else if (!Collision.WetCollision(position, width, height + 12))
+		else if (!Collision.WetCollision(position, width, height + 12) && !solidCollision)
 			velocity.Y += .1f;
 		else
 			velocity.Y *= .75f;
@@ -105,31 +95,25 @@ public class SmallBuoyEntity : SimpleEntity
 		position += velocity;
 
 		Lighting.AddLight(Top, .3f, .1f, .1f);
-
-		//Pickaxe check
 		var player = Main.LocalPlayer;
-		var heldItem = player.HeldItem;
 
-		if (heldItem != null && Hitbox.Contains(Main.MouseWorld.ToPoint()) && player.IsTargetTileInItemRange(heldItem) && player.HeldItem.pick > 0 && player.ItemAnimationJustStarted)
+		if (Hitbox.Contains(Main.MouseWorld.ToPoint()) && player.IsTargetTileInItemRange(new Item()))
 		{
-			Kill();
+			player.cursorItemIconEnabled = true;
+			player.cursorItemIconID = ItemType;
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.mouseRight && Main.mouseRightRelease)
 			{
-				ModPacket packet = SpiritReforgedMod.Instance.GetPacket(MessageType.KillSimpleEntity, 1);
-				packet.Write(whoAmI);
-				packet.Send();
+				Kill();
+				ItemMethods.NewItemSynced(GetSource_Death(), ItemType, Hitbox.Center(), true);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					new KillSimpleEntityData((short)whoAmI).Send();
 			}
 		}
 	}
 
-	public override void OnKill()
-	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-			Item.NewItem(GetSource_Death(), Hitbox, ModContent.ItemType<SmallBuoy>());
-
-		SoundEngine.PlaySound(SoundID.Dig, Center);
-	}
+	public override void OnKill() => SoundEngine.PlaySound(SoundID.Dig, Center);
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -137,11 +121,16 @@ public class SmallBuoyEntity : SimpleEntity
 
 		var texture = Texture.Value;
 		var origin = new Vector2(texture.Width / 2, texture.Height);
-		var drawPosition = position - Main.screenPosition + new Vector2(0, Sin(30f)) + origin;
+		var drawPosition = position - Main.screenPosition + new Vector2(0, solidCollision ? 0 : Sin(30f)) + origin;
 		var color = Lighting.GetColor((int)(Center.X / 16), (int)(Center.Y / 16));
 
-		float rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), TileSwaySystem.Instance.SunflowerWindCounter);
-		rotation += TileSwayHelper.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
+		float rotation = 0;
+
+		if (!solidCollision)
+		{
+			rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), TileSwaySystem.SunflowerWindCounter);
+			rotation += TileSwayHelper.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
+		}
 
 		spriteBatch.Draw(texture, drawPosition, null, color, rotation * .1f, origin, 1, SpriteEffects.None, 0f);
 

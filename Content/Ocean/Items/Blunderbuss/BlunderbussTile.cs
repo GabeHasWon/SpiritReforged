@@ -13,6 +13,8 @@ public class BlunderbussTile : ModTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.CanDropFromRightClick[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.Origin = new(1, 0);
@@ -23,7 +25,29 @@ public class BlunderbussTile : ModTile
 		AddMapEntry(new Color(100, 100, 50));
 		RegisterItemDrop(ModContent.ItemType<Blunderbuss>());
 
-		DustType = -1; //No dust
+		DustType = DustID.Sand; //No dust
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<Blunderbuss>();
+	}
+
+	public override bool CreateDust(int i, int j, ref int type)
+	{
+		var tile = Framing.GetTileSafely(i, j);
+		type = (tile.TileFrameY / 18) switch
+		{
+			1 => DustID.Corruption,
+			2 => DustID.Crimson,
+			3 => DustID.Pearlsand,
+			_ => DustID.Sand,
+		};
+
+		return true;
 	}
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
@@ -60,13 +84,14 @@ public class BlunderbussTile : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var tile = Framing.GetTileSafely(i, j);
-		var texture = TextureAssets.Tile[tile.TileType].Value;
+		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+			return false;
 
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 18);
+		var t = Main.tile[i, j];
+		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 18);
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 2);
 
-		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 		return false;
 	}

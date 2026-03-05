@@ -38,7 +38,7 @@ public class StarParticle : Particle
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
 		Texture2D basetexture = ParticleHandler.GetTexture(Type);
-		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"];
+		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, bloomColor * opacity * 0.5f, 0, bloomtexture.Size() / 2, Scale / 2, SpriteEffects.None, 0);
 

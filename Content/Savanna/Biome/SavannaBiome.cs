@@ -1,31 +1,49 @@
-﻿using Terraria.Graphics.Capture;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Savanna.Tiles;
+using Terraria.GameContent.Personalities;
 
 namespace SpiritReforged.Content.Savanna.Biome;
+
 public class SavannaBiome : ModBiome
 {
-	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
-	public override int Music => (Main.LocalPlayer.townNPCs > 2f) ? -1 : MusicLoader.GetMusicSlot(Mod, "Assets/Music/Savanna");
-	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SavannaWaterStyle>();
-	public override CaptureBiome.TileColorStyle TileColorStyle => CaptureBiome.TileColorStyle.Normal;
+	private int GetMusic()
+	{
+		if (Main.LocalPlayer.ZoneGraveyard || Main.bloodMoon)
+			return -1;
 
+		string name = Main.swapMusic ? "SavannaOtherworld" : "Savanna";
+		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
+	}
+
+	public override void SetStaticDefaults()
+	{
+		NPCHappinessHelper.SetAverage<SavannaBiome>(ModContent.GetInstance<JungleBiome>(), ModContent.GetInstance<DesertBiome>());
+
+		NPCHappiness.Get(NPCID.BestiaryGirl).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.ArmsDealer).SetBiomeAffection(this, AffectionLevel.Like);
+		NPCHappiness.Get(NPCID.Stylist).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Golfer).SetBiomeAffection(this, AffectionLevel.Dislike);
+
+		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), 
+			ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassHallowMowed>()], 400));
+	}
+
+	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+	public override float GetWeight(Player player) => 0.75f;
+
+	public override int Music => GetMusic();
+	public override ModWaterStyle WaterStyle => ModContent.GetInstance<SavannaWaterStyle>();
 	public override ModSurfaceBackgroundStyle SurfaceBackgroundStyle => ModContent.GetInstance<SavannaBGStyle>();
-	public override string BestiaryIcon => base.BestiaryIcon;
 	public override string BackgroundPath => MapBackground;
-	public override Color? BackgroundColor => base.BackgroundColor;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SavannaMapBG";
+	public override int BiomeTorchItemType => ModContent.ItemType<SavannaTorchItem>();
+	public override int BiomeCampfireItemType => AutoContent.ItemType<SavannaCampfire>();
 
 	public override bool IsBiomeActive(Player player)
 	{
 		bool surface = player.ZoneSkyHeight || player.ZoneOverworldHeight;
-		return SavannaTileCounts.InSavanna && surface;
+		return SceneTileCounter.SurveyByType[Type].Success && surface;
 	}
-}
-
-internal class SavannaTileCounts : ModSystem
-{
-	public int savannaCount;
-
-	public static bool InSavanna => ModContent.GetInstance<SavannaTileCounts>().savannaCount >= 400;
-
-	public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts) => savannaCount = tileCounts[ModContent.TileType<Tiles.SavannaGrass>()] + tileCounts[ModContent.TileType<Tiles.SavannaDirt>()];
 }

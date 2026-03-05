@@ -1,0 +1,80 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: Savanna
+		TownNPCDialogueName: the Savanna
+	}
+
+	SaltBiome: {
+		DisplayName: Salt Flats
+		TownNPCDialogueName: the Salt Flats
+	}
+
+	ZigguratBiome: {
+		DisplayName: Ziggurat
+		TownNPCDialogueName: the Ziggurat
+	}
+}
+
+SlotContexts.Backpack: Pack
+
+Conditions: {
+	InSavanna: In Savanna
+	PeevedTumbler: When sparkling
+	Discovered: Discovery
+	Submerged: Submerged
+	InSaltFlats: In Salt Flats
+	IsPrickly: When prickly
+	InZiggurat: In the Ziggurat
+}
+
+Misc: {
+	Pins: {
+		Move: Move Pin
+		Obtained: You already own this pin
+		UseItem: Right click to add this pin to your collection
+	}
+
+	NoStock: Out of stock
+	GraveText: <wavy>The text is old and faded; you can't quite make out what it says.
+	MenuButton: Use menu style
+	UnchangedMap: Map has no changes.
+	ShareMap: Map has been shared.
+	ShareAndUpdateMap: Map has been shared & updated.
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0} has been impaled."
+		1: "{0} was skewered."
+	}
+}
+
+GameTips: {
+	ReforgedTip0: Always carry around food. You never know when it could be useful!
+	ReforgedTip1: Rarely, butterflies are known to hide in underground groves.
+	ReforgedTip2: Pins are useful! Check your pin inventory on the bottom-left of your map.
+	ReforgedTip3: Savanna animals cannot be caught in bug nets.
+	ReforgedTip4: Backpacks. You've got more space now.
+	ReforgedTip5: The inky void of the ocean offers many boons.
+	ReforgedTip6: Stargrass offers a nice reprieve in the darkness of night.
+	ReforgedTip7: Cloudstalk always grows under clouds.
+	ReforgedTip8: The top of Acacia trees can be stood on if you need some height.
+	ReforgedTip9: Items randomly float atop the ocean; check in once in a while!
+}
+
+Emotes: {
+	CartographerEmote.Command: cartographer
+	HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Ledger
+		Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Shimmersight
+		Description: Showing shimmer tooltips
+	}
+}

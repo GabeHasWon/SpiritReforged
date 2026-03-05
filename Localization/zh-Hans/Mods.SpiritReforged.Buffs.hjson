@@ -1,0 +1,139 @@
+EmpoweredSwim: {
+	DisplayName: 游泳增幅
+	Description: 你感觉在水里游的更快了
+}
+
+MantarayBuff: {
+	DisplayName: 救援蝠鲼
+	Description: 迅疾如潮！
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: 水母
+	Description: 可爱且有弹性的水母为你而战！
+}
+
+JellyfishPet_Buff: {
+	DisplayName: 友善的水母
+	Description: 这只充满活力的水母喜欢跟着你！
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: 西风之跃
+	Description: 获得临时二段跳
+}
+
+FlightPotionBuff: {
+	DisplayName: 翱翔
+	Description: 飞行时间增加25%
+}
+
+BottleMountBuff: {
+	DisplayName: 木筏
+	Description: 发送求救信号
+}
+
+FairyMinion_Buff: {
+	DisplayName: 仙灵
+	Description: 嘿！当心点！
+}
+
+Impaled: {
+	DisplayName: 穿刺
+	Description: 你被一根尖刺刺穿了。好痛！
+}
+
+KoiTotemBuff: {
+	DisplayName: 锦鲤图腾
+	Description: 渔力增加
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: 缥缈幻蝶
+	Description: 缥缈蝴蝶为你而战！
+}
+
+ToucanMinion_Buff: {
+	DisplayName: 巨嘴鸟
+	Description: 巨嘴鸟为你而战
+}
+
+QuenchPotion_Buff: {
+	DisplayName: 解渴
+	Description: 其他药水的持续时间延长25%
+}
+
+TumblerPet_Buff: {
+	DisplayName: 矛盾的翻滚怪
+	Description: 一个友善的风滚草正跟着你
+}
+
+Frozen: {
+	DisplayName: 冰冻
+	Description: 降低敌人的移动速度
+}
+
+GildedScarabBuff: {
+	DisplayName: 甲虫护盾
+	Description: 防御力增加{0}
+}
+
+PoolNoodleBubbleBuff: {
+	DisplayName: 游泳浮条泡泡
+	Description: 你已寻获魂灵传说秘典……敬请期待我们的超级Boss——坠落之星，暗钢！
+}
+
+ExplorerSpeed: {
+	DisplayName: 探险家之速
+	Description: 你的行动能力大幅度增加了
+}
+
+RemedyPotionBuff: {
+	DisplayName: 救济
+	Description: 免疫一些有害减益
+}
+
+OpenWounds: {
+	DisplayName: 开放性伤口
+	Description: 易流血
+}
+
+ExplorerPot: {
+	DisplayName: 探险家的兴奋
+	Description: 你渴望更多！
+}
+
+ExplorerMine: {
+	DisplayName: 探险家的活力
+	Description: 挖下去吧！
+}
+
+JinxMark: {
+	DisplayName: 厄劫标记
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: 武器灌注：冻结
+	Description: 近战和鞭子攻击会冻结敌人
+}
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
+}
+
+TinyDragonPet_Buff: {
+	// DisplayName: Tiny Dragon
+	// Description: A little dragon is following you
+}
+
+EnlilBuff: {
+	// DisplayName: Enlil's Aid
+	// Description: Increased vertical mobility
+}

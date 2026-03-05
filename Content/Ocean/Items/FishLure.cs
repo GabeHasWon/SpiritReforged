@@ -1,14 +1,18 @@
 ﻿using SpiritReforged.Common.ItemCommon.FloatingItem;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
-using static SpiritReforged.Common.Misc.ReforgedMultiplayer;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
 public class FishLure : FloatingItem
 {
-	private static bool WaterBelow()
+	public override float SpawnWeight => .008f;
+	public override float Weight => base.Weight * 0.9f;
+	public override float Bouyancy => base.Bouyancy * 1.08f;
+
+	internal static bool WaterBelow()
 	{
 		for (int i = 0; i < 2; i++)
 		{
@@ -23,9 +27,11 @@ public class FishLure : FloatingItem
 		return false;
 	}
 
-	public override float SpawnWeight => .008f;
-	public override float Weight => base.Weight * 0.9f;
-	public override float Bouyancy => base.Bouyancy * 1.08f;
+	public override void SetStaticDefaults() => PlayerEvents.OnAnglerQuestReward += (player, rareMultiplier, rewardItems) =>
+	{
+		if (Main.rand.NextBool(15))
+			rewardItems.Add(new Item(Type, Main.rand.Next(1, 4)));
+	};
 
 	public override void SetDefaults()
 	{
@@ -50,24 +56,11 @@ public class FishLure : FloatingItem
 	}
 
 	public override bool CanUseItem(Player player) => WaterBelow() && player.IsTargetTileInItemRange(Item);
-
 	public override bool? UseItem(Player player)
 	{
-		if (player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
+		if (!Main.dedServ && player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			int type = SimpleEntitySystem.types[typeof(FishLureEntity)];
-			var position = Main.MouseWorld;
-
-			SimpleEntitySystem.NewEntity(type, position);
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-			{
-				ModPacket packet = SpiritReforgedMod.Instance.GetPacket(MessageType.SpawnSimpleEntity, 2);
-				packet.Write(type);
-				packet.WriteVector2(position);
-				packet.Send();
-			}
-
+			SimpleEntitySystem.NewEntity<FishLureEntity>(Main.MouseWorld);
 			return true;
 		}
 
@@ -77,17 +70,22 @@ public class FishLure : FloatingItem
 
 public class FishLureEntity : SimpleEntity
 {
+	protected virtual int ItemType => ModContent.ItemType<FishLure>();
+	public bool SolidCollision { get; private set; }
+
 	public override void Load()
 	{
-		Size = new Vector2(8);
+		Size = new Vector2(16);
 		saveMe = true;
 	}
 
 	public override void Update()
 	{
+		SolidCollision = Collision.SolidCollision(position, width, height);
+
 		if (Collision.WetCollision(position, width, height))
 			velocity.Y -= .05f;
-		else if (!Collision.WetCollision(position, width, height + 2))
+		else if (!Collision.WetCollision(position, width, height + 2) && !SolidCollision)
 			velocity.Y += .1f;
 		else
 			velocity.Y *= .75f;
@@ -97,20 +95,21 @@ public class FishLureEntity : SimpleEntity
 		//Proximity check
 		var player = Main.LocalPlayer;
 		var distance = new Vector2(Math.Abs(player.Center.X - Center.X), Math.Abs(player.Center.Y - Center.Y));
-		if (distance.X < Main.buffScanAreaWidth / 2 && distance.Y < Main.buffScanAreaHeight / 2)
+
+		if (distance.X < Main.buffScanAreaWidth * 8 && distance.Y < Main.buffScanAreaHeight * 8)
 			player.GetModPlayer<OceanPlayer>().nearLure = true;
 
-		//Pickaxe check
-		var heldItem = player.HeldItem;
-		if (heldItem != null && Hitbox.Contains(Main.MouseWorld.ToPoint()) && player.IsTargetTileInItemRange(heldItem) && player.HeldItem.pick > 0 && player.ItemAnimationJustStarted)
+		if (Hitbox.Contains(Main.MouseWorld.ToPoint()) && player.IsTargetTileInItemRange(new Item()))
 		{
-			Kill();
+			player.cursorItemIconEnabled = true;
+			player.cursorItemIconID = ItemType;
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			if (Main.mouseRight && Main.mouseRightRelease)
 			{
-				ModPacket packet = SpiritReforgedMod.Instance.GetPacket(MessageType.KillSimpleEntity, 1);
-				packet.Write(whoAmI);
-				packet.Send();
+				Kill();
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					new KillSimpleEntityData((short)whoAmI).Send();
 			}
 		}
 	}
@@ -118,21 +117,31 @@ public class FishLureEntity : SimpleEntity
 	public override void OnKill()
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient)
-			Item.NewItem(GetSource_Death(), Hitbox, ModContent.ItemType<FishLure>());
+			Item.NewItem(GetSource_Death(), Hitbox, ItemType);
 
 		SoundEngine.PlaySound(SoundID.Dig, Center);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		float Sin(float numerator) => (float)Math.Sin((Main.timeForVisualEffects + Center.X) / numerator);
-
-		var drawPosition = Center - Main.screenPosition + new Vector2(0, Sin(30f));
+		var drawPosition = Center - Main.screenPosition + new Vector2(0, SolidCollision ? 0 : Sin(30f));
 		var color = Lighting.GetColor((int)(Center.X / 16), (int)(Center.Y / 16));
 
-		float rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), TileSwaySystem.Instance.SunflowerWindCounter);
-		rotation += TileSwayHelper.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
-
-		spriteBatch.Draw(Texture.Value, drawPosition, null, color, rotation * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
+		spriteBatch.Draw(Texture.Value, drawPosition, null, color, GetRotation() * .1f, Texture.Size() / 2, 1, SpriteEffects.None, 0f);
 	}
+
+	public float GetRotation()
+	{
+		float rotation = 0;
+
+		if (!SolidCollision)
+		{
+			rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), TileSwaySystem.SunflowerWindCounter);
+			rotation += TileSwayHelper.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
+		}
+
+		return rotation;
+	}
+
+	public float Sin(float numerator) => (float)Math.Sin((Main.timeForVisualEffects + Center.X) / numerator);
 }

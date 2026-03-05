@@ -1,0 +1,139 @@
+EmpoweredSwim: {
+	DisplayName: Empowered Swim
+	Description: You feel much faster in water
+}
+
+MantarayBuff: {
+	DisplayName: Rescue Ray
+	Description: Swift as the tides!
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: Jellyfish
+	Description: A cute, bouncy Jellyfish fights for you!
+}
+
+JellyfishPet_Buff: {
+	DisplayName: Friendly Jellyfish
+	Description: This energetic jellyfish loves following you around!
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: Zephyr Jump
+	Description: Temporarily grants an additional jump
+}
+
+FlightPotionBuff: {
+	DisplayName: Soaring
+	Description: Increases flight duration by 25%
+}
+
+BottleMountBuff: {
+	DisplayName: Raft
+	Description: Sending out an SOS
+}
+
+FairyMinion_Buff: {
+	DisplayName: Fairies
+	Description: Hey! Watch out!
+}
+
+Impaled: {
+	DisplayName: Impaled
+	Description: You've been impaled by a pike. Ouch!
+}
+
+KoiTotemBuff: {
+	DisplayName: Koi Totem
+	Description: Increased fishing skill
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: Ethereal Butterfly
+	Description: The ethereal butterfly fights for you
+}
+
+ToucanMinion_Buff: {
+	DisplayName: Toucane
+	Description: The toucan fights for you
+}
+
+QuenchPotion_Buff: {
+	DisplayName: Quenched
+	Description: Other potions last 25% longer
+}
+
+TumblerPet_Buff: {
+	DisplayName: Ambivalent Tumbler
+	Description: A friendly tumbleweed is following you
+}
+
+Frozen: {
+	DisplayName: Frozen
+	Description: Reduced enemy movement speed
+}
+
+GildedScarabBuff: {
+	DisplayName: Scarab Shield
+	Description: Defense increased by {0}
+}
+
+PoolNoodleBubbleBuff: {
+	DisplayName: Pool Noodle Bubble Buff
+	Description: You've found the secret Spirit Lore Codex... Stay tuned for our superboss Darksteel, the Fallen Star!
+}
+
+ExplorerSpeed: {
+	DisplayName: Explorer Speed
+	Description: Your speed is greatly improved
+}
+
+RemedyPotionBuff: {
+	DisplayName: Remedy
+	Description: Immunity to some harmful effects
+}
+
+OpenWounds: {
+	DisplayName: Open Wounds
+	Description: Susceptible to bleeding
+}
+
+ExplorerPot: {
+	DisplayName: Explorer's Thrill
+	Description: You're eager for more!
+}
+
+ExplorerMine: {
+	DisplayName: Explorer's Vigor
+	Description: Keep digging!
+}
+
+JinxMark: {
+	DisplayName: Jinx Mark
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Weapon Imbue: Freezing
+	Description: Melee and Whip attacks freeze enemies
+}
+
+Slowed: {
+	DisplayName: Slowed
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Toucane
+	Description: The toucane fights for you?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Tiny Dragon
+	Description: A little dragon is following you
+}
+
+EnlilBuff: {
+	DisplayName: Enlil's Aid
+	Description: Increased vertical mobility
+}

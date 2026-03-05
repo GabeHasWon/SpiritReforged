@@ -26,8 +26,8 @@ internal class CircleBoidObject(Boid flock) : BoidObject(flock)
 		float alpha = MathHelper.Clamp(1 - spawnTimer-- / 100f, 0f, 1f);
 		var lightColour = Lighting.GetColor(position.ToTileCoordinates()) * alpha;
 
-		float scale = parent.flockScale;
-		var texture = BoidManager.FishTextures[textureID].Value;
+		float scale = 1;
+		var texture = BoidManager.Types[variant].Value;
 		var source = texture.Frame(1, 2, 0, frame % 2);
 		var effects = velocity.X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
@@ -45,9 +45,9 @@ internal class CircleBoidObject(Boid flock) : BoidObject(flock)
 
 	public override void Update()
 	{
-		acceleration += Anchor(50) * .14f;
+		acceleration += Anchor(50) * 0.14f;
 		acceleration += AvoidHooman(50) * 4f;
-		acceleration += AvoidTiles(100) * .5f;
+		acceleration += AvoidTiles(100) * 5f;
 		ApplyForces();
 
 		if (Main.rand.NextBool(7))

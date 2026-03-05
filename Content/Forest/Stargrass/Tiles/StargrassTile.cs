@@ -1,15 +1,28 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
-using System.Linq;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 [AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
-internal class StargrassTile : ModTile
+public class StargrassTile : GrassTile, ISetConversion
 {
+	public virtual ConversionHandler.Set ConversionSet => new()
+	{
+		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+		{ BiomeConversionID.Hallow, TileID.HallowedGrass },
+		{ BiomeConversionID.PurificationPowder, TileID.Grass },
+		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	};
+
 	public static Color Glow(object obj) 
 	{
 		var pos = (Point)obj;
@@ -19,24 +32,19 @@ internal class StargrassTile : ModTile
 
 	public override void SetStaticDefaults()
 	{
-		Main.tileSolid[Type] = true;
-		Main.tileMerge[Type][Type] = true;
-		Main.tileBlockLight[Type] = true;
+		base.SetStaticDefaults();
+
 		Main.tileLighted[Type] = true;
-		Main.tileMerge[TileID.Dirt][Type] = true;
-		Main.tileMerge[Type][TileID.Dirt] = true;
-		Main.tileMerge[TileID.Grass][Type] = true;
-		Main.tileMerge[Type][TileID.Grass] = true;
-
-		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.Conversion.Grass[Type] = true;
-		TileID.Sets.CanBeDugByShovel[Type] = true;
 
+		int mowType = ModContent.TileType<StargrassMowed>();
+		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
+
+		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
 
-		var data = TileObjectData.GetTileData(TileID.Sunflower, 0);
-		data.AnchorValidTiles = data.AnchorValidTiles.Concat([Type]).ToArray(); //Allow sunflowers to be planted on this tile
+		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
 	}
 
 	public override void FloorVisuals(Player player)
@@ -73,45 +81,33 @@ internal class StargrassTile : ModTile
 		}
 	}
 
-	public override bool CanExplode(int i, int j)
+	public override void Convert(int i, int j, int conversionType)
 	{
-		WorldGen.KillTile(i, j, false, false, true); //Makes the tile completely go away instead of reverting to dirt
-		return true;
+		if (ConversionHandler.FindSet(nameof(StargrassTile), conversionType, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		//Surrounded by solid tiles
-		if (WorldGen.SolidOrSlopedTile(i, j - 1) && WorldGen.SolidOrSlopedTile(i, j + 1) && WorldGen.SolidOrSlopedTile(i - 1, j) && WorldGen.SolidOrSlopedTile(i + 1, j))
-		{
+		if (!WorldGen.TileIsExposedToAir(i, j))
 			Main.tile[i, j].TileType = TileID.Grass;
-			return false;
-		}
 
 		return true;
 	}
 
-	public override void RandomUpdate(int i, int j)
+	public override void GrowPlants(int i, int j)
 	{
-		if (!Framing.GetTileSafely(i, j - 1).HasTile && Main.rand.NextBool(4))
-		{
-			int style = Main.rand.Next(26);
-			WorldGen.PlaceObject(i, j - 1, ModContent.TileType<StargrassFlowers>(), true, style);
-			NetMessage.SendObjectPlacement(-1, i, j - 1, ModContent.TileType<StargrassFlowers>(), style, 0, -1, -1);
-		}
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
 
-		if (SpreadHelper.Spread(i, j, Type, 4, TileID.Dirt) && Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendTileSquare(-1, i, j, 3, TileChangeType.None);
+		if (!Main.rand.NextBool(4) || Framing.GetTileSafely(i, j - 1).HasTile)
+			return;
+
+		int style = Main.rand.Next(StargrassFlowers.StyleRange);
+
+		WorldGen.PlaceObject(i, j - 1, ModContent.TileType<StargrassFlowers>(), true, style);
+		NetMessage.SendObjectPlacement(-1, i, j - 1, ModContent.TileType<StargrassFlowers>(), style, 0, -1, -1);
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.2f, 0.5f);
-
-	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
-	{
-		if (!fail)
-		{
-			fail = true;
-			Framing.GetTileSafely(i, j).TileType = TileID.Dirt;
-		}
-	}
 }

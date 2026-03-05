@@ -7,18 +7,19 @@ namespace SpiritReforged.Content.Forest.FairyWhistle;
 
 public class FairyProj : ModProjectile
 {
+	private ref float ColorStyle => ref Projectile.ai[0];
+
 	public override void SetStaticDefaults()
 	{
-		// DisplayName.SetDefault("Fae Bolt");
-		Main.projFrames[Projectile.type] = 4;
-		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 15;
-		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-		ProjectileID.Sets.MinionShot[Projectile.type] = true;
+		Main.projFrames[Type] = 4;
+		ProjectileID.Sets.TrailCacheLength[Type] = 15;
+		ProjectileID.Sets.TrailingMode[Type] = 2;
+		ProjectileID.Sets.MinionShot[Type] = true;
 	}
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = Vector2.One * 10;
+		Projectile.Size = new Vector2(10);
 		Projectile.friendly = true;
 		Projectile.ignoreWater = true;
 		Projectile.alpha = 255;
@@ -50,24 +51,28 @@ public class FairyProj : ModProjectile
 
 			for (int i = 0; i < 3; i++) //weak burst of particles in direction of movement
 				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(1f, 2f),
-					FairyMinion.PARTICLE_GREEN, Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
+					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
 
 			for (int i = 0; i < 4; i++) //wide burst of slower moving particles in opposite direction
 				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, -velnormal.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(0.25f, 1.5f),
-					FairyMinion.PARTICLE_GREEN, Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
+					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
 
 			for (int i = 0; i < 3; i++) //narrow burst of faster, bigger particles
 				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 12) * Main.rand.NextFloat(1.5f, 3f),
-					FairyMinion.PARTICLE_GREEN, Main.rand.NextFloat(0.4f, 0.5f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.15f, 0.97f)));
+					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.4f, 0.5f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.15f, 0.97f)));
 		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"];
-		Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(124, 255, 47, 0) * Projectile.Opacity, 0, bloom.Size() / 2, Projectile.scale * 0.15f, SpriteEffects.None, 0);
-		Projectile.QuickDrawTrail(Main.spriteBatch, 0.4f, drawColor: Color.White.Additive());
+		var color = FairyMinion.StyleColor(ColorStyle).Additive();
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, color * Projectile.Opacity, 0, bloom.Size() / 2, Projectile.scale * 0.15f, SpriteEffects.None, 0);
+		
+		Projectile.QuickDrawTrail(Main.spriteBatch, 0.4f, drawColor: color);
+		Projectile.QuickDraw(Main.spriteBatch, drawColor: color);
 		Projectile.QuickDraw(Main.spriteBatch, drawColor: Color.White.Additive());
+
 		return false;
 	}
 }

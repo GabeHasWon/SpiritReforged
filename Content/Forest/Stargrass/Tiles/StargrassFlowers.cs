@@ -1,22 +1,26 @@
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
-using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-public class StargrassFlowers : ModTile
+[AutoloadGlowmask("255,255,255", false)]
+public class StargrassFlowers : ModTile, ISwayTile
 {
+	public const int StyleRange = 27;
+	public const int TileHeight = 24;
+
 	public override void SetStaticDefaults()
 	{
-		Main.tileFrameImportant[Type] = true;
-		Main.tileCut[Type] = true;
 		Main.tileSolid[Type] = false;
+		Main.tileFrameImportant[Type] = true;
+		Main.tileNoFail[Type] = true;
+		Main.tileCut[Type] = true;
 		Main.tileLighted[Type] = true;
 
-		DustType = DustID.Grass;
-		HitSound = SoundID.Grass;
-
+		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -24,25 +28,20 @@ public class StargrassFlowers : ModTile
 		TileObjectData.newTile.WaterDeath = false;
 		TileObjectData.newTile.CoordinatePadding = 2;
 		TileObjectData.newTile.CoordinateWidth = 16;
-		TileObjectData.newTile.CoordinateHeights = [20];
-		TileObjectData.newTile.DrawYOffset = -2;
-		TileObjectData.newTile.Style = 0;
+		TileObjectData.newTile.CoordinateHeights = [TileHeight];
+		TileObjectData.newTile.DrawYOffset = -(TileHeight - 18);
 		TileObjectData.newTile.StyleHorizontal = true;
-		TileObjectData.newTile.UsesCustomCanPlace = true;
+		TileObjectData.newTile.RandomStyleRange = StyleRange;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
-
-		for (int i = 0; i < 25; i++)
-		{
-			TileObjectData.newSubTile.CopyFrom(TileObjectData.newTile);
-			TileObjectData.addSubTile(TileObjectData.newSubTile.Style);
-		}
-
 		TileObjectData.addTile(Type);
+
+		AddMapEntry(new Color(20, 190, 130));
+		DustType = DustID.Grass;
+		HitSound = SoundID.Grass;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
-
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
@@ -50,23 +49,53 @@ public class StargrassFlowers : ModTile
 			(r, g, b) = (0.025f, 0.1f, 0.25f);
 	}
 
-	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
-		TileSwaySystem.DrawGrassSway(spriteBatch, TextureAssets.Tile[Type].Value, i, j, Lighting.GetColor(i, j));
-		return false;
+		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HeldItem.type == ItemID.Sickle)
+			yield return new Item(ItemID.Hay, Main.rand.Next(1, 3));
+
+		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
+			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
 	}
 
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		const float MinBrightness = 0.4f;
-		const float MaxDist = 140 * 140;
+		ConversionHandler.CommonPlants(i, j, Type);
+		return true;
+	}
 
-		float dist = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)].DistanceSQ(new Vector2(i, j) * 16 + new Vector2(8));
-		float strength = MinBrightness;
+	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	{
+		var tile = Framing.GetTileSafely(i, j);
+		int type = tile.TileType;
+		var data = TileObjectData.GetTileData(tile);
 
-		if (dist < MaxDist)
-			strength = MathHelper.Lerp(MinBrightness, 1f, 1 - dist / MaxDist);
+		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
+		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, TileHeight);
+		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
 
-		TileSwaySystem.DrawGrassSway(spriteBatch, Texture + "_Glow", i, j, StargrassTile.Glow(new Point(i, j)) * strength);
+		spriteBatch.Draw(TextureAssets.Tile[type].Value, drawPos + offset + dataOffset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);
+
+		var glowmask = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
+		spriteBatch.Draw(glowmask, drawPos + offset + dataOffset, source, GetGlow(new(i, j)), rotation, origin, 1, default, 0);
+
+		static Color GetGlow(Point16 coords)
+		{
+			const float maxDistance = 140 * 140;
+
+			float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
+			return StargrassTile.Glow(new Point(coords.X, coords.Y)) * MathHelper.Clamp(1f - distance / maxDistance, 0.4f, 1f);
+		}
+	}
+
+	public float Physics(Point16 coords)
+	{
+		var data = TileObjectData.GetTileData(Framing.GetTileSafely(coords));
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(coords.X, coords.Y, TileSwaySystem.GrassWindCounter);
+
+		if (!WorldGen.InAPlaceWithWind(coords.X, coords.Y, data.Width, data.Height))
+			rotation = 0f;
+
+		return rotation + Main.instance.TilesRenderer.GetWindGridPush(coords.X, coords.Y, 20, 0.35f) * 1.5f;
 	}
 }

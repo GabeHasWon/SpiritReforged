@@ -16,40 +16,50 @@ public enum OpenFlags
 
 public static class OpenTools
 {
-	public static OpenFlags GetOpenings(int i, int j, bool onlyVertical = true, bool noDiagonals = true)
+	public static OpenFlags GetOpenings(int i, int j, bool onlyVertical = true, bool noDiagonals = true, bool onlySolid = false)
 	{
 		OpenFlags flags = OpenFlags.None;
 
-		if (!Main.tile[i, j - 1].HasTile)
+		if (Clear(i, j - 1))
 			flags |= OpenFlags.Above;
 
-		if (!Main.tile[i, j + 1].HasTile)
+		if (Clear(i, j + 1))
 			flags |= OpenFlags.Below;
 
 		if (onlyVertical)
 			return flags;
 
-		if (!Main.tile[i - 1, j].HasTile)
+		if (Clear(i - 1, j))
 			flags |= OpenFlags.Left;
 
-		if (!Main.tile[i + 1, j].HasTile)
+		if (Clear(i + 1, j))
 			flags |= OpenFlags.Right;
 
 		if (noDiagonals)
 			return flags;
 
-		if (!Main.tile[i + 1, j - 1].HasTile)
+		if (Clear(i + 1, j - 1))
 			flags |= OpenFlags.UpRight;
 
-		if (!Main.tile[i - 1, j - 1].HasTile)
+		if (Clear(i - 1, j - 1))
 			flags |= OpenFlags.UpLeft;
 
-		if (!Main.tile[i - 1, j + 1].HasTile)
+		if (Clear(i - 1, j + 1))
 			flags |= OpenFlags.DownLeft;
 
-		if (!Main.tile[i + 1, j + 1].HasTile)
+		if (Clear(i + 1, j + 1))
 			flags |= OpenFlags.DownRight;
 
 		return flags;
+
+		bool Clear(int x, int y)
+		{
+			var tile = Main.tile[x, y];
+
+			if (onlySolid)
+				return !WorldGen.SolidOrSlopedTile(tile);
+
+			return !tile.HasTile;
+		}
 	}
 }

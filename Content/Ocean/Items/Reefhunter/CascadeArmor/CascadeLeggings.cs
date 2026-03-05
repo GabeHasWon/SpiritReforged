@@ -1,5 +1,3 @@
-using SpiritReforged.Content.Ocean.Items.Reefhunter;
-
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.CascadeArmor;
 
 [AutoloadEquip(EquipType.Legs)]
@@ -9,7 +7,7 @@ public class CascadeLeggings : ModItem
 	{
 		Item.width = 38;
 		Item.height = 26;
-		Item.value = 4000;
+		Item.value = Item.sellPrice(silver: 80);
 		Item.rare = ItemRarityID.Blue;
 		Item.defense = 3;
 	}
@@ -18,13 +16,5 @@ public class CascadeLeggings : ModItem
 	{
 		if (player.wet)
 			player.moveSpeed += .15f;
-	}
-
-	public override void AddRecipes()
-	{
-		var recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<MineralSlag>(), 10);
-		recipe.AddTile(TileID.Anvils);
-		recipe.Register();
 	}
 }

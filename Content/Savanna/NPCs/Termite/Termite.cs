@@ -1,5 +1,8 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Content.Savanna.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Termite;
 
@@ -9,11 +12,25 @@ public class Termite : ModNPC
 	public ref float TermiteTimeLeft => ref NPC.ai[2];
 	public bool OnTree { get => NPC.ai[3] == 1; set => NPC.ai[3] = value ? 1 : 0; }
 
+	public static readonly SoundStyle Death = new("SpiritReforged/Assets/SFX/NPCDeath/BugDeath")
+	{
+		Volume = 0.5f,
+		Pitch = 0.3f,
+		MaxInstances = 0
+	};
+
 	public override void SetStaticDefaults()
 	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
+		{
+			item.value = Item.sellPrice(copper: 95);
+			item.bait = 9;
+		});
+
 		Main.npcFrameCount[Type] = 3;
 		Main.npcCatchable[Type] = true;
 		NPCID.Sets.CountsAsCritter[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
 	public override void SetDefaults()
@@ -25,20 +42,25 @@ public class Termite : ModNPC
 		NPC.lifeMax = 5;
 		NPC.dontCountMe = true;
 		NPC.HitSound = SoundID.NPCHit1;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 66;
-		NPC.npcSlots = 0;
+		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.CritterWorm;
+		NPC.npcSlots = 0.1f;
 		NPC.noGravity = false;
-		AIType = NPCID.Grubby;
 		NPC.dontTakeDamageFromHostiles = false;
+
+		AIType = NPCID.Grubby;
+		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("TermiteGore").Type, NPC.scale);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/BugDeath"), NPC.Center);
+			SoundEngine.PlaySound(Death, NPC.Center);
 
 			for (int k = 0; k < 5; k++)
 				Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Scarecrow, 1.05f * hit.HitDirection, -1.95f, 0, new Color(), 0.6f);
@@ -114,7 +136,7 @@ public class Termite : ModNPC
 		var tilePos = NPC.Center + new Vector2(offsetX * 16, -16);
 		var tile = Framing.GetTileSafely(tilePos);
 
-		return tile.TileType is TileID.Trees || tile.TileType is TileID.PalmTree;
+		return TileID.Sets.IsShakeable[tile.TileType];
 	}
 
 	public override void FindFrame(int frameHeight)

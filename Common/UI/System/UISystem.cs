@@ -1,4 +1,3 @@
-using SpiritReforged.Common.UI.BackpackInterface;
 using System.Linq;
 using Terraria.UI;
 
@@ -9,8 +8,13 @@ public class UISystem : ModSystem
 {
     private static readonly HashSet<AutoUIState> UIStates = [];
 
-    internal static T GetState<T>() where T : AutoUIState => UIStates.FirstOrDefault(x => x is T) as T;
+	/// <summary> Gets the AutoUIState of the given type. </summary>
+	internal static T GetState<T>() where T : AutoUIState => UIStates.FirstOrDefault(x => x is T) as T;
+	/// <summary> Checks whether the AutoUIState of the given type is active. </summary>
+	internal static bool IsActive<T>() where T : AutoUIState => UIStates.FirstOrDefault(x => x is T).UserInterface.CurrentState is not null;
+	/// <summary> Enables the AutoUIState of the given type. </summary>
 	internal static void SetActive<T>() where T : AutoUIState => UIStates.FirstOrDefault(x => x is T).UserInterface.SetState(GetState<T>());
+	/// <summary> Disables the AutoUIState of the given type. </summary>
 	internal static void SetInactive<T>() where T : AutoUIState => UIStates.FirstOrDefault(x => x is T).UserInterface.SetState(null);
 
 	public override void Load()
@@ -26,7 +30,13 @@ public class UISystem : ModSystem
 		}
 	}
 
-    public override void UpdateUI(GameTime gameTime)
+	public override void Unload()
+	{
+		foreach (var state in UIStates)
+			state.Unload(Mod);
+	}
+
+	public override void UpdateUI(GameTime gameTime)
     {
         foreach (var state in UIStates)
             state.UserInterface?.Update(gameTime);
@@ -42,7 +52,9 @@ public class UISystem : ModSystem
                     "SpiritReforged: UI" + state.UniqueId,
                     delegate
                     {
-                        state.UserInterface.Draw(Main.spriteBatch, new GameTime());
+						if (state.UserInterface.CurrentState is not null)
+							state.UserInterface?.Draw(Main.spriteBatch, new GameTime());
+
                         return true;
                     },
                     InterfaceScaleType.UI)

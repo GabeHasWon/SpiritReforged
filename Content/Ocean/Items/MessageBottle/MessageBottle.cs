@@ -22,7 +22,7 @@ public class MessageBottle : FloatingItem
 		Item.height = 10;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.value = Item.sellPrice(0, 1, 0, 0);
-		Item.rare = ItemRarityID.Blue;
+		Item.rare = ItemRarityID.Yellow;
 		Item.maxStack = 1;
 		Item.UseSound = SoundID.Item79;
 		Item.mountType = ModContent.MountType<MessageBottleMount>();

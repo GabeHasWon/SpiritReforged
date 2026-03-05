@@ -1,0 +1,44 @@
+Discoveries: Adding discoveries
+Stargrass: Growing stargrass
+HerosMemorial: Remembering a hero
+Butterfly: Hiding butterfly shrines
+FishingCoves: Adding fishing spots
+PopulateOcean: Populating the ocean
+Gravel: Placing gravel
+SavannaTerrain: Creating plateaus
+SavannaObjects: Populating the savanna
+SaltFlats: Adding salt
+Ecotones: Mapping ecotones
+Caves: Decorating caves
+DesertExtras: Hiding secrets in the sands
+NeonMosses: Glowing moss
+Pottery: Stashing pots
+Scarecrow: Scaring birds
+
+Signs: {
+	Underground: {
+		Common: {
+			0: <wavy>Pots hold the secret...
+			1: <wavy>The text is too faded to read.
+			2: <colorful:255,80,80>The sign is covered in unintelligible scrawling from a dubious liquid.
+			3: <wavy>......er's Wares
+			4: <wavy>The old sign has almost crumbled to dust.
+			5: <wavy>A crudely drawn skeleton beckons.
+			6: <wavy>If you're reading this, I'm already dead.
+			7: If you're reading this, I'm doing great!
+			8: <wavy>Beware: Worms
+			9: The sign rambles on about something you can't quite understand. It's not worth reading further.
+			10: Dwarven scripture is scrawled all over the sign. You can read none of it.
+		}
+
+		Rare: {
+			0: <wavy>Collect my pages...
+			1: Looks like there's no goo balls around here. -the Sign Painter
+			2:
+				'''
+				<wavy>0
+				days since cave incident
+				'''
+		}
+	}
+}

@@ -2,11 +2,10 @@
 
 internal class MusicDisplayCompat : ModSystem
 {
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.MusicDisplay.Enabled;
 	public override void PostSetupContent()
 	{
-		if (!ModLoader.TryGetMod("MusicDisplay", out Mod display))
-			return;
-
+		var display = CrossMod.MusicDisplay.Instance;
 		LocalizedText modName = Language.GetText("Mods.SpiritReforged.MusicDisplay.ModName");
 
 		void AddMusic(string name)
@@ -18,6 +17,13 @@ internal class MusicDisplayCompat : ModSystem
 
 		AddMusic("Duststorm");
 		AddMusic("Savanna");
+		AddMusic("SavannaNight");
 		AddMusic("DeepOcean");
+		AddMusic("SavannaOtherworld");
+		AddMusic("SavannaOtherworldNight");
+		AddMusic("DuststormOtherworld");
+		AddMusic("Ziggurat");
+		AddMusic("Salt");
+		AddMusic("SaltNight");
 	}
 }

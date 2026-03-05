@@ -1,22 +1,29 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ModCompat;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.RoguesCrest;
 
 [AutoloadEquip(EquipType.Neck)]
 public class RogueCrest : MinionAccessory
 {
-	public override MinionAccessoryData Data => new MinionAccessoryData(ModContent.ProjectileType<RogueKnifeMinion>(), 5);
+	public override MinionAccessoryData Data => new(ModContent.ProjectileType<RogueKnifeMinion>(), 5);
 
-	public override void SetDefaults()
+	public override void StaticDefaults()
 	{
-		Item.damage = 5;
-		Item.DamageType = DamageClass.Summon;
-		Item.knockBack = .5f;
-		Item.width = 48;
-		Item.height = 49;
+		ItemLootDatabase.AddItemRule(ItemID.WoodenCrate, ItemDropRule.Common(Type, 8));
+		ItemLootDatabase.AddItemRule(ItemID.WoodenCrateHard, ItemDropRule.Common(Type, 8));
+	}
+
+	public override void Defaults()
+	{
+		Item.width = 38;
+		Item.height = 36;
 		Item.value = Item.buyPrice(0, 3, 0, 0);
-		Item.rare = ItemRarityID.Green;
+		Item.rare = ItemRarityID.Blue;
 		Item.defense = 1;
-		Item.accessory = true;
+
+		MoRHelper.SetSlashBonus(Item);
 	}
 }

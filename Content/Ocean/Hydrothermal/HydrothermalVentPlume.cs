@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -7,13 +8,24 @@ namespace SpiritReforged.Content.Ocean.Hydrothermal;
 
 public class HydrothermalVentPlume : ModProjectile
 {
+	/// <summary> Item drop type and chance denominator. </summary>
+	internal static readonly Dictionary<int, byte> DropPool = [];
+
 	public override string Texture => "Terraria/Images/NPC_0";
+
+	public override void SetStaticDefaults()
+	{
+		DropPool.Add(ModContent.ItemType<MineralSlagPickup>(), 4);
+
+		if (CrossMod.Classic.Enabled && CrossMod.Classic.TryFind("SulfurDeposit", out ModItem sulfur))
+			DropPool.Add(sulfur.Type, 3);
+	}
 
 	public override void SetDefaults()
 	{
 		Projectile.ignoreWater = true;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = Tiles.HydrothermalVent.eruptDuration;
+		Projectile.timeLeft = Tiles.HydrothermalVent.EruptDuration;
 	}
 
 	public override void AI()
@@ -22,19 +34,22 @@ public class HydrothermalVentPlume : ModProjectile
 		{
 			SoundEngine.PlaySound(SoundID.Drown with { Pitch = -.5f, PitchVariance = .25f, Volume = 1.5f }, Projectile.Center);
 
-			if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(4))
-				Item.NewItem(Projectile.GetSource_FromAI(), Projectile.Center, ModContent.ItemType<MineralSlagPickup>());
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				foreach (int i in DropPool.Keys)
+				{
+					if (Main.rand.NextBool(DropPool[i]))
+						Item.NewItem(Projectile.GetSource_FromAI(), Projectile.Center, i);
+				}
+			}
 		}
 
-		if (Main.rand.NextBool(10))
-			ForegroundEmber();
-
-		if (Main.rand.NextBool(12)) //Small embers
+		if (Main.rand.NextBool(12))
+		{
 			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(-1f, 1f) * 4, 0),
 				(Projectile.velocity * Main.rand.NextFloat(.25f)).RotatedByRandom(.4f), Color.OrangeRed, Main.rand.NextFloat(.1f, .4f), 190, 8, delegate (Particle p)
-				{
-					p.Velocity = p.Velocity.RotatedByRandom(.05f);
-				}));
+				{ p.Velocity = p.Velocity.RotatedByRandom(.05f); }));
+		}
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -52,25 +67,6 @@ public class HydrothermalVentPlume : ModProjectile
 		dust2.position = new Vector2(Projectile.Center.X, Projectile.Center.Y + Projectile.height * -0.5f);
 		dust2.noGravity = true;
 		dust2.fadeIn = 1.5f;
-	}
-
-	private void ForegroundEmber()
-	{
-		var startPos = new Vector2(Projectile.Center.X - Main.screenWidth / 2 + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y);
-
-		if (!Collision.WetCollision(startPos, 2, 2))
-			return;
-
-		var p = new FireParticleScreen();
-		p.Position = startPos;
-		p.OriginalScreenPosition = Main.screenPosition;
-		p.Velocity = new Vector2(0, Main.rand.NextFloat(.75f, 2));
-		p.Rotation = Main.rand.NextFloat(MathHelper.PiOver4);
-		p.Scale = Main.rand.NextFloat(0.25f, 0.35f);
-		p.ParallaxStrength = (float)Math.Pow(p.Scale, 3);
-		p.MaxTime = 360;
-
-		ParticleHandler.SpawnParticle(p);
 	}
 
 	public override bool ShouldUpdatePosition() => false;

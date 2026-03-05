@@ -1,19 +1,26 @@
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class TridentZombie : ReplaceNPC
+public class TridentZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.ArmedZombie, NPCID.ArmedZombieCenx];
+	public int[] TypesToReplace => [NPCID.ArmedZombie, NPCID.ArmedZombieCenx];
+	private float _frameCounter;
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.ArmedZombie];
-
-		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Hide = true };
-		NPCID.Sets.NPCBestiaryDrawOffset.Add(NPC.type, drawModifiers);
+		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.ArmedZombie];
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.BoneThrowingSkeleton;
 		NPCID.Sets.Zombies[Type] = true;
+
+		MoRHelper.AddElement(NPC, MoRHelper.Water);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Wet);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Armed);
 	}
 
 	public override void SetDefaults()
@@ -51,13 +58,25 @@ public class TridentZombie : ReplaceNPC
 		}
 	}
 
+	public override void FindFrame(int frameHeight)
+	{
+		if (NPC.IsABestiaryIconDummy)
+		{
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
+		}
+	}
+
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
+		npcLoot.AddCommon(ModContent.ItemType<FishChips>(), 30);
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.Kelp>(), 10, 1, 2);
 		npcLoot.AddCommon(ItemID.Trident, 120);
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

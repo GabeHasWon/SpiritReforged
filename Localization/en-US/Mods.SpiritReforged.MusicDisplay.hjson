@@ -1,0 +1,55 @@
+ModName: Spirit Reforged
+Salvati: Salvati
+Sbubby: Sbubby
+Moonbird: Moonbird
+BySalvati: "{$By} {$Salvati}"
+
+Duststorm: {
+	DisplayName: Drifting Prairie (Duststorm Theme)
+	Author: "{$By} {$Sbubby}"
+}
+
+Savanna: {
+	DisplayName: Savanna
+	Author: "{$BySalvati}, {$Sbubby}"
+}
+
+SavannaNight: {
+	DisplayName: Savanna Night
+	Author: "{$BySalvati}"
+}
+
+DeepOcean: {
+	DisplayName: Deep Ocean
+	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: Otherworldly Savanna Day
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: Otherworldly Savanna Night
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: Otherworldly Dustorm
+	Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	DisplayName: Ziggurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	DisplayName: Salt Flats
+	Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	DisplayName: Salt Flats (Night)
+	Author: "{$By} {$Sbubby}"
+}

@@ -1,9 +1,9 @@
-using SpiritReforged.Common.TileCommon.FurnitureTiles;
-using SpiritReforged.Content.Jungle.Bamboo.Items;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBench : SofaTile
+public class BambooBench : BenchTile
 {
-	public override int CoreMaterial => ModContent.ItemType<StrippedBamboo>();
+	public override IFurnitureData Info => new BasicInfo(this.AutoModItem(), AutoContent.ItemType<StrippedBamboo>());
 }

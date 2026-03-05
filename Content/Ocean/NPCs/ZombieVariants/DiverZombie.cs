@@ -1,17 +1,23 @@
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class DiverZombie : ReplaceNPC
+public class DiverZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.Zombies[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Wet);
 	}
 
 	public override void SetDefaults()
@@ -102,12 +108,13 @@ public class DiverZombie : ReplaceNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
+		npcLoot.AddCommon(ModContent.ItemType<FishChips>(), 30);
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ItemID.Flipper, 100);
-		npcLoot.AddOneFromOptions(65, ModContent.ItemType<Items.Vanity.DiverSet.DiverLegs>(), 
+		npcLoot.AddOneFromOptions(65, ModContent.ItemType<Items.Vanity.DiverSet.DiverLegs>(),
 			ModContent.ItemType<Items.Vanity.DiverSet.DiverHead>(), ModContent.ItemType<Items.Vanity.DiverSet.DiverBody>());
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

@@ -1,0 +1,53 @@
+Diver: {
+	DisplayName: 潜水员
+	Flavor: 经历一场翻船事故后，这位潜水员正摩拳擦掌，准备在新大陆大展身手——他已迫不及待要探索未知水域了。
+	Description: 以全套潜水员时装、脚蹼和海洋吊坠开始游戏。
+}
+
+Botanist: {
+	DisplayName: 植物学家
+	Flavor: 一位草药专家，如果你愿意这样称呼。擅长采集与运用草药。
+	Description: 以全套植物学家套装、一把镰刀和几个草药袋在稻草人旁边开始游戏。
+}
+
+Recluse: {
+	DisplayName: 隐士
+	Flavor: 于他而言，深居地底才是上策，既无人打扰，钓鱼也更惬意！
+	Description: 以全套渔夫套装、玻璃钢钓竿、一些诱饵和一些宝匣在地下钓鱼小屋开始游戏。
+}
+
+Hunter: {
+	DisplayName: 猎人
+	Flavor: 猎杀，是他们的生存法则。正如稀树平原上的动物一样，狩猎即是全部。
+	Description: 以一把猎枪、一些弹药和游猎时装在稀树平原开始游戏。
+}
+
+Hiker: {
+	DisplayName: 旅行者
+	Flavor: 探险能带来乐趣，而且他们也有足够的补给。
+	Description: 以60根火把、30个荧光棒和150个绳索在最高的山峰开始游戏。
+}
+
+Caveman: {
+	// DisplayName: Caveman
+	// Flavor: The simple life proves productive. One word sums it up: Ug.
+	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	// DisplayName: Disentombed
+	// Flavor: Three thousand years have passed...my reign will return. I will return.
+	// Description: Spawns with the mummy vanity in the Ziggurat.
+}
+
+Worshipper: {
+	// DisplayName: Worshipper
+	// Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
+	// Description: Spawns with the Sundancer armor set and a Windshear Staff in an underground Oasis.
+}
+
+Purifier: {
+	// DisplayName: Purifier
+	// Flavor: Abhorrent evil beogne; burn at the sting of my purity.
+	// Description: Spawns with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
+}

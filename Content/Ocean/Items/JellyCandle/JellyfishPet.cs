@@ -1,16 +1,17 @@
-using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.BuffCommon;
 
 namespace SpiritReforged.Content.Ocean.Items.JellyCandle;
 
+[AutoloadPetBuff]
 public class JellyfishPet : ModProjectile
 {
 	private float frameCounter;
 
 	public override void SetStaticDefaults()
 	{
-		// DisplayName.SetDefault("Jellyfish");
 		Main.projFrames[Type] = 3;
 		Main.projPet[Type] = true;
+
 		ProjectileID.Sets.CharacterPreviewAnimations[Type] = ProjectileID.Sets.SimpleLoop(0, Main.projFrames[Type], 6)
 			.WithSpriteDirection(-1)
 			.WithCode(DelegateMethods.CharacterPreview.Float);
@@ -27,7 +28,6 @@ public class JellyfishPet : ModProjectile
 	public override void AI()
 	{
 		Player player = Main.player[Projectile.owner];
-		player.GetModPlayer<PetPlayer>().PetFlag(Projectile);
 
 		player.zephyrfish = false; //Relic from AIType
 

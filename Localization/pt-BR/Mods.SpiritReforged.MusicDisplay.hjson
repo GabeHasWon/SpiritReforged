@@ -1,0 +1,55 @@
+ModName: Spirit Reforged
+Salvati: Salvati
+Sbubby: Sbubby
+// Moonbird: Moonbird
+BySalvati: "{$By} {$Salvati}"
+
+Duststorm: {
+	DisplayName: Planície Derivante (Tema Tempestade de Areia)
+	Author: "{$By} {$Sbubby}"
+}
+
+Savanna: {
+	DisplayName: Savana
+	Author: "{$BySalvati}, {$Sbubby}"
+}
+
+SavannaNight: {
+	DisplayName: Noite na Savana
+	Author: "{$BySalvati}"
+}
+
+DeepOcean: {
+	DisplayName: Oceano Profundo
+	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	// DisplayName: Otherworldly Savanna Day
+	// Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	// DisplayName: Otherworldly Savanna Night
+	// Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	// DisplayName: Otherworldly Dustorm
+	// Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	// DisplayName: Ziggurat
+	// Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	// DisplayName: Salt Flats
+	// Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	// DisplayName: Salt Flats (Night)
+	// Author: "{$By} {$Sbubby}"
+}

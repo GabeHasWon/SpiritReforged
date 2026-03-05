@@ -1,0 +1,40 @@
+Cascade:
+	'''
+	Causar dano aos inimigos cria um escudo de bolhas,  
+	que, quando completamente formado, concede alta resistência contra o próximo ataque,  
+	causando dano e repelindo inimigos próximos  
+	'''
+Driftwood:
+	'''
+	Permite ao portador flutuar na água  
+	Aumenta o poder de pesca  
+	'''
+Drywood: Aumenta a velocidade de movimento na superfície
+Botanist:
+	'''
+	Você obtém recompensas aumentadas de todos os tipos de ervas  
+	Você tem um olho poderoso para detectar ervas  
+	'''
+Marksman:
+	'''
+	Usar a Armadura do Atirador acumula concentração  
+	Enquanto concentrado, seu próximo ataque será um golpe crítico e causará mais dano  
+	A concentração é interrompida quando você é atingido, mas recarrega mais rápido quando está parado  
+	'''
+/* Wayfarer:
+	'''
+	Slain enemies drop more coins
+	Breaking pots grants a movement speed buff
+	Mining ore grants a mining speed buff
+	''' */
+/* Granite:
+	'''
+	Double tap {0} to stomp
+	Hitting the ground releases a shockwave that scales with height
+	''' */
+/* Sundancer:
+	'''
+	An afterimage follows you with a half second delay
+	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
+	''' */
+// Bedouin: Double tap a direction to dash and envelop yourself in a tornado

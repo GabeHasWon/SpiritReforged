@@ -1,0 +1,80 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: Savana
+		TownNPCDialogueName: a Savana
+	}
+
+	SaltBiome: {
+		// DisplayName: Salt Flats
+		// TownNPCDialogueName: the Salt Flats
+	}
+
+	ZigguratBiome: {
+		// DisplayName: Ziggurat
+		// TownNPCDialogueName: the Ziggurat
+	}
+}
+
+SlotContexts.Backpack: Mochila
+
+Conditions: {
+	InSavanna: Na Savana
+	// PeevedTumbler: When sparkling
+	// Discovered: Discovery
+	// Submerged: Submerged
+	// InSaltFlats: In Salt Flats
+	// IsPrickly: When prickly
+	// InZiggurat: In the Ziggurat
+}
+
+Misc: {
+	Pins: {
+		Move: Mover Alfinete
+		Obtained: Você já possui este alfinete
+		UseItem: Clique direito para adicionar este alfinete à sua coleção
+	}
+
+	NoStock: Fora de estoque
+	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
+	MenuButton: Usar estilo de menu
+	// UnchangedMap: Map has no changes.
+	// ShareMap: Map has been shared.
+	// ShareAndUpdateMap: Map has been shared & updated.
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0} foi empalado."
+		1: "{0} foi espetado."
+	}
+}
+
+GameTips: {
+	ReforgedTip0: Sempre leve comida consigo. Você nunca sabe quando pode ser útil!
+	ReforgedTip1: Raramente, sabe-se que borboletas se escondem em bosques subterrâneos.
+	ReforgedTip2: Alfinetes são úteis! Verifique seu inventário de alfinetes no canto inferior esquerdo do mapa.
+	ReforgedTip3: Animais da savana não podem ser capturados com redes de insetos.
+	ReforgedTip4: Mochilas. Agora você tem mais espaço.
+	ReforgedTip5: O vazio profundo do oceano oferece muitos benefícios.
+	ReforgedTip6: A grama estelar oferece um bom alívio na escuridão da noite.
+	ReforgedTip7: Talos Nuvem sempre crescem sob nuvens.
+	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
+	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
+}
+
+Emotes: {
+	// CartographerEmote.Command: cartographer
+	// HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		// DisplayName: Ledger
+		// Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		// DisplayName: Shimmersight
+		// Description: Showing shimmer tooltips
+	}
+}

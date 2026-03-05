@@ -1,9 +1,10 @@
-﻿namespace SpiritReforged.Content.Ocean.Items;
+﻿using SpiritReforged.Common.ModCompat;
+
+namespace SpiritReforged.Content.Ocean.Items;
 
 public class PirateKey : ModItem
 {
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 1;
-
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Classic.Enabled;
 	public override void SetDefaults()
 	{
 		Item.width = 14;

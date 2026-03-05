@@ -56,10 +56,8 @@ public class GlowParticle : Particle
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
 		Texture2D tex = ParticleHandler.GetTexture(Type);
-		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"];
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		float scaleTimeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
-
-		void Draw(Texture2D drawTex, Vector2 pos, float opacity, float scaleMod) => spriteBatch.Draw(drawTex, pos - Main.screenPosition, null, Color.Additive() * opacity, 0, drawTex.Size() / 2, scaleMod * Scale * scaleTimeModifier, SpriteEffects.None, 0);
 
 		for (int i = 0; i < oldPositions.Length; i++)
 		{
@@ -76,6 +74,8 @@ public class GlowParticle : Particle
 			float easeModifier = EaseFunction.EaseQuadOut.Ease(1 - progress);
 			Draw(tex, oldPositions[i], easeModifier * 0.25f, easeModifier);
 		}
+
+		void Draw(Texture2D drawTex, Vector2 pos, float opacity, float scaleMod) => spriteBatch.Draw(drawTex, pos - Main.screenPosition, null, Color.Additive() * opacity, 0, drawTex.Size() / 2, scaleMod * Scale * scaleTimeModifier, SpriteEffects.None, 0);
 	}
 
 	public override ParticleLayer DrawLayer => _drawLayer;

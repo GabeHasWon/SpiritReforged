@@ -1,6 +1,8 @@
+using System.Linq;
+
 namespace SpiritReforged.Content.Ocean.Boids;
 
-internal class BoidObject : Entity
+internal class BoidObject(Boid flock) : Entity
 {
 	public Vector2 acceleration;
 
@@ -11,16 +13,10 @@ internal class BoidObject : Entity
 	protected byte frame = 0;
 	protected int spawnTimer = 100;
 
-	public readonly Boid parent;
-	public readonly int textureID;
+	public readonly Boid parent = flock;
+	public readonly int variant = Main.rand.Next(flock.variants.ToList());
 
 	public List<BoidObject> AdjFish = [];
-
-	public BoidObject(Boid flock)
-	{
-		parent = flock;
-		textureID = parent.TextureLookup[Main.rand.Next(parent.TextureLookup.Length)];
-	}
 
 	protected static Vector2 Limit(Vector2 vec, float val)
 	{
@@ -124,7 +120,7 @@ internal class BoidObject : Entity
 	}
 
 	//Must face the same general direction
-	public Vector2 Allignment(int range)
+	public Vector2 Alignment(int range)
 	{
 		int count = 0;
 		var sum = new Vector2(0, 0);
@@ -185,12 +181,12 @@ internal class BoidObject : Entity
 		var lightColour = Lighting.GetColor(position.ToTileCoordinates());
 
 		float alpha = MathHelper.Clamp(1 - spawnTimer-- / 100f, 0f, 1f);
-		var texture = BoidManager.FishTextures[textureID].Value;
+		var texture = BoidManager.Types[variant].Value;
 		var source = texture.Frame(1, 2, 0, frame % 2);
 		var effects = velocity.X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
 		spritebatch.Draw(texture, position - Main.screenPosition, source, lightColour * alpha, 
-			velocity.ToRotation() + (float)Math.PI, source.Size() / 2, parent.flockScale, effects, 0f);
+			velocity.ToRotation() + (float)Math.PI, source.Size() / 2, 1, effects, 0f);
 	}
 
 	public void ApplyForces()
@@ -205,7 +201,7 @@ internal class BoidObject : Entity
 	{
 		//arbitrarily weight
 		acceleration += Seperation(25) * 1.5f;
-		acceleration += Allignment(50) * 1f;
+		acceleration += Alignment(50) * 1f;
 		acceleration += Cohesion(50) * 1f;
 		acceleration += AvoidHooman(50) * 4f;
 		acceleration += AvoidTiles(100) * 5f;

@@ -3,22 +3,27 @@ using SpiritReforged.Common.ItemCommon;
 using Terraria.DataStructures;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
+using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 [AutoloadEquip(EquipType.Neck)]
-public class OceanPendant : AccessoryItem
+[FromClassic("PendantOfTheOcean")]
+public class OceanPendant : EquippableItem
 {
+	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });
+
 	public override void SetDefaults()
 	{
 		Item.width = 32;
 		Item.height = 36;
 		Item.rare = ItemRarityID.Green;
-		Item.value = Item.buyPrice(0, 0, 80, 0);
+		Item.value = Item.sellPrice(0, 4, 80, 0);
 		Item.accessory = true;
 	}
 
-	public override void UpdateEquip(Player player)
+	public override void UpdateEquippable(Player player)
 	{
 		if (Collision.WetCollision(player.position, player.width, player.height))
 		{
@@ -36,7 +41,6 @@ public class OceanPendantLayer : PlayerDrawLayer
 
 	public override void Load() => glowTexture = ModContent.Request<Texture2D>(GetType().Namespace.Replace(".", "/") + "/OceanPendant_Neck_Glow");
 	public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.NeckAcc);
-	public override bool IsHeadLayer => false;
 
 	public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
 	{

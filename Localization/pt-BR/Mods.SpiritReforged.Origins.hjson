@@ -1,0 +1,53 @@
+Diver: {
+	DisplayName: Mergulhador
+	Flavor: Depois de um grande tombo, o Mergulhador está pronto para começar em uma nova terra, ansioso para explorar novas águas.
+	Description: Começa com o conjunto completo de vaidade de Mergulhador, nadadeiras e um Pingente do Oceano.
+}
+
+Botanist: {
+	DisplayName: Botânico
+	Flavor: Um herbologista, por assim dizer. Muito habilidoso em coletar e usar ervas.
+	Description: Começa com o conjunto completo de Botânico, uma foice e alguns sacos de ervas, ao lado de um Espantalho.
+}
+
+Recluse: {
+	DisplayName: Recluso
+	Flavor: Para ele, é mais fácil se esconder nas profundezas subterrâneas onde ninguém irá incomodá-lo. Pescar é melhor por aqui!
+	Description: Começa com o conjunto completo de Botânico, uma foice e alguns sacos de ervas.
+}
+
+Hunter: {
+	DisplayName: Caçador
+	Flavor: A caça é seu jogo. Assim como os animais na Savana, a caça é tudo.
+	Description: Começa com um Rifle de Caçador, algumas munições e vaidade de Safári em uma Savana.
+}
+
+Hiker: {
+	DisplayName: Caminhante
+	Flavor: Exploração alimenta o prazer, e ele tem os suprimentos para isso.
+	Description: Começa com 60 Tochas, 30 Bastões Luminosos, 150 Cordas no topo da colina mais alta.
+}
+
+Caveman: {
+	// DisplayName: Caveman
+	// Flavor: The simple life proves productive. One word sums it up: Ug.
+	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	// DisplayName: Disentombed
+	// Flavor: Three thousand years have passed...my reign will return. I will return.
+	// Description: Spawns with the mummy vanity in the Ziggurat.
+}
+
+Worshipper: {
+	// DisplayName: Worshipper
+	// Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
+	// Description: Spawns with the Sundancer armor set and a Windshear Staff in an underground Oasis.
+}
+
+Purifier: {
+	// DisplayName: Purifier
+	// Flavor: Abhorrent evil beogne; burn at the sting of my purity.
+	// Description: Spawns with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
+}

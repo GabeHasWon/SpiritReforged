@@ -1,9 +1,10 @@
-using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.BuffCommon;
 using Terraria.Audio;
 using Terraria.GameContent.Golf;
 
 namespace SpiritReforged.Content.Savanna.Items.WrithingSticks;
 
+[AutoloadPetBuff]
 public class TumblerPet : ModProjectile
 {
 	private static Asset<Texture2D> Highlight;
@@ -31,7 +32,6 @@ public class TumblerPet : ModProjectile
 	public override void AI()
 	{
 		var owner = Main.player[Projectile.owner];
-		owner.GetModPlayer<PetPlayer>().PetFlag(Projectile);
 
 		Projectile.rotation += Projectile.velocity.Length() * .08f * Projectile.direction;
 

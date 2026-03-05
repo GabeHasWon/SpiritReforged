@@ -1,0 +1,154 @@
+﻿using SpiritReforged.Common.ItemCommon;
+using System.IO;
+using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
+
+namespace SpiritReforged.Common.TileCommon.PresetTiles;
+
+/// <summary> A tile entity who can store a single item, saved on unload. See <see cref="TileEntityData"/> for syncing. </summary>
+public abstract class SingleSlotEntity : ModTileEntity
+{
+	/// <summary> Whether <see cref="Player.PlayDroppedItemAnimation"/> should be called in <see cref="OnInteract"/>. Defaults to true. </summary>
+	public virtual bool PlayDroppedAnimation => true;
+
+	public Item item = new();
+
+	/// <summary> Called on the local client when right-clicking a tile. </summary>
+	/// <returns> Whether an interaction has occured. </returns>
+	public virtual bool OnInteract(Player player)
+	{
+		bool success = CanAdd();
+
+		if (!item.IsAir) //Drop the item already in the slot
+		{
+			ItemMethods.NewItemSynced(player.GetSource_TileInteraction(Position.X, Position.Y), item, Position.ToVector2() * 16, true);
+			item.TurnToAir();
+
+			success = true;
+		}
+
+		if (success)
+		{
+			player.GamepadEnableGrappleCooldown();
+
+			if (CanAdd()) //Add a new item to the slot of possible
+			{
+				item = ItemLoader.TransferWithLimit(player.inventory[player.selectedItem], 1);
+
+				if (player.selectedItem == 58)
+					Main.mouseItem = player.inventory[player.selectedItem].Clone(); //Consume mouseItem like vanilla does
+			}
+
+			player.releaseUseItem = false;
+			player.mouseInterface = true;
+
+			if (!item.IsAir)
+			{
+				if (PlayDroppedAnimation)
+					player.PlayDroppedItemAnimation(20);
+
+				Recipe.FindRecipes();
+			}
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				new TileEntityData((short)ID).Send();
+		}
+
+		return success;
+
+		bool CanAdd()
+		{
+			var item = player.HeldItem;
+			return CanAddItem(item) && !item.favorited;
+		}
+	}
+
+	/// <summary> Removes <see cref="item"/> and automatically syncs it. </summary>
+	public void RemoveItem()
+	{
+		item.TurnToAir();
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+			new TileEntityData((short)ID).Send();
+	}
+
+	public virtual bool CanAddItem(Item item) => true;
+
+	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
+	{
+		TileExtensions.GetTopLeft(ref i, ref j);
+		var d = TileObjectData.GetTileData(Main.tile[i, j]);
+
+		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			NetMessage.SendTileSquare(Main.myPlayer, i, j, size.X, size.Y);
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: Type);
+			return -1;
+		}
+
+		return Place(i, j);
+	}
+
+	public override void Update()
+	{
+		if (!IsTileValidForEntity(Position.X, Position.Y))
+			Kill(Position.X, Position.Y);
+	}
+
+	public override void OnNetPlace() => NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
+	public override void NetSend(BinaryWriter writer) => ItemIO.Send(item, writer);
+	public override void NetReceive(BinaryReader reader) => item = ItemIO.Receive(reader);
+
+	public override void SaveData(TagCompound tag)
+	{
+		if (!item.IsAir)
+			tag[nameof(item)] = item;
+	}
+
+	public override void LoadData(TagCompound tag) => item = tag.Get<Item>(nameof(item));
+}
+
+/// <summary> Helper tile to be used in conjunction with <see cref="SingleSlotEntity"/>. </summary>
+public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEntity
+{
+	public int ItemType => (this is IAutoloadTileItem) ? this.AutoItem().type : ItemID.None;
+
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		if (effectOnly)
+			return;
+
+		if (Entity(i, j) is T slot && !slot.item.IsAir)
+		{
+			fail = true;
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				TileExtensions.GetTopLeft(ref i, ref j);
+
+				var pos = new Vector2(i, j).ToWorldCoordinates();
+
+				Item.NewItem(new EntitySource_TileBreak(i, j), pos, slot.item);
+				slot.RemoveItem();
+			}
+		}
+	}
+
+	public override bool RightClick(int i, int j)
+	{
+		if (Entity(i, j) is T entity)
+			entity.OnInteract(Main.LocalPlayer);
+
+		return true;
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = (Entity(i, j) is not T entity || entity.item.IsAir) ? ItemType : entity.item.type;
+	}
+}

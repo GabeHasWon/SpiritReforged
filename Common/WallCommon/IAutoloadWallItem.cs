@@ -53,6 +53,8 @@ public class AutoloadedWallItem(string name, string texture, IAutoloadWallItem h
 		return item;
 	}
 
+	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 400;
+
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableWall(Mod.Find<ModWall>(_internalName.Replace("Item", "")).Type);

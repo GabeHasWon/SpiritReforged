@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ProjectileCommon;
 using System.IO;
 using Terraria.Audio;
 
@@ -58,19 +59,24 @@ public class UrchinStaffProjectile : ModProjectile
 		float shotTime = 0.7f;
 
 		if (p.itemAnimation == (int)(shotTime * p.itemAnimationMax))
-			ShootUrchin(p);
+		{
+			if (Projectile.owner == Main.myPlayer)
+				ShootUrchin(p);
+
+			SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+		}
 	}
 
 	private void ShootUrchin(Player player)
 	{
-		Vector2 adjustedTrajectory = ArcVelocityHelper.GetArcVel(UrchinPos - player.MountedCenter, RelativeTargetPosition, 0.25f, ShotTrajectory.Length());
-		var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), UrchinPos, adjustedTrajectory + player.velocity / 3, ModContent.ProjectileType<UrchinBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-		proj.rotation = Projectile.rotation;
-		proj.Center = UrchinPos;
-		if (Main.netMode != NetmodeID.SinglePlayer) //Sync projectile made only on one client
-			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+		var adjustedTrajectory = ArcVelocityHelper.GetArcVel(UrchinPos - player.MountedCenter, RelativeTargetPosition, 0.25f, ShotTrajectory.Length());
 
-		SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+		PreNewProjectile.New(Projectile.GetSource_FromAI(), UrchinPos, adjustedTrajectory + player.velocity / 3, ModContent.ProjectileType<UrchinBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner, preSpawnAction: delegate (Projectile p)
+		{
+			p.rotation = Projectile.rotation;
+			p.Center = UrchinPos;
+		});
+
 		Projectile.netUpdate = true;
 		Projectile.ai[0]++;
 	}
@@ -100,6 +106,5 @@ public class UrchinStaffProjectile : ModProjectile
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.WriteVector2(ShotTrajectory);
-
 	public override void ReceiveExtraAI(BinaryReader reader) => ShotTrajectory = reader.ReadVector2();
 }

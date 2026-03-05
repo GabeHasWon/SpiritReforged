@@ -4,9 +4,19 @@ namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
 public class DashSwordPlayer : ModPlayer
 {
+	public bool HasDashCharge { get; private set; }
+
 	public bool holdingSword;
 	public bool dashing;
-	public bool hasDashCharge;
+
+	private int _internalCooldown;
+
+	/// <summary> Optionally set a dash cooldown. </summary>
+	public void SetDashCooldown(int time = 30)
+	{
+		_internalCooldown = time;
+		HasDashCharge = false;
+	}
 
 	public override void ResetEffects() => holdingSword = false;
 
@@ -18,8 +28,8 @@ public class DashSwordPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		if (Player.velocity.Y == 0 && !Player.ItemAnimationActive)
-			hasDashCharge = true;
+		if (!Player.ItemAnimationActive && (_internalCooldown = Math.Max(_internalCooldown - 1, 0)) == 0 && Player.velocity.Y == 0)
+			HasDashCharge = true;
 	}
 
 	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable) => dashing;

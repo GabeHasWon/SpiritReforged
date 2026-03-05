@@ -27,6 +27,7 @@ public class AutoloadedUnsafeWall(string name, string texture) : ModWall
 	{
 		AssociatedWall.SetStaticDefaults();
 		Main.wallHouse[Type] = false;
+		Main.wallBlend[Type] = AssociatedWall.Type;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => AssociatedWall.NumDust(i, j, fail, ref num);
@@ -52,4 +53,11 @@ public class UnsafeWallLoader : ModSystem
 internal static class AutoloadedWallExtensions
 {
 	public static int GetUnsafe(this IAutoloadUnsafeWall wall, Mod mod) => mod.Find<ModWall>(wall.Name + "Unsafe").Type;
+
+	/// <summary> Attempts to find the autoloaded unsafe wall associated with the given Type. Throws an exception on failure. </summary>
+	public static int UnsafeWallType<T>() where T : ModWall
+	{
+		var mod = SpiritReforgedMod.Instance;
+		return mod.Find<ModWall>(ModContent.GetInstance<T>().Name + "Unsafe").Type;
+	}
 }

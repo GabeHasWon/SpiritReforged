@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -7,32 +8,42 @@ namespace SpiritReforged.Common.UI.BackpackInterface;
 
 internal class BackpackUIState : AutoUIState
 {
-	private BackpackUISlot functionalSlot;
-	private BackpackUISlot vanitySlot;
+	internal static bool HasPotionSlotMod { get; private set; }
 
-	private bool _hadBackpack;
-	private int _lastMapStyle;
+	private BackpackUISlot _functionalSlot;
+	private BackpackUISlot _vanitySlot;
+	private BackpackUISlot _dyeSlot;
+
+	private Item _lastBackpack;
+	private int _lastAdjustY;
 
 	public override void OnInitialize()
 	{
+		HasPotionSlotMod = ModLoader.HasMod("PotionSlots");
 		Width = Height = StyleDimension.Fill;
 
-		functionalSlot = new BackpackUISlot(false);
-		Append(functionalSlot);
+		_functionalSlot = new BackpackUISlot(false);
+		_functionalSlot.Left = new StyleDimension(-186, 1);
+		Append(_functionalSlot);
 
-		vanitySlot = new BackpackUISlot(true);
-		Append(vanitySlot);
+		_vanitySlot = new BackpackUISlot(true);
+		_vanitySlot.Left = new StyleDimension(_functionalSlot.Left.Pixels - 48, 1);
+		Append(_vanitySlot);
 
-		SetPositions();
+		_dyeSlot = new BackpackUISlot(false, true);
+		_dyeSlot.Left = new StyleDimension(_vanitySlot.Left.Pixels - 48, 1);
+		Append(_dyeSlot);
+
+		SetVariablePositions();
 
 		On_Main.DrawInventory += TryOpenUI;
 	}
 
-	private void TryOpenUI(On_Main.orig_DrawInventory orig, Main self)
+	private static void TryOpenUI(On_Main.orig_DrawInventory orig, Main self)
 	{
 		orig(self);
 
-		if (Main.playerInventory && UISystem.GetState<BackpackUIState>().UserInterface.CurrentState is null)
+		if (Main.playerInventory)
 			UISystem.SetActive<BackpackUIState>();
 	}
 
@@ -40,71 +51,64 @@ internal class BackpackUIState : AutoUIState
 	{
 		if (!Main.playerInventory)
 		{
-			_hadBackpack = false; //Force the storage list to reload when the UI closes
+			_lastBackpack = null; //Force the storage list to reload when the UI closes
 			SetStorageSlots(true);
 
 			UISystem.SetInactive<BackpackUIState>(); //Close the UI
 			return;
 		}
 
-		bool hasBackpack = BackpackPlayer.TryGetBackpack(Main.LocalPlayer, out var _);
+		if (Main.LocalPlayer.GetModPlayer<BackpackPlayer>().backpack.ModItem is BackpackItem bp)
+		{
+			if (_lastBackpack != bp.Item)
+				SetStorageSlots(false);
 
-		if (hasBackpack && !_hadBackpack)
-			SetStorageSlots(false);
-		else if (!hasBackpack && _hadBackpack)
-			SetStorageSlots(true);
+			_lastBackpack = bp.Item;
+		}
+		else
+		{
+			if (_lastBackpack != null)
+				SetStorageSlots(true);
 
-		_hadBackpack = hasBackpack;
+			_lastBackpack = null;
+		}
 
-		if (Main.mapStyle != _lastMapStyle)
-			SetPositions();
+		int value = UIHelper.GetMapHeight();
+		if (value != _lastAdjustY)
+			SetVariablePositions();
 
-		_lastMapStyle = Main.mapStyle;
+		_lastAdjustY = value;
 
 		base.Update(gameTime);
 	}
 
-	private void SetPositions()
+	private void SetVariablePositions() => _functionalSlot.Top = _vanitySlot.Top = _dyeSlot.Top = new StyleDimension(UIHelper.GetMapHeight() + 174, 0);
+
+	/// <summary> Adds or removes backpack slots with items according to the currently equipped backpack.<para/>
+	/// This is a snapshot, and must be called again if the <see cref="BackpackPlayer.backpack"/> instance has changed.<br/>
+	/// In most cases, this is handled automatically by the UI state, but not always. </summary>
+	/// <param name="clear"> Whether to remove the backpack storage slots. </param>
+	internal void SetStorageSlots(bool clear)
 	{
-		if (Main.mapStyle == 1) //Standard minimap display
+		List<UIElement> removals = [];
+
+		foreach (var item in Children)
+			if (item is BasicItemSlot or UIText)
+				removals.Add(item);
+
+		foreach (var item in removals)
+			RemoveChild(item);
+
+		if (!clear)
 		{
-			functionalSlot.Left = new StyleDimension(-186, 1);
-			functionalSlot.Top = new StyleDimension(430, 0);
+			const float spacing = 33.5f;
+			int baseX = HasPotionSlotMod ? 609 : 571;
 
-			vanitySlot.Left = new StyleDimension(functionalSlot.Left.Pixels - 48, 1);
-			vanitySlot.Top = functionalSlot.Top;
-		}
-		else
-		{
-			functionalSlot.Left = new StyleDimension(-186, 1);
-			functionalSlot.Top = new StyleDimension(174, 0);
-
-			vanitySlot.Left = new StyleDimension(functionalSlot.Left.Pixels - 48, 1);
-			vanitySlot.Top = functionalSlot.Top;
-		}
-	}
-
-	private void SetStorageSlots(bool clear)
-	{
-		if (clear)
-		{
-			List<UIElement> removals = [];
-
-			foreach (var item in Children)
-				if (item is UIItemSlot or UIText)
-					removals.Add(item);
-
-			foreach (var item in removals)
-				RemoveChild(item);
-		}
-		else
-		{
-			const int BaseX = 570;
 			int xOff = 0, yOff = 0;
 
 			Append(new UIText(Language.GetTextValue("Mods.SpiritReforged.SlotContexts.Backpack"), 0.725f, false)
 			{
-				Left = new StyleDimension(BaseX, 0),
+				Left = new StyleDimension(baseX, 0),
 				Top = new StyleDimension(86, 0),
 				Width = StyleDimension.FromPixels(32),
 				Height = StyleDimension.FromPixels(32),
@@ -113,38 +117,19 @@ internal class BackpackUIState : AutoUIState
 			});
 
 			var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
-			var items = (mPlayer.backpack.ModItem as BackpackItem).items;
+			var backpack = mPlayer.backpack.ModItem as BackpackItem;
+			var items = backpack.items;
 
 			for (int i = 0; i < items.Length; ++i) //Add backpack storage slots
 			{
-				var newSlot = new UIItemSlot(items, i, ItemSlot.Context.ChestItem)
-				{
-					Left = new StyleDimension(BaseX + xOff * 32, 0),
-					Top = new StyleDimension(105 + yOff * 33, 0),
-					Width = StyleDimension.FromPixels(32),
-					Height = StyleDimension.FromPixels(32)
-				};
+				Append(backpack.SetupSlot(i, new(baseX + xOff * spacing, 105 + yOff * spacing)));
 
-				yOff++;
-
-				if (yOff >= 4)
+				if (++yOff >= 4)
 				{
 					xOff++;
 					yOff = 0;
 				}
-
-				Append(newSlot);
 			}
 		}
-	}
-
-	protected override void DrawChildren(SpriteBatch spriteBatch)
-	{
-		float lastScale = Main.inventoryScale;
-		Main.inventoryScale = 0.6f; //Scale down storage slots
-
-		base.DrawChildren(spriteBatch);
-
-		Main.inventoryScale = lastScale;
 	}
 }

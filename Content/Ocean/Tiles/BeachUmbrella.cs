@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem
+public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem, IModifySmartTarget
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 20);
 
@@ -39,16 +39,20 @@ public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (Framing.GetTileSafely(i, j).TileFrameY == 0)
-			CustomDraw(i, j, spriteBatch, TileObjectData.GetTileData(Framing.GetTileSafely(i, j)));
+		var t = Main.tile[i, j];
+		if (t.TileFrameY == 0)
+		{
+			if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+				return false;
+
+			CustomDraw(i, j, spriteBatch, TileObjectData.GetTileData(t), texture, color);
+		}
 
 		return false;
 	}
 
-	private void CustomDraw(int i, int j, SpriteBatch spriteBatch, TileObjectData data, Color? color = null)
+	private static void CustomDraw(int i, int j, SpriteBatch spriteBatch, TileObjectData data, Texture2D texture, Color color)
 	{
-		var texture = TextureAssets.Tile[Type].Value;
-		var lightOffset = Lighting.LegacyEngine.Mode > 1 && Main.GameZoomTarget == 1 ? Vector2.Zero : Vector2.One * 12;
 		bool flipped = data.Style == 1;
 		var sizeOffset = new Point(flipped ? 1 : 2, 2);
 
@@ -59,10 +63,9 @@ public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem
 				(int x, int y) = (i + frameX - sizeOffset.X, j + frameY - sizeOffset.Y);
 
 				var source = new Rectangle((flipped ? 4 * 18 : 0) + frameX * 18, frameY * 18, 16, (frameY == 4) ? 18 : 16);
-				var drawPos = (new Vector2(x, y) + lightOffset) * 16 - Main.screenPosition;
-				color ??= Lighting.GetColor(x, y);
+				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileExtensions.TileOffset;
 
-				spriteBatch.Draw(texture, drawPos, source, color.Value, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 			}
 		}
 	}
@@ -72,6 +75,12 @@ public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem
 		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
 		var color = ((op[0, 0] == 1) ? Color.White : Color.Red * .7f) * .5f;
 
-		CustomDraw(op.Coordinates.X, op.Coordinates.Y, spriteBatch, data, color);
+		CustomDraw(op.Coordinates.X, op.Coordinates.Y, spriteBatch, data, TextureAssets.Tile[Type].Value, color);
+	}
+
+	public void ModifyTarget(ref int x, ref int y)
+	{
+		while (Main.tile[x, y - 1].TileType == Type)
+			y--;
 	}
 }

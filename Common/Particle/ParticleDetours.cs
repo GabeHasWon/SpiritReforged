@@ -2,43 +2,64 @@
 
 namespace SpiritReforged.Common.Particle;
 
-public static class ParticleDetours
+internal class ParticleDetours : ILoadable
 {
-	public static void Initialize()
+	public void Load(Mod mod)
 	{
-		On_Main.DrawProjectiles += On_Main_DrawProjectiles;
-		On_Main.DrawNPCs += On_Main_DrawNPCs;
-		On_Main.DrawInfernoRings += On_Main_DrawInfernoRings;
+		On_Main.DrawProjectiles += AtProjectile;
+		On_Main.DrawNPCs += AboveNPC;
+		On_Main.DrawInfernoRings += AbovePlayer;
+		On_Main.DoDraw_Tiles_NonSolid += BelowSolid;
+		On_Main.DoDraw_WallsAndBlacks += BelowWall;
 	}
 
-	private static void On_Main_DrawInfernoRings(On_Main.orig_DrawInfernoRings orig, Main self)
+	private static void AbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
 	{
 		orig(self);
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
-		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
-		Main.spriteBatch.RestartToDefault();
+		
+		if (ParticleHandler.Particles.Length != 0) //Avoid restarting the SpriteBatch if there's nothing to draw
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
+			Main.spriteBatch.RestartToDefault();
+		}
 	}
 
-	private static void On_Main_DrawNPCs(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+	private static void AboveNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
 		orig(self, behindTiles);
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveNPC);
 	}
 
-	private static void On_Main_DrawProjectiles(On_Main.orig_DrawProjectiles orig, Main self)
+	private static void AtProjectile(On_Main.orig_DrawProjectiles orig, Main self)
 	{
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.ZoomMatrix);
+		if (ParticleHandler.Particles.Length == 0)
+		{
+			orig(self);
+			return;
+		}
+
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowProjectile);
 		Main.spriteBatch.End();
+
 		orig(self);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveProjectile);
 	}
 
-	public static void Unload()
+	private static void BelowSolid(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
-		On_Main.DrawProjectiles -= On_Main_DrawProjectiles;
-		On_Main.DrawNPCs -= On_Main_DrawNPCs;
-		On_Main.DrawInfernoRings -= On_Main_DrawInfernoRings;
+		orig(self);
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
 	}
+
+	private static void BelowWall(On_Main.orig_DoDraw_WallsAndBlacks orig, Main self)
+	{
+		orig(self);
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
+	}
+
+	public void Unload() { }
 }

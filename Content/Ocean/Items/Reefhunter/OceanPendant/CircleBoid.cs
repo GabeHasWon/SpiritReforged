@@ -2,7 +2,7 @@ using SpiritReforged.Content.Ocean.Boids;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
-internal class CircleBoid(int[] lookup, float scale = 1, float maxFlockSize = 60, float spawnWeight = 1) : Boid(lookup, scale, maxFlockSize, spawnWeight)
+internal class CircleBoid(float maxFlockSize = 60, float spawnWeight = 1, params int[] types) : Boid(maxFlockSize, spawnWeight, types)
 {
 	public Vector2? anchor;
 

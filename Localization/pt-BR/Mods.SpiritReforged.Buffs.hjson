@@ -1,0 +1,139 @@
+EmpoweredSwim: {
+	DisplayName: Nado Potencializado
+	Description: Você se sente muito mais rápido na água
+}
+
+MantarayBuff: {
+	DisplayName: Arraia de Resgate
+	Description: Rápido como as marés!
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: Água-Viva
+	Description: Uma água-viva fofa e saltitante luta por você!
+}
+
+JellyfishPet_Buff: {
+	DisplayName: Água-Viva Amigável
+	Description: Essa água-viva cheia de energia adora te acompanhar!
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: Salto Etéreo
+	Description: Concede temporariamente um salto adicional
+}
+
+FlightPotionBuff: {
+	DisplayName: Voando Alto
+	Description: Aumenta a duração do voo em 25%
+}
+
+BottleMountBuff: {
+	DisplayName: Jangada
+	Description: Enviando um SOS
+}
+
+FairyMinion_Buff: {
+	DisplayName: Fadas
+	Description: Ei! Cuidado!
+}
+
+Impaled: {
+	DisplayName: Empalado
+	Description: Você foi empalado por uma lança. Ai!
+}
+
+KoiTotemBuff: {
+	DisplayName: Totem de Koi
+	Description: Habilidade de pesca aumentada
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: Borboleta Etérea
+	Description: A borboleta etérea luta por você
+}
+
+ToucanMinion_Buff: {
+	DisplayName: Toucano
+	Description: O tucano luta por você
+}
+
+QuenchPotion_Buff: {
+	DisplayName: Refrescado
+	Description: Outras poções duram 25% mais
+}
+
+TumblerPet_Buff: {
+	DisplayName: Tumbleweed Amigável
+	Description: Uma bolota de galhos amiga está te seguindo
+}
+
+Frozen: {
+	DisplayName: Congelado
+	Description: Velocidade de movimento do inimigo reduzida
+}
+
+GildedScarabBuff: {
+	DisplayName: Escudo de Escaravelho
+	Description: Defesa aumentada em {0}
+}
+
+PoolNoodleBubbleBuff: {
+	DisplayName: Buff de Bolhas de Macarrão de Piscina
+	Description: Você encontrou o Codex Secreto do Lore dos Espíritos... Fique ligado para nosso superboss Darksteel, a Estrela Caída!
+}
+
+ExplorerSpeed: {
+	DisplayName: Velocidade do Explorador
+	Description: Sua velocidade está muito melhorada
+}
+
+RemedyPotionBuff: {
+	DisplayName: Cura
+	Description: Imunidade a alguns efeitos prejudiciais
+}
+
+OpenWounds: {
+	DisplayName: Feridas Abertas
+	Description: Suscetível a sangramento
+}
+
+ExplorerPot: {
+	// DisplayName: Explorer's Thrill
+	// Description: You're eager for more!
+}
+
+ExplorerMine: {
+	// DisplayName: Explorer's Vigor
+	// Description: Keep digging!
+}
+
+JinxMark: {
+	// DisplayName: Jinx Mark
+	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
+
+FlaskOfFrost_Buff: {
+	// DisplayName: Weapon Imbue: Freezing
+	// Description: Melee and Whip attacks freeze enemies
+}
+
+Slowed: {
+	// DisplayName: Slowed
+	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	// DisplayName: Toucane
+	// Description: The toucane fights for you?
+}
+
+TinyDragonPet_Buff: {
+	// DisplayName: Tiny Dragon
+	// Description: A little dragon is following you
+}
+
+EnlilBuff: {
+	// DisplayName: Enlil's Aid
+	// Description: Increased vertical mobility
+}

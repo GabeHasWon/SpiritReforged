@@ -1,4 +1,3 @@
-using System.Linq;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Ocean.Boids;
@@ -8,27 +7,30 @@ public class BoidManager : ModSystem
 	/// <summary> int corresponds to the current world seed. </summary>
 	internal static Action<int> OnAddBoids;
 
-	private const int normalFish = 12;
-	private const int specialFish = 2;
+	/// <summary> The hash of potential boids for this world.<br/>
+	/// Boids can have objects dynamically added and removed within a world, but the initial data always remains. </summary>
+	internal static HashSet<Boid> Boids = [];
 
-	public static Asset<Texture2D>[] FishTextures { get; private set; }
-	internal static List<Boid> boids = [];
+	/// <summary> Stores boid fish textures by load index (used as identifier 'type'). </summary>
+	internal static readonly Dictionary<int, Asset<Texture2D>> Types = [];
 
 	public override void Load()
 	{
+		const int numTypes = 14;
+
 		if (Main.dedServ)
 			return;
 
-		FishTextures = new Asset<Texture2D>[normalFish + specialFish];
-		for (int i = 0; i < FishTextures.Length; i++)
-			FishTextures[i] = ModContent.Request<Texture2D>("SpiritReforged/Content/Ocean/Boids/Textures/fish_" + i);
+		for (int i = 0; i < numTypes; i++)
+			Types.Add(i, ModContent.Request<Texture2D>("SpiritReforged/Content/Ocean/Boids/Textures/fish_" + i));
 
-		On_Main.DrawWoF += (On_Main.orig_DrawWoF orig, Main self) =>
+		On_Main.DrawWoF += static (On_Main.orig_DrawWoF orig, Main self) =>
 		{
 			if (!Main.gamePaused) //Update here because boids are largely visual
 				Update();
 
 			Draw(Main.spriteBatch);
+			orig(self);
 		};
 	}
 
@@ -36,80 +38,78 @@ public class BoidManager : ModSystem
 
 	public override void OnWorldLoad()
 	{
-		int seed = SpiritReforgedSystem.GetWorldSeed();
+		int seed = Main.ActiveWorldFileData.Seed;
 		int boidCount = 8 + seed % 5; //The number of unique boids in this world
 
 		for (int i = 0; i < boidCount; i++)
 		{
 			var boid = new WeightedRandom<Boid>();
-			boid.Add(new Boid(Lookup(seed + i), 1f, Main.rand.Next(5, 20)), 1);
-			boid.Add(new Boid(Lookup(seed + i), 1f, Main.rand.Next(30, 60)), .2f);
-			boid.Add(new Boid(12, .8f, Main.rand.Next(30, 60)), .14f); //Shrimp
-			boid.Add(new Boid(13, .525f, 60), .19f); //Sardine
+			int[] selection = SelectTypes(seed + i * 300f);
 
-			boids.Add((Boid)boid);
+			boid.Add(new Boid(Main.rand.Next(5, 20), 1, selection), 1);
+			boid.Add(new Boid(Main.rand.Next(30, 60), .5f, selection), .2f);
+			boid.Add(new Boid(Main.rand.Next(30, 60), .8f, 12), .14f); //Shrimp
+			boid.Add(new Boid(60, .525f, 13), .19f); //Sardine
+
+			Boids.Add((Boid)boid);
 		}
 
 		OnAddBoids?.Invoke(seed);
 	}
 
-	public static int[] Lookup(int seed)
+	/// <summary> Used to select pseudo random types for a boid. </summary>
+	internal static int[] SelectTypes(float seed)
 	{
-		int[] lookups = new int[(int)(Math.Abs(Math.Sin(seed)) * 10f) % 4 + 1];
-		for (int j = 0; j < lookups.Length; ++j)
+		int count = (int)(seed / 200f % 4f) + 1;
+		List<int> result = [];
+
+		for (int j = 0; j < count; ++j)
 		{
-			int toAdd = (int)(Math.Abs(Math.Sin(seed + j)) * 10f) % normalFish;
-
-			while (lookups.Contains(toAdd))
-				toAdd = ++toAdd % normalFish; //Avoid duplicates
-
-			lookups[j] = toAdd;
+			int toAdd = (int)((seed / 220f + j * 15.5f) / 8f) % 12;
+			result.Add(toAdd);
 		}
 
-		return lookups;
+		return [.. result];
 	}
 
-	public override void OnWorldUnload() => boids.Clear();
+	public override void OnWorldUnload() => Boids.Clear();
 
 	public static void Draw(SpriteBatch spriteBatch)
 	{
-		foreach (Boid fishflock in boids)
+		foreach (Boid fishflock in Boids)
 			fishflock.Draw(spriteBatch);
 	}
 
 	public static void Update()
 	{
-		foreach (Boid fishflock in boids)
+		foreach (Boid fishflock in Boids)
 			fishflock.Update();
 
-		Player player = Main.LocalPlayer;
-		const int spawnRate = 40;
+		bool nearLure = Main.LocalPlayer.GetModPlayer<OceanPlayer>().nearLure;
+		int spawnRate = nearLure ? 28 : 34;
 
-		if (player.ZoneBeach && Main.GameUpdateCount % spawnRate == spawnRate - 1 || Main.GameUpdateCount % spawnRate > spawnRate - 3 && player.GetModPlayer<OceanPlayer>().nearLure)
+		if ((Main.LocalPlayer.ZoneBeach || nearLure) && Main.GameUpdateCount % spawnRate == 0)
 		{
 			var weightedBoid = new WeightedRandom<Boid>();
-			for (int i = 0; i < boids.Count; i++)
+
+			foreach (var registered in Boids)
 			{
-				if (boids[i].spawnWeight > 0)
-					weightedBoid.Add(boids[i], boids[i].spawnWeight);
+				float w = registered.spawnWeight;
+
+				if (w > 0)
+					weightedBoid.Add(registered, w);
 			}
 
 			const int fluff = 1000;
-			var spawnPos = player.Center + new Vector2((Main.screenWidth / 2 + fluff) * Main.rand.NextFloat(-1f, 1f), 
-				(Main.screenHeight / 2 + fluff) * Main.rand.NextFloat(-1f, 1f));
+			var spawnPos = Main.LocalPlayer.Center + new Vector2((Main.screenWidth / 2 + fluff) * Main.rand.NextFloat(-1f, 1f), (Main.screenHeight / 2 + fluff) * Main.rand.NextFloat(-1f, 1f));
 
-			//Don't spawn on-screen
-			if (new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight).Contains(spawnPos.ToPoint()))
+			//Don't spawn on-screen unless spawned by a lure
+			if (!nearLure && new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight).Contains(spawnPos.ToPoint()))
 				return;
 
 			var tilePos = spawnPos.ToTileCoordinates();
-			if (WorldGen.InWorld(tilePos.X, tilePos.Y, 10))
-			{
-				var tile = Framing.GetTileSafely(tilePos);
-
-				if (tile.LiquidAmount > 100)
-					((Boid)weightedBoid).Populate(spawnPos, Main.rand.Next(20, 30), 50f);
-			}
+			if (WorldGen.InWorld(tilePos.X, tilePos.Y, 10) && Framing.GetTileSafely(tilePos).LiquidAmount == 255)
+				((Boid)weightedBoid).Populate(spawnPos, Main.rand.Next(20, 30), 50f);
 		}
 	}
 }

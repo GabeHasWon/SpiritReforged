@@ -1,17 +1,25 @@
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 
-public class SafariZombie : ReplaceNPC
+public class SafariZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
+	private float _frameCounter;
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
 	}
 
 	public override void SetDefaults()
@@ -30,7 +38,10 @@ public class SafariZombie : ReplaceNPC
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
 		BannerItem = Item.BannerToItem(Banner);
+		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "NightTime");
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
@@ -42,26 +53,26 @@ public class SafariZombie : ReplaceNPC
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("SafariZombie" + i).Type, 1f);
 	}
 
-	float frameCounter;
-
 	public override void FindFrame(int frameHeight)
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 300);
+		var rule = ItemDropRule.Common(ModContent.ItemType<HuntingRifle>(), 100);
+		rule.OnSuccess(ItemDropRule.Common(ItemID.MusketBall, 1, 25, 45), hideLootReport: true);
+		npcLoot.Add(rule);
+
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
-		npcLoot.AddOneFromOptions(75, ModContent.ItemType<Items.Vanity.SafariHat>(), 
-			ModContent.ItemType<Items.Vanity.SafariVest>(), ModContent.ItemType<Items.Vanity.SafariShorts>());
+		npcLoot.AddOneFromOptions(75, ModContent.ItemType<Items.Vanity.SafariHat>(), ModContent.ItemType<Items.Vanity.SafariVest>(), ModContent.ItemType<Items.Vanity.SafariShorts>());
 	}
 
-	public override bool CanSpawn(Player player) => player.InModBiome<Biome.SavannaBiome>();
+	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();
 }

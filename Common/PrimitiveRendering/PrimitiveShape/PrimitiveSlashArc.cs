@@ -48,8 +48,8 @@ public class PrimitiveSlashArc : IPrimitiveShape
 			progress *= SlashProgress;
 
 			float angle = MathHelper.Lerp(AngleRange.X, AngleRange.Y, progress);
-			float distance = MathHelper.Lerp(MinDistance, MaxDistance, DistanceEase.Ease(EaseFunction.EaseSine.Ease(progress)));
-			float width = MathHelper.Lerp(Width, MaxWidth, DistanceEase.Ease(EaseFunction.EaseSine.Ease(progress)));
+			float distance = MathHelper.Lerp(MinDistance, MaxDistance, DistanceEase.Ease(progress));
+			float width = MathHelper.Lerp(Width, MaxWidth, DistanceEase.Ease(progress));
 
 			Vector2 minDistPoint = BasePosition + DirectionUnit.RotatedBy(angle) * (distance - width / 2);
 			Vector2 maxDistPoint = BasePosition + DirectionUnit.RotatedBy(angle) * (distance + width / 2);

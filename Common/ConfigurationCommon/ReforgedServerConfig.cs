@@ -9,4 +9,8 @@ class ReforgedServerConfig : ModConfig
 
 	[DefaultValue(true)]
 	public bool VentCritters { get; set; }
+
+	[Range(0, 400)]
+	[DefaultValue(12)]
+	public int MaxFloatingItemCount { get; set; }
 }

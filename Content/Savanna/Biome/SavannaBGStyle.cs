@@ -1,6 +1,8 @@
+using SpiritReforged.Common.Visuals;
+
 namespace SpiritReforged.Content.Savanna.Biome;
 
-public class SavannaBGStyle : ModSurfaceBackgroundStyle
+public class SavannaBGStyle : ModSurfaceBackgroundStyle, IBGStyle
 {
 	public override int ChooseMiddleTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SavannaBackgroundMid");
 	public override int ChooseFarTexture() => BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Textures/Backgrounds/SavannaBackgroundFar");
@@ -26,5 +28,11 @@ public class SavannaBGStyle : ModSurfaceBackgroundStyle
 				if (fades[i] < 0f)
 					fades[i] = 0f;
 			}
+	}
+
+	public void ForceBackgroundStyle(ref int style)
+	{
+		if (style == 2 && Main.LocalPlayer.InModBiome<SavannaBiome>()) //Forcefully override purity desert
+			style = ModContent.GetInstance<SavannaBGStyle>().Slot;
 	}
 }

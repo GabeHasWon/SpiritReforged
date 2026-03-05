@@ -1,7 +1,10 @@
-﻿using SpiritReforged.Common.WorldGeneration;
+﻿using SpiritReforged.Common.WallCommon;
+using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Walls;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.WorldBuilding;
 
@@ -9,14 +12,20 @@ namespace SpiritReforged.Content.Savanna.Ecotone;
 
 internal static class BaobabGen
 {
-	public static void GenerateBaobab(int x, int y)
+	/// <summary> Generates a baobab tree at the given tile coordinates. </summary>
+	/// <param name="i"> The X tile coordinate. </param>
+	/// <param name="j"> The Y tile coordinate. </param>
+	/// <returns> The area of the BODY of the baobab tree. </returns>
+	public static Rectangle GenerateBaobab(int i, int j)
 	{
 		const int width = 16;
 		int height = WorldGen.genRand.Next(27, 31);
 
-		CreateBase(x, y, width, height);
-		CreateRoots(x, y, width);
-		CreateBranches(x, y - height + 4);
+		CreateBase(i, j, width, height);
+		CreateRoots(i, j, width);
+		CreateBranches(i, j - height + 4);
+
+		return new Rectangle(i, j, width, height);
 	}
 
 	private static void CreateBase(int x, int y, int width, int height)
@@ -28,17 +37,28 @@ internal static class BaobabGen
 
 		var openingSize = new Point(4, 8);
 		var opening = new Rectangle(x - openingSize.X / 2, y - openingSize.Y - 1, openingSize.X, openingSize.Y);
+		ShapeData data = new();
+
+		ushort baobabWall = (ushort)AutoloadedWallExtensions.UnsafeWallType<LivingBaobabWall>();
 
 		WorldUtils.Gen(new Point(x - width / 2, y - preCurveHeight), new Shapes.Rectangle(width, preCurveHeight), 
-			Actions.Chain(new Actions.SetTile((ushort)ModContent.TileType<LivingBaobab>())));
+			Actions.Chain(new Actions.SetTile((ushort)ModContent.TileType<LivingBaobab>()).Output(data), new Actions.PlaceWall(baobabWall))); //Rectangle body
+
+		WorldUtils.Gen(new Point(x - width / 2, y - preCurveHeight), new ModShapes.InnerOutline(data, false), Actions.Chain(new Modifiers.IsTouchingAir(), 
+			new Actions.ClearWall()));
 
 		WorldUtils.Gen(new Point(x - openingSize.X / 2, y - openingSize.Y - 1), new Shapes.Rectangle(openingSize.X, openingSize.Y), 
-			Actions.Chain(new Actions.ClearTile(), new Actions.PlaceWall((ushort)ModContent.WallType<LivingBaobabWall>())));
+			Actions.Chain(new Actions.ClearTile(), new Modifiers.Offset(0, 2), new Actions.SetLiquid())); //Opening
 
 		for (int i = 0; i < 2; i++) //Curved top
-			WorldUtils.Gen(new Point(x - 1 + i, y - preCurveHeight - 1), new Shapes.Mound(width / 2, curveHeight), Actions.Chain(new Actions.SetTile((ushort)ModContent.TileType<LivingBaobab>())));
+			WorldUtils.Gen(new Point(x - 1 + i, y - preCurveHeight - 1), new Shapes.Mound(width / 2, curveHeight),
+				Actions.Chain(new Actions.SetTile((ushort)ModContent.TileType<LivingBaobab>()), new Modifiers.Offset(0, 1), new Actions.PlaceWall(baobabWall), 
+				new Modifiers.IsTouchingAir(), new Actions.ClearWall()));
 
 		WorldGen.PlaceTile(opening.Center.X - 1, opening.Bottom - 1, ModContent.TileType<BaobabPod>(), true);
+
+		WorldUtils.Gen(new Point(x - width / 2, y), new Shapes.Rectangle(width, 3),
+			Actions.Chain(new Modifiers.IsNotSolid(), new Actions.SetTile((ushort)ModContent.TileType<SavannaDirt>()))); //Dirt packing
 	}
 
 	private static void CreateRoots(int x, int y, int width)
@@ -70,16 +90,25 @@ internal static class BaobabGen
 			int halfWidth = WorldGen.genRand.Next(7, 13);
 			var last = points.Last().ToPoint();
 
-			WorldUtils.Gen(last, new Shapes.Mound(halfWidth, WorldGen.genRand.Next(4, 6)),
-				Actions.Chain(new Modifiers.SkipTiles((ushort)ModContent.TileType<LivingBaobab>()), new Modifiers.Blotches(2, 0.1), 
-				new Actions.SetTile((ushort)ModContent.TileType<LivingBaobabLeaf>()).Output(data), new Actions.PlaceWall((ushort)ModContent.WallType<LivingBaobabLeafWall>()))); //Add a canopy
+			ushort baobabLeafWall = (ushort)AutoloadedWallExtensions.UnsafeWallType<LivingBaobabLeafWall>();
 
-			WorldUtils.Gen(points.Last().ToPoint(), new ModShapes.InnerOutline(data, false), Actions.Chain(new Actions.ClearWall()));
+			WorldUtils.Gen(last, new Shapes.Mound(halfWidth, WorldGen.genRand.Next(4, 6)), Actions.Chain(new Modifiers.SkipTiles((ushort)ModContent.TileType<LivingBaobab>()),
+				new Modifiers.Conditions(new NotInCorruptArea()), new Modifiers.Blotches(2, 0.1), 
+				new Actions.SetTile((ushort)ModContent.TileType<LivingBaobabLeaf>()).Output(data), 
+				new Actions.PlaceWall(baobabLeafWall))); //Add a canopy
 
-			for (int b = last.X - halfWidth; b < last.X + halfWidth; b++) //Randomly generate baobab fruit below canopies
+			WorldUtils.Gen(points.Last().ToPoint(), new ModShapes.InnerOutline(data, true), Actions.Chain(new Actions.ClearWall()));
+			WorldUtils.Gen(points.Last().ToPoint(), new ModShapes.InnerOutline(data, false), Actions.Chain(new Modifiers.Dither(), new Actions.Smooth()));
+
+			if (i is 0 or (branches - 1))
 			{
-				if (WorldGen.genRand.NextBool(4))
-					WorldGen.PlaceObject(b, last.Y + 1, ModContent.TileType<Items.BaobabFruit.BaobabFruitTile>(), true, WorldGen.genRand.Next(2));
+				NotInCorruptArea notCorr = new();
+
+				for (int b = last.X - halfWidth; b < last.X + halfWidth; b++) //Randomly generate baobab fruit below canopies
+				{
+					if (WorldGen.genRand.NextBool(4) && notCorr.IsValid(b, last.Y + 1))
+						HangingBaobabFruit.GrowVine(b, last.Y + 1, WorldGen.genRand.Next(2, 5));
+				}
 			}
 		}
 
@@ -125,4 +154,9 @@ internal static class BaobabGen
 				WorldGen.PlaceTile(x, y, type);
 			}
 	}
+}
+
+public class NotInCorruptArea : GenCondition
+{
+	protected override bool CheckValidity(int x, int y) => !EcotoneSurfaceMapping.CorruptAreas.Values.Any(v => v.ContainsKey(new Point16(x, y)));
 }

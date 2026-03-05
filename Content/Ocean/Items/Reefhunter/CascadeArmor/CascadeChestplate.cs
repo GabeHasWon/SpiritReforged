@@ -3,20 +3,16 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter.CascadeArmor;
 [AutoloadEquip(EquipType.Body)]
 public class CascadeChestplate : ModItem
 {
+	internal static int Slot { get; private set; }
+
+	public override void SetStaticDefaults() => Slot = EquipLoader.GetEquipSlot(Mod, nameof(CascadeChestplate), EquipType.Body);
+
 	public override void SetDefaults()
 	{
 		Item.width = 38;
 		Item.height = 26;
-		Item.value = 5600;
+		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
 		Item.defense = 4;
-	}
-
-	public override void AddRecipes()
-	{
-		Recipe recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<MineralSlag>(), 14);
-		recipe.AddTile(TileID.Anvils);
-		recipe.Register();
 	}
 }

@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
@@ -6,15 +7,8 @@ public class DrywoodPlatform : ModTile, IAutoloadTileItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
-		item.CreateRecipe(2)
-			.AddIngredient(ModContent.ItemType<Items.Drywood.Drywood>())
-			.Register();
-
-		//Allow platform items to be crafted back into base materials
-		Recipe.Create(ModContent.ItemType<Items.Drywood.Drywood>())
-			.AddIngredient(item.Type, 2)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<Drywood>()).Register();
+		Recipe.Create(AutoContent.ItemType<Drywood>()).AddIngredient(item.Type, 2).Register(); //Allow platform items to be crafted back into base materials
 	}
 
 	public override void SetStaticDefaults()
@@ -44,6 +38,8 @@ public class DrywoodPlatform : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(179, 146, 107));
 		DustType = DustID.WoodFurniture;
 		AdjTiles = [TileID.Platforms];
+
+		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

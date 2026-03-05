@@ -3,6 +3,7 @@
 public class MantarayMount : ModMount
 {
 	private float _frameProgress;
+	private bool _hovering;
 	private const float MaxSpeed = 16.5f;
 
 	public override void SetStaticDefaults()
@@ -22,7 +23,9 @@ public class MantarayMount : ModMount
 		MountData.jumpSpeed = 3f;
 		MountData.swimSpeed = 95f;
 		MountData.blockExtraJumps = true;
-		MountData.totalFrames = 7;
+
+		int total = 13;
+		MountData.totalFrames = total;
 
 		int[] yOffsets = new int[MountData.totalFrames];
 		for (int index = 0; index < yOffsets.Length; ++index)
@@ -33,23 +36,23 @@ public class MantarayMount : ModMount
 		MountData.bodyFrame = 3;
 		MountData.yOffset = 20;
 		MountData.playerHeadOffset = 31;
-		MountData.standingFrameCount = 7;
+		MountData.standingFrameCount = total;
 		MountData.standingFrameDelay = 4;
 		MountData.standingFrameStart = 0;
-		MountData.runningFrameCount = 7;
+		MountData.runningFrameCount = total;
 		MountData.runningFrameDelay = 4;
 		MountData.runningFrameStart = 0;
-		MountData.flyingFrameCount = 7;
+		MountData.flyingFrameCount = total;
 		MountData.flyingFrameDelay = 4;
 		MountData.flyingFrameStart = 0;
-		MountData.inAirFrameCount = 7;
+		MountData.inAirFrameCount = total;
 		MountData.inAirFrameDelay = 4;
 		MountData.inAirFrameStart = 0;
 		MountData.idleFrameCount = 0;
 		MountData.idleFrameDelay = 0;
 		MountData.idleFrameStart = 0;
 		MountData.idleFrameLoop = false;
-		MountData.swimFrameCount = 7;
+		MountData.swimFrameCount = total;
 		MountData.swimFrameDelay = 12;
 		MountData.swimFrameStart = 0;
 
@@ -70,6 +73,8 @@ public class MantarayMount : ModMount
 			(player.direction == Math.Sign(player.velocity.X)) ? 1 : -1;
 		player.fullRotation = player.velocity.Y * 0.05f * player.direction * direction * MountData.jumpHeight / 14f;
 
+		_hovering = false;
+
 		if (!player.wet)
 		{
 			MountData.flightTimeMax = 0;
@@ -82,8 +87,8 @@ public class MantarayMount : ModMount
 			if (player.velocity.Y == 0 && player.oldVelocity.Y == 0) //Grounded check
 				MountData.runSpeed = 0.1f;
 
-			if (player.controlJump)
-				HoverBehaviour(player);
+			if (player.controlJump && HoverBehaviour(player))
+				_hovering = true;
 		}
 		else
 		{
@@ -101,36 +106,32 @@ public class MantarayMount : ModMount
 		player.gills = true;
 	}
 
-	private void HoverBehaviour(Player player)
+	private bool HoverBehaviour(Player player)
 	{
 		const int hoverHeight = 5;
 		var playerPos = new Point((int)(player.Bottom.X / 16), (int)(player.Bottom.Y / 16));
 
 		for (int i = 0; i < hoverHeight; i++)
 		{
-			var tile = Main.tile[playerPos.X, playerPos.Y + i];
-			if (WorldGen.SolidOrSlopedTile(tile) || tile.LiquidAmount > 0)
+			var tile = Framing.GetTileSafely(playerPos.X, playerPos.Y + i);
+			if (tile.LiquidAmount > 0)
 			{
-				player.velocity.Y = MathHelper.Lerp(player.velocity.Y, -5f, .1f); //Hover velocity
-				if (tile.LiquidAmount > 0)
-				{
-					MountData.acceleration = 0.2f;
-					MountData.dashSpeed = 2.5f;
-					MountData.runSpeed = 9f;
-				}
-				else
-				{
-					MountData.acceleration = 0.15f;
-					MountData.dashSpeed = 1f;
-					MountData.runSpeed = 3f;
-				}
+				player.velocity.Y = MathHelper.Lerp(player.velocity.Y, -4f, .1f); //Hover velocity
+
+				MountData.acceleration = 0.2f;
+				MountData.dashSpeed = 2.5f;
+				MountData.runSpeed = 9f;
 
 				break;
 			}
+			else if (WorldGen.SolidOrSlopedTile(tile))
+				return false;
 		}
 
 		if (player.velocity.Y > 0)
 			player.velocity.Y *= .8f; //Reduce gravity
+
+		return true;
 	}
 
 	public override bool UpdateFrame(Player mountedPlayer, int state, Vector2 velocity)
@@ -138,7 +139,11 @@ public class MantarayMount : ModMount
 		//2% of the total frames per tick, up to 6% based on how fast you're moving
 		_frameProgress += 0.02f + Math.Min(velocity.Length() / MaxSpeed, 1) * 0.04f;
 		_frameProgress %= 1;
-		mountedPlayer.mount._frame = (int)(MountData.totalFrames * _frameProgress);
+
+		if (_hovering || mountedPlayer.velocity.Y == 0 || mountedPlayer.velocity.Length() < 4.5f)
+			mountedPlayer.mount._frame = (int)(6 * _frameProgress);
+		else
+			mountedPlayer.mount._frame = (int)(6 + 7 * _frameProgress);
 
 		//Fun fact! If you return false here for god knows what reason the mount isn't able to hover/swim
 		//So the default framecounter is constantly set to 0 amd we return true instead as a bandaid fix

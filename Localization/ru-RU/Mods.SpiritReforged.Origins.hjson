@@ -1,0 +1,53 @@
+Diver: {
+	DisplayName: Водолаз
+	Flavor: После тяжёлых испытаний водолаз готов начать жизнь заново, всё ещё мечтая о неизведанных водах.
+	Description: Начинает с полным набором водолаза, ластами и сокровищем мерфолка.
+}
+
+Botanist: {
+	DisplayName: Ботаник
+	Flavor: Травник, если вы позволите. Мастерски собирает и использует растения.
+	Description: Начинает с комплектом ботаника, серпом, несколькими мешочками с травами и пугалом.
+}
+
+Recluse: {
+	DisplayName: Отшельник
+	Flavor: Ему проще зарыться глубоко под землю, где его никто не побеспокоит. Да и рыбалка там лучше!
+	Description: Начинает со шляпой рыбака, удочкой из стекловолокна, небольшим количеством наживки и ящиков в подземной рыбацкой коморке.
+}
+
+Hunter: {
+	DisplayName: Охотник
+	Flavor: Первобытная природа — его стихия. Как и звери саванны, он живёт охотой.
+	Description: Начинает с охотничьей винтовкой, небольшим запасом патронов и охотничьим костюмом в саванне.
+}
+
+Hiker: {
+	DisplayName: Путешественник
+	Flavor: Походы — его страсть, и у него есть всё необходимое для приключений.
+	Description: Начинает с 60 факелами, 30 светящимися палочками и 150 верёвками на самом высоком холме.
+}
+
+Caveman: {
+	// DisplayName: Caveman
+	// Flavor: The simple life proves productive. One word sums it up: Ug.
+	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	// DisplayName: Disentombed
+	// Flavor: Three thousand years have passed...my reign will return. I will return.
+	// Description: Spawns with the mummy vanity in the Ziggurat.
+}
+
+Worshipper: {
+	// DisplayName: Worshipper
+	// Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
+	// Description: Spawns with the Sundancer armor set and a Windshear Staff in an underground Oasis.
+}
+
+Purifier: {
+	// DisplayName: Purifier
+	// Flavor: Abhorrent evil beogne; burn at the sting of my purity.
+	// Description: Spawns with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
+}

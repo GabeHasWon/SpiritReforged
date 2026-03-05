@@ -21,14 +21,14 @@ internal static class StructureTools
 	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false)
 	{
 		mod ??= ModContent.GetInstance<SpiritReforgedMod>();
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions(structure, mod, ref dims);
+
+		var dims = StructureHelper.API.Generator.GetStructureDimensions(structure, mod);
 		position = (position.ToVector2() - dims.ToVector2() * origin).ToPoint16();
 
 		if (cullAbove)
 			CullLine(position, dims);
 
-		StructureHelper.Generator.GenerateStructure(structure, position, mod);
+		StructureHelper.API.Generator.GenerateStructure(structure, position, mod);
 		return position;
 	}
 
@@ -51,9 +51,9 @@ internal static class StructureTools
 	/// <param name="structureName">Path to the structure to spawn.</param>
 	/// <param name="invalidBiomes">Invalid places to place the structure.</param>
 	/// <returns>Whether the structure was placed or not.</returns>
-	public static bool SpawnConvertedStructure(Point16 position, Point16 size, string structureName, params QuickConversion.BiomeType[] invalidBiomes)
+	public static bool SpawnConvertedStructure(Point16 position, Point16 size, string structureName, out QuickConversion.BiomeType biome, params QuickConversion.BiomeType[] invalidBiomes)
 	{
-		var biome = QuickConversion.FindConversionBiome(position, size);
+		biome = QuickConversion.FindConversionBiome(position, size);
 
 		if (invalidBiomes.Contains(biome))
 			return false;
@@ -62,5 +62,17 @@ internal static class StructureTools
 		PlaceByOrigin(structureName, position, new(0));
 		QuickConversion.SimpleConvert(conditions, biome, biome != QuickConversion.BiomeType.Purity);
 		return true;
+	}
+
+	internal static void ClearActuators(short x, short y, short width, short height)
+	{
+		for (int i = x; i <= x + width; ++i)
+		{
+			for (int j = y; j <= y + height; j++)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.HasActuator = false;
+			}
+		}
 	}
 }

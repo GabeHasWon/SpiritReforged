@@ -1,21 +1,25 @@
+using RubbleAutoloader;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-public class ButterflyStump : ModTile
+[AutoloadGlowmask("100,100,100,0")]
+public class ButterflyStump : ModTile, IAutoloadRubble
 {
-	private static Asset<Texture2D> glowTexture;
 	private const int FrameHeight = 18 * 4;
 
-	private static int ItemType => ModContent.ItemType<ButterflyStaff>();
+	protected static int ItemType => ModContent.ItemType<ButterflyStaff>();
+	public IAutoloadRubble.RubbleData Data => new(ItemType, IAutoloadRubble.RubbleSize.Large);
+
 	private static bool HasItem(int i, int j) => Framing.GetTileSafely(i, j).TileFrameY < FrameHeight;
 	private static bool TopHalf(int i, int j) => Framing.GetTileSafely(i, j).TileFrameY % FrameHeight < 18 * 2;
-
-	public override void Load() => glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow");
 
 	public override void SetStaticDefaults()
 	{
@@ -49,19 +53,19 @@ public class ButterflyStump : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var system = ModContent.GetInstance<ButterflySystem>();
-		var thisZone = system.butterflyZones.Where(x => x.Contains(new Point(i, j))).FirstOrDefault();
+		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyShrineBiome e && e.Rectangle.Contains(new Point(i, j)));
+		bool removedAny = false;
 
-		if (thisZone != default)
-		{
-			system.butterflyZones.Remove(thisZone); //Remove the zone associated with this stump if it is destroyed
-			NetMessage.SendData(MessageID.WorldData); // and sync it
-		}
+		foreach (var biome in overlap)
+			removedAny |= MicrobiomeSystem.Microbiomes.Remove(biome); //Remove any overlapping microbiomes if it is destroyed
+
+		if (removedAny && Main.netMode == NetmodeID.Server)
+			NetMessage.SendData(MessageID.WorldData); //Sync the changes
 	}
 
 	public override void MouseOver(int i, int j)
 	{
-		if (!HasItem(i, j))
+		if (!HasItem(i, j) || Autoloader.IsRubble(Type))
 			return;
 
 		Player player = Main.LocalPlayer;
@@ -72,7 +76,7 @@ public class ButterflyStump : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		if (HasItem(i, j))
+		if (HasItem(i, j) && !Autoloader.IsRubble(Type))
 		{
 			TileExtensions.GetTopLeft(ref i, ref j);
 
@@ -83,16 +87,33 @@ public class ButterflyStump : ModTile
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendTileSquare(-1, i, j, 2, 4);
 
-			int item = Item.NewItem(null, new Vector2(i + 1, j) * 16, ItemType);
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendData(MessageID.SyncItem, number: item);
-
+			ItemMethods.NewItemSynced(new EntitySource_TileBreak(i, j), ItemType, new Vector2(i, j).ToWorldCoordinates(16, 0), true);
 			NPC.NewNPCDirect(null, (i + 1) * 16, (j + 1) * 16, ModContent.NPCType<ButterflyCritter>()).netUpdate = true;
 
 			return true;
 		}
 
 		return false;
+	}
+
+	public override void RandomUpdate(int i, int j) //Randomly generate butterflies
+	{
+		const int tries = 20;
+
+		if (!Autoloader.IsRubble(Type) && WorldGen.PlayerLOS(i, j) && NPC.CountNPCS(ModContent.NPCType<ButterflyCritter>()) < 5)
+		{
+			var world = new Vector2(i, j).ToWorldCoordinates();
+			Vector2 pos = world;
+
+			for (int t = 0; t < tries; t++)
+			{
+				pos = world + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16 * 10);
+				if (!Collision.SolidCollision(pos, 8, 8) && Collision.CanHitLine(pos, 0, 0, world, 0, 0))
+					break;
+			}
+
+			NPC.NewNPCDirect(null, pos, ModContent.NPCType<ButterflyCritter>());
+		}
 	}
 
 	public override void AnimateTile(ref int frame, ref int frameCounter)
@@ -119,25 +140,5 @@ public class ButterflyStump : ModTile
 
 		var color = new Vector3(255, 125, 255) * .001f;
 		(r, g, b) = (color.X, color.Y, color.Z);
-	}
-
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-	{
-		var tile = Main.tile[i, j];
-		if (!TileDrawing.IsVisible(tile))
-			return;
-
-		if (HasItem(i, j))
-		{
-			var zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange, Main.offScreenRange);
-			int addFrameX = 0, addFrameY = 0;
-
-			TileLoader.SetAnimationFrame(Type, i, j, ref addFrameX, ref addFrameY);
-
-			var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + addFrameY, 16, 16);
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + zero + new Vector2(0, 2);
-
-			spriteBatch.Draw(glowTexture.Value, position, source, (Color.White with { A = 0 }) * .2f, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		}
 	}
 }

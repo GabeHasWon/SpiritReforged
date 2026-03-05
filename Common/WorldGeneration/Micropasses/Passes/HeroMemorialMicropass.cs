@@ -1,10 +1,9 @@
-﻿using SpiritReforged.Common.WorldGeneration.Micropasses;
-using SpiritReforged.Content.Forest.Misc;
+﻿using SpiritReforged.Content.Forest.Misc;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Common.WorldGeneration.Micropasses;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class HeroMemorialMicropass : Micropass
 {

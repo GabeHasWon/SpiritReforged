@@ -1,16 +1,16 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.Visuals;
+using System.IO;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Ocean.Items.Blunderbuss;
 
 internal class BlunderbussProjectile : GlobalProjectile
 {
-	private static readonly Dictionary<Texture2D, Color> colorCache = [];
-
 	public const int timeLeftMax = 25;
 	public bool firedFromBlunderbuss;
 
 	public override bool InstancePerEntity => true;
-	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => lateInstantiation && !entity.arrow;
+	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => lateInstantiation && entity.CountsAsClass(DamageClass.Ranged) && !entity.arrow;
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
 	{
@@ -30,7 +30,8 @@ internal class BlunderbussProjectile : GlobalProjectile
 			var texture = TextureAssets.Projectile[873].Value;
 
 			float lerp = 1f - i / (float)(trailLength - 1);
-			var color = (Color.Lerp(GetBrightestColor(defaultTexture).MultiplyRGBA(Color.Black * .5f), GetBrightestColor(defaultTexture), lerp) with { A = 0 }) * lerp;
+			var brightest = TextureColorCache.GetBrightestColor(defaultTexture);
+			var color = (Color.Lerp(brightest.MultiplyRGBA(Color.Black * .5f), brightest, lerp) with { A = 0 }) * lerp;
 			var position = projectile.Center - Main.screenPosition - projectile.velocity * i * (1f - time);
 			var scale = new Vector2(time, 1f) * projectile.scale;
 
@@ -55,15 +56,22 @@ internal class BlunderbussProjectile : GlobalProjectile
 		return timeLeft > 0; //prevent on-kill effects (such as SoundID.Dig) when visibly faded out
 	}
 
-	private static Color GetBrightestColor(Texture2D texture)
+	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		if (colorCache.TryGetValue(texture, out Color value))
-			return value;
+		binaryWriter.Write(firedFromBlunderbuss);
 
-		var data = new Color[texture.Width * texture.Height];
-		texture.GetData(data);
-		var brightest = data.OrderBy(x => x.ToVector3().Length()).FirstOrDefault();
+		if (firedFromBlunderbuss) //Scale isn't synced automatically
+			binaryWriter.Write(projectile.scale);
+	}
 
-		return (brightest == default) ? Color.Goldenrod : brightest;
+	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+	{
+		firedFromBlunderbuss = binaryReader.ReadBoolean();
+
+		if (firedFromBlunderbuss)
+		{
+			projectile.scale = binaryReader.ReadSingle();
+			projectile.timeLeft = Math.Min(projectile.timeLeft, timeLeftMax); //We don't need to write timeLeft because it's constant
+		}
 	}
 }

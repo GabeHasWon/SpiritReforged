@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.ItemCommon;
+using Terraria.DataStructures;
 using Terraria.UI;
 
 namespace SpiritReforged.Common.Visuals.Glowmasks;
@@ -10,11 +11,7 @@ internal class GlowmaskItem : GlobalItem
 	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 	{
 		if (ItemIdToGlowmask.TryGetValue(item.type, out var glow) && glow.DrawAutomatically)
-		{
-			Vector2 pos = item.Center - Main.screenPosition;
-			Main.GetItemDrawFrame(item.type, out _, out Rectangle frame);
-			Main.EntitySpriteDraw(glow.Glowmask.Value, pos, frame, glow.GetDrawColor(item), 0f, frame.Size() / 2f, scale, SpriteEffects.None, 0);
-		}
+			item.DrawInWorld(glow.GetDrawColor(item), rotation, scale, glow.Glowmask.Value);
 	}
 
 	/// <summary>
@@ -22,7 +19,7 @@ internal class GlowmaskItem : GlobalItem
 	/// This draws the glowmask of the held item, assuming the held item is in <see cref="ItemIdToGlowmask"/>.<br/>
 	/// This should account for all item types and styles; just note it's not 100% tested.
 	/// </summary>
-	internal class GlowmaskItemLayer : PlayerDrawLayer
+	private class GlowmaskItemLayer : PlayerDrawLayer
 	{
 		public override Position GetDefaultPosition() => new Multiple()
 		{

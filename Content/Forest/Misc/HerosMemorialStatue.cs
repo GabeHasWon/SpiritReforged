@@ -11,6 +11,14 @@ public class HerosMemorialStatue : ModTile, IAutoloadTileItem
 		item.Item.Size = new Vector2(30, 48);
 	}
 
+	void IAutoloadTileItem.AddItemRecipes(ModItem item)
+	{
+		item.CreateRecipe()
+			.AddIngredient(ItemID.StoneBlock, 50)
+			.AddTile(TileID.HeavyWorkBench)
+			.Register();
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;

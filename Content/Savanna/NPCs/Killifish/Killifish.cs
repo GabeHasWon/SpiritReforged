@@ -1,4 +1,5 @@
-using SpiritReforged.Content.Vanilla.Items.Food;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -6,7 +7,6 @@ using Terraria.GameContent.Bestiary;
 namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 [AutoloadCritter]
-[AutoloadBanner]
 public class Killifish : ModNPC
 {
 	private ref float YMovement => ref NPC.ai[0]; // Y Movement (adapted from vanilla)
@@ -18,14 +18,21 @@ public class Killifish : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		CreateItemDefaults();
+
 		Main.npcFrameCount[Type] = 9;
 		Main.npcCatchable[Type] = true;
+
 		NPCID.Sets.CountsAsCritter[Type] = true;
+		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
+
+	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 3, 29));
 
 	public override void SetDefaults()
 	{
-		NPC.width = 46;
+		NPC.width = 28;
 		NPC.height = 28;
 		NPC.damage = 0;
 		NPC.defense = 0;
@@ -39,13 +46,10 @@ public class Killifish : ModNPC
 		NPC.dontCountMe = true;
 		NPC.friendly = true;
 		NPC.dontTakeDamage = false;
+		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
 
-	public override void SetBestiary(BestiaryDatabase dataNPC, BestiaryEntry bestiaryEntry)
-	{
-		bestiaryEntry.UIInfoProvider = new CritterUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type]);
-		bestiaryEntry.AddInfo(this, "Ocean");
-	}
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 
 	public override bool? CanBeHitByItem(Player player, Item item) => true;
 	public override bool? CanBeHitByProjectile(Projectile projectile) => true;
@@ -53,7 +57,7 @@ public class Killifish : ModNPC
 	public override void OnSpawn(IEntitySource source) //Set non-deterministic features on server then sync
 	{
 		NPC.scale = Main.rand.NextFloat(.7f, 1f);
-		pickedType = Main.rand.Next(0, 2);
+		pickedType = Main.rand.Next(2);
 		NPC.netUpdate = true;
 	}
 
@@ -319,5 +323,5 @@ public class Killifish : ModNPC
 		}
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<RawFish>(3);
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.Water ? (spawnInfo.PlayerInTown ? 0.75f : 0.18f) : 0f;
 }

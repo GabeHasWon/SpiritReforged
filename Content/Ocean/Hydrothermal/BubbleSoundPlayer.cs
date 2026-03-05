@@ -2,14 +2,15 @@
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal;
 
-internal class BubbleSoundPlayer : ModPlayer
+internal class BubbleSoundPlayer : ModSystem
 {
-	private readonly SoundStyle sound = new("SpiritReforged/Assets/SFX/Ambient/Bubbling") { SoundLimitBehavior = SoundLimitBehavior.IgnoreNew, IsLooped = true };
-	private bool stopped;
+	private static readonly SoundStyle sound = new("SpiritReforged/Assets/SFX/Ambient/Bubbling") { SoundLimitBehavior = SoundLimitBehavior.IgnoreNew, PlayOnlyIfFocused = true, IsLooped = true };
+	private static bool stopped;
 
-	public override void PostUpdateEquips()
+	public override void PostUpdatePlayers()
 	{
-		if (Collision.WetCollision(Main.LocalPlayer.position, Main.LocalPlayer.width, Main.LocalPlayer.height)) //Ambient sound logic
+		var player = Main.LocalPlayer;
+		if (player.wet && Collision.WetCollision(player.position, player.width, player.height)) //Ambient sound logic
 		{
 			if (stopped)
 			{
@@ -26,14 +27,23 @@ internal class BubbleSoundPlayer : ModPlayer
 
 	public static void StartSound(Vector2 origin)
 	{
-		if (Main.LocalPlayer.TryGetModPlayer(out BubbleSoundPlayer asp) && !asp.stopped)
+		const int soundDistance = 250;
+
+		if (!stopped)
 		{
-			SoundEngine.PlaySound(asp.sound, origin);
+			SoundEngine.PlaySound(sound, origin);
+			var activeSound = SoundEngine.FindActiveSound(in sound);
 
-			var activeSound = SoundEngine.FindActiveSound(in asp.sound);
+			if (activeSound != null && activeSound.Position.HasValue)
+			{
+				var player = Main.LocalPlayer;
+				float volume = Math.Clamp(1f - player.Distance(activeSound.Position.Value) / soundDistance, 0, 1);
 
-			if (activeSound != null && activeSound.Position.HasValue && Main.LocalPlayer.Distance(activeSound.Position.Value) > Main.LocalPlayer.Distance(origin))
-				activeSound.Position = origin; //Move the sound to the closest vent
+				if (player.Distance(activeSound.Position.Value) > player.Distance(origin))
+					activeSound.Position = origin; //Move the sound to the closest vent
+
+				activeSound.Volume = volume; //Adjust volume based on distance
+			}
 		}
 	}
 }

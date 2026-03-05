@@ -1,5 +1,6 @@
 ﻿namespace SpiritReforged.Common.TileCommon.DrawPreviewHook;
 
+[Obsolete("Use PreDrawPlacementPreview instead")]
 public class DrawPreviewHook : ILoadable
 {
 	public static void ForceDrawPreview()
@@ -12,7 +13,7 @@ public class DrawPreviewHook : ILoadable
 
 	public void Load(Mod mod) => On_TileObject.DrawPreview += ModifyDrawPreview;
 
-	private void ModifyDrawPreview(On_TileObject.orig_DrawPreview orig, SpriteBatch sb, Terraria.DataStructures.TileObjectPreviewData op, Vector2 position)
+	private static void ModifyDrawPreview(On_TileObject.orig_DrawPreview orig, SpriteBatch sb, Terraria.DataStructures.TileObjectPreviewData op, Vector2 position)
 	{
 		if (TileLoader.GetTile(op.Type) is IDrawPreview idp)
 			idp.DrawPreview(sb, op, position); //Skips orig

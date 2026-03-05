@@ -1,5 +1,7 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Savanna.Biome;
-using SpiritReforged.Content.Savanna.DustStorm;
+using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Sparrow;
@@ -7,7 +9,14 @@ namespace SpiritReforged.Content.Savanna.NPCs.Sparrow;
 [AutoloadCritter]
 public class Sparrow : ModNPC
 {
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 5;
+	public override void SetStaticDefaults()
+	{
+		ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(silver: 5));
+
+		Main.npcFrameCount[Type] = 5;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+		Recipes.AddToGroup(RecipeGroupID.Birds, this.AutoItemType());
+	}
 
 	public override void SetDefaults()
 	{
@@ -26,5 +35,14 @@ public class Sparrow : ModNPC
 
 		if (NPC.life <= 0 && !Main.dedServ)
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("SparrowGore").Type, 1f);
+	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		if (spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.SpawnTileType == ModContent.TileType<SavannaGrass>() && 
+			!spawnInfo.Player.GetModPlayer<DustStorm.DustStormPlayer>().ZoneDustStorm && !spawnInfo.Water && Main.dayTime && !spawnInfo.Invasion)
+			return .15f;
+
+		return 0;
 	}
 }

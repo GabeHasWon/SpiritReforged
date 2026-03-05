@@ -26,10 +26,7 @@ public abstract class AutoloadedSky : CustomSky, ILoadable
 		LoadedSkies.Add(key, new Func<Player, bool>(ActivationCondition));
 	}
 
-	public void Unload()
-	{
-
-	}
+	public void Unload() { }
 
 	public override void Update(GameTime gameTime)
 	{

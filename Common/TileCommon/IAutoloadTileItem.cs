@@ -1,39 +1,36 @@
 ﻿using System.Linq;
-using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.TileCommon;
 
-/// <summary>
-/// Automatically generates an item that places the given <see cref="ModTile"/> down.<br/>
-/// The <see cref="SetItemDefaults(ModItem)"/> and <see cref="AddItemRecipes(ModItem)"/> hooks can be used to modify the generated item.
-/// </summary>
+/// <summary> Automatically generates an item that places the given <see cref="ModTile"/> down.<br/>
+/// The <see cref="StaticItemDefaults"/>, <see cref="SetItemDefaults"/> and <see cref="AddItemRecipes"/> hooks can be used to conveniently modify the generated item. </summary>
 public interface IAutoloadTileItem
 {
 	// These are already defined on ModTiles and shortens the autoloading code a bit.
 	public string Name { get; }
 	public string Texture { get; }
 
+	public void StaticItemDefaults(ModItem item) { }
 	public void SetItemDefaults(ModItem item) { }
 	public void AddItemRecipes(ModItem item) { }
 }
 
-public class AutoloadTileItemSystem : ModSystem
+public class AutoloadTileItemHandler : ILoadable
 {
-	public override void Load()
+	public static void AutoloadItem(ModTile item) => SpiritReforgedMod.Instance.AddContent(new AutoloadedTileItem(item.Name + "Item", item.Texture + "Item", (IAutoloadTileItem)item));
+
+	public void Load(Mod mod) => SpiritReforgedSystem.OnLoad += static () =>
 	{
-		var types = AssemblyManager.GetLoadableTypes(Mod.Code).Where(x => typeof(IAutoloadTileItem).IsAssignableFrom(x) && !x.IsAbstract);
+		List<ModTile> types = [.. ModContent.GetContent<ModTile>().Where(x => x is IAutoloadTileItem)];
 
 		foreach (var item in types)
-		{
-			if (!typeof(ModTile).IsAssignableFrom(item))
-				throw new InvalidCastException("IAutoloadTileItem should be placed on only ModTiles!");
+			AutoloadItem(item);
+	};
 
-			var instance = Activator.CreateInstance(item) as IAutoloadTileItem;
-			Mod.AddContent(new AutoloadedTileItem(instance.Name + "Item", instance.Texture + "Item", instance));
-		}
-	}
+	public void Unload() { }
 }
 
+/// <summary> Represents an item autoloaded with <see cref="IAutoloadTileItem"/>. </summary>
 public class AutoloadedTileItem(string name, string texture, IAutoloadTileItem hooks) : ModItem
 {
 	protected override bool CloneNewInstances => true;
@@ -53,9 +50,11 @@ public class AutoloadedTileItem(string name, string texture, IAutoloadTileItem h
 		return item;
 	}
 
+	public override void SetStaticDefaults() => _hooks.StaticItemDefaults(this);
+
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(Mod.Find<ModTile>(_internalName.Replace("Item", "")).Type);
+		Item.DefaultToPlaceableTile(Mod.Find<ModTile>(_internalName.Replace("Item", string.Empty)).Type);
 		_hooks.SetItemDefaults(this);
 	}
 

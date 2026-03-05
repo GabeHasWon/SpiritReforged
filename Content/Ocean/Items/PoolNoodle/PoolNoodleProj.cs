@@ -1,9 +1,5 @@
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Buffs.SummonTag;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
-using Terraria.Audio;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 
 namespace SpiritReforged.Content.Ocean.Items.PoolNoodle;
 
@@ -15,6 +11,7 @@ public class PoolNoodleProj : BaseWhipProj
 		set => Projectile.ai[1] = value;
 	}
 
+	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.PoolNoodle.DisplayName");
 	public override void StaticDefaults() => Main.projFrames[Type] = 7;
 
 	public override void Defaults()
@@ -33,7 +30,8 @@ public class PoolNoodleProj : BaseWhipProj
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		base.OnHitNPC(target, hit, damageDone);
-		target.AddBuff(ModContent.BuffType<SummonTag3>(), 360);
+
+		target.ApplySummonTag(3);
 		target.AddBuff(ModContent.BuffType<PoolNoodleBubbleBuff>(), 600);
 	}
 }

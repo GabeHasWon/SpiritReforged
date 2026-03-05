@@ -1,4 +1,4 @@
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Forest.Stargrass.Items;
 using Terraria.Utilities;
 
@@ -17,7 +17,7 @@ public class StargrassTree : ModTree
 		SpecialGroupMaximumSaturationValue = 1f
 	};
 
-	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<StargrassTile>()];
+	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassMowed>()];
 	public override int CreateDust() => DustID.WoodFurniture;
 	public override int TreeLeaf() => GoreID.TreeLeaf_Normal;
 	public override int DropWood() => ItemID.Wood;
@@ -78,7 +78,7 @@ public class StargrassTree : ModTree
 		else if (effect == StargrassTreeShakeEffect.Fruit)
 		{
 			Vector2 offset = this.GetRandomTreePosition(Main.tile[x, y]);
-			int type = Main.rand.NextBool() ? ModContent.ItemType<EnchantedApple>() : ModContent.ItemType<EnchantedStarFruit>();
+			int type = Main.rand.Next([ModContent.ItemType<MidnightApple>(), ModContent.ItemType<CrescentMelon>(), ModContent.ItemType<Pearlberry>()]);
 			Item.NewItem(WorldGen.GetItemSource_FromTreeShake(x, y), new Vector2(x, y) * 16 + offset, type, 1);
 		}
 

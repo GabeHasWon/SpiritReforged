@@ -1,11 +1,18 @@
-﻿using MonoMod.Cil;
+﻿using ILLogger;
+using MonoMod.Cil;
+using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Common.TileCommon;
 
+/// <summary>
+/// Defines the draw orders for a given tile.<br/>
+/// This attribute is not inherited.
+/// </summary>
+/// <param name="layers"></param>
 [AttributeUsage(AttributeTargets.Class)]
 public class DrawOrderAttribute(params Layer[] layers) : Attribute
 {
@@ -20,90 +27,119 @@ public class DrawOrderAttribute(params Layer[] layers) : Attribute
 	}
 }
 
-public class DrawOrderHandler : ILoadable
+internal class DrawOrderSystem : ModSystem
 {
-	public static readonly Dictionary<Point16, Layer[]> specialDrawPoints = [];
+	internal static event Action DrawTilesSolid;
+	internal static event Action DrawTilesNonSolid;
+	internal static event Action PostDrawPlayers;
+
+	/// <summary> Stores tile types and defined layer pairs on load. </summary>
+	private static readonly Dictionary<int, Layer[]> DrawOrderTypes = []; 
+
+	/// <summary> Stores drawing coordinates so our detours know where to draw. </summary>
+	internal static readonly HashSet<Point16> SpecialDrawPoints = [];
+
 	/// <summary> Used in conjunction with <see cref="DrawOrderAttribute"/> to tell whether a tile is drawing as a result of the attribute and on what layer. </summary>
-	internal static Layer order = Layer.Default;
+	internal static Layer Order = Layer.Default;
 
-	public void Load(Mod mod)
+	public static bool TryGetLayers(int type, out Layer[] layers)
 	{
-		static void Draw(Layer layer)
+		if (DrawOrderTypes.TryGetValue(type, out Layer[] value))
 		{
-			order = layer;
-			var above = specialDrawPoints.Where(x => x.Value.Contains(order));
-			foreach (var set in above)
-			{
-				var p = set.Key;
-				TileLoader.PreDraw(p.X, p.Y, Framing.GetTileSafely(p.X, p.Y).TileType, Main.spriteBatch);
-			}
-
-			order = Layer.Default;
+			layers = value;
+			return true;
 		}
 
-		On_TileDrawing.PreDrawTiles += ClearDrawPoints;
-		IL_Main.DoDraw_Tiles_Solid += (ILContext il) =>
+		layers = null;
+		return false;
+	}
+
+	public override void Load()
+	{
+		#region detours/il
+		IL_Main.DoDraw_Tiles_Solid += static il =>
 		{
 			var c = new ILCursor(il);
 			for (int i = 0; i < 2; i++)
 			{
 				if (!c.TryGotoNext(x => x.MatchCallvirt<SpriteBatch>("End")))
 				{
-					SpiritReforgedMod.Instance.Logger.Debug("Failed goto SpriteBatch.End; Index: " + i);
+					SpiritReforgedMod.Instance.LogIL("Draw Order Solids", $"Method 'SpriteBatch.End' index {i} not found.");
 					return;
 				}
 			}
 
-			c.EmitDelegate(() => Draw(Layer.Solid)); //Emit a delegate so we can draw just before the spritebatch ends
+			c.EmitDelegate(() => DrawTilesSolid?.Invoke()); //Emit a delegate so we can draw just before the spritebatch ends
 		};
 
-		On_Main.DoDraw_Tiles_NonSolid += (On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self) =>
+		On_Main.DoDraw_Tiles_NonSolid += static (orig, self) =>
 		{
 			orig(self);
-			Draw(Layer.NonSolid);
+			DrawTilesNonSolid?.Invoke();
 		};
 
-		On_Main.DrawPlayers_AfterProjectiles += (On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self) =>
+		On_Main.DrawPlayers_AfterProjectiles += static (orig, self) =>
 		{
 			orig(self);
 
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-			Draw(Layer.OverPlayers);
+			PostDrawPlayers?.Invoke();
 			Main.spriteBatch.End();
 		};
+		#endregion
+
+		TileEvents.AddPreDrawAction(false, SpecialDrawPoints.Clear);
+
+		PostDrawPlayers += () => Draw(Layer.OverPlayers);
+		DrawTilesNonSolid += () => Draw(Layer.NonSolid);
+		DrawTilesSolid += () => Draw(Layer.Solid);
+
+		static void Draw(Layer layer)
+		{
+			Order = layer;
+
+			foreach (var pt in SpecialDrawPoints)
+			{
+				int type = Framing.GetTileSafely(pt).TileType;
+
+				if (DrawOrderTypes.TryGetValue(type, out var value) && value.Contains(Order))
+					TileLoader.PreDraw(pt.X, pt.Y, type, Main.spriteBatch);
+			}
+
+			Order = Layer.Default;
+		}
 	}
 
-	private void ClearDrawPoints(On_TileDrawing.orig_PreDrawTiles orig, TileDrawing self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
+	public override void PostSetupContent()
 	{
-		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
+		var modTiles = ModContent.GetContent<ModTile>();
+		foreach (var tile in modTiles)
+		{
+			var tag = (DrawOrderAttribute)Attribute.GetCustomAttribute(tile.GetType(), typeof(DrawOrderAttribute), false);
 
-		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
-		if (!solidLayer && flag)
-			specialDrawPoints.Clear();
+			if (tag is not null)
+				DrawOrderTypes.Add(tile.Type, tag.Layers);
+			else if (tile is ISwayTile sway && sway.Style == -1) //If no layers are defined for this ISwayTile, automatically add a valid layer for sway drawing
+				DrawOrderTypes.Add(tile.Type, [Layer.NonSolid]);
+		}
 	}
 
-	public void Unload() { }
+	internal static void DrawNonsolid() => DrawTilesNonSolid?.Invoke();
+	internal static void DrawSolid() => DrawTilesSolid?.Invoke();
+	internal static void DrawOverPlayers() => PostDrawPlayers?.Invoke();
 }
 
-public class DrawOrderGlobalTile : GlobalTile
+internal class DrawOrderGlobalTile : GlobalTile
 {
-	private static DrawOrderAttribute Tag(int type)
-	{
-		if (TileLoader.GetTile(type) is ModTile mTile)
-			return (DrawOrderAttribute)Attribute.GetCustomAttribute(mTile.GetType(), typeof(DrawOrderAttribute));
-
-		return null;
-	}
-
 	public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch)
 	{
-		if (Tag(type) is not DrawOrderAttribute tag)
+		if (!DrawOrderSystem.TryGetLayers(type, out var value))
 			return true;
 
-		if (DrawOrderHandler.order == Layer.Default)
+		if (DrawOrderSystem.Order == Layer.Default)
 		{
-			DrawOrderHandler.specialDrawPoints.Add(new Point16(i, j), tag.Layers);
-			return tag.Layers.Contains(Layer.Default);
+			DrawOrderSystem.SpecialDrawPoints.Add(new Point16(i, j));
+			return value.Contains(Layer.Default);
 		}
 
 		return true;

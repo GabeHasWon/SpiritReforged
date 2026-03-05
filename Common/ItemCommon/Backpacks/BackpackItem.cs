@@ -1,9 +1,12 @@
 ﻿using SpiritReforged.Common.UI.BackpackInterface;
+using SpiritReforged.Common.UI.Misc;
+using System.IO;
 using Terraria.ModLoader.IO;
+using Terraria.UI;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
-internal abstract class BackpackItem : ModItem
+public abstract class BackpackItem : ModItem
 {
 	protected override bool CloneNewInstances => true;
 
@@ -11,6 +14,8 @@ internal abstract class BackpackItem : ModItem
 
 	/// <summary> How many slots this backpack has. </summary>
 	protected abstract int SlotCap { get; }
+
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCap);
 
 	public override ModItem Clone(Item newEntity)
 	{
@@ -36,15 +41,30 @@ internal abstract class BackpackItem : ModItem
 	public override bool CanRightClick() => true;
 	public override bool ConsumeItem(Player player) => false; //Prevent RightClick from destroying the item
 
+	/// <summary> Controls which <see cref="BasicItemSlot"/>s are added by this backpack as UI elements. </summary>
+	/// <param name="number"> the index of <see cref="items"/>. </param>
+	/// <param name="position"> the default position of this element. </param>
+	public virtual BasicItemSlot SetupSlot(int number, Vector2 position)
+	{
+		var pixelDimension = StyleDimension.FromPixels(32);
+		return new PackInventorySlot(items, number)
+		{
+			Left = new StyleDimension(position.X, 0),
+			Top = new StyleDimension(position.Y, 0),
+			Width = pixelDimension,
+			Height = pixelDimension
+		};
+	}
+
 	public override void RightClick(Player player) //Attempt to swap this backpack into the backpack slot
 	{
 		if (!BackpackUISlot.CanClickItem(player.GetModPlayer<BackpackPlayer>().backpack))
 			return;
 
-		int oldType = player.GetModPlayer<BackpackPlayer>().backpack.type;
+		var oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
-		Item.SetDefaults(oldType);
+		Item.SetDefaults(oldPack.type);
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -67,5 +87,17 @@ internal abstract class BackpackItem : ModItem
 			else
 				items[i] = new Item();
 		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		foreach (var item in items)
+			ItemIO.Send(item, writer, true);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		foreach (var item in items)
+			ItemIO.Receive(item, reader, true);
 	}
 }

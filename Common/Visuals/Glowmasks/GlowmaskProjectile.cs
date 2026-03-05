@@ -8,11 +8,13 @@ internal class GlowmaskProjectile : GlobalProjectile
 	{
 		if (ProjIdToGlowmask.TryGetValue(projectile.type, out var glow) && glow.DrawAutomatically)
 		{
+			var texture = glow.Glowmask.Value;
+			var frame = texture.Frame(1, Main.projFrames[projectile.type]);
+
 			Vector2 pos = projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY);
-			SpriteEffects effect = projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			int frameHeight = glow.Glowmask.Height() / Main.projFrames[projectile.type];
-			Rectangle frame = new Rectangle(0, frameHeight * projectile.frame, glow.Glowmask.Width(), frameHeight);
-			Main.EntitySpriteDraw(glow.Glowmask.Value, pos, frame, glow.GetDrawColor(projectile), projectile.rotation, frame.Size() / 2f, projectile.scale, effect, 0);
+			SpriteEffects effects = (projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+			Main.EntitySpriteDraw(texture, pos, frame, glow.GetDrawColor(projectile), projectile.rotation, frame.Size() / 2f, projectile.scale, effects, 0);
 		}
 	}
 }

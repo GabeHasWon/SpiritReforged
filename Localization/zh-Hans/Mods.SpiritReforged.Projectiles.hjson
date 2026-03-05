@@ -1,0 +1,62 @@
+HydrothermalVentPlume.DisplayName: 烟流
+Cannonbubble.DisplayName: 加农泡泡
+UrchinBall.DisplayName: 海胆球
+UrchinSpike.DisplayName: 海胆刺
+JellyfishBolt.DisplayName: 电矢
+JellyfishMinion.DisplayName: 小水母
+ReefWrathProj.DisplayName: 珊瑚礁
+JellyfishPet.DisplayName: 水母宠物
+FairyMinion.DisplayName: 仙灵仆从
+FairyProj.DisplayName: 魔法矢
+StarPowderProj.DisplayName: 星之尘
+ButterflyMinion.DisplayName: 蝴蝶仆从
+ToucanFeather.DisplayName: 巨嘴鸟羽毛
+ToucanMinion.DisplayName: 巨嘴鸟仆从
+TumblerPet.DisplayName: 翻滚怪宠物
+SunOrb.DisplayName: 太阳球
+SunStaffHeld.DisplayName: 太阳法杖
+WheatgrassSeed.DisplayName: 麦草种子
+RoyalKhopeshHeld.DisplayName: 皇家弯刀
+Zipline.DisplayName: 飞索
+RogueKnifeMinion.DisplayName: 生锈的刀
+CactusWallProj.DisplayName: 仙人掌墙
+SkullSentryEye.DisplayName: 骷髅哨兵之眼
+SkullSentryMucus.DisplayName: 骷髅哨兵粘液
+SkullSentrySentry.DisplayName: 骷髅哨兵
+ZiplineProj.DisplayName: 飞索
+FallingBaobabFruit.DisplayName: 掉落的面包树果实
+RollingCart.DisplayName: 手推车
+RadonMossBobber.DisplayName: 氡苔藓浮标
+OganessonMossBobber.DisplayName: 「气奥」苔藓浮标
+BuffAura.DisplayName: 增益光环
+WheezerCloud.DisplayName: 毒气
+Shockwave.DisplayName: 冲击波
+EnergizedShockwave.DisplayName: 能量冲击波
+RollingBowlder.DisplayName: 滚动巨石
+Firespike.DisplayName: 火刺
+CannonBomb.DisplayName: 炸弹大炮
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: 厄劫箭
+JinxBowMinion.DisplayName: 厄劫弓仆从
+RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: 能量践踏
+EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: 手指射击
+// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+// PhysicsChain.DisplayName: Chain
+// GoldPhysicsChain.DisplayName: Gold Chain
+// CactusSpine.DisplayName: Cactus Spine
+// TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+// DragonFireball.DisplayName: Dragon Fireball
+// PileOfConsequencesPet.DisplayName: Consequences
+// EnergyLaser.DisplayName: Energy Laser
+// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+// WindBlast.DisplayName: Wind Blast
+// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"

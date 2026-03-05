@@ -6,21 +6,39 @@ sampler textureSampler = sampler_state
     AddressU = wrap;
     AddressV = clamp;
 };
-texture perlinNoise;
+texture noise;
 sampler noiseSampler = sampler_state
 {
-    Texture = (perlinNoise);
+    Texture = (noise);
+    AddressU = wrap;
+    AddressV = wrap;
+};
+texture secondaryNoise;
+sampler secondaryNoiseSampler = sampler_state
+{
+    Texture = (secondaryNoise);
     AddressU = wrap;
     AddressV = wrap;
 };
 
 float Progress;
 float uTime;
-float4 uColor;
-float xMod;
-float yMod;
+float dissolve;
+bool doDissolve;
+float intensity;
+
+float4 primaryColor;
+float4 secondaryColor;
+float4 tertiaryColor;
+float colorLerpExp;
+
+float2 coordMods;
 float distortion;
 float texExponent;
+
+bool pixellate;
+float2 pixelDimensions;
+float2 scroll;
 
 struct VertexShaderInput
 {
@@ -49,29 +67,47 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 };
 
-float GetAbsDistance(float inputCoordinate)
+float4 ColorLerp3(float amount)
 {
-    return abs(inputCoordinate - 0.5f) * 2;
+    if (amount < 0.5f)
+        return lerp(tertiaryColor, secondaryColor, amount * 2);
+
+    return lerp(secondaryColor, primaryColor, (amount - 0.5f) * 2);
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float4 color = input.Color;
+    float2 baseCoords = input.TextureCoordinates;
+    if (pixellate)
+        baseCoords = round(baseCoords * pixelDimensions) / pixelDimensions;
     
-    float2 noiseCoords = float2(input.TextureCoordinates.x * xMod, input.TextureCoordinates.y * yMod);
+    float2 noiseCoords = float2((baseCoords.x + scroll.x) * coordMods.x, (baseCoords.y + scroll.y) * coordMods.y);
     float noiseFactor = 2 * (tex2D(noiseSampler, noiseCoords) - 0.5f);
-    float2 texCoords = float2(input.TextureCoordinates.x + (distortion * noiseFactor), input.TextureCoordinates.y + (distortion * noiseFactor));
+    float2 texCoords = float2(baseCoords.x + (distortion * noiseFactor), baseCoords.y + (distortion * noiseFactor));
     
-    float strength = pow(tex2D(textureSampler, texCoords).r, texExponent);
+    float baseTexStrength = tex2D(textureSampler, texCoords).r;
+    if (baseTexStrength <= 0.05f)
+        return float4(0, 0, 0, 0);
     
-    return color * strength * uColor;
+    float strength = pow(baseTexStrength, texExponent);
+    
+    float dissolveNoiseStrength = (1 - tex2D(secondaryNoiseSampler, noiseCoords).r) * dissolve;
+    float dissolveYStrength = lerp(0, pow(input.TextureCoordinates.y, 0.66f), pow(dissolve, 0.5f));
+    float dissolveXStrength = lerp(0, pow((1 - abs(baseCoords.x - 0.5f) * 2), 0.66f), pow(dissolve, 0.5f));
+    float dissolvePosBase = dissolveYStrength + dissolveXStrength;
+    
+    if (doDissolve)
+        strength = smoothstep(min((dissolveNoiseStrength + dissolvePosBase + pow(dissolve, 6)) / 2, 1), 1, pow(strength, 0.34f)) * pow(strength, 0.66f);
+    
+    return color * strength * ColorLerp3(pow(strength * pow(1 - dissolve, 0.33f), colorLerpExp)) * intensity;
 }
 
 technique BasicColorDrawing
 {
     pass DefaultPS
 	{
-        VertexShader = compile vs_2_0 MainVS();
-        PixelShader = compile ps_2_0 MainPS();
+        VertexShader = compile vs_3_0 MainVS();
+        PixelShader = compile ps_3_0 MainPS();
     }
 };

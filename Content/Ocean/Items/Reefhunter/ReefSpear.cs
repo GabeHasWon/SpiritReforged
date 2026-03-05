@@ -1,13 +1,20 @@
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter;
 
 public class ReefSpear : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.Spears[Type] = true;
+
+		MoRHelper.AddElement(Item, MoRHelper.Water);
+	}
 	public override void SetDefaults()
 	{
-		Item.damage = 26;
+		Item.damage = 20;
 		Item.width = 28;
 		Item.height = 14;
 		Item.useTime = Item.useAnimation = 30;
@@ -63,12 +70,6 @@ public class ReefSpear : ModItem
 		}
 	}
 
-	public override void AddRecipes()
-	{
-		var recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<IridescentScale>(), 10);
-		recipe.AddIngredient(ModContent.ItemType<MineralSlag>(), 12);
-		recipe.AddTile(TileID.Anvils);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<MineralSlag>(), 12)
+		.AddIngredient(ItemID.Coral, 3).AddTile(TileID.Anvils).Register();
 }

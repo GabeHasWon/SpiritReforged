@@ -12,7 +12,7 @@ public class DiverBody : ModItem
 		Item.width = 30;
 		Item.height = 30;
 		Item.value = Item.sellPrice(0, 0, 14, 0);
-		Item.rare = ItemRarityID.Green;
+		Item.rare = ItemRarityID.White;
 		Item.vanity = true;
 	}
 }

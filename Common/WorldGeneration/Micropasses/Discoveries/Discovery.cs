@@ -9,7 +9,7 @@ internal abstract class Discovery : Micropass
 
 	public sealed override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex)
 	{
-		var valid = DiscoveryHandler.valid;
+		var valid = DiscoverySystem.valid;
 		if (!valid.Contains(this))
 			return -1;
 

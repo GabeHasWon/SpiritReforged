@@ -1,29 +1,23 @@
-using SpiritReforged.Content.Vanilla.Items.Food;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Savanna.Biome;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 [AutoloadCritter]
-public class GoldKillifish : Killifish
+public class GoldKillifish : Killifish, IGoldCritter
 {
+	public int[] NormalPersistentIDs => [ModContent.NPCType<Killifish>()];
+
+	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
+
 	public override void OnSpawn(IEntitySource source) { }
-
-	public override void AI()
-	{
-		base.AI(); //Call base so Killifish AI can run
-		Lighting.AddLight((int)(NPC.Center.X / 16f), (int)(NPC.Center.Y / 16f), .1f, .1f, .1f);
-
-		if (Main.rand.NextBool(30))
-		{
-			var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.GoldCoin);
-			dust.velocity *= 0f;
-			dust.fadeIn += 0.5f;
-		}
-	}
 
 	public override void FindFrame(int frameHeight)
 	{
-		NPC.frameCounter += .25f;
+		NPC.frameCounter += 0.25f;
 		NPC.frameCounter %= Main.npcFrameCount[Type];
 		int frame = (int)NPC.frameCounter;
 		NPC.frame.Y = frame * frameHeight;
@@ -41,5 +35,5 @@ public class GoldKillifish : Killifish
 		}
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<RawFish>(2);
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SavannaBiome>() && spawnInfo.Water ? (spawnInfo.PlayerInTown ? 0.01f : 0.0025f) : 0f;
 }

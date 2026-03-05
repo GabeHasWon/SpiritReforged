@@ -4,7 +4,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.CascadeArmor;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -56,12 +55,13 @@ public class Cannonbubble : ModProjectile
 		if (Projectile.wet)
 			Projectile.velocity.Y -= 0.08f;
 
-		for (int i = 0; i < Main.maxProjectiles; i++)
+		foreach (var p in Main.ActiveProjectiles)
 		{
-			Projectile p = Main.projectile[i];
-			if (p.type == Projectile.type && p.active && p != null && p.whoAmI != Projectile.whoAmI && p.Hitbox.Intersects(Projectile.Hitbox))
+			if (p.type == Projectile.type && p.whoAmI != Projectile.whoAmI && p.Hitbox.Intersects(Projectile.Hitbox))
 				BubbleCollision(p);
 		}
+
+		Projectile.TryShimmerBounce();
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -73,7 +73,7 @@ public class Cannonbubble : ModProjectile
 
 		for (int i = ProjectileID.Sets.TrailCacheLength[Projectile.type] - 1; i > 0; i--)
 		{
-			float progress = 1 - (i / (float)ProjectileID.Sets.TrailCacheLength[Projectile.type]);
+			float progress = 1 - i / (float)ProjectileID.Sets.TrailCacheLength[Projectile.type];
 			float trailOpacity = progress * GetSpeedRatio(2);
 
 			var square = new SquarePrimitive()
@@ -82,7 +82,7 @@ public class Cannonbubble : ModProjectile
 				Height = primDimensions.X * progress,
 				Length = primDimensions.Y * progress,
 				Position = Projectile.oldPos[i] + Projectile.Size/2 - Main.screenPosition,
-				Rotation = MathHelper.TwoPi - MathHelper.PiOver2 + Projectile.oldRot[i]
+				Rotation = MathHelper.TwoPi + MathHelper.PiOver2 + Projectile.oldRot[i]
 			};
 			bubbleTrail.Add(square);
 		}
@@ -93,10 +93,10 @@ public class Cannonbubble : ModProjectile
 			Height = primDimensions.X,
 			Length = primDimensions.Y,
 			Position = Projectile.Center - Main.screenPosition,
-			Rotation = MathHelper.TwoPi - MathHelper.PiOver2 + Projectile.rotation
+			Rotation = MathHelper.TwoPi + MathHelper.PiOver2 + Projectile.rotation
 		});
 
-		Effect bubbleEffect = AssetLoader.LoadedShaders["TextureMap"];
+		Effect bubbleEffect = AssetLoader.LoadedShaders["TextureMap"].Value;
 		bubbleEffect.Parameters["uTexture"].SetValue(outline);
 		bubbleEffect.Parameters["rotation"].SetValue(MathHelper.TwoPi + Projectile.rotation);
 		PrimitiveRenderer.DrawPrimitiveShapeBatched(bubbleTrail.ToArray(), bubbleEffect);
@@ -129,10 +129,10 @@ public class Cannonbubble : ModProjectile
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop") with { PitchVariance = 0.4f, Pitch = 1.3f, Volume = .6f, MaxInstances = 10 }, Projectile.Center);
 
 		//ParticleHandler.SpawnParticle(new BubblePop(Projectile.Center, Projectile.scale * 0.35f, 0.8f, 30));
-		ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.15f, 150 * Projectile.scale, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, -MathHelper.PiOver2).UsesLightColor());
+		ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 150 * Projectile.scale, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, -MathHelper.PiOver2).UsesLightColor());
 
 		for(int i = -1; i <= 1; i += 2)
-			ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.15f, 80 * Projectile.scale, 40, EaseFunction.EaseCircularOut).WithSkew(Main.rand.NextFloat(), Main.rand.NextFloat(MathHelper.TwoPi)).UsesLightColor());
+			ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 80 * Projectile.scale, 40, EaseFunction.EaseCircularOut).WithSkew(Main.rand.NextFloat(), Main.rand.NextFloat(MathHelper.TwoPi)).UsesLightColor());
 
 		for (int i = 0; i < 2; i++)
 			ParticleHandler.SpawnParticle(new BubbleParticle(Projectile.Center, Main.rand.NextVec2CircularEven(1, 1), Main.rand.NextFloat(0.3f, 0.4f), 30));
@@ -223,8 +223,8 @@ public class Cannonbubble : ModProjectile
 
 		if (!Main.dedServ)
 		{
-			Color color = RINGCOLOR * EaseFunction.EaseCircularOut.Ease(strength);
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, color, color, 0.75f, 60 * Projectile.scale * strength, 20, "LiquidTrail", new Vector2(1, 0.5f), EaseFunction.EaseCircularOut, false, 0.6f, 0.25f).WithSkew(0.75f, Projectile.velocity.ToRotation()).UsesLightColor());
+			Color color = RINGCOLOR * EaseFunction.EaseCubicOut.Ease(strength);
+			ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, color, color * 0.5f, 0.6f, 100 * Projectile.scale * strength, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, Projectile.velocity.ToRotation() - MathHelper.Pi).UsesLightColor());
 			SoundEngine.PlaySound(SoundID.Item54 with { PitchVariance = 0.3f, Volume = 0.5f * strength }, Projectile.Center);
 		}
 	}

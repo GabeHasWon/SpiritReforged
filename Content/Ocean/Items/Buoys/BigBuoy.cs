@@ -1,40 +1,23 @@
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.SimpleEntity;
-using Terraria.Audio;
-using static SpiritReforged.Common.Misc.ReforgedMultiplayer;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
 
+[FromClassic("BigBuoyItem")]
 public class BigBuoy : SmallBuoy
 {
 	public override bool? UseItem(Player player)
 	{
 		if (player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			int type = SimpleEntitySystem.types[typeof(BigBuoyEntity)];
-			var position = Main.MouseWorld;
-
-			SimpleEntitySystem.NewEntity(type, position);
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-			{
-				ModPacket packet = SpiritReforgedMod.Instance.GetPacket(MessageType.SpawnSimpleEntity, 2);
-				packet.Write(type);
-				packet.WriteVector2(position);
-				packet.Send();
-			}
-
+			SimpleEntitySystem.NewEntity<BigBuoyEntity>(Main.MouseWorld);
 			return true;
 		}
 
 		return null;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-			.AddRecipeGroup(RecipeGroupID.IronBar, 8)
-			.AddIngredient(ItemID.Wire, 7)
-			.AddIngredient(ItemID.Glass, 7)
-			.AddTile(TileID.Anvils)
-			.Register();
+	public override void AddRecipes() => CreateRecipe().AddRecipeGroup("CopperBars", 3).AddIngredient(ItemID.Glass, 2).AddTile(TileID.Anvils).Register();
 }
 
 public class BigBuoyEntity : SmallBuoyEntity
@@ -42,6 +25,7 @@ public class BigBuoyEntity : SmallBuoyEntity
 	private static Asset<Texture2D> GlowTexture;
 
 	public override Texture2D Glowmask => GlowTexture.Value;
+	protected override int ItemType => ModContent.ItemType<BigBuoy>();
 
 	public override void Load()
 	{
@@ -51,13 +35,5 @@ public class BigBuoyEntity : SmallBuoyEntity
 		saveMe = true;
 		width = 46;
 		height = 120;
-	}
-
-	public override void OnKill()
-	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-			Item.NewItem(GetSource_Death(), Hitbox, ModContent.ItemType<BigBuoy>());
-
-		SoundEngine.PlaySound(SoundID.Dig, Center);
 	}
 }

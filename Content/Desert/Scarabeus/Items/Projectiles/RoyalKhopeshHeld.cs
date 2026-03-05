@@ -13,6 +13,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
@@ -44,10 +45,14 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	private float[] oldScale = { 0 };
 
+	public override bool IsLoadingEnabled(Mod mod) => false;
+
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 15;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
+
+		MoRHelper.AddElement(Projectile, MoRHelper.Earth);
 	}
 
 	public override void SetDefaults()
@@ -93,11 +98,14 @@ public class RoyalKhopeshHeld : ModProjectile
 		float progress = AiTimer / SwingTime;
 		switch (Combo)
 		{
-			case 0: FirstSwing(progress, direction);
+			case 0:
+				FirstSwing(progress, direction);
 				break;
-			case 1: DoubleSwing(progress, ref direction);
+			case 1:
+				DoubleSwing(progress, ref direction);
 				break;
-			default: FinalSwing(progress, direction);
+			default:
+				FinalSwing(progress, direction);
 				break;
 		}
 
@@ -229,7 +237,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if(Combo == 2)
+		if (Combo == 2)
 		{
 			modifiers.FinalDamage *= 1.5f;
 			modifiers.FlatBonusDamage += Min(target.defense / 2, 20);
@@ -239,6 +247,8 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
+		MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
+
 		if (Main.dedServ)
 			return;
 
@@ -313,7 +323,7 @@ public class RoyalKhopeshHeld : ModProjectile
 		Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 		float baseOpacity = 0.4f;
 
-		for(int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
+		for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
 		{
 			if (oldScale[i] == 0)
 				return;
@@ -351,7 +361,7 @@ public class RoyalKhopeshHeld : ModProjectile
 		}
 
 		//Fix trail drawing to account for windup swing, set different params on windup swing
-		if(Combo == 2)
+		if (Combo == 2)
 		{
 			if (progress < WINDUP_TIME)
 				return;
@@ -385,11 +395,11 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	private static void SetSandtrailParams(out Effect effect, float progress, float swingProgress)
 	{
-		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"];
-		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noise"]);
+		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"].Value;
+		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
 		effect.Parameters["baseColorDark"].SetValue(SAND_DARK.ToVector4());
 		effect.Parameters["baseColorLight"].SetValue(SAND_LIGHT.ToVector4());
-		effect.Parameters["overlayTexture"].SetValue(AssetLoader.LoadedTextures["particlenoise"]);
+		effect.Parameters["overlayTexture"].SetValue(AssetLoader.LoadedTextures["particlenoise"].Value);
 		effect.Parameters["overlayColor"].SetValue(SAND_PARTICLE.ToVector4());
 
 		effect.Parameters["coordMods"].SetValue(new Vector2(1.8f, 0.3f));
@@ -405,11 +415,11 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	private static void SetRedtrailParams(out Effect effect, float progress, float swingProgress)
 	{
-		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"];
-		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noiseCrystal"]);
+		effect = AssetLoader.LoadedShaders["NoiseParticleTrail"].Value;
+		effect.Parameters["baseTexture"].SetValue(AssetLoader.LoadedTextures["noiseCrystal"].Value);
 		effect.Parameters["baseColorDark"].SetValue(RUBY_DARK.ToVector4());
 		effect.Parameters["baseColorLight"].SetValue(RUBY_LIGHT.ToVector4());
-		effect.Parameters["overlayTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"]);
+		effect.Parameters["overlayTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
 		effect.Parameters["overlayColor"].SetValue(RUBY_PARTICLE.ToVector4());
 
 		effect.Parameters["coordMods"].SetValue(new Vector2(4f, 1f));
@@ -429,7 +439,7 @@ public class RoyalKhopeshHeld : ModProjectile
 		float windupProgress = (progress) / WINDUP_TIME;
 		windupProgress = Min(windupProgress, 1);
 
-		Texture2D starTex = AssetLoader.LoadedTextures["Star"];
+		Texture2D starTex = AssetLoader.LoadedTextures["Star"].Value;
 		GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Type, out GlowmaskInfo glowmaskInfo);
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
 

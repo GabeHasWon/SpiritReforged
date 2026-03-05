@@ -20,13 +20,13 @@ public class BubblePop : Particle
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
-		Texture2D drawTex = ParticleHandler.GetTexture(Type);
+		var texture = ParticleHandler.GetTexture(Type);
+		var color = Lighting.GetColor(Position.ToTileCoordinates());
+
 		int frameNumber = (int)Math.Floor((double)(Progress * NUMFRAMES));
-		int frameHeight = drawTex.Height / NUMFRAMES;
-		var drawFrame = new Rectangle(0, frameNumber * frameHeight, drawTex.Width, frameHeight);
+		var frame = texture.Frame(1, NUMFRAMES, 0, frameNumber, 0, -2);
+		var origin = frame.Size() / 2 + new Vector2(0, 5);
 
-		Color lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
-
-		spriteBatch.Draw(drawTex, Position - Main.screenPosition, drawFrame, lightColor * _opacity, Rotation, drawFrame.Size() / 2, Scale, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, frame, color * _opacity, Rotation, origin, Scale, SpriteEffects.None, 0);
 	}
 }

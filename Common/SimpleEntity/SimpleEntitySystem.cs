@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using Terraria.GameContent.Drawing;
 using Terraria.ModLoader.IO;
 
@@ -6,92 +7,108 @@ namespace SpiritReforged.Common.SimpleEntity;
 
 public class SimpleEntitySystem : ModSystem
 {
-	internal static Dictionary<Type, int> types = [];
-	internal static Asset<Texture2D>[] textures;
+	internal static Dictionary<Type, int> Types = [];
+	internal static Asset<Texture2D>[] Textures;
 
 	/// <summary> Instances that were created on load. </summary>
-	private static SimpleEntity[] templates;
+	private static SimpleEntity[] Templates;
 
 	/// <summary> Entities that exist in the world. </summary>
-	internal static SimpleEntity[] entities;
+	internal static SimpleEntity[] Entities;
 
-	internal const int maxEntities = 200;
-	private static int nextIndex;
+	internal const int MaxEntities = 200;
+	private static int NextIndex;
 
-	public static SimpleEntity NewEntity(int type, Vector2 position)
+	/// <summary> Summons a new entity at the given position and syncs it if <paramref name="quiet"/> is false. </summary>
+	public static SimpleEntity NewEntity(int type, Vector2 position, bool quiet = false)
 	{
-		var entity = templates[type].Clone();
+		var entity = Templates[type].Clone();
 		entity.active = true;
-		entity.whoAmI = nextIndex;
+		entity.whoAmI = NextIndex;
 		entity.Center = position;
 
-		entities[nextIndex] = entity;
+		Entities[NextIndex] = entity;
 
-		for (int i = nextIndex; i < entities.Length; i++)
+		for (int i = NextIndex; i < Entities.Length; i++)
 		{
-			if (entities[i] is null)
+			if (Entities[i] is null)
 			{
-				nextIndex = i;
+				NextIndex = i;
 				break;
 			}
 		} //Move up the array to the next available slot
 
+		if (Main.netMode != NetmodeID.SinglePlayer && !quiet)
+			new SpawnSimpleEntityData((short)type, position).Send();
+
 		return entity;
 	}
 
+	/// <inheritdoc cref="NewEntity(int, Vector2, bool)"/>
+	public static SimpleEntity NewEntity(Type type, Vector2 position, bool quiet = false)
+	{
+		int t = Types[type];
+		return NewEntity(t, position, quiet);
+	}
+
+	/// <inheritdoc cref="NewEntity(int, Vector2, bool)"/>
+	public static SimpleEntity NewEntity<T>(Vector2 position, bool quiet = false) where T : SimpleEntity => NewEntity(typeof(T), position, quiet);
+
 	public static void RemoveEntity(int whoAmI)
 	{
-		entities[whoAmI] = null;
-		nextIndex = whoAmI;
+		Entities[whoAmI] = null;
+		NextIndex = whoAmI;
 	}
 
 	public override void Load()
 	{
-		templates = new SimpleEntity[maxEntities];
-		entities = new SimpleEntity[maxEntities];
-		textures = new Asset<Texture2D>[maxEntities];
+		Templates = new SimpleEntity[MaxEntities];
+		Entities = new SimpleEntity[MaxEntities];
+		Textures = new Asset<Texture2D>[MaxEntities];
 
 		foreach (Type type in SpiritReforgedMod.Instance.Code.GetTypes())
-			if (type.IsSubclassOf(typeof(SimpleEntity)) && !type.IsAbstract && type != typeof(SimpleEntity))
+		{
+			if (type.IsSubclassOf(typeof(SimpleEntity)) && !type.IsAbstract)
 			{
-				int myType = types.Count;
-				types[type] = myType;
+				int myType = Types.Count;
+				Types[type] = myType;
 
 				var instance = (SimpleEntity)Activator.CreateInstance(type);
-				textures[myType] = ModContent.Request<Texture2D>(instance.TexturePath);
+				Textures[myType] = ModContent.Request<Texture2D>(instance.TexturePath);
 				instance.Load();
-				templates[myType] = instance;
+				Templates[myType] = instance;
 			}
+		}
 
-		Array.Resize(ref textures, types.Count);
-		Array.Resize(ref templates, types.Count);
+		Array.Resize(ref Textures, Types.Count);
+		Array.Resize(ref Templates, Types.Count);
 
 		On_TileDrawing.Update += UpdateEntities;
 		On_Main.DoDraw_Tiles_NonSolid += DrawEntities;
 	}
 
-	private void UpdateEntities(On_TileDrawing.orig_Update orig, TileDrawing self)
+	private static void UpdateEntities(On_TileDrawing.orig_Update orig, TileDrawing self)
 	{
 		orig(self);
 
-		for (int i = 0; i < maxEntities; i++)
-			entities[i]?.Update();
+		for (int i = 0; i < MaxEntities; i++)
+			Entities[i]?.Update();
 	}
 
-	private void DrawEntities(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
+	private static void DrawEntities(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
 		orig(self);
 
-		for (int i = 0; i < maxEntities; i++)
-			entities[i]?.Draw(Main.spriteBatch);
+		for (int i = 0; i < MaxEntities; i++)
+			Entities[i]?.Draw(Main.spriteBatch);
 	}
 
-	public override void OnWorldUnload()
+	public override void ClearWorld()
 	{
-		for (int i = 0; i < maxEntities; i++)
-			entities[i] = null; //Unload all of our entities with the world
+		for (int i = 0; i < MaxEntities; i++)
+			Entities[i] = null; //Unload all of our entities with the world
 
-		nextIndex = 0;
+		NextIndex = 0;
 	}
 
 	private const string commonKey = "simpleEntities";
@@ -101,16 +118,16 @@ public class SimpleEntitySystem : ModSystem
 		{
 			var list = new List<TagCompound>();
 
-			for (int i = 0; i < maxEntities; i++)
+			for (int i = 0; i < MaxEntities; i++)
 			{
-				var entity = entities[i];
+				var entity = Entities[i];
 				if (entity == null || !entity.saveMe)
 					continue;
 
 				TagCompound tag = [];
 
-				tag["x"] = (int)entity.position.X;
-				tag["y"] = (int)entity.position.Y;
+				tag["x"] = (int)entity.Center.X;
+				tag["y"] = (int)entity.Center.Y;
 				tag["name"] = entity.GetType().Name;
 
 				list.Add(tag);
@@ -134,7 +151,35 @@ public class SimpleEntitySystem : ModSystem
 
 			var position = new Vector2(tagInList.GetInt("x"), tagInList.GetInt("y"));
 			string name = tagInList.GetString("name");
-			NewEntity(types.FirstOrDefault(x => x.Key.Name == name).Value, position);
+			NewEntity(Types.FirstOrDefault(x => x.Key.Name == name).Value, position);
+		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		var entities = Entities.Where(x => x is not null);
+		writer.Write((byte)entities.Count());
+
+		foreach (var entity in entities)
+		{
+			writer.Write((int)entity.Center.X);
+			writer.Write((int)entity.Center.Y);
+			writer.Write((byte)entity.Type);
+		}
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		ClearWorld();
+		byte count = reader.ReadByte();
+
+		for (int i = 0; i < count; i++)
+		{
+			int x = reader.ReadInt32();
+			int y = reader.ReadInt32();
+			byte type = reader.ReadByte();
+
+			NewEntity(type, new Vector2(x, y), true);
 		}
 	}
 }

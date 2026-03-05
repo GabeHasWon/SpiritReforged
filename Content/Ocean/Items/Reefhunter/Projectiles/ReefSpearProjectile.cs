@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
@@ -42,6 +43,8 @@ public class ReefSpearProjectile : ModProjectile
 		Projectile.localNPCHitCooldown = -1;
 		Projectile.ownerHitCheck = true;
 		DrawHeldProjInFrontOfHeldItemAndArms = false;
+
+		MoRHelper.SetSpearBonus(Projectile);
 	}
 
 	public override bool? CanDamage() => true;
@@ -60,8 +63,8 @@ public class ReefSpearProjectile : ModProjectile
 
 		if (_maxTimeleft == 0) //Initialize
 		{
-			if(p.whoAmI == Main.myPlayer)
-				_direction = Vector2.Normalize(p.Center - Main.MouseWorld);
+			if (p.whoAmI == Main.myPlayer)
+				_direction = Vector2.Normalize(Main.MouseWorld - p.Center);
 
 			float modifiedAttackSpeed = 0.25f + p.GetWeaponAttackSpeed(p.HeldItem) * 0.75f;
 			Projectile.timeLeft = (int)(Projectile.timeLeft / modifiedAttackSpeed);
@@ -71,19 +74,18 @@ public class ReefSpearProjectile : ModProjectile
 			Projectile.netUpdate = true;
 		}
 
-		if(Projectile.timeLeft > _maxTimeleft)
+		if (Projectile.timeLeft > _maxTimeleft)
 			Windup(p, ref factor, ref stretchAmount);
-
 		else
 			StabCombo(ref length, ref factor, ref stretchAmount);
 
-		p.SetCompositeArmFront(true, stretchAmount, _direction.ToRotation() + 1.57f + _rotationOffset * _rotationDirection);
+		p.SetCompositeArmFront(true, stretchAmount, _direction.ToRotation() - 1.57f + _rotationOffset * _rotationDirection);
 		var clampedStretch = (CompositeArmStretchAmount)MathHelper.Clamp((byte)stretchAmount, 1, 2);
-		p.SetCompositeArmBack(true, clampedStretch, _direction.ToRotation() + 1.57f + _rotationOffset * _rotationDirection);
+		p.SetCompositeArmBack(true, clampedStretch, _direction.ToRotation() - 1.57f + _rotationOffset * _rotationDirection);
 
 		var offset = new Vector2(0, -2 * p.direction);
 
-		Projectile.Center = p.Center + new Vector2(0, p.gfxOffY) - Vector2.Lerp(Vector2.Zero, RealDirection, factor * length) + RealDirection * 0.5f + offset;
+		Projectile.Center = p.Center + new Vector2(0, p.gfxOffY) - Vector2.Lerp(RealDirection, Vector2.Zero, factor * length) + RealDirection * 0.5f + offset;
 	}
 
 	private void Windup(Player p, ref float factor, ref CompositeArmStretchAmount stretchAmount)
@@ -93,7 +95,7 @@ public class ReefSpearProjectile : ModProjectile
 		factor = MathHelper.Lerp(0.25f, 0f, progress);
 		if (p.whoAmI == Main.myPlayer)
 		{
-			_direction = Vector2.Normalize(p.Center - Main.MouseWorld);
+			_direction = Vector2.Normalize(Main.MouseWorld - p.Center);
 			p.direction = Main.MouseWorld.X >= p.MountedCenter.X ? 1 : -1;
 		}
 
@@ -117,13 +119,12 @@ public class ReefSpearProjectile : ModProjectile
 
 		for (int i = 0; i < stabTimes.ToArray().Length; i++)
 		{
-			if(Projectile.timeLeft == stabTimes[i])
+			if (Projectile.timeLeft == stabTimes[i])
 			{
-
 				if (_rotationDirection == 0)
 					_rotationDirection = 1;
 
-				_rotationDirection *= Main.rand.NextFloat(-1.2f, -0.8f);
+				_rotationDirection *= Main.rand.NextFloat(-.7f, -.5f);
 				if (Projectile.timeLeft == stabTimes[NUM_STABS - 1])
 					_rotationDirection = 0;
 
@@ -169,18 +170,13 @@ public class ReefSpearProjectile : ModProjectile
 			stretchAmount = CompositeArmStretchAmount.ThreeQuarters;
 	}
 
-	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-	{
-		modifiers.HitDirectionOverride = Math.Sign(-_direction.X);
-		if (CheckStuckSpears(target))
-			modifiers.SourceDamage *= 1.33f;
-	}
-
-	public override void ModifyHitPlayer(Player target, ref HurtModifiers modifiers) => modifiers.HitDirectionOverride = Math.Sign(-_direction.X);
+	public override bool ShouldUpdatePosition() => false;
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = Math.Sign(_direction.X);
+	public override void ModifyHitPlayer(Player target, ref HurtModifiers modifiers) => modifiers.HitDirectionOverride = Math.Sign(_direction.X);
 
 	private bool CheckStuckSpears(NPC target)
 	{
-		foreach(Projectile proj in Main.ActiveProjectiles)
+		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
 			if (proj.ModProjectile == null)
 				continue;
@@ -194,45 +190,51 @@ public class ReefSpearProjectile : ModProjectile
 
 	public override void ModifyDamageHitbox(ref Rectangle hitbox)
 	{
-		Vector2 pos = Projectile.Center - RealDirection - Projectile.Size / 2;
+		Vector2 pos = Projectile.Center + RealDirection - Projectile.Size / 2;
 
 		hitbox.X = (int)pos.X;
 		hitbox.Y = (int)pos.Y;
 	}
 
 	public override bool? CanHitNPC(NPC target) => _canHitEnemy ? null : false;
-
 	public override bool CanHitPlayer(Player target) => _canHitEnemy;
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => HitEffects();
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		HitEffects();
+
+		if (CheckStuckSpears(target))
+			target.SimpleStrikeNPC(damageDone / 3, hit.HitDirection, false, 0, null, false, 0, false);
+	}
+
 	public override void OnHitPlayer(Player target, HurtInfo info) => HitEffects();
+
 	private void HitEffects()
 	{
 		if (_hitEffectCooldown)
 			return;
 
 		float scaleMod = (_rotationDirection == 0) ? 1f : 0.66f;
-		Vector2 particleBasePos = Projectile.Center - RealDirection * 1.33f;
+		Vector2 particleBasePos = Projectile.Center + RealDirection;
 
 		var particle = new TexturedPulseCircle(
 				particleBasePos,
-				Color.Lerp(new Color(251, 204, 62, 220), new Color(230, 27, 112, 220), 0.5f) * 0.8f,
-				new Color(230, 27, 112, 220) * 0.8f,
-				0.85f,
-				170 * scaleMod,
-				(int)(30 * scaleMod),
+				new Color(230, 27, 112) * 0.5f,
+				0.75f,
+				200 * scaleMod,
+				(int)(35 * scaleMod),
 				"noise",
-				new Vector2(2, 0.6f),
-				EaseFunction.EaseCubicOut, false, 0.4f).WithSkew(0.8f, MathHelper.Pi + _direction.ToRotation() + _rotationOffset * _rotationDirection).UsesLightColor();
-		particle.Velocity = Vector2.Normalize(-RealDirection) / 1.5f;
+				new Vector2(4, 0.75f),
+				EaseFunction.EaseCubicOut).WithSkew(0.75f, _direction.ToRotation() + _rotationOffset * _rotationDirection - MathHelper.Pi).UsesLightColor();
+		particle.Velocity = Vector2.Normalize(RealDirection) / 2;
 
 		ParticleHandler.SpawnParticle(particle);
 
-		for(int i = 0; i < (int)(Main.rand.Next(5, 7) * scaleMod); i++)
+		for (int i = 0; i < (int)(Main.rand.Next(5, 7) * scaleMod); i++)
 		{
 			Vector2 offset = Vector2.UnitY.RotatedBy(_direction.ToRotation() + _rotationOffset * _rotationDirection) * Main.rand.NextFloat(-15, 15) * scaleMod;
 			offset = offset.RotatedByRandom(0.2f);
-			ParticleHandler.SpawnParticle(new BubbleParticle(particleBasePos + offset, Vector2.Normalize(-RealDirection) * Main.rand.NextFloat(2, 4f) * scaleMod, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(30, 61)));
+			ParticleHandler.SpawnParticle(new BubbleParticle(particleBasePos + offset, Vector2.Normalize(RealDirection) * Main.rand.NextFloat(1f, 4f) * scaleMod, Main.rand.NextFloat(0.1f, 0.2f), Main.rand.Next(30, 61)));
 		}
 
 		_hitEffectCooldown = true;
@@ -241,7 +243,7 @@ public class ReefSpearProjectile : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D t = TextureAssets.Projectile[Projectile.type].Value;
-		Main.spriteBatch.Draw(t, Projectile.Center - Main.screenPosition, null, lightColor, RealDirection.ToRotation() - MathHelper.Pi, new Vector2(40, 14), 1f, SpriteEffects.None, 1f);
+		Main.spriteBatch.Draw(t, Projectile.Center - Main.screenPosition, null, lightColor, RealDirection.ToRotation(), new Vector2(40, 14), 1f, SpriteEffects.None, 1f);
 		return false;
 	}
 

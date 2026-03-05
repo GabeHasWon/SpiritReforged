@@ -2,11 +2,27 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
 using Terraria.DataStructures;
 using Terraria.Audio;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter;
 
 public class UrchinStaff : ModItem
 {
+	public static readonly SoundStyle LightPop = new("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop")
+	{
+		PitchVariance = 0.4f,
+		Pitch = -2f,
+		Volume = 0.75f,
+		MaxInstances = 3
+	};
+
+	public override void SetStaticDefaults()
+	{
+		MoRHelper.AddElement(Item, MoRHelper.Poison);
+		MoRHelper.AddElement(Item, MoRHelper.Water, true);
+	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 18;
@@ -29,29 +45,23 @@ public class UrchinStaff : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop") with { PitchVariance = 0.4f, Pitch = -2f, Volume = .75f, MaxInstances = 3 }, player.Center);
+		SoundEngine.PlaySound(LightPop, player.Center);
 
 		Vector2 targetPos = Main.MouseWorld;
 		Vector2 shotTrajectory = player.GetArcVel(targetPos, 0.25f, velocity.Length());
-		var proj = Projectile.NewProjectileDirect(source, player.MountedCenter, Vector2.Zero, type, damage, knockback, player.whoAmI);
 
-		if (proj.ModProjectile is UrchinStaffProjectile staffProj)
+		PreNewProjectile.New(source, player.MountedCenter, Vector2.Zero, type, damage, knockback, player.whoAmI, preSpawnAction: delegate (Projectile p)
 		{
-			staffProj.ShotTrajectory = shotTrajectory;
-			staffProj.RelativeTargetPosition = Main.MouseWorld - player.MountedCenter;
-			if (Main.netMode != NetmodeID.SinglePlayer) //sync extra ai as projectile is made
-				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
-		}
+			if (p.ModProjectile is UrchinStaffProjectile staffProj)
+			{
+				staffProj.ShotTrajectory = shotTrajectory;
+				staffProj.RelativeTargetPosition = Main.MouseWorld - player.MountedCenter;
+			}
+		});
 
 		return false;
 	}
 
-	public override void AddRecipes()
-	{
-		var recipe = CreateRecipe();
-		recipe.AddIngredient(ModContent.ItemType<IridescentScale>(), 8);
-		recipe.AddIngredient(ModContent.ItemType<MineralSlag>(), 10);
-		recipe.AddTile(TileID.Anvils);
-		recipe.Register();
-	}
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<MineralSlag>(), 10)
+		.AddIngredient(ItemID.Starfish).AddTile(TileID.Anvils).Register();
 }

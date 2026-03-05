@@ -1,17 +1,24 @@
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 
-public class TumbleZombie : ReplaceNPC
+public class TumbleZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
+	private float _frameCounter;
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
+
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
 	}
 
 	public override void SetDefaults()
@@ -30,14 +37,15 @@ public class TumbleZombie : ReplaceNPC
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
 		BannerItem = Item.BannerToItem(Banner);
+		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "NightTime");
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		for (int k = 0; k < 20; k++)
-		{
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, 2.5f * hit.HitDirection, -2.5f, 0, Color.White, 0.78f);
-		}
 
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
@@ -54,15 +62,13 @@ public class TumbleZombie : ReplaceNPC
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, 385, Main.rand.NextFloat(.25f, .4f));
 	}
 
-	float frameCounter;
-
 	public override void FindFrame(int frameHeight)
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
@@ -72,8 +78,7 @@ public class TumbleZombie : ReplaceNPC
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.WrithingSticks.WrithingSticks>(), 800);
 		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 300);
-
 	}
 
-	public override bool CanSpawn(Player player) => player.InModBiome<Biome.SavannaBiome>();
+	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();
 }

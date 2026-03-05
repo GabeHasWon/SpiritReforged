@@ -1,9 +1,12 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
+[FromClassic("DeepCascadeShard")]
 public class MineralSlag : ModItem
 {
 	private struct ItemData(int itemType, int stack = 1) //Extractinator use
@@ -12,13 +15,11 @@ public class MineralSlag : ModItem
 		public int stack = stack;
 	}
 
-	protected const int frameCount = 5;
-	protected int subID = -1; //Controls the in-world sprite for this item
-
 	public override void SetStaticDefaults()
 	{
-		Main.RegisterItemAnimation(Type, new Terraria.DataStructures.DrawAnimationVertical(2, frameCount) { NotActuallyAnimating = true });
 		ItemID.Sets.ExtractinatorMode[Type] = Type;
+		VariantGlobalItem.AddVariants(Type, [new Point(20, 20), new Point(20, 20), new Point(20, 22), new Point(20, 22), new Point(20, 20)]);
+		Item.ResearchUnlockCount = 25;
 	}
 
 	public override void SetDefaults()
@@ -32,24 +33,6 @@ public class MineralSlag : ModItem
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.autoReuse = true;
 		Item.consumable = true;
-	}
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		if (subID == -1)
-			subID = Main.rand.Next(frameCount);
-
-		var texture = TextureAssets.Item[Type].Value;
-		var source = texture.Frame(1, frameCount, 0, subID, 0, -2);
-
-		spriteBatch.Draw(texture, Item.position - Main.screenPosition, source, GetAlpha(lightColor) ?? lightColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-		return false;
-	}
-
-	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-	{
-		subID = -1;
-		return true;
 	}
 
 	public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
@@ -68,14 +51,13 @@ public class MineralSlag : ModItem
 		choice.Add(new ItemData(ItemID.GoldOre, Main.rand.Next(3) + 1), .5f);
 		choice.Add(new ItemData(ItemID.PlatinumOre, Main.rand.Next(3) + 1), .5f);
 
-		choice.Add(new ItemData(ItemID.AmberMosquito), .01f);
-
 		resultType = ((ItemData)choice).itemType;
 		resultStack = ((ItemData)choice).stack;
 	}
 }
 
-public class MineralSlagPickup : MineralSlag //Spawned strictly by Hydrothermal Vents
+/// <summary> Non-functional variant of <see cref="MineralSlag"/> used for visual effects. </summary>
+public class MineralSlagPickup : MineralSlag
 {
 	private const int timeLeftMax = 60 * 60 * 2;
 	private int timeLeft = timeLeftMax;
@@ -94,9 +76,9 @@ public class MineralSlagPickup : MineralSlag //Spawned strictly by Hydrothermal 
 			float intensity = (timeLeft - (timeLeftMax - duration)) / duration;
 
 			var texture = TextureAssets.Item[Type].Value;
-			var source = texture.Frame(1, frameCount, 0, subID, 0, -2);
+			var source = VariantGlobalItem.GetSource(Item);
 
-			Main.EntitySpriteDraw(AssetLoader.LoadedTextures["Bloom"], Item.Center - Main.screenPosition, null,
+			Main.EntitySpriteDraw(AssetLoader.LoadedTextures["Bloom"].Value, Item.Center - Main.screenPosition, null,
 				(Color.Yellow with { A = 0 }) * .35f * intensity, rotation, AssetLoader.LoadedTextures["Bloom"].Size() / 2, Item.scale * .25f, SpriteEffects.None);
 
 			for (int i = 0; i < 3; i++)
@@ -142,6 +124,8 @@ public class MineralSlagPickup : MineralSlag //Spawned strictly by Hydrothermal 
 			}
 		}
 	}
+
+	public override bool CanPickup(Player player) => true;
 
 	public override bool OnPickup(Player player)
 	{

@@ -1,0 +1,55 @@
+ModName: Spirit Reforged
+Salvati: Salvati
+Sbubby: Sbubby
+Moonbird: Moonbird
+BySalvati: "{$By} {$Salvati}"
+
+Duststorm: {
+	DisplayName: Drifting Prairie (тема пыльной бури)
+	Author: "{$By} {$Sbubby}"
+}
+
+Savanna: {
+	DisplayName: Саванна
+	Author: "{$BySalvati} и {$Sbubby}"
+}
+
+SavannaNight: {
+	DisplayName: Ночь в саванне
+	Author: "{$BySalvati}"
+}
+
+DeepOcean: {
+	DisplayName: Глубокий океан
+	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: День в саванне — Потусторонняя
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: Ночь в саванне — Потусторонняя
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: Пыльная буря — Потусторонняя
+	Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	// DisplayName: Ziggurat
+	// Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	// DisplayName: Salt Flats
+	// Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	// DisplayName: Salt Flats (Night)
+	// Author: "{$By} {$Sbubby}"
+}

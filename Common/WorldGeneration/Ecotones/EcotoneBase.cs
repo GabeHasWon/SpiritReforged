@@ -2,17 +2,17 @@
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
-internal abstract class EcotoneBase : ILoadable
+public abstract class EcotoneBase : ILoadable
 {
 	public static readonly List<EcotoneBase> Ecotones = [];
 
 	public void Load(Mod mod)
 	{
 		Ecotones.Add(this);
-		InternalLoad();
+		Load();
 	}
 
-	protected virtual void InternalLoad() { }
+	protected virtual void Load() { }
 	public void Unload() { }
 	public abstract void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries);
 }

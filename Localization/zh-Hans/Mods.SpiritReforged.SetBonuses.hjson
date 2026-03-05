@@ -1,0 +1,40 @@
+Cascade:
+	'''
+	对敌人造成伤害时会构建起泡泡盾，
+	完整尺寸大小的泡泡盾对受到的下次攻击有着极高的伤害抗性，
+	伤害并击退附近的敌人
+	'''
+Driftwood:
+	'''
+	允许佩戴者漂浮在水面
+	增加渔力
+	'''
+Drywood: 在地表时增加移动速度
+Botanist:
+	'''
+	你从各种草药中获得奖励增加
+	你拥有一双发现草药的强大眼睛
+	'''
+Marksman:
+	'''
+	穿上神射手盔甲可以集中注意力
+	注意力集中时，你的下次攻击必定暴击且造成更多伤害
+	受到伤害时注意力会中断，但站定不动时会注意力会集中的更快
+	'''
+Wayfarer:
+	'''
+	击杀敌人会掉落更多钱币
+	打破罐子时会获得移动速度增益
+	挖掘矿石时会获得挖掘速度增益
+	'''
+Granite:
+	'''
+	双击{0}键进行践踏
+	撞击地面时会释放随高度变化的冲击波
+	'''
+/* Sundancer:
+	'''
+	An afterimage follows you with a half second delay
+	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
+	''' */
+// Bedouin: Double tap a direction to dash and envelop yourself in a tornado

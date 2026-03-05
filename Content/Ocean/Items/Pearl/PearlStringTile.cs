@@ -1,13 +1,15 @@
+using RubbleAutoloader;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Pearl;
 
-[DrawOrder(DrawOrderAttribute.Layer.Solid)] //Draw over sand
-public class PearlStringTile : ModTile
+[AutoloadGlowmask("255,255,255", false)]
+public class PearlStringTile : ModTile, IAutoloadRubble
 {
-	private static Asset<Texture2D> glowTexture;
+	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<PearlString>(), IAutoloadRubble.RubbleSize.Small);
 
 	public override void SetStaticDefaults()
 	{
@@ -15,8 +17,10 @@ public class PearlStringTile : ModTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.CanDropFromRightClick[Type] = true;
+		
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
-		TileObjectData.newTile.CoordinateHeights = [18];
+		TileObjectData.newTile.CoordinateHeights = [16];
 		TileObjectData.newTile.Origin = new(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
 		TileObjectData.newTile.AnchorValidTiles = [TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
@@ -24,10 +28,34 @@ public class PearlStringTile : ModTile
 
 		AddMapEntry(new Color(100, 100, 120));
 		RegisterItemDrop(ModContent.ItemType<PearlString>());
+		SolidBottomTile.TileTypes.Add(Type);
 
-		DustType = -1; //No dust
+		DustType = DustID.Sand;
+	}
 
-		glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow");
+	public override void MouseOver(int i, int j)
+	{
+		if (Autoloader.IsRubble(Type))
+			return;
+
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<PearlString>();
+	}
+
+	public override bool CreateDust(int i, int j, ref int type)
+	{
+		var tile = Framing.GetTileSafely(i, j);
+		type = (tile.TileFrameY / 18) switch
+		{
+			1 => DustID.Corruption,
+			2 => DustID.Crimson,
+			3 => DustID.Pearlsand,
+			_ => DustID.Sand,
+		};
+
+		return true;
 	}
 
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
@@ -56,16 +84,19 @@ public class PearlStringTile : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		var tile = Framing.GetTileSafely(i, j);
-		var texture = TextureAssets.Tile[tile.TileType].Value;
+		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+			return false;
 
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 14);
+		var t = Framing.GetTileSafely(i, j);
 
-		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(glowTexture.Value, position, source, Lighting.GetColor(i, j) * 2, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);
+		var offset = Lighting.LegacyEngine.Mode > 1 && Main.GameZoomTarget == 1 ? Vector2.Zero : Vector2.One * 12;
+		var position = (new Vector2(i, j) + offset) * 16 - Main.screenPosition;
 
-		var rect = new Rectangle(i * 16, j * 16 + 14, 16, 16);
+		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position, source, color * 2, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+		var rect = new Rectangle(i * 16, j * 16, 16, 16);
 		if (!Main.gamePaused && Main.rand.NextBool(50) && Main.LocalPlayer.Distance(rect.Center()) < 100) //Nearby dust effects
 		{
 			var dustPos = Main.rand.NextVector2FromRectangle(rect);
