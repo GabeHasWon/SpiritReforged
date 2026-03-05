@@ -29,6 +29,13 @@ Records: {
 	Boulder: Катится по земле, если его задеть.
 }
 
+FablesGraves: {
+	SetNames: {
+		// Savanna: Savanna Graves
+		// SaltFlats: Salt Graves
+	}
+}
+
 SunkenTreasureTile.MapEntry: "{$Items.SunkenTreasure.DisplayName}"
 HydrothermalVent.MapEntry: Гидротермальное жерло
 CoralMapEntry: Коралл
