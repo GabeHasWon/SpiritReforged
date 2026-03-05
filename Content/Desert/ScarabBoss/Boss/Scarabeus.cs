@@ -72,7 +72,6 @@ public partial class Scarabeus : ModNPC
 			Skitter,
 			HornSwipe,
 			Leap,
-			TraversalLeap,
 			RollDash,
 			GroundedSlam,
 			Dig,

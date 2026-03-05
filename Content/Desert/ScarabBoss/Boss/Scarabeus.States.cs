@@ -211,9 +211,13 @@ public partial class Scarabeus : ModNPC
 					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
 					{
 						Vector2 desiredPos = Target.Center + Target.velocity * 20;
-						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Clamp(NPC.Center.Distance(desiredPos) / 36, 15, 30), true);
-						NPC.noTileCollide = true;
 
+						if (NPC.Center.Y - Target.Center.Y > 80)
+							NPC.velocity = NPC.GetArcVel(desiredPos - new Vector2(0, 30), NPC.gravity, Math.Clamp((NPC.Center.Y - (desiredPos.Y - 30)) / 16f, 15, 50), true);
+						else
+							NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Clamp(NPC.Center.Distance(desiredPos) / 36, 15, 30), true);
+
+						NPC.noTileCollide = true;
 						Counter = 0;
 						jumpState++;
 					}
@@ -239,72 +243,10 @@ public partial class Scarabeus : ModNPC
 						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					}
 				}
-
-				break;
-
-			case 2: //Recover
-				NPC.noTileCollide = false;
-				NPC.velocity.X *= 0.9f;
-
-				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
+				else if (Target.Center.Y - NPC.Center.Y > 200) //Prompt a slam when too high up
 				{
-					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
-					ChangeState(SelectWeightedState());
-				}
-
-				break;
-		}
-
-		/*
-		 * Todo:
-		 * Phase through some tiles but avoid phasing through a wall, use primarily for closing vertical gaps, pits, and walls
-		 */
-	}
-
-	public void TraversalLeap()
-	{
-		ref float jumpState = ref NPC.ai[2];
-
-		NPC.noGravity = false;
-		NPC.GravityMultiplier *= 2;
-
-		switch (jumpState)
-		{
-			case 0: //Prepare for a jump
-				if (Grounded) //Check if grounded
-				{
-					NPC.velocity.X *= 0.8f;
-					NPC.FaceTarget();
-
-					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
-					{
-						Vector2 desiredPos = Target.Center;
-						NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Max(15, (NPC.Center.Y - desiredPos.Y) / 18f), true);
-						NPC.noTileCollide = true;
-
-						jumpState++;
-					}
-				}
-
-				break;
-
-			case 1: //Jump and land
-				SetFrame(0, 2, PhaseOneProfile);
-				dealContactDamage = true;
-
-				NPC.noTileCollide = NPC.velocity.Y < 0;
-
-				if (Grounded) //Land
-				{
+					jumpState = 3;
 					Counter = 0;
-					jumpState++;
-					//vfx and sfx and shockwaves here
-
-					if (!Main.dedServ)
-					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
-						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
-					}
 				}
 
 				break;
@@ -317,6 +259,41 @@ public partial class Scarabeus : ModNPC
 				{
 					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
 					ChangeState(SelectWeightedState());
+				}
+
+				break;
+
+			case 3: //Optional ground slam
+				SetFrame(DigFrame, PhaseOneProfile);
+				NPC.rotation += Math.Min(Counter * 0.02f, 0.5f) * NPC.direction;
+				NPC.noTileCollide = false;
+				NPC.noGravity = true;
+
+				if (Counter > 20)
+				{
+					NPC.velocity.X *= 0.98f;
+
+					if (Grounded) //Land
+					{
+						if (!Main.dedServ)
+						{
+							Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
+							Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+						}
+
+						NPC.rotation = 0;
+						ChangeState(SelectWeightedState());
+					}
+					else
+					{
+						showTrail = NPC.velocity.Y > 2;
+						NPC.velocity.Y = Math.Min(NPC.velocity.Y + 1.2f, 30);
+					}
+				}
+				else
+				{
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 10, 0.1f);
+					NPC.velocity.Y = NPC.velocity.Y * 0.93f;
 				}
 
 				break;
@@ -337,9 +314,9 @@ public partial class Scarabeus : ModNPC
 			case 0: //Telegraph
 				NPC.velocity.X *= 0.8f;
 				NPC.FaceTarget();
-				UpdateFrame(3, 12, PhaseOneProfile, false);
+				UpdateFrame(3, 10, PhaseOneProfile, false);
 
-				if (Counter > 50)
+				if (Counter > 45)
 				{
 					Counter = 0;
 					dashState++;
@@ -597,9 +574,16 @@ public partial class Scarabeus : ModNPC
 				NPC.Opacity = 0;
 				NPC.noGravity = true;
 
-				Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 8, 0.1f);
-				NPC.position.Y = groundPosition.Y;
+				if (Counter < 3)
+				{
+					NPC.Top = FindGroundFromPosition(Target.Center) - new Vector2(0, NPC.height / 2);
+				}
+				else
+				{
+					Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 8, 0.1f);
+					NPC.position.Y = groundPosition.Y;
+				}
 
 				if (!Main.dedServ) //Digging visuals
 				{

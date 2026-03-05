@@ -12,40 +12,51 @@ public partial class Scarabeus : ModNPC
 	private Action SelectWeightedState()
 	{
 		if (!phaseTwo && NPC.Center.Y - Target.Center.Y > 80)
-			return TraversalLeap;
+			return Leap; //Prioritize leap if too far below Target
 
 		WeightedRandom<Action> state = new();
 
 		if (phaseTwo)
 		{
-			state.Add(FlyHover, 1);
-			state.Add(FlyingDash, 1);
-			state.Add(ChainGroundPound, 1);
+			Add(FlyHover, 1);
+			Add(FlyingDash, 1);
+			Add(ChainGroundPound, 1);
 
 			if (!Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
-				state.Add(LeapDig, 1);
+				Add(LeapDig, 1);
 
-			state.Add(ScarabSwarm, 1);
+			Add(ScarabSwarm, 1);
 		}
 		else
 		{
 			if (CurrentState != Array.IndexOf(_states, Skitter))
-				state.Add(Walking, 1);
+				Add(Walking, 1);
 
 			if (NPC.DistanceSQ(Target.Center) > 160)
-				state.Add(Leap, 0.5);
+				Add(Leap, 0.5);
 
 			if (Collision.SolidTiles(NPC.position + new Vector2(0, 4), NPC.width, NPC.height)) //This is different from checking whether the NPC is grounded
 			{
-				state.Add(Dig, 1);
-				state.Add(GroundedSlam, 1);
+				Add(Dig, 1);
+				Add(GroundedSlam, 1);
 			}
 
 			if (Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48)
-				state.Add(RollDash, 1);
+				Add(RollDash, 1);
 		}
 
 		return (state.elements.Count == 0) ? Walking : state;
+
+		bool Add(Action element, double weight) //Adds to state and automatically avoids duplicates
+		{
+			if (CurrentState != Array.IndexOf(_states, element))
+			{
+				state.Add(element, weight);
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	/// <summary> From a given input, translates the input to the surfacemost tile on the ground. <br/>
