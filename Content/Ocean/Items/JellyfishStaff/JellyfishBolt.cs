@@ -106,11 +106,11 @@ public class JellyfishBolt : ModProjectile
 				0.7f,
 				80 + Main.rand.NextFloat(20),
 				25 + Main.rand.Next(10),
-				"Lightning",
-				new Vector2(1f, 0.2f),
+				"EnergyTrail",
+				new Vector2(1, 0.14f),
 				EaseFunction.EaseCircularOut,
 				false,
-				0.3f).WithSkew(Main.rand.NextFloat(0.2f, 0.7f), Main.rand.NextFloat(MathHelper.PiOver2) + i * MathHelper.PiOver2));
+				0.5f).WithSkew(Main.rand.NextFloat(0.2f, 0.7f), Main.rand.NextFloat(MathHelper.PiOver2) + i * MathHelper.PiOver2));
 
 		ParticleHandler.SpawnParticle(new DissipatingImage(center, Color.White.Additive(), Main.rand.NextFloat(MathHelper.TwoPi), 0.075f, Main.rand.NextFloat(-0.5f, 0.5f), "ElectricScorch", new(0.4f, 0.4f), new(3, 1.5f), 25));
 	}
