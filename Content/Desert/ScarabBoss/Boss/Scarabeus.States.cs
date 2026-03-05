@@ -249,8 +249,7 @@ public partial class Scarabeus : ModNPC
 				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
-					ChangeState(Leap);
-					//ChangeState(SelectWeightedState());
+					ChangeState(SelectWeightedState());
 				}
 
 				break;
@@ -326,7 +325,6 @@ public partial class Scarabeus : ModNPC
 
 	public void RollDash()
 	{
-		const int dash_time = 20;
 		const int transition_time = 40;
 
 		ref float dashState = ref NPC.ai[2];
@@ -334,64 +332,79 @@ public partial class Scarabeus : ModNPC
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 
-		if (dashState == 0) //Prepare for a roll
+		switch (dashState)
 		{
-			NPC.velocity.X *= 0.8f;
-			NPC.FaceTarget();
-			UpdateFrame(3, 12, PhaseOneProfile, false);
+			case 0: //Telegraph
+				NPC.velocity.X *= 0.8f;
+				NPC.FaceTarget();
+				UpdateFrame(3, 12, PhaseOneProfile, false);
 
-			if (Counter > 50)
-			{
-				dashState++;
-				Counter = 0;
-			}
-
-			return;
-		}
-
-		if (Counter > dash_time + transition_time) //End
-		{
-			NPC.velocity.X /= 2;
-			ChangeState(Walking);
-		}
-		else if (Counter > dash_time) //Skid to a stop
-		{
-			SetFrame(0, 6, PhaseOneProfile);
-			NPC.rotation = 0;
-			NPC.velocity.X *= 0.94f;
-
-			if (Math.Sign(NPC.velocity.X) is int newDirection && newDirection != 0)
-				NPC.direction = -newDirection;
-
-			if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 1 && Main.rand.NextBool())
-			{
-				Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+				if (Counter > 50)
 				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = colors[1],
-					TertiaryColor = colors[2],
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f
-				});
+					Counter = 0;
+					dashState++;
+				}
 
-				Dust.NewDust(NPC.BottomLeft, NPC.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-			}
-		}
-		else //Rolling
-		{
-			NPC.velocity.X = NPC.direction * 22;
-			NPC.rotation += 0.3f * NPC.spriteDirection;
-			NPC.Step();
+				break;
 
-			SetFrame(DigFrame, PhaseOneProfile);
-			showTrail = true;
-			dealContactDamage = true;
-			//sfx here
+			case 1: //Roll
+				NPC.velocity.X = NPC.direction * 22;
+				NPC.rotation += 0.3f * NPC.spriteDirection;
+				NPC.Step();
 
-			if (NPC.collideX)
-				ChangeState(BounceGroundPound); //bounce off of surfaces
+				SetFrame(DigFrame, PhaseOneProfile);
+				showTrail = true;
+				dealContactDamage = true;
+				//sfx here
+
+				if ((Target.Center.X - NPC.Center.X) * NPC.direction < 30)
+				{
+					Counter = 0;
+					dashState++;
+				}
+
+				if (NPC.collideX)
+					ChangeState(BounceGroundPound); //bounce off of surfaces
+
+				break;
+
+			case 2: //Skid to a stop
+				SetFrame(0, 6, PhaseOneProfile);
+				NPC.rotation = 0;
+				NPC.velocity.X *= 0.94f;
+
+				if (Math.Sign(NPC.velocity.X) is int newDirection && newDirection != 0)
+					NPC.direction = -newDirection;
+
+				if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 1 && Main.rand.NextBool())
+				{
+					Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+					ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+					{
+						Pixellate = true,
+						DissolveAmount = 1,
+						SecondaryColor = colors[1],
+						TertiaryColor = colors[2],
+						PixelDivisor = 3,
+						ColorLerpExponent = 0.5f
+					});
+
+					Dust.NewDust(NPC.BottomLeft, NPC.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
+				}
+
+				if (Counter > transition_time)
+				{
+					Counter = 0;
+					dashState++;
+				}
+
+				break;
+
+			case 3: //End
+				NPC.velocity.X /= 2;
+				ChangeState(Walking);
+
+				break;
 		}
 	}
 
