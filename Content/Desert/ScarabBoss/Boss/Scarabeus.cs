@@ -125,6 +125,7 @@ public partial class Scarabeus : ModNPC
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
 			ChangeState(FlyHover);
+			NPC.Opacity = 1f;
 			Profile = PhaseTwoProfile;
 			phaseTwo = true;
 		}
