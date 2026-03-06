@@ -3,6 +3,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
 
@@ -26,7 +27,16 @@ public partial class Scarabeus : ModNPC
 		if (Counter > swarm_time + roar_time) //End the cinematic
 		{
 			NPC.dontTakeDamage = false;
-			ChangeState(Walking);
+
+			if (NPC.life == NPC.lifeMax && Target.head == EquipLoader.GetEquipSlot(Mod, nameof(ScarabMask), EquipType.Head))
+			{
+				NPC.FaceTarget();
+				UpdateFrame(8, 2, PhaseOneProfile); //Bonus animation while wearing Scarabeus' mask
+			}
+			else
+			{
+				ChangeState(Walking);
+			}
 		}
 		else if (Counter > swarm_time) //Emerge
 		{

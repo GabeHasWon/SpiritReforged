@@ -64,7 +64,7 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17, 2]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [4, 6, 4, 5, 13]);
 	}
 

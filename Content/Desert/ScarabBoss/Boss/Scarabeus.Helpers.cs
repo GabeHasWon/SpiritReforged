@@ -3,7 +3,6 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.WorldGeneration;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
