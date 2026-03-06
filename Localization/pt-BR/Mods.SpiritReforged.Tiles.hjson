@@ -29,6 +29,13 @@ Records: {
 	// Boulder: Rolls along the ground when disturbed.
 }
 
+FablesGraves: {
+	SetNames: {
+		// Savanna: Savanna Graves
+		// SaltFlats: Salt Graves
+	}
+}
+
 SunkenTreasureTile.MapEntry: Tesouro Afundado
 HydrothermalVent.MapEntry: Ventiladora Hidrotermal
 CoralMapEntry: Coral

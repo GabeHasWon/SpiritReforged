@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
@@ -5,6 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat;
 
@@ -108,7 +110,13 @@ public class BangleOfStrength : EquippableItem
 		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetIndex ? null : false;
 	}
 
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<Scarab.GildedScarab>();
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<Scarab.GildedScarab>();
+
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
+	}
 
 	public override void SetDefaults()
 	{

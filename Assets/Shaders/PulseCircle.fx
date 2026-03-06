@@ -13,6 +13,7 @@ sampler textureSampler = sampler_state
     AddressV = wrap;
 };
 float2 textureStretch;
+float texExponent;
 float scroll;
 
 struct VertexShaderInput
@@ -37,7 +38,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     
     output.Color = input.Color;
 
-	output.TextureCoordinates = input.TextureCoordinates;
+    output.TextureCoordinates = input.TextureCoordinates;
 
     return output;
 };
@@ -59,29 +60,42 @@ float GetDistanceFromBase(float2 input)
     return GetDistanceFromBase(GetDistance(input));
 }
 
-float4 GeometricRing(VertexShaderOutput input) : COLOR0
+float GetStrength(VertexShaderOutput input)
 {
-    float4 finalColor;
+    float finalStrength;
     
     float distance = GetDistance(input.TextureCoordinates);
     float DistFromRingbase = GetDistanceFromBase(distance);
     if (distance >= 1) //transparent if too much distance from center, as the shader is being applied to a square
-        return float4(0, 0, 0, 0);
+        return 0;
     
     else if (DistFromRingbase <= RingWidth * 0.5f) //always return peak opacity within the specified range
-        finalColor = RingColor;
-    
+        finalStrength = 1;
     else if (DistFromRingbase <= RingWidth * 0.75f) //interpolate to the bloom color between the given range
     {
         float lerpFactor = 1 - cos(3.14f * min((abs(DistFromRingbase - (RingWidth / 2)) / (RingWidth / 2)), 1)) / 2;
-        finalColor = lerp(RingColor, BloomColor, lerpFactor);
+        finalStrength = lerp(1, 0.5f, lerpFactor);
     }
-    
     else //interpolate to transparent if too far from the ring's edges
     {
         float lerpFactor = min(abs(DistFromRingbase - (RingWidth * 0.75f)) / (RingWidth / 4), 1);
-        finalColor = lerp(BloomColor, float4(0, 0, 0, 0), lerpFactor);
+        finalStrength = lerp(0.5f, 0, lerpFactor);
     }
+    
+    return finalStrength;
+}
+
+float4 GeometricRing(VertexShaderOutput input) : COLOR0
+{
+    float4 finalColor = RingColor;
+    float strength = GetStrength(input);
+    if (strength == 0)
+        return float4(0, 0, 0, 0);
+    
+    if (strength > 0.5f)
+        finalColor = lerp(BloomColor, RingColor, (strength - 0.5f) * 2) * strength;
+    else
+        finalColor = lerp(float4(0, 0, 0, 0), BloomColor, strength * 2) * strength;
     
     finalColor *= input.Color;
     return finalColor * 2;
@@ -94,16 +108,26 @@ float GetAngle(float2 input)
 
 float4 TexturedRing(VertexShaderOutput input) : COLOR0
 {
-    float4 baseRing = GeometricRing(input);
+    float strength = GetStrength(input);
     float xCoord = GetAngle(input.TextureCoordinates) / 6.28f;
     xCoord += scroll;
     float yCoord = GetDistance(input.TextureCoordinates);
     yCoord -= 0.5f;
     yCoord *= textureStretch.y / RingWidth;
     yCoord += 0.5f;
-    float4 texColor = tex2D(textureSampler, float2(xCoord * textureStretch.x, yCoord)).r;
+    float texColor = pow(tex2D(textureSampler, float2(xCoord * textureStretch.x, yCoord)).r, texExponent) * strength;
+    if (texColor == 0)
+        return float4(0, 0, 0, 0);
     
-    return baseRing * texColor;
+    float4 finalColor = RingColor;
+    
+    if (texColor > 0.5f)
+        finalColor = lerp(BloomColor, RingColor, (texColor - 0.5f) * 2) * texColor;
+    else
+        finalColor = lerp(float4(0, 0, 0, 0), BloomColor, texColor * 2) * texColor;
+    
+    finalColor *= input.Color;
+    return finalColor * 2;
 }
 
 technique BasicColorDrawing

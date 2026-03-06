@@ -19,6 +19,7 @@ public class SaltCrateHardmodeRestored : ModItem
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateHardmodeRestoredTile>());
 		Item.rare = ItemRarityID.Green;
+		Item.value = Item.sellPrice(0, 1, 0, 0);
 	}
 
 	public override bool CanRightClick() => true;

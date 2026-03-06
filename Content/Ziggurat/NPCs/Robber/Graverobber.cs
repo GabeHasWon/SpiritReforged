@@ -3,6 +3,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Backpacks;
+using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using System.IO;
@@ -262,6 +263,7 @@ public class Graverobber : ModNPC
 		if (VisualStyle == 0)
 			npcLoot.AddCommon(ItemID.MagicLantern, 15);
 
+		npcLoot.AddCommon(ModContent.ItemType<CarrotCake>(), 30);
 		npcLoot.AddCommon(ItemID.GravediggerShovel, 20);
 		npcLoot.AddCommon(ItemID.MetalDetector, 20);
 	}

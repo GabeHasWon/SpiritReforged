@@ -1,7 +1,11 @@
 ﻿using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using SpiritReforged.Content.Forest.Relics;
+using SpiritReforged.Content.Forest.Trophies;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -60,8 +64,8 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17, 2]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [4, 6, 4, 5, 13]);
 	}
 
 	public override void SetDefaults()
@@ -72,7 +76,6 @@ public partial class Scarabeus : ModNPC
 			Skitter,
 			HornSwipe,
 			Leap,
-			TraversalLeap,
 			RollDash,
 			GroundedSlam,
 			Dig,
@@ -192,17 +195,17 @@ public partial class Scarabeus : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		/*npcLoot.AddMasterModeRelicAndPet<ScarabeusRelicItem, ScarabPetItem>();
-		npcLoot.AddBossBag<BagOScarabs>();
+		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
-		var notExpertRule = new LeadingConditionRule(new Conditions.NotExpert());
-		notExpertRule.AddCommon<ScarabMask>(7);
-		notExpertRule.AddCommon<Trophy1>(10);
-		notExpertRule.AddCommon<SandsOfTime>(15);
-		notExpertRule.AddCommon<Chitin>(1, 25, 36);
-		notExpertRule.AddOneFromOptions<ScarabBow, LocustCrook, RoyalKhopesh, RadiantCane>();
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 
-		npcLoot.Add(notExpertRule);*/
+		npcLoot.Add(notExpertRule);
+		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
+		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
+		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
+
+		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
