@@ -383,7 +383,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		if (FindSacrifice(Main.LocalPlayer, out Item result) && !BeamOLight.Enabled && Entity(i, j) is ScarabAltarEntity entity)
+		int projectileType = ModContent.ProjectileType<FloatingGem>();
+		if (!BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity && entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
 			if (--result.stack <= 0)
 				result.TurnToAir(); //Consume an item
@@ -391,7 +392,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
 			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
-				ModContent.ProjectileType<FloatingGem>(), 0, 0, Main.myPlayer, result.type, entity.ID);
+				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
 
 			return true;
 		}

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -59,27 +60,27 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
-	/// <summary> From a given input, translates the input to the surfacemost tile on the ground. <br/>
+	/// <summary> Finds the nearest surface tile to the provided world coordinates, <b>in world coordinates</b> <br/>
 	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
 	private static Vector2 FindGroundFromPosition(Vector2 input)
 	{
 		const int dimensions = 8;
 
-		while (!Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
+		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
 			input.Y += dimensions;
 
-		while (Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
+		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
 			input.Y -= dimensions;
 
 		return input + new Vector2(0, dimensions);
 	}
 
-	private static Color[] GetTilePalette(Point point)
+	private static Color[] GetTilePalette(Vector2 input)
 	{
-		bool valid = WorldMethods.FindGround(point.X, ref point.Y);
-		Tile tile = Framing.GetTileSafely(point);
+		Point tilePosition = input.ToTileCoordinates();
+		Tile tile = Framing.GetTileSafely(tilePosition);
 
-		if (!valid || !tile.HasTile || tile.TileType == TileID.Sand)
+		if (!tile.HasTile || tile.TileType == TileID.Sand)
 			return [new Color(223, 219, 147) * 2f, new Color(188, 170, 86) * 1.33f, new Color(58, 49, 18) * 0.5f];
 
 		var material = TileMaterial.FindMaterial(tile.TileType);

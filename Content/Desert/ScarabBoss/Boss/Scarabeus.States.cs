@@ -82,7 +82,7 @@ public partial class Scarabeus : ModNPC
 				for (int i = 0; i < Main.rand.Next(4); i++)
 				{
 					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
-					Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+					Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(Main.rand.NextVector2FromRectangle(area), particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 					{
@@ -173,7 +173,13 @@ public partial class Scarabeus : ModNPC
 		FrameState state = UpdateFrame(2, 12, PhaseOneProfile, false);
 
 		if (currentFrame.Y is > 2 and < 7)
+		{
 			dealContactDamage = true;
+
+			float distance = Target.Center.X - NPC.Center.X;
+			if (Math.Sign(distance) == NPC.direction)
+				NPC.velocity.X += distance * 0.1f;
+		}
 
 		if (state == FrameState.Stopped)
 			ChangeState(SelectWeightedState());
@@ -284,10 +290,10 @@ public partial class Scarabeus : ModNPC
 						NPC.rotation = 0;
 						ChangeState(SelectWeightedState());
 					}
-					else
+					else //Downward movement
 					{
 						showTrail = NPC.velocity.Y > 2;
-						NPC.velocity.Y = Math.Min(NPC.velocity.Y + 1.2f, 30);
+						NPC.velocity.Y = Math.Min(NPC.velocity.Y + 1.2f, 16);
 					}
 				}
 				else
@@ -355,7 +361,7 @@ public partial class Scarabeus : ModNPC
 
 				if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 1 && Main.rand.NextBool())
 				{
-					Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+					Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
 					ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 					{
 						Pixellate = true,
@@ -593,7 +599,7 @@ public partial class Scarabeus : ModNPC
 						particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
 
 						Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
-						Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+						Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
 
 						ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 						{
@@ -772,65 +778,90 @@ public partial class Scarabeus : ModNPC
 
 		ref float jumpState = ref NPC.ai[2];
 
-		if (jumpState > 3) //Final bounce
+		switch ((int)jumpState)
 		{
-			if (currentFrame == DigFrame) //One-time effects
-				SetFrame(3, PhaseTwoProfile.GetFrameCount(3) - 1, PhaseTwoProfile);
+			case 0: //Track Target and prepare for a ground pound
+				float distance = NPC.DistanceSQ(Target.Center);
+				Vector2 targetPosition = Target.Center - new Vector2(0, 200);
 
-			NPC.velocity *= 0.95f;
-			NPC.rotation = 0;
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * 5, 0.04f * (distance / (200f * 200f)));
+				NPC.rotation = NPC.velocity.X * 0.05f;
 
-			if (UpdateFrame(3, -12, PhaseTwoProfile, false) == FrameState.Stopped)
-				ChangeState(FlyHover);
-		}
-		else if (jumpState == 0) //Line up with Target
-		{
-			float distance = NPC.DistanceSQ(Target.Center);
-			Vector2 targetPosition = Target.Center - new Vector2(0, 200);
+				if (distance < 250 * 250 && Counter > idle_time)
+				{
+					Counter = 0;
+					NPC.velocity.Y -= 5;
+					jumpState++;
+				}
 
-			NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * 5, 0.04f * (distance / (200f * 200f)));
-			NPC.rotation = NPC.velocity.X * 0.05f;
+				UpdateFrame(2, 12, PhaseTwoProfile);
 
-			if (distance < 250 * 250 && Counter > idle_time)
-			{
-				Counter = 0;
-				NPC.velocity.Y -= 5;
-				jumpState++;
-			}
+				if (Math.Abs(Target.Center.X - NPC.Center.X) > 50)
+					NPC.FaceTarget();
 
-			UpdateFrame(2, 12, PhaseTwoProfile);
+				NPC.noTileCollide = true;
 
-			if (Math.Abs(Target.Center.X - NPC.Center.X) > 50)
-				NPC.FaceTarget();
+				break;
 
-			NPC.noTileCollide = true;
-		}
-		else //Fall
-		{
-			if (Profile == PhaseOneProfile)
-				SetFrame(DigFrame, PhaseOneProfile);
-			else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
-				Profile = PhaseOneProfile;
+			case 1: //Ground pound
+				if (Profile == PhaseOneProfile)
+					SetFrame(DigFrame, PhaseOneProfile);
+				else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+					Profile = PhaseOneProfile;
 
-			if (Grounded) //Collide
-			{
-				if (!Main.dedServ)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 9, 15));
+				if (Grounded) //Collide
+				{
+					if (!Main.dedServ)
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 9, 15));
 
-				Counter = 0;
-				Profile = PhaseOneProfile;
-				NPC.velocity.Y = -18; //Bounce up
-				NPC.FaceTarget();
+					Counter = 0;
+					Profile = PhaseOneProfile;
+					NPC.FaceTarget();
 
-				jumpState++;
-			}
+					if ((jumpState += 0.35f) < 2)
+					{
+						NPC.velocity.Y = -18; //Bounce up
+					}
+					else
+					{
+						SetFrame(4, 3, PhaseTwoProfile);
+						NPC.rotation = 0;
+					}
+				}
 
-			NPC.noTileCollide = false;
-			NPC.velocity.Y += 0.6f;
-			NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
+				NPC.noTileCollide = false;
+				NPC.velocity.Y += 0.6f;
+				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
 
-			if (currentFrame == DigFrame)
-				NPC.rotation += 0.1f * NPC.direction;
+				if (currentFrame == DigFrame)
+					NPC.rotation += 0.1f * NPC.direction;
+
+				break;
+
+			case 2: //Stationary slam
+				NPC.velocity.X *= 0.9f;
+				FrameState state = UpdateFrame(4, 12, PhaseTwoProfile, false);
+
+				if ((jumpState > 2.5f) ? state == FrameState.Stopped : currentFrame.Y == 9)
+				{
+					SetFrame(4, 0, PhaseTwoProfile);
+
+					if ((jumpState += 0.35f) > 3)
+					{
+						SetFrame(3, PhaseTwoProfile.GetFrameCount(3) - 1, PhaseTwoProfile);
+						NPC.velocity.Y -= 8;
+					}
+				}
+
+				break;
+
+			case 3: //Transition hop
+				NPC.velocity.X *= 0.9f;
+
+				if (UpdateFrame(3, -12, PhaseTwoProfile, false) == FrameState.Stopped)
+					ChangeState(FlyHover);
+
+				break;
 		}
 
 		if (Counter > expire_time)
@@ -887,7 +918,7 @@ public partial class Scarabeus : ModNPC
 
 			if (Main.rand.NextBool(4) && !Main.dedServ)
 			{
-				Color[] colors = GetTilePalette(NPC.Center.ToTileCoordinates());
+				Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
 				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, colors[0], Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30)
 				{
 					Pixellate = true,
