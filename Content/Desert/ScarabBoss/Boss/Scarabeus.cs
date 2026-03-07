@@ -65,7 +65,7 @@ public partial class Scarabeus : ModNPC
 		});
 
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17, 2]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [4, 6, 4, 5, 13]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
 	}
 
 	public override void SetDefaults()
@@ -80,6 +80,7 @@ public partial class Scarabeus : ModNPC
 			GroundedSlam,
 			Dig,
 			BounceGroundPound,
+			Transition,
 			FlyHover,
 			FlyingDash,
 			ChainGroundPound,
@@ -124,9 +125,8 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
-			ChangeState(FlyHover);
+			ChangeState(Transition);
 			NPC.Opacity = 1f;
-			Profile = PhaseTwoProfile;
 			phaseTwo = true;
 		}
 

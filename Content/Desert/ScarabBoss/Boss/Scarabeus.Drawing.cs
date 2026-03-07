@@ -2,7 +2,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
-using Terraria.GameContent.UI.States;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 

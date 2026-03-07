@@ -49,6 +49,14 @@ public sealed class ScarabRadio : ModItem
 				MusicBoxTile.SpawnMusicNote(i, j);
 		}
 
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+			Player.cursorItemIconID = ModContent.ItemType<ScarabRadio>();
+		}
+
 		public override bool RightClick(int i, int j)
 		{
 			HitWire(i, j);

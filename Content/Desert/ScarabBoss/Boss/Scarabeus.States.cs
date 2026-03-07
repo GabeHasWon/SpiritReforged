@@ -669,6 +669,27 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Phase 2
+	public void Transition()
+	{
+		NPC.velocity.X *= 0.5f;
+		bool jumping = currentFrame == new Point(0, 2);
+		NPC.noGravity = jumping;
+
+		if (jumping)
+		{
+			NPC.velocity.Y *= 0.95f;
+
+			if (Counter >= 20)
+				ChangeState(ScarabSwarm);
+		}
+		else if (UpdateFrame(5, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+		{
+			SetFrame(0, 2, PhaseTwoProfile);
+			NPC.velocity.Y -= 15;
+			Counter = 0;
+		}
+	}
+
 	public void FlyHover()
 	{
 		const int hover_time = 180;
@@ -751,7 +772,7 @@ public partial class Scarabeus : ModNPC
 				Counter = idle_time + 1;
 			}
 
-			SetFrame(0, 2, PhaseTwoProfile);
+			SetFrame(0, 0, PhaseTwoProfile);
 			showTrail = true;
 
 			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
