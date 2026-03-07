@@ -7,6 +7,10 @@ using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.Forest.Cloud.Items;
+using SpiritReforged.Content.Forest.Misc;
+using SpiritReforged.Content.Savanna.Items.Gar;
+using SpiritReforged.Content.Savanna.Tiles.Paintings;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat;
 using SpiritReforged.Content.Ziggurat.Scarab;
@@ -482,53 +486,84 @@ public partial class ZigguratBiome : Microbiome
 	{
 		List<int> main = [ModContent.ItemType<GildedScarab>(), ModContent.ItemType<CeremonialDagger>(), ModContent.ItemType<WindshearScepter>(), ModContent.ItemType<BangleOfStrength>()];
 
+		// Secondary Slot
 		WeightedRandom<(int, Range)> secondary = new();
-		secondary.Add((ItemID.Amethyst, 6..12));
-		secondary.Add((ItemID.Topaz, 5..11));
-		secondary.Add((ItemID.Sapphire, 3..8));
-		secondary.Add((ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25));
 		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
 
-		if (CrossMod.Fables.CheckFind("CeilingChisel", out ModItem chisel))
-			secondary.Add((chisel.Type, 1..1), 0.05f);
+		secondary.Add((ItemID.WhitePearl, 2..5));
+		secondary.Add((ItemID.PinkPearl, 2..4), 0.5f);
+		secondary.Add((ItemID.BlackPearl, 1..3), 0.33f);
 
-		if (CrossMod.Thorium.Enabled)
+		(string name, float weight)[] thoriumLoot =
+		[
+			("AmberRing", 0.75f),
+			("AmethystRing", 0.5f),
+			("AquamarineRing", 0.33f),
+			("EmeraldRing", 0.33f),
+			("OpalRing", 0.33f),
+			("RubyRing", 0.33f),
+			("SapphireRing", 0.33f),
+			("TopazRing", 0.33f),
+			("DiamondRing", 0.25f),
+			("EighthPlagueStaff", 0.15f)
+		];
+
+		foreach (var (name, weight) in thoriumLoot)
 		{
-			if (CrossMod.Thorium.TryFind("Opal", out ModItem opal))
-				secondary.Add((opal.Type, 4..8));
-
-			if (CrossMod.Thorium.TryFind("Aquamarine", out ModItem aquamarine))
-				secondary.Add((aquamarine.Type, 4..8));
+			if (CrossMod.Thorium.CheckFind(name, out ModItem thorium))
+				secondary.Add((thorium.Type, 1..1), weight);
 		}
 
-		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
-			secondary.Add((aquamarineVerdant.Type, 4..8));
+		if (CrossMod.Redemption.CheckFind("CorpseWalkerStaff", out ModItem walkerStaff))
+			secondary.Add((walkerStaff.Type, 1..1), 0.15f);
 
+		// Gems
+		WeightedRandom<(int, Range)> gemPool = new();
+		gemPool.Add((ItemID.Amethyst, 6..12));
+		gemPool.Add((ItemID.Topaz, 5..11));
+		gemPool.Add((ItemID.Sapphire, 3..8));
+		gemPool.Add((ModContent.GetInstance<CarvedLapis>().AutoItemType(), 15..25));
+
+		if (CrossMod.Thorium.CheckFind("Opal", out ModItem opal))
+			gemPool.Add((opal.Type, 4..8));
+
+		if (CrossMod.Thorium.CheckFind("Aquamarine", out ModItem aquamarine))
+			gemPool.Add((aquamarine.Type, 4..8));
+
+		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
+			gemPool.Add((aquamarineVerdant.Type, 4..8));
+
+		// Misc
 		PriorityQueue<(int, Range), float> miscQueue = new();
 		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.TeleportationPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ModContent.ItemType<QuenchPotion>(), 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ModContent.ItemType<DoubleJumpPotion>(), 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ModContent.ItemType<RemedyPotion>(), 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.ThornsPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.ShinePotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.BattlePotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.Rope, 50..100), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((AutoContent.ItemType<WaningSun>(), 1..1), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ScarabBomb, 5..9), WorldGen.genRand.NextFloat());
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
 		var (type, stack) = secondary.Get();
-		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
+
+		var (gemType, gemStack) = gemPool.Get();
+		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
 
 		int miscCount = WorldGen.genRand.Next(3, 5);
 
 		for (int i = 0; i < miscCount; ++i)
 		{
 			var (miscType, miscStack) = miscQueue.Dequeue();
-			chest.item[2 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+			chest.item[3 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
 		}
 	}
 

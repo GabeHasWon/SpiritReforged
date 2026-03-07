@@ -100,11 +100,9 @@ public class StoneStupas : PotTile, ILootable
 	{
 		List<IItemDropRule> branch = [];
 
-		List<int> potions = [ItemID.IronskinPotion, ItemID.ShinePotion, ItemID.NightOwlPotion, ItemID.SwiftnessPotion,
-			ItemID.MiningPotion, ItemID.CalmingPotion, ItemID.BuilderPotion, ItemID.RecallPotion, ItemID.ArcheryPotion,
-			ItemID.GillsPotion, ItemID.HunterPotion, ItemID.TrapsightPotion, ItemID.FeatherfallPotion, ItemID.WaterWalkingPotion,
-			ItemID.GravitationPotion, ItemID.InvisibilityPotion, ItemID.ThornsPotion, ItemID.HeartreachPotion, ItemID.FlipperPotion,
-			ItemID.ManaRegenerationPotion, ItemID.ObsidianSkinPotion, ItemID.MagicPowerPotion, ItemID.BattlePotion, ItemID.TitanPotion];
+		List<int> potions = [ItemID.NightOwlPotion, ItemID.CalmingPotion, ItemID.RecallPotion,
+			ItemID.GillsPotion, ItemID.HunterPotion, ItemID.TrapsightPotion, 
+			ItemID.HeartreachPotion, ItemID.ManaRegenerationPotion, ItemID.MagicPowerPotion];
 
 		branch.Add(ItemDropRule.OneFromOptions(15, [.. potions]));
 		branch.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.Multiplayer), ItemID.WormholePotion, 30));
@@ -116,7 +114,6 @@ public class StoneStupas : PotTile, ILootable
 			branch.Add(DropRules.LootPoolDrop.SameStack(10, 20, 1, 8, 3, ItemID.WoodenArrow, ItemID.Shuriken));
 
 		branch.Add(ItemDropRule.Common(Main.hardMode ? ItemID.HealingPotion : ItemID.LesserHealingPotion));
-		branch.Add(ItemDropRule.Common(ItemID.Bomb, 8, 1, 4));
 
 		if (!Main.hardMode)
 			branch.Add(ItemDropRule.Common(ItemID.Rope, 4, 20, 40));
