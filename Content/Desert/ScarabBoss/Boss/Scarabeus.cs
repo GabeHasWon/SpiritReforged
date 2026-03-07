@@ -154,10 +154,10 @@ public partial class Scarabeus : ModNPC
 			//wingSoundSlot = SlotId.Invalid;
 			//}
 
-			//for (int i = 1; i <= 7; i++)
-			//	Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
-
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
+
+			for (int i = 1; i < 12; i++)
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 30; i++)
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
@@ -168,7 +168,7 @@ public partial class Scarabeus : ModNPC
 				dust.velocity *= 5f;
 				dust.noGravity = true;
 
-				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, .82f).velocity *= 2f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
 			}
 		}
 	}
