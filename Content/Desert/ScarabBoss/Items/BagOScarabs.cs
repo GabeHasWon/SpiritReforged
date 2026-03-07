@@ -11,6 +11,7 @@ public class BagOScarabs : BossBagItem
 		itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
 		itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<SerratedClaws>()));
+		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<Scarabeus>()));
 	}
 }
