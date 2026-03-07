@@ -860,6 +860,7 @@ public partial class Scarabeus : ModNPC
 					}
 				}
 
+				dealContactDamage = true;
 				NPC.noTileCollide = false;
 				NPC.velocity.Y += 0.6f;
 				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
@@ -872,6 +873,9 @@ public partial class Scarabeus : ModNPC
 			case 2: //Stationary slam
 				NPC.velocity.X *= 0.9f;
 				FrameState state = UpdateFrame(4, 12, PhaseTwoProfile, false);
+
+				if (currentFrame.Y is > 2 and < 7)
+					dealContactDamage = true;
 
 				if ((jumpState > 2.5f) ? state == FrameState.Stopped : currentFrame.Y == 9)
 				{
