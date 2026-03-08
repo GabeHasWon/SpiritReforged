@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
@@ -29,8 +30,11 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[1] = value;
 	}
 
+	/// <summary> The player currently targeted by this NPC. </summary>
 	public Player Target => Main.player[NPC.target];
+	/// <summary> Whether this NPC should ignore platform collision. </summary>
 	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
+	/// <summary> Whether this NPC is in contact with the ground. </summary>
 	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
 
 	/// <summary> Whether the second phase has started. </summary>
@@ -158,6 +162,12 @@ public partial class Scarabeus : ModNPC
 
 			for (int i = 1; i < 12; i++)
 				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+
+			for (int i = 0; i < 8; i++)
+			{
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
+			}
 
 			for (int i = 0; i < 30; i++)
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;

@@ -1,9 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
-using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -14,76 +13,36 @@ public sealed class ScarabRadio : ModItem
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
-			Main.tileNoAttach[Type] = true;
-			Main.tileLavaDeath[Type] = true;
+			Main.tileObsidianKill[Type] = true;
+
+			TileID.Sets.HasOutlines[Type] = true;
+			TileID.Sets.DisableSmartCursor[Type] = true;
 
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
-			TileObjectData.newTile.Origin = new(0, 1);
-			TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-			TileObjectData.newTile.DrawYOffset = 2;
-			TileObjectData.newTile.StyleHorizontal = true;
-
-			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
-			TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
-			TileObjectData.addAlternate(1);
+			TileObjectData.newTile.CoordinateHeights = [16, 18];
+			TileObjectData.newTile.Origin = new Point16(0, 1);
+			TileObjectData.newTile.LavaDeath = false;
 			TileObjectData.addTile(Type);
 
+			RegisterItemDrop(ModContent.ItemType<ScarabRadio>()); //Register this drop for all styles
+			AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
 			DustType = -1;
-			AddMapEntry(FurnitureTile.CommonColor, CreateMapEntryName());
-			RegisterItemDrop(ModContent.ItemType<ScarabRadio>());
 		}
 
-		public override void NearbyEffects(int i, int j, bool closer)
-		{
-			if (!closer && !Main.dedServ)
-			{
-				Tile tile = Main.tile[i, j];
-				if (tile.TileFrameX % 36 == 0 && tile.TileFrameY == 0)
-					ChooseMusic.SetMusic(MusicSlot);
-			}
-		}
+		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
 		public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 		{
-			if (visible && tile.TileFrameX % 36 == 0 && tile.TileFrameY == 0 && MusicBoxTile.SpawnNote)
+			if (visible && tile.TileFrameX == 36 && tile.TileFrameY % 36 == 0 && MusicBoxTile.SpawnNote)
 				MusicBoxTile.SpawnMusicNote(i, j);
 		}
 
 		public override void MouseOver(int i, int j)
 		{
-			Player Player = Main.LocalPlayer;
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
-			Player.cursorItemIconID = ModContent.ItemType<ScarabRadio>();
-		}
-
-		public override bool RightClick(int i, int j)
-		{
-			HitWire(i, j);
-			return true;
-		}
-
-		public override void HitWire(int i, int j)
-		{
-			const int height = 36;
-			TileExtensions.GetTopLeft(ref i, ref j);
-
-			for (int y = 0; y < 2; y++)
-			{
-				for (int x = 0; x < 2; x++)
-				{
-					Tile tile = Framing.GetTileSafely(i + x, j + y);
-					tile.TileFrameY += (short)((tile.TileFrameY < height) ? height : -height);
-
-					Wiring.SkipWire(i + x, j + y);
-				}
-			}
-
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendTileSquare(-1, i, j, 2, 2);
-
-			if (!Main.dedServ)
-				SoundEngine.PlaySound(SoundID.Mech);
+			Player player = Main.LocalPlayer;
+			player.noThrow = 2;
+			player.cursorItemIconEnabled = true;
+			player.cursorItemIconID = ModContent.ItemType<ScarabRadio>();
 		}
 	}
 
@@ -115,12 +74,18 @@ public sealed class ScarabRadio : ModItem
 		orig(ref drawinfo);
 	}
 
-	public override void SetStaticDefaults() => MusicSlot = MusicLoader.GetMusicSlot(Mod, "Assets/Music/RadioScarab");
+	public override void SetStaticDefaults()
+	{
+		MusicSlot = MusicLoader.GetMusicSlot(Mod, "Assets/Music/RadioScarab");
+		MusicLoader.AddMusicBox(Mod, MusicSlot, Type, ModContent.TileType<ScarabRadioTile>());
+
+		ItemID.Sets.CanGetPrefixes[Type] = false;
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.MusicBox;
+	}
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<ScarabRadioTile>());
-		Item.width = Item.height = 14;
+		Item.DefaultToMusicBox(ModContent.TileType<ScarabRadioTile>());
 		Item.maxStack = 1;
 		Item.holdStyle = ItemHoldStyleID.HoldUp;
 		Item.value = Item.sellPrice(gold: 1);
@@ -133,7 +98,7 @@ public sealed class ScarabRadio : ModItem
 		{
 			ChooseMusic.SetMusic(MusicSlot);
 
-			if (MusicBoxTile.SpawnNote)
+			if ((int)Main.timeForVisualEffects % 20 == 0 && Main.rand.NextBool(3))
 			{
 				var gore = Gore.NewGoreDirect(player.GetSource_FromThis("HeldItem"), player.Top - new Vector2(0, 20), new Vector2(0, -0.5f), Main.rand.Next(570, 573), 0.8f);
 				gore.position.X -= gore.Width / 2;
