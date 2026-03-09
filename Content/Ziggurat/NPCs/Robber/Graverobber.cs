@@ -11,6 +11,7 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.Utilities;
 
@@ -55,6 +56,13 @@ public class Graverobber : ModNPC
 
 			spriteBatch.Draw(texture, _position - Main.screenPosition, source, Lighting.GetColor(_position.ToTileCoordinates()), 0, source.Size() / 2, 1, effects, 0);
 		}
+	}
+
+	public class HoldingLanternRule : IItemDropRuleCondition
+	{
+		public bool CanDrop(DropAttemptInfo info) => info.npc.ModNPC is Graverobber robber && robber.VisualStyle == 0;
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.NPCs.Graverobber.HoldingLantern");
 	}
 
 	public enum State : byte { Idle, Walk, Jump }
@@ -136,6 +144,9 @@ public class Graverobber : ModNPC
 				_bag ??= new(NPC.Center + new Vector2(NPC.direction * -40, 0));
 				_bag.Update();
 			}
+
+			if (_alerted)
+				NPC.direction = NPC.spriteDirection = Math.Sign(Main.player[NPC.target].Center.X - NPC.Center.X);
 		}
 		else
 		{
@@ -166,7 +177,7 @@ public class Graverobber : ModNPC
 				NPC.velocity.Y -= 5; //Jump
 		}
 
-		if (Math.Sign(NPC.velocity.X) != NPC.direction)
+		if (Math.Sign(NPC.velocity.X) != NPC.direction && NPC.velocity.X != 0)
 			NPC.direction = NPC.spriteDirection = -Math.Sign(NPC.velocity.X);
 
 		Counter++;
@@ -252,17 +263,18 @@ public class Graverobber : ModNPC
 
 		if ((player.ZoneDesert || player.ZoneUndergroundDesert) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>())
 			&& aboveWallType != WallID.None && !Main.wallHouse[aboveWallType])
-			return 0.18f;
+			return 0.12f;
 
 		return SpawnCondition.Cavern.Chance * 0.05f;
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 10);
+		npcLoot.AddCommon(ModContent.ItemType<GiantBag>(), 20);
 
-		if (VisualStyle == 0)
-			npcLoot.AddCommon(ItemID.MagicLantern, 15);
+		LeadingConditionRule rule = new(new HoldingLanternRule());
+		rule.OnSuccess(ItemDropRule.Common(ItemID.MagicLantern, 15));
+		npcLoot.Add(rule);
 
 		npcLoot.AddCommon(ModContent.ItemType<CarrotCake>(), 30);
 		npcLoot.AddCommon(ItemID.GravediggerShovel, 20);
