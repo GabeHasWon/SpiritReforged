@@ -1,10 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
-using SpiritReforged.Content.Savanna.Items;
-using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -40,7 +37,6 @@ internal class StarPowderProj : ModProjectile
 	public override string Texture => base.Texture[..^"Proj".Length];
 
 	private bool _justSpawned;
-	private HashSet<Point16> _convertedTiles = []; 
 
 	public override void SetDefaults() => Projectile.CloneDefaults(ProjectileID.PurificationPowder);
 	public override void AI()
@@ -64,14 +60,7 @@ internal class StarPowderProj : ModProjectile
 		}
 
 		Point16 pt = Projectile.Center.ToTileCoordinates16();
-
-		if (!_convertedTiles.Contains(pt))
-		{
-			WorldGen.Convert(pt.X, pt.Y, StarConversion.ConversionType, 3, true, true);
-			_convertedTiles.Add(pt);
-
-			Main.NewText(pt);
-		}
+		WorldGen.Convert(pt.X, pt.Y, StarConversion.ConversionType, 3, true, true);
 	}
 
 	public override bool? CanCutTiles() => false;
