@@ -15,6 +15,8 @@ internal class SignTagHandler : ILoadable
 	private static bool _wasSignHover;
 	/// <summary> All tag data on the currently viewed sign. </summary>
 	private static string _currentTag;
+	/// <summary> Used to avoid clipping on the wavy sign tag effect, and reduce the amount of Immediate batching restarts. </summary>
+	private static RenderTarget2D _drawingTarget = null;
 
 	public void Load(Mod mod)
 	{
@@ -29,6 +31,19 @@ internal class SignTagHandler : ILoadable
 		On_Main.TextDisplayCache.PrepareCache += ModifySignMenu;
 		On_Sign.TextSign += VerifyEditTag;
 		On_Main.DrawInterface += ResetSignHover;
+
+		if (Main.dedServ)
+			return;
+
+		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370)); // 530, 370 is the max size of a vanilla sign UI
+	}
+
+	public void Unload()
+	{
+		if (Main.dedServ)
+			return;
+
+		Main.RunOnMainThread(() => _drawingTarget?.Dispose());
 	}
 
 	private static void TrackSignText(On_Main.orig_DrawMouseOver orig, Main self)
@@ -186,7 +201,13 @@ internal class SignTagHandler : ILoadable
 			lineAmount++;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+			Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+			RenderTargetBinding[] bindings = Main.instance.GraphicsDevice.GetRenderTargets();
+			Main.instance.GraphicsDevice.SetRenderTarget(_drawingTarget);
+			Main.instance.GraphicsDevice.Clear(Color.Transparent);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
 			PlayerInput.SetZoom_UI();
 
@@ -213,25 +234,41 @@ internal class SignTagHandler : ILoadable
 			var rectangle = new Rectangle((int)vector.X - 10, (int)vector.Y - 5, (int)width + 20, 30 * lineAmount + 7);
 			var color = Main.MouseTextColorReal;
 
-			if (Main.SettingsEnabled_OpaqueBoxBehindTooltips)
-			{
-				color = Color.Lerp(color, Color.White, 1);
-				Utils.DrawInvBG(Main.spriteBatch, rectangle, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
-			}
-
 			bool skipDraw = false;
 			GetText(_currentTag, delegate (SignTag tag)
 			{
-				if (tag.Draw(rectangle, array, lineAmount, ref color) == true)
+				if (tag.ModifyDraw(rectangle, array, lineAmount, ref color) == true)
 					skipDraw = true;
 			});
 
 			if (!skipDraw)
 			{
-				var textPosition = new Vector2(rectangle.X + 10, rectangle.Y + 5);
+				var textPosition = new Vector2(20, 20);// rectangle.X + 10, rectangle.Y + 5);
 				for (int line = 0; line < lineAmount; line++)
 					Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, array[line], textPosition.X, textPosition.Y + line * 30, color, Color.Black, Vector2.Zero);
 			}
+
+			Main.spriteBatch.End();
+			Main.instance.GraphicsDevice.SetRenderTargets(bindings);
+
+			// Consider maybe having a PreShader hook for sign tags, but isn't necessary atm and this saves a restart.
+			if (Main.SettingsEnabled_OpaqueBoxBehindTooltips)
+			{
+				Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+
+				color = Color.Lerp(color, Color.White, 1);
+				Utils.DrawInvBG(Main.spriteBatch, rectangle, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
+				
+				Main.spriteBatch.End();
+			}
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			GetText(_currentTag, delegate (SignTag tag)
+			{
+				tag.ModifyRenderTarget();
+			});
+
+			Main.spriteBatch.Draw(_drawingTarget, new Vector2(rectangle.X - 10, rectangle.Y - 15), Color.White);
 
 			Main.mouseText = true;
 			return false;
@@ -273,6 +310,4 @@ internal class SignTagHandler : ILoadable
 		orig(self, gameTime);
 		_wasSignHover = Main.signHover != -1;
 	}
-
-	public void Unload() { }
 }
