@@ -284,7 +284,7 @@ public class SaltBlockReflective : SaltBlock
 		{
 			int samples = colors.Length - 1;
 
-			float areaWidth = Main.screenWidth;
+			float areaWidth = Main.screenWidth ;
 			float areaHeight = Main.screenHeight;
 			float divHeight = areaHeight / samples;
 

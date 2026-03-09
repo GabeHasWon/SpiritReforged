@@ -33,7 +33,7 @@ internal class ColorfulTag : SignTag
 		return true;
 	}
 
-	public override bool Draw(Rectangle panel, string[] text, int numLines, ref Color color)
+	public override bool ModifyDraw(Rectangle panel, string[] text, int numLines, ref Color color)
 	{
 		color = ((_color == default) ? Main.DiscoColor : _color).Additive(Main.mouseTextColor);
 

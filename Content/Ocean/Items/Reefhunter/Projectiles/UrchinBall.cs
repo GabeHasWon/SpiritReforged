@@ -241,22 +241,22 @@ public class UrchinBall : ModProjectile
 		for (int i = 0; i < 2; i++)
 		{
 			var easeFunction = (i == 0) ? EaseFunction.EaseQuadOut : EaseFunction.EaseCubicOut;
-			float ringWidth = 0.35f + Main.rand.NextFloat(-0.1f, 0.1f);
-			float size = 200 + Main.rand.NextFloat(-25, 50);
-			int lifetime = 25 + Main.rand.Next(11);
+			float ringWidth = 0.85f + Main.rand.NextFloat(-0.1f, 0.1f);
+			float size = 150 + Main.rand.NextFloat(-25, 26);
+			int lifetime = 17 + Main.rand.Next(6);
 			float zRotation = Main.rand.NextFloat(0.7f, 0.9f);
-			float xyRotation = angle + Main.rand.NextFloat(0.3f, -0.3f);
+			float xyRotation = angle + Main.rand.NextFloat(0.5f) * (i - 0.5f) * 2;
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
 				Projectile.Center + Main.rand.NextVec2CircularEven(5, 5),
-				OrangeVFXColor(100) * 0.5f,
-				OrangeVFXColor(100) * 0.1f,
+				OrangeVFXColor(100) * 0.75f,
+				OrangeVFXColor(100) * 0.25f,
 				ringWidth,
 				size,
 				lifetime,
-				"noise",
-				new Vector2(3, 0.15f),
-				easeFunction).WithSkew(zRotation, xyRotation));
+				"cloudNoise",
+				new Vector2(1.5f, 1),
+				easeFunction, false, ringWidth * 0.75f).WithSkew(zRotation, xyRotation));
 		}
 
 		for (int i = -1; i < 2; i += 2)
