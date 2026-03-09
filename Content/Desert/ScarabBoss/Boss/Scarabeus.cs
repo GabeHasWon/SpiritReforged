@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
@@ -29,8 +30,11 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[1] = value;
 	}
 
+	/// <summary> The player currently targeted by this NPC. </summary>
 	public Player Target => Main.player[NPC.target];
+	/// <summary> Whether this NPC should ignore platform collision. </summary>
 	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
+	/// <summary> Whether this NPC is in contact with the ground. </summary>
 	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
 
 	/// <summary> Whether the second phase has started. </summary>
@@ -65,7 +69,7 @@ public partial class Scarabeus : ModNPC
 		});
 
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17, 2]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [4, 6, 4, 5, 13]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
 	}
 
 	public override void SetDefaults()
@@ -80,6 +84,7 @@ public partial class Scarabeus : ModNPC
 			GroundedSlam,
 			Dig,
 			BounceGroundPound,
+			Transition,
 			FlyHover,
 			FlyingDash,
 			ChainGroundPound,
@@ -124,8 +129,8 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
-			ChangeState(FlyHover);
-			Profile = PhaseTwoProfile;
+			ChangeState(Transition);
+			NPC.Opacity = 1f;
 			phaseTwo = true;
 		}
 
@@ -153,10 +158,16 @@ public partial class Scarabeus : ModNPC
 			//wingSoundSlot = SlotId.Invalid;
 			//}
 
-			//for (int i = 1; i <= 7; i++)
-			//	Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
-
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
+
+			for (int i = 1; i < 12; i++)
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+
+			for (int i = 0; i < 8; i++)
+			{
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
+			}
 
 			for (int i = 0; i < 30; i++)
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
@@ -167,7 +178,7 @@ public partial class Scarabeus : ModNPC
 				dust.velocity *= 5f;
 				dust.noGravity = true;
 
-				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, .82f).velocity *= 2f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
 			}
 		}
 	}
@@ -199,6 +210,7 @@ public partial class Scarabeus : ModNPC
 
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));

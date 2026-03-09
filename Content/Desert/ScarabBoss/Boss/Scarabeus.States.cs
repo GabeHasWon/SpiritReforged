@@ -3,6 +3,8 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
@@ -42,32 +44,38 @@ public partial class Scarabeus : ModNPC
 		{
 			if (NPC.Opacity == 0) //One-time effects
 			{
-				NPC.noTileCollide = false;
 				NPC.noGravity = false;
-				NPC.velocity.Y = -12;
+				NPC.velocity.Y = -30;
 				NPC.Opacity = 1;
 			}
+
+			NPC.noTileCollide = NPC.velocity.Y < 0;
 
 			if (Grounded) //Landed
 			{
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);
 				NPC.rotation = 0;
+				NPC.velocity.X = 0;
 
 				if (!Main.dedServ)
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 2, 3, 20));
 			}
 			else
 			{
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center - new Vector2(80 * NPC.direction, 0)).X * 10, 0.2f);
+				NPC.rotation += 0.4f * NPC.direction;
+				NPC.GravityMultiplier *= 3;
+
 				SetFrame(DigFrame, PhaseOneProfile);
-				NPC.rotation += 0.3f * NPC.direction;
+				showTrail = true;
 			}
 		}
 		else //Rumbling
 		{
 			if (Counter == 0) //On-spawn effects
 			{
-				NPC.Center = FindGroundFromPosition(Target.Center) - new Vector2(0, NPC.height / 2);
+				NPC.Center = (FindSandySurface(Target.Center.ToTileCoordinates(), out Point result) ? result.ToWorldCoordinates() : FindGroundFromPosition(Target.Center)) - new Vector2(0, NPC.height / 2);
 				NPC.FaceTarget();
 
 				if (!Main.dedServ)
@@ -114,6 +122,26 @@ public partial class Scarabeus : ModNPC
 				if (Counter % 20 == 0)
 					BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX + NPC.velocity / 2);
 			}
+		}
+
+		static bool FindSandySurface(Point origin, out Point result)
+		{
+			const int range = 50;
+
+			for (int x = origin.X - range / 2; x < origin.X + range / 2; x++)
+			{
+				int y = WorldMethods.FindGround(x, origin.Y);
+				Tile tile = Main.tile[x, y];
+
+				if (tile.HasTile && tile.TileType == TileID.Sand)
+				{
+					result = new Point(x, y);
+					return true;
+				}
+			}
+
+			result = Point.Zero;
+			return false;
 		}
 	}
 	#endregion
@@ -669,6 +697,27 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Phase 2
+	public void Transition()
+	{
+		NPC.velocity.X *= 0.5f;
+		bool jumping = currentFrame == new Point(0, 2);
+		NPC.noGravity = jumping;
+
+		if (jumping)
+		{
+			NPC.velocity.Y *= 0.95f;
+
+			if (Counter >= 20)
+				ChangeState(ScarabSwarm);
+		}
+		else if (UpdateFrame(5, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+		{
+			SetFrame(0, 2, PhaseTwoProfile);
+			NPC.velocity.Y -= 15;
+			Counter = 0;
+		}
+	}
+
 	public void FlyHover()
 	{
 		const int hover_time = 180;
@@ -751,7 +800,7 @@ public partial class Scarabeus : ModNPC
 				Counter = idle_time + 1;
 			}
 
-			SetFrame(0, 2, PhaseTwoProfile);
+			SetFrame(0, 0, PhaseTwoProfile);
 			showTrail = true;
 
 			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
@@ -839,6 +888,7 @@ public partial class Scarabeus : ModNPC
 					}
 				}
 
+				dealContactDamage = true;
 				NPC.noTileCollide = false;
 				NPC.velocity.Y += 0.6f;
 				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
@@ -851,6 +901,9 @@ public partial class Scarabeus : ModNPC
 			case 2: //Stationary slam
 				NPC.velocity.X *= 0.9f;
 				FrameState state = UpdateFrame(4, 12, PhaseTwoProfile, false);
+
+				if (currentFrame.Y is > 2 and < 7)
+					dealContactDamage = true;
 
 				if ((jumpState > 2.5f) ? state == FrameState.Stopped : currentFrame.Y == 9)
 				{

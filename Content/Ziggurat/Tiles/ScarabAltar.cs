@@ -94,7 +94,11 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			Projectile.scale = Math.Min(Projectile.scale + 0.05f, 1);
 
 			float speed = EaseFunction.EaseCubicInOut.Ease(Counter / 30) * 8;
-			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(_origin) * speed, 0.1f);
+			var velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(_origin) * speed, 0.1f);
+
+			if (!velocity.HasNaNs())
+				Projectile.velocity = velocity;
+
 			Projectile.rotation += Projectile.velocity.X * 0.08f;
 
 			if (++Counter > 30 && Projectile.DistanceSQ(_origin) < 16 * 16)

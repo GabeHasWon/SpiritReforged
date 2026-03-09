@@ -2984,3 +2984,8 @@ ScarabTrophy: {
 	DisplayName: Scarabeus Trophy
 	Tooltip: ""
 }
+
+ScarabRadio: {
+	DisplayName: Scarab Radio
+	Tooltip: ""
+}

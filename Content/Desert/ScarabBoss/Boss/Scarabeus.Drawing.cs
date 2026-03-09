@@ -106,6 +106,9 @@ public partial class Scarabeus : ModNPC
 
 		NPC.frame.X = NPC.frame.Width * currentFrame.X;
 		NPC.frame.Y = NPC.frame.Height * currentFrame.Y;
+
+		if (NPC.IsABestiaryIconDummy)
+			UpdateFrame(currentFrame.X, 12, PhaseOneProfile);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -116,7 +119,7 @@ public partial class Scarabeus : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		Vector2 position = NPC.Center - Main.screenPosition - new Vector2(0, 8);
+		Vector2 position = NPC.Center - screenPos - new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 		Vector2 origin = new(108, 98);
 
 		if (showTrail)
@@ -150,6 +153,19 @@ public partial class Scarabeus : ModNPC
 
 			DrawHelpers.DrawOutline(spriteBatch, Glowmask.Value, NPC.Center - Main.screenPosition, default, (offset) =>
 				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, NPC.scale, effects));
+		}
+
+		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
+		{
+			Rectangle portraitBox = new((int)position.X - NPC.frame.Width / 2, (int)position.Y - NPC.frame.Height / 2, NPC.frame.Width, NPC.frame.Height);
+			var dimensions = Main.BestiaryUI.GetDimensions().ToRectangle();
+			Rectangle bestiaryBox = new(dimensions.X + (int)(dimensions.Width * 0.6f), dimensions.Y, (int)(dimensions.Width * 0.4f), dimensions.Height);
+
+			int oldFrameX = currentFrame.X;
+			currentFrame.X = (bestiaryBox.Contains(Main.MouseScreen.ToPoint()) && portraitBox.Contains(Main.MouseScreen.ToPoint())) ? 6 : 1;
+
+			if (oldFrameX != currentFrame.X)
+				currentFrame.Y = 0; //Reset
 		}
 
 		return false;
