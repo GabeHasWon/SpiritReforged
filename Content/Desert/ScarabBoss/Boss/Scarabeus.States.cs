@@ -683,6 +683,7 @@ public partial class Scarabeus : ModNPC
 		NPC.velocity.X *= 0.5f;
 		bool jumping = currentFrame == new Point(0, 2);
 		NPC.noGravity = jumping;
+		NPC.noTileCollide = false;
 
 		if (jumping)
 		{
