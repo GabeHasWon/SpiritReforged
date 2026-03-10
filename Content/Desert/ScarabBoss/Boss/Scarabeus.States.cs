@@ -3,6 +3,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
@@ -681,12 +682,14 @@ public partial class Scarabeus : ModNPC
 	public void Transition()
 	{
 		NPC.velocity.X *= 0.5f;
-		bool jumping = currentFrame == new Point(0, 2);
-		NPC.noGravity = jumping;
+		bool jumpingFrame = currentFrame == new Point(0, 2);
+		NPC.noGravity = jumpingFrame;
 		NPC.noTileCollide = false;
+		NPC.dontTakeDamage = true;
 
-		if (jumping)
+		if (jumpingFrame)
 		{
+			NPC.dontTakeDamage = false;
 			NPC.velocity.Y *= 0.95f;
 
 			if (Counter >= 20)
@@ -697,6 +700,15 @@ public partial class Scarabeus : ModNPC
 			SetFrame(0, 2, PhaseTwoProfile);
 			NPC.velocity.Y -= 15;
 			Counter = 0;
+		}
+		else if (!Main.dedServ && Counter == 0) //Spawn effects
+		{
+			var easeAnimation = new AnimationSequence()
+				.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
+				.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
+				.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 		}
 	}
 
