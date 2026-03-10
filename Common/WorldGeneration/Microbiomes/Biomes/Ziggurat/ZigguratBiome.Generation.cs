@@ -37,8 +37,9 @@ public partial class ZigguratBiome : Microbiome
 	protected override void OnPlace(Point16 point)
 	{
 		Rectangle area = new(point.X - Width / 2, point.Y - Height / 2, Width, Height);
+		int layers = Math.Max((int)(Main.maxTilesY / 1200f * 2) + 2, 4);
 
-		CreateShape(area, 4, out var bounds);
+		CreateShape(area, layers, out var bounds);
 		TotalBounds = [.. bounds];
 
 		CreateAltar(bounds[0]);
@@ -585,13 +586,9 @@ public partial class ZigguratBiome : Microbiome
 		ZigguratRooms.BasicRoom selection;
 
 		if (WorldGen.genRand.NextBool(4))
-		{
 			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise), new ZigguratRooms.BurialRoom(bound, noise));
-		}
 		else
-		{
 			selection = new ZigguratRooms.BasicRoom(bound, noise);
-		}
 
 		if (layer == numLayers && progress == 0) //Final layer
 		{
