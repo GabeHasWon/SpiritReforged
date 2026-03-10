@@ -96,15 +96,7 @@ public class AdornedFlash : ModProjectile
 		Projectile.velocity = Projectile.rotation.ToRotationVector2();
 
 		if (Projectile.timeLeft > 40)
-			Lighting.AddLight(Projectile.Center, MulticolorLerp(Projectile.timeLeft / 50f, PrismaticColors).ToVector3() * (Projectile.timeLeft / 50f));
-	}
-	internal static Color MulticolorLerp(float increment, params Color[] colors)
-	{
-		increment %= 0.999f;
-		int currentColorIndex = (int)(increment * colors.Length);
-		Color color = colors[currentColorIndex];
-		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
-		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
+			Lighting.AddLight(Projectile.Center, AdornedArrowHandler.MulticolorLerp(Projectile.timeLeft / 50f, PrismaticColors).ToVector3() * (Projectile.timeLeft / 50f));
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
