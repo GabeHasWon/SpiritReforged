@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -9,42 +10,57 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 public class AdornedFlash : ModProjectile
 {
-	// TODO: use better sound
-	internal static SoundStyle FlashHit = SoundID.Item29 with { PitchVariance = 0.2f, Volume = 0.2f };
 	public override string Texture => AssetLoader.EmptyTexture;
 
-	public Vector2 originalCenter;
-
+	// TODO: use better sound
+	internal static SoundStyle FlashHit = SoundID.Item29 with { PitchVariance = 0.2f, Volume = 0.2f };
+	
 	public int _maxShines;
-
-	public Vector2[] shineScales;
-	public float[] shineRotations;
 	public int[] shineColors; // indices of PrismaticColors
+	private int PrismaticTimer;
+
+	private float MaxPrismaticTimer;
+	public float[] shineRotations;
+
+	public Vector2 originalCenter;
+	public Vector2[] shineScales;
 
 	private Color[] PrismaticColors = new Color[3]; // base colors
-	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors
-	private int PrismaticTimer;
-	private float MaxPrismaticTimer;
-
-	private void InitializeColors()
+	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors	
+	public override void Load()
 	{
-		PrismaticColors = AdornedArrowHandler.GetPrismaticColors();
-
-		PrismaticActiveColors[0] = PrismaticColors[0];
-		PrismaticActiveColors[1] = PrismaticColors[1];
-		PrismaticActiveColors[2] = PrismaticColors[2];
-
-		PrismaticTimer = 20;
-		MaxPrismaticTimer = 20;
+		On_Main.DrawCachedProjs += DrawLight;
 	}
 
-	private void FadeColors()
+	private void DrawLight(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 	{
-		PrismaticActiveColors[0] = Color.Lerp(PrismaticColors[0], PrismaticColors[1], PrismaticTimer / MaxPrismaticTimer);
-		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
-		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
-	}
+		if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
+		{
+			List<Projectile> flashes = new List<Projectile>();
 
+			foreach (Projectile p in Main.projectile.Where(p => p.active && p.type == Type))
+			{
+				flashes.Add(p);
+				(p.ModProjectile as AdornedFlash).PreDrawNonPreMult();
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+			
+			foreach (Projectile p in flashes)
+			{
+				(p.ModProjectile as AdornedFlash).DrawPreMult();
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+
+			foreach (Projectile p in flashes)
+			{
+				(p.ModProjectile as AdornedFlash).DrawPostPreMult();
+			}
+		}
+	}
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(30);
@@ -96,17 +112,14 @@ public class AdornedFlash : ModProjectile
 		Projectile.velocity = Projectile.rotation.ToRotationVector2();
 
 		if (Projectile.timeLeft > 40)
-			Lighting.AddLight(Projectile.Center, AdornedArrowHandler.MulticolorLerp(Projectile.timeLeft / 50f, PrismaticColors).ToVector3() * (Projectile.timeLeft / 50f));
+			Lighting.AddLight(Projectile.Center, AdornedBowGlobalProjectile.MulticolorLerp(Projectile.timeLeft / 50f, PrismaticColors).ToVector3() * (Projectile.timeLeft / 50f));
 	}
 
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-	{
-		behindNPCs.Add(index);
-	}
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		static void DelegateAction(Particle p) => p.Velocity *= 0.925f;
+		static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
 
 		SoundEngine.PlaySound(FlashHit, target.Center);
 
@@ -144,7 +157,7 @@ public class AdornedFlash : ModProjectile
 				if (_idx2 > 2)
 					_idx2 = 0;
 
-				ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, PrismaticColors[_idx1].Additive(), PrismaticColors[_idx2].Additive(), scale, maxTime, DelegateAction));
+				ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, PrismaticColors[_idx1].Additive(), PrismaticColors[_idx2].Additive(), scale, maxTime, DecelerateAction));
 			}
 		}	
 	}
@@ -157,10 +170,9 @@ public class AdornedFlash : ModProjectile
 		return Vector2.Dot(rotation, direction) >= Math.Cos(MathHelper.ToRadians(90f) / 2f) && Projectile.Distance(targetHitbox.Center.ToVector2()) < 200f;
 	}
 
-	public override bool PreDraw(ref Color lightColor)
+	// for batching, see DrawLight above
+	public void PreDrawNonPreMult()
 	{
-		var shine = AssetLoader.LoadedTextures["Shine"].Value;
-		var shineAlpha = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		var star = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
@@ -168,12 +180,15 @@ public class AdornedFlash : ModProjectile
 
 		Main.EntitySpriteDraw(bloom, Projectile.Center - Main.screenPosition, null, PrismaticActiveColors[0].Additive() * fade,
 			0f, bloom.Size() / 2f, 0.5f * MathHelper.Lerp(1.05f, 0.85f, EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f)), 0f);
-		
+
 		Main.EntitySpriteDraw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * fade,
 			0f, star.Size() / 2f, 0.1f * MathHelper.Lerp(1.05f, 0.85f, EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f)), 0f);
+	}
 
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+	public void DrawPreMult()
+	{
+		var shine = AssetLoader.LoadedTextures["Shine"].Value;
+		var shineAlpha = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 
 		for (int i = 0; i < _maxShines; i++)
 		{
@@ -181,9 +196,12 @@ public class AdornedFlash : ModProjectile
 				Projectile.rotation + shineRotations[i] + MathHelper.PiOver2, new Vector2(shine.Width / 2, shine.Height),
 				shineScales[i] * MathHelper.Lerp(1.05f, 0.85f, EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f)), SpriteEffects.None);
 		}
+	}
 
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+	public void DrawPostPreMult()
+	{
+		var shine = AssetLoader.LoadedTextures["Shine"].Value;
+		var shineAlpha = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 
 		for (int i = 0; i < _maxShines; i++)
 		{
@@ -191,7 +209,37 @@ public class AdornedFlash : ModProjectile
 				Projectile.rotation + shineRotations[i] + MathHelper.PiOver2, new Vector2(shineAlpha.Width / 2, shineAlpha.Height),
 				shineScales[i] * MathHelper.Lerp(1.05f, 0.85f, EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f)), SpriteEffects.None);
 		}
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+
+		
+		
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);	
 
 		return false;
 	}
+
+	private void InitializeColors()
+	{
+		PrismaticColors = AdornedBowGlobalProjectile.GetPrismaticColors();
+
+		PrismaticActiveColors[0] = PrismaticColors[0];
+		PrismaticActiveColors[1] = PrismaticColors[1];
+		PrismaticActiveColors[2] = PrismaticColors[2];
+
+		PrismaticTimer = 20;
+		MaxPrismaticTimer = 20;
+	}
+
+	private void FadeColors()
+	{
+		PrismaticActiveColors[0] = Color.Lerp(PrismaticColors[0], PrismaticColors[1], PrismaticTimer / MaxPrismaticTimer);
+		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
+		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
+	}
+
 }

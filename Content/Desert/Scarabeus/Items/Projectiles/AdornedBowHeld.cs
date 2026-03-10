@@ -11,6 +11,8 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 {
+	internal const int MAX_FLASH_TIMER = 60;
+
 	// TODO: change these sfx
 	internal static SoundStyle ArrowShoot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 	{
@@ -29,13 +31,12 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		Volume = 0.5f,
 		PitchVariance = 0.15f
 	};
+	
+	internal bool _flashed;
 
-	internal const int MAX_FLASH_TIMER = 60;
+	internal int _flashTimer;
 
 	internal Color[] PrismaticColors;
-
-	internal bool _flashed;
-	internal int _flashTimer;
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
 		stringLength = 30;
@@ -51,7 +52,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 		if (perfectShot)
 		{
-			projectile.GetGlobalProjectile<AdornedArrowHandler>().active = true;
+			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
 			projectile.velocity *= 1.5f;
 
 			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
@@ -67,14 +68,14 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 	public override void PostAI()
 	{
-		PrismaticColors ??= AdornedArrowHandler.GetPrismaticColors();
+		PrismaticColors ??= AdornedBowGlobalProjectile.GetPrismaticColors();
 
 		if (_flashTimer > 0)
 		{
 			_flashTimer--;
 
 			Lighting.AddLight(Projectile.Center, 
-				AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
+				AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
 				* 0.5f * (_flashTimer / (float)MAX_FLASH_TIMER));
 		}
 		
@@ -96,7 +97,6 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 			else                          // no longer shakes when the perfect shot window is over
 				radius *= 0f;
 		}
-		
 
 		if (_fired) // stop shaking when fired
 			radius *= Projectile.timeLeft / 30f;
@@ -110,7 +110,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
 		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
-		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
+		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
 		float strength = Charge * (Projectile.timeLeft / 30f);
 
@@ -171,7 +171,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 		var square = new SquarePrimitive
 		{
-			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
+			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
 			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,

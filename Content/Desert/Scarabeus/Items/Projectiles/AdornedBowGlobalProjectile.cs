@@ -4,6 +4,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Ziggurat.Vanity;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using static Microsoft.Xna.Framework.MathHelper;
@@ -60,7 +61,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 
 			float fadeOut = Projectile.timeLeft / 20f;
 			
-			Color fadeColor = AdornedArrowHandler.MulticolorLerp(fadeOut, PrimsaticColors) * fadeOut;
+			Color fadeColor = AdornedBowGlobalProjectile.MulticolorLerp(fadeOut, PrimsaticColors) * fadeOut;
 
 			var drawPos = Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f);
 			var drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
@@ -74,74 +75,26 @@ public class AdornedArrowDeathTrail : ModProjectile
 }
 
 // global projectile for visuals and effects attached to power shot arrows
-// TODO: Change naming? AdornedGlobalProjectile may be preferred here.
-
-public class AdornedArrowHandler : GlobalProjectile
+public class AdornedBowGlobalProjectile : GlobalProjectile
 {
-	#region Global Helper Functions
-	// Helper Functions for Adorned Bow Visuals
-	// This method can be moved to a generic helper class if wanted
-	public static Color MulticolorLerp(float increment, params Color[] colors)
-	{
-		increment %= 0.999f;
-		int currentColorIndex = (int)(increment * colors.Length);
-		Color color = colors[currentColorIndex];
-		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
-		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
-	}
-
-	public static Color[] GetPrismaticColors()
-	{
-		var colors = new Color[3];
-
-		colors[0] = new Color(255, 0, 70 + 25 * Main.rand.Next(5)); // Magenta to Purple
-		colors[1] = new Color(0, 255, 255 - 25 * Main.rand.Next(5)); // Cyan to Green
-		colors[2] = new Color(255, 255 - 25 * Main.rand.Next(5), 0); // Yellow to Orange
-
-		return colors;
-	}
-
-	#endregion
-	#region Internal Helper Functions
-	private void InitializeColors()
-	{
-		PrismaticColors = GetPrismaticColors();
-
-		PrismaticActiveColors[0] = PrismaticColors[0];
-		PrismaticActiveColors[1] = PrismaticColors[1];
-		PrismaticActiveColors[2] = PrismaticColors[2];
-
-		PrismaticTimer = 50;
-		MaxPrismaticTimer = 50;
-	}
-
-	private void FadeColors()
-	{
-		PrismaticActiveColors[0] = Color.Lerp(PrismaticColors[0], PrismaticColors[1], PrismaticTimer / MaxPrismaticTimer);
-		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
-		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
-	}
-	#endregion
+	public const int MAX_TRAIL_LENGTH = 12;
+	public override bool InstancePerEntity => true;
 
 	internal static SoundStyle FlashHit = SoundID.Item29 with { PitchVariance = 0.15f, Volume = 0.33f };
-	public override bool InstancePerEntity => true;
+
+	private readonly Vector2[] _oldPositions = new Vector2[MAX_TRAIL_LENGTH];
 
 	public bool active; // whether or not to give the projectile effects
 
-	public const int TrailLength = 12;
-	private readonly Vector2[] _oldPositions = new Vector2[TrailLength];
-
 	private int _flashTimer = 15;
+	private int PrismaticTimer;
+
+	private float MaxPrismaticTimer;
 
 	private Color[] PrismaticColors = new Color[3]; // base colors
 	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors
-	private int PrismaticTimer;
-	private float MaxPrismaticTimer;
-	public override void OnSpawn(Projectile projectile, IEntitySource source)
-	{
-		InitializeColors();
-	}
-
+	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly && entity.DamageType == DamageClass.Ranged;
+	public override void OnSpawn(Projectile projectile, IEntitySource source) => InitializeColors();
 	public override void AI(Projectile Projectile)
 	{
 		if (!active)
@@ -174,7 +127,7 @@ public class AdornedArrowHandler : GlobalProjectile
 			}
 		}
 
-		for (int i = TrailLength - 1; i > 0; i--)
+		for (int i = MAX_TRAIL_LENGTH - 1; i > 0; i--)
 			_oldPositions[i] = _oldPositions[i - 1];
 
 		_oldPositions[0] = Projectile.Center + Projectile.velocity * 0.5f;
@@ -192,11 +145,11 @@ public class AdornedArrowHandler : GlobalProjectile
 		var defaultTexture = TextureAssets.Projectile[Projectile.type].Value;
 		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.White);
 
-		for (int i = TrailLength - 1; i >= 0; i--)
+		for (int i = MAX_TRAIL_LENGTH - 1; i >= 0; i--)
 		{
 			var texture = TextureAssets.Projectile[ProjectileID.HallowBossRainbowStreak].Value;
 
-			float lerp = 1f - i / (float)(TrailLength - 1);
+			float lerp = 1f - i / (float)(MAX_TRAIL_LENGTH - 1);
 			var position = _oldPositions[i] - Main.screenPosition;
 			var scale = new Vector2(.5f * lerp, 1) * Projectile.scale;
 
@@ -259,7 +212,7 @@ public class AdornedArrowHandler : GlobalProjectile
 			p.rotation = projectile.velocity.ToRotation();
 			p.spriteDirection = projectile.direction;
 
-			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+			static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -296,7 +249,7 @@ public class AdornedArrowHandler : GlobalProjectile
 						_idx2 = 0;
 
 					ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, PrismaticColors[_idx1].Additive(),
-						PrismaticColors[_idx2].Additive(), scale, maxTime, DelegateAction));
+						PrismaticColors[_idx2].Additive(), scale, maxTime, DecelerateAction));
 				}	
 			}
 		}
@@ -337,12 +290,52 @@ public class AdornedArrowHandler : GlobalProjectile
 
 				PreNewProjectile.New(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdornedArrowDeathTrail>(), 0, 0, projectile.owner, preSpawnAction: (Projectile p) =>
 				{
-					(p.ModProjectile as AdornedArrowDeathTrail).PrimsaticColors = PrismaticColors;
-					(p.ModProjectile as AdornedArrowDeathTrail)._oldPositions = _oldPositions;
-					(p.ModProjectile as AdornedArrowDeathTrail)._arrowType = projectile.type;
+					var deathTrail = (p.ModProjectile as AdornedArrowDeathTrail);
+
+					deathTrail.PrimsaticColors = PrismaticColors;
+					deathTrail._oldPositions = _oldPositions;
+					deathTrail._arrowType = projectile.type;
 					p.rotation = projectile.rotation;
 				});
 			}
 		}
+	}
+	public static Color MulticolorLerp(float increment, params Color[] colors)
+	{
+		increment %= 0.999f;
+		int currentColorIndex = (int)(increment * colors.Length);
+		Color color = colors[currentColorIndex];
+		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
+		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
+	}
+
+	public static Color[] GetPrismaticColors()
+	{
+		var colors = new Color[3];
+
+		colors[0] = new Color(255, 0, 70 + 25 * Main.rand.Next(5)); // Magenta to Purple
+		colors[1] = new Color(0, 255, 255 - 25 * Main.rand.Next(5)); // Cyan to Green
+		colors[2] = new Color(255, 255 - 25 * Main.rand.Next(5), 0); // Yellow to Orange
+
+		return colors;
+	}
+
+	private void InitializeColors()
+	{
+		PrismaticColors = GetPrismaticColors();
+
+		PrismaticActiveColors[0] = PrismaticColors[0];
+		PrismaticActiveColors[1] = PrismaticColors[1];
+		PrismaticActiveColors[2] = PrismaticColors[2];
+
+		PrismaticTimer = 50;
+		MaxPrismaticTimer = 50;
+	}
+
+	private void FadeColors()
+	{
+		PrismaticActiveColors[0] = Color.Lerp(PrismaticColors[0], PrismaticColors[1], PrismaticTimer / MaxPrismaticTimer);
+		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
+		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
 	}
 }
