@@ -15,6 +15,29 @@ namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 {
+	// TODO: change these sfx
+	internal static SoundStyle ArrowShoot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.15f
+	};
+
+	internal static SoundStyle PerfectShot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.2f
+	};
+
+	internal static SoundStyle Flash = new("SpiritReforged/Assets/SFX/Item/ClubReady")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.15f
+	};
+
+	internal const int MAX_FLASH_TIMER = 60;
+
+	internal Color[] PrismaticColors;
+
 	internal bool _flashed;
 	internal int _flashTimer;
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
@@ -27,14 +50,8 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 	protected override void ModifyFiredProj(ref Projectile projectile, bool fullCharge, bool perfectShot)
 	{
-		SoundStyle whoosh = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
-		{
-			Volume = 0.5f,
-			PitchVariance = 0.15f
-		};
-
 		if (!Main.dedServ)
-			SoundEngine.PlaySound(whoosh, projectile.Center);
+			SoundEngine.PlaySound(ArrowShoot, projectile.Center);
 
 		if (perfectShot)
 		{
@@ -48,75 +65,21 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 			};
 
 			if (!Main.dedServ)
-				SoundEngine.PlaySound(whoosh, projectile.Center);
-
-			Color color = Color.LightSteelBlue;
-
-			Vector2 pos = projectile.Center + Projectile.rotation.ToRotationVector2() * 25;
-
-			//ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), color.Additive(), 0.5f, 35));
-			//ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), Color.White.Additive(), 0.5f, 35));
+				SoundEngine.PlaySound(PerfectShot, projectile.Center);
 		}
-
-		/*if (fullCharge)
-		{
-			float ringSize = 70 + (perfectShot ? 30 : 0);
-			int ringTime = 25 + (perfectShot ? 5 : 0);
-			float ringOpacity = 0.8f + (perfectShot ? 0.2f : 0);
-			float velocity = perfectShot ? 0.4f : 0.25f;
-
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
-				Projectile.Center + Projectile.rotation.ToRotationVector2() * 10,
-				Color.LightSteelBlue.Additive() * ringOpacity,
-				Color.Lerp(Color.Orange.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
-				1f,
-				ringSize,
-				ringTime,
-				"supPerlin",
-				new Vector2(2, 1.5f),
-				EaseCircularOut,
-				false,
-				0.8f) { Velocity = Projectile.rotation.ToRotationVector2() * velocity } .WithSkew(0.85f, Projectile.rotation));
-
-			if(perfectShot)
-			{
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(
-					Projectile.Center + Projectile.rotation.ToRotationVector2() * 10,
-					Color.LightSteelBlue.Additive() * ringOpacity,
-					Color.Lerp(Color.Orange.Additive(), Color.LightGoldenrodYellow.Additive(), 0.5f) * ringOpacity,
-					1f,
-					ringSize * 0.75f,
-					ringTime - 7,
-					"supPerlin",
-					new Vector2(2, 1.5f),
-					EaseCircularOut,
-					false,
-					0.6f) { Velocity = Projectile.rotation.ToRotationVector2() * velocity * 2f }.WithSkew(0.85f, Projectile.rotation));
-			}
-		}*/
-	}
-	internal static Color MulticolorLerp(float increment, params Color[] colors)
-	{
-		increment %= 0.999f;
-		int currentColorIndex = (int)(increment * colors.Length);
-		Color color = colors[currentColorIndex];
-		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
-		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
 	}
 
 	public override void PostAI()
 	{
+		PrismaticColors ??= AdornedArrowHandler.GetPrismaticColors();
+
 		if (_flashTimer > 0)
 		{
 			_flashTimer--;
 
-			Lighting.AddLight(Projectile.Center, MulticolorLerp(_flashTimer / 60f, 
-				[
-					Color.Magenta,
-					Color.Orange,
-					Color.Cyan
-				]
-				).ToVector3() * 0.5f * (_flashTimer / 60f));
+			Lighting.AddLight(Projectile.Center, 
+				AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
+				* 0.5f * (_flashTimer / (float)MAX_FLASH_TIMER));
 		}
 		
 		float radius = 1.2f * Charge / 1f;  // shakes rapidly whilst charging up a shot
@@ -125,16 +88,10 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		{
 			if (!_flashed)
 			{
-				SoundStyle charged = new("SpiritReforged/Assets/SFX/Item/ClubReady")
-				{
-					Volume = 0.5f,
-					PitchVariance = 0.15f
-				};
-
 				if (!Main.dedServ)
-					SoundEngine.PlaySound(charged, Projectile.Center);
+					SoundEngine.PlaySound(Flash, Projectile.Center);
 
-				_flashTimer = 60;
+				_flashTimer = MAX_FLASH_TIMER;
 				_flashed = true;
 			}
 
@@ -157,7 +114,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
 		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
-		Color color = Color.White.Additive();
+		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
 		float strength = Charge * (Projectile.timeLeft / 30f);
 
@@ -174,8 +131,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 		Vector2 scale = new Vector2(0.15f, 0.15f) * Lerp(0, maxSize, perfectShotProgress) * 0.5f;
 		var starOrigin = starTex.Size() / 2;
-		Color starColor = Projectile.GetAlpha(Color.Lerp(Color.LightSteelBlue.Additive(), Color.LightCyan.Additive(), perfectShotProgress)) * EaseQuadOut.Ease(perfectShotProgress);
-		Main.spriteBatch.Draw(starTex, center, null, starColor, Projectile.rotation, starOrigin, scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(starTex, center, null, color, Projectile.rotation, starOrigin, scale, SpriteEffects.None, 0);
 	}
 
 	protected override void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgress, Color lightColor)
@@ -212,14 +168,14 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		effect.Parameters["finalIntensityMod"].SetValue(opacity);
 		effect.Parameters["textureStrength"].SetValue(4);
 		effect.Parameters["finalExponent"].SetValue(1.5f);
-		effect.Parameters["flipCoords"].SetValue(true);
+		effect.Parameters["flipCoords"].SetValue(true)	;
 
 		var dimensions = new Vector2(30, 80);
 		dimensions = Vector2.Lerp(dimensions, new Vector2(40, 90), EaseQuadOut.Ease(perfectShotProgress));
 
 		var square = new SquarePrimitive
 		{
-			Color = Color.LightSteelBlue.Additive() * Projectile.Opacity,
+			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedArrowHandler.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
 			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,

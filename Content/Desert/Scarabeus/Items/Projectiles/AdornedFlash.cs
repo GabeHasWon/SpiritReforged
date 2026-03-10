@@ -10,12 +10,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
 public class AdornedFlash : ModProjectile
 {
+	// TODO: use better sound
+	internal static SoundStyle FlashHit = SoundID.Item29 with { PitchVariance = 0.2f, Volume = 0.2f };
 	public override string Texture => AssetLoader.EmptyTexture;
 
 	public Vector2 originalCenter;
@@ -33,9 +36,7 @@ public class AdornedFlash : ModProjectile
 
 	private void InitializeColors()
 	{
-		PrismaticColors[0] = new Color(225, 50, 50 + 25 * Main.rand.Next(5)); // Magenta to Purple
-		PrismaticColors[1] = new Color(50, 255, 255 - 25 * Main.rand.Next(5)); // Cyan to Green
-		PrismaticColors[2] = new Color(255, 255 - 25 * Main.rand.Next(5), 50); // Yellow to Orange
+		PrismaticColors = AdornedArrowHandler.GetPrismaticColors();
 
 		PrismaticActiveColors[0] = PrismaticColors[0];
 		PrismaticActiveColors[1] = PrismaticColors[1];
@@ -78,7 +79,7 @@ public class AdornedFlash : ModProjectile
 	{
 		InitializeColors();
 
-		_maxShines = Main.rand.Next(3, 6) * 2;
+		_maxShines = Main.rand.Next(4, 8) * 2;
 
 		shineScales = new Vector2[_maxShines];
 		shineRotations = new float[_maxShines];
@@ -86,7 +87,7 @@ public class AdornedFlash : ModProjectile
 
 		for (int i = 0; i < _maxShines; i++)
 		{
-			shineScales[i] = new Vector2(Main.rand.NextFloat(0.2f, 0.4f), Main.rand.NextFloat(0.1f, 0.3f));
+			shineScales[i] = new Vector2(Main.rand.NextFloat(0.25f, 0.5f), Main.rand.NextFloat(0.1f, 0.25f));
 			shineRotations[i] = Main.rand.NextFloat(-0.5f, 0.5f);
 			shineColors[i] = (int)(3 * (i / (float)_maxShines));
 		}
@@ -122,6 +123,8 @@ public class AdornedFlash : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		static void DelegateAction(Particle p) => p.Velocity *= 0.925f;
+
+		SoundEngine.PlaySound(FlashHit, target.Center);
 
 		Color c = PrismaticColors[Main.rand.Next(3)];
 

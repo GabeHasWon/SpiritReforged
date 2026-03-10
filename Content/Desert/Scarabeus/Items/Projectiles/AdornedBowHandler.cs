@@ -24,15 +24,18 @@ using static SpiritReforged.Common.Visuals.DrawHelpers;
 
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
 
-// global projectile for visuals and effects attached to power shot arrows
-// TODO: Change naming? AdornedGlobalProjectile may be preferred here.
-
+// This class serves as the death trail for any adorned bow projectiles
+// We cannot keep the data on the projectile itself because the projectile dies, this is a weird workaround that kind of takes a projectile slot-
+// But its better than messing with death logic
 public class AdornedArrowDeathTrail : ModProjectile
 {
+	// TODO: use better sound
 	public override string Texture => AssetLoader.EmptyTexture;
 
 	public const int TrailLength = 12;
 	public Vector2[] _oldPositions;
+
+	public Color[] PrimsaticColors = new Color[3];
 
 	public int _arrowType;
 
@@ -60,10 +63,6 @@ public class AdornedArrowDeathTrail : ModProjectile
 		var defaultTexture = TextureAssets.Projectile[_arrowType].Value;
 		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.LightSkyBlue);
 
-		//var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-
-		//Main.EntitySpriteDraw(bloom, Projectile.Center - (Projectile.rotation - PiOver2).ToRotationVector2() * 5f - Main.screenPosition, null, Color.White with { A = 0 } * 0.33f, Projectile.rotation, bloom.Size() / 2, 0.35f, SpriteEffects.None);
-
 		for (int i = TrailLength - 1; i >= 0; i--)
 		{
 			var texture = TextureAssets.Projectile[ProjectileID.HallowBossRainbowStreak].Value;
@@ -73,8 +72,8 @@ public class AdornedArrowDeathTrail : ModProjectile
 			var scale = new Vector2(.5f * lerp, 1) * Projectile.scale;
 
 			float fadeOut = Projectile.timeLeft / 20f;
-
-			Color fadeColor = Color.Lerp(Color.LightSteelBlue, Color.White, lerp).Additive() * fadeOut;
+			
+			Color fadeColor = AdornedArrowHandler.MulticolorLerp(fadeOut, PrimsaticColors) * fadeOut;
 
 			var drawPos = Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f);
 			var drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
@@ -87,26 +86,39 @@ public class AdornedArrowDeathTrail : ModProjectile
 	}
 }
 
+// global projectile for visuals and effects attached to power shot arrows
+// TODO: Change naming? AdornedGlobalProjectile may be preferred here.
+
 public class AdornedArrowHandler : GlobalProjectile
 {
-	public override bool InstancePerEntity => true;
+	#region Global Helper Functions
+	// Helper Functions for Adorned Bow Visuals
+	// This method can be moved to a generic helper class if wanted
+	public static Color MulticolorLerp(float increment, params Color[] colors)
+	{
+		increment %= 0.999f;
+		int currentColorIndex = (int)(increment * colors.Length);
+		Color color = colors[currentColorIndex];
+		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
+		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
+	}
 
-	public bool active; // whether or not to give the projectile effects
+	public static Color[] GetPrismaticColors()
+	{
+		var colors = new Color[3];
 
-	public const int TrailLength = 12;
-	private readonly Vector2[] _oldPositions = new Vector2[TrailLength];
+		colors[0] = new Color(255, 0, 70 + 25 * Main.rand.Next(5)); // Magenta to Purple
+		colors[1] = new Color(0, 255, 255 - 25 * Main.rand.Next(5)); // Cyan to Green
+		colors[2] = new Color(255, 255 - 25 * Main.rand.Next(5), 0); // Yellow to Orange
 
-	private int _flashTimer = 15;
+		return colors;
+	}
 
-	private Color[] PrismaticColors = new Color[3]; // base colors
-	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors
-	private int PrismaticTimer;
-	private float MaxPrismaticTimer;
+	#endregion
+	#region Internal Helper Functions
 	private void InitializeColors()
 	{
-		PrismaticColors[0] = new Color(255, 0, 70 + 25 * Main.rand.Next(5)); // Magenta to Purple
-		PrismaticColors[1] = new Color(0, 255, 255 - 25 * Main.rand.Next(5)); // Cyan to Green
-		PrismaticColors[2] = new Color(255, 255 - 25 * Main.rand.Next(5), 0); // Yellow to Orange
+		PrismaticColors = GetPrismaticColors();
 
 		PrismaticActiveColors[0] = PrismaticColors[0];
 		PrismaticActiveColors[1] = PrismaticColors[1];
@@ -122,7 +134,22 @@ public class AdornedArrowHandler : GlobalProjectile
 		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
 		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
 	}
+	#endregion
 
+	internal static SoundStyle FlashHit = SoundID.Item29 with { PitchVariance = 0.15f, Volume = 0.33f };
+	public override bool InstancePerEntity => true;
+
+	public bool active; // whether or not to give the projectile effects
+
+	public const int TrailLength = 12;
+	private readonly Vector2[] _oldPositions = new Vector2[TrailLength];
+
+	private int _flashTimer = 15;
+
+	private Color[] PrismaticColors = new Color[3]; // base colors
+	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors
+	private int PrismaticTimer;
+	private float MaxPrismaticTimer;
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		InitializeColors();
@@ -164,28 +191,7 @@ public class AdornedArrowHandler : GlobalProjectile
 			_oldPositions[i] = _oldPositions[i - 1];
 
 		_oldPositions[0] = Projectile.Center + Projectile.velocity * 0.5f;
-
-		//if (!Main.dedServ)
-		//	CreateTrail(Projectile, TrailSystem.ProjectileRenderer);
 	}
-
-	/*public  void CreateTrail(Projectile Projectile, ProjectileTrailRenderer renderer)
-	{
-		var position = new EntityTrailPosition(Projectile);
-
-		renderer.CreateTrail(Projectile, new VertexTrail(new RainbowTrail(), new RoundCap(), position, new ImageShader(AssetLoader.LoadedTextures["Lightning"].Value, new Vector2(0.1f, 0.1f), 0.1f, 0.1f), 40, 200));
-	}*/
-
-	// can be moved to helper class
-	internal static Color MulticolorLerp(float increment, params Color[] colors)
-	{
-		increment %= 0.999f;
-		int currentColorIndex = (int)(increment * colors.Length);
-		Color color = colors[currentColorIndex];
-		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
-		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
-	}
-
 	public override bool PreDraw(Projectile Projectile, ref Color lightColor)
 	{
 		if (!active)
@@ -198,10 +204,6 @@ public class AdornedArrowHandler : GlobalProjectile
 
 		var defaultTexture = TextureAssets.Projectile[Projectile.type].Value;
 		Texture2D solid = TextureColorCache.ColorSolid(defaultTexture, Color.White);
-
-		//var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-
-		//Main.EntitySpriteDraw(bloom, Projectile.Center - (Projectile.rotation - PiOver2).ToRotationVector2() * 5f - Main.screenPosition, null, Color.White with { A = 0 } * 0.33f, Projectile.rotation, bloom.Size() / 2, 0.35f, SpriteEffects.None);
 
 		for (int i = TrailLength - 1; i >= 0; i--)
 		{
@@ -263,38 +265,9 @@ public class AdornedArrowHandler : GlobalProjectile
 	{
 		if (active)
 		{
-			int count = 0;
-			int maxHits = 3;
+			SoundEngine.PlaySound(FlashHit, target.Center);
 
-			foreach (NPC n in Main.npc.Where(n => projectile.Distance(n.Center) < 300f).OrderBy(n => projectile.Distance(n.Center))) // loop through closest npcs
-			{
-				float degrees = 60f;
-
-				Vector2 _pDir = projectile.velocity.SafeNormalize(Vector2.Zero);
-				Vector2 _tDir = projectile.DirectionTo(n.Center).SafeNormalize(Vector2.Zero);
-
-				bool conalCheck = Vector2.Dot(_pDir, _tDir) >= (float)Math.Cos(ToRadians(degrees) / 2f);
-
-				if (n != target && n.CanBeChasedBy() && n.active && conalCheck)
-				{
-					Vector2 velocity = projectile.DirectionTo(n.Center);
-
-					//PreNewProjectile.New(projectile.GetSource_OnHit(n), n.Center, Vector2.Zero, ModContent.ProjectileType<AdornedFlash>(), (int)(projectile.damage * 0.66f), 0f, projectile.owner, preSpawnAction: (Projectile p) =>
-					//{
-					//	(p.ModProjectile as AdornedFlash).originalCenter = projectile.Center;
-					//});
-
-					//
-					count++;
-				}
-
-				if (count >= maxHits)
-					break;
-			}
-
-			SoundEngine.PlaySound(SoundID.Item29 with { PitchVariance = 0.15f, Volume = 0.33f }, target.Center);
-
-			Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdornedFlash>(), (int)(projectile.damage * 0.66f), 0f, projectile.owner);
+			var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdornedFlash>(), (int)(projectile.damage * 0.66f), 0f, projectile.owner);
 
 			p.rotation = projectile.velocity.ToRotation();
 			p.spriteDirection = projectile.direction;
@@ -308,13 +281,8 @@ public class AdornedArrowHandler : GlobalProjectile
 				static void ColorAction(Particle p)
 				{
 					p.Velocity *= 0.95f;
-					Color light = Main.rand.Next(new Color[] { Color.Green, Color.Cyan, Color.Orange });
+					Color light = Main.rand.Next([Color.Green, Color.Cyan, Color.Orange]);
 					Lighting.AddLight(p.Position, light.ToVector3() * MathHelper.Lerp(0.25f, 0f, p.TimeActive / (float)p.MaxTime));
-				}
-
-				static void DelegateAction_2(Particle p)
-				{
-					p.Velocity *= 0.975f;
 				}
 
 				ParticleHandler.SpawnParticle(new SharpStarParticle(
@@ -327,17 +295,6 @@ public class AdornedArrowHandler : GlobalProjectile
 					0.5f,
 					ColorAction)
 					);
-
-				/*ParticleHandler.SpawnParticle(new LingeringStarParticle(
-					target.Center,
-					projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.65f),
-					Color.White.Additive() * 0.5f,
-					c,
-					Main.rand.NextFloat(0.1f, 0.4f),
-					Main.rand.Next(40, 70),
-					0.75f,
-					DelegateAction_2)
-					);*/
 
 				for (int j = 0; j < 2; j++)
 				{
@@ -389,8 +346,11 @@ public class AdornedArrowHandler : GlobalProjectile
 
 			if (Main.myPlayer == projectile.owner)
 			{
+				// ik this is slightly jank :p  
+
 				PreNewProjectile.New(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdornedArrowDeathTrail>(), 0, 0, projectile.owner, preSpawnAction: (Projectile p) =>
 				{
+					(p.ModProjectile as AdornedArrowDeathTrail).PrimsaticColors = PrismaticColors;
 					(p.ModProjectile as AdornedArrowDeathTrail)._oldPositions = _oldPositions;
 					(p.ModProjectile as AdornedArrowDeathTrail)._arrowType = projectile.type;
 					p.rotation = projectile.rotation;
