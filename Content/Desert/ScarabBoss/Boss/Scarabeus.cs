@@ -43,6 +43,7 @@ public partial class Scarabeus : ModNPC
 	public bool dealContactDamage = false;
 
 	private Action[] _states;
+	private bool _charmed;
 
 	public override void Load()
 	{
@@ -68,7 +69,7 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [7, 8, 16, 8, 8, 8, 6, 17, 2]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [8, 8, 16, 8, 8, 8, 6, 17]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
 	}
 

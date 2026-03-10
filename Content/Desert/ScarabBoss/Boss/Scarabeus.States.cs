@@ -7,6 +7,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
+using Terraria.GameContent.UI;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -30,13 +31,15 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.dontTakeDamage = false;
 
-			if (NPC.life == NPC.lifeMax && Target.head == EquipLoader.GetEquipSlot(Mod, nameof(ScarabMask), EquipType.Head))
+			if (NPC.life == NPC.lifeMax && (_charmed || Target.head == EquipLoader.GetEquipSlot(Mod, nameof(ScarabMask), EquipType.Head)))
 			{
 				NPC.FaceTarget();
-				UpdateFrame(8, 2, PhaseOneProfile); //Bonus animation while wearing Scarabeus' mask
+				SetFrame(0, 7, PhaseOneProfile); //Bonus animation while wearing Scarabeus' mask
+				_charmed = true;
 			}
 			else
 			{
+				_charmed = false;
 				ChangeState(Walking);
 			}
 		}
@@ -650,7 +653,11 @@ public partial class Scarabeus : ModNPC
 					Counter = 0;
 					digState++;
 
-					NPC.velocity = NPC.GetArcVel(Target.Center + Vector2.Normalize(Target.velocity) * 400, NPC.gravity, 15, true);
+					if (NPC.DistanceSQ(Target.Center) < 50 * 50)
+						NPC.velocity.Y -= 10;
+					else
+						NPC.velocity = NPC.GetArcVel(Target.Center + Vector2.Normalize(Target.velocity) * 400, NPC.gravity, 15, true);
+
 					NPC.noGravity = false;
 					NPC.FaceTarget();
 				}
