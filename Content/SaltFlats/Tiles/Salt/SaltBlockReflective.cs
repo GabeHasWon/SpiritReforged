@@ -196,6 +196,7 @@ public class SaltBlockReflective : SaltBlock
 			if (Reflections.Detail > 2)
 			{
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverWiresUI, false);
+				Main.instance.DrawInfernoRings();
 			}
 
 			spriteBatch.End();

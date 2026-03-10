@@ -41,14 +41,6 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 			projectile.GetGlobalProjectile<AdornedArrowHandler>().active = true;
 			projectile.velocity *= 1.5f;
 
-			if (Main.myPlayer == projectile.owner)
-			{
-				// Client side screen shake
-				Vector2 dir = projectile.rotation.ToRotationVector2().RotatedByRandom(0.3f);
-
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(projectile.Center, dir * Main.rand.NextFloat(1f, 2f), 2, 1, 10, -1, "AdornedBowChargedShot"));
-			}
-
 			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 			{
 				Volume = 0.5f,
@@ -62,11 +54,11 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 			Vector2 pos = projectile.Center + Projectile.rotation.ToRotationVector2() * 25;
 
-			ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), color.Additive(), 0.5f, 35));
-			ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), Color.White.Additive(), 0.5f, 35));
+			//ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), color.Additive(), 0.5f, 35));
+			//ParticleHandler.SpawnParticle(new LightBurst(pos, Main.rand.NextFloatDirection(), Color.White.Additive(), 0.5f, 35));
 		}
 
-		if (fullCharge)
+		/*if (fullCharge)
 		{
 			float ringSize = 70 + (perfectShot ? 30 : 0);
 			int ringTime = 25 + (perfectShot ? 5 : 0);
@@ -101,15 +93,33 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 					false,
 					0.6f) { Velocity = Projectile.rotation.ToRotationVector2() * velocity * 2f }.WithSkew(0.85f, Projectile.rotation));
 			}
-		}
+		}*/
+	}
+	internal static Color MulticolorLerp(float increment, params Color[] colors)
+	{
+		increment %= 0.999f;
+		int currentColorIndex = (int)(increment * colors.Length);
+		Color color = colors[currentColorIndex];
+		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
+		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
 	}
 
 	public override void PostAI()
 	{
 		if (_flashTimer > 0)
+		{
 			_flashTimer--;
 
-		float radius = 2f * Charge / 1f;  // shakes rapidly whilst charging up a shot
+			Lighting.AddLight(Projectile.Center, MulticolorLerp(_flashTimer / 60f, 
+				[
+					Color.Magenta,
+					Color.Orange,
+					Color.Cyan
+				]
+				).ToVector3() * 0.5f * (_flashTimer / 60f));
+		}
+		
+		float radius = 1.2f * Charge / 1f;  // shakes rapidly whilst charging up a shot
 
 		if (Charge == 1f)
 		{
@@ -124,7 +134,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 				if (!Main.dedServ)
 					SoundEngine.PlaySound(charged, Projectile.Center);
 
-				_flashTimer = 10;
+				_flashTimer = 60;
 				_flashed = true;
 			}
 
@@ -133,7 +143,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 			else                          // no longer shakes when the perfect shot window is over
 				radius *= 0f;
 		}
-			
+		
 
 		if (_fired) // stop shaking when fired
 			radius *= Projectile.timeLeft / 30f;
@@ -145,7 +155,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 	{
 		GlowmaskProjectile.ProjIdToGlowmask.TryGetValue(Type, out GlowmaskInfo glowmaskInfo);
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
-		Texture2D starTex = AssetLoader.LoadedTextures["Star"].Value;
+		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
 		Color color = Color.White.Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
@@ -162,7 +172,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		var center = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Projectile.rotation.ToRotationVector2() * 10;
 		float maxSize = 0.6f * Projectile.scale;
 
-		Vector2 scale = new Vector2(1f, 1f) * Lerp(0, maxSize, perfectShotProgress) * 0.5f;
+		Vector2 scale = new Vector2(0.15f, 0.15f) * Lerp(0, maxSize, perfectShotProgress) * 0.5f;
 		var starOrigin = starTex.Size() / 2;
 		Color starColor = Projectile.GetAlpha(Color.Lerp(Color.LightSteelBlue.Additive(), Color.LightCyan.Additive(), perfectShotProgress)) * EaseQuadOut.Ease(perfectShotProgress);
 		Main.spriteBatch.Draw(starTex, center, null, starColor, Projectile.rotation, starOrigin, scale, SpriteEffects.None, 0);
@@ -173,7 +183,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		float opacity = 1 - _perfectShotCurTimer / _perfectShotMaxTime;
 		opacity = Math.Max(opacity, 1.5f * perfectShotProgress);
 
-		if(Charge == 1)
+		if (Charge == 1)
 			ConeNoise(-10, 0.5f * opacity, 10, perfectShotProgress);
 
 		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
