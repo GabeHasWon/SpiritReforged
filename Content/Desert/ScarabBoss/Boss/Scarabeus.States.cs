@@ -3,7 +3,6 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
@@ -152,7 +151,6 @@ public partial class Scarabeus : ModNPC
 		const int max_walk_time = 360;
 
 		ref float digTimer = ref NPC.ai[2];
-		ref float jumpTimer = ref NPC.ai[3];
 
 		NPC.FaceTarget();
 
@@ -164,12 +162,6 @@ public partial class Scarabeus : ModNPC
 
 		if (Grounded) //Check if grounded
 		{
-			if (DetermineGap() && ++jumpTimer > 15) // Jump over gaps if needed
-			{
-				ChangeState(Leap);
-				return;
-			}
-
 			float distance = NPC.DistanceSQ(Target.Center);
 			if (distance > 200 * 200)
 			{
@@ -191,17 +183,6 @@ public partial class Scarabeus : ModNPC
 
 		if (Counter > max_walk_time)
 			ChangeState(SelectWeightedState());
-	}
-
-	/// <summary> Determines if this NPC, while moving, is approaching a gap that requires jumping over. </summary>
-	private bool DetermineGap()
-	{
-		if (NPC.velocity.X == 0)
-			return false;
-		else if (NPC.velocity.X < 0)
-			return !Collision.SolidCollision(NPC.BottomLeft - new Vector2(NPC.width * 0.6f, 0), (int)(NPC.width * 0.6f), 16);
-
-		return !Collision.SolidCollision(NPC.BottomRight, (int)(NPC.width * 0.6f), 16);
 	}
 
 	public void HornSwipe()
