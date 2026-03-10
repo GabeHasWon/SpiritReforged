@@ -67,7 +67,7 @@ public partial class Scarabeus : ModNPC
 				NPC.rotation += 0.4f * NPC.direction;
 				NPC.GravityMultiplier *= 3;
 
-				SetFrame(DigFrame, PhaseOneProfile);
+				SetFrame(RollFrame, PhaseOneProfile);
 				showTrail = true;
 			}
 		}
@@ -290,7 +290,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 3: //Optional ground slam
-				SetFrame(DigFrame, PhaseOneProfile);
+				SetFrame(RollFrame, PhaseOneProfile);
 				NPC.rotation += Math.Min(Counter * 0.02f, 0.5f) * NPC.direction;
 				NPC.noTileCollide = false;
 				NPC.noGravity = true;
@@ -355,7 +355,7 @@ public partial class Scarabeus : ModNPC
 				NPC.rotation += 0.3f * NPC.spriteDirection;
 				NPC.Step();
 
-				SetFrame(DigFrame, PhaseOneProfile);
+				SetFrame(RollFrame, PhaseOneProfile);
 				showTrail = true;
 				dealContactDamage = true;
 				//sfx here
@@ -456,7 +456,7 @@ public partial class Scarabeus : ModNPC
 
 		if (jumpState < max_bounces)
 		{
-			SetFrame(DigFrame, PhaseOneProfile);
+			SetFrame(RollFrame, PhaseOneProfile);
 			dealContactDamage = true;
 
 			//Check if grounded
@@ -571,6 +571,7 @@ public partial class Scarabeus : ModNPC
 				{
 					NPC.velocity.Y -= 4;
 					NPC.velocity.X = NPC.direction * 4;
+					NPC.noTileCollide = true;
 
 					digState++;
 				}
@@ -584,13 +585,13 @@ public partial class Scarabeus : ModNPC
 			case 1: //Fall into the ground
 				SetFrame(0, 1, PhaseOneProfile);
 
-				NPC.rotation = NPC.velocity.Y * 0.04f * NPC.direction;
+				NPC.rotation = NPC.velocity.Y * 0.08f * NPC.direction;
 				NPC.velocity.Y += 0.5f;
-				NPC.noTileCollide = true;
+				NPC.GravityMultiplier *= 2;
 
-				if (Collision.SolidCollision(NPC.Center - new Vector2(8), 16, 16) || NPC.Opacity != 1)
+				if (Collision.SolidCollision(NPC.position, NPC.width, NPC.height - 4) || NPC.Opacity != 1)
 				{
-					if ((NPC.Opacity -= 0.09f) <= 0)
+					if ((NPC.Opacity -= 0.1f) <= 0)
 					{
 						digState++; //Disappear into the ground
 						Counter = 0;
@@ -602,16 +603,15 @@ public partial class Scarabeus : ModNPC
 			case 2: //Dig
 				NPC.Opacity = 0;
 				NPC.noGravity = true;
+				NPC.velocity = Vector2.Zero;
 
-				if (Counter < 3)
+				if (Counter < dig_time - 30)
 				{
-					NPC.Top = FindGroundFromPosition(Target.Center) - new Vector2(0, NPC.height / 2);
+					NPC.Top = FindGroundFromPosition(Target.Center);
 				}
 				else
 				{
-					Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 8, 0.1f);
-					NPC.position.Y = groundPosition.Y;
+					NPC.Top = FindGroundFromPosition(NPC.Top);
 				}
 
 				if (!Main.dedServ) //Digging visuals
@@ -650,7 +650,7 @@ public partial class Scarabeus : ModNPC
 					Counter = 0;
 					digState++;
 
-					NPC.velocity.Y = -10;
+					NPC.velocity = NPC.GetArcVel(Target.Center + Vector2.Normalize(Target.velocity) * 400, NPC.gravity, 15, true);
 					NPC.noGravity = false;
 					NPC.FaceTarget();
 				}
@@ -658,19 +658,28 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 3: //Emerge and land
-				SetFrame(DigFrame, PhaseOneProfile);
-				NPC.rotation += 0.3f * NPC.direction;
-				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
-				NPC.velocity.X *= 0.9f;
+				if (!Grounded)
+					SetFrame(0, 1, PhaseOneProfile);
 
-				if (Counter > 10)
+				NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
+				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
+				NPC.GravityMultiplier *= 2;
+
+				if (Counter > 10 && NPC.velocity.Y >= 0)
 				{
 					NPC.noTileCollide = false;
 
 					if (Grounded) //Land
 					{
-						ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
-						SetFrame(DigFrame, PhaseOneProfile);
+						NPC.velocity.X *= 0.1f;
+						NPC.rotation = 0;
+						NPC.behindTiles = false;
+
+						if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
+						{
+							ChangeState(Main.rand.NextFromList(Walking, BounceGroundPound));
+							SetFrame(0, 0, PhaseOneProfile); //Change back to the control frame to prevent jitters
+						}
 
 						return;
 					}
@@ -861,7 +870,7 @@ public partial class Scarabeus : ModNPC
 
 			case 1: //Ground pound
 				if (Profile == PhaseOneProfile)
-					SetFrame(DigFrame, PhaseOneProfile);
+					SetFrame(RollFrame, PhaseOneProfile);
 				else if (UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
 					Profile = PhaseOneProfile;
 
@@ -890,7 +899,7 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.Y += 0.6f;
 				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 6, 0.1f).X; //Track Target
 
-				if (currentFrame == DigFrame)
+				if (currentFrame == RollFrame)
 					NPC.rotation += 0.1f * NPC.direction;
 
 				break;
@@ -950,11 +959,11 @@ public partial class Scarabeus : ModNPC
 		if (groundState == 0 && jumpState == 1) //Fall into the ground
 		{
 			if (Profile != PhaseOneProfile && UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
-				SetFrame(DigFrame, PhaseOneProfile);
+				SetFrame(RollFrame, PhaseOneProfile);
 
 			NPC.velocity.Y = Math.Min(NPC.velocity.Y + 0.4f, 24);
 
-			if (currentFrame == DigFrame)
+			if (currentFrame == RollFrame)
 				NPC.rotation += MathHelper.Clamp(NPC.velocity.Y * 0.05f * NPC.direction, -1, 1);
 
 			if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8)) //Disappear into the ground

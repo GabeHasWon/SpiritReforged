@@ -29,8 +29,8 @@ public partial class Scarabeus : ModNPC
 
 	public enum FrameState { Progressed, Stopped, Looped }
 
-	/// <summary> Dig frame for profile one. </summary>
-	public static readonly Point DigFrame = new(0, 4);
+	/// <summary> Roll frame for profile one. </summary>
+	public static readonly Point RollFrame = new(0, 4);
 
 	/// <summary> The current visual profile to be used for drawing. Contains frame count and texture information. </summary>
 	public VisualProfile Profile { get; private set; }
