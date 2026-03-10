@@ -588,10 +588,13 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.Y += 0.5f;
 				NPC.noTileCollide = true;
 
-				if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8))
+				if (Collision.SolidCollision(NPC.Center - new Vector2(8), 16, 16) || NPC.Opacity != 1)
 				{
-					digState++; //Disappear into the ground
-					Counter = 0;
+					if ((NPC.Opacity -= 0.09f) <= 0)
+					{
+						digState++; //Disappear into the ground
+						Counter = 0;
+					}
 				}
 
 				break;
@@ -684,7 +687,7 @@ public partial class Scarabeus : ModNPC
 		NPC.velocity.X *= 0.5f;
 		bool jumpingFrame = currentFrame == new Point(0, 2);
 		NPC.noGravity = jumpingFrame;
-		NPC.noTileCollide = false;
+		NPC.noTileCollide = jumpingFrame;
 		NPC.dontTakeDamage = true;
 
 		if (jumpingFrame)
