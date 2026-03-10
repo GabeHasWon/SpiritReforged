@@ -1,13 +1,9 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.Graphics.CameraModifiers;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
