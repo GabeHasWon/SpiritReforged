@@ -4,7 +4,7 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Dusts;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 [AutoloadEquip(EquipType.Head)]
 public class BedouinCowl : ModItem
@@ -16,7 +16,6 @@ public class BedouinCowl : ModItem
 		public override void DashEffects(Player player)
 		{
 			if (!Main.dedServ)
-			{
 				for (int k = 0; k < 2; k++)
 				{
 					int dust;
@@ -28,14 +27,13 @@ public class BedouinCowl : ModItem
 					Main.dust[dust].velocity *= 0.1f;
 					Main.dust[dust].scale *= 1f + Main.rand.Next(20) * 0.01f;
 				}
-			}
 
 			DashPlayer dashPlayer = player.GetModPlayer<DashPlayer>();
 
 			if (dashPlayer.DashDirection.Y < 0)
 				dashPlayer.cooldown = dashPlayer.dashInfo.Cooldown * 3; //Increase the dash cooldown if ascending
 
-			player.opacityForAnimation = (dashPlayer.DashProgress > 0.5f) ? 1f : 0.1f;
+			player.opacityForAnimation = dashPlayer.DashProgress > 0.5f ? 1f : 0.1f;
 			player.noKnockback = true;
 
 			player.immuneTime = 5;
@@ -63,7 +61,7 @@ public class BedouinCowl : ModItem
 				{
 					var offset = Vector2.SmoothStep(player.Center + Vector2.UnitY * (player.height / 2), player.Center - Vector2.UnitY * (player.height / 2), i / density);
 					float scale = MathHelper.Lerp(0.6f, 1f, i / density);
-					float lerp = (Math.Abs(density / 2 - i) > density / 2 * 0.6f) ? Math.Abs(density / 2 - i) / (density / 2) : 0f;
+					float lerp = Math.Abs(density / 2 - i) > density / 2 * 0.6f ? Math.Abs(density / 2 - i) / (density / 2) : 0f;
 					float rotation = i / 6f - Main.GlobalTimeWrappedHourly * 7f;
 
 					drawInfo.DrawDataCache.Add(new(texture, offset - Main.screenPosition, source, GetColor(player, lerp), rotation, source.Size() / 2, scale, drawInfo.playerEffect, 0));

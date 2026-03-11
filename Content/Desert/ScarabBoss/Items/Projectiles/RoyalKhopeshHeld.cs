@@ -2,20 +2,16 @@
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.ProjectileCommon;
 using System.IO;
-using static Terraria.Player;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using Terraria.Audio;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using Terraria;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.ModCompat;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class RoyalKhopeshHeld : ModProjectile
@@ -113,8 +109,8 @@ public class RoyalKhopeshHeld : ModProjectile
 		if (direction < 0)
 			armRot -= PiOver2;
 
-		owner.SetCompositeArmFront(true, CompositeArmStretchAmount.Full, armRot);
-		Projectile.Center = owner.GetFrontHandPosition(CompositeArmStretchAmount.Full, armRot);
+		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
+		Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, armRot);
 
 		AiTimer++;
 		if (AiTimer > SwingTime)
@@ -211,7 +207,7 @@ public class RoyalKhopeshHeld : ModProjectile
 				progress = EaseQuarticOut.Ease(progress);
 				break;
 			case 1:
-				float halfProgress = (progress % 0.5f) * 2;
+				float halfProgress = progress % 0.5f * 2;
 				progress = EaseCircularOut.Ease(halfProgress);
 				break;
 			case 2:
@@ -225,7 +221,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		if (Combo == 2 && (AiTimer / SwingTime) < WINDUP_TIME)
+		if (Combo == 2 && AiTimer / SwingTime < WINDUP_TIME)
 			return false;
 
 		Projectile.TryGetOwner(out Player Owner);
@@ -271,7 +267,7 @@ public class RoyalKhopeshHeld : ModProjectile
 			{
 				Vector2 velDust = particleDirection.RotatedByRandom(PiOver4) * Main.rand.NextFloat(3, 7) * sineProgress;
 				float scale = Main.rand.NextFloat(0.9f, 1.3f) * sineProgress * SizeModifier * SizeModifier;
-				Dust d = Dust.NewDustDirect(target.Center, 3, 8, DustID.Sand, velDust.X, velDust.Y, Scale: scale);
+				var d = Dust.NewDustDirect(target.Center, 3, 8, DustID.Sand, velDust.X, velDust.Y, Scale: scale);
 				d.noGravity = true;
 			}
 		}
@@ -308,7 +304,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		DrawTrail();
 
-		if (Combo != 2 || (AiTimer / SwingTime) >= WINDUP_TIME)
+		if (Combo != 2 || AiTimer / SwingTime >= WINDUP_TIME)
 			DrawAfterimages(lightColor, origin);
 
 		Projectile.QuickDraw(origin: origin);
@@ -436,7 +432,7 @@ public class RoyalKhopeshHeld : ModProjectile
 	private void EmpoweredGlow(Vector2 origin)
 	{
 		float progress = AiTimer / SwingTime;
-		float windupProgress = (progress) / WINDUP_TIME;
+		float windupProgress = progress / WINDUP_TIME;
 		windupProgress = Min(windupProgress, 1);
 
 		Texture2D starTex = AssetLoader.LoadedTextures["Star"].Value;
@@ -456,10 +452,10 @@ public class RoyalKhopeshHeld : ModProjectile
 		//Glowmask drawing
 		float glowProgress = EaseCircularIn.Ease(windupProgress);
 		color = RUBY_DARK.Additive() * glowProgress * EaseCircularOut.Ease(1 - progress);
-		SpriteEffects effects = (Projectile.spriteDirection < 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		SpriteEffects effects = Projectile.spriteDirection < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		for (int i = 0; i < 6; i++)
 		{
-			Vector2 offset = Vector2.UnitX.RotatedBy((TwoPi * i / 6) + Projectile.rotation);
+			Vector2 offset = Vector2.UnitX.RotatedBy(TwoPi * i / 6 + Projectile.rotation);
 
 			Main.spriteBatch.Draw(glowmaskTex, center + offset, null, color * 0.33f, Projectile.rotation, origin, Projectile.scale, effects, 0);
 		}

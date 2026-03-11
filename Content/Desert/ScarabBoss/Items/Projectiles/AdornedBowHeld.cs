@@ -6,37 +6,37 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 {
-	internal const int MAX_FLASH_TIMER = 60;
+	public const int MAX_FLASH_TIMER = 60;
 
 	// TODO: change these sfx
-	internal static SoundStyle ArrowShoot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
+	public static readonly SoundStyle ArrowShoot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 	{
 		Volume = 0.5f,
 		PitchVariance = 0.15f
 	};
 
-	internal static SoundStyle PerfectShot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
+	public static readonly SoundStyle PerfectShot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 	{
 		Volume = 0.5f,
 		PitchVariance = 0.2f
 	};
 
-	internal static SoundStyle Flash = new("SpiritReforged/Assets/SFX/Item/ClubReady")
+	public static readonly SoundStyle Flash = new("SpiritReforged/Assets/SFX/Item/ClubReady")
 	{
 		Volume = 0.5f,
 		PitchVariance = 0.15f
 	};
-	
-	internal bool _flashed;
 
-	internal int _flashTimer;
+	private readonly AdornedBow.PrismaticPalette _palette = new();
+	private bool _flashed;
+	private int _flashTimer;
 
-	internal Color[] PrismaticColors;
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
 		stringLength = 30;
@@ -68,8 +68,6 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 	public override void PostAI()
 	{
-		PrismaticColors ??= AdornedBowGlobalProjectile.GetPrismaticColors();
-
 		if (_flashTimer > 0)
 		{
 			_flashTimer--;
@@ -110,14 +108,14 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
 		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
-		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
+		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
 		float strength = Charge * (Projectile.timeLeft / 30f);
 
 		int numGlow = 8;
 		for (int i = 0; i < 6; i++)
 		{
-			Vector2 offset = Vector2.UnitX.RotatedBy((TwoPi * i / numGlow) + Projectile.rotation + Main.GlobalTimeWrappedHourly / 5) * Lerp(4, 2, strength);
+			Vector2 offset = Vector2.UnitX.RotatedBy(TwoPi * i / numGlow + Projectile.rotation + Main.GlobalTimeWrappedHourly / 5) * Lerp(4, 2, strength);
 
 			Main.spriteBatch.Draw(glowmaskTex, Projectile.Center + new Vector2(0f, Projectile.gfxOffY) + offset - Main.screenPosition, null, color * (EaseCircularIn.Ease(strength) + perfectShotProgress) * (1f / numGlow), Projectile.rotation, glowmaskTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
@@ -140,10 +138,9 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
 
-		if(Charge == 1)
+		if (Charge == 1)
 		{
 			Main.spriteBatch.RestartToDefault();
-
 			ConeNoise(10, 0.5f * opacity, 0, perfectShotProgress);
 		}
 	}
@@ -153,7 +150,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		Effect effect = AssetLoader.LoadedShaders["SpiralNoiseCone"].Value;
 		Texture2D texture = AssetLoader.LoadedTextures["swirlNoise"].Value;
 		effect.Parameters["uTexture"].SetValue(texture);
-		effect.Parameters["scroll"].SetValue(new Vector2(spiral, (Main.GlobalTimeWrappedHourly / 5) - timeOffset));
+		effect.Parameters["scroll"].SetValue(new Vector2(spiral, Main.GlobalTimeWrappedHourly / 5 - timeOffset));
 
 		effect.Parameters["uColor"].SetValue(Color.LightSteelBlue.Additive(150).ToVector4());
 		effect.Parameters["uColor2"].SetValue(Color.LightCyan.Additive(150).ToVector4());
@@ -171,7 +168,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 		var square = new SquarePrimitive
 		{
-			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, PrismaticColors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
+			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
 			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,

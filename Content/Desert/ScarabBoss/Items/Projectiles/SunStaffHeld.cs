@@ -1,12 +1,10 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using static Terraria.Player;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class SunStaffHeld : ModProjectile
@@ -76,8 +74,8 @@ public class SunStaffHeld : ModProjectile
 		if (owner.direction < 0)
 			Projectile.rotation = MathHelper.Lerp(-MathHelper.PiOver4, -3 * MathHelper.PiOver4, 1 - RiseProgress) + MathHelper.Pi;
 
-		owner.SetCompositeArmFront(true, CompositeArmStretchAmount.Full, Projectile.rotation);
-		Projectile.Center = owner.GetFrontHandPosition(CompositeArmStretchAmount.Full, Projectile.rotation);
+		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation);
+		Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation);
 
 		AiTimer++;
 		FlashTimer = Math.Max(--FlashTimer, 0);
@@ -158,7 +156,7 @@ public class SunStaffHeld : ModProjectile
 			staffTipPos = GetStaffTipPos(0.6f, rotationFlip + MathHelper.PiOver4 - MathHelper.Pi);
 		}
 
-		Vector2 staffPos = owner.GetFrontHandPosition(CompositeArmStretchAmount.Full, Projectile.rotation) - Main.screenPosition + Vector2.UnitY * owner.gfxOffY;
+		Vector2 staffPos = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation) - Main.screenPosition + Vector2.UnitY * owner.gfxOffY;
 		float staffScale = MathHelper.Lerp(RiseProgress, 1, 0.33f);
 
 		//Draw a star underneath the staff when it flashes after releasing m1, that rapidly decreases in scale

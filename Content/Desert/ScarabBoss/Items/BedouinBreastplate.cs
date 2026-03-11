@@ -1,4 +1,4 @@
-namespace SpiritReforged.Content.Desert.Scarabeus.Items;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 [AutoloadEquip(EquipType.Body, EquipType.Back)]
 public class BedouinBreastplate : ModItem

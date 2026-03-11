@@ -8,7 +8,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using System.IO;
 
-namespace SpiritReforged.Content.Desert.Scarabeus.Items.Projectiles;
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
 public class SunOrb : ModProjectile
@@ -44,7 +44,7 @@ public class SunOrb : ModProjectile
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
 		Projectile.usesLocalNPCImmunity = true;
-		Projectile.localNPCHitCooldown = (int)((FLASHTIME / NUMHITS) * (1 - CAN_HIT_THRESHOLD)) + 1;
+		Projectile.localNPCHitCooldown = (int)(FLASHTIME / NUMHITS * (1 - CAN_HIT_THRESHOLD)) + 1;
 	}
 
 	public override bool? CanCutTiles() => false;
@@ -200,7 +200,7 @@ public class SunOrb : ModProjectile
 			int curPosOffset = (int)(progress * rayDist);
 			int rectangleHeight = (int)(rayHeight / numCalcs);
 
-			var collisionLine = new Rectangle(tip.X - (curWidth / 2) + curPosOffset, tip.Y + curHeight, curWidth, rectangleHeight);
+			var collisionLine = new Rectangle(tip.X - curWidth / 2 + curPosOffset, tip.Y + curHeight, curWidth, rectangleHeight);
 			if (collisionLine.Intersects(targetHitbox))
 				return true;
 		}
