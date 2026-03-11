@@ -1047,8 +1047,8 @@ ExplorerTreadsItem: {
 	DisplayName: Explorer's Treads
 	Tooltip:
 		'''
-		+5% Movement speed for every 10% missing health
-		50% chance to avoid traps and hazards
+		50% chance to dodge traps and hazards
+		Grants a short speed boost after touching traps or hazards
 		'Makes exploring temples a walk in the park'
 		'''
 }
