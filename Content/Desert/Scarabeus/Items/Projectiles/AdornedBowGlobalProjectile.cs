@@ -91,14 +91,16 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 
 	private float MaxPrismaticTimer;
 
-	private Color[] PrismaticColors = new Color[3]; // base colors
+	private Color[] PrismaticColors; // base colors
 	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly && entity.DamageType == DamageClass.Ranged;
-	public override void OnSpawn(Projectile projectile, IEntitySource source) => InitializeColors();
 	public override void AI(Projectile Projectile)
 	{
 		if (!active)
 			return;
+
+		if (PrismaticColors is null)
+			InitializeColors();
 
 		if (PrismaticTimer > 0)
 		{

@@ -25,42 +25,55 @@ public class AdornedFlash : ModProjectile
 	public Vector2 originalCenter;
 	public Vector2[] shineScales;
 
-	private Color[] PrismaticColors = new Color[3]; // base colors
+	private Color[] PrismaticColors; // base colors
 	private Color[] PrismaticActiveColors = new Color[3]; // colors that lerp between the base colors	
 	public override void Load()
 	{
+		if (Main.dedServ)
+			return;
+
 		On_Main.DrawCachedProjs += DrawLight;
 	}
 
 	private void DrawLight(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 	{
+		SpriteBatch sb = Main.spriteBatch;
+
+		orig(self, projCache, startSpriteBatch);
+
 		if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 		{
 			List<Projectile> flashes = new List<Projectile>();
 
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			
 			foreach (Projectile p in Main.projectile.Where(p => p.active && p.type == Type))
 			{
 				flashes.Add(p);
 				(p.ModProjectile as AdornedFlash).PreDrawNonPreMult();
 			}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-			
+			sb.End();
+			sb.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp,
+					DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
 			foreach (Projectile p in flashes)
 			{
 				(p.ModProjectile as AdornedFlash).DrawPreMult();
 			}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+			sb.End();
+			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			foreach (Projectile p in flashes)
 			{
 				(p.ModProjectile as AdornedFlash).DrawPostPreMult();
 			}
+
+			sb.End();
 		}
 	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(30);
@@ -83,26 +96,27 @@ public class AdornedFlash : ModProjectile
 
 	public override bool ShouldUpdatePosition() => false;
 
-	public override void OnSpawn(IEntitySource source)
-	{
-		InitializeColors();
-
-		_maxShines = Main.rand.Next(4, 8) * 2;
-
-		shineScales = new Vector2[_maxShines];
-		shineRotations = new float[_maxShines];
-		shineColors = new int[_maxShines];
-
-		for (int i = 0; i < _maxShines; i++)
-		{
-			shineScales[i] = new Vector2(Main.rand.NextFloat(0.25f, 0.5f), Main.rand.NextFloat(0.1f, 0.25f));
-			shineRotations[i] = Main.rand.NextFloat(-0.5f, 0.5f);
-			shineColors[i] = (int)(3 * (i / (float)_maxShines));
-		}
-	}
-
 	public override void AI()
 	{
+		// initialization check
+		if (PrismaticColors is null)
+		{
+			InitializeColors();
+
+			_maxShines = Main.rand.Next(4, 8) * 2;
+
+			shineScales = new Vector2[_maxShines];
+			shineRotations = new float[_maxShines];
+			shineColors = new int[_maxShines];
+
+			for (int i = 0; i < _maxShines; i++)
+			{
+				shineScales[i] = new Vector2(Main.rand.NextFloat(0.25f, 0.5f), Main.rand.NextFloat(0.1f, 0.25f));
+				shineRotations[i] = Main.rand.NextFloat(-0.5f, 0.5f);
+				shineColors[i] = (int)(3 * (i / (float)_maxShines));
+			}
+		}
+
 		if (PrismaticTimer > 0)
 		{
 			FadeColors();
@@ -187,8 +201,9 @@ public class AdornedFlash : ModProjectile
 
 	public void DrawPreMult()
 	{
+		float fade = EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f);
+
 		var shine = AssetLoader.LoadedTextures["Shine"].Value;
-		var shineAlpha = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 
 		for (int i = 0; i < _maxShines; i++)
 		{
@@ -200,7 +215,8 @@ public class AdornedFlash : ModProjectile
 
 	public void DrawPostPreMult()
 	{
-		var shine = AssetLoader.LoadedTextures["Shine"].Value;
+		float fade = EaseBuilder.EaseQuinticIn.Ease(Projectile.timeLeft / 50f);
+
 		var shineAlpha = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 
 		for (int i = 0; i < _maxShines; i++)
@@ -241,5 +257,4 @@ public class AdornedFlash : ModProjectile
 		PrismaticActiveColors[1] = Color.Lerp(PrismaticColors[1], PrismaticColors[2], PrismaticTimer / MaxPrismaticTimer);
 		PrismaticActiveColors[2] = Color.Lerp(PrismaticColors[2], PrismaticColors[0], PrismaticTimer / MaxPrismaticTimer);
 	}
-
 }
