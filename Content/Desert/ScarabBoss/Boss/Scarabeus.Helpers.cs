@@ -9,53 +9,65 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public partial class Scarabeus : ModNPC
 {
-	private Action SelectWeightedState()
+	private float GoBackToIdle()
 	{
-		if (!phaseTwo && NPC.Center.Y - Target.Center.Y > 80)
-			return Leap; //Prioritize leap if too far below Target
+		ChangeState(FindAppropriateIdleState());
+		return 0f;
+	}
 
-		WeightedRandom<Action> state = new();
+	private AIState FindAppropriateIdleState()
+	{
+		float playerDistanceX = Math.Abs(NPC.Center.X - Target.Center.X);
 
-		if (phaseTwo)
+		//Get some distance
+		if (playerDistanceX < 110f)
+			return AIState.IdleAwayFromPlayer;
+		return AIState.IdleTowardsPlayer;
+	}
+
+	private AIState SelectAttack()
+	{
+		WeightedRandom<AIState> state = new();
+
+		if (!phaseTwo)
 		{
-			Add(FlyHover, 1);
-			Add(FlyingDash, 1);
-			Add(ChainGroundPound, 1);
+			//Add(AIState.Shockwave, 1);
+			Add(AIState.GroundPound, 1);
+			//Add(AIState.Dig, 1);
+			//Add(AIState.Roll, 1);
 
-			if (!Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
-				Add(LeapDig, 1);
-
-			Add(ScarabSwarm, 1);
+			//if (!Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
+			//	Add(LeapDig, 1);
 		}
 		else
 		{
-			if (CurrentState != Array.IndexOf(_states, Skitter))
-				Add(Walking, 1);
+			Add(AIState.FlyingDash, 1);
+			Add(AIState.GroundPound, 1);
+			Add(AIState.Dig, 1);
+			Add(AIState.Swarm, 1);
+			//if (NPC.DistanceSQ(Target.Center) > 120 * 120)
+			//	Add(Leap, 0.5);
 
-			if (NPC.DistanceSQ(Target.Center) > 120 * 120)
-				Add(Leap, 0.5);
+			//if (Collision.SolidTiles(NPC.position + new Vector2(0, 4), NPC.width, NPC.height)) //This is different from checking whether the NPC is grounded
+			//{
+			//	Add(DigAttack, 1);
+			//	Add(ShockwaveAttack, 1);
+			//}
 
-			if (Collision.SolidTiles(NPC.position + new Vector2(0, 4), NPC.width, NPC.height)) //This is different from checking whether the NPC is grounded
-			{
-				Add(Dig, 1);
-				Add(GroundedSlam, 1);
-			}
-
-			if (Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48)
-				Add(RollDash, 1);
+			//if (Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48)
+			//	Add(RollAttack, 1);
 		}
 
-		return (state.elements.Count == 0) ? Walking : state;
+		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;
+		LastAttack = selectedState;
+		ShiftUpToFloorLevel();
+		NPC.velocity.Y = Math.Min(NPC.velocity.Y, 0);
+		return selectedState;
 
-		bool Add(Action element, double weight) //Adds to state and automatically avoids duplicates
+		void Add(AIState element, double weight) //Adds to state and automatically avoids duplicates
 		{
-			if (CurrentState != Array.IndexOf(_states, element))
-			{
-				state.Add(element, weight);
-				return true;
-			}
-
-			return false;
+			float weightMult = LastAttack == element ? 0.1f : 1f;
+			state.Add(element, weight * weightMult);
 		}
 	}
 
@@ -102,5 +114,36 @@ public partial class Scarabeus : ModNPC
 			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
 			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
 		}
+	}
+
+	/// <summary>
+	/// Moves scarabeus up to be entirely outside of tiles if it is partially clipped into the floor. This can happen if it ground pounds too hard
+	/// </summary>
+	private void ShiftUpToFloorLevel(int maxTileShiftUp = 2)
+	{
+		bool shifted = false;
+		Vector2 collisionPosition = NPC.position;
+		int collisionWidth = NPC.width;
+		int collisionHeight = NPC.height;
+		ShrinkTileHitbox(NPC, ref collisionPosition, ref collisionWidth, ref collisionHeight);
+
+		for (int i = 0; i < maxTileShiftUp * 8; i++)
+		{
+			bool freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 8, collisionWidth, 1, IgnorePlatforms);
+			if (!freeSpaceAbove)
+				freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 16, collisionWidth, 1, IgnorePlatforms);
+
+			if (Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight, IgnorePlatforms) && freeSpaceAbove)
+			{
+				shifted = true;
+				NPC.position.Y -= 1f;
+				collisionPosition.Y--;
+			}
+			else
+				break;
+		}
+
+		if (shifted)
+			NPC.netUpdate = true;
 	}
 }

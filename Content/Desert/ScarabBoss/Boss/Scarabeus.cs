@@ -5,6 +5,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 
@@ -18,43 +19,96 @@ public partial class Scarabeus : ModNPC
 	private static VisualProfile PhaseTwoProfile;
 	private static int PhaseTwoHeadSlot;
 
-	public int CurrentState
+	public delegate float ScarabeusAttackDelegate(ref bool retarget);
+
+	public AIState CurrentState
 	{
-		get => (int)NPC.ai[0];
-		set => NPC.ai[0] = value;
+		get => (AIState)NPC.ai[0];
+		set => NPC.ai[0] = (int)value;
 	}
 
-	public int Counter
+	public ref float Counter => ref NPC.ai[1];
+	public ref float ExtraMemory => ref NPC.ai[2];
+
+	public AIState LastAttack
 	{
-		get => (int)NPC.ai[1];
-		set => NPC.ai[1] = value;
+		get => (AIState)NPC.ai[3];
+		set => NPC.ai[3] = (int)value;
 	}
 
-	/// <summary> The player currently targeted by this NPC. </summary>
+	private static float DifficultyScale => Main.masterMode ? 3 : Main.expertMode ? 2 : 0;
+
+	/// <summary> The player currently targeted by this NPC. </summary>qq
 	public Player Target => Main.player[NPC.target];
+
 	/// <summary> Whether this NPC should ignore platform collision. </summary>
-	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
+	public bool IgnorePlatforms => NPC.Bottom.Y < Target.Top.Y;
+
 	/// <summary> Whether this NPC is in contact with the ground. </summary>
 	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
 
+	public bool OnTopOfTiles
+	{
+		get
+		{
+			Vector2 collisionPosition = NPC.position;
+			int collisionWidth = NPC.width;
+			int collisionHeight = NPC.height;
+			ShrinkTileHitbox(NPC, ref collisionPosition, ref collisionWidth, ref collisionHeight);
+			return Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight + 8, !IgnorePlatforms);
+		}
+	}
+
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
+
+	/// <summary> Annoyance value that increases when the player breaks line of sight with scarabeus. Makes it close in towards the player faster. </summary>
+	public float Enrage
+	{
+		get => _enrage;
+		set => _enrage = Math.Clamp(value, 0, 1);
+	}
+	private float _enrage;
+
 	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
 	public bool dealContactDamage = false;
 
-	private Action[] _states;
-	private bool _charmed;
+	public enum AIState
+	{
+		SpawnAnim,
+		Charmed,
+		PhaseTransitionAnim,
+
+		IdleTowardsPlayer,
+		IdleAwayFromPlayer,
+		IdleBackAwayFast,
+
+		//P1 Attacks
+		GroundPound,
+		Shockwave,
+		Dig,
+		Roll,
+
+		FlyingDash,
+		Swarm,
+		MaxValue
+	}
+
+	public bool IsIdling
+	{
+		get
+		{
+			AIState currentState = CurrentState;
+			return currentState == AIState.IdleTowardsPlayer || currentState == AIState.IdleAwayFromPlayer || currentState == AIState.IdleBackAwayFast;
+		}
+	}
+
+	private ScarabeusAttackDelegate[] _stateAI;
 
 	public override void Load()
 	{
 		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
-		NPCEvents.OnPlatformCollision += PlatformCollision;
-	}
-
-	private static void PlatformCollision(NPC npc, ref bool fall)
-	{
-		if (npc.ModNPC is Scarabeus scarabeus)
-			fall = scarabeus.IgnorePlatforms;
+		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox;
 	}
 
 	public override void SetStaticDefaults()
@@ -75,23 +129,23 @@ public partial class Scarabeus : ModNPC
 
 	public override void SetDefaults()
 	{
-		_states = [
-			SpawnAnimation,
-			Walking,
-			Skitter,
-			HornSwipe,
-			Leap,
-			RollDash,
-			GroundedSlam,
-			Dig,
-			BounceGroundPound,
-			Transition,
-			FlyHover,
-			FlyingDash,
-			ChainGroundPound,
-			LeapDig,
-			ScarabSwarm
-		];
+		//Cinematic bits
+		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
+		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
+		_stateAI[(int)AIState.Charmed] = CharmedIdle;
+		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
+		//Idle variants
+		_stateAI[(int)AIState.IdleTowardsPlayer]       = IdleBetweenAttacks;
+		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
+		_stateAI[(int)AIState.IdleBackAwayFast] = IdleBetweenAttacks;
+		//P1 Attacks
+		_stateAI[(int)AIState.GroundPound] = GroundPoundAttack;
+		_stateAI[(int)AIState.Shockwave] = ShockwaveAttack;
+		_stateAI[(int)AIState.Dig] = DigAttack;
+		_stateAI[(int)AIState.Roll] = RollAttack;
+		//P2 attacks
+		_stateAI[(int)AIState.FlyingDash] = FlyingDashAttack;
+		_stateAI[(int)AIState.Swarm] = SwarmAttack;
 
 		Profile = PhaseOneProfile;
 
@@ -121,25 +175,44 @@ public partial class Scarabeus : ModNPC
 
 	public override void AI()
 	{
-		NPC.TargetClosest(false);
+		//Retarget early if we dont have a target or if scarabeus is idling
+		if (!NPC.HasValidTarget || IsIdling)
+			NPC.TargetClosest(false);
+
 		NPC.behindTiles = false;
 		NPC.ShowNameOnHover = NPC.Opacity != 0;
 
 		dealContactDamage = false;
 		showTrail = false;
+		iridescenceBoost = MathHelper.Lerp(iridescenceBoost, 0f, 0.1f);
 
-		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
+		if (!phaseTwo && NPC.life < NPC.lifeMax / 2 && IsIdling)
 		{
-			ChangeState(Transition);
+			ChangeState(AIState.PhaseTransitionAnim);
 			NPC.Opacity = 1f;
 			phaseTwo = true;
 		}
 
-		_states[CurrentState].Invoke();
-		Counter++;
+		bool retarget = !IsIdling;
+		float counterTickMultiplier = _stateAI[(int)CurrentState](ref retarget);
+
+		//Retarget late if we're attacking and we need to retarget
+		if (retarget)
+			NPC.TargetClosest(false);
+		Counter += counterTickMultiplier;
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
+
+	public override bool ModifyCollisionData(Rectangle victimHitbox, ref int immunityCooldownSlot, ref MultipliableFloat damageMultiplier, ref Rectangle npcHitbox)
+	{
+		if (CurrentState == AIState.GroundPound && NPC.velocity.Y > 0)
+		{
+			npcHitbox.Inflate(15, 15);
+		}
+
+		return true;
+	}
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
@@ -238,9 +311,7 @@ public partial class Scarabeus : ModNPC
 			index = slot;
 	}
 
-	public void ChangeState(Action state) => ChangeState(Array.IndexOf(_states, state));
-
-	public void ChangeState(int state)
+	public void ChangeState(AIState state)
 	{
 		for (int i = 0; i < 4; i++)
 			NPC.ai[i] = 0;
@@ -250,5 +321,32 @@ public partial class Scarabeus : ModNPC
 
 		NPC.rotation = 0;
 		currentFrame.Y = 0;
+	}
+
+	public override bool? CanFallThroughPlatforms() => IgnorePlatforms;
+
+	private bool ShrinkTileHitbox(NPC npc, ref Vector2 collisionTopLeft, ref int collisionWidth, ref int collisionHeight)
+	{
+		if (npc.type == Type)
+		{
+			collisionWidth = 70;
+			collisionHeight = 40;
+			collisionTopLeft = new Vector2(npc.Center.X - collisionWidth / 2, npc.Bottom.Y - collisionHeight);
+			return true;
+		}
+
+		return false;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(phaseTwo);
+		writer.Write(Enrage);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		phaseTwo = reader.ReadBoolean();
+		Enrage = reader.ReadSingle();
 	}
 }

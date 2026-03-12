@@ -45,6 +45,10 @@ public partial class Scarabeus : ModNPC
 	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
 	public bool showTrail;
 
+	public float iridescenceBoost;
+
+	public float squishY = 1f;
+
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
 	{
@@ -97,6 +101,22 @@ public partial class Scarabeus : ModNPC
 	private void SetFrame(Point frame, VisualProfile profile) => SetFrame(frame.X, frame.Y, profile);
 	#endregion
 
+	public bool OriginAtFeet()
+	{
+		if (Profile == PhaseOneProfile)
+		{
+			if (currentFrame.X != 0)
+				return true;
+			if (currentFrame.Y < 1 || currentFrame.Y > 5)
+				return true;
+			return false;
+		}
+		else
+		{
+			return currentFrame.Y > 3;
+		}
+	}
+
 	public override void FindFrame(int frameHeight)
 	{
 		if (!Main.dedServ)
@@ -110,6 +130,8 @@ public partial class Scarabeus : ModNPC
 		NPC.frame.X = NPC.frame.Width * currentFrame.X;
 		NPC.frame.Y = NPC.frame.Height * currentFrame.Y;
 
+		squishY = MathHelper.Lerp(squishY, 1f, 0.3f);
+
 		if (NPC.IsABestiaryIconDummy)
 			UpdateFrame(currentFrame.X, 12, PhaseOneProfile);
 	}
@@ -122,8 +144,14 @@ public partial class Scarabeus : ModNPC
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		Vector2 position = NPC.Center - screenPos - new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
-		Vector2 origin = new(108, 98);
+		bool originAtFeet = OriginAtFeet();
+		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
+		Vector2 origin = originAtFeet ? new(108, 152) : new(108, 98);
+		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
+
+		Vector2 scale = new Vector2(2 - MathF.Pow(squishY, 2f), MathF.Pow(squishY, 0.7f)) * NPC.scale;
+		if (squishY > 1)
+			scale = new Vector2(1 - MathF.Pow(squishY - 1, 2f), 1f + MathF.Pow(squishY - 1, 0.7f)) * NPC.scale;
 
 		if (showTrail)
 		{
@@ -139,26 +167,28 @@ public partial class Scarabeus : ModNPC
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
 		sheenShader.Parameters["resolution"].SetValue(texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f + iridescenceBoost * 0.1f);
+		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
 		FlipShadersOnOff(spriteBatch, sheenShader, true);
 
-		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
-		if (_charmed)
+		Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White);
+
+		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
 
 		if (Profile == PhaseTwoProfile)
 		{
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
-			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);
 
 			DrawHelpers.DrawOutline(spriteBatch, Glowmask.Value, NPC.Center - Main.screenPosition, default, (offset) =>
-				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, NPC.scale, effects));
+				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 		}
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
