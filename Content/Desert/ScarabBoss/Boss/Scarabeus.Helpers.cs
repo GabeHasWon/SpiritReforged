@@ -129,11 +129,11 @@ public partial class Scarabeus : ModNPC
 
 		for (int i = 0; i < maxTileShiftUp * 8; i++)
 		{
-			bool freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 8, collisionWidth, 1, IgnorePlatforms);
+			bool freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 8, collisionWidth, 1, !IgnorePlatforms);
 			if (!freeSpaceAbove)
-				freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 16, collisionWidth, 1, IgnorePlatforms);
+				freeSpaceAbove = !Collision.SolidCollision(collisionPosition - Vector2.UnitY * 16, collisionWidth, 1, !IgnorePlatforms);
 
-			if (Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight, IgnorePlatforms) && freeSpaceAbove)
+			if (Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight, !IgnorePlatforms) && freeSpaceAbove)
 			{
 				shifted = true;
 				NPC.position.Y -= 1f;

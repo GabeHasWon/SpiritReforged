@@ -647,7 +647,7 @@ public partial class Scarabeus : ModNPC
 	public float GroundPoundAttack(ref bool retarget)
 	{
 		retarget = false;
-		int max_bounces = phaseTwo ? 3 : 2;
+		int max_bounces = phaseTwo ? 3 : 1;
 		const int final_bounce_track_time = 40;
 		const int air_pause_time = 16;
 		const int rest_time = 90;
@@ -689,6 +689,10 @@ public partial class Scarabeus : ModNPC
 				Spin();
 				if (Counter > final_bounce_track_time - 10)
 					NPC.velocity.X *= 0.9f;
+
+				//Slow down when about to overshoot target
+				if (Math.Sign(NPC.velocity.X) != Math.Sign((Target.Center.X + Target.velocity.X * 20) - NPC.Center.X - NPC.direction * 100f))
+					NPC.velocity.X *= 0.95f;
 			}
 			else 
 			{
@@ -701,7 +705,6 @@ public partial class Scarabeus : ModNPC
 				if (Counter < final_bounce_track_time + air_pause_time)
 				{
 					artificialGravityMultiplier = 0f;
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
 					NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, -1.25f, 0.3f);
 				}
 				else
@@ -709,6 +712,8 @@ public partial class Scarabeus : ModNPC
 					artificialGravityMultiplier = 1.3f;
 					squishY = 1f + Utils.GetLerpValue(2f, 20f, NPC.velocity.Y, true) * 0.1f;
 				}
+
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(Target.Center.X - NPC.Center.X) * 4.6f, 0.01f);
 			}
 
 			//On tile collision
@@ -720,21 +725,22 @@ public partial class Scarabeus : ModNPC
 				squishY = 0.7f;
 				artificialGravityMultiplier = 0f;
 
-				for (int i = -3; i <= 3; i++)
-				{
-					if (i == 0)
-						continue;
-
-					float distStep = Main.rand.NextFloat(11, 13) * i * 16;
-					Vector2 projPosition = FindGroundFromPosition(NPC.Bottom + Vector2.UnitX * distStep) - Vector2.UnitY * 80;
-
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.Zero, ModContent.ProjectileType<SandPillar>(), NPC.damage / 4, 3, Main.myPlayer, Math.Abs(i) * 40);
-				}
-
 				if (!Main.dedServ)
 				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+
+				}
+
+				for (int i = -1; i <= 1; i += 2)
+				{
+					for (int j = 0; j < 4; j++)
+					{
+						float distStep = (200 + j * 56) * i ;
+						Vector2 projPosition = FindGroundFromPosition(NPC.Bottom + Vector2.UnitX * distStep) - Vector2.UnitY * 80;
+
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.Zero, ModContent.ProjectileType<SandPillar>(), NPC.damage / 4, 3, Main.myPlayer, 5 + j * 3);
+					}
 				}
 			}
 		}
@@ -775,16 +781,24 @@ public partial class Scarabeus : ModNPC
 			Counter = 0;
 
 			Vector2 bounceTarget = Target.Center + Target.velocity * 30f;
-			float overshootMultiplier = Utils.GetLerpValue(1f, 3f, Target.velocity.X * NPC.direction, true);
-			if (bounceIndex == max_bounces)
-				overshootMultiplier = 1f;
-			bounceTarget.X += Math.Clamp(Target.Center.X - NPC.Center.X, -400, 400) * 0.8f * overshootMultiplier;
+			float overshootMultiplier = Utils.GetLerpValue(1f, 3f, Target.velocity.X * NPC.direction, true) * 0.8f;
+			float maxOvershootDistance = 400;
+			float maxBounceXVel = 26f;
 
-			NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: 26);
+			if (bounceIndex == max_bounces)
+			{
+				overshootMultiplier = 2.5f;
+				maxOvershootDistance = 600;
+				maxBounceXVel = 36f;
+			}
+
+			bounceTarget.X += Math.Clamp(Target.Center.X - NPC.Center.X, -maxOvershootDistance, maxOvershootDistance) * overshootMultiplier;
+
+			NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: maxBounceXVel);
 
 			if (!Main.dedServ && bounceIndex > 1)
 			{
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 3, 15, 800));
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 4, 15, 1800));
 				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 			}
 		}
