@@ -20,7 +20,7 @@ public class DivebombScarab : ModProjectile
 	{
 		Main.projFrames[Projectile.type] = 4;
 		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
-		ProjectileID.Sets.TrailingMode[Projectile.type] = 3;
+		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 	}
 
 	public override void SetDefaults()
@@ -30,8 +30,6 @@ public class DivebombScarab : ModProjectile
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
-		Main.projFrames[Projectile.type] = 4;
-		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 		Projectile.alpha = 0;
 	}
 
@@ -114,7 +112,7 @@ public class DivebombScarab : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-		var scale = Projectile.scale * (1 - _bgDistance);
+		float scale = Projectile.scale * (1 - _bgDistance);
 		Vector2 position = Projectile.Center - Vector2.Lerp(Main.screenPosition, _spawnOrigin, (float)Math.Pow(_bgDistance, 1.5));
 		var color = Color.Lerp(lightColor, Color.Black, _bgDistance / 3);
 

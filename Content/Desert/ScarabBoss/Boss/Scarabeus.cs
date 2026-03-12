@@ -125,7 +125,7 @@ public partial class Scarabeus : ModNPC
 		NPC.ShowNameOnHover = NPC.Opacity != 0;
 
 		dealContactDamage = false;
-		showTrail = false;
+		afterimageTrail = new(false);
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{

@@ -68,7 +68,7 @@ public partial class Scarabeus : ModNPC
 				NPC.GravityMultiplier *= 3;
 
 				SetFrame(DigFrame, PhaseOneProfile);
-				showTrail = true;
+				afterimageTrail = new(true);
 			}
 		}
 		else //Rumbling
@@ -330,7 +330,7 @@ public partial class Scarabeus : ModNPC
 					}
 					else //Downward movement
 					{
-						showTrail = NPC.velocity.Y > 2;
+						afterimageTrail = new(NPC.velocity.Y > 2);
 						NPC.velocity.Y = Math.Min(NPC.velocity.Y + 1.2f, 16);
 					}
 				}
@@ -374,7 +374,7 @@ public partial class Scarabeus : ModNPC
 				NPC.Step();
 
 				SetFrame(DigFrame, PhaseOneProfile);
-				showTrail = true;
+				afterimageTrail = new(true);
 				dealContactDamage = true;
 				//sfx here
 
@@ -724,7 +724,7 @@ public partial class Scarabeus : ModNPC
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
-		NPC.rotation = NPC.velocity.X * 0.05f;
+		NPC.rotation = NPC.velocity.X * 0.01f;
 		NPC.FaceTarget();
 
 		UpdateFrame(2, 12, PhaseTwoProfile);
@@ -801,7 +801,7 @@ public partial class Scarabeus : ModNPC
 			}
 
 			SetFrame(0, 0, PhaseTwoProfile);
-			showTrail = true;
+			afterimageTrail = new(true, true);
 
 			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
 			NPC.direction = Math.Sign(NPC.velocity.X);
@@ -933,8 +933,8 @@ public partial class Scarabeus : ModNPC
 
 	public void LeapDig()
 	{
-		const int underground_time = 180;
-		const int num_eruptions = 3;
+		const int underground_time = 45;
+		const int num_eruptions = 4;
 		const int rest_time = 40;
 
 		ref float jumpState = ref NPC.ai[2];
@@ -950,83 +950,139 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity = new Vector2(6 * NPC.direction, -12);
 		}
 
-		if (groundState == 0 && jumpState == 1) //Fall into the ground
+		if (groundState == 0 && jumpState <= num_eruptions) //Fall into the ground
 		{
-			if (Profile != PhaseOneProfile && UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
-				SetFrame(DigFrame, PhaseOneProfile);
+			//Curl up animation for the first leap into ground
+			if (Profile != PhaseOneProfile && jumpState == 1)
+				if(UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+					SetFrame(DigFrame, PhaseOneProfile);
 
 			NPC.velocity.Y = Math.Min(NPC.velocity.Y + 0.4f, 24);
+			dealContactDamage = true;
 
 			if (currentFrame == DigFrame)
 				NPC.rotation += MathHelper.Clamp(NPC.velocity.Y * 0.05f * NPC.direction, -1, 1);
+
+			else if(jumpState > 1)
+			{
+				afterimageTrail = new(true, false, 0.25f);
+				NPC.rotation = NPC.velocity.ToRotation() + (NPC.direction < 0 ? MathHelper.Pi : 0);
+			}
 
 			if (Collision.SolidCollision(NPC.Top - new Vector2(4), 8, 8)) //Disappear into the ground
 			{
 				groundState = 1;
 				NPC.Opacity = 0;
 				NPC.velocity = Vector2.Zero;
+				Counter = 0;
 
 				if (!Main.dedServ)
+				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 4, 3, 20));
-
-				//fx here
+					BouncingTileWave(8, 12, 30, Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
+				}
 			}
 		}
 
 		if (groundState == 1) //Dig
 		{
 			Vector2 groundPosition = FindGroundFromPosition(new Vector2(NPC.Center.X, Target.Center.Y));
-			NPC.velocity.X = (float)Math.Sin(Counter * MathHelper.TwoPi / 120) * 5 + NPC.DirectionTo(Target.Center).X;
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 8, 0.1f);
 			NPC.position.Y = groundPosition.Y;
 
-			if (Main.rand.NextBool(4) && !Main.dedServ)
+			if (!Main.dedServ) //Digging visuals
 			{
-				Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center - Vector2.UnitY * 32, -Vector2.UnitY * 8, colors[0], Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseCubicOut, 30)
+				for (int i = 0; i < Main.rand.Next(4); i++)
 				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = colors[1],
-					TertiaryColor = colors[2],
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.5f,
-					Layer = ParticleLayer.BelowSolid
-				});
+					Vector2 particlePos = NPC.Center - Vector2.UnitY * 48;
+					particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
+
+					Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
+					Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+					{
+						Pixellate = true,
+						DissolveAmount = 1,
+						Intensity = 0.9f,
+						SecondaryColor = colors[1],
+						TertiaryColor = colors[2],
+						PixelDivisor = 3,
+						Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+						ColorLerpExponent = 0.5f,
+						Layer = ParticleLayer.BelowSolid
+					});
+				}
+
+				if (Main.rand.NextBool(3))
+					Dust.NewDust(NPC.position - Vector2.UnitY * 8, NPC.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.7f, 1.2f));
+
+				if (Counter % 20 == 0)
+					BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
 			}
-
-			if (Counter % (underground_time / (num_eruptions + 1)) == 0 && Counter != underground_time)
-			{
-				//projectile here					
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center - Vector2.UnitY * 80, Vector2.Zero, ModContent.ProjectileType<SandPillar>(), NPC.damage / 4, 3);
-
-				if (!Main.dedServ)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 2, 3, 20));
-			}
-
-			if (Counter % 20 == 0)
-				BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
 
 			if (Counter > underground_time) //Reemerge
 			{
-				SetFrame(0, 2, PhaseOneProfile);
 				Counter = 0;
 
 				NPC.FaceTarget();
 				NPC.rotation = 0;
 				NPC.Opacity = 1;
-				NPC.velocity.Y = -15;
+
+				if (jumpState == num_eruptions)
+				{
+					SetFrame(0, 2, PhaseTwoProfile);
+					NPC.velocity.Y = -15;
+					NPC.velocity.X = 0;
+				}
+				else
+				{
+					//Currently uses p2 dig keyframe but runs into issues of drawing above drawblack because of terraria's awesome layering
+					SetFrame(0, 1, PhaseTwoProfile);
+					NPC.velocity = NPC.GetArcVel(Target.Center - Vector2.UnitY * 80 + Vector2.UnitX * NPC.direction * 320, 0.4f, 16, true);
+
+					//put rock projectiles here when they EXIST
+				}
 
 				groundState = 0;
 				jumpState++;
 
-				//fx here
-
+				//fx
 				if (!Main.dedServ)
+				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 4, 3, 20));
+					BouncingTileWave(8, 12, 30, Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
+
+					for(int i = 0; i < 20; i++)
+					{
+						Vector2 particlePos = NPC.Center - Vector2.UnitY * 48;
+						particlePos += Main.rand.NextFloat(-40, 40) * Vector2.UnitX;
+
+						Vector2 particleVel = NPC.velocity * Main.rand.NextFloat(0.25f);
+						Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
+
+						ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.24f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 80))
+						{
+							Pixellate = true,
+							DissolveAmount = 1,
+							Intensity = 0.7f,
+							SecondaryColor = colors[1],
+							TertiaryColor = colors[2],
+							PixelDivisor = 2,
+							Rotation = particleVel.ToRotation() + Main.rand.NextFloat(-0.2f, 0.2f),
+							ColorLerpExponent = 0.5f,
+							Layer = ParticleLayer.BelowSolid
+						});
+
+						if (Main.rand.NextBool())
+							Dust.NewDust(particlePos, NPC.width, 0, DustID.Sand, particleVel.X * 2, particleVel.Y * 2, 0, default, Main.rand.NextFloat(0.7f, 1.2f));
+					}
+				}
 			}
 		}
 
-		if (jumpState == 2)
+		//Transition to next attack
+		if (jumpState == num_eruptions + 1)
 		{
 			Counter++;
 			NPC.velocity.Y *= 0.95f;
@@ -1043,8 +1099,8 @@ public partial class Scarabeus : ModNPC
 	{
 		//durations of each segment
 		const int attack_start_time = 40;
-		const int swarm_length = 120;
-		const int flash_boom_chargeup = 60;
+		const int swarm_length = 60;
+		const int flash_boom_chargeup = 120;
 		const int rest_time = 30;
 
 		//short form calculations using durations of each segment
@@ -1067,19 +1123,27 @@ public partial class Scarabeus : ModNPC
 		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * 3 * Counter / attackEndTime) / 10;
 		UpdateFrame(1, 12, PhaseTwoProfile);
 
+		void MakeScarab()
+		{
+			int side = Main.rand.NextBool() ? -1 : 1;
+			Vector2 position = NPC.Center + new Vector2(Main.rand.NextFloat(900, 1100) * side, Main.rand.NextFloat(-300, 100));
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), position, Vector2.Zero, ModContent.ProjectileType<SwarmScarab>(), NPC.damage / 4, 1, -1, 0, side);
+		}
+
 		if (Counter == attack_start_time)
 		{
 			//proj here
 
 			if (Main.netMode != NetmodeID.Server)
 			{
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.LightGoldenrodYellow, 1, 2400, 30, "GlowTrail", new Vector2(1, 1), EaseFunction.EaseCircularOut, true, 0.33f));
+				//ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.LightGoldenrodYellow, 1, 2400, 30, "GlowTrail", new Vector2(1, 1), EaseFunction.EaseCircularOut, true, 0.33f));
 			}
 		}
 
-		if (Counter > flashChargeStart && Counter < flashExplostionTime)
+		if (Counter > attack_start_time && Counter < flashChargeStart)
 		{
-			//vfx here
+			if (Counter % 6 == 0)
+				MakeScarab();
 		}
 
 		if (Counter == flashExplostionTime)

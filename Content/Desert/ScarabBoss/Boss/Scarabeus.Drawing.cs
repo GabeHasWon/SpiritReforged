@@ -27,6 +27,13 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
+	public struct TrailData(bool enabled, bool isGlowing = false, float opacity = 1)
+	{
+		public bool Enabled = enabled;
+		public bool Glowing = isGlowing;
+		public float Opacity = opacity;
+	}
+
 	public enum FrameState { Progressed, Stopped, Looped }
 
 	/// <summary> Dig frame for profile one. </summary>
@@ -39,8 +46,8 @@ public partial class Scarabeus : ModNPC
 	/// <summary> The selected frame in the 2D spritesheet.<para/>
 	/// Prefer <see cref="UpdateFrame"/> and <see cref="SetFrame"/> for assignment. </summary>
 	public Point currentFrame;
-	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
-	public bool showTrail;
+	/// <summary> Whether this NPC should draw a trail, whether it should be glowing or normal, and what the opacity should be. Resets every frame. </summary>
+	public TrailData afterimageTrail;
 
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
@@ -122,9 +129,10 @@ public partial class Scarabeus : ModNPC
 		Vector2 position = NPC.Center - screenPos - new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 		Vector2 origin = new(108, 98);
 
-		if (showTrail)
+		if (afterimageTrail.Enabled)
 		{
-			Color color = phaseTwo ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			Color color = afterimageTrail.Glowing ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			color *= afterimageTrail.Opacity;
 
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{
