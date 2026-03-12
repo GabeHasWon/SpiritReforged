@@ -133,6 +133,10 @@ public partial class Scarabeus : ModNPC
 			ChangeState(Transition);
 			NPC.Opacity = 1f;
 			phaseTwo = true;
+
+			//Immediately fade out p1 music before switching
+			Main.musicFade[Main.curMusic] = 0;
+			Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");
 		}
 
 		_states[CurrentState].Invoke();

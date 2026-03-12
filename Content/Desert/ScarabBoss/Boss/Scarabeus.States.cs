@@ -729,6 +729,9 @@ public partial class Scarabeus : ModNPC
 
 			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 		}
+
+		//We don't want the p2 music to be quiet during this so this skips the fade in
+		Main.musicFade[Main.curMusic] = 1;
 	}
 
 	public void FlyHover()
