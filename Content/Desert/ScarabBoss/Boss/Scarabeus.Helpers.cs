@@ -32,7 +32,7 @@ public partial class Scarabeus : ModNPC
 			if (CurrentState != Array.IndexOf(_states, Skitter))
 				Add(Walking, 1);
 
-			if (NPC.DistanceSQ(Target.Center) > 160)
+			if (NPC.DistanceSQ(Target.Center) > 120 * 120)
 				Add(Leap, 0.5);
 
 			if (Collision.SolidTiles(NPC.position + new Vector2(0, 4), NPC.width, NPC.height)) //This is different from checking whether the NPC is grounded

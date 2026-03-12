@@ -1,7 +1,10 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using Microsoft.CodeAnalysis;
+using Newtonsoft.Json.Linq;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
+using Terraria.GameContent.UI;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -36,8 +39,8 @@ public partial class Scarabeus : ModNPC
 
 	public enum FrameState { Progressed, Stopped, Looped }
 
-	/// <summary> Dig frame for profile one. </summary>
-	public static readonly Point DigFrame = new(0, 4);
+	/// <summary> Roll frame for profile one. </summary>
+	public static readonly Point RollFrame = new(0, 4);
 
 	/// <summary> The current visual profile to be used for drawing. Contains frame count and texture information. </summary>
 	public VisualProfile Profile { get; private set; }
@@ -154,6 +157,9 @@ public partial class Scarabeus : ModNPC
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
+		if (_charmed)
+			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
+
 		if (Profile == PhaseTwoProfile)
 		{
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
@@ -177,6 +183,23 @@ public partial class Scarabeus : ModNPC
 		}
 
 		return false;
+	}
+
+	private static void DrawEmote(SpriteBatch spriteBatch, Vector2 position, int emote)
+	{
+		Texture2D texture = TextureAssets.Extra[ExtrasID.EmoteBubble].Value;
+		SpriteEffects effect = SpriteEffects.None;
+
+		Rectangle source = texture.Frame(EmoteBubble.EMOTE_SHEET_HORIZONTAL_FRAMES, EmoteBubble.EMOTE_SHEET_VERTICAL_FRAMES);
+		Vector2 origin = new(source.Width / 2, source.Height);
+
+		int frame = (int)Main.timeForVisualEffects / 12 % 2;
+		source = texture.Frame(EmoteBubble.EMOTE_SHEET_HORIZONTAL_FRAMES, 39, emote * 2 % 8 + frame, 1 + emote / 4);
+
+		DrawHelpers.DrawOutline(spriteBatch, texture, position - Main.screenPosition, Color.White, (offset) =>
+			spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, Color.White.Additive(), 0f, origin, 1f, effect, 0f));
+
+		spriteBatch.Draw(texture, position - Main.screenPosition, source, Color.White, 0f, origin, 1f, effect, 0f);
 	}
 
 	public void FlipShadersOnOff(SpriteBatch spriteBatch, Effect effect, bool immediate)
