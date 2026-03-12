@@ -29,6 +29,13 @@ Records: {
 	Boulder: 受到扰动时会沿着地面滚动。
 }
 
+FablesGraves: {
+	SetNames: {
+		// Savanna: Savanna Graves
+		// SaltFlats: Salt Graves
+	}
+}
+
 SunkenTreasureTile.MapEntry: 沉没的宝藏
 HydrothermalVent.MapEntry: 热液喷口
 CoralMapEntry: 珊瑚
@@ -54,3 +61,4 @@ OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadio
 // ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 // DustyTomb.MapEntry: Dusty Tomb
 // EnlilStatue.MapEntry: Enlil Statue
+// ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"

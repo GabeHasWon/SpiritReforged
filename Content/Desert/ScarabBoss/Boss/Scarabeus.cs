@@ -1,9 +1,12 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Gores;
+using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using SpiritReforged.Content.Forest.Relics;
+using SpiritReforged.Content.Forest.Trophies;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -27,7 +30,12 @@ public partial class Scarabeus : ModNPC
 		set => NPC.ai[1] = value;
 	}
 
+	/// <summary> The player currently targeted by this NPC. </summary>
 	public Player Target => Main.player[NPC.target];
+	/// <summary> Whether this NPC should ignore platform collision. </summary>
+	public bool IgnorePlatforms => NPC.Center.Y < Target.Top.Y - 20;
+	/// <summary> Whether this NPC is in contact with the ground. </summary>
+	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
 
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
@@ -35,8 +43,19 @@ public partial class Scarabeus : ModNPC
 	public bool dealContactDamage = false;
 
 	private Action[] _states;
+	private bool _charmed;
 
-	public override void Load() => PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
+	public override void Load()
+	{
+		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
+		NPCEvents.OnPlatformCollision += PlatformCollision;
+	}
+
+	private static void PlatformCollision(NPC npc, ref bool fall)
+	{
+		if (npc.ModNPC is Scarabeus scarabeus)
+			fall = scarabeus.IgnorePlatforms;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -50,8 +69,8 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], [7, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), [3, 6, 4, 5]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [8, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
 	}
 
 	public override void SetDefaults()
@@ -66,6 +85,7 @@ public partial class Scarabeus : ModNPC
 			GroundedSlam,
 			Dig,
 			BounceGroundPound,
+			Transition,
 			FlyHover,
 			FlyingDash,
 			ChainGroundPound,
@@ -106,20 +126,21 @@ public partial class Scarabeus : ModNPC
 		NPC.ShowNameOnHover = NPC.Opacity != 0;
 
 		dealContactDamage = false;
-		showTrail = false;
+		afterimageTrail = new(false);
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2)
 		{
-			ChangeState(FlyHover);
-			Profile = PhaseTwoProfile;
+			ChangeState(Transition);
+			NPC.Opacity = 1f;
 			phaseTwo = true;
+
+			//Immediately fade out p1 music before switching
+			Main.musicFade[Main.curMusic] = 0;
+			Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");
 		}
 
 		_states[CurrentState].Invoke();
 		Counter++;
-
-		if (!NPC.noGravity && !NPC.noTileCollide)
-			NPC.Step();
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -142,23 +163,27 @@ public partial class Scarabeus : ModNPC
 			//wingSoundSlot = SlotId.Invalid;
 			//}
 
-			//for (int i = 1; i <= 7; i++)
-			//	Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Scarab" + i.ToString()).Type, 1f);
+			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
-			NPC.position += NPC.Size / 2;
-			NPC.Size = new Vector2(100, 60);
-			NPC.position -= NPC.Size / 2;
+			for (int i = 1; i < 12; i++)
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+
+			for (int i = 0; i < 8; i++)
+			{
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
+			}
 
 			for (int i = 0; i < 30; i++)
-				Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
 
 			for (int j = 0; j < 50; j++)
 			{
-				var dust = Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 1f);
+				var dust = Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 1f);
 				dust.velocity *= 5f;
 				dust.noGravity = true;
 
-				Dust.NewDustDirect(new Vector2(NPC.position.X, NPC.position.Y), NPC.width, NPC.height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, .82f).velocity *= 2f;
+				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
 			}
 		}
 	}
@@ -186,20 +211,23 @@ public partial class Scarabeus : ModNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		/*npcLoot.AddMasterModeRelicAndPet<ScarabeusRelicItem, ScarabPetItem>();
-		npcLoot.AddBossBag<BagOScarabs>();
+		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
-		var notExpertRule = new LeadingConditionRule(new Conditions.NotExpert());
-		notExpertRule.AddCommon<ScarabMask>(7);
-		notExpertRule.AddCommon<Trophy1>(10);
-		notExpertRule.AddCommon<SandsOfTime>(15);
-		notExpertRule.AddCommon<Chitin>(1, 25, 36);
-		notExpertRule.AddOneFromOptions<ScarabBow, LocustCrook, RoyalKhopesh, RadiantCane>();
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 
-		npcLoot.Add(notExpertRule);*/
+		npcLoot.Add(notExpertRule);
+		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
+		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
+		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
+
+		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
+
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : null;
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
@@ -227,108 +255,4 @@ public partial class Scarabeus : ModNPC
 		NPC.rotation = 0;
 		currentFrame.Y = 0;
 	}
-
-	#region helpers
-	private Action SelectRandomState()
-	{
-		List<Action> availablePatterns = [];
-
-		Action[] phase1standard = [Walking, Leap];
-		Action[] phase1strong = [Dig, GroundedSlam, RollDash];
-
-		Action[] phase2standard = [FlyHover, FlyingDash];
-		Action[] phase2strong = [ChainGroundPound, LeapDig, ScarabSwarm];
-
-		if (phaseTwo)
-		{
-			availablePatterns.AddRange(phase2standard);
-			availablePatterns.AddRange(phase2strong);
-		}
-		else
-		{
-			availablePatterns.AddRange(phase1standard);
-			availablePatterns.AddRange(phase1strong);
-		}
-
-		//Prune the current attack and attacks that shouldn't be used
-		List<Action> temp = [];
-
-		for (int i = 0; i < availablePatterns.ToArray().Length; i++)
-		{
-			if (availablePatterns[i] != _states[CurrentState] && IsStateValid(availablePatterns[i]))
-				temp.Add(availablePatterns[i]);
-		}
-
-		//Set a random attack from the remainders
-		return Main.rand.NextFromCollection(temp);
-	}
-
-	/// <summary> Checks if the given attack is viable for random selection, given the current position of the boss and terrain around it </summary>
-	private bool IsStateValid(Action state)
-	{
-		if (state == Walking)
-			return CurrentState != Array.IndexOf(_states, Skitter);
-		else if (state == Leap)
-			return NPC.Distance(Target.Center) > 160;
-		else if (state == RollDash)
-			return Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48;
-		else if (state == GroundedSlam)
-			return Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false);
-		else if (state == Dig)
-			return Collision.SolidTiles(NPC.BottomLeft, NPC.width / 16, 3, false) && CurrentState != Array.IndexOf(_states, BounceGroundPound);
-		else if (state == LeapDig)
-			return !Collision.SolidTiles(NPC.position, NPC.width, NPC.height);
-
-		return true;
-	}
-
-	/// <summary> From a given input, translates the input to the surfacemost tile on the ground. <br/>
-	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
-	private static Vector2 FindGroundFromPosition(Vector2 input)
-	{
-		const int dimensions = 8;
-
-		while (!Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
-			input.Y += dimensions;
-
-		while (Collision.SolidTiles(input - new Vector2(dimensions / 2), dimensions, dimensions))
-			input.Y -= dimensions;
-
-		return input + new Vector2(0, dimensions);
-	}
-
-	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
-	{
-		for (int j = -1; j <= 1; j += 2)
-			BouncingTileWave(j, numTiles, maxHeight, totalTime, offset);
-
-		ParticleHandler.SpawnParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
-	}
-
-	private void BouncingTileWave(int direction, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
-	{
-		for (float i = 0; i < numTiles; i++)
-		{
-			float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));
-			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
-		}
-	}
-
-	private void CheckPlatform()
-	{
-		bool onplatform = true;
-		for (int i = (int)NPC.position.X; i < NPC.position.X + NPC.width; i += NPC.width / 4)
-		{ //check tiles beneath the boss to see if they are all platforms
-			Tile tile = Framing.GetTileSafely(new Point((int)NPC.position.X / 16, (int)(NPC.position.Y + NPC.height + 8) / 16));
-			if (!TileID.Sets.Platforms[tile.TileType])
-				onplatform = false;
-		}
-
-		if (onplatform && NPC.Center.Y < Target.position.Y - 20) //if they are and the player is lower than the boss, temporarily let the boss ignore tiles to go through them
-			NPC.noTileCollide = true;
-		else
-			NPC.noTileCollide = false;
-	}
-	#endregion
 }

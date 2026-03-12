@@ -2592,7 +2592,7 @@ BronzePlatformItem: {
 
 ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
-	Tooltip: ""
+	Tooltip: Lights up when nearby
 }
 
 SwordStandMahoganyItem: {
@@ -2612,7 +2612,7 @@ RedSandstoneBrickForegroundWallItem: {
 
 SaltPylonItem: {
 	DisplayName: Salt Flats Pylon
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 SaltNightMusicBoxItem: {
@@ -2815,16 +2815,11 @@ SaltFountainItem: {
 	Tooltip: ""
 }
 
-ScarabDebugSpawner: {
-	DisplayName: Scarab Debug Spawner
-	Tooltip: ""
-}
-
 SaltskipperQuestFish: {
-	Description: Mods.SpiritReforged.Items.SaltskipperQuestFish.Description
-	CatchLocation: Mods.SpiritReforged.Items.SaltskipperQuestFish.CatchLocation
-	DisplayName: Saltskipper Quest Fish
-	Tooltip: ""
+	Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
+	CatchLocation: Salt Flats
+	DisplayName: Saltskipper
+	Tooltip: "'Caught in Salt Flats'"
 }
 
 WispBannerItem.DisplayName: Wisp Banner
@@ -2953,4 +2948,49 @@ GoldCricketCageItem: {
 ScarabPetItem: {
 	DisplayName: Scarab Food
 	Tooltip: Summons a little Scarab companion
+}
+
+CarrotCake: {
+	Tooltip: "{$BuffDescription.WellFed3}"
+	DisplayName: Carrot Cake
+}
+
+AvianRitualMask: {
+	DisplayName: Avian Ritual Mask
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: Bull Ritual Mask
+	Tooltip: ""
+}
+
+AdornedBow: {
+	DisplayName: Adorned Bow
+	Tooltip: ""
+}
+
+BagOScarabs: {
+	DisplayName: Treasure Bag (Scarabeus)
+	Tooltip: ""
+}
+
+ScarabMask: {
+	DisplayName: Scarabeus Mask
+	Tooltip: ""
+}
+
+ScarabRelic: {
+	DisplayName: Scarabeus Relic
+	Tooltip: ""
+}
+
+ScarabTrophy: {
+	DisplayName: Scarabeus Trophy
+	Tooltip: ""
+}
+
+ScarabRadio: {
+	DisplayName: Scarab Radio
+	Tooltip: ""
 }

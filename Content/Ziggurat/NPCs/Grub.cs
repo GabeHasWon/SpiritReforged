@@ -1,9 +1,11 @@
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs;
 
@@ -136,8 +138,8 @@ public class Grub : ModNPC
 		{
 			bool dead = NPC.life <= 0;
 
-			for (int i = 0; i < (dead ? 20 : 5); i++)
-				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.GreenMoss, Scale: Main.rand.NextFloat(0.5f, 1.2f)).velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
+			for (int i = 0; i < (dead ? 16 : 5); i++)
+				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.BlueMoss, NPC.velocity.X * 0.3f, NPC.velocity.Y * 0.3f, Scale: Main.rand.NextFloat(0.6f, 1.25f));
 
 			if (dead)
 			{
@@ -183,6 +185,7 @@ public class Grub : ModNPC
 		return ((type == ModContent.TileType<PaleHive>() || type == ModContent.TileType<GooeyHive>()) && Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY - 1].WallType == PaleHiveWall.UnsafeType) ? 0.32f : 0;
 	}
 
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon(ModContent.ItemType<CarrotCake>(), 30);
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		var texture = TextureAssets.Npc[Type].Value;

@@ -1,15 +1,29 @@
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.NPCs.Mummy;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class DustyTomb : ModTile
 {
+	public static readonly SoundStyle Thud = new("SpiritReforged/Assets/SFX/Ambient/StoneThud")
+	{	
+		PitchVariance = 0.4f,
+		MaxInstances = 2
+	};
+
+	public static readonly SoundStyle Open = new("SpiritReforged/Assets/SFX/Ambient/SarcophagusOpen")
+	{
+		PitchVariance = 0.2f,
+		MaxInstances = 2
+	};
+
 	internal class TombSpawnData : PacketData
 	{
 		private readonly Point16 _coordinates;
@@ -98,7 +112,13 @@ public class DustyTomb : ModTile
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				var npc = NPC.NewNPCDirect(new EntitySource_TileUpdate(i, j), origin.ToWorldCoordinates(8, 16), ModContent.NPCType<DecrepitMummy>());
+				SoundEngine.PlaySound(Thud, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(Open, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(SoundID.Zombie3, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { PitchRange = (-0.5f, -0.2f)}, origin.ToWorldCoordinates(8, 16));
+
+				int npcType = CrossMod.Redemption.CheckFind("CorpseWalkerPriest", out ModNPC corpsePriest) && Main.rand.NextBool(7) ? corpsePriest.Type : ModContent.NPCType<DecrepitMummy>();
+				var npc = NPC.NewNPCDirect(new EntitySource_TileUpdate(i, j), origin.ToWorldCoordinates(8, 16), npcType);
 				npc.SpawnedFromStatue = true;
 				npc.netUpdate = true;
 			}

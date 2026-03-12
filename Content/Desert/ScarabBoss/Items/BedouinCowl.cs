@@ -37,6 +37,10 @@ public class BedouinCowl : ModItem
 
 			player.opacityForAnimation = (dashPlayer.DashProgress > 0.5f) ? 1f : 0.1f;
 			player.noKnockback = true;
+
+			player.immuneTime = 5;
+			player.immune = true;
+			player.immuneNoBlink = true;
 		}
 	}
 

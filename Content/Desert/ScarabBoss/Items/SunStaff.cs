@@ -7,8 +7,6 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 [AutoloadGlowmask("255,255,255")]
 public class SunStaff : ModItem
 {
-	public override bool IsLoadingEnabled(Mod mod) => false;
-
 	public override void SetStaticDefaults()
 	{
 		Item.staff[Type] = true;

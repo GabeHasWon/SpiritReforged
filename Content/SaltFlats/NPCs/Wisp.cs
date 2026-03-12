@@ -6,6 +6,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -188,6 +189,7 @@ public class Wisp : ModNPC
 			DelegateMethods.c_1 = beamColor; //Render color
 			Utils.DrawLaser(spriteBatch, texture, startPosition, endPosition, drawScale, lineFraming);
 		}
+
 	}
 
 	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/WispHit")
@@ -422,6 +424,12 @@ public class Wisp : ModNPC
 
 		if (_counter == 0)
 			_counter++;
+	}
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		if (CrossMod.Redemption.CheckFind("LostSoul", out ModItem lostSoul))
+			npcLoot.AddCommon(lostSoul.Type, 15);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_isHostile);

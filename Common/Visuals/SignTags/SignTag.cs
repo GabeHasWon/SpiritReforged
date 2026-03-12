@@ -4,7 +4,7 @@
 /// Loaded by <see cref="SignTagHandler"/>. </summary>
 internal abstract class SignTag
 {
-	/// <summary> The beginning text key required for <see cref="Draw"/> to be called. </summary>
+	/// <summary> The beginning text key required for <see cref="ModifyDraw"/> to be called. </summary>
 	public abstract string Key { get; }
 
 	/// <summary>
@@ -36,5 +36,10 @@ internal abstract class SignTag
 	/// <param name="text"> Each line of text. </param>
 	/// <param name="numLines"> The number of lines of text. </param>
 	/// <returns> Whether to replace default drawing. </returns>
-	public virtual bool Draw(Rectangle panel, string[] text, int numLines, ref Color color) => false;
+	public virtual bool ModifyDraw(Rectangle panel, string[] text, int numLines, ref Color color) => false;
+
+	/// <summary> Modifies how the render target is drawn, such as by applying a shader.</summary>
+	public virtual void ModifyRenderTarget()
+	{
+	}
 }

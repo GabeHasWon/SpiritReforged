@@ -6,6 +6,17 @@ namespace SpiritReforged.Content.Desert;
 
 public class Thornball : ModItem
 {
+	internal class ThornballGNPC : GlobalNPC
+	{
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+			if (CrossMod.Redemption.CheckFind("DevilsTongue", out ModNPC tongue))
+			{
+				if (npc.type == tongue.Type)
+					npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+			}
+		}
+	}
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 99;

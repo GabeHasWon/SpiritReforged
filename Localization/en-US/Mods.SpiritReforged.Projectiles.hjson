@@ -65,6 +65,8 @@ ClawHitbox.DisplayName: Claw Hitbox
 DivebombScarab.DisplayName: Divebomb Scarab
 SwarmScarab.DisplayName: Swarm Scarab
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+AdornedArrow.DisplayName: Adorned Arrow
+AdornedBowHeld.DisplayName: Adorned Bow Held
 FloatingGem.DisplayName: Floating Gem
 BeamOLight.DisplayName: Beam O Light
 ScarabPetProjectile.DisplayName: Scarababy

@@ -18,6 +18,12 @@ public static class CollisionChecks
 		return WorldGen.SolidTile(Main.tile[i, j]) || TileID.Sets.Platforms[type];
 	}
 
+	public static bool OnlySlopes(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.HasTile && tile.Slope != SlopeType.Solid;
+	}
+
 	/// <inheritdoc cref="Tiles(int, int, int, int, TilesDelegate)"/>
 	public static bool Tiles(Rectangle area, TilesDelegate action) => Tiles(area.X / 16, area.Y / 16, (int)((area.X + (float)area.Width) / 16f), (int)((area.Y + (float)area.Height) / 16f), action);
 
