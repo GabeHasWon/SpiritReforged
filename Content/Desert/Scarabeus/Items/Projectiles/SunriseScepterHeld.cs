@@ -3,6 +3,8 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
@@ -66,7 +68,7 @@ public class SunriseScepterHeld : ModProjectile
 
 			Projectile.rotation = -MathHelper.Lerp(0.2f, 0.1f, progress) * Projectile.direction;
 
-			armRotation = -2.5f * Projectile.direction;
+			armRotation = -MathHelper.Lerp(2.5f, 3f, EaseBuilder.EaseCircularOut.Ease(progress)) * Projectile.direction;
 
 			Vector2 targetPosition = Owner.Center + new Vector2(-30f * Owner.direction, -MathHelper.Lerp(90f, 150f, EaseBuilder.EaseQuarticOut.Ease(progress)));
 
@@ -83,7 +85,7 @@ public class SunriseScepterHeld : ModProjectile
 
 			armRotation = -2.5f * Projectile.direction;
 
-			Vector2 targetPosition = Owner.Center + new Vector2(-30f * Owner.direction, -MathHelper.Lerp(150f, 90f, EaseBuilder.EaseQuarticIn.Ease(progress)));
+			Vector2 targetPosition = Owner.Center + new Vector2(-30f * Owner.direction, -MathHelper.Lerp(150f, 140f, EaseBuilder.EaseQuarticIn.Ease(progress)));
 
 			OrbPosition = Vector2.Lerp(OrbPosition, targetPosition, 0.3f);
 
@@ -118,6 +120,9 @@ public class SunriseScepterHeld : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		DrawOrb();
+		
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
@@ -142,9 +147,9 @@ public class SunriseScepterHeld : ModProjectile
 
 		Main.EntitySpriteDraw(bloom, tipPosition - Main.screenPosition, null, new Color(255, 255, 0, 0) * fade * 0.25f, 0, bloom.Size() / 2f, 0.35f, flip);
 
-		Main.EntitySpriteDraw(godray, tipPosition - Main.screenPosition, null, new Color(255, 50, 0, 0) * fade * 0.15f, 0, godray.Size() / 2f, 0.1f, flip);
+		Main.EntitySpriteDraw(godray, tipPosition - Main.screenPosition, null, new Color(255, 255, 255, 0) * fade * 0.15f, 0, godray.Size() / 2f, 0.1f, flip);
 
-		Main.EntitySpriteDraw(bloom, tipPosition - Main.screenPosition, null, new Color(255, 50, 0, 0) * fade * 0.15f, 0, bloom.Size() / 2f, 0.35f, flip);
+		Main.EntitySpriteDraw(bloom, tipPosition - Main.screenPosition, null, new Color(255, 255, 255, 0) * fade * 0.15f, 0, bloom.Size() / 2f, 0.35f, flip);
 
 		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, lightColor * fade, rot, texture.Size() / 2f, Projectile.scale, flip);
 
@@ -153,10 +158,47 @@ public class SunriseScepterHeld : ModProjectile
 
 	internal void DrawOrb()
 	{
-		// TODO: change this LMFAO
-		Texture2D texture = TextureAssets.Projectile[ModContent.ProjectileType<SunriseScepterOrb>()].Value;
+		Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Content/Desert/Scarabeus/Items/Projectiles/SunriseScepterOrb").Value;
+		
+		float progress = 1f;
 
-		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		if (Progress < 0.3f)
+			progress = EaseBuilder.EaseCircularIn.Ease(Progress / 0.3f);
+
+		if (Progress > 0.8f)
+			progress = 1f - EaseBuilder.EaseCircularIn.Ease((Progress - 0.8f) / 0.2f);
+
+		// Modified from Zoro's original code
+		Effect effect = AssetLoader.LoadedShaders["SunOrb"].Value;
+		effect.Parameters["lightColor"].SetValue(Color.LightGoldenrodYellow.Additive().ToVector4());
+		effect.Parameters["darkColor"].SetValue(Color.Red.Additive().ToVector4());
+		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["Extra_49"].Value);
+		effect.Parameters["intensity"].SetValue(1f);
+
+		//Subtle swirly noise around the main orb- unneccessary flourish but I like it
+		float time = Progress;
+		effect.Parameters["noiseTexture"].SetValue(AssetLoader.LoadedTextures["SwirlNoise"].Value);
+		effect.Parameters["scroll"].SetValue(new Vector2(-time / 6, -time / 2));
+		effect.Parameters["textureStretch"].SetValue(new Vector2(1, 5f));
+
+		//Godrays around the orb, intensity dramatically increases when the orb flashes
+		effect.Parameters["rayTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
+		effect.Parameters["rayScroll"].SetValue(new Vector2(time / 6, -3f * time + 2.5f));
+		effect.Parameters["rayStretch"].SetValue(new Vector2(1f, MathHelper.Lerp(0.01f, 0.035f, Math.Abs((float)Math.Sin(Timer * 0.05f)))));
+		float rayIntensity = 3f * Math.Abs((float)Math.Sin(Timer * 0.05f)) * progress;
+		effect.Parameters["rayIntensity"].SetValue(rayIntensity);
+
+		var square = new SquarePrimitive
+		{
+			Color = Color.White * progress,
+			Height = 60,
+			Length = 60,
+			Position = OrbPosition - Main.screenPosition
+		};
+
+		PrimitiveRenderer.DrawPrimitiveShape(square, effect);
+
+		/*Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Texture2D godray = AssetLoader.LoadedTextures["GodrayCircle"].Value;
 		Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
 
@@ -176,7 +218,7 @@ public class SunriseScepterHeld : ModProjectile
 
 		Main.EntitySpriteDraw(bloom, OrbPosition - Main.screenPosition, null, new Color(255, 55, 0, 0) * fade, 0f, bloom.Size() / 2f, scale * 0.35f, 0);
 
-		Main.EntitySpriteDraw(godray, OrbPosition - Main.screenPosition, null, new Color(255, 205, 0, 0) * fade, 0f, godray.Size() / 2f, scale * 0.2f, 0);
+		Main.EntitySpriteDraw(godray, OrbPosition - Main.screenPosition, null, new Color(255, 205, 0, 0) * fade, 0f, godray.Size() / 2f, scale * 0.2f, 0);*/
 	}
 
 	internal void Initialize()
