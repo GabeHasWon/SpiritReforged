@@ -35,7 +35,7 @@ internal class SignTagHandler : ILoadable
 		if (Main.dedServ)
 			return;
 
-		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370));
+		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370)); // 530, 370 is the max size of a vanilla sign UI
 	}
 
 	public void Unload()
