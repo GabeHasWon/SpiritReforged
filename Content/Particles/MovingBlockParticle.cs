@@ -1,7 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 
-namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
+namespace SpiritReforged.Content.Particles;
 
 public class MovingBlockParticle : Particle
 {

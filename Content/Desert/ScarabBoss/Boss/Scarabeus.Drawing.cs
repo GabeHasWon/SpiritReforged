@@ -146,7 +146,7 @@ public partial class Scarabeus : ModNPC
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		bool originAtFeet = OriginAtFeet();
 		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
-		Vector2 origin = originAtFeet ? new(108, 152) : new(108, 98);
+		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
 		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 
 		Vector2 scale = new Vector2(2 - MathF.Pow(squishY, 2f), MathF.Pow(squishY, 0.7f)) * NPC.scale;

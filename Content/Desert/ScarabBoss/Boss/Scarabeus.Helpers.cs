@@ -3,6 +3,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Particles;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -31,7 +32,7 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo)
 		{
-			//Add(AIState.Shockwave, 1);
+			Add(AIState.Shockwave, 1);
 			Add(AIState.GroundPound, 1);
 			//Add(AIState.Dig, 1);
 			//Add(AIState.Roll, 1);
@@ -81,6 +82,19 @@ public partial class Scarabeus : ModNPC
 			input.Y += dimensions;
 
 		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
+			input.Y -= dimensions;
+
+		return input + new Vector2(0, dimensions);
+	}
+
+	private Vector2 FindGroundFromPositionIgnorePlatforms(Vector2 input)
+	{
+		const int dimensions = 8;
+
+		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
+			input.Y += dimensions;
+
+		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < Target.Top.Y - 40 ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
 			input.Y -= dimensions;
 
 		return input + new Vector2(0, dimensions);

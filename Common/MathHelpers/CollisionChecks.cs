@@ -17,6 +17,11 @@ public static class CollisionChecks
 		int type = Main.tile[i, j].TileType;
 		return WorldGen.SolidTile(Main.tile[i, j]) || TileID.Sets.Platforms[type];
 	}
+	public static bool SolidOnly(int i, int j)
+	{
+		Tile t = Main.tile[i, j];
+		return t.HasUnactuatedTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType] && !TileID.Sets.Platforms[t.TileType];
+	}
 
 	public static bool OnlySlopes(int i, int j)
 	{

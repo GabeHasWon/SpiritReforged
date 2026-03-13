@@ -255,7 +255,7 @@ public partial class Scarabeus : ModNPC
 
 	#endregion
 
-	#region Idle movement
+	#region Idling between attacks
 	public float IdleBetweenAttacks(ref bool retarget)
 	{
 		NPC.FaceTarget();
@@ -612,9 +612,10 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 
+	#region Shockwave Slam
 	public float ShockwaveAttack(ref bool retarget)
 	{
-		const int duration = 90;
+		const int duration = 98;
 
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
@@ -623,25 +624,66 @@ public partial class Scarabeus : ModNPC
 		if (Counter < 5)
 			NPC.FaceTarget();
 
+		int lastFrameY = currentFrame.Y;
 		UpdateFrame(7, (int)(Profile.GetFrameCount(7) * 60f / duration), PhaseOneProfile);
 
-		if (Counter == (int)(duration * 0.6f))
+		if (lastFrameY < 9 && currentFrame.Y >= 9)
 		{
 			dealContactDamage = true;
 			//projectiles and sfx here
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
+				SpawnShockwaveFissure();
+			if (!Main.dedServ)
 			{
-				Vector2 center = FindGroundFromPosition(NPC.Center + NPC.direction * Vector2.UnitX * 320);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), center - Vector2.UnitY * 160, Vector2.Zero, ModContent.ProjectileType<SlamShockwave>(), NPC.damage / 2, 16, Main.myPlayer, NPC.direction);
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
+				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 			}
 		}
 
 		if (Counter > duration)
 			return GoBackToIdle();
-
 		return 1f;
 	}
+
+	public void SpawnShockwaveFissure()
+	{
+		Vector2 fissurePos = FindGroundFromPositionIgnorePlatforms(NPC.Center);
+		int delay = 5;
+		float shockwaveHeight = 50f;
+
+		for (int i = 0; i < 24; i++)
+		{
+			float spacing = 32f;
+			float vfxVelocity = 1.2f;
+
+			if (i < 15)
+			{
+				delay += 1;
+				shockwaveHeight += 4f;
+			}
+			else if (i == 15)
+			{
+				delay += 17;
+				shockwaveHeight += 50f;
+			}
+			else
+			{
+				spacing = 16f;
+				vfxVelocity = 0.8f;
+				shockwaveHeight += 5f;
+			}
+
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), fissurePos, new Vector2(NPC.direction * vfxVelocity, 0f), ModContent.ProjectileType<SandShockwavePillar>(), NPC.damage / 4, 3, Main.myPlayer, delay, shockwaveHeight);
+
+			Vector2 newFissurePos = FindGroundFromPositionIgnorePlatforms(fissurePos + new Vector2(spacing * NPC.direction, -40));
+			if (Math.Abs(newFissurePos.Y - fissurePos.Y) > 200)
+				break;
+
+			fissurePos = newFissurePos;
+		}
+	}
+	#endregion
 
 	#region Ground pound
 	public float GroundPoundAttack(ref bool retarget)
@@ -729,7 +771,6 @@ public partial class Scarabeus : ModNPC
 				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
-
 				}
 
 				for (int i = -1; i <= 1; i += 2)
@@ -737,9 +778,8 @@ public partial class Scarabeus : ModNPC
 					for (int j = 0; j < 4; j++)
 					{
 						float distStep = (200 + j * 56) * i ;
-						Vector2 projPosition = FindGroundFromPosition(NPC.Bottom + Vector2.UnitX * distStep) - Vector2.UnitY * 80;
-
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.Zero, ModContent.ProjectileType<SandPillar>(), NPC.damage / 4, 3, Main.myPlayer, 5 + j * 3);
+						Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), NPC.damage / 4, 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
 					}
 				}
 			}
@@ -767,7 +807,7 @@ public partial class Scarabeus : ModNPC
 
 		void Spin()
 		{
-			NPC.rotation += NPC.direction * 0.1f + NPC.velocity.X / 120;
+			NPC.rotation += NPC.direction * 0.25f + NPC.velocity.X / 120;
 		}
 
 		void Bounce(ref float bounceIndex)

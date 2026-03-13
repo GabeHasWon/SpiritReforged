@@ -210,6 +210,11 @@ public partial class Scarabeus : ModNPC
 		{
 			npcHitbox.Inflate(15, 15);
 		}
+		else if (CurrentState == AIState.Shockwave)
+		{
+			npcHitbox.Inflate(40, 0);
+			npcHitbox.X += NPC.direction * 35;
+		}
 
 		return true;
 	}
@@ -313,7 +318,7 @@ public partial class Scarabeus : ModNPC
 
 	public void ChangeState(AIState state)
 	{
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 3; i++)
 			NPC.ai[i] = 0;
 
 		CurrentState = state;
