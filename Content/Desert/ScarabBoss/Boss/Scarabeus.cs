@@ -108,7 +108,8 @@ public partial class Scarabeus : ModNPC
 	public override void Load()
 	{
 		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
-		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox;
+		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox; 
+		ScarabHeatHazeShaderData.Load();
 	}
 
 	public override void SetStaticDefaults()
@@ -200,13 +201,15 @@ public partial class Scarabeus : ModNPC
 		if (retarget)
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
+
+		ScarabHeatHazeShaderData.AnyScarabeusPresent = true;
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
 
 	public override bool ModifyCollisionData(Rectangle victimHitbox, ref int immunityCooldownSlot, ref MultipliableFloat damageMultiplier, ref Rectangle npcHitbox)
 	{
-		if (CurrentState == AIState.GroundPound && NPC.velocity.Y > 0)
+		if (CurrentState == AIState.GroundPound && NPC.velocity.Y > 0 && NPC.ai[2] < GroundPoundBounceCount)
 		{
 			npcHitbox.Inflate(15, 15);
 		}
@@ -214,6 +217,12 @@ public partial class Scarabeus : ModNPC
 		{
 			npcHitbox.Inflate(40, 0);
 			npcHitbox.X += NPC.direction * 35;
+		}
+		//Its the dig state but this is the hitbox for the dig attack!
+		else if (CurrentState == AIState.Dig)
+		{
+			npcHitbox.Inflate(-20, 10);
+			npcHitbox.X += NPC.direction * 65;
 		}
 
 		return true;

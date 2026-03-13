@@ -5,6 +5,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
+using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -44,10 +45,8 @@ public partial class Scarabeus : ModNPC
 	public Point currentFrame;
 	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
 	public bool showTrail;
-
-	public float iridescenceBoost;
-
 	public float squishY = 1f;
+	public float iridescenceBoost;
 
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)

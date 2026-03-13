@@ -12,6 +12,7 @@ public partial class Scarabeus : ModNPC
 {
 	private float GoBackToIdle()
 	{
+		SetFrame(phaseTwo ? 4 : 0, 0, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 		ChangeState(FindAppropriateIdleState());
 		return 0f;
 	}
@@ -34,7 +35,7 @@ public partial class Scarabeus : ModNPC
 		{
 			Add(AIState.Shockwave, 1);
 			Add(AIState.GroundPound, 1);
-			//Add(AIState.Dig, 1);
+			Add(AIState.Dig, 123232232);
 			//Add(AIState.Roll, 1);
 
 			//if (!Collision.SolidTiles(NPC.position, NPC.width, NPC.height))
@@ -42,10 +43,10 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
-			Add(AIState.FlyingDash, 1);
+			//Add(AIState.FlyingDash, 1);
 			Add(AIState.GroundPound, 1);
 			Add(AIState.Dig, 1);
-			Add(AIState.Swarm, 1);
+			//Add(AIState.Swarm, 1);
 			//if (NPC.DistanceSQ(Target.Center) > 120 * 120)
 			//	Add(Leap, 0.5);
 
