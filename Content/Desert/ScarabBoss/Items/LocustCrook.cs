@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.PlayerCommon;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI.States;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -26,6 +27,12 @@ internal class LocustCrook : ModItem
 		private ref float ThrowTimer => ref Projectile.localAI[0];
 		private ref float Rotation => ref Projectile.localAI[1];
 
+		private bool VisuallyHeld
+		{
+			get => Projectile.localAI[2] == 0;
+			set => Projectile.localAI[2] = value ? 0 : 1;
+		}
+
 		public override string Texture => base.Texture.Replace("Projectile", "");
 
 		public override void SetDefaults()
@@ -41,10 +48,6 @@ internal class LocustCrook : ModItem
 
 		public void Throw()
 		{
-			Projectile.sentry = true;
-			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * 12;
-			Owner.UpdateMaxTurrets();
-
 			Held = false;
 			Rotation = Projectile.rotation + MathHelper.PiOver2 * 1.5f;
 			ThrowTimer = 30;
@@ -52,26 +55,49 @@ internal class LocustCrook : ModItem
 
 		public override void AI()
 		{
-			if (!Held && ThrowTimer > 0)
+			// Oh man this is really messy...
+			if (!Held && Owner.itemAnimation > 0)
 			{
-				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, Rotation + ThrowTimer * 0.03f);
-				ThrowTimer--;
+				if (Owner.itemAnimation == Owner.itemAnimationMax / 2)
+				{
+					Projectile.sentry = true;
+					Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld).RotatedBy(0.32f) * 12;
+					Owner.UpdateMaxTurrets();
+
+					VisuallyHeld = false;
+				}
 			}
 
-			if (Held)
+			if (VisuallyHeld)
 			{
+				const float MaxTurn = 1.6f;
+
 				Vector2 mouse = PlayerMouseHandler.GetMouse(Projectile.owner);
 				Owner.ChangeDir(Math.Sign(mouse.X - Owner.Center.X));
 
-				Projectile.rotation = Projectile.AngleTo(mouse) - MathHelper.PiOver2 * 1.5f;
+				float factor = Owner.itemAnimation / (float)Owner.itemAnimationMax;
+				float anim = MathHelper.Lerp(MathHelper.Lerp(0, MaxTurn, factor), MathHelper.Lerp(MaxTurn, 0, factor), factor);
+
+				Projectile.rotation = Projectile.AngleTo(mouse) - MathHelper.PiOver2 * 1.5f + anim * Owner.direction;
 				Projectile.Center = Owner.Center + Projectile.DirectionTo(mouse).RotatedBy(Owner.direction == 1 ? -MathHelper.PiOver2 : MathHelper.PiOver2) * 14;
+
+				if (Owner.itemAnimation > 0)
+				{
+					Vector2 dir = Projectile.DirectionTo(Main.MouseWorld);
+					Projectile.velocity += dir * (Owner.itemAnimationMax - Owner.itemAnimation) * 0.8f;
+					Projectile.rotation = MathHelper.Lerp(Projectile.rotation, dir.ToRotation() - MathHelper.PiOver2 * 1.5f, (float)Owner.itemAnimation / Owner.itemAnimationMax);
+				}
 
 				if (Owner.direction == 1)
 					Projectile.rotation -= MathHelper.Pi;
 
 				Owner.heldProj = Projectile.whoAmI;
 				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, Projectile.rotation + MathHelper.PiOver2 * 1.5f);
-
+			}
+			// ...but it looks kinda okay!
+			
+			if (Held)
+			{
 				if (Owner.HeldItem.type != ModContent.ItemType<LocustCrook>())
 				{
 					Projectile.Kill();
@@ -83,7 +109,9 @@ internal class LocustCrook : ModItem
 
 			if (!Embedded)
 			{
-				Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2 * 1.5f;
+				if (!VisuallyHeld)
+					Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2 * 1.5f;
+				
 				Projectile.velocity.Y += 0.16f;
 				Projectile.velocity.Y *= 0.999f;
 
@@ -108,7 +136,8 @@ internal class LocustCrook : ModItem
 					{
 						int type = ModContent.ProjectileType<CrookLocust>();
 						Vector2 position = GetTipPos(false);
-						Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, -Vector2.UnitY, type, Projectile.damage, 0, Projectile.owner);
+						int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, -Vector2.UnitY, type, Projectile.damage, 0, Projectile.owner);
+						Main.projectile[proj].localAI[0] = Projectile.whoAmI;
 					}
 
 					Timer = 0;
@@ -129,7 +158,7 @@ internal class LocustCrook : ModItem
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Type].Value;
-			SpriteEffects effect = Owner.direction == 1 && Held ? SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			SpriteEffects effect = Owner.direction == 1 && VisuallyHeld ? SpriteEffects.FlipVertically | SpriteEffects.FlipHorizontally : SpriteEffects.None;
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, 1f, effect, 0);
 			return false;
 		}
@@ -138,6 +167,7 @@ internal class LocustCrook : ModItem
 	private class CrookLocust : ModProjectile
 	{
 		public NPC TargetNPC => Main.npc[Target];
+		public Projectile ParentProj => Main.projectile[(int)ProjOwner];
 
 		int Target
 		{
@@ -153,6 +183,8 @@ internal class LocustCrook : ModItem
 
 		ref float Timer => ref Projectile.ai[2];
 
+		ref float ProjOwner => ref Projectile.localAI[0];
+
 		public override void SetStaticDefaults() => ProjectileID.Sets.SentryShot[Type] = true;
 
 		public override void SetDefaults()
@@ -161,6 +193,7 @@ internal class LocustCrook : ModItem
 			Projectile.Size = new Vector2(12);
 			Projectile.timeLeft = 600;
 			Projectile.aiStyle = -1;
+			Projectile.penetrate = 3;
 		}
 
 		public override void AI()
@@ -187,6 +220,14 @@ internal class LocustCrook : ModItem
 				{
 					Target = Main.rand.Next(options);
 					Projectile.netUpdate = true;
+					Timer = -1;
+				}
+
+				Timer++;
+
+				if (Timer % 90 == 0)
+				{
+
 				}
 			}
 			else
@@ -194,6 +235,7 @@ internal class LocustCrook : ModItem
 				if (!TargetNPC.CanBeChasedBy())
 				{
 					Target = -1;
+					Timer = 0;
 					return;
 				}
 
@@ -245,7 +287,7 @@ internal class LocustCrook : ModItem
 
 	public override void HoldItem(Player player)
 	{
-		if (Main.myPlayer != player.whoAmI)
+		if (Main.myPlayer != player.whoAmI || player.itemAnimation > 0)
 			return;
 
 		int type = ModContent.ProjectileType<LocustCrookProjectile>();
