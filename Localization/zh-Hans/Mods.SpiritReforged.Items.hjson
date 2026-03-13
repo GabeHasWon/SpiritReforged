@@ -2964,3 +2964,8 @@ AdornedBow: {
 	// DisplayName: Adorned Bow
 	// Tooltip: ""
 }
+
+LocustCrook: {
+	// DisplayName: Locust Crook
+	// Tooltip: ""
+}
