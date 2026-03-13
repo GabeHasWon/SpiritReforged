@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.SaltFlats.Items;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
@@ -14,6 +15,8 @@ public class AncientBooks : ModTile, IAutoloadTileItem
 
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
 		ItemID.Sets.ShimmerTransformToItem[ItemID.Book] = Type;
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
 	}
 
 	public override void SetStaticDefaults()

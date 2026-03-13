@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.VerletChains;
 using SpiritReforged.Common.Visuals;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Tiles;
@@ -40,12 +41,13 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 				return;
 			}
 
-			if (chain == null)
+			if (chain == null) //Create a new chain
 			{
 				const int segments = 8;
 				int length = FlagTrail.Value.Height;
 
 				chain = new Chain(length / segments - 3, segments + 1, Position.ToWorldCoordinates(), new ChainPhysics(), stiffness: 2);
+				chain.Update(Position.ToWorldCoordinates(), Position.ToWorldCoordinates() + new Vector2(0, 30));
 			}
 
 			float wind = Main.WindForVisuals;
@@ -95,6 +97,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 	public const int SlopeFrame = 18;
 	public static readonly Asset<Texture2D> FlagTrail = DrawHelpers.RequestLocal<FlagRing>("FlagTrail", false);
 
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 8);
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(5).AddRecipeGroup("CopperBars").AddIngredient(ItemID.Silk).AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()
@@ -115,6 +118,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(165, 85, 55));
 		RegisterItemDrop(this.AutoItemType());
 		DustType = -1;
+		HitSound = SoundID.Item37;
 	}
 
 	public override bool Slope(int i, int j)
@@ -135,6 +139,9 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		}
 
 		Vector2 position = new Vector2(i, j).ToWorldCoordinates();
+
+		SoundEngine.PlaySound(SoundID.Item37 with { Pitch = -0.25f }, position);
+
 		for (int g = 0; g < 3; g++)
 		{
 			int type = Main.rand.NextFromList(GoreID.Smoke1, GoreID.Smoke2, GoreID.Smoke3);

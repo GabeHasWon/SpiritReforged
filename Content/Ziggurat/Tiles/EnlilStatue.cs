@@ -85,4 +85,15 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 		return true;
 	}
+	public void StaticItemDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.CatBast;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.CatBast] = Type;
+	}
+
+	public void SetItemDefaults(ModItem item)
+	{
+		item.Item.rare = ItemRarityID.Blue;
+		item.Item.value = Item.sellPrice(gold: 2);
+	}
 }

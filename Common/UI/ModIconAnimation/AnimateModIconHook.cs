@@ -3,6 +3,7 @@ using SpiritReforged.Common.UI.Misc;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.UI.ModIconAnimation;
 
@@ -38,6 +39,7 @@ internal class AnimateModIconHook : ILoadable
 			element.RemoveChild(icon);
 
 			var tex = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("icon_animated", AssetRequestMode.ImmediateLoad);
+			var alt = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("icon_desert", AssetRequestMode.ImmediateLoad);
 			var scroll = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("icon_scroll", AssetRequestMode.ImmediateLoad);
 
 			if (DateTime.Now.Month == 4 && DateTime.Now.Day == 1)
@@ -46,7 +48,7 @@ internal class AnimateModIconHook : ILoadable
 				scroll = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("Assets/Textures/AprilFools/FablesReforgedScroll2", AssetRequestMode.ImmediateLoad);
 			}
 
-			element.Append(new UIScrollingImage(tex, scroll, 0.3f));
+			element.Append(new UIScrollingImage(tex, scroll, 0.3f, alt, DisplayAltIcon));
 
 			if (UIMenuThemeButton.CanExist()) //Add the menu theme button
 			{
@@ -62,10 +64,32 @@ internal class AnimateModIconHook : ILoadable
 
 			if (DateTime.Now.Month == 4 && DateTime.Now.Day == 1)
 			{
-				nameUI.SetText("Fables Reforged v0.1");
+				nameUI.SetText("Fables Reforged: Overseer's Return v0.2");
 				nameUI.TextColor = new Color(255, 215, 148);
 			}
 		}
+	}
+
+	private static bool DisplayAltIcon(UIScrollingImage self, Vector2 position, float timer, ref float opacity)
+	{
+		Main.spriteBatch.Draw(self.AltBorder!.Value, position, Color.White);
+
+		timer %= self.Scrolling.Width();
+
+		if (timer is > 280 and < 360)
+		{
+			opacity = MathHelper.Lerp(1, 0, Utils.GetLerpValue(280, 360, timer));
+		}
+		else if (timer is >= 360 and <= 720)
+		{
+			opacity = 0;
+		}
+		else if (timer is > 720 and < 790)
+		{
+			opacity = MathHelper.Lerp(0, 1, Utils.GetLerpValue(720, 790, timer));
+		}
+
+		return true;
 	}
 
 	public void Unload()

@@ -57,7 +57,7 @@ public class AfterimagePlayer : ModPlayer
 		for (int i = 0; i < 3; i++)
 			self.DrawPlayer(camera, drawPlayer, position, drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - mult, 1);
 
-		var glow = TextureAssets.Extra[98].Value;
+		var glow = TextureAssets.Extra[ExtrasID.SharpTears].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float wave = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 20f) * 0.5f;

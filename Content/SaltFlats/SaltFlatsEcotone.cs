@@ -1,6 +1,8 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WorldGeneration;
@@ -9,17 +11,20 @@ using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
+using SpiritReforged.Content.Savanna.Tiles.Paintings;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.SaltFlats;
@@ -49,6 +54,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			}
 		}
 	}
+
+	[WorldBound]
+	public static Rectangle SaltFlatsArea;
 
 	private static FastNoiseLite Noise;
 
@@ -102,6 +110,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
+		SaltFlatsArea = Rectangle.Empty;
 		if (!CanGenerate(out var bounds))
 			return;
 
@@ -139,9 +148,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		Decorate(area);
-
-		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
+		SaltFlatsArea = area;
+		Decorate(SaltFlatsArea);
+		WorldDetours.Regions.Add(new(SaltFlatsArea, WorldDetours.Context.Piles));
 	}
 
 	private static void FillSurface(SurfaceInfo info)
@@ -336,22 +345,40 @@ internal class SaltFlatsEcotone : EcotoneBase
 	private static void PopulateChest(Chest chest)
 	{
 		int[] main = [ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>(), ModContent.ItemType<BoStaff>()];
-		(int type, Range stack)[] secondary = [(ItemID.Amethyst, 6..12), (ItemID.Topaz, 5..11), (ItemID.Sapphire, 3..8), (ModContent.ItemType<TornMapPiece>(), 1..2)];
+
+		WeightedRandom<(int, Range)> secondary = new();
+		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
+		secondary.Add((ItemID.PurificationPowder, 12..18));
+		secondary.Add((ItemID.WaterWalkingBoots, 1..1), 0.1f);
+
+		if (CrossMod.Thorium.CheckFind("PurifiedShards", out ModItem shards))
+			secondary.Add((shards.Type, 8..12));
+
+		if (CrossMod.Fables.CheckFind("MirageDust", out ModItem mirage))
+			secondary.Add((mirage.Type, 8..12));
+
+		if (CrossMod.Redemption.CheckFind("TrappedSoulBauble", out ModItem soulBauble))
+			secondary.Add((soulBauble.Type, 1..1), 0.15f);
 
 		PriorityQueue<(int, Range), float> miscQueue = new();
-		miscQueue.Enqueue((ItemID.ThrowingKnife, 5..11), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.BiomeSightPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.CalmingPotion, 1..2), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.TrapsightPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.NightOwlPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.SwiftnessPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.IronskinPotion, 1..2), WorldGen.genRand.NextFloat());
-		miscQueue.Enqueue((ItemID.Rope, 15..25), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.HunterPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.InvisibilityPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.ManaRegenerationPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.MagicPowerPotion, 1..2), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ItemID.Rope, 50..100), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
+		miscQueue.Enqueue((ModContent.ItemType<Flarepowder>(), 25..50), WorldGen.genRand.NextFloat());
+
 
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
-		var (type, stack) = WorldGen.genRand.Next(secondary);
-		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value + 1));
+		var (type, stack) = secondary.Get();
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
 
 		int miscCount = WorldGen.genRand.Next(3, 5);
 

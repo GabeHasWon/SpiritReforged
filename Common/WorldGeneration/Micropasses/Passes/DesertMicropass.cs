@@ -22,7 +22,7 @@ internal class DesertMicropass : Micropass
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.DesertExtras");
 
 		int generated = 0;
-		int maxAmount = 10 * (WorldGen.GetWorldSize() + 1);
+		int maxAmount = 13 * (WorldGen.GetWorldSize() + 1);
 
 		int top = (int)(Main.worldSurface * 1.2f);
 		Rectangle region = new(GenVars.desertHiveLeft, top, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - top);

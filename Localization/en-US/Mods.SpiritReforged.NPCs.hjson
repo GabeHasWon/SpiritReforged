@@ -540,8 +540,27 @@ DecrepitMummy: {
 
 Graverobber: {
 	DisplayName: Graverobber
-	Entry: ""
+	Entry: Their misfortune is to be hit like a pinata and for gold to rain out. It's almost as alluring as the valuables themselves...
+	HoldingLantern: "When holding a lantern"
 }
 
 LootBag.DisplayName: Loot Bag
 TinyGrub.DisplayName: Tiny Grub
+
+CactusZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: ""
+}
+
+SunburntZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: ""
+}
+
+VeiledZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: ""
+}
+
+Cricket.DisplayName: Cricket
+GoldCricket.DisplayName: Gold Cricket

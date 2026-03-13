@@ -70,9 +70,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float4 reflectedColor = tex2D(cloudReflection, flippedCoords);
     reflectedColor *= mask.a * pow(mask.r, 0.5);
+    //Fade if going past the screen bounds
+    reflectedColor *= invlerp(0, 0.2, flippedCoords.y);
     
     //Fade the sky near the top based on a value
     reflectedColor *= lerp(1, invlerp(0.2, 0.48, flippedCoords.y), topFadeStrength);
+    
     
     reflectedColor = lerp(reflectedColor, float4(0, 0, 0, 1), shimmerAlpha);
     

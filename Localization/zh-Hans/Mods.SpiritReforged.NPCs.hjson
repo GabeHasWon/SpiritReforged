@@ -545,3 +545,21 @@ Graverobber: {
 
 // LootBag.DisplayName: Loot Bag
 // TinyGrub.DisplayName: Tiny Grub
+
+CactusZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+SunburntZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+VeiledZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+// Cricket.DisplayName: Cricket
+// GoldCricket.DisplayName: Gold Cricket
