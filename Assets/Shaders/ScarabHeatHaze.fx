@@ -32,20 +32,29 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     float distanceToCenter = length(float2(0.5, 0.5) - uv) * 1.4142;
     
     float darknessMultiplier = uProgress; //Used to avoid having the shader get too ugly when in broad daylight on the surface
-    float drugIntensity = uIntensity; //Controls the strenght of the extra trippy psychedelic effects when spored
     
     //Distort the edges of the screen (based on "drug intensity")
-    float distortionStrenght = pow(smoothstep(0.4, 1, distanceToCenter), 2);
-    float4 distortionNoise = tex2D(distortionTex, uv * 0.4 + float2(uTime * 0.2, uTime * 0.2)) * tex2D(distortionTex, uv * 0.3 + float2(-uTime * 0.1, -uTime * 0.1));
-    uv += (float2(0.5, 0.5) - distortionNoise.xy) * distortionStrenght * 0.056 * drugIntensity;
+    float distortionStrenght = pow(smoothstep(0.2, 1, distanceToCenter), 2) + uIntensity * 0.4;
+    float2 distortionUv = (uv * uScreenResolution) / 1000;
+    
+    float4 distortionNoise = tex2D(distortionTex, distortionUv + float2(uTime * 0.1, uTime * 0.1)) * tex2D(distortionTex, distortionUv * 0.4 + float2(-uTime * 0.1, -uTime * 0.1));
+    uv += (float2(0.5, 0.5) - distortionNoise.xy) * distortionStrenght * 0.026;
     
     float4 baseColor = tex2D(uImage0, uv);
+    
+    float2 unitSide = float2(sin(uTime * 2) / uScreenResolution.x * (uIntensity * 2 + distanceToCenter * 1.5), 0);
+    
+    float chromaStrength = 0.3 * uIntensity + 0.5 * distanceToCenter;
+    baseColor.r = lerp(baseColor.r, tex2D(uImage0, uv + unitSide * 2).r, chromaStrength);
+    baseColor.gb = lerp(baseColor.gb, tex2D(uImage0, uv - unitSide * 2).gb, chromaStrength);
     float4 output = baseColor;
     
     //Tint the image, by making it lerp to a gradient map
     float brightness = dot(baseColor.rgb, float3(0.299, 0.587, 0.114));
-    float tintStrenght = uOpacity;
-    output = lerp(output, tex2D(gradientMap, float2(baseColor.b, brightness)), tintStrenght);
+    float tintStrenght = uOpacity * (0.23 + 0.1 * sin(uTime)) + uIntensity * 0.1;
+    output = lerp(output, tex2D(gradientMap, float2(1 - uIntensity * 0.6, pow(1 - brightness, 1.5))), tintStrenght);
+    
+    output.r *= 1 + 0.1;
     
     output.a = 1;
     return output;

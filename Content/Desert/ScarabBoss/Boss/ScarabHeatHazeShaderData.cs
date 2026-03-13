@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Skies;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
@@ -22,13 +24,27 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 		{
 			myFilter = new Filter(
 				new ScarabHeatHazeShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/ScarabHeatHaze"), "ScarabHeatHazePass")
-				.UseImage(DrawHelpers.RequestLocal<Scarabeus>("TonemapGradient", false), 0) //Gradient map texture that color maps the screen to be bluer
-				.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/DisplaceNoise"), 1) //Distortion map
+				.UseImage(DrawHelpers.RequestLocal<Scarabeus>("TonemapGradient", false), 0, SamplerState.LinearClamp) //Gradient map texture that color maps the screen to be bluer
+				.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/DisplaceNoise"), 1, SamplerState.LinearWrap) //Distortion map
 				, EffectPriority.High);
 
 			Filters.Scene["SpiritReforged:ScarabHeatHaze"] = myFilter;
-
 			SpiritReforgedSystem.PostUpdateEverythingEvent += UpdateShaderParameters;
+			On_Main.DrawSunAndMoon += DrawSunHaze;
+		}
+
+		private static void DrawSunHaze(On_Main.orig_DrawSunAndMoon orig, Main self, Main.SceneArea sceneArea, Color moonColor, Color sunColor, float tempMushroomInfluence)
+		{
+			orig(self, sceneArea, moonColor, sunColor, tempMushroomInfluence);
+
+			if (Main.remixWorld || !Main.dayTime || HeatHazeOpacity <= 0.01f)
+				return;
+
+			Texture2D sunTex = TextureAssets.Sun.Value;
+			Vector2 position = SunMoonILEdit.SunDrawData.Position;
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
 		}
 
 		private static void UpdateShaderParameters()
@@ -79,7 +95,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 
         public override void Apply()
         {
-            base.Apply();
+			base.Apply();
         }
     }
 }

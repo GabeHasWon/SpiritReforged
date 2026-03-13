@@ -35,7 +35,7 @@ public partial class Scarabeus : ModNPC
 		{
 			Add(AIState.Shockwave, 1);
 			Add(AIState.GroundPound, 1);
-			Add(AIState.Dig, 123232232);
+			Add(AIState.Dig, 1);
 			//Add(AIState.Roll, 1);
 
 			//if (!Collision.SolidTiles(NPC.position, NPC.width, NPC.height))

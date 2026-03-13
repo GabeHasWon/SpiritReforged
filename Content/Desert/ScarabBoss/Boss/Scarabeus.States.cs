@@ -652,6 +652,7 @@ public partial class Scarabeus : ModNPC
 			{
 				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+				ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 			}
 		}
 
@@ -733,7 +734,7 @@ public partial class Scarabeus : ModNPC
 			//Rolling up from the skies in phase 2
 			if (phaseTwo && bounceIndex == 0)
 			{
-				if (Profile != PhaseOneProfile && UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (Profile != PhaseOneProfile && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(RollFrame, PhaseOneProfile);
 					NPC.rotation += NPC.direction;
@@ -808,6 +809,7 @@ public partial class Scarabeus : ModNPC
 				{
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+					ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 				}
 
 				for (int i = -1; i <= 1; i += 2)
@@ -896,15 +898,19 @@ public partial class Scarabeus : ModNPC
 		const int dig_time = 120;
 		ref float digState = ref NPC.ai[2];
 
-		float initialJumpHeight = 7;
+		float initialJumpHeight = 0;
+		float initialJumpSpeed = 12;
 		float maxFallTimeBeforeDigDissapear = 50;
+		float digDownVelocity = 0.2f;
 
 		NPC.behindTiles = digState > 0;
 		
 		if (phaseTwo)
 		{
+			initialJumpSpeed = 8;
 			initialJumpHeight = 8;
 			maxFallTimeBeforeDigDissapear = 300;
+			digDownVelocity = 0.5f;
 			NPC.noTileCollide = true;
 			NPC.noGravity = true;
 		}
@@ -923,7 +929,7 @@ public partial class Scarabeus : ModNPC
 				else
 				{
 					NPC.velocity.Y -= initialJumpHeight;
-					NPC.velocity.X = NPC.direction * 8;
+					NPC.velocity.X = NPC.direction * initialJumpSpeed;
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					Counter = 0;
@@ -938,13 +944,13 @@ public partial class Scarabeus : ModNPC
 				if (!phaseTwo)
 				{
 					SetFrame(0, 1, PhaseOneProfile);
-					NPC.rotation = NPC.velocity.Y * 0.08f * NPC.direction;
+					NPC.rotation = NPC.velocity.Y * 0.05f * NPC.direction;
 				}
 				//In phase 2, since its leaping from above it rolls up into a ball
 				else
 				{
 					//Rolling up
-					if (Profile != PhaseOneProfile && UpdateFrame(3, 12, PhaseTwoProfile, false) == FrameState.Stopped)
+					if (Profile != PhaseOneProfile && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 					{
 						SetFrame(RollFrame, PhaseOneProfile);
 						NPC.rotation += NPC.direction;
@@ -954,7 +960,7 @@ public partial class Scarabeus : ModNPC
 						GroundPoundSpin();
 				}
 
-				NPC.velocity.Y += 0.5f;
+				NPC.velocity.Y += digDownVelocity;
 				NPC.GravityMultiplier *= 2;
 
 				if (Collision.SolidCollision(NPC.position, NPC.width, NPC.height - 24) || Counter > maxFallTimeBeforeDigDissapear || NPC.Opacity != 1)
@@ -1048,7 +1054,6 @@ public partial class Scarabeus : ModNPC
 
 						NPC.noGravity = false;
 						NPC.direction = Math.Sign(NPC.velocity.X);
-						SetFrame(new Point(2, 5), PhaseOneProfile);
 					}
 				}
 
@@ -1056,16 +1061,12 @@ public partial class Scarabeus : ModNPC
 
 			case 3: //Emerge and land
 
-				currentFrame.X = 2;
-				if (currentFrame.Y < 5)
-					currentFrame.Y = 5;
-
 				retarget = false;
 				NPC.rotation = NPC.velocity.Y * 0.08f * NPC.direction;
 				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
 				NPC.GravityMultiplier *= 2;
 
-				dealContactDamage = currentFrame.Y >= 6 && currentFrame.Y < 9;
+				dealContactDamage = currentFrame.X == 2 && currentFrame.Y >= 6 && currentFrame.Y < 9;
 
 				if (Counter > 10 && NPC.velocity.Y >= 0)
 				{
@@ -1077,6 +1078,8 @@ public partial class Scarabeus : ModNPC
 						NPC.rotation = 0;
 						NPC.behindTiles = false;
 
+						if (currentFrame.Y < 5)
+							currentFrame.Y = 5;
 						if (UpdateFrame(2, 12, PhaseOneProfile, false) == FrameState.Stopped)
 							return GoBackToIdle();
 						return 1f;
@@ -1091,7 +1094,7 @@ public partial class Scarabeus : ModNPC
 
 	public void DigProjectileBurst()
 	{
-		if (DifficultyScale < 2 || Main.netMode == NetmodeID.MultiplayerClient)
+		if (DifficultyScale < 2 || !phaseTwo || Main.netMode == NetmodeID.MultiplayerClient)
 			return;
 
 		int projectileType = ModContent.ProjectileType<SandballProjectile>();
@@ -1099,14 +1102,11 @@ public partial class Scarabeus : ModNPC
 		Vector2 ground = FindGroundFromPositionIgnorePlatforms(NPC.Center);
 		Point groundPos = ground.ToTileCoordinates();
 
-		for (int i = -1; i <= 1; i += 2)
+		for (int j = -2; j < 2; j++)
 		{
-			for (int j = 0; j < 3; j++)
-			{
-				Vector2 velocity = -Vector2.UnitY.RotatedBy((0.3f + j * 0.2f) * i) * Main.rand.NextFloat(9f, 11f);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, NPC.damage / 4, 3, Main.myPlayer, groundPos.X, groundPos.Y);
-			}
-		}
+			Vector2 velocity = -Vector2.UnitY.RotatedBy(j * 0.25f + Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(9f, 11f);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, NPC.damage / 4, 3, Main.myPlayer, groundPos.X, groundPos.Y);
+		}		
 	}
 	#endregion
 
