@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.PlayerCommon;
+using Terraria;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -6,6 +8,8 @@ internal class LocustCrook : ModItem
 {
 	private class LocustCrookProjectile : ModProjectile 
 	{
+		private Player Owner => Main.player[Projectile.owner];
+
 		private bool Embedded
 		{
 			get => Projectile.ai[0] == 1;
@@ -13,6 +17,12 @@ internal class LocustCrook : ModItem
 		}
 
 		private ref float Timer => ref Projectile.ai[1];
+
+		private bool Held
+		{
+			get => Projectile.ai[2] == 0;
+			set => Projectile.ai[2] = value ? 0 : 1;
+		}
 
 		public override string Texture => base.Texture.Replace("Projectile", "");
 
@@ -22,13 +32,41 @@ internal class LocustCrook : ModItem
 			Projectile.hostile = false;
 			Projectile.Size = new Vector2(14);
 			Projectile.timeLeft = Projectile.SentryLifeTime;
-			Projectile.sentry = true;
+			Projectile.sentry = false;
 		}
 
 		public override bool? CanDamage() => false;
 
 		public override void AI()
 		{
+			if (Held)
+			{
+				Vector2 mouse = PlayerMouseHandler.GetMouse(Projectile.owner);
+				Projectile.rotation = Projectile.AngleTo(mouse) - MathHelper.PiOver2 * 1.5f;
+				Projectile.Center = Owner.Center + Projectile.DirectionTo(mouse) * 8;
+
+				Owner.heldProj = Projectile.whoAmI;
+				Owner.ChangeDir(Math.Sign(Projectile.Center.X - Owner.Center.X));
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.ThreeQuarters, Projectile.rotation + MathHelper.PiOver2 * 1.5f);
+
+				if (Owner.HeldItem.type != ModContent.ItemType<LocustCrook>())
+				{
+					Projectile.Kill();
+					return;
+				}
+
+				if (Main.myPlayer == Projectile.owner && Main.mouseLeft)
+				{
+					Projectile.sentry = true;
+					Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * 12;
+					Owner.UpdateMaxTurrets();
+
+					Held = false;
+				}
+
+				return;
+			}
+
 			if (!Embedded)
 			{
 				Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2 * 1.5f;
@@ -175,10 +213,19 @@ internal class LocustCrook : ModItem
 		Item.useStyle = ItemUseStyleID.RaiseLamp;
 	}
 
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => false;
+
+	public override void HoldItem(Player player)
 	{
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-		player.UpdateMaxTurrets();
-		return false;
+		if (Main.myPlayer != player.whoAmI)
+			return;
+
+		int type = ModContent.ProjectileType<LocustCrookProjectile>();
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+			if (projectile.type == type && projectile.owner == player.whoAmI && projectile.ai[2] == 0)
+				return;
+
+		Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, type, Item.damage, 0, player.whoAmI);
 	}
 }
