@@ -1356,7 +1356,7 @@ WayfarerLegs: {
 
 AncientKoiTotem: {
 	DisplayName: 远古锦鲤图腾
-	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+	Tooltip: "{$Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
@@ -1375,7 +1375,7 @@ ClayBomb: {
 
 ClayBombSticky: {
 	DisplayName: 粘性粘土炸弹
-	Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+	Tooltip: "{$Items.ClayBomb.Tooltip}"
 }
 
 SandBomb: {
@@ -1385,7 +1385,7 @@ SandBomb: {
 
 SandBombSticky: {
 	DisplayName: 粘性沙子炸弹
-	Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+	Tooltip: "{$Items.SandBomb.Tooltip}"
 }
 
 CoarseBomb: {
@@ -1395,7 +1395,7 @@ CoarseBomb: {
 
 CoarseBombSticky: {
 	DisplayName: 粘性粗泥炸弹
-	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+	Tooltip: "{$Items.CoarseBomb.Tooltip}"
 }
 
 MudBomb: {
@@ -1405,7 +1405,7 @@ MudBomb: {
 
 MudBombSticky: {
 	DisplayName: 粘性泥巴炸弹
-	Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+	Tooltip: "{$Items.MudBomb.Tooltip}"
 }
 
 HideTunic: {
@@ -1652,32 +1652,32 @@ FlaskArgon: {
 
 FlaskHelium: {
 	DisplayName: 氦苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
 	DisplayName: 氪苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
 	DisplayName: 氖苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
 	DisplayName: 「气奥」苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
 	DisplayName: 氡苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
 	DisplayName: 氙苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 BiomePotsGraniteItem: {
@@ -1778,7 +1778,7 @@ ZenithPotsItem: {
 }
 
 ZenithPotsPaleItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
 	Tooltip: ""
 }
 
@@ -1809,27 +1809,27 @@ FlaskBlue: {
 
 FlaskBrown: {
 	DisplayName: 棕色苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
 	DisplayName: 绿色苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
 	DisplayName: 熔岩苔藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
 	DisplayName: 紫色岩藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
 	DisplayName: 红色岩藓烧瓶
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 TitleMusicBoxItem: {
@@ -1929,14 +1929,14 @@ VexpowderBlue: {
 	DisplayName: 苦恼之尘
 	Tooltip:
 		'''
-		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		{$Items.Flarepowder.Tooltip}
 		困惑被击中的敌人
 		'''
 }
 
 VexpowderRed: {
-	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+	DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Items.VexpowderBlue.Tooltip}"
 }
 
 BreakawayChair: {
@@ -1945,17 +1945,17 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
-	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+	DisplayName: 远古{$Items.LeatherHood.DisplayName}
+	Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	DisplayName: 远古{$Items.LeatherLegs.DisplayName}
 	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	DisplayName: 远古{$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	DisplayName: 远古{$Items.LeatherPlate.DisplayName}
 	Tooltip: ""
 }
 
@@ -1968,7 +1968,7 @@ MossSlimeBannerItem.DisplayName: 苔藓史莱姆旗
 
 InvisibleLure: {
 	DisplayName: 隐形鱼诱
-	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+	Tooltip: "{$Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
@@ -2022,12 +2022,12 @@ GraniteBody: {
 
 GraniteHead: {
 	DisplayName: 动能面甲
-	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 GraniteLegs: {
 	DisplayName: 动能护胫
-	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 FingerGun: {
