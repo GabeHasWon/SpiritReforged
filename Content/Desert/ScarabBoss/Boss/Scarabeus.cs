@@ -225,6 +225,12 @@ public partial class Scarabeus : ModNPC
 			npcHitbox.X += NPC.direction * 65;
 		}
 
+		else if (CurrentState == AIState.Roll)
+		{
+			//Shave off the top of the hitbox when rolling to make it easier to jump over
+			npcHitbox.Y += 20;
+		}
+
 		return true;
 	}
 

@@ -148,6 +148,11 @@ public partial class Scarabeus : ModNPC
 		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
 		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 
+		Vector2 positionOffset = Vector2.Zero;
+		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
+			positionOffset.Y += 16;
+		position += positionOffset;
+
 		Vector2 scale = new Vector2(2 - MathF.Pow(squishY, 2f), MathF.Pow(squishY, 0.7f)) * NPC.scale;
 		if (squishY > 1)
 			scale = new Vector2(1 - MathF.Pow(squishY - 1, 2f), 1f + MathF.Pow(squishY - 1, 0.7f)) * NPC.scale;
@@ -159,7 +164,7 @@ public partial class Scarabeus : ModNPC
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{
 				Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
-				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
+				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8) + positionOffset, NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
 			}
 		}
 
@@ -176,7 +181,7 @@ public partial class Scarabeus : ModNPC
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
-		Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White);
+		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White);
 
 		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);

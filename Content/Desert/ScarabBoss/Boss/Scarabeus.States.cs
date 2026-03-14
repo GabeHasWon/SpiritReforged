@@ -294,9 +294,6 @@ public partial class Scarabeus : ModNPC
 		return 1 / (60f * nextAttackTime);
 	}
 
-	#endregion
-
-	#region Phase 1
 	public void GroundedIdle(ref float nextAttackWaitTime)
 	{
 		NPC.rotation = 0f;
@@ -387,209 +384,200 @@ public partial class Scarabeus : ModNPC
 		}
 
 		//NPC.Step();
-		float fps = Math.Min(Math.Abs(NPC.velocity.X) * 5, 22) * NPC.direction;
+		float fps = Math.Min(Math.Abs(NPC.velocity.X) * 5, 22) * (Math.Sign(NPC.velocity.X) * NPC.direction);
 		if (swimming && Math.Abs(fps) < 14f)
 			fps = 14f * NPC.direction;
 
 		UpdateFrame(1, (int)fps, PhaseOneProfile);
 	}
 
-	/*
-	public float HornSwipe(ref bool retarget)
+	public void FlyHover(ref float nextAttackWaitTime)
 	{
-		NPC.noGravity = false;
-		NPC.velocity.X *= 0.5f;
-		FrameState state = UpdateFrame(2, 12, PhaseOneProfile, false);
+		//Attacks slower in P2 because its flying so its harder to hit
+		nextAttackWaitTime *= 1.2f;
 
-		if (currentFrame.Y is > 2 and < 7)
+		NPC.noTileCollide = true;
+		NPC.noGravity = true;
+		NPC.rotation = NPC.velocity.X * 0.05f;
+		NPC.FaceTarget();
+
+		UpdateFrame(2, 15, PhaseTwoProfile);
+
+		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
+
+		//Vertical movement
+		if (heightAboveGround < 128)
+			NPC.velocity.Y -= 0.1f;
+
+		else if (Math.Abs(NPC.position.Y - Target.position.Y) > 160)
+			NPC.velocity.Y -= 0.175f * Math.Sign(NPC.Center.Y - Target.Center.Y);
+		else
+			NPC.velocity.Y *= 0.9f;
+
+		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * Counter) / 10;
+
+		//Horizontal movement
+
+		if (NPC.Center.X < Target.Center.X)
 		{
-			dealContactDamage = true;
-
-			float distance = Target.Center.X - NPC.Center.X;
-			if (Math.Sign(distance) == NPC.direction)
-				NPC.velocity.X += distance * 0.1f;
+			if (NPC.velocity.X < 0)
+			{
+				NPC.velocity.X *= 0.975f;
+				NPC.velocity.X += 0.025f;
+			}
+			else
+			{
+				NPC.velocity.X += 0.1f;
+			}
 		}
 
-		if (state == FrameState.Stopped)
-			ChangeState(SelectAttack());
-
-		return 1f;
-	}
-
-	public void Skitter()
-	{
-		const int skitter_time = 40;
-
-		NPC.noGravity = false;
-		NPC.velocity.X = -NPC.direction * MathHelper.Lerp(12, 4, EaseFunction.EaseQuadOut.Ease(Counter / skitter_time));
-		NPC.Step();
-
-		UpdateFrame(1, (int)(NPC.direction * NPC.velocity.X) * 4, PhaseOneProfile);
-
-		if (Counter > skitter_time)
-			ChangeState(SelectAttack());
-	}
-
-	public void Leap()
-	{
-		ref float jumpState = ref NPC.ai[2];
-
-		NPC.noGravity = false;
-		NPC.GravityMultiplier *= 2;
-
-		switch (jumpState)
+		else
 		{
-			case 0: //Prepare for a jump
-				if (Grounded) //Check if grounded
-				{
-					NPC.velocity.X *= 0.8f;
-					NPC.FaceTarget();
-
-					if (UpdateFrame(4, 10, PhaseOneProfile, false) == FrameState.Stopped) //Add jump velocity
-					{
-						Vector2 desiredPos = Target.Center + Target.velocity * 20;
-
-						if (NPC.Center.Y - Target.Center.Y > 80)
-							NPC.velocity = NPC.GetArcVel(desiredPos - new Vector2(0, 30), NPC.gravity, Math.Clamp((NPC.Center.Y - (desiredPos.Y - 30)) / 16f, 15, 50), true);
-						else
-							NPC.velocity = NPC.GetArcVel(desiredPos, NPC.gravity, Math.Clamp(NPC.Center.Distance(desiredPos) / 36, 15, 30), true);
-
-						NPC.noTileCollide = true;
-						Counter = 0;
-						jumpState++;
-					}
-				}
-
-				break;
-
-			case 1: //Jump and land
-				SetFrame(0, 2, PhaseOneProfile);
-				dealContactDamage = true;
-
-				NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
-				NPC.noTileCollide = NPC.velocity.Y < 0;
-
-				if (Grounded) //Land
-				{
-					NPC.rotation = 0;
-					jumpState++;
-
-					if (!Main.dedServ)
-					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
-						Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
-					}
-				}
-				else if (Target.Center.Y - NPC.Center.Y > 200) //Prompt a slam when too high up
-				{
-					jumpState = 3;
-					Counter = 0;
-				}
-
-				break;
-
-			case 2: //Recover
-				NPC.noTileCollide = false;
-				NPC.velocity.X *= 0.9f;
-
-				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
-				{
-					SetFrame(0, 0, PhaseOneProfile); //Return to the control frame
-					ChangeState(SelectAttack());
-				}
-
-				break;
-
-			case 3: //Optional ground slam
-				SetFrame(RollFrame, PhaseOneProfile);
-				NPC.rotation += Math.Min(Counter * 0.02f, 0.5f) * NPC.direction;
-				NPC.noTileCollide = false;
-				NPC.noGravity = true;
-
-				if (Counter > 20)
-				{
-					NPC.velocity.X *= 0.98f;
-
-					if (Grounded) //Land
-					{
-						if (!Main.dedServ)
-						{
-							Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2Unit(), 4, 2, 15, -1, "ScarabLanding"));
-							Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
-						}
-
-						NPC.rotation = 0;
-						ChangeState(SelectAttack());
-					}
-					else //Downward movement
-					{
-						showTrail = NPC.velocity.Y > 2;
-						NPC.velocity.Y = Math.Min(NPC.velocity.Y + 1.2f, 16);
-					}
-				}
-				else
-				{
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center).X * 10, 0.1f);
-					NPC.velocity.Y = NPC.velocity.Y * 0.93f;
-				}
-
-				break;
+			if (NPC.velocity.X > 0)
+			{
+				NPC.velocity.X *= 0.975f;
+				NPC.velocity.X -= 0.025f;
+			}
+			else
+			{
+				NPC.velocity.X -= 0.1f;
+			}
 		}
-	}
-	*/
 
+		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
+		NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
+	}
+	#endregion
+
+	//Phase 1
+	#region Roll
 	public float RollAttack(ref bool retarget)
 	{
+		retarget = false;
 		const int transition_time = 40;
-
 		ref float dashState = ref NPC.ai[2];
 
-		NPC.noTileCollide = false;
-		NPC.noGravity = false;
+		NPC.behindTiles = dashState >= 1 && dashState < 3;
+
+		if (Counter == 0 && dashState == 0)
+			NPC.FaceTarget();
 
 		switch (dashState)
 		{
-			case 0: //Telegraph
+			//Anticipation
+			case 0:
 				NPC.velocity.X *= 0.8f;
-				NPC.FaceTarget();
-				UpdateFrame(3, 10, PhaseOneProfile, false);
 
-				if (Counter > 45)
+				//Lil bob before the jump
+				if (UpdateFrame(4, 12, PhaseOneProfile, false) != FrameState.Stopped)
 				{
+					NPC.velocity.X *= 0.95f;
+					NPC.noGravity = false;
+					NPC.noTileCollide = false;
+				}
+				else
+				{
+					NPC.velocity.Y -= 9f;
+					NPC.velocity.X = 0f;
+					NPC.position.Y -= 20;
+					NPC.noTileCollide = true;
+					NPC.noGravity = false;
+					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
+					SetFrame(RollFrame, PhaseOneProfile);
 					Counter = 0;
 					dashState++;
 				}
 
 				break;
 
-			case 1: //Roll
-				NPC.velocity.X = NPC.direction * 22;
-				NPC.rotation += 0.3f * NPC.spriteDirection;
-				NPC.Step();
+			case 1: // Bounce before the roll
+				SetFrame(RollFrame, PhaseOneProfile);
+				GroundPoundSpin();
+				NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
+
+				dealContactDamage = true;
+				NPC.noGravity = false;
+
+				//Hitting the ground
+				if (NPC.velocity.Y > 0 && OnTopOfTiles)
+				{
+					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
+					Counter = 0;
+					dashState++;
+					NPC.velocity.Y = 0;
+					NPC.velocity.X = NPC.direction * 12f;
+					NPC.noGravity = true;
+					NPC.noTileCollide = true;
+				}
+
+				break;
+
+			case 2: //Roll
+				NPC.noGravity = true;
+				NPC.noTileCollide = true;
+
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 22, 0.1f);
+				NPC.rotation += 0.01f * NPC.velocity.X;
+
+				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y;
+
+				//Match floor height when the slope is low enough
+				if (floorHeight > NPC.Top.Y && floorHeight < NPC.Bottom.Y + 40)
+				{
+					NPC.velocity.Y = 0;
+					NPC.position.Y = MathHelper.Lerp(NPC.position.Y, floorHeight - NPC.height, 0.6f);
+				}
+				//Fall if theres no floor
+				else if (!OnTopOfTiles && floorHeight > NPC.Bottom.Y)
+					NPC.velocity.Y += 0.45f;
+				//Bonk and transition to ground pound
+				else if (floorHeight < NPC.Top.Y)
+				{
+					//BONK effects
+					if (!Main.dedServ)
+					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+						Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
+						ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
+					}
+
+					ChangeState(AIState.GroundPound); //bounce off of surfaces
+					NPC.velocity.X = 0;
+					NPC.velocity.Y = 0;
+					return 0f;
+				}
 
 				SetFrame(RollFrame, PhaseOneProfile);
 				showTrail = true;
 				dealContactDamage = true;
 				//sfx here
 
-				if ((Target.Center.X - NPC.Center.X) * NPC.direction < 30)
+				if ((Target.Center.X - NPC.Center.X) * NPC.direction < -100)
 				{
 					Counter = 0;
 					dashState++;
-				}
-
-				if (NPC.collideX)
-				{
-					ChangeState(AIState.GroundPound); //bounce off of surfaces
-					return 0f;
+					NPC.direction = NPC.velocity.X < 0 ? 1 : -1;
+					showTrail = false;
+					NPC.rotation = 0;
+					SetFrame(0, 6, PhaseOneProfile);
 				}
 
 				break;
 
-			case 2: //Skid to a stop
+			case 3: //Skid to a stop
 				SetFrame(0, 6, PhaseOneProfile);
 				NPC.rotation = 0;
-				NPC.velocity.X *= 0.94f;
+				NPC.velocity.X *= 0.92f;
+
+				float floorHeightAgain = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y;
+				//Match floor height when the slope is low enough
+				if (floorHeightAgain > NPC.Top.Y && floorHeightAgain < NPC.Bottom.Y + 40)
+				{
+					NPC.velocity.Y = 0;
+					NPC.position.Y = MathHelper.Lerp(NPC.position.Y, floorHeightAgain - NPC.height, 0.3f);
+				}
+				else if (!OnTopOfTiles)
+					NPC.velocity.Y += 0.3f;
 
 				if (Math.Sign(NPC.velocity.X) is int newDirection && newDirection != 0)
 					NPC.direction = -newDirection;
@@ -613,18 +601,16 @@ public partial class Scarabeus : ModNPC
 				if (Counter > transition_time)
 				{
 					Counter = 0;
-					dashState++;
+					NPC.velocity.X /= 2;
+					return GoBackToIdle();
 				}
 
 				break;
-
-			case 3: //End
-				NPC.velocity.X /= 2;
-				return GoBackToIdle();
 		}
 
 		return 1f;
 	}
+	#endregion
 
 	#region Shockwave Slam
 	public float ShockwaveAttack(ref bool retarget)
@@ -635,6 +621,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = false;
 		NPC.velocity.X *= 0.8f;
 
+		retarget = false;
 		if (Counter < 5)
 			NPC.FaceTarget();
 
@@ -893,6 +880,7 @@ public partial class Scarabeus : ModNPC
 	}
 	#endregion
 
+	#region Dig
 	public float DigAttack(ref bool retarget)
 	{
 		const int dig_time = 120;
@@ -1099,8 +1087,10 @@ public partial class Scarabeus : ModNPC
 
 		int projectileType = ModContent.ProjectileType<SandballProjectile>();
 
-		Vector2 ground = FindGroundFromPositionIgnorePlatforms(NPC.Center);
+		Vector2 ground = FindGroundFromPositionIgnorePlatforms(NPC.Top);
 		Point groundPos = ground.ToTileCoordinates();
+
+		//TextureColorCache.GetDominantPalette(TextureAssets.Tile[Main.tile[groundPos].TileType].Value);
 
 		for (int j = -2; j < 2; j++)
 		{
@@ -1110,64 +1100,8 @@ public partial class Scarabeus : ModNPC
 	}
 	#endregion
 
-	#region Phase 2
-	public void FlyHover(ref float nextAttackWaitTime)
-	{
-		//Attacks slower in P2 because its flying so its harder to hit
-		nextAttackWaitTime *= 1.2f;
-
-		NPC.noTileCollide = true;
-		NPC.noGravity = true;
-		NPC.rotation = NPC.velocity.X * 0.05f;
-		NPC.FaceTarget();
-
-		UpdateFrame(2, 12, PhaseTwoProfile);
-
-		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
-
-		//Vertical movement
-		if (heightAboveGround < 128)
-			NPC.velocity.Y -= 0.1f;
-
-		else if (Math.Abs(NPC.position.Y - Target.position.Y) > 160)
-			NPC.velocity.Y -= 0.175f * Math.Sign(NPC.Center.Y - Target.Center.Y);
-		else
-			NPC.velocity.Y *= 0.9f;
-
-		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * Counter) / 10;
-
-		//Horizontal movement
-
-		if (NPC.Center.X < Target.Center.X)
-		{
-			if (NPC.velocity.X < 0)
-			{
-				NPC.velocity.X *= 0.975f;
-				NPC.velocity.X += 0.025f;
-			}
-			else
-			{
-				NPC.velocity.X += 0.1f;
-			}
-		}
-
-		else
-		{
-			if (NPC.velocity.X > 0)
-			{
-				NPC.velocity.X *= 0.975f;
-				NPC.velocity.X -= 0.025f;
-			}
-			else
-			{
-				NPC.velocity.X -= 0.1f;
-			}
-		}
-
-		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -12, 12);
-		NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -8, 8);
-	}
-
+	//Phase 2
+	#region Flying dash
 	public float FlyingDashAttack(ref bool retarget)
 	{
 		const int expire_time = 300;
@@ -1222,7 +1156,9 @@ public partial class Scarabeus : ModNPC
 
 		return 1f;
 	}
+	#endregion
 
+	#region Swarm
 	public float SwarmAttack(ref bool retarget)
 	{
 		//durations of each segment
