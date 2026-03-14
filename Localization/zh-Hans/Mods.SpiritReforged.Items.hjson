@@ -2945,6 +2945,11 @@ GoldCricketCageItem: {
 	// Tooltip: ""
 }
 
+ScarabPetItem: {
+	// DisplayName: Scarab Food
+	// Tooltip: Summons a little Scarab companion
+}
+
 CarrotCake: {
 	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
