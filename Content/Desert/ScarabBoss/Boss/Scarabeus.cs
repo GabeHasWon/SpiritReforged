@@ -89,7 +89,7 @@ public partial class Scarabeus : ModNPC
 		Dig,
 		Roll,
 
-		FlyingDash,
+		SwoopDash,
 		Swarm,
 		MaxValue
 	}
@@ -145,7 +145,7 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.Dig] = DigAttack;
 		_stateAI[(int)AIState.Roll] = RollAttack;
 		//P2 attacks
-		_stateAI[(int)AIState.FlyingDash] = FlyingDashAttack;
+		_stateAI[(int)AIState.SwoopDash] = SwoopDashAttack;
 		_stateAI[(int)AIState.Swarm] = SwarmAttack;
 
 		Profile = PhaseOneProfile;
@@ -184,7 +184,7 @@ public partial class Scarabeus : ModNPC
 		NPC.ShowNameOnHover = NPC.Opacity != 0;
 
 		dealContactDamage = false;
-		showTrail = false;
+		trailOpacity = 0f;
 		iridescenceBoost = MathHelper.Lerp(iridescenceBoost, 0f, 0.1f);
 
 		if (!phaseTwo && NPC.life < NPC.lifeMax / 2 && IsIdling)
@@ -202,7 +202,7 @@ public partial class Scarabeus : ModNPC
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
 
-		ScarabHeatHazeShaderData.AnyScarabeusPresent = true;
+		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Math.Max(ScarabHeatHazeShaderData.HeatHazeOpacity,  Utils.GetLerpValue(0f, 0.5f, (NPC.life / (float)NPC.lifeMax), true));
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -218,11 +218,11 @@ public partial class Scarabeus : ModNPC
 			npcHitbox.Inflate(40, 0);
 			npcHitbox.X += NPC.direction * 35;
 		}
-		//Its the dig state but this is the hitbox for the dig attack!
+		//Its the dig state but this is the hitbox for the horn swipe it does at the end specifically!
 		else if (CurrentState == AIState.Dig)
 		{
-			npcHitbox.Inflate(-20, 10);
-			npcHitbox.X += NPC.direction * 65;
+			npcHitbox.Inflate(0, 10);
+			npcHitbox.X += NPC.direction * 45;
 		}
 
 		else if (CurrentState == AIState.Roll)

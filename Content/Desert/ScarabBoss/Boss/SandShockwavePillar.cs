@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
+using static SpiritReforged.Content.Desert.ScarabBoss.Boss.Scarabeus;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -48,6 +49,9 @@ public class SandShockwavePillar : ModProjectile
 
 		if (AITimer > SpawnDelay)
 		{
+			//Scrapped cuz it looks ugly
+			//Color[] colors = GetTilePalette(Projectile.Bottom + Vector2.UnitY * 10);
+
 			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(2, 6) * ParticleVerticalSpeedMult, new Color(253, 239, 167) * 0.7f, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 			{
 				Pixellate = true,

@@ -36,16 +36,16 @@ public static class CollisionChecks
 	public static bool Tiles(int startX, int startY, int endX, int endY, TilesDelegate action)
 	{
 		if (startX < 0)
-			return true;
+			return false;
 
 		if (endX >= Main.maxTilesX)
-			return true;
+			return false;
 
 		if (startY < 0)
-			return true;
+			return false;
 
 		if (endY >= Main.maxTilesY)
-			return true;
+			return false;
 
 		for (int i = startX; i < endX + 1; i++)
 		{

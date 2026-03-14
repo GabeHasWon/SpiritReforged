@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using Terraria.DataStructures;
@@ -15,10 +16,7 @@ public class TileChunkParticle : Particle
 	private float _angularMomentum;
 
 	private readonly bool _bigMode;
-	private readonly int _bigModeTopLeftVariant;
-	private readonly int _bigModeTopRightVariant;
-	private readonly int _bigModeBottomLeftVariant;
-	private readonly int _bigModeBottomRightVariant;
+	private readonly TileChunkSegment[] _bigModeSegments;
 
 	public TileChunkParticle(Point tilePosition, Vector2 worldPosition, Vector2 velocity, int lifetime, bool bigMode = false) : base()
 	{
@@ -26,7 +24,11 @@ public class TileChunkParticle : Particle
 		tilePosition.Y = Math.Clamp(tilePosition.Y, 0, Main.maxTilesY - 1);
 		_tileCache = Main.tile[tilePosition];
 
-		if (!_tileCache.HasTile || Main.tileFrameImportant[_tileCache.TileType])
+		if (!_tileCache.HasTile || 
+			Main.tileFrameImportant[_tileCache.TileType] || 
+			TileID.Sets.NotReallySolid[_tileCache.TileType] || 
+			!Main.tileSolid[_tileCache.TileType] ||
+			TileID.Sets.Platforms[_tileCache.TileType])
 		{
 			killMe = true;
 			return;
@@ -35,7 +37,7 @@ public class TileChunkParticle : Particle
 		Position = worldPosition;
 		Velocity = velocity;
 		Scale = 1;
-		_angularMomentum = Velocity.Length() * 0.02f * (velocity.X < 0 ? -1 : 1);
+		_angularMomentum = Velocity.Length() * Main.rand.NextFloat(0.015f, 0.022f) * (velocity.X < 0 ? -1 : 1);
 
 		//Pick the frame coordinates of the 1x1 tile chunks
 		_xFrame = (short)(162 + Main.rand.Next(3) * 18);
@@ -48,12 +50,14 @@ public class TileChunkParticle : Particle
 
 		if (_bigMode)
 		{
-			_bigModeTopLeftVariant = Main.rand.Next(3);
-			_bigModeTopRightVariant = Main.rand.Next(3);
-			_bigModeBottomLeftVariant = Main.rand.Next(3);
-			_bigModeBottomRightVariant = Main.rand.Next(3);
+			_bigModeSegments = new TileChunkSegment[4];
+			_bigModeSegments[0] = new TileChunkSegment(0, 54, -1, -1);
+			_bigModeSegments[1] = new TileChunkSegment(18, 54, 1, -1);
+			_bigModeSegments[2] = new TileChunkSegment(0, 72, -1, 1);
+			_bigModeSegments[3] = new TileChunkSegment(18, 72, 1, 1);
 		}
 
+		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 		MaxTime = lifetime;
 	}
 
@@ -100,14 +104,53 @@ public class TileChunkParticle : Particle
 		}
 		else
 		{
-			Vector2 unitX = Vector2.UnitX.RotatedBy(Rotation) * Scale * 8f;
-			Vector2 unitY = Vector2.UnitY.RotatedBy(Rotation) * Scale * 8f;
+			Vector2 unitX = Vector2.UnitX.RotatedBy(Rotation) * Scale;
+			Vector2 unitY = Vector2.UnitY.RotatedBy(Rotation) * Scale;
 
 			//Draw a chunky 2x2 cube of tiles
-			spriteBatch.Draw(texture, position - unitX - unitY - Main.screenPosition, new Rectangle(_bigModeTopLeftVariant * 36, 54, 16, 16), color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(texture, position + unitX - unitY - Main.screenPosition, new Rectangle(18 + _bigModeTopRightVariant * 36, 54, 16, 16), color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0); 
-			spriteBatch.Draw(texture, position - unitX + unitY - Main.screenPosition, new Rectangle(_bigModeBottomLeftVariant * 36, 72, 16, 16), color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(texture, position + unitX + unitY - Main.screenPosition, new Rectangle(18 + _bigModeBottomRightVariant * 36, 72, 16, 16), color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0);
+			for (int i = 0; i < 4; i++)
+				_bigModeSegments[i].Draw(spriteBatch, texture, position - Main.screenPosition, color, Rotation, Scale, unitX, unitY);
+		}
+	}
+
+	private struct TileChunkSegment
+	{
+		public int shrinkX;
+		public int shrinkY;
+
+		public int dirX;
+		public int dirY;
+
+		public Rectangle frame;
+
+		public TileChunkSegment(int frameXStart, int frameY, int directionX, int directionY)
+		{
+			int frameX = frameXStart + Main.rand.Next(3) * 36;
+
+			shrinkX = 0;
+			shrinkY = 0;
+
+			if (Main.rand.NextBool(3))
+			{
+				shrinkX = Main.rand.Next(4) * 2;
+				shrinkY = Main.rand.Next(4) * 2;
+			}
+
+			dirX = directionX;
+			dirY = directionY;
+
+			frame = new Rectangle(frameX + Math.Max(0, shrinkX * dirX), frameY + Math.Max(0, shrinkY * dirY), 16 - shrinkX, 16 - shrinkY);
+		}
+
+		public void Draw(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Color color, float rotation, float scale, Vector2 unitX, Vector2 unitY)
+		{
+			position = new Vector2((int)position.X, (int)position.Y);
+
+			int shiftX = Math.Min((16 - shrinkX) * dirX, 0);
+			int shiftY = Math.Min((16 - shrinkY) * dirY, 0);
+
+			Vector2 drawPosition = position + unitX * shiftX + unitY * shiftY;
+			spriteBatch.Draw(texture, drawPosition, frame, color, rotation, Vector2.Zero, scale, SpriteEffects.None, 0);
 		}
 	}
 }

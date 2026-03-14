@@ -12,7 +12,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 	{
 		public static float HeatHazeIntensity = 0f;
 		public static float HeatHazeOpacity = 0f;
-		public static bool AnyScarabeusPresent = false;
+		public static float HeatHazeTargetOpacity = 0f;
 		private static Filter myFilter;
 
 		public ScarabHeatHazeShaderData(Asset<Effect> shader, string passName)
@@ -49,15 +49,15 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 
 		private static void UpdateShaderParameters()
 		{
-			bool shouldShaderBeActive = AnyScarabeusPresent;
-			AnyScarabeusPresent = false;
+			bool shouldShaderBeActive = HeatHazeTargetOpacity > 0;
+			HeatHazeTargetOpacity = 0;
 
 			//Make the shader fade in and out
 			if (shouldShaderBeActive)
 			{
 				HeatHazeOpacity += 0.08f;
-				if (HeatHazeOpacity > 1f)
-					HeatHazeOpacity = 1f;
+				if (HeatHazeOpacity > HeatHazeTargetOpacity)
+					HeatHazeOpacity = HeatHazeTargetOpacity;
 			}
 			else
 			{

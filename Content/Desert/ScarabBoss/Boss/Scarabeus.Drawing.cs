@@ -44,7 +44,7 @@ public partial class Scarabeus : ModNPC
 	/// Prefer <see cref="UpdateFrame"/> and <see cref="SetFrame"/> for assignment. </summary>
 	public Point currentFrame;
 	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
-	public bool showTrail;
+	public float trailOpacity;
 	public float squishY = 1f;
 	public float iridescenceBoost;
 
@@ -157,9 +157,10 @@ public partial class Scarabeus : ModNPC
 		if (squishY > 1)
 			scale = new Vector2(1 - MathF.Pow(squishY - 1, 2f), 1f + MathF.Pow(squishY - 1, 0.7f)) * NPC.scale;
 
-		if (showTrail)
+		if (trailOpacity > 0)
 		{
-			Color color = phaseTwo ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			Color color = Profile == PhaseTwoProfile ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			color *= trailOpacity;
 
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
 			{

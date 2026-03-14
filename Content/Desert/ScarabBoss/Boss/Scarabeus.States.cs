@@ -126,7 +126,7 @@ public partial class Scarabeus : ModNPC
 				NPC.MaxFallSpeedMultiplier *= 2f;
 
 				SetFrame(RollFrame, PhaseOneProfile);
-				showTrail = true;
+				trailOpacity = 0.4f;
 			}
 		}
 
@@ -225,12 +225,37 @@ public partial class Scarabeus : ModNPC
 	public float TransitionAnimation(ref bool retarget)
 	{
 		NPC.velocity.X *= 0.5f;
-		bool jumpingFrame = currentFrame == new Point(0, 2);
-		NPC.noGravity = jumpingFrame;
-		NPC.noTileCollide = jumpingFrame;
+		bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
+		NPC.noGravity = jumped;
+		NPC.noTileCollide = jumped;
 		NPC.dontTakeDamage = true;
 
-		if (jumpingFrame)
+		//Slower framerate right before the wings reveal
+		int framerate = currentFrame.Y == 6 ? 5 : 12;
+
+		//Spawn effects
+		if (!jumped && !Main.dedServ && Counter == 0) 
+		{
+			var easeAnimation = new AnimationSequence()
+				.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
+				.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
+				.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+		}
+		else if (!jumped)
+		{
+			if (NPC.velocity.Y > 0 && OnTopOfTiles)
+				NPC.velocity.Y = 0;
+
+			if (UpdateFrame(5, framerate, PhaseTwoProfile, false) == FrameState.Stopped)
+			{
+				SetFrame(0, 2, PhaseTwoProfile);
+				NPC.velocity.Y -= 15;
+				Counter = 0;
+			}
+		}
+		else if (jumped)
 		{
 			NPC.dontTakeDamage = false;
 			NPC.velocity.Y *= 0.95f;
@@ -240,21 +265,6 @@ public partial class Scarabeus : ModNPC
 				ChangeState(AIState.Swarm);
 				return 0f;
 			}
-		}
-		else if (UpdateFrame(5, 12, PhaseTwoProfile, false) == FrameState.Stopped)
-		{
-			SetFrame(0, 2, PhaseTwoProfile);
-			NPC.velocity.Y -= 15;
-			Counter = 0;
-		}
-		else if (!Main.dedServ && Counter == 0) //Spawn effects
-		{
-			var easeAnimation = new AnimationSequence()
-				.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
-				.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
-				.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
-
-			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 		}
 
 		return 1f;
@@ -391,7 +401,7 @@ public partial class Scarabeus : ModNPC
 		UpdateFrame(1, (int)fps, PhaseOneProfile);
 	}
 
-	public void FlyHover(ref float nextAttackWaitTime)
+	public void FlyHover(ref float nextAttackWaitTime, float wingbeatSpeed = 1f)
 	{
 		//Attacks slower in P2 because its flying so its harder to hit
 		nextAttackWaitTime *= 1.2f;
@@ -401,13 +411,17 @@ public partial class Scarabeus : ModNPC
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
 
-		UpdateFrame(2, 15, PhaseTwoProfile);
+		UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
 
-		float heightAboveGround = FindGroundFromPosition(NPC.Center).Y - NPC.Center.Y;
+		float heightAboveGround = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y - NPC.Center.Y;
 
 		//Vertical movement
 		if (heightAboveGround < 128)
+		{
 			NPC.velocity.Y -= 0.1f;
+			if (heightAboveGround < 0)
+				NPC.velocity.Y -= 0.15f;
+		}
 
 		else if (Math.Abs(NPC.position.Y - Target.position.Y) > 160)
 			NPC.velocity.Y -= 0.175f * Math.Sign(NPC.Center.Y - Target.Center.Y);
@@ -456,6 +470,7 @@ public partial class Scarabeus : ModNPC
 		retarget = false;
 		const int transition_time = 40;
 		ref float dashState = ref NPC.ai[2];
+		float rollSpeed = phaseTwo ? 30 : 22;
 
 		NPC.behindTiles = dashState >= 1 && dashState < 3;
 
@@ -466,26 +481,60 @@ public partial class Scarabeus : ModNPC
 		{
 			//Anticipation
 			case 0:
-				NPC.velocity.X *= 0.8f;
+				bool doRollBounceTelegraph = false;
 
-				//Lil bob before the jump
-				if (UpdateFrame(4, 12, PhaseOneProfile, false) != FrameState.Stopped)
+				if (!phaseTwo)
 				{
-					NPC.velocity.X *= 0.95f;
-					NPC.noGravity = false;
-					NPC.noTileCollide = false;
+					NPC.velocity.X *= 0.8f;
+					//Lil bob before the jump
+					if (UpdateFrame(4, 12, PhaseOneProfile, false) != FrameState.Stopped)
+					{
+						NPC.velocity.X *= 0.95f;
+						NPC.noGravity = false;
+						NPC.noTileCollide = false;
+					}
+					else
+						doRollBounceTelegraph = true;
 				}
+				//In phase 2, scarabeus can only do the roll dash from its flying swoop dash, and it starts with its velocity conserved
 				else
 				{
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.03f);
+					NPC.velocity.Y += 0.15f;
+
+					SetFrame(RollFrame, PhaseOneProfile);
+					GroundPoundSpin();
+					dealContactDamage = true;
+					NPC.noGravity = false;
+
+					//Hitting the ground
+					if (NPC.velocity.Y > 0 && OnTopOfTiles)
+					{
+						NPC.velocity.Y *= 0;
+						doRollBounceTelegraph = true;
+						ShiftUpToFloorLevel();
+					}
+				}
+
+				if (doRollBounceTelegraph)
+				{
+					if (!phaseTwo)
+						NPC.position.Y -= 20;
 					NPC.velocity.Y -= 9f;
 					NPC.velocity.X = 0f;
-					NPC.position.Y -= 20;
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
 					SetFrame(RollFrame, PhaseOneProfile);
 					Counter = 0;
 					dashState++;
+
+					if (!Main.dedServ)
+					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 4, 5, 35));
+						Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
+						ScarabHeatHazeShaderData.HeatHazeIntensity = 0.1f;
+					}
 				}
 
 				break;
@@ -494,6 +543,10 @@ public partial class Scarabeus : ModNPC
 				SetFrame(RollFrame, PhaseOneProfile);
 				GroundPoundSpin();
 				NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
+
+				//Fall faster in P2 for faster telegraph
+				if (phaseTwo)
+					NPC.velocity.Y += 0.12f;
 
 				dealContactDamage = true;
 				NPC.noGravity = false;
@@ -516,7 +569,7 @@ public partial class Scarabeus : ModNPC
 				NPC.noGravity = true;
 				NPC.noTileCollide = true;
 
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 22, 0.1f);
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * rollSpeed, 0.1f);
 				NPC.rotation += 0.01f * NPC.velocity.X;
 
 				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y;
@@ -548,16 +601,25 @@ public partial class Scarabeus : ModNPC
 				}
 
 				SetFrame(RollFrame, PhaseOneProfile);
-				showTrail = true;
+				trailOpacity = Math.Min(1, Counter / 25f);
 				dealContactDamage = true;
+				if (!Main.dedServ)
+					CreateRollParticles();
 				//sfx here
 
 				if ((Target.Center.X - NPC.Center.X) * NPC.direction < -100)
 				{
+					//in phase 2 we just don't do the skid
+					if (phaseTwo)
+					{
+						NPC.velocity.X *= 0.5f;
+						return GoBackToIdle();
+					}
+
 					Counter = 0;
 					dashState++;
 					NPC.direction = NPC.velocity.X < 0 ? 1 : -1;
-					showTrail = false;
+					trailOpacity = 0f;
 					NPC.rotation = 0;
 					SetFrame(0, 6, PhaseOneProfile);
 				}
@@ -584,7 +646,7 @@ public partial class Scarabeus : ModNPC
 
 				if (!Main.dedServ && Math.Abs(NPC.velocity.X) > 1 && Main.rand.NextBool())
 				{
-					Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
+					Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center) + Vector2.UnitY * 10);
 					ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, -Vector2.UnitY, colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 					{
 						Pixellate = true,
@@ -609,6 +671,34 @@ public partial class Scarabeus : ModNPC
 		}
 
 		return 1f;
+	}
+
+	public void CreateRollParticles()
+	{
+		if (!Main.rand.NextBool(3))
+		{
+			Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Bottom) + Vector2.UnitY * 10f);
+			ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, new Vector2(-NPC.velocity.X * 0.3f, -2f), colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				SecondaryColor = colors[1],
+				TertiaryColor = colors[2],
+				PixelDivisor = 3,
+				ColorLerpExponent = 0.5f
+			});
+		}
+
+		Vector2 dustPosition = NPC.Bottom + Vector2.UnitY * 3f;
+		Point tilePosition = dustPosition.ToTileCoordinates();
+		int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+
+		Dust dust = Main.dust[dustIndex];
+		dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-16f, 16f);
+		dust.velocity.Y = -Main.rand.NextFloat(1.5f, 4f);
+		dust.velocity.X = -NPC.velocity.X * Main.rand.NextFloat(0.2f, 1f);
+		dust.noLightEmittence = true;
+		dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
 	}
 	#endregion
 
@@ -1102,59 +1192,109 @@ public partial class Scarabeus : ModNPC
 
 	//Phase 2
 	#region Flying dash
-	public float FlyingDashAttack(ref bool retarget)
+	public float SwoopDashAttack(ref bool retarget)
 	{
-		const int expire_time = 300;
-		const int idle_time = 90;
-		const int dash_time = 30;
+		const float teleraph_time = 40;
+		const float recovery_time = 20;
+		const float idealXDistanceToPlayer = 250f;
+		float distXToTarget = Math.Abs(NPC.Center.X - Target.Center.X);
 
-		ref float dashRotation = ref NPC.ai[2];
-		ref float dashState = ref NPC.ai[3];
+		ref float dashState = ref NPC.ai[2];
+		ref float dashRotation = ref NPC.ai[3];
+		retarget = dashState < 1;
 
-		UpdateFrame(2, 12, PhaseTwoProfile);
 		NPC.noTileCollide = true;
-		dealContactDamage = true;
-		bool inRange = NPC.DistanceSQ(Target.Center) < 350 * 350;
+		dealContactDamage = dashState == 1;
 
-		if ((inRange || dashState == 1) && Counter > idle_time)
-		{
-			if (dashState == 0)
-			{
-				dashRotation = NPC.AngleTo(Target.Center);
-				dashState = 1;
-				Counter = idle_time + 1;
-			}
-
-			SetFrame(0, 0, PhaseTwoProfile);
-			showTrail = true;
-
-			NPC.velocity = Vector2.UnitX.RotatedBy(dashRotation) * 18;
-			NPC.direction = Math.Sign(NPC.velocity.X);
-			NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
-
-			if (Counter > idle_time + dash_time)
-			{
-				NPC.velocity *= 0.4f;
-				return GoBackToIdle();
-			}
-		}
-		else
+		if (Counter == 0 && dashState == 0)
 		{
 			NPC.FaceTarget();
-			Vector2 targetPosition = Target.Center + new Vector2(300, 0) * -NPC.direction;
-
-			NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * 5, 0.05f);
-			NPC.rotation = NPC.velocity.X * 0.05f;
+			NPC.velocity.X -= NPC.direction * (4f + 8f * Utils.GetLerpValue(idealXDistanceToPlayer, idealXDistanceToPlayer * 0.3f, distXToTarget, true));
+			NPC.velocity.Y -= 1;
 		}
 
-		if (Counter > expire_time)
+		switch (dashState)
 		{
-			NPC.noTileCollide = false;
-			dealContactDamage = false;
-			return GoBackToIdle();
-		}
+			//Anticipation
+			case 0:
+				UpdateFrame(2, 8 + (int)(Counter / teleraph_time * 12), PhaseTwoProfile);
 
+				if (distXToTarget > idealXDistanceToPlayer)
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, 0f, 0.02f);
+				NPC.rotation = NPC.velocity.X * 0.05f - MathF.Sin(Counter / (float)teleraph_time * 3.25f) * 0.3f * NPC.direction;
+
+				if (Counter > teleraph_time)
+				{
+					dashState++;
+					Counter = 0f;
+					NPC.FaceTarget();
+
+					//We do some funny buisness and use an arc trajectory and then flip the gravity around, so instead of doing ballistics up it does ballistics down. haha
+					float distToPlayerX = (Target.Center.X - NPC.Center.X);
+					if (Math.Abs(distToPlayerX) < 200)
+						distToPlayerX = 200 * (distToPlayerX < 0 ? -1 : 1);
+					Vector2 ballisticTarget = new Vector2(Target.Center.X + distToPlayerX, NPC.Center.Y);
+					float targetHeight = FindGroundFromPositionIgnorePlatforms(Target.Center).Y;
+
+					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, ballisticTarget, 0.6f, heightAboveTarget: Math.Abs(NPC.Center.Y - targetHeight));
+					NPC.velocity.Y *= -1;
+				}
+
+				break;
+
+			//Dash
+			case 1:
+				SetFrame(0, 0, PhaseTwoProfile);
+				trailOpacity = Utils.GetLerpValue(-4f, 0f, NPC.velocity.Y, false);
+
+				//Fake the velocity accelerating over time WITHOUT actually multiplying it
+				//cuz thatd be too annoying and mess up the ballistics so we actually move scarab back a portion of its speed
+				float speedMultiplier = 0.5f + Math.Min(1, Counter / 14f) * 0.5f;
+				NPC.position -= NPC.velocity * (1 - speedMultiplier);
+				NPC.velocity.Y -= 0.6f * speedMultiplier;
+
+				NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
+
+				if (NPC.velocity.Y < 0)
+					NPC.velocity.X *= 0.98f;
+
+				if (NPC.velocity.Y < -4)
+				{
+					if (Main.rand.NextBool())
+						return TransitionIntoRoll();
+
+					Counter = 0;
+					NPC.velocity.X *= 0.7f;
+					dashState++;
+				}
+
+				break;
+
+			case 2:
+				float worthless = 1f;
+				FlyHover(ref worthless, 0.3f + 0.7f * Counter / recovery_time);
+				if (Counter > recovery_time)
+					return GoBackToIdle();
+				break;
+		}
+		
 		return 1f;
+	}
+
+	private float TransitionIntoRoll()
+	{
+		ChangeState(AIState.Roll);
+		NPC.velocity = NPC.velocity.RotatedBy(-0.45f * NPC.direction);
+		if (NPC.velocity.Length() > 16f)
+			NPC.velocity = NPC.velocity.SafeNormalize(-Vector2.UnitY) * 16f;
+
+		//NPC.velocity.X = Math.Clamp(NPC.velocity.X, -5, 5);
+		NPC.position.Y -= 20;
+		NPC.noTileCollide = true;
+		NPC.noGravity = false;
+		SetFrame(RollFrame, PhaseOneProfile);
+		return 0f;
 	}
 	#endregion
 

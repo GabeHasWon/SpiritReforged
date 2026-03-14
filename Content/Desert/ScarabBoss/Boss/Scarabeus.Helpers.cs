@@ -12,7 +12,7 @@ public partial class Scarabeus : ModNPC
 {
 	private float GoBackToIdle()
 	{
-		SetFrame(phaseTwo ? 4 : 0, 0, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+		SetFrame(phaseTwo ? 3 : 0, 0, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 		ChangeState(FindAppropriateIdleState());
 		return 0f;
 	}
@@ -40,21 +40,10 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
-			//Add(AIState.FlyingDash, 1);
+			Add(AIState.SwoopDash, 2221);
 			Add(AIState.GroundPound, 1);
 			Add(AIState.Dig, 1);
 			//Add(AIState.Swarm, 1);
-			//if (NPC.DistanceSQ(Target.Center) > 120 * 120)
-			//	Add(Leap, 0.5);
-
-			//if (Collision.SolidTiles(NPC.position + new Vector2(0, 4), NPC.width, NPC.height)) //This is different from checking whether the NPC is grounded
-			//{
-			//	Add(DigAttack, 1);
-			//	Add(ShockwaveAttack, 1);
-			//}
-
-			//if (Math.Abs(NPC.Center.Y - Target.Center.Y) < 64 && Math.Abs(NPC.Center.X - Target.Center.X) > 48)
-			//	Add(RollAttack, 1);
 		}
 
 		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;
@@ -72,7 +61,7 @@ public partial class Scarabeus : ModNPC
 
 	/// <summary> Finds the nearest surface tile to the provided world coordinates, <b>in world coordinates</b> <br/>
 	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
-	private static Vector2 FindGroundFromPosition(Vector2 input)
+	public static Vector2 FindGroundFromPosition(Vector2 input)
 	{
 		const int dimensions = 8;
 
@@ -85,9 +74,12 @@ public partial class Scarabeus : ModNPC
 		return input + new Vector2(0, dimensions);
 	}
 
-	private Vector2 FindGroundFromPositionIgnorePlatforms(Vector2 input)
+	public Vector2 FindGroundFromPositionIgnorePlatforms(Vector2 input)
 	{
 		const int dimensions = 8;
+
+		if (input.X < 0 || input.X >= Main.maxTilesX * 16)
+			return input;
 
 		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
 			input.Y += dimensions;
@@ -98,12 +90,12 @@ public partial class Scarabeus : ModNPC
 		return input + new Vector2(0, dimensions);
 	}
 
-	private static Color[] GetTilePalette(Vector2 input)
+	public static Color[] GetTilePalette(Vector2 input)
 	{
 		Point tilePosition = input.ToTileCoordinates();
 		Tile tile = Framing.GetTileSafely(tilePosition);
 
-		if (!tile.HasTile || tile.TileType == TileID.Sand)
+		if (!tile.HasTile || !Main.tileSolid[tile.TileType] || tile.TileType == TileID.Sand)
 			return [new Color(223, 219, 147) * 2f, new Color(188, 170, 86) * 1.33f, new Color(58, 49, 18) * 0.5f];
 
 		var material = TileMaterial.FindMaterial(tile.TileType);
