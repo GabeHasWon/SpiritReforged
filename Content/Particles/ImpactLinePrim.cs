@@ -1,9 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -18,7 +15,7 @@ public class ImpactLinePrim(Vector2 position, Vector2 velocity, Color color, Vec
 		if (UseLightColor)
 			uColor = Color.MultiplyRGBA(Lighting.GetColor(Position.ToTileCoordinates()));
 
-		Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"];
+		Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
 		var blurLine = new SquarePrimitive()
 		{
 			Position = Position - Main.screenPosition,

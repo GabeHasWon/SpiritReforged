@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
 using Terraria.GameContent.UI.Elements;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -52,13 +51,13 @@ public partial class CatalogueUI : AutoUIState
 	{
 		_entries.ClearEntries();
 
-		foreach (var value in RecordHandler.Records)
+		foreach (var record in RecordHandler.Records)
 		{
-			bool locked = !Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(value.key);
-			bool newAndShiny = Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsNew(value.key);
+			bool locked = !record.Condition.IsMet();
+			bool newAndShiny = Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsNew(record.key);
 
-			if (value.hidden?.Invoke() != true || !locked)
-				_entries.AddEntry(new CatalogueEntry(value, locked, newAndShiny));
+			if (record.hidden?.Invoke() != true || !locked)
+				_entries.AddEntry(new CatalogueEntry(record, locked, newAndShiny));
 		}
 	}
 

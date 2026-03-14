@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Content.Desert.GildedScarab;
-using SpiritReforged.Content.Forest.ArcaneNecklace;
+﻿using SpiritReforged.Content.Forest.ArcaneNecklace;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Forest.RoguesCrest;
@@ -17,6 +16,8 @@ using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underworld.Blasphemer;
 using SpiritReforged.Content.Underground.Items.FingerGun;
 using SpiritReforged.Content.Granite.Vanity;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Content.SaltFlats.Tiles;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
@@ -27,7 +28,8 @@ public class ChestLoot : ModSystem
 	{
 		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<PoolNoodle>()), (int)VanillaChestID.Water, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.5f, ModContent.ItemType<BeachTowel>(), ModContent.ItemType<BikiniBottom>(), ModContent.ItemType<BikiniTop>(), ModContent.ItemType<SwimmingTrunks>(), ModContent.ItemType<TintedGlasses>()), (int)VanillaChestID.Water, 1);
-		
+		AddToVanillaChest(new ChestInfo(2, 0.15f, AutoContent.ItemType<Osmosifier>()), (int)VanillaChestID.Water, 1);
+
 		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<ToucaneItem>()), (int)VanillaChestID.Ivy, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.5f, ModContent.ItemType<DyeCrateItem>()), (int)VanillaChestID.Ivy, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.33f, ModContent.ItemType<DyeCrateItem>()), (int)VanillaChestID.Jungle, 1);
@@ -38,8 +40,6 @@ public class ChestLoot : ModSystem
 		AddToVanillaChest(new ChestInfo(1, 0.125f, ModContent.ItemType<ArcaneNecklaceGold>(), ModContent.ItemType<ArcaneNecklacePlatinum>()), (int)VanillaChestID.Wood, 1);
 		AddToVanillaChest(new ChestInfo(3, 0.35f, ModContent.ItemType<DoubleJumpPotion>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(25, 50, 0.3f, ModContent.ItemType<Flarepowder>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
-
-        AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<GildedScarab>()), (int)VanillaChestID2.Sandstone, 1, TileID.Containers2);
 
 		AddToVanillaChest(new ChestInfo(2, 0.3f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Wood, Main.rand.Next(1, 3));
 		AddToVanillaChest(new ChestInfo(2, 0.25f, ModContent.ItemType<TornMapPiece>()), (int)VanillaChestID.Ivy, Main.rand.Next(1, 4));

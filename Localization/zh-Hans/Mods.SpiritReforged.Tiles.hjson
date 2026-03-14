@@ -29,6 +29,13 @@ Records: {
 	Boulder: 受到扰动时会沿着地面滚动。
 }
 
+FablesGraves: {
+	SetNames: {
+		Savanna: 稀树平原坟墓
+		SaltFlats: 盐坟墓
+	}
+}
+
 SunkenTreasureTile.MapEntry: 沉没的宝藏
 HydrothermalVent.MapEntry: 热液喷口
 CoralMapEntry: 珊瑚
@@ -49,3 +56,8 @@ PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
 Starflower.MapEntry: 星状花
 BonsaiTrees.MapEntry: 盆栽
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
+SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
+ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
+DustyTomb.MapEntry: 尘埃陵墓
+EnlilStatue.MapEntry: 恩利尔雕像

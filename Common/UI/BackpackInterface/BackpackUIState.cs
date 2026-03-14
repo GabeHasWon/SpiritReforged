@@ -117,25 +117,18 @@ internal class BackpackUIState : AutoUIState
 			});
 
 			var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
-			var items = (mPlayer.backpack.ModItem as BackpackItem).items;
+			var backpack = mPlayer.backpack.ModItem as BackpackItem;
+			var items = backpack.items;
 
 			for (int i = 0; i < items.Length; ++i) //Add backpack storage slots
 			{
-				var newSlot = new PackInventorySlot(items, i)
-				{
-					Left = new StyleDimension(baseX + xOff * spacing, 0),
-					Top = new StyleDimension(105 + yOff * spacing, 0),
-					Width = StyleDimension.FromPixels(32),
-					Height = StyleDimension.FromPixels(32)
-				};
+				Append(backpack.SetupSlot(i, new(baseX + xOff * spacing, 105 + yOff * spacing)));
 
 				if (++yOff >= 4)
 				{
 					xOff++;
 					yOff = 0;
 				}
-
-				Append(newSlot);
 			}
 		}
 	}

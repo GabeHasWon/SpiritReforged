@@ -112,6 +112,9 @@ public class EnergyPlunge : ModProjectile
 			return;
 		}
 
+		if (StartHeight < Projectile.Center.Y - 12 * 16) // Give i-frames only when the player has fallen far enough
+			owner.SetImmuneTimeForAllTypes(30);
+
 		float odds = Math.Clamp(1f - Math.Abs(owner.velocity.Y / FallSpeed), 0.1f, 1f);
 		if (Main.rand.NextFloat(odds) < 0.05f)
 		{
@@ -136,7 +139,7 @@ public class EnergyPlunge : ModProjectile
 		var owner = Main.player[Projectile.owner];
 
 		float strength = Math.Max((Projectile.Center.Y - StartHeight) / 200f, 0);
-		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(50) * strength);
+		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(40) * strength);
 		float knockback = owner.GetKnockback(DamageClass.Melee).ApplyTo(5) * strength;
 
 		float strengthCapped = Math.Min(strength / 1.5f, 1);
@@ -177,7 +180,7 @@ public class EnergyPlunge : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var owner = Main.player[Projectile.owner];
-		var effect = AssetLoader.LoadedShaders["StarjinxNoise"];
+		var effect = AssetLoader.LoadedShaders["StarjinxNoise"].Value;
 		float rotation = Projectile.rotation + ((owner.gravDir < 0f) ? MathHelper.Pi : 0);
 
 		float opacity = Projectile.Opacity * Math.Min(owner.velocity.Y / FallSpeed, 1) * 0.8f;

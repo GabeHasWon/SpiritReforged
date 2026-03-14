@@ -1,5 +1,8 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Content.Ocean.Items;
+using SpiritReforged.Content.Savanna.NPCs.Gar;
+using SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 namespace SpiritReforged.Content.Vanilla.Food;
 
@@ -13,6 +16,15 @@ public class Sushi : FoodItem
 		return true;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5)
-		.AddIngredient(ModContent.ItemType<RawFish>()).AddTile(TileID.CookingPots).Register();
+	public override void AddRecipes()
+	{
+		AddRecipe(ItemID.RedSnapper);
+		AddRecipe(ItemID.Salmon);
+		AddRecipe(ItemID.Trout);
+		AddRecipe(ItemID.AtlanticCod);
+		AddRecipe(AutoContent.ItemType<Killifish>());
+		AddRecipe(AutoContent.ItemType<Gar>());
+
+		void AddRecipe(int ingredient) => CreateRecipe().AddIngredient(ModContent.ItemType<Kelp>(), 5).AddIngredient(ingredient).AddTile(TileID.CookingPots).Register();
+	}
 }

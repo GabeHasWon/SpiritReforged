@@ -38,3 +38,18 @@ DuststormOtherworld: {
 	DisplayName: 异界尘暴
 	Author: "{$By} jakedastardly"
 }
+
+Ziggurat: {
+	DisplayName: 庙塔
+	Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	DisplayName: 盐滩
+	Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	DisplayName: 盐滩 - 夜
+	Author: "{$By} {$Sbubby}"
+}

@@ -6,14 +6,11 @@ VanillaDialogue: {
 		// Kelp: Don't eat the seaweed.
 	}
 
-	ArmsDealer: {
-		// Savanna1: Lotta big game around these parts. Even the likes of you could hit 'em.
-		// Placeholder: placeholder
-	}
+	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
 
 	Stylist: {
-		// Savanna1: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm1: If I have to pick out sand from one more person's hair, I swear...
+		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		// Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
 	}
 
-	Demolitionist: {
-		// HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
-		// Placeholder: placeholder
-	}
+	// Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
 
 	Nurse: {
 		// Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
@@ -46,6 +40,17 @@ VanillaDialogue: {
 		// Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
 		// Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
 	}
+
+	Angler: {
+		// Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
+		// Pager1: Remember to bring me the fish IN PERSON.
+	}
+
+	// Wizard.SaltFlats: The rocks around these parts would make for a perfect crystal ball!
+	// Painter.SaltFlats: I've never seen a more beautiful landscape! I could paint here for the rest of my life.
+	// Cyborg.SaltFlats: It.. it burns.
+	// Mechanic.SaltFlats: Ugh! All this salt is corroding my gear. Get me out of here!
+	// Truffle.SaltFlats: This place is deeply uncomfortable for our kind. I feel so dry...
 }
 
 Crinoid: {
@@ -287,6 +292,18 @@ Cartographer: {
 				// 2: You up for a challenge? I'm not, that's for sure. There's this dungeon with a room that reeks of blood... And with that strange altar in the middle, yeah I didn't stay for long.
 			}
 
+			SaltFlat: {
+				// 0: Can't forget it! There, right there, is the first time I saw a mirror to the sky. I was looking down, as I tend to do, and BAM! Clouds! First, I was concerned, but it was just a thin layer of water...probably. Make sure it's safe so I don't have to.
+				// 1: Right there! You ever find yourself sliding down the slopes in those snowy areas? Like, with all the ice and such? No? Well, let's say it makes it way harder to tell what's going on in front of you when you do that. Intentionally, of course. This place looks awesome though, I'd recommend once you get the snow off of you.
+				// 2: Usually, a pratfall brings me to a discovery. This time, I was diligent. Shortly after panicking about a surprisingly wet ground, the vista appeared before me. It was stunning. As long as you keep your maps on your hips, you're set for a wonderful time.
+			}
+
+			Ziggurat: {
+				// 0: Hmm...there. I've said this before - I'm a cartographer. I draw maps. So when I see a big, imposing wall of cracking, crumbling red brick, I am unbelievably skilled at determining if it's something I should mess with. I heard buzzing in there. Needless to say, yours for the taking.
+				// 1: Gotcha! Desert makes it easy to remember. Not much to recall there, you know, so seeing smoke rise out of the ground with no explanation? Interesting. You look down and see the facade of a massive structure? Memorable. Have at her. I wasn't going to risk lava or whatever.
+				// 2: Here you are. It's part of my job to find the occasional ruin. No worries, we've got a protocol for a reason. But man, stepping in and almost being pierced through the ground? Gentle reminder that sometimes, I'm an excellent runner.
+			}
+
 			FirstPin: Adicionei este alfinete à sua "Coleção de Alfinetes". Você pode acessá-lo a qualquer momento no canto inferior esquerdo do seu mapa.
 		}
 	}
@@ -454,3 +471,95 @@ MossSlime: {
 // HeliumMossSlime.DisplayName: Helium Moss Slime
 // OganessonMossSlime.DisplayName: Oganesson Moss Slime
 // RadonMossSlime.DisplayName: Radon Moss Slime
+// Tumbleweed.DisplayName: Tumbleweed
+
+Flamingo: {
+	// DisplayName: Flamingo
+	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+}
+
+DivingBeetle: {
+	// DisplayName: Diving Beetle
+	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+}
+
+GoldDivingBeetle: {
+	// DisplayName: Gold Diving Beetle
+	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+}
+
+Jerboa: {
+	// DisplayName: Jerboa
+	// Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
+}
+
+Grub: {
+	// DisplayName: Scarab Larva
+	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
+}
+
+DesertStactus: {
+	// DisplayName: Stactus
+	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+}
+
+CorruptStactus: {
+	// DisplayName: Corrupt Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	// DisplayName: Crimson Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	// DisplayName: Hallowed Stactus
+	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	// DisplayName: Brine Shrimp
+	// Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+}
+
+GoldenBrineShrimp: {
+	// DisplayName: Golden Brine Shrimp
+	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+}
+
+Wisp: {
+	// DisplayName: Wisp
+	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+}
+
+DecrepitMummy: {
+	// DisplayName: Decrepit Mummy
+	// Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
+}
+
+Graverobber: {
+	// DisplayName: Graverobber
+	// Entry: ""
+}
+
+// LootBag.DisplayName: Loot Bag
+// TinyGrub.DisplayName: Tiny Grub
+
+CactusZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+SunburntZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+VeiledZombie: {
+	// DisplayName: "{$NPCName.Zombie}"
+	// Entry: ""
+}
+
+// Cricket.DisplayName: Cricket
+// GoldCricket.DisplayName: Gold Cricket

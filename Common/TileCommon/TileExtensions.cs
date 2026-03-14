@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Chests;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
@@ -6,6 +7,57 @@ namespace SpiritReforged.Common.TileCommon;
 
 public static class TileExtensions
 {
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "treeShakeX")]
+	private static extern ref int[] TreeShakeX(WorldGen worldGen);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "treeShakeY")]
+	private static extern ref int[] TreeShakeY(WorldGen worldGen);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "numTreeShakes")]
+	private static extern ref int NumTreeShakes(WorldGen worldGen);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "maxTreeShakes")]
+	private static extern ref int MaxTreeShakes(WorldGen worldGen);
+
+	/// <summary> Gets whether the tile at the given coordinates has been shook, and shakes it if not. </summary>
+	public static bool ShakeTree(int i, int j)
+	{
+		WorldGen worldGen = default;
+
+		if (NumTreeShakes(worldGen) == MaxTreeShakes(worldGen))
+			return false;
+
+		int[] shakeX = TreeShakeX(worldGen);
+		int[] shakeY = TreeShakeY(worldGen);
+
+		for (int k = 0; k < NumTreeShakes(worldGen); k++)
+		{
+			if (shakeX[k] == i && shakeY[k] == j)
+				return false;
+		}
+
+		shakeX[NumTreeShakes(worldGen)] = i;
+		shakeY[NumTreeShakes(worldGen)] = j;
+		NumTreeShakes(worldGen)++;
+
+		return true;
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawSingleTile")]
+	private static extern void DrawSingleTile(TileDrawing drawing, TileDrawInfo drawData, bool solidLayer, int waterStyleOverride, Vector2 screenPosition, Vector2 screenOffset, int tileX, int tileY);
+
+	public static void DrawSingleTile(int i, int j, bool solidLayer = true, Vector2? screenOffset = null)
+	{
+		screenOffset ??= TileOffset;
+
+		TileDrawing renderer = Main.instance.TilesRenderer;
+		Vector2 unscaledPosition = Main.Camera.UnscaledPosition;
+		TileDrawInfo data = new();
+
+		renderer.GetTileDrawData(i, j, data.tileCache, data.typeCache, ref data.tileFrameX, ref data.tileFrameY, out data.tileWidth, out data.tileHeight, out data.tileTop, out data.halfBrickHeight, out data.addFrX, out data.addFrY, out data.tileSpriteEffect, out data.glowTexture, out data.glowSourceRect, out data.glowColor);
+		DrawSingleTile(renderer, data, solidLayer, -1, unscaledPosition, screenOffset.Value, i, j);
+	}
+
 	/// <summary> Gets common visual info related to the tile at the given coordinates, such as painted color. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate.</param>
@@ -65,28 +117,31 @@ public static class TileExtensions
 	}
 
 	public static Vector2 TileOffset => Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-	public static Vector2 DrawPosition(this ModTile _, int i, int j, Vector2 off = default) => DrawPosition(i, j, off);
 	public static Vector2 DrawPosition(int i, int j, Vector2 off = default) => new Vector2(i, j) * 16 - Main.screenPosition - off + TileOffset;
 
-	public static void DrawSloped(this ModTile _, int i, int j, Texture2D texture, Color color, Vector2 positionOffset, bool overrideFrame = false)
-		=> DrawSloped(i, j, texture, color, positionOffset, overrideFrame);
+	/// <summary> Default tile slope drawing. See the overload for more customizeablility. </summary>
+	public static void DrawSloped(int i, int j)
+	{
+		var texture = TextureAssets.Tile[Main.tile[i, j].TileType].Value;
+		DrawSloped(i, j, texture, Lighting.GetColor(i, j), TileOffset);
+	}
 
-	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 positionOffset, bool overrideFrame = false)
+	public static void DrawSloped(int i, int j, Texture2D texture, Color color, Vector2 offset, Point overrideFrame = default)
 	{
 		Tile tile = Main.tile[i, j];
 		int frameX = tile.TileFrameX;
 		int frameY = tile.TileFrameY;
 
-		if (overrideFrame)
+		if (overrideFrame != Point.Zero)
 		{
-			frameX = 0;
-			frameY = 0;
+			frameX = overrideFrame.X;
+			frameY = overrideFrame.Y;
 		}
 
 		int width = 16;
 		int height = 16;
 		var location = new Vector2(i * 16, j * 16);
-		Vector2 offsets = -Main.screenPosition + TileOffset + positionOffset;
+		Vector2 offsets = -Main.screenPosition + offset;
 		Vector2 drawLoc = location + offsets;
 
 		if (tile.Slope == 0 && !tile.IsHalfBlock || Main.tileSolid[tile.TileType] && Main.tileSolidTop[tile.TileType]) //second one should be for platforms
@@ -195,9 +250,10 @@ public static class TileExtensions
 	/// <returns>The tile data.</returns>
 	public static TileObjectData SafelyGetData(this Tile tile) => TileObjectData.GetTileData(tile);
 
-	/// <summary>
-	/// Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>.
-	/// </summary>
+	/// <summary> Returns whether <see cref="Tile.HasTile"/> and <see cref="Tile.TileType"/> equals <paramref name="type"/>. </summary>
+	public static bool HasTileType(this Tile tile, int type) => tile.HasTile && tile.TileType == type;
+
+	/// <summary> Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>. </summary>
 	/// <param name="tile">The tile to merge with.</param>
 	/// <param name="otherIds">All other tiles to merge with.</param>
 	public static void Merge(this ModTile tile, params int[] otherIds)
@@ -206,6 +262,16 @@ public static class TileExtensions
 		{
 			Main.tileMerge[tile.Type][id] = true;
 			Main.tileMerge[id][tile.Type] = true;
+		}
+	}
+
+	/// <inheritdoc cref="Merge(ModTile, int[])"/>
+	public static void Merge(int thisId, params int[] otherIds)
+	{
+		foreach (int id in otherIds)
+		{
+			Main.tileMerge[thisId][id] = true;
+			Main.tileMerge[id][thisId] = true;
 		}
 	}
 
@@ -219,34 +285,6 @@ public static class TileExtensions
 		{
 			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
 				data.AnchorValidTiles = [.. data.AnchorValidTiles, modTileType];
-		}
-	}
-
-	public static Point16 GetAnchor(int i, int j)
-	{
-		Point16 coords = Point16.Zero;
-
-		if (TileObjectData.GetTileData(Main.tile[i, j].TileType, 0) is TileObjectData data)
-		{
-			if (data.AnchorBottom != AnchorData.Empty && Valid(coords = new(i, j + 1), data))
-				return coords;
-
-			if (data.AnchorLeft != AnchorData.Empty && Valid(coords = new(i - 1, j), data))
-				return coords;
-
-			if (data.AnchorRight != AnchorData.Empty && Valid(coords = new(i + 1, j), data))
-				return coords;
-
-			if (data.AnchorTop != AnchorData.Empty && Valid(coords = new(i, j - 1), data))
-				return coords;
-		}
-
-		return coords;
-
-		static bool Valid(Point16 coords, TileObjectData data)
-		{
-			int type = Framing.GetTileSafely(coords).TileType;
-			return data.isValidTileAnchor(type) || data.isValidAlternateAnchor(type);
 		}
 	}
 }

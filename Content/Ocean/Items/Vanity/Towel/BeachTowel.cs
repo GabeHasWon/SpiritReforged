@@ -24,7 +24,11 @@ public class BeachTowel : ModItem
 			self.body = EquipLoader.GetEquipSlot(mod, nameof(BeachTowel), EquipType.Body);
 	}
 
-	public override void SetStaticDefaults() => Slot = EquipLoader.GetEquipSlot(Mod, nameof(BeachTowel), EquipType.HandsOn);
+	public override void SetStaticDefaults()
+	{
+		Slot = EquipLoader.GetEquipSlot(Mod, nameof(BeachTowel), EquipType.HandsOn);
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<BikiniTop>();
+	}
 
 	public override void SetDefaults()
 	{

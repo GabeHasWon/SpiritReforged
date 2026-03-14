@@ -3,6 +3,16 @@ Biomes: {
 		DisplayName: 稀树平原
 		TownNPCDialogueName: 稀树平原
 	}
+
+	SaltBiome: {
+		DisplayName: 盐滩
+		TownNPCDialogueName: 盐滩
+	}
+
+	ZigguratBiome: {
+		DisplayName: 庙塔
+		TownNPCDialogueName: 庙塔
+	}
 }
 
 SlotContexts.Backpack: 背包
@@ -11,7 +21,10 @@ Conditions: {
 	InSavanna: 于稀树平原
 	PeevedTumbler: 当闪烁时
 	Discovered: 发现
-	Submerged: 水下
+	Submerged: 水中
+	InSaltFlats: 于盐滩
+	IsPrickly: 有刺
+	InZiggurat: 于庙塔
 }
 
 Misc: {
@@ -51,5 +64,17 @@ GameTips: {
 
 Emotes: {
 	CartographerEmote.Command: cartographer
-	HikerEmote.Command: hikeremote
+	HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: 分类账
+		Description: 显示价格提示
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: 微光视野
+		Description: 显示微光提示
+	}
 }

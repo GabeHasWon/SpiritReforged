@@ -3,6 +3,8 @@ namespace SpiritReforged.Content.Underground.Items.EarthshakerVanity;
 [AutoloadEquip(EquipType.Head)]
 public class EarthshakerHeadgear : ModItem
 {
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<EarthshakerWarmask>();
+
 	public override void SetDefaults()
 	{
 		Item.width = 34;

@@ -1,7 +1,7 @@
 CommonTooltips: {
 	Backpack:
 		'''
-		可容纳4个物品
+		可容纳{0}个物品
 		取下背包前需要清空背包
 		'''
 	Shimmerable: "{0} 在微光中转化"
@@ -175,7 +175,7 @@ Nigiri: {
 }
 
 HoneySalmon: {
-	DisplayName: 蜜裹三文鱼
+	DisplayName: 蜜裹鱼片
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: 远古潜渊者胸甲
+	DisplayName: 锈蚀潜渊者胸甲
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: 远古潜渊者头盔
+	DisplayName: 锈蚀潜渊者头盔
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: 远古潜渊者裤
+	DisplayName: 锈蚀潜渊者裤
 	Tooltip: ""
 }
 
@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: 干木沙发
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: 干木梳妆台
 	Tooltip: ""
@@ -889,7 +884,7 @@ WheatgrassSeedPouch: {
 	DisplayName: 麦草种子袋
 	Tooltip:
 		'''
-		撒下会在草地上长出小麦草的种子
+		撒下会长出麦草的种子
 		“在手中哗啦作响”
 		'''
 }
@@ -1769,7 +1764,11 @@ Blasphemer: {
 
 Hummus: {
 	DisplayName: 鹰嘴豆泥
-	Tooltip: 温暖可口！
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		温暖可口！
+		'''
 }
 
 ZenithPotsItem: {
@@ -2050,4 +2049,922 @@ HardlightVisor: {
 	Tooltip: ""
 	AltDisplayName: 硬光面甲
 	AltTooltip: “请勿与强光面甲混淆”
+}
+
+PolishedAmberItem: {
+	DisplayName: 抛光琥珀
+	Tooltip: ""
+}
+
+AmberFossilSafeItem: {
+	DisplayName: 琥珀化石
+	Tooltip: ""
+}
+
+GildedSandstoneItem: {
+	DisplayName: 镀金沙岩
+	Tooltip: ""
+}
+
+RedSandstoneBrickItem: {
+	DisplayName: 赤沙岩砖
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedItem: {
+	DisplayName: 破裂赤沙岩砖
+	Tooltip: “结构仍然完好无损！”
+}
+
+WalkieTalkie: {
+	DisplayName: 对讲机
+	Tooltip: 使你能够随时随地的与渔夫对话
+	Disabled: 无人应答……
+}
+
+ScryingLens: {
+	DisplayName: 占卜透镜
+	Tooltip: 显示微光嬗变
+	ShimmerLine: " 转化为 [i:{0}] [c/FFFFFF:{1}]"
+}
+
+Ledger: {
+	DisplayName: 分类账
+	Tooltip: 显示物品钱币价格
+}
+
+MysticalCodex: {
+	DisplayName: 秘典
+	Tooltip: 显示物品钱币价格和微光嬗变
+}
+
+CommonPotsSavannaItem: {
+	DisplayName: 稀树平原罐子
+	Tooltip: ""
+}
+
+StactusBannerItem.DisplayName: 刺角株旗
+
+SunEarrings: {
+	DisplayName: 太阳舞者耳环
+	Tooltip:
+		'''
+		增加20点最大魔力值
+		增加7%魔法伤害
+		'''
+}
+
+SilkSirwal: {
+	DisplayName: 太阳舞者灯笼裤
+	Tooltip: 在地面上时增加移动速度和加速度
+}
+
+SilkTop: {
+	DisplayName: 太阳舞者上衣
+	Tooltip: 增加7%魔法伤害
+}
+
+CeremonialDagger: {
+	DisplayName: 仪式匕首
+	Tooltip:
+		'''
+		对镇民造成伤害
+		右键对流血的敌人造成暴击伤害
+		'''
+}
+
+Thornball: {
+	DisplayName: 棘球
+	Tooltip: 粘在图格上
+}
+
+SaltBlockDullItem: {
+	DisplayName: 单调盐块
+	Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	DisplayName: 盐块
+	Tooltip: “光滑且反光”
+}
+
+NeedleTrapItem: {
+	DisplayName: 针刺陷阱
+	Tooltip: ""
+}
+
+DivingBeetleItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	Tooltip: ""
+}
+
+SunDropper: {
+	DisplayName: 魔法阳光滴管
+	Tooltip: ""
+}
+
+OsmosifierItem: {
+	DisplayName: 渗透装置
+	Tooltip: 放置在水中时会被动生成盐块
+}
+
+GoldDivingBeetleItem: {
+	DisplayName: 金龙虱
+	Tooltip: ""
+}
+
+StoneStupasItem: {
+	DisplayName: 石制佛塔
+	Tooltip: ""
+}
+
+SaltChestItem: {
+	DisplayName: 盐箱
+	Tooltip: ""
+}
+
+SaltDresserItem: {
+	DisplayName: 盐梳妆台
+	Tooltip: ""
+}
+
+SaltBathtubItem: {
+	DisplayName: 盐浴缸
+	Tooltip: ""
+}
+
+SaltBedItem: {
+	DisplayName: 盐床
+	Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	DisplayName: 盐书架
+	Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	DisplayName: 盐烛台
+	Tooltip: ""
+}
+
+SaltChandelierItem: {
+	DisplayName: 盐吊灯
+	Tooltip: ""
+}
+
+SaltClockItem: {
+	DisplayName: 盐钟
+	Tooltip: ""
+}
+
+SaltDoorItem: {
+	DisplayName: 盐门
+	Tooltip: ""
+}
+
+SaltLampItem: {
+	DisplayName: 盐灯
+	Tooltip: ""
+}
+
+SaltLanternItem: {
+	DisplayName: 盐灯笼
+	Tooltip: ""
+}
+
+SaltPianoItem: {
+	DisplayName: 盐钢琴
+	Tooltip: ""
+}
+
+SaltSinkItem: {
+	DisplayName: 盐水槽
+	Tooltip: ""
+}
+
+SaltSofaItem: {
+	DisplayName: 盐沙发
+	Tooltip: ""
+}
+
+SaltTableItem: {
+	DisplayName: 盐桌
+	Tooltip: ""
+}
+
+SaltToiletItem: {
+	DisplayName: 盐马桶
+	Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	DisplayName: 盐工作台
+	Tooltip: ""
+}
+
+SaltCandleItem: {
+	DisplayName: 盐蜡烛
+	Tooltip: ""
+}
+
+SaltChairItem: {
+	DisplayName: 盐椅
+	Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	DisplayName: 异界收音机
+	Tooltip:
+		'''
+		右键切换异界音乐
+		“迷人的老式风格”
+		'''
+	TunedToNormal: （标准频率）
+	TunedToOtherworld: （怪异频率）
+	MusicDisplay: "[i:576] 正在收听："
+}
+
+SleightOfHand: {
+	DisplayName: 敏捷手法
+	Tooltip:
+		'''
+		手持远程武器时双击{0}键交换所使用的弹药
+		在物品栏中时也会生效
+		'''
+}
+
+RuinedSandstonePillarItem: {
+	DisplayName: 残破沙岩柱
+	Tooltip: ""
+}
+
+GlidingItem: {
+	DisplayName: 滑翔
+	Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	DisplayName: 邪恶火烈鸟
+	Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	DisplayName: 盐墙
+	Tooltip: ""
+}
+
+JerboaItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	Tooltip: ""
+}
+
+JarboaItem: {
+	DisplayName: 跳鼠罐
+	Tooltip: ""
+}
+
+RedSandstoneBrickWallItem: {
+	DisplayName: 赤沙岩砖墙
+	Tooltip: ""
+}
+
+PolishedSandstoneWallItem: {
+	DisplayName: 抛光沙岩墙
+	Tooltip: ""
+}
+
+CarvedLapisItem: {
+	DisplayName: 雕琢青金石
+	Tooltip: ""
+}
+
+LapisChestItem: {
+	DisplayName: 青金石箱
+	Tooltip: ""
+}
+
+LapisDresserItem: {
+	DisplayName: 青金石梳妆台
+	Tooltip: ""
+}
+
+LapisCandleItem: {
+	DisplayName: 青金石蜡烛
+	Tooltip: ""
+}
+
+LapisBathtubItem: {
+	DisplayName: 青金石浴缸
+	Tooltip: ""
+}
+
+LapisBedItem: {
+	DisplayName: 青金石床
+	Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	DisplayName: 青金石书架
+	Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	DisplayName: 青金石烛台
+	Tooltip: ""
+}
+
+LapisChairItem: {
+	DisplayName: 青金石椅
+	Tooltip: ""
+}
+
+LapisChandelierItem: {
+	DisplayName: 青金石吊灯
+	Tooltip: ""
+}
+
+LapisClockItem: {
+	DisplayName: 青金石钟
+	Tooltip: ""
+}
+
+LapisDoorItem: {
+	DisplayName: 青金石门
+	Tooltip: ""
+}
+
+LapisLampItem: {
+	DisplayName: 青金石灯
+	Tooltip: ""
+}
+
+LapisLanternItem: {
+	DisplayName: 青金石灯笼
+	Tooltip: ""
+}
+
+LapisPianoItem: {
+	DisplayName: 青金石钢琴
+	Tooltip: ""
+}
+
+LapisSinkItem: {
+	DisplayName: 青金石水槽
+	Tooltip: ""
+}
+
+LapisSofaItem: {
+	DisplayName: 青金石沙发
+	Tooltip: ""
+}
+
+LapisTableItem: {
+	DisplayName: 青金石桌
+	Tooltip: ""
+}
+
+LapisToiletItem: {
+	DisplayName: 青金石马桶
+	Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	DisplayName: 青金石工作台
+	Tooltip: ""
+}
+
+LapisPlatformItem: {
+	DisplayName: 青金石平台
+	Tooltip: ""
+}
+
+SwordStandItem: {
+	DisplayName: 剑架
+	Tooltip: 右键点击展示某些武器
+}
+
+TrellisItem: {
+	DisplayName: 藤架
+	Tooltip: 用{$ItemName.GrassSeeds}种植藤蔓
+}
+
+TrellisBorealItem: {
+	DisplayName: 针叶木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	DisplayName: 乌木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	DisplayName: 红木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	DisplayName: 棕榈木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	DisplayName: 珍珠木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	DisplayName: 暗影木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	DisplayName: 十字藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	DisplayName: 十字针叶木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	DisplayName: 十字乌木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	DisplayName: 十字红木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	DisplayName: 十字棕榈木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	DisplayName: 十字珍珠木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	DisplayName: 十字暗影木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	DisplayName: 链环
+	Tooltip: 放置时按上/下建可调整链条长度
+}
+
+GoldChainLoopItem: {
+	DisplayName: 金链环
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	DisplayName: 盐平台
+	Tooltip: ""
+}
+
+MahakalaMaskBlue: {
+	DisplayName: 摩诃迦罗面具
+	Tooltip: 降低所受到的来自腐化敌人的伤害
+}
+
+MahakalaMaskRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+}
+
+RedSandstoneSlabItem: {
+	DisplayName: 赤沙岩板
+	Tooltip: ""
+}
+
+CenserItem: {
+	DisplayName: 香炉
+	Tooltip: ""
+}
+
+CarvedLapisWallItem: {
+	DisplayName: 雕琢青金石墙
+	Tooltip: ""
+}
+
+BronzePotsItem: {
+	DisplayName: 青铜罐子
+	Tooltip: ""
+}
+
+LapisPotsItem: {
+	DisplayName: 青金石罐子
+	Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	DisplayName: 干木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: 青铜格栅
+	Tooltip: ""
+}
+
+BronzePlatingItem: {
+	DisplayName: 青铜护板
+	Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	DisplayName: 青铜护板墙
+	Tooltip: ""
+}
+
+BronzePlatformItem: {
+	DisplayName: 青铜平台
+	Tooltip: ""
+}
+
+ZigguratTorchItem: {
+	DisplayName: 庙塔火把
+	Tooltip: 附近有玩家时亮起
+}
+
+SwordStandMahoganyItem: {
+	DisplayName: 红木剑架
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	DisplayName: 沙岩剑架
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: 前景赤沙岩砖墙
+	Tooltip: ""
+}
+
+SaltPylonItem: {
+	DisplayName: 盐滩晶塔
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+SaltNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: 音乐盒（盐滩 - 夜）
+}
+
+SaltMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: 音乐盒（盐滩）
+}
+
+PineappleSeeds: {
+	DisplayName: 菠萝种子
+	Tooltip: ""
+}
+
+StactusCorruptBannerItem.DisplayName: 腐化刺角株旗
+StactusCrimsonBannerItem.DisplayName: 玫瑰刺角株旗
+
+Dragonsong: {
+	DisplayName: 龙歌
+	Tooltip:
+		'''
+		50%几率节省弹药
+		“你是一个可怕的人”
+		'''
+}
+
+TinyDragon: {
+	DisplayName: 小龙
+	Tooltip:
+		'''
+		召唤小龙跟着你
+		“最后的同类”
+		'''
+}
+
+PileOfConsequences: {
+	DisplayName: 一堆结果
+	Tooltip: “你知道你做了什么。”
+}
+
+BrineShrimpItem: {
+	DisplayName: 卤虫
+	Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	DisplayName: 金卤虫
+	Tooltip: ""
+}
+
+CorruptStactusBannerItem.DisplayName: 腐化刺角株旗
+CrimsonStactusBannerItem.DisplayName: 猩红刺角株旗
+DesertStactusBannerItem.DisplayName: 沙漠刺角株旗
+HallowedStactusBannerItem.DisplayName: 神圣刺角株旗
+
+AncientBannerItem: {
+	DisplayName: 远古旗帜
+	Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	DisplayName: 高沙岩架
+	Tooltip: ""
+}
+
+SaltTorchItem: {
+	DisplayName: 盐火把
+	Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	DisplayName: 音乐盒（庙塔）
+	Tooltip: ""
+}
+
+PinSaltFlat: {
+	DisplayName: 盐滩图钉
+	Tooltip: ""
+}
+
+PinZiggurat: {
+	DisplayName: 庙塔图钉
+	Tooltip: ""
+}
+
+BangleOfStrength: {
+	DisplayName: 力量手镯
+	Tooltip: 永久性强化近战伤害
+}
+
+ScarabTabletOneItem: {
+	DisplayName: 羽冠神像
+	Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	DisplayName: 具翼之阳
+	Tooltip: ""
+}
+
+ScarabAltarItem: {
+	DisplayName: 远古祭坛
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	DisplayName: 破裂赤沙岩砖墙
+	Tooltip: ""
+}
+
+AncientBooksItem: {
+	DisplayName: 古书
+	Tooltip: “因时间而难以辨认”
+}
+
+ZigguratMummyBannerItem.DisplayName: 腐朽木乃伊旗
+
+SaltGlassWallItem: {
+	DisplayName: 盐玻璃墙
+	Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	DisplayName: 盐面板墙
+	Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	DisplayName: 盐板墙
+	Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	DisplayName: 盐壁炉
+	Tooltip: ""
+}
+
+SaltGlassItem: {
+	DisplayName: 盐玻璃
+	Tooltip: ""
+}
+
+SaltPanelItem: {
+	DisplayName: 盐面板
+	Tooltip: ""
+}
+
+SaltPlateItem: {
+	DisplayName: 盐板
+	Tooltip: ""
+}
+
+SaltCrate: {
+	DisplayName: 盐腌匣
+	Tooltip: ""
+}
+
+SaltCrateHardmode: {
+	DisplayName: 盐水匣
+	Tooltip: ""
+}
+
+SaltCrateRestored: {
+	DisplayName: 修复的盐腌匣
+	Tooltip: ""
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: 修复的盐水匣
+	Tooltip: ""
+}
+
+GraverobberBannerItem.DisplayName: 盗墓者旗
+
+GiantBag: {
+	DisplayName: 战利品袋
+	Tooltip: "{$CommonTooltips.Backpack}"
+}
+
+CrackedSandstoneItem: {
+	DisplayName: 破裂沙岩
+	Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	DisplayName: 石制圣物盒
+	Tooltip: ""
+}
+
+SaltCampfireItem: {
+	DisplayName: 盐篝火
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFountainItem: {
+	DisplayName: 盐滩喷泉
+	Tooltip: ""
+}
+
+SaltskipperQuestFish: {
+	Description: 那些盐滩真是太迷幻了！我甚至分不清哪里是盐的尽头，哪里是水的开始！不过，当我终于把鱼钩甩进水里时，一条看起来很恶心的鱼突然扑腾着跳出水面，就在我旁边，而且它竟然开始呼吸空气！快帮我抓住它，这样我就能遛我的新宠物鱼了。
+	CatchLocation: 盐滩
+	DisplayName: 盐跃鱼
+	Tooltip: “抓捕位置：盐滩”
+}
+
+WispBannerItem.DisplayName: 游魂旗
+DecrepitMummyBannerItem.DisplayName: 腐朽木乃伊旗
+
+PaleHiveItem: {
+	DisplayName: 苍白蜂巢
+	Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	DisplayName: 苍白蜂巢墙
+	Tooltip: ""
+}
+
+GooBlockItem: {
+	DisplayName: 粘胶砖
+	Tooltip: ""
+}
+
+WindshearScepter: {
+	DisplayName: 风切变权杖
+	Tooltip: ""
+}
+
+SaltTallGateItem: {
+	DisplayName: 盐高门
+	Tooltip: ""
+}
+
+EnlilStatueItem: {
+	DisplayName: 恩利尔雕像
+	Tooltip: 放置在附近时增加垂直机动性
+}
+
+SerratedClaws: {
+	DisplayName: 锯齿爪
+	Tooltip: ""
+}
+
+FlagRingItem: {
+	DisplayName: 旗杆
+	Tooltip: 可被锤击以添加旗帜
+}
+
+CobbledBrickWallItem: {
+	DisplayName: 鹅卵石砖墙
+	Tooltip: ""
+}
+
+CobbledBrickItem: {
+	DisplayName: 鹅卵石砖
+	Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	DisplayName: 青铜格栅门
+	Tooltip: ""
+}
+
+CalmingBellItem: {
+	DisplayName: 宁静之铃
+	Tooltip: 右键降低刷怪率
+}
+
+BrownShinglesItem: {
+	DisplayName: 棕色瓦
+	Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	DisplayName: 木瓦
+	Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	DisplayName: 镀金赤沙岩
+	Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	DisplayName: 青铜格栅块
+	Tooltip: ""
+}
+
+BedouinBreastplate: {
+	DisplayName: 贝都因人胸甲
+	Tooltip: 增加5%伤害
+}
+
+BedouinCowl: {
+	DisplayName: 贝都因人风帽
+	Tooltip: 增加5%暴击率
+}
+
+BedouinLeggings: {
+	DisplayName: 贝都因人护胫
+	Tooltip: 增加10%移动速度
+}
+
+ZigguratTikiTorchItem: {
+	DisplayName: 庙塔提基火把
+	Tooltip: ""
+}
+
+CricketItem: {
+	DisplayName: 蟋蟀
+	Tooltip: ""
+}
+
+GoldCricketItem: {
+	DisplayName: 金蟋蟀
+	Tooltip: ""
+}
+
+CricketCageItem: {
+	DisplayName: 蟋蟀笼
+	Tooltip: ""
+}
+
+GoldCricketCageItem: {
+	DisplayName: 金蟋蟀笼
+	Tooltip: ""
+}
+
+CarrotCake: {
+	Tooltip: "{$BuffDescription.WellFed3}"
+	DisplayName: 胡萝卜蛋糕
+}
+
+AvianRitualMask: {
+	DisplayName: 鸟类仪式面具
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: 公牛仪式面具
+	Tooltip: ""
+}
+
+AdornedBow: {
+	DisplayName: 华饰弓
+	Tooltip: ""
 }

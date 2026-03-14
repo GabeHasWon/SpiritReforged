@@ -14,6 +14,7 @@ public class Kelp : FloatingItem
 	{
 		VariantGlobalItem.AddVariants(Type, [new Point(24, 18), new Point(20, 24), new Point(22, 22), new Point(20, 22)]);
 		Item.ResearchUnlockCount = 25;
+		ItemID.Sets.ShimmerTransformToItem[Type] = AutoContent.ItemType<Driftwood>();
 	}
 
 	public override void SetDefaults()

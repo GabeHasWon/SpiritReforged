@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Savanna.Biome;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Content.Savanna.Biome;
 
 namespace SpiritReforged.Content.Savanna.DustStorm;
 
@@ -9,7 +10,7 @@ public class DustStormPlayer : ModPlayer
 
 	private bool EvilSavanna()
 	{
-		if (SavannaTileCounts.InSavanna)
+		if (SceneTileCounter.GetSurvey<SavannaBiome>().Success)
 			return Player.ZoneCorrupt || Player.ZoneCrimson || Player.ZoneHallow;
 
 		return false;

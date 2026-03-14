@@ -1,26 +1,22 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering;
-using static Terraria.ModLoader.Core.TmodFile;
 using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader.Core;
 using SpiritReforged;
 
-internal static class AssetLoader
+[Autoload(Side = ModSide.Client)]
+internal sealed class AssetLoader : ILoadable
 {
-	public static TrailManager VertexTrailManager;
 	public static BlendState NonPremultipliedAlphaFix;
 
 	public static BasicEffect BasicShaderEffect;
 	public static IDictionary<string, Asset<Texture2D>> LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
-	public static IDictionary<string, Effect> LoadedShaders = new Dictionary<string, Effect>();
+	public static IDictionary<string, Asset<Effect>> LoadedShaders = new Dictionary<string, Asset<Effect>>();
 
-	public static string EmptyTexture => "Terraria/Images/NPC_0";
+	public const string EmptyTexture = "Terraria/Images/NPC_0";
 
-	public static void Load(Mod mod)
+	public void Load(Mod mod)
 	{
-		if (Main.dedServ) //dont do this on the server because it will DIE
-			return;
-
 		ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection);
 		Main.QueueMainThreadAction(() => BasicShaderEffect = new BasicEffect(Main.graphics.GraphicsDevice)
 		{
@@ -38,9 +34,9 @@ internal static class AssetLoader
 		};
 
 		var tmodfile = (TmodFile)typeof(SpiritReforgedMod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(SpiritReforgedMod.Instance);
-		var files = (IDictionary<string, FileEntry>)typeof(TmodFile).GetField("files", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(tmodfile);
+		var files = (IDictionary<string, TmodFile.FileEntry>)typeof(TmodFile).GetField("files", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(tmodfile);
 		string assetsDirectory = "Assets/";
-		foreach (KeyValuePair<string, FileEntry> kvp in files.Where(x => x.Key.Contains(assetsDirectory)))
+		foreach (KeyValuePair<string, TmodFile.FileEntry> kvp in files.Where(x => x.Key.Contains(assetsDirectory)))
 		{
 			//Loading textures
 			string textureDirectory = assetsDirectory + "Textures/";
@@ -59,17 +55,33 @@ internal static class AssetLoader
 				string shaderPath = RemoveExtension(kvp.Key, ".xnb");
 				string shaderKey = RemoveDirectory(shaderPath, shaderDirectory);
 
-				LoadedShaders.Add(shaderKey, mod.Assets.Request<Effect>(shaderPath, AssetRequestMode.ImmediateLoad).Value);
+				LoadedShaders.Add(shaderKey, mod.Assets.Request<Effect>(shaderPath, AssetRequestMode.ImmediateLoad));
 			}
 		}
-
-		VertexTrailManager = new TrailManager();
 
 		//Register some vanilla textures under our own system for convenience
 		LoadedTextures.Add("FlameTrail", TextureAssets.Extra[189]);
 		LoadedTextures.Add("SwirlNoise", TextureAssets.Extra[193]);
 		LoadedTextures.Add("EnergyTrail", TextureAssets.Extra[194]);
 		LoadedTextures.Add("GlowTrail_2", TextureAssets.Extra[197]);
+	}
+
+	/// <summary> Requests and/or registers the texture of <paramref name="fullPath"/>. </summary>
+	/// <param name="name"> The name used to identify the texture. </param>
+	/// <param name="fullPath"> The full path of the texture to request. </param>
+	public static Asset<Texture2D> GetTexture(string name, string fullPath)
+	{
+		if (LoadedTextures.TryGetValue(name, out var asset))
+		{
+			return asset;
+		}
+		else
+		{
+			var newAsset = ModContent.Request<Texture2D>(fullPath);
+			LoadedTextures.Add(name, newAsset);
+
+			return newAsset;
+		}
 	}
 
 	/// <summary>
@@ -86,16 +98,12 @@ internal static class AssetLoader
 	/// <param name="input"></param>
 	/// <param name="directory"></param>
 	/// <returns></returns>
-	private static string RemoveDirectory(string input, string directory) => input.Remove(0, directory.Length);
+	private static string RemoveDirectory(string input, string directory) => input[directory.Length..];
 
-	public static void Unload()
+	public void Unload()
 	{
-		if (Main.dedServ)
-			return;
-
-		VertexTrailManager = null;
 		BasicShaderEffect = null;
 		LoadedTextures = new Dictionary<string, Asset<Texture2D>>();
-		LoadedShaders = new Dictionary<string, Effect>();
+		LoadedShaders = new Dictionary<string, Asset<Effect>>();
 	}
 }

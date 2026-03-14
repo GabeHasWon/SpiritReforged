@@ -11,11 +11,8 @@ public abstract class ToiletTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 6)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 6).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -40,7 +37,7 @@ public abstract class ToiletTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Toilet"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Toilet"));
 		AdjTiles = [TileID.Toilets];
 		DustType = -1;
 	}
@@ -66,7 +63,7 @@ public abstract class ToiletTile : FurnitureTile
 		if (WithinRange(i, j, player))
 		{
 			player.noThrow = 2;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 			player.cursorItemIconEnabled = true;
 
 			if (Framing.GetTileSafely(i, j).TileFrameX / 18 < 1)

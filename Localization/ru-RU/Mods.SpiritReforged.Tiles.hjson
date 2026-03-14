@@ -29,6 +29,13 @@ Records: {
 	Boulder: Катится по земле, если его задеть.
 }
 
+FablesGraves: {
+	SetNames: {
+		// Savanna: Savanna Graves
+		// SaltFlats: Salt Graves
+	}
+}
+
 SunkenTreasureTile.MapEntry: "{$Items.SunkenTreasure.DisplayName}"
 HydrothermalVent.MapEntry: Гидротермальное жерло
 CoralMapEntry: Коралл
@@ -49,3 +56,8 @@ PotionVats.MapEntry: Чан для зелий
 ObsidianShroom.MapEntry: Обсидиановый гриб
 Starflower.MapEntry: Звёздоцвет
 BonsaiTrees.MapEntry: Бонсай
+OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
+// SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
+// ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
+// DustyTomb.MapEntry: Dusty Tomb
+// EnlilStatue.MapEntry: Enlil Statue

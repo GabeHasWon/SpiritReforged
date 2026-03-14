@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Underground.NPCs;
@@ -38,36 +39,41 @@ public class BiomePots : PotTile, ILootable
 		Volume = 0.25f
 	};
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override Dictionary<string, int[]> TileStyles
+	{
+		get
+		{
+			Dictionary<string, int[]> dict = [];
+			int start = 0;
+
+			foreach (string name in Enum.GetNames<Style>())
+				dict.Add(name, [start++, start++, start++]);
+
+			return dict;
+		}
+	}
+
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles).AddRating(2).AddDescription(Language.GetText(TileRecord.DescKey + ".Biome"));
 
 		if (group.name == "BiomePotsCrimson")
 		{
-			record.Hide(() => !WorldGen.crimson); //Conditionally hide some entries
+			record.SetCondition(AnyEvil).Hide(() => !WorldGen.crimson); //Conditionally hide some entries
 		}
 		else if (group.name == "BiomePotsCorruption")
 		{
-			record.Hide(() => WorldGen.crimson);
+			record.SetCondition(AnyEvil).Hide(() => WorldGen.crimson);
 		}
 
-		RecordHandler.Records.Add(record);
-	}
+		return record;
 
-	public override Dictionary<string, int[]> TileStyles => new()
-	{
-		{ "Cavern", [0, 1, 2] },
-		{ "Ice", [3, 4, 5] },
-		{ "Desert", [6, 7, 8] },
-		{ "Jungle", [9, 10, 11] },
-		{ "Dungeon", [12, 13, 14] },
-		{ "Corruption", [15, 16, 17] },
-		{ "Crimson", [18, 19, 20] },
-		{ "Marble", [21, 22, 23] },
-		{ "Hell", [24, 25, 26] },
-		{ "Mushroom", [27, 28, 29] },
-        { "Granite", [30, 31, 32] }
-    };
+		static bool AnyEvil()
+		{
+			var global = Main.LocalPlayer.GetModPlayer<RecordPlayer>();
+			return global.IsValidated("BiomePotsCorruption") || global.IsValidated("BiomePotsCrimson");
+		}
+	}
 
 	/// <summary> Gets the <see cref="Style"/> associated with the given frame. </summary>
 	private static Style GetStyle(int frameY) => (Style)(frameY / 36);
@@ -85,7 +91,7 @@ public class BiomePots : PotTile, ILootable
 		_ => 1.25f
 	};
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 		switch (group.name)
@@ -463,7 +469,7 @@ public class BiomePots : PotTile, ILootable
 				Style.Marble => ItemID.YellowTorch,
 				Style.Hell => ItemID.DemonTorch,
 				Style.Mushroom => ItemID.MushroomTorch,
-				_ => ItemID.UltrabrightTorch
+				_ => ItemID.SpelunkerGlowstick
 			};
 
 			return result;

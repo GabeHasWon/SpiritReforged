@@ -2,16 +2,10 @@ namespace SpiritReforged.Content.Dusts;
 
 public class FrostBreath : ModDust
 {
-	private static Texture2D texture;
-
-	public override void SetStaticDefaults()
-	{
-		texture = ModContent.Request<Texture2D>(Texture).Value;
-	}
 	public override void OnSpawn(Dust dust)
 	{
 		dust.noGravity = true;
-		dust.frame = new Rectangle(0, texture.Height / 3 * Main.rand.Next(3), texture.Width, texture.Height / 3);
+		dust.frame = new Rectangle(0, 38 * Main.rand.Next(3), 36, 38);
 		dust.noLight = true;
 
 		dust.position -= dust.frame.Size() / 2; //Center the dust on spawn

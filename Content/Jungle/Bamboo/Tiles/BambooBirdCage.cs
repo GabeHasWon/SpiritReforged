@@ -26,6 +26,8 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		BirdTypes = [ItemID.Cardinal, ItemID.BlueJay, ItemID.GoldBird, ItemID.Bird, ItemID.Seagull, 
 			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>(), AutoContent.ItemType<SandPiper>()];
 
@@ -42,8 +44,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 		TileObjectData.newTile.Height = 3;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, 2, 0);
-		ModTileEntity tileEntity = ModContent.GetInstance<BambooBirdCageSlot>();
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.StyleHorizontal = true;
 
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);

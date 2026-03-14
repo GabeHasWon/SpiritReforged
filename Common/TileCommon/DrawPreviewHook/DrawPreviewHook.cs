@@ -1,5 +1,6 @@
 ﻿namespace SpiritReforged.Common.TileCommon.DrawPreviewHook;
 
+[Obsolete("Use PreDrawPlacementPreview instead")]
 public class DrawPreviewHook : ILoadable
 {
 	public static void ForceDrawPreview()

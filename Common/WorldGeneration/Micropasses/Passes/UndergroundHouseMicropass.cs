@@ -36,7 +36,7 @@ internal class UndergroundHouseMicropass : ModSystem
 	{
 		orig(self, context, structures);
 
-		if (self.Type != HouseType.Wood && self.Type != HouseType.Ice)
+		if (self.Type is not HouseType.Wood and not HouseType.Ice and not HouseType.Desert)
 			return;
 
 		bool hasPlaced = false;

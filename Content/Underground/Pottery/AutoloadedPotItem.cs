@@ -5,16 +5,16 @@ namespace SpiritReforged.Content.Underground.Pottery;
 
 /// <summary> Specialised pot item template for <see cref="PotteryWheel"/>. </summary>
 /// <param name="baseName"> The internal name of the tile this item places. </param>
-public sealed class AutoloadedPotItem(string baseName, StyleDatabase.StyleGroup group, AutoloadedPotItem.RecipeDelegate recipe = null) : ModItem
+public sealed class AutoloadedPotItem(string baseName, NamedStyles.StyleGroup group, Condition recipeCondition, AutoloadedPotItem.RecipeDelegate recipe = null) : ModItem
 {
-	public delegate void RecipeDelegate(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition);
+	public delegate void RecipeDelegate(ModItem modItem, NamedStyles.StyleGroup group, Condition condition);
 
 	protected override bool CloneNewInstances => true;
 	public override string Name => _group.name + "Item";
 	public override string Texture => DrawHelpers.RequestLocal(GetType(), _group.name);
 
 	private string _baseName = baseName;
-	private StyleDatabase.StyleGroup _group = group;
+	private NamedStyles.StyleGroup _group = group;
 
 	private ModTile Tile => Mod.Find<ModTile>(_baseName);
 
@@ -39,10 +39,5 @@ public sealed class AutoloadedPotItem(string baseName, StyleDatabase.StyleGroup 
 	}
 
 	public override void SetDefaults() => Item.DefaultToPlaceableTile(Tile.Type, _group.styles[0]);
-	public override void AddRecipes() => recipe?.Invoke(this, _group, new(Discovered, RecordedPot));
-
-	/// <summary> Localized text "Discovered". Normally used in tandem with <see cref="RecordedPot"/> to create a condition. </summary>
-	public static LocalizedText Discovered => Language.GetText("Mods.SpiritReforged.Conditions.Discovered");
-	/// <summary> Whether <see cref="_group"/> is discovered by the local player. </summary>
-	public bool RecordedPot() => Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(_group.name);
+	public override void AddRecipes() => recipe?.Invoke(this, _group, recipeCondition);
 }

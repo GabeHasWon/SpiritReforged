@@ -117,3 +117,23 @@ FlaskOfFrost_Buff: {
 	DisplayName: Weapon Imbue: Freezing
 	Description: Melee and Whip attacks freeze enemies
 }
+
+Slowed: {
+	DisplayName: Slowed
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Toucane
+	Description: The toucane fights for you?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Tiny Dragon
+	Description: A little dragon is following you
+}
+
+EnlilBuff: {
+	DisplayName: Enlil's Aid
+	Description: Increased vertical mobility
+}

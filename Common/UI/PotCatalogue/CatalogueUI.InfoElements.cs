@@ -62,7 +62,7 @@ public partial class CatalogueUI : AutoUIState
 		//Description & star rating
 		info = new CatalogueInfo();
 		info.Width.Pixels = width;
-		info.Height.Set(32 + UIHelper.GetTextHeight(Selected.record.description, (int)info.Width.Pixels), 0);
+		info.Height.Set(32 + UIHelper.GetTextHeight(Selected.record.Description.Value, (int)info.Width.Pixels), 0);
 		info.Action += DescInfo_Action;
 
 		_info.AddEntry(info);
@@ -92,7 +92,7 @@ public partial class CatalogueUI : AutoUIState
 
 	private bool NameInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
 	{
-		string name = Selected.record.name;
+		string name = Selected.record.DisplayName.Value;
 		var namePos = bounds.Center();
 
 		Utils.DrawBorderString(spriteBatch, name, namePos, Main.MouseTextColorReal, .9f, .5f, .5f);
@@ -111,7 +111,7 @@ public partial class CatalogueUI : AutoUIState
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, Main.UIScaleMatrix);
 
-			var shader = AssetLoader.LoadedShaders["Rainbow"];
+			var shader = AssetLoader.LoadedShaders["Rainbow"].Value;
 			var texture = StarLight.Value;
 
 			for (int i = 0; i < count; i++)
@@ -147,7 +147,7 @@ public partial class CatalogueUI : AutoUIState
 
 		//Draw description
 		float height = 0;
-		string desc = Selected.record.description;
+		string desc = Selected.record.Description.Value;
 		string[] wrappingText = UIHelper.WrapText(desc, bounds.Width);
 
 		for (int i = 0; i < wrappingText.Length; i++)

@@ -1,12 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-/// <summary> A tile entity who can store a single item, saved on unload. See <see cref="SingleSlotData"/> for syncing. </summary>
+/// <summary> A tile entity who can store a single item, saved on unload. See <see cref="TileEntityData"/> for syncing. </summary>
 public abstract class SingleSlotEntity : ModTileEntity
 {
 	/// <summary> Whether <see cref="Player.PlayDroppedItemAnimation"/> should be called in <see cref="OnInteract"/>. Defaults to true. </summary>
@@ -52,7 +51,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 			}
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
-				new SingleSlotData((short)ID, item).Send();
+				new TileEntityData((short)ID).Send();
 		}
 
 		return success;
@@ -70,7 +69,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 		item.TurnToAir();
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			new SingleSlotData((short)ID, item).Send();
+			new TileEntityData((short)ID).Send();
 	}
 
 	public virtual bool CanAddItem(Item item) => true;
@@ -111,59 +110,10 @@ public abstract class SingleSlotEntity : ModTileEntity
 	public override void LoadData(TagCompound tag) => item = tag.Get<Item>(nameof(item));
 }
 
-/// <summary> Sends <see cref="SingleSlotEntity.item"/> by tile entity ID. </summary>
-internal class SingleSlotData : PacketData
-{
-	private readonly short _id;
-	private readonly Item _item;
-
-	public SingleSlotData() { }
-	public SingleSlotData(short tileEntityID, Item item)
-	{
-		_id = tileEntityID;
-		_item = item;
-	}
-
-	public override void OnReceive(BinaryReader reader, int whoAmI)
-	{
-		short index = reader.ReadInt16();
-		Item item = ItemIO.Receive(reader);
-
-		if (Main.netMode == NetmodeID.Server) //Relay to other clients
-			new SingleSlotData(index, item).Send(ignoreClient: whoAmI);
-
-		if (TileEntity.ByID[index] is SingleSlotEntity slot)
-			slot.item = item;
-	}
-
-	public override void OnSend(ModPacket modPacket)
-	{
-		modPacket.Write(_id);
-		ItemIO.Send(_item, modPacket);
-	}
-}
-
 /// <summary> Helper tile to be used in conjunction with <see cref="SingleSlotEntity"/>. </summary>
-public abstract class SingleSlotTile<T> : ModTile where T : SingleSlotEntity
+public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEntity
 {
-	/// <summary> The <b>template</b> instance of the associated tile entity. if instanced data is required, use <see cref="Entity"/> instead. </summary>
-	protected SingleSlotEntity entity;
-
 	public int ItemType => (this is IAutoloadTileItem) ? this.AutoItem().type : ItemID.None;
-
-	public override void SetStaticDefaults() => entity = ModContent.GetInstance<T>();
-
-	/// <returns> Whether the multitile at the given position has a tile entity. </returns>
-	public T Entity(int i, int j)
-	{
-		if (Main.tile[i, j].TileType != Type)
-			return null;
-
-		TileExtensions.GetTopLeft(ref i, ref j);
-		int id = ModContent.GetInstance<T>().Find(i, j);
-
-		return (id == -1) ? null : (T)TileEntity.ByID[id];
-	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{

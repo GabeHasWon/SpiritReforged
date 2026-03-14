@@ -42,6 +42,14 @@ internal static class CrossMod
 
 		/// <inheritdoc cref="Mod.TryFind{T}(string, out T)"/>
 		public readonly bool TryFind<T>(string s, out T t) where T : ModType => ((Mod)this).TryFind(s, out t);
+
+		/// <summary><inheritdoc cref="Mod.TryFind{T}(string, out T)"/><br/>Additionally, checks if the mod is enabled for ease of use.</summary>
+		public readonly bool CheckFind<T>(string s, out T t) where T : ModType
+		{
+			t = default;
+			return Enabled && ((Mod)this).TryFind(s, out t);
+		}
+
 		public static explicit operator Mod(ModEntry e) => e.Instance;
 	}
 
@@ -53,6 +61,7 @@ internal static class CrossMod
 	public static readonly ModEntry MusicDisplay = new("MusicDisplay");
 	public static readonly ModEntry Classic = new("SpiritMod");
 	public static readonly ModEntry Census = new("Census");
+	public static readonly ModEntry Verdant = new("Verdant");
 
 	/// <summary> The names and instances of loaded crossmod mods per <see cref="ModEntry"/>. </summary>
 	private static readonly Dictionary<string, Mod> LoadedMods = [];

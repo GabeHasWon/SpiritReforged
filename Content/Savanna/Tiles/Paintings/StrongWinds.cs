@@ -6,8 +6,7 @@ namespace SpiritReforged.Content.Savanna.Tiles.Paintings;
 
 public class StrongWinds : PaintingTile
 {
-	public override int TileHeight => 3;
-	public override int TileWidth => 3;
+	public override Point TileSize => new(3, 3);
 
 	public override void AddItemRecipes(ModItem item)
 	{

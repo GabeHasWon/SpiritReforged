@@ -40,7 +40,10 @@ public class FlaskOfFrost : ModItem
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 20;
+
 		BuffType = BuffAutoloader.SourceToType[GetType()];
+		Main.persistentBuff[BuffType] = true;
+		Main.meleeBuff[BuffType] = true;
 	}
 
 	public override void SetDefaults()

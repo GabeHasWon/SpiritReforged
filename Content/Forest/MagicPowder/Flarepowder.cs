@@ -5,6 +5,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -18,6 +19,12 @@ namespace SpiritReforged.Content.Forest.MagicPowder;
 
 public class Flarepowder : ModItem
 {
+	public static readonly SoundStyle Cast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast")
+	{
+		PitchRange = (0.5f, 1f),
+		MaxInstances = 2
+	};
+
 	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
@@ -108,7 +115,7 @@ public class Flarepowder : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/MagicCast1") with { PitchRange = (0.5f, 1f), MaxInstances = 2 }, player.Center);
+		SoundEngine.PlaySound(Cast, player.Center);
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -120,7 +127,7 @@ public class Flarepowder : ModItem
 	}
 }
 
-internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
+internal class FlarepowderDust : ModProjectile
 {
 	public const int TimeLeftMax = 60 * 3;
 
@@ -140,22 +147,13 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 	public (float, float) randomTimeLeft;
 	private bool _spawned = true;
 
-	public virtual void DoTrailCreation(TrailManager tm)
-	{
-		float scale = Projectile.scale;
-
-		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[3].Additive()), new RoundCap(), new DefaultTrailPosition(), 10 * scale, 20 * scale);
-		tm.CreateTrail(Projectile, new LightColorTrail(new Color(130, 26, 12) * 0.6f, Color.Transparent), new RoundCap(), new DefaultTrailPosition(), 15 * scale, 50 * scale);
-		tm.CreateTrail(Projectile, new StandardColorTrail(Colors[0].Additive()), new RoundCap(), new DefaultTrailPosition(), 5 * scale, 10 * scale);
-	}
-
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 	public override void SetDefaults()
 	{
+		Projectile.Size = new(8);
 		Projectile.DamageType = DamageClass.Magic;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
-		Projectile.tileCollide = false;
 		Projectile.ignoreWater = true;
 		Projectile.timeLeft = TimeLeftMax;
 		randomTimeLeft = (0.1f, 0.3f);
@@ -229,7 +227,18 @@ internal class FlarepowderDust : ModProjectile, IManualTrailProjectile
 			Projectile.netUpdate = true;
 		}
 
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+	}
+
+	public virtual void CreateTrail(ProjectileTrailRenderer renderer)
+	{
+		float scale = Projectile.scale;
+		var position = new EntityTrailPosition(Projectile);
+
+		renderer.CreateTrail(Projectile, new VertexTrail(new StandardColorTrail(Colors[3].Additive()), new RoundCap(), position, new DefaultShader(), 10 * scale, 20 * scale));
+		renderer.CreateTrail(Projectile, new VertexTrail(new LightColorTrail(new Color(130, 26, 12) * 0.6f, Color.Transparent), new RoundCap(), position, new DefaultShader(), 15 * scale, 50 * scale));
+		renderer.CreateTrail(Projectile, new VertexTrail(new StandardColorTrail(Colors[0].Additive()), new RoundCap(), position, new DefaultShader(), 5 * scale, 10 * scale));
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

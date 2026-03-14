@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using SpiritReforged.Content.Savanna.Items.Food;
 using SpiritReforged.Content.Underground.Pottery;
@@ -15,23 +16,20 @@ namespace SpiritReforged.Content.Underground.Tiles;
 public class WickerBaskets : PotTile, ILootable
 {
 	/// <summary> The area that <see cref="WickerBaskets"/> start generating within. </summary>
-	public static Rectangle PicnicArea
+	public static Rectangle GetPicnicArea()
 	{
-		get
-		{
-			int picnicY = (int)GenVars.worldSurfaceHigh;
-			return new Rectangle(20, picnicY, Main.maxTilesX - 40, (int)Math.Max(Main.worldSurface - picnicY, 10));
-		}
+		int picnicY = (int)GenVars.worldSurfaceHigh;
+		return new Rectangle(20, picnicY, Main.maxTilesX - 40, (int)Math.Max(Main.worldSurface - picnicY, 10));
 	}
 
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".WickerBasket");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4));
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4);
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3)
 		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()

@@ -26,7 +26,7 @@ public class SpiritLogo : ILoadable
 
 	private static void LoadAssets() 
 	{
-		logoShader = AssetLoader.LoadedShaders["SpiritLogo"];
+		logoShader = AssetLoader.LoadedShaders["SpiritLogo"].Value;
 
 		sTexture = AssetLoader.LoadedTextures["ModLogo/LogoS"];
 		sOutlineTexture = AssetLoader.LoadedTextures["ModLogo/LogoSOutline"];

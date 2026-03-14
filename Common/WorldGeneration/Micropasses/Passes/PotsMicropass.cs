@@ -10,8 +10,6 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class PotsMicropass : Micropass
 {
-	private delegate bool GenDelegate(int x, int y);
-
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
 
@@ -28,7 +26,7 @@ internal class PotsMicropass : Micropass
 
 	public override void Load(Mod mod)
 	{
-		On_WorldGen.PlacePot += PotConversion;
+		TileEvents.OnPlacePot += PotConversion;
 		On_WorldGen.PlaceTile += PotBoulderConversion;
 	}
 
@@ -47,7 +45,7 @@ internal class PotsMicropass : Micropass
 
 	/// <summary> 50% chance to replace regular pots placed on mushroom grass.<br/>
 	/// 100% chance to replace regular pots placed on granite. </summary>
-	private static bool PotConversion(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
+	private static bool PotConversion(int x, int y, ushort type, int style)
 	{
 		if (WorldGen.generatingWorld)
 		{
@@ -58,17 +56,17 @@ internal class PotsMicropass : Micropass
 				if (WorldGen.genRand.NextBool())
 				{
 					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next(3));
-					return false; //Skips orig
+					return false;
 				}
 			}
 			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
 				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
-				return false; //Skips orig
+				return false;
 			}
 		}
 
-		return orig(x, y, type, style);
+		return true;
 	}
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
@@ -96,7 +94,7 @@ internal class PotsMicropass : Micropass
 		Generate(CreateAether, (int)(scale * 3), out _);
 		Generate(CreateUpsideDown, (int)(scale * 4), out _);
 		Generate(CreateBoulder, (int)(scale * 15), out _);
-		Generate(CreatePicnic, (int)(scale * 2), out _, WickerBaskets.PicnicArea);
+		Generate(CreatePicnic, (int)(scale * 2), out _, WickerBaskets.GetPicnicArea());
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
@@ -249,7 +247,9 @@ internal class PotsMicropass : Micropass
 		y--;
 
 		int type = ModContent.TileType<WickerBaskets>();
-		if (!TileID.Sets.Grass[Main.tile[x, y + 1].TileType] || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
+		int tileType = Main.tile[x, y + 1].TileType;
+
+		if (!TileID.Sets.Grass[tileType] || tileType == TileID.CrimsonGrass || tileType == TileID.CorruptGrass || WorldGen.CountNearBlocksTypes(x, y, 20, 1, type) > 0)
 			return false;
 
 		Placer.Check(x, y, type).IsClear().Place();
@@ -282,35 +282,35 @@ internal class PotsMicropass : Micropass
 		int tile = Main.tile[x, y + 1].TileType;
 		int wall = Main.tile[x, y].WallType;
 
-		if (Main.tile[x, y].LiquidType is LiquidID.Shimmer || !AreaClear(x, y - 1, 2, 2, true))
+		if (Main.tile[x, y].LiquidType is LiquidID.Shimmer || !AreaClear(x, y - 1, 2, 2, true) || WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots))
 			return false; //Never generate in shimmer or over other tiles
 
 		int style = -1;
 
 		if (wall is WallID.Dirt or WallID.GrassUnsafe || tile is TileID.Dirt or TileID.Stone or TileID.ClayBlock or TileID.WoodBlock or TileID.Granite && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Cavern);
+			style = GetStyleRange(BiomePots.Style.Cavern);
 
 		if (wall is WallID.SnowWallUnsafe || tile is TileID.SnowBlock or TileID.IceBlock or TileID.BreakableIce && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Ice);
+			style = GetStyleRange(BiomePots.Style.Ice);
 		else if (wall is WallID.Sandstone or WallID.HardenedSand)
-			style = GetRange(BiomePots.Style.Desert);
+			style = GetStyleRange(BiomePots.Style.Desert);
 		else if (wall is WallID.MudUnsafe || tile is TileID.JungleGrass && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Jungle);
+			style = GetStyleRange(BiomePots.Style.Jungle);
 		else if (tile is TileID.CorruptGrass or TileID.Ebonstone or TileID.Demonite && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Corruption);
+			style = GetStyleRange(BiomePots.Style.Corruption);
 		else if (tile is TileID.CrimsonGrass or TileID.Crimstone or TileID.Crimtane && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Crimson);
+			style = GetStyleRange(BiomePots.Style.Crimson);
 		else if (tile is TileID.Marble)
-			style = GetRange(BiomePots.Style.Marble);
+			style = GetStyleRange(BiomePots.Style.Marble);
 		else if (tile is TileID.MushroomGrass)
-			style = GetRange(BiomePots.Style.Mushroom);
+			style = GetStyleRange(BiomePots.Style.Mushroom);
 		else if (tile is TileID.Granite)
-			style = GetRange(BiomePots.Style.Granite);
+			style = GetStyleRange(BiomePots.Style.Granite);
 
 		if (y > Main.UnderworldLayer)
-			style = GetRange(BiomePots.Style.Hell);
+			style = GetStyleRange(BiomePots.Style.Hell);
 		else if (tile is TileID.BlueDungeonBrick or TileID.GreenDungeonBrick or TileID.PinkDungeonBrick && Main.wallDungeon[wall] && y > Main.worldSurface)
-			style = GetRange(BiomePots.Style.Dungeon);
+			style = GetStyleRange(BiomePots.Style.Dungeon);
 
 		if (style != -1)
 		{
@@ -321,12 +321,12 @@ internal class PotsMicropass : Micropass
 		}
 
 		return false;
+	}
 
-		static int GetRange(BiomePots.Style value)
-		{
-			int v = (int)value * 3;
-			return WorldGen.genRand.Next(v, v + 3);
-		}
+	public static int GetStyleRange(BiomePots.Style value)
+	{
+		int v = (int)value * 3;
+		return WorldGen.genRand.Next(v, v + 3);
 	}
 
 	public static bool CreateStack(int x, int y)
@@ -369,6 +369,6 @@ internal class PotsMicropass : Micropass
 		static bool WoodenPlatform(Tile t) => t.TileType == TileID.Platforms && t.TileFrameY == 0;
 	}
 
-	/// <summary> Checks whether the below tile is contained in <see cref="CommonBlacklist"/>. </summary>
-	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidType != LiquidID.Shimmer;
+	/// <summary> Checks whether a pot can be placed at the given coordinates. </summary>
+	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots);
 }

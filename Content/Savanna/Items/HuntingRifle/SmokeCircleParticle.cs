@@ -43,7 +43,7 @@ public class SmokeCircleParticle : Particle
 		float progress = TimeActive / (float)_maxTime;
 		var size = new Vector2(.25f * tex.Width, 1f * tex.Height) * Scale;
 
-		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
+		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"].Value;
 		Color baseColor = ((TimeActive < 3) ? Color * 1.5f : Color);
 		effect.Parameters["primaryColor"].SetValue(baseColor.ToVector4());
 		effect.Parameters["secondaryColor"].SetValue(baseColor.ToVector4() / 1.5f);

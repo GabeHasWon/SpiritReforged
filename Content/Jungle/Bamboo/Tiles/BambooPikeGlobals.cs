@@ -1,13 +1,11 @@
-﻿using Humanizer;
-using SpiritReforged.Content.Jungle.Bamboo.Buffs;
+﻿using SpiritReforged.Content.Jungle.Bamboo.Buffs;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
 public class BambooPikePlayer : ModPlayer
 {
-	public static PlayerDeathReason GetDeathReason(Player player)
-		=> PlayerDeathReason.ByCustomReason(Language.GetTextValue("Mods.SpiritReforged.DamageSources.Impaling." + Main.rand.Next(2)).FormatWith(player.name));
+	public static PlayerDeathReason GetDeathReason(Player player) => PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.SpiritReforged.DamageSources.Impaling." + Main.rand.Next(2), player.name));
 
 	public override void PostUpdate()
 	{

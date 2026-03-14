@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using System.Linq;
@@ -32,13 +33,13 @@ public class PotionVats : PotTile, ICutAttempt
 		return (id == -1) ? null : (VatSlot)TileEntity.ByID[id];
 	}
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Potion");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4));
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(4);
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		switch (group.name)
 		{
@@ -138,8 +139,8 @@ public class PotionVats : PotTile, ICutAttempt
 		}
 		else
 		{
-			SoundEngine.PlaySound(SoundID.Shatter with { Pitch = .9f }, pos);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/PotBreak") with { Volume = .10f, Pitch = 1f, }, pos);
+			SoundEngine.PlaySound(SoundID.Shatter with { Pitch = 0.9f }, pos);
+			SoundEngine.PlaySound(BiomePots.Break with { Volume = 0.10f, Pitch = 1f }, pos);
 		}
 
 		return false;

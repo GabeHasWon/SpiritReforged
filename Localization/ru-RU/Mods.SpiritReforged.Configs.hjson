@@ -1,4 +1,4 @@
-ReforgeClientConfig: {
+ReforgedClientConfig: {
 	DisplayName: Клиентская конфигурация Reforge
 
 	OceanShape: {
@@ -11,13 +11,18 @@ ReforgeClientConfig: {
 			'''
 	}
 
-	SurfaceWaterTransparency: {
-		Label: Прозрачность воды в океане
-		Tooltip:
+	ReflectionDetail: {
+		// Label: Reflection Detail
+		/* Tooltip:
 			'''
-			При включении этой настройки делает воду в океане прозрачной.
-			Не влияет на другие биомы.
-			'''
+			Determines the detail of all reflections
+			Higher values mean more detail and a greater resulting performance cost
+			''' */
+	}
+
+	AmbientSounds: {
+		// Label: Ambient Sounds
+		// Tooltip: Plays ambient sounds in specific biomes
 	}
 }
 

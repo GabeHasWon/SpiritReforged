@@ -1,16 +1,16 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.UI;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Forest.Misc.ChairClub;
 
-class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
+class BreakawayChairProj : BaseClubProj
 {
 	public BreakawayChairProj() : base(new Vector2(30, 34)) { }
 
@@ -29,7 +29,13 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 		_parameters.HasIndicator = false;
 	}
 
-	public void DoTrailCreation(TrailManager tM)
+	public override void OnSwingStart()
+	{
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+	}
+
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 30 * MeleeSizeModifier;
 		float trailWidth = 20 * MeleeSizeModifier;
@@ -44,10 +50,9 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 0.5f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
-	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
 	public override bool? CanHitNPC(NPC target) => target.isLikeATownNPC ? true : null;
 	internal override bool CanCollide(float progress) => false;
 

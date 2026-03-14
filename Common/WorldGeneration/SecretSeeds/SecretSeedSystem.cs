@@ -40,11 +40,13 @@ internal class SecretSeedSystem : ModSystem
 		WorldSecretSeed = null;
 
 		foreach (string key in SecretSeeds.Keys)
+		{
 			if (CompareFromArray(SecretSeeds[key]))
 			{
 				WorldSecretSeed = SecretSeeds[key];
 				break;
 			}
+		}
 
 		bool CompareFromArray(SecretSeed s)
 		{

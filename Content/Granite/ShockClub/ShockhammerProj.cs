@@ -1,10 +1,8 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
-using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
@@ -12,9 +10,9 @@ using Terraria.Audio;
 
 namespace SpiritReforged.Content.Granite.ShockClub;
 
-class ShockhammerProj : BaseClubProj, IManualTrailProjectile
+class ShockhammerProj : BaseClubProj
 {
-	public static readonly SoundStyle MagicCast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast1")
+	public static readonly SoundStyle MagicCast = new("SpiritReforged/Assets/SFX/Projectile/MagicCast")
 	{
 		Pitch = 0.5f,
 		Volume = 1.5f
@@ -24,7 +22,14 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 
 	public override float WindupTimeRatio => 0.9f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Cyan;
+	public override void OnSwingStart()
+	{
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+	}
+
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 90 * MeleeSizeModifier;
 		float trailWidth = 40 * MeleeSizeModifier;
@@ -49,7 +54,7 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 1,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 
 		parameters.TrailLength *= 1.25f * MathHelper.Lerp(Charge, 1, 0.5f);
 		parameters.Color = Color.LightCyan;
@@ -57,16 +62,12 @@ class ShockhammerProj : BaseClubProj, IManualTrailProjectile
 		parameters.UseLightColor = false;
 		parameters.Intensity *= 2 * MathHelper.Lerp(Charge, 1, 0.25f);
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "EnergyTrail", new Vector2(1, 0.2f)), TrailLayer.UnderProjectile));
-
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "EnergyTrail", new Vector2(1, 0.2f))));
 	}
-
-	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Cyan;
-	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(12);

@@ -1,5 +1,4 @@
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
@@ -7,10 +6,11 @@ using System.IO;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Underground.Items.OreClubs;
 
-class PlatinumClubProj : BaseClubProj, ITrailProjectile
+class PlatinumClubProj : BaseClubProj
 {
 	private bool _inputHeld = true;
 
@@ -25,7 +25,7 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 
 	public override bool? CanDamage() => (GetWindupProgress < 0.75f || CheckAIState(AIStates.SWINGING)) ? null : false;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		Vector2 trailDist = new(82 * MeleeSizeModifier);
 		Vector2 trailWidth = new(26 * MeleeSizeModifier);
@@ -70,8 +70,8 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 			MaxWidth = trailWidth.Y,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "FlameTrail", new Vector2(3f, 0.25f)), TrailLayer.UnderProjectile));
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "supPerlin", new Vector2(1.5f, 1.25f)), TrailLayer.UnderProjectile));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "FlameTrail", new Vector2(3f, 0.25f))));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, uSwingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "supPerlin", new Vector2(1.5f, 1.25f))));
 	}
 
 	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.CadetBlue;
@@ -159,7 +159,8 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 	{
 		if (!_inputHeld)
 		{
-			TrailManager.TryTrailKill(Projectile);
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
+
 			_lingerTimer -= 2;
 			float lingerProgress = _lingerTimer / (float)LingerTime;
 
@@ -184,9 +185,13 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 
 	public override void OnSwingStart()
 	{
-		TrailManager.TryTrailKill(Projectile);
 		Projectile.ResetLocalNPCHitImmunity();
-		TrailManager.ManualTrailSpawn(Projectile);
+
+		if (!Main.dedServ)
+		{
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
+			CreateTrail(TrailSystem.ProjectileRenderer);
+		}
 
 		int tempDirection = Owner.direction;
 		if (Owner == Main.LocalPlayer)
@@ -207,7 +212,7 @@ class PlatinumClubProj : BaseClubProj, ITrailProjectile
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(10);

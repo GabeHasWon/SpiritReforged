@@ -84,7 +84,7 @@ public class PulseCircle : Particle
 
 	public override void CustomDraw(SpriteBatch spriteBatch)
 	{
-		Effect effect = AssetLoader.LoadedShaders["PulseCircle"];
+		Effect effect = AssetLoader.LoadedShaders["PulseCircle"].Value;
 		effect.Parameters["RingColor"].SetValue(Color.ToVector4());
 		effect.Parameters["BloomColor"].SetValue(_bloomColor.ToVector4());
 		effect.Parameters["RingWidth"].SetValue(_ringWidth * MathHelper.Lerp(1, _endRingWidth, 1 - EaseFunction.EaseCubicIn.Ease(_opacity)));
