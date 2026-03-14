@@ -1,6 +1,6 @@
 ﻿using Terraria.GameContent.Bestiary;
 
-namespace SpiritReforged.Common.NPCCommon;
+namespace SpiritReforged.Common.NPCCommon.Interfaces;
 
 /// <summary> Automatically applies various elements of gold critters to this <see cref="ModNPC"/>, such as: <para/>
 /// Adding the type to <see cref="NPCID.Sets.GoldCrittersCollection"/><para/>

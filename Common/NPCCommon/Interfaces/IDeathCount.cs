@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.NPCCommon;
+﻿namespace SpiritReforged.Common.NPCCommon.Interfaces;
 
 /// <summary> Detours <see cref="NPC.ExcludedFromDeathTally"/> and <see cref="NPC.IsNPCValidForBestiaryKillCredit"/>. </summary>
 internal interface IDeathCount
