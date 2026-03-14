@@ -2964,3 +2964,8 @@ AdornedBow: {
 	// DisplayName: Adorned Bow
 	// Tooltip: ""
 }
+
+SpiritTreeTopper: {
+	// DisplayName: Spirit Tree Topper
+	// Tooltip: ""
+}
