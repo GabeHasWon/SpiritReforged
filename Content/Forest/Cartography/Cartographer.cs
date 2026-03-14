@@ -7,6 +7,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Forest.Cartography.Maps;
