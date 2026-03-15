@@ -202,7 +202,7 @@ public partial class Scarabeus : ModNPC
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
 
-		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Math.Max(ScarabHeatHazeShaderData.HeatHazeOpacity,  Utils.GetLerpValue(0f, 0.5f, (NPC.life / (float)NPC.lifeMax), true));
+		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, 0.5f, (NPC.life / (float)NPC.lifeMax), true);
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -339,7 +339,8 @@ public partial class Scarabeus : ModNPC
 		CurrentState = state;
 		NPC.netUpdate = true;
 
-		NPC.rotation = 0;
+		if (!phaseTwo)
+			NPC.rotation = 0;
 		currentFrame.Y = 0;
 	}
 

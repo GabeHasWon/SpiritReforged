@@ -11,8 +11,6 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 public class SandballProjectile : ModProjectile
 {
 	private const int MAX_TIMELEFT = 360;
-	private float Progress => EaseFunction.EaseCircularOut.Ease(Projectile.timeLeft  / (float)MAX_TIMELEFT);
-
 	public Point MimicTilePosition => new Point((int)Projectile.ai[0], (int)Projectile.ai[1]);
 
 	public override string Texture => AssetLoader.EmptyTexture;
@@ -24,17 +22,13 @@ public class SandballProjectile : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(16, 16);
+		Projectile.Size = new(18, 18);
 		Projectile.hostile = true;
 		Projectile.tileCollide = true;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
 		Projectile.timeLeft = MAX_TIMELEFT;
 	}
-
-	public override bool ShouldUpdatePosition() => true;
-
-	public override bool? CanDamage() => null;
 
 	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
 	{
@@ -84,7 +78,7 @@ public class SandballProjectile : ModProjectile
 			Tile t = Main.tile[MimicTilePosition];
 			_variantTopLeft = Main.rand.Next(3);
 			_variantTopRight = Main.rand.Next(3);
-			_variantBottomLeft = Main.rand.Next(3); 
+			_variantBottomLeft = Main.rand.Next(3);
 			_variantBottomRight = Main.rand.Next(3);
 
 			if (!t.HasTile || Main.tileFrameImportant[t.TileType])

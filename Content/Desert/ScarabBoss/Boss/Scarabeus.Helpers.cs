@@ -40,10 +40,10 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
-			Add(AIState.SwoopDash, 2221);
+			Add(AIState.SwoopDash, 1);
 			Add(AIState.GroundPound, 1);
 			Add(AIState.Dig, 1);
-			//Add(AIState.Swarm, 1);
+			Add(AIState.Swarm, 122223);
 		}
 
 		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;

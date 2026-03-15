@@ -283,6 +283,9 @@ public partial class Scarabeus : ModNPC
 		if (Counter == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			ExtraMemory = Main.rand.NextFloat(1.8f, 2.2f) - 0.15f * DifficultyScale;
+			if (LastAttack == AIState.Swarm)
+				ExtraMemory *= 1.65f;
+
 			NPC.netUpdate = true;
 		}
 
@@ -390,7 +393,7 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y + NPC.gravity * 1.5f, -8f, 16f);
 
 			//Heavily slowdown wait time while scarab is falling
-			nextAttackWaitTime *= 3f;
+			nextAttackWaitTime *= 12f;
 		}
 
 		//NPC.Step();
@@ -474,7 +477,7 @@ public partial class Scarabeus : ModNPC
 
 		NPC.behindTiles = dashState >= 1 && dashState < 3;
 
-		if (Counter == 0 && dashState == 0)
+		if (Counter == 0 && dashState == 0 && !phaseTwo)
 			NPC.FaceTarget();
 
 		switch (dashState)
@@ -613,6 +616,9 @@ public partial class Scarabeus : ModNPC
 					if (phaseTwo)
 					{
 						NPC.velocity.X *= 0.5f;
+						NPC.rotation = 0;
+						SetFrame(new Point(0, 3), PhaseTwoProfile);
+						trailOpacity = 0;
 						return GoBackToIdle();
 					}
 
@@ -1209,7 +1215,7 @@ public partial class Scarabeus : ModNPC
 		if (Counter == 0 && dashState == 0)
 		{
 			NPC.FaceTarget();
-			NPC.velocity.X -= NPC.direction * (4f + 8f * Utils.GetLerpValue(idealXDistanceToPlayer, idealXDistanceToPlayer * 0.3f, distXToTarget, true));
+			NPC.velocity.X = -NPC.direction * (3f + 6f * Utils.GetLerpValue(idealXDistanceToPlayer, idealXDistanceToPlayer * 0.3f, distXToTarget, true));
 			NPC.velocity.Y -= 1;
 		}
 
@@ -1286,8 +1292,8 @@ public partial class Scarabeus : ModNPC
 	{
 		ChangeState(AIState.Roll);
 		NPC.velocity = NPC.velocity.RotatedBy(-0.45f * NPC.direction);
-		if (NPC.velocity.Length() > 16f)
-			NPC.velocity = NPC.velocity.SafeNormalize(-Vector2.UnitY) * 16f;
+		if (NPC.velocity.Length() > 23f)
+			NPC.velocity = NPC.velocity.SafeNormalize(-Vector2.UnitY) * 23f;
 
 		//NPC.velocity.X = Math.Clamp(NPC.velocity.X, -5, 5);
 		NPC.position.Y -= 20;
@@ -1302,18 +1308,14 @@ public partial class Scarabeus : ModNPC
 	public float SwarmAttack(ref bool retarget)
 	{
 		//durations of each segment
-		const int attack_start_time = 40;
-		const int swarm_length = 120;
-		const int flash_boom_chargeup = 60;
-		const int rest_time = 30;
-
-		//short form calculations using durations of each segment
-		int flashChargeStart = attack_start_time + swarm_length;
-		int flashExplostionTime = attack_start_time + swarm_length + flash_boom_chargeup;
-		int attackEndTime = attack_start_time + swarm_length + flash_boom_chargeup + rest_time;
+		const float swarm_length = 340;
+		const float attack_end_time = swarm_length + 80;
 
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
+		NPC.FaceTarget();
+
+		ScarabHeatHazeShaderData.HeatHazeTargetIntensity = 0.6f;
 
 		//attack start
 		if (Counter == 0)
@@ -1321,38 +1323,35 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y = -6;
 			NPC.velocity.X /= 2;
 			//fx here?
-		}
 
-		NPC.velocity *= 0.95f;
-		NPC.velocity.Y += (float)Math.Sin(MathHelper.TwoPi * 3 * Counter / attackEndTime) / 10;
-		UpdateFrame(1, 12, PhaseTwoProfile);
-
-		if (Counter == attack_start_time)
-		{
-			//proj here
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.LightGoldenrodYellow, 1, 2400, 30, "GlowTrail", new Vector2(1, 1), EaseFunction.EaseCircularOut, true, 0.33f));
-			}
-		}
-
-		if (Counter > flashChargeStart && Counter < flashExplostionTime)
-		{
-			//vfx here
-		}
-
-		if (Counter == flashExplostionTime)
-		{
 			if (Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 3; i++)
-					ParticleHandler.SpawnParticle(new DissipatingImage(NPC.Center, Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.66f, 0, "GodrayCircle", Vector2.Zero, new Vector2(3, 1.4f), 15));
-
+					ParticleHandler.SpawnParticle(new DissipatingImage(NPC.Center - Vector2.UnitY.RotatedBy(NPC.rotation) * 30f, Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.66f, 0, "GodrayCircle", Vector2.Zero, new Vector2(3, 1.4f), 15));
 			}
 		}
 
-		if (Counter > attackEndTime)
+		Vector2 targetFloor = FindGroundFromPositionIgnorePlatforms(Target.position);
+		Vector2 targetPosition = targetFloor - Vector2.UnitY.RotatedBy(Math.Sin(Counter * 0.03f) * 0.5f) * 400f;
+		float distanceToTarget = (NPC.Center - targetPosition).Length();
+		float speedToTarget = Utils.GetLerpValue(0.2f, 10f, distanceToTarget, true)  * 8f;
+
+		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(targetPosition.X - NPC.Center.X) * speedToTarget, 0.02f);
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetPosition.Y - NPC.Center.Y) * speedToTarget, 0.04f);
+
+		UpdateFrame(1, 12, PhaseTwoProfile);
+		NPC.rotation = NPC.velocity.X * 0.05f;
+
+		if (Counter < swarm_length)
+		{
+			if (Counter % 18 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				Vector2 offset = Vector2.UnitY.RotatedByRandom(MathHelper.PiOver2 * 0.8f) * 1000;
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + offset, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI);
+			}
+		}
+
+		if (Counter >= attack_end_time)
 			return GoBackToIdle();
 		return 1f;
 	}

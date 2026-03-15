@@ -10,9 +10,29 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 {
     public class ScarabHeatHazeShaderData : ScreenShaderData
 	{
-		public static float HeatHazeIntensity = 0f;
-		public static float HeatHazeOpacity = 0f;
-		public static float HeatHazeTargetOpacity = 0f;
+		public static float heatHazeOpacity = 0f;
+
+		public static float HeatHazeTargetOpacity
+		{
+			get => _heatHazeTargetOpacity;
+			set => _heatHazeTargetOpacity = Math.Max(_heatHazeTargetOpacity, value);
+		}
+		private static float _heatHazeTargetOpacity = 0f;
+
+		public static float HeatHazeTargetIntensity
+		{
+			get => _heatHazeTargetIntensity;
+			set => _heatHazeTargetIntensity = Math.Max(_heatHazeTargetIntensity, value);
+		}
+		private static float _heatHazeTargetIntensity = 0f;
+
+		public static float HeatHazeIntensity
+		{
+			get => _heatHazeIntensity;
+			set => _heatHazeIntensity = Math.Max(_heatHazeIntensity, value);
+		}
+		private static float _heatHazeIntensity;
+
 		private static Filter myFilter;
 
 		public ScarabHeatHazeShaderData(Asset<Effect> shader, string passName)
@@ -37,46 +57,50 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 		{
 			orig(self, sceneArea, moonColor, sunColor, tempMushroomInfluence);
 
-			if (Main.remixWorld || !Main.dayTime || HeatHazeOpacity <= 0.01f)
+			if (Main.remixWorld || !Main.dayTime || heatHazeOpacity <= 0.01f)
 				return;
 
 			Texture2D sunTex = TextureAssets.Sun.Value;
 			Vector2 position = SunMoonILEdit.SunDrawData.Position;
-			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
-			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
-			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * HeatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
+			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
 		}
 
 		private static void UpdateShaderParameters()
 		{
 			bool shouldShaderBeActive = HeatHazeTargetOpacity > 0;
-			HeatHazeTargetOpacity = 0;
 
 			//Make the shader fade in and out
 			if (shouldShaderBeActive)
 			{
-				HeatHazeOpacity += 0.08f;
-				if (HeatHazeOpacity > HeatHazeTargetOpacity)
-					HeatHazeOpacity = HeatHazeTargetOpacity;
+				heatHazeOpacity += 0.08f;
+				if (heatHazeOpacity > HeatHazeTargetOpacity)
+					heatHazeOpacity = HeatHazeTargetOpacity;
 			}
 			else
 			{
-				HeatHazeOpacity -= 0.02f;
-				if (HeatHazeOpacity < 0f)
-					HeatHazeOpacity = 0f;
+				heatHazeOpacity -= 0.02f;
+				if (heatHazeOpacity < 0f)
+					heatHazeOpacity = 0f;
 			}
+
+			if (HeatHazeIntensity > 0.01f)
+				heatHazeOpacity = Math.Min(HeatHazeIntensity, heatHazeOpacity);
 
 			if (shouldShaderBeActive && !myFilter.IsActive())
 				Filters.Scene.Activate("SpiritReforged:ScarabHeatHaze");
 			else if (!shouldShaderBeActive && myFilter.IsActive())
 				Filters.Scene.Deactivate("SpiritReforged:ScarabHeatHaze");
 
-			HeatHazeIntensity = MathHelper.Lerp(HeatHazeIntensity, 0f, 0.04f);
+			_heatHazeIntensity = MathHelper.Lerp(_heatHazeIntensity, _heatHazeTargetIntensity, 0.04f);
+			_heatHazeTargetIntensity = 0;
+			_heatHazeTargetOpacity = 0;
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			UseOpacity(HeatHazeOpacity);
+			UseOpacity(heatHazeOpacity);
 			UseIntensity(HeatHazeIntensity);
 
             //Taken from sepia dst screenshader
