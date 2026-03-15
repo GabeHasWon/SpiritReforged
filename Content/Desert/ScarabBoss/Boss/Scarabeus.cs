@@ -16,6 +16,7 @@ public partial class Scarabeus : ModNPC
 {
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
+	private static VisualProfile BallProfile;
 	private static int PhaseTwoHeadSlot;
 
 	public int CurrentState
@@ -71,6 +72,7 @@ public partial class Scarabeus : ModNPC
 
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [8, 8, 16, 8, 8, 8, 6, 17]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
+		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
 	}
 
 	public override void SetDefaults()

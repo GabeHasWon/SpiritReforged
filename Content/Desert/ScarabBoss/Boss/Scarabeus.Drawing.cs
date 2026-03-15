@@ -1,7 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using Newtonsoft.Json.Linq;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
@@ -132,30 +133,39 @@ public partial class Scarabeus : ModNPC
 		Vector2 position = NPC.Center - screenPos - new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 		Vector2 origin = new(108, 98);
 
-		if (afterimageTrail.Enabled)
+		if (currentFrame == RollFrame)
 		{
-			Color color = afterimageTrail.Glowing ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
-			color *= afterimageTrail.Opacity;
-
-			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
-			{
-				Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
-				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
-			}
+			DrawBall(texture, origin, drawColor);
 		}
 
-		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
-		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
-		sheenShader.Parameters["resolution"].SetValue(texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
-		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
-		FlipShadersOnOff(spriteBatch, sheenShader, true);
+		else
+		{
+			if (afterimageTrail.Enabled)
+			{
+				Color color = afterimageTrail.Glowing ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+				color *= afterimageTrail.Opacity;
 
-		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
+				for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
+				{
+					Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
+					Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
+				}
+			}
 
-		FlipShadersOnOff(spriteBatch, null, false);
+			Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+			sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+			sheenShader.Parameters["resolution"].SetValue(texture.Size());
+			sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
+			sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+			sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+			sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
+			FlipShadersOnOff(spriteBatch, sheenShader, true);
+
+			Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
+
+			FlipShadersOnOff(spriteBatch, null, false);
+
+		}
 
 		if (_charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
@@ -185,6 +195,53 @@ public partial class Scarabeus : ModNPC
 		return false;
 	}
 
+	private void DrawBall(Texture2D texture, Vector2 origin, Color lightColor)
+	{
+		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadOut.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
+		var squishScale = new Vector2(1 + squishAmount, 1 - squishAmount);
+		List<SquarePrimitive> ballTrail = [];
+		var primDimensions = new Vector2(140 * squishScale.X, 140 * squishScale.Y);
+		bool flipped = NPC.spriteDirection > 0;
+		for (int i = NPCID.Sets.TrailCacheLength[NPC.type] - 1; i > 0; i--)
+		{
+			float progress = 1 - i / (float)NPCID.Sets.TrailCacheLength[NPC.type];
+			float trailOpacity = progress / 5;
+
+			var square = new SquarePrimitive()
+			{
+				Color = NPC.DrawColor(lightColor) * trailOpacity,
+				Height = primDimensions.X,
+				Length = primDimensions.Y,
+				Position = NPC.oldPos[i] + NPC.Size / 2 - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
+				Rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 - (flipped ? MathHelper.Pi : 0)
+			};
+			ballTrail.Add(square);
+		}
+
+		ballTrail.Add(new SquarePrimitive()
+		{
+			Color = NPC.DrawColor(lightColor),
+			Height = primDimensions.X,
+			Length = primDimensions.Y,
+			Position = NPC.Center - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
+			Rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 - (flipped ? MathHelper.Pi : 0)
+		});
+
+		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+		sheenShader.Parameters["uTexture"].SetValue(BallProfile.Texture.Value);
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(0, 0, BallProfile.Texture.Width(), BallProfile.Texture.Height()));
+		sheenShader.Parameters["resolution"].SetValue(BallProfile.Texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(BallProfile.SheenMask.Value);
+		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
+		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
+		sheenShader.Parameters["flip"].SetValue(flipped);
+
+		PrimitiveRenderer.DrawPrimitiveShapeBatched(ballTrail.ToArray(), sheenShader, "BallPass");
+	}
+
 	private static void DrawEmote(SpriteBatch spriteBatch, Vector2 position, int emote)
 	{
 		Texture2D texture = TextureAssets.Extra[ExtrasID.EmoteBubble].Value;
@@ -211,13 +268,27 @@ public partial class Scarabeus : ModNPC
 			spriteBatch.End();
 			spriteBatch.GraphicsDevice.RasterizerState = priorRasterizer;
 			spriteBatch.GraphicsDevice.ScissorRectangle = priorScissorRectangle;
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, priorRasterizer, effect, Main.UIScaleMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, priorRasterizer, null, Main.UIScaleMatrix);
+
+			if (effect == null)
+				return;
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+				if(pass.Name == "GeometricStyle")
+					pass.Apply();
 		}
 		else
 		{
 			spriteBatch.End();
 			SpriteSortMode sortMode = immediate ? SpriteSortMode.Immediate : SpriteSortMode.Deferred;
-			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+			if (effect == null)
+				return;
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+				if (pass.Name == "GeometricStyle")
+					pass.Apply();
 		}
 	}
 }
