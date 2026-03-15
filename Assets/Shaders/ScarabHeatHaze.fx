@@ -31,8 +31,6 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     float2 uv = coords;
     float distanceToCenter = length(float2(0.5, 0.5) - uv) * 1.4142;
     
-    float darknessMultiplier = uProgress; //Used to avoid having the shader get too ugly when in broad daylight on the surface
-    
     //Distort the edges of the screen (based on "drug intensity")
     float distortionStrenght = pow(smoothstep(0.2, 1, distanceToCenter), 2) + uIntensity * 0.4;
     float2 distortionUv = (uv * uScreenResolution) / 1000;
@@ -54,7 +52,7 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     float tintStrenght = uOpacity * (0.23 + 0.1 * sin(uTime)) + uIntensity * 0.1;
     output = lerp(output, tex2D(gradientMap, float2(1 - uIntensity * 0.6, pow(1 - brightness, 1.5))), tintStrenght);
     
-    output.r *= 1 + 0.1;
+    output.r *= 1 + 0.1 * uOpacity;
     
     output.a = 1;
     return output;

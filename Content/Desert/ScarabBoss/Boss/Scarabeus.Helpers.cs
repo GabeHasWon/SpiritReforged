@@ -81,7 +81,7 @@ public partial class Scarabeus : ModNPC
 		if (input.X < 0 || input.X >= Main.maxTilesX * 16)
 			return input;
 
-		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), CollisionChecks.AnySurface))
+		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < Target.Top.Y - 40 ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
 			input.Y += dimensions;
 
 		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < Target.Top.Y - 40 ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))

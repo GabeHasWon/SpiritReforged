@@ -282,9 +282,11 @@ public partial class Scarabeus : ModNPC
 		//Pick a time to wait before the next attack
 		if (Counter == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			ExtraMemory = Main.rand.NextFloat(1.8f, 2.2f) - 0.15f * DifficultyScale;
+			ExtraMemory = Main.rand.NextFloat(1.8f, 2.3f) - 0.15f * DifficultyScale;
 			if (LastAttack == AIState.Swarm)
 				ExtraMemory *= 1.65f;
+			if (!phaseTwo)
+				ExtraMemory *= 0.9f + 0.1f * Utils.GetLerpValue(0.5f, 1f, NPC.life / (float)NPC.lifeMax, true);
 
 			NPC.netUpdate = true;
 		}
@@ -423,7 +425,7 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.velocity.Y -= 0.1f;
 			if (heightAboveGround < 0)
-				NPC.velocity.Y -= 0.15f;
+				 NPC.velocity.Y -= 0.15f;
 		}
 
 		else if (Math.Abs(NPC.position.Y - Target.position.Y) > 160)
@@ -1309,19 +1311,23 @@ public partial class Scarabeus : ModNPC
 	{
 		//durations of each segment
 		const float swarm_length = 340;
-		const float attack_end_time = swarm_length + 80;
+		const float attack_end_time = swarm_length + 180;
+		const int projectileSpawnDelay = 40;
 
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
-		NPC.FaceTarget();
 
-		ScarabHeatHazeShaderData.HeatHazeTargetIntensity = 0.6f;
+		if (Math.Abs(NPC.Center.X - Target.Center.X) > 90f)
+			NPC.FaceTarget();
+
+		ScarabHeatHazeShaderData.HeatHazeTargetIntensity = 0.6f * Math.Min(1, Counter / 150f);
 
 		//attack start
 		if (Counter == 0)
 		{
 			NPC.velocity.Y = -6;
 			NPC.velocity.X /= 2;
+			NPC.FaceTarget();
 			//fx here?
 
 			if (Main.netMode != NetmodeID.Server)
@@ -1331,29 +1337,47 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		Vector2 targetFloor = FindGroundFromPositionIgnorePlatforms(Target.position);
-		Vector2 targetPosition = targetFloor - Vector2.UnitY.RotatedBy(Math.Sin(Counter * 0.03f) * 0.5f) * 400f;
-		float distanceToTarget = (NPC.Center - targetPosition).Length();
-		float speedToTarget = Utils.GetLerpValue(0.2f, 10f, distanceToTarget, true)  * 8f;
+		//Try to hover at approx the same height above the player
+		float targetHeight = FindGroundFromPositionIgnorePlatforms(Target.position).Y - 360;
+		float distanceToTarget = Math.Abs(NPC.Center.Y - targetHeight);
+		float speedToTarget = Utils.GetLerpValue(10, 210f, distanceToTarget, true) * 3f;
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 
-		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, Math.Sign(targetPosition.X - NPC.Center.X) * speedToTarget, 0.02f);
-		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetPosition.Y - NPC.Center.Y) * speedToTarget, 0.04f);
+		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 4f, 0.02f);
 
 		UpdateFrame(1, 12, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
 
-		if (Counter < swarm_length)
-		{
-			if (Counter % 18 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
-			{
-				Vector2 offset = Vector2.UnitY.RotatedByRandom(MathHelper.PiOver2 * 0.8f) * 1000;
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + offset, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI);
-			}
-		}
+		if (Counter < swarm_length && Counter % projectileSpawnDelay == 0)
+			SpawnBabySwarmer((int)(Counter / projectileSpawnDelay));
 
 		if (Counter >= attack_end_time)
 			return GoBackToIdle();
 		return 1f;
+	}
+
+	public void SpawnBabySwarmer(int swarmerIndex)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
+		float spawnAreaOffsetX = Target.velocity.X * 35f;
+		float spawnAreaRadius = 400 - (swarmerIndex % 4) * 30;
+
+		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
+		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+
+		float spawnHopHeight = 4 + 2.3f * (swarmerIndex % 3);
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+
+		//Spawn swarmers further away that are only just meant to make it look more natural
+		if (swarmerIndex % 2 == 1)
+		{
+			spawnHopHeight = 7f;
+			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		}
 	}
 	#endregion
 }

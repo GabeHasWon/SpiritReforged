@@ -1,7 +1,9 @@
 using Microsoft.CodeAnalysis;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Particles;
+using System.Security.Cryptography;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics.CameraModifiers;
 using static Terraria.GameContent.PlayerEyeHelper;
@@ -26,7 +28,7 @@ public class BabyAntlionProjectile : ModProjectile
 		}
 	}
 
-	public ref float Timer => ref Projectile.ai[1];
+	public ref float HopHeight => ref Projectile.ai[1];
 
 	public NPC Scarab => Main.npc[(int)Projectile.ai[0]];
 
@@ -35,13 +37,25 @@ public class BabyAntlionProjectile : ModProjectile
 		Hidden,
 		Emerging,
 		ChasingScarab,
-		Burnt
+		Burnt,
+		FlyOff
 	}
 
 	public AIState CurrentState
 	{
 		get => (AIState)Projectile.ai[2];
 		set => Projectile.ai[2] = (int)value;
+	}
+
+	public override void Load()
+	{
+		PlayerEvents.OnModifyHurt += NoKnockback;
+	}
+
+	private void NoKnockback(Player player, ref Player.HurtModifiers modifiers)
+	{
+		if (modifiers.DamageSource != null & modifiers.DamageSource.SourceProjectileType == Type)
+			modifiers.Knockback *= 0f;
 	}
 
 	public override void SetStaticDefaults()
@@ -56,86 +70,198 @@ public class BabyAntlionProjectile : ModProjectile
 		Projectile.tileCollide = false;
 		Projectile.penetrate = -1;
 		Projectile.timeLeft = MAX_TIMELEFT;
+		Projectile.manualDirectionChange = true;
+		Projectile.hide = true;
+
+		Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 	}
 
 	public override bool? CanDamage() => CurrentState != AIState.Hidden && Projectile.timeLeft > 30 ? null : false;
 
 	public override void AI()
 	{
-		Timer++;
-
 		if (CurrentState == AIState.Hidden)
 		{
+			LieInWait();
+			return;
+		}
 
-
-			if (Timer > 30)
-			{
-				CurrentState = AIState.Emerging;
-				Projectile.velocity.Y = -10f;
-			}
+		//Spin around and up into the air before starting to fly
+		if (CurrentState == AIState.Emerging)
+		{
+			SpinEmerge();
+			return;
 		}
 
 		//Falling down when burnt
 		if (CurrentState == AIState.Burnt)
 		{
-			Projectile.velocity.X = 0;
-			Projectile.velocity.Y += 0.2f;
-
-			Projectile.rotation += Projectile.direction * 0.03f;
-
-			//Sharticles
-			if (!Main.dedServ & Main.rand.NextBool(3))
-			{
-				Dust d = Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), DustID.Torch, Vector2.Zero, 0, Scale: Main.rand.NextFloat(0.7f, 1f));
-				d.noLight = true;
-			}
-
-			if (!Main.dedServ && Main.rand.NextBool(4))
-			{
-				Gore g = Gore.NewGorePerfect(Projectile.GetSource_FromThis(), Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), Vector2.Zero, 99, Main.rand.NextFloat(1f, 1.2f));
-				g.alpha = 160;
-				g.position -= Vector2.One * 10f;
-			}
-
+			BurnOffAndFall();
 			return;
 		}
 
-		Lighting.AddLight(Projectile.Center, 0.3f, 0.1f, 0.1f);
-
-		if (!HasAScarabValid)
+		//Fly away if there's no valid scarabeus anymore
+		if (!HasAScarabValid && CurrentState != AIState.FlyOff)
 		{
+			CurrentState = AIState.FlyOff;
 			Projectile.timeLeft = Math.Min(Projectile.timeLeft, 40);
+		}
+
+		//Update the frame for it to flap its wings
+		if (++Projectile.frameCounter > 4)
+		{
+			Projectile.frameCounter = 0;
+			Projectile.frame = (Projectile.frame + 1) % 8;
+		}
+
+		//Flying off
+		if (CurrentState == AIState.FlyOff)
+		{
+			Projectile.velocity.Y = MathHelper.Lerp(Projectile.velocity.Y, -6f, 0.2f);
+			Projectile.velocity.X *= 0.91f;
+			Projectile.rotation = Projectile.velocity.X * 0.02f;
+			Projectile.direction = Projectile.velocity.X < 0 ? 1 : -1;
 			return;
 		}
 
 		Vector2 towardsScarab = (Scarab.Center - Vector2.UnitY * 30f - Projectile.Center);
+		float distanceToScarab = towardsScarab.Length();
 
-		if (towardsScarab.Length() < 30f)
+		if (distanceToScarab < 40f)
 		{
-			Burnt = true;
+			CurrentState = AIState.Burnt;
+			Projectile.velocity.X = 0;
 			Projectile.velocity.Y = 0;
 			Projectile.timeLeft = 200;
+			Projectile.frame = Main.rand.Next(3);
+			Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 			return;
 		}
 
+		//Stop following scarab if its no longer burning and were too far
+		if (Scarab.ai[0] != (int)Scarabeus.AIState.Swarm && distanceToScarab > 200)
+		{
+			CurrentState = AIState.FlyOff;
+			Projectile.timeLeft = Math.Min(Projectile.timeLeft, 40);
+		}
+
 		towardsScarab.Normalize();
-		towardsScarab = towardsScarab.RotatedBy(MathF.Sin(Timer * 0.02f) * 0.1) * 10;
+		towardsScarab = towardsScarab.RotatedBy(MathF.Sin(Projectile.timeLeft * 0.1f) * 0.16) * 13;
 
-		Projectile.velocity = towardsScarab;
-		Projectile.rotation = Projectile.velocity.ToRotation();
+		float accelerationSpeed = Utils.GetLerpValue(400f, 100f, distanceToScarab, true);
+		Projectile.velocity = Vector2.Lerp(Projectile.velocity, towardsScarab, 0.1f + accelerationSpeed * 0.2f);
+		Projectile.rotation = Projectile.velocity.X * 0.02f;
+	}
 
+	public void LieInWait()
+	{
+		const int emerge_wait_time = 45;
+
+		//Do dust and smoke on the floor
+		if (Main.rand.NextBool(2))
+		{
+			Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3), palette[0] * 0.7f, Main.rand.NextFloat(0.03f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				SecondaryColor = palette[1] * 0.7f,
+				TertiaryColor = palette[2] * 0.7f,
+				PixelDivisor = 3,
+				ColorLerpExponent = 0.25f,
+				Layer = ParticleLayer.BelowSolid
+			});
+		}
+
+		if (!Main.rand.NextBool(3))
+		{
+			Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
+			Point tilePosition = dustPosition.ToTileCoordinates();
+			int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+
+			Dust dust = Main.dust[dustIndex];
+			dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-16f, 16f);
+			dust.velocity.Y -= Main.rand.NextFloat(1.5f, 3f);
+			dust.velocity.X *= 0.5f;
+			dust.noLightEmittence = true;
+			dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+		}
+
+		//Just die if scarab dies lol
+		if (!HasAScarabValid)
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		//Emerge outta the ground
+		if (MAX_TIMELEFT - Projectile.timeLeft > emerge_wait_time)
+		{
+			Projectile.direction = (Projectile.Center.X - Scarab.Center.X) < 0 ? 1 : -1;
+			CurrentState = AIState.Emerging;
+			Projectile.velocity.Y = -HopHeight;
+			Projectile.netUpdate = true;
+		}
+	}
+
+	public void SpinEmerge()
+	{
+		Projectile.rotation += Projectile.direction * 0.36f;
+		Projectile.velocity.Y += 0.2f;
+
+		if (Projectile.velocity.Y >= 0)
+		{
+			if (HasAScarabValid)
+			{
+				Projectile.direction = (Projectile.Center.X - Scarab.Center.X) < 0 ? 1 : -1;
+				CurrentState = AIState.ChasingScarab;
+			}
+			else
+				CurrentState = AIState.FlyOff;
+		}
+	}
+
+	public void BurnOffAndFall()
+	{
+		Projectile.velocity.X = 0;
+		Projectile.velocity.Y += 0.2f;
+		Projectile.rotation += Projectile.direction * 0.01f;
+
+		//Sharticles
+		if (!Main.dedServ & Main.rand.NextBool(3))
+		{
+			Dust d = Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), DustID.Torch, Vector2.Zero, 0, Scale: Main.rand.NextFloat(0.7f, 1f));
+			d.noLight = true;
+		}
+
+		if (!Main.dedServ && Main.rand.NextBool(4))
+		{
+			Gore g = Gore.NewGorePerfect(Projectile.GetSource_FromThis(), Projectile.Center + Main.rand.NextVector2Circular(8f, 8f), Vector2.Zero, 99, Main.rand.NextFloat(1f, 1.2f));
+			g.alpha = 185;
+			g.position -= Vector2.One * 10f;
+			g.rotation = Main.rand.NextFloat(6.24f);
+		}
+	}
+
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+	{
+		behindNPCs.Add(index);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
+		if (CurrentState == AIState.Hidden)
+			return false;
+
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center;
 		float rotation = Projectile.rotation;
 		float scale = Projectile.scale;
-		Rectangle frame = texture.Frame(1, 2, 0, Burnt ? 1 : 0);
+		Rectangle frame = texture.Frame(8, 3, Projectile.frame, CurrentState == AIState.Burnt ? 2 : CurrentState == AIState.Emerging ? 0 : 1);
 		SpriteEffects effects = Projectile.direction < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-		lightColor *= Math.Max(1, Projectile.timeLeft / 40f) * Utils.GetLerpValue(MAX_TIMELEFT, MAX_TIMELEFT - 30, Projectile.timeLeft, true);
+		lightColor *= Math.Min(1, Projectile.timeLeft / 40f) * Utils.GetLerpValue(MAX_TIMELEFT, MAX_TIMELEFT - 30, Projectile.timeLeft, true);
 
 		Main.EntitySpriteDraw(texture, position - Main.screenPosition, frame, lightColor, rotation, frame.Size() / 2f, scale, effects, 0);
 		return false;

@@ -86,7 +86,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 			}
 
 			if (HeatHazeIntensity > 0.01f)
-				heatHazeOpacity = Math.Min(HeatHazeIntensity, heatHazeOpacity);
+				heatHazeOpacity = Math.Max(HeatHazeIntensity, heatHazeOpacity);
 
 			if (shouldShaderBeActive && !myFilter.IsActive())
 				Filters.Scene.Activate("SpiritReforged:ScarabHeatHaze");
