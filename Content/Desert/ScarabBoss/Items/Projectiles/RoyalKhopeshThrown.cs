@@ -90,8 +90,6 @@ public class RoyalKhopeshThrown : ModProjectile
 			else
 				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-			Projectile.timeLeft--;
-
 			return false;
 		}
 			
