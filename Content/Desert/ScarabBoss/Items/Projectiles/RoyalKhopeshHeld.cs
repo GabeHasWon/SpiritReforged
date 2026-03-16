@@ -5,10 +5,9 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
 using Terraria.Graphics.CameraModifiers;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
-
-[AutoloadGlowmask("255,255,255", false)]
 public class RoyalKhopeshHeld : ModProjectile
 {
 	public static readonly SoundStyle EmpoweredHit = SoundID.DD2_SonicBoomBladeSlash;
@@ -105,10 +104,10 @@ public class RoyalKhopeshHeld : ModProjectile
 	{
 		Main.instance.LoadProjectile(985);
 
-		Texture2D tex = TextureAssets.Projectile[Type].Value;
-		Texture2D texWhite = ModContent.Request<Texture2D>("SpiritReforged/Content/Desert/ScarabBoss/Items/Projectiles/RoyalKhopeshHeld_White").Value;
-		Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
-		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		var tex = TextureAssets.Projectile[Type].Value;
+		var texWhite = TextureColorCache.ColorSolid(tex, Color.White);
+		var star = AssetLoader.LoadedTextures["Star"].Value;
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
 
