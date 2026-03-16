@@ -6,6 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using System;
@@ -150,8 +151,6 @@ public class RoyalKhopeshThrown : ModProjectile
 
 	public override void AI()
 	{
-		//Dust.NewDustPerfect(Projectile.Center + new Vector2(0, -30).RotatedBy(Projectile.rotation), DustID.Sand, Vector2.Zero, (int)MathHelper.Lerp(150, 240, 1f - Projectile.timeLeft / 120f), default, 1f).noGravity = true;
-
 		if (Main.rand.NextBool(5))
 		{
 			float progress = Projectile.timeLeft / (float)(MAX_TIMELEFT / 2);
@@ -266,7 +265,7 @@ public class RoyalKhopeshThrown : ModProjectile
 		Main.instance.LoadProjectile(985);
 
 		var tex = TextureAssets.Projectile[ModContent.ProjectileType<RoyalKhopeshHeld>()].Value;
-		var texWhite = ModContent.Request<Texture2D>("SpiritReforged/Content/Desert/ScarabBoss/Items/Projectiles/RoyalKhopeshHeld_White").Value;
+		var texWhite = TextureColorCache.ColorSolid(tex, Color.White);
 
 		float fadeOut = 1f;
 
