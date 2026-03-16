@@ -47,6 +47,7 @@ public partial class Scarabeus : ModNPC
 	public float trailOpacity;
 	public float squishY = 1f;
 	public float iridescenceBoost;
+	public int scarabColorIndex = 0;
 
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
@@ -181,6 +182,7 @@ public partial class Scarabeus : ModNPC
 		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.08f);
 		FlipShadersOnOff(spriteBatch, sheenShader, true);
 
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);

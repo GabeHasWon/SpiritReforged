@@ -233,6 +233,8 @@ public partial class Scarabeus : ModNPC
 		//Slower framerate right before the wings reveal
 		int framerate = currentFrame.Y == 6 ? 5 : 12;
 
+		Main.musicFade[Main.curMusic] = 1;
+
 		//Spawn effects
 		if (!jumped && Counter == 0) 
 		{

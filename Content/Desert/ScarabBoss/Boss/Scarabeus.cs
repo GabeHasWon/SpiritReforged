@@ -39,12 +39,12 @@ public partial class Scarabeus : ModNPC
 	public static int STAT_DEFENSE = 10;
 
 	//Contact damage
-	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 30;
-	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 40;
-	public static int STAT_GROUNDPOUND_CONTACT_DAMAGE = 40;
-	public static int STAT_ROLL_CONTACT_DAMAGE = 25;
-	public static int STAT_SLAM_CONTACT_DAMAGE = 45;
-	public static int STAT_FLYDASH_CONTACT_DAMAGE = 45;
+	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 26;
+	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 34;
+	public static int STAT_GROUNDPOUND_CONTACT_DAMAGE = 34;
+	public static int STAT_ROLL_CONTACT_DAMAGE = 20;
+	public static int STAT_SLAM_CONTACT_DAMAGE = 38;
+	public static int STAT_FLYDASH_CONTACT_DAMAGE = 38;
 	public static float STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER = 2f;
 	public static float STAT_CONTACT_DAMAGE_MASTER_MULTIPLIER = 3f;
 
@@ -68,6 +68,9 @@ public partial class Scarabeus : ModNPC
 		return (int)(damageModified);
 	}
 	#endregion
+
+	private static int Phase1Music;
+	private static int Phase2Music;
 
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
@@ -182,6 +185,9 @@ public partial class Scarabeus : ModNPC
 
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
+
+		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
+		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
 	}
 
 	public override void SetDefaults()
@@ -224,7 +230,10 @@ public partial class Scarabeus : ModNPC
 		if (!NPC.IsABestiaryIconDummy)
 			NPC.Opacity = 0;
 
-		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
+		int activeScarabs = Main.npc.Count(n => n.active && n.type == Type);
+		scarabColorIndex = activeScarabs - 1;
+
+		Music = Phase1Music;
 	}
 
 	//No journey scaling cuz we aleady scale stuff
@@ -266,6 +275,9 @@ public partial class Scarabeus : ModNPC
 			NPC.Opacity = 1f;
 			phaseTwo = true;
 		}
+
+		if (phaseTwo && Music == Phase1Music)
+			Music = Phase2Music;
 
 		bool retarget = !IsIdling;
 		float counterTickMultiplier = _stateAI[(int)CurrentState](ref retarget);
