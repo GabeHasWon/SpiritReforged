@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Visuals.Skies;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -33,6 +34,8 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 		}
 		private static float _heatHazeIntensity;
 
+		private static Vector2 sunPosition = Vector2.Zero;
+
 		private static Filter myFilter;
 
 		public ScarabHeatHazeShaderData(Asset<Effect> shader, string passName)
@@ -62,6 +65,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 
 			Texture2D sunTex = TextureAssets.Sun.Value;
 			Vector2 position = SunMoonILEdit.SunDrawData.Position;
+			sunPosition = position;
 			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
 			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
 			Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
@@ -101,24 +105,21 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss
 		public override void Update(GameTime gameTime)
 		{
 			UseOpacity(heatHazeOpacity);
-			UseIntensity(HeatHazeIntensity);
-
-            //Taken from sepia dst screenshader
-            float screenPositionInTiles = (Main.screenPosition.Y + Main.screenHeight / 2f) / 16f;
-            //Calculates how much on the surface we are
-            float surfaceValue = 1f - Utils.SmoothStep((float)Main.worldSurface, (float)Main.worldSurface + 30f, screenPositionInTiles);
-            Vector2 midnightDirection = Utils.GetDayTimeAsDirectionIn24HClock(0f);
-
-            //Use the dot product between clock hand directions to find if its night or not and have a smooth transition
-            //Then multiply the "surface value" by it so that during the night , surface is 0 as if we were undeground
-            surfaceValue *= 1 - Utils.SmoothStep(0.2f, 0.4f, Vector2.Dot(midnightDirection, Utils.GetDayTimeAsDirectionIn24HClock()));
-
-            //Lower opacity when on surface at day
-            UseProgress(1 - surfaceValue * 0.7f);
+			UseIntensity(Math.Min(1, HeatHazeIntensity + Sandstorm.Severity * 0.2f));
+            UseProgress(Sandstorm.Severity);
         }
 
         public override void Apply()
         {
+			Vector2 adjustedScreenSunPosition = Vector2.Transform(sunPosition, Main.BackgroundViewMatrix.EffectMatrix);
+			base.Shader.Parameters["sunPosition"]?.SetValue(adjustedScreenSunPosition);
+
+			Vector2 tileTargetCorner = Vector2.Transform(Main.sceneTilePos - Main.screenPosition, Main.Transform);
+			Vector2 tileTargetCorner2 = Vector2.Transform(Main.sceneTilePos - Main.screenPosition + Main.instance.tileTarget.Size(), Main.Transform);
+
+			base.Shader.Parameters["tileTarget"]?.SetValue(Main.instance.tileTarget);
+			base.Shader.Parameters["tileTargetTopLeft"]?.SetValue(tileTargetCorner);
+			base.Shader.Parameters["tileTargetBottomRight"]?.SetValue(tileTargetCorner2);
 			base.Apply();
         }
     }

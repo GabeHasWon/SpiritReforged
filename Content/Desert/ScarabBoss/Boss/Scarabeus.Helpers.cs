@@ -4,6 +4,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
+using System.Linq;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -35,10 +36,15 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo)
 		{
-			Add(AIState.Shockwave, 1 - Utils.GetLerpValue(600f, 1000f, distanceToTargetX, true) * 0.4f);
+			float targetFloorY = FindGroundFromPositionIgnorePlatforms(Target.Center).Y;
+			float myFloorY = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y;
+
+			float distanceToTargetY = myFloorY - targetFloorY;
+
+			Add(AIState.Shockwave, 1 - Utils.GetLerpValue(600f, 1000f, distanceToTargetX, true) * 0.3f - Utils.GetLerpValue(200f, 600f, distanceToTargetY, true) * 0.5f);
 			Add(AIState.GroundPound, 1 + Utils.GetLerpValue(700f, 1000f, distanceToTargetX, true) * 0.4f);
 			Add(AIState.Dig, 1 + Utils.GetLerpValue(700f, 1000f, distanceToTargetX, true) * 0.4f);
-			Add(AIState.Roll, 1);
+			Add(AIState.Roll, 1 - Utils.GetLerpValue(300f, 500f, distanceToTargetY, true) * 0.5f);
 		}
 		else
 		{
@@ -52,10 +58,15 @@ public partial class Scarabeus : ModNPC
 		LastAttack = selectedState;
 		ShiftUpToFloorLevel();
 		NPC.velocity.Y = Math.Min(NPC.velocity.Y, 0);
+		if (!phaseTwo)
+			NPC.rotation = 0f;
 		return selectedState;
 
 		void Add(AIState element, double weight) //Adds to state and automatically avoids duplicates
 		{
+			if (weight <= 0)
+				return;
+
 			float weightMult = LastAttack == element ? 0.1f : 1f;
 			state.Add(element, weight * weightMult);
 		}
@@ -151,5 +162,23 @@ public partial class Scarabeus : ModNPC
 
 		if (shifted)
 			NPC.netUpdate = true;
+	}
+
+	public bool GetClosestDesertPlayer(float maxDistance)
+	{
+		IEnumerable<Player> potentialTargets = Main.player.Where(p => p.active && !p.dead && p.ZoneDesert && p.Distance(NPC.Center) < maxDistance);
+		if (potentialTargets.Count() == 0)
+			return false;
+
+		Player targetChoice = potentialTargets.OrderBy(p => p.Distance(NPC.Center) - p.aggro).FirstOrDefault();
+		if (targetChoice == null)
+			return false;
+
+		int oldTarget = NPC.target;
+		NPC.target = targetChoice.whoAmI;
+		NPC.targetRect = targetChoice.Hitbox;
+		if (oldTarget != NPC.target)
+			NPC.netUpdate = true;
+		return true;
 	}
 }

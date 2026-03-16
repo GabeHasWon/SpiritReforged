@@ -6,7 +6,11 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using System.IO;
+using System.Linq;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.Creative;
+using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -15,6 +19,13 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 [AutoloadGlowmask("255,255,255", false)]
 public partial class Scarabeus : ModNPC
 {
+	#region SFX
+	public static readonly SoundStyle GroundPoundFallSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Falling");
+	public static readonly SoundStyle GroundPoundSlamSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/GroundPound");
+	public static readonly SoundStyle RollStartSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/RollDash");
+	public static readonly SoundStyle SlideScreechSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Slide");
+	#endregion
+
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
 	private static int PhaseTwoHeadSlot;
@@ -125,7 +136,7 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [8, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25]);
 	}
 
@@ -204,6 +215,7 @@ public partial class Scarabeus : ModNPC
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
 
+		ManageSandstormffects();
 		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, 0.5f, (NPC.life / (float)NPC.lifeMax), true);
 	}
 
@@ -289,6 +301,28 @@ public partial class Scarabeus : ModNPC
 	{
 		if (!player.ZoneDesert)
 			modifiers.FinalDamage /= 3;
+	}
+
+	public void ManageSandstormffects()
+	{
+		foreach (Player Player in Main.player.Where(p => p.active && !p.dead))
+			Player.buffImmune[BuffID.WindPushed] = true;
+
+		if (!phaseTwo || CreativePowerManager.Instance.GetPower<CreativePowers.FreezeWindDirectionAndStrength>().Enabled || CreativePowerManager.Instance.GetPower<CreativePowers.FreezeTime>().Enabled)
+			return;
+
+		Sandstorm.Happening = true;
+		Sandstorm.TimeLeft = 60;
+		if (Sandstorm.TimeLeft < 2)
+			Sandstorm.TimeLeft = 2;
+
+		//Sandstorm ramps up as the fight progresses
+		float intendedSandstormPower = 0.2f + 0.8f * Utils.GetLerpValue(0.5f, 0.2f, NPC.life / (float)NPC.lifeMax, true);
+		float sandstormPower = Math.Max(MathHelper.Lerp(Sandstorm.Severity, intendedSandstormPower, 0.2f), 0.2f);
+
+		Sandstorm.Severity = Math.Max(Sandstorm.Severity, sandstormPower);
+		Sandstorm.IntendedSeverity = Math.Max(Sandstorm.IntendedSeverity, sandstormPower);
+		Main.windSpeedTarget = 0.8f;
 	}
 
 	/*public override bool PreKill()

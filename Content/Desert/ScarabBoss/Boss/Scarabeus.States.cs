@@ -315,8 +315,6 @@ public partial class Scarabeus : ModNPC
 
 	public void GroundedIdle(ref float nextAttackWaitTime)
 	{
-		NPC.rotation = 0f;
-
 		//when grounded scarabeus doesn't actually collide with tiles like normal otherwise IT GETS STUCK EVERYWHERE LIKE A CHUD
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
@@ -358,6 +356,7 @@ public partial class Scarabeus : ModNPC
 		bool inWater = Collision.WetCollision(collisionOrigin, collisionWidth, collisionHeight + 8);
 		bool wantsToSwim = inWater && NPC.Bottom.Y > targetHitbox.Bottom + 20;
 		bool swimming = false;
+		bool falling = false;
 
 		float walkSpeed = 0f;
 		if (CurrentState == AIState.IdleTowardsPlayer)
@@ -397,9 +396,9 @@ public partial class Scarabeus : ModNPC
 		else
 		{
 			NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y + NPC.gravity * 1.5f, -8f, 16f);
-
 			//Heavily slowdown wait time while scarab is falling
 			nextAttackWaitTime *= 12f;
+			falling = NPC.velocity.Y > 5;
 		}
 
 		//NPC.Step();
@@ -407,7 +406,16 @@ public partial class Scarabeus : ModNPC
 		if (swimming && Math.Abs(fps) < 14f)
 			fps = 14f * NPC.direction;
 
-		UpdateFrame(1, (int)fps, PhaseOneProfile);
+		if (falling)
+		{
+			SetFrame(0, 8, PhaseOneProfile);
+			NPC.rotation = NPC.velocity.X * 0.03f; 
+		}
+		else
+		{
+			NPC.rotation = 0f;
+			UpdateFrame(1, (int)fps, PhaseOneProfile);
+		}
 	}
 
 	public void FlyHover(ref float nextAttackWaitTime, float wingbeatSpeed = 1f)
@@ -570,6 +578,9 @@ public partial class Scarabeus : ModNPC
 					NPC.velocity.X = NPC.direction * 12f;
 					NPC.noGravity = true;
 					NPC.noTileCollide = true;
+
+					if (!Main.dedServ)
+						SoundEngine.PlaySound(RollStartSound, NPC.Center, RollSoundTracking);
 				}
 
 				break;
@@ -634,6 +645,9 @@ public partial class Scarabeus : ModNPC
 					trailOpacity = 0f;
 					NPC.rotation = 0;
 					SetFrame(0, 6, PhaseOneProfile);
+
+					if (!Main.dedServ)
+						SoundEngine.PlaySound(SlideScreechSound, NPC.Center, RollSoundTracking);
 				}
 
 				break;
@@ -683,6 +697,13 @@ public partial class Scarabeus : ModNPC
 		}
 
 		return 1f;
+
+		bool RollSoundTracking(ActiveSound soundInstance)
+		{
+			if (CurrentState == AIState.Roll)
+				soundInstance.Position = NPC.Center;
+			return true;
+		}
 	}
 
 	public void CreateRollParticles()
@@ -742,6 +763,7 @@ public partial class Scarabeus : ModNPC
 				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 				ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
+				SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
 			}
 		}
 
@@ -867,6 +889,10 @@ public partial class Scarabeus : ModNPC
 					profile = PhaseTwoProfile;
 				}
 
+				//Do the fall sound when we transition away from the roll frame
+				if (currentFrame.X != frame.X && (currentFrame.X != 0))
+					SoundEngine.PlaySound(GroundPoundFallSound, NPC.Center, GroundPoundFallSoundTrack);
+
 				SetFrame(frame, profile); 	
 				NPC.rotation = NPC.rotation.AngleLerpDirectional(NPC.velocity.Y * 0.003f * NPC.direction, 0.06f + Utils.GetLerpValue(0f, 6f, NPC.velocity.Y, true) * 0.14f, NPC.direction == -1);
 			
@@ -899,6 +925,7 @@ public partial class Scarabeus : ModNPC
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
+					SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
 				}
 
 				for (int i = -1; i <= 1; i += 2)
@@ -941,6 +968,14 @@ public partial class Scarabeus : ModNPC
 
 		NPC.velocity.Y += downwardsSlamGravity * artificialGravityMultiplier;
 		return 1f;
+	}
+
+	bool GroundPoundFallSoundTrack(ActiveSound sound)
+	{
+		sound.Position = NPC.Center;
+		if (NPC.ai[2] > GroundPoundBounceCount)
+			return false;
+		return true;
 	}
 
 	void GroundPoundSpin()
@@ -1128,7 +1163,6 @@ public partial class Scarabeus : ModNPC
 					Counter = 0;
 					digState++;
 					NPC.dontTakeDamage = false; 
-					DigProjectileBurst();
 
 					//Attack ends early in phase 2, with scarabeus transitionning from the dig immediately into a singular ground pound
 					if (phaseTwo)
@@ -1137,6 +1171,7 @@ public partial class Scarabeus : ModNPC
 						NPC.Opacity = 1;
 						NPC.ai[2] = GroundPoundBounceCount - 1;
 						GroundPoundBounce(ref NPC.ai[2], 0.38f);
+						DigProjectileBurst();
 						SetFrame(RollFrame, PhaseOneProfile);
 						NPC.noTileCollide = true;
 						NPC.noGravity = true;
@@ -1191,7 +1226,7 @@ public partial class Scarabeus : ModNPC
 
 	public void DigProjectileBurst()
 	{
-		if (DifficultyScale < 2 || !phaseTwo || Main.netMode == NetmodeID.MultiplayerClient)
+		if (DifficultyScale < 2 || Main.netMode == NetmodeID.MultiplayerClient)
 			return;
 
 		int projectileType = ModContent.ProjectileType<SandballProjectile>();
@@ -1203,6 +1238,13 @@ public partial class Scarabeus : ModNPC
 
 		for (int j = -2; j < 2; j++)
 		{
+			if (j == 0)
+				continue;
+
+			//1 less projectile at the side scarab emerges
+			if (Math.Abs(j) == 2 && Math.Sign(j) == Math.Sign(NPC.velocity.X))
+				continue;
+
 			Vector2 velocity = -Vector2.UnitY.RotatedBy(j * 0.25f + Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(9f, 11f);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, NPC.damage / 4, 3, Main.myPlayer, groundPos.X, groundPos.Y);
 		}		
@@ -1215,7 +1257,7 @@ public partial class Scarabeus : ModNPC
 	{
 		const float teleraph_time = 40;
 		const float recovery_time = 20;
-		const float idealXDistanceToPlayer = 250f;
+		const float idealXDistanceToPlayer = 500f;
 		float distXToTarget = Math.Abs(NPC.Center.X - Target.Center.X);
 
 		ref float dashState = ref NPC.ai[2];
@@ -1240,10 +1282,13 @@ public partial class Scarabeus : ModNPC
 
 				if (distXToTarget > idealXDistanceToPlayer)
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
+				else
+					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, (NPC.Center.X - Target.Center.X) < 0 ? -13 : 13, 0.034f);
+
 				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, 0f, 0.02f);
 				NPC.rotation = NPC.velocity.X * 0.05f - MathF.Sin(Counter / (float)teleraph_time * 3.25f) * 0.3f * NPC.direction;
 
-				if (Counter > teleraph_time)
+				if (Counter > teleraph_time && distXToTarget > idealXDistanceToPlayer * 0.9f)
 				{
 					dashState++;
 					Counter = 0f;
@@ -1258,6 +1303,8 @@ public partial class Scarabeus : ModNPC
 
 					NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, ballisticTarget, 0.6f, heightAboveTarget: Math.Abs(NPC.Center.Y - targetHeight));
 					NPC.velocity.Y *= -1;
+					if (Math.Abs(NPC.velocity.X) < 9)
+						NPC.velocity.X = (NPC.velocity.X < 0 ? -1 : 1) * 9;
 				}
 
 				break;

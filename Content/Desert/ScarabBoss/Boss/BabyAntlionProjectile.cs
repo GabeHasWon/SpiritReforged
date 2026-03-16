@@ -129,6 +129,13 @@ public class BabyAntlionProjectile : ModProjectile
 
 		if (distanceToScarab < 40f)
 		{
+			//No burnt corpses in normal
+			if (!Main.expertMode)
+			{
+				Projectile.Kill();
+				return;
+			}
+
 			CurrentState = AIState.Burnt;
 			Projectile.velocity.X = 0;
 			Projectile.velocity.Y = 0;
