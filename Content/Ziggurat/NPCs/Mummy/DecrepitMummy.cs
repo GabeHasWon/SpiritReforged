@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Vanity;
@@ -53,6 +54,7 @@ internal class DecrepitMummy : ModNPC
 		NPC.aiStyle = -1;
 
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
+		UndeadNPC.UndeadTypes.Add(Type);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
