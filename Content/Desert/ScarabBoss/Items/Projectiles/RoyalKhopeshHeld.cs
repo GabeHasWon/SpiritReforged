@@ -1,22 +1,9 @@
-﻿using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.ProjectileCommon;
-using System.IO;
-using static SpiritReforged.Common.Easing.EaseFunction;
-using static Microsoft.Xna.Framework.MathHelper;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Content.Underground.Moss.MossFlasks;
-using SpiritReforged.Content.Aether.Items;
-using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.PrimitiveRendering.Trails;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
-using Terraria;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
@@ -302,7 +289,7 @@ public class RoyalKhopeshHeld : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.25f * progress;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = Vector2.UnitX * OriginalDirection * 1.5f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(tipPosition + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(tipPosition + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
 

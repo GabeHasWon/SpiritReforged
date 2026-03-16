@@ -1,22 +1,48 @@
-﻿using Humanizer.Localisation;
-using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using System;
 using System.IO;
 using Terraria.Audio;
 using Terraria.Graphics.Renderers;
-using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
+
 public class RoyalKhopeshThrown : ModProjectile
 {
+	internal class KhopeshTugPacketData : PacketData
+	{
+		private readonly short _who;
+		private readonly Vector2 _target;
+
+		public KhopeshTugPacketData() { }
+
+		public KhopeshTugPacketData(short who, Vector2 target)
+		{
+			_who = who;
+			_target = target;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			short who = reader.ReadInt16();
+			Vector2 target = reader.ReadVector2();
+			Main.npc[who].GetGlobalNPC<RoyalKhopeshGlobalNPC>().SetTug(target);
+			Main.npc[who].netUpdate = true;
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_who);
+			modPacket.WriteVector2(_target);
+		}
+	}
+
 	// Maximum distance in which enemies will recalled with the sword
 	public const int MAX_RECALL_DISTANCE = 400;
 	public const int MAX_TIMELEFT = 240;
@@ -94,7 +120,6 @@ public class RoyalKhopeshThrown : ModProjectile
 
 			return false;
 		}
-			
 
 		if (Stuck)
 		{
@@ -114,7 +139,7 @@ public class RoyalKhopeshThrown : ModProjectile
 				Projectile.rotation = (Projectile.Center - Projectile.velocity * 5f).DirectionTo(target.Center).ToRotation() + MathHelper.PiOver2;
 			}
 
-			if (Main.mouseRight && Projectile.timeLeft < MAX_TIMELEFT - 40 && !Dying)
+			if (Main.myPlayer == Projectile.owner && Main.mouseRight && Projectile.timeLeft < MAX_TIMELEFT - 40 && !Dying)
 			{
 				Projectile.friendly = true;
 
@@ -126,13 +151,18 @@ public class RoyalKhopeshThrown : ModProjectile
 
 					if (dist < MAX_RECALL_DISTANCE)
 					{
-						float lerp = dist / (float)MAX_RECALL_DISTANCE;
+						float lerp = dist / MAX_RECALL_DISTANCE;
 
 						target.velocity += target.DirectionTo(Main.player[Projectile.owner].Center + new Vector2(0f, -100f)) * MathHelper.Lerp(5f, 24f, lerp);
 
-						target.GetGlobalNPC<RoyalKhopeshGlobalNPC>().targetPosition = Main.player[Projectile.owner].Center + new Vector2(0f, -100f);
-						target.GetGlobalNPC<RoyalKhopeshGlobalNPC>().slowTimer = 30;
-					}				
+						if (Main.netMode == NetmodeID.MultiplayerClient)
+						{
+							new NPCVelocityPacketData((short)target.whoAmI, target.velocity).Send();
+							new KhopeshTugPacketData((short)target.whoAmI, Main.player[Projectile.owner].Center + new Vector2(0f, -100f)).Send();
+						}
+						else
+							target.GetGlobalNPC<RoyalKhopeshGlobalNPC>().SetTug(Main.player[Projectile.owner].Center + new Vector2(0f, -100f));
+					}
 				}
 
 				owner.GetModPlayer<RoyalKhopeshPlayer>().EmpoweredStrikeTimer = 120;
@@ -164,7 +194,7 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f * progress;
 			float scale = Main.rand.NextFloat(0.05f, 0.1f) * progress;
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.5f);
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseBuilder.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 		}
 
 		if (Dying)
@@ -185,7 +215,7 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.1f) * 0.5f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseBuilder.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 		}
 		else
 		{

@@ -8,6 +8,7 @@ using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -155,6 +156,33 @@ public class RoyalKhopeshGlobalNPC : GlobalNPC
 
 			if (dist is < 10f or > 400f)
 				targetPosition = null;
+		}
+	}
+
+	public void SetTug(Vector2 targetPosition)
+	{
+		this.targetPosition = targetPosition;
+		slowTimer = 30;
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		bool hasPos = targetPosition is not null;
+		bitWriter.WriteBit(hasPos);
+
+		if (hasPos)
+		{
+			binaryWriter.WriteVector2(targetPosition.Value);
+			binaryWriter.Write((byte)(slowTimer > 0 ? slowTimer : 0)); // Don't underflow the byte lol
+		}
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		if (bitReader.ReadBit())
+		{
+			targetPosition = binaryReader.ReadVector2();
+			slowTimer = binaryReader.ReadByte();
 		}
 	}
 }
