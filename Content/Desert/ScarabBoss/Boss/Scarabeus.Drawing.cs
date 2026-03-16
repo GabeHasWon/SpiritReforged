@@ -214,6 +214,15 @@ public partial class Scarabeus : ModNPC
 				currentFrame.Y = 0; //Reset
 		}
 
+		/*
+		MultipliableFloat test = new MultipliableFloat();
+		Rectangle hitbox = NPC.Hitbox;
+		ModifyCollisionData(Target.Hitbox, ref NPC.type, ref test, ref hitbox);
+		hitbox.X -= (int)Main.screenPosition.X;
+		hitbox.Y -= (int)Main.screenPosition.Y;
+		spriteBatch.Draw(TextureAssets.MagicPixel.Value, hitbox, dealContactDamage ? Color.Red * 0.8f : Color.Black * 0.4f);
+		*/
+
 		return false;
 	}
 

@@ -222,7 +222,7 @@ public class BabyAntlionProjectile : ModProjectile
 	{
 		Projectile.velocity.X = 0;
 		Projectile.velocity.Y += 0.2f;
-		Projectile.rotation += Projectile.direction * 0.01f;
+		Projectile.rotation += Projectile.direction * 0.06f;
 
 		//Sharticles
 		if (!Main.dedServ & Main.rand.NextBool(3))

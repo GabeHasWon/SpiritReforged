@@ -1203,6 +1203,12 @@ public partial class Scarabeus : ModNPC
 
 					if (Counter % 20 == 0)
 						BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
+
+					//About to emerge!
+					if (Counter >= dig_time - 30)
+					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 6.5f, 3, 30, uniqueIdentity: "ScarabeusDigRumble"));
+					}
 				}
 
 				if (Counter > dig_time) //Reemerge
