@@ -31,19 +31,21 @@ public partial class Scarabeus : ModNPC
 	{
 		WeightedRandom<AIState> state = new();
 
+		float distanceToTargetX = Math.Abs(Target.Center.X - NPC.Center.X);
+
 		if (!phaseTwo)
 		{
-			Add(AIState.Shockwave, 1);
-			Add(AIState.GroundPound, 1);
-			Add(AIState.Dig, 1);
+			Add(AIState.Shockwave, 1 - Utils.GetLerpValue(600f, 1000f, distanceToTargetX, true) * 0.4f);
+			Add(AIState.GroundPound, 1 + Utils.GetLerpValue(700f, 1000f, distanceToTargetX, true) * 0.4f);
+			Add(AIState.Dig, 1 + Utils.GetLerpValue(700f, 1000f, distanceToTargetX, true) * 0.4f);
 			Add(AIState.Roll, 1);
 		}
 		else
 		{
-			Add(AIState.SwoopDash, 1);
+			Add(AIState.SwoopDash, 1 - Utils.GetLerpValue(100f, 30f, distanceToTargetX, true) * 0.2f);
 			Add(AIState.GroundPound, 1);
 			Add(AIState.Dig, 1);
-			Add(AIState.Swarm, 122223);
+			Add(AIState.Swarm, 0.85f);
 		}
 
 		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;

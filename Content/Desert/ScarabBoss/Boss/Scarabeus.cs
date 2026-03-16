@@ -78,6 +78,7 @@ public partial class Scarabeus : ModNPC
 		SpawnAnim,
 		Charmed,
 		PhaseTransitionAnim,
+		Despawn,
 
 		IdleTowardsPlayer,
 		IdleAwayFromPlayer,
@@ -135,6 +136,7 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
 		_stateAI[(int)AIState.Charmed] = CharmedIdle;
 		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
+		_stateAI[(int)AIState.Despawn] = DigAttack;
 		//Idle variants
 		_stateAI[(int)AIState.IdleTowardsPlayer]       = IdleBetweenAttacks;
 		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
@@ -221,7 +223,7 @@ public partial class Scarabeus : ModNPC
 		//Its the dig state but this is the hitbox for the horn swipe it does at the end specifically!
 		else if (CurrentState == AIState.Dig)
 		{
-			npcHitbox.Inflate(0, 10);
+			npcHitbox.Inflate(10, 10);
 			npcHitbox.X += NPC.direction * 45;
 		}
 

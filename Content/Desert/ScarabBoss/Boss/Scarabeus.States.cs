@@ -234,16 +234,21 @@ public partial class Scarabeus : ModNPC
 		int framerate = currentFrame.Y == 6 ? 5 : 12;
 
 		//Spawn effects
-		if (!jumped && !Main.dedServ && Counter == 0) 
+		if (!jumped && Counter == 0) 
 		{
-			var easeAnimation = new AnimationSequence()
-				.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
-				.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
-				.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+			ShiftUpToFloorLevel();
 
-			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+			if (!Main.dedServ)
+			{
+				var easeAnimation = new AnimationSequence()
+					.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
+					.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
+					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+			}
 		}
-		else if (!jumped)
+
+		if (!jumped)
 		{
 			if (NPC.velocity.Y > 0 && OnTopOfTiles)
 				NPC.velocity.Y = 0;
@@ -270,7 +275,6 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 	#endregion
-
 	#endregion
 
 	#region Idling between attacks
@@ -1060,6 +1064,13 @@ public partial class Scarabeus : ModNPC
 						digState++; //Disappear into the ground
 						NPC.dontTakeDamage = true;
 						Counter = 0;
+					}
+
+					//If were despawning
+					if (CurrentState == AIState.Despawn)
+					{
+						NPC.active = false;
+						return 0f;
 					}
 				}
 

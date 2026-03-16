@@ -175,7 +175,8 @@ public class SandShockwavePillar : ModProjectile
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		Rectangle recenteredHitbox = new Rectangle((int)Projectile.Center.X - 10, (int)Projectile.position.Y - HitboxHeight, 20, HitboxHeight);
+		float hitboxHeight = HitboxHeight * (0.4f + 0.6f * Math.Min((MAX_TIMELEFT - Projectile.timeLeft) / 14f, 1));
+		Rectangle recenteredHitbox = new Rectangle((int)Projectile.Center.X - 10, (int)(Projectile.position.Y - hitboxHeight), 20, (int)hitboxHeight);
 		return recenteredHitbox.Intersects(targetHitbox);
 	}
 
