@@ -47,17 +47,6 @@ public class BabyAntlionProjectile : ModProjectile
 		set => Projectile.ai[2] = (int)value;
 	}
 
-	public override void Load()
-	{
-		PlayerEvents.OnModifyHurt += NoKnockback;
-	}
-
-	private void NoKnockback(Player player, ref Player.HurtModifiers modifiers)
-	{
-		if (modifiers.DamageSource != null & modifiers.DamageSource.SourceProjectileType == Type)
-			modifiers.Knockback *= 0f;
-	}
-
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
@@ -65,7 +54,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(16, 16);
+		Projectile.Size = new(26, 26);
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
 		Projectile.penetrate = -1;
@@ -249,6 +238,13 @@ public class BabyAntlionProjectile : ModProjectile
 			g.position -= Vector2.One * 10f;
 			g.rotation = Main.rand.NextFloat(6.24f);
 		}
+	}
+
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers) => modifiers.Knockback *= 0f;
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		target.AddBuff(BuffID.OnFire, Scarabeus.STAT_ANTLION_ONFIRE_DURATION, false);
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)

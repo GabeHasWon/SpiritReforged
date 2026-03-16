@@ -291,6 +291,8 @@ public partial class Scarabeus : ModNPC
 				ExtraMemory *= 1.65f;
 			if (!phaseTwo)
 				ExtraMemory *= 0.9f + 0.1f * Utils.GetLerpValue(0.5f, 1f, NPC.life / (float)NPC.lifeMax, true);
+			else
+				ExtraMemory *= 0.7f + 0.3f * Utils.GetLerpValue(0f, 0.3f, NPC.life / (float)NPC.lifeMax, true);
 
 			NPC.netUpdate = true;
 		}
@@ -337,7 +339,7 @@ public partial class Scarabeus : ModNPC
 		if (playerDistanceX < 60f)
 			CurrentState = AIState.IdleBackAwayFast;
 		//Slow down the fast back away if enough distance has been put between scarab and the player
-		if (playerDistanceX > 100f && CurrentState == AIState.IdleBackAwayFast)
+		if (playerDistanceX > 130f && CurrentState == AIState.IdleBackAwayFast)
 			CurrentState = AIState.IdleAwayFromPlayer;
 
 		//Come towards the player if the sightline is broken
@@ -365,7 +367,7 @@ public partial class Scarabeus : ModNPC
 			walkSpeed = -2f;
 		else if (CurrentState == AIState.IdleBackAwayFast)
 		{
-			walkSpeed = -5f;
+			walkSpeed = -6.5f;
 			nextAttackWaitTime *= 0.8f; //Cooldown goes down faster while backing away fast
 		}
 
@@ -519,7 +521,7 @@ public partial class Scarabeus : ModNPC
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.03f);
 					NPC.velocity.Y += 0.15f;
 
-					SetFrame(RollFrame, PhaseOneProfile);
+					SetFrame(RollFrame, PhaseTwoProfile);
 					GroundPoundSpin();
 					dealContactDamage = true;
 					NPC.noGravity = false;
@@ -530,6 +532,9 @@ public partial class Scarabeus : ModNPC
 						NPC.velocity.Y *= 0;
 						doRollBounceTelegraph = true;
 						ShiftUpToFloorLevel();
+
+						SoundEngine.PlaySound(BounceSound, NPC.Center);
+						GroundImpactVFX(Math.Abs(NPC.velocity.Y));
 					}
 				}
 
@@ -542,7 +547,7 @@ public partial class Scarabeus : ModNPC
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
-					SetFrame(RollFrame, PhaseOneProfile);
+					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 					Counter = 0;
 					dashState++;
 
@@ -557,7 +562,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: // Bounce before the roll
-				SetFrame(RollFrame, PhaseOneProfile);
+				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 				GroundPoundSpin();
 				NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
 
@@ -580,7 +585,11 @@ public partial class Scarabeus : ModNPC
 					NPC.noTileCollide = true;
 
 					if (!Main.dedServ)
+					{
 						SoundEngine.PlaySound(RollStartSound, NPC.Center, RollSoundTracking);
+						SoundEngine.PlaySound(BounceSound with { Volume = 0.4f}, NPC.Center);
+						GroundImpactVFX(3f);
+					}
 				}
 
 				break;
@@ -592,7 +601,7 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * rollSpeed, 0.1f);
 				NPC.rotation += 0.01f * NPC.velocity.X;
 
-				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y;
+				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center, Math.Max(NPC.Center.Y - 14f, Target.Bottom.Y)).Y;
 
 				//Match floor height when the slope is low enough
 				if (floorHeight > NPC.Top.Y && floorHeight < NPC.Bottom.Y + 40)
@@ -620,7 +629,7 @@ public partial class Scarabeus : ModNPC
 					return 0f;
 				}
 
-				SetFrame(RollFrame, PhaseOneProfile);
+				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 				trailOpacity = Math.Min(1, Counter / 25f);
 				dealContactDamage = true;
 				if (!Main.dedServ)
@@ -738,18 +747,24 @@ public partial class Scarabeus : ModNPC
 	#region Shockwave Slam
 	public float ShockwaveAttack(ref bool retarget)
 	{
-		const int duration = 98;
-
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 		NPC.velocity.X *= 0.8f;
 
 		retarget = false;
 		if (Counter < 5)
+		{
+			retarget = true;
 			NPC.FaceTarget();
+		}
 
 		int lastFrameY = currentFrame.Y;
-		UpdateFrame(7, (int)(Profile.GetFrameCount(7) * 60f / duration), PhaseOneProfile);
+		int framerate = 10;
+		//Faster telegraph if the player is going past scarab
+		if (lastFrameY < 9)
+			framerate += (int)(10 * Utils.GetLerpValue(100, -30, (Target.Center.X - NPC.Center.X) * NPC.direction, true));
+
+		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
 
 		if (lastFrameY < 9 && currentFrame.Y >= 9)
 		{
@@ -767,7 +782,7 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		if (Counter > duration)
+		if (updateResult == FrameState.Stopped)
 			return GoBackToIdle();
 		return 1f;
 	}
@@ -775,38 +790,59 @@ public partial class Scarabeus : ModNPC
 	public void SpawnShockwaveFissure()
 	{
 		Vector2 fissurePos = FindGroundFromPositionIgnorePlatforms(NPC.Center);
-		int delay = 5;
-		float shockwaveHeight = 50f;
+		bool invalidFissurePosition = false;
+		const float min_travel_distance = 512;
+		const float big_burst_area = 128;
+		const float max_travel_distance = 1800;
 
-		for (int i = 0; i < 24; i++)
+		float overshootMult = 0.3f + 0.7f * Utils.GetLerpValue(2f, 5f, Math.Abs(Target.velocity.X), true);
+		float travelDistLeft = Math.Clamp(Math.Abs(NPC.Center.X - Target.Center.X) + big_burst_area * 3 * overshootMult, min_travel_distance + big_burst_area, max_travel_distance);
+
+		float fullTravelDist = travelDistLeft;
+		float travelspeed = min_travel_distance / (fullTravelDist - big_burst_area);
+		float burstSpawnDelay = 5f;
+
+		while (travelDistLeft > 0)
 		{
-			float spacing = 32f;
-			float vfxVelocity = 1.2f;
+			//The big burst has its shockwave projectiles more closely packed
+			float spacing = travelDistLeft <= big_burst_area ? 16 : 32;
+			float vfxVelocity = travelDistLeft <= big_burst_area ? 0.8f : 1.2f;
 
-			if (i < 15)
+			//Shockwave increases in height as it travels before getting even bigger at the burst point
+			float travelProgress = Utils.GetLerpValue(fullTravelDist, big_burst_area, travelDistLeft, true);
+			float shockwaveHeight = MathHelper.Lerp(50, 80, travelProgress);
+			if (travelDistLeft <= big_burst_area)
+				shockwaveHeight += Utils.Remap(travelDistLeft, big_burst_area, 0, 80, 120, true);
+
+			//Progress linearly
+			if (travelDistLeft > big_burst_area)
+				burstSpawnDelay += travelspeed;
+
+			//Kaboom!
+			if (!invalidFissurePosition)
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), fissurePos, new Vector2(NPC.direction * vfxVelocity, 0f), ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_SLAM_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, burstSpawnDelay, shockwaveHeight);
+
+			Vector2 newFissurePos = FindGroundFromPositionIgnorePlatforms(fissurePos + new Vector2(spacing * NPC.direction, -40), Math.Max(Target.Center.Y - 40, fissurePos.Y - 140));
+
+			//If we do too big a vertical jump between positions, first we try to ignore it and if for 2x in a row the elevation diff is too big, we stop the shockwave early 
+			if (Math.Abs(newFissurePos.Y - fissurePos.Y) > 200)
 			{
-				delay += 1;
-				shockwaveHeight += 4f;
-			}
-			else if (i == 15)
-			{
-				delay += 17;
-				shockwaveHeight += 50f;
+				//If we already had a broken position last time, it's over, give up
+				if (invalidFissurePosition)
+					break;
+
+				invalidFissurePosition = true;
+				newFissurePos.Y = fissurePos.Y; //Go to the old Y level
 			}
 			else
-			{
-				spacing = 16f;
-				vfxVelocity = 0.8f;
-				shockwaveHeight += 5f;
-			}
-
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), fissurePos, new Vector2(NPC.direction * vfxVelocity, 0f), ModContent.ProjectileType<SandShockwavePillar>(), NPC.damage / 4, 3, Main.myPlayer, delay, shockwaveHeight);
-
-			Vector2 newFissurePos = FindGroundFromPositionIgnorePlatforms(fissurePos + new Vector2(spacing * NPC.direction, -40));
-			if (Math.Abs(newFissurePos.Y - fissurePos.Y) > 200)
-				break;
-
+				invalidFissurePosition = false;
 			fissurePos = newFissurePos;
+
+			//If we transition from the small fissure spreading across the floor to the bigger burst at the end, add an extra delay for impact
+			if (travelDistLeft > big_burst_area && travelDistLeft - spacing <= big_burst_area)
+				burstSpawnDelay += 17f;
+
+			travelDistLeft -= spacing;
 		}
 	}
 	#endregion
@@ -845,21 +881,21 @@ public partial class Scarabeus : ModNPC
 			//Rolling up from the skies in phase 2
 			if (phaseTwo && bounceIndex == 0)
 			{
-				if (Profile != PhaseOneProfile && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
-					SetFrame(RollFrame, PhaseOneProfile);
+					SetFrame(RollFrame, PhaseTwoProfile);
 					NPC.rotation += NPC.direction;
 				}
 			}
 			else
-				SetFrame(RollFrame, PhaseOneProfile);
+				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 
 			dealContactDamage = true;
 
 			//Bounce
 			if (onTheFloor)
 				GroundPoundBounce(ref bounceIndex, downwardsSlamGravity);
-			else if (currentFrame == RollFrame && Profile == PhaseOneProfile)
+			else if (currentFrame == RollFrame)
 				GroundPoundSpin();
 		}
 
@@ -883,10 +919,11 @@ public partial class Scarabeus : ModNPC
 				//Start to unfurl as we fall down
 				Point frame = NPC.velocity.Y > 6f ? new Point(7, 8) : NPC.velocity.Y > 1f ? new Point(0, 5) : RollFrame;
 				VisualProfile profile = PhaseOneProfile;
-				if (phaseTwo && NPC.velocity.Y > 6f)
+				if (phaseTwo)
 				{
-					frame = new Point(4, 2);
 					profile = PhaseTwoProfile;
+					if (NPC.velocity.Y > 6)
+						frame = new Point(4, 2);
 				}
 
 				//Do the fall sound when we transition away from the roll frame
@@ -926,6 +963,7 @@ public partial class Scarabeus : ModNPC
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 					SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
+					GroundImpactVFX(3f);
 				}
 
 				for (int i = -1; i <= 1; i += 2)
@@ -934,7 +972,7 @@ public partial class Scarabeus : ModNPC
 					{
 						float distStep = (200 + j * 56) * i ;
 						Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), NPC.damage / 4, 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
 					}
 				}
 			}
@@ -993,9 +1031,12 @@ public partial class Scarabeus : ModNPC
 		NPC.FaceTarget();
 		Counter = 0;
 
-		Vector2 bounceTarget = Target.Center + Target.velocity * 30f;
+		Vector2 bounceTarget = FindGroundFromPositionIgnorePlatforms(Target.Center);
+		bounceTarget.Y = Math.Min(bounceTarget.Y, Target.Center.Y + 300);
+		bounceTarget += Target.velocity * 30f;
+
 		float overshootMultiplier = Utils.GetLerpValue(1f, 3f, Target.velocity.X * NPC.direction, true) * 0.8f;
-		float maxOvershootDistance = 400;
+		float maxOvershootDistance = 200;
 		float maxBounceXVel = 26f;
 
 		if (bounceIndex == GroundPoundBounceCount)
@@ -1009,10 +1050,12 @@ public partial class Scarabeus : ModNPC
 
 		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: maxBounceXVel);
 
-		if (!Main.dedServ && bounceIndex > 1)
+		if (!Main.dedServ && (bounceIndex > 1 || phaseTwo))
 		{
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 4, 15, 1800));
 			Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+			SoundEngine.PlaySound(BounceSound, NPC.Center);
+			GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.1f);
 		}
 	}
 	#endregion
@@ -1075,13 +1118,13 @@ public partial class Scarabeus : ModNPC
 				else
 				{
 					//Rolling up
-					if (Profile != PhaseOneProfile && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+					if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 					{
-						SetFrame(RollFrame, PhaseOneProfile);
+						SetFrame(RollFrame, PhaseTwoProfile);
 						NPC.rotation += NPC.direction;
 					}
 					//balling
-					else if (Profile == PhaseOneProfile && currentFrame == RollFrame)
+					else if (currentFrame == RollFrame)
 						GroundPoundSpin();
 				}
 
@@ -1092,7 +1135,11 @@ public partial class Scarabeus : ModNPC
 				{
 					//Screenshake when it hits the floor in phase 2 because it did so from a high height
 					if (!Main.dedServ && NPC.Opacity == 1 && phaseTwo)
+					{
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 7, 10, 40, 900));
+						SoundEngine.PlaySound(BounceSound, NPC.Center);
+						GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.3f);
+					}
 
 					if ((NPC.Opacity -= 0.1f) <= 0)
 					{
@@ -1172,9 +1219,11 @@ public partial class Scarabeus : ModNPC
 						NPC.ai[2] = GroundPoundBounceCount - 1;
 						GroundPoundBounce(ref NPC.ai[2], 0.38f);
 						DigProjectileBurst();
-						SetFrame(RollFrame, PhaseOneProfile);
+						SetFrame(RollFrame, PhaseTwoProfile);
 						NPC.noTileCollide = true;
 						NPC.noGravity = true;
+						if (!Main.dedServ)
+							GroundImpactVFX(1.3f);
 						return 0f;
 					}
 					else
@@ -1198,12 +1247,14 @@ public partial class Scarabeus : ModNPC
 				NPC.Opacity = Math.Min(NPC.Opacity + 0.1f, 1);
 				NPC.GravityMultiplier *= 2;
 
-				dealContactDamage = currentFrame.X == 2 && currentFrame.Y >= 6 && currentFrame.Y < 9;
+				dealContactDamage = (currentFrame.X == 2 && currentFrame.Y >= 6 && currentFrame.Y < 9) || (currentFrame.X != 2 && NPC.velocity.Y < 0);
+
+				if ((NPC.Center.X - Target.Center.X) * NPC.direction > 0)
+					NPC.velocity.X *= 0.96f;
 
 				if (Counter > 10 && NPC.velocity.Y >= 0)
 				{
 					NPC.noTileCollide = false;
-
 					if (OnTopOfTiles) //Land
 					{
 						NPC.velocity.X *= 0.1f;
@@ -1211,7 +1262,11 @@ public partial class Scarabeus : ModNPC
 						NPC.behindTiles = false;
 
 						if (currentFrame.Y < 5)
+						{
+							GroundImpactVFX(1f);
 							currentFrame.Y = 5;
+						}
+
 						if (UpdateFrame(2, 12, PhaseOneProfile, false) == FrameState.Stopped)
 							return GoBackToIdle();
 						return 1f;
@@ -1246,7 +1301,7 @@ public partial class Scarabeus : ModNPC
 				continue;
 
 			Vector2 velocity = -Vector2.UnitY.RotatedBy(j * 0.25f + Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(9f, 11f);
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, NPC.damage / 4, 3, Main.myPlayer, groundPos.X, groundPos.Y);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, GetProjectileDamage(STAT_DIG_EMERGE_DEBRIS_DAMAGE), 3, Main.myPlayer, groundPos.X, groundPos.Y);
 		}		
 	}
 	#endregion
@@ -1359,7 +1414,7 @@ public partial class Scarabeus : ModNPC
 		NPC.position.Y -= 20;
 		NPC.noTileCollide = true;
 		NPC.noGravity = false;
-		SetFrame(RollFrame, PhaseOneProfile);
+		SetFrame(RollFrame, PhaseTwoProfile);
 		return 0f;
 	}
 	#endregion
@@ -1426,7 +1481,7 @@ public partial class Scarabeus : ModNPC
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 
 		float spawnHopHeight = 4 + 2.3f * (swarmerIndex % 3);
-		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 
 		//Spawn swarmers further away that are only just meant to make it look more natural
 		if (swarmerIndex % 2 == 1)
@@ -1434,7 +1489,7 @@ public partial class Scarabeus : ModNPC
 			spawnHopHeight = 7f;
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), 20, 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 		}
 	}
 	#endregion

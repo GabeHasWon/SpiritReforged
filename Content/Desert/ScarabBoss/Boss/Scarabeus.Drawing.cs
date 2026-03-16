@@ -112,7 +112,7 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
-			return currentFrame.Y > 3;
+			return currentFrame.X > 3;
 		}
 	}
 
@@ -146,8 +146,13 @@ public partial class Scarabeus : ModNPC
 		bool originAtFeet = OriginAtFeet();
 		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
 		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
-		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
+		if (currentFrame == RollFrame)
+			origin = new(114, 104);
 
+		if (effects == SpriteEffects.FlipHorizontally)
+			origin.X = NPC.frame.Width - origin.X;
+
+		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
 		Vector2 positionOffset = Vector2.Zero;
 		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
 			positionOffset.Y += 16;

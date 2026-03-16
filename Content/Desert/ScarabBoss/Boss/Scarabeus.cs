@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.NPCCommon;
+﻿using ReLogic.Utilities;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
@@ -22,8 +23,50 @@ public partial class Scarabeus : ModNPC
 	#region SFX
 	public static readonly SoundStyle GroundPoundFallSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Falling");
 	public static readonly SoundStyle GroundPoundSlamSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/GroundPound");
+	public static readonly SoundStyle BounceSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Bounce", 3) { MaxInstances = 3};
 	public static readonly SoundStyle RollStartSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/RollDash");
 	public static readonly SoundStyle SlideScreechSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Slide");
+	public static readonly SoundStyle ChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Chitter", 4) {  MaxInstances = 5};
+	public static readonly SoundStyle SmallChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/SmallChitter", 4) { MaxInstances = 5 };
+	public static readonly SoundStyle WindLoopSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/WindLoop") { IsLooped = true, MaxInstances = 0 };
+	private SlotId windLoopSFXInstance;
+	#endregion
+
+	#region Balance values
+	public static int STAT_LIFEMAX_NORMAL = 3900;
+	public static int STAT_LIFEMAX_EXPERT = 4700;
+	public static int STAT_LIFEMAX_MASTER = 5700;
+	public static int STAT_DEFENSE = 10;
+
+	//Contact damage
+	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 30;
+	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 40;
+	public static int STAT_GROUNDPOUND_CONTACT_DAMAGE = 40;
+	public static int STAT_ROLL_CONTACT_DAMAGE = 25;
+	public static int STAT_SLAM_CONTACT_DAMAGE = 45;
+	public static int STAT_FLYDASH_CONTACT_DAMAGE = 45;
+	public static float STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER = 2f;
+	public static float STAT_CONTACT_DAMAGE_MASTER_MULTIPLIER = 3f;
+
+	//Projectile damage
+	public static int STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE = 30;
+	public static int STAT_SLAM_SHOCKWAVE_DAMAGE = 38;
+	public static int STAT_DIG_EMERGE_DEBRIS_DAMAGE = 20;
+	public static int STAT_ANTLION_SWARMER_DAMAGE = 20;
+	public static int STAT_ANTLION_ONFIRE_DURATION = 120;
+	public static float STAT_PROJECTILE_DAMAGE_EXPERT_MULTIPLIER = 1.7f;
+	public static float STAT_PROJECTILE_DAMAGE_MASTER_MULTIPLIER = 2.5f;
+
+	public static int GetProjectileDamage(int baseDamage)
+	{
+		float damageModified = baseDamage / 2;
+		if (Main.masterMode)
+			damageModified *= STAT_PROJECTILE_DAMAGE_MASTER_MULTIPLIER / 3f;
+		else if (Main.expertMode)
+			damageModified *= STAT_PROJECTILE_DAMAGE_EXPERT_MULTIPLIER / 2f;
+
+		return (int)(damageModified);
+	}
 	#endregion
 
 	private static VisualProfile PhaseOneProfile;
@@ -120,7 +163,8 @@ public partial class Scarabeus : ModNPC
 	public override void Load()
 	{
 		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
-		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox; 
+		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox;
+		NPCEvents.ModifyJourneyStrengthScaling += NoJourneyScaling;
 		ScarabHeatHazeShaderData.Load();
 	}
 
@@ -166,9 +210,9 @@ public partial class Scarabeus : ModNPC
 		NPC.width = 90;
 		NPC.height = 90;
 		NPC.value = 30000;
-		NPC.damage = 40;
-		NPC.defense = 10;
-		NPC.lifeMax = 2550;
+		NPC.damage = STAT_HORN_SWIPE_CONTACT_DAMAGE;
+		NPC.defense = STAT_DEFENSE;
+		NPC.lifeMax = STAT_LIFEMAX_NORMAL;
 		NPC.aiStyle = -1;
 		NPC.boss = true;
 		NPC.npcSlots = 15f;
@@ -181,6 +225,22 @@ public partial class Scarabeus : ModNPC
 			NPC.Opacity = 0;
 
 		Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
+	}
+
+	//No journey scaling cuz we aleady scale stuff
+	private void NoJourneyScaling(NPC npc, ref float strength)
+	{
+		if (strength < 1)
+			strength = MathHelper.Lerp(strength, 1, 0.5f);
+		else
+			strength = 1;
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		int usedLifemax = Main.masterMode ? STAT_LIFEMAX_MASTER : Main.expertMode ? STAT_LIFEMAX_EXPERT : STAT_LIFEMAX_NORMAL;
+		NPC.lifeMax = (int)(usedLifemax * balance);
+		NPC.damage = STAT_HORN_SWIPE_CONTACT_DAMAGE;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
@@ -215,25 +275,50 @@ public partial class Scarabeus : ModNPC
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
 
+		SetContactDamage();
 		ManageSandstormffects();
 		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, 0.5f, (NPC.life / (float)NPC.lifeMax), true);
+	}
+
+	public void SetContactDamage()
+	{
+		if (CurrentState == AIState.Dig)
+			NPC.damage = currentFrame.X == 2 ? STAT_HORN_SWIPE_CONTACT_DAMAGE : STAT_DIG_EMERGE_CONTACT_DAMAGE;
+		else if (CurrentState == AIState.Roll)
+			NPC.damage = STAT_ROLL_CONTACT_DAMAGE;
+		else if (CurrentState == AIState.GroundPound)
+			NPC.damage = STAT_GROUNDPOUND_CONTACT_DAMAGE;
+		else if (CurrentState == AIState.Shockwave)
+			NPC.damage = STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE;
+		else if (CurrentState == AIState.SwoopDash)
+			NPC.damage = STAT_FLYDASH_CONTACT_DAMAGE;
+
+		//Apply master & expert multipliers
+		if (Main.masterMode)
+			NPC.damage = (int)(NPC.damage * STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER);
+		else if (Main.expertMode)
+			NPC.damage = (int)(NPC.damage * STAT_CONTACT_DAMAGE_MASTER_MULTIPLIER);
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
 
 	public override bool ModifyCollisionData(Rectangle victimHitbox, ref int immunityCooldownSlot, ref MultipliableFloat damageMultiplier, ref Rectangle npcHitbox)
 	{
-		if (CurrentState == AIState.GroundPound && NPC.velocity.Y > 0 && NPC.ai[2] < GroundPoundBounceCount)
+		if (CurrentState == AIState.GroundPound && NPC.velocity.Y >= 0)
 		{
-			npcHitbox.Inflate(15, 15);
+			if (NPC.ai[2] < GroundPoundBounceCount)
+				npcHitbox.Inflate(8, 15);
+			else
+				npcHitbox.Inflate(20, 15);
 		}
+
 		else if (CurrentState == AIState.Shockwave)
 		{
 			npcHitbox.Inflate(40, 0);
 			npcHitbox.X += NPC.direction * 35;
 		}
 		//Its the dig state but this is the hitbox for the horn swipe it does at the end specifically!
-		else if (CurrentState == AIState.Dig)
+		else if (CurrentState == AIState.Dig && currentFrame.X == 2)
 		{
 			npcHitbox.Inflate(10, 10);
 			npcHitbox.X += NPC.direction * 45;
@@ -339,7 +424,7 @@ public partial class Scarabeus : ModNPC
 		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
-		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
+		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 
 		npcLoot.Add(notExpertRule);
@@ -350,15 +435,27 @@ public partial class Scarabeus : ModNPC
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 
+	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
+	{
+		//Zero knockback because we will do our own custom KB in OnHitPlayer
+		if (CurrentState == AIState.Dig)
+			modifiers.Knockback *= 0;
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		//Horn swipe KB
+		if (CurrentState == AIState.Dig)
+		{
+			target.velocity.Y -= 10f;
+			target.velocity.X += NPC.direction * 4f;
+			target.fallStart = (int)(target.position.Y / 16f);
+		}	
+	}
+
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : null;
-
-	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
-	{
-		NPC.lifeMax = (int)(NPC.lifeMax * (Main.masterMode ? 0.85f : 1.0f) * 0.7143f * balance);
-		NPC.damage = (int)(NPC.damage * 0.626f);
-	}
 
 	public override void BossHeadSlot(ref int index)
 	{

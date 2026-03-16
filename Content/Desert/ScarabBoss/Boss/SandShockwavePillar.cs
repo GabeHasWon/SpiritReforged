@@ -34,14 +34,14 @@ public class SandShockwavePillar : ModProjectile
 
 	public override bool ShouldUpdatePosition() => false;
 
-	public override bool? CanDamage() => AITimer > SpawnDelay ? null : false;
+	public override bool? CanDamage() => AITimer > SpawnDelay && Projectile.timeLeft > 5 ? null : false;
 
 	public override void AI()
 	{
 		if (AITimer == 0)
 			Projectile.timeLeft += (int)SpawnDelay;
 
-		if (AITimer++ == SpawnDelay)
+		if (AITimer++ == (int)SpawnDelay)
 			OnSpawn();
 
 		if (Main.dedServ)
@@ -75,51 +75,6 @@ public class SandShockwavePillar : ModProjectile
 				dust.velocity.X *= 0.5f;
 				dust.noLightEmittence = true;
 				dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
-			}
-		}
-
-		//Telegraph
-		else if (false)
-		{
-			for (int i = 0; i < Main.rand.Next(3); i++)
-			{
-				Vector2 particlePos = Projectile.Bottom;
-				particlePos += Main.rand.NextFloat(-16, 16) * Vector2.UnitX;
-
-				Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 10);
-
-				ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, Color.Beige, Main.rand.NextFloat(0.04f, 0.1f), EaseFunction.EaseCircularOut, Main.rand.Next(20, 30))
-				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
-				});
-			}
-
-			if (Main.rand.NextBool(3))
-				Dust.NewDust(Projectile.BottomLeft - Vector2.UnitY * 8, Projectile.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-
-			if (AITimer == SpawnDelay - 15 || AITimer == (SpawnDelay / 2) - 15)
-			{
-				int numTiles = 3;
-				float maxHeight = 6;
-				int totalTime = 30;
-
-				for (int j = -1; j <= 1; j += 2)
-				{
-					for (float i = 0; i < numTiles; i++)
-					{
-						float height = MathHelper.Lerp(maxHeight, 0, i / numTiles);
-						int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-						ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(Projectile.Bottom + j * Vector2.UnitX * 16 * (i + 1), totalTime / 2, height), delay);
-					}
-				}
-
-				ParticleHandler.SpawnParticle(new MovingBlockParticle(Projectile.Bottom, totalTime / 2, maxHeight));
 			}
 		}
 	}
@@ -183,6 +138,15 @@ public class SandShockwavePillar : ModProjectile
 	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 	{
 		modifiers.HitDirectionOverride = Math.Sign(Projectile.velocity.X);
+		modifiers.Knockback *= 0;
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
+	{
+		target.velocity.Y -= HitboxHeight * 0.053f;
+		target.velocity.X += Projectile.velocity.X * 3f;
+		target.jump = Player.jumpHeight / 2;
+		target.fallStart = (int)(target.position.Y / 16f);
 	}
 
 	public override bool PreDraw(ref Color lightColor) => false;

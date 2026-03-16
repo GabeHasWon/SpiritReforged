@@ -87,17 +87,18 @@ public partial class Scarabeus : ModNPC
 		return input + new Vector2(0, dimensions);
 	}
 
-	public Vector2 FindGroundFromPositionIgnorePlatforms(Vector2 input)
+	public Vector2 FindGroundFromPositionIgnorePlatforms(Vector2 input, float? platformIgnoreHeight = null)
 	{
 		const int dimensions = 8;
+		platformIgnoreHeight ??= Target.Top.Y - 40;
 
 		if (input.X < 0 || input.X >= Main.maxTilesX * 16)
 			return input;
 
-		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < Target.Top.Y - 40 ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
+		while (!CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < platformIgnoreHeight ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
 			input.Y += dimensions;
 
-		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < Target.Top.Y - 40 ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
+		while (CollisionChecks.Tiles(new((int)input.X - dimensions / 2, (int)input.Y - dimensions / 2, dimensions, dimensions), input.Y < platformIgnoreHeight ? CollisionChecks.SolidOnly : CollisionChecks.AnySurface))
 			input.Y -= dimensions;
 
 		return input + new Vector2(0, dimensions);
@@ -108,11 +109,52 @@ public partial class Scarabeus : ModNPC
 		Point tilePosition = input.ToTileCoordinates();
 		Tile tile = Framing.GetTileSafely(tilePosition);
 
-		if (!tile.HasTile || !Main.tileSolid[tile.TileType] || tile.TileType == TileID.Sand)
-			return [new Color(223, 219, 147) * 2f, new Color(188, 170, 86) * 1.33f, new Color(58, 49, 18) * 0.5f];
+		if (!tile.HasTile || !Main.tileSolid[tile.TileType] || TileID.Sets.Platforms[tile.TileType] || tile.TileType == TileID.Sand)
+			return [new Color(253, 239, 167) * 0.7f, new Color(148, 138, 90) * 0.7f, new Color(118, 116, 66) * 0.7f];
 
 		var material = TileMaterial.FindMaterial(tile.TileType);
 		return [material.Color, (material.Color * 0.8f).Additive(255) * 1.33f, (material.Color * 0.25f).Additive(255) * 0.5f];
+	}
+
+	private void GroundImpactVFX(float strength = 10f)
+	{
+		for (int i = 0; i < 22; i++)
+		{
+			Vector2 particlePos = NPC.Bottom + Vector2.UnitY * 4;
+			particlePos += Main.rand.NextFloat(-64, 64) * Vector2.UnitX;
+
+			Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7) * strength;
+			Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				Intensity = 0.9f,
+				SecondaryColor = colors[1],
+				TertiaryColor = colors[2],
+				PixelDivisor = 3,
+				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+				ColorLerpExponent = 0.5f,
+				Layer = ParticleLayer.BelowSolid
+			});
+		}
+
+		for (int i = 0; i < 20; i++)
+		{
+			Vector2 dustPosition = NPC.Bottom + Vector2.UnitY * 4f;
+			Point tilePosition = dustPosition.ToTileCoordinates();
+			int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+
+			Dust dust = Main.dust[dustIndex];
+			dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-NPC.width * 1.5f, NPC.width * 1.5f) - Vector2.UnitY * Main.rand.NextFloat(0f, 20f);
+			dust.velocity.Y = -Main.rand.NextFloat(1.5f, 8f) * strength;
+			dust.velocity.X *= 0.3f;
+			dust.noLightEmittence = true;
+			dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+		}
+
+		BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
 	}
 
 	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
