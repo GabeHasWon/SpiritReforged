@@ -30,6 +30,8 @@ public partial class Scarabeus : ModNPC
 
 	private AIState SelectAttack()
 	{
+		//return AIState.Shockwave;
+
 		WeightedRandom<AIState> state = new();
 
 		float distanceToTargetX = Math.Abs(Target.Center.X - NPC.Center.X);
@@ -154,7 +156,7 @@ public partial class Scarabeus : ModNPC
 			dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
 		}
 
-		BouncingTileWave(5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-NPC.width / 4, NPC.width / 4) * Vector2.UnitX);
+		BouncingTileWave(5, Main.rand.NextFloat(10, 20), Main.rand.Next(30, 40));
 	}
 
 	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
