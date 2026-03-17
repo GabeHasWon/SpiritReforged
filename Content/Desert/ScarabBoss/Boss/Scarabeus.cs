@@ -246,6 +246,10 @@ public partial class Scarabeus : ModNPC
 		int activeScarabs = Main.npc.Count(n => n.active && n.type == Type);
 		scarabColorIndex = activeScarabs - 1;
 
+		//Chance to shift up the color index for a shiny scarab
+		if (!NPC.IsABestiaryIconDummy && Main.rand.NextBool(8192))
+			scarabColorIndex = 1;
+
 		Music = Phase1Music;
 	}
 
@@ -530,11 +534,13 @@ public partial class Scarabeus : ModNPC
 	{
 		writer.Write(phaseTwo);
 		writer.Write(Enrage);
+		writer.Write(scarabColorIndex);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
 		phaseTwo = reader.ReadBoolean();
 		Enrage = reader.ReadSingle();
+		scarabColorIndex = reader.ReadInt32();
 	}
 }
