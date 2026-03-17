@@ -2,7 +2,7 @@
 using System.Linq;
 using Terraria.Chat;
 
-namespace SpiritReforged.Common.NPCCommon;
+namespace SpiritReforged.Common.NPCCommon.Interfaces;
 
 internal interface ITravelNPC
 {
@@ -74,10 +74,8 @@ internal class TravelFlags : ModSystem
 		{
 			List<NPC> townNPCs = [];
 			foreach (var npc in Main.ActiveNPCs)
-			{
 				if (npc.townNPC && !npc.homeless && npc.type != NPCID.OldMan)
 					townNPCs.Add(npc);
-			}
 
 			if (townNPCs.Count >= 2)
 			{
@@ -93,9 +91,7 @@ internal class TravelFlags : ModSystem
 	private static void TryDespawn()
 	{
 		if (!Main.dayTime || Main.time > 48600.0)
-		{
 			foreach (var npc in Main.ActiveNPCs)
-			{
 				if (vDatabase.ContainsKey(npc.type) && !WorldGen.PlayerLOS((int)(npc.Center.X / 16), (int)(npc.Center.Y / 16)))
 				{
 					DespawnNPC(npc);
@@ -103,8 +99,6 @@ internal class TravelFlags : ModSystem
 
 					break;
 				}
-			}
-		}
 
 		static void DespawnNPC(NPC npc)
 		{
@@ -125,9 +119,7 @@ internal class TravelFlags : ModSystem
 	private static void PopulateDatabase()
 	{
 		foreach (var npc in SpiritReforgedMod.Instance.GetContent<ModNPC>())
-		{
 			if (npc is ITravelNPC v)
 				vDatabase.Add(npc.Type, v.CanSpawnTraveler);
-		}
 	}
 }

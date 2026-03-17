@@ -1,5 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using Terraria.Audio;
@@ -71,7 +72,7 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	{
 		Vector2 position = tileCoords.ToWorldCoordinates(8, Framing.GetTileSafely(tileCoords).IsHalfBlock ? 16 : 8);
 		SlopeType type = Main.tile[tileCoords].Slope;
-		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), 30, 0, -1, (float)type);
+		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), ModeUtils.ProjectileDamage(15, 20, 30, 60), 0, -1, (float)type);
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());

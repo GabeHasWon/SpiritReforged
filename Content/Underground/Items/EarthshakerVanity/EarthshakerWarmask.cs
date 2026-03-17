@@ -10,7 +10,7 @@ public class EarthshakerWarmask : ModItem
 		Item.width = 28;
 		Item.height = 24;
 		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.White;
+		Item.rare = ItemRarityID.Blue;
 		Item.vanity = true;
 	}
 }
