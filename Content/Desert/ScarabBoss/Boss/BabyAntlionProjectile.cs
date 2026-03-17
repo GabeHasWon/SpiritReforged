@@ -47,10 +47,7 @@ public class BabyAntlionProjectile : ModProjectile
 		set => Projectile.ai[2] = (int)value;
 	}
 
-	public override void SetStaticDefaults()
-	{
-		ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
-	}
+	public override void SetStaticDefaults() => ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -124,6 +121,9 @@ public class BabyAntlionProjectile : ModProjectile
 				Projectile.Kill();
 				return;
 			}
+
+			if (!Main.dedServ)
+				ParticleHandler.SpawnParticle(new FireSploshion(Projectile.Center, 30));
 
 			CurrentState = AIState.Burnt;
 			Projectile.velocity.X = 0;

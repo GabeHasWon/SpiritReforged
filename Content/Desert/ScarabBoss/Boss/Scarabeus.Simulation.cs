@@ -33,7 +33,7 @@ public partial class Scarabeus : ModNPC
 		{
 			Vector2 origin = (effects == SpriteEffects.FlipHorizontally) ? new(NPC.frame.Width - Components[layer].Origin.X, Components[layer].Origin.Y) : Components[layer].Origin;
 			float rotation = NPC.rotation;
-			rotation += Math.Clamp(NPC.velocity.X, -3, 3) * Components[layer].PhysicsStrength;
+			rotation += Math.Clamp(NPC.velocity.X * Components[layer].PhysicsStrength, -3, 3);
 
 			Rectangle frame = texture.Frame(Profile.Columns, Profile.Rows, layer, currentFrame.Y);
 			Main.EntitySpriteDraw(texture, position + (origin - NPC.frame.Size() / 2).RotatedBy(NPC.rotation), frame, color, rotation, origin, scale, effects);
