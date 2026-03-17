@@ -260,6 +260,8 @@ public partial class Scarabeus : ModNPC
 				SetFrame(0, 2, PhaseTwoProfile);
 				NPC.velocity.Y -= 15;
 				Counter = 0;
+				NPC.noTileCollide = true;
+				NPC.noGravity = true;
 			}
 		}
 		else if (jumped)
@@ -288,7 +290,12 @@ public partial class Scarabeus : ModNPC
 		//Pick a time to wait before the next attack
 		if (Counter == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			ExtraMemory = Main.rand.NextFloat(1.8f, 2.3f) - 0.15f * DifficultyScale;
+			ExtraMemory = Main.rand.NextFloat(STAT_MIN_IDLE_TIME, STAT_MAX_IDLE_TIME);
+			if (Main.masterMode)
+				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_MASTER;
+			else
+				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_EXPERT;
+
 			if (LastAttack == AIState.Swarm)
 				ExtraMemory *= 1.65f;
 			if (!phaseTwo)
@@ -296,6 +303,7 @@ public partial class Scarabeus : ModNPC
 			else
 				ExtraMemory *= 0.7f + 0.3f * Utils.GetLerpValue(0f, 0.3f, NPC.life / (float)NPC.lifeMax, true);
 
+			ExtraMemory = MathHelper.Max(0.01f, ExtraMemory);
 			NPC.netUpdate = true;
 		}
 

@@ -38,6 +38,12 @@ public partial class Scarabeus : ModNPC
 	public static int STAT_LIFEMAX_MASTER = 5700;
 	public static int STAT_DEFENSE = 10;
 
+	//Idle times
+	public static float STAT_MAX_IDLE_TIME = 2.3f;
+	public static float STAT_MIN_IDLE_TIME = 1.8f;
+	public static float STAT_IDLE_TIME_REDUCTION_EXPERT = 0.3f;
+	public static float STAT_IDLE_TIME_REDUCTION_MASTER = 0.45f;
+
 	//Contact damage
 	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 26;
 	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 34;
