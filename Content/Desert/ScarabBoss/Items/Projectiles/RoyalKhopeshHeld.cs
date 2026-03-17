@@ -61,8 +61,7 @@ public class RoyalKhopeshHeld : ModProjectile
 	{
 		if (_empoweredStrike)
 		{
-			modifiers.FinalDamage *= 2f;
-			modifiers.SetCrit();
+			modifiers.FinalDamage *= 1.3f;
 		}	
 	}
 

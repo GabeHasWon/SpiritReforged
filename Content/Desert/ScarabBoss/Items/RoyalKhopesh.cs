@@ -44,7 +44,7 @@ public class RoyalKhopesh : ModItem
 
 		if (player.altFunctionUse == 2)
 		{
-			modPlayer.ThrowCooldown = RoyalKhopeshPlayer.COOLDOWN_TIME;
+			//modPlayer.ThrowCooldown = RoyalKhopeshPlayer.COOLDOWN_TIME;
 
 			type = ModContent.ProjectileType<RoyalKhopeshThrown>();
 			velocity *= 20f;
