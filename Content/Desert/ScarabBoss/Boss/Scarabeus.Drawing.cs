@@ -1,11 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using Newtonsoft.Json.Linq;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
-using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -175,6 +172,34 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
+		if (CurrentState == AIState.Swarm) //Swarm flash visuals
+		{
+			float opacity = 1f - Counter / 15f;
+			if (opacity > 0)
+			{
+				Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+				Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
+				Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
+				float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
+
+				for (int i = 0; i < 2; i++)
+				{
+					float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
+
+					Main.EntitySpriteDraw(star2, NPC.Top - Main.screenPosition, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
+					Main.EntitySpriteDraw(star, NPC.Top - Main.screenPosition, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
+				}
+			}
+
+			float opacity2 = 1f - Counter / 160f;
+			if (opacity2 > 0)
+			{
+				Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
+				Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
+				Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
+			}
+		}
+
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
 		sheenShader.Parameters["resolution"].SetValue(texture.Size());
@@ -189,12 +214,12 @@ public partial class Scarabeus : ModNPC
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
-		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White);
+		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
 
 		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
 
-		if (Profile == PhaseTwoProfile)
+		if (Profile == PhaseTwoProfile) //Draw a glow
 		{
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
 			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);

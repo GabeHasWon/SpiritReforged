@@ -157,7 +157,7 @@ public partial class Scarabeus : ModNPC
 		get
 		{
 			AIState currentState = CurrentState;
-			return currentState == AIState.IdleTowardsPlayer || currentState == AIState.IdleAwayFromPlayer || currentState == AIState.IdleBackAwayFast;
+			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
 		}
 	}
 
@@ -199,7 +199,7 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
 		_stateAI[(int)AIState.Despawn] = DigAttack;
 		//Idle variants
-		_stateAI[(int)AIState.IdleTowardsPlayer]       = IdleBetweenAttacks;
+		_stateAI[(int)AIState.IdleTowardsPlayer] = IdleBetweenAttacks;
 		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
 		_stateAI[(int)AIState.IdleBackAwayFast] = IdleBetweenAttacks;
 		//P1 Attacks

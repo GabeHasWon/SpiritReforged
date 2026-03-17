@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
@@ -12,7 +10,6 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.Audio;
-using Terraria.GameContent.UI;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -1449,13 +1446,6 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y = -6;
 			NPC.velocity.X /= 2;
 			NPC.FaceTarget();
-			//fx here?
-
-			if (Main.netMode != NetmodeID.Server)
-			{
-				for (int i = 0; i < 3; i++)
-					ParticleHandler.SpawnParticle(new DissipatingImage(NPC.Center - Vector2.UnitY.RotatedBy(NPC.rotation) * 30f, Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.66f, 0, "GodrayCircle", Vector2.Zero, new Vector2(3, 1.4f), 15));
-			}
 		}
 
 		//Try to hover at approx the same height above the player
@@ -1474,6 +1464,7 @@ public partial class Scarabeus : ModNPC
 
 		if (Counter >= attack_end_time)
 			return GoBackToIdle();
+
 		return 1f;
 	}
 
@@ -1483,7 +1474,7 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		float spawnAreaOffsetX = Target.velocity.X * 35f;
-		float spawnAreaRadius = 400 - (swarmerIndex % 4) * 30;
+		float spawnAreaRadius = 400 - swarmerIndex % 4 * 30;
 
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
