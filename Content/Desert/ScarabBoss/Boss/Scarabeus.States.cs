@@ -104,7 +104,7 @@ public partial class Scarabeus : ModNPC
 			FablesCameraFocus();
 			NPC.noTileCollide = NPC.velocity.Y < 0;
 
-			if (Grounded) //Landed
+			if (OnTopOfTiles) //Landed
 			{
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);

@@ -101,9 +101,6 @@ public partial class Scarabeus : ModNPC
 	/// <summary> Whether this NPC should ignore platform collision. </summary>
 	public bool IgnorePlatforms => NPC.Bottom.Y < Target.Top.Y;
 
-	/// <summary> Whether this NPC is in contact with the ground. </summary>
-	public bool Grounded => NPC.velocity.Y == 0; /*NPC.collideY || CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.OnlySlopes)*/
-
 	public bool OnTopOfTiles
 	{
 		get
@@ -129,6 +126,9 @@ public partial class Scarabeus : ModNPC
 
 	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
 	public bool dealContactDamage = false;
+
+	/// <summary> Tracks when Scarabeus should despawn. </summary>
+	public int despawnTimer;
 
 	public enum AIState
 	{
@@ -287,6 +287,7 @@ public partial class Scarabeus : ModNPC
 			NPC.TargetClosest(false);
 		Counter += counterTickMultiplier;
 
+		HandleDespawn();
 		SetContactDamage();
 		ManageSandstormffects();
 		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, 0.5f, (NPC.life / (float)NPC.lifeMax), true);
@@ -310,6 +311,14 @@ public partial class Scarabeus : ModNPC
 			NPC.damage = (int)(NPC.damage * STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER);
 		else if (Main.expertMode)
 			NPC.damage = (int)(NPC.damage * STAT_CONTACT_DAMAGE_MASTER_MULTIPLIER);
+	}
+
+	public void HandleDespawn()
+	{
+		if (NPC.HasPlayerTarget && (!Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000) && ++despawnTimer >= 60 * 20)
+			ChangeState(AIState.Despawn);
+		else
+			despawnTimer = 0;
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
