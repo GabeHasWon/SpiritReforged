@@ -121,6 +121,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
+		NPCID.Sets.CantTakeLunchMoney[Type] = true;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);

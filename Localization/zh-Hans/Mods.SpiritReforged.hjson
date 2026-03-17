@@ -5,13 +5,13 @@ Biomes: {
 	}
 
 	SaltBiome: {
-		// DisplayName: Salt Flats
-		// TownNPCDialogueName: the Salt Flats
+		DisplayName: 盐滩
+		TownNPCDialogueName: 盐滩
 	}
 
 	ZigguratBiome: {
-		// DisplayName: Ziggurat
-		// TownNPCDialogueName: the Ziggurat
+		DisplayName: 庙塔
+		TownNPCDialogueName: 庙塔
 	}
 }
 
@@ -21,10 +21,10 @@ Conditions: {
 	InSavanna: 于稀树平原
 	PeevedTumbler: 当闪烁时
 	Discovered: 发现
-	Submerged: 水下
-	// InSaltFlats: In Salt Flats
-	// IsPrickly: When prickly
-	// InZiggurat: In the Ziggurat
+	Submerged: 水中
+	InSaltFlats: 于盐滩
+	IsPrickly: 有刺
+	InZiggurat: 于庙塔
 }
 
 Misc: {
@@ -63,18 +63,18 @@ GameTips: {
 }
 
 Emotes: {
-	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hiker
+	CartographerEmote.Command: cartographer
+	HikerEmote.Command: hiker
 }
 
 InfoDisplays: {
 	LedgerInfoDisplay: {
-		// DisplayName: Ledger
-		// Description: Showing price tooltips
+		DisplayName: 分类账
+		Description: 显示价格提示
 	}
 
 	ScryingLensInfoDisplay: {
-		// DisplayName: Shimmersight
-		// Description: Showing shimmer tooltips
+		DisplayName: 微光视野
+		Description: 显示微光提示
 	}
 }

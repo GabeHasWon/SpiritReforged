@@ -119,21 +119,21 @@ FlaskOfFrost_Buff: {
 }
 
 Slowed: {
-	// DisplayName: Slowed
-	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+	DisplayName: 减速
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
 }
 
 ToucaneMinion_Buff: {
-	// DisplayName: Toucane
-	// Description: The toucane fights for you?
+	DisplayName: 巨嘴鸟
+	Description: 巨嘴鸟为你而战？
 }
 
 TinyDragonPet_Buff: {
-	// DisplayName: Tiny Dragon
-	// Description: A little dragon is following you
+	DisplayName: 小龙
+	Description: 一只小龙正跟着你
 }
 
 EnlilBuff: {
-	// DisplayName: Enlil's Aid
-	// Description: Increased vertical mobility
+	DisplayName: 恩利尔的援护
+	Description: 垂直机动性增加
 }
