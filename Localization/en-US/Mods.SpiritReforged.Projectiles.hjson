@@ -67,3 +67,5 @@ AdornedArrowDeathTrail.DisplayName: Adorned Arrow Death Trail
 LocustCrookProjectile.DisplayName: Locust Crook
 CrookLocust.DisplayName: Locust
 LocustDamageProjectile.DisplayName: Locust Damage Projectile
+LocustExplosion.DisplayName: Locust Explosion
+CrookLocustGore.DisplayName: Crook Locust Gore

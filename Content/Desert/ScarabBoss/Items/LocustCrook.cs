@@ -8,6 +8,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -20,9 +21,14 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 internal class LocustCrook : ModItem
 {
+	// file is slightly messy
 	private class LocustCrookProjectile : ModProjectile 
 	{
+		private const int MAX_ATTACK_COOLDOWN = 300;
+		private static readonly SoundStyle EmbedSound = SoundID.DD2_MonkStaffGroundMiss with { Volume = 0.5f, PitchVariance = 0.2f };
 		private Player Owner => Main.player[Projectile.owner];
+
+		internal List<BabyLocust> orbitingLocusts = new();
 
 		public bool HitTile
 		{
@@ -56,7 +62,7 @@ internal class LocustCrook : ModItem
 			}
 		}
 
-		public NPC Target => TargetWhoAmI > -1 ? Main.npc[(int)TargetWhoAmI] : null;
+		public NPC Target => TargetWhoAmI > 0 ? Main.npc[(int)TargetWhoAmI] : null;
 
 		public int TileHitTimer;
 
@@ -65,7 +71,7 @@ internal class LocustCrook : ModItem
 		public override void SetStaticDefaults()
 		{
 			ProjectileID.Sets.TrailingMode[Type] = 0;
-			ProjectileID.Sets.TrailCacheLength[Type] = 5;
+			ProjectileID.Sets.TrailCacheLength[Type] = 7;
 		}
 
 		public override void SetDefaults()
@@ -75,9 +81,6 @@ internal class LocustCrook : ModItem
 			Projectile.Size = new Vector2(14);
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 			Projectile.sentry = true;
-
-			ProjectileID.Sets.TrailCacheLength[Type] = 10;
-			ProjectileID.Sets.TrailingMode[Type] = 0;
 
 			Projectile.hide = true;
 		}
@@ -89,40 +92,53 @@ internal class LocustCrook : ModItem
 		{
 			Timer++;
 
-			NPC target = FindTarget();
-			if (target != default)
-				TargetWhoAmI = target.whoAmI;
-
-			if (MinionTarget != null)
-				TargetWhoAmI = MinionTarget.whoAmI;
-
-			if (Target is null)
-			{
-				AttackTimer = 0;
-				TargetWhoAmI = -1;
-			}
-			else
-			{
-				if (!Target.active || Target is null)
-				{
-					TargetWhoAmI = -1;
-					return false;
-				}
-
-				if (++AttackTimer % 120 == 0)
-				{
-					if (Main.myPlayer == Projectile.owner)
-						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2CircularEdge(5f, 5f),
-							ModContent.ProjectileType<CrookLocust>(), Projectile.damage, Projectile.knockBack, Projectile.owner, TargetWhoAmI, 60);
-				}
-			}
-				
-			if (TileHitTimer > 0)
-				TileHitTimer--;
-
-			// how i feel copy and pasting khopesh code
 			if (HitTile)
 			{
+				foreach (BabyLocust l in orbitingLocusts)
+				{
+					l.Update();
+				}
+
+				NPC target = FindTarget();
+				if (target != default)
+					TargetWhoAmI = target.whoAmI;
+
+				if (MinionTarget != null)
+					TargetWhoAmI = MinionTarget.whoAmI;
+
+				if (Target is null)
+				{
+					AttackTimer = MAX_ATTACK_COOLDOWN - 60;
+					TargetWhoAmI = -1;
+				}
+				else
+				{
+					if (Main.rand.NextBool(15))
+					{
+						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
+							-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f), 100 + Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+					}
+
+					if (!Target.active || Target is null)
+					{
+						TargetWhoAmI = -1;
+						return false;
+					}
+
+					if (++AttackTimer % MAX_ATTACK_COOLDOWN == 0)
+					{
+						if (Main.myPlayer == Projectile.owner)
+							Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, -Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(1f),
+								ModContent.ProjectileType<CrookLocust>(), Projectile.damage, Projectile.knockBack, Projectile.owner, TargetWhoAmI, 60);
+
+						SoundEngine.PlaySound(SoundID.Item97 with { Volume = 0.33f}, Projectile.Center);
+						TileHitTimer = 15;
+					}
+				}
+
+				if (TileHitTimer > 0)
+					TileHitTimer--;
+
 				float progress = TileHitTimer / 20f;
 
 				Projectile.velocity = oldVelo;
@@ -166,14 +182,19 @@ internal class LocustCrook : ModItem
 		{
 			if (!HitTile)
 			{
+				for (int i = 0; i < 3; i++)
+				{
+					orbitingLocusts.Add(new BabyLocust(60, Projectile.whoAmI, false));
+				}
+
 				HitTile = true;
 				TileHitTimer = 20;
-				AttackTimer = 0;
+				AttackTimer = MAX_ATTACK_COOLDOWN - 60;
 
-				Projectile.position += oldVelocity * 2;
+				Projectile.position += oldVelocity * 1.25f;
 				oldVelo = oldVelocity;
 				Projectile.rotation = oldVelocity.ToRotation() + MathHelper.PiOver4;
-				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with { Volume = 0.5f, PitchVariance = 0.2f }, Projectile.Center);
+				SoundEngine.PlaySound(EmbedSound, Projectile.Center);
 			}
 
 			return false;
@@ -183,34 +204,30 @@ internal class LocustCrook : ModItem
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			foreach (BabyLocust locust in orbitingLocusts.Where(l => l.drawBehind))
+			{
+				locust.DrawSelf(Main.spriteBatch, Main.screenPosition, lightColor);
+			}
+
 			var tex = TextureAssets.Projectile[Type].Value;
 			var solid = TextureColorCache.ColorSolid(tex, Color.White);
 
 			var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
 
 			float fade = 1f;
-			if (Timer < 15f)
-				fade = Timer / 15f;
+			if (Timer < 30f)
+				fade = Timer / 30f;
 
 			Vector2 drawPos = Projectile.Center + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver4);
 
 			if (!HitTile)
 			{
-				for (int j = 0; j < 4; j++)
-				{
-					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-					Color drawColor = new Color(255, 150, 0, 0);
-
-					Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, drawColor, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-					Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, Color.White.Additive() * 0.5f, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-				}
-
 				for (int i = 0; i < Projectile.oldPos.Length; i++)
 				{
 					Vector2 pos = Projectile.oldPos[i] + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver4) + Projectile.Size / 2f;
 					float lerp = 1f - i / (float)Projectile.oldPos.Length;
 
-					Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 150, 0, 0) * fade * lerp,
+					Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 150, 0, 0) * 0.25f * fade * lerp,
 					  Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0f);
 				}
 			}			
@@ -222,68 +239,165 @@ internal class LocustCrook : ModItem
 				{
 					outLineFade = 1f - TileHitTimer / 20f;
 
-					float fadeOut = TileHitTimer / 20f;
-
-					for (int j = 0; j < 4; j++)
-					{
-						Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-						Color drawColor = new Color(255, 150, 0, 0);
-
-						Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, drawColor * fadeOut, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-						Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, Color.White.Additive() * 0.5f * fadeOut, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-					}
-
 					for (int i = 0; i < Projectile.oldPos.Length; i++)
 					{
 						Vector2 pos = Projectile.oldPos[i] + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver4) + Projectile.Size / 2f;
 						float lerp = 1f - i / (float)Projectile.oldPos.Length;
 
-						Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 150, 0, 0) * fade * lerp,
+						Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 150, 0, 0) * 0.25f * fade * lerp,
 						  Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0f);
 					}
 				}
 
 				float sinFade = (float)Math.Abs(Math.Sin(Timer * 0.025f));
 
-				for (int j = 0; j < 4; j++)
-				{
-					Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-
-					Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, Color.Black * sinFade * outLineFade, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-					Main.EntitySpriteDraw(solid, drawPos + offset - Main.screenPosition, null, Color.Purple.Additive() * sinFade * outLineFade * 0.15f, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
-				}
+				Main.EntitySpriteDraw(solid, drawPos + Main.rand.NextVector2CircularEdge(1.5f, 1.5f) * sinFade - Main.screenPosition, null, Color.Black * sinFade * outLineFade * 0.5f, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
 			}
 
 			Main.EntitySpriteDraw(tex, drawPos - Main.screenPosition, null, lightColor * fade, Projectile.rotation, tex.Size() / 2f, 1f, 0, 0);
 
 			if (HitTile)
 			{
+				float sinFade = (float)Math.Abs(Math.Sin(Timer * 0.025f));
+
+				Main.EntitySpriteDraw(solid, drawPos + Main.rand.NextVector2CircularEdge(1.5f, 1.5f) * sinFade - Main.screenPosition, null, Color.DarkOliveGreen * sinFade * 0.5f, Projectile.rotation, solid.Size() / 2, 1f, SpriteEffects.None);
+
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 				float fadeIn = 1f - TileHitTimer / 20f;
 
-				Main.spriteBatch.Draw(bloom, drawPos + new Vector2(20f, 0f).RotatedBy(Projectile.rotation - MathHelper.PiOver4) - Main.screenPosition, null, Color.Black * fadeIn * 0.7f,
-					  Projectile.rotation, bloom.Size() / 2f, 2.5f, 0, 0f);
+				Main.spriteBatch.Draw(bloom, drawPos + new Vector2(20f, 0f).RotatedBy(Projectile.rotation - MathHelper.PiOver4) - Main.screenPosition, null, Color.Black * fadeIn * 0.4f,
+					  Projectile.rotation, bloom.Size() / 2f, 1.5f, 0, 0f);
 				
-				Main.spriteBatch.Draw(bloom, drawPos + new Vector2(20f, 0f).RotatedBy(Projectile.rotation - MathHelper.PiOver4) - Main.screenPosition, null, Color.Purple * fadeIn * 0.45f,
-					  Projectile.rotation, bloom.Size() / 2f, 2f, 0, 0f);
+				Main.spriteBatch.Draw(bloom, drawPos + new Vector2(20f, 0f).RotatedBy(Projectile.rotation - MathHelper.PiOver4) - Main.screenPosition, null, Color.DarkGreen * fadeIn * 0.25f,
+					  Projectile.rotation, bloom.Size() / 2f, 1f, 0, 0f);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 
+			foreach (BabyLocust locust in orbitingLocusts.Where(l => !l.drawBehind))
+			{
+				locust.DrawSelf(Main.spriteBatch, Main.screenPosition, lightColor);
+			}
+
 			return false;
 		}
 
-		internal NPC FindTarget()
+		public override void SendExtraAI(BinaryWriter writer)
 		{
-			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			writer.WriteVector2(oldVelo);
+			writer.Write(TileHitTimer);
 		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			oldVelo = reader.ReadVector2();
+			TileHitTimer = reader.ReadInt32();
+		}
+
+		internal NPC FindTarget() => Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 	}
 
 	private class CrookLocust : ModProjectile
 	{
+		internal class LocustExplosion : ModProjectile
+		{
+			public override string Texture => AssetLoader.EmptyTexture;
+
+			public override void SetDefaults()
+			{
+				Projectile.friendly = true;
+				Projectile.DamageType = DamageClass.Summon;
+				Projectile.Size = new Vector2(90);
+				Projectile.timeLeft = 10;
+
+				Projectile.usesLocalNPCImmunity = true;
+				Projectile.localNPCHitCooldown = -1;
+
+				Projectile.penetrate = -1;
+				Projectile.tileCollide = false;
+			}
+
+			public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+			{
+				target.TryGetGlobalNPC<LocustDamageGlobalNPC>(out var globalNPC);
+
+				for (int i = 0; i < 2 + Main.rand.Next(3); i++)
+				{
+					if (globalNPC?.locusts.Count < LocustDamageGlobalNPC.MAX_LOCUSTS)
+					{
+						globalNPC.AddLocust(target.whoAmI);
+						globalNPC.AttackerWhoAmI = Projectile.owner;
+					}
+				}
+			}
+		}
+
+		internal class CrookLocustGore : ModProjectile
+		{
+			public override void SetDefaults()
+			{
+				Projectile.Size = new Vector2(6);
+				Projectile.timeLeft = 120;
+				Projectile.tileCollide = true;
+			}
+
+			public override void AI()
+			{
+				Projectile.velocity *= 0.98f;
+				Projectile.rotation += Projectile.velocity.X * 0.05f;
+
+				if (Projectile.timeLeft < 110)
+					if (Projectile.velocity.Y < 16f)
+					{
+						Projectile.velocity.Y += 0.15f;
+
+						if (Projectile.velocity.Y > 0)
+							Projectile.velocity.Y *= 1.1f;
+					}
+					else
+						Projectile.velocity.Y = 16f;
+			}
+
+			public override void OnKill(int timeLeft)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
+							Main.rand.NextVector2Circular(3f, 3f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(50, 50), DustID.Poisoned,
+								-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+				}
+			}
+
+			public override bool PreDraw(ref Color lightColor)
+			{
+				var tex = TextureAssets.Projectile[Type].Value;
+				var solid = TextureColorCache.ColorSolid(tex, Color.White);
+
+				Rectangle sourceRectangle = tex.Frame(1, 3, frameY: (int)Projectile.ai[0]);
+
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRectangle, Projectile.GetAlpha(lightColor), Projectile.rotation, sourceRectangle.Size() / 2f,
+					Projectile.scale, 0, 0f);
+
+				if (Projectile.timeLeft > 90)
+				{
+					float lerp = (Projectile.timeLeft - 90) / 30f;
+
+					Main.spriteBatch.Draw(solid, Projectile.Center - Main.screenPosition, sourceRectangle, Color.DarkOliveGreen * lerp, Projectile.rotation, sourceRectangle.Size() / 2f,
+						Projectile.scale, 0, 0f);
+				}
+
+				return false;
+			}
+		}
+
+		private static readonly SoundStyle HitSound = new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_Slimy") with { Volume = 0.66f, PitchVariance = 0.15f };
+		private static readonly SoundStyle DeathSound_01 = SoundID.NPCDeath1 with { Volume = 0.5f };
+		private static readonly SoundStyle DeathSound_02 = new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/BugDeath") with { Volume = 0.33f, PitchVariance = 0.2f };
 		public NPC TargetNPC => Main.npc[Target];
 		public Projectile ParentProj => Main.projectile[(int)ProjOwner];
 		private Player Owner => Main.player[Projectile.owner];
@@ -326,11 +440,16 @@ internal class LocustCrook : ModItem
 			Projectile.aiStyle = -1;
 			Projectile.penetrate = 3;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
+
+			Projectile.usesIDStaticNPCImmunity = true;
+			Projectile.idStaticNPCHitCooldown = 20;
+
 			Projectile.tileCollide = false;
+			Projectile.hide = true;
 
 			RareDraw = Main.rand.NextBool(5);
 
-			ProjectileID.Sets.TrailCacheLength[Type] = 10;
+			ProjectileID.Sets.TrailCacheLength[Type] = 6;
 			ProjectileID.Sets.TrailingMode[Type] = 0;
 		}
 
@@ -350,9 +469,7 @@ internal class LocustCrook : ModItem
 			{
 				Projectile.frameCounter = 0;
 				if (++Projectile.frame >= Main.projFrames[Projectile.type])
-				{
 					Projectile.frame = 0;
-				}
 			}
 
 			if (TargetNPC is null || !TargetNPC.active)
@@ -363,9 +480,12 @@ internal class LocustCrook : ModItem
 					Target = newTarget.whoAmI;
 				else
 				{
-					Projectile.velocity *= 0.925f;
+					Projectile.velocity *= 0.95f;
 					if (Projectile.velocity.Length() < 1f)
+					{
+						Explode(true);
 						Projectile.Kill();
+					}				
 				}
 
 				return;
@@ -393,9 +513,7 @@ internal class LocustCrook : ModItem
 				FlyToTarget(dist, velocityRamp);
 			}
 			else if (Projectile.penetrate > 0)
-			{
-				Dash();
-			}					
+				Dash();				
 		}
 
 		internal void ExplodingBehavior(float dist)
@@ -403,9 +521,7 @@ internal class LocustCrook : ModItem
 			Vector2 direction = TargetNPC.Center - Projectile.Center;
 			direction.Normalize();
 			if (dist > 100f)
-			{
 				direction *= 15f;
-			}
 			else
 			{
 				if (Main.rand.NextBool(2))
@@ -413,7 +529,10 @@ internal class LocustCrook : ModItem
 					Color smokeColor = new Color(5, 5, 5) * 0.2f;
 					float scale = Main.rand.NextFloat(0.1f, 0.2f) * Timer / 30f;
 					var velSmoke = -Projectile.velocity * 0.05f;
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
+						Main.rand.NextVector2Circular(15f, 15f) * Timer / 30f, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
 				}
 
 				Projectile.rotation += Main.rand.NextFloat(-0.2f, 0.2f);
@@ -428,8 +547,44 @@ internal class LocustCrook : ModItem
 			Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.05f);
 		}
 
-		internal void Explode()
+		// natural death is whether it explodes on an enemy or explodes from being inactive
+		internal void Explode(bool naturalDeath = false)
 		{
+			int loops = naturalDeath ? 3 : 15;
+
+			for (int i = 0; i < loops; i++)
+			{
+				Color smokeColor = new Color(5, 5, 5) * 0.25f;
+				float scale = Main.rand.NextFloat(0.07f, 0.15f);
+				var velSmoke = -Vector2.UnitY * Main.rand.NextFloat(2f, 5f);
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
+							Main.rand.NextVector2Circular(9f, 9f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(50, 50), DustID.Poisoned,
+							velSmoke, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Sluggy,
+							Main.rand.NextVector2Circular(3f, 3f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.2f, 1f));
+			}
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				if (!naturalDeath)
+					Projectile.NewProjectile(Projectile.GetSource_Death("Crook Locust Explode"), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<LocustExplosion>(),
+						22, 2f, Projectile.owner);
+
+				for (int i = 0; i < 3; i++)
+				{
+					float mult = Main.rand.NextFloat(5f, 8f);
+					if (naturalDeath)
+						mult *= 0.2f;
+
+					Projectile.NewProjectile(Projectile.GetSource_Death("Locust Gore"), Projectile.Center, -Vector2.UnitY.RotatedByRandom(Math.PI) * mult, ModContent.ProjectileType<CrookLocustGore>(), 0, 0, Projectile.owner, i);
+				}
+			}
+
 			Projectile.Kill();
 		}
 
@@ -437,12 +592,21 @@ internal class LocustCrook : ModItem
 		{
 			if (DashTimer <= 0)
 			{
-				if (Main.rand.NextBool(2))
+				if (Main.rand.NextBool(4))
 				{
-					Color smokeColor = new Color(5, 5, 5) * 0.2f;
+					Color smokeColor = new Color(5, 5, 5) * 0.16f;
 					float scale = Main.rand.NextFloat(0.1f, 0.15f);
 					var velSmoke = -Projectile.velocity * 0.05f;
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
+						-Projectile.velocity * Main.rand.NextFloat(), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.9f, 1.25f)).noGravity = true;
+
+					if (Main.rand.NextBool())
+					{
+						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
+							-Vector2.UnitY, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+					}
 				}
 			}
 
@@ -470,21 +634,46 @@ internal class LocustCrook : ModItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			SoundEngine.PlaySound(HitSound, Projectile.Center);
+
 			if (Projectile.penetrate == 1)
 				Timer = 0;
 
-			target.TryGetGlobalNPC<LocustDamageGlobalNPC>(out var globalNPC);
+			float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-			if (globalNPC.locusts.Count < LocustDamageGlobalNPC.MAX_LOCUSTS)
+			var circle = new TexturedPulseCircle(Projectile.Center, Color.Orange.Additive() * .75f, 1, 60, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+			circle.Angle = angle;
+			ParticleHandler.SpawnParticle(circle);
+
+			circle = new TexturedPulseCircle(Projectile.Center, Color.White * 0.35f, 1, 60, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+			circle.Angle = angle;
+			ParticleHandler.SpawnParticle(circle);
+
+			for (int i = 0; i < 4; i++)
 			{
-				globalNPC.AddLocust(target.whoAmI);
-				globalNPC.AttackerWhoAmI = Projectile.owner;
-			}		
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Sluggy,
+							-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Ichor,
+							-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1f)).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
+							-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+			}
 		}
 
 		public override void OnKill(int timeLeft)
 		{
+			SoundEngine.PlaySound(DeathSound_01, Projectile.Center);
+			SoundEngine.PlaySound(DeathSound_02, Projectile.Center);
+		}
 
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			if (Projectile.penetrate > 0 && Timer < 30)
+				behindNPCsAndTiles.Add(index);
+			else
+				behindProjectiles.Add(index);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -493,9 +682,11 @@ internal class LocustCrook : ModItem
 			if (Timer < 30f && Projectile.penetrate > 0)
 				fadeIn = Timer / 30f;
 
-			Texture2D tex = TextureAssets.Projectile[Type].Value;
-			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+			var tex = TextureAssets.Projectile[Type].Value;
+			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+			var star = AssetLoader.LoadedTextures["Star"].Value;
+			var solid = TextureColorCache.ColorSolid(tex, Color.White);
+
 			Rectangle sourceRectangle = tex.Frame(2, Main.projFrames[Projectile.type], frameX: RareDraw ? 0 : 1, frameY: Projectile.frame);
 
 			float scale = 1f;
@@ -515,9 +706,9 @@ internal class LocustCrook : ModItem
 				Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f;
 				float lerp = 1f - i / (float)Projectile.oldPos.Length;
 
-				Color drawColor = Color.Black;
+				Color drawColor = Color.DarkSeaGreen * 0.5f;
 				if (DashTimer > 0)
-					drawColor = Color.Lerp(new Color(255, 120, 0, 0), Color.Black, 1f - DashTimer / 30f);
+					drawColor = Color.Lerp(Color.GreenYellow.Additive(), Color.DarkSeaGreen * 0.5f, 1f - DashTimer / 30f);
 
 				Main.spriteBatch.Draw(tex, pos - Main.screenPosition, sourceRectangle, drawColor * lerp * 0.5f * fadeIn,
 				  Projectile.rotation, sourceRectangle.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
@@ -532,13 +723,18 @@ internal class LocustCrook : ModItem
 
 				Vector2 eyePos = drawPos + new Vector2(6f * -Projectile.spriteDirection, 0f).RotatedBy(Projectile.rotation);
 
-				Main.spriteBatch.Draw(star, eyePos - Main.screenPosition, null, new Color(255, 120, 0, 0), Projectile.rotation + MathHelper.TwoPi * EaseBuilder.EaseQuadIn.Ease(flashTimer), star.Size() / 2f, 0.2f * flashTimer, 0f, 0f);
+				Main.spriteBatch.Draw(bloom, eyePos - Main.screenPosition, null, new Color(255, 150, 0, 0) * 0.5f, 0f, bloom.Size() / 2f, 0.3f * flashTimer, 0f, 0f);
+				Main.spriteBatch.Draw(star, eyePos - Main.screenPosition, null, new Color(255, 150, 0, 0), Projectile.rotation + MathHelper.TwoPi * EaseBuilder.EaseQuadIn.Ease(flashTimer), star.Size() / 2f, 0.2f * flashTimer, 0f, 0f);
 				Main.spriteBatch.Draw(star, eyePos - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.8f, Projectile.rotation + MathHelper.TwoPi * EaseBuilder.EaseQuadIn.Ease(flashTimer), star.Size() / 2f, 0.1f * flashTimer, 0f, 0f);
 			}
 
 			if (Projectile.penetrate < 0)
 			{
-				Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, sourceRectangle, Color.Black * (Timer / 30f), Projectile.rotation, sourceRectangle.Size() / 2f,
+				float progress = Timer / 30f;
+
+				Main.spriteBatch.Draw(bloom, drawPos - Main.screenPosition, null, Color.DarkOliveGreen.Additive() * 0.5f, 0f, bloom.Size() / 2f, 0.5f * progress, 0f, 0f);
+
+				Main.spriteBatch.Draw(solid, drawPos - Main.screenPosition, sourceRectangle, Color.Lerp(Color.Black, Color.DarkOliveGreen, progress) * progress, Projectile.rotation, sourceRectangle.Size() / 2f,
 					Projectile.scale * scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
 			}
 
@@ -553,20 +749,23 @@ internal class LocustCrook : ModItem
 			return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 		}
 	}
+
 	// These are purely visual
 	protected class BabyLocust
 	{
 		internal string Texture = "SpiritReforged/Content/Desert/ScarabBoss/Items/CrookBabyLocust";
 
-		public NPC Parent => Main.npc[parentNPCWhoAmI];
+		public Entity Parent => parentingNPC ? Main.npc[parentWhoAmI] : Main.projectile[parentWhoAmI];
 
 		public float AnimationSpeed => lifetime * 0.125f * (2 - scale);
 
 		public bool drawBehind;
+		public bool parentingNPC;
 
 		public int lifetime;
-		public int index;
-		public int parentNPCWhoAmI;
+		public int parentWhoAmI;
+
+		internal int fadeInTimer;
 
 		internal int frame;
 		internal int frameCounter;
@@ -577,11 +776,12 @@ internal class LocustCrook : ModItem
 		public Vector2 position;
 		public float rotation;
 
-		public BabyLocust(int Lifetime, int Index, int ParentWhoAmI)
+		// ParentingNPC determins if the baby locusts are parenting an npc (dot effect) or otherwise a projectile (the crook)
+		public BabyLocust(int Lifetime,int ParentWhoAmI, bool ParentingNPC = true)
 		{
 			lifetime = Lifetime;
-			index = Index;
-			parentNPCWhoAmI = ParentWhoAmI;
+			parentWhoAmI = ParentWhoAmI;
+			parentingNPC = ParentingNPC;
 
 			rotationOffset = Main.rand.NextFloat(MathHelper.TwoPi);
 			scale = Main.rand.NextFloat(0.8f, 1.2f);
@@ -589,8 +789,15 @@ internal class LocustCrook : ModItem
 
 		public void Update()
 		{
+			if (fadeInTimer < 20)
+				fadeInTimer++;
+
 			rotationOffset += Main.rand.NextFloat(0.05f);
-			lifetime--;
+
+			if (!parentingNPC)
+				lifetime++;
+			else
+				lifetime--;
 
 			float sin = (float)Math.Sin(AnimationSpeed);
 			float cos = (float)Math.Cos(AnimationSpeed);
@@ -600,10 +807,11 @@ internal class LocustCrook : ModItem
 			else
 				direction = 1;
 
-			// starts from the bottom and works its way up the entire sprite
-			float yOffset = Parent.height / 2 - Parent.height / LocustDamageGlobalNPC.MAX_LOCUSTS;
+			Vector2 pos = Parent.Center;
+			if (!parentingNPC)
+				pos = Parent.Center + new Vector2(-20, 0).RotatedBy(Main.projectile[parentWhoAmI].rotation - MathHelper.PiOver4);
 
-			position = Parent.Center + new Vector2(Parent.width * cos, 0f).RotatedBy(rotationOffset);
+			position = pos + new Vector2(Parent.width * cos, 0f).RotatedBy(rotationOffset);
 			rotation = MathHelper.Lerp(rotation, cos, 0.05f);
 
 			if (sin is < 1f and > (-0.5f))
@@ -621,31 +829,29 @@ internal class LocustCrook : ModItem
 			}
 		}
 
-		public void DrawSelf(SpriteBatch sb, Vector2 screenPosition)
+		public void DrawSelf(SpriteBatch sb, Vector2 screenPosition, Color drawColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Rectangle sourceRectangle = tex.Frame(1, 4, frameY: frame);
 
-			float sin = (float)Math.Sin(AnimationSpeed);
-			float cos = (float)Math.Cos(AnimationSpeed);
+			float fadeIn = fadeInTimer / 20f;
 
-			Color color = Color.White;
+			float sin = (float)Math.Sin(AnimationSpeed);
+
+			Color color = drawColor;
 
 			if (sin > 0.8f)
-				color = Color.Lerp(Color.White, new Color(50, 50, 50), (sin - 0.8f) / 0.2f);
+				color = Color.Lerp(drawColor, new Color(90, 90, 90), (sin - 0.8f) / 0.2f);
 
 			float rot = rotation;
 
 			SpriteEffects flip = SpriteEffects.None;
 
 			if (direction == -1)
-			{
 				flip = SpriteEffects.FlipHorizontally;
-				//rot += MathHelper.Pi;
-			}
 
 			sb.Draw(tex, position + Main.rand.NextVector2Circular(1f, 1f) * (float)Math.Abs(sin) - screenPosition,
-				sourceRectangle, color, rot, sourceRectangle.Size() / 2f, scale, flip, 0f);
+				sourceRectangle, color * fadeIn, rot, sourceRectangle.Size() / 2f, scale, flip, 0f);
 		}
 	}
 
@@ -654,6 +860,7 @@ internal class LocustCrook : ModItem
 		// purely for damage purposes because Target.StrikeNPC sucks
 		internal class LocustDamageProjectile : ModProjectile
 		{
+			private static readonly SoundStyle HitSound = SoundID.NPCDeath52 with { Volume = 0.05f, PitchVariance = 0.3f };
 			public override string Texture => AssetLoader.EmptyTexture;
 
 			public override void SetDefaults()
@@ -663,6 +870,25 @@ internal class LocustCrook : ModItem
 
 				Projectile.penetrate = 1;
 				Projectile.tileCollide = false;
+			}
+
+			public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
+							Main.rand.NextVector2Circular(5f, 5f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+				}
+				
+				for (int i = 0; i < 3; i++)
+				{
+					Color smokeColor = new Color(5, 5, 5) * 0.2f;
+					float scale = Main.rand.NextFloat(0.1f, 0.2f);
+					var velSmoke = -Vector2.UnitY * 2f;
+					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+				}
+
+				SoundEngine.PlaySound(HitSound, target.Center);
 			}
 		}
 
@@ -675,6 +901,20 @@ internal class LocustCrook : ModItem
 
 		public override bool InstancePerEntity => true;
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.CanBeChasedBy();
+
+		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		{
+			if (locusts.Count > 0)
+			{
+				if (npc.lifeRegen > 0)
+					npc.lifeRegen = 0;
+
+				npc.lifeRegen -= 2 * locusts.Count;
+
+				if (damage < 1)
+					damage = 1;
+			}
+ 		}
 
 		public override void AI(NPC npc)
 		{
@@ -694,12 +934,12 @@ internal class LocustCrook : ModItem
 
 			if (locusts.Count > 0)
 			{
-				if (++AttackTimer % (120 / locusts.Count) == 0)
+				if (++AttackTimer % (180 / locusts.Count) == 0)
 				{
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Projectile.NewProjectile(npc.GetSource_OnHurt(Main.player[AttackerWhoAmI], "SpiritReforged:LocustCrookBabyHit"), npc.Center,
-												Vector2.Zero, ModContent.ProjectileType<LocustDamageProjectile>(), 10 * locusts.Count, 0f, AttackerWhoAmI);
+						Projectile.NewProjectile(npc.GetSource_OnHurt(Main.player[AttackerWhoAmI], "SpiritReforged:LocustCrookBabyHit"), npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2),
+												Vector2.Zero, ModContent.ProjectileType<LocustDamageProjectile>(), 3 * locusts.Count, 0f, AttackerWhoAmI);
 					}					
 				}
 			}
@@ -711,7 +951,7 @@ internal class LocustCrook : ModItem
 		{
 			foreach (BabyLocust locust in locusts.Where(l => l.drawBehind))
 			{
-				locust.DrawSelf(spriteBatch, screenPos);
+				locust.DrawSelf(spriteBatch, screenPos, drawColor);
 			}
 
 			return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
@@ -721,27 +961,27 @@ internal class LocustCrook : ModItem
 		{
 			foreach (BabyLocust locust in locusts.Where(l => !l.drawBehind))
 			{
-				locust.DrawSelf(spriteBatch, screenPos);
+				locust.DrawSelf(spriteBatch, screenPos, drawColor);
 			}
 		}
 
 		public void AddLocust(int targetWhoAmI)
 		{
-			int index = 0;
-			// find any locusts with the same index
-			while (locusts.Any(l => l.index == index))
-			{
-				index++;
-			}
+			locusts.Add(new BabyLocust(600, targetWhoAmI));
 
-			locusts.Add(new BabyLocust(600, index, targetWhoAmI));
+			foreach (BabyLocust l in locusts)
+			{
+				l.lifetime += 120;
+				if (l.lifetime > 720)
+					l.lifetime = 720;
+			}
 		}
 	}
 
 	public override void SetDefaults()
 	{
 		Item.Size = new(32);
-		Item.damage = 25;
+		Item.damage = 14;
 		Item.knockBack = 1f;
 
 		Item.useTime = 40;
@@ -749,6 +989,7 @@ internal class LocustCrook : ModItem
 
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
+		Item.mana = 100;
 
 		Item.DamageType = DamageClass.Summon;
 		Item.noUseGraphic = true;
