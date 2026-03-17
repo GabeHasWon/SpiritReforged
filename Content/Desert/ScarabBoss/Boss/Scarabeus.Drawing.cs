@@ -10,8 +10,7 @@ public partial class Scarabeus : ModNPC
 {
 	public readonly record struct VisualProfile
 	{
-		public readonly Asset<Texture2D> Texture;
-		public readonly Asset<Texture2D> SheenMask;
+		public readonly Asset<Texture2D> Texture, SheenMask, GlowMask;
 		public readonly int Rows;
 		private readonly int[] FrameCount;
 
@@ -19,10 +18,11 @@ public partial class Scarabeus : ModNPC
 		/// <summary> Safely gets the number of frames in the provided column. </summary>
 		public readonly int GetFrameCount(int column) => (column >= Columns || column < 0) ? 0 : FrameCount[column];
 
-		public VisualProfile(Asset<Texture2D> Texture, Asset<Texture2D> SheenMask, int[] FrameCount)
+		public VisualProfile(Asset<Texture2D> Texture, Asset<Texture2D> SheenMask, int[] FrameCount, Asset<Texture2D> GlowMask = null)
 		{
 			this.Texture = Texture;
 			this.SheenMask = SheenMask;
+			this.GlowMask = GlowMask;
 			this.FrameCount = FrameCount;
 			Rows = FrameCount.OrderBy(static x => x).Last();
 		}
@@ -35,12 +35,11 @@ public partial class Scarabeus : ModNPC
 
 	/// <summary> The current visual profile to be used for drawing. Contains frame count and texture information. </summary>
 	public VisualProfile Profile { get; private set; }
-	public static readonly Asset<Texture2D> Glowmask = DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false);
 
 	/// <summary> The selected frame in the 2D spritesheet.<para/>
 	/// Prefer <see cref="UpdateFrame"/> and <see cref="SetFrame"/> for assignment. </summary>
 	public Point currentFrame;
-	/// <summary> Whether this NPC should draw a trail. Resets every frame. </summary>
+	/// <summary> The opacity of Scarabeus' trail. Resets every frame. </summary>
 	public float trailOpacity;
 	public float squishY = 1f;
 	public float iridescenceBoost;
@@ -104,7 +103,7 @@ public partial class Scarabeus : ModNPC
 		{
 			if (currentFrame.X != 0)
 				return true;
-			if (currentFrame.Y < 1 || currentFrame.Y > 5)
+			if (currentFrame.Y is < 1 or > 5)
 				return true;
 			return false;
 		}
@@ -210,7 +209,10 @@ public partial class Scarabeus : ModNPC
 		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
 		FlipShadersOnOff(spriteBatch, sheenShader, true);
 
-		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);
+		if (Profile == SimulatedProfile)
+			DrawSimulated(NPC.DrawColor(drawColor), effects);
+		else
+			Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
@@ -219,13 +221,14 @@ public partial class Scarabeus : ModNPC
 		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
 
-		if (Profile == PhaseTwoProfile) //Draw a glow
+		if (Profile.GlowMask != null && Profile != SimulatedProfile) //Draw a glowmask
 		{
+			Texture2D glowmask = Profile.GlowMask.Value;
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
-			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);
+			Main.EntitySpriteDraw(glowmask, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);
 
-			DrawHelpers.DrawOutline(spriteBatch, Glowmask.Value, NPC.Center - Main.screenPosition, default, (offset) =>
-				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
+			DrawHelpers.DrawOutline(spriteBatch, glowmask, NPC.Center - Main.screenPosition, default, (offset) =>
+				Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 		}
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions

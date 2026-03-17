@@ -437,7 +437,7 @@ public partial class Scarabeus : ModNPC
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
 
-		UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
+		UpdateFrame(0, (int)(15 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
 
 		float heightAboveGround = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y - NPC.Center.Y;
 
