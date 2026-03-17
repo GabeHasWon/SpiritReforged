@@ -38,11 +38,16 @@ public partial class Scarabeus : ModNPC
 	public static int STAT_LIFEMAX_MASTER = 5700;
 	public static int STAT_DEFENSE = 10;
 
+	public static float PHASE_2_HEALTH_THRESHOLD = 0.5f;
+
 	//Idle times
-	public static float STAT_MAX_IDLE_TIME = 2.3f;
+	public static float STAT_MAX_IDLE_TIME = 2.3f; //Random range in seconds for how long scarabeus waits between attacks
 	public static float STAT_MIN_IDLE_TIME = 1.8f;
-	public static float STAT_IDLE_TIME_REDUCTION_EXPERT = 0.3f;
-	public static float STAT_IDLE_TIME_REDUCTION_MASTER = 0.45f;
+	public static float STAT_IDLE_TIME_REDUCTION_EXPERT = 0.3f; //Amount of time substracted from the idle time in expert
+	public static float STAT_IDLE_TIME_REDUCTION_MASTER = 0.45f; //Amount of time substracted from the idle time in master (doesn't stack with the expert reduction)
+	public static float STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 = 0.9f; //Idle time multiplier which smoothly goes from 1 to this value as scarab's HP falls in phase 1 (Starting out at 100% idle time, and lowering to XX% idle time as it approaches half health)
+	public static float STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 = 0.7f; //Idle time multiplier which smoothly goes from 1 to this value as scarab's HP falls in phase 2 (Starting out at 100% idle time, and lowering to XX% idle time as it approaches zero health)
+	public static float STAT_IDLE_TIME_P2_MULTIPLIER = 1.2f; //Idle time multiplier when scarab is in phase 2
 
 	//Contact damage
 	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 26;
@@ -275,7 +280,7 @@ public partial class Scarabeus : ModNPC
 		trailOpacity = 0f;
 		iridescenceBoost = MathHelper.Lerp(iridescenceBoost, 0f, 0.1f);
 
-		if (!phaseTwo && NPC.life < NPC.lifeMax / 2 && IsIdling)
+		if (!phaseTwo && NPC.life < NPC.lifeMax * PHASE_2_HEALTH_THRESHOLD && IsIdling)
 		{
 			ChangeState(AIState.PhaseTransitionAnim);
 			NPC.Opacity = 1f;
@@ -296,7 +301,7 @@ public partial class Scarabeus : ModNPC
 		HandleDespawn();
 		SetContactDamage();
 		ManageSandstormffects();
-		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, 0.5f, (NPC.life / (float)NPC.lifeMax), true);
+		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
 	}
 
 	public void SetContactDamage()
@@ -429,7 +434,7 @@ public partial class Scarabeus : ModNPC
 			Sandstorm.TimeLeft = 2;
 
 		//Sandstorm ramps up as the fight progresses
-		float intendedSandstormPower = 0.2f + 0.8f * Utils.GetLerpValue(0.5f, 0.2f, NPC.life / (float)NPC.lifeMax, true);
+		float intendedSandstormPower = 0.2f + 0.8f * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 0.2f, NPC.life / (float)NPC.lifeMax, true);
 		float sandstormPower = Math.Max(MathHelper.Lerp(Sandstorm.Severity, intendedSandstormPower, 0.2f), 0.2f);
 
 		Sandstorm.Severity = Math.Max(Sandstorm.Severity, sandstormPower);

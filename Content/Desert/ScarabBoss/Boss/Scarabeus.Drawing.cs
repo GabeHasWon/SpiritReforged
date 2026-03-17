@@ -207,7 +207,7 @@ public partial class Scarabeus : ModNPC
 		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
-		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.08f);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
 		FlipShadersOnOff(spriteBatch, sheenShader, true);
 
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);

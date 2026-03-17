@@ -296,9 +296,9 @@ public partial class Scarabeus : ModNPC
 			if (LastAttack == AIState.Swarm)
 				ExtraMemory *= 1.65f;
 			if (!phaseTwo)
-				ExtraMemory *= 0.9f + 0.1f * Utils.GetLerpValue(0.5f, 1f, NPC.life / (float)NPC.lifeMax, true);
+				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1) * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 1f, NPC.life / (float)NPC.lifeMax, true);
 			else
-				ExtraMemory *= 0.7f + 0.3f * Utils.GetLerpValue(0f, 0.3f, NPC.life / (float)NPC.lifeMax, true);
+				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
 
 			ExtraMemory = MathHelper.Max(0.01f, ExtraMemory);
 			NPC.netUpdate = true;
@@ -430,7 +430,7 @@ public partial class Scarabeus : ModNPC
 	public void FlyHover(ref float nextAttackWaitTime, float wingbeatSpeed = 1f)
 	{
 		//Attacks slower in P2 because its flying so its harder to hit
-		nextAttackWaitTime *= 1.2f;
+		nextAttackWaitTime *= STAT_IDLE_TIME_P2_MULTIPLIER;
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
