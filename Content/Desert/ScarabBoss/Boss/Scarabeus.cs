@@ -134,6 +134,7 @@ public partial class Scarabeus : ModNPC
 		get => _enrage;
 		set => _enrage = Math.Clamp(value, 0, 1);
 	}
+
 	private float _enrage;
 
 	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>

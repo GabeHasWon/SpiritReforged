@@ -9,6 +9,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 
@@ -549,14 +550,34 @@ public partial class Scarabeus : ModNPC
 				{
 					if (!phaseTwo)
 						NPC.position.Y -= 20;
+
 					NPC.velocity.Y -= 9f;
 					NPC.velocity.X = 0f;
+					NPC.velocity.X += NPC.DirectionTo(Target.Center).X * 3f;
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
 					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 					Counter = 0;
 					dashState++;
+
+					if (!Main.dedServ)
+					{
+						for (int i = 0; i < 60; i++)
+						{
+							Vector2 pos = NPC.BottomRight;
+							if (NPC.direction == -1)
+								pos = NPC.BottomLeft;
+
+							pos.X += Main.rand.NextFloat(-60, 60);
+							
+							KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4));
+						}
+					}
+						
+					
+					SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
 					if (!Main.dedServ)
 					{
@@ -570,8 +591,8 @@ public partial class Scarabeus : ModNPC
 
 			case 1: // Bounce before the roll
 				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
-				GroundPoundSpin();
-				NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
+				GroundPoundSpin(true);
+				//NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
 
 				//Fall faster in P2 for faster telegraph
 				if (phaseTwo)
@@ -593,9 +614,11 @@ public partial class Scarabeus : ModNPC
 
 					if (!Main.dedServ)
 					{
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+
 						SoundEngine.PlaySound(RollStartSound, NPC.Center, RollSoundTracking);
 						SoundEngine.PlaySound(BounceSound with { Volume = 0.4f}, NPC.Center);
-						GroundImpactVFX(3f);
+						GroundImpactVFX(1.5f);
 					}
 				}
 
@@ -605,7 +628,17 @@ public partial class Scarabeus : ModNPC
 				NPC.noGravity = true;
 				NPC.noTileCollide = true;
 
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * rollSpeed, 0.1f);
+				float interpolant = 0f;
+
+				float dist = Math.Abs(Target.Center.X - NPC.Center.X);
+				if (dist > 300f)
+					interpolant = 1f;
+				else if (dist > 100f)
+					interpolant = (dist - 100f) / 200f;
+	
+				float adjustedRollSpeed = rollSpeed * MathHelper.Lerp(1f, 2.5f, interpolant);
+
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * adjustedRollSpeed, 0.1f);
 				NPC.rotation += 0.01f * NPC.velocity.X;
 
 				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center, Math.Max(NPC.Center.Y - 14f, Target.Bottom.Y)).Y;
@@ -722,9 +755,33 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
+	public void KickupDust(Vector2 pos, Vector2 velocity, ParticleLayer drawLayer = ParticleLayer.AboveNPC)
+	{
+		ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity, new Color(253, 239, 167) * 0.7f, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+		{
+			Pixellate = true,
+			DissolveAmount = 1,
+			SecondaryColor = new Color(148, 138, 90) * 0.7f,
+			TertiaryColor = new Color(118, 116, 66) * 0.7f,
+			PixelDivisor = 3,
+			ColorLerpExponent = 0.25f,
+			Layer = drawLayer
+		});
+
+		Vector2 dustPosition = pos + Vector2.UnitY * 4f;
+		Point tilePosition = dustPosition.ToTileCoordinates();
+		int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+
+		Dust dust = Main.dust[dustIndex];
+		dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-16f, 16f);
+		dust.velocity = velocity;
+		dust.noLightEmittence = true;
+		dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+	}
+
 	public void CreateRollParticles()
 	{
-		if (!Main.rand.NextBool(3))
+		if (Main.rand.NextBool(2))
 		{
 			Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Bottom) + Vector2.UnitY * 10f);
 			ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, new Vector2(-NPC.velocity.X * 0.3f, -2f), colors[0], Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
@@ -771,15 +828,41 @@ public partial class Scarabeus : ModNPC
 		if (lastFrameY < 9)
 			framerate += (int)(10 * Utils.GetLerpValue(100, -30, (Target.Center.X - NPC.Center.X) * NPC.direction, true));
 
+		if (lastFrameY == 2 && ExtraMemory < 1)
+		{
+			if (!Main.dedServ)
+			{
+				for (int i = 0; i < 15; i++)
+				{
+					Vector2 pos = NPC.BottomRight;
+					if (NPC.direction == -1)
+						pos = NPC.BottomLeft;
+
+					KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f) * Main.rand.NextFloat(2, 4));
+				}
+			}
+
+			SoundEngine.PlaySound(ChitterSound, NPC.Center);
+			ExtraMemory++;
+		}
+
+		if (lastFrameY == 5 && ExtraMemory < 2)
+		{
+			SoundEngine.PlaySound(GroundPoundFallSound with { Volume = 1.2f, Pitch = 1f + 0.01f * framerate }, NPC.Center);
+			ExtraMemory++;
+		}
+
 		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
 
 		if (lastFrameY < 9 && currentFrame.Y >= 9)
 		{
+			ExtraMemory = 0;
 			dealContactDamage = true;
 			//projectiles and sfx here
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 				SpawnShockwaveFissure();
+
 			if (!Main.dedServ)
 			{
 				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
@@ -791,12 +874,14 @@ public partial class Scarabeus : ModNPC
 
 		if (updateResult == FrameState.Stopped)
 			return GoBackToIdle();
+
 		return 1f;
 	}
 
 	public void SpawnShockwaveFissure()
 	{
 		Vector2 fissurePos = FindGroundFromPositionIgnorePlatforms(NPC.Center);
+
 		bool invalidFissurePosition = false;
 		const float min_travel_distance = 512;
 		const float big_burst_area = 128;
@@ -808,6 +893,9 @@ public partial class Scarabeus : ModNPC
 		float fullTravelDist = travelDistLeft;
 		float travelspeed = min_travel_distance / (fullTravelDist - big_burst_area);
 		float burstSpawnDelay = 5f;
+		
+		//Spawn a tile wave in the direction of the attack
+		BouncingTileWave(NPC.direction, 45, 14, 60);
 
 		while (travelDistLeft > 0)
 		{
@@ -908,12 +996,33 @@ public partial class Scarabeus : ModNPC
 
 		else if (bounceIndex == max_bounces)
 		{
+			if (Counter == 1)
+			{
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 40; i++)
+					{
+						Vector2 pos = NPC.BottomRight;
+						if (NPC.direction == -1)
+							pos = NPC.BottomLeft;
+
+						pos.X += Main.rand.NextFloat(-60, 60);
+
+						KickupDust(pos, new Vector2(0.7f * NPC.direction, -2f).RotatedByRandom(1f) * Main.rand.NextFloat(1, 5));
+					}
+				}
+
+				SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+			}
+
 			dealContactDamage = true;
 
 			//Continue tracking in the air for a bit
 			if (NPC.velocity.Y < 0)
 			{
-				GroundPoundSpin();
+				GroundPoundSpin(false);
+				NPC.rotation += NPC.velocity.X * 0.025f;
 				if (Counter > final_bounce_track_time - 10)
 					NPC.velocity.X *= 0.9f;
 
@@ -931,6 +1040,11 @@ public partial class Scarabeus : ModNPC
 					profile = PhaseTwoProfile;
 					if (NPC.velocity.Y > 6)
 						frame = new Point(4, 2);
+				}
+
+				if (NPC.velocity.Y > 8f)
+				{
+					trailOpacity = Utils.Clamp(MathHelper.Lerp(0f, 1f, (NPC.velocity.Y - 8f) / 12f), 0, 1) * 0.5f;
 				}
 
 				//Do the fall sound when we transition away from the roll frame
@@ -970,7 +1084,12 @@ public partial class Scarabeus : ModNPC
 					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 					ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 					SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
-					GroundImpactVFX(3f);
+					GroundImpactVFX(1f);
+
+					for (int i = -10; i < 10; i++)
+					{
+						KickupDust(NPC.Bottom + new Vector2(8 * i, 0f), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f));
+					}
 				}
 
 				for (int i = -1; i <= 1; i += 2)
@@ -1023,9 +1142,12 @@ public partial class Scarabeus : ModNPC
 		return true;
 	}
 
-	void GroundPoundSpin()
+	void GroundPoundSpin(bool useYVelocity = false)
 	{
-		NPC.rotation += NPC.direction * 0.25f + NPC.velocity.X / 120;
+		if (useYVelocity)
+			NPC.rotation += 0.035f + Math.Abs(NPC.velocity.Y) * 0.06f;
+		else
+			NPC.rotation += NPC.direction * 0.25f + NPC.velocity.X / 120;
 	}
 
 	void GroundPoundBounce(ref float bounceIndex, float downwardsSlamGravity)
@@ -1103,6 +1225,23 @@ public partial class Scarabeus : ModNPC
 				}
 				else
 				{
+					if (!Main.dedServ)
+					{
+						for (int i = 0; i < 12; i++)
+						{
+							Vector2 pos = NPC.BottomRight;
+							if (NPC.direction == -1)
+								pos = NPC.BottomLeft;
+
+							pos.X += Main.rand.NextFloat(-60, 60);
+
+							KickupDust(pos, new Vector2(-1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4), ParticleLayer.BelowSolid);
+						}
+					}
+
+					SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+
 					NPC.velocity.Y -= initialJumpHeight;
 					NPC.velocity.X = NPC.direction * initialJumpSpeed;
 					NPC.noTileCollide = true;
@@ -1148,7 +1287,7 @@ public partial class Scarabeus : ModNPC
 						GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.3f);
 					}
 
-					if ((NPC.Opacity -= 0.1f) <= 0)
+					if ((NPC.Opacity -= 0.15f) <= 0)
 					{
 						digState++; //Disappear into the ground
 						NPC.dontTakeDamage = true;
@@ -1248,6 +1387,23 @@ public partial class Scarabeus : ModNPC
 
 						NPC.noGravity = false;
 						NPC.direction = Math.Sign(NPC.velocity.X);
+
+						if (!Main.dedServ)
+						{
+							for (int i = 0; i < 24; i++)
+							{
+								Vector2 pos = NPC.Center;
+								if (NPC.direction == -1)
+									pos = NPC.Center;
+
+								pos.X += Main.rand.NextFloat(-60, 60);
+
+								KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(4, 8), ParticleLayer.AboveNPC);
+							}
+						}
+
+						SoundEngine.PlaySound(ChitterSound, NPC.Center);
+						SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
 					}
 				}
 
@@ -1276,7 +1432,24 @@ public partial class Scarabeus : ModNPC
 
 						if (currentFrame.Y < 5)
 						{
-							GroundImpactVFX(1f);
+							SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+							SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
+
+							if (!Main.dedServ)
+							{
+								for (int i = 0; i < 4; i++)
+								{
+									Vector2 pos = NPC.BottomRight;
+									if (NPC.direction == -1)
+										pos = NPC.BottomLeft;
+
+									pos.X += Main.rand.NextFloat(-4, 4);
+
+									KickupDust(pos, new Vector2(2f * NPC.direction, -2.1f).RotatedByRandom(0.15f) * Main.rand.NextFloat(1, 4), ParticleLayer.AboveNPC);
+								}
+							}
+
+							GroundImpactVFX(1.2f);
 							currentFrame.Y = 5;
 						}
 

@@ -40,7 +40,7 @@ public class MovingBlockParticle : Particle
 			Kill();
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
+	public override ParticleLayer DrawLayer => ParticleLayer.AboveSolid;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
