@@ -48,7 +48,7 @@ VanillaDialogue: {
 
 	Wizard.SaltFlats: 这周围的石头简直是制作水晶球的绝佳材料！
 	Painter.SaltFlats: 我从未见过比这更美的风景！真想一辈子都在这儿作画。
-	Cyborg.SaltFlats:  这……这地方灼人。
+	Cyborg.SaltFlats: 这……这地方灼人。
 	Mechanic.SaltFlats: 呃！这些盐都快把我的装备腐蚀坏了。快带我离开这儿！
 	Truffle.SaltFlats: 地方令我这种生物来说非常不舒服。我感觉好干燥……
 }
@@ -541,8 +541,6 @@ DecrepitMummy: {
 Graverobber: {
 	DisplayName: 盗墓者
 	Entry: 他们不幸的是像皮纳塔一样被击中，金子如雨点般落下。这景致简直跟财宝本身一样诱人……
-
-
 	HoldingLantern: “当手持灯笼时”
 }
 
