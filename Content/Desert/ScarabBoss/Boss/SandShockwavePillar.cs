@@ -2,7 +2,6 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
-using static SpiritReforged.Content.Desert.ScarabBoss.Boss.Scarabeus;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
