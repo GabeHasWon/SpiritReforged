@@ -10,7 +10,7 @@ public class EarthshakerBreastplate : ModItem
 		Item.width = 38;
 		Item.height = 20;
 		Item.value = Item.sellPrice(gold: 2);
-		Item.rare = ItemRarityID.White;
+		Item.rare = ItemRarityID.Blue;
 		Item.vanity = true;
 	}
 }

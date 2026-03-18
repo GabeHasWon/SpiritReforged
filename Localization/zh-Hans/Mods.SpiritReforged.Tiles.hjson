@@ -31,8 +31,8 @@ Records: {
 
 FablesGraves: {
 	SetNames: {
-		// Savanna: Savanna Graves
-		// SaltFlats: Salt Graves
+		Savanna: 稀树平原坟墓
+		SaltFlats: 盐坟墓
 	}
 }
 
@@ -57,7 +57,7 @@ ObsidianShroom.MapEntry: 黑曜石蘑菇
 Starflower.MapEntry: 星状花
 BonsaiTrees.MapEntry: 盆栽
 OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
-// SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
-// ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
-// DustyTomb.MapEntry: Dusty Tomb
-// EnlilStatue.MapEntry: Enlil Statue
+SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
+ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
+DustyTomb.MapEntry: 尘埃陵墓
+EnlilStatue.MapEntry: 恩利尔雕像
