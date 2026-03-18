@@ -27,7 +27,7 @@ public class LocustDamageGlobalNPC : GlobalNPC
 		{
 			for (int i = 0; i < 5; i++)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
-						Main.rand.NextVector2Circular(5f, 5f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+						Main.rand.NextVector2Circular(5f, 5f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.35f)).noGravity = true;
 
 			for (int i = 0; i < 3; i++)
 			{

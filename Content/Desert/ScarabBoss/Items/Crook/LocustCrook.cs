@@ -108,7 +108,7 @@ public class LocustCrook : ModItem
 				{
 					if (Main.rand.NextBool(15))
 						Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
-							-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f), 100 + Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
+							-Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f), 100 + Main.rand.Next(100), default, Main.rand.NextFloat(1f, 1.25f)).noGravity = true;
 
 					if (!Target.active || Target is null)
 					{
