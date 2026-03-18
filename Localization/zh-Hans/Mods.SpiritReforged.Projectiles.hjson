@@ -64,9 +64,9 @@ AdornedArrow.DisplayName: 华饰箭
 AdornedBowHeld.DisplayName: 华饰弓
 AdornedFlash.DisplayName: 华饰闪光
 AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
-// RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
 // LocustCrookProjectile.DisplayName: Locust Crook
 // CrookLocust.DisplayName: Locust
 // LocustDamageProjectile.DisplayName: Locust Damage Projectile
 // LocustExplosion.DisplayName: Locust Explosion
 // CrookLocustGore.DisplayName: Crook Locust Gore
+// RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
