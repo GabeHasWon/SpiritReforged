@@ -72,10 +72,10 @@ public class CrookLocust : ModProjectile
 			for (int i = 0; i < 5; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
-						Main.rand.NextVector2Circular(3f, 3f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+						Main.rand.NextVector2Circular(3f, 3f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.3f)).noGravity = true;
 
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(50, 50), DustID.Poisoned,
-					-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+					-Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.3f)).noGravity = true;
 			}
 		}
 
@@ -267,10 +267,10 @@ public class CrookLocust : ModProjectile
 			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
-						Main.rand.NextVector2Circular(9f, 9f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+						Main.rand.NextVector2Circular(9f, 9f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.3f)).noGravity = true;
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(50, 50), DustID.Poisoned,
-						velSmoke, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
+						velSmoke, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.4f)).noGravity = true;
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Sluggy,
 						Main.rand.NextVector2Circular(3f, 3f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.2f, 1f));
@@ -310,7 +310,7 @@ public class CrookLocust : ModProjectile
 
 				if (Main.rand.NextBool())
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
-						-Vector2.UnitY, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2.25f)).noGravity = true;
+						-Vector2.UnitY, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.1f, 1.35f)).noGravity = true;
 			}
 
 		Vector2 direction = TargetNPC.Center - Projectile.Center;
@@ -340,7 +340,9 @@ public class CrookLocust : ModProjectile
 		if (Projectile.penetrate == 1)
 			Timer = 0;
 
-		ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 10, 1, Main.rand.NextFloat(2)));
+		Vector2 normalized = Projectile.velocity.SafeNormalize(Vector2.One);
+
+		ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 20, 1, -Projectile.velocity.ToRotation(), -normalized));
 
 		for (int i = 0; i < 4; i++)
 		{
