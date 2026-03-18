@@ -30,7 +30,7 @@ public partial class Scarabeus : ModNPC
 
 	private AIState SelectAttack()
 	{
-		//return AIState.Shockwave;
+		//return AIState.Roar;
 
 		WeightedRandom<AIState> state = new();
 

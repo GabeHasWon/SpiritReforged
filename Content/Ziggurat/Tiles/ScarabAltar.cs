@@ -190,7 +190,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			{
 				if (!Main.dedServ)
 				{
-					if (!CrossMod.Fables.Enabled)
+					/*if (!CrossMod.Fables.Enabled)
 					{
 						Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
 						var easeAnimation = new AnimationSequence()
@@ -199,7 +199,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 							.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 
 						Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-					}
+					}*/
 
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
 				}

@@ -11,6 +11,7 @@ using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
+using static SpiritReforged.Common.Misc.AnimationSequence;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -53,6 +54,17 @@ public partial class Scarabeus : ModNPC
 						ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.7f), 1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
 					}
 				}
+				
+				if (!Main.dedServ)
+				{
+					Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
+					var easeAnimation = new AnimationSequence()
+						.Add(new EaseSegment(120, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+						.Add(new FollowSegment(240, NPC))
+						.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+					Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+				}
 			}
 
 			if (!Main.dedServ)
@@ -94,6 +106,25 @@ public partial class Scarabeus : ModNPC
 		{
 			if (NPC.Opacity == 0) //One-time effects
 			{
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 20; i++)
+					{
+						Vector2 pos = NPC.BottomLeft;
+						if (NPC.direction == -1)
+							pos = NPC.BottomRight;
+
+						KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+						
+						KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+					}
+				}
+
+				BouncingTileWave(7, 8f, 40);
+
+				SoundEngine.PlaySound(ChitterSound, NPC.Center);
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
+
 				NPC.noGravity = false;
 				NPC.velocity.Y = -30;
 				NPC.Opacity = 1;
@@ -106,6 +137,29 @@ public partial class Scarabeus : ModNPC
 
 			if (OnTopOfTiles) //Landed
 			{
+				if (ExtraMemory < 2)
+				{
+					if (!Main.dedServ)
+					{
+						for (int i = 0; i < 20; i++)
+						{
+							Vector2 pos = NPC.BottomLeft;
+							if (NPC.direction == -1)
+								pos = NPC.BottomRight;
+
+							KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+
+							KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+						}
+					}
+
+					BouncingTileWave(7, 8f, 40);
+
+					SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
+
+					ExtraMemory++;
+				}
+
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);
 				NPC.rotation = 0;
@@ -118,7 +172,8 @@ public partial class Scarabeus : ModNPC
 			else
 			{
 				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center - new Vector2(80 * NPC.direction, 0)).X * 10, 0.2f);
-				NPC.rotation += 0.4f * NPC.direction;
+				//NPC.rotation += NPC.velocity.X * 0.04f;
+				NPC.rotation += NPC.direction * 0.4f;
 				NPC.GravityMultiplier *= 3;
 				NPC.MaxFallSpeedMultiplier *= 2f;
 
@@ -130,14 +185,17 @@ public partial class Scarabeus : ModNPC
 		//End the cinematic
 		else
 		{
-			NPC.dontTakeDamage = false;
-			FablesToggleUI(true);
+			Counter = 0;
+			ExtraMemory = 0;
 
 			//Bonus animation while wearing Scarabeus' mask, interrupted if the player hits it
 			if (CanBeCharmed)
+			{
+				NPC.dontTakeDamage = false;
 				ChangeState(AIState.Charmed);
+			}			
 			else
-				ChangeState(FindAppropriateIdleState());
+				ChangeState(AIState.Roar);
 		}
 
 		return 1f;
@@ -209,13 +267,104 @@ public partial class Scarabeus : ModNPC
 
 		if (!CanBeCharmed)
 		{
-			ChangeState(AIState.IdleBackAwayFast);
+			ChangeState(AIState.Roar);
 			Counter = 0;
 			return 0f;
 		}
 
 		return 1f;
 	}
+	#endregion
+
+	#region SpawnRoar
+
+	public float Roar(ref bool retarget)
+	{
+		int lastFrameY = currentFrame.Y;
+		int framerate = 10;
+		
+		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
+
+		if (lastFrameY == 2 && ExtraMemory < 1)
+		{
+			if (!Main.dedServ)
+			{
+				for (int i = 0; i < 5; i++)
+				{
+					Vector2 pos = NPC.BottomRight;
+					if (NPC.direction == -1)
+						pos = NPC.BottomLeft;
+
+					KickupDust(pos, new Vector2(0.2f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+
+					KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+				}
+			}
+
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+
+			Main.musicFade[Main.curMusic] = 0.5f;
+			Music = Phase1Music;
+
+			ExtraMemory++;
+		}
+
+		if (lastFrameY == 4 && ExtraMemory < 2)
+		{
+			if (!Main.dedServ)
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitX * NPC.direction, 10, 10, 60));
+
+			SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.1f}, NPC.Center);
+			SoundEngine.PlaySound(ChitterSound, NPC.Center);
+
+			ExtraMemory++;
+		}
+
+		if (lastFrameY == 7 && ExtraMemory < 15)
+		{
+			ExtraMemory++;
+			SetFrame(7, 7, PhaseOneProfile);
+		}
+
+		if (lastFrameY == 9 && ExtraMemory < 16)
+		{
+			if (!Main.dedServ)
+			{
+				for (int i = 0; i < 20; i++)
+				{
+					Vector2 pos = NPC.BottomRight;
+					if (NPC.direction == -1)
+						pos = NPC.BottomLeft;
+
+					KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+
+					KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+				}
+			}
+
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, -Vector2.UnitY, 10, 10, 60));
+
+			BouncingTileWave(7, 8f, 40);
+
+			SoundEngine.PlaySound(ChitterSound, NPC.Center);
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
+
+			ExtraMemory++;
+		}
+
+		NPC.FaceTarget();
+		
+		if (updateResult == FrameState.Stopped)
+		{
+			ChangeState(FindAppropriateIdleState());
+
+			Counter = 0;
+			return 0f;
+		}
+
+		return 1f;
+	}
+
 	#endregion
 
 	#region Phase transition
@@ -562,19 +711,16 @@ public partial class Scarabeus : ModNPC
 
 					if (!Main.dedServ)
 					{
-						for (int i = 0; i < 60; i++)
+						for (int i = 0; i < 10; i++)
 						{
-							Vector2 pos = NPC.BottomRight;
+							Vector2 pos = NPC.BottomLeft;
 							if (NPC.direction == -1)
-								pos = NPC.BottomLeft;
+								pos = NPC.BottomRight;
 
-							pos.X += Main.rand.NextFloat(-60, 60);
-							
-							KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4));
+							KickupDust(pos, new Vector2(-1f * NPC.direction, -1f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5));
 						}
 					}
-						
-					
+
 					SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
 					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
@@ -829,18 +975,6 @@ public partial class Scarabeus : ModNPC
 
 		if (lastFrameY == 2 && ExtraMemory < 1)
 		{
-			if (!Main.dedServ)
-			{
-				for (int i = 0; i < 15; i++)
-				{
-					Vector2 pos = NPC.BottomRight;
-					if (NPC.direction == -1)
-						pos = NPC.BottomLeft;
-
-					KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f) * Main.rand.NextFloat(2, 4));
-				}
-			}
-
 			SoundEngine.PlaySound(ChitterSound, NPC.Center);
 			ExtraMemory++;
 		}
@@ -999,15 +1133,17 @@ public partial class Scarabeus : ModNPC
 			{
 				if (!Main.dedServ)
 				{
-					for (int i = 0; i < 40; i++)
+					for (int i = 0; i < 3; i++)
 					{
-						Vector2 pos = NPC.BottomRight;
+						Vector2 pos = NPC.BottomLeft;
 						if (NPC.direction == -1)
-							pos = NPC.BottomLeft;
+							pos = NPC.BottomRight;
 
-						pos.X += Main.rand.NextFloat(-60, 60);
+						pos.X += Main.rand.NextFloat(-20, 20);
 
-						KickupDust(pos, new Vector2(0.7f * NPC.direction, -2f).RotatedByRandom(1f) * Main.rand.NextFloat(1, 5));
+						KickupDust(pos, new Vector2(-0.5f * NPC.direction, -1f).RotatedByRandom(0.25f) * Main.rand.NextFloat(1, 3));
+
+						KickupDust(pos, new Vector2(0.05f * NPC.direction, -2f).RotatedByRandom(0.05f) * Main.rand.NextFloat(1, 5));
 					}
 				}
 
@@ -1224,22 +1360,26 @@ public partial class Scarabeus : ModNPC
 				}
 				else
 				{
-					if (!Main.dedServ)
+					if (!phaseTwo)
 					{
-						for (int i = 0; i < 12; i++)
+						if (!Main.dedServ)
 						{
-							Vector2 pos = NPC.BottomRight;
-							if (NPC.direction == -1)
-								pos = NPC.BottomLeft;
+							for (int i = 0; i < 12; i++)
+							{
+								Vector2 pos = NPC.BottomRight;
+								if (NPC.direction == -1)
+									pos = NPC.BottomLeft;
 
-							pos.X += Main.rand.NextFloat(-60, 60);
+								pos.X += Main.rand.NextFloat(-60, 60);
 
-							KickupDust(pos, new Vector2(-1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4), ParticleLayer.BelowSolid);
+								KickupDust(pos, new Vector2(-1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4), ParticleLayer.BelowSolid);
+							}
 						}
-					}
 
-					SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
-					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+						SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+						SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+
+					}
 
 					NPC.velocity.Y -= initialJumpHeight;
 					NPC.velocity.X = NPC.direction * initialJumpSpeed;
@@ -1389,15 +1529,15 @@ public partial class Scarabeus : ModNPC
 
 						if (!Main.dedServ)
 						{
-							for (int i = 0; i < 24; i++)
+							for (int i = 0; i < 12; i++)
 							{
 								Vector2 pos = NPC.Center;
-								if (NPC.direction == -1)
-									pos = NPC.Center;
 
-								pos.X += Main.rand.NextFloat(-60, 60);
+								pos.X += Main.rand.NextFloat(-30, 30);
 
-								KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(4, 8), ParticleLayer.AboveNPC);
+								KickupDust(pos, new Vector2(1f * NPC.direction, -1.2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(3, 6), ParticleLayer.AboveNPC);
+
+								KickupDust(pos, new Vector2(1.5f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(4, 8), ParticleLayer.BelowSolid);
 							}
 						}
 

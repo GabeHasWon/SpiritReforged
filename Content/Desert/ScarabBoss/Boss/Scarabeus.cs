@@ -80,6 +80,7 @@ public partial class Scarabeus : ModNPC
 	}
 	#endregion
 
+	private static int SpawningMusic = MusicID.QueenSlime;
 	private static int Phase1Music;
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;
@@ -146,6 +147,7 @@ public partial class Scarabeus : ModNPC
 	public enum AIState
 	{
 		SpawnAnim,
+		Roar,
 		Charmed,
 		PhaseTransitionAnim,
 		Despawn,
@@ -209,6 +211,7 @@ public partial class Scarabeus : ModNPC
 		//Cinematic bits
 		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
 		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
+		_stateAI[(int)AIState.Roar] = Roar;
 		_stateAI[(int)AIState.Charmed] = CharmedIdle;
 		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
 		_stateAI[(int)AIState.Despawn] = DigAttack;
@@ -248,11 +251,7 @@ public partial class Scarabeus : ModNPC
 		int activeScarabs = Main.npc.Count(n => n.active && n.type == Type);
 		scarabColorIndex = activeScarabs - 1;
 
-		//Chance to shift up the color index for a shiny scarab
-		if (!NPC.IsABestiaryIconDummy && Main.rand.NextBool(8192))
-			scarabColorIndex = 1;
-
-		Music = Phase1Music;
+		Music = MusicID.Eerie;
 	}
 
 	//No journey scaling cuz we aleady scale stuff
