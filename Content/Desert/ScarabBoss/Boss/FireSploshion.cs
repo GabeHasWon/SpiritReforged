@@ -17,7 +17,7 @@ public class FireSploshion : Particle
 		style = Main.rand.Next(2);
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
+	public override ParticleLayer DrawLayer => ParticleLayer.AboveNPC;
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

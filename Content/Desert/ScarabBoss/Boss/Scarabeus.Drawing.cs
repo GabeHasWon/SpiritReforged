@@ -191,7 +191,7 @@ public partial class Scarabeus : ModNPC
 				}
 			}
 
-			float opacity2 = 1f - Counter / 160f;
+			float opacity2 = 1f - Counter / 720f;
 			if (opacity2 > 0)
 			{
 				Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;

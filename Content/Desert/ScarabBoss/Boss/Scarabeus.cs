@@ -382,8 +382,12 @@ public partial class Scarabeus : ModNPC
 		if (Main.dedServ)
 			return;
 
-		for (int i = 0; i < 5; i++)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, hit.HitDirection, -1f, 0, default, 1f);
+		for (int i = 0; i < 9; i++)
+		{
+			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Ichor, hit.HitDirection, -1f, 0, default, 1f);
+			d.noLight = true;
+			d.noGravity = true;
+		}
 
 		if (NPC.life <= 0)
 		{

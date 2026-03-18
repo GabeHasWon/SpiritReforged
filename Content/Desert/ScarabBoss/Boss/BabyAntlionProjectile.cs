@@ -123,11 +123,13 @@ public class BabyAntlionProjectile : ModProjectile
 			}
 
 			if (!Main.dedServ)
-				ParticleHandler.SpawnParticle(new FireSploshion(Projectile.Center, 30));
+				ParticleHandler.SpawnParticle(new FireSploshion(Projectile.Center, Main.rand.Next(15, 25)));
 
 			CurrentState = AIState.Burnt;
-			Projectile.velocity.X = 0;
-			Projectile.velocity.Y = 0;
+			Projectile.velocity *= 0.1f;
+			Projectile.velocity -= Vector2.UnitY.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f, 6f);
+			if (Main.rand.NextBool(3))
+				Projectile.velocity += Scarab.DirectionTo((Scarab.ModNPC as Scarabeus).Target.Center + new Vector2(0f, -16f)) * 3f;
 			Projectile.timeLeft = 200;
 			Projectile.frame = Main.rand.Next(3);
 			Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -220,9 +222,12 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public void BurnOffAndFall()
 	{
-		Projectile.velocity.X = 0;
-		Projectile.velocity.Y += 0.2f;
-		Projectile.rotation += Projectile.direction * 0.06f;
+		Projectile.velocity.X *= 0.99f;
+		Projectile.velocity.Y += 0.18f;
+		if (Projectile.velocity.Y > 0)
+			Projectile.velocity.Y *= 1.02f;
+
+		Projectile.rotation += Projectile.velocity.Y * 0.01f;
 
 		//Sharticles
 		if (!Main.dedServ & Main.rand.NextBool(3))
@@ -249,7 +254,12 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 	{
-		behindNPCs.Add(index);
+		if (CurrentState == AIState.Emerging)
+			behindNPCsAndTiles.Add(index);
+		else if (CurrentState != AIState.Burnt)
+			overPlayers.Add(index);
+		else
+			behindNPCs.Add(index);
 	}
 
 	public override bool PreDraw(ref Color lightColor)

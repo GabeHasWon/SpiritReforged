@@ -91,7 +91,7 @@ public partial class Scarabeus : ModNPC
 
 				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 3.5f, 3, swarm_time, uniqueIdentity: "ScarabeusSpawnShake"));
 
-				FablesCameraFocus();
+				//FablesCameraFocus();
 
 				if (Main.rand.NextBool(3))
 					Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(area), DustID.Sand, new(0, -4), 0, default, Main.rand.NextFloat(0.7f, 1.2f));
@@ -110,17 +110,17 @@ public partial class Scarabeus : ModNPC
 				{
 					for (int i = 0; i < 20; i++)
 					{
-						Vector2 pos = NPC.BottomLeft;
-						if (NPC.direction == -1)
-							pos = NPC.BottomRight;
+						Vector2 pos = NPC.Bottom;
+
+						pos.X += Main.rand.Next(-30, 30);
 
 						KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
 						
 						KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
 					}
-				}
 
-				BouncingTileWave(7, 8f, 40);
+					GroundImpactVFX(2f);
+				}
 
 				SoundEngine.PlaySound(ChitterSound, NPC.Center);
 				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
@@ -128,11 +128,9 @@ public partial class Scarabeus : ModNPC
 				NPC.noGravity = false;
 				NPC.velocity.Y = -30;
 				NPC.Opacity = 1;
-				FablesIntroCard(roar_time);
-				FablesToggleUI(false);
 			}
 
-			FablesCameraFocus();
+			//FablesCameraFocus();
 			NPC.noTileCollide = NPC.velocity.Y < 0;
 
 			if (OnTopOfTiles) //Landed
@@ -141,19 +139,19 @@ public partial class Scarabeus : ModNPC
 				{
 					if (!Main.dedServ)
 					{
-						for (int i = 0; i < 20; i++)
+						for (int i = 0; i < 15; i++)
 						{
-							Vector2 pos = NPC.BottomLeft;
-							if (NPC.direction == -1)
-								pos = NPC.BottomRight;
+							Vector2 pos = NPC.Bottom;
+
+							pos.X += Main.rand.Next(-30, 30);
 
 							KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
 
 							KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
 						}
-					}
 
-					BouncingTileWave(7, 8f, 40);
+						GroundImpactVFX(1.5f);
+					}
 
 					SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
 
@@ -185,6 +183,8 @@ public partial class Scarabeus : ModNPC
 		//End the cinematic
 		else
 		{
+			SetFrame(7, 0, PhaseOneProfile);
+
 			Counter = 0;
 			ExtraMemory = 0;
 
@@ -287,6 +287,9 @@ public partial class Scarabeus : ModNPC
 
 		if (lastFrameY == 2 && ExtraMemory < 1)
 		{
+			FablesIntroCard(120);
+			FablesToggleUI(false);
+
 			if (!Main.dedServ)
 			{
 				for (int i = 0; i < 5; i++)
@@ -320,13 +323,17 @@ public partial class Scarabeus : ModNPC
 			ExtraMemory++;
 		}
 
-		if (lastFrameY == 7 && ExtraMemory < 15)
+		int roarTime = 15;
+		if (CrossMod.Fables.Enabled)
+			roarTime = 60;
+
+		if (lastFrameY == 7 && ExtraMemory < roarTime)
 		{
 			ExtraMemory++;
 			SetFrame(7, 7, PhaseOneProfile);
 		}
 
-		if (lastFrameY == 9 && ExtraMemory < 16)
+		if (lastFrameY == 9 && ExtraMemory < roarTime + 1)
 		{
 			if (!Main.dedServ)
 			{
@@ -403,6 +410,22 @@ public partial class Scarabeus : ModNPC
 
 			if (UpdateFrame(5, framerate, PhaseTwoProfile, false) == FrameState.Stopped)
 			{
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 20; i++)
+					{
+						Vector2 pos = NPC.Bottom;
+
+						pos.X += Main.rand.Next(-30, 30);
+
+						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+
+						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+					}
+				}
+
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+
 				SetFrame(0, 2, PhaseTwoProfile);
 				NPC.velocity.Y -= 15;
 				Counter = 0;
@@ -571,6 +594,16 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
+
+			if (Main.rand.NextBool(15))
+			{
+				Vector2 pos = NPC.BottomLeft;
+				if (NPC.direction == -1)
+					pos = NPC.BottomRight;
+
+				KickupDust(pos, new Vector2(-1f * NPC.direction, -1f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 3));
+			}
+
 			NPC.rotation = 0f;
 			UpdateFrame(1, (int)fps, PhaseOneProfile);
 		}
@@ -1779,6 +1812,11 @@ public partial class Scarabeus : ModNPC
 		UpdateFrame(1, 12, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
 
+		if (Counter < 360)
+			trailOpacity = 0.4f * (1f - Counter / 360f);
+
+		SwarmAttackVisuals();
+
 		if (Counter < swarm_length && Counter % projectileSpawnDelay == 0)
 			SpawnBabySwarmer((int)(Counter / projectileSpawnDelay));
 
@@ -1796,6 +1834,10 @@ public partial class Scarabeus : ModNPC
 		float spawnAreaOffsetX = Target.velocity.X * 35f;
 		float spawnAreaRadius = 400 - swarmerIndex % 4 * 30;
 
+		//Spawn directly on player
+		if (Main.rand.NextBool(3))
+			spawnAreaRadius = 0f;
+
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 
@@ -1809,6 +1851,16 @@ public partial class Scarabeus : ModNPC
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		}
+	}
+
+	public void SwarmAttackVisuals()
+	{	
+		Vector2 orbPosition = NPC.Center + new Vector2(0f, -60f);
+
+		if (Main.rand.NextBool(10))
+		{
+			ParticleHandler.SpawnParticle(new EmberParticle(orbPosition + Main.rand.NextVector2Circular(50f, 50f), -Vector2.UnitY, Color.Orange, 1f, 30));
 		}
 	}
 	#endregion
