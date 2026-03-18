@@ -333,10 +333,15 @@ public partial class Scarabeus : ModNPC
 
 	public void HandleDespawn()
 	{
-		if (NPC.HasPlayerTarget && (!Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000) && ++despawnTimer >= 60 * 20)
-			ChangeState(AIState.Despawn);
+		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
+		{
+			if (++despawnTimer >= 60 * 20 && CurrentState != AIState.Despawn)
+				ChangeState(AIState.Despawn);
+		}
 		else
+		{
 			despawnTimer = 0;
+		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
