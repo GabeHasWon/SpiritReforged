@@ -9,7 +9,6 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
 

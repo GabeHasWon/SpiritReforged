@@ -240,6 +240,7 @@ public partial class Scarabeus : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath5;
 		NPC.dontTakeDamage = true;
 		NPC.knockBackResist = 0;
+		NPC.BossBar = ModContent.GetInstance<ScarabeusBossBar>();
 
 		if (!NPC.IsABestiaryIconDummy)
 			NPC.Opacity = 0;
@@ -335,7 +336,7 @@ public partial class Scarabeus : ModNPC
 	{
 		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
 		{
-			if (++despawnTimer >= 60 * 20 && CurrentState != AIState.Despawn)
+			if (++despawnTimer >= 60 * 20 && IsIdling)
 				ChangeState(AIState.Despawn);
 		}
 		else
@@ -503,9 +504,12 @@ public partial class Scarabeus : ModNPC
 
 	public override void BossHeadSlot(ref int index)
 	{
-		int slot = PhaseTwoHeadSlot;
-		if (phaseTwo && slot != -1)
-			index = slot;
+		if (phaseTwo)
+		{
+			int slot = PhaseTwoHeadSlot;
+			if (slot != -1)
+				index = slot;
+		}
 	}
 
 	public void ChangeState(AIState state)
