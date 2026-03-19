@@ -750,14 +750,14 @@ public partial class Scarabeus : ModNPC
 		else
 		{
 
-			if (Main.rand.NextBool(15))
+			/*if (Main.rand.NextBool(15))
 			{
 				Vector2 pos = NPC.BottomLeft;
 				if (NPC.direction == -1)
 					pos = NPC.BottomRight;
 
 				KickupDust(pos, new Vector2(-1f * NPC.direction, -1f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 3));
-			}
+			}*/
 
 			NPC.rotation = 0f;
 			UpdateFrame(1, (int)fps, PhaseOneProfile);
@@ -889,7 +889,7 @@ public partial class Scarabeus : ModNPC
 
 					NPC.velocity.Y -= 9f;
 					NPC.velocity.X = 0f;
-					NPC.velocity.X += NPC.DirectionTo(Target.Center).X * 3f;
+					NPC.velocity.X += NPC.DirectionTo(Target.Center).X * 0.2f;
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
@@ -969,7 +969,7 @@ public partial class Scarabeus : ModNPC
 				else if (dist > 100f)
 					interpolant = (dist - 100f) / 200f;
 	
-				float adjustedRollSpeed = rollSpeed * MathHelper.Lerp(1f, 2.5f, interpolant);
+				float adjustedRollSpeed = rollSpeed * MathHelper.Lerp(1f, 1.5f, interpolant);
 
 				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * adjustedRollSpeed, 0.1f);
 				NPC.rotation += 0.01f * NPC.velocity.X;
@@ -1671,7 +1671,7 @@ public partial class Scarabeus : ModNPC
 
 							pos.X += Main.rand.NextFloat(-60, 60);
 
-							KickupDust(pos, new Vector2(-2f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4), ParticleLayer.AboveSolid);
+							KickupDust(pos, new Vector2(-2f * NPC.direction, -1.2f).RotatedByRandom(1f) * Main.rand.NextFloat(2, 4));
 						}
 					}
 
@@ -2083,9 +2083,8 @@ public partial class Scarabeus : ModNPC
 		float spawnAreaOffsetX = Target.velocity.X * 35f;
 		float spawnAreaRadius = 400 - swarmerIndex % 4 * 30;
 
-		//Spawn directly on player
-		if (Main.rand.NextBool(3))
-			spawnAreaRadius = 0f;
+		//if (Main.rand.NextBool(3))
+		//	spawnAreaRadius = 0f;
 
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
