@@ -5,6 +5,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Security.Cryptography;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
@@ -161,9 +162,10 @@ public class BabyAntlionProjectile : ModProjectile
 
 			CurrentState = AIState.Burnt;
 			Projectile.velocity *= 0.1f;
-			Projectile.velocity -= Vector2.UnitY.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f, 6f);
-			if (Main.rand.NextBool(3))
-				Projectile.velocity += Scarab.DirectionTo((Scarab.ModNPC as Scarabeus).Target.Center + new Vector2(0f, -16f)) * 3f;
+			//Projectile.velocity -= Vector2.UnitY.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f, 6f);
+			//if (Main.rand.NextBool(3))
+			//	Projectile.velocity += Scarab.DirectionTo((Scarab.ModNPC as Scarabeus).Target.Center + new Vector2(0f, -16f)) * 3f;
+
 			Projectile.timeLeft = 200;
 			Projectile.frame = Main.rand.Next(3);
 			Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
@@ -191,56 +193,76 @@ public class BabyAntlionProjectile : ModProjectile
 
 		float progress = 1f - (Projectile.timeLeft - MAX_TIMELEFT + emerge_wait_time) / (float)emerge_wait_time;
 
+		
 		//Do dust and smoke on the floor
-		if (Main.rand.NextBool(2) && !Main.dedServ)
+		if (!Main.dedServ)
 		{
-			Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3) * 2f * progress, palette[0] * 0.7f, Main.rand.NextFloat(0.07f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
+			if (Main.rand.NextBool(2))
 			{
-				Pixellate = true,
-				DissolveAmount = 1,
-				SecondaryColor = palette[1] * 0.7f,
-				TertiaryColor = palette[2] * 0.7f,
-				PixelDivisor = 3,
-				ColorLerpExponent = 0.25f,
-				Layer = ParticleLayer.BelowSolid
-			});
-		}
+				Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
 
-		if (Main.rand.NextBool(5) && !Main.dedServ)
-		{
-			Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
-			Point tilePosition = dustPosition.ToTileCoordinates();
-			int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3) * 2f * progress, palette[0] * 0.7f, Main.rand.NextFloat(0.07f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
+				{
+					Pixellate = true,
+					DissolveAmount = 1,
+					SecondaryColor = palette[1] * 0.7f,
+					TertiaryColor = palette[2] * 0.7f,
+					PixelDivisor = 3,
+					ColorLerpExponent = 0.25f,
+					Layer = ParticleLayer.BelowSolid
+				});
+			}
 
-			Dust dust = Main.dust[dustIndex];
-			dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-16f, 16f);
-			dust.velocity.Y -= Main.rand.NextFloat(1.5f, 3f);
-			dust.velocity.X *= 0.5f;
-			dust.noLightEmittence = true;
-			dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
-		}
+			if (Main.rand.NextBool(5) && !Main.dedServ)
+			{
+				Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
+				Point tilePosition = dustPosition.ToTileCoordinates();
+				int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
 
-		if (Main.rand.NextBool(5))
-		{
-			Vector2 pos = _originalPosition + new Vector2(Main.rand.Next(-8, 8), 0);
+				Dust dust = Main.dust[dustIndex];
+				dust.position = dustPosition + Vector2.UnitX * Main.rand.NextFloat(-16f, 16f);
+				dust.velocity.Y -= Main.rand.NextFloat(1.5f, 3f);
+				dust.velocity.X *= 0.5f;
+				dust.noLightEmittence = true;
+				dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+			}
 
-			ParticleHandler.SpawnParticle(new GlowParticle(
+			if (Main.rand.NextBool(24))
+			{
+				Vector2 pos = _originalPosition + new Vector2(Main.rand.Next(-12, 12), -2);
+
+				ParticleHandler.SpawnParticle(new StarParticle(
+					pos,
+					Vector2.Zero,
+					Color.White.Additive() * 0.5f,
+					Color.Orange.Additive(),
+					0.2f,
+					25,
+					0.5f
+					));
+			}
+
+			if (Main.rand.NextBool(30))
+			{
+				Vector2 pos = _originalPosition + new Vector2(Main.rand.Next(-8, 8), 0);
+
+				ParticleHandler.SpawnParticle(new GlowParticle(
 				pos,
-				-Vector2.UnitY * Main.rand.NextFloat(1, 3), 
+				-Vector2.UnitY * Main.rand.NextFloat(1, 3),
 				Color.Orange.Additive(),
 				0.5f,
 				30
 				));
 
-			ParticleHandler.SpawnParticle(new GlowParticle(
-				pos,
-				-Vector2.UnitY * Main.rand.NextFloat(1, 3),
-				Color.White.Additive(),
-				0.4f,
-				25
-				));
+				ParticleHandler.SpawnParticle(new GlowParticle(
+					pos,
+					-Vector2.UnitY * Main.rand.NextFloat(1, 3),
+					Color.White.Additive(),
+					0.4f,
+					25
+					));
+			}
 		}
 
 		//Just die if scarab dies lol
@@ -354,7 +376,7 @@ public class BabyAntlionProjectile : ModProjectile
 		var ray = AssetLoader.LoadedTextures["Ray"].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
-		if (Projectile.timeLeft > MAX_TIMELEFT - 60)
+		/*if (Projectile.timeLeft > MAX_TIMELEFT - 60)
 		{
 			float progress = 1f - (Projectile.timeLeft - MAX_TIMELEFT + 60) / 60f;
 
@@ -375,7 +397,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 			Main.spriteBatch.Draw(ray, _originalPosition - Main.screenPosition, null, Color.White.Additive() * fade,
 				MathHelper.Pi, ray.Size() / 2f, new Vector2(1f, 0.5f + 1.2f * fade), 0f, 0);
-		}
+		}*/
 
 		if (CurrentState == AIState.Hidden)
 			return false;
@@ -427,9 +449,9 @@ public class BabyAntlionProjectile : ModProjectile
 			{
 				float dist = Projectile.Distance(Scarab.Center);
 
-				if (dist < 250f)
+				if (dist < 175f)
 				{
-					float lerp = 1f - (dist - 40f) / 210f;
+					float lerp = 1f - (dist - 40f) / 135f;
 
 					DrawBloom(bloom, solid, position, frame, rotation, scale, effects, lerp);
 				}
