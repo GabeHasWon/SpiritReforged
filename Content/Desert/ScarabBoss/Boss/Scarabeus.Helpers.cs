@@ -30,7 +30,7 @@ public partial class Scarabeus : ModNPC
 
 	private AIState SelectAttack()
 	{
-		//return AIState.PhaseTransitionAnim;
+		//return AIState.DeathAnim;
 
 		WeightedRandom<AIState> state = new();
 

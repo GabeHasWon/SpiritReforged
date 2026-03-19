@@ -1,11 +1,13 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
+using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -13,6 +15,7 @@ using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -144,6 +147,8 @@ public partial class Scarabeus : ModNPC
 	/// <summary> Tracks when Scarabeus should despawn. </summary>
 	public int despawnTimer;
 
+	public int _shakeTimer;
+
 	public enum AIState
 	{
 		SpawnAnim,
@@ -151,6 +156,7 @@ public partial class Scarabeus : ModNPC
 		Charmed,
 		PhaseTransitionAnim,
 		Despawn,
+		DeathAnim,
 
 		IdleTowardsPlayer,
 		IdleAwayFromPlayer,
@@ -215,6 +221,7 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.Charmed] = CharmedIdle;
 		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
 		_stateAI[(int)AIState.Despawn] = DigAttack;
+		_stateAI[(int)AIState.DeathAnim] = DeathAnimation;
 		//Idle variants
 		_stateAI[(int)AIState.IdleTowardsPlayer] = IdleBetweenAttacks;
 		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
@@ -274,8 +281,28 @@ public partial class Scarabeus : ModNPC
 
 	public override bool CheckActive() => Target.active && !Target.dead;
 
+	public override bool CheckDead()
+	{
+		if (CurrentState != AIState.DeathAnim)
+		{
+			Counter = 0;
+			NPC.life = 1;
+			NPC.dontTakeDamage = true;
+
+			ChangeState(AIState.DeathAnim);
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	public override void AI()
 	{
+		if (_shakeTimer > 0)
+			_shakeTimer--;
+
 		//Retarget early if we dont have a target or if scarabeus is idling
 		if (!NPC.HasValidTarget || IsIdling)
 			NPC.TargetClosest(false);
@@ -389,7 +416,7 @@ public partial class Scarabeus : ModNPC
 			d.noGravity = true;
 		}
 
-		if (NPC.life <= 0)
+		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
 		{
 			//SoundEngine.TryGetActiveSound(wingSoundSlot, out ActiveSound sound);
 
@@ -420,7 +447,23 @@ public partial class Scarabeus : ModNPC
 				dust.noGravity = true;
 
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
+
+				ParticleHandler.SpawnParticle(new GlowParticle(
+							NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f),
+							Main.rand.NextVector2Circular(10f, 10f),
+							Color.Orange,
+							Main.rand.NextFloat(0.7f, 1f),
+							60,
+							1,
+							DecelerateAction
+						));
 			}
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
+
+			static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
+
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 45));
 		}
 	}
 

@@ -39,8 +39,23 @@ public class SandballProjectile : ModProjectile
 	{
 		Projectile.rotation += Projectile.velocity.X * 0.04f;
 		Projectile.velocity.Y += 0.2f;
+
+		if (Projectile.velocity.Y > 0)
+			Projectile.velocity.Y *= 1.03f;
+
 		if (Projectile.velocity.Y > 16f)
 			Projectile.velocity.Y = 16;
+
+		Point tilePosition = MimicTilePosition;
+		int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+		
+		Dust dust = Main.dust[dustIndex];
+		dust.position = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
+		dust.velocity = -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f);
+		dust.noLightEmittence = true;
+		dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+		dust.alpha = 50 + Main.rand.Next(100);
+		dust.noGravity = Main.rand.NextBool();
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

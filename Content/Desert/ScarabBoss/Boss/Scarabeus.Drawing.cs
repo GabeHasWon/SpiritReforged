@@ -1,9 +1,11 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader;
+using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -140,6 +142,8 @@ public partial class Scarabeus : ModNPC
 
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		var solid = TextureColorCache.ColorSolid(texture, Color.White);
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		bool originAtFeet = OriginAtFeet();
 		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
@@ -171,6 +175,12 @@ public partial class Scarabeus : ModNPC
 				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8) + positionOffset, NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
 			}
 		}
+
+		if (_shakeTimer > 0)
+			position += Main.rand.NextVector2CircularEdge(7f, 7f) * _shakeTimer / 20f;
+
+		if (CurrentState == AIState.DeathAnim)
+			position += Main.rand.NextVector2CircularEdge(3f, 3f) * Counter / 360f;
 
 		if (CurrentState == AIState.Swarm) //Swarm flash visuals
 		{
@@ -230,6 +240,52 @@ public partial class Scarabeus : ModNPC
 
 			DrawHelpers.DrawOutline(spriteBatch, glowmask, NPC.Center - Main.screenPosition, default, (offset) =>
 				Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
+		}
+
+		if (CurrentState == AIState.DeathAnim)
+		{
+			Main.spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.25f * (Counter / 360f),
+				0f, bloom.Size() / 2f, 1.1f, 0f, 0);
+
+			Main.EntitySpriteDraw(solid, position, NPC.frame, Color.Orange.Additive() * (Counter / 360f), NPC.rotation, origin, scale, effects);
+			Main.EntitySpriteDraw(solid, position, NPC.frame, Color.White * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), NPC.rotation, origin, scale, effects);
+			
+			Main.spriteBatch.Draw(bloom, position, null, Color.DarkOrange.Additive() * 0.3f * (Counter / 360f),
+					0f, bloom.Size() / 2f, 1.75f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
+
+			Main.spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.4f * (Counter / 360f),
+					0f, bloom.Size() / 2f, 1.5f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
+			
+			Main.spriteBatch.Draw(bloom, position, null, Color.White.Additive() * (Counter / 360f),
+					0f, bloom.Size() / 2f, 1f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
+
+			if (ExtraMemory > 1)
+			{
+				float opacity = 1f - ExtraMemory / 25f;
+				if (opacity > 0)
+				{
+					Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+					Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
+					Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
+					float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
+
+					for (int i = 0; i < 2; i++)
+					{
+						float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
+
+						Main.EntitySpriteDraw(star2, NPC.Top - Main.screenPosition, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
+						Main.EntitySpriteDraw(star, NPC.Top - Main.screenPosition, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
+					}
+				}
+
+				float opacity2 = 1f - ExtraMemory / 200f;
+				if (opacity2 > 0)
+				{
+					Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
+					Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
+					Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
+				}
+			}
 		}
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
