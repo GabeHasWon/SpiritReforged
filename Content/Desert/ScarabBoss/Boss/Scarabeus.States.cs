@@ -474,19 +474,47 @@ public partial class Scarabeus : ModNPC
 	#region Death Animation
 	public float DeathAnimation(ref bool retarget)
 	{
+		UpdateFrame(0, (int)(30), SimulatedProfile);
+
 		if (Counter == 0)
 		{
+			NPC.hide = true;
+
+			ExtraMemory = 0;
+			NPC.velocity = new Vector2(Main.rand.Next(-6, 6), -Main.rand.Next(4, 5));
+
+			if (OnTopOfTiles)
+				NPC.velocity.Y -= 16;
+
+			NPC.noGravity = true;
+
 			if (!Main.dedServ)
-			{	
-				for (int i = 0; i < 30; i++)
+			{
+				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
+				var easeAnimation = new AnimationSequence()
+					.Add(new EaseSegment(40, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+					.Add(new FollowSegment(400, NPC))
+					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+			}
+		}
+
+		if (Counter % 25 == 0)
+		{
+			if (!Main.dedServ)
+			{
+				Vector2 pos = NPC.Center + new Vector2(-10f * NPC.direction, -20f).RotatedBy(NPC.rotation);
+
+				for (int i = 0; i < 10; i++)
 				{
-					Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f);
+					pos += Main.rand.NextVector2Circular(25f, 25f);
 
 					ParticleHandler.SpawnParticle(new EmberParticle(
 						pos,
 						Main.rand.NextVector2Circular(2f, 2f),
 						Color.Orange,
-						Main.rand.NextFloat(0.6f, 1f),
+						Main.rand.NextFloat(0.4f, 1f) * Counter / 120f,
 						30
 					));
 
@@ -494,177 +522,66 @@ public partial class Scarabeus : ModNPC
 						pos,
 						Main.rand.NextVector2Circular(2f, 2f),
 						Color.Orange,
-						Main.rand.NextFloat(0.6f, 1f),
-						30
-					));
-				}
-			}
-
-			ExtraMemory = 0;
-			NPC.velocity = new Vector2(Main.rand.Next(-6, 6), -Main.rand.Next(2, 4));
-			NPC.noGravity = false;
-
-			Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
-			var easeAnimation = new AnimationSequence()
-				.Add(new EaseSegment(30, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-				.Add(new FollowSegment(500, NPC))
-				.Add(new SequenceCameraModifier.ReturnSegment(90, EaseFunction.EaseCubicInOut));
-
-			Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-		}
-
-		if (Counter > 450)
-			Counter = 450;
-
-		bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
-
-		int rand = Utils.Clamp(15 - (int)(14 * Counter / 240f), 2, 14);
-		if (Main.rand.NextBool(rand))
-		{
-			ParticleHandler.SpawnParticle(new EmberParticle(
-						NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f),
-						-Vector2.UnitY * Main.rand.NextFloat(1, 5),
-						Color.Orange,
 						Main.rand.NextFloat(0.4f, 1f) * Counter / 120f,
 						30
 					));
+				}
+			}
+
+			SoundEngine.PlaySound(NPC.HitSound, NPC.Center);
+
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 25));
+			_shakeTimer = 20;
+
+			NPC.velocity.Y += 0.2f;
+			NPC.position.Y += 16;
 		}
 
-		ScarabHeatHazeShaderData.HeatHazeTargetIntensity = 1f * Math.Min(1, Counter / 400f);
-
-		if (!jumped)
+		if (!OnTopOfTiles && ExtraMemory <= 0 && Counter < 600)
 		{
-			if (OnTopOfTiles)
-			{
-				if (NPC.velocity.Y > 0)
-					NPC.velocity.Y = 0;
+			NPC.velocity.Y += 0.02f;
 
-				if (ExtraMemory < 1)
-				{
-					if (!Main.dedServ)
-					{
-						for (int i = 0; i < 15; i++)
-						{
-							Vector2 pos = NPC.Bottom;
+			if (NPC.velocity.Y > 0)
+				NPC.velocity.Y *= 1.01f;
 
-							pos.X += Main.rand.Next(-30, 30);
+			NPC.velocity.X += 0.5f * (float)Math.Cos(Counter / 25f);
+			NPC.velocity.X *= 0.95f;
 
-							KickupDust(pos, new Vector2(1f * NPC.direction, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+			NPC.direction = Math.Sign(NPC.velocity.X);
 
-							KickupDust(pos, new Vector2(0.5f * NPC.direction, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
-						}
-
-						GroundImpactVFX(1.5f);
-					}
-
-					SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
-
-					NPC.FaceTarget();
-					UpdateFrame(6, 12, PhaseOneProfile, false);
-					NPC.rotation = 0;
-					NPC.velocity.X = 0;
-					NPC.velocity.Y = 0;
-					NPC.noGravity = true;
-					ShiftUpToFloorLevel();
-
-					if (!Main.dedServ)
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 2, 3, 20));
-
-					ExtraMemory++;
-				}
-				else
-				{
-					if (Counter % 30 == 0)
-					{
-						if (!Main.dedServ)
-						{
-							Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f);
-
-							for (int i = 0; i < 10; i++)
-							{				
-								ParticleHandler.SpawnParticle(new EmberParticle(
-									pos,
-									Main.rand.NextVector2Circular(2f, 2f),
-									Color.Orange,
-									Main.rand.NextFloat(0.4f, 1f) * Counter / 120f,
-									30
-								));
-
-								ParticleHandler.SpawnParticle(new GlowParticle(
-									pos,
-									Main.rand.NextVector2Circular(2f, 2f),
-									Color.Orange,
-									Main.rand.NextFloat(0.4f, 1f) * Counter / 120f,
-									30
-								));
-							}
-						}
-
-						SoundEngine.PlaySound(SoundID.NPCHit31, NPC.Center);
-
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 25));
-						_shakeTimer = 20;
-					}
-
-					if (UpdateFrame(5, 6, PhaseTwoProfile, false) == FrameState.Stopped)
-					{
-						if (!Main.dedServ)
-						{
-							for (int i = 0; i < 20; i++)
-							{
-								Vector2 pos = NPC.Bottom;
-
-								pos.X += Main.rand.Next(-30, 30);
-
-								KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
-
-								KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
-							}
-						}
-
-						SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
-
-						SetFrame(0, 2, PhaseTwoProfile);
-						NPC.velocity.Y -= 15;
-						ExtraMemory = 0;
-						NPC.noTileCollide = true;
-						NPC.noGravity = true;
-					}
-				}
-			}
-			else
-			{
-				NPC.noGravity = true;
-				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.DirectionTo(Target.Center - new Vector2(80 * NPC.direction, 0)).X * 10, 0.2f);
-				NPC.rotation += 0.3f + NPC.velocity.X * 0.05f;
-
-				NPC.velocity.Y += 0.15f;
-				if (NPC.velocity.Y > 0)
-					NPC.velocity.Y *= 1.03f;
-
-				if (NPC.velocity.Y > 16f)
-					NPC.velocity.Y = 16f;
-
-				SetFrame(RollFrame, PhaseOneProfile);
-				trailOpacity = 0.6f;
-			}
+			NPC.rotation = NPC.velocity.X * (NPC.velocity.Y / 16f) * 0.4f;
 		}
 		else
 		{
-			trailOpacity = 1f;
-			NPC.velocity.Y *= 0.95f;
+			NPC.velocity *= 0.3f;
 
-			float radius = MathHelper.Lerp(2f, 10f, ExtraMemory / 120f);
+			if (ExtraMemory == 0)
+			{
+				NPC.noTileCollide = false;
 
-			ParticleHandler.SpawnParticle(new EmberParticle(
-						NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f),
-						Main.rand.NextVector2CircularEdge(radius, radius),
-						Color.Orange,
-						Main.rand.NextFloat(0.8f, 2f) * ExtraMemory / 120f,
-						30
-					));
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 36; i++)
+					{
+						Vector2 pos = NPC.BottomRight;
+						if (NPC.direction == -1)
+							pos = NPC.BottomLeft;
 
-			if (++ExtraMemory > 120)
+						pos.X += Main.rand.NextFloat(-60, 60);
+
+						KickupDust(pos, -NPC.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(4f), ParticleLayer.AboveSolid);
+
+						KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(5f), ParticleLayer.BelowSolid);
+					}
+				}
+
+				SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+			}
+
+			NPC.Center += Main.rand.NextVector2Circular(15f, 15f) * ExtraMemory / 5f;
+
+			if (++ExtraMemory >= 5)
 			{
 				NPC.life = 0;
 				NPC.checkDead();
@@ -846,7 +763,7 @@ public partial class Scarabeus : ModNPC
 			UpdateFrame(1, (int)fps, PhaseOneProfile);
 		}
 	}
-
+	
 	public void FlyHover(ref float nextAttackWaitTime, float wingbeatSpeed = 1f)
 	{
 		//Attacks slower in P2 because its flying so its harder to hit

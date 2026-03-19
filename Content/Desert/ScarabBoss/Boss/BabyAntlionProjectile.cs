@@ -197,7 +197,6 @@ public class BabyAntlionProjectile : ModProjectile
 		//Do dust and smoke on the floor
 		if (!Main.dedServ)
 		{
-
 			if (Main.rand.NextBool(2))
 			{
 				Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);

@@ -180,7 +180,7 @@ public partial class Scarabeus : ModNPC
 			position += Main.rand.NextVector2CircularEdge(7f, 7f) * _shakeTimer / 20f;
 
 		if (CurrentState == AIState.DeathAnim)
-			position += Main.rand.NextVector2CircularEdge(3f, 3f) * Counter / 360f;
+			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
 
 		if (CurrentState == AIState.Swarm) //Swarm flash visuals
 		{
@@ -244,52 +244,6 @@ public partial class Scarabeus : ModNPC
 				Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 		}
 
-		if (CurrentState == AIState.DeathAnim)
-		{
-			Main.spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.25f * (Counter / 360f),
-				0f, bloom.Size() / 2f, 1.1f, 0f, 0);
-
-			Main.EntitySpriteDraw(solid, position, NPC.frame, Color.Orange.Additive() * (Counter / 360f), NPC.rotation, origin, scale, effects);
-			Main.EntitySpriteDraw(solid, position, NPC.frame, Color.White * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), NPC.rotation, origin, scale, effects);
-			
-			Main.spriteBatch.Draw(bloom, position, null, Color.DarkOrange.Additive() * 0.3f * (Counter / 360f),
-					0f, bloom.Size() / 2f, 1.75f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
-
-			Main.spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.4f * (Counter / 360f),
-					0f, bloom.Size() / 2f, 1.5f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
-			
-			Main.spriteBatch.Draw(bloom, position, null, Color.White.Additive() * (Counter / 360f),
-					0f, bloom.Size() / 2f, 1f * EaseBuilder.EaseQuinticIn.Ease(Counter / 400f), 0f, 0);
-
-			if (ExtraMemory > 1)
-			{
-				float opacity = 1f - ExtraMemory / 25f;
-				if (opacity > 0)
-				{
-					Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
-					Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
-					Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
-					float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
-
-					for (int i = 0; i < 2; i++)
-					{
-						float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
-
-						Main.EntitySpriteDraw(star2, NPC.Top - Main.screenPosition, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
-						Main.EntitySpriteDraw(star, NPC.Top - Main.screenPosition, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
-					}
-				}
-
-				float opacity2 = 1f - ExtraMemory / 200f;
-				if (opacity2 > 0)
-				{
-					Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
-					Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
-					Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
-				}
-			}
-		}
-
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
 		{
 			Rectangle portraitBox = new((int)position.X - NPC.frame.Width / 2, (int)position.Y - NPC.frame.Height / 2, NPC.frame.Width, NPC.frame.Height);
@@ -303,6 +257,11 @@ public partial class Scarabeus : ModNPC
 				currentFrame.Y = 0; //Reset
 		}
 
+		if (CurrentState == AIState.DeathAnim)
+		{
+			Main.spriteBatch.Draw(bloom, NPC.Center + new Vector2(-10f * NPC.direction, -20f).RotatedBy(NPC.rotation) - Main.screenPosition, null, Color.Orange.Additive() * (Counter / 360f), 0f, bloom.Size() / 2f, 1f, 0f, 0f);
+		}
+
 		/*
 		MultipliableFloat test = new MultipliableFloat();
 		Rectangle hitbox = NPC.Hitbox;
@@ -313,6 +272,12 @@ public partial class Scarabeus : ModNPC
 		*/
 
 		return false;
+	}
+
+	public override void DrawBehind(int index)
+	{
+		if (CurrentState == AIState.DeathAnim)
+			Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	private static void DrawEmote(SpriteBatch spriteBatch, Vector2 position, int emote)
