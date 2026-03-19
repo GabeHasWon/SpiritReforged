@@ -120,6 +120,9 @@ public partial class Scarabeus : ModNPC
 
 	private void GroundImpactVFX(float strength = 10f)
 	{
+		if (Main.dedServ)
+			return;
+
 		for (int i = 0; i < 22; i++)
 		{
 			Vector2 particlePos = NPC.Bottom + Vector2.UnitY * 4;
@@ -161,6 +164,9 @@ public partial class Scarabeus : ModNPC
 
 	private void BouncingTileWave(int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
 	{
+		if (Main.dedServ)
+			return;
+
 		for (int j = -1; j <= 1; j += 2)
 			BouncingTileWave(j, numTiles, maxHeight, totalTime, offset);
 
@@ -169,6 +175,9 @@ public partial class Scarabeus : ModNPC
 
 	private void BouncingTileWave(int direction, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
 	{
+		if (Main.dedServ)
+			return;
+
 		for (float i = 0; i < numTiles; i++)
 		{
 			float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));

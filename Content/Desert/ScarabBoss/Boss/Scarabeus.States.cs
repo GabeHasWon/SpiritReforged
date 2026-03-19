@@ -935,6 +935,9 @@ public partial class Scarabeus : ModNPC
 
 	public void KickupDust(Vector2 pos, Vector2 velocity, ParticleLayer drawLayer = ParticleLayer.AboveNPC)
 	{
+		if (Main.dedServ)
+			return;
+
 		ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity, new Color(253, 239, 167) * 0.7f, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 		{
 			Pixellate = true,
@@ -959,6 +962,9 @@ public partial class Scarabeus : ModNPC
 
 	public void CreateRollParticles()
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(2))
 		{
 			Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Bottom) + Vector2.UnitY * 10f);
@@ -1856,10 +1862,9 @@ public partial class Scarabeus : ModNPC
 
 	public void SwarmAttackVisuals()
 	{	
-		Vector2 orbPosition = NPC.Center + new Vector2(0f, -60f);
-
-		if (Main.rand.NextBool(10))
+		if (Main.rand.NextBool(10) && !Main.dedServ)
 		{
+			Vector2 orbPosition = NPC.Center + new Vector2(0f, -60f);
 			ParticleHandler.SpawnParticle(new EmberParticle(orbPosition + Main.rand.NextVector2Circular(50f, 50f), -Vector2.UnitY, Color.Orange, 1f, 30));
 		}
 	}

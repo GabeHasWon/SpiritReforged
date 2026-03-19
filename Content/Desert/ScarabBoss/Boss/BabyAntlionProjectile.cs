@@ -156,7 +156,7 @@ public class BabyAntlionProjectile : ModProjectile
 		const int emerge_wait_time = 45;
 
 		//Do dust and smoke on the floor
-		if (Main.rand.NextBool(2))
+		if (Main.rand.NextBool(2) && !Main.dedServ)
 		{
 			Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
 
@@ -172,7 +172,7 @@ public class BabyAntlionProjectile : ModProjectile
 			});
 		}
 
-		if (!Main.rand.NextBool(3))
+		if (!Main.rand.NextBool(3) && !Main.dedServ)
 		{
 			Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
 			Point tilePosition = dustPosition.ToTileCoordinates();
