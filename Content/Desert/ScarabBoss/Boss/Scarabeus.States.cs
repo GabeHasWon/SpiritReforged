@@ -1192,7 +1192,7 @@ public partial class Scarabeus : ModNPC
 
 			if (!Main.dedServ)
 			{
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 17, 6, 65, 1000));
 				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 				ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 				SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
