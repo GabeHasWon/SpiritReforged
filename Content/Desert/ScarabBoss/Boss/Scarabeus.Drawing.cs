@@ -231,6 +231,8 @@ public partial class Scarabeus : ModNPC
 
 		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
+		else if (CurrentState == AIState.Dance)
+			DrawEmote(spriteBatch, ((NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight) + new Vector2(0, (float)Math.Sin(Main.timeForVisualEffects / 30f) * 3), EmoteID.EmoteNote);
 
 		if (Profile.GlowMask != null && Profile != SimulatedProfile) //Draw a glowmask
 		{

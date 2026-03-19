@@ -154,6 +154,7 @@ public partial class Scarabeus : ModNPC
 		SpawnAnim,
 		Roar,
 		Charmed,
+		Dance,
 		PhaseTransitionAnim,
 		Despawn,
 		DeathAnim,
@@ -219,6 +220,7 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
 		_stateAI[(int)AIState.Roar] = Roar;
 		_stateAI[(int)AIState.Charmed] = CharmedIdle;
+		_stateAI[(int)AIState.Dance] = DanceIdle;
 		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
 		_stateAI[(int)AIState.Despawn] = DigAttack;
 		_stateAI[(int)AIState.DeathAnim] = DeathAnimation;

@@ -192,10 +192,12 @@ public partial class Scarabeus : ModNPC
 
 			//Bonus animation while wearing Scarabeus' mask, interrupted if the player hits it
 			if (CanBeCharmed)
-			{
-				NPC.dontTakeDamage = false;
-				ChangeState(AIState.Charmed);
-			}			
+            {
+                NPC.dontTakeDamage = false;
+                ChangeState(AIState.Charmed);
+            }
+            else if (CanDance)
+				ChangeState(AIState.Dance);
 			else
 				ChangeState(AIState.Roar);
 		}
@@ -374,6 +376,25 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 
+	#endregion
+
+	#region Dancing easter egg
+	public bool CanDance => Main.newMusic == ScarabRadio.MusicSlot || Target.HeldItem.type == ModContent.ItemType<ScarabRadio>();
+
+	public float DanceIdle(ref bool retarget)
+	{
+		NPC.FaceTarget();
+		UpdateFrame(4, 10, PhaseOneProfile);
+
+		if (!CanDance)
+		{
+			ChangeState(AIState.IdleBackAwayFast);
+			Counter = 0;
+			return 0f;
+		}
+
+		return 1f;
+	}
 	#endregion
 
 	#region Phase transition
