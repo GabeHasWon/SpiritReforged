@@ -773,6 +773,7 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = true;
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
+		wingFrameCounter += 22f / 60f; //30 fps for wings specifically
 
 		UpdateFrame(0, (int)(15 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
 

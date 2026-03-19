@@ -47,6 +47,7 @@ public partial class Scarabeus : ModNPC
 	public float squishY = 1f;
 	public float iridescenceBoost;
 	public int scarabColorIndex = 0;
+	public float wingFrameCounter;
 
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
