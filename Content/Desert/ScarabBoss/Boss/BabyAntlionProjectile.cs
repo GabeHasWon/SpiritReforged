@@ -122,10 +122,10 @@ public class BabyAntlionProjectile : ModProjectile
 			return;
 		}
 
-		Vector2 towardsScarab = (Scarab.Center - Vector2.UnitY * 30f - Projectile.Center);
+		Vector2 towardsScarab = (Scarab.Top - Vector2.UnitY * 48f - Projectile.Center);
 		float distanceToScarab = towardsScarab.Length();
 
-		if (distanceToScarab < 40f)
+		if (distanceToScarab < 30f)
 		{
 			//No burnt corpses in normal
 			if (!Main.expertMode)
@@ -162,9 +162,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 			CurrentState = AIState.Burnt;
 			Projectile.velocity *= 0.1f;
-			//Projectile.velocity -= Vector2.UnitY.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f, 6f);
-			//if (Main.rand.NextBool(3))
-			//	Projectile.velocity += Scarab.DirectionTo((Scarab.ModNPC as Scarabeus).Target.Center + new Vector2(0f, -16f)) * 3f;
+			Projectile.velocity += Scarab.DirectionTo(Projectile.Center + new Vector2(0f, -16f)) * 3f;
 
 			Projectile.timeLeft = 200;
 			Projectile.frame = Main.rand.Next(3);
@@ -303,21 +301,27 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public void BurnOffAndFall()
 	{
-		Projectile.velocity.X *= 0.99f;
+		Projectile.velocity.X *= 0.95f;
 		Projectile.velocity.Y += 0.18f;
 		if (Projectile.velocity.Y > 0)
 			Projectile.velocity.Y *= 1.02f;
 
 		Projectile.rotation += Projectile.velocity.Y * 0.01f;
 
-		//Sharticles
-
 		if (!Main.dedServ)
 		{
-			if (Main.rand.NextBool(3))
+			if(Main.rand.NextBool(3))
 			{
-				Dust d = Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), DustID.Torch, Vector2.Zero, 0, Scale: Main.rand.NextFloat(0.7f, 1f));
-				d.noLight = true;
+				Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(10, 10);
+				Vector2 velocity = -Vector2.UnitY + Projectile.velocity;
+				Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)];
+				float scale = Main.rand.NextFloat(0.06f, 0.09f);
+				int maxTime = (int)(Main.rand.Next(10, 35));
+
+				ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
+				{
+					ColorLerpExponent = 2.5f
+				});
 			}
 
 			if (Main.rand.NextBool(4))
@@ -411,9 +415,9 @@ public class BabyAntlionProjectile : ModProjectile
 
 		lightColor *= Math.Min(1, Projectile.timeLeft / 40f) * Utils.GetLerpValue(MAX_TIMELEFT, MAX_TIMELEFT - 30, Projectile.timeLeft, true);
 		
-		if (CurrentState == AIState.Emerging || CurrentState == AIState.Burnt)
+		if (CurrentState is AIState.Emerging or AIState.Burnt)
 		{
-			Color color = new Color(255, 200, 0, 0);
+			var color = new Color(255, 200, 0, 0);
 
 			if (CurrentState == AIState.Burnt)
 			{

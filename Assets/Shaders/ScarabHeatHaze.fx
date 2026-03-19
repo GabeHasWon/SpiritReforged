@@ -49,13 +49,14 @@ float2 invlerp(float2 from, float2 to, float2 value)
 
 float GetSunStrength(float2 uv)
 {
-    float2 offsetToSun = (sunPosition / uScreenResolution) - uv;
+    float2 zoomResolution = uScreenResolution * uZoom;
+    float2 offsetToSun = (sunPosition / zoomResolution) - uv;
     offsetToSun.x *= uScreenResolution.x / uScreenResolution.y;
     float distanceToSun = invlerp(0.1 + sin(uTime * 0.2) * 0.03, 0.04, length(offsetToSun));
     distanceToSun = pow(distanceToSun, 2);
     
-    float2 tileTargetUvStart = tileTargetTopLeft / uScreenResolution;
-    float2 tileTargetUvEnd = tileTargetBottomRight / uScreenResolution;
+    float2 tileTargetUvStart = tileTargetTopLeft / zoomResolution;
+    float2 tileTargetUvEnd = tileTargetBottomRight / zoomResolution;
     float2 tileTargetCoordinates = invlerp(tileTargetUvStart, tileTargetUvEnd, uv);
     float4 mask = tex2D(tileMask, tileTargetCoordinates).a;
     distanceToSun -= mask * 0.9;
@@ -79,7 +80,7 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     
     float4 baseColor = tex2D(uImage0, uv);
     
-    float2 unitSide = float2(sin(uTime * 2) / uScreenResolution.x * (uIntensity * 2 + distanceToCenter * 1.5), 0);
+    float2 unitSide = float2(sin(uTime * 2) / uScreenResolution.x * (uIntensity * 2 + distanceToCenter * 1.5) * uZoom.x, 0);
     
     float chromaStrength = 0.1 * uIntensity + 0.5 * distanceToCenter;
     baseColor.r = lerp(baseColor.r, tex2D(uImage0, uv + unitSide * 2).r, chromaStrength);

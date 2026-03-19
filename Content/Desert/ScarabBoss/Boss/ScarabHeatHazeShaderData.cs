@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Visuals;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Skies;
 using Terraria.GameContent.Events;
 using Terraria.Graphics.Effects;
@@ -63,6 +64,7 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 		Texture2D sunTex = TextureAssets.Sun.Value;
 		Vector2 position = SunMoonILEdit.SunDrawData.Position;
 		sunPosition = position;
+
 		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
 		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
 		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
@@ -108,11 +110,11 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 
 	public override void Apply()
 	{
-		Vector2 adjustedScreenSunPosition = Vector2.Transform(sunPosition, Main.BackgroundViewMatrix.EffectMatrix);
+		var adjustedScreenSunPosition = Vector2.Transform(sunPosition, Main.BackgroundViewMatrix.EffectMatrix);
 		base.Shader.Parameters["sunPosition"]?.SetValue(adjustedScreenSunPosition);
 
-		Vector2 tileTargetCorner = Vector2.Transform(Main.sceneTilePos - Main.screenPosition, Main.Transform);
-		Vector2 tileTargetCorner2 = Vector2.Transform(Main.sceneTilePos - Main.screenPosition + Main.instance.tileTarget.Size(), Main.Transform);
+		var tileTargetCorner = Vector2.Transform(Main.sceneTilePos - Main.screenPosition, Main.Transform);
+		var tileTargetCorner2 = Vector2.Transform(Main.sceneTilePos - Main.screenPosition + Main.instance.tileTarget.Size(), Main.Transform);
 
 		base.Shader.Parameters["tileTarget"]?.SetValue(Main.instance.tileTarget);
 		base.Shader.Parameters["tileTargetTopLeft"]?.SetValue(tileTargetCorner);
