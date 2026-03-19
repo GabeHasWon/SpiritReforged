@@ -1466,7 +1466,10 @@ public partial class Scarabeus : ModNPC
 
 				artificialGravityMultiplier = 0f;
 
-				if (UpdateFrame(5, 30, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (currentFrame.Y < 8)
+					currentFrame.Y = 8;
+
+				if (UpdateFrame(5, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
 					if (!Main.dedServ)
 					{
@@ -2061,8 +2064,8 @@ public partial class Scarabeus : ModNPC
 		UpdateFrame(1, 12, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
 
-		if (Counter < 360)
-			trailOpacity = 0.4f * (1f - Counter / 360f);
+		//if (Counter < 360)
+			//trailOpacity = 0.4f * (1f - Counter / 360f);
 
 		SwarmAttackVisuals();
 

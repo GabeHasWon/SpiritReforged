@@ -353,6 +353,16 @@ public class BabyAntlionProjectile : ModProjectile
 		}		
 	}
 
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (CurrentState != AIState.Burnt)
+			return null;
+
+		//Bigger hitbox on burnt ones to make the mmore punishing to players who stand still
+		projHitbox.Inflate(6, 6);
+		return projHitbox.Intersects(targetHitbox);
+	}
+
 	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers) => modifiers.Knockback *= 0f;
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
