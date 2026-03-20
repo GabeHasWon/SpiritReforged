@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.TileCommon;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -7,6 +8,37 @@ namespace SpiritReforged.Content.Forest.Misc.ChristmasTreeTops;
 
 internal class ChristmasTreeInformationEntity : ModTileEntity
 {
+	/// <summary>
+	/// Used to place a <see cref="ChristmasTreeInformationEntity"/> on servers as the standard system doesn't seem to work.
+	/// </summary>
+	internal class ChristmasEntityData : PacketData
+	{
+		private readonly short _x;
+		private readonly short _y;
+
+		public ChristmasEntityData() { }
+		public ChristmasEntityData(int x, int y)
+		{
+			_x = (short)x;
+			_y = (short)y;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			int x = reader.ReadInt16();
+			int y = reader.ReadInt16();
+			int id = ModContent.GetInstance<ChristmasTreeInformationEntity>().Place(x, y);
+
+			NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, id);
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_x);
+			modPacket.Write(_y);
+		}
+	}
+
 	public short Topper = -1;
 
 	internal static bool TryGetEntity(Point16 pos, out ChristmasTreeInformationEntity tree, out Point16 newPosition)
@@ -35,6 +67,12 @@ internal class ChristmasTreeInformationEntity : ModTileEntity
 		}
 		else if (ValidCheck(x, y))
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				new ChristmasEntityData(x, y).Send();
+				return false;
+			}
+
 			ModContent.GetInstance<ChristmasTreeInformationEntity>().Place(x, y);
 			tree = ByPosition[new Point16(x, y)] as ChristmasTreeInformationEntity;
 			newPosition = new Point16(x, y);
@@ -61,11 +99,56 @@ internal class ChristmasTreeInformationEntity : ModTileEntity
 
 internal class ChristmasTreeFunctionality : GlobalTile
 {
+	/// <summary>
+	/// Used to update <see cref="ChristmasTreeInformationEntity"/> from Client -> Server.
+	/// </summary>
+	internal class ChristmasTreePacketData : PacketData
+	{
+		private readonly short _x;
+		private readonly short _y;
+		private readonly int _obj;
+
+		public ChristmasTreePacketData() { }
+		public ChristmasTreePacketData(int x, int y, int obj)
+		{
+			_x = (short)x;
+			_y = (short)y;
+			_obj = obj;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			int x = reader.ReadInt16();
+			int y = reader.ReadInt16();
+			int obj = reader.ReadInt32();
+
+			UpdateTreeTopper(ref x, ref y, obj);
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_x);
+			modPacket.Write(_y);
+			modPacket.Write(_obj);
+		}
+	}
+
 	public override void Load() => On_WorldGen.dropXmasTree += RemoveCustomItemFromTree;
 
 	private void RemoveCustomItemFromTree(On_WorldGen.orig_dropXmasTree orig, int x, int y, int obj)
 	{
 		orig(x, y, obj);
+
+		UpdateTreeTopper(ref x, ref y, obj);
+	}
+
+	private static void UpdateTreeTopper(ref int x, ref int y, int obj)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			new ChristmasTreePacketData(x, y, obj).Send();
+			return;
+		}
 
 		if (!ChristmasTreeInformationEntity.TryGetEntity(new Point16(x, y), out ChristmasTreeInformationEntity tree, out Point16 newPosition))
 			return;
