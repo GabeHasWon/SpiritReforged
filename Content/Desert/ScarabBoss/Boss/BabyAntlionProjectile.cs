@@ -161,10 +161,11 @@ public class BabyAntlionProjectile : ModProjectile
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.45f, PitchVariance = 0.15f }, Projectile.Center);
 
 			CurrentState = AIState.Burnt;
+			Projectile.position.X = Scarab.Center.X;
 			Projectile.velocity *= 0.1f;
 			Projectile.velocity += Scarab.DirectionTo(Projectile.Center + new Vector2(0f, -16f)) * 3f;
 
-			Projectile.timeLeft = 200;
+			Projectile.timeLeft = 120;
 			Projectile.frame = Main.rand.Next(3);
 			Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 			return;
@@ -301,7 +302,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public void BurnOffAndFall()
 	{
-		Projectile.velocity.X *= 0.95f;
+		Projectile.velocity.X *= 0.8f;
 		Projectile.velocity.Y += 0.18f;
 		if (Projectile.velocity.Y > 0)
 			Projectile.velocity.Y *= 1.02f;
@@ -344,8 +345,8 @@ public class BabyAntlionProjectile : ModProjectile
 				var p = new SmokeCloud(
 					Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
 					-Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f),
-					Color.Black * (1f - Projectile.timeLeft / 200f),
-					0.5f * EaseBuilder.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 200f),
+					Color.Black * (1f - Projectile.timeLeft / 120f),
+					0.25f * EaseBuilder.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 120f),
 					EaseFunction.EaseCircularOut,
 					30);
 
@@ -354,6 +355,16 @@ public class BabyAntlionProjectile : ModProjectile
 				ParticleHandler.SpawnParticle(p);
 			}
 		}		
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (CurrentState != AIState.Burnt)
+			return null;
+
+		//Bigger hitbox on burnt ones to make the mmore punishing to players who stand still
+		projHitbox.Inflate(6, 6);
+		return projHitbox.Intersects(targetHitbox);
 	}
 
 	public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers) => modifiers.Knockback *= 0f;
@@ -417,7 +428,7 @@ public class BabyAntlionProjectile : ModProjectile
 		
 		if (CurrentState is AIState.Emerging or AIState.Burnt)
 		{
-			var color = new Color(255, 200, 0, 0);
+			Color color = new Color(255, 200, 0) * 0.2f;
 
 			if (CurrentState == AIState.Burnt)
 			{
@@ -445,16 +456,15 @@ public class BabyAntlionProjectile : ModProjectile
 		{
 			if (CurrentState == AIState.Burnt)
 			{
-				if (Projectile.timeLeft > 120)
-					DrawBloom(bloom, solid, position, frame, rotation, scale, effects, (Projectile.timeLeft - 120) / 80f);
+				DrawBloom(bloom, solid, position, frame, rotation, scale, effects, Projectile.timeLeft / 120f);
 			}
 			else
 			{
 				float dist = Projectile.Distance(Scarab.Center);
 
-				if (dist < 175f)
+				if (dist < 120f)
 				{
-					float lerp = 1f - (dist - 40f) / 135f;
+					float lerp = 1f - (dist - 40f) / 80f;
 
 					DrawBloom(bloom, solid, position, frame, rotation, scale, effects, lerp);
 				}

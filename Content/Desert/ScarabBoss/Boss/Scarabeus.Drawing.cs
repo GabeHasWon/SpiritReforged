@@ -174,7 +174,9 @@ public partial class Scarabeus : ModNPC
 
 		if (trailOpacity > 0)
 		{
-			Color color = Profile == PhaseTwoProfile ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			bool glowingImages = Profile == PhaseTwoProfile && (CurrentState != AIState.GroundPound) && CurrentState != AIState.Dig && CurrentState != AIState.Roll;
+
+			Color color = glowingImages ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
 			color *= trailOpacity;
 
 			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
@@ -192,6 +194,8 @@ public partial class Scarabeus : ModNPC
 
 		if (CurrentState == AIState.Swarm) //Swarm flash visuals
 		{
+			Vector2 orbPos = NPC.Center + new Vector2(0f, -NPC.height / 2).RotatedBy(NPC.rotation) - Main.screenPosition;
+
 			float opacity = 1f - Counter / 15f;
 			if (opacity > 0)
 			{
@@ -204,8 +208,8 @@ public partial class Scarabeus : ModNPC
 				{
 					float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
 
-					Main.EntitySpriteDraw(star2, NPC.Top - Main.screenPosition, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
-					Main.EntitySpriteDraw(star, NPC.Top - Main.screenPosition, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
+					Main.EntitySpriteDraw(star2, orbPos, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
+					Main.EntitySpriteDraw(star, orbPos, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
 				}
 			}
 
@@ -213,8 +217,8 @@ public partial class Scarabeus : ModNPC
 			if (opacity2 > 0)
 			{
 				Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
-				Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
-				Main.EntitySpriteDraw(godrays, NPC.Top - Main.screenPosition, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
+				Main.EntitySpriteDraw(godrays, orbPos, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
+				Main.EntitySpriteDraw(godrays, orbPos, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
 			}
 		}
 
