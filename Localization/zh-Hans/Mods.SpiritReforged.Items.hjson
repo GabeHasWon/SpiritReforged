@@ -890,8 +890,12 @@ WheatgrassSeedPouch: {
 }
 
 RoyalKhopesh: {
-	DisplayName: 皇家弯刀
-	Tooltip: ""
+	DisplayName: 皇家镰形剑
+	Tooltip:
+		'''
+		左键进行挥舞连击
+		右键扔出镰形剑——如果击中敌人，再次右键会将其拉近并强化刀锋
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -2970,6 +2974,6 @@ AdornedBow: {
 }
 
 LocustCrook: {
-	// DisplayName: Locust Crook
-	// Tooltip: ""
+	DisplayName: 蝗虫曲柄杖
+	Tooltip: ""
 }

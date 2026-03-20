@@ -541,7 +541,7 @@ DecrepitMummy: {
 Graverobber: {
 	DisplayName: 盗墓者
 	Entry: 他们不幸的是像皮纳塔一样被击中，金子如雨点般落下。这景致简直跟财宝本身一样诱人……
-	HoldingLantern: “当手持灯笼时”
+	HoldingLantern: 当手持灯笼时
 }
 
 LootBag.DisplayName: 战利品袋
