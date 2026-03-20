@@ -17,6 +17,7 @@ internal class MossSlime : ModNPC
 	protected static Dictionary<int, HashSet<int>> SpawnTilesById = [];
 
 	private static int DummyBestiaryType = -1;
+	private static int DummyBestiaryTimer = 0;
 
 	public override string Texture => "SpiritReforged/Content/Underground/NPCs/MossSlimes/MossSlimeBase";
 
@@ -86,11 +87,17 @@ internal class MossSlime : ModNPC
 		return spawnInfo.SpawnTileY > Main.worldSurface && SpawnTilesById[Type].Contains(spawnInfo.SpawnTileType) ? 0.3f : 0;
 	}
 
+	public override void FindFrame(int frameHeight)
+	{
+		if (Type == ModContent.NPCType<MossSlime>())
+			DummyBestiaryTimer++;
+	}
+
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		if (Type == ModContent.NPCType<MossSlime>())
 		{
-			DummyBestiaryType = (Main.GameUpdateCount % 480) switch
+			DummyBestiaryType = (DummyBestiaryTimer % 480) switch
 			{
 				< 60 => ModContent.NPCType<KryptonMossSlime>(),
 				< 120 => ModContent.NPCType<NeonMossSlime>(),

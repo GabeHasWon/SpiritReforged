@@ -147,6 +147,8 @@ public class Graverobber : ModNPC
 
 			if (_alerted)
 				NPC.direction = NPC.spriteDirection = Math.Sign(Main.player[NPC.target].Center.X - NPC.Center.X);
+
+			CheckChangeDir();
 		}
 		else
 		{
@@ -157,6 +159,8 @@ public class Graverobber : ModNPC
 			{
 				Player target = Main.player[NPC.target];
 				TargetSpeed = Math.Sign(target.Center.X - NPC.Center.X) * 2f;
+
+				CheckChangeDir();
 			}
 			else if (Main.netMode != NetmodeID.MultiplayerClient && Counter % 80 == 0)
 			{
@@ -167,6 +171,11 @@ public class Graverobber : ModNPC
 
 				if (TargetSpeed != oldTargetSpeed)
 					NPC.netUpdate = true;
+
+				if (direction != 0)
+					NPC.direction = NPC.spriteDirection = direction;
+				else
+					NPC.velocity.X = 0;
 			}
 
 			ChangeAnimationState(NPC.velocity.Y != 0 ? State.Jump : State.Walk);
@@ -177,10 +186,13 @@ public class Graverobber : ModNPC
 				NPC.velocity.Y -= 5; //Jump
 		}
 
+		Counter++;
+	}
+
+	private void CheckChangeDir()
+	{
 		if (Math.Sign(NPC.velocity.X) != NPC.direction && NPC.velocity.X != 0)
 			NPC.direction = NPC.spriteDirection = -Math.Sign(NPC.velocity.X);
-
-		Counter++;
 	}
 
 	public void ChangeAnimationState(State toState)

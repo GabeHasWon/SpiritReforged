@@ -1764,7 +1764,11 @@ Blasphemer: {
 
 Hummus: {
 	// DisplayName: Hummus
-	// Tooltip: Warm and tasty!
+	/* Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Warm and tasty!'
+		''' */
 }
 
 ZenithPotsItem: {
@@ -2476,37 +2480,37 @@ TrellisShadewoodItem: {
 }
 
 TrellisTwoItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	// DisplayName: Crossed Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	// DisplayName: Crossed Boreal Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	// DisplayName: Crossed Ebonwood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	// DisplayName: Crossed Rich Mahogany Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	// DisplayName: Crossed Palm Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	// DisplayName: Crossed Pearlwood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	// DisplayName: Crossed Shadewood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2647,7 +2651,7 @@ TinyDragon: {
 	/* Tooltip:
 		'''
 		Summons a tiny dragon to follow you around
-		"'Last of its kind'"
+		'Last of its kind'
 		''' */
 }
 
@@ -2967,5 +2971,10 @@ AdornedBow: {
 
 SpiritTreeTopper: {
 	// DisplayName: Spirit Tree Topper
+	// Tooltip: ""
+}
+
+LocustCrook: {
+	// DisplayName: Locust Crook
 	// Tooltip: ""
 }

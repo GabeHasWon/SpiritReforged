@@ -161,14 +161,14 @@ public class TumblerPet : ModProjectile
 	{
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 
-		//Draw normally
-		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
-
 		for (int i = Projectile.oldPos.Length - 1; i >= 0; i--) //Draw trail
 		{
 			var position = Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(lightColor) * .5f * (1f - (float)i / Projectile.oldPos.Length), Projectile.rotation, texture.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
+
+		//Draw normally
+		Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 
 		for (int i = 0; i < 2; i++) //Draw eye
 		{

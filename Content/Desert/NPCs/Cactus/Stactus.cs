@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -18,7 +19,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
-public abstract class Stactus : ModNPC, IDeathCount
+public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 {
 	private class IsPrickly : IItemDropRuleCondition, IProvideItemConditionDescription
 	{
@@ -120,6 +121,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
+		NPCID.Sets.CantTakeLunchMoney[Type] = true;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
@@ -603,4 +605,5 @@ public abstract class Stactus : ModNPC, IDeathCount
 	}
 
 	public bool TallyDeath(NPC npc) => (npc.ModNPC as Stactus).Segment is SegmentType.Head; //Only ever tally the head
+	public bool CanPickupCoins() => Segment is SegmentType.Head; // Only the head picks up coins
 }
