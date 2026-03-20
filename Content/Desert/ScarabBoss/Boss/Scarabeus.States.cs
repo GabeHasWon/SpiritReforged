@@ -484,8 +484,8 @@ public partial class Scarabeus : ModNPC
 			ExtraMemory = 0;
 			NPC.velocity = new Vector2(Main.rand.Next(-6, 6), -Main.rand.Next(4, 5));
 
-			if (OnTopOfTiles)
-				NPC.velocity.Y -= 16;
+			if (CurrentState != AIState.IdleTowardsPlayer && Math.Abs(NPC.velocity.Y) < 5)
+				NPC.velocity.Y -= 1.5f;
 
 			NPC.noGravity = true;
 
@@ -552,7 +552,7 @@ public partial class Scarabeus : ModNPC
 
 			NPC.rotation = NPC.velocity.X * (NPC.velocity.Y / 16f) * 0.4f;
 		}
-		else
+		else if (NPC.velocity.Y > 0)
 		{
 			NPC.velocity *= 0.3f;
 
