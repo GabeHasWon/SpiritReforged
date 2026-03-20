@@ -475,6 +475,7 @@ public partial class Scarabeus : ModNPC
 	public float DeathAnimation(ref bool retarget)
 	{
 		UpdateFrame(0, (int)(30), SimulatedProfile);
+		wingFrameCounter += 25f / 60f;
 
 		if (Counter == 0)
 		{
@@ -1553,6 +1554,7 @@ public partial class Scarabeus : ModNPC
 		bounceTarget.X += Math.Clamp(Target.Center.X - NPC.Center.X, -maxOvershootDistance, maxOvershootDistance) * overshootMultiplier;
 
 		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: maxBounceXVel);
+		squishY = 0.6f;
 
 		if (!Main.dedServ && (bounceIndex > 1 || phaseTwo))
 		{

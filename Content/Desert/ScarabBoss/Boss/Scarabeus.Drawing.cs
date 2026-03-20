@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
@@ -141,6 +143,13 @@ public partial class Scarabeus : ModNPC
 		if (NPC.Opacity == 0)
 			return false;
 
+		//Skip all of this if ball because drawing is entirely different
+		if (currentFrame == RollFrame)
+		{
+			DrawBall(drawColor);
+			return false;
+		}
+
 		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
@@ -149,8 +158,6 @@ public partial class Scarabeus : ModNPC
 		bool originAtFeet = OriginAtFeet();
 		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
 		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
-		if (currentFrame == RollFrame)
-			origin = new(114, 104);
 
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
@@ -275,6 +282,45 @@ public partial class Scarabeus : ModNPC
 		return false;
 	}
 
+	private void DrawBall(Color lightColor)
+	{
+		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadIn.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
+		var squishScale = new Vector2(1 + squishAmount, 1 - squishAmount);
+		squishScale *= new Vector2(squishY, 1 / squishY);
+
+		List<SquarePrimitive> ballTrail = [];
+		var primDimensions = new Vector2(140 * squishScale.X, 140 * squishScale.Y);
+		bool flipped = NPC.spriteDirection > 0;
+		float rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
+		if(NPC.velocity.Length() < 3)
+			rotation = 0;
+
+		ballTrail.Add(new SquarePrimitive()
+		{
+			Color = NPC.DrawColor(lightColor),
+			Height = primDimensions.X,
+			Length = primDimensions.Y,
+			Position = NPC.Center - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
+			Rotation = rotation
+		});
+
+		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+		sheenShader.Parameters["uTexture"].SetValue(BallProfile.Texture.Value);
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(0, 0, BallProfile.Texture.Width(), BallProfile.Texture.Height()));
+		sheenShader.Parameters["resolution"].SetValue(BallProfile.Texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(BallProfile.SheenMask.Value);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+
+		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
+		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
+		sheenShader.Parameters["flip"].SetValue(flipped);
+
+		PrimitiveRenderer.DrawPrimitiveShapeBatched(ballTrail.ToArray(), sheenShader, "BallPass");
+	}
+
 	public override void DrawBehind(int index)
 	{
 		if (CurrentState == AIState.DeathAnim)
@@ -307,13 +353,25 @@ public partial class Scarabeus : ModNPC
 			spriteBatch.End();
 			spriteBatch.GraphicsDevice.RasterizerState = priorRasterizer;
 			spriteBatch.GraphicsDevice.ScissorRectangle = priorScissorRectangle;
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, priorRasterizer, effect, Main.UIScaleMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, priorRasterizer, null, Main.UIScaleMatrix);
+
+			if (effect == null)
+				return;
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
+				pass.Apply();
 		}
 		else
 		{
 			spriteBatch.End();
 			SpriteSortMode sortMode = immediate ? SpriteSortMode.Immediate : SpriteSortMode.Deferred;
-			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+			if (effect == null)
+				return;
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
+					pass.Apply();
 		}
 	}
 }

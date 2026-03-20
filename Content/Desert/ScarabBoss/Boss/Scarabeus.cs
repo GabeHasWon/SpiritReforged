@@ -91,6 +91,7 @@ public partial class Scarabeus : ModNPC
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
 	private static VisualProfile SimulatedProfile;
+	private static VisualProfile BallProfile;
 
 	public delegate float ScarabeusAttackDelegate(ref bool retarget);
 
@@ -208,6 +209,7 @@ public partial class Scarabeus : ModNPC
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
 		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
 		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false));
+		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
