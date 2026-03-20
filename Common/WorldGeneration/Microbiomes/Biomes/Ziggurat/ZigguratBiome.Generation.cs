@@ -343,10 +343,10 @@ public partial class ZigguratBiome : Microbiome
 
 	private static bool PlaceCenser(int i, int j)
 	{
-		int space = GetSpace(i, j, 7);
+		int space = GetSpace(i, j, 8);
 		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && space > 2 && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 		{
-			byte segments = (byte)Math.Min(WorldGen.genRand.Next(3, 7), space - 1);
+			byte segments = (byte)Math.Min(WorldGen.genRand.Next(3, 7), space - 2);
 			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().Find(new(i, j), segments));
 			return true;
 		}

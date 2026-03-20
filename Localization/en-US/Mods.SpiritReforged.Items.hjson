@@ -891,7 +891,11 @@ WheatgrassSeedPouch: {
 
 RoyalKhopesh: {
 	DisplayName: Royal Khopesh
-	Tooltip: ""
+	Tooltip:
+		'''
+		Left click to perform a combo of swings
+		Right click to throw the khopesh - if you hit an enemy, right click again to draw them close and empower your blade
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -2966,5 +2970,10 @@ BullRitualMask: {
 
 AdornedBow: {
 	DisplayName: Adorned Bow
+	Tooltip: ""
+}
+
+LocustCrook: {
+	DisplayName: Locust Crook
 	Tooltip: ""
 }

@@ -2968,3 +2968,8 @@ AdornedBow: {
 	DisplayName: 华饰弓
 	Tooltip: ""
 }
+
+LocustCrook: {
+	// DisplayName: Locust Crook
+	// Tooltip: ""
+}

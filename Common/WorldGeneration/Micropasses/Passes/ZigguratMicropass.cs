@@ -7,6 +7,7 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.IO;
@@ -477,7 +478,10 @@ internal class ZigguratMicropass : Micropass
 
 	public static bool PlaceDoor(int x, int y)
 	{
-		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && SolidRange(new(x, y - 1, 1, 5)) && !SolidRange(new(x - 1, y, 1, 3)) && !SolidRange(new(x + 1, y, 1, 3)))
+		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && 
+			BlockingRange(new(x, y - 1, 1, 5)) && 
+			!BlockingRange(new(x - 1, y, 1, 3), true, true) && 
+			!BlockingRange(new(x + 1, y, 1, 3), true, true))
 		{
 			for (int i = 0; i < 3; i++)
 				Framing.GetTileSafely(x, y + i).ClearTile();
@@ -500,16 +504,24 @@ internal class ZigguratMicropass : Micropass
 
 		return false;
 
-		static bool SolidRange(Rectangle area)
+		static bool BlockingRange(Rectangle area, bool incChains = false, bool incNonSolid = false)
 		{
-			bool solid = true;
+			bool blocking = true;
 			for (int x = area.Left; x < area.Right; x++)
 			{
 				for (int y = area.Top; y < area.Bottom; y++)
-					solid &= WorldGen.SolidTile(x, y);
+				{
+					Tile tile = Framing.GetTileSafely(x, y);
+					bool existsButNonSolid = tile.HasTile && !WorldGen.SolidTile(x, y);
+
+					blocking &= 
+						(WorldGen.SolidTile(x, y) |
+						(WorldGen.TileType(x, y) == ModContent.TileType<GoldChainLoop>() && incChains) |
+						(incNonSolid && existsButNonSolid));
+				}
 			}
 
-			return solid;
+			return blocking;
 		}
 	}
 
