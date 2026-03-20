@@ -2989,3 +2989,8 @@ ScarabRadio: {
 	DisplayName: Scarab Radio
 	Tooltip: ""
 }
+
+SpaceHeater: {
+	DisplayName: Space Heater
+	Tooltip: ""
+}
