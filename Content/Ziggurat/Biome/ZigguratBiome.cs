@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Ziggurat.Biome;
 public class ZigguratBiome : ModBiome
 {
 	/// <summary> A collection of walls associated with the natural biome. </summary>
-	public static readonly HashSet<int> WallTypes = [RedSandstoneBrickWall.UnsafeType, RedSandstoneBrickCrackedWall.UnsafeType, ModContent.WallType<RedSandstoneBrickForegroundWall>(), CarvedLapisWall.UnsafeType, PaleHiveWall.UnsafeType, ModContent.WallType<SandyZigguratWall>(), BronzePlatingWall.UnsafeType];
+	public static readonly HashSet<int> WallTypes = [RedSandstoneBrickWall.UnsafeType, ModContent.WallType<RedSandstoneBrickForegroundWall>(), CarvedLapisWall.UnsafeType, PaleHiveWall.UnsafeType, ModContent.WallType<SandyZigguratWall>(), BronzePlatingWall.UnsafeType];
 	/// <summary> A collection of tiles associated with the natural biome. Used only for <see cref="Common.WorldGeneration.QuickConversion."/> </summary>
 	public static readonly HashSet<int> TileTypes = [ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>()];
 
