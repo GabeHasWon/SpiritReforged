@@ -61,3 +61,4 @@ SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
 ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 DustyTomb.MapEntry: 尘埃陵墓
 EnlilStatue.MapEntry: 恩利尔雕像
+// StoneReliquary.MapEntry: Reliquary
