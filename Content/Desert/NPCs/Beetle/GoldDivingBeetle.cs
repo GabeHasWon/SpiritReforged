@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 
 namespace SpiritReforged.Content.Desert.NPCs.Beetle;
 

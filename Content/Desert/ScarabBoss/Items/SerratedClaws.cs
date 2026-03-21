@@ -89,4 +89,6 @@ public class SerratedClaws : ModItem
 		player.handon = EquipSlots[0];
 		player.handoff = EquipSlots[1];
 	}
+
+	public override float UseSpeedMultiplier(Player player) => player.GetAttackSpeed(DamageClass.Melee) + (1 - player.pickSpeed) * 0.5f;
 }

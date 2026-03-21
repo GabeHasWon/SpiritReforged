@@ -40,16 +40,16 @@ DuststormOtherworld: {
 }
 
 Ziggurat: {
-	// DisplayName: Ziggurat
-	// Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: 庙塔
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	// DisplayName: Salt Flats
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: 盐滩
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: 盐滩 - 夜
+	Author: "{$By} {$Sbubby}"
 }

@@ -61,4 +61,5 @@ OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadio
 // ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 // DustyTomb.MapEntry: Dusty Tomb
 // EnlilStatue.MapEntry: Enlil Statue
+// StoneReliquary.MapEntry: Reliquary
 // ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
