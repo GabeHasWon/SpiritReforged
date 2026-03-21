@@ -4,6 +4,7 @@ float2 resolution;
 float time;
 float sheenOpacityMultiplier; //0.15
 float saturationBoost; //0.1
+float shellColorShift;
 
 texture sheenMasks;
 sampler sheenTex = sampler_state
@@ -169,7 +170,12 @@ float4 MainPS(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
     colorHsv.g += saturationBoost;
     
     float iridescenceOpacity = sheenOpacityMultiplier + sin(time * 2) * 0.05;
-    compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;      
+    compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;
+    
+    colorHsv = rgb2hsv(compositedColor.rgb);
+    colorHsv.r += shellColorShift * sheenInfo.r;
+    compositedColor.rgb = lerp(compositedColor.rgb, hsv2rgb(colorHsv), min(1, ceil(shellColorShift)));
+    
     return compositedColor * vertexColor;
 }
 
@@ -196,13 +202,18 @@ float4 BallPS(VertexShaderOutput input) : COLOR0
     
     float iridescenceOpacity = sheenOpacityMultiplier + sin(time * 2) * 0.05;
     compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;
-    return input.Color * compositedColor;
+    
+    colorHsv = rgb2hsv(compositedColor.rgb);
+    colorHsv.r += shellColorShift * sheenInfo.r;
+    compositedColor.rgb = lerp(compositedColor.rgb, hsv2rgb(colorHsv), min(1, ceil(shellColorShift)));
+    
+    return compositedColor * input.Color;
 }
 
 technique BasicColorDrawing
 {
-    pass GeometricStyle
-	{
+    pass DefaultPass
+    {
         PixelShader = compile ps_3_0 MainPS();
     }
 

@@ -6,6 +6,8 @@ using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
+using Terraria.ModLoader;
+using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -13,8 +15,7 @@ public partial class Scarabeus : ModNPC
 {
 	public readonly record struct VisualProfile
 	{
-		public readonly Asset<Texture2D> Texture;
-		public readonly Asset<Texture2D> SheenMask;
+		public readonly Asset<Texture2D> Texture, SheenMask, GlowMask;
 		public readonly int Rows;
 		private readonly int[] FrameCount;
 
@@ -22,20 +23,14 @@ public partial class Scarabeus : ModNPC
 		/// <summary> Safely gets the number of frames in the provided column. </summary>
 		public readonly int GetFrameCount(int column) => (column >= Columns || column < 0) ? 0 : FrameCount[column];
 
-		public VisualProfile(Asset<Texture2D> Texture, Asset<Texture2D> SheenMask, int[] FrameCount)
+		public VisualProfile(Asset<Texture2D> Texture, Asset<Texture2D> SheenMask, int[] FrameCount, Asset<Texture2D> GlowMask = null)
 		{
 			this.Texture = Texture;
 			this.SheenMask = SheenMask;
+			this.GlowMask = GlowMask;
 			this.FrameCount = FrameCount;
 			Rows = FrameCount.OrderBy(static x => x).Last();
 		}
-	}
-
-	public struct TrailData(bool enabled, bool isGlowing = false, float opacity = 1)
-	{
-		public bool Enabled = enabled;
-		public bool Glowing = isGlowing;
-		public float Opacity = opacity;
 	}
 
 	public enum FrameState { Progressed, Stopped, Looped }
@@ -45,13 +40,16 @@ public partial class Scarabeus : ModNPC
 
 	/// <summary> The current visual profile to be used for drawing. Contains frame count and texture information. </summary>
 	public VisualProfile Profile { get; private set; }
-	public static readonly Asset<Texture2D> Glowmask = DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false);
 
 	/// <summary> The selected frame in the 2D spritesheet.<para/>
 	/// Prefer <see cref="UpdateFrame"/> and <see cref="SetFrame"/> for assignment. </summary>
 	public Point currentFrame;
-	/// <summary> Whether this NPC should draw a trail, whether it should be glowing or normal, and what the opacity should be. Resets every frame. </summary>
-	public TrailData afterimageTrail;
+	/// <summary> The opacity of Scarabeus' trail. Resets every frame. </summary>
+	public float trailOpacity;
+	public float squishY = 1f;
+	public float iridescenceBoost;
+	public int scarabColorIndex = 0;
+	public float wingFrameCounter;
 
 	#region framing methods
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
@@ -105,6 +103,22 @@ public partial class Scarabeus : ModNPC
 	private void SetFrame(Point frame, VisualProfile profile) => SetFrame(frame.X, frame.Y, profile);
 	#endregion
 
+	public bool OriginAtFeet()
+	{
+		if (Profile == PhaseOneProfile)
+		{
+			if (currentFrame.X != 0)
+				return true;
+			if (currentFrame.Y is < 1 or > 5)
+				return true;
+			return false;
+		}
+		else
+		{
+			return currentFrame.X > 3;
+		}
+	}
+
 	public override void FindFrame(int frameHeight)
 	{
 		if (!Main.dedServ)
@@ -118,6 +132,8 @@ public partial class Scarabeus : ModNPC
 		NPC.frame.X = NPC.frame.Width * currentFrame.X;
 		NPC.frame.Y = NPC.frame.Height * currentFrame.Y;
 
+		squishY = MathHelper.Lerp(squishY, 1f, 0.3f);
+
 		if (NPC.IsABestiaryIconDummy)
 			UpdateFrame(currentFrame.X, 12, PhaseOneProfile);
 	}
@@ -127,56 +143,117 @@ public partial class Scarabeus : ModNPC
 		if (NPC.Opacity == 0)
 			return false;
 
-		NPC.spriteDirection = NPC.direction;
-		Texture2D texture = Profile.Texture.Value;
-		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		Vector2 position = NPC.Center - screenPos - new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
-		Vector2 origin = new(108, 98);
-
+		//Skip all of this if ball because drawing is entirely different
 		if (currentFrame == RollFrame)
 		{
-			DrawBall(texture, origin, drawColor);
+			DrawBall(drawColor);
+			return false;
 		}
 
-		else
-		{
-			if (afterimageTrail.Enabled)
-			{
-				Color color = afterimageTrail.Glowing ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
-				color *= afterimageTrail.Opacity;
+		NPC.spriteDirection = NPC.direction;
+		Texture2D texture = Profile.Texture.Value;
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		var solid = TextureColorCache.ColorSolid(texture, Color.White);
+		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		bool originAtFeet = OriginAtFeet();
+		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
+		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
 
-				for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
+		if (effects == SpriteEffects.FlipHorizontally)
+			origin.X = NPC.frame.Width - origin.X;
+
+		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
+		Vector2 positionOffset = Vector2.Zero;
+		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
+			positionOffset.Y += 16;
+		position += positionOffset;
+
+		Vector2 scale = new Vector2(2 - MathF.Pow(squishY, 2f), MathF.Pow(squishY, 0.7f)) * NPC.scale;
+		if (squishY > 1)
+			scale = new Vector2(1 - MathF.Pow(squishY - 1, 2f), 1f + MathF.Pow(squishY - 1, 0.7f)) * NPC.scale;
+
+		if (trailOpacity > 0)
+		{
+			bool glowingImages = Profile == PhaseTwoProfile && (CurrentState != AIState.GroundPound) && CurrentState != AIState.Dig && CurrentState != AIState.Roll;
+
+			Color color = glowingImages ? NPC.DrawColor(Color.PaleGoldenrod).Additive() : NPC.DrawColor(drawColor);
+			color *= trailOpacity;
+
+			for (int c = 0; c < NPCID.Sets.TrailCacheLength[Type]; c++)
+			{
+				Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
+				Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8) + positionOffset, NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
+			}
+		}
+
+		if (_shakeTimer > 0)
+			position += Main.rand.NextVector2CircularEdge(7f, 7f) * _shakeTimer / 20f;
+
+		if (CurrentState == AIState.DeathAnim)
+			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
+
+		if (CurrentState == AIState.Swarm) //Swarm flash visuals
+		{
+			Vector2 orbPos = NPC.Center + new Vector2(0f, -NPC.height / 2).RotatedBy(NPC.rotation) - Main.screenPosition;
+
+			float opacity = 1f - Counter / 15f;
+			if (opacity > 0)
+			{
+				Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+				Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
+				Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
+				float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
+
+				for (int i = 0; i < 2; i++)
 				{
-					Color trailColor = color * (1f - c / (float)NPCID.Sets.TrailCacheLength[Type]) * 0.5f;
-					Main.EntitySpriteDraw(texture, NPC.oldPos[c] - Main.screenPosition + NPC.Size / 2 - new Vector2(0, 8), NPC.frame, trailColor, NPC.oldRot[c], origin, NPC.scale, effects);
+					float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
+
+					Main.EntitySpriteDraw(star2, orbPos, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
+					Main.EntitySpriteDraw(star, orbPos, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
 				}
 			}
 
-			Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
-			sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
-			sheenShader.Parameters["resolution"].SetValue(texture.Size());
-			sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-			sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
-			sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-			sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
-			FlipShadersOnOff(spriteBatch, sheenShader, true);
-
-			Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, NPC.scale, effects);
-
-			FlipShadersOnOff(spriteBatch, null, false);
-
+			float opacity2 = 1f - Counter / 720f;
+			if (opacity2 > 0)
+			{
+				Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
+				Main.EntitySpriteDraw(godrays, orbPos, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
+				Main.EntitySpriteDraw(godrays, orbPos, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
+			}
 		}
 
-		if (_charmed)
+		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+		sheenShader.Parameters["resolution"].SetValue(texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f + iridescenceBoost * 0.1f);
+		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+		FlipShadersOnOff(spriteBatch, sheenShader, true);
+
+		if (Profile == SimulatedProfile)
+			DrawSimulated(NPC.DrawColor(drawColor), effects);
+		else
+			Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);
+
+		FlipShadersOnOff(spriteBatch, null, false);
+
+		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
+
+		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
+		else if (CurrentState == AIState.Dance)
+			DrawEmote(spriteBatch, ((NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight) + new Vector2(0, (float)Math.Sin(Main.timeForVisualEffects / 30f) * 3), EmoteID.EmoteNote);
 
-		if (Profile == PhaseTwoProfile)
+		if (Profile.GlowMask != null && Profile != SimulatedProfile) //Draw a glowmask
 		{
+			Texture2D glowmask = Profile.GlowMask.Value;
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
-			Main.EntitySpriteDraw(Glowmask.Value, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(glowmask, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);
 
-			DrawHelpers.DrawOutline(spriteBatch, Glowmask.Value, NPC.Center - Main.screenPosition, default, (offset) =>
-				Main.EntitySpriteDraw(Glowmask.Value, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, NPC.scale, effects));
+			DrawHelpers.DrawOutline(spriteBatch, glowmask, NPC.Center - Main.screenPosition, default, (offset) =>
+				Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 		}
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
@@ -192,31 +269,35 @@ public partial class Scarabeus : ModNPC
 				currentFrame.Y = 0; //Reset
 		}
 
+		if (CurrentState == AIState.DeathAnim)
+		{
+			Main.spriteBatch.Draw(bloom, NPC.Center + new Vector2(-10f * NPC.direction, -20f).RotatedBy(NPC.rotation) - Main.screenPosition, null, Color.Orange.Additive() * (Counter / 360f), 0f, bloom.Size() / 2f, 1f, 0f, 0f);
+		}
+
+		/*
+		MultipliableFloat test = new MultipliableFloat();
+		Rectangle hitbox = NPC.Hitbox;
+		ModifyCollisionData(Target.Hitbox, ref NPC.type, ref test, ref hitbox);
+		hitbox.X -= (int)Main.screenPosition.X;
+		hitbox.Y -= (int)Main.screenPosition.Y;
+		spriteBatch.Draw(TextureAssets.MagicPixel.Value, hitbox, dealContactDamage ? Color.Red * 0.8f : Color.Black * 0.4f);
+		*/
+
 		return false;
 	}
 
-	private void DrawBall(Texture2D texture, Vector2 origin, Color lightColor)
+	private void DrawBall(Color lightColor)
 	{
-		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadOut.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
+		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadIn.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
 		var squishScale = new Vector2(1 + squishAmount, 1 - squishAmount);
+		squishScale *= new Vector2(squishY, 1 / squishY);
+
 		List<SquarePrimitive> ballTrail = [];
 		var primDimensions = new Vector2(140 * squishScale.X, 140 * squishScale.Y);
 		bool flipped = NPC.spriteDirection > 0;
-		for (int i = NPCID.Sets.TrailCacheLength[NPC.type] - 1; i > 0; i--)
-		{
-			float progress = 1 - i / (float)NPCID.Sets.TrailCacheLength[NPC.type];
-			float trailOpacity = progress / 5;
-
-			var square = new SquarePrimitive()
-			{
-				Color = NPC.DrawColor(lightColor) * trailOpacity,
-				Height = primDimensions.X,
-				Length = primDimensions.Y,
-				Position = NPC.oldPos[i] + NPC.Size / 2 - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
-				Rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 - (flipped ? MathHelper.Pi : 0)
-			};
-			ballTrail.Add(square);
-		}
+		float rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
+		if(NPC.velocity.Length() < 3)
+			rotation = 0;
 
 		ballTrail.Add(new SquarePrimitive()
 		{
@@ -224,7 +305,7 @@ public partial class Scarabeus : ModNPC
 			Height = primDimensions.X,
 			Length = primDimensions.Y,
 			Position = NPC.Center - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
-			Rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2 - (flipped ? MathHelper.Pi : 0)
+			Rotation = rotation
 		});
 
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
@@ -235,11 +316,19 @@ public partial class Scarabeus : ModNPC
 		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(BallProfile.SheenMask.Value);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+
 		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
 		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
 		sheenShader.Parameters["flip"].SetValue(flipped);
 
 		PrimitiveRenderer.DrawPrimitiveShapeBatched(ballTrail.ToArray(), sheenShader, "BallPass");
+	}
+
+	public override void DrawBehind(int index)
+	{
+		if (CurrentState == AIState.DeathAnim)
+			Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	private static void DrawEmote(SpriteBatch spriteBatch, Vector2 position, int emote)
@@ -273,9 +362,8 @@ public partial class Scarabeus : ModNPC
 			if (effect == null)
 				return;
 
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-				if(pass.Name == "GeometricStyle")
-					pass.Apply();
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
+				pass.Apply();
 		}
 		else
 		{
@@ -286,8 +374,7 @@ public partial class Scarabeus : ModNPC
 			if (effect == null)
 				return;
 
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-				if (pass.Name == "GeometricStyle")
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
 					pass.Apply();
 		}
 	}
