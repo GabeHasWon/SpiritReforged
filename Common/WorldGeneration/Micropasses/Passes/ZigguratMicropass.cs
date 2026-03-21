@@ -200,6 +200,10 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
+			int startX = WorldGen.genRand.Next(-1, 4);
+			int endX = WorldGen.genRand.Next(-4, 1);
+			WorldUtils.Gen(a.Location + new Point(startX, -1), new Shapes.Rectangle(Math.Max(a.Width + 2 - endX, 1), 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<SandySandstone>())); //Add sandy tops
+
 			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 			if (WorldGen.genRand.NextBool(3))
 				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
@@ -530,7 +534,7 @@ internal class ZigguratMicropass : Micropass
 		if (!WorldGen.SolidTile(x, y) && WorldGen.SolidTile(x, y + 1))
 		{
 			ShapeData data = new();
-			WorldUtils.Gen(new(x, y), new Shapes.Mound(4, 2), Actions.Chain(
+			WorldUtils.Gen(new(x, y), new Shapes.Mound(5, 2), Actions.Chain(
 				new Modifiers.IsNotSolid(),
 				new Actions.Custom(PlaceGroundedSand)
 			).Output(data));

@@ -113,6 +113,21 @@ public partial class ZigguratBiome : Microbiome
 
 			CreateHalo(bound);
 			CreateDithering(bound);
+
+			WorldUtils.Gen(bound.Location - new Point(4, 4), new Shapes.Rectangle(bound.Width + 8, bound.Height + 8), new Actions.Custom((x, y, args) =>
+			{
+				if (x < bound.Left + 7 || x >= bound.Right - 7)
+				{
+					Tile tile = Main.tile[x, y];
+					if (tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile(x, y - 1))
+					{
+						tile.ResetToType((ushort)ModContent.TileType<SandySandstone>());
+						return true;
+					}
+				}
+
+				return false;
+			})); //Sandy outline
 		}
 
 		//Add weathering around some edges of the shape
@@ -179,7 +194,7 @@ public partial class ZigguratBiome : Microbiome
 
 		const int width = 8;
 		WorldUtils.Gen(new(i - width / 2, j), new Shapes.Rectangle(width, 2), Actions.Chain(
-			new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+			new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>(), (ushort)ModContent.TileType<SandySandstone>()),
 			new Actions.SetTileKeepWall((ushort)ModContent.TileType<GildedRedSandstone>())
 		));
 	}
