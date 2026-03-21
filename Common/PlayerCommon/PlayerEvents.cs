@@ -7,12 +7,14 @@ public class PlayerEvents : ModPlayer
 	public delegate void PlayerDelegate(Player player);
 	public delegate void AnglerQuestDelegate(Player player, float rareMultiplier, List<Item> rewardItems);
 	public delegate void ModifyHitDelegate(Player player, NPC npc, ref Player.HurtModifiers modifiers);
+	public delegate void ModifyHurtDelegate(Player player, ref Player.HurtModifiers modifiers);
 
 	public static event PlayerDelegate OnKill;
 	public static event AnglerQuestDelegate OnAnglerQuestReward;
 	public static event PlayerDelegate OnPostUpdateRunSpeeds;
 	public static event PlayerDelegate OnPostUpdateEquips;
 	public static event ModifyHitDelegate OnModifyHitByNPC;
+	public static event ModifyHurtDelegate OnModifyHurt;
 
 	/// <summary> Subscribes to <see cref="OnAnglerQuestReward"/> with reward chances based on the provided info. </summary>
 	/// <param name="item"> The item to add as a reward. </param>
@@ -32,4 +34,5 @@ public class PlayerEvents : ModPlayer
 	public override void PostUpdateRunSpeeds() => OnPostUpdateRunSpeeds?.Invoke(Player);
 	public override void PostUpdateEquips() => OnPostUpdateEquips?.Invoke(Player);
 	public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) => OnModifyHitByNPC?.Invoke(Player, npc, ref modifiers);
+	public override void ModifyHurt(ref Player.HurtModifiers modifiers) => OnModifyHurt?.Invoke(Player, ref modifiers);
 }

@@ -91,7 +91,7 @@ public class UrchinBall : ModProjectile
 
 	public override void AI()
 	{
-		if (_spawned)
+		if (_spawned && !Main.dedServ)
 		{
 			CreateTrail(TrailSystem.ProjectileRenderer);
 			_spawned = false;

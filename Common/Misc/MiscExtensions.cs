@@ -96,4 +96,30 @@ internal static class MiscExtensions
 
 	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
 	public static bool Common(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
+
+	public static float Modulo(this float dividend, float divisor)
+	{
+		return (dividend % divisor + divisor) % divisor;
+	}
+
+	public static float AngleLerpDirectional(this float from, float to, float progress, bool clockwise)
+	{
+		from = from.Modulo(MathHelper.TwoPi);
+		to = to.Modulo(MathHelper.TwoPi);
+
+		if (clockwise)
+		{
+			// Clockwise
+			if (from < to)
+				to -= MathHelper.TwoPi;
+		}
+		else
+		{
+			// Counter-clockwise
+			if (from > to)
+				to += MathHelper.TwoPi;
+		}
+
+		return from + (to - from) * progress;
+	}
 }
