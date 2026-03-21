@@ -31,6 +31,7 @@ public class AfterimagePlayer : ModPlayer
 
 	public Vector2 ImagePosition => _positionCache[29 - TrailLength];
 	private readonly Vector2[] _positionCache = new Vector2[30];
+	private readonly Player[] _playerStateCache = new Player[30];
 	private float _manaEase;
 
 	public override void Load() => On_LegacyPlayerRenderer.DrawPlayerFull += static (orig, self, camera, player) =>
@@ -46,13 +47,19 @@ public class AfterimagePlayer : ModPlayer
 		sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		var afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
+
 		float manaStrength = (afterimager._duplicateDelay > 0) ? 1 : (afterimager._manaEase / ManaThreshold);
 		float mult = MathHelper.Clamp(drawPlayer.position.DistanceSQ(position) / 1000f, 0, 1) * manaStrength;
 
 		Lighting.AddLight(position, new Vector3(0.5f, 0.3f, 0.05f) * mult);
 
 		for (int a = 0; a < TrailLength; a++)
-			self.DrawPlayer(camera, drawPlayer, afterimager._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+		{
+			Player p = afterimager._playerStateCache[29 - a];
+			if(p != null) 
+				self.DrawPlayer(camera, p, afterimager._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+
+		}
 
 		for (int i = 0; i < 3; i++)
 			self.DrawPlayer(camera, drawPlayer, position, drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - mult, 1);
@@ -99,6 +106,12 @@ public class AfterimagePlayer : ModPlayer
 				_positionCache[i] = _positionCache[i - 1];
 
 			_positionCache[0] = Player.position;
+
+			//Update old player states
+			for (int i = _playerStateCache.Length - 1; i > 0; i--)
+				_playerStateCache[i] = _playerStateCache[i - 1];
+
+			_playerStateCache[0] = (Player)Player.Clone();
 		}
 	}
 	#endregion
