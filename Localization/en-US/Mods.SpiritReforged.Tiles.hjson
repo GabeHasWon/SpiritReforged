@@ -62,4 +62,4 @@ ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 DustyTomb.MapEntry: Dusty Tomb
 EnlilStatue.MapEntry: Enlil Statue
 ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-SpaceHeaterTile.MapEntry: Mods.SpiritReforged.Tiles.SpaceHeaterTile.MapEntry
+SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"
