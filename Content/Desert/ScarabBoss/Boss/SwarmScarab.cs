@@ -1,159 +1,146 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class SwarmScarab : ModProjectile
 {
-	private const int MAX_TIMELEFT = 40;
+	private const int FOREGROUND_TIME = 60;
 
-	private ref float SpawnDelay => ref Projectile.ai[0];
-	private ref float AITimer => ref Projectile.ai[1];
+	private float _fgDistance = 1;
 
-	private float Progress => EaseFunction.EaseCircularOut.Ease((AITimer - SpawnDelay) / MAX_TIMELEFT);
+	private Vector2 _spawnOrigin;
 
-	public override string Texture => AssetLoader.EmptyTexture;
+	private ref float AITimer => ref Projectile.ai[0];
 
-	public override void SetStaticDefaults() => base.SetStaticDefaults();
+	private ref float Direction => ref Projectile.ai[1];
+
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Projectile.type] = 2;
+		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+	}
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(58, 160);
+		Projectile.Size = new(48, 48);
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
+		Main.projFrames[Projectile.type] = 2;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = MAX_TIMELEFT;
+		Projectile.alpha = 0;
 	}
 
 	public override void AI()
 	{
-		if(AITimer == 0)
-			Projectile.timeLeft += (int)SpawnDelay;
-
-		if (AITimer++ == SpawnDelay)
+		Projectile.direction = Projectile.spriteDirection = (int)Direction;
+		if (AITimer++ == 0)
 			OnSpawn();
 
-		if (AITimer > SpawnDelay)
-		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				for (int i = 0; i < 1; i++)
-				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(8, 20), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
-					{
-						Pixellate = true,
-						DissolveAmount = 1,
-						SecondaryColor = Color.SandyBrown,
-						TertiaryColor = Color.SaddleBrown,
-						PixelDivisor = 3,
-						ColorLerpExponent = 0.25f,
-						Layer = ParticleLayer.BelowSolid
-					});
-				}
+		//go up, enter screen from foreground, then do a dashing sweep
 
-				if (Main.rand.NextBool())
-					Dust.NewDust(Projectile.BottomLeft, Projectile.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-			}
+		if (Projectile.frameCounter++ > 2)
+		{
+			if (Projectile.frame >= 1)
+				Projectile.frame = 0;
+
+			else
+				Projectile.frame++;
+
+			Projectile.frameCounter = 0;
 		}
 
-		else if (Main.netMode != NetmodeID.Server)
-		{
-			for (int i = 0; i < Main.rand.Next(3); i++)
-			{
-				Vector2 particlePos = Projectile.Bottom;
-				particlePos += Main.rand.NextFloat(-16, 16) * Vector2.UnitX;
-
-				Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 10);
-
-				ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, Color.Beige, Main.rand.NextFloat(0.04f, 0.1f), EaseFunction.EaseCircularOut, Main.rand.Next(20, 30))
-				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
-				});
-			}
-
-			if (Main.rand.NextBool(3))
-				Dust.NewDust(Projectile.BottomLeft - Vector2.UnitY * 8, Projectile.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-
-			if (AITimer == SpawnDelay - 15 || AITimer == (SpawnDelay / 2) - 15)
-			{
-				int numTiles = 3;
-				float maxHeight = 6;
-				int totalTime = 30;
-
-				for (int j = -1; j <= 1; j += 2)
-				{
-					for (float i = 0; i < numTiles; i++)
-					{
-						float height = MathHelper.Lerp(maxHeight, 0, i / numTiles);
-						int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-						ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(Projectile.Bottom + j * Vector2.UnitX * 16 * (i + 1), totalTime / 2, height), delay);
-					}
-				}
-
-				ParticleHandler.SpawnParticle(new MovingBlockParticle(Projectile.Bottom, totalTime / 2, maxHeight));
-			}
-		}
+		if (AITimer <= FOREGROUND_TIME)
+			FGFlying();
+		else
+			DashSweep();
 	}
 
 	private void OnSpawn()
 	{
-		if (Main.netMode != NetmodeID.Server)
+		Projectile.netUpdate = true;
+		_spawnOrigin = Main.screenPosition;
+	}
+
+	private void FGFlying()
+	{
+		float progress = AITimer / FOREGROUND_TIME;
+		Projectile.velocity = new Vector2(MathHelper.Lerp(-9, -3, EaseFunction.EaseCircularIn.Ease(progress)) * Direction,
+			MathHelper.Lerp(4, 0, EaseFunction.EaseQuadIn.Ease(progress)));
+
+		_fgDistance = MathHelper.Lerp(1, 0, EaseFunction.EaseQuadInOut.Ease(progress));
+	}
+
+	private void DashSweep()
+	{
+		const int anticipation_time = 40;
+		const int dash_time = 60;
+		const int dash_rest_time = 40;
+
+		int DashStartTime = FOREGROUND_TIME + anticipation_time;
+		int DashEndTime = DashStartTime + dash_time;
+		int FlyOffTime = DashEndTime + dash_rest_time;
+
+		//Anticipation before dash, moving backwards and speeding up animation
+		if (AITimer < DashStartTime)
 		{
-			for (int i = 0; i < 6; i++)
-			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom + Main.rand.NextFloat(-64, 64) * Vector2.UnitX, -Vector2.UnitY * Main.rand.NextFloat(2, 6), Color.Beige, Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
-				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
-				});
-			}
+			float progress = (AITimer - FOREGROUND_TIME) / anticipation_time;
+			Projectile.velocity = new Vector2(MathHelper.Lerp(-3, 7, EaseFunction.EaseQuadIn.Ease(progress)) * Direction,
+				MathHelper.Lerp(0, 0.5f, EaseFunction.EaseCubicOut.Ease(progress)));
+
+			Projectile.frameCounter++;
+		}
+
+		//Set dash speed
+		if (AITimer == DashStartTime)
+			Projectile.velocity = new Vector2(-18 * Direction, 3);
+
+		//Gradually curve back upwards
+		if(AITimer > DashStartTime && AITimer < DashEndTime)
+			Projectile.velocity.Y -= 0.1f;
+
+		//Slow down and reduce animation speed
+		if(AITimer > DashEndTime && AITimer < FlyOffTime)
+		{
+			Projectile.velocity *= 0.95f;
+
+			if (AITimer % 2 == 0)
+				Projectile.frameCounter--;
+		}
+
+		//Fly upwards and fade out
+		if(AITimer > FlyOffTime)
+		{
+			Projectile.velocity = Vector2.Lerp(Projectile.velocity, new Vector2(-1 * Direction, -4), 0.04f);
+			if (AITimer % 2 == 0)
+				Projectile.frameCounter++;
+
+			Projectile.alpha += 12;
+			if (Projectile.alpha >= 255)
+				Projectile.Kill();
 		}
 	}
 
-	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-	{
-		Rectangle adjustedHitbox = projHitbox;
-		adjustedHitbox.Y += adjustedHitbox.Height;
-		adjustedHitbox.Height = (int)(projHitbox.Height * Progress);
-		adjustedHitbox.Y -= adjustedHitbox.Height;
-
-		return adjustedHitbox.Intersects(targetHitbox);
-	}
-
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => overPlayers.Add(index);
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		if (AITimer < SpawnDelay)
-			return false;
+		Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+		float scale = Projectile.scale * (1 + _fgDistance * 1.5f);
+		Vector2 position = Projectile.Center - Vector2.Lerp(Main.screenPosition, Main.screenPosition - 2 * (_spawnOrigin - Main.screenPosition), (float)Math.Pow(_fgDistance, 1.5f) / 2);
+		var color = Color.Lerp(lightColor, Color.Black, _fgDistance);
+		color *= 1 - EaseFunction.EaseCircularIn.Ease(EaseFunction.EaseCircularIn.Ease(_fgDistance));
 
-		/*
-		int drawTimer = (int)(AITimer - SpawnDelay);
+		//Dash check based on x velocity
+		if (Math.Abs(Projectile.velocity.X) > 10)
+			Projectile.QuickDrawTrail(baseOpacity: 0.2f);
 
-		Effect shockwaveEffect = AssetLoader.LoadedShaders["GroundShockwave"].Value;
-
-		var square = new SquarePrimitive
-		{
-			Color = Color.White,
-			Length = Projectile.width,
-			Height = Projectile.height,
-			Position = Projectile.Center - Vector2.UnitY * Projectile.height / 2
-		};
-
-		PrimitiveRenderer.DrawPrimitiveShape(square, shockwaveEffect);*/
+		Main.EntitySpriteDraw(tex, position, Projectile.DrawFrame(), color * Projectile.Opacity, Projectile.rotation, Projectile.DrawFrame().Size() / 2, scale, Direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
 
 		return false;
 	}

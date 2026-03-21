@@ -1,149 +1,125 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class DivebombScarab : ModProjectile
 {
-	private const int MAX_TIMELEFT = 40;
+	private const int BACKGROUND_TIME = 90;
 
-	private ref float SpawnDelay => ref Projectile.ai[0];
-	private ref float AITimer => ref Projectile.ai[1];
+	private float _bgDistance = 1;
 
-	private float Progress => EaseFunction.EaseCircularOut.Ease((AITimer - SpawnDelay) / MAX_TIMELEFT);
+	private Vector2 _spawnOrigin;
 
-	public override string Texture => AssetLoader.EmptyTexture;
+	private ref float AITimer => ref Projectile.ai[0];
 
-	public override void SetStaticDefaults() => base.SetStaticDefaults();
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Projectile.type] = 4;
+		ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+		ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+	}
 
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(58, 160);
+		Projectile.Size = new(48, 48);
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = MAX_TIMELEFT;
+		Projectile.alpha = 0;
 	}
 
 	public override void AI()
 	{
-		if(AITimer == 0)
-			Projectile.timeLeft += (int)SpawnDelay;
-
-		if (AITimer++ == SpawnDelay)
+		if (AITimer++ == 0)
 			OnSpawn();
 
-		if (AITimer > SpawnDelay)
-			if (Main.netMode != NetmodeID.Server)
-			{
-				for (int i = 0; i < 1; i++)
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(8, 20), Color.LightGoldenrodYellow, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
-					{
-						Pixellate = true,
-						DissolveAmount = 1,
-						SecondaryColor = Color.SandyBrown,
-						TertiaryColor = Color.SaddleBrown,
-						PixelDivisor = 3,
-						ColorLerpExponent = 0.25f,
-						Layer = ParticleLayer.BelowSolid
-					});
+		//go up, enter foreground from bg, then slam downwards and tile collide
 
-				if (Main.rand.NextBool())
-					Dust.NewDust(Projectile.BottomLeft, Projectile.width, 16, DustID.Sand, 0, Main.rand.NextFloat(-4, -8), 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-			}
-
-		else if (Main.netMode != NetmodeID.Server)
+		if (Projectile.frameCounter++ > 2)
 		{
-			for (int i = 0; i < Main.rand.Next(3); i++)
-			{
-				Vector2 particlePos = Projectile.Bottom;
-				particlePos += Main.rand.NextFloat(-16, 16) * Vector2.UnitX;
+			if (Projectile.frame >= 3)
+				Projectile.frame = 0;
 
-				Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 10);
+			else
+				Projectile.frame++;
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, Color.Beige, Main.rand.NextFloat(0.04f, 0.1f), EaseFunction.EaseCircularOut, Main.rand.Next(20, 30))
-				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
-				});
-			}
-
-			if (Main.rand.NextBool(3))
-				Dust.NewDust(Projectile.BottomLeft - Vector2.UnitY * 8, Projectile.width, 0, DustID.Sand, 0, -4, 0, default, Main.rand.NextFloat(0.5f, 0.9f));
-
-			if (AITimer == SpawnDelay - 15 || AITimer == SpawnDelay / 2 - 15)
-			{
-				int numTiles = 3;
-				float maxHeight = 6;
-				int totalTime = 30;
-
-				for (int j = -1; j <= 1; j += 2)
-					for (float i = 0; i < numTiles; i++)
-					{
-						float height = MathHelper.Lerp(maxHeight, 0, i / numTiles);
-						int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-						ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(Projectile.Bottom + j * Vector2.UnitX * 16 * (i + 1), totalTime / 2, height), delay);
-					}
-
-				ParticleHandler.SpawnParticle(new MovingBlockParticle(Projectile.Bottom, totalTime / 2, maxHeight));
-			}
+			Projectile.frameCounter = 0;
 		}
+
+		if (AITimer <= BACKGROUND_TIME)
+			BGFlying();
+		else
+			DiveBomb();
 	}
 
 	private void OnSpawn()
 	{
-		if (Main.netMode != NetmodeID.Server)
-			for (int i = 0; i < 6; i++)
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom + Main.rand.NextFloat(-64, 64) * Vector2.UnitX, -Vector2.UnitY * Main.rand.NextFloat(2, 6), Color.Beige, Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
-				{
-					Pixellate = true,
-					DissolveAmount = 1,
-					SecondaryColor = Color.SandyBrown,
-					TertiaryColor = Color.SaddleBrown,
-					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
-				});
+		Projectile.netUpdate = true;
+		_spawnOrigin = Main.screenPosition;
 	}
 
-	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	private void BGFlying()
 	{
-		Rectangle adjustedHitbox = projHitbox;
-		adjustedHitbox.Y += adjustedHitbox.Height;
-		adjustedHitbox.Height = (int)(projHitbox.Height * Progress);
-		adjustedHitbox.Y -= adjustedHitbox.Height;
+		float progress = AITimer / BACKGROUND_TIME;
+		Projectile.velocity.Y = MathHelper.Lerp(-16, 0, EaseFunction.EaseCircularOut.Ease(progress));
+		_bgDistance = MathHelper.Lerp(0.75f, 0, EaseFunction.EaseQuadOut.Ease(progress));
+	}
 
-		return adjustedHitbox.Intersects(targetHitbox);
+	private void DiveBomb()
+	{
+		const int ANTICIPATION_TIME = 30;
+
+		if(AITimer < BACKGROUND_TIME + ANTICIPATION_TIME)
+		{
+			float progress = (AITimer - BACKGROUND_TIME) / ANTICIPATION_TIME;
+			Projectile.velocity.Y = MathHelper.Lerp(-0.2f, -5, EaseFunction.EaseQuadIn.Ease(progress));
+			Projectile.velocity.X = MathHelper.Lerp(0, 0.5f, EaseFunction.EaseCubicOut.Ease(progress));
+			Projectile.frameCounter++;
+		}
+
+		if(AITimer == BACKGROUND_TIME + ANTICIPATION_TIME)
+		{
+			Projectile.velocity.Y = 20;
+			Projectile.velocity.X = -4;
+			Projectile.tileCollide = true;
+		}
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 
+	public override void OnKill(int timeLeft)
+	{
+		Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+		for (int i = 0; i < 10; i++)
+		{
+			int d = Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, DustID.Plantera_Green, Projectile.oldVelocity.X * 0.2f, Projectile.oldVelocity.Y * 0.2f);
+			Main.dust[d].noGravity = true;
+			Main.dust[d].scale = 1.2f;
+		}
+
+		SoundEngine.PlaySound(SoundID.NPCDeath1, Projectile.Center);
+
+		if (Main.netMode != NetmodeID.Server)
+			for (int i = 1; i <= 3; i++)
+				Main.gore[Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>("largescarab" + i.ToString()).Type)].timeLeft = 10;
+	}
+
 	public override bool PreDraw(ref Color lightColor)
 	{
-		if (AITimer < SpawnDelay)
-			return false;
+		Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+		float scale = Projectile.scale * (1 - _bgDistance);
+		Vector2 position = Projectile.Center - Vector2.Lerp(Main.screenPosition, _spawnOrigin, (float)Math.Pow(_bgDistance, 1.5));
+		var color = Color.Lerp(lightColor, Color.Black, _bgDistance / 3);
 
-		/*
-		int drawTimer = (int)(AITimer - SpawnDelay);
+		if (Projectile.tileCollide == true)
+			Projectile.QuickDrawTrail(baseOpacity: 0.2f);
 
-		Effect shockwaveEffect = AssetLoader.LoadedShaders["GroundShockwave"].Value;
-
-		var square = new SquarePrimitive
-		{
-			Color = Color.White,
-			Length = Projectile.width,
-			Height = Projectile.height,
-			Position = Projectile.Center - Vector2.UnitY * Projectile.height / 2
-		};
-
-		PrimitiveRenderer.DrawPrimitiveShape(square, shockwaveEffect);*/
+		Main.EntitySpriteDraw(tex, position, Projectile.DrawFrame(), color, Projectile.rotation, Projectile.DrawFrame().Size() / 2, scale, SpriteEffects.None);
 
 		return false;
 	}

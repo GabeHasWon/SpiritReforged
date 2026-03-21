@@ -67,6 +67,8 @@ FingerShot.DisplayName: 手指射击
 // SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 // AdornedArrow.DisplayName: Adorned Arrow
 // AdornedBowHeld.DisplayName: Adorned Bow Held
+// AdornedFlash.DisplayName: Adorned Flash
+// AdornedArrowDeathTrail.DisplayName: Adorned Arrow Death Trail
 // FloatingGem.DisplayName: Floating Gem
 // BeamOLight.DisplayName: Beam O Light
 // SandShockwavePillar.DisplayName: Sand Shockwave Pillar

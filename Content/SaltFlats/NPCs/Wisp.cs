@@ -35,6 +35,8 @@ public class Wisp : ModNPC
 
 			base.Update(ref settings);
 
+			Opacity = MathF.Min(Opacity, _parent.Opacity);
+
 			if (++_timeSinceSpawn >= TimeToLive)
 			{
 				ShouldBeRemovedFromRenderer = true;
@@ -189,7 +191,6 @@ public class Wisp : ModNPC
 			DelegateMethods.c_1 = beamColor; //Render color
 			Utils.DrawLaser(spriteBatch, texture, startPosition, endPosition, drawScale, lineFraming);
 		}
-
 	}
 
 	public static readonly SoundStyle Hit = new("SpiritReforged/Assets/SFX/NPCHit/WispHit")
@@ -230,6 +231,9 @@ public class Wisp : ModNPC
 	{
 		const int hostileThreshold = 60;
 
+		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
+		Lighting.AddLight(NPC.Center, coreColor.ToVector3() * NPC.Opacity);
+
 		if (!Main.dedServ)
 		{
 			if (_trails == null)
@@ -243,6 +247,7 @@ public class Wisp : ModNPC
 				var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, _isHostile ? DustID.RedTorch : DustID.BlueCrystalShard);
 				dust.noGravity = true;
 				dust.velocity = Vector2.Zero;
+				dust.alpha = (int)((1 - NPC.Opacity) * 255);
 			}
 		}
 
@@ -262,7 +267,7 @@ public class Wisp : ModNPC
 						Main.ParticleSystem_World_OverPlayers.Add(new PrettySparkleParticle()
 						{
 							LocalPosition = NPC.Center,
-							ColorTint = Color.OrangeRed,
+							ColorTint = Color.OrangeRed * NPC.Opacity,
 							Scale = Vector2.One,
 							TimeToLive = 40
 						});
@@ -304,7 +309,7 @@ public class Wisp : ModNPC
 			_counter++;
 		}
 
-		if (Main.dayTime && NPC.Center.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.05f) <= 0)
+		if (Main.dayTime && NPC.Center.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.004f) <= 0)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -345,13 +350,15 @@ public class Wisp : ModNPC
 		];
 	}
 
+	public override bool? CanFallThroughPlatforms() => true;
+
 	public override void FindFrame(int frameHeight)
 	{
 		if (Main.dedServ)
 			return;
 
 		if (Main.rand.NextBool(10))
-			_twirlParticleRenderer.Add(new TwirlyParticle(NPC, _isHostile ? Color.Red : Color.Cyan)
+			_twirlParticleRenderer.Add(new TwirlyParticle(NPC, (_isHostile ? Color.Red : Color.Cyan))
 			{
 				LocalPosition = NPC.Center + new Vector2(Main.rand.NextFloat(22f, 30f), 0).RotatedByRandom(1),
 				Scale = Vector2.One * Main.rand.NextFloat(0.2f, 0.3f),
@@ -453,8 +460,6 @@ public class Wisp : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
-		Lighting.AddLight(NPC.Center, coreColor.ToVector3());
-
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Extra_49"].Value;
 		float pulse = (float)Math.Sin(Main.timeForVisualEffects / 20f);
@@ -475,11 +480,14 @@ public class Wisp : ModNPC
 		if (_trails != null)
 		{
 			foreach (VertexTrail trail in _trails)
+			{
+				trail.Opacity = NPC.Opacity;
 				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+			}
 		}
 
 		return false;
 
-		Color GetAdditive(Color tint, byte additive = 0) => NPC.IsABestiaryIconDummy ? tint.Additive(additive) : NPC.GetAlpha(tint).Additive(additive);
+		Color GetAdditive(Color tint, byte additive = 0) => NPC.IsABestiaryIconDummy ? tint.Additive(additive) : NPC.GetAlpha(tint).Additive(additive) * NPC.Opacity;
 	}
 }

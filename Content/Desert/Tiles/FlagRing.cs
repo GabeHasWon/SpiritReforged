@@ -41,12 +41,13 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 				return;
 			}
 
-			if (chain == null)
+			if (chain == null) //Create a new chain
 			{
 				const int segments = 8;
 				int length = FlagTrail.Value.Height;
 
 				chain = new Chain(length / segments - 3, segments + 1, Position.ToWorldCoordinates(), new ChainPhysics(), stiffness: 2);
+				chain.Update(Position.ToWorldCoordinates(), Position.ToWorldCoordinates() + new Vector2(0, 30));
 			}
 
 			float wind = Main.WindForVisuals;

@@ -31,7 +31,7 @@ public class RoyalKhopesh : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		PreNewProjectile.New(source, player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI, preSpawnAction: (Projectile projectile) =>
+		PreNewProjectile.New(source, player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI, preSpawnAction: (projectile) =>
 		{
 			KhopeshPlayer kPlayer = player.GetModPlayer<KhopeshPlayer>();
 			var khopesh = projectile.ModProjectile as RoyalKhopeshHeld;
@@ -41,8 +41,8 @@ public class RoyalKhopesh : ModItem
 
 			int useSpeed = (int)(Item.useTime / player.GetTotalAttackSpeed(DamageClass.Melee));
 			khopesh.BaseDirection = velocity;
-			khopesh.SwingDirection = (kPlayer.Combo % 3 == 1) ? -1 : 1;
-			khopesh.SwingTime = (kPlayer.Combo == 2) ? (int)(useSpeed * 1.7f) : useSpeed;
+			khopesh.SwingDirection = kPlayer.Combo % 3 == 1 ? -1 : 1;
+			khopesh.SwingTime = kPlayer.Combo == 2 ? (int)(useSpeed * 1.7f) : useSpeed;
 			khopesh.SwingTime *= 1 + RoyalKhopeshHeld.EXTRA_UPDATES;
 			khopesh.Combo = kPlayer.Combo;
 			khopesh.SwingRadians = MathHelper.Pi * 1.75f;
