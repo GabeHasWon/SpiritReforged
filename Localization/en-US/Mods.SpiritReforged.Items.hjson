@@ -2991,6 +2991,6 @@ ScarabRadio: {
 }
 
 SpaceHeater: {
-	DisplayName: Space Heater
-	Tooltip: ""
+	DisplayName: Radiator
+	Tooltip: Right click the tile to modify its heat setting
 }
