@@ -139,12 +139,12 @@ internal class SaltFlatsSystem : ModSystem
 			}
 
 			Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			bgShader.Parameters["texColorUVLerper"].SetValue(0f);
 			bgShader.Parameters["WorldViewProjection"].SetValue(projection);
+			bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
 			SetSkyColor(bgShader);
-			bgShader.Parameters["viewMatrix"].SetValue(projection);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, bgShader);
