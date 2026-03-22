@@ -929,7 +929,7 @@ public partial class Scarabeus : ModNPC
 
 				//Fall faster in P2 for faster telegraph
 				if (phaseTwo)
-					NPC.velocity.Y += 0.12f;
+					NPC.velocity.Y += phaseTwo ? 0.12f : 0.08f;
 
 				dealContactDamage = true;
 				NPC.noGravity = false;
@@ -2093,7 +2093,7 @@ public partial class Scarabeus : ModNPC
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 
-		float spawnHopHeight = 4 + 2.3f * (swarmerIndex % 3);
+		float spawnHopHeight = 5.6f + 2.3f * (swarmerIndex % 3);
 		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 
 		//Spawn swarmers further away that are only just meant to make it look more natural
@@ -2103,6 +2103,15 @@ public partial class Scarabeus : ModNPC
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		}
+
+		if (swarmerIndex % 3 == 2)
+		{
+			spawnPosition = Target.Center + Vector2.UnitX * (-spawnAreaOffsetX * 0.5f + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			spawnHopHeight = 1 + 1.3f * (swarmerIndex % 3);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+
 		}
 	}
 

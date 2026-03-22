@@ -360,11 +360,11 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		if (CurrentState != AIState.Burnt)
+		if (CurrentState != AIState.Burnt && CurrentState != AIState.Emerging)
 			return null;
 
-		//Bigger hitbox on burnt ones to make the mmore punishing to players who stand still
-		projHitbox.Inflate(6, 6);
+		//Bigger hitbox on burnt and emerging ones to make the mmore punishing to players who stand still
+		projHitbox.Inflate(14, 8);
 		return projHitbox.Intersects(targetHitbox);
 	}
 

@@ -53,10 +53,10 @@ public partial class Scarabeus : ModNPC
 	public static float STAT_IDLE_TIME_P2_MULTIPLIER = 1.2f; //Idle time multiplier when scarab is in phase 2
 
 	//Contact damage
-	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 26;
+	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 35;
 	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 34;
 	public static int STAT_GROUNDPOUND_CONTACT_DAMAGE = 34;
-	public static int STAT_ROLL_CONTACT_DAMAGE = 20;
+	public static int STAT_ROLL_CONTACT_DAMAGE = 35;
 	public static int STAT_SLAM_CONTACT_DAMAGE = 38;
 	public static int STAT_FLYDASH_CONTACT_DAMAGE = 38;
 	public static float STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER = 2f;
