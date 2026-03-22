@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;

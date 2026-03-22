@@ -262,7 +262,7 @@ public partial class Scarabeus : ModNPC
 		int activeScarabs = Main.npc.Count(n => n.active && n.type == Type);
 		scarabColorIndex = activeScarabs - 1;
 
-		Music = MusicID.Eerie;
+		Music = 0;
 	}
 
 	//No journey scaling cuz we aleady scale stuff
@@ -339,7 +339,9 @@ public partial class Scarabeus : ModNPC
 		HandleDespawn();
 		SetContactDamage();
 		ManageSandstormffects();
-		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
+
+		if (Main.dayTime)
+			ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
 	}
 
 	public void SetContactDamage()
@@ -364,7 +366,7 @@ public partial class Scarabeus : ModNPC
 
 	public void HandleDespawn()
 	{
-		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
+		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || !Main.dayTime || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
 		{
 			if (++despawnTimer >= 60 * 20 && IsIdling)
 				ChangeState(AIState.Despawn);

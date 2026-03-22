@@ -1,7 +1,7 @@
 CommonTooltips: {
 	Backpack:
 		'''
-		可容纳4个物品
+		可容纳{0}个物品
 		取下背包前需要清空背包
 		'''
 	Shimmerable: "{0} 在微光中转化"
@@ -175,7 +175,7 @@ Nigiri: {
 }
 
 HoneySalmon: {
-	DisplayName: 蜜裹三文鱼
+	DisplayName: 蜜裹鱼片
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: 远古潜渊者胸甲
+	DisplayName: 锈蚀潜渊者胸甲
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: 远古潜渊者头盔
+	DisplayName: 锈蚀潜渊者头盔
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: 远古潜渊者裤
+	DisplayName: 锈蚀潜渊者裤
 	Tooltip: ""
 }
 
@@ -884,7 +884,7 @@ WheatgrassSeedPouch: {
 	DisplayName: 麦草种子袋
 	Tooltip:
 		'''
-		撒下会在草地上长出小麦草的种子
+		撒下会长出麦草的种子
 		“在手中哗啦作响”
 		'''
 }
@@ -1764,7 +1764,11 @@ Blasphemer: {
 
 Hummus: {
 	DisplayName: 鹰嘴豆泥
-	Tooltip: 温暖可口！
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		温暖可口！
+		'''
 }
 
 ZenithPotsItem: {
@@ -2048,921 +2052,921 @@ HardlightVisor: {
 }
 
 PolishedAmberItem: {
-	// DisplayName: Polished Amber
-	// Tooltip: ""
+	DisplayName: 抛光琥珀
+	Tooltip: ""
 }
 
 AmberFossilSafeItem: {
-	// DisplayName: Amber Fossil
-	// Tooltip: ""
+	DisplayName: 琥珀化石
+	Tooltip: ""
 }
 
 GildedSandstoneItem: {
-	// DisplayName: Gilded Sandstone
-	// Tooltip: ""
+	DisplayName: 镀金沙岩
+	Tooltip: ""
 }
 
 RedSandstoneBrickItem: {
-	// DisplayName: Red Sandstone Brick
-	// Tooltip: ""
+	DisplayName: 赤沙岩砖
+	Tooltip: ""
 }
 
 RedSandstoneBrickCrackedItem: {
-	// DisplayName: Cracked Red Sandstone Brick
-	// Tooltip: "'Still structurally sound!'"
+	DisplayName: 破裂赤沙岩砖
+	Tooltip: “结构仍然完好无损！”
 }
 
 WalkieTalkie: {
-	// DisplayName: Walkie-Talkie
-	// Tooltip: Allows you to talk to the Angler anywhere
-	// Disabled: No one's around to respond...
+	DisplayName: 对讲机
+	Tooltip: 使你能够随时随地的与渔夫对话
+	Disabled: 无人应答……
 }
 
 ScryingLens: {
-	// DisplayName: Scrying Lens
-	// Tooltip: Displays Shimmer transmutations
-	// ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
+	DisplayName: 占卜透镜
+	Tooltip: 显示微光嬗变
+	ShimmerLine: " 转化为 [i:{0}] [c/FFFFFF:{1}]"
 }
 
 Ledger: {
-	// DisplayName: Ledger
-	// Tooltip: Displays item coin prices
+	DisplayName: 分类账
+	Tooltip: 显示物品钱币价格
 }
 
 MysticalCodex: {
-	// DisplayName: Mystical Codex
-	// Tooltip: Displays item coin prices and Shimmer transmutations
+	DisplayName: 秘典
+	Tooltip: 显示物品钱币价格和微光嬗变
 }
 
 CommonPotsSavannaItem: {
-	// DisplayName: Savanna Pot
-	// Tooltip: ""
+	DisplayName: 稀树平原罐子
+	Tooltip: ""
 }
 
-// StactusBannerItem.DisplayName: Stactus Banner
+StactusBannerItem.DisplayName: 刺角株旗
 
 SunEarrings: {
-	// DisplayName: Sundancer Earrings
-	/* Tooltip:
+	DisplayName: 太阳舞者耳环
+	Tooltip:
 		'''
-		Increases maximum mana by 20
-		7% increased magic damage
-		''' */
+		增加20点最大魔力值
+		增加7%魔法伤害
+		'''
 }
 
 SilkSirwal: {
-	// DisplayName: Sundancer Sirwal
-	// Tooltip: Increases movement speed and acceleration on the ground
+	DisplayName: 太阳舞者灯笼裤
+	Tooltip: 在地面上时增加移动速度和加速度
 }
 
 SilkTop: {
-	// DisplayName: Sundancer Top
-	// Tooltip: 7% increased magic damage
+	DisplayName: 太阳舞者上衣
+	Tooltip: 增加7%魔法伤害
 }
 
 CeremonialDagger: {
-	// DisplayName: Ceremonial Dagger
-	/* Tooltip:
+	DisplayName: 仪式匕首
+	Tooltip:
 		'''
-		Deals damage to townsfolk
-		<right> deals critical damage to bleeding enemies
-		''' */
+		对镇民造成伤害
+		右键对流血的敌人造成暴击伤害
+		'''
 }
 
 Thornball: {
-	// DisplayName: Thornball
-	// Tooltip: Sticks to tiles
+	DisplayName: 棘球
+	Tooltip: 粘在图格上
 }
 
 SaltBlockDullItem: {
-	// DisplayName: Dull Salt Block
-	// Tooltip: ""
+	DisplayName: 单调盐块
+	Tooltip: ""
 }
 
 SaltBlockReflectiveItem: {
-	// DisplayName: Salt Block
-	// Tooltip: "'Smooth and reflective'"
+	DisplayName: 盐块
+	Tooltip: “光滑且反光”
 }
 
 NeedleTrapItem: {
-	// DisplayName: Needle Trap
-	// Tooltip: ""
+	DisplayName: 针刺陷阱
+	Tooltip: ""
 }
 
 DivingBeetleItem: {
-	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
-	// Tooltip: ""
+	DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	Tooltip: ""
 }
 
 SunDropper: {
-	// DisplayName: Magic Sunlight Dropper
-	// Tooltip: ""
+	DisplayName: 魔法阳光滴管
+	Tooltip: ""
 }
 
 OsmosifierItem: {
-	// DisplayName: Osmosifier
-	// Tooltip: Passively produces salt blocks when placed in water
+	DisplayName: 渗透装置
+	Tooltip: 放置在水中时会被动生成盐块
 }
 
 GoldDivingBeetleItem: {
-	// DisplayName: Gold Diving Beetle
-	// Tooltip: ""
+	DisplayName: 金龙虱
+	Tooltip: ""
 }
 
 StoneStupasItem: {
-	// DisplayName: Stone Stupa
-	// Tooltip: ""
+	DisplayName: 石制佛塔
+	Tooltip: ""
 }
 
 SaltChestItem: {
-	// DisplayName: Salt Chest
-	// Tooltip: ""
+	DisplayName: 盐箱
+	Tooltip: ""
 }
 
 SaltDresserItem: {
-	// DisplayName: Salt Dresser
-	// Tooltip: ""
+	DisplayName: 盐梳妆台
+	Tooltip: ""
 }
 
 SaltBathtubItem: {
-	// DisplayName: Salt Bathtub
-	// Tooltip: ""
+	DisplayName: 盐浴缸
+	Tooltip: ""
 }
 
 SaltBedItem: {
-	// DisplayName: Salt Bed
-	// Tooltip: ""
+	DisplayName: 盐床
+	Tooltip: ""
 }
 
 SaltBookcaseItem: {
-	// DisplayName: Salt Bookcase
-	// Tooltip: ""
+	DisplayName: 盐书架
+	Tooltip: ""
 }
 
 SaltCandelabraItem: {
-	// DisplayName: Salt Candelabra
-	// Tooltip: ""
+	DisplayName: 盐烛台
+	Tooltip: ""
 }
 
 SaltChandelierItem: {
-	// DisplayName: Salt Chandelier
-	// Tooltip: ""
+	DisplayName: 盐吊灯
+	Tooltip: ""
 }
 
 SaltClockItem: {
-	// DisplayName: Salt Clock
-	// Tooltip: ""
+	DisplayName: 盐钟
+	Tooltip: ""
 }
 
 SaltDoorItem: {
-	// DisplayName: Salt Door
-	// Tooltip: ""
+	DisplayName: 盐门
+	Tooltip: ""
 }
 
 SaltLampItem: {
-	// DisplayName: Salt Lamp
-	// Tooltip: ""
+	DisplayName: 盐灯
+	Tooltip: ""
 }
 
 SaltLanternItem: {
-	// DisplayName: Salt Lantern
-	// Tooltip: ""
+	DisplayName: 盐灯笼
+	Tooltip: ""
 }
 
 SaltPianoItem: {
-	// DisplayName: Salt Piano
-	// Tooltip: ""
+	DisplayName: 盐钢琴
+	Tooltip: ""
 }
 
 SaltSinkItem: {
-	// DisplayName: Salt Sink
-	// Tooltip: ""
+	DisplayName: 盐水槽
+	Tooltip: ""
 }
 
 SaltSofaItem: {
-	// DisplayName: Salt Sofa
-	// Tooltip: ""
+	DisplayName: 盐沙发
+	Tooltip: ""
 }
 
 SaltTableItem: {
-	// DisplayName: Salt Table
-	// Tooltip: ""
+	DisplayName: 盐桌
+	Tooltip: ""
 }
 
 SaltToiletItem: {
-	// DisplayName: Salt Toilet
-	// Tooltip: ""
+	DisplayName: 盐马桶
+	Tooltip: ""
 }
 
 SaltWorkBenchItem: {
-	// DisplayName: Salt Work Bench
-	// Tooltip: ""
+	DisplayName: 盐工作台
+	Tooltip: ""
 }
 
 SaltCandleItem: {
-	// DisplayName: Salt Candle
-	// Tooltip: ""
+	DisplayName: 盐蜡烛
+	Tooltip: ""
 }
 
 SaltChairItem: {
-	// DisplayName: Salt Chair
-	// Tooltip: ""
+	DisplayName: 盐椅
+	Tooltip: ""
 }
 
 OtherworldlyRadioItem: {
-	// DisplayName: Otherworldly Radio
-	/* Tooltip:
+	DisplayName: 异界收音机
+	Tooltip:
 		'''
-		<right> to toggle Otherworld music
-		'Charmingly old-fashioned'
-		''' */
-	// TunedToNormal: (Standard Frequency)
-	// TunedToOtherworld: (Odd Frequency)
-	// MusicDisplay: "[i:576] You're listening to:"
+		右键切换异界音乐
+		“迷人的老式风格”
+		'''
+	TunedToNormal: （标准频率）
+	TunedToOtherworld: （怪异频率）
+	MusicDisplay: "[i:576] 正在收听："
 }
 
 SleightOfHand: {
-	// DisplayName: Sleight of Hand
-	/* Tooltip:
+	DisplayName: 敏捷手法
+	Tooltip:
 		'''
-		Double tap {0} while holding a ranged weapon to swap ammo types
-		Works while in the inventory
-		''' */
+		手持远程武器时双击{0}键交换所使用的弹药
+		在物品栏中时也会生效
+		'''
 }
 
 RuinedSandstonePillarItem: {
-	// DisplayName: Ruined Sandstone Pillar
-	// Tooltip: ""
+	DisplayName: 残破沙岩柱
+	Tooltip: ""
 }
 
 GlidingItem: {
-	// DisplayName: Gliding
-	// Tooltip: "'Tix A. Lun'"
+	DisplayName: 滑翔
+	Tooltip: "'Tix A. Lun'"
 }
 
 ViciousFlamingoItem: {
-	// DisplayName: Vicious Flamingo
-	// Tooltip: "'Tix A. Lun'"
+	DisplayName: 邪恶火烈鸟
+	Tooltip: "'Tix A. Lun'"
 }
 
 SaltWallItem: {
-	// DisplayName: Salt Wall
-	// Tooltip: ""
+	DisplayName: 盐墙
+	Tooltip: ""
 }
 
 JerboaItem: {
-	// DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
-	// Tooltip: ""
+	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	Tooltip: ""
 }
 
 JarboaItem: {
-	// DisplayName: Jarboa
-	// Tooltip: ""
+	DisplayName: 跳鼠罐
+	Tooltip: ""
 }
 
 RedSandstoneBrickWallItem: {
-	// DisplayName: Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: 赤沙岩砖墙
+	Tooltip: ""
 }
 
 PolishedSandstoneWallItem: {
-	// DisplayName: Polished Sandstone Wall
-	// Tooltip: ""
+	DisplayName: 抛光沙岩墙
+	Tooltip: ""
 }
 
 CarvedLapisItem: {
-	// DisplayName: Carved Lapis
-	// Tooltip: ""
+	DisplayName: 雕琢青金石
+	Tooltip: ""
 }
 
 LapisChestItem: {
-	// DisplayName: Lapis Chest
-	// Tooltip: ""
+	DisplayName: 青金石箱
+	Tooltip: ""
 }
 
 LapisDresserItem: {
-	// DisplayName: Lapis Dresser
-	// Tooltip: ""
+	DisplayName: 青金石梳妆台
+	Tooltip: ""
 }
 
 LapisCandleItem: {
-	// DisplayName: Lapis Candle
-	// Tooltip: ""
+	DisplayName: 青金石蜡烛
+	Tooltip: ""
 }
 
 LapisBathtubItem: {
-	// DisplayName: Lapis Bathtub
-	// Tooltip: ""
+	DisplayName: 青金石浴缸
+	Tooltip: ""
 }
 
 LapisBedItem: {
-	// DisplayName: Lapis Bed
-	// Tooltip: ""
+	DisplayName: 青金石床
+	Tooltip: ""
 }
 
 LapisBookcaseItem: {
-	// DisplayName: Lapis Bookcase
-	// Tooltip: ""
+	DisplayName: 青金石书架
+	Tooltip: ""
 }
 
 LapisCandelabraItem: {
-	// DisplayName: Lapis Candelabra
-	// Tooltip: ""
+	DisplayName: 青金石烛台
+	Tooltip: ""
 }
 
 LapisChairItem: {
-	// DisplayName: Lapis Chair
-	// Tooltip: ""
+	DisplayName: 青金石椅
+	Tooltip: ""
 }
 
 LapisChandelierItem: {
-	// DisplayName: Lapis Chandelier
-	// Tooltip: ""
+	DisplayName: 青金石吊灯
+	Tooltip: ""
 }
 
 LapisClockItem: {
-	// DisplayName: Lapis Clock
-	// Tooltip: ""
+	DisplayName: 青金石钟
+	Tooltip: ""
 }
 
 LapisDoorItem: {
-	// DisplayName: Lapis Door
-	// Tooltip: ""
+	DisplayName: 青金石门
+	Tooltip: ""
 }
 
 LapisLampItem: {
-	// DisplayName: Lapis Lamp
-	// Tooltip: ""
+	DisplayName: 青金石灯
+	Tooltip: ""
 }
 
 LapisLanternItem: {
-	// DisplayName: Lapis Lantern
-	// Tooltip: ""
+	DisplayName: 青金石灯笼
+	Tooltip: ""
 }
 
 LapisPianoItem: {
-	// DisplayName: Lapis Piano
-	// Tooltip: ""
+	DisplayName: 青金石钢琴
+	Tooltip: ""
 }
 
 LapisSinkItem: {
-	// DisplayName: Lapis Sink
-	// Tooltip: ""
+	DisplayName: 青金石水槽
+	Tooltip: ""
 }
 
 LapisSofaItem: {
-	// DisplayName: Lapis Sofa
-	// Tooltip: ""
+	DisplayName: 青金石沙发
+	Tooltip: ""
 }
 
 LapisTableItem: {
-	// DisplayName: Lapis Table
-	// Tooltip: ""
+	DisplayName: 青金石桌
+	Tooltip: ""
 }
 
 LapisToiletItem: {
-	// DisplayName: Lapis Toilet
-	// Tooltip: ""
+	DisplayName: 青金石马桶
+	Tooltip: ""
 }
 
 LapisWorkBenchItem: {
-	// DisplayName: Lapis Work Bench
-	// Tooltip: ""
+	DisplayName: 青金石工作台
+	Tooltip: ""
 }
 
 LapisPlatformItem: {
-	// DisplayName: Lapis Platform
-	// Tooltip: ""
+	DisplayName: 青金石平台
+	Tooltip: ""
 }
 
 SwordStandItem: {
-	// DisplayName: Sword Stand
-	// Tooltip: Allows some weapons to be displayed using <right>
+	DisplayName: 剑架
+	Tooltip: 右键点击展示某些武器
 }
 
 TrellisItem: {
-	// DisplayName: Trellis
-	// Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
+	DisplayName: 藤架
+	Tooltip: 用{$ItemName.GrassSeeds}种植藤蔓
 }
 
 TrellisBorealItem: {
-	// DisplayName: Boreal Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 针叶木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisEbonwoodItem: {
-	// DisplayName: Ebonwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 乌木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisMahoganyItem: {
-	// DisplayName: Rich Mahogany Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 红木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisPalmItem: {
-	// DisplayName: Palm Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 棕榈木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisPearlwoodItem: {
-	// DisplayName: Pearlwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 珍珠木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisShadewoodItem: {
-	// DisplayName: Shadewood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 暗影木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字针叶木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字乌木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字红木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字棕榈木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字珍珠木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 十字暗影木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 ChainLoopItem: {
-	// DisplayName: Chain Loop
-	// Tooltip: Press Up/Down while placing to adjust chain length
+	DisplayName: 链环
+	Tooltip: 放置时按上/下建可调整链条长度
 }
 
 GoldChainLoopItem: {
-	// DisplayName: Gold Chain Loop
-	// Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+	DisplayName: 金链环
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
 }
 
 SaltPlatformItem: {
-	// DisplayName: Salt Platform
-	// Tooltip: ""
+	DisplayName: 盐平台
+	Tooltip: ""
 }
 
 MahakalaMaskBlue: {
-	// DisplayName: Mahakala Mask
-	// Tooltip: Reduces damage taken from corrupt enemies
+	DisplayName: 摩诃迦罗面具
+	Tooltip: 降低所受到的来自腐化敌人的伤害
 }
 
 MahakalaMaskRed: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
 }
 
 RedSandstoneSlabItem: {
-	// DisplayName: Red Sandstone Slab
-	// Tooltip: ""
+	DisplayName: 赤沙岩板
+	Tooltip: ""
 }
 
 CenserItem: {
-	// DisplayName: Censer
-	// Tooltip: ""
+	DisplayName: 香炉
+	Tooltip: ""
 }
 
 CarvedLapisWallItem: {
-	// DisplayName: Carved Lapis Wall
-	// Tooltip: ""
+	DisplayName: 雕琢青金石墙
+	Tooltip: ""
 }
 
 BronzePotsItem: {
-	// DisplayName: Bronze Pot
-	// Tooltip: ""
+	DisplayName: 青铜罐子
+	Tooltip: ""
 }
 
 LapisPotsItem: {
-	// DisplayName: Lapis Pot
-	// Tooltip: ""
+	DisplayName: 青金石罐子
+	Tooltip: ""
 }
 
 TrellisDrywoodItem: {
-	// DisplayName: Drywood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: 干木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoDrywoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 BronzeGrateItem: {
-	// DisplayName: Bronze Grate
-	// Tooltip: ""
+	DisplayName: 青铜格栅
+	Tooltip: ""
 }
 
 BronzePlatingItem: {
-	// DisplayName: Bronze Plating
-	// Tooltip: ""
+	DisplayName: 青铜护板
+	Tooltip: ""
 }
 
 BronzePlatingWallItem: {
-	// DisplayName: Bronze Plating Wall
-	// Tooltip: ""
+	DisplayName: 青铜护板墙
+	Tooltip: ""
 }
 
 BronzePlatformItem: {
-	// DisplayName: Bronze Platform
-	// Tooltip: ""
+	DisplayName: 青铜平台
+	Tooltip: ""
 }
 
 ZigguratTorchItem: {
-	// DisplayName: Ziggurat Torch
-	// Tooltip: Lights up when nearby
+	DisplayName: 庙塔火把
+	Tooltip: 附近有玩家时亮起
 }
 
 SwordStandMahoganyItem: {
-	// DisplayName: Mahogany Sword Stand
-	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+	DisplayName: 红木剑架
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
 SwordStandSandstoneItem: {
-	// DisplayName: Sandstone Sword Stand
-	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+	DisplayName: 沙岩剑架
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
 RedSandstoneBrickForegroundWallItem: {
-	// DisplayName: Foreground Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: 前景赤沙岩砖墙
+	Tooltip: ""
 }
 
 SaltPylonItem: {
-	// DisplayName: Salt Flats Pylon
-	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+	DisplayName: 盐滩晶塔
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 SaltNightMusicBoxItem: {
-	// Tooltip: ""
-	// DisplayName: Music Box (Salt Flats Night)
+	Tooltip: ""
+	DisplayName: 音乐盒（盐滩 - 夜）
 }
 
 SaltMusicBoxItem: {
-	// Tooltip: ""
-	// DisplayName: Music Box (Salt Flats)
+	Tooltip: ""
+	DisplayName: 音乐盒（盐滩）
 }
 
 PineappleSeeds: {
-	// DisplayName: Pineapple Seeds
-	// Tooltip: ""
+	DisplayName: 菠萝种子
+	Tooltip: ""
 }
 
-// StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
-// StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
+StactusCorruptBannerItem.DisplayName: 腐化刺角株旗
+StactusCrimsonBannerItem.DisplayName: 玫瑰刺角株旗
 
 Dragonsong: {
-	// DisplayName: Dragonsong
-	/* Tooltip:
+	DisplayName: 龙歌
+	Tooltip:
 		'''
-		50% chance to save ammo
-		'You are a terrible person'
-		''' */
+		50%几率节省弹药
+		“你是一个可怕的人”
+		'''
 }
 
 TinyDragon: {
-	// DisplayName: Tiny Dragon
-	/* Tooltip:
+	DisplayName: 小龙
+	Tooltip:
 		'''
-		Summons a tiny dragon to follow you around
-		"'Last of its kind'"
-		''' */
+		召唤小龙跟着你
+		“最后的同类”
+		'''
 }
 
 PileOfConsequences: {
-	// DisplayName: Pile of Consequences
-	// Tooltip: "'You know what you did.'"
+	DisplayName: 一堆结果
+	Tooltip: “你知道你做了什么。”
 }
 
 BrineShrimpItem: {
-	// DisplayName: Brine Shrimp
-	// Tooltip: ""
+	DisplayName: 卤虫
+	Tooltip: ""
 }
 
 GoldenBrineShrimpItem: {
-	// DisplayName: Golden Brine Shrimp
-	// Tooltip: ""
+	DisplayName: 金卤虫
+	Tooltip: ""
 }
 
-// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
-// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
-// DesertStactusBannerItem.DisplayName: Desert Stactus Banner
-// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
+CorruptStactusBannerItem.DisplayName: 腐化刺角株旗
+CrimsonStactusBannerItem.DisplayName: 猩红刺角株旗
+DesertStactusBannerItem.DisplayName: 沙漠刺角株旗
+HallowedStactusBannerItem.DisplayName: 神圣刺角株旗
 
 AncientBannerItem: {
-	// DisplayName: Ancient Banner
-	// Tooltip: ""
+	DisplayName: 远古旗帜
+	Tooltip: ""
 }
 
 TallSandstoneShelfItem: {
-	// DisplayName: Tall Sandstone Shelf
-	// Tooltip: ""
+	DisplayName: 高沙岩架
+	Tooltip: ""
 }
 
 SaltTorchItem: {
-	// DisplayName: Salt Torch
-	// Tooltip: ""
+	DisplayName: 盐火把
+	Tooltip: ""
 }
 
 ZigguratMusicBoxItem: {
-	// DisplayName: Music Box (Ziggurat)
-	// Tooltip: ""
+	DisplayName: 音乐盒（庙塔）
+	Tooltip: ""
 }
 
 PinSaltFlat: {
-	// DisplayName: Salt Flats Pin
-	// Tooltip: ""
+	DisplayName: 盐滩图钉
+	Tooltip: ""
 }
 
 PinZiggurat: {
-	// DisplayName: Ziggurat Pin
-	// Tooltip: ""
+	DisplayName: 庙塔图钉
+	Tooltip: ""
 }
 
 BangleOfStrength: {
-	// DisplayName: Bangle of Strength
-	// Tooltip: Periodically empowers melee damage
+	DisplayName: 力量手镯
+	Tooltip: 永久性强化近战伤害
 }
 
 ScarabTabletOneItem: {
-	// DisplayName: Crested Idol
-	// Tooltip: ""
+	DisplayName: 羽冠神像
+	Tooltip: ""
 }
 
 ScarabTabletTwoItem: {
-	// DisplayName: Winged Sun
-	// Tooltip: ""
+	DisplayName: 具翼之阳
+	Tooltip: ""
 }
 
 ScarabAltarItem: {
-	// DisplayName: Ancient Altar
-	// Tooltip: ""
+	DisplayName: 远古祭坛
+	Tooltip: ""
 }
 
 RedSandstoneBrickCrackedWallItem: {
-	// DisplayName: Cracked Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: 破裂赤沙岩砖墙
+	Tooltip: ""
 }
 
 AncientBooksItem: {
-	// DisplayName: Ancient Book
-	// Tooltip: "'Rendered unreadable by time'"
+	DisplayName: 古书
+	Tooltip: “因时间而难以辨认”
 }
 
-// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
+ZigguratMummyBannerItem.DisplayName: 腐朽木乃伊旗
 
 SaltGlassWallItem: {
-	// DisplayName: Salt Glass Wall
-	// Tooltip: ""
+	DisplayName: 盐玻璃墙
+	Tooltip: ""
 }
 
 SaltPanelWallItem: {
-	// DisplayName: Salt Panel Wall
-	// Tooltip: ""
+	DisplayName: 盐面板墙
+	Tooltip: ""
 }
 
 SaltPlateWallItem: {
-	// DisplayName: Salt Plate Wall
-	// Tooltip: ""
+	DisplayName: 盐板墙
+	Tooltip: ""
 }
 
 SaltFireplaceItem: {
-	// DisplayName: Salt Fireplace
-	// Tooltip: ""
+	DisplayName: 盐壁炉
+	Tooltip: ""
 }
 
 SaltGlassItem: {
-	// DisplayName: Salt Glass
-	// Tooltip: ""
+	DisplayName: 盐玻璃
+	Tooltip: ""
 }
 
 SaltPanelItem: {
-	// DisplayName: Salt Panel
-	// Tooltip: ""
+	DisplayName: 盐面板
+	Tooltip: ""
 }
 
 SaltPlateItem: {
-	// DisplayName: Salt Plate
-	// Tooltip: ""
+	DisplayName: 盐板
+	Tooltip: ""
 }
 
 SaltCrate: {
-	// DisplayName: Salted Crate
-	// Tooltip: ""
+	DisplayName: 盐腌匣
+	Tooltip: ""
 }
 
 SaltCrateHardmode: {
-	// DisplayName: Brine Crate
-	// Tooltip: ""
+	DisplayName: 盐水匣
+	Tooltip: ""
 }
 
 SaltCrateRestored: {
-	// DisplayName: Restored Salted Crate
-	// Tooltip: ""
+	DisplayName: 修复的盐腌匣
+	Tooltip: ""
 }
 
 SaltCrateHardmodeRestored: {
-	// DisplayName: Restored Brine Crate
-	// Tooltip: ""
+	DisplayName: 修复的盐水匣
+	Tooltip: ""
 }
 
-// GraverobberBannerItem.DisplayName: Graverobber Banner
+GraverobberBannerItem.DisplayName: 盗墓者旗
 
 GiantBag: {
-	// DisplayName: Loot Bag
-	// Tooltip: "{$CommonTooltips.Backpack}"
+	DisplayName: 战利品袋
+	Tooltip: "{$CommonTooltips.Backpack}"
 }
 
 CrackedSandstoneItem: {
-	// DisplayName: Cracked Sandstone
-	// Tooltip: ""
+	DisplayName: 破裂沙岩
+	Tooltip: ""
 }
 
 StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary Item
-	// Tooltip: ""
+	DisplayName: 石制圣物盒
+	Tooltip: ""
 }
 
 SaltCampfireItem: {
-	// DisplayName: Salt Campfire
-	// Tooltip: "{$ItemTooltip.Campfire}"
+	DisplayName: 盐篝火
+	Tooltip: "{$ItemTooltip.Campfire}"
 }
 
 SaltFountainItem: {
-	// DisplayName: Salt Flats Fountain
-	// Tooltip: ""
+	DisplayName: 盐滩喷泉
+	Tooltip: ""
 }
 
 SaltskipperQuestFish: {
-	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
-	// CatchLocation: Salt Flats
-	// DisplayName: Saltskipper
-	// Tooltip: "'Caught in Salt Flats'"
+	Description: 那些盐滩真是太迷幻了！我甚至分不清哪里是盐的尽头，哪里是水的开始！不过，当我终于把鱼钩甩进水里时，一条看起来很恶心的鱼突然扑腾着跳出水面，就在我旁边，而且它竟然开始呼吸空气！快帮我抓住它，这样我就能遛我的新宠物鱼了。
+	CatchLocation: 盐滩
+	DisplayName: 盐跃鱼
+	Tooltip: “抓捕位置：盐滩”
 }
 
-// WispBannerItem.DisplayName: Wisp Banner
-// DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner
+WispBannerItem.DisplayName: 游魂旗
+DecrepitMummyBannerItem.DisplayName: 腐朽木乃伊旗
 
 PaleHiveItem: {
-	// DisplayName: Pale Hive
-	// Tooltip: ""
+	DisplayName: 苍白蜂巢
+	Tooltip: ""
 }
 
 PaleHiveWallItem: {
-	// DisplayName: Pale Hive Wall
-	// Tooltip: ""
+	DisplayName: 苍白蜂巢墙
+	Tooltip: ""
 }
 
 GooBlockItem: {
-	// DisplayName: Goo Block
-	// Tooltip: ""
+	DisplayName: 粘胶砖
+	Tooltip: ""
 }
 
 WindshearScepter: {
-	// DisplayName: Windshear Scepter
-	// Tooltip: ""
+	DisplayName: 风切变权杖
+	Tooltip: ""
 }
 
 SaltTallGateItem: {
-	// DisplayName: Salt Tall Gate
-	// Tooltip: ""
+	DisplayName: 盐高门
+	Tooltip: ""
 }
 
 EnlilStatueItem: {
-	// DisplayName: Enlil Statue
-	// Tooltip: Increases vertical mobility when placed nearby
+	DisplayName: 恩利尔雕像
+	Tooltip: 放置在附近时增加垂直机动性
 }
 
 SerratedClaws: {
-	// DisplayName: Serrated Claws
-	// Tooltip: ""
+	DisplayName: 锯齿爪
+	Tooltip: ""
 }
 
 FlagRingItem: {
-	// DisplayName: Flagpole
-	// Tooltip: Can be hammered to add flags
+	DisplayName: 旗杆
+	Tooltip: 可被锤击以添加旗帜
 }
 
 CobbledBrickWallItem: {
-	// DisplayName: Cobbled Brick Wall
-	// Tooltip: ""
+	DisplayName: 鹅卵石砖墙
+	Tooltip: ""
 }
 
 CobbledBrickItem: {
-	// DisplayName: Cobbled Brick
-	// Tooltip: ""
+	DisplayName: 鹅卵石砖
+	Tooltip: ""
 }
 
 BronzeGrateDoorItem: {
-	// DisplayName: Bronze Grate Door
-	// Tooltip: ""
+	DisplayName: 青铜格栅门
+	Tooltip: ""
 }
 
 CalmingBellItem: {
-	// DisplayName: Calming Bell
-	// Tooltip: Right click to reduce enemy spawns
+	DisplayName: 宁静之铃
+	Tooltip: 右键降低刷怪率
 }
 
 BrownShinglesItem: {
-	// DisplayName: Brown Shingles
-	// Tooltip: ""
+	DisplayName: 棕色瓦
+	Tooltip: ""
 }
 
 WoodenShinglesItem: {
-	// DisplayName: Wooden Shingles
-	// Tooltip: ""
+	DisplayName: 木瓦
+	Tooltip: ""
 }
 
 GildedRedSandstoneItem: {
-	// DisplayName: Gilded Red Sandstone
-	// Tooltip: ""
+	DisplayName: 镀金赤沙岩
+	Tooltip: ""
 }
 
 BronzeGrateBlockItem: {
-	// DisplayName: Bronze Grate Block
-	// Tooltip: ""
+	DisplayName: 青铜格栅块
+	Tooltip: ""
 }
 
 BedouinBreastplate: {
-	// DisplayName: Bedouin Breastplate
-	// Tooltip: 5% increased damage
+	DisplayName: 贝都因人胸甲
+	Tooltip: 增加5%伤害
 }
 
 BedouinCowl: {
-	// DisplayName: Bedouin Cowl
-	// Tooltip: 5% increased critical strike chance
+	DisplayName: 贝都因人风帽
+	Tooltip: 增加5%暴击率
 }
 
 BedouinLeggings: {
-	// DisplayName: Bedouin Leggings
-	// Tooltip: 10% increased movement speed
+	DisplayName: 贝都因人护胫
+	Tooltip: 增加10%移动速度
 }
 
 ZigguratTikiTorchItem: {
-	// DisplayName: Ziggurat Tiki Torch
-	// Tooltip: ""
+	DisplayName: 庙塔提基火把
+	Tooltip: ""
 }
 
 CricketItem: {
-	// DisplayName: Cricket
-	// Tooltip: ""
+	DisplayName: 蟋蟀
+	Tooltip: ""
 }
 
 GoldCricketItem: {
-	// DisplayName: Gold Cricket
-	// Tooltip: ""
+	DisplayName: 金蟋蟀
+	Tooltip: ""
 }
 
 CricketCageItem: {
-	// DisplayName: Cricket Cage
-	// Tooltip: ""
+	DisplayName: 蟋蟀笼
+	Tooltip: ""
 }
 
 GoldCricketCageItem: {
-	// DisplayName: Gold Cricket Cage
-	// Tooltip: ""
+	DisplayName: 金蟋蟀笼
+	Tooltip: ""
 }
 
 CarrotCake: {
-	// Tooltip: "{$BuffDescription.WellFed3}"
-	// DisplayName: Carrot Cake
+	Tooltip: "{$BuffDescription.WellFed3}"
+	DisplayName: 胡萝卜蛋糕
 }
 
 AvianRitualMask: {
-	// DisplayName: Avian Ritual Mask
-	// Tooltip: ""
+	DisplayName: 鸟类仪式面具
+	Tooltip: ""
 }
 
 BullRitualMask: {
-	// DisplayName: Bull Ritual Mask
-	// Tooltip: ""
+	DisplayName: 公牛仪式面具
+	Tooltip: ""
 }
 
 AdornedBow: {
-	// DisplayName: Adorned Bow
-	// Tooltip: ""
+	DisplayName: 华饰弓
+	Tooltip: ""
 }
 
 BagOScarabs: {
@@ -2991,6 +2995,16 @@ ScarabRadio: {
 }
 
 SpaceHeater: {
-	// DisplayName: Space Heater
+	// DisplayName: Radiator
+	// Tooltip: Right click the tile to modify its heat setting
+}
+
+ScarabMusicBox: {
+	// DisplayName: Scarabeus Music Box
+	// Tooltip: ""
+}
+
+LocustCrook: {
+	// DisplayName: Locust Crook
 	// Tooltip: ""
 }

@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.NPCs.Gar;

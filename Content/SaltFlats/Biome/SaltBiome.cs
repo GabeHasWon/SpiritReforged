@@ -35,6 +35,7 @@ public class SaltBiome : ModBiome
 	public override int BiomeTorchItemType => ModContent.ItemType<SaltTorchItem>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SaltFlatsMapBG";
+	public override string BackgroundPath => MapBackground;
 	public override int Music => GetMusic();
 
 	public override bool IsBiomeActive(Player player)
@@ -42,4 +43,6 @@ public class SaltBiome : ModBiome
 		bool surface = player.ZoneSkyHeight || player.ZoneOverworldHeight;
 		return SceneTileCounter.SurveyByType[Type].Success && surface;
 	}
+
+	public override void OnInBiome(Player player) => player.ZoneDesert = true;
 }
