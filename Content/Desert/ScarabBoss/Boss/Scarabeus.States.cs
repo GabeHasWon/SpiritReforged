@@ -35,8 +35,6 @@ public partial class Scarabeus : ModNPC
 		 * scarab bursts out of ground and roars
 		*/
 
-		Main.NewText(Counter);
-
 		//Rumbling
 		if (Counter <= swarm_time)
 		{
