@@ -1,9 +1,10 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PlayerCommon.Interfaces;
-using SpiritReforged.Content.Savanna.DustStorm;
-using System.Xml.Linq;
-using Terraria.DataStructures;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -34,7 +35,6 @@ public class SerratedClaws : ModItem
 
 			if (owner.channel)
 			{
-
 				if (owner.HeldItem.type != ModContent.ItemType<SerratedClaws>())
 					owner.channel = false;
 
@@ -66,24 +66,28 @@ public class SerratedClaws : ModItem
 		{
 			if (Player.HeldItem.ModItem is SerratedClaws && killed)
 			{
-				Color color = GetTint(Color.SandyBrown) * Main.rand.NextFloat(1.2f, 1.6f);
-				var dust = Dust.NewDustDirect(new Vector2(x, y - 1) * 16, 32, 32, ModContent.DustType<SavannaCloud>(), 0, 0, 0, color, Main.rand.NextFloat(.5f, 2f));
-				dust.velocity = Vector2.Zero;
-				dust.customData = 0.4f;
-				dust.fadeIn = 1f;
-			}
+				Vector2 dir = Player.DirectionFrom(new Vector2(x, y).ToWorldCoordinates());
+				Tile tile = Main.tile[x, y];
+				tile.TileType = (ushort)priorType;
 
-			Color GetTint(Color defColor = default)
-			{
-				if (TileID.Sets.Corrupt[priorType])
-					return Color.MediumPurple;
-				else if (TileID.Sets.Crimson[priorType])
-					return Color.OrangeRed;
-				else if (TileID.Sets.Hallow[priorType])
-					return Color.LightBlue;
-				else
-					return defColor;
+				Vector2 velocity = dir.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f);
+				SpawnSmoke(new Vector2(x, y).ToWorldCoordinates(), velocity, 0.1f, Main.rand.Next(45, 60), EaseFunction.EaseCircularInOut, tile);
+				tile.TileType = TileID.Dirt;
 			}
+		}
+
+		private static void SpawnSmoke(Vector2 position, Vector2 velocity, float scale, int duration, EaseFunction ease, Tile tile)
+		{
+			var material = TileMaterial.FindMaterial(tile.TileType);
+			var hsl = Main.rgbToHsl(material.Color);
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, material.Color, scale, ease, duration)
+			{
+				Pixellate = true,
+				PixelDivisor = 4,
+				TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f }),
+				Layer = ParticleLayer.AbovePlayer
+			});
 		}
 	}
 
