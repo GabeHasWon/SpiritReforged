@@ -111,7 +111,7 @@ internal class SpaceHeater : ModItem
 
 			if (Main.mouseRight && TileEntity.ByPosition[topLeft] is SpaceHeaterEntity heater)
 			{
-				float factor = Utils.GetLerpValue(topLeft.Y * 16, (topLeft.Y + 4) * 16, Main.MouseWorld.Y, true);
+				float factor = Utils.GetLerpValue(topLeft.Y * 16 + 8, (topLeft.Y + 4) * 16 - 16, Main.MouseWorld.Y, true);
 				heater.Strength = 1 - factor;
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)

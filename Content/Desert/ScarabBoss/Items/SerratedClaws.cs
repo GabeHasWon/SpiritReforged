@@ -1,5 +1,9 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.PlayerCommon.Interfaces;
+using SpiritReforged.Content.Savanna.DustStorm;
+using System.Xml.Linq;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -50,6 +54,33 @@ public class SerratedClaws : ModItem
 		}
 
 		public override bool ShouldUpdatePosition() => false;
+	}
+
+	public class SerratedClawsPlayer : ModPlayer, IOnMineTile
+	{
+		public void OnMineTile(int x, int y, int pickPower, int priorType, bool killed)
+		{
+			if (Player.HeldItem.ModItem is SerratedClaws && killed)
+			{
+				Color color = GetTint(Color.SandyBrown) * Main.rand.NextFloat(1.2f, 1.6f);
+				var dust = Dust.NewDustDirect(new Vector2(x, y - 1) * 16, 32, 32, ModContent.DustType<SavannaCloud>(), 0, 0, 0, color, Main.rand.NextFloat(.5f, 2f));
+				dust.velocity = Vector2.Zero;
+				dust.customData = 0.4f;
+				dust.fadeIn = 1f;
+			}
+
+			Color GetTint(Color defColor = default)
+			{
+				if (TileID.Sets.Corrupt[priorType])
+					return Color.MediumPurple;
+				else if (TileID.Sets.Crimson[priorType])
+					return Color.OrangeRed;
+				else if (TileID.Sets.Hallow[priorType])
+					return Color.LightBlue;
+				else
+					return defColor;
+			}
+		}
 	}
 
 	private static readonly int[] EquipSlots = new int[2];
