@@ -43,4 +43,6 @@ public class SaltBiome : ModBiome
 		bool surface = player.ZoneSkyHeight || player.ZoneOverworldHeight;
 		return SceneTileCounter.SurveyByType[Type].Success && surface;
 	}
+
+	public override void OnInBiome(Player player) => player.ZoneDesert = true;
 }

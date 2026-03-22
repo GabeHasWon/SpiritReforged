@@ -2969,11 +2969,6 @@ AdornedBow: {
 	Tooltip: ""
 }
 
-LocustCrook: {
-	// DisplayName: Locust Crook
-	// Tooltip: ""
-}
-
 BagOScarabs: {
 	// DisplayName: Treasure Bag (Scarabeus)
 	// Tooltip: ""
@@ -3001,5 +2996,10 @@ ScarabRadio: {
 
 ScarabMusicBox: {
 	// DisplayName: Scarabeus Music Box
+	// Tooltip: ""
+}
+
+LocustCrook: {
+	// DisplayName: Locust Crook
 	// Tooltip: ""
 }

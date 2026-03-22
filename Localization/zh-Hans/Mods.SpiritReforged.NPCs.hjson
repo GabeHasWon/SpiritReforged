@@ -545,6 +545,12 @@ Graverobber: {
 }
 
 LootBag.DisplayName: 战利品袋
+
+Scarabeus: {
+	// DisplayName: Scarabeus
+	// Entry: ""
+}
+
 TinyGrub.DisplayName: 小幼虫
 
 CactusZombie: {
