@@ -58,7 +58,12 @@ DragonFireball.DisplayName: 龙火球
 PileOfConsequencesPet.DisplayName: 结果
 EnergyLaser.DisplayName: 能量激光
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+// SandPillar.DisplayName: Sand Pillar
+// SlamShockwave.DisplayName: Slam Shockwave
 WindBlast.DisplayName: 风波
+// ClawHitbox.DisplayName: Claw Hitbox
+// DivebombScarab.DisplayName: Divebomb Scarab
+// SwarmScarab.DisplayName: Swarm Scarab
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 AdornedArrow.DisplayName: 华饰箭
 AdornedBowHeld.DisplayName: 华饰弓
@@ -70,3 +75,8 @@ AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
 // LocustExplosion.DisplayName: Locust Explosion
 // CrookLocustGore.DisplayName: Crook Locust Gore
 // RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
+// FloatingGem.DisplayName: Floating Gem
+// BeamOLight.DisplayName: Beam O Light
+// SandShockwavePillar.DisplayName: Sand Shockwave Pillar
+// SandballProjectile.DisplayName: Sandball Projectile
+// BabyAntlionProjectile.DisplayName: Baby Antlion Projectile
