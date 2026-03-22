@@ -14,8 +14,8 @@ namespace SpiritReforged.Content.Jungle.Misc;
 
 public class Macuahuitl : ClubItem
 {
-	internal override float DamageScaling => 4f;
-	internal override float KnockbackScaling => 5f;
+	internal override float DamageScaling => 4.5f;
+	internal override float KnockbackScaling => 7f;
 
 	public override void SetStaticDefaults()
 	{
@@ -25,8 +25,8 @@ public class Macuahuitl : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 16;
-		Item.knockBack = 2;
+		Item.damage = 26;
+		Item.knockBack = 2.8f;
 		ChargeTime = 40;
 		SwingTime = 24;
 		Item.width = 60;
