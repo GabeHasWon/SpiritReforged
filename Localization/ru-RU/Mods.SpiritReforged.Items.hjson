@@ -2990,6 +2990,11 @@ ScarabRadio: {
 	// Tooltip: ""
 }
 
+SpaceHeater: {
+	// DisplayName: Radiator
+	// Tooltip: Right click the tile to modify its heat setting
+}
+
 ScarabMusicBox: {
 	// DisplayName: Scarabeus Music Box
 	// Tooltip: ""

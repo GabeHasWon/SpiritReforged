@@ -53,10 +53,10 @@ public partial class Scarabeus : ModNPC
 	public static float STAT_IDLE_TIME_P2_MULTIPLIER = 1.2f; //Idle time multiplier when scarab is in phase 2
 
 	//Contact damage
-	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 26;
+	public static int STAT_DIG_EMERGE_CONTACT_DAMAGE = 35;
 	public static int STAT_HORN_SWIPE_CONTACT_DAMAGE = 34;
 	public static int STAT_GROUNDPOUND_CONTACT_DAMAGE = 34;
-	public static int STAT_ROLL_CONTACT_DAMAGE = 20;
+	public static int STAT_ROLL_CONTACT_DAMAGE = 35;
 	public static int STAT_SLAM_CONTACT_DAMAGE = 38;
 	public static int STAT_FLYDASH_CONTACT_DAMAGE = 38;
 	public static float STAT_CONTACT_DAMAGE_EXPERT_MULTIPLIER = 2f;
@@ -262,7 +262,7 @@ public partial class Scarabeus : ModNPC
 		int activeScarabs = Main.npc.Count(n => n.active && n.type == Type);
 		scarabColorIndex = activeScarabs - 1;
 
-		Music = MusicID.Eerie;
+		Music = 0;
 	}
 
 	//No journey scaling cuz we aleady scale stuff
@@ -339,7 +339,9 @@ public partial class Scarabeus : ModNPC
 		HandleDespawn();
 		SetContactDamage();
 		ManageSandstormffects();
-		ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
+
+		if (Main.dayTime)
+			ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
 	}
 
 	public void SetContactDamage()
@@ -364,7 +366,7 @@ public partial class Scarabeus : ModNPC
 
 	public void HandleDespawn()
 	{
-		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
+		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || !Main.dayTime || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
 		{
 			if (++despawnTimer >= 60 * 20 && IsIdling)
 				ChangeState(AIState.Despawn);
@@ -521,6 +523,7 @@ public partial class Scarabeus : ModNPC
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));

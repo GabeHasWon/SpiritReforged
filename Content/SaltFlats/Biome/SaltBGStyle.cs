@@ -1,13 +1,9 @@
 using ILLogger;
-using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
-using Terraria.GameInput;
 using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -235,18 +231,21 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		SkyManager.Instance.DrawToDepth(Main.spriteBatch, 5f);
 
 		//BG clouds from the background itself
-		Texture2D cloudTexture = FarClouds.Value;
-		Color color = Main.ColorOfTheSkies;
-		float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
-		float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
-		int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
-		Rectangle bounds = GetBounds(FarTexture);
-		Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
-		int loops = BackgroundStyleHelper.BackgroundLoops;
-		int cloudLoops = loops + 1;
-		SpoofFarBackgroundParameters(scAdj, backgroundTopMagicNumber, 2, 30);
-		bgTopY = BackgroundStyleHelper.BackgroundTopY;
-		DrawScroll((position, scale) => Main.spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
+		if (Main.BackgroundEnabled)
+		{
+			Texture2D cloudTexture = FarClouds.Value;
+			Color color = Main.ColorOfTheSkies;
+			float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
+			float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
+			int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
+			Rectangle bounds = GetBounds(FarTexture);
+			Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
+			int loops = BackgroundStyleHelper.BackgroundLoops;
+			int cloudLoops = loops + 1;
+			SpoofFarBackgroundParameters(scAdj, backgroundTopMagicNumber, 2, 30);
+			bgTopY = BackgroundStyleHelper.BackgroundTopY;
+			DrawScroll((position, scale) => Main.spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
+		}
 
 		#region Mid-layer clouds
 		float cloudTop = bgTopY - 50;
@@ -267,18 +266,21 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		#endregion
 
 		#region Front layer clouds
-		cloudTop = (float)bgTopY * 1.01f - 150f;
-		for (int n = 0; n < Main.maxClouds; n++)
+		if (Main.BackgroundEnabled)
 		{
-			Cloud cloud = Main.cloud[n];
-			if (cloud.active && cloud.scale >= 1.15f)
+			cloudTop = (float)bgTopY * 1.01f - 150f;
+			for (int n = 0; n < Main.maxClouds; n++)
 			{
-				Color cloudColor = cloud.cloudColor(Main.ColorOfTheSkies);
-				if (Main.atmo < 1f)
-					cloudColor *= Main.atmo;
+				Cloud cloud = Main.cloud[n];
+				if (cloud.active && cloud.scale >= 1.15f)
+				{
+					Color cloudColor = cloud.cloudColor(Main.ColorOfTheSkies);
+					if (Main.atmo < 1f)
+						cloudColor *= Main.atmo;
 
-				float cloudHeight = cloud.position.Y * (Main.screenHeight / 600f) - 100f;
-				DrawCloudSpoof(cloud, cloudColor * globalCloudAlpha, cloudHeight + cloudTop);
+					float cloudHeight = cloud.position.Y * (Main.screenHeight / 600f) - 100f;
+					DrawCloudSpoof(cloud, cloudColor * globalCloudAlpha, cloudHeight + cloudTop);
+				}
 			}
 		}
 		#endregion
@@ -436,8 +438,18 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
 				float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
 
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
-				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				if (Main.BackgroundEnabled)
+				{
+					DrawScroll((position, scale) =>
+					{
+						spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0);
+
+						// I'm lazy and this fixes occasional cutoffs sometimes
+						spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX + 2048, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0);
+					}, -1, cloudLoops);
+
+					DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				}
 
 				float debugValue = BackgroundStyleHelper.BackgroundTopY;
 
@@ -445,9 +457,12 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
 
 				//If in the gamemenu, just draw the reflection of the background mountain clouds. Otherwise, the mountain cloud reflections draw through the reflection shader
-				if (Main.gameMenu || Main.LocalPlayer.gravDir == -1)
-					DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
-				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				if (Main.BackgroundEnabled)
+				{
+					if (Main.gameMenu || Main.LocalPlayer.gravDir == -1)
+						DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
+					DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				}
 
 				if (!Main.gameMenu && Main.LocalPlayer.gravDir == 1 && skyReflectionsTarget != null && !skyReflectionsTarget.Target.IsDisposed)
 				{

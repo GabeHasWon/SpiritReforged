@@ -1,11 +1,10 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using static Microsoft.Xna.Framework.MathHelper;
-using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
@@ -18,7 +17,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 
 	public override string Texture => AssetLoader.EmptyTexture;
 
-	public Vector2[] oldPositions;
+	public Vector2[] oldPositions = new Vector2[TrailLength];
 	public Color[] prismaticColors = new Color[3];
 	public int arrowType;
 
@@ -55,7 +54,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 			Color fadeColor = AdornedBowGlobalProjectile.MulticolorLerp(fadeOut, prismaticColors) * fadeOut;
 
 			var drawPos = Vector2.Lerp(position, oldPositions[0] - Main.screenPosition, 0.33f);
-			Color drawColor = fadeColor * EaseQuadIn.Ease(lerp) * 0.5f;
+			Color drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
 			Main.EntitySpriteDraw(solid, drawPos, null, drawColor, Projectile.rotation, solid.Size() / 2, new Vector2(Projectile.scale), SpriteEffects.None);
 
 			Main.EntitySpriteDraw(rainbowTexture, position, null, fadeColor with { A = 0 }, Projectile.rotation, rainbowTexture.Size() / 2, scale, SpriteEffects.None);
@@ -147,7 +146,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			Color fadeColor = Color.Lerp(Color.LightSteelBlue, Color.White, lerp).Additive();
 
 			if (_prismaticTimer > 0)
-				fadeColor = Color.Lerp(MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseCircularIn.Ease(1f - PrismaticProgress));
+				fadeColor = Color.Lerp(MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseFunction.EaseCircularIn.Ease(1f - PrismaticProgress));
 
 			if (i == 0)
 			{
@@ -157,7 +156,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 				//Draw border around the main image
 				for (int j = 0; j < 4; j++)
 				{
-					Vector2 offset = new Vector2(-2 * -Projectile.direction, 0).RotatedBy(Projectile.rotation - PiOver2) + Vector2.UnitX.RotatedBy(TwoPi * j / 4f) * 2;
+					Vector2 offset = new Vector2(-2 * -Projectile.direction, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
 					Color drawColor = MulticolorLerp(PrismaticProgress, _secondaryPalette.Colors);
 
 					if (_prismaticTimer <= 0)
@@ -170,7 +169,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			else //Otherwise draw as trail
 			{
 				var drawPos = Vector2.Lerp(position, _oldPositions[0] - Main.screenPosition, 0.33f);
-				var drawColor = fadeColor * EaseQuadIn.Ease(lerp) * 0.5f;
+				var drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
 				Main.EntitySpriteDraw(solid, drawPos, null, drawColor, Projectile.rotation, solid.Size() / 2, new Vector2(Projectile.scale), SpriteEffects.None);
 			}
 
@@ -185,9 +184,10 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		if (active)
 		{
 			var star = AssetLoader.LoadedTextures["StarChromatic"].Value;
-			float fade = EaseQuinticOut.Ease(1f);
+			float fade = EaseFunction.EaseQuinticOut.Ease(1f);
+			Vector2 position = Projectile.Center + new Vector2(Projectile.width, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) - Main.screenPosition;
 
-			Main.EntitySpriteDraw(star, Projectile.Center + new Vector2(Projectile.width, 0).RotatedBy(Projectile.rotation - PiOver2) - Main.screenPosition, null, Color.White with { A = 0 } * fade, Pi * EaseQuinticIn.Ease(fade), star.Size() / 2, 0.0325f, SpriteEffects.None);
+			Main.EntitySpriteDraw(star, position, null, Color.White with { A = 0 } * fade, MathHelper.Pi * EaseFunction.EaseQuinticIn.Ease(fade), star.Size() / 2, 0.0325f, SpriteEffects.None);
 		}
 	}
 
@@ -198,7 +198,8 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 
 		SoundEngine.PlaySound(FlashHit, target.Center);
 
-		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, ModContent.ProjectileType<AdornedFlash>(), (int)(projectile.damage * 0.66f), 0f, projectile.owner);
+		int type = ModContent.ProjectileType<AdornedFlash>();
+		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, type, (int)(projectile.damage * 0.66f), 0f, projectile.owner);
 
 		p.rotation = projectile.velocity.ToRotation();
 		p.spriteDirection = projectile.direction;
@@ -211,7 +212,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			{
 				p.Velocity *= 0.95f;
 				Color light = Main.rand.Next([Color.Green, Color.Cyan, Color.Orange]);
-				Lighting.AddLight(p.Position, light.ToVector3() * Lerp(0.25f, 0f, p.TimeActive / (float)p.MaxTime));
+				Lighting.AddLight(p.Position, light.ToVector3() * MathHelper.Lerp(0.25f, 0f, p.TimeActive / (float)p.MaxTime));
 			}
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(

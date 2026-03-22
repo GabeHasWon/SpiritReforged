@@ -25,7 +25,8 @@ public partial class Scarabeus : ModNPC
 	public float SpawnAnimation(ref bool retarget)
 	{
 		const int swarm_time = 120;
-		const int roar_time = 120;
+		const int roar_time = 80;
+		const int pause_roar_time = 60;
 
 		/*Todo: 
 		 * foreground scarab particles fly across the screen from bottom left to top right
@@ -55,14 +56,11 @@ public partial class Scarabeus : ModNPC
 						scarabPos += new Vector2(-Main.rand.NextFloat(900, 1400), Main.rand.NextFloat(200, 800)) * (backgroundScarab ? 1f : 1.2f);
 						ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.7f), 1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
 					}
-				}
-				
-				if (!Main.dedServ)
-				{
+
 					Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
 					var easeAnimation = new AnimationSequence()
 						.Add(new EaseSegment(120, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-						.Add(new FollowSegment(240, NPC))
+						.Add(new FollowSegment(270, NPC))
 						.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 
 					Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
@@ -183,7 +181,7 @@ public partial class Scarabeus : ModNPC
 		}
 
 		//End the cinematic
-		else
+		else if (Counter >= swarm_time + roar_time + pause_roar_time)
 		{
 			SetFrame(7, 0, PhaseOneProfile);
 
@@ -310,8 +308,8 @@ public partial class Scarabeus : ModNPC
 
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
-			Main.musicFade[Main.curMusic] = 0.5f;
 			Music = Phase1Music;
+			Main.musicFade[Main.curMusic] = 1f;
 
 			ExtraMemory++;
 		}
@@ -931,7 +929,7 @@ public partial class Scarabeus : ModNPC
 
 				//Fall faster in P2 for faster telegraph
 				if (phaseTwo)
-					NPC.velocity.Y += 0.12f;
+					NPC.velocity.Y += phaseTwo ? 0.12f : 0.08f;
 
 				dealContactDamage = true;
 				NPC.noGravity = false;
@@ -2095,7 +2093,7 @@ public partial class Scarabeus : ModNPC
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 
-		float spawnHopHeight = 4 + 2.3f * (swarmerIndex % 3);
+		float spawnHopHeight = 5.6f + 2.3f * (swarmerIndex % 3);
 		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 
 		//Spawn swarmers further away that are only just meant to make it look more natural
@@ -2105,6 +2103,15 @@ public partial class Scarabeus : ModNPC
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		}
+
+		if (swarmerIndex % 3 == 2)
+		{
+			spawnPosition = Target.Center + Vector2.UnitX * (-spawnAreaOffsetX * 0.5f + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			spawnHopHeight = 1 + 1.3f * (swarmerIndex % 3);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+
 		}
 	}
 
