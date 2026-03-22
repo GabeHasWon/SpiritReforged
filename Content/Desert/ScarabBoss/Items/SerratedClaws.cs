@@ -62,9 +62,9 @@ public class SerratedClaws : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 3;
+		Item.damage = 10;
 		Item.Size = new Vector2(34, 28);
-		Item.useTime = 5;
+		Item.useTime = 12;
 		Item.useAnimation = 12;
 		Item.knockBack = 0.2f;
 		Item.DamageType = DamageClass.Melee;
@@ -72,7 +72,7 @@ public class SerratedClaws : ModItem
 		Item.expert = true;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.pick = 35;
+		Item.pick = 50;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
 		Item.channel = true;
@@ -92,5 +92,5 @@ public class SerratedClaws : ModItem
 		player.handoff = EquipSlots[1];
 	}
 
-	public override float UseSpeedMultiplier(Player player) => player.GetAttackSpeed(DamageClass.Melee) + (1 - player.pickSpeed) * 2;
+	public override float UseSpeedMultiplier(Player player) => player.GetAttackSpeed(DamageClass.Melee) + (1 - player.pickSpeed) * 2.5f;
 }
