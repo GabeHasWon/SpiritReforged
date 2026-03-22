@@ -11,7 +11,7 @@ public class ZigguratBiome : ModBiome
 	public static readonly HashSet<int> TileTypes = [ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>()];
 
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Ziggurat");
-	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+	public override SceneEffectPriority Priority => SceneEffectPriority.Event;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/ZigguratMapBG";
 	public override string BackgroundPath => MapBackground;
 
