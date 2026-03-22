@@ -34,6 +34,10 @@ public class SerratedClaws : ModItem
 
 			if (owner.channel)
 			{
+
+				if (owner.HeldItem.type != ModContent.ItemType<SerratedClaws>())
+					owner.channel = false;
+
 				Projectile.timeLeft++;
 				Projectile.Center = owner.Center + Projectile.velocity;
 
