@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -24,25 +25,25 @@ public class SerratedClaws : ModItem
 		{
 			Player owner = Main.player[Projectile.owner];
 
+			if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == owner.whoAmI)
+				new PlayerMouseHandler.ShareMouseData((byte)owner.whoAmI, Main.MouseWorld).Send();
+
 			if (owner.channel)
 			{
 				Projectile.timeLeft++;
 				Projectile.Center = owner.Center + Projectile.velocity;
 
-				float rotation = owner.AngleTo(Main.MouseWorld) - MathHelper.PiOver2;
+				float rotation = owner.AngleTo(PlayerMouseHandler.GetMouse(owner.whoAmI)) - MathHelper.PiOver2;
 				float time = (_animationTime += 0.6f) * 0.9f;
 
 				owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, rotation + MathF.Sin(time) * 0.65f);
 				owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation + MathF.Cos(time) * 0.65f);
 
-				if (Main.myPlayer == Projectile.owner)
-				{
-					Vector2 oldVelocity = Projectile.velocity;
-					Projectile.velocity = owner.DirectionTo(Main.MouseWorld) * 14;
+				Vector2 oldVelocity = Projectile.velocity;
+				Projectile.velocity = owner.DirectionTo(PlayerMouseHandler.GetMouse(owner.whoAmI)) * 14;
 					
-					if (Projectile.velocity != oldVelocity)
-						Projectile.netUpdate = true; //Sync velocity changes if necessary
-				}
+				if (Projectile.velocity != oldVelocity)
+					Projectile.netUpdate = true; //Sync velocity changes if necessary
 
 				owner.ChangeDir(Math.Sign(Projectile.velocity.X));
 			}
@@ -90,5 +91,5 @@ public class SerratedClaws : ModItem
 		player.handoff = EquipSlots[1];
 	}
 
-	public override float UseSpeedMultiplier(Player player) => player.GetAttackSpeed(DamageClass.Melee) + (1 - player.pickSpeed) * 0.5f;
+	public override float UseSpeedMultiplier(Player player) => player.GetAttackSpeed(DamageClass.Melee) + (1 - player.pickSpeed) * 2;
 }
