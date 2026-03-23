@@ -7,8 +7,6 @@ public class AncientMarksmanHood : LeatherHood
 {
 	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<LeatherHood>();
 
-	public override bool IsArmorSet(Item head, Item body, Item legs)
-		=> (head.type, body.type, legs.type) == (Type, ModContent.ItemType<AncientMarksmanPlate>(), ModContent.ItemType<AncientMarksmanLegs>());
 	public override void AddRecipes()
 	{
 	}
