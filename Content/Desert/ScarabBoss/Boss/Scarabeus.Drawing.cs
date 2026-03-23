@@ -6,8 +6,6 @@ using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.GameContent.UI;
-using Terraria.ModLoader;
-using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 

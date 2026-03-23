@@ -63,4 +63,4 @@ OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadio
 // EnlilStatue.MapEntry: Enlil Statue
 // StoneReliquary.MapEntry: Reliquary
 // ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-// SpaceHeaterTile.MapEntry: Mods.SpiritReforged.Tiles.SpaceHeaterTile.MapEntry
+// SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"
