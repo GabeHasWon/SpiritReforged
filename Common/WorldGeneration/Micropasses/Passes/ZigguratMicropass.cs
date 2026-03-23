@@ -475,7 +475,7 @@ internal class ZigguratMicropass : Micropass
 
 		if (tile.WallType != WallID.None && WorldGen.SolidTile(x, y + 1))
 		{
-			if (WorldGen.genRand.NextFloat() < 0.7f) //Add a branch for vanilla pots because traditional tile placement methods don't work
+			if (WorldGen.genRand.NextFloat() < 0.85f) //Add a branch for vanilla pots because traditional tile placement methods don't work
 				return WorldGen.PlacePot(x, y, 28, WorldGen.genRand.Next(34, 37));
 			else
 				return Placer.PlaceTile(x, y, ModContent.TileType<BiomePots>(), PotsMicropass.GetStyleRange(BiomePots.Style.Desert)).success;
