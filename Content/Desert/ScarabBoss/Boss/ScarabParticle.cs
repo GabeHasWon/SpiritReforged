@@ -9,6 +9,7 @@ public class ScarabParticle : Particle
 	private const int NUM_FRAMES = 4;
 
 	private readonly float _distFromScreen;
+	private readonly float _horizontalSpeedMult;
 	private readonly float _acceleration;
 
 	private readonly int _direction;
@@ -28,11 +29,12 @@ public class ScarabParticle : Particle
 		MaxTime = FLY_TIME;
 		_animOffset = Main.rand.Next(60);
 		_acceleration = Main.rand.NextFloat(0.04f, 0.12f);
+		_horizontalSpeedMult = Main.rand.NextFloat(1, 2);
 	}
 
 	public override void Update()
 	{
-		Velocity.X = _direction * (_isBackground ? 10 : 24) * (_acceleration * 6 + 1);
+		Velocity.X = _direction * (_isBackground ? 10 : 24) * _horizontalSpeedMult;
 		Velocity.Y -= _acceleration;
 	}
 
@@ -49,11 +51,6 @@ public class ScarabParticle : Particle
 
 		float scale = (_isBackground) ? (1 - _distFromScreen) : (1 + _distFromScreen);
 
-		if (_isBackground)
-			scale *= MathHelper.Lerp(1, Main.GameZoomTarget, 1 - _distFromScreen);
-		else
-			scale *= (float)Math.Pow(Main.GameZoomTarget, 0.5f);
-
 		Color drawColor = Color.White;
 
 		drawColor = Color.Lerp(drawColor, Color.Black, (_isBackground ? 0.5f : 1) * _distFromScreen);
@@ -61,12 +58,18 @@ public class ScarabParticle : Particle
 		int curFrame = (int)((TimeActive + _animOffset) / 3f % NUM_FRAMES);
 
 		Rectangle drawFrame = new(0, curFrame * (tex.Height / NUM_FRAMES), tex.Width, (tex.Height / NUM_FRAMES) - 1);
+
+		//WIP zoom scaling logic, doesnt look quiite right yet
 		float parallaxLerper = (float)Math.Pow(_distFromScreen, Main.GameZoomTarget * _distFromScreen);
 		if (_isBackground)
+		{
 			parallaxLerper = MathHelper.Lerp(_distFromScreen, _distFromScreen * _distFromScreen, Main.GameZoomTarget - 1);
-
-		if (_isBackground)
 			scale *= MathHelper.Lerp(1, Main.GameZoomTarget, 1 - _distFromScreen);
+		}
+		else
+		{
+			scale *= (float)Math.Pow(Main.GameZoomTarget, 0.5f);
+		}
 
 		Vector2 drawPosition = Position - Vector2.Lerp(Main.screenPosition, _startCamera, parallaxLerper);
 		if(!_isBackground)
