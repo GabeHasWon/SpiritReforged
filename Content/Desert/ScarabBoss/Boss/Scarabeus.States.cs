@@ -52,11 +52,17 @@ public partial class Scarabeus : ModNPC
 					for (int i = 0; i < 48; i++)
 					{
 						Vector2 scarabPos = Target.Center;
-						bool backgroundScarab = !Main.rand.NextBool(3);
-						int spawnDelayRange = (int)(swarm_time * (backgroundScarab ? 0.25f : 0.66f));
+						bool backgroundScarab = !Main.rand.NextBool(4);
+						int spawnDelayRange = swarm_time;
 						int spawnDelayStatic = backgroundScarab ? 0 : swarm_time / 3;
-						scarabPos += new Vector2(-Main.rand.NextFloat(900, 1400), Main.rand.NextFloat(200, 800)) * (backgroundScarab ? 1f : 1.2f);
-						ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.7f), 1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
+						scarabPos += new Vector2(-Main.rand.NextFloat(1300, 1400), Main.rand.NextFloat(200, 500));
+						if (!backgroundScarab)
+						{
+							scarabPos.X = Target.Center.X + Main.rand.NextFloat(1600, 2000);
+							scarabPos.Y -= 200;
+						}
+
+						ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.9f), backgroundScarab ? 1 : -1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
 					}
 
 					Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
