@@ -83,7 +83,7 @@ class PlatinumClubProj : BaseClubProj
 			if (target.knockBackResist > 0 && target.gravity != 0)
 				target.velocity.Y = -Projectile.knockBack;
 
-			target.velocity.X -= Projectile.knockBack * Projectile.direction * target.knockBackResist * 0.8f;
+			target.velocity.X -= Projectile.knockBack * Projectile.direction * target.knockBackResist * 0.92f;
 		}
 
 		if (!Main.dedServ)

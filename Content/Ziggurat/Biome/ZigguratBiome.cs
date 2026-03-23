@@ -1,6 +1,8 @@
-﻿using SpiritReforged.Content.Ziggurat.Tiles;
+﻿using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace SpiritReforged.Content.Ziggurat.Biome;
 
@@ -32,14 +34,16 @@ public class ZigguratBiome : ModBiome
 	public static readonly HashSet<int> TileTypes = [ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>()];
 
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Ziggurat");
-	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+	public override SceneEffectPriority Priority => SceneEffectPriority.Event;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/ZigguratMapBG";
 	public override string BackgroundPath => MapBackground;
 
 	public override bool IsBiomeActive(Player player)
 	{
-		int wallType = Framing.GetTileSafely(player.Center).WallType;
-		return WallTypes.Contains(wallType);
+		Point tileCoords = player.Center.ToTileCoordinates();
+		int wallType = Framing.GetTileSafely(tileCoords).WallType;
+
+		return !Main.wallHouse[wallType] && ZigguratMicrobiome.TotalBounds.Any(x => x.Contains(tileCoords));
 	}
 
 	public override void OnInBiome(Player player) => player.ZoneDesert = true;
