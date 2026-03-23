@@ -200,9 +200,11 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
-			int startX = WorldGen.genRand.Next(-1, 4);
-			int endX = WorldGen.genRand.Next(-4, 1);
-			WorldUtils.Gen(a.Location + new Point(startX, -1), new Shapes.Rectangle(Math.Max(a.Width + 2 - endX, 1), 1), new Actions.SetTileKeepWall((ushort)ModContent.TileType<SandySandstone>())); //Add sandy tops
+			int startX = WorldGen.genRand.Next(-1, 8);
+			int endX = WorldGen.genRand.Next(-8, 1);
+			WorldUtils.Gen(a.Location + new Point(startX, -1), new Shapes.Rectangle(Math.Max(a.Width + 2 - endX, 1), 1), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<SandySandstone>()))); //Add sandy tops
 
 			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 			if (WorldGen.genRand.NextBool(3))
@@ -444,14 +446,16 @@ internal class ZigguratMicropass : Micropass
 		int height = WorldGen.genRand.Next(3, 7);
 		int flagHeight = Math.Max(height - WorldGen.genRand.Next(0, 2), 3);
 		bool result = false;
+		Tile tile = Main.tile[x, y];
 
-		if (Main.tile[x, y].WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+		if (tile.WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
 		{
 			for (int i = 0; i < height; i++)
 			{
-				PlaceAttempt attempt = Placer.PlaceTile<FlagRing>(x, y - i);
-				result |= attempt.success;
+				if (!Placer.PlaceTile<FlagRing>(x, y - i).success)
+					break;
 
+				result = true;
 				if (i == flagHeight - 1)
 				{
 					Main.tile[x, y - i].TileFrameY = FlagRing.SlopeFrame;

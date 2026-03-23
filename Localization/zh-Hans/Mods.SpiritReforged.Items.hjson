@@ -3008,3 +3008,8 @@ LocustCrook: {
 	// DisplayName: Locust Crook
 	// Tooltip: ""
 }
+
+SpiritTreeTopper: {
+	// DisplayName: Spirit Tree Topper
+	// Tooltip: ""
+}

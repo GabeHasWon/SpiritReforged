@@ -11,7 +11,8 @@ namespace SpiritReforged.Content.Granite.ShockClub;
 [FromClassic("RageBlazeDecapitator")]
 public class Shockhammer : ClubItem
 {
-	internal override float DamageScaling => 1.5f;
+	internal override float DamageScaling => 2.25f;
+	internal override float KnockbackScaling => 1.4f;
 
 	public override void SetStaticDefaults()
 	{

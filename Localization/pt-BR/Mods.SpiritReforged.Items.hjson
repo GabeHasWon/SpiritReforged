@@ -2805,7 +2805,7 @@ CrackedSandstoneItem: {
 }
 
 StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary Item
+	// DisplayName: Stone Reliquary
 	// Tooltip: ""
 }
 
@@ -2969,38 +2969,8 @@ AdornedBow: {
 	// Tooltip: ""
 }
 
-BagOScarabs: {
-	// DisplayName: Treasure Bag (Scarabeus)
-	// Tooltip: ""
-}
-
-ScarabMask: {
-	// DisplayName: Scarabeus Mask
-	// Tooltip: ""
-}
-
-ScarabRelic: {
-	// DisplayName: Scarabeus Relic
-	// Tooltip: ""
-}
-
-ScarabTrophy: {
-	// DisplayName: Scarabeus Trophy
-	// Tooltip: ""
-}
-
-ScarabRadio: {
-	// DisplayName: Scarab Radio
-	// Tooltip: ""
-}
-
-SpaceHeater: {
-	// DisplayName: Radiator
-	// Tooltip: Right click the tile to modify its heat setting
-}
-
-ScarabMusicBox: {
-	// DisplayName: Scarabeus Music Box
+SpiritTreeTopper: {
+	// DisplayName: Spirit Tree Topper
 	// Tooltip: ""
 }
 
