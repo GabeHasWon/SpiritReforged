@@ -1,13 +1,16 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -417,9 +420,18 @@ public partial class Scarabeus : ModNPC
 
 		for (int i = 0; i < 9; i++)
 		{
-			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Ichor, hit.HitDirection, -1f, 0, default, 1f);
-			d.noLight = true;
+			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f);
 			d.noGravity = true;
+		}
+
+		if (Main.rand.NextBool(5))
+		{
+			Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+
+			for (int i = 0; i < 9; i++)
+			{
+				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), NPC.DirectionTo(Target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 9f), 50, default, 1.5f).noGravity = false;
+			}
 		}
 
 		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
@@ -435,16 +447,24 @@ public partial class Scarabeus : ModNPC
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
 			for (int i = 1; i < 12; i++)
-				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 8; i++)
 			{
-				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
 				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
 			}
 
 			for (int i = 0; i < 30; i++)
+			{
+				ParticleHandler.SpawnParticle(new SmokeCloud(area.Center(), -NPC.velocity.RotatedByRandom(2f) * Main.rand.NextFloat(3f), Color.DarkOrange, Color.Orange * 0.3f, 0.2f, EaseBuilder.EaseCircularOut, 100, false)
+				{
+					Pixellate = true,
+					PixelDivisor = 3,
+				});
+
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
+			}
 
 			for (int j = 0; j < 50; j++)
 			{
@@ -454,15 +474,7 @@ public partial class Scarabeus : ModNPC
 
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(
-							NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f),
-							Main.rand.NextVector2Circular(10f, 10f),
-							Color.Orange,
-							Main.rand.NextFloat(0.7f, 1f),
-							60,
-							1,
-							DecelerateAction
-						));
+				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), 50, default, 2.5f).noGravity = false;
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
