@@ -2,6 +2,7 @@ sampler drawTexture : register(s0);
 float texColorUVLerper;
 matrix WorldViewProjection;
 matrix viewMatrix;
+float2 matrixZoom;
 
 float3 baseColor;
 float3 gradientColor;
@@ -36,7 +37,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 pos = mul(input.Position, WorldViewProjection);
     output.Position = pos;
     output.Color = input.Color;
-    output.uv = input.TextureCoordinates;
+    output.uv = input.TextureCoordinates / matrixZoom;
     output.screenUv = mul(input.Position, viewMatrix);
     output.screenUv = invlerp(float2(-1, -1), float2(1, 1), output.screenUv);
     

@@ -477,6 +477,10 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["cloudTargetYOffset"].SetValue(ReflectedSkyRenderOffset / reflectionCanvasSize.Y);
 					bgShader.Parameters["topFadeStrength"].SetValue(ReflectionFadeAwayValue);
 					bgShader.Parameters["shimmerAlpha"].SetValue(Main.shimmerAlpha);
+					bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
+					SaltFlatsSystem.SetSkyColor(bgShader);
+					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
+					bgShader.Parameters["doMask"].SetValue(SaltFlatsSystem.nightSkyOpacity > 0f);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
 					Vector2 maskScaleRatio = reflectionCanvasSize / nightSkyMaskTexture.Size();
@@ -498,21 +502,6 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, bgShader);
 
 					spriteBatch.Draw(skyReflectionsTarget.Target, Vector2.Zero, null, Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
-					RestartSpritebatch(null);
-				}
-
-				if (SaltFlatsSystem.nightSkyOpacity > 0f)
-				{
-					Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
-					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
-					bgShader.Parameters["WorldViewProjection"].SetValue( Main.BackgroundViewMatrix.TransformationMatrix * projection);
-
-					//	bgShader.Parameters["viewMatrix"].SetValue(projection);
-					SaltFlatsSystem.SetSkyColor(bgShader);
-					RestartSpritebatch(bgShader);
-
-					DrawScroll((position, scale) => spriteBatch.Draw(nightSkyMaskTexture, position, bounds, color * SaltFlatsSystem.nightSkyOpacity, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 					RestartSpritebatch(null);
 				}
 

@@ -160,7 +160,7 @@ public partial class Scarabeus : ModNPC
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
 
-		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 20 : 8);
+		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 0 : 8);
 		Vector2 positionOffset = Vector2.Zero;
 		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
 			positionOffset.Y += 16;
@@ -360,6 +360,11 @@ public partial class Scarabeus : ModNPC
 			if (effect == null)
 				return;
 
+			ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection, false);
+
+			if (effect.HasParameter("WorldViewProjection"))
+				effect.Parameters["WorldViewProjection"].SetValue(view * projection);
+
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
 				pass.Apply();
 		}
@@ -367,10 +372,15 @@ public partial class Scarabeus : ModNPC
 		{
 			spriteBatch.End();
 			SpriteSortMode sortMode = immediate ? SpriteSortMode.Immediate : SpriteSortMode.Deferred;
-			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			spriteBatch.Begin(sortMode, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 
 			if (effect == null)
 				return;
+
+			ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection, false);
+
+			if (effect.HasParameter("WorldViewProjection"))
+				effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
 					pass.Apply();
