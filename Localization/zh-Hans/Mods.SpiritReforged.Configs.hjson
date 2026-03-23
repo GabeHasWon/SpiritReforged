@@ -1,28 +1,28 @@
 ReforgedClientConfig: {
-	// DisplayName: Reforged Client Config
+	DisplayName: 魂灵新魄客户端配置
 
 	OceanShape: {
-		// Label: Ocean Shape
-		/* Tooltip:
+		Label: 海洋形状
+		Tooltip:
 			'''
-			Modifies the Ocean generation in certain ways
-			Defaults to a Piecewise_V generation
-			The Piecewise_V generation is recommended for Spirit playthroughs
-			''' */
+			以某些方式修改海洋生成
+			默认为分段_V生成
+			仅推荐在游玩魂灵模组时使用分段_V生成
+			'''
 	}
 
 	ReflectionDetail: {
-		// Label: Reflection Detail
-		/* Tooltip:
+		Label: 反射细节
+		Tooltip:
 			'''
-			Determines the detail of all reflections
-			Higher values mean more detail and a greater resulting performance cost
-			''' */
+			决定所有反射的细节
+			值越高意味着细节越多，相应的性能成本也越高
+			'''
 	}
 
 	AmbientSounds: {
-		// Label: Ambient Sounds
-		// Tooltip: Plays ambient sounds in specific biomes
+		Label: 环境音
+		Tooltip: 在特定生物群系中播放环境音
 	}
 }
 
@@ -31,27 +31,27 @@ OceanShape: {
 
 	Default: {
 		Label: 默认
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	SlantedSine: {
 		Label: 倾斜正弦
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise: {
 		Label: 分段
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_M: {
 		Label: 分段_ M
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_V: {
 		Label: 分段_ V
-		// Tooltip: ""
+		Tooltip: ""
 	}
 }
 
@@ -59,7 +59,7 @@ ReforgedServerConfig: {
 	DisplayName: 魂灵新魄服务器配置
 
 	VentCritters: {
-		Label: 海洋：热液喷口生态系统
+		Label: 热液喷口生态系统
 		Tooltip:
 			'''
 			启用后，允许小动物在热液喷口附近生成

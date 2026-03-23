@@ -221,7 +221,7 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
 		_fired = reader.ReadBoolean();
-		_perfectShotCurTimer = reader.ReadInt16();
+		_perfectShotCurTimer = reader.ReadInt32();
 		_direction = reader.ReadVector2();
 	}
 }

@@ -44,6 +44,30 @@ public class AnimationSequence
 		}
 	}
 
+	/// <summary> Follows an entities position /// </summary>
+	public class FollowSegment : IAnimationTask
+	{
+		public FollowSegment(int duration, Entity Parent)
+		{
+			Duration = duration;
+			parent = Parent;
+			position = parent.Center;
+		}
+		public int Duration { get; }
+
+		private Vector2 position;
+		private Entity parent;
+		public void Update(AnimationSequence orchestrator)
+		{
+			if (position == default)
+				position = orchestrator.position;
+			else
+				position = parent.Center;
+
+			orchestrator.position = Vector2.Lerp(orchestrator.position, position - Main.ScreenSize.ToVector2() / 2, 0.05f);
+		}
+	}
+
 	/// <summary> Zooms from value to value. </summary>
 	public class ZoomSegment : IAnimationTask
 	{

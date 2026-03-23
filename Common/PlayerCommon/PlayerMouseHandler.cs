@@ -40,4 +40,10 @@ internal class PlayerMouseHandler
 	}
 
 	public static Dictionary<int, Vector2> MouseByWhoAmI = [];
+
+	/// <summary>
+	/// Gets either <see cref="Main.MouseWorld"/> for the local client, or <see cref="MouseByWhoAmI"/>[<paramref name="who"/>] for remote clients.<br/>
+	/// Must be used in tandem with a <see cref="ShareMouseData"/> packet, otherwise the mouse data will not be updated properly.
+	/// </summary>
+	public static Vector2 GetMouse(int who) => Main.myPlayer == who ? Main.MouseWorld : MouseByWhoAmI[who];
 }

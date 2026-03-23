@@ -7,6 +7,11 @@ public class VertexTrail : BaseTrail
 {
 	public float DissolveSpeed { get; set; }
 
+	/// <summary>
+	/// Controls immediate trail opacity, useful for fading out.
+	/// </summary>
+	public float Opacity { get; set; }
+
 	private readonly ITrailCap _trailCap;
 	private readonly ITrailColor _trailColor;
 	private readonly ITrailPosition _trailPosition;
@@ -126,7 +131,7 @@ public class VertexTrail : BaseTrail
 		Vector2 prevClockwise = _points[0] + startNormal * halfWidth;
 		Vector2 prevCClockwise = _points[0] - startNormal * halfWidth;
 
-		Color previousColor = _trailColor.GetColourAt(0f, trailLength, _points, _points[0]);
+		Color previousColor = _trailColor.GetColourAt(0f, trailLength, _points, _points[0]) * Opacity;
 
 		_trailCap.AddCap(vertices, ref currentIndex, previousColor, _points[0], startNormal, _widthStart);
 		for (int i = 1; i < _points.Count; i++)
@@ -138,7 +143,7 @@ public class VertexTrail : BaseTrail
 			Vector2 normal = CurveNormal(_points, i);
 			Vector2 clockwise = _points[i] + normal * thisPointsWidth;
 			Vector2 cclockwise = _points[i] - normal * thisPointsWidth;
-			Color color = _trailColor.GetColourAt(currentDistance, trailLength, _points, _points[0]);
+			Color color = _trailColor.GetColourAt(currentDistance, trailLength, _points, _points[0]) * Opacity;
 
 			AddVertex(clockwise, color, Vector2.UnitX * i);
 			AddVertex(prevClockwise, previousColor, Vector2.UnitX * (i - 1));

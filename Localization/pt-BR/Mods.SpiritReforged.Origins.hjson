@@ -43,11 +43,11 @@ Disentombed: {
 Worshipper: {
 	// DisplayName: Worshipper
 	// Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
-	// Description: Spawns with the Sundancer armor set and a Windshear Staff in an underground Oasis.
+	// Description: Spawns with the Sundancer armor set and a Windshear Scepter in an underground Oasis.
 }
 
 Purifier: {
 	// DisplayName: Purifier
-	// Flavor: Abhorrent evil beogne; burn at the sting of my purity.
+	// Flavor: Abhorrent evil begone; burn at the sting of my purity.
 	// Description: Spawns with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
 }

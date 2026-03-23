@@ -1,6 +1,7 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -189,14 +190,17 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			{
 				if (!Main.dedServ)
 				{
-					Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
+					/*if (!CrossMod.Fables.Enabled)
+					{
+						Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
+						var easeAnimation = new AnimationSequence()
+							.Add(new AnimationSequence.EaseSegment(WaitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+							.Add(new AnimationSequence.WaitSegment(TimeLeftMax - WaitTime - 40))
+							.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 
-					var easeAnimation = new AnimationSequence()
-						.Add(new AnimationSequence.EaseSegment(WaitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-						.Add(new AnimationSequence.WaitSegment(TimeLeftMax - WaitTime - 40))
-						.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+						Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+					}*/
 
-					Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
 				}
 

@@ -891,7 +891,11 @@ WheatgrassSeedPouch: {
 
 RoyalKhopesh: {
 	DisplayName: Royal Khopesh
-	Tooltip: ""
+	Tooltip:
+		'''
+		Left click to perform a combo of swings
+		Right click to throw the khopesh - if you hit an enemy, right click again to draw them close and empower your blade
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -1764,7 +1768,11 @@ Blasphemer: {
 
 Hummus: {
 	DisplayName: Hummus
-	Tooltip: Warm and tasty!
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Warm and tasty!'
+		'''
 }
 
 ZenithPotsItem: {
@@ -2476,37 +2484,37 @@ TrellisShadewoodItem: {
 }
 
 TrellisTwoItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	DisplayName: Crossed Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	DisplayName: Crossed Boreal Wood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	DisplayName: Crossed Ebonwood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	DisplayName: Crossed Rich Mahogany Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	DisplayName: Crossed Palm Wood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	DisplayName: Crossed Pearlwood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	DisplayName: Crossed Shadewood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2647,7 +2655,7 @@ TinyDragon: {
 	Tooltip:
 		'''
 		Summons a tiny dragon to follow you around
-		"'Last of its kind'"
+		'Last of its kind'
 		'''
 }
 
@@ -2992,5 +3000,20 @@ ScarabTrophy: {
 
 ScarabRadio: {
 	DisplayName: Scarab Radio
+	Tooltip: ""
+}
+
+SpaceHeater: {
+	DisplayName: Radiator
+	Tooltip: Right click the tile to modify its heat setting
+}
+
+ScarabMusicBox: {
+	DisplayName: Scarabeus Music Box
+	Tooltip: ""
+}
+
+LocustCrook: {
+	DisplayName: Locust Crook
 	Tooltip: ""
 }

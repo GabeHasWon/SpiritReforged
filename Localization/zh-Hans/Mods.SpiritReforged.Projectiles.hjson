@@ -47,26 +47,37 @@ VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.Display
 EnergyImpact.DisplayName: 能量践踏
 EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: 手指射击
-// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
-// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
-// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
-// PhysicsChain.DisplayName: Chain
-// GoldPhysicsChain.DisplayName: Gold Chain
-// CactusSpine.DisplayName: Cactus Spine
-// TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
-// DragonFireball.DisplayName: Dragon Fireball
-// PileOfConsequencesPet.DisplayName: Consequences
-// EnergyLaser.DisplayName: Energy Laser
-// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: 锁链
+GoldPhysicsChain.DisplayName: 金锁链
+CactusSpine.DisplayName: 仙人掌刺
+TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: 龙火球
+PileOfConsequencesPet.DisplayName: 结果
+EnergyLaser.DisplayName: 能量激光
+BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
 // SandPillar.DisplayName: Sand Pillar
 // SlamShockwave.DisplayName: Slam Shockwave
-// WindBlast.DisplayName: Wind Blast
+WindBlast.DisplayName: 风波
 // ClawHitbox.DisplayName: Claw Hitbox
 // DivebombScarab.DisplayName: Divebomb Scarab
 // SwarmScarab.DisplayName: Swarm Scarab
-// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
-// AdornedArrow.DisplayName: Adorned Arrow
-// AdornedBowHeld.DisplayName: Adorned Bow Held
+SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+AdornedArrow.DisplayName: 华饰箭
+AdornedBowHeld.DisplayName: 华饰弓
+AdornedFlash.DisplayName: 华饰闪光
+AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
+// LocustCrookProjectile.DisplayName: Locust Crook
+// CrookLocust.DisplayName: Locust
+// LocustDamageProjectile.DisplayName: Locust Damage Projectile
+// LocustExplosion.DisplayName: Locust Explosion
+// CrookLocustGore.DisplayName: Crook Locust Gore
+// RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
 // FloatingGem.DisplayName: Floating Gem
 // BeamOLight.DisplayName: Beam O Light
 // ScarabPetProjectile.DisplayName: Scarab Pet Projectile
+// SandShockwavePillar.DisplayName: Sand Shockwave Pillar
+// SandballProjectile.DisplayName: Sandball Projectile
+// BabyAntlionProjectile.DisplayName: Baby Antlion Projectile

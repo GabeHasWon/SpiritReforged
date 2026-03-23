@@ -25,7 +25,7 @@ public enum ParticleDrawType
 
 public class ParticleHandler : ILoadable
 {
-	private static readonly int MaxParticlesAllowed = 1000;
+	private static readonly int MaxParticlesAllowed = 1500;
 
 	internal static Particle[] Particles;
 	internal static IDictionary<Particle, int> QueuedParticles;

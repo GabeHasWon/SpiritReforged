@@ -85,12 +85,9 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				if (!Reflections.HighResolution)
-				{
-					//Reflections.DrawBlack(Main.instance, true);
-					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
-				}
-
+				//Reflections.DrawBlack(Main.instance, true);
+				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+				
 				if (Reflections.Detail > 2)
 					Reflections.DrawBackGore(Main.instance);
 			}
@@ -102,8 +99,7 @@ public class SaltBlockReflective : SaltBlock
 				if (CrossMod.Fables.Enabled)
 					CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindNonSolidTiles");
 
-				if (!Reflections.HighResolution)
-					spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
 				DrawOrderSystem.DrawNonsolid();
 				spriteBatch.End();
@@ -128,13 +124,10 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				if (!Reflections.HighResolution)
-				{
-					spriteBatch.BeginDefault();
-					spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-					DrawOrderSystem.DrawSolid();
-					spriteBatch.End();
-				}
+				spriteBatch.BeginDefault();
+				spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+				DrawOrderSystem.DrawSolid();
+				spriteBatch.End();
 
 				if (Reflections.Detail > 2)
 					Reflections.DrawTileEntities(Main.instance, true, false, false);
@@ -196,6 +189,7 @@ public class SaltBlockReflective : SaltBlock
 			if (Reflections.Detail > 2)
 			{
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverWiresUI, false);
+				Main.instance.DrawInfernoRings();
 			}
 
 			spriteBatch.End();

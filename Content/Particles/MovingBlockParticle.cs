@@ -1,7 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using Terraria.GameContent.Drawing;
 
-namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
+namespace SpiritReforged.Content.Particles;
 
 public class MovingBlockParticle : Particle
 {
@@ -39,7 +40,7 @@ public class MovingBlockParticle : Particle
 			Kill();
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
+	public override ParticleLayer DrawLayer => ParticleLayer.AboveSolid;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
@@ -47,14 +48,24 @@ public class MovingBlockParticle : Particle
 	{
 		if (!Collision.SolidTiles(Position, 1, 1, false))
 			return;
+		if (!TileDrawing.IsVisible(_tile))
+			return;
 
 		float bounceDisplace = _bounceHeight * EaseFunction.EaseSine.Ease(Progress);
 
 		Texture2D texture = TextureAssets.Tile[_tile.TileType].Value;
+		Color color = Lighting.GetColor(_tilePosition);
+		if (_tile.TileColor != PaintID.None)
+		{
+			Texture2D paintedTex = Main.instance.TilePaintSystem.TryGetTileAndRequestIfNotReady(_tile.TileType, 0, _tile.TileColor);
+			texture = paintedTex ?? texture;
+		}
+
+		if (_tile.IsTileFullbright)
+			color = Color.White;
+
 		var frame = new Rectangle(_xFrame, _yFrame, 16, 18);
 		Vector2 position = Position - Vector2.UnitY * bounceDisplace;
-		Color color = Lighting.GetColor(_tilePosition);
-
 		spriteBatch.Draw(texture, position - Main.screenPosition, frame, color, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 
 		var bottomFrame = new Rectangle(_xFrame, (_yFrame / 18) * 18 + 14, 16, 2);
