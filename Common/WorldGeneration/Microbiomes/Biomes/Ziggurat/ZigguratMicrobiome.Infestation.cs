@@ -5,7 +5,7 @@ using SpiritReforged.Content.Ziggurat.Walls;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
-public partial class ZigguratBiome : Microbiome
+public partial class ZigguratMicrobiome : Microbiome
 {
 	private static void Infest(int count, Rectangle bound)
 	{

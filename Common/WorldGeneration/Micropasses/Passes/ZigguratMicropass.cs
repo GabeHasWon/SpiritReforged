@@ -23,7 +23,7 @@ internal class ZigguratMicropass : Micropass
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		const int scanRadius = 50;
-		const int range = ZigguratBiome.Width / 2;
+		const int range = ZigguratMicrobiome.Width / 2;
 
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		Point finalPosition = Point.Zero;
@@ -39,22 +39,22 @@ internal class ZigguratMicropass : Micropass
 			if (!WorldUtils.Find(new(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
 				return; // ?? big hole where the desert is?
 
-			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratBiome.Height * 0.3f));
+			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.Height * 0.3f));
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratBiome.Width / 2), -(ZigguratBiome.Height / 2), ZigguratBiome.Width, ZigguratBiome.Height)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
+			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratMicrobiome.Width / 2), -(ZigguratMicrobiome.Height / 2), ZigguratMicrobiome.Width, ZigguratMicrobiome.Height)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
 			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10)
 				continue;
 
 			CreateDunes(new(foundPos.X - 80, foundPos.Y - 10, 160, 10));
-			Microbiome.Create<ZigguratBiome>(finalPosition = zigguratPos);
+			Microbiome.Create<ZigguratMicrobiome>(finalPosition = zigguratPos);
 
 			break;
 		}
 
 		int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
-		int ruinsWidth = (int)(ZigguratBiome.Width / 1.5f) * worldScalar;
+		int ruinsWidth = (int)(ZigguratMicrobiome.Width / 1.5f) * worldScalar;
 		WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
 	}
 

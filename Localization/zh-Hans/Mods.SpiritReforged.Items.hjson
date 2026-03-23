@@ -2969,12 +2969,12 @@ AdornedBow: {
 	Tooltip: ""
 }
 
-LocustCrook: {
-	// DisplayName: Locust Crook
+SpiritTreeTopper: {
+	// DisplayName: Spirit Tree Topper
 	// Tooltip: ""
 }
 
-SpiritTreeTopper: {
-	// DisplayName: Spirit Tree Topper
+LocustCrook: {
+	// DisplayName: Locust Crook
 	// Tooltip: ""
 }

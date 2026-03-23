@@ -97,7 +97,7 @@ internal class SpecialPointMappingMicropass : Micropass
 		{
 			if (biome is ButterflyShrineBiome butterflyBiome)
 				Add(butterflyBiome.Position.X, butterflyBiome.Position.Y, InterestType.ButterflyShrine);
-			else if (biome is ZigguratBiome zigguratBiome)
+			else if (biome is ZigguratMicrobiome zigguratBiome)
 				Add(zigguratBiome.Position.X, zigguratBiome.Position.Y, InterestType.Ziggurat);
 		}
 
