@@ -11,17 +11,14 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
-using Terraria.Chat;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Graphics.CameraModifiers;
-using Terraria.UI.Chat;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -136,6 +133,15 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
+	public bool IsIdling
+	{
+		get
+		{
+			AIState currentState = CurrentState;
+			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
+		}
+	}
+
 	/// <summary> Whether the second phase has started. </summary>
 	public bool phaseTwo;
 
@@ -179,15 +185,6 @@ public partial class Scarabeus : ModNPC
 		SwoopDash,
 		Swarm,
 		MaxValue
-	}
-
-	public bool IsIdling
-	{
-		get
-		{
-			AIState currentState = CurrentState;
-			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
-		}
 	}
 
 	private ScarabeusAttackDelegate[] _stateAI;
@@ -378,9 +375,7 @@ public partial class Scarabeus : ModNPC
 				ChangeState(AIState.Despawn);
 		}
 		else
-		{
 			despawnTimer = 0;
-		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -422,19 +417,12 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		for (int i = 0; i < 9; i++)
-		{
-			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f);
-			d.noGravity = true;
-		}
+			Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f).noGravity = true;
 
 		if (Main.rand.NextBool(5))
 		{
-			Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
-
 			for (int i = 0; i < 9; i++)
-			{
 				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), NPC.DirectionTo(Target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 9f), 50, default, 1.5f).noGravity = false;
-			}
 		}
 
 		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
@@ -580,7 +568,7 @@ public partial class Scarabeus : ModNPC
 
 	public void ChangeState(AIState state, bool setIdleTime = false)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 1; i < 3; i++)
 			NPC.ai[i] = 0;
 
 		CurrentState = state;
@@ -591,13 +579,8 @@ public partial class Scarabeus : ModNPC
 
 		currentFrame.Y = 0;
 
-		ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(DateTime.Now.ToString("HH:mm:ss") + " | State: " + state), Color.White);
-
-		if (setIdleTime)
-		{
-			// Pick a time to wait before the next attack
+		if (setIdleTime) // Pick a time to wait before the next attack
 			SetIdleTime(ref ExtraMemory);
-		}
 	}
 
 	public override bool? CanFallThroughPlatforms() => IgnorePlatforms;
@@ -620,6 +603,7 @@ public partial class Scarabeus : ModNPC
 		writer.Write(phaseTwo);
 		writer.Write(Enrage);
 		writer.Write(scarabColorIndex);
+		writer.Write((Half)NPC.Opacity);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -627,5 +611,6 @@ public partial class Scarabeus : ModNPC
 		phaseTwo = reader.ReadBoolean();
 		Enrage = reader.ReadSingle();
 		scarabColorIndex = reader.ReadInt32();
+		NPC.Opacity = (float)reader.ReadHalf();
 	}
 }

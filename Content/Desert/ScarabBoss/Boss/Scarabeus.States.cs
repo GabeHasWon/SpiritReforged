@@ -12,8 +12,8 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.Audio;
-using Terraria.Chat;
 using Terraria.Graphics.CameraModifiers;
+
 using static SpiritReforged.Common.Misc.AnimationSequence;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -380,7 +380,10 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Dancing easter egg
-	public bool CanDance => Main.newMusic == ScarabRadio.MusicSlot || Target.HeldItem.type == ModContent.ItemType<ScarabRadio>();
+	/// <summary>
+	/// Checks if the target is holding a radio.
+	/// </summary>
+	public bool CanDance => Target.HeldItem.type == ModContent.ItemType<ScarabRadio>();
 
 	public float DanceIdle(ref bool retarget)
 	{
@@ -631,13 +634,8 @@ public partial class Scarabeus : ModNPC
 		NPC.FaceTarget();
 		NPC.dontTakeDamage = false;
 
-		if (Counter == 0)
-		{
-
-		}
-
 		// Alias ExtraMemory for readability
-		ref float waitTimeMultiplier = ref ExtraMemory;
+		float waitTimeMultiplier = ExtraMemory;
 
 		if (!phaseTwo)
 			GroundedIdle(ref waitTimeMultiplier);
@@ -682,10 +680,7 @@ public partial class Scarabeus : ModNPC
 			waitTimeMultiplier *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
 
 		if (Main.netMode == NetmodeID.Server) // Use this over netUpdate so we avoid netSpam
-		{
 			NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
-			ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(DateTime.Now.ToString("HH:mm:ss") + " | Selected multiplier: " + waitTimeMultiplier), Color.White);
-		}
 	}
 
 	public void GroundedIdle(ref float nextAttackWaitTime)
@@ -2098,15 +2093,12 @@ public partial class Scarabeus : ModNPC
 		float targetHeight = FindGroundFromPositionIgnorePlatforms(Target.position).Y - 360;
 		float distanceToTarget = Math.Abs(NPC.Center.Y - targetHeight);
 		float speedToTarget = Utils.GetLerpValue(10, 210f, distanceToTarget, true) * 3f;
-		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 4f, 0.02f);
 
 		UpdateFrame(1, 12, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
-
-		//if (Counter < 360)
-			//trailOpacity = 0.4f * (1f - Counter / 360f);
 
 		SwarmAttackVisuals();
 
