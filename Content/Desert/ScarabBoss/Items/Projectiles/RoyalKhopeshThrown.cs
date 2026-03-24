@@ -181,7 +181,7 @@ public class RoyalKhopeshThrown : ModProjectile
 
 	public override void AI()
 	{
-		if (Main.rand.NextBool(5))
+		if (Main.rand.NextBool(5) && !Main.dedServ)
 		{
 			float progress = Projectile.timeLeft / (float)(MAX_TIMELEFT / 2);
 
@@ -196,6 +196,9 @@ public class RoyalKhopeshThrown : ModProjectile
 
 		if (Dying)
 		{
+			if (Main.dedServ)
+				return;
+
 			Projectile.velocity *= 0.96f;
 			Projectile.rotation += Projectile.velocity.Length() * 0.025f;
 
@@ -243,6 +246,9 @@ public class RoyalKhopeshThrown : ModProjectile
 			offset -= Projectile.velocity * 0.5f;
 			Projectile.netUpdate = true;
 
+			if (Main.dedServ)
+				return;
+
 			for (int i = 0; i < 5; i++)
 			{
 				var velocity = -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f, 0.5f);
@@ -270,6 +276,9 @@ public class RoyalKhopeshThrown : ModProjectile
 			Stuck = false;
 			Projectile.friendly = false;
 
+			if (Main.dedServ)
+				return false;
+
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundMiss with { Volume = 0.5f, PitchVariance = 0.2f}, Projectile.Center);
 
 			for (int i = 0; i < 5; i++)
@@ -280,10 +289,10 @@ public class RoyalKhopeshThrown : ModProjectile
 				Color smokeColor = new Color(223, 219, 147) * 0.35f;
 				float scale = Main.rand.NextFloat(0.05f, 0.1f);
 				var velSmoke = -Projectile.velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat();
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseBuilder.EaseQuadOut, Main.rand.Next(30, 40)));
+				Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+				ParticleHandler.SpawnParticle(new SmokeCloud(spawnPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
-				Dust.NewDustPerfect(Projectile.Center,
-				DustID.Sand, velSmoke * Main.rand.NextFloat(2), 150, default, 1f).noGravity = true;
+				Dust.NewDustPerfect(Projectile.Center, DustID.Sand, velSmoke * Main.rand.NextFloat(2), 150, default, 1f).noGravity = true;
 			}
 		}
 
@@ -347,7 +356,8 @@ public class RoyalKhopeshThrown : ModProjectile
 		return false;
 	}
 
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) 
+		=> behindNPCsAndTiles.Add(index);
 
 	// Someone more well versed than me in multiplayer compat may need to double check this
 	public override void SendExtraAI(BinaryWriter writer)

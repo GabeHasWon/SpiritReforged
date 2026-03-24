@@ -14,7 +14,7 @@ public partial class Scarabeus : ModNPC
 	private float GoBackToIdle()
 	{
 		SetFrame(phaseTwo ? 3 : 0, 0, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
-		ChangeState(FindAppropriateIdleState());
+		ChangeState(FindAppropriateIdleState(), true);
 		return 0f;
 	}
 

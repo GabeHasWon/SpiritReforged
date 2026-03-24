@@ -11,11 +11,10 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.Graphics.CameraModifiers;
 using static SpiritReforged.Common.Misc.AnimationSequence;
-using static SpiritReforged.Content.Desert.ScarabBoss.Boss.Scarabeus;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -522,7 +521,7 @@ public partial class Scarabeus : ModNPC
 				{
 					pos += Main.rand.NextVector2Circular(5f, 5f);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.1f, EaseBuilder.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.1f, EaseFunction.EaseCircularIn, 50, false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
@@ -530,7 +529,7 @@ public partial class Scarabeus : ModNPC
 						PixelDivisor = 3,
 					});
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.13f, EaseBuilder.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.13f, EaseFunction.EaseCircularIn, 50, false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
@@ -619,7 +618,7 @@ public partial class Scarabeus : ModNPC
 	#region Idling between attacks
 	public float IdleBetweenAttacks(ref bool retarget)
 	{
-		if (Main.rand.NextBool(300))
+		if (Main.rand.NextBool(300) && !Main.dedServ)
 		{
 			SoundStyle chitter = SmallChitterSound;
 
@@ -632,32 +631,18 @@ public partial class Scarabeus : ModNPC
 		NPC.FaceTarget();
 		NPC.dontTakeDamage = false;
 
-		//Pick a time to wait before the next attack
-		if (Counter == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Counter == 0)
 		{
-			ExtraMemory = Main.rand.NextFloat(STAT_MIN_IDLE_TIME, STAT_MAX_IDLE_TIME);
-			if (Main.masterMode)
-				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_MASTER;
-			else
-				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_EXPERT;
 
-			if (LastAttack == AIState.Swarm)
-				ExtraMemory *= 1.65f;
-			if (!phaseTwo)
-				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1) * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 1f, NPC.life / (float)NPC.lifeMax, true);
-			else
-				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
-
-			ExtraMemory = MathHelper.Max(0.01f, ExtraMemory);
-			NPC.netUpdate = true;
 		}
 
-		float nextAttackTime = ExtraMemory;
+		// Alias ExtraMemory for readability
+		ref float waitTimeMultiplier = ref ExtraMemory;
 
 		if (!phaseTwo)
-			GroundedIdle(ref nextAttackTime);
+			GroundedIdle(ref waitTimeMultiplier);
 		else
-			FlyHover(ref nextAttackTime);
+			FlyHover(ref waitTimeMultiplier);
 
 		//Switch to an attack after enough time
 		if (Counter > 1f)
@@ -667,7 +652,40 @@ public partial class Scarabeus : ModNPC
 		}
 
 		//We increment the idle counter
-		return 1 / (60f * nextAttackTime);
+		return 1 / (60f * waitTimeMultiplier);
+	}
+
+	private void SetIdleTime(ref float waitTimeMultiplier)
+	{
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			waitTimeMultiplier = Main.rand.NextFloat(STAT_MIN_IDLE_TIME, STAT_MAX_IDLE_TIME);
+			waitTimeMultiplier = MathHelper.Max(0.01f, waitTimeMultiplier);
+		}
+		else
+		{
+			// Only wait the max time on clients, waiting for the server to sync their value
+			waitTimeMultiplier = STAT_MAX_IDLE_TIME;
+		}
+
+		if (Main.masterMode)
+			waitTimeMultiplier -= STAT_IDLE_TIME_REDUCTION_MASTER;
+		else
+			waitTimeMultiplier -= STAT_IDLE_TIME_REDUCTION_EXPERT;
+
+		if (LastAttack == AIState.Swarm)
+			waitTimeMultiplier *= 1.65f;
+
+		if (!phaseTwo)
+			waitTimeMultiplier *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1) * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 1f, NPC.life / (float)NPC.lifeMax, true);
+		else
+			waitTimeMultiplier *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
+
+		if (Main.netMode == NetmodeID.Server) // Use this over netUpdate so we avoid netSpam
+		{
+			NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
+			ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(DateTime.Now.ToString("HH:mm:ss") + " | Selected multiplier: " + waitTimeMultiplier), Color.White);
+		}
 	}
 
 	public void GroundedIdle(ref float nextAttackWaitTime)
@@ -1522,7 +1540,7 @@ public partial class Scarabeus : ModNPC
 				NPC.dontTakeDamage = false;
 				NPC.velocity.Y *= 0.95f;
 
-				trailOpacity = EaseBuilder.EaseQuinticIn.Ease(1f - Counter / 20f);
+				trailOpacity = EaseFunction.EaseQuinticIn.Ease(1f - Counter / 20f);
 
 				if (Counter >= 20)
 					return GoBackToIdle();

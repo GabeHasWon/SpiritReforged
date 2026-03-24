@@ -237,7 +237,7 @@ public partial class Scarabeus : ModNPC
 
 		FlipShadersOnOff(spriteBatch, null, false);
 
-		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
+		Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
 
 		if (CurrentState == AIState.Charmed)
 			DrawEmote(spriteBatch, (NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight, EmoteID.EmotionLove);
