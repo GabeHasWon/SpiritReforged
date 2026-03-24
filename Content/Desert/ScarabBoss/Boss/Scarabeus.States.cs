@@ -52,7 +52,6 @@ public partial class Scarabeus : ModNPC
 					for (int i = 0; i < 48; i++)
 					{
 						Vector2 scarabPos = Target.Center;
-						bool backgroundScarab = !Main.rand.NextBool(4);
 						bool backgroundScarab = !Main.rand.NextBool(3);
 						int spawnDelayRange = swarm_time;
 						int spawnDelayStatic = backgroundScarab ? 0 : (int)(swarm_time * 0.66f);
