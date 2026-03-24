@@ -41,27 +41,6 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		}
 	}
 
-	//public sealed class InteractWithAltarData : PacketData
-	//{
-	//	int _entityId = 0;
-
-	//	public InteractWithAltarData()
-	//	{
-	//	}
-
-	//	public InteractWithAltarData(int id)
-	//	{
-	//		_entityId = id;
-	//	}
-
-	//	public override void OnSend(ModPacket modPacket) => modPacket.Write(_entityId);
-
-	//	public override void OnReceive(BinaryReader reader, int whoAmI)
-	//	{
-
-	//	}
-	//}
-
 	#region projectiles
 	public sealed class FloatingGem : ModProjectile
 	{
@@ -608,8 +587,6 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
 				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 300);
 			}
-
-			Mod.Logger.Debug("Spawned guy?");
 		}
 
 		if (Main.netMode == NetmodeID.Server)
