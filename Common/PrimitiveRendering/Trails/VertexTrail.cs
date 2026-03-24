@@ -39,6 +39,7 @@ public class VertexTrail : BaseTrail
 		_originalWidth = _widthStart;
 
 		_points = [];
+		Opacity = 1;
 	}
 
 	protected override void OnDissolve()
