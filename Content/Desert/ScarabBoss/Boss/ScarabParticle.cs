@@ -28,7 +28,7 @@ public class ScarabParticle : Particle
 		_isBackground = isBackground;
 		MaxTime = FLY_TIME;
 		_animOffset = Main.rand.Next(60);
-		_acceleration = Main.rand.NextFloat(0.04f, 0.12f);
+		_acceleration = Main.rand.NextFloat(0.04f, 0.08f);
 		_horizontalSpeedMult = Main.rand.NextFloat(1, 2);
 	}
 

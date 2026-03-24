@@ -53,8 +53,9 @@ public partial class Scarabeus : ModNPC
 					{
 						Vector2 scarabPos = Target.Center;
 						bool backgroundScarab = !Main.rand.NextBool(4);
+						bool backgroundScarab = !Main.rand.NextBool(3);
 						int spawnDelayRange = swarm_time;
-						int spawnDelayStatic = backgroundScarab ? 0 : swarm_time / 3;
+						int spawnDelayStatic = backgroundScarab ? 0 : (int)(swarm_time * 0.66f);
 						scarabPos += new Vector2(-Main.rand.NextFloat(1300, 1400), Main.rand.NextFloat(200, 500));
 						if (!backgroundScarab)
 						{
@@ -295,6 +296,12 @@ public partial class Scarabeus : ModNPC
 		
 		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
 
+		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3)
+			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center, 0.35f, 4500, 30, EaseFunction.EaseCubicIn, false, 0.35f));
+
+		Music = Phase1Music;
+		Main.musicFade[Main.curMusic] = 1f;
+
 		if (lastFrameY == 2 && ExtraMemory < 1)
 		{
 			FablesIntroCard(100);
@@ -316,9 +323,6 @@ public partial class Scarabeus : ModNPC
 
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
-			Music = Phase1Music;
-			Main.musicFade[Main.curMusic] = 1f;
-
 			ExtraMemory++;
 		}
 
@@ -327,7 +331,7 @@ public partial class Scarabeus : ModNPC
 			if (!Main.dedServ)
 				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitX * NPC.direction, 10, 10, 60));
 
-			SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.1f}, NPC.Center);
+			//SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.1f}, NPC.Center);
 			SoundEngine.PlaySound(ChitterSound, NPC.Center);
 
 			ExtraMemory++;
