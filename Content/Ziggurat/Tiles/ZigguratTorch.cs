@@ -12,7 +12,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 public class ZigguratTorch : ModTile, IAutoloadTileItem
 {
 	public const int FrameHeight = 20;
-	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal(typeof(ZigguratTorch), "ZigguratTorch_Flame", false);
+	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal<ZigguratTorch>("ZigguratTorch_Flame", false);
 
 	public static readonly SoundStyle Ignite = new("SpiritReforged/Assets/SFX/Tile/TorchIgnite", 2)
 	{
@@ -69,19 +69,29 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		SoundEngine.PlaySound(SoundID.Mech, new Vector2(i * 16, j * 16));
+		Wiring.HitSwitchAndSync(i, j);
 		HitWire(i, j);
 
 		return true;
+	}
+
+	public override void HitSwitch(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		var sound = (tile.TileFrameY == 0) ? Ignite : Extinguish;
+		SoundEngine.PlaySound(sound, new Vector2(i, j).ToWorldCoordinates());
+
+		if (tile.TileFrameY == 0 && !Main.dedServ)
+		{
+			for (int x = 0; x < 5; x++)
+				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.AshTreeShake, new() { PositionInWorld = new Vector2(i, j).ToWorldCoordinates(8, 0) });
+		}
 	}
 
 	public override void HitWire(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
 		tile.TileFrameY = (short)((tile.TileFrameY == 0) ? FrameHeight : 0);
-
-		var sound = (tile.TileFrameY == 0) ? Extinguish : Ignite;
-		SoundEngine.PlaySound(sound, new Vector2(i, j).ToWorldCoordinates());
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 			NetMessage.SendTileSquare(-1, i, j);
@@ -93,12 +103,10 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		{
 			var worldCoords = new Vector2(i, j).ToWorldCoordinates();
 
-			if (Main.LocalPlayer.Distance(worldCoords) < 16 * 3 && Wiring.CheckMech(i, j, 180))
+			if (Main.LocalPlayer.Distance(worldCoords) < 16 * 3)
 			{
+				Wiring.HitSwitchAndSync(i, j);
 				HitWire(i, j);
-
-				for (int x = 0; x < 5; x++)
-					ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.AshTreeShake, new() { PositionInWorld = worldCoords - new Vector2(0, 8) });
 			}
 		}
 	}
