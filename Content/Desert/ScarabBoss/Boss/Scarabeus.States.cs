@@ -244,13 +244,6 @@ public partial class Scarabeus : ModNPC
 			"Salvati");
 	}
 
-	public void FablesCameraFocus()
-	{
-		if (!CrossMod.Fables.Enabled)
-			return;
-		CrossMod.Fables.Instance.Call("vfx.cameraMagnetWithImmunity", NPC.Center, NPC.Center, 2000f, 1.4f);
-	}
-
 	public void FablesToggleUI(bool uiEnabled)
 	{
 		if (!CrossMod.Fables.Enabled)
@@ -279,7 +272,6 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region SpawnRoar
-
 	public float Roar(ref bool retarget)
 	{
 		int lastFrameY = currentFrame.Y;
@@ -289,8 +281,11 @@ public partial class Scarabeus : ModNPC
 
 		if (lastFrameY == 2 && ExtraMemory < 1)
 		{
-			FablesIntroCard(120);
-			FablesToggleUI(false);
+			if (!FightingDScourge)
+			{
+				FablesIntroCard(120);
+				FablesToggleUI(false);
+			}
 
 			if (!Main.dedServ)
 			{
@@ -638,7 +633,7 @@ public partial class Scarabeus : ModNPC
 			FlyHover(ref nextAttackTime);
 
 		//Switch to an attack after enough time
-		if (Counter > 1f)
+		if (Counter > 1f && !FightingDScourge)
 		{
 			ChangeState(SelectAttack());
 			return 0f;
@@ -1163,8 +1158,12 @@ public partial class Scarabeus : ModNPC
 
 		int lastFrameY = currentFrame.Y;
 		int framerate = 10;
+
+		//Much slower telegraph when fighting desert scourge, because when it does the slam it's for the Giga-Impact ultraslam 9000 that sends scourge flying up
+		if (FightingDScourge)
+			framerate -= 5;
 		//Faster telegraph if the player is going past scarab
-		if (lastFrameY < 9)
+		else if (lastFrameY < 9)
 			framerate += (int)(10 * Utils.GetLerpValue(100, -30, (Target.Center.X - NPC.Center.X) * NPC.direction, true));
 
 		if (lastFrameY == 2 && ExtraMemory < 1)
@@ -1224,6 +1223,8 @@ public partial class Scarabeus : ModNPC
 		//Spawn a tile wave in the direction of the attack
 		BouncingTileWave(NPC.direction, 45, 14, 60);
 
+		bool explodedDesertScourge = !FightingDScourge;
+
 		while (travelDistLeft > 0)
 		{
 			//The big burst has its shockwave projectiles more closely packed
@@ -1262,10 +1263,21 @@ public partial class Scarabeus : ModNPC
 
 			//If we transition from the small fissure spreading across the floor to the bigger burst at the end, add an extra delay for impact
 			if (travelDistLeft > big_burst_area && travelDistLeft - spacing <= big_burst_area)
+			{
 				burstSpawnDelay += 17f;
+
+				if (!explodedDesertScourge)
+				{
+					explodedDesertScourge = true;
+					DuoFightUnearthScourge(fissurePos, burstSpawnDelay);
+				}
+			}
 
 			travelDistLeft -= spacing;
 		}
+
+		if (!explodedDesertScourge)
+			DuoFightUnearthScourge(fissurePos, burstSpawnDelay);
 	}
 	#endregion
 

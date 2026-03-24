@@ -11,6 +11,7 @@ using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
@@ -170,8 +171,15 @@ public partial class Scarabeus : ModNPC
 		Dig,
 		Roll,
 
+		//P2 Attacks
 		SwoopDash,
 		Swarm,
+
+		//Duo Fight Attacks
+		DuoFightSpawnAnim,
+		DuoFightSpawnAnimFallback,
+		DuoFightSwoopPincer,
+
 		MaxValue
 	}
 
@@ -213,6 +221,8 @@ public partial class Scarabeus : ModNPC
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
+
+		LoadDuoFight();
 	}
 
 	public override void SetDefaults()
@@ -238,6 +248,9 @@ public partial class Scarabeus : ModNPC
 		//P2 attacks
 		_stateAI[(int)AIState.SwoopDash] = SwoopDashAttack;
 		_stateAI[(int)AIState.Swarm] = SwarmAttack;
+		//Duo fight
+		_stateAI[(int)AIState.DuoFightSpawnAnim] = DuoFightSpawnAnimation;
+		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = DuoFightSpawnFallback;
 
 		Profile = PhaseOneProfile;
 
@@ -263,6 +276,11 @@ public partial class Scarabeus : ModNPC
 		scarabColorIndex = activeScarabs - 1;
 
 		Music = 0;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		CheckDuoFightStart(source);
 	}
 
 	//No journey scaling cuz we aleady scale stuff
@@ -553,7 +571,7 @@ public partial class Scarabeus : ModNPC
 
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
 
-	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : null;
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : !FightingDScourge;
 
 	public override void BossHeadSlot(ref int index)
 	{

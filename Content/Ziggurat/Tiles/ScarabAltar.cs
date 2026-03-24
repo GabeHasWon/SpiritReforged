@@ -110,7 +110,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 
 				if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
-					entity.Interact();
+				{
+					bool isFablesItem = CrossMod.Fables.Enabled && _fablesStormlionItems[ItemType];
+					entity.Interact(isFablesItem);
+				}
 			}
 		}
 
@@ -157,6 +160,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public ref float Counter => ref Projectile.ai[1];
 
+		public bool StartDuoFight => CrossMod.Fables.Enabled && Projectile.ai[2] == 1;
+
 		private const int WaitTime = 120;
 		private bool _justSpawned = true;
 		private bool _spawnedBoss = false;
@@ -189,20 +194,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			if (_justSpawned)
 			{
 				if (!Main.dedServ)
-				{
-					/*if (!CrossMod.Fables.Enabled)
-					{
-						Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
-						var easeAnimation = new AnimationSequence()
-							.Add(new AnimationSequence.EaseSegment(WaitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-							.Add(new AnimationSequence.WaitSegment(TimeLeftMax - WaitTime - 40))
-							.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
-
-						Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-					}*/
-
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
-				}
 
 				Projectile.timeLeft = TimeLeftMax;
 				_justSpawned = false;
@@ -265,8 +257,14 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 						ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, -Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(0.2f, 1), Color.Goldenrod, Color.MediumPurple, Main.rand.NextFloat(0.2f, 0.5f), 150, 2));
 				}
 
-				if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
-					NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					//Summon Scarabeus or the duo fight manager from Fables
+					if (StartDuoFight && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFightManager))
+						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+					else
+						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+				}
 
 				_spawnedBoss = true;
 			}
@@ -342,6 +340,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	#endregion
 
 	private int[] _hoverTypes;
+	private static bool[] _fablesStormlionItems;
+	private static int _fablesDeadStormlionLarvaType = -1;
+	private static int _fablesStormlionBucketType = -1;
 
 	public override void SetStaticDefaults()
 	{
@@ -366,6 +367,22 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(124, 24, 28), CreateMapEntryName());
 		DustType = -1;
 		MinPick = 55;
+
+		//Load the stormlion items from fables
+		if (_fablesStormlionItems == null)
+		{
+			if (CrossMod.Fables.Enabled &&
+				CrossMod.Fables.TryFind("DeadStormlionLarvaItem", out ModItem deadLarva) &&
+				CrossMod.Fables.TryFind("StormlionLarvaItem", out ModItem aliveLarva) &&
+				CrossMod.Fables.TryFind("BucketOfLarvae", out ModItem larvaBucket))
+			{
+				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(deadLarva.Type, aliveLarva.Type, larvaBucket.Type);
+				_fablesStormlionBucketType = larvaBucket.Type;
+				_fablesDeadStormlionLarvaType = deadLarva.Type;
+			}
+			else
+				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(false);
+		}
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.InInteractionRange(i, j, TileReachCheckSettings.Simple);
@@ -394,13 +411,18 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
 		if (!BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity && entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
-			if (--result.stack <= 0)
-				result.TurnToAir(); //Consume an item
-
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
+			int itemType = result.type;
+			//When sacrificing the stormlion bucket, it should spawn a dead stormlion instead of consuming the bucket
+			if (itemType == _fablesStormlionBucketType)
+				itemType = _fablesDeadStormlionLarvaType;
 
 			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
-				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
+				projectileType, 0, 0, Main.myPlayer, itemType, entity.ID);
+
+			//Consume an item
+			if (result.type != _fablesStormlionBucketType && --result.stack <= 0)
+				result.TurnToAir();
 
 			return true;
 		}
@@ -414,6 +436,18 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		{
 			result = player.HeldItem;
 			return true;
+		}
+
+		//Holding a fables item, check for stormlion grub items
+		//Importantly, we DO NOT! Check for the grubs in the player's inventory, only their held item (To make it extra secret)
+		if (CrossMod.Fables.Enabled && !player.HeldItem.IsAir)
+		{
+			//Accepts stormlion larvae as offerings
+			if (_fablesStormlionItems[player.HeldItem.type])
+			{
+				result = player.HeldItem;
+				return true;
+			}
 		}
 
 		foreach (Item item in player.inventory)
@@ -540,7 +574,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		return Place(i, j);
 	}
 
-	public void Interact()
+	public void Interact(bool fablesGrub = false)
 	{
 		SetInteractTime();
 
@@ -558,12 +592,16 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		if (subVolume > 0)
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
+		//When sacrificing a fables stormlion grub for the Scarab VS Scourge duo fight, the altar gets filled instantly
+		if (fablesGrub)
+			consumableCount = ConsumableCountMax;
+
 		if (++consumableCount >= ConsumableCountMax)
 		{
 			consumableCount = 0;
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
-				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, ModContent.ProjectileType<ScarabAltar.BeamOLight>(), 0, 0, -1, 300);
+				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, ModContent.ProjectileType<ScarabAltar.BeamOLight>(), 0, 0, -1, 300, 0, fablesGrub ? 1 : 0);
 		}
 	}
 

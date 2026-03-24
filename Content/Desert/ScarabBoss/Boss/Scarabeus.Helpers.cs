@@ -53,7 +53,7 @@ public partial class Scarabeus : ModNPC
 			Add(AIState.SwoopDash, 1 - Utils.GetLerpValue(100f, 30f, distanceToTargetX, true) * 0.2f);
 			Add(AIState.GroundPound, 1);
 			Add(AIState.Dig, 1);
-			Add(AIState.Swarm, 2323230.85f);
+			Add(AIState.Swarm, 0.85f);
 		}
 
 		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;
