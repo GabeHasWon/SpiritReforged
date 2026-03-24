@@ -3011,5 +3011,9 @@ SpiritTreeTopper: {
 
 LocustCrook: {
 	// DisplayName: Locust Crook
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts
+		''' */
 }

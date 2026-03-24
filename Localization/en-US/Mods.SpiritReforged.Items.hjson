@@ -893,8 +893,8 @@ RoyalKhopesh: {
 	DisplayName: Royal Khopesh
 	Tooltip:
 		'''
-		Left click to perform a combo of swings
-		Right click to throw the khopesh - if you hit an enemy, right click again to draw them close and empower your blade
+		Right click to throw the khopesh 
+		Right click again to pull back struck enemies
 		'''
 }
 
@@ -2969,8 +2969,12 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	DisplayName: Adorned Bow
-	Tooltip: ""
+	DisplayName: Gilded Greatbow
+	Tooltip:
+		'''
+		Charges an empowered shot
+		Empowered shots damage nearby enemies
+		'''
 }
 
 BagOScarabs: {
@@ -3015,5 +3019,9 @@ SpiritTreeTopper: {
 
 LocustCrook: {
 	DisplayName: Locust Crook
-	Tooltip: ""
+	Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts
+		'''
 }

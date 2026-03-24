@@ -2965,8 +2965,12 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	// DisplayName: Adorned Bow
-	// Tooltip: ""
+	// DisplayName: Gilded Greatbow
+	/* Tooltip:
+		'''
+		Charges an empowered shot
+		Empowered shots damage nearby enemies
+		''' */
 }
 
 BagOScarabs: {
@@ -3011,5 +3015,9 @@ SpiritTreeTopper: {
 
 LocustCrook: {
 	// DisplayName: Locust Crook
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts
+		''' */
 }
