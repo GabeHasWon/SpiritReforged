@@ -1,10 +1,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
-using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -18,7 +14,7 @@ public class RoyalKhopesh : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 28;
+		Item.damage = 25;
 		Item.Size = new Vector2(48, 52);
 		Item.useTime = Item.useAnimation = 48;
 		Item.knockBack = 1f;

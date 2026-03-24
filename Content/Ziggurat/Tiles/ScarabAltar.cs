@@ -1,7 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -392,7 +391,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	public override bool RightClick(int i, int j)
 	{
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
-		if (!BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity && entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
+
+		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
+			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
 			if (--result.stack <= 0)
 				result.TurnToAir(); //Consume an item
@@ -511,8 +512,16 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 {
+	/// <summary>
+	/// Minimum time between two interactions.
+	/// </summary>
 	public const int InteractTimeMax = 10;
-	public const int ConsumableCountMax = 10;
+
+	/// <summary>
+	/// Amount of gems needed to summon Scarabeus.
+	/// </summary>
+	public const int ConsumableCountMax = 5;
+
 	public int consumableCount;
 
 	public int InteractTime { get; private set; }
