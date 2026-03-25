@@ -3027,6 +3027,11 @@ LocustCrook: {
 		''' */
 }
 
+IridescentDye: {
+	// DisplayName: Iridescent Dye
+	// Tooltip: ""
+}
+
 ScarabLightPetItem: {
 	// DisplayName: Scarab Light Pet Item
 	// Tooltip: ""

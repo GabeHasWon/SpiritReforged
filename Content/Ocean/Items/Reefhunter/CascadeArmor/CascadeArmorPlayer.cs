@@ -190,13 +190,13 @@ public class CascadeArmorPlayer : ModPlayer
 
 	private void DrawBubble(SpriteBatch sB, bool outline = false)
 	{
-		if (_bubbleVisual > 0f)
+		if (!Player.invis && _bubbleVisual > 0f)
 		{
 			Texture2D texture = (outline ? OutlineTexture : ShieldTexture).Value;
 
 			Vector2 drawPos = Player.Center - Main.screenPosition + new Vector2(0, Player.gfxOffY);
 
-			float opacity = outline ? .25f : 0.8f;
+			float opacity = outline ? 0.25f : 0.8f;
 			Color lightColor = Lighting.GetColor((int)(Player.Center.X / 16), (int)(Player.Center.Y / 16));
 
 			sB.Draw(texture, drawPos, null, lightColor * _bubbleVisual * opacity, 0f, texture.Size() / 2f, _bubbleSquish * GetBaseBubbleScale, SpriteEffects.None, 0);

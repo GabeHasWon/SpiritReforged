@@ -336,7 +336,7 @@ public class BabyAntlionProjectile : ModProjectile
 					Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
 					-Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f),
 					Color.Black * (1f - Projectile.timeLeft / 120f) * 0.5f,
-					0.175f * EaseBuilder.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 120f),
+					0.175f * EaseFunction.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 120f),
 					EaseFunction.EaseCircularOut,
 					30);
 

@@ -894,7 +894,7 @@ RoyalKhopesh: {
 	Tooltip:
 		'''
 		Right click to throw the khopesh 
-		Right click again to pull back struck enemies
+		Left or Right click to pull back struck enemies, empowering the blade for a moment
 		'''
 }
 
@@ -3029,6 +3029,11 @@ LocustCrook: {
 		Summons a sentry
 		Throws out a crook that attracts locusts
 		'''
+}
+
+IridescentDye: {
+	DisplayName: Iridescent Dye
+	Tooltip: ""
 }
 
 ScarabLightPetItem: {

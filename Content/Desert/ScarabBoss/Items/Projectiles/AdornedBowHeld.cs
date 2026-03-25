@@ -134,7 +134,12 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 		opacity = Math.Max(opacity, 1.5f * perfectShotProgress);
 
 		if (Charge == 1)
+		{
+			Main.spriteBatch.RestartToDefault(); 
 			ConeNoise(-10, 0.5f * opacity, 10, perfectShotProgress);
+		}
+
+		arrowPos -= new Vector2(0f, -6f).RotatedBy(Projectile.rotation);
 
 		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
 
