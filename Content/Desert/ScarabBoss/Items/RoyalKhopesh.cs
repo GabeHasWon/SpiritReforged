@@ -83,6 +83,8 @@ public class RoyalKhopeshPlayer : ModPlayer
 
 	internal int CooldownFlashTimer;
 
+	internal Vector2 HandPosition;
+
 	// not entirely sure if I need to unload
 	public override void Load() => On_Main.DrawInfernoRings += DrawCooldownFlash;
 	private void DrawCooldownFlash(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -93,18 +95,25 @@ public class RoyalKhopeshPlayer : ModPlayer
 		{
 			p.TryGetModPlayer<RoyalKhopeshPlayer>(out var modPlayer);
 
-			if (modPlayer?.CooldownFlashTimer > 0)
+			if (modPlayer?.EmpoweredStrikeTimer > 0 && p.ItemTimeIsZero)
 			{
 				Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
 				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+				Texture2D kopesh = ModContent.Request<Texture2D>("SpiritReforged/Content/Desert/ScarabBoss/Items/RoyalKhopesh").Value;
 
-				float flashTime = modPlayer.CooldownFlashTimer / (float)COOLDOWN_FLASH_TIMER;
-				
-				Main.spriteBatch.Draw(bloom, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.MediumVioletRed.Additive() * 0.5f * flashTime, 0f, bloom.Size() / 2f, 0.3f, 0f, 0f);
+				float lerp = modPlayer.EmpoweredStrikeTimer / 90f;
 
-				Main.spriteBatch.Draw(star, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.MediumVioletRed.Additive(), 0f, star.Size() / 2f, 0.3f * flashTime, 0f, 0f);
+				//Main.spriteBatch.Draw(bloom, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.MediumVioletRed.Additive() * 0.5f * flashTime, 0f, bloom.Size() / 2f, 0.3f, 0f, 0f);
 
-				Main.spriteBatch.Draw(star, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.15f * flashTime, 0f, 0f);
+				//Main.spriteBatch.Draw(star, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.MediumVioletRed.Additive(), 0f, star.Size() / 2f, 0.3f * flashTime, 0f, 0f);
+
+				//Main.spriteBatch.Draw(star, (p.HandPosition ?? p.Center) - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.15f * flashTime, 0f, 0f);
+
+				Vector2 pos = p.Center + new Vector2(4f, 10f);
+
+				float rot = MathHelper.Lerp(0f, 0.5f, lerp) + MathHelper.PiOver2 * p.direction;
+
+				// Main.spriteBatch.Draw(kopesh, pos - Main.screenPosition, null, Color.White, rot, kopesh.Size() / 2f, 1f, 0f, 0f);
 			}
 		}
 	}
@@ -132,6 +141,14 @@ public class RoyalKhopeshPlayer : ModPlayer
 			Combo = 0;
 			FastStrikeAmount = 2;
 		}			
+	}
+
+	public override void PostUpdate()
+	{
+		//if (EmpoweredStrikeTimer > 0 && Player.ItemTimeIsZero)
+		//{
+		//	Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(1.5f, 0.5f, EmpoweredStrikeTimer / 90f));
+		//}
 	}
 }
 

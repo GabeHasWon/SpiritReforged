@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
@@ -269,7 +270,7 @@ public class LocustCrook : ModItem
 					  Projectile.rotation, bloom.Size() / 2f, 1f, 0, 0f);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			foreach (BabyLocust locust in _orbitingLocusts.Where(l => !l.drawBehind))
