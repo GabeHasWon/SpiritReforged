@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 
 namespace SpiritReforged.Content.Particles;
@@ -14,8 +15,9 @@ public class LensFlareRing(Vector2 position, float ringWidth, float maxRadius, i
 
 	internal override void EffectExtras(ref Effect curEffect)
 	{
-		curEffect.Parameters["uTexture"].SetValue(_texture);
-		curEffect.Parameters["textureStretch"].SetValue(new Vector2(_textureStretch.X, _textureStretch.Y));
+		curEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["vnoise"].Value);
+		curEffect.Parameters["textureStretch"].SetValue(new Vector2(_textureStretch.X * 2, 1));
 		curEffect.Parameters["scroll"].SetValue(0);
+		curEffect.Parameters["RingWidth"].SetValue(ringWidth);
 	}
 }

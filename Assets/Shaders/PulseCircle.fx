@@ -212,24 +212,29 @@ float4 TexturedRing(VertexShaderOutput input) : COLOR0
 
 float4 LensFlareRing(VertexShaderOutput input) : COLOR0
 {
-    float strength = GetStrength(input);
+    float strength = max(1 - GetDistanceFromBase(input.TextureCoordinates), 0);
     float xCoord = GetAngle(input.TextureCoordinates) / 6.28f;
-    xCoord += scroll;
     float yCoord = GetDistance(input.TextureCoordinates);
+    float ringWidthAdjusted = RingWidth * pow(input.TextureCoordinates.y, 0.5f);
     yCoord -= 0.5f;
-    yCoord *= textureStretch.y / RingWidth;
+    yCoord *= textureStretch.y / ringWidthAdjusted;
     yCoord += 0.5f;
-    float texColor = pow(tex2D(textureSampler, float2(xCoord * textureStretch.x, yCoord)).r, texExponent) * strength;
-    if (texColor == 0)
+    float ringWidthInverted = (1 - ringWidthAdjusted);
+    
+    float texColor = pow(1 - (tex2D(textureSampler, float2(xCoord * textureStretch.x, scroll)).r), 1.5f) * ((strength - ringWidthInverted) / ringWidthAdjusted);
+    texColor *= pow(input.TextureCoordinates.y, 2);
+    if (texColor == 0 || strength <= ringWidthInverted)
         return float4(0, 0, 0, 0);
     
     float4 finalColor = texColor * input.Color;
     
-    float3 HSV = rgb2hsv(finalColor.rgb);
-    HSV.x = input.TextureCoordinates.y;
-    finalColor.rgb = hsv2rgb(HSV);
+    float3 HSV;
+    HSV.x = yCoord;
+    HSV.y = 0.6f;
+    HSV.z = 1;
+    finalColor.rgb = hsv2rgb(HSV) * texColor * input.Color.rgb * 2;
     
-    return finalColor;
+    return finalColor * strength;
 }
 float4 RoarRing(VertexShaderOutput input) : COLOR0
 {
