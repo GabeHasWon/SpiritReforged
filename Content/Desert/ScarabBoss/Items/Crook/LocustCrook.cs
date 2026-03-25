@@ -149,6 +149,9 @@ public class LocustCrook : ModItem
 		{
 			AttackTimer++;
 
+			if (Owner.dead)
+				Projectile.Kill();
+
 			if (Main.rand.NextBool(15))
 				ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
 					-Projectile.velocity * 0.05f, Color.White.Additive() * 0.5f, new Color(255, 120, 0, 0), Main.rand.NextFloat(0.1f, 0.2f), 20, 0f));
@@ -157,6 +160,7 @@ public class LocustCrook : ModItem
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 
 			if (AttackTimer > 20)
+			{
 				if (Projectile.velocity.Y < 16f)
 				{
 					Projectile.velocity.Y += 0.3f;
@@ -166,6 +170,7 @@ public class LocustCrook : ModItem
 				}
 				else
 					Projectile.velocity.Y = 16f;
+			}
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -278,13 +283,13 @@ public class LocustCrook : ModItem
 			_tileHitTimer = reader.ReadInt32();
 		}
 
-		internal NPC FindTarget() => Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		internal NPC FindTarget() => Main.npc.Where(n => n.CanBeChasedBy() && n.DistanceSQ(Projectile.Center) < 1000f * 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 	}
 
 	public override void SetDefaults()
 	{
 		Item.Size = new(32);
-		Item.damage = 14;
+		Item.damage = 11;
 		Item.knockBack = 1f;
 
 		Item.useTime = 40;

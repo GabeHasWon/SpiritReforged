@@ -43,7 +43,10 @@ internal class PlayerMouseHandler
 
 	/// <summary>
 	/// Gets either <see cref="Main.MouseWorld"/> for the local client, or <see cref="MouseByWhoAmI"/>[<paramref name="who"/>] for remote clients.<br/>
-	/// Must be used in tandem with a <see cref="ShareMouseData"/> packet, otherwise the mouse data will not be updated properly.
+	/// Must be used in tandem with a <see cref="ShareMouseData"/> packet, otherwise the mouse data will not be updated properly.<br/>
+	/// If clients have not yet recieved the mouse packet, this will default to a few tiles above the remove player.<br/>
+	/// <b>DO NOT</b> use this for syncing-important content, only for unimportant visuals or vfx.
 	/// </summary>
-	public static Vector2 GetMouse(int who) => Main.myPlayer == who ? Main.MouseWorld : MouseByWhoAmI[who];
+	public static Vector2 GetMouse(int who) => Main.myPlayer == who ? Main.MouseWorld : 
+		(MouseByWhoAmI.TryGetValue(who, out Vector2 mouse) ? mouse : Main.player[who].Center - new Vector2(0, 40));
 }

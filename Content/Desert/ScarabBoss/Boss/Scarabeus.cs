@@ -7,10 +7,10 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -96,7 +96,7 @@ public partial class Scarabeus : ModNPC
 	private static VisualProfile SimulatedProfile;
 	private static VisualProfile BallProfile;
 
-	public delegate float ScarabeusAttackDelegate(ref bool retarget);
+	public delegate float ScarabeusAttackDelegate(Scarabeus self, ref bool retarget);
 
 	public AIState CurrentState
 	{
@@ -130,6 +130,15 @@ public partial class Scarabeus : ModNPC
 			int collisionHeight = NPC.height;
 			ShrinkTileHitbox(NPC, ref collisionPosition, ref collisionWidth, ref collisionHeight);
 			return Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight + 8, !IgnorePlatforms);
+		}
+	}
+
+	public bool IsIdling
+	{
+		get
+		{
+			AIState currentState = CurrentState;
+			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
 		}
 	}
 
@@ -178,15 +187,6 @@ public partial class Scarabeus : ModNPC
 		MaxValue
 	}
 
-	public bool IsIdling
-	{
-		get
-		{
-			AIState currentState = CurrentState;
-			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
-		}
-	}
-
 	private ScarabeusAttackDelegate[] _stateAI;
 
 	public override void Load()
@@ -222,25 +222,25 @@ public partial class Scarabeus : ModNPC
 	{
 		//Cinematic bits
 		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
-		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
-		_stateAI[(int)AIState.Roar] = Roar;
-		_stateAI[(int)AIState.Charmed] = CharmedIdle;
-		_stateAI[(int)AIState.Dance] = DanceIdle;
-		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
-		_stateAI[(int)AIState.Despawn] = DigAttack;
-		_stateAI[(int)AIState.DeathAnim] = DeathAnimation;
+		_stateAI[(int)AIState.SpawnAnim] = (Scarabeus scarab, ref bool retarget) => scarab.SpawnAnimation(ref retarget);
+		_stateAI[(int)AIState.Roar] = (Scarabeus scarab, ref bool retarget) => scarab.Roar(ref retarget);
+		_stateAI[(int)AIState.Charmed] = (Scarabeus scarab, ref bool retarget) => scarab.CharmedIdle(ref retarget);
+		_stateAI[(int)AIState.Dance] = (Scarabeus scarab, ref bool retarget) => scarab.DanceIdle(ref retarget);
+		_stateAI[(int)AIState.PhaseTransitionAnim] = (Scarabeus scarab, ref bool retarget) => scarab.TransitionAnimation(ref retarget);
+		_stateAI[(int)AIState.Despawn] = (Scarabeus scarab, ref bool retarget) => scarab.DigAttack(ref retarget);
+		_stateAI[(int)AIState.DeathAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DeathAnimation(ref retarget);
 		//Idle variants
-		_stateAI[(int)AIState.IdleTowardsPlayer] = IdleBetweenAttacks;
-		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
-		_stateAI[(int)AIState.IdleBackAwayFast] = IdleBetweenAttacks;
+		_stateAI[(int)AIState.IdleTowardsPlayer] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
+		_stateAI[(int)AIState.IdleAwayFromPlayer] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
+		_stateAI[(int)AIState.IdleBackAwayFast] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
 		//P1 Attacks
-		_stateAI[(int)AIState.GroundPound] = GroundPoundAttack;
-		_stateAI[(int)AIState.Shockwave] = ShockwaveAttack;
-		_stateAI[(int)AIState.Dig] = DigAttack;
-		_stateAI[(int)AIState.Roll] = RollAttack;
+		_stateAI[(int)AIState.GroundPound] = (Scarabeus scarab, ref bool retarget) => scarab.GroundPoundAttack(ref retarget);
+		_stateAI[(int)AIState.Shockwave] = (Scarabeus scarab, ref bool retarget) => scarab.ShockwaveAttack(ref retarget);
+		_stateAI[(int)AIState.Dig] = (Scarabeus scarab, ref bool retarget) => scarab.DigAttack(ref retarget);
+		_stateAI[(int)AIState.Roll] = (Scarabeus scarab, ref bool retarget) => scarab.RollAttack(ref retarget);
 		//P2 attacks
-		_stateAI[(int)AIState.SwoopDash] = SwoopDashAttack;
-		_stateAI[(int)AIState.Swarm] = SwarmAttack;
+		_stateAI[(int)AIState.SwoopDash] = (Scarabeus scarab, ref bool retarget) => scarab.SwoopDashAttack(ref retarget);
+		_stateAI[(int)AIState.Swarm] = (Scarabeus scarab, ref bool retarget) => scarab.SwarmAttack(ref retarget);
 
 		Profile = PhaseOneProfile;
 
@@ -332,7 +332,7 @@ public partial class Scarabeus : ModNPC
 			Music = Phase2Music;
 
 		bool retarget = !IsIdling;
-		float counterTickMultiplier = _stateAI[(int)CurrentState](ref retarget);
+		float counterTickMultiplier = _stateAI[(int)CurrentState](this, ref retarget);
 
 		//Retarget late if we're attacking and we need to retarget
 		if (retarget)
@@ -375,9 +375,7 @@ public partial class Scarabeus : ModNPC
 				ChangeState(AIState.Despawn);
 		}
 		else
-		{
 			despawnTimer = 0;
-		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -419,19 +417,12 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		for (int i = 0; i < 9; i++)
-		{
-			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f);
-			d.noGravity = true;
-		}
+			Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f).noGravity = true;
 
 		if (Main.rand.NextBool(5))
 		{
-			Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
-
 			for (int i = 0; i < 9; i++)
-			{
 				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), NPC.DirectionTo(Target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 9f), 50, default, 1.5f).noGravity = false;
-			}
 		}
 
 		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
@@ -457,7 +448,7 @@ public partial class Scarabeus : ModNPC
 
 			for (int i = 0; i < 30; i++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(area.Center(), -NPC.velocity.RotatedByRandom(2f) * Main.rand.NextFloat(3f), Color.DarkOrange, Color.Orange * 0.3f, 0.2f, EaseBuilder.EaseCircularOut, 100, false)
+				ParticleHandler.SpawnParticle(new SmokeCloud(area.Center(), -NPC.velocity.RotatedByRandom(2f) * Main.rand.NextFloat(3f), Color.DarkOrange, Color.Orange * 0.3f, 0.2f, EaseFunction.EaseCircularOut, 100, false)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,
@@ -478,8 +469,6 @@ public partial class Scarabeus : ModNPC
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
-
-			static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
 
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 45));
 		}
@@ -532,7 +521,7 @@ public partial class Scarabeus : ModNPC
 	{
 		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
-		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>(), ModContent.ItemType<LocustCrook>()));
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
@@ -577,9 +566,9 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
-	public void ChangeState(AIState state)
+	public void ChangeState(AIState state, bool setIdleTime = false)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 1; i < 3; i++)
 			NPC.ai[i] = 0;
 
 		CurrentState = state;
@@ -587,7 +576,11 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo)
 			NPC.rotation = 0;
+
 		currentFrame.Y = 0;
+
+		if (setIdleTime) // Pick a time to wait before the next attack
+			SetIdleTime(ref ExtraMemory);
 	}
 
 	public override bool? CanFallThroughPlatforms() => IgnorePlatforms;
@@ -610,6 +603,7 @@ public partial class Scarabeus : ModNPC
 		writer.Write(phaseTwo);
 		writer.Write(Enrage);
 		writer.Write(scarabColorIndex);
+		writer.Write((Half)NPC.Opacity);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -617,5 +611,6 @@ public partial class Scarabeus : ModNPC
 		phaseTwo = reader.ReadBoolean();
 		Enrage = reader.ReadSingle();
 		scarabColorIndex = reader.ReadInt32();
+		NPC.Opacity = (float)reader.ReadHalf();
 	}
 }

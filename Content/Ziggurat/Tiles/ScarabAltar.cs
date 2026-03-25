@@ -1,7 +1,8 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -12,6 +13,7 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
+using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -108,10 +110,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				
 				if (!Main.dedServ)
 					TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
-
-				if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
-					entity.Interact();
 			}
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
+				entity.Interact();
 		}
 
 		public override bool? CanDamage() => false;
@@ -351,6 +356,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 		TileID.Sets.PreventsTileHammeringIfOnTopOfIt[Type] = true;
+		TileID.Sets.PreventsTileReplaceIfOnTopOfIt[Type] = true;
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
@@ -392,7 +398,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	public override bool RightClick(int i, int j)
 	{
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
-		if (!BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity && entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
+
+		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
+			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
 			if (--result.stack <= 0)
 				result.TurnToAir(); //Consume an item
@@ -410,7 +418,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	private static bool FindSacrifice(Player player, out Item result)
 	{
-		if (!player.HeldItem.IsAir && SpiritSets.Gemstone[player.HeldItem.type])
+		if (!player.HeldItem.IsAir && ValidItem(player.HeldItem))
 		{
 			result = player.HeldItem;
 			return true;
@@ -418,7 +426,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		foreach (Item item in player.inventory)
 		{
-			if (!item.IsAir && SpiritSets.Gemstone[item.type])
+			if (!item.IsAir && ValidItem(item))
 			{
 				result = item;
 				return true;
@@ -428,6 +436,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		result = new(ItemID.None);
 		return false;
 	}
+
+	private static bool ValidItem(Item item) => SpiritSets.Gemstone[item.type] || item.type == ModContent.GetInstance<PolishedAmber>().AutoItemType();
 
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
@@ -511,8 +521,16 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 {
+	/// <summary>
+	/// Minimum time between two interactions.
+	/// </summary>
 	public const int InteractTimeMax = 10;
-	public const int ConsumableCountMax = 10;
+
+	/// <summary>
+	/// Amount of gems needed to summon Scarabeus.
+	/// </summary>
+	public const int ConsumableCountMax = 5;
+
 	public int consumableCount;
 
 	public int InteractTime { get; private set; }
@@ -554,17 +572,25 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 
 		SoundEngine.PlaySound(SoundID.Coins with { Pitch = (float)consumableCount / ConsumableCountMax }, area.Center());
 
-		float subVolume = (float)(consumableCount - ConsumableCountMax / 2) / (ConsumableCountMax / 2);
+		float subVolume = (float)(consumableCount - ConsumableCountMax / 2f) / (ConsumableCountMax / 2f);
 		if (subVolume > 0)
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
-		if (++consumableCount >= ConsumableCountMax)
+		consumableCount++;
+
+		if (consumableCount >= ConsumableCountMax)
 		{
 			consumableCount = 0;
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
-				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, ModContent.ProjectileType<ScarabAltar.BeamOLight>(), 0, 0, -1, 300);
+			{
+				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
+				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 300);
+			}
 		}
+
+		if (Main.netMode == NetmodeID.Server)
+			NetMessage.SendData(MessageID.TileEntitySharing, number: ID);
 	}
 
 	public void SetInteractTime() => InteractTime = InteractTimeMax;

@@ -142,7 +142,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		if (_empoweredStrike && lerp < 0.6f)
 		{
-			float prog = EaseBuilder.EaseCircularIn.Ease(1f - lerp / 0.6f);
+			float prog = EaseFunction.EaseCircularIn.Ease(1f - lerp / 0.6f);
 			
 			Main.spriteBatch.Draw(texWhite, drawPos - Main.screenPosition, null, Color.MediumVioletRed.Additive() * prog,
 			  Projectile.rotation + (Owner.direction == -1 ? MathHelper.TwoPi : 0f) + rot, texWhite.Size() / 2f, Projectile.scale, flip, 0f);
@@ -165,7 +165,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		var smear = TextureAssets.Projectile[985].Value;
 
-		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5.5f, EaseBuilder.EaseQuinticOut.Ease(1f - progress)));
+		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5.5f, EaseFunction.EaseQuinticOut.Ease(1f - progress)));
 		var pos = Owner.Center + new Vector2(90f, -90f).RotatedBy(Projectile.rotation - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f)) * _originalScale - Main.screenPosition;
 
 		Main.EntitySpriteDraw(smear, pos, source, OutlineColor, Projectile.rotation - MathHelper.PiOver4 - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f),
@@ -196,7 +196,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		var smear = TextureAssets.Projectile[985].Value;
 
-		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5f, EaseBuilder.EaseQuinticOut.Ease(1f - progress)));
+		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5f, EaseFunction.EaseQuinticOut.Ease(1f - progress)));
 		var pos = Owner.Center + new Vector2(75f, -70f).RotatedBy(Projectile.rotation - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f)) * _originalScale - Main.screenPosition;
 
 		Main.EntitySpriteDraw(smear, pos, source, OutlineColor * fadeIn, Projectile.rotation - MathHelper.PiOver4 - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f),
@@ -220,9 +220,9 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		float armRotation = Projectile.velocity.ToRotation() + (OriginalDirection == -1 ? MathHelper.Pi : 0f);
 
-		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
-		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
 		if (progress < 0.3f)
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.1f, 1.3f, progress / 0.3f);
@@ -233,7 +233,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.3f, 1.1f, lerp);
 
-			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseBuilder.EaseCircularIn.Ease(lerp)) * OriginalDirection;
+			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseFunction.EaseCircularIn.Ease(lerp)) * OriginalDirection;
 		}
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
@@ -252,9 +252,9 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		float armRotation = Projectile.velocity.ToRotation() + (OriginalDirection == -1 ? MathHelper.Pi : 0f);
 
-		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
-		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
 		if (progress < 0.3f)
 			Projectile.scale = _originalScale * MathHelper.Lerp(0.9f, 1.1f, progress / 0.3f);
@@ -265,7 +265,7 @@ public class RoyalKhopeshHeld : ModProjectile
 			
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.1f, 0.9f, lerp);
 
-			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseBuilder.EaseCircularIn.Ease(lerp)) * OriginalDirection;
+			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseFunction.EaseCircularIn.Ease(lerp)) * OriginalDirection;
 		}
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);

@@ -34,7 +34,7 @@ public class AdornedBow : ModItem
 	{
 		Item.damage = 15;
 		Item.Size = new Vector2(48, 52);
-		Item.useTime = Item.useAnimation = 120;
+		Item.useTime = Item.useAnimation = 90;
 		Item.knockBack = 1f;
 		Item.noMelee = true;
 		Item.channel = true;
