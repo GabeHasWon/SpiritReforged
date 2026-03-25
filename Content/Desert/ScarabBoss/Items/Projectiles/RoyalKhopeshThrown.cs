@@ -177,6 +177,8 @@ public class RoyalKhopeshThrown : ModProjectile
 				Projectile.velocity = Projectile.DirectionTo(owner.Center) * 10f;
 				Projectile.timeLeft = FADEOUT_TIME;
 				Dying = true;
+
+				Projectile.netUpdate = true;
 			}
 
 			return false;
