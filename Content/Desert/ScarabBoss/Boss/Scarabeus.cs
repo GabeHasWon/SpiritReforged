@@ -237,7 +237,7 @@ public partial class Scarabeus : ModNPC
 		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
-		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
+		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");
 	}
 
 	public override void SetDefaults()
