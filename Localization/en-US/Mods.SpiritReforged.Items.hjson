@@ -3025,3 +3025,8 @@ LocustCrook: {
 		Throws out a crook that attracts locusts
 		'''
 }
+
+IridescentDye: {
+	DisplayName: Iridescent Dye
+	Tooltip: ""
+}

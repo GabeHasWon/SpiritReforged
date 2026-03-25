@@ -187,7 +187,7 @@ public partial class Scarabeus : ModNPC
 		MaxValue
 	}
 
-	private ScarabeusAttackDelegate[] _stateAI;
+	private static ScarabeusAttackDelegate[] _stateAI;
 
 	public override void Load()
 	{
@@ -198,27 +198,6 @@ public partial class Scarabeus : ModNPC
 	}
 
 	public override void SetStaticDefaults()
-	{
-		Main.npcFrameCount[Type] = 17; //The highest frame count
-		NPCID.Sets.TrailCacheLength[Type] = 8;
-		NPCID.Sets.TrailingMode[Type] = 3;
-
-		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
-		{
-			Position = new Vector2(8f, 12f),
-			PortraitPositionXOverride = 0f
-		});
-
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
-		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false));
-		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
-
-		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
-		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
-	}
-
-	public override void SetDefaults()
 	{
 		//Cinematic bits
 		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
@@ -242,6 +221,27 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.SwoopDash] = (Scarabeus scarab, ref bool retarget) => scarab.SwoopDashAttack(ref retarget);
 		_stateAI[(int)AIState.Swarm] = (Scarabeus scarab, ref bool retarget) => scarab.SwarmAttack(ref retarget);
 
+		Main.npcFrameCount[Type] = 17; //The highest frame count
+		NPCID.Sets.TrailCacheLength[Type] = 8;
+		NPCID.Sets.TrailingMode[Type] = 3;
+
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Position = new Vector2(8f, 12f),
+			PortraitPositionXOverride = 0f
+		});
+
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
+		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false));
+		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
+
+		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
+		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
+	}
+
+	public override void SetDefaults()
+	{
 		Profile = PhaseOneProfile;
 
 		NPC.width = 90;
@@ -525,6 +525,7 @@ public partial class Scarabeus : ModNPC
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
