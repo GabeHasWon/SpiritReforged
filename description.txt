@@ -22,4 +22,4 @@ Our brand new update, the Catch-up Patch (v0.1.2) brings you lots of new content
 We hope you enjoy Spirit Reforged and join Team Spirit on our next adventure.
 
 -- Contributors --
-tomat, alinahvoshch, Halmska
+tomat, alinahvoshch, Halmska, mathica

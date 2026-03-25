@@ -167,7 +167,7 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInZiggurat()
 	{
-		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratBiome).ToHashSet();
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicrobiome).ToHashSet();
 
 		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;

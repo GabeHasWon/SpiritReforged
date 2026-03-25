@@ -292,7 +292,6 @@ public class LocustCrook : ModItem
 
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
-		Item.mana = 100;
 
 		Item.DamageType = DamageClass.Summon;
 		Item.noUseGraphic = true;

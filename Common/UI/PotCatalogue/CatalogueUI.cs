@@ -27,18 +27,30 @@ public partial class CatalogueUI : AutoUIState
 	{
 		LoadAssets();
 
-		Width.Set(600, 0);
-		Height.Set(400, 0);
+		float uiWidth = 600;
+		float uiHeight = 400;
+		float entriesWidth = 398;
+		float infoWidth = 202;
+
+		if (Language.ActiveCulture.Name == "ru-RU")
+		{
+			uiWidth = 625;
+			entriesWidth = 322f;
+			infoWidth = 303f;
+		}
+
+		Width.Set(uiWidth, 0);
+		Height.Set(uiHeight, 0);
 		Left.Set(-Width.Pixels / 2, .5f);
 		Top.Set(-Height.Pixels / 2 - 50, .5f);
 
 		_entries = new();
-		_entries.Width.Set(406, 0);
+		_entries.Width.Set(entriesWidth, 0);
 		_entries.Height.Set(Height.Pixels, 0);
 		_entries.AddScrollbar(new UIScrollbar());
 
 		_info = new();
-		_info.Width.Set(194, 0);
+		_info.Width.Set(infoWidth, 0);
 		_info.Height.Set(Height.Pixels, 0);
 		_info.Left.Set(_entries.Width.Pixels, 0);
 		_info.AddScrollbar(new UIScrollbar());
