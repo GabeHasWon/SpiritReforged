@@ -61,7 +61,8 @@ public class RoyalKhopeshHeld : ModProjectile
 	{
 		if (_empoweredStrike)
 		{
-			modifiers.FinalDamage *= 1.3f;
+			modifiers.FinalDamage *= 2f;
+			modifiers.SetCrit();
 		}	
 	}
 
@@ -323,8 +324,8 @@ public class RoyalKhopeshHeld : ModProjectile
 			_empoweredStrike = true;
 			kopeshPlayer.EmpoweredStrikeTimer = 0;
 
-			if (Main.myPlayer == Projectile.owner)
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity, 2f, 3, 15));
+			//if (Main.myPlayer == Projectile.owner)
+				//Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity, 2f, 3, 15));
 
 			SoundEngine.PlaySound(EmpoweredSlash_01, Owner.Center);
 			SoundEngine.PlaySound(EmpoweredSlash_02, Owner.Center);

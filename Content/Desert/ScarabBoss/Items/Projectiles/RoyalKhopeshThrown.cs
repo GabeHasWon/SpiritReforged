@@ -138,7 +138,7 @@ public class RoyalKhopeshThrown : ModProjectile
 				Projectile.rotation = (Projectile.Center - Projectile.velocity * 5f).DirectionTo(target.Center).ToRotation() + MathHelper.PiOver2;
 			}
 
-			if (Main.myPlayer == Projectile.owner && Main.mouseRight && Projectile.timeLeft < MAX_TIMELEFT - 40 && !Dying)
+			if (Main.myPlayer == Projectile.owner && Main.mouseLeft && Projectile.timeLeft < MAX_TIMELEFT - 40 && !Dying)
 			{
 				Projectile.friendly = true;
 
@@ -165,6 +165,9 @@ public class RoyalKhopeshThrown : ModProjectile
 				}
 
 				owner.GetModPlayer<RoyalKhopeshPlayer>().EmpoweredStrikeTimer = 120;
+
+				owner.SetItemAnimation(15);
+				owner.SetItemTime(15);
 
 				Projectile.friendly = false;
 				Stuck = false;

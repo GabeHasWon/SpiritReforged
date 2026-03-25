@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 using System.IO;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -14,7 +15,7 @@ public class RoyalKhopesh : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 25;
+		Item.damage = 22;
 		Item.Size = new Vector2(48, 52);
 		Item.useTime = Item.useAnimation = 48;
 		Item.knockBack = 1f;
@@ -60,7 +61,7 @@ public class RoyalKhopesh : ModItem
 
 	public override bool AltFunctionUse(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<RoyalKhopeshThrown>()] <= 0 && player.GetModPlayer<RoyalKhopeshPlayer>().ThrowCooldown <= 0;
 
-	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0;
+	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] <= 0 && !Main.projectile.Any(p => p.active && p.owner == player.whoAmI && p.type == ModContent.ProjectileType<RoyalKhopeshThrown>() && ((p.ModProjectile as RoyalKhopeshThrown).Stuck || (p.ModProjectile as RoyalKhopeshThrown).Dying && p.timeLeft > 30));
 	public override bool MeleePrefix() => true;
 
 	public override void NetReceive(BinaryReader reader) => swingDirection = reader.ReadInt32();

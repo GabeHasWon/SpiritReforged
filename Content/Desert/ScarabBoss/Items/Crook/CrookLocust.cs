@@ -347,9 +347,9 @@ public class CrookLocust : ModProjectile
 		if (Projectile.penetrate == 1)
 			Timer = 0;
 
-		Vector2 normalized = Projectile.velocity.SafeNormalize(Vector2.One);
+		//Vector2 normalized = Projectile.velocity.SafeNormalize(Vector2.One);
 
-		ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 20, 1, -Projectile.velocity.ToRotation(), -normalized));
+		//ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 20, 1, -Projectile.velocity.ToRotation(), -normalized));
 
 		for (int i = 0; i < 4; i++)
 		{

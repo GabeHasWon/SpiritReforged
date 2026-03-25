@@ -193,6 +193,13 @@ public class LocustCrook : ModItem
 			return false;
 		}
 
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = false;
+
+			return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
+		}
+
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 
 		public override bool PreDraw(ref Color lightColor)
@@ -304,6 +311,7 @@ public class LocustCrook : ModItem
 		Item.shoot = ModContent.ProjectileType<LocustCrookProjectile>();
 		Item.shootSpeed = 1;
 		Item.useStyle = ItemUseStyleID.Swing;
+		Item.UseSound = SoundID.DD2_MonkStaffSwing;
 		Item.autoReuse = true;
 	}
 
