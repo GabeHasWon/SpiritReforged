@@ -30,6 +30,7 @@ public class SunStaff : ModItem
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.UseSound = SoundID.DD2_MonkStaffSwing;
 		Item.shoot = ModContent.ProjectileType<SunStaffHeld>();
 	}
 

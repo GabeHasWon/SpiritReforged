@@ -6,6 +6,7 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
 using Terraria.Graphics.CameraModifiers;
 using SpiritReforged.Common.Visuals;
+using System.IO;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 public class RoyalKhopeshHeld : ModProjectile
@@ -345,10 +346,23 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		MaxTime = Projectile.timeLeft;
 		Projectile.rotation = Owner.DirectionTo(Projectile.Center + Projectile.velocity).ToRotation() + MathHelper.PiOver4;
-		Projectile.netUpdate = true;
 		Projectile.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 		OriginalDirection = Projectile.direction;
 		Owner.itemTime = Projectile.timeLeft / 2;
 		Owner.itemAnimation = Owner.itemTime;
+
+		Projectile.netUpdate = true;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_empoweredStrike);
+		writer.Write(_originalScale);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		_empoweredStrike = reader.ReadBoolean();
+		_originalScale = reader.ReadSingle();
 	}
 }
