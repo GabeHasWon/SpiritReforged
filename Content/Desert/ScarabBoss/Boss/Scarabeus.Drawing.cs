@@ -136,6 +136,29 @@ public partial class Scarabeus : ModNPC
 			UpdateFrame(currentFrame.X, 12, PhaseOneProfile);
 	}
 
+	public Effect GetShader(Texture2D texture, Texture2D sheenTexture, Rectangle frame)
+	{
+		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
+		sheenShader.Parameters["uTexture"].SetValue(texture);
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));
+		sheenShader.Parameters["resolution"].SetValue(texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(sheenTexture);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+
+		return sheenShader;
+
+		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
+		sheenShader.Parameters["resolution"].SetValue(texture.Size());
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f + iridescenceBoost * 0.1f);
+		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
+		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
+		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
+		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+	}
+
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		if (NPC.Opacity == 0)
@@ -220,14 +243,7 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
-		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
-		sheenShader.Parameters["resolution"].SetValue(texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f + iridescenceBoost * 0.1f);
-		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.6f : 0.15f);
-		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-		sheenShader.Parameters["sheenMasks"].SetValue(Profile.SheenMask.Value);
-		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
+		Effect sheenShader = GetShader(texture, Profile.SheenMask.Value, NPC.frame);
 		FlipShadersOnOff(spriteBatch, sheenShader, true);
 
 		if (Profile == SimulatedProfile)
@@ -272,15 +288,6 @@ public partial class Scarabeus : ModNPC
 			Main.spriteBatch.Draw(bloom, NPC.Center + new Vector2(-10f * NPC.direction, -20f).RotatedBy(NPC.rotation) - Main.screenPosition, null, Color.Orange.Additive() * (Counter / 360f), 0f, bloom.Size() / 2f, 1f, 0f, 0f);
 		}
 
-		/*
-		MultipliableFloat test = new MultipliableFloat();
-		Rectangle hitbox = NPC.Hitbox;
-		ModifyCollisionData(Target.Hitbox, ref NPC.type, ref test, ref hitbox);
-		hitbox.X -= (int)Main.screenPosition.X;
-		hitbox.Y -= (int)Main.screenPosition.Y;
-		spriteBatch.Draw(TextureAssets.MagicPixel.Value, hitbox, dealContactDamage ? Color.Red * 0.8f : Color.Black * 0.4f);
-		*/
-
 		return false;
 	}
 
@@ -306,20 +313,10 @@ public partial class Scarabeus : ModNPC
 			Rotation = rotation
 		});
 
-		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
-		sheenShader.Parameters["uTexture"].SetValue(BallProfile.Texture.Value);
-		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(0, 0, BallProfile.Texture.Width(), BallProfile.Texture.Height()));
-		sheenShader.Parameters["resolution"].SetValue(BallProfile.Texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
-		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
-		sheenShader.Parameters["sheenMasks"].SetValue(BallProfile.SheenMask.Value);
-		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
-
+		Effect sheenShader = GetShader(BallProfile.Texture.Value, BallProfile.SheenMask.Value, BallProfile.Texture.Frame());
 		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
 		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
 		sheenShader.Parameters["flip"].SetValue(flipped);
-
 		PrimitiveRenderer.DrawPrimitiveShapeBatched(ballTrail.ToArray(), sheenShader, "BallPass");
 	}
 
