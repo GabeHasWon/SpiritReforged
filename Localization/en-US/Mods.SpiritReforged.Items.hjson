@@ -3038,7 +3038,7 @@ IridescentDye: {
 
 ScarabLightPetItem: {
 	DisplayName: Scarab Bulb
-	Tooltip:	
+	Tooltip:
 		'''
 		Summons a Scarababy
 		'Eureka!'

@@ -3033,6 +3033,10 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	// DisplayName: Scarab Light Pet Item
-	// Tooltip: ""
+	// DisplayName: Scarab Bulb
+	/* Tooltip:
+		'''
+		Summons a Scarababy
+		'Eureka!'
+		''' */
 }
