@@ -1507,8 +1507,11 @@ public partial class Scarabeus : ModNPC
 
 				artificialGravityMultiplier = 0f;
 
-				if (currentFrame.Y < 8)
-					currentFrame.Y = 8;
+				if (currentFrame.Y < 10)
+					currentFrame.Y = 10;
+
+				if (currentFrame.Y is 19 or 21)
+					SetFrame(5, currentFrame.Y + 1, PhaseTwoProfile);
 
 				if (UpdateFrame(5, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
