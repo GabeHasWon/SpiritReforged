@@ -3,6 +3,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -10,6 +11,21 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class NeedleTrap : ModTile, IAutoloadTileItem
 {
+	/// <summary>
+	/// Utility class solely used to run player step functionality on sp/server.
+	/// </summary>
+	public class NeedleTrapPlayer : ModPlayer
+	{
+		public override void PreUpdate()
+		{
+			var tileCoords = Player.Bottom.ToTileCoordinates16();
+			var tile = Framing.GetTileSafely(tileCoords);
+
+			if (tile.HasUnactuatedTile && tile.TileType == ModContent.TileType<NeedleTrap>())
+				ModContent.GetInstance<NeedleTrap>().HitWire(tileCoords.X, tileCoords.Y); // HitWire does nothing in mp clients
+		}
+	}
+
 	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
 	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
 
@@ -31,18 +47,6 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
-	public override void FloorVisuals(Player player)
-	{
-		if (player.whoAmI == Main.myPlayer)
-		{
-			var tileCoords = player.Bottom.ToTileCoordinates16();
-			var tile = Framing.GetTileSafely(tileCoords);
-
-			if (tile.HasUnactuatedTile && tile.TileType == Type && Wiring.CheckMech(tileCoords.X, tileCoords.Y, NeedleTrapProj.TimeLeftMax))
-				SpawnSpike(new EntitySource_TileInteraction(player, tileCoords.X, tileCoords.Y), tileCoords);
-		}
-	}
-
 	public override bool Slope(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
@@ -62,6 +66,9 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 
 	public override void HitWire(int i, int j) //Allow this trap to be triggered using wire in addition to being stepped on
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+		
 		if (Wiring.CheckMech(i, j, NeedleTrapProj.TimeLeftMax))
 			SpawnSpike(Wiring.GetProjectileSource(i, j), new(i, j));
 	}
