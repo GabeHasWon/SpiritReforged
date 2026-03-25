@@ -142,3 +142,8 @@ ScarabPetBuff: {
 	DisplayName: Tiny Scarab
 	Description: "'It really loves to roll...'"
 }
+
+ScarabLightPetBuff: {
+	DisplayName: Scarababy
+	Description: "'It's plotting...'"
+}

@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
@@ -13,5 +14,6 @@ public class BagOScarabs : BossBagItem
 		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<SerratedClaws>()));
 		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<Scarabeus>()));
+		itemLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabLightPetItem>()));
 	}
 }

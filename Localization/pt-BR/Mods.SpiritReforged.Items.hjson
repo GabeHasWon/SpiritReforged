@@ -3026,3 +3026,8 @@ LocustCrook: {
 		Throws out a crook that attracts locusts
 		''' */
 }
+
+ScarabLightPetItem: {
+	// DisplayName: Scarab Light Pet Item
+	// Tooltip: ""
+}
