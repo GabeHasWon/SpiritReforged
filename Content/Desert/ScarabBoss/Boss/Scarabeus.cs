@@ -336,7 +336,7 @@ public partial class Scarabeus : ModNPC
 		trailOpacity = 0f;
 		iridescenceBoost = MathHelper.Lerp(iridescenceBoost, 0f, 0.1f);
 
-		if (!phaseTwo && NPC.life < NPC.lifeMax * PHASE_2_HEALTH_THRESHOLD && IsIdling)
+		if (!phaseTwo && NPC.life < NPC.lifeMax * PHASE_2_HEALTH_THRESHOLD && IsIdling && !FightingDScourge)
 		{
 			ChangeState(AIState.PhaseTransitionAnim);
 			NPC.Opacity = 1f;

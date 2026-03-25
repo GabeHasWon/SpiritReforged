@@ -61,6 +61,13 @@ public partial class Scarabeus : ModNPC
 			case "doDigRumbleVFX":
 				DuoFightSpawnRumbleVFX((Rectangle)args[2], (bool)args[3]);
 				return true;
+			case "getScarabHealth":
+				return Main.masterMode ? STAT_LIFEMAX_MASTER : Main.expertMode ? STAT_LIFEMAX_EXPERT : STAT_LIFEMAX_NORMAL;
+			case "isScarabOnTopOfTiles":
+				return ((args[2] as NPC).ModNPC as Scarabeus).OnTopOfTiles;
+			case "doScourgeLandSlamShockwave":
+				((args[2] as NPC).ModNPC as Scarabeus).DuoFightGigaFloorShockwave(false, (Vector2)args[3]);
+				return true;
 		}
 
 		return null;
@@ -155,10 +162,82 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Giga Slam Attack
-	public void DuoFightUnearthScourge(Vector2 position, float delay)
+	public void DuoFightGigaFloorShockwave(bool unearthScourge = true, Vector2? shockwaveCenter = null)
 	{
-		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "sendScourgeFlyingUp", scourgeFightManager, position, delay);
+		Vector2 fissureCenterPos = shockwaveCenter ?? scourgeFightManager.NPC.Center;
+		fissureCenterPos = FindGroundFromPositionIgnorePlatforms(fissureCenterPos);
+
+		float scourgeTotalLength = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getScourgeLength", scourgeFightManager);
+		float scourgeHalfWidth = scourgeTotalLength * 0.5f;
+
+		float burstDelay = unearthScourge ? 7f : 1f;
+
+		if (unearthScourge)
+			CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "sendScourgeFlyingUp", scourgeFightManager, fissureCenterPos, burstDelay + 2);
+
+		//Spawn a tile wave
+		BouncingTileWave((int)(scourgeTotalLength / 19), 14, 60, null);
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
+		for (int side = -1; side <= 1; side += 2)
+		{
+			bool invalidFissurePosition = false;
+			float big_burst_area = scourgeTotalLength / 3f;
+			Vector2 fissurePos = fissureCenterPos;
+
+			float travelDist = 0f;
+
+			float fullTravelDist = scourgeHalfWidth;
+			float travelspeed = 0.1f;
+			float burstSpawnDelay = burstDelay;
+
+			while (travelDist < fullTravelDist)
+			{
+				//The big burst has its shockwave projectiles more closely packed
+				float spacing = travelDist <= big_burst_area ? 16 : 32;
+
+				//Shockwave increases in height as it travels before getting even bigger at the burst point
+				float travelProgress = Utils.GetLerpValue(fullTravelDist, big_burst_area, travelDist, true);
+				float shockwaveHeight = MathHelper.Lerp(50, 80, travelProgress);
+				if (travelDist <= big_burst_area)
+					shockwaveHeight += Utils.Remap(travelDist, 0, big_burst_area, 120, 40, true);
+
+				float vfxVelocity = travelDist <= big_burst_area ? 0.1f : 1.5f - travelProgress;
+
+				//Progress linearly
+				if (travelDist > big_burst_area)
+					burstSpawnDelay += travelspeed;
+
+				//Kaboom!
+				if (!invalidFissurePosition)
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), fissurePos, new Vector2(side * vfxVelocity, 0f), ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_SLAM_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, burstSpawnDelay, shockwaveHeight);
+
+				Vector2 newFissurePos = FindGroundFromPositionIgnorePlatforms(fissurePos + new Vector2(spacing * side, -40), Math.Max(Target.Center.Y - 40, fissurePos.Y - 140));
+
+				//If we do too big a vertical jump between positions, first we try to ignore it and if for 2x in a row the elevation diff is too big, we stop the shockwave early 
+				if (Math.Abs(newFissurePos.Y - fissurePos.Y) > 200)
+				{
+					//If we already had a broken position last time, it's over, give up
+					if (invalidFissurePosition)
+						break;
+
+					invalidFissurePosition = true;
+					newFissurePos.Y = fissurePos.Y; //Go to the old Y level
+				}
+				else
+					invalidFissurePosition = false;
+				fissurePos = newFissurePos;
+
+				//If we transition from the small fissure spreading across the floor to the bigger burst at the end, add an extra delay for impact
+				if (travelDist < big_burst_area && travelDist + spacing >= big_burst_area)
+					burstSpawnDelay += 17f;
+				travelDist += spacing;
+			}
+		}
 	}
+
 	#endregion
 
 	#region Visuals
@@ -168,8 +247,11 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		Vector2 rumbleCenter = rumbleArea.Center.ToVector2();
+		float rumbleWidth = rumbleArea.Width;
 
-		for (int i = 0; i < Main.rand.Next(4); i++)
+		int maxParticles = rumbleWidth < 150 ? Main.rand.Next(4) : (int)(rumbleWidth / 16);
+
+		for (int i = 0; i < maxParticles; i++)
 		{
 			Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
 			Color[] colors = GetTilePalette(FindGroundFromPosition(rumbleCenter));
@@ -192,7 +274,7 @@ public partial class Scarabeus : ModNPC
 			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(rumbleArea), DustID.Sand, new(0, -4), 0, default, Main.rand.NextFloat(0.7f, 1.2f));
 
 		if (doTileWave)
-			StaticBouncingTileWave(rumbleCenter, 5, Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-rumbleArea.Width / 4, rumbleArea.Width / 4) * Vector2.UnitX);
+			StaticBouncingTileWave(rumbleCenter, rumbleWidth < 150 ? 5 : (int)(rumbleWidth / 18), Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-rumbleArea.Width / 4, rumbleArea.Width / 4) * Vector2.UnitX);
 	}
 
 	private Effect GetElectricEffect(float electricityOpacity)

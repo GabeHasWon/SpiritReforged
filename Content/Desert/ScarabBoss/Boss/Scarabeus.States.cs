@@ -657,17 +657,26 @@ public partial class Scarabeus : ModNPC
 		ShrinkTileHitbox(NPC, ref collisionOrigin, ref collisionWidth, ref collisionHeight);
 		float collisionBottom = collisionOrigin.Y + collisionHeight;
 
+		float idealTargetDistance = 110;
+		float fastBackAwayDistance = 60;
+
+		if (FightingDScourge)
+		{
+			idealTargetDistance = 300;
+			fastBackAwayDistance = 120;
+		}
+
 		//Get some distance
-		if (playerDistanceX < 110f && CurrentState == AIState.IdleTowardsPlayer)
+		if (playerDistanceX < idealTargetDistance && CurrentState == AIState.IdleTowardsPlayer)
 			CurrentState = AIState.IdleAwayFromPlayer;
 		//Draw near
-		if (playerDistanceX > 190f && CurrentState == AIState.IdleAwayFromPlayer)
+		if (playerDistanceX > idealTargetDistance + 80 && CurrentState == AIState.IdleAwayFromPlayer)
 			CurrentState = AIState.IdleTowardsPlayer;
 		//Fast back away if the player is really too close
-		if (playerDistanceX < 60f)
+		if (playerDistanceX < fastBackAwayDistance)
 			CurrentState = AIState.IdleBackAwayFast;
 		//Slow down the fast back away if enough distance has been put between scarab and the player
-		if (playerDistanceX > 130f && CurrentState == AIState.IdleBackAwayFast)
+		if (playerDistanceX > idealTargetDistance + 20 && CurrentState == AIState.IdleBackAwayFast)
 			CurrentState = AIState.IdleAwayFromPlayer;
 
 		//Come towards the player if the sightline is broken
@@ -1145,9 +1154,13 @@ public partial class Scarabeus : ModNPC
 	#region Shockwave Slam
 	public float ShockwaveAttack(ref bool retarget)
 	{
+		if (Counter == 0)
+			ShiftUpToFloorLevel();
+
 		NPC.noTileCollide = false;
 		NPC.noGravity = false;
 		NPC.velocity.X *= 0.8f;
+		NPC.rotation = 0;
 
 		retarget = false;
 		if (Counter < 5)
@@ -1161,9 +1174,14 @@ public partial class Scarabeus : ModNPC
 
 		//Much slower telegraph when fighting desert scourge, because when it does the slam it's for the Giga-Impact ultraslam 9000 that sends scourge flying up
 		if (FightingDScourge)
+		{
 			framerate -= 5;
+			if (scourgeFightManager.NPC.ai[3] < 20)
+				framerate = 1;
+		}
+
 		//Faster telegraph if the player is going past scarab
-		else if (lastFrameY < 9)
+		if (lastFrameY < 9)
 			framerate += (int)(10 * Utils.GetLerpValue(100, -30, (Target.Center.X - NPC.Center.X) * NPC.direction, true));
 
 		if (lastFrameY == 2 && ExtraMemory < 1)
@@ -1184,10 +1202,11 @@ public partial class Scarabeus : ModNPC
 		{
 			ExtraMemory = 0;
 			dealContactDamage = true;
-			//projectiles and sfx here
 
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-				SpawnShockwaveFissure();
+			if (FightingDScourge)
+				DuoFightGigaFloorShockwave(true);
+			else
+				SpawnShockwaveFissure();			
 
 			if (!Main.dedServ)
 			{
@@ -1206,8 +1225,13 @@ public partial class Scarabeus : ModNPC
 
 	public void SpawnShockwaveFissure()
 	{
-		Vector2 fissurePos = FindGroundFromPositionIgnorePlatforms(NPC.Center);
+		//Spawn a tile wave in the direction of the attack
+		BouncingTileWave(NPC.direction, 45, 14, 60);
 
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
+		Vector2 fissurePos = FindGroundFromPositionIgnorePlatforms(NPC.Center);
 		bool invalidFissurePosition = false;
 		const float min_travel_distance = 512;
 		const float big_burst_area = 128;
@@ -1220,10 +1244,6 @@ public partial class Scarabeus : ModNPC
 		float travelspeed = min_travel_distance / (fullTravelDist - big_burst_area);
 		float burstSpawnDelay = 5f;
 		
-		//Spawn a tile wave in the direction of the attack
-		BouncingTileWave(NPC.direction, 45, 14, 60);
-
-		bool explodedDesertScourge = !FightingDScourge;
 
 		while (travelDistLeft > 0)
 		{
@@ -1263,21 +1283,10 @@ public partial class Scarabeus : ModNPC
 
 			//If we transition from the small fissure spreading across the floor to the bigger burst at the end, add an extra delay for impact
 			if (travelDistLeft > big_burst_area && travelDistLeft - spacing <= big_burst_area)
-			{
 				burstSpawnDelay += 17f;
-
-				if (!explodedDesertScourge)
-				{
-					explodedDesertScourge = true;
-					DuoFightUnearthScourge(fissurePos, burstSpawnDelay);
-				}
-			}
 
 			travelDistLeft -= spacing;
 		}
-
-		if (!explodedDesertScourge)
-			DuoFightUnearthScourge(fissurePos, burstSpawnDelay);
 	}
 	#endregion
 
