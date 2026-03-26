@@ -115,7 +115,14 @@ public class SoilBallProjectile : ModProjectile
 		Vector2 position = Projectile.Center;
 		float rotation = Projectile.rotation;
 		float scale = Projectile.scale;
-		Rectangle frame = texture.Frame(1, 3, 0, TileID.Sets.CanBeDugByShovel[_tileType] ? 1 : 0, 0, -2);
+
+		int frameIndex = 0;
+		if (TileID.Sets.Conversion.Sand[_tileType])
+			frameIndex = 2;
+		else if (TileID.Sets.Conversion.Snow[_tileType] || TileID.Sets.CanBeDugByShovel[_tileType])
+			frameIndex = 1;
+
+		Rectangle frame = texture.Frame(1, 3, 0, frameIndex, 0, -2);
 
 		Color color = Lighting.GetColor(position.ToTileCoordinates());
 		if (_tileFullbright)
