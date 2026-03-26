@@ -207,7 +207,7 @@ public partial class ZigguratMicrobiome : Microbiome
 		int j = origin.Y;
 
 		WorldMethods.FindGround(i, ref j);
-		WorldGen.PlaceTile(i, j - 1, ModContent.TileType<ScarabAltar>(), true);
+		Placer.PlaceTile<ScarabAltar>(i, j -1).PostPlacement(out ScarabAltarEntity _);
 
 		const int width = 8;
 		WorldUtils.Gen(new(i - width / 2, j), new Shapes.Rectangle(width, 2), Actions.Chain(
@@ -308,8 +308,9 @@ public partial class ZigguratMicrobiome : Microbiome
 
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
-		int maxChestCount = Main.maxTilesX / 2100;
+		int minChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
+		PriorityQueue<Point16, float> chestPositions = new();
 
 		foreach (var room in rooms)
 		{
@@ -338,9 +339,12 @@ public partial class ZigguratMicrobiome : Microbiome
 			{
 				decorator.Enqueue((i, j) =>
 				{
-					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(7))
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)))
 					{
-						furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+						if (WorldGen.genRand.NextBool(7))
+							furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+
+						chestPositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
 						return true;
 					}
 
@@ -357,19 +361,18 @@ public partial class ZigguratMicrobiome : Microbiome
 			decorator.Run();
 		}
 
+		while (minChestCount > 0 && chestPositions.Count > 0)
+		{
+			Point16 pos = chestPositions.Dequeue();
+
+			if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
+				minChestCount--;
+		}
+
 		while (furniturePositions.Count > 0)
 		{
 			Point16 pos = furniturePositions.Dequeue();
-
-			if (maxChestCount > 0)
-			{
-				PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest);
-				maxChestCount--;
-			}
-			else
-			{
-				PlaceRandomFurniture(pos.X, pos.Y);
-			}
+			PlaceRandomFurniture(pos.X, pos.Y);
 		}
 	}
 

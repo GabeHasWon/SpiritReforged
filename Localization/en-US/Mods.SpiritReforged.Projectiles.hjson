@@ -58,7 +58,12 @@ DragonFireball.DisplayName: Dragon Fireball
 PileOfConsequencesPet.DisplayName: Consequences
 EnergyLaser.DisplayName: Energy Laser
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+SandPillar.DisplayName: Sand Pillar
+SlamShockwave.DisplayName: Slam Shockwave
 WindBlast.DisplayName: Wind Blast
+ClawHitbox.DisplayName: Claw Hitbox
+DivebombScarab.DisplayName: Divebomb Scarab
+SwarmScarab.DisplayName: Swarm Scarab
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 AdornedArrow.DisplayName: Adorned Arrow
 AdornedBowHeld.DisplayName: Adorned Bow Held
@@ -70,3 +75,14 @@ LocustDamageProjectile.DisplayName: Locust Damage Projectile
 LocustExplosion.DisplayName: Locust Explosion
 CrookLocustGore.DisplayName: Crook Locust Gore
 RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
+FloatingGem.DisplayName: Floating Gem
+BeamOLight.DisplayName: Beam O Light
+ScarabPetProjectile.DisplayName: Mini Scarabeus
+SandShockwavePillar.DisplayName: Sand Shockwave
+SandballProjectile.DisplayName: Sandball
+BabyAntlionProjectile.DisplayName: Baby Antlion
+ScarabLightPet.DisplayName: Scarababy
+SandShockwavePillar.DisplayName: Sand Shockwave Pillar
+SandballProjectile.DisplayName: Sandball Projectile
+BabyAntlionProjectile.DisplayName: Baby Antlion Projectile
+SoilBallProjectile.DisplayName: Soil Ball Projectile

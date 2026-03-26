@@ -179,6 +179,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 			SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.5f, Pitch = 0.1f }, Projectile.Center);
 
 			target.AddBuff(BuffID.Bleeding, 200);
+			target.GetGlobalNPC<NPCBleedVisuals>().bleedDirection = Projectile.DirectionFrom(target.Center);
 
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(target.Hitbox.ClosestPointInRect(Projectile.Center) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());

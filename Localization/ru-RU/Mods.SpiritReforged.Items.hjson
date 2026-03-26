@@ -2801,7 +2801,7 @@ CrackedSandstoneItem: {
 }
 
 StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary
+	// DisplayName: Stone Reliquary Item
 	// Tooltip: ""
 }
 
@@ -2945,6 +2945,11 @@ GoldCricketCageItem: {
 	// Tooltip: ""
 }
 
+ScarabPetItem: {
+	// DisplayName: Scarab Food
+	// Tooltip: Summons a little Scarab companion
+}
+
 CarrotCake: {
 	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
@@ -2961,7 +2966,46 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	// DisplayName: Adorned Bow
+	// DisplayName: Gilded Greatbow
+	/* Tooltip:
+		'''
+		Charges an empowered shot
+		Empowered shots damage nearby enemies
+		''' */
+}
+
+BagOScarabs: {
+	// DisplayName: Treasure Bag (Scarabeus)
+	// Tooltip: ""
+}
+
+ScarabMask: {
+	// DisplayName: Scarabeus Mask
+	// Tooltip: ""
+}
+
+ScarabRelic: {
+	// DisplayName: Scarabeus Relic
+	// Tooltip: ""
+}
+
+ScarabTrophy: {
+	// DisplayName: Scarabeus Trophy
+	// Tooltip: ""
+}
+
+ScarabRadio: {
+	// DisplayName: Scarab Radio
+	// Tooltip: ""
+}
+
+SpaceHeater: {
+	// DisplayName: Radiator
+	// Tooltip: Right click the tile to modify its heat setting
+}
+
+ScarabMusicBox: {
+	// DisplayName: Scarabeus Music Box
 	// Tooltip: ""
 }
 
@@ -2972,5 +3016,23 @@ SpiritTreeTopper: {
 
 LocustCrook: {
 	// DisplayName: Locust Crook
+	/* Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts
+		''' */
+}
+
+IridescentDye: {
+	// DisplayName: Iridescent Dye
 	// Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	// DisplayName: Scarab Bulb
+	/* Tooltip:
+		'''
+		Summons a Scarababy
+		'Eureka!'
+		''' */
 }

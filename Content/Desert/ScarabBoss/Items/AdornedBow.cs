@@ -32,9 +32,9 @@ public class AdornedBow : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 15;
+		Item.damage = 25;
 		Item.Size = new Vector2(48, 52);
-		Item.useTime = Item.useAnimation = 120;
+		Item.useTime = Item.useAnimation = 60;
 		Item.knockBack = 1f;
 		Item.noMelee = true;
 		Item.channel = true;

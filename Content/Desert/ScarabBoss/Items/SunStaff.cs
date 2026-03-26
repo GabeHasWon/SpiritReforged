@@ -7,8 +7,6 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 [AutoloadGlowmask("255,255,255")]
 public class SunStaff : ModItem
 {
-	public override bool IsLoadingEnabled(Mod mod) => false;
-
 	public override void SetStaticDefaults()
 	{
 		Item.staff[Type] = true;
@@ -32,6 +30,7 @@ public class SunStaff : ModItem
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.UseSound = SoundID.DD2_MonkStaffSwing;
 		Item.shoot = ModContent.ProjectileType<SunStaffHeld>();
 	}
 

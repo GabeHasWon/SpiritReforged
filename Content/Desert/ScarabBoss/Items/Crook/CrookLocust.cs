@@ -33,11 +33,13 @@ public class CrookLocust : ModProjectile
 			target.TryGetGlobalNPC<LocustDamageGlobalNPC>(out var globalNPC);
 
 			for (int i = 0; i < 2 + Main.rand.Next(3); i++)
+			{
 				if (globalNPC?.locusts.Count < LocustDamageGlobalNPC.MAX_LOCUSTS)
 				{
 					globalNPC.AddLocust(target.whoAmI);
 					globalNPC.AttackerWhoAmI = Projectile.owner;
 				}
+			}
 		}
 	}
 
@@ -56,6 +58,7 @@ public class CrookLocust : ModProjectile
 			Projectile.rotation += Projectile.velocity.X * 0.05f;
 
 			if (Projectile.timeLeft < 110)
+			{
 				if (Projectile.velocity.Y < 16f)
 				{
 					Projectile.velocity.Y += 0.15f;
@@ -65,6 +68,7 @@ public class CrookLocust : ModProjectile
 				}
 				else
 					Projectile.velocity.Y = 16f;
+			}
 		}
 
 		public override void OnKill(int timeLeft)
@@ -225,18 +229,19 @@ public class CrookLocust : ModProjectile
 
 	internal void ExplodingBehavior(float dist)
 	{
-		Vector2 direction = TargetNPC.Center - Projectile.Center;
-		direction.Normalize();
+		Vector2 direction = Vector2.Normalize(TargetNPC.Center - Projectile.Center);
+		
 		if (dist > 100f)
 			direction *= 15f;
 		else
 		{
-			if (Main.rand.NextBool(2))
+			if (Main.rand.NextBool(2) && !Main.dedServ)
 			{
 				Color smokeColor = new Color(5, 5, 5) * 0.2f;
 				float scale = Main.rand.NextFloat(0.1f, 0.2f) * Timer / 30f;
 				var velSmoke = -Projectile.velocity * 0.05f;
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, 
+					EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
 					Main.rand.NextVector2Circular(15f, 15f) * Timer / 30f, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 2f)).noGravity = true;
@@ -264,7 +269,8 @@ public class CrookLocust : ModProjectile
 			Color smokeColor = new Color(5, 5, 5) * 0.25f;
 			float scale = Main.rand.NextFloat(0.07f, 0.15f);
 			var velSmoke = -Vector2.UnitY * Main.rand.NextFloat(2f, 5f);
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, 
+				EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
 						Main.rand.NextVector2Circular(9f, 9f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.2f, 1.3f)).noGravity = true;
@@ -288,7 +294,8 @@ public class CrookLocust : ModProjectile
 				if (naturalDeath)
 					mult *= 0.2f;
 
-				Projectile.NewProjectile(Projectile.GetSource_Death("Locust Gore"), Projectile.Center, -Vector2.UnitY.RotatedByRandom(Math.PI) * mult, ModContent.ProjectileType<CrookLocustGore>(), 0, 0, Projectile.owner, i);
+				Projectile.NewProjectile(Projectile.GetSource_Death("Locust Gore"), Projectile.Center, -Vector2.UnitY.RotatedByRandom(Math.PI) * mult, 
+					ModContent.ProjectileType<CrookLocustGore>(), 0, 0, Projectile.owner, i);
 			}
 		}
 
@@ -297,21 +304,21 @@ public class CrookLocust : ModProjectile
 
 	internal void FlyToTarget(float dist, float velocityRamp)
 	{
-		if (DashTimer <= 0)
-			if (Main.rand.NextBool(4))
-			{
-				Color smokeColor = new Color(5, 5, 5) * 0.16f;
-				float scale = Main.rand.NextFloat(0.1f, 0.15f);
-				var velSmoke = -Projectile.velocity * 0.05f;
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+		if (DashTimer <= 0 && Main.rand.NextBool(4) && !Main.dedServ)
+		{
+			Color smokeColor = new Color(5, 5, 5) * 0.16f;
+			float scale = Main.rand.NextFloat(0.1f, 0.15f);
+			var velSmoke = -Projectile.velocity * 0.05f;
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale,
+				EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
+			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
+				-Projectile.velocity * Main.rand.NextFloat(), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.9f, 1.25f)).noGravity = true;
+
+			if (Main.rand.NextBool())
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
-					-Projectile.velocity * Main.rand.NextFloat(), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.9f, 1.25f)).noGravity = true;
-
-				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,
-						-Vector2.UnitY, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.1f, 1.35f)).noGravity = true;
-			}
+					-Vector2.UnitY, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(1.1f, 1.35f)).noGravity = true;
+		}
 
 		Vector2 direction = TargetNPC.Center - Projectile.Center;
 		direction.Normalize();
@@ -340,9 +347,9 @@ public class CrookLocust : ModProjectile
 		if (Projectile.penetrate == 1)
 			Timer = 0;
 
-		Vector2 normalized = Projectile.velocity.SafeNormalize(Vector2.One);
+		//Vector2 normalized = Projectile.velocity.SafeNormalize(Vector2.One);
 
-		ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 20, 1, -Projectile.velocity.ToRotation(), -normalized));
+		//ParticleHandler.SpawnParticle(new CartoonHit(Projectile.Center, 20, 1, -Projectile.velocity.ToRotation(), -normalized));
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -438,9 +445,11 @@ public class CrookLocust : ModProjectile
 
 	internal NPC FindTarget()
 	{
-		if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].Distance(Projectile.Center) < 1000f)
+		const float DistanceSquared = 800 * 800f;
+
+		if (Owner.HasMinionAttackTargetNPC && Main.npc[Owner.MinionAttackTargetNPC].DistanceSQ(Projectile.Center) < DistanceSquared)
 			return Main.npc[Owner.MinionAttackTargetNPC];
 
-		return Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		return Main.npc.Take(Main.maxNPCs).Where(n => n.CanBeChasedBy() && n.DistanceSQ(Projectile.Center) < DistanceSquared).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 	}
 }

@@ -29,7 +29,7 @@ public class SaltSky : AutoloadedSky
 		try
 		{
 			Main.tileBatch.Begin();
-			SaltBlockReflective.SaltGridOverlay.DrawSimpleGradient(gradientColor);
+			//SaltBlockReflective.SaltGridOverlay.DrawSimpleGradient(gradientColor);
 			Main.tileBatch.End();
 		}
 		finally

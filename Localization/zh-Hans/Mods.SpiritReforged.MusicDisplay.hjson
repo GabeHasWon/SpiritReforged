@@ -53,3 +53,18 @@ SaltNight: {
 	DisplayName: 盐滩 - 夜
 	Author: "{$By} {$Sbubby}"
 }
+
+Scarabeus: {
+	// DisplayName: Soaring Complications (Scarabeus Theme)
+	// Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	// DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
+	// Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	// DisplayName: Soaring Complications (Radio Edit)
+	// Author: "{$By} {$Sbubby}"
+}

@@ -218,7 +218,7 @@ internal class ZigguratMicropass : Micropass
 				bool isTile = p < 1 || p >= a.Width - 1;
 				int tileType = (p < 1 || p >= a.Width - 1) ? ModContent.TileType<RuinedSandstonePillar>() : -1;
 				int wallType = (p < 0 || p >= a.Width) ? WallID.None : RedSandstoneBrickCrackedWall.UnsafeType;
-				float ease = 1f - EaseBuilder.EaseSine.Ease((p + 1f) / (float)(a.Width + 1f));
+				float ease = 1f - EaseFunction.EaseSine.Ease((p + 1f) / (float)(a.Width + 1f));
 
 				DropPillar(p + a.X, a.Bottom + 1, tileType, wallType, out int lowestY, (tileType == -1) ? Math.Max((int)(ease * 15), 1) : 0);
 

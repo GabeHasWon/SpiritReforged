@@ -3,6 +3,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
@@ -18,7 +19,7 @@ public class SunStaffHeld : ModProjectile
 
 	private bool _stoppedChannel = false;
 
-	public override bool IsLoadingEnabled(Mod mod) => false;
+	//public override bool IsLoadingEnabled(Mod mod) => false;
 
 	public override void SetDefaults()
 	{
@@ -73,10 +74,12 @@ public class SunStaffHeld : ModProjectile
 		Projectile.rotation = MathHelper.Lerp(-MathHelper.PiOver4, -3 * MathHelper.PiOver4, RiseProgress);
 		if (owner.direction < 0)
 			Projectile.rotation = MathHelper.Lerp(-MathHelper.PiOver4, -3 * MathHelper.PiOver4, 1 - RiseProgress) + MathHelper.Pi;
+		
+		Projectile.rotation += 0.2f * (float)Math.Abs(Math.Cos(AiTimer / 50));
 
 		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation);
 		Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation);
-
+		
 		AiTimer++;
 		FlashTimer = Math.Max(--FlashTimer, 0);
 	}
@@ -128,6 +131,8 @@ public class SunStaffHeld : ModProjectile
 
 			ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, particleColor, scale, lifeTime, 3, delegateAction).OverrideDrawLayer(ParticleLayer.AbovePlayer));
 		}
+
+		SoundEngine.PlaySound(SoundID.Item43, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -148,6 +153,7 @@ public class SunStaffHeld : ModProjectile
 		SpriteEffects flip = SpriteEffects.None;
 		float rotationFlip = MathHelper.Lerp(Projectile.rotation, 0, 0.9f) - MathHelper.PiOver4;
 		Vector2 staffTipPos = GetStaffTipPos(0.6f, rotationFlip - MathHelper.PiOver4);
+
 		if (owner.direction < 0)
 		{
 			rotationFlip += MathHelper.PiOver2;
@@ -179,6 +185,7 @@ public class SunStaffHeld : ModProjectile
 		float numGlow = 6;
 		float distance = MathHelper.Lerp(2, 4, flashProgress);
 		float opacity = MathHelper.Lerp(1, 3, flashProgress) / numGlow;
+		opacity += (float)Math.Abs(Math.Sin(AiTimer / 50)) * 0.5f;
 		for (int i = 0; i < numGlow; i++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / numGlow) * distance;

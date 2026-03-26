@@ -545,16 +545,22 @@ Graverobber: {
 }
 
 LootBag.DisplayName: Loot Bag
+
+Scarabeus: {
+	DisplayName: Scarabeus
+	Entry: ""
+}
+
 TinyGrub.DisplayName: Tiny Grub
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Of all the ways to go, dying by cacti has got to be one of the worst. Undying by cacti must also be pretty bad. 
+	Entry: Of all the ways to go, dying by cacti has got to be one of the worst. Undying by cacti must also be pretty bad.
 }
 
 SunburntZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Now detesting the sun, this zombie goes about at night to prevent further damage to its rotting skin. 
+	Entry: Now detesting the sun, this zombie goes about at night to prevent further damage to its rotting skin.
 }
 
 VeiledZombie: {

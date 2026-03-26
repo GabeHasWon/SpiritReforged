@@ -30,7 +30,7 @@ public class SunOrb : ModProjectile
 	private bool _stoppedChannel = false;
 	private bool _initialized = false;
 
-	public override bool IsLoadingEnabled(Mod mod) => false;
+	//public override bool IsLoadingEnabled(Mod mod) => false;
 
 	public override void SetDefaults()
 	{
@@ -78,6 +78,7 @@ public class SunOrb : ModProjectile
 		Vector2 mouseOffset = Vector2.Normalize(_mousePos) * Min(_mousePos.Length() / 5, 40) * new Vector2(0.5f, 1f);
 
 		Projectile.Center = Vector2.Lerp(Projectile.Center, owner.MountedCenter + _offset + owner.velocity + mouseOffset, 0.2f);
+		Projectile.position.Y += (float)Math.Sin(AiTimer / 80) * 1.2f;
 
 		GrowShrink();
 		GetRayDimensions(out float rayHeight, out _, out float rayDist);
@@ -94,11 +95,12 @@ public class SunOrb : ModProjectile
 		//Create light at the sun's position and following the ray
 		float lightStrength = Projectile.scale / 2 + GetFlashProgress / 2;
 		Lighting.AddLight(Projectile.Center, Color.Goldenrod.ToVector3() * lightStrength);
-		float numLight = 10;
+		float numLight = 30;
+
 		for(int i = 0; i < numLight; i++)
 		{
 			Vector2 pos = new Vector2(rayDist, rayHeight) * i / numLight;
-			Lighting.AddLight(Projectile.Center + pos, Color.Goldenrod.ToVector3() * lightStrength * 0.5f);
+			Lighting.AddLight(Projectile.Center + pos, Color.LightGoldenrodYellow.ToVector3() * lightStrength);
 		}
 
 		AiTimer++;
@@ -150,6 +152,8 @@ public class SunOrb : ModProjectile
 	{
 		if (Main.dedServ)
 			return;
+
+		target.AddBuff(BuffID.OnFire, 240);
 
 		ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow, 0.6f, 30));
 
@@ -263,7 +267,7 @@ public class SunOrb : ModProjectile
 		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["FlameTrail"].Value);
 		float scrollAmount = EaseCircularIn.Ease(GetFlashProgress) * 0.4f;
 		effect.Parameters["scroll"].SetValue(new Vector2(0, scrollAmount));
-		effect.Parameters["textureStretch"].SetValue(new Vector2(4, 1) * 0.05f);
+		effect.Parameters["textureStretch"].SetValue(new Vector2(4, 1) * 0.2f);
 		effect.Parameters["texExponentRange"].SetValue(new Vector2(1, 0.25f));
 		effect.Parameters["flipCoords"].SetValue(true);
 
@@ -293,7 +297,8 @@ public class SunOrb : ModProjectile
 			BottomPosOffset = rayFinalDimensions.Z
 		};
 
-		square.SetTopPosition(Projectile.Center - Main.screenPosition);
+		square.SetTopPosition(Projectile.Center - Main.screenPosition + new Vector2(rayFinalDimensions.Z, 0f));
+		square.Rotation += MathHelper.Pi;
 
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect);
 	}
