@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 
 namespace SpiritReforged.Content.Particles;
@@ -19,6 +20,6 @@ public class RoarRing(Vector2 position, float ringWidth, float maxRadius, int ma
 		curEffect.Parameters["uTexture"].SetValue(NoiseTexture);
 		curEffect.Parameters["textureStretch"].SetValue(TextureStretch);
 		curEffect.Parameters["scroll"].SetValue(0);
-		curEffect.Parameters["RingColor"].SetValue(Color.ToVector4() * Opacity);
+		curEffect.Parameters["RingColor"].SetValue(Color.ToVector4() * Opacity * EaseFunction.EaseSine.Ease(1 - Progress));
 	}
 }

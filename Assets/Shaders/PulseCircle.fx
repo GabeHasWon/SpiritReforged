@@ -253,7 +253,7 @@ float4 RoarRing(VertexShaderOutput input) : COLOR0
         float lerper = (strength - ringWidthAdjusted) / RingWidth;
         texColor = pow(tex2D(textureSampler, float2(xCoord * textureStretch.x, yCoord)).r, lerp(2, 3, pow(1 - lerper, 2)));
         texColor *= lerp(0.75f, 1, pow(lerper, 0.5f));
-        texColor = (texColor * lerper + pow(lerper, 0.5f)) / 2;
+        texColor = (texColor * lerper + pow(lerper, 2)) / 2;
     }
     
     else
@@ -261,10 +261,10 @@ float4 RoarRing(VertexShaderOutput input) : COLOR0
     
     float4 finalColor = RingColor * texColor;
     
-    finalColor = pow(finalColor, lerp(2, 3, 1 - input.Color.r));
+    finalColor = pow(finalColor, lerp(1, 2, 1 - input.Color.r));
     finalColor *= input.Color;
     
-    return finalColor * 0.8f;
+    return finalColor;
 }
 
 technique BasicColorDrawing

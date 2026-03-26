@@ -299,10 +299,11 @@ public partial class Scarabeus : ModNPC
 		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3 && Main.netMode != NetmodeID.Server)
 		{
 			var offset = new Vector2(NPC.width / 3, -NPC.height / 3);
-			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center + offset, 0.35f, 4500, 15, EaseFunction.EaseCubicIn, false, 0.35f) 
+			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center + offset, 0.4f, 4500, 15, EaseFunction.EaseCubicIn, false, 0.4f) 
 			{ 
 				Opacity = 0.66f, 
-				TextureStretch = new(Main.rand.NextFloat(2, 2.5f), 0.065f) 
+				TextureStretch = new(Main.rand.NextFloat(3, 4), 0.065f),
+				Color = Color.Lerp(Color.LightYellow, Color.Yellow, 0.5f).Additive(100)
 			});
 		}
 
