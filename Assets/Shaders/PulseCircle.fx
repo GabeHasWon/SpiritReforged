@@ -222,17 +222,18 @@ float4 LensFlareRing(VertexShaderOutput input) : COLOR0
     float ringWidthInverted = (1 - ringWidthAdjusted);
     
     float texColor = pow(1 - (tex2D(textureSampler, float2(xCoord * textureStretch.x, scroll)).r), 1.5f) * ((strength - ringWidthInverted) / ringWidthAdjusted);
-    texColor *= pow(input.TextureCoordinates.y, 2);
+    texColor *= pow(input.TextureCoordinates.y, 2.5f);
     if (texColor == 0 || strength <= ringWidthInverted)
         return float4(0, 0, 0, 0);
     
     float4 finalColor = texColor * input.Color;
     
     float3 HSV;
-    HSV.x = yCoord;
-    HSV.y = 0.6f;
-    HSV.z = 1;
-    finalColor.rgb = hsv2rgb(HSV) * texColor * input.Color.rgb * 2;
+    HSV.x = yCoord; //hue- shift the color wheel based on the "y coordinate"
+    HSV.y = 0.7f; //saturation- hardcoded to 80% for right now
+    HSV.z = 1; //value
+    finalColor.rgb = hsv2rgb(HSV) * finalColor.rgb * 3;
+    finalColor.a *= 0.8f;
     
     return finalColor * strength;
 }

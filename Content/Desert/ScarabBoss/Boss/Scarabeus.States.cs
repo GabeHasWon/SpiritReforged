@@ -2083,6 +2083,9 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y = -6;
 			NPC.velocity.X /= 2;
 			NPC.FaceTarget();
+
+			if(!Main.dedServ)
+				ParticleHandler.SpawnParticle(new LensFlareRing(NPC.Center - Vector2.UnitY * 60, 0.3f, 600, 60, EaseFunction.EaseCircularOut).Attach(NPC));
 		}
 
 		//Try to hover at approx the same height above the player
@@ -2147,12 +2150,14 @@ public partial class Scarabeus : ModNPC
 	}
 
 	public void SwarmAttackVisuals()
-	{	
-		if (Main.rand.NextBool(10) && !Main.dedServ)
-		{
-			Vector2 orbPosition = NPC.Center + new Vector2(0f, -60f);
+	{
+		if (Main.dedServ)
+			return;
+
+		Vector2 orbPosition = NPC.Center + new Vector2(0f, -60f);
+
+		if (Main.rand.NextBool(10))
 			ParticleHandler.SpawnParticle(new EmberParticle(orbPosition + Main.rand.NextVector2Circular(50f, 50f), -Vector2.UnitY, Color.Orange, 1f, 30));
-		}
 	}
 	#endregion
 }
