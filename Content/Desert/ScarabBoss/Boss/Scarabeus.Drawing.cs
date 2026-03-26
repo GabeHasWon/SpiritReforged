@@ -162,6 +162,8 @@ public partial class Scarabeus : ModNPC
 		if (NPC.Opacity == 0)
 			return false;
 
+		NPC.spriteDirection = NPC.direction;
+
 		//Skip all of this if ball because drawing is entirely different
 		if (currentFrame == RollFrame && (Profile == PhaseOneProfile || Profile == PhaseTwoProfile))
 		{
@@ -169,7 +171,6 @@ public partial class Scarabeus : ModNPC
 			return false;
 		}
 
-		NPC.spriteDirection = NPC.direction;
 		Texture2D texture = Profile.Texture.Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		var solid = TextureColorCache.ColorSolid(texture, Color.White);
