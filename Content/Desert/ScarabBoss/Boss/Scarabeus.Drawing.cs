@@ -302,15 +302,19 @@ public partial class Scarabeus : ModNPC
 
 	private void DrawBall(Color lightColor)
 	{
+		const int ballPadding = 35;
+
 		FlipShadersOnOff(Main.spriteBatch, null, true);
 
 		Texture2D texture = BallProfile.Texture.Value;
 		Texture2D sheenMask = BallProfile.SheenMask.Value;
-		Rectangle frame = texture.Frame();
+		Rectangle frame = texture.Frame(1, 2, 0, phaseTwo ? 1 : 0);
 
-		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadIn.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
+		frame.Inflate(-ballPadding, -ballPadding);
+
+		float squishAmount = MathHelper.Lerp(0, 0.07f, EaseFunction.EaseQuadIn.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
 		var squishScale = new Vector2(1 + squishAmount, 1 - squishAmount);
-		squishScale *= new Vector2(squishY, 1 / squishY);
+		squishScale *= Vector2.Lerp(Vector2.One, new Vector2(squishY, 1 / squishY), 0.5f);
 
 		var primDimensions = new Vector2(frame.Width * squishScale.X, frame.Height * squishScale.Y);
 		bool flipped = NPC.spriteDirection > 0;
@@ -329,15 +333,12 @@ public partial class Scarabeus : ModNPC
 
 		Effect sheenShader = GetShader(texture, sheenMask, frame);
 
-		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
-		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
+		sheenShader.Parameters["rotation"].SetValue((-NPC.rotation + rotation) * NPC.spriteDirection);
 		sheenShader.Parameters["flip"].SetValue(flipped);
 
 		Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
-		Main.graphics.GraphicsDevice.Textures[0] = (Texture)texture;
+		Main.graphics.GraphicsDevice.Textures[0] = texture;
 		PrimitiveRenderer.DrawPrimitiveShape(square, sheenShader, "BallPass");
-
-		FlipShadersOnOff(Main.spriteBatch, null, false);
 	}
 
 	public override void DrawBehind(int index)

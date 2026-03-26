@@ -18,7 +18,6 @@ sampler sheenTex = sampler_state
 
 matrix WorldViewProjection;
 float rotation;
-float2 origin;
 bool flip;
 
 struct VertexShaderInput
@@ -50,8 +49,15 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float2 Rotate(float2 coords, float2 origin)
 {
+    coords -= origin;
+    coords *= resolution / sourceRect.zw;
+    
     float2x2 rotate = float2x2(cos(rotation), -sin(rotation), sin(rotation), cos(rotation));
-    return mul((coords - origin), rotate) + origin;
+    coords = mul(coords, rotate);
+        
+    coords /= resolution / sourceRect.zw;
+    coords += origin;
+    return coords;
 }
 
 float4 alphablend(float4 background, float4 foreground)
@@ -60,7 +66,6 @@ float4 alphablend(float4 background, float4 foreground)
     result.a = saturate(background.a + foreground.a);
     return result;
 }
-
 
 float3 rgb2hsv(float3 rgb)
 {
@@ -176,10 +181,13 @@ float4 MainPS(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
 float4 BallPS(VertexShaderOutput input) : COLOR0
 {
     float2 rotatedUv = input.TextureCoordinates;
+    rotatedUv *= sourceRect.zw / resolution;
+    rotatedUv += sourceRect.xy / resolution;
+    
     if (flip)
         rotatedUv.x = 1 - rotatedUv.x;
     
-    rotatedUv = Rotate(rotatedUv, float2(0.5f, 0.5f));
+    rotatedUv = Rotate(rotatedUv, (sourceRect.xy + sourceRect.zw * 0.5) / resolution);
     return getSheen(rotatedUv, scarabTex) * input.Color;
 }
 

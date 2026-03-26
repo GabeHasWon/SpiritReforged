@@ -814,9 +814,9 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = true;
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
-		wingFrameCounter += 22f / 60f; //30 fps for wings specifically
+		wingFrameCounter += (18f / 60f) * wingbeatSpeed; //18 fps for wings specifically
 
-		UpdateFrame(0, (int)(15 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
+		UpdateFrame(0, (int)(12 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
 
 		float heightAboveGround = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y - NPC.Center.Y;
 
@@ -1514,7 +1514,7 @@ public partial class Scarabeus : ModNPC
 				if (currentFrame.Y is 19 or 21)
 					SetFrame(0, currentFrame.Y + 1, TakeoffProfile);
 
-				if (UpdateFrame(0, 16, TakeoffProfile, false) == FrameState.Stopped)
+				if (UpdateFrame(0, 11, TakeoffProfile, false) == FrameState.Stopped)
 				{
 					if (!Main.dedServ)
 					{
@@ -1965,7 +1965,8 @@ public partial class Scarabeus : ModNPC
 		{
 			//Anticipation
 			case 0:
-				UpdateFrame(0, 8 + (int)(Counter / teleraph_time * 12), SimulatedProfile);
+				wingFrameCounter += (18f / 60f) * (1 + Counter / teleraph_time);
+				UpdateFrame(0, 12, SimulatedProfile);
 
 				if (distXToTarget > idealXDistanceToPlayer)
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
@@ -2107,7 +2108,7 @@ public partial class Scarabeus : ModNPC
 		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 4f, 0.02f);
 
-		UpdateFrame(1, 12, PhaseTwoProfile);
+		UpdateFrame(1, 18, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
 
 		SwarmAttackVisuals();

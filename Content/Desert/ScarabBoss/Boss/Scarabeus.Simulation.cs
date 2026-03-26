@@ -78,16 +78,6 @@ public partial class Scarabeus : ModNPC
 			Main.EntitySpriteDraw(texture, position, frame, drawColor * WING_OPACITY * 0.16f, rotation, origin, scale, effects);
 
 			frame = texture.Frame(Profile.Columns, Profile.Rows, layer, WingFrame(0));
-			//Wing afterimage trail
-			for (int i = NPCID.Sets.TrailCacheLength[Type] - 1; i >= 0; i--)
-			{
-				float progress = 1 - i / (float)NPCID.Sets.TrailCacheLength[Type];
-				progress = EaseFunction.EaseCircularIn.Ease(progress);
-				Vector2 trailPosition = NPC.oldPos[i] + NPC.Size / 2 - Main.screenPosition + (origin - NPC.frame.Size() / 2).RotatedBy(NPC.rotation);
-
-				Main.EntitySpriteDraw(texture, trailPosition, frame, drawColor * WING_OPACITY * progress, rotation, origin, scale, effects);
-			}
-
 			Main.EntitySpriteDraw(texture, position, frame, drawColor * WING_OPACITY, rotation, origin, scale, effects);
 			return;
 		}
