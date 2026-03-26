@@ -295,8 +295,16 @@ public partial class Scarabeus : ModNPC
 		
 		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
 
-		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3)
-			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center, 0.35f, 4500, 24, EaseFunction.EaseCubicIn, false, 0.35f));
+		//Roar while standing upwards
+		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3 && Main.netMode != NetmodeID.Server)
+		{
+			var offset = new Vector2(NPC.width / 3, -NPC.height / 3);
+			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center + offset, 0.35f, 4500, 15, EaseFunction.EaseCubicIn, false, 0.35f) 
+			{ 
+				Opacity = 0.66f, 
+				TextureStretch = new(Main.rand.NextFloat(2, 2.5f), 0.065f) 
+			});
+		}
 
 		Music = Phase1Music;
 		Main.musicFade[Main.curMusic] = 1f;
