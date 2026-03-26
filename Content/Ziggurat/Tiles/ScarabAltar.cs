@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -117,7 +118,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		public override void OnKill(int timeLeft)
 		{
 			if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
-				entity.Interact();
+			{
+				bool isFablesItem = CrossMod.Fables.Enabled && _fablesStormlionItems[ItemType];
+				entity.Interact(isFablesItem);
+			}
 		}
 
 		public override bool? CanDamage() => false;
@@ -164,6 +168,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public ref float GemCount => ref Projectile.ai[2];
 
+		public bool StartDuoFight => CrossMod.Fables.Enabled && Projectile.ai[2] == 666;
+
 		public float FlashTime;
 		private bool _justSpawned = true;
 
@@ -186,9 +192,15 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				{
 					if (!Main.dedServ)
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
-					
-					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
-						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						//Summon Scarabeus or the duo fight manager from fables
+						if (StartDuoFight && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFightManager))
+							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+						else
+							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+					}
 
 					Projectile.timeLeft = MaxTime / 2;
 					_justSpawned = false;
@@ -327,6 +339,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	#endregion
 
 	private int[] _hoverTypes;
+	private static bool[] _fablesStormlionItems;
+	private static int _fablesDeadStormlionLarvaType = -1;
+	private static int _fablesStormlionBucketType = -1;
 
 	public override void SetStaticDefaults()
 	{
@@ -352,6 +367,22 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(124, 24, 28), CreateMapEntryName());
 		DustType = -1;
 		MinPick = 55;
+		
+		//Load the stormlion items from fables
+		if (_fablesStormlionItems == null)
+		{
+			if (CrossMod.Fables.Enabled &&
+				CrossMod.Fables.TryFind("DeadStormlionLarvaItem", out ModItem deadLarva) &&
+				CrossMod.Fables.TryFind("StormlionLarvaItem", out ModItem aliveLarva) &&
+				CrossMod.Fables.TryFind("BucketOfLarvae", out ModItem larvaBucket))
+			{
+				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(deadLarva.Type, aliveLarva.Type, larvaBucket.Type);
+				_fablesStormlionBucketType = larvaBucket.Type;
+				_fablesDeadStormlionLarvaType = deadLarva.Type;
+			}
+			else
+				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(false);
+		}
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.InInteractionRange(i, j, TileReachCheckSettings.Simple);
@@ -402,6 +433,18 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		{
 			result = player.HeldItem;
 			return true;
+		}
+
+		//Holding a fables item, check for stormlion grub items
+		//Importantly, we DO NOT! Check for the grubs in the player's inventory, only their held item (To make it extra secret)
+		if (CrossMod.Fables.Enabled && !player.HeldItem.IsAir)
+		{
+			//Accepts stormlion larvae as offerings
+			if (_fablesStormlionItems[player.HeldItem.type])
+			{
+				result = player.HeldItem;
+				return true;
+			}
 		}
 
 		foreach (Item item in player.inventory)
@@ -539,7 +582,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		return Place(i, j);
 	}
 
-	public void Interact()
+	public void Interact(bool fablesGrub = false)
 	{
 		SetInteractTime();
 
@@ -557,23 +600,34 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		if (subVolume > 0)
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
-		if (consumableCount == 0)
+		consumableCount++;
+		//When sacrificing a fables stormlion grub for the Scarab VS Scourge duo fight, the altar gets filled instantly with the value 666 so we know its from fables
+		if (fablesGrub)
+			consumableCount = 666;
+
+		int beamType = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
+		bool validBeam = BeamWhoAmI >= 0 && BeamWhoAmI < Main.maxProjectiles && Main.projectile[BeamWhoAmI].active && Main.projectile[BeamWhoAmI].type == beamType;
+		if (!validBeam)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
-				BeamWhoAmI = Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 240);
+				BeamWhoAmI = Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beamType, 0, 0, -1, 240, consumableCount);
+				validBeam = true;
 			}
 		}
 
-		consumableCount++;
-
-		if (BeamWhoAmI > 0 && consumableCount <= ConsumableCountMax)
+		//Update the gem count of the altar
+		if (validBeam)
+		{
 			Main.projectile[BeamWhoAmI].ai[2] = consumableCount;
+			Main.projectile[BeamWhoAmI].netUpdate = true;
+		}
 
-		
 		if (consumableCount >= ConsumableCountMax)
+		{
 			consumableCount = 0;
+			BeamWhoAmI = -1;
+		}
 
 		if (Main.netMode == NetmodeID.Server)
 			NetMessage.SendData(MessageID.TileEntitySharing, number: ID);
@@ -588,6 +642,15 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	}
 
 	public override void OnNetPlace() => NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
-	public override void NetSend(BinaryWriter writer) => writer.Write((byte)consumableCount);
-	public override void NetReceive(BinaryReader reader) => consumableCount = reader.ReadByte();
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((byte)consumableCount);
+		writer.Write(BeamWhoAmI);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		consumableCount = reader.ReadByte();
+		BeamWhoAmI = reader.ReadByte();
+	}
 }
