@@ -1907,7 +1907,7 @@ public partial class Scarabeus : ModNPC
 		if (DifficultyScale < 2 || Main.netMode == NetmodeID.MultiplayerClient)
 			return;
 
-		int projectileType = ModContent.ProjectileType<SandballProjectile>();
+		int projectileType = ModContent.ProjectileType<SoilBallProjectile>();
 
 		Vector2 ground = FindGroundFromPositionIgnorePlatforms(NPC.Top);
 		Point groundPos = ground.ToTileCoordinates();
