@@ -234,10 +234,10 @@ public partial class Scarabeus : ModNPC
 		});
 
 		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("Scarabeus_Sheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Wings", false));
 		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false), simulated: true);
 		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall_Sheen", false), [1]);
-		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Winsg", false));
+		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Wings", false));
 		DeadProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
