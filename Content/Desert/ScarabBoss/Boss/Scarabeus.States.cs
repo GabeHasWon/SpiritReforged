@@ -296,7 +296,7 @@ public partial class Scarabeus : ModNPC
 		FrameState updateResult = UpdateFrame(7, framerate, PhaseOneProfile, false);
 
 		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3)
-			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center, 0.35f, 4500, 30, EaseFunction.EaseCubicIn, false, 0.35f));
+			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center, 0.35f, 4500, 24, EaseFunction.EaseCubicIn, false, 0.35f));
 
 		Music = Phase1Music;
 		Main.musicFade[Main.curMusic] = 1f;
@@ -2083,9 +2083,6 @@ public partial class Scarabeus : ModNPC
 			NPC.velocity.Y = -6;
 			NPC.velocity.X /= 2;
 			NPC.FaceTarget();
-
-			if(!Main.dedServ)
-				ParticleHandler.SpawnParticle(new LensFlareRing(NPC.Center - Vector2.UnitY * 60, 0.3f, 600, 60, EaseFunction.EaseCircularOut).Attach(NPC));
 		}
 
 		//Try to hover at approx the same height above the player

@@ -15,8 +15,8 @@ public class LensFlareRing(Vector2 position, float ringWidth, float maxRadius, i
 
 	internal override void EffectExtras(ref Effect curEffect)
 	{
-		curEffect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
-		curEffect.Parameters["textureStretch"].SetValue(new Vector2(_textureStretch.X, 1));
+		curEffect.Parameters["uTexture"].SetValue(_texture);
+		curEffect.Parameters["textureStretch"].SetValue(_textureStretch);
 		curEffect.Parameters["scroll"].SetValue(0);
 		curEffect.Parameters["RingWidth"].SetValue(ringWidth);
 	}

@@ -229,11 +229,11 @@ float4 LensFlareRing(VertexShaderOutput input) : COLOR0
     float4 finalColor = texColor * input.Color;
     
     float3 HSV;
-    HSV.x = yCoord; //hue- shift the color wheel based on the "y coordinate"
-    HSV.y = 0.7f; //saturation- hardcoded to 80% for right now
-    HSV.z = 1; //value
+    HSV.x = yCoord; //shift the color wheel based on the "y coordinate"
+    HSV.y = 0.75f;
+    HSV.z = 1;
     finalColor.rgb = hsv2rgb(HSV) * finalColor.rgb * 3;
-    finalColor.a *= 0.8f;
+    finalColor.a *= 0.9f;
     
     return finalColor * strength;
 }
@@ -264,7 +264,7 @@ float4 RoarRing(VertexShaderOutput input) : COLOR0
     finalColor = pow(finalColor, lerp(2, 3, 1 - input.Color.r));
     finalColor *= input.Color;
     
-    return finalColor;
+    return finalColor * 0.8f;
 }
 
 technique BasicColorDrawing

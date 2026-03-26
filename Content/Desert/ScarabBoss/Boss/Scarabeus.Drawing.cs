@@ -191,34 +191,7 @@ public partial class Scarabeus : ModNPC
 			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
 
 		if (CurrentState == AIState.Swarm) //Swarm flash visuals
-		{
-			Vector2 orbPos = NPC.Center + new Vector2(0f, -NPC.height / 2).RotatedBy(NPC.rotation) - Main.screenPosition;
-
-			float opacity = 1f - Counter / 15f;
-			if (opacity > 0)
-			{
-				Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
-				Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
-				Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
-				float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
-
-				for (int i = 0; i < 2; i++)
-				{
-					float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
-
-					Main.EntitySpriteDraw(star2, orbPos, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
-					Main.EntitySpriteDraw(star, orbPos, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
-				}
-			}
-
-			float opacity2 = 1f - Counter / 720f;
-			if (opacity2 > 0)
-			{
-				Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
-				Main.EntitySpriteDraw(godrays, orbPos, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
-				Main.EntitySpriteDraw(godrays, orbPos, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
-			}
-		}
+			SwarmFXBehind();
 
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(NPC.frame.X, NPC.frame.Y, NPC.frame.Width, NPC.frame.Height));
@@ -254,6 +227,9 @@ public partial class Scarabeus : ModNPC
 				Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 		}
 
+		if (CurrentState == AIState.Swarm) //Swarm lens flare
+			SwarmFXFront();
+
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
 		{
 			Rectangle portraitBox = new((int)position.X - NPC.frame.Width / 2, (int)position.Y - NPC.frame.Height / 2, NPC.frame.Width, NPC.frame.Height);
@@ -282,6 +258,61 @@ public partial class Scarabeus : ModNPC
 		*/
 
 		return false;
+	}
+
+	private void SwarmFXFront()
+	{
+		Effect effect = AssetLoader.LoadedShaders["PulseCircle"].Value;
+		effect.Parameters["RingWidth"].SetValue(0.35f);
+		effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		effect.Parameters["textureStretch"].SetValue(new Vector2(1, 1));
+		effect.Parameters["scroll"].SetValue(0);
+
+		float opacity = EaseFunction.CompoundEase([EaseFunction.EaseSine, EaseFunction.EaseCircularOut]).Ease(Counter / 520f);
+		Color lightColor = Color.White * opacity;
+		float scale = (float)(Math.Sin(MathHelper.TwoPi * Counter / 120f) / 2) + 0.5f;
+		scale = MathHelper.Lerp(0.95f, 1.05f, scale);
+
+		var square = new SquarePrimitive
+		{
+			Color = lightColor,
+			Height = 320 * scale,
+			Length = 320 * scale,
+			Position = NPC.Center - Main.screenPosition - Vector2.UnitY * 45,
+			Rotation = MathHelper.Pi
+		};
+
+		PrimitiveRenderer.DrawPrimitiveShape(square, effect, "LensFlareStyle");
+	}
+
+	private void SwarmFXBehind()
+	{
+		Vector2 orbPos = NPC.Center + new Vector2(0f, -NPC.height / 2).RotatedBy(NPC.rotation) - Main.screenPosition;
+
+		float opacity = 1f - Counter / 15f;
+		if (opacity > 0)
+		{
+			Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+			Texture2D star2 = AssetLoader.LoadedTextures["Star2"].Value;
+			Color color = Color.Lerp(Color.LightGoldenrodYellow, Color.Goldenrod, 0.5f).Additive() * opacity;
+			float flashScale = MathHelper.Lerp(0.5f, 1f, opacity);
+
+			for (int i = 0; i < 2; i++)
+			{
+				float flashRotation = MathHelper.PiOver2 * (i + (float)(Main.timeForVisualEffects * 0.05f));
+
+				Main.EntitySpriteDraw(star2, orbPos, null, color, flashRotation, star2.Size() / 2, flashScale * 1.5f, 0);
+				Main.EntitySpriteDraw(star, orbPos, null, color, flashRotation, star.Size() / 2, flashScale * 2, 0);
+			}
+		}
+
+		float opacity2 = 1f - Counter / 720f;
+		if (opacity2 > 0)
+		{
+			Texture2D godrays = AssetLoader.LoadedTextures["GodrayCircle"].Value;
+			Main.EntitySpriteDraw(godrays, orbPos, null, Color.Goldenrod.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.01f), godrays.Size() / 2, 0.3f * opacity2, 0);
+			Main.EntitySpriteDraw(godrays, orbPos, null, Color.LightGoldenrodYellow.Additive() * opacity2, (float)(Main.timeForVisualEffects * 0.02f), godrays.Size() / 2, 0.3f * opacity2, 0);
+		}
 	}
 
 	private void DrawBall(Color lightColor)
