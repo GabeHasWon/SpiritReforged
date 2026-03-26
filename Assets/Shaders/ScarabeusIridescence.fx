@@ -16,17 +16,6 @@ sampler sheenTex = sampler_state
     minfilter = POINT;
 };
 
-//variables specifically for ball prim
-texture uTexture;
-sampler2D textureSampler = sampler_state
-{
-    texture = <uTexture>;
-    magfilter = LINEAR;
-    minfilter = LINEAR;
-    mipfilter = LINEAR;
-    AddressU = clamp;
-    AddressV = clamp;
-};
 matrix WorldViewProjection;
 float rotation;
 float2 origin;
@@ -151,63 +140,47 @@ float3 hsv2rgb(float3 hsv)
     return float3(r, g, b);
 }
 
-float4 MainPS(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
+float4 getSheen(float2 uv, sampler tex)
 {
-    float4 compositedColor = tex2D(scarabTex, uv);
-    
-    float2 frameUv = (uv * resolution - sourceRect.xy) / sourceRect.zw;
-    float2 pixUv = floor(frameUv * sourceRect.zw) / sourceRect.zw;
-    
+    float4 compositedColor = tex2D(tex, uv);
     //Red channel for the opacity of the iridescence, green channel for the hueshift offset
     float2 sheenInfo = tex2D(sheenTex, uv).rg;
+    
+    float2 frameUv = (uv * resolution - sourceRect.xy) / sourceRect.zw;
+    float2 pixUv = floor(frameUv * sourceRect.zw * 2) / (sourceRect.zw * 2);
     
     float3 colorHsv = rgb2hsv(compositedColor.rgb);
     
     //Hueshift that is offset by the fresnel value (which makes it hueshift more towards the edges of the shell) and by a left-right gradient
     float hueShift = sin(sheenInfo.g * 3 + pixUv.x * 3 - time + colorHsv.b) * (1 + sheenInfo.g);
-    //Step the hueshift for a quirkier pixelated effect
+    //Step the hueshift for a quirkier pixelated effect, and boost the saturation a smidge
     colorHsv.r += floor(hueShift * 8) / 20;
     colorHsv.g += saturationBoost;
     
     float iridescenceOpacity = sheenOpacityMultiplier + sin(time * 2) * 0.05;
     compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;
     
+    //hue shift the shell again for when there's multiple scarabs at once!
     colorHsv = rgb2hsv(compositedColor.rgb);
     colorHsv.r += shellColorShift * sheenInfo.r;
     compositedColor.rgb = lerp(compositedColor.rgb, hsv2rgb(colorHsv), min(1, ceil(shellColorShift)));
     
-    return compositedColor * vertexColor;
+    return compositedColor;
+}
+
+float4 MainPS(float2 uv : TEXCOORD0, float4 vertexColor : COLOR0) : COLOR0
+{
+    return getSheen(uv, scarabTex) * vertexColor;
 }
 
 float4 BallPS(VertexShaderOutput input) : COLOR0
 {
-    float2 frameUv = input.TextureCoordinates;
+    float2 rotatedUv = input.TextureCoordinates;
     if (flip)
-        frameUv.x = 1 - frameUv.x;
+        rotatedUv.x = 1 - rotatedUv.x;
     
-    frameUv = Rotate(frameUv, float2(0.5f, 0.5f));
-    float2 pixUv = floor(frameUv * resolution * 2) / (resolution * 2);
-    
-    float4 compositedColor = tex2D(textureSampler, pixUv);
-    //Red channel for the opacity of the iridescence, green channel for the hueshift offset
-    float2 sheenInfo = tex2D(sheenTex, pixUv).rg;
-    
-    float3 colorHsv = rgb2hsv(compositedColor.rgb);
-    
-    //Hueshift that is offset by the fresnel value (which makes it hueshift more towards the edges of the shell) and by a left-right gradient
-    float hueShift = sin(sheenInfo.g * 3 + pixUv.x * 3 - time + colorHsv.b) * (1 + sheenInfo.g);
-    //Step the hueshift for a quirkier pixelated effect
-    colorHsv.r += floor(hueShift * 8) / 20;
-    colorHsv.g += saturationBoost;
-    
-    float iridescenceOpacity = sheenOpacityMultiplier + sin(time * 2) * 0.05;
-    compositedColor.rgb = alphablend(compositedColor, float4(hsv2rgb(colorHsv), sheenInfo.r * iridescenceOpacity)).rgb;
-    
-    colorHsv = rgb2hsv(compositedColor.rgb);
-    colorHsv.r += shellColorShift * sheenInfo.r;
-    compositedColor.rgb = lerp(compositedColor.rgb, hsv2rgb(colorHsv), min(1, ceil(shellColorShift)));
-    
-    return compositedColor * input.Color;
+    rotatedUv = Rotate(rotatedUv, float2(0.5f, 0.5f));
+    return getSheen(rotatedUv, scarabTex) * input.Color;
 }
 
 technique BasicColorDrawing

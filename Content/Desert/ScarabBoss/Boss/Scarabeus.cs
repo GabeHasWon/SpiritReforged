@@ -93,8 +93,10 @@ public partial class Scarabeus : ModNPC
 
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
+	private static VisualProfile TakeoffProfile;
 	private static VisualProfile SimulatedProfile;
 	private static VisualProfile BallProfile;
+	private static VisualProfile DeadProfile;
 
 	public delegate float ScarabeusAttackDelegate(Scarabeus self, ref bool retarget);
 
@@ -231,10 +233,12 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
-		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false));
-		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("Scarabeus_Sheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
+		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false), simulated: true);
+		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall_Sheen", false), [1]);
+		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Winsg", false));
+		DeadProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");

@@ -247,8 +247,8 @@ public partial class Scarabeus : ModNPC
 			new Color(10, 153, 245),    //Boss name chroma abberation color 1
 			new Color(106, 81, 246),    //Boss name chroma abberation color 2
 
-			"Crawling Complication 2",
-			"Salvati");
+			"Soaring Complications",
+			"Sbubby");
 	}
 
 	public void FablesCameraFocus()
@@ -430,7 +430,7 @@ public partial class Scarabeus : ModNPC
 			{
 				var easeAnimation = new AnimationSequence()
 					.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
-					.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
+					.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * TakeoffProfile.GetFrameCount(0))))
 					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 			}
@@ -441,7 +441,7 @@ public partial class Scarabeus : ModNPC
 			if (NPC.velocity.Y > 0 && OnTopOfTiles)
 				NPC.velocity.Y = 0;
 
-			if (UpdateFrame(5, framerate, PhaseTwoProfile, false) == FrameState.Stopped)
+			if (UpdateFrame(0, framerate, TakeoffProfile, false) == FrameState.Stopped)
 			{
 				if (!Main.dedServ)
 				{
@@ -481,6 +481,7 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 	#endregion
+
 	#region Death Animation
 	public float DeathAnimation(ref bool retarget)
 	{
@@ -489,7 +490,7 @@ public partial class Scarabeus : ModNPC
 		if (OnTopOfTiles)
 			frameCounter = 0;
 
-		UpdateFrame(0, frameCounter, SimulatedProfile);
+		UpdateFrame(0, frameCounter, DeadProfile);
 		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
 
 		if (Counter == 0)
@@ -1057,7 +1058,7 @@ public partial class Scarabeus : ModNPC
 					{
 						NPC.velocity.X *= 0.5f;
 						NPC.rotation = 0;
-						SetFrame(new Point(0, 3), PhaseTwoProfile);
+						SetFrame(Point.Zero, SimulatedProfile);
 						trailOpacity = 0;
 						return GoBackToIdle();
 					}
@@ -1344,7 +1345,7 @@ public partial class Scarabeus : ModNPC
 			//Rolling up from the skies in phase 2
 			if (phaseTwo && bounceIndex == 0)
 			{
-				if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (currentFrame != RollFrame && UpdateFrame(2, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(RollFrame, PhaseTwoProfile);
 					NPC.rotation += NPC.direction;
@@ -1412,7 +1413,7 @@ public partial class Scarabeus : ModNPC
 				{
 					profile = PhaseTwoProfile;
 					if (NPC.velocity.Y > 6)
-						frame = new Point(4, 2);
+						frame = new Point(3, 2);
 				}
 
 				if (NPC.velocity.Y > 8f)
@@ -1479,7 +1480,7 @@ public partial class Scarabeus : ModNPC
 
 		else //rest before next attack
 		{
-			bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
+			bool jumped = currentFrame == new Point(0, 3) && Profile == PhaseTwoProfile;
 
 			if (!phaseTwo)
 			{
@@ -1511,9 +1512,9 @@ public partial class Scarabeus : ModNPC
 					currentFrame.Y = 10;
 
 				if (currentFrame.Y is 19 or 21)
-					SetFrame(5, currentFrame.Y + 1, PhaseTwoProfile);
+					SetFrame(0, currentFrame.Y + 1, TakeoffProfile);
 
-				if (UpdateFrame(5, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (UpdateFrame(0, 16, TakeoffProfile, false) == FrameState.Stopped)
 				{
 					if (!Main.dedServ)
 					{
@@ -1531,7 +1532,7 @@ public partial class Scarabeus : ModNPC
 
 					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
-					SetFrame(0, 2, PhaseTwoProfile);
+					SetFrame(0, 3, PhaseTwoProfile);
 					NPC.velocity.Y -= 25;
 					NPC.velocity.X += NPC.direction * 5;
 					Counter = 0;
@@ -1689,7 +1690,7 @@ public partial class Scarabeus : ModNPC
 				else
 				{
 					//Rolling up
-					if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+					if (currentFrame != RollFrame && UpdateFrame(2, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 					{
 						SetFrame(RollFrame, PhaseTwoProfile);
 						NPC.rotation += NPC.direction;
@@ -1964,7 +1965,7 @@ public partial class Scarabeus : ModNPC
 		{
 			//Anticipation
 			case 0:
-				UpdateFrame(2, 8 + (int)(Counter / teleraph_time * 12), PhaseTwoProfile);
+				UpdateFrame(0, 8 + (int)(Counter / teleraph_time * 12), SimulatedProfile);
 
 				if (distXToTarget > idealXDistanceToPlayer)
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
