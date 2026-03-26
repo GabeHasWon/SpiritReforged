@@ -2949,6 +2949,11 @@ GoldCricketCageItem: {
 	// Tooltip: ""
 }
 
+ScarabPetItem: {
+	// DisplayName: Scarab Food
+	// Tooltip: Summons a little Scarab companion
+}
+
 CarrotCake: {
 	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
@@ -3025,4 +3030,13 @@ LocustCrook: {
 IridescentDye: {
 	// DisplayName: Iridescent Dye
 	// Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	// DisplayName: Scarab Bulb
+	/* Tooltip:
+		'''
+		Summons a Scarababy
+		'Eureka!'
+		''' */
 }
