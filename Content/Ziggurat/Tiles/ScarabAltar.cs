@@ -160,7 +160,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			set => Projectile.ai[0] = value;
 		}
 
-		public ref float Counter => ref Projectile.ai[1];
+		public ref float FlashTime => ref Projectile.ai[1];
 
 		private const int WaitTime = 120;
 		private bool _justSpawned = true;
@@ -189,25 +189,15 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override void AI()
 		{
+			if (FlashTime > 0)
+				FlashTime--;
+
 			Enabled = true;
 
 			if (_justSpawned)
 			{
 				if (!Main.dedServ)
-				{
-					/*if (!CrossMod.Fables.Enabled)
-					{
-						Vector2 targetPosition = Projectile.Center - Main.ScreenSize.ToVector2() / 2;
-						var easeAnimation = new AnimationSequence()
-							.Add(new AnimationSequence.EaseSegment(WaitTime, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-							.Add(new AnimationSequence.WaitSegment(TimeLeftMax - WaitTime - 40))
-							.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
-
-						Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-					}*/
-
 					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
-				}
 
 				Projectile.timeLeft = TimeLeftMax;
 				_justSpawned = false;
@@ -215,73 +205,61 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
 			}
 
-			if (Projectile.timeLeft >= TimeLeftMax - WaitTime)
+			if (!_spawnedBoss)
 			{
-				if (Main.rand.NextFloat() < Counter / WaitTime * 0.4f)
-				{
-					float strength = Main.rand.NextFloat();
-					var color = Color.Lerp(Color.Red, Color.Goldenrod, strength);
-					Vector2 position = Projectile.Center - (Vector2.UnitY * Main.rand.NextFloat(40, 60)).RotatedByRandom(1);
-
-					ParticleHandler.SpawnParticle(new EmberParticle(position, position.DirectionTo(Projectile.Center) * strength * 2, color, MathHelper.Lerp(0.2f, 0.5f, strength), 30, 2));
-				}
-			}
-			else
-			{
-				if (!Main.dedServ)
-				{
-					if (Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
-					{
-						var shader = Filters.Scene["SpiritReforged:LightShaderData"].GetShader();
-						float power = Math.Min(((Counter - WaitTime < 20) ? Counter - WaitTime : Projectile.timeLeft) / 20f, 1);
-
-						shader.UseOpacity(power);
-						shader.UseIntensity(power / 2);
-					}
-					else
-					{
-						Filters.Scene.Activate("SpiritReforged:LightShaderData");
-					}
-				}
-
-				if (Main.rand.NextBool(3))
-				{
-					float progress = (float)(Projectile.timeLeft / (float)TimeLeftMax);
-
-					Rectangle hitbox = new((int)Projectile.Center.X - 8, (int)(Projectile.Center.Y - Main.screenHeight / 2), 16, Main.screenHeight / 2);
-					Vector2 position = Main.rand.NextVector2FromRectangle(hitbox);
-					float scale = Main.rand.NextFloat(0.5f, 2f);
-
-					ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.UnitY * -5 * progress, Color.Goldenrod.Additive() * progress, new(0.3f, 1 * scale), 20, 1));
-
-					if (Main.rand.NextFloat() > 0.3f)
-						ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.UnitY * -5 * progress, Color.White.Additive() * progress, new(0.2f, 0.5f * scale), 20, 1));
-				}
-			}
-
-			if (++Counter >= WaitTime && !_spawnedBoss)
-			{
-				if (!Main.dedServ)
-				{
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitY, 6, 2, 50));
-					ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, 0, Color.PaleVioletRed, 1, 20) { Velocity = -Vector2.UnitY });
-
-					for (int i = 0; i < 5; i++)
-						ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, -Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(0.2f, 1), Color.Goldenrod, Color.MediumPurple, Main.rand.NextFloat(0.2f, 0.5f), 150, 2));
-				}
-
-				if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
-					NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+				//if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
+				//	NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
 
 				_spawnedBoss = true;
+			}
+
+			int chance = (int)MathHelper.Lerp(20, 2, 1f - (Projectile.timeLeft - TimeLeftMax / 2) / (float)(TimeLeftMax / 2));
+
+			/*if (Projectile.timeLeft > TimeLeftMax / 2 && Projectile.timeLeft % chance == 0)
+			{
+				float strength = Main.rand.NextFloat();
+				var color = Color.Lerp(Color.LightGoldenrodYellow, Color.Orange, strength);
+				Vector2 position = Projectile.Center - (Vector2.UnitY * Main.rand.NextFloat(40, 60)).RotatedByRandom(1.5f);
+
+				ParticleHandler.SpawnParticle(new EmberParticle(position, position.DirectionTo(Projectile.Center) * strength * 2, color, MathHelper.Lerp(0.5f, 1f, strength), 40, 2));
+			}*/
+
+			if (Projectile.timeLeft == TimeLeftMax / 2)
+			{
+				if (!Main.dedServ)
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));
+
+				/*static void RotationAndScaleAction(Particle p)
+				{
+					p.Scale *= 1.01f;
+				}
+
+				float rotation = Main.rand.NextFloat(-0.1f, 0.1f);
+
+				for (int i = 0; i < 8; i++)
+				{
+					Color c = Color.Orange;
+
+					ParticleHandler.SpawnParticle(new LightFlash(Projectile.Center, Color.LightGoldenrodYellow.Additive(), c.Additive(), new Vector2(Main.rand.NextFloat(0.08f, 0.15f), Main.rand.NextFloat(0.05f, 0.1f)), 35, rotation + Main.rand.NextFloat(-0.85f, 0.85f), Main.rand.NextFloat(-0.05f, 0.05f), RotationAndScaleAction));
+				}*/
+
+				FlashTime = 60;
+
+				static void DecelerateAction(Particle p) => p.Velocity *= 0.94f;
+
+				for (int i = 0; i < 30; i++)
+				{
+					Vector2 velocity = -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(9f);
+
+					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, Color.Orange, 1f, 30, 3, DecelerateAction));
+
+					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, 0.8f, 20, 3, DecelerateAction));
+				}
 			}
 		}
 
 		public override void OnKill(int timeLeft)
 		{
-			if (!Main.dedServ && Filters.Scene["SpiritReforged:LightShaderData"].IsActive())
-				Filters.Scene.Deactivate("SpiritReforged:LightShaderData");
-
 			Enabled = false;
 		}
 
@@ -289,42 +267,79 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (Projectile.timeLeft > TimeLeftMax - WaitTime)
+			var godray = AssetLoader.LoadedTextures["GodrayCircle"].Value;
+			var ray = AssetLoader.LoadedTextures["Ray"].Value;
+			var shine = AssetLoader.LoadedTextures["ShineAlpha"].Value;
+
+			float progress = 1f - Projectile.timeLeft / (float)TimeLeftMax;
+
+			float scale;
+			float opacity;
+
+			if (progress < 0.5f)
 			{
-				Texture2D rayTexture = TextureAssets.Projectile[ProjectileID.MedusaHeadRay].Value;
-				float rayOpacity = 1f - (float)Projectile.timeLeft / TimeLeftMax;
+				float lerp = progress / 0.5f;
 
-				Main.EntitySpriteDraw(rayTexture, Projectile.Center - Main.screenPosition, null, Color.Goldenrod.Additive() * rayOpacity, 0, new(rayTexture.Width / 2, rayTexture.Height), new Vector2(2, 0.2f) * Projectile.scale, default);
-				Main.EntitySpriteDraw(rayTexture, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * rayOpacity, 0, new(rayTexture.Width / 2, rayTexture.Height), new Vector2(1, 0.1f) * Projectile.scale, default);
+				scale = MathHelper.Lerp(0.5f, 1f, lerp);
 
-				return false;
+				opacity = lerp;
+			}
+			else
+			{
+				float lerp = (progress - 0.5f) / 0.5f;
+
+				scale = 1f;
+
+				opacity = 1f - lerp;
 			}
 
-			float progress = EaseFunction.EaseCircularIn.Ease(Projectile.timeLeft / (float)(TimeLeftMax - WaitTime));
+			Main.spriteBatch.Draw(godray, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.LightGoldenrodYellow, Color.Orange, opacity).Additive() * opacity, MathHelper.Pi, godray.Size() / 2f, scale * 0.2f, 0f, 0f);
 
-			Vector2 center = Projectile.Center;
-			float opacity = Math.Clamp(((float)(TimeLeftMax - WaitTime) - Projectile.timeLeft) * 0.2f, 0, 1);
+			Effect effect = AssetLoader.LoadedShaders["LightRay"].Value;
 
-			Color rainbow = Main.hslToRgb((float)Main.timeForVisualEffects / 10f % 1, 1f, 0.5f);
-			var subColor = Color.Lerp(Color.Lerp(rainbow, Color.Goldenrod, 1f - progress), Color.PaleVioletRed, progress);
+			effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["FlameTrail"].Value);
+			float scrollAmount = EaseBuilder.EaseCircularIn.Ease(opacity) * 0.6f;
+			effect.Parameters["scroll"].SetValue(new Vector2(0, scrollAmount));
+			effect.Parameters["textureStretch"].SetValue(new Vector2(4, 1) * 0.2f);
+			effect.Parameters["texExponentRange"].SetValue(new Vector2(1, 0.25f));
+			effect.Parameters["flipCoords"].SetValue(true);
 
-			DrawLightBeam(center, subColor, opacity * progress);
+			float easedScale = EaseBuilder.EaseCircularIn.Ease(scale);
+			float easedFlashProgress = EaseBuilder.EaseCubicOut.Ease(opacity * 1.5f);
+			effect.Parameters["finalIntensityMod"].SetValue(1 * (1 + easedFlashProgress / 2) * easedScale * Projectile.scale);
+			effect.Parameters["textureStrength"].SetValue(easedFlashProgress); //Don't display texture while not flashing
+			effect.Parameters["finalExponent"].SetValue(2f);
 
-			for (int i = 0; i < 2; i++)
+			Color colorOne = Color.LightGoldenrodYellow;
+			Color colorTwo = Color.Orange;
+
+			if (FlashTime > 0)
 			{
-				SquarePrimitive blurLine = new()
-				{
-					Position = Projectile.Center - Main.screenPosition,
-					Height = 72,
-					Length = 36,
-					Rotation = MathHelper.PiOver2,
-					Color = ((i == 0) ? Color.Goldenrod : Color.White).Additive() * progress
-				};
+				float lerp = EaseBuilder.EaseCircularOut.Ease((int)FlashTime / 60f);
 
-				PrimitiveRenderer.DrawPrimitiveShape(blurLine, AssetLoader.LoadedShaders["BlurLine"].Value);
+				scale += 0.3f * lerp;
 			}
 
-			Lighting.AddLight(Projectile.Center, new Vector3(1f, 0.7f, 0.2f) * progress * 3);
+			effect.Parameters["uColor"].SetValue(colorOne.ToVector4() * opacity);
+
+			effect.Parameters["uColor2"].SetValue(colorTwo.ToVector4() * opacity);
+
+			var rayFinalDimensions = new Vector3(350f * scale, 150f * scale, 1f);
+
+			float sunWidth = 70;
+			effect.Parameters["taperRatio"].SetValue(sunWidth / rayFinalDimensions.X);
+
+			var square = new SquarePrimitive
+			{
+				Color = Color.White,
+				Height = rayFinalDimensions.Y,
+				Length = rayFinalDimensions.X,
+			};
+
+			square.SetTopPosition(Projectile.Center - Main.screenPosition + new Vector2(0f, -rayFinalDimensions.Y));
+
+			PrimitiveRenderer.DrawPrimitiveShape(square, effect);
+
 			return false;
 		}
 
@@ -585,7 +600,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
-				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 300);
+				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 240);
 			}
 		}
 
