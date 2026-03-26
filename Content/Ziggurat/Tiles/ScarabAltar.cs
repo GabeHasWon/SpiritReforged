@@ -16,6 +16,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using System.IO;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
@@ -154,32 +155,17 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override string Texture => AssetLoader.EmptyTexture;
 
-		public int TimeLeftMax
+		public int MaxTime
 		{
 			get => (int)Projectile.ai[0];
 			set => Projectile.ai[0] = value;
 		}
+		public ref float Time => ref Projectile.ai[1];
 
-		public ref float FlashTime => ref Projectile.ai[1];
+		public ref float GemCount => ref Projectile.ai[2];
 
-		private const int WaitTime = 120;
+		public float FlashTime;
 		private bool _justSpawned = true;
-		private bool _spawnedBoss = false;
-
-		public override void Load()
-		{
-			if (!Main.dedServ)
-			{
-				const string name = "SpiritReforged:LightShaderData";
-				Filters.Scene[name] = new Filter(
-					new LightShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/LightFilter"), "LightFilterPass")
-					.UseColor(new Color(100, 100, 100))
-					.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/noiseCrystal2"))
-					, EffectPriority.High);
-
-				Filters.Scene[name].Load();
-			}
-		}
 
 		public override void SetDefaults()
 		{
@@ -192,69 +178,46 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			if (FlashTime > 0)
 				FlashTime--;
 
-			Enabled = true;
-
-			if (_justSpawned)
+			if (GemCount >= ScarabAltarEntity.ConsumableCountMax)
 			{
-				if (!Main.dedServ)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
+				Enabled = true;
 
-				Projectile.timeLeft = TimeLeftMax;
-				_justSpawned = false;
-
-				SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
-			}
-
-			if (!_spawnedBoss)
-			{
-				//if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
-				//	NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
-
-				_spawnedBoss = true;
-			}
-
-			int chance = (int)MathHelper.Lerp(20, 2, 1f - (Projectile.timeLeft - TimeLeftMax / 2) / (float)(TimeLeftMax / 2));
-
-			/*if (Projectile.timeLeft > TimeLeftMax / 2 && Projectile.timeLeft % chance == 0)
-			{
-				float strength = Main.rand.NextFloat();
-				var color = Color.Lerp(Color.LightGoldenrodYellow, Color.Orange, strength);
-				Vector2 position = Projectile.Center - (Vector2.UnitY * Main.rand.NextFloat(40, 60)).RotatedByRandom(1.5f);
-
-				ParticleHandler.SpawnParticle(new EmberParticle(position, position.DirectionTo(Projectile.Center) * strength * 2, color, MathHelper.Lerp(0.5f, 1f, strength), 40, 2));
-			}*/
-
-			if (Projectile.timeLeft == TimeLeftMax / 2)
-			{
-				if (!Main.dedServ)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));
-
-				/*static void RotationAndScaleAction(Particle p)
+				if (_justSpawned)
 				{
-					p.Scale *= 1.01f;
+					if (!Main.dedServ)
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
+					
+					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
+						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+
+					Projectile.timeLeft = MaxTime / 2;
+					_justSpawned = false;
+
+					SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
+
+					if (!Main.dedServ)
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));
+
+					FlashTime = 60;
+
+					static void DecelerateAction(Particle p) => p.Velocity *= 0.94f;
+
+					for (int i = 0; i < 30; i++)
+					{
+						Vector2 velocity = -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(9f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, Color.Orange, 1f, 30, 3, DecelerateAction));
+
+						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, 0.8f, 20, 3, DecelerateAction));
+					}
 				}
+			}
+			else
+			{
+				if (Time < GemCount * (MaxTime / (ScarabAltarEntity.ConsumableCountMax * 2)))
+					Time++;
 
-				float rotation = Main.rand.NextFloat(-0.1f, 0.1f);
-
-				for (int i = 0; i < 8; i++)
-				{
-					Color c = Color.Orange;
-
-					ParticleHandler.SpawnParticle(new LightFlash(Projectile.Center, Color.LightGoldenrodYellow.Additive(), c.Additive(), new Vector2(Main.rand.NextFloat(0.08f, 0.15f), Main.rand.NextFloat(0.05f, 0.1f)), 35, rotation + Main.rand.NextFloat(-0.85f, 0.85f), Main.rand.NextFloat(-0.05f, 0.05f), RotationAndScaleAction));
-				}*/
-
-				FlashTime = 60;
-
-				static void DecelerateAction(Particle p) => p.Velocity *= 0.94f;
-
-				for (int i = 0; i < 30; i++)
-				{
-					Vector2 velocity = -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(9f);
-
-					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, Color.Orange, 1f, 30, 3, DecelerateAction));
-
-					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White, 0.8f, 20, 3, DecelerateAction));
-				}
+				Projectile.timeLeft = (int)(MaxTime - Time);
 			}
 		}
 
@@ -268,10 +231,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		public override bool PreDraw(ref Color lightColor)
 		{
 			var godray = AssetLoader.LoadedTextures["GodrayCircle"].Value;
-			var ray = AssetLoader.LoadedTextures["Ray"].Value;
-			var shine = AssetLoader.LoadedTextures["ShineAlpha"].Value;
 
-			float progress = 1f - Projectile.timeLeft / (float)TimeLeftMax;
+			float progress = 1f - Projectile.timeLeft / (float)MaxTime;
 
 			float scale;
 			float opacity;
@@ -299,6 +260,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 			effect.Parameters["uTexture"].SetValue(AssetLoader.LoadedTextures["FlameTrail"].Value);
 			float scrollAmount = EaseBuilder.EaseCircularIn.Ease(opacity) * 0.6f;
+
+			if (GemCount < 5)
+				scrollAmount = (float)Math.Sin(Main.timeForVisualEffects * 0.01f) * 0.5f;
+
 			effect.Parameters["scroll"].SetValue(new Vector2(0, scrollAmount));
 			effect.Parameters["textureStretch"].SetValue(new Vector2(4, 1) * 0.2f);
 			effect.Parameters["texExponentRange"].SetValue(new Vector2(1, 0.25f));
@@ -547,6 +512,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	public const int ConsumableCountMax = 5;
 
 	public int consumableCount;
+	public int BeamWhoAmI = -1;
 
 	public int InteractTime { get; private set; }
 
@@ -591,18 +557,23 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		if (subVolume > 0)
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
-		consumableCount++;
-
-		if (consumableCount >= ConsumableCountMax)
+		if (consumableCount == 0)
 		{
-			consumableCount = 0;
-
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
-				Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 240);
+				BeamWhoAmI = Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 240);
 			}
 		}
+
+		consumableCount++;
+
+		if (BeamWhoAmI > 0 && consumableCount <= ConsumableCountMax)
+			Main.projectile[BeamWhoAmI].ai[2] = consumableCount;
+
+		
+		if (consumableCount >= ConsumableCountMax)
+			consumableCount = 0;
 
 		if (Main.netMode == NetmodeID.Server)
 			NetMessage.SendData(MessageID.TileEntitySharing, number: ID);
