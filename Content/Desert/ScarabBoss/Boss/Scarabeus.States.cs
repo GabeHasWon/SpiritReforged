@@ -11,11 +11,10 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 using Terraria.Graphics.CameraModifiers;
+
 using static SpiritReforged.Common.Misc.AnimationSequence;
-using static SpiritReforged.Content.Desert.ScarabBoss.Boss.Scarabeus;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -248,8 +247,8 @@ public partial class Scarabeus : ModNPC
 			new Color(10, 153, 245),    //Boss name chroma abberation color 1
 			new Color(106, 81, 246),    //Boss name chroma abberation color 2
 
-			"Crawling Complication 2",
-			"Salvati");
+			"Soaring Complications",
+			"Sbubby");
 	}
 
 	public void FablesCameraFocus()
@@ -399,7 +398,10 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Dancing easter egg
-	public bool CanDance => Main.newMusic == ScarabRadio.MusicSlot || Target.HeldItem.type == ModContent.ItemType<ScarabRadio>();
+	/// <summary>
+	/// Checks if the target is holding a radio.
+	/// </summary>
+	public bool CanDance => Target.HeldItem.type == ModContent.ItemType<ScarabRadio>();
 
 	public float DanceIdle(ref bool retarget)
 	{
@@ -440,7 +442,7 @@ public partial class Scarabeus : ModNPC
 			{
 				var easeAnimation = new AnimationSequence()
 					.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
-					.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * PhaseTwoProfile.GetFrameCount(5))))
+					.Add(new AnimationSequence.WaitSegment((int)(60 / 12f * TakeoffProfile.GetFrameCount(0))))
 					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
 				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 			}
@@ -451,7 +453,7 @@ public partial class Scarabeus : ModNPC
 			if (NPC.velocity.Y > 0 && OnTopOfTiles)
 				NPC.velocity.Y = 0;
 
-			if (UpdateFrame(5, framerate, PhaseTwoProfile, false) == FrameState.Stopped)
+			if (UpdateFrame(0, framerate, TakeoffProfile, false) == FrameState.Stopped)
 			{
 				if (!Main.dedServ)
 				{
@@ -491,6 +493,7 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 	#endregion
+
 	#region Death Animation
 	public float DeathAnimation(ref bool retarget)
 	{
@@ -499,7 +502,7 @@ public partial class Scarabeus : ModNPC
 		if (OnTopOfTiles)
 			frameCounter = 0;
 
-		UpdateFrame(0, frameCounter, SimulatedProfile);
+		UpdateFrame(0, frameCounter, DeadProfile);
 		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
 
 		if (Counter == 0)
@@ -540,7 +543,7 @@ public partial class Scarabeus : ModNPC
 				{
 					pos += Main.rand.NextVector2Circular(5f, 5f);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.1f, EaseBuilder.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.1f, EaseFunction.EaseCircularIn, 50, false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
@@ -548,7 +551,7 @@ public partial class Scarabeus : ModNPC
 						PixelDivisor = 3,
 					});
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.13f, EaseBuilder.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.13f, EaseFunction.EaseCircularIn, 50, false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
@@ -637,7 +640,7 @@ public partial class Scarabeus : ModNPC
 	#region Idling between attacks
 	public float IdleBetweenAttacks(ref bool retarget)
 	{
-		if (Main.rand.NextBool(300))
+		if (Main.rand.NextBool(300) && !Main.dedServ)
 		{
 			SoundStyle chitter = SmallChitterSound;
 
@@ -650,32 +653,13 @@ public partial class Scarabeus : ModNPC
 		NPC.FaceTarget();
 		NPC.dontTakeDamage = false;
 
-		//Pick a time to wait before the next attack
-		if (Counter == 0 && Main.netMode != NetmodeID.MultiplayerClient)
-		{
-			ExtraMemory = Main.rand.NextFloat(STAT_MIN_IDLE_TIME, STAT_MAX_IDLE_TIME);
-			if (Main.masterMode)
-				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_MASTER;
-			else
-				ExtraMemory -= STAT_IDLE_TIME_REDUCTION_EXPERT;
-
-			if (LastAttack == AIState.Swarm)
-				ExtraMemory *= 1.65f;
-			if (!phaseTwo)
-				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1) * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 1f, NPC.life / (float)NPC.lifeMax, true);
-			else
-				ExtraMemory *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
-
-			ExtraMemory = MathHelper.Max(0.01f, ExtraMemory);
-			NPC.netUpdate = true;
-		}
-
-		float nextAttackTime = ExtraMemory;
+		// Alias ExtraMemory for readability
+		float waitTimeMultiplier = ExtraMemory;
 
 		if (!phaseTwo)
-			GroundedIdle(ref nextAttackTime);
+			GroundedIdle(ref waitTimeMultiplier);
 		else
-			FlyHover(ref nextAttackTime);
+			FlyHover(ref waitTimeMultiplier);
 
 		//Switch to an attack after enough time
 		if (Counter > 1f)
@@ -685,7 +669,37 @@ public partial class Scarabeus : ModNPC
 		}
 
 		//We increment the idle counter
-		return 1 / (60f * nextAttackTime);
+		return 1 / (60f * waitTimeMultiplier);
+	}
+
+	private void SetIdleTime(ref float waitTimeMultiplier)
+	{
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			waitTimeMultiplier = Main.rand.NextFloat(STAT_MIN_IDLE_TIME, STAT_MAX_IDLE_TIME);
+			waitTimeMultiplier = MathHelper.Max(0.01f, waitTimeMultiplier);
+		}
+		else
+		{
+			// Only wait the max time on clients, waiting for the server to sync their value
+			waitTimeMultiplier = STAT_MAX_IDLE_TIME;
+		}
+
+		if (Main.masterMode)
+			waitTimeMultiplier -= STAT_IDLE_TIME_REDUCTION_MASTER;
+		else
+			waitTimeMultiplier -= STAT_IDLE_TIME_REDUCTION_EXPERT;
+
+		if (LastAttack == AIState.Swarm)
+			waitTimeMultiplier *= 1.65f;
+
+		if (!phaseTwo)
+			waitTimeMultiplier *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P1) * Utils.GetLerpValue(PHASE_2_HEALTH_THRESHOLD, 1f, NPC.life / (float)NPC.lifeMax, true);
+		else
+			waitTimeMultiplier *= STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2 + (1 - STAT_IDLE_TIME_HEALTH_PERCENT_MIN_MULTIPLIER_P2) * Utils.GetLerpValue(0f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
+
+		if (Main.netMode == NetmodeID.Server) // Use this over netUpdate so we avoid netSpam
+			NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
 	}
 
 	public void GroundedIdle(ref float nextAttackWaitTime)
@@ -812,9 +826,9 @@ public partial class Scarabeus : ModNPC
 		NPC.noGravity = true;
 		NPC.rotation = NPC.velocity.X * 0.05f;
 		NPC.FaceTarget();
-		wingFrameCounter += 22f / 60f; //30 fps for wings specifically
+		wingFrameCounter += (18f / 60f) * wingbeatSpeed; //18 fps for wings specifically
 
-		UpdateFrame(0, (int)(15 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
+		UpdateFrame(0, (int)(12 * wingbeatSpeed), SimulatedProfile); //UpdateFrame(2, (int)(15 * wingbeatSpeed), PhaseTwoProfile);
 
 		float heightAboveGround = FindGroundFromPositionIgnorePlatforms(NPC.Center).Y - NPC.Center.Y;
 
@@ -1056,7 +1070,7 @@ public partial class Scarabeus : ModNPC
 					{
 						NPC.velocity.X *= 0.5f;
 						NPC.rotation = 0;
-						SetFrame(new Point(0, 3), PhaseTwoProfile);
+						SetFrame(Point.Zero, SimulatedProfile);
 						trailOpacity = 0;
 						return GoBackToIdle();
 					}
@@ -1343,7 +1357,7 @@ public partial class Scarabeus : ModNPC
 			//Rolling up from the skies in phase 2
 			if (phaseTwo && bounceIndex == 0)
 			{
-				if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (currentFrame != RollFrame && UpdateFrame(2, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 				{
 					SetFrame(RollFrame, PhaseTwoProfile);
 					NPC.rotation += NPC.direction;
@@ -1411,7 +1425,7 @@ public partial class Scarabeus : ModNPC
 				{
 					profile = PhaseTwoProfile;
 					if (NPC.velocity.Y > 6)
-						frame = new Point(4, 2);
+						frame = new Point(3, 2);
 				}
 
 				if (NPC.velocity.Y > 8f)
@@ -1478,7 +1492,7 @@ public partial class Scarabeus : ModNPC
 
 		else //rest before next attack
 		{
-			bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
+			bool jumped = currentFrame == new Point(0, 3) && Profile == PhaseTwoProfile;
 
 			if (!phaseTwo)
 			{
@@ -1506,10 +1520,13 @@ public partial class Scarabeus : ModNPC
 
 				artificialGravityMultiplier = 0f;
 
-				if (currentFrame.Y < 8)
-					currentFrame.Y = 8;
+				if (currentFrame.Y < 10)
+					currentFrame.Y = 10;
 
-				if (UpdateFrame(5, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+				if (currentFrame.Y is 19 or 21)
+					SetFrame(0, currentFrame.Y + 1, TakeoffProfile);
+
+				if (UpdateFrame(0, 11, TakeoffProfile, false) == FrameState.Stopped)
 				{
 					if (!Main.dedServ)
 					{
@@ -1527,7 +1544,7 @@ public partial class Scarabeus : ModNPC
 
 					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
-					SetFrame(0, 2, PhaseTwoProfile);
+					SetFrame(0, 3, PhaseTwoProfile);
 					NPC.velocity.Y -= 25;
 					NPC.velocity.X += NPC.direction * 5;
 					Counter = 0;
@@ -1540,7 +1557,7 @@ public partial class Scarabeus : ModNPC
 				NPC.dontTakeDamage = false;
 				NPC.velocity.Y *= 0.95f;
 
-				trailOpacity = EaseBuilder.EaseQuinticIn.Ease(1f - Counter / 20f);
+				trailOpacity = EaseFunction.EaseQuinticIn.Ease(1f - Counter / 20f);
 
 				if (Counter >= 20)
 					return GoBackToIdle();
@@ -1685,7 +1702,7 @@ public partial class Scarabeus : ModNPC
 				else
 				{
 					//Rolling up
-					if (currentFrame != RollFrame && UpdateFrame(3, 16, PhaseTwoProfile, false) == FrameState.Stopped)
+					if (currentFrame != RollFrame && UpdateFrame(2, 16, PhaseTwoProfile, false) == FrameState.Stopped)
 					{
 						SetFrame(RollFrame, PhaseTwoProfile);
 						NPC.rotation += NPC.direction;
@@ -1902,7 +1919,7 @@ public partial class Scarabeus : ModNPC
 		if (DifficultyScale < 2 || Main.netMode == NetmodeID.MultiplayerClient)
 			return;
 
-		int projectileType = ModContent.ProjectileType<SandballProjectile>();
+		int projectileType = ModContent.ProjectileType<SoilBallProjectile>();
 
 		Vector2 ground = FindGroundFromPositionIgnorePlatforms(NPC.Top);
 		Point groundPos = ground.ToTileCoordinates();
@@ -1960,7 +1977,8 @@ public partial class Scarabeus : ModNPC
 		{
 			//Anticipation
 			case 0:
-				UpdateFrame(2, 8 + (int)(Counter / teleraph_time * 12), PhaseTwoProfile);
+				wingFrameCounter += (18f / 60f) * (1 + Counter / teleraph_time);
+				UpdateFrame(0, 12, SimulatedProfile);
 
 				if (distXToTarget > idealXDistanceToPlayer)
 					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.01f);
@@ -2098,15 +2116,12 @@ public partial class Scarabeus : ModNPC
 		float targetHeight = FindGroundFromPositionIgnorePlatforms(Target.position).Y - 360;
 		float distanceToTarget = Math.Abs(NPC.Center.Y - targetHeight);
 		float speedToTarget = Utils.GetLerpValue(10, 210f, distanceToTarget, true) * 3f;
-		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 4f, 0.02f);
 
-		UpdateFrame(1, 12, PhaseTwoProfile);
+		UpdateFrame(1, 18, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
-
-		//if (Counter < 360)
-			//trailOpacity = 0.4f * (1f - Counter / 360f);
 
 		SwarmAttackVisuals();
 

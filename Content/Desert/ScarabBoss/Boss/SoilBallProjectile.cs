@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics.CameraModifiers;
@@ -8,12 +9,10 @@ using static Terraria.GameContent.PlayerEyeHelper;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
-public class SandballProjectile : ModProjectile
+public class SoilBallProjectile : ModProjectile
 {
 	private const int MAX_TIMELEFT = 360;
 	public Point MimicTilePosition => new Point((int)Projectile.ai[0], (int)Projectile.ai[1]);
-
-	public override string Texture => AssetLoader.EmptyTexture;
 
 	public override void SetStaticDefaults()
 	{
@@ -69,10 +68,6 @@ public class SandballProjectile : ModProjectile
 		modifiers.HitDirectionOverride = Math.Sign(Projectile.velocity.X);
 	}
 
-	private int _variantTopLeft;
-	private int _variantTopRight;
-	private int _variantBottomLeft;
-	private int _variantBottomRight;
 	private bool _initializedAppearance = false;
 	private int _tileType;
 	private int _tileColor;
@@ -91,11 +86,6 @@ public class SandballProjectile : ModProjectile
 			_initializedAppearance = true;
 
 			Tile t = Main.tile[MimicTilePosition];
-			_variantTopLeft = Main.rand.Next(3);
-			_variantTopRight = Main.rand.Next(3);
-			_variantBottomLeft = Main.rand.Next(3);
-			_variantBottomRight = Main.rand.Next(3);
-
 			if (!t.HasTile || Main.tileFrameImportant[t.TileType])
 			{
 				_tileType = TileID.Sandstone;
@@ -112,16 +102,27 @@ public class SandballProjectile : ModProjectile
 			}
 		}
 
-		Texture2D texture = TextureAssets.Tile[_tileType].Value;
+		Texture2D tileTexture = TextureAssets.Tile[_tileType].Value;
 		if (_tileColor != PaintID.None)
 		{
 			Texture2D paintedTex = Main.instance.TilePaintSystem.TryGetTileAndRequestIfNotReady(_tileType, 0, _tileColor);
-			texture = paintedTex ?? texture;
+			tileTexture = paintedTex ?? tileTexture;
 		}
+
+		Texture2D ramp = TextureColorCache.GetDominantPaletteInTileTexture(tileTexture);
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
 
 		Vector2 position = Projectile.Center;
 		float rotation = Projectile.rotation;
 		float scale = Projectile.scale;
+
+		int frameIndex = 0;
+		if (TileID.Sets.Conversion.Sand[_tileType])
+			frameIndex = 2;
+		else if (TileID.Sets.Conversion.Snow[_tileType] || TileID.Sets.CanBeDugByShovel[_tileType])
+			frameIndex = 1;
+
+		Rectangle frame = texture.Frame(1, 3, 0, frameIndex, 0, -2);
 
 		Color color = Lighting.GetColor(position.ToTileCoordinates());
 		if (_tileFullbright)
@@ -129,14 +130,17 @@ public class SandballProjectile : ModProjectile
 		if (!Main.ShouldShowInvisibleWalls() && _tileEcho)
 			color = Color.Cyan * 0.2f;
 
-		Vector2 unitX = Vector2.UnitX.RotatedBy(rotation) * Projectile.scale * 8f;
-		Vector2 unitY = Vector2.UnitY.RotatedBy(rotation) * Projectile.scale * 8f;
+		Effect recolorShader = AssetLoader.LoadedShaders["ApplyPalette"].Value;
+		recolorShader.Parameters["recolorRamp"].SetValue(ramp);
+		recolorShader.Parameters["smoothRamp"].SetValue(true);
 
-		//Draw a chunky 2x2 cube of tiles
-		Main.EntitySpriteDraw(texture, position - unitX - unitY - Main.screenPosition, new Rectangle(_variantTopLeft * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position + unitX - unitY - Main.screenPosition, new Rectangle(18 + _variantTopRight * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position - unitX + unitY - Main.screenPosition, new Rectangle(_variantBottomLeft * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position + unitX + unitY - Main.screenPosition, new Rectangle(18 + _variantBottomRight * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, recolorShader, Main.GameViewMatrix.ZoomMatrix);
+
+		Main.spriteBatch.Draw(texture, position - Main.screenPosition, frame,color, rotation, frame.Size() / 2f, scale, 0, 0);
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
 		return false;
 	}
 }

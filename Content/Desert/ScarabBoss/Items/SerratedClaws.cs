@@ -125,7 +125,7 @@ public class SerratedClaws : ModItem
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
 		Item.channel = true;
-		Item.autoReuse = false;
+		Item.autoReuse = true;
 		Item.shoot = ModContent.ProjectileType<SerratedClawsHeld>();
 
 		MoRHelper.SetSlashBonus(Item);
@@ -134,6 +134,7 @@ public class SerratedClaws : ModItem
 	public override bool MeleePrefix() => true;
 	public override void HoldItemFrame(Player player) => DisplayEquips(player);
 	public override void UseItemFrame(Player player) => DisplayEquips(player);
+	public override bool CanShoot(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<SerratedClawsHeld>()] == 0; // Only spawn one projectile
 
 	private static void DisplayEquips(Player player)
 	{

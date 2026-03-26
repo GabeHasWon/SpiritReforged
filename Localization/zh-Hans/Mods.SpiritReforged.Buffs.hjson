@@ -137,3 +137,13 @@ EnlilBuff: {
 	DisplayName: 恩利尔的援护
 	Description: 垂直机动性增加
 }
+
+ScarabPetBuff: {
+	// DisplayName: Tiny Scarab
+	// Description: "'It really loves to roll...'"
+}
+
+ScarabLightPetBuff: {
+	// DisplayName: Scarababy
+	// Description: "'It's plotting...'"
+}

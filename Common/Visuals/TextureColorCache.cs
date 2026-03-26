@@ -57,7 +57,7 @@ internal class TextureColorCache
 	}
 
 	#region Mean shift clustering
-	public static Texture2D GetDominantPalette(Texture2D texture)
+	public static Texture2D GetDominantPaletteInTileTexture(Texture2D texture)
 	{
 		const bool debugMode = false;
 
@@ -115,25 +115,23 @@ internal class TextureColorCache
 			closestCluster.totalPixelWeight += paletteElement.weight;
 		}
 
-		Texture2D textureToCache = null;
-		int rampIndex = 0;
-		foreach (MeanShiftCluster cluster in clusters.OrderByDescending(c => c.totalPixelWeight))
+		if (debugMode)
 		{
-			textureToCache = GeneratePaletteRampFromMeanShiftCluster(cluster);
-
-			if (!TextureRampCache.ContainsKey(texture))
-				TextureRampCache.Add(texture, textureToCache);
-
-			if (!debugMode)
-				break;
-
-			string path = $"{Main.SavePath}/PaletteTest/";
-			Stream saveStream = File.OpenWrite(path + texture.Name + "Ramp_" + rampIndex.ToString() + ".png");
-			textureToCache.SaveAsPng(saveStream, 2, 128);
-			saveStream.Dispose();
-			rampIndex++;
+			int rampIndex = 0;
+			foreach (MeanShiftCluster cluster in clusters.OrderByDescending(c => c.totalPixelWeight))
+			{
+				Texture2D rampTexture = GeneratePaletteRampFromMeanShiftCluster(cluster);
+				string path = $"{Main.SavePath}/PaletteTest/";
+				Stream saveStream = File.OpenWrite(path + texture.Name + "Ramp_" + rampIndex.ToString() + ".png");
+				rampTexture.SaveAsPng(saveStream, 2, 128);
+				saveStream.Dispose();
+				rampIndex++;
+			}
 		}
 
+		Texture2D textureToCache = GeneratePaletteRampFromMeanShiftCluster(clusters.OrderByDescending(c => c.totalPixelWeight).First());
+		if (!TextureRampCache.ContainsKey(texture))
+			TextureRampCache.Add(texture, textureToCache);
 		return textureToCache;
 	}
 
