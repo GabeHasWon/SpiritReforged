@@ -27,6 +27,13 @@ public static class PrimitiveRenderer
 		if (vertices.Length == 0 || indeces.Length == 0)
 			return;
 
+		BlendState prevBlendState = Graphics.BlendState;
+		DepthStencilState prevDepthStencil = Graphics.DepthStencilState;
+		RasterizerState prevRasterizer = Graphics.RasterizerState;
+		Graphics.BlendState = BlendState.AlphaBlend;
+		Graphics.DepthStencilState = DepthStencilState.None;
+		Graphics.RasterizerState = RasterizerState.CullNone;
+
 		//Graphics.RasterizerState = RasterizerState.CullNone;
 
 		//Determine the number of lines or triangles to draw, given the amount of indeces and type of primitives
@@ -49,6 +56,10 @@ public static class PrimitiveRenderer
 
 		//Finally, draw the primitives
 		Graphics.DrawUserIndexedPrimitives(primitiveType, vertices, 0, vertices.Length, indeces, 0, primitiveCount);
+
+		Graphics.BlendState = prevBlendState;
+		Graphics.DepthStencilState = prevDepthStencil;
+		Graphics.RasterizerState = prevRasterizer;
 	}
 
 	/// <summary>
