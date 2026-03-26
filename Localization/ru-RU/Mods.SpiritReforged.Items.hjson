@@ -2945,6 +2945,11 @@ GoldCricketCageItem: {
 	// Tooltip: ""
 }
 
+ScarabPetItem: {
+	// DisplayName: Scarab Food
+	// Tooltip: Summons a little Scarab companion
+}
+
 CarrotCake: {
 	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
@@ -2961,8 +2966,12 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	// DisplayName: Adorned Bow
-	// Tooltip: ""
+	// DisplayName: Gilded Greatbow
+	/* Tooltip:
+		'''
+		Charges an empowered shot
+		Empowered shots damage nearby enemies
+		''' */
 }
 
 BagOScarabs: {
@@ -3000,12 +3009,30 @@ ScarabMusicBox: {
 	// Tooltip: ""
 }
 
-LocustCrook: {
-	// DisplayName: Locust Crook
-	// Tooltip: ""
-}
-
 SpiritTreeTopper: {
 	// DisplayName: Spirit Tree Topper
 	// Tooltip: ""
+}
+
+LocustCrook: {
+	// DisplayName: Locust Crook
+	/* Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts
+		''' */
+}
+
+IridescentDye: {
+	// DisplayName: Iridescent Dye
+	// Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	// DisplayName: Scarab Bulb
+	/* Tooltip:
+		'''
+		Summons a Scarababy
+		'Eureka!'
+		''' */
 }

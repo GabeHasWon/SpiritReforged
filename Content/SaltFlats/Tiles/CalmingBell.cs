@@ -103,8 +103,8 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 
 			if (!Main.LocalPlayer.HasBuff(BuffID.Calm))
 			{
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
 
 				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
 				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)

@@ -139,17 +139,17 @@ internal class SaltFlatsSystem : ModSystem
 			}
 
 			Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			bgShader.Parameters["texColorUVLerper"].SetValue(0f);
 			bgShader.Parameters["WorldViewProjection"].SetValue(projection);
+			bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
 			SetSkyColor(bgShader);
-			bgShader.Parameters["viewMatrix"].SetValue(projection);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, null, null, bgShader);
 
-			Vector2 galaxyScale = new Vector2(Math.Max(1, Main.screenWidth / (float)(_galaxyTex.Value.Width)), 1);
+			Vector2 galaxyScale = new Vector2(Math.Max(Math.Max(Main.screenWidth / 1920, 1), Main.screenWidth / (float)(_galaxyTex.Value.Width)), 1);
 			Main.spriteBatch.Draw(_galaxyTex.Value, new Vector2(-300), null, Color.White * nightSkyOpacity, 0, Vector2.Zero, galaxyScale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();

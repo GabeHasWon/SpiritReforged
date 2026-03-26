@@ -17,6 +17,20 @@ public class SaltBiome : ModBiome
 		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
+	public override void Load()
+	{
+		On_Player.ManageSpecialBiomeVisuals += NoHeatHazeInFlats;
+	}
+
+	private void NoHeatHazeInFlats(On_Player.orig_ManageSpecialBiomeVisuals orig, Player self, string biomeName, bool inZone, Vector2 activationSource)
+	{
+		//Disable heat haze when in salt flats (and not in hell)
+		if (inZone && biomeName == "HeatDistortion" && self.InModBiome<SaltBiome>() && activationSource.Y < Main.maxTilesY - 400)
+			inZone = false;
+
+		orig(self, biomeName, inZone, activationSource);
+	}
+
 	public override void SetStaticDefaults()
 	{
 		NPCHappinessHelper.SetAverage<SaltBiome>(ModContent.GetInstance<SnowBiome>(), ModContent.GetInstance<DesertBiome>());

@@ -19,14 +19,16 @@ using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
 using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Windshear;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
-public partial class ZigguratBiome : Microbiome
+public partial class ZigguratMicrobiome : Microbiome
 {
 	/// <summary> The maximum width of the biome. </summary>
 	public const int Width = 180;
@@ -35,16 +37,20 @@ public partial class ZigguratBiome : Microbiome
 
 	public const int HallwayWidth = 4;
 
-	private static HashSet<Rectangle> TotalBounds;
+	/// <summary> The full rectangular area this biome encompasses. </summary>
+	public Rectangle FullArea => new(Position.X - Width / 2, Position.Y - Height / 2, Width, Height);
+
+	[WorldBound]
+	public static readonly HashSet<Rectangle> TotalBounds = [];
 	private static HashSet<GenRoom> TotalRooms;
 
 	protected override void OnPlace(Point16 point)
 	{
-		Rectangle area = new(point.X - Width / 2, point.Y - Height / 2, Width, Height);
-		int layers = Math.Max((int)(Main.maxTilesY / 1200f * 2) + 2, 4);
+		List<Rectangle> bounds = GetBounds(FullArea);
+		CreateShape(FullArea, bounds);
 
-		CreateShape(area, layers, out var bounds);
-		TotalBounds = [.. bounds];
+		foreach (Rectangle bound in bounds)
+			TotalBounds.Add(bound);
 
 		CreateAltar(bounds[0]);
 		AddRooms(bounds, out var rooms);
@@ -67,49 +73,60 @@ public partial class ZigguratBiome : Microbiome
 		foreach (var b in bounds)
 			WorldDetours.Regions.Add(new(b, WorldDetours.Context.Pots | WorldDetours.Context.Piles));
 
-		TotalBounds = null;
 		TotalRooms = null;
 	}
 
-	/// <summary> Creates the basic shape of the ziggurat. </summary>
-	/// <param name="area"> The total area the structure can occupy. </param>
-	/// <param name="layers"> The number of distinct layers in the structure. </param>
-	/// <param name="bounds"></param>
-	private static void CreateShape(Rectangle area, int layers, out List<Rectangle> bounds)
+	private static List<Rectangle> GetBounds(Rectangle fullArea)
 	{
 		//A gradual width multiplier starting from the top layer
 		const float minWidth = 0.25f;
 		//A height multiplier strictly for the bottom layer
 		const float finalHeight = 1.3f;
 
-		int finalLayerHeight = (int)(area.Height / layers * finalHeight);
-		int commonLayerHeight = (area.Height - finalLayerHeight) / (layers - 1);
-		bounds = [];
+		List<Rectangle> bounds = [];
+		int layers = Math.Max((int)(Main.maxTilesY / 1200f * 2) + 2, 4);
 
-		Point center = new(area.Center.X, area.Y + commonLayerHeight / 2);
+		int finalLayerHeight = (int)(fullArea.Height / layers * finalHeight);
+		int commonLayerHeight = (fullArea.Height - finalLayerHeight) / (layers - 1);
+
+		Point center = new(fullArea.Center.X, fullArea.Y + commonLayerHeight / 2);
 
 		for (int y = 0; y < layers; y++)
 		{
 			bool finalLayer = y == layers - 1;
 
-			int width = (int)MathHelper.Lerp(area.Width * minWidth, area.Width, y / (layers - 1f));
+			int width = (int)MathHelper.Lerp(fullArea.Width * minWidth, fullArea.Width, y / (layers - 1f));
 			int height = finalLayer ? finalLayerHeight : commonLayerHeight;
 
 			if (y == 0) //Force starting height
 				width = height + 10;
 
 			var topLeft = center - new Point(width / 2, commonLayerHeight / 2);
-
-			WorldUtils.Gen(topLeft, new Shapes.Rectangle(width, height), Actions.Chain(
-				new Actions.ClearTile(),
-				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
-			));
-
-			WorldUtils.Gen(topLeft + new Point(1, 1), new Shapes.Rectangle(width - 2, height), new Actions.PlaceWall((ushort)ModContent.WallType<SandyZigguratWall>()));
 			Rectangle bound = new(topLeft.X, topLeft.Y, width, height);
 
 			bounds.Add(bound);
 			center.Y += height;
+		}
+
+		return bounds;
+	}
+
+	/// <summary> Creates the basic shape of the ziggurat. </summary>
+	/// <param name="fullBounds"> The total area the structure is occupying. </param>
+	/// <param name="bounds"></param>
+	private static void CreateShape(Rectangle fullBounds, List<Rectangle> bounds)
+	{
+		for (int y = 0; y < bounds.Count; y++)
+		{
+			Rectangle bound = bounds[y];
+			bool finalLayer = y == bounds.Count - 1;
+
+			WorldUtils.Gen(bound.Location, new Shapes.Rectangle(bound.Width, bound.Height), Actions.Chain(
+				new Actions.ClearTile(),
+				new Actions.PlaceTile((ushort)ModContent.TileType<RedSandstoneBrick>())
+			));
+
+			WorldUtils.Gen(bound.Location + new Point(1, 1), new Shapes.Rectangle(bound.Width - 2, bound.Height), new Actions.PlaceWall((ushort)ModContent.WallType<SandyZigguratWall>()));
 
 			CreateHalo(bound);
 			CreateDithering(bound);
@@ -134,12 +151,12 @@ public partial class ZigguratBiome : Microbiome
 		ShapeData shape = new();
 		ushort brick = (ushort)ModContent.TileType<RedSandstoneBrick>();
 
-		WorldUtils.Gen(area.Location, new Shapes.Rectangle(area.Width, area.Height), Actions.Chain(
+		WorldUtils.Gen(fullBounds.Location, new Shapes.Rectangle(fullBounds.Width, fullBounds.Height), Actions.Chain(
 			new Modifiers.OnlyTiles(brick),
 			new Actions.Blank()
 		).Output(shape));
 
-		WorldUtils.Gen(area.Location, new ModShapes.InnerOutline(shape), Actions.Chain(
+		WorldUtils.Gen(fullBounds.Location, new ModShapes.InnerOutline(shape), Actions.Chain(
 			new Modifiers.Dither(),
 			new Modifiers.Blotches(2, 0.1),
 			new Modifiers.IsTouching(false, TileID.Sand),
@@ -291,8 +308,9 @@ public partial class ZigguratBiome : Microbiome
 
 	private static void AddNeutralDecorations(List<GenRoom> rooms)
 	{
-		int maxChestCount = Main.maxTilesX / 2100;
+		int minChestCount = Main.maxTilesX / 2100;
 		PriorityQueue<Point16, float> furniturePositions = new();
+		PriorityQueue<Point16, float> chestPositions = new();
 
 		foreach (var room in rooms)
 		{
@@ -321,9 +339,12 @@ public partial class ZigguratBiome : Microbiome
 			{
 				decorator.Enqueue((i, j) =>
 				{
-					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)) && WorldGen.genRand.NextBool(7))
+					if ((WorldGen.SolidTile(i, j + 1) || WorldGen.SolidTile(i, j - 1)))
 					{
-						furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+						if (WorldGen.genRand.NextBool(7))
+							furniturePositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
+
+						chestPositions.Enqueue(new Point16(i, j), WorldGen.genRand.NextFloat());
 						return true;
 					}
 
@@ -340,19 +361,18 @@ public partial class ZigguratBiome : Microbiome
 			decorator.Run();
 		}
 
+		while (minChestCount > 0 && chestPositions.Count > 0)
+		{
+			Point16 pos = chestPositions.Dequeue();
+
+			if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
+				minChestCount--;
+		}
+
 		while (furniturePositions.Count > 0)
 		{
 			Point16 pos = furniturePositions.Dequeue();
-
-			if (maxChestCount > 0)
-			{
-				PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest);
-				maxChestCount--;
-			}
-			else
-			{
-				PlaceRandomFurniture(pos.X, pos.Y);
-			}
+			PlaceRandomFurniture(pos.X, pos.Y);
 		}
 	}
 
@@ -662,6 +682,7 @@ public partial class ZigguratBiome : Microbiome
 		return selection;
 	}
 
+	#region helpers
 	private static void CreateHallways(IEnumerable<GenRoom> rooms, Func<GenRoom.Link, GenRoom.Link, bool> condition)
 	{
 		PairRooms(rooms.OrderBy(static x => x.Origin.Y));
@@ -884,5 +905,34 @@ public partial class ZigguratBiome : Microbiome
 		}
 
 		return false;
+	}
+	#endregion
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		base.NetSend(writer);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		base.NetReceive(reader);
+
+		TotalBounds.Clear();
+		foreach (Rectangle bound in GetBounds(FullArea))
+			TotalBounds.Add(bound);
+	}
+
+	public override void WorldSave(TagCompound tag)
+	{
+		base.WorldSave(tag);
+	}
+
+	public override void WorldLoad(TagCompound tag)
+	{
+		base.WorldLoad(tag);
+
+		TotalBounds.Clear();
+		foreach (Rectangle bound in GetBounds(FullArea))
+			TotalBounds.Add(bound);
 	}
 }

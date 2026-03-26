@@ -6,6 +6,7 @@ float reflectionHorizonHeight;
 float cloudTargetYOffset;
 float topFadeStrength;
 float shimmerAlpha;
+float2 matrixZoom;
 
 texture reflectionMaskTexture;
 sampler reflectionMask
@@ -19,6 +20,11 @@ sampler reflectionMask
 };
 matrix maskTransform;
 matrix maskReverseTransform;
+
+float3 baseColor;
+float3 gradientColor;
+float texColorUVLerper;
+bool doMask = true;
 
 
 struct VertexShaderInput
@@ -53,9 +59,26 @@ float invlerp(float from, float to, float value)
     return saturate((value - from) / (to - from));
 }
 
+float4 AddMask(VertexShaderOutput i)
+{
+    float2 heightAndMask = float2(invlerp(0, 0.5, i.TextureCoordinates.y), invlerp(0, 0.2, i.TextureCoordinates.y));
+    float mask = 1;
+    
+    float2 textureSample = tex2D(reflectionMask, i.TextureCoordinates).ra;
+    textureSample.y *= 0.4;
+    heightAndMask = lerp(heightAndMask, textureSample, texColorUVLerper);
+    heightAndMask.y *= i.Color.a;
+    
+    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);
+    
+    return blueGradient * heightAndMask.y;
+}
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TextureCoordinates;
+    float2 heightAndMask = float2(invlerp(0, 0.5, input.TextureCoordinates.y), invlerp(0, 0.2, input.TextureCoordinates.y));
+    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);
     
     //Get the mask by transforming the screenspace coords into coordinates that match the drawn background texture outside of the shader
     float2 maskCoords = mul(float4(coords.x, coords.y, 1, 1), maskTransform).xy;
@@ -69,6 +92,8 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     
     float4 reflectedColor = tex2D(cloudReflection, flippedCoords);
+    if (doMask)
+        reflectedColor += AddMask(input);
     reflectedColor *= mask.a * pow(mask.r, 0.5);
     //Fade if going past the screen bounds
     reflectedColor *= invlerp(0, 0.2, flippedCoords.y);

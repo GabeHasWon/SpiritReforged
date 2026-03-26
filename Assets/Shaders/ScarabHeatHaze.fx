@@ -72,11 +72,11 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     float sandstormStrength = uProgress * uOpacity;
     
     //Distort the edges of the screen (based on "drug intensity")
-    float distortionStrenght = pow(smoothstep(0.2, 1, distanceToCenter), 2) + uIntensity * 0.4;
+    float distortionStrenght = (pow(smoothstep(0.2, 1, distanceToCenter), 2) + uIntensity * 0.4) * pow(uOpacity, 0.5);
     float2 distortionUv = (uv * uScreenResolution) / 1000;
     
     float4 distortionNoise = tex2D(distortionTex, distortionUv + float2(uTime * 0.1, uTime * 0.1)) * tex2D(distortionTex, distortionUv * 0.4 + float2(-uTime * 0.1, -uTime * 0.1));
-    uv += (float2(0.5, 0.5) - distortionNoise.xy) * distortionStrenght * 0.026;
+    uv += (float2(0.3, 0.3) - distortionNoise.xy) * distortionStrenght * 0.026;
     
     float4 baseColor = tex2D(uImage0, uv);
     

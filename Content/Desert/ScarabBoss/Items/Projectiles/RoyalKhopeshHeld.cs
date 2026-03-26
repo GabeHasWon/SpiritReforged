@@ -6,6 +6,7 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
 using Terraria.Graphics.CameraModifiers;
 using SpiritReforged.Common.Visuals;
+using System.IO;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 public class RoyalKhopeshHeld : ModProjectile
@@ -61,7 +62,8 @@ public class RoyalKhopeshHeld : ModProjectile
 	{
 		if (_empoweredStrike)
 		{
-			modifiers.FinalDamage *= 1.3f;
+			modifiers.FinalDamage *= 2f;
+			modifiers.SetCrit();
 		}	
 	}
 
@@ -142,7 +144,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		if (_empoweredStrike && lerp < 0.6f)
 		{
-			float prog = EaseBuilder.EaseCircularIn.Ease(1f - lerp / 0.6f);
+			float prog = EaseFunction.EaseCircularIn.Ease(1f - lerp / 0.6f);
 			
 			Main.spriteBatch.Draw(texWhite, drawPos - Main.screenPosition, null, Color.MediumVioletRed.Additive() * prog,
 			  Projectile.rotation + (Owner.direction == -1 ? MathHelper.TwoPi : 0f) + rot, texWhite.Size() / 2f, Projectile.scale, flip, 0f);
@@ -165,7 +167,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		var smear = TextureAssets.Projectile[985].Value;
 
-		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5.5f, EaseBuilder.EaseQuinticOut.Ease(1f - progress)));
+		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5.5f, EaseFunction.EaseQuinticOut.Ease(1f - progress)));
 		var pos = Owner.Center + new Vector2(90f, -90f).RotatedBy(Projectile.rotation - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f)) * _originalScale - Main.screenPosition;
 
 		Main.EntitySpriteDraw(smear, pos, source, OutlineColor, Projectile.rotation - MathHelper.PiOver4 - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f),
@@ -196,7 +198,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		var smear = TextureAssets.Projectile[985].Value;
 
-		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5f, EaseBuilder.EaseQuinticOut.Ease(1f - progress)));
+		var source = smear.Frame(1, 4, 0, (int)MathHelper.Lerp(0, 5f, EaseFunction.EaseQuinticOut.Ease(1f - progress)));
 		var pos = Owner.Center + new Vector2(75f, -70f).RotatedBy(Projectile.rotation - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f)) * _originalScale - Main.screenPosition;
 
 		Main.EntitySpriteDraw(smear, pos, source, OutlineColor * fadeIn, Projectile.rotation - MathHelper.PiOver4 - (Owner.direction == -1 ? MathHelper.PiOver2 : 0f),
@@ -220,9 +222,9 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		float armRotation = Projectile.velocity.ToRotation() + (OriginalDirection == -1 ? MathHelper.Pi : 0f);
 
-		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
-		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
 		if (progress < 0.3f)
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.1f, 1.3f, progress / 0.3f);
@@ -233,7 +235,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.3f, 1.1f, lerp);
 
-			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseBuilder.EaseCircularIn.Ease(lerp)) * OriginalDirection;
+			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseFunction.EaseCircularIn.Ease(lerp)) * OriginalDirection;
 		}
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
@@ -252,9 +254,9 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		float armRotation = Projectile.velocity.ToRotation() + (OriginalDirection == -1 ? MathHelper.Pi : 0f);
 
-		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		Projectile.rotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
-		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseBuilder.EaseQuinticOut.Ease(progress)) * OriginalDirection;
+		armRotation += MathHelper.Lerp(swingStart, swingEnd, EaseFunction.EaseQuinticOut.Ease(progress)) * OriginalDirection;
 
 		if (progress < 0.3f)
 			Projectile.scale = _originalScale * MathHelper.Lerp(0.9f, 1.1f, progress / 0.3f);
@@ -265,7 +267,7 @@ public class RoyalKhopeshHeld : ModProjectile
 			
 			Projectile.scale = _originalScale * MathHelper.Lerp(1.1f, 0.9f, lerp);
 
-			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseBuilder.EaseCircularIn.Ease(lerp)) * OriginalDirection;
+			Projectile.rotation += MathHelper.Lerp(0f, -0.5f * Combo, EaseFunction.EaseCircularIn.Ease(lerp)) * OriginalDirection;
 		}
 
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
@@ -323,8 +325,8 @@ public class RoyalKhopeshHeld : ModProjectile
 			_empoweredStrike = true;
 			kopeshPlayer.EmpoweredStrikeTimer = 0;
 
-			if (Main.myPlayer == Projectile.owner)
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity, 2f, 3, 15));
+			//if (Main.myPlayer == Projectile.owner)
+				//Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Projectile.velocity, 2f, 3, 15));
 
 			SoundEngine.PlaySound(EmpoweredSlash_01, Owner.Center);
 			SoundEngine.PlaySound(EmpoweredSlash_02, Owner.Center);
@@ -344,10 +346,23 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		MaxTime = Projectile.timeLeft;
 		Projectile.rotation = Owner.DirectionTo(Projectile.Center + Projectile.velocity).ToRotation() + MathHelper.PiOver4;
-		Projectile.netUpdate = true;
 		Projectile.direction = Main.MouseWorld.X < Owner.Center.X ? -1 : 1;
 		OriginalDirection = Projectile.direction;
 		Owner.itemTime = Projectile.timeLeft / 2;
 		Owner.itemAnimation = Owner.itemTime;
+
+		Projectile.netUpdate = true;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_empoweredStrike);
+		writer.Write(_originalScale);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		_empoweredStrike = reader.ReadBoolean();
+		_originalScale = reader.ReadSingle();
 	}
 }

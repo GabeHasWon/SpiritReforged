@@ -1,10 +1,13 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
@@ -91,10 +94,12 @@ public partial class Scarabeus : ModNPC
 
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;
+	private static VisualProfile TakeoffProfile;
 	private static VisualProfile SimulatedProfile;
 	private static VisualProfile BallProfile;
+	private static VisualProfile DeadProfile;
 
-	public delegate float ScarabeusAttackDelegate(ref bool retarget);
+	public delegate float ScarabeusAttackDelegate(Scarabeus self, ref bool retarget);
 
 	public AIState CurrentState
 	{
@@ -128,6 +133,15 @@ public partial class Scarabeus : ModNPC
 			int collisionHeight = NPC.height;
 			ShrinkTileHitbox(NPC, ref collisionPosition, ref collisionWidth, ref collisionHeight);
 			return Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight + 8, !IgnorePlatforms);
+		}
+	}
+
+	public bool IsIdling
+	{
+		get
+		{
+			AIState currentState = CurrentState;
+			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
 		}
 	}
 
@@ -183,16 +197,7 @@ public partial class Scarabeus : ModNPC
 		MaxValue
 	}
 
-	public bool IsIdling
-	{
-		get
-		{
-			AIState currentState = CurrentState;
-			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
-		}
-	}
-
-	private ScarabeusAttackDelegate[] _stateAI;
+	private static ScarabeusAttackDelegate[] _stateAI;
 
 	public override void Load()
 	{
@@ -204,6 +209,32 @@ public partial class Scarabeus : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		//Cinematic bits
+		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
+		_stateAI[(int)AIState.SpawnAnim] = (Scarabeus scarab, ref bool retarget) => scarab.SpawnAnimation(ref retarget);
+		_stateAI[(int)AIState.Roar] = (Scarabeus scarab, ref bool retarget) => scarab.Roar(ref retarget);
+		_stateAI[(int)AIState.Charmed] = (Scarabeus scarab, ref bool retarget) => scarab.CharmedIdle(ref retarget);
+		_stateAI[(int)AIState.Dance] = (Scarabeus scarab, ref bool retarget) => scarab.DanceIdle(ref retarget);
+		_stateAI[(int)AIState.PhaseTransitionAnim] = (Scarabeus scarab, ref bool retarget) => scarab.TransitionAnimation(ref retarget);
+		_stateAI[(int)AIState.Despawn] = (Scarabeus scarab, ref bool retarget) => scarab.DigAttack(ref retarget);
+		_stateAI[(int)AIState.DeathAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DeathAnimation(ref retarget);
+		//Idle variants
+		_stateAI[(int)AIState.IdleTowardsPlayer] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
+		_stateAI[(int)AIState.IdleAwayFromPlayer] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
+		_stateAI[(int)AIState.IdleBackAwayFast] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
+		//P1 Attacks
+		_stateAI[(int)AIState.GroundPound] = (Scarabeus scarab, ref bool retarget) => scarab.GroundPoundAttack(ref retarget);
+		_stateAI[(int)AIState.Shockwave] = (Scarabeus scarab, ref bool retarget) => scarab.ShockwaveAttack(ref retarget);
+		_stateAI[(int)AIState.Dig] = (Scarabeus scarab, ref bool retarget) => scarab.DigAttack(ref retarget);
+		_stateAI[(int)AIState.Roll] = (Scarabeus scarab, ref bool retarget) => scarab.RollAttack(ref retarget);
+		//P2 attacks
+		_stateAI[(int)AIState.SwoopDash] = (Scarabeus scarab, ref bool retarget) => scarab.SwoopDashAttack(ref retarget);
+		_stateAI[(int)AIState.Swarm] = (Scarabeus scarab, ref bool retarget) => scarab.SwarmAttack(ref retarget);
+
+		//Duo fight
+		_stateAI[(int)AIState.DuoFightSpawnAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnAnimation(ref retarget);
+		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnFallback(ref retarget);
+
 		Main.npcFrameCount[Type] = 17; //The highest frame count
 		NPCID.Sets.TrailCacheLength[Type] = 8;
 		NPCID.Sets.TrailingMode[Type] = 3;
@@ -214,44 +245,20 @@ public partial class Scarabeus : ModNPC
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), [3, 6, 4, 5, 13, 25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false));
-		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false));
-		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBallSheen", false), [1]);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("Scarabeus_Sheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Wings", false));
+		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false), simulated: true);
+		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall_Sheen", false), [1]);
+		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Wings", false));
+		DeadProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
-		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus2");
-
+		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");
 		LoadDuoFight();
 	}
 
 	public override void SetDefaults()
 	{
-		//Cinematic bits
-		_stateAI = new ScarabeusAttackDelegate[(int)AIState.MaxValue];
-		_stateAI[(int)AIState.SpawnAnim] = SpawnAnimation;
-		_stateAI[(int)AIState.Roar] = Roar;
-		_stateAI[(int)AIState.Charmed] = CharmedIdle;
-		_stateAI[(int)AIState.Dance] = DanceIdle;
-		_stateAI[(int)AIState.PhaseTransitionAnim] = TransitionAnimation;
-		_stateAI[(int)AIState.Despawn] = DigAttack;
-		_stateAI[(int)AIState.DeathAnim] = DeathAnimation;
-		//Idle variants
-		_stateAI[(int)AIState.IdleTowardsPlayer] = IdleBetweenAttacks;
-		_stateAI[(int)AIState.IdleAwayFromPlayer] = IdleBetweenAttacks;
-		_stateAI[(int)AIState.IdleBackAwayFast] = IdleBetweenAttacks;
-		//P1 Attacks
-		_stateAI[(int)AIState.GroundPound] = GroundPoundAttack;
-		_stateAI[(int)AIState.Shockwave] = ShockwaveAttack;
-		_stateAI[(int)AIState.Dig] = DigAttack;
-		_stateAI[(int)AIState.Roll] = RollAttack;
-		//P2 attacks
-		_stateAI[(int)AIState.SwoopDash] = SwoopDashAttack;
-		_stateAI[(int)AIState.Swarm] = SwarmAttack;
-		//Duo fight
-		_stateAI[(int)AIState.DuoFightSpawnAnim] = DuoFightSpawnAnimation;
-		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = DuoFightSpawnFallback;
-
 		Profile = PhaseOneProfile;
 
 		NPC.width = 90;
@@ -347,7 +354,7 @@ public partial class Scarabeus : ModNPC
 			Music = Phase2Music;
 
 		bool retarget = !IsIdling;
-		float counterTickMultiplier = _stateAI[(int)CurrentState](ref retarget);
+		float counterTickMultiplier = _stateAI[(int)CurrentState](this, ref retarget);
 
 		//Retarget late if we're attacking and we need to retarget
 		if (retarget)
@@ -390,9 +397,7 @@ public partial class Scarabeus : ModNPC
 				ChangeState(AIState.Despawn);
 		}
 		else
-		{
 			despawnTimer = 0;
-		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -434,10 +439,12 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		for (int i = 0; i < 9; i++)
+			Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, ModContent.DustType<ScarabeusBlood>(), hit.HitDirection, -1f, 0, default, 1.3f).noGravity = true;
+
+		if (Main.rand.NextBool(5))
 		{
-			Dust d = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Ichor, hit.HitDirection, -1f, 0, default, 1f);
-			d.noLight = true;
-			d.noGravity = true;
+			for (int i = 0; i < 9; i++)
+				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), NPC.DirectionTo(Target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 9f), 50, default, 1.5f).noGravity = false;
 		}
 
 		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
@@ -453,16 +460,24 @@ public partial class Scarabeus : ModNPC
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
 			for (int i = 1; i < 12; i++)
-				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), NPC.velocity, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 8; i++)
 			{
-				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
 				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
 			}
 
 			for (int i = 0; i < 30; i++)
+			{
+				ParticleHandler.SpawnParticle(new SmokeCloud(area.Center(), -NPC.velocity.RotatedByRandom(2f) * Main.rand.NextFloat(3f), Color.DarkOrange, Color.Orange * 0.3f, 0.2f, EaseFunction.EaseCircularOut, 100, false)
+				{
+					Pixellate = true,
+					PixelDivisor = 3,
+				});
+
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
+			}
 
 			for (int j = 0; j < 50; j++)
 			{
@@ -472,20 +487,10 @@ public partial class Scarabeus : ModNPC
 
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(
-							NPC.Center + Main.rand.NextVector2Circular(NPC.width * 0.66f, NPC.height * 0.66f),
-							Main.rand.NextVector2Circular(10f, 10f),
-							Color.Orange,
-							Main.rand.NextFloat(0.7f, 1f),
-							60,
-							1,
-							DecelerateAction
-						));
+				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), 50, default, 2.5f).noGravity = false;
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
-
-			static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
 
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 45));
 		}
@@ -538,10 +543,12 @@ public partial class Scarabeus : ModNPC
 	{
 		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
-		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>()/*, ModContent.ItemType<LocustCrook>()*/));
+		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>(), ModContent.ItemType<LocustCrook>()));
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
@@ -583,9 +590,9 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
-	public void ChangeState(AIState state)
+	public void ChangeState(AIState state, bool setIdleTime = false)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 1; i < 3; i++)
 			NPC.ai[i] = 0;
 
 		CurrentState = state;
@@ -593,7 +600,11 @@ public partial class Scarabeus : ModNPC
 
 		if (!phaseTwo)
 			NPC.rotation = 0;
+
 		currentFrame.Y = 0;
+
+		if (setIdleTime) // Pick a time to wait before the next attack
+			SetIdleTime(ref ExtraMemory);
 	}
 
 	public override bool? CanFallThroughPlatforms() => IgnorePlatforms;
@@ -616,6 +627,7 @@ public partial class Scarabeus : ModNPC
 		writer.Write(phaseTwo);
 		writer.Write(Enrage);
 		writer.Write(scarabColorIndex);
+		writer.Write((Half)NPC.Opacity);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -623,5 +635,6 @@ public partial class Scarabeus : ModNPC
 		phaseTwo = reader.ReadBoolean();
 		Enrage = reader.ReadSingle();
 		scarabColorIndex = reader.ReadInt32();
+		NPC.Opacity = (float)reader.ReadHalf();
 	}
 }
