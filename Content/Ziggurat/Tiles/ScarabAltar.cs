@@ -382,14 +382,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
 			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
-			if (--result.stack <= 0)
-				result.TurnToAir(); //Consume an item
-
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
 			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
 				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
 
+			if (--result.stack <= 0)
+				result.TurnToAir(); //Consume an item
 			return true;
 		}
 
