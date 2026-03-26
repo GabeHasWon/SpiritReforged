@@ -82,6 +82,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 	private readonly AdornedBow.PrismaticPalette _primaryPalette = new();
 	private readonly AdornedBow.PrismaticPalette _secondaryPalette = new();
 
+	private bool _hitNPC = false;
 	private int _prismaticTimer = 50;
 
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly && entity.DamageType == DamageClass.Ranged;
@@ -193,13 +194,13 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 
 	public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (!active)
+		if (!active || _hitNPC)
 			return;
 
 		SoundEngine.PlaySound(FlashHit, target.Center);
 
 		int type = ModContent.ProjectileType<AdornedFlash>();
-		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, type, (int)(projectile.damage * 0.66f), 0f, projectile.owner);
+		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, type, (int)(projectile.damage * 0.66f), 0f, projectile.owner, target.whoAmI);
 
 		p.rotation = projectile.velocity.ToRotation();
 		p.spriteDirection = projectile.direction;
@@ -244,6 +245,8 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		}
 
 		static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
+
+		_hitNPC = true; // only make flash effect once;
 	}
 
 	public override void OnKill(Projectile projectile, int timeLeft)

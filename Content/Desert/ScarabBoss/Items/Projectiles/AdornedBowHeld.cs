@@ -10,7 +10,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
+public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 {
 	public const int MAX_FLASH_TIMER = 60;
 
@@ -39,9 +39,9 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
-		stringLength = 30;
+		stringLength = 48;
 		maxDrawback = 10;
-		stringOrigin = new Vector2(5, 25);
+		stringOrigin = new Vector2(5, 31);
 		stringColor = Color.LightCyan;
 	}
 
@@ -139,7 +139,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 1.5f, 30)
 			ConeNoise(-10, 0.5f * opacity, 10, perfectShotProgress);
 		}
 
-		arrowPos -= new Vector2(0f, -6f).RotatedBy(Projectile.rotation);
+		//arrowPos -= new Vector2(0f, -6f).RotatedBy(Projectile.rotation);
 
 		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
 

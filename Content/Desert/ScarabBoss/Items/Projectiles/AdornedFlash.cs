@@ -19,6 +19,9 @@ public class AdornedFlash : ModProjectile
 	private readonly AdornedBow.PrismaticPalette _primaryPalette = new();
 	private readonly AdornedBow.PrismaticPalette _secondaryPalette = new();
 
+	// dont damage the hit npc
+	public int HitTargetID => (int)Projectile.ai[0];
+
 	private int _prismaticTimer = 20;
 	private int _maxShines;
 	private int[] _shineColors; // indices of PrismaticColors
@@ -120,6 +123,7 @@ public class AdornedFlash : ModProjectile
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);
 
+	public override bool? CanHitNPC(NPC target) => target.whoAmI != HitTargetID;
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		SoundEngine.PlaySound(FlashHit, target.Center);
