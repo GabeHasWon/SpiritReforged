@@ -298,12 +298,23 @@ public partial class Scarabeus : ModNPC
 		if (Counter % 10 == 0 && lastFrameY is <= 7 and >= 3 && Main.netMode != NetmodeID.Server)
 		{
 			var offset = new Vector2(NPC.width / 3, -NPC.height / 3);
+			Color particleColor = Color.Lerp(Color.LightYellow, Color.Goldenrod, 0.5f).Additive(100);
 			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center + offset, 0.4f, 4500, 15, EaseFunction.EaseCubicIn, false, 0.4f) 
 			{ 
-				Opacity = 0.66f, 
-				TextureStretch = new(Main.rand.NextFloat(3, 4), 0.065f),
-				Color = Color.Lerp(Color.LightYellow, Color.Yellow, 0.5f).Additive(100)
+				Opacity = 0.5f, 
+				TextureStretch = new(Main.rand.NextFloat(1, 4), 0.065f),
+				Color = particleColor,
+				UseLightColor = true
 			});
+
+			int blurLineCount = Main.rand.Next(4, 7);
+			for(int i = 0; i < blurLineCount; i++)
+			{
+				var velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(40, 80);
+				var scale = new Vector2(Main.rand.NextFloat(0.8f, 1.4f), Main.rand.NextFloat(2, 7));
+				float acceleration = Main.rand.NextFloat(0.95f, 0.98f);
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(NPC.Center + offset, velocity, particleColor * 0.4f, scale, 15, acceleration) { UseLightColor = true, NoLight = true });
+			}
 		}
 
 		Music = Phase1Music;
