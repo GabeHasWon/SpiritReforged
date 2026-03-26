@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Newtonsoft.Json.Linq;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -300,38 +301,42 @@ public partial class Scarabeus : ModNPC
 
 	private void DrawBall(Color lightColor)
 	{
-		Texture2D texture = Profile.Texture.Value;
-		Texture2D sheenMask = Profile.SheenMask.Value;
+		FlipShadersOnOff(Main.spriteBatch, null, true);
+
+		Texture2D texture = BallProfile.Texture.Value;
+		Texture2D sheenMask = BallProfile.SheenMask.Value;
 		Rectangle frame = texture.Frame();
 
 		float squishAmount = MathHelper.Lerp(0, 0.15f, EaseFunction.EaseQuadIn.Ease(Math.Min(NPC.velocity.Length() / 20, 1)));
 		var squishScale = new Vector2(1 + squishAmount, 1 - squishAmount);
 		squishScale *= new Vector2(squishY, 1 / squishY);
 
-		List<SquarePrimitive> ballTrail = [];
 		var primDimensions = new Vector2(frame.Width * squishScale.X, frame.Height * squishScale.Y);
 		bool flipped = NPC.spriteDirection > 0;
 		float rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
 		if(NPC.velocity.Length() < 3)
 			rotation = 0;
 
-		ballTrail.Add(new SquarePrimitive()
+		IPrimitiveShape square = new SquarePrimitive()
 		{
 			Color = NPC.DrawColor(lightColor),
 			Height = primDimensions.X,
 			Length = primDimensions.Y,
 			Position = NPC.Center - Main.screenPosition + Vector2.UnitY * (40 - (40 * squishScale.Y)),
 			Rotation = rotation
-		});
+		};
 
 		Effect sheenShader = GetShader(texture, sheenMask, frame);
 
-		Main.graphics.GraphicsDevice.Textures[0] = texture;
 		sheenShader.Parameters["rotation"].SetValue(-NPC.rotation * NPC.spriteDirection);
 		sheenShader.Parameters["origin"].SetValue(new Vector2(38, 38));
 		sheenShader.Parameters["flip"].SetValue(flipped);
 
-		PrimitiveRenderer.DrawPrimitiveShapeBatched(ballTrail.ToArray(), sheenShader, "BallPass");
+		Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
+		Main.graphics.GraphicsDevice.Textures[0] = (Texture)texture;
+		PrimitiveRenderer.DrawPrimitiveShape(square, sheenShader, "BallPass");
+
+		FlipShadersOnOff(Main.spriteBatch, null, false);
 	}
 
 	public override void DrawBehind(int index)
