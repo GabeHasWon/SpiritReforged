@@ -58,28 +58,31 @@ DragonFireball.DisplayName: 龙火球
 PileOfConsequencesPet.DisplayName: 结果
 EnergyLaser.DisplayName: 能量激光
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
-// SandPillar.DisplayName: Sand Pillar
-// SlamShockwave.DisplayName: Slam Shockwave
+SandPillar.DisplayName: 沙柱
+SlamShockwave.DisplayName: 猛击冲击波
 WindBlast.DisplayName: 风波
-// ClawHitbox.DisplayName: Claw Hitbox
-// DivebombScarab.DisplayName: Divebomb Scarab
-// SwarmScarab.DisplayName: Swarm Scarab
+ClawHitbox.DisplayName: 爪击
+DivebombScarab.DisplayName: 俯冲轰炸甲虫
+SwarmScarab.DisplayName: 群聚甲虫
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
 AdornedArrow.DisplayName: 华饰箭
 AdornedBowHeld.DisplayName: 华饰弓
 AdornedFlash.DisplayName: 华饰闪光
 AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
-// LocustCrookProjectile.DisplayName: Locust Crook
-// CrookLocust.DisplayName: Locust
-// LocustDamageProjectile.DisplayName: Locust Damage Projectile
-// LocustExplosion.DisplayName: Locust Explosion
-// CrookLocustGore.DisplayName: Crook Locust Gore
-// RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
-// FloatingGem.DisplayName: Floating Gem
-// BeamOLight.DisplayName: Beam O Light
-// ScarabPetProjectile.DisplayName: Mini Scarabeus
-// SandShockwavePillar.DisplayName: Sand Shockwave Pillar
-// SandballProjectile.DisplayName: Sandball Projectile
-// BabyAntlionProjectile.DisplayName: Baby Antlion Projectile
-// ScarabLightPet.DisplayName: Scarababy
-// SoilBallProjectile.DisplayName: Soil Ball Projectile
+LocustCrookProjectile.DisplayName: 蝗虫曲柄杖
+CrookLocust.DisplayName: 蝗虫
+LocustDamageProjectile.DisplayName: 蝗虫弹幕
+LocustExplosion.DisplayName: 蝗虫爆炸
+CrookLocustGore.DisplayName: 蝗虫尸块
+RoyalKhopeshThrown.DisplayName: 皇家镰形剑
+FloatingGem.DisplayName: 浮空宝石
+BeamOLight.DisplayName: 光束
+ScarabPetProjectile.DisplayName: 迷你圣甲虫
+SandShockwavePillar.DisplayName: 沙子冲击波
+SandballProjectile.DisplayName: 沙球
+BabyAntlionProjectile.DisplayName: 蚁狮宝宝
+ScarabLightPet.DisplayName: 甲虫宝宝
+SandShockwavePillar.DisplayName: 沙子冲击波柱
+SandballProjectile.DisplayName: 沙球弹幕
+BabyAntlionProjectile.DisplayName: 蚁狮宝宝弹幕
+SoilBallProjectile.DisplayName: 土球弹幕
