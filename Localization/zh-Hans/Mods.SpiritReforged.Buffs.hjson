@@ -140,7 +140,7 @@ EnlilBuff: {
 
 ScarabPetBuff: {
 	DisplayName: 小甲虫
-	Description: ”它真的很喜欢摇滚心……“
+	Description: ”它真的很喜欢摇滚……“
 }
 
 ScarabLightPetBuff: {
