@@ -28,7 +28,6 @@ public partial class CatalogueUI : AutoUIState
 		LoadAssets();
 
 		float uiWidth = 600;
-		float uiHeight = 400;
 		float entriesWidth = 398;
 		float infoWidth = 202;
 
@@ -40,7 +39,7 @@ public partial class CatalogueUI : AutoUIState
 		}
 
 		Width.Set(uiWidth, 0);
-		Height.Set(uiHeight, 0);
+		Height.Set(400, 0);
 		Left.Set(-Width.Pixels / 2, .5f);
 		Top.Set(-Height.Pixels / 2 - 50, .5f);
 

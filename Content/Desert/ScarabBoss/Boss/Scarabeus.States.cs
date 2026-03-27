@@ -237,8 +237,8 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		CrossMod.Fables.Instance.Call("vfx.displaybossintrocard", 
-			"Scarabeus", 
-			"Aura Monster", 
+			Language.GetTextValue("Mods.SpiritReforged.NPCs.Scarabeus.DisplayName"),
+			Language.GetTextValue("Mods.SpiritReforged.NPCs.Scarabeus.Title"), 
 			cardDuration, 
 			NPC.Center.X < Main.LocalPlayer.Center.X, 
 			
@@ -248,7 +248,8 @@ public partial class Scarabeus : ModNPC
 			new Color(106, 81, 246),    //Boss name chroma abberation color 2
 
 			"Soaring Complications",
-			"Sbubby");
+			"Sbubby"
+		);
 	}
 
 	public void FablesCameraFocus()

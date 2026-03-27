@@ -45,7 +45,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Stone;
-		AddMapEntry(new Color(107, 90, 64), CreateMapEntryName());
+		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Items.EnlilStatueItem.DisplayName"));
 		RegisterItemDrop(this.AutoItemType());
 	}
 

@@ -97,7 +97,7 @@ internal class SpaceHeater : ModItem
 			TileObjectData.addTile(Type);
 
 			RegisterItemDrop(ModContent.ItemType<SpaceHeater>());
-			AddMapEntry(new Color(135, 135, 136), this.GetLocalization("MapEntry"));
+			AddMapEntry(new Color(135, 135, 136), Language.GetText("Mods.SpiritReforged.Items.SpaceHeater.DisplayName"));
 
 			DustType = DustID.Iron;
 		}

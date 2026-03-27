@@ -1,28 +1,28 @@
 ReforgedClientConfig: {
-	DisplayName: Клиентская конфигурация Reforge
+	DisplayName: Клиентская конфигурация
 
 	OceanShape: {
 		Label: Генерация океана
 		Tooltip:
 			'''
-			Определяет способ генерации океана.
-			По умолчанию используется генерация типа «Кусочная_V».
-			Генерация «Кусочная_V» рекомендуется для прохождений с модом Spirit.
+			Определяет способ генерации океана
+			По умолчанию используется тип «Кусочная_V»
+			Генерация «Кусочная_V» рекомендуется для игры в Spirit
 			'''
 	}
 
 	ReflectionDetail: {
-		// Label: Reflection Detail
-		/* Tooltip:
+		Label: Детализация отражений
+		Tooltip:
 			'''
-			Determines the detail of all reflections
-			Higher values mean more detail and a greater resulting performance cost
-			''' */
+			Определяет уровень детализации отражений
+			Более высокие значения оказывают большую нагрузку на производительность
+			'''
 	}
 
 	AmbientSounds: {
-		// Label: Ambient Sounds
-		// Tooltip: Plays ambient sounds in specific biomes
+		Label: Звуки окружения
+		Tooltip: Добавляет новые звуки окружения в некоторые биомы
 	}
 }
 
@@ -31,44 +31,44 @@ OceanShape: {
 
 	Default: {
 		Label: Стандартная
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	SlantedSine: {
 		Label: Наклонная синусоида
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise: {
 		Label: Кусочная
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_M: {
 		Label: Кусочная_M
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_V: {
 		Label: Кусочная_V
-		// Tooltip: ""
+		Tooltip: ""
 	}
 }
 
 ReforgedServerConfig: {
-	DisplayName: Серверная конфигурация Reforge
+	DisplayName: Серверная конфигурация
 
 	VentCritters: {
 		Label: Живность возле гидротермальных источников
 		Tooltip:
 			'''
-			При включении этой настройки вокруг гидротермальных источников появляется живность.
-			Она не влияет на частоту появления обычных врагов, но учитывается в общем лимите существ в мире.
+			Рядом с гидротермальными источниками будут появляться различная живность
+			Она не влияет на частоту появления обычных врагов, но будет учитываться в общем лимите существ в мире
 			'''
 	}
 
 	MaxFloatingItemCount: {
 		Label: Лимит плавающих предметов
-		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно.
+		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно
 	}
 }

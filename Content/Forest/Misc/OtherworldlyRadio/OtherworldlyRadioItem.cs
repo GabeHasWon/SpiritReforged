@@ -101,7 +101,7 @@ public class OtherworldlyRadioPlaced : ModTile
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(142, 92, 79), CreateMapEntryName());
+		AddMapEntry(new Color(142, 92, 79), Language.GetText("Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName"));
 		RegisterItemDrop(ModContent.ItemType<OtherworldlyRadioItem>());
 
 		AdjTiles = [TileID.MusicBoxes];

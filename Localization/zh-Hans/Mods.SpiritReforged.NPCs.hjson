@@ -94,23 +94,23 @@ OceanSlime: {
 }
 
 DiverZombie: {
-	Entry: 谁会知道那些氧气罐需要装有真正的氧气？
 	DisplayName: 僵尸
+	Entry: 谁会知道那些氧气罐需要装有真正的氧气？
 }
 
 KelpZombie: {
-	Entry: 鱼类害怕我，女人害怕我，男人害怕我，小孩害怕我，因为我是亡灵。
 	DisplayName: 僵尸
+	Entry: 鱼类害怕我，女人害怕我，男人害怕我，小孩害怕我，因为我是亡灵。
 }
 
 SailorZombie: {
-	Entry: 尽管它们现在的状态可能并不尽如人意，但它们曾经运营过一艘非常不错的豪华游艇，你应该找个时间去看看。
 	DisplayName: 僵尸
+	Entry: 尽管它们现在的状态可能并不尽如人意，但它们曾经运营过一艘非常不错的豪华游艇，你应该找个时间去看看。
 }
 
 TridentZombie: {
-	Entry: 他们的三叉戟显然对他们的生活没有多大用处。但它仍然很尖，所以要小心。
 	DisplayName: 僵尸
+	Entry: 他们的三叉戟显然对他们的生活没有多大用处。但它仍然很尖，所以要小心。
 }
 
 Killifish: {
@@ -548,6 +548,7 @@ LootBag.DisplayName: 战利品袋
 
 Scarabeus: {
 	// DisplayName: Scarabeus
+	// Title: Aura Monster
 	// Entry: ""
 }
 
