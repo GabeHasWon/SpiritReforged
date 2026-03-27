@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Dusts;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
@@ -11,7 +12,7 @@ public class BedouinCowl : ModItem
 {
 	public sealed class BedouinDash : ModDash
 	{
-		public override void SetDefaults(out DashInfo info) => info = new(15, 25, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
+		public override void SetDefaults(out DashInfo info) => info = new(15, 22, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
 
 		public override void DashEffects(Player player)
 		{
@@ -30,6 +31,9 @@ public class BedouinCowl : ModItem
 
 			DashPlayer dashPlayer = player.GetModPlayer<DashPlayer>();
 
+			if (dashPlayer.duration == dashPlayer.dashInfo.Duration - 1 && !Main.dedServ)
+				SoundEngine.PlaySound(SoundID.DD2_BookStaffCast, player.Center); //Immediate dash sound effect
+
 			if (dashPlayer.DashDirection.Y < 0)
 				dashPlayer.cooldown = dashPlayer.dashInfo.Cooldown * 3; //Increase the dash cooldown if ascending
 
@@ -39,6 +43,9 @@ public class BedouinCowl : ModItem
 			player.immuneTime = 5;
 			player.immune = true;
 			player.immuneNoBlink = true;
+
+			if (player.dashDelay == 0)
+				player.dashDelay = 1; //Stop common dash delay
 		}
 	}
 
