@@ -46,7 +46,7 @@ public class AdornedBow : ModItem
 		Item.value = Item.sellPrice(gold: 2);
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.shoot = ModContent.ProjectileType<AdornedBowHeld>();
-		Item.shootSpeed = 8;
+		Item.shootSpeed = 10;
 		Item.useAmmo = AmmoID.Arrow;
 	}
 

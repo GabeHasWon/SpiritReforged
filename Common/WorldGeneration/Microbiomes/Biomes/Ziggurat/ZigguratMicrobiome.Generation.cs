@@ -527,8 +527,8 @@ public partial class ZigguratMicrobiome : Microbiome
 		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
 
 		secondary.Add((ItemID.WhitePearl, 2..5));
-		secondary.Add((ItemID.PinkPearl, 2..4), 0.5f);
-		secondary.Add((ItemID.BlackPearl, 1..3), 0.33f);
+		secondary.Add((ItemID.BlackPearl, 1..3), 0.12f);
+		secondary.Add((ItemID.PinkPearl, 2..4), 0.05f);
 
 		(string name, float weight)[] thoriumLoot =
 		[

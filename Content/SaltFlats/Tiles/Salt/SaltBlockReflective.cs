@@ -262,7 +262,7 @@ public class SaltBlockReflective : SaltBlock
 				//s.Parameters["backgroundCompositeMatrix"].SetValue(inverse);
 			}
 
-			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyColor(1f));
+			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyGradient(1f)[1].ToVector4() * Main.ColorOfTheSkies.ToVector4());
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);
 

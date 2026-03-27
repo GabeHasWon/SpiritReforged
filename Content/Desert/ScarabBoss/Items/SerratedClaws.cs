@@ -113,15 +113,16 @@ public class SerratedClaws : ModItem
 	{
 		Item.damage = 10;
 		Item.Size = new Vector2(34, 28);
-		Item.useTime = 12;
-		Item.useAnimation = 12;
-		Item.knockBack = 0.2f;
+		Item.useTime = 9;
+		Item.useAnimation = 9;
+		Item.knockBack = 0.25f;
 		Item.DamageType = DamageClass.Melee;
 		Item.useTurn = true;
 		Item.expert = true;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.pick = 50;
+		Item.tileBoost = -1;
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
 		Item.channel = true;

@@ -147,8 +147,8 @@ public partial class Scarabeus : ModNPC
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));
 		sheenShader.Parameters["resolution"].SetValue(texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.5f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(sheenTexture);
 		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
@@ -186,7 +186,11 @@ public partial class Scarabeus : ModNPC
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
 
-		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 0 : 8);
+		var bestiaryOffset = new Vector2(-12, 8);
+		position -= screenPos + new Vector2(0, 9);
+		if (NPC.IsABestiaryIconDummy)
+			position -= bestiaryOffset;
+
 		Vector2 positionOffset = Vector2.Zero;
 		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
 			positionOffset.Y += 16;

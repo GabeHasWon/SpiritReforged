@@ -21,12 +21,13 @@ internal class ScarabLightPetItem : ModItem
 		{
 			Projectile.Size = new Vector2(58, 50);
 			Projectile.timeLeft = 2;
+			Projectile.tileCollide = false;
 		}
 
 		public override void AI()
 		{
 			Player owner = Main.player[Projectile.owner];
-			owner.GetModPlayer<PetPlayer>().PetFlag(Projectile);
+			owner.GetModPlayer<PetPlayer>().PetFlag<ScarabLightPetBuff>(Projectile);
 
 			if (Projectile.velocity.X > 0)
 				Projectile.spriteDirection = -1;
@@ -40,7 +41,7 @@ internal class ScarabLightPetItem : ModItem
 			Vector2 targetPosition = owner.Center - new Vector2(0, 80);
 			float distance = Projectile.Center.DistanceSQ(targetPosition);
 			bool far = distance > 700 * 700;
-			(float mod, float factor, float fade) = far ? (9, 0.33f, 0) : (6, 0.2f, 1);
+			(float mod, float factor, float fade) = far ? (9, 0.25f, 0) : (6, 0.15f, 1);
 
 			AdditiveFade = MathHelper.Lerp(AdditiveFade, fade, 0.1f);
 

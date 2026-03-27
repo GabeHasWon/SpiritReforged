@@ -21,10 +21,10 @@ sampler reflectionMask
 matrix maskTransform;
 matrix maskReverseTransform;
 
+//Moonlight mask colors
+float moonlightMaskOpacity;
 float3 baseColor;
 float3 gradientColor;
-float texColorUVLerper;
-bool doMask = true;
 
 
 struct VertexShaderInput
@@ -59,26 +59,27 @@ float invlerp(float from, float to, float value)
     return saturate((value - from) / (to - from));
 }
 
-float4 AddMask(VertexShaderOutput i)
+float4 alphablendPremult(float4 background, float4 foreground)
 {
-    float2 heightAndMask = float2(invlerp(0, 0.5, i.TextureCoordinates.y), invlerp(0, 0.2, i.TextureCoordinates.y));
-    float mask = 1;
-    
-    float2 textureSample = tex2D(reflectionMask, i.TextureCoordinates).ra;
+    float4 result = background * (1 - foreground.a) + foreground;
+    result.a = saturate(background.a + foreground.a);
+    return result;
+}
+
+float4 MoonlightMask(float2 maskCoords, float4 mask)
+{
+    //R value is the strength of the moonlight (top/down gradient), A is the opacity multiplier of the moonlight in general  
+    float2 textureSample = mask.ra;
     textureSample.y *= 0.4;
-    heightAndMask = lerp(heightAndMask, textureSample, texColorUVLerper);
-    heightAndMask.y *= i.Color.a;
+    textureSample.y *= moonlightMaskOpacity;
     
-    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);
-    
-    return blueGradient * heightAndMask.y;
+    float4 blueGradient = float4(baseColor + gradientColor * textureSample.r, 0);
+    return blueGradient * textureSample.g;
 }
 
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TextureCoordinates;
-    float2 heightAndMask = float2(invlerp(0, 0.5, input.TextureCoordinates.y), invlerp(0, 0.2, input.TextureCoordinates.y));
-    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);
     
     //Get the mask by transforming the screenspace coords into coordinates that match the drawn background texture outside of the shader
     float2 maskCoords = mul(float4(coords.x, coords.y, 1, 1), maskTransform).xy;
@@ -89,20 +90,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float2 flippedCoords = coords - float2(0, cloudTargetYOffset);
     flippedCoords.y = (flippedCoords.y - reflectionLine) * -1 + reflectionLine;
-    
-    
     float4 reflectedColor = tex2D(cloudReflection, flippedCoords);
-    if (doMask)
-        reflectedColor += AddMask(input);
+    
     reflectedColor *= mask.a * pow(mask.r, 0.5);
     //Fade if going past the screen bounds
     reflectedColor *= invlerp(0, 0.2, flippedCoords.y);
     
-    //Fade the sky near the top based on a value
+    //Fade the sky near the top based on a value (Based on Moonlord being here or not etc..)
     reflectedColor *= lerp(1, invlerp(0.2, 0.48, flippedCoords.y), topFadeStrength);
-    
-    
     reflectedColor = lerp(reflectedColor, float4(0, 0, 0, 1), shimmerAlpha);
+    
+    reflectedColor = alphablendPremult(reflectedColor, MoonlightMask(maskCoords, mask));
     
     return reflectedColor * input.Color;
 }

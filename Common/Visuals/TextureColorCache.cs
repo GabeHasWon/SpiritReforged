@@ -25,7 +25,8 @@ internal class TextureColorCache
 		//Orders colors from darkest to brightest, and excludes fully transparent pixels
 		data = [.. data.OrderBy(x => x.ToVector3().Length()).Where(x => x != Color.Transparent)];
 
-		ColorCache.Add(texture, data);
+		if (data.Length != 0)
+			ColorCache.Add(texture, data);
 		return data;
 	}
 

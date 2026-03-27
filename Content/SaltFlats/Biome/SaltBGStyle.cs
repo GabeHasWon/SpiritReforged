@@ -108,9 +108,12 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 	}
 
 	#region Capture sky objects for reflection
+	public static bool DrawingSkyObjectReflection = false;
+
 	public void RenderSkyObjects(SpriteBatch spriteBatch)
 	{
 		spriteBatch.End();
+		DrawingSkyObjectReflection = true;
 
 		Matrix transformMatrix = Main.BackgroundViewMatrix.EffectMatrix;
 		transformMatrix.Translation += Vector3.UnitY * ReflectedSkyRenderOffset;
@@ -243,6 +246,9 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		{
 			Texture2D cloudTexture = FarClouds.Value;
 			Color color = Main.ColorOfTheSkies;
+			Color bgTintColorTarget = SaltFlatsSystem.GetBackgroundTintColor(out float bgTintStrength);
+			color = Color.Lerp(color, bgTintColorTarget, bgTintStrength);
+
 			float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
 			float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
 			int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
@@ -299,6 +305,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 		if (Main.shimmerAlpha > 0f)
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, Vector2.Zero, null, Color.Black * Main.shimmerAlpha, 0f, Vector2.Zero, new Vector2(Main.Camera.UnscaledSize.X + (float)(Main.offScreenRange * 2), Main.Camera.UnscaledSize.Y + (float)(Main.offScreenRange * 2)), SpriteEffects.None, 0f);
+
+		DrawingSkyObjectReflection = false;
 	}
 
 	public void SpoofFarBackgroundParameters(float scAdj, double backgroundTopMagicNumber, float bgGlobalScaleMultiplier, int pushBGTopHack)
@@ -415,6 +423,9 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				spriteBatch.Draw(backgroundTarget.Target, Vector2.Zero, null, Color.White * Main.bgAlphaFarBackLayer[Slot], 0, Vector2.Zero, 1, 0, 0);
 				RestartSpritebatch(null); 
 				TestMe();
+
+				//spriteBatch.Draw(skyReflectionsTarget.Target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
+
 				return false;
 			}
 
@@ -428,7 +439,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Texture2D nightSkyMaskTexture = SkyReflectionMask.Value;
 
 				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
-				color = Color.Lerp(color, new Color(80, 120, 255), MathF.Pow(SaltFlatsSystem.nightSkyOpacity, 2f) * 0.3f);
+				Color bgTintColorTarget = SaltFlatsSystem.GetBackgroundTintColor(out float bgTintStrength);
+				color = Color.Lerp(color, bgTintColorTarget, bgTintStrength);
 
 				Rectangle bounds = GetBounds(slot);
 				int loops = BackgroundStyleHelper.BackgroundLoops;
@@ -487,8 +499,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["shimmerAlpha"].SetValue(Main.shimmerAlpha);
 					bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
 					SaltFlatsSystem.SetSkyColor(bgShader);
-					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
-					bgShader.Parameters["doMask"].SetValue(SaltFlatsSystem.nightSkyOpacity > 0f);
+					bgShader.Parameters["moonlightMaskOpacity"].SetValue(SaltFlatsSystem.nightSkyOpacity);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
 					Vector2 maskScaleRatio = reflectionCanvasSize / nightSkyMaskTexture.Size();

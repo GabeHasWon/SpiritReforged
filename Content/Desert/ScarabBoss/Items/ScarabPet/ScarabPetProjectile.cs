@@ -61,7 +61,7 @@ public class ScarabPetProjectile : ModProjectile, IModifyEmotePosition
 
 	public override void AI()
 	{
-		Main.player[Projectile.owner].GetModPlayer<PetPlayer>().PetFlag(Projectile);
+		Main.player[Projectile.owner].GetModPlayer<PetPlayer>().PetFlag<ScarabPetItem.ScarabPetBuff>(Projectile);
 
 		if (Projectile.velocity.X > 0)
 			Projectile.spriteDirection = -1;

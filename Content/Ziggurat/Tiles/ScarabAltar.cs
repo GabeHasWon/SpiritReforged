@@ -193,13 +193,16 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					if (!Main.dedServ)
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
 
-					if (Main.netMode != NetmodeID.MultiplayerClient)
+					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
 					{
-						//Summon Scarabeus or the duo fight manager from fables
 						if (StartDuoFight && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFightManager))
 							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
 						else
+						{
 							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+							if (Main.getGoodWorld)
+								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2 : 1);
+						}
 					}
 
 					Projectile.timeLeft = MaxTime / 2;
@@ -413,14 +416,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
 			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
 		{
-			if (--result.stack <= 0)
-				result.TurnToAir(); //Consume an item
-
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
 			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
 				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
 
+			if (--result.stack <= 0)
+				result.TurnToAir(); //Consume an item
 			return true;
 		}
 
