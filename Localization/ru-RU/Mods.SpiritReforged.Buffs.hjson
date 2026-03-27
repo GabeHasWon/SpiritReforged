@@ -119,7 +119,7 @@ FlaskOfFrost_Buff: {
 }
 
 Slowed: {
-	DisplayName: "{$BuffName.Slowed}"
+	DisplayName: Замедленный
 	Description: ""
 }
 
