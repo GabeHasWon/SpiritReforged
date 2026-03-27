@@ -186,7 +186,11 @@ public partial class Scarabeus : ModNPC
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
 
-		position -= screenPos + new Vector2(0, NPC.IsABestiaryIconDummy ? 0 : 8);
+		var bestiaryOffset = new Vector2(-12, 8);
+		position -= screenPos + new Vector2(0, 9);
+		if (NPC.IsABestiaryIconDummy)
+			position -= bestiaryOffset;
+
 		Vector2 positionOffset = Vector2.Zero;
 		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
 			positionOffset.Y += 16;
