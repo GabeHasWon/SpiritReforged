@@ -219,7 +219,7 @@ public partial class Scarabeus : ModNPC
 			int start = origin.X - (range / 2) * scanDirection;
 			int end = origin.X + (range / 2) * scanDirection;
 
-			for (int x = start; x < end; x += scanDirection)
+			for (int x = start; (x - end) * scanDirection < 0; x += scanDirection)
 			{
 				int y = WorldMethods.FindGround(x, origin.Y);
 				Tile tile = Main.tile[x, y];
