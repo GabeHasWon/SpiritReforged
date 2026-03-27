@@ -602,7 +602,7 @@ DrywoodSword: {
 
 HuntingRifle: {
 	DisplayName: 猎枪
-	Tooltip: 对远处的目标和站定不动时造成更多伤害
+	Tooltip: 对远处的目标造成更多伤害，站定不动时进一步增加造成的伤害
 }
 
 SafariHat: {
