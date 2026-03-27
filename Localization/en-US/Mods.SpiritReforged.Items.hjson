@@ -3013,7 +3013,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: Scarabeus Music Box
+	DisplayName: Music Box (Scarabeus)
 	Tooltip: ""
 }
 
