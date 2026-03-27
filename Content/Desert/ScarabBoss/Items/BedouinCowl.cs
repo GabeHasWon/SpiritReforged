@@ -12,7 +12,7 @@ public class BedouinCowl : ModItem
 {
 	public sealed class BedouinDash : ModDash
 	{
-		public override void SetDefaults(out DashInfo info) => info = new(15, 22, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
+		public override void SetDefaults(out DashInfo info) => info = new(15, 8, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
 
 		public override void DashEffects(Player player)
 		{
@@ -35,17 +35,14 @@ public class BedouinCowl : ModItem
 				SoundEngine.PlaySound(SoundID.DD2_BookStaffCast, player.Center); //Immediate dash sound effect
 
 			if (dashPlayer.DashDirection.Y < 0)
-				dashPlayer.cooldown = dashPlayer.dashInfo.Cooldown * 3; //Increase the dash cooldown if ascending
+				dashPlayer.cooldown = 60; //Increase the dash cooldown if ascending
 
-			player.opacityForAnimation = dashPlayer.DashProgress > 0.5f ? 1f : 0.1f;
+			player.opacityForAnimation = dashPlayer.DashProgress > 0.75f ? 1f : (dashPlayer.DashProgress * 1.5f);
 			player.noKnockback = true;
 
 			player.immuneTime = 5;
 			player.immune = true;
 			player.immuneNoBlink = true;
-
-			if (player.dashDelay == 0)
-				player.dashDelay = 1; //Stop common dash delay
 		}
 	}
 
