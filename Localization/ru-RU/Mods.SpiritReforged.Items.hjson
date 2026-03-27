@@ -2124,7 +2124,7 @@ CeremonialDagger: {
 	// DisplayName: Ceremonial Dagger
 	/* Tooltip:
 		'''
-		Deals damage to townsfolk
+		Can be used to sacrifice townsfolk
 		<right> deals critical damage to bleeding enemies
 		''' */
 }
@@ -2703,7 +2703,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	// DisplayName: Bangle of Strength
-	// Tooltip: Periodically empowers melee damage
+	// Tooltip: Periodically empowers melee strikes
 }
 
 ScarabTabletOneItem: {
@@ -2842,7 +2842,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	// DisplayName: Windshear Scepter
-	// Tooltip: ""
+	// Tooltip: Shoots a piercing gust of wind
 }
 
 SaltTallGateItem: {
@@ -2970,7 +2970,7 @@ AdornedBow: {
 	/* Tooltip:
 		'''
 		Charges an empowered shot
-		Empowered shots damage nearby enemies
+		Release with perfect timing to create a damaging flash of light
 		''' */
 }
 
@@ -3019,7 +3019,7 @@ LocustCrook: {
 	/* Tooltip:
 		'''
 		Summons a sentry
-		Throws out a crook that attracts locusts
+		Throws out a crook that attracts locusts to infest enemies
 		''' */
 }
 
