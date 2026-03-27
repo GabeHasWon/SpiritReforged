@@ -12,14 +12,15 @@ public class PetPlayer : ModPlayer
 	public bool HasPet(int projectileId) => pets.Contains(projectileId);
 
 	/// <summary>
-	/// Automatically sets pet flag for any given projectile using <see cref="pets"/>, despawns the projectile if the player doesn't have the flag or is dead.
+	/// Automatically sets pet flag for any given projectile using <see cref="pets"/>, despawns the projectile if the player doesn't have the flag, buff or is dead.
 	/// </summary>
-	public void PetFlag(Projectile projectile)
+	public void PetFlag<T>(Projectile projectile) where T : ModBuff
 	{
-		var modPlayer = Main.player[projectile.owner].GetModPlayer<PetPlayer>();
+		Player player = Main.player[projectile.owner];
+		var modPlayer = player.GetModPlayer<PetPlayer>();
 		modPlayer.pets.Add(projectile.type);
 
-		if (Player.dead)
+		if (Player.dead || !player.HasBuff<T>())
 			modPlayer.pets.Remove(projectile.type);
 
 		if (modPlayer.pets.Contains(projectile.type))
