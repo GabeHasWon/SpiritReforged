@@ -556,23 +556,31 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		if (subVolume > 0)
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
-		if (consumableCount == 0)
+		consumableCount++;
+
+		int beamType = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
+		bool validBeam = BeamWhoAmI >= 0 && BeamWhoAmI < Main.maxProjectiles && Main.projectile[BeamWhoAmI].active && Main.projectile[BeamWhoAmI].type == beamType;
+		if (!validBeam)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int beam = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
-				BeamWhoAmI = Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beam, 0, 0, -1, 240);
+				BeamWhoAmI = Projectile.NewProjectile(new EntitySource_TileEntity(this), area.Center() - new Vector2(0, 1), Vector2.Zero, beamType, 0, 0, -1, 240, consumableCount);
+				validBeam = true;
 			}
 		}
 
-		consumableCount++;
-
-		if (BeamWhoAmI > 0 && consumableCount <= ConsumableCountMax)
+		//Update the gem count of the altar
+		if (validBeam)
+		{
 			Main.projectile[BeamWhoAmI].ai[2] = consumableCount;
+			Main.projectile[BeamWhoAmI].netUpdate = true;
+		}
 
-		
 		if (consumableCount >= ConsumableCountMax)
+		{
 			consumableCount = 0;
+			BeamWhoAmI = -1;
+		}
 
 		if (Main.netMode == NetmodeID.Server)
 			NetMessage.SendData(MessageID.TileEntitySharing, number: ID);
@@ -587,6 +595,15 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	}
 
 	public override void OnNetPlace() => NetMessage.SendData(MessageID.TileEntitySharing, number: ID, number2: Position.X, number3: Position.Y);
-	public override void NetSend(BinaryWriter writer) => writer.Write((byte)consumableCount);
-	public override void NetReceive(BinaryReader reader) => consumableCount = reader.ReadByte();
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((byte)consumableCount);
+		writer.Write(BeamWhoAmI);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		consumableCount = reader.ReadByte();
+		BeamWhoAmI = reader.ReadByte();
+	}
 }
