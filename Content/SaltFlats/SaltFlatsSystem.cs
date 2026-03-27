@@ -58,7 +58,10 @@ internal class SaltFlatsSystem : ModSystem
 		float cloudOpacity = self.scale * self.Alpha;
 		if (cloudOpacity > 1f)
 			cloudOpacity = 1f;
+		cloudOpacity *= 1f - bloodMoonStrength * 0.6f;
+
 		Color tintTarget = GetBackgroundTintColor(out float tintStrength);
+		tintStrength += 0.4f * bloodMoonStrength;
 		tintTarget *= cloudOpacity;
 		return Color.Lerp(output, tintTarget, Math.Min(1, tintStrength * 1.5f));
 	}
