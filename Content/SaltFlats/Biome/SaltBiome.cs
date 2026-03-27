@@ -58,5 +58,10 @@ public class SaltBiome : ModBiome
 		return SceneTileCounter.SurveyByType[Type].Success && surface;
 	}
 
-	public override void OnInBiome(Player player) => player.ZoneDesert = true;
+	public override void OnInBiome(Player player)
+	{
+		player.ZoneDesert = true;
+		player.ZoneSnow = true;
+		player.ZoneSandstorm = false;
+	}
 }
