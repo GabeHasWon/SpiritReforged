@@ -260,6 +260,15 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 				if (style == 0)
 					count--; //Juvenile debuff
 
+				for (int i = 0; i < count; i++)
+				{
+					if (Collision.SolidTiles(NPC.position - new Vector2(0, NPC.height * i), NPC.width, NPC.height - 4))
+					{
+						count = i;
+						break; //Prevent growing too tall if colliding with solid surfaces
+					}
+				}
+
 				SpawnStack(count, style);
 
 				NPC.velocity.Y = -3;
