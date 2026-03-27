@@ -146,9 +146,9 @@ public partial class Scarabeus : ModNPC
 	{
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));
-		sheenShader.Parameters["resolution"].SetValue(texture.Size());
-		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(0.15f);
-		sheenShader.Parameters["saturationBoost"].SetValue(0.15f);
+		sheenShader.Parameters["resolution"].SetValue(texture.Size()); 
+		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f);
+		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.5f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
 		sheenShader.Parameters["sheenMasks"].SetValue(sheenTexture);
 		sheenShader.Parameters["shellColorShift"].SetValue(scarabColorIndex * 0.3f);
