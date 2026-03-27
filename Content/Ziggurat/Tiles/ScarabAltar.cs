@@ -186,9 +186,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				{
 					if (!Main.dedServ)
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
-					
+
 					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
+					{
 						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+						if (Main.getGoodWorld)
+							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2 : 1);
+					}
 
 					Projectile.timeLeft = MaxTime / 2;
 					_justSpawned = false;

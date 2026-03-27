@@ -29,6 +29,8 @@ public partial class Scarabeus : ModNPC
 		const int roar_time = 80;
 		const int pause_roar_time = 60;
 
+		bool spawnFlipped = scarabColorIndex % 2 == 1;
+
 		/*Todo: 
 		 * foreground scarab particles fly across the screen from bottom left to top right
 		 * screenshake
@@ -41,7 +43,7 @@ public partial class Scarabeus : ModNPC
 		{
 			if (Counter == 0) //On-spawn effects
 			{
-				NPC.Center = (FindSandySurface(Target.Center.ToTileCoordinates(), out Point result) ? result.ToWorldCoordinates() : FindGroundFromPosition(Target.Center)) - new Vector2(0, NPC.height / 2);
+				NPC.Center = (FindSandySurface(Target.Center.ToTileCoordinates(), out Point result, spawnFlipped ? -1 : 1) ? result.ToWorldCoordinates() : FindGroundFromPosition(Target.Center)) - new Vector2(0, NPC.height / 2);
 				NPC.FaceTarget();
 
 				if (!Main.dedServ)
@@ -209,12 +211,15 @@ public partial class Scarabeus : ModNPC
 
 		return 1f;
 
-		static bool FindSandySurface(Point origin, out Point result)
+		static bool FindSandySurface(Point origin, out Point result, int scanDirection = 1)
 		{
 			const int range = 50;
 			bool[] validSurfaceTiles = TileID.Sets.Factory.CreateBoolSet(TileID.Sand, ModContent.TileType<SavannaGrass>(), ModContent.TileType<SaltBlockDull>(), ModContent.TileType<SaltBlockReflective>());
 
-			for (int x = origin.X - range / 2; x < origin.X + range / 2; x++)
+			int start = origin.X - (range / 2) * scanDirection;
+			int end = origin.X + (range / 2) * scanDirection;
+
+			for (int x = start; (x - end) * scanDirection < 0; x += scanDirection)
 			{
 				int y = WorldMethods.FindGround(x, origin.Y);
 				Tile tile = Main.tile[x, y];
@@ -249,13 +254,6 @@ public partial class Scarabeus : ModNPC
 
 			"Soaring Complications",
 			"Sbubby");
-	}
-
-	public void FablesCameraFocus()
-	{
-		if (!CrossMod.Fables.Enabled)
-			return;
-		CrossMod.Fables.Instance.Call("vfx.cameraMagnetWithImmunity", NPC.Center, NPC.Center, 2000f, 1.4f);
 	}
 
 	public void FablesToggleUI(bool uiEnabled)
@@ -449,7 +447,8 @@ public partial class Scarabeus : ModNPC
 		{
 			ShiftUpToFloorLevel();
 
-			if (!Main.dedServ)
+			//No camera shift in ftw since there's 2 scarabs
+			if (!Main.dedServ && !Main.getGoodWorld)
 			{
 				var easeAnimation = new AnimationSequence()
 					.Add(new AnimationSequence.EaseSegment(30, Main.screenPosition, NPC.Center - Main.ScreenSize.ToVector2() / 2, EaseFunction.EaseCubicInOut))
@@ -530,7 +529,7 @@ public partial class Scarabeus : ModNPC
 
 			NPC.noGravity = true;
 
-			if (!Main.dedServ)
+			if (!Main.dedServ && !Main.getGoodWorld)
 			{
 				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
 				var easeAnimation = new AnimationSequence()
