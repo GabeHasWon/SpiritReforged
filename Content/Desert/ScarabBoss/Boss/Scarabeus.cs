@@ -531,10 +531,10 @@ public partial class Scarabeus : ModNPC
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
-		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
 
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
