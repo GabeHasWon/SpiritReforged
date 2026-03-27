@@ -2850,7 +2850,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	DisplayName: Windshear Scepter
-	Tooltip: "Shoots a piercing gust of wind"
+	Tooltip: Shoots a piercing gust of wind
 }
 
 SaltTallGateItem: {
