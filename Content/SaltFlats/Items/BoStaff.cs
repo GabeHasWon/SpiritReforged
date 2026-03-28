@@ -33,8 +33,8 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 
 	public override void SetDefaults()
 	{
-		Item.damage = 8;
-		Item.knockBack = 6;
+		Item.damage = 16;
+		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 28;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;

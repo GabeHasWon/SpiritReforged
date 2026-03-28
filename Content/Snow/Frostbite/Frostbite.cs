@@ -26,7 +26,8 @@ public class FrostbiteItem : ModItem
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 24;
-		Item.damage = 8;
+		Item.damage = 9;
+		Item.ArmorPenetration = 10;
 		Item.knockBack = 0;
 		Item.DamageType = DamageClass.Magic;
 		Item.noMelee = true;
@@ -38,7 +39,7 @@ public class FrostbiteItem : ModItem
 		Item.value = Item.sellPrice(0, 0, 50, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.Item20;
-		Item.mana = 2;
+		Item.mana = 4;
 		Item.shootSpeed = AttackRange;
 		Item.shoot = ModContent.ProjectileType<FrostbiteProj>();
 	}

@@ -28,7 +28,7 @@ public class FingerGun : ModItem
 		Item.DamageType = DamageClass.Magic;
 		Item.Size = new(32, 28);
 		Item.damage = 12;
-		Item.ArmorPenetration = 14;
+		Item.ArmorPenetration = 5;
 		Item.mana = 3;
 		Item.crit = 10;
 		Item.knockBack = 1;
