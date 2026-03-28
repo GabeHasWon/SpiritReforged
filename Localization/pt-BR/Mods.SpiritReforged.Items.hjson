@@ -2103,7 +2103,7 @@ SunEarrings: {
 	DisplayName: Brinco da Dançarina Solar
 	Tooltip:
 		'''
-		   Aumenta a mana máxima em 20
+		Aumenta a mana máxima em 20
 		7% de aumento no dano por magia
 		'''
 }
