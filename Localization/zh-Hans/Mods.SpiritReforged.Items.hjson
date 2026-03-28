@@ -489,12 +489,12 @@ LivingBaobabWallItem: {
 
 LivingBaobabLeafWand: {
 	DisplayName: 活面包树树叶魔棒
-	Tooltip: ""
+	Tooltip: 放置活面包树树叶
 }
 
 LivingBaobabWand: {
 	DisplayName: 活面包树魔棒
-	Tooltip: ""
+	Tooltip: 放置活面包树
 }
 
 WrithingSticks: {
@@ -1573,7 +1573,7 @@ PotionVatsCloningItem: {
 
 SilverFoodPlatterItem: {
 	DisplayName: 银制食物托盘
-	Tooltip: 右键将物品放置在托盘上
+	Tooltip: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -2572,7 +2572,7 @@ TrellisDrywoodItem: {
 }
 
 TrellisTwoDrywoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	DisplayName: 十字干木藤架
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
