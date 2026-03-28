@@ -34,6 +34,20 @@ public class AfterimagePlayer : ModPlayer
 	private readonly Player[] _playerStateCache = new Player[30];
 	private float _manaEase;
 
+	public static BlendState AdditiveNoAlpha = new BlendState
+	{
+		AlphaBlendFunction = BlendFunction.Add,
+		ColorBlendFunction = BlendFunction.Add,
+		ColorSourceBlend = Blend.SourceAlpha,
+		ColorDestinationBlend = Blend.One,
+		AlphaSourceBlend = Blend.SourceAlpha,
+		AlphaDestinationBlend = Blend.One,
+		ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels1 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels2 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels3 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue
+	};
+
 	public override void Load() => On_LegacyPlayerRenderer.DrawPlayerFull += static (orig, self, camera, player) =>
 	{
 		if (player.GetModPlayer<AfterimagePlayer>().setActive)
@@ -44,7 +58,7 @@ public class AfterimagePlayer : ModPlayer
 
 	private static void DrawAfterimage(SpriteBatch sb, LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position)
 	{
-		sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		sb.Begin(SpriteSortMode.Immediate, AdditiveNoAlpha, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		var afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
 

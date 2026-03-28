@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Dusts;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
@@ -11,7 +12,7 @@ public class BedouinCowl : ModItem
 {
 	public sealed class BedouinDash : ModDash
 	{
-		public override void SetDefaults(out DashInfo info) => info = new(15, 25, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
+		public override void SetDefaults(out DashInfo info) => info = new(15, 8, 18f, new PolynomialEase((x) => (float)Math.Sin(x * (MathHelper.Pi * 0.95f))), 0.9f);
 
 		public override void DashEffects(Player player)
 		{
@@ -30,10 +31,13 @@ public class BedouinCowl : ModItem
 
 			DashPlayer dashPlayer = player.GetModPlayer<DashPlayer>();
 
-			if (dashPlayer.DashDirection.Y < 0)
-				dashPlayer.cooldown = dashPlayer.dashInfo.Cooldown * 3; //Increase the dash cooldown if ascending
+			if (dashPlayer.duration == dashPlayer.dashInfo.Duration - 1 && !Main.dedServ)
+				SoundEngine.PlaySound(SoundID.DD2_BookStaffCast, player.Center); //Immediate dash sound effect
 
-			player.opacityForAnimation = dashPlayer.DashProgress > 0.5f ? 1f : 0.1f;
+			if (dashPlayer.DashDirection.Y < 0)
+				dashPlayer.cooldown = 60; //Increase the dash cooldown if ascending
+
+			player.opacityForAnimation = dashPlayer.DashProgress > 0.75f ? 1f : (dashPlayer.DashProgress * 1.5f);
 			player.noKnockback = true;
 
 			player.immuneTime = 5;
@@ -90,7 +94,7 @@ public class BedouinCowl : ModItem
 	{
 		Item.width = 22;
 		Item.height = 22;
-		Item.value = 7500;
+		Item.value = Item.sellPrice(silver: 50);
 		Item.rare = ItemRarityID.Green;
 		Item.defense = 3;
 	}

@@ -5,7 +5,7 @@ Moonbird: Moonbird
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: 漂移草原（主题曲：尘暴）
+	DisplayName: Drifting Prairie（主题曲：尘暴）
 	Author: "{$By} {$Sbubby}"
 }
 
@@ -55,16 +55,16 @@ SaltNight: {
 }
 
 Scarabeus: {
-	// DisplayName: Soaring Complications (Scarabeus Theme)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Soaring Complications（主题曲：圣甲虫）
+	Author: "{$By} {$Sbubby}"
 }
 
 ScarabeusP2: {
-	// DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Soaring Complications（主题曲：圣甲虫 - 阶段2）
+	Author: "{$By} {$Sbubby}"
 }
 
 RadioScarab: {
-	// DisplayName: Soaring Complications (Radio Edit)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Soaring Complications（电台剪辑版）
+	Author: "{$By} {$Sbubby}"
 }

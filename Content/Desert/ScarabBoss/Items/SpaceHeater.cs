@@ -213,10 +213,7 @@ internal class SpaceHeater : ModItem
 			if (hideSlider)
 				return;
 
-			PlayerInput.SetZoom_MouseInWorld();
 			Point mouse = Main.MouseWorld.ToPoint();
-			PlayerInput.SetZoom_UI();
-
 			Rectangle tileBounds = new(topLeft.X * 16, topLeft.Y * 16, 16 * 2, 16 * 4);
 
 			if (tileBounds.Contains(mouse))

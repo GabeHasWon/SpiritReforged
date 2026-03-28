@@ -200,7 +200,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 		else //This has no parent (the base of the stack)
 		{
 			var target = Main.player[NPC.target].Center;
-			float maxSpeed = Main.zenithWorld ? 2 : 0.2f;
+			float maxSpeed = Main.zenithWorld ? 2 : 0.23f;
 			float speed = (NPC.Distance(target) < 16 * 18) ? Math.Sign(NPC.DirectionTo(target).X) * maxSpeed : 0;
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, speed, 0.05f);
@@ -259,6 +259,15 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 
 				if (style == 0)
 					count--; //Juvenile debuff
+
+				for (int i = 0; i < count; i++)
+				{
+					if (Collision.SolidTiles(NPC.position - new Vector2(0, NPC.height * i), NPC.width, NPC.height - 4))
+					{
+						count = i;
+						break; //Prevent growing too tall if colliding with solid surfaces
+					}
+				}
 
 				SpawnStack(count, style);
 

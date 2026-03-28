@@ -11,6 +11,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -69,7 +70,7 @@ public partial class Scarabeus : ModNPC
 	public static int STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE = 30;
 	public static int STAT_SLAM_SHOCKWAVE_DAMAGE = 38;
 	public static int STAT_DIG_EMERGE_DEBRIS_DAMAGE = 20;
-	public static int STAT_ANTLION_SWARMER_DAMAGE = 20;
+	public static int STAT_ANTLION_SWARMER_DAMAGE = 23;
 	public static int STAT_ANTLION_ONFIRE_DURATION = 120;
 	public static float STAT_PROJECTILE_DAMAGE_EXPERT_MULTIPLIER = 1.7f;
 	public static float STAT_PROJECTILE_DAMAGE_MASTER_MULTIPLIER = 2.5f;
@@ -91,9 +92,10 @@ public partial class Scarabeus : ModNPC
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;
 
+	public static VisualProfile TakeoffProfile;
+
 	private static VisualProfile PhaseOneProfile;
-	private static VisualProfile PhaseTwoProfile;
-	private static VisualProfile TakeoffProfile;
+	private static VisualProfile PhaseTwoProfile;	
 	private static VisualProfile SimulatedProfile;
 	private static VisualProfile BallProfile;
 	private static VisualProfile DeadProfile;
@@ -442,21 +444,41 @@ public partial class Scarabeus : ModNPC
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
 			for (int i = 1; i < 12; i++)
-				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
+				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2.5f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
-			for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 12; i++)
 			{
-				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
 				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
 			}
 
+			Vector2 velocity = -NPC.velocity * 0.7f;
+
 			for (int i = 0; i < 30; i++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(area.Center(), -NPC.velocity.RotatedByRandom(2f) * Main.rand.NextFloat(3f), Color.DarkOrange, Color.Orange * 0.3f, 0.2f, EaseFunction.EaseCircularOut, 100, false)
+				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);		
+				
+				ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 				{
 					Pixellate = true,
+					DissolveAmount = 1,
+					Intensity = 0.9f,
 					PixelDivisor = 3,
 				});
+
+				ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(2.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.4f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+				{
+					Pixellate = true,
+					DissolveAmount = 1,
+					Intensity = 0.9f,
+					PixelDivisor = 3,
+				});
+
+				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(1.65f) * Main.rand.NextFloat(0.8f), 0, default, Main.rand.NextFloat(1f, 2f));
+
+				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(0.95f) * Main.rand.NextFloat(0.8f), 0, default, Main.rand.NextFloat(1f, 2f));
+
+				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.6f).noGravity = true;
 
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
 			}
@@ -474,7 +496,7 @@ public partial class Scarabeus : ModNPC
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 45));
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45));
 		}
 	}
 

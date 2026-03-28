@@ -541,32 +541,32 @@ DecrepitMummy: {
 Graverobber: {
 	DisplayName: 盗墓者
 	Entry: 他们不幸的是像皮纳塔一样被击中，金子如雨点般落下。这景致简直跟财宝本身一样诱人……
-	HoldingLantern: “当手持灯笼时”
+	HoldingLantern: 当手持灯笼时
 }
 
 LootBag.DisplayName: 战利品袋
 
 Scarabeus: {
-	// DisplayName: Scarabeus
-	// Title: Aura Monster
-	// Entry: ""
+	DisplayName: 圣甲虫
+  // Title: Crested Idol
+	Entry: ""
 }
 
 TinyGrub.DisplayName: 小幼虫
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: ""
+	Entry: 在所有可能的死法中，被仙人掌扎死肯定是最糟糕的死法之一。被仙人掌扎而没有死去想必也很糟糕。
 }
 
 SunburntZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: ""
+	Entry: 如今厌恶阳光，这只僵尸只在夜间出没，以免腐烂的皮肤进一步受损。
 }
 
 VeiledZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: ""
+	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
 Cricket.DisplayName: 蟋蟀

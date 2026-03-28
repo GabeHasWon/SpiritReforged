@@ -54,7 +54,7 @@ ButterflyMinion_Buff: {
 }
 
 ToucanMinion_Buff: {
-	DisplayName: 巨嘴鸟
+	DisplayName: 巨嘴鸟手杖
 	Description: 巨嘴鸟为你而战
 }
 
@@ -124,8 +124,8 @@ Slowed: {
 }
 
 ToucaneMinion_Buff: {
-	DisplayName: 巨嘴鸟
-	Description: 巨嘴鸟为你而战？
+	DisplayName: 巨嘴鸟手杖
+	Description: 巨嘴鸟手杖为你而战？
 }
 
 TinyDragonPet_Buff: {
@@ -139,11 +139,11 @@ EnlilBuff: {
 }
 
 ScarabPetBuff: {
-	// DisplayName: Tiny Scarab
-	// Description: "'It really loves to roll...'"
+	DisplayName: 小甲虫
+	Description: ”它真的很喜欢摇滚……“
 }
 
 ScarabLightPetBuff: {
-	// DisplayName: Scarababy
-	// Description: "'It's plotting...'"
+	DisplayName: 甲虫宝宝
+	Description: ”它在密谋……“
 }

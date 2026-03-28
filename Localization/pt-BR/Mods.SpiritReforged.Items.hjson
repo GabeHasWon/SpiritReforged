@@ -1754,7 +1754,7 @@ Bowlder: {
 
 BoStaff: {
 	// DisplayName: Bo Staff
-	// Tooltip: Dealing continuous damage builds combo
+	// Tooltip: Consecutive hits build combo
 }
 
 Blasphemer: {
@@ -1909,7 +1909,7 @@ JinxBow: {
 	// DisplayName: Jinxbow
 	/* Tooltip:
 		'''
-		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Fires equipped arrows at enemies and occasionally marks them
 		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		''' */
 }
@@ -2126,7 +2126,7 @@ CeremonialDagger: {
 	// DisplayName: Ceremonial Dagger
 	/* Tooltip:
 		'''
-		Deals damage to townsfolk
+		Can be used to sacrifice townsfolk
 		<right> deals critical damage to bleeding enemies
 		''' */
 }
@@ -2702,7 +2702,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	// DisplayName: Bangle of Strength
-	// Tooltip: Periodically empowers melee damage
+	// Tooltip: Periodically empowers melee strikes
 }
 
 ScarabTabletOneItem: {
@@ -2839,7 +2839,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	// DisplayName: Windshear Scepter
-	// Tooltip: ""
+	// Tooltip: Shoots a piercing gust of wind
 }
 
 SaltTallGateItem: {
@@ -2967,7 +2967,7 @@ AdornedBow: {
 	/* Tooltip:
 		'''
 		Charges an empowered shot
-		Empowered shots damage nearby enemies
+		Perfectly timed shots cause arrows to refract on hit
 		''' */
 }
 
@@ -3016,7 +3016,7 @@ LocustCrook: {
 	/* Tooltip:
 		'''
 		Summons a sentry
-		Throws out a crook that attracts locusts
+		Throws out a crook that attracts locusts to infest enemies
 		''' */
 }
 

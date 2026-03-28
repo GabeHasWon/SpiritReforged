@@ -20,6 +20,7 @@ matrix WorldViewProjection;
 float rotation;
 bool flip;
 
+
 struct VertexShaderInput
 {
     float2 TextureCoordinates : TEXCOORD0;
@@ -46,6 +47,13 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
     return output;
 };
+
+void SpriteVertexShader(inout float4 color : COLOR0,
+                        inout float2 texCoord : TEXCOORD0,
+                        inout float4 position : SV_Position)
+{
+    position = mul(position, WorldViewProjection);
+}
 
 float2 Rotate(float2 coords, float2 origin)
 {
@@ -195,6 +203,7 @@ technique BasicColorDrawing
 {
     pass DefaultPass
     {
+        VertexShader = compile vs_3_0 SpriteVertexShader();
         PixelShader = compile ps_3_0 MainPS();
     }
 

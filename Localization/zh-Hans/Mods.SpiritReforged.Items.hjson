@@ -602,7 +602,7 @@ DrywoodSword: {
 
 HuntingRifle: {
 	DisplayName: 猎枪
-	Tooltip: 对远处的目标和站定不动时造成更多伤害
+	Tooltip: 对远处的目标造成更多伤害，站定不动时进一步增加造成的伤害
 }
 
 SafariHat: {
@@ -890,8 +890,12 @@ WheatgrassSeedPouch: {
 }
 
 RoyalKhopesh: {
-	DisplayName: 皇家弯刀
-	Tooltip: ""
+	DisplayName: 皇家镰形剑
+	Tooltip:
+		'''
+		右键扔出镰形剑
+		左键或右键拉回被击中的敌人，并短暂强化下次攻击
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -1754,7 +1758,7 @@ Bowlder: {
 
 BoStaff: {
 	DisplayName: 长棍法杖
-	Tooltip: 连击造成连续伤害
+	Tooltip: 连续命中积累连击
 }
 
 Blasphemer: {
@@ -1909,7 +1913,7 @@ JinxBow: {
 	DisplayName: 厄劫弓
 	Tooltip:
 		'''
-		发射消耗弹药的箭矢，偶尔会标记敌人
+		对敌人发射已装备的箭矢，偶尔会标记敌人
 		使用远程攻击打击被标记的敌人会释放一支强大的魔法箭
 		'''
 }
@@ -2126,7 +2130,7 @@ CeremonialDagger: {
 	DisplayName: 仪式匕首
 	Tooltip:
 		'''
-		对镇民造成伤害
+		可以用于献祭镇民
 		右键对流血的敌人造成暴击伤害
 		'''
 }
@@ -2702,7 +2706,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战伤害
+	Tooltip: 永久性强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -2839,7 +2843,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	DisplayName: 风切变权杖
-	Tooltip: ""
+	Tooltip: 发射一阵穿刺强风
 }
 
 SaltTallGateItem: {
@@ -2943,8 +2947,8 @@ GoldCricketCageItem: {
 }
 
 ScarabPetItem: {
-	// DisplayName: Scarab Food
-	// Tooltip: Summons a little Scarab companion
+	DisplayName: 甲虫食物
+	Tooltip: 召唤一只小甲虫伙伴
 }
 
 CarrotCake: {
@@ -2963,69 +2967,73 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	DisplayName: 华饰弓
-	Tooltip: ""
+	DisplayName: 镀金巨弓
+	Tooltip:
+		'''
+		蓄力一次强化射击
+		在完美时机射击会使箭矢在命中时折射
+		'''
 }
 
 BagOScarabs: {
-	// DisplayName: Treasure Bag (Scarabeus)
-	// Tooltip: ""
+	DisplayName: 宝藏袋（圣甲虫）
+	Tooltip: ""
 }
 
 ScarabMask: {
-	// DisplayName: Scarabeus Mask
-	// Tooltip: ""
+	DisplayName: 圣甲虫面具
+	Tooltip: ""
 }
 
 ScarabRelic: {
-	// DisplayName: Scarabeus Relic
-	// Tooltip: ""
+	DisplayName: 圣甲虫圣物
+	Tooltip: ""
 }
 
 ScarabTrophy: {
-	// DisplayName: Scarabeus Trophy
-	// Tooltip: ""
+	DisplayName: 圣甲虫纪念章
+	Tooltip: ""
 }
 
 ScarabRadio: {
-	// DisplayName: Scarab Radio
-	// Tooltip: ""
+	DisplayName: 甲虫收音机
+	Tooltip: ""
 }
 
 SpaceHeater: {
-	// DisplayName: Radiator
-	// Tooltip: Right click the tile to modify its heat setting
+	DisplayName: 电暖器
+	Tooltip: 右键图格以修改其热量设置
 }
 
 ScarabMusicBox: {
-	// DisplayName: Music Box (Scarabeus)
-	// Tooltip: ""
+	DisplayName: 音乐盒（圣甲虫）
+	Tooltip: ""
 }
 
 SpiritTreeTopper: {
-	// DisplayName: Spirit Tree Topper
-	// Tooltip: ""
+	DisplayName: 魂灵树顶饰
+	Tooltip: ""
 }
 
 LocustCrook: {
-	// DisplayName: Locust Crook
-	/* Tooltip:
+	DisplayName: 蝗虫曲柄杖
+	Tooltip:
 		'''
-		Summons a sentry
-		Throws out a crook that attracts locusts
-		''' */
+		召唤一个哨兵
+		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
+		'''
 }
 
 IridescentDye: {
-	// DisplayName: Iridescent Dye
-	// Tooltip: ""
+	DisplayName: 虹彩染料
+	Tooltip: ""
 }
 
 ScarabLightPetItem: {
-	// DisplayName: Scarab Bulb
-	/* Tooltip:
+	DisplayName: 甲虫灯泡
+	Tooltip:
 		'''
-		Summons a Scarababy
-		'Eureka!'
-		''' */
+		召唤一只甲虫宝宝
+		”尤里卡！“
+		'''
 }

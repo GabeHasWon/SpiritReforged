@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics.PackedVector;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
@@ -48,6 +49,21 @@ internal class SaltFlatsSystem : ModSystem
 		On_Main.DrawStarsInBackground += CacheSceneArea;
 		On_Main.DrawSunAndMoon += DrawSaltFlatAtmosphere;
 		On_Main.SetBackColor += EditMoonColor;
+		On_Cloud.cloudColor += EditCloudColor;
+	}
+
+	private Color EditCloudColor(On_Cloud.orig_cloudColor orig, Cloud self, Color bgColor)
+	{
+		Color output = orig(self, bgColor);
+		float cloudOpacity = self.scale * self.Alpha;
+		if (cloudOpacity > 1f)
+			cloudOpacity = 1f;
+		cloudOpacity *= 1f - bloodMoonStrength * 0.6f;
+
+		Color tintTarget = GetBackgroundTintColor(out float tintStrength);
+		tintStrength += 0.4f * bloodMoonStrength;
+		tintTarget *= cloudOpacity;
+		return Color.Lerp(output, tintTarget, Math.Min(1, tintStrength * 1.5f));
 	}
 
 	private void DrawSaltFlatAtmosphere(On_Main.orig_DrawSunAndMoon orig, Main self, Main.SceneArea sceneArea, Color moonColor, Color sunColor, float tempMushroomInfluence)
@@ -62,8 +78,18 @@ internal class SaltFlatsSystem : ModSystem
 		cachedArea = sceneArea;
 	}
 
+	public static void UpdateSkyStrengthVariable(ref float variable, bool toggled)
+	{
+		variable = MathHelper.Lerp(variable, toggled ? 1f : 0f, 0.05f);
+		if (!toggled && variable < 0.01f)
+			variable = 0;
+		else if (toggled && variable > 0.99f)
+			variable = 1;
+	}
+
 	public static void DrawSaltFlatsBackground()
 	{
+		_dirtyBgTintVariables = true;
 		bool playerInSaltBiome;
 		if (!Main.gameMenu)
 			playerInSaltBiome = Main.LocalPlayer.InModBiome<SaltBiome>();
@@ -85,16 +111,24 @@ internal class SaltFlatsSystem : ModSystem
 			return;
 		}
 
-		eclipseStrength = MathHelper.Lerp(eclipseStrength, Main.eclipse ? 1f : 0f, 0.05f);
-		bloodMoonStrength = MathHelper.Lerp(bloodMoonStrength, Main.bloodMoon ? 1f : 0f, 0.05f);
-		snowMoonStrength = MathHelper.Lerp(snowMoonStrength, Main.snowMoon ? 1f : 0f, 0.05f);
-		pumpkinMoonStrength = MathHelper.Lerp(pumpkinMoonStrength, Main.pumpkinMoon ? 1f : 0f, 0.05f);
+		UpdateSkyStrengthVariable(ref eclipseStrength, Main.eclipse);
+		UpdateSkyStrengthVariable(ref bloodMoonStrength, Main.bloodMoon || Main.SceneMetrics.BloodMoonMonolith || Main.LocalPlayer.bloodMoonMonolithShader);
+		UpdateSkyStrengthVariable(ref snowMoonStrength, Main.snowMoon);
+		UpdateSkyStrengthVariable(ref pumpkinMoonStrength, Main.pumpkinMoon);
 
 		float nightFade = 1f;
 		if (Main.time < 1600)
 			nightFade = (float)(Main.time / 1600f);
+
+		if (Main.eclipse && Main.dayTime)
+		{
+			if (Main.time > Main.dayLength - 1600)
+				nightFade = (float)Utils.GetLerpValue(Main.dayLength, Main.dayLength - 1600, Main.time);
+		}
 		else if (Main.time > Main.nightLength - 1600)
+		{
 			nightFade = (float)Utils.GetLerpValue(Main.nightLength, Main.nightLength - 1600, Main.time);
+		}
 
 		nightSkyOpacity = saltFlatsOpacity * nightFade;
 		nightGlowOpacity = saltFlatsOpacity * nightFade;
@@ -141,7 +175,6 @@ internal class SaltFlatsSystem : ModSystem
 			Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			bgShader.Parameters["texColorUVLerper"].SetValue(0f);
 			bgShader.Parameters["WorldViewProjection"].SetValue(projection);
 			bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
 			SetSkyColor(bgShader);
@@ -173,7 +206,7 @@ internal class SaltFlatsSystem : ModSystem
 		Vector3 baseGradientColor = new Vector3(0.2f, 0.3f, 0f);
 
 		baseSkyColor = Vector3.Lerp(baseSkyColor, new Vector3(0.4f, 0f, 0f), bloodMoonStrength);
-		baseGradientColor = Vector3.Lerp(baseGradientColor, new Vector3(0.1f, 0.1f, 0.1f), bloodMoonStrength);
+		baseGradientColor = Vector3.Lerp(baseGradientColor, new Vector3(0.1f, 0.06f, 0.0f), bloodMoonStrength);
 
 		baseSkyColor = Vector3.Lerp(baseSkyColor, new Vector3(0.1f, 0.2f, 0.2f), snowMoonStrength);
 		baseGradientColor = Vector3.Lerp(baseGradientColor, new Vector3(0.1f, 0.1f, 0.15f), snowMoonStrength);
@@ -213,12 +246,62 @@ internal class SaltFlatsSystem : ModSystem
 		Color colorTarget = new Color(0, 0.3f, 1f);
 		colorTarget = Color.Lerp(colorTarget, new Color(0.1f, 0.3f, 0.4f), snowMoonStrength);
 		colorTarget = Color.Lerp(colorTarget, new Color(0.7f, 0.15f, 0.1f), pumpkinMoonStrength);
-
 		colorTarget = Color.Lerp(colorTarget, new Color(0.2f, 0.04f, 0.1f), eclipseStrength);
 
-		float nightGlowStrength = 0.3f + Main.bgAlphaFarBackLayer[ModContent.GetInstance<SaltBGStyle>().Slot] * 0.6f; //Salt bg intensifies the glow during the night
+		//float nightGlowStrength = 0.3f + Main.bgAlphaFarBackLayer[ModContent.GetInstance<SaltBGStyle>().Slot] * 0.6f; //Salt bg intensifies the glow during the night
 		backgroundColor = Color.Lerp(backgroundColor, colorTarget, nightGlowOpacity * 0.3f);
 		tileColor = Color.Lerp(tileColor, colorTarget, nightGlowOpacity * 0.3f);
+	}
+
+	public static void ModifySkyGradientColors(ref Color topColor, ref Color middleColor, ref Color bottomColor)
+	{
+		if (bloodMoonStrength > 0)
+		{
+			topColor = Color.Lerp(topColor, Color.Black, bloodMoonStrength);
+			middleColor = Color.Lerp(middleColor, new Color(0.8f, 0.4f, 0.2f), bloodMoonStrength);
+		}
+
+		if (pumpkinMoonStrength > 0)
+		{
+			topColor = Color.Lerp(topColor, Color.Black, pumpkinMoonStrength);
+			middleColor = Color.Lerp(middleColor, new Color(0.8f, 0.6f, 0.1f), pumpkinMoonStrength);
+		}
+
+		//Darken the sky entirely when its the eclipse, the only tint on the sky will come from the SaltFlatsSky shader drawing behind the sun, drawing a black to red gradient
+		if (eclipseStrength > 0)
+		{
+			topColor = Color.Lerp(topColor, Color.Black, eclipseStrength);
+			middleColor = Color.Lerp(middleColor, Color.Black, eclipseStrength);
+			bottomColor = Color.Lerp(bottomColor, Color.Black, eclipseStrength);
+		}
+	}
+
+	private static bool _dirtyBgTintVariables = true;
+	private static float _bgTintStrength;
+	private static Color _bgTintColorTarget;
+	public static Color GetBackgroundTintColor(out float tintStrength)
+	{
+		if (!_dirtyBgTintVariables)
+		{
+			tintStrength = _bgTintStrength;
+			return _bgTintColorTarget;
+		}
+
+		_dirtyBgTintVariables = false;
+		tintStrength = 0f;
+
+		if (nightSkyOpacity == 0)
+			return Color.White;
+
+		tintStrength = MathF.Pow(nightSkyOpacity, 2f) * 0.3f;
+		tintStrength *= 1 - eclipseStrength;
+		_bgTintStrength = tintStrength;
+
+		_bgTintColorTarget = new Color(80, 120, 255);
+		_bgTintColorTarget = Color.Lerp(_bgTintColorTarget, new Color(0.7f, 0.4f, 0.2f), bloodMoonStrength);
+		_bgTintColorTarget = Color.Lerp(_bgTintColorTarget, new Color(0.1f, 0.3f, 0.4f), snowMoonStrength);
+		_bgTintColorTarget = Color.Lerp(_bgTintColorTarget, new Color(0.7f, 0.15f, 0.1f), pumpkinMoonStrength);
+		return _bgTintColorTarget;
 	}
 
 	public override void SaveWorldData(TagCompound tag) => tag["height"] = SurfaceHeight;
