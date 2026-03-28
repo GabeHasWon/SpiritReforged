@@ -374,6 +374,8 @@ public partial class Scarabeus : ModNPC
 		Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 		Main.graphics.GraphicsDevice.Textures[0] = texture;
 		PrimitiveRenderer.DrawPrimitiveShape(square, sheenShader, "BallPass");
+
+		FlipShadersOnOff(Main.spriteBatch, null, false);
 	}
 
 	public override void DrawBehind(int index)
