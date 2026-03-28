@@ -1850,7 +1850,7 @@ ElephantKite: {
 
 CartographyTableItem: {
 	DisplayName: Tabela Cartográfica
-	/Tooltip:
+	Tooltip:
 		'''
 		Permite com que você divida seu mapa com outros jogadores
 		Interaja para enviar suas descobertas
@@ -1946,7 +1946,7 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-       DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+    DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
 	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
 }
 
@@ -1962,10 +1962,10 @@ AncientMarksmanPlate: {
 
 RollingPotsItem: {
 	DisplayName: Vaso Rolante
-	/Tooltip: ""
+	Tooltip: ""
 }
 
-// MossSlimeBannerItem.DisplayName: Bandeira da Geleia de Musgo
+MossSlimeBannerItem.DisplayName: Bandeira da Geleia de Musgo
 
 InvisibleLure: {
 	DisplayName: Isca Invisível

@@ -287,15 +287,15 @@ Cartographer: {
 			}
 
 			WulfrumBunker: {
-				// 0: Não sei se me lembro bem, mas eu estava caminhando por aí como de costume, e atrás de um bosque de árvores vi essa estranha estrutura mecânica verde. No topo havia várias coisas e embaixo ouvi um zumbido mecânico... não, obrigado!
-				// 1: Era ali que ficava meu acampamento! Eu estava descansando depois de um longo e agradável dia de caminhada, quando esse homenzinho mecânico com uma mão enorme ROUBOU minha mochila. Ainda bem que eu tinha descansado um pouco, porque aquele bichinho me fez correr por um bom tempo.
-				// 2: Aí está! Difícil esquecer, afinal. Não se vê muita indústria por aqui, o que é bom para mim. Não gosto muito de todo esse barulho. Principalmente depois que um campo de energia apareceu e sucata começou a voar na minha direção.
+				0: Não sei se me lembro bem, mas eu estava caminhando por aí como de costume, e atrás de um bosque de árvores vi essa estranha estrutura mecânica verde. No topo havia várias coisas e embaixo ouvi um zumbido mecânico... não, obrigado!
+				1: Era ali que ficava meu acampamento! Eu estava descansando depois de um longo e agradável dia de caminhada, quando esse homenzinho mecânico com uma mão enorme ROUBOU minha mochila. Ainda bem que eu tinha descansado um pouco, porque aquele bichinho me fez correr por um bom tempo.
+				2: Aí está! Difícil esquecer, afinal. Não se vê muita indústria por aqui, o que é bom para mim. Não gosto muito de todo esse barulho. Principalmente depois que um campo de energia apareceu e sucata começou a voar na minha direção.
 			}
 
 			BloodAltar: {
-				// 0: E... pronto! Mapear a superfície é apenas, bem, a superfície. Encontro muitas coisas estranhas no subsolo, e de muitas delas me mantenho afastado... O quê? Sou cartógrafo, não aventureiro!
-				// 1: Por hoje é isso! Você parece ser do tipo capaz. Eu encontrei um morto-vivo que realmente ouvia a razão, o que já era estranho o suficiente, mas ele me vendeu esta... mão. Segui para onde ela apontava e me vi numa cripta perturbadora... Talvez você consiga tirar alguma coisa disso tudo, eu não vou voltar lá.
-				// 2: Você topa um desafio? Eu não, com certeza. Tem uma masmorra com uma sala que cheira a sangue... E com aquele altar estranho no meio... é, eu não fiquei muito tempo lá não.
+				0: E... pronto! Mapear a superfície é apenas, bem, a superfície. Encontro muitas coisas estranhas no subsolo, e de muitas delas me mantenho afastado... O quê? Sou cartógrafo, não aventureiro!
+				1: Por hoje é isso! Você parece ser do tipo capaz. Eu encontrei um morto-vivo que realmente ouvia a razão, o que já era estranho o suficiente, mas ele me vendeu esta... mão. Segui para onde ela apontava e me vi numa cripta perturbadora... Talvez você consiga tirar alguma coisa disso tudo, eu não vou voltar lá.
+				2: Você topa um desafio? Eu não, com certeza. Tem uma masmorra com uma sala que cheira a sangue... E com aquele altar estranho no meio... é, eu não fiquei muito tempo lá não.
 
 			SaltFlat: {
 				0: Não posso esquecer! Ali, bem ali, foi a primeira vez que vi um reflexo do céu. Eu estava olhando para baixo, como costumo fazer, e BAM! Nuvens! A princípio, fiquei preocupado, mas era apenas uma fina camada de água... provavelmente. Certifique-se de que seja seguro para que eu não precise me preocupar.
