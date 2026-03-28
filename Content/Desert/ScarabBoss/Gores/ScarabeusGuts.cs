@@ -21,8 +21,9 @@ public class ScarabeusGuts : ModGore
 
 		if (CollisionChecks.Tiles(new((int)gore.position.X, (int)gore.position.Y, 16, 16), CollisionChecks.SolidOrPlatform))
 		{
-			if (gore.drawOffset.Y == 0) //One-time effects
-				SoundEngine.PlaySound(SoundID.NPCHit18 with { PitchVariance = 0.2f, Volume = 0.5f }, gore.position);
+			//Unused sound code for later?
+			//if (gore.drawOffset.Y == 0) //One-time effects
+				//SoundEngine.PlaySound(SoundID.NPCHit18 with { PitchVariance = 0.2f, Volume = 0.5f }, gore.position);
 
 			gore.position.Y = gore.position.ToTileCoordinates().ToWorldCoordinates().Y;
 
