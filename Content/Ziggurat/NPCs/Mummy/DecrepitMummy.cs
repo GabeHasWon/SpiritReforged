@@ -60,7 +60,7 @@ internal class DecrepitMummy : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(80, 90, 120, 180);
+		NPC.lifeMax = ModeUtils.ByMode(90, 100, 130, 190);
 		NPC.damage = ModeUtils.ByMode(20, 37, 40, 60);
 	}
 
