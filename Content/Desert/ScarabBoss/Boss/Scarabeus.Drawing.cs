@@ -215,7 +215,7 @@ public partial class Scarabeus : ModNPC
 		}
 
 		if (_shakeTimer > 0)
-			position += Main.rand.NextVector2CircularEdge(7f, 7f) * _shakeTimer / 20f;
+			position += Main.rand.NextVector2CircularEdge(20f, 20f) * _shakeTimer / 40f;
 
 		if (CurrentState == AIState.DeathAnim)
 			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
@@ -274,7 +274,7 @@ public partial class Scarabeus : ModNPC
 
 		if (CurrentState == AIState.DeathAnim)
 		{
-			Main.spriteBatch.Draw(bloom, NPC.Center + new Vector2(-10f * NPC.direction, -20f).RotatedBy(NPC.rotation) - Main.screenPosition, null, Color.Orange.Additive() * (Counter / 360f), 0f, bloom.Size() / 2f, 1f, 0f, 0f);
+
 		}
 
 		return false;

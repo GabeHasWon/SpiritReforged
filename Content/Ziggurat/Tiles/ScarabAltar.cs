@@ -258,7 +258,12 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				opacity = 1f - lerp;
 			}
 
-			Main.spriteBatch.Draw(godray, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.LightGoldenrodYellow, Color.Orange, opacity).Additive() * opacity, MathHelper.Pi, godray.Size() / 2f, scale * 0.2f, 0f, 0f);
+			float glowSin = 0;
+
+			if (GemCount < 5)
+				glowSin = 0.1f * (float)Math.Sin(Main.timeForVisualEffects * 0.04f);
+
+			Main.spriteBatch.Draw(godray, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.LightGoldenrodYellow, Color.Orange, opacity).Additive() * (opacity + glowSin), MathHelper.Pi, godray.Size() / 2f, (scale + glowSin) * 0.2f , 0f, 0f);
 
 			Effect effect = AssetLoader.LoadedShaders["LightRay"].Value;
 
@@ -293,7 +298,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 			effect.Parameters["uColor2"].SetValue(colorTwo.ToVector4() * opacity);
 
-			var rayFinalDimensions = new Vector3(350f * scale, 150f * scale, 1f);
+			var rayFinalDimensions = new Vector3(350f * scale, 100f * scale, 1f);
 
 			float sunWidth = 70;
 			effect.Parameters["taperRatio"].SetValue(sunWidth / rayFinalDimensions.X);

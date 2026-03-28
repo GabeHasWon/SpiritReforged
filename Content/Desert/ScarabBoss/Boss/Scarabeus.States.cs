@@ -27,7 +27,7 @@ public partial class Scarabeus : ModNPC
 	{
 		const int swarm_time = 120;
 		const int roar_time = 80;
-		const int pause_roar_time = 60;
+		//const int pause_roar_time = 30;
 
 		bool spawnFlipped = scarabColorIndex % 2 == 1;
 
@@ -166,7 +166,7 @@ public partial class Scarabeus : ModNPC
 
 					ExtraMemory++;
 				}
-
+			
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);
 				NPC.rotation = 0;
@@ -189,24 +189,43 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		//End the cinematic
-		else if (Counter >= swarm_time + roar_time + pause_roar_time)
+		if (Counter == swarm_time + roar_time)
 		{
-			SetFrame(7, 0, PhaseOneProfile);
-
-			Counter = 0;
+			currentFrame.Y = 0;
 			ExtraMemory = 0;
+		}
 
-			//Bonus animation while wearing Scarabeus' mask, interrupted if the player hits it
-			if (CanBeCharmed)
-            {
-                NPC.dontTakeDamage = false;
-                ChangeState(AIState.Charmed);
-            }
-            else if (CanDance)
-				ChangeState(AIState.Dance);
-			else
-				ChangeState(AIState.Roar);
+		//End the cinematic
+		else if (Counter >= swarm_time + roar_time)
+		{
+			int framerate = 10;
+
+			FrameState updateResult = UpdateFrame(6, framerate, PhaseOneProfile, false);
+			if (ExtraMemory > 0)
+				updateResult = FrameState.Stopped;
+
+			if (updateResult == FrameState.Stopped)
+			{		
+				if (++ExtraMemory > 15)
+				{
+					SetFrame(7, 0, PhaseOneProfile);
+					
+					ExtraMemory = 0;
+					Counter = 0;
+
+					//Bonus animation while wearing Scarabeus' mask, interrupted if the player hits it
+
+					if (CanBeCharmed)
+					{
+						NPC.dontTakeDamage = false;
+						ChangeState(AIState.Charmed);
+					}
+					else if (CanDance)
+						ChangeState(AIState.Dance);
+					else
+						ChangeState(AIState.Roar);
+				}
+			}		
 		}
 
 		return 1f;
@@ -243,9 +262,9 @@ public partial class Scarabeus : ModNPC
 
 		CrossMod.Fables.Instance.Call("vfx.displaybossintrocard", 
 			"Scarabeus", 
-			"Aura Monster", 
+			"Crested Idol", 
 			cardDuration, 
-			NPC.Center.X < Main.LocalPlayer.Center.X, 
+			NPC.Center.X < Main.LocalPlayer.Center.X,
 			
 			new Color(8, 0, 222) * 0.7f,  //Boss bar border color
 			(new Color(225, 163, 39) * 0.8f) , //Title color
@@ -299,19 +318,20 @@ public partial class Scarabeus : ModNPC
 			Color particleColor = Color.Lerp(Color.LightYellow, Color.Goldenrod, 0.5f).Additive(100);
 			ParticleHandler.SpawnParticle(new RoarRing(NPC.Center + offset, 0.4f, 4500, 15, EaseFunction.EaseCubicIn, false, 0.4f) 
 			{ 
-				Opacity = 0.5f, 
+				Opacity = 0.25f, 
 				TextureStretch = new(Main.rand.NextFloat(1, 4), 0.065f),
 				Color = particleColor,
 				UseLightColor = true
 			});
 
 			int blurLineCount = Main.rand.Next(4, 7);
+
 			for(int i = 0; i < blurLineCount; i++)
 			{
 				var velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(40, 80);
 				var scale = new Vector2(Main.rand.NextFloat(0.8f, 1.4f), Main.rand.NextFloat(2, 7));
 				float acceleration = Main.rand.NextFloat(0.95f, 0.98f);
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(NPC.Center + offset, velocity, particleColor * 0.4f, scale, 15, acceleration) { UseLightColor = true, NoLight = true });
+				ParticleHandler.SpawnParticle(new ImpactLinePrim(NPC.Center + offset, velocity, particleColor * 0.2f, scale, 15, acceleration) { UseLightColor = true, NoLight = true });
 			}
 		}
 
@@ -505,27 +525,36 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Death Animation
+
+	internal Vector2 deathDirection;
 	public float DeathAnimation(ref bool retarget)
 	{
-		int frameCounter = (int)MathHelper.Lerp(30, 0, Math.Min(Counter / 300f, 1f));
+		int frameCounter = 30;
 
-		if (OnTopOfTiles)
-			frameCounter = 0;
+		if (Counter > 60f)
+		{
+			if (Counter < 120f)
+			{
+				frameCounter = (int)MathHelper.Lerp(30, 5, (Counter - 60f) / 60f);
+			}
+			else
+				frameCounter = 5;
+		}
 
 		UpdateFrame(0, frameCounter, DeadProfile);
 		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
 
 		if (Counter == 0)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillStart") with { Volume = 0.2f});
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillStart") with { Volume = 0.2f });
 
 			NPC.hide = true;
 
 			ExtraMemory = 0;
-			NPC.velocity = Vector2.UnitY * -2f + NPC.DirectionTo(Target.Center) * -4f;
+			NPC.velocity = Vector2.UnitY * -0.5f + NPC.DirectionTo(Target.Center) * -1f;
 
 			if (CurrentState != AIState.IdleTowardsPlayer && Math.Abs(NPC.velocity.Y) < 5)
-				NPC.velocity.Y -= 4f;
+				NPC.velocity.Y -= 3f;
 
 			NPC.noGravity = true;
 
@@ -534,26 +563,26 @@ public partial class Scarabeus : ModNPC
 				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
 				var easeAnimation = new AnimationSequence()
 					.Add(new EaseSegment(40, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-					.Add(new FollowSegment(160, NPC))
-					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+					.Add(new FollowSegment(110, NPC))
+					.Add(new SequenceCameraModifier.ReturnSegment(45, EaseFunction.EaseCubicInOut));
 
 				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
 			}
 		}
 
-		if (Counter % 20 == 0)
+		if (Counter % 50 == 0)
 		{
 			if (!Main.dedServ)
 			{
 				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
 
-				Vector2 velocity = Main.rand.NextVector2CircularEdge(5f, 5f);
+				Vector2 velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
 
-				for (int i = 0; i < 7; i++)
+				for (int i = 0; i < 12; i++)
 				{
 					pos += Main.rand.NextVector2Circular(5f, 5f);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.1f, EaseFunction.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.35f, Color.Yellow * 0.1f, Main.rand.NextFloat(0.05f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 70), false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
@@ -561,53 +590,122 @@ public partial class Scarabeus : ModNPC
 						PixelDivisor = 3,
 					});
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), Color.DarkOrange, Color.Yellow * 0.3f, 0.13f, EaseFunction.EaseCircularIn, 50, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.35f, Color.Yellow * 0.1f, Main.rand.NextFloat(0.1f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 70), false)
 					{
 						Pixellate = true,
 						DissolveAmount = 1,
 						Intensity = 0.9f,
 						PixelDivisor = 3,
 					});
+
+					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 0, default, 1f);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.3f);
 
 					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.6f).noGravity = true;
 				}
 
-				if (Main.rand.NextBool(3))
-				{
-					var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), pos, velocity, ModContent.GoreType<ScarabeusGuts>());
-					gore.position -= new Vector2(gore.Width, gore.Height) / 2;
-				}			
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), pos, velocity, ModContent.GoreType<ScarabeusGuts>());
+				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
 			}
 
 			SoundEngine.PlaySound(NPC.HitSound, NPC.Center);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.5f, Pitch = -0.2f }, NPC.Center);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 5, 3, 25));
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25));
+			_shakeTimer = 40;
+		}
+
+		if (Counter % 20 == 0)
+		{
+			bool strongBurst = Main.rand.NextBool(4);
+
+			if (!Main.dedServ)
+			{
+				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+
+				Vector2 velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
+
+				for (int i = 0; i < 7 + (strongBurst ? 10 : 0); i++)
+				{
+					pos += Main.rand.NextVector2Circular(5f, 5f);
+
+					if (strongBurst)
+					{
+						ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1.2f) * Main.rand.NextFloat(2.5f), Color.DarkOrange * 0.5f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 70), false)
+						{
+							Pixellate = true,
+							DissolveAmount = 1,
+							Intensity = 0.9f,
+							PixelDivisor = 3,
+						});
+
+						ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(2.5f), Color.DarkOrange * 0.5f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.15f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 70), false)
+						{
+							Pixellate = true,
+							DissolveAmount = 1,
+							Intensity = 0.9f,
+							PixelDivisor = 3,
+						});
+					}					
+					
+					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 0, default, 1f);
+
+					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.3f);
+
+					Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.6f).noGravity = true;
+				}
+
+				if (strongBurst)
+				{
+					var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), pos, velocity, ModContent.GoreType<ScarabeusGuts>());
+					gore.position -= new Vector2(gore.Width, gore.Height) / 2;
+				}
+			}
+
+			SoundEngine.PlaySound(NPC.HitSound, NPC.Center);
+			if (strongBurst)
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.5f, Pitch = -0.2f }, NPC.Center);
+
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25));
 			_shakeTimer = 20;
+			if (strongBurst)
+				_shakeTimer = 40;
 
-			NPC.velocity.Y += 0.2f;
+			NPC.velocity.Y += 0.15f;
 			NPC.position.Y += 16;
 		}
 
 		if (!OnTopOfTiles && ExtraMemory <= 0)
 		{
-			NPC.velocity.Y += 0.05f;
+			NPC.velocity.Y += 0.04f;
 
-			if (NPC.velocity.Y > 4 && NPC.velocity.Y < 16)
+			if (NPC.velocity.Y > 0 && NPC.velocity.Y < 16)
 				NPC.velocity.Y *= 1.1f;
 
 			if (NPC.velocity.Y > 16)
 				NPC.velocity.Y = 16f;
 
 			if (Counter < 150)
-				NPC.velocity.X += 0.3f * (float)Math.Cos(Counter / 20f);
+				NPC.velocity.X += 0.25f * (float)Math.Cos(Counter / 20f);
 
-			NPC.velocity.X *= MathHelper.Lerp(0.99f, 0.975f, Math.Min(Counter / 150f, 1f));
+			NPC.velocity.X *= MathHelper.Lerp(0.99f, 0.98f, Math.Min(Counter / 150f, 1f));
 
 			NPC.direction = Math.Sign(NPC.velocity.X);
 
-			NPC.rotation = NPC.velocity.X * (NPC.velocity.Y / 16f) * 0.3f;
+			if (Counter > 100f)
+			{
+				if (Counter < 200f)
+				{
+					NPC.rotation += 0.1f * ((Counter - 100f) / 100f) * NPC.direction;
+				}
+				else
+					NPC.rotation += 0.1f * NPC.direction;
+			}
+			else
+			{			
+				NPC.rotation = NPC.velocity.X * 0.12f * (1f - Counter / 100f);
+			}		
 		}
 		else if (NPC.velocity.Y > 0)
 		{
@@ -633,7 +731,7 @@ public partial class Scarabeus : ModNPC
 
 			SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
-			
+
 			//SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillEnd") with { Volume = 0.35f });
 
 			NPC.life = 0;
@@ -641,6 +739,89 @@ public partial class Scarabeus : ModNPC
 			NPC.HitEffect();
 			NPC.active = false;
 		}
+
+		/*int frameCounter = (int)MathHelper.Lerp(25, 0, Math.Min(Counter / 60f, 1f));
+
+		if (OnTopOfTiles)
+			frameCounter = 0;
+
+		UpdateFrame(0, frameCounter, DeadProfile);
+		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
+
+		if (Counter == 0)
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillStart") with { Volume = 0.2f});
+
+			NPC.hide = true;
+
+			ExtraMemory = 0;
+
+			deathDirection = NPC.DirectionTo(Target.Center);
+
+			NPC.velocity += Vector2.UnitY * -2f + deathDirection * -9f;
+
+			NPC.noGravity = true;
+
+			if (!Main.dedServ)
+			{
+				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
+				var easeAnimation = new AnimationSequence()
+					.Add(new EaseSegment(40, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+					.Add(new FollowSegment(240, NPC))
+					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+			}
+		}
+
+		if (!OnTopOfTiles && ExtraMemory <= 0)
+		{
+			if (Counter < 60)
+			{
+				float progress = 1f - Counter / 60f;
+
+				NPC.velocity.X *= 0.99f;
+				NPC.velocity.Y -= 0.05f * progress;
+
+				if (Counter % 15 == 0)
+				{
+					NPC.velocity.Y -= 0.15f;
+					NPC.rotation -= 0.1f * NPC.direction;
+				}
+
+				NPC.velocity.Y *= 0.95f;
+				
+				NPC.rotation -= 0.01f * NPC.direction;
+
+				NPC.direction = -Math.Sign(NPC.velocity.X);
+			}
+			else
+			{
+				NPC.velocity.X *= 0.99f;
+				NPC.rotation -= 0.01f * -Math.Sign(NPC.velocity.X);
+
+				if (NPC.velocity.Y < 16f)
+				{
+					NPC.velocity.Y += 0.35f;
+					if (NPC.velocity.Y > 0)
+						NPC.velocity.Y *= 1.1f;
+				}
+				else
+					NPC.velocity.Y = 16f;
+
+				NPC.direction = -Math.Sign(NPC.velocity.X);
+			}			
+		}
+		else
+		{
+			ExtraMemory = 1;
+			NPC.velocity *= 0f;
+
+			NPC.life = 0;
+			NPC.checkDead();
+			NPC.HitEffect();
+			NPC.active = false;
+		}*/
 
 		return 1f;
 	}
