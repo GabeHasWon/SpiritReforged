@@ -26,7 +26,7 @@ public class ScarabeusGuts : ModGore
 
 			gore.position.Y = gore.position.ToTileCoordinates().ToWorldCoordinates().Y;
 
-			gore.drawOffset.Y = -12;
+			gore.drawOffset.Y = 0;
 			gore.Frame = new(2, 3, 1, gore.Frame.CurrentRow);
 			gore.velocity = Vector2.Zero;
 			gore.rotation = 0;
