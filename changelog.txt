@@ -1,2 +1,2 @@
-v0.1.2.8
-- Fixed error on server load/unload
+v0.2.0.1
+- Fixed a bunch of minor localization mistakes

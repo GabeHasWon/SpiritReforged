@@ -65,14 +65,14 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 	}
 
 	/// <summary> Finds a <see cref="ChainObject"/> to be associated with this tile. </summary>
-	public virtual ChainObject Find(Point16 coords, byte segments) => new(coords, segments);
+	public virtual ChainObject CreateObject(Point16 coords, byte segments) => new(coords, segments);
 
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
 		Point16 coords = new(i, j);
 		byte count = GetSegmentCount();
 
-		ChainObjectSystem.AddObject(Find(coords, count));
+		ChainObjectSystem.AddObject(CreateObject(coords, count));
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			new ChainObjectSystem.PlacementData(coords, count, Type).Send();

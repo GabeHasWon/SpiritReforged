@@ -94,23 +94,23 @@ OceanSlime: {
 }
 
 DiverZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Who knew those oxygen tanks needed to have actual oxygen in them?
-	DisplayName: Zombie
 }
 
 KelpZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Fish fear me, women fear me, men fear me, children fear me, for I am the undead.
-	DisplayName: Zombie
 }
 
 SailorZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Despite their current status, they used to run this really nice luxury cruiser you should check out sometime.
-	DisplayName: Zombie
 }
 
 TridentZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Their trident clearly didn't do them much good in life. It's still quite pointy, so watch out.
-	DisplayName: Zombie
 }
 
 Killifish: {
@@ -129,7 +129,7 @@ Termite: {
 }
 
 SavannaSandSlime: {
-	DisplayName: Sand Slime
+	DisplayName: "{$NPCName.SandSlime}"
 	Entry: Slightly more leafy, a little less sandy, all the same danger.
 }
 
@@ -471,7 +471,7 @@ ArgonMossSlime.DisplayName: Argon Moss Slime
 HeliumMossSlime.DisplayName: Helium Moss Slime
 OganessonMossSlime.DisplayName: Oganesson Moss Slime
 RadonMossSlime.DisplayName: Radon Moss Slime
-Tumbleweed.DisplayName: Tumbleweed
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
 	DisplayName: Flamingo
@@ -548,7 +548,8 @@ LootBag.DisplayName: Loot Bag
 
 Scarabeus: {
 	DisplayName: Scarabeus
-	Entry: ""
+	Title: Crested Idol
+	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
 }
 
 TinyGrub.DisplayName: Tiny Grub

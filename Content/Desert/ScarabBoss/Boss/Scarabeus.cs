@@ -71,7 +71,7 @@ public partial class Scarabeus : ModNPC
 	public static int STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE = 30;
 	public static int STAT_SLAM_SHOCKWAVE_DAMAGE = 38;
 	public static int STAT_DIG_EMERGE_DEBRIS_DAMAGE = 20;
-	public static int STAT_ANTLION_SWARMER_DAMAGE = 20;
+	public static int STAT_ANTLION_SWARMER_DAMAGE = 23;
 	public static int STAT_ANTLION_ONFIRE_DURATION = 120;
 	public static float STAT_PROJECTILE_DAMAGE_EXPERT_MULTIPLIER = 1.7f;
 	public static float STAT_PROJECTILE_DAMAGE_MASTER_MULTIPLIER = 2.5f;

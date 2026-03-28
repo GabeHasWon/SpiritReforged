@@ -37,17 +37,17 @@ Caveman: {
 Disentombed: {
 	DisplayName: 掘出坟墓者
 	Flavor: 三千年已逝……我的统治将重现。我将归来。
-	Description: 以木乃伊时装在庙塔生成。
+	Description: 以木乃伊时装在庙塔开始游戏。
 }
 
 Worshipper: {
 	DisplayName: 崇拜者
 	Flavor: 虽被诅咒终生向太阳祈祷却永不得见，却依然心怀希望。
-	Description: 以太阳舞者盔甲套装和风切变权杖在地下绿洲生成。
+	Description: 以太阳舞者盔甲套装和风切变权杖在地下绿洲开始游戏。
 }
 
 Purifier: {
 	DisplayName: 净化者
 	Flavor: 邪恶退散；在我纯净的锋芒下化为灰烬。
-	Description: 以长棍法杖和摩诃迦罗面具在盐滩生成（如果可行）。
+	Description: 以长棍法杖和摩诃迦罗面具在盐滩开始游戏（如果可行）。
 }

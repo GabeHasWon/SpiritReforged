@@ -21,12 +21,13 @@ public class ScarabeusGuts : ModGore
 
 		if (CollisionChecks.Tiles(new((int)gore.position.X, (int)gore.position.Y, 16, 16), CollisionChecks.SolidOrPlatform))
 		{
-			if (gore.drawOffset.Y == 0) //One-time effects
-				SoundEngine.PlaySound(SoundID.NPCHit18 with { PitchVariance = 0.2f, Volume = 0.5f }, gore.position);
+			//Unused sound code for later?
+			//if (gore.drawOffset.Y == 0) //One-time effects
+				//SoundEngine.PlaySound(SoundID.NPCHit18 with { PitchVariance = 0.2f, Volume = 0.5f }, gore.position);
 
 			gore.position.Y = gore.position.ToTileCoordinates().ToWorldCoordinates().Y;
 
-			gore.drawOffset.Y = -12;
+			gore.drawOffset.Y = 0;
 			gore.Frame = new(2, 3, 1, gore.Frame.CurrentRow);
 			gore.velocity = Vector2.Zero;
 			gore.rotation = 0;

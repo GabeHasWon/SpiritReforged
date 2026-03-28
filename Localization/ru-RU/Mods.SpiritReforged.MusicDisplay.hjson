@@ -2,69 +2,70 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+By: от
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Drifting Prairie (тема пыльной бури)
+	DisplayName: Пыльная буря: Drifting Prairie
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
-	DisplayName: Саванна
+	DisplayName: Саванна: Savanna
 	Author: "{$BySalvati} и {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Ночь в саванне
+	DisplayName: Ночная саванна: Savanna Night
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: Глубокий океан
+	DisplayName: Океанические глубины: Deep Ocean
 	Author: "{$BySalvati}"
 }
 
 SavannaOtherworld: {
-	DisplayName: День в саванне — Потусторонняя
+	DisplayName: Иная саванна: Otherworldly Savanna Day
 	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	DisplayName: Ночь в саванне — Потусторонняя
+	DisplayName: Иная ночная саванна: Otherworldly Savanna Night
 	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	DisplayName: Пыльная буря — Потусторонняя
+	DisplayName: Иная пыльная буря: Otherworldly Dustorm
 	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {
-	// DisplayName: Ziggurat
-	// Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: Зиккурат: Ziggurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	// DisplayName: Salt Flats
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Солончаковые равнины: Salt Flats
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Ночные солончаковые равнины: Salt Flats (Night)
+	Author: "{$By} {$Sbubby}"
 }
 
 Scarabeus: {
-	// DisplayName: Soaring Complications (Scarabeus Theme)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Скарабеус: Soaring Complications
+	Author: "{$By} {$Sbubby}"
 }
 
 ScarabeusP2: {
-	// DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Скарабеус, 2 фаза: Soaring Complications
+	Author: "{$By} {$Sbubby}"
 }
 
 RadioScarab: {
-	// DisplayName: Soaring Complications (Radio Edit)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Радио: Soaring Complications
+	Author: "{$By} {$Sbubby}"
 }

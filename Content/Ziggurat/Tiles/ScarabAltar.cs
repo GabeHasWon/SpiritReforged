@@ -372,7 +372,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(124, 24, 28), CreateMapEntryName());
+		AddMapEntry(new Color(124, 24, 28), Language.GetText("Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName"));
 		DustType = -1;
 		MinPick = 55;
 		

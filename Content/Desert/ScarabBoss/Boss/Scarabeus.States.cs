@@ -261,8 +261,8 @@ public partial class Scarabeus : ModNPC
 			return;
 
 		CrossMod.Fables.Instance.Call("vfx.displaybossintrocard", 
-			"Scarabeus", 
-			"Crested Idol", 
+			Language.GetTextValue("Mods.SpiritReforged.NPCs.Scarabeus.DisplayName"),
+			Language.GetTextValue("Mods.SpiritReforged.NPCs.Scarabeus.Title"), 
 			cardDuration, 
 			NPC.Center.X < Main.LocalPlayer.Center.X,
 			
@@ -272,7 +272,8 @@ public partial class Scarabeus : ModNPC
 			new Color(106, 81, 246),    //Boss name chroma abberation color 2
 
 			"Soaring Complications",
-			"Sbubby");
+			"Sbubby"
+		);
 	}
 
 	public void FablesToggleUI(bool uiEnabled)
@@ -517,6 +518,7 @@ public partial class Scarabeus : ModNPC
 
 			if (Counter >= 20)
 			{
+				LastAttack = AIState.Swarm;
 				ChangeState(AIState.Swarm);
 				return 0f;
 			}
@@ -531,6 +533,8 @@ public partial class Scarabeus : ModNPC
 	internal Vector2 deathDirection;
 	public float DeathAnimation(ref bool retarget)
 	{
+		Main.musicFade[Main.curMusic] = 0f;
+
 		int frameCounter = 30;
 
 		if (Counter > 60f)
@@ -705,13 +709,13 @@ public partial class Scarabeus : ModNPC
 					NPC.rotation += 0.1f * NPC.direction;
 			}
 			else
-			{			
+			{
 				NPC.rotation = NPC.velocity.X * 0.12f * (1f - Counter / 100f);
-			}		
+			}
 		}
 		else if (NPC.velocity.Y > 0)
 		{
-			NPC.velocity *= 0.15f;
+			NPC.velocity *= 0.2f;
 
 			if (!Main.dedServ)
 			{
@@ -741,89 +745,6 @@ public partial class Scarabeus : ModNPC
 			NPC.HitEffect();
 			NPC.active = false;
 		}
-
-		/*int frameCounter = (int)MathHelper.Lerp(25, 0, Math.Min(Counter / 60f, 1f));
-
-		if (OnTopOfTiles)
-			frameCounter = 0;
-
-		UpdateFrame(0, frameCounter, DeadProfile);
-		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
-
-		if (Counter == 0)
-		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillStart") with { Volume = 0.2f});
-
-			NPC.hide = true;
-
-			ExtraMemory = 0;
-
-			deathDirection = NPC.DirectionTo(Target.Center);
-
-			NPC.velocity += Vector2.UnitY * -2f + deathDirection * -9f;
-
-			NPC.noGravity = true;
-
-			if (!Main.dedServ)
-			{
-				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
-				var easeAnimation = new AnimationSequence()
-					.Add(new EaseSegment(40, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-					.Add(new FollowSegment(240, NPC))
-					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
-
-				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-			}
-		}
-
-		if (!OnTopOfTiles && ExtraMemory <= 0)
-		{
-			if (Counter < 60)
-			{
-				float progress = 1f - Counter / 60f;
-
-				NPC.velocity.X *= 0.99f;
-				NPC.velocity.Y -= 0.05f * progress;
-
-				if (Counter % 15 == 0)
-				{
-					NPC.velocity.Y -= 0.15f;
-					NPC.rotation -= 0.1f * NPC.direction;
-				}
-
-				NPC.velocity.Y *= 0.95f;
-				
-				NPC.rotation -= 0.01f * NPC.direction;
-
-				NPC.direction = -Math.Sign(NPC.velocity.X);
-			}
-			else
-			{
-				NPC.velocity.X *= 0.99f;
-				NPC.rotation -= 0.01f * -Math.Sign(NPC.velocity.X);
-
-				if (NPC.velocity.Y < 16f)
-				{
-					NPC.velocity.Y += 0.35f;
-					if (NPC.velocity.Y > 0)
-						NPC.velocity.Y *= 1.1f;
-				}
-				else
-					NPC.velocity.Y = 16f;
-
-				NPC.direction = -Math.Sign(NPC.velocity.X);
-			}			
-		}
-		else
-		{
-			ExtraMemory = 1;
-			NPC.velocity *= 0f;
-
-			NPC.life = 0;
-			NPC.checkDead();
-			NPC.HitEffect();
-			NPC.active = false;
-		}*/
 
 		return 1f;
 	}

@@ -94,7 +94,7 @@ public class BedouinCowl : ModItem
 	{
 		Item.width = 22;
 		Item.height = 22;
-		Item.value = 7500;
+		Item.value = Item.sellPrice(silver: 50);
 		Item.rare = ItemRarityID.Green;
 		Item.defense = 3;
 	}

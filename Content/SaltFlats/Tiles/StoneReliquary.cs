@@ -7,6 +7,8 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public sealed class StoneReliquary : ChestTile, ICustomContainer
 {
+	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
+
 	public override void StaticDefaults()
 	{
 		base.StaticDefaults();
@@ -28,10 +30,10 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer
 		TileID.Sets.AvoidedByNPCs[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 
-		AddMapEntry(new Color(99, 99, 99), this.GetLocalization("MapEntry"));
+		AddMapEntry(new Color(99, 99, 99), Language.GetText("Mods.SpiritReforged.Items.StoneReliquaryItem.DisplayName"));
 	}
 
-	//public override LocalizedText DefaultContainerName(int frameX, int frameY) => this.GetLocalization("MapEntry");
+	//public override LocalizedText DefaultContainerName(int frameX, int frameY) => Language.GetText("Mods.SpiritReforged.Items.StoneReliquaryItem.DisplayName");
 
 	public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 	{

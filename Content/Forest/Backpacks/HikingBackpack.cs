@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Forest.Backpacks;
 internal class HikingBackpack : BackpackItem
 {
 	protected override int SlotCap => 4;
-
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<Minipack>();
 	public override void Defaults()
 	{
 		Item.Size = new Vector2(34, 28);

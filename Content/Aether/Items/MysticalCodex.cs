@@ -6,7 +6,7 @@ public class MysticalCodex : ModItem
 {
 	public override void SetDefaults()
 	{
-		Item.CloneDefaults(ItemID.Radar);
+		Item.CloneDefaults(ItemID.GPS);
 		Item.Size = new(30, 32);
 	}
 

@@ -17,7 +17,7 @@ public class SunStaff : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 20;
+		Item.damage = 23;
 		Item.width = Item.height = 46;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 1f;

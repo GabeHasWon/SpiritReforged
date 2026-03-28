@@ -32,7 +32,7 @@ public partial class Scarabeus : ModNPC
 	{
 		//return AIState.Swarm;
 
-		if (!Main.dayTime)
+		if (!Main.dayTime || Target.dead)
 			return AIState.Despawn;
 
 		WeightedRandom<AIState> state = new();
