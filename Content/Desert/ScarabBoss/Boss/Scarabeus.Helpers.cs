@@ -32,6 +32,9 @@ public partial class Scarabeus : ModNPC
 	{
 		//return AIState.Swarm;
 
+		if (!Main.dayTime)
+			return AIState.Despawn;
+
 		WeightedRandom<AIState> state = new();
 
 		float distanceToTargetX = Math.Abs(Target.Center.X - NPC.Center.X);
