@@ -706,133 +706,42 @@ public partial class Scarabeus : ModNPC
 					NPC.rotation += 0.1f * NPC.direction;
 			}
 			else
-			{			
+			{
 				NPC.rotation = NPC.velocity.X * 0.12f * (1f - Counter / 100f);
-			}		
+			}
 		}
 		else if (NPC.velocity.Y > 0)
 		{
-			if (ExtraMemory == 0)
-			{
-				ExtraMemory = 1;
-				Counter = 0;
-
-				NPC.velocity *= 0.1f;
-
-				if (!Main.dedServ)
-				{
-					for (int i = 0; i < 55; i++)
-					{
-						Vector2 pos = NPC.BottomRight;
-						if (NPC.direction == -1)
-							pos = NPC.BottomLeft;
-
-						pos.X += Main.rand.NextFloat(-60, 60);
-
-						KickupDust(pos, -NPC.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1.5f), ParticleLayer.AboveSolid);
-
-						KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), ParticleLayer.BelowSolid);
-					}
-
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 3, 20));
-				}
-
-				SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
-				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
-			}
-
-			//SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillEnd") with { Volume = 0.35f });
-			if (Counter > 5)
-			{
-				NPC.life = 0;
-				NPC.checkDead();
-				NPC.HitEffect();
-				NPC.active = false;
-			}		
-		}
-
-		/*int frameCounter = (int)MathHelper.Lerp(25, 0, Math.Min(Counter / 60f, 1f));
-
-		if (OnTopOfTiles)
-			frameCounter = 0;
-
-		UpdateFrame(0, frameCounter, DeadProfile);
-		wingFrameCounter += 25f / 60f * (frameCounter / 30f);
-
-		if (Counter == 0)
-		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillStart") with { Volume = 0.2f});
-
-			NPC.hide = true;
-
-			ExtraMemory = 0;
-
-			deathDirection = NPC.DirectionTo(Target.Center);
-
-			NPC.velocity += Vector2.UnitY * -2f + deathDirection * -9f;
-
-			NPC.noGravity = true;
+			NPC.velocity *= 0.2f;
 
 			if (!Main.dedServ)
 			{
-				Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
-				var easeAnimation = new AnimationSequence()
-					.Add(new EaseSegment(40, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-					.Add(new FollowSegment(240, NPC))
-					.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
-
-				Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
-			}
-		}
-
-		if (!OnTopOfTiles && ExtraMemory <= 0)
-		{
-			if (Counter < 60)
-			{
-				float progress = 1f - Counter / 60f;
-
-				NPC.velocity.X *= 0.99f;
-				NPC.velocity.Y -= 0.05f * progress;
-
-				if (Counter % 15 == 0)
+				for (int i = 0; i < 55; i++)
 				{
-					NPC.velocity.Y -= 0.15f;
-					NPC.rotation -= 0.1f * NPC.direction;
+					Vector2 pos = NPC.BottomRight;
+					if (NPC.direction == -1)
+						pos = NPC.BottomLeft;
+
+					pos.X += Main.rand.NextFloat(-60, 60);
+
+					KickupDust(pos, -NPC.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1.5f), ParticleLayer.AboveSolid);
+
+					KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), ParticleLayer.BelowSolid);
 				}
 
-				NPC.velocity.Y *= 0.95f;
-				
-				NPC.rotation -= 0.01f * NPC.direction;
-
-				NPC.direction = -Math.Sign(NPC.velocity.X);
+				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 3, 20));
 			}
-			else
-			{
-				NPC.velocity.X *= 0.99f;
-				NPC.rotation -= 0.01f * -Math.Sign(NPC.velocity.X);
 
-				if (NPC.velocity.Y < 16f)
-				{
-					NPC.velocity.Y += 0.35f;
-					if (NPC.velocity.Y > 0)
-						NPC.velocity.Y *= 1.1f;
-				}
-				else
-					NPC.velocity.Y = 16f;
+			SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
 
-				NPC.direction = -Math.Sign(NPC.velocity.X);
-			}			
-		}
-		else
-		{
-			ExtraMemory = 1;
-			NPC.velocity *= 0f;
+			//SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillEnd") with { Volume = 0.35f });
 
 			NPC.life = 0;
 			NPC.checkDead();
 			NPC.HitEffect();
 			NPC.active = false;
-		}*/
+		}
 
 		return 1f;
 	}

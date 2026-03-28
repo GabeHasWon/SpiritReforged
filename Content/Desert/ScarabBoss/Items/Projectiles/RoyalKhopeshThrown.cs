@@ -199,7 +199,13 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f * progress;
 			float scale = Main.rand.NextFloat(0.05f, 0.1f) * progress;
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.5f);
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				Intensity = 0.9f,
+				PixelDivisor = 3,
+			});
 		}
 
 		if (Dying)
@@ -223,7 +229,13 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.1f) * 0.5f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleHandler.SpawnParticle(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				Intensity = 0.9f,
+				PixelDivisor = 3,
+			});
 		}
 		else
 		{
