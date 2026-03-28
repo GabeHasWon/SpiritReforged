@@ -141,7 +141,7 @@ public partial class Scarabeus : ModNPC
 		get
 		{
 			AIState currentState = CurrentState;
-			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast;
+			return currentState is AIState.IdleTowardsPlayer or AIState.IdleAwayFromPlayer or AIState.IdleBackAwayFast or AIState.DuoFightIdleStandStill;
 		}
 	}
 
@@ -193,6 +193,8 @@ public partial class Scarabeus : ModNPC
 		DuoFightSpawnAnim,
 		DuoFightSpawnAnimFallback,
 		DuoFightSwoopPincer,
+		DuoFightIdleStandStill,
+		DuoFightGrabbedByScourge,
 
 		MaxValue
 	}
@@ -234,6 +236,8 @@ public partial class Scarabeus : ModNPC
 		//Duo fight
 		_stateAI[(int)AIState.DuoFightSpawnAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnAnimation(ref retarget);
 		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnFallback(ref retarget);
+		_stateAI[(int)AIState.DuoFightIdleStandStill] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightStandStillIdle(ref retarget);
+		_stateAI[(int)AIState.DuoFightGrabbedByScourge] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightGrabbedByScourge(ref retarget);
 
 		Main.npcFrameCount[Type] = 17; //The highest frame count
 		NPCID.Sets.TrailCacheLength[Type] = 8;
