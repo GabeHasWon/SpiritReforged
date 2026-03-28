@@ -3,9 +3,12 @@
   <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
     <AssemblyName>SpiritReforged</AssemblyName>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Content\Particles\SharpStarParticle.png" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="NPCUtils">
       <HintPath>lib\NPCUtils.dll</HintPath>

@@ -91,7 +91,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 	public float Physics(Point16 coords)
 	{
 		var data = TileObjectData.GetTileData(Framing.GetTileSafely(coords));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(coords.X, coords.Y, TileSwaySystem.Instance.GrassWindCounter);
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(coords.X, coords.Y, TileSwaySystem.GrassWindCounter);
 
 		if (!WorldGen.InAPlaceWithWind(coords.X, coords.Y, data.Width, data.Height))
 			rotation = 0f;

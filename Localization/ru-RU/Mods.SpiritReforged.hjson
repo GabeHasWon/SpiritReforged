@@ -3,30 +3,43 @@ Biomes: {
 		DisplayName: Саванна
 		TownNPCDialogueName: Саванна
 	}
+
+	SaltBiome: {
+		DisplayName: Солончаковые равнины
+		TownNPCDialogueName: Солончаковые равнины
+	}
+
+	ZigguratBiome: {
+		DisplayName: Зиккурат
+		TownNPCDialogueName: Зиккурат
+	}
 }
 
 SlotContexts.Backpack: Рюкзак
 
 Conditions: {
 	InSavanna: В саванне
-	PeevedTumbler: Когда блестит
-	Discovered: Когда обнаружен
-	Submerged: Полностью погружённый в воду
+	PeevedTumbler: С блестящего перекати-поля
+	Discovered: Был найден в мире
+	Submerged: Если полностью погружён в воду
+	InSaltFlats: В солончаковых равнинах
+	IsPrickly: C кактусениц с розовым цветком
+	InZiggurat: В Зиккурате
 }
 
 Misc: {
 	Pins: {
 		Move: Переместить булавку
-		Obtained: Эта булавка уже у вас
-		UseItem: Нажмите ПКМ, чтобы добавить эту булавку в коллекцию
+		Obtained: Такая булавка уже есть в вашей коллекции
+		UseItem: Нажмите ПКМ по булавке, чтобы добавить её в коллекцию
 	}
 
 	NoStock: Нет в наличии
 	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
 	MenuButton: Использовать тему меню
-	UnchangedMap: Карта не изменена.
-	ShareMap: Карта отправлена.
-	ShareAndUpdateMap: Карта отправлена и обновлена.
+	UnchangedMap: Карта осталась без изменений.
+	ShareMap: Информация с карты была передана.
+	ShareAndUpdateMap: Карта была обновлена и передана.
 }
 
 DamageSources: {
@@ -38,18 +51,30 @@ DamageSources: {
 
 GameTips: {
 	ReforgedTip0: Всегда носите с собой еду — никогда не знаешь, когда она пригодится!
-	ReforgedTip1: Изредка в подземных рощах можно встретить бабочек.
-	ReforgedTip2: Булавки очень полезны! Проверьте свой инвентарь булавок в левом нижнем углу карты.
+	ReforgedTip1: Некоторые бабочки прячутся в подземных рощах.
+	ReforgedTip2: Булавки очень полезны! Проверьте свои булавки в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
 	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей.
-	ReforgedTip5: В чернильной пустоте океана сокрыто множество сокровищ.
-	ReforgedTip6: Звёздная трава дарит приятное облегчение в ночной темноте.
-	ReforgedTip7: Облачник всегда растёт под облаками.
-	ReforgedTip8: На верхушки акаций можно встать, если вам нужно забраться повыше.
-	ReforgedTip9: Время от времени на поверхность океана всплывают случайные предметы — проверяйте почаще!
+	ReforgedTip5: В тёмных глубинах океана сокрыто множество сокровищ.
+	ReforgedTip6: Под покровом ночи свечение звёздной травы дарит приятное облегчение.
+	ReforgedTip7: Облачник всегда рядом с облаками.
+	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вам нужно забраться повыше.
+	ReforgedTip9: Иногда на поверхность океана всплывают случайные предметы — проверяйте его почаще!
 }
 
 Emotes: {
 	CartographerEmote.Command: cartographer
-	HikerEmote.Command: hikeremote
+	HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Стоимость предметов
+		Description: Видимость стоимости: ВКЛ
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Трасмутации в мерцании
+		Description: Видимость трансмутаций: ВКЛ
+	}
 }

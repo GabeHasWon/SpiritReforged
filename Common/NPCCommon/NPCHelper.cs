@@ -1,4 +1,7 @@
-﻿namespace SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.Multiplayer;
+using System.IO;
+
+namespace SpiritReforged.Common.NPCCommon;
 
 public static class NPCHelper
 {
@@ -20,6 +23,24 @@ public static class NPCHelper
 
 	public static Color DrawColor(this NPC npc, Color drawColor) => npc.GetAlpha(npc.GetNPCColorTintedByBuffs(drawColor));
 
+	public static void Step(this NPC npc)
+	{
+		bool below = npc.HasPlayerTarget && Main.player[npc.target].Center.Y - 32 > npc.position.Y;
+		npc.GetTileCollisionParameters(out Vector2 cPosition, out int cWidth, out int cHeight);
+
+		Vector2 collisionOffset = npc.position - cPosition;
+		npc.position += collisionOffset;
+
+		if (below && npc.velocity.Y == 0)
+			Collision.StepDown(ref npc.position, ref npc.velocity, cWidth, cHeight, ref npc.stepSpeed, ref npc.gfxOffY);
+
+		if (npc.velocity.Y >= 0)
+			Collision.StepUp(ref npc.position, ref npc.velocity, cWidth, cHeight, ref npc.stepSpeed, ref npc.gfxOffY, 1, !below, 1);
+
+		npc.position -= collisionOffset;
+	}
+
+	#region buff immunity
 	public static void BuffImmune(int type, bool whipsToo = false)
 	{
 		if (whipsToo)
@@ -43,4 +64,45 @@ public static class NPCHelper
 
 	public static void ImmuneTo<T1, T2, T3>(ModNPC npc, params int[] buffs) where T1 : ModBuff where T2 : ModBuff where T3 : ModBuff
 		=> ImmuneTo(npc, [.. new List<int>(buffs) { ModContent.BuffType<T1>(), ModContent.BuffType<T2>(), ModContent.BuffType<T3>() }]);
+	#endregion
+
+	#region buff handling
+	/// <summary> Safely removes <paramref name="buffType"/> from this NPC with considerations for multiplayer clients. </summary>
+	public static void RemoveBuff(this NPC npc, int buffType)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			new RequestBuffRemovalData((short)npc.whoAmI, buffType).Send();
+		else
+			npc.DelBuff(npc.FindBuffIndex(buffType));
+	}
+
+	/// <summary> Requests buff removal by the server from a client. </summary>
+	internal class RequestBuffRemovalData : PacketData
+	{
+		private readonly short _npcIndex;
+		private readonly int _buffType;
+
+		public RequestBuffRemovalData() { }
+		public RequestBuffRemovalData(short npcIndex, int buffType)
+		{
+			_npcIndex = npcIndex;
+			_buffType = buffType;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			short npcIndex = reader.ReadInt16();
+			int buffType = reader.ReadInt32();
+
+			if (npcIndex > 0 && npcIndex < Main.maxNPCs)
+				Main.npc[npcIndex].DelBuff(Main.npc[npcIndex].FindBuffIndex(buffType));
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_npcIndex);
+			modPacket.Write(_buffType);
+		}
+	}
+	#endregion
 }

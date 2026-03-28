@@ -6,14 +6,11 @@ VanillaDialogue: {
 		Kelp: 别吃海藻。
 	}
 
-	ArmsDealer: {
-		Savanna1: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
-		Placeholder: placeholder
-	}
+	ArmsDealer.Savanna: 这地界可有不少大家伙。就连你这样的菜鸟也能打中。
 
 	Stylist: {
-		Savanna1: 在这种气候里保持发型简直要命。
-		Duststorm1: 要是再让我从别人头发里挑沙子，我就……
+		Savanna: 在这种气候里保持发型简直要命。
+		Duststorm: 要是再让我从别人头发里挑沙子，我就……
 	}
 
 	TravellingMerchant: {
@@ -22,10 +19,7 @@ VanillaDialogue: {
 		Discoveries: 有时候旅途中会碰到稀罕玩意儿。要是你留心观察，说不定也能发现。
 	}
 
-	Demolitionist: {
-		HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
-		Placeholder: placeholder
-	}
+	Demolitionist.HasBoomshroom: 你说啥？会"超级爆炸"的蘑菇？我爱死大自然了！
 
 	Nurse: {
 		Duststorm: 别让外面的沙尘刮伤你！这可不归我管。
@@ -46,6 +40,17 @@ VanillaDialogue: {
 		Savanna1: 天呐——这里简直完美！你快来看看这些可爱的小动物！
 		Savanna2: 什么？！那些鬣狗咬你了？但它们明明那么呆萌！
 	}
+
+	Angler: {
+		Pager0: ……你在尝试什么？你不能通过寻呼机来把鱼给我，蠢蛋！
+		Pager1: 记得亲自把鱼给我。
+	}
+
+	Wizard.SaltFlats: 这周围的石头简直是制作水晶球的绝佳材料！
+	Painter.SaltFlats: 我从未见过比这更美的风景！真想一辈子都在这儿作画。
+	Cyborg.SaltFlats: 这……这地方灼人。
+	Mechanic.SaltFlats: 呃！这些盐都快把我的装备腐蚀坏了。快带我离开这儿！
+	Truffle.SaltFlats: 地方令我这种生物来说非常不舒服。我感觉好干燥……
 }
 
 Crinoid: {
@@ -89,23 +94,23 @@ OceanSlime: {
 }
 
 DiverZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 谁会知道那些氧气罐需要装有真正的氧气？
-	DisplayName: 僵尸
 }
 
 KelpZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 鱼类害怕我，女人害怕我，男人害怕我，小孩害怕我，因为我是亡灵。
-	DisplayName: 僵尸
 }
 
 SailorZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 尽管它们现在的状态可能并不尽如人意，但它们曾经运营过一艘非常不错的豪华游艇，你应该找个时间去看看。
-	DisplayName: 僵尸
 }
 
 TridentZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 他们的三叉戟显然对他们的生活没有多大用处。但它仍然很尖，所以要小心。
-	DisplayName: 僵尸
 }
 
 Killifish: {
@@ -124,7 +129,7 @@ Termite: {
 }
 
 SavannaSandSlime: {
-	DisplayName: 沙史莱姆
+	DisplayName: "{$NPCName.SandSlime}"
 	Entry: 枝叶稍密，沙土略稀，凶险如故。
 }
 
@@ -282,9 +287,21 @@ Cartographer: {
 			}
 
 			BloodAltar: {
-				0: 还有……这里！地表测绘只是皮毛，大多怪东西都在地下，不过我都绕着它们走……什么？我只是个测绘师，又不是冒险家！
+				0: 还有……那里！地表测绘只是皮毛，大多怪东西都在地下，不过我都绕着它们走……什么？我只是个测绘师，又不是冒险家！
 				1: 应该是这儿！你看起来是个靠谱的。我曾遇到个能沟通的亡灵，够奇怪了吧？而且他居然卖给我一只……断手。跟着它指引的方向，我找到个阴森的墓室……或许你能发现点啥，反正我是不回去那儿了。
 				2: 准备好迎接挑战了吗？反正我没有。地牢里有个房间弥漫着血腥味……并且房间正中央摆着古怪的祭坛，是的，我没待多久就溜了。
+			}
+
+			SaltFlat: {
+				0: 忘不了！那儿，在那儿，我第一次看到了天空的镜像。我像往常一样往下看，然后砰！云！一开始我还挺担心的，不过那应该只是薄薄一层水……大概吧。你帮我确认下安全，我就不用亲自去了。
+				1: 就是那儿！你有没有发现自己从雪地里滑下滑坡的情况？比如在到处都是冰的地方？没有？好吧，这么跟你说吧，要是你滑过就知道，根本看不清前头是啥情况——当然我是故意滑的。不过这个地方看着是真不错，等你弄掉了身上的雪，我强烈推荐你也来试试！
+				2: 平时我都是摔个跟头才能有新发现。而这回，我格外小心。在对令人惊讶的潮湿地面感到恐慌后不久，远处的景色便出现在我面前。令人震惊。你只要把地图别在腰上，就能度过一段美好的时光。
+			}
+
+			Ziggurat: {
+				0: 嗯……在那儿。我说过——我是个制图师。我画图。 所以当我看到一堵巨大、威严的红砖墙，上面布满了裂缝和碎砖时，我就能无比准确地判断出这东西该不该碰。我听见里面有嗡嗡声。不用说，它归你了，想拿就拿吧。
+				1: 明白！沙漠很容易让人记住。你知道，那儿没什么特别的，所以看到有烟没理由地从地下冒出来？有意思。你低头一看，发现一个巨大建筑的立面？够难忘的。上吧。我可不想去冒遇到岩浆或者别的什么的风险。
+				2: 就是这儿。偶尔发现点遗迹也是我工作的一部分。别担心，我们定规矩是有原因的。不过，天啊，一脚踩进去差点被地面刺穿了？温馨提示，有时候我跑得还是挺快的。
 			}
 
 			FirstPin: 我已将这个图钉加入了“图钉收藏”，你随时可从地图左下角查看。
@@ -454,3 +471,103 @@ ArgonMossSlime.DisplayName: 氩苔藓史莱姆
 HeliumMossSlime.DisplayName: 氦苔藓史莱姆
 OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
 RadonMossSlime.DisplayName: 氡苔藓史莱姆
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
+
+Flamingo: {
+	DisplayName: 火烈鸟
+	Entry: 它们成群结队地聚在一起，以滤食水中的微生物为生。
+}
+
+DivingBeetle: {
+	DisplayName: 龙虱
+	Entry: 它们将空气困在壳下，用发达的后腿在水里游动。偶尔会有鱼被吸引过来。
+}
+
+GoldDivingBeetle: {
+	DisplayName: 金龙虱
+	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+}
+
+Jerboa: {
+	DisplayName: 跳鼠
+	Entry: 这种活泼好动的小家伙喜欢干旱气候，能在在平坦的沙漠上飞驰，也会在稀树草原的草丛中捕食昆虫。
+}
+
+Grub: {
+	DisplayName: 甲虫幼虫
+	Entry: 甲虫从孵化那一刻起就誓死保卫自己的领地。别看这小家伙现在只能咬到脚踝，长大了可不得了！
+}
+
+DesertStactus: {
+	DisplayName: 刺角株
+	Entry: 实际上，刺角株是很温顺的生物，但满身是刺的性格让它们很难交到朋友。
+}
+
+CorruptStactus: {
+	DisplayName: 腐化刺角株
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	DisplayName: 猩红刺角株
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	DisplayName: 神圣刺角株
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	DisplayName: 卤虫
+	Entry: 虽然俗名叫"海猴子"，但它们既不住在海里，长得也跟猴子没有半点关系。
+}
+
+GoldenBrineShrimp: {
+	DisplayName: 金卤虫
+	Entry: 据说稀有的金卤虫能把最幸运的火烈鸟也染成金色——这事儿是真是假还有待考证。
+}
+
+Wisp: {
+	DisplayName: 游魂
+	Entry: 游荡在荒原上的奇异能量，不招惹它们就相安无事。据说游魂一见到黎明的微光就会消失无踪。
+}
+
+DecrepitMummy: {
+	DisplayName: 腐朽木乃伊
+	Entry: 这些木乃伊被闯入者惊醒，从墓穴中起身守护自己的领地。
+}
+
+Graverobber: {
+	DisplayName: 盗墓者
+	Entry: 他们不幸的是像皮纳塔一样被击中，金子如雨点般落下。这景致简直跟财宝本身一样诱人……
+	HoldingLantern: 当手持灯笼时
+}
+
+LootBag.DisplayName: 战利品袋
+
+Scarabeus: {
+	DisplayName: 圣甲虫
+	Title: 羽冠神像
+	Entry: ""
+}
+
+TinyGrub.DisplayName: 小幼虫
+
+CactusZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 在所有可能的死法中，被仙人掌扎死肯定是最糟糕的死法之一。被仙人掌扎而没有死去想必也很糟糕。
+}
+
+SunburntZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 如今厌恶阳光，这只僵尸只在夜间出没，以免腐烂的皮肤进一步受损。
+}
+
+VeiledZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
+}
+
+Cricket.DisplayName: 蟋蟀
+GoldCricket.DisplayName: 金蟋蟀

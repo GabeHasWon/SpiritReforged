@@ -45,13 +45,13 @@ internal class SwayGlobalTile : GlobalTile
 				float rotation;
 				if (tileOriginY == 0)
 				{
-					float swing = 1f - (1f - (float)(y + 1) / data.Height) + .5f;
-					rotation = physics * swing * -.1f;
+					float swing = 1f - (1f - (float)(y + 1) / data.Height) + 0.5f;
+					rotation = physics * swing * -0.1f;
 				}
 				else
 				{
-					float swing = 1f - (float)(y + 1) / tileOriginY + .5f;
-					rotation = physics * swing * .1f;
+					float swing = 1f - (float)(y + 1) / tileOriginY + 0.5f;
+					rotation = physics * swing * 0.1f;
 				}
 
 				var rotationOffset = new Vector2(0, Math.Abs(rotation) * 20f) * ((tileOriginY == 0) ? -1 : 1);

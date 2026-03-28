@@ -2,7 +2,9 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Underground.Pottery;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
@@ -15,12 +17,17 @@ public class Pots : PotTile, ILootable
 	public const string NameKey = "MapObject.Pot";
 	public const string PotTexture = "Terraria/Images/Tiles_28";
 
+	public enum Style : int
+	{
+		Cavern, Ice, Jungle, Dungeon, Hell, Corruption, Spider, Crimson, Pyramid, Temple, Marble, Desert
+	}
+
 	public override string Texture => PotTexture;
 	public override Dictionary<string, int[]> TileStyles
 	{
 		get
 		{
-			string[] names = ["Cavern", "Ice", "Jungle", "Dungeon", "Hell", "Corruption", "Spider", "Crimson", "Pyramid", "Temple", "Marble", "Desert"];
+			string[] names = Enum.GetNames<Style>();
 			Dictionary<string, int[]> groups = [];
 
 			groups.Add(names[0], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
@@ -38,23 +45,31 @@ public class Pots : PotTile, ILootable
 		}
 	}
 
-	public override void AddRecord(int type, StyleDatabase.StyleGroup group)
+	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SpawnThingsFromPot")]
+	public static extern void SpawnThingsFromPot(WorldGen worldGen, int i, int j, int x2, int y2, int style);
+
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
+		var record = base.AddRecord(type, group);
 		if (group.name == "PotsCrimson")
 		{
-			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => !WorldGen.crimson)); //Conditionally hide some entries
+			record = new TileRecord(group.name, type, group.styles).SetCondition(AnyEvil).Hide(() => !WorldGen.crimson); //Conditionally hide some entries
 		}
 		else if (group.name == "PotsCorruption")
 		{
-			RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).Hide(() => WorldGen.crimson));
+			record = new TileRecord(group.name, type, group.styles).SetCondition(AnyEvil).Hide(() => WorldGen.crimson);
 		}
-		else
+
+		return record;
+
+		static bool AnyEvil()
 		{
-			base.AddRecord(type, group);
+			var global = Main.LocalPlayer.GetModPlayer<RecordPlayer>();
+			return global.IsValidated("PotsCorruption") || global.IsValidated("PotsCrimson");
 		}
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleDatabase.StyleGroup group, Condition condition)
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition)
 	{
 		int type = ModContent.TileType<PotteryWheel>();
 
@@ -130,7 +145,7 @@ public class Pots : PotTile, ILootable
 		if (loot is not TileLootTable t || !t.Simulated)
 			return; //Only allow this drop table when simulated because it is not currently correct
 
-		string styleName = StyleDatabase.GetName(Type, (byte)t.Style);
+		string styleName = NamedStyles.GetName(Type, (byte)t.Style);
 		List<IItemDropRule> branch = []; //Full branch to select ONE option from
 
 		if (styleName == "PotsDungeon")
@@ -169,18 +184,13 @@ public class Pots : PotTile, ILootable
 
 		loot.Add(new OneFromRulesRule(1, [.. branch]));
 
-		int TorchType()
+		int TorchType() => styleName switch
 		{
-			int result = styleName switch
-			{
-				"PotCorruption" => ItemID.CorruptTorch,
-				"PotCrimson" => ItemID.CrimsonTorch,
-				"PotJungle" => ItemID.JungleTorch,
-				"PotDesert" => ItemID.DesertTorch,
-				_ => ItemID.Torch
-			};
-
-			return result;
-		}
+			"PotCorruption" => ItemID.CorruptTorch,
+			"PotCrimson" => ItemID.CrimsonTorch,
+			"PotJungle" => ItemID.JungleTorch,
+			"PotDesert" => ItemID.DesertTorch,
+			_ => ItemID.Torch
+		};
 	}
 }

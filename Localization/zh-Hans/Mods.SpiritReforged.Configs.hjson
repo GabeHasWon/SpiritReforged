@@ -1,8 +1,8 @@
-ReforgeClientConfig: {
+ReforgedClientConfig: {
 	DisplayName: 魂灵新魄客户端配置
 
 	OceanShape: {
-		Label: 海洋：海洋生成形状
+		Label: 海洋形状
 		Tooltip:
 			'''
 			以某些方式修改海洋生成
@@ -11,13 +11,18 @@ ReforgeClientConfig: {
 			'''
 	}
 
-	SurfaceWaterTransparency: {
-		Label: 海洋：海水透明度
+	ReflectionDetail: {
+		Label: 反射细节
 		Tooltip:
 			'''
-			启用后，允许海水透明
-			不会影响任其他生物群落
+			决定所有反射的细节
+			值越高意味着细节越多，相应的性能成本也越高
 			'''
+	}
+
+	AmbientSounds: {
+		Label: 环境音
+		Tooltip: 在特定生物群系中播放环境音
 	}
 }
 
@@ -26,27 +31,27 @@ OceanShape: {
 
 	Default: {
 		Label: 默认
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	SlantedSine: {
 		Label: 倾斜正弦
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise: {
 		Label: 分段
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_M: {
 		Label: 分段_ M
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_V: {
 		Label: 分段_ V
-		// Tooltip: ""
+		Tooltip: ""
 	}
 }
 
@@ -54,7 +59,7 @@ ReforgedServerConfig: {
 	DisplayName: 魂灵新魄服务器配置
 
 	VentCritters: {
-		Label: 海洋：热液喷口生态系统
+		Label: 热液喷口生态系统
 		Tooltip:
 			'''
 			启用后，允许小动物在热液喷口附近生成

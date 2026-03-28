@@ -18,12 +18,8 @@ public abstract class BedTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 15)
-			.AddIngredient(ItemID.Silk, 5)
-			.AddTile(TileID.Sawmill)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 15).AddIngredient(ItemID.Silk, 5).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void StaticDefaults()
@@ -51,7 +47,7 @@ public abstract class BedTile : FurnitureTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Bed"));
+		AddMapEntry(CommonColor, Language.GetText("ItemName.Bed"));
 		AdjTiles = [TileID.Beds];
 		DustType = -1;
 	}
@@ -83,12 +79,12 @@ public abstract class BedTile : FurnitureTile
 			if (player.SpawnX == spawnX && player.SpawnY == spawnY)
 			{
 				player.RemoveSpawn();
-				Main.NewText("Spawn point removed!", 255, 240, 20);
+				Main.NewText(Language.GetTextValue("Game.SpawnPointRemoved"), 255, 240, 20);
 			}
 			else if (Player.CheckSpawn(spawnX, spawnY))
 			{
 				player.ChangeSpawn(spawnX, spawnY);
-				Main.NewText("Spawn point set!", 255, 240, 20);
+				Main.NewText(Language.GetTextValue("Game.SpawnPointSet"), 255, 240, 20);
 			}
 		}
 		else
@@ -111,7 +107,7 @@ public abstract class BedTile : FurnitureTile
 		{
 			player.noThrow = 2;
 			player.cursorItemIconEnabled = true;
-			player.cursorItemIconID = ModItem.Type;
+			player.cursorItemIconID = Info.Item.Type;
 		}
 		else if (player.IsWithinSnappngRangeToTile(i, j, PlayerSleepingHelper.BedSleepingMaxDistance))
 		{

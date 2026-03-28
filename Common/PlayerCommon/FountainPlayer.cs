@@ -16,6 +16,8 @@ internal class FountainPlayer : ModPlayer
 
 	/// <summary> Sets the player's current fountain to the given water style. Avoid calling this method on the server. </summary>
 	internal void SetFountain<T>() where T : ModWaterStyle => _fountainSlot = ModContent.GetInstance<T>().Slot;
+	/// <inheritdoc cref="SetFountain{T}()"/>
+	internal void SetFountain(int value) => _fountainSlot = value;
 
 	/// <summary> Handles <see cref="FountainPlayer"/> reset. Does not exist on the server. </summary>
 	[Autoload(Side = ModSide.Client)]

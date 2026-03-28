@@ -10,17 +10,17 @@ MantarayBuff: {
 
 JellyfishMinion_Buff: {
 	DisplayName: Медуза
-	Description: Миленькая, и упругая медуза сражается за вас!
+	Description: За вас сражается милая и упругая медуза!
 }
 
 JellyfishPet_Buff: {
 	DisplayName: Дружелюбная медуза
-	Description: Эта энергичная медуза обожает сопровождать вас повсюду!
+	Description: Эта энергичная медуза обожает следовать за вами!
 }
 
 DoubleJumpPotionBuff: {
 	DisplayName: Бризовый прыжок
-	Description: Даёт временный двойной прыжок
+	Description: Вы можете совершать дополнительный прыжок
 }
 
 FlightPotionBuff: {
@@ -30,7 +30,7 @@ FlightPotionBuff: {
 
 BottleMountBuff: {
 	DisplayName: Плот
-	Description: Посылает сигнал бедствия
+	Description: Посылаем сигнал бедствия
 }
 
 FairyMinion_Buff: {
@@ -50,22 +50,22 @@ KoiTotemBuff: {
 
 ButterflyMinion_Buff: {
 	DisplayName: Эфирная бабочка
-	Description: Эфирная бабочка сражается за вас
+	Description: За вас сражается эфирная бабочка
 }
 
 ToucanMinion_Buff: {
 	DisplayName: Тукан
-	Description: Тукан сражается за вас
+	Description: За вас сражается тукан
 }
 
 QuenchPotion_Buff: {
 	DisplayName: Пресыщение
-	Description: Длительность действия остальных зелий увеличена на 25%
+	Description: Длительность эффектов остальных зелий увеличена на 25%
 }
 
 TumblerPet_Buff: {
 	DisplayName: Сомнительное перекати-поле
-	Description: Это игривое перекати-поле не отстаёт ни на шаг!
+	Description: За вами следует дружелюбное перекати-поле
 }
 
 Frozen: {
@@ -89,8 +89,8 @@ ExplorerSpeed: {
 }
 
 RemedyPotionBuff: {
-	DisplayName: Исцеление
-	Description: Невосприимчивость к некоторым негативным эффектам
+	DisplayName: Иммунитет
+	Description: Невосприимчивость к некоторым дебаффам
 }
 
 OpenWounds: {
@@ -100,7 +100,7 @@ OpenWounds: {
 
 ExplorerPot: {
 	DisplayName: Трепет исследователя
-	Description: Вы жаждите большего!
+	Description: Вы жаждете большего!
 }
 
 ExplorerMine: {
@@ -115,5 +115,35 @@ JinxMark: {
 
 FlaskOfFrost_Buff: {
 	DisplayName: Смазанное оружие: Заморозка
-	Description: Атаки ближнего боя, а также хлысты замораживают врагов
+	Description: Атаки хлыстов и оружия ближнего боя накладывают дебафф «{$Buffs.Frozen.DisplayName}»
+}
+
+Slowed: {
+	DisplayName: Замедленный
+	Description: ""
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Туканотрость
+	Description: За вас сражается туканострость?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Дракоша
+	Description: За вами следует маленький дракон
+}
+
+EnlilBuff: {
+	DisplayName: Благословение Энлиля
+	Description: Вертикальная подвижность увеличена
+}
+
+ScarabPetBuff: {
+	DisplayName: Крошка скарабей
+	Description: «Ему очень нравится кататься...»
+}
+
+ScarabLightPetBuff: {
+	DisplayName: Скарабейчик
+	Description: «Он что-то замышляет...»
 }

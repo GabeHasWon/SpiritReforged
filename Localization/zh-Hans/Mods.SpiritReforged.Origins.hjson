@@ -13,7 +13,7 @@ Botanist: {
 Recluse: {
 	DisplayName: 隐士
 	Flavor: 于他而言，深居地底才是上策，既无人打扰，钓鱼也更惬意！
-	Description: 以全套渔夫套装、玻璃钢钓竿、一些诱饵和一些宝匣在地下钓鱼小屋开始游戏。
+	Description: 以渔夫帽、玻璃钢钓竿、一些诱饵和一些宝匣在地下钓鱼小屋开始游戏。
 }
 
 Hunter: {
@@ -26,4 +26,28 @@ Hiker: {
 	DisplayName: 旅行者
 	Flavor: 探险能带来乐趣，而且他们也有足够的补给。
 	Description: 以60根火把、30个荧光棒和150个绳索在最高的山峰开始游戏。
+}
+
+Caveman: {
+	DisplayName: 穴居人
+	Flavor: 简简单单的生活反而很充实。一个字概括就是：嘎。
+	Description: 以隐匿束腰外衣和木棒在……在地下的任意高度开始游戏。
+}
+
+Disentombed: {
+	DisplayName: 掘出坟墓者
+	Flavor: 三千年已逝……我的统治将重现。我将归来。
+	Description: 以木乃伊时装在庙塔开始游戏。
+}
+
+Worshipper: {
+	DisplayName: 崇拜者
+	Flavor: 虽被诅咒终生向太阳祈祷却永不得见，却依然心怀希望。
+	Description: 以太阳舞者盔甲套装和风切变权杖在地下绿洲开始游戏。
+}
+
+Purifier: {
+	DisplayName: 净化者
+	Flavor: 邪恶退散；在我纯净的锋芒下化为灰烬。
+	Description: 以长棍法杖和摩诃迦罗面具在盐滩开始游戏（如果可行）。
 }

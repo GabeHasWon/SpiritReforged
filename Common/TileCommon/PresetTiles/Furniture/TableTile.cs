@@ -8,11 +8,8 @@ public abstract class TableTile : FurnitureTile
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 8)
-			.AddTile(TileID.WorkBenches)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 8).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()
@@ -27,12 +24,12 @@ public abstract class TableTile : FurnitureTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 3, 0);
-		TileObjectData.newTile.Origin = new Point16(2, 1);
+		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTable);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Table"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Table"));
 		AdjTiles = [TileID.Tables];
 		DustType = -1;
 	}

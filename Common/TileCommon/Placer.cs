@@ -7,6 +7,7 @@ namespace SpiritReforged.Common.TileCommon;
 
 public struct PlaceAttempt(bool success)
 {
+	/// <summary> Whether the last chained step has succeeded. </summary>
 	public bool success = success;
 	/// <summary> Can only be safely used if <see cref="success"/> is true. </summary>
 	public TileObject data;
@@ -118,7 +119,7 @@ public static class Placer
 	}
 
 	/// <summary> Calls <see cref="TileObjectData.CallPostPlacementPlayerHook"/> for this attempt, and outputs entity of T. </summary>
-	public static PlaceAttempt PostPlacement<T>(this PlaceAttempt a, out T entity) where T : class
+	public static PlaceAttempt PostPlacement<T>(this PlaceAttempt a, out T entity) where T : TileEntity
 	{
 		if (a.success)
 		{

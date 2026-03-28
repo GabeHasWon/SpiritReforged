@@ -23,6 +23,25 @@ public static class DrawHelpers
 		}
 	}
 
+	public static void DrawOutline(SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Color color, Action<Vector2> action = null)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			Vector2 offset = i switch
+			{
+				1 => new(0, -2),
+				2 => new(2, 0),
+				3 => new(0, 2),
+				_ => new(-2, 0)
+			};
+
+			if (action is null)
+				spriteBatch.Draw(texture, position + offset, null, color, 0, texture.Size() / 2, 1, default, 0);
+			else
+				action.Invoke(offset);
+		}
+	}
+
 	public static void DrawGodrays(SpriteBatch spriteBatch, Vector2 position, Color rayColor, float baseLength, float width, int numRays)
 	{
 		for (int i = 0; i < numRays; i++)
@@ -50,4 +69,9 @@ public static class DrawHelpers
 	public static Asset<Texture2D> RequestLocal(Type type, string name, bool immediate = false) => ModContent.Request<Texture2D>(RequestLocal(type, name), immediate ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
 	/// <summary> Gets the string key for a texture resulting from the given arguments. See the overload for <see cref="Texture2D"/>. </summary>
 	public static string RequestLocal(Type type, string name) => (type.Namespace + '.' + name).Replace('.', '/');
+
+	/// <inheritdoc cref="RequestLocal(Type, string, bool)"/>
+	public static Asset<Texture2D> RequestLocal<T>(string name, bool immediate = false) => ModContent.Request<Texture2D>(RequestLocal(typeof(T), name), immediate ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
+	/// <inheritdoc cref="RequestLocal(Type, string)"/>
+	public static string RequestLocal<T>(string name) => (typeof(T).Namespace + '.' + name).Replace('.', '/');
 }

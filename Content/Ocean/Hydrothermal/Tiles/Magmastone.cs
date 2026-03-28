@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -44,7 +45,7 @@ public class Magmastone : ModTile, IAutoloadTileItem
 		const int range = 10;
 
 		var pos = (Point)obj;
-		var defaultColor = Lighting.GetColor(pos) * 2;
+		Color defaultColor = Lighting.GetColor(pos) * 2;
 
 		foreach (var pt in wireGlowPoints)
 		{
@@ -109,8 +110,9 @@ public class Magmastone : ModTile, IAutoloadTileItem
 
 		DustType = DustID.Asphalt;
 		MineResist = .5f;
+		HitSound = SoundID.Tink;
 
-		Mod.Find<ModItem>(Name + "Item").Item.ResearchUnlockCount = 100;
+		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void HitWire(int i, int j)

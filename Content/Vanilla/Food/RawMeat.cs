@@ -8,11 +8,7 @@ public class RawMeat : FoodItem
 {
 	internal override Point Size => new(30, 26);
 
-	public override void StaticDefaults()
-	{
-		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<RawFish>();
-		VariantGlobalItem.AddVariants(Type, [new Point(30, 26), new Point(28, 22), new Point(26, 22)]);
-	}
+	public override void StaticDefaults() => VariantGlobalItem.AddVariants(Type, [new Point(30, 26), new Point(28, 22), new Point(26, 22)]);
 
 	public override void Defaults() => Item.buffTime = 45 * 60;
 

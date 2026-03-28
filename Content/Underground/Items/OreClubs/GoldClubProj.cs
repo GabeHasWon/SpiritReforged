@@ -1,7 +1,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -11,7 +11,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Underground.Items.OreClubs;
 
-class GoldClubProj : BaseClubProj, IManualTrailProjectile
+class GoldClubProj : BaseClubProj
 {
 	private static Color LightGold => new(255, 249, 181);
 	private static Color DarkGold => new(227, 197, 105);
@@ -43,7 +43,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	internal override bool CanCollide(float progress) => base.CanCollide(progress) && Direction == 1;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 78 * MeleeSizeModifier;
 		float trailWidth = 25 * MeleeSizeModifier;
@@ -86,10 +86,10 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 				TrailLength = 0.5f
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, upswingTrailParam, swingFunc, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, upswingTrailParam, swingFunc, SwingTrail.BasicSwingShaderParams));
 		}
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, swingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(0.5f, 0.5f)), TrailLayer.UnderProjectile));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, swingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(0.5f, 0.5f))));
 
 		parameters.Color = Color.Pink;
 		parameters.SecondaryColor = Ruby;
@@ -97,16 +97,18 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 		parameters.TrailLength += 0.05f * trailLengthMod;
 		parameters.UseLightColor = false;
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, swingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "noiseCrystal", new Vector2(3f, 0.5f)), TrailLayer.UnderProjectile));
-
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, swingFunc, s => SwingTrail.NoiseSwingShaderParams(s, "noiseCrystal", new Vector2(3f, 0.5f))));
 	}
 
 	public override void SafeSetDefaults() => _parameters.ChargeColor = Color.Gold;
 
 	public override void OnSwingStart()
 	{
-		TrailManager.TryTrailKill(Projectile);
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+		{
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
+			CreateTrail(TrailSystem.ProjectileRenderer);
+		}
 	}
 
 	public override void Swinging(Player owner)
@@ -141,7 +143,7 @@ class GoldClubProj : BaseClubProj, IManualTrailProjectile
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(12);

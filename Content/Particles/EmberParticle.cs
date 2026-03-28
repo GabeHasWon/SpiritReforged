@@ -8,6 +8,8 @@ public class EmberParticle : Particle
 {
 	private const float FADETIME = 0.3f;
 
+	public bool emitLight = true;
+
 	private readonly Color _startColor;
 	private readonly Color _endColor;
 	private ParticleLayer _drawLayer = ParticleLayer.BelowProjectile;
@@ -49,14 +51,18 @@ public class EmberParticle : Particle
 		else if (TimeActive > MaxTime - fadeintime)
 			Color *= (MaxTime - TimeActive) / fadeintime;
 
-		Lighting.AddLight(Position, Color.ToVector3() * Scale * 0.5f);
+		if (emitLight)
+			Lighting.AddLight(Position, Color.ToVector3() * Scale * 0.5f);
 
 		Velocity = Velocity.RotatedByRandom(0.1f);
 		Velocity *= 0.99f;
 
-		oldPositions[0] = Position;
-		for(int i = oldPositions.Length - 1; i > 0; i--)
-			oldPositions[i] = oldPositions[i - 1];
+		if (oldPositions.Length != 0)
+		{
+			oldPositions[0] = Position;
+			for (int i = oldPositions.Length - 1; i > 0; i--)
+				oldPositions[i] = oldPositions[i - 1];
+		}
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

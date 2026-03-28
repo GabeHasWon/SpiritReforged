@@ -35,7 +35,7 @@ internal class SignTagHandler : ILoadable
 		if (Main.dedServ)
 			return;
 
-		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370));
+		Main.RunOnMainThread(() => _drawingTarget = new RenderTarget2D(Main.instance.GraphicsDevice, 530, 370)); // 530, 370 is the max size of a vanilla sign UI
 	}
 
 	public void Unload()
@@ -257,7 +257,10 @@ internal class SignTagHandler : ILoadable
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
 				color = Color.Lerp(color, Color.White, 1);
-				Utils.DrawInvBG(Main.spriteBatch, rectangle, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
+				Rectangle frame = rectangle;
+				int size = (int)((Main.UIScale - 1) * 10f);
+				frame.Inflate(size, size);
+				Utils.DrawInvBG(Main.spriteBatch, frame, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
 				
 				Main.spriteBatch.End();
 			}
@@ -268,7 +271,8 @@ internal class SignTagHandler : ILoadable
 				tag.ModifyRenderTarget();
 			});
 
-			Main.spriteBatch.Draw(_drawingTarget, new Vector2(rectangle.X - 10, rectangle.Y - 15), Color.White);
+			float scaleMod = MathF.Pow(Main.UIScale, 2);
+			Main.spriteBatch.Draw(_drawingTarget, new Vector2(rectangle.X - 13 * scaleMod, rectangle.Y - 15 * scaleMod), Color.White);
 
 			Main.mouseText = true;
 			return false;

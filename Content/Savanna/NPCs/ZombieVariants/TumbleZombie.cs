@@ -6,13 +6,12 @@ using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 
-public class TumbleZombie : ReplaceNPC
+public class TumbleZombie : ModNPC, ISubstitute
 {
-	private float frameCounter;
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
+	private float _frameCounter;
 
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
-
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
@@ -67,9 +66,9 @@ public class TumbleZombie : ReplaceNPC
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
@@ -81,5 +80,5 @@ public class TumbleZombie : ReplaceNPC
 		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 300);
 	}
 
-	public override bool CanSpawn(Player player) => player.InModBiome<SavannaBiome>();
+	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();
 }

@@ -54,7 +54,7 @@ ButterflyMinion_Buff: {
 }
 
 ToucanMinion_Buff: {
-	DisplayName: 巨嘴鸟
+	DisplayName: 巨嘴鸟手杖
 	Description: 巨嘴鸟为你而战
 }
 
@@ -116,4 +116,34 @@ JinxMark: {
 FlaskOfFrost_Buff: {
 	DisplayName: 武器灌注：冻结
 	Description: 近战和鞭子攻击会冻结敌人
+}
+
+Slowed: {
+	DisplayName: 减速
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: 巨嘴鸟手杖
+	Description: 巨嘴鸟手杖为你而战？
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: 小龙
+	Description: 一只小龙正跟着你
+}
+
+EnlilBuff: {
+	DisplayName: 恩利尔的援护
+	Description: 垂直机动性增加
+}
+
+ScarabPetBuff: {
+	DisplayName: 小甲虫
+	Description: ”它真的很喜欢摇滚……“
+}
+
+ScarabLightPetBuff: {
+	DisplayName: 甲虫宝宝
+	Description: ”它在密谋……“
 }

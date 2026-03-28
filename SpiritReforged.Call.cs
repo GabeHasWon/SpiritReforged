@@ -1,9 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.SaltFlats.Items;
+using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
-using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 
 namespace SpiritReforged;
@@ -42,6 +44,10 @@ public partial class SpiritReforgedMod : Mod
 							return SavannaEcotone.SavannaArea = rectangle;
 						else
 							throw new ArgumentException("SetSavannaArea parameters should be two elements long: (\"SetSavannaArea\", rectangle)!");
+					}
+				case "GetSaltFlatsArea":
+					{
+						return SaltFlatsEcotone.SaltFlatsArea;
 					}
 				case "AddPotionVat":
 					{

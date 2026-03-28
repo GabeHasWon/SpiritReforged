@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Savanna.Biome;
@@ -94,6 +95,7 @@ public class Hyena : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = .41f;
 		NPC.direction = 1; //Don't start at 0
+
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
@@ -478,7 +480,7 @@ public class Hyena : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Invasion)
+		if (!spawnInfo.Common())
 			return 0;
 
 		int x = spawnInfo.SpawnTileX;
@@ -486,7 +488,7 @@ public class Hyena : ModNPC
 		int wall = Framing.GetTileSafely(x, y).WallType;
 
 		if (spawnInfo.Player.InModBiome<SavannaBiome>() && !spawnInfo.Water && IsValidGround() && wall == WallID.None)
-			return (NPC.CountNPCS(Type) > 4) ? .13f : .36f;
+			return (NPC.CountNPCS(Type) > 4) ? 0.13f : 0.36f;
 
 		return 0;
 

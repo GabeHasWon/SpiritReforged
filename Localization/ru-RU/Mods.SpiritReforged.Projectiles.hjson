@@ -3,37 +3,37 @@ Cannonbubble.DisplayName: Пушечный пузырь
 UrchinBall.DisplayName: Шар морского ежа
 UrchinSpike.DisplayName: Игла морского ежа
 JellyfishBolt.DisplayName: Электрический разряд
-JellyfishMinion.DisplayName: Маленькая медуза
+JellyfishMinion.DisplayName: "{$Buffs.JellyfishMinion_Buff.DisplayName}"
 ReefWrathProj.DisplayName: Коралловая ярость
-JellyfishPet.DisplayName: Ручная медуза
-FairyMinion.DisplayName: Фея-миньон
+JellyfishPet.DisplayName: "{$Buffs.JellyfishPet_Buff.DisplayName}"
+FairyMinion.DisplayName: Фея
 FairyProj.DisplayName: Магический заряд
 StarPowderProj.DisplayName: Звёздная пыль
-ButterflyMinion.DisplayName: Эфирная бабочка
+ButterflyMinion.DisplayName: "{$Buffs.ButterflyMinion_Buff.DisplayName}"
 ToucanFeather.DisplayName: Перо тукана
-ToucanMinion.DisplayName: Тукан-миньон
+ToucanMinion.DisplayName: Тукан
 TumblerPet.DisplayName: Ручное перекати-поле
 SunOrb.DisplayName: Солнечный шар
-SunStaffHeld.DisplayName: Солнечный посох
+SunStaffHeld.DisplayName: "{$Items.SunStaff.DisplayName}"
 WheatgrassSeed.DisplayName: Семена пырея
 RoyalKhopeshHeld.DisplayName: Королевский хопеш
-Zipline.DisplayName: Рельсовая дорога
+Zipline.DisplayName: Рельсострел
 RogueKnifeMinion.DisplayName: Ржавый нож
 CactusWallProj.DisplayName: Кактусовая стена
 SkullSentryEye.DisplayName: Глаз черепа-часового
 SkullSentryMucus.DisplayName: Слизь черепа-часового
-SkullSentrySentry.DisplayName: Череп плотоядки
-ZiplineProj.DisplayName: Снаряд рельсовой дороги
+SkullSentrySentry.DisplayName: "{$Items.SkullSentry.DisplayName}"
+ZiplineProj.DisplayName: Рельсовыстрел
 FallingBaobabFruit.DisplayName: Падающий плод баобаба
 RollingCart.DisplayName: Катящаяся вагонетка
-RadonMossBobber.DisplayName: Поплавок с радоновым мхом
-OganessonMossBobber.DisplayName: Поплавок с огнессоновым мхом
+RadonMossBobber.DisplayName: "{$Items.RadonBobber.DisplayName}"
+OganessonMossBobber.DisplayName: "{$Items.OganessonBobber.DisplayName}"
 BuffAura.DisplayName: Аура баффа
 WheezerCloud.DisplayName: Ядовитый газ
 Shockwave.DisplayName: Ударная волна
-EnergizedShockwave.DisplayName: Энергитическая ударная волна
-RollingBowlder.DisplayName: Катящийся булыжник
-Firespike.DisplayName: Огнешип
+EnergizedShockwave.DisplayName: Энергетическая ударная волна
+RollingBowlder.DisplayName: Катящаяся глыба
+Firespike.DisplayName: Огненный шип
 CannonBomb.DisplayName: Выстрел бомбопушки
 BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
 DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
@@ -47,3 +47,39 @@ VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
 EnergyImpact.DisplayName: Энергетический удар
 EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Пальцевыстрел
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: Цепь
+GoldPhysicsChain.DisplayName: Золотая цепь
+CactusSpine.DisplayName: Колючка кактуса
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: Огненный плевок дракона
+PileOfConsequencesPet.DisplayName: Ответственность
+EnergyLaser.DisplayName: Энергетический лазер
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
+// SandPillar.DisplayName: Sand Pillar
+// SlamShockwave.DisplayName: Slam Shockwave
+WindBlast.DisplayName: Удар ветра
+// ClawHitbox.DisplayName: Claw Hitbox
+DivebombScarab.DisplayName: Пикирующей скарабей
+SwarmScarab.DisplayName: Скарабейный рой
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
+// AdornedArrow.DisplayName: Adorned Arrow
+AdornedBowHeld.DisplayName: "{$Items.AdornedBow.DisplayName}"
+AdornedFlash.DisplayName: Сверкание стрелы
+AdornedArrowDeathTrail.DisplayName: Попадание стрелы
+LocustCrookProjectile.DisplayName: "{$Items.LocustCrook.DisplayName}"
+CrookLocust.DisplayName: Саранча
+LocustDamageProjectile.DisplayName: Атака саранчи
+LocustExplosion.DisplayName: Взрыв саванчи
+CrookLocustGore.DisplayName: Останки саванчи
+RoyalKhopeshThrown.DisplayName: "{$Items.RoyalKhopesh.DisplayName}"
+FloatingGem.DisplayName: Парящий самоцвет
+BeamOLight.DisplayName: Луч света
+ScarabPetProjectile.DisplayName: Мини-Скарабеус
+SandShockwavePillar.DisplayName: Песчаная ударная волна
+SandballProjectile.DisplayName: Комок песка
+BabyAntlionProjectile.DisplayName: Маленький муравьиный лев
+ScarabLightPet.DisplayName: Скарабейчик
+SoilBallProjectile.DisplayName: Каменный шар

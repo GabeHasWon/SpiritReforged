@@ -25,7 +25,8 @@ public class Gravel : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(120, 120, 120));
 		DustType = DustID.Asphalt;
-		MineResist = .5f;
+		MineResist = 0.5f;
+		HitSound = SoundID.Tink;
 
 		Mod.Find<ModItem>(Name + "Item").Item.ResearchUnlockCount = 100;
 	}
@@ -44,12 +45,6 @@ public class Gravel : ModTile, IAutoloadTileItem
 
 	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
 	{
-		static void Disallow(ref int side)
-		{
-			if (side == ModContent.TileType<HydrothermalVent>())
-				side = -1;
-		}
-
 		WorldGen.TileMergeAttempt(-2, TileID.Sand, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
 		WorldGen.TileMergeAttempt(-2, TileID.HardenedSand, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
 
@@ -62,7 +57,14 @@ public class Gravel : ModTile, IAutoloadTileItem
 		Disallow(ref downLeft);
 		Disallow(ref downRight);
 
-		int vType = ModContent.TileType<HydrothermalVent>();
-		WorldGen.TileMergeAttempt(Type, vType, ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
+		WorldGen.TileMergeAttempt(Type, ModContent.TileType<HydrothermalVent>(), ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
+		WorldGen.TileMergeAttempt(Type, ModContent.TileType<GravelPile>(), ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
+		WorldGen.TileMergeAttempt(Type, ModContent.TileType<GravelStalagmite>(), ref up, ref down, ref left, ref right, ref upLeft, ref upRight, ref downLeft, ref downRight);
+
+		static void Disallow(ref int side)
+		{
+			if (side == ModContent.TileType<HydrothermalVent>() || side == ModContent.TileType<GravelPile>() || side == ModContent.TileType<GravelStalagmite>())
+				side = -1;
+		}
 	}
 }

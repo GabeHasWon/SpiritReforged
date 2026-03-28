@@ -3,7 +3,7 @@
 namespace SpiritReforged.Common.Visuals.Glowmasks;
 
 /// <summary>
-/// Autoloads the glowmask of the according Entity (currently, NPCs and Tiles).<br/>
+/// Autoloads the glowmask of the according Entity (currently, Items, Projectiles, NPCs and Tiles) - this means <see cref="ModTexturedType.Texture"/> + "_Glow".<br/>
 /// <paramref name="stringData"/> is one of two things. First, the Color of the glowmask, if constant, in one of these formats:<br/>
 /// <c>R,G,B,A</c><br/><c>R,G,B</c><br/>All numbers are bytes.<br/><br/>
 /// If you want a dynamic color, you can create a static method that takes an <c>object</c> and returns <c>Color</c>.<br/>

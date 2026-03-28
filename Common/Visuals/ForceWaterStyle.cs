@@ -2,6 +2,12 @@
 
 namespace SpiritReforged.Common.Visuals;
 
+/// <summary> Used to forcefully override water style. Can be applied to <see cref="ModBackgroundStyle"/>. </summary>
+internal interface IWaterStyle
+{
+	public void ForceWaterStyle(ref int style);
+}
+
 /// <summary> Manually overrides water style in specific scenarios. Doesn't exist on the server. </summary>
 [Autoload(Side = ModSide.Client)]
 internal class WaterStyleSystem : ModSystem
@@ -69,10 +75,4 @@ internal class WaterStyleSystem : ModSystem
 
 		return style;
 	}
-}
-
-/// <summary> Used to forcefully override water style. Can be applied to <see cref="ModBackgroundStyle"/>. </summary>
-internal interface IWaterStyle
-{
-	public void ForceWaterStyle(ref int style);
 }

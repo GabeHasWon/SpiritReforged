@@ -9,14 +9,23 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter;
 
 public class UrchinStaff : ModItem
 {
+	public static readonly SoundStyle LightPop = new("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop")
+	{
+		PitchVariance = 0.4f,
+		Pitch = -2f,
+		Volume = 0.75f,
+		MaxInstances = 3
+	};
+
 	public override void SetStaticDefaults()
 	{
 		MoRHelper.AddElement(Item, MoRHelper.Poison);
 		MoRHelper.AddElement(Item, MoRHelper.Water, true);
 	}
+
 	public override void SetDefaults()
 	{
-		Item.damage = 18;
+		Item.damage = 22;
 		Item.width = 28;
 		Item.height = 14;
 		Item.useTime = Item.useAnimation = 24;
@@ -36,7 +45,7 @@ public class UrchinStaff : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop") with { PitchVariance = 0.4f, Pitch = -2f, Volume = .75f, MaxInstances = 3 }, player.Center);
+		SoundEngine.PlaySound(LightPop, player.Center);
 
 		Vector2 targetPos = Main.MouseWorld;
 		Vector2 shotTrajectory = player.GetArcVel(targetPos, 0.25f, velocity.Length());

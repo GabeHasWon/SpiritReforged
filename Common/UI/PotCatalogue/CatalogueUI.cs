@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Underground.Pottery;
 using Terraria.GameContent.UI.Elements;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -28,18 +27,29 @@ public partial class CatalogueUI : AutoUIState
 	{
 		LoadAssets();
 
-		Width.Set(600, 0);
+		float uiWidth = 600;
+		float entriesWidth = 398;
+		float infoWidth = 202;
+
+		if (Language.ActiveCulture.Name == "ru-RU")
+		{
+			uiWidth = 625;
+			entriesWidth = 322f;
+			infoWidth = 303f;
+		}
+
+		Width.Set(uiWidth, 0);
 		Height.Set(400, 0);
 		Left.Set(-Width.Pixels / 2, .5f);
 		Top.Set(-Height.Pixels / 2 - 50, .5f);
 
 		_entries = new();
-		_entries.Width.Set(406, 0);
+		_entries.Width.Set(entriesWidth, 0);
 		_entries.Height.Set(Height.Pixels, 0);
 		_entries.AddScrollbar(new UIScrollbar());
 
 		_info = new();
-		_info.Width.Set(194, 0);
+		_info.Width.Set(infoWidth, 0);
 		_info.Height.Set(Height.Pixels, 0);
 		_info.Left.Set(_entries.Width.Pixels, 0);
 		_info.AddScrollbar(new UIScrollbar());
@@ -52,13 +62,13 @@ public partial class CatalogueUI : AutoUIState
 	{
 		_entries.ClearEntries();
 
-		foreach (var value in RecordHandler.Records)
+		foreach (var record in RecordHandler.Records)
 		{
-			bool locked = !Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsValidated(value.key);
-			bool newAndShiny = Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsNew(value.key);
+			bool locked = !record.Condition.IsMet();
+			bool newAndShiny = Main.LocalPlayer.GetModPlayer<RecordPlayer>().IsNew(record.key);
 
-			if (value.hidden?.Invoke() != true || !locked)
-				_entries.AddEntry(new CatalogueEntry(value, locked, newAndShiny));
+			if (record.hidden?.Invoke() != true || !locked)
+				_entries.AddEntry(new CatalogueEntry(record, locked, newAndShiny));
 		}
 	}
 

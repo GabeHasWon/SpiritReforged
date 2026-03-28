@@ -7,24 +7,15 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 [AutoloadGlowmask("255,165,0", false)]
 public abstract class ChandelierTile : FurnitureTile, ISwayTile
 {
-	public virtual bool BlurGlowmask => true;
-
-	/// <summary>
-	/// Offsets the anchor and how wide it needs to be. Defaults to (1, 1), meaning the anchor only needs 1 tile in the middle of the 3 tile wide chandelier.
-	/// </summary>
+	/// <summary> Offsets the anchor and how wide it needs to be. Defaults to (1, 1), meaning the anchor only needs 1 tile in the middle of the 3 tile wide chandelier. </summary>
 	public virtual (int width, int count) AnchorDataOffsets => (1, 1);
 
 	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 6);
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		if (CoreMaterial != ItemID.None)
-			item.CreateRecipe()
-			.AddIngredient(CoreMaterial, 4)
-			.AddIngredient(ItemID.Torch, 4)
-			.AddIngredient(ItemID.Chain)
-			.AddTile(TileID.Anvils)
-			.Register();
+		if (Info.Material != ItemID.None)
+			item.CreateRecipe().AddIngredient(Info.Material, 4).AddIngredient(ItemID.Torch, 4).AddIngredient(ItemID.Chain).AddTile(TileID.Anvils).Register();
 	}
 
 	public override void StaticDefaults()
@@ -35,13 +26,14 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
+		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, AnchorDataOffsets.width, AnchorDataOffsets.count);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.Origin = new Point16(1, 0);
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Chandelier"));
+		AddMapEntry(CommonColor, Language.GetText("MapObject.Chandelier"));
 		AdjTiles = [TileID.Chandeliers];
 		DustType = -1;
 	}
@@ -51,14 +43,17 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 		var data = TileObjectData.GetTileData(Type, 0);
 		int width = data.CoordinateFullWidth;
 
-		j -= Framing.GetTileSafely(i, j).TileFrameY / 18; //Move to the multitile's top
+		TileExtensions.GetTopLeft(ref i, ref j);
 
-		for (int h = 0; h < 2; h++)
+		for (int x = i; x < i + 3; x++)
 		{
-			var tile = Framing.GetTileSafely(i, j + h);
-			tile.TileFrameX += (short)((tile.TileFrameX < width) ? width : -width);
+			for (int y = j; y < j + 3; y++)
+			{
+				var tile = Framing.GetTileSafely(x, y);
+				tile.TileFrameX += (short)((tile.TileFrameX < width) ? width : -width);
 
-			Wiring.SkipWire(i, j + h);
+				Wiring.SkipWire(x, y);
+			}
 		}
 
 		NetMessage.SendTileSquare(-1, i, j, data.Width, data.Height);
@@ -66,14 +61,27 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
-		var tile = Framing.GetTileSafely(i, j);
-		var color = Color.Orange;
+		var tile = Main.tile[i, j];
 
-		if (tile.TileFrameX == 18 && tile.TileFrameY == 18)
-			(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+		if (tile.TileFrameX == 18 && tile.TileFrameY == 0)
+		{
+			var color = (Info is LightedInfo l) ? l.Light : Color.Orange.ToVector3() / 255f;
+			(r, g, b) = (color.X, color.Y, color.Z);
+		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	public virtual float Physics(Point16 topLeft)
+	{
+		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.SunflowerWindCounter);
+
+		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
+			rotation = 0f;
+
+		return rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 60, 1.26f, 3, true);
+	}
+
+	public virtual void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
 			return;
@@ -90,7 +98,7 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 
 		var glowTexture = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
 
-		if (BlurGlowmask)
+		if (Info is LightedInfo l && l.Blur)
 		{
 			ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (uint)i);
 			for (int c = 0; c < 7; c++) //Draw our glowmask with a randomized position
@@ -99,14 +107,12 @@ public abstract class ChandelierTile : FurnitureTile, ISwayTile
 				float shakeY = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
 				var shakeOffset = new Vector2(shakeX, shakeY);
 
-				spriteBatch.Draw(glowTexture, position + shakeOffset, source, 
-					new Color(100, 100, 100, 0), rotation, origin, 1, SpriteEffects.None, 0f);
+				spriteBatch.Draw(glowTexture, position + shakeOffset, source, new Color(100, 100, 100, 0), rotation, origin, 1, SpriteEffects.None, 0f);
 			}
 		}
 		else
 		{
-			spriteBatch.Draw(glowTexture, position, source, Color.White, 
-				rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(glowTexture, position, source, Color.White, rotation, origin, 1, SpriteEffects.None, 0);
 		}
 	}
 }

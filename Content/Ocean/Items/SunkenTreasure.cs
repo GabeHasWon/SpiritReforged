@@ -95,7 +95,7 @@ public class SunkenTreasureTile : ModTile
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Sand;
-		AddMapEntry(new Color(133, 106, 56), CreateMapEntryName());
+		AddMapEntry(new Color(133, 106, 56), Language.GetText("Mods.SpiritReforged.Items.SunkenTreasure.DisplayName"));
 		SolidBottomTile.TileTypes.Add(Type);
 	}
 

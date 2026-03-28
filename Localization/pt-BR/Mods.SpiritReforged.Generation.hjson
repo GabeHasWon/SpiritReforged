@@ -7,36 +7,38 @@ PopulateOcean: Preenchendo o oceano
 Gravel: Colocando cascalho
 SavannaTerrain: Criando platôs
 SavannaObjects: Preenchendo a savana
-// Ecotones: Mapping ecotones
-// Caves: Decorating caves
-// NeonMosses: Glowing moss
-// Pottery: Stashing pots
-// Scarecrow: Scaring birds
+// SaltFlats: Adding salt
+Ecotones: Mapeando ecótonos
+Caves: Decorando cavernas
+// DesertExtras: Hiding secrets in the sands
+NeonMosses: Musgo brilhante
+Pottery: Empilhando vasos
+Scarecrow: Assustando pássaros
 
 Signs: {
 	Underground: {
 		Common: {
-			// 0: <wavy>Pots hold the secret...
-			// 1: <wavy>The text is too faded to read.
-			// 2: <colorful:255,80,80>The sign is covered in unintelligible scrawling from a dubious liquid.
-			// 3: <wavy>......er's Wares
-			// 4: <wavy>The old sign has almost crumbled to dust.
-			// 5: <wavy>A crudely drawn skeleton beckons.
-			// 6: <wavy>If you're reading this, I'm already dead.
-			// 7: If you're reading this, I'm doing great!
-			// 8: <wavy>Beware: Worms
-			// 9: The sign rambles on about something you can't quite understand. It's not worth reading further.
-			// 10: Dwarven scripture is scrawled all over the sign. You can read none of it.
+			0: <wavy>Vasos guardam um segredo...
+			1: <wavy>O texto está desbotado demais para a leitura.
+			2: <colorful:255,80,80>A placa está coberta de rabiscos ininteligíveis feitos com um líquido duvidoso.
+			3: <wavy>......rafa; mercadorias...
+			4: <wavy>A placa parece estar colapsando com todo o pó.
+			5: <wavy>O esqueleto mal desenhado acena.
+			6: <wavy>Se você está lendo isso, saiba que eu morri.
+			7: Se tu tá lendo isso, saiba que estou muito bem!
+			8: <wavy>Perigo: Minhocas
+			9: A placa prossegue comentando sobre algo que você não consegue entender direito. Não vale a pena ler mais.
+			10: A placa está rabiscada com inscrições em língua anã. Não se consegue ler nada.
 		}
 
 		Rare: {
-			// 0: <wavy>Collect my pages...
-			// 1: Looks like there's no goo balls around here. -the Sign Painter
-			/* 2:
+			0: <wavy>Colete minhas páginas...
+			1: Parece que não tem nenhuma gosma aqui - Pintor de Placas
+			2:
 				'''
 				<wavy>0
-				days since cave incident
-				''' */
+				dias desde o último incidente
+				'''
 		}
 	}
 }

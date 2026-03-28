@@ -9,43 +9,37 @@ Records: {
 		'''
 		Обычный горшок, в котором иногда попадаются полезные предметы.
 
-		Чем глубже под землей, тем больше ценность.
+		Как правило, чем он глубже, тем дороже его содержимое.
 		'''
 	Zenith:
 		'''
 		Обычный горшок, в котором иногда попадаются полезные предметы... этот, к тому же, чересчур вычурный.
 
-		Чем глубже под землей, тем больше ценность.
+		Как правило, чем он глубже, тем дороже его содержимое.
 		'''
 	Potion: Содержит мощное зелье.
 	UpsideDown: ‟Ошибка при производстве‟
-	Worm: При разрушении выползают множество червей.
+	Worm: При разрушении из него выползают множество червей.
 	Platter: Горячее блюдо, готовое к употреблению. Кто же мог его оставить?
 	WickerBasket: Пикник — специально для вас!
 	Aether: Даёт разнообразные полезные и сверкающие улучшения.
 	Stuffed: Какое странное место для торговца. Похоже, он только и ждёт, чтобы его побеспокоили.
-	Scrying: При разрушении открывает некоторую часть карты.
+	Scrying: При разрушении открывает небольшую часть карты.
 	Biome: Содержит больше разнообразной добычи, чем обычные горшки.
-	Boulder: Катится по земле, если его задеть.
+	Boulder: Покатиться по земле, если его задеть.
 }
 
-SunkenTreasureTile.MapEntry: "{$Items.SunkenTreasure.DisplayName}"
+FablesGraves: {
+	SetNames: {
+		Savanna: Надгробия саванны
+		SaltFlats: Соляные надгробья
+	}
+}
+
 HydrothermalVent.MapEntry: Гидротермальное жерло
-CoralMapEntry: Коралл
-KelpMapEntry: "{$Items.Kelp.DisplayName}"
-GarInAJar_Tile.MapEntry: "{$Items.GarInAJar.DisplayName}"
-CloudstalkTile.MapEntry: "{$Items.Cloudstalk.DisplayName}"
-SmallDriftwoodTile.MapEntry: "{$Items.SmallDriftwoodItem.DisplayName}"
-MediumDriftwoodTile.MapEntry: "{$Items.MediumDriftwoodItem.DisplayName}"
-LargeDriftwoodTile.MapEntry: "{$Items.LargeDriftwoodItem.DisplayName}"
-BambooBirdCage.MapEntry: "{$Items.BambooBirdCageItem.DisplayName}"
-KoiTotemTile.MapEntry: "{$Items.KoiTotem.DisplayName}"
-HerosMemorialStatue.MapEntry: "{$Items.HerosMemorialStatueItem.DisplayName}"
-TermiteJar_Tile.MapEntry: "{$Items.TermiteJar.DisplayName}"
-GarInAJarTile.MapEntry: "{$Items.GarInAJar.DisplayName}"
-KillieFishbowlTile.MapEntry: "{$Items.KillieFishbowl.DisplayName}"
 OreCarts.MapEntry: Вагонетка
 PotionVats.MapEntry: Чан для зелий
 ObsidianShroom.MapEntry: Обсидиановый гриб
 Starflower.MapEntry: Звёздоцвет
 BonsaiTrees.MapEntry: Бонсай
+DustyTomb.MapEntry: Запылившийся гроб

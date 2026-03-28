@@ -3,6 +3,16 @@ Biomes: {
 		DisplayName: Savanna
 		TownNPCDialogueName: the Savanna
 	}
+
+	SaltBiome: {
+		DisplayName: Salt Flats
+		TownNPCDialogueName: the Salt Flats
+	}
+
+	ZigguratBiome: {
+		DisplayName: Ziggurat
+		TownNPCDialogueName: the Ziggurat
+	}
 }
 
 SlotContexts.Backpack: Pack
@@ -12,6 +22,9 @@ Conditions: {
 	PeevedTumbler: When sparkling
 	Discovered: Discovery
 	Submerged: Submerged
+	InSaltFlats: In Salt Flats
+	IsPrickly: When prickly
+	InZiggurat: In the Ziggurat
 }
 
 Misc: {
@@ -51,5 +64,17 @@ GameTips: {
 
 Emotes: {
 	CartographerEmote.Command: cartographer
-	HikerEmote.Command: hikeremote
+	HikerEmote.Command: hiker
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Ledger
+		Description: Showing price tooltips
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Shimmersight
+		Description: Showing shimmer tooltips
+	}
 }

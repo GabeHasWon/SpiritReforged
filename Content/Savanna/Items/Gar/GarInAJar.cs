@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Items.Gar;
@@ -5,6 +6,8 @@ namespace SpiritReforged.Content.Savanna.Items.Gar;
 [AutoloadEquip(EquipType.Head)]
 public class GarInAJar : ModItem
 {
+	public override void SetStaticDefaults() => ItemMethods.HideEquipSlot(Type, EquipType.Head, TextureAssets.ArmorHead);
+
 	public override void SetDefaults()
 	{
 		Item.width = 32;
@@ -43,8 +46,7 @@ public class GarInAJarTile : ModTile
 		DustType = DustID.Glass;
 		AnimationFrameHeight = 36;
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(200, 200, 200), name);
+		AddMapEntry(new Color(200, 200, 200), Language.GetText("Mods.SpiritReforged.Items.GarInAJar.DisplayName"));
 	}
 
 	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) => offsetY = 2;
@@ -82,7 +84,7 @@ internal class GarInAJarLayer : PlayerDrawLayer
 
 	private static Asset<Texture2D> Texture;
 
-	public override void Load() => Texture = ModContent.Request<Texture2D>(ModContent.GetInstance<GarInAJar>().Texture + "_Head2");
+	public override void Load() => Texture = ModContent.Request<Texture2D>(ModContent.GetInstance<GarInAJar>().Texture + "_Head");
 	public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FaceAcc);
 
 	protected override void Draw(ref PlayerDrawSet drawInfo)

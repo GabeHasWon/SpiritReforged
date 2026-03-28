@@ -30,7 +30,7 @@ public class RumFire : ModProjectile
 
 	public override void AI()
 	{
-		if (!Projectile.Surface())
+		if (!Projectile.Surface() || Projectile.wet)
 		{
 			Projectile.Kill();
 			return;
@@ -142,6 +142,8 @@ public class RumExplosion : ModProjectile
 			}
 		}
 	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
 
 	public override bool PreDraw(ref Color lightColor)
 	{

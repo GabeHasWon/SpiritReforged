@@ -1,19 +1,25 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Forest.WoodClub;
 
-class WoodenClubProj : BaseClubProj, IManualTrailProjectile
+class WoodenClubProj : BaseClubProj
 {
 	public WoodenClubProj() : base(new Vector2(58)) { }
 
 	public override float WindupTimeRatio => 0.8f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public override void OnSwingStart()
+	{
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+	}
+
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 52 * MeleeSizeModifier;
 		float trailWidth = 30 * MeleeSizeModifier;
@@ -36,14 +42,12 @@ class WoodenClubProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 0.5f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
-
-	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(8);

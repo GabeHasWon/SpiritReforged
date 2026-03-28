@@ -10,9 +10,9 @@ namespace SpiritReforged.Content.Granite.Armor;
 public class GraniteBody : ModItem
 {
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;
-	private static void DoubleTap(Player player, int keyDir)
+	private static void DoubleTap(Player player, DoubleTapPlayer.Direction direction)
 	{
-		if (!EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
+		if (direction == DoubleTapPlayer.Direction.Down && !EnergyPlunge.Stomping(player) && EnergyPlunge.CanStomp(player))
 			EnergyPlunge.Begin(player);
 	}
 
@@ -35,7 +35,8 @@ public class GraniteBody : ModItem
 
 	public override void UpdateEquip(Player player) => Player.jumpSpeed += 1;
 	public override void ArmorSetShadows(Player player) => player.armorEffectDrawShadow = true;
-	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == ModContent.ItemType<GraniteHead>() || head.type is ItemID.UltrabrightHelmet or ItemID.NightVisionHelmet) && body.type == Type && legs.type == ModContent.ItemType<GraniteLegs>();
+	public override bool IsArmorSet(Item head, Item body, Item legs) => (head.type == ModContent.ItemType<GraniteHead>() || head.type is ItemID.UltrabrightHelmet or ItemID.NightVisionHelmet) 
+		&& body.type == Type && legs.type == ModContent.ItemType<GraniteLegs>();
 
 	public override void UpdateArmorSet(Player player) //Normally set effects would go into the head armor class, but that's not possible here due to the alternative helmet functionality
 	{

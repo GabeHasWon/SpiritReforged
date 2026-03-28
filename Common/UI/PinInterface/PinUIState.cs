@@ -36,6 +36,9 @@ internal class PinUIState : AutoUIState
 
 	private void ForceDraw(Vector2 arg1, float arg2) //By default, UI doesn't draw when the fullscreen map is open
 	{
+		if (WorldGen.generatingWorld)
+			return;
+
 		UISystem.SetActive<PinUIState>();
 
 		int oldMouseX = Main.mouseX;

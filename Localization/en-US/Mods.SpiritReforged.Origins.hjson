@@ -27,3 +27,27 @@ Hiker: {
 	Flavor: Exploration fuels enjoyment, and they've got the supplies to boot.
 	Description: Starts with 60 Torches, 30 Glowsticks, 150 Ropes atop the highest hill.
 }
+
+Caveman: {
+	DisplayName: Caveman
+	Flavor: The simple life proves productive. One word sums it up: Ug.
+	Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+}
+
+Disentombed: {
+	DisplayName: Disentombed
+	Flavor: Three thousand years have passed...my reign will return. I will return.
+	Description: Starts with the mummy vanity in the Ziggurat.
+}
+
+Worshipper: {
+	DisplayName: Worshipper
+	Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
+	Description: Starts with the Sundancer armor set and a Windshear Scepter in an underground Oasis.
+}
+
+Purifier: {
+	DisplayName: Purifier
+	Flavor: Abhorrent evil begone; burn at the sting of my purity.
+	Description: Starts with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
+}

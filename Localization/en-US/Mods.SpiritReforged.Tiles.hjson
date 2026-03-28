@@ -29,23 +29,17 @@ Records: {
 	Boulder: Rolls along the ground when disturbed.
 }
 
-SunkenTreasureTile.MapEntry: Sunken Treasure
+FablesGraves: {
+	SetNames: {
+		Savanna: Savanna Graves
+		SaltFlats: Salt Graves
+	}
+}
+
 HydrothermalVent.MapEntry: Hydrothermal Vent
-CoralMapEntry: Coral
-KelpMapEntry: Kelp
-GarInAJar_Tile.MapEntry: Gar in a Jar
-CloudstalkTile.MapEntry: Cloudstalk
-SmallDriftwoodTile.MapEntry: Small Driftwood
-MediumDriftwoodTile.MapEntry: Medium Driftwood
-LargeDriftwoodTile.MapEntry: Large Driftwood
-BambooBirdCage.MapEntry: Bamboo Bird Cage
-KoiTotemTile.MapEntry: Koi Totem
-HerosMemorialStatue.MapEntry: A Hero's Memorial
-TermiteJar_Tile.MapEntry: Termite Jar
-GarInAJarTile.MapEntry: Gar In A Jar
-KillieFishbowlTile.MapEntry: Killie Fishbowl
 OreCarts.MapEntry: Minecart
 PotionVats.MapEntry: Potion Vat
 ObsidianShroom.MapEntry: Obsidian Shroom
 Starflower.MapEntry: Starflower
 BonsaiTrees.MapEntry: Bonsai
+DustyTomb.MapEntry: Dusty Tomb
