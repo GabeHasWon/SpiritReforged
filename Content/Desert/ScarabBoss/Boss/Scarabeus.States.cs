@@ -1501,30 +1501,7 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.Y = 0;
 				squishY = 0.7f;
 				artificialGravityMultiplier = 0f;
-
-				if (!Main.dedServ)
-				{
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
-					Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
-					ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
-					SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
-					GroundImpactVFX(1f);
-
-					for (int i = -10; i < 10; i++)
-					{
-						KickupDust(NPC.Bottom + new Vector2(8 * i, 0f), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f));
-					}
-				}
-
-				for (int i = -1; i <= 1; i += 2)
-				{
-					for (int j = 0; j < 4; j++)
-					{
-						float distStep = (200 + j * 56) * i;
-						Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
-					}
-				}
+				DoGroundPoundShockwaves();
 			}
 		}
 
@@ -1604,6 +1581,36 @@ public partial class Scarabeus : ModNPC
 
 		NPC.velocity.Y += downwardsSlamGravity * artificialGravityMultiplier;
 		return 1f;
+	}
+
+	public void DoGroundPoundShockwaves()
+	{
+		if (!Main.dedServ)
+		{
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
+			Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
+			ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
+			SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
+			GroundImpactVFX(1f);
+
+			for (int i = -10; i < 10; i++)
+			{
+				KickupDust(NPC.Bottom + new Vector2(8 * i, 0f), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f));
+			}
+		}
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
+		for (int i = -1; i <= 1; i += 2)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				float distStep = (200 + j * 56) * i;
+				Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
+				Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
+			}
+		}
 	}
 
 	bool GroundPoundFallSoundTrack(ActiveSound sound)

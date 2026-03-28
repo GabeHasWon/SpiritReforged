@@ -146,7 +146,7 @@ public partial class Scarabeus : ModNPC
 	{
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));
-		sheenShader.Parameters["resolution"].SetValue(texture.Size());
+		sheenShader.Parameters["resolution"].SetValue(texture.Size()); 
 		sheenShader.Parameters["sheenOpacityMultiplier"].SetValue(Main.getGoodWorld ? 0.4f : 0.15f);
 		sheenShader.Parameters["saturationBoost"].SetValue(Main.getGoodWorld ? 0.5f : 0.15f);
 		sheenShader.Parameters["time"].SetValue(Main.GlobalTimeWrappedHourly);
@@ -187,7 +187,7 @@ public partial class Scarabeus : ModNPC
 			origin.X = NPC.frame.Width - origin.X;
 
 		var bestiaryOffset = new Vector2(-12, 8);
-		position -= screenPos + new Vector2(0, 9);
+		position -= screenPos + new Vector2(0, 8);
 		if (NPC.IsABestiaryIconDummy)
 			position -= bestiaryOffset;
 
@@ -415,7 +415,7 @@ public partial class Scarabeus : ModNPC
 			ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection, false);
 
 			if (effect.HasParameter("WorldViewProjection"))
-				effect.Parameters["WorldViewProjection"].SetValue(view * projection);
+				effect.Parameters["WorldViewProjection"].SetValue(Matrix.CreateTranslation(-0.5f, -0.5f, 0) * projection);
 
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
 				pass.Apply();
