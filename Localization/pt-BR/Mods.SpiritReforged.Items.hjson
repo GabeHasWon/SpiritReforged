@@ -2044,7 +2044,7 @@ HardlightVisor: {
 	DisplayName: Viseira Brilhante
 	Tooltip: ""
 	AltDisplayName: Viseira Brilhante
-	AltTooltip: "''"
+	AltTooltip: ""
 }
 
 PolishedAmberItem: {
