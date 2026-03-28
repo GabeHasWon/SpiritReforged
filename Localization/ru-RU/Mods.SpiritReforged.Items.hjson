@@ -984,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: Метельник
-	Tooltip: Вызывает перед вами снежную бурю
+	Tooltip:
+		'''
+		Вызывает перед вами снежную бурю
+		Игнорирует часть защиты врага
+		'''
 }
 
 RogueCrest: {
