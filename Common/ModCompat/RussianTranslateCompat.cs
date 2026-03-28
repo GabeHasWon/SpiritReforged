@@ -9,6 +9,7 @@ using SpiritReforged.Content.Underground.WayfarerSet;
 using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 
 namespace SpiritReforged.Common.ModCompat;
+
 internal class RussianTranslateCompat : ModSystem
 {
 	public override void PostSetupContent()

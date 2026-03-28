@@ -549,7 +549,7 @@ LootBag.DisplayName: Loot Bag
 Scarabeus: {
 	DisplayName: Scarabeus
 	Title: Crested Idol
-	Entry: ""
+	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
 }
 
 TinyGrub.DisplayName: Tiny Grub
