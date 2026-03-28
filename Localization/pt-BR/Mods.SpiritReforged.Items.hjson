@@ -1569,7 +1569,7 @@ PotionVatsCloningItem: {
 
 SilverFoodPlatterItem: {
 	// DisplayName: Silver Food Platter
-	// Tooltip: <right> to place item on platter
+	// Tooltip: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -2103,8 +2103,6 @@ CommonPotsSavannaItem: {
 	// Tooltip: ""
 }
 
-// StactusBannerItem.DisplayName: Stactus Banner
-
 SunEarrings: {
 	// DisplayName: Sundancer Earrings
 	/* Tooltip:
@@ -2570,7 +2568,7 @@ TrellisDrywoodItem: {
 }
 
 TrellisTwoDrywoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	// DisplayName: Crossed Drywood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2633,9 +2631,6 @@ PineappleSeeds: {
 	// DisplayName: Pineapple Seeds
 	// Tooltip: ""
 }
-
-// StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
-// StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
 
 Dragonsong: {
 	// DisplayName: Dragonsong
@@ -2734,8 +2729,6 @@ AncientBooksItem: {
 	// DisplayName: Ancient Book
 	// Tooltip: "'Rendered unreadable by time'"
 }
-
-// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
 
 SaltGlassWallItem: {
 	// DisplayName: Salt Glass Wall
@@ -2955,8 +2948,8 @@ ScarabPetItem: {
 }
 
 CarrotCake: {
-	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Carrot Cake
+	// Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {

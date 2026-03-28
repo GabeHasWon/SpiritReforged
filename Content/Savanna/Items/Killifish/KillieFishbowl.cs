@@ -52,8 +52,7 @@ public class KillieFishbowlTile : ModTile
 		DustType = DustID.Glass;
 		AnimationFrameHeight = 54;
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(200, 200, 200), name);
+		AddMapEntry(new Color(200, 200, 200), Language.GetText("Mods.SpiritReforged.Items.KillieFishbowl.DisplayName"));
 	}
 
 	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) => offsetY = 2;

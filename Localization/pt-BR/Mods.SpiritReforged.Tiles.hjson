@@ -36,31 +36,10 @@ FablesGraves: {
 	}
 }
 
-SunkenTreasureTile.MapEntry: Tesouro Afundado
 HydrothermalVent.MapEntry: Ventiladora Hidrotermal
-CoralMapEntry: Coral
-KelpMapEntry: Alga Marinha
-GarInAJar_Tile.MapEntry: Gar em um Jarro
-CloudstalkTile.MapEntry: Talos Nuvem
-SmallDriftwoodTile.MapEntry: Madeira à Deriva Pequena
-MediumDriftwoodTile.MapEntry: Madeira à Deriva Média
-LargeDriftwoodTile.MapEntry: Madeira à Deriva Grande
-BambooBirdCage.MapEntry: Gaiola de Bambu
-KoiTotemTile.MapEntry: Totem de Koi
-HerosMemorialStatue.MapEntry: Memorial de um Herói
-TermiteJar_Tile.MapEntry: Pote de Cupim
-GarInAJarTile.MapEntry: Gar em um Jarro
-KillieFishbowlTile.MapEntry: Aquário de Killie
 // OreCarts.MapEntry: Minecart
 // PotionVats.MapEntry: Potion Vat
 // ObsidianShroom.MapEntry: Obsidian Shroom
 // Starflower.MapEntry: Starflower
 // BonsaiTrees.MapEntry: Bonsai
-OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
-// SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
-// ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 // DustyTomb.MapEntry: Dusty Tomb
-// EnlilStatue.MapEntry: Enlil Statue
-// StoneReliquary.MapEntry: Reliquary
-// ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-// SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"

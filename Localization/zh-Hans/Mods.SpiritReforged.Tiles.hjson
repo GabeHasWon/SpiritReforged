@@ -36,31 +36,10 @@ FablesGraves: {
 	}
 }
 
-SunkenTreasureTile.MapEntry: 沉没的宝藏
 HydrothermalVent.MapEntry: 热液喷口
-CoralMapEntry: 珊瑚
-KelpMapEntry: 海带
-GarInAJar_Tile.MapEntry: 罐中雀鳝
-CloudstalkTile.MapEntry: 云茎
-SmallDriftwoodTile.MapEntry: 小型浮木
-MediumDriftwoodTile.MapEntry: 中型浮木
-LargeDriftwoodTile.MapEntry: 大型浮木
-BambooBirdCage.MapEntry: 条纹竹鸟笼
-KoiTotemTile.MapEntry: 锦鲤图腾
-HerosMemorialStatue.MapEntry: 英雄纪念碑
-TermiteJar_Tile.MapEntry: 白蚁罐
-GarInAJarTile.MapEntry: 罐中雀鳝
-KillieFishbowlTile.MapEntry: 鳉鱼鱼缸
 OreCarts.MapEntry: 矿车
 PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
 Starflower.MapEntry: 星状花
 BonsaiTrees.MapEntry: 盆栽
-OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
-SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
-ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 DustyTomb.MapEntry: 尘埃陵墓
-EnlilStatue.MapEntry: 恩利尔雕像
-StoneReliquary.MapEntry: 圣物盒
-ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"

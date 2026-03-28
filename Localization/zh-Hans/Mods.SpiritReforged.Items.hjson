@@ -2107,8 +2107,6 @@ CommonPotsSavannaItem: {
 	Tooltip: ""
 }
 
-StactusBannerItem.DisplayName: 刺角株旗
-
 SunEarrings: {
 	DisplayName: 太阳舞者耳环
 	Tooltip:
@@ -2638,9 +2636,6 @@ PineappleSeeds: {
 	Tooltip: ""
 }
 
-StactusCorruptBannerItem.DisplayName: 腐化刺角株旗
-StactusCrimsonBannerItem.DisplayName: 玫瑰刺角株旗
-
 Dragonsong: {
 	DisplayName: 龙歌
 	Tooltip:
@@ -2738,8 +2733,6 @@ AncientBooksItem: {
 	DisplayName: 古书
 	Tooltip: “因时间而难以辨认”
 }
-
-ZigguratMummyBannerItem.DisplayName: 腐朽木乃伊旗
 
 SaltGlassWallItem: {
 	DisplayName: 盐玻璃墙
@@ -2959,8 +2952,8 @@ ScarabPetItem: {
 }
 
 CarrotCake: {
-	Tooltip: "{$BuffDescription.WellFed3}"
 	DisplayName: 胡萝卜蛋糕
+	Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {

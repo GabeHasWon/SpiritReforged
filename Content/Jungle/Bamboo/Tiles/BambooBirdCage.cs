@@ -53,8 +53,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(100, 100, 60), name);
+		AddMapEntry(new Color(100, 100, 60), Language.GetText("Mods.SpiritReforged.Items.BambooBirdCageItem.DisplayName"));
 		DustType = -1;
 		RegisterItemDrop(ItemType);
 	}

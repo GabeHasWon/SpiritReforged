@@ -1,15 +1,15 @@
 CommonTooltips: {
 	Backpack:
 		'''
-		Вмещает 4 предмета
-		Перед снятием достаньте все предметы
+		Вмещает {0} {^0:предмет;предмета;предметов}
+		Перед снятием из него необходимо достать все предметы
 		'''
 	Shimmerable: "{0} Можно трансмутировать в мерцании"
 }
 
 Kelp: {
 	DisplayName: Ламинария
-	Tooltip: Нужно сажать в воду
+	Tooltip: Можно посадить только в воде
 }
 
 PirateChestItem: {
@@ -76,17 +76,17 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: Нагрудник рифового охотника
+	DisplayName: Нагрудник охотника рифов
 	Tooltip: Увеличивает сопротивление к отбрасыванию на 50%
 }
 
 CascadeHelmet: {
-	DisplayName: Шлем рифового охотника
+	DisplayName: Шлем охотника рифов
 	Tooltip: Позволяет дышать под водой
 }
 
 CascadeLeggings: {
-	DisplayName: Поножи рифового охотника
+	DisplayName: Поножи охотника рифов
 	Tooltip: Увеличивает скорость передвижения в воде на 15%
 }
 
@@ -99,8 +99,8 @@ Lifesaver: {
 	DisplayName: Спасатель
 	Tooltip:
 		'''
-		Призывает ездового ската манту
-		Скат не может передвигаться по суше, но умеет парить над жидкостями
+		Призывает ездового ската
+		Скат не может передвигаться по суше, но умеет плавать и выпрыгивать из жидкостей
 		'''
 }
 
@@ -116,11 +116,11 @@ IridescentScale: {
 
 OceanPendant: {
 	DisplayName: Сокровище мерфолка
-	Tooltip: Значительно улучшает передвижение под водой
+	Tooltip: Значительно улучшает подвижность под водой
 }
 
 ReefSpear: {
-	DisplayName: Рифовый пронзатель
+	DisplayName: Пронзатель рифов
 	Tooltip:
 		'''
 		Нажмите ПКМ, чтобы метнуть
@@ -140,11 +140,11 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: Панцирная щука в банке
+	DisplayName: Панцирник в банке
 }
 
 GarItem: {
-	DisplayName: Панцирная щука
+	DisplayName: Панцирник
 	Tooltip: ""
 }
 
@@ -154,7 +154,7 @@ SavannaDirtItem: {
 }
 
 GoldGarItem: {
-	DisplayName: Золотая панцирная щука
+	DisplayName: Золотой панцирник
 	Tooltip: ""
 }
 
@@ -179,7 +179,7 @@ Nigiri: {
 }
 
 HoneySalmon: {
-	DisplayName: Лосось в медовой глазури
+	DisplayName: Филе в медовой глазури
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -188,7 +188,7 @@ HoneySalmon: {
 }
 
 FishChips: {
-	DisplayName: Рыбные чипсы
+	DisplayName: Рыба с картошкой фри
 	Tooltip: "{$BuffDescription.WellFed}"
 }
 
@@ -197,7 +197,7 @@ CrystalFish: {
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed2}
-		Усиливает магическую силу
+		Увеличивает магическую силу
 		'''
 }
 
@@ -224,7 +224,7 @@ GoldenCaviar: {
 		'''
 }
 
-GarBannerItem.DisplayName: Знамя панцирной щуки
+GarBannerItem.DisplayName: Знамя панцирника
 
 CoconutMilk: {
 	DisplayName: Кокосовое молоко
@@ -236,17 +236,17 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: Древний нагрудник водолаза
+	DisplayName: Ржавый нагрудник водолаза
 	Tooltip: ""
 }
 
 DiverHead: {
-	DisplayName: Древний шлем водолаза
+	DisplayName: Ржавый шлем водолаза
 	Tooltip: ""
 }
 
 DiverLegs: {
-	DisplayName: Древние штаны водолаза
+	DisplayName: Ржавые штаны водолаза
 	Tooltip: ""
 }
 
@@ -272,7 +272,7 @@ BambooBenchItem: {
 
 BambooBirdCageItem: {
 	DisplayName: Бамбуковая птичья клетка
-	Tooltip: Некоторых птиц можно поместить внутрь, нажав ПКМ
+	Tooltip: Нажмите ПКМ, чтобы посадить птицу внутрь
 }
 
 BambooPikeItem: {
@@ -296,7 +296,7 @@ SteamedMussels: {
 
 JellyCandle: {
 	DisplayName: Медузья свеча
-	Tooltip: Призывает парящую медузу, которая следует за вами
+	Tooltip: Призывает парящую медузу, следующую за вами
 }
 
 SmallDriftwoodItem: {
@@ -305,7 +305,7 @@ SmallDriftwoodItem: {
 }
 
 MediumDriftwoodItem: {
-	DisplayName: Средняяя коряга
+	DisplayName: Средняя коряга
 	Tooltip: «Приятна для глаз»
 }
 
@@ -346,7 +346,7 @@ DriftwoodWallItem: {
 
 Cloudstalk: {
 	DisplayName: Облачник
-	Tooltip: «Встречается на большой высоте»
+	Tooltip: «Растёт на больших высотах»
 }
 
 CloudstalkSeed: {
@@ -356,7 +356,7 @@ CloudstalkSeed: {
 
 DoubleJumpPotion: {
 	DisplayName: Зелье бриза
-	Tooltip: Даёт временный двойной прыжок
+	Tooltip: Позволяет совершать дополнительный прыжок
 }
 
 FlightPotion: {
@@ -365,7 +365,7 @@ FlightPotion: {
 }
 
 HangingCloudstalkItem: {
-	DisplayName: Свисающий облачник
+	DisplayName: Подвесной облачник
 	Tooltip: ""
 }
 
@@ -416,21 +416,21 @@ BambooHalberd: {
 
 BambooKendoBlade: {
 	DisplayName: Бамбуковый синай
-	Tooltip: Нажмите ПКМ, чтобы совершить рывок вперёд
+	Tooltip: Нажмите ПКМ, чтобы совершить рывок
 }
 
 KoiTotem: {
 	DisplayName: Тотем кои
 	Tooltip:
 		'''
-		Увеличивает мастерство рыбалки, если размещён поблизости
-		Имеет шас восстановить последнюю использованную наживку
+		Увеличивает навык рыбной ловли в большом радиусе
+		Даёт шанс восстановить последнюю использованную наживку
 		'''
 }
 
 FairyWhistle: {
 	DisplayName: Свисток феи
-	Tooltip: Призывает фею парить вокруг и защищать вас
+	Tooltip: Вызывает фею-защитницу парить вокруг
 }
 
 TermiteItem: {
@@ -440,11 +440,11 @@ TermiteItem: {
 
 StarPowder: {
 	DisplayName: Звёздный порошок
-	Tooltip: Примените на траве, чтобы наполнить её звёздным светом!
+	Tooltip: Рассыпьте на траву, чтобы наполнить её звёздным светом!
 }
 
 TermiteJar: {
-	DisplayName: Банка с термитами
+	DisplayName: Термиты в банке
 	Tooltip: «Экологический ужас»
 }
 
@@ -452,8 +452,8 @@ ButterflyStaff: {
 	DisplayName: Посох эфирной бабочки
 	Tooltip:
 		'''
-		Призывает магическую бабочку сражаться за вас
-		«Создан из безупречного цветка сакуры»
+		Призывает волшебную бабочку сражаться за вас
+		«Создан из безупречного цветка вишни»
 		'''
 }
 
@@ -463,7 +463,7 @@ PoolNoodle: {
 		'''
 		3 ед. урона от метки призывателя
 		{$CommonItemTooltip.Whips}
-		Поражённые враги могут выпускать взрывы пузырей при атаке миньонов
+		Атаки миньонов по отмеченным врага создают взрывы пузырей
 		'''
 }
 
@@ -474,11 +474,11 @@ ToucaneItem: {
 
 QuenchPotion: {
 	DisplayName: Зелье пресыщения
-	Tooltip: Увеличивает длительность действия остальных зелий на 25%
+	Tooltip: Увеличивает длительность эффектов остальных зелий на 25%
 }
 
 LivingBaobabLeafWallItem: {
-	DisplayName: Стена из живых листьев баобаба
+	DisplayName: Стена из живой листвы баобаба
 	Tooltip: ""
 }
 
@@ -488,18 +488,18 @@ LivingBaobabWallItem: {
 }
 
 LivingBaobabLeafWand: {
-	DisplayName: Ветвь живых листьев баобаба
-	Tooltip: ""
+	DisplayName: Ветвь с листьями баобаба
+	Tooltip: Размещает листья баобаба
 }
 
 LivingBaobabWand: {
 	DisplayName: Ветвь живого баобаба
-	Tooltip: ""
+	Tooltip: Размещает живую древесину баобаба
 }
 
 WrithingSticks: {
 	DisplayName: Извивающиеся ветки
-	Tooltip: Призывает дружелюбное перекати-поле, которое следует за вами
+	Tooltip: Призывает дружелюбное перекати-поле, следующее за вами
 }
 
 BaobabFruit: {
@@ -538,12 +538,12 @@ BeachUmbrellaItem: {
 
 BigBuoy: {
 	DisplayName: Большой буй
-	Tooltip: "{$ItemTooltip.CoralTorch}"
+	Tooltip: Можно разместить на поверхности воды
 }
 
 SmallBuoy: {
-	DisplayName: Малый буй
-	Tooltip: "{$ItemTooltip.CoralTorch}"
+	DisplayName: Маленький буй
+	Tooltip: "{$Items.BigBuoy.Tooltip}"
 }
 
 LoungeChairItem: {
@@ -606,17 +606,17 @@ HuntingRifle: {
 }
 
 SafariHat: {
-	DisplayName: Шляпа для сафари
+	DisplayName: Сафари-шляпа
 	Tooltip: ""
 }
 
 SafariShorts: {
-	DisplayName: Шорты для сафари
+	DisplayName: Сафари-шорты
 	Tooltip: ""
 }
 
 SafariVest: {
-	DisplayName: Жилет для сафари
+	DisplayName: Сафари-жилет
 	Tooltip: ""
 }
 
@@ -646,7 +646,7 @@ DrywoodBookcaseItem: {
 }
 
 DrywoodCandelabraItem: {
-	DisplayName: Канделябр из сухого дерева
+	DisplayName: Подсвечник из сухого дерева
 	Tooltip: ""
 }
 
@@ -857,7 +857,7 @@ BotanistLegs: {
 
 BeachTowel: {
 	DisplayName: Пляжное полотенце
-	Tooltip: «Сохраняет сухость, но не вздумайте прыгать с ним в воду!»
+	Tooltip: «Сохраняет вашу сухость, но не вздумайте прыгать с ним в воду!»
 }
 
 BikiniBottom: {
@@ -867,31 +867,35 @@ BikiniBottom: {
 
 BikiniTop: {
 	DisplayName: Бюстгальтер
-	Tooltip: «Воприки ожиданиям, он действительно не предоставляет никакой защиты.»
+	Tooltip: «Вопреки ожиданиям, он действительно не предоставляет никакой защиты»
 }
 
 SwimmingTrunks: {
 	DisplayName: Плавки
-	Tooltip: «Хотя они особо не защищают, они, определённо, выглядят стильно.»
+	Tooltip: «Хотя они особо не защищают, они, определённо, выглядят стильно»
 }
 
 TintedGlasses: {
 	DisplayName: Тонированные очки
-	Tooltip: «Они придают такого стиля, что лучше их не снимать их даже ночью.»
+	Tooltip: «Они придают такого стиля, что лучше их не снимать даже ночью»
 }
 
 WheatgrassSeedPouch: {
 	DisplayName: Мешочек с семенами пырея
 	Tooltip:
 		'''
-		Разбрасывает семена, покрывая траву пыреем
-		'Шуршит и покачивается в руке'
+		На земле, на которой будет рассыпаны семена, моментально вырастет пырей
+		«Пересыпаются и шуршат в руках»
 		'''
 }
 
 RoyalKhopesh: {
 	DisplayName: Королевский хопеш
-	Tooltip: ""
+	Tooltip:
+		'''
+		Нажмите ПКМ, чтобы метнуть хопеш
+		Повторно нажмите ПКМ, чтобы притянуть к себе поражённого врага и усилить следующую атаку
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -903,8 +907,8 @@ FishLure: {
 	DisplayName: Рыболовная приманка
 	Tooltip:
 		'''
-		{$ItemTooltip.CoralTorch}
-		Привлекает стаи рыб в ближайшие водоёмы
+		{$Items.BigBuoy.Tooltip}
+		Привлекает стаи рыб в ближайшие воды
 		'''
 }
 
@@ -929,7 +933,7 @@ MagmastoneItem: {
 }
 
 SavannaCrateHardmode: {
-	DisplayName: Ящик сафари
+	DisplayName: Сафари-ящик
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -940,7 +944,7 @@ SavannaCrate: {
 
 MineralSlag: {
 	DisplayName: Минеральный шлак
-	Tooltip: Можно использовать в промывателе
+	Tooltip: Можно переработать в промывателе
 }
 
 HyenaBannerItem.DisplayName: Знамя гиены
@@ -967,29 +971,29 @@ DrywoodWallItem: {
 }
 
 ZiplineGun: {
-	DisplayName: Рельсомёт
+	DisplayName: Рельсострел
 	Tooltip:
 		'''
-		Создаёт рельсы в точке, на которую указывает курсор, позволяя игрокам перемещаться
-		Рельсы можно удалить, наведя на них курсор или нажав ПКМ
-		«Не путать с рельсотроном»
+		Создаёт рельсы, по которым могут перемещаться игроки
+		Рельсы можно полностью убрать, нажав ПКМ
+		Нажмите ЛКМ по одному концу рельс, чтобы убрать только его
 		'''
-	AssistantOn: Нажмите ПКМ, чтобы включить ассистента
-	AssistantOff: Нажмите ПКМ, чтобы отключить ассистента
+	AssistantOn: Нажмите ПКМ, чтобы включить предпросмотр
+	AssistantOff: Нажмите ПКМ, чтобы отключить предпросмотр
 }
 
 FrostbiteItem: {
 	DisplayName: Метельник
-	Tooltip: Вызывает снежную бурю перед вами
+	Tooltip: Вызывает перед вами снежную бурю
 }
 
 RogueCrest: {
 	DisplayName: Герб разбойника
 	Tooltip:
 		'''
-		Призывает ржавый меч сражаться за вас
-		Этот меч не занимает слоты призываемых миньонов
-		Иногда накладывает дебафф «{$Buffs.OpenWounds.DisplayName}», из-за которого враги истекают кровью при ударах оружием ближнего боя
+		Призывает ржавый меч, не занимающий слоты миньонов, сражаться за вас
+		Меч может наложить дебафф «{$Buffs.OpenWounds.DisplayName}» на поражённых врагов
+		Атаки по врагам с этим дебаффом оружием ближнего боя вызывают у них кровотечение
 		'''
 }
 
@@ -997,8 +1001,8 @@ GildedScarab: {
 	DisplayName: Позолоченный скарабей
 	Tooltip:
 		'''
-		При получении урона временно даёт бафф, увеличивающий защиту
-		Чем больше урона вы получаете, тем сильнее увеличивается защита
+		Увеличивает защиту после получения урона
+		Чем больше урона было получено, тем выше будет бонус к защите
 		'''
 }
 
@@ -1009,7 +1013,7 @@ SparrowItem: {
 
 Blunderbuss: {
 	DisplayName: Мушкетон
-	Tooltip: Стреляет пулями широким разбросом
+	Tooltip: Стреляет с широким разбросом
 }
 
 SafekeeperRing: {
@@ -1024,17 +1028,17 @@ SafekeeperRing: {
 PeevedTumblerBannerItem.DisplayName: Знамя раздражённого перекати-поля
 
 LeatherHood: {
-	DisplayName: Капюшон стрелка
+	DisplayName: Капюшон застрельщика
 	Tooltip: Увеличивает шанс критического удара на 5%
 }
 
 LeatherLegs: {
-	DisplayName: Ботинки стрелка
+	DisplayName: Ботинки застрельщика
 	Tooltip: ""
 }
 
 LeatherPlate: {
-	DisplayName: Нагрудник стрелка
+	DisplayName: Нагрудник застрельщика
 	Tooltip: ""
 }
 
@@ -1042,9 +1046,9 @@ ExplorerTreadsItem: {
 	DisplayName: Ботинки исследователя
 	Tooltip:
 		'''
-		Увеличивает скорость передвижения на 5% за каждые 10% потерянного здоровья
-		Даёт 50% шанс избежать ловушек и опасностей
-		«С такими ботинками даже исследования храмов превращаются в обычную прогулку»
+		Даёт 50% шанс уклониться от урона ловушки
+		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
+		«С такими ботинками даже исследование храмов превращаются в обычную прогулку»
 		'''
 }
 
@@ -1059,14 +1063,14 @@ LeatherCloakItem: {
 
 CactusStaff: {
 	DisplayName: Кактусовый посох
-	Tooltip: Призывает кактусовые стены для защиты
+	Tooltip: Призывает кактусовые стены на вашу защиту
 }
 
 PearlString: {
 	DisplayName: Жемчужное ожерелье
 	Tooltip:
 		'''
-		С убитых врагов выпадает больше монет
+		С убитых врагов будет выпадать больше монет
 		«Вы чувствуете себя везучим»
 		'''
 }
@@ -1087,11 +1091,11 @@ DriftwoodFenceItem: {
 }
 
 ArcaneNecklaceGold: {
-	DisplayName: Арканическое ожерелье
+	DisplayName: Арканное ожерелье
 	Tooltip:
 		'''
 		Увеличивает максимальный запас маны на 20 ед.
-		При попадании по врагам могут выпадать звёзды маны
+		С поражённых врагов могут выпасть звёзды маны
 		'''
 }
 
@@ -1121,17 +1125,17 @@ PinYellow: {
 }
 
 PinHive: {
-	DisplayName: Улиная булавка
+	DisplayName: Булавка с ульем
 	Tooltip: ""
 }
 
 PinButterfly: {
-	DisplayName: Булавка-бабочка
+	DisplayName: Булавка с бабочкой
 	Tooltip: ""
 }
 
 PinFaeling: {
-	DisplayName: Булавка-феечка
+	DisplayName: Булавка с феечкой
 	Tooltip: ""
 }
 
@@ -1146,7 +1150,7 @@ PinCuriosity: {
 }
 
 PinSky: {
-	DisplayName: Небеская булавка
+	DisplayName: Небесная булавка
 	Tooltip: ""
 }
 
@@ -1157,7 +1161,7 @@ PinSword: {
 
 TornMapPiece: {
 	DisplayName: Обрывок карты
-	Tooltip: Открывает окружающую область карты
+	Tooltip: Открывает небольшую область карты вокруг вас
 }
 
 FashionableBackpack: {
@@ -1165,7 +1169,7 @@ FashionableBackpack: {
 	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		«Современно, элегантно и всё ещё практично.»
+		«Современно, изящно и всё ещё практично»
 		'''
 }
 
@@ -1179,11 +1183,11 @@ HikingBackpack: {
 }
 
 Minipack: {
-	DisplayName: Мини-рюкзак
+	DisplayName: Рюкзачок
 	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		«Маленький, лёгкий и очень компактный!»
+		«Маленький, лёгкий и очень компактный»
 		'''
 }
 
@@ -1192,7 +1196,7 @@ PinkPack: {
 	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		«Лучшего цвета, практичен и заметен издалека!»
+		«Прекрасного цвета, практичный и заметен издалека»
 		'''
 }
 
@@ -1201,7 +1205,7 @@ PouchPack: {
 	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		«Простой, удобный и легко пачкающийся»
+		«Простой, удобный и с вечно вываливающимся содержимым»
 		'''
 }
 
@@ -1215,7 +1219,7 @@ DyeCrateItem: {
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: Музыкальная шкатулка (Ночь в саванне)
+	DisplayName: Музыкальная шкатулка (Ночная саванна)
 	Tooltip: ""
 }
 
@@ -1225,7 +1229,7 @@ SavannaPylonItem: {
 }
 
 CraneFeather: {
-	DisplayName: Перо журавля
+	DisplayName: Журавлиное перо
 	Tooltip: Увеличивает манёвренность в воздухе
 }
 
@@ -1235,7 +1239,7 @@ TatteredMap: {
 }
 
 CrescentMelon: {
-	DisplayName: Долька дыни
+	DisplayName: Дыня-полумесяц
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -1259,12 +1263,12 @@ NightSky: {
 		'''
 		{$BuffDescription.WellFed2}
 		{$ItemTooltip.ManaRegenerationPotion}
-		«На вкус как космос»
+		«Космический вкус»
 		'''
 }
 
 Pearlberry: {
-	DisplayName: Жемчужная ягода
+	DisplayName: Жемчужика
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -1284,7 +1288,7 @@ DriftwoodHammer: {
 }
 
 RemedyPotion: {
-	DisplayName: Исцеляющее зелье
+	DisplayName: Иммунное зелье
 	Tooltip:
 		'''
 		Даёт невосприимчивость к следующим дебаффам:
@@ -1300,7 +1304,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: Знамя кокосового слизня
 
 OceanDepthsBoxItem: {
-	DisplayName: Музыкальная шкатулка (Глубины океана)
+	DisplayName: Музыкальная шкатулка (Океанические глубины)
 	Tooltip: ""
 }
 
@@ -1316,7 +1320,7 @@ CampfireSpit: {
 
 KillieFishbowl: {
 	DisplayName: Аквариум с рыбкой килли
-	Tooltip: «Возможно, в следующий раз стоит взять аквариум побольше?»
+	Tooltip: «Может, в следующий раз стоит взять аквариум побольше?»
 }
 
 SparrowCageItem: {
@@ -1340,7 +1344,7 @@ WayfarerHead: {
 }
 
 WayfarerBody: {
-	DisplayName: Рюкзак странника
+	DisplayName: Рубашка странника
 	Tooltip: Увеличивает скорость передвижения на 5%
 }
 
@@ -1350,15 +1354,15 @@ WayfarerLegs: {
 }
 
 AncientKoiTotem: {
-	DisplayName: Тотем древнего кои
+	DisplayName: Древний тотем кои
 	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
-	DisplayName: Взрывной гриб
+	DisplayName: Взрывогриб
 	Tooltip:
 		'''
-		Все метаемые взрывчатые предметы увеличиваются в размере... и мощности
+		Вся метательная взрывчатка увеличивается в размере... и мощности
 		Увеличивает задержку между бросками
 		'''
 }
@@ -1384,12 +1388,12 @@ SandBombSticky: {
 }
 
 CoarseBomb: {
-	DisplayName: Бомба грубой земли
+	DisplayName: Грубая земляная бомба
 	Tooltip: Вызывает небольшой взрыв, разбрасывающий грубую землю
 }
 
 CoarseBombSticky: {
-	DisplayName: Липкая бомба грубой земли
+	DisplayName: Липкая грубая земляная бомба
 	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
@@ -1404,16 +1408,16 @@ MudBombSticky: {
 }
 
 HideTunic: {
-	DisplayName: Туника из шкуры
-	Tooltip: Увеличивает размер оружия ближнего боя и его отбрасывание на 25%
+	DisplayName: Одежда из шкуры
+	Tooltip: Увеличивает размер и отбрасывание оружия ближнего боя на 25%
 }
 
 PotteryWheelItem: {
 	DisplayName: Гончарный круг
 	Tooltip:
 		'''
-		Используется для создания декоративных горшочков
-		Нажмите ПКМ по установленному предмету, чтобы просмотреть доступные рецепты
+		Используется для создания декоративных горшков
+		Нажмите ПКМ по установленному кругу, чтобы просмотреть доступные рецепты
 		'''
 }
 
@@ -1423,7 +1427,7 @@ BiomePotsCavernItem: {
 }
 
 OrnatePotsItem: {
-	DisplayName: Изысканный горшок
+	DisplayName: Изящный горшок
 	Tooltip: ""
 }
 
@@ -1468,7 +1472,7 @@ BiomePotsHellItem: {
 }
 
 BiomePotsMushroomItem: {
-	DisplayName: Грибной горшрк
+	DisplayName: Грибной горшок
 	Tooltip: ""
 }
 
@@ -1508,17 +1512,17 @@ PotsSpiderItem: {
 }
 
 PotsCrimsonItem: {
-	DisplayName: Маленький багряный горшочек
+	DisplayName: Маленький багряный горшок
 	Tooltip: ""
 }
 
 PotsPyramidItem: {
-	DisplayName: Маленький горшок пирамид
+	DisplayName: Маленький горшок пирамиды
 	Tooltip: ""
 }
 
 PotsTempleItem: {
-	DisplayName: Маленький горшок пирамиды
+	DisplayName: Маленький горшок Храма
 	Tooltip: ""
 }
 
@@ -1528,7 +1532,7 @@ PotsMarbleItem: {
 }
 
 PotsDesertItem: {
-	DisplayName: Маленький горшок пустыни
+	DisplayName: Маленький пустынный горшок
 	Tooltip: ""
 }
 
@@ -1538,7 +1542,7 @@ CommonPotsMushroomItem: {
 }
 
 SilverPlattersItem: {
-	DisplayName: Серебряное блюдо
+	DisplayName: Закрытое серебряное блюдо
 	Tooltip: ""
 }
 
@@ -1558,7 +1562,7 @@ AetherShipmentItem: {
 }
 
 PotionVatsAntiqueItem: {
-	DisplayName: Античный чан для зелий
+	DisplayName: Антикварный чан для зелий
 	Tooltip: ""
 }
 
@@ -1568,8 +1572,8 @@ PotionVatsCloningItem: {
 }
 
 SilverFoodPlatterItem: {
-	DisplayName: Серебряное блюдце для еды
-	Tooltip: Нажмите ПКМ, чтобы поместить предмет на блюдце
+	DisplayName: Серебряное блюдо
+	Tooltip: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -1578,32 +1582,32 @@ RadonMossItem: {
 }
 
 OganessonMossItem: {
-	DisplayName: Оганессоновый мох
+	DisplayName: Оганесоновый мох
 	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
 RadonMossBrickItem: {
-	DisplayName: Кирпич из радонового мха
+	DisplayName: Радоновый моховой кирпич
 	Tooltip: ""
 }
 
 RadonMossBrickWallItem: {
-	DisplayName: Кирпичная стена из радонового мха
+	DisplayName: Стена из радонового мохового кирпича
 	Tooltip: ""
 }
 
 OganessonMossBrickItem: {
-	DisplayName: Кирпич из оганессонового мха
+	DisplayName: Оганесоновый моховой кирпич
 	Tooltip: ""
 }
 
 OganessonMossBrickWallItem: {
-	DisplayName: Кирпичная стена из оганессонового мха
+	DisplayName: Стена из оганесонового мохового кирпича
 	Tooltip: ""
 }
 
 ScryingPotItem: {
-	DisplayName: Гадальный горшочек
+	DisplayName: Гадальный горшок
 	Tooltip: ""
 }
 
@@ -1613,7 +1617,7 @@ BombCannon: {
 		'''
 		Использует бомбы в качестве боеприпасов
 		Выпущенные из пушки бомбы не разрушают блоки
-		«Бомбическое изобретение»
+		«Подрыв в науке»
 		'''
 }
 
@@ -1632,7 +1636,7 @@ PotionVatsAlchemyItem: {
 	Tooltip: ""
 }
 
-DunceCrabBannerItem.DisplayName: Знамя краба-олуха
+DunceCrabBannerItem.DisplayName: Знамя тупоголового краба
 WheezerBannerItem.DisplayName: Знамя пыхтельника
 
 WheezerStatueItem: {
@@ -1641,37 +1645,37 @@ WheezerStatueItem: {
 }
 
 FlaskArgon: {
-	DisplayName: Флакон аргонового мха
-	Tooltip: При попадании распространяет светящийся мох
+	DisplayName: Флакон с аргоновым мхом
+	Tooltip: Распространяет светящийся мох при столкновении
 }
 
 FlaskHelium: {
-	DisplayName: Флакон геливого мха
+	DisplayName: Флакон с гелиевым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
-	DisplayName: Флакон криптонового мха
+	DisplayName: Флакон с криптоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
-	DisplayName: Флакон неонового мха
+	DisplayName: Флакон с неоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
-	DisplayName: Флакон оганессонового мха
+	DisplayName: Флакон с оганесоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
-	DisplayName: Флакон радонового мха
+	DisplayName: Флакон с радоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
-	DisplayName: Флакон ксенонового мха
+	DisplayName: Флакон с ксеноновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1686,7 +1690,7 @@ CommonPotsGraniteItem: {
 }
 
 OganessonBobber: {
-	DisplayName: Поплавок с оганессоновым мхом
+	DisplayName: Поплавок с оганесоновым мхом
 	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
@@ -1697,12 +1701,12 @@ RadonBobber: {
 
 LandscapingShears: {
 	DisplayName: Садовые ножницы
-	Tooltip: Увеличивают количество ресурсов при сборе листвы
+	Tooltip: Увеличивают получаемое количество ресурсов при сборе растительности
 }
 
 WoodenClub: {
-	DisplayName: Деревянная дубинка
-	Tooltip: Можно зарядить для увеличения урона и отбрасывания
+	DisplayName: Деревянная дубина
+	Tooltip: Зарядите, чтобы увеличить урон и отбрасывание
 }
 
 GoldClub: {
@@ -1715,7 +1719,7 @@ PlatinumClub: {
 	Tooltip:
 		'''
 		Выполняет взмах вверх, подбрасывая врагов в воздух
-		Удерживайте, чтобы завершить ударом сверху вниз
+		Зарядите, чтобы совершить удар сверху вниз
 		'''
 }
 
@@ -1723,8 +1727,8 @@ FrostGiantBelt: {
 	DisplayName: Пояс ледяного великана
 	Tooltip:
 		'''
-		Даёт 50% сопротивление к отбрасыванию во время заряда дубинки
-		Заряд дубинки постепенно увеличивает защиту
+		Увеличивает сопротивление к отбрасыванию во время зарядки дубины на 50%
+		Постепенно увеличивает вашу защиту во время зарядки дубины
 		'''
 }
 
@@ -1732,39 +1736,43 @@ Macuahuitl: {
 	DisplayName: Макуауитль
 	Tooltip:
 		'''
-		Быстро вращается вокруг персонажа, накладывая кровотечение
-		Заряженные удары наносят дополнительный урон кровоточащим врагам
+		Быстро раскручивается вокруг вас, накладывая кровотечение на поражённых врагов
+		Полностью заряженные удары наносят дополнительный урон врагам с кровотечением
 		'''
 }
 
 BassSlapper: {
 	DisplayName: Окунешлёп
-	Tooltip: Полный заряд позволяет нанести серию быстрых ударов
+	Tooltip: При полном заряде наносит серию из нескольких быстрых ударов
 }
 
 Shockhammer: {
 	DisplayName: Ударный молот
-	Tooltip: Полный заряд выпускает ударную волну, проходящую по земле
+	Tooltip: При полном заряде выпускает ударную волну, протягивающуюся по земле
 }
 
 Bowlder: {
-	DisplayName: Ударный валун
-	Tooltip: Заряженные удары запускают смертоносный валун
+	DisplayName: Глыба
+	Tooltip: При полном заряде запускают смертоносную катящуюся глыбу
 }
 
 BoStaff: {
 	DisplayName: Бо
-	Tooltip: Наносит непрерывный урон, проводя комбинации атак
+	Tooltip: Совершает комбо при продолжительном нанесении урона
 }
 
 Blasphemer: {
 	DisplayName: Богохульник
-	Tooltip: Заряженные удары извергают огненный гейзер
+	Tooltip: Полностью заряженные удары извергают огненный гейзер
 }
 
 Hummus: {
 	DisplayName: Хумус
-	Tooltip: Тёплый и вкусный!
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		«Тёплый и вкусный!»
+		'''
 }
 
 ZenithPotsItem: {
@@ -1778,17 +1786,17 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (День в саванне)
+	DisplayName: Иноминая музыкальная шкатулка (Дневная саванна)
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (Ночь в саванне)
+	DisplayName: Иноминая музыкальная шкатулка (Ночная саванна)
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Потусторонняя музыкальная шкатулка (Пыльная буря)
+	DisplayName: Иноминая музыкальная шкатулка (Пыльная буря)
 	Tooltip: ""
 }
 
@@ -1799,7 +1807,7 @@ SavannaTorchItem: {
 
 FlaskBlue: {
 	DisplayName: Флакон с синим мхом
-	Tooltip: При столкновении распространяет мох
+	Tooltip: Распространяет мох при столкновении
 }
 
 FlaskBrown: {
@@ -1843,11 +1851,11 @@ ElephantKite: {
 }
 
 CartographyTableItem: {
-	DisplayName: Стол картографа
+	DisplayName: Картографический стол
 	Tooltip:
 		'''
 		Позволяет делиться исследованиями карты с другими игроками
-		Взаимодействуйте, чтобы поделиться своими открытиями
+		Нажмите ПКМ по столу, чтобы поделиться своими открытиями
 		'''
 }
 
@@ -1857,7 +1865,7 @@ PurityBonsaiItem: {
 }
 
 RubyBonsaiItem: {
-	DisplayName: Рубиновый бонсай
+	DisplayName: Бонсай из рубинового дерева
 	Tooltip: ""
 }
 
@@ -1872,32 +1880,32 @@ WillowBonsaiItem: {
 }
 
 AmethystBonsaiItem: {
-	DisplayName: Аметистовый бонсай
+	DisplayName: Бонсай из аметистового дерева
 	Tooltip: ""
 }
 
 DiamondBonsaiItem: {
-	DisplayName: Алмазный бонсай
+	DisplayName: Бонсай из алмазного дерева
 	Tooltip: ""
 }
 
 EmeraldBonsaiItem: {
-	DisplayName: Изумрудный бонсай
+	DisplayName: Бонсай из изумрудного дерева
 	Tooltip: ""
 }
 
 SapphireBonsaiItem: {
-	DisplayName: Сапфировый бонсай
+	DisplayName: Бонсай из сапфирового дерева
 	Tooltip: ""
 }
 
 TopazBonsaiItem: {
-	DisplayName: Топазовый бонсай
+	DisplayName: Бонсай из топазового дерева
 	Tooltip: ""
 }
 
 AmberBonsaiItem: {
-	DisplayName: Янтарный бонсай
+	DisplayName: Топаз из янтарного дерева
 	Tooltip: ""
 }
 
@@ -1905,27 +1913,27 @@ JinxBow: {
 	DisplayName: Лук сглаза
 	Tooltip:
 		'''
-		Стреляет по врагам, не расходуя боеприпасы, иногда накладывая на них метку
-		При попадании стрелковыми атаками по врагам с меткой выпускается мощная магическая стрела
+		Стреляет по врагам стрелами, не расходующими боеприпасы и имеющие шанс наложить метку сглаза
+		Атаки по отмеченным врагам стрелковым оружием выпустят из лука мощную магическую стрелу
 		'''
 }
 
 ExplosiveRum: {
 	DisplayName: Взрывной ром
-	Tooltip: «О, а вот и он!»
+	Tooltip: «Куда это ром вечно исчезает? А... Вот куда»
 }
 
 Flarepowder: {
-	DisplayName: Порошок искр
+	DisplayName: Искрящийся порошок
 	Tooltip: Выпускает облако парящего магического порошка
 }
 
 VexpowderBlue: {
-	DisplayName: Порошок смятения
+	DisplayName: Досаждающий порошок
 	Tooltip:
 		'''
 		{$Items.Flarepowder.Tooltip}
-		Накладывает на поражённых врагов дебафф «{$BuffName.Confused}»
+		Накладывает дебафф «{$BuffName.Confused}» на поражённых врагов
 		'''
 }
 
@@ -1935,22 +1943,22 @@ VexpowderRed: {
 }
 
 BreakawayChair: {
-	DisplayName: Ломкий стул
+	DisplayName: Хрупкий стул
 	Tooltip: Ломается при ударе
 }
 
 AncientMarksmanHood: {
-	DisplayName: Древний капюшон стрелка
+	DisplayName: Древний капюшон застрельщика
 	Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	DisplayName: Древние ботинки стрелка
+	DisplayName: Древние ботинки застрельщика
 	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	DisplayName: Древний нагрудник стрелка
+	DisplayName: Древний нагрудник застрельщика
 	Tooltip: ""
 }
 
@@ -1962,12 +1970,12 @@ RollingPotsItem: {
 MossSlimeBannerItem.DisplayName: Знамя мшистого слизня
 
 InvisibleLure: {
-	DisplayName: Невидимая блесна
+	DisplayName: Невидимая приманка
 	Tooltip: "{$Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
-	DisplayName: Перчатка меткого стрелка
+	DisplayName: Перчатка застрельщика
 	Tooltip:
 		'''
 		Увеличивает урон от стрелковых атак на расстоянии
@@ -1976,8 +1984,8 @@ SharpshooterGlove: {
 }
 
 BonsaiPot: {
-	DisplayName: Горшок для бонсая
-	Tooltip: Используется для создания декоративных бонсаев
+	DisplayName: Горшок для бонсай
+	Tooltip: Используется для создания декоративных бонсай
 }
 
 WickerBasketsItem: {
@@ -2016,7 +2024,7 @@ GraniteBody: {
 }
 
 GraniteHead: {
-	DisplayName: Кинетический визор
+	DisplayName: Кинетический щиток
 	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
@@ -2026,1013 +2034,1006 @@ GraniteLegs: {
 }
 
 FingerGun: {
-	DisplayName: Пальцестрел
+	DisplayName: Пальцебластер
 	Tooltip:
 		'''
-		Игнорирует часть защиты врагов
+		Игнорирует часть защиты врага
 		Скорость стрельбы увеличивается при большем запасе маны
 		«Пиу-пиу!»
 		'''
 }
 
 FlaskOfFrost: {
-	DisplayName: Флакон мороза
-	Tooltip: Атаки ближнего боя, а также хлысты накладывают дебафф «{$Buffs.Frozen.DisplayName}»
+	DisplayName: Флакон с морозом
+	Tooltip: Атаки хлыстов и оружия ближнего боя накладывают дебафф «{$Buffs.Frozen.DisplayName}»
 }
 
 HardlightVisor: {
-	DisplayName: Светотвёрдый визор
+	DisplayName: Твёрдосветовой визор
 	Tooltip: ""
-	AltDisplayName: Светопрочный визор
-	AltTooltip: «Не путать со светотвёрдым визором»
+	AltDisplayName: Твердосветовой визор
+	AltTooltip: «Не путать с твёрдосветовой визором»
 }
 
 PolishedAmberItem: {
-	// DisplayName: Polished Amber
-	// Tooltip: ""
+	DisplayName: Гладкий янтарь
+	Tooltip: ""
 }
 
 AmberFossilSafeItem: {
-	// DisplayName: Amber Fossil
-	// Tooltip: ""
+	DisplayName: Янтарное ископаемое
+	Tooltip: ""
 }
 
 GildedSandstoneItem: {
-	// DisplayName: Gilded Sandstone
-	// Tooltip: ""
+	DisplayName: Позолоченный песчаник
+	Tooltip: ""
 }
 
 RedSandstoneBrickItem: {
-	// DisplayName: Red Sandstone Brick
-	// Tooltip: ""
+	DisplayName: Красный песчаниковый кирпич
+	Tooltip: ""
 }
 
 RedSandstoneBrickCrackedItem: {
-	// DisplayName: Cracked Red Sandstone Brick
-	// Tooltip: "'Still structurally sound!'"
+	DisplayName: Потрескавшийся красный песчаниковый кирпич
+	Tooltip: «Всё ещё надёжен для строительства!»
 }
 
 WalkieTalkie: {
-	// DisplayName: Walkie-Talkie
-	// Tooltip: Allows you to talk to the Angler anywhere
-	// Disabled: No one's around to respond...
+	DisplayName: Рация
+	Tooltip: Позволяет поговорить с рыбаком где угодно
+	Disabled: Но на другом конце никого нет...
 }
 
 ScryingLens: {
-	// DisplayName: Scrying Lens
-	// Tooltip: Displays Shimmer transmutations
-	// ShimmerLine: " Shimmers into [i:{0}] [c/FFFFFF:{1}]"
+	DisplayName: Линза предвидения
+	Tooltip: Отображает трансмутации в мерцании
+	ShimmerLine: " Трансмутируется в: [i:{0}] [c/FFFFFF:{1}]"
 }
 
 Ledger: {
-	// DisplayName: Ledger
-	// Tooltip: Displays item coin prices
+	DisplayName: Бухгалтерская книга
+	Tooltip: Отображает стоимость продажи предметов
 }
 
 MysticalCodex: {
-	// DisplayName: Mystical Codex
-	// Tooltip: Displays item coin prices and Shimmer transmutations
+	DisplayName: Загадочный манускрипт
+	Tooltip: Отображает трансмутации и стоимость продажи предметов
 }
 
 CommonPotsSavannaItem: {
-	// DisplayName: Savanna Pot
-	// Tooltip: ""
+	DisplayName: Горшок саванны
+	Tooltip: ""
 }
 
-// StactusBannerItem.DisplayName: Stactus Banner
-
 SunEarrings: {
-	// DisplayName: Sundancer Earrings
-	/* Tooltip:
+	DisplayName: Серьги танцора Солнца
+	Tooltip:
 		'''
-		Increases maximum mana by 20
-		7% increased magic damage
-		''' */
+		Увеличивает максимальный запас маны на 20 ед.
+		Увеличивает магический урон на 7%
+		'''
 }
 
 SilkSirwal: {
-	// DisplayName: Sundancer Sirwal
-	// Tooltip: Increases movement speed and acceleration on the ground
+	DisplayName: Шаровары танцора Солнца
+	Tooltip: Увеличивает скорость и ускорение передвижения по земле
 }
 
 SilkTop: {
-	// DisplayName: Sundancer Top
-	// Tooltip: 7% increased magic damage
+	DisplayName: Накидка танцора Солнца
+	Tooltip: Увеличивает магический урон на 7%
 }
 
 CeremonialDagger: {
-	// DisplayName: Ceremonial Dagger
-	/* Tooltip:
+	DisplayName: Церемониальный нож
+	Tooltip:
 		'''
-		Can be used to sacrifice townsfolk
-		<right> deals critical damage to bleeding enemies
-		''' */
+		Может наносить урон городским НИПам
+		Атака ПКМ всегда наносит критические удары, но только по врагам с кровотечением
+		'''
 }
 
 Thornball: {
-	// DisplayName: Thornball
-	// Tooltip: Sticks to tiles
+	DisplayName: Кактусовый шар
+	Tooltip: Прилипает к блокам
 }
 
 SaltBlockDullItem: {
-	// DisplayName: Dull Salt Block
-	// Tooltip: ""
+	DisplayName: Солончак
+	Tooltip: ""
 }
 
 SaltBlockReflectiveItem: {
-	// DisplayName: Salt Block
-	// Tooltip: "'Smooth and reflective'"
+	DisplayName: Чистая соль
+	Tooltip: «Гладкая и отражающая свет»
 }
 
 NeedleTrapItem: {
-	// DisplayName: Needle Trap
-	// Tooltip: ""
+	DisplayName: Ловушка с иглой
+	Tooltip: ""
 }
 
 DivingBeetleItem: {
-	// DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
-	// Tooltip: ""
+	DisplayName: Плавунец
+	Tooltip: ""
 }
 
 SunDropper: {
-	// DisplayName: Magic Sunlight Dropper
-	// Tooltip: ""
+	DisplayName: Магическая пипетка с солнечным светом
+	Tooltip: ""
 }
 
 OsmosifierItem: {
-	// DisplayName: Osmosifier
-	// Tooltip: Passively produces salt blocks when placed in water
+	DisplayName: Осмосификатор
+	Tooltip: Автоматически создаёт солончак, если размещён в воде
 }
 
 GoldDivingBeetleItem: {
-	// DisplayName: Gold Diving Beetle
-	// Tooltip: ""
+	DisplayName: Золотой плавунец
+	Tooltip: ""
 }
 
 StoneStupasItem: {
-	// DisplayName: Stone Stupa
-	// Tooltip: ""
+	DisplayName: Каменная ступа
+	Tooltip: ""
 }
 
 SaltChestItem: {
-	// DisplayName: Salt Chest
-	// Tooltip: ""
+	DisplayName: Соляной сундук
+	Tooltip: ""
 }
 
 SaltDresserItem: {
-	// DisplayName: Salt Dresser
-	// Tooltip: ""
+	DisplayName: Соляной комод
+	Tooltip: ""
 }
 
 SaltBathtubItem: {
-	// DisplayName: Salt Bathtub
-	// Tooltip: ""
+	DisplayName: Соляная ванна
+	Tooltip: ""
 }
 
 SaltBedItem: {
-	// DisplayName: Salt Bed
-	// Tooltip: ""
+	DisplayName: Соляная кровать
+	Tooltip: ""
 }
 
 SaltBookcaseItem: {
-	// DisplayName: Salt Bookcase
-	// Tooltip: ""
+	DisplayName: Соляной книжный шкаф
+	Tooltip: ""
 }
 
 SaltCandelabraItem: {
-	// DisplayName: Salt Candelabra
-	// Tooltip: ""
+	DisplayName: Соляной подсвечник
+	Tooltip: ""
 }
 
 SaltChandelierItem: {
-	// DisplayName: Salt Chandelier
-	// Tooltip: ""
+	DisplayName: Соляная люстра
+	Tooltip: ""
 }
 
 SaltClockItem: {
-	// DisplayName: Salt Clock
-	// Tooltip: ""
+	DisplayName: Соляные напольные часы
+	Tooltip: ""
 }
 
 SaltDoorItem: {
-	// DisplayName: Salt Door
-	// Tooltip: ""
+	DisplayName: Соляная дверь
+	Tooltip: ""
 }
 
 SaltLampItem: {
-	// DisplayName: Salt Lamp
-	// Tooltip: ""
+	DisplayName: Соляная напольная лампа
+	Tooltip: ""
 }
 
 SaltLanternItem: {
-	// DisplayName: Salt Lantern
-	// Tooltip: ""
+	DisplayName: Соляной фонарь
+	Tooltip: ""
 }
 
 SaltPianoItem: {
-	// DisplayName: Salt Piano
-	// Tooltip: ""
+	DisplayName: Соляное пианино
+	Tooltip: ""
 }
 
 SaltSinkItem: {
-	// DisplayName: Salt Sink
-	// Tooltip: ""
+	DisplayName: Соляная раковина
+	Tooltip: ""
 }
 
 SaltSofaItem: {
-	// DisplayName: Salt Sofa
-	// Tooltip: ""
+	DisplayName: Соляной диван
+	Tooltip: ""
 }
 
 SaltTableItem: {
-	// DisplayName: Salt Table
-	// Tooltip: ""
+	DisplayName: Соляной стол
+	Tooltip: ""
 }
 
 SaltToiletItem: {
-	// DisplayName: Salt Toilet
-	// Tooltip: ""
+	DisplayName: Соляной унитаз
+	Tooltip: ""
 }
 
 SaltWorkBenchItem: {
-	// DisplayName: Salt Work Bench
-	// Tooltip: ""
+	DisplayName: Соляной верстак
+	Tooltip: ""
 }
 
 SaltCandleItem: {
-	// DisplayName: Salt Candle
-	// Tooltip: ""
+	DisplayName: Соляная свеча
+	Tooltip: ""
 }
 
 SaltChairItem: {
-	// DisplayName: Salt Chair
-	// Tooltip: ""
+	DisplayName: Соляной стул
+	Tooltip: ""
 }
 
 OtherworldlyRadioItem: {
-	// DisplayName: Otherworldly Radio
-	/* Tooltip:
+	DisplayName: Иномирное радио
+	Tooltip:
 		'''
-		<right> to toggle Otherworld music
-		'Charmingly old-fashioned'
-		''' */
-	// TunedToNormal: (Standard Frequency)
-	// TunedToOtherworld: (Odd Frequency)
-	// MusicDisplay: "[i:576] You're listening to:"
+		Нажмите ПКМ, чтобы переключить иномирную музыку
+		«Очаровательно старомодный»
+		'''
+	TunedToNormal: (обычная частота)
+	TunedToOtherworld: (необычная частота)
+	MusicDisplay: "[i:576] Вы слушаете:"
 }
 
 SleightOfHand: {
-	// DisplayName: Sleight of Hand
-	/* Tooltip:
+	DisplayName: Ловкость рук
+	Tooltip:
 		'''
-		Double tap {0} while holding a ranged weapon to swap ammo types
-		Works while in the inventory
-		''' */
+		Дважды нажмите клавишу {0}, держа стрелковое оружие, чтобы сменить используемые боеприпасы
+		Работает даже в инвентаре
+		'''
 }
 
 RuinedSandstonePillarItem: {
-	// DisplayName: Ruined Sandstone Pillar
-	// Tooltip: ""
+	DisplayName: Разрушенная песчаниковая колонна
+	Tooltip: ""
 }
 
 GlidingItem: {
-	// DisplayName: Gliding
-	// Tooltip: "'Tix A. Lun'"
+	DisplayName: Картина «Планирование»
+	Tooltip: «Тикс Э. Лун»
 }
 
 ViciousFlamingoItem: {
-	// DisplayName: Vicious Flamingo
-	// Tooltip: "'Tix A. Lun'"
+	DisplayName: Картина «Свирепый фламинго»
+	Tooltip: «Тикс Э. Лун»
 }
 
 SaltWallItem: {
-	// DisplayName: Salt Wall
-	// Tooltip: ""
+	DisplayName: Солончаковая стена
+	Tooltip: ""
 }
 
 JerboaItem: {
-	// DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
-	// Tooltip: ""
+	DisplayName: Тушканчик
+	Tooltip: ""
 }
 
 JarboaItem: {
-	// DisplayName: Jarboa
-	// Tooltip: ""
+	DisplayName: Банка с тушканчиком
+	Tooltip: ""
 }
 
 RedSandstoneBrickWallItem: {
-	// DisplayName: Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: Стена из красного песчаникового кирпича
+	Tooltip: ""
 }
 
 PolishedSandstoneWallItem: {
-	// DisplayName: Polished Sandstone Wall
-	// Tooltip: ""
+	DisplayName: Отполированная песчаниковая стена
+	Tooltip: ""
 }
 
 CarvedLapisItem: {
-	// DisplayName: Carved Lapis
-	// Tooltip: ""
+	DisplayName: Резной лазурит
+	Tooltip: ""
 }
 
 LapisChestItem: {
-	// DisplayName: Lapis Chest
-	// Tooltip: ""
+	DisplayName: Лазуритовый сундук
+	Tooltip: ""
 }
 
 LapisDresserItem: {
-	// DisplayName: Lapis Dresser
-	// Tooltip: ""
+	DisplayName: Лазуритовый комод
+	Tooltip: ""
 }
 
 LapisCandleItem: {
-	// DisplayName: Lapis Candle
-	// Tooltip: ""
+	DisplayName: Лазуритовая свеча
+	Tooltip: ""
 }
 
 LapisBathtubItem: {
-	// DisplayName: Lapis Bathtub
-	// Tooltip: ""
+	DisplayName: Лазуритовая ванна
+	Tooltip: ""
 }
 
 LapisBedItem: {
-	// DisplayName: Lapis Bed
-	// Tooltip: ""
+	DisplayName: Лазуритовая кровать
+	Tooltip: ""
 }
 
 LapisBookcaseItem: {
-	// DisplayName: Lapis Bookcase
-	// Tooltip: ""
+	DisplayName: Лазуритовый книжный шкаф
+	Tooltip: ""
 }
 
 LapisCandelabraItem: {
-	// DisplayName: Lapis Candelabra
-	// Tooltip: ""
+	DisplayName: Лазуритовый подсвечник
+	Tooltip: ""
 }
 
 LapisChairItem: {
-	// DisplayName: Lapis Chair
-	// Tooltip: ""
+	DisplayName: Лазуритовый стул
+	Tooltip: ""
 }
 
 LapisChandelierItem: {
-	// DisplayName: Lapis Chandelier
-	// Tooltip: ""
+	DisplayName: Лазуритовая люстра
+	Tooltip: ""
 }
 
 LapisClockItem: {
-	// DisplayName: Lapis Clock
-	// Tooltip: ""
+	DisplayName: Лазуритовые напольные часы
+	Tooltip: ""
 }
 
 LapisDoorItem: {
-	// DisplayName: Lapis Door
-	// Tooltip: ""
+	DisplayName: Лазуритовая дверь
+	Tooltip: ""
 }
 
 LapisLampItem: {
-	// DisplayName: Lapis Lamp
-	// Tooltip: ""
+	DisplayName: Лазуритовая напольная лампа
+	Tooltip: ""
 }
 
 LapisLanternItem: {
-	// DisplayName: Lapis Lantern
-	// Tooltip: ""
+	DisplayName: Лазуритовый фонарь
+	Tooltip: ""
 }
 
 LapisPianoItem: {
-	// DisplayName: Lapis Piano
-	// Tooltip: ""
+	DisplayName: Лазуритовое пианино
+	Tooltip: ""
 }
 
 LapisSinkItem: {
-	// DisplayName: Lapis Sink
-	// Tooltip: ""
+	DisplayName: Лазуритовая раковина
+	Tooltip: ""
 }
 
 LapisSofaItem: {
-	// DisplayName: Lapis Sofa
-	// Tooltip: ""
+	DisplayName: Лазуритовый диван
+	Tooltip: ""
 }
 
 LapisTableItem: {
-	// DisplayName: Lapis Table
-	// Tooltip: ""
+	DisplayName: Лазуритовый стол
+	Tooltip: ""
 }
 
 LapisToiletItem: {
-	// DisplayName: Lapis Toilet
-	// Tooltip: ""
+	DisplayName: Лазуритовый унитаз
+	Tooltip: ""
 }
 
 LapisWorkBenchItem: {
-	// DisplayName: Lapis Work Bench
-	// Tooltip: ""
+	DisplayName: Лазуритовый верстак
+	Tooltip: ""
 }
 
 LapisPlatformItem: {
-	// DisplayName: Lapis Platform
-	// Tooltip: ""
+	DisplayName: Лазуритовая платформа
+	Tooltip: ""
 }
 
 SwordStandItem: {
-	// DisplayName: Sword Stand
-	// Tooltip: Allows some weapons to be displayed using <right>
+	DisplayName: Подставка для меча
+	Tooltip: Нажмите ПКМ, чтобы положить меч
 }
 
 TrellisItem: {
-	// DisplayName: Trellis
-	// Tooltip: Apply {$ItemName.GrassSeeds} to grow vines
+	DisplayName: Трельяж
+	Tooltip: Используйте семена травы, чтобы вырастить лозу
 }
 
 TrellisBorealItem: {
-	// DisplayName: Boreal Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из северного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisEbonwoodItem: {
-	// DisplayName: Ebonwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из эбонитового дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisMahoganyItem: {
-	// DisplayName: Rich Mahogany Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из красного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisPalmItem: {
-	// DisplayName: Palm Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из пальмового дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisPearlwoodItem: {
-	// DisplayName: Pearlwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из жемчужного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisShadewoodItem: {
-	// DisplayName: Shadewood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из мрачного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoItem: {
-	// DisplayName: Crossed Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	// DisplayName: Crossed Boreal Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из северного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	// DisplayName: Crossed Ebonwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из эбонитового дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	// DisplayName: Crossed Rich Mahogany Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из красного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	// DisplayName: Crossed Palm Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из пальмового дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	// DisplayName: Crossed Pearlwood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из жемчужного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	// DisplayName: Crossed Shadewood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из мрачного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 ChainLoopItem: {
-	// DisplayName: Chain Loop
-	// Tooltip: Press Up/Down while placing to adjust chain length
+	DisplayName: Подвесная цепь
+	Tooltip: Нажимайте клавиши ВВЕРХ/ВНИЗ, чтобы изменить длину цепи
 }
 
 GoldChainLoopItem: {
-	// DisplayName: Gold Chain Loop
-	// Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+	DisplayName: Подвесная золотая цепь
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
 }
 
 SaltPlatformItem: {
-	// DisplayName: Salt Platform
-	// Tooltip: ""
+	DisplayName: Соляная платформа
+	Tooltip: ""
 }
 
 MahakalaMaskBlue: {
-	// DisplayName: Mahakala Mask
-	// Tooltip: Reduces damage taken from corrupt enemies
+	DisplayName: Маска Махакалы
+	Tooltip: Снижает урон, получаемый от врагов заражений
 }
 
 MahakalaMaskRed: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
 }
 
 RedSandstoneSlabItem: {
-	// DisplayName: Red Sandstone Slab
-	// Tooltip: ""
+	DisplayName: Красная песчаниковая плитка
+	Tooltip: ""
 }
 
 CenserItem: {
-	// DisplayName: Censer
-	// Tooltip: ""
+	DisplayName: Кадильница
+	Tooltip: ""
 }
 
 CarvedLapisWallItem: {
-	// DisplayName: Carved Lapis Wall
-	// Tooltip: ""
+	DisplayName: Стена из резного лазурита
+	Tooltip: ""
 }
 
 BronzePotsItem: {
-	// DisplayName: Bronze Pot
-	// Tooltip: ""
+	DisplayName: Бронзовый горшок
+	Tooltip: ""
 }
 
 LapisPotsItem: {
-	// DisplayName: Lapis Pot
-	// Tooltip: ""
+	DisplayName: Лазуритовый горшок
+	Tooltip: ""
 }
 
 TrellisDrywoodItem: {
-	// DisplayName: Drywood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из сухого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoDrywoodItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из сухого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 BronzeGrateItem: {
-	// DisplayName: Bronze Grate
-	// Tooltip: ""
+	DisplayName: Бронзовая решётка
+	Tooltip: ""
 }
 
 BronzePlatingItem: {
-	// DisplayName: Bronze Plating
-	// Tooltip: ""
+	DisplayName: Бронзовое покрытие
+	Tooltip: ""
 }
 
 BronzePlatingWallItem: {
-	// DisplayName: Bronze Plating Wall
-	// Tooltip: ""
+	DisplayName: Стена с бронзовым покрытием
+	Tooltip: ""
 }
 
 BronzePlatformItem: {
-	// DisplayName: Bronze Platform
-	// Tooltip: ""
+	DisplayName: Бронзовая платформа
+	Tooltip: ""
 }
 
 ZigguratTorchItem: {
-	// DisplayName: Ziggurat Torch
-	// Tooltip: Lights up when nearby
+	DisplayName: Факел Зиккурата
+	Tooltip: Зажигается, если подойти
 }
 
 SwordStandMahoganyItem: {
-	// DisplayName: Mahogany Sword Stand
-	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+	DisplayName: Подставка для меча из красного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
 SwordStandSandstoneItem: {
-	// DisplayName: Sandstone Sword Stand
-	// Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+	DisplayName: Песчаниковая подставка для меча
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
 RedSandstoneBrickForegroundWallItem: {
-	// DisplayName: Foreground Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: Передняя стена из красного песчаникового кирпича
+	Tooltip: ""
 }
 
 SaltPylonItem: {
-	// DisplayName: Salt Flats Pylon
-	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+	DisplayName: Пилон солончаковых равнин
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 SaltNightMusicBoxItem: {
-	// Tooltip: ""
-	// DisplayName: Music Box (Salt Flats Night)
+	Tooltip: ""
+	DisplayName: Музыкальная шкатулка (Ночные солончаковые равнины)
 }
 
 SaltMusicBoxItem: {
-	// Tooltip: ""
-	// DisplayName: Music Box (Salt Flats)
+	Tooltip: ""
+	DisplayName: Музыкальная шкатулка (Солончаковые равнины)
 }
 
 PineappleSeeds: {
-	// DisplayName: Pineapple Seeds
-	// Tooltip: ""
+	DisplayName: Семена ананаса
+	Tooltip: ""
 }
 
-// StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
-// StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
-
 Dragonsong: {
-	// DisplayName: Dragonsong
-	/* Tooltip:
+	DisplayName: Песня дракона
+	Tooltip:
 		'''
-		50% chance to save ammo
-		'You are a terrible person'
-		''' */
+		50% шанс не использовать боеприпасы
+		«Ты ужасный человек»
+		'''
 }
 
 TinyDragon: {
-	// DisplayName: Tiny Dragon
-	/* Tooltip:
+	DisplayName: Дракоша
+	Tooltip:
 		'''
-		Summons a tiny dragon to follow you around
-		'Last of its kind'
-		''' */
+		Призывает дракошу, следующего за вами
+		«Последний в своём роде»
+		'''
 }
 
 PileOfConsequences: {
-	// DisplayName: Pile of Consequences
-	// Tooltip: "'You know what you did.'"
+	DisplayName: Груда ответственности
+	Tooltip: «Ты знаешь, что сделал.»
 }
 
 BrineShrimpItem: {
-	// DisplayName: Brine Shrimp
-	// Tooltip: ""
+	DisplayName: Солоноводная креветка
+	Tooltip: ""
 }
 
 GoldenBrineShrimpItem: {
-	// DisplayName: Golden Brine Shrimp
-	// Tooltip: ""
+	DisplayName: Золотая солоноводная креветка
+	Tooltip: ""
 }
 
-// CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
-// CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
-// DesertStactusBannerItem.DisplayName: Desert Stactus Banner
-// HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
+CorruptStactusBannerItem.DisplayName: Знамя искажённой кактусеницы
+CrimsonStactusBannerItem.DisplayName: Знамя багряной кактусеницы
+DesertStactusBannerItem.DisplayName: Знамя пустынной кактусеницы
+HallowedStactusBannerItem.DisplayName: Знамя освящённой кактусеницы
 
 AncientBannerItem: {
-	// DisplayName: Ancient Banner
-	// Tooltip: ""
+	DisplayName: Древнее знамя
+	Tooltip: ""
 }
 
 TallSandstoneShelfItem: {
-	// DisplayName: Tall Sandstone Shelf
-	// Tooltip: ""
+	DisplayName: Песчаниковая полка
+	Tooltip: ""
 }
 
 SaltTorchItem: {
-	// DisplayName: Salt Torch
-	// Tooltip: ""
+	DisplayName: Солончаковый факел
+	Tooltip: ""
 }
 
 ZigguratMusicBoxItem: {
-	// DisplayName: Music Box (Ziggurat)
-	// Tooltip: ""
+	DisplayName: Музыкальная шкатулка (Зиккурат)
+	Tooltip: ""
 }
 
 PinSaltFlat: {
-	// DisplayName: Salt Flats Pin
-	// Tooltip: ""
+	DisplayName: Солончаковая булавка
+	Tooltip: ""
 }
 
 PinZiggurat: {
-	// DisplayName: Ziggurat Pin
-	// Tooltip: ""
+	DisplayName: Булавка Зиккурата
+	Tooltip: ""
 }
 
 BangleOfStrength: {
-	// DisplayName: Bangle of Strength
-	// Tooltip: Periodically empowers melee strikes
+	DisplayName: Бэнгл силы
+	Tooltip: Периодически усиливает атаки ближнего боя
 }
 
 ScarabTabletOneItem: {
-	// DisplayName: Crested Idol
-	// Tooltip: ""
+	DisplayName: Скрижаль «Гребенчатый идол»
+	Tooltip: ""
 }
 
 ScarabTabletTwoItem: {
-	// DisplayName: Winged Sun
-	// Tooltip: ""
+	DisplayName: Скрижаль «Крылатое солнце»
+	Tooltip: ""
 }
 
 ScarabAltarItem: {
-	// DisplayName: Ancient Altar
-	// Tooltip: ""
+	DisplayName: Древний алтарь
+	Tooltip: ""
 }
 
 RedSandstoneBrickCrackedWallItem: {
-	// DisplayName: Cracked Red Sandstone Brick Wall
-	// Tooltip: ""
+	DisplayName: Стена из потрескавшегося красного песчаникового кирпича
+	Tooltip: ""
 }
 
 AncientBooksItem: {
-	// DisplayName: Ancient Book
-	// Tooltip: "'Rendered unreadable by time'"
+	DisplayName: Древние письмена
+	Tooltip: «Стали нечитаемыми со временем»
 }
 
-// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
-
 SaltGlassWallItem: {
-	// DisplayName: Salt Glass Wall
-	// Tooltip: ""
+	DisplayName: Соляная стеклянная стена
+	Tooltip: ""
 }
 
 SaltPanelWallItem: {
-	// DisplayName: Salt Panel Wall
-	// Tooltip: ""
+	DisplayName: Стена из соляной панели
+	Tooltip: ""
 }
 
 SaltPlateWallItem: {
-	// DisplayName: Salt Plate Wall
-	// Tooltip: ""
+	DisplayName: Стена из соляной плитки
+	Tooltip: ""
 }
 
 SaltFireplaceItem: {
-	// DisplayName: Salt Fireplace
-	// Tooltip: ""
+	DisplayName: Солончаковый камин
+	Tooltip: ""
 }
 
 SaltGlassItem: {
-	// DisplayName: Salt Glass
-	// Tooltip: ""
+	DisplayName: Соляное стекло
+	Tooltip: ""
 }
 
 SaltPanelItem: {
-	// DisplayName: Salt Panel
-	// Tooltip: ""
+	DisplayName: Соляная панель
+	Tooltip: ""
 }
 
 SaltPlateItem: {
-	// DisplayName: Salt Plate
-	// Tooltip: ""
+	DisplayName: Соляная плитка
+	Tooltip: ""
 }
 
 SaltCrate: {
-	// DisplayName: Salted Crate
-	// Tooltip: ""
+	DisplayName: Соляной ящик
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
-	// DisplayName: Brine Crate
-	// Tooltip: ""
+	DisplayName: Минерализованный ящик
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
-	// DisplayName: Restored Salted Crate
-	// Tooltip: ""
+	DisplayName: Очищенный соляной ящик
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
-	// DisplayName: Restored Brine Crate
-	// Tooltip: ""
+	DisplayName: Очищенный минерализованный ящик
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
-// GraverobberBannerItem.DisplayName: Graverobber Banner
+GraverobberBannerItem.DisplayName: Знамя расхитителя могил
 
 GiantBag: {
-	// DisplayName: Loot Bag
-	// Tooltip: "{$CommonTooltips.Backpack}"
+	DisplayName: Большой мешок
+	Tooltip: "{$CommonTooltips.Backpack}"
 }
 
 CrackedSandstoneItem: {
-	// DisplayName: Cracked Sandstone
-	// Tooltip: ""
+	DisplayName: Потрескавшийся песчаник
+	Tooltip: ""
 }
 
 StoneReliquaryItem: {
-	// DisplayName: Stone Reliquary
-	// Tooltip: ""
+	DisplayName: Каменный реликварий
+	Tooltip: ""
 }
 
 SaltCampfireItem: {
-	// DisplayName: Salt Campfire
-	// Tooltip: "{$ItemTooltip.Campfire}"
+	DisplayName: Солончаковый костёр
+	Tooltip: "{$ItemTooltip.Campfire}"
 }
 
 SaltFountainItem: {
-	// DisplayName: Salt Flats Fountain
-	// Tooltip: ""
+	DisplayName: Фонтан солончаковой воды
+	Tooltip: ""
 }
 
 SaltskipperQuestFish: {
-	// Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
-	// CatchLocation: Salt Flats
-	// DisplayName: Saltskipper
-	// Tooltip: "'Caught in Salt Flats'"
+	Description: Солончаковые равнины выглядят безумно! Почти невозможно отличить где заканчивается соль и начинается вода. Когда я наконец закинул крючок в воду, рядом со мной из воды выскочила какая-то противная рыба, которая начала дышать НА СУШЕ! Она будет отличным домашним питомцем, так что поймай её для меня!
+	CatchLocation: Солончаковые равнины
+	DisplayName: Солоноводный прыгун
+	Tooltip: «Водится в солончаковых равнинах»
 }
 
-// WispBannerItem.DisplayName: Wisp Banner
-// DecrepitMummyBannerItem.DisplayName: Decrepit Mummy Banner
+WispBannerItem.DisplayName: Знамя блуждающего огонька
+DecrepitMummyBannerItem.DisplayName: Знамя дряхлой мумии
 
 PaleHiveItem: {
-	// DisplayName: Pale Hive
-	// Tooltip: ""
+	DisplayName: Выцветший улей
+	Tooltip: ""
 }
 
 PaleHiveWallItem: {
-	// DisplayName: Pale Hive Wall
-	// Tooltip: ""
+	DisplayName: Стена выцветшего улья
+	Tooltip: ""
 }
 
 GooBlockItem: {
-	// DisplayName: Goo Block
-	// Tooltip: ""
+	DisplayName: Липкая масса
+	Tooltip: ""
 }
 
 WindshearScepter: {
-	// DisplayName: Windshear Scepter
-	// Tooltip: Shoots a piercing gust of wind
+	DisplayName: Скипетр ветрового сдвига
+	Tooltip: Выпускает пронзающий ветряной шквал
 }
 
 SaltTallGateItem: {
-	// DisplayName: Salt Tall Gate
-	// Tooltip: ""
+	DisplayName: Соляные ворота
+	Tooltip: ""
 }
 
 EnlilStatueItem: {
-	// DisplayName: Enlil Statue
-	// Tooltip: Increases vertical mobility when placed nearby
+	DisplayName: Статуя Энлиля
+	Tooltip: Увеличивает вертикальную подвижность, если размещена поблизости
 }
 
 SerratedClaws: {
-	// DisplayName: Serrated Claws
-	// Tooltip: ""
+	DisplayName: Зазубренные клешни
+	Tooltip: ""
 }
 
 FlagRingItem: {
-	// DisplayName: Flagpole
-	// Tooltip: Can be hammered to add flags
+	DisplayName: Флагшток
+	Tooltip: Ударьте молотом, чтобы добавить флаг
 }
 
 CobbledBrickWallItem: {
-	// DisplayName: Cobbled Brick Wall
-	// Tooltip: ""
+	DisplayName: Стена из мощённого кирпича
+	Tooltip: ""
 }
 
 CobbledBrickItem: {
-	// DisplayName: Cobbled Brick
-	// Tooltip: ""
+	DisplayName: Мощёный кирпич
+	Tooltip: ""
 }
 
 BronzeGrateDoorItem: {
-	// DisplayName: Bronze Grate Door
-	// Tooltip: ""
+	DisplayName: Бронзовая решётчатая дверь
+	Tooltip: ""
 }
 
 CalmingBellItem: {
-	// DisplayName: Calming Bell
-	// Tooltip: Right click to reduce enemy spawns
+	DisplayName: Умиротворяющий колокол
+	Tooltip: Нажмите ПКМ, чтобы снизить скорость появления врагов
 }
 
 BrownShinglesItem: {
-	// DisplayName: Brown Shingles
-	// Tooltip: ""
+	DisplayName: Коричневая черепица
+	Tooltip: ""
 }
 
 WoodenShinglesItem: {
-	// DisplayName: Wooden Shingles
-	// Tooltip: ""
+	DisplayName: Деревянная черепица
+	Tooltip: ""
 }
 
 GildedRedSandstoneItem: {
-	// DisplayName: Gilded Red Sandstone
-	// Tooltip: ""
+	DisplayName: Позолоченный красный песчаник
+	Tooltip: ""
 }
 
 BronzeGrateBlockItem: {
-	// DisplayName: Bronze Grate Block
-	// Tooltip: ""
+	DisplayName: Блок бронзовой решётки
+	Tooltip: ""
 }
 
 BedouinBreastplate: {
-	// DisplayName: Bedouin Breastplate
-	// Tooltip: 5% increased damage
+	DisplayName: Бедуинский нагрудник
+	Tooltip: Увеличивает урон на 5%
 }
 
 BedouinCowl: {
-	// DisplayName: Bedouin Cowl
-	// Tooltip: 5% increased critical strike chance
+	DisplayName: Бедуинский капюшон
+	Tooltip: Увеличивает шанс критического удара на 5%
 }
 
 BedouinLeggings: {
-	// DisplayName: Bedouin Leggings
-	// Tooltip: 10% increased movement speed
+	DisplayName: Бедуинские поножи
+	Tooltip: Увеличивает скорость передвижения на 10%
 }
 
 ZigguratTikiTorchItem: {
-	// DisplayName: Ziggurat Tiki Torch
-	// Tooltip: ""
+	DisplayName: Тики-факел Зиккурата
+	Tooltip: ""
 }
 
 CricketItem: {
-	// DisplayName: Cricket
-	// Tooltip: ""
+	DisplayName: Сверчок
+	Tooltip: ""
 }
 
 GoldCricketItem: {
-	// DisplayName: Gold Cricket
-	// Tooltip: ""
+	DisplayName: Золотой сверчок
+	Tooltip: ""
 }
 
 CricketCageItem: {
-	// DisplayName: Cricket Cage
-	// Tooltip: ""
+	DisplayName: Террариум со сверчком
+	Tooltip: ""
 }
 
 GoldCricketCageItem: {
-	// DisplayName: Gold Cricket Cage
-	// Tooltip: ""
+	DisplayName: Террариум с золотым сверчком
+	Tooltip: ""
 }
 
 ScarabPetItem: {
-	// DisplayName: Scarab Food
-	// Tooltip: Summons a little Scarab companion
+	DisplayName: Скарабейный корм
+	Tooltip: Призывает крошку-скарабея сопровождать вас
 }
 
 CarrotCake: {
-	// Tooltip: "{$BuffDescription.WellFed3}"
-	// DisplayName: Carrot Cake
+	DisplayName: Морковный торт
+	Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {
-	// DisplayName: Avian Ritual Mask
-	// Tooltip: ""
+	DisplayName: Ритуальная маска птаха
+	Tooltip: ""
 }
 
 BullRitualMask: {
-	// DisplayName: Bull Ritual Mask
-	// Tooltip: ""
+	DisplayName: Ритуальная маска быка
+	Tooltip: ""
 }
 
 AdornedBow: {
-	// DisplayName: Gilded Greatbow
-	/* Tooltip:
+	DisplayName: Злачёный большой лук
+	Tooltip:
 		'''
-		Charges an empowered shot
-		Perfectly timed shots cause arrows to refract on hit
-		''' */
+		Зарядите, чтобы совершить усиленный выстрел
+		Стрелы, выпущенные ровно в момент заряда, создают преломление света при попадании
+		'''
 }
 
 BagOScarabs: {
-	// DisplayName: Treasure Bag (Scarabeus)
-	// Tooltip: ""
+	DisplayName: Мешок с сокровищами (Скарабеус)
+	Tooltip: ""
 }
 
 ScarabMask: {
-	// DisplayName: Scarabeus Mask
-	// Tooltip: ""
+	DisplayName: Маска Скарабеуса
+	Tooltip: ""
 }
 
 ScarabRelic: {
-	// DisplayName: Scarabeus Relic
-	// Tooltip: ""
+	DisplayName: Реликвия Скарабеуса
+	Tooltip: ""
 }
 
 ScarabTrophy: {
-	// DisplayName: Scarabeus Trophy
-	// Tooltip: ""
+	DisplayName: Трофей Скарабеуса
+	Tooltip: ""
 }
 
 ScarabRadio: {
-	// DisplayName: Scarab Radio
-	// Tooltip: ""
+	DisplayName: Скарабейное радио
+	Tooltip: ""
 }
 
 SpaceHeater: {
-	// DisplayName: Radiator
-	// Tooltip: Right click the tile to modify its heat setting
+	DisplayName: Радиатор
+	Tooltip: Двигайте ползунок с помощью ПКМ, чтобы изменить температуру
 }
 
 ScarabMusicBox: {
-	// DisplayName: Music Box (Scarabeus)
-	// Tooltip: ""
+	DisplayName: Музыкальная шкатулка (Скарабеус)
+	Tooltip: ""
 }
 
 SpiritTreeTopper: {
-	// DisplayName: Spirit Tree Topper
-	// Tooltip: ""
+	DisplayName: Ёлочное украшение Spirit
+	Tooltip: ""
 }
 
 LocustCrook: {
-	// DisplayName: Locust Crook
-	/* Tooltip:
+	DisplayName: Посох саранчевода
+	Tooltip:
 		'''
-		Summons a sentry
-		Throws out a crook that attracts locusts to infest enemies
-		''' */
+		Призывает стража
+		Забрасывает посох, привлекающий саранчу, которая заражающую врагов
+		'''
 }
 
 IridescentDye: {
-	// DisplayName: Iridescent Dye
-	// Tooltip: ""
+	DisplayName: Переливающийся краситель
+	Tooltip: ""
 }
 
 ScarabLightPetItem: {
-	// DisplayName: Scarab Bulb
-	/* Tooltip:
+	DisplayName: Скарабейная лампочка
+	Tooltip:
 		'''
-		Summons a Scarababy
-		'Eureka!'
-		''' */
+		Призывает Скарабейчика
+		«Эврика!»
+		'''
 }

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.UI.Elements;
@@ -106,10 +107,26 @@ internal class BackpackUIState : AutoUIState
 
 			int xOff = 0, yOff = 0;
 
-			Append(new UIText(Language.GetTextValue("Mods.SpiritReforged.SlotContexts.Backpack"), 0.725f, false)
+			float baseY = 86;
+			float textScale = 0.725f;
+
+			if (Language.ActiveCulture.Name == "ru-RU")
+			{
+				textScale = 0.475f;
+				baseY = 90.5f;
+
+				//Adjust for custom Russian font
+				if (CrossMod.RussianTranslate.Enabled)
+				{
+					textScale = 0.525f;
+					baseY = 89;
+				}
+			}
+
+			Append(new UIText(Language.GetTextValue("Mods.SpiritReforged.SlotContexts.Backpack"), textScale, false)
 			{
 				Left = new StyleDimension(baseX, 0),
-				Top = new StyleDimension(86, 0),
+				Top = new StyleDimension(baseY, 0),
 				Width = StyleDimension.FromPixels(32),
 				Height = StyleDimension.FromPixels(32),
 				TextColor = Color.White * 0.95f,

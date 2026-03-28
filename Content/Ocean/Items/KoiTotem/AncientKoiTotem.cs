@@ -33,7 +33,7 @@ public class AncientKoiTotemTile : ModTile
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Ash;
-		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Tiles.KoiTotemTile.MapEntry"));
+		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Items.KoiTotem.DisplayName"));
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer) => ModContent.GetInstance<KoiTotemTile>().NearbyEffects(i, j, closer);
