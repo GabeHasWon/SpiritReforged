@@ -2974,7 +2974,7 @@ AdornedBow: {
 	/* Tooltip:
 		'''
 		Charges an empowered shot
-		Release with perfect timing to create a damaging flash of light
+		Perfectly timed shots cause arrows to refract on hit
 		''' */
 }
 
@@ -3009,7 +3009,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	// DisplayName: Scarabeus Music Box
+	// DisplayName: Music Box (Scarabeus)
 	// Tooltip: ""
 }
 

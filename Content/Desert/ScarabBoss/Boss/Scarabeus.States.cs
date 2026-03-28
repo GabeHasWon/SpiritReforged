@@ -515,6 +515,7 @@ public partial class Scarabeus : ModNPC
 
 			if (Counter >= 20)
 			{
+				LastAttack = AIState.Swarm;
 				ChangeState(AIState.Swarm);
 				return 0f;
 			}
@@ -529,6 +530,8 @@ public partial class Scarabeus : ModNPC
 	internal Vector2 deathDirection;
 	public float DeathAnimation(ref bool retarget)
 	{
+		Main.musicFade[Main.curMusic] = 0f;
+
 		int frameCounter = 30;
 
 		if (Counter > 60f)
@@ -709,35 +712,43 @@ public partial class Scarabeus : ModNPC
 		}
 		else if (NPC.velocity.Y > 0)
 		{
-			NPC.velocity *= 0.15f;
-
-			if (!Main.dedServ)
+			if (ExtraMemory == 0)
 			{
-				for (int i = 0; i < 55; i++)
+				ExtraMemory = 1;
+				Counter = 0;
+
+				NPC.velocity *= 0.1f;
+
+				if (!Main.dedServ)
 				{
-					Vector2 pos = NPC.BottomRight;
-					if (NPC.direction == -1)
-						pos = NPC.BottomLeft;
+					for (int i = 0; i < 55; i++)
+					{
+						Vector2 pos = NPC.BottomRight;
+						if (NPC.direction == -1)
+							pos = NPC.BottomLeft;
 
-					pos.X += Main.rand.NextFloat(-60, 60);
+						pos.X += Main.rand.NextFloat(-60, 60);
 
-					KickupDust(pos, -NPC.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1.5f), ParticleLayer.AboveSolid);
+						KickupDust(pos, -NPC.velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(1.5f), ParticleLayer.AboveSolid);
 
-					KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), ParticleLayer.BelowSolid);
+						KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), ParticleLayer.BelowSolid);
+					}
+
+					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 3, 20));
 				}
 
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 3, 20));
+				SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
 			}
 
-			SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
-			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, NPC.Center);
-
 			//SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/KillEnd") with { Volume = 0.35f });
-
-			NPC.life = 0;
-			NPC.checkDead();
-			NPC.HitEffect();
-			NPC.active = false;
+			if (Counter > 5)
+			{
+				NPC.life = 0;
+				NPC.checkDead();
+				NPC.HitEffect();
+				NPC.active = false;
+			}		
 		}
 
 		/*int frameCounter = (int)MathHelper.Lerp(25, 0, Math.Min(Counter / 60f, 1f));
