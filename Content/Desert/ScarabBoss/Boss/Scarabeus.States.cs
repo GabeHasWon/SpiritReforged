@@ -918,24 +918,27 @@ public partial class Scarabeus : ModNPC
 			fastBackAwayDistance = 120;
 		}
 
-		//Get some distance
-		if (playerDistanceX < idealTargetDistance && CurrentState == AIState.IdleTowardsPlayer)
-			CurrentState = AIState.IdleAwayFromPlayer;
-		//Draw near
-		if (playerDistanceX > idealTargetDistance + 80 && CurrentState == AIState.IdleAwayFromPlayer)
-			CurrentState = AIState.IdleTowardsPlayer;
-		//Fast back away if the player is really too close
-		if (playerDistanceX < fastBackAwayDistance)
-			CurrentState = AIState.IdleBackAwayFast;
-		//Slow down the fast back away if enough distance has been put between scarab and the player
-		if (playerDistanceX > idealTargetDistance + 20 && CurrentState == AIState.IdleBackAwayFast)
-			CurrentState = AIState.IdleAwayFromPlayer;
-
-		//Come towards the player if the sightline is broken
-		if (playerDistanceX > 150 && !Collision.CanHitLine(new Vector2(NPC.Center.X + 40 * NPC.direction, collisionOrigin.Y - 16), 1, 1, Target.Top, 1, 1))
+		if (CurrentState != AIState.DuoFightIdleStandStill)
 		{
-			CurrentState = AIState.IdleTowardsPlayer;
-			Enrage += 0.1f;
+			//Get some distance
+			if (playerDistanceX < idealTargetDistance && CurrentState == AIState.IdleTowardsPlayer)
+				CurrentState = AIState.IdleAwayFromPlayer;
+			//Draw near
+			if (playerDistanceX > idealTargetDistance + 80 && CurrentState == AIState.IdleAwayFromPlayer)
+				CurrentState = AIState.IdleTowardsPlayer;
+			//Fast back away if the player is really too close
+			if (playerDistanceX < fastBackAwayDistance)
+				CurrentState = AIState.IdleBackAwayFast;
+			//Slow down the fast back away if enough distance has been put between scarab and the player
+			if (playerDistanceX > idealTargetDistance + 20 && CurrentState == AIState.IdleBackAwayFast)
+				CurrentState = AIState.IdleAwayFromPlayer;
+
+			//Come towards the player if the sightline is broken
+			if (playerDistanceX > 150 && !Collision.CanHitLine(new Vector2(NPC.Center.X + 40 * NPC.direction, collisionOrigin.Y - 16), 1, 1, Target.Top, 1, 1))
+			{
+				CurrentState = AIState.IdleTowardsPlayer;
+				Enrage += 0.1f;
+			}
 		}
 
 		Rectangle targetHitbox = NPC.GetTargetData().Hitbox;
@@ -1011,7 +1014,7 @@ public partial class Scarabeus : ModNPC
 			UpdateFrame(1, (int)fps, PhaseOneProfile);
 
 			//Standing still
-			if (fps == 0)
+			if (fps == 0 || Math.Abs(NPC.velocity.X) < 0.05f)
 				SetFrame(0, 0, PhaseOneProfile);
 		}
 	}
@@ -1761,7 +1764,7 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 
-	public void DoGroundPoundShockwaves(float safeZoneRadius = 200)
+	public void DoGroundPoundShockwaves(float safeZoneRadius = 200, int slamColumns = 4, float maxHeight = 300f, float heightLossPerStep = 40, bool lightningStrikes = false)
 	{
 		if (!Main.dedServ)
 		{
@@ -1777,16 +1780,19 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-			return;
-
 		for (int i = -1; i <= 1; i += 2)
 		{
-			for (int j = 0; j < 4; j++)
+			for (int j = 0; j < slamColumns; j++)
 			{
 				float distStep = (safeZoneRadius + j * 56) * i;
 				Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
-				Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
+				int shockwaveDelay = 1 + j * 3;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, shockwaveDelay, maxHeight - j * heightLossPerStep);
+				
+				if (lightningStrikes)
+					CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnThunderColumn", scourgeFightManager, projPosition, 900 + j * heightLossPerStep, shockwaveDelay - 1);
 			}
 		}
 	}
@@ -1980,7 +1986,8 @@ public partial class Scarabeus : ModNPC
 			case 2: 
 				NPC.Opacity = 0;
 				NPC.noGravity = true;
-				NPC.velocity = Vector2.Zero;
+				NPC.velocity = Vector2.Zero; 
+				NPC.dontTakeDamage = true;
 				retarget = false;
 
 				if (Counter < dig_time - 30)
@@ -2125,8 +2132,12 @@ public partial class Scarabeus : ModNPC
 							currentFrame.Y = 5;
 						}
 
+						if (currentFrame.Y == 7 && FightingDScourge)
+							CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "dischargeElectricity", scourgeFightManager);
+
 						if (UpdateFrame(2, 12, PhaseOneProfile, false) == FrameState.Stopped)
 							return GoBackToIdle();
+
 						return 1f;
 					}
 				}

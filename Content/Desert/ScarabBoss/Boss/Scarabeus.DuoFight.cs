@@ -70,9 +70,51 @@ public partial class Scarabeus : ModNPC
 				return true;
 			case "doGroundPoundShockwaves":
 				float safeSpace = 200;
+				int slamColumns = 4;
+				float maxColumnHeight = 300;
+				float heightLossPerStep = 40;
+				bool doLightningStrikes = false;
+
 				if (args.Length > 3)
 					safeSpace = (float)args[3];
-				((args[2] as NPC).ModNPC as Scarabeus).DoGroundPoundShockwaves(safeSpace);
+				if (args.Length > 4)
+					slamColumns = (int)args[4];
+				if (args.Length > 5)
+					maxColumnHeight = (float)args[5];
+				if (args.Length > 6)
+					heightLossPerStep = (float)args[6];
+				if (args.Length > 7)
+					doLightningStrikes = (bool)args[7];
+
+				((args[2] as NPC).ModNPC as Scarabeus).DoGroundPoundShockwaves(safeSpace, slamColumns, maxColumnHeight, heightLossPerStep, doLightningStrikes);
+				return true;
+			case "setFrame":
+				VisualProfile profile = PhaseOneProfile;
+
+				if (args.Length > 4)
+				{
+					int profileIndex = (int)args[4];
+					switch (profileIndex)
+					{
+						case 1:
+							profile = PhaseTwoProfile;
+							break;
+						case 2:
+							profile = TakeoffProfile;
+							break;
+						case 3:
+							profile = SimulatedProfile;
+							break;
+						case 4:
+							profile = DeadProfile;
+							break;
+					}
+				}
+
+				((args[2] as NPC).ModNPC as Scarabeus).SetFrame((Point)args[3], profile);
+				return true;
+			case "renderScarab":
+				((args[2] as NPC).ModNPC as Scarabeus).PreDraw((SpriteBatch)args[3], (Vector2)args[4], (Color)args[5]);
 				return true;
 		}
 
@@ -257,6 +299,7 @@ public partial class Scarabeus : ModNPC
 		Vector3 positionInfo = (Vector3)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getPositionInScourgeJaws", scourgeFightManager);
 		NPC.Center = new Vector2(positionInfo.X, positionInfo.Y);
 		NPC.rotation = positionInfo.Z;
+		NPC.behindTiles = true;
 		return 1f;
 	}
 	#endregion
