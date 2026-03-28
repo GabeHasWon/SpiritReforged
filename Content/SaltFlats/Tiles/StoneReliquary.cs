@@ -7,6 +7,8 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public sealed class StoneReliquary : ChestTile, ICustomContainer
 {
+	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
+
 	public override void StaticDefaults()
 	{
 		base.StaticDefaults();

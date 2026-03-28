@@ -7,7 +7,7 @@ public class BedouinLeggings : ModItem
 	{
 		Item.width = 26;
 		Item.height = 18;
-		Item.value = 10000;
+		Item.value = Item.sellPrice(silver: 40);
 		Item.rare = ItemRarityID.Green;
 		Item.defense = 3;
 	}
