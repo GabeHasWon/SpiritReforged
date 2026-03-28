@@ -7,8 +7,10 @@ PopulateOcean: Preenchendo o oceano
 Gravel: Colocando cascalho
 SavannaTerrain: Criando platôs
 SavannaObjects: Preenchendo a savana
+// SaltFlats: Adding salt
 Ecotones: Mapeando ecótonos
 Caves: Decorando cavernas
+// DesertExtras: Hiding secrets in the sands
 NeonMosses: Musgo brilhante
 Pottery: Empilhando vasos
 Scarecrow: Assustando pássaros
@@ -36,7 +38,7 @@ Signs: {
 				'''
 				<wavy>0
 				dias desde o último incidente
-				''' 
+				'''
 		}
 	}
 }

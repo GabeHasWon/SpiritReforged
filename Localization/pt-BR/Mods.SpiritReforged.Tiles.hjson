@@ -1,29 +1,28 @@
 Records: {
-Records: {
 	CoinPortal:
 		'''
 		Sempre contém um portal de moedas.
 
 		Que sorte!
-		''' 
+		'''
 	Common:
 		'''
 		Um vaso comum que às vezes contém coisas úteis.
 
 		Valor aumenta com a profundidade.
-		''' 
+		'''
 	Zenith:
 		'''
 		Um vaso comum que às vezes contém coisas úteis... este é desnecessariamente chamativo.
 
 		Valor aumenta com a profundidade.
-		''' 
-    Potion: Contém potentes poções.
+		'''
+	Potion: Contém potentes poções.
 	UpsideDown: `Problema na fabricação`
 	Worm: Lança uma variedade de minhocas após ser destruído.
 	Platter: Uma refeição quentinha pronta para você. Quem deixaria isso para trás?
 	WickerBasket: Um piquenique, só pra você!
-	her: Contém úteis, e brilhantes melhorias.
+	// Aether: Provides various useful, sparkly upgrades.
 	Stuffed: Que lugar estranho para encontrar um comerciante. Ele está praticamente pedindo para ser incomodad.
 	Scrying: Revela uma larga porção do mapa ao ser destruído.
 	Biome: Contém uma variedade maior de saque em relação aos vasos comuns.
@@ -38,29 +37,9 @@ FablesGraves: {
 }
 
 HydrothermalVent.MapEntry: Ventiladora Hidrotermal
-CoralMapEntry: Coral
-KelpMapEntry: Alga Marinha
-GarInAJar_Tile.MapEntry: Gar em um Jarro
-CloudstalkTile.MapEntry: Talos Nuvem
-SmallDriftwoodTile.MapEntry: Madeira à Deriva Pequena
-MediumDriftwoodTile.MapEntry: Madeira à Deriva Média
-LargeDriftwoodTile.MapEntry: Madeira à Deriva Grande
-BambooBirdCage.MapEntry: Gaiola de Bambu
-KoiTotemTile.MapEntry: Totem de Koi
-HerosMemorialStatue.MapEntry: Memorial de um Herói
-TermiteJar_Tile.MapEntry: Pote de Cupim
-GarInAJarTile.MapEntry: Gar em um Jarro
-KillieFishbowlTile.MapEntry: Aquário de Killie
 OreCarts.MapEntry: Carrinho de Mina
 PotionVats.MapEntry: Tanque de Poção
 ObsidianShroom.MapEntry: Cogumelo de Obsidiana
 Starflower.MapEntry: Flor Estrelar
 BonsaiTrees.MapEntry: Bonsai
-OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
-SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
-ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
 DustyTomb.MapEntry: Túmulo Empoirado
-EnlilStatue.MapEntry: Estátua de Enlil
-StoneReliquary.MapEntry: Relicário
-ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"

@@ -1,32 +1,27 @@
 VanillaDialogue: {
 	Guide: {
-   WorldNPC: Você pode acabar se encontrando com outros aventureiros enquanto explora o mundo. Caso os encontre, tente ajudar uns aos outros!
-        Ecotone: Se o clima estiver correto, a região entre o Deserto e a Selva pode ser o lar de uma vasta Savana. Sempre quis conhece-la!
-        Savanna: O couro dos animais daqui podem lhe fazer acessórios excêntricos, pivete.
-        Kelp: Não coma a alga.
-    }	
-
-	ArmsDealer: {
-	    Savanna1: Tem muita caça por aqui. Até alguém como você conseguiria pegar um daqui.
-	    Placeholder: placeholder
+		WorldNPC: Você pode acabar se encontrando com outros aventureiros enquanto explora o mundo. Caso os encontre, tente ajudar uns aos outros!
+		Ecotone: Se o clima estiver correto, a região entre o Deserto e a Selva pode ser o lar de uma vasta Savana. Sempre quis conhece-la!
+		Savanna: O couro dos animais daqui podem lhe fazer acessórios excêntricos, pivete.
+		Kelp: Não coma a alga.
 	}
+
+	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
 
 	Stylist: {
-        Savanna1: É cruelmente difícil manter o meu corte de cabelo nesse clima.
-        Duststorm1: Se eu tiver que ficar tirando areia do cabelo de mais alguém, eu juro que...	}
-
-  TravellingMerchant: {
-        Cartographer1: Eu geralmente encontro uma cartógrafa rebelde nas minhas viagens. Ela é uma baita de uma concorrência!
-        Cartographer2: Oh, é a {0}! Ela me passou direções mês passado, antes de cair direto em um buraco.
-        Discoveries: As vezes, eu acabo de deparando com raridades na minha jornada. Talvez você possa as encontrar também, se estiver de olho. 
-    } 
-
-	Demolitionist: {
-		HasBoomshroom: Você disse o quê? Um cogumelo que faz explosões ainda maiores?! Eu amo a mãe natureza!
-		Placeholder: placeholder
+		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
+		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
 	}
 
-	Nurse: { 
+	TravellingMerchant: {
+		Cartographer1: Eu geralmente encontro uma cartógrafa rebelde nas minhas viagens. Ela é uma baita de uma concorrência!
+		Cartographer2: Oh, é a {0}! Ela me passou direções mês passado, antes de cair direto em um buraco.
+		Discoveries: As vezes, eu acabo de deparando com raridades na minha jornada. Talvez você possa as encontrar também, se estiver de olho.
+	}
+
+	Demolitionist.HasBoomshroom: Você disse o quê? Um cogumelo que faz explosões ainda maiores?! Eu amo a mãe natureza!
+
+	Nurse: {
 		Duststorm: Não se machuque com toda essa poeira lá forá! Te ajudar sujo assim tá forá do meu orçamento.
 		Savanna: Não, não sou uma veterinária! Agora tire esses animais daqui.
 	}
@@ -247,7 +242,6 @@ Cartographer: {
 					'''
 			}
 
-
 			Hive: {
 				0: O alfinete vai... aqui. Para ser sincero, não recomendo aquele lugar na selva. É BRUTO. Mas quando você vê uma dessas colmeias grandes, há mel por perto. E isso vale muitas picadas.
 				1: Aqui está! Uh... vou ser honesto. Às vezes você encontra ouro líquido e AINDA assim não vale a pena. Abelhas nojentas... é melhor fazer uma caminhada do que negócios.
@@ -296,6 +290,7 @@ Cartographer: {
 				0: E... pronto! Mapear a superfície é apenas, bem, a superfície. Encontro muitas coisas estranhas no subsolo, e de muitas delas me mantenho afastado... O quê? Sou cartógrafo, não aventureiro!
 				1: Por hoje é isso! Você parece ser do tipo capaz. Eu encontrei um morto-vivo que realmente ouvia a razão, o que já era estranho o suficiente, mas ele me vendeu esta... mão. Segui para onde ela apontava e me vi numa cripta perturbadora... Talvez você consiga tirar alguma coisa disso tudo, eu não vou voltar lá.
 				2: Você topa um desafio? Eu não, com certeza. Tem uma masmorra com uma sala que cheira a sangue... E com aquele altar estranho no meio... é, eu não fiquei muito tempo lá não.
+			}
 
 			SaltFlat: {
 				0: Não posso esquecer! Ali, bem ali, foi a primeira vez que vi um reflexo do céu. Eu estava olhando para baixo, como costumo fazer, e BAM! Nuvens! A princípio, fiquei preocupado, mas era apenas uma fina camada de água... provavelmente. Certifique-se de que seja seguro para que eu não precise me preocupar.
@@ -304,10 +299,10 @@ Cartographer: {
 			}
 
 			Ziggurat: {
-                0: Hmm... pronto. Já disse isso antes: sou cartógrafo. Desenho mapas. Então, quando vejo uma parede grande e imponente de tijolos vermelhos rachados e desmoronando, sou incrivelmente habilidoso em determinar se devo mexer com ela. Ouvi um zumbido estranho lá dentro. Nem preciso dizer, isso é sua responsabilidade.
-                1: Entendi! O deserto facilita a memorização. Não há muito o que lembrar por lá, sabe, então ver fumaça saindo do chão sem explicação? Interessante. Você olha para baixo e vê a fachada de uma estrutura enorme? Memorável. Vá em frente. Eu não arriscar cair na lava ou algo assim.
-                2: Aqui está. Faz parte do meu trabalho encontrar ruínas de vez em quando. Sem problemas, temos um protocolo por um motivo. Mas, nossa, entrar e quase ser perfurado pelo chão? Um lembrete gentil de que, às vezes, sou um excelente corredor.
-
+				0: Hmm... pronto. Já disse isso antes: sou cartógrafo. Desenho mapas. Então, quando vejo uma parede grande e imponente de tijolos vermelhos rachados e desmoronando, sou incrivelmente habilidoso em determinar se devo mexer com ela. Ouvi um zumbido estranho lá dentro. Nem preciso dizer, isso é sua responsabilidade.
+				1: Entendi! O deserto facilita a memorização. Não há muito o que lembrar por lá, sabe, então ver fumaça saindo do chão sem explicação? Interessante. Você olha para baixo e vê a fachada de uma estrutura enorme? Memorável. Vá em frente. Eu não arriscar cair na lava ou algo assim.
+				2: Aqui está. Faz parte do meu trabalho encontrar ruínas de vez em quando. Sem problemas, temos um protocolo por um motivo. Mas, nossa, entrar e quase ser perfurado pelo chão? Um lembrete gentil de que, às vezes, sou um excelente corredor.
+			}
 
 			FirstPin: Adicionei este alfinete à sua "Coleção de Alfinetes". Você pode acessá-lo a qualquer momento no canto inferior esquerdo do seu mapa.
 		}
@@ -388,7 +383,7 @@ HideZombieSmall: {
 }
 
 PotterySlime: {
-    DisplayName: Geleia Ceramista
+	DisplayName: Geleia Ceramista
 
 	Names: {
 		// 0: Sable
@@ -437,20 +432,20 @@ DunceCrab: {
 	Entry: Uma das causas mais comuns de acidentes durante aventuras, esse molusco vaga pelas cavernas, e geralmente é uma grande surpresa para aventureiros. Se alimentam de musgos e líquen, geralmente encontrado nas cavernas.
 }
 
-Wheezer: { 
+Wheezer: {
 	DisplayName: Wheezer
 	Entry: O Wheezer é um parente extremamente tóxico das salamandras, conhecidos por seu comportamento agressivo. Por mais estranho que pareça, a comida favorita deles são brotos de azevinho, sendo contraditório a suas tendências carnívoras.
-} 
+}
 
-WorldFrog: { 
-	DisplayName: Sapo Ajudante 
+WorldFrog: {
+	DisplayName: Sapo Ajudante
 	Button: Atualize o mundo
 
 	Sounds: {
 		0: Croak
 		1: Ribbit
 	}
-	
+
 	Dialogue: {
 		0: Se você procura coisas para explorar, eu tenho uma oferta para você, eu imploro!
 		1: Está procurando por coisas novas? Entre minhas mãos, uma oferta que criei!
@@ -459,20 +454,20 @@ WorldFrog: {
 
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
-		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los! 
+		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
 	}
 }
 
 MossSlime: {
-	   DisplayName: Geleia de Musgo
-	   Entry: Um grupo curioso de geleias, que de alguma forma estão cobertas de musgo. Existem em muitas variedades, mesmo que sejam apenas com musgos brilhantes... por alguma razão. Uma possível fonte de luz, talvez?
-} 
+	DisplayName: Geleia de Musgo
+	Entry: Um grupo curioso de geleias, que de alguma forma estão cobertas de musgo. Existem em muitas variedades, mesmo que sejam apenas com musgos brilhantes... por alguma razão. Uma possível fonte de luz, talvez?
+}
 
 KryptonMossSlime.DisplayName: Geleia de Musgo de Criptônio
 LavaMossSlime.DisplayName: Geleia de Musgo de Lava
 NeonMossSlime.DisplayName: Geleia de Musgo Néon
 XenonMossSlime.DisplayName: Geleia de Musgo de Xenônio
-ArgonMossSlime.DisplayName: Geleia de Musgo de Argônio 
+ArgonMossSlime.DisplayName: Geleia de Musgo de Argônio
 HeliumMossSlime.DisplayName: Geleia de Musgo de Hélio
 OganessonMossSlime.DisplayName: Geleia de Musgo de Oganesson
 RadonMossSlime.DisplayName: Geleia de Musgo de Radônio
@@ -553,7 +548,7 @@ LootBag.DisplayName: Sacola de Brindes
 
 Scarabeus: {
 	DisplayName: Escarabeus
-  // Title: Crested Idol
+	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
 	Entry: ""
 }
 

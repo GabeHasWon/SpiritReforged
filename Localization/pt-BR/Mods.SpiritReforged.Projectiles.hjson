@@ -1,4 +1,4 @@
-HHydrothermalVentPlume.DisplayName: Nuvem de Fumaça
+// HydrothermalVentPlume.DisplayName: Smoke Plume
 Cannonbubble.DisplayName: Bolha de Canhão
 UrchinBall.DisplayName: Bola de Ouriço
 UrchinSpike.DisplayName: Espinho de Ouriço
@@ -26,7 +26,7 @@ SkullSentrySentry.DisplayName: Sentinela do Crânio
 ZiplineProj.DisplayName: Projétil de Tirolesa
 FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
 RollingCart.DisplayName: Carrinho Rolante
-RadonMossBobber.DisplayName: Isca Flutuante de Pescaria do Musgo de Radônio	
+RadonMossBobber.DisplayName: Isca Flutuante de Pescaria do Musgo de Radônio
 OganessonMossBobber.DisplayName: Oganesson Moss Bobber
 BuffAura.DisplayName: Buff Aura
 WheezerCloud.DisplayName: Gás Venenoso
@@ -79,7 +79,7 @@ FloatingGem.DisplayName: Gema Flutuante
 BeamOLight.DisplayName: Luz
 ScarabPetProjectile.DisplayName: Mini Escarabeus
 SandShockwavePillar.DisplayName: Onda de choque do Pilar de Arenito
-SandballProjectile.DisplayName: Bola de Areia 
+SandballProjectile.DisplayName: Bola de Areia
 BabyAntlionProjectile.DisplayName: Projétil da Pequena Formiga-Leão
 ScarabLightPet.DisplayName: Escarabebê
 SoilBallProjectile.DisplayName: Bola de Tralha

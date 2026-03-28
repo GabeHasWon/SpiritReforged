@@ -665,11 +665,6 @@ DrywoodClockItem: {
 	Tooltip: ""
 }
 
-DrywoodCouchItem: {
-	DisplayName: Sofá de Madeira Seca
-	Tooltip: ""
-}
-
 DrywoodDresserItem: {
 	DisplayName: Cômoda de Madeira Seca
 	Tooltip: ""
@@ -1365,7 +1360,7 @@ BoomShroom: {
 		'''
 		Todos os explosivos que arremesar serão muito maiores... e mais fortes
 		O intervalo entre os usos é aumentado
-		''' */
+		'''
 }
 
 ClayBomb: {
@@ -1400,7 +1395,7 @@ CoarseBombSticky: {
 
 MudBomb: {
 	DisplayName: Bomba de Lama
-    Tooltip: Uma pequena explosão que espalha lama
+	Tooltip: Uma pequena explosão que espalha lama
 }
 
 MudBombSticky: {
@@ -1419,7 +1414,7 @@ PotteryWheelItem: {
 		'''
 		Usado na criação de vasos decorativos
 		<right> após ser posicionado para ver receitas disponíveis
-		''' 
+		'''
 }
 
 BiomePotsCavernItem: {
@@ -1503,7 +1498,7 @@ PotsHellItem: {
 }
 
 PotsCorruptionItem: {
-    DisplayName: Vaso Pequeno Corrompido
+	DisplayName: Vaso Pequeno Corrompido
 	Tooltip: ""
 }
 
@@ -1573,8 +1568,8 @@ PotionVatsCloningItem: {
 }
 
 SilverFoodPlatterItem: {
+	DisplayName: "{$ItemTooltip.FoodPlatter}"
 	Tooltip: <right> para colocar item no prato
-  DisplayName: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -1619,7 +1614,7 @@ BombCannon: {
 		Usa bombas como munição
 		As bombas atiradas pelo ganhão não destroem blocos
 		'Uma invenção bombástica'
-		''' 
+		'''
 }
 
 PotHead: {
@@ -1637,7 +1632,7 @@ PotionVatsAlchemyItem: {
 	Tooltip: ""
 }
 
-DunceCrabBannerItem.DisplayName: Bandeira do Caranbroca 
+DunceCrabBannerItem.DisplayName: Bandeira do Caranbroca
 WheezerBannerItem.DisplayName: Bandeira do Wheezer
 
 WheezerStatueItem: {
@@ -1671,7 +1666,7 @@ FlaskOganesson: {
 }
 
 FlaskRadon: {
-	DisplayName: Frasco de Musgo de Radônio 
+	DisplayName: Frasco de Musgo de Radônio
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1686,7 +1681,7 @@ BiomePotsGraniteItem: {
 }
 
 CommonPotsGraniteItem: {
-	DisplayName: Vaso Pequeno de Granito 
+	DisplayName: Vaso Pequeno de Granito
 	Tooltip: ""
 }
 
@@ -1703,7 +1698,6 @@ RadonBobber: {
 LandscapingShears: {
 	DisplayName: Tesoura de Jardinagem
 	Tooltip: Aumenta a produtividade na colheita da folhagem
-
 }
 
 WoodenClub: {
@@ -1722,7 +1716,7 @@ PlatinumClub: {
 		'''
 		Lança um ataque de baixo pra cima que arremesa os inimigos no ar
 		Segure para seguir com um golpe de cima pra baixo
-		''' 
+		'''
 }
 
 FrostGiantBelt: {
@@ -1731,7 +1725,7 @@ FrostGiantBelt: {
 		'''
 		50% de resistência a recuos enquanto carrega um clube
 		Carregar um clube aumenta a defesa gradualmente
-		''' 
+		'''
 }
 
 Macuahuitl: {
@@ -1740,7 +1734,7 @@ Macuahuitl: {
 		'''
 		Pode ser girado rapidamente em volta do usuário, criando um ataque que causa sangramento ao inimigo
 		Ataques carregados causam dano extra aos inimigos que já estão sangrando
-		''' 
+		'''
 }
 
 BassSlapper: {
@@ -1749,8 +1743,8 @@ BassSlapper: {
 }
 
 Shockhammer: {
-   DisplayName: Martelo de Choque
-   Tooltip: Ao ser carregado completamente libera uma onda de choque que se propaga por alguns blocos
+	DisplayName: Martelo de Choque
+	Tooltip: Ao ser carregado completamente libera uma onda de choque que se propaga por alguns blocos
 }
 
 Bowlder: {
@@ -1854,7 +1848,7 @@ CartographyTableItem: {
 		'''
 		Permite com que você divida seu mapa com outros jogadores
 		Interaja para enviar suas descobertas
-		''' 
+		'''
 }
 
 PurityBonsaiItem: {
@@ -1913,7 +1907,7 @@ JinxBow: {
 		'''
 		Dispara flechas contra os inimigos sem consumir munição e ocasionalmente os marca
 		Atacar inimigos marcados com ataques à distância libera uma poderosa flecha mágica
-		''' 
+		'''
 }
 
 ExplosiveRum: {
@@ -1932,7 +1926,7 @@ VexpowderBlue: {
 		'''
 		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
 		Inflige confusão nos inimigos atingidos
-		''' 
+		'''
 }
 
 VexpowderRed: {
@@ -1946,7 +1940,7 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-    DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
 	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
 }
 
@@ -1978,7 +1972,7 @@ SharpshooterGlove: {
 		'''
 		Aumenta o dano de atirador em uma certa distância
 		Disparos consecutivos a essa distância causam dano aumentado
-		''' 
+		'''
 }
 
 BonsaiPot: {
@@ -2038,7 +2032,7 @@ FingerGun: {
 		Ignora parte da defesa inimiga
 		Valores maiores de mana aumentam a velocidade da arma
 		'Pew pew!'
-		''' 
+		'''
 }
 
 FlaskOfFrost: {
@@ -2087,7 +2081,7 @@ WalkieTalkie: {
 ScryingLens: {
 	DisplayName: Lente de Perscrutação
 	Tooltip: Mostra transmutações com o Brilhante
-	ShimmerLine: "Se transforma em [i:{0}] [c/FFFFFF:{1}]"
+	ShimmerLine: Se transforma em [i:{0}] [c/FFFFFF:{1}]
 }
 
 Ledger: {
@@ -2105,13 +2099,11 @@ CommonPotsSavannaItem: {
 	Tooltip: ""
 }
 
-StactusBannerItem.DisplayName: Bandeira do Empilhacto
-
 SunEarrings: {
 	DisplayName: Brinco da Dançarina Splar
 	Tooltip:
 		'''
-	    Aumenta a mana máxima em 20
+		   Aumenta a mana máxima em 20
 		7% de aumento no dano por magia
 		'''
 }
@@ -2137,7 +2129,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Bola Espinhenta
-	Tooltip: 
+	Tooltip:
 		'''
 		Gruda nos Blocos
 		"'Por favor, não confundir com o armamento goblin'"
@@ -2327,7 +2319,7 @@ JerboaItem: {
 
 JarboaItem: {
 	DisplayName: Jarra com Jerboa
-	Tooltip: "Essa jarra já é boa… comigo fica jerboa!... Me desculpa"
+	Tooltip: Essa jarra já é boa… comigo fica jerboa!... Me desculpa
 }
 
 RedSandstoneBrickWallItem: {
@@ -2536,7 +2528,7 @@ SaltPlatformItem: {
 }
 
 MahakalaMaskBlue: {
-	DisplayName: Mascará de Mahakala 
+	DisplayName: Mascará de Mahakala
 	Tooltip: Reduz os danos sofridos por inimigos corrompidos
 }
 
@@ -2616,12 +2608,12 @@ SwordStandSandstoneItem: {
 }
 
 RedSandstoneBrickForegroundWallItem: {
-	DisplayName: Parede de Primeiro Plano de Tijolo Vermelho de Arenito 
+	DisplayName: Parede de Primeiro Plano de Tijolo Vermelho de Arenito
 	Tooltip: ""
 }
 
 SaltPylonItem: {
-	DisplayName: Pilar das Salinas 
+	DisplayName: Pilar das Salinas
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -2639,9 +2631,6 @@ PineappleSeeds: {
 	DisplayName: Sementes de Abacaxi
 	Tooltip: ""
 }
-
-StactusCorruptBannerItem.DisplayName: Bandeira do Empilhacto Corrompido
-StactusCrimsonBannerItem.DisplayName: Bandeira do Empilhacto Rosa
 
 Dragonsong: {
 	DisplayName: Canção do Dragão
@@ -2954,7 +2943,7 @@ GoldCricketCageItem: {
 }
 
 ScarabPetItem: {
-	DisplayName: Comida de Escaravelho 
+	DisplayName: Comida de Escaravelho
 	Tooltip: Invoca um pequeno companheiro escaravelho!
 }
 

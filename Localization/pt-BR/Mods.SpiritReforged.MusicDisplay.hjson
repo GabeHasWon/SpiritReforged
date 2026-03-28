@@ -38,3 +38,33 @@ DuststormOtherworld: {
 	DisplayName: Música de Outro Mundo (Tempestade de Poeira)
 	Author: "{$By} jakedastardly"
 }
+
+Ziggurat: {
+	// DisplayName: Ziggurat
+	// Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	// DisplayName: Salt Flats
+	// Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	// DisplayName: Salt Flats (Night)
+	// Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	// DisplayName: Soaring Complications (Scarabeus Theme)
+	// Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	// DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
+	// Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	// DisplayName: Soaring Complications (Radio Edit)
+	// Author: "{$By} {$Sbubby}"
+}
