@@ -2819,8 +2819,8 @@ SaltCampfireItem: {
 }
 
 SaltFountainItem: {
-	// DisplayName: Salt Flats Fountain
-	// Tooltip: ""
+	DisplayName: Fonte de Água Salgada
+	Tooltip: ""
 }
 
 SaltskipperQuestFish: {
