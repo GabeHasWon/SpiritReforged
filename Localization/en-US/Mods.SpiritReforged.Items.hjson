@@ -984,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: Frostbite
-	Tooltip: Conjures a blizzard in front of you
+	Tooltip:
+		'''
+		Conjures a blizzard in front of you
+		Ignores some enemy defense
+		'''
 }
 
 RogueCrest: {
