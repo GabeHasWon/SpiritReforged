@@ -1,4 +1,4 @@
-CCommonTooltips: {
+CommonTooltips: {
 	Backpack:
 		'''
 		Guarda 4 itens
@@ -1573,8 +1573,8 @@ PotionVatsCloningItem: {
 }
 
 SilverFoodPlatterItem: {
-	DisplayName: Prato de Refeição
 	Tooltip: <right> para colocar item no prato
+  DisplayName: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -2741,8 +2741,6 @@ AncientBooksItem: {
 	// Tooltip: "'Tornaram-se ilegíveis com o tempo'"
 }
 
-// ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
-
 SaltGlassWallItem: {
 	// DisplayName: Parede de Vidro de Sal
 	// Tooltip: ""
@@ -2961,8 +2959,8 @@ ScarabPetItem: {
 }
 
 CarrotCake: {
-	// Tooltip: "{$BuffDescription.WellFed3}"
 	// DisplayName: Bolo de Cenoura
+	// Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {
@@ -2976,12 +2974,12 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	// DisplayName: Arco Carregado do Sol
-	/* Tooltip:
+	DisplayName: Arco Carregado do Sol
+	Tooltip:
 		'''
 		Carrega um tiro poderoso
 		Tiros carregados dão dano em inimigos próximos
-		''' */
+		'''
 }
 
 BagOScarabs: {

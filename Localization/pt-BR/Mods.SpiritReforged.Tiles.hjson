@@ -37,7 +37,6 @@ FablesGraves: {
 	}
 }
 
-SunkenTreasureTile.MapEntry: Tesouro Afundado
 HydrothermalVent.MapEntry: Ventiladora Hidrotermal
 CoralMapEntry: Coral
 KelpMapEntry: Alga Marinha

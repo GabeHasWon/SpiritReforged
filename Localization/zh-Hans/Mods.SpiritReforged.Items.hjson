@@ -602,7 +602,7 @@ DrywoodSword: {
 
 HuntingRifle: {
 	DisplayName: 猎枪
-	Tooltip: 对远处的目标和站定不动时造成更多伤害
+	Tooltip: 对远处的目标造成更多伤害，站定不动时进一步增加造成的伤害
 }
 
 SafariHat: {
@@ -894,7 +894,7 @@ RoyalKhopesh: {
 	Tooltip:
 		'''
 		右键扔出镰形剑
-		左键或右键拉回被击中的敌人，并短暂强化刀锋一段时间
+		左键或右键拉回被击中的敌人，并短暂强化下次攻击
 		'''
 }
 
@@ -1758,7 +1758,7 @@ Bowlder: {
 
 BoStaff: {
 	DisplayName: 长棍法杖
-	Tooltip: 连击造成连续伤害
+	Tooltip: 连续命中积累连击
 }
 
 Blasphemer: {
@@ -1913,7 +1913,7 @@ JinxBow: {
 	DisplayName: 厄劫弓
 	Tooltip:
 		'''
-		发射消耗弹药的箭矢，偶尔会标记敌人
+		对敌人发射已装备的箭矢，偶尔会标记敌人
 		使用远程攻击打击被标记的敌人会释放一支强大的魔法箭
 		'''
 }
@@ -2107,8 +2107,6 @@ CommonPotsSavannaItem: {
 	Tooltip: ""
 }
 
-StactusBannerItem.DisplayName: 刺角株旗
-
 SunEarrings: {
 	DisplayName: 太阳舞者耳环
 	Tooltip:
@@ -2132,7 +2130,7 @@ CeremonialDagger: {
 	DisplayName: 仪式匕首
 	Tooltip:
 		'''
-		对镇民造成伤害
+		可以用于献祭镇民
 		右键对流血的敌人造成暴击伤害
 		'''
 }
@@ -2638,9 +2636,6 @@ PineappleSeeds: {
 	Tooltip: ""
 }
 
-StactusCorruptBannerItem.DisplayName: 腐化刺角株旗
-StactusCrimsonBannerItem.DisplayName: 玫瑰刺角株旗
-
 Dragonsong: {
 	DisplayName: 龙歌
 	Tooltip:
@@ -2711,7 +2706,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战伤害
+	Tooltip: 永久性强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -2738,8 +2733,6 @@ AncientBooksItem: {
 	DisplayName: 古书
 	Tooltip: “因时间而难以辨认”
 }
-
-ZigguratMummyBannerItem.DisplayName: 腐朽木乃伊旗
 
 SaltGlassWallItem: {
 	DisplayName: 盐玻璃墙
@@ -2850,7 +2843,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	DisplayName: 风切变权杖
-	Tooltip: ""
+	Tooltip: 发射一阵穿刺强风
 }
 
 SaltTallGateItem: {
@@ -2959,8 +2952,8 @@ ScarabPetItem: {
 }
 
 CarrotCake: {
-	Tooltip: "{$BuffDescription.WellFed3}"
 	DisplayName: 胡萝卜蛋糕
+	Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {
@@ -2978,7 +2971,7 @@ AdornedBow: {
 	Tooltip:
 		'''
 		蓄力一次强化射击
-		强化射击会伤害附近的敌人
+		在完美时机射击会使箭矢在命中时折射
 		'''
 }
 
@@ -3013,7 +3006,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: 圣甲虫音乐盒
+	DisplayName: 音乐盒（圣甲虫）
 	Tooltip: ""
 }
 
@@ -3027,7 +3020,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		召唤一个哨兵
-		扔出会吸引蝗虫的曲柄杖
+		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
 		'''
 }
 

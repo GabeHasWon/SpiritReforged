@@ -44,8 +44,28 @@ public partial class Scarabeus : ModNPC
 			if (layer == 1)
 				FlipShadersOnOff(spriteBatch, null, false);
 
+			if (CurrentState == AIState.DeathAnim && layer is 1 or 10)
+			{
+				var newTex = SimulatedProfile.Texture.Value;
+				var newShader = GetShader(newTex, SimulatedProfile.SheenMask.Value, NPC.frame);
+
+				DrawSimulatedLayer(layer, newTex, basePosition, scale, color, effects, newShader);
+			}
+
 			DrawSimulatedLayer(layer, texture, basePosition, scale, color, effects, sheenShader);
 
+			if (CurrentState == AIState.DeathAnim && layer == 5)
+			{
+				float lerp = 1f - Counter / 120f;
+				if (Counter > 120f)
+					lerp = 0f;
+
+				var newTex = SimulatedProfile.Texture.Value;
+				var newShader = GetShader(newTex, SimulatedProfile.SheenMask.Value, NPC.frame);
+
+				DrawSimulatedLayer(layer, newTex, basePosition, scale, color * lerp, effects, newShader);
+			}
+			
 			//Draw the body layer glowmask
 			if (layer == 5 && Profile.GlowMask != null)
 			{
@@ -63,7 +83,16 @@ public partial class Scarabeus : ModNPC
 		Vector2 origin = (effects == SpriteEffects.FlipHorizontally) ? new(NPC.frame.Width - Components[layer].Origin.X, Components[layer].Origin.Y) : Components[layer].Origin;
 		Vector2 position = basePosition + (origin - NPC.frame.Size() / 2).RotatedBy(NPC.rotation);
 		float rotation = NPC.rotation;
-		rotation += Math.Clamp(NPC.velocity.X * Components[layer].PhysicsStrength, -3, 3);
+
+		if (CurrentState == AIState.DeathAnim)
+		{
+			rotation += Math.Clamp(NPC.velocity.X * Components[layer].PhysicsStrength * 2.5f, -4, 4);
+		}
+		else
+		{
+			rotation += Math.Clamp(NPC.velocity.X * Components[layer].PhysicsStrength, -3, 3);
+		}
+
 		Rectangle frame = texture.Frame(Profile.Columns, Profile.Rows, layer, currentFrame.Y);
 
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));

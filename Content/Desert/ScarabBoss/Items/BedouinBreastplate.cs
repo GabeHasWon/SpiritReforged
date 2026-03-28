@@ -7,7 +7,7 @@ public class BedouinBreastplate : ModItem
 	{
 		Item.width = 32;
 		Item.height = 30;
-		Item.value = 12500;
+		Item.value = Item.sellPrice(silver: 75);
 		Item.rare = ItemRarityID.Green;
 		Item.defense = 4;
 	}

@@ -64,5 +64,5 @@ public class GoldChainLoop : ChainLoop
 		}
 	}
 
-	public override ChainObject Find(Point16 coords, byte segments) => new GoldChainObject(coords, segments);
+	public override ChainObject CreateObject(Point16 coords, byte segments) => new GoldChainObject(coords, segments);
 }

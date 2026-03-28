@@ -53,9 +53,12 @@ internal class ZigguratMicropass : Micropass
 			break;
 		}
 
-		int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
-		int ruinsWidth = (int)(ZigguratMicrobiome.Width / 1.5f) * worldScalar;
-		WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
+		if (finalPosition != Point.Zero) //Gen didn't fail
+		{
+			int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
+			int ruinsWidth = (int)(ZigguratMicrobiome.Width / 1.5f) * worldScalar;
+			WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
+		}
 	}
 
 	public static void CreateDunes(Rectangle area)

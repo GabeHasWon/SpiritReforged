@@ -23,7 +23,7 @@ public class Coral3x3 : ModTile, IDrawPreview, IAutoloadRubble
 
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		DustType = DustID.Coralstone;
-		AddMapEntry(new Color(87, 61, 51), Language.GetText("Mods.SpiritReforged.Tiles.CoralMapEntry"));
+		AddMapEntry(new Color(87, 61, 51), Language.GetText("ItemName.Coral"));
 	}
 
 	public virtual void SetObjectData()

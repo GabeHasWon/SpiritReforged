@@ -99,23 +99,23 @@ OceanSlime: {
 }
 
 DiverZombie: {
-	Entry: Quem diria que tanques de oxigênio precisavam ter oxigênio de verdade neles?
 	DisplayName: Zumbi
+	Entry: Quem diria que tanques de oxigênio precisavam ter oxigênio de verdade neles?
 }
 
 KelpZombie: {
-	Entry: Peixes me temem, mulheres me temem, homens me temem, crianças me temem, porque eu sou o morto-vivo.
 	DisplayName: Zumbi
+	Entry: Peixes me temem, mulheres me temem, homens me temem, crianças me temem, porque eu sou o morto-vivo.
 }
 
 SailorZombie: {
-	Entry: Apesar do estado atual, eles costumavam comandar um luxuoso cruzeiro que você deveria visitar um dia.
 	DisplayName: Zumbi
+	Entry: Apesar do estado atual, eles costumavam comandar um luxuoso cruzeiro que você deveria visitar um dia.
 }
 
 TridentZombie: {
-	Entry: Seu tridente claramente não ajudou muito em vida. Ainda está bem pontudo, então tome cuidado.
 	DisplayName: Zumbi
+	Entry: Seu tridente claramente não ajudou muito em vida. Ainda está bem pontudo, então tome cuidado.
 }
 
 Killifish: {
@@ -476,7 +476,7 @@ ArgonMossSlime.DisplayName: Geleia de Musgo de Argônio
 HeliumMossSlime.DisplayName: Geleia de Musgo de Hélio
 OganessonMossSlime.DisplayName: Geleia de Musgo de Oganesson
 RadonMossSlime.DisplayName: Geleia de Musgo de Radônio
-Tumbleweed.DisplayName: Arbusto Seco
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
 	DisplayName: Flamingo
@@ -553,6 +553,7 @@ LootBag.DisplayName: Sacola de Brindes
 
 Scarabeus: {
 	DisplayName: Escarabeus
+  // Title: Crested Idol
 	Entry: ""
 }
 
