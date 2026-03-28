@@ -2528,7 +2528,7 @@ SaltPlatformItem: {
 }
 
 MahakalaMaskBlue: {
-	DisplayName: Mascará de Mahakala
+	DisplayName: Máscara de Mahakala
 	Tooltip: Reduz os danos sofridos por inimigos corrompidos
 }
 
@@ -2953,12 +2953,12 @@ CarrotCake: {
 }
 
 AvianRitualMask: {
-	DisplayName: Mascará do Ritual Aviário
+	DisplayName: Máscara do Ritual Aviário
 	Tooltip: ""
 }
 
 BullRitualMask: {
-	DisplayName: Mascará de Ritual do Touro
+	DisplayName: Máscara de Ritual do Touro
 	Tooltip: ""
 }
 
@@ -2977,7 +2977,7 @@ BagOScarabs: {
 }
 
 ScarabMask: {
-	DisplayName: Mascará do Escarabeus
+	DisplayName: Máscara do Escarabeus
 	Tooltip: ""
 }
 

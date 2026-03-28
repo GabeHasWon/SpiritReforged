@@ -1,4 +1,2 @@
--- SUNSCORCHED --
-v0.2
-
-Full changelog here: https://docs.google.com/document/d/170anIaSLxPfJwxATIN7qViyHGfpuXmz2Wz97KtA67qo
+v0.2.0.1
+- Fixed a bunch of minor localization mistakes
