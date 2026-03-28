@@ -25,18 +25,18 @@ DeepOcean: {
 }
 
 SavannaOtherworld: {
-	// DisplayName: Otherworldly Savanna Day
-	// Author: "{$By} {$Moonbird}"
+	DisplayName: Música de Outro Mundo (Savana de Dia)
+	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	// DisplayName: Otherworldly Savanna Night
-	// Author: "{$By} soundbin"
+	DisplayName: Música de Outro Mundo (Savana de Noite)
+	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	// DisplayName: Otherworldly Dustorm
-	// Author: "{$By} jakedastardly"
+	DisplayName: Música de Outro Mundo (Tempestade de Poeira)
+	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {

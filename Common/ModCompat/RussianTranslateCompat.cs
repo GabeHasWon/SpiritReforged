@@ -14,10 +14,11 @@ internal class RussianTranslateCompat : ModSystem
 	public override void PostSetupContent()
 	{
 		var spiritR = Mod;
-		var tru = CrossMod.RussianTranslate.Instance;
 
 		if (!CrossMod.RussianTranslate.Enabled)
 			return;
+
+		var tru = CrossMod.RussianTranslate.Instance;
 
 		tru.Call("AddFeminineItems", spiritR, new[]
 		{
