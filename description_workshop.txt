@@ -12,7 +12,7 @@ Spirit Reforged is the latest and main project developed by Team Spirit, also re
 
 Spirit Reforged is a standalone project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
-Our brand new update, Sunscorched (v0.3), introduces Reforged's first boss Scarabeus, our new Salt Flats ecotone, and many changes to the Desert! Here are the stats at a glance:
+Our brand new update, Sunscorched (v0.2), introduces Reforged's first boss Scarabeus, our new Salt Flats ecotone, and many changes to the Desert! Here are the stats at a glance:
 
 - 550 Items, including tons of new weapons and gear
 - 2 New Ecotone Biomes: The Savanna and the Salt Flats
@@ -20,3 +20,6 @@ Our brand new update, Sunscorched (v0.3), introduces Reforged's first boss Scara
 - Numerous microbiomes, microstructures, and discoveries scattered across the world
 
 We hope you enjoy Spirit Reforged and join Team Spirit on our next adventure.
+
+-- Contributors --
+tomat, alinahvoshch, Halmska, mathica

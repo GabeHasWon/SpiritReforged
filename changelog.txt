@@ -1,2 +1,4 @@
-v0.1.2.8
-- Fixed error on server load/unload
+-- SUNSCORCHED --
+v0.2
+
+Full changelog here: https://docs.google.com/document/d/170anIaSLxPfJwxATIN7qViyHGfpuXmz2Wz97KtA67qo
