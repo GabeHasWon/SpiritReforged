@@ -225,7 +225,7 @@ public class AfterimagePlayer : ModPlayer
 		if (!setActive)
 			_manaCounter = 0;
 
-		if (_manaCounter >= ManaThreshold)
+		if (_manaCounter >= ManaThreshold && !Player.ItemAnimationActive)
 			reduce -= ManaThreshold;
 	}
 }
