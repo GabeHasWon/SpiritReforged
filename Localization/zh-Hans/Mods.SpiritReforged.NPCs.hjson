@@ -94,22 +94,22 @@ OceanSlime: {
 }
 
 DiverZombie: {
-	DisplayName: 僵尸
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 谁会知道那些氧气罐需要装有真正的氧气？
 }
 
 KelpZombie: {
-	DisplayName: 僵尸
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 鱼类害怕我，女人害怕我，男人害怕我，小孩害怕我，因为我是亡灵。
 }
 
 SailorZombie: {
-	DisplayName: 僵尸
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 尽管它们现在的状态可能并不尽如人意，但它们曾经运营过一艘非常不错的豪华游艇，你应该找个时间去看看。
 }
 
 TridentZombie: {
-	DisplayName: 僵尸
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: 他们的三叉戟显然对他们的生活没有多大用处。但它仍然很尖，所以要小心。
 }
 
@@ -129,7 +129,7 @@ Termite: {
 }
 
 SavannaSandSlime: {
-	DisplayName: 沙史莱姆
+	DisplayName: "{$NPCName.SandSlime}"
 	Entry: 枝叶稍密，沙土略稀，凶险如故。
 }
 
@@ -471,7 +471,7 @@ ArgonMossSlime.DisplayName: 氩苔藓史莱姆
 HeliumMossSlime.DisplayName: 氦苔藓史莱姆
 OganessonMossSlime.DisplayName: 「气奥」苔藓史莱姆
 RadonMossSlime.DisplayName: 氡苔藓史莱姆
-Tumbleweed.DisplayName: 风滚草
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
 	DisplayName: 火烈鸟
@@ -548,7 +548,7 @@ LootBag.DisplayName: 战利品袋
 
 Scarabeus: {
 	DisplayName: 圣甲虫
-	// Title: Crested Idol
+	Title: 羽冠神像
 	Entry: ""
 }
 
