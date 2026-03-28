@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Conjures a blizzard in front of you
-		Ignores some enemy defense
+		Ignores 5 points of enemy Defense
 		'''
 }
 
@@ -2041,8 +2041,8 @@ FingerGun: {
 	DisplayName: Finger Blaster
 	Tooltip:
 		'''
-		Ignores some enemy defense
 		Fires faster at higher mana
+		Ignores 5 points of enemy Defense
 		'Pew pew!'
 		'''
 }
@@ -2644,6 +2644,7 @@ Dragonsong: {
 	DisplayName: Dragonsong
 	Tooltip:
 		'''
+		Uses gel for ammo
 		50% chance to save ammo
 		'You are a terrible person'
 		'''
