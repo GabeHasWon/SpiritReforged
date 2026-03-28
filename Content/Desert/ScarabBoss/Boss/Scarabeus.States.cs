@@ -1791,7 +1791,7 @@ public partial class Scarabeus : ModNPC
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, shockwaveDelay, maxHeight - j * heightLossPerStep);
 				
-				if (lightningStrikes)
+				if (!Main.dedServ && lightningStrikes && (j == 0 || Main.rand.NextBool(3)))
 					CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnThunderColumn", scourgeFightManager, projPosition, 900 + j * heightLossPerStep, shockwaveDelay - 1);
 			}
 		}
