@@ -2,6 +2,7 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+By: by
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {

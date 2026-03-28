@@ -1773,8 +1773,8 @@ ZenithPotsItem: {
 }
 
 ZenithPotsPaleItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
-	Tooltip: ""
+	// DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
+	// Tooltip: ""
 }
 
 OtherworldSavannaMusicBoxItem: {
