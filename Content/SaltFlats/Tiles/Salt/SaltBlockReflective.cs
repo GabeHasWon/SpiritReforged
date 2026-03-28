@@ -117,10 +117,13 @@ public class SaltBlockReflective : SaltBlock
 				spriteBatch.End();
 
 			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
-				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindSolidTiles");
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawbehindsolidtilesbehindbgnpcs");
 
 			if (!Main.LocalPlayer.detectCreature)
 				DrawNPCsAndProjsBehindTiles(spriteBatch);
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawbehindsolidtilesabovebgnpcs");
 
 			if (Reflections.Detail > 1)
 			{
@@ -143,7 +146,7 @@ public class SaltBlockReflective : SaltBlock
 			Reflections.DrawPlayers_BehindNPCs(Main.instance);
 
 			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
-				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawAboveSolidTiles");
+				CrossMod.Fables.Instance.Call("vfx.customdrawlayers.drawabovesolidtiles");
 
 			if (Reflections.Detail > 2)
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCs);
@@ -152,6 +155,9 @@ public class SaltBlockReflective : SaltBlock
 			Reflections.DrawNPCs(Main.instance, false);
 			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCProjectiles, behindTiles: false);
 			spriteBatch.End();
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customdrawlayers.drawabovenpcs");
 
 			if (Reflections.Detail > 1)
 				SystemLoader.PostDrawTiles();
