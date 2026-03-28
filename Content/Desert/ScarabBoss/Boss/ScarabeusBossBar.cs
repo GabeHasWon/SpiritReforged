@@ -23,7 +23,7 @@ public class ScarabeusBossBar : ModBossBar
 
 	public override void PostDraw(SpriteBatch spriteBatch, NPC npc, BossBarDrawParams drawParams)
 	{
-		if (npc.ModNPC is Scarabeus scarabeus && scarabeus.CurrentState == Scarabeus.AIState.PhaseTransitionAnim && scarabeus.currentFrame.X == 5)
+		if (npc.ModNPC is Scarabeus scarabeus && scarabeus.CurrentState == Scarabeus.AIState.PhaseTransitionAnim && scarabeus.Profile == Scarabeus.TakeoffProfile)
 		{
 			Texture2D texture = ParticleHandler.GetTexture(ParticleHandler.TypeOf<FireSploshion>());
 			Rectangle source = texture.Frame(2, 7, 0, (int)(scarabeus.Counter / 30f * 6));

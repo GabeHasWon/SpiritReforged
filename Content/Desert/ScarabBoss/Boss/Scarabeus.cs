@@ -92,12 +92,12 @@ public partial class Scarabeus : ModNPC
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;
 
-	private static VisualProfile PhaseOneProfile;
-	private static VisualProfile PhaseTwoProfile;
-	private static VisualProfile TakeoffProfile;
-	private static VisualProfile SimulatedProfile;
-	private static VisualProfile BallProfile;
-	private static VisualProfile DeadProfile;
+	internal static VisualProfile PhaseOneProfile;
+	internal static VisualProfile PhaseTwoProfile;
+	internal static VisualProfile TakeoffProfile;
+	internal static VisualProfile SimulatedProfile;
+	internal static VisualProfile BallProfile;
+	internal static VisualProfile DeadProfile;
 
 	public delegate float ScarabeusAttackDelegate(Scarabeus self, ref bool retarget);
 
@@ -236,7 +236,7 @@ public partial class Scarabeus : ModNPC
 		//Duo fight
 		_stateAI[(int)AIState.DuoFightSpawnAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnAnimation(ref retarget);
 		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnFallback(ref retarget);
-		_stateAI[(int)AIState.DuoFightIdleStandStill] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightStandStillIdle(ref retarget);
+		_stateAI[(int)AIState.DuoFightIdleStandStill] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
 		_stateAI[(int)AIState.DuoFightGrabbedByScourge] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightGrabbedByScourge(ref retarget);
 
 		Main.npcFrameCount[Type] = 17; //The highest frame count

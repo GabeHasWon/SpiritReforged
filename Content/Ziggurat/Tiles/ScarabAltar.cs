@@ -413,15 +413,26 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	{
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
 
-		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
-			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
+		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity)
 		{
+			bool bowlFull = entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] >= ScarabAltarEntity.ConsumableCountMax;
+			//Since stormlion items from fables instantly set the bowl's fill level to 666, prevent more than 1 from being dispensed at once
+			bowlFull |= Main.LocalPlayer.ownedProjectileCounts[projectileType] > 0 && _fablesStormlionItems[result.type];
+
+			if (bowlFull)
+				return false;
+
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
-			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
-				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
+			int itemType = result.type;
+			//When sacrificing the stormlion bucket, it should spawn a dead stormlion instead of consuming the bucket
+			if (itemType == _fablesStormlionBucketType)
+				itemType = _fablesDeadStormlionLarvaType;
 
-			if (--result.stack <= 0)
+			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
+				projectileType, 0, 0, Main.myPlayer, itemType, entity.ID);
+
+			if (result.type != _fablesStormlionBucketType && --result.stack <= 0)
 				result.TurnToAir(); //Consume an item
 			return true;
 		}

@@ -69,7 +69,10 @@ public partial class Scarabeus : ModNPC
 				((args[2] as NPC).ModNPC as Scarabeus).DuoFightGigaFloorShockwave(false, (Vector2)args[3]);
 				return true;
 			case "doGroundPoundShockwaves":
-				((args[2] as NPC).ModNPC as Scarabeus).DuoFightGigaFloorShockwave(false, (Vector2)args[3]);
+				float safeSpace = 200;
+				if (args.Length > 3)
+					safeSpace = (float)args[3];
+				((args[2] as NPC).ModNPC as Scarabeus).DoGroundPoundShockwaves(safeSpace);
 				return true;
 		}
 
@@ -163,13 +166,6 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 	#endregion
-
-	public float DuoFightStandStillIdle(ref bool retarget)
-	{
-		retarget = false;
-
-		return 1f;
-	}
 
 	#region Giga Slam Attack
 	public void DuoFightGigaFloorShockwave(bool unearthScourge = true, Vector2? shockwaveCenter = null)

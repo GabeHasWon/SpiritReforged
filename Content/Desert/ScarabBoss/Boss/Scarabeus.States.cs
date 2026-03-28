@@ -779,6 +779,9 @@ public partial class Scarabeus : ModNPC
 			nextAttackWaitTime *= 0.8f; //Cooldown goes down faster while backing away fast
 		}
 
+		else if (CurrentState == AIState.DuoFightIdleStandStill)
+			walkSpeed *= 0f;
+
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, walkSpeed * NPC.direction, 0.05f);
 
 		//Fall down fast if above player
@@ -823,18 +826,12 @@ public partial class Scarabeus : ModNPC
 		}
 		else
 		{
-
-			/*if (Main.rand.NextBool(15))
-			{
-				Vector2 pos = NPC.BottomLeft;
-				if (NPC.direction == -1)
-					pos = NPC.BottomRight;
-
-				KickupDust(pos, new Vector2(-1f * NPC.direction, -1f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 3));
-			}*/
-
 			NPC.rotation = 0f;
 			UpdateFrame(1, (int)fps, PhaseOneProfile);
+
+			//Standing still
+			if (fps == 0)
+				SetFrame(0, 0, PhaseOneProfile);
 		}
 	}
 	
@@ -1583,7 +1580,7 @@ public partial class Scarabeus : ModNPC
 		return 1f;
 	}
 
-	public void DoGroundPoundShockwaves()
+	public void DoGroundPoundShockwaves(float safeZoneRadius = 200)
 	{
 		if (!Main.dedServ)
 		{
@@ -1606,7 +1603,7 @@ public partial class Scarabeus : ModNPC
 		{
 			for (int j = 0; j < 4; j++)
 			{
-				float distStep = (200 + j * 56) * i;
+				float distStep = (safeZoneRadius + j * 56) * i;
 				Vector2 projPosition = FindGroundFromPositionIgnorePlatforms(NPC.Bottom + Vector2.UnitX * distStep);
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), projPosition, Vector2.UnitY * i * 0.5f, ModContent.ProjectileType<SandShockwavePillar>(), GetProjectileDamage(STAT_GROUNDPOUND_SHOCKWAVE_DAMAGE), 3, Main.myPlayer, 1 + j * 3, 300 - j * 40f);
 			}
