@@ -35,17 +35,17 @@ EnergizedShockwave.DisplayName: Energized Shockwave
 RollingBowlder.DisplayName: Rolling Bowlder
 Firespike.DisplayName: Firespike
 CannonBomb.DisplayName: Bomb Cannon Shot
-BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
 JinxArrow.DisplayName: Jinx Arrow
 JinxBowMinion.DisplayName: Jinx Bow Minion
-RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
-VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
 EnergyImpact.DisplayName: Energy Stomp
-EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Finger Shot
 NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
 ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"

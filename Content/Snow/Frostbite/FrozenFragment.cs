@@ -4,7 +4,7 @@ public class FrozenFragment : ModProjectile
 {
 	private const int timeLeftMax = 120;
 
-	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Frostbite.DisplayName");
+	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.FrostbiteItem.DisplayName");
 	private int TargetWhoAmI
 	{
 		get => (int)Projectile.ai[0];

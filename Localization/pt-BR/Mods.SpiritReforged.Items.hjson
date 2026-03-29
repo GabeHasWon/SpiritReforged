@@ -1351,7 +1351,7 @@ WayfarerLegs: {
 
 AncientKoiTotem: {
 	// DisplayName: Ancient Koi Totem
-	// Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+	// Tooltip: "{$Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
@@ -1370,7 +1370,7 @@ ClayBomb: {
 
 ClayBombSticky: {
 	// DisplayName: Sticky Clay Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+	// Tooltip: "{$Items.ClayBomb.Tooltip}"
 }
 
 SandBomb: {
@@ -1380,7 +1380,7 @@ SandBomb: {
 
 SandBombSticky: {
 	// DisplayName: Sticky Sand Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+	// Tooltip: "{$Items.SandBomb.Tooltip}"
 }
 
 CoarseBomb: {
@@ -1390,7 +1390,7 @@ CoarseBomb: {
 
 CoarseBombSticky: {
 	// DisplayName: Sticky Coarse Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+	// Tooltip: "{$Items.CoarseBomb.Tooltip}"
 }
 
 MudBomb: {
@@ -1400,7 +1400,7 @@ MudBomb: {
 
 MudBombSticky: {
 	// DisplayName: Sticky Mud Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+	// Tooltip: "{$Items.MudBomb.Tooltip}"
 }
 
 HideTunic: {
@@ -1647,32 +1647,32 @@ FlaskArgon: {
 
 FlaskHelium: {
 	// DisplayName: Helium Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
 	// DisplayName: Krypton Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
 	// DisplayName: Neon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
 	// DisplayName: Oganesson Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
 	// DisplayName: Radon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
 	// DisplayName: Xenon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	// Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 BiomePotsGraniteItem: {
@@ -1777,7 +1777,7 @@ ZenithPotsItem: {
 }
 
 ZenithPotsPaleItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	// DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
 	// Tooltip: ""
 }
 
@@ -1808,27 +1808,27 @@ FlaskBlue: {
 
 FlaskBrown: {
 	// DisplayName: Brown Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	// Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
 	// DisplayName: Green Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	// Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
 	// DisplayName: Lava Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	// Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
 	// DisplayName: Purple Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	// Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
 	// DisplayName: Red Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	// Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 TitleMusicBoxItem: {
@@ -1928,14 +1928,14 @@ VexpowderBlue: {
 	// DisplayName: Vexpowder
 	/* Tooltip:
 		'''
-		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		{$Items.Flarepowder.Tooltip}
 		Confuses hit enemies
 		''' */
 }
 
 VexpowderRed: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+	// DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+	// Tooltip: "{$Items.VexpowderBlue.Tooltip}"
 }
 
 BreakawayChair: {
@@ -1944,17 +1944,17 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
-	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+	// DisplayName: Ancient {$Items.LeatherHood.DisplayName}
+	// Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	// DisplayName: Ancient {$Items.LeatherLegs.DisplayName}
 	// Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	// DisplayName: Ancient {$Items.LeatherPlate.DisplayName}
 	// Tooltip: ""
 }
 
@@ -1967,7 +1967,7 @@ RollingPotsItem: {
 
 InvisibleLure: {
 	// DisplayName: Invisible Lure
-	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+	// Tooltip: "{$Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
@@ -2021,12 +2021,12 @@ GraniteBody: {
 
 GraniteHead: {
 	// DisplayName: Kinetic Visor
-	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	// Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 GraniteLegs: {
 	// DisplayName: Kinetic Greaves
-	// Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	// Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 FingerGun: {
