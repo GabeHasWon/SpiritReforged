@@ -984,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: 寒霜
-	Tooltip: 在你的前方变出暴雪
+	Tooltip:
+		'''
+		在你的前方变出暴雪
+		无视敌人5点的防御力
+		'''
 }
 
 RogueCrest: {
@@ -2037,8 +2041,8 @@ FingerGun: {
 	DisplayName: 手指冲击波
 	Tooltip:
 		'''
-		无视敌人些许防御力
 		魔力值越高，发射速度越快
+		无视敌人5点的防御力
 		“咻咻！”
 		'''
 }
@@ -2640,6 +2644,7 @@ Dragonsong: {
 	DisplayName: 龙歌
 	Tooltip:
 		'''
+		使用凝胶作为弹药
 		50%几率节省弹药
 		“你是一个可怕的人”
 		'''
