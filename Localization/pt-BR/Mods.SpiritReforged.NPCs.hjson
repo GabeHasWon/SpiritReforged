@@ -10,7 +10,7 @@ VanillaDialogue: {
 
 	Stylist: {
 		Savanna: É extremamente difícil manter meu penteado neste clima.
-	    Duststorm: Se eu tiver que tirar areia do cabelo de mais uma pessoa, eu juro que...
+		Duststorm: Se eu tiver que tirar areia do cabelo de mais uma pessoa, eu juro que...
 	}
 
 	TravellingMerchant: {
@@ -549,7 +549,7 @@ LootBag.DisplayName: Sacola de Brindes
 Scarabeus: {
 	DisplayName: Escarabeus
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
-	Entry: "Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas."
+	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas.
 	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 

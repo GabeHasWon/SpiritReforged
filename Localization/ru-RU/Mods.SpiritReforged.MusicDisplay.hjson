@@ -46,12 +46,12 @@ Ziggurat: {
 }
 
 Salt: {
-	DisplayName: Солончаковые равнины: Salt Flats
+	DisplayName: Солончаковые равнины: Reflected Skies
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: Ночные солончаковые равнины: Salt Flats (Night)
+	DisplayName: Ночные солончаковые равнины: Refracted Stars
 	Author: "{$By} {$Sbubby}"
 }
 
