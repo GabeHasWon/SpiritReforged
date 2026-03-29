@@ -1002,7 +1002,7 @@ RogueCrest: {
 }
 
 GildedScarab: {
-	DisplayName: 镀金圣甲虫
+	DisplayName: 镀金甲虫
 	Tooltip:
 		'''
 		受到攻击时会获得一个短暂的防御增益
