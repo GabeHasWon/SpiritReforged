@@ -1953,7 +1953,7 @@ public partial class Scarabeus : ModNPC
 						Vector2 heightOffset = NPC.height * Vector2.UnitY / 2;
 
 						Vector2 preferredArc = NPC.GetArcVel(Target.Center + predictiveOffset, NPC.gravity, 14, true);
-						Vector2 reachPlatformArc = NPC.GetArcVel(Target.Center + (predictiveOffset / 2) - heightOffset, NPC.gravity * 2, 14, true, true);
+						Vector2 reachPlatformArc = NPC.GetArcVel(Target.Center + (predictiveOffset) - heightOffset, NPC.gravity * 2, 14, true, true);
 
 						//switch to more accurate arc if player is more than 7 tiles above the boss, bit more than jump height
 						bool canReachPlayer = Math.Abs(Target.Bottom.Y - NPC.Top.Y) < 112;
