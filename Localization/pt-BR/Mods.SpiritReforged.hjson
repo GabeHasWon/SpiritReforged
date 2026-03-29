@@ -10,7 +10,7 @@ Biomes: {
 	}
 
 	ZigguratBiome: {
-	    DisplayName: Zigurate
+		DisplayName: Zigurate
 		TownNPCDialogueName: O Zigurate
 	}
 }

@@ -3034,7 +3034,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Scarab Bulb
+	DisplayName: Bulb Rattle
 	Tooltip:
 		'''
 		Summons a Scarababy

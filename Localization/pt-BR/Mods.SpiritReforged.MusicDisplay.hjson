@@ -2,6 +2,7 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+// By: by
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
@@ -40,31 +41,31 @@ DuststormOtherworld: {
 }
 
 Ziggurat: {
-	   DisplayName: Zigurate
-	   Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: Zigurate
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	   DisplayName: Salinas
-	   Author: "{$By} {$Sbubby}"
+	DisplayName: Salinas
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	   DisplayName: Noite nas Salinas
-	   Author: "{$By} {$Sbubby}"
+	DisplayName: Noite nas Salinas
+	Author: "{$By} {$Sbubby}"
 }
 
 Scarabeus: {
-	   DisplayName: Complicações Aéreas (Tema do Escarabeus)
-	   Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Tema do Escarabeus)
+	Author: "{$By} {$Sbubby}"
 }
 
 ScarabeusP2: {
-	   DisplayName: Complicações Aéreas (Tema da segunda fase do Escarabeus)
-	   Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Tema da segunda fase do Escarabeus)
+	Author: "{$By} {$Sbubby}"
 }
 
 RadioScarab: {
-	   DisplayName: Complicações Aéreas (Edição de Rádio)
-	   Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Edição de Rádio)
+	Author: "{$By} {$Sbubby}"
 }
