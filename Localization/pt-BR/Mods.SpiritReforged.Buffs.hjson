@@ -99,51 +99,51 @@ OpenWounds: {
 }
 
 ExplorerPot: {
-	// DisplayName: Explorer's Thrill
-	// Description: You're eager for more!
+	DisplayName: Emoção do Explorador
+	Description: Você quer mais!
 }
 
 ExplorerMine: {
-	// DisplayName: Explorer's Vigor
-	// Description: Keep digging!
+	DisplayName: Vigor do Explorador
+	Description: Continue Cavando!
 }
 
 JinxMark: {
-	// DisplayName: Jinx Mark
-	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	DisplayName: Marcado
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
 }
 
 FlaskOfFrost_Buff: {
-	// DisplayName: Weapon Imbue: Freezing
-	// Description: Melee and Whip attacks freeze enemies
+	DisplayName: Congelante
+	Description: Ataques corpo-a-corpo e chicotes congelam os inimigos
 }
 
 Slowed: {
-	// DisplayName: Slowed
-	// Description: Mods.SpiritReforged.Buffs.Slowed.Description
+	DisplayName: Lento
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
 }
 
 ToucaneMinion_Buff: {
-	// DisplayName: Toucane
-	// Description: The toucane fights for you?
+	DisplayName: Tucano
+	Description: O Tucano luta por você?
 }
 
 TinyDragonPet_Buff: {
-	// DisplayName: Tiny Dragon
-	// Description: A little dragon is following you
+	DisplayName: Pequeno Dragão
+	Description: Um Pequeno Dragão te segue
 }
 
 EnlilBuff: {
-	// DisplayName: Enlil's Aid
-	// Description: Increased vertical mobility
+	DisplayName: Benção de Enlil
+	Description: Aumenta a velocidade verticalmente
 }
 
 ScarabPetBuff: {
-	// DisplayName: Tiny Scarab
-	// Description: "'It really loves to roll...'"
+	DisplayName: Pequeno Escaravelho
+	Description: "'Ele ama MUITO rolar...'"
 }
 
 ScarabLightPetBuff: {
-	// DisplayName: Scarababy
-	// Description: "'It's plotting...'"
+	DisplayName: Escarabebê
+	Description: "'Ele tá tramando algo...'"
 }

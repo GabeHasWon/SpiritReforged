@@ -29,25 +29,26 @@ Hiker: {
 }
 
 Caveman: {
-	// DisplayName: Caveman
-	// Flavor: The simple life proves productive. One word sums it up: Ug.
-	// Description: Starts with a Hide Tunic, Wooden Club...anywhere high underground.
+	DisplayName: Homem das Cavernas
+	Flavor: Esse simples organismo se provou produtivo, uma única palavra resume tudo que ele diz Uga
+	Description: Começa com uma túnica de couro, um porrete de madeira... em qualquer lugar no subsolo.
 }
 
 Disentombed: {
-	// DisplayName: Disentombed
-	// Flavor: Three thousand years have passed...my reign will return. I will return.
-	// Description: Starts with the mummy vanity in the Ziggurat.
+	DisplayName: Desenterrado
+	Flavor: Três mil anos se passaram... meu reinado retornará. Eu retornarei.
+	Description: Nasce com a Roupa de Múmia em um Zigurate
 }
 
 Worshipper: {
-	// DisplayName: Worshipper
-	// Flavor: Cursed to pray to the sun yet never see it. Holds hope regardless.
-	// Description: Starts with the Sundancer armor set and a Windshear Scepter in an underground Oasis.
+	DisplayName: Adorador
+	Flavor: Amaldiçoado a rezar para o sol sem jamais vê-lo. Mesmo assim, mantém a esperança.
+	Description: Começa com o conjunto de armadura de Dançarina Solar e um Cetro Corta-Vento em um oásis subterrâneo.
 }
 
 Purifier: {
-	// DisplayName: Purifier
-	// Flavor: Abhorrent evil begone; burn at the sting of my purity.
-	// Description: Starts with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
+	DisplayName: Purificador
+	Flavor: Mal abominável, vai-te embora e queime com a dor da minha pureza.
+	Description: Começa com o Bastão Bo e uma Máscara Mahakala nas Salinas (se possível).
+
 }

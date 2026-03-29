@@ -1773,8 +1773,8 @@ ZenithPotsItem: {
 }
 
 ZenithPotsPaleItem: {
-	// DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
-	// Tooltip: ""
+	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
 }
 
 OtherworldSavannaMusicBoxItem: {
@@ -2044,7 +2044,7 @@ HardlightVisor: {
 	DisplayName: Viseira Brilhante
 	Tooltip: ""
 	AltDisplayName: Viseira Brilhante
-	AltTooltip: ""
+	AltTooltip: "''"
 }
 
 PolishedAmberItem: {
@@ -2103,7 +2103,7 @@ SunEarrings: {
 	DisplayName: Brinco da Dançarina Solar
 	Tooltip:
 		'''
-		Aumenta a mana máxima em 20
+		   Aumenta a mana máxima em 20
 		7% de aumento no dano por magia
 		'''
 }

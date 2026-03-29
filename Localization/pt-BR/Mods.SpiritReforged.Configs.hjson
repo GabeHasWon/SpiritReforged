@@ -1,28 +1,28 @@
 ReforgedClientConfig: {
-	// DisplayName: Reforged Client Config
+	DisplayName: Configurações do Cliente do Reforged
 
 	OceanShape: {
-		// Label: Ocean Shape
-		/* Tooltip:
+		Label: Formato do Oceano
+		Tooltip:
 			'''
-			Modifies the Ocean generation in certain ways
-			Defaults to a Piecewise_V generation
-			The Piecewise_V generation is recommended for Spirit playthroughs
-			''' */
+			Modifica a geração de mundo do Oceano
+			Por padrão, utiliza-se a geração Piecewise_V.
+            A geração Piecewise_V é recomendada para jogatinas com o Spirit.
+			'''
 	}
 
 	ReflectionDetail: {
-		// Label: Reflection Detail
-		/* Tooltip:
+		Label: Detalhes nas reflexões
+		Tooltip:
 			'''
-			Determines the detail of all reflections
-			Higher values mean more detail and a greater resulting performance cost
-			''' */
+			Determina o nível de detalhe nos reflexos
+			Quanto menor o valor, maior chance de um bom desempenho
+			'''
 	}
 
 	AmbientSounds: {
-		// Label: Ambient Sounds
-		// Tooltip: Plays ambient sounds in specific biomes
+		Label: Sons de Ambiente
+		Tooltip: Novos sons em biomas específicos
 	}
 }
 
@@ -31,27 +31,27 @@ OceanShape: {
 
 	Default: {
 		Label: Padrão
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	SlantedSine: {
 		Label: Seno Inclinado
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise: {
 		Label: Piecewise
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_M: {
 		Label: Piecewise_ M
-		// Tooltip: ""
+		Tooltip: ""
 	}
 
 	Piecewise_V: {
 		Label: Piecewise_ V
-		// Tooltip: ""
+		Tooltip: ""
 	}
 }
 
