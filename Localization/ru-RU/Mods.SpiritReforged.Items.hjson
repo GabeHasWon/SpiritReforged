@@ -1909,7 +1909,7 @@ TopazBonsaiItem: {
 }
 
 AmberBonsaiItem: {
-	DisplayName: Топаз из янтарного дерева
+	DisplayName: Бонсай из янтарного дерева
 	Tooltip: ""
 }
 
