@@ -222,7 +222,7 @@ public class Wisp : ModNPC
 		NPC.scale = Main.rand.NextFloat(0.75f, 1.25f);
 		NPC.damage = 0;
 
-		AIType = NPCID.Butterfly;
+		AIType = NPCID.None;
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -232,6 +232,8 @@ public class Wisp : ModNPC
 	public override void AI()
 	{
 		const int hostileThreshold = 60;
+
+		NPC.ai[3] = 1; // Avoids some weird functionality with the vanilla behavior
 
 		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
 		Lighting.AddLight(NPC.Center, coreColor.ToVector3() * NPC.Opacity);
@@ -275,8 +277,8 @@ public class Wisp : ModNPC
 						});
 				}
 
-				NPC.defDamage = 10;
-				NPC.damage = 10;
+				NPC.defDamage = ModeUtils.ByMode(10, 14, 18, 25);
+				NPC.damage = NPC.defDamage;
 				NPC.chaseable = true;
 				NPC.aiStyle = NPCAIStyleID.Bat;
 
@@ -475,8 +477,6 @@ public class Wisp : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		Main.NewText(DateTime.Now.ToString("HH:mm:ss"));
-
 		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Extra_49"].Value;
