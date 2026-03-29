@@ -6,7 +6,6 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -203,9 +202,9 @@ public class Wisp : ModNPC
 		PitchVariance = 0.25f
 	};
 
+	private float _counter = 0;
 	private readonly ParticleRenderer _twirlParticleRenderer = new();
 	private VertexTrail[] _trails;
-	private int _counter;
 	private bool _isHostile;
 
 	public override void SetStaticDefaults() => MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
@@ -221,6 +220,9 @@ public class Wisp : ModNPC
 		NPC.HitSound = Hit;
 		NPC.DeathSound = Death;
 		NPC.scale = Main.rand.NextFloat(0.75f, 1.25f);
+		NPC.damage = 0;
+
+		AIType = NPCID.Butterfly;
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -273,9 +275,13 @@ public class Wisp : ModNPC
 						});
 				}
 
+				NPC.defDamage = 10;
 				NPC.damage = 10;
 				NPC.chaseable = true;
 				NPC.aiStyle = NPCAIStyleID.Bat;
+
+				if (!_isHostile)
+					NPC.netUpdate = true;
 
 				_isHostile = true;
 			}
@@ -404,6 +410,7 @@ public class Wisp : ModNPC
 	}
 
 	public override bool? CanBeHitByItem(Player player, Item item) => (player.dontHurtCritters && !_isHostile) ? false : null;
+
 	public override bool? CanBeHitByProjectile(Projectile projectile)
 	{
 		if (projectile.BelongsToPlayer())
@@ -439,8 +446,17 @@ public class Wisp : ModNPC
 			npcLoot.AddCommon(lostSoul.Type, 15);
 	}
 
-	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_isHostile);
-	public override void ReceiveExtraAI(BinaryReader reader) => _isHostile = reader.ReadBoolean();
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_isHostile);
+		writer.Write((Half)_counter);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		_isHostile = reader.ReadBoolean();
+		_counter = (float)reader.ReadHalf();
+	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
@@ -459,6 +475,8 @@ public class Wisp : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
+		Main.NewText(DateTime.Now.ToString("HH:mm:ss"));
+
 		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Extra_49"].Value;

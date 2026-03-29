@@ -35,6 +35,8 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.FramesOnKillWall[Type] = true;
 
+		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.StyleHorizontal = true;
