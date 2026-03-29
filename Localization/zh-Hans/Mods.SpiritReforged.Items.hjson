@@ -3035,7 +3035,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: 响动灯泡
+	DisplayName: 颤响灯泡
 	Tooltip:
 		'''
 		召唤一只甲虫宝宝
