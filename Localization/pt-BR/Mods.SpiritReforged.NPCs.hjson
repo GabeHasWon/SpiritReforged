@@ -550,6 +550,7 @@ Scarabeus: {
 	DisplayName: Escarabeus
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
 	Entry: ""
+	// SpawnInfo: Use any gem item at the Ancient Altar on the Ziggurat
 }
 
 TinyGrub.DisplayName: Pequena Larva

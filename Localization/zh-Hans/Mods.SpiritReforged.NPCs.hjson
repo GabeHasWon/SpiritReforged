@@ -550,6 +550,7 @@ Scarabeus: {
 	DisplayName: 圣甲虫
 	Title: 羽冠神像
 	Entry: ""
+	// SpawnInfo: Use any gem item at the Ancient Altar on the Ziggurat
 }
 
 TinyGrub.DisplayName: 小幼虫

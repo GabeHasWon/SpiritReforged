@@ -63,5 +63,6 @@ public class SaltBiome : ModBiome
 		player.ZoneDesert = true;
 		player.ZoneSnow = true;
 		player.ZoneSandstorm = false;
+		player.environmentBuffImmunityTimer = 2; // This is a timer *solely* used to provide teleport immunity to Chilled. Huh?
 	}
 }

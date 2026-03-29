@@ -46,12 +46,12 @@ Ziggurat: {
 }
 
 Salt: {
-	// DisplayName: Salt Flats
+	// DisplayName: Reflected Skies (Salt Flats Day Theme)
 	// Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
+	// DisplayName: Refracted Stars (Salt Flats Night Theme)
 	// Author: "{$By} {$Sbubby}"
 }
 
