@@ -46,12 +46,12 @@ Ziggurat: {
 }
 
 Salt: {
-	DisplayName: 盐滩
+	DisplayName: Reflected Skies（主题曲：盐滩 - 昼）
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: 盐滩 - 夜
+	DisplayName: Refracted Stars（主题曲：盐滩 - 夜）
 	Author: "{$By} {$Sbubby}"
 }
 
