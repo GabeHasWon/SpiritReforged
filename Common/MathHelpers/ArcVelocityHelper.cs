@@ -2,7 +2,7 @@
 
 public static class ArcVelocityHelper
 {
-	public static Vector2 GetArcVel(Vector2 startingPos, Vector2 targetPos, float gravity, float speed, bool useHigherAngle = false)
+	public static Vector2 GetArcVel(Vector2 startingPos, Vector2 targetPos, float gravity, float speed, bool useHigherAngle = false, bool forceReachTarget = false)
 	{
 		//Start by getting the desired end point relative to the starting point, and the rotation to that end point
 		Vector2 distToTravel = targetPos - startingPos;
@@ -17,6 +17,9 @@ public static class ArcVelocityHelper
 			if(finalX == 0 || float.IsNaN(finalX))
 			{
 				angle = finalY >= 0 ? MathHelper.PiOver2 : -MathHelper.PiOver2;
+				if(forceReachTarget && finalY < 0)
+					speed = Math.Max(speed, (float)Math.Sqrt(-2 * gravity * finalY));
+
 				break;
 			}
 
@@ -43,8 +46,13 @@ public static class ArcVelocityHelper
 				break;
 			}
 
-			float distanceDecrease = 10;
-			distToTravel -= distanceDecrease * Vector2.Normalize(distToTravel);
+			if(!forceReachTarget)
+			{
+				float distanceDecrease = 10;
+				distToTravel -= distanceDecrease * Vector2.Normalize(distToTravel);
+			}
+			else
+				speed++;
 		}	
 
 		return Vector2.UnitX.RotatedBy(angle) * speed;
@@ -81,7 +89,28 @@ public static class ArcVelocityHelper
 		return new Vector2(DistanceToTravel.X / TravelTime, neededYvel);
 	}
 
-	public static Vector2 GetArcVel(this Entity ent, Vector2 targetPos, float gravity, float speed, bool useHigherAngle = false) => GetArcVel(ent.Center, targetPos, gravity, speed, useHigherAngle);
+	public static Vector2 GetArcVel(this Entity ent, Vector2 targetPos, float gravity, float speed, bool useHigherAngle = false, bool forceReachTarget = false) => GetArcVel(ent.Center, targetPos, gravity, speed, useHigherAngle, forceReachTarget);
+
+	public static bool CanReachArc(Vector2 startingPos, Vector2 targetPos, float gravity, float speed)
+	{
+		Vector2 distToTravel = targetPos - startingPos;
+
+		float finalX = Math.Abs(distToTravel.X);
+		float finalY = distToTravel.Y;
+
+		if (finalX == 0 || float.IsNaN(finalX))
+		{
+			if (finalY < 0)
+				return speed >= Math.Sqrt(-2 * gravity * finalY);
+
+			return true;
+		}
+
+		float quadFormulaB = 2 * (float)Math.Pow(speed, 2) / (gravity * finalX);
+		float quadFormulaC = 1 - quadFormulaB / finalX * finalY;
+
+		return QuadFormulaSolvable(1, quadFormulaB, quadFormulaC);
+	}
 
 	/// <summary>
 	/// Solves the quadratic formula using the inputted variables as the A, B, and C variables in the equation. Returns two floats, one being the square root being added, and the other being the square root being subtracted.

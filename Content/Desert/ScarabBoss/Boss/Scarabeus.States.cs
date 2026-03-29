@@ -1881,11 +1881,11 @@ public partial class Scarabeus : ModNPC
 
 				if (Counter < dig_time - 30)
 				{
-					NPC.Top = FindGroundFromPosition(Target.Center);
+					NPC.Top = FindGroundFromPositionIgnorePlatforms(Target.Center, Target.Bottom.Y + 800);
 				}
 				else
 				{
-					NPC.Top = FindGroundFromPosition(NPC.Top);
+					NPC.Top = FindGroundFromPositionIgnorePlatforms(NPC.Top, Target.Bottom.Y + 800);
 				}
 
 				if (!Main.dedServ) //Digging visuals
@@ -1948,10 +1948,20 @@ public partial class Scarabeus : ModNPC
 					}
 					else
 					{
-						if (NPC.DistanceSQ(Target.Center) < 50 * 50)
-							NPC.velocity.Y -= 10;
+						Vector2 predictiveOffset = Target.velocity.SafeNormalize(Vector2.Zero) * 400;
+						predictiveOffset.Y = 0;
+						Vector2 heightOffset = NPC.height * Vector2.UnitY / 2;
+
+						Vector2 preferredArc = NPC.GetArcVel(Target.Center + predictiveOffset, NPC.gravity, 14, true);
+						Vector2 reachPlatformArc = NPC.GetArcVel(Target.Center + (predictiveOffset / 2) - heightOffset, NPC.gravity * 2, 14, true, true);
+
+						//switch to more accurate arc if player is more than 7 tiles above the boss, bit more than jump height
+						bool canReachPlayer = Math.Abs(Target.Bottom.Y - NPC.Top.Y) < 112;
+
+						if (canReachPlayer)
+							NPC.velocity = preferredArc;
 						else
-							NPC.velocity = NPC.GetArcVel(Target.Center + Vector2.Normalize(Target.velocity) * 400, NPC.gravity, 15, true);
+							NPC.velocity = reachPlatformArc;
 
 						NPC.noGravity = false;
 						NPC.direction = Math.Sign(NPC.velocity.X);
