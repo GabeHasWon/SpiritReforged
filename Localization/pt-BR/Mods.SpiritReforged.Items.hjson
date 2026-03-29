@@ -2043,8 +2043,8 @@ FlaskOfFrost: {
 HardlightVisor: {
 	DisplayName: Viseira Brilhante
 	Tooltip: ""
-	AltDisplayName: Viseira Brilhante
-	AltTooltip: "''"
+	AltDisplayName: Viseira Futurística
+	AltTooltip: "'Era moda no ano 3000!'"
 }
 
 PolishedAmberItem: {
