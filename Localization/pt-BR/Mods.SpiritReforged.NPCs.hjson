@@ -550,7 +550,7 @@ Scarabeus: {
 	DisplayName: Escarabeus
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
 	Entry: "Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas."
-	// SpawnInfo: Use any gem item at the Ancient Altar on the Ziggurat
+	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
 TinyGrub.DisplayName: Pequena Larva
