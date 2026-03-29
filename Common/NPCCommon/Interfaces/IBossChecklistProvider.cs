@@ -11,15 +11,22 @@ public enum ChecklistType : byte
 	Event
 }
 
+/// <summary>
+/// Describes either a localized text or function that returns a localized text (at least one, but not both).
+/// </summary>
 public readonly record struct LocalizableFunc
 {
+	private const string InvalidObjectMessage = "One of Text or Func should be non-null.";
+
 	public readonly LocalizedText? Text;
 	public readonly Func<LocalizedText>? Func;
 
 	public LocalizableFunc(LocalizedText? Text, Func<LocalizedText>? Func)
 	{
 		if (Text is null && Func is null)
-			throw new InvalidOperationException("One of Text or Func should be non-null.");
+			throw new InvalidOperationException(InvalidObjectMessage);
+		else if (Text is not null && Func is not null)
+			throw new InvalidOperationException(InvalidObjectMessage);
 
 		this.Text = Text;
 		this.Func = Func;
