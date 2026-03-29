@@ -193,9 +193,11 @@ public partial class Scarabeus : ModNPC
 		//Duo Fight Attacks
 		DuoFightSpawnAnim,
 		DuoFightSpawnAnimFallback,
-		DuoFightSwoopPincer,
 		DuoFightIdleStandStill,
 		DuoFightGrabbedByScourge,
+		DuoFightTakeoff,
+		DuoFightEaten,
+		DuoFightGunkRoll,
 
 		MaxValue
 	}
@@ -239,6 +241,9 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.DuoFightSpawnAnimFallback] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightSpawnFallback(ref retarget);
 		_stateAI[(int)AIState.DuoFightIdleStandStill] = (Scarabeus scarab, ref bool retarget) => scarab.IdleBetweenAttacks(ref retarget);
 		_stateAI[(int)AIState.DuoFightGrabbedByScourge] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightGrabbedByScourge(ref retarget);
+		_stateAI[(int)AIState.DuoFightTakeoff] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightTakeoff(ref retarget);
+		_stateAI[(int)AIState.DuoFightEaten] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightGrabbedByScourge(ref retarget);
+		_stateAI[(int)AIState.DuoFightGunkRoll] = (Scarabeus scarab, ref bool retarget) => scarab.RollAttack(ref retarget);
 
 		Main.npcFrameCount[Type] = 17; //The highest frame count
 		NPCID.Sets.TrailCacheLength[Type] = 8;
@@ -396,6 +401,12 @@ public partial class Scarabeus : ModNPC
 
 	public void HandleDespawn()
 	{
+		if (FightingDScourge)
+		{
+			despawnTimer = 0;
+			return;
+		}
+
 		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || !Main.dayTime || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
 		{
 			if (++despawnTimer >= 60 * 20 && IsIdling)

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
@@ -116,6 +117,9 @@ public partial class Scarabeus : ModNPC
 			case "renderScarab":
 				((args[2] as NPC).ModNPC as Scarabeus).PreDraw((SpriteBatch)args[3], (Vector2)args[4], (Color)args[5]);
 				return true;
+			case "getPukedOut":
+				((args[2] as NPC).ModNPC as Scarabeus).GetPukedOut((Vector2)args[3], (Vector2)args[4]);
+				return true;
 		}
 
 		return null;
@@ -203,6 +207,69 @@ public partial class Scarabeus : ModNPC
 			Profile = PhaseOneProfile;
 			ChangeState(AIState.IdleAwayFromPlayer);
 			return 0f;
+		}
+
+		return 1f;
+	}
+	#endregion
+
+	#region Takeoff from floor
+	public float DuoFightTakeoff(ref bool retarget)
+	{
+		retarget = false;
+		bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
+
+		if (!jumped)
+		{
+			if (Counter == 0)
+				ShiftUpToFloorLevel();
+
+			NPC.velocity *= 0.5f;
+			NPC.rotation = 0;
+			NPC.noGravity = false;
+			NPC.noTileCollide = false;
+
+			if (currentFrame.Y < 10)
+				currentFrame.Y = 10;
+			if (currentFrame.Y is 19 or 21)
+				SetFrame(0, currentFrame.Y + 1, TakeoffProfile);
+
+			//Jump!!!
+			if (UpdateFrame(0, 11, TakeoffProfile, false) == FrameState.Stopped)
+			{
+				if (!Main.dedServ)
+				{
+					for (int i = 0; i < 20; i++)
+					{
+						Vector2 pos = NPC.Bottom;
+						pos.X += Main.rand.Next(-30, 30);
+						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
+						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+					}
+				}
+
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
+
+				SetFrame(0, 2, PhaseTwoProfile);
+				NPC.velocity.Y -= 25;
+				NPC.velocity.X += NPC.direction * 5;
+				Counter = 0;
+				NPC.noTileCollide = true;
+				NPC.noGravity = true;
+			}
+		}
+		else
+		{
+			NPC.velocity.Y *= 0.95f;
+			trailOpacity = EaseFunction.EaseQuinticIn.Ease(1f - Counter / 20f);
+			if (Counter >= 20)
+			{
+				if (FightingDScourge)
+					CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "takeoffCompleted", scourgeFightManager);
+				//Fallback just in case something horrible happened
+				else
+					ChangeState(AIState.Swarm);
+			}
 		}
 
 		return 1f;
@@ -300,7 +367,36 @@ public partial class Scarabeus : ModNPC
 		NPC.Center = new Vector2(positionInfo.X, positionInfo.Y);
 		NPC.rotation = positionInfo.Z;
 		NPC.behindTiles = true;
+
+		if (CurrentState == AIState.DuoFightEaten)
+			NPC.Opacity = 0f;
+		else
+			NPC.Opacity = 1f;
+
 		return 1f;
+	}
+	#endregion
+
+	#region Attract Scarab then get eaten then get puked out
+	public static Point GunkBallFrame = new Point(0, 9);
+
+	public void GetPukedOut(Vector2 vomitPosition, Vector2 spitTarget)
+	{
+		const float _rollStartGravity = 0.15f;
+
+		NPC.Center = vomitPosition;
+		NPC.Opacity = 1f;
+
+		Player target = (Player)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getScourgeTarget", scourgeFightManager);
+		spitTarget.X += Math.Sign(target.Center.X - NPC.Center.X) * 400;
+
+		Vector2 velocity =  ArcVelocityHelper.GetArcVel(NPC.Center, spitTarget, _rollStartGravity, minArcHeight: 130f, maxXvel: 50f, heightAboveTarget: 120);
+		NPC.velocity = velocity;
+
+		ChangeState(AIState.DuoFightGunkRoll);
+		NPC.noTileCollide = true;
+		NPC.noGravity = false;
+		SetFrame(GunkBallFrame, PhaseOneProfile);
 	}
 	#endregion
 
@@ -341,16 +437,30 @@ public partial class Scarabeus : ModNPC
 			StaticBouncingTileWave(rumbleCenter, rumbleWidth < 150 ? 5 : (int)(rumbleWidth / 18), Main.rand.NextFloat(4, 10), Main.rand.Next(30, 40), Main.rand.NextFloat(-rumbleArea.Width / 4, rumbleArea.Width / 4) * Vector2.UnitX);
 	}
 
-	private Effect GetElectricEffect(float electricityOpacity)
+	public void DrawElectricOutline(SpriteBatch spriteBatch, Effect electroShader, Texture2D texture, Vector2 position, Vector2 origin, Vector2 scale, SpriteEffects effects)
 	{
-		if (scourgeFightManager == null)
-			return null;
+		float electricOpacity = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "scarabElectricShaderOpacity", scourgeFightManager);
+		if (electricOpacity <= 0f)
+			return;
 
-		Texture2D texture = Profile.Texture.Value;
-		if (currentFrame == RollFrame)
-			texture = BallProfile.Texture.Value;
+		//When electrified, draw an outline behind scarab
+		float prevOpacity = electroShader.Parameters["uOpacity"].GetValueSingle();
+		float glowValue = electroShader.Parameters["glowStrenght"].GetValueSingle();
 
-		return (Effect)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "setupElectricShader", scourgeFightManager, texture, NPC.frame, electricityOpacity);
+		//Set bright colors for the shader 
+		electroShader.Parameters["uOpacity"]?.SetValue(1f);
+		electroShader.Parameters["glowStrenght"]?.SetValue(324f);
+		foreach (EffectPass pass in electroShader.CurrentTechnique.Passes)
+			pass.Apply();
+
+		for (int i = 0; i < 4; i++)
+			spriteBatch.Draw(texture, position + Vector2.UnitX.RotatedBy(i / 4f * MathHelper.TwoPi) * 2f, NPC.frame, Color.White * electricOpacity, NPC.rotation, origin, scale, effects, 0);
+
+		//Reset shader params
+		electroShader.Parameters["uOpacity"]?.SetValue(prevOpacity);
+		electroShader.Parameters["glowStrenght"]?.SetValue(glowValue);
+		foreach (EffectPass pass in electroShader.CurrentTechnique.Passes)
+			pass.Apply();
 	}
 
 	private static void StaticBouncingTileWave(Vector2 rumblePos, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)

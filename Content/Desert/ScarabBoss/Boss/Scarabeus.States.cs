@@ -1007,13 +1007,14 @@ public partial class Scarabeus : ModNPC
 	#region Roll
 	public float RollAttack(ref bool retarget)
 	{
+		bool comboedFromScourge = CurrentState == AIState.DuoFightGunkRoll;
+
 		retarget = false;
 		const int transition_time = 40;
 		ref float dashState = ref NPC.ai[2];
-		float rollSpeed = phaseTwo ? 30 : 22;
+		float rollSpeed = (comboedFromScourge || phaseTwo) ? 30 : 22;
 
 		NPC.behindTiles = dashState >= 1 && dashState < 3;
-
 		if (Counter == 0 && dashState == 0 && !phaseTwo)
 			NPC.FaceTarget();
 
@@ -1023,7 +1024,7 @@ public partial class Scarabeus : ModNPC
 			case 0:
 				bool doRollBounceTelegraph = false;
 
-				if (!phaseTwo)
+				if (!phaseTwo && !comboedFromScourge)
 				{
 					NPC.velocity.X *= 0.8f;
 					//Lil bob before the jump
@@ -1037,12 +1038,18 @@ public partial class Scarabeus : ModNPC
 						doRollBounceTelegraph = true;
 				}
 				//In phase 2, scarabeus can only do the roll dash from its flying swoop dash, and it starts with its velocity conserved
+				//Same goes for starting the roll as it gets vomited out by desert scourge
 				else
 				{
-					NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.03f);
+					if (!comboedFromScourge)
+						NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.03f);
 					NPC.velocity.Y += 0.15f;
 
-					SetFrame(RollFrame, PhaseTwoProfile);
+					if (!comboedFromScourge)
+						SetFrame(RollFrame, PhaseTwoProfile);
+					else
+						SetFrame(GunkBallFrame, PhaseOneProfile);
+
 					GroundPoundSpin();
 					dealContactDamage = true;
 					NPC.noGravity = false;
@@ -1061,7 +1068,7 @@ public partial class Scarabeus : ModNPC
 
 				if (doRollBounceTelegraph)
 				{
-					if (!phaseTwo)
+					if (!phaseTwo && !comboedFromScourge)
 						NPC.position.Y -= 20;
 
 					NPC.velocity.Y -= 9f;
@@ -1070,7 +1077,11 @@ public partial class Scarabeus : ModNPC
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
-					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+					if (!comboedFromScourge)
+						SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+					else
+						SetFrame(GunkBallFrame, PhaseOneProfile);
+
 					Counter = 0;
 					dashState++;
 
@@ -1100,12 +1111,16 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: // Bounce before the roll
-				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+				if (!comboedFromScourge)
+					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+				else
+					SetFrame(GunkBallFrame, PhaseOneProfile);
+
 				GroundPoundSpin(true);
 				//NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
 
 				//Fall faster in P2 for faster telegraph
-				if (phaseTwo)
+				if (phaseTwo || comboedFromScourge)
 					NPC.velocity.Y += phaseTwo ? 0.12f : 0.08f;
 
 				dealContactDamage = true;
@@ -1179,12 +1194,15 @@ public partial class Scarabeus : ModNPC
 					return 0f;
 				}
 
-				SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+				if (!comboedFromScourge)
+					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
+				else
+					SetFrame(GunkBallFrame, PhaseOneProfile);
+
 				trailOpacity = Math.Min(1, Counter / 25f);
 				dealContactDamage = true;
 				if (!Main.dedServ)
 					CreateRollParticles();
-				//sfx here
 
 				if ((Target.Center.X - NPC.Center.X) * NPC.direction < -100)
 				{
@@ -2283,7 +2301,7 @@ public partial class Scarabeus : ModNPC
 		if (Counter < swarm_length && Counter % projectileSpawnDelay == 0)
 			SpawnBabySwarmer((int)(Counter / projectileSpawnDelay));
 
-		if (Counter >= attack_end_time)
+		if (Counter >= attack_end_time && !FightingDScourge)
 			return GoBackToIdle();
 
 		return 1f;

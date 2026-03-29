@@ -58,15 +58,16 @@ public partial class Scarabeus : ModNPC
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
 	{
 		FrameState result = FrameState.Progressed;
-		Profile = profile;
 
-		if (currentFrame.X != column)
+		if (currentFrame.X != column || Profile != profile)
 		{
 			currentFrame.X = column;
 			currentFrame.Y = 0;
 
 			NPC.frameCounter = 0;
 		}
+
+		Profile = profile;
 
 		if (++NPC.frameCounter > 60.0 / Math.Abs(framesPerSecond))
 		{
@@ -112,7 +113,7 @@ public partial class Scarabeus : ModNPC
 		{
 			if (currentFrame.X != 0)
 				return true;
-			if (currentFrame.Y is < 1 or > 5)
+			if (currentFrame.Y is < 1 or (> 5 and < 9))
 				return true;
 			return false;
 		}
@@ -145,7 +146,7 @@ public partial class Scarabeus : ModNPC
 
 	public Effect GetShader(Texture2D texture, Texture2D sheenTexture, Rectangle frame)
 	{
-		if (FightingDScourge && (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "scarabNeedsElectricShader", scourgeFightManager))
+		if (FightingDScourge && (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "scarabElectricShaderOpacity", scourgeFightManager) > 0)
 			return (Effect)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "setupElectricShader", scourgeFightManager, texture, NPC.frame, NPC.whoAmI);
 
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
@@ -233,8 +234,12 @@ public partial class Scarabeus : ModNPC
 		else
 		{
 			Effect sheenShader = GetShader(texture, Profile.SheenMask.Value, NPC.frame);
-			
 			FlipShadersOnOff(spriteBatch, sheenShader, true);
+
+			//When electrified, draw an outline behind scarab
+			if (FightingDScourge)
+				DrawElectricOutline(spriteBatch, sheenShader, texture, position, origin, scale, effects);
+
 			spriteBatch.Draw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects, 0);
 			FlipShadersOnOff(spriteBatch, null, false);
 
