@@ -1,3 +1,4 @@
+using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.DataStructures;
@@ -25,6 +26,8 @@ public class TinyGrub : ModNPC
 		NPC.knockBackResist = 0;
 		NPC.noGravity = true;
 		NPC.aiStyle = NPCAIStyleID.Butterfly;
+
+		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
 
 	public override void AI()

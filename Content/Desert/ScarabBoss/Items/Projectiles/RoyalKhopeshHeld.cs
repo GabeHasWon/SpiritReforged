@@ -279,7 +279,7 @@ public class RoyalKhopeshHeld : ModProjectile
 	{
 		float progress = Projectile.timeLeft / MaxTime;
 
-		if (Projectile.timeLeft % 2 == 0 && _empoweredStrike)
+		if (Projectile.timeLeft % 2 == 0 && _empoweredStrike && !Main.dedServ)
 		{
 			var tipPosition = Projectile.Center + new Vector2(30f * OriginalDirection, -40f).RotatedBy(Projectile.rotation) * _originalScale;
 

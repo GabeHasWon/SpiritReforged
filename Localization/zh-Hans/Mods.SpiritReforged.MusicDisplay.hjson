@@ -46,12 +46,12 @@ Ziggurat: {
 }
 
 Salt: {
-	DisplayName: 盐滩
+	DisplayName: Reflected Skies（主题曲：盐滩 - 昼）
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: 盐滩 - 夜
+	DisplayName: Refracted Stars（主题曲：盐滩 - 夜）
 	Author: "{$By} {$Sbubby}"
 }
 
@@ -68,4 +68,9 @@ ScarabeusP2: {
 RadioScarab: {
 	DisplayName: Soaring Complications（电台剪辑版）
 	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	// DisplayName: Another Journey (Spirit Title Theme)
+	// Author: "{$By} {$Salvati}"
 }

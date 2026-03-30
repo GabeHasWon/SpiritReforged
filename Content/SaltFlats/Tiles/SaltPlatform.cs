@@ -9,9 +9,11 @@ public class SaltPlatform : ModTile, IAutoloadTileItem
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<SaltBlockDull>()).Register();
+		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<SaltBlockReflective>()).Register();
 
 		//Allow platform items to be crafted back into base materials
 		Recipe.Create(AutoContent.ItemType<SaltBlockDull>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(AutoContent.ItemType<SaltBlockReflective>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void SetStaticDefaults()

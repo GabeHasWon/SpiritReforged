@@ -550,6 +550,7 @@ Scarabeus: {
 	DisplayName: Scarabeus
 	Title: Crested Idol
 	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
+	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
 }
 
 TinyGrub.DisplayName: Tiny Grub

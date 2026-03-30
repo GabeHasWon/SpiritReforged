@@ -6,11 +6,11 @@ VanillaDialogue: {
 		Kelp: Não coma a alga.
 	}
 
-	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
+	ArmsDealer.Savanna: Tem muita caça grande por aqui. Até alguém como você conseguiria pegar um desses.
 
 	Stylist: {
-		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
+		Savanna: É extremamente difícil manter meu penteado neste clima.
+		Duststorm: Se eu tiver que tirar areia do cabelo de mais uma pessoa, eu juro que...
 	}
 
 	TravellingMerchant: {
@@ -42,7 +42,7 @@ VanillaDialogue: {
 	}
 
 	Angler: {
-		Pager0: ...O que cê tá tentando fazer? Você NÃO CONSEGUE entregar esse peixe pelo seu brinquedo, idiota.
+		Pager0: ...O que cê tá tentando fazer? Você NÃO CONSEGUE entregar esse peixe através de seu brinquedo, idiota.
 		Pager1: Se você quer me dar um peixe então VENHA AQUI.
 	}
 
@@ -386,33 +386,33 @@ PotterySlime: {
 	DisplayName: Geleia Ceramista
 
 	Names: {
-		// 0: Sable
-		// 1: Saki
-		// 2: Sal
-		// 3: Santra
-		// 4: Sark
-		// 5: Sassafrass
-		// 6: Satya
-		// 7: Sawyl
-		// 8: Seppo
-		// 9: Shammy
-		// 10: Shard
-		// 11: Shio
-		// 12: Silas
-		// 13: Silica
-		// 14: Silty
-		// 15: Sleet
-		// 16: Sloan
-		// 17: Snap
-		// 18: Soggy
-		// 19: Soda
-		// 20: Sonya
-		// 21: Sparta
-		// 22: Splet
-		// 23: Spot
-		// 24: Stratton
-		// 25: Sullivan
-		// 26: Swain
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
 	}
 
 	Chatter: {
@@ -549,7 +549,8 @@ LootBag.DisplayName: Sacola de Brindes
 Scarabeus: {
 	DisplayName: Escarabeus
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
-	Entry: ""
+	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas.
+	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
 TinyGrub.DisplayName: Pequena Larva
