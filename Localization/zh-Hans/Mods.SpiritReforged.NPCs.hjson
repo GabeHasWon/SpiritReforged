@@ -550,7 +550,7 @@ Scarabeus: {
 	DisplayName: 圣甲虫
 	Title: 羽冠神像
 	Entry: 这只巨型甲虫仪态威严、色彩斑斓，曾受到远古庙塔居民的崇拜。时至今日，它仍在原地等待朝拜。
-	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛上使用任意宝石物品
+	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
 TinyGrub.DisplayName: 小幼虫
