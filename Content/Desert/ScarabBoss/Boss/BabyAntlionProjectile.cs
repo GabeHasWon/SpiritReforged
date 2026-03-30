@@ -99,7 +99,7 @@ public class BabyAntlionProjectile : ModProjectile
 	{
 		get
 		{
-			if (!Main.expertMode) //|| (Scarab.ModNPC as Scarabeus).FightingDScourge)
+			if (!Main.expertMode || ((Scarab.ModNPC as Scarabeus).FightingDScourge && HopHeight % 0.1f < 0.05f))
 				return true;
 			return false;
 		}

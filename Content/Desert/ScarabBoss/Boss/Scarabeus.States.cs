@@ -2299,12 +2299,11 @@ public partial class Scarabeus : ModNPC
 		float xAcceleration = 0.02f;
 		float yMoveSpeed = 3f;
 		float yAcceleration = 0.04f;
-		bool standingStillWaitingForScourge = StandingStillWaitingToGetEatenByScourge;
 
 		if (FightingDScourge)
 		{
 			//Stand still horizontally waiting for scourge to gobble it up
-			if (standingStillWaitingForScourge)
+			if (StandingStillWaitingToGetEatenByScourge)
 			{
 				velocityTargetX = 0;
 				xAcceleration = 0.05f;
@@ -2339,7 +2338,7 @@ public partial class Scarabeus : ModNPC
 		{
 			if (FightingDScourge)
 			{
-				if (!standingStillWaitingForScourge)
+				if (!(bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmStopSpawningAntlions", scourgeFightManager))
 					DuoFightSpawnSwarmersFar((int)(Counter / projectileSpawnDelay));
 			}
 			else if (Counter < swarm_length)
