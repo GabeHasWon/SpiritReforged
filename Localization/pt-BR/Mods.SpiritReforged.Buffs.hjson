@@ -138,11 +138,6 @@ EnlilBuff: {
 	Description: Aumenta a velocidade verticalmente
 }
 
-ScarabPetBuff: {
-	DisplayName: Pequeno Escaravelho
-	Description: "'Ele ama MUITO rolar...'"
-}
-
 ScarabLightPetBuff: {
 	DisplayName: Escarabebê
 	Description: "'Ele tá tramando algo...'"

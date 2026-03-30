@@ -3,10 +3,10 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 
-internal class ScarabLightPetItem : ModItem
+public class ScarabLightPetItem : ModItem
 {
 	[AutoloadGlowmask("255,255,255", false)]
-	internal class ScarabLightPet : ModProjectile 
+	public sealed class ScarabLightPet : ModProjectile 
 	{
 		private ref float AdditiveFade => ref Projectile.ai[0];
 		private ref float FrameCounter => ref Projectile.ai[1];
@@ -92,14 +92,6 @@ internal class ScarabLightPetItem : ModItem
 	{
 		protected override (string, string) BuffInfo => ("Scarababy", "'It's plotting...'");
 		protected override bool IsLightPet => true;
-	}
-
-	public override void SetStaticDefaults()
-	{
-		Item.ResearchUnlockCount = 1;
-
-		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<ScarabPetItem>();
-		ItemID.Sets.ShimmerTransformToItem[ModContent.ItemType<ScarabPetItem>()] = Type;
 	}
 
 	public override void SetDefaults()

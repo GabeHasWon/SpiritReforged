@@ -138,11 +138,6 @@ EnlilBuff: {
 	Description: 垂直机动性增加
 }
 
-ScarabPetBuff: {
-	DisplayName: 小甲虫
-	Description: ”它真的很喜欢摇滚……“
-}
-
 ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“

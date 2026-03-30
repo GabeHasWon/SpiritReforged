@@ -138,11 +138,6 @@ EnlilBuff: {
 	Description: Вертикальная подвижность увеличена
 }
 
-ScarabPetBuff: {
-	DisplayName: Крошка скарабей
-	Description: «Ему очень нравится кататься...»
-}
-
 ScarabLightPetBuff: {
 	DisplayName: Скарабейчик
 	Description: «Он что-то замышляет...»
