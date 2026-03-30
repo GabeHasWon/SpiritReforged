@@ -2951,11 +2951,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: 甲虫食物
-	Tooltip: 召唤一只小甲虫伙伴
-}
-
 CarrotCake: {
 	DisplayName: 胡萝卜蛋糕
 	Tooltip: "{$BuffDescription.WellFed3}"

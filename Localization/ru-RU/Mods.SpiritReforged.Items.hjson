@@ -2951,11 +2951,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Скарабейный корм
-	Tooltip: Призывает крошку-скарабея сопровождать вас
-}
-
 CarrotCake: {
 	DisplayName: Морковный торт
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -3035,7 +3030,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Скарабейная лампочка
+	DisplayName: Погремушка-лампочка
 	Tooltip:
 		'''
 		Призывает Скарабейчика
