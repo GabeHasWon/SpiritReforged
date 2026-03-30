@@ -1002,7 +1002,7 @@ RogueCrest: {
 }
 
 GildedScarab: {
-	DisplayName: 镀金圣甲虫
+	DisplayName: 镀金甲虫
 	Tooltip:
 		'''
 		受到攻击时会获得一个短暂的防御增益
@@ -2676,7 +2676,7 @@ GoldenBrineShrimpItem: {
 
 CorruptStactusBannerItem.DisplayName: 腐化刺角株旗
 CrimsonStactusBannerItem.DisplayName: 猩红刺角株旗
-DesertStactusBannerItem.DisplayName: 沙漠刺角株旗
+DesertStactusBannerItem.DisplayName: 刺角株旗
 HallowedStactusBannerItem.DisplayName: 神圣刺角株旗
 
 AncientBannerItem: {
@@ -3035,7 +3035,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: 甲虫灯泡
+	DisplayName: 颤响灯泡
 	Tooltip:
 		'''
 		召唤一只甲虫宝宝
