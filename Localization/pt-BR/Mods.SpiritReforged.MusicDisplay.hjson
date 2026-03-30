@@ -69,3 +69,8 @@ RadioScarab: {
 	DisplayName: Complicações Aéreas (Edição de Rádio)
 	Author: "{$By} {$Sbubby}"
 }
+
+TitleTheme: {
+	// DisplayName: Another Journey (Spirit Title Theme)
+	// Author: "{$By} {$Salvati}"
+}

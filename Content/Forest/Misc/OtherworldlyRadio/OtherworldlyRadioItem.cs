@@ -1,9 +1,13 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.GameContent.UI.Elements;
 using Terraria.UI.Chat;
 
 namespace SpiritReforged.Content.Forest.Misc.OtherworldlyRadio;
@@ -56,8 +60,12 @@ public class OtherworldlyRadioItem : ModItem
 		if (line.Name == "MusicDisplayName")
 		{
 			var font = FontAssets.DeathText.Value;
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, line.Text, new Vector2(line.X, line.Y), Color.White, 0f, Vector2.Zero, new Vector2(0.5f));
-			yOffset += 4;
+			Vector2 size = ChatManager.GetStringSize(font, line.Text, new Vector2(0.5f));
+			Texture2D panel = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground").Value;
+			Texture2D border = Main.Assets.Request<Texture2D>("Images/UI/PanelBorder").Value;
+			UIHelper.DrawPanel(Main.spriteBatch, panel, border, new Rectangle(line.X - 6, line.Y - 4, (int)size.X + 14, 38));
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, line.Text, new Vector2(line.X, line.Y + 2), Color.White, 0f, Vector2.Zero, new Vector2(0.5f));
+			yOffset += 6;
 			return false;
 		}
 

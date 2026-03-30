@@ -69,3 +69,8 @@ RadioScarab: {
 	DisplayName: Soaring Complications（电台剪辑版）
 	Author: "{$By} {$Sbubby}"
 }
+
+TitleTheme: {
+	// DisplayName: Another Journey (Spirit Title Theme)
+	// Author: "{$By} {$Salvati}"
+}

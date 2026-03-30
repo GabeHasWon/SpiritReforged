@@ -2675,7 +2675,7 @@ GoldenBrineShrimpItem: {
 
 CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
 CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
-DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+DesertStactusBannerItem.DisplayName: Stactus Banner
 HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
 
 AncientBannerItem: {
@@ -3034,7 +3034,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Scarab Bulb
+	DisplayName: Bulb Rattle
 	Tooltip:
 		'''
 		Summons a Scarababy
