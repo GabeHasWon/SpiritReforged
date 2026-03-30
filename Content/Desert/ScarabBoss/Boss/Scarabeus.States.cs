@@ -1755,7 +1755,8 @@ public partial class Scarabeus : ModNPC
 		float digDownVelocity = 0.2f;
 
 		NPC.behindTiles = digState > 0;
-		
+		NPC.MaxFallSpeedMultiplier *= 2f;
+
 		if (phaseTwo)
 		{
 			initialJumpSpeed = 8;
@@ -1832,18 +1833,19 @@ public partial class Scarabeus : ModNPC
 				}
 
 				NPC.velocity.Y += digDownVelocity;
-				NPC.GravityMultiplier *= 2;
+				NPC.GravityMultiplier *= 1.5f;
 
 				if (Collision.SolidCollision(NPC.position, NPC.width, NPC.height - 24) || Counter > maxFallTimeBeforeDigDissapear || NPC.Opacity != 1)
 				{
-					//Screenshake when it hits the floor in phase 2 because it did so from a high height
-					if (!Main.dedServ && NPC.Opacity == 1 && phaseTwo)
+					//Screenshake when it hits the floor in phase 2 or when falling from a platform in phase 1 because it did so from a high height
+					if (!Main.dedServ && NPC.Opacity == 1 && (phaseTwo || NPC.velocity.Y >= NPC.maxFallSpeed /2))
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 7, 10, 40, 900));
-						SoundEngine.PlaySound(BounceSound, NPC.Center);
-						GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.3f);
+						float intensity = phaseTwo ? 1 : 0.66f;
+						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 7 * intensity, 10, 40, 900));
+						SoundEngine.PlaySound(BounceSound.WithVolumeScale(intensity), NPC.Center);
+						GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.3f * intensity);
 
-						for (int i = 0; i < 24; i++)
+						for (int i = 0; i < 24 * intensity; i++)
 						{
 							Vector2 pos = NPC.BottomRight;
 							if (NPC.direction == -1)
@@ -1878,17 +1880,14 @@ public partial class Scarabeus : ModNPC
 				NPC.noGravity = true;
 				NPC.velocity = Vector2.Zero;
 				retarget = false;
+				float platformIgnoreHeight = Target.Bottom.Y + 800;
 
 				if (Counter < dig_time - 30)
-				{
-					NPC.Top = FindGroundFromPositionIgnorePlatforms(Target.Center, Target.Bottom.Y + 800);
-				}
+					NPC.Top = FindGroundFromPositionIgnorePlatforms(Target.Center, platformIgnoreHeight);
 				else
-				{
-					NPC.Top = FindGroundFromPositionIgnorePlatforms(NPC.Top, Target.Bottom.Y + 800);
-				}
+					NPC.Top = FindGroundFromPositionIgnorePlatforms(NPC.Top, platformIgnoreHeight);
 
-				if (!Main.dedServ) //Digging visuals
+				if (!Main.dedServ && Counter >= 20) //Digging visuals
 				{
 					for (int i = 0; i < Main.rand.Next(4); i++)
 					{
@@ -1957,6 +1956,14 @@ public partial class Scarabeus : ModNPC
 
 						//switch to more accurate arc if player is more than 7 tiles above the boss, bit more than jump height
 						bool canReachPlayer = Math.Abs(Target.Bottom.Y - NPC.Top.Y) < 112;
+
+						if(!canReachPlayer)
+						{
+							bool checkLanding = SimulateDigLeap(reachPlatformArc);
+
+							if (!checkLanding)
+								reachPlatformArc = NPC.GetArcVel(Target.Center - heightOffset, NPC.gravity * 2, 14, false, true);
+						}
 
 						if (canReachPlayer)
 							NPC.velocity = preferredArc;
@@ -2064,14 +2071,15 @@ public partial class Scarabeus : ModNPC
 			if (Math.Abs(j) == 2 && Math.Sign(j) == Math.Sign(NPC.velocity.X))
 				continue;
 
-			Vector2 velocity = -Vector2.UnitY.RotatedBy(j * 0.25f + Main.rand.NextFloat(-0.12f, 0.12f)) * Main.rand.NextFloat(9f, 11f);
+			float speedScalingMod = (float)Math.Pow(NPC.velocity.Length() / 16, 1.5f);
+			Vector2 velocity = -Vector2.UnitY.RotatedBy((j * 0.25f + Main.rand.NextFloat(-0.12f, 0.12f)) / (float)Math.Pow(speedScalingMod, 0.66f)) * Main.rand.NextFloat(9f, 11f) * speedScalingMod;
 
 			for (int i = 0; i < 4; i++)
 			{
 				KickupDust(ground, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), ParticleLayer.AboveNPC);
 			}
 
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, GetProjectileDamage(STAT_DIG_EMERGE_DEBRIS_DAMAGE), 3, Main.myPlayer, groundPos.X, groundPos.Y);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, GetProjectileDamage(STAT_DIG_EMERGE_DEBRIS_DAMAGE), 3, Main.myPlayer, groundPos.X, groundPos.Y, speedScalingMod);
 		}		
 	}
 	#endregion
@@ -2270,12 +2278,13 @@ public partial class Scarabeus : ModNPC
 
 		float spawnAreaOffsetX = Target.velocity.X * 35f;
 		float spawnAreaRadius = 400 - swarmerIndex % 4 * 30;
+		float platformIgnoreHeight = Target.Center.Y + 800;
 
 		//if (Main.rand.NextBool(3))
 		//	spawnAreaRadius = 0f;
 
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
-		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 
 		float spawnHopHeight = 5.6f + 2.3f * (swarmerIndex % 3);
 		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
@@ -2285,14 +2294,14 @@ public partial class Scarabeus : ModNPC
 		{
 			spawnHopHeight = 7f;
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
-			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 		}
 
 		if (swarmerIndex % 3 == 2)
 		{
 			spawnPosition = Target.Center + Vector2.UnitX * (-spawnAreaOffsetX * 0.5f + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
-			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 			spawnHopHeight = 1 + 1.3f * (swarmerIndex % 3);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 

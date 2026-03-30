@@ -77,6 +77,45 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 
+	private bool SimulateDigLeap(Vector2 reachPlatformArc)
+	{
+		bool checkLanding = true;
+		int counter = 0;
+		Vector2 dummyVel = reachPlatformArc;
+		Vector2 dummyPos = NPC.Center;
+		//simulate boss's trajectory to find where it lands
+		while (true)
+		{
+			dummyPos += dummyVel;
+			float grav = NPC.gravity * 2;
+			counter++;
+
+			if (dummyVel.Y < NPC.maxFallSpeed)
+				dummyVel.Y += grav;
+			else
+				dummyVel.Y = NPC.maxFallSpeed;
+
+			if ((dummyPos.X - Target.Center.X) * NPC.direction > 0)
+				dummyVel.X *= 0.96f;
+
+			Point dummyTilePos = dummyPos.ToTileCoordinates();
+			if (CollisionChecks.AnySurface(dummyTilePos.X, dummyTilePos.Y) && counter > 10 && dummyVel.Y >= 0)
+			{
+				//remove prediction if line of sight between landing and player would be broken
+				if (Collision.SolidTilesVersatile((int)Target.Center.X / 16, dummyTilePos.X, (int)Target.Center.Y / 16, dummyTilePos.Y - 1))
+					checkLanding = false;
+
+				//or if too far below player
+				if (dummyPos.Y - Target.Bottom.Y >= 112)
+					checkLanding = false;
+
+				break;
+			}
+		}
+
+		return checkLanding;
+	}
+
 	/// <summary> Finds the nearest surface tile to the provided world coordinates, <b>in world coordinates</b> <br/>
 	/// If the given input is inside the ground, instead moves upwards until reaching the surface. </summary>
 	public static Vector2 FindGroundFromPosition(Vector2 input)

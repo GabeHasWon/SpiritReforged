@@ -8,6 +8,9 @@ public static class CollisionChecks
 	public static bool AnySurface(int i, int j)
 	{
 		int type = Main.tile[i, j].TileType;
+		if (!Main.tile[i, j].HasTile)
+			return false;
+
 		return Main.tileSolid[type] || Main.tileSolidTop[type];
 	}
 

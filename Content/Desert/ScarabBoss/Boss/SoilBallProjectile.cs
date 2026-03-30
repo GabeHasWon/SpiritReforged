@@ -37,7 +37,7 @@ public class SoilBallProjectile : ModProjectile
 	public override void AI()
 	{
 		Projectile.rotation += Projectile.velocity.X * 0.04f;
-		Projectile.velocity.Y += 0.2f;
+		Projectile.velocity.Y += 0.2f * (float)Math.Pow(Projectile.ai[2], 0.485f);
 
 		if (Projectile.velocity.Y > 0)
 			Projectile.velocity.Y *= 1.03f;
