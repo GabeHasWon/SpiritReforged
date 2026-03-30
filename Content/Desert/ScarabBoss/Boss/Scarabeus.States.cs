@@ -1007,12 +1007,12 @@ public partial class Scarabeus : ModNPC
 	#region Roll
 	public float RollAttack(ref bool retarget)
 	{
-		bool comboedFromScourge = CurrentState == AIState.DuoFightGunkRoll;
+		bool scourgeFightGunkroll = CurrentState == AIState.DuoFightGunkRoll;
 
 		retarget = false;
 		const int transition_time = 40;
 		ref float dashState = ref NPC.ai[2];
-		float rollSpeed = (comboedFromScourge || phaseTwo) ? 30 : 22;
+		float rollSpeed = (scourgeFightGunkroll || phaseTwo) ? 30 : 22;
 
 		NPC.behindTiles = dashState >= 1 && dashState < 3;
 		if (Counter == 0 && dashState == 0 && !phaseTwo)
@@ -1024,7 +1024,7 @@ public partial class Scarabeus : ModNPC
 			case 0:
 				bool doRollBounceTelegraph = false;
 
-				if (!phaseTwo && !comboedFromScourge)
+				if (!phaseTwo && !scourgeFightGunkroll)
 				{
 					NPC.velocity.X *= 0.8f;
 					//Lil bob before the jump
@@ -1041,18 +1041,19 @@ public partial class Scarabeus : ModNPC
 				//Same goes for starting the roll as it gets vomited out by desert scourge
 				else
 				{
-					if (!comboedFromScourge)
+					if (!scourgeFightGunkroll)
 						NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, 0f, 0.03f);
-					NPC.velocity.Y += 0.15f;
 
-					if (!comboedFromScourge)
+					NPC.velocity.Y += !scourgeFightGunkroll ? 0.15f : STAT_DUOFIGHT_PUKEROLL_GRAVITY;
+
+					if (!scourgeFightGunkroll)
 						SetFrame(RollFrame, PhaseTwoProfile);
 					else
 						SetFrame(GunkBallFrame, PhaseOneProfile);
 
 					GroundPoundSpin();
 					dealContactDamage = true;
-					NPC.noGravity = false;
+					NPC.noGravity = scourgeFightGunkroll;
 
 					//Hitting the ground
 					if (NPC.velocity.Y > 0 && OnTopOfTiles)
@@ -1068,7 +1069,7 @@ public partial class Scarabeus : ModNPC
 
 				if (doRollBounceTelegraph)
 				{
-					if (!phaseTwo && !comboedFromScourge)
+					if (!phaseTwo && !scourgeFightGunkroll)
 						NPC.position.Y -= 20;
 
 					NPC.velocity.Y -= 9f;
@@ -1077,7 +1078,7 @@ public partial class Scarabeus : ModNPC
 					NPC.noTileCollide = true;
 					NPC.noGravity = false;
 					NPC.direction = (NPC.Center.X - Target.Center.X) < 0 ? 1 : -1;
-					if (!comboedFromScourge)
+					if (!scourgeFightGunkroll)
 						SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 					else
 						SetFrame(GunkBallFrame, PhaseOneProfile);
@@ -1111,7 +1112,7 @@ public partial class Scarabeus : ModNPC
 				break;
 
 			case 1: // Bounce before the roll
-				if (!comboedFromScourge)
+				if (!scourgeFightGunkroll)
 					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 				else
 					SetFrame(GunkBallFrame, PhaseOneProfile);
@@ -1120,8 +1121,8 @@ public partial class Scarabeus : ModNPC
 				//NPC.rotation += 0.02f * NPC.direction * Math.Max(0, NPC.velocity.Y);
 
 				//Fall faster in P2 for faster telegraph
-				if (phaseTwo || comboedFromScourge)
-					NPC.velocity.Y += phaseTwo ? 0.12f : 0.08f;
+				if (phaseTwo || scourgeFightGunkroll)
+					NPC.velocity.Y += 0.12f;
 
 				dealContactDamage = true;
 				NPC.noGravity = false;
@@ -1188,13 +1189,16 @@ public partial class Scarabeus : ModNPC
 						ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
 					}
 
+					if (scourgeFightGunkroll)
+						DuoFightPukesplosion();
+
 					ChangeState(AIState.GroundPound); //bounce off of surfaces
 					NPC.velocity.X = 0;
 					NPC.velocity.Y = 0;
 					return 0f;
 				}
 
-				if (!comboedFromScourge)
+				if (!scourgeFightGunkroll)
 					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 				else
 					SetFrame(GunkBallFrame, PhaseOneProfile);
@@ -1222,6 +1226,9 @@ public partial class Scarabeus : ModNPC
 					trailOpacity = 0f;
 					NPC.rotation = 0;
 					SetFrame(0, 6, PhaseOneProfile);
+
+					if (scourgeFightGunkroll)
+						DuoFightPukesplosion();
 
 					if (!Main.dedServ)
 						SoundEngine.PlaySound(SlideScreechSound, NPC.Center, RollSoundTracking);
@@ -2267,10 +2274,11 @@ public partial class Scarabeus : ModNPC
 		//durations of each segment
 		const float swarm_length = 340;
 		const float attack_end_time = swarm_length + 180;
-		const int projectileSpawnDelay = 40;
+		int projectileSpawnDelay = FightingDScourge ? 20 : 40;
 
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
+		NPC.behindTiles = FightingDScourge;
 
 		if (Math.Abs(NPC.Center.X - Target.Center.X) > 90f)
 			NPC.FaceTarget();
@@ -2285,21 +2293,58 @@ public partial class Scarabeus : ModNPC
 			NPC.FaceTarget();
 		}
 
-		//Try to hover at approx the same height above the player
-		float targetHeight = FindGroundFromPositionIgnorePlatforms(Target.position).Y - 360;
-		float distanceToTarget = Math.Abs(NPC.Center.Y - targetHeight);
-		float speedToTarget = Utils.GetLerpValue(10, 210f, distanceToTarget, true) * 3f;
+		float idealHeightAbovePlayer = 360;
+		float minHeight = Main.maxTilesY * 16;
+		float velocityTargetX = NPC.direction * 4f;
+		float xAcceleration = 0.02f;
+		float yMoveSpeed = 3f;
+		float yAcceleration = 0.04f;
+		bool standingStillWaitingForScourge = StandingStillWaitingToGetEatenByScourge;
 
-		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetHeight - NPC.Center.Y) * speedToTarget, 0.04f);
-		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * 4f, 0.02f);
+		if (FightingDScourge)
+		{
+			//Stand still horizontally waiting for scourge to gobble it up
+			if (standingStillWaitingForScourge)
+			{
+				velocityTargetX = 0;
+				xAcceleration = 0.05f;
+				idealHeightAbovePlayer = 160;
+				yAcceleration = 0.09f;
+			}
+
+			else
+			{
+				//Go up if scourge ever gets too close to reaching scarab
+				float scourgeHeight = ((NPC)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getDesertScourge", scourgeFightManager)).Center.Y;
+				minHeight = scourgeHeight - 100;
+				if (NPC.Bottom.Y > scourgeHeight - 50)
+					NPC.velocity.Y = -6;
+			}
+		}
+
+		//Try to hover at approx the same height above the player
+		float targetY = Math.Min(FindGroundFromPositionIgnorePlatforms(Target.position).Y - idealHeightAbovePlayer, minHeight);
+		float distanceToTargetY = Math.Abs(NPC.Center.Y - targetY);
+		float speedToTargetY = Utils.GetLerpValue(10, 210f, distanceToTargetY, true) * yMoveSpeed;
+
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, Math.Sign(targetY - NPC.Center.Y) * speedToTargetY, yAcceleration);
+		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, velocityTargetX, xAcceleration);
 
 		UpdateFrame(1, 18, PhaseTwoProfile);
 		NPC.rotation = NPC.velocity.X * 0.05f;
 
 		SwarmAttackVisuals();
 
-		if (Counter < swarm_length && Counter % projectileSpawnDelay == 0)
-			SpawnBabySwarmer((int)(Counter / projectileSpawnDelay));
+		if (Counter % projectileSpawnDelay == 0)
+		{
+			if (FightingDScourge)
+			{
+				if (!standingStillWaitingForScourge)
+					DuoFightSpawnSwarmersFar((int)(Counter / projectileSpawnDelay));
+			}
+			else if (Counter < swarm_length)
+				SpawnBabySwarmer((int)(Counter / projectileSpawnDelay));
+		}
 
 		if (Counter >= attack_end_time && !FightingDScourge)
 			return GoBackToIdle();
@@ -2314,9 +2359,6 @@ public partial class Scarabeus : ModNPC
 
 		float spawnAreaOffsetX = Target.velocity.X * 35f;
 		float spawnAreaRadius = 400 - swarmerIndex % 4 * 30;
-
-		//if (Main.rand.NextBool(3))
-		//	spawnAreaRadius = 0f;
 
 		Vector2 spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);

@@ -7,7 +7,11 @@ public class ScarabeusBossBar : ModBossBar
 {
 	public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams)
 	{
-		var icon = TextureAssets.NpcHeadBoss[npc.GetBossHeadTextureIndex()].Value;
+		int bossHeadIndex = npc.GetBossHeadTextureIndex();
+		if (bossHeadIndex == -1) //Failsafe
+			bossHeadIndex = NPCID.Sets.BossHeadTextures[npc.type];
+
+		var icon = TextureAssets.NpcHeadBoss[bossHeadIndex].Value;
 		drawParams.IconTexture = icon;
 		drawParams.IconFrame = icon.Frame();
 

@@ -383,7 +383,7 @@ public partial class Scarabeus : ModNPC
 	{
 		if (CurrentState == AIState.Dig)
 			NPC.damage = currentFrame.X == 2 ? STAT_HORN_SWIPE_CONTACT_DAMAGE : STAT_DIG_EMERGE_CONTACT_DAMAGE;
-		else if (CurrentState == AIState.Roll)
+		else if (CurrentState == AIState.Roll || CurrentState == AIState.DuoFightGunkRoll)
 			NPC.damage = STAT_ROLL_CONTACT_DAMAGE;
 		else if (CurrentState == AIState.GroundPound)
 			NPC.damage = STAT_GROUNDPOUND_CONTACT_DAMAGE;
@@ -440,7 +440,7 @@ public partial class Scarabeus : ModNPC
 			npcHitbox.X += NPC.direction * 45;
 		}
 
-		else if (CurrentState == AIState.Roll)
+		else if (CurrentState == AIState.Roll || CurrentState == AIState.DuoFightGunkRoll)
 		{
 			//Shave off the top of the hitbox when rolling to make it easier to jump over
 			npcHitbox.Y += 20;
@@ -624,6 +624,9 @@ public partial class Scarabeus : ModNPC
 			if (slot != -1)
 				index = slot;
 		}
+
+		if (CurrentState == AIState.DuoFightEaten)
+			index = -1;
 	}
 
 	public void ChangeState(AIState state, bool setIdleTime = false)

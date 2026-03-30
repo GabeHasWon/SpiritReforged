@@ -49,6 +49,7 @@ public class BabyAntlionProjectile : ModProjectile
 		Emerging,
 		ChasingScarab,
 		Burnt,
+		BurntHarmless,
 		FlyOff
 	}
 
@@ -61,6 +62,8 @@ public class BabyAntlionProjectile : ModProjectile
 	public Vector2 _originalPosition = Vector2.Zero;
 
 	public override void SetStaticDefaults() => ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+
+	public static bool[] _desertScourgeSegmentTypes;
 
 	public override void SetDefaults()
 	{
@@ -77,11 +80,28 @@ public class BabyAntlionProjectile : ModProjectile
 		ProjectileID.Sets.TrailingMode[Type] = 0;
 		ProjectileID.Sets.TrailCacheLength[Type] = 7;
 
+		_desertScourgeSegmentTypes = NPCID.Sets.Factory.CreateBoolSet(false);
 		if (CrossMod.Fables.Enabled)
 		{
 			DrawStormlion = Main.rand.NextBool(5) ? 1 : 0;
 			if (DrawStormlion > 0 && Main.IsItStorming)
 				DrawStormlion = 2 + Main.rand.Next(2);
+
+			if (CrossMod.Fables.TryFind("DesertScourge", out ModNPC scourgeHead) &&
+			CrossMod.Fables.TryFind("DesertScourgeHitbox", out ModNPC scourgeHitbox))
+			{
+				_desertScourgeSegmentTypes = NPCID.Sets.Factory.CreateBoolSet(scourgeHead.Type, scourgeHitbox.Type);
+			}				
+		}
+	}
+
+	public bool QuickFadeAway
+	{
+		get
+		{
+			if (!Main.expertMode) //|| (Scarab.ModNPC as Scarabeus).FightingDScourge)
+				return true;
+			return false;
 		}
 	}
 
@@ -106,7 +126,7 @@ public class BabyAntlionProjectile : ModProjectile
 		}
 
 		//Falling down when burnt
-		if (CurrentState == AIState.Burnt)
+		if (CurrentState is AIState.Burnt or AIState.BurntHarmless)
 		{
 			BurnOffAndFall();
 			return;
@@ -167,11 +187,12 @@ public class BabyAntlionProjectile : ModProjectile
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/DragonFire" + Main.rand.Next(1, 4)) with { Volume = 0.05f }, Projectile.Center);
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.45f, PitchVariance = 0.15f }, Projectile.Center);
 
-			CurrentState = AIState.Burnt;
+			CurrentState = QuickFadeAway ? AIState.BurntHarmless : AIState.Burnt;
 			Projectile.position.X = Scarab.Center.X;
 			Projectile.velocity *= 0.1f;
 			Projectile.velocity += Scarab.DirectionTo(Projectile.Center + new Vector2(0f, -16f)) * 3f;
 			Projectile.timeLeft = 120;
+			Projectile.netUpdate = true;
 
 			Projectile.frame = Main.rand.Next(3);
 
@@ -182,7 +203,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 			Projectile.rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 
-			if (!Main.expertMode)
+			if (CurrentState == AIState.BurntHarmless)
 			{
 				Projectile.friendly = false;
 				Projectile.velocity = Main.rand.NextVector2Circular(5f, 5f);
@@ -293,7 +314,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 		Projectile.rotation += Projectile.velocity.Y * 0.01f;
 
-		if (!Main.expertMode)
+		if (CurrentState == AIState.BurntHarmless)
 		{
 			Projectile.timeLeft--;
 			Projectile.velocity *= 0.93f;
@@ -345,12 +366,30 @@ public class BabyAntlionProjectile : ModProjectile
 
 				ParticleHandler.SpawnParticle(p);
 			}
-		}		
+
+			//Get destroyed if overlapping with a scourge segment
+			if (Scarab != null && Scarab.active && Scarab.ModNPC is Scarabeus scarabeus && scarabeus.FightingDScourge)
+			{
+				Rectangle projHitbox = Projectile.Hitbox;
+				projHitbox.Inflate(5, 5);
+
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					NPC n = Main.npc[i];
+					if (n.active && _desertScourgeSegmentTypes[n.type] && projHitbox.Intersects(n.Hitbox))
+					{
+						scarabeus.DuoFightMicroBurnOnScourge();
+						Projectile.Kill();
+						return;
+					}
+				}
+			}
+		}
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		if (CurrentState != AIState.Burnt && CurrentState != AIState.Emerging)
+		if (CurrentState != AIState.Burnt && CurrentState != AIState.BurntHarmless && CurrentState != AIState.Emerging)
 			return null;
 
 		//Bigger hitbox on burnt and emerging ones to make the mmore punishing to players who stand still
@@ -362,7 +401,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
-		if (CurrentState == AIState.Burnt)
+		if (CurrentState is AIState.Burnt or AIState.BurntHarmless)
 			target.AddBuff(BuffID.OnFire, Scarabeus.STAT_ANTLION_ONFIRE_DURATION, false);
 	}
 
@@ -370,7 +409,7 @@ public class BabyAntlionProjectile : ModProjectile
 	{
 		if (Projectile.timeLeft > MAX_TIMELEFT - 90)
 			behindNPCsAndTiles.Add(index);
-		else if (CurrentState != AIState.Burnt)
+		else if (CurrentState is not AIState.Burnt or AIState.BurntHarmless )
 			overPlayers.Add(index);
 		else
 			behindNPCs.Add(index);
@@ -389,7 +428,7 @@ public class BabyAntlionProjectile : ModProjectile
 		Vector2 position = Projectile.Center;
 		float rotation = Projectile.rotation;
 		float scale = Projectile.scale;
-		Rectangle frame = texture.Frame(8, 3, Projectile.frame, CurrentState == AIState.Burnt ? 2 : CurrentState == AIState.Emerging ? 0 : 1);
+		Rectangle frame = texture.Frame(8, 3, Projectile.frame, CurrentState is AIState.Burnt or AIState.BurntHarmless ? 2 : CurrentState == AIState.Emerging ? 0 : 1);
 		SpriteEffects effects = Projectile.direction < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 		lightColor *= Math.Min(1, Projectile.timeLeft / 40f) * Utils.GetLerpValue(MAX_TIMELEFT, MAX_TIMELEFT - 30, Projectile.timeLeft, true);
@@ -398,7 +437,7 @@ public class BabyAntlionProjectile : ModProjectile
 		{
 			texture = stormlionTexture;
 			solid = TextureColorCache.ColorSolid(stormlionTexture, Color.White);
-			frame = stormlionTexture.Frame(8, 6, Projectile.frame, CurrentState == AIState.Burnt ? 2 : CurrentState == AIState.Emerging ? 0 : 1);
+			frame = stormlionTexture.Frame(8, 6, Projectile.frame, CurrentState is AIState.Burnt or AIState.BurntHarmless ? 2 : CurrentState == AIState.Emerging ? 0 : 1);
 
 			if (DrawStormlion == 2)
 			{
@@ -407,11 +446,11 @@ public class BabyAntlionProjectile : ModProjectile
 			}
 		}
 		
-		if (CurrentState is AIState.Emerging or AIState.Burnt)
+		if (CurrentState is AIState.Emerging or AIState.Burnt or AIState.BurntHarmless)
 		{
 			Color color = new Color(255, 200, 0) * 0.2f;
 
-			if (CurrentState == AIState.Burnt)
+			if (CurrentState is AIState.Burnt or AIState.BurntHarmless)
 			{
 				if (Projectile.timeLeft > 120)
 				{
@@ -435,7 +474,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 		if (CurrentState != AIState.FlyOff)
 		{
-			if (CurrentState == AIState.Burnt)
+			if (CurrentState is AIState.Burnt or AIState.BurntHarmless)
 			{
 				float progress = 0f;
 

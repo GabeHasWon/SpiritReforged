@@ -348,6 +348,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	private int[] _hoverTypes;
 	private static bool[] _fablesStormlionItems;
+	private static bool[] _fablesSpawnBlockingNPCs;
 	private static int _fablesDeadStormlionLarvaType = -1;
 	private static int _fablesStormlionBucketType = -1;
 
@@ -375,22 +376,27 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(124, 24, 28), Language.GetText("Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName"));
 		DustType = -1;
 		MinPick = 55;
-		
+
 		//Load the stormlion items from fables
-		if (_fablesStormlionItems == null)
+		if (CrossMod.Fables.Enabled &&
+			CrossMod.Fables.TryFind("DeadStormlionLarvaItem", out ModItem deadLarva) &&
+			CrossMod.Fables.TryFind("StormlionLarvaItem", out ModItem aliveLarva) &&
+			CrossMod.Fables.TryFind("BucketOfLarvae", out ModItem larvaBucket))
 		{
-			if (CrossMod.Fables.Enabled &&
-				CrossMod.Fables.TryFind("DeadStormlionLarvaItem", out ModItem deadLarva) &&
-				CrossMod.Fables.TryFind("StormlionLarvaItem", out ModItem aliveLarva) &&
-				CrossMod.Fables.TryFind("BucketOfLarvae", out ModItem larvaBucket))
-			{
-				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(deadLarva.Type, aliveLarva.Type, larvaBucket.Type);
-				_fablesStormlionBucketType = larvaBucket.Type;
-				_fablesDeadStormlionLarvaType = deadLarva.Type;
-			}
-			else
-				_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(false);
+			_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(deadLarva.Type, aliveLarva.Type, larvaBucket.Type);
+			_fablesStormlionBucketType = larvaBucket.Type;
+			_fablesDeadStormlionLarvaType = deadLarva.Type;
 		}
+		else
+			_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(false);
+
+		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("DesertScourge", out ModNPC dscourge) &&
+			CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFight))
+		{
+			_fablesSpawnBlockingNPCs = NPCID.Sets.Factory.CreateBoolSet(dscourge.Type, duoFight.Type);
+		}
+		else
+			_fablesSpawnBlockingNPCs = NPCID.Sets.Factory.CreateBoolSet(false);
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.InInteractionRange(i, j, TileReachCheckSettings.Simple);
@@ -414,11 +420,34 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
 	}
 
+	public bool CanRecieveOfferings
+	{
+		get
+		{
+			if (!Main.dayTime || BeamOLight.Enabled)
+				return false;
+			if (!Main.LocalPlayer.ZoneDesert)
+				return false;
+
+			//Can't use the altar while scourge is already spawned. To summon Scarab & Scourge at once, you must use the stormlion offering feature
+			if (CrossMod.Fables.Enabled)
+			{
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					if (Main.npc[i].active && _fablesSpawnBlockingNPCs[Main.npc[i].type])
+						return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
 	public override bool RightClick(int i, int j)
 	{
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
 
-		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity)
+		if (CanRecieveOfferings && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity)
 		{
 			bool bowlFull = entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] >= ScarabAltarEntity.ConsumableCountMax;
 			//Since stormlion items from fables instantly set the bowl's fill level to 666, prevent more than 1 from being dispensed at once

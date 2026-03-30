@@ -4,22 +4,9 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent.UI;
-using Terraria.Graphics.CameraModifiers;
-using Terraria.ModLoader;
-using static SpiritReforged.Common.Misc.AnimationSequence;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
-using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -118,7 +105,10 @@ public partial class Scarabeus : ModNPC
 				((args[2] as NPC).ModNPC as Scarabeus).PreDraw((SpriteBatch)args[3], (Vector2)args[4], (Color)args[5]);
 				return true;
 			case "getPukedOut":
-				((args[2] as NPC).ModNPC as Scarabeus).GetPukedOut((Vector2)args[3], (Vector2)args[4]);
+				((args[2] as NPC).ModNPC as Scarabeus).DuoFightGetPukedOut((Vector2)args[3], (Vector2)args[4]);
+				return true;
+			case "doBurnParticles":
+				((args[2] as NPC).ModNPC as Scarabeus).DoBurnParticles((Vector2)args[3], (Vector2)args[4], (float)args[5]);
 				return true;
 		}
 
@@ -380,23 +370,115 @@ public partial class Scarabeus : ModNPC
 	#region Attract Scarab then get eaten then get puked out
 	public static Point GunkBallFrame = new Point(0, 9);
 
-	public void GetPukedOut(Vector2 vomitPosition, Vector2 spitTarget)
-	{
-		const float _rollStartGravity = 0.15f;
+	public static float STAT_DUOFIGHT_PUKEROLL_GRAVITY = 0.47f;
 
+	public void DoBurnParticles(Vector2 center, Vector2 impartedVelocity, float radius)
+	{
+		if (Main.dedServ)
+			return;
+
+		if (Main.rand.NextBool(3))
+		{
+			Vector2 position = center + Main.rand.NextVector2Circular(radius, radius);
+			Vector2 velocity = -Vector2.UnitY + impartedVelocity;
+			Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)];
+			float scale = Main.rand.NextFloat(0.06f, 0.09f);
+			int maxTime = (int)(Main.rand.Next(10, 35));
+
+			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
+			{
+				ColorLerpExponent = 2.5f
+			});
+		}
+
+		if (Main.rand.NextBool(4))
+		{
+			var p = new EmberParticle(
+				center + Main.rand.NextVector2Circular(radius, radius) * 1.4f,
+				-impartedVelocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.3f),
+				Color.Orange,
+				Main.rand.NextFloat(0.2f, 0.5f),
+				30
+				);
+
+			p.emitLight = false;
+
+			ParticleHandler.SpawnParticle(p);
+		}
+
+		if (Main.rand.NextBool())
+		{
+			var p = new SmokeCloud(
+				center + Main.rand.NextVector2Circular(radius, radius),
+				-Vector2.UnitY.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f),
+				Color.Black * 0.15f,
+				0.175f,
+				EaseFunction.EaseCircularOut,
+				30);
+
+			p.Pixellate = true;
+			p.Layer = ParticleLayer.BelowProjectile;
+
+			ParticleHandler.SpawnParticle(p);
+		}
+	}
+
+	public void DuoFightSpawnSwarmersFar(int swarmerIndex)
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+
+		int swarmerCount = swarmerIndex % 2 == 1 ? 3 : 2;
+		for (int i = 0; i < swarmerCount; i++)
+		{
+			//Spawn swarmers far away
+			float spawnAreaDirection = (Main.rand.NextBool() ? -1 : 1);
+			float spawnAreaOffsetX = 400;
+			float spawnAreaRadius = 600 - swarmerIndex % 4 * 30;
+
+			Vector2 spawnPosition = NPC.Center + Vector2.UnitX * (spawnAreaOffsetX + Main.rand.NextFloat(spawnAreaRadius)) * spawnAreaDirection;
+
+			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition);
+			float spawnHopHeight = 5.6f + 2.3f * ((swarmerIndex + i) % 4);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
+		}
+	}
+
+	public void DuoFightMicroBurnOnScourge()
+	{
+		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "inflictScourgeMicroburn", scourgeFightManager);
+	}
+
+	public bool StandingStillWaitingToGetEatenByScourge
+	{
+		get
+		{
+			if (!FightingDScourge)
+				return false;
+			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
+		}
+	}
+
+	public void DuoFightGetPukedOut(Vector2 vomitPosition, Vector2 spitTarget)
+	{
 		NPC.Center = vomitPosition;
 		NPC.Opacity = 1f;
 
 		Player target = (Player)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getScourgeTarget", scourgeFightManager);
 		spitTarget.X += Math.Sign(target.Center.X - NPC.Center.X) * 400;
 
-		Vector2 velocity =  ArcVelocityHelper.GetArcVel(NPC.Center, spitTarget, _rollStartGravity, minArcHeight: 130f, maxXvel: 50f, heightAboveTarget: 120);
+		Vector2 velocity =  ArcVelocityHelper.GetArcVel(NPC.Center, spitTarget, STAT_DUOFIGHT_PUKEROLL_GRAVITY, minArcHeight: 130f, maxXvel: 50f, heightAboveTarget: 100f);
 		NPC.velocity = velocity;
 
 		ChangeState(AIState.DuoFightGunkRoll);
 		NPC.noTileCollide = true;
-		NPC.noGravity = false;
+		NPC.noGravity = true;
 		SetFrame(GunkBallFrame, PhaseOneProfile);
+	}
+
+	public void DuoFightPukesplosion()
+	{
+		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "pukesplosion", scourgeFightManager);
 	}
 	#endregion
 
