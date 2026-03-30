@@ -550,7 +550,7 @@ Scarabeus: {
 	DisplayName: Скарабеус
 	Title: Гребенчатый идол
 	Entry: Из-за своего величественного вида и переливающегося окраса, этот гигантский жук некогда почитался древними жителями Зиккурата. Он остаётся здесь по сей день, ожидая своих подношений.
-	// SpawnInfo: Use any gem item at the Ancient Altar on the Ziggurat
+	// SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat
 }
 
 TinyGrub.DisplayName: Маленькая личинка
