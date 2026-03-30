@@ -133,25 +133,30 @@ public class AmberFossil : EntityTile<FossilEntity>
 }
 
 /// <summary> A placeable amber fossil. </summary>
-public class AmberFossilSafe : AmberFossil, IAutoloadTileItem
+public class AmberFossilSafe : AmberFossil
 {
-	public void AddItemRecipes(ModItem item)
+	public sealed class AmberFossilSafeItem : ModItem
 	{
-		StartRecipe().AddRecipeGroup(RecipeGroupID.Fireflies).Register();
-		StartRecipe().AddRecipeGroup(RecipeGroupID.Dragonflies).Register();
-		StartRecipe().AddRecipeGroup(RecipeGroupID.Butterflies).Register();
-		StartRecipe().AddIngredient(ItemID.Grasshopper).Register();
-		StartRecipe().AddIngredient(ItemID.Frog).Register();
+		public override void SetStaticDefaults() => Item.ResearchUnlockCount = 100;
 
-		Recipe StartRecipe() => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10);
+		public override void SetDefaults() => Item.DefaultToPlaceableTile(ModContent.TileType<AmberFossilSafe>());
+
+		public override void AddRecipes()
+		{
+			StartRecipe().AddRecipeGroup(RecipeGroupID.Fireflies).Register();
+			StartRecipe().AddRecipeGroup(RecipeGroupID.Dragonflies).Register();
+			StartRecipe().AddRecipeGroup(RecipeGroupID.Butterflies).Register();
+			StartRecipe().AddIngredient(ItemID.Grasshopper).Register();
+			StartRecipe().AddIngredient(ItemID.Frog).Register();
+
+			Recipe StartRecipe() => CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10);
+		}
 	}
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-
-		RegisterItemDrop(this.AutoItemType());
-		this.AutoItem().ResearchUnlockCount = 100;
+		RegisterItemDrop(ModContent.ItemType<AmberFossilSafeItem>());
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
