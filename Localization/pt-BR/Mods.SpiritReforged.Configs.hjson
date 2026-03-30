@@ -7,7 +7,7 @@ ReforgedClientConfig: {
 			'''
 			Modifica a geração de mundo do Oceano
 			Por padrão, utiliza-se a geração Piecewise_V.
-			         A geração Piecewise_V é recomendada para jogatinas com o Spirit.
+			A geração Piecewise_V é recomendada para jogatinas com o Spirit.
 			'''
 	}
 
