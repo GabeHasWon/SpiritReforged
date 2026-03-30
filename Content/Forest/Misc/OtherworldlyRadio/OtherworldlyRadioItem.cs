@@ -2,15 +2,10 @@ using ReLogic.Graphics;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.UI;
-using SpiritReforged.Content.Underground.Items.Zipline;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Terraria.Audio;
-using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -57,12 +52,16 @@ public class OtherworldlyRadioItem : ModItem
 	{
 		const int padding = 17;
 
-		if (Item.tooltipContext != ItemSlot.Context.InventoryItem)
+		if (Item.tooltipContext != ItemSlot.Context.InventoryItem || !CrossMod.MusicDisplay.Enabled)
 			return true;
 
 		var position = new Vector2(x - 14, y + 5);
 		string text = this.GetLocalization("MusicDisplay").Value;
-		object[] info = (object[])CrossMod.MusicDisplay.Instance.Call("GetMusicInfo", (short)Main.curMusic);
+		(bool success, object[] info, _) = ((bool, object[], string message))CrossMod.MusicDisplay.Instance.Call("TryGetMusicInfo", (short)Main.curMusic);
+
+		if (!success)
+			return true;
+
 		var name = (LocalizedText)info[0];
 		var author = (LocalizedText)info[1];
 
