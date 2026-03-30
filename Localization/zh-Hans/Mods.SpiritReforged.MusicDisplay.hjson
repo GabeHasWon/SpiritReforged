@@ -11,12 +11,12 @@ Duststorm: {
 }
 
 Savanna: {
-	DisplayName: 稀树平原
+	DisplayName: Fever Trees（主题曲：稀树平原 - 昼）
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: 稀树平原 - 夜
+	DisplayName: Moonlit Meadow（主题曲：稀树平原 - 夜）
 	Author: "{$BySalvati}"
 }
 
@@ -71,6 +71,6 @@ RadioScarab: {
 }
 
 TitleTheme: {
-	// DisplayName: Another Journey (Spirit Title Theme)
-	// Author: "{$By} {$Salvati}"
+	DisplayName: Another Journey（主题曲：魂灵标题）
+	Author: "{$By} {$Salvati}"
 }
