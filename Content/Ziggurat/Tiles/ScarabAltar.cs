@@ -2,7 +2,6 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -16,12 +15,10 @@ using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.Graphics.CameraModifiers;
-using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
@@ -339,17 +336,11 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	void IAutoloadTileItem.AddItemRecipes(ModItem item)
 	{
-		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15)
-			.AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5).AddIngredient(ItemID.GoldBar, 4).AddTile(TileID.Anvils).Register();
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5)
+			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();
 
-		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15)
-			.AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5).AddIngredient(ItemID.PlatinumBar, 4).AddTile(TileID.Anvils).Register();
-
-		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ItemID.Sapphire, 5).AddIngredient(ItemID.GoldBar, 4)
-			.AddTile(TileID.Anvils).Register();
-
-		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ItemID.Sapphire, 5).AddIngredient(ItemID.PlatinumBar, 4)
-			.AddTile(TileID.Anvils).Register();
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ItemID.Sapphire, 5)
+			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();
 	}
 
 	public override void SetStaticDefaults()
