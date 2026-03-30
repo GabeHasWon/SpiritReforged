@@ -40,11 +40,6 @@ public class OtherworldlyRadioItem : ModItem
 			else
 				tooltips[index].Text += this.GetLocalization("TunedToOtherworld").Value;
 		}
-
-		if (CrossMod.MusicDisplay.Enabled)
-		{
-
-		}
 	}
 
 	// TODO: Make an interface/helper system for this
@@ -94,23 +89,6 @@ public class OtherworldlyRadioItem : ModItem
 
 		static float Size(string text) => FontAssets.MouseText.Value.MeasureString(text).X + padding;
 	}
-
-	//public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
-	//{
-	//	if (line.Name == "MusicDisplayName")
-	//	{
-	//		var font = FontAssets.DeathText.Value;
-	//		Vector2 size = ChatManager.GetStringSize(font, line.Text, new Vector2(0.5f));
-	//		Texture2D panel = Main.Assets.Request<Texture2D>("Images/UI/PanelBackground").Value;
-	//		Texture2D border = Main.Assets.Request<Texture2D>("Images/UI/PanelBorder").Value;
-	//		UIHelper.DrawPanel(Main.spriteBatch, panel, border, new Rectangle(line.X - 6, line.Y - 4, (int)size.X + 14, 38));
-	//		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, line.Text, new Vector2(line.X, line.Y + 2), Color.White, 0f, Vector2.Zero, new Vector2(0.5f));
-	//		yOffset += 6;
-	//		return false;
-	//	}
-
-	//	return true;
-	//}
 
 	public override bool ConsumeItem(Player player) => false;
 	public override bool CanRightClick() => true;
