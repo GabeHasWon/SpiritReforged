@@ -92,8 +92,7 @@ public partial class Scarabeus : ModNPC
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;
 
-	public static VisualProfile TakeoffProfile;
-
+	internal static VisualProfile TakeoffProfile;
 	private static VisualProfile PhaseOneProfile;
 	private static VisualProfile PhaseTwoProfile;	
 	private static VisualProfile SimulatedProfile;
