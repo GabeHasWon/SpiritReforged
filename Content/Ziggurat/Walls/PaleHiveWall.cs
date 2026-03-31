@@ -1,10 +1,21 @@
-﻿using SpiritReforged.Common.WallCommon;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.WallCommon;
+using SpiritReforged.Content.Ziggurat.Tiles;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
 public class PaleHiveWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadWallItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>(nameof(PaleHiveWall) + "Unsafe").Type;
+
+	public void AddItemRecipes(ModItem item)
+	{
+		int hive = AutoContent.ItemType<PaleHive>();
+		int type = item.Type;
+
+		item.CreateRecipe(4).AddIngredient(hive).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(hive).AddIngredient(type, 4).AddTile(TileID.WorkBenches).Register();
+	}
 
 	public override void SetStaticDefaults()
 	{
