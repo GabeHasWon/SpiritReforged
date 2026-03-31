@@ -2977,7 +2977,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Мешок с сокровищами (Скарабеус)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3010,8 +3010,8 @@ ScarabMusicBox: {
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: Первая фаза
+		1: Вторая фаза
 	}
 }
 
