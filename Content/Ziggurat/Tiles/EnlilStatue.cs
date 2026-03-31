@@ -51,7 +51,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer)
+		if (!closer || Main.LocalPlayer.dead)
 			return;
 
 		Main.LocalPlayer.AddBuff(ModContent.BuffType<EnlilBuff>(), 6);

@@ -984,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: 寒霜
-	Tooltip: 在你的前方变出暴雪
+	Tooltip:
+		'''
+		在你的前方变出暴雪
+		无视敌人5点的防御力
+		'''
 }
 
 RogueCrest: {
@@ -998,7 +1002,7 @@ RogueCrest: {
 }
 
 GildedScarab: {
-	DisplayName: 镀金圣甲虫
+	DisplayName: 镀金甲虫
 	Tooltip:
 		'''
 		受到攻击时会获得一个短暂的防御增益
@@ -2037,8 +2041,8 @@ FingerGun: {
 	DisplayName: 手指冲击波
 	Tooltip:
 		'''
-		无视敌人些许防御力
 		魔力值越高，发射速度越快
+		无视敌人5点的防御力
 		“咻咻！”
 		'''
 }
@@ -2640,6 +2644,7 @@ Dragonsong: {
 	DisplayName: 龙歌
 	Tooltip:
 		'''
+		使用凝胶作为弹药
 		50%几率节省弹药
 		“你是一个可怕的人”
 		'''
@@ -2671,7 +2676,7 @@ GoldenBrineShrimpItem: {
 
 CorruptStactusBannerItem.DisplayName: 腐化刺角株旗
 CrimsonStactusBannerItem.DisplayName: 猩红刺角株旗
-DesertStactusBannerItem.DisplayName: 沙漠刺角株旗
+DesertStactusBannerItem.DisplayName: 刺角株旗
 HallowedStactusBannerItem.DisplayName: 神圣刺角株旗
 
 AncientBannerItem: {
@@ -3030,7 +3035,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: 甲虫灯泡
+	DisplayName: 颤响灯泡
 	Tooltip:
 		'''
 		召唤一只甲虫宝宝

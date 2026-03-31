@@ -14,7 +14,7 @@ Spirit Reforged é um projeto independente e não precisa ser jogado junto com S
 
 Nossa novíssima atualização, Sunscorched (v0.2), apresenta o primeiro chefe de Reforged, Escarabeus, nosso novo ecótono As Salinas, e muitas mudanças no Deserto! Aqui estão as elas em resumo:
 
-550 Itens, incluindo novas armas e equipamentos
+553 Itens, incluindo novas armas e equipamentos
 2 Novos biomas ecótonos: A Savana e as Salinas
 65 Inimigos e NPCs, incluindo 2 novos NPCs Errantes Mundiais para encontrar
 Diversos microbiomas, microestruturas e descobertas espalhadas pelo mundo

@@ -11,12 +11,12 @@ Duststorm: {
 }
 
 Savanna: {
-	DisplayName: 稀树平原
+	DisplayName: Fever Trees（主题曲：稀树平原 - 昼）
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: 稀树平原 - 夜
+	DisplayName: Moonlit Meadow（主题曲：稀树平原 - 夜）
 	Author: "{$BySalvati}"
 }
 
@@ -46,12 +46,12 @@ Ziggurat: {
 }
 
 Salt: {
-	DisplayName: 盐滩
+	DisplayName: Reflected Skies（主题曲：盐滩 - 昼）
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: 盐滩 - 夜
+	DisplayName: Refracted Stars（主题曲：盐滩 - 夜）
 	Author: "{$By} {$Sbubby}"
 }
 
@@ -68,4 +68,9 @@ ScarabeusP2: {
 RadioScarab: {
 	DisplayName: Soaring Complications（电台剪辑版）
 	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Another Journey（主题曲：魂灵标题）
+	Author: "{$By} {$Salvati}"
 }

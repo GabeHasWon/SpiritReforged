@@ -146,7 +146,7 @@ public sealed class ChainObjectSystem : ModSystem
 			ushort tileType = reader.ReadUInt16();
 
 			if (ObjectByCoords.ContainsKey(coords))
-				return;
+				continue;
 
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)
 			{

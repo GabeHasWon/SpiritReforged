@@ -172,7 +172,7 @@ internal class ChristmasTreeFunctionality : GlobalTile
 		if (tree.Topper != -1)
 		{
 			Texture2D tex = TreeTopper.TopperTextures[tree.Topper].Value;
-			spriteBatch.Draw(tex, TileExtensions.DrawPosition(i - 1, j, new Vector2(-5, 0)), Lighting.GetColor(i, j));
+			spriteBatch.Draw(tex, TileExtensions.DrawPosition(i - 1, j, new Vector2(-5, 0)), Color.White);
 		}
 	}
 
