@@ -198,6 +198,8 @@ public partial class Scarabeus : ModNPC
 		DuoFightTakeoff,
 		DuoFightEaten,
 		DuoFightGunkRoll,
+		DuoFightFollowLeader,
+		DuoFightFlyBackToTheFloor,
 
 		MaxValue
 	}
@@ -244,6 +246,8 @@ public partial class Scarabeus : ModNPC
 		_stateAI[(int)AIState.DuoFightTakeoff] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightTakeoff(ref retarget);
 		_stateAI[(int)AIState.DuoFightEaten] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightGrabbedByScourge(ref retarget);
 		_stateAI[(int)AIState.DuoFightGunkRoll] = (Scarabeus scarab, ref bool retarget) => scarab.RollAttack(ref retarget);
+		_stateAI[(int)AIState.DuoFightFollowLeader] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightFlyFollowLeader(ref retarget);
+		_stateAI[(int)AIState.DuoFightFlyBackToTheFloor] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightFlyDownToGround(ref retarget);
 
 		Main.npcFrameCount[Type] = 17; //The highest frame count
 		NPCID.Sets.TrailCacheLength[Type] = 8;

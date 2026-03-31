@@ -1016,7 +1016,10 @@ public partial class Scarabeus : ModNPC
 
 		NPC.behindTiles = dashState >= 1 && dashState < 3;
 		if (Counter == 0 && dashState == 0 && !phaseTwo)
+		{
 			NPC.FaceTarget();
+			ShiftUpToFloorLevel();
+		}
 
 		switch (dashState)
 		{
@@ -1146,6 +1149,9 @@ public partial class Scarabeus : ModNPC
 						SoundEngine.PlaySound(BounceSound with { Volume = 0.4f}, NPC.Center);
 						GroundImpactVFX(1.5f);
 					}
+
+					if (FightingDScourge)
+						DuoFightSimulateRoll(rollSpeed);
 				}
 
 				break;
@@ -2192,7 +2198,7 @@ public partial class Scarabeus : ModNPC
 			//Dash
 			case 1:
 				
-				if (Main.rand.NextBool())
+				if (!Main.dedServ && Main.rand.NextBool())
 				{
 					Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
 
@@ -2221,16 +2227,35 @@ public partial class Scarabeus : ModNPC
 				//Fake the velocity accelerating over time WITHOUT actually multiplying it
 				//cuz thatd be too annoying and mess up the ballistics so we actually move scarab back a portion of its speed
 				float speedMultiplier = 0.1f + Math.Min(1, Counter / 14f) * 1f;
+				float slowdownWhenMovingUp = 0.98f;
+				float minYVelocity = -4;
+
+				if (FightingDScourge)
+				{
+					float speedupScale = Main.masterMode ? 1f : Main.expertMode ? 0.8f : 0.5f;
+					speedMultiplier += Counter / 34f * speedupScale;
+					slowdownWhenMovingUp = 0.99f;
+					minYVelocity = -6;
+				}
+
 				NPC.position -= NPC.velocity * (1 - speedMultiplier);
 				NPC.velocity.Y -= 0.6f * speedMultiplier;
 
 				NPC.rotation = NPC.velocity.ToRotation() + ((NPC.direction == -1) ? MathHelper.Pi : 0);
 
 				if (NPC.velocity.Y < 0)
-					NPC.velocity.X *= 0.98f;
+					NPC.velocity.X *= slowdownWhenMovingUp;
 
-				if (NPC.velocity.Y < -4)
+				if (NPC.velocity.Y < minYVelocity)
 				{
+					//Go down to the ground, since during the duo fight scarab only idles on the floor
+					if (FightingDScourge)
+					{
+						NPC.velocity.Y -= 1f;
+						ChangeState(AIState.DuoFightFlyBackToTheFloor);
+						return 0f;
+					}
+
 					if (Main.rand.NextBool())
 						return TransitionIntoRoll();
 

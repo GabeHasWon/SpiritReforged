@@ -7,6 +7,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -110,6 +111,9 @@ public partial class Scarabeus : ModNPC
 			case "doBurnParticles":
 				((args[2] as NPC).ModNPC as Scarabeus).DoBurnParticles((Vector2)args[3], (Vector2)args[4], (float)args[5]);
 				return true;
+			case "startJoustSwoop":
+				((args[2] as NPC).ModNPC as Scarabeus).DuoFightStartAirDash((Vector2)args[3]);
+				return true;
 		}
 
 		return null;
@@ -207,7 +211,9 @@ public partial class Scarabeus : ModNPC
 	public float DuoFightTakeoff(ref bool retarget)
 	{
 		retarget = false;
-		bool jumped = currentFrame == new Point(0, 2) && Profile == PhaseTwoProfile;
+		bool jumped = (currentFrame == new Point(0, 2) || currentFrame == new Point(0, 3)) && Profile == PhaseTwoProfile;
+		bool jumpingIntoLightbulb = (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "shouldTakeoffIntoLightbulb", scourgeFightManager);
+		float towardsFightManager = (scourgeFightManager.NPC.Center.X - NPC.Center.X) < 0 ? -1 : 1;
 
 		if (!jumped)
 		{
@@ -240,9 +246,14 @@ public partial class Scarabeus : ModNPC
 
 				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, NPC.Center);
 
-				SetFrame(0, 2, PhaseTwoProfile);
+				SetFrame(0, jumpingIntoLightbulb ? 2 : 3, PhaseTwoProfile);
 				NPC.velocity.Y -= 25;
-				NPC.velocity.X += NPC.direction * 5;
+
+				if (jumpingIntoLightbulb)
+					NPC.velocity.X += NPC.direction * 5;
+				else
+					NPC.velocity.X += towardsFightManager * 10;
+
 				Counter = 0;
 				NPC.noTileCollide = true;
 				NPC.noGravity = true;
@@ -252,6 +263,8 @@ public partial class Scarabeus : ModNPC
 		{
 			NPC.velocity.Y *= 0.95f;
 			trailOpacity = EaseFunction.EaseQuinticIn.Ease(1f - Counter / 20f);
+			SetFrame(0, jumpingIntoLightbulb ? 2 : 3, PhaseTwoProfile);
+
 			if (Counter >= 20)
 			{
 				if (FightingDScourge)
@@ -479,6 +492,173 @@ public partial class Scarabeus : ModNPC
 	public void DuoFightPukesplosion()
 	{
 		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "pukesplosion", scourgeFightManager);
+	}
+	#endregion
+
+	#region Joust Dash
+	public float DuoFightFlyFollowLeader(ref bool retarget)
+	{
+		NPC.target = scourgeFightManager.NPC.target;
+		NPC.noTileCollide = true;
+		NPC.noGravity = true;
+		NPC.rotation = NPC.velocity.X * 0.05f;
+		NPC.direction = Math.Sign(Target.Center.X - NPC.Center.X);
+		wingFrameCounter += (18f / 60f); //18 fps for wings specifically
+		UpdateFrame(0, 12, SimulatedProfile);
+
+		float speedup = Utils.GetLerpValue(40f, 100f, NPC.Distance(scourgeFightManager.NPC.Center), true);
+		float movespeed = MathHelper.Lerp(4f, 16f + (Counter / 40f) * 20f, speedup);
+		float acceleration = MathHelper.Lerp(0.03f, 0.08f, speedup);
+
+		Vector2 toLeader = (scourgeFightManager.NPC.Center - NPC.Center).SafeNormalize(Vector2.Zero) * movespeed;
+		NPC.velocity = Vector2.Lerp(NPC.velocity, toLeader, acceleration);
+
+		if (Math.Sign(NPC.velocity.X) == Math.Sign(NPC.Center.X - scourgeFightManager.NPC.Center.X))
+			NPC.velocity *= 0.97f;
+
+		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -18, 18);
+		NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -18, 18);
+		return 1f;
+	}
+
+	public float DuoFightFlyDownToGround(ref bool retarget)
+	{
+		retarget = false;
+
+		switch (ExtraMemory)
+		{
+			//Flying down to the ground
+			case 0:
+				NPC.noTileCollide = true;
+				NPC.noGravity = true;
+				NPC.rotation = NPC.velocity.X * 0.03f;
+				wingFrameCounter += (18f / 60f); //18 fps for wings specifically
+				UpdateFrame(0, 12, SimulatedProfile);
+
+				NPC.velocity.X *= 0.98f;
+				NPC.velocity.Y += 0.6f;
+				if (NPC.velocity.Y > 12)
+					NPC.velocity.Y = 12;
+
+				if (OnTopOfTiles && NPC.velocity.Y >= 0)
+				{
+					ShiftUpToFloorLevel();
+					ExtraMemory = 1;
+					NPC.rotation = 0;
+					NPC.velocity.Y = 0;
+					NPC.velocity.X *= 0.6f;
+					SetFrame(6, 0, PhaseOneProfile);
+				}
+
+				break;
+			case 1:
+				retarget = true;
+				NPC.FaceTarget();
+
+				NPC.noTileCollide = false;
+				NPC.noGravity = false;
+
+				NPC.rotation = 0;
+				NPC.velocity.Y = 0;
+				NPC.velocity.X *= 0.85f;
+				if (UpdateFrame(6, 12, PhaseOneProfile, false) == FrameState.Stopped)
+					return GoBackToIdle();
+				break;
+		}
+
+		return 1f;
+	}
+
+	public void DuoFightStartAirDash(Vector2 dashTarget)
+	{
+		NPC.netUpdate = true;
+		CurrentState = AIState.SwoopDash;
+		ExtraMemory = 1;
+		Counter = 0f;
+		NPC.direction = (dashTarget.X - NPC.Center.X) < 0 ? -1 : 1;
+
+		//We do some funny buisness and use an arc trajectory and then flip the gravity around, so instead of doing ballistics up it does ballistics down. haha
+		float distToTargetX = (dashTarget.X - NPC.Center.X);
+		float targetHeight = FindGroundFromPositionIgnorePlatforms(dashTarget).Y;
+
+		//Cant go too low
+		targetHeight = Math.Min(targetHeight, dashTarget.Y + 160);
+
+		Vector2 ballisticTarget = new Vector2(dashTarget.X , targetHeight);
+		if (Math.Abs(distToTargetX) < 200)
+			ballisticTarget.X += 200 * NPC.direction;
+
+		//Flip target upside down
+		ballisticTarget.Y = (ballisticTarget.Y - NPC.Center.Y) * -1 + NPC.Center.Y;
+		if (ballisticTarget.Y >= NPC.Center.Y - 100)
+			ballisticTarget.Y = NPC.Center.Y - 100;
+
+		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, ballisticTarget, 0.6f);
+
+		NPC.velocity.Y *= -1;
+		if (Math.Abs(NPC.velocity.X) < 9)
+			NPC.velocity.X = (NPC.velocity.X < 0 ? -1 : 1) * 9;
+	}
+	#endregion
+
+	#region Roll -> Hit Scourge -> Bounce ground pounds
+	public void DuoFightSimulateRoll(float rollSpeed)
+	{
+		Vector2 simulatedRollPosition = NPC.Center;
+		Vector2 simulatedVelocity = NPC.velocity;
+		Vector2 simulatedTargetPosition = Target.Center;
+		Vector2 simulatedTargetVelocity = Target.velocity;
+		float targetReachTime = 0f;
+
+		for (int i = 0; i < 300; i++)
+		{
+			float npcTopY = simulatedRollPosition.Y - NPC.height / 2f;
+			float npcBottomY = simulatedRollPosition.Y + NPC.height / 2f;
+
+			float interpolant = 0f;
+			float dist = Math.Abs(simulatedTargetPosition.X - simulatedRollPosition.X);
+			if (dist > 300f)
+				interpolant = 1f;
+			else if (dist > 100f)
+				interpolant = (dist - 100f) / 200f;
+
+			float adjustedRollSpeed = rollSpeed * MathHelper.Lerp(1f, 1.5f, interpolant);
+
+			simulatedVelocity.X = MathHelper.Lerp(simulatedVelocity.X, NPC.direction * adjustedRollSpeed, 0.1f);
+			float floorHeight = FindGroundFromPositionIgnorePlatforms(simulatedRollPosition, Math.Max(simulatedRollPosition.Y - 14f, Target.Bottom.Y)).Y;
+
+			//Match floor height when the slope is low enough
+			if (floorHeight > npcTopY && floorHeight < npcBottomY + 40)
+			{
+				simulatedVelocity.Y = 0;
+				simulatedRollPosition.Y = MathHelper.Lerp(simulatedRollPosition.Y, floorHeight - NPC.height * 0.5f, 0.6f);
+			}
+			//Fall if theres no floor
+			else if (!OnTopOfTiles && floorHeight > npcBottomY)
+				simulatedVelocity.Y += 0.45f;
+
+			//Bonk and transition to ground pound
+			else if (floorHeight < npcTopY)
+			{
+				simulatedTargetPosition.X -= Math.Sign(simulatedVelocity.X) * 16f;
+				break;
+			}
+
+			if ((simulatedTargetPosition.X - simulatedRollPosition.X) * NPC.direction < -500)
+				break;
+
+			simulatedRollPosition += simulatedVelocity;
+			simulatedTargetPosition += simulatedTargetVelocity;
+			targetReachTime++;
+			Dust.QuickDust(simulatedRollPosition, Color.Red);
+		}
+
+		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "commitRollSimOutput", scourgeFightManager, simulatedTargetPosition, targetReachTime);
+	}
+
+	public void DuoFightRollBonk()
+	{
+
 	}
 	#endregion
 
