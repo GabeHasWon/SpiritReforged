@@ -2982,7 +2982,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Treasure Bag (Scarabeus)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {

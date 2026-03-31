@@ -78,5 +78,5 @@ public class Relics : ModTile
 
 public class ScarabRelic : ModItem
 {
-	public override void SetDefaults() => Item.SetRelicsDefaults(0);
+	public override void SetDefaults() => Item.DefaultToRelic(0);
 }
