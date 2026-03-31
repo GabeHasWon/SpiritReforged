@@ -155,6 +155,11 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			Volume = 0.25f 
 		};
 
+		public static readonly SoundStyle AnticipationWeird = new("SpiritReforged/Assets/SFX/Tile/WackyDissonantChime")
+		{
+			Volume = 0.35f
+		};
+
 		public override string Texture => AssetLoader.EmptyTexture;
 
 		public int MaxTime
@@ -206,7 +211,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					Projectile.timeLeft = MaxTime / 2;
 					_justSpawned = false;
 
-					SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
+					SoundEngine.PlaySound(StartDuoFight ? AnticipationWeird : Anticipation, Projectile.Center);
 
 					if (!Main.dedServ)
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));

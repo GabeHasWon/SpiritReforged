@@ -1008,6 +1008,7 @@ public partial class Scarabeus : ModNPC
 	public float RollAttack(ref bool retarget)
 	{
 		bool scourgeFightGunkroll = CurrentState == AIState.DuoFightGunkRoll;
+		bool scourgeFightBonkroll = !scourgeFightGunkroll && FightingDScourge;
 
 		retarget = false;
 		const int transition_time = 40;
@@ -1113,8 +1114,9 @@ public partial class Scarabeus : ModNPC
 				}
 
 				break;
-
-			case 1: // Bounce before the roll
+			
+			// Bounce before the roll
+			case 1: 
 				if (!scourgeFightGunkroll)
 					SetFrame(RollFrame, phaseTwo ? PhaseTwoProfile : PhaseOneProfile);
 				else
@@ -1156,25 +1158,22 @@ public partial class Scarabeus : ModNPC
 
 				break;
 
-			case 2: //Roll
+			//Roll
+			case 2:
 				NPC.noGravity = true;
 				NPC.noTileCollide = true;
 
 				float interpolant = 0f;
-
 				float dist = Math.Abs(Target.Center.X - NPC.Center.X);
 				if (dist > 300f)
 					interpolant = 1f;
 				else if (dist > 100f)
 					interpolant = (dist - 100f) / 200f;
-	
 				float adjustedRollSpeed = rollSpeed * MathHelper.Lerp(1f, 1.5f, interpolant);
-
 				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, NPC.direction * adjustedRollSpeed, 0.1f);
 				NPC.rotation += 0.01f * NPC.velocity.X;
 
 				float floorHeight = FindGroundFromPositionIgnorePlatforms(NPC.Center, Math.Max(NPC.Center.Y - 14f, Target.Bottom.Y)).Y;
-
 				//Match floor height when the slope is low enough
 				if (floorHeight > NPC.Top.Y && floorHeight < NPC.Bottom.Y + 40)
 				{
@@ -1187,6 +1186,9 @@ public partial class Scarabeus : ModNPC
 				//Bonk and transition to ground pound
 				else if (floorHeight < NPC.Top.Y)
 				{
+					if (scourgeFightBonkroll)
+						return DuoFightRollBonk();
+
 					//BONK effects
 					if (!Main.dedServ)
 					{
@@ -1214,7 +1216,13 @@ public partial class Scarabeus : ModNPC
 				if (!Main.dedServ)
 					CreateRollParticles();
 
-				if ((Target.Center.X - NPC.Center.X) * NPC.direction < -100)
+				//When doing the "bonk" roll from the scourge duo fight, instead of stopping after going past the player, the roll instead stops after it has hit desert scourge
+				if (scourgeFightBonkroll)
+				{
+					if ((scourgeFightManager.NPC.Center.X - NPC.Center.X) * NPC.direction < 0)
+						return DuoFightRollBonk();
+				}
+				else if ((Target.Center.X - NPC.Center.X) * NPC.direction < -100)
 				{
 					//in phase 2 we just don't do the skid
 					if (phaseTwo)
@@ -1497,22 +1505,28 @@ public partial class Scarabeus : ModNPC
 	#region Ground pound
 	private int GroundPoundBounceCount => phaseTwo ? 3 : 1;
 
+	const float DEFAULT_GROUND_POUND_GRAVITY = 0.38f;
+
 	public float GroundPoundAttack(ref bool retarget)
 	{
 		retarget = false;
 		int max_bounces = GroundPoundBounceCount;
 		const int final_bounce_track_time = 40;
-		const int air_pause_time = 16;
+		int air_pause_time = 16;
 		const int rest_time = 90;
-		const float downwardsSlamGravity = 0.38f;
+		float downwardsSlamGravity = DEFAULT_GROUND_POUND_GRAVITY;
 		ref float bounceIndex = ref NPC.ai[2];
 		float artificialGravityMultiplier = 1f;
+
+		if (FightingDScourge)
+		{
+			max_bounces++;
+		}
 
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
 
 		bool onTheFloor = OnTopOfTiles && NPC.velocity.Y >= 0;
-
 		if (bounceIndex == 0 && Counter == 0 && phaseTwo && NPC.velocity.Y >= -9)
 			NPC.velocity.Y = Math.Min(-3, NPC.velocity.Y - 9f);
 
@@ -1634,7 +1648,21 @@ public partial class Scarabeus : ModNPC
 				NPC.velocity.Y = 0;
 				squishY = 0.7f;
 				artificialGravityMultiplier = 0f;
-				DoGroundPoundShockwaves();
+
+				float safeZoneRadius = 200;
+				int slamColumns = 4;
+				float slamHeight = 300;
+				float heightLossPerStep = 40f;
+
+				if (FightingDScourge)
+				{
+					safeZoneRadius = 240;
+					slamColumns = 8;
+					slamHeight = 400f;
+					heightLossPerStep = 30;
+				}
+
+				DoGroundPoundShockwaves(safeZoneRadius, slamColumns, slamHeight, heightLossPerStep);
 			}
 		}
 
@@ -1770,10 +1798,13 @@ public partial class Scarabeus : ModNPC
 		bounceIndex++;
 		//Avoid scenarios where scarab ends up stuck in the floor
 		ShiftUpToFloorLevel();
-
 		NPC.TargetClosest();
 		NPC.FaceTarget();
 		Counter = 0;
+
+		float minJumpHeight = 300;
+		if (FightingDScourge && bounceIndex >= GroundPoundBounceCount)
+			minJumpHeight = 500;
 
 		Vector2 bounceTarget = FindGroundFromPositionIgnorePlatforms(Target.Center);
 		bounceTarget.Y = Math.Min(bounceTarget.Y, Target.Center.Y + 300);
@@ -1783,7 +1814,7 @@ public partial class Scarabeus : ModNPC
 		float maxOvershootDistance = 200;
 		float maxBounceXVel = 26f;
 
-		if (bounceIndex == GroundPoundBounceCount)
+		if (bounceIndex >= GroundPoundBounceCount)
 		{
 			overshootMultiplier = 2.5f;
 			maxOvershootDistance = 600;
@@ -1792,7 +1823,7 @@ public partial class Scarabeus : ModNPC
 
 		bounceTarget.X += Math.Clamp(Target.Center.X - NPC.Center.X, -maxOvershootDistance, maxOvershootDistance) * overshootMultiplier;
 
-		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: maxBounceXVel);
+		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: minJumpHeight, heightAboveTarget: minJumpHeight, maxXvel: maxBounceXVel);
 		squishY = 0.6f;
 
 		if (!Main.dedServ && (bounceIndex > 1 || phaseTwo))

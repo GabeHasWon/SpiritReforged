@@ -608,6 +608,10 @@ public partial class Scarabeus : ModNPC
 		Vector2 simulatedVelocity = NPC.velocity;
 		Vector2 simulatedTargetPosition = Target.Center;
 		Vector2 simulatedTargetVelocity = Target.velocity;
+
+		simulatedTargetVelocity.X = Math.Clamp(simulatedTargetVelocity.X, -Target.maxRunSpeed, Target.maxRunSpeed);
+		simulatedTargetVelocity.Y *= 0;
+
 		float targetReachTime = 0f;
 
 		for (int i = 0; i < 300; i++)
@@ -634,7 +638,7 @@ public partial class Scarabeus : ModNPC
 				simulatedRollPosition.Y = MathHelper.Lerp(simulatedRollPosition.Y, floorHeight - NPC.height * 0.5f, 0.6f);
 			}
 			//Fall if theres no floor
-			else if (!OnTopOfTiles && floorHeight > npcBottomY)
+			else if (!SimOnTopOfTiles(simulatedRollPosition) && floorHeight > npcBottomY)
 				simulatedVelocity.Y += 0.45f;
 
 			//Bonk and transition to ground pound
@@ -650,15 +654,96 @@ public partial class Scarabeus : ModNPC
 			simulatedRollPosition += simulatedVelocity;
 			simulatedTargetPosition += simulatedTargetVelocity;
 			targetReachTime++;
-			Dust.QuickDust(simulatedRollPosition, Color.Red);
+			//Dust.QuickDust(simulatedRollPosition, Color.Red);
 		}
 
-		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "commitRollSimOutput", scourgeFightManager, simulatedTargetPosition, targetReachTime);
+		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "commitRollSimOutput", scourgeFightManager, simulatedRollPosition, targetReachTime);
+
+		bool SimOnTopOfTiles(Vector2 simPosition)
+		{
+			Vector2 cachedPosition = NPC.Center;
+			NPC.Center = simPosition;
+			bool value = OnTopOfTiles;
+			NPC.Center = cachedPosition;
+			return value;
+		}
 	}
 
-	public void DuoFightRollBonk()
+	public float DuoFightRollBonk(float downwardsSlamGravity = DEFAULT_GROUND_POUND_GRAVITY)
 	{
+		if (!Main.dedServ)
+		{
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+			Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
+			ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
+		}
 
+		float cachedRotation = NPC.rotation;
+		ChangeState(AIState.GroundPound);
+		NPC.rotation = cachedRotation;
+		SetFrame(RollFrame, PhaseOneProfile);
+		NPC.TargetClosest();
+		NPC.FaceTarget();
+		Counter = 1;
+		ExtraMemory = 1;
+
+		//Start a bounce
+		Vector2 bounceTarget = FindGroundFromPositionIgnorePlatforms(Target.Center);
+		bounceTarget.Y = Math.Min(bounceTarget.Y, Target.Center.Y + 300);
+		bounceTarget += Target.velocity * 30f;
+
+		float overshootMultiplier = Utils.GetLerpValue(1f, 3f, Target.velocity.X * NPC.direction, true) * 0.8f;
+		float maxOvershootDistance = 200;
+		float maxBounceXVel = 26f;
+		bounceTarget.X += Math.Clamp(Target.Center.X - NPC.Center.X, -maxOvershootDistance, maxOvershootDistance) * overshootMultiplier;
+
+		NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, bounceTarget, downwardsSlamGravity, minArcHeight: 300f, heightAboveTarget: 300f, maxXvel: maxBounceXVel);
+		squishY = 0.6f;
+
+		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "rollBonk", scourgeFightManager, bounceTarget, DuoFightSimulateBounce(downwardsSlamGravity));
+		return 0f;
+	}
+
+	public float DuoFightSimulateBounce(float gravity)
+	{
+		Vector2 simulatedPosition = NPC.Center;
+		Vector2 simulatedVelocity = NPC.velocity;
+		Vector2 simulatedTargetPosition = Target.Center;
+		Vector2 simulatedTargetVelocity = Target.velocity;
+		float bounceDuration = 0f;
+
+		simulatedTargetVelocity.X = Math.Clamp(simulatedTargetVelocity.X, -Target.maxRunSpeed, Target.maxRunSpeed);
+		simulatedTargetVelocity.Y *= 0;
+
+		for (int i = 0; i < 120; i++)
+		{
+			bool onTheFloor = SimOnTopOfTiles(simulatedPosition) && simulatedVelocity.Y >= 0;
+			float targetDistanceX = Math.Abs(simulatedTargetPosition.X - simulatedPosition.X);
+			if (targetDistanceX < 300)
+			{
+				float extraAllowedHeight = Utils.GetLerpValue(40f, 300f, targetDistanceX, true);
+				onTheFloor &= simulatedPosition.Y >= simulatedTargetPosition.Y - 16 - extraAllowedHeight * 200;
+			}
+
+			if (onTheFloor)
+				break;
+
+			simulatedVelocity.Y += gravity;
+			simulatedPosition += simulatedVelocity;
+			simulatedTargetPosition += simulatedTargetVelocity;
+			bounceDuration++;
+		}
+
+		return bounceDuration;
+
+		bool SimOnTopOfTiles(Vector2 simPosition)
+		{
+			Vector2 cachedPosition = NPC.Center;
+			NPC.Center = simPosition;
+			bool value = OnTopOfTiles;
+			NPC.Center = cachedPosition;
+			return value;
+		}
 	}
 	#endregion
 
