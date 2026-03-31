@@ -111,7 +111,7 @@ public class StoneStupas : PotTile, ILootable
 		if (Main.hardMode)
 			branch.Add(ItemDropRule.OneFromOptions(4, ItemID.UnholyArrow, ItemID.Grenade, (WorldGen.SavedOreTiers.Silver == TileID.Silver) ? ItemID.SilverBullet : ItemID.TungstenBullet));
 		else
-			branch.Add(DropRules.LootPoolDrop.SameStack(10, 20, 1, 8, 3, ItemID.WoodenArrow, ItemID.Shuriken));
+			branch.Add(DropRules.LootPoolDrop.SameStack(1, 10, 20, 8, 3, ItemID.WoodenArrow, ItemID.Shuriken));
 
 		branch.Add(ItemDropRule.Common(Main.hardMode ? ItemID.HealingPotion : ItemID.LesserHealingPotion));
 

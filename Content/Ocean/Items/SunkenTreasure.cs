@@ -53,8 +53,8 @@ public class SunkenTreasure : FloatingItem
 		];
 
 		itemLoot.AddOneFromOptions(3, lootTable);
-		itemLoot.Add(DropRules.LootPoolDrop.SameStack(6, 10, 1, 4, 1, ItemID.GoldBar, ItemID.SilverBar, ItemID.TungstenBar, ItemID.PlatinumBar));
-		itemLoot.Add(DropRules.LootPoolDrop.SameStack(5, 7, 1, 4, 1, ItemID.Ruby, ItemID.Emerald, ItemID.Topaz, ItemID.Amethyst, ItemID.Diamond, ItemID.Sapphire, ItemID.Amber));
+		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 6, 10, 4, 1, ItemID.GoldBar, ItemID.SilverBar, ItemID.TungstenBar, ItemID.PlatinumBar));
+		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 5, 7, 4, 1, ItemID.Ruby, ItemID.Emerald, ItemID.Topaz, ItemID.Amethyst, ItemID.Diamond, ItemID.Sapphire, ItemID.Amber));
 		itemLoot.AddCommon(ModContent.ItemType<ExplosiveRum>(), 1, 45, 71);
 
 		//Thorium Crossmod
