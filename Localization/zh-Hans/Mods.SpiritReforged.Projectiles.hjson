@@ -79,7 +79,7 @@ FloatingGem.DisplayName: 浮空宝石
 BeamOLight.DisplayName: 光束
 ScarabPetProjectile.DisplayName: 迷你圣甲虫
 SandShockwavePillar.DisplayName: 沙子冲击波柱
-SandballProjectile.DisplayName: 沙球弹幕
-BabyAntlionProjectile.DisplayName: 蚁狮宝宝弹幕
+SandballProjectile.DisplayName: 沙球
+BabyAntlionProjectile.DisplayName: 蚁狮宝宝
 ScarabLightPet.DisplayName: 甲虫宝宝
-SoilBallProjectile.DisplayName: 土球弹幕
+SoilBallProjectile.DisplayName: 土球

@@ -1,56 +1,56 @@
 VanillaDialogue: {
 	Guide: {
-		// WorldNPC: You might run into other explorers as you wander the world. If you do, maybe you can help each other out!
-		// Ecotone: If the climate is right, the region between the Desert and Jungle can be home to a vast Savanna. I've always wanted to see it!
-		// Savanna: The leather from the animals here could craft you some pretty neat gear, kid.
-		// Kelp: Don't eat the seaweed.
+		WorldNPC: Você pode acabar se encontrando com outros aventureiros enquanto explora o mundo. Caso os encontre, tente ajudar uns aos outros!
+		Ecotone: Se o clima estiver correto, a região entre o Deserto e a Selva pode ser o lar de uma vasta Savana. Sempre quis conhece-la!
+		Savanna: O couro dos animais daqui podem lhe fazer acessórios excêntricos, pivete.
+		Kelp: Não coma a alga.
 	}
 
-	// ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
+	ArmsDealer.Savanna: Tem muita caça grande por aqui. Até alguém como você conseguiria pegar um desses.
 
 	Stylist: {
-		// Savanna: It's wicked hard to maintain my hairstyle in this climate.
-		// Duststorm: If I have to pick out sand from one more person's hair, I swear...
+		Savanna: É extremamente difícil manter meu penteado neste clima.
+		Duststorm: Se eu tiver que tirar areia do cabelo de mais uma pessoa, eu juro que...
 	}
 
 	TravellingMerchant: {
-		// Cartographer1: I often run into a wayward cartographer on my travels. I swear, she gives me a run for my money!
-		// Cartographer2: Oh, it's {0}! She gave me directions last month before falling right into a ditch.
-		// Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
+		Cartographer1: Eu geralmente encontro uma cartógrafa rebelde nas minhas viagens. Ela é uma baita de uma concorrência!
+		Cartographer2: Oh, é a {0}! Ela me passou direções mês passado, antes de cair direto em um buraco.
+		Discoveries: As vezes, eu acabo de deparando com raridades na minha jornada. Talvez você possa as encontrar também, se estiver de olho.
 	}
 
-	// Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
+	Demolitionist.HasBoomshroom: Você disse o quê? Um cogumelo que faz explosões ainda maiores?! Eu amo a mãe natureza!
 
 	Nurse: {
-		// Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
-		// Savanna: No, I'm not a vet! Now get those animals out of here.
+		Duststorm: Não se machuque com toda essa poeira lá forá! Te ajudar sujo assim tá forá do meu orçamento.
+		Savanna: Não, não sou uma veterinária! Agora tire esses animais daqui.
 	}
 
 	PartyGirl: {
-		// Duststorm: Aw, it's not party weather. Maybe we can have a kickback instead!
-		// Savanna: All this open space is perfect for a party! Ooh, maybe a dayger!
+		Duststorm: Poxa, esse clima é péssimo para uma festa. Talvez possamos apenas relaxar!
+		Savanna: Todo esse espaço é perfeito para uma festa! Ooh, uma festa matinal seriia demais!
 	}
 
 	Golfer: {
-		// Duststorm: It's all this dust's fault that I'm playing below par!
-		// Savanna: Everything here is a hazard! My balls keep getting stuck in the bushes and sand...and the trees!
+		Duststorm: É toda essa poeira que me faz jogar mal desse jeito!
+		Savanna: Tudo aqui é um perigo! Minhas bolas ficam presas nos arbustos, na areia...e nas árvores!
 	}
 
 	Zoologist: {
-		// Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
-		// Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
+		Savanna1: Oh meu deus- esse lugar é tipo, perfeito! Você tem que ver todos os animais fofinhos aqui.
+		Savanna2: Que?! Aquelas hienas te morderam?? Mas elas são tipo, totalmente adoráveis!
 	}
 
 	Angler: {
-		// Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
-		// Pager1: Remember to bring me the fish IN PERSON.
+		Pager0: ...O que cê tá tentando fazer? Você NÃO CONSEGUE entregar esse peixe através de seu brinquedo, idiota.
+		Pager1: Se você quer me dar um peixe então VENHA AQUI.
 	}
 
-	// Wizard.SaltFlats: The rocks around these parts would make for a perfect crystal ball!
-	// Painter.SaltFlats: I've never seen a more beautiful landscape! I could paint here for the rest of my life.
-	// Cyborg.SaltFlats: It.. it burns.
-	// Mechanic.SaltFlats: Ugh! All this salt is corroding my gear. Get me out of here!
-	// Truffle.SaltFlats: This place is deeply uncomfortable for our kind. I feel so dry...
+	Wizard.SaltFlats: As rochas por aqui seriam perfeitas para fazer uma nova bola de cristal!
+	Painter.SaltFlats: Nunca vi uma paisagem tão linda! Eu poderia pintar aqui pelo resto da minha vida.
+	Cyborg.SaltFlats: Isso... isso queima.
+	Mechanic.SaltFlats: Eca! Todo esse sal está corroendo meu equipamento. Me tirem daqui!
+	Truffle.SaltFlats: Este lugar é profundamente desconfortável para nós. Sinto-me tão seco...
 }
 
 Crinoid: {
@@ -89,28 +89,28 @@ GoldGar: {
 }
 
 OceanSlime: {
-	DisplayName: Slime de Côco
-	Entry: Cuidado com o que vem de cima! Esses slimes traiçoeiros vivem na costa, camuflados de forma inconspícua como esta fruta familiar.
+	DisplayName: Geleia de Côco
+	Entry: Cuidado com o que vem de cima! Essas geleias traiçoeiros vivem na costa, camuflados de forma inconspícua como esta fruta familiar.
 }
 
 DiverZombie: {
-	Entry: Quem diria que tanques de oxigênio precisavam ter oxigênio de verdade neles?
 	DisplayName: Zumbi
+	Entry: Quem diria que tanques de oxigênio precisavam ter oxigênio de verdade neles?
 }
 
 KelpZombie: {
-	Entry: Peixes me temem, mulheres me temem, homens me temem, crianças me temem, porque eu sou o morto-vivo.
 	DisplayName: Zumbi
+	Entry: Peixes me temem, mulheres me temem, homens me temem, crianças me temem, porque eu sou o morto-vivo.
 }
 
 SailorZombie: {
-	Entry: Apesar do estado atual, eles costumavam comandar um luxuoso cruzeiro que você deveria visitar um dia.
 	DisplayName: Zumbi
+	Entry: Apesar do estado atual, eles costumavam comandar um luxuoso cruzeiro que você deveria visitar um dia.
 }
 
 TridentZombie: {
-	Entry: Seu tridente claramente não ajudou muito em vida. Ainda está bem pontudo, então tome cuidado.
 	DisplayName: Zumbi
+	Entry: Seu tridente claramente não ajudou muito em vida. Ainda está bem pontudo, então tome cuidado.
 }
 
 Killifish: {
@@ -129,7 +129,7 @@ Termite: {
 }
 
 SavannaSandSlime: {
-	DisplayName: Slime de Areia
+	DisplayName: Geleiia de Areia
 	Entry: Um pouco mais folhoso, um pouco menos arenoso, o mesmo perigo.
 }
 
@@ -169,7 +169,7 @@ ButterflyCritter: {
 }
 
 SavannaJungleSlime: {
-	DisplayName: Slime da Selva
+	DisplayName: Geleia Silvestre
 	Entry: Comeu algumas flores! Quase fofo demais para matar...
 }
 
@@ -281,27 +281,27 @@ Cartographer: {
 			}
 
 			WulfrumBunker: {
-				// 0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				// 1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
-				// 2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
+				0: Não sei se me lembro bem, mas eu estava caminhando por aí como de costume, e atrás de um bosque de árvores vi essa estranha estrutura mecânica verde. No topo havia várias coisas e embaixo ouvi um zumbido mecânico... não, obrigado!
+				1: Era ali que ficava meu acampamento! Eu estava descansando depois de um longo e agradável dia de caminhada, quando esse homenzinho mecânico com uma mão enorme ROUBOU minha mochila. Ainda bem que eu tinha descansado um pouco, porque aquele bichinho me fez correr por um bom tempo.
+				2: Aí está! Difícil esquecer, afinal. Não se vê muita indústria por aqui, o que é bom para mim. Não gosto muito de todo esse barulho. Principalmente depois que um campo de energia apareceu e sucata começou a voar na minha direção.
 			}
 
 			BloodAltar: {
-				// 0: And... there! Charting the surface is only, well, the surface. I find a lot of strange things underground, and many of them I steer clear from... What? I'm a cartographer, not an adventurer!
-				// 1: Should be it! You seem like the capable type. I'd found this undead fellow who actually listened to reason, which was strange enough, but he sold me this... hand. I followed where it pointed to and found myself at an unsettling crypt... Maybe you can get something out of all this, I'm not going back there.
-				// 2: You up for a challenge? I'm not, that's for sure. There's this dungeon with a room that reeks of blood... And with that strange altar in the middle, yeah I didn't stay for long.
+				0: E... pronto! Mapear a superfície é apenas, bem, a superfície. Encontro muitas coisas estranhas no subsolo, e de muitas delas me mantenho afastado... O quê? Sou cartógrafo, não aventureiro!
+				1: Por hoje é isso! Você parece ser do tipo capaz. Eu encontrei um morto-vivo que realmente ouvia a razão, o que já era estranho o suficiente, mas ele me vendeu esta... mão. Segui para onde ela apontava e me vi numa cripta perturbadora... Talvez você consiga tirar alguma coisa disso tudo, eu não vou voltar lá.
+				2: Você topa um desafio? Eu não, com certeza. Tem uma masmorra com uma sala que cheira a sangue... E com aquele altar estranho no meio... é, eu não fiquei muito tempo lá não.
 			}
 
 			SaltFlat: {
-				// 0: Can't forget it! There, right there, is the first time I saw a mirror to the sky. I was looking down, as I tend to do, and BAM! Clouds! First, I was concerned, but it was just a thin layer of water...probably. Make sure it's safe so I don't have to.
-				// 1: Right there! You ever find yourself sliding down the slopes in those snowy areas? Like, with all the ice and such? No? Well, let's say it makes it way harder to tell what's going on in front of you when you do that. Intentionally, of course. This place looks awesome though, I'd recommend once you get the snow off of you.
-				// 2: Usually, a pratfall brings me to a discovery. This time, I was diligent. Shortly after panicking about a surprisingly wet ground, the vista appeared before me. It was stunning. As long as you keep your maps on your hips, you're set for a wonderful time.
+				0: Não posso esquecer! Ali, bem ali, foi a primeira vez que vi um reflexo do céu. Eu estava olhando para baixo, como costumo fazer, e BAM! Nuvens! A princípio, fiquei preocupado, mas era apenas uma fina camada de água... provavelmente. Certifique-se de que seja seguro para que eu não precise me preocupar.
+				1: Bem, é isso! Pergunta, você já se viu deslizando pelas encostas naquelas áreas nevadas? Tipo, com todo aquele gelo e tal? Não? Bom, digamos que fica bem mais difícil enxergar o que está acontecendo na sua frente quando você faz isso. De propósito, claro. Mas esse lugar parece incrível, recomendo ir lá depois que você se livrar da neve.
+				2: Normalmente, um tropeço me leva a uma descoberta. Desta vez, eu estava atento. Logo depois de entrar em pânico com o chão inesperadamente molhado, a vista se revelou diante de mim. Era deslumbrante. Contanto que você mantenha seus mapas à mão, você terá momentos maravilhosos.
 			}
 
 			Ziggurat: {
-				// 0: Hmm...there. I've said this before - I'm a cartographer. I draw maps. So when I see a big, imposing wall of cracking, crumbling red brick, I am unbelievably skilled at determining if it's something I should mess with. I heard buzzing in there. Needless to say, yours for the taking.
-				// 1: Gotcha! Desert makes it easy to remember. Not much to recall there, you know, so seeing smoke rise out of the ground with no explanation? Interesting. You look down and see the facade of a massive structure? Memorable. Have at her. I wasn't going to risk lava or whatever.
-				// 2: Here you are. It's part of my job to find the occasional ruin. No worries, we've got a protocol for a reason. But man, stepping in and almost being pierced through the ground? Gentle reminder that sometimes, I'm an excellent runner.
+				0: Hmm... pronto. Já disse isso antes: sou cartógrafo. Desenho mapas. Então, quando vejo uma parede grande e imponente de tijolos vermelhos rachados e desmoronando, sou incrivelmente habilidoso em determinar se devo mexer com ela. Ouvi um zumbido estranho lá dentro. Nem preciso dizer, isso é sua responsabilidade.
+				1: Entendi! O deserto facilita a memorização. Não há muito o que lembrar por lá, sabe, então ver fumaça saindo do chão sem explicação? Interessante. Você olha para baixo e vê a fachada de uma estrutura enorme? Memorável. Vá em frente. Eu não arriscar cair na lava ou algo assim.
+				2: Aqui está. Faz parte do meu trabalho encontrar ruínas de vez em quando. Sem problemas, temos um protocolo por um motivo. Mas, nossa, entrar e quase ser perfurado pelo chão? Um lembrete gentil de que, às vezes, sou um excelente corredor.
 			}
 
 			FirstPin: Adicionei este alfinete à sua "Coleção de Alfinetes". Você pode acessá-lo a qualquer momento no canto inferior esquerdo do seu mapa.
@@ -379,196 +379,196 @@ HideZombieBig: {
 
 HideZombieSmall: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Seu traje é um sucesso na última moda dos mortos-vivos.
+	Entry: Seu traje é um sucesso no mundo da moda dos mortos-vivos.
 }
 
 PotterySlime: {
-	// DisplayName: Pottery Slime
+	DisplayName: Geleia Ceramista
 
 	Names: {
-		// 0: Sable
-		// 1: Saki
-		// 2: Sal
-		// 3: Santra
-		// 4: Sark
-		// 5: Sassafrass
-		// 6: Satya
-		// 7: Sawyl
-		// 8: Seppo
-		// 9: Shammy
-		// 10: Shard
-		// 11: Shio
-		// 12: Silas
-		// 13: Silica
-		// 14: Silty
-		// 15: Sleet
-		// 16: Sloan
-		// 17: Snap
-		// 18: Soggy
-		// 19: Soda
-		// 20: Sonya
-		// 21: Sparta
-		// 22: Splet
-		// 23: Spot
-		// 24: Stratton
-		// 25: Sullivan
-		// 26: Swain
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
 	}
 
 	Chatter: {
-		// 0: Wubba dooble doo?
-		// 1: Plip plop. Blorp.
-		// 2: Wawa.
+		0: Wubba dooble doo?
+		1: Plip plop. Blorp.
+		2: Wawa.
 	}
 
-	// Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
-	// Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
+	Entry: Acredite ou não, essa geleia é mundialmente renomada na arte da cerâmica. Você está na presença de um mestre contemporâneo!
+	Census.SpawnCondition: Destrua vasos incomuns [i:SpiritReforged/BiomePotsCavernItem] na caverna
 }
 
-// StompableGnome.DisplayName: Stompable Gnome
+StompableGnome.DisplayName: Gnomo Pisoteável
 
 DunceCrab: {
-	// DisplayName: Dunce Crab
-	// Entry: One of the most common causes for adventuring accidents, this cave-dwelling mollusk is usually quite the surprise. It feeds on mosses and lichen often found in caves.
+	DisplayName: Caranbroca
+	Entry: Uma das causas mais comuns de acidentes durante aventuras, esse molusco vaga pelas cavernas, e geralmente é uma grande surpresa para aventureiros. Se alimentam de musgos e líquen, geralmente encontrado nas cavernas.
 }
 
 Wheezer: {
-	// DisplayName: Wheezer
-	// Entry: A wheezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	DisplayName: Wheezer
+	Entry: O Wheezer é um parente extremamente tóxico das salamandras, conhecidos por seu comportamento agressivo. Por mais estranho que pareça, a comida favorita deles são brotos de azevinho, sendo contraditório a suas tendências carnívoras.
 }
 
 WorldFrog: {
-	// DisplayName: Helpful Looking Frog
-	// Button: Update World
+	DisplayName: Sapo Ajudante
+	Button: Atualize o mundo
 
 	Sounds: {
-		// 0: Croak
-		// 1: Ribbit
+		0: Croak
+		1: Ribbit
 	}
 
 	Dialogue: {
-		// 0: If you wish to look for things to explore, I've got an offer for you - I implore!
-		// 1: You look for things new? Betwixt my hands, an offer I drew!
-		// 2: My magicks sense something missing in the air; but - you should not despair!
+		0: Se você procura coisas para explorar, eu tenho uma oferta para você, eu imploro!
+		1: Está procurando por coisas novas? Entre minhas mãos, uma oferta que criei!
+		2: Meu senso mágico diz que tem algo faltando no ar; mas - não entre em desespero!
 	}
 
 	Reports: {
-		// CavesAndClubs_0: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
-		// CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
+		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
+		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
 	}
 }
 
 MossSlime: {
-	// DisplayName: Moss Slime
-	// Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+	DisplayName: Geleia de Musgo
+	Entry: Um grupo curioso de geleias, que de alguma forma estão cobertas de musgo. Existem em muitas variedades, mesmo que sejam apenas com musgos brilhantes... por alguma razão. Uma possível fonte de luz, talvez?
 }
 
-// KryptonMossSlime.DisplayName: Krypton Moss Slime
-// LavaMossSlime.DisplayName: Lava Moss Slime
-// NeonMossSlime.DisplayName: Neon Moss Slime
-// XenonMossSlime.DisplayName: Xenon Moss Slime
-// ArgonMossSlime.DisplayName: Argon Moss Slime
-// HeliumMossSlime.DisplayName: Helium Moss Slime
-// OganessonMossSlime.DisplayName: Oganesson Moss Slime
-// RadonMossSlime.DisplayName: Radon Moss Slime
-// Tumbleweed.DisplayName: Tumbleweed
+KryptonMossSlime.DisplayName: Geleia de Musgo de Criptônio
+LavaMossSlime.DisplayName: Geleia de Musgo de Lava
+NeonMossSlime.DisplayName: Geleia de Musgo Néon
+XenonMossSlime.DisplayName: Geleia de Musgo de Xenônio
+ArgonMossSlime.DisplayName: Geleia de Musgo de Argônio
+HeliumMossSlime.DisplayName: Geleia de Musgo de Hélio
+OganessonMossSlime.DisplayName: Geleia de Musgo de Oganesson
+RadonMossSlime.DisplayName: Geleia de Musgo de Radônio
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
-	// DisplayName: Flamingo
-	// Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+	DisplayName: Flamingo
+	Entry: Reunindo-se em grandes grupos, eles filtram a água em busca dos organismos microscópicos que compõem sua dieta.
 }
 
 DivingBeetle: {
-	// DisplayName: Diving Beetle
-	// Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+	DisplayName: Besouro-Mergulhador
+	Entry: A criatura aprisiona ar sob sua carapaça e nada na água usando patas traseiras alongadas. Peixes são ocasionalmente atraídos por essas criaturas.
 }
 
 GoldDivingBeetle: {
-	// DisplayName: Gold Diving Beetle
-	// Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+	DisplayName: Besouro-Mergulhador de Ouro
+	Entry: Raramente, há animais que ficam inteiramente cobertos por ouro! Eles valem bastante para vendedores e os peixem amam iscas douradas!
 }
 
 Jerboa: {
-	// DisplayName: Jerboa
-	// Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
+	DisplayName: Jerboa
+	Entry: Este veloz e ágil animal gosta de climas áridos, onde pode correr pelas areias planas do deserto e se alimentar de insetos na grama da savana.
 }
 
 Grub: {
-	// DisplayName: Scarab Larva
-	// Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
+	DisplayName: Larva de Escaravelho
+	Entry: Esses besouros ativam seus instintos de proteger seu território a partir do momento em que nascem. Essa criaturinha mordedora de tornozelos pode se tornar bastante temível!
 }
 
 DesertStactus: {
-	// DisplayName: Stactus
-	// Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+	DisplayName: Empilhacto
+	Entry: Empilhactos na verdade, são criaturas muito dóceis, mas têm dificuldade em fazer amigos devido ao seu temperamento espinhoso...
 }
 
 CorruptStactus: {
-	// DisplayName: Corrupt Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	DisplayName: Empilhacto Corrompido
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
-	// DisplayName: Crimson Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	DisplayName: Empilhacto do Carmim
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
-	// DisplayName: Hallowed Stactus
-	// Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	DisplayName: Empilhacto Consagrado
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 BrineShrimp: {
-	// DisplayName: Brine Shrimp
-	// Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+	DisplayName: Camarão da Salmoura
+	Entry: Apesar de serem popularmente conhecidos como "macacos do mar", eles não vivem no mar, muito menos se parecem com macacos.
 }
 
 GoldenBrineShrimp: {
-	// DisplayName: Golden Brine Shrimp
-	// Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+	DisplayName: Camarão da Salmoura de Ouro
+	Entry: Dourado e raro, o Camarão-da-Salmoura de Ouro é conhecido por transformar até o flamingo mais sortudo em dourado. A veracidade disso ainda está pra ser comprovada.
 }
 
 Wisp: {
-	// DisplayName: Wisp
-	// Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+	DisplayName: Tatá
+	Entry: Uma luz que flutua passivamente pelas planícies, a menos que seja provocada. São conhecidas por desaparecerem ao menor sinal do amanhecer.
 }
 
 DecrepitMummy: {
-	// DisplayName: Decrepit Mummy
-	// Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
+	DisplayName: Múmia Decrépita
+	Entry: Despertadas pela presença de um intruso, essas múmias emergem de seus túmulos para protegerem seus direitos.
 }
 
 Graverobber: {
-	// DisplayName: Graverobber
-	// Entry: Their misfortune is to be hit like a pinata and for gold to rain out. It's almost as alluring as the valuables themselves...
-	// HoldingLantern: When holding a lantern
+	DisplayName: Ladrão de Sepulturas
+	Entry: O azar deles é serem atingidos como uma pinhata e verem o ouro cair do céu. É quase tão atraente quanto os próprios objetos de valor...
+	HoldingLantern: Enquanto Carrega uma Lanterna
 }
 
-// LootBag.DisplayName: Loot Bag
+LootBag.DisplayName: Sacola de Brindes
 
 Scarabeus: {
-	// DisplayName: Scarabeus
-	// Entry: ""
+	DisplayName: Escarabeus
+	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
+	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas.
+	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
-// TinyGrub.DisplayName: Tiny Grub
+TinyGrub.DisplayName: Pequena Larva
 
 CactusZombie: {
-	// DisplayName: "{$NPCName.Zombie}"
-	// Entry: Of all the ways to go, dying by cacti has got to be one of the worst. Undying by cacti must also be pretty bad.
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: De todas as maneiras de morrer, morrer pelas mãos de cactos deve ser uma das piores. E a ressurreição pelas mãos de cactos também deve ser bem ruim.
 }
 
 SunburntZombie: {
-	// DisplayName: "{$NPCName.Zombie}"
-	// Entry: Now detesting the sun, this zombie goes about at night to prevent further damage to its rotting skin.
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Agora, detestando o sol, esse zumbi vagueia à noite para evitar maiores danos à sua pele em decomposição.
 }
 
 VeiledZombie: {
-	// DisplayName: "{$NPCName.Zombie}"
-	// Entry: Dressing to beat the heat is only one part to surviving the desert. Bringing food and water is not a step that should be overlooked.
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Vestir-se adequadamente para enfrentar o calor é apenas uma parte da sobrevivência no deserto. Levar comida e água é um passo essencial que não deve ser negligenciado.
 }
 
-// Cricket.DisplayName: Cricket
-// GoldCricket.DisplayName: Gold Cricket
-// ScarabTownPet.DisplayName: Scarab Town Pet
-// BeetleTownPet.DisplayName: Beetle Town Pet
+Cricket.DisplayName: Grilo
+GoldCricket.DisplayName: Grilo de Ouro

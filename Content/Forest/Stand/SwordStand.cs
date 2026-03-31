@@ -93,8 +93,7 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(140, 140, 140), name);
+		AddMapEntry(new Color(140, 140, 140), Language.GetText("Mods.SpiritReforged.Items.SwordStandItem.DisplayName"));
 		DustType = -1;
 
 		RegisterIsSword();

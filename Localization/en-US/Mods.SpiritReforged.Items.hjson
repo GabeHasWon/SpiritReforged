@@ -489,12 +489,12 @@ LivingBaobabWallItem: {
 
 LivingBaobabLeafWand: {
 	DisplayName: Living Baobab Leaf Wand
-	Tooltip: ""
+	Tooltip: Places baobab leaves
 }
 
 LivingBaobabWand: {
 	DisplayName: Living Baobab Wand
-	Tooltip: ""
+	Tooltip: Places living baobab
 }
 
 WrithingSticks: {
@@ -984,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: Frostbite
-	Tooltip: Conjures a blizzard in front of you
+	Tooltip:
+		'''
+		Conjures a blizzard in front of you
+		Ignores 5 points of enemy Defense
+		'''
 }
 
 RogueCrest: {
@@ -1573,7 +1577,7 @@ PotionVatsCloningItem: {
 
 SilverFoodPlatterItem: {
 	DisplayName: Silver Food Platter
-	Tooltip: <right> to place item on platter
+	Tooltip: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -2037,8 +2041,8 @@ FingerGun: {
 	DisplayName: Finger Blaster
 	Tooltip:
 		'''
-		Ignores some enemy defense
 		Fires faster at higher mana
+		Ignores 5 points of enemy Defense
 		'Pew pew!'
 		'''
 }
@@ -2106,8 +2110,6 @@ CommonPotsSavannaItem: {
 	DisplayName: Savanna Pot
 	Tooltip: ""
 }
-
-StactusBannerItem.DisplayName: Stactus Banner
 
 SunEarrings: {
 	DisplayName: Sundancer Earrings
@@ -2574,7 +2576,7 @@ TrellisDrywoodItem: {
 }
 
 TrellisTwoDrywoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	DisplayName: Crossed Drywood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2638,13 +2640,11 @@ PineappleSeeds: {
 	Tooltip: ""
 }
 
-StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
-StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
-
 Dragonsong: {
 	DisplayName: Dragonsong
 	Tooltip:
 		'''
+		Uses gel for ammo
 		50% chance to save ammo
 		'You are a terrible person'
 		'''
@@ -2676,7 +2676,7 @@ GoldenBrineShrimpItem: {
 
 CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
 CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
-DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+DesertStactusBannerItem.DisplayName: Stactus Banner
 HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
 
 AncientBannerItem: {
@@ -2738,8 +2738,6 @@ AncientBooksItem: {
 	DisplayName: Ancient Book
 	Tooltip: "'Rendered unreadable by time'"
 }
-
-ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
 
 SaltGlassWallItem: {
 	DisplayName: Salt Glass Wall
@@ -2959,8 +2957,8 @@ ScarabPetItem: {
 }
 
 CarrotCake: {
-	Tooltip: "{$BuffDescription.WellFed3}"
 	DisplayName: Carrot Cake
+	Tooltip: "{$BuffDescription.WellFed3}"
 }
 
 AvianRitualMask: {
@@ -2984,7 +2982,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Treasure Bag (Scarabeus)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3015,6 +3013,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Music Box (Scarabeus)
 	Tooltip: ""
+
+	Toggle: {
+		0: Phase One
+		1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {
@@ -3037,7 +3040,7 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Scarab Bulb
+	DisplayName: Bulb Rattle
 	Tooltip:
 		'''
 		Summons a Scarababy

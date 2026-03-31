@@ -45,13 +45,13 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Stone;
-		AddMapEntry(new Color(107, 90, 64), CreateMapEntryName());
+		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Items.EnlilStatueItem.DisplayName"));
 		RegisterItemDrop(this.AutoItemType());
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer)
+		if (!closer || Main.LocalPlayer.dead)
 			return;
 
 		Main.LocalPlayer.AddBuff(ModContent.BuffType<EnlilBuff>(), 6);

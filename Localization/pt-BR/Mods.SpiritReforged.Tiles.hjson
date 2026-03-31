@@ -1,66 +1,48 @@
 Records: {
-	/* CoinPortal:
+	CoinPortal:
 		'''
-		Always contains a coin portal.
+		Sempre contém um portal de moedas.
 
-		A lucky find!
-		''' */
-	/* Common:
+		Que sorte!
 		'''
-		A common pot which sometimes contains useful goodies.
-
-		Value increases when further underground.
-		''' */
-	/* Zenith:
+	Common:
 		'''
-		A common pot which sometimes contains useful goodies... this one is needlessly gaudy.
+		Um vaso comum que às vezes contém coisas úteis.
 
-		Value increases when further underground.
-		''' */
-	// Potion: Contains a potent brew.
-	// UpsideDown: `Manufacturing error`
-	// Worm: Scatters a variety of worms when destroyed.
-	// Platter: A hot meal ready for the taking. Who would leave this behind?
-	// WickerBasket: A picnic, just for you!
+		Valor aumenta com a profundidade.
+		'''
+	Zenith:
+		'''
+		Um vaso comum que às vezes contém coisas úteis... este é desnecessariamente chamativo.
+
+		Valor aumenta com a profundidade.
+		'''
+	Potion: Contém potentes poções.
+	UpsideDown: `Problema na fabricação`
+	Worm: Lança uma variedade de minhocas após ser destruído.
+	Platter: Uma refeição quentinha pronta para você. Quem deixaria isso para trás?
+	WickerBasket: Um piquenique, só pra você!
 	// Aether: Provides various useful, sparkly upgrades.
-	// Stuffed: What a strange place to find a merchant. They're just asking to be bothered.
-	// Scrying: Reveals a large portion of the map upon being destroyed.
-	// Biome: Contains a greater variety of loot than common pots.
-	// Boulder: Rolls along the ground when disturbed.
+	Stuffed: Que lugar estranho para encontrar um comerciante. Ele está praticamente pedindo para ser incomodad.
+	Scrying: Revela uma larga porção do mapa ao ser destruído.
+	Biome: Contém uma variedade maior de saque em relação aos vasos comuns.
+	Boulder: Vai girando até bater no chão quando incomodado.
 }
 
 FablesGraves: {
 	SetNames: {
-		// Savanna: Savanna Graves
-		// SaltFlats: Salt Graves
+		Savanna: Lápide da Savana
+		SaltFlats: Lápide de Sal
 	}
 }
 
-SunkenTreasureTile.MapEntry: Tesouro Afundado
 HydrothermalVent.MapEntry: Ventiladora Hidrotermal
-CoralMapEntry: Coral
-KelpMapEntry: Alga Marinha
-GarInAJar_Tile.MapEntry: Gar em um Jarro
-CloudstalkTile.MapEntry: Talos Nuvem
-SmallDriftwoodTile.MapEntry: Madeira à Deriva Pequena
-MediumDriftwoodTile.MapEntry: Madeira à Deriva Média
-LargeDriftwoodTile.MapEntry: Madeira à Deriva Grande
-BambooBirdCage.MapEntry: Gaiola de Bambu
-KoiTotemTile.MapEntry: Totem de Koi
-HerosMemorialStatue.MapEntry: Memorial de um Herói
-TermiteJar_Tile.MapEntry: Pote de Cupim
-GarInAJarTile.MapEntry: Gar em um Jarro
-KillieFishbowlTile.MapEntry: Aquário de Killie
-// OreCarts.MapEntry: Minecart
-// PotionVats.MapEntry: Potion Vat
-// ObsidianShroom.MapEntry: Obsidian Shroom
-// Starflower.MapEntry: Starflower
-// BonsaiTrees.MapEntry: Bonsai
-OtherworldlyRadioPlaced.MapEntry: "{$Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName}"
-// SwordStand.MapEntry: "{$Mods.SpiritReforged.Items.SwordStandItem.DisplayName}"
-// ScarabAltar.MapEntry: "{$Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName}"
-// DustyTomb.MapEntry: Dusty Tomb
-// EnlilStatue.MapEntry: Enlil Statue
-// StoneReliquary.MapEntry: Reliquary
-// ScarabRadioTile.MapEntry: "{$Mods.SpiritReforged.Items.ScarabRadio.DisplayName}"
-// SpaceHeaterTile.MapEntry: "{$Mods.SpiritReforged.Items.SpaceHeater.DisplayName}"
+OreCarts.MapEntry: Carrinho de Mina
+PotionVats.MapEntry: Tanque de Poção
+ObsidianShroom.MapEntry: Cogumelo de Obsidiana
+Starflower.MapEntry: Flor Estrelar
+BonsaiTrees.MapEntry: Bonsai
+DustyTomb.MapEntry: Túmulo Empoirado
+# Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
+// OganessonMoss.MapEntry: Oganesson Moss
+// RadonMoss.MapEntry: Radon Moss

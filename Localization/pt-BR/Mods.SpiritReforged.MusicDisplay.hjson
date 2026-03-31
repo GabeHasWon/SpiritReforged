@@ -1,12 +1,12 @@
 ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
-// Moonbird: Moonbird
+Moonbird: Moonbird
 // By: by
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Planície Derivante (Tema Tempestade de Areia)
+	DisplayName: Planície Derivante (Tema Tempestade de Poeira)
 	Author: "{$By} {$Sbubby}"
 }
 
@@ -26,46 +26,51 @@ DeepOcean: {
 }
 
 SavannaOtherworld: {
-	// DisplayName: Otherworldly Savanna Day
-	// Author: "{$By} {$Moonbird}"
+	DisplayName: Música de Outro Mundo (Savana de Dia)
+	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	// DisplayName: Otherworldly Savanna Night
-	// Author: "{$By} soundbin"
+	DisplayName: Música de Outro Mundo (Savana de Noite)
+	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	// DisplayName: Otherworldly Dustorm
-	// Author: "{$By} jakedastardly"
+	DisplayName: Música de Outro Mundo (Tempestade de Poeira)
+	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {
-	// DisplayName: Ziggurat
-	// Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: Zigurate
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	// DisplayName: Salt Flats
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Salinas
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Noite nas Salinas
+	Author: "{$By} {$Sbubby}"
 }
 
 Scarabeus: {
-	// DisplayName: Soaring Complications (Scarabeus Theme)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Tema do Escarabeus)
+	Author: "{$By} {$Sbubby}"
 }
 
 ScarabeusP2: {
-	// DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Tema da segunda fase do Escarabeus)
+	Author: "{$By} {$Sbubby}"
 }
 
 RadioScarab: {
-	// DisplayName: Soaring Complications (Radio Edit)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Complicações Aéreas (Edição de Rádio)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	// DisplayName: Another Journey (Spirit Title Theme)
+	// Author: "{$By} {$Salvati}"
 }

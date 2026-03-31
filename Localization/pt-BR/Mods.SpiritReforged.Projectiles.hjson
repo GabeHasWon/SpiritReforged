@@ -1,4 +1,4 @@
-HydrothermalVentPlume.DisplayName: Nuvem de Fumaça
+// HydrothermalVentPlume.DisplayName: Smoke Plume
 Cannonbubble.DisplayName: Bolha de Canhão
 UrchinBall.DisplayName: Bola de Ouriço
 UrchinSpike.DisplayName: Espinho de Ouriço
@@ -25,61 +25,61 @@ SkullSentryMucus.DisplayName: Muco da Sentinela do Crânio
 SkullSentrySentry.DisplayName: Sentinela do Crânio
 ZiplineProj.DisplayName: Projétil de Tirolesa
 FallingBaobabFruit.DisplayName: Fruto de Baobá Caído
-// RollingCart.DisplayName: Rolling Cart
-// RadonMossBobber.DisplayName: Radon Moss Bobber
-// OganessonMossBobber.DisplayName: Oganesson Moss Bobber
-// BuffAura.DisplayName: Buff Aura
-// WheezerCloud.DisplayName: Poisonous Gas
-// Shockwave.DisplayName: Shockwave
-// EnergizedShockwave.DisplayName: Energized Shockwave
-// RollingBowlder.DisplayName: Rolling Bowlder
-// Firespike.DisplayName: Firespike
-// CannonBomb.DisplayName: Bomb Cannon Shot
-// BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
-// DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
-// JinxArrow.DisplayName: Jinx Arrow
-// JinxBowMinion.DisplayName: Jinx Bow Minion
-// RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
-// RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
-// FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
-// VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
-// VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
-// EnergyImpact.DisplayName: Energy Stomp
-// EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
-// FingerShot.DisplayName: Finger Shot
-// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
-// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
-// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
-// PhysicsChain.DisplayName: Chain
-// GoldPhysicsChain.DisplayName: Gold Chain
-// CactusSpine.DisplayName: Cactus Spine
-// TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
-// DragonFireball.DisplayName: Dragon Fireball
-// PileOfConsequencesPet.DisplayName: Consequences
-// EnergyLaser.DisplayName: Energy Laser
-// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
-// SandPillar.DisplayName: Sand Pillar
-// SlamShockwave.DisplayName: Slam Shockwave
-// WindBlast.DisplayName: Wind Blast
-// ClawHitbox.DisplayName: Claw Hitbox
-// DivebombScarab.DisplayName: Divebomb Scarab
-// SwarmScarab.DisplayName: Swarm Scarab
-// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
-// AdornedArrow.DisplayName: Adorned Arrow
-// AdornedBowHeld.DisplayName: Adorned Bow Held
-// AdornedFlash.DisplayName: Adorned Flash
-// AdornedArrowDeathTrail.DisplayName: Adorned Arrow Death Trail
-// LocustCrookProjectile.DisplayName: Locust Crook
-// CrookLocust.DisplayName: Locust
-// LocustDamageProjectile.DisplayName: Locust Damage Projectile
-// LocustExplosion.DisplayName: Locust Explosion
-// CrookLocustGore.DisplayName: Crook Locust Gore
-// RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
-// FloatingGem.DisplayName: Floating Gem
-// BeamOLight.DisplayName: Beam O Light
-// ScarabPetProjectile.DisplayName: Mini Scarabeus
-// SandShockwavePillar.DisplayName: Sand Shockwave Pillar
-// SandballProjectile.DisplayName: Sandball Projectile
-// BabyAntlionProjectile.DisplayName: Baby Antlion Projectile
-// ScarabLightPet.DisplayName: Scarababy
-// SoilBallProjectile.DisplayName: Soil Ball Projectile
+RollingCart.DisplayName: Carrinho Rolante
+RadonMossBobber.DisplayName: Isca Flutuante de Pescaria do Musgo de Radônio
+OganessonMossBobber.DisplayName: Oganesson Moss Bobber
+BuffAura.DisplayName: Buff Aura
+WheezerCloud.DisplayName: Gás Venenoso
+Shockwave.DisplayName: Onda de Choque
+EnergizedShockwave.DisplayName: Onda Energizada
+RollingBowlder.DisplayName: Pedregulho Rolante
+Firespike.DisplayName: Espinho de Fogo
+CannonBomb.DisplayName: Tiro do Canhão de Bombas
+BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: Flecha Jinx
+JinxBowMinion.DisplayName: Minion do Arco Jinx
+RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Impacto de Energia
+EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Tirinho de Dedo
+NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: Corrente
+GoldPhysicsChain.DisplayName: Corrente Dourada
+CactusSpine.DisplayName: Espinho de Cacto
+TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: Bola de Fogo de Dragão
+PileOfConsequencesPet.DisplayName: Consequências
+EnergyLaser.DisplayName: Laser Energizado
+BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+SandPillar.DisplayName: Pìlar de Arenito
+SlamShockwave.DisplayName: Onda de Choque
+WindBlast.DisplayName: Jato de Vento
+ClawHitbox.DisplayName: Garra
+DivebombScarab.DisplayName: Escaravelho Mergulhador
+SwarmScarab.DisplayName: Amontoado de Besouros
+SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+AdornedArrow.DisplayName: Flecha Ensolarada
+AdornedBowHeld.DisplayName: Flecha Ensolarada Energizada
+AdornedFlash.DisplayName: Flecha da Luz
+AdornedArrowDeathTrail.DisplayName: Trilha da Morte
+LocustCrookProjectile.DisplayName: Gafanhoto
+CrookLocust.DisplayName: Gafanhoto
+LocustDamageProjectile.DisplayName: Projétil do Gafanhoto
+LocustExplosion.DisplayName: Explosão do Gafanhoto
+CrookLocustGore.DisplayName: Restos mortais do Gafanhoto
+RoyalKhopeshThrown.DisplayName: Lançamento Real de Khopesh
+FloatingGem.DisplayName: Gema Flutuante
+BeamOLight.DisplayName: Luz
+ScarabPetProjectile.DisplayName: Mini Escarabeus
+SandShockwavePillar.DisplayName: Onda de choque do Pilar de Arenito
+SandballProjectile.DisplayName: Bola de Areia
+BabyAntlionProjectile.DisplayName: Projétil da Pequena Formiga-Leão
+ScarabLightPet.DisplayName: Escarabebê
+SoilBallProjectile.DisplayName: Bola de Tralha

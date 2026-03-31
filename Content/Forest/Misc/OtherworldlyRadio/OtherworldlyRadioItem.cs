@@ -1,9 +1,12 @@
+using ReLogic.Graphics;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using System.Collections.ObjectModel;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace SpiritReforged.Content.Forest.Misc.OtherworldlyRadio;
@@ -37,31 +40,54 @@ public class OtherworldlyRadioItem : ModItem
 			else
 				tooltips[index].Text += this.GetLocalization("TunedToOtherworld").Value;
 		}
-
-		if (CrossMod.MusicDisplay.Enabled)
-		{
-			object[] info = (object[])CrossMod.MusicDisplay.Instance.Call("GetMusicInfo", (short)Main.curMusic);
-			var name = (LocalizedText)info[0];
-			var author = (LocalizedText)info[1];
-			string text = this.GetLocalization("MusicDisplay").Value;
-
-			tooltips.Add(new TooltipLine(Mod, "MusicDisplayInfo", text) { OverrideColor = Color.LightGray });
-			tooltips.Add(new TooltipLine(Mod, "MusicDisplayName", name.Value));
-			tooltips.Add(new TooltipLine(Mod, "MusicDisplayAuthor", author.Value));
-		}
 	}
 
-	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+	// TODO: Make an interface/helper system for this
+	public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y) //Assistant tooltip
 	{
-		if (line.Name == "MusicDisplayName")
+		const int padding = 17;
+
+		if (Item.tooltipContext != ItemSlot.Context.InventoryItem || !CrossMod.MusicDisplay.Enabled)
+			return true;
+
+		var position = new Vector2(x - 14, y + 5);
+		string text = this.GetLocalization("MusicDisplay").Value;
+		(bool success, object[] info, _) = ((bool, object[], string message))CrossMod.MusicDisplay.Instance.Call("TryGetMusicInfo", (short)Main.curMusic);
+
+		if (!success)
+			return true;
+
+		var name = (LocalizedText)info[0];
+		var author = (LocalizedText)info[1];
+
+		int textLength = GetBiggest(text, name.Value, author.Value);
+
+		foreach (var line in lines)
+			position.Y += FontAssets.MouseText.Value.MeasureString(line.Text).Y; //Position vertically
+
+		if (Main.SettingsEnabled_OpaqueBoxBehindTooltips)
 		{
-			var font = FontAssets.DeathText.Value;
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, line.Text, new Vector2(line.X, line.Y), Color.White, 0f, Vector2.Zero, new Vector2(0.5f));
-			yOffset += 4;
-			return false;
+			var bgSource = new Rectangle((int)position.X, (int)position.Y, textLength + padding, 34 * 3);
+			Utils.DrawInvBG(Main.spriteBatch, bgSource, new Color(23, 25, 81, 255) * 0.925f);
 		}
 
+		DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color color = Main.MouseTextColorReal;
+
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position + new Vector2(padding, 12), color, 0f, Vector2.Zero, Vector2.One);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.DeathText.Value, name.Value, position + new Vector2(padding, 36), color, 0f, Vector2.Zero, new Vector2(0.5f));
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, author.Value, position + new Vector2(padding, 66), color, 0f, Vector2.Zero, Vector2.One);
+
 		return true;
+	}
+
+	private static int GetBiggest(string text, string name, string author)
+	{
+		const int padding = 17;
+
+		return (int)Math.Max(Size(text), Math.Max((FontAssets.DeathText.Value.MeasureString(name).X + padding * 2) * 0.5f, Size(author)));
+
+		static float Size(string text) => FontAssets.MouseText.Value.MeasureString(text).X + padding;
 	}
 
 	public override bool ConsumeItem(Player player) => false;
@@ -101,7 +127,7 @@ public class OtherworldlyRadioPlaced : ModTile
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(142, 92, 79), CreateMapEntryName());
+		AddMapEntry(new Color(142, 92, 79), Language.GetText("Mods.SpiritReforged.Items.OtherworldlyRadioItem.DisplayName"));
 		RegisterItemDrop(ModContent.ItemType<OtherworldlyRadioItem>());
 
 		AdjTiles = [TileID.MusicBoxes];

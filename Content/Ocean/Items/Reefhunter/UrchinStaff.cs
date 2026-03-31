@@ -25,7 +25,7 @@ public class UrchinStaff : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 18;
+		Item.damage = 22;
 		Item.width = 28;
 		Item.height = 14;
 		Item.useTime = Item.useAnimation = 24;

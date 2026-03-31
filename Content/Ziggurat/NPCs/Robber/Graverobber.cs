@@ -100,7 +100,7 @@ public class Graverobber : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new(32);
-		NPC.lifeMax = 120;
+		NPC.lifeMax = 110;
 		NPC.defense = 5;
 		NPC.damage = 12;
 		NPC.HitSound = SoundID.NPCHit1;

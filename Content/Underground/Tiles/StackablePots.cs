@@ -145,15 +145,18 @@ internal class FallingPot : ModProjectile
 
 	public override void OnKill(int timeLeft)
 	{
-		SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = .5f, MaxInstances = -1 }, Projectile.Center);
-
-		for (int i = 0; i < 10; i++)
+		if (!Main.dedServ)
 		{
-			var velocity = new Vector2(0, -Main.rand.NextFloat(2f)).RotatedByRandom(.25f);
-			Dust.NewDustDirect(Projectile.BottomLeft, Projectile.width, 4, DustID.Pot, velocity.X, velocity.Y, Scale: Main.rand.NextFloat() + .25f);
-		}
+			SoundEngine.PlaySound(SoundID.Shatter with { PitchVariance = .5f, MaxInstances = -1 }, Projectile.Center);
 
-		ParticleHandler.SpawnParticle(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+			for (int i = 0; i < 10; i++)
+			{
+				var velocity = new Vector2(0, -Main.rand.NextFloat(2f)).RotatedByRandom(.25f);
+				Dust.NewDustDirect(Projectile.BottomLeft, Projectile.width, 4, DustID.Pot, velocity.X, velocity.Y, Scale: Main.rand.NextFloat() + .25f);
+			}
+
+			ParticleHandler.SpawnParticle(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+		}
 
 		var pos = Projectile.Center.ToTileCoordinates();
 		BreakPot(pos.X, pos.Y, (int)Style);

@@ -5,13 +5,13 @@ Biomes: {
 	}
 
 	SaltBiome: {
-		// DisplayName: Salt Flats
-		// TownNPCDialogueName: the Salt Flats
+		DisplayName: Salinas
+		TownNPCDialogueName: as Salinas
 	}
 
 	ZigguratBiome: {
-		// DisplayName: Ziggurat
-		// TownNPCDialogueName: the Ziggurat
+		DisplayName: Zigurate
+		TownNPCDialogueName: O Zigurate
 	}
 }
 
@@ -19,12 +19,12 @@ SlotContexts.Backpack: Mochila
 
 Conditions: {
 	InSavanna: Na Savana
-	// PeevedTumbler: When sparkling
-	// Discovered: Discovery
-	// Submerged: Submerged
-	// InSaltFlats: In Salt Flats
-	// IsPrickly: When prickly
-	// InZiggurat: In the Ziggurat
+	PeevedTumbler: Enquanto brilha
+	Discovered: Descoberto
+	Submerged: Submerso
+	InSaltFlats: Nas Salinas
+	IsPrickly: Caso seja Espinhento
+	InZiggurat: No Zigurate
 }
 
 Misc: {
@@ -37,9 +37,9 @@ Misc: {
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
-	// UnchangedMap: Map has no changes.
-	// ShareMap: Map has been shared.
-	// ShareAndUpdateMap: Map has been shared & updated.
+	UnchangedMap: Mapa não teve mudanças.
+	ShareMap: Mapa foi compartilhado.
+	ShareAndUpdateMap: Mapa foi compartilhado e atualizado.
 }
 
 DamageSources: {
@@ -63,18 +63,18 @@ GameTips: {
 }
 
 Emotes: {
-	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hiker
+	CartographerEmote.Command: cartografo
+	HikerEmote.Command: caminhante
 }
 
 InfoDisplays: {
 	LedgerInfoDisplay: {
-		// DisplayName: Ledger
-		// Description: Showing price tooltips
+		DisplayName: Livro-Razão
+		Description: Mostrando informações de preço
 	}
 
 	ScryingLensInfoDisplay: {
-		// DisplayName: Shimmersight
-		// Description: Showing shimmer tooltips
+		DisplayName: Visão Brilhante
+		Description: Mostrando descrições de itens do Brilhante
 	}
 }

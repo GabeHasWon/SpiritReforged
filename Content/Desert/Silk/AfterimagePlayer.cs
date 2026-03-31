@@ -222,7 +222,10 @@ public class AfterimagePlayer : ModPlayer
 
 	public override void ModifyManaCost(Item item, ref float reduce, ref float mult)
 	{
-		if (_manaCounter >= ManaThreshold)
+		if (!setActive)
+			_manaCounter = 0;
+
+		if (_manaCounter >= ManaThreshold && !Player.ItemAnimationActive)
 			reduce -= ManaThreshold;
 	}
 }

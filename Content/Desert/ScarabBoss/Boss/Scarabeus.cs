@@ -1,6 +1,8 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -12,6 +14,7 @@ using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -25,7 +28,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 [AutoloadBossHead]
 [AutoloadGlowmask("255,255,255", false)]
-public partial class Scarabeus : ModNPC
+public partial class Scarabeus : ModNPC, IBossChecklistProvider
 {
 	#region SFX
 	public static readonly SoundStyle GroundPoundFallSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Falling");
@@ -640,4 +643,15 @@ public partial class Scarabeus : ModNPC
 		scarabColorIndex = reader.ReadInt32();
 		NPC.Opacity = (float)reader.ReadHalf();
 	}
+
+	BossChecklistData IBossChecklistProvider.ChecklistData() => new(2.2f, () => BossFlags.Downed(Type), new LocalizableFunc(this.GetLocalization("SpawnInfo"), null),
+	[
+		ModContent.ItemType<ScarabMask>(), ModContent.ItemType<ScarabRelic>(), ModContent.ItemType<ScarabTrophy>()
+	], [ModContent.GetInstance<ScarabAltar>().AutoItemType()]);
+
+	Action<SpriteBatch, Rectangle, Color> IBossChecklistProvider.PreDrawPortrait => (batch, rectangle, color) =>
+	{
+		Texture2D tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Desert/ScarabBoss/Boss/Scarabeus_Checklist").Value;
+		batch.Draw(tex, rectangle.Center(), null, BossFlags.Downed(Type) ? color : Color.Black, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+	};
 }
