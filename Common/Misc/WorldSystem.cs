@@ -15,10 +15,8 @@ public class WorldSystem : ModSystem
 
 	public static void SetWorldFlag(string name, bool value)
 	{
-		if (WorldFlags.ContainsKey(name))
+		if (!WorldFlags.TryAdd(name, value))
 			WorldFlags[name] = value;
-		else
-			WorldFlags.Add(name, value);
 	}
 
 	public static bool CheckWorldFlag(string name) => WorldFlags.TryGetValue(name, out bool value) && value;
@@ -69,7 +67,7 @@ public class WorldSystem : ModSystem
 
 		foreach (var item in flagCompound)
 		{
-			if (WorldFlags.ContainsKey(item.Key) && item.Value is bool value)
+			if (flagCompound.TryGet(item.Key, out bool value))
 				SetWorldFlag(item.Key, value);
 		}
 	}

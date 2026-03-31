@@ -1,64 +1,55 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
-using System.Linq;
+using SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 namespace SpiritReforged.Content.Desert.NPCs.TownBeetle;
 
 public class BeetleTownPet : ModNPC
 {
-	private readonly record struct PetProfile
+	private class ScarabTownPetProfile : ITownNPCProfile
 	{
-		public readonly int HeadIndex;
-		public readonly Asset<Texture2D> Texture;
-		public readonly string[] Names;
+		private readonly record struct PetProfileInfo(string Identifier, Asset<Texture2D> Texture);
 
-		public PetProfile(int HeadIndex, Asset<Texture2D> Texture, string[] Names)
+		private readonly List<PetProfileInfo> _profileInfo = [];
+
+		public ScarabTownPetProfile AddVariant(string identifier)
 		{
-			this.HeadIndex = HeadIndex;
-			this.Texture = Texture;
-			this.Names = Names;
+			Asset<Texture2D> texture = DrawHelpers.RequestLocal<BeetleTownPet>(identifier, false);
+			_profileInfo.Add(new(identifier, texture));
+
+			return this;
 		}
 
-		public PetProfile(string Identifier, string[] Names)
-		{
-			Mod mod = SpiritReforgedMod.Instance;
-
-			HeadIndex = mod.AddNPCHeadTexture(ModContent.NPCType<BeetleTownPet>(), DrawHelpers.RequestLocal<BeetleTownPet>(Identifier + "_Head"));
-			Texture = DrawHelpers.RequestLocal<BeetleTownPet>(Identifier, false);
-			this.Names = Names;
-		}
-	}
-
-	public class ScarabTownPetProfile : ITownNPCProfile
-	{
-		public int RollVariation() => Main.rand.Next(6);
+		public int RollVariation() => Main.rand.Next(_profileInfo.Count);
 		public string GetNameForVariant(NPC npc) => npc.getNewNPCName();
-		public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => GetPetProfile(npc.townNpcVariationIndex).Texture;
-		public int GetHeadTextureIndex(NPC npc) => GetPetProfile(npc.townNpcVariationIndex).HeadIndex;
+		public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => _profileInfo[npc.townNpcVariationIndex].Texture;
+		public int GetHeadTextureIndex(NPC npc) => HeadIndexes[npc.townNpcVariationIndex];
+		public List<string> GetNames(ILocalizedModType localizedType, NPC npc)
+		{
+			List<string> result = [];
+
+			for (int i = 0; i < 15; i++)
+				result.Add(localizedType.GetLocalizedValue("Names." + _profileInfo[npc.townNpcVariationIndex].Identifier + i));
+
+			return result;
+		}
 	}
 
 	public override string Texture => AssetLoader.EmptyTexture;
 
-	private static readonly List<PetProfile> PetProfiles = [];
-	private static ITownNPCProfile NPCProfile;
+	private static int[] HeadIndexes;
+	private static ScarabTownPetProfile NPCProfile;
 
-	private static PetProfile GetPetProfile(int value)
-	{
-		if (value >= PetProfiles.Count || value < 0)
-			value = 0;
-
-		return PetProfiles[value];
-	}
-
-	public override void Load()
-	{
-		PetProfiles.Add(new("RoyalScarab", []));
-		PetProfiles.Add(new("DungBeetle", []));
-		PetProfiles.Add(new("JewelBeetle", []));
-		PetProfiles.Add(new("Ladybug", []));
-		PetProfiles.Add(new("Weevil", []));
-		PetProfiles.Add(new("Maybug", []));
-	}
+	public override void Load() => HeadIndexes =
+	[
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("RoyalScarab_Head")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("DungBeetle_Head")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("JewelBeetle_Head")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Ladybug_Head")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Weevil")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Maybug_Head")),
+	];
 
 	public override void SetStaticDefaults()
 	{
@@ -70,7 +61,7 @@ public class BeetleTownPet : ModNPC
 		NPCID.Sets.NPCFramingGroup[Type] = 8;
 
 		NPCID.Sets.IsTownPet[Type] = true;
-		NPCID.Sets.CannotSitOnFurniture[Type] = false;
+		NPCID.Sets.CannotSitOnFurniture[Type] = true;
 		NPCID.Sets.TownNPCBestiaryPriority.Add(Type);
 		NPCID.Sets.PlayerDistanceWhilePetting[Type] = 32;
 		NPCID.Sets.IsPetSmallForPetting[Type] = true;
@@ -80,7 +71,13 @@ public class BeetleTownPet : ModNPC
 			Velocity = 0.25f
 		});
 
-		NPCProfile = new ScarabTownPetProfile();
+		NPCProfile = new ScarabTownPetProfile()
+			.AddVariant("RoyalScarab")
+			.AddVariant("DungBeetle")
+			.AddVariant("JewelBeetle")
+			.AddVariant("Ladybug")
+			.AddVariant("Weevil")
+			.AddVariant("Maybug");
 	}
 
 	public override void SetDefaults()
@@ -99,13 +96,15 @@ public class BeetleTownPet : ModNPC
 		NPC.housingCategory = 1;
 	}
 
-	public override bool CanTownNPCSpawn(int numTownNPCs) => false; //Change on license
+	public override bool CanTownNPCSpawn(int numTownNPCs) => WorldSystem.CheckWorldFlag(BeetleLicense.UsedLicense);
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
 
-	public override List<string> SetNPCNameList() => GetPetProfile(NPC.townNpcVariationIndex).Names.ToList();
+	public override List<string> SetNPCNameList() => NPCProfile.GetNames(this, NPC);
 
 	public override void SetChatButtons(ref string button, ref string button2) => button = Language.GetTextValue("UI.PetTheAnimal"); //Pet
+
+	public override string GetChat() => this.GetLocalizedValue("Chitter");
 
 	public override void FindFrame(int frameHeight)
 	{
@@ -113,7 +112,7 @@ public class BeetleTownPet : ModNPC
 			return;
 
 		bool moving = NPC.velocity.X != 0;
-		Texture2D texture = GetPetProfile(NPC.townNpcVariationIndex).Texture.Value;
+		Texture2D texture = NPCProfile.GetTextureNPCShouldUse(NPC).Value;
 		NPC.frame.Width = texture.Width / 2;
 		NPC.frame.Height = texture.Height / Main.npcFrameCount[Type];
 
@@ -130,7 +129,7 @@ public class BeetleTownPet : ModNPC
 	{
 		NPC.spriteDirection = NPC.direction;
 
-		Texture2D texture = GetPetProfile(NPC.townNpcVariationIndex).Texture.Value;
+		Texture2D texture = NPCProfile.GetTextureNPCShouldUse(NPC).Value;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 origin = new(NPC.frame.Width / 2, NPC.frame.Height);
 
