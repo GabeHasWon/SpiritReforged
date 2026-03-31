@@ -216,23 +216,24 @@ public class BabyAntlionProjectile : ModProjectile
 		//Do dust and smoke on the floor
 		if (!Main.dedServ)
 		{
-			if (Main.rand.NextBool(2))
+			if (!Main.rand.NextBool(3))
 			{
 				Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3) * MathHelper.Lerp(0.7f, 2f, progress), palette[0] * 0.7f, Main.rand.NextFloat(0.07f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
+				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 4) * MathHelper.Lerp(0.7f, 3f, progress), palette[0] * 0.7f, Main.rand.NextFloat(0.1f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
-					SecondaryColor = palette[1] * 0.7f,
-					TertiaryColor = palette[2] * 0.7f,
+					SecondaryColor = palette[1],
+					TertiaryColor = palette[2],
 					PixelDivisor = 3,
 					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
+					Layer = ParticleLayer.BelowSolid,
+					Intensity = 1.5f
 				});
 			}
 
-			if (Main.rand.NextBool(5) && !Main.dedServ)
+			if (Main.rand.NextBool(3))
 			{
 				Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
 				Point tilePosition = dustPosition.ToTileCoordinates();
@@ -244,6 +245,23 @@ public class BabyAntlionProjectile : ModProjectile
 				dust.velocity.X *= 0.5f;
 				dust.noLightEmittence = true;
 				dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
+			}
+
+			if (Projectile.timeLeft % 20 == 0)
+			{
+				Vector2 particleCenter = Projectile.Center + Vector2.UnitY * 4f;
+				ParticleHandler.SpawnParticle(new MovingBlockParticle(particleCenter, 15, 6));
+
+				for(int i = -2; i <= 2; i++)
+				{
+					if (i == 0)
+						continue;
+
+					Vector2 adjustedPosition = particleCenter + i * 16 * Vector2.UnitX;
+					int bounceHeight = (int)(6f / (Math.Abs(i) + 1));
+					int delay = Math.Abs(i) * 5;
+					ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(adjustedPosition, 15, bounceHeight), delay);
+				}
 			}
 		}
 
@@ -335,8 +353,8 @@ public class BabyAntlionProjectile : ModProjectile
 				var p = new SmokeCloud(
 					Projectile.Center + Main.rand.NextVector2Circular(5f, 5f),
 					-Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.2f),
-					Color.Black * (1f - Projectile.timeLeft / 120f) * 0.5f,
-					0.175f * EaseFunction.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 120f),
+					Color.Black * (1f - Projectile.timeLeft / 120f) * 0.66f,
+					0.1f * EaseFunction.EaseCircularInOut.Ease(1f - Projectile.timeLeft / 120f),
 					EaseFunction.EaseCircularOut,
 					30);
 

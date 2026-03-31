@@ -2287,12 +2287,14 @@ public partial class Scarabeus : ModNPC
 		spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 
 		float spawnHopHeight = 5.6f + 2.3f * (swarmerIndex % 3);
+		spawnHopHeight -= (Target.Bottom.Y - spawnPosition.Y) / 55;
 		Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 
 		//Spawn swarmers further away that are only just meant to make it look more natural
 		if (swarmerIndex % 2 == 1)
 		{
 			spawnHopHeight = 7f;
+			spawnHopHeight -= (Target.Bottom.Y - spawnPosition.Y) / 60;
 			spawnPosition = Target.Center + Vector2.UnitX * (spawnAreaOffsetX + (Main.rand.NextBool() ? -1 : 1) * spawnAreaRadius * 1.4f);
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
@@ -2303,6 +2305,7 @@ public partial class Scarabeus : ModNPC
 			spawnPosition = Target.Center + Vector2.UnitX * (-spawnAreaOffsetX * 0.5f + Main.rand.NextFloat(-spawnAreaRadius, spawnAreaRadius));
 			spawnPosition = FindGroundFromPositionIgnorePlatforms(spawnPosition, platformIgnoreHeight);
 			spawnHopHeight = 1 + 1.3f * (swarmerIndex % 3);
+			spawnHopHeight -= (Target.Bottom.Y - spawnPosition.Y) / 60;
 			Projectile.NewProjectile(NPC.GetSource_FromThis(), spawnPosition, Vector2.Zero, ModContent.ProjectileType<BabyAntlionProjectile>(), GetProjectileDamage(STAT_ANTLION_SWARMER_DAMAGE), 0, Main.myPlayer, NPC.whoAmI, spawnHopHeight);
 
 		}
