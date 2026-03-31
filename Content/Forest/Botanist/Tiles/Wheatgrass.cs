@@ -1,11 +1,12 @@
-﻿using SpiritReforged.Common.TileCommon.TileSway;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Botanist.Tiles;
 
-public class Wheatgrass : ModTile, ISwayTile
+public class Wheatgrass : ModTile, ICutAttempt, ISwayTile
 {
 	public const int Styles = 9;
 
@@ -63,5 +64,11 @@ public class Wheatgrass : ModTile, ISwayTile
 			rotation = 0f;
 
 		return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 30, 2f, 1, true)) * 1.5f;
+	}
+
+	public bool OnCutAttempt(int i, int j)
+	{
+		var p = Main.player[Player.FindClosest(new Vector2(i, j) * 16, 16, 16)];
+		return p.HeldItem.type is ItemID.Sickle or ItemID.LawnMower; //Only allow this tile to be cut using a sickle or lawnmower
 	}
 }
