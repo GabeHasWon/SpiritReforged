@@ -53,7 +53,7 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		}
 	}
 
-	public static AmberGridOverlay Overlay;
+	public static AmberGridOverlay Overlay { get; private set; }
 
 	public override void Load()
 	{

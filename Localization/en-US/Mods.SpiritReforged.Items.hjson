@@ -2977,7 +2977,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Treasure Bag (Scarabeus)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3008,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Music Box (Scarabeus)
 	Tooltip: ""
+
+	Toggle: {
+		0: Phase One
+		1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {

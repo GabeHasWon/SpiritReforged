@@ -3008,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Музыкальная шкатулка (Скарабеус)
 	Tooltip: ""
+
+	Toggle: {
+		// 0: Phase One
+		// 1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {

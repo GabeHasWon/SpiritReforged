@@ -1,17 +1,59 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using Terraria.UI;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
-public sealed class ScarabMusicBox : ModItem
+public class ScarabMusicBox : ModItem
 {
+	private sealed class PhaseButton : ISlotButton
+	{
+		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<PhaseButton>("ScarabMusicBoxToggle", false);
+
+		public void Draw(SpriteBatch spriteBatch, Vector2 center, Item item, bool hoveredOver)
+		{
+			if (item.ModItem is not ScarabMusicBox scarabBox)
+				return;
+
+			Texture2D texture = Texture.Value;
+			Rectangle source = texture.Frame(1, 2, 0, scarabBox._inPhaseTwo ? 1 : 0, 0, -2);
+
+			spriteBatch.Draw(texture, center, source, Color.White, 0, source.Size() / 2, 1, 0, 0);
+
+			if (hoveredOver)
+			{
+				Main.HoverItem = new Item();
+				Main.hoverItemName = Language.GetTextValue("Mods.SpiritReforged.Items.ScarabMusicBox.Toggle." + (scarabBox._inPhaseTwo ? 1 : 0));
+
+				if (Main.mouseLeft && Main.mouseLeftRelease)
+				{
+					scarabBox._inPhaseTwo = !scarabBox._inPhaseTwo;
+					SoundEngine.PlaySound(SoundID.MenuTick);
+				}
+			}
+		}
+
+		public bool IsActive(int context, out Rectangle bounds)
+		{
+			bounds = new(42, (context is ItemSlot.Context.EquipAccessoryVanity) ? 4 : 16, 14, 14);
+			return context is ItemSlot.Context.EquipAccessory or ItemSlot.Context.EquipAccessoryVanity;
+		}
+	}
+
 	[AutoloadGlowmask("255,255,255")]
 	public sealed class ScarabMusicBoxTile : ModTile
 	{
+		public override void Load() => TileEvents.OnSwitchMusicBox += StopSwitchMusicBox;
+
+		private static bool StopSwitchMusicBox(int i, int j, int type) => type != ModContent.TileType<ScarabMusicBoxTile>();
+
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
@@ -26,7 +68,7 @@ public sealed class ScarabMusicBox : ModItem
 			TileObjectData.newTile.DrawYOffset = 2;
 			TileObjectData.addTile(Type);
 
-			RegisterItemDrop(ModContent.ItemType<ScarabRadio>()); //Register this drop for all styles
+			RegisterItemDrop(ModContent.ItemType<ScarabMusicBox>()); //Register this drop for all styles
 			AddMapEntry(new Color(191, 142, 111), Language.GetText("ItemName.MusicBox"));
 			DustType = -1;
 		}
@@ -103,6 +145,16 @@ public sealed class ScarabMusicBox : ModItem
 	public static int MusicSlot { get; private set; }
 	public static int MusicSlotPhase2 { get; private set; }
 
+	private bool _inPhaseTwo;
+
+	public override void Load() => PlayerEvents.OnApplyMusicBox += OverrideMusicBox;
+
+	private static void OverrideMusicBox(Player player, Item item)
+	{
+		if (item.ModItem is ScarabMusicBox scarabBox)
+			Main.musicBoxNotModifiedByVolume = Main.musicBox2 = scarabBox._inPhaseTwo ? MusicSlotPhase2 : MusicSlot;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		MusicSlot = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
@@ -110,7 +162,20 @@ public sealed class ScarabMusicBox : ModItem
 
 		ItemID.Sets.CanGetPrefixes[Type] = false;
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<ScarabRadio>();
+
+		MusicLoader.AddMusicBox(Mod, MusicSlot, Type, ModContent.TileType<ScarabMusicBoxTile>());
+		Main.RegisterItemAnimation(Type, new DrawAnimationVertical(2, 2) { NotActuallyAnimating = true });
+		SlotButtonLoader.RegisterButton(Type, new PhaseButton());
 	}
 
 	public override void SetDefaults() => Item.DefaultToMusicBox(ModContent.TileType<ScarabMusicBoxTile>());
+
+	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+	{
+		Texture2D texture = TextureAssets.Item[Type].Value;
+		frame.Y = _inPhaseTwo ? frame.Height + 2 : 0;
+		spriteBatch.Draw(texture, position, frame, drawColor, 0, origin, scale, default, 0);
+
+		return false;
+	}
 }

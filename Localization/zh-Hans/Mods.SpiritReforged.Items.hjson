@@ -3008,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: 音乐盒（圣甲虫）
 	Tooltip: ""
+
+	Toggle: {
+		// 0: Phase One
+		// 1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {

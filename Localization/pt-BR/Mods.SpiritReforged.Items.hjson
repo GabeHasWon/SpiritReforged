@@ -2999,6 +2999,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Caixinha de Música (Escarabeus)
 	Tooltip: ""
+
+	Toggle: {
+		// 0: Phase One
+		// 1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {

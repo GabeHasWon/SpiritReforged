@@ -23,15 +23,31 @@ public class DyeCrateItem : ModItem
 
 	public override void ModifyItemLoot(ItemLoot itemLoot)
 	{
-		Range[] ranges = [2..5, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3, 1..3];
-		int[] idsCommon = [ItemID.BlueBerries, ItemID.CyanHusk, ItemID.RedHusk, ItemID.VioletHusk,
-			ItemID.GreenMushroom, ItemID.LimeKelp, ItemID.OrangeBloodroot, ItemID.PinkPricklyPear, ItemID.PurpleMucos, ItemID.SkyBlueFlower, ItemID.TealMushroom,
-			ItemID.YellowMarigold, ItemID.BlackInk];
+		itemLoot.Add(new DropRules.LootPoolDrop(4, 1, 1, 
+			[
+			new(ItemID.BlueBerries, 2..5),
+			new(ItemID.CyanHusk, 1..3),
+			new(ItemID.RedHusk, 1..3),
+			new(ItemID.VioletHusk, 1..3),
+			new(ItemID.GreenMushroom, 1..3),
+			new(ItemID.LimeKelp, 1..3),
+			new(ItemID.OrangeBloodroot, 1..3),
+			new(ItemID.PinkPricklyPear, 1..3),
+			new(ItemID.PurpleMucos, 1..3),
+			new(ItemID.SkyBlueFlower, 1..3),
+			new(ItemID.TealMushroom, 1 ..3),
+			new(ItemID.YellowMarigold, 1 ..3),
+			new(ItemID.BlackInk, 1 ..3)
+			]
+		));
 
-		itemLoot.Add(new DropRules.LootPoolDrop(ranges, 4, 1, 1, idsCommon));
-
-		Range[] strangePlantRanges = [1..3, 1..3, 1..3, 1..3];
-		int[] idsStrange = [ItemID.StrangePlant1, ItemID.StrangePlant2, ItemID.StrangePlant3, ItemID.StrangePlant4];
-		itemLoot.Add(new DropRules.LootPoolDrop(strangePlantRanges, 1, 10, 1, idsStrange));
+		itemLoot.Add(new DropRules.LootPoolDrop(1, 10, 1,
+			[
+			new(ItemID.StrangePlant1, 1..3),
+			new(ItemID.StrangePlant2, 1..3),
+			new(ItemID.StrangePlant3, 1..3),
+			new(ItemID.StrangePlant4, 1..3)
+			]
+		));
 	}
 }

@@ -72,7 +72,7 @@ internal static class ItemMethods
 		Item.value = Item.buyPrice(gold: 1);
 	}
 
-	public static void SetRelicsDefaults(this Item Item, int style)
+	public static void DefaultToRelic(this Item Item, int style)
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<Relics>(), style);
 		Item.width = 30;
@@ -81,5 +81,14 @@ internal static class ItemMethods
 		Item.rare = ItemRarityID.Master;
 		Item.master = true;
 		Item.value = Item.buyPrice(0, 5);
+	}
+
+	public static void DefaultToBossBag(this Item Item)
+	{
+		Item.Size = new(20);
+		Item.maxStack = Item.CommonMaxStack;
+		Item.consumable = true;
+		Item.expert = true;
+		Item.rare = -2;
 	}
 }

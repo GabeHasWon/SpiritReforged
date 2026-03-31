@@ -1,11 +1,50 @@
 using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.UI;
+using SpiritReforged.Common.Visuals;
 using System.IO;
+using Terraria.Audio;
+using Terraria.UI;
 
-namespace SpiritReforged.Content.Ocean.Items.Vanity.Towel;
+namespace SpiritReforged.Content.Ocean.Items.Vanity;
 
 [AutoloadEquip(EquipType.HandsOn)]
 public class BeachTowel : ModItem
 {
+	private sealed class ShirtButton : ISlotButton
+	{
+		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<ShirtButton>("BeachTowelToggle", false);
+
+		public void Draw(SpriteBatch spriteBatch, Vector2 center, Item item, bool hoveredOver)
+		{
+			var modPlayer = Main.LocalPlayer.GetModPlayer<BeachTowelPlayer>();
+			Texture2D texture = Texture.Value;
+			Rectangle source = texture.Frame(2, 1, modPlayer.bodyEquip ? 1 : 0, 0, -2);
+
+			spriteBatch.Draw(texture, center, source, Color.White * .8f, 0, source.Size() / 2, 1, SpriteEffects.None, 0);
+
+			if (hoveredOver)
+			{
+				if (Main.mouseLeft && Main.mouseLeftRelease)
+				{
+					modPlayer.bodyEquip = !modPlayer.bodyEquip;
+					SoundEngine.PlaySound(SoundID.MenuTick);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+						new TowelVisibilityData(modPlayer.bodyEquip, (byte)Main.myPlayer).Send();
+				}
+
+				Main.HoverItem = new Item();
+				Main.hoverItemName = Lang.inter[modPlayer.bodyEquip ? 60 : 59].Value; // visible/hidden
+			}
+		}
+
+		public bool IsActive(int context, out Rectangle bounds)
+		{
+			bounds = new(42, 4, 14, 14);
+			return context is ItemSlot.Context.EquipAccessoryVanity;
+		}
+	}
+
 	internal static int Slot { get; private set; }
 
 	public override void Load()
@@ -28,6 +67,8 @@ public class BeachTowel : ModItem
 	{
 		Slot = EquipLoader.GetEquipSlot(Mod, nameof(BeachTowel), EquipType.HandsOn);
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<BikiniTop>();
+
+		SlotButtonLoader.RegisterButton(Type, new ShirtButton());
 	}
 
 	public override void SetDefaults()
