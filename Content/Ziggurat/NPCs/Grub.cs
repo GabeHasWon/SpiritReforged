@@ -1,5 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Vanilla.Food;
+using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.IO;
@@ -47,6 +48,8 @@ public class Grub : ModNPC
 		NPC.HitSound = SoundID.NPCHit45;
 		NPC.knockBackResist = 1f;
 		AIType = -1;
+
+		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");

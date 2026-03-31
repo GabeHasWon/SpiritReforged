@@ -38,7 +38,7 @@ public class DustyTomb : ModTile
 			if (Main.netMode == NetmodeID.Server)
 				new TombSpawnData(coordinates).Send(ignoreClient: whoAmI);
 
-			OpenUp(coordinates.X, coordinates.Y);
+			OpenUp(coordinates.X, coordinates.Y, true);
 		}
 
 		public override void OnSend(ModPacket modPacket) => modPacket.WritePoint16(_coordinates);
@@ -69,22 +69,18 @@ public class DustyTomb : ModTile
 	{
 		const int distance = 100;
 
-		if (!closer && Main.LocalPlayer.DistanceSQ(new Point(i, j).ToWorldCoordinates()) < distance * distance && Main.LocalPlayer.velocity.Length() > 3)
-		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				new TombSpawnData(new(i, j)).Send();
-
-			OpenUp(i, j);
-		}
+		if (!closer && Main.LocalPlayer.DistanceSQ(new Point(i, j).ToWorldCoordinates()) < distance * distance && Main.LocalPlayer.velocity.LengthSquared() > 3 * 3)
+			OpenUp(i, j, false);
 	}
 
-	public static void OpenUp(int i, int j)
+	public static void OpenUp(int i, int j, bool fromNet)
 	{
 		const int fullWidth = 18 * 3;
 		Point16 origin = new(i, j);
 		TileExtensions.GetTopLeft(ref i, ref j);
 
 		Tile tile = Main.tile[i, j];
+
 		if (tile.TileFrameX % (fullWidth * 2) == 0) //Closed styles
 		{
 			for (int x = i; x < i + 3; x++)
@@ -93,12 +89,18 @@ public class DustyTomb : ModTile
 					Main.tile[x, y].TileFrameX += fullWidth;
 			}
 
-			//if (Main.netMode != NetmodeID.SinglePlayer)
-			//	NetMessage.SendTileSquare(-1, i, j, 3, 2);
+			if (!fromNet && Main.netMode == NetmodeID.MultiplayerClient)
+				new TombSpawnData(new(i, j)).Send();
 
 			Rectangle topArea = new(i * 16, j * 16, fullWidth, 2);
+
 			if (!Main.dedServ)
 			{
+				SoundEngine.PlaySound(Thud, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(Open, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(SoundID.Zombie3, origin.ToWorldCoordinates(8, 16));
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { PitchRange = (-0.5f, -0.2f) }, origin.ToWorldCoordinates(8, 16));
+
 				for (int g = 1; g < 5; g++)
 					Gore.NewGore(new EntitySource_TileUpdate(i, j), Main.rand.NextVector2FromRectangle(topArea), -Vector2.UnitY, SpiritReforgedMod.Instance.Find<ModGore>("RedBrick" + g).Type, 1f);
 
@@ -112,12 +114,7 @@ public class DustyTomb : ModTile
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				SoundEngine.PlaySound(Thud, origin.ToWorldCoordinates(8, 16));
-				SoundEngine.PlaySound(Open, origin.ToWorldCoordinates(8, 16));
-				SoundEngine.PlaySound(SoundID.Zombie3, origin.ToWorldCoordinates(8, 16));
-				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { PitchRange = (-0.5f, -0.2f)}, origin.ToWorldCoordinates(8, 16));
-
-				int npcType = CrossMod.Redemption.CheckFind("CorpseWalkerPriest", out ModNPC corpsePriest) && Main.rand.NextBool(7) ? corpsePriest.Type : ModContent.NPCType<DecrepitMummy>();
+				int npcType = CrossMod.Redemption.CheckFind("CorpseWalkerPriest", out ModNPC priest) && Main.rand.NextBool(7) ? priest.Type : ModContent.NPCType<DecrepitMummy>();
 				var npc = NPC.NewNPCDirect(new EntitySource_TileUpdate(i, j), origin.ToWorldCoordinates(8, 16), npcType);
 				npc.SpawnedFromStatue = true;
 				npc.netUpdate = true;

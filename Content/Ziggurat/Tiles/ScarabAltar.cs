@@ -17,12 +17,10 @@ using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using System.IO;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.Graphics.CameraModifiers;
-using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
@@ -352,6 +350,15 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	private static int _fablesDeadStormlionLarvaType = -1;
 	private static int _fablesStormlionBucketType = -1;
 
+	void IAutoloadTileItem.AddItemRecipes(ModItem item)
+	{
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5)
+			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();
+
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ItemID.Sapphire, 5)
+			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -399,6 +406,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			_fablesSpawnBlockingNPCs = NPCID.Sets.Factory.CreateBoolSet(false);
 	}
 
+	public override bool CanExplode(int i, int j) => false;
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => settings.player.InInteractionRange(i, j, TileReachCheckSettings.Simple);
 
 	public override void MouseOver(int i, int j)

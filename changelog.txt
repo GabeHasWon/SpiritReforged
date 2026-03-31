@@ -1,2 +1,27 @@
 v0.2.0.1
-- Fixed a bunch of minor localization mistakes
+- Added boss checklist support & tooling + simple boss downed flagging system
+- Fixed Salt Flats chilled in water
+- Guaranteed variable items in Ziggurat, like the Dungeon does
+- Fixed Enlil Statue applying to dead players
+- Added crafting recipe for Ancient Altar
+- Fixed Ancient Altar being bombable but not minable
+- Fixed both Shingle variants using the wrong method for their wood ingredients
+- Fixed issues with dying while using the Bamboo Halberd
+- Removed the old Scarabeus Master Mode Pet
+- Clarified Frostbite and Finger Blaster tooltips
+- Nerfed Vexpowder's base damage from 10 to 8
+- Clarified Bedouin Armor Set Bonus tooltip
+- Fixed Salt Flats Bestiary Icon not appearing
+- Added a Recipe for Cobbled Bricks
+- Improved Wisp behavior in multiplayer
+- Fixed an issue with the Royal Khopesh and Falling Pot in multiplayer
+- Ziggurat torches now count as light sources
+- Added a glowmask to the Spirit Tree Topper
+- Fixed display issues with the Otherworldly Radio
+- Fixed an issue where retro light would lead to crashes in the Salt Flats
+- Reduced the intensity of Fairy Whistle vfx slightly
+- Updated Music Display compatibility to include new names and the title theme
+- Fixed Grub Bestiary entries displaying in the wrong place
+- Fixed Dusty Tombs really spamming packets in multiplayer
+- Fixed bad logic in ChainObjectSystem breaking Censers, potentially causing framing issues
+- Fixed some miscellaneous localization inconsistencies/minor issues

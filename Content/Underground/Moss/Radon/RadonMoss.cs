@@ -11,11 +11,15 @@ public class RadonMoss : OganessonMoss
 	public override void SetEntry()
 	{
 		RegisterItemDrop(ModContent.ItemType<RadonMossItem>());
-		AddMapEntry(new Color(252, 248, 3));
+
+		AddMapEntry(new Color(252, 248, 3), this.GetLocalization("MapEntry"));
+		AddMapEntry(new Color(252, 248, 3), LocalizedText.Empty); // Register two map entries & only use 1 in GetMapOption for Recipe Browser functionality w/o in-game changes
 
 		DustType = ModContent.DustType<RadonMossDust>();
 		HitSound = SoundID.Grass;
 	}
+
+	public override ushort GetMapOption(int i, int j) => 1;
 
 	public override void RandomUpdate(int i, int j)
 	{

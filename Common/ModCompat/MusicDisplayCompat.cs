@@ -28,5 +28,6 @@ internal class MusicDisplayCompat : ModSystem
 		AddMusic("Scarabeus");
 		AddMusic("ScarabeusP2");
 		AddMusic("RadioScarab");
+		AddMusic("TitleTheme");
 	}
 }

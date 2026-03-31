@@ -42,11 +42,15 @@ public partial class ZigguratMicrobiome : Microbiome
 
 	[WorldBound]
 	public static readonly HashSet<Rectangle> TotalBounds = [];
+
 	private static HashSet<GenRoom> TotalRooms;
+	private static int ChestCounter = 0;
 
 	protected override void OnPlace(Point16 point)
 	{
 		List<Rectangle> bounds = GetBounds(FullArea);
+		ChestCounter = WorldGen.genRand.Next(4);
+		
 		CreateShape(FullArea, bounds);
 
 		foreach (Rectangle bound in bounds)
@@ -586,7 +590,7 @@ public partial class ZigguratMicrobiome : Microbiome
 		miscQueue.Enqueue((AutoContent.ItemType<WaningSun>(), 1..1), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.ScarabBomb, 5..9), WorldGen.genRand.NextFloat());
 
-		chest.item[0] = new Item(WorldGen.genRand.Next(main));
+		chest.item[0] = new Item(main[ChestCounter++ % main.Count]);
 
 		var (type, stack) = secondary.Get();
 		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));

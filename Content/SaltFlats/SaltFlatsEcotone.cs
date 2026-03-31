@@ -374,7 +374,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 		miscQueue.Enqueue((ItemID.SilverCoin, 4..14), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ModContent.ItemType<Flarepowder>(), 25..50), WorldGen.genRand.NextFloat());
 
-
 		chest.item[0] = new Item(WorldGen.genRand.Next(main));
 
 		var (type, stack) = secondary.Get();
