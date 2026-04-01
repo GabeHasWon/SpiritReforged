@@ -152,7 +152,7 @@ public class RoyalKhopeshThrown : ModProjectile
 					{
 						float lerp = dist / MAX_RECALL_DISTANCE;
 
-						target.velocity += target.DirectionTo(Main.player[Projectile.owner].Center + new Vector2(0f, -100f)) * MathHelper.Lerp(5f, 24f, lerp);
+						target.velocity += target.DirectionTo(Main.player[Projectile.owner].Center + new Vector2(0f, -100f)) * MathHelper.Lerp(8f, 20f, EaseBuilder.EaseQuadOut.Ease(lerp));
 
 						if (Main.netMode == NetmodeID.MultiplayerClient)
 						{
