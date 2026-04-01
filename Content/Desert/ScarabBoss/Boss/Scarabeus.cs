@@ -1,6 +1,7 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
@@ -136,7 +137,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			int collisionWidth = NPC.width;
 			int collisionHeight = NPC.height;
 			ShrinkTileHitbox(NPC, ref collisionPosition, ref collisionWidth, ref collisionHeight);
-			return Collision.SolidCollision(collisionPosition, collisionWidth, collisionHeight + 8, !IgnorePlatforms);
+			return CollisionHelper.SolidCollision(collisionPosition, collisionWidth, collisionHeight + 8, !IgnorePlatforms);
 		}
 	}
 
