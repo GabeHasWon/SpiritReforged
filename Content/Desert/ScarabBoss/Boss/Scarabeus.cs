@@ -706,6 +706,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		writer.Write(Enrage);
 		writer.Write(scarabColorIndex);
 		writer.Write((Half)NPC.Opacity);
+		SyncDuoFightStuff(writer);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -714,6 +715,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Enrage = reader.ReadSingle();
 		scarabColorIndex = reader.ReadInt32();
 		NPC.Opacity = (float)reader.ReadHalf();
+		SyncDuoFightStuff(reader);
 	}
 
 	BossChecklistData IBossChecklistProvider.ChecklistData() => new(2.2f, () => BossFlags.Downed(Type), new LocalizableFunc(this.GetLocalization("SpawnInfo"), null),

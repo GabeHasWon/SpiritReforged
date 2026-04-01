@@ -7,6 +7,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Particles;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
@@ -856,6 +857,18 @@ public partial class Scarabeus : ModNPC
 		//Failsafe
 		if (FightingDScourge && NPC.life <= 0)
 			NPC.life = 1;
+	}
+
+	public void SyncDuoFightStuff(BinaryWriter writer)
+	{
+		writer.Write(scourgeFightManagerIndex);
+	}
+
+	public void SyncDuoFightStuff(BinaryReader reader)
+	{
+		scourgeFightManagerIndex = reader.ReadInt32();
+		if (scourgeFightManagerIndex != -1)
+			scourgeFightManager = Main.npc[scourgeFightManagerIndex].ModNPC;
 	}
 
 	#region Visuals
