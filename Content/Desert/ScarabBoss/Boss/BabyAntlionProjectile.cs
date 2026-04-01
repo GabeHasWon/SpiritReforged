@@ -41,6 +41,9 @@ public class BabyAntlionProjectile : ModProjectile
 
 	public ref float HopHeight => ref Projectile.ai[1];
 
+	public float HeightOffset { get; set; }
+	public float OffsetTimer { get; set; }
+
 	public NPC Scarab => Main.npc[(int)Projectile.ai[0]];
 
 	public enum AIState
@@ -281,12 +284,19 @@ public class BabyAntlionProjectile : ModProjectile
 			Projectile.direction = (Projectile.Center.X - Scarab.Center.X) < 0 ? 1 : -1;
 			CurrentState = AIState.Emerging;
 			Projectile.velocity.Y = -HopHeight;
+			HeightOffset = Main.player[Scarab.target].Bottom.Y - Projectile.Center.Y;
 			Projectile.netUpdate = true;
 		}
 	}
 
 	public void SpinEmerge()
 	{
+		int emergeTime = (int)(HopHeight / 0.2f);
+		OffsetTimer++;
+		float progressCur = EaseFunction.EaseQuadOut.Ease(OffsetTimer / emergeTime);
+		float progressPrev = EaseFunction.EaseQuadOut.Ease((OffsetTimer - 1) / emergeTime);
+		Projectile.position.Y += (progressCur * HeightOffset) - (progressPrev * HeightOffset);
+
 		Projectile.rotation += Projectile.direction * 0.36f;
 		Projectile.velocity.Y += 0.2f;
 
