@@ -3047,3 +3047,24 @@ ScarabLightPetItem: {
 		”尤里卡！“
 		'''
 }
+
+BlankGlyph: {
+	// DisplayName: Blank Glyph
+	// Tooltip: ""
+	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	// Target: Can only be applied to weapons
+	// RightClick: Hold this glyph and right-click the weapon you want to enchant
+	// Remove: Hold this glyph and right-click the item whose glyph you want to remove
+}
+
+BlazeGlyph: {
+	// DisplayName: Blaze Glyph
+	/* Tooltip:
+		'''
+		Dealing damage sets you ablaze
+		+25% damage and +10% critical strike chance
+		''' */
+	// Addendum: Dealing damage sets you ablaze
+	// Effect: Blazing
+	// Death: "{0} was consumed by Rage..."
+}
