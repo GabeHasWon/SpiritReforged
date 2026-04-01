@@ -45,7 +45,7 @@ public class RoyalKhopeshThrown : ModProjectile
 	}
 
 	// Maximum distance in which enemies will recalled with the sword
-	public const int MAX_RECALL_DISTANCE = 400;
+	public const int MAX_RECALL_DISTANCE = 800;
 	public const int MAX_TIMELEFT = 240;
 	public const int FADEOUT_TIME = 60;
 
