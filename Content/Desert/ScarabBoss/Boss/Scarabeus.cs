@@ -330,7 +330,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
 
-	public override bool CheckActive() => Target.active && !Target.dead;
+	public override bool CheckActive() => !FightingDScourge && Target.active && !Target.dead;
 
 	public override bool CheckDead()
 	{
