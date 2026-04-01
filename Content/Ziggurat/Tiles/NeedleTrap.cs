@@ -29,6 +29,8 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
 	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
 
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddRecipeGroup("CopperBars").AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		TileID.Sets.DrawsWalls[Type] = true;

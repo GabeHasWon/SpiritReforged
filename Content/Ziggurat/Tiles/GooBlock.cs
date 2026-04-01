@@ -1,10 +1,14 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Content.Desert.Tiles;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class GooBlock : ModTile, IAutoloadTileItem
 {
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddCondition(Condition.InGraveyard).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;

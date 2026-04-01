@@ -1,13 +1,22 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
 using Terraria.GameContent.ItemDropRules;
+using SpiritReforged.Common.ItemCommon;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
-public class BagOScarabs : BossBagItem
+public class BagOScarabs : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.BossBag[Type] = true;
+		ItemID.Sets.PreHardmodeLikeBossBag[Type] = true;
+		ItemID.Sets.OpenableBag[Type] = true;
+	}
+
+	public override void SetDefaults() => Item.DefaultToBossBag();
+
 	public override void ModifyItemLoot(ItemLoot itemLoot)
 	{
 		itemLoot.Add(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>(), ModContent.ItemType<LocustCrook>()));
