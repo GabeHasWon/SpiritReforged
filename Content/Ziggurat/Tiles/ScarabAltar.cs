@@ -705,12 +705,12 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((byte)consumableCount);
-		writer.Write(BeamWhoAmI);
+		writer.Write((short)BeamWhoAmI);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
 		consumableCount = reader.ReadByte();
-		BeamWhoAmI = reader.ReadByte();
+		BeamWhoAmI = reader.ReadInt16();
 	}
 }

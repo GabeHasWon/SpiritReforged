@@ -50,6 +50,8 @@ public partial class Scarabeus : ModNPC
 
 		switch (instruction)
 		{
+			case "isFightingScourge":
+				return ((args[2] as NPC).ModNPC as Scarabeus).FightingDScourge;
 			case "doDigRumbleVFX":
 				DuoFightSpawnRumbleVFX((Rectangle)args[2], (bool)args[3]);
 				return true;
@@ -151,6 +153,13 @@ public partial class Scarabeus : ModNPC
 			scarabColorIndex = 0; //No recolored scarab because at points in the fight a different shader gets applied on scarab so we can't rely on the iridescence shader for it
 		}
 	}
+
+	public override bool ModifyDeathMessage(ref NetworkText customText, ref Color color)
+	{
+		//Disables the death message when fighting scourge
+		return !FightingDScourge;
+	}
+
 	#endregion
 
 	#region Spawn anim
@@ -868,7 +877,7 @@ public partial class Scarabeus : ModNPC
 	{
 		scourgeFightManagerIndex = reader.ReadInt32();
 		if (scourgeFightManagerIndex != -1)
-			scourgeFightManager = Main.npc[scourgeFightManagerIndex].ModNPC;
+			scourgeFightManager = (ModNPC)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "verifyFightHandler", scourgeFightManagerIndex, NPC.whoAmI);
 	}
 
 	#region Visuals
