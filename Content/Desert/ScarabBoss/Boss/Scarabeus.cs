@@ -203,6 +203,8 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		DuoFightGunkRoll,
 		DuoFightFollowLeader,
 		DuoFightFlyBackToTheFloor,
+		DuoFightDeathSwarm,
+		DuoFightDeathAnim,
 
 		MaxValue
 	}
@@ -251,6 +253,8 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		_stateAI[(int)AIState.DuoFightGunkRoll] = (Scarabeus scarab, ref bool retarget) => scarab.RollAttack(ref retarget);
 		_stateAI[(int)AIState.DuoFightFollowLeader] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightFlyFollowLeader(ref retarget);
 		_stateAI[(int)AIState.DuoFightFlyBackToTheFloor] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightFlyDownToGround(ref retarget);
+		_stateAI[(int)AIState.DuoFightDeathSwarm] = (Scarabeus scarab, ref bool retarget) => scarab.SwarmAttack(ref retarget);
+		_stateAI[(int)AIState.DuoFightDeathAnim] = (Scarabeus scarab, ref bool retarget) => scarab.DuoFightDeathAnim(ref retarget);
 
 		Main.npcFrameCount[Type] = 17; //The highest frame count
 		NPCID.Sets.TrailCacheLength[Type] = 8;
@@ -329,7 +333,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override bool CheckDead()
 	{
-		if (CurrentState != AIState.DeathAnim)
+		if (CurrentState != AIState.DeathAnim && CurrentState != AIState.DuoFightDeathAnim)
 		{
 			Counter = 0;
 			NPC.life = 1;
@@ -381,6 +385,20 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		HandleDespawn();
 		SetContactDamage();
 		ManageSandstormffects();
+
+		if (Profile == SimulatedProfile || Profile == PhaseTwoProfile || Profile == TakeoffProfile)
+		{
+			float lightStrength = 0.5f;
+			if (Profile == PhaseTwoProfile && currentFrame.X == 2)
+			{
+				lightStrength = 3f;
+			}
+
+			if (Profile == TakeoffProfile && currentFrame.Y < 12)
+				lightStrength = 0;
+
+			Lighting.AddLight(NPC.Center, 1f * lightStrength, 1f * lightStrength, 0.2f * lightStrength);
+		}
 
 		if (Main.dayTime)
 			ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
@@ -537,6 +555,15 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45));
 		}
+	
+		if (NPC.life <= 0 && CurrentState == AIState.DuoFightDeathAnim)
+		{
+			Gore g = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center - Vector2.One * 60, -Vector2.UnitY * 0.4f, Mod.Find<ModGore>(NPC.direction == 1 ? "ScarabeusCharredFlip"  : "ScarabeusCharred").Type, 1f);
+			g.behindTiles = true;
+			GoreID.Sets.DrawBehind[g.type] = true;
+			g.rotation = NPC.rotation;
+			g.timeLeft = 100;
+		}
 	}
 
 	public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
@@ -662,6 +689,11 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			collisionWidth = 70;
 			collisionHeight = 40;
 			collisionTopLeft = new Vector2(npc.Center.X - collisionWidth / 2, npc.Bottom.Y - collisionHeight);
+
+			//Don't hit the ground as immediately when being a burnt charred corpse
+			if (CurrentState == AIState.DuoFightDeathAnim)
+				collisionTopLeft.Y -= 30;
+
 			return true;
 		}
 

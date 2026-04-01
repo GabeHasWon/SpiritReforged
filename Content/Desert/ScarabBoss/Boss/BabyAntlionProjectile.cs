@@ -213,7 +213,7 @@ public class BabyAntlionProjectile : ModProjectile
 		}
 
 		//Stop following scarab if its no longer burning and were too far
-		if (Scarab.ai[0] != (int)Scarabeus.AIState.Swarm && distanceToScarab > 200)
+		if (Scarab.ai[0] != (int)Scarabeus.AIState.Swarm && Scarab.ai[0] != (int)Scarabeus.AIState.DuoFightDeathSwarm && distanceToScarab > 200)
 		{
 			CurrentState = AIState.FlyOff;
 			Projectile.timeLeft = Math.Min(Projectile.timeLeft, 40);

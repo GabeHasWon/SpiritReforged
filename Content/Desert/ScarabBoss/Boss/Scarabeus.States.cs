@@ -1008,7 +1008,7 @@ public partial class Scarabeus : ModNPC
 	public float RollAttack(ref bool retarget)
 	{
 		bool scourgeFightGunkroll = CurrentState == AIState.DuoFightGunkRoll;
-		bool scourgeFightBonkroll = !scourgeFightGunkroll && FightingDScourge;
+		bool scourgeFightBonkroll = !scourgeFightGunkroll && FightingDScourge && !DuoFightDeathIsHappening;
 
 		retarget = false;
 		const int transition_time = 40;
@@ -1385,7 +1385,7 @@ public partial class Scarabeus : ModNPC
 		int framerate = 10;
 
 		//Much slower telegraph when fighting desert scourge, because when it does the slam it's for the Giga-Impact ultraslam 9000 that sends scourge flying up
-		if (FightingDScourge)
+		if (FightingDScourge && !DuoFightDeathIsHappening)
 		{
 			framerate -= 5;
 			if (scourgeFightManager.NPC.ai[3] < 20)
@@ -1804,7 +1804,7 @@ public partial class Scarabeus : ModNPC
 
 		float minJumpHeight = 300;
 		if (FightingDScourge && bounceIndex >= GroundPoundBounceCount)
-			minJumpHeight = 500;
+			minJumpHeight = Math.Max(minJumpHeight, 500 - DifficultyScale * 20f);
 
 		Vector2 bounceTarget = FindGroundFromPositionIgnorePlatforms(Target.Center);
 		bounceTarget.Y = Math.Min(bounceTarget.Y, Target.Center.Y + 300);
@@ -2390,7 +2390,8 @@ public partial class Scarabeus : ModNPC
 
 		SwarmAttackVisuals();
 
-		if (Counter % projectileSpawnDelay == 0)
+		//When in the duo fight death swarm animation, don't even bother spawning antlions, the player has won already
+		if (Counter % projectileSpawnDelay == 0 && CurrentState != AIState.DuoFightDeathSwarm)
 		{
 			if (FightingDScourge)
 			{

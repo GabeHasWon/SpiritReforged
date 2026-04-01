@@ -157,7 +157,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public static readonly SoundStyle AnticipationWeird = new("SpiritReforged/Assets/SFX/Tile/WackyDissonantChime")
 		{
-			Volume = 0.35f
+			Volume = 0.65f
 		};
 
 		public override string Texture => AssetLoader.EmptyTexture;

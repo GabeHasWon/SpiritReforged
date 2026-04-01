@@ -35,6 +35,7 @@ float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
 float2 sunPosition;
+float sunIntensity;
 
 float invlerp(float from, float to, float value)
 {
@@ -93,7 +94,7 @@ float4 Main(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
     output = lerp(output, tex2D(gradientMap, float2(1 - uIntensity * 0.6, pow(1 - brightness, 1.5))), tintStrenght);
     
     output.r *= 1 + 0.1 * uOpacity + 0.1 * sandstormStrength;
-    output.rgb += float3(1, 0.7, 0.3) * GetSunStrength(uv) * sandstormStrength * 0.7;
+    output.rgb += float3(1, 0.7, 0.3) * GetSunStrength(uv) * sandstormStrength * 0.7 * sunIntensity;
     
     output.a = 1;
     return output;

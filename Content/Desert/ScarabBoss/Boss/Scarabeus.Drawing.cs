@@ -191,7 +191,7 @@ public partial class Scarabeus : ModNPC
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
 
-		if (CurrentState != AIState.DuoFightGrabbedByScourge)
+		if (CurrentState != AIState.DuoFightGrabbedByScourge && CurrentState != AIState.DuoFightDeathAnim)
 			position -= new Vector2(0, 8);
 
 		if (NPC.IsABestiaryIconDummy)
@@ -226,7 +226,7 @@ public partial class Scarabeus : ModNPC
 		if (CurrentState == AIState.DeathAnim)
 			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
 
-		if (CurrentState == AIState.Swarm) //Swarm flash visuals
+		if (CurrentState is AIState.Swarm or AIState.DuoFightDeathSwarm) //Swarm flash visuals
 			SwarmFXBehind();
 
 		if (Profile.Simulated)
@@ -238,7 +238,14 @@ public partial class Scarabeus : ModNPC
 
 			//When electrified, draw an outline behind scarab
 			if (FightingDScourge)
+			{
 				DrawElectricOutline(spriteBatch, sheenShader, texture, position, origin, scale, effects);
+
+				//Darken as its being cooked up
+				float burnProgress = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "deathAnimBurnProgress", scourgeFightManager);
+				if (burnProgress > 0 && burnProgress < 1)
+					drawColor *= 1 - burnProgress;
+			}
 
 			spriteBatch.Draw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects, 0);
 			FlipShadersOnOff(spriteBatch, null, false);
@@ -267,7 +274,7 @@ public partial class Scarabeus : ModNPC
 
 		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
 
-		if (CurrentState == AIState.Swarm) //Swarm lens flare
+		if (CurrentState is AIState.Swarm or AIState.DuoFightDeathSwarm) //Swarm lens flare
 			SwarmFXFront();
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions

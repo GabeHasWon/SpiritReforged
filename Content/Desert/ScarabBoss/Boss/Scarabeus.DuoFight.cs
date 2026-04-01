@@ -4,6 +4,8 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
+using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -114,6 +116,9 @@ public partial class Scarabeus : ModNPC
 			case "startJoustSwoop":
 				((args[2] as NPC).ModNPC as Scarabeus).DuoFightStartAirDash((Vector2)args[3]);
 				return true;
+			case "spawnEltronGore":
+				((args[2] as NPC).ModNPC as Scarabeus).DuoFightSpawnDeathGores((Vector2)args[3]);
+				return true;				
 		}
 
 		return null;
@@ -390,6 +395,8 @@ public partial class Scarabeus : ModNPC
 		if (Main.dedServ)
 			return;
 
+		Lighting.AddLight(center, 0.6f, 0.2f, 0.2f);
+
 		if (Main.rand.NextBool(3))
 		{
 			Vector2 position = center + Main.rand.NextVector2Circular(radius, radius);
@@ -468,6 +475,10 @@ public partial class Scarabeus : ModNPC
 		{
 			if (!FightingDScourge)
 				return false;
+
+			if (CurrentState == AIState.DuoFightDeathSwarm)
+				return true;
+
 			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
 		}
 	}
@@ -507,8 +518,12 @@ public partial class Scarabeus : ModNPC
 		UpdateFrame(0, 12, SimulatedProfile);
 
 		float speedup = Utils.GetLerpValue(40f, 100f, NPC.Distance(scourgeFightManager.NPC.Center), true);
-		float movespeed = MathHelper.Lerp(4f, 16f + (Counter / 40f) * 20f, speedup);
-		float acceleration = MathHelper.Lerp(0.03f, 0.08f, speedup);
+		float accel = Counter;
+		if (accel < 0)
+			accel = 45 + Counter;
+
+		float movespeed = MathHelper.Lerp(4f, 16f + (accel / 40f) * 20f, speedup);
+		float acceleration = MathHelper.Lerp(0.03f, 0.08f, MathF.Min(1f, speedup + accel / 16f));
 
 		Vector2 toLeader = (scourgeFightManager.NPC.Center - NPC.Center).SafeNormalize(Vector2.Zero) * movespeed;
 		NPC.velocity = Vector2.Lerp(NPC.velocity, toLeader, acceleration);
@@ -746,6 +761,102 @@ public partial class Scarabeus : ModNPC
 		}
 	}
 	#endregion
+
+	#region Death Anim
+	public bool DuoFightDeathIsHappening => (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "inDeathAnim", scourgeFightManager);
+
+	public void DuoFightSpawnDeathGores(Vector2 impartedVelocity)
+	{
+		if (Main.dedServ)
+			return;
+
+		impartedVelocity *= 0.1f;
+		Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
+
+		for (int i = 1; i < 3; i++)
+			Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), impartedVelocity * 1.5f + Vector2.UnitX * (i == 1 ? -1 : 1) * Main.rand.NextFloat(4f, 10f), Mod.Find<ModGore>("ScarabeusDuo" + i.ToString()).Type, 1f);
+
+		for (int i = 0; i < 3; i++)
+		{
+			var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), ModContent.GoreType<ScarabeusGuts>());
+			gore.position -= new Vector2(gore.Width, gore.Height) / 2;
+			gore.velocity += impartedVelocity;
+		}
+
+		for (int i = 0; i < 10; i++)
+		{
+			Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(3f, 10f) + impartedVelocity, Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				Intensity = 0.9f,
+				PixelDivisor = 3,
+			});
+
+			Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(3f, 10f) + impartedVelocity, 0, default, Main.rand.NextFloat(1f, 2f));
+		}
+
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
+	}
+
+	public float DuoFightDeathAnim(ref bool retarget)
+	{
+		retarget = false;
+		NPC.Opacity = 1f;
+		NPC.noGravity = true;
+
+		switch (ExtraMemory)
+		{
+			//Held in scourge's jaws
+			case 0:
+				if (scourgeFightManager == null)
+				{
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+						NPC.StrikeInstantKill();
+					return 0f;
+				}
+
+				bool burntOut = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "deathAnimBurnProgress", scourgeFightManager) >= 1;
+
+				//Ball, but with a shattered elytra
+				SetFrame(new Point(0, burntOut ? 7 : 6), PhaseTwoProfile);
+
+				Vector3 positionInfo = (Vector3)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "getPositionInScourgeJaws", scourgeFightManager);
+				NPC.Center = new Vector2(positionInfo.X, positionInfo.Y);
+				NPC.rotation = positionInfo.Z;
+				NPC.behindTiles = true;
+				break;
+
+			//Falling down to the ground
+			case 1:
+				SetFrame(new Point(0, 7), PhaseTwoProfile);
+				NPC.realLife = -1;
+				NPC.dontTakeDamage = true;
+				NPC.behindTiles = true;
+				NPC.velocity.Y += 0.3f;
+				if (OnTopOfTiles)
+				{
+					NPC.life = 0;
+					NPC.checkDead();
+					NPC.HitEffect();
+					NPC.active = false;
+				}
+
+				break;
+		}
+
+		return 1f;
+	}
+	#endregion
+
+	public override void ResetEffects()
+	{
+		//Failsafe
+		if (FightingDScourge && NPC.life <= 0)
+			NPC.life = 1;
+	}
 
 	#region Visuals
 	public static void DuoFightSpawnRumbleVFX(Rectangle rumbleArea, bool doTileWave)
