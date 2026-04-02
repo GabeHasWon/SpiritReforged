@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Forest.Relics;
+﻿using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using Terraria.DataStructures;
 
@@ -63,6 +64,8 @@ internal static class ItemMethods
 		ModItem modItem = ItemLoader.GetItem(type);
 		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
 	}
+
+	public static GlyphGlobalItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) ? glyphItem.glyph : default;
 
 	public static void DefaultToTrophy(this Item Item, int style)
 	{

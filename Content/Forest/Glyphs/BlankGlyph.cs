@@ -2,7 +2,9 @@ using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using System.IO;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 
@@ -25,57 +27,40 @@ public class BlankGlyph : ModItem
 
 public class GlyphGlobalItem : GlobalItem
 {
-	public readonly record struct GlyphType
+	public readonly record struct GlyphType(int ItemType)
 	{
-		private static readonly Dictionary<string, int> NameToType = [];
-
-		public readonly bool Empty => Name == null || ItemType < ItemID.Count || ItemLoader.GetItem(ItemType) is not GlyphItem;
-
-		/// <summary> The item type associated with this Glyph. </summary>
-		public readonly int ItemType
-		{
-			get
-			{
-				if (Name != null)
-				{
-					if (NameToType.TryGetValue(Name, out int itemType))
-					{
-						return itemType;
-					}
-					else if (SpiritReforgedMod.Instance.TryFind(Name, out ModItem modItem))
-					{
-						NameToType.Add(Name, modItem.Type);
-						return modItem.Type;
-					}
-				}
-
-				return -1;
-			}
-		}
-
-		public readonly string Name;
-
-		public GlyphType(string Name) => this.Name = Name;
-
-		public GlyphType(int ItemType) => Name = ItemLoader.GetItem(ItemType).Name;
+		public string Name => ItemLoader.GetItem(ItemType)?.Name;
 	}
 
 	public override bool InstancePerEntity => true;
 
 	/// <summary> Prevents item consumption for the local client only. </summary>
 	private static bool StopItemConsumption;
+
 	public GlyphType glyph;
 
-	public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanBeApplied(item);
+	public override void ApplyPrefix(Item item, int pre)
+	{
+		if (WorldGen.gen && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects on worldgen
+		{
+			GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
+			GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
+
+			if (glyphItem.Type != ModContent.ItemType<NullGlyph>() && glyphItem.CanApplyGlyph(item))
+				glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Generate);
+		}
+	}
+
+	public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
 
 	public override void RightClick(Item item, Player player)
 	{
-		if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanBeApplied(item))
+		if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
 		{
-			glyphItem.OnApply(item);
+			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Apply);
 
 			if (--Main.mouseItem.stack <= 0)
-				Main.mouseItem.TurnToAir(); //Consume a glyph on hand
+				Main.mouseItem.TurnToAir(); //Consume the glyph on hand
 
 			StopItemConsumption = true;
 		}
@@ -90,7 +75,7 @@ public class GlyphGlobalItem : GlobalItem
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
-		if (!glyph.Empty && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
 		{
 			tooltips.AddRange(new List<TooltipLine>()
 				{
@@ -105,7 +90,7 @@ public class GlyphGlobalItem : GlobalItem
 	{
 		const int slotDimensions = 52;
 
-		if (!glyph.Empty && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
 		{
 			Texture2D texture = glyphItem.IconTexture.Value;
 			float iconScale = Main.inventoryScale;
@@ -122,21 +107,34 @@ public class GlyphGlobalItem : GlobalItem
 
 	public override void NetReceive(Item item, BinaryReader reader)
 	{
-		if (ItemLoader.GetItem(reader.ReadInt32()) is ModItem modItem)
-			glyph = new(modItem.Name);
+		if (ItemLoader.GetItem(reader.ReadInt32()) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Sync);
 	}
 
-	public override void SaveData(Item item, TagCompound tag) => tag[nameof(glyph)] = glyph.Name;
+	public override void SaveData(Item item, TagCompound tag)
+	{
+		if (glyph.Name != null)
+			tag[nameof(glyph)] = glyph.Name;
+	}
 
 	public override void LoadData(Item item, TagCompound tag)
 	{
-		if (tag.GetString(nameof(glyph)) is string name && name != default)
-			glyph = new(name);
+		if (tag.GetString(nameof(glyph)) is string name && name != default && Mod.TryFind(name, out ModItem modItem) && modItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Load);
 	}
 }
 
+[AutoloadGlowmask("255,255,255")]
 public abstract class GlyphItem : ModItem
 {
+	public enum ApplicationContext
+	{
+		Apply,
+		Generate,
+		Sync,
+		Load
+	}
+
 	public readonly record struct GlyphSettings(Color Color);
 
 	public LocalizedText Effect => this.GetLocalization("Effect");
@@ -168,12 +166,19 @@ public abstract class GlyphItem : ModItem
 
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 
-	public virtual bool CanBeApplied(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph.ItemType != Type;
+	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph.ItemType != Type;
 
-	public virtual void OnApply(Item item)
+	public virtual void ApplyGlyph(Item item, ApplicationContext context)
 	{
 		item.GetGlobalItem<GlyphGlobalItem>().glyph = new(Type);
-		SoundEngine.PlaySound(EnchantSound);
+		
+		if (context == ApplicationContext.Apply)
+			SoundEngine.PlaySound(EnchantSound);
+
+		item.prefix = 0;
+		
+		if (context != ApplicationContext.Sync)
+			item.Refresh(false); //Always prompts a netsync
 
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);

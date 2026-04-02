@@ -4,13 +4,17 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 
 public sealed class NullGlyph : GlyphItem
 {
-	public override bool CanBeApplied(Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && !glyphItem.glyph.Empty;
+	public override bool CanApplyGlyph(Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph != default;
 
-	public override void OnApply(Item item)
+	public override void ApplyGlyph(Item item, ApplicationContext context)
 	{
 		item.GetGlobalItem<GlyphGlobalItem>().glyph = default;
-		SoundEngine.PlaySound(EnchantSound);
 
+		if (context == ApplicationContext.Apply)
+			SoundEngine.PlaySound(EnchantSound);
+
+		item.prefix = 0;
+		item.Refresh(false);
 		item.ClearNameOverride();
 	}
 

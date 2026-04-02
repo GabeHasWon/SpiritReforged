@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Скарабейчик
 	Description: «Он что-то замышляет...»
 }
+
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Mods.SpiritReforged.Buffs.DivineStrike.Description
+}

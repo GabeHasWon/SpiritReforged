@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“
 }
+
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Mods.SpiritReforged.Buffs.DivineStrike.Description
+}

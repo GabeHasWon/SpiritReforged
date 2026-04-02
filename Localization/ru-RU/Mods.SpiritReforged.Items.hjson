@@ -3072,3 +3072,15 @@ NullGlyph: {
 	// Tooltip: Removes the effects of a Glyph
 	// RightClick: Hold this glyph and right-click the item whose glyph you want to remove
 }
+
+RadiantGlyph: {
+	// DisplayName: Radiant Glyph
+	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	// Effect: Radiant
+}
+
+StormGlyph: {
+	// DisplayName: Storm Glyph
+	// Tooltip: Attacks occasionally release a forceful gust of wind
+	// Effect: Billowed
+}

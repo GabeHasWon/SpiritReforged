@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Escarabebê
 	Description: "'Ele tá tramando algo...'"
 }
+
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Mods.SpiritReforged.Buffs.DivineStrike.Description
+}

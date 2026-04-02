@@ -83,3 +83,6 @@ SandballProjectile.DisplayName: Комок песка
 BabyAntlionProjectile.DisplayName: Маленький муравьиный лев
 ScarabLightPet.DisplayName: Скарабейчик
 SoilBallProjectile.DisplayName: Каменный шар
+// RadiantEnergy.DisplayName: Radiant Energy
+// SlicingGust.DisplayName: Slicing Gust
+// ZephyrWave.DisplayName: Zephyr Wave

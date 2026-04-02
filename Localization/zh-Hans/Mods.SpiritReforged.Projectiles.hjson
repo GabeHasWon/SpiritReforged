@@ -83,3 +83,6 @@ SandballProjectile.DisplayName: 沙球
 BabyAntlionProjectile.DisplayName: 蚁狮宝宝
 ScarabLightPet.DisplayName: 甲虫宝宝
 SoilBallProjectile.DisplayName: 土球
+// RadiantEnergy.DisplayName: Radiant Energy
+// SlicingGust.DisplayName: Slicing Gust
+// ZephyrWave.DisplayName: Zephyr Wave
