@@ -2387,6 +2387,13 @@ public partial class Scarabeus : ModNPC
 				velocityTargetX *= 1 + speedupFactor * 8f;
 			}
 		}
+		else
+		{
+			float xDistToTarget = Math.Abs(NPC.Center.X - Target.Center.X);
+			float speedupFactor = Utils.GetLerpValue(350f, 600f, xDistToTarget, true);
+			velocityTargetX *= 1 + speedupFactor * 3f;
+			xAcceleration += 0.03f * MathF.Pow(speedupFactor, 2f);
+		}
 
 		//Try to hover at approx the same height above the player
 		float targetY = Math.Min(FindGroundFromPositionIgnorePlatforms(Target.position).Y - idealHeightAbovePlayer, minHeight);
