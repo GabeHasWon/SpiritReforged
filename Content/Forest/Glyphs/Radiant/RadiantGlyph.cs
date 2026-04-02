@@ -15,7 +15,7 @@ public class RadiantGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 			{
-				if ((radiantCooldown += 1f / (Player.HeldItem.useTime * 3f)) >= 1)
+				if (++radiantCooldown > Player.HeldItem.useTime * 3f)
 				{
 					int radiantBuff = ModContent.BuffType<DivineStrike>();
 					if (!Player.HasBuff(radiantBuff))
@@ -45,9 +45,10 @@ public class RadiantGlyph : GlyphItem
 				for (int i = 0; i < 5; i++)
 					ParticleHandler.SpawnParticle(new StarParticle(target.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat() * 2f, Color.Yellow, Main.rand.NextFloat(0.1f, 0.25f), Main.rand.Next(15, 30), 0.1f));
 
-				radiantCooldown = 0;
 				Player.ClearBuff(ModContent.BuffType<DivineStrike>());
 			}
+
+			radiantCooldown = 0;
 		}
 	}
 

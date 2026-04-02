@@ -6,11 +6,11 @@ public sealed class NullGlyph : GlyphItem
 {
 	public override bool CanApplyGlyph(Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph != default;
 
-	public override void ApplyGlyph(Item item, ApplicationContext context)
+	public override void ApplyGlyph(Item item, IApplicationContext context)
 	{
 		item.GetGlobalItem<GlyphGlobalItem>().glyph = default;
 
-		if (context == ApplicationContext.Apply)
+		if (context is ApplyContext)
 			SoundEngine.PlaySound(EnchantSound);
 
 		item.prefix = 0;

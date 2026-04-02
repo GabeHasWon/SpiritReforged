@@ -47,7 +47,7 @@ public class GlyphGlobalItem : GlobalItem
 			GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
 
 			if (glyphItem.Type != ModContent.ItemType<NullGlyph>() && glyphItem.CanApplyGlyph(item))
-				glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Generate);
+				glyphItem.ApplyGlyph(item, new GlyphItem.GenerateContext());
 		}
 	}
 
@@ -57,7 +57,7 @@ public class GlyphGlobalItem : GlobalItem
 	{
 		if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
 		{
-			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Apply);
+			glyphItem.ApplyGlyph(item, new GlyphItem.ApplyContext(player));
 
 			if (--Main.mouseItem.stack <= 0)
 				Main.mouseItem.TurnToAir(); //Consume the glyph on hand
@@ -103,12 +103,23 @@ public class GlyphGlobalItem : GlobalItem
 		}
 	}
 
-	public override void NetSend(Item item, BinaryWriter writer) => writer.Write(glyph.ItemType);
+	public override void NetSend(Item item, BinaryWriter writer)
+	{
+		writer.Write(glyph.ItemType);
+		
+		if (glyph.ItemType != -1)
+			writer.Write((byte)Main.myPlayer); //Track which client sent this data
+	}
 
 	public override void NetReceive(Item item, BinaryReader reader)
 	{
-		if (ItemLoader.GetItem(reader.ReadInt32()) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Sync);
+		if (reader.ReadInt32() is int itemType && itemType != -1)
+		{
+			byte originPlayer = reader.ReadByte();
+
+			if (ItemLoader.GetItem(itemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+				glyphItem.ApplyGlyph(item, new GlyphItem.SyncContext(originPlayer));
+		}
 	}
 
 	public override void SaveData(Item item, TagCompound tag)
@@ -119,21 +130,26 @@ public class GlyphGlobalItem : GlobalItem
 
 	public override void LoadData(Item item, TagCompound tag)
 	{
-		if (tag.GetString(nameof(glyph)) is string name && name != default && Mod.TryFind(name, out ModItem modItem) && modItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-			glyphItem.ApplyGlyph(item, GlyphItem.ApplicationContext.Load);
+		if (tag.GetString(nameof(glyph)) is string name && name != null && Mod.TryFind(name, out ModItem modItem) && modItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			glyphItem.ApplyGlyph(item, new GlyphItem.LoadContext());
 	}
 }
 
 [AutoloadGlowmask("255,255,255")]
 public abstract class GlyphItem : ModItem
 {
-	public enum ApplicationContext
-	{
-		Apply,
-		Generate,
-		Sync,
-		Load
-	}
+	#region application context
+	public interface IApplicationContext;
+
+	/// <summary> When an effect is applied as a result of being applied by a player. </summary>
+	public readonly record struct ApplyContext(Player Player) : IApplicationContext;
+	/// <summary> When an effect is applied as a result of being generated naturally. </summary>
+	public readonly record struct GenerateContext : IApplicationContext;
+	/// <summary> When an effect is applied as a result of network sync. </summary>
+	public readonly record struct SyncContext(int ClientOrigin) : IApplicationContext;
+	/// <summary> When an effect is applied as a result of data loading. </summary>
+	public readonly record struct LoadContext : IApplicationContext;
+	#endregion
 
 	public readonly record struct GlyphSettings(Color Color);
 
@@ -168,20 +184,23 @@ public abstract class GlyphItem : ModItem
 
 	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph.ItemType != Type;
 
-	public virtual void ApplyGlyph(Item item, ApplicationContext context)
+	/// <summary> Applies the effects of this Glyph to <paramref name="item"/>. </summary>
+	/// <param name="item"> The item being affected. </param>
+	/// <param name="context"> The context in which this effect is being applied. Some examples include <see cref="ApplyContext"/>, <see cref="GenerateContext"/>, and <see cref="SyncContext"/>. </param>
+	public virtual void ApplyGlyph(Item item, IApplicationContext context)
 	{
 		item.GetGlobalItem<GlyphGlobalItem>().glyph = new(Type);
 		
-		if (context == ApplicationContext.Apply)
+		if (context is ApplyContext)
 			SoundEngine.PlaySound(EnchantSound);
 
 		item.prefix = 0;
-		
-		if (context != ApplicationContext.Sync)
-			item.Refresh(false); //Always prompts a netsync
 
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);
+
+		if (context is not SyncContext)
+			item.Refresh(false); //Always prompts a netsync
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
