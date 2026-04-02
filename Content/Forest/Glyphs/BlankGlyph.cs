@@ -26,7 +26,8 @@ public class GlyphGlobalItem : GlobalItem
 	public readonly record struct GlyphType
 	{
 		private static readonly Dictionary<string, int> NameToType = [];
-		public static readonly GlyphType None = default;
+
+		public readonly bool Empty => Name == null || ItemType < ItemID.Count || ItemLoader.GetItem(ItemType) is not GlyphItem;
 
 		/// <summary> The item type associated with this Glyph. </summary>
 		public readonly int ItemType
@@ -66,12 +67,17 @@ public class GlyphGlobalItem : GlobalItem
 	public override void RightClick(Item item, Player player)
 	{
 		if (player.HeldItem.ModItem is GlyphItem glyphItem && glyphItem.CanBeApplied(item))
+		{
 			glyphItem.OnApply(item, player);
+
+			if (--Main.mouseItem.stack <= 0)
+				Main.mouseItem.TurnToAir(); //Consume a glyph on hand
+		}
 	}
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
-		if (glyph != GlyphType.None && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (!glyph.Empty && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
 		{
 			tooltips.AddRange(new List<TooltipLine>()
 				{
@@ -86,7 +92,7 @@ public class GlyphGlobalItem : GlobalItem
 	{
 		const int slotDimensions = 52;
 
-		if (glyph != GlyphType.None && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (!glyph.Empty && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
 		{
 			Texture2D texture = glyphItem.IconTexture.Value;
 			float iconScale = Main.inventoryScale;
@@ -100,8 +106,8 @@ public class GlyphGlobalItem : GlobalItem
 
 	public override void NetReceive(Item item, BinaryReader reader)
 	{
-		if (reader.ReadInt32() is int type && type >= ItemID.Count)
-			glyph = new(ItemLoader.GetItem(type).Name);
+		if (ItemLoader.GetItem(reader.ReadInt32()) is ModItem modItem)
+			glyph = new(modItem.Name);
 	}
 
 	public override void SaveData(Item item, TagCompound tag) => tag[nameof(glyph)] = glyph.Name;
