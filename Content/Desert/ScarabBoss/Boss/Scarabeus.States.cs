@@ -2376,6 +2376,15 @@ public partial class Scarabeus : ModNPC
 				minHeight = scourgeHeight - 100;
 				if (NPC.Bottom.Y > scourgeHeight - 50)
 					NPC.velocity.Y = -6;
+
+				float xDistToTarget = Math.Abs(NPC.Center.X - Target.Center.X);
+				float speedupFactor = Utils.GetLerpValue(350f, 600f, xDistToTarget, true);
+				velocityTargetX *= 1 + speedupFactor * 4f + Target.maxRunSpeed / 10f;
+				xAcceleration += 0.04f * MathF.Pow(speedupFactor, 2f);
+
+				//Go even faster if the player is way too far
+				speedupFactor = Utils.GetLerpValue(600f, 800f, xDistToTarget, true);
+				velocityTargetX *= 1 + speedupFactor * 8f;
 			}
 		}
 
