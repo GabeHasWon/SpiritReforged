@@ -489,38 +489,50 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	private static bool FindSacrifice(Player player, out Item result)
 	{
-		if (!player.HeldItem.IsAir && ValidItem(player.HeldItem))
+		result = null;
+
+		if (!player.HeldItem.IsAir && ValidItem(player.HeldItem, out _))
 		{
 			result = player.HeldItem;
 			return true;
 		}
 
-		//Holding a fables item, check for stormlion grub items
-		//Importantly, we DO NOT! Check for the grubs in the player's inventory, only their held item (To make it extra secret)
-		if (CrossMod.Fables.Enabled && !player.HeldItem.IsAir)
+		Item firstLowPrioResult = null;
+		foreach (Item item in player.inventory)
 		{
-			//Accepts stormlion larvae as offerings
-			if (_fablesStormlionItems[player.HeldItem.type])
+			if (!item.IsAir && ValidItem(item, out bool lowPriority))
 			{
-				result = player.HeldItem;
-				return true;
+				result = item;
+				if (!lowPriority)
+					return true;
+				else if (firstLowPrioResult == null)
+					firstLowPrioResult = item;
 			}
 		}
 
-		foreach (Item item in player.inventory)
+		if (firstLowPrioResult != null)
 		{
-			if (!item.IsAir && ValidItem(item))
-			{
-				result = item;
-				return true;
-			}
+			result = firstLowPrioResult;
+			return true;
 		}
 
 		result = new(ItemID.None);
 		return false;
 	}
 
-	private static bool ValidItem(Item item) => SpiritSets.Gemstone[item.type] || item.type == ModContent.GetInstance<PolishedAmber>().AutoItemType();
+	private static bool ValidItem(Item item, out bool lowPriority)
+	{
+		lowPriority = false;
+		bool valid = SpiritSets.Gemstone[item.type] || item.type == ModContent.GetInstance<PolishedAmber>().AutoItemType();
+
+		if (!valid && _fablesStormlionItems[item.type])
+		{
+			lowPriority = true;
+			valid = true;
+		}
+
+		return valid;
+	}
 
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
