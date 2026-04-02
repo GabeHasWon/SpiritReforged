@@ -2301,7 +2301,7 @@ SleightOfHand: {
 }
 
 RuinedSandstonePillarItem: {
-	DisplayName: 残破沙岩柱
+	DisplayName: 废墟沙岩柱
 	Tooltip: ""
 }
 
