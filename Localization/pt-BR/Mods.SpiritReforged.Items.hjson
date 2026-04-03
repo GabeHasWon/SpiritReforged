@@ -3033,3 +3033,15 @@ ScarabLightPetItem: {
 		'Eureca!'
 		'''
 }
+
+BeetleLicense: {
+	// DisplayName: Beetle License
+	/* Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		''' */
+	// LicenseUse: The license teleports away to the beetle delivery service...
+}
