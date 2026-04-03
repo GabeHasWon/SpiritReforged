@@ -17,6 +17,22 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class SoilBallProjectile : ModProjectile
 {
+	internal readonly struct TileVariantStruct
+	{
+		public TileVariantStruct()
+		{
+			TopLeft = Main.rand.Next(3);
+			TopRight = Main.rand.Next(3);
+			BottomLeft = Main.rand.Next(3);
+			BottomRight = Main.rand.Next(3);
+		}
+
+		public readonly int TopLeft;
+		public readonly int TopRight;
+		public readonly int BottomLeft;
+		public readonly int BottomRight;
+	}
+
 	private const int MAX_TIMELEFT = 360;
 	public Point MimicTilePosition => new Point((int)Projectile.ai[0], (int)Projectile.ai[1]);
 
@@ -139,10 +155,7 @@ public class SoilBallProjectile : ModProjectile
 		modifiers.HitDirectionOverride = Math.Sign(Projectile.velocity.X);
 	}
 
-	private int _variantTopLeft;
-	private int _variantTopRight;
-	private int _variantBottomLeft;
-	private int _variantBottomRight;
+	private TileVariantStruct variants;
 	private bool _initializedAppearance = false;
 	private int _tileType;
 	private int _tileColor;
@@ -161,10 +174,7 @@ public class SoilBallProjectile : ModProjectile
 			_initializedAppearance = true;
 
 			Tile t = Main.tile[MimicTilePosition];
-			_variantTopLeft = Main.rand.Next(3);
-			_variantTopRight = Main.rand.Next(3);
-			_variantBottomLeft = Main.rand.Next(3);
-			_variantBottomRight = Main.rand.Next(3);
+			variants = new();
 
 			if (!t.HasTile || Main.tileFrameImportant[t.TileType])
 			{
@@ -232,10 +242,10 @@ public class SoilBallProjectile : ModProjectile
 	//Draw a chunky 2x2 cube of tiles
 	internal void DrawTile(Texture2D texture, Vector2 position, Vector2 unitX, Vector2 unitY, Color color, float rotation, float scale)
 	{
-		Main.EntitySpriteDraw(texture, position - unitX - unitY - Main.screenPosition, new Rectangle(_variantTopLeft * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position + unitX - unitY - Main.screenPosition, new Rectangle(18 + _variantTopRight * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position - unitX + unitY - Main.screenPosition, new Rectangle(_variantBottomLeft * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
-		Main.EntitySpriteDraw(texture, position + unitX + unitY - Main.screenPosition, new Rectangle(18 + _variantBottomRight * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position - unitX - unitY - Main.screenPosition, new Rectangle(variants.TopLeft * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position + unitX - unitY - Main.screenPosition, new Rectangle(18 + variants.TopRight * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position - unitX + unitY - Main.screenPosition, new Rectangle(variants.BottomLeft * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position + unitX + unitY - Main.screenPosition, new Rectangle(18 + variants.BottomRight * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
 	}
 
 	private void CreateTrail()
