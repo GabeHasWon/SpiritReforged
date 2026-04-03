@@ -1,22 +1,49 @@
 using Microsoft.CodeAnalysis;
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.Graphics.CameraModifiers;
+using Terraria.Graphics.Renderers;
 using static Terraria.GameContent.PlayerEyeHelper;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public class SoilBallProjectile : ModProjectile
 {
+	internal readonly struct TileVariantStruct
+	{
+		public TileVariantStruct()
+		{
+			TopLeft = Main.rand.Next(3);
+			TopRight = Main.rand.Next(3);
+			BottomLeft = Main.rand.Next(3);
+			BottomRight = Main.rand.Next(3);
+		}
+
+		public readonly int TopLeft;
+		public readonly int TopRight;
+		public readonly int BottomLeft;
+		public readonly int BottomRight;
+	}
+
 	private const int MAX_TIMELEFT = 360;
 	public Point MimicTilePosition => new Point((int)Projectile.ai[0], (int)Projectile.ai[1]);
+
+	private readonly ParticleRenderer _twirlParticleRenderer = new();
+	private VertexTrail[] _trails;
 
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.DontAttachHideToAlpha[Type] = true;
+		ProjectileID.Sets.TrailingMode[Type] = 0;
+		ProjectileID.Sets.TrailCacheLength[Type] = 10;
 	}
 
 	public override void SetDefaults()
@@ -26,7 +53,7 @@ public class SoilBallProjectile : ModProjectile
 		Projectile.tileCollide = true;
 		Projectile.hide = true;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = MAX_TIMELEFT;
+		Projectile.timeLeft = MAX_TIMELEFT;		
 	}
 
 	public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
@@ -36,7 +63,16 @@ public class SoilBallProjectile : ModProjectile
 
 	public override void AI()
 	{
-		Projectile.rotation += Projectile.velocity.X * 0.04f;
+		if (!Main.dedServ)
+		{
+			if (_trails == null)
+				CreateTrail();
+
+			foreach (VertexTrail trail in _trails)
+				trail.Update();
+		}
+
+		Projectile.rotation += 0.035f + Math.Abs(Projectile.velocity.Y) * 0.02f;
 		Projectile.velocity.Y += 0.2f;
 
 		if (Projectile.velocity.Y > 0)
@@ -53,8 +89,59 @@ public class SoilBallProjectile : ModProjectile
 		dust.velocity = -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.3f);
 		dust.noLightEmittence = true;
 		dust.scale = Main.rand.NextFloat(0.5f, 1.2f);
-		dust.alpha = 50 + Main.rand.Next(100);
+		dust.alpha = 50 + Main.rand.Next(100); 
 		dust.noGravity = Main.rand.NextBool();
+		if (dust.noGravity)
+			dust.scale *= 1.5f;
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, Projectile.Center);
+		Point tilePosition = MimicTilePosition;
+
+		Color[] colors = Scarabeus.GetTilePalette(MimicTilePosition.ToVector2());
+
+		for (int i = 0; i < 15; i++)
+		{
+			int dustIndex = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+
+			Dust dust = Main.dust[dustIndex];
+			dust.position = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
+			dust.velocity = -Projectile.oldVelocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f);
+			dust.noLightEmittence = true;
+			dust.scale = Main.rand.NextFloat(1f, 1.5f);
+			dust.alpha = 50 + Main.rand.Next(50);
+			dust.noGravity = true;
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, -Projectile.oldVelocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.5f), colors[0], Main.rand.NextFloat(0.08f, 0.15f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 80))
+			{
+				Pixellate = true,
+				DissolveAmount = 1,
+				Intensity = 0.9f,
+				SecondaryColor = colors[1],
+				TertiaryColor = colors[2],
+				PixelDivisor = 3,
+				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
+				ColorLerpExponent = 0.5f,
+				Layer = ParticleLayer.BelowSolid
+			});
+		}
+		
+		for (int i = 0; i < Main.rand.Next(2, 5); i++)
+		{
+			while (!Main.tile[tilePosition].HasTile)
+				tilePosition.Y += 1;
+
+			ParticleHandler.SpawnParticle(
+				new TileChunkParticle(
+					tilePosition, 
+					Projectile.Center + Main.rand.NextVector2Circular(25f, 25f), 
+					-Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(3f, 6f), 
+					30, 
+					false)
+				);
+		}
 	}
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -68,6 +155,7 @@ public class SoilBallProjectile : ModProjectile
 		modifiers.HitDirectionOverride = Math.Sign(Projectile.velocity.X);
 	}
 
+	private TileVariantStruct variants;
 	private bool _initializedAppearance = false;
 	private int _tileType;
 	private int _tileColor;
@@ -86,6 +174,8 @@ public class SoilBallProjectile : ModProjectile
 			_initializedAppearance = true;
 
 			Tile t = Main.tile[MimicTilePosition];
+			variants = new();
+
 			if (!t.HasTile || Main.tileFrameImportant[t.TileType])
 			{
 				_tileType = TileID.Sandstone;
@@ -102,27 +192,16 @@ public class SoilBallProjectile : ModProjectile
 			}
 		}
 
-		Texture2D tileTexture = TextureAssets.Tile[_tileType].Value;
+		Texture2D texture = TextureAssets.Tile[_tileType].Value;
 		if (_tileColor != PaintID.None)
 		{
 			Texture2D paintedTex = Main.instance.TilePaintSystem.TryGetTileAndRequestIfNotReady(_tileType, 0, _tileColor);
-			tileTexture = paintedTex ?? tileTexture;
+			texture = paintedTex ?? texture;
 		}
-
-		Texture2D ramp = TextureColorCache.GetDominantPaletteInTileTexture(tileTexture);
-		Texture2D texture = TextureAssets.Projectile[Type].Value;
 
 		Vector2 position = Projectile.Center;
 		float rotation = Projectile.rotation;
 		float scale = Projectile.scale;
-
-		int frameIndex = 0;
-		if (TileID.Sets.Conversion.Sand[_tileType])
-			frameIndex = 2;
-		else if (TileID.Sets.Conversion.Snow[_tileType] || TileID.Sets.CanBeDugByShovel[_tileType])
-			frameIndex = 1;
-
-		Rectangle frame = texture.Frame(1, 3, 0, frameIndex, 0, -2);
 
 		Color color = Lighting.GetColor(position.ToTileCoordinates());
 		if (_tileFullbright)
@@ -130,17 +209,57 @@ public class SoilBallProjectile : ModProjectile
 		if (!Main.ShouldShowInvisibleWalls() && _tileEcho)
 			color = Color.Cyan * 0.2f;
 
-		Effect recolorShader = AssetLoader.LoadedShaders["ApplyPalette"].Value;
-		recolorShader.Parameters["recolorRamp"].SetValue(ramp);
-		recolorShader.Parameters["smoothRamp"].SetValue(true);
+		Vector2 unitX = Vector2.UnitX.RotatedBy(rotation) * Projectile.scale * 8f;
+		Vector2 unitY = Vector2.UnitY.RotatedBy(rotation) * Projectile.scale * 8f;
 
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, recolorShader, Main.GameViewMatrix.ZoomMatrix);
+		for (int i = Projectile.oldPos.Length - 1; i >= 0; i--)
+		{
+			Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2f;
+			float lerp = 1f  -  i / (float)Projectile.oldPos.Length;
 
-		Main.spriteBatch.Draw(texture, position - Main.screenPosition, frame,color, rotation, frame.Size() / 2f, scale, 0, 0);
+			Vector2 scaledUnitX = Vector2.UnitX.RotatedBy(rotation) * Projectile.scale * 8f * lerp;
+			Vector2 scaledUnitY = Vector2.UnitY.RotatedBy(rotation) * Projectile.scale * 8f * lerp;
 
-		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.ZoomMatrix);
+			float scaled = Projectile.scale * lerp;
+
+			DrawTile(texture, pos, scaledUnitX, scaledUnitY, color * lerp, rotation, scaled);
+		}
+
+		if (_trails != null)
+		{
+			foreach (VertexTrail trail in _trails)
+			{
+				trail.Opacity = 1f;
+				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, Main.spriteBatch.GraphicsDevice);
+			}
+		}
+
+		DrawTile(texture, position, unitX, unitY, color, rotation, scale);
+		
 		return false;
+	}
+
+	//Draw a chunky 2x2 cube of tiles
+	internal void DrawTile(Texture2D texture, Vector2 position, Vector2 unitX, Vector2 unitY, Color color, float rotation, float scale)
+	{
+		Main.EntitySpriteDraw(texture, position - unitX - unitY - Main.screenPosition, new Rectangle(variants.TopLeft * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position + unitX - unitY - Main.screenPosition, new Rectangle(18 + variants.TopRight * 36, 54, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position - unitX + unitY - Main.screenPosition, new Rectangle(variants.BottomLeft * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+		Main.EntitySpriteDraw(texture, position + unitX + unitY - Main.screenPosition, new Rectangle(18 + variants.BottomRight * 36, 72, 16, 16), color, rotation, Vector2.One * 8, scale, SpriteEffects.None, 0);
+	}
+
+	private void CreateTrail()
+	{
+		Color[] colors = Scarabeus.GetTilePalette(MimicTilePosition.ToVector2());
+
+		ITrailCap tCap = new RoundCap();
+		ITrailPosition tPos = new EntityTrailPosition(Projectile);
+		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
+
+		_trails =
+		[
+			new VertexTrail(new GradientTrail(colors[0] with { A = 255 }, Color.Transparent, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 70, 250, -2),
+			new VertexTrail(new GradientTrail(colors[1] with { A = 255 }, Color.Transparent, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 60, 200, -2),
+		];
 	}
 }

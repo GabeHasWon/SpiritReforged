@@ -45,7 +45,7 @@ public class RoyalKhopeshThrown : ModProjectile
 	}
 
 	// Maximum distance in which enemies will recalled with the sword
-	public const int MAX_RECALL_DISTANCE = 400;
+	public const int MAX_RECALL_DISTANCE = 800;
 	public const int MAX_TIMELEFT = 240;
 	public const int FADEOUT_TIME = 60;
 
@@ -152,7 +152,7 @@ public class RoyalKhopeshThrown : ModProjectile
 					{
 						float lerp = dist / MAX_RECALL_DISTANCE;
 
-						target.velocity += target.DirectionTo(Main.player[Projectile.owner].Center + new Vector2(0f, -100f)) * MathHelper.Lerp(5f, 24f, lerp);
+						target.velocity += target.DirectionTo(Main.player[Projectile.owner].Center + new Vector2(0f, -100f)) * MathHelper.Lerp(8f, 20f, EaseBuilder.EaseQuadOut.Ease(lerp));
 
 						if (Main.netMode == NetmodeID.MultiplayerClient)
 						{

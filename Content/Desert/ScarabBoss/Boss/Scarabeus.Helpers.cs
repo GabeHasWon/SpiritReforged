@@ -30,7 +30,7 @@ public partial class Scarabeus : ModNPC
 
 	private AIState SelectAttack()
 	{
-		//return AIState.Swarm;
+		// return AIState.Dig;
 
 		if (!Main.dayTime || Target.dead)
 			return AIState.Despawn;
