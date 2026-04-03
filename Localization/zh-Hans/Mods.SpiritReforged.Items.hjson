@@ -3044,13 +3044,13 @@ ScarabLightPetItem: {
 }
 
 BeetleLicense: {
-	// DisplayName: Beetle License
-	/* Tooltip:
+	DisplayName: 甲虫许可证
+	Tooltip:
 		'''
-		Use to adopt a beetle for your town
-		Already have a beetle?
-		Use additional licenses to activate the Pet Exchange Program!
-		Find the perfect fit for you and your beetle!
-		''' */
-	// LicenseUse: The license teleports away to the beetle delivery service...
+		用于为城镇领养一只甲虫
+		已经养了甲虫？
+		再用一张许可证可以激活宠物交换计划！
+		找到最搭你的甲虫！
+		'''
+	LicenseUse: 发送许可证给甲虫运送服务站……
 }
