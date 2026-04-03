@@ -2942,11 +2942,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Comida de Escaravelho
-	Tooltip: Invoca um pequeno companheiro escaravelho!
-}
-
 CarrotCake: {
 	DisplayName: Bolo de Cenoura
 	Tooltip: "{$BuffDescription.WellFed3}"
