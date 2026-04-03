@@ -7,6 +7,7 @@ using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 namespace SpiritReforged;
 
@@ -97,6 +98,10 @@ public partial class SpiritReforgedMod : Mod
 							throw new ArgumentException("PlayerBotanist parameter 1 should be a Player.");
 
 						return BotanistHat.SetActive(args[1] as Player);
+					}
+				case "fablescrossmod.kaiju":
+					{
+						return Scarabeus.HandleModCall(args);
 					}
 				default:
 					{

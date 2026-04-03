@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -57,15 +58,16 @@ public partial class Scarabeus : ModNPC
 	private FrameState UpdateFrame(int column, int framesPerSecond, VisualProfile profile, bool loop = true)
 	{
 		FrameState result = FrameState.Progressed;
-		Profile = profile;
 
-		if (currentFrame.X != column)
+		if (currentFrame.X != column || Profile != profile)
 		{
 			currentFrame.X = column;
 			currentFrame.Y = 0;
 
 			NPC.frameCounter = 0;
 		}
+
+		Profile = profile;
 
 		if (++NPC.frameCounter > 60.0 / Math.Abs(framesPerSecond))
 		{
@@ -111,7 +113,7 @@ public partial class Scarabeus : ModNPC
 		{
 			if (currentFrame.X != 0)
 				return true;
-			if (currentFrame.Y is < 1 or > 5)
+			if (currentFrame.Y is < 1 or (> 5 and < 9))
 				return true;
 			return false;
 		}
@@ -144,6 +146,9 @@ public partial class Scarabeus : ModNPC
 
 	public Effect GetShader(Texture2D texture, Texture2D sheenTexture, Rectangle frame)
 	{
+		if (FightingDScourge && (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "scarabElectricShaderOpacity", scourgeFightManager) > 0)
+			return (Effect)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "setupElectricShader", scourgeFightManager, texture, NPC.frame, NPC.whoAmI);
+
 		Effect sheenShader = AssetLoader.LoadedShaders["ScarabeusIridescence"].Value;
 		sheenShader.Parameters["sourceRect"].SetValue(new Vector4(frame.X, frame.Y, frame.Width, frame.Height));
 		sheenShader.Parameters["resolution"].SetValue(texture.Size()); 
@@ -165,7 +170,7 @@ public partial class Scarabeus : ModNPC
 		NPC.spriteDirection = NPC.direction;
 
 		//Skip all of this if ball because drawing is entirely different
-		if (currentFrame == RollFrame && (Profile == PhaseOneProfile || Profile == PhaseTwoProfile))
+		if (currentFrame == RollFrame && (Profile == PhaseOneProfile || Profile == PhaseTwoProfile) && CurrentState != AIState.DuoFightGrabbedByScourge)
 		{
 			DrawBall(drawColor);
 			return false;
@@ -176,7 +181,7 @@ public partial class Scarabeus : ModNPC
 		var solid = TextureColorCache.ColorSolid(texture, Color.White);
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		bool originAtFeet = OriginAtFeet();
-		Vector2 position = originAtFeet ? NPC.Bottom : NPC.Center;
+		Vector2 position = (originAtFeet ? NPC.Bottom : NPC.Center) - screenPos;
 		Vector2 origin = originAtFeet ? new(108, 148) : new(108, 98);
 
 		//Takeoff sheet is a big taller due to the wing deployment
@@ -186,10 +191,11 @@ public partial class Scarabeus : ModNPC
 		if (effects == SpriteEffects.FlipHorizontally)
 			origin.X = NPC.frame.Width - origin.X;
 
-		var bestiaryOffset = new Vector2(-12, 8);
-		position -= screenPos + new Vector2(0, 8);
+		if (CurrentState != AIState.DuoFightGrabbedByScourge && CurrentState != AIState.DuoFightDeathAnim)
+			position -= new Vector2(0, 8);
+
 		if (NPC.IsABestiaryIconDummy)
-			position -= bestiaryOffset;
+			position -= new Vector2(-12, 8);
 
 		Vector2 positionOffset = Vector2.Zero;
 		if (CurrentState == AIState.Roll && ExtraMemory > 0 && ExtraMemory < 3)
@@ -220,7 +226,7 @@ public partial class Scarabeus : ModNPC
 		if (CurrentState == AIState.DeathAnim)
 			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
 
-		if (CurrentState == AIState.Swarm) //Swarm flash visuals
+		if (CurrentState is AIState.Swarm or AIState.DuoFightDeathSwarm) //Swarm flash visuals
 			SwarmFXBehind();
 
 		if (Profile.Simulated)
@@ -229,7 +235,19 @@ public partial class Scarabeus : ModNPC
 		{
 			Effect sheenShader = GetShader(texture, Profile.SheenMask.Value, NPC.frame);
 			FlipShadersOnOff(spriteBatch, sheenShader, true);
-			Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects);
+
+			//When electrified, draw an outline behind scarab
+			if (FightingDScourge)
+			{
+				DrawElectricOutline(spriteBatch, sheenShader, texture, position, origin, scale, effects);
+
+				//Darken as its being cooked up
+				float burnProgress = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "deathAnimBurnProgress", scourgeFightManager);
+				if (burnProgress > 0 && burnProgress < 1)
+					drawColor *= 1 - burnProgress;
+			}
+
+			spriteBatch.Draw(texture, position, NPC.frame, NPC.DrawColor(drawColor), NPC.rotation, origin, scale, effects, 0);
 			FlipShadersOnOff(spriteBatch, null, false);
 
 			if (Profile.Wings != null && Profile != SimulatedProfile) //Draw wings in transparent
@@ -256,7 +274,7 @@ public partial class Scarabeus : ModNPC
 
 		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
 
-		if (CurrentState == AIState.Swarm) //Swarm lens flare
+		if (CurrentState is AIState.Swarm or AIState.DuoFightDeathSwarm) //Swarm lens flare
 			SwarmFXFront();
 
 		if (NPC.IsABestiaryIconDummy) //Bestiary hover interactions
@@ -370,7 +388,6 @@ public partial class Scarabeus : ModNPC
 
 		sheenShader.Parameters["rotation"].SetValue((-NPC.rotation + rotation) * NPC.spriteDirection);
 		sheenShader.Parameters["flip"].SetValue(flipped);
-
 		Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
 		Main.graphics.GraphicsDevice.Textures[0] = texture;
 		PrimitiveRenderer.DrawPrimitiveShape(square, sheenShader, "BallPass");
@@ -437,7 +454,7 @@ public partial class Scarabeus : ModNPC
 			if (effect.HasParameter("WorldViewProjection"))
 				effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 
-			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name != "BallPass"))
 					pass.Apply();
 		}
 	}
