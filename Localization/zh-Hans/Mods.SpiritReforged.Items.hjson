@@ -2145,7 +2145,7 @@ Thornball: {
 }
 
 SaltBlockDullItem: {
-	DisplayName: 单调盐块
+	DisplayName: 暗淡盐块
 	Tooltip: ""
 }
 
@@ -2301,7 +2301,7 @@ SleightOfHand: {
 }
 
 RuinedSandstonePillarItem: {
-	DisplayName: 残破沙岩柱
+	DisplayName: 废墟沙岩柱
 	Tooltip: ""
 }
 
@@ -2842,7 +2842,7 @@ PaleHiveWallItem: {
 }
 
 GooBlockItem: {
-	DisplayName: 粘胶砖
+	DisplayName: 黏砖
 	Tooltip: ""
 }
 
@@ -2977,7 +2977,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: 宝藏袋（圣甲虫）
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3010,8 +3010,8 @@ ScarabMusicBox: {
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: 阶段 1
+		1: 阶段 2
 	}
 }
 
