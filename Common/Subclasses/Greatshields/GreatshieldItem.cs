@@ -10,14 +10,9 @@ internal abstract class GreatshieldItem : ModItem
 
 	public virtual void ModifyLayerDrawing(ref DrawData data) { }
 
-	public override bool? UseItem(Player player)
+	public override void HoldItem(Player player)
 	{
-		if (!player.ItemTimeIsZero)
-			return false;
-
-		player.SetItemAnimation(Item.useAnimation);
-		player.SetItemTime(Item.useTime);
-
-		return true;
+		if (Main.myPlayer == player.whoAmI)
+			player.ChangeDir(Math.Sign(Main.MouseWorld.X - player.Center.X));
 	}
 }

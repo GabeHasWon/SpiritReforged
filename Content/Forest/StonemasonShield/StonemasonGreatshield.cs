@@ -10,7 +10,7 @@ internal class StonemasonGreatshield : GreatshieldItem
 		Item.DamageType = ModContent.GetInstance<GreatshieldClass>();
 		Item.defense = 2;
 		Item.useTime = 35;
-		Item.useAnimation = 8;
+		Item.useAnimation = 20;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.useStyle = -1;
