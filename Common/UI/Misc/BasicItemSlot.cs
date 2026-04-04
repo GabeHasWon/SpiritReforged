@@ -8,6 +8,8 @@ public class BasicItemSlot : UIElement
 {
 	public float Scale { get; private set; }
 
+	public Item Item => _items[_index];
+
 	protected readonly Item[] _items;
 	protected readonly int _index;
 	protected readonly int _context;
