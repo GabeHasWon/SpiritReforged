@@ -86,6 +86,45 @@ public class GlyphGlobalItem : GlobalItem
 		}
 	}
 
+	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+	{
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		{
+			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
+			
+			var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
+
+			Vector2 origin = frame.Size() / 2f;
+			Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
+
+			Effect effect = AssetLoader.LoadedShaders["GlyphShader"].Value;
+
+			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+			effect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+			var noiseSwirl = AssetLoader.LoadedTextures["swirlNoise2"].Value;
+			//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
+			var noiseAlt = AssetLoader.LoadedTextures["swirlNoise"].Value;
+
+			effect.Parameters["uImage1"].SetValue(noiseSwirl);
+			effect.Parameters["uImage2"].SetValue(noiseAlt);
+			//effect.Parameters["uImage3"].SetValue(gradient);
+			effect.Parameters["itemSize"].SetValue(texture.Size());
+
+			effect.Parameters["uColor1"].SetValue(Color.Purple.ToVector4() * 0.3f);
+			effect.Parameters["uColor2"].SetValue(Color.DeepPink.ToVector4() * 0.4f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(texWhite, position, frame, Color.White, rotation, origin, scale, 0f, 0f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		}
+	}
+
 	public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
 		const int slotDimensions = 52;

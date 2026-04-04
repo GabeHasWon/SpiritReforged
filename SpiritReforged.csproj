@@ -7,6 +7,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="assets\shaders\GlyphShader.fx" />
     <None Remove="Content\Particles\SharpStarParticle.png" />
   </ItemGroup>
   <ItemGroup>
