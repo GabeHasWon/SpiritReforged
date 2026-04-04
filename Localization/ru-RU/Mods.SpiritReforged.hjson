@@ -78,3 +78,6 @@ InfoDisplays: {
 		Description: Видимость трансмутаций: ВКЛ
 	}
 }
+
+// GreatshieldClass_Class.DisplayName: greatshieldclass damage
+// DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

@@ -78,3 +78,6 @@ InfoDisplays: {
 		Description: 显示微光提示
 	}
 }
+
+// GreatshieldClass_Class.DisplayName: greatshieldclass damage
+// DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

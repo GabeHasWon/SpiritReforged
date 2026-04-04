@@ -78,3 +78,6 @@ InfoDisplays: {
 		Description: Mostrando descrições de itens do Brilhante
 	}
 }
+
+// GreatshieldClass_Class.DisplayName: greatshieldclass damage
+// DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

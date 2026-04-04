@@ -78,3 +78,6 @@ InfoDisplays: {
 		Description: Showing shimmer tooltips
 	}
 }
+
+GreatshieldClass_Class.DisplayName: greatshieldclass damage
+DamageClasses.GreatshieldClass.DisplayName: Greatshield Class
