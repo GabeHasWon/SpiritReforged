@@ -11,12 +11,12 @@ Duststorm: {
 }
 
 Savanna: {
-	DisplayName: Саванна: Savanna
+	DisplayName: Дневная саванна: Fever Trees
 	Author: "{$BySalvati} и {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Ночная саванна: Savanna Night
+	DisplayName: Ночная саванна: Moonlit Meadow
 	Author: "{$BySalvati}"
 }
 
@@ -26,7 +26,7 @@ DeepOcean: {
 }
 
 SavannaOtherworld: {
-	DisplayName: Иная саванна: Otherworldly Savanna Day
+	DisplayName: Иная дневная саванна: Otherworldly Savanna Day
 	Author: "{$By} {$Moonbird}"
 }
 
@@ -36,7 +36,7 @@ SavannaOtherworldNight: {
 }
 
 DuststormOtherworld: {
-	DisplayName: Иная пыльная буря: Otherworldly Dustorm
+	DisplayName: Иная пыльная буря: Otherworldly Duststorm
 	Author: "{$By} jakedastardly"
 }
 
@@ -66,11 +66,11 @@ ScarabeusP2: {
 }
 
 RadioScarab: {
-	DisplayName: Радио: Soaring Complications
+	DisplayName: Soaring Complications (радио-версия)
 	Author: "{$By} {$Sbubby}"
 }
 
 TitleTheme: {
-	// DisplayName: Another Journey (Spirit Title Theme)
-	// Author: "{$By} {$Salvati}"
+	DisplayName: Заглавная тема Spirit: Another Journey
+	Author: "{$By} {$Salvati}"
 }

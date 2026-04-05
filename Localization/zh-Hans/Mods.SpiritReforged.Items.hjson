@@ -2145,7 +2145,7 @@ Thornball: {
 }
 
 SaltBlockDullItem: {
-	DisplayName: 单调盐块
+	DisplayName: 暗淡盐块
 	Tooltip: ""
 }
 
@@ -2301,7 +2301,7 @@ SleightOfHand: {
 }
 
 RuinedSandstonePillarItem: {
-	DisplayName: 残破沙岩柱
+	DisplayName: 废墟沙岩柱
 	Tooltip: ""
 }
 
@@ -2842,7 +2842,7 @@ PaleHiveWallItem: {
 }
 
 GooBlockItem: {
-	DisplayName: 粘胶砖
+	DisplayName: 黏砖
 	Tooltip: ""
 }
 
@@ -2951,11 +2951,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: 甲虫食物
-	Tooltip: 召唤一只小甲虫伙伴
-}
-
 CarrotCake: {
 	DisplayName: 胡萝卜蛋糕
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -2982,7 +2977,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: 宝藏袋（圣甲虫）
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3013,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: 音乐盒（圣甲虫）
 	Tooltip: ""
+
+	Toggle: {
+		0: 阶段 1
+		1: 阶段 2
+	}
 }
 
 SpiritTreeTopper: {
@@ -3041,4 +3041,16 @@ ScarabLightPetItem: {
 		召唤一只甲虫宝宝
 		”尤里卡！“
 		'''
+}
+
+BeetleLicense: {
+	// DisplayName: Beetle License
+	/* Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		''' */
+	// LicenseUse: The license teleports away to the beetle delivery service...
 }

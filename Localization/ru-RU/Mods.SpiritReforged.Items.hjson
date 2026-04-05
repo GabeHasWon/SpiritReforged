@@ -2951,11 +2951,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Скарабейный корм
-	Tooltip: Призывает крошку-скарабея сопровождать вас
-}
-
 CarrotCake: {
 	DisplayName: Морковный торт
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -2982,7 +2977,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Мешок с сокровищами (Скарабеус)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3013,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Музыкальная шкатулка (Скарабеус)
 	Tooltip: ""
+
+	Toggle: {
+		0: Первая фаза
+		1: Вторая фаза
+	}
 }
 
 SpiritTreeTopper: {
@@ -3035,10 +3035,22 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Скарабейная лампочка
+	DisplayName: Погремушка-лампочка
 	Tooltip:
 		'''
 		Призывает Скарабейчика
 		«Эврика!»
 		'''
+}
+
+BeetleLicense: {
+	// DisplayName: Beetle License
+	/* Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		''' */
+	// LicenseUse: The license teleports away to the beetle delivery service...
 }

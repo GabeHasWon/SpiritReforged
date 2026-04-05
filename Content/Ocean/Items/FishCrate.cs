@@ -32,14 +32,14 @@ public class FishCrate : FloatingItem
 
 	public override void ModifyItemLoot(ItemLoot itemLoot)
 	{
-		itemLoot.Add(DropRules.LootPoolDrop.SameStack(3, 4, 1, 1, 1, ItemID.Shrimp, ItemID.Salmon, ItemID.Bass, ItemID.RedSnapper, ItemID.Trout));
-		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 2, 1, 4, 1, ItemID.Damselfish, ItemID.DoubleCod, ItemID.ArmoredCavefish, ItemID.FrostMinnow));
+		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 3, 4, 1, 1, ItemID.Shrimp, ItemID.Salmon, ItemID.Bass, ItemID.RedSnapper, ItemID.Trout));
+		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 1, 2, 4, 1, ItemID.Damselfish, ItemID.DoubleCod, ItemID.ArmoredCavefish, ItemID.FrostMinnow));
 		itemLoot.AddOneFromOptions(27, ItemID.ReaverShark, ItemID.Swordfish, ItemID.SawtoothShark);
 		itemLoot.AddOneFromOptions<Vanity.DiverSet.DiverLegs, Vanity.DiverSet.DiverBody, Vanity.DiverSet.DiverHead>(14);
-		itemLoot.Add(DropRules.LootPoolDrop.SameStack(9, 12, 1, 3, 1, ItemID.FrostDaggerfish, ItemID.BombFish));
+		itemLoot.Add(DropRules.LootPoolDrop.SameStack(1, 9, 12, 3, 1, ItemID.FrostDaggerfish, ItemID.BombFish));
 
 		LeadingConditionRule isHardmode = new LeadingConditionRule(new Conditions.IsHardmode());
-		isHardmode.OnSuccess(DropRules.LootPoolDrop.SameStack(1, 3, 1, 10, 1, ItemID.FlarefinKoi, ItemID.Obsidifish, ItemID.Prismite, ItemID.PrincessFish));
+		isHardmode.OnSuccess(DropRules.LootPoolDrop.SameStack(1, 1, 3, 10, 1, ItemID.FlarefinKoi, ItemID.Obsidifish, ItemID.Prismite, ItemID.PrincessFish));
 		itemLoot.Add(isHardmode);
 
 		itemLoot.AddCommon(ItemID.SilverCoin, 3, 40, 91);

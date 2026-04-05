@@ -4,7 +4,7 @@ using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
 
-public class TileEvents : GlobalTile
+public sealed class TileEvents : GlobalTile
 {
 	public delegate void TileDelegate(int i, int j, int type);
 
@@ -12,6 +12,7 @@ public class TileEvents : GlobalTile
 	public delegate void KillTileDelegate(int i, int j, int type, ref bool fail, ref bool effectOnly);
 	public delegate bool TileFrameDelegate(int i, int j, int type, ref bool resetFrame, ref bool noBreak);
 	public delegate void NearbyDelegate(int i, int j, int type, bool closer);
+	public delegate bool SwitchMusicBoxDelegate(int i, int j, int type);
 
 	/// <summary> Return false to prevent orig and end the enumeration. </summary>
 	/// <param name="i"> The X coordinate. </param>
@@ -26,6 +27,7 @@ public class TileEvents : GlobalTile
 	public static event TileDelegate OnRandomUpdate;
 	public static event NearbyDelegate OnNearby;
 	public static event PlacePotDelegate OnPlacePot;
+	public static event SwitchMusicBoxDelegate OnSwitchMusicBox;
 
 	/// <summary>
 	/// Used to avoid recursion when using <see cref="WorldGen.PlacePot(int, int, ushort, int)"/> in an <see cref="OnPlacePot"/> call.
@@ -78,6 +80,7 @@ public class TileEvents : GlobalTile
 		On_TileDrawing.PreDrawTiles += PreDrawTilesDetour;
 		On_WorldGen.PlaceTile += PlaceTileDetour;
 		On_WorldGen.PlacePot += PlacePotDetour;
+		On_WorldGen.SwitchMB += SwitchMusicBoxDetour;
 
 		var type = typeof(Mod).Assembly.GetType("Terraria.ModLoader.TileLoader");
 		MethodInfo info = type.GetMethod("TileFrame", BindingFlags.Static | BindingFlags.Public, [typeof(int), typeof(int), typeof(int), typeof(bool).MakeByRefType(), typeof(bool).MakeByRefType()]);
@@ -111,6 +114,21 @@ public class TileEvents : GlobalTile
 		}
 
 		return orig(x, y, type, style);
+	}
+
+	private static void SwitchMusicBoxDetour(On_WorldGen.orig_SwitchMB orig, int i, int j)
+	{
+		if (OnSwitchMusicBox != null)
+		{
+			var enumerator = OnSwitchMusicBox.GetInvocationList().GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				if (enumerator.Current is SwitchMusicBoxDelegate dele && !dele.Invoke(i, j, Main.tile[i, j].TileType))
+					return;
+			}
+		}
+
+		orig(i, j);
 	}
 
 	private static bool HookTileFrame(TileFrameDelegate orig, int i, int j, int type, ref bool resetFrame, ref bool noBreak)

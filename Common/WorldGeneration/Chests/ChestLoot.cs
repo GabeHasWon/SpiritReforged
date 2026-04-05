@@ -6,18 +6,17 @@ using SpiritReforged.Content.Jungle.Misc.DyeCrate;
 using SpiritReforged.Content.Jungle.Toucane;
 using SpiritReforged.Content.Ocean.Items.PoolNoodle;
 using SpiritReforged.Content.Ocean.Items.Vanity;
-using SpiritReforged.Content.Ocean.Items.Vanity.Towel;
 using SpiritReforged.Content.Underground.Items.BoulderClub;
 using SpiritReforged.Content.Underground.Items.ExplorerTreads;
 using SpiritReforged.Content.Underground.Items.Zipline;
 using SpiritReforged.Content.Forest.MagicPowder;
-using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Underworld.Blasphemer;
 using SpiritReforged.Content.Underground.Items.FingerGun;
 using SpiritReforged.Content.Granite.Vanity;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 

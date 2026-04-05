@@ -2942,11 +2942,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Comida de Escaravelho
-	Tooltip: Invoca um pequeno companheiro escaravelho!
-}
-
 CarrotCake: {
 	DisplayName: Bolo de Cenoura
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -3004,6 +2999,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Caixinha de Música (Escarabeus)
 	Tooltip: ""
+
+	Toggle: {
+		// 0: Phase One
+		// 1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {
@@ -3032,4 +3032,16 @@ ScarabLightPetItem: {
 		Invoca um pequeno Escarabebêus!
 		'Eureca!'
 		'''
+}
+
+BeetleLicense: {
+	// DisplayName: Beetle License
+	/* Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		''' */
+	// LicenseUse: The license teleports away to the beetle delivery service...
 }

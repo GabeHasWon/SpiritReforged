@@ -28,5 +28,6 @@ public class BagOScarabs : ModItem
 		itemLoot.Add(ItemDropRule.CoinsBasedOnNPCValue(ModContent.NPCType<Scarabeus>()));
 		itemLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabLightPetItem>()));
 		itemLoot.Add(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
+		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<BeetleLicense>(), 4));
 	}
 }

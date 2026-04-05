@@ -2951,11 +2951,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Scarab Food
-	Tooltip: Summons a little Scarab companion
-}
-
 CarrotCake: {
 	DisplayName: Carrot Cake
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -3013,6 +3008,11 @@ SpaceHeater: {
 ScarabMusicBox: {
 	DisplayName: Music Box (Scarabeus)
 	Tooltip: ""
+
+	Toggle: {
+		0: Phase One
+		1: Phase Two
+	}
 }
 
 SpiritTreeTopper: {
@@ -3041,4 +3041,16 @@ ScarabLightPetItem: {
 		Summons a Scarababy
 		'Eureka!'
 		'''
+}
+
+BeetleLicense: {
+	DisplayName: Beetle License
+	Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		'''
+	LicenseUse: The license teleports away to the beetle delivery service...
 }

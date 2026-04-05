@@ -2079,7 +2079,7 @@ public partial class Scarabeus : ModNPC
 				KickupDust(ground, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), ParticleLayer.AboveNPC);
 			}
 
-			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, GetProjectileDamage(STAT_DIG_EMERGE_DEBRIS_DAMAGE), 3, Main.myPlayer, groundPos.X, groundPos.Y, speedScalingMod);
+			Projectile.NewProjectile(NPC.GetSource_FromThis(), ground, velocity, projectileType, GetProjectileDamage(STAT_DIG_EMERGE_DEBRIS_DAMAGE), 3, Main.myPlayer, groundPos.X, groundPos.Y + 4, speedScalingMod);
 		}		
 	}
 	#endregion
