@@ -103,17 +103,24 @@ public class GlyphGlobalItem : GlobalItem
 			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 			effect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
 
-			var noiseSwirl = AssetLoader.LoadedTextures["swirlNoise2"].Value;
+			var noise = AssetLoader.LoadedTextures["swirlNoise2"].Value;
 			//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
-			var noiseAlt = AssetLoader.LoadedTextures["swirlNoise"].Value;
+			var noiseAlt = AssetLoader.LoadedTextures["noiseCrystal"].Value;
 
-			effect.Parameters["uImage1"].SetValue(noiseSwirl);
+			effect.Parameters["uImage1"].SetValue(noise);
 			effect.Parameters["uImage2"].SetValue(noiseAlt);
 			//effect.Parameters["uImage3"].SetValue(gradient);
 			effect.Parameters["itemSize"].SetValue(texture.Size());
 
-			effect.Parameters["uColor1"].SetValue(Color.Purple.ToVector4() * 0.3f);
-			effect.Parameters["uColor2"].SetValue(Color.DeepPink.ToVector4() * 0.4f);
+			float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+			float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+			effect.Parameters["uColor1"].SetValue(Color.Lerp(Color.BlueViolet, Color.Purple, sin).ToVector4() * 0.5f);
+			effect.Parameters["uColor2"].SetValue(Color.Lerp(Color.DeepPink, Color.DarkCyan, cos).ToVector4() * 0.5f);
+			effect.Parameters["uColor3"].SetValue(Color.LightPink.ToVector4());
+
+			effect.Parameters["baseDepth"].SetValue(8f);
+			effect.Parameters["scale"].SetValue(0.5f);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);

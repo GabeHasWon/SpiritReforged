@@ -33,12 +33,14 @@ sampler2D uImage3Sampler = sampler_state
     AddressV = clamp;
 };
 
-
+float baseDepth;
 float time;
 float intensity;
+float scale;
 float2 screenPos;
 float4 uColor1;
 float4 uColor2;
+float4 uColor3; // shine color
 
 float2 itemSize; // size of the item texture
 
@@ -50,7 +52,7 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     
     float2 pixelSize = float2(1.0 / itemSize.x, 1.0 / itemSize.y);
     
-    float depth = 8 * (1.0 + intensity * 3);
+    float depth = baseDepth * (1.0 + intensity * 3);
     float2 offset = pixelSize * depth;
     
     // takes the sum of the alphas around the item sprite
@@ -80,7 +82,8 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     float2 pixelatedUV = floor(uv * itemSize) / itemSize / 4.0;
     
     float2 scrollingUV = pixelatedUV + float2(time / 6.28f, time / 6.28f);
-    float4 noise = tex2D(uImage1Sampler, screenPos + scrollingUV);
+    
+    float4 noise = tex2D(uImage1Sampler, (screenPos + scrollingUV) * scale);
     
     float iriOffset = (sin((noise.r + time * 0.5) * 6.2831) * 0.5) + 0.5;
     // iridecent noise texture
@@ -99,7 +102,17 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     finalColor *= interpolant;
     finalColor.rgb *= interpolant;
     
+    // make the edges a bit brighter in color
+    if (interpolant > 0.75)
+        finalColor.rgb *= 1.0 + 0.5 * (interpolant - 0.75) / 0.25;
+    
     //finalColor.a = 0;
+    
+    float brightness = finalColor.r + finalColor.g + finalColor.b;
+    
+    // lerp brighter colors towards the shine color
+    if (brightness > 1.0)
+        finalColor = lerp(finalColor, uColor3, (brightness - 1.0) / 2.0);
     
     return finalColor;
 }
