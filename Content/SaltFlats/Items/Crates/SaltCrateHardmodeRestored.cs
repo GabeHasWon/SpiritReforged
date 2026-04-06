@@ -23,5 +23,21 @@ public class SaltCrateHardmodeRestored : ModItem
 	}
 
 	public override bool CanRightClick() => true;
-	public override void ModifyItemLoot(ItemLoot itemLoot) => SaltCrate.ModifyLoot(itemLoot);
+
+	public override void ModifyItemLoot(ItemLoot itemLoot)
+	{
+		int[] dropOptions = [ModContent.ItemType<MahakalaMaskBlue>(),
+			ModContent.ItemType<MahakalaMaskRed>(),
+			ModContent.ItemType<BoStaff>(),
+			ItemID.CloudinaBottle,
+			ItemID.WaterWalkingBoots];
+
+		IItemDropRule main = ItemDropRule.OneFromOptions(1, dropOptions);
+
+		itemLoot.AddCommon(ItemID.LawnFlamingo, 5);
+
+		CrateHelper.HardmodeBiomeCrate(itemLoot, main,
+			ItemDropRule.NotScalingWithLuck(AutoContent.ItemType<SaltBlockDull>(), 3, 20, 50),
+			ItemDropRule.NotScalingWithLuck(AutoContent.ItemType<Drywood>(), 3, 20, 50));
+	}
 }

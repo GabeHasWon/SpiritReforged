@@ -570,8 +570,15 @@ VeiledZombie: {
 	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
-Cricket.DisplayName: 蟋蟀
-GoldCricket.DisplayName: 金蟋蟀
+Cricket: {
+	DisplayName: 蟋蟀
+	// Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+}
+
+GoldCricket: {
+	DisplayName: 金蟋蟀
+	// Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+}
 
 BeetleTownPet: {
 	// DisplayName: Beetle

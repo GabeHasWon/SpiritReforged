@@ -26,6 +26,7 @@ public class SaltCrateHardmode : ModItem
 	}
 
 	public override bool CanRightClick() => true;
+
 	public static void ModifyLoot(ItemLoot itemLoot)
 	{
 		int[] dropOptions = [ModContent.ItemType<MahakalaMaskBlue>(),

@@ -26,7 +26,7 @@ public class GoldenBrineShrimp : BrineShrimp, IGoldCritter
 		NPC.noGravity = true;
 		NPC.npcSlots = 0;
 		NPC.dontCountMe = true;
-		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
+		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");

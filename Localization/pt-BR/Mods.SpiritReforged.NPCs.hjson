@@ -570,8 +570,15 @@ VeiledZombie: {
 	Entry: Vestir-se adequadamente para enfrentar o calor é apenas uma parte da sobrevivência no deserto. Levar comida e água é um passo essencial que não deve ser negligenciado.
 }
 
-Cricket.DisplayName: Grilo
-GoldCricket.DisplayName: Grilo de Ouro
+Cricket: {
+	DisplayName: Grilo
+	// Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+}
+
+GoldCricket: {
+	DisplayName: Grilo de Ouro
+	// Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+}
 
 BeetleTownPet: {
 	// DisplayName: Beetle

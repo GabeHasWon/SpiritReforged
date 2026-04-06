@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Conjures a blizzard in front of you
-		Ignores 5 points of enemy Defense
+		Ignores 10 points of enemy Defense
 		'''
 }
 
@@ -3053,4 +3053,9 @@ BeetleLicense: {
 		Find the perfect fit for you and your beetle!
 		'''
 	LicenseUse: The license teleports away to the beetle delivery service...
+}
+
+GooeyHiveItem: {
+	DisplayName: Gooey Hive
+	Tooltip: ""
 }
