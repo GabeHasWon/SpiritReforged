@@ -1,23 +1,21 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.UI.Misc;
-using SpiritReforged.Common.UI.System;
+﻿using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
 using System.Linq;
 using Terraria.UI;
 
-namespace SpiritReforged.Common.UI;
+namespace SpiritReforged.Common.UI.Misc;
 
-public class EnchantedAnvilState : AutoUIState
+public class EnchantmentUI : AutoUIState
 {
 	public class GlyphButton : UIElement
 	{
-		private readonly int _itemType;
+		public readonly int itemType;
+		private float _hoverTime;
 
 		public GlyphButton(int itemType)
 		{
-			_itemType = itemType;
+			this.itemType = itemType;
 
 			Width.Set(28, 0);
 			Height.Set(28, 0);
@@ -25,26 +23,29 @@ public class EnchantedAnvilState : AutoUIState
 
 		public override void Update(GameTime gameTime)
 		{
+			base.Update(gameTime);
+
 			if (IsMouseHovering)
 			{
-				if (Main.mouseLeft && Main.mouseLeftRelease)
-				{
-
-				}
+				_hoverTime = Math.Min(_hoverTime + 0.1f, 1);
+			}
+			else
+			{
+				_hoverTime = Math.Max(_hoverTime - 0.1f, 0);
 			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Texture2D texture = TextureAssets.Item[_itemType].Value;
-			Vector2 center = GetDimensions().Center();
+			Texture2D texture = TextureAssets.Item[itemType].Value;
+			Vector2 center = GetDimensions().Center() - new Vector2(0, _hoverTime * 4);
 
 			if (IsMouseHovering)
 			{
 				DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
 				{
 					Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
-					Color outlineColor = ItemLoader.GetItem(_itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
+					Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
 
 					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor, 0, texture.Size() / 2, 1, 0, 0);
 				});
@@ -54,17 +55,22 @@ public class EnchantedAnvilState : AutoUIState
 		}
 	}
 
+	private static readonly Asset<Texture2D> Background = DrawHelpers.RequestLocal<EnchantmentUI>("EnchantmentUI_Background", false);
+
+	private readonly List<GlyphButton> _glyphButtons = [];
 	private BasicItemSlot _slot;
 	private float _animationProgress;
-	private readonly List<GlyphButton> _glyphButtons = [];
 
 	public override void OnInitialize()
 	{
-		Width = Height = StyleDimension.Fill;
+		Width = Height = new StyleDimension(200, 0);
+		HAlign = 0.5f;
+		VAlign = 0.6f;
 
-		_slot = new(new Item());
+		_slot = new(new Item(), ItemSlot.Context.CreativeSacrifice);
 		_slot.Left = new StyleDimension(-(_slot.Width.Pixels / 2), 0.5f);
 		_slot.Top = new StyleDimension(-(_slot.Height.Pixels / 2), 0.5f);
+
 		OverrideSamplerState = SamplerState.PointClamp;
 		Append(_slot);
 	}
@@ -72,7 +78,7 @@ public class EnchantedAnvilState : AutoUIState
 	public override void Update(GameTime gameTime)
 	{
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
-			UISystem.SetInactive<EnchantedAnvilState>();
+			UISystem.SetInactive<EnchantmentUI>();
 
 		if (_slot.Item.IsAir)
 		{
@@ -89,21 +95,18 @@ public class EnchantedAnvilState : AutoUIState
 			_animationProgress = MathHelper.Min(_animationProgress + 0.025f, 1);
 		}
 
-		int count = _glyphButtons.Count;
-		for (int i = 0; i < count; i++)
-		{
-			GlyphButton button = _glyphButtons[i];
-			Vector2 origin = button.GetDimensions().ToRectangle().Size() / 2;
-
-			float rotation = MathHelper.PiOver2 * ((float)(i / (count - 1f)) - 0.5f);
-			Vector2 targetPosition = _slot.GetDimensions().Center() + new Vector2(0, -100).RotatedBy(rotation);
-
-			var lerpPosition = Vector2.Lerp(button.GetDimensions().Center(), targetPosition, EaseFunction.EaseCircularInOut.Ease(_animationProgress)) - origin; //Lerp to position
-			button.Left.Set(lerpPosition.X, 0);
-			button.Top.Set(lerpPosition.Y, 0);
-		}
-
 		base.Update(gameTime);
+	}
+
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		Texture2D texture = Background.Value;
+		Vector2 center = GetDimensions().Center();
+
+		spriteBatch.Draw(texture, center + new Vector2(0, 40), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
+		Utils.DrawBorderString(spriteBatch, "Enchant", center + new Vector2(0, 86), Main.MouseTextColorReal, 0.9f, 0.5f);
+
+		base.Draw(spriteBatch);
 	}
 
 	private void AddButtons()
@@ -113,8 +116,9 @@ public class EnchantedAnvilState : AutoUIState
 		for (int i = 0; i < itemTypes.Length; i++)
 		{
 			GlyphButton button = new(itemTypes[i]);
-			button.Left.Set(0, 0.5f);
-			button.Top.Set(0, 0.5f);
+			button.Left.Set((button.Width.Pixels + 8) * (i - itemTypes.Length * 0.5f), 0.5f);
+			button.Top.Set(40, 0.5f);
+			button.OnLeftClick += OnClickButton;
 
 			_glyphButtons.Add(button);
 			Append(button);
@@ -131,9 +135,17 @@ public class EnchantedAnvilState : AutoUIState
 		}
 	}
 
+	private void OnClickButton(UIMouseEvent evt, UIElement listeningElement)
+	{
+		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
+		{
+			glyphItem.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+		}
+	}
+
 	private static void CreateGlyphs(int count, out int[] itemTypes)
 	{
-		List<GlyphItem> glyphItems = ModContent.GetContent<GlyphItem>().ToList();
+		List<GlyphItem> glyphItems = ModContent.GetContent<GlyphItem>().Where(static x => x is not NullGlyph).ToList();
 		List<int> result = [];
 
 		for (int c = 0; c < count; c++)

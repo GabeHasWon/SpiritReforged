@@ -1,6 +1,5 @@
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.UI;
+using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
@@ -34,7 +33,7 @@ public class EnchantedAnvil : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		UISystem.SetActive<EnchantedAnvilState>();
+		UISystem.SetActive<EnchantmentUI>();
 		Main.playerInventory = true;
 
 		return true;
@@ -45,7 +44,7 @@ public class EnchantedAnvil : ModTile
 		if (!closer && TileObjectData.IsTopLeft(i, j))
 		{
 			if (Main.LocalPlayer.DistanceSQ(new Vector2(i + 1, j) * 16) > 100 * 100)
-				UISystem.SetInactive<EnchantedAnvilState>();
+				UISystem.SetInactive<EnchantmentUI>();
 		}
 	}
 
