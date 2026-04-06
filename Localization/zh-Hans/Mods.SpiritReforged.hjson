@@ -78,3 +78,5 @@ InfoDisplays: {
 		Description: 显示微光提示
 	}
 }
+
+// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

@@ -78,3 +78,5 @@ InfoDisplays: {
 		Description: Showing shimmer tooltips
 	}
 }
+
+DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

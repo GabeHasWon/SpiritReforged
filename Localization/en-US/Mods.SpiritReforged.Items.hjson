@@ -3084,3 +3084,26 @@ StormGlyph: {
 	Tooltip: Attacks occasionally release a forceful gust of wind
 	Effect: Billowed
 }
+
+MoonlightGlyph: {
+	DisplayName: Moonlight Glyph
+	Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		'''
+	Effect: Dazzling
+}
+
+RotGlyph: {
+	DisplayName: Rot Glyph
+	Tooltip: Attacks inflict a contagious blight
+	Effect: Blighted
+}
+
+ShockGlyph: {
+	DisplayName: Shock Glyph
+	Tooltip: Critical strikes shock nearby enemies
+	Effect: Shocking
+}

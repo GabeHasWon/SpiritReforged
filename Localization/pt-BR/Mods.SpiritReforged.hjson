@@ -78,3 +78,5 @@ InfoDisplays: {
 		Description: Mostrando descrições de itens do Brilhante
 	}
 }
+
+// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

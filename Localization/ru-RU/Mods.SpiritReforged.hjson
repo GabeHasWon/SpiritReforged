@@ -78,3 +78,5 @@ InfoDisplays: {
 		Description: Видимость трансмутаций: ВКЛ
 	}
 }
+
+// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
