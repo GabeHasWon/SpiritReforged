@@ -7,7 +7,11 @@ public class ScarabeusBossBar : ModBossBar
 {
 	public override bool PreDraw(SpriteBatch spriteBatch, NPC npc, ref BossBarDrawParams drawParams)
 	{
-		var icon = TextureAssets.NpcHeadBoss[npc.GetBossHeadTextureIndex()].Value;
+		int bossHeadIndex = npc.GetBossHeadTextureIndex();
+		if (bossHeadIndex == -1) //Failsafe
+			bossHeadIndex = NPCID.Sets.BossHeadTextures[npc.type];
+
+		var icon = TextureAssets.NpcHeadBoss[bossHeadIndex].Value;
 		drawParams.IconTexture = icon;
 		drawParams.IconFrame = icon.Frame();
 
@@ -23,18 +27,10 @@ public class ScarabeusBossBar : ModBossBar
 
 	public override void PostDraw(SpriteBatch spriteBatch, NPC npc, BossBarDrawParams drawParams)
 	{
-		if (npc is null)
-			return;
-
-		if (npc.ModNPC is not Scarabeus)
-			return;
-
-		var scarab = npc.ModNPC as Scarabeus;
-
-		if (scarab.CurrentState == Scarabeus.AIState.PhaseTransitionAnim && scarab.Profile == Scarabeus.TakeoffProfile)
+		if (npc != null && npc.ModNPC is Scarabeus scarabeus && scarabeus.CurrentState == Scarabeus.AIState.PhaseTransitionAnim && scarabeus.Profile == Scarabeus.TakeoffProfile)
 		{
 			Texture2D texture = ParticleHandler.GetTexture(ParticleHandler.TypeOf<FireSploshion>());
-			Rectangle source = texture.Frame(2, 7, 0, (int)(scarab.Counter / 30f * 6));
+			Rectangle source = texture.Frame(2, 7, 0, (int)(scarabeus.Counter / 30f * 6));
 
 			spriteBatch.Draw(texture, drawParams.BarCenter - new Vector2(drawParams.BarTexture.Width / 2 - 14, 0), source, Color.White, 0, source.Size() / 2, 1, 0, 0);
 		}
