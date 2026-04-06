@@ -3098,3 +3098,14 @@ ShockGlyph: {
 	// Tooltip: Critical strikes shock nearby enemies
 	// Effect: Shocking
 }
+
+BeeGlyph: {
+	// DisplayName: Bee Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		''' */
+	// Effect: Buzzing
+}
