@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.PlayerCommon;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Greatshields;
 
@@ -30,7 +31,7 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		Vector2 headOffset = Main.OffsetsPlayerOffhand[currentFrame]; // "Animates" the shield with position offsets
 		bool right = plr.direction == 1;
 		float xOffset = right ? 8 : 0; // Hardcoded specific offset because it's not centered properly when flipped
-		float rotation = plr.AngleTo(Main.MouseWorld);
+		float rotation = plr.AngleTo(PlayerMouseHandler.GetMouse(plr.whoAmI));
 		float functionalRotation = rotation; // Rotation used for the aim direction instead of sprite rotation
 
 		if (plr.direction == -1)
@@ -39,35 +40,16 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		// This block handles actually animating the shield, w/ tweakable parameters
 		if (plr.ItemAnimationActive)
 		{
-			const float Anticipation = 0.4f;
-			const float Push = 0.15f;
-
-			const float AnticipationRotation = 0.2f;
-
-			float factor = 1 - plr.itemAnimation / (float)plr.itemAnimationMax;
-
-			if (factor < Anticipation)
-			{
-				factor = MathHelper.Lerp(0, -0.4f, factor / Anticipation);
-				rotation += MathHelper.Lerp(0, AnticipationRotation * -plr.direction, factor / Anticipation);
-			}
-			else if (factor < Anticipation + Push)
-			{
-				factor = MathHelper.Lerp(-0.1f, 1f, (factor - Anticipation) / Push);
-				rotation += MathHelper.Lerp(AnticipationRotation * -plr.direction, 0, (factor - Anticipation) / Push);
-			}
-			else
-				factor = MathHelper.Lerp(1, 0, (factor - (Push + Anticipation)) / (1 - (Push + Anticipation)));
+			rotation = GetShieldAnimationData(plr, rotation, out float factor);
 
 			int sign = Math.Sign(xOffset);
-
 			if (sign == 0)
 				sign = 1;
 
-			xOffset += factor * 12 * sign;
+			xOffset += factor * 10 * sign;
 		}
 
-		var basicOffset = new Vector2(0, 28) + new Vector2(12 + xOffset, 0).RotatedBy(functionalRotation);
+		var basicOffset = new Vector2(0, 28) + new Vector2(12 + xOffset, 0).RotatedBy(functionalRotation) * new Vector2(1, 0.8f);
 
 		if (currentFrame == JumpFrame)
 			basicOffset.Y += 8;
@@ -80,5 +62,29 @@ internal class GreatshieldLayer : PlayerDrawLayer
 
 		shield.ModifyLayerDrawing(ref data);
 		drawInfo.DrawDataCache.Add(data);
+	}
+
+	internal static float GetShieldAnimationData(Player plr, float rotation, out float factor)
+	{
+		const float Anticipation = 0.4f;
+		const float Push = 0.15f;
+
+		const float AnticipationRotation = 0.2f;
+
+		factor = 1 - plr.itemAnimation / (float)plr.itemAnimationMax;
+		if (factor < Anticipation)
+		{
+			factor = MathHelper.Lerp(0, -0.4f, factor / Anticipation);
+			rotation += MathHelper.Lerp(0, AnticipationRotation * -plr.direction, factor / Anticipation);
+		}
+		else if (factor < Anticipation + Push)
+		{
+			factor = MathHelper.Lerp(-0.1f, 1f, (factor - Anticipation) / Push);
+			rotation += MathHelper.Lerp(AnticipationRotation * -plr.direction, 0, (factor - Anticipation) / Push);
+		}
+		else
+			factor = MathHelper.Lerp(1, 0, (factor - (Push + Anticipation)) / (1 - (Push + Anticipation)));
+
+		return rotation;
 	}
 }
