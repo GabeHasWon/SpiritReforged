@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		在你的前方变出暴雪
-		无视敌人5点的防御力
+		无视敌人10点的防御力
 		'''
 }
 
@@ -3056,6 +3056,6 @@ BeetleLicense: {
 }
 
 GooeyHiveItem: {
-	// DisplayName: Gooey Hive
-	// Tooltip: ""
+	DisplayName: 黏糊蜂巢
+	Tooltip: ""
 }
