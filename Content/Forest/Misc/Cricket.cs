@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using Terraria;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -20,6 +21,8 @@ public class Cricket : ModNPC, ISubstitute
 		NPC.CloneDefaults(NPCID.Grasshopper);
 		AnimationType = NPCID.Grasshopper;
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
 
 	public virtual void CreateItemDefaults() =>
 		ItemEvents.CreateItemDefaults(

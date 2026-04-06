@@ -616,6 +616,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>(), ModContent.ItemType<LocustCrook>()));
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
@@ -624,7 +625,6 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
-		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
 
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));

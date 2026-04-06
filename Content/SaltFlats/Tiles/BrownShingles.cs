@@ -11,6 +11,8 @@ public class BrownShingles : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		TileID.Sets.DrawsWalls[Type] = true; // Stops niche issue with the frameY offset in the method below
+
 		AddMapEntry(new Color(60, 45, 40));
 		DustType = DustID.BrownMoss;
 	}

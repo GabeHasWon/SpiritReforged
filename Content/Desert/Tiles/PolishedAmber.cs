@@ -64,6 +64,8 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		}
 	}
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(10).AddIngredient(ItemID.Amber).AddTile(TileID.WorkBenches).Register();

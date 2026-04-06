@@ -24,6 +24,7 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		PitchVariance = 0.2f
 	};
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 5;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddIngredient(ItemID.Torch, 1).Register();
 
 	public override void SetStaticDefaults()
@@ -56,8 +57,6 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 
 		DustType = -1;
 		AdjTiles = [TileID.Torches];
-
-		this.AutoItem().ResearchUnlockCount = 5;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
