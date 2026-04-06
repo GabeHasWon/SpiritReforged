@@ -199,12 +199,16 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
 					{
 						if (StartDuoFight && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFightManager))
+						{
 							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+							if (Main.getGoodWorld)
+								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+						}
 						else
 						{
 							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
 							if (Main.getGoodWorld)
-								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2 : 1);
+								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2: 1);
 						}
 					}
 

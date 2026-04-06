@@ -21,6 +21,20 @@ public partial class Scarabeus : ModNPC
 		get => desertScourge != null;
 	}
 
+	public bool StandingStillWaitingToGetEatenByScourge
+	{
+		get
+		{
+			if (!FightingDScourge)
+				return false;
+
+			if (CurrentState == AIState.DuoFightDeathSwarm)
+				return true;
+
+			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
+		}
+	}
+
 	private int scourgeFightManagerIndex = -1;
 	public ModNPC scourgeFightManager;
 	private NPC _cachedDesertScourge;
@@ -44,7 +58,6 @@ public partial class Scarabeus : ModNPC
 
 	public static object HandleModCall(object[] args)
 	{
-		//???
 		if (args.Length < 2 || args[1] is not string instruction)
 			return null;
 
@@ -477,20 +490,6 @@ public partial class Scarabeus : ModNPC
 	public void DuoFightMicroBurnOnScourge()
 	{
 		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "inflictScourgeMicroburn", scourgeFightManager);
-	}
-
-	public bool StandingStillWaitingToGetEatenByScourge
-	{
-		get
-		{
-			if (!FightingDScourge)
-				return false;
-
-			if (CurrentState == AIState.DuoFightDeathSwarm)
-				return true;
-
-			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
-		}
 	}
 
 	public void DuoFightGetPukedOut(Vector2 vomitPosition, Vector2 spitTarget)
