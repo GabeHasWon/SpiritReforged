@@ -2,6 +2,8 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -114,7 +116,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		public override void OnKill(int timeLeft)
 		{
 			if (TileEntity.ByID[TileEntityID] is ScarabAltarEntity entity)
-				entity.Interact();
+			{
+				bool isFablesItem = CrossMod.Fables.Enabled && _fablesStormlionItems[ItemType];
+				entity.Interact(isFablesItem);
+			}
 		}
 
 		public override bool? CanDamage() => false;
@@ -150,6 +155,11 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			Volume = 0.25f 
 		};
 
+		public static readonly SoundStyle AnticipationWeird = new("SpiritReforged/Assets/SFX/Tile/WackyDissonantChime")
+		{
+			Volume = 0.65f
+		};
+
 		public override string Texture => AssetLoader.EmptyTexture;
 
 		public int MaxTime
@@ -160,6 +170,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		public ref float Time => ref Projectile.ai[1];
 
 		public ref float GemCount => ref Projectile.ai[2];
+
+		public bool StartDuoFight => CrossMod.Fables.Enabled && Projectile.ai[2] == 666;
 
 		public float FlashTime;
 		private bool _justSpawned = true;
@@ -186,15 +198,24 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
 					{
-						NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
-						if (Main.getGoodWorld)
-							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2 : 1);
+						if (StartDuoFight && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFightManager))
+						{
+							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+							if (Main.getGoodWorld)
+								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, duoFightManager.Type);
+						}
+						else
+						{
+							NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>());
+							if (Main.getGoodWorld)
+								NPC.NewNPCDirect(Projectile.GetSource_Death(), Projectile.Center, ModContent.NPCType<Scarabeus>(), ai2: 1);
+						}
 					}
 
 					Projectile.timeLeft = MaxTime / 2;
 					_justSpawned = false;
 
-					SoundEngine.PlaySound(Anticipation with { Pitch = 0.1f, Volume = 0.25f }, Projectile.Center);
+					SoundEngine.PlaySound(StartDuoFight ? AnticipationWeird : Anticipation, Projectile.Center);
 
 					if (!Main.dedServ)
 						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));
@@ -333,6 +354,10 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	#endregion
 
 	private int[] _hoverTypes;
+	private static bool[] _fablesStormlionItems;
+	private static bool[] _fablesSpawnBlockingNPCs;
+	private static int _fablesDeadStormlionLarvaType = -1;
+	private static int _fablesStormlionBucketType = -1;
 
 	void IAutoloadTileItem.AddItemRecipes(ModItem item)
 	{
@@ -367,6 +392,27 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		AddMapEntry(new Color(124, 24, 28), Language.GetText("Mods.SpiritReforged.Items.ScarabAltarItem.DisplayName"));
 		DustType = -1;
 		MinPick = 55;
+
+		//Load the stormlion items from fables
+		if (CrossMod.Fables.Enabled &&
+			CrossMod.Fables.TryFind("DeadStormlionLarvaItem", out ModItem deadLarva) &&
+			CrossMod.Fables.TryFind("StormlionLarvaItem", out ModItem aliveLarva) &&
+			CrossMod.Fables.TryFind("BucketOfLarvae", out ModItem larvaBucket))
+		{
+			_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(deadLarva.Type, aliveLarva.Type, larvaBucket.Type);
+			_fablesStormlionBucketType = larvaBucket.Type;
+			_fablesDeadStormlionLarvaType = deadLarva.Type;
+		}
+		else
+			_fablesStormlionItems = ItemID.Sets.Factory.CreateBoolSet(false);
+
+		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("DesertScourge", out ModNPC dscourge) &&
+			CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC duoFight))
+		{
+			_fablesSpawnBlockingNPCs = NPCID.Sets.Factory.CreateBoolSet(dscourge.Type, duoFight.Type);
+		}
+		else
+			_fablesSpawnBlockingNPCs = NPCID.Sets.Factory.CreateBoolSet(false);
 	}
 
 	public override bool CanExplode(int i, int j) => false;
@@ -391,19 +437,53 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
 	}
 
+	public bool CanRecieveOfferings
+	{
+		get
+		{
+			if (!Main.dayTime || BeamOLight.Enabled)
+				return false;
+			if (!Main.LocalPlayer.ZoneDesert)
+				return false;
+
+			//Can't use the altar while scourge is already spawned. To summon Scarab & Scourge at once, you must use the stormlion offering feature
+			if (CrossMod.Fables.Enabled)
+			{
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					if (Main.npc[i].active && _fablesSpawnBlockingNPCs[Main.npc[i].type])
+						return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
 	public override bool RightClick(int i, int j)
 	{
 		int projectileType = ModContent.ProjectileType<FloatingGem>();
 
-		if (Main.dayTime && !BeamOLight.Enabled && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity 
-			&& entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] < ScarabAltarEntity.ConsumableCountMax)
+		if (CanRecieveOfferings && FindSacrifice(Main.LocalPlayer, out Item result) && Entity(i, j) is ScarabAltarEntity entity)
 		{
+			bool bowlFull = entity.consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType] >= ScarabAltarEntity.ConsumableCountMax;
+			//Since stormlion items from fables instantly set the bowl's fill level to 666, prevent more than 1 from being dispensed at once
+			bowlFull |= Main.LocalPlayer.ownedProjectileCounts[projectileType] > 0 && _fablesStormlionItems[result.type];
+
+			if (bowlFull)
+				return false;
+
 			Vector2 origin = TileObjectData.TopLeft(i, j).ToWorldCoordinates(32, 8);
 
-			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
-				projectileType, 0, 0, Main.myPlayer, result.type, entity.ID);
+			int itemType = result.type;
+			//When sacrificing the stormlion bucket, it should spawn a dead stormlion instead of consuming the bucket
+			if (itemType == _fablesStormlionBucketType)
+				itemType = _fablesDeadStormlionLarvaType;
 
-			if (--result.stack <= 0)
+			Projectile.NewProjectile(new EntitySource_TileInteraction(Main.LocalPlayer, i, j), origin, (Vector2.UnitY * -Main.rand.NextFloat(9, 13)).RotateRandom(0.5), 
+				projectileType, 0, 0, Main.myPlayer, itemType, entity.ID);
+
+			if (result.type != _fablesStormlionBucketType && --result.stack <= 0)
 				result.TurnToAir(); //Consume an item
 			return true;
 		}
@@ -413,26 +493,50 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	private static bool FindSacrifice(Player player, out Item result)
 	{
-		if (!player.HeldItem.IsAir && ValidItem(player.HeldItem))
+		result = null;
+
+		if (!player.HeldItem.IsAir && ValidItem(player.HeldItem, out _))
 		{
 			result = player.HeldItem;
 			return true;
 		}
 
+		Item firstLowPrioResult = null;
 		foreach (Item item in player.inventory)
 		{
-			if (!item.IsAir && ValidItem(item))
+			if (!item.IsAir && ValidItem(item, out bool lowPriority))
 			{
 				result = item;
-				return true;
+				if (!lowPriority)
+					return true;
+				else if (firstLowPrioResult == null)
+					firstLowPrioResult = item;
 			}
+		}
+
+		if (firstLowPrioResult != null)
+		{
+			result = firstLowPrioResult;
+			return true;
 		}
 
 		result = new(ItemID.None);
 		return false;
 	}
 
-	private static bool ValidItem(Item item) => SpiritSets.Gemstone[item.type] || item.type == ModContent.GetInstance<PolishedAmber>().AutoItemType();
+	private static bool ValidItem(Item item, out bool lowPriority)
+	{
+		lowPriority = false;
+		bool valid = SpiritSets.Gemstone[item.type] || item.type == ModContent.GetInstance<PolishedAmber>().AutoItemType();
+
+		if (!valid && _fablesStormlionItems[item.type])
+		{
+			lowPriority = true;
+			valid = true;
+		}
+
+		return valid;
+	}
 
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
@@ -554,7 +658,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		return Place(i, j);
 	}
 
-	public void Interact()
+	public void Interact(bool fablesGrub = false)
 	{
 		SetInteractTime();
 
@@ -573,6 +677,9 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 			SoundEngine.PlaySound(SoundID.CoinPickup with { Volume = subVolume }, area.Center());
 
 		consumableCount++;
+		//When sacrificing a fables stormlion grub for the Scarab VS Scourge duo fight, the altar gets filled instantly with the value 666 so we know its from fables
+		if (fablesGrub)
+			consumableCount = 666;
 
 		int beamType = ModContent.ProjectileType<ScarabAltar.BeamOLight>();
 		bool validBeam = BeamWhoAmI >= 0 && BeamWhoAmI < Main.maxProjectiles && Main.projectile[BeamWhoAmI].active && Main.projectile[BeamWhoAmI].type == beamType;
@@ -614,12 +721,12 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((byte)consumableCount);
-		writer.Write(BeamWhoAmI);
+		writer.Write((short)BeamWhoAmI);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
 		consumableCount = reader.ReadByte();
-		BeamWhoAmI = reader.ReadByte();
+		BeamWhoAmI = reader.ReadInt16();
 	}
 }
