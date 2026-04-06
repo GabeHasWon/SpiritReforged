@@ -6,6 +6,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class GildedRedSandstone : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sandstone, 20).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()
@@ -17,7 +18,6 @@ public class GildedRedSandstone : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);

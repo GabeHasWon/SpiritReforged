@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
 public class StrippedBamboo : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public void SetItemDefaults(ModItem item) => item.Item.value = 1;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.BambooBlock).AddTile(TileID.WorkBenches).Register();
 
@@ -24,7 +26,6 @@ public class StrippedBamboo : ModTile, IAutoloadTileItem
 		DustType = DustID.PalmWood;
 		AddMapEntry(new Color(145, 128, 109));
 
-		this.AutoItem().ResearchUnlockCount = 100;
 		SpiritClassic.AddItemReplacement("StrippedBamboo", this.AutoItem().type);
 	}
 }

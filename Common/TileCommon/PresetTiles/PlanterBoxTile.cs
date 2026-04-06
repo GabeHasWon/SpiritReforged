@@ -4,6 +4,7 @@ namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
 {
+	public virtual void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 25;
 	public virtual void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 1);
 
 	public override void SetStaticDefaults()
@@ -17,7 +18,6 @@ public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(185, 150, 110));
 		DustType = DustID.WoodFurniture;
 
-		this.AutoItem().ResearchUnlockCount = 25;
 		PlanterBoxMerge.PlanterTypes.Add(Type);
 	}
 
