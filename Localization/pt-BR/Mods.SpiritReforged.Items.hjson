@@ -3050,3 +3050,8 @@ StonemasonGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
 }
+
+FencingFoil: {
+	// DisplayName: Fencing Foil
+	// Tooltip: Sweetspot hits deal critical damage
+}

@@ -8,6 +8,8 @@ public abstract class SwungProjectile : ModProjectile
 {
 	public readonly record struct Configuration(EaseFunction Easing, int Reach, int Width);
 
+	/// <summary> The projectile owner. </summary>
+	public Player Owner => Main.player[Projectile.owner];
 	/// <summary> The full duration of the swing. </summary>
 	public float SwingTime => Main.player[Projectile.owner].itemTimeMax;
 	/// <summary> The progress of the swing relative to <see cref="SwingTime"/>. </summary>
@@ -143,5 +145,7 @@ public abstract class SwungProjectile : ModProjectile
 
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
+
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + Vector2.Normalize(Projectile.velocity) * (config.Reach + add);
 	#endregion
 }
