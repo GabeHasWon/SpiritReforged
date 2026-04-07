@@ -1,11 +1,14 @@
 using Humanizer;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
@@ -25,19 +28,15 @@ public class BlankGlyph : ModItem
 	}
 }
 
+#region globals
 public class GlyphGlobalItem : GlobalItem
 {
-	public readonly record struct GlyphType(int ItemType)
-	{
-		public string Name => ItemLoader.GetItem(ItemType)?.Name;
-	}
-
 	public override bool InstancePerEntity => true;
 
 	/// <summary> Prevents item consumption for the local client only. </summary>
 	private static bool StopItemConsumption;
 
-	public GlyphType glyph;
+	public GlyphItem.GlyphType glyph;
 
 	public override void ApplyPrefix(Item item, int pre)
 	{
@@ -88,7 +87,7 @@ public class GlyphGlobalItem : GlobalItem
 
 	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem)
 		{
 			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
 			
@@ -136,7 +135,7 @@ public class GlyphGlobalItem : GlobalItem
 	{
 		const int slotDimensions = 52;
 
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem) //Draw glyph inventory icons
 		{
 			Texture2D texture = glyphItem.IconTexture.Value;
 			float iconScale = Main.inventoryScale;
@@ -149,22 +148,14 @@ public class GlyphGlobalItem : GlobalItem
 		}
 	}
 
-	public override void NetSend(Item item, BinaryWriter writer)
-	{
-		writer.Write(glyph.ItemType);
-		
-		if (glyph.ItemType != -1)
-			writer.Write((byte)Main.myPlayer); //Track which client sent this data
-	}
+	public override void NetSend(Item item, BinaryWriter writer) => writer.Write(glyph.ItemType);
 
 	public override void NetReceive(Item item, BinaryReader reader)
 	{
 		if (reader.ReadInt32() is int itemType && itemType != -1)
 		{
-			byte originPlayer = reader.ReadByte();
-
 			if (ItemLoader.GetItem(itemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-				glyphItem.ApplyGlyph(item, new GlyphItem.SyncContext(originPlayer));
+				glyphItem.ApplyGlyph(item, new GlyphItem.SyncContext(255));
 		}
 	}
 
@@ -181,6 +172,36 @@ public class GlyphGlobalItem : GlobalItem
 	}
 }
 
+public class GlyphGlobalProjectile : GlobalProjectile
+{
+	public override bool InstancePerEntity => true;
+
+	public GlyphItem.GlyphType glyph;
+
+	public override void OnSpawn(Projectile projectile, IEntitySource source)
+	{
+		if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph() is GlyphItem.GlyphType itemGlyph && itemGlyph.ItemType > 0)
+		{
+			glyph = itemGlyph; //Transfer the associated item glyph to this projectile
+			projectile.netUpdate = true;
+		}
+		else if (source is EntitySource_Parent { Entity: Entity entity } && entity is Projectile parent && parent.GetGlyph() is GlyphItem.GlyphType projGlyph && projGlyph.ItemType > 0)
+		{
+			glyph = projGlyph; //Transfer the parent projectile glyph to this projectile
+			projectile.netUpdate = true;
+		}
+	}
+
+	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => binaryWriter.Write(glyph.ItemType);
+
+	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+	{
+		if (binaryReader.ReadInt32() is int itemType && ItemLoader.GetItem(itemType) is GlyphItem)
+			glyph = new(itemType);
+	}
+}
+#endregion
+
 [AutoloadGlowmask("255,255,255")]
 public abstract class GlyphItem : ModItem
 {
@@ -196,6 +217,11 @@ public abstract class GlyphItem : ModItem
 	/// <summary> When an effect is applied as a result of data loading. </summary>
 	public readonly record struct LoadContext : IApplicationContext;
 	#endregion
+
+	public readonly record struct GlyphType(int ItemType)
+	{
+		public string Name => ItemLoader.GetItem(ItemType)?.Name;
+	}
 
 	public readonly record struct GlyphSettings(Color Color);
 
@@ -241,6 +267,7 @@ public abstract class GlyphItem : ModItem
 			SoundEngine.PlaySound(EnchantSound);
 
 		item.prefix = 0;
+		//item.DamageType = ContentSamples.ItemsByType[item.type].DamageType; //Default damage type
 
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);

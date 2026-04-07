@@ -1,6 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
@@ -47,7 +48,8 @@ public class BeeGlyph : GlyphItem
 
 		public override void CustomDraw(SpriteBatch spriteBatch)
 		{
-			int type = ProjectileID.Bee;
+			const int type = ProjectileID.Bee;
+
 			Texture2D texture = TextureAssets.Projectile[type].Value;
 			Rectangle source = texture.Frame(1, Main.projFrames[type], 0, (int)(TimeActive / 4 % Main.projFrames[type]), 0, 0);
 			Color color = Lighting.GetColor(Position.ToTileCoordinates());
@@ -88,7 +90,7 @@ public class BeeGlyph : GlyphItem
 				TagEffects(owner, npc);
 				tagged = false;
 			}
-			else if (!projectile.IsMinionOrSentryRelated && owner.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
+			else if (!projectile.IsMinionOrSentryRelated && projectile.type is not ProjectileID.Bee or ProjectileID.GiantBee && projectile.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
 			{
 				tagged = true;
 			}

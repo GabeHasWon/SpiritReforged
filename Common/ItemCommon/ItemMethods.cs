@@ -65,7 +65,7 @@ internal static class ItemMethods
 		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
 	}
 
-	public static GlyphGlobalItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) ? glyphItem.glyph : default;
+	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) ? glyphItem.glyph : default;
 
 	public static void DefaultToTrophy(this Item Item, int style)
 	{
