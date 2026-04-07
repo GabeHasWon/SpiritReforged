@@ -1,9 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
-using Terraria.GameContent.ItemDropRules;
-
-namespace SpiritReforged.Content.SaltFlats.Items.Crates;
+﻿namespace SpiritReforged.Content.SaltFlats.Items.Crates;
 
 public class SaltCrateRestored : ModItem
 {

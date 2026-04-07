@@ -1,9 +1,4 @@
-﻿using Terraria.GameContent.ItemDropRules;
-using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
-
-namespace SpiritReforged.Content.SaltFlats.Items.Crates;
+﻿namespace SpiritReforged.Content.SaltFlats.Items.Crates;
 
 public class SaltCrateHardmodeRestored : ModItem
 {
@@ -23,5 +18,5 @@ public class SaltCrateHardmodeRestored : ModItem
 	}
 
 	public override bool CanRightClick() => true;
-	public override void ModifyItemLoot(ItemLoot itemLoot) => SaltCrate.ModifyLoot(itemLoot);
+	public override void ModifyItemLoot(ItemLoot itemLoot) => SaltCrateHardmode.ModifyLoot(itemLoot);
 }
