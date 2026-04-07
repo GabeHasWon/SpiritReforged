@@ -9,9 +9,7 @@ public class ShockGlyph : GlyphItem
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hit.Crit && Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>())
-			{
-				//Proc
-			}
+				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<LightningBlast>(), (int)(damageDone * 0.35f), 0);
 		}
 	}
 
