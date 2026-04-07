@@ -166,9 +166,10 @@ public class RoyalKhopeshGlobalNPC : GlobalNPC
 
 			float dist = npc.Distance(targetPosition.Value);
 
-			npc.velocity *= MathHelper.Lerp(0.85f, 0.99f, dist / 400f);
+			if (dist < 200)
+				npc.velocity *= MathHelper.Lerp(0.85f, 0.95f, dist / 200f);
 
-			if (dist is < 10f or > 400f)
+			if (dist is < 10f or > 800f)
 				targetPosition = null;
 		}
 	}
@@ -176,7 +177,7 @@ public class RoyalKhopeshGlobalNPC : GlobalNPC
 	public void SetTug(Vector2 targetPosition)
 	{
 		this.targetPosition = targetPosition;
-		slowTimer = 30;
+		slowTimer = 60;
 	}
 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)

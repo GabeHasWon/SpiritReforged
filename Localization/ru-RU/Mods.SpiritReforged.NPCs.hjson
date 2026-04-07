@@ -574,105 +574,105 @@ Cricket.DisplayName: Сверчок
 GoldCricket.DisplayName: Золотой сверчок
 
 BeetleTownPet: {
-	// DisplayName: Beetle
-	// Chitter: Chitter
+	DisplayName: Жук
+	Chitter: *Стрекотание*
 
 	Names: {
-		// RoyalScarab0: Azure
-		// RoyalScarab1: Berry
-		// RoyalScarab2: Bluey
-		// RoyalScarab3: Crowno
-		// RoyalScarab4: Khepri
-		// RoyalScarab5: Lapis
-		// RoyalScarab6: Lumi
-		// RoyalScarab7: Minibeus
-		// RoyalScarab8: Prince
-		// RoyalScarab9: Queenie
-		// RoyalScarab10: Scarb
-		// RoyalScarab11: Sadie
-		// RoyalScarab12: Sapphire
-		// RoyalScarab13: Skippy
-		// RoyalScarab14: Sunny
-		// RoyalScarab15: Scab
-		// DungBeetle0: Asbestos
-		// DungBeetle1: Bit
-		// DungBeetle2: Brick
-		// DungBeetle3: Cannonball
-		// DungBeetle4: Clay
-		// DungBeetle5: Dave
-		// DungBeetle6: Dirt
-		// DungBeetle7: Greg
-		// DungBeetle8: Grumpy
-		// DungBeetle9: Hercules
-		// DungBeetle10: Jeff
-		// DungBeetle11: Licorice
-		// DungBeetle12: Pebbles
-		// DungBeetle13: Petey
-		// DungBeetle14: Soot
-		// DungBeetle15: Spoon
-		// JewelBeetle0: Aubrey
-		// JewelBeetle1: Bea
-		// JewelBeetle2: Bonbon
-		// JewelBeetle3: Caramel
-		// JewelBeetle4: Glinty
-		// JewelBeetle5: Goldilocks
-		// JewelBeetle6: Hummus
-		// JewelBeetle7: Kylie
-		// JewelBeetle8: Mallow
-		// JewelBeetle9: Mina
-		// JewelBeetle10: Obol
-		// JewelBeetle11: Saoirse
-		// JewelBeetle12: Sheila
-		// JewelBeetle13: Taffy
-		// JewelBeetle14: Topaz
-		// JewelBeetle15: Zahrah
-		// Weevil0: Archibald
-		// Weevil1: Boots, Charlamagne
-		// Weevil2: Charlamagne
-		// Weevil3: Dinky
-		// Weevil4: Duchess
-		// Weevil5: Eleanor
-		// Weevil6: Hubert
-		// Weevil7: Ickabod
-		// Weevil8: Jebediah
-		// Weevil9: Johnson
-		// Weevil10: Knievel
-		// Weevil11: Lawrence
-		// Weevil12: Lord Eggleston Esquire III
-		// Weevil13: Poky
-		// Weevil14: Sniffles
-		// Weevil15: Winnifred
-		// Maybug0: April
-		// Maybug1: Charlotte
-		// Maybug2: Clover
-		// Maybug3: Dew
-		// Maybug4: Dizzy
-		// Maybug5: Fuzzy
-		// Maybug6: Gigi
-		// Maybug7: Holly
-		// Maybug8: Juniper
-		// Maybug9: Mandy
-		// Maybug10: Maya
-		// Maybug11: Minky
-		// Maybug12: Paprika
-		// Maybug13: Piper
-		// Maybug14: Popcorn
-		// Maybug16: Velvet
-		// Ladybug0: Basil
-		// Ladybug1: Chacha
-		// Ladybug2: Cinnamon
-		// Ladybug3: Dainty
-		// Ladybug4: Dandy
-		// Ladybug5: Diva
-		// Ladybug6: Lady
-		// Ladybug7: Lovely
-		// Ladybug8: Missy
-		// Ladybug9: Pin
-		// Ladybug10: Polka
-		// Ladybug11: Rosa
-		// Ladybug12: Scarlet
-		// Ladybug13: Spots
-		// Ladybug14: Titania
-		// Ladybug15: Tulip
+		RoyalScarab0: Лазурь
+		RoyalScarab1: Ягодка
+		RoyalScarab2: Блю
+		RoyalScarab3: Корончик
+		RoyalScarab4: Хепри
+		RoyalScarab5: Ляпис
+		RoyalScarab6: Луми
+		RoyalScarab7: Минибеус
+		RoyalScarab8: Принц
+		RoyalScarab9: Коралина
+		RoyalScarab10: Скарб
+		RoyalScarab11: Сэди
+		RoyalScarab12: Сапфир
+		RoyalScarab13: Скиппи
+		RoyalScarab14: Санни
+		RoyalScarab15: Скаб
+		DungBeetle0: Асбест
+		DungBeetle1: Кусик
+		DungBeetle2: Кирпич
+		DungBeetle3: Ядр
+		DungBeetle4: Клэй
+		DungBeetle5: Дэйв
+		DungBeetle6: Грязнуля
+		DungBeetle7: Грэг
+		DungBeetle8: Ворчун
+		DungBeetle9: Геркулес
+		DungBeetle10: Джефф
+		DungBeetle11: Лакрица
+		DungBeetle12: Галька
+		DungBeetle13: Пити
+		DungBeetle14: Сажик
+		DungBeetle15: Ложка
+		JewelBeetle0: Обри
+		JewelBeetle1: Би
+		JewelBeetle2: Бонбон
+		JewelBeetle3: Карамель
+		JewelBeetle4: Блестик
+		JewelBeetle5: Златовласка
+		JewelBeetle6: Хумус
+		JewelBeetle7: Кайли
+		JewelBeetle8: Зефирка
+		JewelBeetle9: Мина
+		JewelBeetle10: Обол
+		JewelBeetle11: Сирша
+		JewelBeetle12: Шейла
+		JewelBeetle13: Таффи
+		JewelBeetle14: Топаз
+		JewelBeetle15: Захра
+		Weevil0: Арчибальд
+		Weevil1: Сапожок
+		Weevil2: Шарлемань
+		Weevil3: Динки
+		Weevil4: Герцогин
+		Weevil5: Элеонора
+		Weevil6: Хьюберт
+		Weevil7: Икабод
+		Weevil8: Джебедия
+		Weevil9: Джонсон
+		Weevil10: Книвел
+		Weevil11: Лоуренс
+		Weevil12: Лорд Эгглстон, эсквайр III
+		Weevil13: Простачок
+		Weevil14: Шмыг
+		Weevil15: Уиннифред
+		Maybug0: Эйприл
+		Maybug1: Шарлотта
+		Maybug2: Кловер
+		Maybug3: Росинка
+		Maybug4: Диззи
+		Maybug5: Фаззи
+		Maybug6: Джиджи
+		Maybug7: Холли
+		Maybug8: Джунипер
+		Maybug9: Мэнди
+		Maybug10: Майя
+		Maybug11: Минки
+		Maybug12: Паприка
+		Maybug13: Пайпер
+		Maybug14: Попкорн
+		Maybug16: Вельвет
+		Ladybug0: Базиль
+		Ladybug1: Чача
+		Ladybug2: Синнамон
+		Ladybug3: Неженка
+		Ladybug4: Пижон
+		Ladybug5: Дива
+		Ladybug6: Леди
+		Ladybug7: Милашка
+		Ladybug8: Мисси
+		Ladybug9: Пин
+		Ladybug10: Полька
+		Ladybug11: Роза
+		Ladybug12: Скарлет
+		Ladybug13: Пятнышка
+		Ladybug14: Титания
+		Ladybug15: Тюльпан
 	}
 }

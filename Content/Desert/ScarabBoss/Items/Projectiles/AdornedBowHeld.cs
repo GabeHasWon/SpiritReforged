@@ -3,6 +3,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria;
 using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
@@ -53,6 +54,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		if (perfectShot)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
+
 			projectile.velocity *= 1.5f;
 
 			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
