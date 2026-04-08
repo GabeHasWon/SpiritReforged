@@ -4,13 +4,13 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 
 public class UrchinImpact(Vector2 position, Vector2 velocity, float width, float length, float rotation, int maxTime, float opacity) : MotionNoiseCone(position, velocity, width, length, rotation, maxTime)
 {
-	internal override bool UseLightColor => true;
+	public override bool UseLightColor => true;
 	private readonly float _opacity = opacity;
 	
 	internal override float GetScroll() => TimeActive / 20f;
 
-	internal override Color BrightColor => new(145, 67, 111);
-	internal override Color DarkColor => new(87, 35, 88);
+	public override Color BrightColor => new(145, 67, 111);
+	public override Color DarkColor => new(87, 35, 88);
 
 	internal override void DissipationStyle(ref float dissipationProgress, ref float finalExponent, ref float xCoordExponent)
 	{

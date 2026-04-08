@@ -24,7 +24,7 @@ public abstract class MotionNoiseCone : Particle
 
 	public MotionNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, int detatchTime = -1) : this(basePosition, velocity, width, length, rotation, maxTime)
 	{
-		if(entity == null)
+		if (entity == null)
 			return;
 
 		_attachedEntity = entity;
@@ -65,9 +65,9 @@ public abstract class MotionNoiseCone : Particle
 
 	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 
-	internal virtual Color DarkColor { get; set; }
-	internal virtual Color BrightColor { get; set; }
-	internal virtual bool UseLightColor { get; set; }
+	public virtual Color DarkColor { get; set; }
+	public virtual Color BrightColor { get; set; }
+	public virtual bool UseLightColor { get; set; }
 
 	/// <summary>
 	/// Controls the scrolling of the noise texture.

@@ -3064,3 +3064,12 @@ FencingFoil: {
 	DisplayName: Fencing Foil
 	Tooltip: Sweetspot hits deal critical damage
 }
+
+SilverRapier: {
+	DisplayName: Silver Rapier
+	Tooltip:
+		'''
+		Sweetspot hits deal critical damage
+		<right> to parry
+		'''
+}

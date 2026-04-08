@@ -88,7 +88,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
 
-	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30);
+	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30, ProgressiveStretch);
 
 	public override void AI()
 	{
@@ -130,25 +130,8 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 		base.AI();
 
-		if (Stab)
-		{
-			if (Counter == 1)
-				ParticleHandler.SpawnParticle(new BasicNoiseCone(Projectile.Center - Projectile.velocity * 30, Projectile.velocity * 3, 20, new(75, 150)).SetColors(Color.SandyBrown, new Color(200, 160, 90)).SetIntensity(2));
-
-			var owner = Main.player[Projectile.owner];
-			Player.CompositeArmStretchAmount amount = (int)(Progress * 4f) switch
-			{
-				1 => Player.CompositeArmStretchAmount.ThreeQuarters,
-				2 => Player.CompositeArmStretchAmount.Quarter,
-				3 => Player.CompositeArmStretchAmount.None,
-				_ => Player.CompositeArmStretchAmount.Full
-			};
-
-			GetRotation(out float armRotation);
-
-			owner.SetCompositeArmFront(true, amount, armRotation);
-			Projectile.Center = owner.GetFrontHandPosition(amount, armRotation);
-		}
+		if (Stab && Counter == 1)
+			ParticleHandler.SpawnParticle(new BasicNoiseCone(Projectile.Center - Projectile.velocity * 30, Projectile.velocity * 3, 20, new(75, 150)).SetColors(Color.SandyBrown, new Color(200, 160, 90)).SetIntensity(2));
 
 		if (AltFunction && Main.rand.NextBool())
 		{
@@ -218,11 +201,11 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 		if (!Stab && !Flourishing)
 		{
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), config.Reach + 10, effects: effects);
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), config.Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), Config.Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), Config.Reach + 10, effects: effects);
 
 			if (AltFunction && Progress > 0.2f)
-				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, config.Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, Config.Reach + 10, effects: effects);
 		}
 
 		if (AltFunction)

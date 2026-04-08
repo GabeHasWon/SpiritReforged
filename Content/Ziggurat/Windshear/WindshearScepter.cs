@@ -112,14 +112,14 @@ public class WindshearScepter : ModItem
 		public override string Texture => ModContent.GetInstance<WindshearScepter>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<WindshearScepter>().DisplayName;
 
-		public override Configuration SetConfiguration() => new(new PolynomialEase(static(x) => Math.Min(x * 3, 1)), 30, 10);
+		public override Configuration SetConfiguration() => new(new PolynomialEase(static(x) => Math.Min(x * 3, 1)), 30, 10, FullStretch);
 		public override bool? CanDamage() => false;
 
 		public override float GetRotation(out float armRotation)
 		{
 			if (Progress < 0.3f && Main.rand.NextBool())
 			{
-				Vector2 endPosition = Projectile.Center + new Vector2(config.Reach, -config.Reach).RotatedBy(Projectile.rotation);
+				Vector2 endPosition = Projectile.Center + new Vector2(Config.Reach, -Config.Reach).RotatedBy(Projectile.rotation);
 				var dust = Dust.NewDustPerfect(endPosition, DustID.YellowTorch, new Vector2(1, SwingDirection).RotatedBy(Projectile.rotation) * Main.rand.NextFloat(2f));
 				dust.noGravity = true;
 				dust.noLightEmittence = true;
@@ -144,14 +144,14 @@ public class WindshearScepter : ModItem
 			DrawHeld(lightColor, origin, Projectile.rotation);
 			Main.EntitySpriteDraw(glowmask, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Projectile.GetAlpha(Color.Lerp(Color.White, Color.Red, opacity)), Projectile.rotation, origin, Projectile.scale, default, 0);
 			
-			DrawSmear(Projectile.GetAlpha(Color.Goldenrod.Additive(100)) * 0.3f * opacity, Projectile.rotation - MathHelper.PiOver4, (int)(Progress * 8f), config.Reach + 38, 0.5f, effects);
-			DrawSmear(Projectile.GetAlpha(Color.White.Additive(100)) * 0.3f * opacity, Projectile.rotation - MathHelper.PiOver4, (int)(Progress * 8f), config.Reach + 38, 0.4f, effects);
+			DrawSmear(Projectile.GetAlpha(Color.Goldenrod.Additive(100)) * 0.3f * opacity, Projectile.rotation - MathHelper.PiOver4, (int)(Progress * 8f), Config.Reach + 38, 0.5f, effects);
+			DrawSmear(Projectile.GetAlpha(Color.White.Additive(100)) * 0.3f * opacity, Projectile.rotation - MathHelper.PiOver4, (int)(Progress * 8f), Config.Reach + 38, 0.4f, effects);
 
 			if (opacity > 0)
 			{
 				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 				Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
-				Vector2 endPosition = Projectile.Center + new Vector2(config.Reach, -config.Reach).RotatedBy(Projectile.rotation);
+				Vector2 endPosition = Projectile.Center + new Vector2(Config.Reach, -Config.Reach).RotatedBy(Projectile.rotation);
 
 				Main.spriteBatch.Draw(bloom, endPosition - Main.screenPosition, null, Color.PaleGoldenrod.Additive() * 0.3f * opacity, MathHelper.PiOver2, bloom.Size() / 2, Projectile.scale * 0.3f, default, 0);
 

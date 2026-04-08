@@ -111,7 +111,7 @@ public class ZiplineGun : ModItem
 	{
 		bool oldMouseShowGrid = Main.MouseShowBuildingGrid;
 
-		if (!Main.LocalPlayer.mouseInterface && Main.LocalPlayer.HeldItem?.ModItem is ZiplineGun ziplineGun && Main.LocalPlayer.GetModPlayer<ZiplinePlayer>().assistant)
+		if (!Main.LocalPlayer.mouseInterface && Main.LocalPlayer.HeldItem?.ModItem is ZiplineGun && Main.LocalPlayer.GetModPlayer<ZiplinePlayer>().assistant)
 		{
 			var grid = TextureAssets.CursorRadial.Value;
 
@@ -119,27 +119,26 @@ public class ZiplineGun : ModItem
 			var finalPos = GetCursor(true, out _).ToWorldCoordinates() - Main.screenPosition; //The position of placement (cursor adjusted by Magnetize)
 
 			float rotation = (float)Math.Sin(Main.timeForVisualEffects / 50f) * .1f;
-			bool exceedsRange = false;
 
 			if (Main.LocalPlayer.gravDir == -1f)
 				cursorPos.Y = Main.screenHeight - cursorPos.Y;
 
 			if (CheckRemoveable())
 			{
-				var outline = TextureAssets.Extra[2].Value;
+				var outline = TextureAssets.Extra[ExtrasID.LaserRuler].Value;
 				var source = new Rectangle(0, 0, 16, 16);
 
-				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Green * .5f).Additive());
+				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Green * 0.5f).Additive());
 				Main.spriteBatch.Draw(outline, finalPos, source, Color.Green.Additive(), rotation, source.Size() / 2, 1 + rotation, default, 0);
 			}
-			else if (!CheckDistance(out exceedsRange) || !CheckTile(out _))
+			else if (!CheckDistance(out bool exceedsRange) || !CheckTile(out _))
 			{
 				if (!exceedsRange)
-					DrawDottedLine(Color.Red.Additive());
+					DrawDottedLine(Color.Red.Additive(), 16);
 
 				var x = X_Texture.Value;
 
-				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Red * .5f).Additive());
+				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Red * 0.5f).Additive());
 				Main.spriteBatch.Draw(x, finalPos, null, Color.Red.Additive(), rotation, x.Size() / 2, 1 + rotation, default, 0);
 			}
 			else
@@ -147,12 +146,12 @@ public class ZiplineGun : ModItem
 				var color = CheckAngle() ? Color.Cyan : Color.Yellow;
 
 				if (!exceedsRange)
-					DrawDottedLine(color.Additive());
+					DrawDottedLine(color.Additive(), 16);
 
-				var outline = TextureAssets.Extra[2].Value;
+				var outline = TextureAssets.Extra[ExtrasID.LaserRuler].Value;
 				var source = new Rectangle(0, 0, 16, 16);
 
-				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (color * .5f).Additive());
+				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (color * 0.5f).Additive());
 				Main.spriteBatch.Draw(outline, finalPos, source, color.Additive(), rotation, source.Size() / 2, 1 + rotation, default, 0);
 			}
 
@@ -162,44 +161,42 @@ public class ZiplineGun : ModItem
 		orig();
 
 		Main.MouseShowBuildingGrid = oldMouseShowGrid;
+	}
 
-		static void DrawDottedLine(Color color)
+	private static void DrawDottedLine(Color color, int width)
+	{
+		var myZipline = ZiplineHandler.Ziplines.Where(x => x.Owner == Main.LocalPlayer).FirstOrDefault();
+		if (myZipline == default || myZipline.points.Count == 0)
+			return;
+
+		var start = GetCursor(true, out _).ToWorldCoordinates();
+		var end = myZipline.points.Last();
+		float totalDistance = start.Distance(end);
+
+		var dirUnit = start.DirectionTo(end);
+		float motionUnit = (float)Main.timeForVisualEffects / 50 % 2;
+
+		var texture = TextureAssets.MagicPixel.Value;
+		var source = new Rectangle(0, 0, 1, 4);
+
+		int chunks = (int)(totalDistance / width);
+
+		for (int i = 0; i < chunks; i++)
 		{
-			const int chunkWidth = 16;
+			if (i % 2 == 0)
+				continue;
 
-			var myZipline = ZiplineHandler.Ziplines.Where(x => x.Owner == Main.LocalPlayer).FirstOrDefault();
-			if (myZipline == default || myZipline.points.Count == 0)
-				return;
+			var position = Vector2.Lerp(end + dirUnit * width, start, (i + motionUnit) / chunks);
 
-			var start = GetCursor(true, out _).ToWorldCoordinates();
-			var end = myZipline.points.Last();
-			float totalDistance = start.Distance(end);
+			float scaleWidth = totalDistance / chunks;
+			if (i >= chunks - 2)
+				scaleWidth *= 1f - motionUnit;
+			else if (i <= 1)
+				scaleWidth *= motionUnit / 2;
 
-			var dirUnit = start.DirectionTo(end);
-			float motionUnit = (float)Main.timeForVisualEffects / 50 % 2;
+			var scale = new Vector2(scaleWidth, 1);
 
-			var texture = TextureAssets.MagicPixel.Value;
-			var source = new Rectangle(0, 0, 1, 4);
-
-			int chunks = (int)(totalDistance / chunkWidth);
-
-			for (int i = 0; i < chunks; i++)
-			{
-				if (i % 2 == 0)
-					continue;
-
-				var position = Vector2.Lerp(end + dirUnit * chunkWidth, start, (i + motionUnit) / chunks);
-
-				float scaleWidth = totalDistance / chunks;
-				if (i >= chunks - 2)
-					scaleWidth *= 1f - motionUnit;
-				else if (i <= 1)
-					scaleWidth *= motionUnit / 2;
-
-				var scale = new Vector2(scaleWidth, 1);
-
-				Main.spriteBatch.Draw(texture, position - Main.screenPosition, source, color, start.AngleTo(end), source.Size() / 2, scale, default, 0);
-			}
+			Main.spriteBatch.Draw(texture, position - Main.screenPosition, source, color, start.AngleTo(end), source.Size() / 2, scale, default, 0);
 		}
 	}
 

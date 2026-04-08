@@ -5,12 +5,12 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 
 public class ReefSpearImpact(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, float taperExponent, int detatchTime = -1) : MotionNoiseCone(entity, basePosition, velocity, width, length, rotation, maxTime, detatchTime)
 {
-	internal override bool UseLightColor => true;
+	public override bool UseLightColor => true;
 	private readonly float _taperExponent = taperExponent;
 	internal override float GetScroll() => -1.5f * (EaseFunction.EaseCircularOut.Ease(Progress) + TimeActive/60f);
 
-	internal override Color BrightColor => new(251, 204, 62, 220);
-	internal override Color DarkColor => new(230, 27, 112, 220);
+	public override Color BrightColor => new(251, 204, 62, 220);
+	public override Color DarkColor => new(230, 27, 112, 220);
 
 	internal override void DissipationStyle(ref float dissipationProgress, ref float finalExponent, ref float xCoordExponent)
 	{

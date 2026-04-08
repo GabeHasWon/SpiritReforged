@@ -4,17 +4,14 @@ namespace SpiritReforged.Content.Particles;
 
 internal class BasicNoiseCone(Vector2 position, Vector2 velocity, int maxTime, Point dimensions = default) : MotionNoiseCone(position, velocity, (dimensions.X == 0) ? 100 : dimensions.X, (dimensions.Y == 0) ? 100 : dimensions.Y, velocity.ToRotation(), maxTime)
 {
-	private Color _bright;
-	private Color _dark;
-
 	private int _numColors = 8;
 	private float _colorLerpExponent = 1.5f;
 	private float _intensity = 1.2f;
 
 	public BasicNoiseCone SetColors(Color brightColor, Color darkColor)
 	{
-		_bright = brightColor;
-		_dark = darkColor;
+		BrightColor = brightColor;
+		DarkColor = darkColor;
 
 		return this;
 	}
@@ -37,14 +34,11 @@ internal class BasicNoiseCone(Vector2 position, Vector2 velocity, int maxTime, P
 		return this;
 	}
 
-	internal override Color BrightColor => _bright;
-	internal override Color DarkColor => _dark;
-
 	internal override float ColorLerpExponent => _colorLerpExponent;
 	internal override int NumColors => _numColors;
 	internal override float FinalIntensity => _intensity;
 
-	internal override bool UseLightColor => true;
+	public override bool UseLightColor => true;
 
 	internal override float GetScroll() => -1.5f * (EaseFunction.EaseCircularOut.Ease(Progress) + TimeActive / 60f);
 
