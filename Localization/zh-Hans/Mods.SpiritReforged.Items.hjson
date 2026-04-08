@@ -2711,7 +2711,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战攻击
+	Tooltip: 定期强化近战攻击
 }
 
 ScarabTabletOneItem: {
