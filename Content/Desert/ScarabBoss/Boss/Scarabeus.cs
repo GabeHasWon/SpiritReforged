@@ -11,6 +11,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
@@ -624,9 +625,9 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
-		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
 
+		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabLightPetItem>()));
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 
