@@ -7,25 +7,31 @@ internal class AutoPetProjectile : GlobalProjectile
 	{
 		var player = Main.player[projectile.owner];
 
-		if (player.HasBuff(AutoloadedPetBuff.Registered[projectile.type]))
+		if (player.HasBuff(AutoloadedPetBuff.PetBuff[projectile.type]))
 			projectile.timeLeft = 2;
 	}
 
 	public override bool PreAI(Projectile projectile)
 	{
-		if (AutoloadedPetBuff.Registered.ContainsKey(projectile.type)) //Is an autoloaded pet
+		if (AutoloadedPetBuff.ProjectileHasBuff(projectile.type)) //Is an autoloaded pet
 			PetFlag(projectile);
 
 		return true;
 	}
 }
 
+[ReinitializeDuringResizeArrays]
 internal sealed class AutoloadedPetBuff(string fullName, bool lightPet = false) : AutoloadedBuff(fullName)
 {
-	/// <summary> Projectile type to buff type. Populated after <see cref="ModBuff.SetStaticDefaults"/>. </summary>
-	public static readonly Dictionary<int, int> Registered = [];
+	public static readonly int[] PetBuff = ProjectileID.Sets.Factory.CreateNamedSet(SpiritReforgedMod.Instance, "PetBuff").Description("Maps projectile ID to buff ID")
+		.RegisterIntSet(defaultState: -1);
 
 	public int PetType { get; private set; }
+
+	/// <summary>
+	/// Returns whether the given projectile has a buff associated with it.
+	/// </summary>
+	public static bool ProjectileHasBuff(int projectileId) => PetBuff[projectileId] != -1;
 
 	public override void SetStaticDefaults()
 	{
@@ -37,7 +43,7 @@ internal sealed class AutoloadedPetBuff(string fullName, bool lightPet = false) 
 			Main.vanityPet[Type] = true;
 
 		if (Mod.TryFind(SourceName, out ModProjectile p))
-			Registered.Add(PetType = p.Type, Type);
+			PetBuff[p.Type] = Type;
 	}
 
 	public override void Update(Player player, ref int buffIndex)
