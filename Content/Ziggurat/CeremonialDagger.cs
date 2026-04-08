@@ -88,7 +88,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
 
-	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30, ProgressiveStretch);
+	public override IConfiguration SetConfiguration() => new Configuration(EaseFunction.EaseCubicOut, 58, 30, ProgressiveStretch);
 
 	public override void AI()
 	{
@@ -201,11 +201,11 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 		if (!Stab && !Flourishing)
 		{
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), Config.Reach + 10, effects: effects);
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), Config.Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), ((Configuration)Config).Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), ((Configuration)Config).Reach + 10, effects: effects);
 
 			if (AltFunction && Progress > 0.2f)
-				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, Config.Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, ((Configuration)Config).Reach + 10, effects: effects);
 		}
 
 		if (AltFunction)

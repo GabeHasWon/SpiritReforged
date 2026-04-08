@@ -5,7 +5,6 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -13,7 +12,7 @@ namespace SpiritReforged.Content.Forest.Rapiers;
 
 public class FencingFoil : ModItem
 {
-	public class FencingFoilSwing : SwungProjectile
+	public class FencingFoilSwing : RapierProjectile
 	{
 		public int FlourishDirection => (int)Projectile.ai[1];
 
@@ -23,40 +22,33 @@ public class FencingFoil : ModItem
 		public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1");
 
 		private BasicNoiseCone _motionCone;
-		private bool _hitSweetSpot;
 
-		public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch, 12);
 
 		public override void AI()
 		{
 			base.AI();
 
 			if (!Main.dedServ && Counter == 1)
-			{
-				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center - Projectile.velocity * 8, Projectile.velocity, 20, new(50, 150)).SetColors(Color.White.Additive(100), Color.SteelBlue).SetIntensity(2).AttachTo(Projectile));
-			}
+				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center - Projectile.velocity * 8, Projectile.velocity, 20, new(50, 150)).SetColors(Color.White.Additive(100), Color.Gray).SetIntensity(2).AttachTo(Projectile));
 		}
 
 		public override float GetRotation(out float armRotation)
 		{
-			float flourishRotation = _hitSweetSpot ? 0 : ((Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.06f * FlourishDirection : 0);
+			float flourishRotation = (Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.06f * FlourishDirection : 0;
 			float easedRotation = EaseFunction.EaseCubicIn.Ease(flourishRotation);
-
-			int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-			float value = base.GetRotation(out armRotation) + easedRotation + direction * Progress * 2;
+			float value = base.GetRotation(out armRotation) + easedRotation;
 
 			armRotation += easedRotation;
-			return value + MathHelper.PiOver4;
+			return value;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			int reach = Config.Reach - 12;
-			if (Projectile.Center.DistanceSQ(target.Hitbox.ClosestPointInRect(Projectile.Center)) > reach * reach)
-			{
-				modifiers.SetCrit(); //Sweet spot crit
-				SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, target.Center);
+			base.ModifyHitNPC(target, ref modifiers);
 
+			if (!Main.dedServ && hitSweetSpot)
+			{
 				for (int i = 0; i < 5; i++)
 				{
 					float magnitude = Main.rand.NextFloat();
@@ -64,37 +56,19 @@ public class FencingFoil : ModItem
 				}
 
 				_motionCone?.SetColors(Color.White.Additive(100), Color.Goldenrod);
-				_hitSweetSpot = true;
-			}
-			else
-			{
-				modifiers.DisableCrit();
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			float offset = Math.Max(30 * (0.5f - Progress * 2), -2);
-			DrawHeld(lightColor, new Vector2(0, TextureAssets.Projectile[Type].Value.Height) + new Vector2(-offset, offset), Projectile.rotation);
+			base.PreDraw(ref lightColor);
+
 			float mult = 1f - Counter / 5f;
-
 			if (mult > 0)
-			{
-				const float starScale = 0.8f;
-
-				Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
-				Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
-
-				Vector2 position = GetEndPosition() - Main.screenPosition;
-
-				Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.SteelBlue).Additive() * mult, 0, star.Size() / 2, Projectile.scale * starScale * mult, default);
-				Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * mult, 0, star.Size() / 2, Projectile.scale * 0.8f * starScale * mult, default);
-			}
+				DrawStar(lightColor, 0.8f, mult);
 
 			return false;
 		}
-
-		public override bool? CanDamage() => (Counter <= 5) ? null : false;
 	}
 
 	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;

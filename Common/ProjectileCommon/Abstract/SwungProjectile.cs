@@ -18,7 +18,15 @@ public abstract class SwungProjectile : ModProjectile
 	};
 	#endregion
 
-	public readonly record struct Configuration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch);
+	public interface IConfiguration
+	{
+		public EaseFunction Easing { get; }
+		public int Width { get; }
+		public int Reach { get; }
+		public Func<Player.CompositeArmStretchAmount> Stretch { get; }
+	}
+
+	public readonly record struct Configuration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch) : IConfiguration;
 
 	/// <summary> The full duration of the swing. </summary>
 	public float SwingTime => Main.player[Projectile.owner].itemTimeMax;
@@ -32,7 +40,7 @@ public abstract class SwungProjectile : ModProjectile
 	/// <summary> The progress of the swing. </summary>
 	public int Counter;
 
-	public Configuration Config { get; protected set; }
+	public IConfiguration Config { get; protected set; }
 
 	/// <summary><inheritdoc cref="ModProjectile.SetDefaults"/><para/>
 	/// Prefer overriding <see cref="SetConfiguration"/> instead of this method. </summary>
@@ -52,8 +60,8 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	/// <summary><inheritdoc cref="ModProjectile.SetDefaults"/><para/>
-	/// Must return a custom <see cref="Configuration"/>. </summary>
-	public abstract Configuration SetConfiguration();
+	/// Must return a custom <see cref="IConfiguration"/>. See <see cref="Configuration"/> for default. </summary>
+	public abstract IConfiguration SetConfiguration();
 
 	public override void AI()
 	{
@@ -123,7 +131,7 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	#region helper methods
-	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), Config.Reach + 10, effects: effects);
+	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), Config	.Reach + 10, effects: effects);
 	public void DrawSmear(Color color, float rotation, int frame, float distance, float scale = 0.75f, SpriteEffects effects = default)
 	{
 		Main.instance.LoadProjectile(985);

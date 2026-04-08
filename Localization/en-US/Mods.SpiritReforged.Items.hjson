@@ -3073,3 +3073,12 @@ SilverRapier: {
 		<right> to parry
 		'''
 }
+
+TungstenSabre: {
+	DisplayName: Tungsten Sabre
+	Tooltip:
+		'''
+		Sweetspot hits deal critical damage
+		<right> to parry
+		'''
+}

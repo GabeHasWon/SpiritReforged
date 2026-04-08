@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -9,14 +10,14 @@ public abstract class RapierProjectile : SwungProjectile
 		public enum ParryState { Active, Inactive, Successful }
 
 		public ParryState parryState;
-		private bool _wasSuccessful;
+		private int _resetTime;
 
 		public override bool FreeDodge(Player.HurtInfo info)
 		{
 			if (parryState == ParryState.Active)
 			{
 				parryState = ParryState.Successful; //Needs synced
-				_wasSuccessful = true;
+				_resetTime = 2;
 
 				Player.SetImmuneTimeForAllTypes(30);
 
@@ -28,17 +29,17 @@ public abstract class RapierProjectile : SwungProjectile
 
 		public override void PostUpdate()
 		{
-			if (_wasSuccessful)
-			{
-				_wasSuccessful = false;
+			if (Math.Max(_resetTime -= 1, 0) > 0)
 				return;
-			}
 
 			parryState = ParryState.Inactive;
 		}
 	}
 
-	public bool Parry => Projectile.ai[0] == 1;
+	public readonly record struct RapierConfiguration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch, int SweetSpotScale) : IConfiguration;
+
+	public ParryPlayer Global => Main.player[Projectile.owner].GetModPlayer<ParryPlayer>();
+	public bool SecondaryUse { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
 
 	protected bool hitSweetSpot;
 
@@ -62,7 +63,7 @@ public abstract class RapierProjectile : SwungProjectile
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (InSweetSpot(target, 12))
+		if (InSweetSpot(target, ((RapierConfiguration)Config).SweetSpotScale))
 		{
 			modifiers.SetCrit(); //Sweet spot crit
 			hitSweetSpot = true;
@@ -77,29 +78,27 @@ public abstract class RapierProjectile : SwungProjectile
 	{
 		float offset = Math.Max(30 * (0.5f - Progress * 2), -2);
 		DrawHeld(lightColor, new Vector2(0, TextureAssets.Projectile[Type].Value.Height) + new Vector2(-offset, offset), Projectile.rotation);
-		float mult = 1f - Counter / 5f;
-
-		if (mult > 0)
-		{
-			const float starScale = 0.8f;
-
-			Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
-			Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
-
-			Vector2 position = GetEndPosition() - Main.screenPosition;
-
-			Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.SteelBlue).Additive() * mult, 0, star.Size() / 2, Projectile.scale * starScale * mult, default);
-			Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * mult, 0, star.Size() / 2, Projectile.scale * 0.8f * starScale * mult, default);
-		}
 
 		return false;
 	}
 
-	public override bool? CanDamage() => (!Parry && Counter <= 5) ? null : false;
+	public override bool? CanDamage() => (!SecondaryUse && Counter <= 5) ? null : false;
 
+	#region helpers
 	public bool InSweetSpot(NPC target, int scale)
 	{
-		float reach = Config.Reach - scale;
+		float reach = ((RapierConfiguration)Config).Reach - scale;
 		return Projectile.Center.DistanceSQ(target.Hitbox.ClosestPointInRect(Projectile.Center)) > reach * reach;
 	}
+
+	public void DrawStar(Color lightColor, float scale, float intensity)
+	{
+		Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
+		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
+		Vector2 position = GetEndPosition() - Main.screenPosition;
+
+		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.SteelBlue).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * scale * intensity, default);
+		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * 0.8f * scale * intensity, default);
+	}
+	#endregion
 }

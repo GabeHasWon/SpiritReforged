@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
@@ -8,7 +7,6 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
@@ -24,17 +22,16 @@ public class SilverRapier : ModItem
 		public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1");
 
 		private BasicNoiseCone _motionCone;
-		private bool _hitSweetSpot;
 
-		public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch, 12);
 
 		public override void AI()
 		{
 			base.AI();
 
-			if (Parry)
+			if (SecondaryUse)
 			{
-				Main.player[Projectile.owner].GetModPlayer<ParryPlayer>().parryState = ParryPlayer.ParryState.Active;
+				Global.parryState = ParryPlayer.ParryState.Active;
 			}
 			else if (!Main.dedServ && SwingArc == 0 && Counter == 1)
 			{
@@ -44,12 +41,17 @@ public class SilverRapier : ModItem
 
 		public override void OnParry(Player.HurtInfo info)
 		{
+			SoundEngine.PlaySound(SoundID.Research with { Pitch = 0.5f }, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.Item21, Projectile.Center);
+
 			SwingArc = 2;
 			Counter = 0;
 
 			Projectile.timeLeft++;
 			Projectile.knockBack *= 3;
-			Projectile.ai[0] = 0;
+			SecondaryUse = false;
+
+			Main.player[Projectile.owner].velocity -= Projectile.velocity * 5;
 
 			if (Projectile.owner == Main.myPlayer)
 			{
@@ -60,43 +62,47 @@ public class SilverRapier : ModItem
 
 		public override float GetRotation(out float armRotation)
 		{
-			float flourishRotation = _hitSweetSpot ? 0 : ((Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.06f * FlourishDirection : 0);
-			float easedRotation = EaseFunction.EaseCubicIn.Ease(flourishRotation);
+			if (SecondaryUse)
+			{
+				float value = GetAbsoluteAngle() - MathHelper.PiOver4;
+				armRotation = value - MathHelper.PiOver4;
 
-			float value = base.GetRotation(out armRotation) + easedRotation;
+				return value;
+			}
+			else
+			{
+				float flourishRotation = (Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.08f * FlourishDirection : 0;
+				float easedRotation = EaseFunction.EaseCubicIn.Ease(flourishRotation);
+				float value = base.GetRotation(out armRotation) + easedRotation;
 
-			armRotation += easedRotation;
-			return value;
+				armRotation += easedRotation;
+				return value;
+			}
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (InSweetSpot(target, 12))
+			base.ModifyHitNPC(target, ref modifiers);
+
+			if (hitSweetSpot)
 			{
-				modifiers.SetCrit(); //Sweet spot crit
 				SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, target.Center);
 
 				for (int i = 0; i < 5; i++)
 				{
 					float magnitude = Main.rand.NextFloat();
-					ParticleHandler.SpawnParticle(new EmberParticle(GetEndPosition(), Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, Color.Goldenrod, 0.4f * (1f - magnitude), 30, 3));
+					ParticleHandler.SpawnParticle(new EmberParticle(GetEndPosition(), Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, Color.PaleVioletRed, 0.4f * (1f - magnitude), 30, 3));
 				}
 
-				_motionCone?.SetColors(Color.White.Additive(100), Color.Goldenrod);
-				_hitSweetSpot = true;
-			}
-			else
-			{
-				modifiers.DisableCrit();
+				_motionCone?.SetColors(Color.White.Additive(100), Color.PaleVioletRed);
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (Parry)
-				return false;
+			float offset = (!SecondaryUse && SwingArc == 0) ? Math.Max(30 * (0.5f - Progress * 2), -2) : 0;
+			float mult = 1f - Counter / 5f;
 
-			float offset = Math.Max(30 * (0.5f - Progress * 2), -2);
 			DrawHeld(Projectile.GetAlpha(lightColor), new Vector2(0, TextureAssets.Projectile[Type].Value.Height) + new Vector2(-offset, offset), Projectile.rotation);
 
 			if (SwingArc != 0)
@@ -105,24 +111,13 @@ public class SilverRapier : ModItem
 				SpriteEffects effects = (direction == -1) ? SpriteEffects.FlipVertically : default;
 				float rotation = Projectile.rotation - MathHelper.PiOver4 - 0.5f * direction;
 
-				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.SteelBlue)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), Config.Reach + 10, effects: effects);
-				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), Config.Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.PaleVioletRed)) * 0.5f, rotation, (int)(Progress * 8f), ((RapierConfiguration)Config).Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.LightGray)), rotation, (int)(Progress * 12f), ((RapierConfiguration)Config).Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.White)) * 0.7f * (1f - Progress), rotation, (int)(Progress * 15f), ((RapierConfiguration)Config).Reach + 12, effects: effects);
 			}
-			else
+			else if (!SecondaryUse && mult > 0)
 			{
-				float mult = 1f - Counter / 5f;
-				if (mult > 0)
-				{
-					const float starScale = 0.8f;
-
-					Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
-					Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
-
-					Vector2 position = GetEndPosition() - Main.screenPosition;
-
-					Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.SteelBlue).Additive() * mult, 0, star.Size() / 2, Projectile.scale * starScale * mult, default);
-					Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * mult, 0, star.Size() / 2, Projectile.scale * 0.8f * starScale * mult, default);
-				}
+				DrawStar(lightColor, 0.8f, mult);
 			}
 
 			return false;
@@ -163,4 +158,6 @@ public class SilverRapier : ModItem
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.RemoveAll(static x => x.Mod == "Terraria" && x.Name == "CritChance"); //Remove the line indicating crit chance
+
+	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 4).AddIngredient(ItemID.SilverBar, 6).AddTile(TileID.Anvils).Register();
 }
