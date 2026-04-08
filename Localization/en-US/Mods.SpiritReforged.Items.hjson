@@ -2798,7 +2798,11 @@ GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Loot Bag
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'A favourite of scoundrels and miscreants everywhere'
+		'''
 }
 
 CrackedSandstoneItem: {
