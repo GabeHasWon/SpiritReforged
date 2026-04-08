@@ -2670,7 +2670,7 @@ BrineShrimpItem: {
 }
 
 GoldenBrineShrimpItem: {
-	DisplayName: Golden Brine Shrimp
+	DisplayName: Gold Brine Shrimp
 	Tooltip: ""
 }
 
