@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Bronze Grate
+	DisplayName: Bronze Grate Wall
 	Tooltip: ""
 }
 
@@ -2776,22 +2776,22 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Restored Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Restored Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Graverobber Banner
@@ -2911,7 +2911,7 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Bronze Grate Block
+	DisplayName: Bronze Grate
 	Tooltip: ""
 }
 
