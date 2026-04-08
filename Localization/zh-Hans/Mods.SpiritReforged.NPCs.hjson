@@ -572,12 +572,12 @@ VeiledZombie: {
 
 Cricket: {
 	DisplayName: 蟋蟀
-	// Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
 }
 
 GoldCricket: {
 	DisplayName: 金蟋蟀
-	// Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
 }
 
 BeetleTownPet: {
