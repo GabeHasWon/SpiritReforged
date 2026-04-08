@@ -43,7 +43,10 @@ internal sealed class AutoloadedPetBuff(string fullName, bool lightPet = false) 
 			Main.vanityPet[Type] = true;
 
 		if (Mod.TryFind(SourceName, out ModProjectile p))
-			PetBuff[p.Type] = Type;
+		{
+			PetType = p.Type;
+			PetBuff[PetType] = Type;
+		}
 	}
 
 	public override void Update(Player player, ref int buffIndex)
