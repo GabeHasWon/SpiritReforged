@@ -575,7 +575,10 @@ GoldCricket.DisplayName: Grilo de Ouro
 
 BeetleTownPet: {
 	// DisplayName: Beetle
-	// Chitter: Chitter
+	// Chitter0: *Chk chk!*
+	// Chitter1: *Bug noises*
+	// Chitter2: *Beetle noises*
+	// Chitter3: *Happy chittering*
 
 	Names: {
 		// RoyalScarab0: Azure

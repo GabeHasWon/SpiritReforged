@@ -575,7 +575,9 @@ GoldCricket.DisplayName: Gold Cricket
 
 BeetleTownPet: {
 	DisplayName: Beetle
-	Chitter: Chitter
+	Chitter0: *Happy chittering*
+	Chitter1: *Bug noises*
+	Chitter2: *Beetle noises*
 
 	Names: {
 		RoyalScarab0: Azure

@@ -104,7 +104,7 @@ public class BeetleTownPet : ModNPC
 
 	public override void SetChatButtons(ref string button, ref string button2) => button = Language.GetTextValue("UI.PetTheAnimal"); //Pet
 
-	public override string GetChat() => this.GetLocalizedValue("Chitter");
+	public override string GetChat() => this.GetLocalizedValue("Chitter" + Main.rand.Next(3));
 
 	public override void FindFrame(int frameHeight)
 	{
