@@ -178,6 +178,9 @@ public partial class Scarabeus : ModNPC
 	#region Spawn anim
 	public float DuoFightSpawnAnimation(ref bool retarget)
 	{
+		NPC.position -= NPC.netOffset;
+		NPC.netOffset *= 0f;
+
 		retarget = false;
 		NPC.direction = 1; //Scarab will always jump from the left
 
