@@ -165,6 +165,6 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + Vector2.Normalize(Projectile.velocity) * (Config.Reach + add);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(Config.Reach + add, 0).RotatedBy(GetRotation(out _) - MathHelper.PiOver4);
 	#endregion
 }

@@ -3082,3 +3082,8 @@ TungstenSabre: {
 		<right> to parry
 		'''
 }
+
+SharpeningStone: {
+	DisplayName: Sharpening Stone
+	Tooltip: Increases Rapier sweetspot damage by 25%
+}

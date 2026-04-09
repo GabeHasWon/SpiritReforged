@@ -5,53 +5,39 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract class RapierProjectile : SwungProjectile
 {
-	public sealed class ParryPlayer : ModPlayer
+	public interface IFreeDodge
 	{
-		public enum ParryState { Active, Inactive, Successful }
+		/// <summary> Called whenever the player is about to take damage. </summary>
+		/// <returns> Whether damage should be dodged. </returns>
+		public bool FreeDodge(Player.HurtInfo info);
+	}
 
-		public ParryState parryState;
-		private int _resetTime;
+	public sealed class FreeDodgePlayer : ModPlayer
+	{
+		public int oldHeldProjectile;
+
+		public override void Load() => On_Player.Update += CacheHeldProjectile;
+
+		private static void CacheHeldProjectile(On_Player.orig_Update orig, Player self, int i)
+		{
+			if (self.TryGetModPlayer(out FreeDodgePlayer freeDodgePlayer))
+				freeDodgePlayer.oldHeldProjectile = self.heldProj;
+
+			orig(self, i);
+		}
 
 		public override bool FreeDodge(Player.HurtInfo info)
 		{
-			if (parryState == ParryState.Active)
-			{
-				parryState = ParryState.Successful; //Needs synced
-				_resetTime = 2;
-
-				Player.SetImmuneTimeForAllTypes(30);
-
-				return true;
-			}
+			if (oldHeldProjectile != -1 && Main.projectile[oldHeldProjectile].ModProjectile is IFreeDodge iFreeDodge)
+				return iFreeDodge.FreeDodge(info);
 
 			return false;
-		}
-
-		public override void PostUpdate()
-		{
-			if (Math.Max(_resetTime -= 1, 0) > 0)
-				return;
-
-			parryState = ParryState.Inactive;
 		}
 	}
 
 	public readonly record struct RapierConfiguration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch, int SweetSpotScale) : IConfiguration;
 
-	public ParryPlayer Global => Main.player[Projectile.owner].GetModPlayer<ParryPlayer>();
-	public bool SecondaryUse { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
-
 	protected bool hitSweetSpot;
-
-	public override void AI()
-	{
-		base.AI();
-
-		if (Main.player[Projectile.owner].GetModPlayer<ParryPlayer>().parryState == ParryPlayer.ParryState.Successful)
-			OnParry(default);
-	}
-
-	public virtual void OnParry(Player.HurtInfo info) { }
 
 	public override float GetRotation(out float armRotation)
 	{
@@ -82,7 +68,7 @@ public abstract class RapierProjectile : SwungProjectile
 		return false;
 	}
 
-	public override bool? CanDamage() => (!SecondaryUse && Counter <= 5) ? null : false;
+	public override bool? CanDamage() => (Counter <= 5) ? null : false;
 
 	#region helpers
 	public bool InSweetSpot(NPC target, int scale)

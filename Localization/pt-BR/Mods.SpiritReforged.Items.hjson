@@ -3067,5 +3067,14 @@ SilverRapier: {
 
 TungstenSabre: {
 	// DisplayName: Tungsten Sabre
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Sweetspot hits deal critical damage
+		<right> to parry
+		''' */
+}
+
+SharpeningStone: {
+	// DisplayName: Sharpening Stone
+	// Tooltip: Increases Rapier sweetspot damage by 10%
 }
