@@ -575,10 +575,9 @@ GoldCricket.DisplayName: Золотой сверчок
 
 BeetleTownPet: {
 	DisplayName: Жук
-	// Chitter0: *Chk chk!*
+	// Chitter0: *Happy chittering*
 	// Chitter1: *Bug noises*
 	// Chitter2: *Beetle noises*
-	// Chitter3: *Happy chittering*
 
 	Names: {
 		RoyalScarab0: Лазурь
