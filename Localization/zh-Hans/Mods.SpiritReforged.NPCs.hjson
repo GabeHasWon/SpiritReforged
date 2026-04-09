@@ -575,9 +575,9 @@ GoldCricket.DisplayName: 金蟋蟀
 
 BeetleTownPet: {
 	DisplayName: 甲虫
-	// Chitter0: *Happy chittering*
-	// Chitter1: *Bug noises*
-	// Chitter2: *Beetle noises*
+	Chitter0: *快乐的叽叽声*
+	Chitter1: *虫子的噪音声*
+	Chitter2: *甲虫的噪音声*
 
 	Names: {
 		RoyalScarab0: Azure

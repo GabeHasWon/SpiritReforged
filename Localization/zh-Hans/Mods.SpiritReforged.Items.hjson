@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: 青铜格栅
+	DisplayName: 青铜格栅墙
 	Tooltip: ""
 }
 
@@ -2776,29 +2776,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: 盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: 盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: 修复的盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: 修复的盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: 盗墓者旗
 
 GiantBag: {
 	DisplayName: 战利品袋
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“各地恶棍与歹徒的最爱”
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2907,7 +2911,7 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: 青铜格栅块
+	DisplayName: 青铜格栅
 	Tooltip: ""
 }
 
