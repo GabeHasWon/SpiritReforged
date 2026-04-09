@@ -18,7 +18,6 @@ public class CrackedSandstone : ModTile, IAutoloadTileItem
 
 		DustType = DustID.DynastyShingle_Red;
 		this.AutoItem().ResearchUnlockCount = 100;
-		HitSound = SoundID.Tink;
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, TileID.Sand, ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
