@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
 }
 
-TinyGrub.DisplayName: Tiny Grub
+TinyGrub: {
+	DisplayName: Tiny Grub
+	Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
