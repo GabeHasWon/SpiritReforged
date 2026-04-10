@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
@@ -51,35 +50,12 @@ public class DuelistRose : EquippableItem
 		}
 	}
 
-	public sealed class DuelistRosePlayer : ModPlayer
-	{
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (Player.HasEquip<DuelistRose>() && hit.Crit && Player.HoldingProjectile(out Projectile held) && held.ModProjectile is RapierProjectile)
-			{
-				target.AddBuff(ModContent.BuffType<OffBalance>(), 300);
-
-				for (int i = 0; i < 3; i++)
-				{
-					Vector2 velocity = Main.rand.NextVector2Circular(hit.HitDirection * 8, Main.rand.NextFloat(1, 2)) - Vector2.UnitY;
-					Gore.NewGoreDirect(Player.GetSource_OnHit(target), target.Center + velocity, velocity, ModContent.GoreType<RosePetal>(), Main.rand.NextFloat(0.5f, 1));
-
-					Dust.NewDustDirect(target.Center - new Vector2(4), 8, 8, DustID.Smoke, Alpha: 150, Scale: Main.rand.NextFloat() + 1).noGravity = true;
-				}
-			}
-		}
-	}
-
 	public sealed class OffBalance : ModBuff
 	{
 		public override string Texture => "Terraria/Images/Buff";
 
 		public override void Update(Player player, ref int buffIndex) => player.statDefense -= 10;
-
-		public override void Update(NPC npc, ref int buffIndex)
-		{
-			npc.GetStats().statDefense -= 10;
-		}
+		public override void Update(NPC npc, ref int buffIndex) => npc.GetStats().statDefense -= 10;
 	}
 
 	public override void SetDefaults()
@@ -92,4 +68,21 @@ public class DuelistRose : EquippableItem
 	}
 
 	public override void UpdateAccessory(Player player, bool hideVisual) => player.GetModPlayer<FreeDodgePlayer>().freeDodgeTime *= 1.5f;
+
+	/// <summary> Activates the effects of the accessory. Should be placed in a relevant OnHitNPC method. </summary>
+	public static void ApplyEffect(Player player, NPC target, NPC.HitInfo hit)
+	{
+		if (player.HasEquip<DuelistRose>())
+		{
+			target.AddBuff(ModContent.BuffType<OffBalance>(), 300);
+
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 velocity = Main.rand.NextVector2Circular(hit.HitDirection * 8, Main.rand.NextFloat(1, 2)) - Vector2.UnitY;
+				Gore.NewGoreDirect(player.GetSource_OnHit(target), target.Center + velocity, velocity, ModContent.GoreType<RosePetal>(), Main.rand.NextFloat(0.5f, 1));
+
+				Dust.NewDustDirect(target.Center - new Vector2(4), 8, 8, DustID.Smoke, Alpha: 150, Scale: Main.rand.NextFloat() + 1).noGravity = true;
+			}
+		}
+	}
 }

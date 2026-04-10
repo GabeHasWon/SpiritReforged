@@ -40,20 +40,10 @@ public class FencingFoil : ModItem
 			return value;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			base.ModifyHitNPC(target, ref modifiers);
-
-			if (!Main.dedServ && hitSweetSpot)
+			if (hitSweetSpot)
 			{
-				/*for (int i = 0; i < 5; i++)
-				{
-					float magnitude = Main.rand.NextFloat();
-					var dust = Dust.NewDustPerfect(GetEndPosition(), DustID.Torch, Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, 0, default, 1.5f);
-					dust.noGravity = true;
-					dust.noLight = true;
-				}*/
-
 				_motionCone?.SetColors(Color.White.Additive(100), new(255, 185, 62));
 				for (int i = 0; i < 5; i++)
 				{

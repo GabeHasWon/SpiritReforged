@@ -39,7 +39,7 @@ public abstract class RapierProjectile : SwungProjectile
 			hitSweetSpot = true;
 
 			Vector2 direction = (-Projectile.velocity).RotatedBy(Main.rand.NextFromList(-1f, -0.5f, 0.5f, 1f));
-			ParticleHandler.SpawnParticle(new CartoonHit(GetEndPosition() + direction * 20, 10, Main.rand.NextFloat(0.5f, 1.5f), direction.ToRotation() - MathHelper.PiOver2 - MathHelper.PiOver4, direction * Main.rand.NextFloat(1, 2)));
+			ParticleHandler.SpawnParticle(new CartoonHit(GetEndPosition() + direction * 20, 10, Main.rand.NextFloat(0.5f, 1.5f), direction.ToRotation() - MathHelper.PiOver2 - MathHelper.PiOver4, direction * Main.rand.NextFloat(1, 2), Color.White));
 		}
 		else
 		{

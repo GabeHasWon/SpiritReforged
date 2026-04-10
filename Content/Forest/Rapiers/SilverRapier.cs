@@ -101,10 +101,8 @@ public class SilverRapier : ModItem
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			base.ModifyHitNPC(target, ref modifiers);
-
 			if (hitSweetSpot)
 			{
 				for (int i = 0; i < 5; i++)
@@ -115,6 +113,9 @@ public class SilverRapier : ModItem
 
 				_motionCone?.SetColors(Color.White.Additive(100), Color.PaleVioletRed);
 			}
+
+			if (Move == MoveType.Swing)
+				DuelistRose.ApplyEffect(Main.player[Projectile.owner], target, hit);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

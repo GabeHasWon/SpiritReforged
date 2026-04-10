@@ -4,6 +4,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Rapiers;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -11,6 +12,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underworld;
 
+[AutoloadGlowmask("255,255,255")]
 public class Cinderbrand : ModItem
 {
 	public class CinderbrandSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
