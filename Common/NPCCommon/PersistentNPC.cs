@@ -2,8 +2,34 @@
 
 namespace SpiritReforged.Common.NPCCommon;
 
-internal class PersistentNPCSystem : ModSystem
+public class PersistentNPCSystem : ModSystem
 {
+	public sealed class PersistentGlobalNPC : GlobalNPC
+	{
+		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => PersistentTypes.Contains(entity.type);
+
+		public override void PostAI(NPC npc)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
+			int range = Range + 2 * 16;
+			bool playerInRange = true;
+
+			Iterate(delegate (Player p)
+			{
+				playerInRange = npc.DistanceSQ(p.Center) < range * range;
+				return playerInRange;
+			});
+
+			if (!playerInRange)
+			{
+				MakePersistent(npc);
+				npc.netUpdate = true;
+			}
+		}
+	}
+
 	/// <returns> Whether this check was successful. Skips all later checks as a result. </returns>
 	public delegate bool PlayerCheck(Player p);
 
@@ -69,32 +95,6 @@ internal class PersistentNPCSystem : ModSystem
 		{
 			if (check?.Invoke(p) == true)
 				return;
-		}
-	}
-}
-
-internal class PersistentGlobalNPC : GlobalNPC
-{
-	public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => PersistentNPCSystem.PersistentTypes.Contains(entity.type);
-
-	public override void PostAI(NPC npc)
-	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-			return;
-
-		int range = PersistentNPCSystem.Range + 2 * 16;
-		bool playerInRange = true;
-
-		PersistentNPCSystem.Iterate(delegate (Player p)
-		{
-			playerInRange = npc.DistanceSQ(p.Center) < range * range;
-			return playerInRange;
-		});
-
-		if (!playerInRange)
-		{
-			PersistentNPCSystem.MakePersistent(npc);
-			npc.netUpdate = true;
 		}
 	}
 }

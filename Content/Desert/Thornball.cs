@@ -109,6 +109,6 @@ public class Slowed : ModBuff
 	public override void Update(NPC npc, ref int buffIndex)
 	{
 		if (npc.knockBackResist > 0)
-			SlowdownGlobalNPC.ApplySlow(npc, 0.25f);
+			npc.GetStats().statSpeed *= 0.75f;
 	}
 }

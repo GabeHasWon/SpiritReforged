@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
@@ -12,21 +13,12 @@ public class TungstenSabre : SilverRapier
 
 	public override void SetDefaults()
 	{
+		Item.DefaultToSpear(ModContent.ProjectileType<TungstenSabreSwing>(), 1f, 22);
+		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 50));
 		Item.damage = 17;
-		Item.knockBack = 3;
-		Item.useTime = Item.useAnimation = 22;
-		Item.DamageType = DamageClass.Melee;
-		Item.width = Item.height = 46;
-		Item.useStyle = ItemUseStyleID.Swing;
-		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.Blue;
-		Item.UseSound = SoundID.Item1;
-		Item.shoot = ModContent.ProjectileType<TungstenSabreSwing>();
-		Item.shootSpeed = 1f;
+		Item.knockBack = 3.5f;
+		Item.UseSound = RapierProjectile.DefaultSwing;
 		Item.autoReuse = true;
-		Item.useTurn = true;
-		Item.noUseGraphic = true;
-		Item.noMelee = true;
 		MoRHelper.SetSlashBonus(Item);
 	}
 

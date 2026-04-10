@@ -40,6 +40,8 @@ public static class NPCHelper
 		npc.position -= collisionOffset;
 	}
 
+	public static StatGlobalNPC GetStats(this NPC npc) => npc.TryGetGlobalNPC(out StatGlobalNPC statGlobalNPC) ? statGlobalNPC : default;
+
 	#region buff immunity
 	public static void BuffImmune(int type, bool whipsToo = false)
 	{

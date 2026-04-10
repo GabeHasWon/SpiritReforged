@@ -5,7 +5,6 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
-using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
@@ -19,11 +18,9 @@ public class FencingFoil : ModItem
 		public override string Texture => ModContent.GetInstance<FencingFoil>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<FencingFoil>().DisplayName;
 
-		public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1");
-
 		private BasicNoiseCone _motionCone;
 
-		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch, 12);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch, 12, 0);
 
 		public override void AI()
 		{
@@ -49,13 +46,20 @@ public class FencingFoil : ModItem
 
 			if (!Main.dedServ && hitSweetSpot)
 			{
+				/*for (int i = 0; i < 5; i++)
+				{
+					float magnitude = Main.rand.NextFloat();
+					var dust = Dust.NewDustPerfect(GetEndPosition(), DustID.Torch, Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, 0, default, 1.5f);
+					dust.noGravity = true;
+					dust.noLight = true;
+				}*/
+
+				_motionCone?.SetColors(Color.White.Additive(100), new(255, 185, 62));
 				for (int i = 0; i < 5; i++)
 				{
 					float magnitude = Main.rand.NextFloat();
 					ParticleHandler.SpawnParticle(new EmberParticle(GetEndPosition(), Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, Color.Goldenrod, 0.4f * (1f - magnitude), 30, 3));
 				}
-
-				_motionCone?.SetColors(Color.White.Additive(100), Color.Goldenrod);
 			}
 		}
 
@@ -75,29 +79,18 @@ public class FencingFoil : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 14;
-		Item.knockBack = 3;
-		Item.useTime = Item.useAnimation = 25;
-		Item.DamageType = DamageClass.Melee;
-		Item.width = Item.height = 46;
-		Item.useStyle = ItemUseStyleID.Swing;
-		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.Blue;
-		Item.UseSound = SoundID.Item1;
-		Item.shoot = ModContent.ProjectileType<FencingFoilSwing>();
-		Item.shootSpeed = 1f;
+		Item.DefaultToSpear(ModContent.ProjectileType<FencingFoilSwing>(), 1f, 18);
+		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 25));
+		Item.damage = 10;
+		Item.knockBack = 2;
+		Item.UseSound = RapierProjectile.DefaultSwing;
 		Item.autoReuse = true;
-		Item.useTurn = true;
-		Item.noUseGraphic = true;
-		Item.noMelee = true;
 		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SoundEngine.PlaySound(FencingFoilSwing.Slash with { Pitch = 1f, PitchVariance = 0.15f });
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 0, source, 0, Main.rand.NextFromList(-1, 1));
-
 		return false;
 	}
 

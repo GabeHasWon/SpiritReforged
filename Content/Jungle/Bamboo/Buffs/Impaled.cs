@@ -1,5 +1,5 @@
+using SpiritReforged.Common.NPCCommon;
 using Terraria.Audio;
-using static SpiritReforged.Common.NPCCommon.SlowdownGlobalNPC;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Buffs;
 
@@ -47,14 +47,14 @@ public class Impaled : ModBuff
 			if (npc.buffTime[buffIndex] % 30 == 0)
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { PitchVariance = .2f, Pitch = -.5f }, npc.Center);
 
-			ApplySlow(npc, 1);
+			npc.GetStats().statSpeed *= 0;
 
 			npc.lifeRegen = -10;
 			npc.velocity = Vector2.UnitY * .1f;
 		}
 		else
 		{
-			ApplySlow(npc, .5f);
+			npc.GetStats().statSpeed *= 0.5f;
 			npc.lifeRegen = 0;
 		}
 

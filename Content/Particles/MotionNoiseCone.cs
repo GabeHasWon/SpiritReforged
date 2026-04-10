@@ -160,9 +160,7 @@ public abstract class MotionNoiseCone : Particle
 		effect.Parameters["colorLerpExponent"].SetValue(ColorLerpExponent);
 		effect.Parameters["finalIntensityMod"].SetValue(FinalIntensity);
 
-		Color lightColor = Color.White;
-		if (UseLightColor)
-			lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
+		Color lightColor = UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates()) : Color.White;
 
 		var square = new SquarePrimitive
 		{

@@ -1,4 +1,4 @@
-using static SpiritReforged.Common.NPCCommon.SlowdownGlobalNPC;
+using SpiritReforged.Common.NPCCommon;
 
 namespace SpiritReforged.Content.Snow.Frostbite;
 
@@ -17,7 +17,7 @@ public class Frozen : ModBuff
 		if (npc.knockBackResist <= 0f)
 			return;
 
-		ApplySlow(npc, .3f);
+		npc.GetStats().statSpeed *= 0.7f;
 		if (Main.rand.NextBool(25))
 		{
 			Vector2 position = npc.position + new Vector2(npc.width * Main.rand.NextFloat(), npc.height * Main.rand.NextFloat());

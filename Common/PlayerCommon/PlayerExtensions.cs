@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
 using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Common.PlayerCommon;
@@ -51,7 +50,7 @@ internal static class PlayerExtensions
 
 	public static bool HoldingProjectile(this Player player, out Projectile held)
 	{
-		int index = (player.heldProj == -1) ? player.GetModPlayer<RapierProjectile.FreeDodgePlayer>().oldHeldProjectile : player.heldProj;
+		int index = (player.heldProj == -1) ? player.GetModPlayer<FreeDodgePlayer>().oldHeldProjectile : player.heldProj;
 		if (index != -1)
 		{
 			held = Main.projectile[index];

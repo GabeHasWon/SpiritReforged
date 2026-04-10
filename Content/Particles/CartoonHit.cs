@@ -16,7 +16,7 @@ public class CartoonHit : Particle
 		MaxTime = duration;
 
 		Color = Color.White;
-		Velocity = velocity ?? new Vector2(-2).RotatedBy(rotation);
+		Velocity = velocity ?? Vector2.Zero;
 		style = Main.rand.Next(3);
 	}
 
@@ -26,8 +26,9 @@ public class CartoonHit : Particle
 		Rectangle source = texture.Frame(1, 3, 0, style, 0, -2);
 
 		float rotation = Rotation - MathHelper.PiOver2;
+		float scale = Scale * (1f - Progress);
 
-		//spriteBatch.Draw(texture, Position - Main.screenPosition + new Vector2(2).RotatedBy(rotation), source, Color.White * 0.5f * (1f - Progress), rotation, source.Size() / 2, Scale, 0, 0);
-		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color.White * (1f - Progress), rotation, source.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition + new Vector2(2 * scale).RotatedBy(rotation), source, Color.White * 0.5f * (1f - Progress), rotation, source.Size() / 2, scale, 0, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color, rotation, source.Size() / 2, scale, 0, 0);
 	}
 }

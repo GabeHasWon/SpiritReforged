@@ -3076,5 +3076,19 @@ TungstenSabre: {
 
 SharpeningStone: {
 	// DisplayName: Sharpening Stone
-	// Tooltip: Increases Rapier sweetspot damage by 10%
+	// Tooltip: Increases Rapier sweetspot damage by 25%
+}
+
+Cinderbrand: {
+	// DisplayName: Cinderbrand
+	// Tooltip: ""
+}
+
+DuelistRose: {
+	// DisplayName: Duelist's Rose
+	/* Tooltip:
+		'''
+		Increases parry window by 50%
+		Parrying enemies knocks them off balance, reducing defense
+		''' */
 }

@@ -26,10 +26,10 @@ public abstract class SwungProjectile : ModProjectile
 		public Func<Player.CompositeArmStretchAmount> Stretch { get; }
 	}
 
-	public readonly record struct Configuration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch) : IConfiguration;
+	public readonly record struct BasicConfiguration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch) : IConfiguration;
 
 	/// <summary> The full duration of the swing. </summary>
-	public float SwingTime => Main.player[Projectile.owner].itemTimeMax;
+	public virtual float SwingTime => Main.player[Projectile.owner].itemTimeMax;
 	/// <summary> The progress of the swing relative to <see cref="SwingTime"/>. </summary>
 	public float Progress => Counter / SwingTime;
 	/// <summary> The absolute direction of the swing. </summary>
@@ -40,7 +40,10 @@ public abstract class SwungProjectile : ModProjectile
 	/// <summary> The progress of the swing. </summary>
 	public int Counter;
 
-	public IConfiguration Config { get; protected set; }
+	private IConfiguration _config;
+
+	/// <summary> Gets <see cref="_config"/> and automatically casts the result. </summary>
+	public T GetConfig<T>() where T : IConfiguration => (T)_config;
 
 	/// <summary><inheritdoc cref="ModProjectile.SetDefaults"/><para/>
 	/// Prefer overriding <see cref="SetConfiguration"/> instead of this method. </summary>
@@ -56,17 +59,17 @@ public abstract class SwungProjectile : ModProjectile
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 
-		Config = SetConfiguration();
+		_config = SetConfiguration();
 	}
 
 	/// <summary><inheritdoc cref="ModProjectile.SetDefaults"/><para/>
-	/// Must return a custom <see cref="IConfiguration"/>. See <see cref="Configuration"/> for default. </summary>
+	/// Must return a custom <see cref="IConfiguration"/>. See <see cref="BasicConfiguration"/> for default. </summary>
 	public abstract IConfiguration SetConfiguration();
 
 	public override void AI()
 	{
 		var owner = Main.player[Projectile.owner];
-		Player.CompositeArmStretchAmount stretch = Config.Stretch.Invoke();
+		Player.CompositeArmStretchAmount stretch = _config.Stretch.Invoke();
 
 		Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
 		Projectile.rotation = GetRotation(out float armRotation);
@@ -82,8 +85,8 @@ public abstract class SwungProjectile : ModProjectile
 	/// <summary> Gets the rotation of the swing aside from texture orientation. Used primarily for collision checks. </summary>
 	public float GetAbsoluteAngle()
 	{
-		float ease = Config.Easing.Ease(MathHelper.Min(Progress, 1));
-		float progress = (Projectile.direction == -1) ? 1f - ease : ease;
+		float ease = (_config.Easing == null) ? MathHelper.Min(Progress, 1) : _config.Easing.Ease(MathHelper.Min(Progress, 1));
+		float progress = (Projectile.direction == -1) ? (1f - ease) : ease;
 
 		return Projectile.velocity.ToRotation() - SwingArc / 2f + SwingArc * progress;
 	}
@@ -97,13 +100,13 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	public override bool ShouldUpdatePosition() => false;
-	public override void CutTiles() => Projectile.PlotTileCut(Config.Reach, Projectile.width);
+	public override void CutTiles() => Projectile.PlotTileCut(_config.Reach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		var endPos = Projectile.Center + (Vector2.UnitX * Config.Reach).RotatedBy(GetAbsoluteAngle());
+		var endPos = Projectile.Center + (Vector2.UnitX * _config.Reach).RotatedBy(GetAbsoluteAngle());
 		float collisionPoint = 0f;
 
-		return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, Config.Width, ref collisionPoint);
+		return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, _config.Width, ref collisionPoint);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -131,7 +134,7 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	#region helper methods
-	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), Config	.Reach + 10, effects: effects);
+	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), _config.Reach + 10, effects: effects);
 	public void DrawSmear(Color color, float rotation, int frame, float distance, float scale = 0.75f, SpriteEffects effects = default)
 	{
 		Main.instance.LoadProjectile(985);
@@ -165,6 +168,6 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(Config.Reach + add, 0).RotatedBy(GetRotation(out _) - MathHelper.PiOver4);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(_config.Reach + add, 0).RotatedBy(GetRotation(out _) - MathHelper.PiOver4);
 	#endregion
 }

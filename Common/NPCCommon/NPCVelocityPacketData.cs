@@ -3,9 +3,7 @@ using System.IO;
 
 namespace SpiritReforged.Common.NPCCommon;
 
-/// <summary>
-/// Syncs an NPC's velocity from a client. If you're on a server, use <see cref="NPC.netUpdate"/> instead.
-/// </summary>
+/// <summary> Syncs an NPC's velocity from a client. If you're on a server, use <see cref="NPC.netUpdate"/> instead. </summary>
 internal class NPCVelocityPacketData : PacketData
 {
 	private readonly short _who;

@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Escarabebê
 	Description: "'Ele tá tramando algo...'"
 }
+
+OffBalance: {
+	// DisplayName: Off Balance
+	// Description: Mods.SpiritReforged.Buffs.OffBalance.Description
+}

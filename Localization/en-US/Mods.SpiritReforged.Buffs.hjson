@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Scarababy
 	Description: "'It's plotting...'"
 }
+
+OffBalance: {
+	DisplayName: Off Balance
+	Description: Mods.SpiritReforged.Buffs.OffBalance.Description
+}
