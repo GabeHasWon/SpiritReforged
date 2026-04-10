@@ -2171,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: Osmosifier
-	Tooltip: Passively produces salt blocks when placed in water
+	Tooltip: Passively produces dull salt blocks when placed in water
 }
 
 GoldDivingBeetleItem: {
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Foreground Red Sandstone Brick Wall
-	Tooltip: ""
+	Tooltip: Displays in front of players
 }
 
 SaltPylonItem: {
