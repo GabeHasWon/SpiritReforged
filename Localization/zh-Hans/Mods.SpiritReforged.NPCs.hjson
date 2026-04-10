@@ -555,7 +555,7 @@ Scarabeus: {
 
 TinyGrub: {
 	DisplayName: 小幼虫
-	// Entry: Almost as full of potential as it is grossness.
+	Entry: 其潜力跟恶心程度一样大。
 }
 
 CactusZombie: {
