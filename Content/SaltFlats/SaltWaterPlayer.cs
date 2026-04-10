@@ -10,6 +10,8 @@ internal class SaltWaterPlayer : ModPlayer
 		{
 			const float FloatSpeed = -1f;
 
+			bool jump = false;
+
 			if (Collision.WetCollision(Player.position + new Vector2(0, 20), Player.width, 8))
 			{
 				if (Player.velocity.Y > FloatSpeed)
@@ -21,7 +23,11 @@ internal class SaltWaterPlayer : ModPlayer
 			else if (Collision.WetCollision(Player.position + new Vector2(0, 28), Player.width, 8))
 			{
 				Player.velocity.Y -= Player.gravity * 0.6f;
+				jump = true;
 			}
+
+			if (jump && Player.controlJump && Player.velocity.Y > -4)
+				Player.velocity.Y = -4;
 		}
 	}
 }
