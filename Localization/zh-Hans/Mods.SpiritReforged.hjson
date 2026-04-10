@@ -50,6 +50,7 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: 常备食物，以备不时之需！
 	ReforgedTip1: 蝴蝶偶尔会藏在地下树丛里。
 	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
@@ -60,6 +61,15 @@ GameTips: {
 	ReforgedTip7: 云茎只生长在云层之下。
 	ReforgedTip8: 需要高度时，可站上金合欢树顶。
 	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
+	# Caves & Clubs
+	// ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
+	// ReforgedTip11: Clubs offer strong, focused single-target damage.
+	# Sunscorched
+	// ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
+	// ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprised hide around every corner.
+	// ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
+	// ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
+	// ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
 }
 
 Emotes: {

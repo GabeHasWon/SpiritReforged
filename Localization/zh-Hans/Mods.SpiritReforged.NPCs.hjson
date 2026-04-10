@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
-TinyGrub.DisplayName: 小幼虫
+TinyGrub: {
+	DisplayName: 小幼虫
+	// Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"

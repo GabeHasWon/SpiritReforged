@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Используйте любой самоцвет на [i:SpiritReforged/ScarabAltarItem] древнем алтаре в Зиккурате.
 }
 
-TinyGrub.DisplayName: Маленькая личинка
+TinyGrub: {
+	DisplayName: Маленькая личинка
+	// Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"

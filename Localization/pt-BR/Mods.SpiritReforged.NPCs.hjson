@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
-TinyGrub.DisplayName: Pequena Larva
+TinyGrub: {
+	DisplayName: Pequena Larva
+	// Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
