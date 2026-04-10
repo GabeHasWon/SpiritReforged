@@ -2171,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: 渗透装置
-	Tooltip: 放置在水中时会被动生成盐块
+	Tooltip: 放置在水中时会被动生成暗淡盐块
 }
 
 GoldDivingBeetleItem: {
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: 前景赤沙岩砖墙
-	Tooltip: ""
+	Tooltip: 显示在玩家前面
 }
 
 SaltPylonItem: {
