@@ -1,4 +1,5 @@
 using SpiritReforged.Common;
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -194,7 +195,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				if (_justSpawned)
 				{
 					if (!Main.dedServ)
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 5, 5, 30));
+						ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitX, 5, 5, 30);
 
 					if (Main.netMode != NetmodeID.MultiplayerClient) //Summon Scarabeus
 					{
@@ -218,7 +219,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 					SoundEngine.PlaySound(StartDuoFight ? AnticipationWeird : Anticipation, Projectile.Center);
 
 					if (!Main.dedServ)
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitX, 10, 10, 30));
+						ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitX, 10, 10, 30);
 
 					FlashTime = 60;
 
