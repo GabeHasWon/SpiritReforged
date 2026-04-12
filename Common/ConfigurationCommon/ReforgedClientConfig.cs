@@ -21,6 +21,9 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(true)]
 	public bool AmbientSounds { get; set; }
 
+	[DefaultValue(1)]
+	public float ScreenshakeStrength { get; set; }
+
 	public override void OnChanged()
 	{
 		int type = ModContent.TileType<SaltBlockReflective>();

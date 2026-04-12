@@ -1,4 +1,5 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -555,7 +556,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45));
+			ScreenshakeHelper.Shake(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45);
 		}
 	
 		if (NPC.life <= 0 && CurrentState == AIState.DuoFightDeathAnim)

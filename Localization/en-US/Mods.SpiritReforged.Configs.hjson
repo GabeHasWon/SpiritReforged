@@ -24,6 +24,11 @@ ReforgedClientConfig: {
 		Label: Ambient Sounds
 		Tooltip: Plays ambient sounds in specific biomes
 	}
+
+	ScreenshakeStrength: {
+		Label: Screenshake Strength
+		Tooltip: ""
+	}
 }
 
 OceanShape: {

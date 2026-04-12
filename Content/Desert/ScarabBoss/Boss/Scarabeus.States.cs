@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
@@ -48,7 +49,7 @@ public partial class Scarabeus : ModNPC
 
 				if (!Main.dedServ)
 				{
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 0.5f, 3, swarm_time * 2, uniqueIdentity: "ScarabeusSpawnShake"));
+					ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 0.5f, 3, swarm_time * 2, uniqueId: "ScarabeusSpawnShake");
 
 					for (int i = 0; i < 48; i++)
 					{
@@ -98,8 +99,7 @@ public partial class Scarabeus : ModNPC
 					});
 				}
 
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 3.5f, 3, swarm_time, uniqueIdentity: "ScarabeusSpawnShake"));
-
+				ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 3.5f, 3, swarm_time, uniqueId: "ScarabeusSpawnShake");
 				//FablesCameraFocus();
 
 				if (Main.rand.NextBool(3))
@@ -166,7 +166,7 @@ public partial class Scarabeus : ModNPC
 
 					ExtraMemory++;
 				}
-			
+
 				NPC.FaceTarget();
 				UpdateFrame(6, 12, PhaseOneProfile, false);
 				NPC.rotation = 0;
@@ -174,7 +174,7 @@ public partial class Scarabeus : ModNPC
 				ShiftUpToFloorLevel();
 
 				if (!Main.dedServ)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 2, 3, 20));
+					ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 2, 3, 20);
 			}
 			else
 			{
@@ -368,7 +368,7 @@ public partial class Scarabeus : ModNPC
 		if (lastFrameY == 4 && ExtraMemory < 2)
 		{
 			if (!Main.dedServ)
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitX * NPC.direction, 10, 10, 60));
+				ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitX * NPC.direction, 10, 10, 60);
 
 			//SoundEngine.PlaySound(SoundID.Roar with { Volume = 0.1f}, NPC.Center);
 			SoundEngine.PlaySound(ChitterSound, NPC.Center);
@@ -404,7 +404,7 @@ public partial class Scarabeus : ModNPC
 
 			FablesToggleUI(true);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, -Vector2.UnitY, 10, 10, 60));
+			ScreenshakeHelper.Shake(NPC.Center, -Vector2.UnitY, 10, 10, 60);
 
 			BouncingTileWave(7, 8f, 40);
 
@@ -617,8 +617,8 @@ public partial class Scarabeus : ModNPC
 
 			SoundEngine.PlaySound(NPC.HitSound, NPC.Center);
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.5f, Pitch = -0.2f }, NPC.Center);
-
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25));
+			ScreenshakeHelper.Shake(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25);
+			
 			_shakeTimer = 40;
 		}
 
@@ -673,11 +673,9 @@ public partial class Scarabeus : ModNPC
 			if (strongBurst)
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.5f, Pitch = -0.2f }, NPC.Center);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25));
-			_shakeTimer = 20;
-			if (strongBurst)
-				_shakeTimer = 40;
-
+			ScreenshakeHelper.Shake(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 8, 3, 25);
+			
+			_shakeTimer = strongBurst ? 40 : 20;
 			NPC.velocity.Y += 0.15f;
 			NPC.position.Y += 16;
 		}
@@ -732,7 +730,7 @@ public partial class Scarabeus : ModNPC
 					KickupDust(pos, -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), ParticleLayer.BelowSolid);
 				}
 
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 5, 3, 20));
+				ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 5, 3, 20);
 			}
 
 			SoundEngine.PlaySound(SmallChitterSound, NPC.Center);
@@ -1107,7 +1105,7 @@ public partial class Scarabeus : ModNPC
 
 					if (!Main.dedServ)
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 4, 5, 35));
+						ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 4, 5, 35);
 						Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
 						ScarabHeatHazeShaderData.HeatHazeIntensity = 0.1f;
 					}
@@ -1145,8 +1143,7 @@ public partial class Scarabeus : ModNPC
 
 					if (!Main.dedServ)
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
-
+						ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 5, 35);
 						SoundEngine.PlaySound(RollStartSound, NPC.Center, RollSoundTracking);
 						SoundEngine.PlaySound(BounceSound with { Volume = 0.4f}, NPC.Center);
 						GroundImpactVFX(1.5f);
@@ -1192,7 +1189,7 @@ public partial class Scarabeus : ModNPC
 					//BONK effects
 					if (!Main.dedServ)
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+						ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 5, 35);
 						Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
 						ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
 					}
@@ -1422,7 +1419,7 @@ public partial class Scarabeus : ModNPC
 
 			if (!Main.dedServ)
 			{
-				Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 17, 6, 65, 1000));
+				ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 17, 6, 65, 1000);
 				Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 				ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 				SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
@@ -1748,7 +1745,7 @@ public partial class Scarabeus : ModNPC
 	{
 		if (!Main.dedServ)
 		{
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 3, 35));
+			ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 3, 35);
 			Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 			ScarabHeatHazeShaderData.HeatHazeIntensity = 1f;
 			SoundEngine.PlaySound(GroundPoundSlamSound, NPC.Center);
@@ -1830,7 +1827,7 @@ public partial class Scarabeus : ModNPC
 
 		if (!Main.dedServ && (bounceIndex > 1 || phaseTwo))
 		{
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 4, 15, 1800));
+			ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 4, 15, 1800);
 			Collision.HitTiles(NPC.BottomLeft, new Vector2(0, -6), NPC.width, 10);
 			SoundEngine.PlaySound(BounceSound, NPC.Center);
 			GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.1f);
@@ -1934,7 +1931,7 @@ public partial class Scarabeus : ModNPC
 					//Screenshake when it hits the floor in phase 2 because it did so from a high height
 					if (!Main.dedServ && NPC.Opacity == 1 && phaseTwo)
 					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 7, 10, 40, 900));
+						ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 7, 10, 40, 900);
 						SoundEngine.PlaySound(BounceSound, NPC.Center);
 						GroundImpactVFX(Math.Abs(NPC.velocity.Y) * 0.3f);
 
@@ -2016,9 +2013,7 @@ public partial class Scarabeus : ModNPC
 
 					//About to emerge!
 					if (Counter >= dig_time - 30)
-					{
-						Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 6.5f, 3, 30, uniqueIdentity: "ScarabeusDigRumble"));
-					}
+						ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY.RotatedByRandom(1f), 6.5f, 3, 30, uniqueId: "ScarabeusDigRumble");
 				}
 
 				if (Counter > dig_time) //Reemerge

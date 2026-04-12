@@ -24,6 +24,11 @@ ReforgedClientConfig: {
 		Label: Звуки окружения
 		Tooltip: Добавляет новые звуки окружения в некоторые биомы
 	}
+
+	ScreenshakeStrength: {
+		// Label: Screenshake Strength
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {
