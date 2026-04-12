@@ -3101,3 +3101,12 @@ DuelistRose: {
 		Parrying enemies knocks them off balance, reducing defense
 		'''
 }
+
+Reiterpallasch: {
+	DisplayName: Reiterpallasch
+	Tooltip:
+		'''
+		Sweetspot hits deal critical damage and grant shells
+		<right> consumes shells to fire a high-damage shotgun blast
+		'''
+}

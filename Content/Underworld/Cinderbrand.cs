@@ -27,7 +27,7 @@ public class Cinderbrand : ModItem
 
 		private BasicNoiseCone _motionCone;
 
-		public override IConfiguration SetConfiguration() => new RapierConfiguration(null, 58, 12, ParryStretch, 12, 15);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(null, 58, 12, 12, 15);
 
 		public Player.CompositeArmStretchAmount ParryStretch()
 		{
@@ -87,18 +87,19 @@ public class Cinderbrand : ModItem
 			return true;
 		}
 
-		public override float GetRotation(out float armRotation)
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			if (Move == MoveType.Stance)
 			{
 				float value = GetAbsoluteAngle();
 				armRotation = value - MathHelper.PiOver2;
+				stretch = Player.CompositeArmStretchAmount.Full;
 
 				return value + (Projectile.direction == -1 ? MathHelper.Pi + MathHelper.PiOver2 : MathHelper.Pi);
 			}
 			else
 			{
-				return base.GetRotation(out armRotation);
+				return base.GetRotation(out armRotation, out stretch);
 			}
 		}
 

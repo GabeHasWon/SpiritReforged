@@ -20,7 +20,7 @@ public class FencingFoil : ModItem
 
 		private BasicNoiseCone _motionCone;
 
-		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ProgressiveStretch, 12, 0);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, 12, 0);
 
 		public override void AI()
 		{
@@ -30,11 +30,11 @@ public class FencingFoil : ModItem
 				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center - Projectile.velocity * 8, Projectile.velocity, 20, new(50, 150)).SetColors(Color.White.Additive(100), Color.Gray).SetIntensity(2).AttachTo(Projectile));
 		}
 
-		public override float GetRotation(out float armRotation)
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			float flourishRotation = (Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.06f * FlourishDirection : 0;
 			float easedRotation = EaseFunction.EaseCubicIn.Ease(flourishRotation);
-			float value = base.GetRotation(out armRotation) + easedRotation;
+			float value = base.GetRotation(out armRotation, out stretch) + easedRotation;
 
 			armRotation += easedRotation;
 			return value;

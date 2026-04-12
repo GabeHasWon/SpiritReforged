@@ -112,10 +112,10 @@ public class WindshearScepter : ModItem
 		public override string Texture => ModContent.GetInstance<WindshearScepter>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<WindshearScepter>().DisplayName;
 
-		public override IConfiguration SetConfiguration() => new BasicConfiguration(new PolynomialEase(static(x) => Math.Min(x * 3, 1)), 30, 10, FullStretch);
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(new PolynomialEase(static(x) => Math.Min(x * 3, 1)), 30, 10);
 		public override bool? CanDamage() => false;
 
-		public override float GetRotation(out float armRotation)
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			if (Progress < 0.3f && Main.rand.NextBool())
 			{
@@ -126,7 +126,7 @@ public class WindshearScepter : ModItem
 			}
 
 			int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-			float value = base.GetRotation(out armRotation) + direction * Progress * 2.5f;
+			float value = base.GetRotation(out armRotation, out stretch) + direction * Progress * 2.5f;
 
 			return value + MathHelper.PiOver4;
 		}

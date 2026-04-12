@@ -88,7 +88,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
 
-	public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 58, 30, ProgressiveStretch);
+	public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 58, 30);
 
 	public override void AI()
 	{
@@ -142,10 +142,10 @@ public class CeremonialDaggerSwing : SwungProjectile
 		}
 	}
 
-	public override float GetRotation(out float armRotation)
+	public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 	{
 		int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-		float value = base.GetRotation(out armRotation) + direction * Progress * 2;
+		float value = base.GetRotation(out armRotation, out stretch) + direction * Progress * 2;
 
 		return value + MathHelper.PiOver4;
 	}

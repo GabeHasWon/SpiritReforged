@@ -26,22 +26,17 @@ public class SilverRapier : ModItem
 
 		private BasicNoiseCone _motionCone;
 
-		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, ParryStretch, 12, 15);
-
-		public Player.CompositeArmStretchAmount ParryStretch()
-		{
-			if (Move == MoveType.Stance)
-				return Player.CompositeArmStretchAmount.Full;
-			else
-				return ProgressiveStretch();
-		}
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicOut, 58, 12, 12, 15);
 
 		public override void AI()
 		{
 			base.AI();
 
 			if (!Main.dedServ && Move == MoveType.Lunge && Counter == 1)
-				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center - Projectile.velocity * 8, Projectile.velocity, 14, new(50, 150)).SetColors(Color.White.Additive(100), Color.SteelBlue).SetIntensity(2).AttachTo(Projectile));
+			{
+				Vector2 position = Projectile.Center - Projectile.velocity * 8;
+				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(position, Projectile.velocity, 14, new(50, 150)).SetColors(Color.White.Additive(100), Color.SteelBlue).SetIntensity(2).AttachTo(Projectile));
+			}
 		}
 
 		public bool FreeDodge(Player.HurtInfo info)
@@ -86,18 +81,19 @@ public class SilverRapier : ModItem
 			return true;
 		}
 
-		public override float GetRotation(out float armRotation)
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			if (Move == MoveType.Stance)
 			{
 				float value = GetAbsoluteAngle();
 				armRotation = value - MathHelper.PiOver2;
+				stretch = Player.CompositeArmStretchAmount.Full;
 
 				return value + ((Projectile.direction == -1) ? MathHelper.Pi + MathHelper.PiOver2 : MathHelper.Pi);
 			}
 			else
 			{
-				return base.GetRotation(out armRotation);
+				return base.GetRotation(out armRotation, out stretch);
 			}
 		}
 

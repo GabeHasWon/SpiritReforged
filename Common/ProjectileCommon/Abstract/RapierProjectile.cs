@@ -9,7 +9,7 @@ namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract class RapierProjectile : SwungProjectile
 {
-	public readonly record struct RapierConfiguration(EaseFunction Easing, int Reach, int Width, Func<Player.CompositeArmStretchAmount> Stretch, int SweetSpotScale, int ParryWindow) : IConfiguration;
+	public readonly record struct RapierConfiguration(EaseFunction Easing, int Reach, int Width, int SweetSpotScale, int ParryWindow) : IConfiguration;
 
 	public static readonly SoundStyle DefaultSwing = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1")
 	{
@@ -21,10 +21,10 @@ public abstract class RapierProjectile : SwungProjectile
 
 	protected bool hitSweetSpot;
 
-	public override float GetRotation(out float armRotation)
+	public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 	{
 		int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-		float value = base.GetRotation(out armRotation) + direction * Progress * 2;
+		float value = base.GetRotation(out armRotation, out stretch) + direction * Progress * 2;
 
 		return value + MathHelper.PiOver4;
 	}
