@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -15,7 +16,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
-public sealed class Reiterpallasch : ModItem
+public sealed class Reiterpallasch : ModItem, IDrawHeld
 {
 	public class ReiterpallaschSwing : RapierProjectile
 	{
@@ -151,19 +152,14 @@ public sealed class Reiterpallasch : ModItem
 
 				return value;
 			}
-			else if (Move == MoveType.Fire)
-			{
-				float value = base.GetRotation(out armRotation, out _);
-				value -= EaseFunction.EaseSine.Ease(Math.Min(Progress * 5, 1)) * 0.2f * Projectile.direction;
-				stretch = Player.CompositeArmStretchAmount.Full;
-
-				return value;
-			}
 			else
 			{
 				float value = GetAbsoluteAngle();
 				armRotation = value - 1.57f;
 				stretch = ProgressiveStretch();
+
+				if (Move == MoveType.Fire)
+					value -= EaseFunction.EaseSine.Ease(Math.Min(Progress * 5, 1)) * 0.2f * Projectile.direction;
 
 				return value + MathHelper.PiOver4 + SwingArc / 2 * Projectile.direction; //Correct rotation
 			}
@@ -275,7 +271,7 @@ public sealed class Reiterpallasch : ModItem
 		MoRHelper.SetSlashBonus(Item);
 	}
 
-	public override bool AltFunctionUse(Player player) => true; //shells >= MaxShells;
+	public override bool AltFunctionUse(Player player) => shells >= MaxShells;
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
@@ -286,7 +282,7 @@ public sealed class Reiterpallasch : ModItem
 		{
 			moveType = ReiterpallaschSwing.MoveType.Fire;
 			swingArc = 0;
-			damage *= 5;
+			damage *= 3;
 		}
 
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, swingArc, source, (int)moveType);
@@ -294,7 +290,7 @@ public sealed class Reiterpallasch : ModItem
 		_swingArc = _swingArc switch
 		{
 			0 => -0.1f,
-			-0.1f => 0.3f,
+			-0.1f => 0.2f,
 			_ => 0
 		};
 
@@ -327,6 +323,25 @@ public sealed class Reiterpallasch : ModItem
 			});
 
 			spriteBatch.Draw(texture, position.Floor(), null, Color.White, (float)Math.Sin(positional / 20f) * 0.3f, texture.Size() / 2, drawScale, 0, 0);
+		}
+	}
+
+	public void DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		if (!drawinfo.drawPlayer.ItemAnimationActive && drawinfo.heldItem.ModItem is Reiterpallasch reiterpallasch && reiterpallasch.shells >= MaxShells)
+		{
+			Texture2D texture = TextureAssets.Item[drawinfo.heldItem.type].Value;
+			Rectangle source = texture.Frame();
+			Vector2 origin = new((drawinfo.itemEffect == SpriteEffects.FlipHorizontally) ? source.Width - 18 : 18, 40);
+
+			bool animating = drawinfo.drawPlayer.bodyFrameCounter != 0;
+			float sine = (float)Math.Sin(drawinfo.drawPlayer.bodyFrameCounter / 10f);
+			float rotation = -(animating ? MathHelper.PiOver2 : 1.2f) * drawinfo.drawPlayer.direction;
+
+			Vector2 location = (drawinfo.drawPlayer.RotatedRelativePoint(animating ? drawinfo.drawPlayer.Center : drawinfo.drawPlayer.Center - new Vector2(4 * drawinfo.drawPlayer.direction, 0)) + new Vector2((int)(sine * 2) * 2, 0)).Floor();
+			Color color = drawinfo.drawPlayer.HeldItem.GetAlpha(Lighting.GetColor(location.ToTileCoordinates()));
+
+			drawinfo.DrawDataCache.Add(new DrawData(texture, location - Main.screenPosition, source, color, rotation, origin, 1, drawinfo.itemEffect));
 		}
 	}
 

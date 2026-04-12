@@ -93,7 +93,7 @@ public class SilverRapier : ModItem
 			}
 			else
 			{
-				return base.GetRotation(out armRotation, out stretch);
+				return base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4;
 			}
 		}
 

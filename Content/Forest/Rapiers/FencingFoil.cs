@@ -13,8 +13,6 @@ public class FencingFoil : ModItem
 {
 	public class FencingFoilSwing : RapierProjectile
 	{
-		public int FlourishDirection => (int)Projectile.ai[1];
-
 		public override string Texture => ModContent.GetInstance<FencingFoil>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<FencingFoil>().DisplayName;
 
@@ -32,12 +30,11 @@ public class FencingFoil : ModItem
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
-			float flourishRotation = (Counter > SwingTime / 2) ? (Counter - SwingTime / 2) * 0.06f * FlourishDirection : 0;
-			float easedRotation = EaseFunction.EaseCubicIn.Ease(flourishRotation);
-			float value = base.GetRotation(out armRotation, out stretch) + easedRotation;
+			float value = GetAbsoluteAngle();
+			armRotation = value - 1.57f;
+			stretch = ProgressiveStretch();
 
-			armRotation += easedRotation;
-			return value;
+			return value + MathHelper.PiOver4 + SwingArc / 2 * Projectile.direction;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -80,7 +77,7 @@ public class FencingFoil : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 0, source, 0, Main.rand.NextFromList(-1, 1));
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, Main.rand.NextFromList(-0.1f, 0.1f), source);
 		return false;
 	}
 

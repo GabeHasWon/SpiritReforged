@@ -21,14 +21,6 @@ public abstract class RapierProjectile : SwungProjectile
 
 	protected bool hitSweetSpot;
 
-	public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
-	{
-		int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-		float value = base.GetRotation(out armRotation, out stretch) + direction * Progress * 2;
-
-		return value + MathHelper.PiOver4;
-	}
-
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
 		if (InSweetSpot(target, GetConfig<RapierConfiguration>().SweetSpotScale))
