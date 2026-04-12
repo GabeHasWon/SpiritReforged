@@ -308,14 +308,14 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Music = 0;
 	}
 
-	public override void OnSpawn(IEntitySource source)
-	{
-		CheckDuoFightStart(source);
-	}
+	public override void OnSpawn(IEntitySource source) => CheckDuoFightStart(source);
 
 	//No journey scaling cuz we aleady scale stuff
 	private void NoJourneyScaling(NPC npc, ref float strength)
 	{
+		if (npc.type != ModContent.NPCType<Scarabeus>())
+			return;
+
 		if (strength < 1)
 			strength = MathHelper.Lerp(strength, 1, 0.5f);
 		else
