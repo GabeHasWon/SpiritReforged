@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
-using SpiritReforged.Content.Ziggurat.Tiles;
+﻿using SpiritReforged.Common.WallCommon;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 

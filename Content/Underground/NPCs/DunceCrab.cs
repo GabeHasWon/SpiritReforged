@@ -386,7 +386,6 @@ public class DunceCrab : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-
 		if (spawnInfo.Invasion || spawnInfo.PlayerInTown)
 			return 0;
 
