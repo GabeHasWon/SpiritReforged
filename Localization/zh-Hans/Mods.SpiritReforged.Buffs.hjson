@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“
 }
+
+ScarabMountBuff: {
+	// DisplayName: Scarab Mount Buff
+	// Description: Mods.SpiritReforged.Buffs.ScarabMountBuff.Description
+}

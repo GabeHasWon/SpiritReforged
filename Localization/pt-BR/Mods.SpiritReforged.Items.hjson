@@ -3045,3 +3045,8 @@ BeetleLicense: {
 		''' */
 	// LicenseUse: The license teleports away to the beetle delivery service...
 }
+
+ScarabMountItem: {
+	// DisplayName: Scarab Mount Item
+	// Tooltip: ""
+}

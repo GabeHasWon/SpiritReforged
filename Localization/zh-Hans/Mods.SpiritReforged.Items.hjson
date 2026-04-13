@@ -3054,3 +3054,8 @@ BeetleLicense: {
 		'''
 	LicenseUse: 发送许可证给甲虫运送服务站……
 }
+
+ScarabMountItem: {
+	// DisplayName: Scarab Mount Item
+	// Tooltip: ""
+}

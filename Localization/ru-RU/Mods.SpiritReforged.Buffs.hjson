@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Скарабейчик
 	Description: «Он что-то замышляет...»
 }
+
+ScarabMountBuff: {
+	// DisplayName: Scarab Mount Buff
+	// Description: Mods.SpiritReforged.Buffs.ScarabMountBuff.Description
+}

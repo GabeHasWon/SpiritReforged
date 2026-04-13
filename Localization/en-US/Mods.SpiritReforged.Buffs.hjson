@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Scarababy
 	Description: "'It's plotting...'"
 }
+
+ScarabMountBuff: {
+	DisplayName: Scarab Mount Buff
+	Description: Mods.SpiritReforged.Buffs.ScarabMountBuff.Description
+}
