@@ -9,7 +9,11 @@ public class GoldGar : Gar, IGoldCritter
 {
 	public int[] NormalPersistentIDs => [ModContent.NPCType<Gar>()];
 
-	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
+	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
+	{
+		item.value = Item.sellPrice(gold: 10);
+		item.rare = ItemRarityID.Orange; 
+	});
 
 	public override void OnSpawn(IEntitySource source)
 	{
