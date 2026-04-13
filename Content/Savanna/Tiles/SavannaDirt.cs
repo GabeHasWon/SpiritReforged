@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Savanna.Tiles;
 
 public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe().AddIngredient(ItemID.SandBlock).AddIngredient(ItemID.MudBlock).Register();
@@ -24,8 +26,6 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		this.Merge(TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
 		AddMapEntry(new Color(138, 79, 45));
 		MineResist = 0.5f;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)

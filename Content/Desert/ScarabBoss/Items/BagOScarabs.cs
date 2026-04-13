@@ -29,5 +29,6 @@ public class BagOScarabs : ModItem
 		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		itemLoot.Add(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
 		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<BeetleLicense>(), 4));
+		itemLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 	}
 }

@@ -573,8 +573,15 @@ VeiledZombie: {
 	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
-Cricket.DisplayName: 蟋蟀
-GoldCricket.DisplayName: 金蟋蟀
+Cricket: {
+	DisplayName: 蟋蟀
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
+}
+
+GoldCricket: {
+	DisplayName: 金蟋蟀
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
+}
 
 BeetleTownPet: {
 	DisplayName: 甲虫

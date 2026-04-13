@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		在你的前方变出暴雪
-		无视敌人5点的防御力
+		无视敌人10点的防御力
 		'''
 }
 
@@ -2711,7 +2711,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战攻击
+	Tooltip: 定期强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -3057,4 +3057,9 @@ BeetleLicense: {
 		找到最搭你的甲虫！
 		'''
 	LicenseUse: 发送许可证给甲虫运送服务站……
+}
+
+GooeyHiveItem: {
+	DisplayName: 黏糊蜂巢
+	Tooltip: ""
 }

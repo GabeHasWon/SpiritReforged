@@ -3054,3 +3054,8 @@ BeetleLicense: {
 		'''
 	LicenseUse: Паспорт телепортируется в жучью службу доставки...
 }
+
+GooeyHiveItem: {
+	// DisplayName: Gooey Hive
+	// Tooltip: ""
+}
