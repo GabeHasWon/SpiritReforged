@@ -24,6 +24,11 @@ ReforgedClientConfig: {
 		Label: Sons de Ambiente
 		Tooltip: Novos sons em biomas específicos
 	}
+
+	ScreenshakeStrength: {
+		// Label: Screenshake Strength
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {

@@ -1,4 +1,5 @@
 ﻿using ReLogic.Utilities;
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -11,6 +12,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
 using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
@@ -307,14 +309,14 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Music = 0;
 	}
 
-	public override void OnSpawn(IEntitySource source)
-	{
-		CheckDuoFightStart(source);
-	}
+	public override void OnSpawn(IEntitySource source) => CheckDuoFightStart(source);
 
 	//No journey scaling cuz we aleady scale stuff
 	private void NoJourneyScaling(NPC npc, ref float strength)
 	{
+		if (npc.type != ModContent.NPCType<Scarabeus>())
+			return;
+
 		if (strength < 1)
 			strength = MathHelper.Lerp(strength, 1, 0.5f);
 		else
@@ -554,7 +556,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
 
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45));
+			ScreenshakeHelper.Shake(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45);
 		}
 	
 		if (NPC.life <= 0 && CurrentState == AIState.DuoFightDeathAnim)
@@ -627,6 +629,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
 		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
 
+		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabLightPetItem>()));
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 

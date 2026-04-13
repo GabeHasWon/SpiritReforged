@@ -15,7 +15,7 @@ public class SaltCrateHardmode : ModItem
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SaltCrate>();
-		Item.ResearchUnlockCount = 10;
+		Item.ResearchUnlockCount = 5;
 	}
 	
 	public override void SetDefaults()
@@ -26,6 +26,7 @@ public class SaltCrateHardmode : ModItem
 	}
 
 	public override bool CanRightClick() => true;
+	public override void ModifyItemLoot(ItemLoot itemLoot) => ModifyLoot(itemLoot);
 
 	public static void ModifyLoot(ItemLoot itemLoot)
 	{

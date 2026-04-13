@@ -1,4 +1,6 @@
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using System.IO;
 using Terraria.Audio;
@@ -122,8 +124,11 @@ public abstract partial class BaseClubProj : ModProjectile
 				SoundEngine.PlaySound(SoundID.Item70.WithVolumeScale(volume), Projectile.Center);
 				SoundEngine.PlaySound(DefaultSmash.WithVolumeScale(volume), Projectile.Center);
 
-				if (Main.LocalPlayer == owner)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.Normalize(Projectile.oldPosition - Projectile.position), 1 + Charge * 2, 6, (int)(20 * (0.5f + Charge / 2))));
+				if (Main.myPlayer == owner.whoAmI)
+				{
+					var direction = Vector2.Normalize(Projectile.oldPosition - Projectile.position);
+					ScreenshakeHelper.Shake(owner.Center, direction, 1 + Charge * 2, 6, (int)(20 * (0.5f + Charge / 2)));
+				}
 			}
 		}
 

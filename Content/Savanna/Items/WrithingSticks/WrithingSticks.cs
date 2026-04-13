@@ -9,7 +9,7 @@ public class WrithingSticks : ModItem
 	{
 		Item.CloneDefaults(ItemID.Fish);
 		Item.shoot = ModContent.ProjectileType<TumblerPet>();
-		Item.buffType = AutoloadedPetBuff.Registered[Item.shoot];
+		Item.buffType = AutoloadedPetBuff.PetBuff[Item.shoot];
 	}
 
 	public override void UseStyle(Player player, Rectangle heldItemFrame)

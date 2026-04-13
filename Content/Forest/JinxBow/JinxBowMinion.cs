@@ -81,6 +81,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		{
 			DoEmpoweredShot(target);
 			_isDoingEmpoweredShot = true;
+			SetArrowData(player);
 		}
 
 		if (!target.active)
@@ -158,6 +159,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			AiTimer = FIRE_TIME;
 			EmpoweredShotTarget = -1;
 			Projectile.netUpdate = true;
+
+			SetArrowData(player);
 		}
 	}
 
@@ -249,9 +252,9 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 	private void SetArrowData(Player player)
 	{
-		//BowHelpers.FindAmmo(player, AmmoID.Arrow, out int type, out int damage, out float knockback, out float speed, 1);
+		BowHelpers.FindAmmo(player, AmmoID.Arrow, out int type, out int damage, out float knockback, out float speed, 1);
 
-		if (!player.PickAmmo(ContentSamples.ItemsByType[ItemID.WoodenBow], out int type, out float speed, out int damage, out float knockback, out _))
+		if (type == ProjectileID.None)
 			type = ProjectileID.WoodenArrowFriendly;
 
 		speed += 10;

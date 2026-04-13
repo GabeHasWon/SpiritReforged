@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
@@ -178,6 +179,9 @@ public partial class Scarabeus : ModNPC
 	#region Spawn anim
 	public float DuoFightSpawnAnimation(ref bool retarget)
 	{
+		NPC.position -= NPC.netOffset;
+		NPC.netOffset *= 0f;
+
 		retarget = false;
 		NPC.direction = 1; //Scarab will always jump from the left
 
@@ -697,7 +701,7 @@ public partial class Scarabeus : ModNPC
 	{
 		if (!Main.dedServ)
 		{
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+			ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 5, 35);
 			Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
 			ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
 		}

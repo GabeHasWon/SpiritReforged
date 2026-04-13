@@ -47,7 +47,7 @@ public class BeetleTownPet : ModNPC
 		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("DungBeetle_Head")),
 		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("JewelBeetle_Head")),
 		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Ladybug_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Weevil")),
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Weevil_Head")),
 		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Maybug_Head")),
 	];
 
@@ -104,7 +104,7 @@ public class BeetleTownPet : ModNPC
 
 	public override void SetChatButtons(ref string button, ref string button2) => button = Language.GetTextValue("UI.PetTheAnimal"); //Pet
 
-	public override string GetChat() => this.GetLocalizedValue("Chitter");
+	public override string GetChat() => this.GetLocalizedValue("Chitter" + Main.rand.Next(3));
 
 	public override void FindFrame(int frameHeight)
 	{

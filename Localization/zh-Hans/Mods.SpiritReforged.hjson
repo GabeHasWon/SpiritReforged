@@ -50,6 +50,7 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: 常备食物，以备不时之需！
 	ReforgedTip1: 蝴蝶偶尔会藏在地下树丛里。
 	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
@@ -60,6 +61,15 @@ GameTips: {
 	ReforgedTip7: 云茎只生长在云层之下。
 	ReforgedTip8: 需要高度时，可站上金合欢树顶。
 	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
+	# Caves & Clubs
+	ReforgedTip10: 你脚下的洞穴里点缀着许多罐子！睁大眼睛留意着点。
+	ReforgedTip11: 棍棒能提供强力且集中的单体伤害。
+	# Sunscorched
+	ReforgedTip12: 传说曾有宝石供奉于远古祭坛之上……
+	ReforgedTip13: 探索远古庙塔时要格外小心！每个角落都可能藏有惊喜。
+	ReforgedTip14: 沙漠底下的绿洲或许能带来一丝难得的宁静。
+	ReforgedTip15: 琥珀中藏着秘密！或许你能在其中发现一些奖励……
+	ReforgedTip16: 在沙漠废墟中行走时请多加小心！有些地面可能没有你想象的那么牢固。
 }
 
 Emotes: {

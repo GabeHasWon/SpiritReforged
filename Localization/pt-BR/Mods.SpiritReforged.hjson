@@ -50,6 +50,7 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: Sempre leve comida consigo. Você nunca sabe quando pode ser útil!
 	ReforgedTip1: Raramente, sabe-se que borboletas se escondem em bosques subterrâneos.
 	ReforgedTip2: Alfinetes são úteis! Verifique seu inventário de alfinetes no canto inferior esquerdo do mapa.
@@ -60,6 +61,15 @@ GameTips: {
 	ReforgedTip7: Talos Nuvem sempre crescem sob nuvens.
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
+	# Caves & Clubs
+	// ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
+	// ReforgedTip11: Clubs offer strong, focused single-target damage.
+	# Sunscorched
+	// ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
+	// ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprises hide around every corner.
+	// ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
+	// ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
+	// ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
 }
 
 Emotes: {

@@ -24,6 +24,11 @@ ReforgedClientConfig: {
 		Label: 环境音
 		Tooltip: 在特定生物群系中播放环境音
 	}
+
+	ScreenshakeStrength: {
+		Label: 屏幕震动强度
+		Tooltip: ""
+	}
 }
 
 OceanShape: {

@@ -524,8 +524,8 @@ BrineShrimp: {
 }
 
 GoldenBrineShrimp: {
-	DisplayName: Golden Brine Shrimp
-	Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+	DisplayName: Gold Brine Shrimp
+	Entry: Golden and rare, the Gold Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }
 
 Wisp: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
 }
 
-TinyGrub.DisplayName: Tiny Grub
+TinyGrub: {
+	DisplayName: Tiny Grub
+	Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -582,7 +585,9 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Beetle
-	Chitter: Chitter
+	Chitter0: *Happy chittering*
+	Chitter1: *Bug noises*
+	Chitter2: *Beetle noises*
 
 	Names: {
 		RoyalScarab0: Azure

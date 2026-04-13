@@ -3044,15 +3044,15 @@ ScarabLightPetItem: {
 }
 
 BeetleLicense: {
-	// DisplayName: Beetle License
-	/* Tooltip:
+	DisplayName: Жучий паспорт
+	Tooltip:
 		'''
-		Use to adopt a beetle for your town
-		Already have a beetle?
-		Use additional licenses to activate the Pet Exchange Program!
-		Find the perfect fit for you and your beetle!
-		''' */
-	// LicenseUse: The license teleports away to the beetle delivery service...
+		Используйте, чтобы заселить в городе жука
+		Жук уже есть?
+		Используйте дополнительные паспорта для запуска программы по обмену питомцами!
+		Найдите своего идеального жука!
+		'''
+	LicenseUse: Паспорт телепортируется в жучью службу доставки...
 }
 
 GooeyHiveItem: {
