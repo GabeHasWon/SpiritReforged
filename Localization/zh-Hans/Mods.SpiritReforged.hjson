@@ -62,14 +62,14 @@ GameTips: {
 	ReforgedTip8: 需要高度时，可站上金合欢树顶。
 	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
 	# Caves & Clubs
-	// ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
-	// ReforgedTip11: Clubs offer strong, focused single-target damage.
+	ReforgedTip10: 你脚下的洞穴里点缀着许多罐子！睁大眼睛留意着点。
+	ReforgedTip11: 棍棒能提供强力且集中的单体伤害。
 	# Sunscorched
-	// ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
-	// ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprises hide around every corner.
-	// ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
-	// ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
-	// ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
+	ReforgedTip12: 传说曾有宝石供奉于远古祭坛之上……
+	ReforgedTip13: 探索远古庙塔时要格外小心！每个角落都可能藏有惊喜。
+	ReforgedTip14: 沙漠底下的绿洲或许能带来一丝难得的宁静。
+	ReforgedTip15: 琥珀中藏着秘密！或许你能在其中发现一些奖励……
+	ReforgedTip16: 在沙漠废墟中行走时请多加小心！有些地面可能没有你想象的那么牢固。
 }
 
 Emotes: {
