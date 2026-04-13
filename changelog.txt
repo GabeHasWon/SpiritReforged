@@ -42,3 +42,4 @@ v0.2.0.3
 - Added Ancient Books to Desert Crates
 - Ancient Altar mouse-over visuals no longer display when the Altar is unusable (outside the Desert)
 - Fixed an issue where Ancient Altar visuals did not disappear when the altar was broken
+- Improved custom merging frames (thanks zoey2)
