@@ -43,9 +43,9 @@ internal class ScarabMountItem : ModItem
 			MountData.flightTimeMax = 0;
 			MountData.fatigueMax = 0;
 			MountData.jumpHeight = 0;
-			MountData.acceleration = 0.2f;
+			MountData.acceleration = 0.16f;
 			MountData.swimSpeed = 2;
-			MountData.jumpSpeed = 6;
+			MountData.jumpSpeed = 8;
 			MountData.blockExtraJumps = true;
 			MountData.totalFrames = 1;
 			MountData.constantJump = false;
@@ -74,10 +74,7 @@ internal class ScarabMountItem : ModItem
 
 		public override void UpdateEffects(Player player)
 		{
-			SetStaticDefaults();
-
 			player.noKnockback = true;
-			MountData.jumpSpeed = Math.Abs(player.velocity.X) * 0.4f + 8;
 			_rotation += player.velocity.X * 0.02f;
 
 			if (Main.getGoodWorld)
@@ -85,7 +82,7 @@ internal class ScarabMountItem : ModItem
 				if (player.HasBuff(BuffID.Tipsy))
 				{
 					player.fullRotation = _rotation;
-					player.fullRotationOrigin = new Vector2(16, 90);
+					player.fullRotationOrigin = new Vector2(10, 90);
 				}
 				else
 					player.fullRotation = 0;
@@ -115,12 +112,15 @@ internal class ScarabMountItem : ModItem
 			for (int i = 0; i < _hitsPerNPC.Length; ++i)
 				_hitsPerNPC[i] = Math.Max(0, _hitsPerNPC[i] - 1);
 
-			if (Math.Abs(player.velocity.X) < MountData.runSpeed - 1f)
+			if (!ScarabMountPlayer.DashSpeed(player))
 				return;
+
+			Rectangle hitbox = player.Hitbox;
+			hitbox.Inflate(12, 6);
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.CanBeChasedBy() && npc.Hitbox.Intersects(player.Hitbox) && _hitsPerNPC[npc.whoAmI] == 0)
+				if (!npc.isLikeATownNPC && !player.npcTypeNoAggro[npc.type] && (!npc.friendly || npc.lifeMax == 5) && npc.Hitbox.Intersects(hitbox) && _hitsPerNPC[npc.whoAmI] == 0)
 				{
 					_hitsPerNPC[npc.whoAmI] = 80;
 					npc.SimpleStrikeNPC(30, Math.Sign(player.velocity.X), false, 12, damageVariation: true);
@@ -139,17 +139,28 @@ internal class ScarabMountItem : ModItem
 
 	public class ScarabMountPlayer : ModPlayer
 	{
+		public static bool MountDashing(Player plr) => plr.mount.Active && plr.mount.Type == ModContent.MountType<ScarabMount>() && DashSpeed(plr);
+		public static bool DashSpeed(Player plr) => Math.Abs(plr.velocity.X) >= plr.mount._data.runSpeed - 1f;
+
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 		{
 			Player plr = drawInfo.drawPlayer;
 
 			if (Player.mount.Active && plr.mount.Type == ModContent.MountType<ScarabMount>())
+			{
 				drawInfo.isSitting = true;
+
+				if (DashSpeed(Player))
+				{
+					Player.armorEffectDrawShadowLokis = true;
+					Player.armorEffectDrawOutlines = true;
+				}
+			}
 		}
 
 		public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
 		{
-			if (Player.mount.Active && Player.mount.Type == ModContent.MountType<ScarabMount>() && Math.Abs(Player.velocity.X) >= Player.mount._data.runSpeed - 1f)
+			if (MountDashing(Player))
 				return false;
 
 			return true;
