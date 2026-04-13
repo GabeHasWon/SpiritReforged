@@ -1,12 +1,5 @@
-﻿using SpiritReforged.Content.Ocean.Items.MessageBottle;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
+﻿using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
-using Terraria.GameContent.UI.Elements;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -49,7 +42,7 @@ internal class ScarabMountItem : ModItem
 			MountData.blockExtraJumps = true;
 			MountData.totalFrames = 1;
 			MountData.constantJump = false;
-			MountData.playerYOffsets = [34];
+			MountData.playerYOffsets = [40];
 			MountData.yOffset = 15;
 			MountData.xOffset = 0;
 			MountData.bodyFrame = 3;
@@ -74,6 +67,8 @@ internal class ScarabMountItem : ModItem
 
 		public override void UpdateEffects(Player player)
 		{
+			SetStaticDefaults();
+
 			player.noKnockback = true;
 			_rotation += player.velocity.X * 0.02f;
 
@@ -166,6 +161,27 @@ internal class ScarabMountItem : ModItem
 			return true;
 		}
 	}
+
+	public class ScarabSaddleLayer : PlayerDrawLayer
+	{
+		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.BackAcc);
+
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+			Player plr = drawInfo.drawPlayer;
+
+			if (!plr.mount.Active || plr.mount.Type != ModContent.MountType<ScarabMount>() || drawInfo.shadow != 0)
+				return;
+
+			Vector2 position = drawInfo.Center - Main.screenPosition;
+			drawInfo.DrawDataCache.Add(new DrawData(Saddle.Value, position.Floor() - new Vector2(16, -18), null, Color.White, 0f, Vector2.Zero, 1f, drawInfo.playerEffect, 0)
+			{
+				shader = plr.cMount
+			});
+		}
+	}
+
+	private static readonly Asset<Texture2D> Saddle = DrawHelpers.RequestLocal(typeof(ScarabMount), "ScarabMount_Saddle", false);
 
 	public override void SetDefaults()
 	{
