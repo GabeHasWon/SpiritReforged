@@ -15,6 +15,7 @@ public class TallSandstoneShelf : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileTable[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
+		AdjTiles = [TileID.Bookcases];
 
 		AddMapEntry(FurnitureTile.CommonColor);
 

@@ -3,6 +3,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.EarthshakerVanity;
+using SpiritReforged.Content.Underground.Moss;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.Audio;
@@ -390,9 +391,10 @@ public class DunceCrab : ModNPC
 
 		int x = spawnInfo.SpawnTileX;
 		int y = spawnInfo.SpawnTileY;
+		float mossMultiplier = ModContent.GetInstance<MossTileCounts>().neonCount >= 200 ? 1.2f : 1f;
 
 		if (y > Main.worldSurface && spawnInfo.Player.ZonePurity && !spawnInfo.Water && NPC.IsValidSpawningGroundTile(x, y))
-			return Main.hardMode ? .06f : .12f;
+			return (Main.hardMode ? .06f : .12f) * mossMultiplier;
 
 		return 0;
 	}
