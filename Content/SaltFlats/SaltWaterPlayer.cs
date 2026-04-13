@@ -8,16 +8,16 @@ internal class SaltWaterPlayer : ModPlayer
 	{
 		if (Player.wet && Player.InModBiome<SaltBiome>())
 		{
-			const float FloatSpeed = -1f;
+			const float FloatSpeedMax = -1f;
 
 			bool jump = false;
 
 			if (Collision.WetCollision(Player.position + new Vector2(0, 20), Player.width, 8))
 			{
-				if (Player.velocity.Y > FloatSpeed)
+				if (Player.velocity.Y > FloatSpeedMax)
 				{
-					float floatSpeed = Math.Max(0, 0.3f - Math.Abs(Player.velocity.X) * 0.1f);
-					Player.velocity.Y = MathHelper.Max(Player.velocity.Y - floatSpeed, FloatSpeed);
+					float speedIncrease = Math.Max(0, 0.3f - Math.Abs(Player.velocity.X) * 0.1f);
+					Player.velocity.Y = MathHelper.Max(Player.velocity.Y - speedIncrease, FloatSpeedMax);
 				}
 			}
 			else if (Collision.WetCollision(Player.position + new Vector2(0, 28), Player.width, 8))
