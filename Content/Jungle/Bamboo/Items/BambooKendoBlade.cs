@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
@@ -10,7 +11,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
-public class BambooKendoBlade : ModItem, IDashSword
+public class BambooKendoBlade : ModItem, IDrawHeld
 {
 	private float swingArc;
 	private static Asset<Texture2D> HeldTexture;
@@ -45,10 +46,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 	public override void HoldItem(Player player)
 	{
 		if (!player.ItemAnimationActive)
-		{
-			player.GetModPlayer<DashSwordPlayer>().holdingSword = true;
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.1f * player.direction);
-		}
 	}
 
 	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
@@ -56,7 +54,9 @@ public class BambooKendoBlade : ModItem, IDashSword
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse == 2)
+		{
 			Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<KendoBladeLunge>(), (int)(damage * 2.25f), knockback, player.whoAmI);
+		}
 		else
 		{
 			float oldSwingArc = swingArc;
@@ -71,7 +71,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 
 	public void DrawHeld(ref PlayerDrawSet info)
 	{
-		if (!HeldTexture.IsLoaded)
+		if (info.drawPlayer.ItemAnimationActive || !HeldTexture.IsLoaded)
 			return;
 
 		var texture = HeldTexture;

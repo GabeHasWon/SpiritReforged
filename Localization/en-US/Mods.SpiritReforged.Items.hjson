@@ -3059,3 +3059,17 @@ StonemasonGreatshield: {
 	DisplayName: Stonemason Greatshield
 	Tooltip: ""
 }
+
+BlackBlade: {
+	DisplayName: Black Blade
+	Tooltip:
+		'''
+		<right> to dash through enemies
+		Successful dashes empower your next 3 attacks
+		'''
+}
+
+RoninSheath: {
+	DisplayName: Ronin Sheath
+	Tooltip: Reduces Katana cooldown by {0}% and increases damage by {1}%
+}

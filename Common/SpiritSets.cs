@@ -14,6 +14,9 @@ public class SpiritSets : ModSystem
 		ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.Arkhalis, ItemID.Terragrim, ItemID.TheHorsemansBlade, ItemID.BloodyMachete, ItemID.Swordfish,
 		ItemID.ObsidianSwordfish, ItemID.JoustingLance, ItemID.HallowJoustingLance, ItemID.ShadowJoustingLance, ItemID.PiercingStarlight);
 
+	/// <summary> Whether this item is considered a katana for subclass delegations. </summary>
+	public static readonly bool[] IsKatana = ItemFactory.CreateNamedSet(nameof(IsKatana)).Description("Whether this item is considered a katana for subclass delegations").RegisterBoolSet();
+
 	/// <summary> Whether this item is Jem. </summary>
 	public static readonly bool[] Gemstone = ItemFactory.CreateNamedSet(nameof(Gemstone)).Description("Whether this item is a gem").RegisterBoolSet(ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, 
 		ItemID.Ruby, ItemID.Emerald, ItemID.Diamond, ItemID.Amber);
