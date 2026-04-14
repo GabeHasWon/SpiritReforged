@@ -3059,3 +3059,12 @@ StonemasonGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
 }
+
+Nightlight: {
+	// DisplayName: Nightlight
+	/* Tooltip:
+		'''
+		Casts short-ranged fireballs
+		Slows nearby enemies as mana is spent
+		''' */
+}
