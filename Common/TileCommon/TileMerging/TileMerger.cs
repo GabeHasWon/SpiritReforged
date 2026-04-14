@@ -119,7 +119,7 @@ public sealed class TileMerger : ModSystem
 
 		void Check(Tile tile, int bit)
 		{
-			if (tile.TileType != type)
+			if (!tile.HasTile || tile.TileType != type)
 				return;
 
 			mask |= bit;
