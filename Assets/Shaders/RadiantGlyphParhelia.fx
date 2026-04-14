@@ -25,25 +25,31 @@ float4 uColor;
 float time;
 float distortionStrength;
 
+float pixelRes;
+
 float4 main(float2 uv : TEXCOORD) : COLOR
 {
     float noise = tex2D(uImage1Sampler, uv + float2(0.0, time)).r - 0.5;
 
     float2 distortedUV = uv + (noise * distortionStrength);
+
+    float2 pixelatedUV = distortedUV;
+    if (pixelRes > 0)
+        pixelatedUV = floor(distortedUV * pixelRes) / pixelRes;
     
     // scale the star
-    float2 starUV = ((distortedUV - 0.5) * scale) + 0.5;
+    float2 starUV = ((pixelatedUV - 0.5) * scale) + 0.5;
     float4 starTex = tex2D(uImage0, starUV);  
     
     // draw two stars
-    float2 starUV_2 = ((distortedUV - 0.5) * scaleTwo) + 0.5;
+    float2 starUV_2 = ((pixelatedUV - 0.5) * scaleTwo) + 0.5;
     float4 starTex_2 = tex2D(uImage0, starUV_2);
     
     starTex *= uColor;
     starTex_2 *= uColor * 0.1;
     
     float2 center = float2(0.5, 0.5);
-    float dist = distance(distortedUV, center);
+    float dist = distance(pixelatedUV, center);
     
     // calculates a ring using the distance from the center
     // fades the ring in the four corners using the polar angle from the center
@@ -58,10 +64,10 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     
     float4 ringColor = uColor * ring;
     
-    float yDist = abs(distortedUV.y - 0.5);
-    float xDist = abs(distortedUV.x - 0.5);
+    float yDist = abs(pixelatedUV.y - 0.5);
+    float xDist = abs(pixelatedUV.x - 0.5);
 
-    float angle = atan2(distortedUV.y - 0.5, distortedUV.x - 0.5);
+    float angle = atan2(pixelatedUV.y - 0.5, pixelatedUV.x - 0.5);
 
     float polarMask = cos(angle * 2.0);
 
@@ -72,8 +78,8 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     ringColor *= pow(polarMask, 4.0);
     ringColor *= ringOpacity;
     
-    float2 leftUV = ((distortedUV - 0.5 - float2(-ringRadius, 0.0)) * outerStarScale) + 0.5;
-    float2 rightUV = ((distortedUV - 0.5 - float2(ringRadius, 0.0)) * outerStarScale) + 0.5;
+    float2 leftUV = ((pixelatedUV - 0.5 - float2(-ringRadius, 0.0)) * outerStarScale) + 0.5;
+    float2 rightUV = ((pixelatedUV - 0.5 - float2(ringRadius, 0.0)) * outerStarScale) + 0.5;
     
     float4 leftStar = tex2D(uImage0, leftUV);
     float4 rightStar = tex2D(uImage0, rightUV);
@@ -85,7 +91,9 @@ float4 main(float2 uv : TEXCOORD) : COLOR
     leftStar *= outerFade;
     rightStar *= outerFade;
     
-    return starTex + starTex_2 + ringColor + leftStar + rightStar;
+    float4 bloom = uColor * exp(-dist * 25.0);
+
+    return starTex + starTex_2 + ringColor + leftStar + rightStar + bloom;
 }
 
 technique Technique1

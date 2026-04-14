@@ -1,4 +1,5 @@
 using Humanizer;
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
@@ -85,49 +86,39 @@ public class GlyphGlobalItem : GlobalItem
 		}
 	}
 
-	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+	public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem)
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
+		{
+			g.UpdateGlyphItemInWorld(item);
+		}
+	}
+
+	public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+	{
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
 		{
 			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
-			
-			var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
 
 			Vector2 origin = frame.Size() / 2f;
 			Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
 
-			Effect effect = AssetLoader.LoadedShaders["GlyphShader"].Value;
+			g.PreDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
+		}
 
-			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
-			effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
-			effect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+		return true;
+	}
 
-			var noise = AssetLoader.LoadedTextures["swirlNoise2"].Value;
-			//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
-			var noiseAlt = AssetLoader.LoadedTextures["noiseCrystal"].Value;
+	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+	{
+		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
+		{
+			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
 
-			effect.Parameters["uImage1"].SetValue(noise);
-			effect.Parameters["uImage2"].SetValue(noiseAlt);
-			//effect.Parameters["uImage3"].SetValue(gradient);
-			effect.Parameters["itemSize"].SetValue(texture.Size());
-
-			float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
-			float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
-
-			effect.Parameters["uColor1"].SetValue(Color.Lerp(Color.BlueViolet, Color.Purple, sin).ToVector4() * 0.5f);
-			effect.Parameters["uColor2"].SetValue(Color.Lerp(Color.DeepPink, Color.DarkCyan, cos).ToVector4() * 0.5f);
-			effect.Parameters["uColor3"].SetValue(Color.LightPink.ToVector4());
-
-			effect.Parameters["baseDepth"].SetValue(8f);
-			effect.Parameters["scale"].SetValue(0.5f);
-
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			spriteBatch.Draw(texWhite, position, frame, Color.White, rotation, origin, scale, 0f, 0f);
-
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			Vector2 origin = frame.Size() / 2f;
+			Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
+			
+			g.PostDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
 		}
 	}
 
@@ -291,5 +282,19 @@ public abstract class GlyphItem : ModItem
 		{
 			OverrideColor = new Color(120, 190, 120)
 		});
+	}
+
+	public virtual void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	{
+
+	}
+	public virtual void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	{
+
+	}
+
+	public virtual void UpdateGlyphItemInWorld(Item item)
+	{
+
 	}
 }

@@ -12,6 +12,14 @@ internal class ParticleDetours : ILoadable
 		On_Main.DoDraw_Tiles_NonSolid += BelowSolid;
 		On_Main.DoDraw_Tiles_Solid += AboveSolid;
 		On_Main.DoDraw_WallsAndBlacks += BelowWall;
+		On_Main.DrawItems += AboveItem;
+	}
+
+	private void AboveItem(On_Main.orig_DrawItems orig, Main self)
+	{
+		orig(self);
+
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveItem);
 	}
 
 	private static void AbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -46,7 +54,6 @@ internal class ParticleDetours : ILoadable
 		Main.spriteBatch.End();
 
 		orig(self);
-
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveProjectile);
 	}
 

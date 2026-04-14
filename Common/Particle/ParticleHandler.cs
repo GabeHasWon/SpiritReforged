@@ -11,7 +11,8 @@ public enum ParticleLayer
 	AbovePlayer,
 	AboveSolid,
 	BelowSolid,
-	BelowWall
+	BelowWall,
+	AboveItem
 }
 
 public enum ParticleDrawType
