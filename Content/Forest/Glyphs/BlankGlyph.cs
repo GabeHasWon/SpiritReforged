@@ -263,6 +263,9 @@ public abstract class GlyphItem : ModItem
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);
 
+		if (item.rare < 13)
+			item.rare++;
+
 		if (context is not SyncContext)
 			item.Refresh(false); //Always prompts a netsync
 	}

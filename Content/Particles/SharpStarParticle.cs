@@ -10,6 +10,8 @@ public class SharpStarParticle : Particle
 	private Color bloomColor;
 	private float progress;
 
+	private bool addLight = true;
+
 	private readonly float rotSpeed;
 	private readonly Action<Particle> _action;
 	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
@@ -17,7 +19,7 @@ public class SharpStarParticle : Particle
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public SharpStarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null)
+	public SharpStarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null, bool AddLight = true)
 	{
 		Position = position;
 		Velocity = velocity;
@@ -28,15 +30,17 @@ public class SharpStarParticle : Particle
 		MaxTime = maxTime;
 		rotSpeed = rotationSpeed;
 		_action = extraUpdateAction;
+		addLight = AddLight;
 	}
 
-	public SharpStarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, rotationSpeed, extraUpdateAction) { }
+	public SharpStarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null, bool AddLight = true) : this(position, velocity, color, color, scale, maxTime, rotationSpeed, extraUpdateAction, AddLight) { }
 
 	public override void Update()
 	{
 		progress = (float)Math.Sin(Progress * MathHelper.Pi);
 		Color = bloomColor;
-		Lighting.AddLight(Position, Color.R / 255f * progress, Color.G / 255f * progress, Color.B / 255f * progress);
+		if (addLight)
+			Lighting.AddLight(Position, Color.R / 255f * progress, Color.G / 255f * progress, Color.B / 255f * progress);
 		Velocity *= 0.98f;
 		Rotation += rotSpeed * progress * (Velocity.X > 0 ? 0.07f : -0.07f);
 
