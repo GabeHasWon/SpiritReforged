@@ -19,6 +19,32 @@ public class BlackBlade : ModItem
 		public int swiftSwings;
 	}
 
+	public class BlackSmokeParticle : Particle
+	{
+		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+
+		public BlackSmokeParticle(Vector2 position, int duration, float scale = 1, float rotation = 0, Vector2? velocity = null)
+		{
+			Position = position;
+			Scale = scale;
+			Rotation = rotation;
+			MaxTime = duration;
+
+			Color = Color.White;
+			Velocity = velocity ?? new Vector2(-2).RotatedBy(rotation);
+		}
+
+		public override void CustomDraw(SpriteBatch spriteBatch)
+		{
+			Texture2D texture = Texture;
+			Rectangle source = texture.Frame(1, 5, 0, (int)(Progress * 5), 0, -2);
+			Velocity *= 0.98f;
+
+			float rotation = Rotation;
+			spriteBatch.Draw(texture, Position - Main.screenPosition, source, Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color.Gray), rotation, source.Size() / 2, Scale, 0, 0);
+		}
+	}
+
 	public sealed class BlackBladeSwing : SwungProjectile
 	{
 		public bool Secondary { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
@@ -93,6 +119,22 @@ public class BlackBlade : ModItem
 		{
 			if (Secondary)
 				BlackBladePlayer.swiftSwings = 3;
+
+			if (!Main.dedServ)
+			{
+				Vector2 position = target.Hitbox.ClosestPointInRect(GetEndPosition());
+
+				for (int i = 0; i < 3; i++)
+				{
+					float angle = Main.rand.NextFloat(-1f, 1f);
+					Vector2 velocity = (Projectile.velocity * -Main.rand.NextFloat(2)).RotatedBy(angle);
+
+					ParticleHandler.SpawnParticle(new BlackSmokeParticle(position, 20, Main.rand.NextFloat(0.5f, 1), velocity.ToRotation() + MathHelper.PiOver2, velocity));
+					var dust = Dust.NewDustPerfect(position, DustID.Ash, Main.rand.NextVector2Circular(2, 2), 150);
+					dust.noGravity = true;
+					dust.fadeIn = 1.2f;
+				}
+			}
 		}
 
 		public override void OnKill(int timeLeft)
