@@ -228,13 +228,12 @@ public class KendoBladeLunge : ModProjectile
 
 	public override void AI()
 	{
-		var owner = Main.player[Projectile.owner];
-		var mp = owner.GetModPlayer<DashSwordPlayer>();
-		mp.SetDashCooldown(40);
+		Player owner = Main.player[Projectile.owner];
+		DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
 
 		if (Counter < DashDuration) //Ongoing dash
 		{
-			mp.dashing = true;
+			mp.SetDash(40);
 			float quote = Counter / DashDuration;
 
 			if (Counter + 1 == DashDuration)
@@ -278,8 +277,6 @@ public class KendoBladeLunge : ModProjectile
 			dust.noGravity = true;
 			dust.noLightEmittence = true;
 		}
-		else
-			mp.dashing = false;
 
 		if (Counter > DashDuration + StrikeDelay)
 		{

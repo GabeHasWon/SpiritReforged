@@ -3073,3 +3073,8 @@ RoninSheath: {
 	DisplayName: Ronin Sheath
 	Tooltip: Reduces Katana cooldown by {0}% and increases damage by {1}%
 }
+
+Vajra: {
+	DisplayName: Vajra
+	Tooltip: ""
+}

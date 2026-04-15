@@ -5,25 +5,31 @@ namespace SpiritReforged.Common.PlayerCommon;
 public class DashSwordPlayer : ModPlayer
 {
 	public bool HasDashCharge { get; private set; }
+	public bool Dashing => _dashTime != 0;
 
 	/// <summary> Modifies the rate in which dashes recharge. </summary>
 	public StatModifier statDashCooldown = StatModifier.Default;
-	public bool dashing;
 
+	private float _dashTime;
 	private float _internalCooldown;
 
 	/// <summary> Optionally set a dash cooldown. </summary>
-	public void SetDashCooldown(int time = 30)
+	public void SetDash(int cooldown = 30)
 	{
-		_internalCooldown = time;
+		_dashTime = 2;
+		_internalCooldown = cooldown;
 		HasDashCharge = false;
 	}
 
-	public override void ResetEffects() => statDashCooldown = StatModifier.Default;
+	public override void ResetEffects()
+	{
+		statDashCooldown = StatModifier.Default;
+		_dashTime = Math.Max(_dashTime - 1, 0);
+	}
 
 	public override void PreUpdate()
 	{
-		if (dashing)
+		if (Dashing)
 			Player.maxFallSpeed = 2000f;
 	}
 
@@ -33,5 +39,5 @@ public class DashSwordPlayer : ModPlayer
 			HasDashCharge = true;
 	}
 
-	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable) => dashing;
+	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable) => Dashing;
 }

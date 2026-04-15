@@ -1,42 +1,128 @@
 using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class BlackBlade : ModItem, IDrawHeld
+public class BlackBlade : ModItem
 {
+	public sealed class BlackBladePlayer : ModPlayer
+	{
+		public int swiftSwings;
+	}
+
 	public sealed class BlackBladeSwing : SwungProjectile
 	{
+		public bool Secondary { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
+
+		public BlackBladePlayer BlackBladePlayer => Main.player[Projectile.owner].TryGetModPlayer(out BlackBladePlayer blackBladePlayer) ? blackBladePlayer : default;
+
+		public override float SwingTime => Secondary ? base.SwingTime * 1.2f : base.SwingTime * ((BlackBladePlayer.swiftSwings != 0) ? 0.7f : 1);
+
 		public override LocalizedText DisplayName => ModContent.GetInstance<BlackBlade>().DisplayName;
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 
-		public override IConfiguration SetConfiguration() => new BasicConfiguration(Common.Easing.EaseFunction.EaseCubicOut, 68, 25);
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 68, 25);
 
-		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
+		public override void AI()
 		{
-			float value = base.GetRotation(out armRotation, out stretch);
+			base.AI();
 
-			if (Progress < 0.8f && Main.rand.NextBool())
+			if (Secondary)
+			{
+				HoldDistance = Math.Max((1 - EaseFunction.EaseCubicIn.Ease(Progress) * 3) * 8, -14);
+				Player owner = Main.player[Projectile.owner];
+
+				DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
+				mp.SetDash(40);
+
+				if (Counter > SwingTime - 5)
+				{
+					owner.velocity *= 0.5f;
+				}
+				else
+				{
+					int magnitude = 20;
+					owner.velocity = Vector2.Lerp(owner.velocity, Projectile.velocity * magnitude * 2, Progress * Progress * Progress * Progress);
+
+					if (Counter == SwingTime / 2)
+					{
+						owner.velocity = Projectile.velocity * magnitude;
+						SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
+					}
+
+					if (Counter == 0)
+						SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -1 }, Projectile.Center);
+				}
+
+				owner.velocity.Y += owner.gravity * 8 * Progress;
+
+				if (Progress > 0.4f)
+				{
+					for (int i = 0; i < 3; i++)
+					{
+						var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.PurpleCrystalShard, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
+						dust.noGravity = true;
+						dust.velocity = Projectile.velocity * 3;
+					}
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Projectile.velocity, Color.Black, 0.15f, EaseFunction.EaseCircularIn, 10)
+					{
+						TertiaryColor = Color.PaleVioletRed
+					});
+				}
+			}
+			else if (Progress < 0.8f && Main.rand.NextBool())
 			{
 				float intensity = Main.rand.NextFloat();
 				var position = Vector2.Lerp(Projectile.Center, GetEndPosition(), intensity);
-				Dust.NewDustPerfect(position, Main.rand.NextFromList(DustID.Smoke, DustID.Ash), Vector2.UnitX.RotatedBy(value + MathHelper.PiOver2 * SwingDirection), 180, default, intensity * 1.5f).noGravity = true;
+				Dust.NewDustPerfect(position, Main.rand.NextFromList(DustID.Smoke, DustID.Ash), Vector2.UnitX.RotatedBy(Projectile.rotation + MathHelper.PiOver2 * SwingDirection), 180, default, intensity * 1.5f).noGravity = true;
 			}
+		}
 
-			return value;
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (Secondary)
+				BlackBladePlayer.swiftSwings = 3;
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			if (!Secondary)
+				BlackBladePlayer.swiftSwings = Math.Max(BlackBladePlayer.swiftSwings - 1, 0);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
 			Vector2 origin = new(4, 30); //The handle
+			Rectangle frame = Secondary ? TextureAssets.Projectile[Type].Value.Frame(1, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, 0, -2) : default;
+			bool empowered = BlackBladePlayer.swiftSwings != 0;
 
-			DrawHeld(lightColor, origin, Projectile.rotation, effects);
+			if (empowered && !Secondary)
+			{
+				DrawSmear(Color.Black * 0.5f, Projectile.rotation, (SwingDirection == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None);
+			}
+
+			if (Secondary || empowered)
+			{
+				Color color = (empowered && !Secondary) ? Color.Black : Color.Purple.Additive();
+
+				DrawHelpers.DrawOutline(Main.spriteBatch, default, default, default, (offset) =>
+					DrawHeld(color * (1f - Progress * 2) * 2, origin + offset, Projectile.rotation, effects, frame));
+			}
+
+			DrawHeld(lightColor, origin, Projectile.rotation, effects, frame);
+
 			return false;
 		}
 	}
@@ -55,7 +141,7 @@ public class BlackBlade : ModItem, IDrawHeld
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.value = Item.sellPrice(silver: 3);
-		Item.rare = ItemRarityID.White;
+		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ModContent.ProjectileType<BlackBladeSwing>();
 		Item.shootSpeed = 1f;
@@ -65,8 +151,6 @@ public class BlackBlade : ModItem, IDrawHeld
 		Item.noMelee = true;
 		MoRHelper.SetSlashBonus(Item);
 	}
-
-	public override void HoldItem(Player player) { }
 
 	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
 
@@ -79,11 +163,11 @@ public class BlackBlade : ModItem, IDrawHeld
 			_ => 3f
 		};
 
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc);
+		float swingArc = (player.altFunctionUse == 2) ? 0.3f : _swingArc;
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, swingArc, null, player.altFunctionUse - 1);
+
 		return false;
 	}
-
-	public void DrawHeld(ref PlayerDrawSet info) { }
 
 	public override void AddRecipes() { }
 }

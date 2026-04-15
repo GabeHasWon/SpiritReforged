@@ -26,6 +26,8 @@ public abstract class SwungProjectile : ModProjectile
 	public float SwingArc;
 	/// <summary> The progress of the swing. </summary>
 	public int Counter;
+	/// <summary> The visual hold distance of the projectile. </summary>
+	public float HoldDistance;
 
 	private IConfiguration _config;
 
@@ -125,23 +127,26 @@ public abstract class SwungProjectile : ModProjectile
 	public void DrawSmear(Color color, float rotation, int frame, float distance, float scale = 0.75f, SpriteEffects effects = default)
 	{
 		Main.instance.LoadProjectile(985);
-		var smear = TextureAssets.Projectile[985].Value;
+		Texture2D smear = TextureAssets.Projectile[985].Value;
 
-		var player = Main.player[Projectile.owner];
-		var source = smear.Frame(1, 4, 0, frame);
-		var position = player.Center + (Vector2.UnitX * distance).RotatedBy(rotation) - Main.screenPosition;
+		Player player = Main.player[Projectile.owner];
+		Rectangle source = smear.Frame(1, 4, 0, frame);
+		Vector2 position = player.Center + (Vector2.UnitX * distance).RotatedBy(rotation) - Main.screenPosition;
 
 		Main.EntitySpriteDraw(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), scale, effects, 0);
 	}
 
-	public void DrawHeld(Color color, Vector2 origin, float rotation, SpriteEffects effects = default)
+	public void DrawHeld(Color color, Vector2 origin, float rotation, SpriteEffects effects = default, Rectangle frame = default)
 	{
-		var texture = TextureAssets.Projectile[Type];
-		float visCounter = MathHelper.Min(Counter / (SwingTime / 2), 1);
-		var frame = texture.Frame(1, Main.projFrames[Type], 0, (int)(visCounter * (Main.projFrames[Type] - 1)), 0, (Main.projFrames[Type] > 1) ? -2 : 0);
-		var position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		if (frame == default)
+		{
+			float visCounter = MathHelper.Min(Counter / (SwingTime / 2), 1);
+			frame = texture.Frame(1, Main.projFrames[Type], 0, (int)(visCounter * (Main.projFrames[Type] - 1)), 0, (Main.projFrames[Type] > 1) ? -2 : 0);
+		}
 
-		Main.EntitySpriteDraw(texture.Value, position, frame, color, rotation, origin, Projectile.scale, effects);
+		Vector2 position = Projectile.Center + (Vector2.UnitX * HoldDistance).RotatedBy(rotation) - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
+		Main.EntitySpriteDraw(texture, position, frame, color, rotation, origin, Projectile.scale, effects);
 	}
 
 	public static Projectile Spawn(Vector2 position, Vector2 velocity, int type, int damage, float knockback, Player owner, float swingArc, IEntitySource source = default, float ai0 = 0, float ai1 = 0, float ai2 = 0)
