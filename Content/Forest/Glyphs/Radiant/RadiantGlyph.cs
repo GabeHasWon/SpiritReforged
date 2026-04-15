@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
@@ -63,13 +64,16 @@ public class RadiantGlyph : GlyphItem
 				effect.Parameters["uImage1"].SetValue(noise);
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0015f);
 
-				effect.Parameters["pixelRes"].SetValue(56f);
+				effect.Parameters["pixelRes"].SetValue(0f);
 
 				foreach (Player player in Main.player)
 				{
 					if (player.TryGetModPlayer<RadiantPlayer>(out var mp))
 					{
-						float lerp = mp.radiantCooldown / (player.HeldItem.useTime * 3f);
+						if (mp.baseScale <= 0)
+							return;
+
+						float lerp = 1f - mp._flashTimer / 60f;
 						lerp = Math.Min(lerp, 1);
 
 						float scale = mp.baseScale + 0.02f * pulse;
@@ -78,11 +82,11 @@ public class RadiantGlyph : GlyphItem
 
 						if (mp._flashTimer > 0)
 						{
-							color = Color.Lerp(color, Color.Yellow.Additive(), mp._flashTimer / 30f);
-							scale += 0.05f * (mp._flashTimer / 30f);
+							color = Color.Lerp(color, Color.Yellow.Additive(), mp._flashTimer / 60f);
+							scale += 0.05f * (mp._flashTimer / 60f);
 						}
 
-						effect.Parameters["distortionStrength"].SetValue(0.015f + 0.04f * (1f - lerp));
+						effect.Parameters["distortionStrength"].SetValue(0.005f + 0.1f * (1f - lerp));
 
 						//spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -90,11 +94,13 @@ public class RadiantGlyph : GlyphItem
 
 						//spriteBatch.End();
 
+						Vector2 pos = player.Bottom + new Vector2(0f, player.gfxOffY - 40f * EaseBuilder.EaseOutBack().Ease(lerp));
+
 						effect.Parameters["uColor"].SetValue(color.ToVector4() * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
 
 						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-						spriteBatch.Draw(tex, player.Top + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
+						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
 
 						spriteBatch.End();
 
@@ -102,7 +108,7 @@ public class RadiantGlyph : GlyphItem
 
 						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
-						spriteBatch.Draw(tex, player.Top + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
+						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
 
 						spriteBatch.End();
 					}
@@ -117,25 +123,22 @@ public class RadiantGlyph : GlyphItem
 				if (_flashTimer > 0)
 					_flashTimer--;
 
-				float lerp = radiantCooldown / (Player.HeldItem.useTime * 3f);
-				lerp = Math.Min(lerp, 1);
-
-				float scaleToBe = 0.15f;
-				if (lerp > 0.33f)
-					scaleToBe = 0.2f;
-				if (lerp > 0.66f)
-					scaleToBe = 0.25f;
-				if (lerp >= 1f)
-					scaleToBe = 0.35f;
-
-				baseScale = MathHelper.Lerp(baseScale, scaleToBe, 0.1f);
+				baseScale = 0f;
 
 				Color lightColor = Color.Yellow;
 
 				if (_flashTimer > 0)
-					lightColor = Color.Lerp(lightColor, Color.White, _flashTimer / 30f);
+				{
+					lightColor = Color.Lerp(lightColor, Color.White, _flashTimer / 60f);
 
-				Lighting.AddLight(Player.Center, lightColor.ToVector3() * lerp * 0.5f * (_flashTimer > 0 ? 1f + _flashTimer / 30f : 1f));
+					float lerp = 1f - _flashTimer / 60f;
+
+					baseScale = MathHelper.Lerp(0.1f, 0.3f, EaseBuilder.EaseCircularInOut.Ease(lerp));
+				}
+				else if (radiantCooldown > Player.HeldItem.useTime * 3f)
+					baseScale = 0.3f;
+
+				Lighting.AddLight(Player.Center, lightColor.ToVector3() * 2f * baseScale);
 
 				if (++radiantCooldown > Player.HeldItem.useTime * 3f)
 				{
@@ -145,7 +148,7 @@ public class RadiantGlyph : GlyphItem
 						//ParticleHandler.SpawnParticle(new StarParticle(Player.Center + new Vector2(0, -10 * Player.gravDir), Vector2.Zero, Color.White, Color.Yellow, 0.2f, 10, 0));
 						SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
 
-						_flashTimer = 30;
+						_flashTimer = 60;
 					}
 
 					Player.AddBuff(radiantBuff, 10);
