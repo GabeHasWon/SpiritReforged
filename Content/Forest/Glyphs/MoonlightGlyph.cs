@@ -5,6 +5,8 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
@@ -12,6 +14,39 @@ public class MoonlightGlyph : GlyphItem
 {
 	public sealed class MoonlightPlayer : ModPlayer
 	{
+		internal static int[] maxTimeLefts = new int[Main.maxCombatText];
+
+		public override void Load()
+		{
+			On_CombatText.UpdateCombatText += FadeDamageText;
+		}
+
+		private void FadeDamageText(On_CombatText.orig_UpdateCombatText orig)
+		{
+			orig();
+
+			for (int i = 0; i < Main.maxCombatText; i++)
+			{
+				CombatText text = Main.combatText[i];
+				if (maxTimeLefts[i] > 0)
+				{
+					if (text.active)
+					{
+						Color blue, orange;
+
+						blue = text.crit ? Color.DarkSlateBlue : Color.RoyalBlue;
+						orange = text.crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
+
+						text.color = Color.Lerp(blue, orange, EaseBuilder.EaseCircularInOut.Ease(1f - text.lifeTime / (float)maxTimeLefts[i]));
+					}
+					else
+					{
+						maxTimeLefts[i] = 0;
+					}
+				}
+			}
+		}
+
 		public override void ModifyWeaponDamage(Item item, ref StatModifier damage)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
@@ -31,6 +66,8 @@ public class MoonlightGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
 			{
+				//SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop") with { Pitch = -0.1f, PitchVariance = 0.2f }, target.Center);
+
 				float strength = MathHelper.Lerp(0.125f, 0.22f, 1f - Player.statMana / (float)Player.statManaMax2);
 
 				float angle = Main.rand.NextFloat(MathHelper.Pi);
@@ -56,22 +93,59 @@ public class MoonlightGlyph : GlyphItem
 					ParticleHandler.SpawnParticle(new MagicParticle(position, Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextBool() ? c1 : c2, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30)));
 				}
 
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.Blue, new Vector2(1f, 0.5f), 60, 0)
-				{
-					Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
-				});
-
 				if (Player.statMana < Player.statManaMax2)
 				{
+					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/WispHit") with { Pitch = -0.1f, PitchVariance = 0.2f}, target.Center);
+					
 					int manaIncrease = (int)Math.Max(damageDone / 20f, 1);
 
 					Player.statMana = Math.Min(Player.statMana + manaIncrease, Player.statManaMax2);
 
 					Player.ManaEffect(manaIncrease); //Leeching
+
+					ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
+					{
+						Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
+					});
+
+					ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, Color.White.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
+					{
+						Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
+					});
+					
+					for (int i = 0; i < 3; i++)
+					{
+						Vector2 velocity = position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 10f);
+
+						float scale = Main.rand.NextFloat(0.3f, 1f);
+						int lifeTime = Main.rand.Next(20, 60);
+
+						ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, c2.Additive() * 0.5f, c1.Additive() * 0.5f, scale * strength, lifeTime, 0, DecelerateAction)
+						{
+							Rotation = 0
+						});
+
+						ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, scale * 0.9f * strength, lifeTime - 5, 0, DecelerateAction)
+						{
+							Rotation = 0
+						});
+					}
+
+					static void DecelerateAction(Particle p)
+					{
+						p.Velocity *= 0.97f;
+						p.Rotation += p.Velocity.Length() * 0.2f;
+					}
 				}
 
-				CombatText.NewText(target.getRect(), hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile, (int)(damageDone * 0.8f), hit.Crit);
-				CombatText.NewText(target.getRect(), hit.Crit ? Color.DarkSlateBlue : Color.RoyalBlue, (int)(damageDone * 0.2f), hit.Crit);
+				Color orange;
+
+				orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
+
+				CombatText.NewText(target.getRect(), orange, (int)(damageDone * 0.8f), hit.Crit);
+				int magicDamage = CombatText.NewText(target.getRect(), Color.White, (int)(damageDone * 0.2f), hit.Crit);
+
+				maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
 			}
 		}
 	}
