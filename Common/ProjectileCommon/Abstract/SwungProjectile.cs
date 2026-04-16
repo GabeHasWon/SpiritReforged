@@ -136,9 +136,11 @@ public abstract class SwungProjectile : ModProjectile
 		Main.EntitySpriteDraw(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), scale, effects, 0);
 	}
 
-	public void DrawHeld(Color color, Vector2 origin, float rotation, SpriteEffects effects = default, Rectangle frame = default)
+	public void DrawHeld(Color color, Vector2 origin, float rotation, SpriteEffects effects = default, Rectangle frame = default, Texture2D texture = default)
 	{
-		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		if (texture == default)
+			texture = TextureAssets.Projectile[Type].Value;
+
 		if (frame == default)
 		{
 			float visCounter = MathHelper.Min(Counter / (SwingTime / 2), 1);
@@ -160,7 +162,7 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(_config.Reach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(_config.Reach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _));
 
 	public Player.CompositeArmStretchAmount ProgressiveStretch() => (int)(Progress * 4f) switch
 	{

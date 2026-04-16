@@ -3078,3 +3078,12 @@ Vajra: {
 	DisplayName: Vajra
 	Tooltip: ""
 }
+
+GhostBlade: {
+	DisplayName: Ghost Blade
+	Tooltip:
+		'''
+		<right> to throw a single shuriken
+		Striking a shuriken creates a copy and sends both forward
+		'''
+}
