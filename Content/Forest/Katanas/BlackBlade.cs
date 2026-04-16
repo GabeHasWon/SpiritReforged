@@ -65,7 +65,7 @@ public class BlackBlade : ModItem
 
 			if (Secondary)
 			{
-				HoldDistance = Math.Max((1 - EaseFunction.EaseCubicIn.Ease(Progress) * 3) * 8, -14);
+				HoldDistance = Math.Max((1 - EaseFunction.EaseCubicOut.Ease(Progress) * 3) * 24, -8);
 				Player owner = Main.player[Projectile.owner];
 
 				DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
@@ -96,7 +96,7 @@ public class BlackBlade : ModItem
 				{
 					for (int i = 0; i < 3; i++)
 					{
-						var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.PurpleCrystalShard, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
+						var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.Ash, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
 						dust.noGravity = true;
 						dust.velocity = Projectile.velocity * 3;
 					}
@@ -157,7 +157,7 @@ public class BlackBlade : ModItem
 
 			if (Secondary || empowered)
 			{
-				Color color = (empowered && !Secondary) ? Color.Black : Color.Purple.Additive();
+				Color color = Color.Black;
 
 				DrawHelpers.DrawOutline(Main.spriteBatch, default, default, default, (offset) =>
 					DrawHeld(color * (1f - Progress * 2) * 2, origin + offset, Projectile.rotation, effects, frame));
@@ -206,7 +206,7 @@ public class BlackBlade : ModItem
 		};
 
 		float swingArc = (player.altFunctionUse == 2) ? 0.3f : _swingArc;
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, swingArc, null, player.altFunctionUse - 1);
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, swingArc, source, player.altFunctionUse - 1);
 
 		return false;
 	}
