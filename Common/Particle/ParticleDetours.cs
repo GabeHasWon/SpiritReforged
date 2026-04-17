@@ -37,7 +37,10 @@ internal class ParticleDetours : ILoadable
 
 	private static void AboveNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowNPC);
+
 		orig(self, behindTiles);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveNPC);
 	}
 

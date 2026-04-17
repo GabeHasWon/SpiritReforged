@@ -102,6 +102,9 @@ public class RadiantGlyph : GlyphItem
 
 						effect.Parameters["uColor"].SetValue(color.ToVector4() * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
 
+						if (!startSpriteBatch)
+							spriteBatch.End();
+
 						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
@@ -115,6 +118,9 @@ public class RadiantGlyph : GlyphItem
 						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
 
 						spriteBatch.End();
+
+						if (!startSpriteBatch)
+							spriteBatch.BeginDefault();
 					}
 				}
 			}

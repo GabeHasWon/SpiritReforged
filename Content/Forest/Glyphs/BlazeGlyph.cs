@@ -4,13 +4,30 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BlazeGlyph : GlyphItem
 {
+	public sealed class BlazeDebuff : ModBuff
+	{
+
+	}
+
 	public sealed class BlazePlayer : ModPlayer
 	{
+		public override void Load()
+		{
+			On_Main.DrawCachedProjs += DrawFire;
+		}
+
+		private void DrawFire(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
+		{
+
+		}
+
 		public override void MeleeEffects(Item item, Rectangle hitbox)
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>() && Main.rand.NextBool(5))
@@ -24,11 +41,11 @@ public class BlazeGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
+			/*if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
 				Player.AddBuff(BuffID.OnFire, 120);
-				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center));
-			}
+				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center), target.DirectionTo(Player.Center).ToRotation());
+			}*/
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
@@ -36,20 +53,66 @@ public class BlazeGlyph : GlyphItem
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
 				Player.AddBuff(BuffID.OnFire, 120);
-				SpawnHitEffects(proj.Center);
+				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
 			}
 		}
 
-		public void SpawnHitEffects(Vector2 position)
+		public void SpawnHitEffects(Vector2 position, float angle)
 		{
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
-			ParticleHandler.SpawnParticle(new FireParticle(position, Player.DirectionTo(position), colors, 1, 0.075f, EaseFunction.EaseQuadOut, 40));
 
-			for (int i = 0; i < 4; i++)
+			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f, 30, 0)
 			{
-				var dust = Dust.NewDustPerfect(position, DustID.Torch, Scale: 1.5f);
-				dust.noGravity = Main.rand.NextBool();
+				Layer = ParticleLayer.BelowNPC,
+				Rotation = angle,
+				TimeActive = 5
+			});
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.LightYellow.Additive() * 0.2f, 0.25f, 25, 0)
+			{
+				Layer = ParticleLayer.BelowNPC,
+				Rotation = angle,
+				TimeActive = 5
+			});
+
+			for (int i = 0; i < 5; i++)
+			{
+				var dust = Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(5f, 5f), DustID.Torch, Main.rand.NextVector2Circular(1f, 1f));
+				dust.noGravity = !Main.rand.NextBool(5);
+				if (dust.noGravity)
+					dust.scale = 0.5f;
+				else
+					dust.fadeIn = 1.1f;
 				dust.noLightEmittence = true;
+
+				var particle = new EmberParticle(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				particle.OverrideDrawLayer(ParticleLayer.AboveItem);
+				ParticleHandler.SpawnParticle(particle);
+
+				particle = new EmberParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				particle.OverrideDrawLayer(ParticleLayer.AboveItem);
+				ParticleHandler.SpawnParticle(particle);
+
+				if (Main.rand.NextBool(3))
+				{
+					if (i == 0)
+						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.15f, PitchVariance = 0.15f }, position);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f, EaseFunction.EaseQuadOut, 60, false)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f, EaseFunction.EaseQuadOut, 60, false)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+				}			
+
+				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
+				{
+					Layer = ParticleLayer.BelowNPC
+				});
 			}
 		}
 	}
@@ -65,7 +128,7 @@ public class BlazeGlyph : GlyphItem
 
 		Color c1, c2;
 		c1 = Color.Lerp(Color.Yellow, Color.DarkOrange, sin);
-		c2 = Color.Lerp(Color.Red, Color.OrangeRed, sin);
+		c2 = Color.Lerp(Color.Red, Color.OrangeRed, cos);
 
 		effect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.15f);
 		effect.Parameters["uColor2"].SetValue(c2.ToVector4() * 0.2f);
@@ -107,14 +170,20 @@ public class BlazeGlyph : GlyphItem
 
 	public override void UpdateGlyphItemInWorld(Item item)
 	{
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		Color c1, c2;
+		c1 = Color.Lerp(Color.Yellow, Color.DarkOrange, sin);
+		c2 = Color.Lerp(Color.Red, Color.OrangeRed, cos);
+
+		Lighting.AddLight(item.Center, Color.Lerp(c1, c2, sin).ToVector3() / 2);
+
 		Color[] emberColors = { 
 			Color.Orange,
-			Color.Yellow,
 			Color.DarkOrange,
 			Color.OrangeRed,
 			Color.Goldenrod,
-			Color.DarkRed,
-			Color.Red
 		};
 
 		if (Main.rand.NextBool(120))
@@ -123,7 +192,7 @@ public class BlazeGlyph : GlyphItem
 
 			Vector2 velocity = Vector2.Zero;
 
-			var particle = new EmberParticle(pos, velocity, Main.rand.Next(emberColors), 1f, 30);
+			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 1f, 40);
 			particle.OverrideDrawLayer(ParticleLayer.AboveItem);
 			ParticleHandler.SpawnParticle(particle);
 		}
@@ -132,7 +201,9 @@ public class BlazeGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(4f), new Color(), 0.05f, EaseFunction.EaseQuadOut, 60, false));
+			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.25f, 0.07f, EaseFunction.EaseQuadOut, 60, false));
+			
+			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.5f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
 
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 			ParticleHandler.SpawnParticle(new FireParticle(pos, -Vector2.UnitY * Main.rand.NextFloat(0.5f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
@@ -141,9 +212,9 @@ public class BlazeGlyph : GlyphItem
 			});
 		}
 
-		if (Main.rand.NextBool(180))
+		if (Main.rand.NextBool(60))
 		{
-			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
+			/*Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1f);
 			int dir = Main.rand.NextBool() ? -1 : 1;
@@ -156,7 +227,15 @@ public class BlazeGlyph : GlyphItem
 			ParticleHandler.SpawnParticle(new CurvingEmberParticle(pos, velocity, Color.LightYellow * 0.5f, 0.1f, 180, dir, 60)
 			{
 				rotationalStrength = 0.01f
-			});
+			});*/
+
+			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
+
+			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1.25f, 1.5f);
+
+			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), Main.rand.NextFloat(0.3f), 60, 5);
+			particle.OverrideDrawLayer(ParticleLayer.BelowProjectile);
+			ParticleHandler.SpawnParticle(particle);
 		}
 	}
 
