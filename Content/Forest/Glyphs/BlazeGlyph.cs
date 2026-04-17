@@ -86,11 +86,11 @@ public class BlazeGlyph : GlyphItem
 				dust.noLightEmittence = true;
 
 				var particle = new EmberParticle(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-				particle.OverrideDrawLayer(ParticleLayer.AboveItem);
+				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 				ParticleHandler.SpawnParticle(particle);
 
 				particle = new EmberParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-				particle.OverrideDrawLayer(ParticleLayer.AboveItem);
+				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 				ParticleHandler.SpawnParticle(particle);
 
 				if (Main.rand.NextBool(3))
