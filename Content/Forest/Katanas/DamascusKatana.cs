@@ -1,11 +1,7 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Content.Particles;
-using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
@@ -20,71 +16,38 @@ public class DamascusKatana : ModItem
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 
-		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 68, 25);
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 60, 25);
 
 		public override void AI()
 		{
 			base.AI();
 
-			if (Secondary)
+			if (SwingArc == 0)
+				HoldDistance = Math.Max(40 * (0.5f - Progress * 2), -10);
+
+			if (Secondary && Counter == 1)
 			{
-				HoldDistance = Math.Max((1 - EaseFunction.EaseCubicOut.Ease(Progress) * 3) * 24, -8);
 				Player owner = Main.player[Projectile.owner];
-
-				DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
-				mp.SetDash(40);
-
-				if (Counter > SwingTime - 5)
-				{
-					owner.velocity *= 0.5f;
-				}
-				else
-				{
-					int magnitude = 20;
-					owner.velocity = Vector2.Lerp(owner.velocity, Projectile.velocity * magnitude * 2, Progress * Progress * Progress * Progress);
-
-					if (Counter == SwingTime / 2)
-					{
-						owner.velocity = Projectile.velocity * magnitude;
-						SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
-					}
-
-					if (Counter == 0)
-						SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -1 }, Projectile.Center);
-				}
-
-				owner.velocity.Y += owner.gravity * 8 * Progress;
-
-				if (Progress > 0.4f)
-				{
-					for (int i = 0; i < 3; i++)
-					{
-						var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.Ash, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
-						dust.noGravity = true;
-						dust.velocity = Projectile.velocity * 3;
-					}
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Projectile.velocity, Color.Black, 0.15f, EaseFunction.EaseCircularIn, 10)
-					{
-						TertiaryColor = Color.PaleVioletRed
-					});
-				}
+				owner.velocity.Y -= 8;
 			}
-			else if (Progress < 0.8f && Main.rand.NextBool())
-			{
-				float intensity = Main.rand.NextFloat();
-				var position = Vector2.Lerp(Projectile.Center, GetEndPosition(), intensity);
-				Dust.NewDustPerfect(position, Main.rand.NextFromList(DustID.Smoke, DustID.Ash), Vector2.UnitX.RotatedBy(Projectile.rotation + MathHelper.PiOver2 * SwingDirection), 180, default, intensity * 1.5f).noGravity = true;
-			}
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (Secondary)
+				target.velocity.Y -= 8 * target.knockBackResist;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
-			Vector2 origin = new(4, 30); //The handle
-			Rectangle frame = Secondary ? TextureAssets.Projectile[Type].Value.Frame(1, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, 0, -2) : default;
+			Vector2 origin = new(4, 18); //The handle
+			Rectangle source = (SwingArc == 0) ? TextureAssets.Projectile[Type].Frame(1, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, 0, -2) : default;
 
-			DrawHeld(lightColor, origin, Projectile.rotation, effects, frame);
+			if (Secondary)
+				DrawSmear(Color.Gray, Projectile.rotation, effects);
+
+			DrawHeld(lightColor, origin, Projectile.rotation, effects, source);
 
 			return false;
 		}
@@ -96,8 +59,8 @@ public class DamascusKatana : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToSpear(ModContent.ProjectileType<DamascusKatanaSwing>(), 1, 22);
-		Item.SetShopValues(ItemRarityColor.White0, Item.sellPrice(gold: 1, silver: 30));
+		Item.DefaultToSpear(ModContent.ProjectileType<DamascusKatanaSwing>(), 1, 19);
+		Item.SetShopValues(ItemRarityColor.White0, Item.sellPrice(silver: 30));
 		Item.damage = 12;
 		Item.knockBack = 3;
 		Item.autoReuse = true;
@@ -108,15 +71,21 @@ public class DamascusKatana : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		_swingArc = _swingArc switch
+		if (player.altFunctionUse == 2)
 		{
-			3f => -4f,
-			-4f => 5f,
-			_ => 3f
-		};
+			SwungProjectile.Spawn(position, Vector2.Normalize(new Vector2(1 * player.direction, -1)), type, damage, knockback, player, -4, source, 1);
+		}
+		else
+		{
+			_swingArc = _swingArc switch
+			{
+				3f => -5f,
+				-5f => 0f,
+				_ => 3f
+			};
 
-		float swingArc = (player.altFunctionUse == 2) ? 0.3f : _swingArc;
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, swingArc, source, player.altFunctionUse - 1);
+			SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source);
+		}
 
 		return false;
 	}

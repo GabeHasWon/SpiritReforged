@@ -3087,3 +3087,8 @@ GhostBlade: {
 		Striking a shuriken creates a copy and sends both forward
 		''' */
 }
+
+DamascusKatana: {
+	// DisplayName: Damascus Katana
+	// Tooltip: <right> to uppercut, gaining some height and knocking enemies up
+}

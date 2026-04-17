@@ -176,7 +176,7 @@ public class BlackBlade : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToSpear(ModContent.ProjectileType<DamascusKatanaSwing>(), 1, 20);
+		Item.DefaultToSpear(ModContent.ProjectileType<BlackBladeSwing>(), 1, 20);
 		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 10));
 		Item.damage = 12;
 		Item.crit = 2;
