@@ -1,60 +1,22 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Content.Forest.Katanas.DamascusKatana;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class BlackBlade : ModItem
+public class DamascusKatana : ModItem
 {
-	public sealed class BlackBladePlayer : ModPlayer
-	{
-		public int swiftSwings;
-	}
-
-	public class BlackSmokeParticle : Particle
-	{
-		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-		public BlackSmokeParticle(Vector2 position, int duration, float scale = 1, float rotation = 0, Vector2? velocity = null)
-		{
-			Position = position;
-			Scale = scale;
-			Rotation = rotation;
-			MaxTime = duration;
-
-			Color = Color.White;
-			Velocity = velocity ?? new Vector2(-2).RotatedBy(rotation);
-		}
-
-		public override void CustomDraw(SpriteBatch spriteBatch)
-		{
-			Texture2D texture = Texture;
-			Rectangle source = texture.Frame(1, 5, 0, (int)(Progress * 5), 0, -2);
-			Velocity *= 0.98f;
-
-			float rotation = Rotation;
-			spriteBatch.Draw(texture, Position - Main.screenPosition, source, Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color.Gray), rotation, source.Size() / 2, Scale, 0, 0);
-		}
-	}
-
-	public sealed class BlackBladeSwing : SwungProjectile
+	public sealed class DamascusKatanaSwing : SwungProjectile
 	{
 		public bool Secondary { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
 
-		public BlackBladePlayer BlackBladePlayer => Main.player[Projectile.owner].TryGetModPlayer(out BlackBladePlayer blackBladePlayer) ? blackBladePlayer : default;
-
-		public override float SwingTime => Secondary ? base.SwingTime * 1.2f : base.SwingTime * ((BlackBladePlayer.swiftSwings != 0) ? 0.7f : 1);
-
-		public override LocalizedText DisplayName => ModContent.GetInstance<BlackBlade>().DisplayName;
+		public override LocalizedText DisplayName => ModContent.GetInstance<DamascusKatana>().DisplayName;
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 
@@ -116,53 +78,11 @@ public class BlackBlade : ModItem
 			}
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (Secondary)
-				BlackBladePlayer.swiftSwings = 3;
-
-			if (!Main.dedServ)
-			{
-				Vector2 position = target.Hitbox.ClosestPointInRect(GetEndPosition());
-
-				for (int i = 0; i < 3; i++)
-				{
-					float angle = Main.rand.NextFloat(-1f, 1f);
-					Vector2 velocity = (Projectile.velocity * -Main.rand.NextFloat(2)).RotatedBy(angle);
-
-					ParticleHandler.SpawnParticle(new BlackSmokeParticle(position, 20, Main.rand.NextFloat(0.5f, 1), velocity.ToRotation() + MathHelper.PiOver2, velocity));
-					var dust = Dust.NewDustPerfect(position, DustID.Ash, Main.rand.NextVector2Circular(2, 2), 150);
-					dust.noGravity = true;
-					dust.fadeIn = 1.2f;
-				}
-			}
-		}
-
-		public override void OnKill(int timeLeft)
-		{
-			if (!Secondary)
-				BlackBladePlayer.swiftSwings = Math.Max(BlackBladePlayer.swiftSwings - 1, 0);
-		}
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
 			Vector2 origin = new(4, 30); //The handle
 			Rectangle frame = Secondary ? TextureAssets.Projectile[Type].Value.Frame(1, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, 0, -2) : default;
-			bool empowered = BlackBladePlayer.swiftSwings != 0;
-
-			if (empowered && !Secondary)
-			{
-				DrawSmear(Color.Black * 0.5f, Projectile.rotation, (SwingDirection == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None);
-			}
-
-			if (Secondary || empowered)
-			{
-				Color color = Color.Black;
-
-				DrawHelpers.DrawOutline(Main.spriteBatch, default, default, default, (offset) =>
-					DrawHeld(color * (1f - Progress * 2) * 2, origin + offset, Projectile.rotation, effects, frame));
-			}
 
 			DrawHeld(lightColor, origin, Projectile.rotation, effects, frame);
 
@@ -176,16 +96,15 @@ public class BlackBlade : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToSpear(ModContent.ProjectileType<DamascusKatanaSwing>(), 1, 20);
-		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 10));
+		Item.DefaultToSpear(ModContent.ProjectileType<DamascusKatanaSwing>(), 1, 22);
+		Item.SetShopValues(ItemRarityColor.White0, Item.sellPrice(gold: 1, silver: 30));
 		Item.damage = 12;
-		Item.crit = 2;
 		Item.knockBack = 3;
 		Item.autoReuse = true;
 		MoRHelper.SetSlashBonus(Item);
 	}
 
-	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
+	public override bool AltFunctionUse(Player player) => true;
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{

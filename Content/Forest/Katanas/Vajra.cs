@@ -19,10 +19,8 @@ public class Vajra : ModItem, IDrawHeld
 
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (hasMark)
-			{
-
-			}
+			if (!hasMark)
+				return;
 		}
 
 		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) => bitWriter.WriteBit(hasMark);
@@ -61,7 +59,7 @@ public class Vajra : ModItem, IDrawHeld
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
-			Vector2 origin = new(4, 24); //The handle
+			Vector2 origin = new(4, 28); //The handle
 			Rectangle source = (SwingArc == 0) ? TextureAssets.Projectile[Type].Frame(1, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, 0, -2) : default;
 
 			DrawHeld(lightColor, origin, Projectile.rotation, effects, source);
