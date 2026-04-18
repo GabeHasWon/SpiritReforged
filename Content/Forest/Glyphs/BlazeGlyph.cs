@@ -2,32 +2,25 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
+using System.Linq;
+using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BlazeGlyph : GlyphItem
 {
-	public sealed class BlazeDebuff : ModBuff
+	/*public sealed class BlazeDebuff : ModBuff
 	{
 
-	}
+	}*/
 
 	public sealed class BlazePlayer : ModPlayer
 	{
-		public override void Load()
-		{
-			On_Main.DrawCachedProjs += DrawFire;
-		}
-
-		private void DrawFire(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
-		{
-
-		}
-
 		public override void MeleeEffects(Item item, Rectangle hitbox)
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>() && Main.rand.NextBool(5))
@@ -38,37 +31,44 @@ public class BlazeGlyph : GlyphItem
 				dust.noLightEmittence = true;
 			}
 		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			/*if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
+			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				Player.AddBuff(BuffID.OnFire, 120);
+				if (!Player.HasBuff(BuffID.OnFire))
+					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+
+				Player.AddBuff(BuffID.OnFire, 60);
 				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center), target.DirectionTo(Player.Center).ToRotation());
-			}*/
+			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				Player.AddBuff(BuffID.OnFire, 120);
+				if (!Player.HasBuff(BuffID.OnFire))
+					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+
+				//fireFlashTimer = 120;
+
+				Player.AddBuff(BuffID.OnFire, 60);			
 				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
 			}
 		}
 
-		public void SpawnHitEffects(Vector2 position, float angle)
+		public void SpawnHitEffects(Vector2 position, float angle, float scale = 1f)
 		{
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f, 30, 0)
+			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f * scale, 30, 0)
 			{
 				Layer = ParticleLayer.BelowNPC,
 				Rotation = angle,
 				TimeActive = 5
 			});
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.LightYellow.Additive() * 0.2f, 0.25f, 25, 0)
+			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.LightYellow.Additive() * 0.2f * scale, 0.25f, 25, 0)
 			{
 				Layer = ParticleLayer.BelowNPC,
 				Rotation = angle,
@@ -98,18 +98,18 @@ public class BlazeGlyph : GlyphItem
 					if (i == 0)
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.15f, PitchVariance = 0.15f }, position);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f, EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f * scale, EaseFunction.EaseQuadOut, 60, false)
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f, EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f * scale, EaseFunction.EaseQuadOut, 60, false)
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
 				}			
 
-				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
+				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40)
 				{
 					Layer = ParticleLayer.BelowNPC
 				});
