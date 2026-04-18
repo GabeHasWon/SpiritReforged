@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.Subclasses.Greatshields;
+﻿using Terraria.DataStructures;
+
+namespace SpiritReforged.Common.Subclasses.Greatshields;
 
 internal class GreatshieldPlayer : ModPlayer
 {
@@ -67,5 +69,11 @@ internal class GreatshieldPlayer : ModPlayer
 
 		Player.statLifeMax2 += boostHealth;
 		Player.statLife += dif;
+	}
+
+	public override void HideDrawLayers(PlayerDrawSet drawInfo)
+	{
+		if (drawInfo.drawPlayer.HeldItem.ModItem is GreatshieldItem)
+			PlayerDrawLayers.Shield.Hide();
 	}
 }

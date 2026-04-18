@@ -5,15 +5,6 @@ namespace SpiritReforged.Common.Subclasses.Greatshields;
 
 internal class GreatshieldLayer : PlayerDrawLayer
 {
-	internal class HideShieldPlayer : ModPlayer
-	{
-		public override void HideDrawLayers(PlayerDrawSet drawInfo)
-		{
-			if (drawInfo.drawPlayer.HeldItem.ModItem is GreatshieldItem)
-				PlayerDrawLayers.Shield.Hide();
-		}
-	}
-
 	public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccBack);
 
 	protected override void Draw(ref PlayerDrawSet drawInfo)
