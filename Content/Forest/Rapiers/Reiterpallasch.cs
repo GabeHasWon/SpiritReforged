@@ -44,13 +44,13 @@ public sealed class Reiterpallasch : ModItem, IDrawHeld
 
 			if (Move == MoveType.Flourish)
 			{
-				if (Counter == SwingTime / 6)
+				if (Counter == (int)(SwingTime / 6))
 				{
 					_holdDistance = -20;
 					SoundEngine.PlaySound(HuntingRifleProj.Ring, Projectile.Center);
 				}
 
-				if (Counter == SwingTime / 2)
+				if (Counter == (int)(SwingTime / 2))
 				{
 					for (int i = 0; i < 8; i++)
 					{
@@ -232,7 +232,7 @@ public sealed class Reiterpallasch : ModItem, IDrawHeld
 
 	private float _swingArc;
 
-	public override void Load() => On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
+	/*public override void Load() => On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
 
 	private static void DrawHeldItem(On_PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
 	{
@@ -256,7 +256,7 @@ public sealed class Reiterpallasch : ModItem, IDrawHeld
 		}
 
 		orig(ref drawinfo);
-	}
+	}*/
 
 	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
 
@@ -335,10 +335,10 @@ public sealed class Reiterpallasch : ModItem, IDrawHeld
 			Vector2 origin = new((drawinfo.itemEffect == SpriteEffects.FlipHorizontally) ? source.Width - 18 : 18, 40);
 
 			bool animating = drawinfo.drawPlayer.bodyFrameCounter != 0;
-			float sine = (float)Math.Sin(drawinfo.drawPlayer.bodyFrameCounter / 10f);
+			float sine = (float)Math.Sin(drawinfo.drawPlayer.bodyFrameCounter / 20f);
 			float rotation = -(animating ? MathHelper.PiOver2 : 1.2f) * drawinfo.drawPlayer.direction;
 
-			Vector2 location = (drawinfo.drawPlayer.RotatedRelativePoint(animating ? drawinfo.drawPlayer.Center : drawinfo.drawPlayer.Center - new Vector2(4 * drawinfo.drawPlayer.direction, 0)) + new Vector2((int)(sine * 2) * 2, 0)).Floor();
+			Vector2 location = (drawinfo.drawPlayer.RotatedRelativePoint(animating ? drawinfo.drawPlayer.Center : drawinfo.drawPlayer.Center - new Vector2(4 * drawinfo.drawPlayer.direction, 0)) + new Vector2((int)(sine * 2) * 2 * -drawinfo.drawPlayer.direction, 0)).Floor();
 			Color color = drawinfo.drawPlayer.HeldItem.GetAlpha(Lighting.GetColor(location.ToTileCoordinates()));
 
 			drawinfo.DrawDataCache.Add(new DrawData(texture, location - Main.screenPosition, source, color, rotation, origin, 1, drawinfo.itemEffect));

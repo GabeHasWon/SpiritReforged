@@ -44,7 +44,7 @@ internal class Recipes : ModSystem
 		RecipeGroup.RegisterGroup("Shells", BaseGroup(ItemID.Seashell, [ItemID.Seashell, ItemID.TulipShell, ItemID.JunoniaShell, ItemID.LightningWhelkShell]));
 		RecipeGroup.RegisterGroup("ClayAndMud", BaseGroup(ItemID.ClayBlock, [ItemID.ClayBlock, ItemID.MudBlock]));
 		RecipeGroup.RegisterGroup("Salt", BaseGroup(AutoContent.ItemType<SaltBlockDull>(), [AutoContent.ItemType<SaltBlockDull>(), AutoContent.ItemType<SaltBlockReflective>()]));
-		RecipeGroup.RegisterGroup("EarlyRapiers", BaseGroup(ModContent.ItemType<FencingFoil>(), [ModContent.ItemType<FencingFoil>(), ModContent.ItemType<SilverRapier>(), ModContent.ItemType<TungstenSabre>()]));
+		RecipeGroup.RegisterGroup("EarlyRapiers", BaseGroup(ModContent.ItemType<FencingFoil>(), [ModContent.ItemType<FencingFoil>(), ModContent.ItemType<SilverEstoc>(), ModContent.ItemType<TungstenSabre>()]));
 	}
 
 	public static RecipeGroup BaseGroup(object GroupName, int[] Items)

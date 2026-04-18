@@ -5,7 +5,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Forest.Rapiers;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -22,8 +21,8 @@ public class Cinderbrand : ModItem
 		public MoveType Move { get => (MoveType)Projectile.ai[0]; set => Projectile.ai[0] = (int)value; }
 		public int FlourishDirection => (int)Projectile.ai[1];
 
-		public override string Texture => ModContent.GetInstance<SilverRapier>().Texture;
-		public override LocalizedText DisplayName => ModContent.GetInstance<SilverRapier>().DisplayName;
+		public override string Texture => ModContent.GetInstance<Cinderbrand>().Texture;
+		public override LocalizedText DisplayName => ModContent.GetInstance<Cinderbrand>().DisplayName;
 
 		private BasicNoiseCone _motionCone;
 

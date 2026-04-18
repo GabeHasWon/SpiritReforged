@@ -3,9 +3,9 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
-public class TungstenSabre : SilverRapier
+public class TungstenSabre : SilverEstoc
 {
-	public class TungstenSabreSwing : SilverRapierSwing
+	public class TungstenSabreSwing : SilverEstocSwing
 	{
 		public override string Texture => ModContent.GetInstance<TungstenSabre>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<TungstenSabre>().DisplayName;

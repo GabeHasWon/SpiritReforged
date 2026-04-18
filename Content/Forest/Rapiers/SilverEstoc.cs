@@ -11,9 +11,9 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
-public class SilverRapier : ModItem
+public class SilverEstoc : ModItem
 {
-	public class SilverRapierSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
+	public class SilverEstocSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
 	{
 		public enum MoveType { Lunge, Stance, Swing }
 
@@ -21,8 +21,8 @@ public class SilverRapier : ModItem
 
 		public override float SwingTime => (Move == MoveType.Stance) ? FreeDodgeTime : base.SwingTime;
 
-		public override string Texture => ModContent.GetInstance<SilverRapier>().Texture;
-		public override LocalizedText DisplayName => ModContent.GetInstance<SilverRapier>().DisplayName;
+		public override string Texture => ModContent.GetInstance<SilverEstoc>().Texture;
+		public override LocalizedText DisplayName => ModContent.GetInstance<SilverEstoc>().DisplayName;
 
 		private BasicNoiseCone _motionCone;
 
@@ -145,7 +145,7 @@ public class SilverRapier : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToSpear(ModContent.ProjectileType<SilverRapierSwing>(), 1f, 18);
+		Item.DefaultToSpear(ModContent.ProjectileType<SilverEstocSwing>(), 1f, 18);
 		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 50));
 		Item.damage = 14;
 		Item.knockBack = 3;
@@ -158,7 +158,7 @@ public class SilverRapier : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SilverRapierSwing.MoveType moveType = (player.altFunctionUse == 2) ? SilverRapierSwing.MoveType.Stance : SilverRapierSwing.MoveType.Lunge;
+		SilverEstocSwing.MoveType moveType = (player.altFunctionUse == 2) ? SilverEstocSwing.MoveType.Stance : SilverEstocSwing.MoveType.Lunge;
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 0, source, (int)moveType);
 
 		return false;

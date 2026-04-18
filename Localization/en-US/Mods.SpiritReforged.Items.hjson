@@ -3065,8 +3065,8 @@ FencingFoil: {
 	Tooltip: Sweetspot hits deal critical damage
 }
 
-SilverRapier: {
-	DisplayName: Silver Rapier
+SilverEstoc: {
+	DisplayName: Silver Estoc
 	Tooltip:
 		'''
 		Sweetspot hits deal critical damage
@@ -3108,5 +3108,14 @@ Reiterpallasch: {
 		'''
 		Sweetspot hits deal critical damage and grant shells
 		<right> consumes shells to fire a high-damage shotgun blast
+		'''
+}
+
+Jian: {
+	DisplayName: Jian
+	Tooltip:
+		'''
+		Sweetspot hits deal critical damage and build combo
+		<right> to parry, unleashing a flurry of stabs empowered by combo
 		'''
 }
