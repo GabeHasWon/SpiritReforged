@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Forest.StonemasonShield;
 
 internal class StonemasonGreatshield : GreatshieldItem
 {
+	public override GreatshieldAltInfo Info => new(20, 60, 120, 40);
+
 	public override void SetDefaults()
 	{
 		Item.DamageType = ModContent.GetInstance<GreatshieldClass>();
@@ -19,5 +21,5 @@ internal class StonemasonGreatshield : GreatshieldItem
 		Item.knockBack = 12;
 	}
 
-	public override void ModifyLayerDrawing(ref DrawData data) => data.position.Y -= 4;
+	public override void ModifyLayerDrawing(ref DrawData data, bool isGuard) => data.position.Y -= 4;
 }
