@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(ItemID.SmoothSandstone).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
@@ -19,7 +21,6 @@ public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(174, 110, 48));
 
 		DustType = DustID.Dirt;
-		this.AutoItem().ResearchUnlockCount = 100;
 
 		for (int type = 0; type < TileLoader.TileCount; type++)
 			Main.tileMerge[type][Type] |= Main.tileSolid[type]; //Have everything merge with this type

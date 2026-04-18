@@ -1,14 +1,45 @@
-v0.2.0.2
-- Fixed issues where Scarabeus's music box was not being recorded
-- Fixed issues with Scarabeus's music box playing while in the inventory
-- Fixed a crash issue with the Dye Crate
-- Fixed certain boss drops not showing up in Boss Checklist for Scarabeus
-- Introduced recipes for Pale Hive, Goo Block, Needle Trap, Pale Hive Wall, and Gooey Hive
-- Moved Aegis Fruits in Aether Shipments to Hardmode
-- Made Wheatgrass function similarly to Elephant Grass (now is slightly harder to break by accident)
-- Added a unique sprite for Amber Fossils
-- Fixed some display issues with the Scarab Radio
-- Potentially fixed issues with the Ziggurat’s tiles not loading correctly in multiplayer
-- Fixed scarabeus getting stuck on non-wooden platforms
-- Fixed an issue with Fables April Fools Logo
-- Prevented gems from being offered to the Ancient Altar while Desert Scourge (Fables) is near
+v0.2.0.3
+--- Added 6 New Scarab Town Pets and the Scarab License! ---
+- Added right-click to open tooltip to modded crates
+- Added a tooltip to the Loot Bag
+- Changed Bronze Grate to Bronze Grate Wall, and Bronze Grate Block to Bronze Grate
+- Fixed issues with the Scarab vs. Scourge spawn animation in multiplayer
+- Fixed an issue with the Calming Bell glow texture not drawing correctly
+- Added some visual effects to the soil ball projectile kicked up by Scarab while digging
+- Fixed multiplayer issues with Royal Khopesh
+- Fixed multiplayer issues with the Adorned Bow
+- Improved the Scourge vs Scarab fight in FTW
+- Fixed an issue with the Brine Crate not dropping items correctly
+- Made a lot of blocks have correct research counts
+- Fixed crates not dropping bait/potions
+- Made Scarabeus Mask drop consistently & with vanilla parity
+- Added both Cricket entries
+- Fixed weird unloaded texture error regarding the Giant Bag
+- Fixed Golden Brine Shrimp being considered a Savanna entity instead of Salt Flats
+- Fixed issue with Brown Shingles incorrectly hiding walls behind it, even if they should be visible
+- Allowed Salt Candelabra to use paint properly
+- Added Gooey Hive tile item
+- Corrected Frostbite tooltip to say 10 armor piercing instead of 5
+- Changed Cracked Sandstone SFX to be consistent with other (non-brick) sandstone tiles
+- Slightly reduced Graverobber spawnrate
+- Prevented Zoologist's custom dialogue in the Savanna during a Blood Moon
+- Scarab Master Mode pet now drops from the boss instead of the bag
+- Fixed an issue that caused NPC HP to scale incorrectly in different modes
+- Added a config for Screenshake effects
+- Added Crane Feather to Wood Crates
+- Changed Rogue's Crest Crate odds from 12.5% to 5%
+- Hardlight Visor now dropped by Granite Elementals at a 2% chance
+- Sandstone Shelf counts as a bookshelf
+- Dunce crab spawnrates increased in moss biomes
+- Polished Sandstone Walls now have a crafting recipe
+- Increased Golden Diving Beetle sell price to 10 gold to match other golden critters
+- Increased golden critter rarities to Orange from White
+- Flamingo and Tiny Grub now properly shimmer into Faeling
+- Either salt can now be used to craft Salt Walls (Salt Walls can still only be converted back into Dull Salt)
+- Added a crafting recipe for Reflective Salt
+- Fixed visual and functional issues with the Jinxbow
+- Stopped Snow and Desert enemies from spawning in the Salt Flats
+- Added Ancient Books to Desert Crates
+- Ancient Altar mouse-over visuals no longer display when the Altar is unusable (outside the Desert)
+- Fixed an issue where Ancient Altar visuals did not disappear when the altar was broken
+- Improved custom merging frames (thanks zoey2)

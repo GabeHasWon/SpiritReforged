@@ -3055,6 +3055,11 @@ BeetleLicense: {
 	LicenseUse: Паспорт телепортируется в жучью службу доставки...
 }
 
+GooeyHiveItem: {
+	// DisplayName: Gooey Hive
+	// Tooltip: ""
+}
+
 ScarabMountItem: {
 	// DisplayName: Scarab Mount Item
 	// Tooltip: ""

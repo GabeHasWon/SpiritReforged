@@ -3046,6 +3046,11 @@ BeetleLicense: {
 	// LicenseUse: The license teleports away to the beetle delivery service...
 }
 
+GooeyHiveItem: {
+	// DisplayName: Gooey Hive
+	// Tooltip: ""
+}
+
 ScarabMountItem: {
 	// DisplayName: Scarab Mount Item
 	// Tooltip: ""

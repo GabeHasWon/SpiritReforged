@@ -62,6 +62,7 @@ public sealed class TileMerger : ModSystem
 		foreach (int type in types)
 		{
 			(int mask, int paint) = GetMergeData(i, j, type);
+
 			if (mask <= 0 || !_texturePatchByType.TryGetValue(type, out string path))
 				continue;
 
@@ -86,35 +87,56 @@ public sealed class TileMerger : ModSystem
 
 	private static (int mask, int shaderIndex) GetMergeData(int i, int j, int type)
 	{
-		Tile center = Main.tile[i, j];
+		Tile center = Framing.GetTileSafely(i, j);
+
 		int mask = 0;
-		int shaderIdx = 0;
+		int shaderIndex = 0;
 
-		Check(i, j - 1, 1, true);
-		Check(i, j + 1, 2, false);
-		Check(i - 1, j, 4, false);
-		Check(i + 1, j, 8, false);
+		// Tile should only merge if they face their neighbor and their
+		// neighbor faces them, excluding half tiles.
 
-		return (mask, shaderIdx);
+		Tile down = Framing.GetTileSafely(i, j + 1);
+		if (Down(center.Slope) && Up(down.Slope) && !down.IsHalfBlock)
+			Check(down, 2);
 
-		void Check(int x, int y, int bit, bool isUp)
+		// Half tiles should only merge with the tile below them.
+		if (center.IsHalfBlock)
+			return (mask, shaderIndex);
+
+		Tile up = Framing.GetTileSafely(i, j - 1);
+		if (Up(center.Slope) && Down(up.Slope))
+			Check(up, 1);
+
+		Tile left = Framing.GetTileSafely(i - 1, j);
+		if (Left(center.Slope) && Right(left.Slope) && !left.IsHalfBlock)
+			Check(left, 4);
+
+		Tile right = Framing.GetTileSafely(i + 1, j);
+		if (Right(center.Slope) && Left(right.Slope) && !right.IsHalfBlock)
+			Check(right, 8);
+
+		return (mask, shaderIndex);
+
+		void Check(Tile tile, int bit)
 		{
-			Tile neighbor = Main.tile[x, y];
-			if (!neighbor.HasTileType(type))
+			if (!tile.HasTile || tile.TileType != type)
 				return;
 
-			bool canMerge = isUp
-				? !center.IsHalfBlock && (center.BottomSlope || center.Slope == 0) &&
-				  (neighbor.TopSlope || neighbor.Slope == 0)
-				: !center.IsHalfBlock;
-
-			if (canMerge)
-			{
-				mask |= bit;
-				if (shaderIdx == 0)
-					shaderIdx = neighbor.TileColor;
-			}
+			mask |= bit;
+			
+			if (shaderIndex == 0)
+				shaderIndex = tile.TileColor;
 		}
+
+		static bool Block(SlopeType slope) => slope == SlopeType.Solid;
+
+		static bool Up(SlopeType slope) => Block(slope) || slope is SlopeType.SlopeUpLeft or SlopeType.SlopeUpRight;
+
+		static bool Down(SlopeType slope) => Block(slope) || slope is SlopeType.SlopeDownLeft or SlopeType.SlopeDownRight;
+
+		static bool Left(SlopeType slope) => Block(slope) || slope is SlopeType.SlopeUpLeft or SlopeType.SlopeDownLeft;
+
+		static bool Right(SlopeType slope) => Block(slope) || slope is SlopeType.SlopeUpRight or SlopeType.SlopeDownRight;
 	}
 }
 

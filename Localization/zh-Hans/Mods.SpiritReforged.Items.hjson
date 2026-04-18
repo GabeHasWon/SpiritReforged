@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		在你的前方变出暴雪
-		无视敌人5点的防御力
+		无视敌人10点的防御力
 		'''
 }
 
@@ -2171,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: 渗透装置
-	Tooltip: 放置在水中时会被动生成盐块
+	Tooltip: 放置在水中时会被动生成暗淡盐块
 }
 
 GoldDivingBeetleItem: {
@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: 青铜格栅
+	DisplayName: 青铜格栅墙
 	Tooltip: ""
 }
 
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: 前景赤沙岩砖墙
-	Tooltip: ""
+	Tooltip: 显示在玩家前面
 }
 
 SaltPylonItem: {
@@ -2711,7 +2711,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战攻击
+	Tooltip: 定期强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -2776,29 +2776,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: 盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: 盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: 修复的盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: 修复的盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: 盗墓者旗
 
 GiantBag: {
 	DisplayName: 战利品袋
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“各地恶棍与歹徒的最爱”
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2907,7 +2911,7 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: 青铜格栅块
+	DisplayName: 青铜格栅
 	Tooltip: ""
 }
 
@@ -3053,6 +3057,11 @@ BeetleLicense: {
 		找到最搭你的甲虫！
 		'''
 	LicenseUse: 发送许可证给甲虫运送服务站……
+}
+
+GooeyHiveItem: {
+	DisplayName: 黏糊蜂巢
+	Tooltip: ""
 }
 
 ScarabMountItem: {

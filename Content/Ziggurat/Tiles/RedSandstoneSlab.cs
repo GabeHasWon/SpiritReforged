@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class RedSandstoneSlab : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddTile(TileID.HeavyWorkBench).Register();
 
 	public override void SetStaticDefaults()
@@ -21,7 +23,6 @@ public class RedSandstoneSlab : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 

@@ -22,7 +22,7 @@ public class SaltCrateRestored : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 10;
+	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateRestoredTile>());

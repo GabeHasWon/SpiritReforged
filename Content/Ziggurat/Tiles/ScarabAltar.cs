@@ -1,3 +1,4 @@
+using Humanizer;
 using SpiritReforged.Common;
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
@@ -185,6 +186,14 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		public override void AI()
 		{
+			Tile tile = Main.tile[Projectile.Center.ToTileCoordinates16()];
+
+			if (!tile.HasTile || tile.TileType != ModContent.TileType<ScarabAltar>())
+			{
+				Projectile.Kill();
+				return;
+			}	
+
 			if (FlashTime > 0)
 				FlashTime--;
 
@@ -354,6 +363,29 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	}
 	#endregion
 
+	public bool CanRecieveOfferings
+	{
+		get
+		{
+			if (!Main.dayTime || BeamOLight.Enabled)
+				return false;
+			if (!Main.LocalPlayer.ZoneDesert)
+				return false;
+
+			//Can't use the altar while scourge is already spawned. To summon Scarab & Scourge at once, you must use the stormlion offering feature
+			if (CrossMod.Fables.Enabled)
+			{
+				for (int i = 0; i < Main.maxNPCs; i++)
+				{
+					if (Main.npc[i].active && _fablesSpawnBlockingNPCs[Main.npc[i].type])
+						return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
 	private int[] _hoverTypes;
 	private static bool[] _fablesStormlionItems;
 	private static bool[] _fablesSpawnBlockingNPCs;
@@ -432,33 +464,13 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			_hoverTypes = hoverTypes.ToArray();
 		}
 
+		if (!CanRecieveOfferings)
+			return;
+
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
 		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
-	}
-
-	public bool CanRecieveOfferings
-	{
-		get
-		{
-			if (!Main.dayTime || BeamOLight.Enabled)
-				return false;
-			if (!Main.LocalPlayer.ZoneDesert)
-				return false;
-
-			//Can't use the altar while scourge is already spawned. To summon Scarab & Scourge at once, you must use the stormlion offering feature
-			if (CrossMod.Fables.Enabled)
-			{
-				for (int i = 0; i < Main.maxNPCs; i++)
-				{
-					if (Main.npc[i].active && _fablesSpawnBlockingNPCs[Main.npc[i].type])
-						return false;
-				}
-			}
-
-			return true;
-		}
 	}
 
 	public override bool RightClick(int i, int j)
@@ -510,8 +522,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 				result = item;
 				if (!lowPriority)
 					return true;
-				else if (firstLowPrioResult == null)
-					firstLowPrioResult = item;
+				else 
+					firstLowPrioResult ??= item;
 			}
 		}
 

@@ -1,4 +1,5 @@
 using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 
@@ -6,13 +7,14 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
 public abstract class SaltBlock : ModTile, IAutoloadTileItem
 {
+
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)
 	{
 		Volume = 0.5f,
 		PitchVariance = 0.3f
 	};
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item) => Recipe.Create(ItemID.PurificationPowder, 2).AddIngredient(item.Type, 3).Register();
+	public virtual void AddItemRecipes(ModItem item) => Recipe.Create(ItemID.PurificationPowder, 2).AddIngredient(item.Type, 3).Register();
 
 	public override void SetStaticDefaults()
 	{

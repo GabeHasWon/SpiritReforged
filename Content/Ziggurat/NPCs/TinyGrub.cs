@@ -10,6 +10,7 @@ public class TinyGrub : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.CountsAsCritter[Type] = true;
 	}

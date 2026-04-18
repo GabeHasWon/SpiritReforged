@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -7,9 +8,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
-using Terraria.GameContent.Events;
 using Terraria.Graphics;
-using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -335,6 +334,13 @@ public class SaltBlockReflective : SaltBlock
 
 	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
 	private static SaltGridOverlay Overlay;
+
+	public override void AddItemRecipes(ModItem item)
+	{
+		base.AddItemRecipes(item);
+
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<SaltBlockDull>().AutoItemType()).AddCondition(Condition.NearWater).Register();
+	}
 
 	public override void Load()
 	{
