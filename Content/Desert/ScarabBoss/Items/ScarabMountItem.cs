@@ -22,6 +22,7 @@ internal class ScarabMountItem : ModItem
 
 	public class ScarabMount : ModMount
 	{
+		private float _drunkRotation = 0f;
 		private float _rotation = 0f;
 		private int[] _hitsPerNPC = new int[Main.maxNPCs];
 
@@ -44,7 +45,7 @@ internal class ScarabMountItem : ModItem
 			MountData.constantJump = false;
 			MountData.playerYOffsets = [40];
 			MountData.yOffset = 15;
-			MountData.xOffset = 0;
+			MountData.xOffset = 10;
 			MountData.bodyFrame = 3;
 			MountData.playerHeadOffset = 26;
 			MountData.standingFrameCount = 1;
@@ -69,21 +70,22 @@ internal class ScarabMountItem : ModItem
 		{
 			SetStaticDefaults();
 
-			player.noKnockback = true;
-			_rotation += player.velocity.X * 0.02f;
-
-			if (Main.getGoodWorld)
-			{
-				if (player.HasBuff(BuffID.Tipsy))
-				{
-					player.fullRotation = _rotation;
-					player.fullRotationOrigin = new Vector2(10, 90);
-				}
-				else
-					player.fullRotation = 0;
-			}
-
 			float xVel = Math.Abs(player.velocity.X);
+
+			player.noKnockback = true;
+			_drunkRotation += player.velocity.X * 0.02f;
+			_rotation = player.velocity.X * 0.05f;
+
+			if (Main.getGoodWorld && player.HasBuff(BuffID.Tipsy))
+			{
+				player.fullRotation = _drunkRotation;
+				player.fullRotationOrigin = new Vector2(10, 90);
+			}
+			else
+			{
+				player.fullRotationOrigin = new Vector2(10, 90);
+				player.fullRotation = _rotation;
+			}
 
 			if (xVel > 6)
 			{
@@ -126,7 +128,7 @@ internal class ScarabMountItem : ModItem
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, 
 			ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
-			rotation = _rotation;
+			rotation = _drunkRotation;
 
 			return true;
 		}
@@ -173,7 +175,7 @@ internal class ScarabMountItem : ModItem
 			if (!plr.mount.Active || plr.mount.Type != ModContent.MountType<ScarabMount>() || drawInfo.shadow != 0)
 				return;
 
-			Vector2 position = drawInfo.Center - Main.screenPosition;
+			Vector2 position = drawInfo.Center - Main.screenPosition + new Vector2(plr.mount._data.xOffset, 0);
 			drawInfo.DrawDataCache.Add(new DrawData(Saddle.Value, position.Floor() - new Vector2(16, -18), null, Color.White, 0f, Vector2.Zero, 1f, drawInfo.playerEffect, 0)
 			{
 				shader = plr.cMount

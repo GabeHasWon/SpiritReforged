@@ -3065,6 +3065,6 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	DisplayName: Scarab Mount Item
-	Tooltip: ""
+	DisplayName: Honeysuckle Bud
+	Tooltip: Summons a pillbug mount
 }
