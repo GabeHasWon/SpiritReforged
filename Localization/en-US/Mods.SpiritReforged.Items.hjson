@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Mahakala Mask
-	Tooltip: Reduces damage taken from corrupt enemies
+	Tooltip: Reduces damage taken from and dealt to evil enemies
 }
 
 MahakalaMaskRed: {
