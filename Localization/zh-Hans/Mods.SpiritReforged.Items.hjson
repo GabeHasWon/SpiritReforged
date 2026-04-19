@@ -928,7 +928,7 @@ GravelItem: {
 }
 
 MagmastoneItem: {
-	DisplayName: 熔岩石
+	DisplayName: 岩浆石
 	Tooltip: ""
 }
 
@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: 摩诃迦罗面具
-	Tooltip: 降低所受到的来自腐化敌人的伤害
+	Tooltip: 降低所受到的来自邪恶敌人的伤害，并增加对邪恶敌人造成的伤害
 }
 
 MahakalaMaskRed: {
