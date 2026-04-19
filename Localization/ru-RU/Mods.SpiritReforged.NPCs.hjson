@@ -555,7 +555,7 @@ Scarabeus: {
 
 TinyGrub: {
 	DisplayName: Маленькая личинка
-	// Entry: Almost as full of potential as it is grossness.
+	Entry: Почти настолько же полна потенциала, насколько она отвратительна.
 }
 
 CactusZombie: {
@@ -575,19 +575,19 @@ VeiledZombie: {
 
 Cricket: {
 	DisplayName: Сверчок
-	// Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
 }
 
 GoldCricket: {
 	DisplayName: Золотой сверчок
-	// Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
 }
 
 BeetleTownPet: {
 	DisplayName: Жук
-	// Chitter0: *Happy chittering*
-	// Chitter1: *Bug noises*
-	// Chitter2: *Beetle noises*
+	Chitter0: *Счастливое стрекотание*
+	Chitter1: *Звуки жука*
+	Chitter2: *Звуки букашки*
 
 	Names: {
 		RoyalScarab0: Лазурь

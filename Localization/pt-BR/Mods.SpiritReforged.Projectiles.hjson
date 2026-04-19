@@ -58,14 +58,10 @@ DragonFireball.DisplayName: Bola de Fogo de Dragão
 PileOfConsequencesPet.DisplayName: Consequências
 EnergyLaser.DisplayName: Laser Energizado
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
-SandPillar.DisplayName: Pìlar de Arenito
-SlamShockwave.DisplayName: Onda de Choque
 WindBlast.DisplayName: Jato de Vento
-ClawHitbox.DisplayName: Garra
 DivebombScarab.DisplayName: Escaravelho Mergulhador
 SwarmScarab.DisplayName: Amontoado de Besouros
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
-AdornedArrow.DisplayName: Flecha Ensolarada
 AdornedBowHeld.DisplayName: Flecha Ensolarada Energizada
 AdornedFlash.DisplayName: Flecha da Luz
 AdornedArrowDeathTrail.DisplayName: Trilha da Morte

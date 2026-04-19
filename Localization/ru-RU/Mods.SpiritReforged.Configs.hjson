@@ -26,8 +26,8 @@ ReforgedClientConfig: {
 	}
 
 	ScreenshakeStrength: {
-		// Label: Screenshake Strength
-		// Tooltip: ""
+		Label: Множитель силы тряски экрана
+		Tooltip: ""
 	}
 }
 
