@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: 棘球
-	Tooltip: 粘在图格上
+	Tooltip: 会粘在图格上以及减速敌人
 }
 
 SaltBlockDullItem: {
