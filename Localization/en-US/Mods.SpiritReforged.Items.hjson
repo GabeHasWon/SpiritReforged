@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles
+	Tooltip: Sticks to tiles and slows enemies
 }
 
 SaltBlockDullItem: {
