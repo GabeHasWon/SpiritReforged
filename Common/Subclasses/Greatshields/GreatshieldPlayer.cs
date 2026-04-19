@@ -16,6 +16,8 @@ internal class GreatshieldPlayer : ModPlayer
 	internal int parryAnim = 0; // How long the parry animation lasts
 	internal int parryAnimMax = 0;
 
+	internal Action<Player, Player.HurtInfo> lastBlockHook = null;
+
 	public override void ResetEffects()
 	{
 		parryTime = Math.Max(parryTime - 1, 0);
@@ -47,11 +49,13 @@ internal class GreatshieldPlayer : ModPlayer
 
 		modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
 		{
-			int dif = Math.Min(info.Damage - boostHealth, info.Damage);
-			boostHealth -= info.Damage;
+			int dif = Math.Min(boostHealth, info.Damage);
+			boostHealth = Math.Max(boostHealth - info.Damage, 0);
+
+			lastBlockHook?.Invoke(Player, info);
 
 			if (boostHealth > 0)
-				Player.statLife += info.Damage;
+				Player.statLife += dif;
 		};
 	}
 

@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: Scarababy
 	Description: "'It's plotting...'"
 }
+
+StonemasonBuff: {
+	DisplayName: Stonemason Block
+	Description: Your next attack deals double knockback
+}

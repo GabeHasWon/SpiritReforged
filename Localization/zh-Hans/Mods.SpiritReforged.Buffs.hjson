@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“
 }
+
+StonemasonBuff: {
+	// DisplayName: Stonemason Buff
+	// Description: Mods.SpiritReforged.Buffs.StonemasonBuff.Description
+}

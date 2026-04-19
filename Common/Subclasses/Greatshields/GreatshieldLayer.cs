@@ -21,7 +21,8 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		int currentFrame = plr.bodyFrame.Y / plr.bodyFrame.Height;
 		Vector2 headOffset = Main.OffsetsPlayerOffhand[currentFrame]; // "Animates" the shield with position offsets
 		bool right = plr.direction == 1;
-		float xOffset = right ? 8 : 0; // Hardcoded specific offset because it's not centered properly when flipped
+		float visualXOffset = right ? 8 : 0; // Hardcoded specific offset because it's not centered properly when flipped
+		float xOffset = 0;
 		float rotation = plr.AngleTo(PlayerMouseHandler.GetMouse(plr.whoAmI));
 		float functionalRotation = rotation; // Rotation used for the aim direction instead of sprite rotation
 		GreatshieldPlayer shieldPlayer = plr.GetModPlayer<GreatshieldPlayer>();
@@ -30,7 +31,7 @@ internal class GreatshieldLayer : PlayerDrawLayer
 			rotation += MathHelper.Pi;
 
 		// This block handles actually animating the shield, w/ tweakable parameters - "thrust" animation
-		if (plr.ItemAnimationActive && shieldPlayer.parryTime <= 0)
+		if (plr.ItemAnimationActive && shieldPlayer.parryAnim <= 0)
 		{
 			rotation = GetShieldAnimationData(plr, rotation, out float factor);
 
@@ -47,7 +48,7 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		if (shieldPlayer.parryTime > 0)
 			guardFactor = shieldPlayer.AnimationFactor;
 
-		var basicOffset = new Vector2(0, 28) + new Vector2(12 + xOffset, 0).RotatedBy(functionalRotation) * new Vector2(1, 0.8f);
+		var basicOffset = new Vector2(visualXOffset, 28) + new Vector2(12 + xOffset, 0).RotatedBy(functionalRotation) * new Vector2(1, 0.8f);
 
 		if (currentFrame == JumpFrame)
 			basicOffset.Y += 8;

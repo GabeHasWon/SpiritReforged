@@ -58,22 +58,31 @@ internal abstract class GreatshieldItem : ModItem
 
 	public override bool? UseItem(Player player)
 	{
+		GreatshieldPlayer shieldPlr = player.GetModPlayer<GreatshieldPlayer>();
+
+		if (shieldPlr.parryAnim > 0)
+			return false;
+
 		if (player.altFunctionUse == 2)
 		{
-			if (player.GetModPlayer<GreatshieldPlayer>().parryTime <= 0)
+			if (shieldPlr.parryTime <= 0)
 			{
-				player.GetModPlayer<GreatshieldPlayer>().Guard(Info);
+				shieldPlr.Guard(Info);
 				return true;
 			}
-			else
-				return false;
+
+			return false;
 		}
 
 		return null;
 	}
 
+	public override bool CanShoot(Player player) => player.altFunctionUse != 2;
+
 	public override void HoldItem(Player player)
 	{
+		player.GetModPlayer<GreatshieldPlayer>().lastBlockHook = OnBlock;
+
 		if (Main.myPlayer == player.whoAmI)
 		{
 			player.ChangeDir(Math.Sign(Main.MouseWorld.X - player.Center.X));
@@ -96,4 +105,6 @@ internal abstract class GreatshieldItem : ModItem
 		< 0.6f => Player.CompositeArmStretchAmount.ThreeQuarters,
 		_ => Player.CompositeArmStretchAmount.Full
 	};
+
+	public virtual void OnBlock(Player player, Player.HurtInfo info) { }
 }
