@@ -626,7 +626,7 @@ SunStaff: {
 }
 
 SavannaMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原）
+	DisplayName: 八音盒（稀树平原）
 	Tooltip: ""
 }
 
@@ -900,7 +900,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（尘暴）
+	DisplayName: 八音盒（尘暴）
 }
 
 FishLure: {
@@ -1223,7 +1223,7 @@ DyeCrateItem: {
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原 - 夜）
+	DisplayName: 八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
@@ -1308,7 +1308,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
 
 OceanDepthsBoxItem: {
-	DisplayName: 音乐盒（海洋深处）
+	DisplayName: 八音盒（海洋深处）
 	Tooltip: ""
 }
 
@@ -1790,17 +1790,17 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	DisplayName: 异界八音盒（稀树平原 - 昼）
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	DisplayName: 异界八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（尘暴）
+	DisplayName: 异界八音盒（尘暴）
 	Tooltip: ""
 }
 
@@ -1840,7 +1840,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: 音乐盒（魂灵主界面）
+	DisplayName: 八音盒（魂灵主界面）
 	Tooltip: ""
 }
 
@@ -2627,12 +2627,12 @@ SaltPylonItem: {
 
 SaltNightMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩 - 夜）
+	DisplayName: 八音盒（盐滩 - 夜）
 }
 
 SaltMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩）
+	DisplayName: 八音盒（盐滩）
 }
 
 PineappleSeeds: {
@@ -2695,7 +2695,7 @@ SaltTorchItem: {
 }
 
 ZigguratMusicBoxItem: {
-	DisplayName: 音乐盒（庙塔）
+	DisplayName: 八音盒（庙塔）
 	Tooltip: ""
 }
 
@@ -3010,7 +3010,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: 音乐盒（圣甲虫）
+	DisplayName: 八音盒（圣甲虫）
 	Tooltip: ""
 
 	Toggle: {
