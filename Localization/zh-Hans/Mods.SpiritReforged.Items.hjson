@@ -2892,7 +2892,7 @@ BronzeGrateDoorItem: {
 
 CalmingBellItem: {
 	DisplayName: 宁静之铃
-	Tooltip: 右键降低刷怪率
+	Tooltip: 右键降低敌人的生成速度
 }
 
 BrownShinglesItem: {
