@@ -10,14 +10,16 @@ public class DashSwordPlayer : ModPlayer
 	/// <summary> Modifies the rate in which dashes recharge. </summary>
 	public StatModifier statDashCooldown = StatModifier.Default;
 
+	/// <summary> The duration in which the player is actively dashing. </summary>
 	private float _dashTime;
-	private float _internalCooldown;
+	/// <summary> A cooldown used for special functions. </summary>
+	public float internalCooldown;
 
 	/// <summary> Optionally set a dash cooldown. </summary>
 	public void SetDash(int cooldown = 30)
 	{
 		_dashTime = 2;
-		_internalCooldown = cooldown;
+		internalCooldown = cooldown;
 		HasDashCharge = false;
 	}
 
@@ -35,7 +37,7 @@ public class DashSwordPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		if (!Player.ItemAnimationActive && (_internalCooldown = Math.Max(_internalCooldown - statDashCooldown.ApplyTo(1), 0)) == 0 && Player.velocity.Y == 0)
+		if (!Player.ItemAnimationActive && (internalCooldown = Math.Max(internalCooldown - statDashCooldown.ApplyTo(1), 0)) == 0 && Player.velocity.Y == 0)
 			HasDashCharge = true;
 	}
 

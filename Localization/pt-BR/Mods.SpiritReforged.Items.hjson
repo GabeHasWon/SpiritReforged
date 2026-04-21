@@ -3065,6 +3065,11 @@ RoninSheath: {
 	// Tooltip: Reduces Katana cooldown by {0}% and increases damage by {1}%
 }
 
+ShinobiHeadband: {
+	// DisplayName: Shinobi Headband
+	// Tooltip: Every third katana strike refreshes all dashes
+}
+
 Vajra: {
 	// DisplayName: Vajra
 	// Tooltip: ""

@@ -28,7 +28,9 @@ public class DamascusKatana : ModItem
 			if (Secondary && Counter == 1)
 			{
 				Player owner = Main.player[Projectile.owner];
-				owner.velocity.Y -= 8;
+
+				if (owner.velocity.Y == 0)
+					owner.velocity.Y -= 8;
 			}
 		}
 
