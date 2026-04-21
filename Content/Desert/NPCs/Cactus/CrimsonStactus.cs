@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using SpiritReforged.Common;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.Utilities;
 
@@ -7,6 +8,12 @@ namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 [AutoloadBanner]
 public class CrimsonStactus : Stactus
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		SpiritSets.IsCorrupt[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -17,9 +24,8 @@ public class CrimsonStactus : Stactus
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		SoundEngine.PlaySound(SoundID.NPCHit13, NPC.Center);
-
 		base.HitEffect(hit);
+		SoundEngine.PlaySound(SoundID.NPCHit13, NPC.Center);
 	}
 
 	public override void FallBehaviour()
@@ -46,9 +52,8 @@ public class CrimsonStactus : Stactus
 
 	public override void DoDeathEffects()
 	{
-		SoundEngine.PlaySound(SoundID.NPCDeath11 with { Pitch = -0.25f }, NPC.Center);
-
 		base.DoDeathEffects();
+		SoundEngine.PlaySound(SoundID.NPCDeath11 with { Pitch = -0.25f }, NPC.Center);
 	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo) => (!spawnInfo.Player.ZoneDesert || !spawnInfo.Player.ZoneCrimson || spawnInfo.SpawnTileType != TileID.Crimsand) ? 0 : SpawnCondition.Crimson.Chance * 0.8f;
