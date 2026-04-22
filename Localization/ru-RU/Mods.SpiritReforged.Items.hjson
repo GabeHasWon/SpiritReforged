@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Кактусовый шар
-	Tooltip: Прилипает к блокам
+	Tooltip: Прилипает к блокам и замедляет поражённых врагов
 }
 
 SaltBlockDullItem: {
