@@ -22,8 +22,6 @@ public class ShinobiHeadband : EquippableItem
 		}
 	}
 
-	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
-
 	public override void SetDefaults()
 	{
 		Item.width = 30;
