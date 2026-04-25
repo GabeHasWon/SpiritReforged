@@ -33,7 +33,7 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		// This block handles actually animating the shield, w/ tweakable parameters - "thrust" animation
 		if (plr.ItemAnimationActive && shieldPlayer.parryAnim <= 0)
 		{
-			rotation = GetShieldAnimationData(plr, rotation, out float factor);
+			rotation = GetShieldAnimationData(plr, rotation, out float factor, out _);
 
 			int sign = Math.Sign(xOffset);
 			if (sign == 0)
@@ -73,26 +73,49 @@ internal class GreatshieldLayer : PlayerDrawLayer
 		}
 	}
 
-	internal static float GetShieldAnimationData(Player plr, float rotation, out float factor)
+	internal static float GetShieldAnimationData(Player plr, float rotation, out float factor, out bool throwingOut, bool push = false)
 	{
 		const float Anticipation = 0.4f;
-		const float Push = 0.15f;
 
 		const float AnticipationRotation = 0.2f;
 
 		factor = 1 - plr.itemAnimation / (float)plr.itemAnimationMax;
-		if (factor < Anticipation)
+		throwingOut = false;
+
+		if (!push)
 		{
-			factor = MathHelper.Lerp(0, -0.4f, factor / Anticipation);
-			rotation += MathHelper.Lerp(0, AnticipationRotation * -plr.direction, factor / Anticipation);
-		}
-		else if (factor < Anticipation + Push)
-		{
-			factor = MathHelper.Lerp(-0.1f, 1f, (factor - Anticipation) / Push);
-			rotation += MathHelper.Lerp(AnticipationRotation * -plr.direction, 0, (factor - Anticipation) / Push);
+			const float Push = 0.15f;
+
+			if (factor < Anticipation)
+			{
+				factor = MathHelper.Lerp(0, -0.4f, factor / Anticipation);
+				rotation += MathHelper.Lerp(0, AnticipationRotation * -plr.direction, factor / Anticipation);
+				throwingOut = true;
+			}
+			else if (factor < Anticipation + Push)
+			{
+				factor = MathHelper.Lerp(-0.1f, 1f, (factor - Anticipation) / Push);
+				rotation += MathHelper.Lerp(AnticipationRotation * -plr.direction, 0, (factor - Anticipation) / Push);
+			}
+			else
+				factor = MathHelper.Lerp(1, 0, (factor - (Push + Anticipation)) / (1 - (Push + Anticipation)));
 		}
 		else
-			factor = MathHelper.Lerp(1, 0, (factor - (Push + Anticipation)) / (1 - (Push + Anticipation)));
+		{
+			const float Push = 0.4f;
+
+			if (factor < Anticipation)
+			{
+				factor = MathHelper.Lerp(0, -0.4f, factor / Anticipation);
+				rotation += MathHelper.Lerp(0, AnticipationRotation * -plr.direction, factor / Anticipation);
+			}
+			else
+			{
+				throwingOut = true;
+				factor = MathHelper.Lerp(-0.1f, 2f, (factor - Anticipation) / Push);
+				rotation += MathHelper.Lerp(AnticipationRotation * -plr.direction, 0, (factor - Anticipation) / Push);
+			}
+		}
 
 		return rotation;
 	}
