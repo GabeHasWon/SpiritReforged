@@ -18,8 +18,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
-		.AddRecipeGroup("CopperBars", 5)
-		.AddIngredient(ItemID.Wire, 10)
+		.AddRecipeGroup("SilverBars", 5)
 		.AddTile(TileID.Anvils)
 		.Register();
 
