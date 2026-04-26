@@ -2522,7 +2522,7 @@ TrellisTwoShadewoodItem: {
 
 ChainLoopItem: {
 	DisplayName: 链环
-	Tooltip: 放置时按上/下建可调整链条长度
+	Tooltip: 放置时按上/下键可调整链条长度
 }
 
 GoldChainLoopItem: {
