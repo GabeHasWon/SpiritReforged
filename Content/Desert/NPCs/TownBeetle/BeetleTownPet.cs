@@ -9,22 +9,23 @@ public class BeetleTownPet : ModNPC
 {
 	private class ScarabTownPetProfile : ITownNPCProfile
 	{
-		private readonly record struct PetProfileInfo(string Identifier, Asset<Texture2D> Texture);
+		private readonly record struct PetProfileInfo(string Identifier, int HeadIndex, Asset<Texture2D> Texture);
 
 		private readonly List<PetProfileInfo> _profileInfo = [];
 
 		public ScarabTownPetProfile AddVariant(string identifier)
 		{
 			Asset<Texture2D> texture = DrawHelpers.RequestLocal<BeetleTownPet>(identifier, false);
-			_profileInfo.Add(new(identifier, texture));
+			int headIndex = NPCHeadLoader.GetHeadSlot(DrawHelpers.RequestLocal<BeetleTownPet>(identifier + "_Head"));
 
+			_profileInfo.Add(new(identifier, headIndex, texture));
 			return this;
 		}
 
 		public int RollVariation() => Main.rand.Next(_profileInfo.Count);
 		public string GetNameForVariant(NPC npc) => npc.getNewNPCName();
 		public Asset<Texture2D> GetTextureNPCShouldUse(NPC npc) => _profileInfo[npc.townNpcVariationIndex].Texture;
-		public int GetHeadTextureIndex(NPC npc) => HeadIndexes[npc.townNpcVariationIndex];
+		public int GetHeadTextureIndex(NPC npc) => _profileInfo[npc.townNpcVariationIndex].HeadIndex;
 		public List<string> GetNames(ILocalizedModType localizedType, NPC npc)
 		{
 			List<string> result = [];
@@ -38,18 +39,17 @@ public class BeetleTownPet : ModNPC
 
 	public override string Texture => AssetLoader.EmptyTexture;
 
-	private static int[] HeadIndexes;
 	private static ScarabTownPetProfile NPCProfile;
 
-	public override void Load() => HeadIndexes =
-	[
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("RoyalScarab_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("DungBeetle_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("JewelBeetle_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Ladybug_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Weevil_Head")),
-		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Maybug_Head")),
-	];
+	public override void Load()
+	{
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("RoyalScarab_Head"));
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("DungBeetle_Head"));
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("JewelBeetle_Head"));
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Ladybug_Head"));
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Weevil_Head"));
+		Mod.AddNPCHeadTexture(Type, DrawHelpers.RequestLocal<BeetleTownPet>("Maybug_Head"));
+	}
 
 	public override void SetStaticDefaults()
 	{
