@@ -3050,3 +3050,8 @@ StonemasonGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
 }
+
+LightningBolt: {
+	// DisplayName: Lightning Bolt
+	// Tooltip: ""
+}

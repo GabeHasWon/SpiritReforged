@@ -144,6 +144,6 @@ ScarabLightPetBuff: {
 }
 
 StonemasonBuff: {
-	// DisplayName: Stonemason Buff
-	// Description: Mods.SpiritReforged.Buffs.StonemasonBuff.Description
+	// DisplayName: Stonemason Block
+	// Description: Your next attack deals double knockback
 }
