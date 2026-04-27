@@ -186,13 +186,13 @@ public class BlazeGlyph : GlyphItem
 			Color.Goldenrod,
 		};
 
-		if (Main.rand.NextBool(120))
+		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
 			Vector2 velocity = Vector2.Zero;
 
-			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 1f, 40);
+			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 0.2f, 40);
 			particle.OverrideDrawLayer(ParticleLayer.AboveItem);
 			ParticleHandler.SpawnParticle(particle);
 		}

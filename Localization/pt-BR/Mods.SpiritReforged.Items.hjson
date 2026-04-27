@@ -3109,3 +3109,8 @@ BeeGlyph: {
 		''' */
 	// Effect: Buzzing
 }
+
+SanguineGlyph: {
+	// DisplayName: Sanguine Glyph
+	// Tooltip: ""
+}
