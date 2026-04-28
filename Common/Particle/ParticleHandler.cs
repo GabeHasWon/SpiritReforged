@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using System.Linq;
 
 namespace SpiritReforged.Common.Particle;
 
@@ -13,7 +12,7 @@ public enum ParticleLayer
 	AboveSolid,
 	BelowSolid,
 	BelowWall,
-	AboveItem,
+	AboveItem
 }
 
 public enum ParticleDrawType
@@ -173,6 +172,7 @@ public class ParticleHandler : ILoadable
 	}
 
 	internal static void DrawAllParticles(SpriteBatch spriteBatch, ParticleLayer drawLayer) => DrawAllParticles(spriteBatch, (p) => p.DrawLayer == drawLayer);
+
 	internal static void DrawAllParticles(SpriteBatch spriteBatch, Func<Particle, bool> func)
 	{
 		var batchedNonpremultiplyParticles = new List<Particle>();

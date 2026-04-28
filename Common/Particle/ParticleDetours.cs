@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.Particle;
 
-internal class ParticleDetours : ILoadable
+internal sealed class ParticleDetours : ILoadable
 {
 	public void Load(Mod mod)
 	{
@@ -15,7 +15,7 @@ internal class ParticleDetours : ILoadable
 		On_Main.DrawItems += AboveItem;
 	}
 
-	private void AboveItem(On_Main.orig_DrawItems orig, Main self)
+	private static void AboveItem(On_Main.orig_DrawItems orig, Main self)
 	{
 		orig(self);
 
