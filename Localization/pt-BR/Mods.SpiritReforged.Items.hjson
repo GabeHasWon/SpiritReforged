@@ -3116,6 +3116,10 @@ SanguineGlyph: {
 }
 
 PrefixVoucher: {
-	// DisplayName: "[c/{0}:{1}] Prefix Voucher"
-	// Tooltip: Can be applied to items with <right>
+	// DisplayName: Prefix Voucher
+	/* Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		''' */
 }

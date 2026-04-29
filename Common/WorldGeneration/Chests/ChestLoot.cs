@@ -16,6 +16,7 @@ using SpiritReforged.Content.Underground.Items.FingerGun;
 using SpiritReforged.Content.Granite.Vanity;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.Underground.Items;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
@@ -51,5 +52,6 @@ public class ChestLoot : ModSystem
 
 		//AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<HardlightVisor>()), (int)VanillaChestID.Granite, 1);
+		AddToVanillaChest(new ChestInfo(1, 0.2f, ModContent.ItemType<PrefixVoucher>()), (int)VanillaChestID.Gold, Main.rand.Next(2, 4));
 	}
 }
