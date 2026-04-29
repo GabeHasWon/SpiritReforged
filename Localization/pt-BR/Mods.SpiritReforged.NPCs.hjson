@@ -572,3 +572,8 @@ VeiledZombie: {
 
 Cricket.DisplayName: Grilo
 GoldCricket.DisplayName: Grilo de Ouro
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: ""
+}

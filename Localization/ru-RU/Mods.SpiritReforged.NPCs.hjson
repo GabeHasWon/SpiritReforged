@@ -572,3 +572,8 @@ VeiledZombie: {
 
 Cricket.DisplayName: Сверчок
 GoldCricket.DisplayName: Золотой сверчок
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: ""
+}

@@ -3123,3 +3123,12 @@ SanguineGlyph: {
 	// DisplayName: Sanguine Glyph
 	// Tooltip: ""
 }
+
+PrefixVoucher: {
+	// DisplayName: Prefix Voucher
+	/* Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		''' */
+}
