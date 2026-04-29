@@ -3,10 +3,11 @@ using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Content.Forest.Cartography;
 using SpiritReforged.Content.Savanna.Biome;
 using Terraria.GameContent.Bestiary;
 
-namespace SpiritReforged.Content.Forest.Cartography;
+namespace SpiritReforged.Content.Forest.Glyphs;
 
 [AutoloadHead]
 public class Enchanter : WorldNPC, ITravelNPC
@@ -53,9 +54,7 @@ public class Enchanter : WorldNPC, ITravelNPC
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
-		{
 			shopName = "Shop";
-		}
 		else
 		{
 			
@@ -70,13 +69,11 @@ public class Enchanter : WorldNPC, ITravelNPC
 			return;
 
 		if (NPC.life <= 0)
-		{
 			for (int i = 1; i < 7; i++)
 			{
 				int goreType = Mod.Find<ModGore>(nameof(Cartographer) + i).Type;
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity, goreType);
 			}
-		}
 
 		for (int d = 0; d < 8; d++)
 			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
