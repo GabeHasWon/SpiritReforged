@@ -21,27 +21,27 @@ SavannaNight: {
 }
 
 DeepOcean: {
-	DisplayName: 海洋深处
+	DisplayName: Deep Ocean
 	Author: "{$BySalvati}"
 }
 
 SavannaOtherworld: {
-	DisplayName: 异界稀树平原 - 昼
+	DisplayName: Otherworldly Savanna Day
 	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	DisplayName: 异界稀树平原 - 夜
+	DisplayName: Otherworldly Savanna Night
 	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	DisplayName: 异界尘暴
+	DisplayName: Otherworldly Duststorm
 	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {
-	DisplayName: 庙塔
+	DisplayName: Ziggurat
 	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
