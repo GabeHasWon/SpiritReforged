@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: Gold Diving Beetle
-	Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {

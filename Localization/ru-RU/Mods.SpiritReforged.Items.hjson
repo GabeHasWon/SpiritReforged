@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Вызывает перед вами снежную бурю
-		Игнорирует 5 ед. защиты врага
+		Игнорирует 10 ед. защиты врага
 		'''
 }
 
@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Кактусовый шар
-	Tooltip: Прилипает к блокам
+	Tooltip: Прилипает к блокам и замедляет поражённых врагов
 }
 
 SaltBlockDullItem: {
@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Маска Махакалы
-	Tooltip: Снижает урон, получаемый от врагов заражений
+	Tooltip: Снижает урон, получаемый от врагов заражений, а также наносимый по ним урон
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Бронзовая решётка
+	DisplayName: Стена из бронзовой решётки
 	Tooltip: ""
 }
 
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Передняя стена из красного песчаникового кирпича
-	Tooltip: ""
+	Tooltip: Отображается перед, а не за игроком
 }
 
 SaltPylonItem: {
@@ -2676,7 +2676,7 @@ GoldenBrineShrimpItem: {
 
 CorruptStactusBannerItem.DisplayName: Знамя искажённой кактусеницы
 CrimsonStactusBannerItem.DisplayName: Знамя багряной кактусеницы
-DesertStactusBannerItem.DisplayName: Знамя пустынной кактусеницы
+DesertStactusBannerItem.DisplayName: Знамя кактусеницы
 HallowedStactusBannerItem.DisplayName: Знамя освящённой кактусеницы
 
 AncientBannerItem: {
@@ -2798,7 +2798,11 @@ GraverobberBannerItem.DisplayName: Знамя расхитителя могил
 
 GiantBag: {
 	DisplayName: Большой мешок
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		«Излюбленный выбор мошенников и прохвостов со всего мира!»
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2907,7 +2911,7 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Блок бронзовой решётки
+	DisplayName: Бронзовая решётка
 	Tooltip: ""
 }
 
@@ -3056,6 +3060,6 @@ BeetleLicense: {
 }
 
 GooeyHiveItem: {
-	// DisplayName: Gooey Hive
-	// Tooltip: ""
+	DisplayName: Липкий улей
+	Tooltip: ""
 }

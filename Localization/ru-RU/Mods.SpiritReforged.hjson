@@ -55,21 +55,21 @@ GameTips: {
 	ReforgedTip1: Некоторые бабочки прячутся в подземных рощах.
 	ReforgedTip2: Булавки очень полезны! Проверьте свои булавки в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
-	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей.
+	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей!
 	ReforgedTip5: В тёмных глубинах океана сокрыто множество сокровищ.
 	ReforgedTip6: Под покровом ночи свечение звёздной травы дарит приятное облегчение.
-	ReforgedTip7: Облачник всегда рядом с облаками.
-	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вам нужно забраться повыше.
+	ReforgedTip7: Облачник всегда растёт рядом с облаками.
+	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вы хотите забраться повыше.
 	ReforgedTip9: Иногда на поверхность океана всплывают случайные предметы — проверяйте его почаще!
 	# Caves & Clubs
-	// ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
-	// ReforgedTip11: Clubs offer strong, focused single-target damage.
+	ReforgedTip10: В пещерах полно различных горшков! Смотрите внимательно!
+	ReforgedTip11: Дубины полезны для фокусированных атак по одиночным целям.
 	# Sunscorched
-	// ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
-	// ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprises hide around every corner.
-	// ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
-	// ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
-	// ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
+	ReforgedTip12: Легенды говорят об одном древнем алтаре, принимающем подношения в виде самоцветов...
+	ReforgedTip13: Будьте осторожны, исследуя Зиккурат! Сюрпризы прячутся в каждом углу.
+	ReforgedTip14: Подземные оазисы хорошее место для отдыха от опасности пустынных пещер.
+	ReforgedTip15: Янтарь полон секретов! Быть может,  внутри них вы найдёте что-нибудь интересное...
+	ReforgedTip16: Будьте бдительны, исследую руины в пустыне! Иногда пол оказывается не таким прочным, как на первый взгляд.
 }
 
 Emotes: {

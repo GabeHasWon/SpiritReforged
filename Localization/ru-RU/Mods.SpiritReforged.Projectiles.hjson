@@ -58,14 +58,10 @@ DragonFireball.DisplayName: Огненный плевок дракона
 PileOfConsequencesPet.DisplayName: Ответственность
 EnergyLaser.DisplayName: Энергетический лазер
 BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
-// SandPillar.DisplayName: Sand Pillar
-// SlamShockwave.DisplayName: Slam Shockwave
 WindBlast.DisplayName: Удар ветра
-// ClawHitbox.DisplayName: Claw Hitbox
 DivebombScarab.DisplayName: Пикирующей скарабей
 SwarmScarab.DisplayName: Скарабейный рой
 SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
-// AdornedArrow.DisplayName: Adorned Arrow
 AdornedBowHeld.DisplayName: "{$Items.AdornedBow.DisplayName}"
 AdornedFlash.DisplayName: Сверкание стрелы
 AdornedArrowDeathTrail.DisplayName: Попадание стрелы
