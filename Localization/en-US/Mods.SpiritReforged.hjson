@@ -65,6 +65,7 @@ GameTips: {
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
+	EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {

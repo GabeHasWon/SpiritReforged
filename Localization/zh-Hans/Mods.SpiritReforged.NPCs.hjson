@@ -572,3 +572,8 @@ VeiledZombie: {
 
 Cricket.DisplayName: 蟋蟀
 GoldCricket.DisplayName: 金蟋蟀
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: ""
+}

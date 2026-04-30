@@ -1,5 +1,5 @@
 using Humanizer;
-using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
@@ -10,12 +10,13 @@ using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 [FromClassic("Glyph")]
-public class BlankGlyph : ModItem
+public class ChromaticWax : ModItem
 {
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 
@@ -34,10 +35,18 @@ public class GlyphGlobalItem : GlobalItem
 {
 	public override bool InstancePerEntity => true;
 
+	private static float AnimationProgress;
+	private static Item AnimationItem;
 	/// <summary> Prevents item consumption for the local client only. </summary>
 	private static bool StopItemConsumption;
 
 	public GlyphItem.GlyphType glyph;
+
+	public void StartAnimation(Item item)
+	{
+		AnimationItem = item;
+		AnimationProgress = 1;
+	}
 
 	public override void ApplyPrefix(Item item, int pre)
 	{
@@ -46,7 +55,7 @@ public class GlyphGlobalItem : GlobalItem
 			GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
 			GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
 
-			if (glyphItem.Type != ModContent.ItemType<NullGlyph>() && glyphItem.CanApplyGlyph(item))
+			if (glyphItem.CanApplyGlyph(item))
 				glyphItem.ApplyGlyph(item, new GlyphItem.GenerateContext());
 		}
 	}
@@ -62,6 +71,7 @@ public class GlyphGlobalItem : GlobalItem
 			if (--Main.mouseItem.stack <= 0)
 				Main.mouseItem.TurnToAir(); //Consume the glyph on hand
 
+			StartAnimation(item);
 			StopItemConsumption = true;
 		}
 	}
@@ -135,7 +145,17 @@ public class GlyphGlobalItem : GlobalItem
 			DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
 				spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
 
-			spriteBatch.Draw(texture, iconPosition, null, Color.White, 0, texture.Size() / 2, iconScale, 0, 0);
+			spriteBatch.Draw(texture, iconPosition, null, Color.White * (1f - AnimationProgress), 0, texture.Size() / 2, iconScale, 0, 0);
+
+			if (AnimationItem == item && AnimationProgress > 0)
+			{
+				Texture2D splashTexture = TextureAssets.Item[glyph.ItemType].Value;
+				float splashScale = (Math.Max((AnimationProgress - 0.5f) * 2, 0) + 1) * Main.UIScale;
+
+				spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(AnimationProgress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
+
+				AnimationProgress -= 0.05f;
+			}
 		}
 	}
 
@@ -237,7 +257,7 @@ public abstract class GlyphItem : ModItem
 		}
 	}
 
-	private const string glyphLocalization = "Mods.SpiritReforged.Items.BlankGlyph.";
+	private const string glyphLocalization = "Mods.SpiritReforged.Items.ChromaticWax.";
 	private static readonly Dictionary<int, Asset<Texture2D>> IconByItemType = [];
 
 	public static readonly SoundStyle EnchantSound = new("SpiritReforged/Assets/SFX/Item/GlyphAttach");

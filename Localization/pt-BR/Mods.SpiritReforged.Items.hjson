@@ -3039,8 +3039,8 @@ ScarabLightPetItem: {
 		'''
 }
 
-BlankGlyph: {
-	// DisplayName: Blank Glyph
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
 	// Tooltip: ""
 	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
 	// Target: Can only be applied to weapons
