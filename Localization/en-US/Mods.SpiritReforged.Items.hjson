@@ -3059,3 +3059,26 @@ StonemasonGreatshield: {
 	DisplayName: Stonemason Greatshield
 	Tooltip: ""
 }
+
+CopperSpanner: {
+	DisplayName: Copper Spanner
+	Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries uses scrap to buff them for a short time
+		'''
+}
+
+TinSpanner: {
+	DisplayName: Tin Spanner
+	Tooltip: "{$CopperSpanner.Tooltip}"
+}
+
+ScrapItem: {
+	DisplayName: Scrap
+	Tooltip:
+		'''
+		Used by various wrenches on sentries
+		'Sharp! (ow)'
+		'''
+}
