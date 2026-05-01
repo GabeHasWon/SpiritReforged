@@ -7,7 +7,7 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
 using Terraria.Audio;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Radiant;
+namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class RadiantGlyph : GlyphItem
 {

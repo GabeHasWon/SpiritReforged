@@ -1,10 +1,9 @@
 using SpiritReforged.Common.EmoteCommon;
-using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
-using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.UI.Misc;
+using SpiritReforged.Common.UI.System;
 using SpiritReforged.Content.Forest.Cartography;
-using SpiritReforged.Content.Savanna.Biome;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
@@ -18,7 +17,7 @@ public class Enchanter : WorldNPC, ITravelNPC
 	{
 		base.SetStaticDefaults();
 
-		Main.npcFrameCount[Type] = 25;
+		Main.npcFrameCount[Type] = 4;
 
 		NPCID.Sets.ExtraFramesCount[Type] = 9;
 		NPCID.Sets.AttackFrameCount[Type] = 4;
@@ -26,9 +25,18 @@ public class Enchanter : WorldNPC, ITravelNPC
 		NPCID.Sets.AttackType[Type] = -1;
 		NPCID.Sets.AttackTime[Type] = 20;
 		NPCID.Sets.HatOffsetY[Type] = 2;
+		NPCID.Sets.IsTownChild[Type] = true;
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
 		{ Velocity = 1f });
+	}
+
+	public override void SetDefaults()
+	{
+		NPC.CloneDefaults(NPCID.SkeletonMerchant);
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.Size = new Vector2(30, 40);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
@@ -45,23 +53,16 @@ public class Enchanter : WorldNPC, ITravelNPC
 		return names;
 	}
 
-	public override void SetChatButtons(ref string button, ref string button2)
-	{
-		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = "Enchant";
-	}
+	public override void SetChatButtons(ref string button, ref string button2) => button = "Enchant";
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
-			shopName = "Shop";
-		else
 		{
-			
+			Main.playerInventory = true;
+			UISystem.SetActive<EnchanterUI>();
 		}
 	}
-
-	public override void AddShops() => new NPCShop(Type).Register();
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
@@ -79,30 +80,18 @@ public class Enchanter : WorldNPC, ITravelNPC
 			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	public override void FindFrame(int frameHeight)
 	{
-		if (SpawnedToday || spawnInfo.Invasion || spawnInfo.Water)
-			return 0; //Never spawn during an invasion, in water or if already spawned that day
+		if (Main.dedServ)
+			return;
 
-		float multiplier = MathHelper.Lerp(1.75f, .5f, spawnInfo.Player.GetModPlayer<PinPlayer>().PinProgress) * (Main.hardMode ? .6f : 1f);
+		Texture2D texture = TextureAssets.Npc[Type].Value;
 
-		if (spawnInfo.SpawnTileY > Main.worldSurface && spawnInfo.SpawnTileY < Main.UnderworldLayer && !spawnInfo.Player.ZoneEvil())
-			return .00023f * multiplier; //Rarely spawn in caves above underworld height
-
-		if ((spawnInfo.Player.InModBiome<SavannaBiome>() || spawnInfo.Player.ZoneDesert || spawnInfo.Player.ZoneJungle || OuterThirds(spawnInfo.SpawnTileX) && spawnInfo.Player.InZonePurity() && !spawnInfo.Player.ZoneSkyHeight) && Main.dayTime)
-			return .0024f * multiplier; //Spawn most commonly in the Savanna, Desert, Jungle, and outer thirds of the Forest during the day
-
-		return 0;
-
-		static bool OuterThirds(int x) => x < Main.maxTilesX / 3 || x > Main.maxTilesX - Main.maxTilesY / 3;
+		NPC.frameCounter = (NPC.frameCounter + 0.15f) % Main.npcFrameCount[Type];
+		NPC.frame = texture.Frame(1, Main.npcFrameCount[Type], 0, (int)NPC.frameCounter, 0, -2);
 	}
 
-	public bool CanSpawnTraveler()
-	{
-		foreach (var p in Main.ActivePlayers)
-			if (p.TryGetModPlayer(out PinPlayer pinPl) && pinPl.PinProgress != 0)
-				return true;
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => base.PreDraw(spriteBatch, screenPos, drawColor);
 
-		return false;
-	}
+	public bool CanSpawnTraveler() => true;
 }
