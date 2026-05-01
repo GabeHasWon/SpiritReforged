@@ -464,6 +464,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+		npcLoot.AddCommon(ItemID.Cactus, 1, 6, 12);
 
 		if (CrossMod.Thorium.Enabled)
 		{

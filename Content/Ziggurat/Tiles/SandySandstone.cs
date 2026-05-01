@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class SandySandstone : ModTile
 {
+	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddIngredient(ItemID.SandBlock).AddTile(TileID.WorkBenches).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
