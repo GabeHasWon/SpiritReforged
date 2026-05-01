@@ -215,6 +215,7 @@ public class RadiantGlyph : GlyphItem
 			}
 
 			radiantCooldown = 0;
+			divineStrike = false;
 
 			static void DecelerateAction(Particle p)
 			{
@@ -226,10 +227,7 @@ public class RadiantGlyph : GlyphItem
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (divineStrike)
-			{
 				modifiers.FinalDamage *= 2.5f;
-				divineStrike = false;
-			}
 		}
 	}
 

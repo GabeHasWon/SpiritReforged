@@ -2,7 +2,9 @@
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.UI;
 
@@ -95,7 +97,7 @@ public class EnchantmentUI : AutoUIState
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
 			UISystem.SetInactive<EnchantmentUI>();
 
-		if (_slot.Item.IsAir)
+		if (_slot.Item.IsAir || EnchantedWorkbench.TargetWorkbench == Point16.Zero)
 		{
 			if (_glyphButtons.Count != 0) //Remove all buttons
 				RemoveButtons();
@@ -155,6 +157,13 @@ public class EnchantmentUI : AutoUIState
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
 		{
 			glyphItem.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+			Point16 target = EnchantedWorkbench.TargetWorkbench;
+
+			if (target != Point16.Zero)
+			{
+				EnchantedWorkbench.Deactivate(target.X, target.Y);
+				EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+			}
 		}
 	}
 
