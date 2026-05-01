@@ -1,5 +1,7 @@
-﻿using SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
+using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -22,7 +24,7 @@ internal class ScarabMountItem : ModItem
 
 	public class ScarabMount : ModMount
 	{
-		private float _drunkRotation = 0f;
+		private float _pillbugRotation = 0f;
 		private float _rotation = 0f;
 		private int[] _hitsPerNPC = new int[Main.maxNPCs];
 
@@ -43,9 +45,10 @@ internal class ScarabMountItem : ModItem
 			MountData.blockExtraJumps = true;
 			MountData.totalFrames = 1;
 			MountData.constantJump = false;
-			MountData.playerYOffsets = [40];
+			MountData.playerYOffsets = [42];
+			MountData.playerXOffset = 6;
 			MountData.yOffset = 15;
-			MountData.xOffset = 10;
+			MountData.xOffset = 4;
 			MountData.bodyFrame = 3;
 			MountData.playerHeadOffset = 26;
 			MountData.standingFrameCount = 1;
@@ -70,15 +73,25 @@ internal class ScarabMountItem : ModItem
 		{
 			SetStaticDefaults();
 
+			ScarabMountPlayer modPlayer = player.GetModPlayer<ScarabMountPlayer>();
+
 			float xVel = Math.Abs(player.velocity.X);
 
 			player.noKnockback = true;
-			_drunkRotation += player.velocity.X * 0.02f;
-			_rotation = player.velocity.X * 0.05f;
+			_pillbugRotation += player.velocity.X * 0.03f;
+
+			_rotation = modPlayer.xVelocityTracker.value.X * -0.02f;
+			_rotation += Math.Abs(modPlayer.yVelocityTracker.value.Y) * -0.04f * player.direction * Utils.GetLerpValue(0f, 3f, xVel, true);
+
+			if (xVel > 3f)
+				_rotation += MathF.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.08f * Utils.GetLerpValue(3f, 5f, xVel, true);
+
+			float playerOffset = MathF.Max(modPlayer.xVelocityTracker.value.Y * 1.5f, -5);
+			MountData.playerYOffsets = [42 + (int)playerOffset];
 
 			if (Main.getGoodWorld && player.HasBuff(BuffID.Tipsy))
 			{
-				player.fullRotation = _drunkRotation;
+				player.fullRotation = _pillbugRotation;
 				player.fullRotationOrigin = new Vector2(10, 90);
 			}
 			else
@@ -128,8 +141,7 @@ internal class ScarabMountItem : ModItem
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, 
 			ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
-			rotation = _drunkRotation;
-
+			rotation = _pillbugRotation;
 			return true;
 		}
 	}
@@ -138,6 +150,22 @@ internal class ScarabMountItem : ModItem
 	{
 		public static bool MountDashing(Player plr) => plr.mount.Active && plr.mount.Type == ModContent.MountType<ScarabMount>() && DashSpeed(plr);
 		public static bool DashSpeed(Player plr) => Math.Abs(plr.velocity.X) >= plr.mount._data.runSpeed - 1f;
+
+		public DampedSpringPhysics xVelocityTracker = new DampedSpringPhysics(0.56f, 0.05f, 2f);
+		public DampedSpringPhysics yVelocityTracker = new DampedSpringPhysics(0.78f, 0.07f, 0.9f);
+		public Vector2 lastVelocity = Vector2.Zero;
+
+		public override void PostUpdate()
+		{
+			Vector2 playerAcceleration = Player.velocity - lastVelocity;
+			Vector2 xVel = Player.velocity;
+			if (Player.velocity.Y == 0)
+				xVel.X *= -1;
+
+			xVelocityTracker.Update(xVel, playerAcceleration);
+			yVelocityTracker.Update(Player.velocity, playerAcceleration);
+			lastVelocity = Player.velocity;
+		}
 
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 		{
@@ -175,8 +203,11 @@ internal class ScarabMountItem : ModItem
 			if (!plr.mount.Active || plr.mount.Type != ModContent.MountType<ScarabMount>() || drawInfo.shadow != 0)
 				return;
 
-			Vector2 position = drawInfo.Center - Main.screenPosition + new Vector2(plr.mount._data.xOffset, 0);
-			drawInfo.DrawDataCache.Add(new DrawData(Saddle.Value, position.Floor() - new Vector2(16, -18), null, Color.White, 0f, Vector2.Zero, 1f, drawInfo.playerEffect, 0)
+			bool flipped = drawInfo.playerEffect == SpriteEffects.FlipHorizontally;
+			Vector2 position = drawInfo.Center - Main.screenPosition + new Vector2(plr.mount._data.xOffset * (flipped ? -1 : 1), 0);
+			Vector2 origin = new Vector2(flipped ? Saddle.Value.Width : 0, 0);
+
+			drawInfo.DrawDataCache.Add(new DrawData(Saddle.Value, position.Floor() + new Vector2(-16 * (flipped ? -1 : 1) , 20), null, drawInfo.colorArmorBody, 0f, origin, 1f, drawInfo.playerEffect, 0)
 			{
 				shader = plr.cMount
 			});
