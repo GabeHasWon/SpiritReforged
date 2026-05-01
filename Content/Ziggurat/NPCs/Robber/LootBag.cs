@@ -49,7 +49,9 @@ public class LootBag : ModNPC
 			Point roundedPosition = Position.ToTileCoordinates();
 
 			if (CollisionChecks.Tiles(hitbox with { Y = hitbox.Y - hitbox.Height }, CollisionChecks.SolidOrPlatform)) //Colliding above
+			{
 				Velocity.Y = Math.Max(0, Velocity.Y);
+			}
 			else if (CollisionChecks.Tiles(new(roundedPosition.X * 16, roundedPosition.Y * 16, hitboxSize, hitboxSize), CollisionChecks.SolidOrPlatform)) //Colliding on the rounded location
 			{
 				_colliding = true;
@@ -105,7 +107,7 @@ public class LootBag : ModNPC
 
 		if (NPC.collideY)
 		{
-			if (NPC.velocity.Y != 0)
+			if (NPC.velocity.Y != 0 && !Main.dedServ)
 			{
 				Vector2 velocity = Vector2.UnitY * (Main.rand.NextFloat() * -NPC.velocity.Y);
 
@@ -139,11 +141,14 @@ public class LootBag : ModNPC
 			NPC.velocity.Y += 0.1f;
 			NPC.rotation -= 0.5f;
 
-			if (Main.rand.NextBool(20))
-				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200, (CoinParticle.CoinType)Main.rand.Next(3)));
+			if (!Main.dedServ)
+			{
+				if (Main.rand.NextBool(20))
+					ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200, (CoinParticle.CoinType)Main.rand.Next(3)));
 
-			if (Main.rand.NextBool(8))
-				Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.CopperCoin).velocity = NPC.velocity * Main.rand.NextFloat(0.5f);
+				if (Main.rand.NextBool(8))
+					Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.CopperCoin).velocity = NPC.velocity * Main.rand.NextFloat(0.5f);
+			}
 		}
 	}
 
