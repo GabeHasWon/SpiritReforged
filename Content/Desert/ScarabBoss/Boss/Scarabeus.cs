@@ -603,15 +603,6 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Main.windSpeedTarget = 0.8f;
 	}
 
-	/*public override bool PreKill()
-	{
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendData(MessageID.WorldData);
-
-		//NPC.PlayDeathSound("ScarabDeathSound");
-		return true;
-	}*/
-
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
@@ -624,6 +615,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<BeetleLicense>(), 4));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabMountItem>(), 4));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));

@@ -33,6 +33,8 @@ internal static class MiscExtensions
 		return new Vector2((float)(x * cos - y * sin) * halfWidth, (float)(x * sin + y * cos) * halfHeight);
 	}
 
+	public static bool HasInfinities(this Vector2 vector) => float.IsInfinity(vector.X) || float.IsInfinity(vector.Y);
+
 	public static Vector2 TurnRight(this Vector2 vec) => new(-vec.Y, vec.X);
 
 	public static Vector2 TurnLeft(this Vector2 vec) => new(vec.Y, -vec.X);
