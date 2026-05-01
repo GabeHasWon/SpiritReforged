@@ -5,7 +5,7 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 namespace SpiritReforged.Content.Desert.NPCs.TownBeetle;
 
-public class BeetleTownPet : ModNPC
+public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 {
 	private class ScarabTownPetProfile : ITownNPCProfile
 	{
