@@ -26,7 +26,7 @@ public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.Sand);
+		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.Sand, TileID.Crimsand, TileID.Ebonsand, TileID.Pearlsand);
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;
