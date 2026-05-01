@@ -26,8 +26,8 @@ ReforgedClientConfig: {
 	}
 
 	ScreenshakeStrength: {
-		// Label: Screenshake Strength
-		// Tooltip: ""
+		Label: Tremor da tela
+		Tooltip: ""
 	}
 }
 

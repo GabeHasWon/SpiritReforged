@@ -2,26 +2,26 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
-// By: by
+By: feito por
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Planície Derivante (Tema Tempestade de Poeira)
+	DisplayName: Drifting Praire (Tempestade de Poeira)
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
-	DisplayName: Savana
+	DisplayName: Fever Trees (Savana de Dia)
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Noite na Savana
+	DisplayName: Moonlit Meadow (Savana de Noite)
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: Oceano Profundo
+	DisplayName: Undersea Adventure (Oceano Profundo)
 	Author: "{$BySalvati}"
 }
 
@@ -41,36 +41,36 @@ DuststormOtherworld: {
 }
 
 Ziggurat: {
-	DisplayName: Zigurate
+	DisplayName: O Tema do Zigurate
 	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	DisplayName: Salinas
+	DisplayName: Reflected Skies (Salinas de Dia)
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: Noite nas Salinas
+	DisplayName: Refracted Stars (Salinas de Noite)
 	Author: "{$By} {$Sbubby}"
 }
 
 Scarabeus: {
-	DisplayName: Complicações Aéreas (Tema do Escarabeus)
+	DisplayName: Soaring Complications (Tema do Escarabeus)
 	Author: "{$By} {$Sbubby}"
 }
 
 ScarabeusP2: {
-	DisplayName: Complicações Aéreas (Tema da segunda fase do Escarabeus)
+	DisplayName: Soaring Complications (Tema da segunda fase do Escarabeus)
 	Author: "{$By} {$Sbubby}"
 }
 
 RadioScarab: {
-	DisplayName: Complicações Aéreas (Edição de Rádio)
+	DisplayName: Soaring Complications (Edição de Rádio)
 	Author: "{$By} {$Sbubby}"
 }
 
 TitleTheme: {
-	// DisplayName: Another Journey (Spirit Title Theme)
-	// Author: "{$By} {$Salvati}"
+	DisplayName: Another Journey (Tela de Título do Spirit)
+	Author: "{$By} {$Salvati}"
 }

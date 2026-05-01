@@ -1,12 +1,12 @@
 Biomes: {
 	SavannaBiome: {
 		DisplayName: Savana
-		TownNPCDialogueName: a Savana
+		TownNPCDialogueName: A Savana
 	}
 
 	SaltBiome: {
 		DisplayName: Salinas
-		TownNPCDialogueName: as Salinas
+		TownNPCDialogueName: As Salinas
 	}
 
 	ZigguratBiome: {
@@ -62,14 +62,14 @@ GameTips: {
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
 	# Caves & Clubs
-	// ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
-	// ReforgedTip11: Clubs offer strong, focused single-target damage.
+	ReforgedTip10: Muitos vasos estão espalhadas pelas cavernas sob seus pés! Fique de olho!
+	ReforgedTip11: Os porretes oferecem dano forte e concentrado em um único alvo.
 	# Sunscorched
-	// ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
-	// ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprises hide around every corner.
-	// ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
-	// ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
-	// ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
+	ReforgedTip12: As lendas falam de uma oferenda de joias sobre um altar antigo...
+	ReforgedTip13: Cuidado ao explorar o antigo Zigurate! Surpresas se escondem em cada cantinho.
+	ReforgedTip14: Os oásis encontrados sob as areias do deserto podem oferecer um pouco de tranquilidade bem-vinda.
+	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
+	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
 }
 
 Emotes: {
@@ -80,11 +80,11 @@ Emotes: {
 InfoDisplays: {
 	LedgerInfoDisplay: {
 		DisplayName: Livro-Razão
-		Description: Mostrando informações de preço
+		Description: Informação de venda
 	}
 
 	ScryingLensInfoDisplay: {
 		DisplayName: Visão Brilhante
-		Description: Mostrando descrições de itens do Brilhante
+		Description: Transmutações de Item
 	}
 }

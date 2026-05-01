@@ -929,12 +929,12 @@ MagmastoneItem: {
 }
 
 SavannaCrateHardmode: {
-	DisplayName: Caixa de Safári
+	DisplayName: Caixote de Safári
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SavannaCrate: {
-	DisplayName: Caixa de Campos
+	DisplayName: Caixote de Campos
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -2645,7 +2645,7 @@ TinyDragon: {
 	DisplayName: Pequeno Dragão
 	Tooltip:
 		'''
-		Invoca um pequeno dragao que irá te seguir
+		Invoca um pequeno dragão que irá te seguir
 		'Último de sua espécie...'
 		'''
 }
@@ -2767,22 +2767,22 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Caixote Salgado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Caixote de Salmoura
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Caixote Salgado Restaurado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Caixote de Salmoura Restaurado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Bandeira do Ladrão de Sepulturas
@@ -2816,19 +2816,19 @@ SaltskipperQuestFish: {
 	Description: Aquelas Salinas são bem loucas! Eu nem conseguia distinguir onde o sal terminava e a água começava! Mas quando finalmente consegui fisgar meu peixe, um peixe com uma aparência horrível simplesmente saltou da água ao meu lado e começou a respirar AR! Traga-o para mim para que eu possa passear com meu novo peixinho de estimação.
 	CatchLocation: As Salinas
 	DisplayName: Capitão do Sal
-	Tooltip: "'Caught in Salt Flats'"
+	Tooltip: "'Capturado nas Salinas'"
 }
 
 WispBannerItem.DisplayName: Bandeira do Tatá
 DecrepitMummyBannerItem.DisplayName: Bandeira da Múmia Decrépita
 
 PaleHiveItem: {
-	DisplayName: Colmeia Pálida
+	DisplayName: Urticária Pálida
 	Tooltip: ""
 }
 
 PaleHiveWallItem: {
-	DisplayName: Parede de Colmeia Pálida
+	DisplayName: Parede de Urticária Pálida
 	Tooltip: ""
 }
 
@@ -2848,7 +2848,7 @@ SaltTallGateItem: {
 }
 
 EnlilStatueItem: {
-	DisplayName: Enlil Statue
+	DisplayName: Estátua de Enlil
 	Tooltip: Aumenta a mobilidade vértical na área posicionada
 }
 
@@ -3001,8 +3001,8 @@ ScarabMusicBox: {
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: Fase 1
+		1: Fase 2
 	}
 }
 
@@ -3016,7 +3016,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		Invoca uma sentinela
-		Lança fora um bandido que atrai gafanhotos
+		Arremesa uma lança que atrai gafanhotos
 		'''
 }
 
@@ -3035,18 +3035,18 @@ ScarabLightPetItem: {
 }
 
 BeetleLicense: {
-	// DisplayName: Beetle License
-	/* Tooltip:
+	DisplayName: Licença para Besouro
+	Tooltip:
 		'''
-		Use to adopt a beetle for your town
-		Already have a beetle?
-		Use additional licenses to activate the Pet Exchange Program!
-		Find the perfect fit for you and your beetle!
-		''' */
-	// LicenseUse: The license teleports away to the beetle delivery service...
+		Use para adotar um besouro na sua cidade.
+		Já tem um besouro?
+		Use licenças adicionais para ativar o Programa de Troca de Animais de Estimação! 
+		Encontre o estilo perfeito para você e seu besouro!
+		'''
+	LicenseUse: A licença se teletransporta para o serviço de entrega de besouros...
 }
 
 GooeyHiveItem: {
-	// DisplayName: Gooey Hive
-	// Tooltip: ""
+	DisplayName: Urticária Gosmenta
+	Tooltip: ""
 }
