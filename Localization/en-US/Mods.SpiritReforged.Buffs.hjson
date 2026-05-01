@@ -110,7 +110,7 @@ ExplorerMine: {
 
 JinxMark: {
 	DisplayName: Jinx Mark
-	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	Description: Marked by the Jinxbow
 }
 
 FlaskOfFrost_Buff: {
@@ -120,7 +120,7 @@ FlaskOfFrost_Buff: {
 
 Slowed: {
 	DisplayName: Slowed
-	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+	Description: Your movement is becoming sluggish
 }
 
 ToucaneMinion_Buff: {
