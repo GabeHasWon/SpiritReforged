@@ -144,6 +144,6 @@ ScarabLightPetBuff: {
 }
 
 ScarabMountBuff: {
-	DisplayName: Scarab Mount Buff
-	Description: Mods.SpiritReforged.Buffs.ScarabMountBuff.Description
+	DisplayName: Pillbug Mount
+	Description: "'Hold on!'"
 }

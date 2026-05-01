@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.MountCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -24,10 +24,6 @@ internal class ScarabMountItem : ModItem
 
 	public class ScarabMount : ModMount
 	{
-		private float _pillbugRotation = 0f;
-		private float _rotation = 0f;
-		private int[] _hitsPerNPC = new int[Main.maxNPCs];
-
 		public override void SetStaticDefaults()
 		{
 			MountData.buff = ModContent.BuffType<ScarabMountBuff>();
@@ -71,34 +67,27 @@ internal class ScarabMountItem : ModItem
 
 		public override void UpdateEffects(Player player)
 		{
-			SetStaticDefaults();
-
-			ScarabMountPlayer modPlayer = player.GetModPlayer<ScarabMountPlayer>();
+			ScarabMountPlayer plr = player.GetModPlayer<ScarabMountPlayer>();
 
 			float xVel = Math.Abs(player.velocity.X);
 
 			player.noKnockback = true;
-			_pillbugRotation += player.velocity.X * 0.03f;
+			plr.pillbugRotation += player.velocity.X * 0.03f;
 
-			_rotation = modPlayer.xVelocityTracker.value.X * -0.02f;
-			_rotation += Math.Abs(modPlayer.yVelocityTracker.value.Y) * -0.04f * player.direction * Utils.GetLerpValue(0f, 3f, xVel, true);
+			plr.rotation = plr.xVelocityTracker.value.X * -0.02f;
+			plr.rotation += Math.Abs(plr.yVelocityTracker.value.Y) * -0.04f * player.direction * Utils.GetLerpValue(0f, 3f, xVel, true);
 
 			if (xVel > 3f)
-				_rotation += MathF.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.08f * Utils.GetLerpValue(3f, 5f, xVel, true);
+				plr.rotation += MathF.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.08f * Utils.GetLerpValue(3f, 5f, xVel, true);
 
-			float playerOffset = MathF.Max(modPlayer.xVelocityTracker.value.Y * 1.5f, -5);
-			MountData.playerYOffsets = [42 + (int)playerOffset];
+			float playerOffset = MathF.Max(plr.xVelocityTracker.value.Y * 1.5f, -5);
+			player.GetModPlayer<InstancedOffsetPlayer>().SetInstancedOffsets([42 + (int)playerOffset]);
+			player.fullRotationOrigin = new Vector2(10, 90);
 
 			if (Main.getGoodWorld && player.HasBuff(BuffID.Tipsy))
-			{
-				player.fullRotation = _pillbugRotation;
-				player.fullRotationOrigin = new Vector2(10, 90);
-			}
+				player.fullRotation = plr.pillbugRotation;
 			else
-			{
-				player.fullRotationOrigin = new Vector2(10, 90);
-				player.fullRotation = _rotation;
-			}
+				player.fullRotation = plr.rotation;
 
 			if (xVel > 6)
 			{
@@ -119,8 +108,8 @@ internal class ScarabMountItem : ModItem
 				}
 			}
 
-			for (int i = 0; i < _hitsPerNPC.Length; ++i)
-				_hitsPerNPC[i] = Math.Max(0, _hitsPerNPC[i] - 1);
+			for (int i = 0; i < plr.hitsPerNPC.Length; ++i)
+				plr.hitsPerNPC[i] = Math.Max(0, plr.hitsPerNPC[i] - 1);
 
 			if (!ScarabMountPlayer.DashSpeed(player))
 				return;
@@ -130,9 +119,9 @@ internal class ScarabMountItem : ModItem
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (!npc.isLikeATownNPC && !player.npcTypeNoAggro[npc.type] && (!npc.friendly || npc.lifeMax == 5) && npc.Hitbox.Intersects(hitbox) && _hitsPerNPC[npc.whoAmI] == 0)
+				if (!npc.isLikeATownNPC && !player.npcTypeNoAggro[npc.type] && (!npc.friendly || npc.lifeMax == 5) && npc.Hitbox.Intersects(hitbox) && plr.hitsPerNPC[npc.whoAmI] == 0)
 				{
-					_hitsPerNPC[npc.whoAmI] = 80;
+					plr.hitsPerNPC[npc.whoAmI] = 80;
 					npc.SimpleStrikeNPC(30, Math.Sign(player.velocity.X), false, 12, damageVariation: true);
 				}
 			}
@@ -141,7 +130,7 @@ internal class ScarabMountItem : ModItem
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, 
 			ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
-			rotation = _pillbugRotation;
+			rotation = drawPlayer.GetModPlayer<ScarabMountPlayer>().pillbugRotation;
 			return true;
 		}
 	}
@@ -154,6 +143,10 @@ internal class ScarabMountItem : ModItem
 		public DampedSpringPhysics xVelocityTracker = new DampedSpringPhysics(0.56f, 0.05f, 2f);
 		public DampedSpringPhysics yVelocityTracker = new DampedSpringPhysics(0.78f, 0.07f, 0.9f);
 		public Vector2 lastVelocity = Vector2.Zero;
+
+		internal float pillbugRotation = 0f;
+		internal float rotation = 0f;
+		internal int[] hitsPerNPC = new int[Main.maxNPCs];
 
 		public override void PostUpdate()
 		{
