@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -6,45 +5,31 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
-using SpiritReforged.Content.Underground.Tiles;
-using System.Linq;
-using Terraria;
 using Terraria.Audio;
-using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Radiant;
+namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class RadiantGlyph : GlyphItem
 {
 	public sealed class RadiantPlayer : ModPlayer
 	{
 		public float radiantCooldown;
+		public bool divineStrike;
 
-		internal int _flashTimer;
-		internal bool _flashed;
+		private int _flashTimer;
+		private float _baseScale;
 
-		internal float baseScale;
-		public override void Load()
-		{
-			On_Main.DrawCachedProjs += DrawParhelia;
-		}
+		public override void Load() => On_Main.DrawCachedProjs += DrawParhelia;
 
-		private void DrawParhelia(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
+		private static void DrawParhelia(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 		{
 			orig(self, projCache, startSpriteBatch);
 
 			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 			{
 				var tex = AssetLoader.LoadedTextures["Star"].Value;
-				var bloomTex = AssetLoader.LoadedTextures["BloomSoft"].Value;
-				var godRay = AssetLoader.LoadedTextures["GodrayCircle"].Value;
-
 				var noise = AssetLoader.LoadedTextures["swirlNoise"].Value;
-
 				var spriteBatch = Main.spriteBatch;
-
-				if (!Main.player.Any(p => p.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>()))
-					return;
 
 				float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly);
 
@@ -58,70 +43,53 @@ public class RadiantGlyph : GlyphItem
 				pulseScale = 1f * MathHelper.Lerp(1f, 0.7f, Math.Abs(pulse));
 
 				effect.Parameters["outerStarScale"].SetValue(new Vector2(2.0f, 3.0f) * pulseScale);
-
 				effect.Parameters["ringRadius"].SetValue(0.25f);
 				effect.Parameters["ringThickness"].SetValue(0.07f);
 				effect.Parameters["ringOpacity"].SetValue(0.5f + 0.2f * pulse);
-
 				effect.Parameters["uImage1"].SetValue(noise);
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0015f);
-
 				effect.Parameters["pixelRes"].SetValue(0f);
 
-				foreach (Player player in Main.player)
+				foreach (Player player in Main.ActivePlayers)
 				{
-					if (player.TryGetModPlayer<RadiantPlayer>(out var mp))
+					if (!player.TryGetModPlayer(out RadiantPlayer radiantPlayer) || !radiantPlayer.divineStrike)
+						continue;
+
+					float lerp = 1f - radiantPlayer._flashTimer / 30f;
+					lerp = Math.Min(lerp, 1);
+
+					Vector2 scale = new Vector2(0.2f) + new Vector2(0.02f) * pulse;
+					Color color = Color.Lerp(Color.DarkOrange, Color.Goldenrod, Math.Abs(pulse)).Additive();
+
+					if (radiantPlayer._flashTimer > 0)
 					{
-						if (!player.HasBuff<DivineStrike>())
-							return;
-
-						float lerp = 1f - mp._flashTimer / 30f;
-						lerp = Math.Min(lerp, 1);
-
-						Vector2 scale = new Vector2(0.2f) + new Vector2(0.02f) * pulse;
-						//if (mp._flashTimer > 0)
-						//	scale = Vector2.Lerp(scale, new Vector2(0.45f, 0.05f), 1f - lerp);
-
-						Color color = Color.Lerp(Color.DarkOrange, Color.Goldenrod, Math.Abs(pulse)).Additive();
-
-						if (mp._flashTimer > 0)
-						{
-							color = Color.Lerp(color, Color.Yellow.Additive(), 1f - lerp);
-							scale += new Vector2(0.05f) * (1f - lerp);
-						}
-
-						effect.Parameters["distortionStrength"].SetValue(0.0075f + 0.05f * (1f - lerp));
-
-						//spriteBatch.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
-						//spriteBatch.Draw(bloomTex, player.Top + new Vector2(0f, player.gfxOffY) - Main.screenPosition, null, color * (lerp - 0.5f * Math.Abs(pulse)), 0f, bloomTex.Size() / 2f, scale * 2f, 0f, 0f);
-
-						//spriteBatch.End();
-
-						Vector2 pos = player.Top + new Vector2(0f, player.gfxOffY);
-
-						effect.Parameters["uColor"].SetValue(color.ToVector4() * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
-
-						if (!startSpriteBatch)
-							spriteBatch.End();
-
-						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-
-						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
-
-						spriteBatch.End();
-
-						effect.Parameters["uColor"].SetValue(Color.White.Additive().ToVector4() * 0.5f * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
-
-						spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-
-						spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
-
-						spriteBatch.End();
-
-						if (!startSpriteBatch)
-							spriteBatch.BeginDefault();
+						color = Color.Lerp(color, Color.Yellow.Additive(), 1f - lerp);
+						scale += new Vector2(0.05f) * (1f - lerp);
 					}
+
+					effect.Parameters["distortionStrength"].SetValue(0.0075f + 0.05f * (1f - lerp));
+
+					Vector2 position = player.Top.Floor() + new Vector2(0f, player.gfxOffY);
+
+					effect.Parameters["uColor"].SetValue(color.ToVector4() * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
+
+					if (!startSpriteBatch)
+						spriteBatch.End();
+
+					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
+					
+					spriteBatch.End();
+
+					effect.Parameters["uColor"].SetValue(Color.White.Additive().ToVector4() * 0.5f * lerp * MathHelper.Lerp(0.7f, 1f, Math.Abs(pulse)));
+
+					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.White.Additive() * lerp, 0f, tex.Size() / 2f, scale, 0f, 0f);
+
+					spriteBatch.End();
+
+					if (!startSpriteBatch)
+						spriteBatch.BeginDefault();
 				}
 			}
 		}
@@ -133,37 +101,34 @@ public class RadiantGlyph : GlyphItem
 				if (_flashTimer > 0)
 					_flashTimer--;
 
-				baseScale = 0f;
+				_baseScale = 0f;
 
 				float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly);
-
 				Color lightColor = Color.Lerp(Color.Orange, Color.LightGoldenrodYellow, Math.Abs(pulse)).Additive();
 
 				if (_flashTimer > 0)
 				{
 					lightColor = Color.Lerp(lightColor, Color.White, _flashTimer / 60f);
-
 					float lerp = 1f - _flashTimer / 60f;
 
-					baseScale = MathHelper.Lerp(0.1f, 0.3f, EaseBuilder.EaseCircularInOut.Ease(lerp));
+					_baseScale = MathHelper.Lerp(0.1f, 0.3f, EaseBuilder.EaseCircularInOut.Ease(lerp));
 				}
 				else if (radiantCooldown > Player.HeldItem.useTime * 3f)
-					baseScale = 0.3f;
+				{
+					_baseScale = 0.3f;
+				}
 
-				Lighting.AddLight(Player.Center, lightColor.ToVector3() * 1.5f * baseScale);
+				Lighting.AddLight(Player.Center, lightColor.ToVector3() * 1.5f * _baseScale);
 
 				if (++radiantCooldown > Player.HeldItem.useTime * 3f)
 				{
-					int radiantBuff = ModContent.BuffType<DivineStrike>();
-					if (!Player.HasBuff(radiantBuff))
+					if (!divineStrike)
 					{
-						//ParticleHandler.SpawnParticle(new StarParticle(Player.Center + new Vector2(0, -10 * Player.gravDir), Vector2.Zero, Color.White, Color.Yellow, 0.2f, 10, 0));
 						SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
 
 						for (int i = 0; i < 5; i++)
 						{
 							Vector2 pos = Player.Center + Main.rand.NextVector2Circular(Player.width, Player.height);
-
 							Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.5f);
 
 							ParticleHandler.SpawnParticle(new SharpStarParticle(pos, velocity, Color.Goldenrod.Additive(), 0.2f, 35, 0)
@@ -184,59 +149,52 @@ public class RadiantGlyph : GlyphItem
 
 					if (Main.rand.NextBool(180))
 					{
-						Vector2 pos = Player.Top + Main.rand.NextVector2Circular(50, 10);
+						Vector2 top = Player.Top + Main.rand.NextVector2Circular(50, 10);
 
-						ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0)
+						ParticleHandler.SpawnParticle(new SharpStarParticle(top, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0)
 						{
 							Rotation = 0f,
 							Layer = ParticleLayer.AbovePlayer
 						});
 
-						ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0)
+						ParticleHandler.SpawnParticle(new SharpStarParticle(top, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0)
 						{
 							Rotation = 0f,
 							Layer = ParticleLayer.AbovePlayer
 						});
 					}
 
-					Player.AddBuff(radiantBuff, 10);
+					divineStrike = true;
 				}
 			}
 			else
 			{
-				baseScale = 0f;
+				divineStrike = false;
 				radiantCooldown = 0;
 
+				_baseScale = 0f;
 				_flashTimer = 0;
 			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HasBuff(ModContent.BuffType<DivineStrike>()))
+			if (divineStrike)
 			{
 				float scaleModifier = MathHelper.Lerp(0.75f, 2f, Math.Min(hit.Damage / 200f, 1));
 
 				SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Volume = 0.4f, Pitch = 0.8f }, target.Center);
-				//Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<RadiantEnergy>(), 0, 0, Player.whoAmI, target.whoAmI);
 
-				//for (int i = 0; i < 5; i++)
-				//	ParticleHandler.SpawnParticle(new StarParticle(target.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat() * 2f, Color.Yellow, Main.rand.NextFloat(0.1f, 0.25f), Main.rand.Next(15, 30), 0.1f));
-
-				var glowPos = target.Center;
-				var ease = Bomb.EffectEase;
-				var stretch = Vector2.One;
+				Vector2 glowPos = target.Center;
+				PolynomialEase ease = Bomb.EffectEase;
+				Vector2 stretch = Vector2.One;
 				float angle = Main.rand.NextFloat(MathHelper.Pi);
 
 				ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.LightGoldenrodYellow.Additive(), Color.DarkGoldenrod.Additive(), 0.6f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
-				{
-					Angle = angle
-				});
+					{ Angle = angle });
 
 				ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.DarkGoldenrod.Additive(), 0.3f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
-				{
-					Angle = angle
-				});
+					{ Angle = angle });
 
 				ParticleHandler.SpawnParticle(new LightBurst(glowPos, angle, Color.Goldenrod.Additive(), 0.5f * scaleModifier, 30));
 				ParticleHandler.SpawnParticle(new LightBurst(glowPos, angle, Color.White.Additive(), 0.3f * scaleModifier, 25));
@@ -249,31 +207,26 @@ public class RadiantGlyph : GlyphItem
 					float scale = Main.rand.NextFloat(0.1f, 0.3f) * scaleModifier;
 
 					ParticleHandler.SpawnParticle(new SharpStarParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 35, 0, DecelerateAction)
-					{
-						Rotation = 0
-					});
+						{ Rotation = 0 });
 
 					ParticleHandler.SpawnParticle(new SharpStarParticle(glowPos, velocity, Color.White.Additive(), scale, 35, 0, DecelerateAction)
-					{
-						Rotation = 0
-					});
+						{ Rotation = 0 });
 				}
-
-				static void DecelerateAction(Particle p)
-				{
-					p.Velocity *= 0.95f;
-					p.Rotation += p.Velocity.Length() * 0.2f;
-				}
-
-				Player.ClearBuff(ModContent.BuffType<DivineStrike>());
 			}
 
 			radiantCooldown = 0;
+			divineStrike = false;
+
+			static void DecelerateAction(Particle p)
+			{
+				p.Velocity *= 0.95f;
+				p.Rotation += p.Velocity.Length() * 0.2f;
+			}
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (Player.HasBuff(ModContent.BuffType<DivineStrike>()))
+			if (divineStrike)
 				modifiers.FinalDamage *= 2.5f;
 		}
 	}
