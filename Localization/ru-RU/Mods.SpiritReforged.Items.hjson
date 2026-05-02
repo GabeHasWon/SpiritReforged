@@ -3121,5 +3121,11 @@ BeeGlyph: {
 
 SanguineGlyph: {
 	// DisplayName: Sanguine Glyph
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
 }
