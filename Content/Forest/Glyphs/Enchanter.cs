@@ -1,7 +1,6 @@
-using SpiritReforged.Common.EmoteCommon;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
-using SpiritReforged.Common.UI.Misc;
+using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Content.Forest.Cartography;
 using Terraria.GameContent.Bestiary;
@@ -11,7 +10,8 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 [AutoloadHead]
 public class Enchanter : WorldNPC, ITravelNPC
 {
-	public override void Load() => AutoEmote.LoadFaceEmote(this, static () => NPC.AnyNPCs(ModContent.NPCType<Enchanter>()));
+	public static readonly Dictionary<int, int> ValueByType = [];
+	//public override void Load() => AutoEmote.LoadFaceEmote(this, static () => NPC.AnyNPCs(ModContent.NPCType<Enchanter>()));
 
 	public override void SetStaticDefaults()
 	{

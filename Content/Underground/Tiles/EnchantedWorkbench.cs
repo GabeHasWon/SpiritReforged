@@ -1,5 +1,5 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.UI.Misc;
+using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Content.Forest.Glyphs;
 using Terraria.DataStructures;

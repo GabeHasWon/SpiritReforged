@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
@@ -8,7 +10,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.UI;
 
-namespace SpiritReforged.Common.UI.Misc;
+namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchantmentUI : AutoUIState
 {
@@ -21,8 +23,8 @@ public class EnchantmentUI : AutoUIState
 		{
 			this.itemType = itemType;
 
-			Width.Set(32, 0);
-			Height.Set(32, 0);
+			Width.Set(38, 0);
+			Height.Set(38, 0);
 		}
 
 		public override void Update(GameTime gameTime)
@@ -30,13 +32,9 @@ public class EnchantmentUI : AutoUIState
 			base.Update(gameTime);
 
 			if (IsMouseHovering)
-			{
 				_hoverTime = Math.Min(_hoverTime + 0.1f, 1);
-			}
 			else
-			{
 				_hoverTime = Math.Max(_hoverTime - 0.1f, 0);
-			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -46,11 +44,13 @@ public class EnchantmentUI : AutoUIState
 
 			if (IsMouseHovering)
 			{
+				spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
+
 				Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
 				Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
 
 				DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
-					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor, 0, texture.Size() / 2, 1, 0, 0));
+					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor.Additive() * 0.5f, 0, texture.Size() / 2, 1, 0, 0));
 
 				if ((int)Main.timeForVisualEffects % 80 == 0 || Main.rand.NextBool(120))
 				{
@@ -169,7 +169,7 @@ public class EnchantmentUI : AutoUIState
 
 	private static void CreateGlyphs(int count, out int[] itemTypes)
 	{
-		List<GlyphItem> glyphItems = ModContent.GetContent<GlyphItem>().ToList();
+		var glyphItems = ModContent.GetContent<GlyphItem>().ToList();
 		List<int> result = [];
 
 		for (int c = 0; c < count; c++)
