@@ -34,6 +34,11 @@ Misc: {
 		UseItem: Right click to add this pin to your collection
 	}
 
+	Enchantment: {
+		PlaceToEnchant: Place an item here to enchant
+		Enchant: Enchant
+	}
+
 	NoStock: Out of stock
 	GraveText: <wavy>The text is old and faded; you can't quite make out what it says.
 	MenuButton: Use menu style

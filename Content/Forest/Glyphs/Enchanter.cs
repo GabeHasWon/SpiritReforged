@@ -55,7 +55,7 @@ public class Enchanter : WorldNPC, ITravelNPC
 		return names;
 	}
 
-	public override void SetChatButtons(ref string button, ref string button2) => button = "Enchant";
+	public override void SetChatButtons(ref string button, ref string button2) => button = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{

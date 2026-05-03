@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.UI.Misc;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
@@ -10,6 +11,29 @@ namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchanterUI : AutoUIState
 {
+	private class ConfirmButton : UIElement
+	{
+		public static readonly Asset<Texture2D> IconTexture = DrawHelpers.RequestLocal<EnchanterUI>("EnchantButton", false);
+
+		protected override void DrawSelf(SpriteBatch spriteBatch)
+		{
+			bool hovering = IsMouseHovering && _hovered != default;
+			Texture2D texture = IconTexture.Value;
+			Rectangle source = texture.Frame(1, 2, 0, hovering ? 1 : 0, 0, -2);
+
+			if (hovering)
+			{
+				Main.hoverItemName = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+				Main.mouseText = true;
+
+				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+					spriteBatch.Draw(texture, GetDimensions().Center() + offset.RotatedBy(Main.timeForVisualEffects / 20f), source, Color.White.Additive() * 0.3f, 0, source.Size() / 2, 1, 0, 0));
+			}
+
+			spriteBatch.Draw(texture, GetDimensions().Center(), source, hovering ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
+		}
+	}
+
 	public static readonly Asset<Texture2D> LowerPanel = DrawHelpers.RequestLocal<EnchanterUI>("GlyphBubble", false);
 	public static readonly Asset<Texture2D> WaxIcon = DrawHelpers.RequestLocal<EnchanterUI>("ChromaticWaxIcon", false);
 
@@ -18,7 +42,7 @@ public class EnchanterUI : AutoUIState
 	private CatalogueList _list;
 	private CatalogueList _infoList;
 	private BasicItemSlot _slot;
-	private UIImageButton _confirmButton;
+	private ConfirmButton _confirmButton;
 
 	private bool _populated;
 
@@ -27,47 +51,53 @@ public class EnchanterUI : AutoUIState
 		Width.Set(400, 0);
 		Height.Set(240, 0);
 		Left.Set(44, 0);
-		Top.Set(0, 0.24f);
+		Top.Set(0, 0.25f);
 
 		_list = new();
 		_list.Width.Set(204, 0);
 		_list.Height.Set(164, 0);
-		_list.Left.Set(20, 0);
-		_list.Top.Set(68, 0);
+		_list.Left.Set(34, 0);
+		_list.Top.Set(54, 0);
 		_list.AddScrollbar(new UIScrollbar());
 
 		_infoList = new();
 		_infoList.Width.Set(160, 0);
 		_infoList.Height.Set(164, 0);
 		_infoList.Left.Set(_list.Left.Pixels + _list.Width.Pixels + 2, 0);
-		_infoList.Top.Set(68, 0);
+		_infoList.Top = _list.Top;
 		_infoList.AddScrollbar(new UIScrollbar());
 
 		_slot = new(new Item(), ItemSlot.Context.PrefixItem);
 		_slot.Left.Set(0, 0);
 		_slot.Top.Set(0, 0);
 
-		_confirmButton = new(TextureAssets.Reforge[0]);
-		_confirmButton.Left.Set(_slot.Width.Pixels - 10, 0);
-		_confirmButton.Top.Set(_slot.Height.Pixels - 10, 0);
+		_confirmButton = new();
+		_confirmButton.Width = _confirmButton.Height = new(30, 0);
+		_confirmButton.Left.Set(_slot.Width.Pixels + 4, 0);
 		_confirmButton.OnLeftClick += OnClickConfirmButton;
 
 		OverrideSamplerState = SamplerState.PointClamp;
-		Append(_list);
-		Append(_infoList);
+		//Append(_list);
+		//Append(_infoList);
 		Append(_slot);
-		Append(_confirmButton);
+		//Append(_confirmButton);
 	}
 
 	public override void Update(GameTime gameTime)
 	{
+		//RemoveAllChildren();
+		//Initialize();
+
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
+		{
 			UISystem.SetInactive<EnchanterUI>();
+			_hovered = default;
+		}
 
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
-		_infoList.Width.Set(160, 0);
+		Main.LocalPlayer.SetTalkNPC(-1);
 
 		if (_slot.Item.IsAir)
 		{
@@ -75,11 +105,13 @@ public class EnchanterUI : AutoUIState
 			{
 				RemoveChild(_list);
 				RemoveChild(_infoList);
+				RemoveChild(_confirmButton);
 
 				_list.ClearEntries();
 				_infoList.ClearEntries();
 			}
 
+			_hovered = default;
 			_populated = false;
 		}
 		else
@@ -88,6 +120,7 @@ public class EnchanterUI : AutoUIState
 			{
 				Append(_list);
 				Append(_infoList);
+				Append(_confirmButton);
 
 				foreach (int type in Enchanter.SpecialShop.Keys)
 				{
@@ -115,6 +148,12 @@ public class EnchanterUI : AutoUIState
 			Main.spriteBatch.Draw(texture, area.Center() + new Vector2(81, -4), null, Color.White * 0.8f, 0, texture.Size() / 2, 1, 0, 0);
 		}
 
+		if (_slot.Item.IsAir)
+		{
+			Vector2 position = _slot.GetDimensions().ToRectangle().TopRight() + new Vector2(6, 0);
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant"), position, Main.MouseTextColorReal, 1, 0, 0);
+		}
+
 		base.Draw(spriteBatch);
 	}
 
@@ -130,7 +169,19 @@ public class EnchanterUI : AutoUIState
 	private void OnClickConfirmButton(UIMouseEvent evt, UIElement listeningElement)
 	{
 		if (_hovered != default)
-			_hovered.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+		{
+			int cost = Enchanter.SpecialShop[_hovered.Type];
+			int type = ModContent.ItemType<ChromaticWax>();
+
+			if (Main.LocalPlayer.CountItem(type, cost) == cost)
+			{
+				for (int c = 0; c < cost; c++)
+					Main.LocalPlayer.ConsumeItem(type);
+
+				_hovered.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+				GlyphGlobalItem.StartAnimation(_slot.Item);
+			}
+		}
 	}
 
 	private void AddInfoElements()
@@ -157,8 +208,6 @@ public class EnchanterUI : AutoUIState
 		info.Height.Set(32 + UIHelper.GetTextHeight(_hovered.Tooltip.Value, (int)info.Width.Pixels), 0);
 		info.Action += DescInfo_Action;
 
-		Main.NewText(info.Height.Pixels);
-
 		_infoList.AddEntry(info);
 	}
 
@@ -175,6 +224,9 @@ public class EnchanterUI : AutoUIState
 
 		spriteBatch.Draw(texture, innerBounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
 		Utils.DrawBorderString(spriteBatch, Enchanter.SpecialShop[_hovered.Type].ToString(), innerBounds.Right() + new Vector2(-12, 4), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);
+
+		if (innerBounds.Contains(Main.MouseScreen.ToPoint()))
+			Main.hoverItemName = Language.GetTextValue("LegacyInterface.46");
 
 		return false;
 	}

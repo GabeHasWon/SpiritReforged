@@ -42,7 +42,7 @@ public class GlyphGlobalItem : GlobalItem
 
 	public GlyphItem.GlyphType glyph;
 
-	public void StartAnimation(Item item)
+	public static void StartAnimation(Item item)
 	{
 		AnimationItem = item;
 		AnimationProgress = 1;
