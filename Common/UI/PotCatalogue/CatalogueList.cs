@@ -52,7 +52,6 @@ public class CatalogueList : UIElement
 		float x = 0;
 		float y = 0;
 		float lastHeight = 0;
-
 		float scrollbarInfluence = (_scrollbar is null) ? 0 : -_scrollbar.GetValue();
 
 		foreach (var e in _listed)
@@ -72,8 +71,8 @@ public class CatalogueList : UIElement
 			lastHeight = e.Height.Pixels;
 		}
 
-		float barWidth = y * .1f;
-		_scrollbar?.SetView(barWidth, Math.Max(y - Height.Pixels * .8f + barWidth, 1)); //Recalculate maximum scrollbar view
+		y += lastHeight;
+		_scrollbar?.SetView(Height.Pixels, Math.Max(y - Height.Pixels, y)); //Recalculate maximum scrollbar view
 
 		RecalculateChildren();
 	}

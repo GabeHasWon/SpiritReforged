@@ -3,7 +3,6 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
-using System.Linq;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -62,20 +61,21 @@ public class EnchanterUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		//RemoveAllChildren(); //DEBUG
-		//Initialize();
-
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
 			UISystem.SetInactive<EnchanterUI>();
 
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
+		_infoList.Width.Set(160, 0);
+
 		if (_slot.Item.IsAir)
 		{
 			if (_populated)
 			{
 				RemoveChild(_list);
+				RemoveChild(_infoList);
+
 				_list.ClearEntries();
 				_infoList.ClearEntries();
 			}
@@ -87,11 +87,11 @@ public class EnchanterUI : AutoUIState
 			if (!_populated)
 			{
 				Append(_list);
+				Append(_infoList);
 
-				var glyphItems = ModContent.GetContent<GlyphItem>().ToList();
-				foreach (GlyphItem item in glyphItems)
+				foreach (int type in Enchanter.SpecialShop.Keys)
 				{
-					var button = new EnchantmentUI.GlyphButton(item.Type);
+					var button = new EnchantmentUI.GlyphButton(type);
 					button.OnLeftClick += OnClickGlyphButton;
 
 					_list.AddEntry(button);
@@ -115,11 +115,6 @@ public class EnchanterUI : AutoUIState
 			Main.spriteBatch.Draw(texture, area.Center() + new Vector2(81, -4), null, Color.White * 0.8f, 0, texture.Size() / 2, 1, 0, 0);
 		}
 
-		//CatalogueUI.DrawPanel(spriteBatch, GetDimensions().ToRectangle(), Color.White.Additive() * 0.2f); //DEBUG visualisation
-		//CatalogueUI.DrawPanel(spriteBatch, _upperPanel.GetDimensions().ToRectangle(), Color.White.Additive() * 0.2f);
-		//CatalogueUI.DrawPanel(spriteBatch, _list.GetDimensions().ToRectangle(), Color.White.Additive() * 0.2f);
-		//CatalogueUI.DrawPanel(spriteBatch, _infoList.GetDimensions().ToRectangle(), Color.White.Additive() * 0.2f);
-
 		base.Draw(spriteBatch);
 	}
 
@@ -127,8 +122,6 @@ public class EnchanterUI : AutoUIState
 	{
 		if (ItemLoader.GetItem((listeningElement as EnchantmentUI.GlyphButton).itemType) is GlyphItem glyphItem)
 		{
-			_infoList.ClearEntries();
-
 			_hovered = glyphItem;
 			AddInfoElements();
 		}
@@ -142,24 +135,29 @@ public class EnchanterUI : AutoUIState
 
 	private void AddInfoElements()
 	{
+		_infoList.ClearEntries();
+		float width = _infoList.AvailableWidth + 2;
+
 		var info = new CatalogueInfo();
-		info.Width = _infoList.Width;
-		info.Height.Set(30, 0);
+		info.Width.Set(width, 0);
+		info.Height.Set(40, 0);
 		info.Action += NameInfo_Action;
 
 		_infoList.AddEntry(info);
 
 		info = new CatalogueInfo();
-		info.Width = _infoList.Width;
+		info.Width.Set(width, 0);
 		info.Height.Set(30, 0);
 		info.Action += PriceInfo_Action;
 
 		_infoList.AddEntry(info);
 
 		info = new CatalogueInfo();
-		info.Width = _infoList.Width;
+		info.Width.Set(width, 0);
 		info.Height.Set(32 + UIHelper.GetTextHeight(_hovered.Tooltip.Value, (int)info.Width.Pixels), 0);
 		info.Action += DescInfo_Action;
+
+		Main.NewText(info.Height.Pixels);
 
 		_infoList.AddEntry(info);
 	}
@@ -171,15 +169,14 @@ public class EnchanterUI : AutoUIState
 			return false;
 
 		bounds.Y -= 4;
-		CatalogueUI.DrawPanel(spriteBatch, bounds, Color.Black * 0.2f, Color.Black * 0.1f);
+		Rectangle innerBounds = new(bounds.X, bounds.Y, 50, bounds.Height);
+		CatalogueUI.DrawPanel(spriteBatch, innerBounds, Color.Black * 0.3f, Color.Black * 0.2f);
 		Texture2D texture = WaxIcon.Value;
 
-		spriteBatch.Draw(texture, bounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
+		spriteBatch.Draw(texture, innerBounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
+		Utils.DrawBorderString(spriteBatch, Enchanter.SpecialShop[_hovered.Type].ToString(), innerBounds.Right() + new Vector2(-12, 4), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);
 
-		if (Enchanter.ValueByType.TryGetValue(_hovered.Type, out int value))
-			Utils.DrawBorderString(spriteBatch, value.ToString(), bounds.Center(), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);
-
-		return true;
+		return false;
 	}
 
 	private bool NameInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
@@ -212,7 +209,7 @@ public class EnchanterUI : AutoUIState
 			Utils.DrawBorderString(spriteBatch, text, bounds.Top() + new Vector2(0, 10 + height * i), Main.MouseTextColorReal, 0.8f, 0.5f, 0);
 		}
 
-		return true;
+		return false;
 	}
 	#endregion
 }

@@ -263,7 +263,11 @@ public abstract class GlyphItem : ModItem
 	public static readonly SoundStyle EnchantSound = new("SpiritReforged/Assets/SFX/Item/GlyphAttach");
 	public GlyphSettings settings;
 
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
+	public override void SetStaticDefaults()
+	{
+		Item.ResearchUnlockCount = 5;
+		Enchanter.SpecialShop.Add(Type, 3);
+	}
 
 	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph.ItemType != Type;
 
