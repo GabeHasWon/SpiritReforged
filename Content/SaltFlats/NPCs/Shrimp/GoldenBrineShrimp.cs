@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Content.SaltFlats.Biome;
-using SpiritReforged.Content.Savanna.Biome;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;
@@ -47,5 +46,5 @@ public class GoldenBrineShrimp : BrineShrimp, IGoldCritter
 		}
 	}
 	
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SaltBiome>() && spawnInfo.Water ? spawnInfo.PlayerInTown ? 0.008f : 0.002f : 0f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Player.InModBiome<SaltBiome>() && spawnInfo.Water ? spawnInfo.PlayerInTown ? 0.002f : 0.0005f : 0f;
 }
