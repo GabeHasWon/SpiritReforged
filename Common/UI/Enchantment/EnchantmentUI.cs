@@ -1,10 +1,16 @@
-﻿using SpiritReforged.Common.UI.System;
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.UI.Misc;
+using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
+using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 using Terraria.UI;
 
-namespace SpiritReforged.Common.UI.Misc;
+namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchantmentUI : AutoUIState
 {
@@ -17,8 +23,8 @@ public class EnchantmentUI : AutoUIState
 		{
 			this.itemType = itemType;
 
-			Width.Set(28, 0);
-			Height.Set(28, 0);
+			Width.Set(38, 0);
+			Height.Set(38, 0);
 		}
 
 		public override void Update(GameTime gameTime)
@@ -26,13 +32,9 @@ public class EnchantmentUI : AutoUIState
 			base.Update(gameTime);
 
 			if (IsMouseHovering)
-			{
 				_hoverTime = Math.Min(_hoverTime + 0.1f, 1);
-			}
 			else
-			{
 				_hoverTime = Math.Max(_hoverTime - 0.1f, 0);
-			}
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -42,13 +44,28 @@ public class EnchantmentUI : AutoUIState
 
 			if (IsMouseHovering)
 			{
-				DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
-				{
-					Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
-					Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
+				spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
 
-					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor, 0, texture.Size() / 2, 1, 0, 0);
-				});
+				Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
+				Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
+
+				DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
+					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor.Additive() * 0.5f, 0, texture.Size() / 2, 1, 0, 0));
+
+				if ((int)Main.timeForVisualEffects % 80 == 0 || Main.rand.NextBool(120))
+				{
+					Vector2 velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
+
+					TerrariaParticles.OverInventory.Add(new PrettySparkleParticle()
+					{
+						LocalPosition = Main.rand.NextVector2FromRectangle(GetDimensions().ToRectangle()),
+						Scale = new Vector2(Main.rand.NextFloat(0.25f, 0.6f)),
+						ColorTint = outlineColor,
+						Velocity = velocity,
+						AccelerationPerFrame = -(velocity * 0.01f),
+						TimeToLive = 120
+					});
+				}
 			}
 
 			spriteBatch.Draw(texture, center, null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
@@ -80,7 +97,7 @@ public class EnchantmentUI : AutoUIState
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
 			UISystem.SetInactive<EnchantmentUI>();
 
-		if (_slot.Item.IsAir)
+		if (_slot.Item.IsAir || EnchantedWorkbench.TargetWorkbench == Point16.Zero)
 		{
 			if (_glyphButtons.Count != 0) //Remove all buttons
 				RemoveButtons();
@@ -140,12 +157,19 @@ public class EnchantmentUI : AutoUIState
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
 		{
 			glyphItem.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+			Point16 target = EnchantedWorkbench.TargetWorkbench;
+
+			if (target != Point16.Zero)
+			{
+				EnchantedWorkbench.Deactivate(target.X, target.Y);
+				EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+			}
 		}
 	}
 
 	private static void CreateGlyphs(int count, out int[] itemTypes)
 	{
-		List<GlyphItem> glyphItems = ModContent.GetContent<GlyphItem>().Where(static x => x is not NullGlyph).ToList();
+		var glyphItems = ModContent.GetContent<GlyphItem>().ToList();
 		List<int> result = [];
 
 		for (int c = 0; c < count; c++)

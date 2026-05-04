@@ -110,7 +110,7 @@ public class BeeGlyph : GlyphItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(142, 186, 231));
+		settings = new(Color.Goldenrod);
 	}
 
 	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !item.DamageType.CountsAsClass(DamageClass.Summon);

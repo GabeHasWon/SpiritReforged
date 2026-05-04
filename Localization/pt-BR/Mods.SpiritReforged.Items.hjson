@@ -3039,8 +3039,8 @@ ScarabLightPetItem: {
 		'''
 }
 
-BlankGlyph: {
-	// DisplayName: Blank Glyph
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
 	// Tooltip: ""
 	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
 	// Target: Can only be applied to weapons
@@ -3112,7 +3112,13 @@ BeeGlyph: {
 
 SanguineGlyph: {
 	// DisplayName: Sanguine Glyph
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
 }
 
 PrefixVoucher: {

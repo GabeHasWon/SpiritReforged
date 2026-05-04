@@ -34,6 +34,11 @@ Misc: {
 		UseItem: 右键点击可将这枚图钉添加到你的收藏中
 	}
 
+	Enchantment: {
+		// PlaceToEnchant: Place an item here to enchant
+		// Enchant: Enchant
+	}
+
 	NoStock: 无库存
 	GraveText: <wavy>其上文字年久失色；令你难以辨认。
 	MenuButton: 使用菜单样式

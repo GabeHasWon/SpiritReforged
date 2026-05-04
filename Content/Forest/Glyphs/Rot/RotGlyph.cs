@@ -8,6 +8,8 @@ using SpiritReforged.Content.Underground.Tiles;
 using static System.Net.Mime.MediaTypeNames;
 using System;
 using Terraria;
+using Terraria.Audio;
+using System.Linq;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Rot;
 
@@ -25,28 +27,62 @@ public class RotGlyph : GlyphItem
 			{
 				var gnpc = target.GetGlobalNPC<RotGlobalNPC>();
 
-				gnpc.AddStack(1);
+				gnpc.AddStack(1, 180);
 
-				var position = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
+				foreach (NPC n in Main.npc)
+				{
+					if (n != target && n.CanBeChasedBy() && n.Distance(target.Center) < 500f)
+					{
+						if (n.GetGlobalNPC<RotGlobalNPC>().stacks <= 0)
+						{
+							for (int i = 0; i < 8; i++)
+							{
+								var pos = n.Center;
+
+								ParticleHandler.SpawnParticle(new FlyParticle(pos, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+
+								ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(87, 94, 1, 255) * 0.2f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+								{
+									Pixellate = true,
+									PixelDivisor = 2,
+									Layer = ParticleLayer.AboveNPC
+								});
+
+								ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(131, 124, 1) * 0.15f, 0.02f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+								{
+									Pixellate = true,
+									PixelDivisor = 2,
+									Layer = ParticleLayer.AboveNPC
+								});
+
+								ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(169, 158, 38) * 0.25f, 0.01f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+								{
+									Pixellate = true,
+									PixelDivisor = 2,
+									Layer = ParticleLayer.AboveNPC
+								});
+							}
+						}
+
+						n.GetGlobalNPC<RotGlobalNPC>().AddStack(1);
+
+						break;
+					}					
+				}
+
+				var position = target.Hitbox.ClosestPointInRect(Player.Center);
 				float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-				Color c1, c2;
-				c1 = Color.Lerp(new Color(66, 64, 0), new Color(87, 94, 0), Main.rand.NextFloat());
-				c2 = Color.Lerp(new Color(131, 124, 1), new Color(169, 158, 38), Main.rand.NextFloat());
-
-				var circle = new TexturedPulseCircle(position, (c1 * 0.5f).Additive(), 2, 30, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
-				circle.Angle = angle;
-				ParticleHandler.SpawnParticle(circle);
-
-				var circle2 = new TexturedPulseCircle(position, (Color.YellowGreen * 0.1f).Additive(), 1, 30, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
-				circle2.Angle = angle;
-				ParticleHandler.SpawnParticle(circle2);
-
-				ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, c2.Additive() * 0.5f, c1.Additive() * 0.5f, 0.3f, 15, 0.1f));
-				ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, 0.2f, 15));
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.05f, PitchVariance = 0.5f}, target.Center);
 
 				for (int i = 0; i < 3; i++)
 				{
+					ParticleHandler.SpawnParticle(new FlyParticle(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.2f)
+						* Main.rand.NextFloat(1.5f), 0f, 0.5f, 45));
+
+					ParticleHandler.SpawnParticle(new MaggotParticle(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.3f)
+						* Main.rand.NextFloat(2.5f) - Vector2.UnitY, Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 20 + Main.rand.Next(20)));
+
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(2f, 2f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.2f, Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
@@ -73,7 +109,14 @@ public class RotGlyph : GlyphItem
 
 		public override void ResetEffects()
 		{
-
+			// add buff here
+			if (decayTimer > 0)
+				decayTimer--;
+			else if (stacks > 0)
+			{
+				stacks--;
+				decayTimer += 60;
+			}
 		}
 
 		public override void UpdateBadLifeRegen()
@@ -83,19 +126,55 @@ public class RotGlyph : GlyphItem
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
 
-				Player.lifeRegen -= stacks;
+				Player.lifeRegen -= stacks * 3;
 			}
 		}
 
 		public override void UpdateEquips()
 		{
-			// add buff here
-			if (decayTimer > 0)
-				decayTimer--;
-			else if (stacks > 0)
+			if (DebuffActive && Main.rand.NextBool(30 - stacks * 2))
 			{
-				stacks--;
-				decayTimer += 10;
+				var position = Player.Center + Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2);
+
+				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
+
+				if (Main.rand.NextBool(3))
+				{
+					ParticleHandler.SpawnParticle(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40)
+					{
+						Layer = ParticleLayer.AbovePlayer
+					});
+				}
+
+				for (int i = 0; i < 2; i++)
+				{
+					position = Player.Center + Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.4f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					{
+						Pixellate = true,
+						PixelDivisor = 2,
+						Layer = ParticleLayer.BelowNPC
+					});
+
+					position = Player.Center + Main.rand.NextVector2Circular(Player.width / 2, Player.height / 2);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.3f, 0.03f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+					{
+						Pixellate = true,
+						PixelDivisor = 2,
+						Layer = ParticleLayer.BelowNPC
+					});
+
+					position = Player.Center + Main.rand.NextVector2Circular(Player.width / 2, Player.height / 2);
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.3f, 0.03f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					{
+						Pixellate = true,
+						PixelDivisor = 2,
+						Layer = ParticleLayer.BelowNPC
+					});
+				}
 			}
 		}
 
@@ -129,7 +208,7 @@ public class RotGlyph : GlyphItem
 			else if (stacks > 0)
 			{
 				stacks--;
-				decayTimer += 30;
+				decayTimer += 60;
 			}
 		}
 
@@ -148,18 +227,30 @@ public class RotGlyph : GlyphItem
 		public override void DrawEffects(NPC npc, ref Color drawColor)
 		{
 			if (Active)
-				drawColor = Color.Lerp(drawColor, Color.DarkOliveGreen, stacks / (float)MAX_STACKS);
+				drawColor = Color.Lerp(drawColor, Color.Lerp(drawColor, new Color(241, 255, 16), (float)Math.Abs(Math.Sin(Main.GlobalTimeWrappedHourly * 2f))), stacks / (float)MAX_STACKS);
 		}
 
 		public override void AI(NPC npc)
 		{
-			if (Active && Main.rand.NextBool(30 - stacks * 2))
+			if (Active && Main.rand.NextBool(30 - stacks * 2) && npc.Opacity > 0)
 			{
+				var position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
+
+				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
+				
+				if (Main.rand.NextBool(3))
+				{
+					ParticleHandler.SpawnParticle(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40)
+					{
+						Layer = ParticleLayer.AboveNPC
+					});
+				}
+
 				for (int i = 0; i < 2; i++)
 				{
-					var position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
+					position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, npc.width * 0.001f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
@@ -168,7 +259,7 @@ public class RotGlyph : GlyphItem
 
 					position = npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.2f, Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
@@ -177,7 +268,7 @@ public class RotGlyph : GlyphItem
 
 					position = npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.2f, Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
@@ -214,7 +305,7 @@ public class RotGlyph : GlyphItem
 
 		Color c1, c2;
 		c1 = Color.Lerp(new Color(66, 64, 0), new Color(87, 94, 0), sin);
-		c2 = Color.Lerp(new Color(131, 124, 1), new Color(169, 158, 38), cos);
+		c2 = Color.Lerp(new Color(131, 124, 1), new Color(87, 94, 0), cos);
 
 		effect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.5f);
 		effect.Parameters["uColor2"].SetValue(c2.ToVector4() * 0.5f);
@@ -256,14 +347,14 @@ public class RotGlyph : GlyphItem
 
 	public override void UpdateGlyphItemInWorld(Item item)
 	{
-		/*if (Main.rand.NextBool(90))
+		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
-			Vector2 velocity = Vector2.Zero;
+			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f);
 
-			Dust.NewDustPerfect(pos, DustID.CorruptGibs, velocity, 100, default, 1f).noGravity = true;
-		}*/
+			ParticleHandler.SpawnParticle(new FlyParticle(pos, velocity, 0f, 1f, 90));
+		}
 
 		if (Main.rand.NextBool(30))
 		{
@@ -288,6 +379,6 @@ public class RotGlyph : GlyphItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(142, 186, 231));
+		settings = new(new(220, 198, 57));
 	}
 }

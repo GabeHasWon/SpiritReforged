@@ -34,6 +34,11 @@ Misc: {
 		UseItem: Нажмите ПКМ по булавке, чтобы добавить её в коллекцию
 	}
 
+	Enchantment: {
+		// PlaceToEnchant: Place an item here to enchant
+		// Enchant: Enchant
+	}
+
 	NoStock: Нет в наличии
 	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
 	MenuButton: Использовать тему меню
