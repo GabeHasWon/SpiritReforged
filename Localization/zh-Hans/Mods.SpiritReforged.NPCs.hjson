@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: 金龙虱
-	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {

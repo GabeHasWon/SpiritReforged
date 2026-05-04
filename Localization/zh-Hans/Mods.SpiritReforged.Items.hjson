@@ -2887,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: 青铜格栅门
-	Tooltip: ""
+	Tooltip: 允许液体通过，即便被关闭
 }
 
 CalmingBellItem: {
@@ -2912,7 +2912,7 @@ GildedRedSandstoneItem: {
 
 BronzeGrateBlockItem: {
 	DisplayName: 青铜格栅
-	Tooltip: ""
+	Tooltip: 仅允许液体通过
 }
 
 BedouinBreastplate: {
@@ -3029,7 +3029,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		召唤一个哨兵
-		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
+		扔出一根曲柄杖，其会吸引蝗虫来侵扰敌人
 		'''
 }
 
@@ -3065,11 +3065,11 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	// DisplayName: Honeysuckle Bud
-	// Tooltip: Summons a pillbug mount
+	DisplayName: 忍冬花蕾
+	Tooltip: 召唤一只鼠妇坐骑
 }
 
 SandySandstoneItem: {
-	// DisplayName: Sandy Sandstone Item
-	// Tooltip: ""
+	DisplayName: 砂质沙岩
+	Tooltip: ""
 }
