@@ -99,9 +99,7 @@ public class GlyphGlobalItem : GlobalItem
 	public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
-		{
 			g.UpdateGlyphItemInWorld(item);
-		}
 	}
 
 	public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -311,17 +309,9 @@ public abstract class GlyphItem : ModItem
 		});
 	}
 
-	public virtual void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
-	{
+	public virtual void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale) { }
 
-	}
-	public virtual void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
-	{
+	public virtual void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale) { }
 
-	}
-
-	public virtual void UpdateGlyphItemInWorld(Item item)
-	{
-
-	}
+	public virtual void UpdateGlyphItemInWorld(Item item) { }
 }
