@@ -1,45 +1,20 @@
-v0.2.0.3
---- Added 6 New Scarab Town Pets and the Scarab License! ---
-- Added right-click to open tooltip to modded crates
-- Added a tooltip to the Loot Bag
-- Changed Bronze Grate to Bronze Grate Wall, and Bronze Grate Block to Bronze Grate
-- Fixed issues with the Scarab vs. Scourge spawn animation in multiplayer
-- Fixed an issue with the Calming Bell glow texture not drawing correctly
-- Added some visual effects to the soil ball projectile kicked up by Scarab while digging
-- Fixed multiplayer issues with Royal Khopesh
-- Fixed multiplayer issues with the Adorned Bow
-- Improved the Scourge vs Scarab fight in FTW
-- Fixed an issue with the Brine Crate not dropping items correctly
-- Made a lot of blocks have correct research counts
-- Fixed crates not dropping bait/potions
-- Made Scarabeus Mask drop consistently & with vanilla parity
-- Added both Cricket entries
-- Fixed weird unloaded texture error regarding the Giant Bag
-- Fixed Golden Brine Shrimp being considered a Savanna entity instead of Salt Flats
-- Fixed issue with Brown Shingles incorrectly hiding walls behind it, even if they should be visible
-- Allowed Salt Candelabra to use paint properly
-- Added Gooey Hive tile item
-- Corrected Frostbite tooltip to say 10 armor piercing instead of 5
-- Changed Cracked Sandstone SFX to be consistent with other (non-brick) sandstone tiles
-- Slightly reduced Graverobber spawnrate
-- Prevented Zoologist's custom dialogue in the Savanna during a Blood Moon
-- Scarab Master Mode pet now drops from the boss instead of the bag
-- Fixed an issue that caused NPC HP to scale incorrectly in different modes
-- Added a config for Screenshake effects
-- Added Crane Feather to Wood Crates
-- Changed Rogue's Crest Crate odds from 12.5% to 5%
-- Hardlight Visor now dropped by Granite Elementals at a 2% chance
-- Sandstone Shelf counts as a bookshelf
-- Dunce crab spawnrates increased in moss biomes
-- Polished Sandstone Walls now have a crafting recipe
-- Increased Golden Diving Beetle sell price to 10 gold to match other golden critters
-- Increased golden critter rarities to Orange from White
-- Flamingo and Tiny Grub now properly shimmer into Faeling
-- Either salt can now be used to craft Salt Walls (Salt Walls can still only be converted back into Dull Salt)
-- Added a crafting recipe for Reflective Salt
-- Fixed visual and functional issues with the Jinxbow
-- Stopped Snow and Desert enemies from spawning in the Salt Flats
-- Added Ancient Books to Desert Crates
-- Ancient Altar mouse-over visuals no longer display when the Altar is unusable (outside the Desert)
-- Fixed an issue where Ancient Altar visuals did not disappear when the altar was broken
-- Improved custom merging frames (thanks zoey2)
+v0.2.0.4
+- Added the Honeysuckle Sprout, a new rolling mount item that drops from Scarabeus
+- Fixed a framing issue where dirt would draw on Salt Flats tiles
+- Fixed an issue where Beetle Pets were not arriving properly after the Beetle License was used
+- Increased club downswing range before they collide with tiles, allowing for smoother swings in enclosed spaces
+- Tattered Map no longer needs to be crafted at a Workbench
+- Brine Shrimp now crafts Pink Dye
+- Red Sandstone Brick now merges with Pearlsand, Crimsand, and Ebonsand
+- Stactus now drops some amount of Cactus when killed
+- Added a recipe for Sandy Sandstone
+- Added a description to some debuffs that had placeholder text
+- Fixed inconsistencies with Music Display names
+- Changed Osmosifier recipe to forego wire
+- Increased Thornball damage from 5 to 6, decreased knockback from 2 to 0, and reduced slow debuff time from 3 to 2 seconds
+- Buffed Mahakala Mask: attacks now also deal 20% extra damage to Corrupt enemies
+- Evil Stactuses now count as Corrupt enemies for the sake of the Mahakala Mask
+- Reduced Golden Brine Shrimp spawn rate
+- Bronze Grate Door now allows liquids through
+- Darkened Ruined Sandstone Pillars to make them seem more like background objects
+- Fixed Pelicans and Sandpipers spawning in space
