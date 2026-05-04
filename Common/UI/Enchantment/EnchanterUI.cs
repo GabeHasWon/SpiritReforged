@@ -85,9 +85,6 @@ public class EnchanterUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		//RemoveAllChildren();
-		//Initialize();
-
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
 		{
 			UISystem.SetInactive<EnchanterUI>();
@@ -173,7 +170,7 @@ public class EnchanterUI : AutoUIState
 			int cost = Enchanter.SpecialShop[_hovered.Type];
 			int type = ModContent.ItemType<ChromaticWax>();
 
-			if (Main.LocalPlayer.CountItem(type, cost) == cost)
+			if (Main.LocalPlayer.CountItem(type, cost) >= cost)
 			{
 				for (int c = 0; c < cost; c++)
 					Main.LocalPlayer.ConsumeItem(type);

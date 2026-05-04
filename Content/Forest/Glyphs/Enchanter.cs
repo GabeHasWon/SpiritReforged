@@ -1,8 +1,9 @@
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
-using SpiritReforged.Content.Forest.Cartography;
+using SpiritReforged.Content.Particles;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
@@ -37,7 +38,7 @@ public class Enchanter : WorldNPC, ITravelNPC
 	{
 		NPC.CloneDefaults(NPCID.SkeletonMerchant);
 		NPC.HitSound = SoundID.NPCHit1;
-		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.DeathSound = SoundID.DD2_WyvernDiveDown;
 		NPC.Size = new Vector2(30, 40);
 	}
 
@@ -68,18 +69,11 @@ public class Enchanter : WorldNPC, ITravelNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		if (Main.dedServ)
-			return;
-
-		if (NPC.life <= 0)
-			for (int i = 1; i < 7; i++)
-			{
-				int goreType = Mod.Find<ModGore>(nameof(Cartographer) + i).Type;
-				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(NPC.getRect()), NPC.velocity, goreType);
-			}
-
-		for (int d = 0; d < 8; d++)
-			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
+		if (!Main.dedServ && NPC.life <= 0)
+		{
+			for (int i = 0; i < 10; i++)
+				ParticleHandler.SpawnParticle(new CartoonSmoke(Main.rand.NextVector2FromRectangle(NPC.Hitbox), 30, 1, Main.rand.NextVector2Circular(2, 2)));
+		}
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -92,8 +86,6 @@ public class Enchanter : WorldNPC, ITravelNPC
 		NPC.frameCounter = (NPC.frameCounter + 0.15f) % Main.npcFrameCount[Type];
 		NPC.frame = texture.Frame(1, Main.npcFrameCount[Type], 0, (int)NPC.frameCounter, 0, -2);
 	}
-
-	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => base.PreDraw(spriteBatch, screenPos, drawColor);
 
 	public bool CanSpawnTraveler() => true;
 }
