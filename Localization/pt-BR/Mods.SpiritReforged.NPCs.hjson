@@ -585,6 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Besouro
+	// Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
 	Chitter0: *Sons animados de chiado*
 	Chitter1: *Sons de inseto*
 	Chitter2: *Sons de Besouro*

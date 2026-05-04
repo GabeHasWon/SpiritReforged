@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.NPCs.TownBeetle;
 
@@ -99,6 +100,8 @@ public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 	public override bool CanTownNPCSpawn(int numTownNPCs) => WorldSystem.CheckWorldFlag(BeetleLicense.UsedLicense);
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
 
 	public override List<string> SetNPCNameList() => NPCProfile.GetNames(this, NPC);
 
