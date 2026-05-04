@@ -2887,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
-	Tooltip: ""
+	Tooltip: Allows liquids through even when closed
 }
 
 CalmingBellItem: {
@@ -2912,7 +2912,7 @@ GildedRedSandstoneItem: {
 
 BronzeGrateBlockItem: {
 	DisplayName: Bronze Grate
-	Tooltip: ""
+	Tooltip: Allows only liquids through
 }
 
 BedouinBreastplate: {
