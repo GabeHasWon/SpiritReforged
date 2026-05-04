@@ -3055,3 +3055,8 @@ ScarabMountItem: {
 	// DisplayName: Honeysuckle Bud
 	// Tooltip: Summons a pillbug mount
 }
+
+SandySandstoneItem: {
+	// DisplayName: Sandy Sandstone Item
+	// Tooltip: ""
+}

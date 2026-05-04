@@ -3,7 +3,7 @@ using SpiritReforged.Common.TileCommon;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class SandySandstone : ModTile
+public class SandySandstone : ModTile, IAutoloadTileItem
 {
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddIngredient(ItemID.SandBlock).AddTile(TileID.WorkBenches).Register();
 
