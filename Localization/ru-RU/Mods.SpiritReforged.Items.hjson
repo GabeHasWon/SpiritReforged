@@ -3063,3 +3063,8 @@ GooeyHiveItem: {
 	DisplayName: Липкий улей
 	Tooltip: ""
 }
+
+ScarabMountItem: {
+	// DisplayName: Honeysuckle Bud
+	// Tooltip: Summons a pillbug mount
+}

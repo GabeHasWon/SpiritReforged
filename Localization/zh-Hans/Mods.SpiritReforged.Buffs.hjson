@@ -142,3 +142,8 @@ ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“
 }
+
+ScarabMountBuff: {
+	// DisplayName: Pillbug Mount
+	// Description: "'Hold on!'"
+}

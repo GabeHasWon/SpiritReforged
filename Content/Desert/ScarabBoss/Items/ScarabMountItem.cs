@@ -1,0 +1,224 @@
+﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.MountCommon;
+using SpiritReforged.Common.Visuals;
+using Terraria.DataStructures;
+
+namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
+
+internal class ScarabMountItem : ModItem
+{
+	public class ScarabMountBuff : ModBuff
+	{
+		public override void SetStaticDefaults()
+		{
+			Main.buffNoTimeDisplay[Type] = true;
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.mount.SetMount(ModContent.MountType<ScarabMount>(), player, false);
+			player.buffTime[buffIndex] = 10;
+		}
+	}
+
+	public class ScarabMount : ModMount
+	{
+		public override void SetStaticDefaults()
+		{
+			MountData.buff = ModContent.BuffType<ScarabMountBuff>();
+			MountData.spawnDust = DustID.Obsidian;
+			MountData.spawnDustNoGravity = true;
+			MountData.heightBoost = 34;
+			MountData.fallDamage = 1f;
+			MountData.runSpeed = 8;
+			MountData.flightTimeMax = 0;
+			MountData.fatigueMax = 0;
+			MountData.jumpHeight = 0;
+			MountData.acceleration = 0.16f;
+			MountData.swimSpeed = 2;
+			MountData.jumpSpeed = 8;
+			MountData.blockExtraJumps = true;
+			MountData.totalFrames = 1;
+			MountData.constantJump = false;
+			MountData.playerYOffsets = [42];
+			MountData.playerXOffset = 6;
+			MountData.yOffset = 15;
+			MountData.xOffset = 4;
+			MountData.bodyFrame = 3;
+			MountData.playerHeadOffset = 26;
+			MountData.standingFrameCount = 1;
+			MountData.standingFrameDelay = 12;
+			MountData.standingFrameStart = 0;
+			MountData.inAirFrameCount = 1;
+			MountData.inAirFrameDelay = 12;
+			MountData.inAirFrameStart = 0;
+			MountData.idleFrameCount = 1;
+			MountData.idleFrameDelay = 12;
+			MountData.idleFrameStart = 0;
+			MountData.idleFrameLoop = true;
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				MountData.textureWidth = MountData.backTexture.Width();
+				MountData.textureHeight = MountData.backTexture.Height();
+			}
+		}
+
+		public override void UpdateEffects(Player player)
+		{
+			ScarabMountPlayer plr = player.GetModPlayer<ScarabMountPlayer>();
+
+			float xVel = Math.Abs(player.velocity.X);
+
+			player.noKnockback = true;
+			plr.pillbugRotation += player.velocity.X * 0.03f;
+
+			plr.rotation = plr.xVelocityTracker.value.X * -0.02f;
+			plr.rotation += Math.Abs(plr.yVelocityTracker.value.Y) * -0.04f * player.direction * Utils.GetLerpValue(0f, 3f, xVel, true);
+
+			if (xVel > 3f)
+				plr.rotation += MathF.Sin(Main.GlobalTimeWrappedHourly * 7f) * 0.08f * Utils.GetLerpValue(3f, 5f, xVel, true);
+
+			float playerOffset = MathF.Max(plr.xVelocityTracker.value.Y * 1.5f, -5);
+			player.GetModPlayer<InstancedOffsetPlayer>().SetInstancedOffsets([42 + (int)playerOffset]);
+			player.fullRotationOrigin = new Vector2(10, 90);
+
+			if (Main.getGoodWorld && player.HasBuff(BuffID.Tipsy))
+				player.fullRotation = plr.pillbugRotation;
+			else
+				player.fullRotation = plr.rotation;
+
+			if (xVel > 6)
+			{
+				float chance = Utils.GetLerpValue(6, 8, xVel, true) * 0.4f;
+
+				if (chance > Main.rand.NextFloat())
+				{
+					Point16 bottom = player.Bottom.ToTileCoordinates16();
+					Tile tile = Main.tile[bottom];
+
+					if (!tile.HasTile)
+						return;
+
+					int dust = WorldGen.KillTile_MakeTileDust(bottom.X, bottom.Y, tile);
+
+					Main.dust[dust].position = player.Bottom;
+					Main.dust[dust].velocity = new Vector2(-player.velocity.X * 0.35f, Main.rand.NextFloat(-4, -1));
+				}
+			}
+
+			for (int i = 0; i < plr.hitsPerNPC.Length; ++i)
+				plr.hitsPerNPC[i] = Math.Max(0, plr.hitsPerNPC[i] - 1);
+
+			if (!ScarabMountPlayer.DashSpeed(player))
+				return;
+
+			Rectangle hitbox = player.Hitbox;
+			hitbox.Inflate(12, 6);
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (!npc.isLikeATownNPC && !player.npcTypeNoAggro[npc.type] && (!npc.friendly || npc.lifeMax == 5) && npc.Hitbox.Intersects(hitbox) && plr.hitsPerNPC[npc.whoAmI] == 0)
+				{
+					plr.hitsPerNPC[npc.whoAmI] = 80;
+					npc.SimpleStrikeNPC(30, Math.Sign(player.velocity.X), false, 12, damageVariation: true);
+				}
+			}
+		}
+
+		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, 
+			ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
+		{
+			rotation = drawPlayer.GetModPlayer<ScarabMountPlayer>().pillbugRotation;
+			return true;
+		}
+	}
+
+	public class ScarabMountPlayer : ModPlayer
+	{
+		public static bool MountDashing(Player plr) => plr.mount.Active && plr.mount.Type == ModContent.MountType<ScarabMount>() && DashSpeed(plr);
+		public static bool DashSpeed(Player plr) => Math.Abs(plr.velocity.X) >= plr.mount._data.runSpeed - 1f;
+
+		public DampedSpringPhysics xVelocityTracker = new DampedSpringPhysics(0.56f, 0.05f, 2f);
+		public DampedSpringPhysics yVelocityTracker = new DampedSpringPhysics(0.78f, 0.07f, 0.9f);
+		public Vector2 lastVelocity = Vector2.Zero;
+
+		internal float pillbugRotation = 0f;
+		internal float rotation = 0f;
+		internal int[] hitsPerNPC = new int[Main.maxNPCs];
+
+		public override void PostUpdate()
+		{
+			Vector2 playerAcceleration = Player.velocity - lastVelocity;
+			Vector2 xVel = Player.velocity;
+			if (Player.velocity.Y == 0)
+				xVel.X *= -1;
+
+			xVelocityTracker.Update(xVel, playerAcceleration);
+			yVelocityTracker.Update(Player.velocity, playerAcceleration);
+			lastVelocity = Player.velocity;
+		}
+
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+			Player plr = drawInfo.drawPlayer;
+
+			if (Player.mount.Active && plr.mount.Type == ModContent.MountType<ScarabMount>())
+			{
+				drawInfo.isSitting = true;
+
+				if (DashSpeed(Player))
+				{
+					Player.armorEffectDrawShadowLokis = true;
+					Player.armorEffectDrawOutlines = true;
+				}
+			}
+		}
+
+		public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+		{
+			if (MountDashing(Player))
+				return false;
+
+			return true;
+		}
+	}
+
+	public class ScarabSaddleLayer : PlayerDrawLayer
+	{
+		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.BackAcc);
+
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+			Player plr = drawInfo.drawPlayer;
+
+			if (!plr.mount.Active || plr.mount.Type != ModContent.MountType<ScarabMount>() || drawInfo.shadow != 0)
+				return;
+
+			bool flipped = drawInfo.playerEffect == SpriteEffects.FlipHorizontally;
+			Vector2 position = drawInfo.Center - Main.screenPosition + new Vector2(plr.mount._data.xOffset * (flipped ? -1 : 1), 0);
+			Vector2 origin = new Vector2(flipped ? Saddle.Value.Width : 0, 0);
+
+			drawInfo.DrawDataCache.Add(new DrawData(Saddle.Value, position.Floor() + new Vector2(-16 * (flipped ? -1 : 1) , 20), null, drawInfo.colorArmorBody, 0f, origin, 1f, drawInfo.playerEffect, 0)
+			{
+				shader = plr.cMount
+			});
+		}
+	}
+
+	private static readonly Asset<Texture2D> Saddle = DrawHelpers.RequestLocal(typeof(ScarabMount), "ScarabMount_Saddle", false);
+
+	public override void SetDefaults()
+	{
+		Item.width = 26;
+		Item.height = 26;
+		Item.useStyle = ItemUseStyleID.Swing;
+		Item.value = Item.sellPrice(0, 1, 0, 0);
+		Item.rare = ItemRarityID.Yellow;
+		Item.maxStack = 1;
+		Item.UseSound = SoundID.Item79;
+		Item.mountType = ModContent.MountType<ScarabMount>();
+		Item.useTime = Item.useAnimation = 20;
+	}
+}
