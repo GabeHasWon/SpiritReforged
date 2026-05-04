@@ -2887,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Бронзовая решётчатая дверь
-	Tooltip: ""
+	Tooltip: Пропускает через себя жидкости, даже если закрыта
 }
 
 CalmingBellItem: {
@@ -2912,7 +2912,7 @@ GildedRedSandstoneItem: {
 
 BronzeGrateBlockItem: {
 	DisplayName: Бронзовая решётка
-	Tooltip: ""
+	Tooltip: Пропускает через себя только жидкости
 }
 
 BedouinBreastplate: {
@@ -3065,11 +3065,11 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	// DisplayName: Honeysuckle Bud
-	// Tooltip: Summons a pillbug mount
+	DisplayName: Бутон жимолости
+	Tooltip: Призывает ездового жука-пилюльщика
 }
 
 SandySandstoneItem: {
-	// DisplayName: Sandy Sandstone Item
-	// Tooltip: ""
+	DisplayName: Песчаный песчаник
+	Tooltip: ""
 }

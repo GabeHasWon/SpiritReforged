@@ -110,7 +110,7 @@ ExplorerMine: {
 
 JinxMark: {
 	DisplayName: Метка сглаза
-	Description: ""
+	Description: Вы отмечены луком сглаза
 }
 
 FlaskOfFrost_Buff: {
@@ -120,7 +120,7 @@ FlaskOfFrost_Buff: {
 
 Slowed: {
 	DisplayName: Замедленный
-	Description: ""
+	Description: Ваши движения становятся вялыми
 }
 
 ToucaneMinion_Buff: {
@@ -144,6 +144,6 @@ ScarabLightPetBuff: {
 }
 
 ScarabMountBuff: {
-	// DisplayName: Pillbug Mount
-	// Description: "'Hold on!'"
+	DisplayName: Ездовой жук-пилюльщик
+	Description: «Держитесь!»
 }
