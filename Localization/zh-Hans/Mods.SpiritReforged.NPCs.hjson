@@ -585,7 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: 甲虫
-	// Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Entry: 虽然它们不适合用来拥抱，但笨拙的样子让它们显得十分惹人喜爱。
 	Chitter0: *快乐的叽叽声*
 	Chitter1: *虫子的噪音声*
 	Chitter2: *甲虫的噪音声*
