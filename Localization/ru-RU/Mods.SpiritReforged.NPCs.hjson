@@ -585,7 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Жук
-	// Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Entry: Милое и неуклюжие насекомое. К сожалению, обнимать их будет не очень удобно.
 	Chitter0: *Счастливое стрекотание*
 	Chitter1: *Звуки жука*
 	Chitter2: *Звуки букашки*
