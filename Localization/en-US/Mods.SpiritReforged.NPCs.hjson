@@ -585,6 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Beetle
+	Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
 	Chitter0: *Happy chittering*
 	Chitter1: *Bug noises*
 	Chitter2: *Beetle noises*
