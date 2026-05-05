@@ -1,5 +1,3 @@
-using SpiritReforged.Common.EmoteCommon;
-using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
@@ -15,8 +13,6 @@ public class Enchanter : WorldNPC, ITravelNPC
 {
 	/// <summary> Stores a shop value by item type. </summary>
 	public static readonly Dictionary<int, int> SpecialShop = [];
-
-	//public override void Load() => AutoEmote.LoadFaceEmote(this, static () => NPC.AnyNPCs(ModContent.NPCType<Enchanter>()));
 
 	public override void SetStaticDefaults()
 	{
@@ -63,15 +59,11 @@ public class Enchanter : WorldNPC, ITravelNPC
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
-			shopName = "Shop";
-		else
 		{
 			Main.playerInventory = true;
 			UISystem.SetActive<EnchanterUI>();
 		}
 	}
-
-	public override void AddShops() => new NPCShop(Type).Register();
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
