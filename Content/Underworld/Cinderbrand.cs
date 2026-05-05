@@ -14,7 +14,7 @@ namespace SpiritReforged.Content.Underworld;
 [AutoloadGlowmask("255,255,255")]
 public class Cinderbrand : ModItem
 {
-	public class CinderbrandSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
+	public class CinderbrandSwing : RapierProjectile, FreeDodgePlayer.IImmuneTo
 	{
 		public enum MoveType { Lunge, Stance, Swing }
 
@@ -44,7 +44,7 @@ public class Cinderbrand : ModItem
 				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center - Projectile.velocity * 8, Projectile.velocity, 20, new(50, 150)).SetColors(Color.White.Additive(100), Color.SteelBlue).SetIntensity(2).AttachTo(Projectile));
 		}
 
-		public bool FreeDodge(Player.HurtInfo info)
+		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
 			if (Move != MoveType.Stance || Counter > FreeDodgeTime)
 				return false;
@@ -53,7 +53,7 @@ public class Cinderbrand : ModItem
 			{
 				Vector2 position = Projectile.Center + Projectile.velocity * (GetConfig<RapierConfiguration>().Reach - 12);
 
-				if (info.DamageSource.TryGetCausingEntity(out Entity entity))
+				if (damageSource.TryGetCausingEntity(out Entity entity))
 					position = entity.Center;
 
 				float rotation = Projectile.AngleTo(position) + Main.rand.NextFloat(-1f, 1f);

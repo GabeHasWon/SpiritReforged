@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.PlayerCommon;
+﻿using Terraria.DataStructures;
+
+namespace SpiritReforged.Common.PlayerCommon;
 
 public sealed class FreeDodgePlayer : ModPlayer
 {
@@ -7,6 +9,13 @@ public sealed class FreeDodgePlayer : ModPlayer
 		/// <summary> Called whenever the player is about to take damage. </summary>
 		/// <returns> Whether damage should be dodged. </returns>
 		public bool FreeDodge(Player.HurtInfo info);
+	}
+
+	public interface IImmuneTo
+	{
+		/// <summary> Called whenever the player is about to take damage. </summary>
+		/// <returns> Whether the player should be immune. </returns>
+		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable);
 	}
 
 	public int oldHeldProjectile;
@@ -23,6 +32,14 @@ public sealed class FreeDodgePlayer : ModPlayer
 	}
 
 	public override void ResetEffects() => freeDodgeTime = StatModifier.Default;
+
+	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
+	{
+		if (oldHeldProjectile != -1 && Main.projectile[oldHeldProjectile].ModProjectile is IImmuneTo iImmuneTo)
+			return iImmuneTo.ImmuneTo(damageSource, cooldownCounter, dodgeable);
+
+		return false;
+	}
 
 	public override bool FreeDodge(Player.HurtInfo info)
 	{

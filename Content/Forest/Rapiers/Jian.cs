@@ -13,7 +13,7 @@ namespace SpiritReforged.Content.Forest.Rapiers;
 
 public class Jian : ModItem
 {
-	public class JianSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
+	public class JianSwing : RapierProjectile, FreeDodgePlayer.IImmuneTo
 	{
 		public enum MoveType { Lunge, Stance, Flurry }
 
@@ -65,7 +65,7 @@ public class Jian : ModItem
 			SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = 0.5f }, Projectile.Center);
 		}
 
-		public bool FreeDodge(Player.HurtInfo info)
+		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
 			if (Move != MoveType.Stance)
 				return false;

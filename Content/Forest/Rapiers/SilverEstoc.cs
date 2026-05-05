@@ -8,12 +8,13 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using static SpiritReforged.Content.SaltFlats.Tiles.SaltDebris;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
 public class SilverEstoc : ModItem
 {
-	public class SilverEstocSwing : RapierProjectile, FreeDodgePlayer.IFreeDodge
+	public class SilverEstocSwing : RapierProjectile, FreeDodgePlayer.IImmuneTo
 	{
 		public enum MoveType { Lunge, Stance, Swing }
 
@@ -39,7 +40,7 @@ public class SilverEstoc : ModItem
 			}
 		}
 
-		public bool FreeDodge(Player.HurtInfo info)
+		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
 			if (Move != MoveType.Stance)
 				return false;
@@ -48,7 +49,7 @@ public class SilverEstoc : ModItem
 			{
 				Vector2 position = Projectile.Center + Projectile.velocity * (GetConfig<RapierConfiguration>().Reach - 12);
 
-				if (info.DamageSource.TryGetCausingEntity(out Entity entity))
+				if (damageSource.TryGetCausingEntity(out Entity entity))
 					position = entity.Center;
 
 				float rotation = Projectile.AngleTo(position) + Main.rand.NextFloat(-1f, 1f);
