@@ -8,7 +8,7 @@ internal static class PlayerExtensions
 {
 	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<TItem>().Name) == true;
 
-	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoPlayer>().info[itemName];
+	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoItem.InfoPlayer>().info[itemName];
 	public static bool HasInfoItem<TItem>(this Player player) where TItem : InfoItem => player.HasInfoItem(ModContent.GetInstance<TItem>().Name);
 
 	/// <summary> Checks whether the set bonus related to this item is active on <paramref name="player"/>.<br/>
