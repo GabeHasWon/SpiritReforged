@@ -1641,10 +1641,10 @@ PotionVatsAlchemyItem: {
 }
 
 DunceCrabBannerItem.DisplayName: 笨蟹旗
-WheezerBannerItem.DisplayName: 响尾兽旗
+WheezerBannerItem.DisplayName: 息鸣螈旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽雕像
+	DisplayName: 息鸣螈雕像
 	Tooltip: ""
 }
 
