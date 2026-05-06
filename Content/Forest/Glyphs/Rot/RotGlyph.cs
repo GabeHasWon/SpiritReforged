@@ -4,12 +4,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using static System.Net.Mime.MediaTypeNames;
-using System;
-using Terraria;
 using Terraria.Audio;
-using System.Linq;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Rot;
 

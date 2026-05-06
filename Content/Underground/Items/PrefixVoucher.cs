@@ -43,7 +43,6 @@ public class PrefixVoucher : ModItem
 			if (Main.mouseItem.ModItem is PrefixVoucher voucher && item.CanApplyPrefix(voucher.prefix))
 			{
 				Texture2D texture = TextureAssets.Item[item.type].Value;
-				//spriteBatch.Draw(texture, position, null, Color.White.Additive() * (float)Math.Sin(Main.timeForVisualEffects / 20f), 0, texture.Size() / 2, scale, 0, 0);
 
 				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
 					spriteBatch.Draw(TextureColorCache.ColorSolid(texture, Color.White), position + offset * scale, null, voucher._info.Color.Additive() * 0.25f, 0, texture.Size() / 2, scale, 0, 0));
@@ -99,23 +98,44 @@ public class PrefixVoucher : ModItem
 		return _info = new(color, rare, string.Empty, Rectangle.Empty);
 	}
 
+	public static int RollRandomPrefix()
+	{
+		int result = 0;
+		while (result == 0)
+		{
+			int index = Main.rand.Next(_sampleTypes.Length);
+			Item item = new(_sampleTypes[index]);
+			item.Prefix(-2);
+
+			if (item.prefix != 0)
+				result = item.prefix;
+		}
+
+		return result;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
 
-		prefix = Main.rand.Next(PrefixLoader.PrefixCount);
+		prefix = RollRandomPrefix();
 		FindInfo();
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		if (tooltips.FindIndex(static x => x.Name == "Tooltip1") is int index && index < 0)
-			return;
+		if (tooltips.FindIndex(static x => x.Name == "ItemName") is int index2 && index2 >= 0)
+		{
+			tooltips[index2].Text = tooltips[index2].Text.FormatWith(_info.PrefixText);
+		}
 
-		Color color = _info.Color * (Main.mouseTextColor / 255f);
-		tooltips[index].Text = tooltips[index].Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText);
+		if (tooltips.FindIndex(static x => x.Name == "Tooltip1") is int index && index >= 0)
+		{
+			Color color = _info.Color * (Main.mouseTextColor / 255f);
+			tooltips[index].Text = tooltips[index].Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText);
+		}
 	}
 
 	public override void PostDrawTooltip(ReadOnlyCollection<DrawableTooltipLine> lines)

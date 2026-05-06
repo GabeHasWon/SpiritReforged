@@ -3122,7 +3122,7 @@ SanguineGlyph: {
 }
 
 PrefixVoucher: {
-	// DisplayName: Prefix Voucher
+	// DisplayName: "{0} Prefix Voucher"
 	/* Tooltip:
 		'''
 		Can be used on items with <right>
