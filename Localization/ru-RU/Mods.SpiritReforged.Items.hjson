@@ -2674,10 +2674,10 @@ GoldenBrineShrimpItem: {
 	Tooltip: ""
 }
 
-CorruptStactusBannerItem.DisplayName: Знамя искажённой кактусеницы
-CrimsonStactusBannerItem.DisplayName: Знамя багряной кактусеницы
-DesertStactusBannerItem.DisplayName: Знамя кактусеницы
-HallowedStactusBannerItem.DisplayName: Знамя освящённой кактусеницы
+CorruptStactusBannerItem.DisplayName: Знамя искажённого стактуса
+CrimsonStactusBannerItem.DisplayName: Знамя багряного стактуса
+DesertStactusBannerItem.DisplayName: Знамя стактуса
+HallowedStactusBannerItem.DisplayName: Знамя освящённого стактуса
 
 AncientBannerItem: {
 	DisplayName: Древнее знамя
