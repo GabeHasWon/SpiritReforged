@@ -33,19 +33,22 @@ public class EnchantedStamp : ModItem
 		public override void LoadData(TagCompound tag) => usedStamp = tag.GetBool(nameof(usedStamp));
 	}
 
-	public sealed class StampGlobalItem : GlobalItem
-	{
-		public override void ApplyPrefix(Item item, int pre)
-		{
-			if (!Main.gameMenu && ModContent.GetInstance<StampToggle>().CurrentState != StampToggle.InactiveState && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects when active
-			{
-				GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
-				GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
+	public override void Load() => ItemEvents.OnPrefix += ReplacePrefixes;
 
-				if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
-					GlyphItem.GlyphGlobalItem.StartAnimation(item);
-			}
+	private static bool ReplacePrefixes(Item item, int prefix)
+	{
+		if (!Main.gameMenu && ModContent.GetInstance<StampToggle>().CurrentState != StampToggle.InactiveState && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects when active
+		{
+			GlyphItem[] array = ModContent.GetContent<GlyphItem>().ToArray();
+			GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
+
+			if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
+				GlyphItem.GlyphGlobalItem.StartAnimation(item);
+
+			return false;
 		}
+
+		return true;
 	}
 
 	public override void SetDefaults()
