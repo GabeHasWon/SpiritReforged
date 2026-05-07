@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -41,11 +42,8 @@ public class EnchantedStamp : ModItem
 				GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
 				GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
 
-				if (glyphItem.CanApplyGlyph(item))
-				{
-					glyphItem.ApplyGlyph(item, new GlyphItem.ApplyContext());
-					GlyphGlobalItem.StartAnimation(item);
-				}
+				if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
+					GlyphItem.GlyphGlobalItem.StartAnimation(item);
 			}
 		}
 	}

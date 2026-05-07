@@ -3144,7 +3144,7 @@ EnchantedStamp: {
 	/* Tooltip:
 		'''
 		Unlocks an ability toggle to the left of the inventory
-		When enabled occasionally grants glyph effects to crafted and reforged items
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
 		''' */
 	// Active: Enchantment on
 	// Inactive: Enchantment off

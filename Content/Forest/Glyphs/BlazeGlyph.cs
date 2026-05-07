@@ -239,12 +239,12 @@ public class BlazeGlyph : GlyphItem
 		}
 	}
 
-	public override void ApplyGlyph(Item item, IApplicationContext context)
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
 		item.damage += (int)Math.Round(item.damage * 0.25f);
 		item.crit += 10;
 
-		base.ApplyGlyph(item, context);
+		base.OnApplyGlyph(item, context);
 	}
 
 	public override void SetDefaults()

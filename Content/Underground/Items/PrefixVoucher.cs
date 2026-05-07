@@ -87,6 +87,10 @@ public class PrefixVoucher : ModItem
 		{
 			string text = (PrefixLoader.GetPrefix(prefix) is ModPrefix modPrefix ? modPrefix.DisplayName : Lang.prefix[prefix]).Value;
 
+			//Apply a name override
+			Item.ClearNameOverride();
+			Item.SetNameOverride(Item.Name.FormatWith(text));
+
 			Vector2 lineTwoSize = font.MeasureString(lines[1].Split(' ')[0]);
 			Vector2 prefixSize = font.MeasureString(text);
 
@@ -126,11 +130,6 @@ public class PrefixVoucher : ModItem
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		if (tooltips.FindIndex(static x => x.Name == "ItemName") is int index2 && index2 >= 0)
-		{
-			tooltips[index2].Text = tooltips[index2].Text.FormatWith(_info.PrefixText);
-		}
-
 		if (tooltips.FindIndex(static x => x.Name == "Tooltip1") is int index && index >= 0)
 		{
 			Color color = _info.Color * (Main.mouseTextColor / 255f);

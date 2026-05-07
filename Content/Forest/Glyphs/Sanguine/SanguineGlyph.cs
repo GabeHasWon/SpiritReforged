@@ -279,10 +279,9 @@ public class SanguineGlyph : GlyphItem
 		settings = new(Color.Red);
 	}
 
-	public override void ApplyGlyph(Item item, IApplicationContext context)
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
 		item.damage -= (int)Math.Round(item.damage * 0.2f);
-
-		base.ApplyGlyph(item, context);
+		base.OnApplyGlyph(item, context);
 	}
 }

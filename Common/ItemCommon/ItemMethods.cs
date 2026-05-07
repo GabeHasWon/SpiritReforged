@@ -65,7 +65,10 @@ internal static class ItemMethods
 		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
 	}
 
-	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) ? glyphItem.glyph : default;
+	#region extension methods
+	public static bool SetGlyph(this Item item, GlyphItem.GlyphType type, GlyphItem.IApplicationContext context = default) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.SetGlyph(item, type, context) : false;
+
+	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.Glyph : default;
 
 	public static void DefaultToTrophy(this Item Item, int style)
 	{
@@ -94,4 +97,5 @@ internal static class ItemMethods
 		Item.expert = true;
 		Item.rare = -2;
 	}
+	#endregion
 }

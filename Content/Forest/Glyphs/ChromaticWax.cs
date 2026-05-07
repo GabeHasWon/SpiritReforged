@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics.Renderers;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
@@ -27,157 +26,6 @@ public class ChromaticWax : ModItem
 		Item.value = 0;
 		Item.rare = ItemRarityID.Quest;
 		Item.maxStack = Item.CommonMaxStack;
-	}
-}
-
-#region globals
-public class GlyphGlobalItem : GlobalItem
-{
-	public override bool InstancePerEntity => true;
-
-	private static float AnimationProgress;
-	private static Item AnimationItem;
-	/// <summary> Prevents item consumption for the local client only. </summary>
-	private static bool StopItemConsumption;
-
-	public GlyphItem.GlyphType glyph;
-
-	public static void StartAnimation(Item item)
-	{
-		AnimationItem = item;
-		AnimationProgress = 1;
-	}
-
-	public override void ApplyPrefix(Item item, int pre)
-	{
-		if (WorldGen.gen && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects on worldgen
-		{
-			GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
-			GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
-
-			if (glyphItem.CanApplyGlyph(item))
-				glyphItem.ApplyGlyph(item, new GlyphItem.GenerateContext());
-		}
-	}
-
-	public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
-
-	public override void RightClick(Item item, Player player)
-	{
-		if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-		{
-			glyphItem.ApplyGlyph(item, new GlyphItem.ApplyContext(player));
-
-			if (--Main.mouseItem.stack <= 0)
-				Main.mouseItem.TurnToAir(); //Consume the glyph on hand
-
-			StartAnimation(item);
-			StopItemConsumption = true;
-		}
-	}
-
-	public override bool ConsumeItem(Item item, Player player)
-	{
-		bool value = StopItemConsumption;
-		StopItemConsumption = false;
-		return !value;
-	}
-
-	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem)
-		{
-			tooltips.AddRange(new List<TooltipLine>()
-				{
-					new(Mod, "GlyphEffect", glyphItem.Effect.Value) { OverrideColor = glyphItem.settings.Color },
-					new(Mod, "GlyphTooltip", glyphItem.Tooltip.Value)
-				}
-			);
-		}
-	}
-
-	public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
-	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
-			g.UpdateGlyphItemInWorld(item);
-	}
-
-	public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
-		{
-			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
-
-			Vector2 origin = frame.Size() / 2f;
-			Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
-
-			g.PreDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
-		}
-
-		return true;
-	}
-
-	public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-	{
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem g)
-		{
-			Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
-
-			Vector2 origin = frame.Size() / 2f;
-			Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
-			
-			g.PostDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
-		}
-	}
-
-	public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-	{
-		const int slotDimensions = 52;
-
-		if (glyph != default && ItemLoader.GetItem(glyph.ItemType) is GlyphItem glyphItem) //Draw glyph inventory icons
-		{
-			Texture2D texture = glyphItem.IconTexture.Value;
-			float iconScale = Main.inventoryScale;
-			Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - texture.Size() / 2 - new Vector2(4)) * iconScale;
-
-			DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
-				spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
-
-			spriteBatch.Draw(texture, iconPosition, null, Color.White * (1f - AnimationProgress), 0, texture.Size() / 2, iconScale, 0, 0);
-
-			if (AnimationItem == item && AnimationProgress > 0)
-			{
-				Texture2D splashTexture = TextureAssets.Item[glyph.ItemType].Value;
-				float splashScale = (Math.Max((AnimationProgress - 0.5f) * 2, 0) + 1) * Main.UIScale;
-
-				spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(AnimationProgress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
-
-				AnimationProgress -= 0.05f;
-			}
-		}
-	}
-
-	public override void NetSend(Item item, BinaryWriter writer) => writer.Write(glyph.ItemType);
-
-	public override void NetReceive(Item item, BinaryReader reader)
-	{
-		if (reader.ReadInt32() is int itemType && itemType != -1)
-		{
-			if (ItemLoader.GetItem(itemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-				glyphItem.ApplyGlyph(item, new GlyphItem.SyncContext(255));
-		}
-	}
-
-	public override void SaveData(Item item, TagCompound tag)
-	{
-		if (glyph.Name != null)
-			tag[nameof(glyph)] = glyph.Name;
-	}
-
-	public override void LoadData(Item item, TagCompound tag)
-	{
-		if (tag.GetString(nameof(glyph)) is string name && name != null && Mod.TryFind(name, out ModItem modItem) && modItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
-			glyphItem.ApplyGlyph(item, new GlyphItem.LoadContext());
 	}
 }
 
@@ -209,11 +57,175 @@ public class GlyphGlobalProjectile : GlobalProjectile
 			glyph = new(itemType);
 	}
 }
-#endregion
 
 [AutoloadGlowmask("255,255,255")]
 public abstract class GlyphItem : ModItem
 {
+	public sealed class GlyphGlobalItem : GlobalItem
+	{
+		public override bool InstancePerEntity => true;
+
+		private static float AnimationProgress;
+		private static Item AnimationItem;
+		/// <summary> Prevents item consumption for the local client only. </summary>
+		private static bool StopItemConsumption;
+
+		public GlyphType Glyph { get; private set; }
+
+		public static void StartAnimation(Item item)
+		{
+			AnimationItem = item;
+			AnimationProgress = 1;
+		}
+
+		/// <summary> Applies the provided glyph effect to <paramref name="item"/>. </summary>
+		/// <param name="item"></param>
+		/// <param name="type"></param>
+		/// <returns> Whether <paramref name="type"/> was successfully applied. </returns>
+		public bool SetGlyph(Item item, GlyphType type, IApplicationContext context)
+		{
+			if (ItemLoader.GetItem(type.ItemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			{
+				Glyph = type;
+				glyphItem.OnApplyGlyph(item, context);
+
+				return true;
+			}
+
+			return false;
+		}
+
+		public override void ApplyPrefix(Item item, int pre)
+		{
+			if (WorldGen.gen && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects on worldgen
+			{
+				GlyphItem[] array = Mod.GetContent<GlyphItem>().ToArray();
+				GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
+
+				item.SetGlyph(new(glyphItem.Type), new GenerateContext());
+			}
+		}
+
+		public override bool CanReforge(Item item) => Glyph == default; //No glyph effect is present
+
+		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
+
+		public override void RightClick(Item item, Player player)
+		{
+			if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			{
+				glyphItem.OnApplyGlyph(item, new ApplyContext(player));
+
+				if (--Main.mouseItem.stack <= 0)
+					Main.mouseItem.TurnToAir(); //Consume the glyph on hand
+
+				StartAnimation(item);
+				StopItemConsumption = true;
+			}
+		}
+
+		public override bool ConsumeItem(Item item, Player player)
+		{
+			bool value = StopItemConsumption;
+			StopItemConsumption = false;
+			return !value;
+		}
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
+			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem glyphItem)
+			{
+				tooltips.AddRange(new List<TooltipLine>()
+					{
+						new(Mod, "GlyphEffect", glyphItem.Effect.Value) { OverrideColor = glyphItem.settings.Color },
+						new(Mod, "GlyphTooltip", glyphItem.Tooltip.Value)
+					}
+				);
+			}
+		}
+
+		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
+		{
+			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
+				g.UpdateGlyphItemInWorld(item);
+		}
+
+		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
+			{
+				Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
+
+				Vector2 origin = frame.Size() / 2f;
+				Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
+
+				g.PreDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
+			}
+
+			return true;
+		}
+
+		public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
+		{
+			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
+			{
+				Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
+
+				Vector2 origin = frame.Size() / 2f;
+				Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
+
+				g.PostDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
+			}
+		}
+
+		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			const int slotDimensions = 52;
+
+			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem glyphItem) //Draw glyph inventory icons
+			{
+				Texture2D texture = glyphItem.IconTexture.Value;
+				float iconScale = Main.inventoryScale;
+				Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - texture.Size() / 2 - new Vector2(4)) * iconScale;
+
+				DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
+					spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
+
+				spriteBatch.Draw(texture, iconPosition, null, Color.White * (1f - AnimationProgress), 0, texture.Size() / 2, iconScale, 0, 0);
+
+				if (AnimationItem == item && AnimationProgress > 0)
+				{
+					Texture2D splashTexture = TextureAssets.Item[Glyph.ItemType].Value;
+					float splashScale = (Math.Max((AnimationProgress - 0.5f) * 2, 0) + 1) * Main.UIScale;
+
+					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(AnimationProgress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
+
+					AnimationProgress -= 0.05f;
+				}
+			}
+		}
+
+		public override void NetSend(Item item, BinaryWriter writer) => writer.Write(Glyph.ItemType);
+
+		public override void NetReceive(Item item, BinaryReader reader)
+		{
+			if (reader.ReadInt32() is int itemType && itemType != -1)
+				item.SetGlyph(new(itemType), new SyncContext(255));
+		}
+
+		public override void SaveData(Item item, TagCompound tag)
+		{
+			if (Glyph.Name != null)
+				tag[nameof(Glyph)] = Glyph.Name;
+		}
+
+		public override void LoadData(Item item, TagCompound tag)
+		{
+			if (tag.GetString(nameof(Glyph)) is string name && name != null && Mod.TryFind(name, out ModItem modItem))
+				item.SetGlyph(new(modItem.Type), new LoadContext());
+		}
+	}
+
 	#region application context
 	public interface IApplicationContext;
 
@@ -267,25 +279,21 @@ public abstract class GlyphItem : ModItem
 		Enchanter.SpecialShop.Add(Type, 3);
 	}
 
-	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.glyph.ItemType != Type;
+	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type;
 
-	/// <summary> Applies the effects of this Glyph to <paramref name="item"/>. </summary>
+	/// <summary> Called when this glyph effect is applied to <paramref name="item"/>. </summary>
 	/// <param name="item"> The item being affected. </param>
 	/// <param name="context"> The context in which this effect is being applied. Some examples include <see cref="ApplyContext"/>, <see cref="GenerateContext"/>, and <see cref="SyncContext"/>. </param>
-	public virtual void ApplyGlyph(Item item, IApplicationContext context)
+	protected virtual void OnApplyGlyph(Item item, IApplicationContext context)
 	{
-		item.GetGlobalItem<GlyphGlobalItem>().glyph = new(Type);
-		
 		if (context is ApplyContext)
 			SoundEngine.PlaySound(EnchantSound);
 
 		item.prefix = 0;
-		//item.DamageType = ContentSamples.ItemsByType[item.type].DamageType; //Default damage type
-
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);
 
-		if (item.rare < 13)
+		if (item.rare < ItemRarityID.Purple)
 			item.rare++;
 
 		if (context is not SyncContext)

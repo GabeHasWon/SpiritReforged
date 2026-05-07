@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
@@ -175,8 +176,8 @@ public class EnchanterUI : AutoUIState
 				for (int c = 0; c < cost; c++)
 					Main.LocalPlayer.ConsumeItem(type);
 
-				_hovered.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
-				GlyphGlobalItem.StartAnimation(_slot.Item);
+				_slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer));
+				GlyphItem.GlyphGlobalItem.StartAnimation(_slot.Item);
 			}
 		}
 	}

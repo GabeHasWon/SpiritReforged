@@ -234,12 +234,12 @@ public class MoonlightGlyph : GlyphItem
 
 	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !item.DamageType.CountsAsClass(DamageClass.Magic);
 
-	public override void ApplyGlyph(Item item, IApplicationContext context)
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
 		item.DamageType = ModContent.GetInstance<HybridDamageClass>().Clone()
 			.AddSubClass(new(item.DamageType, 0.8f))
 			.AddSubClass(new(DamageClass.Magic, 0.2f));
 
-		base.ApplyGlyph(item, context);
+		base.OnApplyGlyph(item, context);
 	}
 }

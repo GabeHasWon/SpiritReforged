@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
@@ -156,7 +157,7 @@ public class EnchantmentUI : AutoUIState
 	{
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
 		{
-			glyphItem.ApplyGlyph(_slot.Item, new GlyphItem.ApplyContext(Main.LocalPlayer));
+			_slot.Item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer));
 			Point16 target = EnchantedWorkbench.TargetWorkbench;
 
 			if (target != Point16.Zero)
