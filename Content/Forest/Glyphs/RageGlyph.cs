@@ -1,0 +1,106 @@
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+
+namespace SpiritReforged.Content.Forest.Glyphs;
+public class RageGlyph : GlyphItem
+{
+	public sealed class RagePlayer : ModPlayer
+	{
+
+	}
+
+	public override void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	{
+		var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
+
+		Effect effect = AssetLoader.LoadedShaders["GlyphShader"].Value;
+
+		effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+		effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+		effect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+		var noise = AssetLoader.LoadedTextures["swirlNoise"].Value;
+		//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
+		var noiseAlt = AssetLoader.LoadedTextures["swirlNoise"].Value;
+
+		effect.Parameters["uImage1"].SetValue(noise);
+		effect.Parameters["uImage2"].SetValue(noiseAlt);
+		//effect.Parameters["uImage3"].SetValue(gradient);
+		effect.Parameters["itemSize"].SetValue(texture.Size());
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		effect.Parameters["uColor1"].SetValue(Color.Lerp(Color.OrangeRed, Color.Red, sin).ToVector4() * 0.5f);
+		effect.Parameters["uColor2"].SetValue(Color.Lerp(Color.DarkRed, new Color(226, 0, 45), cos).ToVector4() * 0.5f);
+		effect.Parameters["uColor3"].SetValue(Color.Orange.ToVector4());
+
+		effect.Parameters["baseDepth"].SetValue(4f);
+		effect.Parameters["scale"].SetValue(0.66f);
+
+		float shakeCounter = (float)Math.Sin(Main.timeForVisualEffects * 0.025f);
+		if (shakeCounter < 0)
+			shakeCounter = 0f;
+
+		Vector2 shake = Main.rand.NextVector2Circular(0.75f, 0.75f) * shakeCounter;
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+
+			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.Red * 0.5f, rotation, origin, scale, 0f, 0f);
+
+			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+
+			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.Red * 0.15f, rotation, origin, scale, 0f, 0f);
+		}
+
+		spriteBatch.End();
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+
+			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.White, rotation, origin, scale, 0f, 0f);
+		}
+
+		spriteBatch.RestartToDefault();
+	}
+
+	public override void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	{
+
+	}
+
+	public override void UpdateGlyphItemInWorld(Item item)
+	{
+		if (Main.rand.NextBool(120))
+		{
+			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.DarkRed.Additive(), 0.2f, 35, 0)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveItem
+			});
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightPink.Additive(), 0.15f, 30, 0, AddLight: false)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveItem
+			});
+		}
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(Color.Red);
+	}
+}

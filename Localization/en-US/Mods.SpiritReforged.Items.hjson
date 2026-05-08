@@ -3149,3 +3149,8 @@ EnchantedStamp: {
 	Active: Enchantment on
 	Inactive: Enchantment off
 }
+
+RageGlyph: {
+	DisplayName: Rage Glyph
+	Tooltip: ""
+}

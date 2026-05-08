@@ -243,7 +243,7 @@ public class BeeGlyph : GlyphItem
 			if (!Main.dedServ && _tagged && Main.rand.NextBool(5) && ParticleHandler.Particles.Where(p => p is BeeOnNPC && (p as BeeOnNPC).Parent == npc).Count() < 3)
 				ParticleHandler.SpawnParticle(new BeeOnNPC(npc, Main.rand.NextVector2Circular(25f, 25f)));
 
-			if (Main.rand.NextBool(100))
+			if (Main.rand.NextBool(100) && _tagged)
 				ParticleHandler.SpawnParticle(new LargeBeeParticle(npc.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(2f, 2f), 0f, Main.rand.NextFloat(0.8f, 1.1f), 90 + Main.rand.Next(60)));
 		}
 

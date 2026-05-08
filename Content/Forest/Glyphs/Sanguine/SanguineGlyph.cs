@@ -276,7 +276,7 @@ public class SanguineGlyph : GlyphItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = Item.CommonMaxStack;
-		settings = new(Color.Red);
+		settings = new(Color.DarkRed);
 	}
 
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
