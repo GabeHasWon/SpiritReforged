@@ -31,8 +31,8 @@ ReforgedClientConfig: {
 	}
 
 	DisableWater: {
-		// Label: Disable Water
-		// Tooltip: ""
+		// Label: Disable Water Visuals
+		// Tooltip: Disables the Reforged water visuals.
 	}
 }
 
