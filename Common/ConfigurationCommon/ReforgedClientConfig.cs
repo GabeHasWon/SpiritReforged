@@ -24,6 +24,10 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(1)]
 	public float ScreenshakeStrength { get; set; }
 
+	[DefaultValue(false)]
+	[ReloadRequired]
+	public bool DisableWater { get; set; }
+
 	public override void OnChanged()
 	{
 		int type = ModContent.TileType<SaltBlockReflective>();

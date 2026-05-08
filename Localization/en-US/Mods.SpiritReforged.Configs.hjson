@@ -27,7 +27,12 @@ ReforgedClientConfig: {
 
 	ScreenshakeStrength: {
 		Label: Screenshake Strength
-		Tooltip: ""
+		Tooltip: Controls how strong all of Reforged's screenshake is.
+	}
+
+	DisableWater: {
+		Label: Disable Water Visuals
+		Tooltip: Disables the Reforged water visuals.
 	}
 }
 
