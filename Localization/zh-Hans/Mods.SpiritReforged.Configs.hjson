@@ -27,12 +27,12 @@ ReforgedClientConfig: {
 
 	ScreenshakeStrength: {
 		Label: 屏幕震动强度
-		Tooltip: ""
+		Tooltip: 控制魂灵新魄屏幕震动的强度。
 	}
 
 	DisableWater: {
-		// Label: Disable Water
-		// Tooltip: ""
+		Label: 禁用水体视觉效果
+		Tooltip: 禁用魂灵新魄水体的视觉效果。
 	}
 }
 
