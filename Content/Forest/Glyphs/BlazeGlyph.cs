@@ -2,23 +2,14 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using System.Linq;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BlazeGlyph : GlyphItem
 {
-	/*public sealed class BlazeDebuff : ModBuff
-	{
-
-	}*/
-
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void MeleeEffects(Item item, Rectangle hitbox)

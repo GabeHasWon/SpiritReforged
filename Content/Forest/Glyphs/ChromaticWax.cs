@@ -114,7 +114,7 @@ public abstract class GlyphItem : ModItem
 		{
 			if (Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
 			{
-				glyphItem.OnApplyGlyph(item, new ApplyContext(player));
+				item.SetGlyph(new(glyphItem.Type), new ApplyContext(player));
 
 				if (--Main.mouseItem.stack <= 0)
 					Main.mouseItem.TurnToAir(); //Consume the glyph on hand
