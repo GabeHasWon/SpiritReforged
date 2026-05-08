@@ -3,7 +3,7 @@ using SpiritReforged.Common.Subclasses.Wrenches;
 
 namespace SpiritReforged.Content.Forest.OreWrenches;
 
-internal class CopperSpanner : ModItem, ISentryHitItem, IScrapDropEntity
+internal class CopperSpanner : ModItem, ISentryHitEntity, IScrapDropEntity
 {
 	internal class SpannerProjectile : GlobalProjectile
 	{
@@ -38,7 +38,7 @@ internal class CopperSpanner : ModItem, ISentryHitItem, IScrapDropEntity
 		Item.useTurn = true;
 	}
 
-	bool ISentryHitItem.CanHitSentry(Player player, Projectile sentry) => player.HasItem(ModContent.ItemType<ScrapItem>());
+	bool ISentryHitEntity.CanHitSentry(Player player, Projectile sentry) => player.HasItem(ModContent.ItemType<ScrapItem>());
 
 	public void OnHitSentry(Player player, Projectile sentry)
 	{
