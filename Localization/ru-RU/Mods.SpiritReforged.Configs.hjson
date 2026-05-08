@@ -29,6 +29,11 @@ ReforgedClientConfig: {
 		Label: Множитель силы тряски экрана
 		Tooltip: ""
 	}
+
+	DisableWater: {
+		// Label: Disable Water
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {

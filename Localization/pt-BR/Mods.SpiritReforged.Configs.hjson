@@ -29,6 +29,11 @@ ReforgedClientConfig: {
 		Label: Tremor da tela
 		Tooltip: ""
 	}
+
+	DisableWater: {
+		// Label: Disable Water
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {
