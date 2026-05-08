@@ -29,6 +29,11 @@ ReforgedClientConfig: {
 		Label: 屏幕震动强度
 		Tooltip: ""
 	}
+
+	DisableWater: {
+		// Label: Disable Water
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {

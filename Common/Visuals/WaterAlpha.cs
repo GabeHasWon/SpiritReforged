@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.Drawing;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 
@@ -14,6 +15,9 @@ public class WaterAlpha : ILoadable
 
 	public void Load(Mod mod)
 	{
+		if (ModContent.GetInstance<ReforgedClientConfig>().DisableWater)
+			return;
+
 		On_LiquidRenderer.DrawNormalLiquids += CheckLiquid;
 		On_TileDrawing.DrawPartialLiquid += DrawPartialLiquid;
 		On_Lighting.GetCornerColors += ModifyWater;
