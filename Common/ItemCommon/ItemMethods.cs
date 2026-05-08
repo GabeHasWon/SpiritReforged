@@ -66,7 +66,7 @@ internal static class ItemMethods
 	}
 
 	#region extension methods
-	public static bool SetGlyph(this Item item, GlyphItem.GlyphType type, GlyphItem.IApplicationContext context = default) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.SetGlyph(item, type, context) : false;
+	public static bool SetGlyph(this Item item, GlyphItem.GlyphType type, GlyphItem.IApplicationContext context = default) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) && glyphItem.SetGlyph(item, type, context);
 
 	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.Glyph : default;
 
