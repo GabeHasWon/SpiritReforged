@@ -138,12 +138,10 @@ public class MoonlightGlyph : GlyphItem
 					}
 				}
 
-				Color orange;
+				Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
 
-				orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
-
-				CombatText.NewText(target.getRect(), orange, (int)(damageDone * 0.8f), hit.Crit);
-				int magicDamage = CombatText.NewText(target.getRect(), Color.White, (int)(damageDone * 0.2f), hit.Crit);
+				CombatText.NewText(target.getRect(), orange, Math.Max((int)(damageDone * 0.8f), 1), hit.Crit);
+				int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
 
 				maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
 			}

@@ -134,8 +134,8 @@ public class SanguineGlyph : GlyphItem
 					int bonusDamage = damageDone - originalDamage;
 					if (bonusDamage > 0)
 					{
-						CombatText.NewText(target.getRect(), orange, originalDamage, hit.Crit);
-						int magicDamage = CombatText.NewText(target.getRect(), Color.White, bonusDamage, hit.Crit);
+						CombatText.NewText(target.getRect(), orange, Math.Max(originalDamage, 1), hit.Crit);
+						int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max(bonusDamage, 1), hit.Crit);
 
 						maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
 					}
