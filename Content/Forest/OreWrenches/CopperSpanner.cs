@@ -3,7 +3,7 @@ using SpiritReforged.Common.Subclasses.Wrenches;
 
 namespace SpiritReforged.Content.Forest.OreWrenches;
 
-internal class CopperSpanner : ModItem, ISentryHitItem, IScrapDropItem
+internal class CopperSpanner : ModItem, ISentryHitItem, IScrapDropEntity
 {
 	internal class SpannerProjectile : GlobalProjectile
 	{
