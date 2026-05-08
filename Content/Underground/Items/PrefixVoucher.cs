@@ -1,7 +1,6 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
-using System.Collections.ObjectModel;
 using System.IO;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
@@ -52,7 +51,7 @@ public class PrefixVoucher : ModItem
 		}
 	}
 
-	public readonly record struct ExtendedPrefixInfo(Color Color, int Rarity, string PrefixText, Rectangle TooltipSource);
+	private readonly record struct ExtendedPrefixInfo(Color Color, int Rarity, string PrefixText, Rectangle TooltipSource);
 
 	/// <summary> Item types to sample for prefix rarity color. </summary>
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
@@ -61,7 +60,7 @@ public class PrefixVoucher : ModItem
 	private ExtendedPrefixInfo _info;
 
 	/// <summary> <see cref="prefix"/> must be valid before calling. </summary>
-	public ExtendedPrefixInfo FindInfo()
+	private ExtendedPrefixInfo FindInfo()
 	{
 		Color color = Color.White;
 		int rare = ItemRarityID.White;
@@ -137,23 +136,18 @@ public class PrefixVoucher : ModItem
 		}
 	}
 
-	public override void PostDrawTooltip(ReadOnlyCollection<DrawableTooltipLine> lines)
+	public override void PostDrawTooltipLine(DrawableTooltipLine line)
 	{
-		foreach (DrawableTooltipLine line in lines)
-		{
-			if (line.Name != "Tooltip1")
-				continue;
+		if (line.Name != "Tooltip1")
+			return;
 
-			Texture2D texture = AssetLoader.LoadedTextures["Star"].Value;
-			Rectangle area = new(line.X + _info.TooltipSource.X + 8, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
+		Rectangle area = new(line.X + _info.TooltipSource.X + 8, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Main.EntitySpriteDraw(bloom, area.Center(), null, _info.Color.Additive() * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * area.Width * 1.5f, 1f / bloom.Height * area.Height), default);
 
-			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			Main.EntitySpriteDraw(bloom, area.Center(), null, _info.Color.Additive() * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * area.Width * 1.5f, 1f / bloom.Height * area.Height), default);
-
-			DrawStar(new(area.X, area.Y), _info.Color.Additive(), 12);
-			DrawStar(new(area.X + area.Width * 0.75f, area.Y + area.Height * 0.8f), _info.Color.Additive(), 30);
-			DrawStar(new(area.Right, area.Y + area.Height * 0.2f), _info.Color.Additive(), 20);
-		}
+		DrawStar(new(area.X, area.Y), _info.Color.Additive(), 12);
+		DrawStar(new(area.X + area.Width * 0.75f, area.Y + area.Height * 0.8f), _info.Color.Additive(), 30);
+		DrawStar(new(area.Right, area.Y + area.Height * 0.2f), _info.Color.Additive(), 20);
 
 		static void DrawStar(Vector2 position, Color color, float duration)
 		{

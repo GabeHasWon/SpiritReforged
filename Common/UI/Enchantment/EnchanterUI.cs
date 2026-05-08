@@ -36,7 +36,6 @@ public class EnchanterUI : AutoUIState
 	}
 
 	public static readonly Asset<Texture2D> LowerPanel = DrawHelpers.RequestLocal<EnchanterUI>("GlyphBubble", false);
-	public static readonly Asset<Texture2D> WaxIcon = DrawHelpers.RequestLocal<EnchanterUI>("ChromaticWaxIcon", false);
 
 	private static GlyphItem _hovered;
 
@@ -218,7 +217,7 @@ public class EnchanterUI : AutoUIState
 		bounds.Y -= 4;
 		Rectangle innerBounds = new(bounds.X, bounds.Y, 50, bounds.Height);
 		CatalogueUI.DrawPanel(spriteBatch, innerBounds, Color.Black * 0.3f, Color.Black * 0.2f);
-		Texture2D texture = WaxIcon.Value;
+		Texture2D texture = ChromaticWax.WorldTexture.Value;
 
 		spriteBatch.Draw(texture, innerBounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
 		Utils.DrawBorderString(spriteBatch, Enchanter.SpecialShop[_hovered.Type].ToString(), innerBounds.Right() + new Vector2(-12, 4), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);

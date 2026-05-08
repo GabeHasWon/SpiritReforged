@@ -3,9 +3,11 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
 using Terraria.Audio;
@@ -17,15 +19,76 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
 {
+	public static Color SpecialColor => Main.hslToRgb((float)Main.timeForVisualEffects / 300f % 1f, 1, 0.8f);
+
+	public static readonly Asset<Texture2D> WorldTexture = DrawHelpers.RequestLocal<ChromaticWax>("ChromaticWax_World", false);
+
 	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 
 	public override void SetDefaults()
 	{
 		Item.width = 28;
 		Item.height = 28;
-		Item.value = 0;
-		Item.rare = ItemRarityID.Quest;
+		Item.value = Item.sellPrice(silver: 10);
+		Item.rare = ItemRarityID.Blue;
 		Item.maxStack = Item.CommonMaxStack;
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		if (tooltips.FindIndex(static x => x.Name == "ItemName") is int index && index != -1)
+			tooltips[index].OverrideColor = SpecialColor;
+	}
+
+	public override void PostDrawTooltipLine(DrawableTooltipLine line)
+	{
+		if (line.Name == "ItemName")
+		{
+			Vector2 lineSize = line.Font.MeasureString(line.Text);
+			Rectangle source = new(line.X, line.Y, (int)lineSize.X, (int)lineSize.Y);
+			Color color = SpecialColor.Additive();
+
+			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+			Main.EntitySpriteDraw(bloom, source.Center(), null, color * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), default);
+
+			DrawStar(new(source.X, source.Y), color * 0.15f, 22);
+			DrawStar(new(source.X + source.Width * 0.5f, source.Y + source.Height * 0.7f), color * 0.3f, 30);
+			DrawStar(new(source.Right, source.Y + source.Height * 0.3f), color * 0.1f, 25);
+		}
+
+		static void DrawStar(Vector2 position, Color color, float duration)
+		{
+			double time = Main.timeForVisualEffects;
+			float fullDuration = duration * 5;
+			float opacity = (float)EaseFunction.EaseSine.Ease((float)time / fullDuration);
+
+			position += Vector2.UnitX * (float)(time / fullDuration % 1) * 10;
+
+			Texture2D texture = AssetLoader.LoadedTextures["Star"].Value;
+			Main.spriteBatch.Draw(texture, position, null, color * opacity, (float)Main.timeForVisualEffects * 0.01f, texture.Size() / 2, 0.1f, 0, 0);
+			Main.spriteBatch.Draw(texture, position, null, color.Additive() * opacity * 0.5f, (float)Main.timeForVisualEffects * 0.01f, texture.Size() / 2, 0.08f, 0, 0);
+		}
+	}
+
+	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+	{
+		Texture2D texture = WorldTexture.Value;
+		Vector2 origin = texture.Size() / 2;
+		Vector2 center = Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
+
+		float itemScale = scale;
+		float itemRotation = rotation;
+
+		if (!Main.gamePaused && Main.rand.NextBool(20))
+		{
+			ParticleHandler.SpawnParticle(new EmberParticle(center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, Main.rand.NextFloat(0.2f, 0.6f), 90));
+		}
+
+		DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+			spriteBatch.Draw(texture, center - Main.screenPosition + offset, null, Item.GetAlpha(SpecialColor.Additive()), itemRotation, origin, itemScale, 0, 0));
+
+		spriteBatch.Draw(texture, center - Main.screenPosition, null, Item.GetAlpha(lightColor), itemRotation, origin, itemScale, 0, 0);
+		return false;
 	}
 }
 

@@ -3041,7 +3041,7 @@ ScarabLightPetItem: {
 
 ChromaticWax: {
 	// DisplayName: Chromatic Wax
-	// Tooltip: ""
+	// Tooltip: Can be exchanged for magical glyphs
 	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
 	// Target: Can only be applied to weapons
 	// RightClick: Hold this glyph and right-click the item you want to enchant
