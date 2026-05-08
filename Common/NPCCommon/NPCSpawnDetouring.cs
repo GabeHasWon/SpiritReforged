@@ -1,5 +1,6 @@
 ﻿using MonoMod.Cil;
 using SpiritReforged.Content.SaltFlats.Biome;
+using System.Reflection.Emit;
 
 namespace SpiritReforged.Common.NPCCommon;
 
@@ -21,6 +22,8 @@ internal class NPCSpawnDetouring : ILoadable
 			return;
 
 		c.EmitDelegate(PreSpawnNPC);
+		//Move ahead so the next remixWorld check doesn't land us at the same remixworld check as before
+		c.Index += 2;
 
 		if (!c.TryGotoNext(x => x.MatchLdsfld<Main>(nameof(Main.remixWorld))))
 			return;

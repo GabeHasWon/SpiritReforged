@@ -3073,3 +3073,83 @@ SandySandstoneItem: {
 	DisplayName: 砂质沙岩
 	Tooltip: ""
 }
+
+TerracottaTombstoneItem: {
+	// Tooltip: ""
+	// DisplayName: Terracotta Tombstone Item
+}
+
+TerracottaGraveMarkerItem: {
+	// Tooltip: ""
+	// DisplayName: Terracotta Grave Marker Item
+}
+
+TerracottaGravestoneItem: {
+	// Tooltip: ""
+	// DisplayName: Terracotta Gravestone Item
+}
+
+TerracottaObeliskItem: {
+	// Tooltip: ""
+	// DisplayName: Terracotta Obelisk Item
+}
+
+DrywoodTombstoneItem: {
+	// Tooltip: ""
+	// DisplayName: Drywood Tombstone Item
+}
+
+SavannaGravestoneItem: {
+	// Tooltip: ""
+	// DisplayName: Savanna Gravestone Item
+}
+
+DrywoodGraveMarkerItem: {
+	// Tooltip: ""
+	// DisplayName: Drywood Grave Marker Item
+}
+
+DrywoodCrossGraveMarkerItem: {
+	// Tooltip: ""
+	// DisplayName: Drywood Cross Grave Marker Item
+}
+
+ModernObeliskItem: {
+	// Tooltip: ""
+	// DisplayName: Modern Obelisk Item
+}
+
+ModernTombscreenItem: {
+	// Tooltip: ""
+	// DisplayName: Modern Tombscreen Item
+}
+
+ModernGravestoneItem: {
+	// Tooltip: ""
+	// DisplayName: Modern Gravestone Item
+}
+
+ModernHeadstoneItem: {
+	// Tooltip: ""
+	// DisplayName: Modern Headstone Item
+}
+
+SaltHeadstoneItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Headstone Item
+}
+
+SaltTombstoneItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Tombstone Item
+}
+
+SaltGravestoneItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Gravestone Item
+}
+
+SaltGraveMarkerItem: {
+	// Tooltip: ""
+	// DisplayName: Salt Grave Marker Item
+}
