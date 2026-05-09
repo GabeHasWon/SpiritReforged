@@ -79,3 +79,19 @@ SandballProjectile.DisplayName: Bola de Areia
 BabyAntlionProjectile.DisplayName: Projétil da Pequena Formiga-Leão
 ScarabLightPet.DisplayName: Escarabebê
 SoilBallProjectile.DisplayName: Bola de Tralha
+// TerracottaTombstoneProjectile.DisplayName: Terracotta Tombstone Projectile
+// TerracottaGraveMarkerProjectile.DisplayName: Terracotta Grave Marker Projectile
+// TerracottaGravestoneProjectile.DisplayName: Terracotta Gravestone Projectile
+// TerracottaObeliskProjectile.DisplayName: Terracotta Obelisk Projectile
+// DrywoodTombstoneProjectile.DisplayName: Drywood Tombstone Projectile
+// SavannaGravestoneProjectile.DisplayName: Savanna Gravestone Projectile
+// DrywoodGraveMarkerProjectile.DisplayName: Drywood Grave Marker Projectile
+// DrywoodCrossGraveMarkerProjectile.DisplayName: Drywood Cross Grave Marker Projectile
+// ModernObeliskProjectile.DisplayName: Modern Obelisk Projectile
+// ModernTombscreenProjectile.DisplayName: Modern Tombscreen Projectile
+// ModernGravestoneProjectile.DisplayName: Modern Gravestone Projectile
+// ModernHeadstoneProjectile.DisplayName: Modern Headstone Projectile
+// SaltHeadstoneProjectile.DisplayName: Salt Headstone Projectile
+// SaltTombstoneProjectile.DisplayName: Salt Tombstone Projectile
+// SaltGravestoneProjectile.DisplayName: Salt Gravestone Projectile
+// SaltGraveMarkerProjectile.DisplayName: Salt Grave Marker Projectile
