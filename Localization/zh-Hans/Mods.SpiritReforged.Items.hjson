@@ -3075,81 +3075,81 @@ SandySandstoneItem: {
 }
 
 TerracottaTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Tombstone Item
+	Tooltip: ""
+	DisplayName: 赤陶墓石
 }
 
 TerracottaGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Grave Marker Item
+	Tooltip: ""
+	DisplayName: 赤陶墓石碑
 }
 
 TerracottaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Gravestone Item
+	Tooltip: ""
+	DisplayName: 赤陶墓碑
 }
 
 TerracottaObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Obelisk Item
+	Tooltip: ""
+	DisplayName: 赤陶方尖碑
 }
 
 DrywoodTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Tombstone Item
+	Tooltip: ""
+	DisplayName: 干木墓石
 }
 
 SavannaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Savanna Gravestone Item
+	Tooltip: ""
+	DisplayName: 稀树平原墓碑
 }
 
 DrywoodGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Grave Marker Item
+	Tooltip: ""
+	DisplayName: 干木墓石碑
 }
 
 DrywoodCrossGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Cross Grave Marker Item
+	Tooltip: ""
+	DisplayName: 干木十字墓石碑
 }
 
 ModernObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Obelisk Item
+	Tooltip: ""
+	DisplayName: 现代方尖碑
 }
 
 ModernTombscreenItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Tombscreen Item
+	Tooltip: ""
+	DisplayName: 现代屏墓
 }
 
 ModernGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Gravestone Item
+	Tooltip: ""
+	DisplayName: 现代墓碑
 }
 
 ModernHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Headstone Item
+	Tooltip: ""
+	DisplayName: 现代碑石
 }
 
 SaltHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Headstone Item
+	Tooltip: ""
+	DisplayName: 盐碑石
 }
 
 SaltTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Tombstone Item
+	Tooltip: ""
+	DisplayName: 盐墓石
 }
 
 SaltGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Gravestone Item
+	Tooltip: ""
+	DisplayName: 盐墓碑
 }
 
 SaltGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Grave Marker Item
+	Tooltip: ""
+	DisplayName: 盐墓石碑
 }
