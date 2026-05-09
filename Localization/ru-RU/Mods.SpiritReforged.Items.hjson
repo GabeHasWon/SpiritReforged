@@ -3075,81 +3075,81 @@ SandySandstoneItem: {
 }
 
 TerracottaTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Tombstone Item
+	DisplayName: Терракотовая надгробная плита
+	Tooltip: ""
 }
 
 TerracottaGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Grave Marker Item
+	DisplayName: Терракотовая могильная табличка
+	Tooltip: ""
 }
 
 TerracottaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Gravestone Item
+	DisplayName: Терракотовая могильная плита
+	Tooltip: ""
 }
 
 TerracottaObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Obelisk Item
+	DisplayName: Терракотовый обелиск
+	Tooltip: ""
 }
 
 DrywoodTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Tombstone Item
+	DisplayName: Надгробная плита из сухого дерева
+	Tooltip: ""
 }
 
 SavannaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Savanna Gravestone Item
+	DisplayName: Могильная плита саванны
+	Tooltip: ""
 }
 
 DrywoodGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Grave Marker Item
+	DisplayName: Могильная табличка из сухого дерева
+	Tooltip: ""
 }
 
 DrywoodCrossGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Cross Grave Marker Item
+	DisplayName: Могильный крест из сухого дерева
+	Tooltip: ""
 }
 
 ModernObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Obelisk Item
+	DisplayName: Современный обелиск
+	Tooltip: ""
 }
 
 ModernTombscreenItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Tombscreen Item
+	DisplayName: Современный надгробный экран
+	Tooltip: ""
 }
 
 ModernGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Gravestone Item
+	DisplayName: Современная могильная плита
+	Tooltip: ""
 }
 
 ModernHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Headstone Item
+	DisplayName: Современное надгробие
+	Tooltip: ""
 }
 
 SaltHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Headstone Item
+	DisplayName: Соляное надгробие
+	Tooltip: ""
 }
 
 SaltTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Tombstone Item
+	DisplayName: Соляная надгробная плита
+	Tooltip: ""
 }
 
 SaltGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Gravestone Item
+	DisplayName: Соляная могильная плита
+	Tooltip: ""
 }
 
 SaltGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Grave Marker Item
+	DisplayName: Соляная могильная табличка
+	Tooltip: ""
 }

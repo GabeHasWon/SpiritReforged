@@ -3062,81 +3062,81 @@ SandySandstoneItem: {
 }
 
 TerracottaTombstoneItem: {
+	// DisplayName: Terracotta Tombstone
 	// Tooltip: ""
-	// DisplayName: Terracotta Tombstone Item
 }
 
 TerracottaGraveMarkerItem: {
+	// DisplayName: Terracotta Grave Marker
 	// Tooltip: ""
-	// DisplayName: Terracotta Grave Marker Item
 }
 
 TerracottaGravestoneItem: {
+	// DisplayName: Terracotta Gravestone
 	// Tooltip: ""
-	// DisplayName: Terracotta Gravestone Item
 }
 
 TerracottaObeliskItem: {
+	// DisplayName: Terracotta Obelisk
 	// Tooltip: ""
-	// DisplayName: Terracotta Obelisk Item
 }
 
 DrywoodTombstoneItem: {
+	// DisplayName: Drywood Tombstone
 	// Tooltip: ""
-	// DisplayName: Drywood Tombstone Item
 }
 
 SavannaGravestoneItem: {
+	// DisplayName: Savanna Gravestone
 	// Tooltip: ""
-	// DisplayName: Savanna Gravestone Item
 }
 
 DrywoodGraveMarkerItem: {
+	// DisplayName: Drywood Grave Marker
 	// Tooltip: ""
-	// DisplayName: Drywood Grave Marker Item
 }
 
 DrywoodCrossGraveMarkerItem: {
+	// DisplayName: Drywood Cross Grave Marker
 	// Tooltip: ""
-	// DisplayName: Drywood Cross Grave Marker Item
 }
 
 ModernObeliskItem: {
+	// DisplayName: Modern Obelisk
 	// Tooltip: ""
-	// DisplayName: Modern Obelisk Item
 }
 
 ModernTombscreenItem: {
+	// DisplayName: Modern Tombscreen
 	// Tooltip: ""
-	// DisplayName: Modern Tombscreen Item
 }
 
 ModernGravestoneItem: {
+	// DisplayName: Modern Gravestone
 	// Tooltip: ""
-	// DisplayName: Modern Gravestone Item
 }
 
 ModernHeadstoneItem: {
+	// DisplayName: Modern Headstone
 	// Tooltip: ""
-	// DisplayName: Modern Headstone Item
 }
 
 SaltHeadstoneItem: {
+	// DisplayName: Salt Headstone
 	// Tooltip: ""
-	// DisplayName: Salt Headstone Item
 }
 
 SaltTombstoneItem: {
+	// DisplayName: Salt Tombstone
 	// Tooltip: ""
-	// DisplayName: Salt Tombstone Item
 }
 
 SaltGravestoneItem: {
+	// DisplayName: Salt Gravestone
 	// Tooltip: ""
-	// DisplayName: Salt Gravestone Item
 }
 
 SaltGraveMarkerItem: {
+	// DisplayName: Salt Grave Marker
 	// Tooltip: ""
-	// DisplayName: Salt Grave Marker Item
 }
