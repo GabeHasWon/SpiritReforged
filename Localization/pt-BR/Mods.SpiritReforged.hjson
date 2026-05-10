@@ -79,12 +79,12 @@ InfoDisplays: {
 	}
 }
 
-# I don't know what these are used for in game, because
+# I don't know what these are used for in game, because...
 // GreatshieldClass_Class.DisplayName: greatshield damage
 // WrenchClass_Class.DisplayName: wrench damage
 
 # These are what are displayed in-game. - Gabe
 DamageClasses: {
-	// GreatshieldClass.DisplayName: melee damage
-	// WrenchClass.DisplayName: summon damage
+	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
+	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
 }

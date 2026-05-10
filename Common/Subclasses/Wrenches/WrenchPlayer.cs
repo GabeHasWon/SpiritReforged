@@ -1,5 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using SpiritReforged.Common.Misc;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
+using Terraria.ModLoader.IO;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.Subclasses.Wrenches;
 
@@ -15,12 +18,68 @@ internal class WrenchPlayer : ModPlayer
 	/// <summary>
 	/// Internal sparse array for per-projectile immune frames.
 	/// </summary>
-	private readonly int[] _sentryImmune = [];
+	private readonly int[] _sentryImmune = new int[Main.maxProjectiles];
 
-	public int storedScrap = 0;
+	public int StoredScrap { get; private set; }
+
+	private int _scrapGrabTimer = 0;
+	private int _lastScrapAmount = 0;
+
+	public override void Load() => CustomCursor.DrawCustomCursor += AddScrapIcon;
+
+	private static void AddScrapIcon(bool thick)
+	{
+		if (thick || Main.LocalPlayer.HeldItem.ModItem is not IScrapDropEntity and not ISentryHitEntity || Main.LocalPlayer.mouseInterface)
+			return;
+
+		const int Offset = 30;
+
+		int type = ModContent.ItemType<ScrapItem>();
+		Main.instance.LoadItem(type);
+		Texture2D tex = TextureAssets.Item[type].Value;
+		Vector2 pos = Main.MouseScreen;
+		float opacity = 1f;
+
+		if (pos.X < Main.screenWidth - Offset * 2)
+			pos.X += Offset;
+		else
+			pos.X -= Offset;
+
+		WrenchPlayer plr = Main.LocalPlayer.GetModPlayer<WrenchPlayer>();
+		string text = "x" + plr.StoredScrap.ToString();
+		Color color = Main.MouseTextColorReal;
+		float adjustedTimer = MathF.Max(0, plr._scrapGrabTimer * 0.02f);
+		float textScale = 1f + adjustedTimer;
+
+		if (text == "x0")
+		{
+			text = "x";
+			opacity = 0.6f;
+			color = new Color(255, 140, 140);
+		}
+
+		color = Color.Lerp(color, plr._lastScrapAmount >= 0 ? Color.Yellow : Color.Red, plr._scrapGrabTimer / 15f);
+		Main.spriteBatch.Draw(tex, pos, Color.White * opacity);
+
+		pos += new Vector2(16, 14);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, pos, color * opacity, adjustedTimer, Vector2.Zero, new(textScale));
+	}
+
+	/// <summary>
+	/// Allows the amount of scrap to be modified. This is done to make sure <see cref="_scrapGrabTimer"/> can be set to animate the UI properly.
+	/// </summary>
+	/// <param name="amount"></param>
+	public void ModifyScrap(int amount)
+	{
+		StoredScrap += amount;
+		_lastScrapAmount = amount;
+		_scrapGrabTimer = 15;
+	}
 
 	public override void PostUpdateEquips() 
 	{
+		_scrapGrabTimer--;
+
 		bool hasItem = Player.itemAnimation > 0 && !Player.ItemAnimationJustStarted;
 		Rectangle drawHitbox = Item.GetDrawHitbox(Player.HeldItem.type, Player);
 		GetItemHitbox(Player, Player.HeldItem, drawHitbox, out _, out Rectangle hitbox);
@@ -29,12 +88,18 @@ internal class WrenchPlayer : ModPlayer
 		{
 			ref int timer = ref _sentryImmune[i];
 
-			if (timer == MeleeHitTime && !hasItem) // Melee hits are hardcoded to only reset when the item being used "resets"
-				timer = 0;
+			if (timer <= 0)
+				continue;
+
+			if (timer == MeleeHitTime) // Melee hits are hardcoded to only reset when the item being used "resets"
+			{
+				if (!hasItem) // Only decrement when the item is no longer in use or has been reused
+					timer = 0;
+			}
 			else
 				timer = Math.Max(timer - 1, 0);
 		}
-
+		
 		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
 			if (proj.owner != Player.whoAmI || !proj.sentry || _sentryImmune[proj.whoAmI] > 0)
@@ -82,4 +147,7 @@ internal class WrenchPlayer : ModPlayer
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_GetMeleeHitbox")]
 	public static extern void GetItemHitbox(Player player, Item sItem, Rectangle heldItemFrame, out bool dontAttack, out Rectangle itemRectangle);
+
+	public override void SaveData(TagCompound tag) => tag.Add("scrap", StoredScrap);
+	public override void LoadData(TagCompound tag) => StoredScrap = tag.GetInt("scrap");
 }

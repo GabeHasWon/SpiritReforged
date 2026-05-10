@@ -36,13 +36,14 @@ internal class CopperSpanner : ModItem, ISentryHitEntity, IScrapDropEntity
 		Item.DamageType = ModContent.GetInstance<WrenchClass>();
 		Item.knockBack = 4;
 		Item.useTurn = true;
+		Item.rare = ItemRarityID.Blue;
 	}
 
-	bool ISentryHitEntity.CanHitSentry(Player player, Projectile sentry) => player.HasItem(ModContent.ItemType<ScrapItem>());
+	bool ISentryHitEntity.CanHitSentry(Player player, Projectile sentry) => player.GetModPlayer<WrenchPlayer>().StoredScrap > 0;
 
-	public void OnHitSentry(Player player, Projectile sentry)
+	void ISentryHitEntity.OnHitSentry(Player player, Projectile sentry) 
 	{
-		player.ConsumeItem(ModContent.ItemType<ScrapItem>());
+		player.GetModPlayer<WrenchPlayer>().ModifyScrap(-1);
 		sentry.GetGlobalProjectile<SpannerProjectile>().empoweredTime = 5 * 60;
 	}
 

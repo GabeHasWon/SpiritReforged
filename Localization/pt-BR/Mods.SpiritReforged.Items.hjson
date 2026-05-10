@@ -3069,7 +3069,7 @@ ScrapItem: {
 	// DisplayName: Scrap
 	/* Tooltip:
 		'''
-		Used by various wrenches
+		Used by various wrenches on sentries
 		'Sharp! (ow)'
 		''' */
 }

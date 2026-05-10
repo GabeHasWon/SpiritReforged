@@ -42,5 +42,5 @@ internal interface ISentryHitEntity
 	/// </summary>
 	/// <param name="sentry"></param>
 	/// <param name="time"></param>
-	public void ModifySentryImmuneTime(Projectile sentry, ref int time, ref bool isMelee);
+	public void ModifySentryImmuneTime(Projectile sentry, ref int time, ref bool isMelee) { }
 }

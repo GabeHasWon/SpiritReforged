@@ -36,31 +36,13 @@ internal interface IScrapDropEntity
 		}
 	}
 
-	// Whoops! Wrote all this before I realized it's not useful. Too bad! - Gabe
-	///// <summary>
-	///// Contains either an item or projectile, but not both, which is a <see cref="IScrapDropEntity"/>.
-	///// </summary>
-	//public readonly struct ItemOrProj
-	//{
-	//	public readonly Item? Item;
-	//	public readonly Projectile? Projectile;
-
-	//	public ItemOrProj(Item? Item = null, Projectile? Projectile = null)
-	//	{
-	//		this.Item = Item;
-	//		this.Projectile = Projectile;
-
-	//		if (Item is not null && Projectile is not null)
-	//			throw new ArgumentException("One of Item or Projectile must be null.");
-	//	}
-
-	//	public IScrapDropEntity Scrap => (Item is null ? Projectile!.ModProjectile as IScrapDropEntity : Item.ModItem as IScrapDropEntity)!;
-	//}
-
 	private static void SpawnScrap(Player player, NPC target) => Item.NewItem(player.GetSource_OnHit(target), target.Hitbox, ModContent.ItemType<ScrapItem>());
 
 	private static void TrySpawnScrap(Player player, NPC target, IScrapDropEntity scrap)
 	{
+		if (!target.CanBeChasedBy())
+			return;
+
 		bool autoDrop = true;
 
 		if (scrap.OverrideConditions(player, target, ref autoDrop))
