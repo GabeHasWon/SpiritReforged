@@ -2,8 +2,6 @@
 
 internal class WrenchClass : SubclassClass
 {
-	//public override LocalizedText DisplayName => base.DisplayName;
-
 	public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
 	{
 		if (damageClass == Generic || damageClass == Summon)

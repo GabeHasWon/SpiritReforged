@@ -6,6 +6,9 @@ using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.Subclasses.Wrenches;
 
+/// <summary>
+/// Controls wrench (sentry onhit) functionality and the scrap UI element on the mouse.
+/// </summary>
 internal class WrenchPlayer : ModPlayer
 {
 	const int MeleeHitTime = 60000;
