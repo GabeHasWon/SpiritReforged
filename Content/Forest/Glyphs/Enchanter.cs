@@ -1,8 +1,13 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Abstract;
 using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
+using SpiritReforged.Content.Forest.Cartography.Maps;
+using SpiritReforged.Content.Forest.Glyphs.CharmcasterSet;
+using SpiritReforged.Content.Forest.Cartography;
 using SpiritReforged.Content.Particles;
 using Terraria.GameContent.Bestiary;
 
@@ -54,16 +59,24 @@ public class Enchanter : WorldNPC, ITravelNPC
 		return names;
 	}
 
-	public override void SetChatButtons(ref string button, ref string button2) => button = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+	public override void SetChatButtons(ref string button, ref string button2)
+	{
+		button = Language.GetTextValue("LegacyInterface.28");
+		button2 = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
+			shopName = "Shop";
+		else
 		{
 			Main.playerInventory = true;
 			UISystem.SetActive<EnchanterUI>();
 		}
 	}
+
+	public override void AddShops() => new NPCShop(Type).Add(ItemID.PeaceCandle).Add(ItemID.WaterCandle, Condition.Hardmode).Add(ItemID.ShadowCandle, Condition.BloodMoon).Add<CharmcasterHat>().Add<CharmcasterRobe>().Add<CharmcasterLeggings>().Register();
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{

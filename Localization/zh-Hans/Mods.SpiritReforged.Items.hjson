@@ -3154,3 +3154,18 @@ RageGlyph: {
 	// DisplayName: Rage Glyph
 	// Tooltip: ""
 }
+
+CharmcasterHat: {
+	// DisplayName: Charmcaster Hat
+	// Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	// DisplayName: Charmcaster Leggings
+	// Tooltip: ""
+}
+
+CharmcasterRobe: {
+	// DisplayName: Charmcaster Robe
+	// Tooltip: ""
+}
