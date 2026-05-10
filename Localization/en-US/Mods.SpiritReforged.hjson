@@ -79,5 +79,7 @@ InfoDisplays: {
 	}
 }
 
-GreatshieldClass_Class.DisplayName: greatshieldclass damage
-DamageClasses.GreatshieldClass.DisplayName: greatshield damage
+DamageClasses: {
+	GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
+	WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+}
