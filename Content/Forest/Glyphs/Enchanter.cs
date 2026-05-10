@@ -76,7 +76,8 @@ public class Enchanter : WorldNPC, ITravelNPC
 		}
 	}
 
-	public override void AddShops() => new NPCShop(Type).Add(ItemID.PeaceCandle).Add(ItemID.WaterCandle, Condition.Hardmode).Add(ItemID.ShadowCandle, Condition.BloodMoon).Add<CharmcasterHat>().Add<CharmcasterRobe>().Add<CharmcasterLeggings>().Register();
+	public override void AddShops() => new NPCShop(Type).Add<EnchantedStamp>().Add(ItemID.PeaceCandle).Add(ItemID.WaterCandle, Condition.Hardmode).Add(ItemID.ShadowCandle, Condition.BloodMoon).
+		Add<CharmcasterHat>().Add<CharmcasterRobe>().Add<CharmcasterLeggings>().Register();
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{

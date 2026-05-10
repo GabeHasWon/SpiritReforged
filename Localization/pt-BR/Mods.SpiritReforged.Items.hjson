@@ -3147,16 +3147,16 @@ RageGlyph: {
 }
 
 CharmcasterHat: {
-	// DisplayName: Charmcaster Hat
+	// DisplayName: Charmcaster's Hat
 	// Tooltip: ""
 }
 
 CharmcasterLeggings: {
-	// DisplayName: Charmcaster Leggings
+	// DisplayName: Charmcaster's Leggings
 	// Tooltip: ""
 }
 
 CharmcasterRobe: {
-	// DisplayName: Charmcaster Robe
+	// DisplayName: Charmcaster's Robe
 	// Tooltip: ""
 }
