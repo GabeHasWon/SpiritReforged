@@ -80,4 +80,10 @@ InfoDisplays: {
 }
 
 // GreatshieldClass_Class.DisplayName: greatshieldclass damage
-// DamageClasses.GreatshieldClass.DisplayName: greatshield damage
+
+DamageClasses: {
+	// GreatshieldClass.DisplayName: greatshield damage
+	// MagazineClass.DisplayName: Magazine Class
+}
+
+// MagazineClass_Class.DisplayName: magazineclass damage

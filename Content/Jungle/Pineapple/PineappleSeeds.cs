@@ -9,7 +9,7 @@ public class PineappleSeeds : ModItem
 {
 	public override void SetStaticDefaults()
 	{
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(Item.type)));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.WitchDoctor, new NPCShop.Entry(Item.type)));
 		ItemLootDatabase.ModifyItemRule(ItemID.HerbBag, AddTypesToList);
 		Item.ResearchUnlockCount = 25;
 	}

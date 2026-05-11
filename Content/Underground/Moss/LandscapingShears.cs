@@ -82,7 +82,7 @@ public class LandscapingShears : ModItem
 
 	public const int AnimationMax = 15;
 
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.BestiaryGirl, new NPCShop.Entry(Type)));
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.BestiaryGirl, new NPCShop.Entry(Type)));
 	public override void SetDefaults()
 	{
 		Item.Size = new Vector2(24);

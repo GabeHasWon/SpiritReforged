@@ -73,7 +73,7 @@ public class Flarepowder : ModItem
 		
 		if (!IsDerived)
 		{
-			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
+			NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Merchant, new NPCShop.Entry(Type)));
 
 			TileLootSystem.RegisterLoot(static (loot) =>
 			{

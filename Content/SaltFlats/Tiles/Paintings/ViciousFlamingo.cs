@@ -13,7 +13,7 @@ public class ViciousFlamingo : PaintingTile
 	public override void StaticDefaults()
 	{
 		base.StaticDefaults();
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(Type, Condition.TimeNight, SpiritConditions.InSaltFlats)));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Painter, new NPCShop.Entry(Type, Condition.TimeNight, SpiritConditions.InSaltFlats)));
 	}
 
 	public override void AddItemRecipes(ModItem item) 

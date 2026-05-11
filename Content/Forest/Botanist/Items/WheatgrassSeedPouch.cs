@@ -8,7 +8,7 @@ namespace SpiritReforged.Content.Forest.Botanist.Items;
 
 public class WheatgrassSeedPouch : ModItem
 {
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, 
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Merchant, 
 		new NPCShop.Entry(ModContent.ItemType<WheatgrassSeedPouch>(), Condition.DownedEyeOfCthulhu)));
 
 	public override void SetDefaults()

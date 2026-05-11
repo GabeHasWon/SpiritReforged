@@ -9,6 +9,6 @@ public class CloudstalkBox : PlanterBoxTile
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Dryad, new NPCShop.Entry(this.AutoItemType())));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Dryad, new NPCShop.Entry(this.AutoItemType())));
 	}
 }

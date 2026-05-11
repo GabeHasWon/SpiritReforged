@@ -36,7 +36,7 @@ public class SaltFountain : ModTile, IAutoloadTileItem
 		AdjTiles = [TileID.WaterFountain];
 
 		RegisterItemDrop(this.AutoItemType());
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(this.AutoItemType())));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.WitchDoctor, new NPCShop.Entry(this.AutoItemType())));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

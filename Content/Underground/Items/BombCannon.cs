@@ -41,7 +41,7 @@ public class BombCannon : ModItem
 			item.notAmmo = true;
 		}, AmmoBombIDs);
 
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
 		MoRHelper.AddElement(Item, MoRHelper.Explosive, true);
 	}
 

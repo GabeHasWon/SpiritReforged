@@ -25,7 +25,7 @@ public class PirateChest : ChestTile
 		AddMapEntry(new Color(87, 64, 31), MapEntry, MapChestName);
 
 		MakeLocked(CrossMod.Classic.Enabled ? ModContent.ItemType<PirateKey>() : ItemID.GoldenKey);
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Pirate, new NPCShop.Entry(this.AutoItemType())));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.Pirate, new NPCShop.Entry(this.AutoItemType())));
 	}
 
 	public override ushort GetMapOption(int i, int j) => (ushort)(IsLockedChest(i, j) ? 1 : 0);

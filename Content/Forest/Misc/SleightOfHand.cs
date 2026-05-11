@@ -129,7 +129,7 @@ public class SleightOfHand : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.ArmsDealer, new NPCShop.Entry(Type)));
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
 
 	public override void SetDefaults()
 	{

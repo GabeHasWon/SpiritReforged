@@ -20,7 +20,7 @@ public class Macuahuitl : ClubItem
 	public override void SetStaticDefaults()
 	{
 		if (!CrossMod.Classic.Enabled)
-			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(Type)));
+			NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.WitchDoctor, new NPCShop.Entry(Type)));
 	}
 
 	public override void SafeSetDefaults()

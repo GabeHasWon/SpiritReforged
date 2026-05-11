@@ -36,7 +36,7 @@ public class SavannaFountain : ModTile, IAutoloadTileItem
 
 		int itemId = Mod.Find<ModItem>("SavannaFountainItem").Type;
 		RegisterItemDrop(itemId);
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(itemId)));
+		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.WitchDoctor, new NPCShop.Entry(itemId)));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
