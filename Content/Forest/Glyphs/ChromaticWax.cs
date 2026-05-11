@@ -141,6 +141,16 @@ public abstract class GlyphItem : ModItem
 			AnimationProgress = 1;
 		}
 
+		public bool HasGlyph(out GlyphItem glyphItem)
+		{
+			glyphItem = default;
+
+			if (ItemLoader.GetItem(Glyph.ItemType) is GlyphItem _glyphItem)
+				glyphItem = _glyphItem;
+
+			return glyphItem != default;
+		}
+
 		/// <summary> Applies the provided glyph effect to <paramref name="item"/>. </summary>
 		/// <param name="item"></param>
 		/// <param name="type"></param>
@@ -169,7 +179,7 @@ public abstract class GlyphItem : ModItem
 			}
 		}
 
-		public override bool CanReforge(Item item) => Glyph == default; //No glyph effect is present
+		public override bool CanReforge(Item item) => !HasGlyph(out _); //No glyph effect is present
 
 		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
 
@@ -196,7 +206,7 @@ public abstract class GlyphItem : ModItem
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem glyphItem)
+			if (HasGlyph(out var glyphItem))
 			{
 				tooltips.AddRange(new List<TooltipLine>()
 					{
@@ -209,43 +219,26 @@ public abstract class GlyphItem : ModItem
 
 		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 		{
-			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
-				g.UpdateGlyphItemInWorld(item);
+			if (HasGlyph(out var glyphItem))
+				glyphItem.UpdateInWorld(item);
 		}
 
 		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
-			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
+			if (HasGlyph(out var glyphItem))
 			{
-				Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
-
-				Vector2 origin = frame.Size() / 2f;
-				Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
-
-				g.PreDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
+				glyphItem.DrawInWorld(item, spriteBatch, item.GetDrawParams(lightColor, rotation));
+				return false;
 			}
 
 			return true;
-		}
-
-		public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
-		{
-			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem g)
-			{
-				Main.GetItemDrawFrame(item.type, out var texture, out Rectangle frame);
-
-				Vector2 origin = frame.Size() / 2f;
-				Vector2 position = item.Bottom - Main.screenPosition - new Vector2(0, origin.Y);
-
-				g.PostDrawGlyphItem(item, texture, frame, spriteBatch, position, origin, rotation, scale);
-			}
 		}
 
 		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			const int slotDimensions = 52;
 
-			if (Glyph != default && ItemLoader.GetItem(Glyph.ItemType) is GlyphItem glyphItem) //Draw glyph inventory icons
+			if (HasGlyph(out var glyphItem)) //Draw glyph inventory icons
 			{
 				Texture2D texture = glyphItem.IconTexture.Value;
 				float iconScale = Main.inventoryScale;
@@ -380,9 +373,10 @@ public abstract class GlyphItem : ModItem
 		});
 	}
 
-	public virtual void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale) { }
+	/// <summary> Used to modify drawing of glyph-affected items in the world. </summary>
+	/// <param name="item"> The item being drawn. </param>
+	/// <param name="spriteBatch"> The SpriteBatch being used. </param>
+	public virtual void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters) => parameters.Draw();
 
-	public virtual void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale) { }
-
-	public virtual void UpdateGlyphItemInWorld(Item item) { }
+	public virtual void UpdateInWorld(Item item) { }
 }

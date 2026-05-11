@@ -239,24 +239,18 @@ public class RadiantGlyph : GlyphItem
 		settings = new(new(234, 167, 51));
 	}
 
-	public override void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
-		var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
-
+		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
 		Effect effect = AssetLoader.LoadedShaders["GlyphShader"].Value;
 
 		effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
 		effect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
 		effect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
 
-		var noise = AssetLoader.LoadedTextures["vnoise"].Value;
-		//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
-		var noiseAlt = AssetLoader.LoadedTextures["vnoise"].Value;
-
-		effect.Parameters["uImage1"].SetValue(noise);
-		effect.Parameters["uImage2"].SetValue(noiseAlt);
-		//effect.Parameters["uImage3"].SetValue(gradient);
-		effect.Parameters["itemSize"].SetValue(texture.Size());
+		effect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		effect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		effect.Parameters["itemSize"].SetValue(parameters.Texture.Size());
 
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
@@ -274,14 +268,15 @@ public class RadiantGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-
-			spriteBatch.Draw(texWhite, position + offset, frame, Color.White, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.RestartToDefault();
+
+		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateGlyphItemInWorld(Item item)
+	public override void UpdateInWorld(Item item)
 	{
 		if (Main.rand.NextBool(180))
 		{

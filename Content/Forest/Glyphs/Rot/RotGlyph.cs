@@ -289,29 +289,24 @@ public class RotGlyph : GlyphItem
 		}
 	}
 
-	public override void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
-		var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
-
+		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
 		Effect effect = AssetLoader.LoadedShaders["BlazeGlyphShader"].Value;
 
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
 
-		Color c1, c2;
-		c1 = Color.Lerp(new Color(66, 64, 0), new Color(87, 94, 0), sin);
-		c2 = Color.Lerp(new Color(131, 124, 1), new Color(87, 94, 0), cos);
+		var c1 = Color.Lerp(new Color(66, 64, 0), new Color(87, 94, 0), sin);
+		var c2 = Color.Lerp(new Color(131, 124, 1), new Color(87, 94, 0), cos);
 
 		effect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.5f);
 		effect.Parameters["uColor2"].SetValue(c2.ToVector4() * 0.5f);
 
-		var noise = AssetLoader.LoadedTextures["noise"].Value;
-		var noise2 = AssetLoader.LoadedTextures["swirlNoise"].Value;
-
-		effect.Parameters["uImage1"].SetValue(noise);
-		effect.Parameters["uImage2"].SetValue(noise2);
+		effect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		effect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
 		effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.00075f);
-		effect.Parameters["uPixelRes"].SetValue(texture.Size().X);
+		effect.Parameters["uPixelRes"].SetValue(parameters.Texture.Size().X);
 		effect.Parameters["uStrength"].SetValue(MathHelper.Lerp(0.03f, 0.06f, Math.Abs((float)Math.Sin(Main.GlobalTimeWrappedHourly / 2))));
 
 		spriteBatch.End();
@@ -320,11 +315,10 @@ public class RotGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
-
-			spriteBatch.Draw(texWhite, position + offset, frame, Color.White, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
-		spriteBatch.End();
+		spriteBatch.End(); //Two restarts per item instance?
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
 
 		effect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.75f);
@@ -333,14 +327,15 @@ public class RotGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-
-			spriteBatch.Draw(texWhite, position + offset, frame, Color.White, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.RestartToDefault();
+
+		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateGlyphItemInWorld(Item item)
+	public override void UpdateInWorld(Item item)
 	{
 		if (Main.rand.NextBool(60))
 		{

@@ -6,11 +6,7 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.UI.Elements;
-using static AssGen.Assets;
-using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
@@ -326,27 +322,23 @@ public class BeeGlyph : GlyphItem
 		}
 	}
 
-	public override void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
-		var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
+		Main.GetItemDrawFrame(item.type, out Texture2D texture, out Rectangle frame);
+		Vector2 position = item.Bottom - new Vector2(0, frame.Height / 2) - Main.screenPosition;
+		Vector2 origin = frame.Size() / 2;
 
+		Texture2D whiteTexture = TextureColorCache.ColorSolid(texture, Color.White);
 		Effect effect = AssetLoader.LoadedShaders["LiquidGlyphShader"].Value;
 
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
-		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
-
-		Color c1, c2;
-		c1 = Color.Lerp(new Color(255, 182, 0), new Color(254, 210, 37), sin);
-		c2 = new Color(211, 113, 11);
+		var c1 = Color.Lerp(new Color(255, 182, 0), new Color(254, 210, 37), sin);
+		var c2 = new Color(211, 113, 11);
 
 		effect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.5f);
 		effect.Parameters["uColor2"].SetValue(c2.ToVector4() * 0.5f);
-
-		var noise = AssetLoader.LoadedTextures["vnoise"].Value;
-		var noise2 = AssetLoader.LoadedTextures["supPerlin"].Value;
-		
-		effect.Parameters["uImage1"].SetValue(noise);
-		effect.Parameters["uImage2"].SetValue(noise2);
+		effect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		effect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
 
 		effect.Parameters["uPixelRes"].SetValue(texture.Size().X / 2);
 
@@ -356,12 +348,10 @@ public class BeeGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-
-			spriteBatch.Draw(texWhite, position + offset, frame, new Color(254, 210, 37), rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, position + offset, frame, new Color(254, 210, 37), parameters.Rotation, origin, parameters.Scale, 0, 0);
 
 			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
-
-			spriteBatch.Draw(texWhite, position + offset, frame, new Color(211, 113, 11) * 0.3f, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, position + offset, frame, new Color(211, 113, 11) * 0.3f, parameters.Rotation, origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.End();
@@ -370,16 +360,15 @@ public class BeeGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-		
-			spriteBatch.Draw(texWhite, position + offset, frame, Color.White, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(whiteTexture, position + offset, frame, Color.White, parameters.Rotation, origin, parameters.Scale, 0, 0);
 		}
 
-		//spriteBatch.Draw(texWhite, position + new Vector2(0, 2), frame, Color.White, rotation, origin, scale, 0f, 0f);
-
 		spriteBatch.RestartToDefault();
+
+		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateGlyphItemInWorld(Item item)
+	public override void UpdateInWorld(Item item)
 	{
 		if (Main.rand.NextBool(45))
 		{

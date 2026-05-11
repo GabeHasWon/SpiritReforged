@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
@@ -12,10 +12,9 @@ public class RageGlyph : GlyphItem
 
 	}
 
-	public override void PreDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
+	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
-		var texWhite = TextureColorCache.ColorSolid(texture, Color.White);
-
+		Texture2D texWhite = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
 		Effect effect = AssetLoader.LoadedShaders["GlyphShader"].Value;
 
 		effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
@@ -29,7 +28,7 @@ public class RageGlyph : GlyphItem
 		effect.Parameters["uImage1"].SetValue(noise);
 		effect.Parameters["uImage2"].SetValue(noiseAlt);
 		//effect.Parameters["uImage3"].SetValue(gradient);
-		effect.Parameters["itemSize"].SetValue(texture.Size());
+		effect.Parameters["itemSize"].SetValue(parameters.Texture.Size());
 
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
@@ -41,21 +40,18 @@ public class RageGlyph : GlyphItem
 		effect.Parameters["baseDepth"].SetValue(4f);
 		effect.Parameters["scale"].SetValue(0.66f);
 
-		float shakeCounter = (float)Math.Sin(Main.timeForVisualEffects * 0.025f);
-		if (shakeCounter < 0)
-			shakeCounter = 0f;
-
+		float shakeCounter = Math.Max((float)Math.Sin(Main.timeForVisualEffects * 0.025f), 0);
 		Vector2 shake = Main.rand.NextVector2Circular(0.75f, 0.75f) * shakeCounter;
 
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
 
-			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.Red * 0.5f, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(texWhite, parameters.Position + offset + shake, parameters.Source, Color.Red * 0.5f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 
 			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
 
-			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.Red * 0.15f, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(texWhite, parameters.Position + offset + shake, parameters.Source, Color.Red * 0.15f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.End();
@@ -65,18 +61,15 @@ public class RageGlyph : GlyphItem
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
 
-			spriteBatch.Draw(texWhite, position + offset + shake, frame, Color.White, rotation, origin, scale, 0f, 0f);
+			spriteBatch.Draw(texWhite, parameters.Position + offset + shake, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.RestartToDefault();
+
+		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void PostDrawGlyphItem(Item item, Texture2D texture, Rectangle frame, SpriteBatch spriteBatch, Vector2 position, Vector2 origin, float rotation, float scale)
-	{
-
-	}
-
-	public override void UpdateGlyphItemInWorld(Item item)
+	public override void UpdateInWorld(Item item)
 	{
 		if (Main.rand.NextBool(120))
 		{
