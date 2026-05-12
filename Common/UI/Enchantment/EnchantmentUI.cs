@@ -10,6 +10,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.UI;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Common.UI.Enchantment;
 
@@ -116,6 +117,8 @@ public class EnchantmentUI : AutoUIState
 		base.Update(gameTime);
 	}
 
+	public override void OnDeactivate() => EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Background.Value;
@@ -175,7 +178,8 @@ public class EnchantmentUI : AutoUIState
 
 		for (int c = 0; c < count; c++)
 		{
-			var choice = glyphItems[Main.rand.Next(glyphItems.Count)];
+			int random = new FastRandom(EnchantedWorkbench.TargetWorkbench.X + EnchantedWorkbench.TargetWorkbench.Y + c).Next(glyphItems.Count);
+			var choice = glyphItems[random];
 
 			result.Add(choice.Type);
 			glyphItems.Remove(choice);

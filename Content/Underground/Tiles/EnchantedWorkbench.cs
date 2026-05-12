@@ -77,10 +77,7 @@ public class EnchantedWorkbench : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer && TileObjectData.IsTopLeft(i, j) && Main.LocalPlayer.DistanceSQ(new Vector2(i + 1, j) * 16) > 100 * 100)
-		{
+		if (!closer && TargetWorkbench == new Point16(i, j) && Main.LocalPlayer.DistanceSQ(TargetWorkbench.ToWorldCoordinates()) > 100 * 100)
 			UISystem.SetInactive<EnchantmentUI>();
-			TargetWorkbench = Point16.Zero;
-		}
 	}
 }
