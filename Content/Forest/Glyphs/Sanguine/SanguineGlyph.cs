@@ -128,6 +128,7 @@ public class SanguineGlyph : GlyphItem
 
 					int originalDamage = (int)(damageDone / damageBonus);
 					int bonusDamage = damageDone - originalDamage;
+
 					if (bonusDamage > 0)
 					{
 						CombatText.NewText(target.getRect(), orange, Math.Max(originalDamage, 1), hit.Crit);
