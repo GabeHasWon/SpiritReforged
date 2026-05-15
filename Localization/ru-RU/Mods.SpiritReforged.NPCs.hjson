@@ -499,22 +499,22 @@ Grub: {
 }
 
 DesertStactus: {
-	DisplayName: Кактусеница
-	Entry: Эти кактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
+	DisplayName: Стактус
+	Entry: Эти стактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
 }
 
 CorruptStactus: {
-	DisplayName: Искажённая кактусеница
+	DisplayName: Искажённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
-	DisplayName: Багряная кактусеница
+	DisplayName: Багряный стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
-	DisplayName: Освящённая кактусеница
+	DisplayName: Освящённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
@@ -585,7 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Жук
-	// Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Entry: Милое и неуклюжие насекомое. К сожалению, обнимать их будет не очень удобно.
 	Chitter0: *Счастливое стрекотание*
 	Chitter1: *Звуки жука*
 	Chitter2: *Звуки букашки*
