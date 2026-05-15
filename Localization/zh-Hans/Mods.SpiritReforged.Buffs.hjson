@@ -110,7 +110,7 @@ ExplorerMine: {
 
 JinxMark: {
 	DisplayName: 厄劫标记
-	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	Description: 被厄劫弓标记
 }
 
 FlaskOfFrost_Buff: {
@@ -120,7 +120,7 @@ FlaskOfFrost_Buff: {
 
 Slowed: {
 	DisplayName: 减速
-	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+	Description: 你的动作变得迟钝
 }
 
 ToucaneMinion_Buff: {
@@ -144,6 +144,6 @@ ScarabLightPetBuff: {
 }
 
 ScarabMountBuff: {
-	// DisplayName: Pillbug Mount
-	// Description: "'Hold on!'"
+	DisplayName: 鼠妇坐骑
+	Description: “抓稳了！”
 }

@@ -47,21 +47,21 @@ VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
 EnergyImpact.DisplayName: 能量践踏
 EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: 手指射击
-NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
-ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
-ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
 PhysicsChain.DisplayName: 锁链
 GoldPhysicsChain.DisplayName: 金锁链
 CactusSpine.DisplayName: 仙人掌刺
-TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
 DragonFireball.DisplayName: 龙火球
 PileOfConsequencesPet.DisplayName: 结果
 EnergyLaser.DisplayName: 能量激光
-BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
 WindBlast.DisplayName: 风波
 DivebombScarab.DisplayName: 俯冲轰炸甲虫
 SwarmScarab.DisplayName: 群聚甲虫
-SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
 AdornedBowHeld.DisplayName: 华饰弓
 AdornedFlash.DisplayName: 华饰闪光
 AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
@@ -79,19 +79,19 @@ SandballProjectile.DisplayName: 沙球
 BabyAntlionProjectile.DisplayName: 蚁狮宝宝
 ScarabLightPet.DisplayName: 甲虫宝宝
 SoilBallProjectile.DisplayName: 土球
-// TerracottaTombstoneProjectile.DisplayName: Terracotta Tombstone Projectile
-// TerracottaGraveMarkerProjectile.DisplayName: Terracotta Grave Marker Projectile
-// TerracottaGravestoneProjectile.DisplayName: Terracotta Gravestone Projectile
-// TerracottaObeliskProjectile.DisplayName: Terracotta Obelisk Projectile
-// DrywoodTombstoneProjectile.DisplayName: Drywood Tombstone Projectile
-// SavannaGravestoneProjectile.DisplayName: Savanna Gravestone Projectile
-// DrywoodGraveMarkerProjectile.DisplayName: Drywood Grave Marker Projectile
-// DrywoodCrossGraveMarkerProjectile.DisplayName: Drywood Cross Grave Marker Projectile
-// ModernObeliskProjectile.DisplayName: Modern Obelisk Projectile
-// ModernTombscreenProjectile.DisplayName: Modern Tombscreen Projectile
-// ModernGravestoneProjectile.DisplayName: Modern Gravestone Projectile
-// ModernHeadstoneProjectile.DisplayName: Modern Headstone Projectile
-// SaltHeadstoneProjectile.DisplayName: Salt Headstone Projectile
-// SaltTombstoneProjectile.DisplayName: Salt Tombstone Projectile
-// SaltGravestoneProjectile.DisplayName: Salt Gravestone Projectile
-// SaltGraveMarkerProjectile.DisplayName: Salt Grave Marker Projectile
+TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"

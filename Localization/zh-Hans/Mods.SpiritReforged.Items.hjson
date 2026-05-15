@@ -1641,10 +1641,10 @@ PotionVatsAlchemyItem: {
 }
 
 DunceCrabBannerItem.DisplayName: 笨蟹旗
-WheezerBannerItem.DisplayName: 响尾兽旗
+WheezerBannerItem.DisplayName: 息鸣螈旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽雕像
+	DisplayName: 息鸣螈雕像
 	Tooltip: ""
 }
 
@@ -2887,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: 青铜格栅门
-	Tooltip: ""
+	Tooltip: 允许液体通过，即便被关闭
 }
 
 CalmingBellItem: {
@@ -2912,7 +2912,7 @@ GildedRedSandstoneItem: {
 
 BronzeGrateBlockItem: {
 	DisplayName: 青铜格栅
-	Tooltip: ""
+	Tooltip: 仅允许液体通过
 }
 
 BedouinBreastplate: {
@@ -3029,7 +3029,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		召唤一个哨兵
-		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
+		扔出一根曲柄杖，其会吸引蝗虫来侵扰敌人
 		'''
 }
 
@@ -3065,91 +3065,91 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	// DisplayName: Honeysuckle Bud
-	// Tooltip: Summons a pillbug mount
+	DisplayName: 忍冬花蕾
+	Tooltip: 召唤一只鼠妇坐骑
 }
 
 SandySandstoneItem: {
-	// DisplayName: Sandy Sandstone
-	// Tooltip: ""
+	DisplayName: 砂质沙岩
+	Tooltip: ""
 }
 
 TerracottaTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Tombstone Item
+	DisplayName: 赤陶墓石
+	Tooltip: ""
 }
 
 TerracottaGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Grave Marker Item
+	DisplayName: 赤陶墓石碑
+	Tooltip: ""
 }
 
 TerracottaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Gravestone Item
+	DisplayName: 赤陶墓碑
+	Tooltip: ""
 }
 
 TerracottaObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Terracotta Obelisk Item
+	DisplayName: 赤陶方尖碑
+	Tooltip: ""
 }
 
 DrywoodTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Tombstone Item
+	DisplayName: 干木墓石
+	Tooltip: ""
 }
 
 SavannaGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Savanna Gravestone Item
+	DisplayName: 稀树平原墓碑
+	Tooltip: ""
 }
 
 DrywoodGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Grave Marker Item
+	DisplayName: 干木墓石碑
+	Tooltip: ""
 }
 
 DrywoodCrossGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Drywood Cross Grave Marker Item
+	DisplayName: 干木十字墓石碑
+	Tooltip: ""
 }
 
 ModernObeliskItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Obelisk Item
+	DisplayName: 现代方尖碑
+	Tooltip: ""
 }
 
 ModernTombscreenItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Tombscreen Item
+	DisplayName: 现代屏墓
+	Tooltip: ""
 }
 
 ModernGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Gravestone Item
+	DisplayName: 现代墓碑
+	Tooltip: ""
 }
 
 ModernHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Modern Headstone Item
+	DisplayName: 现代碑石
+	Tooltip: ""
 }
 
 SaltHeadstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Headstone Item
+	DisplayName: 盐碑石
+	Tooltip: ""
 }
 
 SaltTombstoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Tombstone Item
+	DisplayName: 盐墓石
+	Tooltip: ""
 }
 
 SaltGravestoneItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Gravestone Item
+	DisplayName: 盐墓碑
+	Tooltip: ""
 }
 
 SaltGraveMarkerItem: {
-	// Tooltip: ""
-	// DisplayName: Salt Grave Marker Item
+	DisplayName: 盐墓石碑
+	Tooltip: ""
 }

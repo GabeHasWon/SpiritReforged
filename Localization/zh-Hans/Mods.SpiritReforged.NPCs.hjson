@@ -433,8 +433,8 @@ DunceCrab: {
 }
 
 Wheezer: {
-	DisplayName: 响尾兽
-	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
+	DisplayName: 息鸣螈
+	Entry: 息鸣螈是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
 }
 
 WorldFrog: {
@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: 金龙虱
-	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
@@ -585,7 +585,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: 甲虫
-	// Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Entry: 虽然它们不适合用来拥抱，但笨拙的样子让它们显得十分惹人喜爱。
 	Chitter0: *快乐的叽叽声*
 	Chitter1: *虫子的噪音声*
 	Chitter2: *甲虫的噪音声*
