@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -5,10 +6,11 @@ using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Sky.Lightning;
 
-public class LightningBolt : ModItem
+public class LightningBolt : ModItem, IDrawHeld
 {
 	public readonly struct LightningTrailPosition(Func<Vector2> position) : ITrailPosition
 	{
@@ -116,21 +118,28 @@ public class LightningBolt : ModItem
 					var ease = Bomb.EffectEase;
 					var stretch = Vector2.One;
 					float angle = Main.rand.NextFloat(MathHelper.Pi);
+					Player owner = Main.player[Projectile.owner];
+					Vector2 velocity = owner.DirectionTo(Projectile.Center);
 
 					ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 80, 20, "Smoke", stretch, ease).WithSkew(0.5f, angle));
 					ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), 0.5f, 80, 20, "Smoke", stretch, ease).WithSkew(0.5f, angle));
 
 					for (int i = 0; i < 8; i++)
+						ParticleHandler.SpawnParticle(new EmberParticle(Vector2.Lerp(owner.Center, Projectile.Center, Main.rand.NextFloat()) + Main.rand.NextVector2Circular(8, 8), velocity * Main.rand.NextFloat(2), Color.Transparent, Color.OrangeRed, Main.rand.NextFloat(0.2f, 0.5f), Main.rand.Next(20, 60), 2));
+
+					for (int i = 0; i < 8; i++)
 						ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(2, 2), Color.Goldenrod, 0.2f, 20, 8));
 
-					_chain = new(Projectile.Center - Vector2.UnitY * 500, Projectile.Center, Color.Goldenrod.Additive(), 50);
+					_chain = new(owner.Center, Projectile.Center, Color.Goldenrod.Additive(), 50);
 
 					Point tilePosition = Projectile.Center.ToTileCoordinates();
-					
-					for (int i = 0; i < 5; i++)
+					if (WorldGen.SolidTile(tilePosition))
 					{
-						int dustWhoAmI = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
-						Main.dust[dustWhoAmI].noGravity = true;
+						for (int i = 0; i < 5; i++)
+						{
+							int dustWhoAmI = WorldGen.KillTile_MakeTileDust(tilePosition.X, tilePosition.Y, Framing.GetTileSafely(tilePosition));
+							Main.dust[dustWhoAmI].noGravity = true;
+						}
 					}
 				}
 
@@ -149,9 +158,6 @@ public class LightningBolt : ModItem
 
 			return false;
 		}
-
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{ }
 	}
 
 	public override void SetDefaults()
@@ -166,28 +172,53 @@ public class LightningBolt : ModItem
 		Item.autoReuse = true;
 		Item.channel = true;
 		Item.useTime = Item.useAnimation = 30;
-		Item.useStyle = ItemUseStyleID.HiddenAnimation;
+		Item.useStyle = ItemUseStyleID.Swing;
 		Item.value = Item.sellPrice(0, 0, 50, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.Item20;
 		Item.mana = 4;
-		Item.shootSpeed = 0;
+		Item.shootSpeed = 1;
 		Item.shoot = ModContent.ProjectileType<LightningBoltProj>();
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		player.FindSentryRestingSpot(type, out int x, out int y, out _);
-		position = new Vector2(x, y);
 		float collisionPoint = 0;
+		float lastDistance = -1;
+
+		Vector2 start = player.Center;
+		Vector2 end = start + velocity * 500;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if ((npc.type == NPCID.TargetDummy || npc.CanBeChasedBy()) && Collision.CheckAABBvLineCollision(npc.position, npc.Size, position, position - new Vector2(0, 800), 14, ref collisionPoint))
+			if ((npc.type == NPCID.TargetDummy || npc.CanBeChasedBy()) && Collision.CheckAABBvLineCollision(npc.position, npc.Size, start, end, 14, ref collisionPoint))
 			{
-				position = npc.Top;
-				break;
+				var lerpPosition = Vector2.Lerp(start, end, collisionPoint / start.Distance(end));
+				float currentDistance = lerpPosition.Distance(start);
+
+				if (lastDistance == -1 || currentDistance < lastDistance)
+				{
+					position = lerpPosition;
+					lastDistance = currentDistance;
+				}
 			}
 		}
+
+		velocity = Vector2.Zero;
+	}
+
+	public void DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		Texture2D texture = TextureAssets.Item[Type].Value;
+		Rectangle source = texture.Frame();
+
+		Vector2 origin = source.Size() / 2;
+		Vector2 dirOffset = drawinfo.drawPlayer.ItemAnimationActive ? new(11, -2) : new(13, 0);
+
+		dirOffset.X *= drawinfo.drawPlayer.direction;
+		Vector2 location = (drawinfo.drawPlayer.Center - Main.screenPosition + dirOffset + new Vector2(0, drawinfo.drawPlayer.gfxOffY)).Floor();
+		Color color = drawinfo.drawPlayer.HeldItem.GetAlpha(Lighting.GetColor((drawinfo.ItemLocation / 16).ToPoint()));
+
+		drawinfo.DrawDataCache.Add(new DrawData(texture, location, source, color, 0, origin, 1, drawinfo.itemEffect));
 	}
 }
