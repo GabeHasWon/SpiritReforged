@@ -1,20 +1,8 @@
-v0.2.0.4
-- Added the Honeysuckle Sprout, a new rolling mount item that drops from Scarabeus
-- Fixed a framing issue where dirt would draw on Salt Flats tiles
-- Fixed an issue where Beetle Pets were not arriving properly after the Beetle License was used
-- Increased club downswing range before they collide with tiles, allowing for smoother swings in enclosed spaces
-- Tattered Map no longer needs to be crafted at a Workbench
-- Brine Shrimp now crafts Pink Dye
-- Red Sandstone Brick now merges with Pearlsand, Crimsand, and Ebonsand
-- Stactus now drops some amount of Cactus when killed
-- Added a recipe for Sandy Sandstone
-- Added a description to some debuffs that had placeholder text
-- Fixed inconsistencies with Music Display names
-- Changed Osmosifier recipe to forego wire
-- Increased Thornball damage from 5 to 6, decreased knockback from 2 to 0, and reduced slow debuff time from 3 to 2 seconds
-- Buffed Mahakala Mask: attacks now also deal 20% extra damage to Corrupt enemies
-- Evil Stactuses now count as Corrupt enemies for the sake of the Mahakala Mask
-- Reduced Golden Brine Shrimp spawn rate
-- Bronze Grate Door now allows liquids through
-- Darkened Ruined Sandstone Pillars to make them seem more like background objects
-- Fixed Pelicans and Sandpipers spawning in space
+v0.2.0.5
+- Fixed Oasis issue with Remnants
+- Fixed naturally generated Lapis Dressers not generating with chests properly
+- Added small loot pool for Lapis Dressers
+- Allowed Candelabras and Candles to spawn on Lapis Dressers
+- Added new "Labyrinth" secret seed
+- Fixed Gilded Greatbow doing nonsense in multiplayer
+- 

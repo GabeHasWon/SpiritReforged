@@ -47,7 +47,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		stringColor = Color.LightCyan;
 	}
 
-	protected override void ModifyFiredProj(ref Projectile projectile, bool fullCharge, bool perfectShot)
+	protected override void ModifyFiredProj(Projectile projectile, bool fullCharge, bool perfectShot)
 	{
 		if (!Main.dedServ)
 			SoundEngine.PlaySound(ArrowShoot, projectile.Center);
@@ -55,8 +55,10 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		if (perfectShot)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
-
 			projectile.velocity *= 1.5f;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
 
 			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
 			{
