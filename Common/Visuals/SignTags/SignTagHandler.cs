@@ -206,8 +206,9 @@ internal class SignTagHandler : ILoadable
 			RenderTargetBinding[] bindings = Main.instance.GraphicsDevice.GetRenderTargets();
 			Main.instance.GraphicsDevice.SetRenderTarget(_drawingTarget);
 			Main.instance.GraphicsDevice.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
+			
+			// Drawn without a matrix as as to not apply twice
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Matrix.Identity); 
 
 			PlayerInput.SetZoom_UI();
 
@@ -215,7 +216,7 @@ internal class SignTagHandler : ILoadable
 			var mouse = Main.MouseScreen;
 
 			PlayerInput.SetZoom_UI();
-			PlayerInput.SetZoom_Test();
+
 			float width = 0;
 
 			for (int k = 0; k < lineAmount; k++)
@@ -243,7 +244,7 @@ internal class SignTagHandler : ILoadable
 
 			if (!skipDraw)
 			{
-				var textPosition = new Vector2(20, 20);// rectangle.X + 10, rectangle.Y + 5);
+				var textPosition = new Vector2(20, 20);
 				for (int line = 0; line < lineAmount; line++)
 					Utils.DrawBorderStringFourWay(Main.spriteBatch, FontAssets.MouseText.Value, array[line], textPosition.X, textPosition.Y + line * 30, color, Color.Black, Vector2.Zero);
 			}
@@ -257,10 +258,7 @@ internal class SignTagHandler : ILoadable
 				Main.spriteBatch.Begin(SpriteSortMode.Immediate, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Main.UIScaleMatrix);
 
 				color = Color.Lerp(color, Color.White, 1);
-				Rectangle frame = rectangle;
-				int size = (int)((Main.UIScale - 1) * 10f);
-				frame.Inflate(size, size);
-				Utils.DrawInvBG(Main.spriteBatch, frame, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
+				Utils.DrawInvBG(Main.spriteBatch, rectangle, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
 				
 				Main.spriteBatch.End();
 			}
@@ -271,8 +269,7 @@ internal class SignTagHandler : ILoadable
 				tag.ModifyRenderTarget();
 			});
 
-			float scaleMod = MathF.Pow(Main.UIScale, 2);
-			Main.spriteBatch.Draw(_drawingTarget, new Vector2(rectangle.X - 13 * scaleMod, rectangle.Y - 15 * scaleMod), Color.White);
+			Main.spriteBatch.Draw(_drawingTarget, new Vector2(rectangle.X - 10, rectangle.Y - 12), Color.White);
 
 			Main.mouseText = true;
 			return false;
