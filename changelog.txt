@@ -1,8 +1,10 @@
 v0.2.0.5
-- Fixed Oasis issue with Remnants
+- Added new "Labyrinth" secret seed
+
+- Fixed Oasis crash issue with Remnants
 - Fixed naturally generated Lapis Dressers not generating with chests properly
 - Added small loot pool for Lapis Dressers
 - Allowed Candelabras and Candles to spawn on Lapis Dressers
-- Added new "Labyrinth" secret seed
 - Fixed Gilded Greatbow doing nonsense in multiplayer
-- 
+- Dunce Crabs now fall substantially slower in water
+- Fixed duplicate application of matrix to wavy sign text, causing visual issues
