@@ -34,6 +34,11 @@ ReforgedClientConfig: {
 		Label: Отключить эффекты воды
 		Tooltip: Отключает все визуальные эффекты воды, добавляемые Reforged.
 	}
+
+	ManualEcotoneMapping: {
+		// Label: Manual Ecotone Mapping
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {
