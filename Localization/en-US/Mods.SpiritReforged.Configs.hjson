@@ -34,6 +34,11 @@ ReforgedClientConfig: {
 		Label: Disable Water Visuals
 		Tooltip: Disables the Reforged water visuals.
 	}
+
+	ManualEcotoneMapping: {
+		Label: Manual Ecotone Mapping
+		Tooltip: ""
+	}
 }
 
 OceanShape: {

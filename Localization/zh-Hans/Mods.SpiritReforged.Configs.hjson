@@ -34,6 +34,11 @@ ReforgedClientConfig: {
 		Label: 禁用水体视觉效果
 		Tooltip: 禁用魂灵新魄水体的视觉效果。
 	}
+
+	ManualEcotoneMapping: {
+		// Label: Manual Ecotone Mapping
+		// Tooltip: ""
+	}
 }
 
 OceanShape: {
