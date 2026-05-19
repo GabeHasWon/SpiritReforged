@@ -60,8 +60,8 @@ internal class EcotoneMapperDisplay : ModSystem
 			Vector2 stringPosition = new(drawRectangle.Center.X - size.X / 2f, drawRectangle.Y + 8);
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, stringPosition, Color.White, 0f, Vector2.Zero, Vector2.One);
 
-			// Position & bounds information
-			text = $"{entry.Bounds.X}, {entry.Bounds.Y} - {entry.Width} x {entry.Height} [c/AAAAFF:({entry.StrictBounds.Height})]";
+			// Bounds information
+			text = $"{entry.Width} x {entry.Height} [c/AAAAFF:({entry.StrictBounds.Height})]";
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, stringPosition + new Vector2(0, 24), Color.White, 0f, Vector2.Zero, new(0.8f));
 		}
 
