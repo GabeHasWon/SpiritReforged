@@ -20,7 +20,11 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
 {
+	/// <summary> A pulsing rainbow color used for visual effects. </summary>
 	public static Color SpecialColor => Main.hslToRgb((float)Main.timeForVisualEffects / 300f % 1f, 1, 0.8f);
+
+	/// <summary> The item origin used for visual effects. </summary>
+	private Vector2 Center => Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
 
 	public static readonly Asset<Texture2D> WorldTexture = DrawHelpers.RequestLocal<ChromaticWax>("ChromaticWax_World", false);
 
@@ -33,6 +37,12 @@ public class ChromaticWax : ModItem
 		Item.value = Item.sellPrice(silver: 10);
 		Item.rare = ItemRarityID.Blue;
 		Item.maxStack = Item.CommonMaxStack;
+	}
+
+	public override void Update(ref float gravity, ref float maxFallSpeed)
+	{
+		if (Main.rand.NextBool(10))
+			ParticleHandler.SpawnParticle(new EmberParticle(Center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -74,23 +84,16 @@ public class ChromaticWax : ModItem
 	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
 		Texture2D texture = WorldTexture.Value;
-		Vector2 center = Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
-
 		float itemScale = scale;
 		float itemRotation = rotation;
 
-		if (!Main.gamePaused && Main.rand.NextBool(10))
-		{
-			ParticleHandler.SpawnParticle(new EmberParticle(center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
-		}
-
 		DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
-			spriteBatch.Draw(texture, center - Main.screenPosition + offset, null, Item.GetAlpha(SpecialColor.Additive()), itemRotation, texture.Size() / 2, itemScale, 0, 0));
+			spriteBatch.Draw(texture, Center - Main.screenPosition + offset, null, Item.GetAlpha(SpecialColor.Additive()), itemRotation, texture.Size() / 2, itemScale, 0, 0));
 
 		Texture2D star = AssetLoader.LoadedTextures["StarChromatic"].Value;
-		spriteBatch.Draw(star, center - Main.screenPosition, null, Item.GetAlpha(SpecialColor.Additive()) * 0.8f, 0, star.Size () / 2, itemScale * (0.05f + 0.005f * (float)EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 65f)), 0, 0);
+		spriteBatch.Draw(star, Center - Main.screenPosition, null, Item.GetAlpha(SpecialColor.Additive()) * 0.8f, 0, star.Size () / 2, itemScale * (0.05f + 0.005f * (float)EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 65f)), 0, 0);
 
-		spriteBatch.Draw(texture, center - Main.screenPosition, null, Item.GetAlpha(lightColor), itemRotation, texture.Size() / 2, itemScale, 0, 0);
+		spriteBatch.Draw(texture, Center - Main.screenPosition, null, Item.GetAlpha(lightColor), itemRotation, texture.Size() / 2, itemScale, 0, 0);
 		return false;
 	}
 }
@@ -110,7 +113,7 @@ public class GlyphGlobalNPC : GlobalNPC
 		{
 			LeadingConditionRule isExpertRule = new(new Conditions.IsExpert());
 			isExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>()));
-			isExpertRule.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>(), 2));
+			isExpertRule.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>(), 1, 2, 2));
 
 			npcLoot.Add(isExpertRule);
 		}
