@@ -37,7 +37,7 @@ public class EcotoneEdgeDefinitions : ILoadable
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.Adamantite, "Desert", TileID.Sand, TileID.Ebonsand, TileID.Crimsand));
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CobaltBrick, "Ocean"));
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.SnowBlock, "Snow", TileID.SnowBlock, TileID.IceBlock));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.ChlorophyteBrick, "Jungle", TileID.JungleGrass));
+		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.ChlorophyteBrick, "Jungle", TileID.JungleGrass, TileID.Mud));
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.DemoniteBrick, "Corruption", TileID.CorruptGrass, TileID.Ebonstone, TileID.CorruptIce, TileID.CorruptJungleGrass));
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Crimson", TileID.CrimsonGrass, TileID.Crimstone, TileID.FleshIce, TileID.CrimsonJungleGrass));
 		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Hallow", TileID.HallowedGrass, TileID.Pearlsand, TileID.Pearlstone, TileID.HallowedIce));

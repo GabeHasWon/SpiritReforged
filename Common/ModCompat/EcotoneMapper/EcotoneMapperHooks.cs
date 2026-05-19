@@ -13,8 +13,7 @@ internal class EcotoneMapperHooks : ModSystem
 {
 	public static bool Enabled => CrossMod.WorldGenPreviewer.Enabled && ModContent.GetInstance<ReforgedClientConfig>().ManualEcotoneMapping;
 
-	public static bool ManualMapping { get; private set; }
-	public static bool ActuallyManuallyMapping { get; private set; }
+	public static bool ActuallyManuallyMapping { get; internal set; }
 
 	protected static bool ReadyToContinue = true;
 
@@ -50,10 +49,10 @@ internal class EcotoneMapperHooks : ModSystem
 		KeyboardState state = Keyboard.GetState();
 
 		if (state.IsKeyDown(Keys.Escape))
+		{
 			ReadyToContinue = true;
-
-		if (state.IsKeyDown(Keys.P))
-			ReadyToContinue = false;
+			ActuallyManuallyMapping = false;
+		}
 	}
 
 	public static void ModifyGenerateWorld(ILContext context)
