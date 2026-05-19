@@ -1,7 +1,5 @@
-﻿using ReLogic.Utilities;
-using SpiritReforged.Common;
+﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
@@ -17,9 +15,6 @@ using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
-using SpiritReforged.Content.Savanna.Tiles.Paintings;
-using SpiritReforged.Content.Ziggurat.Tiles;
-using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -102,7 +97,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 			&& EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
-			return true; //Uniquely, salt flats cannot normally generate over spawn
+			return true; // Uniquely, salt flats cannot normally generate over spawn
 		}
 
 		return false;
