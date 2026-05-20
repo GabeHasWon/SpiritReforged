@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using Steamworks;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -11,6 +11,8 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
+
+#nullable enable
 
 public class EcotoneSurfaceMapping : ModSystem
 {
@@ -54,6 +56,7 @@ public class EcotoneSurfaceMapping : ModSystem
 		public EcotoneEdgeDefinition Left;
 		public EcotoneEdgeDefinition Right;
 		public int CorruptionType = BiomeConversionID.Purity;
+		public EcotoneBase? ForcedEcotone;
 
 		private bool _boundsPrepared = false;
 		private Rectangle _bounds = default;
@@ -72,7 +75,7 @@ public class EcotoneSurfaceMapping : ModSystem
 		public bool TileFits(int i, int j) => Definition.ValidIds.Contains(Main.tile[i, j].TileType);
 		public bool SurroundedBy(string one, string two) => Left.Name == one && Right.Name == two || Left.Name == two && Right.Name == one;
 
-		public override string ToString() => $"{Start} to {End}; of {Definition}:{SurfacePoints.Count}";
+		public override string ToString() => $"{Start} to {End}; of {Definition}:{SurfacePoints.Count} - Forced into {(ForcedEcotone?.GetType().Name ?? "None")}";
 	}
 
 	public const int TransitionLength = 20;
@@ -84,7 +87,7 @@ public class EcotoneSurfaceMapping : ModSystem
 
 	public static List<EcotoneEntry> Entries { get; internal set; } = [];
 
-	private static ILHook _modifyCorruptionHook = null;
+	private static ILHook _modifyCorruptionHook = null!;
 
 	/// <summary> For some reason, the Corruption pass *really* spams "area replacement" code. So this just accounts for that. </summary>
 	internal static readonly HashSet<int> SkipCorruptAreaScanXs = [];
@@ -96,7 +99,7 @@ public class EcotoneSurfaceMapping : ModSystem
 	private extern static ref WorldGenLegacyMethod GetUnderlyingMethod(PassLegacy pass);
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "_vanillaGenPasses")]
-	private extern static ref Dictionary<string, GenPass> GetVanillaGenPasses(WorldGen gen);
+	private extern static ref Dictionary<string, GenPass> GetVanillaGenPasses(WorldGen? gen);
 
 	public override void ClearWorld()
 	{
@@ -198,7 +201,7 @@ public class EcotoneSurfaceMapping : ModSystem
 			return;
 
 		_modifyCorruptionHook.Dispose();
-		_modifyCorruptionHook = null;
+		_modifyCorruptionHook = null!;
 	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
@@ -275,7 +278,7 @@ public class EcotoneSurfaceMapping : ModSystem
 		end = Math.Min(end, Main.maxTilesX - Fluff);
 
 		int transitionCount = 0;
-		EcotoneEntry entry = null;
+		EcotoneEntry entry = null!;
 		int conversionType = BiomeConversionID.Purity;
 
 		for (int x = start; x < end; ++x)
@@ -337,6 +340,9 @@ public class EcotoneSurfaceMapping : ModSystem
 		foreach (EcotoneEntry curEntry in Entries)
 			curEntry.FinalizeInformation();
 
+		if (EcotoneMapperHooks.ActuallyManuallyMapping)
+			EcotoneMapperHooks.ReadyToContinue = false;
+
 		static void MapPoint(int x, int y, EcotoneEntry entry)
 		{
 			entry.SurfacePoints.Add(new Point(x, y));
@@ -346,7 +352,7 @@ public class EcotoneSurfaceMapping : ModSystem
 
 	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="predicate"/>.<para/>
 	/// Automatically remaps ecotones. </summary>
-	public static EcotoneEntry FindWhere(Func<EcotoneEntry, bool> predicate)
+	public static EcotoneEntry? FindWhere(Func<EcotoneEntry, bool> predicate)
 	{
 		MapEcotones();
 

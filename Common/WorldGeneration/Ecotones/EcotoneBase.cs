@@ -17,6 +17,8 @@ public abstract class EcotoneBase : ILoadable
 		public static EcotoneIcon FromBiome<T>() where T : ModBiome => new(ModContent.GetInstance<T>().BestiaryIcon);
 	}
 
+	public readonly record struct ManualPlacementInfo(bool Singular);
+
 	public static readonly List<EcotoneBase> Ecotones = [];
 
 	public EcotoneIcon Icon { get; private set; }

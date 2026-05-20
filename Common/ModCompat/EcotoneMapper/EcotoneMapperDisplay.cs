@@ -12,8 +12,6 @@ internal class EcotoneMapperDisplay : ModSystem
 	const float OffscreenXMin = 10f;
 	const float OffscreenYMin = 10f;
 
-	public override void PreWorldGen() => EcotoneMapperHooks.ActuallyManuallyMapping = false;
-
 	// Code heavily adapted from WorldGenPreviewer.
 	// https://github.com/JavidPack/WorldGenPreviewer/blob/1.4/UIWorldLoadSpecial.cs
 	internal static void DrawSelectionAreas()
