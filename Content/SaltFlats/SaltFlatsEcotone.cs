@@ -10,6 +10,7 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
@@ -55,6 +56,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static FastNoiseLite Noise;
 
+	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
 	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
 
 	/// <summary> Converts pots placed atop dull salt into stone stupas. </summary>
