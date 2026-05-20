@@ -11,7 +11,10 @@ namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
 internal class EcotoneMapperHooks : ModSystem 
 {
-	public static bool Enabled => CrossMod.WorldGenPreviewer.Enabled && ModContent.GetInstance<ReforgedClientConfig>().ManualEcotoneMapping;
+	public static bool Enabled => CrossMod.WorldGenPreviewer.Enabled;
+	public static bool DebugEnabled => Enabled && ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones;
+	public static bool ManualEnabled => Enabled && ActuallyManuallyMapping;
+	public static bool AnyEnabled => ManualEnabled && DebugEnabled;
 
 	public static bool ActuallyManuallyMapping { get; internal set; }
 
@@ -68,7 +71,7 @@ internal class EcotoneMapperHooks : ModSystem
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-		if (Enabled)
+		if (Enabled && ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones)
 		{
 			int index = tasks.FindIndex(x => x.Name == "Clean Up Dirt");
 

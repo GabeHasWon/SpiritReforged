@@ -6,6 +6,7 @@ using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
+using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
@@ -27,6 +28,8 @@ internal class SavannaEcotone : EcotoneBase
 	[WorldBound]
 	public static Rectangle SavannaArea;
 	private static int Steps = 0;
+
+	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SavannaBiome>();
 
 	protected override void Load()
 	{

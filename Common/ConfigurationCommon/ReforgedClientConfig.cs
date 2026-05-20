@@ -28,9 +28,10 @@ class ReforgedClientConfig : ModConfig
 	[ReloadRequired]
 	public bool DisableWater { get; set; }
 
+	[Header("Developer")]
 	[DefaultValue(true)]
 	[ReloadRequired]
-	public bool ManualEcotoneMapping { get; set; }
+	public bool DebugEcotones { get; set; }
 
 	public override void OnChanged()
 	{

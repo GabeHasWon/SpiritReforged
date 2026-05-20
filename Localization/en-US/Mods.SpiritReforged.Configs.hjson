@@ -35,9 +35,13 @@ ReforgedClientConfig: {
 		Tooltip: Disables the Reforged water visuals.
 	}
 
-	ManualEcotoneMapping: {
-		Label: Manual Ecotone Mapping
-		Tooltip: ""
+	DebugEcotones: {
+		Label: Ecotone Debugging (with World Gen Previewer)
+		Tooltip: 
+			'''
+			REQUIRES World Gen Previewer.
+			Allows developers and players using the Ecotone system to debug issues with and understand ecotones with a helpful overlay.
+			''' 
 	}
 }
 
