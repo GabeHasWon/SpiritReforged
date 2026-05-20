@@ -4,6 +4,8 @@ using MonoMod.Cil;
 using SpiritReforged.Common.ConfigurationCommon;
 using System.Reflection;
 using Terraria.GameContent.Generation;
+using Terraria.GameContent.UI.Elements;
+using Terraria.GameContent.UI.States;
 using Terraria.UI;
 using Terraria.WorldBuilding;
 
@@ -16,9 +18,15 @@ internal class EcotoneMapperHooks : ModSystem
 	public static bool ManualEnabled => Enabled && ActuallyManuallyMapping;
 	public static bool AnyEnabled => ManualEnabled && DebugEnabled;
 
+	/// <summary>
+	/// Whether the user actually wants the manual ecotone mapping system.
+	/// </summary>
 	public static bool ActuallyManuallyMapping { get; internal set; }
 
-	protected static bool ReadyToContinue = true;
+	/// <summary>
+	/// Used to pause world generation.
+	/// </summary>
+	internal static bool ReadyToContinue = true;
 
 	public override void PostSetupContent()
 	{
@@ -36,6 +44,16 @@ internal class EcotoneMapperHooks : ModSystem
 		MonoModHooks.Add(uiWorldLoadType.GetMethod("DrawSelf", BindingFlags.Instance | BindingFlags.NonPublic), DetourDrawSelf);
 
 		On_Main.Update += SimpleCheck;
+		On_UIWorldCreation.MakeBackAndCreatebuttons += AddMapperButton;
+	}
+
+	private void AddMapperButton(On_UIWorldCreation.orig_MakeBackAndCreatebuttons orig, UIWorldCreation self, UIElement outerContainer)
+	{
+		orig(self, outerContainer);
+
+		//UIImageFramed button = new UIImageFramed();
+
+		//self.Append();
 	}
 
 	public static void DetourDrawSelf(Action<UIState, SpriteBatch> orig, UIState self, SpriteBatch spriteBatch)
