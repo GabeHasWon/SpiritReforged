@@ -20,6 +20,7 @@ public class RageGlyph : GlyphItem
 		// target.life would be always 0 in OnHitNPC
 		internal int _npcLifeBeforeDeath;
 		internal int _overflowDamage;
+		internal int _overflowDecayTimer;
 
 		// drawing
 		internal int _fadeOutTimer;
@@ -76,10 +77,10 @@ public class RageGlyph : GlyphItem
 
 					for (int i = 0; i < ragePlayer.oldPositions.Count; i++)
 					{
-						sb.Draw(rageIcon, ragePlayer.oldPositions[i] - Main.screenPosition, null, color.Additive() * (i / 5f) * fadeOut, 0f, rageIcon.Size() / 2f, scale, 0f, 0f);
+						sb.Draw(rageIcon, ragePlayer.oldPositions[i] - player.velocity * 0.2f - Main.screenPosition, null, color.Additive() * (i / 5f) * fadeOut, 0f, rageIcon.Size() / 2f, scale, 0f, 0f);
 					}
 
-					sb.Draw(rageIcon, player.Center + new Vector2(-4 * player.direction, player.gfxOffY - 16) + shake - Main.screenPosition, null, color * fadeOut, 0f, rageIcon.Size() / 2f, scale, 0f, 0f);
+					sb.Draw(rageIcon, player.Center + new Vector2(-4 * player.direction, player.gfxOffY - 16) + shake - player.velocity * 0.2f - Main.screenPosition, null, color * fadeOut, 0f, rageIcon.Size() / 2f, scale, 0f, 0f);
 				}
 			}
 
@@ -94,6 +95,14 @@ public class RageGlyph : GlyphItem
 
 			if (_fadeInTimer > 0)
 				_fadeInTimer--;
+
+			if (_overflowDecayTimer > 0)
+				_overflowDecayTimer--;
+			else if (_overflowDamage > 0)
+			{
+				_overflowDamage = 0;
+				Clear();
+			}
 
 			if (oldPositions is null)
 			{
@@ -112,12 +121,17 @@ public class RageGlyph : GlyphItem
 
 			if (!GlyphActive && _overflowDamage > 0)
 			{
-				oldPositions.Clear();
-				_fadeOutTimer = 10;
-				_overflowDamage = 0;
-				activateOverflow = false;
-				_npcLifeBeforeDeath = 0;
+				Clear();
 			}
+		}
+
+		internal void Clear()
+		{
+			oldPositions.Clear();
+			_fadeOutTimer = 10;
+			_overflowDamage = 0;
+			activateOverflow = false;
+			_npcLifeBeforeDeath = 0;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -165,6 +179,7 @@ public class RageGlyph : GlyphItem
 					if (activateOverflow)
 					{
 						_overflowDamage += (_npcLifeBeforeDeath - damageDone) * -1;
+						_overflowDecayTimer = 600;
 
 						ParticleHandler.SpawnParticle(new LightBurst(target.Center, 0f, Color.Red.Additive(), 0.3f, 25));
 						ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.White, Color.Red, 0.4f, 60, 0)

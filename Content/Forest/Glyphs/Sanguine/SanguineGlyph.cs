@@ -1,33 +1,96 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using ReLogic.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
 public class SanguineGlyph : GlyphItem
 {
+	internal class SanguineStackingBuff : ModBuff
+	{
+		public override void SetStaticDefaults()
+		{
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (player.GetModPlayer<SanguinePlayer>().stacks.Count > 0)
+			{
+				// find the stack with the most timer and use that for the time display
+				player.buffTime[buffIndex] = player.GetModPlayer<SanguinePlayer>().stacks.OrderBy(s => s.timer).Last().timer;
+			}				
+			else
+			{
+				player.DelBuff(buffIndex);
+				buffIndex--;
+			}
+		}
+
+		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
+		{
+			var stacks = Main.LocalPlayer.GetModPlayer<SanguinePlayer>().stacks;
+
+			int count = stacks.Count;
+
+			buffName = "Sanguine Energy [" + count + "]";
+
+			float damage = 0;
+			foreach (SanguineStack stack in stacks)
+				damage += stack.damageBonus;
+
+			tip = "Damage increased by " + Math.Round(damage * 100, 2) + "%";
+
+			rare = ItemRarityID.Red;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+		{
+			var mp = Main.LocalPlayer.GetModPlayer<SanguinePlayer>();
+
+			var stacks = mp.stacks;
+
+			int count = stacks.Count;
+
+			float lerp = mp.lifestealCooldown / 20f;
+
+			Color drawColor = Color.Lerp(Color.White, Color.Red.Additive(), lerp);
+
+			float scale = MathHelper.Lerp(1f, 1.2f, lerp);
+
+			string text = count.ToString();
+
+			Utils.DrawBorderString(spriteBatch, text, drawParams.Position + new Vector2(25, 20), drawColor, scale);
+		}
+	}
+
+	internal class SanguineStack
+	{
+		/// <param name="decayTimer">How long the buff stack lasts, in ticks</param>
+		/// <param name="damageBonus">How much bonus damage should be added, 0.05: 5% | Bonus is added to 1f</param>
+		public SanguineStack(int decayTimer, float damageBonus)
+		{
+			timer = decayTimer;
+			this.damageBonus = damageBonus;
+		}
+
+		public int timer;
+		public float damageBonus;
+	}
+
 	internal class SanguinePlayer : ModPlayer
 	{
 		internal bool GlyphActive => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>();
 
 		internal List<SanguineStack> stacks = new();
 		internal int lifestealCooldown;
-		internal class SanguineStack
-		{
-			/// <param name="decayTimer">How long the buff stack lasts, in ticks</param>
-			/// <param name="damageBonus">How much bonus damage should be added, 0.05: 5% | Bonus is added to 1f</param>
-			public SanguineStack(int decayTimer, float damageBonus)
-			{
-				timer = decayTimer;
-				this.damageBonus = damageBonus;
-			}
-
-			public int timer;
-			public float damageBonus;
-		}
 
 		internal static int[] maxTimeLefts = new int[Main.maxCombatText];
 
@@ -103,8 +166,11 @@ public class SanguineGlyph : GlyphItem
 					float amountToHeal = (float)damageDone / 10;
 
 					amountToHeal *= MathHelper.Lerp(1f, 3f, 1f - Player.statLife / (float)Player.statLifeMax2);
-					if ((int)amountToHeal < 1) // if the healing is too minimal, return to prevent rapid fire weapons healing one health rapidly
-						return;
+					if ((int)amountToHeal < 1)
+						amountToHeal = 1;
+					
+					if (!Player.HasBuff<SanguineStackingBuff>())
+						Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
 
 					if (amountToHeal > 10)
 						amountToHeal = 10;

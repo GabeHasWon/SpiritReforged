@@ -147,3 +147,18 @@ DivineStrike: {
 	DisplayName: Divine Strike
 	Description: Mods.SpiritReforged.Buffs.DivineStrike.Description
 }
+
+RadiantGlyphBuff: {
+	DisplayName: Radiant Glyph Buff
+	Description: Mods.SpiritReforged.Buffs.RadiantGlyphBuff.Description
+}
+
+RotStackingDebuff: {
+	DisplayName: Rot Stacking Debuff
+	Description: Mods.SpiritReforged.Buffs.RotStackingDebuff.Description
+}
+
+SanguineStackingBuff: {
+	DisplayName: Sanguine Stacking Buff
+	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+}

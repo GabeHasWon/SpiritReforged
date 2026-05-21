@@ -5,14 +5,70 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using static SpiritReforged.Content.Forest.Glyphs.Sanguine.SanguineGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Rot;
 
 public class RotGlyph : GlyphItem
 {
+	public sealed class RotStackingDebuff : ModBuff
+	{
+		public override void SetStaticDefaults()
+		{
+			Main.buffNoSave[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (player.GetModPlayer<RotPlayer>().stacks > 0)
+			{
+				player.buffTime[buffIndex] = 60 * player.GetModPlayer<RotPlayer>().stacks + player.GetModPlayer<RotPlayer>().decayTimer;
+			}
+			else
+			{
+				player.DelBuff(buffIndex);
+				buffIndex--;
+			}
+		}
+
+		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
+		{
+			var stacks = Main.LocalPlayer.GetModPlayer<RotPlayer>().stacks;
+
+			int count = stacks;
+
+			buffName = "Rotting Away [" + count + "]";
+
+			tip = "Your skin is turning green";
+
+			rare = ItemRarityID.Green;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
+		{
+			var mp = Main.LocalPlayer.GetModPlayer<RotPlayer>();
+
+			var stacks = mp.stacks;
+
+			int count = stacks;
+
+			float lerp = mp.stackTimer / 20f;
+
+			Color drawColor = Color.Lerp(Color.White, Color.Green.Additive(), lerp);
+
+			float scale = MathHelper.Lerp(1f, 1.2f, lerp);
+
+			string text = count.ToString();
+
+			Utils.DrawBorderString(spriteBatch, text, drawParams.Position + new Vector2(25, 20), drawColor, scale);
+		}
+	}
+
 	public sealed class RotPlayer : ModPlayer
 	{
 		public int stacks;
+		public int stackTimer; // when a stack decreases
 		public int decayTimer;
 		public bool DebuffActive => stacks > 0;
 
@@ -110,8 +166,12 @@ public class RotGlyph : GlyphItem
 			else if (stacks > 0)
 			{
 				stacks--;
+				stackTimer = 20;
 				decayTimer += 60;
 			}
+
+			if (stackTimer > 0)
+				stackTimer--;
 		}
 
 		public override void UpdateBadLifeRegen()
@@ -127,7 +187,7 @@ public class RotGlyph : GlyphItem
 
 		public override void UpdateEquips()
 		{
-			if (DebuffActive && Main.rand.NextBool(30 - stacks * 2))
+			if (DebuffActive && Main.rand.NextBool(24 - stacks * 2))
 			{
 				var position = Player.Center + Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2);
 
@@ -175,6 +235,9 @@ public class RotGlyph : GlyphItem
 
 		public void AddStack(int stackCount, int decayTime = 180)
 		{
+			if (!Player.HasBuff<RotStackingDebuff>())
+				Player.AddBuff(ModContent.BuffType<RotStackingDebuff>(), 60);
+
 			stacks += stackCount;
 			decayTimer = decayTime;
 
