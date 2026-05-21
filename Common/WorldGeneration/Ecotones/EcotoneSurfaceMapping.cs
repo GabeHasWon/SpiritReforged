@@ -56,7 +56,6 @@ public class EcotoneSurfaceMapping : ModSystem
 		public EcotoneEdgeDefinition Left;
 		public EcotoneEdgeDefinition Right;
 		public int CorruptionType = BiomeConversionID.Purity;
-		public EcotoneBase? ForcedEcotone;
 
 		private bool _boundsPrepared = false;
 		private Rectangle _bounds = default;
@@ -75,7 +74,7 @@ public class EcotoneSurfaceMapping : ModSystem
 		public bool TileFits(int i, int j) => Definition.ValidIds.Contains(Main.tile[i, j].TileType);
 		public bool SurroundedBy(string one, string two) => Left.Name == one && Right.Name == two || Left.Name == two && Right.Name == one;
 
-		public override string ToString() => $"{Start} to {End}; of {Definition}:{SurfacePoints.Count} - Forced into {(ForcedEcotone?.GetType().Name ?? "None")}";
+		public override string ToString() => $"{Start} to {End}; of {Definition}:{SurfacePoints.Count}";
 	}
 
 	public const int TransitionLength = 20;
