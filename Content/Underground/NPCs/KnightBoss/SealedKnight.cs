@@ -1,8 +1,10 @@
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Forest.Glyphs;
 using Terraria.GameContent.ItemDropRules;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Underground.NPCs.KnightBoss;
 
 [AutoloadBossHead]
 public class SealedKnight : ModNPC
@@ -74,25 +76,21 @@ public class SealedKnight : ModNPC
 			return;
 
 		CurrentState = newState;
+		PatternTime = 0;
 		NPC.netUpdate = true;
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (!Main.dedServ && NPC.life <= 0)
-		{
 			for (int i = 1; i < 10; i++) //Spawn death gores
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity * 0.5f, Mod.Find<ModGore>("SealedKnight" + i).Type);
-		}
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		LeadingConditionRule isExpertRule = new(new Conditions.IsExpert());
-		isExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>(), 1, 3, 5));
-		isExpertRule.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>(), 1, 4, 7));
-
-		npcLoot.Add(isExpertRule);
+		npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 4, 7));
+		npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>(), 1, 3, 5));
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -101,14 +99,14 @@ public class SealedKnight : ModNPC
 
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		Rectangle source = NPC.frame;
-		SpriteEffects effects = (NPC.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		Main.EntitySpriteDraw(texture, NPC.Bottom - screenPos + new Vector2(-11 * NPC.spriteDirection, NPC.gfxOffY + 2), source, NPC.DrawColor(drawColor), NPC.rotation, new(source.Width / 2, source.Height), NPC.scale, effects);
 
 		if (CurrentState is not State.Inactive)
 			DrawFlame(screenPos);
 
-		Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), NPC.Top - screenPos, Main.MouseTextColorReal, 1, 0.5f, 0.5f); //DEBUG
+		Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), NPC.Top - screenPos - new Vector2(0, 20), Main.MouseTextColorReal, 1, 0.5f, 0.5f); //DEBUG
 
 		return false;
 	}
@@ -139,11 +137,20 @@ public class SealedKnight : ModNPC
 
 	private static void Active(SealedKnight sealedKnight)
 	{
-
+		if (sealedKnight.PatternTime >= 100)
+			sealedKnight.ChangeState(State.Mortar);
 	}
 
 	private static void Mortar(SealedKnight sealedKnight)
 	{
+		NPC npc = sealedKnight.NPC;
+
+		if (Main.netMode != NetmodeID.MultiplayerClient && sealedKnight.PatternTime == 5 && npc.HasPlayerTarget)
+		{
+			Vector2 velocity = ArcVelocityHelper.GetArcVel(npc.Top, Main.player[npc.target].Center, Firefall.Gravity, 12, true);
+			Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Top, velocity, ModContent.ProjectileType<Firefall>(), npc.damage, 4);
+		}
+
 		if (sealedKnight.PatternTime >= 30)
 			sealedKnight.ChangeState(State.Active);
 	}

@@ -111,11 +111,8 @@ public class GlyphGlobalNPC : GlobalNPC
 	{
 		if (npc.type is NPCID.Tim or NPCID.RuneWizard or NPCID.GoblinSummoner)
 		{
-			LeadingConditionRule isExpertRule = new(new Conditions.IsExpert());
-			isExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>()));
-			isExpertRule.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ChromaticWax>(), 1, 2, 2));
-
-			npcLoot.Add(isExpertRule);
+			npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
+			npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
 		}
 
 		if (npc.type is NPCID.DarkCaster or NPCID.GoblinSorcerer)
