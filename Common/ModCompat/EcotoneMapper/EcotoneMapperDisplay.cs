@@ -12,7 +12,7 @@ internal class EcotoneMapperDisplay : ModSystem
 	const float OffscreenXMin = 10f;
 	const float OffscreenYMin = 10f;
 
-	// Code heavily adapted from WorldGenPreviewer.
+	// Code heavily adapted from WorldGenPreviewer's map overlay code.
 	// https://github.com/JavidPack/WorldGenPreviewer/blob/1.4/UIWorldLoadSpecial.cs
 	internal static void DrawSelectionAreas()
 	{
@@ -20,11 +20,15 @@ internal class EcotoneMapperDisplay : ModSystem
 			return;
 
 		DynamicSpriteFont font = FontAssets.MouseText.Value;
-		CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Exit", Vector2.Zero);
-		CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Tilde", Vector2.UnitY * 24);
 
-		string exitText = Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Help");
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, exitText, new Vector2(20, 20), Color.White, 0f, Vector2.Zero, new(0.8f));
+		if (ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones)
+		{
+			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Exit", Vector2.Zero);
+			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Tilde", Vector2.UnitY * 24);
+
+			string exitText = Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Help");
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, exitText, new Vector2(20, 20), Color.White, 0f, Vector2.Zero, new(0.8f));
+		}
 
 		PlayerInput.SetZoom_Unscaled();
 		Main.spriteBatch.End();
@@ -35,16 +39,19 @@ internal class EcotoneMapperDisplay : ModSystem
 		num20 *= Main.mapFullscreenScale;
 		num21 *= Main.mapFullscreenScale;
 		float panX = -num20 + Main.screenWidth / 2f;
-		float num2 = -num21 + Main.screenHeight / 2f;
+		float panY = -num21 + Main.screenHeight / 2f;
 		panX += OffscreenXMin * Main.mapFullscreenScale;
-		num2 += OffscreenYMin * Main.mapFullscreenScale;
+		panY += OffscreenYMin * Main.mapFullscreenScale;
+		int entryId = 0;
 
 		foreach (var entry in EcotoneSurfaceMapping.Entries)
 		{
 			if (!EcotoneMapperHooks.ActuallyManuallyMapping)
-				DrawDebug(font, panX, num2, entry);
+				DrawDebug(font, panX, panY, entry);
 			else
-				DrawSelection(font, panX, num2, entry);
+				DrawSelection(font, panX, panY, entry, ref entryId);
+
+			entryId++;
 		}
 
 		Main.spriteBatch.End();
@@ -52,17 +59,23 @@ internal class EcotoneMapperDisplay : ModSystem
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
 	}
 
-	private static void DrawSelection(DynamicSpriteFont font, float panX, float num2, EcotoneSurfaceMapping.EcotoneEntry entry)
+	private static void DrawSelection(DynamicSpriteFont font, float panX, float panY, EcotoneSurfaceMapping.EcotoneEntry entry, ref int entryId)
 	{
-		Rectangle drawRectangle = ModifyRectangle(OffscreenXMin, OffscreenYMin, panX, num2, entry.Bounds);
+		Rectangle drawRectangle = ModifyRectangle(OffscreenXMin, OffscreenYMin, panX, panY, entry.Bounds);
 		Utils.DrawInvBG(Main.spriteBatch, drawRectangle, new Color(23, 25, 81, 255) * 0.925f * 0.85f);
 
+		float scale = MathF.Min(MathF.Min(drawRectangle.Width, drawRectangle.Height) / 140f, 1);
+		string corruptionType = entry.CorruptionType == BiomeConversionID.Purity ? "" : $" ({GetConversionName(entry.CorruptionType)})";
 		var position = drawRectangle.Location.ToVector2() + new Vector2(12);
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, entry.Definition.Name, position, Color.White, 0f, Vector2.Zero, Vector2.One);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, entry.Definition.Name + corruptionType, position, Color.White, 0f, Vector2.Zero, Vector2.One * scale);
+
+		int iconCount = 0;
 
 		foreach (EcotoneBase ecotone in EcotoneBase.Ecotones)
 		{
-
+			Vector2 pos = position + new Vector2(iconCount * 36, 30) * scale;
+			Main.spriteBatch.Draw(ecotone.Icon.Texture.Value, pos, null, Color.White, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+			iconCount++;
 		}
 	}
 

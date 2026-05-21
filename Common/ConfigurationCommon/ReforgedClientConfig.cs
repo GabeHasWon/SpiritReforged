@@ -30,7 +30,6 @@ class ReforgedClientConfig : ModConfig
 
 	[Header("Developer")]
 	[DefaultValue(true)]
-	[ReloadRequired]
 	public bool DebugEcotones { get; set; }
 
 	public override void OnChanged()

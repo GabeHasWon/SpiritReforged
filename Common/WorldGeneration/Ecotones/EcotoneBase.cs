@@ -12,7 +12,7 @@ public abstract class EcotoneBase : ILoadable
 	/// </summary>
 	public readonly struct EcotoneIcon(string path)
 	{
-		public readonly Asset<Texture2D> Icon = ModContent.Request<Texture2D>(path);
+		public readonly Asset<Texture2D> Texture = ModContent.Request<Texture2D>(path);
 
 		public static EcotoneIcon FromBiome<T>() where T : ModBiome => new(ModContent.GetInstance<T>().BestiaryIcon);
 	}

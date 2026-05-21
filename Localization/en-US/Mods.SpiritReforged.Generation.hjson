@@ -58,4 +58,7 @@ Mapping: {
 		Blue rectangle is the start-to-end size, i.e. the mapped surface start and end
 		The size shown above the ecotone is the size of the red rectangle, alongside the height of the blue
 		'''
+	Toggle: Click to {0} manual ecotone selection during world generation.
+	Enable: enable
+	Disable: disable
 }

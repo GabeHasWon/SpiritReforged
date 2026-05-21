@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using MonoMod.Cil;
 using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using Terraria.Audio;
 using Terraria.GameContent.Generation;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
@@ -13,10 +15,14 @@ namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
 internal class EcotoneMapperHooks : ModSystem 
 {
+	public readonly record struct EcotoneEntryPair(EcotoneBase Ecotone, EcotoneSurfaceMapping.EcotoneEntry Entry);
+
 	public static bool Enabled => CrossMod.WorldGenPreviewer.Enabled;
 	public static bool DebugEnabled => Enabled && ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones;
 	public static bool ManualEnabled => Enabled && ActuallyManuallyMapping;
 	public static bool AnyEnabled => ManualEnabled && DebugEnabled;
+
+	public static Dictionary<int, EcotoneEntryPair> ForcedEcotones = [];
 
 	/// <summary>
 	/// Whether the user actually wants the manual ecotone mapping system.
@@ -27,6 +33,8 @@ internal class EcotoneMapperHooks : ModSystem
 	/// Used to pause world generation.
 	/// </summary>
 	internal static bool ReadyToContinue = true;
+
+	public override void PreWorldGen() => ForcedEcotones.Clear();
 
 	public override void PostSetupContent()
 	{
@@ -51,9 +59,67 @@ internal class EcotoneMapperHooks : ModSystem
 	{
 		orig(self, outerContainer);
 
-		//UIImageFramed button = new UIImageFramed();
+		if (!Enabled)
+			return;
 
-		//self.Append();
+		ActuallyManuallyMapping = false;
+
+		UIPanel panel = new()
+		{
+			HAlign = 0.5f,
+			VAlign = 0.5f,
+			Left = StyleDimension.FromPixels(-274),
+			Top = StyleDimension.FromPixels(-218),
+			Width = StyleDimension.FromPixels(40),
+			Height = StyleDimension.FromPixels(40),
+			PaddingLeft = 4,
+			PaddingTop = 4,
+			BackgroundColor = new Color(33, 43, 79) * 0.8f
+		};
+
+		self.Append(panel);
+
+		UIImageFramed button = new(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingButton"), new Rectangle(0, 0, 32, 32))
+		{
+			Width = StyleDimension.FromPixels(32),
+			Height = StyleDimension.FromPixels(32),
+			Left = StyleDimension.FromPixels(0)
+		};
+
+		button.OnLeftClick += FlipActuallyMapping;
+		button.OnUpdate += (_) => ReframeMappingButton(button, self);
+		button.OnMouseOut += (_, _) => RemoveDescription(self);
+		panel.Append(button);
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_descriptionText")]
+	public static extern ref UIText GetDescriptionText(UIWorldCreation ui);
+
+	private void FlipActuallyMapping(UIMouseEvent evt, UIElement listeningElement)
+	{
+		ActuallyManuallyMapping = !ActuallyManuallyMapping;
+
+		SoundEngine.PlaySound(SoundID.MenuTick);
+	}
+
+	private static void RemoveDescription(UIWorldCreation self)
+	{
+		UIText description = GetDescriptionText(self); // Resets description text which is set below
+		description?.SetText(Language.GetText("UI.WorldDescriptionDefault"));
+	}
+
+	private static void ReframeMappingButton(UIImageFramed button, UIWorldCreation self)
+	{
+		bool hover = button.ContainsPoint(Main.MouseScreen);
+		button.SetFrame(new Rectangle(hover ? 34 : 0, !ActuallyManuallyMapping ? 34 : 0, 32, 32));
+
+		UIText description = GetDescriptionText(self);
+
+		if (hover)
+		{
+			const string Key = "Mods.SpiritReforged.Generation.Mapping.";
+			description?.SetText(Language.GetTextValue(Key + "Toggle", Language.GetTextValue(Key + (ActuallyManuallyMapping ? "Disable" : "Enable"))));
+		}
 	}
 
 	public static void DetourDrawSelf(Action<UIState, SpriteBatch> orig, UIState self, SpriteBatch spriteBatch)
@@ -89,7 +155,7 @@ internal class EcotoneMapperHooks : ModSystem
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-		if (Enabled && ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones)
+		if (Enabled && (ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones || ActuallyManuallyMapping))
 		{
 			int index = tasks.FindIndex(x => x.Name == "Clean Up Dirt");
 
