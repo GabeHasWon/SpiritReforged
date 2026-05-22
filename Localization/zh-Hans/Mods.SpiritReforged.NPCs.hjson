@@ -554,8 +554,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: 小幼虫
 	Entry: 其潜力跟恶心程度一样大。
+	DisplayName: 小幼虫
 }
 
 CactusZombie: {
@@ -689,6 +689,5 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 }
-// LootBag.DisplayName: Loot Bag
-// TinyGrub.DisplayName: Tiny Grub
+
 // PassiveGhost.DisplayName: Passive Ghost

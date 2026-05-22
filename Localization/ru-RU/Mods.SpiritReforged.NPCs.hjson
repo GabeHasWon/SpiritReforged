@@ -554,8 +554,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Маленькая личинка
 	Entry: Почти настолько же полна потенциала, насколько она отвратительна.
+	DisplayName: Маленькая личинка
 }
 
 CactusZombie: {
@@ -689,6 +689,5 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 }
-// LootBag.DisplayName: Loot Bag
-// TinyGrub.DisplayName: Tiny Grub
+
 // PassiveGhost.DisplayName: Passive Ghost

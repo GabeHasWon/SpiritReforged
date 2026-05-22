@@ -554,8 +554,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Pequena Larva
 	Entry: Tão cheia de potencial quanto é de indelicadeza.
+	DisplayName: Pequena Larva
 }
 
 CactusZombie: {
@@ -689,6 +689,5 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 }
-// LootBag.DisplayName: Loot Bag
-// TinyGrub.DisplayName: Tiny Grub
+
 // PassiveGhost.DisplayName: Passive Ghost
