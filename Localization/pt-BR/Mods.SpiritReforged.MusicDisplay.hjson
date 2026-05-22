@@ -1,55 +1,76 @@
 ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
-// Moonbird: Moonbird
+Moonbird: Moonbird
+By: feito por
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Planície Derivante (Tema Tempestade de Areia)
+	DisplayName: Drifting Praire (Tempestade de Poeira)
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
-	DisplayName: Savana
+	DisplayName: Fever Trees (Savana de Dia)
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Noite na Savana
+	DisplayName: Moonlit Meadow (Savana de Noite)
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: Oceano Profundo
+	DisplayName: Undersea Adventure (Oceano Profundo)
 	Author: "{$BySalvati}"
 }
 
 SavannaOtherworld: {
-	// DisplayName: Otherworldly Savanna Day
-	// Author: "{$By} {$Moonbird}"
+	DisplayName: Música de Outro Mundo (Savana de Dia)
+	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	// DisplayName: Otherworldly Savanna Night
-	// Author: "{$By} soundbin"
+	DisplayName: Música de Outro Mundo (Savana de Noite)
+	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	// DisplayName: Otherworldly Dustorm
-	// Author: "{$By} jakedastardly"
+	DisplayName: Música de Outro Mundo (Tempestade de Poeira)
+	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {
-	// DisplayName: Ziggurat
-	// Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: O Tema do Zigurate
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	// DisplayName: Salt Flats
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Reflected Skies (Salinas de Dia)
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Refracted Stars (Salinas de Noite)
+	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Soaring Complications (Tema do Escarabeus)
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Soaring Complications (Tema da segunda fase do Escarabeus)
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Soaring Complications (Edição de Rádio)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Another Journey (Tela de Título do Spirit)
+	Author: "{$By} {$Salvati}"
 }

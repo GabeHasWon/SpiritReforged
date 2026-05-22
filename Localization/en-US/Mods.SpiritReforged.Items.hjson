@@ -489,12 +489,12 @@ LivingBaobabWallItem: {
 
 LivingBaobabLeafWand: {
 	DisplayName: Living Baobab Leaf Wand
-	Tooltip: ""
+	Tooltip: Places baobab leaves
 }
 
 LivingBaobabWand: {
 	DisplayName: Living Baobab Wand
-	Tooltip: ""
+	Tooltip: Places living baobab
 }
 
 WrithingSticks: {
@@ -891,7 +891,11 @@ WheatgrassSeedPouch: {
 
 RoyalKhopesh: {
 	DisplayName: Royal Khopesh
-	Tooltip: ""
+	Tooltip:
+		'''
+		Right click to throw the khopesh 
+		Left or Right click to pull back struck enemies, empowering the next attack
+		'''
 }
 
 SavannaSandstormMusicBoxItem: {
@@ -980,7 +984,11 @@ ZiplineGun: {
 
 FrostbiteItem: {
 	DisplayName: Frostbite
-	Tooltip: Conjures a blizzard in front of you
+	Tooltip:
+		'''
+		Conjures a blizzard in front of you
+		Ignores 10 points of enemy Defense
+		'''
 }
 
 RogueCrest: {
@@ -1042,8 +1050,8 @@ ExplorerTreadsItem: {
 	DisplayName: Explorer's Treads
 	Tooltip:
 		'''
-		+5% Movement speed for every 10% missing health
-		50% chance to avoid traps and hazards
+		50% chance to dodge traps and hazards
+		Grants a short speed boost after touching traps or hazards
 		'Makes exploring temples a walk in the park'
 		'''
 }
@@ -1351,7 +1359,7 @@ WayfarerLegs: {
 
 AncientKoiTotem: {
 	DisplayName: Ancient Koi Totem
-	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+	Tooltip: "{$Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
@@ -1370,7 +1378,7 @@ ClayBomb: {
 
 ClayBombSticky: {
 	DisplayName: Sticky Clay Bomb
-	Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+	Tooltip: "{$Items.ClayBomb.Tooltip}"
 }
 
 SandBomb: {
@@ -1380,7 +1388,7 @@ SandBomb: {
 
 SandBombSticky: {
 	DisplayName: Sticky Sand Bomb
-	Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+	Tooltip: "{$Items.SandBomb.Tooltip}"
 }
 
 CoarseBomb: {
@@ -1390,7 +1398,7 @@ CoarseBomb: {
 
 CoarseBombSticky: {
 	DisplayName: Sticky Coarse Bomb
-	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+	Tooltip: "{$Items.CoarseBomb.Tooltip}"
 }
 
 MudBomb: {
@@ -1400,7 +1408,7 @@ MudBomb: {
 
 MudBombSticky: {
 	DisplayName: Sticky Mud Bomb
-	Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+	Tooltip: "{$Items.MudBomb.Tooltip}"
 }
 
 HideTunic: {
@@ -1569,7 +1577,7 @@ PotionVatsCloningItem: {
 
 SilverFoodPlatterItem: {
 	DisplayName: Silver Food Platter
-	Tooltip: <right> to place item on platter
+	Tooltip: "{$ItemTooltip.FoodPlatter}"
 }
 
 RadonMossItem: {
@@ -1647,32 +1655,32 @@ FlaskArgon: {
 
 FlaskHelium: {
 	DisplayName: Helium Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
 	DisplayName: Krypton Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
 	DisplayName: Neon Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
 	DisplayName: Oganesson Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
 	DisplayName: Radon Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
 	DisplayName: Xenon Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
 }
 
 BiomePotsGraniteItem: {
@@ -1754,7 +1762,7 @@ Bowlder: {
 
 BoStaff: {
 	DisplayName: Bo Staff
-	Tooltip: Dealing continuous damage builds combo
+	Tooltip: Consecutive hits build combo
 }
 
 Blasphemer: {
@@ -1764,7 +1772,11 @@ Blasphemer: {
 
 Hummus: {
 	DisplayName: Hummus
-	Tooltip: Warm and tasty!
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Warm and tasty!'
+		'''
 }
 
 ZenithPotsItem: {
@@ -1773,7 +1785,7 @@ ZenithPotsItem: {
 }
 
 ZenithPotsPaleItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
 	Tooltip: ""
 }
 
@@ -1804,27 +1816,27 @@ FlaskBlue: {
 
 FlaskBrown: {
 	DisplayName: Brown Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
 	DisplayName: Green Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
 	DisplayName: Lava Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
 	DisplayName: Purple Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
 	DisplayName: Red Moss Flask
-	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 TitleMusicBoxItem: {
@@ -1905,7 +1917,7 @@ JinxBow: {
 	DisplayName: Jinxbow
 	Tooltip:
 		'''
-		Fires arrows at enemies without consuming ammo and occasionally marks them
+		Fires equipped arrows at enemies and occasionally marks them
 		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
 		'''
 }
@@ -1924,14 +1936,14 @@ VexpowderBlue: {
 	DisplayName: Vexpowder
 	Tooltip:
 		'''
-		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
+		{$Items.Flarepowder.Tooltip}
 		Confuses hit enemies
 		'''
 }
 
 VexpowderRed: {
-	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+	DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Items.VexpowderBlue.Tooltip}"
 }
 
 BreakawayChair: {
@@ -1940,17 +1952,17 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
-	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+	DisplayName: Ancient {$Items.LeatherHood.DisplayName}
+	Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	DisplayName: Ancient {$Items.LeatherLegs.DisplayName}
 	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	DisplayName: Ancient {$Items.LeatherPlate.DisplayName}
 	Tooltip: ""
 }
 
@@ -1963,7 +1975,7 @@ MossSlimeBannerItem.DisplayName: Moss Slime Banner
 
 InvisibleLure: {
 	DisplayName: Invisible Lure
-	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+	Tooltip: "{$Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
@@ -2017,20 +2029,20 @@ GraniteBody: {
 
 GraniteHead: {
 	DisplayName: Kinetic Visor
-	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 GraniteLegs: {
 	DisplayName: Kinetic Greaves
-	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
 FingerGun: {
 	DisplayName: Finger Blaster
 	Tooltip:
 		'''
-		Ignores some enemy defense
 		Fires faster at higher mana
+		Ignores 5 points of enemy Defense
 		'Pew pew!'
 		'''
 }
@@ -2099,8 +2111,6 @@ CommonPotsSavannaItem: {
 	Tooltip: ""
 }
 
-StactusBannerItem.DisplayName: Stactus Banner
-
 SunEarrings: {
 	DisplayName: Sundancer Earrings
 	Tooltip:
@@ -2124,14 +2134,14 @@ CeremonialDagger: {
 	DisplayName: Ceremonial Dagger
 	Tooltip:
 		'''
-		Deals damage to townsfolk
+		Can be used to sacrifice townsfolk
 		<right> deals critical damage to bleeding enemies
 		'''
 }
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles
+	Tooltip: Sticks to tiles and slows enemies
 }
 
 SaltBlockDullItem: {
@@ -2161,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: Osmosifier
-	Tooltip: Passively produces salt blocks when placed in water
+	Tooltip: Passively produces dull salt blocks when placed in water
 }
 
 GoldDivingBeetleItem: {
@@ -2476,37 +2486,37 @@ TrellisShadewoodItem: {
 }
 
 TrellisTwoItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisItem.DisplayName}"
+	DisplayName: Crossed Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisBorealItem.DisplayName}"
+	DisplayName: Crossed Boreal Wood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisEbonwoodItem.DisplayName}"
+	DisplayName: Crossed Ebonwood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisMahoganyItem.DisplayName}"
+	DisplayName: Crossed Rich Mahogany Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPalmItem.DisplayName}"
+	DisplayName: Crossed Palm Wood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisPearlwoodItem.DisplayName}"
+	DisplayName: Crossed Pearlwood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisShadewoodItem.DisplayName}"
+	DisplayName: Crossed Shadewood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2527,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Mahakala Mask
-	Tooltip: Reduces damage taken from corrupt enemies
+	Tooltip: Reduces damage taken from and dealt to evil enemies
 }
 
 MahakalaMaskRed: {
@@ -2566,12 +2576,12 @@ TrellisDrywoodItem: {
 }
 
 TrellisTwoDrywoodItem: {
-	DisplayName: "{$Mods.SpiritReforged.Items.TrellisDrywoodItem.DisplayName}"
+	DisplayName: Crossed Drywood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 BronzeGrateItem: {
-	DisplayName: Bronze Grate
+	DisplayName: Bronze Grate Wall
 	Tooltip: ""
 }
 
@@ -2592,7 +2602,7 @@ BronzePlatformItem: {
 
 ZigguratTorchItem: {
 	DisplayName: Ziggurat Torch
-	Tooltip: ""
+	Tooltip: Lights up when nearby
 }
 
 SwordStandMahoganyItem: {
@@ -2607,12 +2617,12 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Foreground Red Sandstone Brick Wall
-	Tooltip: ""
+	Tooltip: Displays in front of players
 }
 
 SaltPylonItem: {
 	DisplayName: Salt Flats Pylon
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 SaltNightMusicBoxItem: {
@@ -2630,13 +2640,11 @@ PineappleSeeds: {
 	Tooltip: ""
 }
 
-StactusCorruptBannerItem.DisplayName: Corrupt Stactus Banner
-StactusCrimsonBannerItem.DisplayName: Rose Stactus Banner
-
 Dragonsong: {
 	DisplayName: Dragonsong
 	Tooltip:
 		'''
+		Uses gel for ammo
 		50% chance to save ammo
 		'You are a terrible person'
 		'''
@@ -2647,7 +2655,7 @@ TinyDragon: {
 	Tooltip:
 		'''
 		Summons a tiny dragon to follow you around
-		"'Last of its kind'"
+		'Last of its kind'
 		'''
 }
 
@@ -2662,13 +2670,13 @@ BrineShrimpItem: {
 }
 
 GoldenBrineShrimpItem: {
-	DisplayName: Golden Brine Shrimp
+	DisplayName: Gold Brine Shrimp
 	Tooltip: ""
 }
 
 CorruptStactusBannerItem.DisplayName: Corrupt Stactus Banner
 CrimsonStactusBannerItem.DisplayName: Crimson Stactus Banner
-DesertStactusBannerItem.DisplayName: Desert Stactus Banner
+DesertStactusBannerItem.DisplayName: Stactus Banner
 HallowedStactusBannerItem.DisplayName: Hallowed Stactus Banner
 
 AncientBannerItem: {
@@ -2703,7 +2711,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: Bangle of Strength
-	Tooltip: Periodically empowers melee damage
+	Tooltip: Periodically empowers melee strikes
 }
 
 ScarabTabletOneItem: {
@@ -2730,8 +2738,6 @@ AncientBooksItem: {
 	DisplayName: Ancient Book
 	Tooltip: "'Rendered unreadable by time'"
 }
-
-ZigguratMummyBannerItem.DisplayName: Decrepit Mummy Banner
 
 SaltGlassWallItem: {
 	DisplayName: Salt Glass Wall
@@ -2770,29 +2776,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Restored Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Restored Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Loot Bag
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'A favourite of scoundrels and miscreants everywhere'
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2819,7 +2829,7 @@ SaltskipperQuestFish: {
 	Description: Those Salt Flats are so trippy! I couldn't tell even where the salt ended and the water began! When I finally got my hook in the water, though, this nasty-looking fish just flopped out of the water next to me and started breathing AIR! Get it for me so I can walk my new pet fish.
 	CatchLocation: Salt Flats
 	DisplayName: Saltskipper
-	Tooltip: ""
+	Tooltip: "'Caught in Salt Flats'"
 }
 
 WispBannerItem.DisplayName: Wisp Banner
@@ -2842,7 +2852,7 @@ GooBlockItem: {
 
 WindshearScepter: {
 	DisplayName: Windshear Scepter
-	Tooltip: ""
+	Tooltip: Shoots a piercing gust of wind
 }
 
 SaltTallGateItem: {
@@ -2877,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
-	Tooltip: ""
+	Tooltip: Allows liquids through even when closed
 }
 
 CalmingBellItem: {
@@ -2901,8 +2911,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Bronze Grate Block
-	Tooltip: ""
+	DisplayName: Bronze Grate
+	Tooltip: Allows only liquids through
 }
 
 BedouinBreastplate: {
@@ -2922,6 +2932,225 @@ BedouinLeggings: {
 
 ZigguratTikiTorchItem: {
 	DisplayName: Ziggurat Tiki Torch
+	Tooltip: ""
+}
+
+CricketItem: {
+	DisplayName: Cricket
+	Tooltip: ""
+}
+
+GoldCricketItem: {
+	DisplayName: Gold Cricket
+	Tooltip: ""
+}
+
+CricketCageItem: {
+	DisplayName: Cricket Cage
+	Tooltip: ""
+}
+
+GoldCricketCageItem: {
+	DisplayName: Gold Cricket Cage
+	Tooltip: ""
+}
+
+CarrotCake: {
+	DisplayName: Carrot Cake
+	Tooltip: "{$BuffDescription.WellFed3}"
+}
+
+AvianRitualMask: {
+	DisplayName: Avian Ritual Mask
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: Bull Ritual Mask
+	Tooltip: ""
+}
+
+AdornedBow: {
+	DisplayName: Gilded Greatbow
+	Tooltip:
+		'''
+		Charges an empowered shot
+		Perfectly timed shots cause arrows to refract on hit
+		'''
+}
+
+BagOScarabs: {
+	DisplayName: Treasure Bag (Scarabeus)
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+ScarabMask: {
+	DisplayName: Scarabeus Mask
+	Tooltip: ""
+}
+
+ScarabRelic: {
+	DisplayName: Scarabeus Relic
+	Tooltip: ""
+}
+
+ScarabTrophy: {
+	DisplayName: Scarabeus Trophy
+	Tooltip: ""
+}
+
+ScarabRadio: {
+	DisplayName: Scarab Radio
+	Tooltip: ""
+}
+
+SpaceHeater: {
+	DisplayName: Radiator
+	Tooltip: Right click the tile to modify its heat setting
+}
+
+ScarabMusicBox: {
+	DisplayName: Music Box (Scarabeus)
+	Tooltip: ""
+
+	Toggle: {
+		0: Phase One
+		1: Phase Two
+	}
+}
+
+SpiritTreeTopper: {
+	DisplayName: Spirit Tree Topper
+	Tooltip: ""
+}
+
+LocustCrook: {
+	DisplayName: Locust Crook
+	Tooltip:
+		'''
+		Summons a sentry
+		Throws out a crook that attracts locusts to infest enemies
+		'''
+}
+
+IridescentDye: {
+	DisplayName: Iridescent Dye
+	Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	DisplayName: Bulb Rattle
+	Tooltip:
+		'''
+		Summons a Scarababy
+		'Eureka!'
+		'''
+}
+
+BeetleLicense: {
+	DisplayName: Beetle License
+	Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		'''
+	LicenseUse: The license teleports away to the beetle delivery service...
+}
+
+GooeyHiveItem: {
+	DisplayName: Gooey Hive
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Honeysuckle Bud
+	Tooltip: Summons a pillbug mount
+}
+
+SandySandstoneItem: {
+	DisplayName: Sandy Sandstone
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Terracotta Tombstone
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Terracotta Grave Marker
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Terracotta Gravestone
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Terracotta Obelisk
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Drywood Tombstone
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Savanna Gravestone
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Drywood Grave Marker
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Drywood Cross Grave Marker
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Modern Obelisk
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Modern Tombscreen
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Modern Gravestone
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Modern Headstone
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Salt Headstone
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Salt Tombstone
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Salt Gravestone
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Salt Grave Marker
 	Tooltip: ""
 }
 

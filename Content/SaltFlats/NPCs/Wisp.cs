@@ -34,6 +34,8 @@ public class Wisp : ModNPC
 
 			base.Update(ref settings);
 
+			Opacity = MathF.Min(Opacity, _parent.Opacity);
+
 			if (++_timeSinceSpawn >= TimeToLive)
 			{
 				ShouldBeRemovedFromRenderer = true;
@@ -200,9 +202,9 @@ public class Wisp : ModNPC
 		PitchVariance = 0.25f
 	};
 
+	private float _counter = 0;
 	private readonly ParticleRenderer _twirlParticleRenderer = new();
 	private VertexTrail[] _trails;
-	private int _counter;
 	private bool _isHostile;
 
 	public override void SetStaticDefaults() => MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Spirit);
@@ -218,6 +220,9 @@ public class Wisp : ModNPC
 		NPC.HitSound = Hit;
 		NPC.DeathSound = Death;
 		NPC.scale = Main.rand.NextFloat(0.75f, 1.25f);
+		NPC.damage = 0;
+
+		AIType = NPCID.None;
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -227,6 +232,11 @@ public class Wisp : ModNPC
 	public override void AI()
 	{
 		const int hostileThreshold = 60;
+
+		NPC.ai[3] = 1; // Avoids some weird functionality with the vanilla behavior
+
+		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
+		Lighting.AddLight(NPC.Center, coreColor.ToVector3() * NPC.Opacity);
 
 		if (!Main.dedServ)
 		{
@@ -241,6 +251,7 @@ public class Wisp : ModNPC
 				var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, _isHostile ? DustID.RedTorch : DustID.BlueCrystalShard);
 				dust.noGravity = true;
 				dust.velocity = Vector2.Zero;
+				dust.alpha = (int)((1 - NPC.Opacity) * 255);
 			}
 		}
 
@@ -260,15 +271,19 @@ public class Wisp : ModNPC
 						Main.ParticleSystem_World_OverPlayers.Add(new PrettySparkleParticle()
 						{
 							LocalPosition = NPC.Center,
-							ColorTint = Color.OrangeRed,
+							ColorTint = Color.OrangeRed * NPC.Opacity,
 							Scale = Vector2.One,
 							TimeToLive = 40
 						});
 				}
 
-				NPC.damage = 10;
+				NPC.defDamage = ModeUtils.ByMode(10, 14, 18, 25);
+				NPC.damage = NPC.defDamage;
 				NPC.chaseable = true;
 				NPC.aiStyle = NPCAIStyleID.Bat;
+
+				if (!_isHostile)
+					NPC.netUpdate = true;
 
 				_isHostile = true;
 			}
@@ -302,7 +317,7 @@ public class Wisp : ModNPC
 			_counter++;
 		}
 
-		if (Main.dayTime && NPC.Center.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.05f) <= 0)
+		if (Main.dayTime && NPC.Center.Y / 16 < Main.worldSurface && (NPC.Opacity -= 0.004f) <= 0)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -343,13 +358,15 @@ public class Wisp : ModNPC
 		];
 	}
 
+	public override bool? CanFallThroughPlatforms() => true;
+
 	public override void FindFrame(int frameHeight)
 	{
 		if (Main.dedServ)
 			return;
 
 		if (Main.rand.NextBool(10))
-			_twirlParticleRenderer.Add(new TwirlyParticle(NPC, _isHostile ? Color.Red : Color.Cyan)
+			_twirlParticleRenderer.Add(new TwirlyParticle(NPC, (_isHostile ? Color.Red : Color.Cyan))
 			{
 				LocalPosition = NPC.Center + new Vector2(Main.rand.NextFloat(22f, 30f), 0).RotatedByRandom(1),
 				Scale = Vector2.One * Main.rand.NextFloat(0.2f, 0.3f),
@@ -395,6 +412,7 @@ public class Wisp : ModNPC
 	}
 
 	public override bool? CanBeHitByItem(Player player, Item item) => (player.dontHurtCritters && !_isHostile) ? false : null;
+
 	public override bool? CanBeHitByProjectile(Projectile projectile)
 	{
 		if (projectile.BelongsToPlayer())
@@ -424,8 +442,23 @@ public class Wisp : ModNPC
 			_counter++;
 	}
 
-	public override void SendExtraAI(BinaryWriter writer) => writer.Write(_isHostile);
-	public override void ReceiveExtraAI(BinaryReader reader) => _isHostile = reader.ReadBoolean();
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		if (CrossMod.Redemption.CheckFind("LostSoul", out ModItem lostSoul))
+			npcLoot.AddCommon(lostSoul.Type, 15);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_isHostile);
+		writer.Write((Half)_counter);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		_isHostile = reader.ReadBoolean();
+		_counter = (float)reader.ReadHalf();
+	}
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
@@ -445,8 +478,6 @@ public class Wisp : ModNPC
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Color coreColor = _isHostile ? Color.Red : Color.PaleTurquoise;
-		Lighting.AddLight(NPC.Center, coreColor.ToVector3());
-
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Extra_49"].Value;
 		float pulse = (float)Math.Sin(Main.timeForVisualEffects / 20f);
@@ -467,11 +498,14 @@ public class Wisp : ModNPC
 		if (_trails != null)
 		{
 			foreach (VertexTrail trail in _trails)
+			{
+				trail.Opacity = NPC.Opacity;
 				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+			}
 		}
 
 		return false;
 
-		Color GetAdditive(Color tint, byte additive = 0) => NPC.IsABestiaryIconDummy ? tint.Additive(additive) : NPC.GetAlpha(tint).Additive(additive);
+		Color GetAdditive(Color tint, byte additive = 0) => NPC.IsABestiaryIconDummy ? tint.Additive(additive) : NPC.GetAlpha(tint).Additive(additive) * NPC.Opacity;
 	}
 }

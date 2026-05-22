@@ -371,7 +371,7 @@ internal class SavannaEcotone : EcotoneBase
 	private static void PlaceStuffOnGrass(int i, int j)
 	{
 		if (WorldGen.genRand.NextBool(8)) //Surface pots
-			WorldGen.PlaceTile(i, j, TileID.Pots, true, true, style: 7);
+			WorldGen.PlaceTile(i, j, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next(6, 9));
 
 		if (WorldGen.genRand.NextBool(13)) //Elephant grass patch
 			CreatePatch(WorldGen.genRand.Next(5, 11), 0, WorldGen.genRand.Next([0, 5]), ModContent.TileType<ElephantGrass>());

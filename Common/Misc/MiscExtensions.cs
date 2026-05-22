@@ -33,6 +33,8 @@ internal static class MiscExtensions
 		return new Vector2((float)(x * cos - y * sin) * halfWidth, (float)(x * sin + y * cos) * halfHeight);
 	}
 
+	public static bool HasInfinities(this Vector2 vector) => float.IsInfinity(vector.X) || float.IsInfinity(vector.Y);
+
 	public static Vector2 TurnRight(this Vector2 vec) => new(-vec.Y, vec.X);
 
 	public static Vector2 TurnLeft(this Vector2 vec) => new(vec.Y, -vec.X);
@@ -96,4 +98,30 @@ internal static class MiscExtensions
 
 	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
 	public static bool EventSafe(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
+
+	public static float Modulo(this float dividend, float divisor)
+	{
+		return (dividend % divisor + divisor) % divisor;
+	}
+
+	public static float AngleLerpDirectional(this float from, float to, float progress, bool clockwise)
+	{
+		from = from.Modulo(MathHelper.TwoPi);
+		to = to.Modulo(MathHelper.TwoPi);
+
+		if (clockwise)
+		{
+			// Clockwise
+			if (from < to)
+				to -= MathHelper.TwoPi;
+		}
+		else
+		{
+			// Counter-clockwise
+			if (from > to)
+				to += MathHelper.TwoPi;
+		}
+
+		return from + (to - from) * progress;
+	}
 }

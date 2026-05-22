@@ -62,6 +62,9 @@ internal static class CrossMod
 	public static readonly ModEntry Classic = new("SpiritMod");
 	public static readonly ModEntry Census = new("Census");
 	public static readonly ModEntry Verdant = new("Verdant");
+	public static readonly ModEntry RussianTranslate = new("CalamityRuTranslate");
+	public static readonly ModEntry BossChecklist = new("BossChecklist");
+	public static readonly ModEntry SubworldLibrary = new("SubworldLibrary");
 
 	/// <summary> The names and instances of loaded crossmod mods per <see cref="ModEntry"/>. </summary>
 	private static readonly Dictionary<string, Mod> LoadedMods = [];

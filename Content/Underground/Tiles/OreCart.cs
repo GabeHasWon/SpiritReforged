@@ -120,7 +120,10 @@ public class OreCarts : ModTile
 		for (int i = 0; i < 20; i++)
 		{
 			var vel = new Vector2(0, -Main.rand.NextFloat(2f)).RotatedByRandom(.25f);
-			Dust.NewDustDirect(area.BottomLeft(), area.Width, 4, DustID.WoodFurniture, vel.X, vel.Y, Scale: Main.rand.NextFloat() + .25f);
+			Dust.NewDustDirect(area.BottomLeft(), area.Width, 4, DustID.WoodFurniture, vel.X, vel.Y, Scale: Main.rand.NextFloat() + 0.25f);
+			
+			int sparks = Dust.NewDust(area.BottomLeft(), area.Width, area.Height, DustID.MinecartSpark, vel.X * 1.2f, vel.Y * 1.2f, Scale: Main.rand.NextFloat() + 2.5f);
+			Main.dust[sparks].fadeIn = 0.5f;
 		}
 
 		int dustType = style switch

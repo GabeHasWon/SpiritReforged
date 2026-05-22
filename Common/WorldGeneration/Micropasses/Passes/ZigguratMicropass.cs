@@ -7,6 +7,7 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
+using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.IO;
@@ -22,7 +23,7 @@ internal class ZigguratMicropass : Micropass
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		const int scanRadius = 50;
-		const int range = ZigguratBiome.Width / 2;
+		const int range = ZigguratMicrobiome.Width / 2;
 
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		Point finalPosition = Point.Zero;
@@ -38,23 +39,26 @@ internal class ZigguratMicropass : Micropass
 			if (!WorldUtils.Find(new(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
 				return; // ?? big hole where the desert is?
 
-			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratBiome.Height * 0.3f));
+			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.Height * 0.3f));
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratBiome.Width / 2), -(ZigguratBiome.Height / 2), ZigguratBiome.Width, ZigguratBiome.Height)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
+			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratMicrobiome.Width / 2), -(ZigguratMicrobiome.Height / 2), ZigguratMicrobiome.Width, ZigguratMicrobiome.Height)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
 			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10)
 				continue;
 
 			CreateDunes(new(foundPos.X - 80, foundPos.Y - 10, 160, 10));
-			Microbiome.Create<ZigguratBiome>(finalPosition = zigguratPos);
+			Microbiome.Create<ZigguratMicrobiome>(finalPosition = zigguratPos);
 
 			break;
 		}
 
-		int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
-		int ruinsWidth = (int)(ZigguratBiome.Width / 1.5f) * worldScalar;
-		WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
+		if (finalPosition != Point.Zero) //Gen didn't fail
+		{
+			int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
+			int ruinsWidth = (int)(ZigguratMicrobiome.Width / 1.5f) * worldScalar;
+			WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
+		}
 	}
 
 	public static void CreateDunes(Rectangle area)
@@ -199,6 +203,12 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrickCracked>())
 			)); //Add tile outlines that are non-invasive to rooms
 
+			int startX = WorldGen.genRand.Next(-1, 8);
+			int endX = WorldGen.genRand.Next(-8, 1);
+			WorldUtils.Gen(a.Location + new Point(startX, -1), new Shapes.Rectangle(Math.Max(a.Width + 2 - endX, 1), 1), Actions.Chain(
+				new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
+				new Actions.SetTileKeepWall((ushort)ModContent.TileType<SandySandstone>()))); //Add sandy tops
+
 			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 			if (WorldGen.genRand.NextBool(3))
 				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
@@ -211,7 +221,7 @@ internal class ZigguratMicropass : Micropass
 				bool isTile = p < 1 || p >= a.Width - 1;
 				int tileType = (p < 1 || p >= a.Width - 1) ? ModContent.TileType<RuinedSandstonePillar>() : -1;
 				int wallType = (p < 0 || p >= a.Width) ? WallID.None : RedSandstoneBrickCrackedWall.UnsafeType;
-				float ease = 1f - EaseBuilder.EaseSine.Ease((p + 1f) / (float)(a.Width + 1f));
+				float ease = 1f - EaseFunction.EaseSine.Ease((p + 1f) / (float)(a.Width + 1f));
 
 				DropPillar(p + a.X, a.Bottom + 1, tileType, wallType, out int lowestY, (tileType == -1) ? Math.Max((int)(ease * 15), 1) : 0);
 
@@ -438,14 +448,16 @@ internal class ZigguratMicropass : Micropass
 		int height = WorldGen.genRand.Next(3, 7);
 		int flagHeight = Math.Max(height - WorldGen.genRand.Next(0, 2), 3);
 		bool result = false;
+		Tile tile = Main.tile[x, y];
 
-		if (Main.tile[x, y].WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+		if (tile.WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
 		{
 			for (int i = 0; i < height; i++)
 			{
-				PlaceAttempt attempt = Placer.PlaceTile<FlagRing>(x, y - i);
-				result |= attempt.success;
+				if (!Placer.PlaceTile<FlagRing>(x, y - i).success)
+					break;
 
+				result = true;
 				if (i == flagHeight - 1)
 				{
 					Main.tile[x, y - i].TileFrameY = FlagRing.SlopeFrame;
@@ -465,7 +477,7 @@ internal class ZigguratMicropass : Micropass
 
 		if (tile.WallType != WallID.None && WorldGen.SolidTile(x, y + 1))
 		{
-			if (WorldGen.genRand.NextFloat() < 0.7f) //Add a branch for vanilla pots because traditional tile placement methods don't work
+			if (WorldGen.genRand.NextFloat() < 0.85f) //Add a branch for vanilla pots because traditional tile placement methods don't work
 				return WorldGen.PlacePot(x, y, 28, WorldGen.genRand.Next(34, 37));
 			else
 				return Placer.PlaceTile(x, y, ModContent.TileType<BiomePots>(), PotsMicropass.GetStyleRange(BiomePots.Style.Desert)).success;
@@ -476,7 +488,10 @@ internal class ZigguratMicropass : Micropass
 
 	public static bool PlaceDoor(int x, int y)
 	{
-		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && SolidRange(new(x, y - 1, 1, 5)) && !SolidRange(new(x - 1, y, 1, 3)) && !SolidRange(new(x + 1, y, 1, 3)))
+		if (Framing.GetTileSafely(x, y + 1).TileType != TileID.Sand && 
+			BlockingRange(new(x, y - 1, 1, 5)) && 
+			!BlockingRange(new(x - 1, y, 1, 3), true, true) && 
+			!BlockingRange(new(x + 1, y, 1, 3), true, true))
 		{
 			for (int i = 0; i < 3; i++)
 				Framing.GetTileSafely(x, y + i).ClearTile();
@@ -499,16 +514,24 @@ internal class ZigguratMicropass : Micropass
 
 		return false;
 
-		static bool SolidRange(Rectangle area)
+		static bool BlockingRange(Rectangle area, bool incChains = false, bool incNonSolid = false)
 		{
-			bool solid = true;
+			bool blocking = true;
 			for (int x = area.Left; x < area.Right; x++)
 			{
 				for (int y = area.Top; y < area.Bottom; y++)
-					solid &= WorldGen.SolidTile(x, y);
+				{
+					Tile tile = Framing.GetTileSafely(x, y);
+					bool existsButNonSolid = tile.HasTile && !WorldGen.SolidTile(x, y);
+
+					blocking &= 
+						(WorldGen.SolidTile(x, y) |
+						(WorldGen.TileType(x, y) == ModContent.TileType<GoldChainLoop>() && incChains) |
+						(incNonSolid && existsButNonSolid));
+				}
 			}
 
-			return solid;
+			return blocking;
 		}
 	}
 
@@ -517,7 +540,7 @@ internal class ZigguratMicropass : Micropass
 		if (!WorldGen.SolidTile(x, y) && WorldGen.SolidTile(x, y + 1))
 		{
 			ShapeData data = new();
-			WorldUtils.Gen(new(x, y), new Shapes.Mound(4, 2), Actions.Chain(
+			WorldUtils.Gen(new(x, y), new Shapes.Mound(5, 2), Actions.Chain(
 				new Modifiers.IsNotSolid(),
 				new Actions.Custom(PlaceGroundedSand)
 			).Output(data));

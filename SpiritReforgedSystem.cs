@@ -10,6 +10,7 @@ public class SpiritReforgedSystem : ModSystem
 	public static event Action OnUnload;
 	/// <summary> Called after all other content has been set up. </summary>
 	public static event Action OnSetupContent;
+	public static event Action PostUpdateEverythingEvent;
 
 	public override void PreUpdateItems()
 	{
@@ -33,5 +34,10 @@ public class SpiritReforgedSystem : ModSystem
 	{
 		OnSetupContent?.Invoke();
 		OnSetupContent = null;
+	}
+
+	public override void PostUpdateEverything()
+	{
+		PostUpdateEverythingEvent?.Invoke();
 	}
 }

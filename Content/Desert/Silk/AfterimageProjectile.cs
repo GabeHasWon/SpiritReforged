@@ -43,6 +43,8 @@ public class AfterimageProjectile : GlobalProjectile
 			Afterimage = true;
 			projectile.netUpdate = true;
 
+			ProjectileEdits.OnSpawn(projectile);
+
 			CreateTrail(projectile);
 		}
 	}

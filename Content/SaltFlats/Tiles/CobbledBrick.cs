@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -5,6 +6,9 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class CobbledBrick : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(ItemID.GrayBrick).AddTile(TileID.HeavyWorkBench).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;

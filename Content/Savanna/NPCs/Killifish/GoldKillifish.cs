@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Vanilla.Food;
 using Terraria.DataStructures;
@@ -11,7 +11,11 @@ public class GoldKillifish : Killifish, IGoldCritter
 {
 	public int[] NormalPersistentIDs => [ModContent.NPCType<Killifish>()];
 
-	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(gold: 10));
+	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
+	{
+		item.value = Item.sellPrice(gold: 10);
+		item.rare = ItemRarityID.Orange;
+	});
 
 	public override void OnSpawn(IEntitySource source) { }
 

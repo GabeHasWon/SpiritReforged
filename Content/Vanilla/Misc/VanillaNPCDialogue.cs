@@ -44,7 +44,7 @@ public class VanillaNPCDialogue : GlobalNPC
 				SetChat(ref chat, player.GetModPlayer<DustStormPlayer>().ZoneDustStorm && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Golfer.Duststorm"));
 			}
 
-			if (npc.type == NPCID.BestiaryGirl)
+			if (npc.type == NPCID.BestiaryGirl && !Main.bloodMoon)
 			{
 				SetChat(ref chat, Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Zoologist.Savanna1"));
 				SetChat(ref chat, player.statLife < player.statLifeMax && Main.rand.NextBool(2), Language.GetTextValue(CommonPath + "Zoologist.Savanna2"));

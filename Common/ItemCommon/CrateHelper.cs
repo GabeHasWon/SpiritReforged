@@ -9,6 +9,10 @@ namespace SpiritReforged.Common.ItemCommon;
 /// </summary>
 internal static class CrateHelper
 {
+	/// <summary>
+	/// Populates an item's loot with a "primary" drop and standard drops for a pre-hardmode crate. Use <see cref="HardmodeBiomeCrate(ItemLoot, IItemDropRule, IItemDropRule[])"/>
+	/// for hardmode crates.
+	/// </summary>
 	public static void BiomeCrate(ItemLoot loot, IItemDropRule mainDrop, params IItemDropRule[] subDrops)
 	{
 		var ores = new IItemDropRule[6]
@@ -60,6 +64,8 @@ internal static class CrateHelper
 		List<IItemDropRule> final =
 		[
 			coinRule,
+			new OneFromRulesRule(4, extraPotions),
+			new OneFromRulesRule(6, extraBait),
 			new OneFromRulesRule(7, ores),
 			new OneFromRulesRule(4, bars),
 			new OneFromRulesRule(3, potions),
@@ -72,6 +78,10 @@ internal static class CrateHelper
 		loot.Add(ItemDropRule.AlwaysAtleastOneSuccess([.. final]));
 	}
 
+	/// <summary>
+	/// Populates an item's loot with a "primary" drop and standard drops for a hardmode crate. Use <see cref="BiomeCrate(ItemLoot, IItemDropRule, IItemDropRule[])"/>
+	/// for pre-hardmode crates.
+	/// </summary>
 	public static void HardmodeBiomeCrate(ItemLoot loot, IItemDropRule mainDrop = null, params IItemDropRule[] subDrops)
 	{
 		var ores = new IItemDropRule[6]

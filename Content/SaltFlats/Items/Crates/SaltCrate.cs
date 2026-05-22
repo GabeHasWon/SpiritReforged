@@ -62,11 +62,12 @@ public class SaltCrate : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 10;
+	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<SaltCrateTile>());
 		Item.rare = ItemRarityID.Green;
+		Item.value = Item.sellPrice(0, 1, 0, 0);
 	}
 
 	public override bool CanRightClick() => true;

@@ -242,7 +242,7 @@ public class Dragonsong : ModItem
 		Item.height = 48;
 		Item.DamageType = DamageClass.Ranged;
 		Item.useAmmo = AmmoID.Gel;
-		Item.damage = 30;
+		Item.damage = 42;
 		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 40;
 		Item.useStyle = ItemUseStyleID.Shoot;
@@ -251,7 +251,7 @@ public class Dragonsong : ModItem
 		Item.value = Item.sellPrice(0, 1, 50, 0);
 		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<DragonFireball>();
-		Item.shootSpeed = 8f;
+		Item.shootSpeed = 10f;
 		Item.autoReuse = true;
 		Item.channel = true;
 	}

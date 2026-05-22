@@ -18,7 +18,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.jumpSpeedBoost += 0.8f;
+			player.jumpSpeedBoost += 2.4f;
 			player.maxFallSpeed *= 1.5f;
 			player.gravity += 0.05f;
 		}
@@ -45,13 +45,13 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Stone;
-		AddMapEntry(new Color(107, 90, 64), CreateMapEntryName());
+		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Items.EnlilStatueItem.DisplayName"));
 		RegisterItemDrop(this.AutoItemType());
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer)
+		if (!closer || Main.LocalPlayer.dead)
 			return;
 
 		Main.LocalPlayer.AddBuff(ModContent.BuffType<EnlilBuff>(), 6);
@@ -84,5 +84,16 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 		}
 
 		return true;
+	}
+	public void StaticItemDefaults()
+	{
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.CatBast;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.CatBast] = Type;
+	}
+
+	public void SetItemDefaults(ModItem item)
+	{
+		item.Item.rare = ItemRarityID.Blue;
+		item.Item.value = Item.sellPrice(gold: 2);
 	}
 }

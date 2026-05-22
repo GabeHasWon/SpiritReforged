@@ -4,9 +4,12 @@ namespace SpiritReforged.Content.Forest.WoodClub;
 
 public class WoodenClub : ClubItem
 {
+	internal override float DamageScaling => 2f;
+	internal override float KnockbackScaling => 1.4f;
+
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 12;
+		Item.damage = 20;
 		Item.knockBack = 5;
 		ChargeTime = 40;
 		SwingTime = 24;

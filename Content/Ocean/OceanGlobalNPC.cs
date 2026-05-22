@@ -25,7 +25,7 @@ internal class OceanGlobalNPC : GlobalNPC
 			var fCondition = new Condition(Language.GetText("LegacyMenu.23"), () => !Main.LocalPlayer.Male);
 
 			shop.Add<Items.Vanity.TintedGlasses>(Condition.InBeach);
-			shop.Add<Items.Vanity.Towel.BeachTowel>(Condition.InBeach, mCondition);
+			shop.Add<Items.Vanity.BeachTowel>(Condition.InBeach, mCondition);
 			shop.Add<Items.Vanity.SwimmingTrunks>(Condition.InBeach, mCondition);
 			shop.Add<Items.Vanity.BikiniTop>(Condition.InBeach, fCondition);
 			shop.Add<Items.Vanity.BikiniBottom>(Condition.InBeach, fCondition);

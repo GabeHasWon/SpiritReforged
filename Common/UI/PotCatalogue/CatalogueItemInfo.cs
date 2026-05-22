@@ -52,7 +52,13 @@ public class CatalogueItemInfo(DropRateInfo info) : CatalogueInfo
 		string format = (_dropRateInfo.dropRate < 0.001) ? "P4" : "P";
 
 		if (_dropRateInfo.dropRate != 1f)
-			dropRate = Utils.PrettifyPercentDisplay(_dropRateInfo.dropRate, format);
+		{
+			dropRate = _dropRateInfo.dropRate.ToString(format, Language.ActiveCulture.CultureInfo);
+
+			//In russian, the percent sign is spaced exclusively in official documents
+			if (Language.ActiveCulture.Name == "ru-RU")
+				dropRate = dropRate.Replace(" %", "%");
+		}
 
 		return stackRange + dropRate;
 	}

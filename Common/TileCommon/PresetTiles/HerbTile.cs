@@ -13,11 +13,13 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		Grown
 	}
 
-	public int GetFrameWidth(int i, int j) => TileObjectData.GetTileData(Main.tile[i, j])?.CoordinateFullWidth ?? 18;
+	public static int GetFrameWidth(int i, int j) => TileObjectData.GetTileData(Main.tile[i, j])?.CoordinateFullWidth ?? 18;
 
 	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
+	/// <summary> The seed item type associated with this herb. </summary>
 	public int SeedType { get; protected set; }
+	/// <summary> The primary item type associated with this herb. </summary>
 	public int HerbType { get; protected set; }
 
 	public override void SetStaticDefaults()

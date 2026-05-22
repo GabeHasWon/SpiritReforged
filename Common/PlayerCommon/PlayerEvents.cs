@@ -2,17 +2,29 @@
 
 namespace SpiritReforged.Common.PlayerCommon;
 
-public class PlayerEvents : ModPlayer
+public sealed class PlayerEvents : ModPlayer
 {
 	public delegate void PlayerDelegate(Player player);
 	public delegate void AnglerQuestDelegate(Player player, float rareMultiplier, List<Item> rewardItems);
 	public delegate void ModifyHitDelegate(Player player, NPC npc, ref Player.HurtModifiers modifiers);
+	public delegate void ModifyHurtDelegate(Player player, ref Player.HurtModifiers modifiers);
+	public delegate void ApplyMusicBoxDelegate(Player player, Item item);
 
 	public static event PlayerDelegate OnKill;
 	public static event AnglerQuestDelegate OnAnglerQuestReward;
 	public static event PlayerDelegate OnPostUpdateRunSpeeds;
 	public static event PlayerDelegate OnPostUpdateEquips;
 	public static event ModifyHitDelegate OnModifyHitByNPC;
+	public static event ModifyHurtDelegate OnModifyHurt;
+	public static event ApplyMusicBoxDelegate OnApplyMusicBox;
+
+	public override void Load() => On_Player.ApplyMusicBox += ApplyMusicBox;
+
+	private static void ApplyMusicBox(On_Player.orig_ApplyMusicBox orig, Player self, Item currentItem)
+	{
+		orig(self, currentItem);
+		OnApplyMusicBox?.Invoke(self, currentItem);
+	}
 
 	/// <summary> Subscribes to <see cref="OnAnglerQuestReward"/> with reward chances based on the provided info. </summary>
 	/// <param name="item"> The item to add as a reward. </param>
@@ -32,4 +44,5 @@ public class PlayerEvents : ModPlayer
 	public override void PostUpdateRunSpeeds() => OnPostUpdateRunSpeeds?.Invoke(Player);
 	public override void PostUpdateEquips() => OnPostUpdateEquips?.Invoke(Player);
 	public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers) => OnModifyHitByNPC?.Invoke(Player, npc, ref modifiers);
+	public override void ModifyHurt(ref Player.HurtModifiers modifiers) => OnModifyHurt?.Invoke(Player, ref modifiers);
 }

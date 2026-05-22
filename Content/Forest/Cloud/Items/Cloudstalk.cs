@@ -67,8 +67,7 @@ public class CloudstalkTile : HerbTile
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox, ModContent.TileType<Tiles.CloudstalkBox>(), ModContent.TileType<BambooPot>()];
 		TileObjectData.addTile(Type);
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(178, 234, 234), name);
+		AddMapEntry(new Color(178, 234, 234), Language.GetText("Mods.SpiritReforged.Items.Cloudstalk.DisplayName"));
 
 		DustType = DustID.Cloud;
 		HerbType = ModContent.ItemType<Cloudstalk>();

@@ -35,15 +35,13 @@ internal class WavyTag : SignTag
 		return true;
 	}
 
-	public override bool Draw(Rectangle panel, string[] text, int numLines, ref Color color)
+	public override void ModifyRenderTarget() 
 	{
 		var effect = AssetLoader.LoadedShaders["Ripple"].Value;
 		effect.Parameters["progress"].SetValue((float)(Main.timeForVisualEffects / 10f % MathHelper.TwoPi));
-		effect.Parameters["strength"].SetValue(.001f * _strength);
-		effect.Parameters["length"].SetValue(.001f * _length);
+		effect.Parameters["strength"].SetValue(.00035f * _strength);
+		effect.Parameters["length"].SetValue(.00003f * _length);
 
 		effect.CurrentTechnique.Passes[0].Apply(); //Restarting the spritebatch is unecessary here
-
-		return false;
 	}
 }

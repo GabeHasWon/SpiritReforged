@@ -7,6 +7,8 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.Savanna.Items.WrithingSticks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -20,12 +22,19 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 
 	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "BoStaffSwing", false);
 
-	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.DD2_JavelinThrowersAttack with { Pitch = -0.2f });
+	public override void SetStaticDefaults()
+	{
+		DiscoveryHelper.RegisterPickup(Type, SoundID.DD2_JavelinThrowersAttack with { Pitch = -0.2f });
+
+		ItemID.Sets.ShimmerTransformToItem[Type] = AutoContent.ItemType<CalmingBell>();
+		ItemID.Sets.ShimmerTransformToItem[AutoContent.ItemType<CalmingBell>()] = Type;
+
+	}
 
 	public override void SetDefaults()
 	{
-		Item.damage = 8;
-		Item.knockBack = 6;
+		Item.damage = 16;
+		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 28;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;

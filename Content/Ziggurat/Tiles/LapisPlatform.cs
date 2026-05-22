@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class LapisPlatform : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 200;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<CarvedLapis>()).Register();
@@ -40,8 +42,6 @@ public class LapisPlatform : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(179, 146, 107));
 		DustType = DustID.Cobalt;
 		AdjTiles = [TileID.Platforms];
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

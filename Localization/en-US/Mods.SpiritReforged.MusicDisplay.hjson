@@ -2,6 +2,7 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+By: by
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
@@ -10,17 +11,17 @@ Duststorm: {
 }
 
 Savanna: {
-	DisplayName: Savanna
+	DisplayName: Fever Trees (Savanna Day Theme)
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Savanna Night
+	DisplayName: Moonlit Meadow (Savanna Night Theme)
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: Deep Ocean
+	DisplayName: Undersea Adventure (Deep Ocean Theme)
 	Author: "{$BySalvati}"
 }
 
@@ -35,7 +36,7 @@ SavannaOtherworldNight: {
 }
 
 DuststormOtherworld: {
-	DisplayName: Otherworldly Dustorm
+	DisplayName: Otherworldly Duststorm
 	Author: "{$By} jakedastardly"
 }
 
@@ -45,11 +46,31 @@ Ziggurat: {
 }
 
 Salt: {
-	DisplayName: Salt Flats
+	DisplayName: Reflected Skies (Salt Flats Day Theme)
 	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	DisplayName: Salt Flats (Night)
+	DisplayName: Refracted Stars (Salt Flats Night Theme)
 	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Soaring Complications (Scarabeus Theme)
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Soaring Complications (Scarabeus Theme, Phase 2)
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Soaring Complications (Radio Edit)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Another Journey (Spirit Title Theme)
+	Author: "{$By} {$Salvati}"
 }

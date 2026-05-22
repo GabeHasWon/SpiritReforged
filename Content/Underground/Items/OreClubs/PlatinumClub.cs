@@ -5,11 +5,12 @@ namespace SpiritReforged.Content.Underground.Items.OreClubs;
 
 public class PlatinumClub : ClubItem
 {
-	internal override float DamageScaling => 1.66f;
+	internal override float DamageScaling => 2.49f;
+	internal override float KnockbackScaling => 1.4f;
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 26;
+		Item.damage = 36;
 		Item.knockBack = 8;
 		ChargeTime = 20;
 		SwingTime = 30;

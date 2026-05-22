@@ -81,6 +81,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		{
 			DoEmpoweredShot(target);
 			_isDoingEmpoweredShot = true;
+			SetArrowData(player);
 		}
 
 		if (!target.active)
@@ -158,6 +159,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			AiTimer = FIRE_TIME;
 			EmpoweredShotTarget = -1;
 			Projectile.netUpdate = true;
+
+			SetArrowData(player);
 		}
 	}
 

@@ -1,5 +1,7 @@
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Granite.Vanity;
 
@@ -12,7 +14,12 @@ public class HardlightVisor : ModItem
 	public override LocalizedText DisplayName => CrossMod.Redemption.Enabled ? Language.GetText(Common + "AltDisplayName") : base.DisplayName;
 	public override LocalizedText Tooltip => CrossMod.Redemption.Enabled ? Language.GetText(Common + "AltTooltip") : base.Tooltip;
 
-	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
+	public override void SetStaticDefaults()
+	{
+		ArmorIDs.Head.Sets.DrawFullHair[Item.headSlot] = true;
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteFlyer), ItemDropRule.Common(Type, 50)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem), ItemDropRule.Common(Type, 50)));
+	}
 
 	public override void SetDefaults()
 	{

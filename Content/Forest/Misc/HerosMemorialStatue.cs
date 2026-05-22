@@ -51,8 +51,7 @@ public class HerosMemorialStatue : ModTile
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(216, 216, 216), name);
+		AddMapEntry(new Color(216, 216, 216), Language.GetText("Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName"));
 
 		DustType = DustID.Stone;
 	}

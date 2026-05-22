@@ -6,6 +6,17 @@ namespace SpiritReforged.Content.Desert;
 
 public class Thornball : ModItem
 {
+	internal class ThornballGNPC : GlobalNPC
+	{
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+			if (CrossMod.Redemption.CheckFind("DevilsTongue", out ModNPC tongue))
+			{
+				if (npc.type == tongue.Type)
+					npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+			}
+		}
+	}
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 99;
@@ -16,8 +27,8 @@ public class Thornball : ModItem
 	{
 		Item.DefaultToThrownWeapon(ModContent.ProjectileType<ThornballThrown>(), 20, 7, true);
 		Item.noUseGraphic = true;
-		Item.damage = 10;
-		Item.knockBack = 2;
+		Item.damage = 6;
+		Item.knockBack = 0;
 		Item.value = Item.sellPrice(copper: 5);
 		Item.UseSound = SoundID.Item1;
 	}
@@ -72,7 +83,7 @@ public class ThornballThrown : ModProjectile
 	}
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HitDirectionOverride = (target.Center.X < Projectile.Center.X) ? -1 : 1;
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(ModContent.BuffType<Slowed>(), 180);
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(ModContent.BuffType<Slowed>(), 120);
 
 	public override bool PreDraw(ref Color lightColor)
 	{

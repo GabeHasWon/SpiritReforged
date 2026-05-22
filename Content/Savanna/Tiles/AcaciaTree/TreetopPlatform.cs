@@ -4,6 +4,7 @@ using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
@@ -86,9 +87,13 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 internal class TreetopCollisionPlayer : ModPlayer
 {
 	public override void Load() => On_NPC.UpdateCollision += CheckNPCCollision;
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "Collision_DecideFallThroughPlatforms")]
+	private static extern bool NPC_DecideFallThroughPlatforms(NPC npc);
+
 	private static void CheckNPCCollision(On_NPC.orig_UpdateCollision orig, NPC self)
 	{
-		if (!self.noGravity)
+		if (!self.noGravity && !NPC_DecideFallThroughPlatforms(self))
 		{
 			foreach (var p in AcaciaTree.Platforms)
 			{

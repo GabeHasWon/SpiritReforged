@@ -2,6 +2,7 @@ sampler drawTexture : register(s0);
 float texColorUVLerper;
 matrix WorldViewProjection;
 matrix viewMatrix;
+float2 matrixZoom;
 
 float3 baseColor;
 float3 gradientColor;
@@ -36,7 +37,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 pos = mul(input.Position, WorldViewProjection);
     output.Position = pos;
     output.Color = input.Color;
-    output.uv = input.TextureCoordinates;
+    output.uv = input.TextureCoordinates / matrixZoom;
     output.screenUv = mul(input.Position, viewMatrix);
     output.screenUv = invlerp(float2(-1, -1), float2(1, 1), output.screenUv);
     
@@ -46,15 +47,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput i) : COLOR0
 {
     float2 heightAndMask = float2(invlerp(0, 0.5, i.uv.y), invlerp(0, 0.2, i.uv.y));
-    float mask = 1;
-    
-    float2 textureSample = tex2D(drawTexture, i.uv).ra;
-    textureSample.y *= 0.4;
-    heightAndMask = lerp(heightAndMask, textureSample, texColorUVLerper);
-    heightAndMask.y *= i.Color.a;
-    
-    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);
-    
+    heightAndMask.y *= i.Color.a;    
+    float4 blueGradient = float4(baseColor + gradientColor * heightAndMask.r, 0);    
     return blueGradient * heightAndMask.y;
 }
 

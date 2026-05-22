@@ -28,7 +28,7 @@ public class FingerGun : ModItem
 		Item.DamageType = DamageClass.Magic;
 		Item.Size = new(32, 28);
 		Item.damage = 12;
-		Item.ArmorPenetration = 14;
+		Item.ArmorPenetration = 5;
 		Item.mana = 3;
 		Item.crit = 10;
 		Item.knockBack = 1;
@@ -142,8 +142,8 @@ public class FingerGunArmManager : ModPlayer
 	{
 		if (IsFingerGunHeld(drawInfo.drawPlayer))
 		{
-			drawInfo.drawPlayer.handon = EquipLoader.GetEquipSlot(SpiritReforgedMod.Instance, "FingerGun", EquipType.HandsOn);
-			drawInfo.cHandOn = -1;
+			drawInfo.drawPlayer.handon = ContentSamples.ItemsByType[ModContent.ItemType<FingerGun>()].handOnSlot;
+			drawInfo.cHandOn = 0;
 		}
 	}
 }

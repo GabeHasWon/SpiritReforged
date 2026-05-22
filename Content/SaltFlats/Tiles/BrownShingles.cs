@@ -4,12 +4,14 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class BrownShingles : ModTile, IAutoloadTileItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(RecipeGroupID.Wood).AddTile(TileID.Sawmill).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddRecipeGroup(RecipeGroupID.Wood).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
+
+		TileID.Sets.DrawsWalls[Type] = true; // Stops niche issue with the frameY offset in the method below
 
 		AddMapEntry(new Color(60, 45, 40));
 		DustType = DustID.BrownMoss;

@@ -24,7 +24,7 @@ public class SavannaBiome : ModBiome
 		NPCHappiness.Get(NPCID.BestiaryGirl).SetBiomeAffection(this, AffectionLevel.Like);
 		NPCHappiness.Get(NPCID.ArmsDealer).SetBiomeAffection(this, AffectionLevel.Like);
 		NPCHappiness.Get(NPCID.Stylist).SetBiomeAffection(this, AffectionLevel.Dislike);
-		NPCHappiness.Get(NPCID.GoldBird).SetBiomeAffection(this, AffectionLevel.Dislike);
+		NPCHappiness.Get(NPCID.Golfer).SetBiomeAffection(this, AffectionLevel.Dislike);
 
 		SceneTileCounter.SurveyByType.Add(Type, new([ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), 
 			ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassMowed>(), ModContent.TileType<SavannaGrassHallowMowed>()], 400));

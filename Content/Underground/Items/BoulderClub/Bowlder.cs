@@ -17,7 +17,8 @@ namespace SpiritReforged.Content.Underground.Items.BoulderClub;
 
 public class Bowlder : ClubItem
 {
-	internal override float DamageScaling => 1.3f;
+	internal override float DamageScaling => 1.95f;
+	internal override float KnockbackScaling => 1.4f;
 
 	public override void SetStaticDefaults()
 	{

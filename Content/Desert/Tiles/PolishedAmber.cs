@@ -53,7 +53,7 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		}
 	}
 
-	public static AmberGridOverlay Overlay;
+	public static AmberGridOverlay Overlay { get; private set; }
 
 	public override void Load()
 	{
@@ -63,6 +63,8 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 			DrawOverHandler.PostDrawTilesSolid += Overlay.Draw;
 		}
 	}
+
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 
 	public void AddItemRecipes(ModItem item)
 	{

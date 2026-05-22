@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System.Reflection;
+using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
 
 namespace SpiritReforged.Common.UI;
 
@@ -50,5 +53,32 @@ internal static class UIHelper
 		}
 
 		return wrappingText.Length * height;
+	}
+
+	public static void DrawPanel(SpriteBatch spriteBatch, Texture2D texture, Texture2D borderTexture, Rectangle dimensions, Color? overrideColor = null, Color? overrideBorderColor = null)
+	{
+		Draw9Slice(spriteBatch, texture, dimensions, overrideColor);
+		Draw9Slice(spriteBatch, borderTexture, dimensions, overrideBorderColor ?? Color.Black);
+	}
+
+	public static void Draw9Slice(SpriteBatch spriteBatch, Texture2D texture, Rectangle dimensions, Color? overrideColor = null)
+	{
+		const int _cornerSize = 12;
+		const int _barSize = 4;
+
+		Color color = overrideColor ?? new Color(63, 82, 151) * 0.7f;
+		Point point = new Point(dimensions.X, dimensions.Y);
+		Point point2 = new Point(point.X + dimensions.Width - _cornerSize, point.Y + dimensions.Height - _cornerSize);
+		int width = point2.X - point.X - _cornerSize;
+		int height = point2.Y - point.Y - _cornerSize;
+		spriteBatch.Draw(texture, new Rectangle(point.X, point.Y, _cornerSize, _cornerSize), new Rectangle(0, 0, _cornerSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y, _cornerSize, _cornerSize), new Rectangle(_cornerSize + _barSize, 0, _cornerSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point.X, point2.Y, _cornerSize, _cornerSize), new Rectangle(0, _cornerSize + _barSize, _cornerSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point2.X, point2.Y, _cornerSize, _cornerSize), new Rectangle(_cornerSize + _barSize, _cornerSize + _barSize, _cornerSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point.Y, width, _cornerSize), new Rectangle(_cornerSize, 0, _barSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point2.Y, width, _cornerSize), new Rectangle(_cornerSize, _cornerSize + _barSize, _barSize, _cornerSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point.X, point.Y + _cornerSize, _cornerSize, height), new Rectangle(0, _cornerSize, _cornerSize, _barSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point2.X, point.Y + _cornerSize, _cornerSize, height), new Rectangle(_cornerSize + _barSize, _cornerSize, _cornerSize, _barSize), color);
+		spriteBatch.Draw(texture, new Rectangle(point.X + _cornerSize, point.Y + _cornerSize, width, height), new Rectangle(_cornerSize, _cornerSize, _barSize, _barSize), color);
 	}
 }

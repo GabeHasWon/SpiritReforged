@@ -1,7 +1,11 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
+using SpiritReforged.Content.Ziggurat.Vanity;
+using System.Diagnostics;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -51,11 +55,12 @@ internal class DecrepitMummy : ModNPC
 		NPC.aiStyle = -1;
 
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
+		UndeadNPC.UndeadTypes.Add(Type);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(80, 90, 120, 180);
+		NPC.lifeMax = ModeUtils.ByMode(90, 100, 130, 190);
 		NPC.damage = ModeUtils.ByMode(20, 37, 40, 60);
 	}
 
@@ -101,7 +106,8 @@ internal class DecrepitMummy : ModNPC
 		if (Main.rand.NextBool(1000))
 			SoundEngine.PlaySound(MummyMoan[Main.rand.Next(MummyMoan.Length)], NPC.Center);
 
-		NPC.spriteDirection = NPC.direction = Math.Sign(NPC.velocity.X);
+		if ((Math.Sign(NPC.velocity.X) != direction) || NPC.direction != direction)
+			NPC.direction = NPC.spriteDirection = Math.Sign(direction);
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -159,6 +165,11 @@ internal class DecrepitMummy : ModNPC
 		notTrapSpawned.OnFailedConditions(ItemDropRule.OneFromOptions(20, ItemID.FastClock, ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants));
 		npcLoot.Add(isTrapSpawned);
 		npcLoot.Add(notTrapSpawned);
+
+		npcLoot.AddCommon(ModContent.ItemType<CarrotCake>(), 25);
+
+		int maskType = Main.rand.NextBool() ? ModContent.ItemType<BullRitualMask>() : ModContent.ItemType<AvianRitualMask>();
+		npcLoot.AddCommon(maskType, 33);
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

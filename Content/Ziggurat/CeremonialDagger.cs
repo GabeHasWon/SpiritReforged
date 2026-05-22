@@ -11,6 +11,9 @@ using SpiritReforged.Content.Forest.RoguesCrest;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using SpiritReforged.Content.Ziggurat.Windshear;
+using SpiritReforged.Common.ItemCommon;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat;
 
@@ -23,11 +26,14 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 	public override void SetStaticDefaults()
 	{
 		SpiritSets.IsSword[Type] = true;
-		//ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WindshearScepter>();
+		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<WindshearScepter>();
+
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
 	}
 	public override void SetDefaults()
 	{
-		Item.damage = 18;
+		Item.damage = 14;
 		Item.crit = 6;
 		Item.knockBack = 3;
 		Item.useTime = Item.useAnimation = 25;
@@ -173,6 +179,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 			SoundEngine.PlaySound(SoundID.NPCHit18 with { Volume = 0.5f, Pitch = 0.1f }, Projectile.Center);
 
 			target.AddBuff(BuffID.Bleeding, 200);
+			target.GetGlobalNPC<NPCBleedVisuals>().bleedDirection = Projectile.DirectionFrom(target.Center);
 
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(target.Hitbox.ClosestPointInRect(Projectile.Center) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());

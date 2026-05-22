@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.ModCompat;
+using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
@@ -38,7 +39,6 @@ public abstract class ClockTile : FurnitureTile
 	public override bool RightClick(int x, int y)
 	{
 		//Post the time
-		string text = "AM";
 		double time = Main.time;
 
 		if (!Main.dayTime)
@@ -49,27 +49,31 @@ public abstract class ClockTile : FurnitureTile
 
 		if (time < 0.0)
 			time += 24.0;
+		if (time >= 24.0)
+			time -= 24.0;
 
-		if (time >= 12.0)
-			text = "PM";
+		int hours = (int)time;
+		int minutes = (int)((time - hours) * 60.0);
 
-		int intTime = (int)time;
-		double deltaTime = time - intTime;
-		deltaTime = (int)(deltaTime * 60.0);
-		string text2 = string.Concat(deltaTime);
+		bool use24Hour = CrossMod.RussianTranslate.Enabled;
 
-		if (deltaTime < 10.0)
-			text2 = "0" + text2;
+		string timeText;
 
-		if (intTime > 12)
-			intTime -= 12;
+		if (use24Hour)
+		{
+			timeText = $"{hours}:{minutes:00}";
+		}
+		else
+		{
+			string period = Language.GetTextValue(hours >= 12 ? "GameUI.TimePastMorning" : "GameUI.TimeAtMorning");
+			int displayHours = hours % 12;
+			if (displayHours == 0)
+				displayHours = 12;
 
-		if (intTime == 0)
-			intTime = 12;
+			timeText = $"{displayHours}:{minutes:00} {period}";
+		}
 
-		string newText = string.Concat("Time: ", intTime, ":", text2, " ", text);
-		Main.NewText(newText, 255, 240, 20);
-
+		Main.NewText(Language.GetTextValue("CLI.Time", timeText), 255, 240, 20);
 		return true;
 	}
 

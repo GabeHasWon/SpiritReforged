@@ -1,13 +1,9 @@
 using ILLogger;
-using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
-using Terraria.GameInput;
 using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
@@ -103,15 +99,21 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 		if (!Main.dedServ)
 		{
-			skyReflectionsTarget?.Target.Dispose();
-			backgroundTarget?.Target.Dispose();
+			Main.QueueMainThreadAction(() =>
+			{
+				skyReflectionsTarget?.Dispose();
+				backgroundTarget?.Dispose();
+			});
 		}
 	}
 
 	#region Capture sky objects for reflection
+	public static bool DrawingSkyObjectReflection = false;
+
 	public void RenderSkyObjects(SpriteBatch spriteBatch)
 	{
 		spriteBatch.End();
+		DrawingSkyObjectReflection = true;
 
 		Matrix transformMatrix = Main.BackgroundViewMatrix.EffectMatrix;
 		transformMatrix.Translation += Vector3.UnitY * ReflectedSkyRenderOffset;
@@ -144,7 +146,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		if (Main.screenPosition.Y >= Main.worldSurface * 16.0 + 16.0)
 			return;
 
-		CustomSurfaceBackgroundStyle.RestartSpritebatch(null, Vector3.UnitY * ReflectedSkyRenderOffset);
+		RestartSpritebatch(null, Vector3.UnitY * ReflectedSkyRenderOffset);
 
 		float globalCloudAlpha = SkyManager.Instance.ProcessCloudAlpha() * Main.atmo;
 
@@ -174,8 +176,16 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 			}
 		}
 		#endregion
-
 		SkyManager.Instance.ResetDepthTracker();
+
+		static void DrawToDepthFixed(float depth)
+		{
+			Vector3 yOffset = new Vector3(0, 1 - Main.BackgroundViewMatrix.Zoom.Y, 0) * (Main.ScreenSize.Y / 2);
+			Vector3 xOffset = new Vector3(1 - Main.BackgroundViewMatrix.Zoom.X, 0, 0) * (Main.ScreenSize.X / 2);
+			RestartSpritebatch(null, Vector3.UnitY * ReflectedSkyRenderOffset + yOffset + xOffset);
+			SkyManager.Instance.DrawToDepth(Main.spriteBatch, depth);
+			RestartSpritebatch(null, Vector3.UnitY * ReflectedSkyRenderOffset);
+		}
 
 		#region Background cloud layers that appear during storms
 		if (Main.BackgroundEnabled && Main.cloudBGAlpha > 0f)
@@ -190,7 +200,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 			//Draws any sky object between the last depth and our BG clouds
 			if (Reflections.Detail > 1)
-				SkyManager.Instance.DrawToDepth(Main.spriteBatch, 1f / (float)bgParallax);
+				DrawToDepthFixed(1f / (float)bgParallax);
 
 			float scaledBackgroundWidth = furthestCloudBGWidth * bgScale;
 			bgTopY = (int)(backgroundTopMagicNumber * 900.0 + 600.0) + (int)scAdj + 30;
@@ -211,7 +221,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 
 			//Draws any sky object between the last depth and our BG clouds
 			if (Reflections.Detail > 1)
-				SkyManager.Instance.DrawToDepth(Main.spriteBatch, 1f / (float)bgParallax);
+				DrawToDepthFixed(1f / (float)bgParallax);
 
 			cloudBGAlpha = Math.Min(1, cloudBGAlpha * 1.5f);
 			bgColor = Main.ColorOfTheSkies * cloudBGAlpha;
@@ -229,21 +239,27 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		}
 		#endregion
 
-		SkyManager.Instance.DrawToDepth(Main.spriteBatch, 5f);
+		DrawToDepthFixed(5f);
 
 		//BG clouds from the background itself
-		Texture2D cloudTexture = FarClouds.Value;
-		Color color = Main.ColorOfTheSkies;
-		float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
-		float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
-		int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
-		Rectangle bounds = GetBounds(FarTexture);
-		Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
-		int loops = BackgroundStyleHelper.BackgroundLoops;
-		int cloudLoops = loops + 1;
-		SpoofFarBackgroundParameters(scAdj, backgroundTopMagicNumber, 2, 30);
-		bgTopY = BackgroundStyleHelper.BackgroundTopY;
-		DrawScroll((position, scale) => Main.spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
+		if (Main.BackgroundEnabled)
+		{
+			Texture2D cloudTexture = FarClouds.Value;
+			Color color = Main.ColorOfTheSkies;
+			Color bgTintColorTarget = SaltFlatsSystem.GetBackgroundTintColor(out float bgTintStrength);
+			color = Color.Lerp(color, bgTintColorTarget, bgTintStrength);
+
+			float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
+			float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
+			int crop = 530 + (int)softParallaxY; //The amount of vertical space to crop from the reflected cloud scroll
+			Rectangle bounds = GetBounds(FarTexture);
+			Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
+			int loops = BackgroundStyleHelper.BackgroundLoops;
+			int cloudLoops = loops + 1;
+			SpoofFarBackgroundParameters(scAdj, backgroundTopMagicNumber, 2, 30);
+			bgTopY = BackgroundStyleHelper.BackgroundTopY;
+			DrawScroll((position, scale) => Main.spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
+		}
 
 		#region Mid-layer clouds
 		float cloudTop = bgTopY - 50;
@@ -264,28 +280,33 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		#endregion
 
 		#region Front layer clouds
-		cloudTop = (float)bgTopY * 1.01f - 150f;
-		for (int n = 0; n < Main.maxClouds; n++)
+		if (Main.BackgroundEnabled)
 		{
-			Cloud cloud = Main.cloud[n];
-			if (cloud.active && cloud.scale >= 1.15f)
+			cloudTop = (float)bgTopY * 1.01f - 150f;
+			for (int n = 0; n < Main.maxClouds; n++)
 			{
-				Color cloudColor = cloud.cloudColor(Main.ColorOfTheSkies);
-				if (Main.atmo < 1f)
-					cloudColor *= Main.atmo;
+				Cloud cloud = Main.cloud[n];
+				if (cloud.active && cloud.scale >= 1.15f)
+				{
+					Color cloudColor = cloud.cloudColor(Main.ColorOfTheSkies);
+					if (Main.atmo < 1f)
+						cloudColor *= Main.atmo;
 
-				float cloudHeight = cloud.position.Y * (Main.screenHeight / 600f) - 100f;
-				DrawCloudSpoof(cloud, cloudColor * globalCloudAlpha, cloudHeight + cloudTop);
+					float cloudHeight = cloud.position.Y * (Main.screenHeight / 600f) - 100f;
+					DrawCloudSpoof(cloud, cloudColor * globalCloudAlpha, cloudHeight + cloudTop);
+				}
 			}
 		}
 		#endregion
 
 		//Draw to depth 1 which would end before the blizzard fullscreen overlay
 		if (Reflections.Detail > 1)
-			SkyManager.Instance.DrawToDepth(Main.spriteBatch,-1f);
+			DrawToDepthFixed(-1);
 
 		if (Main.shimmerAlpha > 0f)
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, Vector2.Zero, null, Color.Black * Main.shimmerAlpha, 0f, Vector2.Zero, new Vector2(Main.Camera.UnscaledSize.X + (float)(Main.offScreenRange * 2), Main.Camera.UnscaledSize.Y + (float)(Main.offScreenRange * 2)), SpriteEffects.None, 0f);
+
+		DrawingSkyObjectReflection = false;
 	}
 
 	public void SpoofFarBackgroundParameters(float scAdj, double backgroundTopMagicNumber, float bgGlobalScaleMultiplier, int pushBGTopHack)
@@ -355,6 +376,20 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 	}
 	#endregion
 
+	public void TestMe()
+	{
+		Vector2 defaultScreenPos = Main.screenPosition;
+		int defaultScreenWidth = Main.screenWidth;
+		int defaultScreenHeight = Main.screenHeight;
+
+		int newScreenWidth = (int)((float)Main.screenWidth / Main.BackgroundViewMatrix.Zoom.X);
+		int newScreenHeight = (int)((float)Main.screenWidth / Main.BackgroundViewMatrix.Zoom.X);
+		Vector2 newScreenPos = Main.screenPosition + Main.BackgroundViewMatrix.Translation;
+
+		Matrix transformationMatrix = Main.BackgroundViewMatrix.TransformationMatrix;
+		transformationMatrix.Translation -= Main.BackgroundViewMatrix.ZoomMatrix.Translation * new Vector3(1f, Main.BackgroundViewMatrix.Effects.HasFlag(SpriteEffects.FlipVertically) ? (-1f) : 1f, 1f);
+	}
+
 	public override bool Draw(SpriteBatch spriteBatch, LayerType layer)
 	{
 		bool shouldFadeDownBackground =
@@ -386,7 +421,11 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null);
 				spriteBatch.Draw(backgroundTarget.Target, Vector2.Zero, null, Color.White * Main.bgAlphaFarBackLayer[Slot], 0, Vector2.Zero, 1, 0, 0);
-				RestartSpritebatch(null);
+				RestartSpritebatch(null); 
+				TestMe();
+
+				//spriteBatch.Draw(skyReflectionsTarget.Target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
+
 				return false;
 			}
 
@@ -400,7 +439,8 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Texture2D nightSkyMaskTexture = SkyReflectionMask.Value;
 
 				Color color = BackgroundStyleHelper.SurfaceBackgroundModified;
-				color = Color.Lerp(color, new Color(80, 120, 255), MathF.Pow(SaltFlatsSystem.nightSkyOpacity, 2f) * 0.2f);
+				Color bgTintColorTarget = SaltFlatsSystem.GetBackgroundTintColor(out float bgTintStrength);
+				color = Color.Lerp(color, bgTintColorTarget, bgTintStrength);
 
 				Rectangle bounds = GetBounds(slot);
 				int loops = BackgroundStyleHelper.BackgroundLoops;
@@ -418,8 +458,18 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				float softParallaxX = Main.screenPosition.X * 0.02f % 2048;
 				float softParallaxY = Main.screenPosition.Y * 0.005f % 2048;
 
-				DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0), -1, cloudLoops);
-				DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				if (Main.BackgroundEnabled)
+				{
+					DrawScroll((position, scale) =>
+					{
+						spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0);
+
+						// I'm lazy and this fixes occasional cutoffs sometimes
+						spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX + 2048, -softParallaxY), bounds, color, 0, default, scale, SpriteEffects.None, 0);
+					}, -1, cloudLoops);
+
+					DrawScroll((position, scale) => spriteBatch.Draw(texture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				}
 
 				float debugValue = BackgroundStyleHelper.BackgroundTopY;
 
@@ -427,9 +477,12 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 				Rectangle reflectionBounds = new(bounds.X, bounds.Y, bounds.Width, bounds.Height - crop);
 
 				//If in the gamemenu, just draw the reflection of the background mountain clouds. Otherwise, the mountain cloud reflections draw through the reflection shader
-				if (Main.gameMenu || Main.LocalPlayer.gravDir == -1)
-					DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
-				DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				if (Main.BackgroundEnabled)
+				{
+					if (Main.gameMenu || Main.LocalPlayer.gravDir == -1)
+						DrawScroll((position, scale) => spriteBatch.Draw(cloudTexture, position + new Vector2(MiddleOffset - softParallaxX, -softParallaxY + crop - 110), reflectionBounds, color * 0.5f, 0, default, BackgroundStyleHelper.BackgroundScale, SpriteEffects.FlipVertically, 0), -1, cloudLoops);
+					DrawScroll((position, scale) => spriteBatch.Draw(mountainTexture, position, bounds, color, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
+				}
 
 				if (!Main.gameMenu && Main.LocalPlayer.gravDir == 1 && skyReflectionsTarget != null && !skyReflectionsTarget.Target.IsDisposed)
 				{
@@ -444,12 +497,18 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					bgShader.Parameters["cloudTargetYOffset"].SetValue(ReflectedSkyRenderOffset / reflectionCanvasSize.Y);
 					bgShader.Parameters["topFadeStrength"].SetValue(ReflectionFadeAwayValue);
 					bgShader.Parameters["shimmerAlpha"].SetValue(Main.shimmerAlpha);
+					bgShader.Parameters["matrixZoom"].SetValue(Main.BackgroundViewMatrix.Zoom);
+					SaltFlatsSystem.SetSkyColor(bgShader);
+					bgShader.Parameters["moonlightMaskOpacity"].SetValue(SaltFlatsSystem.nightSkyOpacity);
 
 					Matrix maskTransformMatrix = Matrix.Identity;
-
 					Vector2 maskScaleRatio = reflectionCanvasSize / nightSkyMaskTexture.Size();
-					maskTransformMatrix = Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y, 0f));
 
+					maskTransformMatrix *= Matrix.Invert(spriteBatch.GetTransformMatrix());
+
+					//WHAT ARE YOUUUUUU WHY ARE YOU OFFSET WRONG!! IT DOESNT EVEN WORK FOR 4K CUZ THE OFFSET IS TOO BIG OVER THERE!!!
+					maskTransformMatrix *= Matrix.CreateTranslation(8f / reflectionCanvasSize.X, 4f / reflectionCanvasSize.Y, 0f);
+					maskTransformMatrix *= Matrix.CreateTranslation(new Vector3(-BackgroundStyleHelper.BackgroundStartX / reflectionCanvasSize.X, -BackgroundStyleHelper.BackgroundTopY / reflectionCanvasSize.Y, 0f));
 					//Adjust the bg scale by the ratio between the RT we're rendering and the BG size
 					maskTransformMatrix *= Matrix.CreateScale(maskScaleRatio.X, maskScaleRatio.Y, 1);
 					//Adjust by the background scale itself
@@ -462,20 +521,6 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone, bgShader);
 
 					spriteBatch.Draw(skyReflectionsTarget.Target, Vector2.Zero, null, Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
-					RestartSpritebatch(null);
-				}
-
-				if (SaltFlatsSystem.nightSkyOpacity > 0f)
-				{
-					Effect bgShader = AssetLoader.LoadedShaders["SaltFlatsSky"].Value;
-					var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-					bgShader.Parameters["texColorUVLerper"].SetValue(1f);
-					bgShader.Parameters["WorldViewProjection"].SetValue(Main.BackgroundViewMatrix.TransformationMatrix * projection);
-
-					//	bgShader.Parameters["viewMatrix"].SetValue(projection);
-					SaltFlatsSystem.SetSkyColor(bgShader);
-					RestartSpritebatch(bgShader);
-					DrawScroll((position, scale) => spriteBatch.Draw(nightSkyMaskTexture, position, bounds, color * SaltFlatsSystem.nightSkyOpacity, 0, Vector2.Zero, BackgroundStyleHelper.BackgroundScale, SpriteEffects.None, 0));
 					RestartSpritebatch(null);
 				}
 

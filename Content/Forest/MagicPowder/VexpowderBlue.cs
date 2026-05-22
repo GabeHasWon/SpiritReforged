@@ -18,7 +18,7 @@ public class VexpowderBlue : Flarepowder
 	{
 		base.SetDefaults();
 		Item.shoot = ModContent.ProjectileType<VexpowderBlueDust>();
-		Item.damage = 10;
+		Item.damage = 8;
 		Item.crit = 2;
 		Item.shootSpeed = 6.2f;
 		Item.value = Item.sellPrice(copper: 7);
@@ -76,8 +76,8 @@ internal class VexpowderBlueDust : FlarepowderDust
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (Main.rand.NextBool(3))
-			target.AddBuff(BuffID.Confused, 150);
+		if (Main.rand.NextBool(2))
+			target.AddBuff(BuffID.Confused, 180);
 	}
 
 	public override void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.PurpleCrystalShard, Projectile.velocity * 0.5f).noGravity = true;

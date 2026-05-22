@@ -31,7 +31,22 @@ public class AfterimagePlayer : ModPlayer
 
 	public Vector2 ImagePosition => _positionCache[29 - TrailLength];
 	private readonly Vector2[] _positionCache = new Vector2[30];
+	private readonly Player[] _playerStateCache = new Player[30];
 	private float _manaEase;
+
+	public static BlendState AdditiveNoAlpha = new BlendState
+	{
+		AlphaBlendFunction = BlendFunction.Add,
+		ColorBlendFunction = BlendFunction.Add,
+		ColorSourceBlend = Blend.SourceAlpha,
+		ColorDestinationBlend = Blend.One,
+		AlphaSourceBlend = Blend.SourceAlpha,
+		AlphaDestinationBlend = Blend.One,
+		ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels1 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels2 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels3 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue
+	};
 
 	public override void Load() => On_LegacyPlayerRenderer.DrawPlayerFull += static (orig, self, camera, player) =>
 	{
@@ -43,21 +58,27 @@ public class AfterimagePlayer : ModPlayer
 
 	private static void DrawAfterimage(SpriteBatch sb, LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position)
 	{
-		sb.Begin(SpriteSortMode.Immediate, BlendState.Additive, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		sb.Begin(SpriteSortMode.Immediate, AdditiveNoAlpha, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 		var afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
+
 		float manaStrength = (afterimager._duplicateDelay > 0) ? 1 : (afterimager._manaEase / ManaThreshold);
 		float mult = MathHelper.Clamp(drawPlayer.position.DistanceSQ(position) / 1000f, 0, 1) * manaStrength;
 
 		Lighting.AddLight(position, new Vector3(0.5f, 0.3f, 0.05f) * mult);
 
 		for (int a = 0; a < TrailLength; a++)
-			self.DrawPlayer(camera, drawPlayer, afterimager._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+		{
+			Player p = afterimager._playerStateCache[29 - a];
+			if(p != null) 
+				self.DrawPlayer(camera, p, afterimager._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+
+		}
 
 		for (int i = 0; i < 3; i++)
 			self.DrawPlayer(camera, drawPlayer, position, drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - mult, 1);
 
-		var glow = TextureAssets.Extra[98].Value;
+		var glow = TextureAssets.Extra[ExtrasID.SharpTears].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float wave = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 20f) * 0.5f;
@@ -99,6 +120,12 @@ public class AfterimagePlayer : ModPlayer
 				_positionCache[i] = _positionCache[i - 1];
 
 			_positionCache[0] = Player.position;
+
+			//Update old player states
+			for (int i = _playerStateCache.Length - 1; i > 0; i--)
+				_playerStateCache[i] = _playerStateCache[i - 1];
+
+			_playerStateCache[0] = (Player)Player.Clone();
 		}
 	}
 	#endregion
@@ -195,7 +222,10 @@ public class AfterimagePlayer : ModPlayer
 
 	public override void ModifyManaCost(Item item, ref float reduce, ref float mult)
 	{
-		if (_manaCounter >= ManaThreshold)
+		if (!setActive)
+			_manaCounter = 0;
+
+		if (_manaCounter >= ManaThreshold && !Player.ItemAnimationActive)
 			reduce -= ManaThreshold;
 	}
 }

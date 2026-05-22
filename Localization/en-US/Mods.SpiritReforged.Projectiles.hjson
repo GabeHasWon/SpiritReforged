@@ -35,28 +35,63 @@ EnergizedShockwave.DisplayName: Energized Shockwave
 RollingBowlder.DisplayName: Rolling Bowlder
 Firespike.DisplayName: Firespike
 CannonBomb.DisplayName: Bomb Cannon Shot
-BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
 JinxArrow.DisplayName: Jinx Arrow
 JinxBowMinion.DisplayName: Jinx Bow Minion
-RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
-VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
 EnergyImpact.DisplayName: Energy Stomp
-EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: Finger Shot
-NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
-ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
-ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
 PhysicsChain.DisplayName: Chain
 GoldPhysicsChain.DisplayName: Gold Chain
 CactusSpine.DisplayName: Cactus Spine
-TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
 DragonFireball.DisplayName: Dragon Fireball
 PileOfConsequencesPet.DisplayName: Consequences
 EnergyLaser.DisplayName: Energy Laser
-BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
 WindBlast.DisplayName: Wind Blast
-SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+DivebombScarab.DisplayName: Divebomb Scarab
+SwarmScarab.DisplayName: Swarm Scarab
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
+AdornedBowHeld.DisplayName: Adorned Bow Held
+AdornedFlash.DisplayName: Adorned Flash
+AdornedArrowDeathTrail.DisplayName: Adorned Arrow Death Trail
+LocustCrookProjectile.DisplayName: Locust Crook
+CrookLocust.DisplayName: Locust
+LocustDamageProjectile.DisplayName: Locust Damage Projectile
+LocustExplosion.DisplayName: Locust Explosion
+CrookLocustGore.DisplayName: Crook Locust Gore
+RoyalKhopeshThrown.DisplayName: Royal Khopesh Thrown
+FloatingGem.DisplayName: Floating Gem
+BeamOLight.DisplayName: Beam O Light
+ScarabPetProjectile.DisplayName: Mini Scarabeus
+SandShockwavePillar.DisplayName: Sand Shockwave Pillar
+SandballProjectile.DisplayName: Sandball
+BabyAntlionProjectile.DisplayName: Baby Antlion
+ScarabLightPet.DisplayName: Scarababy
+SoilBallProjectile.DisplayName: Soil Ball
+TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"

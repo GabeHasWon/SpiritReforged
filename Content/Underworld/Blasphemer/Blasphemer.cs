@@ -19,7 +19,8 @@ namespace SpiritReforged.Content.Underworld.Blasphemer;
 [AutoloadGlowmask("255,255,255")]
 public class Blasphemer : ClubItem
 {
-	internal override float DamageScaling => 2.5f;
+	internal override float DamageScaling => 2.33f;
+	internal override float KnockbackScaling => 1.4f;
 
 	public override void SetStaticDefaults()
 	{
@@ -29,7 +30,7 @@ public class Blasphemer : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 38;
+		Item.damage = 60;
 		Item.knockBack = 6;
 		ChargeTime = 40;
 		SwingTime = 30;

@@ -1,9 +1,13 @@
-﻿namespace SpiritReforged.Content.Savanna.DustStorm;
+﻿using System.Runtime.CompilerServices;
+
+namespace SpiritReforged.Content.Savanna.DustStorm;
 
 //Behaviourally similar to graveyard fog gores
 public class SavannaCloud : ModDust
 {
 	public override string Texture => "Terraria/Images/Gore_1087";
+
+	public static ref float FadeSpeed(Dust dust) => ref Unsafe.Unbox<float>(dust.customData);
 
 	public override void Load() => On_Main.DrawBackgroundBlackFill += DrawUnderTiles;
 
@@ -26,19 +30,21 @@ public class SavannaCloud : ModDust
 	{
 		if (!Main.dedServ)
 		{
+			//Ensure all of the gore textures we need are loaded
 			Main.instance.LoadGore(GoreID.AmbientFloorCloud1);
 			Main.instance.LoadGore(GoreID.AmbientFloorCloud2);
 			Main.instance.LoadGore(GoreID.AmbientFloorCloud3);
 			Main.instance.LoadGore(GoreID.AmbientFloorCloud4);
 		}
-		//Ensure all of the gore textures we need are loaded
+
+		dust.customData = 1f;
 	}
 
 	public override bool Update(Dust dust)
 	{
 		bool CanFadeOut() => dust.fadeIn == 1;
 
-		int fadeOutTime = 255; //The amount of time, in ticks, the dust will take to fade out completely
+		float fadeOutTime = 255 * FadeSpeed(dust); //The amount of time, in ticks, the dust will take to fade out completely
 		int fadeInTime = 20; //The amount of time, in ticks, the dust will take to fade in on spawn
 
 		if (CanFadeOut())

@@ -14,6 +14,10 @@ public class SpiritSets : ModSystem
 		ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.Arkhalis, ItemID.Terragrim, ItemID.TheHorsemansBlade, ItemID.BloodyMachete, ItemID.Swordfish,
 		ItemID.ObsidianSwordfish, ItemID.JoustingLance, ItemID.HallowJoustingLance, ItemID.ShadowJoustingLance, ItemID.PiercingStarlight);
 
+	/// <summary> Whether this item is Jem. </summary>
+	public static readonly bool[] Gemstone = ItemFactory.CreateNamedSet(nameof(Gemstone)).Description("Whether this item is a gem").RegisterBoolSet(ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, 
+		ItemID.Ruby, ItemID.Emerald, ItemID.Diamond, ItemID.Amber);
+
 	/// <summary> Whether this type should grant the "Timber" achievement. </summary>
 	public static readonly bool[] Timber = ItemFactory.CreateBoolSet();
 

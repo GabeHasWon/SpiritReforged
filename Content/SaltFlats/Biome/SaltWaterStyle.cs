@@ -23,7 +23,14 @@ public class SaltWaterStyle : ModWaterStyle
 
 	public override void Load() => DrawOverHandler.PostDrawTilesSolid += DrawShine;
 
-	private static void DrawAndHandleWaterTarget(SpriteBatch spriteBatch) => spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
+	private static void DrawAndHandleWaterTarget(SpriteBatch spriteBatch)
+	{
+		if (!Lighting.NotRetro)
+			return;
+
+		spriteBatch.Draw(Main.waterTarget, Main.sceneWaterPos - Main.screenPosition, Color.White);
+	}
+
 	private static void DrawOverlayTarget(SpriteBatch spriteBatch)
 	{
 		float scroll = (float)Main.timeForVisualEffects / 4000f % 1;

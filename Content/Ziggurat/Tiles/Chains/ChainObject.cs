@@ -26,7 +26,7 @@ public class ChainObject : IGrappleable
 
 	private readonly Vector2[] _positions = new Vector2[3];
 
-	private Vector2 _lastDelta;
+	internal Vector2 lastDelta;
 
 	public readonly Chain chain;
 	public readonly byte segments;
@@ -63,9 +63,9 @@ public class ChainObject : IGrappleable
 		if (oldPosition != Vector2.Zero)
 		{
 			Vector2 delta = (position - oldPosition) * Drag;
-			position += Vector2.Lerp(_lastDelta, delta * 1.5f, 0.1f);
+			position += Vector2.Lerp(lastDelta, delta * 1.5f, 0.1f);
 
-			_lastDelta = delta;
+			lastDelta = delta;
 		}
 
 		position += new Vector2(0, Gravity);
@@ -122,7 +122,12 @@ public class ChainObject : IGrappleable
 			Player owner = Main.player[hook.owner];
 
 			if (owner.grapCount == 0)
-				_lastDelta += hook.velocity * 0.5f; //Punch the chain when initially grappled
+			{
+				lastDelta += hook.oldVelocity * 0.5f; //Punch the chain when initially grappled
+
+				if (Main.myPlayer == owner.whoAmI && Main.netMode == NetmodeID.MultiplayerClient) // Velocity on server (and maybe other clients) isn't the same, force update
+					new ChainObjectSystem.ModifyVelocityData(anchor, lastDelta).Send();
+			}
 
 			hook.Center = Position;
 			GrappleHelper.Latch(hook);

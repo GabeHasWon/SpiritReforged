@@ -2,54 +2,75 @@ ModName: 魂灵新魄
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+By: 作者：
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: 漂移草原（主题曲：尘暴）
+	DisplayName: Drifting Prairie（主题曲：尘暴）
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
-	DisplayName: 稀树平原
+	DisplayName: Fever Trees（主题曲：稀树平原 - 昼）
 	Author: "{$BySalvati}, {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: 稀树平原 - 夜
+	DisplayName: Moonlit Meadow（主题曲：稀树平原 - 夜）
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: 海洋深处
+	DisplayName: Undersea Adventure（主题曲：海洋深处）
 	Author: "{$BySalvati}"
 }
 
 SavannaOtherworld: {
-	DisplayName: 异界稀树平原 - 昼
+	DisplayName: Otherworldly Savanna Day
 	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	DisplayName: 异界稀树平原 - 夜
+	DisplayName: Otherworldly Savanna Night
 	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	DisplayName: 异界尘暴
+	DisplayName: Otherworldly Duststorm
 	Author: "{$By} jakedastardly"
 }
 
 Ziggurat: {
-	// DisplayName: Ziggurat
-	// Author: "{$By} {$Moonbird}, {$Salvati}"
+	DisplayName: Ziggurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
 }
 
 Salt: {
-	// DisplayName: Salt Flats
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Reflected Skies（主题曲：盐滩 - 昼）
+	Author: "{$By} {$Sbubby}"
 }
 
 SaltNight: {
-	// DisplayName: Salt Flats (Night)
-	// Author: "{$By} {$Sbubby}"
+	DisplayName: Refracted Stars（主题曲：盐滩 - 夜）
+	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Soaring Complications（主题曲：圣甲虫）
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Soaring Complications（主题曲：圣甲虫 - 阶段2）
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Soaring Complications（电台剪辑版）
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Another Journey（主题曲：魂灵标题）
+	Author: "{$By} {$Salvati}"
 }

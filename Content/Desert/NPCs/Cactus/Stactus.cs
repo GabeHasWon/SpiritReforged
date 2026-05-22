@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -18,7 +19,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
-public abstract class Stactus : ModNPC, IDeathCount
+public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 {
 	private class IsPrickly : IItemDropRuleCondition, IProvideItemConditionDescription
 	{
@@ -120,6 +121,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
+		NPCID.Sets.CantTakeLunchMoney[Type] = true;
 
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
@@ -198,7 +200,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 		else //This has no parent (the base of the stack)
 		{
 			var target = Main.player[NPC.target].Center;
-			float maxSpeed = Main.zenithWorld ? 2 : 0.2f;
+			float maxSpeed = Main.zenithWorld ? 2 : 0.23f;
 			float speed = (NPC.Distance(target) < 16 * 18) ? Math.Sign(NPC.DirectionTo(target).X) * maxSpeed : 0;
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, speed, 0.05f);
@@ -257,6 +259,15 @@ public abstract class Stactus : ModNPC, IDeathCount
 
 				if (style == 0)
 					count--; //Juvenile debuff
+
+				for (int i = 0; i < count; i++)
+				{
+					if (Collision.SolidTiles(NPC.position - new Vector2(0, NPC.height * i), NPC.width, NPC.height - 4))
+					{
+						count = i;
+						break; //Prevent growing too tall if colliding with solid surfaces
+					}
+				}
 
 				SpawnStack(count, style);
 
@@ -453,6 +464,7 @@ public abstract class Stactus : ModNPC, IDeathCount
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
+		npcLoot.AddCommon(ItemID.Cactus, 1, 6, 12);
 
 		if (CrossMod.Thorium.Enabled)
 		{
@@ -603,4 +615,5 @@ public abstract class Stactus : ModNPC, IDeathCount
 	}
 
 	public bool TallyDeath(NPC npc) => (npc.ModNPC as Stactus).Segment is SegmentType.Head; //Only ever tally the head
+	public bool CanPickupCoins() => Segment is SegmentType.Head; // Only the head picks up coins
 }

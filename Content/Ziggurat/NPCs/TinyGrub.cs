@@ -1,6 +1,8 @@
+using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs;
 
@@ -8,6 +10,7 @@ public class TinyGrub : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.CountsAsCritter[Type] = true;
 	}
@@ -25,7 +28,11 @@ public class TinyGrub : ModNPC
 		NPC.knockBackResist = 0;
 		NPC.noGravity = true;
 		NPC.aiStyle = NPCAIStyleID.Butterfly;
+
+		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 
 	public override void AI()
 	{
@@ -42,11 +49,11 @@ public class TinyGrub : ModNPC
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		for (int k = 0; k < 3; k++)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GreenBlood, hit.HitDirection, -1f, 0, default, 1f);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.BlueMoss, hit.HitDirection, -1f, 0, default, 1f);
 
 		if (NPC.life <= 0 && !Main.dedServ)
 			for (int k = 0; k < 10; k++)
-				Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GreenBlood, hit.HitDirection, -1f, 0, default, 1f);
+				Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.BlueMoss, hit.HitDirection, -1f, 0, default, 1f);
 	}
 
 	public override void FindFrame(int frameHeight)

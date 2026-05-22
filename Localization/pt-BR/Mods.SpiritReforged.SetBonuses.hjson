@@ -21,20 +21,20 @@ Marksman:
 	Enquanto concentrado, seu próximo ataque será um golpe crítico e causará mais dano  
 	A concentração é interrompida quando você é atingido, mas recarrega mais rápido quando está parado  
 	'''
-/* Wayfarer:
+Wayfarer:
 	'''
-	Slain enemies drop more coins
-	Breaking pots grants a movement speed buff
-	Mining ore grants a mining speed buff
-	''' */
-/* Granite:
+	Inimigos derrotados deixam cair mais moedas
+	   Quebrar vasos concede um bônus de velocidade de movimento
+	   Extrair minérios concede um bônus de velocidade de mineração
 	'''
-	Double tap {0} to stomp
-	Hitting the ground releases a shockwave that scales with height
-	''' */
-/* Sundancer:
+Granite:
 	'''
-	An afterimage follows you with a half second delay
-	After using 30 mana, your next magic attack costs 0 mana and is duplicated by your afterimage
-	''' */
-// Bedouin: Double tap a direction to dash and envelop yourself in a tornado
+	Toque duas vezes {0} para esmagar
+	Atingir o chão libera uma onda de choque que escala com a altura
+	'''
+Sundancer:
+	'''
+	Uma imagem residual acompanha você com um atraso de meio segundo
+	Após usar 30 de mana, seu próximo ataque mágico custará 0 de mana e será duplicado pela sua imagem residual
+	'''
+Bedouin: Toque duas vezes em uma direção para dar um dash e se envolver em um tornado

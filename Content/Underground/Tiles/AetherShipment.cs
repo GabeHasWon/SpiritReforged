@@ -195,7 +195,10 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 
 	public void AddLoot(ILoot loot)
 	{
-		loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.AegisFruit, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
+		if (!Main.hardMode)
+			loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
+		else
+			loot.AddOneFromOptions(1, ItemID.AegisFruit, ItemID.ArcaneCrystal, ItemID.AegisCrystal, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
 
 		if (Main.expertMode || Main.masterMode)
 			loot.AddCommon(ItemID.ShimmerTorch, 1, 5, 18);

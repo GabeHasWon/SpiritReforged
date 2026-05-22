@@ -6,6 +6,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public virtual void AddItemRecipes(ModItem item)
 	{
 		int pillar = AutoContent.ItemType<RuinedSandstonePillar>();
@@ -24,11 +26,10 @@ public class RedSandstoneBrick : ModTile, IAutoloadTileItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.Sand, TileID.SandstoneBrick);
+		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), TileID.SandstoneBrick, TileID.Sand, TileID.Crimsand, TileID.Ebonsand, TileID.Pearlsand);
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 

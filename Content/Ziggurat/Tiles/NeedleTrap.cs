@@ -1,7 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -9,8 +11,26 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class NeedleTrap : ModTile, IAutoloadTileItem
 {
+	/// <summary>
+	/// Utility class solely used to run player step functionality on sp/server.
+	/// </summary>
+	public class NeedleTrapPlayer : ModPlayer
+	{
+		public override void PreUpdate()
+		{
+			var tileCoords = Player.Bottom.ToTileCoordinates16();
+			var tile = Framing.GetTileSafely(tileCoords);
+
+			if (tile.HasUnactuatedTile && tile.TileType == ModContent.TileType<NeedleTrap>())
+				ModContent.GetInstance<NeedleTrap>().HitWire(tileCoords.X, tileCoords.Y); // HitWire does nothing in mp clients
+		}
+	}
+
 	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
 	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
+
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddRecipeGroup("CopperBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()
 	{
@@ -26,24 +46,15 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
 
 		DustType = DustID.DynastyShingle_Red;
-		this.AutoItem().ResearchUnlockCount = 100;
-	}
-
-	public override void FloorVisuals(Player player)
-	{
-		if (player.whoAmI == Main.myPlayer)
-		{
-			var tileCoords = player.Bottom.ToTileCoordinates16();
-			var tile = Framing.GetTileSafely(tileCoords);
-
-			if (tile.HasUnactuatedTile && tile.TileType == Type && Wiring.CheckMech(tileCoords.X, tileCoords.Y, NeedleTrapProj.TimeLeftMax))
-				SpawnSpike(new EntitySource_TileInteraction(player, tileCoords.X, tileCoords.Y), tileCoords);
-		}
+		HitSound = SoundID.Tink;
 	}
 
 	public override bool Slope(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
+		Vector2 position = new Vector2(i, j).ToWorldCoordinates();
+
+		SoundEngine.PlaySound(SoundID.Tink with { Pitch = -0.25f }, position);
 
 		tile.Slope = tile.Slope switch
 		{
@@ -57,6 +68,9 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 
 	public override void HitWire(int i, int j) //Allow this trap to be triggered using wire in addition to being stepped on
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			return;
+		
 		if (Wiring.CheckMech(i, j, NeedleTrapProj.TimeLeftMax))
 			SpawnSpike(Wiring.GetProjectileSource(i, j), new(i, j));
 	}
@@ -67,7 +81,7 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	{
 		Vector2 position = tileCoords.ToWorldCoordinates(8, Framing.GetTileSafely(tileCoords).IsHalfBlock ? 16 : 8);
 		SlopeType type = Main.tile[tileCoords].Slope;
-		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), 30, 0, -1, (float)type);
+		Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<NeedleTrapProj>(), ModeUtils.ProjectileDamage(15, 20, 30, 60), 0, -1, (float)type);
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => TileMerger.DrawMerge(spriteBatch, i, j, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());

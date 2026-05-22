@@ -35,28 +35,63 @@ EnergizedShockwave.DisplayName: 能量冲击波
 RollingBowlder.DisplayName: 滚动巨石
 Firespike.DisplayName: 火刺
 CannonBomb.DisplayName: 炸弹大炮
-BigCannonBomb.DisplayName: "{$Mods.SpiritReforged.Projectiles.CannonBomb.DisplayName}"
-DrypowderSpray.DisplayName: "{$Mods.SpiritReforged.Items.Drypowder.DisplayName}"
+BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
 JinxArrow.DisplayName: 厄劫箭
 JinxBowMinion.DisplayName: 厄劫弓仆从
-RumExplosion.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-RumFire.DisplayName: "{$Mods.SpiritReforged.Items.ExplosiveRum.DisplayName}"
-FlarepowderDust.DisplayName: "{$Mods.SpiritReforged.Items.Flarepowder.DisplayName}"
-VexpowderBlueDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-VexpowderRedDust.DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
 EnergyImpact.DisplayName: 能量践踏
-EnergyPlunge.DisplayName: "{$Mods.SpiritReforged.Projectiles.EnergyImpact.DisplayName}"
+EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
 FingerShot.DisplayName: 手指射击
-// NeedleTrapProj.DisplayName: "{$Mods.SpiritReforged.Items.NeedleTrapItem.DisplayName}"
-// ThornballThrown.DisplayName: "{$Mods.SpiritReforged.Items.Thornball.DisplayName}"
-// ToucaneMinion.DisplayName: "{$Mods.SpiritReforged.Projectiles.ToucanMinion.DisplayName}"
-// PhysicsChain.DisplayName: Chain
-// GoldPhysicsChain.DisplayName: Gold Chain
-// CactusSpine.DisplayName: Cactus Spine
-// TinyDragonPet.DisplayName: "{$Mods.SpiritReforged.Items.TinyDragon.DisplayName}"
-// DragonFireball.DisplayName: Dragon Fireball
-// PileOfConsequencesPet.DisplayName: Consequences
-// EnergyLaser.DisplayName: Energy Laser
-// BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
-// WindBlast.DisplayName: Wind Blast
-// SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: 锁链
+GoldPhysicsChain.DisplayName: 金锁链
+CactusSpine.DisplayName: 仙人掌刺
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: 龙火球
+PileOfConsequencesPet.DisplayName: 结果
+EnergyLaser.DisplayName: 能量激光
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
+WindBlast.DisplayName: 风波
+DivebombScarab.DisplayName: 俯冲轰炸甲虫
+SwarmScarab.DisplayName: 群聚甲虫
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
+AdornedBowHeld.DisplayName: 华饰弓
+AdornedFlash.DisplayName: 华饰闪光
+AdornedArrowDeathTrail.DisplayName: 华饰箭死亡尾迹
+LocustCrookProjectile.DisplayName: 蝗虫曲柄杖
+CrookLocust.DisplayName: 蝗虫
+LocustDamageProjectile.DisplayName: 蝗虫弹幕
+LocustExplosion.DisplayName: 蝗虫爆炸
+CrookLocustGore.DisplayName: 蝗虫尸块
+RoyalKhopeshThrown.DisplayName: 皇家镰形剑
+FloatingGem.DisplayName: 浮空宝石
+BeamOLight.DisplayName: 光束
+ScarabPetProjectile.DisplayName: 迷你圣甲虫
+SandShockwavePillar.DisplayName: 沙子冲击波柱
+SandballProjectile.DisplayName: 沙球
+BabyAntlionProjectile.DisplayName: 蚁狮宝宝
+ScarabLightPet.DisplayName: 甲虫宝宝
+SoilBallProjectile.DisplayName: 土球
+TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"

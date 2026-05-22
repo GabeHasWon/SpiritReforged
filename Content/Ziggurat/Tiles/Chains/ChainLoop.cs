@@ -29,7 +29,11 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 		}
 	}
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 80);
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -46,8 +50,6 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(150, 150, 150));
 		DustType = -1;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void PostDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, Rectangle frame, Vector2 position, Color color, bool validPlacement, SpriteEffects spriteEffects)
@@ -64,14 +66,14 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 	}
 
 	/// <summary> Finds a <see cref="ChainObject"/> to be associated with this tile. </summary>
-	public virtual ChainObject Find(Point16 coords, byte segments) => new(coords, segments);
+	public virtual ChainObject CreateObject(Point16 coords, byte segments) => new(coords, segments);
 
 	public override void PlaceInWorld(int i, int j, Item item)
 	{
 		Point16 coords = new(i, j);
 		byte count = GetSegmentCount();
 
-		ChainObjectSystem.AddObject(Find(coords, count));
+		ChainObjectSystem.AddObject(CreateObject(coords, count));
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			new ChainObjectSystem.PlacementData(coords, count, Type).Send();

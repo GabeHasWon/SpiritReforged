@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Ocean.Tiles;
 
 public class DriftwoodPlatform : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 200;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<Driftwood>()).Register();
@@ -38,8 +40,6 @@ public class DriftwoodPlatform : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(179, 146, 107));
 		DustType = DustID.WoodFurniture;
 		AdjTiles = [TileID.Platforms];
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

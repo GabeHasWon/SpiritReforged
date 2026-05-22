@@ -94,23 +94,23 @@ OceanSlime: {
 }
 
 DiverZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Who knew those oxygen tanks needed to have actual oxygen in them?
-	DisplayName: Zombie
 }
 
 KelpZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Fish fear me, women fear me, men fear me, children fear me, for I am the undead.
-	DisplayName: Zombie
 }
 
 SailorZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Despite their current status, they used to run this really nice luxury cruiser you should check out sometime.
-	DisplayName: Zombie
 }
 
 TridentZombie: {
+	DisplayName: "{$NPCName.Zombie}"
 	Entry: Their trident clearly didn't do them much good in life. It's still quite pointy, so watch out.
-	DisplayName: Zombie
 }
 
 Killifish: {
@@ -129,7 +129,7 @@ Termite: {
 }
 
 SavannaSandSlime: {
-	DisplayName: Sand Slime
+	DisplayName: "{$NPCName.SandSlime}"
 	Entry: Slightly more leafy, a little less sandy, all the same danger.
 }
 
@@ -471,7 +471,7 @@ ArgonMossSlime.DisplayName: Argon Moss Slime
 HeliumMossSlime.DisplayName: Helium Moss Slime
 OganessonMossSlime.DisplayName: Oganesson Moss Slime
 RadonMossSlime.DisplayName: Radon Moss Slime
-Tumbleweed.DisplayName: Tumbleweed
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
 	DisplayName: Flamingo
@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: Gold Diving Beetle
-	Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
@@ -524,8 +524,8 @@ BrineShrimp: {
 }
 
 GoldenBrineShrimp: {
-	DisplayName: Golden Brine Shrimp
-	Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+	DisplayName: Gold Brine Shrimp
+	Entry: Golden and rare, the Gold Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }
 
 Wisp: {
@@ -540,9 +540,154 @@ DecrepitMummy: {
 
 Graverobber: {
 	DisplayName: Graverobber
-	Entry: ""
+	Entry: Their misfortune is to be hit like a pinata and for gold to rain out. It's almost as alluring as the valuables themselves...
+	HoldingLantern: When holding a lantern
 }
 
 LootBag.DisplayName: Loot Bag
+
+Scarabeus: {
+	DisplayName: Scarabeus
+	Title: Crested Idol
+	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
+	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
+}
+
+TinyGrub: {
+	DisplayName: Tiny Grub
+	Entry: Almost as full of potential as it is grossness.
+}
+
+CactusZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Of all the ways to go, dying by cacti has got to be one of the worst. Undying by cacti must also be pretty bad.
+}
+
+SunburntZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Now detesting the sun, this zombie goes about at night to prevent further damage to its rotting skin.
+}
+
+VeiledZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Dressing to beat the heat is only one part to surviving the desert. Bringing food and water is not a step that should be overlooked.
+}
+
+Cricket: {
+	DisplayName: Cricket
+	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+}
+
+GoldCricket: {
+	DisplayName: Gold Cricket
+	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+}
+
+BeetleTownPet: {
+	DisplayName: Beetle
+	Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Chitter0: *Happy chittering*
+	Chitter1: *Bug noises*
+	Chitter2: *Beetle noises*
+
+	Names: {
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Scarb
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Cannonball
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Grumpy
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Pebbles
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Spoon
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramel
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topaz
+		JewelBeetle15: Zahrah
+		Weevil0: Archibald
+		Weevil1: Boots
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Hubert
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lawrence
+		Weevil12: Lord Eggleston Esquire III
+		Weevil13: Poky
+		Weevil14: Sniffles
+		Weevil15: Winnifred
+		Maybug0: April
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Holly
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Piper
+		Maybug14: Popcorn
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Cinnamon
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Lovely
+		Ladybug8: Missy
+		Ladybug9: Pin
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Spots
+		Ladybug14: Titania
+		Ladybug15: Tulip
+	}
+}
 TinyGrub.DisplayName: Tiny Grub
 PassiveGhost.DisplayName: Passive Ghost

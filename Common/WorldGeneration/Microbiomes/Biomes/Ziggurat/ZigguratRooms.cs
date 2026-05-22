@@ -21,7 +21,7 @@ public static class ZigguratRooms
 		protected readonly Rectangle _outerBounds = bounds;
 		protected readonly RoomNoise _noise = noise;
 
-		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.Next([8, 10]), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / WorldGen.genRand.Next([8, 10]), 14);
 
 		public override void AddLinks()
 		{
@@ -294,7 +294,7 @@ public static class ZigguratRooms
 
 	public class TreasureRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / 5, 20);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / 5, 20);
 
 		public override void Create()
 		{
@@ -332,11 +332,11 @@ public static class ZigguratRooms
 			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)set.GetTileType(FurnitureSet.Types.Chest), false, 0);
 
 			if (chestIndex != -1)
-				ZigguratBiome.PopulateChest(Main.chest[chestIndex]);
+				ZigguratMicrobiome.PopulateChest(Main.chest[chestIndex]);
 
 			//Add platform furniture
 			Rectangle platformBounds = new(Bounds.X + 10, Bounds.Y, Bounds.Width - 20, Bounds.Height);
-			WorldMethods.Generate(ZigguratBiome.PlaceRandomFurniture, 5, out _, platformBounds, 500);
+			WorldMethods.Generate(ZigguratMicrobiome.PlaceRandomFurniture, 5, out _, platformBounds, 500);
 			//Fill with coin piles
 			WorldMethods.Generate(PlaceCoinPile, WorldGen.genRand.Next(3, 6), out _, Bounds, 100);
 		}
@@ -350,7 +350,7 @@ public static class ZigguratRooms
 
 	public class LibraryRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratBiome.Width / WorldGen.genRand.NextFromList(6, 8), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / WorldGen.genRand.NextFromList(6, 8), 14);
 
 		public override void Create()
 		{

@@ -40,7 +40,11 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 		return value * ((1.2f - Lighting.Brightness(x, y)) / 1.2f);
 	}
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
+	public void SetItemDefaults(ModItem item)
+	{
+		item.Item.rare = ItemRarityID.Blue;
+		item.Item.value = Item.sellPrice(gold: 1);
+	}
 
 	public override void SetStaticDefaults()
     {
@@ -54,7 +58,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-        TileObjectData.newTile.CoordinateHeights = new[] { 24 };
+        TileObjectData.newTile.CoordinateHeights = new[] { 30 };
         TileObjectData.newTile.CoordinateWidth = 22;
         TileObjectData.newTile.Origin = new Point16(0, 0);
         TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
@@ -99,8 +103,8 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, IAutoloadTileItem
 
 			if (!Main.LocalPlayer.HasBuff(BuffID.Calm))
 			{
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseBuilder.EaseCircularOut));
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
+				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
 
 				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
 				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)

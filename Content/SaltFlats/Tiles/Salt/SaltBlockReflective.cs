@@ -1,4 +1,6 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
@@ -6,9 +8,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
-using Terraria.GameContent.Events;
 using Terraria.Graphics;
-using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -84,12 +84,9 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				if (!Reflections.HighResolution)
-				{
-					//Reflections.DrawBlack(Main.instance, true);
-					spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
-				}
-
+				//Reflections.DrawBlack(Main.instance, true);
+				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
+				
 				if (Reflections.Detail > 2)
 					Reflections.DrawBackGore(Main.instance);
 			}
@@ -98,8 +95,10 @@ public class SaltBlockReflective : SaltBlock
 
 			if (Reflections.Detail > 1)
 			{
-				if (!Reflections.HighResolution)
-					spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+				if (CrossMod.Fables.Enabled)
+					CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindNonSolidTiles");
+
+				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
 				DrawOrderSystem.DrawNonsolid();
 				spriteBatch.End();
@@ -116,18 +115,21 @@ public class SaltBlockReflective : SaltBlock
 			else
 				spriteBatch.End();
 
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawbehindsolidtilesbehindbgnpcs");
+
 			if (!Main.LocalPlayer.detectCreature)
 				DrawNPCsAndProjsBehindTiles(spriteBatch);
 
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawbehindsolidtilesabovebgnpcs");
+
 			if (Reflections.Detail > 1)
 			{
-				if (!Reflections.HighResolution)
-				{
-					spriteBatch.BeginDefault();
-					spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-					DrawOrderSystem.DrawSolid();
-					spriteBatch.End();
-				}
+				spriteBatch.BeginDefault();
+				spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+				DrawOrderSystem.DrawSolid();
+				spriteBatch.End();
 
 				if (Reflections.Detail > 2)
 					Reflections.DrawTileEntities(Main.instance, true, false, false);
@@ -142,6 +144,9 @@ public class SaltBlockReflective : SaltBlock
 
 			Reflections.DrawPlayers_BehindNPCs(Main.instance);
 
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customdrawlayers.drawabovesolidtiles");
+
 			if (Reflections.Detail > 2)
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCs);
 
@@ -149,6 +154,9 @@ public class SaltBlockReflective : SaltBlock
 			Reflections.DrawNPCs(Main.instance, false);
 			Reflections.DrawCachedNPCs(Main.instance, Main.instance.DrawCacheNPCProjectiles, behindTiles: false);
 			spriteBatch.End();
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customdrawlayers.drawabovenpcs");
 
 			if (Reflections.Detail > 1)
 				SystemLoader.PostDrawTiles();
@@ -186,6 +194,7 @@ public class SaltBlockReflective : SaltBlock
 			if (Reflections.Detail > 2)
 			{
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverWiresUI, false);
+				Main.instance.DrawInfernoRings();
 			}
 
 			spriteBatch.End();
@@ -258,7 +267,7 @@ public class SaltBlockReflective : SaltBlock
 				//s.Parameters["backgroundCompositeMatrix"].SetValue(inverse);
 			}
 
-			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyColor(1f));
+			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyGradient(1f)[1].ToVector4() * Main.ColorOfTheSkies.ToVector4());
 			s.Parameters["totalHeight"].SetValue(overlayTarget.Target.Height / 255f / 6f);
 			ShaderHelpers.SetEffectMatrices(ref s);
 
@@ -274,7 +283,7 @@ public class SaltBlockReflective : SaltBlock
 		{
 			int samples = colors.Length - 1;
 
-			float areaWidth = Main.screenWidth;
+			float areaWidth = Main.screenWidth ;
 			float areaHeight = Main.screenHeight;
 			float divHeight = areaHeight / samples;
 
@@ -325,6 +334,13 @@ public class SaltBlockReflective : SaltBlock
 
 	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
 	private static SaltGridOverlay Overlay;
+
+	public override void AddItemRecipes(ModItem item)
+	{
+		base.AddItemRecipes(item);
+
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<SaltBlockDull>().AutoItemType()).AddCondition(Condition.NearWater).Register();
+	}
 
 	public override void Load()
 	{

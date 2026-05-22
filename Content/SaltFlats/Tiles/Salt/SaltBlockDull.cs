@@ -46,7 +46,7 @@ public class SaltBlockDull : SaltBlock
 
 	public override void FloorVisuals(Player player)
 	{
-		if (!Main.gamePaused && (int)player.velocity.X != 0 && Main.rand.NextBool(4))
+		if (!Main.gamePaused && (int)player.velocity.X != 0 && Main.rand.NextBool(4) && !Main.dedServ)
 		{
 			var velocity = player.velocity * 0.2f + Vector2.UnitY * -0.5f;
 			var position = player.Bottom + new Vector2(0, 6 * player.gravDir);

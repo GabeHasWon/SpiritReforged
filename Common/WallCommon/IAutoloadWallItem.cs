@@ -13,6 +13,7 @@ public interface IAutoloadWallItem
 	public string Name { get; }
 	public string Texture { get; }
 
+	public void SetStaticDefaults(ModItem item) { }
 	public void SetItemDefaults(ModItem item) { }
 	public void AddItemRecipes(ModItem item) { }
 }

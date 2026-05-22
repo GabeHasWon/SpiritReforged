@@ -139,7 +139,7 @@ public class Wheezer : ModNPC
 				}
 
 				PreNewProjectile.New(Entity.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, preSpawnAction: delegate (Projectile p)
-				{ p.scale *= 2f; });
+				{ p.scale *= 1.2f; });
 
 				NPC.NPCLoot();
 			}

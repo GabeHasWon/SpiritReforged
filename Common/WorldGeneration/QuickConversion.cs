@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Ziggurat.Biome;
 using System.Linq;
 using Terraria.DataStructures;
 
@@ -40,7 +41,7 @@ internal class QuickConversion
 					biomeCounts[BiomeType.Purity]++;
 				else if (tile.TileType is TileID.SnowBlock or TileID.IceBlock)
 					biomeCounts[BiomeType.Ice]++;
-				else if (tile.TileType is TileID.Sand or TileID.Sandstone or TileID.HardenedSand or TileID.FossilOre)
+				else if (tile.TileType is TileID.Sand or TileID.Sandstone or TileID.HardenedSand or TileID.FossilOre || ZigguratBiome.TileTypes.Contains(tile.TileType))
 					biomeCounts[BiomeType.Desert]++;
 				else if (tile.TileType is TileID.MushroomBlock or TileID.MushroomGrass or TileID.MushroomVines)
 					biomeCounts[BiomeType.Mushroom] += 3;

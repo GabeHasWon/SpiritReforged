@@ -6,12 +6,16 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class SaltPlatform : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 200;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<SaltBlockDull>()).Register();
+		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<SaltBlockReflective>()).Register();
 
 		//Allow platform items to be crafted back into base materials
 		Recipe.Create(AutoContent.ItemType<SaltBlockDull>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(AutoContent.ItemType<SaltBlockReflective>()).AddIngredient(item.Type, 2).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void SetStaticDefaults()
@@ -41,8 +45,6 @@ public class SaltPlatform : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(179, 146, 107));
 		DustType = DustID.Pearlsand;
 		AdjTiles = [TileID.Platforms];
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

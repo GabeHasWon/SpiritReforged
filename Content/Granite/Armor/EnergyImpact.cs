@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
@@ -139,7 +140,7 @@ public class EnergyPlunge : ModProjectile
 		var owner = Main.player[Projectile.owner];
 
 		float strength = Math.Max((Projectile.Center.Y - StartHeight) / 200f, 0);
-		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(50) * strength);
+		int damage = (int)(owner.GetDamage(DamageClass.Melee).ApplyTo(40) * strength);
 		float knockback = owner.GetKnockback(DamageClass.Melee).ApplyTo(5) * strength;
 
 		float strengthCapped = Math.Min(strength / 1.5f, 1);
@@ -149,9 +150,7 @@ public class EnergyPlunge : ModProjectile
 		{
 			if (Projectile.owner == Main.myPlayer)
 			{
-				var modifier = new Terraria.Graphics.CameraModifiers.PunchCameraModifier(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
-				Main.instance.CameraModifiers.Add(modifier);
-
+				ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
 				Projectile.NewProjectile(Projectile.GetSource_Death(), center, Vector2.Zero, ModContent.ProjectileType<EnergyImpact>(), damage, knockback, Projectile.owner, strengthCapped);
 			}
 

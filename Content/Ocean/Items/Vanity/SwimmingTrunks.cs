@@ -1,5 +1,3 @@
-using SpiritReforged.Content.Ocean.Items.Vanity.Towel;
-
 namespace SpiritReforged.Content.Ocean.Items.Vanity;
 
 [AutoloadEquip(EquipType.Legs)]

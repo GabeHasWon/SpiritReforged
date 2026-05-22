@@ -12,6 +12,7 @@ public class FairyProj : ModProjectile
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 4;
+
 		ProjectileID.Sets.TrailCacheLength[Type] = 15;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
 		ProjectileID.Sets.MinionShot[Type] = true;
@@ -26,6 +27,7 @@ public class FairyProj : ModProjectile
 		Projectile.timeLeft = 120;
 		Projectile.extraUpdates = 3;
 		Projectile.scale = Main.rand.NextFloat(0.7f, 0.9f);
+		Projectile.DamageType = DamageClass.Summon;
 	}
 
 	public override void AI()

@@ -45,7 +45,7 @@ namespace SpiritReforged.Common.PrimitiveRendering;
 
 	public static void GetProjection(out Matrix projection)
 	{
-		projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+		projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
 
 		/*
 		int width = Main.graphics.GraphicsDevice.Viewport.Width;

@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class Censer : ModTile, IAutoloadTileItem
 {
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 30);
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("GoldBars", 3).AddTile(TileID.Anvils).Register();
 	public override void SetStaticDefaults()
 	{
@@ -37,7 +38,9 @@ public class Censer : ModTile, IAutoloadTileItem
 		{
 			var spawn = Main.rand.NextVector2FromRectangle(hitbox);
 			float scale = Main.rand.NextFloat(0.5f, 1.5f);
-			var velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f) / 3);
+			float posHash = (hitbox.X * hitbox.Y) * 67.67f;
+
+			var velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f + posHash) / (3 + (posHash % 1f - 0.5f)));
 
 			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 60, ParticleLayer.AbovePlayer) { Color = Color.White * 0.2f });
 		}

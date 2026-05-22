@@ -34,7 +34,7 @@ public sealed class ChainObjectSystem : ModSystem
 				new PlacementData(coords, count, tileType).Send(ignoreClient: whoAmI);
 
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)
-				AddObject(loop.Find(coords, count));
+				AddObject(loop.CreateObject(coords, count));
 		}
 
 		public override void OnSend(ModPacket modPacket)
@@ -42,6 +42,39 @@ public sealed class ChainObjectSystem : ModSystem
 			modPacket.WritePoint16(_coords);
 			modPacket.Write(_segments);
 			modPacket.Write(_tileType);
+		}
+	}
+
+	internal class ModifyVelocityData : PacketData
+	{
+		private Point16 _coords;
+		private Vector2 _newVelocity;
+
+		public ModifyVelocityData()
+		{
+		}
+
+		public ModifyVelocityData(Point16 coords, Vector2 newVelocity)
+		{
+			_coords = coords;
+			_newVelocity = newVelocity;
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.WritePoint16(_coords);
+			modPacket.WriteVector2(_newVelocity);
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			_coords = reader.ReadPoint16();
+			_newVelocity = reader.ReadVector2();
+
+			ObjectByCoords[_coords].lastDelta = _newVelocity;
+
+			if (Main.netMode == NetmodeID.Server)
+				Send(-1, whoAmI);
 		}
 	}
 
@@ -65,7 +98,7 @@ public sealed class ChainObjectSystem : ModSystem
 		{
 			ChainObject chain = ObjectByCoords[coords];
 
-			if (chain.OnScreen())
+			if (Main.netMode == NetmodeID.Server || chain.OnScreen()) // Server has no screen
 				chain.Update();
 		}
 	}
@@ -104,7 +137,6 @@ public sealed class ChainObjectSystem : ModSystem
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		ObjectByCoords.Clear();
 		ushort count = reader.ReadUInt16();
 
 		for (int i = 0; i < count; i++)
@@ -113,8 +145,14 @@ public sealed class ChainObjectSystem : ModSystem
 			byte segments = reader.ReadByte();
 			ushort tileType = reader.ReadUInt16();
 
+			if (ObjectByCoords.ContainsKey(coords))
+				continue;
+
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)
-				AddObject(loop.Find(coords, segments));
+			{
+				ChainObject newChain = loop.CreateObject(coords, segments);
+				AddObject(newChain);
+			}
 		}
 	}
 
@@ -147,7 +185,7 @@ public sealed class ChainObjectSystem : ModSystem
 			int tileType = Framing.GetTileSafely(coords).TileType;
 
 			if (TileLoader.GetTile(tileType) is ChainLoop loop)
-				AddObject(loop.Find(coords, segments));
+				AddObject(loop.CreateObject(coords, segments));
 		}
 	}
 }

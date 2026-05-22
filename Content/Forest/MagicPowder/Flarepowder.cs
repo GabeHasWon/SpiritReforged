@@ -89,7 +89,7 @@ public class Flarepowder : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 14;
+		Item.damage = 11;
 		Item.DamageType = DamageClass.Magic;
 		Item.width = Item.height = 14;
 		Item.useTime = Item.useAnimation = 20;

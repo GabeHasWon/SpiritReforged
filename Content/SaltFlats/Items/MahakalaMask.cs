@@ -2,6 +2,7 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.Savanna.Items.WrithingSticks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Items;
@@ -34,6 +35,12 @@ public class MahakalaMaskBlue : ModItem
 			}
 
 			AuraStrength = MathHelper.Lerp(AuraStrength, AuraStrengthTarget, 0.1f);
+		}
+
+		public override void ModifyHitNPC(NPC npc, ref NPC.HitModifiers modifiers)
+		{
+			if (hasMask && SpiritSets.IsCorrupt[npc.type])
+				modifiers.FinalDamage *= 1.2f;
 		}
 
 		public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
@@ -102,6 +109,7 @@ public class MahakalaMaskBlue : ModItem
 		}
 	}
 
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<MahakalaMaskRed>();
 	public override void SetDefaults()
 	{
 		Item.Size = new(20);
@@ -118,6 +126,7 @@ public class MahakalaMaskBlue : ModItem
 [AutoloadEquip(EquipType.Head)]
 public class MahakalaMaskRed : MahakalaMaskBlue
 {
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<MahakalaMaskBlue>();
 	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddRecipeGroup("Salt", 10).AddIngredient(ItemID.Ruby).AddTile(TileID.Anvils)
 		.Register();
 }

@@ -17,6 +17,20 @@ public class SaltBiome : ModBiome
 		return Main.dayTime ? MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}") : MusicLoader.GetMusicSlot(Mod, $"Assets/Music/{name}Night");
 	}
 
+	public override void Load()
+	{
+		On_Player.ManageSpecialBiomeVisuals += NoHeatHazeInFlats;
+	}
+
+	private void NoHeatHazeInFlats(On_Player.orig_ManageSpecialBiomeVisuals orig, Player self, string biomeName, bool inZone, Vector2 activationSource)
+	{
+		//Disable heat haze when in salt flats (and not in hell)
+		if (inZone && biomeName == "HeatDistortion" && self.InModBiome<SaltBiome>() && activationSource.Y < Main.maxTilesY - 400)
+			inZone = false;
+
+		orig(self, biomeName, inZone, activationSource);
+	}
+
 	public override void SetStaticDefaults()
 	{
 		NPCHappinessHelper.SetAverage<SaltBiome>(ModContent.GetInstance<SnowBiome>(), ModContent.GetInstance<DesertBiome>());
@@ -35,11 +49,20 @@ public class SaltBiome : ModBiome
 	public override int BiomeTorchItemType => ModContent.ItemType<SaltTorchItem>();
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 	public override string MapBackground => "SpiritReforged/Assets/Textures/Backgrounds/SaltFlatsMapBG";
+	public override string BackgroundPath => MapBackground;
 	public override int Music => GetMusic();
 
 	public override bool IsBiomeActive(Player player)
 	{
 		bool surface = player.ZoneSkyHeight || player.ZoneOverworldHeight;
 		return SceneTileCounter.SurveyByType[Type].Success && surface;
+	}
+
+	public override void OnInBiome(Player player)
+	{
+		player.ZoneDesert = true;
+		player.ZoneSnow = true;
+		player.ZoneSandstorm = false;
+		player.environmentBuffImmunityTimer = 2; // This is a timer *solely* used to provide teleport immunity to Chilled. Huh?
 	}
 }

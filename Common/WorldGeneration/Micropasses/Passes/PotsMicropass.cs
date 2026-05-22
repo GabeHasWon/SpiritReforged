@@ -128,7 +128,7 @@ internal class PotsMicropass : Micropass
 			return false;
 
 		int type = ModContent.TileType<PotionVats>();
-		var attempt = Placer.Check(x, y, type, style: Main.rand.Next([0, 3, 6])).IsClear().Place().PostPlacement<VatSlot>(out var slot);
+		var attempt = Placer.Check(x, y, type, style: Main.rand.Next([0, 3, 6])).IsClear().Place().PostPlacement(out VatSlot slot);
 
 		if (attempt.success)
 		{

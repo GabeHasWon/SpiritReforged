@@ -6,6 +6,7 @@ float reflectionHorizonHeight;
 float cloudTargetYOffset;
 float topFadeStrength;
 float shimmerAlpha;
+float2 matrixZoom;
 
 texture reflectionMaskTexture;
 sampler reflectionMask
@@ -19,6 +20,11 @@ sampler reflectionMask
 };
 matrix maskTransform;
 matrix maskReverseTransform;
+
+//Moonlight mask colors
+float moonlightMaskOpacity;
+float3 baseColor;
+float3 gradientColor;
 
 
 struct VertexShaderInput
@@ -53,6 +59,24 @@ float invlerp(float from, float to, float value)
     return saturate((value - from) / (to - from));
 }
 
+float4 alphablendPremult(float4 background, float4 foreground)
+{
+    float4 result = background * (1 - foreground.a) + foreground;
+    result.a = saturate(background.a + foreground.a);
+    return result;
+}
+
+float4 MoonlightMask(float2 maskCoords, float4 mask)
+{
+    //R value is the strength of the moonlight (top/down gradient), A is the opacity multiplier of the moonlight in general  
+    float2 textureSample = mask.ra;
+    textureSample.y *= 0.4;
+    textureSample.y *= moonlightMaskOpacity;
+    
+    float4 blueGradient = float4(baseColor + gradientColor * textureSample.r, 0);
+    return blueGradient * textureSample.g;
+}
+
 float4 MainPS(VertexShaderOutput input) : COLOR0
 {
     float2 coords = input.TextureCoordinates;
@@ -66,15 +90,17 @@ float4 MainPS(VertexShaderOutput input) : COLOR0
     
     float2 flippedCoords = coords - float2(0, cloudTargetYOffset);
     flippedCoords.y = (flippedCoords.y - reflectionLine) * -1 + reflectionLine;
-    
-    
     float4 reflectedColor = tex2D(cloudReflection, flippedCoords);
+    
     reflectedColor *= mask.a * pow(mask.r, 0.5);
+    //Fade if going past the screen bounds
+    reflectedColor *= invlerp(0, 0.2, flippedCoords.y);
     
-    //Fade the sky near the top based on a value
+    //Fade the sky near the top based on a value (Based on Moonlord being here or not etc..)
     reflectedColor *= lerp(1, invlerp(0.2, 0.48, flippedCoords.y), topFadeStrength);
-    
     reflectedColor = lerp(reflectedColor, float4(0, 0, 0, 1), shimmerAlpha);
+    
+    reflectedColor = alphablendPremult(reflectedColor, MoonlightMask(maskCoords, mask));
     
     return reflectedColor * input.Color;
 }

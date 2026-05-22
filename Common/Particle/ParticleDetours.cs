@@ -10,6 +10,7 @@ internal class ParticleDetours : ILoadable
 		On_Main.DrawNPCs += AboveNPC;
 		On_Main.DrawInfernoRings += AbovePlayer;
 		On_Main.DoDraw_Tiles_NonSolid += BelowSolid;
+		On_Main.DoDraw_Tiles_Solid += AboveSolid;
 		On_Main.DoDraw_WallsAndBlacks += BelowWall;
 	}
 
@@ -20,7 +21,7 @@ internal class ParticleDetours : ILoadable
 		if (ParticleHandler.Particles.Length != 0) //Avoid restarting the SpriteBatch if there's nothing to draw
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
 			Main.spriteBatch.RestartToDefault();
 		}
@@ -55,10 +56,31 @@ internal class ParticleDetours : ILoadable
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
 	}
 
-	private static void BelowWall(On_Main.orig_DoDraw_WallsAndBlacks orig, Main self)
+	private static void AboveSolid(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
 	{
 		orig(self);
-		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
+
+		if (ParticleHandler.Particles.Length != 0)
+		{
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+			
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveSolid);
+			Main.spriteBatch.End();
+		}
+	}
+
+	private static void BelowWall(On_Main.orig_DoDraw_WallsAndBlacks orig, Main self)
+	{
+		if (ParticleHandler.Particles.Length != 0)
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
+
+			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
+			Main.spriteBatch.RestartToDefault();
+		}
+
+		orig(self);
 	}
 
 	public void Unload() { }

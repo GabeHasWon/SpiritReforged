@@ -18,7 +18,12 @@ public class LeatherHood : ModItem
 	}
 
 	public override bool IsArmorSet(Item head, Item body, Item legs)
-		=> (head.type, body.type, legs.type) == (Type, ModContent.ItemType<LeatherPlate>(), ModContent.ItemType<LeatherLegs>());
+	{
+		return (head.type == Type || head.type == ModContent.ItemType<AncientMarksmanHood>()) &&
+			   (body.type == ModContent.ItemType<LeatherPlate>() || body.type == ModContent.ItemType<AncientMarksmanPlate>()) &&
+			   (legs.type == ModContent.ItemType<LeatherLegs>() || legs.type == ModContent.ItemType<AncientMarksmanLegs>());
+	}
+
 	public override void UpdateEquip(Player player) => player.GetCritChance(DamageClass.Generic) += 5;
 
 	public override void UpdateArmorSet(Player player)

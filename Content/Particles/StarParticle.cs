@@ -8,11 +8,13 @@ public class StarParticle : Particle
 	private Color starColor;
 	private Color bloomColor;
 	private float opacity;
+
 	private readonly float rotSpeed;
+	private readonly Action<Particle> _action;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public StarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f)
+	public StarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;
 		Velocity = velocity;
@@ -22,9 +24,10 @@ public class StarParticle : Particle
 		Scale = scale;
 		MaxTime = maxTime;
 		rotSpeed = rotationSpeed;
+		_action = extraUpdateAction;
 	}
 
-	public StarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f) : this(position, velocity, color, color, scale, maxTime, rotationSpeed) { }
+	public StarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, rotationSpeed, extraUpdateAction) { }
 
 	public override void Update()
 	{
@@ -33,6 +36,8 @@ public class StarParticle : Particle
 		Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
 		Velocity *= 0.98f;
 		Rotation += rotSpeed * (Velocity.X > 0 ? 0.07f : -0.07f);
+
+		_action?.Invoke(this);
 	}
 
 	public override void CustomDraw(SpriteBatch spriteBatch)

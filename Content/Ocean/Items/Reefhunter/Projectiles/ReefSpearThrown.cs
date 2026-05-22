@@ -121,7 +121,11 @@ public class ReefSpearThrown : ModProjectile
 		if (!HasTarget)
 			Projectile.QuickDrawTrail(Main.spriteBatch, 0.25f, drawOrigin: drawOrigin);
 
-		Projectile.QuickDraw(Main.spriteBatch, origin: drawOrigin);
+		NPC npc = Main.npc[(int)Projectile.ai[1]];
+		if (npc.active)
+			lightColor *= npc.Opacity;
+
+		Projectile.QuickDraw(Main.spriteBatch, origin: drawOrigin, drawColor : lightColor);
 		return false;
 	}
 

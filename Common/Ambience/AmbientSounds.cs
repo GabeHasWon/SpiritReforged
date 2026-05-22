@@ -1,7 +1,9 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Content.Ocean;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
+using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.Audio;
 using Terraria.GameContent.Events;
 
@@ -20,6 +22,7 @@ internal class AmbientSounds : ModSystem
 	public static readonly SoundStyle ZigguratAmbience = new(Path + nameof(ZigguratAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle SavannaDayAmbience = new(Path + nameof(SavannaDayAmbience), SoundType.Ambient) { IsLooped = true };
 	public static readonly SoundStyle SavannaNightAmbience = new(Path + nameof(SavannaNightAmbience), SoundType.Ambient) { IsLooped = true };
+	public static readonly SoundStyle SaltAmbience = new(Path + nameof(SaltAmbience), SoundType.Ambient) { IsLooped = true };
 
 	public static event Action OnUpdateAmbience;
 
@@ -34,20 +37,24 @@ internal class AmbientSounds : ModSystem
 
 		var player = Main.LocalPlayer;
 
-		bool savannaDay = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight;
-		UpdateSingleSound(SavannaDayAmbience, 0.002f, savannaDay);
+		bool inSavanna = !player.ZoneDesert && !player.InModBiome<ZigguratBiome>() && player.InModBiome<SavannaBiome>();
+		bool savannaDay = inSavanna && player.ZoneOverworldHeight && Main.dayTime;
+		UpdateSingleSound(SavannaDayAmbience, 0.002f, savannaDay, 0.9f);
 
-		bool savannaNight = player.InModBiome<SavannaBiome>() && player.ZoneOverworldHeight && !Main.dayTime;
-		UpdateSingleSound(SavannaNightAmbience, 0.002f, savannaNight);
+		bool savannaNight = inSavanna && player.ZoneOverworldHeight && !Main.dayTime;
+		UpdateSingleSound(SavannaNightAmbience, 0.002f, savannaNight, 0.9f);
 
-		bool ziggurat = player.InModBiome<Content.Ziggurat.Biome.ZigguratBiome>();
-		UpdateSingleSound(ZigguratAmbience, 0.002f, ziggurat);
+		bool ziggurat = player.InModBiome<ZigguratBiome>();
+		UpdateSingleSound(ZigguratAmbience, 0.002f, ziggurat, 0.6f);
 
 		bool nightTimeCondition = player.ZonePurity && player.ZoneOverworldHeight && !Main.dayTime && !savannaNight;
 		UpdateSingleSound(NighttimeAmbience, 0.005f, nightTimeCondition);
 
-		bool desertWind = player.ZoneDesert && player.ZoneOverworldHeight && !Sandstorm.Happening && !Main.raining && !player.ZoneBeach && !ziggurat;
+		bool desertWind = player.ZoneDesert && player.ZoneOverworldHeight && !Sandstorm.Happening && !Main.raining && !player.ZoneBeach && !ziggurat && !player.InModBiome<SaltBiome>();
 		UpdateSingleSound(DesertWind, 0.005f, desertWind);
+
+		bool inSaltFlats = player.InModBiome<SaltBiome>() && player.ZoneOverworldHeight;
+		UpdateSingleSound(SaltAmbience, 0.005f, inSaltFlats);
 
 		bool caveAmbience = player.ZoneRockLayerHeight;
 		UpdateSingleSound(CaveAmbience, 0.0005f, caveAmbience);
@@ -64,17 +71,18 @@ internal class AmbientSounds : ModSystem
 		if (condition)
 		{
 			if (!SoundSlots.ContainsKey(key))
-				SoundSlots.Add(key, SoundEngine.PlaySound(style));
+				SoundSlots.Add(key, SoundEngine.PlaySound(style with { Volume = 0.05f }));
 
 			if (SoundEngine.TryGetActiveSound(SoundSlots[key], out ActiveSound sound))
 				sound.Volume = MathHelper.Lerp(sound.Volume, maxVolume, lerpFactor);
 			else
-				SoundSlots[key] = SoundEngine.PlaySound(style);
-
+				SoundSlots[key] = SoundEngine.PlaySound(style with { Volume = 0.05f });
 		}
 		else if (SoundSlots.TryGetValue(key, out var slot) && SoundEngine.TryGetActiveSound(slot, out ActiveSound sound))
 		{
-			if ((sound.Volume = MathHelper.Lerp(sound.Volume, 0, lerpFactor)) < cutoff)
+			sound.Volume = MathHelper.Lerp(sound.Volume, 0, lerpFactor);
+
+			if (sound.Volume < cutoff)
 			{
 				sound.Stop();
 				SoundSlots.Remove(key);

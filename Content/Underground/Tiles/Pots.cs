@@ -174,7 +174,7 @@ public class Pots : PotTile, ILootable
 		else if (Main.hardMode)
 			branch.Add(ItemDropRule.OneFromOptions(1, ItemID.UnholyArrow, ItemID.Grenade, (WorldGen.SavedOreTiers.Silver == TileID.Silver) ? ItemID.SilverBullet : ItemID.TungstenBullet));
 		else
-			branch.Add(DropRules.LootPoolDrop.SameStack(10, 20, 1, 1, 1, ItemID.WoodenArrow, ItemID.Shuriken));
+			branch.Add(DropRules.LootPoolDrop.SameStack(1, 10, 20, 1, 1, ItemID.WoodenArrow, ItemID.Shuriken));
 
 		branch.Add(ItemDropRule.Common(Main.hardMode ? ItemID.HealingPotion : ItemID.LesserHealingPotion));
 		branch.Add(ItemDropRule.Common((styleName == "PotsDesert") ? ItemID.ScarabBomb : ItemID.Bomb, 1, 1, 4));

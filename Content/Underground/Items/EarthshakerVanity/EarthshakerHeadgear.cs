@@ -10,7 +10,7 @@ public class EarthshakerHeadgear : ModItem
 		Item.width = 34;
 		Item.height = 26;
 		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.White;
+		Item.rare = ItemRarityID.Blue;
 		Item.vanity = true;
 	}
 }

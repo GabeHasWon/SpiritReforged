@@ -7,13 +7,13 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class AncientBooks : ModTile, IAutoloadTileItem
 {
-	public void StaticItemDefaults()
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item)
 	{
-		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 2, 3, 5));
-		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 3, 5));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(item.Type, 2, 3, 5));
+		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(item.Type, 2, 3, 5));
 
-		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Book;
-		ItemID.Sets.ShimmerTransformToItem[ItemID.Book] = Type;
+		ItemID.Sets.ShimmerTransformToItem[item.Type] = ItemID.Book;
+		ItemID.Sets.ShimmerTransformToItem[ItemID.Book] = item.Type;
 	}
 
 	public override void SetStaticDefaults()

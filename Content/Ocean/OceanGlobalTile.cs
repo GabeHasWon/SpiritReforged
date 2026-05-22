@@ -3,19 +3,24 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Ocean.NPCs.OceanSlime;
 using SpiritReforged.Content.Ocean.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
-using System.Linq;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean;
 
 public class OceanGlobalTile : GlobalTile
 {
+	private static HashSet<int> sands = [];
+	private static HashSet<int> woods = [];
+
+	public override void SetStaticDefaults()
+	{
+		sands = [TileID.Sand, TileID.Crimsand, TileID.Ebonsand, TileID.Pearlsand];
+		woods = [TileID.WoodBlock, TileID.BorealWood, TileID.Ebonwood, TileID.DynastyWood, TileID.RichMahogany, TileID.PalmWood, TileID.Shadewood,
+			TileID.WoodenBeam, AutoContent.ItemType<Driftwood>(), ModContent.TileType<Drywood>(), TileID.Pearlwood];
+	}
+
 	public override void RandomUpdate(int i, int j, int type)
 	{
-		int[] sands = [TileID.Sand, TileID.Crimsand, TileID.Ebonsand, TileID.Pearlsand]; //All valid sands
-		int[] woods = [TileID.WoodBlock, TileID.BorealWood, TileID.Ebonwood, TileID.DynastyWood, TileID.RichMahogany, TileID.PalmWood, TileID.Shadewood, TileID.WoodenBeam,
-			AutoContent.ItemType<Driftwood>(), ModContent.TileType<Drywood>(), TileID.Pearlwood];
-
 		bool inOcean = (i < Main.maxTilesX / 16 || i > Main.maxTilesX / 16 * 15) && j < (int)Main.worldSurface;
 		bool inWorldBounds = i > 40 && i < Main.maxTilesX - 40;
 		var above = Framing.GetTileSafely(i, j - 1);

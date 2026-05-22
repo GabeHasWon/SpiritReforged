@@ -17,6 +17,17 @@ public static class CollisionChecks
 		int type = Main.tile[i, j].TileType;
 		return WorldGen.SolidTile(Main.tile[i, j]) || TileID.Sets.Platforms[type];
 	}
+	public static bool SolidOnly(int i, int j)
+	{
+		Tile t = Main.tile[i, j];
+		return t.HasUnactuatedTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType] && !TileID.Sets.Platforms[t.TileType];
+	}
+
+	public static bool OnlySlopes(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.HasTile && tile.Slope != SlopeType.Solid;
+	}
 
 	/// <inheritdoc cref="Tiles(int, int, int, int, TilesDelegate)"/>
 	public static bool Tiles(Rectangle area, TilesDelegate action) => Tiles(area.X / 16, area.Y / 16, (int)((area.X + (float)area.Width) / 16f), (int)((area.Y + (float)area.Height) / 16f), action);
@@ -25,16 +36,16 @@ public static class CollisionChecks
 	public static bool Tiles(int startX, int startY, int endX, int endY, TilesDelegate action)
 	{
 		if (startX < 0)
-			return true;
+			return false;
 
 		if (endX >= Main.maxTilesX)
-			return true;
+			return false;
 
 		if (startY < 0)
-			return true;
+			return false;
 
 		if (endY >= Main.maxTilesY)
-			return true;
+			return false;
 
 		for (int i = startX; i < endX + 1; i++)
 		{

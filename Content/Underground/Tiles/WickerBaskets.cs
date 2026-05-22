@@ -69,7 +69,7 @@ public class WickerBaskets : PotTile, ILootable
 		if (CrossMod.Redemption.Enabled && CrossMod.Redemption.TryFind("Soulshake", out ModItem shake))
 			loot.AddCommon(shake.Type, 4);
 
-		loot.Add(DropRules.LootPoolDrop.SameStack(1, 1, 3, 1, 1, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit, 
+		loot.Add(DropRules.LootPoolDrop.SameStack(3, 1, 1, 1, 1, ItemID.Apple, ItemID.Apricot, ItemID.Grapefruit, 
 			ItemID.Lemon, ItemID.Peach, ItemID.Cherry, ItemID.Plum, ItemID.BlackCurrant, ItemID.BloodOrange, ItemID.Mango, 
 			ItemID.Pineapple, ItemID.Banana, ItemID.Pomegranate, ItemID.SpicyPepper, ModContent.ItemType<Caryocar>(), ModContent.ItemType<CustardApple>()));
 

@@ -1,12 +1,16 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Content.Desert.Tiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class PaleHive : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddCondition(Condition.InGraveyard).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -19,7 +23,6 @@ public class PaleHive : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(180, 180, 180));
 
 		DustType = DustID.Silk;
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
