@@ -170,12 +170,11 @@ public class EnchanterUI : AutoUIState
 			int cost = Enchanter.SpecialShop[_hovered.Type];
 			int type = ModContent.ItemType<ChromaticWax>();
 
-			if (Main.LocalPlayer.CountItem(type, cost) >= cost)
+			if (Main.LocalPlayer.CountItem(type, cost) >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
 			{
 				for (int c = 0; c < cost; c++)
 					Main.LocalPlayer.ConsumeItem(type);
 
-				_slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer));
 				GlyphItem.GlyphGlobalItem.StartAnimation(_slot.Item);
 			}
 		}
