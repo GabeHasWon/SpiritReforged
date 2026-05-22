@@ -1,26 +1,18 @@
-﻿using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
-using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public partial class Scarabeus : ModNPC
 {
-	public bool FightingDScourge
-	{
-		get => desertScourge != null;
-	}
+	public bool FightingDScourge => desertScourge != null;
 
 	public bool StandingStillWaitingToGetEatenByScourge
 	{
@@ -195,7 +187,7 @@ public partial class Scarabeus : ModNPC
 		float spawnAnimProgress = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPercent", scourgeFightManager);
 
 		NPC.Opacity = 1f;
-		Vector2 targetPosition = (Vector2)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPos", scourgeFightManager);
+		var targetPosition = (Vector2)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPos", scourgeFightManager);
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
 		NPC.behindTiles = spawnAnimProgress < 0.5f;
@@ -245,7 +237,7 @@ public partial class Scarabeus : ModNPC
 		retarget = false;
 		bool jumped = (currentFrame == new Point(0, 2) || currentFrame == new Point(0, 3)) && Profile == PhaseTwoProfile;
 		bool jumpingIntoLightbulb = (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "shouldTakeoffIntoLightbulb", scourgeFightManager);
-		float towardsFightManager = (scourgeFightManager.NPC.Center.X - NPC.Center.X) < 0 ? -1 : 1;
+		float towardsFightManager = scourgeFightManager.NPC.Center.X - NPC.Center.X < 0 ? -1 : 1;
 
 		if (!jumped)
 		{
@@ -269,8 +261,8 @@ public partial class Scarabeus : ModNPC
 				{
 					for (int i = 0; i < 20; i++)
 					{
-						Vector2 pos = NPC.Bottom;
-						pos.X += Main.rand.Next(-30, 30);
+						Vector2 pos = NPC.Bottom + new Vector2(Main.rand.Next(-30, 30), 0);
+
 						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
 						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
 					}
@@ -790,11 +782,7 @@ public partial class Scarabeus : ModNPC
 			Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), impartedVelocity * 1.5f + Vector2.UnitX * (i == 1 ? -1 : 1) * Main.rand.NextFloat(4f, 10f), Mod.Find<ModGore>("ScarabeusDuo" + i.ToString()).Type, 1f);
 
 		for (int i = 0; i < 3; i++)
-		{
-			var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), ModContent.GoreType<ScarabeusGuts>());
-			gore.position -= new Vector2(gore.Width, gore.Height) / 2;
-			gore.velocity += impartedVelocity;
-		}
+			ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f) + impartedVelocity));
 
 		for (int i = 0; i < 10; i++)
 		{
