@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	DisplayName: Сверчок
 	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
+	DisplayName: Сверчок
 }
 
 GoldCricket: {
-	DisplayName: Золотой сверчок
 	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
+	DisplayName: Золотой сверчок
 }
 
 BeetleTownPet: {
@@ -689,8 +689,6 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 }
-Cricket.DisplayName: Сверчок
-GoldCricket.DisplayName: Золотой сверчок
 
 Enchanter: {
 	// DisplayName: Enchanter

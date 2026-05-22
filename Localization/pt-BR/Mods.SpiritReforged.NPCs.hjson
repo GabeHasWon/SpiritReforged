@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	DisplayName: Grilo
 	Entry: À noite, esses pequenos bichinhos podem aparecer em vários tipos de grama. Eles são os principais responsáveis ​​pelos sons da noite.
+	DisplayName: Grilo
 }
 
 GoldCricket: {
-	DisplayName: Grilo de Ouro
 	Entry: Os moradores da cidade dizem que ver um grilo dourado traz boa sorte. Alguns podem dizer que é porque eles vendem bem, e outros dizem que não... certamente que não.
+	DisplayName: Grilo de Ouro
 }
 
 BeetleTownPet: {
@@ -689,8 +689,6 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 }
-Cricket.DisplayName: Grilo
-GoldCricket.DisplayName: Grilo de Ouro
 
 Enchanter: {
 	// DisplayName: Enchanter

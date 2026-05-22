@@ -17,6 +17,9 @@ public class ImpactLine : Particle
 	internal Vector2 _offset;
 	internal readonly float _acceleration;
 
+	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
+	public override ParticleLayer DrawLayer => Layer;
+
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null)
