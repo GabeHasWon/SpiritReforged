@@ -499,22 +499,22 @@ Grub: {
 }
 
 DesertStactus: {
-	DisplayName: Кактусеница
-	Entry: Эти кактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
+	DisplayName: Стактус
+	Entry: Эти стактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
 }
 
 CorruptStactus: {
-	DisplayName: Искажённая кактусеница
+	DisplayName: Искажённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
-	DisplayName: Багряная кактусеница
+	DisplayName: Багряный стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
-	DisplayName: Освящённая кактусеница
+	DisplayName: Освящённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Используйте любой самоцвет на [i:SpiritReforged/ScarabAltarItem] древнем алтаре в Зиккурате.
 }
 
-TinyGrub.DisplayName: Маленькая личинка
+TinyGrub: {
+	DisplayName: Маленькая личинка
+	Entry: Почти настолько же полна потенциала, насколько она отвратительна.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,6 +573,122 @@ VeiledZombie: {
 	Entry: Одеться для защиты от жары — только один из элементов выживания в пустыне. Взятие с собой еды и воды — совсем не тот шаг, который стоит опускать.
 }
 
+Cricket: {
+	DisplayName: Сверчок
+	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
+}
+
+GoldCricket: {
+	DisplayName: Золотой сверчок
+	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
+}
+
+BeetleTownPet: {
+	DisplayName: Жук
+	Entry: Милое и неуклюжие насекомое. К сожалению, обнимать их будет не очень удобно.
+	Chitter0: *Счастливое стрекотание*
+	Chitter1: *Звуки жука*
+	Chitter2: *Звуки букашки*
+
+	Names: {
+		RoyalScarab0: Лазурь
+		RoyalScarab1: Ягодка
+		RoyalScarab2: Блю
+		RoyalScarab3: Корончик
+		RoyalScarab4: Хепри
+		RoyalScarab5: Ляпис
+		RoyalScarab6: Луми
+		RoyalScarab7: Минибеус
+		RoyalScarab8: Принц
+		RoyalScarab9: Коралина
+		RoyalScarab10: Скарб
+		RoyalScarab11: Сэди
+		RoyalScarab12: Сапфир
+		RoyalScarab13: Скиппи
+		RoyalScarab14: Санни
+		RoyalScarab15: Скаб
+		DungBeetle0: Асбест
+		DungBeetle1: Кусик
+		DungBeetle2: Кирпич
+		DungBeetle3: Ядр
+		DungBeetle4: Клэй
+		DungBeetle5: Дэйв
+		DungBeetle6: Грязнуля
+		DungBeetle7: Грэг
+		DungBeetle8: Ворчун
+		DungBeetle9: Геркулес
+		DungBeetle10: Джефф
+		DungBeetle11: Лакрица
+		DungBeetle12: Галька
+		DungBeetle13: Пити
+		DungBeetle14: Сажик
+		DungBeetle15: Ложка
+		JewelBeetle0: Обри
+		JewelBeetle1: Би
+		JewelBeetle2: Бонбон
+		JewelBeetle3: Карамель
+		JewelBeetle4: Блестик
+		JewelBeetle5: Златовласка
+		JewelBeetle6: Хумус
+		JewelBeetle7: Кайли
+		JewelBeetle8: Зефирка
+		JewelBeetle9: Мина
+		JewelBeetle10: Обол
+		JewelBeetle11: Сирша
+		JewelBeetle12: Шейла
+		JewelBeetle13: Таффи
+		JewelBeetle14: Топаз
+		JewelBeetle15: Захра
+		Weevil0: Арчибальд
+		Weevil1: Сапожок
+		Weevil2: Шарлемань
+		Weevil3: Динки
+		Weevil4: Герцогин
+		Weevil5: Элеонора
+		Weevil6: Хьюберт
+		Weevil7: Икабод
+		Weevil8: Джебедия
+		Weevil9: Джонсон
+		Weevil10: Книвел
+		Weevil11: Лоуренс
+		Weevil12: Лорд Эгглстон, эсквайр III
+		Weevil13: Простачок
+		Weevil14: Шмыг
+		Weevil15: Уиннифред
+		Maybug0: Эйприл
+		Maybug1: Шарлотта
+		Maybug2: Кловер
+		Maybug3: Росинка
+		Maybug4: Диззи
+		Maybug5: Фаззи
+		Maybug6: Джиджи
+		Maybug7: Холли
+		Maybug8: Джунипер
+		Maybug9: Мэнди
+		Maybug10: Майя
+		Maybug11: Минки
+		Maybug12: Паприка
+		Maybug13: Пайпер
+		Maybug14: Попкорн
+		Maybug16: Вельвет
+		Ladybug0: Базиль
+		Ladybug1: Чача
+		Ladybug2: Синнамон
+		Ladybug3: Неженка
+		Ladybug4: Пижон
+		Ladybug5: Дива
+		Ladybug6: Леди
+		Ladybug7: Милашка
+		Ladybug8: Мисси
+		Ladybug9: Пин
+		Ladybug10: Полька
+		Ladybug11: Роза
+		Ladybug12: Скарлет
+		Ladybug13: Пятнышка
+		Ladybug14: Титания
+		Ladybug15: Тюльпан
+	}
+}
 Cricket.DisplayName: Сверчок
 GoldCricket.DisplayName: Золотой сверчок
 

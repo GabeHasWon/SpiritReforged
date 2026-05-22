@@ -11,7 +11,7 @@ public abstract class CandelabraTile : FurnitureTile
 	public override void AddItemRecipes(ModItem item)
 	{
 		if (Info.Material != ItemID.None)
-			item.CreateRecipe().AddIngredient(Info.Material, 5).AddIngredient(ItemID.Torch, 5).AddTile(TileID.WorkBenches).Register();
+			item.CreateRecipe().AddIngredient(Info.Material, 5).AddIngredient(ItemID.Torch, 3).AddTile(TileID.WorkBenches).Register();
 	}
 
 	public override void StaticDefaults()

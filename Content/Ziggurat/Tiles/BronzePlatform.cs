@@ -5,6 +5,8 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class BronzePlatform : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 200;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<BronzePlating>()).Register();
@@ -41,8 +43,6 @@ public class BronzePlatform : ModTile, IAutoloadTileItem
 		DustType = DustID.Copper;
 		AdjTiles = [TileID.Platforms];
 		HitSound = SoundID.Tink;
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

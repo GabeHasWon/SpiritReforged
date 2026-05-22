@@ -12,7 +12,7 @@ public class JellyCandle : ModItem
 		Item.CloneDefaults(ItemID.Fish);
 		Item.width = Item.height = 20;
 		Item.shoot = ModContent.ProjectileType<JellyfishPet>();
-		Item.buffType = AutoloadedPetBuff.Registered[Item.shoot];
+		Item.buffType = AutoloadedPetBuff.PetBuff[Item.shoot];
 	}
 
 	public override void UseStyle(Player player, Rectangle heldItemFrame)

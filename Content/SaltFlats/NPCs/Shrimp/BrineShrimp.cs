@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;
@@ -26,7 +27,11 @@ public class BrineShrimp : ModNPC, ItemEvents.IQuickRecipeNPC
 
 	private ref float IdleTime => ref NPC.ai[2];
 
-	public virtual void AddRecipes() => Recipe.Create(ItemID.CookedShrimp, 1).AddIngredient(this.AutoItemType(), 3).Register();
+	public virtual void AddRecipes()
+	{
+		Recipe.Create(ItemID.CookedShrimp, 1).AddIngredient(this.AutoItemType(), 3).Register();
+		Recipe.Create(ItemID.PinkDye, 1).AddIngredient(this.AutoItemType(), 1).AddTile(TileID.DyeVat).Register();
+	}
 
 	public override void SetStaticDefaults()
 	{

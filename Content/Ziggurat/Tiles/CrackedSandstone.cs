@@ -6,6 +6,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 
 public class CrackedSandstone : ModTile, IAutoloadTileItem
 {
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(ItemID.Sandstone).AddTile(TileID.HeavyWorkBench).Register();
 
 	public override void SetStaticDefaults()
@@ -17,7 +18,6 @@ public class CrackedSandstone : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 

@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Conjures a blizzard in front of you
-		Ignores 5 points of enemy Defense
+		Ignores 10 points of enemy Defense
 		'''
 }
 
@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles
+	Tooltip: Sticks to tiles and slows enemies
 }
 
 SaltBlockDullItem: {
@@ -2171,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: Osmosifier
-	Tooltip: Passively produces salt blocks when placed in water
+	Tooltip: Passively produces dull salt blocks when placed in water
 }
 
 GoldDivingBeetleItem: {
@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Mahakala Mask
-	Tooltip: Reduces damage taken from corrupt enemies
+	Tooltip: Reduces damage taken from and dealt to evil enemies
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Bronze Grate
+	DisplayName: Bronze Grate Wall
 	Tooltip: ""
 }
 
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Foreground Red Sandstone Brick Wall
-	Tooltip: ""
+	Tooltip: Displays in front of players
 }
 
 SaltPylonItem: {
@@ -2670,7 +2670,7 @@ BrineShrimpItem: {
 }
 
 GoldenBrineShrimpItem: {
-	DisplayName: Golden Brine Shrimp
+	DisplayName: Gold Brine Shrimp
 	Tooltip: ""
 }
 
@@ -2776,29 +2776,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Restored Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Restored Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Loot Bag
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'A favourite of scoundrels and miscreants everywhere'
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2883,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
-	Tooltip: ""
+	Tooltip: Allows liquids through even when closed
 }
 
 CalmingBellItem: {
@@ -2907,8 +2911,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Bronze Grate Block
-	Tooltip: ""
+	DisplayName: Bronze Grate
+	Tooltip: Allows only liquids through
 }
 
 BedouinBreastplate: {
@@ -2949,11 +2953,6 @@ CricketCageItem: {
 GoldCricketCageItem: {
 	DisplayName: Gold Cricket Cage
 	Tooltip: ""
-}
-
-ScarabPetItem: {
-	DisplayName: Scarab Food
-	Tooltip: Summons a little Scarab companion
 }
 
 CarrotCake: {
@@ -3046,6 +3045,113 @@ ScarabLightPetItem: {
 		Summons a Scarababy
 		'Eureka!'
 		'''
+}
+
+BeetleLicense: {
+	DisplayName: Beetle License
+	Tooltip:
+		'''
+		Use to adopt a beetle for your town
+		Already have a beetle?
+		Use additional licenses to activate the Pet Exchange Program!
+		Find the perfect fit for you and your beetle!
+		'''
+	LicenseUse: The license teleports away to the beetle delivery service...
+}
+
+GooeyHiveItem: {
+	DisplayName: Gooey Hive
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Honeysuckle Bud
+	Tooltip: Summons a pillbug mount
+}
+
+SandySandstoneItem: {
+	DisplayName: Sandy Sandstone
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Terracotta Tombstone
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Terracotta Grave Marker
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Terracotta Gravestone
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Terracotta Obelisk
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Drywood Tombstone
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Savanna Gravestone
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Drywood Grave Marker
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Drywood Cross Grave Marker
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Modern Obelisk
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Modern Tombscreen
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Modern Gravestone
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Modern Headstone
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Salt Headstone
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Salt Tombstone
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Salt Gravestone
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Salt Grave Marker
+	Tooltip: ""
 }
 
 ChromaticWax: {

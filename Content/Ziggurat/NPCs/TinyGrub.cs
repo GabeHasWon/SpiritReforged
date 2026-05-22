@@ -2,6 +2,7 @@ using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs;
 
@@ -9,6 +10,7 @@ public class TinyGrub : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.CountsAsCritter[Type] = true;
 	}
@@ -29,6 +31,8 @@ public class TinyGrub : ModNPC
 
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 
 	public override void AI()
 	{

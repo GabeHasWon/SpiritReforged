@@ -30,13 +30,10 @@ public partial class Scarabeus : ModNPC
 
 	private AIState SelectAttack()
 	{
-		//return AIState.Swarm;
-
 		if (!Main.dayTime || Target.dead)
 			return AIState.Despawn;
 
 		WeightedRandom<AIState> state = new();
-
 		float distanceToTargetX = Math.Abs(Target.Center.X - NPC.Center.X);
 
 		if (!phaseTwo)
@@ -60,11 +57,12 @@ public partial class Scarabeus : ModNPC
 		}
 
 		AIState selectedState = (state.elements.Count == 0) ? FindAppropriateIdleState() : state;
-		LastAttack = selectedState;
 		ShiftUpToFloorLevel();
 		NPC.velocity.Y = Math.Min(NPC.velocity.Y, 0);
+
 		if (!phaseTwo)
 			NPC.rotation = 0f;
+
 		return selectedState;
 
 		void Add(AIState element, double weight) //Adds to state and automatically avoids duplicates
@@ -72,7 +70,7 @@ public partial class Scarabeus : ModNPC
 			if (weight <= 0)
 				return;
 
-			float weightMult = LastAttack == element ? 0.1f : 1f;
+			float weightMult = (LastState == element) ? 0.1f : 1f;
 			state.Add(element, weight * weightMult);
 		}
 	}

@@ -7,14 +7,12 @@ using SpiritReforged.Common.NPCCommon.Interfaces;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
-using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Crook;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using System.IO;
 using System.Linq;
@@ -24,7 +22,6 @@ using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -106,24 +103,9 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public delegate float ScarabeusAttackDelegate(Scarabeus self, ref bool retarget);
 
-	public AIState CurrentState
-	{
-		get => (AIState)NPC.ai[0];
-		set => NPC.ai[0] = (int)value;
-	}
-
-	public ref float Counter => ref NPC.ai[1];
-	public ref float ExtraMemory => ref NPC.ai[2];
-
-	public AIState LastAttack
-	{
-		get => (AIState)NPC.ai[3];
-		set => NPC.ai[3] = (int)value;
-	}
-
 	private static float DifficultyScale => Main.masterMode ? 3 : Main.expertMode ? 2 : 0;
 
-	/// <summary> The player currently targeted by this NPC. </summary>qq
+	/// <summary> The player currently targeted by this NPC. </summary>
 	public Player Target => Main.player[NPC.target];
 
 	/// <summary> Whether this NPC should ignore platform collision. </summary>
@@ -150,8 +132,24 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		}
 	}
 
-	/// <summary> Whether the second phase has started. </summary>
-	public bool phaseTwo;
+	public AIState CurrentState
+	{
+		get => (AIState)NPC.ai[0];
+		set => NPC.ai[0] = (int)value;
+	}
+
+	public ref float Counter => ref NPC.ai[1];
+	public ref float ExtraMemory => ref NPC.ai[2];
+
+	/// <summary> The last unique state before <see cref="CurrentState"/>. </summary>
+	public AIState LastState
+	{
+		get => (AIState)NPC.ai[3];
+		set => NPC.ai[3] = (int)value;
+	}
+
+	/// <summary> Whether a state change has occured this tick. Multiplayer safe. </summary>
+	public bool ChangedState => _lastStateImmediate != CurrentState;
 
 	/// <summary> Annoyance value that increases when the player breaks line of sight with scarabeus. Makes it close in towards the player faster. </summary>
 	public float Enrage
@@ -162,13 +160,21 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	private float _enrage;
 
+	/// <summary> Used to detect state changes within a single tick. It is important to never sync this value <br/>
+	/// Especially useful for multiplayer clients for one-time effects, where <see cref="Counter"/> may have already incremented before phase logic runs for the first time. </summary>
+	private AIState _lastStateImmediate = AIState.MaxValue;
+
+	/// <summary> Whether the second phase has started. </summary>
+	public bool phaseTwo;
+
 	/// <summary> Whether this NPC should deal contact damage. Resets every frame. </summary>
 	public bool dealContactDamage = false;
 
 	/// <summary> Tracks when Scarabeus should despawn. </summary>
 	public int despawnTimer;
+	public int shakeTimer;
 
-	public int _shakeTimer;
+	private static ScarabeusAttackDelegate[] _stateAI;
 
 	public enum AIState
 	{
@@ -209,8 +215,6 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		MaxValue
 	}
-
-	private static ScarabeusAttackDelegate[] _stateAI;
 
 	public override void Load()
 	{
@@ -307,14 +311,14 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Music = 0;
 	}
 
-	public override void OnSpawn(IEntitySource source)
-	{
-		CheckDuoFightStart(source);
-	}
+	public override void OnSpawn(IEntitySource source) => CheckDuoFightStart(source);
 
 	//No journey scaling cuz we aleady scale stuff
 	private void NoJourneyScaling(NPC npc, ref float strength)
 	{
+		if (npc.type != ModContent.NPCType<Scarabeus>())
+			return;
+
 		if (strength < 1)
 			strength = MathHelper.Lerp(strength, 1, 0.5f);
 		else
@@ -330,11 +334,11 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Desert");
 
-	public override bool CheckActive() => Target.active && !Target.dead;
+	public override bool CheckActive() => !FightingDScourge && Target.active && !Target.dead;
 
 	public override bool CheckDead()
 	{
-		if (CurrentState != AIState.DeathAnim && CurrentState != AIState.DuoFightDeathAnim)
+		if (CurrentState is not AIState.DeathAnim and not AIState.DuoFightDeathAnim)
 		{
 			Counter = 0;
 			NPC.life = 1;
@@ -351,8 +355,8 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override void AI()
 	{
-		if (_shakeTimer > 0)
-			_shakeTimer--;
+		if (shakeTimer > 0)
+			shakeTimer--;
 
 		//Retarget early if we dont have a target or if scarabeus is idling
 		if (!NPC.HasValidTarget || IsIdling)
@@ -381,6 +385,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		//Retarget late if we're attacking and we need to retarget
 		if (retarget)
 			NPC.TargetClosest(false);
+
 		Counter += counterTickMultiplier;
 
 		HandleDespawn();
@@ -402,14 +407,16 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		}
 
 		if (Main.dayTime)
-			ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, (NPC.life / (float)NPC.lifeMax), true);
+			ScarabHeatHazeShaderData.HeatHazeTargetOpacity = Utils.GetLerpValue(1f, PHASE_2_HEALTH_THRESHOLD, NPC.life / (float)NPC.lifeMax, true);
+
+		_lastStateImmediate = CurrentState;
 	}
 
 	public void SetContactDamage()
 	{
 		if (CurrentState == AIState.Dig)
 			NPC.damage = currentFrame.X == 2 ? STAT_HORN_SWIPE_CONTACT_DAMAGE : STAT_DIG_EMERGE_CONTACT_DAMAGE;
-		else if (CurrentState == AIState.Roll || CurrentState == AIState.DuoFightGunkRoll)
+		else if (CurrentState is AIState.Roll or AIState.DuoFightGunkRoll)
 			NPC.damage = STAT_ROLL_CONTACT_DAMAGE;
 		else if (CurrentState == AIState.GroundPound)
 			NPC.damage = STAT_GROUNDPOUND_CONTACT_DAMAGE;
@@ -439,7 +446,9 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 				ChangeState(AIState.Despawn);
 		}
 		else
+		{
 			despawnTimer = 0;
+		}
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
@@ -448,7 +457,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 	{
 		if (CurrentState == AIState.GroundPound && NPC.velocity.Y >= 0)
 		{
-			if (NPC.ai[2] < GroundPoundBounceCount)
+			if (ExtraMemory < GroundPoundBounceCount)
 				npcHitbox.Inflate(8, 15);
 			else
 				npcHitbox.Inflate(20, 15);
@@ -466,7 +475,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			npcHitbox.X += NPC.direction * 45;
 		}
 
-		else if (CurrentState == AIState.Roll || CurrentState == AIState.DuoFightGunkRoll)
+		else if (CurrentState is AIState.Roll or AIState.DuoFightGunkRoll)
 		{
 			//Shave off the top of the hitbox when rolling to make it easier to jump over
 			npcHitbox.Y += 20;
@@ -491,24 +500,13 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		if (NPC.life <= 0 && CurrentState == AIState.DeathAnim)
 		{
-			//SoundEngine.TryGetActiveSound(wingSoundSlot, out ActiveSound sound);
-
-			//if (sound is not null && sound.IsPlaying)
-			//{
-			//	sound.Stop();
-			//wingSoundSlot = SlotId.Invalid;
-			//}
-
 			Rectangle area = new((int)NPC.Center.X - 50, (int)NPC.Center.Y - 30, 100, 60);
 
 			for (int i = 1; i < 12; i++)
 				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2.5f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 12; i++)
-			{
-				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f), ModContent.GoreType<ScarabeusGuts>());
-				gore.position -= new Vector2(gore.Width, gore.Height) / 2;
-			}
+				ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f)));
 
 			Vector2 velocity = -NPC.velocity * 0.7f;
 
@@ -533,11 +531,8 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 				});
 
 				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(1.65f) * Main.rand.NextFloat(0.8f), 0, default, Main.rand.NextFloat(1f, 2f));
-
 				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood2>(), velocity.RotatedByRandom(0.95f) * Main.rand.NextFloat(0.8f), 0, default, Main.rand.NextFloat(1f, 2f));
-
 				Dust.NewDustPerfect(pos, ModContent.DustType<ScarabeusBlood>(), velocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.8f), 50 + Main.rand.Next(100), default, 1.6f).noGravity = true;
-
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, Main.rand.NextBool() ? 2f : 0.5f).velocity *= 3f;
 			}
 
@@ -548,18 +543,16 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 				dust.noGravity = true;
 
 				Dust.NewDustDirect(area.TopLeft(), area.Width, area.Height, Main.rand.NextFromList(5, 36, 32), 0f, 0f, 100, default, 0.82f).velocity *= 2f;
-
 				Dust.NewDustPerfect(NPC.Center, ModContent.DustType<ScarabeusBlood>(), -NPC.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(2f), 50, default, 2.5f).noGravity = false;
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid"), NPC.Center);
-
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45));
+			ScreenshakeHelper.Shake(NPC.Center, Main.rand.NextVector2CircularEdge(1f, 1f), 20, 4, 45);
 		}
 	
 		if (NPC.life <= 0 && CurrentState == AIState.DuoFightDeathAnim)
 		{
-			Gore g = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center - Vector2.One * 60, -Vector2.UnitY * 0.4f, Mod.Find<ModGore>(NPC.direction == 1 ? "ScarabeusCharredFlip"  : "ScarabeusCharred").Type, 1f);
+			var g = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center - Vector2.One * 60, -Vector2.UnitY * 0.4f, Mod.Find<ModGore>(NPC.direction == 1 ? "ScarabeusCharredFlip"  : "ScarabeusCharred").Type, 1f);
 			g.behindTiles = true;
 			GoreID.Sets.DrawBehind[g.type] = true;
 			g.rotation = NPC.rotation;
@@ -589,6 +582,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 		Sandstorm.Happening = true;
 		Sandstorm.TimeLeft = 60;
+
 		if (Sandstorm.TimeLeft < 2)
 			Sandstorm.TimeLeft = 2;
 
@@ -601,31 +595,25 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Main.windSpeedTarget = 0.8f;
 	}
 
-	/*public override bool PreKill()
-	{
-		if (Main.netMode != NetmodeID.SinglePlayer)
-			NetMessage.SendData(MessageID.WorldData);
-
-		//NPC.PlayDeathSound("ScarabDeathSound");
-		return true;
-	}*/
-
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		LeadingConditionRule notExpertRule = new(new Conditions.NotExpert());
 
 		notExpertRule.OnSuccess(ItemDropRule.OneFromOptions(1, ModContent.ItemType<AdornedBow>(), ModContent.ItemType<SunStaff>(), ModContent.ItemType<RoyalKhopesh>(), ModContent.ItemType<LocustCrook>()));
 		notExpertRule.OnSuccess(ItemDropRule.FewFromOptions(2, 1, ModContent.ItemType<BedouinCowl>(), ModContent.ItemType<BedouinBreastplate>(), ModContent.ItemType<BedouinLeggings>()));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabRadio>(), 5));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<SpaceHeater>(), 8));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<IridescentDye>(), 4, 3, 3));
 		notExpertRule.OnSuccess(ItemDropRule.Common(ItemID.ScarabBomb, 1, 8, 12));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<BeetleLicense>(), 4));
+		notExpertRule.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ScarabMountItem>(), 4));
 
 		npcLoot.Add(notExpertRule);
 		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabTrophy>(), 6));
-		npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<ScarabMask>(), 7));
 		npcLoot.Add(ItemDropRule.BossBag(ModContent.ItemType<BagOScarabs>()));
 
+		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabLightPetItem>()));
 		npcLoot.Add(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<ScarabRelic>()));
 	}
 
@@ -649,7 +637,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox) => boundingBox = NPC.Hitbox;
 
-	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => (NPC.Opacity == 0) ? false : !FightingDScourge;
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => NPC.Opacity != 0 && !FightingDScourge;
 
 	public override void BossHeadSlot(ref int index)
 	{
@@ -666,10 +654,11 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public void ChangeState(AIState state, bool setIdleTime = false)
 	{
-		for (int i = 1; i < 3; i++)
-			NPC.ai[i] = 0;
-
+		Counter = 0;
+		ExtraMemory = 0;
+		LastState = CurrentState;
 		CurrentState = state;
+		
 		NPC.netUpdate = true;
 
 		if (!phaseTwo)
@@ -707,6 +696,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		writer.Write(Enrage);
 		writer.Write(scarabColorIndex);
 		writer.Write((Half)NPC.Opacity);
+
 		SyncDuoFightStuff(writer);
 	}
 
@@ -716,6 +706,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 		Enrage = reader.ReadSingle();
 		scarabColorIndex = reader.ReadInt32();
 		NPC.Opacity = (float)reader.ReadHalf();
+
 		SyncDuoFightStuff(reader);
 	}
 

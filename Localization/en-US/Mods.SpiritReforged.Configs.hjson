@@ -24,6 +24,16 @@ ReforgedClientConfig: {
 		Label: Ambient Sounds
 		Tooltip: Plays ambient sounds in specific biomes
 	}
+
+	ScreenshakeStrength: {
+		Label: Screenshake Strength
+		Tooltip: Controls how strong all of Reforged's screenshake is.
+	}
+
+	DisableWater: {
+		Label: Disable Water Visuals
+		Tooltip: Disables the Reforged water visuals.
+	}
 }
 
 OceanShape: {

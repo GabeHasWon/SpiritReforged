@@ -1,5 +1,5 @@
-﻿
-namespace SpiritReforged.Content.Desert.ScarabBoss.Dusts;
+﻿namespace SpiritReforged.Content.Desert.ScarabBoss;
+
 public class ScarabeusBlood : ModDust
 {
 	public override void SetStaticDefaults() => UpdateType = DustID.Blood;
@@ -7,7 +7,8 @@ public class ScarabeusBlood : ModDust
 
 public class ScarabeusBlood2 : ModDust
 {
-	public override string Texture => "SpiritReforged/Content/Desert/ScarabBoss/Dusts/ScarabeusBlood";
+	public override string Texture => ModContent.GetInstance<ScarabeusBlood>().Texture;
+
 	public override void OnSpawn(Dust dust)
 	{
 		dust.noGravity = false;
@@ -22,7 +23,7 @@ public class ScarabeusBlood2 : ModDust
 
 		Tile tile = Framing.GetTileSafely((int)dust.position.X / 16, (int)dust.position.Y / 16);
 
-		if (tile.HasTile && tile.BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[tile.TileType])
+		if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
 		{
 			dust.alpha += 10;
 			dust.velocity *= -0.1f;

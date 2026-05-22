@@ -58,14 +58,10 @@ DragonFireball.DisplayName: Bola de Fogo de Dragão
 PileOfConsequencesPet.DisplayName: Consequências
 EnergyLaser.DisplayName: Laser Energizado
 BangleImpact.DisplayName: "{$Mods.SpiritReforged.Projectiles.Shockwave.DisplayName}"
-SandPillar.DisplayName: Pìlar de Arenito
-SlamShockwave.DisplayName: Onda de Choque
 WindBlast.DisplayName: Jato de Vento
-ClawHitbox.DisplayName: Garra
 DivebombScarab.DisplayName: Escaravelho Mergulhador
 SwarmScarab.DisplayName: Amontoado de Besouros
 SerratedClawsHeld.DisplayName: "{$Mods.SpiritReforged.Items.SerratedClaws.DisplayName}"
-AdornedArrow.DisplayName: Flecha Ensolarada
 AdornedBowHeld.DisplayName: Flecha Ensolarada Energizada
 AdornedFlash.DisplayName: Flecha da Luz
 AdornedArrowDeathTrail.DisplayName: Trilha da Morte
@@ -83,6 +79,22 @@ SandballProjectile.DisplayName: Bola de Areia
 BabyAntlionProjectile.DisplayName: Projétil da Pequena Formiga-Leão
 ScarabLightPet.DisplayName: Escarabebê
 SoilBallProjectile.DisplayName: Bola de Tralha
+// TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+// TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+// TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+// TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+// DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+// SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+// DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+// DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+// ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+// ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+// ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+// ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+// SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+// SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+// SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+// SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
 // RadiantEnergy.DisplayName: Radiant Energy
 // SlicingGust.DisplayName: Slicing Gust
 // ZephyrWave.DisplayName: Zephyr Wave

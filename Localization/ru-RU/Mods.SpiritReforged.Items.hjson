@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Вызывает перед вами снежную бурю
-		Игнорирует 5 ед. защиты врага
+		Игнорирует 10 ед. защиты врага
 		'''
 }
 
@@ -2141,7 +2141,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Кактусовый шар
-	Tooltip: Прилипает к блокам
+	Tooltip: Прилипает к блокам и замедляет поражённых врагов
 }
 
 SaltBlockDullItem: {
@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Маска Махакалы
-	Tooltip: Снижает урон, получаемый от врагов заражений
+	Tooltip: Снижает урон, получаемый от врагов заражений, а также наносимый по ним урон
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Бронзовая решётка
+	DisplayName: Стена из бронзовой решётки
 	Tooltip: ""
 }
 
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Передняя стена из красного песчаникового кирпича
-	Tooltip: ""
+	Tooltip: Отображается перед, а не за игроком
 }
 
 SaltPylonItem: {
@@ -2674,10 +2674,10 @@ GoldenBrineShrimpItem: {
 	Tooltip: ""
 }
 
-CorruptStactusBannerItem.DisplayName: Знамя искажённой кактусеницы
-CrimsonStactusBannerItem.DisplayName: Знамя багряной кактусеницы
-DesertStactusBannerItem.DisplayName: Знамя пустынной кактусеницы
-HallowedStactusBannerItem.DisplayName: Знамя освящённой кактусеницы
+CorruptStactusBannerItem.DisplayName: Знамя искажённого стактуса
+CrimsonStactusBannerItem.DisplayName: Знамя багряного стактуса
+DesertStactusBannerItem.DisplayName: Знамя стактуса
+HallowedStactusBannerItem.DisplayName: Знамя освящённого стактуса
 
 AncientBannerItem: {
 	DisplayName: Древнее знамя
@@ -2798,7 +2798,11 @@ GraverobberBannerItem.DisplayName: Знамя расхитителя могил
 
 GiantBag: {
 	DisplayName: Большой мешок
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		«Излюбленный выбор мошенников и прохвостов со всего мира!»
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2883,7 +2887,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Бронзовая решётчатая дверь
-	Tooltip: ""
+	Tooltip: Пропускает через себя жидкости, даже если закрыта
 }
 
 CalmingBellItem: {
@@ -2907,8 +2911,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Блок бронзовой решётки
-	Tooltip: ""
+	DisplayName: Бронзовая решётка
+	Tooltip: Пропускает через себя только жидкости
 }
 
 BedouinBreastplate: {
@@ -2951,11 +2955,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Скарабейный корм
-	Tooltip: Призывает крошку-скарабея сопровождать вас
-}
-
 CarrotCake: {
 	DisplayName: Морковный торт
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -2982,7 +2981,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: Мешок с сокровищами (Скарабеус)
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3015,8 +3014,8 @@ ScarabMusicBox: {
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: Первая фаза
+		1: Вторая фаза
 	}
 }
 
@@ -3040,12 +3039,119 @@ IridescentDye: {
 }
 
 ScarabLightPetItem: {
-	DisplayName: Скарабейная лампочка
+	DisplayName: Погремушка-лампочка
 	Tooltip:
 		'''
 		Призывает Скарабейчика
 		«Эврика!»
 		'''
+}
+
+BeetleLicense: {
+	DisplayName: Жучий паспорт
+	Tooltip:
+		'''
+		Используйте, чтобы заселить в городе жука
+		Жук уже есть?
+		Используйте дополнительные паспорта для запуска программы по обмену питомцами!
+		Найдите своего идеального жука!
+		'''
+	LicenseUse: Паспорт телепортируется в жучью службу доставки...
+}
+
+GooeyHiveItem: {
+	DisplayName: Липкий улей
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Бутон жимолости
+	Tooltip: Призывает ездового жука-пилюльщика
+}
+
+SandySandstoneItem: {
+	DisplayName: Песчаный песчаник
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Терракотовая надгробная плита
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Терракотовая могильная табличка
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Терракотовая могильная плита
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Терракотовый обелиск
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Надгробная плита из сухого дерева
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Могильная плита саванны
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Могильная табличка из сухого дерева
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Могильный крест из сухого дерева
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Современный обелиск
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Современный надгробный экран
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Современная могильная плита
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Современное надгробие
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Соляное надгробие
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Соляная надгробная плита
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Соляная могильная плита
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Соляная могильная табличка
+	Tooltip: ""
 }
 
 ChromaticWax: {

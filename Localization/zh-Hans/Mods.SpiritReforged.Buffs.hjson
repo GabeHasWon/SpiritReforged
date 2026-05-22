@@ -4,7 +4,7 @@ EmpoweredSwim: {
 }
 
 MantarayBuff: {
-	DisplayName: 救援蝠鲼
+	DisplayName: 救援鳐鱼
 	Description: 迅疾如潮！
 }
 
@@ -110,7 +110,7 @@ ExplorerMine: {
 
 JinxMark: {
 	DisplayName: 厄劫标记
-	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	Description: 被厄劫弓标记
 }
 
 FlaskOfFrost_Buff: {
@@ -120,7 +120,7 @@ FlaskOfFrost_Buff: {
 
 Slowed: {
 	DisplayName: 减速
-	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+	Description: 你的动作变得迟钝
 }
 
 ToucaneMinion_Buff: {
@@ -141,6 +141,11 @@ EnlilBuff: {
 ScarabLightPetBuff: {
 	DisplayName: 甲虫宝宝
 	Description: ”它在密谋……“
+}
+
+ScarabMountBuff: {
+	DisplayName: 鼠妇坐骑
+	Description: “抓稳了！”
 }
 
 DivineStrike: {

@@ -114,7 +114,9 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 		}
 	}
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sapphire).AddTile(TileID.WorkBenches).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -127,7 +129,6 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(28, 67, 194));
 
 		DustType = DustID.Cobalt;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 

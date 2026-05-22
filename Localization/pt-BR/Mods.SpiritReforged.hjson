@@ -1,12 +1,12 @@
 Biomes: {
 	SavannaBiome: {
 		DisplayName: Savana
-		TownNPCDialogueName: a Savana
+		TownNPCDialogueName: A Savana
 	}
 
 	SaltBiome: {
 		DisplayName: Salinas
-		TownNPCDialogueName: as Salinas
+		TownNPCDialogueName: As Salinas
 	}
 
 	ZigguratBiome: {
@@ -55,6 +55,7 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: Sempre leve comida consigo. Você nunca sabe quando pode ser útil!
 	ReforgedTip1: Raramente, sabe-se que borboletas se escondem em bosques subterrâneos.
 	ReforgedTip2: Alfinetes são úteis! Verifique seu inventário de alfinetes no canto inferior esquerdo do mapa.
@@ -65,6 +66,15 @@ GameTips: {
 	ReforgedTip7: Talos Nuvem sempre crescem sob nuvens.
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
+	# Caves & Clubs
+	ReforgedTip10: Muitos vasos estão espalhadas pelas cavernas sob seus pés! Fique de olho!
+	ReforgedTip11: Os porretes oferecem dano forte e concentrado em um único alvo.
+	# Sunscorched
+	ReforgedTip12: As lendas falam de uma oferenda de joias sobre um altar antigo...
+	ReforgedTip13: Cuidado ao explorar o antigo Zigurate! Surpresas se escondem em cada cantinho.
+	ReforgedTip14: Os oásis encontrados sob as areias do deserto podem oferecer um pouco de tranquilidade bem-vinda.
+	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
+	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
 }
 
 Emotes: {
@@ -76,12 +86,12 @@ Emotes: {
 InfoDisplays: {
 	LedgerInfoDisplay: {
 		DisplayName: Livro-Razão
-		Description: Mostrando informações de preço
+		Description: Informação de venda
 	}
 
 	ScryingLensInfoDisplay: {
 		DisplayName: Visão Brilhante
-		Description: Mostrando descrições de itens do Brilhante
+		Description: Transmutações de Item
 	}
 }
 

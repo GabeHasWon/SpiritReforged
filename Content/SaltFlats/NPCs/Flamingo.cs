@@ -58,6 +58,7 @@ public class Flamingo : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		Main.npcFrameCount[Type] = 12; //Rows
 		NPCID.Sets.CountsAsCritter[Type] = true;
 	}

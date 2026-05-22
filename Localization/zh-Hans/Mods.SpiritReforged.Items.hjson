@@ -626,7 +626,7 @@ SunStaff: {
 }
 
 SavannaMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原）
+	DisplayName: 八音盒（稀树平原）
 	Tooltip: ""
 }
 
@@ -900,7 +900,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（尘暴）
+	DisplayName: 八音盒（尘暴）
 }
 
 FishLure: {
@@ -928,7 +928,7 @@ GravelItem: {
 }
 
 MagmastoneItem: {
-	DisplayName: 熔岩石
+	DisplayName: 岩浆石
 	Tooltip: ""
 }
 
@@ -987,7 +987,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		在你的前方变出暴雪
-		无视敌人5点的防御力
+		无视敌人10点的防御力
 		'''
 }
 
@@ -1223,7 +1223,7 @@ DyeCrateItem: {
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原 - 夜）
+	DisplayName: 八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
@@ -1308,7 +1308,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
 
 OceanDepthsBoxItem: {
-	DisplayName: 音乐盒（海洋深处）
+	DisplayName: 八音盒（海洋深处）
 	Tooltip: ""
 }
 
@@ -1641,10 +1641,10 @@ PotionVatsAlchemyItem: {
 }
 
 DunceCrabBannerItem.DisplayName: 笨蟹旗
-WheezerBannerItem.DisplayName: 响尾兽旗
+WheezerBannerItem.DisplayName: 息鸣螈旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽雕像
+	DisplayName: 息鸣螈雕像
 	Tooltip: ""
 }
 
@@ -1790,17 +1790,17 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	DisplayName: 异界八音盒（稀树平原 - 昼）
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	DisplayName: 异界八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（尘暴）
+	DisplayName: 异界八音盒（尘暴）
 	Tooltip: ""
 }
 
@@ -1840,7 +1840,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: 音乐盒（魂灵主界面）
+	DisplayName: 八音盒（魂灵主界面）
 	Tooltip: ""
 }
 
@@ -2141,11 +2141,11 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: 棘球
-	Tooltip: 粘在图格上
+	Tooltip: 会粘在图格上以及减速敌人
 }
 
 SaltBlockDullItem: {
-	DisplayName: 单调盐块
+	DisplayName: 暗淡盐块
 	Tooltip: ""
 }
 
@@ -2171,7 +2171,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: 渗透装置
-	Tooltip: 放置在水中时会被动生成盐块
+	Tooltip: 放置在水中时会被动生成暗淡盐块
 }
 
 GoldDivingBeetleItem: {
@@ -2301,7 +2301,7 @@ SleightOfHand: {
 }
 
 RuinedSandstonePillarItem: {
-	DisplayName: 残破沙岩柱
+	DisplayName: 废墟沙岩柱
 	Tooltip: ""
 }
 
@@ -2522,7 +2522,7 @@ TrellisTwoShadewoodItem: {
 
 ChainLoopItem: {
 	DisplayName: 链环
-	Tooltip: 放置时按上/下建可调整链条长度
+	Tooltip: 放置时按上/下键可调整链条长度
 }
 
 GoldChainLoopItem: {
@@ -2537,7 +2537,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: 摩诃迦罗面具
-	Tooltip: 降低所受到的来自腐化敌人的伤害
+	Tooltip: 降低所受到的来自邪恶敌人的伤害，并增加对邪恶敌人造成的伤害
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2581,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: 青铜格栅
+	DisplayName: 青铜格栅墙
 	Tooltip: ""
 }
 
@@ -2617,7 +2617,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: 前景赤沙岩砖墙
-	Tooltip: ""
+	Tooltip: 显示在玩家前面
 }
 
 SaltPylonItem: {
@@ -2627,12 +2627,12 @@ SaltPylonItem: {
 
 SaltNightMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩 - 夜）
+	DisplayName: 八音盒（盐滩 - 夜）
 }
 
 SaltMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩）
+	DisplayName: 八音盒（盐滩）
 }
 
 PineappleSeeds: {
@@ -2695,7 +2695,7 @@ SaltTorchItem: {
 }
 
 ZigguratMusicBoxItem: {
-	DisplayName: 音乐盒（庙塔）
+	DisplayName: 八音盒（庙塔）
 	Tooltip: ""
 }
 
@@ -2711,7 +2711,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战攻击
+	Tooltip: 定期强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -2776,29 +2776,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: 盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: 盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: 修复的盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: 修复的盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: 盗墓者旗
 
 GiantBag: {
 	DisplayName: 战利品袋
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“各地恶棍与歹徒的最爱”
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2842,7 +2846,7 @@ PaleHiveWallItem: {
 }
 
 GooBlockItem: {
-	DisplayName: 粘胶砖
+	DisplayName: 黏砖
 	Tooltip: ""
 }
 
@@ -2883,12 +2887,12 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: 青铜格栅门
-	Tooltip: ""
+	Tooltip: 允许液体通过，即便被关闭
 }
 
 CalmingBellItem: {
 	DisplayName: 宁静之铃
-	Tooltip: 右键降低刷怪率
+	Tooltip: 右键降低敌人的生成速度
 }
 
 BrownShinglesItem: {
@@ -2907,8 +2911,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: 青铜格栅块
-	Tooltip: ""
+	DisplayName: 青铜格栅
+	Tooltip: 仅允许液体通过
 }
 
 BedouinBreastplate: {
@@ -2951,11 +2955,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: 甲虫食物
-	Tooltip: 召唤一只小甲虫伙伴
-}
-
 CarrotCake: {
 	DisplayName: 胡萝卜蛋糕
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -2982,7 +2981,7 @@ AdornedBow: {
 
 BagOScarabs: {
 	DisplayName: 宝藏袋（圣甲虫）
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 ScarabMask: {
@@ -3011,12 +3010,12 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: 音乐盒（圣甲虫）
+	DisplayName: 八音盒（圣甲虫）
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: 阶段 1
+		1: 阶段 2
 	}
 }
 
@@ -3030,7 +3029,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		召唤一个哨兵
-		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
+		扔出一根曲柄杖，其会吸引蝗虫来侵扰敌人
 		'''
 }
 
@@ -3046,6 +3045,113 @@ ScarabLightPetItem: {
 		召唤一只甲虫宝宝
 		”尤里卡！“
 		'''
+}
+
+BeetleLicense: {
+	DisplayName: 甲虫许可证
+	Tooltip:
+		'''
+		用于为城镇领养一只甲虫
+		已经养了甲虫？
+		再用一张许可证可以激活宠物交换计划！
+		找到最搭你的甲虫！
+		'''
+	LicenseUse: 发送许可证给甲虫运送服务站……
+}
+
+GooeyHiveItem: {
+	DisplayName: 黏糊蜂巢
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: 忍冬花蕾
+	Tooltip: 召唤一只鼠妇坐骑
+}
+
+SandySandstoneItem: {
+	DisplayName: 砂质沙岩
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: 赤陶墓石
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: 赤陶墓石碑
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: 赤陶墓碑
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: 赤陶方尖碑
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: 干木墓石
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: 稀树平原墓碑
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: 干木墓石碑
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: 干木十字墓石碑
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: 现代方尖碑
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: 现代屏墓
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: 现代墓碑
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: 现代碑石
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: 盐碑石
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: 盐墓石
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: 盐墓碑
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: 盐墓石碑
+	Tooltip: ""
 }
 
 ChromaticWax: {

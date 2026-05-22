@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
@@ -167,6 +166,7 @@ public partial class Scarabeus : ModNPC
 		if (NPC.Opacity == 0)
 			return false;
 
+		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
 		NPC.spriteDirection = NPC.direction;
 
 		//Skip all of this if ball because drawing is entirely different
@@ -220,8 +220,8 @@ public partial class Scarabeus : ModNPC
 			}
 		}
 
-		if (_shakeTimer > 0)
-			position += Main.rand.NextVector2CircularEdge(20f, 20f) * _shakeTimer / 40f;
+		if (shakeTimer > 0)
+			position += Main.rand.NextVector2CircularEdge(20f, 20f) * shakeTimer / 40f;
 
 		if (CurrentState == AIState.DeathAnim)
 			drawColor = Color.Lerp(drawColor, Color.Black, Counter / 480f);
@@ -243,7 +243,7 @@ public partial class Scarabeus : ModNPC
 
 				//Darken as its being cooked up
 				float burnProgress = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "deathAnimBurnProgress", scourgeFightManager);
-				if (burnProgress > 0 && burnProgress < 1)
+				if (burnProgress is > 0 and < 1)
 					drawColor *= 1 - burnProgress;
 			}
 
@@ -272,8 +272,6 @@ public partial class Scarabeus : ModNPC
 		else if (CurrentState == AIState.Dance)
 			DrawEmote(spriteBatch, ((NPC.direction == -1) ? NPC.TopLeft : NPC.TopRight) + new Vector2(0, (float)Math.Sin(Main.timeForVisualEffects / 30f) * 3), EmoteID.EmoteNote);
 
-		//Utils.DrawBorderString(spriteBatch, CurrentState.ToString(), position - Vector2.UnitY * 80f, Color.White); //DEBUG STATE INDICATOR
-
 		if (CurrentState is AIState.Swarm or AIState.DuoFightDeathSwarm) //Swarm lens flare
 			SwarmFXFront();
 
@@ -288,11 +286,6 @@ public partial class Scarabeus : ModNPC
 
 			if (oldFrameX != currentFrame.X)
 				currentFrame.Y = 0; //Reset
-		}
-
-		if (CurrentState == AIState.DeathAnim)
-		{
-
 		}
 
 		return false;

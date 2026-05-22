@@ -92,6 +92,8 @@ public class Magmastone : ModTile, IAutoloadTileItem
 	}
 	#endregion;
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(25).AddIngredient(ItemID.StoneBlock, 10).AddIngredient(ModContent.ItemType<MineralSlag>(), 1).AddTile(TileID.WorkBenches).Register();
@@ -111,8 +113,6 @@ public class Magmastone : ModTile, IAutoloadTileItem
 		DustType = DustID.Asphalt;
 		MineResist = .5f;
 		HitSound = SoundID.Tink;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void HitWire(int i, int j)

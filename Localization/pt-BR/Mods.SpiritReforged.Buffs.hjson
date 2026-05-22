@@ -143,6 +143,11 @@ ScarabLightPetBuff: {
 	Description: "'Ele tá tramando algo...'"
 }
 
+ScarabMountBuff: {
+	// DisplayName: Pillbug Mount
+	// Description: "'Hold on!'"
+}
+
 DivineStrike: {
 	// DisplayName: Divine Strike
 	// Description: Mods.SpiritReforged.Buffs.DivineStrike.Description

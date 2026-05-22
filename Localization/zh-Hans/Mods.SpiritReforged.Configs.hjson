@@ -24,6 +24,16 @@ ReforgedClientConfig: {
 		Label: 环境音
 		Tooltip: 在特定生物群系中播放环境音
 	}
+
+	ScreenshakeStrength: {
+		Label: 屏幕震动强度
+		Tooltip: 控制魂灵新魄屏幕震动的强度。
+	}
+
+	DisableWater: {
+		Label: 禁用水体视觉效果
+		Tooltip: 禁用魂灵新魄水体的视觉效果。
+	}
 }
 
 OceanShape: {

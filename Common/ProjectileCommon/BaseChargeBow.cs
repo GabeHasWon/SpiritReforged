@@ -189,11 +189,10 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	protected void AdjustDirection(float deviation = 0f)
 	{
 		Player player = Main.player[Projectile.owner];
-		if (Main.myPlayer == player.whoAmI)
+
+		if (Main.myPlayer == player.whoAmI && !_fired)
 		{
-			_direction = Main.MouseWorld - (player.Center - new Vector2(4, 4));
-			_direction.Normalize();
-			_direction = _direction.RotatedBy(deviation);
+			_direction = Vector2.Lerp(_direction, player.DirectionTo(Main.MouseWorld), 0.2f);
 			Projectile.netUpdate = true;
 		}
 

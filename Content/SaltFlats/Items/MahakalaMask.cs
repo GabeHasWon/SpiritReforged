@@ -37,6 +37,12 @@ public class MahakalaMaskBlue : ModItem
 			AuraStrength = MathHelper.Lerp(AuraStrength, AuraStrengthTarget, 0.1f);
 		}
 
+		public override void ModifyHitNPC(NPC npc, ref NPC.HitModifiers modifiers)
+		{
+			if (hasMask && SpiritSets.IsCorrupt[npc.type])
+				modifiers.FinalDamage *= 1.2f;
+		}
+
 		public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
 		{
 			if (hasMask && SpiritSets.IsCorrupt[npc.type])

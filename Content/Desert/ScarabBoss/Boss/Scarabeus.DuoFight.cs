@@ -2,23 +2,30 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Desert.ScarabBoss.Dusts;
-using SpiritReforged.Content.Desert.ScarabBoss.Gores;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
 public partial class Scarabeus : ModNPC
 {
-	public bool FightingDScourge
+	public bool FightingDScourge => desertScourge != null;
+
+	public bool StandingStillWaitingToGetEatenByScourge
 	{
-		get => desertScourge != null;
+		get
+		{
+			if (!FightingDScourge)
+				return false;
+
+			if (CurrentState == AIState.DuoFightDeathSwarm)
+				return true;
+
+			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
+		}
 	}
 
 	private int scourgeFightManagerIndex = -1;
@@ -44,7 +51,6 @@ public partial class Scarabeus : ModNPC
 
 	public static object HandleModCall(object[] args)
 	{
-		//???
 		if (args.Length < 2 || args[1] is not string instruction)
 			return null;
 
@@ -165,6 +171,9 @@ public partial class Scarabeus : ModNPC
 	#region Spawn anim
 	public float DuoFightSpawnAnimation(ref bool retarget)
 	{
+		NPC.position -= NPC.netOffset;
+		NPC.netOffset *= 0f;
+
 		retarget = false;
 		NPC.direction = 1; //Scarab will always jump from the left
 
@@ -178,7 +187,7 @@ public partial class Scarabeus : ModNPC
 		float spawnAnimProgress = (float)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPercent", scourgeFightManager);
 
 		NPC.Opacity = 1f;
-		Vector2 targetPosition = (Vector2)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPos", scourgeFightManager);
+		var targetPosition = (Vector2)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "spawnAnimPos", scourgeFightManager);
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
 		NPC.behindTiles = spawnAnimProgress < 0.5f;
@@ -228,7 +237,7 @@ public partial class Scarabeus : ModNPC
 		retarget = false;
 		bool jumped = (currentFrame == new Point(0, 2) || currentFrame == new Point(0, 3)) && Profile == PhaseTwoProfile;
 		bool jumpingIntoLightbulb = (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "shouldTakeoffIntoLightbulb", scourgeFightManager);
-		float towardsFightManager = (scourgeFightManager.NPC.Center.X - NPC.Center.X) < 0 ? -1 : 1;
+		float towardsFightManager = scourgeFightManager.NPC.Center.X - NPC.Center.X < 0 ? -1 : 1;
 
 		if (!jumped)
 		{
@@ -252,8 +261,8 @@ public partial class Scarabeus : ModNPC
 				{
 					for (int i = 0; i < 20; i++)
 					{
-						Vector2 pos = NPC.Bottom;
-						pos.X += Main.rand.Next(-30, 30);
+						Vector2 pos = NPC.Bottom + new Vector2(Main.rand.Next(-30, 30), 0);
+
 						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
 						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
 					}
@@ -479,20 +488,6 @@ public partial class Scarabeus : ModNPC
 		CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "inflictScourgeMicroburn", scourgeFightManager);
 	}
 
-	public bool StandingStillWaitingToGetEatenByScourge
-	{
-		get
-		{
-			if (!FightingDScourge)
-				return false;
-
-			if (CurrentState == AIState.DuoFightDeathSwarm)
-				return true;
-
-			return (bool)CrossMod.Fables.Instance.Call("spiritCrossmod.kaiju", "swarmSitStill", scourgeFightManager);
-		}
-	}
-
 	public void DuoFightGetPukedOut(Vector2 vomitPosition, Vector2 spitTarget)
 	{
 		NPC.Center = vomitPosition;
@@ -698,7 +693,7 @@ public partial class Scarabeus : ModNPC
 	{
 		if (!Main.dedServ)
 		{
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(NPC.Center, Vector2.UnitY, 6, 5, 35));
+			ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitY, 6, 5, 35);
 			Collision.HitTiles(NPC.TopLeft, NPC.velocity, NPC.width, NPC.height + 14);
 			ScarabHeatHazeShaderData.HeatHazeIntensity = 0.7f;
 		}
@@ -787,11 +782,7 @@ public partial class Scarabeus : ModNPC
 			Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), impartedVelocity * 1.5f + Vector2.UnitX * (i == 1 ? -1 : 1) * Main.rand.NextFloat(4f, 10f), Mod.Find<ModGore>("ScarabeusDuo" + i.ToString()).Type, 1f);
 
 		for (int i = 0; i < 3; i++)
-		{
-			var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f), ModContent.GoreType<ScarabeusGuts>());
-			gore.position -= new Vector2(gore.Width, gore.Height) / 2;
-			gore.velocity += impartedVelocity;
-		}
+			ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f) + impartedVelocity));
 
 		for (int i = 0; i < 10; i++)
 		{

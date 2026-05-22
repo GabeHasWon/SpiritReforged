@@ -37,7 +37,7 @@ public class RoyalKhopeshHeld : ModProjectile
 
 		Projectile.ownerHitCheck = true;
 		Projectile.usesLocalNPCImmunity = true;
-		Projectile.localNPCHitCooldown = 25;
+		Projectile.localNPCHitCooldown = -1;
 
 		Projectile.extraUpdates = 1;
 	}

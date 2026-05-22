@@ -43,7 +43,7 @@ internal class WorldNPCFlags : ModSystem
 {
 	public static readonly Dictionary<string, bool> SpawnedToday = [];
 
-	public override void Load() => TimeUtils.JustTurnedDay += ResetAll;
+	public override void Load() => WorldSystem.JustTurnedDay += ResetAll;
 	private static void ResetAll()
 	{
 		foreach (string name in SpawnedToday.Keys)

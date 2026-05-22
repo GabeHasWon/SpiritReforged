@@ -10,7 +10,7 @@ public class SavannaCrateHardmode : ModItem
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<SavannaCrate>();
-		Item.ResearchUnlockCount = 10;
+		Item.ResearchUnlockCount = 5;
 	}
 	
 	public override void SetDefaults()

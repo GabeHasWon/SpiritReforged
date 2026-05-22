@@ -10,7 +10,10 @@ internal class GlowmaskAutoloader : ModSystem
 
 		foreach (var type in types)
 		{
-			Func<object, Color> color = AutoloadGlowmaskAttribute.GetAttributeInfo(Mod, type.GetType(), out bool autoDraw);
+			Func<object, Color> color = AutoloadGlowmaskAttribute.GetAttributeInfo(Mod, type.GetType(), out bool autoDraw, out bool forceUnset);
+
+			if (forceUnset)
+				continue;
 
 			if (type is ModNPC npc)
 			{

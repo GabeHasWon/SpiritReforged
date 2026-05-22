@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.NPCCommon;
 
 internal class StockableShopPlayer : ModPlayer
 {
-	public override void Load() => TimeUtils.JustTurnedDay += Reset;
+	public override void Load() => WorldSystem.JustTurnedDay += Reset;
 	
 	private static void Reset() => StockableShop.ResetAllStock();
 

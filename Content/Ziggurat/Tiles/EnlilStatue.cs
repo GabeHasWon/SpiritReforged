@@ -18,7 +18,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.jumpSpeedBoost += 0.8f;
+			player.jumpSpeedBoost += 2.4f;
 			player.maxFallSpeed *= 1.5f;
 			player.gravity += 0.05f;
 		}

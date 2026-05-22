@@ -433,8 +433,8 @@ DunceCrab: {
 }
 
 Wheezer: {
-	DisplayName: 响尾兽
-	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
+	DisplayName: 息鸣螈
+	Entry: 息鸣螈是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
 }
 
 WorldFrog: {
@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: 金龙虱
-	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
-TinyGrub.DisplayName: 小幼虫
+TinyGrub: {
+	DisplayName: 小幼虫
+	Entry: 其潜力跟恶心程度一样大。
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,6 +573,122 @@ VeiledZombie: {
 	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
+Cricket: {
+	DisplayName: 蟋蟀
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
+}
+
+GoldCricket: {
+	DisplayName: 金蟋蟀
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
+}
+
+BeetleTownPet: {
+	DisplayName: 甲虫
+	Entry: 虽然它们不适合用来拥抱，但笨拙的样子让它们显得十分惹人喜爱。
+	Chitter0: *快乐的叽叽声*
+	Chitter1: *虫子的噪音声*
+	Chitter2: *甲虫的噪音声*
+
+	Names: {
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Scarb
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Cannonball
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Grumpy
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Pebbles
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Spoon
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramel
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topaz
+		JewelBeetle15: Zahrah
+		Weevil0: Archibald
+		Weevil1: Boots
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Hubert
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lawrence
+		Weevil12: Lord Eggleston Esquire III
+		Weevil13: Poky
+		Weevil14: Sniffles
+		Weevil15: Winnifred
+		Maybug0: April
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Holly
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Piper
+		Maybug14: Popcorn
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Cinnamon
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Lovely
+		Ladybug8: Missy
+		Ladybug9: Pin
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Spots
+		Ladybug14: Titania
+		Ladybug15: Tulip
+	}
+}
 Cricket.DisplayName: 蟋蟀
 GoldCricket.DisplayName: 金蟋蟀
 

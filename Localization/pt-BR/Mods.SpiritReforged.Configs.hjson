@@ -24,6 +24,16 @@ ReforgedClientConfig: {
 		Label: Sons de Ambiente
 		Tooltip: Novos sons em biomas específicos
 	}
+
+	ScreenshakeStrength: {
+		Label: Tremor da tela
+		Tooltip: ""
+	}
+
+	DisableWater: {
+		// Label: Disable Water Visuals
+		// Tooltip: Disables the Reforged water visuals.
+	}
 }
 
 OceanShape: {

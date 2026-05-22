@@ -929,12 +929,12 @@ MagmastoneItem: {
 }
 
 SavannaCrateHardmode: {
-	DisplayName: Caixa de Safári
+	DisplayName: Caixote de Safári
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SavannaCrate: {
-	DisplayName: Caixa de Campos
+	DisplayName: Caixote de Campos
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -2645,7 +2645,7 @@ TinyDragon: {
 	DisplayName: Pequeno Dragão
 	Tooltip:
 		'''
-		Invoca um pequeno dragao que irá te seguir
+		Invoca um pequeno dragão que irá te seguir
 		'Último de sua espécie...'
 		'''
 }
@@ -2767,22 +2767,22 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Caixote Salgado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Caixote de Salmoura
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Caixote Salgado Restaurado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Caixote de Salmoura Restaurado
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Bandeira do Ladrão de Sepulturas
@@ -2816,19 +2816,19 @@ SaltskipperQuestFish: {
 	Description: Aquelas Salinas são bem loucas! Eu nem conseguia distinguir onde o sal terminava e a água começava! Mas quando finalmente consegui fisgar meu peixe, um peixe com uma aparência horrível simplesmente saltou da água ao meu lado e começou a respirar AR! Traga-o para mim para que eu possa passear com meu novo peixinho de estimação.
 	CatchLocation: As Salinas
 	DisplayName: Capitão do Sal
-	Tooltip: "'Caught in Salt Flats'"
+	Tooltip: "'Capturado nas Salinas'"
 }
 
 WispBannerItem.DisplayName: Bandeira do Tatá
 DecrepitMummyBannerItem.DisplayName: Bandeira da Múmia Decrépita
 
 PaleHiveItem: {
-	DisplayName: Colmeia Pálida
+	DisplayName: Urticária Pálida
 	Tooltip: ""
 }
 
 PaleHiveWallItem: {
-	DisplayName: Parede de Colmeia Pálida
+	DisplayName: Parede de Urticária Pálida
 	Tooltip: ""
 }
 
@@ -2848,7 +2848,7 @@ SaltTallGateItem: {
 }
 
 EnlilStatueItem: {
-	DisplayName: Enlil Statue
+	DisplayName: Estátua de Enlil
 	Tooltip: Aumenta a mobilidade vértical na área posicionada
 }
 
@@ -2942,11 +2942,6 @@ GoldCricketCageItem: {
 	Tooltip: ""
 }
 
-ScarabPetItem: {
-	DisplayName: Comida de Escaravelho
-	Tooltip: Invoca um pequeno companheiro escaravelho!
-}
-
 CarrotCake: {
 	DisplayName: Bolo de Cenoura
 	Tooltip: "{$BuffDescription.WellFed3}"
@@ -3006,8 +3001,8 @@ ScarabMusicBox: {
 	Tooltip: ""
 
 	Toggle: {
-		// 0: Phase One
-		// 1: Phase Two
+		0: Fase 1
+		1: Fase 2
 	}
 }
 
@@ -3021,7 +3016,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		Invoca uma sentinela
-		Lança fora um bandido que atrai gafanhotos
+		Arremesa uma lança que atrai gafanhotos
 		'''
 }
 
@@ -3037,6 +3032,113 @@ ScarabLightPetItem: {
 		Invoca um pequeno Escarabebêus!
 		'Eureca!'
 		'''
+}
+
+BeetleLicense: {
+	DisplayName: Licença para Besouro
+	Tooltip:
+		'''
+		Use para adotar um besouro na sua cidade.
+		Já tem um besouro?
+		Use licenças adicionais para ativar o Programa de Troca de Animais de Estimação! 
+		Encontre o estilo perfeito para você e seu besouro!
+		'''
+	LicenseUse: A licença se teletransporta para o serviço de entrega de besouros...
+}
+
+GooeyHiveItem: {
+	DisplayName: Urticária Gosmenta
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	// DisplayName: Honeysuckle Bud
+	// Tooltip: Summons a pillbug mount
+}
+
+SandySandstoneItem: {
+	// DisplayName: Sandy Sandstone
+	// Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	// DisplayName: Terracotta Tombstone
+	// Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	// DisplayName: Terracotta Grave Marker
+	// Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	// DisplayName: Terracotta Gravestone
+	// Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	// DisplayName: Terracotta Obelisk
+	// Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	// DisplayName: Drywood Tombstone
+	// Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	// DisplayName: Savanna Gravestone
+	// Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	// DisplayName: Drywood Grave Marker
+	// Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	// DisplayName: Drywood Cross Grave Marker
+	// Tooltip: ""
+}
+
+ModernObeliskItem: {
+	// DisplayName: Modern Obelisk
+	// Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	// DisplayName: Modern Tombscreen
+	// Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	// DisplayName: Modern Gravestone
+	// Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	// DisplayName: Modern Headstone
+	// Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	// DisplayName: Salt Headstone
+	// Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	// DisplayName: Salt Tombstone
+	// Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	// DisplayName: Salt Gravestone
+	// Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	// DisplayName: Salt Grave Marker
+	// Tooltip: ""
 }
 
 ChromaticWax: {

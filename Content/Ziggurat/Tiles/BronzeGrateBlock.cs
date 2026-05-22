@@ -22,6 +22,8 @@ public class BronzeGrateBlock : ModTile, IAutoloadTileItem
 		TileID.Sets.DrawsWalls[Type] = true;
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+		TileID.Sets.BlocksWaterDrawingBehindSelf[Type] = false;
+
 		SpiritSets.AllowsLiquid[Type] = true;
 
 		this.Merge(ModContent.TileType<BronzePlating>());

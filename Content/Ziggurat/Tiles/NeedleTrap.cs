@@ -29,6 +29,7 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
 	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
 
+	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddRecipeGroup("CopperBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()
@@ -46,7 +47,6 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 
 		DustType = DustID.DynastyShingle_Red;
 		HitSound = SoundID.Tink;
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool Slope(int i, int j)
