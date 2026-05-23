@@ -7,6 +7,7 @@ using SpiritReforged.Content.Forest.Glyphs;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.GameContent.ItemDropRules;
+using Terraria.GameContent.UI;
 
 namespace SpiritReforged.Content.Underground.NPCs.KnightBoss;
 
@@ -20,7 +21,8 @@ public class SealedKnight : ModNPC
 		Jump,
 		Mortar,
 		Dash,
-		Block
+		Block,
+		Staggered
 	}
 
 	private delegate void PatternDelegate(SealedKnight sealedKnight);
@@ -36,10 +38,14 @@ public class SealedKnight : ModNPC
 
 	public Player Target => Main.player[NPC.target];
 
+	public int shieldLife;
 	private State _lastStateImmediate;
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.TrailCacheLength[Type] = 8;
+		NPCID.Sets.TrailingMode[Type] = 0;
+
 		_patterns = new PatternDelegate[Enum.GetValues<State>().Length];
 		_patterns[(int)State.Inactive] = Inactive;
 		_patterns[(int)State.Active] = Active;
@@ -47,6 +53,7 @@ public class SealedKnight : ModNPC
 		_patterns[(int)State.Mortar] = Mortar;
 		_patterns[(int)State.Dash] = Dash;
 		_patterns[(int)State.Block] = Block;
+		_patterns[(int)State.Staggered] = Staggered;
 	}
 
 	public override void SetDefaults()
@@ -58,6 +65,7 @@ public class SealedKnight : ModNPC
 		NPC.defense = 5;
 		NPC.knockBackResist = 0;
 		NPC.boss = true;
+		NPC.BossBar = ModContent.GetInstance<KnightBossBar>();
 	}
 
 	public override void AI()
@@ -86,9 +94,7 @@ public class SealedKnight : ModNPC
 
 		CurrentState = newState;
 		Counter = 0;
-
-		if (Main.netMode == NetmodeID.Server)
-			NPC.netUpdate = true;
+		NPC.netUpdate = true;
 	}
 
 	public override void HitEffect(NPC.HitInfo hit)
@@ -112,19 +118,17 @@ public class SealedKnight : ModNPC
 		Rectangle source = NPC.frame;
 		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 drawOffset = new(11 * NPC.spriteDirection, NPC.gfxOffY + 2);
-
-		NPCID.Sets.TrailCacheLength[Type] = 8;
-		NPCID.Sets.TrailingMode[Type] = 0;
+		Color color = (shieldLife > 0) ? Color.Lerp(NPC.DrawColor(drawColor), Color.White.Additive(), EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) / 2) : NPC.DrawColor(drawColor);
 
 		for (int i = 0; i < NPCID.Sets.TrailCacheLength[Type]; i++)
 		{
-			Color trailColor = NPC.DrawColor(drawColor) * (1f - i / (NPCID.Sets.TrailCacheLength[Type] - 1f)) * 0.25f;
+			Color trailColor = color * (1f - i / (NPCID.Sets.TrailCacheLength[Type] - 1f)) * 0.25f;
 			Vector2 position = NPC.oldPos[i] - Main.screenPosition + new Vector2(NPC.width / 2, NPC.height) + drawOffset;
 
 			Main.EntitySpriteDraw(texture, position, source, trailColor, NPC.rotation, new(source.Width / 2, source.Height), NPC.scale, effects);
 		} //Draw a trail
 
-		Main.EntitySpriteDraw(texture, NPC.Bottom - screenPos + drawOffset, source, NPC.DrawColor(drawColor), NPC.rotation, new(source.Width / 2, source.Height), NPC.scale, effects);
+		Main.EntitySpriteDraw(texture, NPC.Bottom - screenPos + drawOffset, source, color, NPC.rotation, new(source.Width / 2, source.Height), NPC.scale, effects);
 
 		if (CurrentState is not State.Inactive)
 			DrawFlame(screenPos);
@@ -134,7 +138,7 @@ public class SealedKnight : ModNPC
 		return false;
 	}
 
-	private void DrawFlame(Vector2 screenPos)
+	public void DrawFlame(Vector2 screenPos)
 	{
 		Texture2D texture = TextureAssets.Flames[0].Value;
 		Rectangle source = new(22, 0, 22, 22);
@@ -146,9 +150,34 @@ public class SealedKnight : ModNPC
 		}
 	}
 
-	public override void SendExtraAI(BinaryWriter writer) => writer.Write((byte)CurrentState);
+	public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers) => ModifyHit(projectile.damage, ref modifiers);
 
-	public override void ReceiveExtraAI(BinaryReader reader) => ChangeState((State)reader.ReadByte());
+	public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers) => ModifyHit(item.damage, ref modifiers);
+
+	public void ModifyHit(int damage, ref NPC.HitModifiers modifiers)
+	{
+		if (shieldLife > 0)
+		{
+			if ((shieldLife -= modifiers.GetDamage(damage, false, true)) <= 0)
+				ChangeState(State.Staggered);
+
+			modifiers.FinalDamage *= 0;
+			modifiers.HideCombatText();
+			modifiers.DisableCrit();
+		}
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((byte)CurrentState);
+		writer.Write(shieldLife);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		ChangeState((State)reader.ReadByte());
+		shieldLife = reader.Read();
+	}
 
 	#region patterns
 	private static void Inactive(SealedKnight sealedKnight)
@@ -156,6 +185,7 @@ public class SealedKnight : ModNPC
 		const int activation_range = 150;
 
 		NPC npc = sealedKnight.NPC;
+		npc.TargetClosest(false);
 
 		if (npc.HasPlayerTarget && npc.DistanceSQ(Main.player[npc.target].Center) < activation_range * activation_range)
 			sealedKnight.ChangeState(State.Active);
@@ -256,7 +286,25 @@ public class SealedKnight : ModNPC
 
 	private static void Block(SealedKnight sealedKnight)
 	{
-		if (sealedKnight.Counter >= 180)
+		if (sealedKnight.ChangedState)
+			sealedKnight.shieldLife = 100;
+
+		if (sealedKnight.Counter++ >= 400)
+		{
+			sealedKnight.ChangeState(State.Active);
+			sealedKnight.shieldLife = 0;
+		}
+	}
+
+	private static void Staggered(SealedKnight sealedKnight)
+	{
+		const int duration = 160;
+		NPC npc = sealedKnight.NPC;
+
+		if (sealedKnight.ChangedState && Main.netMode != NetmodeID.MultiplayerClient)
+			npc.Emote(duration, EmoteID.EmotionCry, new(npc));
+
+		if (sealedKnight.Counter++ >= duration)
 			sealedKnight.ChangeState(State.Active);
 	}
 	#endregion
