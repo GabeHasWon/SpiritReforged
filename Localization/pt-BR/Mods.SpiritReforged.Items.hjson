@@ -3245,7 +3245,8 @@ EnchantedStamp: {
 
 RageGlyph: {
 	// DisplayName: Rage Glyph
-	// Tooltip: ""
+	// Tooltip: Excessive damage is stored for your next attack
+	// Effect: Wrathful
 }
 
 CharmcasterHat: {
