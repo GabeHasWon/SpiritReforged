@@ -264,10 +264,10 @@ public class EcotoneSurfaceMapping : ModSystem
 	}
 
 	/// <summary> Maps ecotones spanning the entire world. Mapping should normally be done before finding an ecotone spawn location. </summary>
-	public static void MapEcotones() => MapEcotones(0, Main.maxTilesX);
+	public static void MapEcotones(EcotoneBase? referenceEcotone) => MapEcotones(referenceEcotone, 0, Main.maxTilesX);
 
 	/// <summary> Maps ecotones within the provided bounds. Mapping should normally be done before finding an ecotone spawn location. </summary>
-	public static void MapEcotones(int start, int end)
+	public static void MapEcotones(EcotoneBase? referenceEcotone, int start, int end)
 	{
 		int Fluff = WorldGen.beachDistance;
 
@@ -339,8 +339,11 @@ public class EcotoneSurfaceMapping : ModSystem
 		foreach (EcotoneEntry curEntry in Entries)
 			curEntry.FinalizeInformation();
 
-		if (EcotoneMapperHooks.ActuallyManuallyMapping)
+		if (EcotoneMapperHooks.ActuallyManuallyMapping && referenceEcotone is not null)
+		{
 			EcotoneMapperHooks.ReadyToContinue = false;
+			EcotoneMapperHooks.MappingEcotone = referenceEcotone;
+		}
 
 		static void MapPoint(int x, int y, EcotoneEntry entry)
 		{
@@ -350,10 +353,11 @@ public class EcotoneSurfaceMapping : ModSystem
 	}
 
 	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="predicate"/>.<para/>
-	/// Automatically remaps ecotones. </summary>
-	public static EcotoneEntry? FindWhere(Func<EcotoneEntry, bool> predicate)
+	/// Remaps ecotones by default, set <paramref name="remap"/> to false if you want to avoid this. </summary>
+	public static EcotoneEntry? FindWhere(Func<EcotoneEntry, bool> predicate, bool remap = true, EcotoneBase? referenceBase = null)
 	{
-		MapEcotones();
+		if (remap)
+			MapEcotones(referenceBase);
 
 		if (Entries.Where(predicate) is IEnumerable<EcotoneEntry> validEntries && validEntries.Any())
 		{
