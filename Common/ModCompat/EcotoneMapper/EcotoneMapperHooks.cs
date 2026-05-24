@@ -29,21 +29,31 @@ internal class EcotoneMapperHooks : ModSystem
 	/// </summary>
 	public static bool ActuallyManuallyMapping { get; internal set; }
 
+	public static EcotoneBase MappingEcotone { get; internal set; }
+
 	/// <summary>
 	/// Used to pause world generation.
 	/// </summary>
 	internal static bool ReadyToContinue = true;
 
+	public static bool AnyForced<T>() where T : EcotoneBase
+	{
+		foreach (EcotoneEntryPair pair in ForcedEcotones.Values)
+			if (pair.Ecotone is T)
+				return true;
+
+		return false;
+	}
+
 	public override void PreWorldGen() => ForcedEcotones.Clear();
+	public override void PostWorldGen() => ActuallyManuallyMapping = false;
 
 	public override void PostSetupContent()
 	{
 		if (!Enabled)
 			return;
-
-		//MethodInfo updateMapMethod = GetModSystemType().GetMethod("UpdateMap", BindingFlags.NonPublic | BindingFlags.Instance);
+		
 		MethodInfo generateWorldDetour = GetModSystemType().GetMethod("On_WorldGenerator_GenerateWorld", BindingFlags.NonPublic | BindingFlags.Instance);
-		//MonoModHooks.Modify(updateMapMethod, ModifyUpdateMap);
 		MonoModHooks.Modify(generateWorldDetour, ModifyGenerateWorld);
 
 		Type worldGenPreviewerType = ((Mod)CrossMod.WorldGenPreviewer).GetType();
@@ -53,7 +63,29 @@ internal class EcotoneMapperHooks : ModSystem
 
 		On_Main.Update += SimpleCheck;
 		On_UIWorldCreation.MakeBackAndCreatebuttons += AddMapperButton;
+		On_WorldGenerator.GenerateWorld += AddMappingChecks;
 	}
+
+	private void AddMappingChecks(On_WorldGenerator.orig_GenerateWorld orig, WorldGenerator self, GenerationProgress progress)
+	{
+		List<GenPass> passes = GetPasses(self);
+
+		for (int i = passes.Count - 2; i >= 0; --i)
+		{
+			if (passes[i] is EcotonePass pass)
+			{
+				passes.Insert(i, new PassLegacy(pass.Name + " [Re-]Mapping", (_, _) =>
+				{
+					EcotoneSurfaceMapping.MapEcotones(pass.Ecotone);
+				}));
+			}
+		}
+
+		orig(self, progress);
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_passes")]
+	public static extern ref List<GenPass> GetPasses(WorldGenerator self);
 
 	private void AddMapperButton(On_UIWorldCreation.orig_MakeBackAndCreatebuttons orig, UIWorldCreation self, UIElement outerContainer)
 	{
@@ -98,6 +130,7 @@ internal class EcotoneMapperHooks : ModSystem
 	private void FlipActuallyMapping(UIMouseEvent evt, UIElement listeningElement)
 	{
 		ActuallyManuallyMapping = !ActuallyManuallyMapping;
+		ReadyToContinue = true;
 
 		SoundEngine.PlaySound(SoundID.MenuTick);
 	}
@@ -133,13 +166,8 @@ internal class EcotoneMapperHooks : ModSystem
 	{
 		orig(self, gameTime);
 
-		KeyboardState state = Keyboard.GetState();
-
-		if (state.IsKeyDown(Keys.Escape))
-		{
+		if (Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape))
 			ReadyToContinue = true;
-			ActuallyManuallyMapping = false;
-		}
 	}
 
 	public static void ModifyGenerateWorld(ILContext context)
@@ -159,7 +187,7 @@ internal class EcotoneMapperHooks : ModSystem
 		{
 			int index = tasks.FindIndex(x => x.Name == "Clean Up Dirt");
 
-			if (index != -1)
+			if (false && index != -1)
 			{
 				tasks.Insert(index, new PassLegacy("Manual Ecotone Mapper", (progress, config) =>
 				{
