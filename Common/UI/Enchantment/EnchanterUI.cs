@@ -175,7 +175,8 @@ public class EnchanterUI : AutoUIState
 				for (int c = 0; c < cost; c++)
 					Main.LocalPlayer.ConsumeItem(type);
 
-				GlyphItem.GlyphGlobalItem.StartAnimation(_slot.Item);
+				if (_hovered.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+					glyphGlobalItem.StartAnimation();
 			}
 		}
 	}

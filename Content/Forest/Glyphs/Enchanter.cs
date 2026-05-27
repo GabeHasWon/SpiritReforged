@@ -1,20 +1,63 @@
-using SpiritReforged.Common.NPCCommon.Abstract;
-using SpiritReforged.Common.NPCCommon.Interfaces;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Content.Forest.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 [AutoloadHead]
-public class Enchanter : WorldNPC, ITravelNPC
+public class Enchanter : ModNPC
 {
+	/// <summary> Used to track whether <see cref="Enchanter"/> has spawned previously in this world. Not useable on multiplayer clients. </summary>
+	public sealed class EnchanterSystem : ModSystem
+	{
+		public bool enchanterSpawned;
+
+		public override void ClearWorld() => enchanterSpawned = false;
+
+		public override void SaveWorldData(TagCompound tag) => tag[nameof(enchanterSpawned)] = enchanterSpawned;
+		public override void LoadWorldData(TagCompound tag) => enchanterSpawned = tag.GetBool(nameof(enchanterSpawned));
+	}
+
 	/// <summary> Stores a shop value by item type. </summary>
 	public static readonly Dictionary<int, int> SpecialShop = [];
+
+	private static readonly Vector2[] TailOrigin = [
+			new(54, 32),
+			new(60, 34),
+			new(58, 28),
+			new(54, 32),
+			new(52, 32),
+			new(50, 32),
+			new(50, 32),
+			new(52, 32),
+			new(54, 32),
+			new(54, 32),
+			new(54, 32),
+			new(52, 32),
+			new(50, 32),
+			new(50, 32),
+			new(50, 32),
+			new(52, 32),
+			new(54, 32),
+			new(54, 32),
+			new(50, 30),
+			new(54, 32),
+			new(54, 32),
+			new(52, 32),
+			new(52, 32),
+			new(54, 32),
+			new(54, 32),
+			new(52, 32),
+		];
 
 	private static Profiles.StackedNPCProfile NPCProfile;
 
@@ -48,7 +91,7 @@ public class Enchanter : WorldNPC, ITravelNPC
 
 	public override void SetDefaults()
 	{
-		NPC.CloneDefaults(NPCID.SkeletonMerchant);
+		NPC.CloneDefaults(NPCID.Merchant);
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.DD2_WyvernDiveDown;
 		NPC.Size = new Vector2(30, 40);
@@ -61,6 +104,25 @@ public class Enchanter : WorldNPC, ITravelNPC
 	public override string GetChat() => Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Dialogue." + Main.rand.Next(5));
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
+
+	public override bool CanTownNPCSpawn(int numTownNPCs)
+	{
+		if (ModContent.GetInstance<EnchanterSystem>().enchanterSpawned || NPC.downedSlimeKing || NPC.downedBoss1 || Main.hardMode) //Has downed a boss or has spawned previously
+			return true;
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			foreach (Item item in player.inventory)
+			{
+				if (!item.IsAir && (item.type == ModContent.ItemType<ChromaticWax>() || item.GetGlyph() != default)) //The item is Chromatic Wax or has an enchantment
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	public override void OnSpawn(IEntitySource source) => ModContent.GetInstance<EnchanterSystem>().enchanterSpawned = true;
 
 	public override List<string> SetNPCNameList()
 	{
@@ -93,9 +155,11 @@ public class Enchanter : WorldNPC, ITravelNPC
 
 	public override void AddShops() => new NPCShop(Type)
 		.Add<EnchantedStamp>()
-		.Add<Flarepowder>()
-		.Add(ItemID.PeaceCandle)
-		.Add(ItemID.WaterCandle, Condition.Hardmode)
+		.Add<Flarepowder>(Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add<VexpowderBlue>(Condition.CorruptWorld, Condition.BloodMoonOrHardmode)
+		.Add<VexpowderRed>(Condition.CrimsonWorld, Condition.BloodMoonOrHardmode)
+		.Add(ItemID.PeaceCandle, Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add(ItemID.WaterCandle, Condition.NotBloodMoon, Condition.Hardmode)
 		.Add(ItemID.ShadowCandle, Condition.BloodMoon)
 		.Add<CharmcasterHat>()
 		.Add<CharmcasterRobe>()
@@ -133,7 +197,23 @@ public class Enchanter : WorldNPC, ITravelNPC
 		}
 	}
 
-	public bool CanSpawnTraveler() => true;
+	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D npcTexture = TextureAssets.Npc[Type].Value;
+		Texture2D flameTexture = TextureAssets.Flames[0].Value;
+
+		Rectangle npcSource = NPC.frame;
+		Rectangle flameSource = new(22, 0, 22, 22);
+		
+		int frame = NPC.frame.Y / (npcTexture.Height / Main.npcFrameCount[Type]);
+		Vector2 offset = (frame >= 0 && frame < TailOrigin.Length) ? TailOrigin[frame] : TailOrigin[0];
+
+		for (int i = 0; i < 3; i++)
+		{
+			Vector2 position = NPC.Center - npcSource.Size() / 2 - screenPos + new Vector2((NPC.spriteDirection == 1) ? (npcSource.Width - offset.X) : offset.X, offset.Y + NPC.gfxOffY) + Main.rand.NextVector2Circular(2, 2);
+			Main.EntitySpriteDraw(flameTexture, position, flameSource, NPC.DrawColor(Color.White.Additive()), NPC.rotation, flameSource.Size() / 2, NPC.scale, 0);
+		}
+	}
 
 	#region attack
 	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown) => base.TownNPCAttackCooldown(ref cooldown, ref randExtraCooldown);

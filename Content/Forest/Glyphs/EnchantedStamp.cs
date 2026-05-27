@@ -45,8 +45,8 @@ public class EnchantedStamp : ModItem
 				GlyphItem[] array = ModContent.GetContent<GlyphItem>().ToArray();
 				GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
 
-				if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
-					GlyphItem.GlyphGlobalItem.StartAnimation(item);
+				if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)) && item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+					glyphGlobalItem.StartAnimation();
 
 				return false;
 			}
