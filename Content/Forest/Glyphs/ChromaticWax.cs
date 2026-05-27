@@ -1,4 +1,5 @@
 using Humanizer;
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -164,18 +165,15 @@ public abstract class GlyphItem : ModItem
 	{
 		public override bool InstancePerEntity => true;
 
-		private static float AnimationProgress;
-		private static Item AnimationItem;
 		/// <summary> Prevents item consumption for the local client only. </summary>
 		private static bool StopItemConsumption;
 
+		private const int AnimationTimeMax = 20;
+		private int _animationTime;
+
 		public GlyphType Glyph { get; private set; }
 
-		public static void StartAnimation(Item item)
-		{
-			AnimationItem = item;
-			AnimationProgress = 1;
-		}
+		public void StartAnimation() => _animationTime = AnimationTimeMax;
 
 		public bool HasGlyph(out GlyphItem glyphItem)
 		{
@@ -215,6 +213,8 @@ public abstract class GlyphItem : ModItem
 			}
 		}
 
+		public override bool AllowPrefix(Item item, int pre) => !HasGlyph(out _);  //No glyph effect is present
+
 		public override bool CanReforge(Item item) => !HasGlyph(out _); //No glyph effect is present
 
 		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
@@ -228,7 +228,7 @@ public abstract class GlyphItem : ModItem
 				if (--Main.mouseItem.stack <= 0)
 					Main.mouseItem.TurnToAir(); //Consume the glyph on hand
 
-				StartAnimation(item);
+				StartAnimation();
 				StopItemConsumption = true;
 			}
 		}
@@ -257,6 +257,15 @@ public abstract class GlyphItem : ModItem
 		{
 			if (HasGlyph(out var glyphItem))
 				glyphItem.UpdateInWorld(item);
+
+			if (_animationTime > 0)
+				_animationTime--; //Update the application animation
+		}
+
+		public override void UpdateInventory(Item item, Player player)
+		{
+			if (_animationTime > 0)
+				_animationTime--; //Update the application animation
 		}
 
 		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -283,16 +292,15 @@ public abstract class GlyphItem : ModItem
 				DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
 					spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
 
-				spriteBatch.Draw(texture, iconPosition, null, Color.White * (1f - AnimationProgress), 0, texture.Size() / 2, iconScale, 0, 0);
+				float progress = (float)_animationTime / AnimationTimeMax;
+				spriteBatch.Draw(texture, iconPosition, null, Color.White * (1f - progress), 0, texture.Size() / 2, iconScale, 0, 0);
 
-				if (AnimationItem == item && AnimationProgress > 0)
+				if (_animationTime > 0)
 				{
 					Texture2D splashTexture = TextureAssets.Item[Glyph.ItemType].Value;
-					float splashScale = (Math.Max((AnimationProgress - 0.5f) * 2, 0) + 1) * Main.UIScale;
+					float splashScale = (Math.Max((progress - 0.5f) * 2, 0) + 1) * Main.UIScale;
 
-					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(AnimationProgress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
-
-					AnimationProgress -= 0.05f;
+					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(progress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
 				}
 			}
 		}
