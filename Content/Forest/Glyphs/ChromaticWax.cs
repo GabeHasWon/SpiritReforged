@@ -378,7 +378,7 @@ public abstract class GlyphItem : ModItem
 		Enchanter.SpecialShop.Add(Type, 3);
 	}
 
-	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type;
+	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type;
 
 	/// <summary> Called when this glyph effect is applied to <paramref name="item"/>. </summary>
 	/// <param name="item"> The item being affected. </param>
