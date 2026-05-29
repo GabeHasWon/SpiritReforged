@@ -255,7 +255,7 @@ public abstract class GlyphItem : ModItem
 		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 		{
 			if (HasGlyph(out var glyphItem))
-				glyphItem.UpdateInWorld(item);
+				glyphItem.UpdateInWorld(item, ref gravity, ref maxFallSpeed);
 
 			if (_animationTime > 0)
 				_animationTime--; //Update the application animation
@@ -421,6 +421,6 @@ public abstract class GlyphItem : ModItem
 	/// <param name="spriteBatch"> The SpriteBatch being used. </param>
 	public virtual void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters) => parameters.Draw();
 
-	public virtual void UpdateInWorld(Item item) { }
+	public virtual void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed) { }
 }
 #endregion

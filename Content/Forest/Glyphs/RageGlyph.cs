@@ -159,7 +159,7 @@ public class RageGlyph : GlyphItem
 				// don't waste overflow damage if the target was to die regardless
 				if (_overflowDamage > 0 && target.life >= _overflowDamage)
 				{
-					Main.NewText("Overflow Damage: " + _overflowDamage);
+					//Main.NewText("Overflow Damage: " + _overflowDamage);
 
 					// dont give the player more overflow damage if were using overflow damage
 					activateOverflow = false;	
@@ -308,7 +308,7 @@ public class RageGlyph : GlyphItem
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateInWorld(Item item)
+	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		if (Main.rand.NextBool(100))
 		{

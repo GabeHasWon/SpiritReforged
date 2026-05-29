@@ -154,7 +154,7 @@ public class BlazeGlyph : GlyphItem
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateInWorld(Item item)
+	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));

@@ -398,7 +398,7 @@ public class RotGlyph : GlyphItem
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	public override void UpdateInWorld(Item item)
+	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		if (Main.rand.NextBool(60))
 		{
