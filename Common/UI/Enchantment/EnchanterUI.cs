@@ -121,7 +121,7 @@ public class EnchanterUI : AutoUIState
 
 				foreach (int type in Enchanter.SpecialShop.Keys)
 				{
-					var button = new EnchantmentUI.GlyphButton(type);
+					var button = new GlyphButton(type);
 					button.OnLeftClick += OnClickGlyphButton;
 
 					_list.AddEntry(button);
@@ -156,7 +156,7 @@ public class EnchanterUI : AutoUIState
 
 	private void OnClickGlyphButton(UIMouseEvent evt, UIElement listeningElement)
 	{
-		if (ItemLoader.GetItem((listeningElement as EnchantmentUI.GlyphButton).itemType) is GlyphItem glyphItem)
+		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
 		{
 			_hovered = glyphItem;
 			AddInfoElements();

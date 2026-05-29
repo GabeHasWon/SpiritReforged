@@ -1,14 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Misc;
+using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Graphics.Renderers;
 using Terraria.UI;
 using Terraria.Utilities;
 
@@ -16,64 +15,6 @@ namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchantmentUI : AutoUIState
 {
-	public class GlyphButton : UIElement
-	{
-		public readonly int itemType;
-		private float _hoverTime;
-
-		public GlyphButton(int itemType)
-		{
-			this.itemType = itemType;
-
-			Width.Set(38, 0);
-			Height.Set(38, 0);
-		}
-
-		public override void Update(GameTime gameTime)
-		{
-			base.Update(gameTime);
-
-			if (IsMouseHovering)
-				_hoverTime = Math.Min(_hoverTime + 0.1f, 1);
-			else
-				_hoverTime = Math.Max(_hoverTime - 0.1f, 0);
-		}
-
-		public override void Draw(SpriteBatch spriteBatch)
-		{
-			Texture2D texture = TextureAssets.Item[itemType].Value;
-			Vector2 center = GetDimensions().Center() - new Vector2(0, _hoverTime * 4);
-
-			if (IsMouseHovering)
-			{
-				spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
-
-				Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
-				Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
-
-				DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
-					spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor.Additive() * 0.5f, 0, texture.Size() / 2, 1, 0, 0));
-
-				if ((int)Main.timeForVisualEffects % 80 == 0 || Main.rand.NextBool(120))
-				{
-					Vector2 velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
-
-					TerrariaParticles.OverInventory.Add(new PrettySparkleParticle()
-					{
-						LocalPosition = Main.rand.NextVector2FromRectangle(GetDimensions().ToRectangle()),
-						Scale = new Vector2(Main.rand.NextFloat(0.25f, 0.6f)),
-						ColorTint = outlineColor,
-						Velocity = velocity,
-						AccelerationPerFrame = -(velocity * 0.01f),
-						TimeToLive = 120
-					});
-				}
-			}
-
-			spriteBatch.Draw(texture, center, null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
-		}
-	}
-
 	private static readonly Asset<Texture2D> Background = DrawHelpers.RequestLocal<EnchantmentUI>("EnchantmentUI_Background", false);
 
 	private readonly List<GlyphButton> _glyphButtons = [];
@@ -87,8 +28,10 @@ public class EnchantmentUI : AutoUIState
 		VAlign = 0.6f;
 
 		_slot = new(new Item(), ItemSlot.Context.CreativeSacrifice);
-		_slot.Left = new StyleDimension(-(_slot.Width.Pixels / 2), 0.5f);
-		_slot.Top = new StyleDimension(-(_slot.Height.Pixels / 2), 0.5f);
+		_slot.Width.Set(48, 0);
+		_slot.Height.Set(48, 0);
+		_slot.Left.Set(-(_slot.Width.Pixels / 2), 0.5f);
+		_slot.Top.Set(-(_slot.Height.Pixels / 2), 0.5f);
 
 		OverrideSamplerState = SamplerState.PointClamp;
 		Append(_slot);
@@ -98,6 +41,9 @@ public class EnchantmentUI : AutoUIState
 	{
 		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
 			UISystem.SetInactive<EnchantmentUI>();
+
+		if (ContainsPoint(Main.MouseScreen))
+			Main.LocalPlayer.mouseInterface = true;
 
 		if (_slot.Item.IsAir || EnchantedWorkbench.TargetWorkbench == Point16.Zero)
 		{
@@ -117,15 +63,42 @@ public class EnchantmentUI : AutoUIState
 		base.Update(gameTime);
 	}
 
-	public override void OnDeactivate() => EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+	public override void OnDeactivate()
+	{
+		if (!_slot.Item.IsAir)
+		{
+			IEntitySource source = new EntitySource_TileInteraction(Main.LocalPlayer, EnchantedWorkbench.TargetWorkbench.X, EnchantedWorkbench.TargetWorkbench.Y);
+
+			Main.LocalPlayer.QuickSpawnItem(source, _slot.Item.Clone());
+			_slot.Item.TurnToAir();
+		}
+
+		EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Background.Value;
+		Rectangle source = texture.Frame(2, 1, 0, 0, -2);
 		Vector2 center = GetDimensions().Center();
 
-		spriteBatch.Draw(texture, center + new Vector2(0, 40), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
-		Utils.DrawBorderString(spriteBatch, "Enchant", center + new Vector2(0, 86), Main.MouseTextColorReal, 0.9f, 0.5f);
+		spriteBatch.Draw(texture, center, source, Color.White, 0, source.Size() / 2, 1, 0, 0);
+
+		if (EnchantedWorkbench.TargetWorkbench != Point16.Zero)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				source = texture.Frame(2, 1, 1, 0, -2);
+				spriteBatch.Draw(texture, center + Main.rand.NextVector2Circular(2, 2), source, Color.White.Additive(200), 0, source.Size() / 2, 1, 0, 0);
+			}
+		}
+
+		string text = "Enchant";
+		Vector2 dimensions = FontAssets.MouseText.Value.MeasureString(text);
+		dimensions.Y *= 0.75f;
+
+		CatalogueUI.DrawPanel(spriteBatch, new Rectangle((int)(center.X - dimensions.X / 2), (int)(center.Y - 40 - dimensions.Y / 2), (int)dimensions.X, (int)dimensions.Y), Color.Black * 0.5f);
+		Utils.DrawBorderString(spriteBatch, "Enchant", center - new Vector2(0, 50), Main.MouseTextColorReal, 0.9f, 0.5f);
 
 		base.Draw(spriteBatch);
 	}
@@ -137,7 +110,9 @@ public class EnchantmentUI : AutoUIState
 		for (int i = 0; i < itemTypes.Length; i++)
 		{
 			GlyphButton button = new(itemTypes[i]);
-			button.Left.Set((button.Width.Pixels + 8) * (i - itemTypes.Length * 0.5f), 0.5f);
+			float spacer = i - itemTypes.Length / 2;
+
+			button.Left.Set(spacer * (button.Width.Pixels + 10) - button.Width.Pixels / 2, 0.5f);
 			button.Top.Set(40, 0.5f);
 			button.OnLeftClick += OnClickButton;
 
