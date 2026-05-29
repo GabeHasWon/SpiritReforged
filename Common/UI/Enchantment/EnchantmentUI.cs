@@ -45,7 +45,7 @@ public class EnchantmentUI : AutoUIState
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
-		if (_slot.Item.IsAir || EnchantedWorkbench.TargetWorkbench == Point16.Zero)
+		if (_slot.Item.IsAir || !EnchantedWorkbench.HasCoords)
 		{
 			if (_glyphButtons.Count != 0) //Remove all buttons
 				RemoveButtons();
@@ -67,13 +67,14 @@ public class EnchantmentUI : AutoUIState
 	{
 		if (!_slot.Item.IsAir)
 		{
-			IEntitySource source = new EntitySource_TileInteraction(Main.LocalPlayer, EnchantedWorkbench.TargetWorkbench.X, EnchantedWorkbench.TargetWorkbench.Y);
+			IEntitySource source = new EntitySource_TileInteraction(Main.LocalPlayer, EnchantedWorkbench.ActiveCoordinates.X, EnchantedWorkbench.ActiveCoordinates.Y);
 
 			Main.LocalPlayer.QuickSpawnItem(source, _slot.Item.Clone());
 			_slot.Item.TurnToAir();
 		}
 
-		EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+		RemoveButtons();
+		EnchantedWorkbench.RemoveCoords();
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -84,7 +85,7 @@ public class EnchantmentUI : AutoUIState
 
 		spriteBatch.Draw(texture, center, source, Color.White, 0, source.Size() / 2, 1, 0, 0);
 
-		if (EnchantedWorkbench.TargetWorkbench != Point16.Zero)
+		if (EnchantedWorkbench.HasCoords)
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -93,19 +94,19 @@ public class EnchantmentUI : AutoUIState
 			}
 		}
 
-		string text = "Enchant";
+		string text = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
 		Vector2 dimensions = FontAssets.MouseText.Value.MeasureString(text);
 		dimensions.Y *= 0.75f;
 
 		CatalogueUI.DrawPanel(spriteBatch, new Rectangle((int)(center.X - dimensions.X / 2), (int)(center.Y - 40 - dimensions.Y / 2), (int)dimensions.X, (int)dimensions.Y), Color.Black * 0.5f);
-		Utils.DrawBorderString(spriteBatch, "Enchant", center - new Vector2(0, 50), Main.MouseTextColorReal, 0.9f, 0.5f);
+		Utils.DrawBorderString(spriteBatch, text, center - new Vector2(0, 50), Main.MouseTextColorReal, 0.9f, 0.5f);
 
 		base.Draw(spriteBatch);
 	}
 
 	private void AddButtons()
 	{
-		CreateGlyphs(3, out int[] itemTypes);
+		CreateGlyphs(_slot.Item, 3, out int[] itemTypes);
 
 		for (int i = 0; i < itemTypes.Length; i++)
 		{
@@ -135,34 +136,41 @@ public class EnchantmentUI : AutoUIState
 	{
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
 		{
-			_slot.Item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer));
-			Point16 target = EnchantedWorkbench.TargetWorkbench;
+			if (_slot.Item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)) && _slot.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+				glyphGlobalItem.StartAnimation();
 
-			if (target != Point16.Zero)
+			if (EnchantedWorkbench.HasCoords)
 			{
+				Point16 target = EnchantedWorkbench.ActiveCoordinates;
+
 				EnchantedWorkbench.Deactivate(target.X, target.Y);
-				EnchantedWorkbench.TargetWorkbench = Point16.Zero;
+				EnchantedWorkbench.RemoveCoords();
 			}
 		}
 	}
 
-	private static void CreateGlyphs(int count, out int[] itemTypes)
+	private static void CreateGlyphs(Item forItem, int count, out int[] itemTypes)
 	{
-		var glyphItems = ModContent.GetContent<GlyphItem>().ToList();
+		IEnumerable<GlyphItem> glyphItems = ModContent.GetContent<GlyphItem>();
+		int itemsCount = glyphItems.Count();
+
+		GlyphItem[] pool = glyphItems.OrderBy(SelectRandomOrder).ToArray(); //The total range of possible picks
 		List<int> result = [];
 
-		for (int c = 0; c < count; c++)
+		for (int c = 0; c < pool.Length; c++)
 		{
-			int random = new FastRandom(EnchantedWorkbench.TargetWorkbench.X + EnchantedWorkbench.TargetWorkbench.Y + c).Next(glyphItems.Count);
-			var choice = glyphItems[random];
+			GlyphItem choice = pool[c];
+			if (choice.CanApplyGlyph(forItem))
+			{
+				result.Add(choice.Type);
 
-			result.Add(choice.Type);
-			glyphItems.Remove(choice);
-
-			if (glyphItems.Count == 0)
-				break;
+				if (result.Count >= count)
+					break;
+			}
 		}
 
 		itemTypes = result.ToArray();
+
+		static float SelectRandomOrder(GlyphItem glyphItem) => new FastRandom(glyphItem.Type * EnchantedWorkbench.ActiveCoordinates.X * EnchantedWorkbench.ActiveCoordinates.Y).NextFloat();
 	}
 }

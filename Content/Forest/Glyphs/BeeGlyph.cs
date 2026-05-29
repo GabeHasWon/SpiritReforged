@@ -373,14 +373,12 @@ public class BeeGlyph : GlyphItem
 		if (Main.rand.NextBool(45))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2CircularEdge(item.width / 3, item.height / 3);
-
 			ParticleHandler.SpawnParticle(new StickyHoneyParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.8f, 1.5f), Main.rand.Next(100, 180), Main.rand.NextFloat(0.03f, 0.08f)));
 		}
 
 		if (Main.rand.NextBool(50))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f);
 
 			if (Main.rand.NextBool(3))

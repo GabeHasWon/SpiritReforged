@@ -256,15 +256,6 @@ public abstract class GlyphItem : ModItem
 		{
 			if (HasGlyph(out var glyphItem))
 				glyphItem.UpdateInWorld(item, ref gravity, ref maxFallSpeed);
-
-			if (_animationTime > 0)
-				_animationTime--; //Update the application animation
-		}
-
-		public override void UpdateInventory(Item item, Player player)
-		{
-			if (_animationTime > 0)
-				_animationTime--; //Update the application animation
 		}
 
 		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
@@ -301,6 +292,9 @@ public abstract class GlyphItem : ModItem
 
 					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(progress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
 				}
+
+				if (_animationTime > 0)
+					_animationTime--; //Update the application animation
 			}
 		}
 

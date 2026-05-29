@@ -10,9 +10,15 @@ public class EnchantedWorkbench : ModTile
 {
 	public const int FullFrameWidth = 18 * 3;
 
+	#region local target
+	public static bool HasCoords => ActiveCoordinates != Point16.Zero;
+
 	/// <summary> The tile coordinates of the workbench currently in use.<br/>
 	/// Valid for the <b>local client</b> only. </summary>
-	internal static Point16 TargetWorkbench = Point16.Zero;
+	public static Point16 ActiveCoordinates { get; private set; }
+
+	public static void RemoveCoords() => ActiveCoordinates = Point16.Zero;
+	#endregion
 
 	public override void SetStaticDefaults()
 	{
@@ -27,7 +33,7 @@ public class EnchantedWorkbench : ModTile
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		DustType = -1;
+		DustType = DustID.WoodFurniture;
 
 		AddMapEntry(new Color(50, 25, 55), CreateMapEntryName());
 	}
@@ -67,17 +73,27 @@ public class EnchantedWorkbench : ModTile
 		if (Framing.GetTileSafely(i, j).TileFrameX >= FullFrameWidth)
 			return false;
 
+		TileExtensions.GetTopLeft(ref i, ref j);
+		ActiveCoordinates = new(i, j);
+
 		UISystem.SetActive<EnchantmentUI>();
 		Main.playerInventory = true;
-
-		TargetWorkbench = new(i, j);
 
 		return true;
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!closer && TargetWorkbench == new Point16(i, j) && Main.LocalPlayer.DistanceSQ(TargetWorkbench.ToWorldCoordinates()) > 100 * 100)
+		if (!closer && ActiveCoordinates == new Point16(i, j) && Main.LocalPlayer.DistanceSQ(ActiveCoordinates.ToWorldCoordinates()) > 100 * 100)
 			UISystem.SetInactive<EnchantmentUI>();
+	}
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		if (!Main.dedServ && UISystem.IsActive<EnchantmentUI>())
+		{
+			UISystem.SetInactive<EnchantmentUI>();
+			Main.playerInventory = false;
+		}
 	}
 }
