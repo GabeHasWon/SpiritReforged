@@ -1,5 +1,9 @@
 v0.2.0.5
 - Added new "Labyrinth" secret seed
+- Added new Manual Ecotone Mapping functionality for world generation
+	There's a new button right next to the name plate for worlds which enables/disables this functionality
+- Added new Ecotone Debugging visualization for internal and cross-mod use
+	Enable this in the config if you want to see how the ecotone mapper maps out ecotones!
 
 - Fixed Oasis crash issue with Remnants
 - Fixed naturally generated Lapis Dressers not generating with chests properly
@@ -8,3 +12,5 @@ v0.2.0.5
 - Fixed Gilded Greatbow doing nonsense in multiplayer
 - Dunce Crabs now fall substantially slower in water
 - Fixed duplicate application of matrix to wavy sign text, causing visual issues
+- Fixed the ecotone mapper considering the ocean as a desert by force
+- Fixed the ecotone mapper mislabeling corrupt ecotone entries (applying to the next entry instead of the current)

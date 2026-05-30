@@ -22,12 +22,21 @@ public abstract class EcotoneBase : ILoadable
 	public static readonly List<EcotoneBase> Ecotones = [];
 
 	public EcotoneIcon Icon { get; private set; }
+	public LocalizedText DisplayName { get; private set; }
+
+	/// <summary>
+	/// Disables the ecotone from being selected in the manual ecotone selector.
+	/// </summary>
+	public virtual HashSet<string> EcotoneEdgeBlocklist => [];
 
 	public void Load(Mod mod)
 	{
 		Ecotones.Add(this);
+		
 		Load();
+
 		Icon = GetIcon();
+		DisplayName = Language.GetOrRegister($"Mods.{mod.Name}.Ecotones.{GetType().Name}", () => GetType().Name);
 	}
 
 	protected virtual void Load() { }

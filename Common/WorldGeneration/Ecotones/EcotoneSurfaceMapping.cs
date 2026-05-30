@@ -309,6 +309,7 @@ public class EcotoneSurfaceMapping : ModSystem
 					EcotoneEdgeDefinition old = entry.Definition;
 					entry.End = new Point(x, y);
 					entry.Right = def;
+					entry.CorruptionType = conversionType;
 
 					if (x <= WorldGen.beachDistance + 20 || x >= Main.maxTilesX - WorldGen.beachDistance - 20)
 						def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
@@ -319,7 +320,6 @@ public class EcotoneSurfaceMapping : ModSystem
 
 						entry = new EcotoneEntry(new Point(x, y), def);
 						entry.Left = old;
-						entry.CorruptionType = conversionType;
 						transitionCount = 0;
 						conversionType = BiomeConversionID.Purity;
 					}
