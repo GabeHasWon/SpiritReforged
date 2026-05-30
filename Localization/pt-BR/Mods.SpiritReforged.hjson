@@ -88,3 +88,21 @@ InfoDisplays: {
 		Description: Transmutações de Item
 	}
 }
+
+Ecotones: {
+	// SaltFlatsEcotone: Salt Flats
+	// SavannaEcotone: Savanna
+}
+
+EcotoneEdges: {
+	// Forest: Forest
+	// Desert: Desert
+	// Ocean: Ocean
+	// Snow: Snow
+	// Jungle: Jungle
+	// Corruption: Corruption
+	// Crimson: Crimson
+	// Hallow: Hallow
+	// Savanna: "{$Ecotones.SavannaEcotone}"
+	// "Salt Flats": "{$Ecotones.SaltFlatsEcotone}"
+}

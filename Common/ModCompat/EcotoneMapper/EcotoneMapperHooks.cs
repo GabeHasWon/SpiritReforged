@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoMod.Cil;
 using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -8,6 +9,7 @@ using Terraria.Audio;
 using Terraria.GameContent.Generation;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 using Terraria.WorldBuilding;
 
@@ -35,6 +37,9 @@ internal class EcotoneMapperHooks : ModSystem
 	/// Used to pause world generation.
 	/// </summary>
 	internal static bool ReadyToContinue = true;
+
+	[WorldBound]
+	public bool ManuallyMappedWorld = false;
 
 	public static bool AnyForced<T>() where T : EcotoneBase
 	{
@@ -64,22 +69,53 @@ internal class EcotoneMapperHooks : ModSystem
 		On_Main.Update += SimpleCheck;
 		On_UIWorldCreation.MakeBackAndCreatebuttons += AddMapperButton;
 		On_WorldGenerator.GenerateWorld += AddMappingChecks;
+		On_AWorldListItem.GetIconElement += AddMappingIcon;
+	}
+
+	private UIElement AddMappingIcon(On_AWorldListItem.orig_GetIconElement orig, AWorldListItem self)
+	{
+		UIElement element = orig(self);
+
+		if (self.Data.TryGetHeaderData<EcotoneMapperHooks>(out TagCompound tag) && tag.ContainsKey("manuallyMapped"))
+			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingIcon")));
+
+		return element;
 	}
 
 	private void AddMappingChecks(On_WorldGenerator.orig_GenerateWorld orig, WorldGenerator self, GenerationProgress progress)
 	{
 		List<GenPass> passes = GetPasses(self);
+		int lastEcotonePass = -1;
 
+		// Display mapping tools before every ecotone pass
 		for (int i = passes.Count - 2; i >= 0; --i)
 		{
 			if (passes[i] is EcotonePass pass)
 			{
-				passes.Insert(i, new PassLegacy(pass.Name + " [Re-]Mapping", (_, _) =>
+				if (lastEcotonePass == -1)
+					lastEcotonePass = i;
+
+				passes.Insert(i, new PassLegacy(pass.Name + " Mapping", (prog, _) =>
 				{
+					prog.Message = Language.GetText("Mods.SpiritReforged.Generation.Mapping.Step").Format(pass.Ecotone.DisplayName.Value);
+					ForcedEcotones.Clear();
 					EcotoneSurfaceMapping.MapEcotones(pass.Ecotone);
 				}));
 			}
 		}
+
+		// And then hide it after the last one
+		if (lastEcotonePass != -1)
+		{
+			passes.Insert(lastEcotonePass + 3, new PassLegacy("Hide Mapping", (_, _) =>
+			{
+				ActuallyManuallyMapping = false;
+				MappingEcotone = null;
+			}));
+		}
+
+		if (ActuallyManuallyMapping)
+			passes.Insert(1, new PassLegacy("Mark as Mapped", (_, _) => ModContent.GetInstance<EcotoneMapperHooks>().ManuallyMappedWorld = true));
 
 		orig(self, progress);
 	}
@@ -115,7 +151,8 @@ internal class EcotoneMapperHooks : ModSystem
 		{
 			Width = StyleDimension.FromPixels(32),
 			Height = StyleDimension.FromPixels(32),
-			Left = StyleDimension.FromPixels(0)
+			Left = StyleDimension.FromPixels(0),
+			OverrideSamplerState = SamplerState.PointClamp
 		};
 
 		button.OnLeftClick += FlipActuallyMapping;
@@ -224,5 +261,14 @@ internal class EcotoneMapperHooks : ModSystem
 	{
 		Type worldGenPreviewerType = ((Mod)CrossMod.WorldGenPreviewer).GetType();
 		return worldGenPreviewerType.Assembly.GetType("WorldGenPreviewer.WorldGenPreviewerModSystem");
+	}
+
+	public override void SaveWorldData(TagCompound tag) => tag.Add("manuallyMapped", ManuallyMappedWorld);
+	public override void LoadWorldData(TagCompound tag) => ManuallyMappedWorld = tag.GetBool("manuallyMapped");
+
+	public override void SaveWorldHeader(TagCompound tag)
+	{
+		if (ManuallyMappedWorld)
+			tag.Add("manuallyMapped", true);
 	}
 }

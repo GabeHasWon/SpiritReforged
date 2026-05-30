@@ -1,21 +1,30 @@
-﻿namespace SpiritReforged.Common.WorldGeneration.Ecotones;
+﻿using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using SpiritReforged.Content.Savanna.Tiles;
 
-public readonly struct EcotoneEdgeDefinition(int displayId, string name, params int[] validIds)
+namespace SpiritReforged.Common.WorldGeneration.Ecotones;
+
+#nullable enable
+
+/// <summary>
+/// Defines an edge for the ecotone mapper to use. This allows ecotones to know what they are and what is to either side of them.
+/// </summary>
+public readonly struct EcotoneEdgeDefinition(int displayId, string name, LocalizedText text, params int[] validIds)
 {
 	public readonly string Name = name;
 	public readonly int[] ValidIds = validIds;
 	public readonly int DisplayId = displayId;
-
+	public readonly LocalizedText DisplayName = text;
+	
 	public override string ToString() => Name + $"(Display: {DisplayId})";
 }
 
-public class EcotoneEdgeDefinitions : ILoadable
+public class EcotoneEdgeDefinitions : ModSystem
 {
 	private static Dictionary<string, EcotoneEdgeDefinition> _edgesByName = [];
 	private static Dictionary<int, EcotoneEdgeDefinition> _edgesByContainedTiles = [];
 	private static HashSet<int> _registeredIds = [];
 
-	public static void AddEdgeDefinition(EcotoneEdgeDefinition def)
+	private static void InternalAddDefinition(EcotoneEdgeDefinition def)
 	{
 		_edgesByName.Add(def.Name, def);
 
@@ -26,27 +35,56 @@ public class EcotoneEdgeDefinitions : ILoadable
 		}
 	}
 
+	/// <summary>
+	/// Adds a vanilla-only edge definition with an overrideable display name.
+	/// </summary>
+	public static void AddEdgeDefinition(Mod mod, int displayId, string name, LocalizedText? displayName, params int[] validIds)
+	{
+		EcotoneEdgeDefinition def = new(displayId, name, displayName ?? Language.GetOrRegister($"Mods.{mod.Name}.EcotoneEdges.{name}", () => name), validIds);
+		InternalAddDefinition(def);
+	}
+
+	/// <summary>
+	/// Adds a mod-only edge definition with an overrideable display name.
+	/// </summary>
+	public static void AddEdgeDefinition<TDisplay, T2>(Mod mod, string name, LocalizedText? displayName) where TDisplay : ModTile where T2 : ModTile
+	{
+		LocalizedText text = displayName ?? Language.GetOrRegister($"Mods.{mod.Name}.EcotoneEdges.{name}");
+		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>());
+		InternalAddDefinition(edge);
+	}
+
+	/// <inheritdoc cref="AddEdgeDefinition{TDisplay, T2}(Mod, string, LocalizedText?)"/>
+	public static void AddEdgeDefinition<TDisplay, T2, T3>(Mod mod, string name, LocalizedText? displayName) where TDisplay : ModTile where T2 : ModTile where T3 : ModTile
+	{
+		LocalizedText text = displayName ?? Language.GetOrRegister($"Mods.{mod.Name}.EcotoneEdges.{name}");
+		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>(), ModContent.TileType<T3>());
+		InternalAddDefinition(edge);
+	}
+
 	public static EcotoneEdgeDefinition GetEcotone(string name) => _edgesByName[name];
 	public static EcotoneEdgeDefinition GetEcotoneByTile(int id) => _edgesByContainedTiles[id];
 	public static bool TryGetEcotoneByTile(int id, out EcotoneEdgeDefinition def) => _edgesByContainedTiles.TryGetValue(id, out def);
 	public static bool TileRegistered(int id) => _registeredIds.Contains(id);
 
-	public void Load(Mod mod)
+	public override void PostSetupContent()
 	{
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.Dirt, "Forest", TileID.Grass, TileID.Dirt, TileID.ClayBlock));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.Adamantite, "Desert", TileID.Sand, TileID.Ebonsand, TileID.Crimsand));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CobaltBrick, "Ocean"));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.SnowBlock, "Snow", TileID.SnowBlock, TileID.IceBlock));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.ChlorophyteBrick, "Jungle", TileID.JungleGrass, TileID.Mud));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.DemoniteBrick, "Corruption", TileID.CorruptGrass, TileID.Ebonstone, TileID.CorruptIce, TileID.CorruptJungleGrass));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Crimson", TileID.CrimsonGrass, TileID.Crimstone, TileID.FleshIce, TileID.CrimsonJungleGrass));
-		AddEdgeDefinition(new EcotoneEdgeDefinition(TileID.CrimtaneBrick, "Hallow", TileID.HallowedGrass, TileID.Pearlsand, TileID.Pearlstone, TileID.HallowedIce));
+		AddEdgeDefinition(Mod, TileID.Dirt, "Forest", null, TileID.Grass, TileID.Dirt, TileID.ClayBlock);
+		AddEdgeDefinition(Mod, TileID.Adamantite, "Desert", null, TileID.Sand, TileID.Ebonsand, TileID.Crimsand);
+		AddEdgeDefinition(Mod, TileID.CobaltBrick, "Ocean", null);
+		AddEdgeDefinition(Mod, TileID.SnowBlock, "Snow", null, TileID.SnowBlock, TileID.IceBlock);
+		AddEdgeDefinition(Mod, TileID.ChlorophyteBrick, "Jungle", null, TileID.JungleGrass, TileID.Mud);
+		AddEdgeDefinition(Mod, TileID.DemoniteBrick, "Corruption", null, TileID.CorruptGrass, TileID.Ebonstone, TileID.CorruptIce, TileID.CorruptJungleGrass);
+		AddEdgeDefinition(Mod, TileID.CrimtaneBrick, "Crimson", null, TileID.CrimsonGrass, TileID.Crimstone, TileID.FleshIce, TileID.CrimsonJungleGrass);
+		AddEdgeDefinition(Mod, TileID.CrimtaneBrick, "Hallow", null, TileID.HallowedGrass, TileID.Pearlsand, TileID.Pearlstone, TileID.HallowedIce);
+		AddEdgeDefinition<SavannaGrass, LivingBaobab, LivingBaobabLeaf>(Mod, "Savanna", null);
+		AddEdgeDefinition<SaltBlockDull, SaltBlockReflective>(Mod, "Salt Flats", null);
 	}
 
-	public void Unload()
+	public override void OnModUnload() 
 	{
-		_edgesByName = null;
-		_edgesByContainedTiles = null;
-		_registeredIds = null;
+		_edgesByName = null!;
+		_edgesByContainedTiles = null!;
+		_registeredIds = null!;
 	}
 }
