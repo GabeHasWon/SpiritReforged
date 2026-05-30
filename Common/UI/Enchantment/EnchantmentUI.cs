@@ -110,7 +110,7 @@ public class EnchantmentUI : AutoUIState
 
 		for (int i = 0; i < itemTypes.Length; i++)
 		{
-			GlyphButton button = new(itemTypes[i]);
+			GlyphButton button = new(itemTypes[i], true);
 			float spacer = i - itemTypes.Length / 2;
 
 			button.Left.Set(spacer * (button.Width.Pixels + 10) - button.Width.Pixels / 2, 0.5f);

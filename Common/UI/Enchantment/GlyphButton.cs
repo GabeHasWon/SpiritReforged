@@ -10,11 +10,15 @@ namespace SpiritReforged.Common.UI.Enchantment;
 public class GlyphButton : UIElement
 {
 	public readonly int itemType;
+	private readonly bool _showDisplayTip;
+
+	private Item _item;
 	private float _hoverTime;
 
-	public GlyphButton(int itemType)
+	public GlyphButton(int itemType, bool showDisplayTip = false)
 	{
 		this.itemType = itemType;
+		_showDisplayTip = showDisplayTip;
 
 		Width.Set(38, 0);
 		Height.Set(38, 0);
@@ -38,6 +42,12 @@ public class GlyphButton : UIElement
 
 		if (IsMouseHovering)
 		{
+			if (_showDisplayTip)
+			{
+				Main.HoverItem = (_item ??= new(itemType));
+				Main.hoverItemName = Main.HoverItem.HoverName;
+			}
+
 			spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
 			Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
 
