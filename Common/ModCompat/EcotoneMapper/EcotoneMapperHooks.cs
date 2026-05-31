@@ -234,6 +234,7 @@ internal class EcotoneMapperHooks : ModSystem
 	/// <summary>
 	/// This is used to hang the generation thread until it's ready to continue.
 	/// </summary>
+	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 	public static void ForcePauseOnWhatIWant()
 	{
 		if (!ReadyToContinue)
