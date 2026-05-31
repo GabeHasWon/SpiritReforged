@@ -14,6 +14,10 @@ internal class EcotoneMapperDisplay : ModSystem
 	const float OffscreenXMin = 10f;
 	const float OffscreenYMin = 10f;
 
+	private static Asset<Texture2D> Gradient = null!;
+
+	public override void Load() => Gradient = ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingGradient");
+
 	// Code heavily adapted from WorldGenPreviewer's map overlay code.
 	// https://github.com/JavidPack/WorldGenPreviewer/blob/1.4/UIWorldLoadSpecial.cs
 	internal static void DrawSelectionAreas()
@@ -60,7 +64,6 @@ internal class EcotoneMapperDisplay : ModSystem
 		float panY = -num21 + Main.screenHeight / 2f;
 		panX += OffscreenXMin * Main.mapFullscreenScale;
 		panY += OffscreenYMin * Main.mapFullscreenScale;
-		int entryId = 0;
 
 		if (EcotoneSurfaceMapping.Entries.Count == 0)
 		{
@@ -71,14 +74,23 @@ internal class EcotoneMapperDisplay : ModSystem
 		// Create a shallow copy so that threading doesn't add to the list while it's being rendered
 		List<EcotoneSurfaceMapping.EcotoneEntry> entryCopy = new(EcotoneSurfaceMapping.Entries);
 
-		foreach (var entry in entryCopy)
+		if (!EcotoneMapperHooks.ActuallyManuallyMapping)
 		{
-			if (!EcotoneMapperHooks.ActuallyManuallyMapping)
+			foreach (var entry in entryCopy)
 				DrawDebug(font, panX, panY, entry);
-			else
-				DrawSelection(font, panX, panY, entry, ref entryId);
+		}
+		else
+		{
+			int entryId = 0;
+			Rectangle lastRectangle = Rectangle.Empty;
 
-			entryId++;
+			for (int i = entryCopy.Count - 1; i >= 0; i--)
+			{
+				EcotoneSurfaceMapping.EcotoneEntry? entry = entryCopy[i];
+				DrawSelection(font, panX, panY, entry, ref entryId, ref lastRectangle);
+
+				entryId++;
+			}
 		}
 
 		EndBatch();
@@ -94,14 +106,14 @@ internal class EcotoneMapperDisplay : ModSystem
 
 	private static void ClickContinue() => EcotoneMapperHooks.ReadyToContinue = true;
 
-	private static void DrawSelection(DynamicSpriteFont font, float panX, float panY, EcotoneSurfaceMapping.EcotoneEntry entry, ref int entryId)
+	private static void DrawSelection(DynamicSpriteFont font, float panX, float panY, EcotoneSurfaceMapping.EcotoneEntry entry, ref int entryId, ref Rectangle lastRectangle)
 	{
 		Rectangle drawRectangle = ModifyRectangle(OffscreenXMin, OffscreenYMin, panX, panY, entry.Bounds, true);
 
 		bool hover = drawRectangle.Contains(Main.MouseScreen.ToPoint());
 		bool hasEntry = EcotoneMapperHooks.ForcedEcotones.ContainsKey(entryId);
 		float colorMul = hasEntry ? 0.5f : 1;
-		Color backCol = hasEntry ? new Color(23, 81, 25) : new Color(23, 25, 81);
+		Color backCol = entry.Definition.MappingColor; //hasEntry ? new Color(23, 81, 25) : new Color(23, 25, 81);
 		bool invalid = EcotoneMapperHooks.MappingEcotone?.EcotoneEdgeBlocklist.Contains(entry.Definition.Name) is true;
 
 		if (invalid)
@@ -112,7 +124,8 @@ internal class EcotoneMapperDisplay : ModSystem
 
 		if (hover)
 		{
-			colorMul *= 0.5f;
+			backCol = Color.Lerp(backCol, Color.White, 0.3f);
+			backCol.A = 180;
 
 			if (Main.mouseLeft && Main.mouseLeftRelease)
 			{
@@ -125,24 +138,33 @@ internal class EcotoneMapperDisplay : ModSystem
 			}
 		}
 
-		Utils.DrawInvBG(Main.spriteBatch, drawRectangle, new Color((int)(backCol.R * colorMul), (int)(backCol.G * colorMul), (int)(backCol.B * colorMul), 255) * 0.925f * 0.85f);
+		Main.spriteBatch.Draw(Gradient.Value, drawRectangle, backCol * colorMul);
+
+		if (drawRectangle.Width < 120)
+		{
+			drawRectangle.Y = lastRectangle.Y - 36;
+			drawRectangle.Height = lastRectangle.Height + 36;
+		}
+
+		lastRectangle = drawRectangle;
+		Main.spriteBatch.Draw(Gradient.Value, drawRectangle with { Width = 4 }, backCol * colorMul);
+		//Utils.DrawInvBG(Main.spriteBatch, drawRectangle, new Color((int)(backCol.R * colorMul), (int)(backCol.G * colorMul), (int)(backCol.B * colorMul), 255) * 0.925f * 0.85f);
 
 		float scale = MathF.Min(MathF.Min(drawRectangle.Width - 8, drawRectangle.Height) / 70f, 1);
-		var position = drawRectangle.Location.ToVector2() + new Vector2(20) * scale;
+		var bufferSize = new Vector2(12) * new Vector2(scale, 1f);
+		var position = drawRectangle.Location.ToVector2() + new Vector2(36, -12);
 
 		// Draws either the entry name or invalid
 		if (!hasEntry)
 		{
 			string text = entry.Definition.DisplayName.Value;
-			float textScale = scale;
 
 			if (invalid)
-			{
 				text = Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Invalid", entry.Definition.DisplayName.Value);
-				textScale = MathF.Min(drawRectangle.Width - 8, drawRectangle.Height) / ChatManager.GetStringSize(font, text, new(scale)).X;
-			}
 
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.White, 0f, Vector2.Zero, Vector2.One * textScale * scale);
+			Main.spriteBatch.Draw(TextureAssets.MapIcon[3].Value, position - new Vector2(36, 6), Color.White);
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.White, 0f, Vector2.Zero, Vector2.One);
+			//DrawScaledText(font, position, text, drawRectangle, bufferSize);
 		}
 		else // Draws the entry name, crossed out, and the new name
 		{
@@ -158,6 +180,16 @@ internal class EcotoneMapperDisplay : ModSystem
 			string actualName = EcotoneMapperHooks.MappingEcotone!.DisplayName.Value;
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, actualName, position, Color.White, 0f, Vector2.Zero, Vector2.One * scale);
 		}
+	}
+
+	private static void DrawScaledText(DynamicSpriteFont font, Vector2 position, string text, Rectangle rectangle, Vector2 bufferSize)
+	{
+		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One);
+		rectangle.Width -= (int)bufferSize.X;
+		rectangle.Height -= (int)bufferSize.Y;
+		float scale = MathF.Min(MathF.Min(rectangle.Width / size.X, rectangle.Height / size.Y), 1);
+
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.White, 0f, Vector2.Zero, new(scale));
 	}
 
 	private static void DrawDebug(DynamicSpriteFont font, float panX, float num2, EcotoneSurfaceMapping.EcotoneEntry entry)
@@ -221,9 +253,11 @@ internal class EcotoneMapperDisplay : ModSystem
 		if (addBuffer)
 		{
 			int minHeight = 10;
+			int lastBottom = bounds.Bottom;
 
 			baseWidth++;
-			baseY -= Math.Max(minHeight - baseHeight, 0);
+			baseY = -20;
+			baseHeight = lastBottom + 20;
 			baseHeight = Math.Max(minHeight, baseHeight); 
 		}
 
