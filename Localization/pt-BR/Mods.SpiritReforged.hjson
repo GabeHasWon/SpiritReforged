@@ -89,20 +89,21 @@ InfoDisplays: {
 	}
 }
 
+
 Ecotones: {
-	// SaltFlatsEcotone: Salt Flats
-	// SavannaEcotone: Savanna
+	SaltFlatsEcotone: Salinas
+	SavannaEcotone: Savana
 }
 
 EcotoneEdges: {
-	// Forest: Forest
-	// Desert: Desert
-	// Ocean: Ocean
-	// Snow: Snow
-	// Jungle: Jungle
-	// Corruption: Corruption
-	// Crimson: Crimson
-	// Hallow: Hallow
-	// Savanna: "{$Ecotones.SavannaEcotone}"
-	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+	Forest: Floresta
+	Desert: Deserto
+	Ocean: Oceano
+	Snow: Neve
+	Jungle: Selva
+	Corruption: Corrupção
+	Crimson: Carmim
+	Hallow: Consagração
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }

@@ -44,7 +44,7 @@ ReforgedClientConfig: {
 			'''
 	}
 
-	Headers.Developer: Developer Header
+	Headers.Developer: Developer Tools
 }
 
 OceanShape: {
