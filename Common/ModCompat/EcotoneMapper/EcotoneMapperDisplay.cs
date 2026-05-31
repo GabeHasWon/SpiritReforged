@@ -23,7 +23,7 @@ internal class EcotoneMapperDisplay : ModSystem
 
 		DynamicSpriteFont font = FontAssets.MouseText.Value;
 
-		if (ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones)
+		if (ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones && !EcotoneMapperHooks.ActuallyManuallyMapping)
 		{
 			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Exit", Vector2.Zero);
 			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Tilde", Vector2.UnitY * 24);
