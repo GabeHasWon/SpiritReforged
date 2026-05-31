@@ -40,7 +40,6 @@ Mapping: {
 	// Invalid: (Invalid - {0})
 }
 
-# Most of these will be unused in game, aside from Corruption and Crimson.
 Signs: {
 	Underground: {
 		Common: {
@@ -67,17 +66,4 @@ Signs: {
 				'''
 		}
 	}
-}
-
-ConversionTypes: {
-	// Purity: Purity
-	// Corruption: Corruption
-	// Hallow: Hallow
-	// GlowingMushroom: Glowing Mushroom
-	// Crimson: Crimson
-	// Sand: Sand
-	// Snow: Snow
-	// Dirt: Dirt
-	// PurificationPowder: Purification Powder
-	// Chlorophyte: Chlorophyte
 }
