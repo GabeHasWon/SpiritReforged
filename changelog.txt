@@ -14,6 +14,7 @@ v0.2.0.5
 - Fixed duplicate application of matrix to wavy sign text, causing visual issues
 - Fixed the ecotone mapper considering the ocean as a desert by force
 - Fixed the ecotone mapper mislabeling corrupt ecotone entries (applying to the next entry instead of the current)
+- Fixed rightmost ecotone entry not having Ocean as its right bound
 - Probably fixed some additional issues with the ecotone mapper I forgot about
 - Added wind sway to all of our custom lanterns
 - Fixed our custom chandeliers not having the exact same sway visuals as vanilla's chandeliers

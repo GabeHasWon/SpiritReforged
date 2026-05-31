@@ -2,7 +2,6 @@
 using ReLogic.Graphics;
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
-using System.Linq;
 using Terraria.GameInput;
 using Terraria.UI.Chat;
 
@@ -14,21 +13,6 @@ internal class EcotoneMapperDisplay : ModSystem
 {
 	const float OffscreenXMin = 10f;
 	const float OffscreenYMin = 10f;
-
-	public static int EcotoneCountOnLoad { get; private set; }
-
-	public override void Load()
-	{
-		// Used for autogenerating localization for conversions.
-		// May be useful in the future?
-		//for (int i = 0; i < BiomeConversionID.Count; ++i)
-		//{
-		//	int value = i;
-		//	_ = Language.GetOrRegister(GetConversionKey(i), () => GetConversionName(value));
-		//}
-	}
-
-	public override void PostSetupContent() => EcotoneCountOnLoad = EcotoneBase.Ecotones.Count;
 
 	// Code heavily adapted from WorldGenPreviewer's map overlay code.
 	// https://github.com/JavidPack/WorldGenPreviewer/blob/1.4/UIWorldLoadSpecial.cs
@@ -52,11 +36,16 @@ internal class EcotoneMapperDisplay : ModSystem
 			float width = ChatManager.GetStringSize(font, Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Select", mappingEcotone.DisplayName.Value), Vector2.One).X;
 
 			var position = new Vector2(Main.screenWidth / 2f - width / 2f - 12, 256);
-			Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)position.X, (int)position.Y - 6, (int)width + 24, 100), new Color(23, 25, 81) * 0.925f * 0.85f);
+			Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)position.X, (int)position.Y - 6, (int)width + 24, 124), new Color(23, 25, 81) * 0.925f * 0.85f);
 
 			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Continue", Vector2.Zero, "", ClickContinue, 1.2f);
 			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.OrEscape", Vector2.UnitY * 26, "", null, 0.8f);
 			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Select", Vector2.UnitY * 60, mappingEcotone.DisplayName.Value);
+			CenterText(font, "Mods.SpiritReforged.Generation.Mapping.Tilde", Vector2.UnitY * 84, "", null, 0.8f);
+
+			// Skip pause if the player hits escape, as mentioned above
+			if (Main.keyState.IsKeyDown(Keys.Escape))
+				EcotoneMapperHooks.ReadyToContinue = true;
 		}
 
 		PlayerInput.SetZoom_Unscaled();
@@ -139,13 +128,12 @@ internal class EcotoneMapperDisplay : ModSystem
 		Utils.DrawInvBG(Main.spriteBatch, drawRectangle, new Color((int)(backCol.R * colorMul), (int)(backCol.G * colorMul), (int)(backCol.B * colorMul), 255) * 0.925f * 0.85f);
 
 		float scale = MathF.Min(MathF.Min(drawRectangle.Width - 8, drawRectangle.Height) / 70f, 1);
-		string corruptionType = entry.CorruptionType == BiomeConversionID.Purity ? "" : $" ({Language.GetTextValue(GetConversionKey(entry.CorruptionType))})";
 		var position = drawRectangle.Location.ToVector2() + new Vector2(20) * scale;
 
 		// Draws either the entry name or invalid
 		if (!hasEntry)
 		{
-			string text = entry.Definition.DisplayName.Value + corruptionType;
+			string text = entry.Definition.DisplayName.Value;
 			float textScale = scale;
 
 			if (invalid)
@@ -158,7 +146,7 @@ internal class EcotoneMapperDisplay : ModSystem
 		}
 		else // Draws the entry name, crossed out, and the new name
 		{
-			string text = entry.Definition.DisplayName.Value + corruptionType;
+			string text = entry.Definition.DisplayName.Value;
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.Gray, 0f, Vector2.Zero, Vector2.One * scale);
 
 			float width = ChatManager.GetStringSize(font, text, Vector2.One).X * scale;
@@ -187,8 +175,7 @@ internal class EcotoneMapperDisplay : ModSystem
 		Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, drawRectangle, Color.White * 0.6f);
 
 		// Corruption, if any + header
-		string corruptionType = entry.CorruptionType == BiomeConversionID.Purity ? "" : $" ({GetConversionName(entry.CorruptionType)})";
-		string text = entry.Left.Name + " < " + $"{entry.Definition.Name}{corruptionType} < " + entry.Right.Name;
+		string text = entry.Left.Name + " < " + $"{entry.Definition.Name} < " + entry.Right.Name;
 		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One);
 		Vector2 stringPosition = new(drawRectangle.Center.X - size.X / 2f, drawRectangle.Y + 8);
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, stringPosition, Color.White, 0f, Vector2.Zero, Vector2.One);
@@ -197,29 +184,6 @@ internal class EcotoneMapperDisplay : ModSystem
 		text = $"{entry.Width} x {entry.Height} [c/AAAAFF:({entry.StrictBounds.Height})]";
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, stringPosition + new Vector2(0, 24), Color.White, 0f, Vector2.Zero, new(0.8f));
 	}
-
-	private static string GetConversionName(int corruptionType)
-	{
-		if (corruptionType >= BiomeConversionID.Count)
-			return BiomeConversionLoader.GetBiomeConversion(corruptionType).Name;
-
-		return corruptionType switch
-		{
-			BiomeConversionID.Purity => "Purity",
-			BiomeConversionID.Corruption => "Corruption",
-			BiomeConversionID.Hallow => "Hallow",
-			BiomeConversionID.GlowingMushroom => "GlowingMushroom",
-			BiomeConversionID.Crimson => "Crimson",
-			BiomeConversionID.Sand => "Sand",
-			BiomeConversionID.Snow => "Snow",
-			BiomeConversionID.Dirt => "Dirt",
-			BiomeConversionID.PurificationPowder => "PurificationPowder",
-			BiomeConversionID.Chlorophyte => "Chlorophyte",
-			_ => throw new InvalidCastException("No conversion ID of type " + corruptionType + " exists.")
-		};
-	}
-
-	private static string GetConversionKey(int corruptionType) => "Mods.SpiritReforged.Generation.ConversionTypes." + GetConversionName(corruptionType);
 
 	private static string CenterText(DynamicSpriteFont font, string text, Vector2 offset, string textFormat = "", Action? onClick = null, float scale = 1f)
 	{
