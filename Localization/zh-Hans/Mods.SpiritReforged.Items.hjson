@@ -76,7 +76,7 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: 珊瑚猎人胸甲
+	DisplayName: 珊瑚猎人护胸
 	Tooltip: 50%击退抗性
 }
 
@@ -236,7 +236,7 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: 锈蚀潜渊者胸甲
+	DisplayName: 锈蚀潜渊者板甲
 	Tooltip: ""
 }
 
@@ -315,7 +315,7 @@ LargeDriftwoodItem: {
 }
 
 DriftwoodChestplate: {
-	DisplayName: 浮木胸甲
+	DisplayName: 浮木护胸
 	Tooltip: ""
 }
 
@@ -325,7 +325,7 @@ DriftwoodHelmet: {
 }
 
 DriftwoodLeggings: {
-	DisplayName: 浮木护胫
+	DisplayName: 浮木护腿
 	Tooltip: ""
 }
 
@@ -494,7 +494,7 @@ LivingBaobabLeafWand: {
 
 LivingBaobabWand: {
 	DisplayName: 活面包树魔棒
-	Tooltip: 放置活面包树
+	Tooltip: 放置活面包木
 }
 
 WrithingSticks: {
@@ -1021,7 +1021,7 @@ Blunderbuss: {
 }
 
 SafekeeperRing: {
-	DisplayName: 保管员戒指
+	DisplayName: 守护者之戒
 	Tooltip:
 		'''
 		小幅度增加对亡灵生物的伤害
@@ -1042,7 +1042,7 @@ LeatherLegs: {
 }
 
 LeatherPlate: {
-	DisplayName: 神射手裤
+	DisplayName: 神射手板甲
 	Tooltip: ""
 }
 
@@ -1218,7 +1218,7 @@ DyeCrateItem: {
 	Tooltip:
 		'''
 		{$CommonItemTooltip.RightClickToOpen}
-		“闻起来...居然这么好闻！”
+		“闻起来……居然这么好闻！”
 		'''
 }
 
@@ -1761,7 +1761,7 @@ Bowlder: {
 }
 
 BoStaff: {
-	DisplayName: 长棍法杖
+	DisplayName: 长棍
 	Tooltip: 连续命中积累连击
 }
 
@@ -1988,7 +1988,7 @@ SharpshooterGlove: {
 }
 
 BonsaiPot: {
-	DisplayName: 盆栽用盆
+	DisplayName: 盆栽盆
 	Tooltip: 用于制作装饰性盆栽
 }
 
@@ -2023,12 +2023,12 @@ EarthshakerWarmask: {
 }
 
 GraniteBody: {
-	DisplayName: 动能胸甲
+	DisplayName: 动能护胸
 	Tooltip: 小幅度增加跳跃高度
 }
 
 GraniteHead: {
-	DisplayName: 动能面甲
+	DisplayName: 动能面罩
 	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
@@ -2053,10 +2053,10 @@ FlaskOfFrost: {
 }
 
 HardlightVisor: {
-	DisplayName: 强光面甲
+	DisplayName: 强光面罩
 	Tooltip: ""
-	AltDisplayName: 硬光面甲
-	AltTooltip: “请勿与强光面甲混淆”
+	AltDisplayName: 硬光面罩
+	AltTooltip: “请勿与强光面罩混淆”
 }
 
 PolishedAmberItem: {
@@ -2126,7 +2126,7 @@ SilkSirwal: {
 }
 
 SilkTop: {
-	DisplayName: 太阳舞者上衣
+	DisplayName: 太阳舞者上装
 	Tooltip: 增加7%魔法伤害
 }
 
@@ -2926,7 +2926,7 @@ BedouinCowl: {
 }
 
 BedouinLeggings: {
-	DisplayName: 贝都因人护胫
+	DisplayName: 贝都因人护腿
 	Tooltip: 增加10%移动速度
 }
 
@@ -3065,7 +3065,7 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	DisplayName: 忍冬花蕾
+	DisplayName: 忍冬花芽
 	Tooltip: 召唤一只鼠妇坐骑
 }
 
