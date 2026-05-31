@@ -25,9 +25,12 @@ public abstract class EcotoneBase : ILoadable
 	public LocalizedText DisplayName { get; private set; }
 
 	/// <summary>
-	/// Disables the ecotone from being selected in the manual ecotone selector.
+	/// Disables the ecotone from being selected in the manual ecotone selector.<br/>
+	/// Defaults to blocking the Ocean, which is wildly unlike all other biomes and almost certainly doesn't work properly.
 	/// </summary>
-	public virtual HashSet<string> EcotoneEdgeBlocklist => [];
+	public virtual HashSet<string> EcotoneEdgeBlocklist => ["Ocean"];
+
+	public virtual string EcotoneEdgeName => GetType().Name.Replace("Ecotone", "");
 
 	public void Load(Mod mod)
 	{

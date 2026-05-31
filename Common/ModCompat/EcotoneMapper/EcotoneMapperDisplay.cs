@@ -4,6 +4,7 @@ using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using Terraria.GameInput;
 using Terraria.UI.Chat;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
@@ -140,56 +141,49 @@ internal class EcotoneMapperDisplay : ModSystem
 
 		Main.spriteBatch.Draw(Gradient.Value, drawRectangle, backCol * colorMul);
 
-		if (drawRectangle.Width < 120)
+		string displayText = entry.Definition.DisplayName.Value;
+		float strikeoutWidth = 0;
+
+		if (invalid) // Entry is invalid
+			displayText = Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Invalid", entry.Definition.DisplayName.Value);
+		else if (hasEntry) // Entry is already used, switch to strikeout ~~Original Entry~~ [c:New Ecotone]
+		{
+			displayText = entry.Definition.DisplayName.Value;
+			strikeoutWidth = ChatManager.GetStringSize(font, displayText, Vector2.One).X;
+			string color = EcotoneEdgeDefinitions.GetEcotone(EcotoneMapperHooks.MappingEcotone!.EcotoneEdgeName).MappingColor.Hex3();
+			displayText += $" [c/{color}:{EcotoneMapperHooks.MappingEcotone!.DisplayName.Value}]";
+		}
+
+		float textWidth = ChatManager.GetStringSize(font, displayText, Vector2.One).X + 36;
+		bool bumped = false;
+
+		if (drawRectangle.Width < textWidth && lastRectangle.Width != 0)
 		{
 			drawRectangle.Y = lastRectangle.Y - 36;
 			drawRectangle.Height = lastRectangle.Height + 36;
+			bumped = true;
 		}
 
 		lastRectangle = drawRectangle;
-		Main.spriteBatch.Draw(Gradient.Value, drawRectangle with { Width = 4 }, backCol * colorMul);
-		//Utils.DrawInvBG(Main.spriteBatch, drawRectangle, new Color((int)(backCol.R * colorMul), (int)(backCol.G * colorMul), (int)(backCol.B * colorMul), 255) * 0.925f * 0.85f);
+
+		if (bumped)
+			Main.spriteBatch.Draw(Gradient.Value, drawRectangle with { X = drawRectangle.X + 2, Width = (int)textWidth, Height = 4 }, backCol * colorMul);
+		
+		Main.spriteBatch.Draw(Gradient.Value, drawRectangle with { Width = 2 }, backCol * colorMul);
 
 		float scale = MathF.Min(MathF.Min(drawRectangle.Width - 8, drawRectangle.Height) / 70f, 1);
-		var bufferSize = new Vector2(12) * new Vector2(scale, 1f);
-		var position = drawRectangle.Location.ToVector2() + new Vector2(36, -12);
+		var position = drawRectangle.Location.ToVector2() + new Vector2(30, -22);
 
-		// Draws either the entry name or invalid
-		if (!hasEntry)
+		string text = displayText;
+		entry.Definition.Icon.Draw(position - new Vector2(36, 8));
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, entry.Definition.MappingColor, 0f, Vector2.Zero, Vector2.One);
+
+		if (strikeoutWidth > 0)
 		{
-			string text = entry.Definition.DisplayName.Value;
-
-			if (invalid)
-				text = Language.GetTextValue("Mods.SpiritReforged.Generation.Mapping.Invalid", entry.Definition.DisplayName.Value);
-
-			Main.spriteBatch.Draw(TextureAssets.MapIcon[3].Value, position - new Vector2(36, 6), Color.White);
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.White, 0f, Vector2.Zero, Vector2.One);
-			//DrawScaledText(font, position, text, drawRectangle, bufferSize);
-		}
-		else // Draws the entry name, crossed out, and the new name
-		{
-			string text = entry.Definition.DisplayName.Value;
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.Gray, 0f, Vector2.Zero, Vector2.One * scale);
-
-			float width = ChatManager.GetStringSize(font, text, Vector2.One).X * scale;
 			Vector2 strikeOutPos = position + Vector2.UnitY * 8 * scale;
-			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, strikeOutPos - new Vector2(2), new Rectangle(0, 0, (int)width + 4, (int)(6 * scale)), Color.Black);
-			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, strikeOutPos, new Rectangle(0, 0, (int)width, (int)(2 * scale)), Color.Gray);
-
-			position.X += width + 16;
-			string actualName = EcotoneMapperHooks.MappingEcotone!.DisplayName.Value;
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, actualName, position, Color.White, 0f, Vector2.Zero, Vector2.One * scale);
+			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, strikeOutPos - new Vector2(2), new Rectangle(0, 0, (int)strikeoutWidth + 4, 6), Color.Black);
+			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, strikeOutPos, new Rectangle(0, 0, (int)strikeoutWidth, 2), Color.Gray);
 		}
-	}
-
-	private static void DrawScaledText(DynamicSpriteFont font, Vector2 position, string text, Rectangle rectangle, Vector2 bufferSize)
-	{
-		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One);
-		rectangle.Width -= (int)bufferSize.X;
-		rectangle.Height -= (int)bufferSize.Y;
-		float scale = MathF.Min(MathF.Min(rectangle.Width / size.X, rectangle.Height / size.Y), 1);
-
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, Color.White, 0f, Vector2.Zero, new(scale));
 	}
 
 	private static void DrawDebug(DynamicSpriteFont font, float panX, float num2, EcotoneSurfaceMapping.EcotoneEntry entry)

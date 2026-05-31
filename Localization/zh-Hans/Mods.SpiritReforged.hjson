@@ -104,5 +104,5 @@ EcotoneEdges: {
 	// Crimson: Crimson
 	// Hallow: Hallow
 	// Savanna: "{$Ecotones.SavannaEcotone}"
-	// "Salt Flats": "{$Ecotones.SaltFlatsEcotone}"
+	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }

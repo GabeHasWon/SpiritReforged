@@ -30,7 +30,7 @@ internal class SavannaEcotone : EcotoneBase
 	public static List<Rectangle> SavannaAreas = new();
 	private static int Steps = 0;
 
-	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle"];
+	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];
 
 	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SavannaBiome>();
 

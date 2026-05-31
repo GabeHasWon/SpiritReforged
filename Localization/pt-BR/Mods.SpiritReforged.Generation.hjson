@@ -16,8 +16,8 @@ Pottery: Empilhando vasos
 Scarecrow: Assustando pássaros
 
 Mapping: {
-	// Exit: Press "Escape" to exit mapping early
-	// Tilde: Hold "Tilde" to hide the overlay
+	// Exit: Press "Escape" to exit mapping early (if paused)
+	// Tilde: Hold "Tilde" (~) to hide the overlay
 	/* Help:
 		'''
 		Ecotones are mapped across the surface of the world multiple times
@@ -37,7 +37,7 @@ Mapping: {
 	// Continue: Click this text to continue
 	// OrEscape: (or press the Escape key)
 	// Step: Mapping {0}
-	// Invalid: (Can't be selected - {0})
+	// Invalid: (Invalid - {0})
 }
 
 # Most of these will be unused in game, aside from Corruption and Crimson.
