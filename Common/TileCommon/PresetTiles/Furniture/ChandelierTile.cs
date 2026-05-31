@@ -6,7 +6,7 @@ using Terraria.GameContent.Drawing;
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 [AutoloadGlowmask("255,165,0", false)]
-public abstract class ChandelierTile : FurnitureTile//, ISwayTile
+public abstract class ChandelierTile : FurnitureTile
 {
 	/// <summary> Offsets the anchor and how wide it needs to be. Defaults to (1, 1), meaning the anchor only needs 1 tile in the middle of the 3 tile wide chandelier. </summary>
 	public virtual (int width, int count) AnchorDataOffsets => (1, 1);
@@ -106,39 +106,4 @@ public abstract class ChandelierTile : FurnitureTile//, ISwayTile
 
 		return rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 60, 1.26f, 3, true);
 	}
-
-	//public virtual void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
-	//{
-	//	if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
-	//		return;
-
-	//	var t = Main.tile[i, j];
-	//	var data = TileObjectData.GetTileData(t);
-
-	//	int height = data.CoordinateHeights[t.TileFrameY / data.CoordinateFullHeight];
-	//	var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, height);
-	//	var position = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + offset;
-
-	//	//Draw normally
-	//	spriteBatch.Draw(texture, position, source, color, rotation, origin, 1, SpriteEffects.None, 0);
-
-	//	var glowTexture = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
-
-	//	if (Info is LightedInfo l && l.Blur)
-	//	{
-	//		ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (uint)i);
-	//		for (int c = 0; c < 7; c++) //Draw our glowmask with a randomized position
-	//		{
-	//			float shakeX = Utils.RandomInt(ref randSeed, -10, 11) * 0.15f;
-	//			float shakeY = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
-	//			var shakeOffset = new Vector2(shakeX, shakeY);
-
-	//			spriteBatch.Draw(glowTexture, position + shakeOffset, source, new Color(100, 100, 100, 0), rotation, origin, 1, SpriteEffects.None, 0f);
-	//		}
-	//	}
-	//	else
-	//	{
-	//		spriteBatch.Draw(glowTexture, position, source, Color.White, rotation, origin, 1, SpriteEffects.None, 0);
-	//	}
-	//}
 }

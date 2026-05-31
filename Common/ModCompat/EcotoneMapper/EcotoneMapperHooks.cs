@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using MonoMod.Cil;
+﻿using MonoMod.Cil;
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
@@ -72,7 +71,6 @@ internal class EcotoneMapperHooks : ModSystem
 
 		MonoModHooks.Add(uiWorldLoadType.GetMethod("DrawSelf", BindingFlags.Instance | BindingFlags.NonPublic), DetourDrawSelf);
 
-		//On_Main.Update += ContinueGenIfPaused;
 		On_UIWorldCreation.MakeBackAndCreatebuttons += AddMapperButton;
 		On_WorldGenerator.GenerateWorld += AddMappingChecks;
 		On_AWorldListItem.GetIconElement += AddMappingIcon;
@@ -233,26 +231,19 @@ internal class EcotoneMapperHooks : ModSystem
 		}
 	}
 
+	/// <summary>
+	/// This is used to hang the generation thread until it's ready to continue.
+	/// </summary>
 	public static void ForcePauseOnWhatIWant()
 	{
 		if (!ReadyToContinue)
 		{
 			while (true)
 			{
-				// Holds the thread until we want something to do with it.
 				if (ReadyToContinue)
 					break;
 			}
 		}
-	}
-
-	public static void ModifyUpdateMap(ILContext context)
-	{
-		ILCursor c = new(context);
-		Type systemType = GetModSystemType();
-
-		if (!c.TryGotoNext(x => x.MatchStsfld(systemType.GetField("contents", BindingFlags.NonPublic | BindingFlags.Static))))
-			return;
 	}
 
 	private static Type GetModSystemType()

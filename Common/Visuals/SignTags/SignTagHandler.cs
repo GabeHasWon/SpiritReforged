@@ -207,7 +207,7 @@ internal class SignTagHandler : ILoadable
 			Main.instance.GraphicsDevice.SetRenderTarget(_drawingTarget);
 			Main.instance.GraphicsDevice.Clear(Color.Transparent);
 			
-			// Drawn without a matrix as as to not apply twice
+			// Drawn without a matrix so as to not apply twice
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, default, SamplerState.PointClamp, null, RasterizerState.CullNone, null, Matrix.Identity); 
 
 			PlayerInput.SetZoom_UI();
