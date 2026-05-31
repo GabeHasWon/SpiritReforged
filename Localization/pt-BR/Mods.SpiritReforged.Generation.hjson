@@ -37,6 +37,7 @@ Mapping: {
 	// Continue: Click to continue
 	// OrEscape: (or press the Escape key)
 	// Step: Mapping {0}
+	// Invalid: (can't be selected - {0})
 }
 
 # Most of these will be unused in game, aside from Corruption and Crimson.

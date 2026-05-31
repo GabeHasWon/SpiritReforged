@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles.Furniture;
 
@@ -8,12 +9,13 @@ public class LapisSet : FurnitureSet
 {
 	public override string Name => "Lapis";
 	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<CarvedLapis>(), new(0.9f, 0.9f, 0.74f), DustID.Cobalt);
-	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Candle);
+	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Candle, Types.Lantern);
 }
 
 public class LapisCandle : CandleTile
 {
 	public override IFurnitureData Info => ModContent.GetInstance<LapisSet>().GetInfo(this);
+
 	public override void StaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -31,4 +33,10 @@ public class LapisCandle : CandleTile
 		AdjTiles = [TileID.Candles];
 		DustType = -1;
 	}
+}
+
+[AutoloadGlowmask("0,0,0", false, true)]
+public class LapisLantern : LanternTile
+{
+	public override IFurnitureData Info => ModContent.GetInstance<LapisSet>().GetInfo(this);
 }
