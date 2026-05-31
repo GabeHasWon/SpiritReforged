@@ -43,7 +43,7 @@ ReforgedClientConfig: {
 			'''
 	}
 
-	Headers.Developer: 开发者顶部导航栏
+	Headers.Developer: 开发者工具
 }
 
 OceanShape: {
