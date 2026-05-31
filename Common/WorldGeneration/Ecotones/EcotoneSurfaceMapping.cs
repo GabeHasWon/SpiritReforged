@@ -55,7 +55,6 @@ public class EcotoneSurfaceMapping : ModSystem
 		public EcotoneEdgeDefinition Definition = definition;
 		public EcotoneEdgeDefinition Left;
 		public EcotoneEdgeDefinition Right;
-		public int CorruptionType = BiomeConversionID.Purity;
 
 		private bool _boundsPrepared = false;
 		private Rectangle _bounds = default;
@@ -278,7 +277,6 @@ public class EcotoneSurfaceMapping : ModSystem
 
 		int transitionCount = 0;
 		EcotoneEntry entry = null!;
-		int conversionType = BiomeConversionID.Purity;
 
 		for (int x = start; x < end; ++x)
 		{
@@ -298,31 +296,34 @@ public class EcotoneSurfaceMapping : ModSystem
 
 			if (transitionCount > TransitionLength && EcotoneEdgeDefinitions.TryGetEcotoneByTile(Main.tile[x, y].TileType, out var def) && def.Name != entry.Definition.Name)
 			{
+				int conversionType = BiomeConversionID.Purity;
+
 				if (def.Name == "Corruption")
 					conversionType = BiomeConversionID.Corruption;
 				else if (def.Name == "Crimson")
 					conversionType = BiomeConversionID.Crimson;
 				else if (def.Name == "Hallow")
 					conversionType = BiomeConversionID.Hallow;
-				else
+
+				if (conversionType != BiomeConversionID.Purity)
+					def = EcotoneEdgeDefinitions.GetEcotone("Forest");
+
+				if (x <= WorldGen.beachDistance + 20 || x >= Main.maxTilesX - WorldGen.beachDistance - 20)
+					def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+
+				EcotoneEdgeDefinition old = entry.Definition;
+				entry.End = new Point(x, y);
+				entry.Right = def;
+				entry.CorruptionType = conversionType;
+
+				if (def.Name != old.Name)
 				{
-					EcotoneEdgeDefinition old = entry.Definition;
-					entry.End = new Point(x, y);
-					entry.Right = def;
-					entry.CorruptionType = conversionType;
+					Entries.Add(entry);
 
-					if (x <= WorldGen.beachDistance + 20 || x >= Main.maxTilesX - WorldGen.beachDistance - 20)
-						def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-
-					if (def.Name != old.Name)
-					{
-						Entries.Add(entry);
-
-						entry = new EcotoneEntry(new Point(x, y), def);
-						entry.Left = old;
-						transitionCount = 0;
-						conversionType = BiomeConversionID.Purity;
-					}
+					entry = new EcotoneEntry(new Point(x, y), def);
+					entry.Left = old;
+					transitionCount = 0;
+					conversionType = BiomeConversionID.Purity;
 				}
 			}
 

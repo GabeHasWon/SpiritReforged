@@ -34,7 +34,7 @@ Mapping: {
 	Enable: enable
 	Disable: disable
 	Select: Click areas to force {0} to spawn there.
-	Continue: Click to continue
+	Continue: Click this text to continue
 	OrEscape: (or press the Escape key)
 	Step: Mapping {0}
 	Invalid: (can't be selected - {0})

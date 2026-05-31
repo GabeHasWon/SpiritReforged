@@ -20,27 +20,33 @@ internal class EcotoneMapperHooks : ModSystem
 	public readonly record struct EcotoneEntryPair(EcotoneBase Ecotone, EcotoneSurfaceMapping.EcotoneEntry Entry);
 
 	public static bool Enabled => CrossMod.WorldGenPreviewer.Enabled;
-	public static bool DebugEnabled => Enabled && ModContent.GetInstance<ReforgedClientConfig>().DebugEcotones;
-	public static bool ManualEnabled => Enabled && ActuallyManuallyMapping;
-	public static bool AnyEnabled => ManualEnabled && DebugEnabled;
 
 	public static Dictionary<int, EcotoneEntryPair> ForcedEcotones = [];
 
 	/// <summary>
-	/// Whether the user actually wants the manual ecotone mapping system.
+	/// If true, the world is being manually mapped.
 	/// </summary>
 	public static bool ActuallyManuallyMapping { get; internal set; }
 
+	/// <summary>
+	/// The current ecotone being mapped. This is set automatically if a <see cref="EcotonePass"/> is properly used.
+	/// </summary>
 	public static EcotoneBase MappingEcotone { get; internal set; }
 
 	/// <summary>
-	/// Used to pause world generation.
+	/// Used to pause world generation between threads. Set this to true to continue the generation.
 	/// </summary>
 	internal static bool ReadyToContinue = true;
 
+	/// <summary>
+	/// Whether this world was manually mapped or not. This is solely a marker and does nothing but show the "manually mapped" icon on the world select screen.
+	/// </summary>
 	[WorldBound]
 	public bool ManuallyMappedWorld = false;
 
+	/// <summary>
+	/// If any ecotone of type <typeparamref name="T"/> has been forced.
+	/// </summary>
 	public static bool AnyForced<T>() where T : EcotoneBase
 	{
 		foreach (EcotoneEntryPair pair in ForcedEcotones.Values)
@@ -66,7 +72,7 @@ internal class EcotoneMapperHooks : ModSystem
 
 		MonoModHooks.Add(uiWorldLoadType.GetMethod("DrawSelf", BindingFlags.Instance | BindingFlags.NonPublic), DetourDrawSelf);
 
-		On_Main.Update += SimpleCheck;
+		//On_Main.Update += ContinueGenIfPaused;
 		On_UIWorldCreation.MakeBackAndCreatebuttons += AddMapperButton;
 		On_WorldGenerator.GenerateWorld += AddMappingChecks;
 		On_AWorldListItem.GetIconElement += AddMappingIcon;
@@ -197,14 +203,6 @@ internal class EcotoneMapperHooks : ModSystem
 		orig(self, spriteBatch);
 
 		EcotoneMapperDisplay.DrawSelectionAreas();
-	}
-
-	private void SimpleCheck(On_Main.orig_Update orig, Main self, GameTime gameTime)
-	{
-		orig(self, gameTime);
-
-		if (Main.keyState.IsKeyDown(Keys.Escape) && Main.oldKeyState.IsKeyUp(Keys.Escape))
-			ReadyToContinue = true;
 	}
 
 	public static void ModifyGenerateWorld(ILContext context)
