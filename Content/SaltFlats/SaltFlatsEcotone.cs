@@ -132,11 +132,15 @@ internal class SaltFlatsEcotone : EcotoneBase
 		int leftBound = bounds.Item1;
 		int rightBound = bounds.Item2;
 
+		leftBound = Math.Max(leftBound, Main.offLimitBorderTiles + 1);
+		rightBound = Math.Min(rightBound, Main.maxTilesX - Main.offLimitBorderTiles - 1);
+
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
 		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, 3);
 		int finalLength = (rightBound - leftBound) / steps;
+
 		int y = EcotoneSurfaceMapping.TotalSurfaceY[(short)leftBound];
 		Rectangle area = Rectangle.Empty;
 		SaltFlatsSystem.SurfaceHeight = Main.maxTilesY;

@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.WorldBuilding;
+using static SpiritReforged.Common.WorldGeneration.GenTypes;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
@@ -276,20 +277,16 @@ public class EcotoneSurfaceMapping : ModSystem
 		end = Math.Min(end, Main.maxTilesX - Fluff);
 
 		int transitionCount = 0;
-		EcotoneEntry entry = null!;
+		EcotoneEntry entry = new(new Point(Main.offLimitBorderTiles, 80), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+		entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+		ManuallyMapEntry(entry, Main.offLimitBorderTiles..start);
 
 		for (int x = start; x < end; ++x)
 		{
 			int y = 80;
 
 			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
-				y++; //Skip over clouds
-
-			if (entry is null)
-			{
-				entry = new EcotoneEntry(new Point(WorldGen.beachDistance + 20, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
-				entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-			}
+				y++; // Skip over clouds
 
 			if (!entry.TileFits(x, y))
 				transitionCount++;
@@ -317,7 +314,7 @@ public class EcotoneSurfaceMapping : ModSystem
 
 				if (def.Name != old.Name)
 				{
-					Entries.Add(entry);
+					AddEntry(entry);
 
 					entry = new EcotoneEntry(new Point(x, y), def);
 					entry.Left = old;
@@ -333,7 +330,15 @@ public class EcotoneSurfaceMapping : ModSystem
 		}
 
 		entry.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-		Entries.Add(entry);
+		AddEntry(entry);
+
+		EcotoneEntry rightEdge = new(entry.End, EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+		rightEdge.Left = entry.Definition;
+		rightEdge.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+		rightEdge.End = new Point(Main.maxTilesX - Main.offLimitBorderTiles, 80);
+		ManuallyMapEntry(rightEdge, rightEdge.Start.X..(Main.maxTilesX - Main.offLimitBorderTiles));
+		Entries.Add(rightEdge);
+
 		Entries = [.. Entries.OrderBy(x => x.Start.X)];
 
 		foreach (EcotoneEntry curEntry in Entries)
@@ -344,12 +349,42 @@ public class EcotoneSurfaceMapping : ModSystem
 			EcotoneMapperHooks.ReadyToContinue = false;
 			EcotoneMapperHooks.MappingEcotone = referenceEcotone;
 		}
+	}
 
-		static void MapPoint(int x, int y, EcotoneEntry entry)
+	private static void AddEntry(EcotoneEntry entry)
+	{
+		// This fixes a weird issue I can't replicate but saw a few times. Don't mind it lol
+		if (entry.Width > 2000 && entry.Definition.Name == "Ocean")
 		{
-			entry.SurfacePoints.Add(new Point(x, y));
-			TotalSurfaceY.Add((short)x, (short)y);
+			if (entry.Start.X < Main.maxTilesX / 2)
+				entry.End.X = WorldGen.beachDistance;
+			else
+			{
+				entry.Start.X = Main.maxTilesX - WorldGen.beachDistance;
+				entry.End.X = Main.maxTilesX - Main.offLimitBorderTiles;
+			}
 		}
+
+		Entries.Add(entry);
+	}
+
+	private static void ManuallyMapEntry(EcotoneEntry entry, Range xRange)
+	{
+		for (int x = xRange.Start.Value; x < xRange.End.Value; ++x)
+		{
+			int y = 80;
+
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; // Skip over clouds
+
+			MapPoint(x, y, entry);
+		}
+	}
+
+	private static void MapPoint(int x, int y, EcotoneEntry entry)
+	{
+		entry.SurfacePoints.Add(new Point(x, y));
+		TotalSurfaceY.TryAdd((short)x, (short)y);
 	}
 
 	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="predicate"/>.<para/>
