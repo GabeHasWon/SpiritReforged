@@ -144,8 +144,8 @@ ScarabLightPetBuff: {
 }
 
 ScarabMountBuff: {
-	// DisplayName: Pillbug Mount
-	// Description: "'Hold on!'"
+	DisplayName: Montaria de tatu-bola
+	Description: "'Segura ai!'"
 }
 
 DivineStrike: {

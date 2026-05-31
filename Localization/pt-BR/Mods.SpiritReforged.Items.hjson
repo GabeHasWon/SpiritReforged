@@ -3021,7 +3021,7 @@ LocustCrook: {
 }
 
 IridescentDye: {
-	DisplayName: Tintura iridescente
+	DisplayName: Tintura Iridescente
 	Tooltip: ""
 }
 
@@ -3052,93 +3052,93 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	// DisplayName: Honeysuckle Bud
-	// Tooltip: Summons a pillbug mount
+	DisplayName: Botão de Madressilva
+	Tooltip: Invoca uma montaria de tatu-bola
 }
 
 SandySandstoneItem: {
-	// DisplayName: Sandy Sandstone
-	// Tooltip: ""
+	DisplayName: Lápide Arenosa
+	Tooltip: ""
 }
 
 TerracottaTombstoneItem: {
-	// DisplayName: Terracotta Tombstone
-	// Tooltip: ""
+	DisplayName: Lápide de Terracota
+	Tooltip: ""
 }
 
 TerracottaGraveMarkerItem: {
-	// DisplayName: Terracotta Grave Marker
-	// Tooltip: ""
+	DisplayName: Cova de Terracota
+	Tooltip: ""
 }
 
 TerracottaGravestoneItem: {
-	// DisplayName: Terracotta Gravestone
-	// Tooltip: ""
+	DisplayName: Túmulo de Terracota
+	Tooltip: ""
 }
 
 TerracottaObeliskItem: {
-	// DisplayName: Terracotta Obelisk
-	// Tooltip: ""
+	DisplayName: Obelisco de Terracota
+	Tooltip: ""
 }
 
 DrywoodTombstoneItem: {
-	// DisplayName: Drywood Tombstone
-	// Tooltip: ""
+	DisplayName: Lápide de Madeira Seca
+	Tooltip: ""
 }
 
 SavannaGravestoneItem: {
-	// DisplayName: Savanna Gravestone
-	// Tooltip: ""
+	DisplayName: Túmulo da Savana
+	Tooltip: ""
 }
 
 DrywoodGraveMarkerItem: {
-	// DisplayName: Drywood Grave Marker
-	// Tooltip: ""
+	DisplayName: Cova de Madeira Seca
+	Tooltip: ""
 }
 
 DrywoodCrossGraveMarkerItem: {
-	// DisplayName: Drywood Cross Grave Marker
-	// Tooltip: ""
+	DisplayName: Lápide com Cruz de Madeira Seca
+	Tooltip: ""
 }
 
 ModernObeliskItem: {
-	// DisplayName: Modern Obelisk
-	// Tooltip: ""
+	DisplayName: Obelisco Moderno
+	Tooltip: ""
 }
 
 ModernTombscreenItem: {
-	// DisplayName: Modern Tombscreen
-	// Tooltip: ""
+	DisplayName: Túmulo Moderno
+	Tooltip: ""
 }
 
 ModernGravestoneItem: {
-	// DisplayName: Modern Gravestone
-	// Tooltip: ""
+	DisplayName: Lápide Moderna
+	Tooltip: ""
 }
 
 ModernHeadstoneItem: {
-	// DisplayName: Modern Headstone
-	// Tooltip: ""
+	DisplayName: Cova Moderna
+	Tooltip: ""
 }
 
 SaltHeadstoneItem: {
-	// DisplayName: Salt Headstone
-	// Tooltip: ""
+	DisplayName: Cova de Sal
+	Tooltip: ""
 }
 
 SaltTombstoneItem: {
-	// DisplayName: Salt Tombstone
-	// Tooltip: ""
+	DisplayName: Túmulo de Sal
+	Tooltip: ""
 }
 
 SaltGravestoneItem: {
-	// DisplayName: Salt Gravestone
-	// Tooltip: ""
+	DisplayName: Lápide de Sal
+	Tooltip: ""
 }
 
 SaltGraveMarkerItem: {
-	// DisplayName: Salt Grave Marker
-	// Tooltip: ""
+	DisplayName: Obelisco de Sal
+	Tooltip: ""
 }
 
 ChromaticWax: {
