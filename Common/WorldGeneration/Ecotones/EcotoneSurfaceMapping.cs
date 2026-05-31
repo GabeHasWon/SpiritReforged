@@ -314,7 +314,6 @@ public class EcotoneSurfaceMapping : ModSystem
 				EcotoneEdgeDefinition old = entry.Definition;
 				entry.End = new Point(x, y);
 				entry.Right = def;
-				entry.CorruptionType = conversionType;
 
 				if (def.Name != old.Name)
 				{
