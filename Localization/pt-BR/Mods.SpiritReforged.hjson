@@ -95,7 +95,6 @@ InfoDisplays: {
 	}
 }
 
-
 Ecotones: {
 	SaltFlatsEcotone: Salinas
 	SavannaEcotone: Savana
@@ -112,17 +111,6 @@ EcotoneEdges: {
 	Hallow: Consagração
 	Savanna: "{$Ecotones.SavannaEcotone}"
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
-}
-	// Forest: Forest
-	// Desert: Desert
-	// Ocean: Ocean
-	// Snow: Snow
-	// Jungle: Jungle
-	// Corruption: Corruption
-	// Crimson: Crimson
-	// Hallow: Hallow
-	// Savanna: "{$Ecotones.SavannaEcotone}"
-	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
 // DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

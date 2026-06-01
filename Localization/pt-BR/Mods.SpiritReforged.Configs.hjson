@@ -36,7 +36,7 @@ ReforgedClientConfig: {
 	}
 
 	DebugEcotones: {
-	    Label: Debug de Ecotonos (com o World Gen Previewer)
+		Label: Debug de Ecotonos (com o World Gen Previewer)
 		Tooltip:
 			'''
 			PRECISA de World Gen Previewer Mod.

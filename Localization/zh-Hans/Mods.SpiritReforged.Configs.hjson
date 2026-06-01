@@ -34,9 +34,10 @@ ReforgedClientConfig: {
 		Label: 禁用水体视觉效果
 		Tooltip: 禁用魂灵新魄水体的视觉效果。
 	}
+
 	DebugEcotones: {
 		Label: 过渡带调试（World Gen Previewer）
-		Tooltip: 
+		Tooltip:
 			'''
 			需要World Gen Previewer（世界生成预览）
 			允许开发者和玩家通过一个实用的叠加界面使用过渡带系统，来调试问题并理解过渡带。
