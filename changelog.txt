@@ -1,5 +1,8 @@
 v0.2.0.5
+English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
+
 - Added new "Labyrinth" secret seed
+	Accepted seeds: labyrinth, ziggurat, zig, biggurat, zargantuar
 - Added new Manual Ecotone Mapping functionality for world generation
 	There's a new button right next to the name plate for worlds which enables/disables this functionality
 - Added new Ecotone Debugging visualization for internal and cross-mod use
