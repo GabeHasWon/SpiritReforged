@@ -25,3 +25,5 @@ English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
 - Fixed our custom chandeliers not having the exact same sway visuals as vanilla's chandeliers
 - Fixed Otherworldly Radio not being consumable despite being placeable, allowing it to be infinitely farmed
 - Fixed Savanna Grass Seeds placing multiple times per use
+- Fixed some issues Scarabeus had in multiplayer
+- Fixed issue where the mod would try to load unloaded bosses, causing issues if a mod is added then removed
