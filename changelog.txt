@@ -1,5 +1,8 @@
-v0.2.0.5
+v0.2.0.5 - Surveyor Patch
+English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
+
 - Added new "Labyrinth" secret seed
+	Accepted seeds: labyrinth, ziggurat, zig, biggurat, zargantuar
 - Added new Manual Ecotone Mapping functionality for world generation
 	There's a new button right next to the name plate for worlds which enables/disables this functionality
 - Added new Ecotone Debugging visualization for internal and cross-mod use
@@ -7,7 +10,7 @@ v0.2.0.5
 
 - Fixed Oasis crash issue with Remnants
 - Fixed naturally generated Lapis Dressers not generating with chests properly
-- Added small loot pool for Lapis Dressers
+- Added small loot pool for Lapis Dressers in Ziggurat
 - Allowed Candelabras and Candles to spawn on Lapis Dressers
 - Fixed Gilded Greatbow doing nonsense in multiplayer
 - Dunce Crabs now fall substantially slower in water
@@ -22,3 +25,5 @@ v0.2.0.5
 - Fixed our custom chandeliers not having the exact same sway visuals as vanilla's chandeliers
 - Fixed Otherworldly Radio not being consumable despite being placeable, allowing it to be infinitely farmed
 - Fixed Savanna Grass Seeds placing multiple times per use
+- Fixed some issues Scarabeus had in multiplayer
+- Fixed issue where the mod would try to load unloaded bosses, causing issues if a mod is added then removed

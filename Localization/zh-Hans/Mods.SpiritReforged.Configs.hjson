@@ -36,15 +36,15 @@ ReforgedClientConfig: {
 	}
 
 	DebugEcotones: {
-		// Label: Ecotone Debugging (with World Gen Previewer)
-		/* Tooltip:
+		Label: 过渡带调试（World Gen Previewer）
+		Tooltip:
 			'''
-			REQUIRES World Gen Previewer.
-			Allows developers and players using the Ecotone system to debug issues with and understand ecotones with a helpful overlay.
-			''' */
+			需要World Gen Previewer（世界生成预览）
+			允许开发者和玩家通过一个实用的叠加界面使用过渡带系统，来调试问题并理解过渡带。
+			'''
 	}
 
-	// Headers.Developer: Developer Header
+	Headers.Developer: 开发者工具
 }
 
 OceanShape: {

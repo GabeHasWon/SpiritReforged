@@ -4,7 +4,6 @@ using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using Terraria.GameInput;
 using Terraria.UI.Chat;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
@@ -55,7 +54,7 @@ internal class EcotoneMapperDisplay : ModSystem
 
 		PlayerInput.SetZoom_Unscaled();
 		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Matrix.Identity);
 
 		float num20 = Main.mapFullscreenPos.X;
 		float num21 = Main.mapFullscreenPos.Y;
