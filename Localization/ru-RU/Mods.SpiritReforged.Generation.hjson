@@ -17,7 +17,7 @@ Scarecrow: Распугивание птиц...
 
 Mapping: {
 	// Exit: Press "Escape" to exit mapping early (if paused)
-	// Tilde: Hold "Tilde" (~) to hide the overlay
+	Tilde: Удерживайте клавишу «тильда» (~/ё), чтобы скрыть меню
 	/* Help:
 		'''
 		Ecotones are mapped across the surface of the world multiple times
@@ -30,14 +30,14 @@ Mapping: {
 		Blue rectangle is the start-to-end size, i.e. the mapped surface start and end
 		The size shown above the ecotone is the size of the red rectangle, alongside the height of the blue
 		''' */
-	// Toggle: Click to {0} manual ecotone selection during world generation.
-	// Enable: enable
-	// Disable: disable
-	// Select: Click areas to force {0} to spawn there.
-	// Continue: Click this text to continue
-	// OrEscape: (or press the Escape key)
-	// Step: Mapping {0}
-	// Invalid: (Invalid - {0})
+	Toggle: Нажмите, чтобы {0} ручную расстановку экотонов во время генерации.
+	Enable: включить
+	Disable: отключить
+	Select: Нажимайте по выделенным зонам, чтобы принудительно сгененировать {0}
+	Continue: Нажмите по этому тексту, чтобы продолжить
+	OrEscape: (или нажмите Escape)
+	Step: Расстановка {0}
+	Invalid: (Недоступно: {0})
 }
 
 Signs: {
