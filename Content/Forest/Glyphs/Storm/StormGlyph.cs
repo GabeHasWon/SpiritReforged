@@ -5,59 +5,64 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Forest.Glyphs.Rot;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using static AssGen.Assets;
+using static SpiritReforged.Content.Ziggurat.Windshear.WindshearScepter;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
+	/// this is from windshear scepter with minor changes to color
 	[Autoload(Side = ModSide.Client)]
 	public sealed class StormMetaballSystem : ModSystem
 	{
-		private static readonly ModTarget2D CloudTarget = new(static () => CloudParticleRenderer.Particles.Count != 0 || Data.Count != 0, DrawCloudTarget);
-		private static readonly ParticleRenderer CloudParticleRenderer = new();
+		private static readonly ModTarget2D StormTarget = new(static () => StormParticleRenderer.Particles.Count != 0 || Data.Count != 0, DrawCloudTarget);
+		private static readonly ParticleRenderer StormParticleRenderer = new();
 		private static readonly HashSet<DrawData> Data = [];
 
-		public static void Add(ABasicParticle particle) => CloudParticleRenderer.Add(particle);
+		public static void Add(ABasicParticle particle) => StormParticleRenderer.Add(particle);
 		public static void Add(DrawData drawData) => Data.Add(drawData);
 
 		public override void Load() => On_Main.DrawProjectiles += DrawShader;
 
 		private static void DrawShader(On_Main.orig_DrawProjectiles orig, Main self)
 		{
-			orig(self);
-
-			if (CloudTarget != null && CloudTarget.Active)
+			if (StormTarget != null && StormTarget.Active)
 			{
 				Effect s = AssetLoader.LoadedShaders["CloudMetaball"].Value;
 				SpriteBatch spriteBatch = Main.spriteBatch;
 
-				s.Parameters["primaryColor"].SetValue(Color.White.ToVector4());
-				s.Parameters["secondaryColor"].SetValue(new Color(0.3f, 0.3f, 0.5f).ToVector4());
+				s.Parameters["primaryColor"].SetValue(Color.LightCyan.ToVector4());
+				s.Parameters["secondaryColor"].SetValue(new Color(50, 50, 50, 150).ToVector4());
 				s.Parameters["numColors"].SetValue(3);
 				ShaderHelpers.SetEffectMatrices(ref s);
 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
 
-				spriteBatch.Draw(CloudTarget, Vector2.Zero, Color.White);
+				spriteBatch.Draw(StormTarget, Vector2.Zero, Color.White);
 
 				spriteBatch.End();
 			}
+
+			orig(self);
 		}
 
 		private static void DrawCloudTarget(SpriteBatch spriteBatch)
 		{
-			CloudParticleRenderer.Settings.AnchorPosition = -Main.screenPosition;
-			CloudParticleRenderer.Draw(spriteBatch);
+			StormParticleRenderer.Settings.AnchorPosition = -Main.screenPosition;
+			StormParticleRenderer.Draw(spriteBatch);
 
 			foreach (DrawData data in Data)
 				spriteBatch.Draw(data.texture, data.position, data.sourceRect, data.color, data.rotation, data.origin, data.scale, data.effect, 0);
@@ -65,7 +70,7 @@ public class StormGlyph : GlyphItem
 			Data.Clear();
 		}
 
-		public override void PostUpdateProjectiles() => CloudParticleRenderer.Update();
+		public override void PostUpdateProjectiles() => StormParticleRenderer.Update();
 	}
 
 	public class StormParticle(int style) : ABasicParticle
@@ -88,7 +93,7 @@ public class StormGlyph : GlyphItem
 			}
 			else
 			{
-				Velocity *= 0.99f;
+				Velocity *= 0.95f;
 				Rotation += Velocity.X * 0.01f;
 
 				int halfTime = TimeToLive / 2;
@@ -159,6 +164,9 @@ public class StormGlyph : GlyphItem
 		public override bool InstancePerEntity => true;
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly;
 
+		private readonly ParticleRenderer _stormParticleRenderer = new();
+		private VertexTrail[] _trails;
+
 		public bool doVisuals;
 		public bool doWindBurst;
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
@@ -184,6 +192,24 @@ public class StormGlyph : GlyphItem
 		{
 			if (doVisuals)
 			{
+				if (!Main.dedServ)
+				{
+					if (_trails == null)
+						CreateTrail(projectile);
+
+					foreach (VertexTrail trail in _trails)
+						trail.Update();
+				}
+
+				if (projectile.timeLeft % 3 == 0)
+				{
+					Vector2 pos = projectile.Center;
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.White * 0.15f, 0.03f, EaseFunction.EaseQuadOut, 60, false));
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.LightCyan * 0.25f, 0.02f, EaseFunction.EaseQuadOut, 60, false));
+				}
+
 				if (doWindBurst)
 				{
 					if (Main.rand.NextBool(17))
@@ -196,47 +222,16 @@ public class StormGlyph : GlyphItem
 						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
 					}
 
-					if (Main.rand.NextBool())
+					StormMetaballSystem.Add(new StormParticle(Main.rand.Next(2))
 					{
-						Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
-						Vector2 velocity = -projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.2f);
-						float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 40, 5, DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 40, 5, DecelerateAction));
-					}
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(5f, 5f), -projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.5f), Color.LightCyan * 0.2f, Main.rand.NextFloat(0.04f, 0.09f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(90), false));
+						LocalPosition = projectile.Center,
+						Scale = Vector2.One * Main.rand.NextFloat(0.4f, 0.8f),
+						Velocity = projectile.velocity * Main.rand.NextFloat(),
+						TimeToLive = 30,
+						Opacity = 1f,
+						Rotation = Main.rand.NextFloat()
+					});
 				}
-				else
-				{
-					if (Main.rand.NextBool(30))
-					{
-						Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
-						Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
-						float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-					}
-
-					if (Main.rand.NextBool(20))
-					{
-						Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(20f, 20f);
-						Vector2 velocity = -projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.4f);
-						float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 90, 5, DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 5, DecelerateAction));
-
-						ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity, Color.White * 0.15f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
-					}
-
-					if (projectile.timeLeft % 3 == 0)
-					{
-						ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(5f, 5f), -projectile.velocity * Main.rand.NextFloat(0.2f), Color.LightCyan * 0.15f, Main.rand.NextFloat(0.02f, 0.07f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(90), false));
-					}
-				}			
 
 				// yes this is silly
 				// yes I think this is the most reasonable way to do this
@@ -329,6 +324,51 @@ public class StormGlyph : GlyphItem
 					}
 				}
 			}
+		}
+
+		public override bool PreDraw(Projectile projectile, ref Color lightColor)
+		{
+			var star = AssetLoader.LoadedTextures["Star"].Value;
+
+			if (doVisuals)
+			{
+				_stormParticleRenderer.Draw(Main.spriteBatch);
+
+				if (_trails != null)
+				{
+					foreach (VertexTrail trail in _trails)
+					{
+						trail.Opacity = 1f;
+						trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, Main.spriteBatch.GraphicsDevice);
+					}
+				}
+
+				if (doWindBurst) 
+					Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.15f, 0f, 0f);
+
+			}
+
+			return base.PreDraw(projectile, ref lightColor);
+		}
+
+		private void CreateTrail(Projectile proj)
+		{
+			ITrailCap tCap = new RoundCap();
+			ITrailPosition tPos = new EntityTrailPosition(proj);
+			ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
+
+			_trails =
+			[
+				new VertexTrail(new GradientTrail(Color.LightCyan, Color.Transparent, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 40, 150, -2),
+				new VertexTrail(new StandardColorTrail(Color.Gray * 0.25f), tCap, tPos, tShader, 20, 150, -2),
+			];
+
+			if (doWindBurst)
+				_trails =
+				[
+					.. _trails,
+                    new VertexTrail(new GradientTrail(Color.LightCyan.Additive(), Color.White.Additive() * 0.2f, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 10, 170, -2),
+				];
 		}
 
 		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
@@ -483,24 +523,42 @@ public class StormGlyph : GlyphItem
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		if (tilePosition is null && item.velocity == Vector2.Zero)
-			tilePosition = FindGroundFromPosition(item.Top);
+			tilePosition = FindGroundFromPosition(item.Center);
 
 		gravity *= 0.33f;
 
-		if (tilePosition.HasValue && Math.Abs(item.position.Y - tilePosition.Value.Y) < 60)
-			item.velocity.Y -= 0.1f;
+		if (tilePosition.HasValue && Math.Abs(item.Center.Y - tilePosition.Value.Y) < 24 && Math.Abs(item.Center.Y - tilePosition.Value.Y) > 0)
+			item.velocity.Y -= 0.12f;
 
 		if (item.velocity.X != 0)
 			tilePosition = null;
 
-		if (Main.rand.NextBool(15))
+		if (item.velocity.Y < 0)
 		{
-			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
+			if (Main.rand.NextBool(3))
+			{
+				Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 2, item.width / 2), -Main.rand.Next(item.height / 4));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2Circular(1f, 1f), Color.White * 0.15f, 0.1f, EaseFunction.EaseQuadOut, 60, false));
+				StormMetaballSystem.Add(new StormParticle(Main.rand.Next(2))
+				{
+					LocalPosition = pos,
+					Scale = Vector2.One * Main.rand.NextFloat(0.3f, 0.5f),
+					Velocity = Vector2.UnitY * Main.rand.NextFloat(2f),
+					TimeToLive = 20,
+					Opacity = 1f,
+					Rotation = Main.rand.NextFloat()
+				});
+			}
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2Circular(1f, 1f), Color.LightCyan * 0.25f, 0.06f, EaseFunction.EaseQuadOut, 60, false));
-		}
+			if (Main.rand.NextBool(5))
+			{
+				Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
+
+				ParticleHandler.SpawnParticle(new SmokeCloud(pos, Vector2.UnitY * Main.rand.NextFloat(2f), Color.White * 0.25f, 0.06f, EaseFunction.EaseQuadOut, 60, false));
+
+				ParticleHandler.SpawnParticle(new SmokeCloud(pos, Vector2.UnitY * Main.rand.NextFloat(2f), Color.LightCyan * 0.35f, 0.04f, EaseFunction.EaseQuadOut, 60, false));
+			}
+		}		
 
 		if (Main.rand.NextBool(50))
 		{
