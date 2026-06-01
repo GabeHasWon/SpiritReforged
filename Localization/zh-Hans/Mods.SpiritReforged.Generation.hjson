@@ -3,17 +3,42 @@ Stargrass: 正在生长星草
 HerosMemorial: 正在缅怀一位英雄
 Butterfly: 正在隐藏蝴蝶圣地
 FishingCoves: 正在添加钓鱼点
-PopulateOcean: 正在填充海盐
+PopulateOcean: 正在填充海洋
 Gravel: 正在放置砾石
 SavannaTerrain: 正在创造高原
 SavannaObjects: 正在填充稀树平原
 SaltFlats: 正在添加盐
-Ecotones: 正在绘制生态区地图
+Ecotones: 正在绘制过渡带地图
 Caves: 正在装饰洞穴
 DesertExtras: 正在将秘密藏到沙子中
 NeonMosses: 正在生长苔藓
 Pottery: 正在储藏罐子
 Scarecrow: 正在惊吓小鸟
+
+Mapping: {
+	Exit: 按“Escape”键提前退出地图绘制（如果已暂停）
+	Tilde: 长按“波浪”（~）键隐藏叠加界面
+	Help:
+		'''
+		过渡带会被多次绘制在世界地表
+		它们附带有三个“定义”：左边缘、自身和右边缘
+		比如像 森林 < 沙漠 < 森林 这样的形式
+		    左边缘是森林
+		    当前生物群系是沙漠
+		    右边缘是森林
+		它们的红色矩形表示其最小/最大范围的边界
+		蓝色矩形表示从起点到终点的尺寸，也就是映射表面的起点和终点
+		过渡带上方显示的数值是红色矩形的尺寸，以及蓝色矩形的高度
+		'''
+	Toggle: 在世界生成期间点击{0}以手动选择过渡带。
+	Enable: 启用
+	Disable: 禁用
+	Select: 点击区域以强制{0}在此处生成。
+	Continue: 点击文本以继续
+	OrEscape: （或按Escape键）
+	Step: 正在绘制{0}
+	Invalid: （无效 - {0}）
+}
 
 Signs: {
 	Underground: {

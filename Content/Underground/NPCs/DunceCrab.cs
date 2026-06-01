@@ -196,6 +196,12 @@ public class DunceCrab : ModNPC
 		{
 			NPC.velocity.X = 0;
 			NPC.velocity.Y += 1f;
+
+			if (NPC.velocity.Y > 60)
+				NPC.velocity.Y = 60;
+
+			if (Collision.WetCollision(NPC.position, NPC.width, NPC.height))
+				NPC.position.Y -= NPC.velocity.Y * 0.85f;
 		}
 
 		NPC.rotation = MathHelper.Pi;

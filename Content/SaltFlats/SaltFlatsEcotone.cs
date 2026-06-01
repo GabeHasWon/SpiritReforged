@@ -1,8 +1,7 @@
-﻿using ReLogic.Utilities;
-using SpiritReforged.Common;
+﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WorldGeneration;
@@ -12,17 +11,14 @@ using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
-using SpiritReforged.Content.Savanna.Tiles.Paintings;
-using SpiritReforged.Content.Ziggurat.Tiles;
-using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Generation;
 using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
@@ -56,10 +52,11 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	[WorldBound]
-	public static Rectangle SaltFlatsArea;
+	public static List<Rectangle> SaltFlatsAreas = new();
 
 	private static FastNoiseLite Noise;
 
+	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
 	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
 
 	/// <summary> Converts pots placed atop dull salt into stone stupas. </summary>
@@ -82,7 +79,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Beaches") is int index && index != -1)
-			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
+			tasks.Insert(index, new EcotonePass("Salt Flats", Generation, this));
 	}
 
 	private static bool CanGenerate(out (int, int) bounds)
@@ -98,11 +95,11 @@ internal class SaltFlatsEcotone : EcotoneBase
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) 
-			&& EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x), false) 
+			is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
-			return true; //Uniquely, salt flats cannot normally generate over spawn
+			return true; // Uniquely, salt flats cannot normally generate over spawn
 		}
 
 		return false;
@@ -110,20 +107,40 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
-		SaltFlatsArea = Rectangle.Empty;
+		if (EcotoneMapperHooks.AnyForced<SaltFlatsEcotone>())
+		{
+			foreach (EcotoneMapperHooks.EcotoneEntryPair pair in EcotoneMapperHooks.ForcedEcotones.Values)
+			{
+				const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
+
+				GenerateIndividualFlats(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
+			}
+		}
+
+		SaltFlatsAreas.Clear();
+
 		if (!CanGenerate(out var bounds))
 			return;
 
+		GenerateIndividualFlats(progress, bounds);
+	}
+
+	private static void GenerateIndividualFlats(GenerationProgress progress, (int, int) bounds)
+	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		int leftBound = bounds.Item1;
 		int rightBound = bounds.Item2;
+
+		leftBound = Math.Max(leftBound, Main.offLimitBorderTiles + 1);
+		rightBound = Math.Min(rightBound, Main.maxTilesX - Main.offLimitBorderTiles - 1);
 
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
 		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, 3);
 		int finalLength = (rightBound - leftBound) / steps;
+
 		int y = EcotoneSurfaceMapping.TotalSurfaceY[(short)leftBound];
 		Rectangle area = Rectangle.Empty;
 		SaltFlatsSystem.SurfaceHeight = Main.maxTilesY;
@@ -148,9 +165,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		SaltFlatsArea = area;
-		Decorate(SaltFlatsArea);
-		WorldDetours.Regions.Add(new(SaltFlatsArea, WorldDetours.Context.Piles));
+		SaltFlatsAreas.Add(area);
+		Decorate(area);
+		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
 	}
 
 	private static void FillSurface(SurfaceInfo info)

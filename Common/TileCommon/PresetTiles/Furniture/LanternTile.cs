@@ -22,12 +22,19 @@ public abstract class LanternTile : FurnitureTile
 		Main.tileLighted[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
+		TileID.Sets.MultiTileSway[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x2);
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile, 1, 0);
 		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.Origin = new Point16(0, 0);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
+
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.AnchorTop = new AnchorData(AnchorType.Platform, 1, 0);
+		TileObjectData.newAlternate.DrawYOffset = -8;
+		TileObjectData.addAlternate(0);
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -35,6 +42,31 @@ public abstract class LanternTile : FurnitureTile
 		AdjTiles = [TileID.HangingLanterns];
 		DustType = -1;
 	}
+
+	public override void AdjustMultiTileVineParameters(int i, int j, ref float? overrideWindCycle, ref float windPushPowerX, ref float windPushPowerY, ref bool dontRotateTopTiles, 
+		ref float totalWindMultiplier, ref Texture2D glowTexture, ref Color glowColor)
+	{
+		overrideWindCycle = 1;
+		windPushPowerY = 0;
+
+		if (GlowmaskTile.TileIdToGlowmask.TryGetValue(Type, out var glowmask))
+		{
+			glowColor = glowmask.GetDrawColor(new Point(i, j));
+			glowTexture = glowmask.Glowmask.Value;
+		}
+	}
+
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		Tile tile = Main.tile[i, j];
+		
+		if (TileObjectData.IsTopLeft(tile))
+			Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.MultiTileVine);
+		
+		return false;
+	}
+
+	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) => offsetY += 2;
 
 	public override void HitWire(int i, int j)
 	{
@@ -62,37 +94,6 @@ public abstract class LanternTile : FurnitureTile
 		{
 			var color = (Info is LightedInfo l) ? l.Light : Color.Orange.ToVector3() / 255f;
 			(r, g, b) = (color.X, color.Y, color.Z);
-		}
-	}
-
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-	{
-		var tile = Framing.GetTileSafely(i, j);
-		if (!TileDrawing.IsVisible(tile))
-			return;
-
-		var texture = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
-		var data = TileObjectData.GetTileData(tile);
-		int height = data.CoordinateHeights[tile.TileFrameY / data.CoordinateFullHeight];
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height);
-
-		if (Info is LightedInfo l && l.Blur)
-		{
-			ulong randSeed = Main.TileFrameSeed ^ (ulong)((long)j << 32 | (uint)i);
-			for (int c = 0; c < 7; c++) //Draw our glowmask with a randomized position
-			{
-				float shakeX = Utils.RandomInt(ref randSeed, -10, 11) * 0.15f;
-				float shakeY = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
-				var offset = new Vector2(shakeX, shakeY);
-
-				var position = new Vector2(i, j) * 16 - Main.screenPosition + offset + TileExtensions.TileOffset;
-				spriteBatch.Draw(texture, position, source, new Color(100, 100, 100, 0), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-			}
-		}
-		else
-		{
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
-			spriteBatch.Draw(texture, position, source, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}
 	}
 }

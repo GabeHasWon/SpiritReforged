@@ -28,6 +28,10 @@ class ReforgedClientConfig : ModConfig
 	[ReloadRequired]
 	public bool DisableWater { get; set; }
 
+	[Header("Developer")]
+	[DefaultValue(false)]
+	public bool DebugEcotones { get; set; }
+
 	public override void OnChanged()
 	{
 		int type = ModContent.TileType<SaltBlockReflective>();
