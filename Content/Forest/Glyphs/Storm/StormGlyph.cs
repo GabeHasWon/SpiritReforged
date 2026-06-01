@@ -4,19 +4,111 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Forest.Glyphs.Rot;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 using static AssGen.Assets;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
+	[Autoload(Side = ModSide.Client)]
+	public sealed class StormMetaballSystem : ModSystem
+	{
+		private static readonly ModTarget2D CloudTarget = new(static () => CloudParticleRenderer.Particles.Count != 0 || Data.Count != 0, DrawCloudTarget);
+		private static readonly ParticleRenderer CloudParticleRenderer = new();
+		private static readonly HashSet<DrawData> Data = [];
+
+		public static void Add(ABasicParticle particle) => CloudParticleRenderer.Add(particle);
+		public static void Add(DrawData drawData) => Data.Add(drawData);
+
+		public override void Load() => On_Main.DrawProjectiles += DrawShader;
+
+		private static void DrawShader(On_Main.orig_DrawProjectiles orig, Main self)
+		{
+			orig(self);
+
+			if (CloudTarget != null && CloudTarget.Active)
+			{
+				Effect s = AssetLoader.LoadedShaders["CloudMetaball"].Value;
+				SpriteBatch spriteBatch = Main.spriteBatch;
+
+				s.Parameters["primaryColor"].SetValue(Color.White.ToVector4());
+				s.Parameters["secondaryColor"].SetValue(new Color(0.3f, 0.3f, 0.5f).ToVector4());
+				s.Parameters["numColors"].SetValue(3);
+				ShaderHelpers.SetEffectMatrices(ref s);
+
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, s, Main.Transform);
+
+				spriteBatch.Draw(CloudTarget, Vector2.Zero, Color.White);
+
+				spriteBatch.End();
+			}
+		}
+
+		private static void DrawCloudTarget(SpriteBatch spriteBatch)
+		{
+			CloudParticleRenderer.Settings.AnchorPosition = -Main.screenPosition;
+			CloudParticleRenderer.Draw(spriteBatch);
+
+			foreach (DrawData data in Data)
+				spriteBatch.Draw(data.texture, data.position, data.sourceRect, data.color, data.rotation, data.origin, data.scale, data.effect, 0);
+
+			Data.Clear();
+		}
+
+		public override void PostUpdateProjectiles() => CloudParticleRenderer.Update();
+	}
+
+	public class StormParticle(int style) : ABasicParticle
+	{
+		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(StormParticle), "StormParticle", false);
+
+		public float Opacity;
+		public int TimeToLive = 60;
+
+		private readonly int _style = style;
+		private int _timeSinceSpawn;
+
+		public override void Update(ref ParticleRendererSettings settings)
+		{
+			base.Update(ref settings);
+
+			if (++_timeSinceSpawn > TimeToLive)
+			{
+				ShouldBeRemovedFromRenderer = true;
+			}
+			else
+			{
+				Velocity *= 0.99f;
+				Rotation += Velocity.X * 0.01f;
+
+				int halfTime = TimeToLive / 2;
+
+				if (_timeSinceSpawn > halfTime)
+					Opacity -= 1f / halfTime;
+			}
+		}
+
+		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
+		{
+			Texture2D texture = Texture.Value;
+			Vector2 position = settings.AnchorPosition + LocalPosition;
+			float frame = (float)_timeSinceSpawn / TimeToLive;
+			Rectangle source = texture.Frame(2, 5, _style, (int)(EaseFunction.EaseCubicIn.Ease(frame) * 5f), -2, -2);
+
+			spritebatch.Draw(texture, position, source, Color.White * Opacity, Rotation, source.Size() / 2, Scale, default, 0);
+		}
+	}
+
 	public sealed class StormGlyphPlayer : ModPlayer
 	{
 		internal int _cooldown;
