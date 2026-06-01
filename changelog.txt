@@ -1,4 +1,4 @@
-v0.2.0.5
+v0.2.0.5 - Small Discoveries
 English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
 
 - Added new "Labyrinth" secret seed
@@ -10,7 +10,7 @@ English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
 
 - Fixed Oasis crash issue with Remnants
 - Fixed naturally generated Lapis Dressers not generating with chests properly
-- Added small loot pool for Lapis Dressers
+- Added small loot pool for Lapis Dressers in Ziggurat
 - Allowed Candelabras and Candles to spawn on Lapis Dressers
 - Fixed Gilded Greatbow doing nonsense in multiplayer
 - Dunce Crabs now fall substantially slower in water
