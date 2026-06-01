@@ -1,4 +1,4 @@
-v0.2.0.5 - Small Discoveries
+v0.2.0.5 - Surveyor Patch
 English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
 
 - Added new "Labyrinth" secret seed

@@ -4,7 +4,6 @@ using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using Terraria.GameInput;
 using Terraria.UI.Chat;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
