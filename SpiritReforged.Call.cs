@@ -34,7 +34,7 @@ public partial class SpiritReforgedMod : Mod
 					}
 				case "GetSavannaArea":
 					{
-						Logger.Debug("\"GetSavannaArea\" will not work properly for manual ecotone mapping.");
+						Logger.Debug("\"GetSavannaArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSavannaAreas\" instead.");
 						return SavannaEcotone.SavannaAreas[0];
 					}
 				case "GetSavannaAreas":
@@ -61,7 +61,7 @@ public partial class SpiritReforgedMod : Mod
 					}
 				case "GetSaltFlatsArea":
 					{
-						Logger.Debug("\"GetSaltFlatsArea\" will not work properly for manual ecotone mapping.");
+						Logger.Debug("\"GetSaltFlatsArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSaltFlatsAreas\" instead.");
 						return SaltFlatsEcotone.SaltFlatsAreas[0];
 					}
 				case "GetSaltFlatsAreas":
