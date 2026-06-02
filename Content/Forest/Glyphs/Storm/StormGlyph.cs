@@ -1,6 +1,8 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
@@ -24,16 +26,18 @@ namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
-	/// this is from windshear scepter with minor changes to color
+	/// this is from windshear scepter with minor changes to color and behavior
 	[Autoload(Side = ModSide.Client)]
 	public sealed class StormMetaballSystem : ModSystem
 	{
 		private static readonly ModTarget2D StormTarget = new(static () => StormParticleRenderer.Particles.Count != 0 || Data.Count != 0, DrawCloudTarget);
 		private static readonly ParticleRenderer StormParticleRenderer = new();
 		private static readonly HashSet<DrawData> Data = [];
+		private static readonly List<WindBurstProjectile> bursts = new();
 
 		public static void Add(ABasicParticle particle) => StormParticleRenderer.Add(particle);
 		public static void Add(DrawData drawData) => Data.Add(drawData);
+		public static void Add(WindBurstProjectile burst) => bursts.Add(burst);
 
 		public override void Load() => On_Main.DrawProjectiles += DrawShader;
 
@@ -67,10 +71,21 @@ public class StormGlyph : GlyphItem
 			foreach (DrawData data in Data)
 				spriteBatch.Draw(data.texture, data.position, data.sourceRect, data.color, data.rotation, data.origin, data.scale, data.effect, 0);
 
+			foreach (WindBurstProjectile burst in bursts)
+			{
+				if (burst.Projectile.active)
+					burst.Draw(spriteBatch);
+			}
+
 			Data.Clear();
 		}
 
-		public override void PostUpdateProjectiles() => StormParticleRenderer.Update();
+		public override void PostUpdateProjectiles() 
+		{
+			StormParticleRenderer.Update();
+
+			bursts.RemoveAll(p => !p.Projectile.active);
+		}	
 	}
 
 	public class StormParticle(int style) : ABasicParticle
@@ -79,6 +94,8 @@ public class StormGlyph : GlyphItem
 
 		public float Opacity;
 		public int TimeToLive = 60;
+
+		public float floatSpeed = 0f;
 
 		private readonly int _style = style;
 		private int _timeSinceSpawn;
@@ -95,6 +112,9 @@ public class StormGlyph : GlyphItem
 			{
 				Velocity *= 0.95f;
 				Rotation += Velocity.X * 0.01f;
+
+				if (floatSpeed > 0)
+					Velocity.Y -= floatSpeed;
 
 				int halfTime = TimeToLive / 2;
 
@@ -122,7 +142,11 @@ public class StormGlyph : GlyphItem
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			if (Active)
-				velocity *= 1.4f;		
+			{
+				// projectiles get an extra update when they do the wind burst (double speed)
+				if (_cooldown > 0)
+					velocity *= 1.5f;
+			}			
 		}
 
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -180,7 +204,9 @@ public class StormGlyph : GlyphItem
 				if (mp._cooldown <= 0)
 				{
 					doWindBurst = true;
-					mp._cooldown = 120;
+					projectile.extraUpdates++;
+					projectile.velocity *= 1.2f;
+					mp._cooldown = 60 * 5; // 5 seconds;
 				}
 
 				doVisuals = true;
@@ -246,12 +272,42 @@ public class StormGlyph : GlyphItem
 					p.Velocity *= 0.97f;
 					p.Velocity = p.Velocity.RotatedBy(-0.08f);
 				}
+			}
+		}
 
-				static void DecelerateAction(Particle p)
+		public override void PostAI(Projectile projectile)
+		{
+			// check for held projctiles- if a glyph is applied to one we want to make sure its ignored
+			// works great for things like the vortex beater- entity sources carry the glyph to the bullets fired but the vortex beater itself does not have the effects
+			if (doVisuals && Main.player[projectile.owner].heldProj > -1 && Main.player[projectile.owner].heldProj == projectile.whoAmI)
+			{
+				doVisuals = false;
+				if (doWindBurst)
 				{
-					p.Velocity *= 0.97f;
+					doWindBurst = false;
+					projectile.extraUpdates--;
 				}
 			}
+		}
+
+		public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+		{
+			if (doWindBurst)
+			{
+				if (Main.myPlayer == projectile.owner)
+				{
+					ScreenshakeHelper.Shake(projectile.Center, projectile.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
+					Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+
+					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
+				}
+
+				WindBurstEffects(projectile);
+
+				doWindBurst = false;
+			}
+
+			return base.OnTileCollide(projectile, oldVelocity);
 		}
 
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
@@ -283,46 +339,17 @@ public class StormGlyph : GlyphItem
 
 			if (doWindBurst)
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") with { Volume = 1.5f, PitchVariance = 0.2f }, projectile.Center);
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 1f, PitchVariance = 0.1f }, projectile.Center);
-				SoundEngine.PlaySound(SoundID.DD2_SonicBoomBladeSlash with { Volume = 1f, PitchVariance = 0.2f }, projectile.Center);
-
 				if (Main.myPlayer == projectile.owner)
 				{
 					ScreenshakeHelper.Shake(target.Center, target.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
-					Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner).rotation = projectile.velocity.ToRotation();
+					Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+
+					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
 				}
 
-				for (int i = 0; i < 30; i++)
-				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(5f, 5f), projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.7f),
-						Color.LightCyan * 0.15f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(30), false));
+				WindBurstEffects(projectile);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(5f, 5f), projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.3f),
-						Color.LightCyan * 0.15f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(30), false));
-				}
-
-				for (int i = 0; i < 12; i++)
-				{
-					Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
-					Vector2 velocity = projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.7f);
-					float scale = Main.rand.NextFloat(0.2f, 0.4f);
-
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, Main.rand.Next(25, 45), 7, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, Main.rand.Next(25, 45), 7, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-
-					static void SpinAction(Particle p)
-					{
-						p.Velocity *= 0.965f;
-						p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(0.03f));
-					}
-
-					static void SpinAction_2(Particle p)
-					{
-						p.Velocity *= 0.965f;
-						p.Velocity = p.Velocity.RotatedBy(-Main.rand.NextFloat(0.03f));
-					}
-				}
+				doWindBurst = false;
 			}
 		}
 
@@ -345,10 +372,34 @@ public class StormGlyph : GlyphItem
 
 				if (doWindBurst) 
 					Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.15f, 0f, 0f);
-
 			}
 
 			return base.PreDraw(projectile, ref lightColor);
+		}
+
+		private void WindBurstEffects(Projectile projectile)
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") with { Volume = 1.5f, PitchVariance = 0.2f }, projectile.Center);
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 1f, PitchVariance = 0.1f }, projectile.Center);
+			SoundEngine.PlaySound(SoundID.DD2_SonicBoomBladeSlash with { Volume = 1f, PitchVariance = 0.2f }, projectile.Center);
+			SoundEngine.PlaySound(SoundID.DoubleJump with { Volume = 2f, PitchVariance = 0.2f, Pitch = -0.2f }, projectile.Center);
+
+			for (int i = 0; i < 25; i++)
+			{
+				StormMetaballSystem.Add(new StormParticle(Main.rand.Next(2))
+				{
+					LocalPosition = projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
+					Scale = Vector2.One * Main.rand.NextFloat(0.7f, 1.2f),
+					Velocity = Main.rand.NextVector2Circular(1.5f, 1.5f) - Vector2.UnitY * Main.rand.NextFloat(),
+					TimeToLive = Main.rand.Next(30, 70),
+					Opacity = 1f,
+					floatSpeed = Main.rand.NextFloat(0.01f, 0.1f),
+					Rotation = Main.rand.NextFloat()
+				});
+
+				ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
+					Main.rand.NextVector2Circular(1.5f, 1.5f) - Vector2.UnitY * Main.rand.NextFloat(), Color.LightCyan * 0.25f, 0.1f, EaseFunction.EaseQuadOut, 60, false));
+			}
 		}
 
 		private void CreateTrail(Projectile proj)
@@ -367,90 +418,164 @@ public class StormGlyph : GlyphItem
 				_trails =
 				[
 					.. _trails,
-                    new VertexTrail(new GradientTrail(Color.LightCyan.Additive(), Color.White.Additive() * 0.2f, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 10, 170, -2),
+					new VertexTrail(new GradientTrail(Color.LightCyan.Additive(), Color.White.Additive() * 0.2f, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 10, 170, -2),
 				];
-		}
-
-		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
-		{
-
-		}
-
-		internal class WindBurstProjectile : ModProjectile
-		{
-			public override string Texture => AssetLoader.EmptyTexture;
-
-			public override void SetDefaults()
-			{
-				Projectile.usesLocalNPCImmunity = true;
-				Projectile.localNPCHitCooldown = -1;
-
-				Projectile.penetrate = 5;
-				Projectile.aiStyle = -1;
-				Projectile.timeLeft = 20;
-
-				Projectile.Size = new(12);
-				Projectile.friendly = true;
-				Projectile.DamageType = DamageClass.Generic;
-
-				Projectile.tileCollide = false;
-			}
-
-			public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-			{
-				Vector2 rotation = Projectile.rotation.ToRotationVector2();
-				Vector2 direction = Projectile.DirectionTo(targetHitbox.Center.ToVector2());
-
-				return Vector2.Dot(rotation, direction) >= Math.Cos(MathHelper.ToRadians(90f) / 2f) && Projectile.Distance(targetHitbox.Center.ToVector2()) < 150f;
-			}
-
-			public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-			{
-				modifiers.HitDirectionOverride = Main.player[Projectile.owner].Center.X > target.Center.X ? -1 : 1;
-
-				modifiers.HideCombatText();
-			}
-
-			public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-			{
-				target.velocity.Y -= Main.rand.NextFloat(1f, 3.33f);
-				target.netUpdate = true;
-
-				int idx = CombatText.NewText(target.getRect(), Color.White, damageDone, hit.Crit);
-
-				ColoredCombatText.AddCombatText(idx, Color.GhostWhite, Color.LightGray);
-
-				for (int i = 0; i < 5; i++)
-				{
-					Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
-					Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1f, 3f);
-					float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 3, DecelerateAction));
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 3, DecelerateAction));
-					
-					pos = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
-					velocity = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.4f) * Main.rand.NextFloat(5f, 10f);
-					scale = Main.rand.NextFloat(0.2f, 0.4f);
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity,
-						Color.LightCyan * 0.15f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(30), false));
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity,
-						Color.LightCyan * 0.15f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(30), false));
-				}
-
-				static void DecelerateAction(Particle p)
-				{
-					p.Velocity *= 0.97f;
-				}
-			}
 		}
 	}
 
+	public class WindBurstProjectile : ModProjectile
+	{
+		public override string Texture => AssetLoader.EmptyTexture;
+
+		public override void SetDefaults()
+		{
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
+
+			Projectile.penetrate = 5;
+			Projectile.stopsDealingDamageAfterPenetrateHits = true;
+			Projectile.aiStyle = -1;
+			Projectile.timeLeft = 45;
+
+			Projectile.Size = new(120);
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Generic;
+
+			Projectile.tileCollide = false;
+			Projectile.rotation = Main.rand.NextFloat(6.28f);
+		}
+
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			modifiers.HitDirectionOverride = Main.player[Projectile.owner].Center.X > target.Center.X ? -1 : 1;
+
+			//modifiers.HideCombatText();
+		}
+
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			var tex = DrawHelpers.RequestLocal(typeof(StormParticle), "StormParticle", false).Value;
+			
+			float frame = 1f - Projectile.timeLeft / 45f;
+			Rectangle source = tex.Frame(2, 5, 0, (int)(EaseFunction.EaseCubicIn.Ease(frame) * 5f), -2, -2);
+
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, Color.White * EaseBuilder.EaseCircularOut.Ease(1f - frame), Projectile.rotation, source.Size() / 2, MathHelper.Lerp(0.5f, 2.5f, EaseBuilder.EaseCircularOut.Ease(frame)), default, 0);
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
+			var star = AssetLoader.LoadedTextures["Star"].Value;
+			
+			float progress = Projectile.timeLeft / 45f;
+
+			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.LightCyan.Additive() * progress, 0f, star.Size() / 2f, new Vector2(MathHelper.Lerp(0.25f, 0.6f, EaseBuilder.EaseCircularIn.Ease(1f - progress)), MathHelper.Lerp(0.2f, 0.01f, EaseBuilder.EaseCircularIn.Ease(1f - progress))), 0f, 0f);
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			target.velocity.Y -= Main.rand.NextFloat(1f, 3.33f);
+			target.netUpdate = true;
+
+			//int idx = CombatText.NewText(target.getRect(), Color.White, damageDone, hit.Crit);
+
+			//ColoredCombatText.AddCombatText(idx, Color.GhostWhite, Color.LightGray);
+		}
+	}
+
+	// I hate it here
+	private static List<int> vanillaBlacklist = [
+		// swords with the slash thingies (theyre techincally projectiles)
+		ItemID.NightsEdge,
+		ItemID.TrueExcalibur,
+		ItemID.TheHorsemansBlade,
+
+		// yoyos
+		ItemID.WoodYoyo,
+		ItemID.Rally,
+		ItemID.CorruptYoyo,
+		ItemID.CrimsonYoyo,
+		ItemID.JungleYoyo,
+		ItemID.Code1,
+		ItemID.Code2,
+		ItemID.HiveFive,
+		ItemID.Valor,
+		ItemID.Cascade,
+		ItemID.FormatC,
+		ItemID.Gradient,
+		ItemID.Chik,
+		ItemID.HelFire,
+		ItemID.Amarok,
+		3286, // yelets
+		ItemID.RedsYoyo,
+		ItemID.ValkyrieYoyo,
+		ItemID.Kraken,
+		ItemID.TheEyeOfCthulhu,
+		ItemID.Terrarian,
+
+		// spears
+		ItemID.Spear,
+		ItemID.Trident,
+		ItemID.ThunderSpear,
+		ItemID.TheRottedFork,
+		ItemID.Swordfish,
+		ItemID.DarkLance,
+		ItemID.CobaltNaginata,
+		ItemID.PalladiumPike,
+		ItemID.MythrilHalberd,
+		ItemID.OrichalcumHalberd,
+		ItemID.AdamantiteGlaive,
+		ItemID.TitaniumTrident,
+		ItemID.Gungnir,
+		3836, // ghastly glaive
+		ItemID.ChlorophytePartisan,
+		ItemID.MushroomSpear,
+		ItemID.ObsidianSwordfish,
+		ItemID.NorthPole,
+
+		// flails
+		ItemID.Mace,
+		ItemID.FlamingMace,
+		ItemID.BallOHurt,
+		ItemID.TheMeatball,
+		ItemID.BlueMoon,
+		ItemID.Sunfury,
+		ItemID.ChainKnife,
+		ItemID.DripplerFlail,
+		ItemID.DaoofPow,
+		ItemID.FlowerPow,
+		ItemID.Anchor,
+		ItemID.ChainGuillotines,
+		ItemID.KOCannon,
+		ItemID.GolemFist,
+		ItemID.Flairon,
+		// kill me
+		// misc
+		ItemID.Arkhalis,
+		ItemID.Terragrim,
+		ItemID.JoustingLance,
+		ItemID.HallowJoustingLance,
+		ItemID.ShadowJoustingLance,
+		3835, // sleepy octopod
+		3858, // sky dragons fury
+		ItemID.PiercingStarlight,
+		ItemID.SolarEruption,
+		ItemID.Zenith,
+	];
+
 	// can only apply to items that shoot projectiles
 	// also no summon weapons
-	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && item.shoot > 0 && item.DamageType != DamageClass.Summon;
+	// also also a lot of edge cases
+	public override bool CanApplyGlyph(Item item)
+	{
+		// todo: add checks for Rapiers, Katanas, etc when subclassdate
+		if (item.ModItem is ClubItem)
+			return false;
+
+		if (vanillaBlacklist.Contains(item.type))
+			return false;
+
+		return base.CanApplyGlyph(item) && item.shoot > 0 && item.DamageType != DamageClass.Summon;
+	}
 
 	public override void SetDefaults()
 	{
