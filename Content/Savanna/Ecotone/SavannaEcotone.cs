@@ -5,6 +5,7 @@ using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Savanna.Biome;
@@ -21,14 +22,18 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Savanna.Ecotone;
 
-internal class SavannaEcotone : EcotoneBase
+internal class SavannaEcotone : EcotoneBase, IGenerationPage
 {
 	private delegate bool OnAttempt(int i, int j);
 
 	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
 	[WorldBound]
 	public static List<Rectangle> SavannaAreas = new();
+
+	[GenConfigurable("Savanna", 2, 15)]
 	private static int Steps = 0;
+
+	string IGenerationPage.PageName => "Savanna";
 
 	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];
 
