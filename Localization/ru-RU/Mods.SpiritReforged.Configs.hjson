@@ -36,12 +36,12 @@ ReforgedClientConfig: {
 	}
 
 	DebugEcotones: {
-		// Label: Ecotone Debugging (with World Gen Previewer)
-		/* Tooltip:
+		Label: Отладка экотонов в WorldGen Previewer
+		Tooltip:
 			'''
-			REQUIRES World Gen Previewer.
-			Allows developers and players using the Ecotone system to debug issues with and understand ecotones with a helpful overlay.
-			''' */
+			ТОЛЬКО с модом WorldGen Previewer.
+			Позволяет отлаживать проблемы с экотонами и лучше понимать их работу с помощью наглядного оверлея.
+			'''
 	}
 
 	Headers.Developer: Для разработчиков
@@ -66,12 +66,12 @@ OceanShape: {
 	}
 
 	Piecewise_M: {
-		Label: Кусочная_M
+		Label: Кусочная (M)
 		Tooltip: ""
 	}
 
 	Piecewise_V: {
-		Label: Кусочная_V
+		Label: Кусочная (V)
 		Tooltip: ""
 	}
 }

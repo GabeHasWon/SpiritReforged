@@ -96,21 +96,21 @@ InfoDisplays: {
 }
 
 Ecotones: {
-	// SaltFlatsEcotone: Salt Flats
-	// SavannaEcotone: Savanna
+	SaltFlatsEcotone: Солончаковые равнины
+	SavannaEcotone: Саванна
 }
 
 EcotoneEdges: {
-	// Forest: Forest
-	// Desert: Desert
-	// Ocean: Ocean
-	// Snow: Snow
-	// Jungle: Jungle
-	// Corruption: Corruption
-	// Crimson: Crimson
-	// Hallow: Hallow
-	// Savanna: "{$Ecotones.SavannaEcotone}"
-	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+	Forest: Лес
+	Desert: Пустыня
+	Ocean: Океан
+	Snow: Снега
+	Jungle: Джунгли
+	Corruption: Искажение
+	Crimson: Багрянец
+	Hallow: Освящение
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
 // DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
