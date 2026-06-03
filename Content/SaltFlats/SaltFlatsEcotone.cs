@@ -117,8 +117,6 @@ internal class SaltFlatsEcotone : EcotoneBase
 			}
 		}
 
-		SaltFlatsAreas.Clear();
-
 		if (!CanGenerate(out var bounds))
 			return;
 

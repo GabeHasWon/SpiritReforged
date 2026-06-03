@@ -106,3 +106,5 @@ EcotoneEdges: {
 	// Savanna: "{$Ecotones.SavannaEcotone}"
 	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
+
+// GenConfigs.Steps: Steps

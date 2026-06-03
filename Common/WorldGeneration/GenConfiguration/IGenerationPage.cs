@@ -6,4 +6,5 @@
 internal interface IGenerationPage
 {
 	public string PageName { get; }
+	public Mod Mod { get; }
 }

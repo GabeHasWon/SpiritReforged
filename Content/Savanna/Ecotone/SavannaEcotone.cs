@@ -30,10 +30,11 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[WorldBound]
 	public static List<Rectangle> SavannaAreas = new();
 
-	[GenConfigurable("Savanna", 2, 15)]
+	[GenConfigurable(2, 15)]
 	private static int Steps = 0;
 
 	string IGenerationPage.PageName => "Savanna";
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];
 
@@ -44,7 +45,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		foreach (Rectangle rect in SavannaAreas)
 			if (func(rect))
 				return true;
-
+		
 		return false;
 	}
 
