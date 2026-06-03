@@ -3187,7 +3187,7 @@ RadiantGlyph: {
 
 StormGlyph: {
 	DisplayName: Storm Glyph
-	Tooltip: 
+	Tooltip:
 		'''
 		Can only be applied to weapons that fire projectiles
 		Increases projectile velocity

@@ -11,7 +11,7 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class RadiantGlyph : GlyphItem
 {
-	public sealed class RadiantGlyphBuff : ModBuff
+	public sealed class DivineStrike : ModBuff
 	{
 		public override void SetStaticDefaults()
 		{
@@ -22,7 +22,9 @@ public class RadiantGlyph : GlyphItem
 		public override void Update(Player player, ref int buffIndex)
 		{
 			if (player.GetModPlayer<RadiantPlayer>().divineStrike)
+			{
 				player.buffTime[buffIndex] = 18000;
+			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -185,7 +187,7 @@ public class RadiantGlyph : GlyphItem
 					}
 
 					divineStrike = true;
-					Player.AddBuff(ModContent.BuffType<RadiantGlyphBuff>(), 60);
+					Player.AddBuff(ModContent.BuffType<DivineStrike>(), 60);
 				}
 			}
 			else

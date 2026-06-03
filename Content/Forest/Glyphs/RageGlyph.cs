@@ -4,15 +4,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Glyphs.Sanguine;
 using SpiritReforged.Content.Particles;
-using System;
-using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics;
-using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
+
 public class RageGlyph : GlyphItem
 {
 	public sealed class RagePlayer : ModPlayer
@@ -333,6 +329,6 @@ public class RageGlyph : GlyphItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = Item.CommonMaxStack;
-		settings = new(Color.Red);
+		settings = new(new(176, 16, 20));
 	}
 }

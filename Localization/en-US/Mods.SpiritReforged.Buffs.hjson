@@ -150,20 +150,15 @@ ScarabMountBuff: {
 
 DivineStrike: {
 	DisplayName: Divine Strike
-	Description: Mods.SpiritReforged.Buffs.DivineStrike.Description
-}
-
-RadiantGlyphBuff: {
-	DisplayName: Radiant Glyph Buff
-	Description: Mods.SpiritReforged.Buffs.RadiantGlyphBuff.Description
+	Description: Your next attack is empowered
 }
 
 RotStackingDebuff: {
-	DisplayName: Rot Stacking Debuff
-	Description: Mods.SpiritReforged.Buffs.RotStackingDebuff.Description
+	DisplayName: Rotting [{0}]
+	Description: "'Your skin is turning green'"
 }
 
 SanguineStackingBuff: {
-	DisplayName: Sanguine Stacking Buff
+	DisplayName: Sanguine Curse
 	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
 }

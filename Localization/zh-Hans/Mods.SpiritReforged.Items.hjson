@@ -3187,7 +3187,12 @@ RadiantGlyph: {
 
 StormGlyph: {
 	// DisplayName: Storm Glyph
-	// Tooltip: Attacks occasionally release a forceful gust of wind
+	/* Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		''' */
 	// Effect: Billowed
 }
 
