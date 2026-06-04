@@ -101,3 +101,4 @@ SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}
 // LightningBlast.DisplayName: Lightning Blast
 // Firefall.DisplayName: Firefall
 // WindBurstProjectile.DisplayName: Wind Burst Projectile
+// CollapseProjectile.DisplayName: Collapse Projectile

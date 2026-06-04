@@ -3281,3 +3281,13 @@ CharmcasterRobe: {
 	DisplayName: Charmcaster's Robe
 	Tooltip: ""
 }
+
+VoidGlyph: {
+	DisplayName: Void Glyph
+	Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after a short time
+		'''
+	Effect: Null
+}
