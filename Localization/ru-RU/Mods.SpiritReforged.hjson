@@ -107,4 +107,43 @@ EcotoneEdges: {
 	// SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-// GenConfigs.Steps: Steps
+GenConfigs: {
+	Pages: {
+		Savanna: {
+			// Name: Savanna
+			// Description: ""
+		}
+	}
+
+	Members: {
+		Steps: {
+			// DisplayName: Steps
+			// Tooltip: The number of steps that the Savanna generates with.
+		}
+
+		BoneChance: {
+			// DisplayName: Bone Chance
+			// Tooltip: The chance for rare bone decor to spawn.
+		}
+
+		CampsiteChance: {
+			// DisplayName: Campsite Chance
+			// Tooltip: The chance for a campsite to spawn in.
+		}
+
+		BaseTreeChance: {
+			// DisplayName: Acacia Tree Chance
+			// Tooltip: The base chance (1/this value) for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+		}
+
+		PotChance: {
+			// DisplayName: PotChance
+			// Tooltip: PotChance
+		}
+
+		TermiteChance: {
+			// DisplayName: TermiteChance
+			// Tooltip: TermiteChance
+		}
+	}
+}

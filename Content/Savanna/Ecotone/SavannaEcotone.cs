@@ -18,6 +18,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Savanna.Ecotone;
@@ -31,7 +32,22 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	public static List<Rectangle> SavannaAreas = new();
 
 	[GenConfigurable(2, 15)]
-	private static int Steps = 0;
+	private static int Steps = 3;
+
+	[GenConfigurable(1, 9)]
+	private static int CampsiteChance = 3;
+
+	[GenConfigurable(5, 200)]
+	[Slider]
+	private static int BaseTreeChance = 90;
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	private static int PotChance = 8;
+
+	[GenConfigurable(10, 90)]
+	[Slider]
+	private static int TermiteChance = 45;
 
 	string IGenerationPage.PageName => "Savanna";
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
@@ -134,6 +150,11 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
+		GenConfigPage page = GenConfigLoader.GetPage<SavannaEcotone>();
+		page.SetupPage();
+		BaseTreeChance = page.ValueOrDefault(nameof(BaseTreeChance), CrossMod.Remnants.Enabled ? 40 : 90); // Maximum odds to generate a tree - lower in Remnants
+		Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Number of steps per savanna
+
 		if (EcotoneMapperHooks.AnyForced<SavannaEcotone>())
 		{
 			foreach (EcotoneMapperHooks.EcotoneEntryPair pair in EcotoneMapperHooks.ForcedEcotones.Values)
@@ -141,6 +162,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 
 				GenerateIndividualSavanna(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
+				Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Randomize steps unless it's been pre-selected
 			}
 		}
 
@@ -163,9 +185,6 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		HashSet<int> validIds = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone];
 
 		var topBottomY = new Point(Math.Min(startY, endY), Math.Max(startY, endY));
-
-		Steps = WorldGen.genRand.Next(2, 5);
-
 		var sandNoise = new Common.WorldGeneration.Noise.FastNoiseLite(WorldGen.genRand.Next());
 		sandNoise.SetFrequency(0.04f);
 		int xOffsetForFactor = -1;
@@ -294,8 +313,6 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	{
 		const int minimumTreeSpace = 7;
 
-		int chanceMax = CrossMod.Remnants.Enabled ? 40 : 90; // Maximum odds to generate a tree - lower in Remnants
-
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaObjects");
 		HashSet<int> treeSpacing = [];
 		HashSet<Point16> grassTop = [];
@@ -381,10 +398,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 			}
 		}
 
-		if (WorldGen.genRand.NextBool(3))
+		if (WorldGen.genRand.NextBool(CampsiteChance))
 			Campsite(area);
 
-		int treeOdds = chanceMax;
+		int treeOdds = BaseTreeChance;
 
 		foreach (var p in grassTop)
 		{
@@ -398,7 +415,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				if (WorldGen.genRand.NextBool(treeOdds) && !baobabArea.Contains(i, j) && GrowTree(i, j, area))
 				{
 					treeSpacing.Add(i);
-					treeOdds = chanceMax;
+					treeOdds = BaseTreeChance;
 				}
 				else
 				{
@@ -413,7 +430,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	/// <param name="j"> Above the grass tile's Y coordinate. </param>
 	private static void PlaceStuffOnGrass(int i, int j)
 	{
-		if (WorldGen.genRand.NextBool(8)) //Surface pots
+		if (WorldGen.genRand.NextBool(PotChance)) //Surface pots
 			WorldGen.PlaceTile(i, j, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next(6, 9));
 
 		if (WorldGen.genRand.NextBool(13)) //Elephant grass patch
@@ -422,7 +439,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		if (WorldGen.genRand.NextBool(9)) //Foliage patch
 			CreatePatch(WorldGen.genRand.Next(6, 13), 2, types: ModContent.TileType<SavannaFoliage>());
 
-		if (WorldGen.genRand.NextBool(45)) //Termite mound
+		if (WorldGen.genRand.NextBool(TermiteChance)) //Termite mound
 		{
 			int type = WorldGen.genRand.NextFromList(ModContent.TileType<TermiteMoundSmall>(),
 				ModContent.TileType<TermiteMoundMedium>(), ModContent.TileType<TermiteMoundLarge>());
@@ -516,7 +533,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				WorldUtils.Gen(new Point(x, y + 1), new Shapes.Mound(halfWidth, 3), Actions.Chain(new Modifiers.Blotches(), new Actions.SetTile(TileID.Stone).Output(data)));
 
 				if (WorldGen.genRand.NextBool())
-					WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss)));
+				{
+					GenAction action = Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss));
+					WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), action);
+				}
 
 				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), new Actions.Smooth());
 				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Offset(0, 4), new Modifiers.Blotches(),

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.ModLoader.Config;
@@ -11,15 +12,19 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 public readonly record struct GenConfigParameters(object Min, object Max, object Step);
 
-public record struct LoadedConfig(GenConfigParameters Parameters, bool Modified, LocalizedText DisplayName, bool IsSlider, Func<object> Get, Action<object> Set);
+public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set)
+{
+	public bool Modified = false;
+}
 
-internal class GenConfigurationLoader : ModSystem
+internal class GenConfigLoader : ModSystem
 {
 	public static List<Mod> LoadingMods = [];
 	public static Dictionary<string, GenConfigPage> PagesByName = [];
 	public static Dictionary<Type, GenConfigPage> PagesByType = [];
 
-	public static GenConfigPage GetPage<T>() where T : IGenerationPage => PagesByType[typeof(T)];
+	public static GenConfigPage GetPage(Type t) => PagesByType[t];
+	public static GenConfigPage GetPage<T>() => GetPage(typeof(T));
 
 	public override void Load() => On_UIWorldCreation.MakeBackAndCreatebuttons += AddConfigButton;
 
@@ -81,44 +86,54 @@ internal class GenConfigurationLoader : ModSystem
 					var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
 					foreach (var prop in props)
-					{
-						delay += () =>
-						{
-							if (prop.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
-							{
-								MethodInfo getMethod = prop.GetGetMethod()!;
-								var getDelegate = (Func<object>)Delegate.CreateDelegate(typeof(Func<object>), getMethod);
-								var setDelegate = (Action<object>)Delegate.CreateDelegate(typeof(Action<object>), prop.GetSetMethod()!);
-								LocalizedText text = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Members.{prop.Name}", () => prop.Name);
-								bool isSlider = prop.GetCustomAttribute<SliderAttribute>() is not null;
-								LoadedConfig config = new(GenerateParameters(attribute, getMethod.ReturnType), false, text, isSlider, getDelegate, setDelegate);
-								configPage.Configs.Add(config);
-							}
-						};
-					}
+						delay += () => GeneratePropConfig(page, configPage, prop);
 
 					var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 
 					foreach (var field in fields)
-					{
-						delay += () =>
-						{
-							if (field.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
-							{
-								var getDelegate = new Func<object>(() => field.GetValue(null)!);
-								var setDelegate = new Action<object>((val) => field.SetValue(null, val));
-								LocalizedText text = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.{field.Name}", () => field.Name);
-								bool isSlider = field.GetCustomAttribute<SliderAttribute>() is not null;
-								LoadedConfig config = new(GenerateParameters(attribute, field.FieldType), false, text, isSlider, getDelegate, setDelegate);
-								configPage.Configs.Add(config);
-							}
-						};
-					}
+						delay += () => GenerateFieldConfig(page, configPage, field);
 				}
 			}
 		}
 
 		delay?.Invoke();
+	}
+
+	private static void GenerateFieldConfig(IGenerationPage page, GenConfigPage configPage, FieldInfo field)
+	{
+		if (field.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
+		{
+			var getDelegate = new Func<object>(() => field.GetValue(null)!);
+			var setDelegate = new Action<object>((val) => field.SetValue(null, val));
+			object def = getDelegate();
+
+			GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
+			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate);
+			configPage.ConfigsByName.Add(field.Name, config);
+		}
+	}
+
+	private static void GeneratePropConfig(IGenerationPage page, GenConfigPage configPage, PropertyInfo prop)
+	{
+		if (prop.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
+		{
+			MethodInfo getMethod = prop.GetGetMethod()!;
+			var getDelegate = (Func<object>)Delegate.CreateDelegate(typeof(Func<object>), getMethod);
+			var setDelegate = (Action<object>)Delegate.CreateDelegate(typeof(Action<object>), prop.GetSetMethod()!);
+			object def = getDelegate();
+
+			GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
+			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate);
+			configPage.ConfigsByName.Add(prop.Name, config);
+		}
+	}
+
+	private static bool IsSlider(MemberInfo member) => member.GetCustomAttribute<SliderAttribute>() is not null;
+
+	private static void GenerateLocalization(IGenerationPage page, string name, out LocalizedText text, out LocalizedText tip)
+	{
+		text = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Members.{name}.DisplayName", () => name);
+		tip = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Members.{name}.Tooltip", () => name);
 	}
 
 	private static GenConfigParameters GenerateParameters(GenConfigurableAttribute attribute, Type type)
@@ -132,21 +147,21 @@ internal class GenConfigurationLoader : ModSystem
 			if (instance is not null)
 			{
 #pragma warning disable IDE0004 // Unnecessary cast
-				// Weird code used to preserve type.
+				// Weird code used to preserve type. The object cast forces the data type in the first (chronological) cast to be boxed, properly preserving it.
 				// This may just be paranoia. There may be better ways to do this.
 				// Too bad! - Gabe
 				step = instance switch
 				{
-					int => 1,
-					short => (short)1,
-					long => (long)1,
-					float => (float)1,
-					double => (double)1,
-					ushort => (ushort)1,
-					uint => (uint)1,
-					ulong => (ulong)1,
-					byte => (byte)1,
-					sbyte => (sbyte)1,
+					int => (object)(int)1,
+					short => (object)(short)1,
+					long => (object)(long)1,
+					float => (object)(float)1,
+					double => (object)(double)1,
+					ushort => (object)(ushort)1,
+					uint => (object)(uint)1,
+					ulong => (object)(ulong)1,
+					byte => (object)(byte)1,
+					sbyte => (object)(sbyte)1,
 					_ => throw new NotSupportedException($"Type {type.Name} not supported.")
 				};
 #pragma warning restore IDE0004 // Unnecessary cast
