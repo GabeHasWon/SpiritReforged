@@ -2,13 +2,13 @@
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
+namespace SpiritReforged.Common.UI.Elements;
 
 // Copied from my same implementation in New Beginnings.
-internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UIElement where T : System.Numerics.INumber<T>
+internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UIElement where T : global::System.Numerics.INumber<T>
 {
-    private static Asset<Texture2D> Back = ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/SliderBase");
-    private static Asset<Texture2D> Button = ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/SliderButton");
+    private static Asset<Texture2D> Back = ModContent.Request<Texture2D>("SpiritReforged/Common/UI/Elements/SliderBase");
+    private static Asset<Texture2D> Button = ModContent.Request<Texture2D>("SpiritReforged/Common/UI/Elements/SliderButton");
 
     public T Value { get; private set; } = start;
 
@@ -35,10 +35,10 @@ internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UI
 		button.OnUpdate += ClickHoldButton;
 
 		Append(button);
-		Reset(button);
+		Reset();
 	}
 
-	private void Reset(UIImageButton button) => SetToFactor(GenericMath.InverseLerp(Minimum, Maximum, Start), button);
+	private void Reset() => SetToFactor(GenericMath.InverseLerp(Minimum, Maximum, Start));
 
 	private void ClickHoldButton(UIElement affectedElement)
     {
@@ -48,19 +48,19 @@ internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UI
             _dragging = false;
 
         if (_dragging)
-            DragButton(affectedElement);
+            DragButton();
     }
 
-    private void DragButton(UIElement sliderButton)
+    private void DragButton()
     {
         var bounds = GetDimensions().ToRectangle();
         int diff = Main.mouseX - bounds.Left;
         float factor = Utils.GetLerpValue(0, 1, diff / (float)bounds.Width, true);
 
-        SetToFactor(factor, sliderButton);
+        SetToFactor(factor);
     }
 
-    private void SetToFactor(float factor, UIElement button)
+    private void SetToFactor(float factor)
     {
         button.HAlign = factor;
         double prop = double.CreateSaturating(Increment) / (double.CreateSaturating(Maximum) - double.CreateSaturating(Minimum));

@@ -1,0 +1,58 @@
+Pages: {
+	Savanna: {
+		Name: "{$Ecotones.SavannaEcotone}"
+		Description: Controls specific aspects of the Savanna ecotone's generation.
+	}
+
+	SaltFlats: {
+		Name: "{$Ecotones.SaltFlatsEcotone}"
+		Description: Controls specific aspects of the Salt Flat ecotone's generation.
+	}
+
+	Caves: {
+		Name: Caves
+		Description: Controls specific aspects of Reforged's custom cave entrances.
+	}
+}
+
+Members: {
+	Steps: {
+		DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
+		Tooltip: The number of steps that the Savanna generates with.
+	}
+
+	CampsiteChance: {
+		DisplayName: "[i:966] Campsite Chance"
+		Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
+	}
+
+	BaseTreeChance: {
+		DisplayName: "[i:27] Acacia Tree Chance"
+		Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+	}
+
+	PotChance: {
+		DisplayName: "[i:31] Pot Chance"
+		Tooltip: The denominator (1/x) of the chance for a pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+	}
+
+	TermiteChance: {
+		DisplayName: "[i:SpiritReforged/TermiteItem] Termite Chance"
+		Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
+	}
+
+	HalfWidth: {
+		DisplayName: (Canyon) Half Width
+		Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
+	}
+
+	MaxDepth: {
+		DisplayName: (Canyon) Max Depth
+		Tooltip: Controls the max depth of a canyon before it starts making a mound.
+	}
+
+	SizeMultiplier: {
+		DisplayName: (Karst) Size Multiplier
+		Tooltip: Multiplier on the size of all digging operations that karsts do.
+	}
+}

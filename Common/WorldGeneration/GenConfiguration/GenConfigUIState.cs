@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Visuals;
-using System.Linq;
+﻿using ReLogic.Graphics;
+using SpiritReforged.Common.UI.Elements;
+using SpiritReforged.Common.Visuals;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
@@ -19,9 +20,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	bool updatePage = false;
 	int pageNumber = 0;
 	UIElement mainPanel = null!;
-	UIPanel pagePanel = null!;
-	UIText pageName = null!;
-	UIText pageDescription = null!;
+	string hoverText = "";
 
 	public override void Update(GameTime gameTime)
 	{
@@ -32,6 +31,24 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
 			updatePage = false;
 		}
+	}
+
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		base.Draw(spriteBatch);
+
+		if (hoverText != string.Empty)
+		{
+			DynamicSpriteFont font = FontAssets.MouseText.Value;
+			Vector2 size = ChatManager.GetStringSize(font, hoverText, Vector2.One);
+			Vector2 position = Main.MouseScreen + new Vector2(0, 20);
+			var backRectangle = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
+			backRectangle.Inflate(8, 8);
+			Utils.DrawInvBG(spriteBatch, backRectangle with { Height = backRectangle.Height - 4 }, new Color(63, 65, 151, 255));
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hoverText, position, Color.White, 0f, Vector2.Zero, Vector2.One);
+		}
+
+		hoverText = string.Empty;
 	}
 
 	public override void OnInitialize() => ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
@@ -65,16 +82,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		backButton.OnLeftClick += (_, _) => ReturnAction();
 		mainPanel.Append(backButton);
-
-		//pagePanel?.Remove();
-		//pageName?.Remove();
-		//pageDescription?.Remove();
 		OpenPage(page);
 	}
 
 	private void OpenPage(GenConfigPage page)
 	{
-		pagePanel = new()
+		UIPanel pagePanel = new()
 		{
 			Width = StyleDimension.Fill,
 			Height = StyleDimension.FromPixels(390),
@@ -83,20 +96,22 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		mainPanel.Append(pagePanel);
 
-		mainPanel.Append(pageName = new UIText(page.DisplayName, 0.7f, true)
+		UIText pageName = new(page.DisplayName, 0.7f, true)
 		{
 			HAlign = 0.5f,
 			Top = StyleDimension.FromPixels(8)
-		});
+		};
+		mainPanel.Append(pageName);
 
 		AppendNextPriorButtons(mainPanel, page);
 
-		mainPanel.Append(pageDescription = new UIText(page.Tooltip, 0.45f, true)
+		UIText pageDescription = new(page.Tooltip, 0.45f, true)
 		{
 			HAlign = 0.5f,
 			Top = StyleDimension.FromPixels(52),
 			TextColor = new Color(240, 240, 240)
-		});
+		};
+		mainPanel.Append(pageDescription);
 
 		UIList configList = new()
 		{
@@ -121,9 +136,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(60),
 			};
+
+			itemPanel.OnUpdate += _ =>
+			{
+				if (itemPanel.ContainsPoint(Main.MouseScreen))
+					hoverText = config.Tip.Value;
+			};
 			configList.Add(itemPanel);
 
-			UIText text = new UIText(config.DisplayName)
+			UIText text = new(config.DisplayName)
 			{
 				Width = StyleDimension.FromPixels(2),
 				Height = StyleDimension.FromPixels(2),
@@ -133,13 +154,60 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			text.OnUpdate += _ =>
 			{
-				text.SetText(config.DisplayName + ": " + config.Get().ToString());
+				text.SetText(config.DisplayName + $": [c/AAAAAA:{config.Get()}]");
 				text.TextColor = config.Modified ? new Color(200, 255, 200) : Color.White;
 			};
 
 			itemPanel.Append(text);
 
-			bool isNumber = config.Get() is int or short or long or float or double or ushort or uint or byte or sbyte;
+			object defaultValue = config.Get();
+			bool isNumber = defaultValue is int or short or long or float or double or ushort or uint or byte or sbyte;
+			bool isInt = defaultValue is int or short or long or ushort or uint or byte or sbyte;
+			InputType inputType = isNumber ? isInt ? InputType.Integer : InputType.Number : InputType.Text;
+
+			UIEditableText input = new(inputType, "...", text =>
+			{
+				config.Modified = true;
+				object obj = defaultValue switch
+				{
+					string => text,
+					int => int.Parse(text),
+					double => double.Parse(text),
+					short => short.Parse(text),
+					float => float.Parse(text),
+					byte => byte.Parse(text),
+					ushort => ushort.Parse(text),
+					sbyte => sbyte.Parse(text),
+					long => long.Parse(text),
+					_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
+				};
+
+				if (isNumber)
+				{
+					if ((dynamic)obj < (dynamic)config.Params.Min)
+						obj = config.Params.Min;
+
+					if ((dynamic)obj > (dynamic)config.Params.Max)
+						obj = config.Params.Max;
+				}
+
+				config.Set(obj);
+			})
+			{
+				Width = StyleDimension.FromPixels(80),
+				Height = StyleDimension.FromPixels(60),
+				Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 4),
+				Top = StyleDimension.FromPixels(4)
+			};
+
+			input.OnUpdate += _ =>
+			{
+				string measureText = text.Text + (config.IsSlider ? " " : $" ({config.Params.Min}-{config.Params.Max})");
+				input.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, measureText, Vector2.One).X + 4);
+			};
+
+			itemPanel.Append(input);
+
 			UIElement? slider = null;
 
 			if (config.IsSlider)
@@ -155,17 +223,16 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				HAlign = 1f,
 			};
 
-			MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(UIImageButton)]);
-			FieldInfo? button = slider?.GetType().GetField("button");
+			MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
 
 			resetButton.OnLeftClick += (_, _) =>
 			{
 				config.Set(config.Default);
 				config.Modified = false;
 
-				if (info is not null && slider is not null && button is not null)
+				if (info is not null && slider is not null)
 				{
-					info.Invoke(slider, [button.GetValue(slider)]);
+					info.Invoke(slider, []);
 				}
 			};
 
@@ -197,7 +264,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		backPanel.Append(priorButton);
 
-		GenConfigPage next = GetPriorPage();
+		GenConfigPage next = GetNextPage();
 		UIButton<string> nextButton = new("Next: " + next.DisplayName.Value)
 		{
 			Width = StyleDimension.FromPixels(140),

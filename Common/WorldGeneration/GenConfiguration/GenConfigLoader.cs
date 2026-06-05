@@ -50,8 +50,8 @@ internal class GenConfigLoader : ModSystem
 
 		UIImageButton button = new(ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/ConfigButton"))
 		{
-			Width = StyleDimension.FromPixels(32),
-			Height = StyleDimension.FromPixels(32),
+			Width = StyleDimension.FromPixels(30),
+			Height = StyleDimension.FromPixels(30),
 			Left = StyleDimension.FromPixels(0),
 			OverrideSamplerState = SamplerState.PointClamp
 		};
@@ -81,10 +81,15 @@ internal class GenConfigLoader : ModSystem
 					var page = (IGenerationPage)Activator.CreateInstance(type)!;
 					string pageName = page.Info.PageName;
 					string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
-					var configPage = new GenConfigPage(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
-					PagesByName.Add(pageName, configPage);
-					PagesByType.Add(type, configPage);
-					LoadedPages.Add(configPage);
+					GenConfigPage configPage = new(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
+
+					if (PagesByName.TryAdd(pageName, configPage))
+					{
+						PagesByType.Add(type, configPage);
+						LoadedPages.Add(configPage);
+					}
+					else
+						configPage = PagesByName[pageName];
 
 					var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 

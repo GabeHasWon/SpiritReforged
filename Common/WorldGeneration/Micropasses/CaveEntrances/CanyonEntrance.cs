@@ -1,15 +1,28 @@
-﻿using SpiritReforged.Common.WorldGeneration.Noise;
-using System.Runtime.InteropServices;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 
-internal class CanyonEntrance : CaveEntrance
+internal class CanyonEntrance : CaveEntrance, IGenerationPage
 {
 	private static bool LateGeneration = false;
 
+	[GenConfigurable(5, 200, 5)]
+	[Slider]
+	private static int HalfWidth = 50;
+
+	[GenConfigurable(80, 300, 10)]
+	[Slider]
+	private static int MaxDepth = 140;
+
 	public override CaveEntranceType Type => CaveEntranceType.Canyon;
+
+	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "CavePage", false));
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)
 	{
@@ -21,9 +34,9 @@ internal class CanyonEntrance : CaveEntrance
 			y = (int)Main.worldSurface - 80;
 
 		int dif = (int)Main.worldSurface - y;
-		int depth = Math.Max(140, dif);
+		int depth = Math.Max(MaxDepth, dif);
 
-		if (depth >= 140)
+		if (depth >= MaxDepth)
 			skipMe = CreateMound(x, y, dif + 10);
 
 		if (!skipMe)
@@ -56,7 +69,9 @@ internal class CanyonEntrance : CaveEntrance
 			_ => TileID.Dirt,
 		};
 
-		var mound = new Shapes.Mound(WorldGen.genRand.Next(46, 56), depth);
+		HalfWidth = GenConfigLoader.GetPage<CanyonEntrance>().ValueOrDefault(nameof(HalfWidth), WorldGen.genRand.Next(46, 56));
+
+		var mound = new Shapes.Mound(HalfWidth, depth);
 		GenAction action = clear
 			? Actions.Chain(new Modifiers.Blotches(), new Modifiers.Conditions(new Conditions.IsTile(TileID.Dirt)), new Actions.Clear())
 			: Actions.Chain(new Modifiers.Blotches(), new Actions.PlaceTile(type));
@@ -127,7 +142,7 @@ internal class CanyonEntrance : CaveEntrance
 						runners.Add(new Point16(i, j));
 				}
 
-				if ((tile.HasTile && !WorldGen.TileIsExposedToAir(i, j) || withinTiles) && j > y + 8 + wallNoise.GetNoise(i, j) * 6 && j < (Main.worldSurface + WorldGen.genRand.Next(5, 10)))
+				if ((tile.HasTile && !WorldGen.TileIsExposedToAir(i, j) || withinTiles) && j > y + 8 + wallNoise.GetNoise(i, j) * 6 && j < Main.worldSurface + WorldGen.genRand.Next(5, 10))
 				{
 					float noise = wallNoise.GetNoise(i, j);
 
@@ -158,9 +173,6 @@ internal class CanyonEntrance : CaveEntrance
 	/// <summary>
 	/// This makes for a nice shape so I'm keeping it for future reference.
 	/// </summary>
-	/// <param name="x"></param>
-	/// <param name="y"></param>
-	/// <param name="depth"></param>
 	public static void WindingCavern(int x, int y, int depth)
 	{
 		FastNoiseLite diggingNoise = new(WorldGen._genRandSeed);

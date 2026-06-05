@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -28,6 +29,13 @@ internal class CustomCaves : ModSystem
 	private static void AddFlagToMountainCavePass(WorldGen.orig_GenPassDetour orig, object self, GenerationProgress progress, GameConfiguration configuration)
 	{
 		AddingMountainCaves = true;
+
+		GenConfigPage page = GenConfigLoader.PagesByName["Caves"];
+		page.SetupPage();
+
+		foreach (var entry in CaveEntrance.EntranceByType.Values)
+			entry.OnStart();
+
 		orig(self, progress, configuration);
 		AddingMountainCaves = false;
 	}
