@@ -101,7 +101,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			}
 		}
 		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x), false) 
-			is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
+			is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420) && !entry.Definition.Ecotone)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
 			return true; // Uniquely, salt flats cannot normally generate over spawn

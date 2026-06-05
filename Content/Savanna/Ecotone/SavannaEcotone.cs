@@ -140,7 +140,8 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x), false) is EcotoneSurfaceMapping.EcotoneEntry entry)
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x), false) is EcotoneSurfaceMapping.EcotoneEntry entry
+			&& !entry.Definition.Ecotone)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
 			return true;
