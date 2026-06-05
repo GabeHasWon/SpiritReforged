@@ -4,8 +4,10 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
@@ -25,7 +27,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.SaltFlats;
 
-internal class SaltFlatsEcotone : EcotoneBase
+internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 {
 	/// <summary>Contains info for generating the biome surface.</summary>
 	/// <param name="Left">The left merge coordinates.</param>
@@ -55,6 +57,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public static List<Rectangle> SaltFlatsAreas = new();
 
 	private static FastNoiseLite Noise;
+
+	PageInfo IGenerationPage.Info => new PageInfo("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false));
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
 	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
@@ -107,6 +112,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
+		GenConfigPage page = GenConfigLoader.GetPage<SaltFlatsEcotone>();
+		page.SetupPage();
+		// YUYU: Put code here!
+
 		if (EcotoneMapperHooks.AnyForced<SaltFlatsEcotone>())
 		{
 			foreach (EcotoneMapperHooks.EcotoneEntryPair pair in EcotoneMapperHooks.ForcedEcotones.Values)

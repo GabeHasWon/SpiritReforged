@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
@@ -49,7 +50,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int TermiteChance = 45;
 
-	string IGenerationPage.PageName => "Savanna";
+	PageInfo IGenerationPage.Info => new PageInfo("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false));
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];

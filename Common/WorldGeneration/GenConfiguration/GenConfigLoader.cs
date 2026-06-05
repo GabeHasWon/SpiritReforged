@@ -20,6 +20,7 @@ public record LoadedConfig(object Default, string Name, GenConfigParameters Para
 internal class GenConfigLoader : ModSystem
 {
 	public static List<Mod> LoadingMods = [];
+	public static List<GenConfigPage> LoadedPages = [];
 	public static Dictionary<string, GenConfigPage> PagesByName = [];
 	public static Dictionary<Type, GenConfigPage> PagesByType = [];
 
@@ -78,10 +79,12 @@ internal class GenConfigLoader : ModSystem
 				if (typeof(IGenerationPage).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
 				{
 					var page = (IGenerationPage)Activator.CreateInstance(type)!;
-					string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{page.PageName}.";
-					var configPage = new GenConfigPage(page.PageName, Language.GetOrRegister(key + "Name", () => page.PageName), Language.GetOrRegister(key + "Description", () => ""));
-					PagesByName.Add(page.PageName, configPage);
+					string pageName = page.Info.PageName;
+					string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
+					var configPage = new GenConfigPage(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
+					PagesByName.Add(pageName, configPage);
 					PagesByType.Add(type, configPage);
+					LoadedPages.Add(configPage);
 
 					var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 

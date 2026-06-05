@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.Visuals;
+using System.Linq;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
@@ -10,22 +12,50 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 internal class GenConfigUIState(Action returnAction) : UIState
 {
+	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
+
 	private readonly Action ReturnAction = returnAction;
 
+	bool updatePage = false;
+	int pageNumber = 0;
+	UIElement mainPanel = null!;
 	UIPanel pagePanel = null!;
 	UIText pageName = null!;
 	UIText pageDescription = null!;
 
-	public override void OnInitialize()
+	public override void Update(GameTime gameTime)
 	{
-		UIPanel panel = new()
+		base.Update(gameTime);
+
+		if (updatePage)
 		{
-			Width = StyleDimension.FromPixels(700),
-			Height = StyleDimension.FromPixels(500),
-			HAlign = 0.5f,
-			VAlign = 0.5f,
-		};
-		Append(panel);
+			ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
+			updatePage = false;
+		}
+	}
+
+	public override void OnInitialize() => ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
+
+	private void ResetPage(GenConfigPage page)
+	{
+		const int Padding = 12;
+
+		RemoveAllChildren();
+
+		mainPanel = page.PageInfo.PageBack is { } value ? new UIImage(value.Value) { Color = new Color(160, 160, 160) } : new UIPanel();
+		mainPanel.Width = StyleDimension.FromPixels(800);
+		mainPanel.Height = StyleDimension.FromPixels(500);
+		mainPanel.Top = StyleDimension.FromPixels(20);
+		mainPanel.HAlign = 0.5f;
+		mainPanel.VAlign = 0.5f;
+		mainPanel.SetPadding(Padding);
+		Append(mainPanel);
+
+		mainPanel.Append(new UIImage(Border)
+		{
+			Left = StyleDimension.FromPixels(-Padding),
+			Top = StyleDimension.FromPixels(-Padding)
+		});
 
 		UIButton<string> backButton = new("x")
 		{
@@ -34,37 +64,38 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		backButton.OnLeftClick += (_, _) => ReturnAction();
-		panel.Append(backButton);
+		mainPanel.Append(backButton);
 
-		pagePanel?.Remove();
-		pageName?.Remove();
-		pageDescription?.Remove();
-		GenConfigPage page = GenConfigLoader.PagesByType.Values.First();
-		OpenPage(panel, page);
+		//pagePanel?.Remove();
+		//pageName?.Remove();
+		//pageDescription?.Remove();
+		OpenPage(page);
 	}
 
-	private void OpenPage(UIPanel backPanel, GenConfigPage page)
+	private void OpenPage(GenConfigPage page)
 	{
 		pagePanel = new()
 		{
 			Width = StyleDimension.Fill,
-			Height = StyleDimension.FromPixels(410),
+			Height = StyleDimension.FromPixels(390),
 			VAlign = 1
 		};
 
-		backPanel.Append(pagePanel);
+		mainPanel.Append(pagePanel);
 
-		backPanel.Append(pageName = new UIText(page.Name, 0.6f, true)
+		mainPanel.Append(pageName = new UIText(page.DisplayName, 0.7f, true)
 		{
-			HAlign = 0.5f, 
+			HAlign = 0.5f,
 			Top = StyleDimension.FromPixels(8)
 		});
 
-		backPanel.Append(pageDescription = new UIText(page.Tooltip, 0.4f, true)
+		AppendNextPriorButtons(mainPanel, page);
+
+		mainPanel.Append(pageDescription = new UIText(page.Tooltip, 0.45f, true)
 		{
 			HAlign = 0.5f,
-			Top = StyleDimension.FromPixels(38),
-			TextColor = new Color(160, 160, 160)
+			Top = StyleDimension.FromPixels(52),
+			TextColor = new Color(240, 240, 240)
 		});
 
 		UIList configList = new()
@@ -114,7 +145,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			if (config.IsSlider)
 				slider = AddSlider(itemPanel, config);
 			else
-				AddPlusMinus(itemPanel, config);
+				AddPlusMinus(itemPanel, config, text);
 
 			UIButton<string> resetButton = new("Reset")
 			{
@@ -140,6 +171,72 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			itemPanel.Append(resetButton);
 		}
+	}
+
+	private void AppendNextPriorButtons(UIElement backPanel, GenConfigPage page)
+	{
+		float width = ChatManager.GetStringSize(FontAssets.DeathText.Value, page.DisplayName.Value, new(0.7f)).X;
+		GenConfigPage prior = GetPriorPage();
+		UIButton<string> priorButton = new("Prior: " + prior.DisplayName.Value)
+		{
+			Width = StyleDimension.FromPixels(140),
+			Height = StyleDimension.FromPixels(40),
+			HAlign = 1f,
+			Left = StyleDimension.FromPixelsAndPercent(-width / 2 - 20, -0.5f)
+		};
+
+		priorButton.OnLeftClick += (_, _) =>
+		{
+			pageNumber--;
+
+			if (pageNumber < 0)
+				pageNumber = GenConfigLoader.LoadedPages.Count - 1;
+
+			updatePage = true;
+		};
+
+		backPanel.Append(priorButton);
+
+		GenConfigPage next = GetPriorPage();
+		UIButton<string> nextButton = new("Next: " + next.DisplayName.Value)
+		{
+			Width = StyleDimension.FromPixels(140),
+			Height = StyleDimension.FromPixels(40),
+			HAlign = 0f,
+			Left = StyleDimension.FromPixelsAndPercent(width / 2 + 20, 0.5f)
+		};
+
+		nextButton.OnLeftClick += (_, _) =>
+		{
+			pageNumber++;
+
+			if (pageNumber >= GenConfigLoader.LoadedPages.Count)
+				pageNumber = 0;
+
+			updatePage = true;
+		};
+
+		backPanel.Append(nextButton);
+	}
+
+	private GenConfigPage GetPriorPage()
+	{
+		int current = pageNumber - 1;
+
+		if (current < 0)
+			current = GenConfigLoader.LoadedPages.Count - 1;
+
+		return GenConfigLoader.LoadedPages[current];
+	}
+
+	private GenConfigPage GetNextPage()
+	{
+		int current = pageNumber + 1;
+
+		if (current >= GenConfigLoader.LoadedPages.Count)
+			current = 0;
+
+		return GenConfigLoader.LoadedPages[current];
 	}
 
 	private static UIElement? AddSlider(UIPanel itemPanel, LoadedConfig config)
@@ -190,7 +287,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			HAlign = 0f,
 			VAlign = 0.5f,
-			Left = StyleDimension.FromPixels(484),
+			Left = StyleDimension.FromPixels(584),
 			Width = StyleDimension.FromPixels(2),
 			Height = StyleDimension.FromPixels(2),
 			TextColor = Color.Gray
@@ -209,7 +306,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return slider;
 	}
 
-	private static void AddPlusMinus(UIPanel itemPanel, LoadedConfig config)
+	private static void AddPlusMinus(UIPanel itemPanel, LoadedConfig config, UIText nameText)
 	{
 		UIButton<string> plus = new("+")
 		{
@@ -252,5 +349,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		itemPanel.Append(minus);
+
+		UIText minMax = new($"({config.Params.Min}-{config.Params.Max})", 0.8f)
+		{
+			TextColor = new Color(180, 180, 180),
+			Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6),
+			VAlign = 0.5f
+		};
+
+		minMax.OnUpdate += (self) => self.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6);
+		itemPanel.Append(minMax);
 	}
 }

@@ -110,8 +110,13 @@ EcotoneEdges: {
 GenConfigs: {
 	Pages: {
 		Savanna: {
-			Name: Savanna
+			Name: "{$Ecotones.SavannaEcotone}"
 			Description: Controls specific aspects of the Savanna ecotone's generation.
+		}
+
+		SaltFlats: {
+			Name: "{$Ecotones.SaltFlatsEcotone}"
+			Description: Controls specific aspects of the Salt Flat ecotone's generation.
 		}
 	}
 

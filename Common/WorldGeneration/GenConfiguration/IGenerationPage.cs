@@ -1,11 +1,15 @@
 ﻿namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
+#nullable enable
+
+public readonly record struct PageInfo(string PageName, Asset<Texture2D>? PageBack);
+
 /// <summary>
 /// Marks a class as one that has a generation page.
 /// </summary>
 public interface IGenerationPage
 {
-	public string PageName { get; }
+	public PageInfo Info { get; }
 	public Mod Mod { get; }
 }
 

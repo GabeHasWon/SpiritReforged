@@ -1,8 +1,8 @@
 ﻿namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
-public class GenConfigPage(string name, LocalizedText display, LocalizedText tooltip)
+public class GenConfigPage(PageInfo info, LocalizedText display, LocalizedText tooltip)
 {
-	public string Name = name;
+	public PageInfo PageInfo = info;
 	public LocalizedText DisplayName = display;
 	public LocalizedText Tooltip = tooltip;
 
