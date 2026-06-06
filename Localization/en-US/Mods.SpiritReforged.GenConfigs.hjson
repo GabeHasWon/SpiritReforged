@@ -78,6 +78,11 @@ Members: {
 
 	StupaChance: {
 		DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
-		Tooltip:  The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+		Tooltip: The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+	}
+
+	TreeChance: {
+		DisplayName: "[i:27] Dead Tree Chance"
+		Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
 	}
 }

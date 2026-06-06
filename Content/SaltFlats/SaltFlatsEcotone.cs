@@ -76,6 +76,10 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int StupaChance = 12;
 
+	[GenConfigurable(1, 50)]
+	[Slider]
+	private static int TreeChance = 35;
+
 	private static FastNoiseLite Noise;
 
 	PageInfo IGenerationPage.Info => new PageInfo("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false));
@@ -134,7 +138,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	{
 		GenConfigPage page = GenConfigLoader.GetPage<SaltFlatsEcotone>();
 		page.SetupPage();
-		RuinQty = page.ValueOrDefault(nameof(RuinQty), Main.rand.Next(1,2));
+		RuinQty = page.ValueOrDefault(nameof(RuinQty), WorldGen.genRand.Next(1,3));
 		CaveRadius = page.ValueOrDefault(nameof(CaveRadius), WorldGen.genRand.Next(3, 10));
 		LakeRadius = page.ValueOrDefault(nameof(LakeRadius), WorldGen.genRand.Next(6, 10));
 
@@ -336,7 +340,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 					Vector2 pt = new(i, j - 1);
 
-					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
+					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(TreeChance) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
 						treePoints.Add(pt);
 				}
 
