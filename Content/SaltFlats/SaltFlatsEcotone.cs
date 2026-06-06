@@ -76,7 +76,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int StupaChance = 12;
 
-	[GenConfigurable(1, 50)]
+	[GenConfigurable(1, 200)]
 	[Slider]
 	private static int TreeChance = 35;
 
@@ -150,6 +150,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 				GenerateIndividualFlats(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
 			}
+
+			return;
 		}
 
 		if (!CanGenerate(out var bounds))

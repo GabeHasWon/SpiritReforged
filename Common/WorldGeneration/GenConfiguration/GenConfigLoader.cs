@@ -52,7 +52,8 @@ internal class GenConfigLoader : ModSystem
 		{
 			Width = StyleDimension.FromPixels(30),
 			Height = StyleDimension.FromPixels(30),
-			Left = StyleDimension.FromPixels(0),
+			Left = StyleDimension.FromPixels(1),
+			Top = StyleDimension.FromPixels(1),
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
@@ -87,6 +88,16 @@ internal class GenConfigLoader : ModSystem
 					{
 						PagesByType.Add(type, configPage);
 						LoadedPages.Add(configPage);
+
+						if (page.Info.Presets is not null)
+						{
+							foreach (ConfigPreset preset in page.Info.Presets)
+							{
+								LocalizedText presetName = Language.GetOrRegister(key + "Presets." + preset.Name + ".Name", () => preset.Name);
+								LocalizedText presetTip = Language.GetOrRegister(key + "Presets." + preset.Name + ".Tooltip", () => preset.Name);
+								configPage.PresetLocalization.Add((presetName, presetTip));
+							}
+						}
 					}
 					else
 						configPage = PagesByName[pageName];

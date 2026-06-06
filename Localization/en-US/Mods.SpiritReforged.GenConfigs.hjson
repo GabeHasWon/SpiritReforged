@@ -1,7 +1,28 @@
+UI: {
+	Min: All Min
+	Max: All Max
+	Preset: Preset:
+	NoPresets: (No Presets)
+	None: None
+	Reset: Reset All
+}
+
 Pages: {
 	Savanna: {
 		Name: "{$Ecotones.SavannaEcotone}"
 		Description: Controls specific aspects of the Savanna ecotone's generation.
+
+		Presets: {
+			Domesticated: {
+				Name: "[i:224] Domesticated"
+				Tooltip: A more lived in savanna with more pots and less wildlife.
+			}
+
+			Infested: {
+				Name: "[i:SpiritReforged/TermiteJar] Infested"
+				Tooltip: Oops! All termites! Trees may be hard to find.
+			}
+		}
 	}
 
 	SaltFlats: {
@@ -18,7 +39,7 @@ Pages: {
 Members: {
 	Steps: {
 		DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
-		Tooltip: The number of steps that the Savanna generates with.
+		Tooltip: The number of flat steps that the Savanna generates with.
 	}
 
 	CampsiteChance: {
@@ -28,16 +49,24 @@ Members: {
 
 	BaseTreeChance: {
 		DisplayName: "[i:27] Acacia Tree Chance"
-		Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+		Tooltip:
+			'''
+			The denominator (1/x) of the chance for a tree to spawn on a given tile.
+			This chance is reduced until a tree is placed, and then it's reset.
+			'''
 	}
 
 	PotChance: {
 		DisplayName: "[i:31] Pot Chance"
-		Tooltip: The denominator (1/x) of the chance for a pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+		Tooltip:
+			'''
+			The denominator (1/x) of the chance for a pot to spawn when decorating. 
+			This does not override tiles, so a value of one will NOT place a pot on every tile.	
+			'''
 	}
 
 	TermiteChance: {
-		DisplayName: "[i:SpiritReforged/TermiteItem] Termite Chance"
+		DisplayName: "[i:SpiritReforged/TermiteJar] Termite Chance"
 		Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
 	}
 
@@ -78,7 +107,11 @@ Members: {
 
 	StupaChance: {
 		DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
-		Tooltip: The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+		Tooltip:
+			'''
+			The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. 
+			This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+			'''
 	}
 
 	TreeChance: {

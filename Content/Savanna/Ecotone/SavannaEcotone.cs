@@ -38,7 +38,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[GenConfigurable(1, 9)]
 	private static int CampsiteChance = 3;
 
-	[GenConfigurable(5, 200)]
+	[GenConfigurable(5, 600)]
 	[Slider]
 	private static int BaseTreeChance = 90;
 
@@ -50,7 +50,25 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int TermiteChance = 45;
 
-	PageInfo IGenerationPage.Info => new PageInfo("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false));
+	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), 
+		[
+			new("Domesticated", false,
+				[
+					new IndividualPreset(nameof(CampsiteChance), 1),
+					new IndividualPreset(nameof(BaseTreeChance), 180),
+					new IndividualPreset(nameof(PotChance), 3),
+					new IndividualPreset(nameof(TermiteChance), 80),
+				]),
+
+			new("Infested", false,
+				[
+					new IndividualPreset(nameof(CampsiteChance), 9),
+					new IndividualPreset(nameof(BaseTreeChance), 550),
+					new IndividualPreset(nameof(PotChance), 5),
+					new IndividualPreset(nameof(TermiteChance), 10),
+				])
+		]);
+
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];
@@ -166,6 +184,8 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				GenerateIndividualSavanna(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
 				Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Randomize steps unless it's been pre-selected
 			}
+
+			return;
 		}
 
 		if (!CanGenerate(out var bounds))
@@ -185,6 +205,9 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 		//A hash of tile types which can be replaced
 		HashSet<int> validIds = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone];
+		HashSet<int> validClears = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone, TileID.Mud, TileID.JungleGrass, TileID.Sand,
+			TileID.HardenedSand, TileID.Trees, TileID.Ebonstone, TileID.Crimstone, TileID.Iron, TileID.Copper, TileID.Tin, TileID.Lead, TileID.Silver, TileID.Platinum, TileID.Gold, 
+			TileID.Tungsten, TileID.ClayBlock];
 
 		var topBottomY = new Point(Math.Min(startY, endY), Math.Max(startY, endY));
 		var sandNoise = new Common.WorldGeneration.Noise.FastNoiseLite(WorldGen.genRand.Next());
@@ -214,7 +237,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 			float taper = Math.Clamp((float)Math.Sin((float)(x - startX) / (endX - startX) * Math.PI) * 1.75f, 0, 1);
 			int startHeight = Math.Min(HighestSurfacePoint(x) - stepY, 0);
-
+			
 			for (int depth = startHeight; depth < (30 + maxDepth + minDepth) * taper; ++depth)
 			{
 				int y = stepY + depth;
@@ -222,7 +245,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 				if (depth >= 0)
 				{
-					if ((depth < 15 || tile.WallType == WallID.None) && !CorrWall(tile.WallType))
+					if ((depth < 15 || tile.WallType == WallID.None) && !CorrWall(tile.WallType) && !CorrWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
 						tile.HasTile = true;
 
 					if (tile.HasTile && !validIds.Contains(tile.TileType) && !TileID.Sets.Ore[tile.TileType])
@@ -250,12 +273,22 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 							else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
 								tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
 						}
-						else
+						else if (!Main.wallDungeon[tile.WallType])
 							tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 					}
 				}
-				else
-					tile.Clear(TileDataType.All);
+				else if (validClears.Contains(tile.TileType))
+				{
+					TileDataType clears = TileDataType.Tile;
+
+					if (!Main.wallDungeon[tile.WallType])
+					{
+						Main.tile[x, y + 1].Clear(TileDataType.Wall);
+						clears |= TileDataType.Wall;
+					}
+
+					tile.Clear(clears);
+				}
 
 				int GetType()
 				{
@@ -300,7 +333,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		}
 	}
 
-	private static bool CorrWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall];
+	private static bool CorrWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall] || Main.wallDungeon[wall];
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{

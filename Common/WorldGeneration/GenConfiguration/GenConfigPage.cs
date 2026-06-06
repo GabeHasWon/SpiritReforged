@@ -5,6 +5,7 @@ public class GenConfigPage(PageInfo info, LocalizedText display, LocalizedText t
 	public PageInfo PageInfo = info;
 	public LocalizedText DisplayName = display;
 	public LocalizedText Tooltip = tooltip;
+	public List<(LocalizedText Name, LocalizedText Tooltip)> PresetLocalization = [];
 
 	public Dictionary<string, LoadedConfig> ConfigsByName = [];
 

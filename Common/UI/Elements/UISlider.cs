@@ -5,25 +5,32 @@ using Terraria.UI;
 namespace SpiritReforged.Common.UI.Elements;
 
 // Copied from my same implementation in New Beginnings.
-internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UIElement where T : global::System.Numerics.INumber<T>
+internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber<T>
 {
     private static Asset<Texture2D> Back = ModContent.Request<Texture2D>("SpiritReforged/Common/UI/Elements/SliderBase");
     private static Asset<Texture2D> Button = ModContent.Request<Texture2D>("SpiritReforged/Common/UI/Elements/SliderButton");
 
-    public T Value { get; private set; } = start;
+    public T Value { get; private set; }
 
-    public readonly T Start = start;
-    public readonly T Increment = increment;
-    public readonly T Minimum = min;
-    public readonly T Maximum = max;
-    public readonly Color Color = color;
-	
+    public readonly T Start;
+	public readonly T Increment;
+	public readonly T Minimum;
+	public readonly T Maximum;
+	public readonly Color Color;
+
 	public UIImageButton button = null;
 
     private bool _dragging = false;
 
-    public override void OnInitialize()
+	public UISlider(T start, T increment, T min, T max, Color color)
 	{
+		Value = start;
+		Start = start;
+		Increment = increment;
+		Minimum = min;
+		Maximum = max;
+		Color = color;
+
 		button = new(Button)
 		{
 			Width = StyleDimension.FromPixels(12),
@@ -60,7 +67,7 @@ internal class UISlider<T>(T start, T increment, T min, T max, Color color) : UI
         SetToFactor(factor);
     }
 
-    private void SetToFactor(float factor)
+    public void SetToFactor(float factor)
     {
         button.HAlign = factor;
         double prop = double.CreateSaturating(Increment) / (double.CreateSaturating(Maximum) - double.CreateSaturating(Minimum));

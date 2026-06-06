@@ -1,6 +1,8 @@
 ﻿using ReLogic.Graphics;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
+using System;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
@@ -17,8 +19,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 	private readonly Action ReturnAction = returnAction;
 
+	private static bool _applyingPreset = false;
+
 	bool updatePage = false;
 	int pageNumber = 0;
+	int pageConfig = -1;
+	Action<GenConfigPage, ConfigPreset>? onSelectPreset = null;
+	Action? onReset = null;
+	UIButton<string> presetButton = null!;
 	UIElement mainPanel = null!;
 	string hoverText = "";
 
@@ -58,6 +66,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		const int Padding = 12;
 
 		RemoveAllChildren();
+
+		pageConfig = -1;
 
 		mainPanel = page.PageInfo.PageBack is { } value ? new UIImage(value.Value) { Color = new Color(160, 160, 160) } : new UIPanel();
 		mainPanel.Width = StyleDimension.FromPixels(800);
@@ -116,7 +126,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		UIList configList = new()
 		{
 			Width = StyleDimension.FromPixelsAndPercent(-24, 1),
-			Height = StyleDimension.Fill,
+			Height = StyleDimension.FromPixelsAndPercent(-60, 1),
 		};
 		pagePanel.Append(configList);
 
@@ -129,6 +139,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(bar);
 		configList.SetScrollbar(bar);
 
+		AddMinMaxPresetAndResetButtons(page, pagePanel);
+
 		foreach (LoadedConfig config in page.ConfigsByName.Values)
 		{
 			UIPanel itemPanel = new()
@@ -139,7 +151,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			itemPanel.OnUpdate += _ =>
 			{
-				if (itemPanel.ContainsPoint(Main.MouseScreen))
+				if (itemPanel.ContainsPoint(Main.MouseScreen) && configList?.ContainsPoint(Main.MouseScreen) is true)
 					hoverText = config.Tip.Value;
 			};
 			configList.Add(itemPanel);
@@ -165,20 +177,25 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			bool isInt = defaultValue is int or short or long or ushort or uint or byte or sbyte;
 			InputType inputType = isNumber ? isInt ? InputType.Integer : InputType.Number : InputType.Text;
 
+			// Define this super early so we can get it for the below onEnter delegate
+			UIElement? slider = null;
+
 			UIEditableText input = new(inputType, "...", text =>
 			{
 				config.Modified = true;
 				object obj = defaultValue switch
 				{
-					string => text,
-					int => int.Parse(text),
-					double => double.Parse(text),
-					short => short.Parse(text),
-					float => float.Parse(text),
-					byte => byte.Parse(text),
-					ushort => ushort.Parse(text),
-					sbyte => sbyte.Parse(text),
-					long => long.Parse(text),
+#pragma warning disable IDE0004 // Unnecessary cast
+					// I said this in some other garish code, but the boxing preserves the type for some reason - Gabe
+					int => (object)int.Parse(text),
+					double => (object)double.Parse(text),
+					short => (object)short.Parse(text),
+					float => (object)float.Parse(text),
+					byte => (object)byte.Parse(text),
+					ushort => (object)ushort.Parse(text),
+					sbyte => (object)sbyte.Parse(text),
+					long => (object)long.Parse(text),
+#pragma warning disable IDE0004
 					_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
 				};
 
@@ -192,9 +209,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				}
 
 				config.Set(obj);
+
+				MethodInfo? setToFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
+
+				if (setToFactor is not null)
+				{
+					GenConfigParameters configParams = config.Params;
+					float factor = GenericMath.InverseLerp((dynamic)configParams.Min, (dynamic)configParams.Max, (dynamic)obj);
+					setToFactor.Invoke(slider, [factor]);
+				}
 			})
 			{
-				Width = StyleDimension.FromPixels(80),
+				Width = StyleDimension.FromPixels(60),
 				Height = StyleDimension.FromPixels(60),
 				Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 4),
 				Top = StyleDimension.FromPixels(4)
@@ -208,12 +234,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			itemPanel.Append(input);
 
-			UIElement? slider = null;
-
 			if (config.IsSlider)
-				slider = AddSlider(itemPanel, config);
+				slider = AddSlider(page, itemPanel, config);
 			else
-				AddPlusMinus(itemPanel, config, text);
+				AddPlusMinus(page, itemPanel, config, text);
 
 			UIButton<string> resetButton = new("Reset")
 			{
@@ -224,6 +248,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			};
 
 			MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
+
+			if (info is not null && slider is not null)
+			{
+				onReset += () => info.Invoke(slider, []);
+			}
 
 			resetButton.OnLeftClick += (_, _) =>
 			{
@@ -238,6 +267,112 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			itemPanel.Append(resetButton);
 		}
+	}
+
+	private void AddMinMaxPresetAndResetButtons(GenConfigPage page, UIPanel pagePanel)
+	{
+		UIButton<string> setMax = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Max"))
+		{
+			Width = StyleDimension.FromPixels(80),
+			Height = StyleDimension.FromPixels(50),
+			HAlign = 0.5f,
+			VAlign = 1f,
+			Left = StyleDimension.FromPixels(160)
+		};
+
+		setMax.OnLeftClick += (_, _) =>
+		{
+			foreach (LoadedConfig config in page.ConfigsByName.Values)
+				config.Set(config.Params.Max);
+		};
+		pagePanel.Append(setMax);
+
+		UIButton<string> setMin = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Min"))
+		{
+			Width = StyleDimension.FromPixels(80),
+			Height = StyleDimension.FromPixels(50),
+			HAlign = 0.5f,
+			VAlign = 1f,
+			Left = StyleDimension.FromPixels(-160)
+		};
+
+		setMin.OnLeftClick += (_, _) =>
+		{
+			foreach (LoadedConfig config in page.ConfigsByName.Values)
+			{
+				config.Set(config.Params.Min);
+				config.Modified = true;
+			}
+		};
+		pagePanel.Append(setMin);
+
+		presetButton = new(GetConfigPresetDisplay(page))
+		{
+			Width = StyleDimension.FromPixels(234),
+			Height = StyleDimension.FromPixels(50),
+			HAlign = 0.5f,
+			VAlign = 1f,
+		};
+
+		presetButton.OnLeftClick += (_, _) =>
+		{
+			if (page.PageInfo.Presets is null or { Count: 0 })
+				return;
+
+			pageConfig++;
+
+			if (pageConfig >= page.PageInfo.Presets.Count)
+				pageConfig = 0;
+
+			_applyingPreset = true;
+
+			ConfigPreset configPreset = page.PageInfo.Presets[pageConfig];
+			configPreset.Apply(page);
+			presetButton.SetText(GetConfigPresetDisplay(page));
+			onSelectPreset?.Invoke(page, configPreset);
+
+			_applyingPreset = false;
+		};
+
+		presetButton.OnUpdate += _ =>
+		{
+			if (pageConfig != -1 && presetButton.ContainsPoint(Main.MouseScreen))
+				hoverText = page.PresetLocalization[pageConfig].Tooltip.Value;
+		};
+
+		pagePanel.Append(presetButton);
+
+		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
+		{
+			Width = StyleDimension.FromPixels(80),
+			Height = StyleDimension.FromPixels(50),
+			HAlign = 0,
+			VAlign = 1f,
+		};
+
+		resetButton.OnLeftClick += (_, _) =>
+		{
+			foreach (var config in page.ConfigsByName.Values)
+			{
+				config.Set(config.Default);
+				config.Modified = false;
+			}
+
+			onReset?.Invoke();
+			ResetPreset(page);
+		};
+
+		pagePanel.Append(resetButton);
+	}
+
+	private string GetConfigPresetDisplay(GenConfigPage page)
+	{
+		const string Key = "Mods.SpiritReforged.GenConfigs.UI.";
+
+		if (page.PageInfo.Presets is null or { Count: 0 })
+			return Language.GetTextValue(Key + "NoPresets");
+
+		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? Language.GetTextValue(Key + "None") : page.PresetLocalization[pageConfig].Name.Value);
 	}
 
 	private void AppendNextPriorButtons(UIElement backPanel, GenConfigPage page)
@@ -306,7 +441,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return GenConfigLoader.LoadedPages[current];
 	}
 
-	private static UIElement? AddSlider(UIPanel itemPanel, LoadedConfig config)
+	private UIElement? AddSlider(GenConfigPage page, UIPanel itemPanel, LoadedConfig config)
 	{
 		dynamic def = config.Default;
 		dynamic step = config.Params.Step;
@@ -333,16 +468,34 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		MethodInfo? valueField = slider.GetType()?.GetProperty("Value")?.GetGetMethod();
 		FieldInfo? dragging = slider.GetType()?.GetField("_dragging", BindingFlags.NonPublic | BindingFlags.Instance);
+		MethodInfo? setToFactor = slider.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
+
+		if (setToFactor is not null)
+		{
+			onSelectPreset += (page, preset) =>
+			{
+				foreach (var indiv in preset.Presets) 
+				{
+					if (config.Name == indiv.Name)
+					{
+						GenConfigParameters configParams = config.Params;
+						float factor = GenericMath.InverseLerp((dynamic)configParams.Min, (dynamic)configParams.Max, (dynamic)indiv.Value);
+						setToFactor.Invoke(slider, [factor]);
+						break;
+					}
+				}
+			};
+		}
 
 		if (valueField is not null)
 		{
 			slider.OnUpdate += self =>
 			{
-				if (!config.Get().Equals(def))
-					config.Modified = true;
-
 				if (dragging?.GetValue(slider) is true)
+				{
 					config.Set(valueField.Invoke(slider, [])!);
+					ConfigModified(page, config);
+				}
 			};
 		}
 		else
@@ -373,7 +526,21 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return slider;
 	}
 
-	private static void AddPlusMinus(UIPanel itemPanel, LoadedConfig config, UIText nameText)
+	private void ConfigModified(GenConfigPage page, LoadedConfig config)
+	{
+		config.Modified = true;
+
+		if (!_applyingPreset && pageConfig != -1)
+			ResetPreset(page);
+	}
+
+	private void ResetPreset(GenConfigPage page)
+	{
+		pageConfig = -1;
+		presetButton.SetText(GetConfigPresetDisplay(page));
+	}
+
+	private void AddPlusMinus(GenConfigPage page, UIPanel itemPanel, LoadedConfig config, UIText nameText)
 	{
 		UIButton<string> plus = new("+")
 		{
@@ -391,7 +558,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				value = config.Params.Max;
 
 			config.Set(value);
-			config.Modified = true;
+			ConfigModified(page, config);
 		};
 
 		itemPanel.Append(plus);
@@ -412,7 +579,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				value = config.Params.Min;
 
 			config.Set(value);
-			config.Modified = true;
+			ConfigModified(page, config);
+
 		};
 
 		itemPanel.Append(minus);

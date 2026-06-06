@@ -3,6 +3,7 @@ using Terraria.GameInput;
 using Terraria.UI;
 using ReLogic.OS;
 using Steamworks;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.UI.Elements;
 
@@ -105,20 +106,22 @@ internal class UIEditableText(InputType inputType = InputType.Text, string backi
 				_updated = true;
 			}
 		}
-		else if (InputType == InputType.Number && (newText == string.Empty || double.TryParse(newText, out double _))) //I found this regex on SO so no idea if it works right lol
+		else if (InputType == InputType.Number && (newText == string.Empty || double.TryParse(newText, out double _)))
 		{
 			if (newText != currentValue)
 			{
 				currentValue = newText;
 				_updated = true;
 			}
-			else
-			if (newText != currentValue)
+			else if (newText != currentValue)
 			{
 				currentValue = newText;
 				_updated = true;
 			}
 		}
+
+		while (ChatManager.GetStringSize(FontAssets.MouseText.Value, currentValue, Vector2.One).X + 8 > GetDimensions().Width && currentValue.Length > 0)
+			currentValue = currentValue[..^1];
 
         _oldHasCompositionString = Platform.Get<IImeService>().CompositionString is { Length: > 0 };
     }
