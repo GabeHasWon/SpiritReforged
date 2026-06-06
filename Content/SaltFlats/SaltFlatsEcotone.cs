@@ -22,6 +22,7 @@ using SpiritReforged.Content.SaltFlats.Walls;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -55,6 +56,29 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	[WorldBound]
 	public static List<Rectangle> SaltFlatsAreas = new();
+
+	[GenConfigurable(1, 10)]
+	private static int MaxSteps = 3;
+
+	[GenConfigurable(2, 25)]
+	[Slider]
+	private static int LakeRadius = 6;
+
+	[GenConfigurable(2, 25)]
+	[Slider]
+	private static int CaveRadius = 3;
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	private static int RuinQty = 2;
+
+	[GenConfigurable(1, 24)]
+	[Slider]
+	private static int StupaChance = 12;
+
+	[GenConfigurable(1, 50)]
+	[Slider]
+	private static int TreeChance = 35;
 
 	private static FastNoiseLite Noise;
 
@@ -114,7 +138,9 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	{
 		GenConfigPage page = GenConfigLoader.GetPage<SaltFlatsEcotone>();
 		page.SetupPage();
-		// YUYU: Put code here!
+		RuinQty = page.ValueOrDefault(nameof(RuinQty), WorldGen.genRand.Next(1,3));
+		CaveRadius = page.ValueOrDefault(nameof(CaveRadius), WorldGen.genRand.Next(3, 10));
+		LakeRadius = page.ValueOrDefault(nameof(LakeRadius), WorldGen.genRand.Next(6, 10));
 
 		if (EcotoneMapperHooks.AnyForced<SaltFlatsEcotone>())
 		{
@@ -145,7 +171,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
-		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, 3);
+		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, MaxSteps);
 		int finalLength = (rightBound - leftBound) / steps;
 
 		int y = EcotoneSurfaceMapping.TotalSurfaceY[(short)leftBound];
@@ -239,10 +265,10 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		}
 
 		foreach (Point o in caveOrigins)
-			CreateCave(o, WorldGen.genRand.Next(3, 10));
+			CreateCave(o, CaveRadius);
 
 		foreach (Point o in lakeOrigins)
-			CreateLake(o, WorldGen.genRand.Next(6, 10));
+			CreateLake(o, LakeRadius);
 
 		static void AddObject(int x, int y, bool condition, ref List<Point> list) //Improves readability
 		{
@@ -294,7 +320,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 				if (!WorldGen.SolidTile(i, j - 1) && aboveTile.LiquidAmount < 20)
 				{
-					if (WorldGen.genRand.NextBool(12))
+					if (WorldGen.genRand.NextBool(StupaChance))
 						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 3));
 
 					if (WorldGen.genRand.NextBool(24))
@@ -314,7 +340,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 					Vector2 pt = new(i, j - 1);
 
-					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
+					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(TreeChance) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
 						treePoints.Add(pt);
 				}
 
@@ -328,12 +354,11 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			return false;
 		}, out _, area);
 
-		int ruinCount = Math.Min(area.Width / 50, 2);
 		Decorator decorator = new(area);
 		decorator.Enqueue(PlaceReliquary, Math.Max(area.Width / 150, 1)).Enqueue(PlaceSaltwortPatch, Math.Max(area.Width / 80, 1));
 
-		if (ruinCount > 0)
-			decorator.Enqueue(CreateRuin, ruinCount);
+		if (RuinQty > 0)
+			decorator.Enqueue(CreateRuin, RuinQty);
 
 		decorator.Run();
 	}

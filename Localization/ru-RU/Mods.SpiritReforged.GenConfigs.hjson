@@ -23,22 +23,22 @@ Members: {
 
 	CampsiteChance: {
 		// DisplayName: "[i:966] Campsite Chance"
-		// Tooltip: The denominator (1/this value) of the chance for a campsite to spawn in.
+		// Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
 	}
 
 	BaseTreeChance: {
 		// DisplayName: "[i:27] Acacia Tree Chance"
-		// Tooltip: The denominator (1/this value) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+		// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
 	}
 
 	PotChance: {
 		// DisplayName: "[i:31] Pot Chance"
-		// Tooltip: The denominator (1/this value) of the chance for a pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+		// Tooltip: The denominator (1/x) of the chance for a pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
 	}
 
 	TermiteChance: {
 		// DisplayName: "[i:SpiritReforged/TermiteItem] Termite Chance"
-		// Tooltip: The denominator (1/this value) of the chance for a termite mound to spawn when decorating.
+		// Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
 	}
 
 	HalfWidth: {
@@ -54,5 +54,35 @@ Members: {
 	SizeMultiplier: {
 		// DisplayName: (Karst) Size Multiplier
 		// Tooltip: Multiplier on the size of all digging operations that karsts do.
+	}
+
+	RuinQty: {
+		// DisplayName: "[i:SpiritReforged/CalmingBellItem] Salt Flats Ruins"
+		// Tooltip: The upper bound of Salt Flats ruins placed. Not all may be placed.
+	}
+
+	LakeRadius: {
+		// DisplayName: "[i:206] Lake Radius"
+		// Tooltip: The radius for Salt Flats lakes. Larger radii correspond to larger lakes.
+	}
+
+	CaveRadius: {
+		// DisplayName: "[i:SpiritReforged/SaltWallItem] Cave Radius"
+		// Tooltip: The radius for Salt Flats caves. Larger radii correspond to larger caves.
+	}
+
+	MaxSteps: {
+		// DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
+		// Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat. Not all may be placed.
+	}
+
+	StupaChance: {
+		// DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
+		// Tooltip: The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+	}
+
+	TreeChance: {
+		// DisplayName: "[i:27] Dead Tree Chance"
+		// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
 	}
 }
