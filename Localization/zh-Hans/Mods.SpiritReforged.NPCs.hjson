@@ -425,7 +425,7 @@ PotterySlime: {
 	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
 }
 
-StompableGnome.DisplayName: 可被踩头的侏儒
+StompableGnome.DisplayName: 可踩侏儒
 
 DunceCrab: {
 	DisplayName: 笨蟹
@@ -438,7 +438,7 @@ Wheezer: {
 }
 
 WorldFrog: {
-	DisplayName: 看起来有帮助的青蛙
+	DisplayName: 有用青蛙
 	Button: 更新世界
 
 	Sounds: {
