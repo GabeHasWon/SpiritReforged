@@ -73,7 +73,7 @@ Members: {
 
 	MaxSteps: {
 		DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
-		Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat. Not all may be placed.
+		Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat.
 	}
 
 	StupaChance: {
