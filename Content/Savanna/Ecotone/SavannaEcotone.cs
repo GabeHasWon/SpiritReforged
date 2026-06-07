@@ -175,7 +175,6 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
 		GenConfigPage page = GenConfigLoader.GetPage<SavannaEcotone>();
-		page.SetupPage();
 		BaseTreeChance = page.ValueOrDefault(nameof(BaseTreeChance), CrossMod.Remnants.Enabled ? 40 : 90); // Maximum odds to generate a tree - lower in Remnants
 		Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Number of steps per savanna
 

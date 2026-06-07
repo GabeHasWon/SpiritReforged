@@ -1,5 +1,8 @@
 ﻿namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
+/// <summary>
+/// The actual loaded generation configuration page for a defined area. Includes the info and localization, plus a helper tool.
+/// </summary>
 public class GenConfigPage(PageInfo info, LocalizedText display, LocalizedText tooltip)
 {
 	public PageInfo PageInfo = info;
@@ -9,20 +12,8 @@ public class GenConfigPage(PageInfo info, LocalizedText display, LocalizedText t
 
 	public Dictionary<string, LoadedConfig> ConfigsByName = [];
 
-	public bool ConfigModified(string name) => ConfigsByName[name].Modified;
-	public void ModifyConfig(string name) => ConfigsByName[name].Modified = true;
-
-	public T ValueOrDefault<T>(string configName, T defaultValue) => ConfigsByName[configName].Modified ? (T)ConfigsByName[configName].Get() : defaultValue;
-
 	/// <summary>
-	/// Sets all the values on the page to the defaults automatically. This should be run once during generation.
+	/// Retrieves either the modified value for the config or the default value passed in.
 	/// </summary>
-	public void SetupPage()
-	{
-		foreach (var config in ConfigsByName.Values)
-		{
-			if (!config.Modified)
-				config.Set(config.Default);
-		}
-	}
+	public T ValueOrDefault<T>(string configName, T defaultValue) => ConfigsByName[configName].Modified ? (T)ConfigsByName[configName].Get() : defaultValue;
 }

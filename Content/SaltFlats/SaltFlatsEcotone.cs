@@ -139,7 +139,6 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
 		GenConfigPage page = GenConfigLoader.GetPage<SaltFlatsEcotone>();
-		page.SetupPage();
 		RuinQty = page.ValueOrDefault(nameof(RuinQty), WorldGen.genRand.Next(1,3));
 		CaveRadius = page.ValueOrDefault(nameof(CaveRadius), WorldGen.genRand.Next(3, 10));
 		LakeRadius = page.ValueOrDefault(nameof(LakeRadius), WorldGen.genRand.Next(6, 10));

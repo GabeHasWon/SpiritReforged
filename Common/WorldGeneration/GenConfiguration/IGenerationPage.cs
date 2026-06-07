@@ -3,13 +3,14 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 #nullable enable
 
+/// <summary>
+/// An individual config's preset value, by name.
+/// </summary>
 public readonly record struct IndividualPreset(string Name, object Value);
 
 /// <summary>
-/// A 
+/// An individual full-config preset. <paramref name="ResetNotIncluded"/> will reset values that aren't included in the preset.
 /// </summary>
-/// <param name="Name"></param>
-/// <param name="Presets"></param>
 public readonly record struct ConfigPreset(string Name, bool ResetNotIncluded, List<IndividualPreset> Presets)
 {
 	internal readonly void Apply(GenConfigPage page)
@@ -46,11 +47,21 @@ public readonly record struct PageInfo(string PageName, Asset<Texture2D>? PageBa
 /// </summary>
 public interface IGenerationPage
 {
+	/// <summary>
+	/// Info used to generate a page.
+	/// </summary>
 	public PageInfo Info { get; }
+
+	/// <summary>
+	/// The mod associated with this page.
+	/// </summary>
 	public Mod Mod { get; }
 }
 
 public static class GenerationPageExtensions
 {
+	/// <summary>
+	/// Retrieves the page associated with this <see cref="IGenerationPage"/>.
+	/// </summary>
 	public static GenConfigPage GetPage(this IGenerationPage page) => GenConfigLoader.GetPage(page.GetType()); 
 }
