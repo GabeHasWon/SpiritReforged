@@ -169,7 +169,17 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			text.OnUpdate += _ =>
 			{
-				text.SetText(config.DisplayName + $": [c/AAAAAA:{config.Get()}]");
+				object valueBack = config.Get();
+				string? value = valueBack.ToString();
+
+				if (valueBack is float f)
+					value = f.ToString("#0.##");
+				else if (valueBack is double d)
+					value = d.ToString("#0.##");
+				else if (valueBack is decimal de)
+					value = de.ToString("#0.##");
+
+				text.SetText(config.DisplayName + $": [c/AAAAAA:{value}]");
 				text.TextColor = config.Modified ? new Color(200, 255, 200) : Color.White;
 			};
 
