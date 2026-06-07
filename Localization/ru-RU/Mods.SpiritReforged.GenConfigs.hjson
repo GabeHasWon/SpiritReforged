@@ -91,6 +91,16 @@ Pages: {
 				// Name: "[i:SpiritReforged/CobbledBrickItem] Sunken Ruins"
 				// Tooltip: The ruins of an ancient civilization have been washed and chipped away.
 			}
+
+			BlankCanvas: {
+				// Name: BlankCanvas
+				// Tooltip: BlankCanvas
+			}
+
+			Dessicated: {
+				// Name: Dessicated
+				// Tooltip: Dessicated
+			}
 		}
 
 		Members: {
