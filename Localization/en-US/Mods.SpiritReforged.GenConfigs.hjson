@@ -1,10 +1,24 @@
 UI: {
 	Min: All Min
+	MinDescription:
+		'''
+		Sets all configs to the values which would reduce generation the most.
+		So a value like "maximum trees" would be set to its minimum, 
+		but a value for "tree chance (1/x)" would be set to its maximum.
+		'''
 	Max: All Max
+	MaxDescription:
+		'''
+		Sets all configs to the values which would increase generation the most.
+		So a value like "maximum trees" would be set to its maximum, 
+		but a value for "tree chance (1/x)" would be set to its minimum.
+		'''
 	Preset: Preset:
 	NoPresets: (No Presets)
 	None: None
 	Reset: Reset All
+	Prior: Prior:
+	Next: Next:
 }
 
 Pages: {
@@ -33,6 +47,16 @@ Pages: {
 	Caves: {
 		Name: Caves
 		Description: Controls specific aspects of Reforged's custom cave entrances.
+	}
+
+	Surface: {
+		Name: Surface
+		Description: Controls specific aspects of Reforged's additions and edits to the surface.
+	}
+
+	Ocean: {
+		Name: Ocean
+		Description: Controls specific aspects of Reforged's overhauled Ocean.
 	}
 }
 
@@ -71,17 +95,17 @@ Members: {
 	}
 
 	HalfWidth: {
-		DisplayName: (Canyon) Half Width
+		DisplayName: "[i:133] (Canyon) Half Width"
 		Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
 	}
 
 	MaxDepth: {
-		DisplayName: (Canyon) Max Depth
-		Tooltip: Controls the max depth of a canyon before it starts making a mound.
+		DisplayName: "[i:133] (Canyon) Max Depth"
+		Tooltip: Controls the max depth of a canyon.
 	}
 
 	SizeMultiplier: {
-		DisplayName: (Karst) Size Multiplier
+		DisplayName: "[i:126] (Karst) Size Multiplier"
 		Tooltip: Multiplier on the size of all digging operations that karsts do.
 	}
 
@@ -117,5 +141,80 @@ Members: {
 	TreeChance: {
 		DisplayName: "[i:27] Dead Tree Chance"
 		Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+	}
+
+	FieldSize: {
+		DisplayName: "[i:SpiritReforged/BotanistHat] (Scarecrow) Field Size"
+		Tooltip: Controls the width of a scarecrow's wheat field.
+	}
+
+	ButterflyCountMax: {
+		DisplayName: "[i:SpiritReforged/ButterflyStaff] (Butterfly Shrines) Max"
+		Tooltip: The maximum number of butterfly shrines that may be placed. May not place all.
+	}
+
+	HeroChance: {
+		DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] (Hero's Memorial) Spawn Chance"
+		Tooltip: The denominator (1/x) of the chance for the Hero's Memorial to spawn.
+	}
+
+	MaxStargrassCount: {
+		DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
+		Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
+	}
+
+	WaterChestCount: {
+		DisplayName: "[i:1298] Water Chest Max"
+		Tooltip: The maximum number of water chests that may be placed in the ocean. Usually will not place all.
+	}
+
+	SunkenTreasureCount: {
+		DisplayName: "[i:SpiritReforged/SunkenTreasure] Sunken Treasure Max"
+		Tooltip: The maximum number of sunken treasure that may be placed in the ocean. Usually will not place all.
+	}
+
+	SandDepth: {
+		DisplayName: "[i:169] Sand Depth"
+		Tooltip: How far into the ground sand goes under the ocean.
+	}
+
+	SandRange: {
+		DisplayName: "[i:169] Sand Range"
+		Tooltip: The upper bound for Sand Depth's random added range in the ocean.
+	}
+
+	CoralLowChance: {
+		DisplayName: "[i:275] Coral Chance (Low)"
+		Tooltip: The denominator (1/x) for coral to spawn in the lower steps of the ocean.
+	}
+
+	CoralHighChance: {
+		DisplayName: "[i:275] Coral Chance (High)"
+		Tooltip: The denominator (1/x) for coral to spawn in the highest step of the ocean.
+	}
+
+	DecorLowChance: {
+		DisplayName: "[i:4090] Decor Chance (Low)"
+		Tooltip: The denominator (1/x) for decor to spawn in the lower steps of the ocean.
+	}
+
+	DecorHighChance: {
+		DisplayName: "[i:4090] Decor Chance (High)"
+		Tooltip: The denominator (1/x) for decor to spawn in the highest step of the ocean.
+	}
+
+	KelpChance: {
+		DisplayName: "[i:SpiritReforged/Kelp] Kelp Chance"
+		Tooltip: The denominator (1/x) for kelp to spawn in the ocean.
+	}
+
+	KelpMaxHeight: {
+		DisplayName: "[i:SpiritReforged/Kelp] Kelp Height"
+		Tooltip: The maximum height, in tiles, that kelp can spawn as.
+	}
+
+	GravelMultiplier: {
+		DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
+		Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
 	}
 }

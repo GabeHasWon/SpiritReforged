@@ -21,7 +21,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 
 	public override CaveEntranceType Type => CaveEntranceType.Canyon;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "CavePage", false));
+	PageInfo IGenerationPage.Info => new("Surface", DrawHelpers.RequestLocal(GetType(), "SurfacePage", false), DrawHelpers.RequestLocal(GetType(), "SurfacePageButton", false));
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)

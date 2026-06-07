@@ -16,6 +16,7 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 internal class GenConfigUIState(Action returnAction) : UIState
 {
 	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
+	private static readonly Asset<Texture2D> ButtonBorder = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "ButtonBorder", false);
 
 	private readonly Action ReturnAction = returnAction;
 
@@ -26,6 +27,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	int pageConfig = -1;
 	Action<GenConfigPage, ConfigPreset>? onSelectPreset = null;
 	Action? onReset = null;
+	Action? onMax = null;
+	Action? onMin = null;
 	UIButton<string> presetButton = null!;
 	UIElement mainPanel = null!;
 	string hoverText = "";
@@ -133,7 +136,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		UIScrollbar bar = new()
 		{
 			Width = StyleDimension.FromPixels(20),
-			Height = StyleDimension.Fill,
+			Height = StyleDimension.FromPixelsAndPercent(-60, 1),
 			HAlign = 1f
 		};
 		pagePanel.Append(bar);
@@ -248,10 +251,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			};
 
 			MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
+			MethodInfo? setFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
 
-			if (info is not null && slider is not null)
+			if (slider is not null)
 			{
-				onReset += () => info.Invoke(slider, []);
+				if (info is not null)
+					onReset += () => info.Invoke(slider, []);
+
+				if (setFactor is not null)
+				{
+					onMin += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 1 : 0)]);
+					onMax += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 0 : 1)]);
+				}
 			}
 
 			resetButton.OnLeftClick += (_, _) =>
@@ -277,13 +288,24 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(160)
+			Left = StyleDimension.FromPixels(168)
+		};
+
+		setMax.OnUpdate += _ =>
+		{
+			if (setMax.ContainsPoint(Main.MouseScreen))
+				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.MaxDescription");
 		};
 
 		setMax.OnLeftClick += (_, _) =>
 		{
 			foreach (LoadedConfig config in page.ConfigsByName.Values)
-				config.Set(config.Params.Max);
+			{
+				config.Set(config.ReverseMinMax ? config.Params.Min : config.Params.Max);
+				ConfigModified(page, config);
+			}
+
+			onMax?.Invoke();
 		};
 		pagePanel.Append(setMax);
 
@@ -293,16 +315,24 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(-160)
+			Left = StyleDimension.FromPixels(-168)
+		};
+
+		setMin.OnUpdate += _ =>
+		{
+			if (setMin.ContainsPoint(Main.MouseScreen))
+				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.MinDescription");
 		};
 
 		setMin.OnLeftClick += (_, _) =>
 		{
 			foreach (LoadedConfig config in page.ConfigsByName.Values)
 			{
-				config.Set(config.Params.Min);
-				config.Modified = true;
+				config.Set(config.ReverseMinMax ? config.Params.Max : config.Params.Min);
+				ConfigModified(page, config);
 			}
+
+			onMin?.Invoke();
 		};
 		pagePanel.Append(setMin);
 
@@ -379,13 +409,31 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		float width = ChatManager.GetStringSize(FontAssets.DeathText.Value, page.DisplayName.Value, new(0.7f)).X;
 		GenConfigPage prior = GetPriorPage();
-		UIButton<string> priorButton = new("Prior: " + prior.DisplayName.Value)
+		string priorText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Prior");
+		UIElement priorButton = prior.PageInfo.PageButton is null ? new UIButton<string>(priorText + " " + prior.DisplayName.Value) : new UIImage(prior.PageInfo.PageButton)
 		{
 			Width = StyleDimension.FromPixels(140),
 			Height = StyleDimension.FromPixels(40),
 			HAlign = 1f,
 			Left = StyleDimension.FromPixelsAndPercent(-width / 2 - 20, -0.5f)
 		};
+
+		if (priorButton is UIImage priorImage)
+		{
+			priorImage.OnUpdate += _ => priorImage.Color = priorImage.ContainsPoint(Main.MouseScreen) ? Color.Gray : Color.White;
+			priorButton.Append(new UIImage(ButtonBorder));
+
+			UIText text = new(priorText + " " + prior.DisplayName.Value)
+			{
+				Width = StyleDimension.Fill,
+				Height = StyleDimension.FromPixels(0),
+				HAlign = 0.5f,
+				VAlign = 0.5f,
+				DynamicallyScaleDownToWidth = true
+			};
+
+			priorButton.Append(text);
+		}
 
 		priorButton.OnLeftClick += (_, _) =>
 		{
@@ -400,13 +448,31 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		backPanel.Append(priorButton);
 
 		GenConfigPage next = GetNextPage();
-		UIButton<string> nextButton = new("Next: " + next.DisplayName.Value)
+		string nextText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Next");
+		UIElement nextButton = next.PageInfo.PageButton is null ? new UIButton<string>(nextText + " " + next.DisplayName.Value) : new UIImage(next.PageInfo.PageButton)
 		{
 			Width = StyleDimension.FromPixels(140),
 			Height = StyleDimension.FromPixels(40),
 			HAlign = 0f,
 			Left = StyleDimension.FromPixelsAndPercent(width / 2 + 20, 0.5f)
 		};
+
+		if (nextButton is UIImage nextImage)
+		{
+			nextImage.OnUpdate += _ => nextImage.Color = nextImage.ContainsPoint(Main.MouseScreen) ? Color.Gray : Color.White;
+			nextButton.Append(new UIImage(ButtonBorder));
+
+			UIText text = new(nextText + " " + next.DisplayName.Value)
+			{
+				Width = StyleDimension.Fill,
+				Height = StyleDimension.FromPixels(0),
+				HAlign = 0.5f,
+				VAlign = 0.5f,
+				DynamicallyScaleDownToWidth = true
+			};
+
+			nextButton.Append(text);
+		}
 
 		nextButton.OnLeftClick += (_, _) =>
 		{
@@ -485,6 +551,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					}
 				}
 			};
+
+			setToFactor.Invoke(slider, [GenericMath.InverseLerp((dynamic)config.Params.Min, (dynamic)config.Params.Max, (dynamic)config.Get())]);
 		}
 
 		if (valueField is not null)

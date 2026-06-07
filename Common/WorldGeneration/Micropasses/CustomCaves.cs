@@ -30,7 +30,7 @@ internal class CustomCaves : ModSystem
 	{
 		AddingMountainCaves = true;
 
-		GenConfigPage page = GenConfigLoader.PagesByName["Caves"];
+		GenConfigPage page = GenConfigLoader.PagesByName["Surface"];
 		page.SetupPage();
 
 		foreach (var entry in CaveEntrance.EntranceByType.Values)

@@ -36,21 +36,25 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	private static int Steps = 3;
 
 	[GenConfigurable(1, 9)]
+	[ReverseMinMax]
 	private static int CampsiteChance = 3;
 
 	[GenConfigurable(5, 600)]
+	[ReverseMinMax]
 	[Slider]
 	private static int BaseTreeChance = 90;
 
 	[GenConfigurable(1, 20)]
+	[ReverseMinMax]
 	[Slider]
 	private static int PotChance = 8;
 
 	[GenConfigurable(10, 90)]
+	[ReverseMinMax]
 	[Slider]
 	private static int TermiteChance = 45;
 
-	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), 
+	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), DrawHelpers.RequestLocal(GetType(), "SavannaPageButton", false), 
 		[
 			new("Domesticated", false,
 				[

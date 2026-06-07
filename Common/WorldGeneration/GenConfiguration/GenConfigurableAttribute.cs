@@ -3,7 +3,7 @@
 #nullable enable
 
 /// <summary>
-/// Marks a property or field as one that can be configured. The page associated is provided.<br/>
+/// Marks a property or field as one that can be configured, alongside their minimum, maximum and step (if any).
 /// </summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
 internal class GenConfigurableAttribute(object min, object max, object? step = null) : Attribute

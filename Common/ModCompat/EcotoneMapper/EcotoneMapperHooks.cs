@@ -80,11 +80,13 @@ internal class EcotoneMapperHooks : ModSystem
 	{
 		UIElement element = orig(self);
 
-		if (self.Data.TryGetHeaderData<EcotoneMapperHooks>(out TagCompound tag) && tag.ContainsKey("manuallyMapped"))
-			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingIcon")));
+		if (DataHasMappingHeader(self))
+			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingIcon")) { Left = StyleDimension.FromPixels(-4) });
 
 		return element;
 	}
+
+	internal static bool DataHasMappingHeader(AWorldListItem self) => self.Data.TryGetHeaderData<EcotoneMapperHooks>(out TagCompound tag) && tag.ContainsKey("manuallyMapped");
 
 	private void AddMappingChecks(On_WorldGenerator.orig_GenerateWorld orig, WorldGenerator self, GenerationProgress progress)
 	{

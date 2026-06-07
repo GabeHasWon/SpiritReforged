@@ -1,6 +1,5 @@
 ﻿using NVorbis.Contracts;
 using ReLogic.Utilities;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.DataStructures;
@@ -17,7 +16,11 @@ internal class KarstEntrance : CaveEntrance, IGenerationPage
 	[Slider]
 	private static float SizeMultiplier = 1f;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "CavePage", false));
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)

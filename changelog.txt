@@ -11,3 +11,7 @@ v0.2.0.6
 - Fixed Dead Tree (Salt Flats tree) shaking not working; increased Drywood drop chance to 100% (from 33%)
 - Added Acacia tree leaves
 - Made items spawned by the tree shaking use EntitySource_TreeShake properly (instead of null)
+- Updated Hiker, Cartographer emote sprites
+- Updated the Hiker's swung weapon
+- Updated Cartography Table sprite
+- Updated the following Music Box sprites: Deep Ocean, Savanna Otherworld Duststorm, Day & Night, Savanna Night

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.ModLoader.Config;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
@@ -12,7 +12,7 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 public readonly record struct GenConfigParameters(object Min, object Max, object Step);
 
-public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set)
+public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set, bool ReverseMinMax)
 {
 	public bool Modified = false;
 }
@@ -27,7 +27,56 @@ internal class GenConfigLoader : ModSystem
 	public static GenConfigPage GetPage(Type t) => PagesByType[t];
 	public static GenConfigPage GetPage<T>() => GetPage(typeof(T));
 
-	public override void Load() => On_UIWorldCreation.MakeBackAndCreatebuttons += AddConfigButton;
+	[WorldBound]
+	public static bool Configured = false;
+
+	public override void Load()
+	{
+		On_UIWorldCreation.MakeBackAndCreatebuttons += AddConfigButton;
+		On_AWorldListItem.GetIconElement += AddMappingIcon;
+	}
+
+	private UIElement AddMappingIcon(On_AWorldListItem.orig_GetIconElement orig, AWorldListItem self)
+	{
+		UIElement element = orig(self);
+
+		if (HasConfiguredMarker(self))
+		{
+			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/ConfigIcon")) 
+			{ 
+				VAlign = 1f, 
+				Height = StyleDimension.FromPixels(20),
+				Left = StyleDimension.FromPixels(-2)
+			});
+		}
+
+		return element;
+	}
+
+	internal static bool HasConfiguredMarker(AWorldListItem self) => self.Data.TryGetHeaderData<GenConfigLoader>(out TagCompound tag) && tag.ContainsKey("configured");
+
+	public override void SaveWorldHeader(TagCompound tag)
+	{
+		if (Configured)
+			tag.Add("configured", true);
+	}
+
+	public override void PreWorldGen()
+	{
+		Configured = false;
+
+		foreach (GenConfigPage page in LoadedPages)
+		{
+			foreach (LoadedConfig config in page.ConfigsByName.Values)
+			{
+				if (config.Modified)
+				{
+					Configured = true;
+					return;
+				}	
+			}
+		}
+	}
 
 	private void AddConfigButton(On_UIWorldCreation.orig_MakeBackAndCreatebuttons orig, UIWorldCreation self, UIElement outerContainer)
 	{
@@ -70,6 +119,7 @@ internal class GenConfigLoader : ModSystem
 		LoadingMods.Add(SpiritReforgedMod.Instance);
 
 		Action? delay = null;
+		List<IGenerationPage> delayedPages = [];
 
 		foreach (Mod mod in LoadingMods)
 		{
@@ -80,42 +130,67 @@ internal class GenConfigLoader : ModSystem
 				if (typeof(IGenerationPage).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
 				{
 					var page = (IGenerationPage)Activator.CreateInstance(type)!;
-					string pageName = page.Info.PageName;
-					string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
-					GenConfigPage configPage = new(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
 
-					if (PagesByName.TryAdd(pageName, configPage))
+					if (page.Info.CopiedPage is not null)
 					{
-						PagesByType.Add(type, configPage);
-						LoadedPages.Add(configPage);
-
-						if (page.Info.Presets is not null)
-						{
-							foreach (ConfigPreset preset in page.Info.Presets)
-							{
-								LocalizedText presetName = Language.GetOrRegister(key + "Presets." + preset.Name + ".Name", () => preset.Name);
-								LocalizedText presetTip = Language.GetOrRegister(key + "Presets." + preset.Name + ".Tooltip", () => preset.Name);
-								configPage.PresetLocalization.Add((presetName, presetTip));
-							}
-						}
+						delayedPages.Add(page);
+						continue;
 					}
-					else
-						configPage = PagesByName[pageName];
 
-					var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-
-					foreach (var prop in props)
-						delay += () => GeneratePropConfig(page, configPage, prop);
-
-					var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-
-					foreach (var field in fields)
-						delay += () => GenerateFieldConfig(page, configPage, field);
+					GenConfigPage configPage = CreatePage(type, page);
+					GetConfigs(ref delay, type, page, configPage);
 				}
 			}
 		}
 
+		foreach (IGenerationPage page in delayedPages)
+		{
+			GenConfigPage configPage = PagesByName[page.Info.CopiedPage!.Info.PageName];
+			GetConfigs(ref delay, page.GetType(), page, configPage);
+			PagesByType.Add(page.GetType(), configPage);
+		}
+
 		delay?.Invoke();
+	}
+
+	private static GenConfigPage CreatePage(Type type, IGenerationPage page)
+	{
+		string pageName = page.Info.PageName;
+		string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
+		GenConfigPage configPage = new(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
+
+		if (PagesByName.TryAdd(pageName, configPage))
+		{
+			PagesByType.Add(type, configPage);
+			LoadedPages.Add(configPage);
+
+			if (page.Info.Presets is not null)
+			{
+				foreach (ConfigPreset preset in page.Info.Presets)
+				{
+					LocalizedText presetName = Language.GetOrRegister(key + "Presets." + preset.Name + ".Name", () => preset.Name);
+					LocalizedText presetTip = Language.GetOrRegister(key + "Presets." + preset.Name + ".Tooltip", () => preset.Name);
+					configPage.PresetLocalization.Add((presetName, presetTip));
+				}
+			}
+		}
+		else
+			configPage = PagesByName[pageName];
+
+		return configPage;
+	}
+
+	private static void GetConfigs(ref Action? delay, Type type, IGenerationPage page, GenConfigPage configPage)
+	{
+		var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
+		foreach (var prop in props)
+			delay += () => GeneratePropConfig(page, configPage, prop);
+
+		var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
+		foreach (var field in fields)
+			delay += () => GenerateFieldConfig(page, configPage, field);
 	}
 
 	private static void GenerateFieldConfig(IGenerationPage page, GenConfigPage configPage, FieldInfo field)
@@ -127,7 +202,8 @@ internal class GenConfigLoader : ModSystem
 			object def = getDelegate();
 
 			GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
-			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate);
+			bool hasReverse = field.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
+			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse);
 			configPage.ConfigsByName.Add(field.Name, config);
 		}
 	}
@@ -142,7 +218,8 @@ internal class GenConfigLoader : ModSystem
 			object def = getDelegate();
 
 			GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
-			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate);
+			bool hasReverse = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
+			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, hasReverse);
 			configPage.ConfigsByName.Add(prop.Name, config);
 		}
 	}

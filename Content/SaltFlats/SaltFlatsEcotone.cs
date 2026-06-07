@@ -74,15 +74,17 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	[GenConfigurable(1, 24)]
 	[Slider]
+	[ReverseMinMax]
 	private static int StupaChance = 12;
 
 	[GenConfigurable(1, 200)]
 	[Slider]
+	[ReverseMinMax]
 	private static int TreeChance = 35;
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new PageInfo("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false));
+	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false));
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();

@@ -1,15 +1,29 @@
-﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class ButterflyMicropass : Micropass
+internal class ButterflyMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Butterfly Shrines";
+
+	[GenConfigurable(0, 50)]
+	[Slider]
+	private static int ButterflyCountMax = 1;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	private static readonly ushort[] Ignore = [TileID.LivingWood, TileID.LeafBlock, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick, 
 		(ushort)ModContent.TileType<SaltBlockDull>(), (ushort)ModContent.TileType<SaltBlockReflective>()];
@@ -23,7 +37,7 @@ internal class ButterflyMicropass : Micropass
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Butterfly");
 		int count = 0;
-		int maxCount = Main.maxTilesX / WorldGen.WorldSizeSmallX; // 1 shrine in small and medium worlds, 2 in large
+		ButterflyCountMax = this.GetPage().ValueOrDefault(nameof(ButterflyCountMax), Main.maxTilesX / WorldGen.WorldSizeSmallX); // 1 shrine in small and medium worlds, 2 in large
 
 		Point16 size = ButterflyShrineBiome.Size;
 		int third = Main.maxTilesX / 3;
@@ -76,7 +90,7 @@ internal class ButterflyMicropass : Micropass
 					WorldUtils.Gen(new Point(origin.X, top.Y + 10), new ModShapes.All(data), new Actions.SetFrames(frameNeighbors: true));
 				}
 
-				if (++count >= maxCount)
+				if (++count >= ButterflyCountMax)
 					return;
 			}
 		}

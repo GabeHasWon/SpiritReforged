@@ -1,11 +1,26 @@
-﻿using Terraria.WorldBuilding;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using SpiritReforged.Content.Forest.Stargrass.Items;
+using System.Runtime.CompilerServices;
+using Terraria.ModLoader.Config;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class StargrassMicropass : Micropass
+internal class StargrassMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Stargrass Patch";
+
+	[GenConfigurable(0, 500, 10)]
+	[Slider]
+	private static int MaxStargrassCount = 0;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Sunflowers"));
 
@@ -13,10 +28,10 @@ internal class StargrassMicropass : Micropass
 	{
 		const int attempts = 300;
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Stargrass");
-
+		
 		float worldSize = Main.maxTilesX / 4200f;
 		int count = 0;
-		int maxCount = (int)(4 * worldSize);
+		MaxStargrassCount = this.GetPage().ValueOrDefault(nameof(MaxStargrassCount), (int)(4 * worldSize));
 
 		for (int a = 0; a < attempts; a++)
 		{
@@ -39,7 +54,7 @@ internal class StargrassMicropass : Micropass
 			int size = WorldGen.genRand.Next(30, 61);
 			WorldGen.Convert(x, y, StarConversion.ConversionType, size);
 
-			if (++count > maxCount)
+			if (++count > MaxStargrassCount)
 				break;
 		}
 	}
