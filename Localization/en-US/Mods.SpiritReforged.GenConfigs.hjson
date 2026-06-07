@@ -71,6 +71,18 @@ Pages: {
 	Ocean: {
 		Name: Ocean
 		Description: Controls specific aspects of Reforged's overhauled Ocean.
+
+		Presets: {
+			KelpForest: {
+				Name: "[i:SpiritReforged/Kelp] Kelp Forest"
+				Tooltip: You can see the fields of kelp from the shore!
+			}
+
+			Volcanic: {
+				Name: "[i:SpiritReforged/GravelItem] Volcanic"
+				Tooltip: A craggy, magmatic ocean with hardly any flora.
+			}
+		}
 	}
 }
 

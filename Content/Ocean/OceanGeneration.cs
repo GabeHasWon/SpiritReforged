@@ -88,7 +88,29 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[WorldBound]
 	public static Rectangle RightOcean;
 
-	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false));
+	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false),
+		[
+			new("KelpForest", false,
+			[
+				new IndividualPreset(nameof(KelpChance), 1),
+				new IndividualPreset(nameof(KelpMaxHeight), 50),
+				new IndividualPreset(nameof(DecorHighChance), 100),
+				new IndividualPreset(nameof(CoralHighChance), 100),
+			]),
+
+			new("Volcanic", false,
+			[
+				new IndividualPreset(nameof(KelpChance), 50),
+				new IndividualPreset(nameof(KelpMaxHeight), 6),
+				new IndividualPreset(nameof(DecorHighChance), 25),
+				new IndividualPreset(nameof(CoralHighChance), 25),
+				new IndividualPreset(nameof(CoralLowChance), 6),
+				new IndividualPreset(nameof(DecorLowChance), 6),
+				new IndividualPreset(nameof(GravelMultiplier), 4f),
+				new IndividualPreset(nameof(SunkenTreasureCount), 8),
+			])
+		]);
+
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
