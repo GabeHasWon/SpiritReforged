@@ -84,7 +84,18 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false));
+	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false),
+		[
+			new("SunkenRuin", false,
+			[
+				new IndividualPreset(nameof(RuinQty), 20),
+				new IndividualPreset(nameof(StupaChance), 16),
+				new IndividualPreset(nameof(LakeRadius), 20),
+				new IndividualPreset(nameof(CaveRadius), 5),
+				new IndividualPreset(nameof(MaxSteps), 4),
+			])
+		]); 
+	
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
