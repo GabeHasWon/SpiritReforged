@@ -16,7 +16,7 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(0, 50)]
 	[Slider]
-	private static int ButterflyCountMax = 1;
+	internal static int ButterflyCountMax = 1;
 
 	PageInfo IGenerationPage.Info => new()
 	{

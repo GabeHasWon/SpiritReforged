@@ -52,6 +52,13 @@ Pages: {
 	Surface: {
 		// Name: Surface
 		// Description: Controls specific aspects of Reforged's additions and edits to the surface.
+
+		Presets: {
+			Whimsical: {
+				// Name: Whimsical
+				// Tooltip: Whimsical
+			}
+		}
 	}
 
 	Ocean: {

@@ -52,6 +52,13 @@ Pages: {
 	Surface: {
 		Name: Surface
 		Description: Controls specific aspects of Reforged's additions and edits to the surface.
+
+		Presets: {
+			Whimsical: {
+				Name: "[i:SpiritReforged/MidnightApple] Whimsical"
+				Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+			}
+		}
 	}
 
 	Ocean: {

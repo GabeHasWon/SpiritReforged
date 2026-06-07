@@ -13,11 +13,12 @@ internal class StargrassMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(0, 500, 10)]
 	[Slider]
-	private static int MaxStargrassCount = 0;
+	internal static int MaxStargrassCount = 0;
 
 	PageInfo IGenerationPage.Info => new()
 	{
 		CopiedPage = new CanyonEntrance(),
+
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
