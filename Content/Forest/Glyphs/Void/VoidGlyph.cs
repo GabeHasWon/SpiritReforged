@@ -1,21 +1,81 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using static SpiritReforged.Content.Forest.Glyphs.Storm.StormGlyph;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Void;
 
 public class VoidGlyph : GlyphItem
 {
+	// Visual system that uses a Render Target to render all singularities for the void glyph
+	public sealed class SingularityVisualSystem : ModSystem
+	{
+		private static readonly ModTarget2D SingularityTarget = new(static () => projectiles.Count != 0, DrawTarget);
+
+		public static List<CollapseProjectile> projectiles = [];
+
+		// drawing a bloom map here for the input to our shader
+		private static void DrawTarget(SpriteBatch spriteBatch)
+		{
+			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+			foreach (CollapseProjectile singularity in projectiles)
+			{
+				// this should theoretically not happen, but just safety check
+				if (singularity is null || !singularity.Projectile.active)
+					continue;
+
+				if (!singularity._dying)
+					continue;
+
+				var projectile = singularity.Projectile;
+
+				float progress = EaseBuilder.EaseQuinticInOut.Ease(1f - projectile.timeLeft / 60f);
+				float intensity = singularity._stacksOnDeath / 10f;
+
+				// Shader uses the G channel for the progress of the black hole.
+				// Shader uses the B channel for the stacks of the black hole (increases singularity intensity)
+				Color dataColor = new Color(1f, progress, intensity, 1f);
+				
+				float sizeInterpolant = progress < 0.5f ? progress / 0.5f : 1f - (progress - 0.5f) / 0.5f;
+				float visualScale = (1.2f + intensity * 0.2f) * sizeInterpolant;
+
+				spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, visualScale, 0f, 0f);
+			}
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (SingularityTarget is not null && SingularityTarget.Active)
+			{
+				if (!Main.dedServ && !Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
+					Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
+
+				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
+			}
+			else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
+				Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
+		}
+	}
+
 	public sealed class VoidPlayer : ModPlayer
 	{
 		public bool Active => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>();
@@ -76,9 +136,12 @@ public class VoidGlyph : GlyphItem
 				return;
 
 			if (gnpc._stacks <= 0)
-				Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex).timeLeft = COLLAPSE_TIME;
+			{
+				Projectile p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
+				p.timeLeft = 60;
+			}
 
-			gnpc._stacks += stacksToAdd;
+			gnpc._stacks += 10;
 			if (gnpc._stacks > MAX_STACKS)
 				gnpc._stacks = MAX_STACKS;
 
@@ -169,25 +232,6 @@ public class VoidGlyph : GlyphItem
 							Rotation = rotation
 						});
 
-						velocity = Main.rand.NextVector2Circular(12f, 2f);
-
-						rotation = Main.rand.NextFloat(6.28f);
-
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.DarkOrange.Additive(), 0.2f, 35, 0, DecelerateAction)
-						{
-							Rotation = rotation
-						});
-
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightGoldenrodYellow.Additive(), 0.05f, 35, 0, DecelerateAction)
-						{
-							Rotation = rotation
-						});
-
-						velocity = Main.rand.NextVector2Circular(25f, 0.1f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.DarkOrange.Additive(), 0.5f, 40, 3, DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightYellow.Additive(), 0.3f, 40, 3, DecelerateAction));
-
 						velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
 
 						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
@@ -216,7 +260,7 @@ public class VoidGlyph : GlyphItem
 
 						bool rotDir = Main.rand.NextBool();
 
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Orange.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
 						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
 					}
 
@@ -233,7 +277,7 @@ public class VoidGlyph : GlyphItem
 					}
 				}
 
-				if (!Main.dedServ)
+				/*if (!Main.dedServ)
 				{
 					if (!Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
 					{
@@ -243,7 +287,7 @@ public class VoidGlyph : GlyphItem
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseProgress(EaseBuilder.EaseQuinticInOut.Ease(1f - Projectile.timeLeft / 60f));
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseTargetPosition(Projectile.Center);
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseIntensity(_stacksOnDeath / 10f);
-				}
+				}*/
 			}
 
 			int stacks = gnpc._stacks;
@@ -259,6 +303,7 @@ public class VoidGlyph : GlyphItem
 
 			if (Projectile.timeLeft == 1 && !_dying)
 			{
+				SingularityVisualSystem.projectiles.Add(this);
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
 
 				_dying = true;
@@ -276,11 +321,13 @@ public class VoidGlyph : GlyphItem
 
 		public override void OnKill(int timeLeft)
 		{
-			if (!Main.dedServ)
+			SingularityVisualSystem.projectiles.Remove(this);
+
+			/*if (!Main.dedServ)
 			{
 				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseProgress(0);
 				Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
-			}
+			}*/
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -332,6 +379,10 @@ public class VoidGlyph : GlyphItem
 
 			Vector2 scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
 
+			Vector2 offset = Vector2.Zero;
+			if (Projectile.timeLeft < 60 && !_dying)
+				offset = Main.rand.NextVector2Circular(2f, 2f) * (1f - Projectile.timeLeft / 60f);
+
 			if (_dying)
 			{
 				float progress = EaseBuilder.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
@@ -342,9 +393,10 @@ public class VoidGlyph : GlyphItem
 
 					Color c = new Color(60, 0, 65, 0);
 
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, 0.5f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, 0.4f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, scale.X * 0.25f * lerp, 0f, 0f);
 				}
 				else
 				{
@@ -352,9 +404,10 @@ public class VoidGlyph : GlyphItem
 
 					Color c = new Color(60, 0, 65, 0);
 
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, 0.5f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, 0.4f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, scale.X * 0.25f * lerp, 0f, 0f);
 				}
 
 				if (Projectile.timeLeft > 30)
@@ -377,8 +430,8 @@ public class VoidGlyph : GlyphItem
 				if (_dying)
 					c = Color.Lerp(c, new Color(60, 0, 65, 0), progressTillHit);
 
-				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, c, 0f, starNonPreMult.Size() / 2f, scale, 0f, 0f);
-				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * 0.75f, 0f, starNonPreMult.Size() / 2f, scale * 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, c, 0f, starNonPreMult.Size() / 2f, scale, 0f, 0f);
+				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.White.Additive() * 0.75f, 0f, starNonPreMult.Size() / 2f, scale * 0.65f, 0f, 0f);
 
 				if (_dying)
 				{
@@ -405,10 +458,10 @@ public class VoidGlyph : GlyphItem
 
 				scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
 
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * (1f - progress), 0f, star.Size() / 2f, scale * progress, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * progress, 0f, 0f);
 				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.65f * progress, 0f, 0f);
 
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(1f, 0.6f, 0.2f, 0f) * (1f - progress), 0f, star.Size() / 2f, scale * 0.5f * progress, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(60, 0, 65, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * 0.5f * progress, 0f, 0f);
 				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.25f * progress, 0f, 0f);
 			}
 
