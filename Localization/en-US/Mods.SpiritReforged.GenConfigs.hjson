@@ -39,6 +39,11 @@ Pages: {
 				Name: "[i:SpiritReforged/TermiteJar] Infested"
 				Tooltip: Oops! All termites! Trees may be hard to find.
 			}
+
+			Bumpy: {
+				Name: "[i:SpiritReforged/Drypowder] Bumpy"
+				Tooltip: Watch your step! Bumps and hills await in this wild Savanna.
+			}
 		}
 
 		Members: {
@@ -153,6 +158,11 @@ Pages: {
 			Whimsical: {
 				Name: "[i:SpiritReforged/MidnightApple] Whimsical"
 				Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+			}
+
+			Treacherous: {
+				Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
+				Tooltip: Vast gorges dot the landscape. Don't look down!
 			}
 		}
 
