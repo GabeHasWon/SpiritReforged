@@ -14,7 +14,7 @@ internal class KarstEntrance : CaveEntrance, IGenerationPage
 
 	[GenConfigurable(0.2f, 4f, 0.1f)]
 	[Slider]
-	private static float SizeMultiplier = 1f;
+	internal static float SizeMultiplier = 1f;
 
 	PageInfo IGenerationPage.Info => new()
 	{

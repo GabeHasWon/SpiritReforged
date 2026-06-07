@@ -4,6 +4,8 @@ using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.DataStructures;
 using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 
@@ -21,7 +23,16 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 
 	public override CaveEntranceType Type => CaveEntranceType.Canyon;
 
-	PageInfo IGenerationPage.Info => new("Surface", DrawHelpers.RequestLocal(GetType(), "SurfacePage", false), DrawHelpers.RequestLocal(GetType(), "SurfacePageButton", false));
+	PageInfo IGenerationPage.Info => new("Surface", DrawHelpers.RequestLocal(GetType(), "SurfacePage", false), DrawHelpers.RequestLocal(GetType(), "SurfacePageButton", false),
+		[
+			new("Whimsical", false,
+				[
+					new IndividualPreset(nameof(StargrassMicropass.MaxStargrassCount), 400),
+					new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 4f),
+					new IndividualPreset(nameof(ScarecrowDiscovery.FieldSize), 40),
+					new IndividualPreset(nameof(ButterflyMicropass.ButterflyCountMax), 8),
+				])
+		]);
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)
