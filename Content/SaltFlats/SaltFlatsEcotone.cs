@@ -57,6 +57,9 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	[WorldBound]
 	public static List<Rectangle> SaltFlatsAreas = new();
 
+	[GenConfigurable(true)]
+	private static bool OverSpawn = false;
+
 	[GenConfigurable(1, 10)]
 	private static int MaxSteps = 3;
 
@@ -129,7 +132,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 2; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed is SaltSeed)
+		if (SecretSeedSystem.WorldSecretSeed is SaltSeed || OverSpawn)
 		{
 			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{

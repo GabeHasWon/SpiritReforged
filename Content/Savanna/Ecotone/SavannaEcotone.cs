@@ -32,6 +32,9 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[WorldBound]
 	public static List<Rectangle> SavannaAreas = new();
 
+	[GenConfigurable(true)]
+	private static bool OverSpawn = false;
+
 	[GenConfigurable(2, 15)]
 	private static int Steps = 3;
 
@@ -154,7 +157,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed)
+		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed || OverSpawn)
 		{
 			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{

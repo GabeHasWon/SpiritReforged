@@ -19,6 +19,9 @@ UI: {
 	// Reset: Reset All
 	// Prior: Prior:
 	// Next: Next:
+	// True: Enabled
+	// False: Disabled
+	// Total: total
 }
 
 Pages: {
@@ -37,6 +40,46 @@ Pages: {
 				// Tooltip: Oops! All termites! Trees may be hard to find.
 			}
 		}
+
+		Members: {
+			OverSpawn: {
+				// DisplayName: "[i:27] Over Spawn"
+				// Tooltip: Whether the savanna should spawn over spawn, much like the "savanna" seed.
+			}
+
+			Steps: {
+				// DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
+				// Tooltip: The number of flat steps that the Savanna generates with.
+			}
+
+			CampsiteChance: {
+				// DisplayName: "[i:966] Campsite Chance"
+				// Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
+			}
+
+			BaseTreeChance: {
+				// DisplayName: "[i:27] Acacia Tree Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile.
+					This chance is reduced until a tree is placed, and then it's reset.
+					''' */
+			}
+
+			PotChance: {
+				// DisplayName: "[i:31] Pot Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a pot to spawn when decorating. 
+					This does not override tiles, so a value of one will NOT place a pot on every tile.	
+					''' */
+			}
+
+			TermiteChance: {
+				// DisplayName: "[i:SpiritReforged/TermiteJar] Termite Chance"
+				// Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
+			}
+		}
 	}
 
 	SaltFlats: {
@@ -49,11 +92,47 @@ Pages: {
 				// Tooltip: The ruins of an ancient civilization have been washed and chipped away.
 			}
 		}
-	}
 
-	Caves: {
-		// Name: Caves
-		// Description: Controls specific aspects of Reforged's custom cave entrances.
+		Members: {
+			OverSpawn: {
+				// DisplayName: "[i:27] Over Spawn"
+				// Tooltip: Whether the salt flats should spawn over spawn, much like the "salt" seed.
+			}
+
+			RuinQty: {
+				// DisplayName: "[i:SpiritReforged/CalmingBellItem] Salt Flats Ruins"
+				// Tooltip: The upper bound of Salt Flats ruins placed. Not all may be placed.
+			}
+
+			LakeRadius: {
+				// DisplayName: "[i:206] Lake Radius"
+				// Tooltip: The radius for Salt Flats lakes. Larger radii correspond to larger lakes.
+			}
+
+			CaveRadius: {
+				// DisplayName: "[i:SpiritReforged/SaltWallItem] Cave Radius"
+				// Tooltip: The radius for Salt Flats caves. Larger radii correspond to larger caves.
+			}
+
+			MaxSteps: {
+				// DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
+				// Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat.
+			}
+
+			StupaChance: {
+				// DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. 
+					This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+					''' */
+			}
+
+			TreeChance: {
+				// DisplayName: "[i:27] Dead Tree Chance"
+				// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+			}
+		}
 	}
 
 	Surface: {
@@ -64,6 +143,43 @@ Pages: {
 			Whimsical: {
 				// Name: "[i:SpiritReforged/MidnightApple] Whimsical"
 				// Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+			}
+		}
+
+		Members: {
+			HalfWidth: {
+				// DisplayName: "[i:133] (Canyon) Half Width"
+				// Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
+			}
+
+			MaxDepth: {
+				// DisplayName: "[i:133] (Canyon) Max Depth"
+				// Tooltip: Controls the max depth of a canyon.
+			}
+
+			SizeMultiplier: {
+				// DisplayName: "[i:126] (Karst) Size Multiplier"
+				// Tooltip: Multiplier on the size of all digging operations that karsts do.
+			}
+
+			FieldSize: {
+				// DisplayName: "[i:SpiritReforged/BotanistHat] (Scarecrow) Field Size"
+				// Tooltip: Controls the width of a scarecrow's wheat field.
+			}
+
+			ButterflyCountMax: {
+				// DisplayName: "[i:SpiritReforged/ButterflyStaff] (Butterfly Shrines) Max"
+				// Tooltip: The maximum number of butterfly shrines that may be placed. May not place all.
+			}
+
+			HeroChance: {
+				// DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] (Hero's Memorial) Spawn Chance"
+				// Tooltip: The denominator (1/x) of the chance for the Hero's Memorial to spawn.
+			}
+
+			MaxStargrassCount: {
+				// DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
+				// Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
 			}
 		}
 	}
@@ -79,168 +195,100 @@ Pages: {
 			}
 
 			Volcanic: {
-				// Name: Volcanic
-				// Tooltip: Volcanic
+				// Name: "[i:SpiritReforged/GravelItem] Volcanic"
+				// Tooltip: A craggy, magmatic ocean with hardly any flora.
+			}
+		}
+
+		Members: {
+			WaterChestCount: {
+				// DisplayName: "[i:1298] Water Chest Max"
+				// Tooltip: The maximum number of water chests that may be placed in the ocean. Usually will not place all.
+			}
+
+			SunkenTreasureCount: {
+				// DisplayName: "[i:SpiritReforged/SunkenTreasure] Sunken Treasure Max"
+				// Tooltip: The maximum number of sunken treasure that may be placed in the ocean. Usually will not place all.
+			}
+
+			SandDepth: {
+				// DisplayName: "[i:169] Sand Depth"
+				// Tooltip: How far into the ground sand goes under the ocean.
+			}
+
+			SandRange: {
+				// DisplayName: "[i:169] Sand Range"
+				// Tooltip: The upper bound for Sand Depth's random added range in the ocean.
+			}
+
+			CoralLowChance: {
+				// DisplayName: "[i:275] Coral Chance (Low)"
+				// Tooltip: The denominator (1/x) for coral to spawn in the lower steps of the ocean.
+			}
+
+			CoralHighChance: {
+				// DisplayName: "[i:275] Coral Chance (High)"
+				// Tooltip: The denominator (1/x) for coral to spawn in the highest step of the ocean.
+			}
+
+			DecorLowChance: {
+				// DisplayName: "[i:4090] Decor Chance (Low)"
+				// Tooltip: The denominator (1/x) for decor to spawn in the lower steps of the ocean.
+			}
+
+			DecorHighChance: {
+				// DisplayName: "[i:4090] Decor Chance (High)"
+				// Tooltip: The denominator (1/x) for decor to spawn in the highest step of the ocean.
+			}
+
+			KelpChance: {
+				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Chance"
+				// Tooltip: The denominator (1/x) for kelp to spawn in the ocean.
+			}
+
+			KelpMaxHeight: {
+				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Height"
+				// Tooltip: The maximum height, in tiles, that kelp can spawn as.
+			}
+
+			GravelMultiplier: {
+				// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
+				// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
+			}
+
+			Shape: {
+				// DisplayName: "[i:4460] Ocean Shape"
+				// Tooltip: The shape the ocean takes.
 			}
 		}
 	}
 }
 
-Members: {
-	Steps: {
-		// DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
-		// Tooltip: The number of flat steps that the Savanna generates with.
-	}
+Enums: {
+	OceanShape: {
+		Default: {
+			// DisplayName: Vanilla
+			// Tooltip: Vanilla's default ocean generation. This disables most of Reforged's changes.
+		}
 
-	CampsiteChance: {
-		// DisplayName: "[i:966] Campsite Chance"
-		// Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
-	}
+		SlantedSine: {
+			// DisplayName: Slanted Sine
+			// Tooltip: A modified shape where the ocean is defined by a slanted sine wave.
+		}
 
-	BaseTreeChance: {
-		// DisplayName: "[i:27] Acacia Tree Chance"
-		/* Tooltip:
-			'''
-			The denominator (1/x) of the chance for a tree to spawn on a given tile.
-			This chance is reduced until a tree is placed, and then it's reset.
-			''' */
-	}
+		Piecewise: {
+			// DisplayName: Piecewise
+			// Tooltip: A more complex piecewise function defines the ocean's shape.
+		}
 
-	PotChance: {
-		// DisplayName: "[i:31] Pot Chance"
-		/* Tooltip:
-			'''
-			The denominator (1/x) of the chance for a pot to spawn when decorating. 
-			This does not override tiles, so a value of one will NOT place a pot on every tile.	
-			''' */
-	}
+		Piecewise_M: {
+			// DisplayName: Piecewise (M)
+			// Tooltip: A modified version of the piecewise function with slightly different slopes.
+		}
 
-	TermiteChance: {
-		// DisplayName: "[i:SpiritReforged/TermiteJar] Termite Chance"
-		// Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
-	}
-
-	HalfWidth: {
-		// DisplayName: "[i:133] (Canyon) Half Width"
-		// Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
-	}
-
-	MaxDepth: {
-		// DisplayName: "[i:133] (Canyon) Max Depth"
-		// Tooltip: Controls the max depth of a canyon.
-	}
-
-	SizeMultiplier: {
-		// DisplayName: "[i:126] (Karst) Size Multiplier"
-		// Tooltip: Multiplier on the size of all digging operations that karsts do.
-	}
-
-	RuinQty: {
-		// DisplayName: "[i:SpiritReforged/CalmingBellItem] Salt Flats Ruins"
-		// Tooltip: The upper bound of Salt Flats ruins placed. Not all may be placed.
-	}
-
-	LakeRadius: {
-		// DisplayName: "[i:206] Lake Radius"
-		// Tooltip: The radius for Salt Flats lakes. Larger radii correspond to larger lakes.
-	}
-
-	CaveRadius: {
-		// DisplayName: "[i:SpiritReforged/SaltWallItem] Cave Radius"
-		// Tooltip: The radius for Salt Flats caves. Larger radii correspond to larger caves.
-	}
-
-	MaxSteps: {
-		// DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
-		// Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat.
-	}
-
-	StupaChance: {
-		// DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
-		/* Tooltip:
-			'''
-			The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. 
-			This does not override tiles, so a value of 1 will NOT place a pot on every tile.
-			''' */
-	}
-
-	TreeChance: {
-		// DisplayName: "[i:27] Dead Tree Chance"
-		// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
-	}
-
-	FieldSize: {
-		// DisplayName: "[i:SpiritReforged/BotanistHat] (Scarecrow) Field Size"
-		// Tooltip: Controls the width of a scarecrow's wheat field.
-	}
-
-	ButterflyCountMax: {
-		// DisplayName: "[i:SpiritReforged/ButterflyStaff] (Butterfly Shrines) Max"
-		// Tooltip: The maximum number of butterfly shrines that may be placed. May not place all.
-	}
-
-	HeroChance: {
-		// DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] (Hero's Memorial) Spawn Chance"
-		// Tooltip: The denominator (1/x) of the chance for the Hero's Memorial to spawn.
-	}
-
-	MaxStargrassCount: {
-		// DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
-		// Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
-	}
-
-	WaterChestCount: {
-		// DisplayName: "[i:1298] Water Chest Max"
-		// Tooltip: The maximum number of water chests that may be placed in the ocean. Usually will not place all.
-	}
-
-	SunkenTreasureCount: {
-		// DisplayName: "[i:SpiritReforged/SunkenTreasure] Sunken Treasure Max"
-		// Tooltip: The maximum number of sunken treasure that may be placed in the ocean. Usually will not place all.
-	}
-
-	SandDepth: {
-		// DisplayName: "[i:169] Sand Depth"
-		// Tooltip: How far into the ground sand goes under the ocean.
-	}
-
-	SandRange: {
-		// DisplayName: "[i:169] Sand Range"
-		// Tooltip: The upper bound for Sand Depth's random added range in the ocean.
-	}
-
-	CoralLowChance: {
-		// DisplayName: "[i:275] Coral Chance (Low)"
-		// Tooltip: The denominator (1/x) for coral to spawn in the lower steps of the ocean.
-	}
-
-	CoralHighChance: {
-		// DisplayName: "[i:275] Coral Chance (High)"
-		// Tooltip: The denominator (1/x) for coral to spawn in the highest step of the ocean.
-	}
-
-	DecorLowChance: {
-		// DisplayName: "[i:4090] Decor Chance (Low)"
-		// Tooltip: The denominator (1/x) for decor to spawn in the lower steps of the ocean.
-	}
-
-	DecorHighChance: {
-		// DisplayName: "[i:4090] Decor Chance (High)"
-		// Tooltip: The denominator (1/x) for decor to spawn in the highest step of the ocean.
-	}
-
-	KelpChance: {
-		// DisplayName: "[i:SpiritReforged/Kelp] Kelp Chance"
-		// Tooltip: The denominator (1/x) for kelp to spawn in the ocean.
-	}
-
-	KelpMaxHeight: {
-		// DisplayName: "[i:SpiritReforged/Kelp] Kelp Height"
-		// Tooltip: The maximum height, in tiles, that kelp can spawn as.
-	}
-
-	GravelMultiplier: {
-		// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
-		// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
+		Piecewise_V: {
+			// DisplayName: Reforged
+			// Tooltip: The finalized version of the piecewise preset with various minor modifications.
+		}
 	}
 }

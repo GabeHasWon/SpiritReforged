@@ -2,8 +2,8 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
-using System;
 using System.Reflection;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
@@ -13,11 +13,18 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 #nullable enable
 
+// This is terrifying code. Good luck!
+/// <summary>
+/// UI for generation configuration; displays one <see cref="GenConfigPage"/> at a time.
+/// </summary>
 internal class GenConfigUIState(Action returnAction) : UIState
 {
 	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
 	private static readonly Asset<Texture2D> ButtonBorder = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "ButtonBorder", false);
 
+	/// <summary>
+	/// Used to return to the vanilla world UI when exiting.
+	/// </summary>
 	private readonly Action ReturnAction = returnAction;
 
 	private static bool _applyingPreset = false;
@@ -155,7 +162,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			itemPanel.OnUpdate += _ =>
 			{
 				if (itemPanel.ContainsPoint(Main.MouseScreen) && configList?.ContainsPoint(Main.MouseScreen) is true)
+				{
 					hoverText = config.Tip.Value;
+
+					if (config.Get() is Enum en)
+					{
+						string baseKey = $"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}";
+						hoverText += $"\n [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}:] " + GetEnumName(page, en, "Tooltip");
+					}
+				}
 			};
 			configList.Add(itemPanel);
 
@@ -179,115 +194,166 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				else if (valueBack is decimal de)
 					value = de.ToString("#0.##");
 
-				text.SetText(config.DisplayName + $": [c/AAAAAA:{value}]");
+				if (valueBack is bool)
+					text.SetText(config.DisplayName + ":");
+				else if (valueBack is Enum en)
+					text.SetText(config.DisplayName + $": [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}]");
+				else
+					text.SetText(config.DisplayName + $": [c/AAAAAA:{value}]");
+
 				text.TextColor = config.Modified ? new Color(200, 255, 200) : Color.White;
 			};
 
 			itemPanel.Append(text);
 
-			object defaultValue = config.Get();
-			bool isNumber = defaultValue is int or short or long or float or double or ushort or uint or byte or sbyte;
-			bool isInt = defaultValue is int or short or long or ushort or uint or byte or sbyte;
-			InputType inputType = isNumber ? isInt ? InputType.Integer : InputType.Number : InputType.Text;
-
 			// Define this super early so we can get it for the below onEnter delegate
 			UIElement? slider = null;
+			object defaultValue = config.Get();
 
-			UIEditableText input = new(inputType, "...", text =>
+			if (defaultValue is not bool)
 			{
-				config.Modified = true;
-				object obj = defaultValue switch
-				{
-#pragma warning disable IDE0004 // Unnecessary cast
-					// I said this in some other garish code, but the boxing preserves the type for some reason - Gabe
-					int => (object)int.Parse(text),
-					double => (object)double.Parse(text),
-					short => (object)short.Parse(text),
-					float => (object)float.Parse(text),
-					byte => (object)byte.Parse(text),
-					ushort => (object)ushort.Parse(text),
-					sbyte => (object)sbyte.Parse(text),
-					long => (object)long.Parse(text),
-#pragma warning disable IDE0004
-					_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
-				};
-
-				if (isNumber)
-				{
-					if ((dynamic)obj < (dynamic)config.Params.Min)
-						obj = config.Params.Min;
-
-					if ((dynamic)obj > (dynamic)config.Params.Max)
-						obj = config.Params.Max;
-				}
-
-				config.Set(obj);
-
-				MethodInfo? setToFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
-
-				if (setToFactor is not null)
-				{
-					GenConfigParameters configParams = config.Params;
-					float factor = GenericMath.InverseLerp((dynamic)configParams.Min, (dynamic)configParams.Max, (dynamic)obj);
-					setToFactor.Invoke(slider, [factor]);
-				}
-			})
-			{
-				Width = StyleDimension.FromPixels(60),
-				Height = StyleDimension.FromPixels(60),
-				Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 4),
-				Top = StyleDimension.FromPixels(4)
-			};
-
-			input.OnUpdate += _ =>
-			{
-				string measureText = text.Text + (config.IsSlider ? " " : $" ({config.Params.Min}-{config.Params.Max})");
-				input.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, measureText, Vector2.One).X + 4);
-			};
-
-			itemPanel.Append(input);
-
-			if (config.IsSlider)
-				slider = AddSlider(page, itemPanel, config);
-			else
-				AddPlusMinus(page, itemPanel, config, text);
-
-			UIButton<string> resetButton = new("Reset")
-			{
-				Width = StyleDimension.FromPixels(60),
-				Height = StyleDimension.FromPixels(40),
-				Left = StyleDimension.FromPixels(0),
-				HAlign = 1f,
-			};
-
-			MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
-			MethodInfo? setFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
-
-			if (slider is not null)
-			{
-				if (info is not null)
-					onReset += () => info.Invoke(slider, []);
-
-				if (setFactor is not null)
-				{
-					onMin += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 1 : 0)]);
-					onMax += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 0 : 1)]);
-				}
+				if (config.IsSlider)
+					slider = AddSlider(page, itemPanel, config);
+				else
+					AddPlusMinus(page, itemPanel, config, text);
 			}
 
-			resetButton.OnLeftClick += (_, _) =>
-			{
-				config.Set(config.Default);
-				config.Modified = false;
+			AddResetButton(config, itemPanel, slider);
 
-				if (info is not null && slider is not null)
+			if (defaultValue is bool)
+			{
+				string tru = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.True");
+				string fals = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.False");
+				UIButton<string> boolButton = new(fals)
 				{
-					info.Invoke(slider, []);
-				}
+					Width = StyleDimension.FromPixels(100),
+					Height = StyleDimension.FromPixels(50),
+				};
+
+				boolButton.OnLeftClick += (_, _) =>
+				{
+					bool reversed = !(bool)config.Get();
+					config.Set(reversed);
+					boolButton.SetText(reversed ? tru : fals);
+					ConfigModified(page, config);
+				};
+
+				boolButton.OnUpdate += _ => boolButton.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 8);
+
+				onMax += () => boolButton.SetText(config.ReverseMinMax ? tru : fals);
+				onMin += () => boolButton.SetText(!config.ReverseMinMax ? tru : fals);
+				onReset += () => boolButton.SetText((bool)config.Get() ? tru : fals);
+
+				itemPanel.Append(boolButton);
+				continue;
+			}
+
+			if (defaultValue is not Enum)
+				AddManualInput(config, itemPanel, text, slider, defaultValue);
+		}
+	}
+	
+	private static string GetEnumName(GenConfigPage page, Enum en, string postfix) => Language.GetTextValue($"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}." + postfix);
+
+	private static void AddManualInput(LoadedConfig config, UIPanel itemPanel, UIText text, UIElement? slider, object defaultValue)
+	{
+		bool isNumber = defaultValue is int or short or long or float or double or ushort or uint or byte or sbyte;
+		bool isInt = defaultValue is int or short or long or ushort or uint or byte or sbyte;
+		InputType inputType = isNumber ? isInt ? InputType.Integer : InputType.Number : InputType.Text;
+
+		UIEditableText input = new(inputType, "...", text =>
+		{
+			config.Modified = true;
+			object obj = defaultValue switch
+			{
+#pragma warning disable IDE0004 // Unnecessary cast
+				// I said this in some other garish code, but the boxing preserves the type for some reason - Gabe
+				int => (object)int.Parse(text),
+				double => (object)double.Parse(text),
+				short => (object)short.Parse(text),
+				float => (object)float.Parse(text),
+				byte => (object)byte.Parse(text),
+				ushort => (object)ushort.Parse(text),
+				sbyte => (object)sbyte.Parse(text),
+				long => (object)long.Parse(text),
+#pragma warning disable IDE0004
+				_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
 			};
 
-			itemPanel.Append(resetButton);
+			if (isNumber)
+			{
+				if ((dynamic)obj < (dynamic)config.Params.Min)
+					obj = config.Params.Min;
+
+				if ((dynamic)obj > (dynamic)config.Params.Max)
+					obj = config.Params.Max;
+			}
+
+			config.Set(obj);
+
+			MethodInfo? setToFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
+
+			if (setToFactor is not null)
+			{
+				GenConfigParameters configParams = config.Params;
+				float factor = GenericMath.InverseLerp((dynamic)configParams.Min, (dynamic)configParams.Max, (dynamic)obj);
+				setToFactor.Invoke(slider, [factor]);
+			}
+		})
+		{
+			Width = StyleDimension.FromPixels(60),
+			Height = StyleDimension.FromPixels(60),
+			Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 4),
+			Top = StyleDimension.FromPixels(4)
+		};
+
+		input.OnUpdate += _ =>
+		{
+			string measureText = text.Text + (config.IsSlider ? " " : $" ({config.Params.Min}-{config.Params.Max})");
+			input.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, measureText, Vector2.One).X + 4);
+		};
+
+		itemPanel.Append(input);
+	}
+
+	private void AddResetButton(LoadedConfig config, UIPanel itemPanel, UIElement? slider)
+	{
+		UIButton<string> resetButton = new("Reset")
+		{
+			Width = StyleDimension.FromPixels(60),
+			Height = StyleDimension.FromPixels(40),
+			Left = StyleDimension.FromPixels(0),
+			HAlign = 1f,
+		};
+
+		MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
+		MethodInfo? setFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
+
+		if (slider is not null)
+		{
+			if (info is not null)
+				onReset += () => info.Invoke(slider, []);
+
+			if (setFactor is not null)
+			{
+				onMin += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 1 : 0)]);
+				onMax += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 0 : 1)]);
+			}
 		}
+
+		resetButton.OnLeftClick += (_, _) =>
+		{
+			config.Set(config.Default);
+			config.Modified = false;
+
+			if (info is not null && slider is not null)
+			{
+				info.Invoke(slider, []);
+			}
+		};
+
+		itemPanel.Append(resetButton);
+		AddHoverTicks(itemPanel);
 	}
 
 	private void AddMinMaxPresetAndResetButtons(GenConfigPage page, UIPanel pagePanel)
@@ -318,6 +384,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			onMax?.Invoke();
 		};
 		pagePanel.Append(setMax);
+		AddHoverTicks(setMax);
 
 		UIButton<string> setMin = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Min"))
 		{
@@ -345,6 +412,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			onMin?.Invoke();
 		};
 		pagePanel.Append(setMin);
+		AddHoverTicks(setMin);
 
 		presetButton = new(GetConfigPresetDisplay(page))
 		{
@@ -381,6 +449,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		pagePanel.Append(presetButton);
+		AddHoverTicks(presetButton);
 
 		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
 		{
@@ -400,9 +469,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			onReset?.Invoke();
 			ResetPreset(page);
+
+			SoundEngine.PlaySound(SoundID.MenuTick);
 		};
 
 		pagePanel.Append(resetButton);
+		AddHoverTicks(resetButton);
 	}
 
 	private string GetConfigPresetDisplay(GenConfigPage page)
@@ -412,7 +484,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		if (page.PageInfo.Presets is null or { Count: 0 })
 			return Language.GetTextValue(Key + "NoPresets");
 
-		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? Language.GetTextValue(Key + "None") : page.PresetLocalization[pageConfig].Name.Value);
+		string noneText = Language.GetTextValue(Key + "None") + $" ({page.PageInfo.Presets.Count} {Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Total")})";
+		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
 	}
 
 	private void AppendNextPriorButtons(UIElement backPanel, GenConfigPage page)
@@ -526,6 +599,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIElement slider = config.Get() switch
 		{
+			Enum => new UISlider<int>((int)def, (int)1, (int)min, (int)max, Color.CornflowerBlue),
 			int => new UISlider<int>(def, step, min, max, Color.CornflowerBlue),
 			double => new UISlider<double>(def, step, min, max, Color.CornflowerBlue),
 			short => new UISlider<short>(def, step, min, max, Color.CornflowerBlue),
@@ -541,6 +615,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		slider.Top = StyleDimension.FromPixels(12);
 		slider.Width = StyleDimension.FromPixels(200);
 		slider.Height = StyleDimension.Fill;
+
+		if (def is Enum)
+			slider.Left = StyleDimension.FromPixels(-180);
 
 		MethodInfo? valueField = slider.GetType()?.GetProperty("Value")?.GetGetMethod();
 		FieldInfo? dragging = slider.GetType()?.GetField("_dragging", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -562,7 +639,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				}
 			};
 
-			setToFactor.Invoke(slider, [GenericMath.InverseLerp((dynamic)config.Params.Min, (dynamic)config.Params.Max, (dynamic)config.Get())]);
+			dynamic current = (dynamic)config.Get();
+
+			if (current is Enum)
+				setToFactor.Invoke(slider, [GenericMath.InverseLerp((int)(dynamic)config.Params.Min, (int)(dynamic)config.Params.Max, (int)current)]);
+			else
+				setToFactor.Invoke(slider, [GenericMath.InverseLerp((dynamic)config.Params.Min, (dynamic)config.Params.Max, current)]);
 		}
 
 		if (valueField is not null)
@@ -571,7 +653,16 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			{
 				if (dragging?.GetValue(slider) is true)
 				{
-					config.Set(valueField.Invoke(slider, [])!);
+					object newValue = valueField.Invoke(slider, [])!;
+
+					if (config.Get() is Enum val)
+					{
+						var enumValue = Enum.Parse(val.GetType(), ((dynamic)newValue).ToString());
+						config.Set(enumValue);
+					}
+					else
+						config.Set(newValue);
+
 					ConfigModified(page, config);
 				}
 			};
@@ -581,21 +672,23 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		itemPanel.Append(slider);
 
-		itemPanel.Append(new UIText(config.Params.Max.ToString())
+		slider.Append(new UIText(config.Params.Max is Enum enMax ? GetEnumName(page, enMax, "DisplayName") : config.Params.Max.ToString())
 		{
 			HAlign = 0f,
-			VAlign = 0.5f,
-			Left = StyleDimension.FromPixels(584),
-			Width = StyleDimension.FromPixels(2),
+			VAlign = 0,
+			Left = StyleDimension.FromPixelsAndPercent(8, 1),
+			Top = StyleDimension.FromPixels(-2),
+			Width = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.ItemStack.Value, config.Params.Max.ToString(), Vector2.One).X),
 			Height = StyleDimension.FromPixels(2),
 			TextColor = Color.Gray
 		});
 
-		itemPanel.Append(new UIText(config.Params.Min.ToString())
+		slider.Append(new UIText(config.Params.Min is Enum enMin ? GetEnumName(page, enMin, "DisplayName") : config.Params.Min.ToString())
 		{
 			HAlign = 1f,
-			VAlign = 0.5f,
-			Left = StyleDimension.FromPixels(-334),
+			VAlign = 0,
+			Left = StyleDimension.FromPixelsAndPercent(-8, -1),
+			Top = StyleDimension.FromPixels(-2),
 			Width = StyleDimension.FromPixels(2),
 			Height = StyleDimension.FromPixels(2),
 			TextColor = Color.Gray
@@ -630,7 +723,22 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		plus.OnLeftClick += (_, _) =>
 		{
-			dynamic value = (dynamic)config.Get() + (dynamic)config.Params.Step;
+			dynamic curValue = (dynamic)config.Get();
+			dynamic value;
+
+			if (curValue is Enum)
+			{
+				GetEnumValueArray(curValue, out Array values, out int index);
+
+				index++;
+
+				if (index >= values.Length)
+					index = 0;
+
+				value = values.GetValue(index)!;
+			}
+			else
+				value = curValue + (dynamic)config.Params.Step;
 
 			if (value > (dynamic)config.Params.Max)
 				value = config.Params.Max;
@@ -651,7 +759,22 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		minus.OnLeftClick += (_, _) =>
 		{
-			dynamic value = (dynamic)config.Get() - (dynamic)config.Params.Step;
+			dynamic curValue = (dynamic)config.Get();
+			dynamic value;
+
+			if (curValue is Enum)
+			{
+				GetEnumValueArray(curValue, out Array values, out int index);
+
+				index--;
+
+				if (index < 0)
+					index = values.Length - 1;
+
+				value = values.GetValue(index)!;
+			}
+			else
+				value = (dynamic)config.Get() - (dynamic)config.Params.Step;
 
 			if (value < (dynamic)config.Params.Min)
 				value = config.Params.Min;
@@ -663,14 +786,41 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		itemPanel.Append(minus);
 
-		UIText minMax = new($"({config.Params.Min}-{config.Params.Max})", 0.8f)
+		if (config.Get() is not Enum)
 		{
-			TextColor = new Color(180, 180, 180),
-			Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6),
-			VAlign = 0.5f
-		};
+			UIText minMax = new($"({config.Params.Min}-{config.Params.Max})", 0.8f)
+			{
+				TextColor = new Color(180, 180, 180),
+				Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6),
+				VAlign = 0.5f
+			};
 
-		minMax.OnUpdate += (self) => self.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6);
-		itemPanel.Append(minMax);
+			minMax.OnUpdate += (self) => self.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, nameText.Text, Vector2.One).X + 6);
+			itemPanel.Append(minMax);
+		}
+	}
+
+	/// <summary>
+	/// Retrieves the array of enums and the index of the given <paramref name="curValue"/> in the array, so it can be incremented/decremented.
+	/// </summary>
+	private static void GetEnumValueArray(dynamic curValue, out Array values, out int index)
+	{
+		values = Enum.GetValues(curValue.GetType());
+		index = 0;
+
+		for (int i = 0; i < values.Length; ++i)
+		{
+			if (values.GetValue(i)!.Equals(curValue))
+			{
+				index = i;
+				break;
+			}
+		}
+	}
+
+	public static void AddHoverTicks(UIElement element)
+	{
+		element.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
+		element.OnMouseOut += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
 	}
 }

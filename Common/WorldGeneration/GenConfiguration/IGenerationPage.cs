@@ -1,10 +1,9 @@
-﻿
-namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
+﻿namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 #nullable enable
 
 /// <summary>
-/// An individual config's preset value, by name.
+/// An individual config's preset value, by name. If the name doesn't match the name of a config, this will throw.
 /// </summary>
 public readonly record struct IndividualPreset(string Name, object Value);
 
@@ -13,6 +12,10 @@ public readonly record struct IndividualPreset(string Name, object Value);
 /// </summary>
 public readonly record struct ConfigPreset(string Name, bool ResetNotIncluded, List<IndividualPreset> Presets)
 {
+	/// <summary>
+	/// Applies this preset to the given page.
+	/// </summary>
+	/// <param name="page"></param>
 	internal readonly void Apply(GenConfigPage page)
 	{
 		HashSet<string> names = [];
@@ -39,6 +42,9 @@ public readonly record struct ConfigPreset(string Name, bool ResetNotIncluded, L
 /// </summary>
 public readonly record struct PageInfo(string PageName, Asset<Texture2D>? PageBack, Asset<Texture2D>? PageButton, List<ConfigPreset>? Presets = null)
 {
+	/// <summary>
+	/// Copies the given instance's <see cref="PageInfo"/> if it is already defined.
+	/// </summary>
 	public IGenerationPage? CopiedPage { get; init; }
 }
 

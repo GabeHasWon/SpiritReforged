@@ -157,7 +157,7 @@ internal class GenConfigLoader : ModSystem
 	{
 		string pageName = page.Info.PageName;
 		string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
-		GenConfigPage configPage = new(page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
+		GenConfigPage configPage = new(page.Mod, page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
 
 		if (PagesByName.TryAdd(pageName, configPage))
 		{
@@ -205,6 +205,21 @@ internal class GenConfigLoader : ModSystem
 			bool hasReverse = field.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse);
 			configPage.ConfigsByName.Add(field.Name, config);
+
+			if (field.FieldType.IsEnum)
+				GenerateEnumLocalization(page, field.FieldType);
+		}
+	}
+
+	private static void GenerateEnumLocalization(IGenerationPage page, Type type)
+	{
+		string[] names = Enum.GetNames(type);
+		string key = $"Mods.{page.Mod.Name}.GenConfigs.Enums.";
+
+		foreach (string name in names)
+		{
+			Language.GetOrRegister(key + type.Name + "." + name + ".DisplayName", () => name);
+			Language.GetOrRegister(key + type.Name + "." + name + ".Tooltip", () => name);
 		}
 	}
 
@@ -221,6 +236,9 @@ internal class GenConfigLoader : ModSystem
 			bool hasReverse = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, hasReverse);
 			configPage.ConfigsByName.Add(prop.Name, config);
+
+			if (getMethod.ReturnType.IsEnum)
+				GenerateEnumLocalization(page, getMethod.ReturnType);
 		}
 	}
 
@@ -228,8 +246,10 @@ internal class GenConfigLoader : ModSystem
 
 	private static void GenerateLocalization(IGenerationPage page, string name, out LocalizedText text, out LocalizedText tip)
 	{
-		text = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Members.{name}.DisplayName", () => name);
-		tip = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Members.{name}.Tooltip", () => name);
+		string pageName = page.Info.CopiedPage is { } copy ? copy.Info.PageName : page.Info.PageName;
+
+		text = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.Members.{name}.DisplayName", () => name);
+		tip = Language.GetOrRegister($"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.Members.{name}.Tooltip", () => name);
 	}
 
 	private static GenConfigParameters GenerateParameters(GenConfigurableAttribute attribute, Type type)
@@ -258,6 +278,7 @@ internal class GenConfigLoader : ModSystem
 					ulong => (object)(ulong)1,
 					byte => (object)(byte)1,
 					sbyte => (object)(sbyte)1,
+					Enum => (object)(int)1,
 					_ => throw new NotSupportedException($"Type {type.Name} not supported.")
 				};
 #pragma warning restore IDE0004 // Unnecessary cast

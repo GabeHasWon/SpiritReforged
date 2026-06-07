@@ -11,4 +11,12 @@ internal class GenConfigurableAttribute(object min, object max, object? step = n
 	public readonly object Min = min;
 	public readonly object Max = max;
 	public readonly object? Step = step;
+
+	/// <summary>
+	/// Overload for simplifying booleans.
+	/// </summary>
+	public GenConfigurableAttribute(bool value) : this(false, true, true)
+	{
+		
+	}
 }

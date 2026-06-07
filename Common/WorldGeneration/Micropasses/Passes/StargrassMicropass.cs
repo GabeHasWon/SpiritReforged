@@ -18,7 +18,6 @@ internal class StargrassMicropass : Micropass, IGenerationPage
 	PageInfo IGenerationPage.Info => new()
 	{
 		CopiedPage = new CanyonEntrance(),
-
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

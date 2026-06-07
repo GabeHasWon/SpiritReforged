@@ -4,6 +4,8 @@ using Terraria.UI;
 
 namespace SpiritReforged.Common.UI.Elements;
 
+#nullable enable
+
 // Copied from my same implementation in New Beginnings.
 internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber<T>
 {
@@ -18,11 +20,15 @@ internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber
 	public readonly T Maximum;
 	public readonly Color Color;
 
-	public UIImageButton button = null;
+	public UIImageButton button = null!;
 
     private bool _dragging = false;
+	private Type? _enumType = null;
 
-	public UISlider(T start, T increment, T min, T max, Color color)
+	/// <summary>
+	/// Creates a slider with the start point, step, minimum, maximum and color. <paramref name="enumType"/> adds in markers for each enum value.
+	/// </summary>
+	public UISlider(T start, T increment, T min, T max, Color color, Type? enumType = null)
 	{
 		Value = start;
 		Start = start;
@@ -30,6 +36,8 @@ internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber
 		Minimum = min;
 		Maximum = max;
 		Color = color;
+
+		_enumType = enumType;
 
 		button = new(Button)
 		{

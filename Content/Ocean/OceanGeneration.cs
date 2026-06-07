@@ -17,7 +17,7 @@ namespace SpiritReforged.Content.Ocean;
 
 public partial class OceanGeneration : ModSystem, IGenerationPage
 {
-	public enum OceanShape
+	public enum OceanShape : byte
 	{
 		Default = 0, //vanilla worldgen
 		SlantedSine, //Yuyu's initial sketch
@@ -31,6 +31,10 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 
 	private static int _roughTimer = 0;
 	private static float _rough = 0f;
+
+	[GenConfigurable(OceanShape.Default, OceanShape.Piecewise_V)]
+	[Slider]
+	public static OceanShape Shape = OceanShape.Piecewise_V;
 
 	[GenConfigurable(0, 12)]
 	[Slider]
@@ -115,7 +119,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-        if (ModContent.GetInstance<ReforgedClientConfig>().OceanShape != OceanShape.Default)
+        if (Shape != OceanShape.Default)
         {
             int beachIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Beaches")); //Replace beach gen
             if (beachIndex != -1)
@@ -533,7 +537,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 			else if (placeY == oceanTop + 5)
 				Main.tile[placeX, placeY].LiquidAmount = 127;
 
-			Main.tile[placeX, placeY].WallType = 0;
+			Main.tile[placeX, placeY].WallType = WallID.None;
 			return true;
 		}
 		else if (placeY > oceanTop)
@@ -554,9 +558,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	/// <param name="tilesFromInnerEdge"></param>
 	private static float GetOceanSlope(int tilesFromInnerEdge)
 	{
-		OceanShape shape = ModContent.GetInstance<ReforgedClientConfig>().OceanShape;
-
-		if (shape == OceanShape.SlantedSine)
+		if (Shape == OceanShape.SlantedSine)
 		{
 			const int SlopeSize = 15;
 			const float Steepness = 0.8f;
@@ -566,7 +568,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 				? SlopeSize * Steepness * (float)Math.Sin(1f / SlopeSize * 234) + Steepness * 234
 				: SlopeSize * Steepness * (float)Math.Sin(1f / SlopeSize * tilesFromInnerEdge) + Steepness * tilesFromInnerEdge;
 		}
-		else if (shape == OceanShape.Piecewise)
+		else if (Shape == OceanShape.Piecewise)
 		{
 			if (tilesFromInnerEdge < 75)
 				return 1 / 75f * tilesFromInnerEdge * tilesFromInnerEdge;
@@ -575,7 +577,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 			else 
 				return tilesFromInnerEdge < 175 ? 1 / 50f * (float)Math.Pow(tilesFromInnerEdge - 125, 2) + 75 : 125;
 		}
-		else if (shape == OceanShape.Piecewise_M)
+		else if (Shape == OceanShape.Piecewise_M)
 		{
 			const float CubicMultiplier = 37.5f;
 			const float CubicMultiplierSq = CubicMultiplier * CubicMultiplier;
