@@ -22,6 +22,10 @@ UI: {
 	// True: Enabled
 	// False: Disabled
 	// Total: total
+	// CustomPresetTooltip: This is a custom preset!
+	// Create: Save as a custom preset
+	// CantSave: (You can't save a default preset)
+	// Load: Load a custom preset
 }
 
 Pages: {

@@ -3,8 +3,12 @@
 /// <summary>
 /// The actual loaded generation configuration page for a defined area. Includes the info and localization, plus a helper tool.
 /// </summary>
-public class GenConfigPage(Mod mod, PageInfo info, LocalizedText display, LocalizedText tooltip)
+public class GenConfigPage(Mod mod, PageInfo info, LocalizedText display, LocalizedText tooltip, int builtInPresets)
 {
+	public string FullName => Mod.Name + "/" + PageInfo.PageName;
+
+	public readonly int BuiltInPresets = builtInPresets;
+
 	public Mod Mod = mod;
 	public PageInfo PageInfo = info;
 	public LocalizedText DisplayName = display;

@@ -2,9 +2,11 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
+using System.IO;
 using System.Reflection;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader.IO;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 using Terraria.UI.Chat;
@@ -21,6 +23,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 {
 	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
 	private static readonly Asset<Texture2D> ButtonBorder = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "ButtonBorder", false);
+
+	private static string PresetsPath => Path.Combine(Main.SavePath, "GenPresets");
+
+	private static bool LoadedAllPresets = false;
 
 	/// <summary>
 	/// Used to return to the vanilla world UI when exiting.
@@ -62,14 +68,40 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Vector2 position = Main.MouseScreen + new Vector2(0, 20);
 			var backRectangle = new Rectangle((int)position.X, (int)position.Y, (int)size.X, (int)size.Y);
 			backRectangle.Inflate(8, 8);
+
+			if (backRectangle.Right > Main.screenWidth)
+				backRectangle.X -= backRectangle.Right - Main.screenWidth;
+
 			Utils.DrawInvBG(spriteBatch, backRectangle with { Height = backRectangle.Height - 4 }, new Color(63, 65, 151, 255));
-			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hoverText, position, Color.White, 0f, Vector2.Zero, Vector2.One);
+			
+			var textPosition = backRectangle.Location.ToVector2() + new Vector2(8);
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, hoverText, textPosition, Color.White, 0f, Vector2.Zero, Vector2.One);
 		}
 
 		hoverText = string.Empty;
 	}
 
-	public override void OnInitialize() => ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
+	public override void OnInitialize()
+	{
+		if (!LoadedAllPresets)
+		{
+			LoadedAllPresets = true;
+
+			if (!AssurePresetsPathExists())
+			{
+				string[] files = Directory.GetFiles(PresetsPath, "*.txt");
+
+				foreach (string loadPath in files)
+				{
+					TagCompound tag = TagIO.FromFile(loadPath);
+					string name = loadPath[(loadPath.LastIndexOf('\\') + 1)..loadPath.LastIndexOf('.')];
+					LoadFromTag(null, tag, name);
+				}
+			}
+		}
+
+		ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
+	}
 
 	private void ResetPage(GenConfigPage page)
 	{
@@ -149,14 +181,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(bar);
 		configList.SetScrollbar(bar);
 
-		AddMinMaxPresetAndResetButtons(page, pagePanel);
+		AddBottomButtons(page, pagePanel);
 
 		foreach (LoadedConfig config in page.ConfigsByName.Values)
 		{
 			UIPanel itemPanel = new()
 			{
 				Width = StyleDimension.Fill,
-				Height = StyleDimension.FromPixels(60),
+				Height = StyleDimension.FromPixels(56),
 			};
 
 			itemPanel.OnUpdate += _ =>
@@ -236,6 +268,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					config.Set(reversed);
 					boolButton.SetText(reversed ? tru : fals);
 					ConfigModified(page, config);
+
+					SoundEngine.PlaySound(SoundID.MenuTick);
 				};
 
 				boolButton.OnUpdate += _ => boolButton.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 8);
@@ -245,6 +279,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				onReset += () => boolButton.SetText((bool)config.Get() ? tru : fals);
 
 				itemPanel.Append(boolButton);
+				AddHoverTicks(boolButton);
 				continue;
 			}
 
@@ -253,7 +288,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		}
 	}
 	
-	private static string GetEnumName(GenConfigPage page, Enum en, string postfix) => Language.GetTextValue($"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}." + postfix);
+	private static string GetEnumName(GenConfigPage page, Enum en, string postfix) 
+		=> Language.GetTextValue($"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}." + postfix);
 
 	private static void AddManualInput(LoadedConfig config, UIPanel itemPanel, UIText text, UIElement? slider, object defaultValue)
 	{
@@ -353,10 +389,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		itemPanel.Append(resetButton);
-		AddHoverTicks(itemPanel);
+		AddHoverTicks(resetButton);
 	}
 
-	private void AddMinMaxPresetAndResetButtons(GenConfigPage page, UIPanel pagePanel)
+	private void AddBottomButtons(GenConfigPage page, UIPanel pagePanel)
 	{
 		UIButton<string> setMax = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Max"))
 		{
@@ -445,7 +481,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		presetButton.OnUpdate += _ =>
 		{
 			if (pageConfig != -1 && presetButton.ContainsPoint(Main.MouseScreen))
-				hoverText = page.PresetLocalization[pageConfig].Tooltip.Value;
+				hoverText = pageConfig >= page.BuiltInPresets ? Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.CustomPresetTooltip") 
+					: page.PresetLocalization[pageConfig].Tooltip.Value;
+
+			if (pageConfig == -1)
+				presetButton.SetText(GetConfigPresetDisplay(page));
 		};
 
 		pagePanel.Append(presetButton);
@@ -475,6 +515,164 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		pagePanel.Append(resetButton);
 		AddHoverTicks(resetButton);
+
+		UIImage saveButton = new(DrawHelpers.RequestLocal(GetType(), "NewButton", false))
+		{
+			Width = StyleDimension.FromPixels(40),
+			Height = StyleDimension.FromPixels(40),
+			HAlign = 1f,
+			VAlign = 1
+		};
+
+		saveButton.OnLeftClick += (_, _) => SaveConfig(page);
+
+		saveButton.OnUpdate += _ =>
+		{
+			saveButton.Color = DefaultConfig(page) ? Color.Gray : Color.White;
+
+			if (saveButton.ContainsPoint(Main.MouseScreen))
+				hoverText = Language.GetTextValue(DefaultConfig(page) ? "Mods.SpiritReforged.GenConfigs.UI.CantSave" : "Mods.SpiritReforged.GenConfigs.UI.Create");
+		};
+
+		pagePanel.Append(saveButton);
+
+		UIImage loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false))
+		{
+			Width = StyleDimension.FromPixels(40),
+			Height = StyleDimension.FromPixels(40),
+			HAlign = 1f,
+			VAlign = 1,
+			Left = StyleDimension.FromPixels(-48)
+		};
+
+		loadButton.OnLeftClick += (_, _) => LoadConfig(page);
+
+		loadButton.OnUpdate += _ =>
+		{
+			if (loadButton.ContainsPoint(Main.MouseScreen))
+				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Load");
+		};
+
+		pagePanel.Append(loadButton);
+	}
+
+	private static void LoadConfig(GenConfigPage page)
+	{
+		AssurePresetsPathExists();
+		var result = nativefiledialog.NFD_OpenDialog("txt", PresetsPath, out string loadPath);
+
+		if (result == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			TagCompound tag = TagIO.FromFile(loadPath);
+			string name = loadPath[(loadPath.LastIndexOf('\\') + 1)..loadPath.LastIndexOf('.')];
+			LoadFromTag(page, tag, name);
+		}
+	}
+
+	private static bool AssurePresetsPathExists()
+	{
+		if (!Directory.Exists(PresetsPath))
+		{
+			Directory.CreateDirectory(PresetsPath);
+			return true;
+		}
+
+		return false;
+	}
+
+	private static void LoadFromTag(GenConfigPage? page, TagCompound tag, string configName)
+	{
+		string name = tag.GetString("pageName");
+		string[] paths = name.Split('/');
+
+		// Get page if it's not passed in
+		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
+
+		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
+			return; // Add notice
+
+		List<IndividualPreset> presets = [];
+		TagCompound presetTag = tag.GetCompound("presets");
+
+		foreach (var config in page.ConfigsByName.Values)
+		{
+			if (presetTag.TryGet(config.Name, out object val))
+			{
+				object value;
+
+				if (config.Get() is Enum en)
+					value = Enum.Parse(en.GetType(), val.ToString()!);
+				else
+					value = Convert.ChangeType(val, config.Get().GetType());
+
+				presets.Add(new IndividualPreset(config.Name, value));
+			}
+		}
+
+		ConfigPreset preset = new(configName, false, presets);
+		page.PageInfo.Presets.Add(preset);
+	}
+
+	private static void SaveConfig(GenConfigPage page)
+	{
+		if (DefaultConfig(page))
+			return;
+
+		AssurePresetsPathExists();
+		var result = nativefiledialog.NFD_SaveDialog("txt", PresetsPath, out string savePath);
+
+		if (result == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			TagCompound tag = CreateTag(page);
+			TagIO.ToFile(tag, savePath.EndsWith(".txt") ? savePath : savePath + ".txt", true);
+		}
+	}
+
+	private static TagCompound CreateTag(GenConfigPage page)
+	{
+		TagCompound tag = [];
+		TagCompound presets = [];
+		tag.Add("pageName", page.Mod.Name + "/" + page.PageInfo.PageName);
+
+		foreach (LoadedConfig config in page.ConfigsByName.Values)
+		{
+			object value = config.Get();
+
+			if (value is Enum en)
+			{
+				Type type = en.GetType().GetEnumUnderlyingType();
+
+				// Ah. Hello again. This is bad. Oh well! - Gabe
+				if (type == typeof(int))
+					value = (object)Convert.ToInt32(en);
+				else if (type == typeof(short))
+					value = (object)Convert.ToInt16(en);
+				else if (type == typeof(byte))
+					value = (object)Convert.ToByte(en);
+				else if (type == typeof(ushort))
+					value = (object)Convert.ToUInt16(en);
+				else if (type == typeof(sbyte))
+					value = (object)Convert.ToSByte(en);
+				else if (type == typeof(float))
+					value = (object)Convert.ToSingle(en);
+				else if (type == typeof(double))
+					value = (object)Convert.ToDouble(en);
+			}
+
+			presets.Add(config.Name, value);
+		}
+
+		tag.Add("presets", presets);
+		return tag;
+	}
+
+	public static bool DefaultConfig(GenConfigPage page)
+	{
+		foreach (LoadedConfig config in page.ConfigsByName.Values)
+			if (config.Modified)
+				return false;
+
+		return true;
 	}
 
 	private string GetConfigPresetDisplay(GenConfigPage page)
@@ -483,6 +681,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		if (page.PageInfo.Presets is null or { Count: 0 })
 			return Language.GetTextValue(Key + "NoPresets");
+
+		if (pageConfig >= page.BuiltInPresets)
+			return "[i:75] [c/AAAAFF:" + page.PageInfo.Presets[pageConfig].Name + "]";
 
 		string noneText = Language.GetTextValue(Key + "None") + $" ({page.PageInfo.Presets.Count} {Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Total")})";
 		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
@@ -506,13 +707,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			priorImage.OnUpdate += _ => priorImage.Color = priorImage.ContainsPoint(Main.MouseScreen) ? Color.Gray : Color.White;
 			priorButton.Append(new UIImage(ButtonBorder));
 
-			UIText text = new(priorText + " " + prior.DisplayName.Value)
+			string buttonText = priorText + " " + prior.DisplayName.Value;
+			float textWidth = ChatManager.GetStringSize(FontAssets.ItemStack.Value, buttonText, Vector2.One).X;
+			UIText text = new(buttonText, Math.Min(1, 114 / textWidth))
 			{
-				Width = StyleDimension.Fill,
-				Height = StyleDimension.FromPixels(0),
+				Width = StyleDimension.FromPixels(3),
+				Height = StyleDimension.FromPixels(6),
 				HAlign = 0.5f,
 				VAlign = 0.5f,
-				DynamicallyScaleDownToWidth = true
+				DynamicallyScaleDownToWidth = true, // This doesn't work for some reason?
 			};
 
 			priorButton.Append(text);
@@ -545,7 +748,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			nextImage.OnUpdate += _ => nextImage.Color = nextImage.ContainsPoint(Main.MouseScreen) ? Color.Gray : Color.White;
 			nextButton.Append(new UIImage(ButtonBorder));
 
-			UIText text = new(nextText + " " + next.DisplayName.Value)
+			string buttonText = nextText + " " + next.DisplayName.Value;
+			float textWidth = ChatManager.GetStringSize(FontAssets.ItemStack.Value, buttonText, Vector2.One).X;
+			UIText text = new(buttonText, 114 / textWidth)
 			{
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(0),

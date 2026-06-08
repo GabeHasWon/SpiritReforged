@@ -21,7 +21,7 @@ internal class GenConfigLoader : ModSystem
 {
 	public static List<Mod> LoadingMods = [];
 	public static List<GenConfigPage> LoadedPages = [];
-	public static Dictionary<string, GenConfigPage> PagesByName = [];
+	public static Dictionary<string, GenConfigPage> PagesByModAndName = [];
 	public static Dictionary<Type, GenConfigPage> PagesByType = [];
 
 	public static GenConfigPage GetPage(Type t) => PagesByType[t];
@@ -145,7 +145,7 @@ internal class GenConfigLoader : ModSystem
 
 		foreach (IGenerationPage page in delayedPages)
 		{
-			GenConfigPage configPage = PagesByName[page.Info.CopiedPage!.Info.PageName];
+			GenConfigPage configPage = PagesByModAndName[page.Info.CopiedPage!.Mod.Name + "/" + page.Info.CopiedPage!.Info.PageName];
 			GetConfigs(ref delay, page.GetType(), page, configPage);
 			PagesByType.Add(page.GetType(), configPage);
 		}
@@ -157,9 +157,9 @@ internal class GenConfigLoader : ModSystem
 	{
 		string pageName = page.Info.PageName;
 		string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
-		GenConfigPage configPage = new(page.Mod, page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""));
+		GenConfigPage configPage = new(page.Mod, page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""), page.Info.Presets.Count);
 
-		if (PagesByName.TryAdd(pageName, configPage))
+		if (PagesByModAndName.TryAdd(configPage.FullName, configPage))
 		{
 			PagesByType.Add(type, configPage);
 			LoadedPages.Add(configPage);
@@ -175,7 +175,7 @@ internal class GenConfigLoader : ModSystem
 			}
 		}
 		else
-			configPage = PagesByName[pageName];
+			configPage = PagesByModAndName[pageName];
 
 		return configPage;
 	}

@@ -57,7 +57,9 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int TermiteChance = 45;
 
-	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), DrawHelpers.RequestLocal(GetType(), "SavannaPageButton", false), 
+	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), DrawHelpers.RequestLocal(GetType(), "SavannaPageButton", false))
+	{
+		Presets = 
 		[
 			new("Domesticated", false,
 				[
@@ -74,7 +76,8 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 					new IndividualPreset(nameof(PotChance), 5),
 					new IndividualPreset(nameof(TermiteChance), 10),
 				])
-		]);
+		]
+	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 

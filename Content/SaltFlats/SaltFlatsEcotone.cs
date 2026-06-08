@@ -87,7 +87,9 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false),
+	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false))
+	{
+		Presets = 
 		[
 			new("SunkenRuin", false,
 			[
@@ -97,7 +99,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 				new IndividualPreset(nameof(CaveRadius), 5),
 				new IndividualPreset(nameof(MaxSteps), 4),
 			])
-		]); 
+		]
+	}; 
 	
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 

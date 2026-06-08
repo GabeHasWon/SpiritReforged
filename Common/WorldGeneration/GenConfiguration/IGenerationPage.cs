@@ -40,12 +40,14 @@ public readonly record struct ConfigPreset(string Name, bool ResetNotIncluded, L
 /// Info used to create a <see cref="GenConfigPage"/>.<br/>
 /// If a page already exists (or will already exist) and you want to use it, use <see cref="CopiedPage"/> to clone that type's page.
 /// </summary>
-public readonly record struct PageInfo(string PageName, Asset<Texture2D>? PageBack, Asset<Texture2D>? PageButton, List<ConfigPreset>? Presets = null)
+public readonly record struct PageInfo(string PageName, Asset<Texture2D>? PageBack, Asset<Texture2D>? PageButton)
 {
 	/// <summary>
 	/// Copies the given instance's <see cref="PageInfo"/> if it is already defined.
 	/// </summary>
 	public IGenerationPage? CopiedPage { get; init; }
+
+	public List<ConfigPreset> Presets { get; init; } = [];
 }
 
 /// <summary>

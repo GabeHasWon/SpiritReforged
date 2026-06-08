@@ -92,7 +92,9 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[WorldBound]
 	public static Rectangle RightOcean;
 
-	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false),
+	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false))
+	{
+		Presets = 
 		[
 			new("KelpForest", false,
 			[
@@ -113,7 +115,8 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 				new IndividualPreset(nameof(GravelMultiplier), 4f),
 				new IndividualPreset(nameof(SunkenTreasureCount), 8),
 			])
-		]);
+		]
+	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
