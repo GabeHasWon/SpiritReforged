@@ -97,7 +97,8 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		Presets = 
 		[
 			new("KelpForest", false,
-			[
+			[               
+				new IndividualPreset(nameof(Shape), OceanShape.Piecewise),
 				new IndividualPreset(nameof(KelpChance), 1),
 				new IndividualPreset(nameof(KelpMaxHeight), 50),
 				new IndividualPreset(nameof(DecorHighChance), 100),
@@ -106,6 +107,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 
 			new("Volcanic", false,
 			[
+				new IndividualPreset(nameof(Shape), OceanShape.Piecewise_M),
 				new IndividualPreset(nameof(KelpChance), 50),
 				new IndividualPreset(nameof(KelpMaxHeight), 6),
 				new IndividualPreset(nameof(DecorHighChance), 25),

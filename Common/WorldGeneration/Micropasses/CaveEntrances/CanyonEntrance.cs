@@ -17,7 +17,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 	[Slider]
 	private static int HalfWidth = 50;
 
-	[GenConfigurable(80, 300, 10)]
+	[GenConfigurable(80, 600, 10)]
 	[Slider]
 	private static int MaxDepth = 140;
 
@@ -28,14 +28,13 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 		Presets = 
 		[
 			new("Whimsical", false,
-			[
-				new IndividualPreset(nameof(StargrassMicropass.MaxStargrassCount), 400),
-				new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 4f),
-				new IndividualPreset(nameof(ScarecrowDiscovery.FieldSize), 40),
-				new IndividualPreset(nameof(ButterflyMicropass.ButterflyCountMax), 8),
-			])
-		]
-	};
+				[
+					new IndividualPreset(nameof(StargrassMicropass.MaxStargrassCount), 400),
+					new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 4f),
+					new IndividualPreset(nameof(ScarecrowDiscovery.FieldSize), 40),
+					new IndividualPreset(nameof(ButterflyMicropass.ButterflyCountMax), 8),
+				])
+		]);
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)

@@ -43,6 +43,11 @@ Pages: {
 				Name: "[i:SpiritReforged/TermiteJar] Infested"
 				Tooltip: Oops! All termites! Trees may be hard to find.
 			}
+
+			Bumpy: {
+				Name: "[i:SpiritReforged/Drypowder] Bumpy"
+				Tooltip: Watch your step! Bumps and hills await in this wild Savanna.
+			}
 		}
 
 		Members: {
@@ -94,6 +99,16 @@ Pages: {
 			SunkenRuin: {
 				Name: "[i:SpiritReforged/CobbledBrickItem] Sunken Ruins"
 				Tooltip: The ruins of an ancient civilization have been washed and chipped away.
+			}
+
+			BlankCanvas: {
+				Name: "[i:SpiritReforged/GlidingItem] Blank Canvas"
+				Tooltip: An empty, endless reflection lies before you.
+			}
+
+			Dessicated: {
+				Name: "[i:1274] Desiccated"
+				Tooltip: There's not a drop of water to be seen. All the trees have withered away.
 			}
 		}
 
@@ -147,6 +162,11 @@ Pages: {
 			Whimsical: {
 				Name: "[i:SpiritReforged/MidnightApple] Whimsical"
 				Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+			}
+
+			Treacherous: {
+				Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
+				Tooltip: Vast gorges dot the landscape. Don't look down!
 			}
 		}
 
