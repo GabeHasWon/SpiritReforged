@@ -17,17 +17,53 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using static SpiritReforged.Content.Forest.Glyphs.Storm.StormGlyph;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Void;
 
 public class VoidGlyph : GlyphItem
 {
+	public sealed class VoidParticle : Particle
+	{
+		public VoidParticle(Vector2 position, Vector2 velocity, Color color, float rotation, float scale, int maxTime)
+		{
+			Position = position;
+			Color = color;
+			Rotation = rotation;
+			Scale = scale;
+			MaxTime = maxTime;
+			Velocity = velocity;
+
+			SingularityVisualSystem.particles.Add(this);
+		}
+
+		public override void Update()
+		{
+			Velocity *= 0.97f;
+			Rotation += Velocity.Length() * 0.02f;
+		}
+
+		public override void OnKill() => SingularityVisualSystem.particles.Remove(this);
+
+		public override void CustomDraw(SpriteBatch spriteBatch)
+		{
+			Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
+
+			spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color * 0.33f, 0, bloomtexture.Size() / 2, Scale * (1f - TimeActive / (float)MaxTime), SpriteEffects.None, 0);
+		}
+
+		public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
+
+		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+	}
+
 	// Visual system that uses a Render Target to render all singularities for the void glyph
 	public sealed class SingularityVisualSystem : ModSystem
 	{
-		private static readonly ModTarget2D SingularityTarget = new(static () => projectiles.Count != 0, DrawTarget);
+		private static readonly ModTarget2D SingularityTarget = new(static () => projectiles.Count != 0 || particles.Count != 0, DrawTarget);
 
 		public static List<CollapseProjectile> projectiles = [];
+		public static List<VoidParticle> particles = [];
 
 		// drawing a bloom map here for the input to our shader
 		private static void DrawTarget(SpriteBatch spriteBatch)
@@ -60,6 +96,19 @@ public class VoidGlyph : GlyphItem
 
 				spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, visualScale, 0f, 0f);
 			}
+
+			foreach (VoidParticle particle in particles)
+			{
+				if (particle is null)
+					return;
+
+				float progress = particle.TimeActive / (float)particle.MaxTime;
+
+				Color dataColor = new Color(1f, progress, 0.5f, 1f);
+				float visualScale = particle.Scale * (1f - progress);
+
+				spriteBatch.Draw(bloom, particle.Position - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, visualScale, 0f, 0f);
+			}
 		}
 
 		public override void PostUpdateEverything()
@@ -84,7 +133,7 @@ public class VoidGlyph : GlyphItem
 		{
 			if (Active)
 			{
-				VoidNPC.AddStack(Player.whoAmI, target.whoAmI);
+				VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone);
 
 				for (int i = 0; i < 3; i++)
 				{
@@ -126,7 +175,9 @@ public class VoidGlyph : GlyphItem
 		internal int _stacks;
 		internal int _cooldown;
 
-		public static void AddStack(int playerIndex, int targetIndex, int stacksToAdd = 1)
+		public int collapseDamage;
+
+		public static void AddStack(int playerIndex, int targetIndex, int damageDealt, int stacksToAdd = 1)
 		{
 			Player player = Main.player[playerIndex];
 			NPC target = Main.npc[targetIndex];
@@ -138,12 +189,14 @@ public class VoidGlyph : GlyphItem
 			if (gnpc._stacks <= 0)
 			{
 				Projectile p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
-				p.timeLeft = 60;
+				p.timeLeft = COLLAPSE_TIME;
 			}
 
-			gnpc._stacks += 10;
+			gnpc._stacks++;
 			if (gnpc._stacks > MAX_STACKS)
 				gnpc._stacks = MAX_STACKS;
+
+			gnpc.collapseDamage += damageDealt;
 
 			Main.NewText("Stack Added");
 
@@ -237,6 +290,8 @@ public class VoidGlyph : GlyphItem
 						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
 						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
 
+						ParticleHandler.SpawnParticle(new VoidParticle(Projectile.Center, Main.rand.NextVector2CircularEdge(7f, 2f) * Main.rand.NextFloat(0.75f, 1f), Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.2f, 0.25f), 45));
+
 						static void DecelerateAction(Particle p)
 						{
 							p.Velocity *= 0.95f;
@@ -301,7 +356,7 @@ public class VoidGlyph : GlyphItem
 			if (Projectile.position != Projectile.oldPosition)
 				Projectile.netUpdate = true;
 
-			if (Projectile.timeLeft == 1 && !_dying)
+			if ((Projectile.timeLeft == 1 || gnpc._stacks >= 10) && !_dying)
 			{
 				SingularityVisualSystem.projectiles.Add(this);
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
@@ -311,11 +366,12 @@ public class VoidGlyph : GlyphItem
 
 				_stacksOnDeath = gnpc._stacks;
 
-				Projectile.damage = gnpc._stacks * 20;
+				Projectile.damage = gnpc.collapseDamage;
 				Projectile.ArmorPenetration = gnpc._stacks;
 
 				gnpc._cooldown = VoidNPC.COOLDOWN_TIME;
 				gnpc._stacks = 0;
+				gnpc.collapseDamage = 0;
 			}
 		}
 
@@ -540,6 +596,24 @@ public class VoidGlyph : GlyphItem
 			});
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightPink.Additive(), 0.15f, 30, 0, AddLight: false)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveItem
+			});
+		}
+		else if (Main.rand.NextBool(90))
+		{
+			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
+
+			ParticleHandler.SpawnParticle(new VoidParticle(pos, Vector2.Zero, Color.Purple.Additive(), 0f, 0.25f, 40));
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos + new Vector2(0, 2), Vector2.Zero, Color.Purple.Additive(), 0.2f, 35, 0)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveItem
+			});
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos + new Vector2(0, 2), Vector2.Zero, Color.LightPink.Additive(), 0.15f, 30, 0, AddLight: false)
 			{
 				Rotation = 0f,
 				Layer = ParticleLayer.AboveItem
