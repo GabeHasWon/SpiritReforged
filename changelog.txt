@@ -16,3 +16,4 @@ v0.2.0.6
 - Updated Cartography Table sprite
 - Updated the following Music Box sprites: Deep Ocean, Savanna Otherworld Duststorm, Day & Night, Savanna Night
 - Adjusted the rate at which our custom moss appears naturally (doubled, all moss now has an equal chance to appear)
+- Updated Russian and Chinese localizations
