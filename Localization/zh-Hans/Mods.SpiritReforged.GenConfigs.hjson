@@ -1,417 +1,421 @@
 UI: {
-	// Min: All Min
-	/* MinDescription:
+	Min: 全部最小
+	MinDescription:
 		'''
-		Sets all configs to the values which would reduce generation the most.
-		So a value like "maximum trees" would be set to its minimum, 
-		but a value for "tree chance (1/x)" would be set to its maximum.
-		''' */
-	// Max: All Max
-	/* MaxDescription:
+		将所有配置项设置为最能减少生成的值。
+		因此，“最大树木”会被设为最小值，
+		但“树木几率（1/x）”会被设为最大值。
 		'''
-		Sets all configs to the values which would increase generation the most.
-		So a value like "maximum trees" would be set to its maximum, 
-		but a value for "tree chance (1/x)" would be set to its minimum.
-		''' */
-	// Preset: Preset:
-	// NoPresets: (No Presets)
-	// None: None
-	// Reset: Reset All
-	// Prior: Prior:
-	// Next: Next:
-	// True: Enabled
-	// False: Disabled
-	// Total: total
-	// CustomPresetTooltip: This is a custom preset!
-	// Create: Save as a custom preset
-	// CantSave: (You can't save a default preset)
-	// Load: Load a custom preset
+	Max: 全部最大
+	MaxDescription:
+		'''
+		将所有配置项设置为最能增加生成的值。
+		因此，“最大树木”会被设为最大值，
+		但“树木几率（1/x）”会被设为最小值。
+		'''
+	Preset: 预设：
+	NoPresets: （无预设）
+	None: 无
+	Reset: 重制全部
+	Prior: 上一个：
+	Next: 下一个：
+	True: 启用
+	False: 禁用
+	Total: 总计
+	CustomPresetTooltip: 这是一个自定义预设！
+	Create: 保存为自定义预设
+	CantSave: （你无法保存默认预设）
+	Load: 加载自定义预设
 }
 
 Pages: {
 	Savanna: {
-		// Name: "{$Ecotones.SavannaEcotone}"
-		// Description: Controls specific aspects of the Savanna ecotone's generation.
+		Name: "{$Ecotones.SavannaEcotone}"
+		Description: 控制稀树平原过渡带生成的具体方面。
 
 		Presets: {
 			Domesticated: {
-				// Name: "[i:224] Domesticated"
-				// Tooltip: A more lived in savanna with more pots and less wildlife.
+				Name: "[i:224] 驯化"
+				Tooltip: 一个更有生活气息的热带草原，更多的罐子，更少的野生动物.
 			}
 
 			Infested: {
-				// Name: "[i:SpiritReforged/TermiteJar] Infested"
-				// Tooltip: Oops! All termites! Trees may be hard to find.
+				Name: "[i:SpiritReforged/TermiteJar] 虫患"
+				Tooltip: 哎呀！全是白蚁！树木可能很难找到。
 			}
 
 			Bumpy: {
-				// Name: "[i:SpiritReforged/Drypowder] Bumpy"
-				// Tooltip: Watch your step! Bumps and hills await in this wild Savanna.
+				Name: "[i:SpiritReforged/Drypowder] 崎岖"
+				Tooltip: 注意脚下！狂野的稀树平原中遍布坑洼和丘陵。
 			}
 		}
 
 		Members: {
 			OverSpawn: {
-				// DisplayName: "[i:27] Over Spawn"
-				// Tooltip: Whether the savanna should spawn over spawn, much like the "savanna" seed.
+				DisplayName: "[i:27] 覆盖生成点"
+				Tooltip: 决定稀树平原是否在生成点生成，类似于“savanna”种子。
 			}
 
 			Steps: {
-				// DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
-				// Tooltip: The number of flat steps that the Savanna generates with.
+				DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] 阶梯"
+				Tooltip: 稀树平原生成的平坦阶梯数量。
 			}
 
 			CampsiteChance: {
-				// DisplayName: "[i:966] Campsite Chance"
-				// Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
+				DisplayName: "[i:966] 营地几率"
+				Tooltip: 营地生成的几率的分母（1/x）。
 			}
 
 			BaseTreeChance: {
-				// DisplayName: "[i:27] Acacia Tree Chance"
-				/* Tooltip:
+				DisplayName: "[i:27] 合金欢树几率"
+				Tooltip:
 					'''
-					The denominator (1/x) of the chance for a tree to spawn on a given tile.
-					This chance is reduced until a tree is placed, and then it's reset.
-					''' */
+					特定物块上生成树木的几率的分母（1/x）。
+					此分母值会持续减少，直至树木被放置，然后重置。
+					'''
 			}
 
 			PotChance: {
-				// DisplayName: "[i:31] Pot Chance"
-				/* Tooltip:
+				DisplayName: "[i:31] 罐子几率"
+				Tooltip:
 					'''
-					The denominator (1/x) of the chance for a pot to spawn when decorating. 
-					This does not override tiles, so a value of one will NOT place a pot on every tile.	
-					''' */
+					装饰时生成罐子的几率的分母（1/x）。
+					这不会覆盖物块，因此当值为1并不会在每个物块上都放置罐子。
+					'''
 			}
 
 			TermiteChance: {
-				// DisplayName: "[i:SpiritReforged/TermiteJar] Termite Chance"
-				// Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
+				DisplayName: "[i:SpiritReforged/TermiteJar] 白蚁几率"
+				Tooltip: 装饰时生成蚁丘的几率的分母（1/x）。
 			}
 		}
 	}
 
 	SaltFlats: {
-		// Name: "{$Ecotones.SaltFlatsEcotone}"
-		// Description: Controls specific aspects of the Salt Flat ecotone's generation.
+		Name: "{$Ecotones.SaltFlatsEcotone}"
+		Description: 控制盐滩过渡带生成的具体方面。
 
 		Presets: {
 			SunkenRuin: {
-				// Name: "[i:SpiritReforged/CobbledBrickItem] Sunken Ruins"
-				// Tooltip: The ruins of an ancient civilization have been washed and chipped away.
+				Name: "[i:SpiritReforged/CobbledBrickItem] 沉没遗迹"
+				Tooltip: 古老文明的遗迹已被冲蚀殆尽。
 			}
 
 			BlankCanvas: {
-				// Name: "[i:SpiritReforged/GlidingItem] Blank Canvas"
-				// Tooltip: An empty, endless reflection lies before you.
+				Name: "[i:SpiritReforged/GlidingItem] 空白画布"
+				Tooltip: 一片空无一物、无尽的映像展现在你面前。
 			}
 
 			Dessicated: {
-				// Name: "[i:1274] Desiccated"
-				// Tooltip: There's not a drop of water to be seen. All the trees have withered away.
+				Name: "[i:1274] 干燥"
+				Tooltip: 一滴水也看不见。所有的树木都已枯萎。
 			}
 		}
 
 		Members: {
 			OverSpawn: {
-				// DisplayName: "[i:27] Over Spawn"
-				// Tooltip: Whether the salt flats should spawn over spawn, much like the "salt" seed.
+				DisplayName: "[i:27] 覆盖生成点"
+				Tooltip: 决定盐滩是否在生成点生成，类似于“salt”种子。
 			}
 
 			RuinQty: {
-				// DisplayName: "[i:SpiritReforged/CalmingBellItem] Salt Flats Ruins"
-				// Tooltip: The upper bound of Salt Flats ruins placed. Not all may be placed.
+				DisplayName: "[i:SpiritReforged/CalmingBellItem] 盐滩废墟"
+				Tooltip: 放置的盐滩废墟数量的上限。并非所有都会放置。
 			}
 
 			LakeRadius: {
-				// DisplayName: "[i:206] Lake Radius"
-				// Tooltip: The radius for Salt Flats lakes. Larger radii correspond to larger lakes.
+				DisplayName: "[i:206] 湖泊半径"
+				Tooltip: 盐滩湖泊的半径。更大的半径对应更大的湖泊。
 			}
 
 			CaveRadius: {
-				// DisplayName: "[i:SpiritReforged/SaltWallItem] Cave Radius"
-				// Tooltip: The radius for Salt Flats caves. Larger radii correspond to larger caves.
+				DisplayName: "[i:SpiritReforged/SaltWallItem] 洞穴半径"
+				Tooltip: 盐滩洞穴的半径。更大的半径对应更大的洞穴。
 			}
 
 			MaxSteps: {
-				// DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
-				// Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat.
+				DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] 最大段数"
+				Tooltip: 盐滩中反射盐滩平原的最大数量。
 			}
 
 			StupaChance: {
-				// DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/StoneStupasItem] 佛塔几率"
+				Tooltip:
 					'''
-					The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. 
-					This does not override tiles, so a value of 1 will NOT place a pot on every tile.
-					''' */
+					装饰时生成石质佛塔罐子的几率的分母（1/x）。
+					这不会覆盖物块，因此值为1并不会在每个物块上都放置罐子。
+					'''
 			}
 
 			TreeChance: {
-				// DisplayName: "[i:27] Dead Tree Chance"
-				// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+				DisplayName: "[i:27] 枯树几率"
+				Tooltip: 特定物块上生成树木的几率的分母（1/x）。此分母值会持续减少，直至树木被放置，然后重置。
 			}
 		}
 	}
 
 	Surface: {
-		// Name: Surface
-		// Description: Controls specific aspects of Reforged's additions and edits to the surface.
+		Name: 地表
+		Description: 控制魂灵新魄对地表的补充和编辑的具体方面。
 
 		Presets: {
 			Whimsical: {
-				// Name: "[i:SpiritReforged/MidnightApple] Whimsical"
-				// Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+				Name: "[i:SpiritReforged/MidnightApple] 异想天开"
+				Tooltip: 巨大的繁茂洞穴，连绵起伏的星草山丘，宁静的麦田……能出什么差错呢？
 			}
 
 			Treacherous: {
-				// Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
-				// Tooltip: Vast gorges dot the landscape. Don't look down!
+				Name: "[i:SpiritReforged/LeatherBackpack] 险恶"
+				Tooltip: 巨大的峡谷点缀着这里的风景。不要向下看！
 			}
 		}
 
 		Members: {
 			HalfWidth: {
-				// DisplayName: "[i:133] (Canyon) Half Width"
-				// Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
+				DisplayName: "[i:133] （峡谷）半宽"
+				Tooltip: 控制峡谷隆起部分的半宽，前提是该部分足够接近地表。
 			}
 
 			MaxDepth: {
-				// DisplayName: "[i:133] (Canyon) Max Depth"
-				// Tooltip: Controls the max depth of a canyon.
+				DisplayName: "[i:133] （峡谷）最大深度"
+				Tooltip: 控制峡谷的最大深度。
 			}
 
 			SizeMultiplier: {
-				// DisplayName: "[i:126] (Karst) Size Multiplier"
-				// Tooltip: Multiplier on the size of all digging operations that karsts do.
+				DisplayName: "[i:126] （喀斯特）尺寸倍率"
+				Tooltip: 喀斯特地貌所有挖掘行为的尺寸倍率。
 			}
 
 			FieldSize: {
-				// DisplayName: "[i:SpiritReforged/BotanistHat] (Scarecrow) Field Size"
-				// Tooltip: Controls the width of a scarecrow's wheat field.
+				DisplayName: "[i:SpiritReforged/BotanistHat] （稻草人）麦田尺寸"
+				Tooltip: 控制稻草人麦田的宽度。
 			}
 
 			ButterflyCountMax: {
-				// DisplayName: "[i:SpiritReforged/ButterflyStaff] (Butterfly Shrines) Max"
-				// Tooltip: The maximum number of butterfly shrines that may be placed. May not place all.
+				DisplayName: "[i:SpiritReforged/ButterflyStaff] （蝴蝶圣地）最大数量"
+				Tooltip: 可能被放置的蝴蝶圣地的最大数量。可能不会全部放置。
 			}
 
 			HeroChance: {
-				// DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] (Hero's Memorial) Spawn Chance"
-				// Tooltip: The denominator (1/x) of the chance for the Hero's Memorial to spawn.
+				DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] （英雄纪念碑） 生成几率"
+				Tooltip: 英雄纪念碑生成的几率的分母（1/x）。
 			}
 
 			MaxStargrassCount: {
-				// DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
-				// Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
+				DisplayName: "[i:SpiritReforged/StarPowder] （星草）区域数量"
+				Tooltip: 可能被放置的星草区域的最大数量。可能不会全部放置，或可能会重叠。
 			}
 		}
 	}
 
 	Ocean: {
-		// Name: Ocean
-		// Description: Controls specific aspects of Reforged's overhauled Ocean.
+		Name: 海洋
+		Description: 控制魂灵新魄翻新的海洋的具体方面。
 
 		Presets: {
 			KelpForest: {
-				// Name: "[i:SpiritReforged/Kelp] Kelp Forest"
-				// Tooltip: You can see the fields of kelp from the shore!
+				Name: "[i:SpiritReforged/Kelp] 海带森林"
+				Tooltip: 从海岸就能看到成片的海带！
 			}
 
 			Volcanic: {
-				// Name: "[i:SpiritReforged/GravelItem] Volcanic"
-				// Tooltip: A craggy, magmatic ocean with hardly any flora.
+				Name: "[i:SpiritReforged/GravelItem] 火山"
+				Tooltip: 多石、岩浆的海洋，几乎没有植物。
 			}
 		}
 
 		Members: {
 			WaterChestCount: {
-				// DisplayName: "[i:1298] Water Chest Max"
-				// Tooltip: The maximum number of water chests that may be placed in the ocean. Usually will not place all.
+				DisplayName: "[i:1298] 水中箱最大数量"
+				Tooltip: 海洋中可能被放置的水中箱的最大数量。通常不会全部放置。
 			}
 
 			SunkenTreasureCount: {
-				// DisplayName: "[i:SpiritReforged/SunkenTreasure] Sunken Treasure Max"
-				// Tooltip: The maximum number of sunken treasure that may be placed in the ocean. Usually will not place all.
+				DisplayName: "[i:SpiritReforged/SunkenTreasure] 沉没的宝藏最大数量"
+				Tooltip: 海洋中可能被放置的沉没的宝藏的最大数量。通常不会全部放置。
 			}
 
 			SandDepth: {
-				// DisplayName: "[i:169] Sand Depth"
-				// Tooltip: How far into the ground sand goes under the ocean.
+				DisplayName: "[i:169] 沙子深度"
+				Tooltip: 海洋下方的沙子能深入地下多远。
 			}
 
 			SandRange: {
-				// DisplayName: "[i:169] Sand Range"
-				// Tooltip: The upper bound for Sand Depth's random added range in the ocean.
+				DisplayName: "[i:169] 沙子范围"
+				Tooltip: 海洋中沙子深度的随机添加范围的上限。
 			}
 
 			CoralLowChance: {
-				// DisplayName: "[i:275] Coral Chance (Low)"
-				// Tooltip: The denominator (1/x) for coral to spawn in the lower steps of the ocean.
+				DisplayName: "[i:275] 珊瑚几率（低层）"
+				Tooltip: 珊瑚在海洋较低梯级生成的几率的分母（1/x）。
 			}
 
 			CoralHighChance: {
-				// DisplayName: "[i:275] Coral Chance (High)"
-				// Tooltip: The denominator (1/x) for coral to spawn in the highest step of the ocean.
+				DisplayName: "[i:275] 珊瑚几率（高层）"
+				Tooltip: 珊瑚在海洋最高梯级生成的几率的分母（1/x）。
 			}
 
 			DecorLowChance: {
-				// DisplayName: "[i:4090] Decor Chance (Low)"
-				// Tooltip: The denominator (1/x) for decor to spawn in the lower steps of the ocean.
+				DisplayName: "[i:4090] 装饰几率（低层）"
+				Tooltip: 装饰物在海洋较低梯级生成的几率的分母（1/x）。
 			}
 
 			DecorHighChance: {
-				// DisplayName: "[i:4090] Decor Chance (High)"
-				// Tooltip: The denominator (1/x) for decor to spawn in the highest step of the ocean.
+				DisplayName: "[i:4090] 装饰几率（高层）"
+				Tooltip: 装饰物在海洋最高梯级生成的几率的分母（1/x）。
 			}
 
 			KelpChance: {
-				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Chance"
-				// Tooltip: The denominator (1/x) for kelp to spawn in the ocean.
+				DisplayName: "[i:SpiritReforged/Kelp] 海带几率"
+				Tooltip: 海带在海洋生成的几率的分母（1/x）。
 			}
 
 			KelpMaxHeight: {
-				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Height"
-				// Tooltip: The maximum height, in tiles, that kelp can spawn as.
+				DisplayName: "[i:SpiritReforged/Kelp] 海带高度"
+				Tooltip: 海带可生成的最大高度（以格为单位）。
 			}
 
 			GravelMultiplier: {
-				// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
-				// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
+				DisplayName: "[i:SpiritReforged/GravelItem] 砾石尺寸倍率"
+				Tooltip: 海洋砾石区域（包括岩浆石）尺寸的修正值。
 			}
 
 			Shape: {
-				// DisplayName: "[i:4460] Ocean Shape"
-				// Tooltip: The shape the ocean takes.
+				DisplayName: "[i:4460] 海洋形状"
+				Tooltip: 海洋呈现的形状。
 			}
 		}
 	}
 
 	Pots: {
-		// Name: Pots
-		// Description: Controls rates and chances for Reforged's new pots.
+		Name: 罐子
+		Description: 控制魂灵新魄新增罐子的比率和几率。
 
 		Members: {
 			WorldMultiplierMultiplier: {
-				// DisplayName: Total Multiplier
-				// Tooltip: A global multiplier for all pots' spawn rate.
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] 总倍率"
+				Tooltip: 所有罐子生成几率的全局倍率。
 			}
 
 			RollingPotChance: {
-				// DisplayName: Rolling Pot Chance
-				// Tooltip: The denominator (1/x) for a Rolling Pot to replace a boulder.
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] 滚动罐子几率"
+				Tooltip: 滚动罐子替代巨石生成的几率的分母（1/x）。
 			}
 
 			OrnateScale: {
-				// DisplayName: Ornate Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Ornate pots.
+				DisplayName: "[i:SpiritReforged/OrnatePotsItem] 华丽罐子比例"
+				Tooltip: 华丽罐子尝试生成的次数的倍率。
 			}
 
 			PotionScale: {
-				// DisplayName: Potion Vat Scale
-				// Tooltip: Multiplier to the number of attempts for Potion Vats.
+				DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] 药罐比例"
+				Tooltip: 药罐尝试生成的次数的倍率。
 			}
 
 			ScryingScale: {
-				// DisplayName: Scrying Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Scrying pots.
+				DisplayName: "[i:SpiritReforged/ScryingPotItem] 占卜罐比例"
+				Tooltip: 占卜罐尝试生成的次数的倍率。
 			}
 
 			StuffedScale: {
-				// DisplayName: Stuffed Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Stuffed pots.
+				DisplayName: "[i:SpiritReforged/StuffedPotsItem] 填充罐子比例"
+				Tooltip: 填充罐子尝试生成的次数的倍率。
 			}
 
 			WormScale: {
-				// DisplayName: Worm Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Worm pots.
+				DisplayName: "[i:SpiritReforged/WormPotItem] 蠕虫罐子比例"
+				Tooltip: 蠕虫罐子尝试生成的次数的倍率。
 			}
 
 			PlatterScale: {
-				// DisplayName: Silver Platter Scale
-				// Tooltip: Multiplier to the number of attempts for Silver Platters.
+				DisplayName: "[i:SpiritReforged/SilverPlattersItem] 银制托盘比例"
+				Tooltip: 银制托盘尝试生成的次数的倍率。
 			}
 
 			AetherScale: {
-				// DisplayName: Aether Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Aether pots.
+				DisplayName: "[i:SpiritReforged/AetherShipmentItem] 以太货物比例"
+				Tooltip: 以太货物尝试生成的次数的倍率。
 			}
 
 			UpsideDownScale: {
-				// DisplayName: Upside-Down Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Upside-Down pots.
+				DisplayName: "[i:SpiritReforged/UpsideDownPotItem] 倒吊罐比例"
+				Tooltip: 倒吊罐尝试生成的次数的倍率。
 			}
 
 			BoulderScale: {
-				// DisplayName: Rolling Pots Scale
-				// Tooltip: Multiplier to the number of attempts for Rolling Pots.
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] 滚动罐子比例"
+				Tooltip: 滚动罐子尝试生成的次数的倍率。
 			}
 
 			PicnicScale: {
-				// DisplayName: Picnic Basket Scale
-				// Tooltip: Multiplier to the number of attempts for Picnic Baskets.
+				DisplayName: "[i:SpiritReforged/WickerBasketsItem] 野餐篮比例"
+				Tooltip: 野餐篮尝试生成的次数的倍率。
 			}
 
 			StackScale: {
-				// DisplayName: Stacked Pots Scale
-				// Tooltip: Multiplier to the number of attempts for stacked pots.
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] 堆叠比例"
+				Tooltip: 堆叠罐子尝试生成的次数的倍率。
 			}
 
 			UncommonScale: {
-				// DisplayName: Uncommon Pots Scale
-				// Tooltip: Multiplier to the number of attempts for all Uncommon pots.
+				DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] 不常见比例"
+				Tooltip: 不常见的罐子尝试生成的次数的倍率。
 			}
 
 			ZenithScale: {
-				// DisplayName: Zenith Pot Scale
-				// Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
+				DisplayName: "[i:SpiritReforged/ZenithPotsItem] 天顶罐子比例"
+				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
 			}
 		}
 	}
 
 	Caves: {
-		// Name: Caves
-		// Description: ""
+		Name: 洞穴
+		Description: 控制杂项洞穴补充内容。
 
 		Members: {
 			SignChance: {
-				// DisplayName: SignChance
-				// Tooltip: SignChance
+				DisplayName: "[i:171] （房屋）标牌几率"
+				Tooltip: 地下小屋中标牌生成的几率的分母（1/x）。
 			}
 
 			MannequinChance: {
-				// DisplayName: MannequinChance
-				// Tooltip: MannequinChance
+				DisplayName: "[i:498] （房屋）人体模型几率"
+				Tooltip: 地下小屋中人体模型生成的几率的分母（1/x）。
 			}
 
 			LoomChance: {
-				// DisplayName: LoomChance
-				// Tooltip: LoomChance
+				DisplayName: "[i:332] （房屋）织布机几率"
+				Tooltip: 地下小屋成为“织布机小屋”（会添加旗帜和织布机）的几率的分母（1/x）。
 			}
 
 			RareSignChance: {
-				// DisplayName: RareSignChance
-				// Tooltip: RareSignChance
+				DisplayName: "[i:3617] （房屋）稀有标牌比率"
+				Tooltip: 地下标牌出现稀有信息的几率的分母（1/x）。
 			}
 
 			CartSpawnRate: {
-				// DisplayName: CartSpawnRate
-				// Tooltip: CartSpawnRate
+				DisplayName: "[i:13]（装饰）矿车比率"
+				Tooltip: 世界中生成的矿石矿车最大数量的倍率。
 			}
 
 			BoomshroomRate: {
-				// DisplayName: BoomshroomRate
-				// Tooltip: BoomshroomRate
+				DisplayName: "[i:SpiritReforged/BoomShroom] （装饰）蘑菇比率"
+				Tooltip: 世界中生成的爆炸蘑菇最大数量的倍率。
 			}
 
 			CovesSpawnRate: {
-				// DisplayName: CovesSpawnRate
-				// Tooltip: CovesSpawnRate
+				DisplayName: "[i:2291] （小湾）倍率"
+				Tooltip: 
+					'''
+					世界中生成的钓鱼小湾最大数量的倍率。
+					这可能会与其他生成结构的模组产生冲突。
+					'''
 			}
 
 			NeonMossChance: {
-				// DisplayName: NeonMossChance
-				// Tooltip: NeonMossChance
+				DisplayName: "[i:SpiritReforged/FlaskRadon] （氖苔藓）自定义苔藓几率"
+				Tooltip: 选中魂灵新魄的自定义发光苔藓而非原版苔藓的几率（x/6）。
 			}
 		}
 	}
@@ -420,28 +424,28 @@ Pages: {
 Enums: {
 	OceanShape: {
 		Default: {
-			// DisplayName: Vanilla
-			// Tooltip: Vanilla's default ocean generation. This disables most of Reforged's changes.
+			DisplayName: 原版
+			Tooltip: 原版默认的海洋生成。这会禁用大部分魂灵新魄的改动。
 		}
 
 		SlantedSine: {
-			// DisplayName: Slanted Sine
-			// Tooltip: A modified shape where the ocean is defined by a slanted sine wave.
+			DisplayName: 倾斜正弦
+			Tooltip: 一种修改后的形状，其中海洋由倾斜的正弦波定义。
 		}
 
 		Piecewise: {
-			// DisplayName: Piecewise
-			// Tooltip: A more complex piecewise function defines the ocean's shape.
+			DisplayName: 分段
+			Tooltip: 一个更复杂的分段函数定义了海洋的形状。
 		}
 
 		Piecewise_M: {
-			// DisplayName: Piecewise (M)
-			// Tooltip: A modified version of the piecewise function with slightly different slopes.
+			DisplayName: 分段（M）
+			Tooltip: 分段函数修改后的版本，具有略微不同的斜率。
 		}
 
 		Piecewise_V: {
-			// DisplayName: Reforged
-			// Tooltip: The finalized version of the piecewise preset with various minor modifications.
+			DisplayName: 魂灵新魄
+			Tooltip: 分段预设的最终版本，包含各种微小修改。
 		}
 	}
 }
