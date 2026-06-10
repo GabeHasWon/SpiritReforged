@@ -138,11 +138,18 @@ internal class EcotoneMapperHooks : ModSystem
 
 		ActuallyManuallyMapping = false;
 
+		int leftOffset = -274;
+
+		if (CrossMod.RussianTranslate.Enabled)
+		{
+			leftOffset = -334;
+		}
+
 		UIPanel panel = new()
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Left = StyleDimension.FromPixels(-274),
+			Left = StyleDimension.FromPixels(leftOffset),
 			Top = StyleDimension.FromPixels(-218),
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
