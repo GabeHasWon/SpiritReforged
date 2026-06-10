@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
@@ -25,9 +26,9 @@ public class EnchantmentUI : AutoUIState
 	{
 		Width = Height = new StyleDimension(200, 0);
 		HAlign = 0.5f;
-		VAlign = 0.6f;
+		VAlign = 0.4f;
 
-		_slot = new(new Item(), ItemSlot.Context.CreativeSacrifice);
+		_slot = new(new Item(), ItemSlot.Context.CreativeSacrifice, 1);
 		_slot.Width.Set(48, 0);
 		_slot.Height.Set(48, 0);
 		_slot.Left.Set(-(_slot.Width.Pixels / 2), 0.5f);
@@ -39,8 +40,8 @@ public class EnchantmentUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
-			UISystem.SetInactive<EnchantmentUI>();
+		if (Main.LocalPlayer.controlInv || !Main.playerInventory || _slot.Item.IsAir && !EnchantedWorkbench.HasCoords)
+			UISystem.SetInactive<EnchantmentUI>(); //Automatically disable the UI if not in the inventory or an enchanted item is removed
 
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
@@ -90,16 +91,19 @@ public class EnchantmentUI : AutoUIState
 			for (int i = 0; i < 3; i++)
 			{
 				source = texture.Frame(2, 1, 1, 0, -2);
-				spriteBatch.Draw(texture, center + Main.rand.NextVector2Circular(2, 2), source, Color.White.Additive(200), 0, source.Size() / 2, 1, 0, 0);
+				float squash = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / (10f + i) % 1);
+
+				spriteBatch.Draw(texture, center + (Vector2.UnitX * (1f + squash * 0.2f)).RotatedBy(Main.timeForVisualEffects / (2f * (i + 1))), source, Color.White.Additive(200), 0, source.Size() / 2, new Vector2(1f + squash * 0.02f, 1f - squash * 0.02f), 0, 0);
 			}
+
+			string text = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+			Vector2 dimensions = FontAssets.MouseText.Value.MeasureString(text);
+			dimensions.Y *= 0.75f;
+
+			//Draw textbox
+			CatalogueUI.DrawPanel(spriteBatch, new Rectangle((int)(center.X - dimensions.X / 2), (int)(center.Y - 40 - dimensions.Y / 2), (int)dimensions.X, (int)dimensions.Y), Color.Black * 0.5f);
+			Utils.DrawBorderString(spriteBatch, text, center - new Vector2(0, 50), Main.MouseTextColorReal, 0.9f, 0.5f);
 		}
-
-		string text = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
-		Vector2 dimensions = FontAssets.MouseText.Value.MeasureString(text);
-		dimensions.Y *= 0.75f;
-
-		CatalogueUI.DrawPanel(spriteBatch, new Rectangle((int)(center.X - dimensions.X / 2), (int)(center.Y - 40 - dimensions.Y / 2), (int)dimensions.X, (int)dimensions.Y), Color.Black * 0.5f);
-		Utils.DrawBorderString(spriteBatch, text, center - new Vector2(0, 50), Main.MouseTextColorReal, 0.9f, 0.5f);
 
 		base.Draw(spriteBatch);
 	}
@@ -114,7 +118,7 @@ public class EnchantmentUI : AutoUIState
 			float spacer = i - itemTypes.Length / 2;
 
 			button.Left.Set(spacer * (button.Width.Pixels + 10) - button.Width.Pixels / 2, 0.5f);
-			button.Top.Set(40, 0.5f);
+			button.Top.Set(50, 0.5f);
 			button.OnLeftClick += OnClickButton;
 
 			_glyphButtons.Add(button);
