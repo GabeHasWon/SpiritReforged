@@ -71,7 +71,7 @@ Pages: {
 				Tooltip:
 					'''
 					The denominator (1/x) of the chance for a tree to spawn on a given tile.
-					This chance is reduced until a tree is placed, and then it's reset.
+					This chance is increased until a tree is placed, and then it's reset.
 					'''
 			}
 
@@ -149,7 +149,11 @@ Pages: {
 
 			TreeChance: {
 				DisplayName: "[i:27] Dead Tree Chance"
-				Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+				Tooltip: 
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile. 
+					This chance is increased until a tree is placed, and then it's reset.
+					'''
 			}
 		}
 	}
