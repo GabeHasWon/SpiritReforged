@@ -222,9 +222,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				if (valueBack is float f)
 					value = f.ToString("#0.##");
 				else if (valueBack is double d)
-					value = d.ToString("#0.##");
+					value = d.ToString("#0.####");
 				else if (valueBack is decimal de)
-					value = de.ToString("#0.##");
+					value = de.ToString("#0.######");
 
 				if (valueBack is bool)
 					text.SetText(config.DisplayName + ":");
@@ -750,7 +750,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			string buttonText = nextText + " " + next.DisplayName.Value;
 			float textWidth = ChatManager.GetStringSize(FontAssets.ItemStack.Value, buttonText, Vector2.One).X;
-			UIText text = new(buttonText, 114 / textWidth)
+			UIText text = new(buttonText, Math.Min(1, 114 / textWidth))
 			{
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(0),
@@ -816,7 +816,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		slider.HAlign = 1f;
-		slider.Left = StyleDimension.FromPixels(-44 - 80);
+		slider.Left = StyleDimension.FromPixels(-44 - 70);
 		slider.Top = StyleDimension.FromPixels(12);
 		slider.Width = StyleDimension.FromPixels(200);
 		slider.Height = StyleDimension.Fill;

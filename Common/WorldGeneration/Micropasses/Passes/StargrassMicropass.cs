@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using SpiritReforged.Content.Forest.Stargrass.Items;
-using System.Runtime.CompilerServices;
 using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 

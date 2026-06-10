@@ -286,6 +286,139 @@ Pages: {
 			}
 		}
 	}
+
+	Pots: {
+		Name: Pots
+		Description: Controls rates and chances for Reforged's new pots.
+
+		Members: {
+			WorldMultiplierMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] Total Multiplier"
+				Tooltip: A global multiplier for all pots' spawn rate.
+			}
+
+			RollingPotChance: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pot Chance"
+				Tooltip: The denominator (1/x) for a Rolling Pot to replace a boulder.
+			}
+
+			OrnateScale: {
+				DisplayName: "[i:SpiritReforged/OrnatePotsItem] Ornate Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Ornate pots.
+			}
+
+			PotionScale: {
+				DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] Potion Vat Scale"
+				Tooltip: Multiplier to the number of attempts for Potion Vats.
+			}
+
+			ScryingScale: {
+				DisplayName: "[i:SpiritReforged/ScryingPotItem] Scrying Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Scrying pots.
+			}
+
+			StuffedScale: {
+				DisplayName: "[i:SpiritReforged/StuffedPotsItem] Stuffed Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Stuffed pots.
+			}
+
+			WormScale: {
+				DisplayName: "[i:SpiritReforged/WormPotItem] Worm Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Worm pots.
+			}
+
+			PlatterScale: {
+				DisplayName: "[i:SpiritReforged/SilverPlattersItem] Silver Platter Scale"
+				Tooltip: Multiplier to the number of attempts for Silver Platters.
+			}
+
+			AetherScale: {
+				DisplayName: "[i:SpiritReforged/AetherShipmentItem] Aether Shipment Scale"
+				Tooltip: Multiplier to the number of attempts for Aether Shipments.
+			}
+
+			UpsideDownScale: {
+				DisplayName: "[i:SpiritReforged/UpsideDownPotItem] Upside-Down Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Upside-Down pots.
+			}
+
+			BoulderScale: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pots Scale"
+				Tooltip: Multiplier to the number of attempts for Rolling Pots.
+			}
+
+			PicnicScale: {
+				DisplayName: "[i:SpiritReforged/WickerBasketsItem] Picnic Basket Scale"
+				Tooltip: Multiplier to the number of attempts for Picnic Baskets.
+			}
+
+			StackScale: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] Stacked Scale"
+				Tooltip: Multiplier to the number of attempts for stacked pots.
+			}
+
+			UncommonScale: {
+				DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] Uncommon Scale"
+				Tooltip: Multiplier to the number of attempts for all Uncommon pots.
+			}
+
+			ZenithScale: {
+				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Zenith Pot Scale"
+				Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
+			}
+		}
+	}
+
+	Caves: {
+		Name: Caves
+		Description: Controls miscellaneous Cave additions.
+
+		Members: {
+			SignChance: {
+				DisplayName: "[i:171] (Houses) Signs Chance"
+				Tooltip: The denominator (1/x) of the chance for a sign to spawn in an underground house.
+			}
+
+			MannequinChance: {
+				DisplayName: "[i:498] (Houses) Mannequin Chance"
+				Tooltip: The denominator (1/x) of the chance for a mannequin to spawn in an underground house.
+			}
+
+			LoomChance: {
+				DisplayName: "[i:332] (Houses) Loom Chance"
+				Tooltip: The denominator (1/x) of the chance for a house to be a "loom house" - which adds in banners and a loom.
+			}
+
+			RareSignChance: {
+				DisplayName: "[i:3617] (Houses) Rare Sign Rate"
+				Tooltip: The denominator (1/x) of the chance for an underground sign to have a rare message.
+			}
+
+			CartSpawnRate: {
+				DisplayName: "[i:13] (Decor) Minecart Rate"
+				Tooltip: The multiplier to the maximum amount of ore minecarts that spawn in a world.
+			}
+
+			BoomshroomRate: {
+				DisplayName: "[i:SpiritReforged/BoomShroom] (Decor) Shroom Rate"
+				Tooltip: The multiplier to the maximum amount of Boomshrooms that spawn in a world.
+			}
+
+			CovesSpawnRate: {
+				DisplayName: "[i:2291] (Coves) Multiplier"
+				Tooltip: 
+					'''
+					The multiplier to the maximum amount of Fishing Coves that spawn in a world. 
+					This may cause issues with other mods that spawn structures.
+					'''
+			}
+
+			NeonMossChance: {
+				DisplayName: "[i:SpiritReforged/FlaskRadon] (Neon Moss) Custom Moss Chance"
+				Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
+			}
+		}
+	}
 }
 
 Enums: {

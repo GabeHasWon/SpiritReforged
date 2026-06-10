@@ -165,8 +165,8 @@ Pages: {
 			}
 
 			Treacherous: {
-				// Name: Treacherous
-				// Tooltip: Treacherous
+				// Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
+				// Tooltip: Vast gorges dot the landscape. Don't look down!
 			}
 		}
 
@@ -283,6 +283,135 @@ Pages: {
 			Shape: {
 				// DisplayName: "[i:4460] Ocean Shape"
 				// Tooltip: The shape the ocean takes.
+			}
+		}
+	}
+
+	Pots: {
+		// Name: Pots
+		// Description: Controls rates and chances for Reforged's new pots.
+
+		Members: {
+			WorldMultiplierMultiplier: {
+				// DisplayName: Total Multiplier
+				// Tooltip: A global multiplier for all pots' spawn rate.
+			}
+
+			RollingPotChance: {
+				// DisplayName: Rolling Pot Chance
+				// Tooltip: The denominator (1/x) for a Rolling Pot to replace a boulder.
+			}
+
+			OrnateScale: {
+				// DisplayName: Ornate Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Ornate pots.
+			}
+
+			PotionScale: {
+				// DisplayName: Potion Vat Scale
+				// Tooltip: Multiplier to the number of attempts for Potion Vats.
+			}
+
+			ScryingScale: {
+				// DisplayName: Scrying Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Scrying pots.
+			}
+
+			StuffedScale: {
+				// DisplayName: Stuffed Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Stuffed pots.
+			}
+
+			WormScale: {
+				// DisplayName: Worm Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Worm pots.
+			}
+
+			PlatterScale: {
+				// DisplayName: Silver Platter Scale
+				// Tooltip: Multiplier to the number of attempts for Silver Platters.
+			}
+
+			AetherScale: {
+				// DisplayName: Aether Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Aether pots.
+			}
+
+			UpsideDownScale: {
+				// DisplayName: Upside-Down Pot Scale
+				// Tooltip: Multiplier to the number of attempts for Upside-Down pots.
+			}
+
+			BoulderScale: {
+				// DisplayName: Rolling Pots Scale
+				// Tooltip: Multiplier to the number of attempts for Rolling Pots.
+			}
+
+			PicnicScale: {
+				// DisplayName: Picnic Basket Scale
+				// Tooltip: Multiplier to the number of attempts for Picnic Baskets.
+			}
+
+			StackScale: {
+				// DisplayName: Stacked Pots Scale
+				// Tooltip: Multiplier to the number of attempts for stacked pots.
+			}
+
+			UncommonScale: {
+				// DisplayName: Uncommon Pots Scale
+				// Tooltip: Multiplier to the number of attempts for all Uncommon pots.
+			}
+
+			ZenithScale: {
+				// DisplayName: Zenith Pot Scale
+				// Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
+			}
+		}
+	}
+
+	Caves: {
+		// Name: Caves
+		// Description: ""
+
+		Members: {
+			SignChance: {
+				// DisplayName: SignChance
+				// Tooltip: SignChance
+			}
+
+			MannequinChance: {
+				// DisplayName: MannequinChance
+				// Tooltip: MannequinChance
+			}
+
+			LoomChance: {
+				// DisplayName: LoomChance
+				// Tooltip: LoomChance
+			}
+
+			RareSignChance: {
+				// DisplayName: RareSignChance
+				// Tooltip: RareSignChance
+			}
+
+			CartSpawnRate: {
+				// DisplayName: CartSpawnRate
+				// Tooltip: CartSpawnRate
+			}
+
+			BoomshroomRate: {
+				// DisplayName: BoomshroomRate
+				// Tooltip: BoomshroomRate
+			}
+
+			CovesSpawnRate: {
+				// DisplayName: CovesSpawnRate
+				// Tooltip: CovesSpawnRate
+			}
+
+			NeonMossChance: {
+				// DisplayName: NeonMossChance
+				// Tooltip: NeonMossChance
 			}
 		}
 	}
