@@ -354,7 +354,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 	private void AddResetButton(LoadedConfig config, UIPanel itemPanel, UIElement? slider)
 	{
-		UIButton<string> resetButton = new("Reset")
+		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(40),
@@ -491,7 +491,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(presetButton);
 		AddHoverTicks(presetButton);
 
-		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
+		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ResetAll"))
 		{
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(50),
@@ -685,7 +685,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		if (pageConfig >= page.BuiltInPresets)
 			return "[i:75] [c/AAAAFF:" + page.PageInfo.Presets[pageConfig].Name + "]";
 
-		string noneText = Language.GetTextValue(Key + "None") + $" ({page.PageInfo.Presets.Count} {Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Total")})";
+		string noneText = Language.GetTextValue(Key + "None") + $" ({Language.GetTextValue(Key + "Total", page.PageInfo.Presets.Count)})";
 		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
 	}
 
