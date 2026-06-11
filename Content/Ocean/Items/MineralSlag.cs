@@ -59,21 +59,28 @@ public class MineralSlag : ModItem
 /// <summary> Non-functional variant of <see cref="MineralSlag"/> used for visual effects. </summary>
 public class MineralSlagPickup : MineralSlag
 {
-	private const int timeLeftMax = 60 * 60 * 2;
-	private int timeLeft = timeLeftMax;
-	private bool collided = false;
+	private const int TimeLeftMax = 60 * 60 * 2;
 
-	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.MineralSlag.DisplayName");
-	public override LocalizedText Tooltip => Language.GetText("Mods.SpiritReforged.Items.MineralSlag.Tooltip");
+	private int _timeLeft = TimeLeftMax;
+	private bool _collided = false;
 
-	public override string Texture => base.Texture.Replace("Pickup", string.Empty);
+	public override LocalizedText DisplayName => ModContent.GetInstance<MineralSlag>().DisplayName;
+	public override LocalizedText Tooltip => ModContent.GetInstance<MineralSlag>().Tooltip;
+
+	public override string Texture => ModContent.GetInstance<MineralSlag>().Texture;
+
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.IsAPickup[Type] = true;
+		base.SetStaticDefaults();
+	}
 
 	public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 	{
-		if (timeLeft > timeLeftMax - 60 * 5) //Draw glow
+		if (_timeLeft > TimeLeftMax - 60 * 5) //Draw glow
 		{
 			float duration = 60f * 5;
-			float intensity = (timeLeft - (timeLeftMax - duration)) / duration;
+			float intensity = (_timeLeft - (TimeLeftMax - duration)) / duration;
 
 			var texture = TextureAssets.Item[Type].Value;
 			var source = VariantGlobalItem.GetSource(Item);
@@ -89,27 +96,30 @@ public class MineralSlagPickup : MineralSlag
 
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
-		if (--timeLeft <= 0)
+		if (--_timeLeft <= 0)
 			Item.active = false;
 
-		if (!collided)
+		if (!_collided)
 		{
 			if (Item.velocity == Vector2.Zero)
 			{
 				Item.velocity = Vector2.UnitY * -1f;
-				for (int i = 0; i < 10; i++)
+				if (!Main.dedServ)
 				{
-					var color = Color.Lerp(Color.Yellow, Color.Orange, Main.rand.NextFloat());
-					float magnitude = Main.rand.NextFloat();
+					for (int i = 0; i < 10; i++)
+					{
+						var color = Color.Lerp(Color.Yellow, Color.Orange, Main.rand.NextFloat());
+						float magnitude = Main.rand.NextFloat();
 
-					ParticleHandler.SpawnParticle(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
-						color, (1f - magnitude) * .5f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
-						{
-							p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-.1f, .1f));
-						}));
+						ParticleHandler.SpawnParticle(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
+							color, (1f - magnitude) * .5f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
+							{
+								p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-.1f, .1f));
+							}));
+					}
 				}
 
-				collided = true;
+				_collided = true;
 			}
 
 			if (Main.rand.NextBool(3))
