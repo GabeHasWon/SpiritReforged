@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.ModCompat;
+using System.Linq;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
@@ -82,11 +83,18 @@ internal class GenConfigLoader : ModSystem
 	{
 		orig(self, outerContainer);
 
+		int leftOffset = -274;
+
+		if (CrossMod.RussianTranslate.Enabled)
+		{
+			leftOffset = -334;
+		}
+
 		UIPanel panel = new()
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Left = StyleDimension.FromPixels(-274),
+			Left = StyleDimension.FromPixels(leftOffset),
 			Top = StyleDimension.FromPixels(-168),
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
