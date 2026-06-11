@@ -59,7 +59,7 @@ PileOfConsequencesPet.DisplayName: Ответственность
 EnergyLaser.DisplayName: Энергетический лазер
 BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
 WindBlast.DisplayName: Удар ветра
-DivebombScarab.DisplayName: Пикирующей скарабей
+DivebombScarab.DisplayName: Пикирующий скарабей
 SwarmScarab.DisplayName: Скарабейный рой
 SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
 AdornedBowHeld.DisplayName: "{$Items.AdornedBow.DisplayName}"
@@ -73,7 +73,6 @@ CrookLocustGore.DisplayName: Останки саванчи
 RoyalKhopeshThrown.DisplayName: "{$Items.RoyalKhopesh.DisplayName}"
 FloatingGem.DisplayName: Парящий самоцвет
 BeamOLight.DisplayName: Луч света
-ScarabPetProjectile.DisplayName: Мини-Скарабеус
 SandShockwavePillar.DisplayName: Песчаная ударная волна
 SandballProjectile.DisplayName: Комок песка
 BabyAntlionProjectile.DisplayName: Маленький муравьиный лев
