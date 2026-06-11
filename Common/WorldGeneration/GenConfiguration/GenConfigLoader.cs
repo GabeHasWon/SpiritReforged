@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using System.Linq;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
@@ -95,7 +96,7 @@ internal class GenConfigLoader : ModSystem
 			HAlign = 0.5f,
 			VAlign = 0.5f,
 			Left = StyleDimension.FromPixels(leftOffset),
-			Top = StyleDimension.FromPixels(-168),
+			Top = StyleDimension.FromPixels(-218),
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
 			PaddingLeft = 4,
@@ -119,7 +120,28 @@ internal class GenConfigLoader : ModSystem
 			UIState state = Main.MenuUI.CurrentState;
 			Main.MenuUI.SetState(new GenConfigUIState(() => Main.MenuUI.SetState(state)));
 		};
+
+		button.OnUpdate += (_) => AddHoverDescription(button, self);
+		button.OnMouseOut += (_, _) => RemoveDescription(self);
 		panel.Append(button);
+	}
+
+	private static void AddHoverDescription(UIImageButton button, UIWorldCreation self)
+	{
+		bool hover = button.ContainsPoint(Main.MouseScreen);
+		UIText description = EcotoneMapperHooks.GetDescriptionText(self);
+
+		if (hover)
+		{
+			const string Key = "Mods.SpiritReforged.GenConfigs.UI.";
+			description?.SetText(Language.GetTextValue(Key + "HoverDescription"));
+		}
+	}
+
+	private static void RemoveDescription(UIWorldCreation self)
+	{
+		UIText description = EcotoneMapperHooks.GetDescriptionText(self); // Resets description text which is set below
+		description?.SetText(Language.GetText("UI.WorldDescriptionDefault"));
 	}
 
 	public override void PostSetupContent()

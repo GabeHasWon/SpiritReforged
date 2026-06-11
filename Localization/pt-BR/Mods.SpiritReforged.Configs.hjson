@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: Configurações do Cliente do Reforged
 
-	OceanShape: {
-		Label: Formato do Oceano
-		Tooltip:
-			'''
-			Modifica a geração de mundo do Oceano
-			Por padrão, utiliza-se a geração Piecewise_V.
-			A geração Piecewise_V é recomendada para jogatinas com o Spirit.
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: Detalhes nas reflexões
 		Tooltip:
@@ -45,35 +35,6 @@ ReforgedClientConfig: {
 	}
 
 	Headers.Developer: Ferramentas de Desenvolvidor
-}
-
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: Padrão
-		Tooltip: ""
-	}
-
-	SlantedSine: {
-		Label: Seno Inclinado
-		Tooltip: ""
-	}
-
-	Piecewise: {
-		Label: Piecewise
-		Tooltip: ""
-	}
-
-	Piecewise_M: {
-		Label: Piecewise_ M
-		Tooltip: ""
-	}
-
-	Piecewise_V: {
-		Label: Piecewise_ V
-		Tooltip: ""
-	}
 }
 
 ReforgedServerConfig: {

@@ -27,6 +27,7 @@ UI: {
 	Create: Сохранить предустановку
 	CantSave: (Вы не можете сохранить стандартные установки)
 	Load: Загрузить набор предустановок
+	// HoverDescription: Configure specific aspects of your world's generation
 }
 
 Pages: {
