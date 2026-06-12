@@ -99,14 +99,7 @@ public class EnchanterUI : AutoUIState
 		if (_slot.Item.IsAir)
 		{
 			if (_populated)
-			{
-				RemoveChild(_list);
-				RemoveChild(_infoList);
-				RemoveChild(_confirmButton);
-
-				_list.ClearEntries();
-				_infoList.ClearEntries();
-			}
+				ClearList();
 
 			_hovered = default;
 			_populated = false;
@@ -114,19 +107,7 @@ public class EnchanterUI : AutoUIState
 		else
 		{
 			if (!_populated)
-			{
-				Append(_list);
-				Append(_infoList);
-				Append(_confirmButton);
-
-				foreach (int type in Enchanter.SpecialShop.Keys)
-				{
-					var button = new GlyphButton(type);
-					button.OnLeftClick += OnClickGlyphButton;
-
-					_list.AddEntry(button);
-				}
-			}
+				PopulateList();
 
 			_populated = true;
 		}
@@ -154,6 +135,34 @@ public class EnchanterUI : AutoUIState
 		base.Draw(spriteBatch);
 	}
 
+	private void PopulateList()
+	{
+		Append(_list);
+		Append(_infoList);
+		Append(_confirmButton);
+
+		foreach (int type in Enchanter.SpecialShop.Keys)
+		{
+			bool canApply = ItemLoader.GetItem(type) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(_slot.Item);
+			GlyphButton button = new(type, inactive: !canApply);
+
+			if (canApply)
+				button.OnLeftClick += OnClickGlyphButton;
+
+			_list.AddEntry(button);
+		}
+	}
+
+	private void ClearList()
+	{
+		RemoveChild(_list);
+		RemoveChild(_infoList);
+		RemoveChild(_confirmButton);
+
+		_list.ClearEntries();
+		_infoList.ClearEntries();
+	}
+
 	private void OnClickGlyphButton(UIMouseEvent evt, UIElement listeningElement)
 	{
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
@@ -177,6 +186,9 @@ public class EnchanterUI : AutoUIState
 
 				if (_hovered.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
 					glyphGlobalItem.StartAnimation();
+
+				ClearList(); //Reset the list
+				PopulateList();
 			}
 		}
 	}
