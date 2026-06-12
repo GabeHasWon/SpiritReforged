@@ -91,7 +91,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	{
 		Presets = 
 		[
-			new("SunkenRuin", false,
+			new("SunkenRuin", 
 			[
 				new IndividualPreset(nameof(RuinQty), 20),
 				new IndividualPreset(nameof(StupaChance), 4),
@@ -100,7 +100,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 				new IndividualPreset(nameof(MaxSteps), 4),
 			]),
 
-			new("Dessicated", false,
+			new("Dessicated", 
 			[
 				new IndividualPreset(nameof(TreeChance), 4),
 				new IndividualPreset(nameof(CaveRadius), 9),
@@ -110,7 +110,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 				new IndividualPreset(nameof(RuinQty), 3),
 			]),
 
-			new("BlankCanvas", false,
+			new("BlankCanvas", 
 			[
 				new IndividualPreset(nameof(MaxSteps), 1),
 				new IndividualPreset(nameof(CaveRadius), 2),

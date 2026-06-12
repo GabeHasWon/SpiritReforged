@@ -10,7 +10,7 @@ public readonly record struct IndividualPreset(string Name, object Value);
 /// <summary>
 /// An individual full-config preset. <paramref name="ResetNotIncluded"/> will reset values that aren't included in the preset.
 /// </summary>
-public readonly record struct ConfigPreset(string Name, bool ResetNotIncluded, List<IndividualPreset> Presets)
+public readonly record struct ConfigPreset(string Name, List<IndividualPreset> Presets, bool ResetNotIncluded = true)
 {
 	/// <summary>
 	/// Applies this preset to the given page.

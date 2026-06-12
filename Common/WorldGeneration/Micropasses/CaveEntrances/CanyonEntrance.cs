@@ -27,7 +27,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 	{
 		Presets =
 		[
-			new("Whimsical", false,
+			new("Whimsical", 
 				[
 					new IndividualPreset(nameof(StargrassMicropass.MaxStargrassCount), 400),
 					new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 4f),
@@ -35,7 +35,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 					new IndividualPreset(nameof(ButterflyMicropass.ButterflyCountMax), 8),
 				]),
 
-			new("Treacherous", false,
+			new("Treacherous", 
 				[
 					new IndividualPreset(nameof(HalfWidth), 200),
 					new IndividualPreset(nameof(MaxDepth), 600),

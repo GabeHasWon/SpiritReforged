@@ -150,7 +150,7 @@ internal class EcotoneMapperHooks : ModSystem
 			HAlign = 0.5f,
 			VAlign = 0.5f,
 			Left = StyleDimension.FromPixels(leftOffset),
-			Top = StyleDimension.FromPixels(-218),
+			Top = StyleDimension.FromPixels(-168),
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
 			PaddingLeft = 4,
@@ -174,6 +174,9 @@ internal class EcotoneMapperHooks : ModSystem
 		panel.Append(button);
 	}
 
+	/// <summary>
+	/// Gets the description text for a given <see cref="UIWorldCreation"/> UI state.
+	/// </summary>
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_descriptionText")]
 	public static extern ref UIText GetDescriptionText(UIWorldCreation ui);
 

@@ -354,7 +354,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 	private void AddResetButton(LoadedConfig config, UIPanel itemPanel, UIElement? slider)
 	{
-		UIButton<string> resetButton = new("Reset")
+		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(40),
@@ -491,7 +491,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(presetButton);
 		AddHoverTicks(presetButton);
 
-		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
+		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ResetAll"))
 		{
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(50),
@@ -516,7 +516,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(resetButton);
 		AddHoverTicks(resetButton);
 
-		UIImage saveButton = new(DrawHelpers.RequestLocal(GetType(), "NewButton", false))
+		UIImageFramed saveButton = new(DrawHelpers.RequestLocal(GetType(), "NewButton", false), new Rectangle(0, 0, 44, 44))
 		{
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
@@ -528,15 +528,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		saveButton.OnUpdate += _ =>
 		{
-			saveButton.Color = DefaultConfig(page) ? Color.Gray : Color.White;
+			bool canSave = !DefaultConfig(page);
+			saveButton.Color = !canSave ? Color.Gray : Color.White;
+			bool hover = canSave && saveButton.ContainsPoint(Main.MouseScreen);
+			saveButton.SetFrame(new Rectangle(0, hover ? 46 : 0, 44, 44));
 
-			if (saveButton.ContainsPoint(Main.MouseScreen))
+			if (hover)
 				hoverText = Language.GetTextValue(DefaultConfig(page) ? "Mods.SpiritReforged.GenConfigs.UI.CantSave" : "Mods.SpiritReforged.GenConfigs.UI.Create");
 		};
 
 		pagePanel.Append(saveButton);
 
-		UIImage loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false))
+		UIImageFramed loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false), new Rectangle(0, 0, 44, 44))
 		{
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
@@ -549,7 +552,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		loadButton.OnUpdate += _ =>
 		{
-			if (loadButton.ContainsPoint(Main.MouseScreen))
+			bool hover = loadButton.ContainsPoint(Main.MouseScreen);
+			loadButton.SetFrame(new Rectangle(0, hover ? 50 : 0, 44, 44));
+
+			if (hover)
 				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Load");
 		};
 
@@ -609,7 +615,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			}
 		}
 
-		ConfigPreset preset = new(configName, false, presets);
+		ConfigPreset preset = new(configName, presets);
 		page.PageInfo.Presets.Add(preset);
 	}
 
@@ -685,7 +691,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		if (pageConfig >= page.BuiltInPresets)
 			return "[i:75] [c/AAAAFF:" + page.PageInfo.Presets[pageConfig].Name + "]";
 
-		string noneText = Language.GetTextValue(Key + "None") + $" ({page.PageInfo.Presets.Count} {Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Total")})";
+		string noneText = Language.GetTextValue(Key + "None") + $" ({Language.GetTextValue(Key + "Total", page.PageInfo.Presets.Count)})";
 		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
 	}
 

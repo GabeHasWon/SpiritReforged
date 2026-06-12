@@ -16,16 +16,18 @@ UI: {
 	Preset: Preset:
 	NoPresets: (No Presets)
 	None: None
-	Reset: Reset All
+	Reset: Reset
+	ResetAll: Reset All
 	Prior: Prior:
 	Next: Next:
 	True: Enabled
 	False: Disabled
-	Total: total
+	Total: "{0} total"
 	CustomPresetTooltip: This is a custom preset!
 	Create: Save as a custom preset
 	CantSave: (You can't save a default preset)
 	Load: Load a custom preset
+	HoverDescription: Open to configure specific aspects of your world's generation.
 }
 
 Pages: {
@@ -71,7 +73,7 @@ Pages: {
 				Tooltip:
 					'''
 					The denominator (1/x) of the chance for a tree to spawn on a given tile.
-					This chance is reduced until a tree is placed, and then it's reset.
+					This chance is increased until a tree is placed, and then it's reset.
 					'''
 			}
 
@@ -149,7 +151,11 @@ Pages: {
 
 			TreeChance: {
 				DisplayName: "[i:27] Dead Tree Chance"
-				Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+				Tooltip:
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile. 
+					This chance is increased until a tree is placed, and then it's reset.
+					'''
 			}
 		}
 	}
@@ -406,7 +412,7 @@ Pages: {
 
 			CovesSpawnRate: {
 				DisplayName: "[i:2291] (Coves) Multiplier"
-				Tooltip: 
+				Tooltip:
 					'''
 					The multiplier to the maximum amount of Fishing Coves that spawn in a world. 
 					This may cause issues with other mods that spawn structures.

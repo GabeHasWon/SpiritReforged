@@ -61,30 +61,30 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	{
 		Presets = 
 		[
-			new("Domesticated", false,
+			new("Domesticated", 
 				[
 					new IndividualPreset(nameof(CampsiteChance), 1),
 					new IndividualPreset(nameof(BaseTreeChance), 180),
 					new IndividualPreset(nameof(PotChance), 3),
 					new IndividualPreset(nameof(TermiteChance), 80),
-				]),
+				], false),
 
-			new("Bumpy", false,
+			new("Bumpy", 
 				[
 					new IndividualPreset(nameof(Steps), 14),
 					new IndividualPreset(nameof(BaseTreeChance), 16),
 					new IndividualPreset(nameof(PotChance), 12),
 					new IndividualPreset(nameof(TermiteChance), 55),
 					new IndividualPreset(nameof(CampsiteChance), 9),
-				]),
+				], false),
 
-			new("Infested", false,
+			new("Infested", 
 				[
 					new IndividualPreset(nameof(CampsiteChance), 9),
 					new IndividualPreset(nameof(BaseTreeChance), 550),
 					new IndividualPreset(nameof(PotChance), 5),
 					new IndividualPreset(nameof(TermiteChance), 10),
-				])
+				], false)
 		]
 	};
 

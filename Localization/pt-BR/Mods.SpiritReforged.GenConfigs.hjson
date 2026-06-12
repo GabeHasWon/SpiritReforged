@@ -16,16 +16,18 @@ UI: {
 	// Preset: Preset:
 	// NoPresets: (No Presets)
 	// None: None
-	// Reset: Reset All
+	// Reset: Reset
+	// ResetAll: Reset All
 	// Prior: Prior:
 	// Next: Next:
 	// True: Enabled
 	// False: Disabled
-	// Total: total
+	// Total: "{0} total"
 	// CustomPresetTooltip: This is a custom preset!
 	// Create: Save as a custom preset
 	// CantSave: (You can't save a default preset)
 	// Load: Load a custom preset
+	// HoverDescription: Open to configure specific aspects of your world's generation.
 }
 
 Pages: {
@@ -71,7 +73,7 @@ Pages: {
 				/* Tooltip:
 					'''
 					The denominator (1/x) of the chance for a tree to spawn on a given tile.
-					This chance is reduced until a tree is placed, and then it's reset.
+					This chance is increased until a tree is placed, and then it's reset.
 					''' */
 			}
 
@@ -149,7 +151,11 @@ Pages: {
 
 			TreeChance: {
 				// DisplayName: "[i:27] Dead Tree Chance"
-				// Tooltip: The denominator (1/x) of the chance for a tree to spawn on a given tile. This chance is reduced until a tree is placed, and then it's reset.
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile. 
+					This chance is increased until a tree is placed, and then it's reset.
+					''' */
 			}
 		}
 	}
@@ -293,77 +299,77 @@ Pages: {
 
 		Members: {
 			WorldMultiplierMultiplier: {
-				// DisplayName: Total Multiplier
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] Total Multiplier"
 				// Tooltip: A global multiplier for all pots' spawn rate.
 			}
 
 			RollingPotChance: {
-				// DisplayName: Rolling Pot Chance
+				// DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pot Chance"
 				// Tooltip: The denominator (1/x) for a Rolling Pot to replace a boulder.
 			}
 
 			OrnateScale: {
-				// DisplayName: Ornate Pot Scale
+				// DisplayName: "[i:SpiritReforged/OrnatePotsItem] Ornate Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for Ornate pots.
 			}
 
 			PotionScale: {
-				// DisplayName: Potion Vat Scale
+				// DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] Potion Vat Scale"
 				// Tooltip: Multiplier to the number of attempts for Potion Vats.
 			}
 
 			ScryingScale: {
-				// DisplayName: Scrying Pot Scale
+				// DisplayName: "[i:SpiritReforged/ScryingPotItem] Scrying Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for Scrying pots.
 			}
 
 			StuffedScale: {
-				// DisplayName: Stuffed Pot Scale
+				// DisplayName: "[i:SpiritReforged/StuffedPotsItem] Stuffed Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for Stuffed pots.
 			}
 
 			WormScale: {
-				// DisplayName: Worm Pot Scale
+				// DisplayName: "[i:SpiritReforged/WormPotItem] Worm Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for Worm pots.
 			}
 
 			PlatterScale: {
-				// DisplayName: Silver Platter Scale
+				// DisplayName: "[i:SpiritReforged/SilverPlattersItem] Silver Platter Scale"
 				// Tooltip: Multiplier to the number of attempts for Silver Platters.
 			}
 
 			AetherScale: {
-				// DisplayName: Aether Pot Scale
-				// Tooltip: Multiplier to the number of attempts for Aether pots.
+				// DisplayName: "[i:SpiritReforged/AetherShipmentItem] Aether Shipment Scale"
+				// Tooltip: Multiplier to the number of attempts for Aether Shipments.
 			}
 
 			UpsideDownScale: {
-				// DisplayName: Upside-Down Pot Scale
+				// DisplayName: "[i:SpiritReforged/UpsideDownPotItem] Upside-Down Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for Upside-Down pots.
 			}
 
 			BoulderScale: {
-				// DisplayName: Rolling Pots Scale
+				// DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pots Scale"
 				// Tooltip: Multiplier to the number of attempts for Rolling Pots.
 			}
 
 			PicnicScale: {
-				// DisplayName: Picnic Basket Scale
+				// DisplayName: "[i:SpiritReforged/WickerBasketsItem] Picnic Basket Scale"
 				// Tooltip: Multiplier to the number of attempts for Picnic Baskets.
 			}
 
 			StackScale: {
-				// DisplayName: Stacked Pots Scale
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] Stacked Scale"
 				// Tooltip: Multiplier to the number of attempts for stacked pots.
 			}
 
 			UncommonScale: {
-				// DisplayName: Uncommon Pots Scale
+				// DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] Uncommon Scale"
 				// Tooltip: Multiplier to the number of attempts for all Uncommon pots.
 			}
 
 			ZenithScale: {
-				// DisplayName: Zenith Pot Scale
+				// DisplayName: "[i:SpiritReforged/ZenithPotsItem] Zenith Pot Scale"
 				// Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
 			}
 		}
@@ -371,47 +377,51 @@ Pages: {
 
 	Caves: {
 		// Name: Caves
-		// Description: ""
+		// Description: Controls miscellaneous Cave additions.
 
 		Members: {
 			SignChance: {
-				// DisplayName: SignChance
-				// Tooltip: SignChance
+				// DisplayName: "[i:171] (Houses) Signs Chance"
+				// Tooltip: The denominator (1/x) of the chance for a sign to spawn in an underground house.
 			}
 
 			MannequinChance: {
-				// DisplayName: MannequinChance
-				// Tooltip: MannequinChance
+				// DisplayName: "[i:498] (Houses) Mannequin Chance"
+				// Tooltip: The denominator (1/x) of the chance for a mannequin to spawn in an underground house.
 			}
 
 			LoomChance: {
-				// DisplayName: LoomChance
-				// Tooltip: LoomChance
+				// DisplayName: "[i:332] (Houses) Loom Chance"
+				// Tooltip: The denominator (1/x) of the chance for a house to be a "loom house" - which adds in banners and a loom.
 			}
 
 			RareSignChance: {
-				// DisplayName: RareSignChance
-				// Tooltip: RareSignChance
+				// DisplayName: "[i:3617] (Houses) Rare Sign Rate"
+				// Tooltip: The denominator (1/x) of the chance for an underground sign to have a rare message.
 			}
 
 			CartSpawnRate: {
-				// DisplayName: CartSpawnRate
-				// Tooltip: CartSpawnRate
+				// DisplayName: "[i:13] (Decor) Minecart Rate"
+				// Tooltip: The multiplier to the maximum amount of ore minecarts that spawn in a world.
 			}
 
 			BoomshroomRate: {
-				// DisplayName: BoomshroomRate
-				// Tooltip: BoomshroomRate
+				// DisplayName: "[i:SpiritReforged/BoomShroom] (Decor) Shroom Rate"
+				// Tooltip: The multiplier to the maximum amount of Boomshrooms that spawn in a world.
 			}
 
 			CovesSpawnRate: {
-				// DisplayName: CovesSpawnRate
-				// Tooltip: CovesSpawnRate
+				// DisplayName: "[i:2291] (Coves) Multiplier"
+				/* Tooltip:
+					'''
+					The multiplier to the maximum amount of Fishing Coves that spawn in a world. 
+					This may cause issues with other mods that spawn structures.
+					''' */
 			}
 
 			NeonMossChance: {
-				// DisplayName: NeonMossChance
-				// Tooltip: NeonMossChance
+				// DisplayName: "[i:SpiritReforged/FlaskRadon] (Neon Moss) Custom Moss Chance"
+				// Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
 			}
 		}
 	}
