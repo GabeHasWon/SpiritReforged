@@ -27,7 +27,7 @@ UI: {
 	Create: Сохранить предустановку
 	CantSave: (Вы не можете сохранить стандартные установки)
 	Load: Загрузить набор предустановок
-	// HoverDescription: Open to configure specific aspects of your world's generation.
+	HoverDescription: Открывает меню настройки некоторых элементов генерации мира из Spirit Reforged.
 }
 
 Pages: {
