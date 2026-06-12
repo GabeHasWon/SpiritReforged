@@ -66,6 +66,20 @@ public class EnchantmentUI : AutoUIState
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
+		if (!Main.mouseItem.IsAir) //Activate or deactive the item slot accordingly
+		{
+			if (CheckItem(Main.mouseItem))
+			{
+				if (_slot.Parent != this)
+					Append(_slot);
+			}
+			else
+			{
+				if (_slot.Parent == this)
+					RemoveChild(_slot);
+			}
+		}
+
 		if (_slot.Item.IsAir || !EnchantedWorkbench.HasCoords)
 		{
 			if (_glyphButtons.Count != 0) //Remove all buttons
@@ -90,6 +104,14 @@ public class EnchantmentUI : AutoUIState
 		}
 
 		_particleLayer.Update(gameTime);
+	}
+
+	private static bool CheckItem(Item item)
+	{
+		const int full_length = 3;
+
+		CreateGlyphs(item, full_length, out int[] itemTypes);
+		return itemTypes.Length == full_length;
 	}
 
 	public override void OnDeactivate()
