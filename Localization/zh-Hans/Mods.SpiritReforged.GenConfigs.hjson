@@ -27,7 +27,7 @@ UI: {
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
-	HoverDescription: 打开以配置世界生成的具体方面。
+	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 }
 
 Pages: {
@@ -166,7 +166,7 @@ Pages: {
 
 		Presets: {
 			Whimsical: {
-				Name: "[i:SpiritReforged/MidnightApple] 异想天开"
+				Name: "[i:SpiritReforged/MidnightApple] 奇想"
 				Tooltip: 巨大的繁茂洞穴，连绵起伏的星草山丘，宁静的麦田……能出什么差错呢？
 			}
 
@@ -427,8 +427,8 @@ Pages: {
 
 		Presets: {
 			Inhabited: {
-				// Tooltip: Inhabited
-				// Name: Inhabited
+				Name: "[i:498] 曾有人迹"
+				Tooltip: 地下各处都有友好探险者的踪迹……他们后来怎样了？
 			}
 		}
 	}
