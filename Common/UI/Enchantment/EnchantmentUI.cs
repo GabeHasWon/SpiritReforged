@@ -9,6 +9,8 @@ using SpiritReforged.Content.Forest.Glyphs;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI.Elements;
+using Terraria.Graphics.Renderers;
 using Terraria.UI;
 using Terraria.Utilities;
 
@@ -17,10 +19,21 @@ namespace SpiritReforged.Common.UI.Enchantment;
 public class EnchantmentUI : AutoUIState
 {
 	private static readonly Asset<Texture2D> Background = DrawHelpers.RequestLocal<EnchantmentUI>("EnchantmentUI_Background", false);
+	private static readonly Asset<Texture2D> CreativeParticle = Main.Assets.Request<Texture2D>("Images/UI/Creative/Research_Spark");
+
+	private static readonly Vector2[] FlameOrigin = [
+			new(36, 10), 
+			new(22, 24), 
+			new(38, 34), 
+			new(144, 12), 
+			new(126, 22), 
+			new(138, 26)
+		];
 
 	private readonly List<GlyphButton> _glyphButtons = [];
+
+	private UIParticleLayer _particleLayer;
 	private BasicItemSlot _slot;
-	private float _animationProgress;
 
 	public override void OnInitialize()
 	{
@@ -34,8 +47,15 @@ public class EnchantmentUI : AutoUIState
 		_slot.Left.Set(-(_slot.Width.Pixels / 2), 0.5f);
 		_slot.Top.Set(-(_slot.Height.Pixels / 2), 0.5f);
 
+		_particleLayer = new()
+		{
+			Width = new StyleDimension(0f, 1f),
+			Height = new StyleDimension(0f, 1f)
+		};
+
 		OverrideSamplerState = SamplerState.PointClamp;
 		Append(_slot);
+		Append(_particleLayer);
 	}
 
 	public override void Update(GameTime gameTime)
@@ -50,18 +70,26 @@ public class EnchantmentUI : AutoUIState
 		{
 			if (_glyphButtons.Count != 0) //Remove all buttons
 				RemoveButtons();
-
-			_animationProgress = 0;
 		}
 		else
 		{
 			if (_glyphButtons.Count == 0) //Add all buttons
 				AddButtons();
-
-			_animationProgress = MathHelper.Min(_animationProgress + 0.025f, 1);
 		}
 
 		base.Update(gameTime);
+
+		if (EnchantedWorkbench.HasCoords && Main.rand.NextBool(2))
+		{
+			Vector2 initialVelocity = Vector2.UnitY * -0.5f;
+			_particleLayer.AddParticle(new CreativeSacrificeParticle(CreativeParticle, null, initialVelocity, FlameOrigin[Main.rand.Next(FlameOrigin.Length)] + new Vector2(13, -4))
+			{
+				AccelerationPerFrame = Vector2.UnitY * 0.01f,
+				ScaleOffsetPerFrame = -1f / 90f
+			});
+		}
+
+		_particleLayer.Update(gameTime);
 	}
 
 	public override void OnDeactivate()
@@ -106,6 +134,8 @@ public class EnchantmentUI : AutoUIState
 		}
 
 		base.Draw(spriteBatch);
+
+		_particleLayer.Draw(spriteBatch);
 	}
 
 	private void AddButtons()
