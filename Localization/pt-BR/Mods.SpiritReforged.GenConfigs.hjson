@@ -424,6 +424,13 @@ Pages: {
 				// Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
 			}
 		}
+
+		Presets: {
+			Inhabited: {
+				// Tooltip: Inhabited
+				// Name: Inhabited
+			}
+		}
 	}
 }
 

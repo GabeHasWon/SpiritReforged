@@ -424,6 +424,13 @@ Pages: {
 				Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
 			}
 		}
+
+		Presets: {
+			Inhabited: {
+				Name: "[i:498] Inhabited"
+				Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
+			}
+		}
 	}
 }
 

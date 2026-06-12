@@ -27,7 +27,7 @@ internal class FishingAreaMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(0.25f, 4, 0.05f)]
 	[Slider]
-	private static float CovesSpawnRate = 1;
+	internal static float CovesSpawnRate = 1;
 
 	public override string WorldGenName => "Fishing Coves";
 

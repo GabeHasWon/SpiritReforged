@@ -52,7 +52,15 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 	{
 		Presets =
 		[
-
+			new("Inhabited",
+			[
+				new IndividualPreset(nameof(SignChance), 3),
+				new IndividualPreset(nameof(RareSignChance), 10),
+				new IndividualPreset(nameof(MannequinChance), 2),
+				new IndividualPreset(nameof(LoomChance), 7),
+				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 14f),
+				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 2.2f),
+			])
 		]
 	};
 

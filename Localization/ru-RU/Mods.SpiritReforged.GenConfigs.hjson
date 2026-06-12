@@ -454,6 +454,13 @@ Pages: {
 				Tooltip: Устанавливает числитель (x/6) шанса замены ванильного светящегося мха на мох из Reforged в пещерах.
 			}
 		}
+
+		Presets: {
+			Inhabited: {
+				// Tooltip: Inhabited
+				// Name: Inhabited
+			}
+		}
 	}
 }
 

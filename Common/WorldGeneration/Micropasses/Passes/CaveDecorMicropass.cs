@@ -14,7 +14,7 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(0.05f, 50f, 0.05f)]
 	[Slider]
-	private static float CartSpawnRate = 1;
+	internal static float CartSpawnRate = 1;
 
 	[GenConfigurable(0.33f, 250f, 0.05f)]
 	[Slider]
