@@ -27,7 +27,7 @@ UI: {
 	Create: Save as a custom preset
 	CantSave: (You can't save a default preset)
 	Load: Load a custom preset
-	HoverDescription: Open to configure specific aspects of your world's generation.
+	HoverDescription: Open to configure specific aspects of your world's generation from Spirit Reforged.
 }
 
 Pages: {
