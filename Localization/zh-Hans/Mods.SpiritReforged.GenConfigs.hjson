@@ -16,16 +16,18 @@ UI: {
 	Preset: 预设：
 	NoPresets: （无预设）
 	None: 无
-	Reset: 重制全部
+	Reset: 重置
+	ResetAll: 重置全部
 	Prior: 上一个：
 	Next: 下一个：
 	True: 启用
 	False: 禁用
-	Total: 总计
+	Total: "{0}总计"
 	CustomPresetTooltip: 这是一个自定义预设！
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
+	HoverDescription: 打开以配置世界生成的具体方面。
 }
 
 Pages: {
