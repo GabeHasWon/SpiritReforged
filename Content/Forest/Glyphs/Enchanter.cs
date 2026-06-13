@@ -197,6 +197,16 @@ public class Enchanter : ModNPC
 		}
 	}
 
+	/*public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D npcTexture = TextureAssets.Npc[Type].Value;
+		Rectangle npcSource = NPC.frame;
+		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+		Main.EntitySpriteDraw(npcTexture, NPC.Center - Main.screenPosition + new Vector2(0, NPC.gfxOffY), npcSource, NPC.DrawColor(drawColor), NPC.rotation, npcSource.Size() / 2, NPC.scale, effects);
+		return false;
+	}*/
+
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Texture2D npcTexture = TextureAssets.Npc[Type].Value;
@@ -218,10 +228,7 @@ public class Enchanter : ModNPC
 	#region attack
 	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown) => base.TownNPCAttackCooldown(ref cooldown, ref randExtraCooldown);
 
-	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
-	{
-		projType = Main.hardMode ? ModContent.ProjectileType<VexpowderBlueDust>() : ModContent.ProjectileType<FlarepowderDust>();
-	}
+	public override void TownNPCAttackProj(ref int projType, ref int attackDelay) => projType = Main.hardMode ? ModContent.ProjectileType<VexpowderBlueDust>() : ModContent.ProjectileType<FlarepowderDust>();
 
 	public override void TownNPCAttackMagic(ref float auraLightMultiplier) => base.TownNPCAttackMagic(ref auraLightMultiplier);
 	#endregion

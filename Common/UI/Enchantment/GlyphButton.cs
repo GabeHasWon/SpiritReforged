@@ -11,14 +11,16 @@ public class GlyphButton : UIElement
 {
 	public readonly int itemType;
 	private readonly bool _showDisplayTip;
+	private readonly bool _inactive;
 
 	private Item _item;
 	private float _hoverTime;
 
-	public GlyphButton(int itemType, bool showDisplayTip = false)
+	public GlyphButton(int itemType, bool showDisplayTip = false, bool inactive = false)
 	{
 		this.itemType = itemType;
 		_showDisplayTip = showDisplayTip;
+		_inactive = inactive;
 
 		Width.Set(38, 0);
 		Height.Set(38, 0);
@@ -39,8 +41,9 @@ public class GlyphButton : UIElement
 		Texture2D texture = TextureAssets.Item[itemType].Value;
 		Texture2D outlineTexture = TextureColorCache.ColorSolid(texture, Color.White);
 		Vector2 center = GetDimensions().Center() - new Vector2(0, _hoverTime * 4);
+		float opacity = _inactive ? 0.2f : 1;
 
-		if (IsMouseHovering)
+		if (IsMouseHovering && !_inactive)
 		{
 			if (_showDisplayTip)
 			{
@@ -72,9 +75,9 @@ public class GlyphButton : UIElement
 		else
 		{
 			DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
-				spriteBatch.Draw(outlineTexture, center + offset, null, Color.Black * 0.3f, 0, texture.Size() / 2, 1, 0, 0));
+				spriteBatch.Draw(outlineTexture, center + offset, null, Color.Black * 0.3f * opacity, 0, texture.Size() / 2, 1, 0, 0));
 		}
 
-		spriteBatch.Draw(texture, center, null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
+		spriteBatch.Draw(texture, center, null, Color.White * opacity, 0, texture.Size() / 2, 1, 0, 0);
 	}
 }
