@@ -28,14 +28,19 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
 {
     float aspectRatio = uScreenResolution.x / uScreenResolution.y;
     
+    float2 uv = coords;
+    
+    float2 size = uScreenResolution / 1.0;
+    uv = floor(coords * size) / size;
+
     // our render target overlay
-    float3 screenTarget = tex2D(uImage1, coords).rgb;
-   
+    float3 screenTarget = tex2D(uImage1, uv).rgb;
+
     float mask = screenTarget.r;
     
     if (mask <= 0.01)
         return tex2D(uImage0, coords);
-    
+           
     // we use the color channels of our overlay for the variables tied to individual projectiles. The screen target is full of bloom textures for distance checks 
     // we have to unmultiply these values to get the raw 0 to 1 values back
     float2 data = screenTarget.gb / max(mask, 0.001);
@@ -46,8 +51,8 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
     float2 offset = float2(10.0 / uScreenResolution.x, 10.0 / uScreenResolution.y);
     
     // we offset the mask by 10 pixels to get a vector for our direction for the black holes distortion and the black hole itself
-    float maskRight = tex2D(uImage1, coords + float2(offset.x, 0)).r;
-    float maskDown = tex2D(uImage1, coords + float2(0, offset.y)).r;
+    float maskRight = tex2D(uImage1, uv + float2(offset.x, 0)).r;
+    float maskDown = tex2D(uImage1, uv + float2(0, offset.y)).r;
     
     float2 inwardDir = float2(maskRight - mask, maskDown - mask);
     float2 outwardDir = float2(0.0, -1.0);
@@ -80,19 +85,37 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
     float2 pullVector = combinedPullDirection * pullStrength * progress * distortionStrength * intensity * uZoom.x;
     pullVector.x /= aspectRatio;
     
-    float2 distortedUV = coords;
+    float2 distortedUV = uv;
     if (progress > 0)
         distortedUV += pullVector * 1.5;
     
     float4 screen = tex2D(uImage0, distortedUV);
-    
+
     // this is the drawing for the actual black hole itself, basically just bloom
-    float edgeGlow = smoothstep(0.825, 0.9, mask) * smoothstep(1.0, 0.95, mask);
+    float edgeGlow = smoothstep(0.75, 0.9, mask) * smoothstep(1.0, 0.95, mask);
     edgeGlow = pow(edgeGlow, 5.0);
     
     float3 ringColor = float3(1.0, 1.0, 1.0) * edgeGlow * 2.0;
     ringColor.rgb *= progressInterpolant;
     screen.rgb += ringColor * intensity;
+    
+    float angle = atan2(outwardDir.y, outwardDir.x);
+
+    float spinSpeed = uTime * 2.0;
+    float swirlAngle = angle + spinSpeed + mask * 4.0;
+
+    float2 noiseUV = float2(cos(swirlAngle), sin(swirlAngle)) * mask * 0.5;
+
+    float noiseValue = tex2D(uImage2, frac(noiseUV)).r;
+
+    float density = smoothstep(0.2, 0.9, noiseValue);
+    
+    float accretionMask = smoothstep(0.6, 0.85, mask);
+
+    float3 accretionDisk = lerp(float3(0.9, 0.3, 1.0), float3(0.2, 0.0, 1.0), noiseValue) * density * accretionMask * 3.0;
+    accretionDisk *= progressInterpolant * intensity;
+    
+    screen.rgb += accretionDisk;
     
     float3 innerRingColor = float3(1.0, 0.2, 1.0) * edgeGlow * 5.0;
     innerRingColor.rgb *= progressInterpolant;

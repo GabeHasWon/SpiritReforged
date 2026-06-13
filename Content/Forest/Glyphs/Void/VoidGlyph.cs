@@ -121,7 +121,10 @@ public class VoidGlyph : GlyphItem
 				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
 			}
 			else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
+			{
+				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(TextureAssets.Npc[0]);
 				Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
+			}
 		}
 	}
 
@@ -135,7 +138,7 @@ public class VoidGlyph : GlyphItem
 			{
 				VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone);
 
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
 				{
 					Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
 
@@ -156,6 +159,26 @@ public class VoidGlyph : GlyphItem
 						p.Velocity *= 0.95f;
 
 						p.Rotation += p.Velocity.Length() * 0.1f;
+					}
+
+					velocity = Main.rand.NextVector2Circular(4f, 4f);
+					float scale = Main.rand.NextFloat(0.1f, 0.3f);
+
+					bool rotDir = Main.rand.NextBool();
+
+					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
+
+					static void SpinAction(Particle p)
+					{
+						p.Velocity *= 0.97f;
+						p.Velocity = p.Velocity.RotatedBy(0.08f);
+					}
+
+					static void SpinAction_2(Particle p)
+					{
+						p.Velocity *= 0.97f;
+						p.Velocity = p.Velocity.RotatedBy(-0.08f);
 					}
 				}
 			}
@@ -192,7 +215,7 @@ public class VoidGlyph : GlyphItem
 				p.timeLeft = COLLAPSE_TIME;
 			}
 
-			gnpc._stacks++;
+			gnpc._stacks += 1;
 			if (gnpc._stacks > MAX_STACKS)
 				gnpc._stacks = MAX_STACKS;
 
@@ -218,7 +241,7 @@ public class VoidGlyph : GlyphItem
 		public bool _dying;
 		public int _stacksOnDeath;
 
-		public Vector2? pos = null;
+		public Vector2 pos;
 
 		public int TargetIndex => (int)Projectile.ai[0];
 		public NPC Target => Main.npc[TargetIndex];
@@ -259,8 +282,15 @@ public class VoidGlyph : GlyphItem
 		{
 			if (Target is null || !Target.active)
 			{
-				Projectile.Kill();
-				return;
+				if (_dying)
+				{
+
+				}
+				else
+				{
+					Projectile.Kill();
+					return;
+				}			
 			}
 
 			var gnpc = Target.GetGlobalNPC<VoidNPC>();
@@ -331,18 +361,6 @@ public class VoidGlyph : GlyphItem
 						p.Velocity = p.Velocity.RotatedBy(-0.08f);
 					}
 				}
-
-				/*if (!Main.dedServ)
-				{
-					if (!Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
-					{
-						Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
-					}
-
-					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseProgress(EaseBuilder.EaseQuinticInOut.Ease(1f - Projectile.timeLeft / 60f));
-					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseTargetPosition(Projectile.Center);
-					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseIntensity(_stacksOnDeath / 10f);
-				}*/
 			}
 
 			int stacks = gnpc._stacks;
@@ -352,7 +370,7 @@ public class VoidGlyph : GlyphItem
 
 			Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * (stacks / 10f));
 
-			Projectile.Center = Target.Center;
+			Projectile.Center = pos;
 			if (Projectile.position != Projectile.oldPosition)
 				Projectile.netUpdate = true;
 
@@ -372,6 +390,11 @@ public class VoidGlyph : GlyphItem
 				gnpc._cooldown = VoidNPC.COOLDOWN_TIME;
 				gnpc._stacks = 0;
 				gnpc.collapseDamage = 0;
+			}
+
+			if (Target is not null)
+			{
+				pos = Target.Center;
 			}
 		}
 
