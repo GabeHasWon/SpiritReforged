@@ -55,26 +55,31 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[GenConfigurable(2, 100)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int CoralLowChance = 27;
 
 	[GenConfigurable(2, 100)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int CoralHighChance = 15;
 
 	[GenConfigurable(2, 100)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int DecorLowChance = 35;
 
 	[GenConfigurable(2, 100)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int DecorHighChance = 14;
 
 	[GenConfigurable(1, 30)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int KelpChance = 2;
 
 	[GenConfigurable(6, 50)]

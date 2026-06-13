@@ -77,11 +77,13 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	[GenConfigurable(1, 24)]
 	[Slider]
+	[Denominator]
 	[ReverseMinMax]
 	private static int StupaChance = 12;
 
 	[GenConfigurable(1, 200)]
 	[Slider]
+	[Denominator]
 	[ReverseMinMax]
 	private static int TreeChance = 35;
 

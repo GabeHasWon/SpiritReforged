@@ -28,6 +28,7 @@ UI: {
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
 	HoverDescription: 打开以配置世界生成的具体方面。
+	// FailedToLoad: Preset isn't for this page. Page expected: {0}
 }
 
 Pages: {
@@ -210,6 +211,11 @@ Pages: {
 			MaxStargrassCount: {
 				DisplayName: "[i:SpiritReforged/StarPowder] （星草）区域数量"
 				Tooltip: 可能被放置的星草区域的最大数量。可能不会全部放置，或可能会重叠。
+			}
+
+			ReforgedCaveWeight: {
+				// DisplayName: "[i:30] (Caves) Custom Weight"
+				// Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
 			}
 		}
 	}
@@ -412,7 +418,7 @@ Pages: {
 
 			CovesSpawnRate: {
 				DisplayName: "[i:2291] （小湾）倍率"
-				Tooltip: 
+				Tooltip:
 					'''
 					世界中生成的钓鱼小湾最大数量的倍率。
 					这可能会与其他生成结构的模组产生冲突。
@@ -427,8 +433,8 @@ Pages: {
 
 		Presets: {
 			Inhabited: {
-				// Tooltip: Inhabited
-				// Name: Inhabited
+				// Name: "[i:498] Inhabited"
+				// Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
 			}
 		}
 	}

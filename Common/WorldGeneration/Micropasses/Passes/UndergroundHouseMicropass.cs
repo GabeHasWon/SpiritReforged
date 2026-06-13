@@ -31,21 +31,25 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 	[GenConfigurable(1, 20)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int SignChance = 5;
 
 	[GenConfigurable(1, 20)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int MannequinChance = 4;
 
 	[GenConfigurable(1, 50)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int LoomChance = 10;
 
 	[GenConfigurable(1, 100)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int RareSignChance = 25;
 
 	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))

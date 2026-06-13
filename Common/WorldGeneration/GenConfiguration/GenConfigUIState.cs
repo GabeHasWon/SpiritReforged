@@ -44,11 +44,16 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	Action? onMin = null;
 	UIButton<string> presetButton = null!;
 	UIElement mainPanel = null!;
+	UIText warningText = null!;
+	int warningTimer = 0;
 	string hoverText = "";
 
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
+
+		warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
+		warningTimer--;
 
 		if (updatePage)
 		{
@@ -119,6 +124,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		mainPanel.VAlign = 0.5f;
 		mainPanel.SetPadding(Padding);
 		Append(mainPanel);
+
+		warningText = new UIText("")
+		{
+			HAlign = 1f,
+			VAlign = 1f,
+			Top = StyleDimension.FromPixels(38),
+		};
+
+		mainPanel.Append(warningText);
 
 		mainPanel.Append(new UIImage(Border)
 		{
@@ -200,7 +214,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					if (config.Get() is Enum en)
 					{
 						string baseKey = $"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}";
-						hoverText += $"\n [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}:] " + GetEnumName(page, en, "Tooltip");
+						string value = $"\n [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}:] ";
+						hoverText += value + GetEnumName(page, en, "Tooltip");
 					}
 				}
 			};
@@ -231,7 +246,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				else if (valueBack is Enum en)
 					text.SetText(config.DisplayName + $": [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}]");
 				else
-					text.SetText(config.DisplayName + $": [c/AAAAAA:{value}]");
+				{
+					string valueText = $": [c/AAAAAA:{value}]";
+
+					if (config.IsDenominator)
+						valueText = $": [c/9988FF:1 /] [c/AAAAAA:{value}]";
+
+					text.SetText(config.DisplayName + valueText);
+				}
 
 				text.TextColor = config.Modified ? new Color(200, 255, 200) : Color.White;
 			};
@@ -468,14 +490,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			if (pageConfig >= page.PageInfo.Presets.Count)
 				pageConfig = 0;
 
-			_applyingPreset = true;
-
-			ConfigPreset configPreset = page.PageInfo.Presets[pageConfig];
-			configPreset.Apply(page);
-			presetButton.SetText(GetConfigPresetDisplay(page));
-			onSelectPreset?.Invoke(page, configPreset);
-
-			_applyingPreset = false;
+			ApplyCurrentPreset(page);
 		};
 
 		presetButton.OnUpdate += _ =>
@@ -518,8 +533,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIImageFramed saveButton = new(DrawHelpers.RequestLocal(GetType(), "NewButton", false), new Rectangle(0, 0, 44, 44))
 		{
-			Width = StyleDimension.FromPixels(40),
-			Height = StyleDimension.FromPixels(40),
+			Width = StyleDimension.FromPixels(44),
+			Height = StyleDimension.FromPixels(44),
 			HAlign = 1f,
 			VAlign = 1
 		};
@@ -541,8 +556,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIImageFramed loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false), new Rectangle(0, 0, 44, 44))
 		{
-			Width = StyleDimension.FromPixels(40),
-			Height = StyleDimension.FromPixels(40),
+			Width = StyleDimension.FromPixels(44),
+			Height = StyleDimension.FromPixels(44),
 			HAlign = 1f,
 			VAlign = 1,
 			Left = StyleDimension.FromPixels(-48)
@@ -562,7 +577,19 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(loadButton);
 	}
 
-	private static void LoadConfig(GenConfigPage page)
+	private void ApplyCurrentPreset(GenConfigPage page)
+	{
+		_applyingPreset = true;
+
+		ConfigPreset configPreset = page.PageInfo.Presets[pageConfig];
+		configPreset.Apply(page);
+		presetButton.SetText(GetConfigPresetDisplay(page));
+		onSelectPreset?.Invoke(page, configPreset);
+
+		_applyingPreset = false;
+	}
+
+	private void LoadConfig(GenConfigPage page)
 	{
 		AssurePresetsPathExists();
 		var result = nativefiledialog.NFD_OpenDialog("txt", PresetsPath, out string loadPath);
@@ -571,7 +598,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			TagCompound tag = TagIO.FromFile(loadPath);
 			string name = loadPath[(loadPath.LastIndexOf('\\') + 1)..loadPath.LastIndexOf('.')];
-			LoadFromTag(page, tag, name);
+
+			if (!LoadFromTag(page, tag, name))
+				return;
+
+			pageConfig = page.PageInfo.Presets.Count - 1;
+			ApplyCurrentPreset(page);
 		}
 	}
 
@@ -586,7 +618,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return false;
 	}
 
-	private static void LoadFromTag(GenConfigPage? page, TagCompound tag, string configName)
+	private bool LoadFromTag(GenConfigPage? page, TagCompound tag, string configName)
 	{
 		string name = tag.GetString("pageName");
 		string[] paths = name.Split('/');
@@ -595,7 +627,13 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
 
 		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
-			return; // Add notice
+		{
+			warningTimer = 300;
+			string actualName = GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]].DisplayName.Value;
+			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.FailedToLoad", actualName));
+			warningText.Recalculate();
+			return false; // Add notice
+		}
 
 		List<IndividualPreset> presets = [];
 		TagCompound presetTag = tag.GetCompound("presets");
@@ -617,6 +655,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		ConfigPreset preset = new(configName, presets);
 		page.PageInfo.Presets.Add(preset);
+		return true;
 	}
 
 	private static void SaveConfig(GenConfigPage page)
@@ -843,7 +882,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					if (config.Name == indiv.Name)
 					{
 						GenConfigParameters configParams = config.Params;
-						float factor = GenericMath.InverseLerp((dynamic)configParams.Min, (dynamic)configParams.Max, (dynamic)indiv.Value);
+						dynamic minimum = (dynamic)configParams.Min;
+						dynamic maximum = (dynamic)configParams.Max;
+						dynamic value = (dynamic)indiv.Value;
+
+						if (minimum is Enum)
+						{
+							minimum = (long)minimum;
+							maximum = (long)minimum;
+							value = (long)minimum;
+						}
+
+						float factor = GenericMath.InverseLerp(minimum, maximum, value);
 						setToFactor.Invoke(slider, [factor]);
 						break;
 					}
@@ -1029,9 +1079,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		}
 	}
 
-	public static void AddHoverTicks(UIElement element)
+	public static void AddHoverTicks(UIElement element, bool hasOut = true)
 	{
 		element.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
-		element.OnMouseOut += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
+
+		if (hasOut)
+			element.OnMouseOut += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
 	}
 }

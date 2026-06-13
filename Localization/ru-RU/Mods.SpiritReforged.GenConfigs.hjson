@@ -28,6 +28,7 @@ UI: {
 	CantSave: (Вы не можете сохранить стандартные установки)
 	Load: Загрузить набор предустановок
 	HoverDescription: Открывает меню настройки некоторых элементов генерации мира из Spirit Reforged.
+	// FailedToLoad: Preset isn't for this page. Page expected: {0}
 }
 
 Pages: {
@@ -228,6 +229,11 @@ Pages: {
 					Устанавливает максимальное возможное количество сгенерированых участков со звёздной травой.
 					Это не гарантирует того, что все участки сгенерируются.
 					'''
+			}
+
+			ReforgedCaveWeight: {
+				// DisplayName: "[i:30] (Caves) Custom Weight"
+				// Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
 			}
 		}
 	}
@@ -457,8 +463,8 @@ Pages: {
 
 		Presets: {
 			Inhabited: {
-				// Tooltip: Inhabited
-				// Name: Inhabited
+				// Name: "[i:498] Inhabited"
+				// Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
 			}
 		}
 	}

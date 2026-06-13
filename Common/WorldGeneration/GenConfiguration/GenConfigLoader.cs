@@ -14,7 +14,8 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 public readonly record struct GenConfigParameters(object Min, object Max, object Step);
 
-public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set, bool ReverseMinMax)
+public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set, 
+	bool ReverseMinMax, bool IsDenominator)
 {
 	public bool Modified = false;
 }
@@ -106,12 +107,10 @@ internal class GenConfigLoader : ModSystem
 
 		self.Append(panel);
 
-		UIImageButton button = new(ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/ConfigButton"))
+		UIImageFramed button = new(ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/ConfigButton"), new Rectangle(0, 0, 32, 32))
 		{
-			Width = StyleDimension.FromPixels(30),
-			Height = StyleDimension.FromPixels(30),
-			Left = StyleDimension.FromPixels(1),
-			Top = StyleDimension.FromPixels(1),
+			Width = StyleDimension.FromPixels(36),
+			Height = StyleDimension.FromPixels(36),
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
@@ -121,12 +120,18 @@ internal class GenConfigLoader : ModSystem
 			Main.MenuUI.SetState(new GenConfigUIState(() => Main.MenuUI.SetState(state)));
 		};
 
-		button.OnUpdate += (_) => AddHoverDescription(button, self);
+		button.OnUpdate += (_) =>
+		{
+			button.SetFrame(new Rectangle(0, button.ContainsPoint(Main.MouseScreen) ? 34 : 0, 32, 32));
+			AddHoverDescription(button, self);
+		};
+
 		button.OnMouseOut += (_, _) => RemoveDescription(self);
+		GenConfigUIState.AddHoverTicks(button, false);
 		panel.Append(button);
 	}
 
-	private static void AddHoverDescription(UIImageButton button, UIWorldCreation self)
+	private static void AddHoverDescription(UIElement button, UIWorldCreation self)
 	{
 		bool hover = button.ContainsPoint(Main.MouseScreen);
 		UIText description = EcotoneMapperHooks.GetDescriptionText(self);
@@ -233,7 +238,8 @@ internal class GenConfigLoader : ModSystem
 
 			GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
 			bool hasReverse = field.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
-			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse);
+			bool isDenom = field.GetCustomAttribute<DenominatorAttribute>() is { };
+			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse, isDenom);
 			configPage.ConfigsByName.Add(field.Name, config);
 
 			if (field.FieldType.IsEnum)
@@ -264,7 +270,8 @@ internal class GenConfigLoader : ModSystem
 
 			GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
 			bool hasReverse = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
-			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, hasReverse);
+			bool isDenom = prop.GetCustomAttribute<DenominatorAttribute>() is { };
+			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, hasReverse, isDenom);
 			configPage.ConfigsByName.Add(prop.Name, config);
 
 			if (getMethod.ReturnType.IsEnum)

@@ -28,6 +28,7 @@ UI: {
 	CantSave: (You can't save a default preset)
 	Load: Load a custom preset
 	HoverDescription: Open to configure specific aspects of your world's generation from Spirit Reforged.
+	FailedToLoad: Preset isn't for this page. Page expected: {0}
 }
 
 Pages: {
@@ -210,6 +211,11 @@ Pages: {
 			MaxStargrassCount: {
 				DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
 				Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
+			}
+
+			ReforgedCaveWeight: {
+				DisplayName: "[i:30] (Caves) Custom Weight"
+				Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
 			}
 		}
 	}

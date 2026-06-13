@@ -13,6 +13,7 @@ internal class HeroMemorialMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(1, 10)]
 	[ReverseMinMax]
+	[Denominator]
 	private static int HeroChance = 10;
 
 	PageInfo IGenerationPage.Info => new()

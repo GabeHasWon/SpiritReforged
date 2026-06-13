@@ -40,20 +40,24 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	[GenConfigurable(1, 9)]
 	[ReverseMinMax]
+	[Denominator]
 	private static int CampsiteChance = 3;
 
 	[GenConfigurable(5, 600)]
 	[ReverseMinMax]
+	[Denominator]
 	[Slider]
 	private static int BaseTreeChance = 90;
 
 	[GenConfigurable(1, 20)]
 	[ReverseMinMax]
+	[Denominator]
 	[Slider]
 	private static int PotChance = 8;
 
 	[GenConfigurable(10, 90)]
 	[ReverseMinMax]
+	[Denominator]
 	[Slider]
 	private static int TermiteChance = 45;
 

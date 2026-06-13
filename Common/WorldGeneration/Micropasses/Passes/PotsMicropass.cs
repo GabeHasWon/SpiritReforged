@@ -4,6 +4,7 @@ using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
@@ -34,6 +35,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 	[GenConfigurable(1, 15)]
 	[Slider]
 	[ReverseMinMax]
+	[Denominator]
 	private static int RollingPotChance = 3;
 
 	[GenConfigurable(1f, MaxPots, 5)]

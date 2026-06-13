@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria.Audio;
@@ -171,6 +172,7 @@ internal class EcotoneMapperHooks : ModSystem
 		button.OnLeftClick += FlipActuallyMapping;
 		button.OnUpdate += (_) => ReframeMappingButton(button, self);
 		button.OnMouseOut += (_, _) => RemoveDescription(self);
+		GenConfigUIState.AddHoverTicks(button, false);
 		panel.Append(button);
 	}
 
