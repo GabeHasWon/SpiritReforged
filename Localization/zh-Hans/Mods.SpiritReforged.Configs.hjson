@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: 魂灵新魄客户端配置
 
-	OceanShape: {
-		Label: 海洋形状
-		Tooltip:
-			'''
-			以某些方式修改海洋生成
-			默认为分段_V生成
-			仅推荐在游玩魂灵模组时使用分段_V生成
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: 反射细节
 		Tooltip:
@@ -45,35 +35,6 @@ ReforgedClientConfig: {
 	}
 
 	Headers.Developer: 开发者工具
-}
-
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: 默认
-		Tooltip: ""
-	}
-
-	SlantedSine: {
-		Label: 倾斜正弦
-		Tooltip: ""
-	}
-
-	Piecewise: {
-		Label: 分段
-		Tooltip: ""
-	}
-
-	Piecewise_M: {
-		Label: 分段_ M
-		Tooltip: ""
-	}
-
-	Piecewise_V: {
-		Label: 分段_ V
-		Tooltip: ""
-	}
 }
 
 ReforgedServerConfig: {

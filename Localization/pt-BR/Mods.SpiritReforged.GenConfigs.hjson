@@ -1,0 +1,470 @@
+UI: {
+	// Min: All Min
+	/* MinDescription:
+		'''
+		Sets all configs to the values which would reduce generation the most.
+		So a value like "maximum trees" would be set to its minimum, 
+		but a value for "tree chance (1/x)" would be set to its maximum.
+		''' */
+	// Max: All Max
+	/* MaxDescription:
+		'''
+		Sets all configs to the values which would increase generation the most.
+		So a value like "maximum trees" would be set to its maximum, 
+		but a value for "tree chance (1/x)" would be set to its minimum.
+		''' */
+	// Preset: Preset:
+	// NoPresets: (No Presets)
+	// None: None
+	// Reset: Reset
+	// ResetAll: Reset All
+	// Prior: Prior:
+	// Next: Next:
+	// True: Enabled
+	// False: Disabled
+	// Total: "{0} total"
+	// CustomPresetTooltip: This is a custom preset!
+	// Create: Save as a custom preset
+	// CantSave: (You can't save a default preset)
+	// Load: Load a custom preset
+	// HoverDescription: Open to configure specific aspects of your world's generation from Spirit Reforged.
+	// FailedToLoad: Preset isn't for this page. Page expected: {0}
+}
+
+Pages: {
+	Savanna: {
+		// Name: "{$Ecotones.SavannaEcotone}"
+		// Description: Controls specific aspects of the Savanna ecotone's generation.
+
+		Presets: {
+			Domesticated: {
+				// Name: "[i:224] Domesticated"
+				// Tooltip: A more lived in savanna with more pots and less wildlife.
+			}
+
+			Infested: {
+				// Name: "[i:SpiritReforged/TermiteJar] Infested"
+				// Tooltip: Oops! All termites! Trees may be hard to find.
+			}
+
+			Bumpy: {
+				// Name: "[i:SpiritReforged/Drypowder] Bumpy"
+				// Tooltip: Watch your step! Bumps and hills await in this wild Savanna.
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				// DisplayName: "[i:27] Over Spawn"
+				// Tooltip: Whether the savanna should spawn over spawn, much like the "savanna" seed.
+			}
+
+			Steps: {
+				// DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Steps"
+				// Tooltip: The number of flat steps that the Savanna generates with.
+			}
+
+			CampsiteChance: {
+				// DisplayName: "[i:966] Campsite Chance"
+				// Tooltip: The denominator (1/x) of the chance for a campsite to spawn in.
+			}
+
+			BaseTreeChance: {
+				// DisplayName: "[i:27] Acacia Tree Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile.
+					This chance is increased until a tree is placed, and then it's reset.
+					''' */
+			}
+
+			PotChance: {
+				// DisplayName: "[i:31] Pot Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a pot to spawn when decorating. 
+					This does not override tiles, so a value of one will NOT place a pot on every tile.	
+					''' */
+			}
+
+			TermiteChance: {
+				// DisplayName: "[i:SpiritReforged/TermiteJar] Termite Chance"
+				// Tooltip: The denominator (1/x) of the chance for a termite mound to spawn when decorating.
+			}
+		}
+	}
+
+	SaltFlats: {
+		// Name: "{$Ecotones.SaltFlatsEcotone}"
+		// Description: Controls specific aspects of the Salt Flat ecotone's generation.
+
+		Presets: {
+			SunkenRuin: {
+				// Name: "[i:SpiritReforged/CobbledBrickItem] Sunken Ruins"
+				// Tooltip: The ruins of an ancient civilization have been washed and chipped away.
+			}
+
+			BlankCanvas: {
+				// Name: "[i:SpiritReforged/GlidingItem] Blank Canvas"
+				// Tooltip: An empty, endless reflection lies before you.
+			}
+
+			Dessicated: {
+				// Name: "[i:1274] Desiccated"
+				// Tooltip: There's not a drop of water to be seen. All the trees have withered away.
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				// DisplayName: "[i:27] Over Spawn"
+				// Tooltip: Whether the salt flats should spawn over spawn, much like the "salt" seed.
+			}
+
+			RuinQty: {
+				// DisplayName: "[i:SpiritReforged/CalmingBellItem] Salt Flats Ruins"
+				// Tooltip: The upper bound of Salt Flats ruins placed. Not all may be placed.
+			}
+
+			LakeRadius: {
+				// DisplayName: "[i:206] Lake Radius"
+				// Tooltip: The radius for Salt Flats lakes. Larger radii correspond to larger lakes.
+			}
+
+			CaveRadius: {
+				// DisplayName: "[i:SpiritReforged/SaltWallItem] Cave Radius"
+				// Tooltip: The radius for Salt Flats caves. Larger radii correspond to larger caves.
+			}
+
+			MaxSteps: {
+				// DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Max Steps"
+				// Tooltip: The maximum number of reflective Salt Flat plains within a Salt Flat.
+			}
+
+			StupaChance: {
+				// DisplayName: "[i:SpiritReforged/StoneStupasItem] Stupa Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a stone stupa pot to spawn when decorating. 
+					This does not override tiles, so a value of 1 will NOT place a pot on every tile.
+					''' */
+			}
+
+			TreeChance: {
+				// DisplayName: "[i:27] Dead Tree Chance"
+				/* Tooltip:
+					'''
+					The denominator (1/x) of the chance for a tree to spawn on a given tile. 
+					This chance is increased until a tree is placed, and then it's reset.
+					''' */
+			}
+		}
+	}
+
+	Surface: {
+		// Name: Surface
+		// Description: Controls specific aspects of Reforged's additions and edits to the surface.
+
+		Presets: {
+			Whimsical: {
+				// Name: "[i:SpiritReforged/MidnightApple] Whimsical"
+				// Tooltip: Giant lush caves, hills of rolling Stargrass, tranquil wheatfields... what could possibly go wrong?
+			}
+
+			Treacherous: {
+				// Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
+				// Tooltip: Vast gorges dot the landscape. Don't look down!
+			}
+		}
+
+		Members: {
+			HalfWidth: {
+				// DisplayName: "[i:133] (Canyon) Half Width"
+				// Tooltip: Controls the half-width of the mound of a canyon, if it is sufficiently close to the surface.
+			}
+
+			MaxDepth: {
+				// DisplayName: "[i:133] (Canyon) Max Depth"
+				// Tooltip: Controls the max depth of a canyon.
+			}
+
+			SizeMultiplier: {
+				// DisplayName: "[i:126] (Karst) Size Multiplier"
+				// Tooltip: Multiplier on the size of all digging operations that karsts do.
+			}
+
+			FieldSize: {
+				// DisplayName: "[i:SpiritReforged/BotanistHat] (Scarecrow) Field Size"
+				// Tooltip: Controls the width of a scarecrow's wheat field.
+			}
+
+			ButterflyCountMax: {
+				// DisplayName: "[i:SpiritReforged/ButterflyStaff] (Butterfly Shrines) Max"
+				// Tooltip: The maximum number of butterfly shrines that may be placed. May not place all.
+			}
+
+			HeroChance: {
+				// DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] (Hero's Memorial) Spawn Chance"
+				// Tooltip: The denominator (1/x) of the chance for the Hero's Memorial to spawn.
+			}
+
+			MaxStargrassCount: {
+				// DisplayName: "[i:SpiritReforged/StarPowder] (Stargrass) Patch Count"
+				// Tooltip: The maximum number of stargrass patches that may be placed. May not place all, or may overlap.
+			}
+
+			ReforgedCaveWeight: {
+				// DisplayName: "[i:30] (Caves) Custom Weight"
+				// Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
+			}
+		}
+	}
+
+	Ocean: {
+		// Name: Ocean
+		// Description: Controls specific aspects of Reforged's overhauled Ocean.
+
+		Presets: {
+			KelpForest: {
+				// Name: "[i:SpiritReforged/Kelp] Kelp Forest"
+				// Tooltip: You can see the fields of kelp from the shore!
+			}
+
+			Volcanic: {
+				// Name: "[i:SpiritReforged/GravelItem] Volcanic"
+				// Tooltip: A craggy, magmatic ocean with hardly any flora.
+			}
+		}
+
+		Members: {
+			WaterChestCount: {
+				// DisplayName: "[i:1298] Water Chest Max"
+				// Tooltip: The maximum number of water chests that may be placed in the ocean. Usually will not place all.
+			}
+
+			SunkenTreasureCount: {
+				// DisplayName: "[i:SpiritReforged/SunkenTreasure] Sunken Treasure Max"
+				// Tooltip: The maximum number of sunken treasure that may be placed in the ocean. Usually will not place all.
+			}
+
+			SandDepth: {
+				// DisplayName: "[i:169] Sand Depth"
+				// Tooltip: How far into the ground sand goes under the ocean.
+			}
+
+			SandRange: {
+				// DisplayName: "[i:169] Sand Range"
+				// Tooltip: The upper bound for Sand Depth's random added range in the ocean.
+			}
+
+			CoralLowChance: {
+				// DisplayName: "[i:275] Coral Chance (Low)"
+				// Tooltip: The denominator (1/x) for coral to spawn in the lower steps of the ocean.
+			}
+
+			CoralHighChance: {
+				// DisplayName: "[i:275] Coral Chance (High)"
+				// Tooltip: The denominator (1/x) for coral to spawn in the highest step of the ocean.
+			}
+
+			DecorLowChance: {
+				// DisplayName: "[i:4090] Decor Chance (Low)"
+				// Tooltip: The denominator (1/x) for decor to spawn in the lower steps of the ocean.
+			}
+
+			DecorHighChance: {
+				// DisplayName: "[i:4090] Decor Chance (High)"
+				// Tooltip: The denominator (1/x) for decor to spawn in the highest step of the ocean.
+			}
+
+			KelpChance: {
+				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Chance"
+				// Tooltip: The denominator (1/x) for kelp to spawn in the ocean.
+			}
+
+			KelpMaxHeight: {
+				// DisplayName: "[i:SpiritReforged/Kelp] Kelp Height"
+				// Tooltip: The maximum height, in tiles, that kelp can spawn as.
+			}
+
+			GravelMultiplier: {
+				// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
+				// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
+			}
+
+			Shape: {
+				// DisplayName: "[i:4460] Ocean Shape"
+				// Tooltip: The shape the ocean takes.
+			}
+		}
+	}
+
+	Pots: {
+		// Name: Pots
+		// Description: Controls rates and chances for Reforged's new pots.
+
+		Members: {
+			WorldMultiplierMultiplier: {
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] Total Multiplier"
+				// Tooltip: A global multiplier for all pots' spawn rate.
+			}
+
+			RollingPotChance: {
+				// DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pot Chance"
+				// Tooltip: The denominator (1/x) for a Rolling Pot to replace a boulder.
+			}
+
+			OrnateScale: {
+				// DisplayName: "[i:SpiritReforged/OrnatePotsItem] Ornate Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Ornate pots.
+			}
+
+			PotionScale: {
+				// DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] Potion Vat Scale"
+				// Tooltip: Multiplier to the number of attempts for Potion Vats.
+			}
+
+			ScryingScale: {
+				// DisplayName: "[i:SpiritReforged/ScryingPotItem] Scrying Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Scrying pots.
+			}
+
+			StuffedScale: {
+				// DisplayName: "[i:SpiritReforged/StuffedPotsItem] Stuffed Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Stuffed pots.
+			}
+
+			WormScale: {
+				// DisplayName: "[i:SpiritReforged/WormPotItem] Worm Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Worm pots.
+			}
+
+			PlatterScale: {
+				// DisplayName: "[i:SpiritReforged/SilverPlattersItem] Silver Platter Scale"
+				// Tooltip: Multiplier to the number of attempts for Silver Platters.
+			}
+
+			AetherScale: {
+				// DisplayName: "[i:SpiritReforged/AetherShipmentItem] Aether Shipment Scale"
+				// Tooltip: Multiplier to the number of attempts for Aether Shipments.
+			}
+
+			UpsideDownScale: {
+				// DisplayName: "[i:SpiritReforged/UpsideDownPotItem] Upside-Down Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Upside-Down pots.
+			}
+
+			BoulderScale: {
+				// DisplayName: "[i:SpiritReforged/RollingPotsItem] Rolling Pots Scale"
+				// Tooltip: Multiplier to the number of attempts for Rolling Pots.
+			}
+
+			PicnicScale: {
+				// DisplayName: "[i:SpiritReforged/WickerBasketsItem] Picnic Basket Scale"
+				// Tooltip: Multiplier to the number of attempts for Picnic Baskets.
+			}
+
+			StackScale: {
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] Stacked Scale"
+				// Tooltip: Multiplier to the number of attempts for stacked pots.
+			}
+
+			UncommonScale: {
+				// DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] Uncommon Scale"
+				// Tooltip: Multiplier to the number of attempts for all Uncommon pots.
+			}
+
+			ZenithScale: {
+				// DisplayName: "[i:SpiritReforged/ZenithPotsItem] Zenith Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
+			}
+		}
+	}
+
+	Caves: {
+		// Name: Caves
+		// Description: Controls miscellaneous Cave additions.
+
+		Members: {
+			SignChance: {
+				// DisplayName: "[i:171] (Houses) Signs Chance"
+				// Tooltip: The denominator (1/x) of the chance for a sign to spawn in an underground house.
+			}
+
+			MannequinChance: {
+				// DisplayName: "[i:498] (Houses) Mannequin Chance"
+				// Tooltip: The denominator (1/x) of the chance for a mannequin to spawn in an underground house.
+			}
+
+			LoomChance: {
+				// DisplayName: "[i:332] (Houses) Loom Chance"
+				// Tooltip: The denominator (1/x) of the chance for a house to be a "loom house" - which adds in banners and a loom.
+			}
+
+			RareSignChance: {
+				// DisplayName: "[i:3617] (Houses) Rare Sign Rate"
+				// Tooltip: The denominator (1/x) of the chance for an underground sign to have a rare message.
+			}
+
+			CartSpawnRate: {
+				// DisplayName: "[i:13] (Decor) Minecart Rate"
+				// Tooltip: The multiplier to the maximum amount of ore minecarts that spawn in a world.
+			}
+
+			BoomshroomRate: {
+				// DisplayName: "[i:SpiritReforged/BoomShroom] (Decor) Shroom Rate"
+				// Tooltip: The multiplier to the maximum amount of Boomshrooms that spawn in a world.
+			}
+
+			CovesSpawnRate: {
+				// DisplayName: "[i:2291] (Coves) Multiplier"
+				/* Tooltip:
+					'''
+					The multiplier to the maximum amount of Fishing Coves that spawn in a world. 
+					This may cause issues with other mods that spawn structures.
+					''' */
+			}
+
+			NeonMossChance: {
+				// DisplayName: "[i:SpiritReforged/FlaskRadon] (Neon Moss) Custom Moss Chance"
+				// Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
+			}
+		}
+
+		Presets: {
+			Inhabited: {
+				// Name: "[i:498] Inhabited"
+				// Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
+			}
+		}
+	}
+}
+
+Enums: {
+	OceanShape: {
+		Default: {
+			// DisplayName: Vanilla
+			// Tooltip: Vanilla's default ocean generation. This disables most of Reforged's changes.
+		}
+
+		SlantedSine: {
+			// DisplayName: Slanted Sine
+			// Tooltip: A modified shape where the ocean is defined by a slanted sine wave.
+		}
+
+		Piecewise: {
+			// DisplayName: Piecewise
+			// Tooltip: A more complex piecewise function defines the ocean's shape.
+		}
+
+		Piecewise_M: {
+			// DisplayName: Piecewise (M)
+			// Tooltip: A modified version of the piecewise function with slightly different slopes.
+		}
+
+		Piecewise_V: {
+			// DisplayName: Reforged
+			// Tooltip: The finalized version of the piecewise preset with various minor modifications.
+		}
+	}
+}

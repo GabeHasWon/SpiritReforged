@@ -26,7 +26,8 @@ public class AcaciaTree : CustomTree, ISetConversion
 		}
 	}
 
-	public override int TreeHeight => WorldGen.genRand.Next(8, 16);
+	public override int TreeHeight => Main.getGoodWorld ? WorldGen.genRand.Next(8, 30) : WorldGen.genRand.Next(8, 16);
+	public override HashSet<SegmentType> ShakeableTreetops => [SegmentType.Default];
 
 	public ConversionHandler.Set ConversionSet => new()
 	{
@@ -118,9 +119,9 @@ public class AcaciaTree : CustomTree, ISetConversion
 		var position = new Vector2(i, j - 3) * 16;
 		int dropType = (int)drop;
 		if (dropType > ItemID.None)
-			Item.NewItem(null, new Rectangle((int)position.X, (int)position.Y, 16, 16), dropType);
+			Item.NewItem(new EntitySource_ShakeTree(i, j), new Rectangle((int)position.X, (int)position.Y, 16, 16), dropType);
 
-		GrowEffects(i, j, true);
+		GrowEffects(i, j, true, ModContent.GoreType<AcaciaTreeLeaf>());
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
@@ -223,7 +224,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 			}
 
 			for (int g = 0; g < loops; g++)
-				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range), 
+				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range) * new Vector2(2, 0.5f) - new Vector2(0, 50), 
 					Main.rand.NextVector2Unit(), goreType, 0.7f + Main.rand.NextFloat() * 0.6f);
 		}
 	}

@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Terraria.Audio;
@@ -80,11 +81,13 @@ internal class EcotoneMapperHooks : ModSystem
 	{
 		UIElement element = orig(self);
 
-		if (self.Data.TryGetHeaderData<EcotoneMapperHooks>(out TagCompound tag) && tag.ContainsKey("manuallyMapped"))
-			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingIcon")));
+		if (DataHasMappingHeader(self))
+			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/EcotoneMapper/MappingIcon")) { Left = StyleDimension.FromPixels(-4) });
 
 		return element;
 	}
+
+	internal static bool DataHasMappingHeader(AWorldListItem self) => self.Data.TryGetHeaderData<EcotoneMapperHooks>(out TagCompound tag) && tag.ContainsKey("manuallyMapped");
 
 	private void AddMappingChecks(On_WorldGenerator.orig_GenerateWorld orig, WorldGenerator self, GenerationProgress progress)
 	{
@@ -148,7 +151,7 @@ internal class EcotoneMapperHooks : ModSystem
 			HAlign = 0.5f,
 			VAlign = 0.5f,
 			Left = StyleDimension.FromPixels(leftOffset),
-			Top = StyleDimension.FromPixels(-218),
+			Top = StyleDimension.FromPixels(-168),
 			Width = StyleDimension.FromPixels(40),
 			Height = StyleDimension.FromPixels(40),
 			PaddingLeft = 4,
@@ -169,9 +172,13 @@ internal class EcotoneMapperHooks : ModSystem
 		button.OnLeftClick += FlipActuallyMapping;
 		button.OnUpdate += (_) => ReframeMappingButton(button, self);
 		button.OnMouseOut += (_, _) => RemoveDescription(self);
+		GenConfigUIState.AddHoverTicks(button, false);
 		panel.Append(button);
 	}
 
+	/// <summary>
+	/// Gets the description text for a given <see cref="UIWorldCreation"/> UI state.
+	/// </summary>
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_descriptionText")]
 	public static extern ref UIText GetDescriptionText(UIWorldCreation ui);
 

@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: Reforged Client Config
 
-	OceanShape: {
-		Label: Ocean Shape
-		Tooltip:
-			'''
-			Modifies the Ocean generation in certain ways
-			Defaults to a Piecewise_V generation
-			The Piecewise_V generation is recommended for Spirit playthroughs
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: Reflection Detail
 		Tooltip:
@@ -45,35 +35,6 @@ ReforgedClientConfig: {
 	}
 
 	Headers.Developer: Developer Tools
-}
-
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: Default
-		Tooltip: ""
-	}
-
-	SlantedSine: {
-		Label: Slanted Sine
-		Tooltip: ""
-	}
-
-	Piecewise: {
-		Label: Piecewise
-		Tooltip: ""
-	}
-
-	Piecewise_M: {
-		Label: Piecewise_ M
-		Tooltip: ""
-	}
-
-	Piecewise_V: {
-		Label: Piecewise_ V
-		Tooltip: ""
-	}
 }
 
 ReforgedServerConfig: {

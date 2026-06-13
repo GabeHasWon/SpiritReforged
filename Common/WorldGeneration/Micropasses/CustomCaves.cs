@@ -1,17 +1,31 @@
-﻿using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses;
 
 /// <summary> Handles replacing mountain caves with our custom caves. </summary>
-internal class CustomCaves : ModSystem
+internal class CustomCaves : ModSystem, IGenerationPage
 {
 	private static readonly Dictionary<Point16, CaveEntranceType> TypeByPosition = [];
 	private static bool AddingMountainCaves = false;
+
+	[GenConfigurable(0.1f, 10f, 0.1f)]
+	[Slider]
+	private static float ReforgedCaveWeight = 1f;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Load()
 	{
@@ -28,6 +42,10 @@ internal class CustomCaves : ModSystem
 	private static void AddFlagToMountainCavePass(WorldGen.orig_GenPassDetour orig, object self, GenerationProgress progress, GameConfiguration configuration)
 	{
 		AddingMountainCaves = true;
+
+		foreach (var entry in CaveEntrance.EntranceByType.Values)
+			entry.OnStart();
+
 		orig(self, progress, configuration);
 		AddingMountainCaves = false;
 	}
@@ -46,13 +64,27 @@ internal class CustomCaves : ModSystem
 
 	private static void OverrideGenMound(On_WorldGen.orig_Mountinater orig, int i, int j)
 	{
-		var type = (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
+		CaveEntranceType type = DetermineEntranceWeight();
 		TypeByPosition.Add(new(i, j), type);
 
 		if (type == CaveEntranceType.Vanilla)
 			orig(i, j);
 		else
 			CaveEntrance.EntranceByType[type].Generate(i, j);
+	}
+
+	private static CaveEntranceType DetermineEntranceWeight()
+	{
+		if (ReforgedCaveWeight == 1f)
+			return (CaveEntranceType)WorldGen.genRand.Next((int)CaveEntranceType.Count);
+		else
+		{
+			WeightedRandom<CaveEntranceType> types = new();
+			types.Add(CaveEntranceType.Vanilla, 1f);
+			types.Add(CaveEntranceType.Canyon, ReforgedCaveWeight);
+			types.Add(CaveEntranceType.Karst, ReforgedCaveWeight);
+			return types;
+		}
 	}
 
 	private static CaveEntranceType GetEntrance(int i, int j)

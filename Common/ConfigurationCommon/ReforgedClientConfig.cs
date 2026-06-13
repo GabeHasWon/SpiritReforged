@@ -9,8 +9,8 @@ class ReforgedClientConfig : ModConfig
 {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
 
-	[DefaultValue(OceanGeneration.OceanShape.Piecewise_V)]
-	public OceanGeneration.OceanShape OceanShape { get; set; }
+	//[DefaultValue(OceanGeneration.OceanShape.Piecewise_V)]
+	//public OceanGeneration.OceanShape OceanShape { get; set; }
 
 	[Range(0, 3)]
 	[DrawTicks]
