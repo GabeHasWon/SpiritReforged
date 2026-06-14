@@ -3153,3 +3153,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Соляная могильная табличка
 	Tooltip: ""
 }
+
+ScarabStaff: {
+	// DisplayName: Scarab Staff
+	// Tooltip: ""
+}

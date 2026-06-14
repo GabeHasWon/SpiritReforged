@@ -3153,3 +3153,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Salt Grave Marker
 	Tooltip: ""
 }
+
+ScarabStaff: {
+	DisplayName: Scarab Staff
+	Tooltip: ""
+}

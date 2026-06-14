@@ -3140,3 +3140,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Obelisco de Sal
 	Tooltip: ""
 }
+
+ScarabStaff: {
+	// DisplayName: Scarab Staff
+	// Tooltip: ""
+}

@@ -147,3 +147,8 @@ ScarabMountBuff: {
 	DisplayName: Ездовой жук-пилюльщик
 	Description: «Держитесь!»
 }
+
+DungBeetleMinion_Buff: {
+	// DisplayName: Dung Beetle Minion_ Buff
+	// Description: Mods.SpiritReforged.Buffs.DungBeetleMinion_Buff.Description
+}

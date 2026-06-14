@@ -147,3 +147,8 @@ ScarabMountBuff: {
 	DisplayName: 鼠妇坐骑
 	Description: “抓稳了！”
 }
+
+DungBeetleMinion_Buff: {
+	// DisplayName: Dung Beetle Minion_ Buff
+	// Description: Mods.SpiritReforged.Buffs.DungBeetleMinion_Buff.Description
+}

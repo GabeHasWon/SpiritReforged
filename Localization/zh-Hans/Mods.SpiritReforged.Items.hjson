@@ -3153,3 +3153,8 @@ SaltGraveMarkerItem: {
 	DisplayName: 盐墓石碑
 	Tooltip: ""
 }
+
+ScarabStaff: {
+	// DisplayName: Scarab Staff
+	// Tooltip: ""
+}

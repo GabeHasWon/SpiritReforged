@@ -95,3 +95,5 @@ SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
 SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+DungBall.DisplayName: Dung Ball
+DungBeetleMinion.DisplayName: Dung Beetle
