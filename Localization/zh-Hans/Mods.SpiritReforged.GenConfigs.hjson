@@ -28,7 +28,7 @@ UI: {
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
-	// FailedToLoad: Preset isn't for this page. Page expected: {0}
+	FailedToLoad: 预设不适用于此页面。预期页面：{0}
 }
 
 Pages: {
@@ -214,8 +214,8 @@ Pages: {
 			}
 
 			ReforgedCaveWeight: {
-				// DisplayName: "[i:30] (Caves) Custom Weight"
-				// Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
+				DisplayName: "[i:30] （洞穴）自定义权重"
+				Tooltip: 魂灵新魄的自定义洞穴替代原版“山洞”生成的权重。
 			}
 		}
 	}
