@@ -53,7 +53,7 @@ public class EnchanterUI : AutoUIState
 		Left.Set(44, 0);
 		Top.Set(0, 0.25f);
 
-		_list = new();
+		_list = new(new CatalogueList.FullPadding(6));
 		_list.Width.Set(204, 0);
 		_list.Height.Set(164, 0);
 		_list.Left.Set(34, 0);
@@ -189,6 +189,8 @@ public class EnchanterUI : AutoUIState
 
 				ClearList(); //Reset the list
 				PopulateList();
+
+				PopupText.NewText(PopupTextContext.ItemReforge, _slot.Item, _slot.Item.stack, noStack: true);
 			}
 		}
 	}
@@ -206,8 +208,9 @@ public class EnchanterUI : AutoUIState
 		_infoList.AddEntry(info);
 
 		info = new CatalogueInfo();
-		info.Width.Set(width, 0);
+		info.Width.Set(width / 2, 0);
 		info.Height.Set(30, 0);
+		info.HAlign = 0.5f;
 		info.Action += PriceInfo_Action;
 
 		_infoList.AddEntry(info);

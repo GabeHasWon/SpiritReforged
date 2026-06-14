@@ -6,12 +6,37 @@ namespace SpiritReforged.Common.UI.PotCatalogue;
 
 public class CatalogueList : UIElement
 {
+	#region padding types
+	public interface IPadding
+	{
+		public int Amount { get; }
+	}
+
+	/// <summary> Applies padding of <see cref="Length"/> between border and elements. </summary>
+	public readonly record struct FullPadding(int Length) : IPadding
+	{
+		public int Amount => Length;
+	}
+
+	/// <summary> Applies padding of <see cref="Length"/> only between elements. </summary>
+	public readonly record struct ElementPadding(int Length) : IPadding
+	{
+		public int Amount => Length;
+	}
+	#endregion
+
 	/// <summary> Specifically contains elements added with <see cref="AddEntry"/>. </summary>
 	private readonly List<UIElement> _listed = [];
+	private readonly IPadding _listPadding;
+
 	private UIScrollbar _scrollbar;
 	private bool _draggingScrollbar;
 
-	public CatalogueList() => OverflowHidden = true;
+	public CatalogueList(IPadding padding = default)
+	{
+		OverflowHidden = true;
+		_listPadding = (padding == default) ? new ElementPadding(6) : padding;
+	}
 
 	/// <summary> The pixel width of this element, considering scrollbar territory. </summary>
 	public float AvailableWidth => GetDimensions().Width - ((_scrollbar is null) ? 0 : _scrollbar.Width.Pixels);
@@ -47,27 +72,27 @@ public class CatalogueList : UIElement
 
 	public void RecalculateEntries()
 	{
-		const int listPadding = 6;
+		float padding = _listPadding.Amount;
+		bool initialPadding = _listPadding is FullPadding;
 
-		float x = 0;
-		float y = 0;
+		float x = initialPadding ? padding : 0;
+		float y = initialPadding ? padding : 0;
 		float lastHeight = 0;
 		float scrollbarInfluence = (_scrollbar is null) ? 0 : -_scrollbar.GetValue();
 
 		foreach (var e in _listed)
 		{
 			int eFullWidth = (int)e.Width.Pixels;
-
 			if (x + eFullWidth > (int)AvailableWidth) //Wrap around
 			{
-				x = 0;
-				y += lastHeight + listPadding;
+				x = initialPadding ? padding : 0;
+				y += lastHeight + padding;
 			}
 
 			e.Left.Pixels = x;
 			e.Top.Pixels = y + scrollbarInfluence;
 
-			x += eFullWidth + listPadding;
+			x += eFullWidth + padding;
 			lastHeight = e.Height.Pixels;
 		}
 
