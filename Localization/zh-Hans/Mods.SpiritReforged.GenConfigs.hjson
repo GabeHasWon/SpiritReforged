@@ -18,11 +18,11 @@ UI: {
 	None: 无
 	Reset: 重置
 	ResetAll: 重置全部
-	Prior: 上一个：
-	Next: 下一个：
+	Prior: 上一页：
+	Next: 下一页：
 	True: 启用
 	False: 禁用
-	Total: "{0}总计"
+	Total: "总计{0}"
 	CustomPresetTooltip: 这是一个自定义预设！
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
@@ -39,7 +39,7 @@ Pages: {
 		Presets: {
 			Domesticated: {
 				Name: "[i:224] 驯化"
-				Tooltip: 一个更有生活气息的热带草原，更多的罐子，更少的野生动物.
+				Tooltip: 一个更有生活气息的稀树平原，更多的罐子，更少的野生动物。
 			}
 
 			Infested: {
@@ -70,7 +70,7 @@ Pages: {
 			}
 
 			BaseTreeChance: {
-				DisplayName: "[i:27] 合金欢树几率"
+				DisplayName: "[i:27] 金合欢树几率"
 				Tooltip:
 					'''
 					特定物块上生成树木的几率的分母（1/x）。
@@ -168,7 +168,7 @@ Pages: {
 		Presets: {
 			Whimsical: {
 				Name: "[i:SpiritReforged/MidnightApple] 奇想"
-				Tooltip: 巨大的繁茂洞穴，连绵起伏的星草山丘，宁静的麦田……能出什么差错呢？
+				Tooltip: 巨大的繁茂洞穴，连绵起伏的星草山丘，宁静的麦田……会出什么问题呢？
 			}
 
 			Treacherous: {
@@ -435,6 +435,261 @@ Pages: {
 			Inhabited: {
 				Name: "[i:498] 曾有人迹"
 				Tooltip: 地下各处都有友好探险者的踪迹……他们后来怎样了？
+			}
+		}
+	}
+
+	Ziggurat: {
+		Name: 庙塔
+		Description: 控制庙塔和其内容的具体方面。
+
+		Members: {
+			UsedWidth: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 宽度"
+				Tooltip: 用于确定庙塔大小的宽度，不一定是实际宽度。
+			}
+
+			UsedHeight: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 高度"
+				Tooltip: 用于确定庙塔大小的高度，不一定是实际高度。
+			}
+
+			MaxInfections: {
+				DisplayName: "[i:SpiritReforged/PaleHiveItem] 侵染最大数量"
+				Tooltip: 庙塔中每层被侵染（巢）的数量。取值范围为0到该值。
+			}
+
+			PotChance: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] 罐子几率"
+				Tooltip: 庙塔中罐子被放置的几率。
+			}
+
+			LapisPotChance: {
+				DisplayName: "[i:SpiritReforged/LapisPotsItem] 青金石罐子几率"
+				Tooltip: 庙塔中青金石罐子被放置的几率。
+			}
+
+			UncommonChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] 不常见的罐子几率"
+				Tooltip: 不常见的罐子被放置的几率。
+			}
+
+			MaxSpikeStripWidth: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] 最大刺带宽度"
+				Tooltip: 一条刺带的最大宽度。
+			}
+
+			SpikeStripChance: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] 刺带几率"
+				Tooltip: 非特殊房间中一条刺带被放置的几率。
+			}
+
+			ChestItemCountMin: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 最低宝箱战利品数量"
+				Tooltip: 宝箱中出现的物品的最低数量。
+			}
+
+			ChestItemCountRange: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱战利品数量范围"
+				Tooltip: 添加物品的范围值（0 - x），最小为{$ChestItemCountMin}。
+			}
+
+			DresserItemCountMin: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 最低梳妆台战利品数量"
+				Tooltip: 梳妆台中出现的物品的最低数量。
+			}
+
+			DresserItemCountRange: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台战利品数量范围"
+				Tooltip: 添加物品的范围值（0 - x），最小为{DresserItemCountMin}。
+			}
+
+			SpecialRoomChance: {
+				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] 特殊房间几率"
+				Tooltip: 任意庙塔房间变为特殊房间的几率。
+			}
+
+			SkipRoomChance: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] 跳过房间几率"
+				Tooltip: 任意房间被跳过而非生成的几率。
+			}
+
+			ChestNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱归一化"
+				Tooltip:
+					'''
+					宝箱战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			DresserNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 梳妆台归一化"
+				Tooltip:
+					'''
+					梳妆台战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			AncientBannerChance: {
+				DisplayName: "[i:SpiritReforged/AncientBannerItem] 远古旗帜几率"
+				Tooltip: 远古旗帜生成的几率。
+			}
+
+			BannerChance: {
+				DisplayName: "[i:340] 旗帜几率"
+				Tooltip: 原版旗帜生成的几率。
+			}
+
+			CenserChance: {
+				DisplayName: "[i:SpiritReforged/CenserItem] 香炉几率"
+				Tooltip: 香炉生成的几率。
+			}
+
+			TabletChance: {
+				DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] 远古碑牌几率"
+				Tooltip: 非宝藏房间中远古碑牌生成的几率。
+			}
+
+			FloorDivotChance: {
+				DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] 地面凹陷几率"
+				Tooltip: 地面凹陷（随机风化效果）发生的几率。
+			}
+
+			SandSplatChance: {
+				DisplayName: "[i:169] 沙溅斑块几率"
+				Tooltip: 沙溅斑块（随机风化效果）发生的几率。
+			}
+
+			PillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] 岩柱几率"
+				Tooltip: 岩柱生成的几率。
+			}
+
+			LightChance: {
+				DisplayName: "[i:SpiritReforged/SunDropper] 光照几率"
+				Tooltip:  一束光线生成的几率。
+			}
+		}
+	}
+
+	Desert: {
+		Name: 沙漠
+		Description: 控制魂灵新魄的沙漠生成的各种方面。
+
+		Members: {
+			PalmHeightMin: {
+				DisplayName: "[i:2504] （绿洲）棕榈树最低高度"
+				Tooltip: 地下绿洲中棕榈树的最低高度。
+			}
+
+			PalmHeightRange: {
+				DisplayName: "[i:2504] （绿洲）棕榈树高度范围"
+				Tooltip: 追加到棕榈树最低高度上的随机范围值。
+			}
+
+			PalmChanceLow: {
+				DisplayName: "[i:2504] （绿洲）棕榈树几率（低）"
+				Tooltip: 在已经至少放置一棵棕榈树后，再放置棕榈树的几率。
+			}
+
+			PalmChanceHigh: {
+				DisplayName: "[i:2504] （绿洲）棕榈树几率（高）"
+				Tooltip: 在尚未放置任何棕榈树前，放置棕榈树的几率。
+			}
+
+			CattailChance: {
+				DisplayName: "[i:2996] （绿洲）香蒲几率"
+				Tooltip: 香蒲被放置的几率。
+			}
+
+			CattailHeightMin: {
+				DisplayName: "[i:2996] （绿洲）香蒲最低高度"
+				Tooltip: 香蒲的最低高度。不会超出水面。
+			}
+
+			CattailHeightRange: {
+				DisplayName: "[i:2996] （绿洲）香蒲高度范围"
+				Tooltip: 追加到香蒲最低高度上的随机范围值。
+			}
+
+			OasisPlantChance: {
+				DisplayName: "[i:1109] （绿洲）绿洲植物几率"
+				Tooltip: 绿洲植物被放置的几率。
+			}
+
+			GlowflowerChance: {
+				DisplayName: "[i:2996] （绿洲）发光花几率"
+				Tooltip: 发光花被放置的几率。
+			}
+
+			PineappleChance: {
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）菠萝几率"
+				Tooltip: 菠萝被放置的几率。
+			}
+
+			SeaOatsChance: {
+				DisplayName: "[i:2996] （绿洲）海燕麦几率"
+				Tooltip: 海燕麦被放置的几率。海燕麦是生长在海洋或绿洲附近的草质谷物植物。
+			}
+
+			LightAmountMin: {
+				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）最低光线数量"
+				Tooltip: 被放置的光线数量的最低值。
+			}
+
+			LightAmountRange: {
+				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）光线范围"
+				Tooltip: 追加到最低光线数量上的随机范围值。
+			}
+
+			PoolWidthMin: {
+				DisplayName: "[i:126] （绿洲）最小水池宽度"
+				Tooltip: 地下绿洲水池的最小宽度。
+			}
+
+			PoolWidthRange: {
+				DisplayName: "[i:126] （绿洲）水池宽度范围"
+				Tooltip: 追加到地下绿洲最小水池宽度上的随机范围值。
+			}
+
+			PoolDepthMin: {
+				DisplayName: "[i:SpiritReforged/Kelp] （绿洲）最小水池深度"
+				Tooltip: 地下绿洲水池的最小深度。
+			}
+
+			PoolDepthRange: {
+				DisplayName: "[i:SpiritReforged/Kelp] （绿洲）水池深度范围"
+				Tooltip: 追加到地下绿洲最小水池深度上的随机范围值。
+			}
+
+			MainNormalization: {
+				DisplayName: "[i:1298] （绿洲）主要物品归一化"
+				Tooltip:
+					'''
+					主要物品战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			ItemNormalization: {
+				DisplayName: "[i:1298] （绿洲）其他物品归一化"
+				Tooltip:
+					'''
+					非主要物品战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			ChestItemCountMin: {
+				DisplayName: "[i:1298] （绿洲）最低宝箱物品数量"
+				Tooltip: 地下绿洲的宝箱中出现的物品的最低数量。
+			}
+
+			ChestItemCountRange: {
+				DisplayName: "[i:1298] （绿洲）宝箱物品数量范围"
+				Tooltip: 追加到地下绿洲最低宝箱物品数量上的随机范围值。
 			}
 		}
 	}
