@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria.Audio;
@@ -16,7 +17,7 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 public readonly record struct GenConfigParameters(object Min, object Max, object Step);
 
 public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set, 
-	bool ReverseMinMax, bool IsDenominator)
+	bool ReverseMinMax, bool IsDenominator, string? PriorityConfig)
 {
 	public bool Modified = false;
 }
@@ -219,15 +220,63 @@ internal class GenConfigLoader : ModSystem
 
 	private static void GetConfigs(ref Action? delay, Type type, IGenerationPage page, GenConfigPage configPage)
 	{
-		var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+		MemberInfo[] members = [.. type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static), 
+			.. type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)];
 
-		foreach (var prop in props)
-			delay += () => GeneratePropConfig(page, configPage, prop);
+		foreach (var member in members)
+		{
+			if (member is PropertyInfo prop)
+				delay += () => GeneratePropConfig(page, configPage, prop);
+			else if (member is FieldInfo field)
+				delay += () => GenerateFieldConfig(page, configPage, field);
+		}
+	}
 
-		var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+	/// <summary>
+	/// Orders the array according to <see cref="PriorityModifierAttribute"/>.
+	/// </summary>
+	internal static PriorityQueue<LoadedConfig, double> PrioritizeConfigs(IEnumerable<LoadedConfig> configs)
+	{
+		PriorityQueue<LoadedConfig, double> orderedConfigs = new();
+		Dictionary<string, List<LoadedConfig>> delayedConfigs = [];
+		int weight = 0;
 
-		foreach (var field in fields)
-			delay += () => GenerateFieldConfig(page, configPage, field);
+		foreach (LoadedConfig info in configs)
+		{
+			if (info.PriorityConfig is { } prior)
+			{
+				delayedConfigs.TryAdd(prior, []);
+				delayedConfigs[prior].Add(info);
+			}
+			else
+				orderedConfigs.Enqueue(info, weight);
+
+			weight++;
+		}
+
+		int inset = 0;
+		Action delays = null!;
+
+		foreach (var (config, prio) in orderedConfigs.UnorderedItems)
+		{
+			if (delayedConfigs.TryGetValue(config.Name, out List<LoadedConfig>? delayed) && delayed is not null)
+			{
+				double curPrio = prio + 0.01f;
+
+				foreach (LoadedConfig delayedConfig in delayed)
+				{
+					double delegatePrio = curPrio;
+					delays += () => orderedConfigs.Enqueue(delayedConfig, delegatePrio);
+					curPrio += 0.01f;
+				}
+			}
+
+			inset++;
+		}
+
+		delays?.Invoke();
+
+		return orderedConfigs;
 	}
 
 	private static void GenerateFieldConfig(IGenerationPage page, GenConfigPage configPage, FieldInfo field)
@@ -241,7 +290,8 @@ internal class GenConfigLoader : ModSystem
 			GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
 			bool hasReverse = field.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			bool isDenom = field.GetCustomAttribute<DenominatorAttribute>() is { };
-			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse, isDenom);
+			string? prioConfig = field.GetCustomAttribute<PriorityModifierAttribute>() is PriorityModifierAttribute prior ? prior.ParentName : null;
+			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse, isDenom, prioConfig);
 			configPage.ConfigsByName.Add(field.Name, config);
 
 			if (field.FieldType.IsEnum)
@@ -271,9 +321,10 @@ internal class GenConfigLoader : ModSystem
 			object def = getDelegate();
 
 			GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
-			bool hasReverse = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
+			bool rev = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			bool isDenom = prop.GetCustomAttribute<DenominatorAttribute>() is { };
-			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, hasReverse, isDenom);
+			string? prioConfig = prop.GetCustomAttribute<PriorityModifierAttribute>() is PriorityModifierAttribute prior ? prior.ParentName : null;
+			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, rev, isDenom, prioConfig);
 			configPage.ConfigsByName.Add(prop.Name, config);
 
 			if (getMethod.ReturnType.IsEnum)

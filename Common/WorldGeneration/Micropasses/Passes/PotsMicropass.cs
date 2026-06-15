@@ -40,54 +40,67 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float OrnateScale = 5;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float PotionScale = 46;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float ScryingScale = 20;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float StuffedScale = 12;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float WormScale = 18;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float PlatterScale = 24;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float AetherScale = 3;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float UpsideDownScale = 4;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float BoulderScale = 15;
 
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float PicnicScale = 2;
 
 	[GenConfigurable(0.00005, 0.05, 0.00005)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	public static double StackScale = 0.0005;
 
 	[GenConfigurable(0.00005, 0.05, 0.00005)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	public static double UncommonScale = 0.00055;
 
 	[GenConfigurable(1, MaxPots, 5)]
 	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	public static float ZenithScale = 200;
 
 	public override string WorldGenName => "Pots";
