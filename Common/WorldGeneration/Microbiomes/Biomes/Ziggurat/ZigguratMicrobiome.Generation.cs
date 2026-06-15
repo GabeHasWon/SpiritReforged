@@ -64,10 +64,11 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(40, DefaultWidth * 10)]
 	[Slider]
-	private static int UsedWidth = DefaultWidth;
+	internal static int UsedWidth = DefaultWidth;
 
 	[GenConfigurable(40, DefaultHeight * 10)]
 	[Slider]
+	[PriorityModifier(nameof(UsedWidth))]
 	private static int UsedHeight = DefaultHeight;
 
 	[GenConfigurable(0, 12)]
@@ -84,12 +85,14 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
+	[PriorityModifier(nameof(PotChance))]
 	private static int LapisPotChance = 10;
 
 	[GenConfigurable(1, 50)]
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
+	[PriorityModifier(nameof(PotChance))]
 	private static int UncommonChance = 5;
 
 	[GenConfigurable(4, 15)]
@@ -98,6 +101,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(1, 50)]
 	[Slider]
+	[PriorityModifier(nameof(MaxSpikeStripWidth))]
 	private static int SpikeStripChance = 3;
 
 	[GenConfigurable(1, 20)]
@@ -106,6 +110,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0, 20)]
 	[Slider]
+	[PriorityModifier(nameof(ChestItemCountRange))]
 	private static int ChestItemCountRange = 2;
 
 	[GenConfigurable(1, 20)]
@@ -114,6 +119,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0, 20)]
 	[Slider]
+	[PriorityModifier(nameof(DresserItemCountMin))]
 	private static int DresserItemCountRange = 3;
 
 	[GenConfigurable(1, 10)]
@@ -126,10 +132,12 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0f, 1f, 0.01f)]
 	[Slider]
+	[PriorityModifier(nameof(ChestItemCountRange))]
 	private static float ChestNormalization = 0;
 
 	[GenConfigurable(0f, 1f, 0.01f)]
 	[Slider]
+	[PriorityModifier(nameof(DresserItemCountMin))]
 	private static float DresserNormalization = 0;
 
 	[GenConfigurable(0f, 1f, 0.01f)]

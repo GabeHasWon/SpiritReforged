@@ -691,6 +691,21 @@ Pages: {
 				DisplayName: "[i:1298] (Oasis) Chest Item Count Range"
 				Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
 			}
+
+			FossilCount: {
+				DisplayName: FossilCount
+				Tooltip: FossilCount
+			}
+
+			FossilMultiplier: {
+				DisplayName: FossilMultiplier
+				Tooltip: FossilMultiplier
+			}
+
+			PatchScale: {
+				DisplayName: PatchScale
+				Tooltip: PatchScale
+			}
 		}
 	}
 }

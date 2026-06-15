@@ -62,6 +62,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[Slider]
 	[ReverseMinMax]
 	[Denominator]
+	[PriorityModifier(nameof(CoralLowChance))]
 	private static int CoralHighChance = 15;
 
 	[GenConfigurable(2, 100)]
@@ -74,6 +75,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[Slider]
 	[ReverseMinMax]
 	[Denominator]
+	[PriorityModifier(nameof(DecorLowChance))]
 	private static int DecorHighChance = 14;
 
 	[GenConfigurable(1, 30)]
@@ -84,6 +86,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 
 	[GenConfigurable(6, 50)]
 	[Slider]
+	[PriorityModifier(nameof(KelpChance))]
 	private static int KelpMaxHeight = 4;
 
 	[GenConfigurable(0.2f, 5f, 0.1f)]

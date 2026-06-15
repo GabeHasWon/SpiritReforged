@@ -481,7 +481,7 @@ Pages: {
 
 			UsedHeight: {
 				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Height"
-				// Tooltip: The width used for determining the size of the Ziggurat, not necessarily the actual width.
+				// Tooltip: The height used for determining the size of the Ziggurat, not necessarily the actual width.
 			}
 
 			MaxInfections: {
@@ -606,112 +606,135 @@ Pages: {
 
 	Desert: {
 		// Name: Desert
-		// Description: ""
+		// Description: Controls various aspects of Reforged's Desert generation.
 
 		Members: {
 			PalmHeightMin: {
-				// DisplayName: PalmHeightMin
-				// Tooltip: PalmHeightMin
+				// DisplayName: "[i:2504] (Oasis) Palm Height Minimum"
+				// Tooltip: Minimum height for palms in an underground Oasis.
 			}
 
 			PalmHeightRange: {
-				// DisplayName: PalmHeightRange
-				// Tooltip: PalmHeightRange
+				// DisplayName: "[i:2504] (Oasis) Palm Height Range"
+				// Tooltip: Range for palms in an underground Oasis, added to the minimum.
 			}
 
 			PalmChanceLow: {
-				// DisplayName: PalmChanceLow
-				// Tooltip: PalmChanceLow
+				// DisplayName: "[i:2504] (Oasis) Palm Chance (Low)"
+				// Tooltip: Chance for a palm to be placed after at least one has already been placed.
 			}
 
 			PalmChanceHigh: {
-				// DisplayName: PalmChanceHigh
-				// Tooltip: PalmChanceHigh
+				// DisplayName: "[i:2504] (Oasis) Palm Chance (High)"
+				// Tooltip: Chance for a palm to be placed before at least one has already been placed.
 			}
 
 			CattailChance: {
-				// DisplayName: CattailChance
-				// Tooltip: CattailChance
+				// DisplayName: "[i:2996] (Oasis) Cattail Chance"
+				// Tooltip: Chance for a cattail to be placed.
 			}
 
 			CattailHeightMin: {
-				// DisplayName: CattailHeightMin
-				// Tooltip: CattailHeightMin
+				// DisplayName: "[i:2996] (Oasis) Cattail Height Minimum"
+				// Tooltip: Minimum height for a cattail. This will not go past water.
 			}
 
 			CattailHeightRange: {
-				// DisplayName: CattailHeightRange
-				// Tooltip: CattailHeightRange
+				// DisplayName: "[i:2996] (Oasis) Cattail Height Range"
+				// Tooltip: Random range added to minimum height for cattails.
 			}
 
 			OasisPlantChance: {
-				// DisplayName: OasisPlantChance
-				// Tooltip: OasisPlantChance
+				// DisplayName: "[i:1109] (Oasis) Oasis Plant Chance"
+				// Tooltip: Chance for an Oasis Plant to be placed.
 			}
 
 			GlowflowerChance: {
-				// DisplayName: GlowflowerChance
-				// Tooltip: GlowflowerChance
+				// DisplayName: "[i:2996] (Oasis) Glowflower Chance"
+				// Tooltip: Chance for a Glowflower to be placed.
 			}
 
 			PineappleChance: {
-				// DisplayName: PineappleChance
-				// Tooltip: PineappleChance
+				// DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oasis) Pineapple Chance"
+				// Tooltip: Chance for a Pineapple to be placed.
 			}
 
 			SeaOatsChance: {
-				// DisplayName: SeaOatsChance
-				// Tooltip: SeaOatsChance
+				// DisplayName: "[i:2996] (Oasis) Sea Oats Chance"
+				// Tooltip: Chance for Sea Oats to be placed. Sea oats are the grassy grain plants near the Ocean or Oases.
 			}
 
 			LightAmountMin: {
-				// DisplayName: LightAmountMin
-				// Tooltip: LightAmountMin
+				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Minimum"
+				// Tooltip: Minimum amount of light rays placed.
 			}
 
 			LightAmountRange: {
-				// DisplayName: LightAmountRange
-				// Tooltip: LightAmountRange
+				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Range"
+				// Tooltip: Random range added to the minimum amount of light rays placed.
 			}
 
 			PoolWidthMin: {
-				// DisplayName: PoolWidthMin
-				// Tooltip: PoolWidthMin
+				// DisplayName: "[i:126] (Oasis) Pool Width Minimum"
+				// Tooltip: Minimum pool width for an underground Oasis.
 			}
 
 			PoolWidthRange: {
-				// DisplayName: PoolWidthRange
-				// Tooltip: PoolWidthRange
+				// DisplayName: "[i:126] (Oasis) Pool Width Range"
+				// Tooltip: Random range added to the minimum width for an underground Oasis's pool.
 			}
 
 			PoolDepthMin: {
-				// DisplayName: PoolDepthMin
-				// Tooltip: PoolDepthMin
+				// DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Minimum"
+				// Tooltip: Minimum pool depth for an underground Oasis.
 			}
 
 			PoolDepthRange: {
-				// DisplayName: PoolDepthRange
-				// Tooltip: PoolDepthRange
+				// DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Range"
+				// Tooltip: Random range added to the minimum depth for an underground Oasis's pool.
 			}
 
 			MainNormalization: {
-				// DisplayName: MainNormalization
-				// Tooltip: MainNormalization
+				// DisplayName: "[i:1298] (Oasis) Main Item Normalization"
+				/* Tooltip:
+					'''
+					The factor at which the main item loot pool is normalized.
+					The higher this value is, the more "even" all items are to roll.
+					''' */
 			}
 
 			ItemNormalization: {
-				// DisplayName: ItemNormalization
-				// Tooltip: ItemNormalization
+				// DisplayName: "[i:1298] (Oasis) Other Item Normalization"
+				/* Tooltip:
+					'''
+					The factor at which the non-main item loot pool is normalized.
+					The higher this value is, the more "even" all items are to roll.
+					''' */
 			}
 
 			ChestItemCountMin: {
-				// DisplayName: ChestItemCountMin
-				// Tooltip: ChestItemCountMin
+				// DisplayName: "[i:1298] (Oasis) Chest Item Count Minimum"
+				// Tooltip: The minimum amount of items in an underground Oasis chest.
 			}
 
 			ChestItemCountRange: {
-				// DisplayName: ChestItemCountRange
-				// Tooltip: ChestItemCountRange
+				// DisplayName: "[i:1298] (Oasis) Chest Item Count Range"
+				// Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
+			}
+
+			FossilCount: {
+				// DisplayName: FossilCount
+				// Tooltip: FossilCount
+			}
+
+			FossilMultiplier: {
+				// DisplayName: FossilMultiplier
+				// Tooltip: FossilMultiplier
+			}
+
+			PatchScale: {
+				// DisplayName: PatchScale
+				// Tooltip: PatchScale
 			}
 		}
 	}

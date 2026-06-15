@@ -196,6 +196,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Height = StyleDimension.FromPixelsAndPercent(-60, 1),
 		};
 		pagePanel.Append(configList);
+		configList.ManualSortMethod = (_) => { };
 
 		UIScrollbar bar = new()
 		{
@@ -208,8 +209,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		AddBottomButtons(page, pagePanel);
 
-		foreach (LoadedConfig config in page.ConfigsByName.Values)
+		PriorityQueue<LoadedConfig, double> orderedConfigs = GenConfigLoader.PrioritizeConfigs(page.ConfigsByName.Values);
+
+		while (orderedConfigs.Count > 0)
 		{
+			LoadedConfig config = orderedConfigs.Dequeue();
+
 			UIPanel itemPanel = new()
 			{
 				Width = StyleDimension.Fill,

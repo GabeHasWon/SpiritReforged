@@ -19,6 +19,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 
 	[GenConfigurable(80, 600, 10)]
 	[Slider]
+	[PriorityModifier(nameof(HalfWidth))]
 	private static int MaxDepth = 140;
 
 	public override CaveEntranceType Type => CaveEntranceType.Canyon;

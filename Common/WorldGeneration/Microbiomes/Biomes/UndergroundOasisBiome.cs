@@ -23,9 +23,6 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	private static WeightedRandom<int> MainWaterItem = null!;
 	private static WeightedRandom<(int type, Range stackRange, Func<bool>? canPlace)> RandomItem = null!;
 
-	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false));
-	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
-
 	public static readonly Point16 Size = new(50, 40);
 	public static readonly HashSet<Rectangle> OasisAreas = [];
 
@@ -35,18 +32,21 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0, 16)]
 	[Slider]
+	[PriorityModifier(nameof(PalmHeightMin))]
 	private static int PalmHeightRange = 8;
 
 	[GenConfigurable(1, 50)]
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
+	[PriorityModifier(nameof(PalmHeightMin))]
 	private static int PalmChanceLow = 15;
 
 	[GenConfigurable(1, 25)]
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
+	[PriorityModifier(nameof(PalmHeightMin))]
 	private static int PalmChanceHigh = 5;
 
 	[GenConfigurable(1, 25)]
@@ -57,10 +57,12 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(1, 10)]
 	[Slider]
+	[PriorityModifier(nameof(CattailChance))]
 	private static int CattailHeightMin = 3;
 
 	[GenConfigurable(0, 20)]
 	[Slider]
+	[PriorityModifier(nameof(CattailChance))]
 	private static int CattailHeightRange = 3;
 
 	[GenConfigurable(1, 30)]
@@ -101,14 +103,17 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0, 8)]
 	[Slider]
+	[PriorityModifier(nameof(PoolWidthMin))]
 	private static int PoolWidthRange = 5;
 
 	[GenConfigurable(0, 10)]
 	[Slider]
+	[PriorityModifier(nameof(PoolWidthMin))]
 	private static int PoolDepthMin = 3;
 
 	[GenConfigurable(0, 15)]
 	[Slider]
+	[PriorityModifier(nameof(PoolWidthMin))]
 	private static int PoolDepthRange = 3;
 
 	[GenConfigurable(0f, 1f, 0.01f)]
@@ -126,6 +131,9 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[GenConfigurable(0, 15)]
 	[Slider]
 	private static int ChestItemCountRange = 2;
+
+	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false));
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
