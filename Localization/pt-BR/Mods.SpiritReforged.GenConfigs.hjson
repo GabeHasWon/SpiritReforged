@@ -27,7 +27,7 @@ UI: {
 	// Create: Save as a custom preset
 	// CantSave: (You can't save a default preset)
 	// Load: Load a custom preset
-	// HoverDescription: Open to configure specific aspects of your world's generation from Spirit Reforged.
+	// HoverDescription: Open to configure specific aspects of Spirit Reforged's generation.
 	// FailedToLoad: Preset isn't for this page. Page expected: {0}
 }
 
@@ -435,6 +435,133 @@ Pages: {
 			Inhabited: {
 				// Name: "[i:498] Inhabited"
 				// Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
+			}
+		}
+	}
+
+	Ziggurat: {
+		// Name: Ziggurat
+		// Description: ""
+
+		Members: {
+			UsedWidth: {
+				// DisplayName: UsedWidth
+				// Tooltip: UsedWidth
+			}
+
+			UsedHeight: {
+				// DisplayName: UsedHeight
+				// Tooltip: UsedHeight
+			}
+
+			MaxInfections: {
+				// DisplayName: MaxInfections
+				// Tooltip: MaxInfections
+			}
+
+			PotChance: {
+				// DisplayName: PotChance
+				// Tooltip: PotChance
+			}
+
+			LapisPotChance: {
+				// DisplayName: LapisPotChance
+				// Tooltip: LapisPotChance
+			}
+
+			UncommonChance: {
+				// DisplayName: UncommonChance
+				// Tooltip: UncommonChance
+			}
+
+			MaxSpikeStripWidth: {
+				// DisplayName: MaxSpikeStripWidth
+				// Tooltip: MaxSpikeStripWidth
+			}
+
+			SpikeStripChance: {
+				// DisplayName: SpikeStripChance
+				// Tooltip: SpikeStripChance
+			}
+
+			ChestItemCountMin: {
+				// DisplayName: ChestItemCountMin
+				// Tooltip: ChestItemCountMin
+			}
+
+			ChestItemCountRange: {
+				// DisplayName: ChestItemCountRange
+				// Tooltip: ChestItemCountRange
+			}
+
+			DresserItemCountMin: {
+				// DisplayName: DresserItemCountMin
+				// Tooltip: DresserItemCountMin
+			}
+
+			DresserItemCountRange: {
+				// DisplayName: DresserItemCountRange
+				// Tooltip: DresserItemCountRange
+			}
+
+			SpecialRoomChance: {
+				// DisplayName: SpecialRoomChance
+				// Tooltip: SpecialRoomChance
+			}
+
+			SkipRoomChance: {
+				// DisplayName: SkipRoomChance
+				// Tooltip: SkipRoomChance
+			}
+
+			ChestNormalization: {
+				// DisplayName: ChestNormalization
+				// Tooltip: ChestNormalization
+			}
+
+			DresserNormalization: {
+				// DisplayName: DresserNormalization
+				// Tooltip: DresserNormalization
+			}
+
+			AncientBannerChance: {
+				// DisplayName: AncientBannerChance
+				// Tooltip: AncientBannerChance
+			}
+
+			BannerChance: {
+				// DisplayName: BannerChance
+				// Tooltip: BannerChance
+			}
+
+			CenserChance: {
+				// DisplayName: CenserChance
+				// Tooltip: CenserChance
+			}
+
+			TabletChance: {
+				// DisplayName: TabletChance
+				// Tooltip: TabletChance
+			}
+
+			FloorDivotChance: {
+				// DisplayName: FloorDivotChance
+				// Tooltip: FloorDivotChance
+			}
+
+			SandSplatChance: {
+				// DisplayName: SandSplatChance
+				// Tooltip: SandSplatChance
+			}
+
+			PillarChance: {
+				// DisplayName: PillarChance
+				// Tooltip: PillarChance
+			}
+
+			LightChance: {
+				// DisplayName: LightChance
+				// Tooltip: LightChance
 			}
 		}
 	}

@@ -438,6 +438,133 @@ Pages: {
 			}
 		}
 	}
+
+	Ziggurat: {
+		// Name: Ziggurat
+		// Description: ""
+
+		Members: {
+			UsedWidth: {
+				// DisplayName: UsedWidth
+				// Tooltip: UsedWidth
+			}
+
+			UsedHeight: {
+				// DisplayName: UsedHeight
+				// Tooltip: UsedHeight
+			}
+
+			MaxInfections: {
+				// DisplayName: MaxInfections
+				// Tooltip: MaxInfections
+			}
+
+			PotChance: {
+				// DisplayName: PotChance
+				// Tooltip: PotChance
+			}
+
+			LapisPotChance: {
+				// DisplayName: LapisPotChance
+				// Tooltip: LapisPotChance
+			}
+
+			UncommonChance: {
+				// DisplayName: UncommonChance
+				// Tooltip: UncommonChance
+			}
+
+			MaxSpikeStripWidth: {
+				// DisplayName: MaxSpikeStripWidth
+				// Tooltip: MaxSpikeStripWidth
+			}
+
+			SpikeStripChance: {
+				// DisplayName: SpikeStripChance
+				// Tooltip: SpikeStripChance
+			}
+
+			ChestItemCountMin: {
+				// DisplayName: ChestItemCountMin
+				// Tooltip: ChestItemCountMin
+			}
+
+			ChestItemCountRange: {
+				// DisplayName: ChestItemCountRange
+				// Tooltip: ChestItemCountRange
+			}
+
+			DresserItemCountMin: {
+				// DisplayName: DresserItemCountMin
+				// Tooltip: DresserItemCountMin
+			}
+
+			DresserItemCountRange: {
+				// DisplayName: DresserItemCountRange
+				// Tooltip: DresserItemCountRange
+			}
+
+			SpecialRoomChance: {
+				// DisplayName: SpecialRoomChance
+				// Tooltip: SpecialRoomChance
+			}
+
+			SkipRoomChance: {
+				// DisplayName: SkipRoomChance
+				// Tooltip: SkipRoomChance
+			}
+
+			ChestNormalization: {
+				// DisplayName: ChestNormalization
+				// Tooltip: ChestNormalization
+			}
+
+			DresserNormalization: {
+				// DisplayName: DresserNormalization
+				// Tooltip: DresserNormalization
+			}
+
+			AncientBannerChance: {
+				// DisplayName: AncientBannerChance
+				// Tooltip: AncientBannerChance
+			}
+
+			BannerChance: {
+				// DisplayName: BannerChance
+				// Tooltip: BannerChance
+			}
+
+			CenserChance: {
+				// DisplayName: CenserChance
+				// Tooltip: CenserChance
+			}
+
+			TabletChance: {
+				// DisplayName: TabletChance
+				// Tooltip: TabletChance
+			}
+
+			FloorDivotChance: {
+				// DisplayName: FloorDivotChance
+				// Tooltip: FloorDivotChance
+			}
+
+			SandSplatChance: {
+				// DisplayName: SandSplatChance
+				// Tooltip: SandSplatChance
+			}
+
+			PillarChance: {
+				// DisplayName: PillarChance
+				// Tooltip: PillarChance
+			}
+
+			LightChance: {
+				// DisplayName: LightChance
+				// Tooltip: LightChance
+			}
+		}
+	}
 }
 
 Enums: {

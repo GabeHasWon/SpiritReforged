@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using System.Linq;
 using System.Reflection;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.ModLoader.Config;
@@ -118,6 +119,7 @@ internal class GenConfigLoader : ModSystem
 		{
 			UIState state = Main.MenuUI.CurrentState;
 			Main.MenuUI.SetState(new GenConfigUIState(() => Main.MenuUI.SetState(state)));
+			SoundEngine.PlaySound(SoundID.MenuOpen);
 		};
 
 		button.OnUpdate += (_) =>

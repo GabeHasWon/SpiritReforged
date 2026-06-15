@@ -4,6 +4,7 @@ using Terraria.UI;
 using ReLogic.OS;
 using Steamworks;
 using Terraria.UI.Chat;
+using Terraria.Audio;
 
 namespace SpiritReforged.Common.UI.Elements;
 
@@ -20,12 +21,13 @@ public enum InputType
 /// Ported from DragonLens: https://github.com/ScalarVector1/DragonLens/blob/master/Content/GUI/FieldEditors/TextField.cs <br/>
 /// Cleaned up and modified to not use DragonLens UI.
 /// </summary>
-internal class UIEditableText(InputType inputType = InputType.Text, string backingText = "", Action<string>? enterText = null) : UIElement
+internal class UIEditableText(InputType inputType = InputType.Text, string backingText = "", Action<string>? enterText = null, bool enterOnOffClick = true) : UIElement
 {
     public readonly InputType InputType = inputType;
 
     private readonly string _backingString = backingText;
 	private readonly Action<string>? _enterAction = enterText;
+	private readonly bool EnterOnOffClick = enterOnOffClick;
 
     public string currentValue = "";
 
@@ -58,34 +60,34 @@ internal class UIEditableText(InputType inputType = InputType.Text, string backi
         _updated = true;
     }
 
-    public override void Update(GameTime gameTime)
-    {
+	public override void Update(GameTime gameTime)
+	{
 		base.Update(gameTime);
 
-        if (_reset)
-        {
-            _updated = false;
-            _reset = false;
-        }
+		if (_reset)
+		{
+			_updated = false;
+			_reset = false;
+		}
 
-        if (_updated)
-            _reset = true;
+		if (_updated)
+			_reset = true;
 
-        if (Main.mouseLeft && !IsMouseHovering)
-            SetNotTyping();
-    }
+		if (Main.mouseLeft && !IsMouseHovering)
+		{
+			if (EnterOnOffClick && _typing)
+				OnEnter();
+
+			SetNotTyping();
+		}
+	}
 
     public void HandleText()
     {
         if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
             SetNotTyping();
 		else if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Enter))
-		{
-			_enterAction?.Invoke(currentValue);
-			currentValue = "";
-			_updated = true;
-			SetNotTyping();
-		}
+			OnEnter();
 
 		PlayerInput.WritingText = true;
         Main.instance.HandleIME();
@@ -126,18 +128,30 @@ internal class UIEditableText(InputType inputType = InputType.Text, string backi
         _oldHasCompositionString = Platform.Get<IImeService>().CompositionString is { Length: > 0 };
     }
 
+	private void OnEnter()
+	{
+		if (currentValue != "")
+			_enterAction?.Invoke(currentValue);
+		currentValue = "";
+		_updated = true;
+		SetNotTyping();
+
+		SoundEngine.PlaySound(SoundID.MenuTick);
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		var rect = GetDimensions().ToRectangle();
 
 		Utils.DrawInvBG(spriteBatch, rect with { Y = rect.Y - 4 });
 
-        if (_typing)
+		if (_typing)
         {
             HandleText();
 
-            // Draw ime panel, note that if there's no composition string then it won't draw anything
-            Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
+			// Draw ime panel, note that if there's no composition string then it won't draw anything
+			Utils.DrawInvBG(spriteBatch, rect with { Y = rect.Y - 4 }, Color.Yellow * (0.15f + (float)Math.Sin(Main.timeForVisualEffects * 0.08f) * 0.05f));
+			Main.instance.DrawWindowsIMEPanel(GetDimensions().Position());
         }
 
         Vector2 pos = GetDimensions().Position() + Vector2.One * 4;
