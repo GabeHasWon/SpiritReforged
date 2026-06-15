@@ -24,6 +24,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
 	private static readonly Asset<Texture2D> ButtonBorder = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "ButtonBorder", false);
 
+	private readonly static Dictionary<string, int> PresetSelectedByPageName = [];
+
 	private static string PresetsPath => Path.Combine(Main.SavePath, "GenPresets");
 
 	private static bool LoadedAllPresets = false;
@@ -114,7 +116,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		RemoveAllChildren();
 
-		pageConfig = -1;
+		if (PresetSelectedByPageName.TryGetValue(page.FullName, out int config))
+			pageConfig = config;
+		else
+			pageConfig = -1;
 
 		mainPanel = page.PageInfo.PageBack is { } value ? new UIImage(value.Value) { Color = new Color(160, 160, 160) } : new UIPanel();
 		mainPanel.Width = StyleDimension.FromPixels(800);
@@ -146,8 +151,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Height = StyleDimension.FromPixels(40),
 		};
 
-		backButton.OnLeftClick += (_, _) => ReturnAction();
+		backButton.OnLeftClick += (_, _) =>
+		{
+			SoundEngine.PlaySound(SoundID.MenuClose);
+
+			ReturnAction();
+		};
 		mainPanel.Append(backButton);
+		AddHoverTicks(backButton);
 		OpenPage(page);
 	}
 
@@ -278,7 +289,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			{
 				string tru = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.True");
 				string fals = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.False");
-				UIButton<string> boolButton = new(fals)
+				UIButton<string> boolButton = new(config.Get() is true ? tru : fals)
 				{
 					Width = StyleDimension.FromPixels(100),
 					Height = StyleDimension.FromPixels(50),
@@ -491,6 +502,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				pageConfig = 0;
 
 			ApplyCurrentPreset(page);
+
+			SoundEngine.PlaySound(SoundID.MenuTick);
 		};
 
 		presetButton.OnUpdate += _ =>
@@ -553,6 +566,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		pagePanel.Append(saveButton);
+		AddHoverTicks(saveButton);
 
 		UIImageFramed loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false), new Rectangle(0, 0, 44, 44))
 		{
@@ -575,6 +589,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		pagePanel.Append(loadButton);
+		AddHoverTicks(loadButton);
 	}
 
 	private void ApplyCurrentPreset(GenConfigPage page)
@@ -585,6 +600,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		configPreset.Apply(page);
 		presetButton.SetText(GetConfigPresetDisplay(page));
 		onSelectPreset?.Invoke(page, configPreset);
+
+		if (!PresetSelectedByPageName.TryAdd(page.FullName, pageConfig))
+			PresetSelectedByPageName[page.FullName] = pageConfig;
 
 		_applyingPreset = false;
 	}
@@ -774,6 +792,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				pageNumber = GenConfigLoader.LoadedPages.Count - 1;
 
 			updatePage = true;
+			SoundEngine.PlaySound(SoundID.MenuOpen);
 		};
 
 		backPanel.Append(priorButton);
@@ -815,6 +834,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				pageNumber = 0;
 
 			updatePage = true;
+			SoundEngine.PlaySound(SoundID.MenuOpen);
 		};
 
 		backPanel.Append(nextButton);
@@ -970,6 +990,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		pageConfig = -1;
 		presetButton.SetText(GetConfigPresetDisplay(page));
+		PresetSelectedByPageName.Remove(page.FullName);
 	}
 
 	private void AddPlusMinus(GenConfigPage page, UIPanel itemPanel, LoadedConfig config, UIText nameText)

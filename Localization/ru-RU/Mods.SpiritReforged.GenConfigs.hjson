@@ -468,6 +468,253 @@ Pages: {
 			}
 		}
 	}
+
+	Ziggurat: {
+		// Name: Ziggurat
+		// Description: Controls aspects of the Ziggurat and its contents.
+
+		Members: {
+			UsedWidth: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Width"
+				// Tooltip: The width used for determining the size of the Ziggurat, not necessarily the actual width.
+			}
+
+			UsedHeight: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Height"
+				// Tooltip: The width used for determining the size of the Ziggurat, not necessarily the actual width.
+			}
+
+			MaxInfections: {
+				// DisplayName: "[i:SpiritReforged/PaleHiveItem] Max Infections"
+				// Tooltip: The amount of infections (nests) per floor of the Ziggurat. Ranges from 0 to this value.
+			}
+
+			PotChance: {
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] Pot Chance"
+				// Tooltip: Chance for pots to be placed in the Ziggurat.
+			}
+
+			LapisPotChance: {
+				// DisplayName: "[i:SpiritReforged/LapisPotsItem] Lapis Pot Chance"
+				// Tooltip: Chance for a pot placed to be a Lapis pot.
+			}
+
+			UncommonChance: {
+				// DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Uncommon Pot Chance"
+				// Tooltip: Chance for a pot placed to be an Uncommon pot.
+			}
+
+			MaxSpikeStripWidth: {
+				// DisplayName: "[i:SpiritReforged/NeedleTrapItem] Max Spike Strip Width"
+				// Tooltip: The maximum width of a spike strip.
+			}
+
+			SpikeStripChance: {
+				// DisplayName: "[i:SpiritReforged/NeedleTrapItem] Spike Strip Chance"
+				// Tooltip: The chance for a spike strip to be placed in non-special rooms.
+			}
+
+			ChestItemCountMin: {
+				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Count Minimum"
+				// Tooltip: The minimum number of items in a chest.
+			}
+
+			ChestItemCountRange: {
+				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Count Range"
+				// Tooltip: The range (0 - x) value of added items, minimum being {$ChestItemCountMin}.
+			}
+
+			DresserItemCountMin: {
+				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Count Minimum"
+				// Tooltip: The minimum number of items in a dresser.
+			}
+
+			DresserItemCountRange: {
+				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Count Range"
+				// Tooltip: The range (0 - x) value of added items, minimum being {DresserItemCountMin}.
+			}
+
+			SpecialRoomChance: {
+				// DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Special Room Chance"
+				// Tooltip: The chance that any Ziggurat room is a special room.
+			}
+
+			SkipRoomChance: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] Skip Room Chance"
+				// Tooltip: The chance for any room to be skipped instead of built.
+			}
+
+			ChestNormalization: {
+				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Normalization"
+				/* Tooltip:
+					'''
+					The factor at which the chest loot pool is normalized.
+					The higher this value is, the more "even" all items are to roll.
+					''' */
+			}
+
+			DresserNormalization: {
+				// DisplayName: "[i:SpiritReforged/LapisChestItem] Dresser Normalization"
+				/* Tooltip:
+					'''
+					The factor at which the dresser loot pool is normalized.
+					The higher this value is, the more "even" all items are to roll.
+					''' */
+			}
+
+			AncientBannerChance: {
+				// DisplayName: "[i:SpiritReforged/AncientBannerItem] Ancient Banner Chance"
+				// Tooltip: The chance for Ancient Banners to spawn.
+			}
+
+			BannerChance: {
+				// DisplayName: "[i:340] Banner Chance"
+				// Tooltip: The chance for vanilla banners to spawn.
+			}
+
+			CenserChance: {
+				// DisplayName: "[i:SpiritReforged/CenserItem] Censer Chance"
+				// Tooltip: The chance for censers to spawn.
+			}
+
+			TabletChance: {
+				// DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] Ancient Tablet Chance"
+				// Tooltip: The chance for Ancient Tablets to spawn in non-Treasure rooms.
+			}
+
+			FloorDivotChance: {
+				// DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] Floor Divot Chance"
+				// Tooltip: The chance for a floor divot (random weathering effect) to occur.
+			}
+
+			SandSplatChance: {
+				// DisplayName: "[i:169] Sand Splat Chance"
+				// Tooltip: The chance for a 'sand splat' (random weathering effect) to occur.
+			}
+
+			PillarChance: {
+				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Pillar Chance"
+				// Tooltip: The chance for a pillar to spawn.
+			}
+
+			LightChance: {
+				// DisplayName: "[i:SpiritReforged/SunDropper] Light Chance"
+				// Tooltip: The chance for a light ray to spawn.
+			}
+		}
+	}
+
+	Desert: {
+		// Name: Desert
+		// Description: ""
+
+		Members: {
+			PalmHeightMin: {
+				// DisplayName: PalmHeightMin
+				// Tooltip: PalmHeightMin
+			}
+
+			PalmHeightRange: {
+				// DisplayName: PalmHeightRange
+				// Tooltip: PalmHeightRange
+			}
+
+			PalmChanceLow: {
+				// DisplayName: PalmChanceLow
+				// Tooltip: PalmChanceLow
+			}
+
+			PalmChanceHigh: {
+				// DisplayName: PalmChanceHigh
+				// Tooltip: PalmChanceHigh
+			}
+
+			CattailChance: {
+				// DisplayName: CattailChance
+				// Tooltip: CattailChance
+			}
+
+			CattailHeightMin: {
+				// DisplayName: CattailHeightMin
+				// Tooltip: CattailHeightMin
+			}
+
+			CattailHeightRange: {
+				// DisplayName: CattailHeightRange
+				// Tooltip: CattailHeightRange
+			}
+
+			OasisPlantChance: {
+				// DisplayName: OasisPlantChance
+				// Tooltip: OasisPlantChance
+			}
+
+			GlowflowerChance: {
+				// DisplayName: GlowflowerChance
+				// Tooltip: GlowflowerChance
+			}
+
+			PineappleChance: {
+				// DisplayName: PineappleChance
+				// Tooltip: PineappleChance
+			}
+
+			SeaOatsChance: {
+				// DisplayName: SeaOatsChance
+				// Tooltip: SeaOatsChance
+			}
+
+			LightAmountMin: {
+				// DisplayName: LightAmountMin
+				// Tooltip: LightAmountMin
+			}
+
+			LightAmountRange: {
+				// DisplayName: LightAmountRange
+				// Tooltip: LightAmountRange
+			}
+
+			PoolWidthMin: {
+				// DisplayName: PoolWidthMin
+				// Tooltip: PoolWidthMin
+			}
+
+			PoolWidthRange: {
+				// DisplayName: PoolWidthRange
+				// Tooltip: PoolWidthRange
+			}
+
+			PoolDepthMin: {
+				// DisplayName: PoolDepthMin
+				// Tooltip: PoolDepthMin
+			}
+
+			PoolDepthRange: {
+				// DisplayName: PoolDepthRange
+				// Tooltip: PoolDepthRange
+			}
+
+			MainNormalization: {
+				// DisplayName: MainNormalization
+				// Tooltip: MainNormalization
+			}
+
+			ItemNormalization: {
+				// DisplayName: ItemNormalization
+				// Tooltip: ItemNormalization
+			}
+
+			ChestItemCountMin: {
+				// DisplayName: ChestItemCountMin
+				// Tooltip: ChestItemCountMin
+			}
+
+			ChestItemCountRange: {
+				// DisplayName: ChestItemCountRange
+				// Tooltip: ChestItemCountRange
+			}
+		}
+	}
 }
 
 Enums: {
