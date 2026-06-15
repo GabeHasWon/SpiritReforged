@@ -3140,3 +3140,9 @@ SaltGraveMarkerItem: {
 	DisplayName: Obelisco de Sal
 	Tooltip: ""
 }
+
+GlitterPurse: {
+	// DisplayName: Glitter Purse
+	// Tooltip: Permanently increases the item capacity of backpacks
+	// StatusText: Your backpacks grow larger
+}

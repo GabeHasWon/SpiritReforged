@@ -51,18 +51,18 @@ public class GiantBag : BackpackItem
 		}
 	}
 
-	protected override int SlotCap => 6;
-
 	public override void SetStaticDefaults()
 	{
 		ItemMethods.HideEquipSlot(Type, EquipType.Back, TextureAssets.AccBack);
 		ItemMethods.HideEquipSlot(Type, EquipType.Front, TextureAssets.AccFront);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.Size = new Vector2(34, 28);
 		Item.value = Item.buyPrice(0, 0, 5, 0);
 		Item.rare = ItemRarityID.Blue;
+
+		slotCount = 6;
 	}
 }

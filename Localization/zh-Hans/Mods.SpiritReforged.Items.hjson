@@ -3153,3 +3153,9 @@ SaltGraveMarkerItem: {
 	DisplayName: 盐墓石碑
 	Tooltip: ""
 }
+
+GlitterPurse: {
+	// DisplayName: Glitter Purse
+	// Tooltip: Permanently increases the item capacity of backpacks
+	// StatusText: Your backpacks grow larger
+}

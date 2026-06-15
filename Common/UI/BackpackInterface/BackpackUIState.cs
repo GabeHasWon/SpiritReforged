@@ -135,7 +135,7 @@ internal class BackpackUIState : AutoUIState
 
 			var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
 			var backpack = mPlayer.backpack.ModItem as BackpackItem;
-			var items = backpack.items;
+			var items = backpack.Items;
 
 			for (int i = 0; i < items.Length; ++i) //Add backpack storage slots
 			{
