@@ -14,8 +14,8 @@ public abstract class BackpackItem : ModItem
 
 	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCount);
 
-	/// <summary> The absolute number of slots this backpack has. </summary>
-	public int SlotCount => slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+	/// <summary> The absolute number of slots this backpack has. </summary> //Check gameMenu to assist with LoadData
+	public int SlotCount => slotCount + ((Main.gameMenu || Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
 
 	public Item[] Items
 	{
@@ -95,19 +95,43 @@ public abstract class BackpackItem : ModItem
 
 	public override void SaveData(TagCompound tag)
 	{
+		TagCompound packCompound = [];
+
 		for (int i = 0; i < Items.Length; i++)
 		{
-			if (Items[i] != null && !Items[i].IsAir) //Don't bother saving air
-				tag.Add("item" + i, ItemIO.Save(Items[i]));
+			Item item = Items[i];
+
+			if (item != null && !item.IsAir) //Don't bother saving air
+				packCompound["item" + i] = ItemIO.Save(item);
 		}
+
+		tag["packContents"] = packCompound;
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
-		for (int i = 0; i < Items.Length; i++)
+		TagCompound packCompound = tag.GetCompound("packContents");
+
+		if (packCompound.Count == 0) //Legacy loading
 		{
-			if (tag.TryGet("item" + i, out TagCompound itemTag))
-				Items[i] = ItemIO.Load(itemTag);
+			for (int i = 0; i < Items.Length; i++)
+			{
+				if (tag.TryGet("item" + i, out TagCompound itemTag))
+					Items[i] = ItemIO.Load(itemTag);
+			}
+		}
+		else //New loading
+		{
+			foreach (var item in packCompound)
+			{
+				if (packCompound.TryGet(item.Key, out TagCompound value))
+				{
+					int index = int.Parse(item.Key[item.Key.Length - 1].ToString()); //The last value in the key is always an integer corresponding to the slot
+					
+					if (index < Items.Length)
+						Items[index] = ItemIO.Load(value);
+				}
+			}
 		}
 	}
 }
