@@ -5,6 +5,7 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Jungle.Pineapple;
@@ -132,7 +133,36 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[Slider]
 	private static int ChestItemCountRange = 2;
 
-	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false));
+	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false))
+	{
+		Presets =
+		[
+			new("Overgrown",
+				[
+					new IndividualPreset(nameof(PalmChanceHigh), 2),
+					new IndividualPreset(nameof(PalmChanceLow), 20),
+					new IndividualPreset(nameof(CattailChance), 1),
+					new IndividualPreset(nameof(CattailHeightMin), 10),
+					new IndividualPreset(nameof(CattailHeightRange), 12),
+					new IndividualPreset(nameof(OasisPlantChance), 2),
+					new IndividualPreset(nameof(GlowflowerChance), 2),
+					new IndividualPreset(nameof(GlowflowerChance), 2),
+					new IndividualPreset(nameof(LightAmountRange), 0),
+					new IndividualPreset(nameof(LightAmountRange), 0),
+					new IndividualPreset(nameof(PoolWidthMin), 10),
+					new IndividualPreset(nameof(PoolDepthMin), 7),
+					new IndividualPreset(nameof(PoolDepthRange), 10)
+				]),
+
+			new("Petrified",
+				[
+					new IndividualPreset(nameof(DesertMicropass.FossilCount), 45),
+					new IndividualPreset(nameof(DesertMicropass.FossilMultiplier), 5f),
+					new IndividualPreset(nameof(DesertMicropass.PatchScale), 22)
+				]),
+		]
+	};
+
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);

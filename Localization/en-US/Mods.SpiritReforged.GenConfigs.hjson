@@ -724,6 +724,18 @@ Pages: {
 				Tooltip: PatchScale
 			}
 		}
+
+		Presets: {
+			Overgrown: {
+				Name: "[i:2996] Overgrown"
+				Tooltip: The oases in this desert are overgrown and wild. How do they thrive?
+			}
+
+			Petrified: {
+				Name: "[i:154] Petrified"
+				Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
+			}
+		}
 	}
 }
 

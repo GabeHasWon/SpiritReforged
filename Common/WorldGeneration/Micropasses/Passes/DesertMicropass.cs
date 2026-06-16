@@ -14,14 +14,14 @@ internal class DesertMicropass : Micropass, IGenerationPage
 
 	[GenConfigurable(0, 60)]
 	[Slider]
-	private static int FossilCount = 13;
+	internal static int FossilCount = 13;
 
 	[GenConfigurable(0f, 10f)]
 	[Slider]
-	private static float FossilMultiplier = 1;
+	internal static float FossilMultiplier = 1;
 
 	[GenConfigurable(1, 40)]
-	private static int PatchScale = DefaultPatchScale;
+	internal static int PatchScale = DefaultPatchScale;
 
 	public override string WorldGenName => "Desert Extras";
 

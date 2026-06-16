@@ -575,18 +575,18 @@ Pages: {
 
 		Presets: {
 			Plagued: {
-				// Name: Plagued
-				// Tooltip: Plagued
+				// Name: "[i:SpiritReforged/PaleHiveItem] Plagued"
+				// Tooltip: This Ziggurat has seen better days. The parts that haven't been buried by sand are crawling with Scarabs.
 			}
 
 			Opulent: {
-				// Name: Opulent
-				// Tooltip: Opulent
+				// Name: "[i:SpiritReforged/LapisPotsItem] Opulent"
+				// Tooltip: Whoever built this Ziggurat spared no expense.
 			}
 
 			Perilous: {
-				// Name: Perilous
-				// Tooltip: Perilous
+				// Name: "[i:SpiritReforged/NeedleTrapItem] Perilous"
+				// Tooltip: More loot, but more traps. A tantalizing prospect.
 			}
 		}
 	}
@@ -722,6 +722,18 @@ Pages: {
 			PatchScale: {
 				// DisplayName: PatchScale
 				// Tooltip: PatchScale
+			}
+		}
+
+		Presets: {
+			Overgrown: {
+				// Name: Overgrown
+				// Tooltip: Overgrown
+			}
+
+			Petrified: {
+				// Name: Petrified
+				// Tooltip: Petrified
 			}
 		}
 	}
