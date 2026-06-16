@@ -5,6 +5,8 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
@@ -182,7 +184,37 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[Denominator]
 	private static int LightChance = 10;
 
-	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false));
+	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	{
+		Presets =
+		[
+			new("Plagued",
+				[
+					new IndividualPreset(nameof(MaxInfections), 12),
+					new IndividualPreset(nameof(SandSplatChance), 20),
+					new IndividualPreset(nameof(FloorDivotChance), 20),
+					new IndividualPreset(nameof(SkipRoomChance), 3),
+				]),
+
+			new("Opulent",
+				[
+					new IndividualPreset(nameof(SpecialRoomChance), 1),
+					new IndividualPreset(nameof(MaxInfections), 1),
+					new IndividualPreset(nameof(LapisPotChance), 5),
+					new IndividualPreset(nameof(UncommonChance), 2),
+					new IndividualPreset(nameof(SandSplatChance), 200),
+					new IndividualPreset(nameof(SkipRoomChance), 15),
+					new IndividualPreset(nameof(CenserChance), 2)
+				]),
+
+		new("Perilous",
+				[
+					new IndividualPreset(nameof(SpikeStripChance), 1),
+					new IndividualPreset(nameof(MaxSpikeStripWidth), 14),
+					new IndividualPreset(nameof(ChestItemCountMin), 6),
+				]),
+		]
+	};
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override void OnPlace(Point16 point)

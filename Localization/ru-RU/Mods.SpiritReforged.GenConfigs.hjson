@@ -602,6 +602,23 @@ Pages: {
 				// Tooltip: The chance for a light ray to spawn.
 			}
 		}
+
+		Presets: {
+			Plagued: {
+				// Name: Plagued
+				// Tooltip: Plagued
+			}
+
+			Opulent: {
+				// Name: Opulent
+				// Tooltip: Opulent
+			}
+
+			Perilous: {
+				// Name: Perilous
+				// Tooltip: Perilous
+			}
+		}
 	}
 
 	Desert: {

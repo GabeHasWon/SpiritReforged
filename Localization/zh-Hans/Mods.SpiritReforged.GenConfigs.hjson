@@ -22,7 +22,7 @@ UI: {
 	Next: 下一页：
 	True: 启用
 	False: 禁用
-	Total: "总计{0}"
+	Total: 总计{0}
 	CustomPresetTooltip: 这是一个自定义预设！
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
@@ -569,7 +569,24 @@ Pages: {
 
 			LightChance: {
 				DisplayName: "[i:SpiritReforged/SunDropper] 光照几率"
-				Tooltip:  一束光线生成的几率。
+				Tooltip: 一束光线生成的几率。
+			}
+		}
+
+		Presets: {
+			Plagued: {
+				// Name: Plagued
+				// Tooltip: Plagued
+			}
+
+			Opulent: {
+				// Name: Opulent
+				// Tooltip: Opulent
+			}
+
+			Perilous: {
+				// Name: Perilous
+				// Tooltip: Perilous
 			}
 		}
 	}
@@ -690,6 +707,21 @@ Pages: {
 			ChestItemCountRange: {
 				DisplayName: "[i:1298] （绿洲）宝箱物品数量范围"
 				Tooltip: 追加到地下绿洲最低宝箱物品数量上的随机范围值。
+			}
+
+			FossilCount: {
+				// DisplayName: FossilCount
+				// Tooltip: FossilCount
+			}
+
+			FossilMultiplier: {
+				// DisplayName: FossilMultiplier
+				// Tooltip: FossilMultiplier
+			}
+
+			PatchScale: {
+				// DisplayName: PatchScale
+				// Tooltip: PatchScale
 			}
 		}
 	}
