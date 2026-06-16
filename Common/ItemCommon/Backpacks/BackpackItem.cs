@@ -52,6 +52,8 @@ public abstract class BackpackItem : ModItem
 		return clone;
 	}
 
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GlitterPurse>();
+
 	public override bool CanRightClick() => true;
 	public override bool ConsumeItem(Player player) => false; //Prevent RightClick from destroying the item
 

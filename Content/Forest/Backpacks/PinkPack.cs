@@ -5,8 +5,6 @@ namespace SpiritReforged.Content.Forest.Backpacks;
 [AutoloadEquip(EquipType.Front)]
 public class PinkPack : BackpackItem
 {
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PouchPack>();
-
 	public override void SetDefaults()
 	{
 		Item.Size = new Vector2(34, 28);
