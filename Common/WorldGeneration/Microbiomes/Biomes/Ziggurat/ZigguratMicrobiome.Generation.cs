@@ -61,17 +61,19 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[WorldBound]
 	public static readonly HashSet<Rectangle> TotalBounds = [];
 
+	public static bool UnnaturallyBig => UsedWidth > DefaultWidth && UsedHeight > DefaultHeight;
+
 	private static HashSet<GenRoom> TotalRooms;
 	private static int ChestCounter = 0;
 
-	[GenConfigurable(40, DefaultWidth * 10)]
+	[GenConfigurable(40, DefaultWidth * 6)]
 	[Slider]
 	internal static int UsedWidth = DefaultWidth;
 
-	[GenConfigurable(40, DefaultHeight * 10)]
+	[GenConfigurable(40, DefaultHeight * 4)]
 	[Slider]
 	[PriorityModifier(nameof(UsedWidth))]
-	private static int UsedHeight = DefaultHeight;
+	internal static int UsedHeight = DefaultHeight;
 
 	[GenConfigurable(0, 12)]
 	[Slider]
@@ -103,10 +105,12 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(1, 50)]
 	[Slider]
+	[ReverseMinMax]
+	[Denominator]
 	[PriorityModifier(nameof(MaxSpikeStripWidth))]
 	private static int SpikeStripChance = 3;
 
-	[GenConfigurable(1, 20)]
+	[GenConfigurable(1, 15)]
 	[Slider]
 	private static int ChestItemCountMin = 3;
 
@@ -126,10 +130,13 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(1, 10)]
 	[Slider]
+	[Denominator]
 	private static int SpecialRoomChance = 4;
 
 	[GenConfigurable(1, 40)]
 	[Slider]
+	[ReverseMinMax]
+	[Denominator]
 	private static int SkipRoomChance = 4;
 
 	[GenConfigurable(0f, 1f, 0.01f)]
@@ -215,6 +222,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 				]),
 		]
 	};
+
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override void OnPlace(Point16 point)
@@ -270,6 +278,8 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 		if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
 			layers = (int)(Main.maxTilesX / 4200f * 20);
+		else if (UsedHeight != DefaultHeight)
+			layers = (int)(UsedHeight / 20f);
 
 		int finalLayerHeight = (int)(fullArea.Height / layers * finalHeight);
 		int commonLayerHeight = (fullArea.Height - finalLayerHeight) / (layers - 1);
@@ -814,6 +824,32 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 			gemPool.Add((aquamarineVerdant.Type, 4..8));
 
 		// Misc
+		PriorityQueue<(int, Range), float> miscQueue = GenerateMiscellaneousLoot();
+
+		chest.item[0] = new Item(main[ChestCounter++ % main.Count]);
+
+		var (type, stack) = secondary.Get();
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
+
+		var (gemType, gemStack) = gemPool.Get();
+		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
+
+		int miscCount = ChestItemCountMin + WorldGen.genRand.Next(ChestItemCountRange + 1);
+
+		for (int i = 0; i < miscCount; ++i)
+		{
+			if (miscQueue.Count == 1)
+				miscQueue = GenerateMiscellaneousLoot();
+
+			var (miscType, miscStack) = miscQueue.Dequeue();
+			chest.item[3 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+		}
+
+		static float Normalize(float input) => MathHelper.Lerp(input, 1, ChestNormalization);
+	}
+
+	private static PriorityQueue<(int, Range), float> GenerateMiscellaneousLoot()
+	{
 		PriorityQueue<(int, Range), float> miscQueue = new();
 		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
@@ -829,24 +865,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((AutoContent.ItemType<WaningSun>(), 1..1), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.ScarabBomb, 5..9), WorldGen.genRand.NextFloat());
-
-		chest.item[0] = new Item(main[ChestCounter++ % main.Count]);
-
-		var (type, stack) = secondary.Get();
-		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
-
-		var (gemType, gemStack) = gemPool.Get();
-		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
-
-		int miscCount = ChestItemCountMin + WorldGen.genRand.Next(ChestItemCountRange + 1);
-
-		for (int i = 0; i < miscCount; ++i)
-		{
-			var (miscType, miscStack) = miscQueue.Dequeue();
-			chest.item[3 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
-		}
-
-		static float Normalize(float input) => MathHelper.Lerp(input, 1, ChestNormalization);
+		return miscQueue;
 	}
 
 	private static void AddRooms(IEnumerable<Rectangle> bounds, out List<GenRoom> rooms)

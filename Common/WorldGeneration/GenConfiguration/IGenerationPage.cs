@@ -30,8 +30,13 @@ public readonly record struct ConfigPreset(string Name, List<IndividualPreset> P
 		if (ResetNotIncluded)
 		{
 			foreach (var config in page.ConfigsByName.Values)
+			{
 				if (!names.Contains(config.Name))
+				{
 					config.Set(config.Default);
+					config.Modified = false;
+				}
+			}
 		}
 	}
 }

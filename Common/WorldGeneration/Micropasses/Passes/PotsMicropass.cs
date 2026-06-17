@@ -4,7 +4,6 @@ using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
-using System.Diagnostics;
 using System.Linq;
 using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
@@ -14,7 +13,7 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class PotsMicropass : Micropass, IGenerationPage
 {
-	public const float MaxPots = 500;
+	public const float MaxPots = 1001;
 
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
@@ -111,8 +110,8 @@ internal class PotsMicropass : Micropass, IGenerationPage
 		[
 			new("Tasty",
 				[
-					new IndividualPreset(nameof(PicnicScale), 500),
-					new IndividualPreset(nameof(PlatterScale), 500),
+					new IndividualPreset(nameof(PicnicScale), 1000),
+					new IndividualPreset(nameof(PlatterScale), 1000),
 					new IndividualPreset(nameof(WormScale), 375),
 					new IndividualPreset(nameof(RollingPotChance), 10),
 					new IndividualPreset(nameof(OrnateScale), 2),
@@ -124,10 +123,10 @@ internal class PotsMicropass : Micropass, IGenerationPage
 					new IndividualPreset(nameof(BoulderScale), 6),
 				]),
 
-			new("Tasty",
+			new("Occult",
 				[
-					new IndividualPreset(nameof(PotionScale), 400),
-					new IndividualPreset(nameof(ScryingScale), 200),
+					new IndividualPreset(nameof(PotionScale), 800),
+					new IndividualPreset(nameof(ScryingScale), 500),
 					new IndividualPreset(nameof(WormScale), 375),
 					new IndividualPreset(nameof(RollingPotChance), 10),
 					new IndividualPreset(nameof(OrnateScale), 2),
@@ -202,24 +201,24 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	public static void RunMultipliedTask(float multiplier)
 	{
-		float scale = WorldMultiplier * multiplier;
+		int scale = (int)(WorldMultiplier * multiplier);
 
-		Generate(CreateOrnate, (int)(scale * OrnateScale), out _);
-		Generate(CreatePotion, (int)(scale * PotionScale), out _);
-		Generate(CreateScrying, (int)(scale * ScryingScale), out _);
-		Generate(CreateStuffed, (int)(scale * StuffedScale), out _);
-		Generate(CreateWorm, (int)(scale * WormScale), out _);
-		Generate(CreatePlatter, (int)(scale * PlatterScale), out _);
-		Generate(CreateAether, (int)(scale * AetherScale), out _);
-		Generate(CreateUpsideDown, (int)(scale * UpsideDownScale), out _);
-		Generate(CreateBoulder, (int)(scale * BoulderScale), out _);
-		Generate(CreatePicnic, (int)(scale * PicnicScale), out _, WickerBaskets.GetPicnicArea());
+		Generate(CreateOrnate, scale, out _, scale: OrnateScale);
+		Generate(CreatePotion, scale, out _, scale: PotionScale);
+		Generate(CreateScrying, scale, out _, scale: ScryingScale);
+		Generate(CreateStuffed, scale, out _, scale: StuffedScale);
+		Generate(CreateWorm, scale, out _, scale: WormScale);
+		Generate(CreatePlatter, scale, out _, scale: PlatterScale);
+		Generate(CreateAether, scale, out _, scale: AetherScale);
+		Generate(CreateUpsideDown, scale, out _, scale: UpsideDownScale);
+		Generate(CreateBoulder, scale, out _, scale: BoulderScale);
+		Generate(CreatePicnic, scale, out _, scale: PicnicScale);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * StackScale * multiplier), out _, maxTries: 30_000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * UncommonScale * multiplier), out int pots, maxTries: 30_000);
 
 		if (Main.zenithWorld)
-			Generate(CreateZenith, (int)(ZenithScale * 200), out _);
+			Generate(CreateZenith, 200, out _, scale: ZenithScale);
 
 		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
 	}

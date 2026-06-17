@@ -95,7 +95,7 @@ internal class ZigguratMicropass : Micropass
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		Point finalPosition = Point.Zero;
 
-		for (int a = 0; a < 300; a++)
+		for (int a = 0; a < 500; a++)
 		{
 			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 20));
 			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 20), loc.Right);
@@ -109,9 +109,10 @@ internal class ZigguratMicropass : Micropass
 			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.DefaultHeight * 0.3f));
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratMicrobiome.DefaultWidth / 2), -(ZigguratMicrobiome.DefaultHeight / 2), ZigguratMicrobiome.DefaultWidth, ZigguratMicrobiome.DefaultHeight)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
+			Rectangle area = new Rectangle(-(ZigguratMicrobiome.UsedWidth / 2), -(ZigguratMicrobiome.UsedHeight / 2), ZigguratMicrobiome.UsedWidth, ZigguratMicrobiome.UsedHeight);
+			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(area), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10)
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10 && !ZigguratMicrobiome.UnnaturallyBig)
 				continue;
 
 			CreateDunes(new(foundPos.X - 80, foundPos.Y - 10, 160, 10));

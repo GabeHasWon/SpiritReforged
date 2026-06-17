@@ -3,6 +3,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -400,13 +401,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			HAlign = 1f,
 		};
 
-		MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
 		MethodInfo? setFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
 
 		if (slider is not null)
 		{
-			if (info is not null)
-				onReset += () => info.Invoke(slider, []);
+			onReset += () => ResetSlider(slider);
 
 			if (setFactor is not null)
 			{
@@ -420,14 +419,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			config.Set(config.Default);
 			config.Modified = false;
 
-			if (info is not null && slider is not null)
-			{
-				info.Invoke(slider, []);
-			}
+			if (slider is not null)
+				ResetSlider(slider);
 		};
 
 		itemPanel.Append(resetButton);
 		AddHoverTicks(resetButton);
+	}
+
+	public static void ResetSlider(UIElement slider)
+	{
+		MethodInfo? info = slider?.GetType().GetMethod("Reset", BindingFlags.NonPublic | BindingFlags.Instance);
+		info?.Invoke(slider, []);
 	}
 
 	private void AddBottomButtons(GenConfigPage page, UIPanel pagePanel)
@@ -920,8 +923,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 						float factor = GenericMath.InverseLerp(minimum, maximum, value);
 						setToFactor.Invoke(slider, [factor]);
-						break;
+						return;
 					}
+
+					if (preset.ResetNotIncluded)
+						ResetSlider(slider);
 				}
 			};
 

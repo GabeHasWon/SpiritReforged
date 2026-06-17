@@ -6,6 +6,7 @@ using System.Reflection;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
+using Terraria.IO;
 using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
@@ -45,7 +46,7 @@ internal class GenConfigLoader : ModSystem
 	{
 		UIElement element = orig(self);
 
-		if (HasConfiguredMarker(self))
+		if (HasConfiguredMarker(self.Data))
 		{
 			element.Append(new UIImage(ModContent.Request<Texture2D>("SpiritReforged/Common/WorldGeneration/GenConfiguration/ConfigIcon")) 
 			{ 
@@ -58,7 +59,13 @@ internal class GenConfigLoader : ModSystem
 		return element;
 	}
 
-	internal static bool HasConfiguredMarker(AWorldListItem self) => self.Data.TryGetHeaderData<GenConfigLoader>(out TagCompound tag) && tag.ContainsKey("configured");
+	public override void OnWorldLoad()
+	{
+		if (Main.ActiveWorldFileData is { } data && HasConfiguredMarker(data))
+			Configured = true;
+	}
+
+	internal static bool HasConfiguredMarker(WorldFileData data) => data.TryGetHeaderData<GenConfigLoader>(out TagCompound tag) && tag.ContainsKey("configured");
 
 	public override void SaveWorldHeader(TagCompound tag)
 	{

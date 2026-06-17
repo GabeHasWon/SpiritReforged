@@ -382,13 +382,13 @@ Pages: {
 
 		Presets: {
 			Tasty: {
-				// Name: Tasty
-				// Tooltip: Tasty
+				// Name: "[i:4029] Tasty"
+				// Tooltip: Someone has left a frankly absurd amount of food lying around. Who made all of this?
 			}
 
 			Occult: {
-				// Name: Occult
-				// Tooltip: Occult
+				// Name: "[i:SpiritReforged/ScryingPotItem]"
+				// Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
 			}
 		}
 	}
