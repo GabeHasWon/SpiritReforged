@@ -379,6 +379,18 @@ Pages: {
 				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
 			}
 		}
+
+		Presets: {
+			Tasty: {
+				// Name: Tasty
+				// Tooltip: Tasty
+			}
+
+			Occult: {
+				// Name: Occult
+				// Tooltip: Occult
+			}
+		}
 	}
 
 	Caves: {
@@ -727,13 +739,13 @@ Pages: {
 
 		Presets: {
 			Overgrown: {
-				// Name: Overgrown
-				// Tooltip: Overgrown
+				// Name: "[i:2996] Overgrown"
+				// Tooltip: The oases in this desert are overgrown and wild. How do they thrive?
 			}
 
 			Petrified: {
-				// Name: Petrified
-				// Tooltip: Petrified
+				// Name: "[i:154] Petrified"
+				// Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
 			}
 		}
 	}

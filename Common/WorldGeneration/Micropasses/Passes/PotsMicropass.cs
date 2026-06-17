@@ -109,7 +109,35 @@ internal class PotsMicropass : Micropass, IGenerationPage
 	{
 		Presets =
 		[
+			new("Tasty",
+				[
+					new IndividualPreset(nameof(PicnicScale), 500),
+					new IndividualPreset(nameof(PlatterScale), 500),
+					new IndividualPreset(nameof(WormScale), 375),
+					new IndividualPreset(nameof(RollingPotChance), 10),
+					new IndividualPreset(nameof(OrnateScale), 2),
+					new IndividualPreset(nameof(PotionScale), 16),
+					new IndividualPreset(nameof(ScryingScale), 5),
+					new IndividualPreset(nameof(StuffedScale), 6),
+					new IndividualPreset(nameof(AetherScale), 2),
+					new IndividualPreset(nameof(UpsideDownScale), 2),
+					new IndividualPreset(nameof(BoulderScale), 6),
+				]),
 
+			new("Tasty",
+				[
+					new IndividualPreset(nameof(PotionScale), 400),
+					new IndividualPreset(nameof(ScryingScale), 200),
+					new IndividualPreset(nameof(WormScale), 375),
+					new IndividualPreset(nameof(RollingPotChance), 10),
+					new IndividualPreset(nameof(OrnateScale), 2),
+					new IndividualPreset(nameof(WormScale), 8),
+					new IndividualPreset(nameof(PlatterScale), 5),
+					new IndividualPreset(nameof(StuffedScale), 6),
+					new IndividualPreset(nameof(AetherScale), 10),
+					new IndividualPreset(nameof(UpsideDownScale), 2),
+					new IndividualPreset(nameof(BoulderScale), 6),
+				]),
 		]
 	};
 
