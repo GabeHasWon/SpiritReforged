@@ -730,18 +730,18 @@ Pages: {
 			}
 
 			FossilCount: {
-				// DisplayName: FossilCount
-				// Tooltip: FossilCount
+				// DisplayName: "[i:SpiritReforged/PolishedAmberItem] Amber Count"
+				// Tooltip: The maximum number of amber veins in the Underground Desert.
 			}
 
 			FossilMultiplier: {
-				// DisplayName: FossilMultiplier
-				// Tooltip: FossilMultiplier
+				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Multiplier"
+				// Tooltip: The multiplier applied to the number of amber veins based on world size.
 			}
 
 			PatchScale: {
-				// DisplayName: PatchScale
-				// Tooltip: PatchScale
+				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
+				// Tooltip: The scaling applied to the size of an amber vein.
 			}
 		}
 

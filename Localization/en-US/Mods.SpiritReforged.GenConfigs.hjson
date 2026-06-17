@@ -526,7 +526,11 @@ Pages: {
 
 			SpecialRoomChance: {
 				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Special Room Chance"
-				Tooltip: The chance that any Ziggurat room is a special room.
+				Tooltip: 
+					'''
+					The chance that any Ziggurat room is a special room; that is, any of these:
+					Library room, Storage room, Burial room
+					'''
 			}
 
 			SkipRoomChance: {
@@ -642,7 +646,7 @@ Pages: {
 			}
 
 			CattailHeightMin: {
-				DisplayName: "[i:2996] (Oasis) Cattail Height Minimum"
+				DisplayName: "[i:2996] (Oasis) Cattail Height Min"
 				Tooltip: Minimum height for a cattail. This will not go past water.
 			}
 
@@ -702,7 +706,7 @@ Pages: {
 			}
 
 			MainNormalization: {
-				DisplayName: "[i:1298] (Oasis) Main Item Normalization"
+				DisplayName: "[i:1298] (Oasis) Main Normalization"
 				Tooltip:
 					'''
 					The factor at which the main item loot pool is normalized.
@@ -711,7 +715,7 @@ Pages: {
 			}
 
 			ItemNormalization: {
-				DisplayName: "[i:1298] (Oasis) Other Item Normalization"
+				DisplayName: "[i:1298] (Oasis) Other Normalization"
 				Tooltip:
 					'''
 					The factor at which the non-main item loot pool is normalized.
@@ -720,28 +724,28 @@ Pages: {
 			}
 
 			ChestItemCountMin: {
-				DisplayName: "[i:1298] (Oasis) Chest Item Count Minimum"
+				DisplayName: "[i:1298] (Oasis) Chest Item Minimum"
 				Tooltip: The minimum amount of items in an underground Oasis chest.
 			}
 
 			ChestItemCountRange: {
-				DisplayName: "[i:1298] (Oasis) Chest Item Count Range"
+				DisplayName: "[i:1298] (Oasis) Chest Item Range"
 				Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
 			}
 
 			FossilCount: {
-				DisplayName: FossilCount
-				Tooltip: FossilCount
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] Amber Count"
+				Tooltip: The maximum number of amber veins in the Underground Desert.
 			}
 
 			FossilMultiplier: {
-				DisplayName: FossilMultiplier
-				Tooltip: FossilMultiplier
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Multiplier"
+				Tooltip: The multiplier applied to the number of amber veins based on world size.
 			}
 
 			PatchScale: {
-				DisplayName: PatchScale
-				Tooltip: PatchScale
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
+				Tooltip: The scaling applied to the size of an amber vein.
 			}
 		}
 
