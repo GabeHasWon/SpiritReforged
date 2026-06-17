@@ -242,7 +242,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 		FindGround(x, ref y);
 		y--;
 
-		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y, true))
 			return false;
 
 		int type = ModContent.TileType<PotionVats>();
@@ -489,6 +489,10 @@ internal class PotsMicropass : Micropass, IGenerationPage
 	}
 
 	/// <summary> Checks whether a pot can be placed at the given coordinates. </summary>
-	private static bool CommonSurface(int x, int y) 
-		=> !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots);
+	private static bool CommonSurface(int x, int y, bool excludeCorrupt = false)
+	{
+		Tile tile = Main.tile[x, y];
+		return !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && tile.LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots)
+			&& (!excludeCorrupt || (!TileID.Sets.Corrupt[tile.TileType] && !TileID.Sets.Crimson[tile.TileType]));
+	}
 }
