@@ -111,8 +111,8 @@ internal class PotsMicropass : Micropass, IGenerationPage
 			new("Tasty",
 				[
 					new IndividualPreset(nameof(PicnicScale), 1000),
-					new IndividualPreset(nameof(PlatterScale), 1000),
-					new IndividualPreset(nameof(WormScale), 375),
+					new IndividualPreset(nameof(PlatterScale), 350),
+					new IndividualPreset(nameof(WormScale), 150),
 					new IndividualPreset(nameof(RollingPotChance), 10),
 					new IndividualPreset(nameof(OrnateScale), 2),
 					new IndividualPreset(nameof(PotionScale), 16),
@@ -125,9 +125,9 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 			new("Occult",
 				[
-					new IndividualPreset(nameof(PotionScale), 800),
-					new IndividualPreset(nameof(ScryingScale), 500),
-					new IndividualPreset(nameof(WormScale), 375),
+					new IndividualPreset(nameof(PotionScale), 200),
+					new IndividualPreset(nameof(ScryingScale), 100),
+					new IndividualPreset(nameof(WormScale), 4),
 					new IndividualPreset(nameof(RollingPotChance), 10),
 					new IndividualPreset(nameof(OrnateScale), 2),
 					new IndividualPreset(nameof(WormScale), 8),

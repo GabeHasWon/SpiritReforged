@@ -173,7 +173,7 @@ Pages: {
 
 			Treacherous: {
 				Name: "[i:SpiritReforged/LeatherBackpack] Treacherous"
-				Tooltip: Vast gorges dot the landscape. Don't look down!
+				Tooltip: Vast gorges may dot the landscape. Don't look down!
 			}
 		}
 
@@ -387,7 +387,7 @@ Pages: {
 			}
 
 			Occult: {
-				Name: "[i:SpiritReforged/ScryingPotItem]"
+				Name: "[i:SpiritReforged/ScryingPotItem] Occult"
 				Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
 			}
 		}
@@ -568,7 +568,7 @@ Pages: {
 			}
 
 			DresserNormalization: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] Dresser Normalization"
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Normalization"
 				Tooltip:
 					'''
 					The factor at which the dresser loot pool is normalized.
