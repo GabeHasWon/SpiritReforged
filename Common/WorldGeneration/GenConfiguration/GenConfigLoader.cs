@@ -365,10 +365,10 @@ internal class GenConfigLoader : ModSystem
 				// Too bad! - Gabe
 				step = instance switch
 				{
-					int => (object)(int)1,
+					int or GenRange => (object)(int)1,
 					short => (object)(short)1,
 					long => (object)(long)1,
-					float => (object)(float)1,
+					float or GenRangeF => (object)(float)1,
 					double => (object)(double)1,
 					ushort => (object)(ushort)1,
 					uint => (object)(uint)1,

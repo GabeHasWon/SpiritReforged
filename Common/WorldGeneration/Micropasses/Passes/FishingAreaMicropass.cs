@@ -31,7 +31,7 @@ internal class FishingAreaMicropass : Micropass, IGenerationPage
 
 	public override string WorldGenName => "Fishing Coves";
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new()
 	{
 		CopiedPage = new UndergroundHouseMicropass()
 	};

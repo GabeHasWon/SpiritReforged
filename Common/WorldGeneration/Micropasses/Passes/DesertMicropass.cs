@@ -21,6 +21,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 	internal static float FossilMultiplier = 1;
 
 	[GenConfigurable(1, 40)]
+	[Slider]
 	internal static int PatchScale = DefaultPatchScale;
 
 	public override string WorldGenName => "Desert Extras";

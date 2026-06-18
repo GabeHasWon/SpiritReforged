@@ -441,6 +441,26 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/FlaskRadon] （氖苔藓）自定义苔藓几率"
 				Tooltip: 选中魂灵新魄的自定义发光苔藓而非原版苔藓的几率（x/6）。
 			}
+
+			StatueCountModifier: {
+				// DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
+				// Tooltip: The maximum amount of Reforged statues spawned in-world.
+			}
+
+			StructuresMax: {
+				// DisplayName: StructuresMax
+				// Tooltip: StructuresMax
+			}
+
+			StructureScale: {
+				// DisplayName: StructureScale
+				// Tooltip: StructureScale
+			}
+
+			PotSpam: {
+				// DisplayName: PotSpam
+				// Tooltip: PotSpam
+			}
 		}
 
 		Presets: {
@@ -734,6 +754,31 @@ Pages: {
 			PatchScale: {
 				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
 				// Tooltip: The scaling applied to the size of an amber vein.
+			}
+
+			RuinSegmentMinimum: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Minimum"
+				// Tooltip: The minimum segment count for an underground desert ruin.
+			}
+
+			RuinSegmentRange: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
+				// Tooltip: The random range added to an underground ruin's segments.
+			}
+
+			RuinCountMinimum: {
+				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Minimum"
+				// Tooltip: The minimum amount of underground desert ruins per world.
+			}
+
+			RuinCountRange: {
+				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
+				// Tooltip: The random range added to the number of underground desert ruins.
+			}
+
+			LightRange: {
+				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
+				// Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
 			}
 		}
 

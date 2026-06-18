@@ -1,17 +1,37 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Underground.Pottery;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
-using System;
 using System.Linq;
+using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class PotteryStructureMicropass : Micropass
+internal class PotteryStructureMicropass : Micropass, IGenerationPage
 {
+	[GenConfigurable(0.25f, 25f)]
+	[Slider]
+	private static float StructuresMax = 5;
+
+	[GenConfigurable(0.1f, 20f)]
+	[Slider]
+	private static float StructureScale = 5f;
+
+	[GenConfigurable(20, 500)]
+	[Slider]
+	private static int PotSpam = 200;
+
 	public override string WorldGenName => "Pottery Structures";
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new UndergroundHouseMicropass(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -26,7 +46,7 @@ internal class PotteryStructureMicropass : Micropass
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Pottery");
 
 		HashSet<Rectangle> regions = [];
-		int maxStructures = Main.maxTilesX / WorldGen.WorldSizeSmallX * 5;
+		int maxStructures = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * StructuresMax);
 		int structures = 0;
 		int xPadding = CrossMod.Remnants.Enabled ? 400 : 40;
 
@@ -47,7 +67,7 @@ internal class PotteryStructureMicropass : Micropass
 
 	public static bool CreateStructure(int x, int y, ref HashSet<Rectangle> regions)
 	{
-		int radius = 20 + (int)((float)Main.maxTilesX / WorldGen.WorldSizeSmallX * 5f);
+		int radius = 20 + (int)((float)Main.maxTilesX / WorldGen.WorldSizeSmallX * StructureScale);
 		var pt = new Point(x, y);
 		Rectangle area = new(x - radius, y - radius, radius * 2, radius * 2);
 
@@ -142,7 +162,7 @@ internal class PotteryStructureMicropass : Micropass
 		selection.Add(ModContent.TileType<ScryingPot>(), .03f);
 		selection.Add(ModContent.TileType<PotionVats>(), .045f);
 
-		for (int i = 0; i < 200; i++)
+		for (int i = 0; i < PotSpam; i++)
 		{
 			var random = WorldGen.genRand.NextVector2FromRectangle(area).ToPoint();
 
@@ -158,17 +178,11 @@ internal class PotteryStructureMicropass : Micropass
 				continue;
 
 			if (type == ModContent.TileType<PotionVats>())
-			{
 				PotsMicropass.CreatePotion(random.X, random.Y);
-			}
 			else if (type == ModContent.TileType<StackablePots>())
-			{
 				PotsMicropass.CreateStack(random.X, random.Y);
-			}
 			else if (type == ModContent.TileType<Pots>())
-			{
 				WorldGen.PlacePot(random.X, random.Y, style: WorldGen.genRand.Next(4));
-			}
 			else
 			{
 				int range = TileObjectData.GetTileData(type, 0)?.RandomStyleRange ?? 1;

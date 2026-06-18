@@ -27,27 +27,17 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	public static readonly Point16 Size = new(50, 40);
 	public static readonly HashSet<Rectangle> OasisAreas = [];
 
-	[GenConfigurable(2, 16)]
-	[Slider]
-	private static int PalmHeightMin = 8;
-
-	[GenConfigurable(0, 16)]
-	[Slider]
-	[PriorityModifier(nameof(PalmHeightMin))]
-	private static int PalmHeightRange = 8;
-
 	[GenConfigurable(1, 50)]
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
-	[PriorityModifier(nameof(PalmHeightMin))]
 	private static int PalmChanceLow = 15;
 
 	[GenConfigurable(1, 25)]
 	[ReverseMinMax]
 	[Slider]
 	[Denominator]
-	[PriorityModifier(nameof(PalmHeightMin))]
+	[PriorityModifier(nameof(PalmChanceLow))]
 	private static int PalmChanceHigh = 5;
 
 	[GenConfigurable(1, 25)]
@@ -55,16 +45,6 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[Slider]
 	[Denominator]
 	private static int CattailChance = 3;
-
-	[GenConfigurable(1, 10)]
-	[Slider]
-	[PriorityModifier(nameof(CattailChance))]
-	private static int CattailHeightMin = 3;
-
-	[GenConfigurable(0, 20)]
-	[Slider]
-	[PriorityModifier(nameof(CattailChance))]
-	private static int CattailHeightRange = 3;
 
 	[GenConfigurable(1, 30)]
 	[ReverseMinMax]
@@ -90,13 +70,16 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[Denominator]
 	private static int SeaOatsChance = 2;
 
-	[GenConfigurable(0, 10)]
-	[Slider]
-	private static int LightAmountMin = 1;
+	//[GenConfigurable(0, 10)]
+	//[Slider]
+	//private static int LightAmountMin = 1;
 
-	[GenConfigurable(0, 15)]
-	[Slider]
-	private static int LightAmountRange = 3;
+	//[GenConfigurable(0, 15)]
+	//[Slider]
+	//private static int LightAmountRange = 3;
+
+	[GenConfigurable("0 0", "10 15")]
+	private static GenRange LightRange = new GenRange(1, 3);
 
 	[GenConfigurable(2, 15)]
 	[Slider]
@@ -142,13 +125,10 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					new IndividualPreset(nameof(PalmChanceHigh), 2),
 					new IndividualPreset(nameof(PalmChanceLow), 20),
 					new IndividualPreset(nameof(CattailChance), 1),
-					new IndividualPreset(nameof(CattailHeightMin), 10),
-					new IndividualPreset(nameof(CattailHeightRange), 12),
 					new IndividualPreset(nameof(OasisPlantChance), 2),
 					new IndividualPreset(nameof(GlowflowerChance), 2),
 					new IndividualPreset(nameof(GlowflowerChance), 2),
-					new IndividualPreset(nameof(LightAmountRange), 0),
-					new IndividualPreset(nameof(LightAmountRange), 0),
+					new IndividualPreset(nameof(LightRange), GenRange.Empty),
 					new IndividualPreset(nameof(PoolWidthMin), 10),
 					new IndividualPreset(nameof(PoolDepthMin), 7),
 					new IndividualPreset(nameof(PoolDepthRange), 10)
@@ -290,7 +270,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
 				if (WorldGen.genRand.NextBool(palmCount == 0 ? PalmChanceHigh : PalmChanceLow) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
-					if (CreatePalmTree(i, j, PalmHeightMin + WorldGen.genRand.Next(PalmHeightRange + 1)))
+					if (CreatePalmTree(i, j, WorldGen.genRand.Next(8, 16)))
 						palmCount++;
 
 				return true;
@@ -309,7 +289,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					{
 						WorldGen.PlaceCatTail(i, j);
 
-						int height = CattailHeightMin + WorldGen.genRand.Next(CattailHeightRange + 1);
+						int height = WorldGen.genRand.Next(3, 6);
 						for (int h = 0; h < height; h++)
 							WorldGen.GrowCatTail(i, j);
 					}
@@ -348,7 +328,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 		int x = point.X;
 		int y = point.Y;
 
-		int count = LightAmountMin + WorldGen.genRand.Next(LightAmountRange + 1);
+		int count = LightRange.RollRange(true);// LightAmountMin + WorldGen.genRand.Next(LightAmountRange + 1);
 		HashSet<int> lastX = [];
 
 		for (int i = 0; i < count; i++)

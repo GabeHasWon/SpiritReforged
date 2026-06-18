@@ -471,6 +471,26 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/FlaskRadon] Шанс на светящийся мох"
 				Tooltip: Устанавливает числитель (x/6) шанса замены ванильного светящегося мха на мох из Reforged в пещерах.
 			}
+
+			StatueCountModifier: {
+				// DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
+				// Tooltip: The maximum amount of Reforged statues spawned in-world.
+			}
+
+			StructuresMax: {
+				// DisplayName: StructuresMax
+				// Tooltip: StructuresMax
+			}
+
+			StructureScale: {
+				// DisplayName: StructureScale
+				// Tooltip: StructureScale
+			}
+
+			PotSpam: {
+				// DisplayName: PotSpam
+				// Tooltip: PotSpam
+			}
 		}
 
 		Presets: {
@@ -556,7 +576,11 @@ Pages: {
 
 			SpecialRoomChance: {
 				// DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Special Room Chance"
-				// Tooltip: The chance that any Ziggurat room is a special room.
+				/* Tooltip:
+					'''
+					The chance that any Ziggurat room is a special room; that is, any of these:
+					Library room, Storage room, Burial room
+					''' */
 			}
 
 			SkipRoomChance: {
@@ -672,7 +696,7 @@ Pages: {
 			}
 
 			CattailHeightMin: {
-				// DisplayName: "[i:2996] (Oasis) Cattail Height Minimum"
+				// DisplayName: "[i:2996] (Oasis) Cattail Height Min"
 				// Tooltip: Minimum height for a cattail. This will not go past water.
 			}
 
@@ -732,7 +756,7 @@ Pages: {
 			}
 
 			MainNormalization: {
-				// DisplayName: "[i:1298] (Oasis) Main Item Normalization"
+				// DisplayName: "[i:1298] (Oasis) Main Normalization"
 				/* Tooltip:
 					'''
 					The factor at which the main item loot pool is normalized.
@@ -741,7 +765,7 @@ Pages: {
 			}
 
 			ItemNormalization: {
-				// DisplayName: "[i:1298] (Oasis) Other Item Normalization"
+				// DisplayName: "[i:1298] (Oasis) Other Normalization"
 				/* Tooltip:
 					'''
 					The factor at which the non-main item loot pool is normalized.
@@ -750,12 +774,12 @@ Pages: {
 			}
 
 			ChestItemCountMin: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Count Minimum"
+				// DisplayName: "[i:1298] (Oasis) Chest Item Minimum"
 				// Tooltip: The minimum amount of items in an underground Oasis chest.
 			}
 
 			ChestItemCountRange: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Count Range"
+				// DisplayName: "[i:1298] (Oasis) Chest Item Range"
 				// Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
 			}
 
@@ -772,6 +796,31 @@ Pages: {
 			PatchScale: {
 				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
 				// Tooltip: The scaling applied to the size of an amber vein.
+			}
+
+			RuinSegmentMinimum: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Minimum"
+				// Tooltip: The minimum segment count for an underground desert ruin.
+			}
+
+			RuinSegmentRange: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
+				// Tooltip: The random range added to an underground ruin's segments.
+			}
+
+			RuinCountMinimum: {
+				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Minimum"
+				// Tooltip: The minimum amount of underground desert ruins per world.
+			}
+
+			RuinCountRange: {
+				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
+				// Tooltip: The random range added to the number of underground desert ruins.
+			}
+
+			LightRange: {
+				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
+				// Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
 			}
 		}
 

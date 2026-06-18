@@ -1,7 +1,9 @@
-﻿using ReLogic.Graphics;
+﻿using JetBrains.Annotations;
+using ReLogic.Graphics;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -262,6 +264,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					text.SetText(config.DisplayName + ":");
 				else if (valueBack is Enum en)
 					text.SetText(config.DisplayName + $": [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}]");
+				else if (valueBack is IGenRange gen)
+					text.SetText(config.DisplayName + $": [c/AAAAAA:{gen.DisplayString()}]");
 				else
 				{
 					string valueText = $": [c/AAAAAA:{value}]";
@@ -277,9 +281,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			itemPanel.Append(text);
 
+			object defaultValue = config.Get();
+
+			if (defaultValue is IGenRange)
+			{
+				itemPanel.Height = StyleDimension.FromPixels(74);
+				text.VAlign = 0.2f;
+				CreateGenRange(config, page, itemPanel);
+				continue;
+			}
+
 			// Define this super early so we can get it for the below onEnter delegate
 			UIElement? slider = null;
-			object defaultValue = config.Get();
 
 			if (defaultValue is not bool)
 			{
@@ -326,7 +339,72 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				AddManualInput(config, itemPanel, text, slider, defaultValue);
 		}
 	}
-	
+
+	private void CreateGenRange(LoadedConfig config, GenConfigPage page, UIPanel itemPanel)
+	{
+		dynamic def = config.Default;
+		dynamic step = config.Params.Step;
+		string[] minStr = ((string)config.Params.Min).Split(' ');
+		string[] maxStr = ((string)config.Params.Max).Split(' ');
+		IGenRange range = (IGenRange)config.Get();
+		bool isFloat = range is GenRangeF;
+
+		dynamic minMin;
+		dynamic minRange;
+		dynamic maxMin;
+		dynamic maxRange;
+		UIElement minSlider;
+
+		// If is split into if-else to preserve type dynamically
+		if (isFloat)
+		{
+			minMin = float.Parse(minStr[0]);
+			maxMin = float.Parse(maxStr[0]);
+			minRange = float.Parse(minStr[1]);
+			maxRange = float.Parse(maxStr[1]);
+
+			GenRangeF rangeF = (GenRangeF)range;
+			minSlider = new UISlider<float>(rangeF.DefaultMin, step, minMin, maxMin, Color.CornflowerBlue);
+		}
+		else
+		{
+			minMin = int.Parse(minStr[0]);
+			maxMin = int.Parse(maxStr[0]);
+			minRange = int.Parse(minStr[1]);
+			maxRange = int.Parse(maxStr[1]);
+
+			GenRange rangeF = (GenRange)range;
+			minSlider = new UISlider<int>(rangeF.DefaultMin, step, minMin, maxMin, Color.CornflowerBlue);
+		}
+
+		DefineSliderInfo(minSlider);
+		AppendMinMaxToSlider(minSlider, minMin.ToString(), maxMin.ToString());
+		minSlider.Top = StyleDimension.FromPixels(4);
+		minSlider.VAlign = 0.1f;
+		itemPanel.Append(minSlider);
+
+		UIElement rangeSlider;
+
+		if (isFloat)
+		{
+			GenRangeF rangeF = (GenRangeF)range;
+			rangeSlider = new UISlider<float>(rangeF.DefaultMin, step, minRange, maxRange, Color.CornflowerBlue);
+		}
+		else
+		{
+			GenRange rangeF = (GenRange)range;
+			rangeSlider = new UISlider<int>(rangeF.DefaultMin, step, minRange, maxRange, Color.CornflowerBlue);
+		}
+
+		DefineSliderInfo(rangeSlider);
+		AppendMinMaxToSlider(rangeSlider, minRange.ToString(), maxRange.ToString());
+		rangeSlider.VAlign = 0.1f;
+		rangeSlider.Top = StyleDimension.FromPixels(34);
+		itemPanel.Append(rangeSlider);
+
+		AddResetButton(config, itemPanel, minSlider, rangeSlider);
+	}
+
 	private static string GetEnumName(GenConfigPage page, Enum en, string postfix) 
 		=> Language.GetTextValue($"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}." + postfix);
 
@@ -391,7 +469,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		itemPanel.Append(input);
 	}
 
-	private void AddResetButton(LoadedConfig config, UIPanel itemPanel, UIElement? slider)
+	/// <summary>
+	/// Adds the reset button with an optional slider or two.<br/>
+	/// If there are two sliders, they must be using the same generic argument.
+	/// </summary>
+	private void AddResetButton(LoadedConfig config, UIPanel itemPanel, UIElement? slider, UIElement? otherSlider = null)
 	{
 		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Reset"))
 		{
@@ -404,15 +486,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		MethodInfo? setFactor = slider?.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
 
 		if (slider is not null)
-		{
-			onReset += () => ResetSlider(slider);
+			AddResetFunctionality(config, slider, setFactor);
 
-			if (setFactor is not null)
-			{
-				onMin += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 1 : 0)]);
-				onMax += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 0 : 1)]);
-			}
-		}
+		if (otherSlider is not null)
+			AddResetFunctionality(config, otherSlider, setFactor);
 
 		resetButton.OnLeftClick += (_, _) =>
 		{
@@ -421,10 +498,24 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 			if (slider is not null)
 				ResetSlider(slider);
+
+			if (otherSlider is not null)
+				ResetSlider(otherSlider);
 		};
 
 		itemPanel.Append(resetButton);
 		AddHoverTicks(resetButton);
+	}
+
+	private void AddResetFunctionality(LoadedConfig config, UIElement slider, MethodInfo? setFactor)
+	{
+		onReset += () => ResetSlider(slider);
+
+		if (setFactor is not null)
+		{
+			onMin += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 1 : 0)]);
+			onMax += () => setFactor.Invoke(slider, [(config.ReverseMinMax ? 0 : 1)]);
+		}
 	}
 
 	public static void ResetSlider(UIElement slider)
@@ -888,11 +979,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			_ => throw new NotSupportedException("I didn't write a type case for this. Write one!")
 		};
 
-		slider.HAlign = 1f;
-		slider.Left = StyleDimension.FromPixels(-44 - 70);
-		slider.Top = StyleDimension.FromPixels(12);
-		slider.Width = StyleDimension.FromPixels(200);
-		slider.Height = StyleDimension.Fill;
+		DefineSliderInfo(slider);
 
 		if (def is Enum)
 			slider.Left = StyleDimension.FromPixels(-180);
@@ -905,7 +992,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			onSelectPreset += (page, preset) =>
 			{
-				foreach (var indiv in preset.Presets) 
+				foreach (var indiv in preset.Presets)
 				{
 					if (config.Name == indiv.Name)
 					{
@@ -964,18 +1051,27 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		itemPanel.Append(slider);
 
-		slider.Append(new UIText(config.Params.Max is Enum enMax ? GetEnumName(page, enMax, "DisplayName") : config.Params.Max.ToString())
+		string? minStr = config.Params.Max is Enum enMax ? GetEnumName(page, enMax, "DisplayName") : config.Params.Max.ToString();
+		string? maxStr = config.Params.Min is Enum enMin ? GetEnumName(page, enMin, "DisplayName") : config.Params.Min.ToString();
+		AppendMinMaxToSlider(slider, minStr!, maxStr!);
+
+		return slider;
+	}
+
+	private static void AppendMinMaxToSlider(UIElement slider, string min, string max)
+	{
+		slider.Append(new UIText(min)
 		{
 			HAlign = 0f,
 			VAlign = 0,
 			Left = StyleDimension.FromPixelsAndPercent(8, 1),
 			Top = StyleDimension.FromPixels(-2),
-			Width = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.ItemStack.Value, config.Params.Max.ToString(), Vector2.One).X),
+			Width = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.ItemStack.Value, max, Vector2.One).X),
 			Height = StyleDimension.FromPixels(2),
 			TextColor = Color.Gray
 		});
 
-		slider.Append(new UIText(config.Params.Min is Enum enMin ? GetEnumName(page, enMin, "DisplayName") : config.Params.Min.ToString())
+		slider.Append(new UIText(max)
 		{
 			HAlign = 1f,
 			VAlign = 0,
@@ -985,8 +1081,15 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			Height = StyleDimension.FromPixels(2),
 			TextColor = Color.Gray
 		});
+	}
 
-		return slider;
+	private static void DefineSliderInfo(UIElement slider)
+	{
+		slider.HAlign = 1f;
+		slider.Left = StyleDimension.FromPixels(-44 - 70);
+		slider.Top = StyleDimension.FromPixels(12);
+		slider.Width = StyleDimension.FromPixels(200);
+		slider.Height = StyleDimension.Fill;
 	}
 
 	private void ConfigModified(GenConfigPage page, LoadedConfig config)

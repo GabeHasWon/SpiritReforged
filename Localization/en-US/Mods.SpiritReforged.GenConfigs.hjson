@@ -441,6 +441,26 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/FlaskRadon] (Neon Moss) Custom Moss Chance"
 				Tooltip: The likelihood that a custom Reforged glowing moss is chosen over a vanilla one (x/6).
 			}
+
+			StatueCountModifier: {
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
+				Tooltip: The maximum amount of Reforged statues spawned in-world.
+			}
+
+			StructuresMax: {
+				DisplayName: StructuresMax
+				Tooltip: StructuresMax
+			}
+
+			StructureScale: {
+				DisplayName: StructureScale
+				Tooltip: StructureScale
+			}
+
+			PotSpam: {
+				DisplayName: PotSpam
+				Tooltip: PotSpam
+			}
 		}
 
 		Presets: {
@@ -526,7 +546,7 @@ Pages: {
 
 			SpecialRoomChance: {
 				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Special Room Chance"
-				Tooltip: 
+				Tooltip:
 					'''
 					The chance that any Ziggurat room is a special room; that is, any of these:
 					Library room, Storage room, Burial room
@@ -746,6 +766,31 @@ Pages: {
 			PatchScale: {
 				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
 				Tooltip: The scaling applied to the size of an amber vein.
+			}
+
+			RuinSegmentMinimum: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Minimum"
+				Tooltip: The minimum segment count for an underground desert ruin.
+			}
+
+			RuinSegmentRange: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
+				Tooltip: The random range added to an underground ruin's segments.
+			}
+
+			RuinCountMinimum: {
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Minimum"
+				Tooltip: The minimum amount of underground desert ruins per world.
+			}
+
+			RuinCountRange: {
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
+				Tooltip: The random range added to the number of underground desert ruins.
+			}
+
+			LightRange: {
+				DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
+				Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
 			}
 		}
 

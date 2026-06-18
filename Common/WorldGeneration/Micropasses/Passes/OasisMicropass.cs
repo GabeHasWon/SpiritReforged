@@ -1,19 +1,44 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class OasisMicropass : Micropass
+internal class OasisMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Underground Oasis";
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	private static int RuinSegmentMinimum = 2;
+
+	[GenConfigurable(0, 30)]
+	[Slider]
+	private static int RuinSegmentRange = 3;
+
+	[GenConfigurable(0, 50)]
+	[Slider]
+	private static int RuinCountMinimum = 0;
+
+	[GenConfigurable(0, 25)]
+	[Slider]
+	private static int RuinCountRange = 4;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new UndergroundOasisBiome()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -68,7 +93,7 @@ internal class OasisMicropass : Micropass
 			rectangle.Inflate(100, 100);
 
 			biomesRectangles.Add(rectangle);
-			int ruinCount = WorldGen.genRand.Next(4);
+			int ruinCount = RuinCountMinimum + WorldGen.genRand.Next(RuinCountRange + 1);
 
 			if (ruinCount > 0)
 				WorldMethods.Generate(GenerateRuins, ruinCount, out _, rectangle, 50);
@@ -89,7 +114,7 @@ internal class OasisMicropass : Micropass
 		if (!GenVars.structures.CanPlace(structureAreaEstimate) || !GenVars.UndergroundDesertLocation.Contains(foundPos))
 			return false;
 
-		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, WorldGen.genRand.Next(2, 5));
+		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, RuinSegmentMinimum + WorldGen.genRand.Next(RuinSegmentRange + 1));
 
 		GenVars.structures.AddProtectedStructure(region);
 		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));
