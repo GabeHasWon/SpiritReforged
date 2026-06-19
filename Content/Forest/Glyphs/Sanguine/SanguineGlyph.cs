@@ -1,4 +1,5 @@
-﻿using ReLogic.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -6,13 +7,17 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
 public class SanguineGlyph : GlyphItem
 {
+	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
 	internal class SanguineStackingBuff : ModBuff
 	{
 		public override void SetStaticDefaults()
@@ -260,6 +265,33 @@ public class SanguineGlyph : GlyphItem
 		}
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.color = Color.DarkRed * 0.5f;
+			drawInfo.DrawDataCache.Add(item);
+
+			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+			item = input;
+			item.position += offset;
+			item.color = Color.DarkRed * 0.15f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -337,5 +369,34 @@ public class SanguineGlyph : GlyphItem
 	{
 		item.damage -= (int)Math.Round(item.damage * 0.2f);
 		base.OnApplyGlyph(item, context);
+	}
+}
+
+public class SanguineGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		if (!drawData.HasValue)
+			return;
+
+		GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+		GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+		GetEffect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+		GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size());
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		GetEffect.Parameters["uColor1"].SetValue(Color.Lerp(Color.DarkRed, Color.Red, sin).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(Color.Black, new Color(200, 25, 100), cos).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor3"].SetValue(Color.Black.ToVector4());
+		GetEffect.Parameters["baseDepth"].SetValue(4f);
+		GetEffect.Parameters["scale"].SetValue(0.66f);
+
+		Apply();
 	}
 }

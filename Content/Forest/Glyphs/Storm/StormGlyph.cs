@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
@@ -11,21 +10,18 @@ using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Forest.Glyphs.Rot;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
-using static AssGen.Assets;
-using static SpiritReforged.Content.Ziggurat.Windshear.WindshearScepter;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
+	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
 	/// this is from windshear scepter with minor changes to color and behavior
 	[Autoload(Side = ModSide.Client)]
 	public sealed class StormMetaballSystem : ModSystem
@@ -585,6 +581,34 @@ public class StormGlyph : GlyphItem
 		settings = new(new(142, 186, 231));
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.texture = TextureColorCache.ColorSolid(item.texture, Color.White);
+			item.color = Color.WhiteSmoke.Additive() * 0.35f;
+			item.position += offset;
+			drawInfo.DrawDataCache.Add(item);
+
+			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+			item.color = Color.LightCyan.Additive() * 0.05f;
+			item.position = input.position + offset;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.texture = TextureColorCache.ColorSolid(item.texture, Color.White);
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -725,5 +749,36 @@ public class StormGlyph : GlyphItem
 		{
 			p.Velocity *= 0.95f;
 		}
+	}
+}
+
+public class StormGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		if (!drawData.HasValue)
+			return;
+
+		GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+		GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+		GetEffect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+		GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+		GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size());
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		GetEffect.Parameters["uColor1"].SetValue(Color.Lerp(Color.LightCyan, Color.Cyan, sin).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(Color.LightGray, Color.White, cos).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor3"].SetValue(Color.WhiteSmoke.ToVector4());
+
+		GetEffect.Parameters["baseDepth"].SetValue(4f);
+		GetEffect.Parameters["scale"].SetValue(0.66f);
+
+		Apply();
 	}
 }

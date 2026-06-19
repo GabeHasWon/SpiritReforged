@@ -1,16 +1,22 @@
-﻿using SpiritReforged.Common.CombatTextCommon;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class RageGlyph : GlyphItem
 {
+	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new RageGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
 	public sealed class RagePlayer : ModPlayer
 	{
 		// what percentage of overflow damage should be stored
@@ -247,6 +253,37 @@ public class RageGlyph : GlyphItem
 		}
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		float shakeCounter = Math.Max((float)Math.Sin(Main.timeForVisualEffects * 0.025f), 0);
+		Vector2 shake = Main.rand.NextVector2Circular(1.25f, 1.25f) * shakeCounter;
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset + shake;
+			item.color = Color.Red * 0.5f;
+			drawInfo.DrawDataCache.Add(item);
+
+			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4; 
+			item = input;
+			item.position += offset + shake;
+			item.color = Color.Red * 0.15f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+
+			DrawData item = input;
+			item.position += offset + shake;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D texWhite = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -330,5 +367,41 @@ public class RageGlyph : GlyphItem
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(new(176, 16, 20));
+	}
+}
+
+public class RageGlyphShaderData (Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		if (!drawData.HasValue)
+			return;
+
+		GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+		GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+		GetEffect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+		var noise = AssetLoader.LoadedTextures["swirlNoise"].Value;
+		//var gradient = AssetLoader.LoadedTextures["Glyphs/BaseGlyph_RampTexture"].Value;
+		var noiseAlt = AssetLoader.LoadedTextures["swirlNoise"].Value;
+
+		GetEffect.Parameters["uImage1"].SetValue(noise);
+		GetEffect.Parameters["uImage2"].SetValue(noiseAlt);
+		//effect.Parameters["uImage3"].SetValue(gradient);
+		GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size());
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		GetEffect.Parameters["uColor1"].SetValue(Color.Lerp(Color.OrangeRed, Color.Red, sin).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(Color.DarkRed, new Color(226, 0, 45), cos).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor3"].SetValue(Color.Orange.ToVector4());
+
+		GetEffect.Parameters["baseDepth"].SetValue(4f);
+		GetEffect.Parameters["scale"].SetValue(0.66f);
+
+		Apply();
 	}
 }

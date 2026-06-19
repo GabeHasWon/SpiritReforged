@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -6,11 +7,15 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class MoonlightGlyph : GlyphItem
 {
+	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
 	public sealed class MoonlightPlayer : ModPlayer
 	{
 		internal static int[] maxTimeLefts = new int[Main.maxCombatText];
@@ -147,6 +152,27 @@ public class MoonlightGlyph : GlyphItem
 		}
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+			DrawData item = input;
+			item.position += offset;
+			item.color = Color.Blue.Additive() * 0.1f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -227,5 +253,36 @@ public class MoonlightGlyph : GlyphItem
 			.AddSubClass(new(DamageClass.Magic, 0.2f));
 
 		base.OnApplyGlyph(item, context);
+	}
+}
+
+public class MoonlightGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		if (!drawData.HasValue)
+			return;
+
+		GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+		GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+		GetEffect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+		GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+		GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["noiseCrystal"].Value);
+		GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size());
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.01f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.015f));
+
+		GetEffect.Parameters["uColor1"].SetValue(Color.Lerp(Color.DarkCyan, Color.MidnightBlue, sin).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(Color.RoyalBlue, Color.DarkSlateBlue, cos).ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor3"].SetValue(Color.BlueViolet.ToVector4());
+
+		GetEffect.Parameters["baseDepth"].SetValue(4f);
+		GetEffect.Parameters["scale"].SetValue(0.66f);
+
+		Apply();
 	}
 }

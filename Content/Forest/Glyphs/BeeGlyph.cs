@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -7,11 +8,15 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BeeGlyph : GlyphItem
 {
+	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new BeeGlyphShaderData(AssetLoader.LoadedShaders["LiquidGlyphShader"], "mainPass"));
+
 	public class BeeInOrbit : Particle
 	{
 		public NPC Parent => Main.npc[_parentWhoAmI];
@@ -322,6 +327,34 @@ public class BeeGlyph : GlyphItem
 		}
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.color = new Color(254, 210, 37);
+			drawInfo.DrawDataCache.Add(item);
+
+			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4; 
+			
+			item = input;
+			item.position += offset;
+			item.color = new Color(211, 113, 11) * 0.3f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Main.GetItemDrawFrame(item.type, out Texture2D texture, out Rectangle frame);
@@ -409,5 +442,32 @@ public class BeeGlyph : GlyphItem
 			.AddSubClass(new(DamageClass.Summon, 0.2f));
 
 		base.OnApplyGlyph(item, context);
+	}
+}
+
+public class BeeGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		if (!drawData.HasValue)
+			return;
+
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		var c1 = Color.Lerp(new Color(255, 182, 0), new Color(254, 210, 37), sin);
+		var c2 = new Color(211, 113, 11);
+
+		GetEffect.Parameters["uColor1"].SetValue(c1.ToVector4() * 0.5f);
+		GetEffect.Parameters["uColor2"].SetValue(c2.ToVector4() * 0.5f);
+		GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["swirlNoise"].Value);
+
+		GetEffect.Parameters["uPixelRes"].SetValue(drawData.Value.texture.Size().X / 2);
+
+		GetEffect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+		GetEffect.Parameters["uStrength"].SetValue(0.2f);
+
+		Apply();
 	}
 }
