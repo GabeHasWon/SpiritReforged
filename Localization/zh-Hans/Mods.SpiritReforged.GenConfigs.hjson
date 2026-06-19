@@ -29,13 +29,13 @@ UI: {
 	Load: 加载自定义预设
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 	FailedToLoad: 预设不适用于此页面。预期页面：{0}
-	/* ConfigNotice:
+	ConfigNotice:
 		'''
-		[c/AAAAFF:Ranges] work by setting the minimum and a randomized addition.
-		The value shown is the actual range used in-game when rolling randomly.
-		''' */
-	// LoadError: An error has occured while loading a preset ({0}). Report this to the Discord (and check client.log):
-	// Duplicate: (Duplicate preset not added)
+		[c/AAAAFF:范围]通过设定最小值和一个随机增量来运作。
+		显示的值是游戏中随机取值时实际使用的范围。
+		'''
+	LoadError: 在加载（{0}）预设时发生了一个错误。请在Discord报告该错误（并查看client.log）：
+	Duplicate: （重复的预设未被添加）
 }
 
 Pages: {
@@ -62,7 +62,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] 覆盖生成点"
+				DisplayName: "[i:50] 覆盖生成点"
 				Tooltip: 决定稀树平原是否在生成点生成，类似于“savanna”种子。
 			}
 
@@ -72,7 +72,7 @@ Pages: {
 			}
 
 			CampsiteChance: {
-				DisplayName: "[i:966] 营地几率"
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] 营地几率"
 				Tooltip: 营地生成的几率的分母（1/x）。
 			}
 
@@ -86,7 +86,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:31] 罐子几率"
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] 罐子几率"
 				Tooltip:
 					'''
 					装饰时生成罐子的几率的分母（1/x）。
@@ -124,7 +124,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] 覆盖生成点"
+				DisplayName: "[i:50] 覆盖生成点"
 				Tooltip: 决定盐滩是否在生成点生成，类似于“salt”种子。
 			}
 
@@ -153,7 +153,7 @@ Pages: {
 				Tooltip:
 					'''
 					装饰时生成石质佛塔罐子的几率的分母（1/x）。
-					这不会覆盖物块，因此值为1并不会在每个物块上都放置罐子。
+					这不会覆盖存在的物块，因此值为1并不会在每个物块上都放置罐子。
 					'''
 			}
 
@@ -180,7 +180,7 @@ Pages: {
 
 			Treacherous: {
 				Name: "[i:SpiritReforged/LeatherBackpack] 险恶"
-				Tooltip: 巨大的峡谷点缀着这里的风景。不要向下看！
+				Tooltip: 巨大的峡谷可能点缀着这里的风景。不要向下看！
 			}
 		}
 
@@ -196,12 +196,12 @@ Pages: {
 			}
 
 			SizeMultiplier: {
-				DisplayName: "[i:126] （喀斯特）尺寸倍率"
-				Tooltip: 喀斯特地貌所有挖掘行为的尺寸倍率。
+				DisplayName: "[i:747] （喀斯特）尺寸倍率"
+				Tooltip: 喀斯特地貌（繁茂洞穴）所有挖掘行为的尺寸倍率。
 			}
 
 			FieldSize: {
-				DisplayName: "[i:SpiritReforged/BotanistHat] （稻草人）麦田尺寸"
+				DisplayName: "[i:SpiritReforged/BotanistHat] （麦田）田野尺寸"
 				Tooltip: 控制稻草人麦田的宽度。
 			}
 
@@ -211,7 +211,7 @@ Pages: {
 			}
 
 			HeroChance: {
-				DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] （英雄纪念碑） 生成几率"
+				DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] （英雄纪念碑）生成几率"
 				Tooltip: 英雄纪念碑生成的几率的分母（1/x）。
 			}
 
@@ -389,13 +389,13 @@ Pages: {
 
 		Presets: {
 			Tasty: {
-				// Name: "[i:4029] Tasty"
-				// Tooltip: Someone has left a frankly absurd amount of food lying around. Who made all of this?
+				Name: "[i:4029] 美味"
+				Tooltip: 有人留下了数量多得离谱的食物。这些到底是谁做的？
 			}
 
 			Occult: {
-				// Name: "[i:SpiritReforged/ScryingPotItem] Occult"
-				// Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
+				Name: "[i:SpiritReforged/ScryingPotItem] 玄秘"
+				Tooltip: 无数法师与术士的失败实验散落在洞穴各处。
 			}
 		}
 	}
@@ -427,19 +427,19 @@ Pages: {
 
 			CartSpawnRate: {
 				DisplayName: "[i:13]（装饰）矿车比率"
-				Tooltip: 世界中生成的矿石矿车最大数量的倍率。
+				Tooltip: 世界中生成的矿石矿车的最大数量的倍率。
 			}
 
 			BoomshroomRate: {
 				DisplayName: "[i:SpiritReforged/BoomShroom] （装饰）蘑菇比率"
-				Tooltip: 世界中生成的爆炸蘑菇最大数量的倍率。
+				Tooltip: 世界中生成的爆炸蘑菇的最大数量的倍率。
 			}
 
 			CovesSpawnRate: {
-				DisplayName: "[i:2291] （小湾）倍率"
+				DisplayName: "[i:SpiritReforged/KoiTotem] （小湾）倍率"
 				Tooltip:
 					'''
-					世界中生成的钓鱼小湾最大数量的倍率。
+					世界中生成的钓鱼小湾的最大数量的倍率。
 					这可能会与其他生成结构的模组产生冲突。
 					'''
 			}
@@ -450,23 +450,23 @@ Pages: {
 			}
 
 			StatueCountModifier: {
-				// DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
-				// Tooltip: The maximum amount of Reforged statues spawned in-world.
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] （雕像）最大数量"
+				Tooltip: 世界中生成的魂灵新魄雕像的最大数量。
 			}
 
 			StructuresMax: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Multiplier"
-				// Tooltip: The multiplier to the number of pottery structures in a world.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）倍率"
+				Tooltip: 世界中生成的陶器结构数量的倍率。
 			}
 
 			StructureScale: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Scale"
-				// Tooltip: The scale applied to the size of pottery structures.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）比例"
+				Tooltip: 应用于陶器结构大小的比例。
 			}
 
 			PotSpam: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
-				// Tooltip: The minimum number of attempts pottery structures have to place pots.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
+				Tooltip: 陶器结构放置罐子的最小尝试次数。
 			}
 		}
 
@@ -477,8 +477,8 @@ Pages: {
 			}
 
 			Empty: {
-				// Name: "[i:1176] Empty"
-				// Tooltip: Is anyone out there?
+				Name: "[i:1176] 空"
+				Tooltip: 有人在这儿吗？
 			}
 		}
 	}
@@ -490,12 +490,20 @@ Pages: {
 		Members: {
 			UsedWidth: {
 				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 宽度"
-				Tooltip: 用于确定庙塔大小的宽度，不一定是实际宽度。
+				Tooltip:
+					'''
+					用于确定庙塔大小的宽度，不一定是实际宽度。
+					高于默认值的值会强制庙塔生成在金字塔之上，否则它可能根本无法生成。
+					'''
 			}
 
 			UsedHeight: {
 				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 高度"
-				Tooltip: 用于确定庙塔大小的高度，不一定是实际高度。
+				Tooltip:
+					'''
+					用于确定庙塔大小的高度，不一定是实际高度。
+					高于默认值的值会强制庙塔生成在金字塔之上，否则它可能根本无法生成。
+					'''
 			}
 
 			MaxInfections: {
@@ -504,7 +512,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:SpiritReforged/PotsCavernItem] 罐子几率"
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] 罐子几率"
 				Tooltip: 庙塔中罐子被放置的几率。
 			}
 
@@ -530,7 +538,11 @@ Pages: {
 
 			SpecialRoomChance: {
 				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] 特殊房间几率"
-				Tooltip: 任意庙塔房间变为特殊房间的几率。
+				Tooltip:
+					'''
+					任意庙塔房间变为特殊房间的几率；也就是以下任意一种：
+					图书馆，储藏室，墓室
+					'''
 			}
 
 			SkipRoomChance: {
@@ -548,7 +560,7 @@ Pages: {
 			}
 
 			DresserNormalization: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] 梳妆台归一化"
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台归一化"
 				Tooltip:
 					'''
 					梳妆台战利品池的归一化系数。
@@ -573,7 +585,7 @@ Pages: {
 
 			TabletChance: {
 				DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] 远古碑牌几率"
-				Tooltip: 非宝藏房间中远古碑牌生成的几率。
+				Tooltip: 非藏宝室房间中远古碑牌生成的几率。
 			}
 
 			FloorDivotChance: {
@@ -597,30 +609,30 @@ Pages: {
 			}
 
 			ChestItemRange: {
-				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Amount"
-				// Tooltip: The range for the number of items in a chest. Three items are guaranteed per chest.
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱战利品数量"
+				Tooltip: 宝箱中物品数量的范围值。每个宝箱中必定有3个物品。
 			}
 
 			DresserItemRange: {
-				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
-				// Tooltip: The range for the number of items in a dresser.
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台战利品数量"
+				Tooltip: 梳妆台中物品数量的范围值。
 			}
 		}
 
 		Presets: {
 			Plagued: {
-				// Name: "[i:SpiritReforged/PaleHiveItem] Plagued"
-				// Tooltip: This Ziggurat has seen better days. The parts that haven't been buried by sand are crawling with Scarabs.
+				Name: "[i:SpiritReforged/PaleHiveItem] 虫扰"
+				Tooltip: 这座庙塔曾有过更好的光景。那些没有被黄沙掩埋的部分，如今爬满了甲虫。
 			}
 
 			Opulent: {
-				// Name: "[i:SpiritReforged/LapisPotsItem] Opulent"
-				// Tooltip: Whoever built this Ziggurat spared no expense.
+				Name: "[i:SpiritReforged/LapisPotsItem] 豪华"
+				Tooltip: 无论是谁建造的这座庙塔，都不惜工本。
 			}
 
 			Perilous: {
-				// Name: "[i:SpiritReforged/NeedleTrapItem] Perilous"
-				// Tooltip: More loot, but more traps. A tantalizing prospect.
+				Name: "[i:SpiritReforged/NeedleTrapItem] 险地"
+				Tooltip: 更多的战利品，但也有更多的陷阱。真是个诱人的前景。
 			}
 		}
 	}
@@ -646,37 +658,37 @@ Pages: {
 			}
 
 			OasisPlantChance: {
-				DisplayName: "[i:1109] （绿洲）绿洲植物几率"
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）绿洲植物几率"
 				Tooltip: 绿洲植物被放置的几率。
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:2996] （绿洲）发光花几率"
+				DisplayName: "[i:4045] （绿洲）发光花几率"
 				Tooltip: 发光花被放置的几率。
 			}
 
 			PineappleChance: {
-				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）菠萝几率"
+				DisplayName: "[i:4294] （绿洲）菠萝几率"
 				Tooltip: 菠萝被放置的几率。
 			}
 
 			SeaOatsChance: {
-				DisplayName: "[i:2996] （绿洲）海燕麦几率"
+				DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] （绿洲）海燕麦几率"
 				Tooltip: 海燕麦被放置的几率。海燕麦是生长在海洋或绿洲附近的草质谷物植物。
 			}
 
 			PoolWidth: {
-				// DisplayName: "[i:206] (Oasis) Pool Width"
-				// Tooltip: The range for an underground Oasis's pool's width (in tiles).
+				DisplayName: "[i:206] （绿洲）水池宽度"
+				Tooltip: 地下绿洲水池宽度的范围值（以格为单位）。
 			}
 
 			PoolDepth: {
-				// DisplayName: "[i:206] (Oasis) Pool Depth"
-				// Tooltip: The range for an underground Oasis's pool's depth (in tiles).
+				DisplayName: "[i:206] （绿洲）水池深度"
+				Tooltip: 地下绿洲水池深度的范围值（以格为单位）。
 			}
 
 			MainNormalization: {
-				DisplayName: "[i:1298] （绿洲）主要物品归一化"
+				DisplayName: "[i:1298] （绿洲）主要归一化"
 				Tooltip:
 					'''
 					主要物品战利品池的归一化系数。
@@ -685,7 +697,7 @@ Pages: {
 			}
 
 			ItemNormalization: {
-				DisplayName: "[i:1298] （绿洲）其他物品归一化"
+				DisplayName: "[i:1298] （绿洲）其他归一化"
 				Tooltip:
 					'''
 					非主要物品战利品池的归一化系数。
@@ -694,60 +706,65 @@ Pages: {
 			}
 
 			ChestItemCountMin: {
-				DisplayName: "[i:1298] （绿洲）最低宝箱物品数量"
-				Tooltip: 地下绿洲的宝箱中出现的物品的最低数量。
+				DisplayName: "[i:1298] （绿洲）最小宝箱物品"
+				Tooltip: 地下绿洲的宝箱中出现的物品的最小数量。
 			}
 
 			ChestItemCountRange: {
-				DisplayName: "[i:1298] （绿洲）宝箱物品数量范围"
-				Tooltip: 追加到地下绿洲最低宝箱物品数量上的随机范围值。
+				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
+				Tooltip: 追加到地下绿洲宝箱物品最小数量上的随机范围值。
 			}
 
 			FossilCount: {
-				// DisplayName: "[i:SpiritReforged/PolishedAmberItem] (Amber) Deposit Amount"
-				// Tooltip: The maximum number of amber veins in the Underground Desert.
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] （琥珀）矿脉数量"
+				Tooltip: 地下沙漠中琥珀矿脉的最大数量。
 			}
 
 			FossilMultiplier: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) World Multiplier"
-				// Tooltip: The multiplier applied to the number of amber veins based on world size.
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）世界倍率"
+				Tooltip: 基于世界大小应用于琥珀矿脉数量的倍率。
 			}
 
 			PatchScale: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) Deposit Scale"
-				// Tooltip: The scaling applied to the size of an amber vein.
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）矿脉比例"
+				Tooltip: 应用于琥珀矿脉大小的比例。
 			}
 
 			RuinCount: {
-				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] (Ruins) Spawn Range"
-				// Tooltip: The range of how many underground desert ruins spawn per Oasis.
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] （废墟）生成范围"
+				Tooltip: 每个绿洲中生成地下沙漠废墟数量的范围值。
 			}
 
 			LightRange: {
-				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
-				// Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
+				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）光线数量"
+				Tooltip: 地下绿洲中光线数量的最小值与额外的随机范围值。
 			}
 
 			ChestItemRange: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Range"
-				// Tooltip: The range for the number of items in an underground Oasis chest.
+				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
+				Tooltip: 地下绿洲宝箱中物品物品数量的范围值。
 			}
 
 			RuinSegments: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] (Ruins) Segment Range"
-				// Tooltip: The range for how many segments an underground ruin may have.
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] （废墟）分段范围"
+				Tooltip: 地下废墟可能有的分段数量的范围值。
 			}
 		}
 
 		Presets: {
 			Overgrown: {
-				// Name: "[i:2996] Overgrown"
-				// Tooltip: The oases in this desert are overgrown and wild. How do they thrive?
+				Name: "[i:2996] 繁茂"
+				Tooltip: 这片沙漠中的绿洲繁茂而狂野。它们是如何蓬勃生长的？
 			}
 
 			Petrified: {
-				// Name: "[i:154] Petrified"
-				// Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
+				Name: "[i:154] 石化"
+				Tooltip: 黄沙之下掩藏着亿万年的化石生态系统。你能将它们全部找出来吗？
+			}
+
+			Ruined: {
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] 废墟"
+				Tooltip: 一个古老的、被遗忘已久的文明曾于这片沙漠之下蓬勃发展。他们的遗迹至今犹存。
 			}
 
 			Ruined: {
