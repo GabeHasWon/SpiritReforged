@@ -62,7 +62,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] 覆盖生成点"
+				DisplayName: "[i:50] 覆盖生成点"
 				Tooltip: 决定稀树平原是否在生成点生成，类似于“savanna”种子。
 			}
 
@@ -72,7 +72,7 @@ Pages: {
 			}
 
 			CampsiteChance: {
-				DisplayName: "[i:966] 营地几率"
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] 营地几率"
 				Tooltip: 营地生成的几率的分母（1/x）。
 			}
 
@@ -86,7 +86,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:31] 罐子几率"
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] 罐子几率"
 				Tooltip:
 					'''
 					装饰时生成罐子的几率的分母（1/x）。
@@ -124,7 +124,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] 覆盖生成点"
+				DisplayName: "[i:50] 覆盖生成点"
 				Tooltip: 决定盐滩是否在生成点生成，类似于“salt”种子。
 			}
 
@@ -153,7 +153,7 @@ Pages: {
 				Tooltip:
 					'''
 					装饰时生成石质佛塔罐子的几率的分母（1/x）。
-					这不会覆盖物块，因此值为1并不会在每个物块上都放置罐子。
+					这不会覆盖存在的物块，因此值为1并不会在每个物块上都放置罐子。
 					'''
 			}
 
@@ -196,12 +196,12 @@ Pages: {
 			}
 
 			SizeMultiplier: {
-				DisplayName: "[i:126] （喀斯特）尺寸倍率"
-				Tooltip: 喀斯特地貌所有挖掘行为的尺寸倍率。
+				DisplayName: "[i:747] （喀斯特）尺寸倍率"
+				Tooltip: 喀斯特地貌（繁茂洞穴）所有挖掘行为的尺寸倍率。
 			}
 
 			FieldSize: {
-				DisplayName: "[i:SpiritReforged/BotanistHat] （稻草人）麦田尺寸"
+				DisplayName: "[i:SpiritReforged/BotanistHat] （麦田）田野尺寸"
 				Tooltip: 控制稻草人麦田的宽度。
 			}
 
@@ -436,7 +436,7 @@ Pages: {
 			}
 
 			CovesSpawnRate: {
-				DisplayName: "[i:2291] （小湾）倍率"
+				DisplayName: "[i:SpiritReforged/KoiTotem] （小湾）倍率"
 				Tooltip:
 					'''
 					世界中生成的钓鱼小湾的最大数量的倍率。
@@ -455,17 +455,17 @@ Pages: {
 			}
 
 			StructuresMax: {
-				DisplayName: "[i:SpiritReforged/PotsCavernItem] （陶器）倍率"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）倍率"
 				Tooltip: 世界中生成的陶器结构数量的倍率。
 			}
 
 			StructureScale: {
-				DisplayName: "[i:SpiritReforged/PotsCavernItem] （陶器）比例"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）比例"
 				Tooltip: 应用于陶器结构大小的比例。
 			}
 
 			PotSpam: {
-				DisplayName: "[i:SpiritReforged/PotsCavernItem] （陶器）罐子数量"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
 				Tooltip: 陶器结构放置罐子的最小尝试次数。
 			}
 		}
@@ -474,6 +474,11 @@ Pages: {
 			Inhabited: {
 				Name: "[i:498] 曾有人迹"
 				Tooltip: 地下各处都有友好探险者的踪迹……他们后来怎样了？
+			}
+
+			Empty: {
+				Name: "[i:1176] 空"
+				Tooltip: 有人在这儿吗？
 			}
 		}
 	}
@@ -507,7 +512,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:SpiritReforged/PotsCavernItem] 罐子几率"
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] 罐子几率"
 				Tooltip: 庙塔中罐子被放置的几率。
 			}
 
@@ -653,32 +658,32 @@ Pages: {
 			}
 
 			OasisPlantChance: {
-				DisplayName: "[i:1109] （绿洲）绿洲植物几率"
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）绿洲植物几率"
 				Tooltip: 绿洲植物被放置的几率。
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:2996] （绿洲）发光花几率"
+				DisplayName: "[i:4045] （绿洲）发光花几率"
 				Tooltip: 发光花被放置的几率。
 			}
 
 			PineappleChance: {
-				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）菠萝几率"
+				DisplayName: "[i:4294] （绿洲）菠萝几率"
 				Tooltip: 菠萝被放置的几率。
 			}
 
 			SeaOatsChance: {
-				DisplayName: "[i:2996] （绿洲）海燕麦几率"
+				DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] （绿洲）海燕麦几率"
 				Tooltip: 海燕麦被放置的几率。海燕麦是生长在海洋或绿洲附近的草质谷物植物。
 			}
 
 			PoolWidth: {
-				DisplayName: "[i:126] （绿洲）水池宽度"
+				DisplayName: "[i:206] （绿洲）水池宽度"
 				Tooltip: 地下绿洲水池宽度的范围值（以格为单位）。
 			}
 
 			PoolDepth: {
-				DisplayName: "[i:SpiritReforged/Kelp] （绿洲）水池深度"
+				DisplayName: "[i:206] （绿洲）水池深度"
 				Tooltip: 地下绿洲水池深度的范围值（以格为单位）。
 			}
 
@@ -711,23 +716,23 @@ Pages: {
 			}
 
 			FossilCount: {
-				DisplayName: "[i:SpiritReforged/PolishedAmberItem] 琥珀数量"
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] （琥珀）矿脉数量"
 				Tooltip: 地下沙漠中琥珀矿脉的最大数量。
 			}
 
 			FossilMultiplier: {
-				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] 琥珀倍率"
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）世界倍率"
 				Tooltip: 基于世界大小应用于琥珀矿脉数量的倍率。
 			}
 
 			PatchScale: {
-				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] 琥珀比例"
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）矿脉比例"
 				Tooltip: 应用于琥珀矿脉大小的比例。
 			}
 
 			RuinCount: {
-				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] 废墟数量范围"
-				Tooltip: 每个绿洲中地下沙漠废墟数量的范围值。
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] （废墟）生成范围"
+				Tooltip: 每个绿洲中生成地下沙漠废墟数量的范围值。
 			}
 
 			LightRange: {
@@ -741,8 +746,8 @@ Pages: {
 			}
 
 			RuinSegments: {
-				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 废墟分段范围"
-				Tooltip: 地下废墟分段数量的范围值。
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] （废墟）分段范围"
+				Tooltip: 地下废墟可能有的分段数量的范围值。
 			}
 		}
 
@@ -755,6 +760,11 @@ Pages: {
 			Petrified: {
 				Name: "[i:154] 石化"
 				Tooltip: 黄沙之下掩藏着亿万年的化石生态系统。你能将它们全部找出来吗？
+			}
+
+			Ruined: {
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] 废墟"
+				Tooltip: 一个古老的、被遗忘已久的文明曾于这片沙漠之下蓬勃发展。他们的遗迹至今犹存。
 			}
 		}
 	}
