@@ -416,5 +416,7 @@ public abstract class GlyphItem : ModItem
 	public virtual void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters) => parameters.Draw();
 
 	public virtual void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed) { }
+
+	public virtual void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input) { }
 }
 #endregion

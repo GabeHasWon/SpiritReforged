@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -5,11 +6,23 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BlazeGlyph : GlyphItem
 {
+	public override void SetStaticDefaults()
+	{
+		//Because of how terraria is programmed, we have to bind one shader to one item id
+		//Bound shaders for drawdata can't have their parameters dynamically adjusted when applied, to my knowledge
+		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
+
+		GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+		GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
+	}
+
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void MeleeEffects(Item item, Rectangle hitbox)
@@ -105,6 +118,29 @@ public class BlazeGlyph : GlyphItem
 					Layer = ParticleLayer.BelowNPC
 				});
 			}
+		}
+	}
+
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for(int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWax>());
+
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+
+			drawInfo.DrawDataCache.Add(item);
 		}
 	}
 
@@ -239,5 +275,43 @@ public class BlazeGlyph : GlyphItem
 		Item.rare = ItemRarityID.Pink;
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(new(233, 143, 26));
+	}
+}
+
+public class BlazeGlyphShaderData(Asset<Effect> shader, string shaderPass, Vector2 colorMod, bool additive) : ArmorShaderData(shader, shaderPass)
+{
+	private Effect GetEffect => shader.Value;
+
+	public override void Apply(Entity entity, DrawData? drawData = null)
+	{
+		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
+		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
+
+		Color c1, c2;
+		c1 = Color.Lerp(Color.Yellow, Color.DarkOrange, sin);
+		c2 = Color.Lerp(Color.Red, Color.OrangeRed, cos);
+		if(additive)
+		{
+			c1 = c1.Additive();
+			c2 = c2.Additive();
+		}
+
+		GetEffect.Parameters["uColor1"].SetValue(c1.ToVector4() * colorMod.X);
+		GetEffect.Parameters["uColor2"].SetValue(c2.ToVector4() * colorMod.Y);
+
+		var noise = AssetLoader.LoadedTextures["swirlNoise2"].Value;
+		var noise2 = AssetLoader.LoadedTextures["swirlNoise"].Value;
+
+		GetEffect.Parameters["uImage1"].SetValue(noise);
+		GetEffect.Parameters["uImage2"].SetValue(noise2);
+		GetEffect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0015f);
+
+		//Shouldn't ever actually be null but just in case
+		float uPixelRes = (drawData == null ? 1 : drawData.Value.texture.Size().X);
+		GetEffect.Parameters["uPixelRes"].SetValue(uPixelRes);
+
+		GetEffect.Parameters["uStrength"].SetValue(MathHelper.Lerp(0.03f, 0.06f, Math.Abs((float)Math.Sin(Main.GlobalTimeWrappedHourly / 2))));
+
+		Apply();
 	}
 }

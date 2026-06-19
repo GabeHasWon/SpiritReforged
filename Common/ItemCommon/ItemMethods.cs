@@ -90,6 +90,8 @@ public static class ItemMethods
 
 	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.Glyph : default;
 
+	public static bool HasGlyph(this Item item) => item.GetGlyph().ItemType > 0;
+
 	public static void DefaultToTrophy(this Item Item, int style)
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<Trophies>(), style);
