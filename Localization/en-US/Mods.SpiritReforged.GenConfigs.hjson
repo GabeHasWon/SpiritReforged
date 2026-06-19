@@ -605,7 +605,7 @@ Pages: {
 
 			ChestItemRange: {
 				DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Amount"
-				Tooltip: The range for the number of items in a chest.
+				Tooltip: The range for the number of items in a chest. Three items are guaranteed per chest.
 			}
 
 			DresserItemRange: {
