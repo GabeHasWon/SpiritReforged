@@ -1192,11 +1192,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 						dynamic maximum = (dynamic)configParams.Max;
 						dynamic value = (dynamic)indiv.Value;
 
-						if (minimum is Enum)
+						if (configParams.Min is Enum)
 						{
-							minimum = (long)minimum;
-							maximum = (long)minimum;
-							value = (long)minimum;
+							minimum = Convert.ToInt64(configParams.Min);
+							maximum = Convert.ToInt64(configParams.Max);
+							value = Convert.ToInt64(indiv.Value);
 						}
 
 						float factor = GenericMath.InverseLerp(minimum, maximum, value);
