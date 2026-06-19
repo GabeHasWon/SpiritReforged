@@ -230,12 +230,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				{
 					hoverText = config.Tip.Value;
 
-					if (config.Get() is Enum en)
+					if (config.Default is Enum en)
 					{
 						string baseKey = $"Mods.{page.Mod.Name}.GenConfigs.Enums.{en.GetType().Name}.{en}";
 						string value = $"\n [c/AAAAAA:{GetEnumName(page, en, "DisplayName")}:] ";
 						hoverText += value + GetEnumName(page, en, "Tooltip");
 					}
+					else if (config.Default is IGenRange)
+						hoverText += "\n" + Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ConfigNotice");
 				}
 			};
 			configList.Add(itemPanel);
@@ -244,6 +246,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			{
 				Width = StyleDimension.FromPixels(2),
 				Height = StyleDimension.FromPixels(2),
+				Left = StyleDimension.FromPixels(-4),
 				VAlign = 0.5f,
 				HAlign = 0,
 			};
@@ -346,8 +349,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		dynamic step = config.Params.Step;
 		string[] minStr = ((string)config.Params.Min).Split(' ');
 		string[] maxStr = ((string)config.Params.Max).Split(' ');
-		IGenRange range = (IGenRange)config.Get();
+		var range = (IGenRange)config.Get();
 		bool isFloat = range is GenRangeF;
+		Type sliderType = isFloat ? typeof(UISlider<float>) : typeof(UISlider<int>);
+
+		MethodInfo? valueField = sliderType.GetProperty("Value")?.GetGetMethod();
+		FieldInfo? dragging = sliderType.GetField("_dragging", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		dynamic minMin;
 		dynamic minRange;
@@ -363,7 +370,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			minRange = float.Parse(minStr[1]);
 			maxRange = float.Parse(maxStr[1]);
 
-			GenRangeF rangeF = (GenRangeF)range;
+			var rangeF = (GenRangeF)range;
 			minSlider = new UISlider<float>(rangeF.DefaultMin, step, minMin, maxMin, Color.CornflowerBlue);
 		}
 		else
@@ -373,12 +380,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			minRange = int.Parse(minStr[1]);
 			maxRange = int.Parse(maxStr[1]);
 
-			GenRange rangeF = (GenRange)range;
+			var rangeF = (GenRange)range;
 			minSlider = new UISlider<int>(rangeF.DefaultMin, step, minMin, maxMin, Color.CornflowerBlue);
 		}
 
 		DefineSliderInfo(minSlider);
-		AppendMinMaxToSlider(minSlider, minMin.ToString(), maxMin.ToString());
+		AppendMinMaxToSlider(minSlider, maxMin.ToString(), minMin.ToString());
 		minSlider.Top = StyleDimension.FromPixels(4);
 		minSlider.VAlign = 0.1f;
 		itemPanel.Append(minSlider);
@@ -387,22 +394,103 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		if (isFloat)
 		{
-			GenRangeF rangeF = (GenRangeF)range;
+			var rangeF = (GenRangeF)range;
 			rangeSlider = new UISlider<float>(rangeF.DefaultMin, step, minRange, maxRange, Color.CornflowerBlue);
 		}
 		else
 		{
-			GenRange rangeF = (GenRange)range;
+			var rangeF = (GenRange)range;
 			rangeSlider = new UISlider<int>(rangeF.DefaultMin, step, minRange, maxRange, Color.CornflowerBlue);
 		}
 
 		DefineSliderInfo(rangeSlider);
-		AppendMinMaxToSlider(rangeSlider, minRange.ToString(), maxRange.ToString());
+		AppendMinMaxToSlider(rangeSlider, maxRange.ToString(), minRange.ToString());
 		rangeSlider.VAlign = 0.1f;
 		rangeSlider.Top = StyleDimension.FromPixels(34);
 		itemPanel.Append(rangeSlider);
 
 		AddResetButton(config, itemPanel, minSlider, rangeSlider);
+
+		if (valueField is not null && dragging is not null)
+		{
+			minSlider.OnUpdate += _ => SliderUpdate(config, page, valueField, dragging, minSlider, true);
+			rangeSlider.OnUpdate += _ => SliderUpdate(config, page, valueField, dragging, rangeSlider, false);
+
+			onReset += () =>
+			{
+				ResetSlider(minSlider);
+				ResetSlider(rangeSlider);
+				ResetConfig(config);
+			};
+
+			MethodInfo? setToFactor = minSlider.GetType()?.GetMethod("SetToFactor", BindingFlags.Public | BindingFlags.Instance);
+
+			if (setToFactor is not null)
+			{
+				onSelectPreset += (page, preset) =>
+				{
+					foreach (var indiv in preset.Presets)
+					{
+						if (config.Name != indiv.Name)
+						{
+							ResetSlider(minSlider);
+							continue;
+						}
+
+						GenConfigParameters configParams = config.Params;
+						string[] minimum = ((string)configParams.Min).Split(' ');
+						string[] maximum = ((string)configParams.Max).Split(' ');
+						IGenRange value = (IGenRange)indiv.Value;
+
+						float minFactor;
+						float rangeFactor;
+
+						if (value is GenRange range)
+						{
+							int minMin = int.Parse(minimum[0]);
+							int minRange = int.Parse(minimum[1]);
+							int maxMin = int.Parse(maximum[0]);
+							int maxRange = int.Parse(maximum[1]);
+
+							minFactor = GenericMath.InverseLerp(minMin, maxMin, range.Minimum);
+							rangeFactor = GenericMath.InverseLerp(minRange, maxRange, range.Range);
+						}
+						else if (value is GenRangeF rangeF)
+						{
+							int minMin = int.Parse(minimum[0]);
+							int minRange = int.Parse(minimum[1]);
+							int maxMin = int.Parse(maximum[0]);
+							int maxRange = int.Parse(maximum[1]);
+
+							minFactor = GenericMath.InverseLerp(minMin, maxMin, rangeF.Minimum);
+							rangeFactor = GenericMath.InverseLerp(minRange, maxRange, rangeF.Range);
+						}
+						else
+							throw new NotSupportedException("Only GenRanges are supported for range configs.");
+
+						setToFactor.Invoke(minSlider, [minFactor]);
+						setToFactor.Invoke(rangeSlider, [rangeFactor]);
+						return;
+					}
+				};
+			}
+		}
+	}
+
+	private void SliderUpdate(LoadedConfig config, GenConfigPage page, MethodInfo valueField, FieldInfo dragging, UIElement minSlider, bool settingMin)
+	{
+		if (dragging.GetValue(minSlider) is true)
+		{
+			object newValue = valueField.Invoke(minSlider, [])!;
+			var range = (IGenRange)config.Get();
+
+			if (range is GenRange intRange)
+				(settingMin ? ref intRange.Minimum : ref intRange.Range) = (int)newValue;
+			else if (range is GenRangeF floatRange)
+				(settingMin ? ref floatRange.Minimum : ref floatRange.Range) = (float)newValue;
+
+			ConfigModified(page, config);
+		}
 	}
 
 	private static string GetEnumName(GenConfigPage page, Enum en, string postfix) 
@@ -456,14 +544,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 4),
+			Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X - 2),
 			Top = StyleDimension.FromPixels(4)
 		};
 
 		input.OnUpdate += _ =>
 		{
 			string measureText = text.Text + (config.IsSlider ? " " : $" ({config.Params.Min}-{config.Params.Max})");
-			input.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, measureText, Vector2.One).X + 4);
+			input.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, measureText, Vector2.One).X - 2);
 		};
 
 		itemPanel.Append(input);
@@ -493,7 +581,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		resetButton.OnLeftClick += (_, _) =>
 		{
-			config.Set(config.Default);
+			ResetConfig(config);
+
 			config.Modified = false;
 
 			if (slider is not null)
@@ -505,6 +594,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		itemPanel.Append(resetButton);
 		AddHoverTicks(resetButton);
+	}
+
+	private static void ResetConfig(LoadedConfig config)
+	{
+		if (config.Default is not IGenRange range)
+			config.Set(config.Default);
+		else
+			config.Set(range.Default);
 	}
 
 	private void AddResetFunctionality(LoadedConfig config, UIElement slider, MethodInfo? setFactor)
@@ -757,21 +854,48 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		foreach (var config in page.ConfigsByName.Values)
 		{
-			if (presetTag.TryGet(config.Name, out object val))
+			try
 			{
-				object value;
+				if (presetTag.TryGet(config.Name, out object val))
+				{
+					object value;
 
-				if (config.Get() is Enum en)
-					value = Enum.Parse(en.GetType(), val.ToString()!);
-				else
-					value = Convert.ChangeType(val, config.Get().GetType());
+					if (config.Default is Enum en)
+						value = Enum.Parse(en.GetType(), val.ToString()!);
+					else if (config.Default is not IGenRange range)
+						value = Convert.ChangeType(val, config.Get().GetType());
+					else
+					{
+						string[] split = ((string)val).Split(' ');
 
-				presets.Add(new IndividualPreset(config.Name, value));
+						if (range is GenRange)
+							value = new GenRange(int.Parse(split[0]), int.Parse(split[1]));
+						else
+							value = new GenRangeF(float.Parse(split[0]), float.Parse(split[1]));
+					}
+
+					presets.Add(new IndividualPreset(config.Name, value));
+				}
+			}
+			catch (Exception e)
+			{
+				warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.LoadError", paths[1]) + "\n" + e.Message);
+				warningText.Recalculate();
+				warningTimer = 300;
 			}
 		}
 
 		ConfigPreset preset = new(configName, presets);
-		page.PageInfo.Presets.Add(preset);
+
+		if (!page.PageInfo.Presets.Any(x => x.Name == configName))
+			page.PageInfo.Presets.Add(preset);
+		else
+		{
+			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate"));
+			warningText.Recalculate();
+			warningTimer = 300;
+		}
+
 		return true;
 	}
 
@@ -819,6 +943,13 @@ internal class GenConfigUIState(Action returnAction) : UIState
 					value = (object)Convert.ToSingle(en);
 				else if (type == typeof(double))
 					value = (object)Convert.ToDouble(en);
+			}
+			else if (value is IGenRange range)
+			{
+				if (range is GenRange intRange)
+					value = intRange.Minimum + " " + intRange.Range;
+				else if (range is GenRangeF floatRange)
+					value = floatRange.Minimum + " " + floatRange.Range;
 			}
 
 			presets.Add(config.Name, value);
@@ -1010,7 +1141,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 						float factor = GenericMath.InverseLerp(minimum, maximum, value);
 						setToFactor.Invoke(slider, [factor]);
-						return;
+						continue;
 					}
 
 					if (preset.ResetNotIncluded)
@@ -1086,7 +1217,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	private static void DefineSliderInfo(UIElement slider)
 	{
 		slider.HAlign = 1f;
-		slider.Left = StyleDimension.FromPixels(-44 - 70);
+		slider.Left = StyleDimension.FromPixels(-38 - 70);
 		slider.Top = StyleDimension.FromPixels(12);
 		slider.Width = StyleDimension.FromPixels(200);
 		slider.Height = StyleDimension.Fill;

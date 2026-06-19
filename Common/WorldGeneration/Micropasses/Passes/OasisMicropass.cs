@@ -8,7 +8,6 @@ using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
-using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -17,21 +16,11 @@ internal class OasisMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Underground Oasis";
 
-	[GenConfigurable(1, 20)]
-	[Slider]
-	private static int RuinSegmentMinimum = 2;
+	[GenConfigurable("1 0", "20 30")]
+	private static GenRange RuinSegments = new GenRange(2, 3);
 
-	[GenConfigurable(0, 30)]
-	[Slider]
-	private static int RuinSegmentRange = 3;
-
-	[GenConfigurable(0, 50)]
-	[Slider]
-	private static int RuinCountMinimum = 0;
-
-	[GenConfigurable(0, 25)]
-	[Slider]
-	private static int RuinCountRange = 4;
+	[GenConfigurable("0 0", "50 25")]
+	private static GenRange RuinCount = new GenRange(0, 4);
 
 	PageInfo IGenerationPage.Info => new()
 	{
@@ -93,7 +82,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 			rectangle.Inflate(100, 100);
 
 			biomesRectangles.Add(rectangle);
-			int ruinCount = RuinCountMinimum + WorldGen.genRand.Next(RuinCountRange + 1);
+			int ruinCount = RuinCount.RollRange();
 
 			if (ruinCount > 0)
 				WorldMethods.Generate(GenerateRuins, ruinCount, out _, rectangle, 50);
@@ -114,7 +103,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 		if (!GenVars.structures.CanPlace(structureAreaEstimate) || !GenVars.UndergroundDesertLocation.Contains(foundPos))
 			return false;
 
-		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, RuinSegmentMinimum + WorldGen.genRand.Next(RuinSegmentRange + 1));
+		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, RuinSegments.RollRange());
 
 		GenVars.structures.AddProtectedStructure(region);
 		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));

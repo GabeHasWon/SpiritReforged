@@ -22,8 +22,12 @@ public readonly record struct ConfigPreset(string Name, List<IndividualPreset> P
 
 		foreach (IndividualPreset preset in Presets)
 		{
-			page.ConfigsByName[preset.Name].Set(preset.Value);
-			page.ConfigsByName[preset.Name].Modified = true;
+			LoadedConfig config = page.ConfigsByName[preset.Name];
+			config.Set(preset.Value);
+
+			if ((dynamic)config.Get() != (dynamic)config.Default)
+				config.Modified = true;
+
 			names.Add(preset.Name);
 		}
 

@@ -70,35 +70,14 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[Denominator]
 	private static int SeaOatsChance = 2;
 
-	//[GenConfigurable(0, 10)]
-	//[Slider]
-	//private static int LightAmountMin = 1;
-
-	//[GenConfigurable(0, 15)]
-	//[Slider]
-	//private static int LightAmountRange = 3;
-
 	[GenConfigurable("0 0", "10 15")]
 	private static GenRange LightRange = new GenRange(1, 3);
 
-	[GenConfigurable(2, 15)]
-	[Slider]
-	private static int PoolWidthMin = 6;
+	[GenConfigurable("0 0", "15 8")]
+	private static GenRange PoolWidth = new GenRange(6, 5);
 
-	[GenConfigurable(0, 8)]
-	[Slider]
-	[PriorityModifier(nameof(PoolWidthMin))]
-	private static int PoolWidthRange = 5;
-
-	[GenConfigurable(0, 10)]
-	[Slider]
-	[PriorityModifier(nameof(PoolWidthMin))]
-	private static int PoolDepthMin = 3;
-
-	[GenConfigurable(0, 15)]
-	[Slider]
-	[PriorityModifier(nameof(PoolWidthMin))]
-	private static int PoolDepthRange = 3;
+	[GenConfigurable("0 0", "10 15")]
+	private static GenRange PoolDepth = new GenRange(3, 3);
 
 	[GenConfigurable(0f, 1f, 0.01f)]
 	[Slider]
@@ -108,13 +87,8 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[Slider]
 	private static float ItemNormalization = 0;
 
-	[GenConfigurable(1, 10)]
-	[Slider]
-	private static int ChestItemCountMin = 6;
-
-	[GenConfigurable(0, 15)]
-	[Slider]
-	private static int ChestItemCountRange = 2;
+	[GenConfigurable("1 0", "10 15")]
+	private static GenRange ChestItemRange = new GenRange(6, 2);
 
 	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false))
 	{
@@ -129,9 +103,8 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					new IndividualPreset(nameof(GlowflowerChance), 2),
 					new IndividualPreset(nameof(GlowflowerChance), 2),
 					new IndividualPreset(nameof(LightRange), GenRange.Empty),
-					new IndividualPreset(nameof(PoolWidthMin), 10),
-					new IndividualPreset(nameof(PoolDepthMin), 7),
-					new IndividualPreset(nameof(PoolDepthRange), 10)
+					new IndividualPreset(nameof(PoolWidth), new GenRange(10, 5)),
+					new IndividualPreset(nameof(PoolDepth), new GenRange(7, 10)),
 				]),
 
 			new("Petrified",
@@ -328,7 +301,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 		int x = point.X;
 		int y = point.Y;
 
-		int count = LightRange.RollRange(true);// LightAmountMin + WorldGen.genRand.Next(LightAmountRange + 1);
+		int count = LightRange.RollRange();// LightAmountMin + WorldGen.genRand.Next(LightAmountRange + 1);
 		HashSet<int> lastX = [];
 
 		for (int i = 0; i < count; i++)
@@ -379,7 +352,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 		WorldMethods.FindGround(origin.X, ref origin.Y);
 		ShapeData shape = new();
 
-		WorldUtils.Gen(origin, new Shapes.Circle(PoolWidthMin + WorldGen.genRand.Next(PoolWidthRange), PoolDepthMin + WorldGen.genRand.Next(PoolDepthRange)), Actions.Chain(
+		WorldUtils.Gen(origin, new Shapes.Circle(PoolWidth.RollRange(), PoolDepth.RollRange()), Actions.Chain(
 			new Modifiers.IsSolid(),
 			new Actions.ClearTile(),
 			new Actions.SetLiquid(LiquidID.Water)
@@ -449,7 +422,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 				chest.item[0] = new(MainWaterItem.Get());
 				chest.item[0].Prefix(-1);
 
-				int miscLength = ChestItemCountMin + WorldGen.genRand.Next(ChestItemCountRange + 1);
+				int miscLength = ChestItemRange.RollRange();
 				HashSet<int> takenRandomIds = [];
 
 				for (int j = 1; j < miscLength; ++j)

@@ -110,23 +110,11 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[PriorityModifier(nameof(MaxSpikeStripWidth))]
 	private static int SpikeStripChance = 3;
 
-	[GenConfigurable(1, 15)]
-	[Slider]
-	private static int ChestItemCountMin = 3;
+	[GenConfigurable("1 0", "18 20")]
+	private static GenRange ChestItemRange = new GenRange(3, 2);
 
-	[GenConfigurable(0, 20)]
-	[Slider]
-	[PriorityModifier(nameof(ChestItemCountRange))]
-	private static int ChestItemCountRange = 2;
-
-	[GenConfigurable(1, 20)]
-	[Slider]
-	private static int DresserItemCountMin = 2;
-
-	[GenConfigurable(0, 20)]
-	[Slider]
-	[PriorityModifier(nameof(DresserItemCountMin))]
-	private static int DresserItemCountRange = 3;
+	[GenConfigurable("1 0", "18 20")]
+	private static GenRange DresserItemRange = new GenRange(2, 3);
 
 	[GenConfigurable(1, 10)]
 	[Slider]
@@ -141,12 +129,12 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	[GenConfigurable(0f, 1f, 0.01f)]
 	[Slider]
-	[PriorityModifier(nameof(ChestItemCountRange))]
+	[PriorityModifier(nameof(ChestItemRange))]
 	private static float ChestNormalization = 0;
 
 	[GenConfigurable(0f, 1f, 0.01f)]
 	[Slider]
-	[PriorityModifier(nameof(DresserItemCountMin))]
+	[PriorityModifier(nameof(DresserItemRange))]
 	private static float DresserNormalization = 0;
 
 	[GenConfigurable(0f, 1f, 0.01f)]
@@ -218,7 +206,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 				[
 					new IndividualPreset(nameof(SpikeStripChance), 1),
 					new IndividualPreset(nameof(MaxSpikeStripWidth), 14),
-					new IndividualPreset(nameof(ChestItemCountMin), 6),
+					new IndividualPreset(nameof(ChestItemRange), new GenRange(6, 3)),
 				]),
 		]
 	};
@@ -761,7 +749,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
 			items.Add((aquamarineVerdant.Type, 4..8));
 
-		int count = DresserItemCountMin + WorldGen.genRand.Next(DresserItemCountRange + 1);
+		int count = DresserItemRange.RollRange();
 
 		for (int k = 0; k < count; ++k)
 		{
@@ -834,7 +822,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		var (gemType, gemStack) = gemPool.Get();
 		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
 
-		int miscCount = ChestItemCountMin + WorldGen.genRand.Next(ChestItemCountRange + 1);
+		int miscCount = ChestItemRange.RollRange();
 
 		for (int i = 0; i < miscCount; ++i)
 		{

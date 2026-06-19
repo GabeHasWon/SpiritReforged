@@ -29,6 +29,13 @@ UI: {
 	Load: Load a custom preset
 	HoverDescription: Open to configure specific aspects of Spirit Reforged's generation.
 	FailedToLoad: Preset isn't for this page. Page expected: {0}
+	ConfigNotice:
+		'''
+		[c/AAAAFF:Ranges] work by setting the minimum and a randomized addition.
+		The value shown is the actual range used in-game when rolling randomly.
+		'''
+	LoadError: An error has occured while loading a preset ({0}). Report this to the Discord (and check client.log):
+	Duplicate: (Duplicate preset not added)
 }
 
 Pages: {
@@ -448,18 +455,18 @@ Pages: {
 			}
 
 			StructuresMax: {
-				DisplayName: StructuresMax
-				Tooltip: StructuresMax
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Multiplier"
+				Tooltip: The multiplier to the number of pottery structures in a world.
 			}
 
 			StructureScale: {
-				DisplayName: StructureScale
-				Tooltip: StructureScale
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Scale"
+				Tooltip: The scale applied to the size of pottery structures.
 			}
 
 			PotSpam: {
-				DisplayName: PotSpam
-				Tooltip: PotSpam
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Pot Count"
+				Tooltip: The minimum number of attempts pottery structures have to place pots.
 			}
 		}
 
@@ -522,26 +529,6 @@ Pages: {
 			SpikeStripChance: {
 				DisplayName: "[i:SpiritReforged/NeedleTrapItem] Spike Strip Chance"
 				Tooltip: The chance for a spike strip to be placed in non-special rooms.
-			}
-
-			ChestItemCountMin: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Count Minimum"
-				Tooltip: The minimum number of items in a chest.
-			}
-
-			ChestItemCountRange: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Count Range"
-				Tooltip: The range (0 - x) value of added items, minimum being {$ChestItemCountMin}.
-			}
-
-			DresserItemCountMin: {
-				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Count Minimum"
-				Tooltip: The minimum number of items in a dresser.
-			}
-
-			DresserItemCountRange: {
-				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Count Range"
-				Tooltip: The range (0 - x) value of added items, minimum being {DresserItemCountMin}.
 			}
 
 			SpecialRoomChance: {
@@ -615,6 +602,16 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/SunDropper] Light Chance"
 				Tooltip: The chance for a light ray to spawn.
 			}
+
+			ChestItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Amount"
+				Tooltip: The range for the number of items in a chest.
+			}
+
+			DresserItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
+				Tooltip: The range for the number of items in a dresser.
+			}
 		}
 
 		Presets: {
@@ -640,16 +637,6 @@ Pages: {
 		Description: Controls various aspects of Reforged's Desert generation.
 
 		Members: {
-			PalmHeightMin: {
-				DisplayName: "[i:2504] (Oasis) Palm Height Minimum"
-				Tooltip: Minimum height for palms in an underground Oasis.
-			}
-
-			PalmHeightRange: {
-				DisplayName: "[i:2504] (Oasis) Palm Height Range"
-				Tooltip: Range for palms in an underground Oasis, added to the minimum.
-			}
-
 			PalmChanceLow: {
 				DisplayName: "[i:2504] (Oasis) Palm Chance (Low)"
 				Tooltip: Chance for a palm to be placed after at least one has already been placed.
@@ -663,16 +650,6 @@ Pages: {
 			CattailChance: {
 				DisplayName: "[i:2996] (Oasis) Cattail Chance"
 				Tooltip: Chance for a cattail to be placed.
-			}
-
-			CattailHeightMin: {
-				DisplayName: "[i:2996] (Oasis) Cattail Height Min"
-				Tooltip: Minimum height for a cattail. This will not go past water.
-			}
-
-			CattailHeightRange: {
-				DisplayName: "[i:2996] (Oasis) Cattail Height Range"
-				Tooltip: Random range added to minimum height for cattails.
 			}
 
 			OasisPlantChance: {
@@ -695,34 +672,14 @@ Pages: {
 				Tooltip: Chance for Sea Oats to be placed. Sea oats are the grassy grain plants near the Ocean or Oases.
 			}
 
-			LightAmountMin: {
-				DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Minimum"
-				Tooltip: Minimum amount of light rays placed.
+			PoolWidth: {
+				DisplayName: "[i:126] (Oasis) Pool Width"
+				Tooltip: The range for an underground Oasis's pool's width (in tiles).
 			}
 
-			LightAmountRange: {
-				DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Range"
-				Tooltip: Random range added to the minimum amount of light rays placed.
-			}
-
-			PoolWidthMin: {
-				DisplayName: "[i:126] (Oasis) Pool Width Minimum"
-				Tooltip: Minimum pool width for an underground Oasis.
-			}
-
-			PoolWidthRange: {
-				DisplayName: "[i:126] (Oasis) Pool Width Range"
-				Tooltip: Random range added to the minimum width for an underground Oasis's pool.
-			}
-
-			PoolDepthMin: {
+			PoolDepth: {
 				DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Minimum"
-				Tooltip: Minimum pool depth for an underground Oasis.
-			}
-
-			PoolDepthRange: {
-				DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Range"
-				Tooltip: Random range added to the minimum depth for an underground Oasis's pool.
+				Tooltip: The range for an underground Oasis's pool's depth (in tiles).
 			}
 
 			MainNormalization: {
@@ -768,29 +725,24 @@ Pages: {
 				Tooltip: The scaling applied to the size of an amber vein.
 			}
 
-			RuinSegmentMinimum: {
-				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Minimum"
-				Tooltip: The minimum segment count for an underground desert ruin.
-			}
-
-			RuinSegmentRange: {
-				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
-				Tooltip: The random range added to an underground ruin's segments.
-			}
-
-			RuinCountMinimum: {
-				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Minimum"
-				Tooltip: The minimum amount of underground desert ruins per world.
-			}
-
-			RuinCountRange: {
+			RuinCount: {
 				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
-				Tooltip: The random range added to the number of underground desert ruins.
+				Tooltip: The range of underground desert ruins per Oasis.
 			}
 
 			LightRange: {
 				DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
 				Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
+			}
+
+			ChestItemRange: {
+				DisplayName: "[i:1298] (Oasis) Chest Item Range"
+				Tooltip: The range for the number of items in an underground Oasis chest.
+			}
+
+			RuinSegments: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
+				Tooltip: The range for an underground ruin's segments.
 			}
 		}
 

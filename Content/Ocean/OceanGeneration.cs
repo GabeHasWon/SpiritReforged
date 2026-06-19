@@ -44,13 +44,16 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[Slider]
 	private static int SunkenTreasureCount = 3;
 
-	[GenConfigurable(2, 50)]
-	[Slider]
-	private static int SandDepth = 20;
+	//[GenConfigurable(2, 50)]
+	//[Slider]
+	//private static int SandDepth = 20;
 
-	[GenConfigurable(0, 25)]
-	[Slider]
-	private static int SandRange = 8;
+	//[GenConfigurable(0, 25)]
+	//[Slider]
+	//private static int SandRange = 8;
+
+	[GenConfigurable("2 0", "50 25")]
+	private static GenRange SandRange = new GenRange(20, 8);
 
 	[GenConfigurable(2, 100)]
 	[Slider]
@@ -209,9 +212,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		float depth = GetOceanSlope(tilesFromInnerEdge);
 		depth += OceanSlopeRoughness();
 
-		SandRange = GenConfigLoader.GetPage<OceanGeneration>().ValueOrDefault(nameof(SandDepth), WorldGen.genRand.Next(8));
-
-		int thickness = SandDepth + WorldGen.genRand.Next(SandRange); //Sand lining is a bit thicker than vanilla
+		int thickness = SandRange.RollRange(); // Sand lining is a bit thicker than vanilla by default
 		bool passedTile = false;
 
 		for (int placeY = 0; placeY < oceanTop + depth + thickness; placeY++)

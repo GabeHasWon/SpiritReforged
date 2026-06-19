@@ -29,6 +29,13 @@ UI: {
 	Load: 加载自定义预设
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 	FailedToLoad: 预设不适用于此页面。预期页面：{0}
+	/* ConfigNotice:
+		'''
+		[c/AAAAFF:Ranges] work by setting the minimum and a randomized addition.
+		The value shown is the actual range used in-game when rolling randomly.
+		''' */
+	// LoadError: An error has occured while loading a preset ({0}). Report this to the Discord (and check client.log):
+	// Duplicate: (Duplicate preset not added)
 }
 
 Pages: {
@@ -387,7 +394,7 @@ Pages: {
 			}
 
 			Occult: {
-				// Name: "[i:SpiritReforged/ScryingPotItem]"
+				// Name: "[i:SpiritReforged/ScryingPotItem] Occult"
 				// Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
 			}
 		}
@@ -448,18 +455,18 @@ Pages: {
 			}
 
 			StructuresMax: {
-				// DisplayName: StructuresMax
-				// Tooltip: StructuresMax
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Multiplier"
+				// Tooltip: The multiplier to the number of pottery structures in a world.
 			}
 
 			StructureScale: {
-				// DisplayName: StructureScale
-				// Tooltip: StructureScale
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Scale"
+				// Tooltip: The scale applied to the size of pottery structures.
 			}
 
 			PotSpam: {
-				// DisplayName: PotSpam
-				// Tooltip: PotSpam
+				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Pot Count"
+				// Tooltip: The minimum number of attempts pottery structures have to place pots.
 			}
 		}
 
@@ -514,26 +521,6 @@ Pages: {
 			SpikeStripChance: {
 				DisplayName: "[i:SpiritReforged/NeedleTrapItem] 刺带几率"
 				Tooltip: 非特殊房间中一条刺带被放置的几率。
-			}
-
-			ChestItemCountMin: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] 最低宝箱战利品数量"
-				Tooltip: 宝箱中出现的物品的最低数量。
-			}
-
-			ChestItemCountRange: {
-				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱战利品数量范围"
-				Tooltip: 添加物品的范围值（0 - x），最小为{$ChestItemCountMin}。
-			}
-
-			DresserItemCountMin: {
-				DisplayName: "[i:SpiritReforged/LapisDresserItem] 最低梳妆台战利品数量"
-				Tooltip: 梳妆台中出现的物品的最低数量。
-			}
-
-			DresserItemCountRange: {
-				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台战利品数量范围"
-				Tooltip: 添加物品的范围值（0 - x），最小为{DresserItemCountMin}。
 			}
 
 			SpecialRoomChance: {
@@ -603,6 +590,16 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/SunDropper] 光照几率"
 				Tooltip: 一束光线生成的几率。
 			}
+
+			ChestItemRange: {
+				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Amount"
+				// Tooltip: The range for the number of items in a chest.
+			}
+
+			DresserItemRange: {
+				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
+				// Tooltip: The range for the number of items in a dresser.
+			}
 		}
 
 		Presets: {
@@ -628,16 +625,6 @@ Pages: {
 		Description: 控制魂灵新魄的沙漠生成的各种方面。
 
 		Members: {
-			PalmHeightMin: {
-				DisplayName: "[i:2504] （绿洲）棕榈树最低高度"
-				Tooltip: 地下绿洲中棕榈树的最低高度。
-			}
-
-			PalmHeightRange: {
-				DisplayName: "[i:2504] （绿洲）棕榈树高度范围"
-				Tooltip: 追加到棕榈树最低高度上的随机范围值。
-			}
-
 			PalmChanceLow: {
 				DisplayName: "[i:2504] （绿洲）棕榈树几率（低）"
 				Tooltip: 在已经至少放置一棵棕榈树后，再放置棕榈树的几率。
@@ -651,16 +638,6 @@ Pages: {
 			CattailChance: {
 				DisplayName: "[i:2996] （绿洲）香蒲几率"
 				Tooltip: 香蒲被放置的几率。
-			}
-
-			CattailHeightMin: {
-				DisplayName: "[i:2996] （绿洲）香蒲最低高度"
-				Tooltip: 香蒲的最低高度。不会超出水面。
-			}
-
-			CattailHeightRange: {
-				DisplayName: "[i:2996] （绿洲）香蒲高度范围"
-				Tooltip: 追加到香蒲最低高度上的随机范围值。
 			}
 
 			OasisPlantChance: {
@@ -683,34 +660,14 @@ Pages: {
 				Tooltip: 海燕麦被放置的几率。海燕麦是生长在海洋或绿洲附近的草质谷物植物。
 			}
 
-			LightAmountMin: {
-				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）最低光线数量"
-				Tooltip: 被放置的光线数量的最低值。
+			PoolWidth: {
+				// DisplayName: "[i:126] (Oasis) Pool Width"
+				// Tooltip: The range for an underground Oasis's pool's width (in tiles).
 			}
 
-			LightAmountRange: {
-				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）光线范围"
-				Tooltip: 追加到最低光线数量上的随机范围值。
-			}
-
-			PoolWidthMin: {
-				DisplayName: "[i:126] （绿洲）最小水池宽度"
-				Tooltip: 地下绿洲水池的最小宽度。
-			}
-
-			PoolWidthRange: {
-				DisplayName: "[i:126] （绿洲）水池宽度范围"
-				Tooltip: 追加到地下绿洲最小水池宽度上的随机范围值。
-			}
-
-			PoolDepthMin: {
-				DisplayName: "[i:SpiritReforged/Kelp] （绿洲）最小水池深度"
-				Tooltip: 地下绿洲水池的最小深度。
-			}
-
-			PoolDepthRange: {
-				DisplayName: "[i:SpiritReforged/Kelp] （绿洲）水池深度范围"
-				Tooltip: 追加到地下绿洲最小水池深度上的随机范围值。
+			PoolDepth: {
+				// DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Minimum"
+				// Tooltip: The range for an underground Oasis's pool's depth (in tiles).
 			}
 
 			MainNormalization: {
@@ -756,29 +713,24 @@ Pages: {
 				// Tooltip: The scaling applied to the size of an amber vein.
 			}
 
-			RuinSegmentMinimum: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Minimum"
-				// Tooltip: The minimum segment count for an underground desert ruin.
-			}
-
-			RuinSegmentRange: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
-				// Tooltip: The random range added to an underground ruin's segments.
-			}
-
-			RuinCountMinimum: {
-				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Minimum"
-				// Tooltip: The minimum amount of underground desert ruins per world.
-			}
-
-			RuinCountRange: {
+			RuinCount: {
 				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
-				// Tooltip: The random range added to the number of underground desert ruins.
+				// Tooltip: The range of underground desert ruins per Oasis.
 			}
 
 			LightRange: {
 				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
 				// Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
+			}
+
+			ChestItemRange: {
+				// DisplayName: "[i:1298] (Oasis) Chest Item Range"
+				// Tooltip: The range for the number of items in an underground Oasis chest.
+			}
+
+			RuinSegments: {
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
+				// Tooltip: The range for an underground ruin's segments.
 			}
 		}
 
