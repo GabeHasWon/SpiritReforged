@@ -477,8 +477,8 @@ Pages: {
 			}
 
 			Empty: {
-				// Name: Empty
-				// Tooltip: Empty
+				// Name: "[i:1176] Empty"
+				// Tooltip: Is anyone out there?
 			}
 		}
 	}
