@@ -427,13 +427,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			{
 				onSelectPreset += (page, preset) =>
 				{
+					bool hasConfig = false;
+
 					foreach (var indiv in preset.Presets)
 					{
 						if (config.Name != indiv.Name)
-						{
-							ResetSlider(minSlider);
 							continue;
-						}
+
+						hasConfig = true;
 
 						GenConfigParameters configParams = config.Params;
 						string[] minimum = ((string)configParams.Min).Split(' ');
@@ -468,8 +469,10 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 						setToFactor.Invoke(minSlider, [minFactor]);
 						setToFactor.Invoke(rangeSlider, [rangeFactor]);
-						return;
 					}
+
+					if (!hasConfig && preset.ResetNotIncluded)
+						ResetSlider(minSlider);
 				};
 			}
 		}
@@ -1183,30 +1186,35 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			onSelectPreset += (page, preset) =>
 			{
+				bool hasConfig = false;
+
 				foreach (var indiv in preset.Presets)
 				{
 					if (config.Name == indiv.Name)
 					{
+						hasConfig = true;
+
 						GenConfigParameters configParams = config.Params;
 						dynamic minimum = (dynamic)configParams.Min;
 						dynamic maximum = (dynamic)configParams.Max;
 						dynamic value = (dynamic)indiv.Value;
 
-						if (minimum is Enum)
+						if (configParams.Min is Enum)
 						{
-							minimum = (long)minimum;
-							maximum = (long)minimum;
-							value = (long)minimum;
+							minimum = Convert.ToInt64(configParams.Min);
+							maximum = Convert.ToInt64(configParams.Max);
+							value = Convert.ToInt64(indiv.Value);
 						}
 
 						float factor = GenericMath.InverseLerp(minimum, maximum, value);
 						setToFactor.Invoke(slider, [factor]);
-						continue;
+						slider.Recalculate();
+						break;
 					}
-
-					if (preset.ResetNotIncluded)
-						ResetSlider(slider);
 				}
+
+				if (!hasConfig && preset.ResetNotIncluded)
+					ResetSlider(slider);
 			};
 
 			dynamic current = (dynamic)config.Get();
