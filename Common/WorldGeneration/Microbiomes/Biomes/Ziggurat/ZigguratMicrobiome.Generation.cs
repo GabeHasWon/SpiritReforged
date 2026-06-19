@@ -110,10 +110,10 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[PriorityModifier(nameof(MaxSpikeStripWidth))]
 	private static int SpikeStripChance = 3;
 
-	[GenConfigurable("1 0", "18 20")]
+	[GenConfigurable("1 0", "15 15")]
 	private static GenRange ChestItemRange = new GenRange(3, 2);
 
-	[GenConfigurable("1 0", "18 20")]
+	[GenConfigurable("1 0", "15 15")]
 	private static GenRange DresserItemRange = new GenRange(2, 3);
 
 	[GenConfigurable(1, 10)]
