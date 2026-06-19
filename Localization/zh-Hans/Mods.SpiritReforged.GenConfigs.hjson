@@ -455,17 +455,17 @@ Pages: {
 			}
 
 			StructuresMax: {
-				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Multiplier"
+				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Multiplier"
 				// Tooltip: The multiplier to the number of pottery structures in a world.
 			}
 
 			StructureScale: {
-				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Scale"
+				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Scale"
 				// Tooltip: The scale applied to the size of pottery structures.
 			}
 
 			PotSpam: {
-				// DisplayName: "[i:SpiritReforged/PotsCavernItem] (Pottery) Pot Count"
+				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
 				// Tooltip: The minimum number of attempts pottery structures have to place pots.
 			}
 		}
@@ -474,6 +474,11 @@ Pages: {
 			Inhabited: {
 				Name: "[i:498] 曾有人迹"
 				Tooltip: 地下各处都有友好探险者的踪迹……他们后来怎样了？
+			}
+
+			Empty: {
+				// Name: Empty
+				// Tooltip: Empty
 			}
 		}
 	}
@@ -661,12 +666,12 @@ Pages: {
 			}
 
 			PoolWidth: {
-				// DisplayName: "[i:126] (Oasis) Pool Width"
+				// DisplayName: "[i:206] (Oasis) Pool Width"
 				// Tooltip: The range for an underground Oasis's pool's width (in tiles).
 			}
 
 			PoolDepth: {
-				// DisplayName: "[i:SpiritReforged/Kelp] (Oasis) Pool Depth Minimum"
+				// DisplayName: "[i:206] (Oasis) Pool Depth"
 				// Tooltip: The range for an underground Oasis's pool's depth (in tiles).
 			}
 
@@ -699,23 +704,23 @@ Pages: {
 			}
 
 			FossilCount: {
-				// DisplayName: "[i:SpiritReforged/PolishedAmberItem] Amber Count"
+				// DisplayName: "[i:SpiritReforged/PolishedAmberItem] (Amber) Deposit Amount"
 				// Tooltip: The maximum number of amber veins in the Underground Desert.
 			}
 
 			FossilMultiplier: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Multiplier"
+				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) World Multiplier"
 				// Tooltip: The multiplier applied to the number of amber veins based on world size.
 			}
 
 			PatchScale: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Amber Scale"
+				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) Deposit Scale"
 				// Tooltip: The scaling applied to the size of an amber vein.
 			}
 
 			RuinCount: {
-				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Ruin Count Range"
-				// Tooltip: The range of underground desert ruins per Oasis.
+				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] (Ruins) Spawn Range"
+				// Tooltip: The range of how many underground desert ruins spawn per Oasis.
 			}
 
 			LightRange: {
@@ -729,8 +734,8 @@ Pages: {
 			}
 
 			RuinSegments: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ruin Segment Range"
-				// Tooltip: The range for an underground ruin's segments.
+				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] (Ruins) Segment Range"
+				// Tooltip: The range for how many segments an underground ruin may have.
 			}
 		}
 
@@ -743,6 +748,11 @@ Pages: {
 			Petrified: {
 				// Name: "[i:154] Petrified"
 				// Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
+			}
+
+			Ruined: {
+				// Name: "[i:SpiritReforged/RedSandstoneSlabItem] Ruined"
+				// Tooltip: An ancient, long-forgotten civilization thrived below the Desert once. Their ruins remain.
 			}
 		}
 	}

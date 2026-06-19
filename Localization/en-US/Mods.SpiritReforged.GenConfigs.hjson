@@ -475,6 +475,11 @@ Pages: {
 				Name: "[i:498] Inhabited"
 				Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
 			}
+
+			Empty: {
+				Name: "[i:1176] Empty"
+				Tooltip: Is anyone out there?
+			}
 		}
 	}
 
@@ -755,6 +760,11 @@ Pages: {
 			Petrified: {
 				Name: "[i:154] Petrified"
 				Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
+			}
+
+			Ruined: {
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] Ruined"
+				Tooltip: An ancient, long-forgotten civilization thrived below the Desert once. Their ruins remain.
 			}
 		}
 	}
