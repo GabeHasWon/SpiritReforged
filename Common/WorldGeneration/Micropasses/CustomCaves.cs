@@ -18,7 +18,7 @@ internal class CustomCaves : ModSystem, IGenerationPage
 
 	[GenConfigurable(0.1f, 10f, 0.1f)]
 	[Slider]
-	private static float ReforgedCaveWeight = 1f;
+	internal static float ReforgedCaveWeight = 1f;
 
 	PageInfo IGenerationPage.Info => new()
 	{

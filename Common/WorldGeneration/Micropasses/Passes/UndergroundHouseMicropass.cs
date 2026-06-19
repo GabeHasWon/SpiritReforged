@@ -67,6 +67,7 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 				new IndividualPreset(nameof(LoomChance), 7),
 				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 14f),
 				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 2.2f),
+				new IndividualPreset(nameof(PotteryStructureMicropass.StructuresMax), 3.2f),
 			])
 		]
 	};

@@ -30,6 +30,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 		[
 			new("Whimsical", 
 				[
+					new IndividualPreset(nameof(CustomCaves.ReforgedCaveWeight), 10f),
 					new IndividualPreset(nameof(StargrassMicropass.MaxStargrassCount), 400),
 					new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 4f),
 					new IndividualPreset(nameof(ScarecrowDiscovery.FieldSize), 40),
@@ -38,6 +39,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 
 			new("Treacherous", 
 				[
+					new IndividualPreset(nameof(CustomCaves.ReforgedCaveWeight), 10f),
 					new IndividualPreset(nameof(HalfWidth), 200),
 					new IndividualPreset(nameof(MaxDepth), 600),
 					new IndividualPreset(nameof(KarstEntrance.SizeMultiplier), 0.2f),
