@@ -605,7 +605,7 @@ Pages: {
 
 			ChestItemRange: {
 				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱战利品数量"
-				Tooltip: 宝箱中物品数量的范围值。
+				Tooltip: 宝箱中物品数量的范围值。每个宝箱中必定有3个物品。
 			}
 
 			DresserItemRange: {
