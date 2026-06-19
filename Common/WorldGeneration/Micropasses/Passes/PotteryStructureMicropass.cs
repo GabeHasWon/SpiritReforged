@@ -14,7 +14,7 @@ internal class PotteryStructureMicropass : Micropass, IGenerationPage
 {
 	[GenConfigurable(0.25f, 25f)]
 	[Slider]
-	private static float StructuresMax = 5;
+	internal static float StructuresMax = 5;
 
 	[GenConfigurable(0.1f, 20f)]
 	[Slider]

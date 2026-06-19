@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
+using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
@@ -67,7 +68,19 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 				new IndividualPreset(nameof(LoomChance), 7),
 				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 14f),
 				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 2.2f),
-			])
+				new IndividualPreset(nameof(PotteryStructureMicropass.StructuresMax), 3.2f),
+			]),
+
+			new("Empty",
+			[
+				new IndividualPreset(nameof(SignChance), 20),
+				new IndividualPreset(nameof(RareSignChance), 20),
+				new IndividualPreset(nameof(MannequinChance), 15),
+				new IndividualPreset(nameof(LoomChance), 45),
+				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 0.5f),
+				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 0.25f),
+				new IndividualPreset(nameof(PotteryStructureMicropass.StructuresMax), 0.25f),
+			]),
 		]
 	};
 

@@ -113,6 +113,12 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					new IndividualPreset(nameof(DesertMicropass.FossilMultiplier), 5f),
 					new IndividualPreset(nameof(DesertMicropass.PatchScale), 22)
 				]),
+
+			new("Ruined",
+				[
+					new IndividualPreset(nameof(OasisMicropass.RuinCount), new GenRange(3, 7)),
+					new IndividualPreset(nameof(OasisMicropass.RuinSegments), new GenRange(5, 11)),
+				]),
 		]
 	};
 
