@@ -17,10 +17,10 @@ internal class OasisMicropass : Micropass, IGenerationPage
 	public override string WorldGenName => "Underground Oasis";
 
 	[GenConfigurable("1 0", "20 30")]
-	private static GenRange RuinSegments = new GenRange(2, 3);
+	internal static GenRange RuinSegments = new GenRange(2, 3);
 
 	[GenConfigurable("0 0", "50 25")]
-	private static GenRange RuinCount = new GenRange(0, 4);
+	internal static GenRange RuinCount = new GenRange(0, 4);
 
 	PageInfo IGenerationPage.Info => new()
 	{

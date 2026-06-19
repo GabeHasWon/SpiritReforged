@@ -73,10 +73,10 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 	[GenConfigurable("0 0", "10 15")]
 	private static GenRange LightRange = new GenRange(1, 3);
 
-	[GenConfigurable("0 0", "15 8")]
+	[GenConfigurable("1 0", "15 8")]
 	private static GenRange PoolWidth = new GenRange(6, 5);
 
-	[GenConfigurable("0 0", "10 15")]
+	[GenConfigurable("1 0", "10 15")]
 	private static GenRange PoolDepth = new GenRange(3, 3);
 
 	[GenConfigurable(0f, 1f, 0.01f)]
@@ -112,6 +112,12 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					new IndividualPreset(nameof(DesertMicropass.FossilCount), 45),
 					new IndividualPreset(nameof(DesertMicropass.FossilMultiplier), 5f),
 					new IndividualPreset(nameof(DesertMicropass.PatchScale), 22)
+				]),
+
+			new("Ruined",
+				[
+					new IndividualPreset(nameof(OasisMicropass.RuinCount), new GenRange(3, 7)),
+					new IndividualPreset(nameof(OasisMicropass.RuinSegments), new GenRange(5, 11)),
 				]),
 		]
 	};

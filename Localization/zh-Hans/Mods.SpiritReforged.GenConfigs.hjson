@@ -766,6 +766,11 @@ Pages: {
 				Name: "[i:SpiritReforged/RedSandstoneSlabItem] 废墟"
 				Tooltip: 一个古老的、被遗忘已久的文明曾于这片沙漠之下蓬勃发展。他们的遗迹至今犹存。
 			}
+
+			Ruined: {
+				// Name: "[i:SpiritReforged/RedSandstoneSlabItem] Ruined"
+				// Tooltip: An ancient, long-forgotten civilization thrived below the Desert once. Their ruins remain.
+			}
 		}
 	}
 }

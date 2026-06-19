@@ -329,8 +329,6 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 				boolButton.OnUpdate += _ => boolButton.Left = StyleDimension.FromPixels(ChatManager.GetStringSize(FontAssets.MouseText.Value, text.Text, Vector2.One).X + 8);
 
-				onMax += () => boolButton.SetText(config.ReverseMinMax ? tru : fals);
-				onMin += () => boolButton.SetText(!config.ReverseMinMax ? tru : fals);
 				onReset += () => boolButton.SetText((bool)config.Get() ? tru : fals);
 
 				itemPanel.Append(boolButton);
@@ -642,7 +640,38 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			foreach (LoadedConfig config in page.ConfigsByName.Values)
 			{
-				config.Set(config.ReverseMinMax ? config.Params.Min : config.Params.Max);
+				if (config.Default is bool)
+					continue;
+
+				if (config.Default is not IGenRange range)
+					config.Set(config.ReverseMinMax ? config.Params.Min : config.Params.Max);
+				else
+				{
+					string[] minimum = ((string)config.Params.Min).Split(' ');
+					string[] maximum = ((string)config.Params.Max).Split(' ');
+
+					if (range is GenRange intRange)
+					{
+						int minMin = int.Parse(minimum[0]);
+						int minRange = int.Parse(minimum[1]);
+						int maxMin = int.Parse(maximum[0]);
+						int maxRange = int.Parse(maximum[1]);
+
+						intRange.Minimum = config.ReverseMinMax ? minMin : maxMin;
+						intRange.Range = config.ReverseMinMax ? minRange : maxRange;
+					}
+					else if (range is GenRangeF rangeF)
+					{
+						float minMin = float.Parse(minimum[0]);
+						float minRange = float.Parse(minimum[1]);
+						float maxMin = float.Parse(maximum[0]);
+						float maxRange = float.Parse(maximum[1]);
+
+						rangeF.Minimum = config.ReverseMinMax ? minMin : maxMin;
+						rangeF.Range = config.ReverseMinMax ? minRange : maxRange;
+					}
+				}
+
 				ConfigModified(page, config);
 			}
 
@@ -670,7 +699,38 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		{
 			foreach (LoadedConfig config in page.ConfigsByName.Values)
 			{
-				config.Set(config.ReverseMinMax ? config.Params.Max : config.Params.Min);
+				if (config.Default is bool)
+					continue;
+
+				if (config.Default is not IGenRange range)
+					config.Set(config.ReverseMinMax ? config.Params.Max : config.Params.Min);
+				else
+				{
+					string[] minimum = ((string)config.Params.Min).Split(' ');
+					string[] maximum = ((string)config.Params.Max).Split(' ');
+
+					if (range is GenRange intRange)
+					{
+						int minMin = int.Parse(minimum[0]);
+						int minRange = int.Parse(minimum[1]);
+						int maxMin = int.Parse(maximum[0]);
+						int maxRange = int.Parse(maximum[1]);
+
+						intRange.Minimum = !config.ReverseMinMax ? minMin : maxMin;
+						intRange.Range = !config.ReverseMinMax ? minRange : maxRange;
+					}
+					else if (range is GenRangeF rangeF)
+					{
+						float minMin = float.Parse(minimum[0]);
+						float minRange = float.Parse(minimum[1]);
+						float maxMin = float.Parse(maximum[0]);
+						float maxRange = float.Parse(maximum[1]);
+
+						rangeF.Minimum = !config.ReverseMinMax ? minMin : maxMin;
+						rangeF.Range = !config.ReverseMinMax ? minRange : maxRange;
+					}
+				}
+
 				ConfigModified(page, config);
 			}
 
