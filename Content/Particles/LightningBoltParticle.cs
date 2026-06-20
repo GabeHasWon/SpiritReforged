@@ -30,7 +30,7 @@ public class LightningSystem : ModSystem
 			
 			var noise = AssetLoader.LoadedTextures["noise"].Value;
 
-			Effect effect = AssetLoader.LoadedShaders["Pixelate"].Value;
+			Effect effect = AssetLoader.LoadedShaders["LightningGlyphShader"].Value;
 			effect.Parameters["uImageSize"].SetValue(LightningTarget.Target.Size());
 			effect.Parameters["uPixelSize"].SetValue(2f * Main.GameViewMatrix.Zoom.X);
 			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.001f);
