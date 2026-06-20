@@ -14,7 +14,11 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class MoonlightGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	public override void SetStaticDefaults() 
+	{ 
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	} 
 
 	public sealed class MoonlightPlayer : ModPlayer
 	{

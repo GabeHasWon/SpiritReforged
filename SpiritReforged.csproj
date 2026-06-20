@@ -9,6 +9,7 @@
   <ItemGroup>
     <None Remove="assets\shaders\GlyphShader.fx" />
     <None Remove="assets\shaders\LiquidGlyphShader.fx" />
+    <None Remove="assets\shaders\Pixelate.fx" />
     <None Remove="assets\shaders\RadiantGlyphParhelia.fx" />
     <None Remove="assets\shaders\VoidGlyphSingularity.fx" />
     <None Remove="Content\Forest\Glyphs\RageGlyph.png" />

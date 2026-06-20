@@ -2,6 +2,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Shock;
@@ -10,7 +11,7 @@ public class ShockGlyph : GlyphItem
 {
 	public sealed class ShockPlayer : ModPlayer
 	{
-
+		
 	}
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
@@ -35,13 +36,17 @@ public class ShockGlyph : GlyphItem
 		effect.Parameters["baseDepth"].SetValue(4f);
 		effect.Parameters["scale"].SetValue(0.2f);
 
+		Vector2 pos = parameters.Position;
+		if (shockTimer > 0)
+			pos += Main.rand.NextVector2Circular(2.5f, 2.5f) * shockTimer / 20f;
+		
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.Cyan.Additive() * 0.05f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
+			spriteBatch.Draw(whiteTexture, pos + offset, parameters.Source, Color.Cyan.Additive() * 0.05f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 
 			offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
-			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.LightCyan.Additive() * 0.05f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
+			spriteBatch.Draw(whiteTexture, pos + offset, parameters.Source, Color.LightCyan.Additive() * 0.05f, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.End();
@@ -50,7 +55,7 @@ public class ShockGlyph : GlyphItem
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-			spriteBatch.Draw(whiteTexture, parameters.Position + offset, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
+			spriteBatch.Draw(whiteTexture, pos + offset, parameters.Source, Color.White, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 		}
 
 		spriteBatch.RestartToDefault();
@@ -62,28 +67,21 @@ public class ShockGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		if (Main.rand.NextBool(30) && shockTimer <= 0)
-			shockTimer = 10;
+		if (Main.rand.NextBool(40) && shockTimer <= 0)
+			shockTimer = 20;
 
 		if (shockTimer > 0)
 			shockTimer--;
 
-		/*if (Main.rand.NextBool(90))
+		if (Main.rand.NextBool(20))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.DarkBlue.Additive(), 0.2f, 35, 0)
+			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Yellow, 0f, Main.rand.NextFloat(0.5f, 1.35f), 10 + Main.rand.Next(20, 40))
 			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
+				
 			});
-
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightCyan.Additive(), 0.15f, 30, 0, AddLight: false)
-			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
-			});
-		}*/
+		}
 	}
 
 	public override void SetDefaults()

@@ -100,7 +100,7 @@ public class VoidGlyph : GlyphItem
 			foreach (VoidParticle particle in particles)
 			{
 				if (particle is null)
-					return;
+					continue;
 
 				float progress = particle.TimeActive / (float)particle.MaxTime;
 

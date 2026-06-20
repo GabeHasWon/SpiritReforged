@@ -19,6 +19,7 @@ internal sealed class AssetLoader : ILoadable
 	public void Load(Mod mod)
 	{
 		ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection);
+
 		Main.QueueMainThreadAction(() => BasicShaderEffect = new BasicEffect(Main.graphics.GraphicsDevice)
 		{
 			VertexColorEnabled = true,
