@@ -132,7 +132,7 @@ public class ShockGlyph : GlyphItem
 			startPos = Projectile.Center;
 			Projectile.netUpdate = true;
 
-			delay = Main.rand.Next(50);
+			delay = 10 * Main.rand.Next(7);
 		}
 
 		public override void OnKill(int timeLeft)
