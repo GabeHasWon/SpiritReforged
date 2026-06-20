@@ -32,7 +32,7 @@ public class SavannaGrassSeeds : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		if (Main.myPlayer == player.whoAmI)
+		if (Main.myPlayer == player.whoAmI && player.ItemAnimationJustStarted)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 			if (tile.HasTile && tile.TileType == ModContent.TileType<Tiles.SavannaDirt>() && player.IsTargetTileInItemRange(Item))

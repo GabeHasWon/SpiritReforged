@@ -1,20 +1,29 @@
-v0.2.0.4
-- Added the Honeysuckle Sprout, a new rolling mount item that drops from Scarabeus
-- Fixed a framing issue where dirt would draw on Salt Flats tiles
-- Fixed an issue where Beetle Pets were not arriving properly after the Beetle License was used
-- Increased club downswing range before they collide with tiles, allowing for smoother swings in enclosed spaces
-- Tattered Map no longer needs to be crafted at a Workbench
-- Brine Shrimp now crafts Pink Dye
-- Red Sandstone Brick now merges with Pearlsand, Crimsand, and Ebonsand
-- Stactus now drops some amount of Cactus when killed
-- Added a recipe for Sandy Sandstone
-- Added a description to some debuffs that had placeholder text
-- Fixed inconsistencies with Music Display names
-- Changed Osmosifier recipe to forego wire
-- Increased Thornball damage from 5 to 6, decreased knockback from 2 to 0, and reduced slow debuff time from 3 to 2 seconds
-- Buffed Mahakala Mask: attacks now also deal 20% extra damage to Corrupt enemies
-- Evil Stactuses now count as Corrupt enemies for the sake of the Mahakala Mask
-- Reduced Golden Brine Shrimp spawn rate
-- Bronze Grate Door now allows liquids through
-- Darkened Ruined Sandstone Pillars to make them seem more like background objects
-- Fixed Pelicans and Sandpipers spawning in space
+v0.2.0.5 - Surveyor Patch
+English, Chinese (Lacewing, Fox Radish, and Lin), Portuguese (Hari)
+
+- Added new "Labyrinth" secret seed
+	Accepted seeds: labyrinth, ziggurat, zig, biggurat, zargantuar
+- Added new Manual Ecotone Mapping functionality for world generation
+	There's a new button right next to the name plate for worlds which enables/disables this functionality
+- Added new Ecotone Debugging visualization for internal and cross-mod use
+	Enable this in the config if you want to see how the ecotone mapper maps out ecotones!
+
+- Fixed Oasis crash issue with Remnants
+- Fixed naturally generated Lapis Dressers not generating with chests properly
+- Added small loot pool for Lapis Dressers in Ziggurat
+- Allowed Candelabras and Candles to spawn on Lapis Dressers
+- Fixed Gilded Greatbow doing nonsense in multiplayer
+- Dunce Crabs now fall substantially slower in water
+- Fixed duplicate application of matrix to wavy sign text, causing visual issues
+- Fixed the ecotone mapper considering the ocean as a desert by force
+- Fixed the ecotone mapper mislabeling corrupt ecotone entries (applying to the next entry instead of the current)
+- Fixed rightmost ecotone entry not having ocean as its right bound
+- Added proper ecotone entries for both oceans
+- Fixed issue where certain corrupt/crimson patches would spam switching ecotone entries instead of flowing continuously
+- Probably fixed some additional issues with the ecotone mapper I forgot about
+- Added wind sway to all of our custom lanterns
+- Fixed our custom chandeliers not having the exact same sway visuals as vanilla's chandeliers
+- Fixed Otherworldly Radio not being consumable despite being placeable, allowing it to be infinitely farmed
+- Fixed Savanna Grass Seeds placing multiple times per use
+- Fixed some issues Scarabeus had in multiplayer
+- Fixed issue where the mod would try to load unloaded bosses, causing issues if a mod is added then removed

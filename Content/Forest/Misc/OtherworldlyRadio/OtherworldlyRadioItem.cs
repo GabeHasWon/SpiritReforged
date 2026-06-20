@@ -90,9 +90,13 @@ public class OtherworldlyRadioItem : ModItem
 		static float Size(string text) => FontAssets.MouseText.Value.MeasureString(text).X + padding;
 	}
 
-	public override bool ConsumeItem(Player player) => false;
 	public override bool CanRightClick() => true;
-	public override void RightClick(Player player) => Main.swapMusic = !Main.swapMusic;
+
+	public override void RightClick(Player player)
+	{
+		Main.swapMusic = !Main.swapMusic;
+		Item.stack++;
+	}
 
 	public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{

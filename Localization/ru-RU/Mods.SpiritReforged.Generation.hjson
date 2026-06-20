@@ -15,6 +15,31 @@ NeonMosses: Выращивание мха...
 Pottery: Расстановка горшков...
 Scarecrow: Распугивание птиц...
 
+Mapping: {
+	// Exit: Press "Escape" to exit mapping early (if paused)
+	Tilde: Удерживайте клавишу «тильда» (~/ё), чтобы скрыть меню
+	/* Help:
+		'''
+		Ecotones are mapped across the surface of the world multiple times
+		They have three "definitions" attached to them: left edge, self and right edge
+		These would be something like Forest < Desert < Forest
+		    Left edge is a Forest
+		    The current biome is a Desert
+		    Right edge is a Forest
+		Their red rectangle is the bounds of their minimum/maximums
+		Blue rectangle is the start-to-end size, i.e. the mapped surface start and end
+		The size shown above the ecotone is the size of the red rectangle, alongside the height of the blue
+		''' */
+	Toggle: Нажмите, чтобы {0} ручную расстановку экотонов во время генерации.
+	Enable: включить
+	Disable: отключить
+	Select: Нажимайте по выделенным зонам, чтобы принудительно сгененировать там {0}
+	Continue: Нажмите по этому тексту, чтобы продолжить
+	OrEscape: (или нажмите Escape)
+	Step: Расстановка: {0}
+	Invalid: (Недоступно: {0})
+}
+
 Signs: {
 	Underground: {
 		Common: {

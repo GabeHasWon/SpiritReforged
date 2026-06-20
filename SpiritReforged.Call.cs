@@ -34,7 +34,12 @@ public partial class SpiritReforgedMod : Mod
 					}
 				case "GetSavannaArea":
 					{
-						return SavannaEcotone.SavannaArea;
+						Logger.Debug("\"GetSavannaArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSavannaAreas\" instead.");
+						return SavannaEcotone.SavannaAreas[0];
+					}
+				case "GetSavannaAreas":
+					{
+						return SavannaEcotone.SavannaAreas;
 					}
 				case "SetSavannaArea":
 					{
@@ -42,13 +47,26 @@ public partial class SpiritReforgedMod : Mod
 							throw new Exception("SavannaArea is unused outside of worldgen. Are you sure you're using this right?");
 
 						if (args.Length == 2 && args[1] is Rectangle rectangle)
-							return SavannaEcotone.SavannaArea = rectangle;
+						{
+							if (SavannaEcotone.SavannaAreas.Count == 0)
+							{
+								SavannaEcotone.SavannaAreas.Add(rectangle);
+								return rectangle;
+							}
+
+							return SavannaEcotone.SavannaAreas[0] = rectangle;
+						}
 						else
 							throw new ArgumentException("SetSavannaArea parameters should be two elements long: (\"SetSavannaArea\", rectangle)!");
 					}
 				case "GetSaltFlatsArea":
 					{
-						return SaltFlatsEcotone.SaltFlatsArea;
+						Logger.Debug("\"GetSaltFlatsArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSaltFlatsAreas\" instead.");
+						return SaltFlatsEcotone.SaltFlatsAreas[0];
+					}
+				case "GetSaltFlatsAreas":
+					{
+						return SaltFlatsEcotone.SaltFlatsAreas;
 					}
 				case "AddPotionVat":
 					{

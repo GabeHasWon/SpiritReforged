@@ -31,9 +31,20 @@ ReforgedClientConfig: {
 	}
 
 	DisableWater: {
-		// Label: Disable Water Visuals
-		// Tooltip: Disables the Reforged water visuals.
+		Label: Desativa Visuais da Água
+		Tooltip: Tira todas as alterações visuais da água do Reforged.
 	}
+
+	DebugEcotones: {
+		Label: Debug de Ecotonos (com o WorldGen Previewer)
+		Tooltip:
+			'''
+			PRECISA de WorldGen Previewer Mod.
+			Permite que desenvolvedores e jogadores que utilizam o sistema Ecotone depurem problemas e compreendam os ecótonos com uma interface intuitiva.
+			'''
+	}
+
+	Headers.Developer: Ferramentas de Desenvolvidor
 }
 
 OceanShape: {

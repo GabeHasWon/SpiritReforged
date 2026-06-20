@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
@@ -31,11 +32,17 @@ internal class OasisMicropass : Micropass
 		int amount = 3 * (WorldGen.GetWorldSize() + 1);
 		Rectangle region = new(GenVars.desertHiveLeft, (int)Main.worldSurface + 40, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - GenVars.desertHiveHigh);
 
+		if (CrossMod.Remnants.Enabled) // Remnants doesn't set the above values in the way we use them, use the below...which may be better anyway?
+			region = GenVars.UndergroundDesertLocation;
+
 		HashSet<Rectangle> biomesRectangles = [];
 
 		for (int i = 0; i < amount; i++)
 		{
 			var pt = WorldGen.genRand.NextVector2FromRectangle(region).ToPoint();
+
+			if (!WorldGen.InWorld(pt.X, pt.Y))
+				break;
 
 			if (!GenVars.structures.CanPlace(new Rectangle(pt.X - area / 2, pt.Y - area / 2, area, area), 4) || biomesRectangles.Any(x => x.Contains(pt)))
 			{

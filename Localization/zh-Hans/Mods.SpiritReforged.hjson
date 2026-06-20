@@ -95,4 +95,22 @@ InfoDisplays: {
 	}
 }
 
+Ecotones: {
+	SaltFlatsEcotone: 盐滩
+	SavannaEcotone: 稀树平原
+}
+
+EcotoneEdges: {
+	Forest: 森林
+	Desert: 沙漠
+	Ocean: 海洋
+	Snow: 雪原
+	Jungle: 丛林
+	Corruption: 腐化
+	Crimson: 猩红
+	Hallow: 神圣
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
 // DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

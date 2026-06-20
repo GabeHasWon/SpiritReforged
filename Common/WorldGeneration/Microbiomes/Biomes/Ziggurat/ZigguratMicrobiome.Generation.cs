@@ -5,6 +5,8 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Forest.Cloud.Items;
@@ -38,7 +40,18 @@ public partial class ZigguratMicrobiome : Microbiome
 	public const int HallwayWidth = 4;
 
 	/// <summary> The full rectangular area this biome encompasses. </summary>
-	public Rectangle FullArea => new(Position.X - Width / 2, Position.Y - Height / 2, Width, Height);
+	public Rectangle FullArea
+	{
+		get
+		{
+			Rectangle bounds = new(Position.X - Width / 2, Position.Y - Height / 2, Width, Height);
+
+			if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+				bounds = new Rectangle(Position.X - Width - 16, Position.Y - Height / 2, Width * 2 + 32, Height * 4);
+
+			return bounds;
+		}
+	}
 
 	[WorldBound]
 	public static readonly HashSet<Rectangle> TotalBounds = [];
@@ -69,7 +82,14 @@ public partial class ZigguratMicrobiome : Microbiome
 		Sandify(bounds);
 
 		for (int i = 2; i < bounds.Count; i++)
-			Infest(WorldGen.genRand.Next(3), bounds[i]);
+		{
+			int infectionCount = WorldGen.genRand.Next(3);
+
+			if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+				infectionCount = WorldGen.genRand.Next(0, i - 1);
+
+			Infest(infectionCount, bounds[i]);
+		}
 
 		AddNeutralDecorations(rooms);
 
@@ -89,6 +109,9 @@ public partial class ZigguratMicrobiome : Microbiome
 
 		List<Rectangle> bounds = [];
 		int layers = Math.Max((int)(Main.maxTilesY / 1200f * 2) + 2, 4);
+
+		if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+			layers = (int)(Main.maxTilesX / 4200f * 20);
 
 		int finalLayerHeight = (int)(fullArea.Height / layers * finalHeight);
 		int commonLayerHeight = (fullArea.Height - finalLayerHeight) / (layers - 1);
@@ -488,19 +511,28 @@ public partial class ZigguratMicrobiome : Microbiome
 				if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
 				{
 					int chairType = set.GetTileType(FurnitureSet.Types.Chair);
-					FurnitureSet.Types lightSetType = WorldGen.genRand.NextFromList(FurnitureSet.Types.Candle, FurnitureSet.Types.Candelabra);
-					int lightType = set.GetTileType(lightSetType);
 
 					Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
 					Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
-					
-					if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && lightSetType is FurnitureSet.Types.Candle) //Candle style fix
-					{
-						Main.tile[i, j - 2].TileFrameX = 18;
-						Main.tile[i, j - 2].TileFrameY = 0;
-					}
+
+					TryPlaceSmallLight(i, j, set);
 
 					return true;
+				}
+			}
+			else if (type == FurnitureSet.Types.Dresser)
+			{
+				if (Placer.Check(i, j, tileType, style).IsClear().success)
+				{
+					WorldGen.Place3x2(i, j, (ushort)tileType);
+					Tile tile = Main.tile[i, j];
+
+					if (tile.HasTile && tile.TileType == tileType)
+					{
+						PopulateDresserChest(i, j);
+						TryPlaceSmallLight(i, j, set);
+						return true;
+					}
 				}
 			}
 			else
@@ -520,6 +552,54 @@ public partial class ZigguratMicrobiome : Microbiome
 		}
 
 		return false;
+	}
+
+	private static void TryPlaceSmallLight(int i, int j, LapisSet set)
+	{
+		FurnitureSet.Types lightSetType = WorldGen.genRand.NextFromList(FurnitureSet.Types.Candle, FurnitureSet.Types.Candelabra);
+		int lightType = set.GetTileType(lightSetType);
+
+		if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && lightSetType is FurnitureSet.Types.Candle) //Candle style fix
+		{
+			Main.tile[i, j - 2].TileFrameX = 18;
+			Main.tile[i, j - 2].TileFrameY = 0;
+		}
+	}
+
+	private static void PopulateDresserChest(int i, int j)
+	{
+		int chest = Chest.FindChest(i - 1, j - 1);
+		WeightedRandom<(int, Range)> items = new(WorldGen.genRand);
+		items.Add((ItemID.Sapphire, 5..9));
+		items.Add((ItemID.Amethyst, 5..9));
+		items.Add((ItemID.Topaz, 5..9));
+		items.Add((ItemID.Silk, 5..9), 1.5f);
+		items.Add((ItemID.AncientCloth, 5..9), 0.33f);
+		items.Add((ItemID.GoldCoin, 1..2), 0.25f);
+		items.Add((ItemID.SilverCoin, 3..8), 0.5f);
+		items.Add((ItemID.Cobweb, 3..8), 0.8f);
+
+		if (GenVars.silver == TileID.Silver)
+			items.Add((ItemID.SilverBar, 2..4));
+		else
+			items.Add((ItemID.TungstenBar, 2..4));
+
+		if (CrossMod.Thorium.CheckFind("Opal", out ModItem opal))
+			items.Add((opal.Type, 4..8));
+
+		if (CrossMod.Thorium.CheckFind("Aquamarine", out ModItem aquamarine))
+			items.Add((aquamarine.Type, 4..8));
+
+		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
+			items.Add((aquamarineVerdant.Type, 4..8));
+
+		int count = WorldGen.genRand.Next(2, 5);
+
+		for (int k = 0; k < count; ++k)
+		{
+			(int itemType, Range range) = items.Get();
+			Main.chest[chest].item[k] = new(itemType, WorldGen.genRand.Next(range.Start.Value, range.End.Value + 1));
+		}
 	}
 
 	internal static void PopulateChest(Chest chest)
@@ -912,11 +992,6 @@ public partial class ZigguratMicrobiome : Microbiome
 	}
 	#endregion
 
-	public override void NetSend(BinaryWriter writer)
-	{
-		base.NetSend(writer);
-	}
-
 	public override void NetReceive(BinaryReader reader)
 	{
 		base.NetReceive(reader);
@@ -926,10 +1001,7 @@ public partial class ZigguratMicrobiome : Microbiome
 			TotalBounds.Add(bound);
 	}
 
-	public override void WorldSave(TagCompound tag)
-	{
-		base.WorldSave(tag);
-	}
+	// NetSend and WorldSave are both default
 
 	public override void WorldLoad(TagCompound tag)
 	{

@@ -197,6 +197,9 @@ public class SaltBlockReflective : SaltBlock
 				Main.instance.DrawInfernoRings();
 			}
 
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawabovewater");
+
 			spriteBatch.End();
 			gd.SetRenderTarget(null);
 			Main.GameViewMatrix.Zoom = storedZoom;

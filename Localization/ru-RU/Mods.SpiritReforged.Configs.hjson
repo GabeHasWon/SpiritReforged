@@ -34,6 +34,17 @@ ReforgedClientConfig: {
 		Label: Отключить эффекты воды
 		Tooltip: Отключает все визуальные эффекты воды, добавляемые Reforged.
 	}
+
+	DebugEcotones: {
+		Label: Отладка экотонов в WorldGen Previewer
+		Tooltip:
+			'''
+			ТОЛЬКО с модом WorldGen Previewer.
+			Позволяет отлаживать проблемы с экотонами и лучше понимать их работу с помощью наглядного оверлея.
+			'''
+	}
+
+	Headers.Developer: Для разработчиков
 }
 
 OceanShape: {
@@ -55,12 +66,12 @@ OceanShape: {
 	}
 
 	Piecewise_M: {
-		Label: Кусочная_M
+		Label: Кусочная (M)
 		Tooltip: ""
 	}
 
 	Piecewise_V: {
-		Label: Кусочная_V
+		Label: Кусочная (V)
 		Tooltip: ""
 	}
 }
