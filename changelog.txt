@@ -1,20 +1,2 @@
-v0.2.1
-- Added the World Configuration Menu, which allows customization of *many* random small things throughout Reforged
-	- Added pages for Savanna, Salt Flats, Caves, Pots, Ziggurat, Desert and Surface
-
-- Fixed issue where Salt Flats would self-clear its own generation areas, potentially causing issues in crossmod
-- Fixed issue where mapping an ecotone in a valid ecotone entry would have a chance to re-generate the ecotone in that slot, overriding it or causing visual issues
-- Allowed ecotone edge definitions to mark themselves as ecotones for clarity
-- Fixed issues where the Savanna would obliterate the dungeon, block it off
-- Fixed walls spawning on the surface of Savanna-flattened areas (such as Corruption)
-- Fixed Acacia tree shake not working properly/consistently and improved the visuals
-- Fixed Dead Tree (Salt Flats tree) shaking not working; increased Drywood drop chance to 100% (from 33%)
-- Added Acacia tree leaves
-- Made items spawned by the tree shaking use EntitySource_TreeShake properly (instead of null)
-- Updated Hiker, Cartographer emote sprites
-- Updated the Hiker's swung weapon
-- Updated Cartography Table sprite
-- Updated the following Music Box sprites: Deep Ocean, Savanna Otherworld Duststorm, Day & Night, Savanna Night
-- Adjusted the rate at which our custom moss appears naturally (doubled, all moss now has an equal chance to appear)
-- Updated Russian and Chinese localizations
-- Fixed Pillbug mount dealing damage to NPCs which should not be able to take damage
+v0.2.1.1
+- Fixed Acacia Trees dropping Chlorophyte Helmets instead of spawning a Sparrow lol
