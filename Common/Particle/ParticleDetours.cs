@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Common.Particle;
 
-internal class ParticleDetours : ILoadable
+internal sealed class ParticleDetours : ILoadable
 {
 	public void Load(Mod mod)
 	{
@@ -12,6 +12,14 @@ internal class ParticleDetours : ILoadable
 		On_Main.DoDraw_Tiles_NonSolid += BelowSolid;
 		On_Main.DoDraw_Tiles_Solid += AboveSolid;
 		On_Main.DoDraw_WallsAndBlacks += BelowWall;
+		On_Main.DrawItems += AboveItem;
+	}
+
+	private static void AboveItem(On_Main.orig_DrawItems orig, Main self)
+	{
+		orig(self);
+
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveItem);
 	}
 
 	private static void AbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -29,7 +37,10 @@ internal class ParticleDetours : ILoadable
 
 	private static void AboveNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
+		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowNPC);
+
 		orig(self, behindTiles);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveNPC);
 	}
 
@@ -46,7 +57,6 @@ internal class ParticleDetours : ILoadable
 		Main.spriteBatch.End();
 
 		orig(self);
-
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveProjectile);
 	}
 

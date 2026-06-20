@@ -3154,6 +3154,144 @@ SaltGraveMarkerItem: {
 	Tooltip: ""
 }
 
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
+	// Tooltip: Can be exchanged for magical glyphs
+	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	// Target: Can only be applied to weapons
+	// RightClick: Hold this glyph and right-click the item you want to enchant
+}
+
+BlazeGlyph: {
+	// DisplayName: Blaze Glyph
+	/* Tooltip:
+		'''
+		Dealing damage sets you ablaze
+		+25% damage and +10% critical strike chance
+		''' */
+	// Effect: Blazing
+	// Death: "{0} was consumed by Rage..."
+}
+
+NullGlyph: {
+	// DisplayName: Null Glyph
+	// Tooltip: Removes the effects of a Glyph
+	// RightClick: Hold this glyph and right-click the item whose glyph you want to remove
+}
+
+RadiantGlyph: {
+	// DisplayName: Radiant Glyph
+	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	// Effect: Radiant
+}
+
+StormGlyph: {
+	// DisplayName: Storm Glyph
+	/* Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		''' */
+	// Effect: Billowed
+}
+
+MoonlightGlyph: {
+	// DisplayName: Moonlight Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		''' */
+	// Effect: Dazzling
+}
+
+RotGlyph: {
+	// DisplayName: Rot Glyph
+	// Tooltip: Attacks inflict a contagious blight
+	// Effect: Blighted
+}
+
+ShockGlyph: {
+	// DisplayName: Shock Glyph
+	// Tooltip: Critical strikes shock nearby enemies
+	// Effect: Shocking
+}
+
+BeeGlyph: {
+	// DisplayName: Bee Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		''' */
+	// Effect: Buzzing
+}
+
+SanguineGlyph: {
+	// DisplayName: Sanguine Glyph
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
+}
+
+PrefixVoucher: {
+	// DisplayName: "{0} Prefix Voucher"
+	/* Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		''' */
+}
+
+EnchantedStamp: {
+	// DisplayName: Enchanted Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+RageGlyph: {
+	// DisplayName: Rage Glyph
+	// Tooltip: Excessive damage is stored for your next attack
+	// Effect: Wrathful
+}
+
+CharmcasterHat: {
+	// DisplayName: Charmcaster's Hat
+	// Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	// DisplayName: Charmcaster's Leggings
+	// Tooltip: ""
+}
+
+CharmcasterRobe: {
+	// DisplayName: Charmcaster's Robe
+	// Tooltip: ""
+}
+
+VoidGlyph: {
+	// DisplayName: Void Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after a short time
+		''' */
+	// Effect: Null
+}
+
 GlitterPurse: {
 	// DisplayName: Glitter Purse
 	// Tooltip: Permanently increases the item capacity of backpacks

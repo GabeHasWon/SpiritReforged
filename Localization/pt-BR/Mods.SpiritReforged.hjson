@@ -34,6 +34,11 @@ Misc: {
 		UseItem: Clique direito para adicionar este alfinete à sua coleção
 	}
 
+	Enchantment: {
+		// PlaceToEnchant: Place an item here to enchant
+		// Enchant: Enchant
+	}
+
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
@@ -75,6 +80,7 @@ GameTips: {
 Emotes: {
 	CartographerEmote.Command: cartografo
 	HikerEmote.Command: caminhante
+	// EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -106,3 +112,5 @@ EcotoneEdges: {
 	Savanna: "{$Ecotones.SavannaEcotone}"
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
+
+// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class

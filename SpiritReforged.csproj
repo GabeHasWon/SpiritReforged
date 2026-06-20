@@ -7,6 +7,16 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="assets\shaders\GlyphShader.fx" />
+    <None Remove="assets\shaders\LiquidGlyphShader.fx" />
+    <None Remove="assets\shaders\Pixelate.fx" />
+    <None Remove="assets\shaders\RadiantGlyphParhelia.fx" />
+    <None Remove="assets\shaders\VoidGlyphSingularity.fx" />
+    <None Remove="Content\Forest\Glyphs\RageGlyph.png" />
+    <None Remove="Content\Forest\Glyphs\RageGlyph_Icon.png" />
+    <None Remove="Content\Forest\Glyphs\Sanguine\SanguineGlyph.png" />
+    <None Remove="Content\Forest\Glyphs\Sanguine\SanguineGlyph_Glow.png" />
+    <None Remove="Content\Forest\Glyphs\Sanguine\SanguineGlyph_Icon.png" />
     <None Remove="Content\Particles\SharpStarParticle.png" />
   </ItemGroup>
   <ItemGroup>

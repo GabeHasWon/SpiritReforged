@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	DisplayName: Сверчок
 	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
+	DisplayName: Сверчок
 }
 
 GoldCricket: {
-	DisplayName: Золотой сверчок
 	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
+	DisplayName: Золотой сверчок
 }
 
 BeetleTownPet: {
@@ -689,3 +689,21 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 }
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: ""
+
+	TownNPCMood: {
+		// Content: I am content.
+		// NoHome: I hate not having a home.
+		// FarFromHome: I am too far from home.
+		// LoveSpace: I love having so much space.
+		// DislikeCrowded: I dislike how crowded I am.
+		// HateCrowded: I hate how crowded I am.
+		// LikeNPC_Princess: I like {NPCName}.
+		// Princess_LovesNPC: I like {NPCName}.
+	}
+}
+
+// SealedKnight.DisplayName: Sealed Knight

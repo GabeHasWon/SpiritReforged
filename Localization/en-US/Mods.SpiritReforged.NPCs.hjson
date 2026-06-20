@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	DisplayName: Cricket
 	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+	DisplayName: Cricket
 }
 
 GoldCricket: {
-	DisplayName: Gold Cricket
 	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+	DisplayName: Gold Cricket
 }
 
 BeetleTownPet: {
@@ -689,3 +689,21 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 }
+
+Enchanter: {
+	DisplayName: Enchanter
+	Entry: ""
+
+	TownNPCMood: {
+		Content: I am content.
+		NoHome: I hate not having a home.
+		FarFromHome: I am too far from home.
+		LoveSpace: I love having so much space.
+		DislikeCrowded: I dislike how crowded I am.
+		HateCrowded: I hate how crowded I am.
+		LikeNPC_Princess: I like {NPCName}.
+		Princess_LovesNPC: I like {NPCName}.
+	}
+}
+
+SealedKnight.DisplayName: Sealed Knight

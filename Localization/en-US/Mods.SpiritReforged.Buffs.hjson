@@ -147,3 +147,18 @@ ScarabMountBuff: {
 	DisplayName: Pillbug Mount
 	Description: "'Hold on!'"
 }
+
+DivineStrike: {
+	DisplayName: Divine Strike
+	Description: Your next attack is empowered
+}
+
+RotStackingDebuff: {
+	DisplayName: Rotting [{0}]
+	Description: "'Your skin is turning green'"
+}
+
+SanguineStackingBuff: {
+	DisplayName: Sanguine Curse
+	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+}

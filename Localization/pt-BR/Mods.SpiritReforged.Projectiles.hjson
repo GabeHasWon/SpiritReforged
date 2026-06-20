@@ -95,3 +95,10 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 // SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 // SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+// RadiantEnergy.DisplayName: Radiant Energy
+// SlicingGust.DisplayName: Slicing Gust
+// ZephyrWave.DisplayName: Zephyr Wave
+// LightningBlast.DisplayName: Lightning Blast
+// Firefall.DisplayName: Firefall
+// WindBurstProjectile.DisplayName: Wind Burst Projectile
+// CollapseProjectile.DisplayName: Collapse Projectile

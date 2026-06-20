@@ -53,7 +53,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 			var scale = new Vector2(.5f * lerp, 1) * Projectile.scale;
 
 			float fadeOut = Projectile.timeLeft / 20f;
-			Color fadeColor = AdornedBowGlobalProjectile.MulticolorLerp(fadeOut, prismaticColors) * fadeOut;
+			Color fadeColor = DrawHelpers.MulticolorLerp(fadeOut, prismaticColors) * fadeOut;
 
 			var drawPos = Vector2.Lerp(position, oldPositions[0] - Main.screenPosition, 0.33f);
 			Color drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
@@ -99,7 +99,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			_prismaticTimer--;
 
 			_secondaryPalette.FadeColors(_primaryPalette.Colors, PrismaticProgress);
-			Lighting.AddLight(Projectile.Center, MulticolorLerp(PrismaticProgress, _primaryPalette.Colors).ToVector3() * 0.5f * PrismaticProgress);
+			Lighting.AddLight(Projectile.Center, DrawHelpers.MulticolorLerp(PrismaticProgress, _primaryPalette.Colors).ToVector3() * 0.5f * PrismaticProgress);
 
 			if (Main.rand.NextBool(20))
 			{
@@ -161,7 +161,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			Color fadeColor = Color.Lerp(Color.LightSteelBlue, Color.White, lerp).Additive();
 
 			if (_prismaticTimer > 0)
-				fadeColor = Color.Lerp(MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseFunction.EaseCircularIn.Ease(1f - PrismaticProgress));
+				fadeColor = Color.Lerp(DrawHelpers.MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseFunction.EaseCircularIn.Ease(1f - PrismaticProgress));
 
 			if (i == 0)
 			{
@@ -172,7 +172,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 				for (int j = 0; j < 4; j++)
 				{
 					Vector2 offset = new Vector2(-2 * -Projectile.direction, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-					Color drawColor = MulticolorLerp(PrismaticProgress, _secondaryPalette.Colors);
+					Color drawColor = DrawHelpers.MulticolorLerp(PrismaticProgress, _secondaryPalette.Colors);
 
 					if (_prismaticTimer <= 0)
 						drawColor = Color.LightSteelBlue;
@@ -307,14 +307,5 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		}
 
 		static void DelegateAction(Particle p) => p.Velocity *= 0.875f;
-	}
-
-	public static Color MulticolorLerp(float increment, params Color[] colors)
-	{
-		increment %= 0.999f;
-		int currentColorIndex = (int)(increment * colors.Length);
-		Color color = colors[currentColorIndex];
-		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
-		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
 	}
 }
