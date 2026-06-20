@@ -221,8 +221,6 @@ public class VoidGlyph : GlyphItem
 
 			gnpc.collapseDamage += damageDealt;
 
-			Main.NewText("Stack Added");
-
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * gnpc._stacks }, target.Center);
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/WispHit") with { Volume = 2f, Pitch = -0.1f * gnpc._stacks }, target.Center);
 		}
@@ -276,17 +274,13 @@ public class VoidGlyph : GlyphItem
 			return _dying && Projectile.timeLeft < 30;
 		}
 
-		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetIndex;
+		public override bool? CanHitNPC(NPC target) => target.active ? target.whoAmI == TargetIndex : null;
 
 		public override void AI()
 		{
 			if (Target is null || !Target.active)
 			{
-				if (_dying)
-				{
-
-				}
-				else
+				if (!_dying)
 				{
 					Projectile.Kill();
 					return;
@@ -334,7 +328,6 @@ public class VoidGlyph : GlyphItem
 				if (Projectile.timeLeft > 30)
 				{
 					float progressTillHit = (Projectile.timeLeft - 30f) / 30f;
-
 					
 					if (Main.rand.NextBool(5))
 					{
@@ -370,7 +363,9 @@ public class VoidGlyph : GlyphItem
 
 			Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * (stacks / 10f));
 
-			Projectile.Center = pos;
+			if (pos != Vector2.Zero)
+				Projectile.Center = pos;
+
 			if (Projectile.position != Projectile.oldPosition)
 				Projectile.netUpdate = true;
 
@@ -417,8 +412,6 @@ public class VoidGlyph : GlyphItem
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/WispDeath") with { Volume = 2f, Pitch = -0.5f}, target.Center);
-
-			Main.NewText("Collapse Hit");
 
 			//pos = target.Center;
 		}
