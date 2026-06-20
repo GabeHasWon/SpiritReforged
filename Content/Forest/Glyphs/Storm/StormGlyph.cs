@@ -20,7 +20,11 @@ namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	public override void SetStaticDefaults() 
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
 
 	/// this is from windshear scepter with minor changes to color and behavior
 	[Autoload(Side = ModSide.Client)]

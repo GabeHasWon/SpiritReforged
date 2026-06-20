@@ -15,7 +15,11 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class BeeGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new BeeGlyphShaderData(AssetLoader.LoadedShaders["LiquidGlyphShader"], "mainPass"));
+	public override void SetStaticDefaults() 
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new BeeGlyphShaderData(AssetLoader.LoadedShaders["LiquidGlyphShader"], "mainPass"));
+	} 
 
 	public class BeeInOrbit : Particle
 	{

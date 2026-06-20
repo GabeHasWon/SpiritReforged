@@ -14,6 +14,8 @@ public class RotGlyph : GlyphItem
 {
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		//dummy item id again for shader binding
 		GameShaders.Armor.BindShader(ModContent.ItemType<EnchantedStamp>(), new RotGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", 0.5f, false));
 		GameShaders.Armor.BindShader(Type, new RotGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", 0.75f, true));

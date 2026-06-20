@@ -16,7 +16,11 @@ using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
 public class SanguineGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
 
 	internal class SanguineStackingBuff : ModBuff
 	{

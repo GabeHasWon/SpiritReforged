@@ -14,7 +14,12 @@ namespace SpiritReforged.Content.Forest.Glyphs;
 
 public class RadiantGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() => GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	public override void SetStaticDefaults() 
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	} 
+
 	public sealed class DivineStrike : ModBuff
 	{
 		public override void SetStaticDefaults()

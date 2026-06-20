@@ -15,6 +15,8 @@ public class BlazeGlyph : GlyphItem
 {
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		//Because of how terraria is programmed, we have to bind one shader to one item id
 		//Bound shaders for drawdata can't have their parameters dynamically adjusted when applied, to my knowledge
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
