@@ -5,6 +5,7 @@ using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.WorldBuilding;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -328,8 +329,8 @@ public static class ZigguratRooms
 			int chestX = Bounds.Center.X + WorldGen.genRand.Next(-2, 3);
 			int chestY = Bounds.Center.Y;
 			WorldMethods.FindGround(chestX, ref chestY);
-			LapisSet set = ModContent.GetInstance<LapisSet>();
-			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)set.GetTileType(FurnitureSet.Types.Chest), false, 0);
+
+			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)LapisSet.TileTypes[nameof(ChestTile)], false, 0);
 
 			if (chestIndex != -1)
 				ZigguratMicrobiome.PopulateChest(Main.chest[chestIndex]);

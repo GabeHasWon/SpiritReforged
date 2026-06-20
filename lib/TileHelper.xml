@@ -1,0 +1,482 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TileHelper</name>
+    </assembly>
+    <members>
+        <member name="T:TileHelper.ArgumentCollection">
+            <summary> </summary>
+            <param name="Arguments"></param>
+        </member>
+        <member name="M:TileHelper.ArgumentCollection.#ctor(System.Collections.Generic.HashSet{TileHelper.Common.FurnitureTile})">
+            <summary> </summary>
+            <param name="Arguments"></param>
+        </member>
+        <member name="P:TileHelper.ArgumentCollection.Arguments">
+            <summary></summary>
+        </member>
+        <member name="M:TileHelper.ArgumentCollection.Get``1">
+            <summary> Gets the argument of T. </summary>
+        </member>
+        <member name="T:TileHelper.Autoloader">
+            <summary> The core of TileUtils. </summary>
+        </member>
+        <member name="M:TileHelper.Autoloader.AllArgs(System.Int32,Microsoft.Xna.Framework.Vector3,System.Nullable{Terraria.Audio.SoundStyle},System.Boolean)">
+            <summary> Gets all type arguments registered by this mod. </summary>
+        </member>
+        <member name="M:TileHelper.Autoloader.NoArgs">
+            <summary> Gets an empty collection of type arguments. </summary>
+        </member>
+        <member name="P:TileHelper.Autoloader.FurnitureTypes">
+            <summary> The template instances of all <see cref="T:TileHelper.Common.FurnitureTile"/>s. </summary>
+        </member>
+        <member name="M:TileHelper.Autoloader.LoadFurnitureSet(System.String,TileHelper.ArgumentCollection,System.Int32,System.Boolean)">
+            <summary> Loads a furniture set using a series of tile templates. </summary>
+            <param name="fullName"> The name of this furniture set, including the desired namespace.<para/>
+            For example, a stone-themed set might use the value "ModName.Content.Tiles.Stone", where the keyword "Stone" will be affixed before every furniture type. </param>
+            <param name="arguments"> The types of furniture tiles to be loaded and with which characteristics.<para/>
+            Use <see cref="M:TileHelper.Autoloader.AllArgs(System.Int32,Microsoft.Xna.Framework.Vector3,System.Nullable{Terraria.Audio.SoundStyle},System.Boolean)"/> and <see cref="M:TileHelper.Autoloader.NoArgs"/> to assist this process, or create your own <see cref="T:TileHelper.ArgumentCollection"/>.<br/>
+            Furniture types can be revoked or added using basic signs, alongside the template tile name.<para/>
+            For example, you can use the following:
+            <code>AllArgs(DustID.Marble, new(0.75f, 0.75f, 0.95f), distortGlow: false) - new BarrelTile() + new UniqueFurnitureTile()</code></param>
+            <param name="ingredient"> The primary ingredient used in crafting. </param>
+            <param name="loadItems"> Whether this set should autoload an item for each tile. </param>
+        </member>
+        <member name="M:TileHelper.Autoloader.Load(Terraria.ModLoader.Mod)">
+            <summary> Loads autoloader content for <paramref name="mod"/>. </summary>
+        </member>
+        <member name="T:TileHelper.Common.Context">
+            <summary> Allows additional control over logic used in <see cref="T:TileHelper.Common.ContextDelegate"/>. </summary>
+        </member>
+        <member name="F:TileHelper.Common.Context.Before">
+            <summary> Used before loading particular data. </summary>
+        </member>
+        <member name="F:TileHelper.Common.Context.After">
+            <summary> Used after loading particular data. </summary>
+        </member>
+        <member name="T:TileHelper.Common.ContextDelegate">
+            <summary> Provides an additional context parameter for ease of use. </summary>
+        </member>
+        <member name="T:TileHelper.Common.DataStructures">
+            <summary> Provides strictly contextual data collections for easy access. </summary>
+        </member>
+        <member name="T:TileHelper.Common.DataStructures.SignatureRecipeDelegate">
+            <summary> Recipe delegate for furniture types. </summary>
+        </member>
+        <member name="F:TileHelper.Common.DataStructures.HasDust">
+            <summary> Whether furniture tile types use dusts by default. </summary>
+        </member>
+        <member name="F:TileHelper.Common.DataStructures.Recipes">
+            <summary> Corresponding recipes of furniture tiles. </summary>
+        </member>
+        <member name="F:TileHelper.Common.DataStructures.CoinValues">
+            <summary> Corresponding coin values of furniture items. </summary>
+        </member>
+        <member name="F:TileHelper.Common.Sets.TileGlowmask">
+            <summary> Stores custom tile glowmasks. </summary>
+        </member>
+        <member name="T:TileHelper.Common.FurnitureTypeAttribute">
+            <summary> Considers the annotated type a template furniture type for autoloading. </summary>
+        </member>
+        <member name="T:TileHelper.Common.ILightTile">
+            <summary> Applied to tile types which emit light and use a glowmask by extension. </summary>
+        </member>
+        <member name="P:TileHelper.Common.ILightTile.Light">
+            <summary> The light level to be emitted by this tile. </summary>
+        </member>
+        <member name="P:TileHelper.Common.ILightTile.DistortGlow">
+            <summary> Whether this tile's glowmask should be distorted, like flame visuals. </summary>
+        </member>
+        <member name="F:TileHelper.Common.FurnitureTile.MapColor">
+            <summary> The most common color for furniture tiles on the map. </summary>
+        </member>
+        <member name="P:TileHelper.Common.FurnitureTile.ItemType">
+            <summary> The item type dropped by this tile. </summary>
+        </member>
+        <member name="P:TileHelper.Common.FurnitureTile.FurnitureName">
+            <summary> The name of this furniture tile's type, corresponding to a class annoted by <see cref="T:TileHelper.Common.FurnitureTypeAttribute"/> For example, 
+            <code>nameof(BathtubTile)</code></summary>
+        </member>
+        <member name="P:TileHelper.Common.FurnitureTile.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Common.FurnitureTile.Texture">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Common.FurnitureTile.SetFullName(System.String)">
+            <summary> Overrides the texture and name of this ModTile. </summary>
+        </member>
+        <member name="M:TileHelper.Common.FurnitureTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Common.GlowmaskTile.Load(Terraria.ModLoader.Mod)">
+            <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Common.Helpers">
+            <summary> Provides a selection of tile related helper methods. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.GetTopLeft(System.Int32,System.Int32)">
+            <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.TryGetTileItem(Terraria.ModLoader.ModTile,Terraria.ModLoader.ModItem@)">
+            <summary> Safely gets the <see cref="T:Terraria.ModLoader.ModItem"/> associated with the provided <paramref name="modTile"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.GetTileOffset(System.Int32,System.Int32)">
+            <summary> Gets the draw position of the tile at the provided coordinates. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.RequestGlowmask(Terraria.ModLoader.ModTexturedType,TileHelper.Common.GlowmaskTile.VertexColor)">
+            <summary> Conveniently gets <see cref="P:Terraria.ModLoader.ModTexturedType.Texture"/> + "_Glow" alongside the provided <paramref name="color"/>, white if null. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.TryGetGlowmask(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
+            <summary> Attempts to get the glowmask from the tile at the provided coordinates. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.GetTileTextureValue(Terraria.Tile)">
+            <summary> Gets the current texture to be used by <paramref name="tile"/>, with respect to <see cref="P:Terraria.Tile.TileColor"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Common.Helpers.CreateTileItem(Terraria.ModLoader.ModTile)">
+            <summary> Creates a new <see cref="T:TileHelper.Content.AutoloadedPlaceable"/> for <paramref name="modTile"/>. </summary>
+        </member>
+        <member name="T:TileHelper.Common.ICreateItem">
+            <summary> Enables item autoloading for the attached ModTile. </summary>
+        </member>
+        <member name="E:TileHelper.Common.ICreateItem.OnAutoloadItems">
+            <summary> Raised before and after placeable items are autoloaded. </summary>
+        </member>
+        <member name="M:TileHelper.Common.ICreateItem.SetItemDefaults(Terraria.ModLoader.ModItem)">
+            <summary> Sets the defaults for <paramref name="modItem"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Common.ICreateItem.AddItemRecipes(Terraria.ModLoader.ModItem)">
+            <summary> Sets the recipe for <paramref name="modItem"/>. </summary>
+        </member>
+        <member name="T:TileHelper.Content.AutoloadedPlaceable.RecipeDelegate">
+            <summary> Recipe delegate for autoloaded placeables. </summary>
+        </member>
+        <member name="P:TileHelper.Content.AutoloadedPlaceable.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.AutoloadedPlaceable.Texture">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.AutoloadedPlaceable.CloneNewInstances">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.AutoloadedPlaceable.TileType">
+            <summary> The tile type this item was created from. </summary>
+        </member>
+        <member name="M:TileHelper.Content.AutoloadedPlaceable.Clone(Terraria.Item)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.AutoloadedPlaceable.SetDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.AutoloadedPlaceable.AddRecipes">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BarrelTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BathtubTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.ModifySmartInteractCoords(System.Int32@,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BenchTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BenchTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BenchTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BenchTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BookcaseTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.CandelabraTile.Light">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.CandelabraTile.DistortGlow">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandelabraTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandelabraTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandelabraTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandelabraTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.CandleTile.Light">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.CandleTile.DistortGlow">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.CandleTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChairTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChairTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChairTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChairTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChairTile.ModifySittingTargetInfo(System.Int32,System.Int32,Terraria.DataStructures.TileRestingInfo@)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.ChandelierTile.AnchorDataOffsets">
+            <summary> Offsets the anchor and how wide it needs to be. Defaults to (1, 1), meaning the anchor only needs 1 tile in the middle of the 3 tile wide chandelier. </summary>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.ChandelierTile.Light">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.ChandelierTile.DistortGlow">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.ChandelierTile.WindCycle">
+            <summary> Used to control physics effects in <see cref="M:TileHelper.Content.Tiles.ChandelierTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.ChestTile.MapEntry">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.MakeLocked(System.Int32)">
+            <summary> Registers a key to use on this chest when locked. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.AddObjectData">
+            <summary> Adds the chest tile object data. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.MapChestName(System.String,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.DefaultContainerName(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.KillMultiTile(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChestTile.MouseOverFar(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ClockTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ClockTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ClockTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ClockTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.DoorTile.OpenType">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.Load">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.PreDrawPlacementPreview(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle@,Microsoft.Xna.Framework.Vector2@,Microsoft.Xna.Framework.Color@,System.Boolean,Microsoft.Xna.Framework.Graphics.SpriteEffects@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DoorTile.DrawWithFrameOffset(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Point)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.DresserTile.MapEntry">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.MapChestName(System.String,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.DefaultContainerName(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.ModifySmartInteractCoords(System.Int32@,System.Int32@,System.Int32@,System.Int32@,System.Int32@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.KillMultiTile(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.DresserTile.MouseOverFar(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LampTile.Light">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LampTile.DistortGlow">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LampTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LampTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LampTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LampTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LanternTile.Light">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LanternTile.DistortGlow">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LanternTile.WindCycle">
+            <summary> Used to control physics effects in <see cref="M:TileHelper.Content.Tiles.LanternTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.SetDrawPositions(System.Int32,System.Int32,System.Int32@,System.Int32@,System.Int32@,System.Int16@,System.Int16@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.PianoTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.SinkTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.SofaTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.SofaTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.SofaTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.SofaTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.TableTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.RightClick(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.MouseOver(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.ModifySittingTargetInfo(System.Int32,System.Int32,Terraria.DataStructures.TileRestingInfo@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ToiletTile.HitWire(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.WorkBenchTile.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+    </members>
+</doc>

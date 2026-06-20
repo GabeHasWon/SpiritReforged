@@ -10,9 +10,10 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Paintings;
 public class ViciousFlamingo : PaintingTile
 {
 	public override Point TileSize => new(4, 4);
-	public override void StaticDefaults()
+
+	public override void SetStaticDefaults()
 	{
-		base.StaticDefaults();
+		base.SetStaticDefaults();
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(Type, Condition.TimeNight, SpiritConditions.InSaltFlats)));
 	}
 

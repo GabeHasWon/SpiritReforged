@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
@@ -33,7 +33,7 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 		TileObjectData.newTile.StyleLineSkip = 9;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("ItemName.Campfire"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("ItemName.Campfire"));
 		AdjTiles = [TileID.Fireplace];
 		DustType = -1;
 	}
@@ -101,10 +101,6 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 			frameYOffset = 252;
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-	{
-	}
-
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		if (OnFire(i, j))
@@ -114,7 +110,7 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 		}
 	}
 
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	/*public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Tile tile = Main.tile[i, j];
 		if (TileDrawing.IsVisible(tile) && OnFire(i, j))
@@ -127,5 +123,5 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 
 			spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position, source, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}
-	}
+	}*/
 }

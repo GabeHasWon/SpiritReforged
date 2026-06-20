@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
@@ -15,10 +16,10 @@ public class TallSandstoneShelf : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileTable[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
+
+		AddMapEntry(FurnitureTile.MapColor);
+
 		AdjTiles = [TileID.Bookcases];
-
-		AddMapEntry(FurnitureTile.CommonColor);
-
 		DustType = DustID.Dirt;
 	}
 
