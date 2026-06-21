@@ -48,6 +48,8 @@ public readonly struct EcotoneEdgeDefinition(int displayId, string name, Localiz
 	public readonly LocalizedText DisplayName = text;
 	public readonly Color MappingColor = color;
 	public readonly VariableIcon Icon = icon;
+
+	public bool Ecotone { get; init; }
 	
 	public override string ToString() => Name + $"(Display: {DisplayId})";
 }
@@ -81,22 +83,28 @@ public class EcotoneEdgeDefinitions : ModSystem
 	/// <summary>
 	/// Adds a mod-only edge definition with an overrideable display name.
 	/// </summary>
-	public static void AddEdgeDefinition<TDisplay, T2, TBiome>(Mod mod, string name, LocalizedText? displayName, Color color) where TDisplay : ModTile where T2 : ModTile
+	public static void AddEdgeDefinition<TDisplay, T2, TBiome>(Mod mod, string name, LocalizedText? displayName, Color color, bool ecotone) where TDisplay : ModTile where T2 : ModTile
 		where TBiome : ModBiome
 	{
 		LocalizedText text = displayName ?? Language.GetOrRegister($"Mods.{mod.Name}.EcotoneEdges.{name}");
 		VariableIcon icon = new(null, ModContent.Request<Texture2D>(ModContent.GetInstance<TBiome>().BestiaryIcon));
-		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, color, icon, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>());
+		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, color, icon, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>())
+		{
+			Ecotone = ecotone
+		};
 		InternalAddDefinition(edge);
 	}
 
 	/// <inheritdoc cref="AddEdgeDefinition{TDisplay, T2}(Mod, string, LocalizedText?)"/>
-	public static void AddEdgeDefinition<TDisplay, T2, T3, TBiome>(Mod mod, string name, LocalizedText? displayName, Color color) 
+	public static void AddEdgeDefinition<TDisplay, T2, T3, TBiome>(Mod mod, string name, LocalizedText? displayName, Color color, bool ecotone)
 		where TDisplay : ModTile where T2 : ModTile where T3 : ModTile where TBiome : ModBiome
 	{
 		LocalizedText text = displayName ?? Language.GetOrRegister($"Mods.{mod.Name}.EcotoneEdges.{name}");
 		VariableIcon icon = new(null, ModContent.Request<Texture2D>(ModContent.GetInstance<TBiome>().BestiaryIcon));
-		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, color, icon, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>(), ModContent.TileType<T3>());
+		EcotoneEdgeDefinition edge = new(ModContent.TileType<TDisplay>(), name, text, color, icon, ModContent.TileType<TDisplay>(), ModContent.TileType<T2>(), ModContent.TileType<T3>())
+		{
+			Ecotone = ecotone
+		};
 		InternalAddDefinition(edge);
 	}
 
@@ -115,8 +123,8 @@ public class EcotoneEdgeDefinitions : ModSystem
 		AddEdgeDefinition(Mod, TileID.ChlorophyteBrick, "Jungle", null, Color.LimeGreen, new VariableIcon(new(6, 1)), TileID.JungleGrass, TileID.Mud, TileID.CorruptJungleGrass, 
 			TileID.CrimsonJungleGrass);
 
-		AddEdgeDefinition<SavannaGrass, LivingBaobab, LivingBaobabLeaf, SavannaBiome>(Mod, "Savanna", null, new Color(153, 111, 48));
-		AddEdgeDefinition<SaltBlockDull, SaltBlockReflective, SaltBiome>(Mod, "SaltFlats", null, Color.White);
+		AddEdgeDefinition<SavannaGrass, LivingBaobab, LivingBaobabLeaf, SavannaBiome>(Mod, "Savanna", null, new Color(153, 111, 48), true);
+		AddEdgeDefinition<SaltBlockDull, SaltBlockReflective, SaltBiome>(Mod, "SaltFlats", null, Color.White, true);
 
 		// Legacy conversion entries - these now all count as their respective non-converted biome, i.e. Forest, Desert, Jungle
 		// These are kept in case we have substantial changes, but I find it unlikely. - Gabe

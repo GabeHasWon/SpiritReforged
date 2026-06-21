@@ -21,6 +21,10 @@ internal abstract class CaveEntrance : ILoadable
 
 	public void Unload() { }
 
+	public virtual void OnStart()
+	{
+	}
+
 	public abstract void Generate(int x, int y);
 
 	/// <summary>
