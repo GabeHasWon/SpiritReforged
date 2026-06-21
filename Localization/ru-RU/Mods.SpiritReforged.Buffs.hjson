@@ -149,6 +149,6 @@ ScarabMountBuff: {
 }
 
 DungBeetleMinion_Buff: {
-	// DisplayName: Dung Beetle Minion_ Buff
-	// Description: Mods.SpiritReforged.Buffs.DungBeetleMinion_Buff.Description
+	// DisplayName: Dung Beetle
+	// Description: A friendly dung beetle fights for you!
 }
