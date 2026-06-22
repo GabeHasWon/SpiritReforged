@@ -1,14 +1,15 @@
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
+using SpiritReforged.Content.Desert.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Botanist.Items;
+namespace SpiritReforged.Content.Desert;
 
-public class WheatgrassSeedPouch : ModItem
+public class MariglowSeedPouch : ModItem
 {
-	public class WheatgrassSeed : ModProjectile
+	public class MariglowSeed : ModProjectile
 	{
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 
@@ -33,28 +34,37 @@ public class WheatgrassSeedPouch : ModItem
 			if (Main.myPlayer == Projectile.owner)
 			{
 				if (WorldGen.IsTileReplacable(position.X, position.Y - 1))
-					Placer.PlaceTile<Wheatgrass>(position.X, position.Y - 1).Send();
+					Placer.PlaceTile<Glowflower>(position.X, position.Y - 1).Send();
 			}
 
 			SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.5f, Pitch = 0.8f }, Projectile.Center);
 
 			for (int i = 0; i < 4; ++i)
-				Dust.NewDust(position.ToWorldCoordinates(), 2, 2, DustID.Hay, WorldGen.genRand.NextFloat(-1, 1) + Projectile.velocity.X, -Main.rand.NextFloat(1, 4), Scale: 0.6f);
+			{
+				Vector2 velocity = new(WorldGen.genRand.NextFloat(-1, 1) + Projectile.velocity.X, -Main.rand.NextFloat(-1, 1));
+				Dust.NewDust(position.ToWorldCoordinates(), 2, 2, DustID.YellowStarDust, velocity.X * 0.2f, velocity.Y * 0.2f);
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Projectile.QuickDraw(drawColor: Projectile.GetAlpha(Color.White));
+			return false;
 		}
 
 		public override bool? CanCutTiles() => false;
 		public override bool? CanDamage() => false;
 	}
 
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => !Main.LocalPlayer.ZoneDesert && shop.NpcType == NPCID.Merchant, 
-		new NPCShop.Entry(ModContent.ItemType<WheatgrassSeedPouch>(), Condition.DownedEyeOfCthulhu)));
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => Main.LocalPlayer.ZoneDesert && shop.NpcType == NPCID.Merchant, 
+		new NPCShop.Entry(ModContent.ItemType<MariglowSeedPouch>(), Condition.DownedEyeOfCthulhu)));
 
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 26;
 		Item.value = Item.sellPrice(0, 0, 0, 5);
 		Item.rare = ItemRarityID.White;
-		Item.shoot = ModContent.ProjectileType<WheatgrassSeed>();
+		Item.shoot = ModContent.ProjectileType<MariglowSeed>();
 		Item.UseSound = SoundID.Item1;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.shootSpeed = 8;
