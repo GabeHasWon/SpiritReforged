@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Savanna.Tiles;
 using TileHelper.Common;
 using TileHelper.Content.Tiles;
 using static TileHelper.Autoloader;

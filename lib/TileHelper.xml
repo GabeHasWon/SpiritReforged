@@ -63,6 +63,13 @@
         <member name="T:TileHelper.Common.DataStructures.SignatureRecipeDelegate">
             <summary> Recipe delegate for furniture types. </summary>
         </member>
+        <member name="T:TileHelper.Common.DataStructures.ResearchCondition">
+            <summary> Provides research value conditions for <paramref name="modItem"/>. Return -1 if <paramref name="modItem"/> meets no conditions. </summary>
+        </member>
+        <member name="F:TileHelper.Common.DataStructures.ResearchConditions">
+            <summary> Stores custom <see cref="T:Terraria.ModLoader.ModItem"/> conditions for <see cref="M:TileHelper.Common.DataStructures.GetResearchCount(Terraria.ModLoader.ModItem)"/>.<para/>
+            For example, the following code would give all ModItems with a damage value greater than zero a research count of one:<code>ResearchConditions.Add(static (modItem) => (modItem.Item.damage > 0) ? 1 : null);</code></summary>
+        </member>
         <member name="F:TileHelper.Common.DataStructures.HasDust">
             <summary> Whether furniture tile types use dusts by default. </summary>
         </member>
@@ -71,6 +78,10 @@
         </member>
         <member name="F:TileHelper.Common.DataStructures.CoinValues">
             <summary> Corresponding coin values of furniture items. </summary>
+        </member>
+        <member name="M:TileHelper.Common.DataStructures.GetResearchCount(Terraria.ModLoader.ModItem)">
+            <summary> Gets the research count of <paramref name="modItem"/> based on a variety of conditions, defaulting to 1.<para/>
+            See <see cref="F:TileHelper.Common.DataStructures.ResearchConditions"/> to provide custom conditions for this method. </summary>
         </member>
         <member name="F:TileHelper.Common.Sets.TileGlowmask">
             <summary> Stores custom tile glowmasks. </summary>
@@ -118,8 +129,8 @@
         <member name="M:TileHelper.Common.Helpers.GetTopLeft(System.Int32,System.Int32)">
             <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.Helpers.TryGetTileItem(Terraria.ModLoader.ModTile,Terraria.ModLoader.ModItem@)">
-            <summary> Safely gets the <see cref="T:Terraria.ModLoader.ModItem"/> associated with the provided <paramref name="modTile"/>. </summary>
+        <member name="M:TileHelper.Common.Helpers.TryGetBlockItem(Terraria.ModLoader.ModBlockType,Terraria.ModLoader.ModItem@)">
+            <summary> Safely gets the <see cref="T:Terraria.ModLoader.ModItem"/> associated with the provided <paramref name="blockType"/>. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.GetTileOffset(System.Int32,System.Int32)">
             <summary> Gets the draw position of the tile at the provided coordinates. </summary>
@@ -133,14 +144,17 @@
         <member name="M:TileHelper.Common.Helpers.GetTileTextureValue(Terraria.Tile)">
             <summary> Gets the current texture to be used by <paramref name="tile"/>, with respect to <see cref="P:Terraria.Tile.TileColor"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.Helpers.CreateTileItem(Terraria.ModLoader.ModTile)">
-            <summary> Creates a new <see cref="T:TileHelper.Content.AutoloadedPlaceable"/> for <paramref name="modTile"/>. </summary>
+        <member name="M:TileHelper.Common.Helpers.CreateBlockItem(Terraria.ModLoader.ModBlockType)">
+            <summary> Creates a new <see cref="T:TileHelper.Content.AutoloadedPlaceable"/> for <paramref name="blockType"/>. </summary>
         </member>
         <member name="T:TileHelper.Common.ICreateItem">
             <summary> Enables item autoloading for the attached ModTile. </summary>
         </member>
         <member name="E:TileHelper.Common.ICreateItem.OnAutoloadItems">
             <summary> Raised before and after placeable items are autoloaded. </summary>
+        </member>
+        <member name="M:TileHelper.Common.ICreateItem.SetItemStaticDefaults(Terraria.ModLoader.ModItem)">
+            <summary> Sets the static defaults for <paramref name="modItem"/>. </summary>
         </member>
         <member name="M:TileHelper.Common.ICreateItem.SetItemDefaults(Terraria.ModLoader.ModItem)">
             <summary> Sets the defaults for <paramref name="modItem"/>. </summary>
@@ -160,10 +174,16 @@
         <member name="P:TileHelper.Content.AutoloadedPlaceable.CloneNewInstances">
             <inheritdoc/>
         </member>
-        <member name="P:TileHelper.Content.AutoloadedPlaceable.TileType">
-            <summary> The tile type this item was created from. </summary>
+        <member name="P:TileHelper.Content.AutoloadedPlaceable.BlockType">
+            <summary> The block type this item was created from. Can be a <see cref="T:Terraria.ModLoader.ModWall"/> or <see cref="T:Terraria.ModLoader.ModTile"/>. </summary>
+        </member>
+        <member name="M:TileHelper.Content.AutoloadedPlaceable.#ctor(Terraria.ModLoader.ModBlockType,TileHelper.Content.AutoloadedPlaceable.RecipeDelegate)">
+            <summary> Creates a new item from <paramref name="blockType"/>. Only <see cref="T:Terraria.ModLoader.ModWall"/> and <see cref="T:Terraria.ModLoader.ModTile"/> are fully supported. </summary>
         </member>
         <member name="M:TileHelper.Content.AutoloadedPlaceable.Clone(Terraria.Item)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.AutoloadedPlaceable.SetStaticDefaults">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.AutoloadedPlaceable.SetDefaults">
@@ -281,6 +301,9 @@
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.ChandelierTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.ChandelierTile.GetTileFlameData(System.Int32,System.Int32,Terraria.GameContent.Drawing.TileDrawing.TileFlameData@)">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.ChandelierTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
@@ -422,6 +445,9 @@
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.LanternTile.AdjustMultiTileVineParameters(System.Int32,System.Int32,System.Nullable{System.Single}@,System.Single@,System.Single@,System.Boolean@,System.Single@,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.LanternTile.GetTileFlameData(System.Int32,System.Int32,Terraria.GameContent.Drawing.TileDrawing.TileFlameData@)">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.LanternTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
