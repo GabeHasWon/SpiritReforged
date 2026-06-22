@@ -17,14 +17,11 @@ public class WheatgrassSeedPouch : ModItem
 			Projectile.Size = new(6);
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 2000;
-			Projectile.frame = -1;
+			Projectile.frame = Main.rand.Next(Main.projFrames[Type]); //Select a random frame
 		}
 
 		public override void AI()
 		{
-			if (Projectile.frame == -1)
-				Projectile.frame = Main.rand.Next(Main.projFrames[Type]); //Select a random frame on spawn
-
 			Projectile.velocity.Y += 0.2f;
 			Projectile.rotation += Projectile.velocity.X * 0.05f;
 		}
