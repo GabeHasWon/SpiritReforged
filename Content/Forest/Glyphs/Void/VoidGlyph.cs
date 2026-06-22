@@ -1,23 +1,15 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using System.Linq;
-using Terraria;
+using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
-using static SpiritReforged.Content.Forest.Glyphs.Storm.StormGlyph;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using static tModPorter.ProgressUpdate;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Void;
 
@@ -68,7 +60,7 @@ public class VoidGlyph : GlyphItem
 		// drawing a bloom map here for the input to our shader
 		private static void DrawTarget(SpriteBatch spriteBatch)
 		{
-			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
@@ -113,73 +105,87 @@ public class VoidGlyph : GlyphItem
 
 		public override void PostUpdateEverything()
 		{
-			if (SingularityTarget is not null && SingularityTarget.Active)
+			if (!Main.dedServ)
 			{
-				if (!Main.dedServ && !Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
-					Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
+				if (SingularityTarget is not null && SingularityTarget.Active)
+				{
+					if (!Main.dedServ && !Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
+						Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
 
-				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
-			}
-			else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
-			{
-				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(TextureAssets.Npc[0]);
-				Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
+					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
+				}
+				else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
+				{
+					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(TextureAssets.Npc[0]);
+					Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
+				}
 			}
 		}
 	}
 
 	public sealed class VoidPlayer : ModPlayer
 	{
-		public bool Active => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>();
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>())
+				ProcSingularity(target, damageDone);
+		}
+
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (item.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>())
+				ProcSingularity(target, damageDone);
+		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Active)
+			if (target.TryGetGlobalNPC(out VoidNPC voidNPC) && voidNPC.stacks > 0)
+				ProcSingularity(target, damageDone); //Allow any damage source to contribute to the singularity if it already exists
+		}
+
+		public void ProcSingularity(NPC target, int damageDone)
+		{
+			VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone);
+
+			for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
 			{
-				VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone);
+				Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
+				float rotation = Main.rand.NextFloat(6.28f);
 
-				for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
 				{
-					Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
+					Rotation = rotation
+				});
 
-					float rotation = Main.rand.NextFloat(6.28f);
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
+				{
+					Rotation = rotation
+				});
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
-					{
-						Rotation = rotation
-					});
+				static void DecelerateAction(Particle p)
+				{
+					p.Velocity *= 0.95f;
+					p.Rotation += p.Velocity.Length() * 0.1f;
+				}
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
-					{
-						Rotation = rotation
-					});
+				velocity = Main.rand.NextVector2Circular(4f, 4f);
+				float scale = Main.rand.NextFloat(0.1f, 0.3f);
 
-					static void DecelerateAction(Particle p)
-					{
-						p.Velocity *= 0.95f;
+				bool rotDir = Main.rand.NextBool();
 
-						p.Rotation += p.Velocity.Length() * 0.1f;
-					}
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
 
-					velocity = Main.rand.NextVector2Circular(4f, 4f);
-					float scale = Main.rand.NextFloat(0.1f, 0.3f);
+				static void SpinAction(Particle p)
+				{
+					p.Velocity *= 0.97f;
+					p.Velocity = p.Velocity.RotatedBy(0.08f);
+				}
 
-					bool rotDir = Main.rand.NextBool();
-
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
-
-					static void SpinAction(Particle p)
-					{
-						p.Velocity *= 0.97f;
-						p.Velocity = p.Velocity.RotatedBy(0.08f);
-					}
-
-					static void SpinAction_2(Particle p)
-					{
-						p.Velocity *= 0.97f;
-						p.Velocity = p.Velocity.RotatedBy(-0.08f);
-					}
+				static void SpinAction_2(Particle p)
+				{
+					p.Velocity *= 0.97f;
+					p.Velocity = p.Velocity.RotatedBy(-0.08f);
 				}
 			}
 		}
@@ -190,45 +196,43 @@ public class VoidGlyph : GlyphItem
 		public const int COOLDOWN_TIME = 60;
 
 		public override bool InstancePerEntity => true;
-		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.CanBeChasedBy();
 
 		const int MAX_STACKS = 10;
 		const int COLLAPSE_TIME = 600;
 		
-		internal int _stacks;
-		internal int _cooldown;
-
+		public int stacks;
+		public int cooldown;
 		public int collapseDamage;
+
+		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.CanBeChasedBy();
 
 		public static void AddStack(int playerIndex, int targetIndex, int damageDealt, int stacksToAdd = 1)
 		{
 			Player player = Main.player[playerIndex];
 			NPC target = Main.npc[targetIndex];
-			var gnpc = target.GetGlobalNPC<VoidNPC>();
 
-			if (gnpc._cooldown > 0 || gnpc._stacks >= MAX_STACKS)
+			if (!target.TryGetGlobalNPC(out VoidNPC voidNPC) || voidNPC.cooldown > 0 || voidNPC.stacks >= MAX_STACKS)
 				return;
 
-			if (gnpc._stacks <= 0)
+			if (voidNPC.stacks <= 0)
 			{
-				Projectile p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
+				var p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
 				p.timeLeft = COLLAPSE_TIME;
 			}
 
-			gnpc._stacks += 1;
-			if (gnpc._stacks > MAX_STACKS)
-				gnpc._stacks = MAX_STACKS;
+			if (++voidNPC.stacks > MAX_STACKS)
+				voidNPC.stacks = MAX_STACKS;
 
-			gnpc.collapseDamage += damageDealt;
+			voidNPC.collapseDamage += damageDealt;
 
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * gnpc._stacks }, target.Center);
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/WispHit") with { Volume = 2f, Pitch = -0.1f * gnpc._stacks }, target.Center);
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * voidNPC.stacks }, target.Center);
+			SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * voidNPC.stacks }, target.Center);
 		}
 
 		public override void ResetEffects(NPC npc)
 		{
-			if (_cooldown > 0)
-				_cooldown--;
+			if (cooldown > 0)
+				cooldown--;
 		}
 	}
 
@@ -269,10 +273,7 @@ public class VoidGlyph : GlyphItem
 			Projectile.localNPCHitCooldown = -1;
 		}
 
-		public override bool? CanDamage()
-		{
-			return _dying && Projectile.timeLeft < 30;
-		}
+		public override bool? CanDamage() => _dying && Projectile.timeLeft < 30;
 
 		public override bool? CanHitNPC(NPC target) => target.active ? target.whoAmI == TargetIndex : null;
 
@@ -356,7 +357,7 @@ public class VoidGlyph : GlyphItem
 				}
 			}
 
-			int stacks = gnpc._stacks;
+			int stacks = gnpc.stacks;
 
 			if (_dying)
 				stacks = _stacksOnDeath;
@@ -369,7 +370,7 @@ public class VoidGlyph : GlyphItem
 			if (Projectile.position != Projectile.oldPosition)
 				Projectile.netUpdate = true;
 
-			if ((Projectile.timeLeft == 1 || gnpc._stacks >= 10) && !_dying)
+			if ((Projectile.timeLeft == 1 || gnpc.stacks >= 10) && !_dying)
 			{
 				SingularityVisualSystem.projectiles.Add(this);
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
@@ -377,13 +378,13 @@ public class VoidGlyph : GlyphItem
 				_dying = true;
 				Projectile.timeLeft = 60;
 
-				_stacksOnDeath = gnpc._stacks;
+				_stacksOnDeath = gnpc.stacks;
 
 				Projectile.damage = gnpc.collapseDamage;
-				Projectile.ArmorPenetration = gnpc._stacks;
+				Projectile.ArmorPenetration = gnpc.stacks;
 
-				gnpc._cooldown = VoidNPC.COOLDOWN_TIME;
-				gnpc._stacks = 0;
+				gnpc.cooldown = VoidNPC.COOLDOWN_TIME;
+				gnpc.stacks = 0;
 				gnpc.collapseDamage = 0;
 			}
 
@@ -393,16 +394,7 @@ public class VoidGlyph : GlyphItem
 			}
 		}
 
-		public override void OnKill(int timeLeft)
-		{
-			SingularityVisualSystem.projectiles.Remove(this);
-
-			/*if (!Main.dedServ)
-			{
-				Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseProgress(0);
-				Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
-			}*/
-		}
+		public override void OnKill(int timeLeft) => SingularityVisualSystem.projectiles.Remove(this);
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
@@ -411,8 +403,7 @@ public class VoidGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCDeath/WispDeath") with { Volume = 2f, Pitch = -0.5f}, target.Center);
-
+			SoundEngine.PlaySound(Wisp.Death with { Volume = 2f, Pitch = -0.5f}, target.Center);
 			//pos = target.Center;
 		}
 
@@ -427,7 +418,7 @@ public class VoidGlyph : GlyphItem
 				if (Target is not null)
 				{
 					var gnpc = Target.GetGlobalNPC<VoidNPC>();
-					stacks = gnpc._stacks;
+					stacks = gnpc.stacks;
 				}	
 			}
 			else
