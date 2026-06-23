@@ -85,7 +85,7 @@ public class EnchanterUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
+		if (Main.LocalPlayer.TalkNPC == null)
 		{
 			UISystem.SetInactive<EnchanterUI>();
 			_hovered = default;
@@ -94,7 +94,7 @@ public class EnchanterUI : AutoUIState
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
-		Main.LocalPlayer.SetTalkNPC(-1);
+		Main.npcChatText = string.Empty;
 
 		if (_slot.Item.IsAir)
 		{
@@ -181,10 +181,10 @@ public class EnchanterUI : AutoUIState
 
 			if (Main.LocalPlayer.CountItem(type, cost) >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
 			{
-				for (int c = 0; c < cost; c++)
+				for (int c = 0; c < cost; c++) //Consume the necessary number of currency
 					Main.LocalPlayer.ConsumeItem(type);
 
-				if (_hovered.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+				if (_slot.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
 					glyphGlobalItem.StartAnimation();
 
 				ClearList(); //Reset the list
