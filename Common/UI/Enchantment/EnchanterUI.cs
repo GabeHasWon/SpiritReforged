@@ -181,10 +181,10 @@ public class EnchanterUI : AutoUIState
 
 			if (Main.LocalPlayer.CountItem(type, cost) >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
 			{
-				for (int c = 0; c < cost; c++)
+				for (int c = 0; c < cost; c++) //Consume the necessary number of currency
 					Main.LocalPlayer.ConsumeItem(type);
 
-				if (_hovered.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+				if (_slot.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
 					glyphGlobalItem.StartAnimation();
 
 				ClearList(); //Reset the list

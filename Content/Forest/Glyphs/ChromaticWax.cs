@@ -1,9 +1,12 @@
 using Humanizer;
+using Mono.Cecil;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -227,7 +230,9 @@ public abstract class GlyphItem : ModItem
 				if (--Main.mouseItem.stack <= 0)
 					Main.mouseItem.TurnToAir(); //Consume the glyph on hand
 
-				StartAnimation();
+				if (item.TryGetGlobalItem(out GlyphGlobalItem glyphGlobalItem))
+					glyphGlobalItem.StartAnimation();
+
 				StopItemConsumption = true;
 			}
 		}
@@ -288,7 +293,23 @@ public abstract class GlyphItem : ModItem
 				if (_animationTime > 0)
 				{
 					Texture2D splashTexture = TextureAssets.Item[Glyph.ItemType].Value;
-					float splashScale = (Math.Max((progress - 0.5f) * 2, 0) + 1) * Main.UIScale;
+					float splashScale = (Math.Max((progress - 0.7f) * 4, 0) + 1) * Main.UIScale;
+
+					DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+						spriteBatch.Draw(splashTexture, position + offset, null, glyphItem.settings.Color.Additive(), 0, splashTexture.Size() / 2, EaseFunction.EaseQuinticOut.Ease(progress), 0, 0));
+
+					Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
+					SquarePrimitive blurLine = new()
+					{
+						Position = position,
+						Height = 20 * progress,
+						Length = 200,
+						Rotation = 0,
+						Color = glyphItem.settings.Color.Additive()
+					};
+
+					PrimitiveRenderer.DrawPrimitiveShape(blurLine, blurEffect);
+					PrimitiveRenderer.DrawPrimitiveShape(blurLine, blurEffect);
 
 					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(progress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
 				}
