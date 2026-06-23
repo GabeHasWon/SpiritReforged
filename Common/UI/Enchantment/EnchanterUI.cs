@@ -85,7 +85,7 @@ public class EnchanterUI : AutoUIState
 
 	public override void Update(GameTime gameTime)
 	{
-		if (Main.LocalPlayer.controlInv || !Main.playerInventory)
+		if (Main.LocalPlayer.TalkNPC == null)
 		{
 			UISystem.SetInactive<EnchanterUI>();
 			_hovered = default;
@@ -94,7 +94,7 @@ public class EnchanterUI : AutoUIState
 		if (ContainsPoint(Main.MouseScreen))
 			Main.LocalPlayer.mouseInterface = true;
 
-		Main.LocalPlayer.SetTalkNPC(-1);
+		Main.npcChatText = string.Empty;
 
 		if (_slot.Item.IsAir)
 		{
