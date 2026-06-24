@@ -1,10 +1,9 @@
-﻿using SpiritReforged.Common.Visuals.Glowmasks;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-[AutoloadGlowmask("255,255,255")]
 public abstract class TorchTile : ModTile
 {
 	public virtual Vector3 Light => new(0.9f);
@@ -22,6 +21,7 @@ public abstract class TorchTile : ModTile
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.DisableSmartInteract[Type] = true;
 		TileID.Sets.Torch[Type] = true;
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleTorch);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
@@ -81,7 +81,7 @@ public abstract class TorchTile : ModTile
 			float yy = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
 			var position = new Vector2(i * 16 - (int)Main.screenPosition.X - 4 / 2f + xx, j * 16 - (int)Main.screenPosition.Y + offsetY + yy) + TileExtensions.TileOffset;
 
-			spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position, frame, new Color(100, 100, 100, 0), 0f, default, 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, position, frame, new Color(100, 100, 100, 0), 0f, default, 1f, SpriteEffects.None, 0f);
 		}
 	}
 

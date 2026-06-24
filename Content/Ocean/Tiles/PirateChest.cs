@@ -7,7 +7,7 @@ using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class PirateChest : ChestTile, ICreateItem
+public class PirateChest : ChestTile, ILoadItem
 {
 	public virtual void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 5);
 

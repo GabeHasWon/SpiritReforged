@@ -6,7 +6,7 @@ using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public sealed class StoneReliquary : ChestTile, ICustomContainer, ICreateItem
+public sealed class StoneReliquary : ChestTile, ICustomContainer, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
 

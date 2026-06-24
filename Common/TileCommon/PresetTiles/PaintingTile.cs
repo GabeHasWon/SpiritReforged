@@ -4,7 +4,7 @@ using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class PaintingTile : ModTile, ICreateItem
+public abstract class PaintingTile : ModTile, ILoadItem
 {
 	public virtual Point TileSize => new(2, 2);
 

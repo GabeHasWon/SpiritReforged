@@ -407,7 +407,7 @@ public class BombScarab : Bomb
 					float f6 = (float)Math.PI * 2f * num943 + num942;
 					Vector2 value13 = f6.ToRotationVector2();
 					value13 *= new Vector2(0.7f, 0.3f);
-					var dust = Dust.NewDustPerfect(Projectile.Center, 59, value13);
+					var dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, value13);
 					dust.fadeIn = 2f;
 					dust.noGravity = true;
 					Dust dust2 = dust;

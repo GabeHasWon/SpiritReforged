@@ -1,15 +1,16 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class TallSandstoneShelf : ModTile, IAutoloadTileItem
+public class TallSandstoneShelf : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void SetItemStaticDefaults(ModItem item) => item.Item.ResearchUnlockCount = 30;
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 10).AddIngredient(AutoContent.ItemType<AncientBooks>()).AddTile(TileID.Sawmill).Register();
+	
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolidTop[Type] = true;

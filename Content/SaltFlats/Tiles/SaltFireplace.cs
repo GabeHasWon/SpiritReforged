@@ -3,15 +3,13 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class SaltFireplace : ModTile, IAutoloadTileItem
+public class SaltFireplace : ModTile, ILoadItem
 {
 	private const int fullFrameHeight = 18 * 2;
 

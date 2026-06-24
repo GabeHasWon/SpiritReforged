@@ -8,19 +8,18 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodSet : ModSystem
 {
-	public override void Load() => ICreateItem.OnAutoloadItems += LoadDriftwoodFurniture;
+	public override void Load() => ILoadItem.OnAutoloadItems += LoadDriftwoodFurniture;
 
-	private static void LoadDriftwoodFurniture(Context context)
+	private static void LoadDriftwoodFurniture(Action action)
 	{
-		if (context == Context.After)
-		{
-			string saltName = typeof(DriftwoodSet).Namespace + ".Driftwood";
-			LoadFurnitureSet(saltName, AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
-				- new ChestTile()
-				- new SofaTile(), 
-				AutoContent.ItemType<Driftwood>()
-			);
-		}
+		action.Invoke();
+
+		string saltName = typeof(DriftwoodSet).Namespace + ".Driftwood";
+		LoadFurnitureSet(saltName, AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
+			- new ChestTile()
+			- new SofaTile(),
+			AutoContent.ItemType<Driftwood>()
+		);
 	}
 
 	public override void PostSetupContent() => SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);

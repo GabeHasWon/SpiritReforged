@@ -33,8 +33,8 @@ public class TridentZombie : ModNPC, ISubstitute
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 60f;
-		NPC.knockBackResist = .55f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.55f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.ArmedZombie;
 		AnimationType = NPCID.ArmedZombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);

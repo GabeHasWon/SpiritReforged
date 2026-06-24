@@ -5,7 +5,7 @@ using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class BronzeGrateDoor : DoorTile, ICreateItem
+public class BronzeGrateDoor : DoorTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<BronzePlating>());
 

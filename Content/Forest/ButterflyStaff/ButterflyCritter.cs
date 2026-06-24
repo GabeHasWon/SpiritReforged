@@ -37,9 +37,9 @@ public class ButterflyCritter : ModNPC
 		NPC.defense = 0;
 		NPC.lifeMax = 1;
 		NPC.dontCountMe = true;
-		NPC.DeathSound = SoundID.NPCDeath6 with { Pitch = .2f };
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 64;
+		NPC.DeathSound = SoundID.NPCDeath6 with { Pitch = 0.2f };
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Firefly;
 		NPC.npcSlots = 0;
 		NPC.noGravity = true;
 		NPC.catchItem = ItemID.SilverCoin; //Allows bug nets to interact with this NPC, even though the player is never allowed to catch it

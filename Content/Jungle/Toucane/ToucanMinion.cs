@@ -267,7 +267,7 @@ public class ToucanMinion : BaseMinion
 					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.DirectionTo(target.Center) * 8, ModContent.ProjectileType<ToucanFeather>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 					for (int j = 0; j < 6; j++)
 					{
-						var dust = Dust.NewDustPerfect(Projectile.Center, 90, Projectile.DirectionTo(target.Center).RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(1f, 2f), 100, default, Main.rand.NextFloat(0.15f, 0.3f));
+						var dust = Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, Projectile.DirectionTo(target.Center).RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(1f, 2f), 100, default, Main.rand.NextFloat(0.15f, 0.3f));
 						dust.fadeIn = 0.75f;
 						dust.noGravity = true;
 					}

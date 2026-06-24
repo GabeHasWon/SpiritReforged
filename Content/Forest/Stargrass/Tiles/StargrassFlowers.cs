@@ -1,12 +1,11 @@
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.TileSway;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
 using Terraria.GameContent.Metadata;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("255,255,255", false)]
 public class StargrassFlowers : ModTile, ISwayTile
 {
 	public const int StyleRange = 27;
@@ -22,6 +21,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
@@ -76,7 +76,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		spriteBatch.Draw(TextureAssets.Tile[type].Value, drawPos + offset + dataOffset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);
 
-		var glowmask = GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value;
+		var glowmask = Sets.TileGlowmask[Type].Texture.Value;
 		spriteBatch.Draw(glowmask, drawPos + offset + dataOffset, source, GetGlow(new(i, j)), rotation, origin, 1, default, 0);
 
 		static Color GetGlow(Point16 coords)

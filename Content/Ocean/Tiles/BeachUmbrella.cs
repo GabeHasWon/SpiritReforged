@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class BeachUmbrella : ModTile, IDrawPreview, IAutoloadTileItem, IModifySmartTarget
+public class BeachUmbrella : ModTile, IDrawPreview, ILoadItem, IModifySmartTarget
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 20);
 

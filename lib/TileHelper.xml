@@ -45,18 +45,6 @@
         <member name="M:TileHelper.Autoloader.Load(Terraria.ModLoader.Mod)">
             <summary> Loads autoloader content for <paramref name="mod"/>. </summary>
         </member>
-        <member name="T:TileHelper.Common.Context">
-            <summary> Allows additional control over logic used in <see cref="T:TileHelper.Common.ContextDelegate"/>. </summary>
-        </member>
-        <member name="F:TileHelper.Common.Context.Before">
-            <summary> Used before loading particular data. </summary>
-        </member>
-        <member name="F:TileHelper.Common.Context.After">
-            <summary> Used after loading particular data. </summary>
-        </member>
-        <member name="T:TileHelper.Common.ContextDelegate">
-            <summary> Provides an additional context parameter for ease of use. </summary>
-        </member>
         <member name="T:TileHelper.Common.DataStructures">
             <summary> Provides strictly contextual data collections for easy access. </summary>
         </member>
@@ -147,19 +135,28 @@
         <member name="M:TileHelper.Common.Helpers.CreateBlockItem(Terraria.ModLoader.ModBlockType)">
             <summary> Creates a new <see cref="T:TileHelper.Content.AutoloadedPlaceable"/> for <paramref name="blockType"/>. </summary>
         </member>
-        <member name="T:TileHelper.Common.ICreateItem">
-            <summary> Enables item autoloading for the attached ModTile. </summary>
+        <member name="T:TileHelper.Common.ILoadItem">
+            <summary> Enables item autoloading for the attached <see cref="T:Terraria.ModLoader.ModTile"/> or <see cref="T:Terraria.ModLoader.ModWall"/>. </summary>
         </member>
-        <member name="E:TileHelper.Common.ICreateItem.OnAutoloadItems">
+        <member name="E:TileHelper.Common.ILoadItem.OnAutoloadItems">
             <summary> Raised before and after placeable items are autoloaded. </summary>
         </member>
-        <member name="M:TileHelper.Common.ICreateItem.SetItemStaticDefaults(Terraria.ModLoader.ModItem)">
+        <member name="P:TileHelper.Common.ILoadItem.ItemType">
+            <summary> Returns the autoloaded <see cref="T:Terraria.ModLoader.ModItem"/> associated with this instance. </summary>
+        </member>
+        <member name="P:TileHelper.Common.ILoadItem.Mod">
+            <summary> The mod this instance belongs to. </summary>
+        </member>
+        <member name="P:TileHelper.Common.ILoadItem.Name">
+            <summary> The name of this instance. </summary>
+        </member>
+        <member name="M:TileHelper.Common.ILoadItem.SetItemStaticDefaults(Terraria.ModLoader.ModItem)">
             <summary> Sets the static defaults for <paramref name="modItem"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.ICreateItem.SetItemDefaults(Terraria.ModLoader.ModItem)">
+        <member name="M:TileHelper.Common.ILoadItem.SetItemDefaults(Terraria.ModLoader.ModItem)">
             <summary> Sets the defaults for <paramref name="modItem"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.ICreateItem.AddItemRecipes(Terraria.ModLoader.ModItem)">
+        <member name="M:TileHelper.Common.ILoadItem.AddItemRecipes(Terraria.ModLoader.ModItem)">
             <summary> Sets the recipe for <paramref name="modItem"/>. </summary>
         </member>
         <member name="T:TileHelper.Content.AutoloadedPlaceable.RecipeDelegate">

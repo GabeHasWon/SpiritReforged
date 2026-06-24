@@ -9,35 +9,34 @@ public class LapisSet : ILoadable
 {
 	public static Dictionary<string, int> TileTypes { get; } = [];
 
-	public void Load(Mod mod) => ICreateItem.OnAutoloadItems += LoadLapisFurniture;
+	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadLapisFurniture;
 
-	private static void LoadLapisFurniture(Context context)
+	private static void LoadLapisFurniture(Action action)
 	{
-		if (context == Context.After)
-		{
-			string saltName = typeof(LapisSet).Namespace + ".Lapis";
-			TileHelper.ArgumentCollection arguments;
+		action.Invoke();
 
-			LoadFurnitureSet(saltName, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
-				- new BarrelTile()
-				- new BenchTile()
-				- new CandleTile()
-				- new LanternTile(), 
-				AutoContent.ItemType<CarvedLapis>()
-			);
+		string saltName = typeof(LapisSet).Namespace + ".Lapis";
+		TileHelper.ArgumentCollection arguments;
 
-			foreach (FurnitureTile tile in arguments.Arguments)
-				TileTypes.Add(tile.FurnitureName, tile.Type); //Collect the resulting types
+		LoadFurnitureSet(saltName, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
+			- new BarrelTile()
+			- new BenchTile()
+			- new CandleTile()
+			- new LanternTile(),
+			AutoContent.ItemType<CarvedLapis>()
+		);
 
-			LapisCandle lapisCandle = ModContent.GetInstance<LapisCandle>();
-			TileTypes.Add(lapisCandle.FurnitureName, lapisCandle.Type); //Manually include the candle as it's not added to arguments
-		}
+		foreach (FurnitureTile tile in arguments.Arguments)
+			TileTypes.Add(tile.FurnitureName, tile.Type); //Collect the resulting types
+
+		LapisCandle lapisCandle = ModContent.GetInstance<LapisCandle>();
+		TileTypes.Add(lapisCandle.FurnitureName, lapisCandle.Type); //Manually include the candle as it's not added to arguments
 	}
 
 	public void Unload() { }
 }
 
-public class LapisCandle : CandleTile, ICreateItem
+public class LapisCandle : CandleTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<CarvedLapis>());
 

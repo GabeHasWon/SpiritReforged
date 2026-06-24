@@ -4,7 +4,7 @@ using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBench : BenchTile, ICreateItem
+public class BambooBench : BenchTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<StrippedBamboo>());
 }

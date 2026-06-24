@@ -450,7 +450,7 @@ public partial class OceanGeneration : ModSystem
 			else if (placeY == oceanTop + 5)
 				Main.tile[placeX, placeY].LiquidAmount = 127;
 
-			Main.tile[placeX, placeY].WallType = 0;
+			Main.tile[placeX, placeY].WallType = WallID.None;
 			return true;
 		}
 		else if (placeY > oceanTop)

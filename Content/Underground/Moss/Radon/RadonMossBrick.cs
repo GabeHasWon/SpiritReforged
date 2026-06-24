@@ -1,11 +1,11 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
 [AutoloadGlowmask("225,225,225")]
-public class RadonMossBrick : ModTile, IAutoloadTileItem
+public class RadonMossBrick : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<RadonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
 
@@ -20,10 +20,6 @@ public class RadonMossBrick : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(252, 248, 3));
 		HitSound = SoundID.Tink;
 		DustType = DustID.YellowTorch;
-
-		//Set item StaticDefaults
-		var item = this.AutoItem();
-		item.ResearchUnlockCount = 100;
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.318f * 1.1f, 0.23f * 1.1f, 0.04f * 1.1f);

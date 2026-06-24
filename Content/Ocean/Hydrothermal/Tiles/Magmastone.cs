@@ -1,15 +1,15 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Ocean.Items;
 using System.IO;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
 [AutoloadGlowmask("Method:Content.Ocean.Hydrothermal.Tiles.Magmastone Glow")]
-public class Magmastone : ModTile, IAutoloadTileItem
+public class Magmastone : ModTile, ILoadItem
 {
 	#region glow
 	/// <summary> The rate in which <see cref="glowPoints"/> value decays. </summary>
@@ -91,8 +91,6 @@ public class Magmastone : ModTile, IAutoloadTileItem
 		}
 	}
 	#endregion;
-
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 
 	public void AddItemRecipes(ModItem item)
 	{

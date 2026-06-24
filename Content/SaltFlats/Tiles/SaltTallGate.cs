@@ -9,7 +9,7 @@ using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutoloadTileItem
+public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, ILoadItem
 {
 	public const int FrameWidth = 36;
 

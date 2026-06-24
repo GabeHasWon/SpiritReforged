@@ -6,10 +6,11 @@ using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileItem
+public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, ILoadItem
 {
 	internal static HashSet<int> BirdTypes;
 

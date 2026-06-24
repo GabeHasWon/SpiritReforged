@@ -8,32 +8,31 @@ namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 
 public class DrywoodSet : ILoadable
 {
-	public void Load(Mod mod) => ICreateItem.OnAutoloadItems += LoadDrywoodFurniture;
+	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadDrywoodFurniture;
 
-	private static void LoadDrywoodFurniture(Context context)
+	private static void LoadDrywoodFurniture(Action action)
 	{
-		if (context == Context.After)
-		{
-			string saltName = typeof(DrywoodSet).Namespace + ".Drywood";
-			TileHelper.ArgumentCollection arguments = AllArgs(DustID.Pearlwood, Color.Orange.ToVector3(), distortGlow: true)
-				- new BarrelTile()
-				- new BenchTile()
-				- new ChairTile();
+		action.Invoke();
 
-			arguments.Get<ChandelierTile>().DistortGlow = false;
+		string saltName = typeof(DrywoodSet).Namespace + ".Drywood";
+		TileHelper.ArgumentCollection arguments = AllArgs(DustID.Pearlwood, Color.Orange.ToVector3(), distortGlow: true)
+			- new BarrelTile()
+			- new BenchTile()
+			- new ChairTile();
 
-			LanternTile lanternTile = arguments.Get<LanternTile>();
-			lanternTile.WindCycle = 0;
-			lanternTile.DistortGlow = false;
+		arguments.Get<ChandelierTile>().DistortGlow = false;
 
-			LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<Drywood>());
-		}
+		LanternTile lanternTile = arguments.Get<LanternTile>();
+		lanternTile.WindCycle = 0;
+		lanternTile.DistortGlow = false;
+
+		LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<Drywood>());
 	}
 
 	public void Unload() { }
 }
 
-public class DrywoodChair : ChairTile, ICreateItem
+public class DrywoodChair : ChairTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<Drywood>());
 

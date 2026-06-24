@@ -8,28 +8,27 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
 
 public class SaltSet : ILoadable
 {
-	public void Load(Mod mod) => ICreateItem.OnAutoloadItems += LoadSaltFurniture;
+	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadSaltFurniture;
 
-	private static void LoadSaltFurniture(Context context)
+	private static void LoadSaltFurniture(Action action)
 	{
-		if (context == Context.After)
-		{
-			string saltName = typeof(SaltSet).Namespace + ".Salt";
-			TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new Vector3(0.75f, 0.75f, 0.95f), SaltBlock.Break, false)
-				- new ClockTile()
-				- new BarrelTile()
-				- new BenchTile();
+		action.Invoke();
 
-			arguments.Get<ChandelierTile>().WindCycle = 0;
+		string saltName = typeof(SaltSet).Namespace + ".Salt";
+		TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new Vector3(0.75f, 0.75f, 0.95f), SaltBlock.Break, false)
+			- new ClockTile()
+			- new BarrelTile()
+			- new BenchTile();
 
-			LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<SaltPanel>());
-		}
+		arguments.Get<ChandelierTile>().WindCycle = 0;
+
+		LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<SaltPanel>());
 	}
 
 	public void Unload() { }
 }
 
-public class SaltClock : ClockTile, ICreateItem
+public class SaltClock : ClockTile, ILoadItem
 {
 	private const int FrameHeight = 90;
 

@@ -4,7 +4,7 @@ using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltPanel : ModTile, ICreateItem
+public class SaltPanel : ModTile, ILoadItem
 {
 	public void ItemRecipes(ModItem modItem)
 	{
