@@ -1,11 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Savanna.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Walls;
 
-public class Trellis : ModWall, IAutoloadWallItem, ICheckItemUse
+public class Trellis : ModWall, ILoadItem, ICheckItemUse
 {
 	public virtual void AddItemRecipes(ModItem item)
 	{

@@ -1,11 +1,10 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
-[AutoloadGlowmask("Method:Content.Ocean.Hydrothermal.Tiles.Magmastone Glow")]
 public class GravelPile : ModTile, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => new(AutoContent.ItemType<Gravel>(), IAutoloadRubble.RubbleSize.Medium);
@@ -19,6 +18,7 @@ public class GravelPile : ModTile, IAutoloadRubble
 		Main.tileNoFail[Type] = true;
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, Magmastone.GetGlowColor);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);

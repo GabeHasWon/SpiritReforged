@@ -1,11 +1,10 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-[AutoloadGlowmask("255,255,255")]
 public class OceanDecor1x2 : ModTile, IAutoloadRubble
 {
 	public virtual IAutoloadRubble.RubbleData Data => new(ItemID.Coral, IAutoloadRubble.RubbleSize.Small);
@@ -16,7 +15,8 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileLighted[Type] = true;
-		
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+
 		AddTileObjectData();
 
 		SolidBottomTile.TileTypes.Add(Type);
@@ -53,7 +53,7 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		float randomLerp = (float)(1 + Math.Sin(i / 10f) / 2f) * .2f;
-		float seedLerp = .4f + (float)(1 + Math.Sin(Main.ActiveWorldFileData.Seed) / 2f) * .2f;
+		float seedLerp = 0.4f + (float)(1 + Math.Sin(Main.ActiveWorldFileData.Seed) / 2f) * .2f;
 
 		Vector3 color = Vector3.Lerp(GlowColor(i, j), Color.White.ToVector3(), seedLerp + randomLerp) / 4.5f;
 		(r, g, b) = (color.X, color.Y, color.Z);

@@ -1,17 +1,17 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
-[AutoloadGlowmask("224,232,70")]
 public class RadonMoss : OganessonMoss
 {
 	public override void SetEntry()
 	{
-		RegisterItemDrop(ModContent.ItemType<RadonMossItem>());
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
 
+		RegisterItemDrop(ModContent.ItemType<RadonMossItem>());
 		AddMapEntry(new Color(252, 248, 3), this.GetLocalization("MapEntry"));
 		AddMapEntry(new Color(252, 248, 3), LocalizedText.Empty); // Register two map entries & only use 1 in GetMapOption for Recipe Browser functionality w/o in-game changes
 

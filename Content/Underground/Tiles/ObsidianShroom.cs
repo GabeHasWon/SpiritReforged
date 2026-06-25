@@ -1,16 +1,15 @@
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Underground.Items.BigBombs;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-[AutoloadGlowmask("255,255,255")]
 public class ObsidianShroom : ModTile
 {
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/StoneCrack2")
 	{
-		PitchRange = (.2f, .8f)
+		PitchRange = (0.2f, 0.8f)
 	};
 
 	public override void SetStaticDefaults()
@@ -22,6 +21,7 @@ public class ObsidianShroom : ModTile
 
 		TileID.Sets.PreventsTileReplaceIfOnTopOfIt[Type] = true;
 		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new(0, 1);

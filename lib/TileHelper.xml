@@ -108,8 +108,20 @@
         <member name="M:TileHelper.Common.FurnitureTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
-        <member name="M:TileHelper.Common.GlowmaskTile.Load(Terraria.ModLoader.Mod)">
+        <member name="T:TileHelper.Common.GlowmaskTile.Glowmask">
+            <summary> Contains tile glowmask drawing information. </summary>
+        </member>
+        <member name="M:TileHelper.Common.GlowmaskTile.Glowmask.#ctor(ReLogic.Content.Asset{Microsoft.Xna.Framework.Graphics.Texture2D},TileHelper.Common.GlowmaskTile.CoordinateColor)">
+            <summary> Contains tile glowmask drawing information. </summary>
+        </member>
+        <member name="M:TileHelper.Common.GlowmaskTile.Load">
             <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Common.GlowmaskTile.PostDraw(System.Int32,System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Common.GlowmaskTile.DrawSlopedGlowmask(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Graphics.Texture2D,Microsoft.Xna.Framework.Color)">
+            <summary> Draws the provided tile as a slope. </summary>
         </member>
         <member name="T:TileHelper.Common.Helpers">
             <summary> Provides a selection of tile related helper methods. </summary>
@@ -123,7 +135,7 @@
         <member name="M:TileHelper.Common.Helpers.GetTileOffset(System.Int32,System.Int32)">
             <summary> Gets the draw position of the tile at the provided coordinates. </summary>
         </member>
-        <member name="M:TileHelper.Common.Helpers.RequestGlowmask(Terraria.ModLoader.ModTexturedType,TileHelper.Common.GlowmaskTile.VertexColor)">
+        <member name="M:TileHelper.Common.Helpers.RequestGlowmask(Terraria.ModLoader.ModTexturedType,TileHelper.Common.GlowmaskTile.CoordinateColor)">
             <summary> Conveniently gets <see cref="P:Terraria.ModLoader.ModTexturedType.Texture"/> + "_Glow" alongside the provided <paramref name="color"/>, white if null. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.TryGetGlowmask(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.Texture2D@,Microsoft.Xna.Framework.Color@)">
@@ -138,8 +150,8 @@
         <member name="T:TileHelper.Common.ILoadItem">
             <summary> Enables item autoloading for the attached <see cref="T:Terraria.ModLoader.ModTile"/> or <see cref="T:Terraria.ModLoader.ModWall"/>. </summary>
         </member>
-        <member name="E:TileHelper.Common.ILoadItem.OnAutoloadItems">
-            <summary> Raised before and after placeable items are autoloaded. </summary>
+        <member name="E:TileHelper.Common.ILoadItem.PostAutoloadItems">
+            <summary> Raised after placeable items are autoloaded. </summary>
         </member>
         <member name="P:TileHelper.Common.ILoadItem.ItemType">
             <summary> Returns the autoloaded <see cref="T:Terraria.ModLoader.ModItem"/> associated with this instance. </summary>

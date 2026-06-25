@@ -8,12 +8,10 @@ namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 
 public class DrywoodSet : ILoadable
 {
-	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadDrywoodFurniture;
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadDrywoodFurniture;
 
-	private static void LoadDrywoodFurniture(Action action)
+	private static void LoadDrywoodFurniture()
 	{
-		action.Invoke();
-
 		string saltName = typeof(DrywoodSet).Namespace + ".Drywood";
 		TileHelper.ArgumentCollection arguments = AllArgs(DustID.Pearlwood, Color.Orange.ToVector3(), distortGlow: true)
 			- new BarrelTile()

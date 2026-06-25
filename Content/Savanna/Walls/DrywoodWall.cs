@@ -1,10 +1,10 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Savanna.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Walls;
 
-public class DrywoodWall : ModWall, IAutoloadWallItem
+public class DrywoodWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

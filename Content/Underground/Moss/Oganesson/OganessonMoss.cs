@@ -1,11 +1,10 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
-[AutoloadGlowmask("255,255,255")]
 public class OganessonMoss : GrassTile
 {
 	protected override int DirtType => TileID.Stone;
@@ -18,8 +17,10 @@ public class OganessonMoss : GrassTile
 		Main.tileLighted[Type] = true;
 		Main.tileMoss[Type] = true;
 
-		this.Merge(DirtType, TileID.GrayBrick);
 		TileID.Sets.Conversion.Moss[Type] = true;
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+
+		this.Merge(DirtType, TileID.GrayBrick);
 
 		SetEntry();
 	}

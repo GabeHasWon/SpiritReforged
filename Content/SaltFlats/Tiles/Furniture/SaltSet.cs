@@ -8,12 +8,10 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
 
 public class SaltSet : ILoadable
 {
-	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadSaltFurniture;
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadSaltFurniture;
 
-	private static void LoadSaltFurniture(Action action)
+	private static void LoadSaltFurniture()
 	{
-		action.Invoke();
-
 		string saltName = typeof(SaltSet).Namespace + ".Salt";
 		TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new Vector3(0.75f, 0.75f, 0.95f), SaltBlock.Break, false)
 			- new ClockTile()

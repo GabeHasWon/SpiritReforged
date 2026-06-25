@@ -3,17 +3,16 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-[AutoloadGlowmask("200,200,200")]
 public class BiomePots : PotTile, ILootable
 {
 	/// <summary> Mirrors <see cref="Styles"/>. </summary>
@@ -144,6 +143,12 @@ public class BiomePots : PotTile, ILootable
 				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(200, 200, 200));
 	}
 
 	public override void AddMapData() => AddMapEntry(new Color(112, 60, 70), Language.GetText("MapObject.Pot"));

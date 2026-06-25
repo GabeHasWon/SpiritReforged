@@ -76,15 +76,15 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		spriteBatch.Draw(TextureAssets.Tile[type].Value, drawPos + offset + dataOffset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);
 
-		var glowmask = Sets.TileGlowmask[Type].Texture.Value;
+		Texture2D glowmask = Sets.TileGlowmask[Type].Texture.Value;
 		spriteBatch.Draw(glowmask, drawPos + offset + dataOffset, source, GetGlow(new(i, j)), rotation, origin, 1, default, 0);
 
 		static Color GetGlow(Point16 coords)
 		{
-			const float maxDistance = 140 * 140;
+			const float max_distance = 140 * 140;
 
 			float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
-			return StargrassTile.Glow(new Point(coords.X, coords.Y)) * MathHelper.Clamp(1f - distance / maxDistance, 0.4f, 1f);
+			return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / max_distance, 0.4f, 1f);
 		}
 	}
 

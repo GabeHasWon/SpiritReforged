@@ -9,12 +9,10 @@ public class LapisSet : ILoadable
 {
 	public static Dictionary<string, int> TileTypes { get; } = [];
 
-	public void Load(Mod mod) => ILoadItem.OnAutoloadItems += LoadLapisFurniture;
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadLapisFurniture;
 
-	private static void LoadLapisFurniture(Action action)
+	private static void LoadLapisFurniture()
 	{
-		action.Invoke();
-
 		string saltName = typeof(LapisSet).Namespace + ".Lapis";
 		TileHelper.ArgumentCollection arguments;
 

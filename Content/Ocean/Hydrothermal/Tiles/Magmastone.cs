@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Ocean.Items;
 using System.IO;
 using Terraria.DataStructures;
@@ -8,12 +7,11 @@ using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
-[AutoloadGlowmask("Method:Content.Ocean.Hydrothermal.Tiles.Magmastone Glow")]
 public class Magmastone : ModTile, ILoadItem
 {
 	#region glow
 	/// <summary> The rate in which <see cref="glowPoints"/> value decays. </summary>
-	private const float GlowDecayRate = .1f;
+	private const float GlowDecayRate = 0.1f;
 
 	/// <summary> Magmastone glow origin points, handled by the local client. </summary>
 	private static readonly Dictionary<Point16, float> glowPoints = [];
@@ -40,23 +38,23 @@ public class Magmastone : ModTile, ILoadItem
 			wireGlowPoints.Add(pt);
 	}
 
-	public static Color Glow(object obj)
+	public static Color GetGlowColor(int i, int j)
 	{
 		const int range = 10;
 
-		var pos = (Point)obj;
-		Color defaultColor = Lighting.GetColor(pos) * 2;
+		Point coords = new(i, j);
+		Color defaultColor = Lighting.GetColor(coords) * 2;
 
-		foreach (var pt in wireGlowPoints)
+		foreach (Point16 point in wireGlowPoints)
 		{
-			if (pos.X == pt.X && pos.Y == pt.Y)
+			if (i == point.X && j == point.Y)
 				return Color.White;
 		}
 
-		foreach (var pt in glowPoints)
+		foreach (Point16 point in glowPoints.Keys)
 		{
-			if (pt.Key.ToVector2().Distance(pos.ToVector2()) <= range)
-				return Color.Lerp(defaultColor, Color.White, pt.Value);
+			if (point.ToVector2().Distance(coords.ToVector2()) <= range)
+				return Color.Lerp(defaultColor, Color.White, glowPoints[point]);
 		}
 
 		return defaultColor;
@@ -103,13 +101,15 @@ public class Magmastone : ModTile, ILoadItem
 		Main.tileSolid[Type] = true;
 		Main.tileMergeDirt[Type] = true;
 		Main.tileBlockLight[Type] = true;
+
 		TileID.Sets.CanBeDugByShovel[Type] = true;
+		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		AddMapEntry(new Color(200, 160, 80));
 		this.Merge(TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>(), TileID.Stone);
 
 		DustType = DustID.Asphalt;
-		MineResist = .5f;
+		MineResist = 0.5f;
 		HitSound = SoundID.Tink;
 	}
 

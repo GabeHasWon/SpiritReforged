@@ -1,8 +1,9 @@
 ﻿using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
-public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("PolishedSandstoneWallUnsafe").Type;
 

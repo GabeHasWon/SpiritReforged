@@ -8,12 +8,10 @@ namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
 public class DriftwoodSet : ModSystem
 {
-	public override void Load() => ILoadItem.OnAutoloadItems += LoadDriftwoodFurniture;
+	public override void Load() => ILoadItem.PostAutoloadItems += LoadDriftwoodFurniture;
 
-	private static void LoadDriftwoodFurniture(Action action)
+	private static void LoadDriftwoodFurniture()
 	{
-		action.Invoke();
-
 		string saltName = typeof(DriftwoodSet).Namespace + ".Driftwood";
 		LoadFurnitureSet(saltName, AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
 			- new ChestTile()
