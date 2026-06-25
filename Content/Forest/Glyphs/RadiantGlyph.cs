@@ -14,6 +14,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.WorldBuilding;
 using static AssGen.Assets;
+using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs;
 
@@ -95,7 +96,7 @@ public class RadiantGlyph : GlyphItem
 
 			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 			{
-				var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/RadiantGlyph_Aura").Value;
+				var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/RadiantGlyph_Aura2").Value;
 				var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 				var star = AssetLoader.LoadedTextures["Star"].Value;
 				var spriteBatch = Main.spriteBatch;
@@ -111,7 +112,7 @@ public class RadiantGlyph : GlyphItem
 					if (radiantPlayer.dissipateTimer > 0)
 						lerp = EaseBuilder.EaseCircularIn.Ease(Math.Min(radiantPlayer.dissipateTimer / 20f, 1));
 
-					Vector2 pos = player.Center + new Vector2(-7 * player.direction, player.gfxOffY - 20 * lerp) - player.velocity * 0.5f;
+					Vector2 pos = player.Center + new Vector2(-9 * player.direction, player.gfxOffY - 25 * lerp) - player.velocity * 0.5f;
 
 					float scaleFactor = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.05f;
 
@@ -122,27 +123,39 @@ public class RadiantGlyph : GlyphItem
 					if (!startSpriteBatch)
 						spriteBatch.End();
 
+					/*Color[] sunColors = [
+						new Color(255, 161, 54),
+						new Color(255, 212, 87),
+						new Color(250, 252, 218),
+					];*/
+
+					Color[] sunColors = [
+						new Color(255, 150, 50),
+						new Color(255, 200, 101),
+						new Color(255, 220, 218),
+					];
+
 					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 					
-					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, new Color(255, 161, 54) * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
 					
-					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, new Color(255, 212, 87) * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[1] * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
 					
-					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, new Color(250, 252, 218) * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
 
-					spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 161, 54) * lerp, 0f, tex.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[0] * lerp, 0f, tex.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
 					
-					spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 212, 87) * 0.4f * lerp, 0f, tex.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[1] * 0.4f * lerp, 0f, tex.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
 					
-					spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(250, 252, 218) * 0.3f * lerp, 0f, tex.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, tex.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
 					
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White * 0.3f * lerp, 0f, tex.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
 					
-					spriteBatch.Draw(star, pos - Main.screenPosition, null, new Color(255, 161, 54) * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[0] * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
 
-					spriteBatch.Draw(star, pos - Main.screenPosition, null, new Color(255, 212, 87) * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[1] * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
 
-					spriteBatch.Draw(star, pos - Main.screenPosition, null, new Color(250, 252, 218) * lerp, 0f, star.Size() / 2f, new Vector2(0.3f, 0.15f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[2] * lerp, 0f, star.Size() / 2f, new Vector2(0.3f, 0.15f) * scaleFactor, flip, 0f);
 
 					spriteBatch.End();
 
@@ -161,25 +174,17 @@ public class RadiantGlyph : GlyphItem
 			{
 				if (_flashTimer > 0)
 					_flashTimer--;
-		
-				_baseScale = 0f;
 
-				float pulse = (float)Math.Sin(Main.GlobalTimeWrappedHourly);
-				Color lightColor = Color.Lerp(Color.Orange, Color.LightGoldenrodYellow, Math.Abs(pulse)).Additive();
-
-				if (_flashTimer > 0)
+				if (divineStrike || dissipateTimer > 0)
 				{
-					lightColor = Color.Lerp(lightColor, Color.White, _flashTimer / 60f);
-					float lerp = 1f - _flashTimer / 60f;
+					float lerp = 1f - _flashTimer / 30f;
+					lerp = EaseBuilder.EaseCircularOut.Ease(Math.Min(lerp, 1));
+					
+					if (dissipateTimer > 0)
+						lerp = EaseBuilder.EaseCircularIn.Ease(Math.Min(dissipateTimer / 20f, 1));
 
-					_baseScale = MathHelper.Lerp(0.1f, 0.3f, EaseBuilder.EaseCircularInOut.Ease(lerp));
+					Lighting.AddLight(Player.Center, Color.LightGoldenrodYellow.ToVector3() * 0.5f * lerp);
 				}
-				else if (radiantCooldown > ChargeTime)
-				{
-					_baseScale = 0.3f;
-				}
-
-				Lighting.AddLight(Player.Center, lightColor.ToVector3() * 1.5f * _baseScale);
 
 				if (++radiantCooldown > ChargeTime)
 				{
@@ -208,7 +213,7 @@ public class RadiantGlyph : GlyphItem
 						_flashTimer = 30;
 					}
 
-					if (Main.rand.NextBool(90))
+					if (Main.rand.NextBool(60))
 					{
 						Vector2 top = Player.Top + Main.rand.NextVector2Circular(50, 10);
 
@@ -225,26 +230,23 @@ public class RadiantGlyph : GlyphItem
 						});
 					}
 
-					if (Main.rand.NextBool(60))
+					if (Main.rand.NextBool(35))
 					{
-						for (int i = 0; i < 2; i++)
+						Vector2 pos = new Vector2(-9, -25);
+
+						float rot = Main.rand.NextFloat(6.28f);
+						int dir = Main.rand.NextBool() ? -1 : 1;
+						ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.5f, 1f), 60 + Main.rand.Next(10, 30), rot, dir)
 						{
-							Vector2 pos = new Vector2(-7, -20);
+							Layer = ParticleLayer.BelowSolid,
+							fromRadiant = true
+						});
 
-							float rot = Main.rand.NextFloat(6.28f);
-							int dir = Main.rand.NextBool() ? -1 : 1;
-							ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f), 60 + Main.rand.Next(10, 30), rot, dir)
-							{
-								Layer = ParticleLayer.BelowSolid,
-								fromRadiant = true
-							});
-
-							ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(1f, 1.5f), 30 + Main.rand.Next(10, 30), rot, dir)
-							{
-								Layer = ParticleLayer.BelowSolid,
-								fromRadiant = true
-							});
-						}					
+						ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(0.7f, 1.15f), 30 + Main.rand.Next(10, 30), rot, dir)
+						{
+							Layer = ParticleLayer.BelowSolid,
+							fromRadiant = true
+						});
 					}
 
 					divineStrike = true;
@@ -423,31 +425,6 @@ public class RadiantGlyph : GlyphItem
 		spriteBatch.RestartToDefault();
 
 		base.DrawInWorld(item, spriteBatch, parameters);
-
-		var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/RadiantGlyph_Sun").Value;
-		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-		var star = AssetLoader.LoadedTextures["Star"].Value;
-
-		float lerp = 0f;
-
-		int time = item.GetGlobalItem<RadiantItem>().timeInWorld;
-		if (time > 60)
-			lerp = EaseBuilder.EaseOutBack().Ease((time - 60) / 120f);
-		
-		float scaleFactor = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.05f;
-
-		float y = item.Size.Y;
-
-		spriteBatch.Draw(bloom, parameters.Position - item.velocity + new Vector2(0f, -y * lerp), null, Color.DarkOrange.Additive() * lerp * 0.4f, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, 0, 0);
-		
-		spriteBatch.Draw(bloom, parameters.Position - item.velocity + new Vector2(0f, -y * lerp), null, Color.Orange.Additive() * lerp * 0.35f, 0f, bloom.Size() / 2f, 0.2f * scaleFactor, 0, 0);
-		
-		spriteBatch.Draw(bloom, parameters.Position - item.velocity + new Vector2(0f, -y * lerp), null, new Color(250, 252, 218, 0) * lerp * 0.3f, 0f, bloom.Size() / 2f, 0.15f * scaleFactor, 0, 0);
-
-		spriteBatch.Draw(tex, parameters.Position - item.velocity + new Vector2(0f, -y * lerp), null, Color.White * lerp, 0f, tex.Size() / 2f, 1f * scaleFactor, 0, 0);
-
-		spriteBatch.Draw(star, parameters.Position - item.velocity + new Vector2(0f, -y * lerp), null, Color.DarkOrange.Additive() * lerp * 0.4f, 0f, star.Size() / 2f, 0.3f * scaleFactor, 0, 0);
-
 	}
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
@@ -469,16 +446,16 @@ public class RadiantGlyph : GlyphItem
 			});
 		}
 
-		if (Main.rand.NextBool(120) && item.GetGlobalItem<RadiantItem>().timeInWorld >= 180)
+		if (Main.rand.NextBool(60))
 		{
-			Vector2 pos = new Vector2(0f, -item.Size.Y);
+			Vector2 pos = new Vector2(0f, 0f);
 
-			float rot = MathHelper.Pi + Main.rand.NextFloat(-0.3f, 0.3f);
+			float rot = Main.rand.NextFloat(6.28f);
 			int dir = Main.rand.NextBool() ? -1 : 1;
 
 			ParticleHandler.SpawnParticle(new LightFlash(item, pos, Color.DarkOrange, new Color(255, 212, 87), new Vector2(1f, 1.25f) * Main.rand.NextFloat(0.75f, 1.25f), 60 + Main.rand.Next(5, 40), rot, dir)
 			{
-				Layer = ParticleLayer.AboveItem,
+				Layer = ParticleLayer.BelowProjectile,
 				fromRadiant = true
 			});
 		}

@@ -92,5 +92,7 @@ public class LightFlash : Particle
 		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color * progress * 0.4f, Rotation, bloom.Size() / 2f,  realScale.X * 0.35f, SpriteEffects.None, 0);
 
 		spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * progress, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale, SpriteEffects.None, 0);
+
+		spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * progress * 1.5f, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale * 0.66f, SpriteEffects.None, 0);
 	}
 }
