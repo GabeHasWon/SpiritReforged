@@ -1,2 +1,6 @@
 v0.2.1.1
 - Fixed Acacia Trees dropping Chlorophyte Helmets instead of spawning a Sparrow lol
+- Fixed Painter selling random items instead of the Gliding and Vicious Flamingo paintings
+- Fixed niche issue where the Safekeeper's Ring's functionality would throw an exception in very specific situations
+- Fixed issue (potentially caused by or amplified by) Advanced World Gen's non-standard world sizes exacerbating odd issue with Desert ruins chests *sometimes*
+- Added additional guards/safety checks to Desert ruin chest placement to hopefully avoid other similar issues
