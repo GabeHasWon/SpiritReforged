@@ -1,14 +1,27 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class NewStatuesMicropass : Micropass
+internal class NewStatuesMicropass : Micropass, IGenerationPage
 {
 	/// <summary> The list of statues to generate in this micropass. </summary>
 	public static readonly List<int> Statues = [];
 
+	[GenConfigurable(0f, 5f, 0.1f)]
+	[Slider]
+	private static float StatueCountModifier = 1f;
+
 	public override string WorldGenName => "New Statues";
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new UndergroundHouseMicropass(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -23,7 +36,7 @@ internal class NewStatuesMicropass : Micropass
 
 		progress.Message = Lang.gen[29].Value; //Localization for `Statues`
 
-		int maxStatues = Main.maxTilesX / WorldGen.WorldSizeSmallX * numPerType * Statues.Count;
+		int maxStatues = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * numPerType * Statues.Count * StatueCountModifier);
 		int statues = 0;
 
 		for (int t = 0; t < maxTries; t++)

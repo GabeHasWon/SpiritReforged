@@ -22,7 +22,7 @@ public static class ZigguratRooms
 		protected readonly Rectangle _outerBounds = bounds;
 		protected readonly RoomNoise _noise = noise;
 
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / WorldGen.genRand.Next([8, 10]), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / WorldGen.genRand.Next([8, 10]), 14);
 
 		public override void AddLinks()
 		{
@@ -295,7 +295,7 @@ public static class ZigguratRooms
 
 	public class TreasureRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / 5, 20);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / 5, 20);
 
 		public override void Create()
 		{
@@ -351,7 +351,7 @@ public static class ZigguratRooms
 
 	public class LibraryRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.Width / WorldGen.genRand.NextFromList(6, 8), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / WorldGen.genRand.NextFromList(6, 8), 14);
 
 		public override void Create()
 		{

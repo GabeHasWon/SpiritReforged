@@ -1,16 +1,20 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
+using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Tile_Entities;
+using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class UndergroundHouseMicropass : ModSystem
+internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 {
 	[Flags]
 	private enum AddedHouseFlags : byte
@@ -24,6 +28,63 @@ internal class UndergroundHouseMicropass : ModSystem
 	private readonly static Dictionary<Point16, HouseType> dolls = [];
 
 	internal static FieldInfo teDollInventory = null;
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	private static int SignChance = 5;
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	[PriorityModifier(nameof(SignChance))]
+	private static int MannequinChance = 4;
+
+	[GenConfigurable(1, 50)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	[PriorityModifier(nameof(SignChance))]
+	private static int LoomChance = 10;
+
+	[GenConfigurable(1, 100)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	[PriorityModifier(nameof(SignChance))]
+	private static int RareSignChance = 25;
+
+	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	{
+		Presets =
+		[
+			new("Inhabited",
+			[
+				new IndividualPreset(nameof(SignChance), 3),
+				new IndividualPreset(nameof(RareSignChance), 10),
+				new IndividualPreset(nameof(MannequinChance), 2),
+				new IndividualPreset(nameof(LoomChance), 7),
+				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 14f),
+				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 2.2f),
+				new IndividualPreset(nameof(PotteryStructureMicropass.StructuresMax), 3.2f),
+			]),
+
+			new("Empty",
+			[
+				new IndividualPreset(nameof(SignChance), 20),
+				new IndividualPreset(nameof(RareSignChance), 20),
+				new IndividualPreset(nameof(MannequinChance), 15),
+				new IndividualPreset(nameof(LoomChance), 45),
+				new IndividualPreset(nameof(CaveDecorMicropass.CartSpawnRate), 0.5f),
+				new IndividualPreset(nameof(FishingAreaMicropass.CovesSpawnRate), 0.25f),
+				new IndividualPreset(nameof(PotteryStructureMicropass.StructuresMax), 0.25f),
+			]),
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Load()
 	{
@@ -47,20 +108,20 @@ internal class UndergroundHouseMicropass : ModSystem
 		{
 			int y = room.Height - 1 + room.Y;
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.Sign) && WorldGen.genRand.NextBool(5) && PlaceDecorInRoom(room, room.Y + 1, TileID.Signs) && self.Type == HouseType.Wood)
+			if (!skipFlags.HasFlag(AddedHouseFlags.Sign) && WorldGen.genRand.NextBool(SignChance) && PlaceDecorInRoom(room, room.Y + 1, TileID.Signs) && self.Type == HouseType.Wood)
 			{
 				hasPlaced = true;
 				skipFlags |= AddedHouseFlags.Sign;
 			}
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.Mannequin) && WorldGen.genRand.NextBool(4) 
+			if (!skipFlags.HasFlag(AddedHouseFlags.Mannequin) && WorldGen.genRand.NextBool(MannequinChance) 
 				&& PlaceDecorInRoom(room, y, WorldGen.genRand.NextBool() ? TileID.Womannequin : TileID.Mannequin, Main.rand.Next(2)))
 			{
 				hasPlaced = true;
 				skipFlags |= AddedHouseFlags.Mannequin;
 			}
 
-			if (!skipFlags.HasFlag(AddedHouseFlags.LoomHouse) && WorldGen.genRand.NextBool(10) && self.Type == HouseType.Wood)
+			if (!skipFlags.HasFlag(AddedHouseFlags.LoomHouse) && WorldGen.genRand.NextBool(LoomChance) && self.Type == HouseType.Wood)
 			{
 				if (PlaceDecorInRoom(room, y, TileID.Loom, Main.rand.Next(2)))
 				{
@@ -106,7 +167,7 @@ internal class UndergroundHouseMicropass : ModSystem
 						{
 							int sign = Sign.ReadSign(x, y);
 
-							Main.sign[sign].text = WorldGen.genRand.NextBool(25)
+							Main.sign[sign].text = WorldGen.genRand.NextBool(RareSignChance)
 								? Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Rare." + Main.rand.Next(3))
 								: Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Common." + Main.rand.Next(11));
 						}
