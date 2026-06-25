@@ -12,8 +12,7 @@ public class DriftwoodSet : ModSystem
 
 	private static void LoadDriftwoodFurniture()
 	{
-		string saltName = typeof(DriftwoodSet).Namespace + ".Driftwood";
-		LoadFurnitureSet(saltName, AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
+		LoadFurnitureSet(typeof(DriftwoodSet).Namespace + ".Driftwood", AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
 			- new ChestTile()
 			- new SofaTile(),
 			AutoContent.ItemType<Driftwood>()
