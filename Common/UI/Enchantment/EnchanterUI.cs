@@ -51,7 +51,7 @@ public class EnchanterUI : AutoUIState
 		Width.Set(400, 0);
 		Height.Set(240, 0);
 		Left.Set(44, 0);
-		Top.Set(0, 0.25f);
+		Top.Set(270, 0);
 
 		_list = new(new CatalogueList.FullPadding(6));
 		_list.Width.Set(204, 0);

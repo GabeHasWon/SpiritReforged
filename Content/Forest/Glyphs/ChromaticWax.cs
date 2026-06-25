@@ -299,17 +299,24 @@ public abstract class GlyphItem : ModItem
 						spriteBatch.Draw(splashTexture, position + offset, null, glyphItem.settings.Color.Additive(), 0, splashTexture.Size() / 2, EaseFunction.EaseQuinticOut.Ease(progress), 0, 0));
 
 					Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
-					SquarePrimitive blurLine = new()
+					SquarePrimitive coloredLine = new()
 					{
 						Position = position,
 						Height = 20 * progress,
 						Length = 200,
-						Rotation = 0,
 						Color = glyphItem.settings.Color.Additive()
 					};
 
-					PrimitiveRenderer.DrawPrimitiveShape(blurLine, blurEffect);
-					PrimitiveRenderer.DrawPrimitiveShape(blurLine, blurEffect);
+					PrimitiveRenderer.DrawPrimitiveShape(new SquarePrimitive()
+					{
+						Position = position,
+						Height = 30 * progress,
+						Length = 240,
+						Color = Color.Black * 0.5f
+					}, blurEffect);
+
+					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect);
+					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect);
 
 					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(progress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
 				}
