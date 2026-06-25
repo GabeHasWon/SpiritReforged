@@ -14,7 +14,7 @@ public class Gliding : PaintingTile
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(Type, Condition.TimeDay, SpiritConditions.InSaltFlats)));
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(this.AutoItemType(), Condition.TimeDay, SpiritConditions.InSaltFlats)));
 	}
 
 	public override void AddItemRecipes(ModItem item) 
