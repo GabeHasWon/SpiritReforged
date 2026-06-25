@@ -10,6 +10,7 @@ using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Walls;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.IO;
 using Terraria.ModLoader.Config;
@@ -395,9 +396,17 @@ internal class ZigguratMicropass : Micropass
 
 		//Begin an optional extension of the room
 		CreateArray(new(area.Center.X - 4, area.Bottom - 8, 8, 8), GetRandomDirections(WorldGen.genRand.Next(5)), out List<Rectangle> areas);
+
+		if (areas.Count == 0)
+			return area;
+
 		areas.RemoveAll(NotInSandOrSandstone);
 
 		Rectangle result = Maximize(areas);
+
+		if (!WorldGen.InWorld(result.X, result.Y, 40) || WorldGen.InWorld(result.Right, result.Bottom, 40))
+			return result;
+
 		int segments = areas.Count;
 		Decorator decorator = new(result);
 
@@ -438,7 +447,15 @@ internal class ZigguratMicropass : Micropass
 		}
 
 		if (WorldGen.genRand.NextBool(ChestChance))
-			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
+		{
+			decorator.Enqueue(static (x, y) =>
+			{
+				if (!WorldGen.InWorld(x, y, 40))
+					return false;
+
+				return WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2);
+			}, 1);
+		}
 
 		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));
 		decorator.Run();
