@@ -75,7 +75,7 @@ public class SleightOfHand : ModItem
 			sb.Draw(back, center, null, Color.Lerp(Color.Gray, Color.White, Progress) * EaseFunction.EaseCubicOut.Ease(Progress), rotation, back.Size() / 2, squashScale, default, 0);
 			sb.Draw(item, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(Progress), rotation, item.Size() / 2, squashScale * itemScale, default, 0);
 
-			Texture2D pulse = TextureAssets.Extra[98].Value;
+			Texture2D pulse = TextureAssets.Extra[ExtrasID.SharpTears].Value;
 			Texture2D wave = TextureAssets.GlowMask[239].Value;
 
 			sb.Draw(wave, center, null, _primaryColor.Additive() * EaseFunction.EaseCircularIn.Ease(Progress) * 0.5f, MathHelper.PiOver2, wave.Size() / 2, 1f - Progress, default, 0);

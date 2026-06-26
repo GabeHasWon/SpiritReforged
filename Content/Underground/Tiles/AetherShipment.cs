@@ -184,7 +184,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 
 		if (tile.TileFrameX % 36 == 18 && tile.TileFrameY % 36 == 18) //Bottom right frame
 		{
-			var bloom = TextureAssets.Extra[60].Value;
+			var bloom = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
 
 			float value = Main.LocalPlayer.DistanceSQ(new Vector2(i, j) * 16) / (200 * 200);
 			Color glow = GlowColor.Additive() * (1f - value) * .5f;

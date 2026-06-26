@@ -1,12 +1,10 @@
 ﻿using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
 public class StargrassMowed : StargrassTile
 {
 	public override ConversionHandler.Set ConversionSet => new()

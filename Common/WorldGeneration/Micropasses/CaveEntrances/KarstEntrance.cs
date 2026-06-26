@@ -1,13 +1,27 @@
-﻿using ReLogic.Utilities;
+﻿using NVorbis.Contracts;
+using ReLogic.Utilities;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 
-internal class KarstEntrance : CaveEntrance
+internal class KarstEntrance : CaveEntrance, IGenerationPage
 {
 	public override CaveEntranceType Type => CaveEntranceType.Karst;
+
+	[GenConfigurable(0.2f, 4f, 0.1f)]
+	[Slider]
+	internal static float SizeMultiplier = 1f;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Generate(int x, int y)
 	{
@@ -24,12 +38,13 @@ internal class KarstEntrance : CaveEntrance
 		{
 			var origin = new Point(x + WorldGen.genRand.Next(-5 * i, 5 * i + 1), y + WorldGen.genRand.Next(2, 5 * i));
 			bool circle = WorldGen.genRand.NextBool();
-			GenShape shape = circle ? new Shapes.Circle(12 + 3 * i, 3 + i) : new Shapes.Rectangle(12 + 3 * i, 4 + i);
+			GenShape shape = circle ? new Shapes.Circle(12 + (int)(3 * i * SizeMultiplier), (int)(3 * SizeMultiplier) + i) 
+				: new Shapes.Rectangle(12 + (int)(3 * i * SizeMultiplier), (int)(4 * SizeMultiplier) + i);
 			var blotches = new Modifiers.Blotches(circle ? 3 : 7, circle ? 2 : 4, circle ? 0.9f : 0.6f);
 			WorldUtils.Gen(origin, shape, Actions.Chain(blotches, new Actions.ClearTile().Output(data)));
 		}
 
-		WorldUtils.Gen(new Point(x, y - 26), new Shapes.Rectangle(8, 25),
+		WorldUtils.Gen(new Point(x, y - 26), new Shapes.Rectangle((int)(8 * SizeMultiplier), (int)(25 * SizeMultiplier)),
 			Actions.Chain(new Modifiers.Blotches(4, 7, 0.2f), new Actions.ClearWall(), new Modifiers.Blotches(5, 3, 0.6f), new Actions.ClearTile().Output(data)));
 
 		foreach (var pos in data.GetData())

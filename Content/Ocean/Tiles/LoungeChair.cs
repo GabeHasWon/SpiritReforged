@@ -1,10 +1,10 @@
-﻿using SpiritReforged.Common.TileCommon;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class LoungeChair : ModTile, IAutoloadTileItem
+public class LoungeChair : ModTile, ILoadItem
 {
 	private static bool Flipped(int i, int j) => Framing.GetTileSafely(i, j).TileFrameX > 36;
 
@@ -14,7 +14,7 @@ public class LoungeChair : ModTile, IAutoloadTileItem
 		return frameX is not (36 or 54);
 	}
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 20);
+	public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(silver: 20);
 
 	public override void SetStaticDefaults()
 	{
@@ -28,8 +28,6 @@ public class LoungeChair : ModTile, IAutoloadTileItem
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.IsValidSpawnPoint[Type] = true;
-		AdjTiles = [TileID.Beds];
-		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 		TileObjectData.newTile.Origin = new Point16(1, 1);
@@ -46,7 +44,10 @@ public class LoungeChair : ModTile, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(71, 185, 238), Language.GetText("ItemName.Bed"));
+		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
+
 		DustType = -1;
+		AdjTiles = [TileID.Beds];
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

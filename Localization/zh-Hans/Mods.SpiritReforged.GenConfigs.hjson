@@ -1,0 +1,800 @@
+UI: {
+	Min: 全部最小
+	MinDescription:
+		'''
+		将所有配置项设置为最能减少生成的值。
+		因此，“最大树木”会被设为最小值，
+		但“树木几率（1/x）”会被设为最大值。
+		'''
+	Max: 全部最大
+	MaxDescription:
+		'''
+		将所有配置项设置为最能增加生成的值。
+		因此，“最大树木”会被设为最大值，
+		但“树木几率（1/x）”会被设为最小值。
+		'''
+	Preset: 预设：
+	NoPresets: （无预设）
+	None: 无
+	Reset: 重置
+	ResetAll: 重置全部
+	Prior: 上一页：
+	Next: 下一页：
+	True: 启用
+	False: 禁用
+	Total: 总计{0}
+	CustomPresetTooltip: 这是一个自定义预设！
+	Create: 保存为自定义预设
+	CantSave: （你无法保存默认预设）
+	Load: 加载自定义预设
+	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
+	FailedToLoad: 预设不适用于此页面。预期页面：{0}
+	ConfigNotice:
+		'''
+		[c/AAAAFF:范围]通过设定最小值和一个随机增量来运作。
+		显示的值是游戏中随机取值时实际使用的范围。
+		'''
+	LoadError: 在加载（{0}）预设时发生了一个错误。请在Discord报告该错误（并查看client.log）：
+	Duplicate: （重复的预设未被添加）
+}
+
+Pages: {
+	Savanna: {
+		Name: "{$Ecotones.SavannaEcotone}"
+		Description: 控制稀树平原过渡带生成的具体方面。
+
+		Presets: {
+			Domesticated: {
+				Name: "[i:224] 驯化"
+				Tooltip: 一个更有生活气息的稀树平原，更多的罐子，更少的野生动物。
+			}
+
+			Infested: {
+				Name: "[i:SpiritReforged/TermiteJar] 虫患"
+				Tooltip: 哎呀！全是白蚁！树木可能很难找到。
+			}
+
+			Bumpy: {
+				Name: "[i:SpiritReforged/Drypowder] 崎岖"
+				Tooltip: 注意脚下！狂野的稀树平原中遍布坑洼和丘陵。
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				DisplayName: "[i:50] 覆盖生成点"
+				Tooltip: 决定稀树平原是否在生成点生成，类似于“savanna”种子。
+			}
+
+			Steps: {
+				DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] 阶梯"
+				Tooltip: 稀树平原生成的平坦阶梯数量。
+			}
+
+			CampsiteChance: {
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] 营地几率"
+				Tooltip: 营地生成的几率的分母（1/x）。
+			}
+
+			BaseTreeChance: {
+				DisplayName: "[i:27] 金合欢树几率"
+				Tooltip:
+					'''
+					特定物块上生成树木的几率的分母（1/x）。
+					此几率会不断增加，直至树木被放置，然后重置。
+					'''
+			}
+
+			PotChance: {
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] 罐子几率"
+				Tooltip:
+					'''
+					装饰时生成罐子的几率的分母（1/x）。
+					这不会覆盖物块，因此当值为1并不会在每个物块上都放置罐子。
+					'''
+			}
+
+			TermiteChance: {
+				DisplayName: "[i:SpiritReforged/TermiteJar] 白蚁几率"
+				Tooltip: 装饰时生成蚁丘的几率的分母（1/x）。
+			}
+		}
+	}
+
+	SaltFlats: {
+		Name: "{$Ecotones.SaltFlatsEcotone}"
+		Description: 控制盐滩过渡带生成的具体方面。
+
+		Presets: {
+			SunkenRuin: {
+				Name: "[i:SpiritReforged/CobbledBrickItem] 沉没遗迹"
+				Tooltip: 古老文明的遗迹已被冲蚀殆尽。
+			}
+
+			BlankCanvas: {
+				Name: "[i:SpiritReforged/GlidingItem] 空白画布"
+				Tooltip: 一片空无一物、无尽的映像展现在你面前。
+			}
+
+			Dessicated: {
+				Name: "[i:1274] 干燥"
+				Tooltip: 一滴水也看不见。所有的树木都已枯萎。
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				DisplayName: "[i:50] 覆盖生成点"
+				Tooltip: 决定盐滩是否在生成点生成，类似于“salt”种子。
+			}
+
+			RuinQty: {
+				DisplayName: "[i:SpiritReforged/CalmingBellItem] 盐滩废墟"
+				Tooltip: 放置的盐滩废墟数量的上限。并非所有都会放置。
+			}
+
+			LakeRadius: {
+				DisplayName: "[i:206] 湖泊半径"
+				Tooltip: 盐滩湖泊的半径。更大的半径对应更大的湖泊。
+			}
+
+			CaveRadius: {
+				DisplayName: "[i:SpiritReforged/SaltWallItem] 洞穴半径"
+				Tooltip: 盐滩洞穴的半径。更大的半径对应更大的洞穴。
+			}
+
+			MaxSteps: {
+				DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] 最大段数"
+				Tooltip: 盐滩中反射盐滩平原的最大数量。
+			}
+
+			StupaChance: {
+				DisplayName: "[i:SpiritReforged/StoneStupasItem] 佛塔几率"
+				Tooltip:
+					'''
+					装饰时生成石质佛塔罐子的几率的分母（1/x）。
+					这不会覆盖存在的物块，因此值为1并不会在每个物块上都放置罐子。
+					'''
+			}
+
+			TreeChance: {
+				DisplayName: "[i:27] 枯树几率"
+				Tooltip:
+					'''
+					特定物块上生成树木的几率的分母（1/x）。
+					此几率会不断增加，直至树木被放置，然后重置。
+					'''
+			}
+		}
+	}
+
+	Surface: {
+		Name: 地表
+		Description: 控制魂灵新魄对地表的补充和编辑的具体方面。
+
+		Presets: {
+			Whimsical: {
+				Name: "[i:SpiritReforged/MidnightApple] 奇想"
+				Tooltip: 巨大的繁茂洞穴，连绵起伏的星草山丘，宁静的麦田……会出什么问题呢？
+			}
+
+			Treacherous: {
+				Name: "[i:SpiritReforged/LeatherBackpack] 险恶"
+				Tooltip: 巨大的峡谷可能点缀着这里的风景。不要向下看！
+			}
+		}
+
+		Members: {
+			HalfWidth: {
+				DisplayName: "[i:133] （峡谷）半宽"
+				Tooltip: 控制峡谷隆起部分的半宽，前提是该部分足够接近地表。
+			}
+
+			MaxDepth: {
+				DisplayName: "[i:133] （峡谷）最大深度"
+				Tooltip: 控制峡谷的最大深度。
+			}
+
+			SizeMultiplier: {
+				DisplayName: "[i:747] （喀斯特）尺寸倍率"
+				Tooltip: 喀斯特地貌（繁茂洞穴）所有挖掘行为的尺寸倍率。
+			}
+
+			FieldSize: {
+				DisplayName: "[i:SpiritReforged/BotanistHat] （麦田）田野尺寸"
+				Tooltip: 控制稻草人麦田的宽度。
+			}
+
+			ButterflyCountMax: {
+				DisplayName: "[i:SpiritReforged/ButterflyStaff] （蝴蝶圣地）最大数量"
+				Tooltip: 可能被放置的蝴蝶圣地的最大数量。可能不会全部放置。
+			}
+
+			HeroChance: {
+				DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] （英雄纪念碑）生成几率"
+				Tooltip: 英雄纪念碑生成的几率的分母（1/x）。
+			}
+
+			MaxStargrassCount: {
+				DisplayName: "[i:SpiritReforged/StarPowder] （星草）区域数量"
+				Tooltip: 可能被放置的星草区域的最大数量。可能不会全部放置，或可能会重叠。
+			}
+
+			ReforgedCaveWeight: {
+				DisplayName: "[i:30] （洞穴）自定义权重"
+				Tooltip: 魂灵新魄的自定义洞穴替代原版“山洞”生成的权重。
+			}
+		}
+	}
+
+	Ocean: {
+		Name: 海洋
+		Description: 控制魂灵新魄翻新的海洋的具体方面。
+
+		Presets: {
+			KelpForest: {
+				Name: "[i:SpiritReforged/Kelp] 海带森林"
+				Tooltip: 从海岸就能看到成片的海带！
+			}
+
+			Volcanic: {
+				Name: "[i:SpiritReforged/GravelItem] 火山"
+				Tooltip: 多石、岩浆的海洋，几乎没有植物。
+			}
+		}
+
+		Members: {
+			WaterChestCount: {
+				DisplayName: "[i:1298] 水中箱最大数量"
+				Tooltip: 海洋中可能被放置的水中箱的最大数量。通常不会全部放置。
+			}
+
+			SunkenTreasureCount: {
+				DisplayName: "[i:SpiritReforged/SunkenTreasure] 沉没的宝藏最大数量"
+				Tooltip: 海洋中可能被放置的沉没的宝藏的最大数量。通常不会全部放置。
+			}
+
+			SandDepth: {
+				DisplayName: "[i:169] 沙子深度"
+				Tooltip: 海洋下方的沙子能深入地下多远。
+			}
+
+			SandRange: {
+				DisplayName: "[i:169] 沙子范围"
+				Tooltip: 海洋中沙子深度的随机添加范围的上限。
+			}
+
+			CoralLowChance: {
+				DisplayName: "[i:275] 珊瑚几率（低层）"
+				Tooltip: 珊瑚在海洋较低梯级生成的几率的分母（1/x）。
+			}
+
+			CoralHighChance: {
+				DisplayName: "[i:275] 珊瑚几率（高层）"
+				Tooltip: 珊瑚在海洋最高梯级生成的几率的分母（1/x）。
+			}
+
+			DecorLowChance: {
+				DisplayName: "[i:4090] 装饰几率（低层）"
+				Tooltip: 装饰物在海洋较低梯级生成的几率的分母（1/x）。
+			}
+
+			DecorHighChance: {
+				DisplayName: "[i:4090] 装饰几率（高层）"
+				Tooltip: 装饰物在海洋最高梯级生成的几率的分母（1/x）。
+			}
+
+			KelpChance: {
+				DisplayName: "[i:SpiritReforged/Kelp] 海带几率"
+				Tooltip: 海带在海洋生成的几率的分母（1/x）。
+			}
+
+			KelpMaxHeight: {
+				DisplayName: "[i:SpiritReforged/Kelp] 海带高度"
+				Tooltip: 海带可生成的最大高度（以格为单位）。
+			}
+
+			GravelMultiplier: {
+				DisplayName: "[i:SpiritReforged/GravelItem] 砾石尺寸倍率"
+				Tooltip: 海洋砾石区域（包括岩浆石）尺寸的修正值。
+			}
+
+			Shape: {
+				DisplayName: "[i:4460] 海洋形状"
+				Tooltip: 海洋呈现的形状。
+			}
+		}
+	}
+
+	Pots: {
+		Name: 罐子
+		Description: 控制魂灵新魄新增罐子的比率和几率。
+
+		Members: {
+			WorldMultiplierMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] 总倍率"
+				Tooltip: 所有罐子生成几率的全局倍率。
+			}
+
+			RollingPotChance: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] 滚动罐子几率"
+				Tooltip: 滚动罐子替代巨石生成的几率的分母（1/x）。
+			}
+
+			OrnateScale: {
+				DisplayName: "[i:SpiritReforged/OrnatePotsItem] 华丽罐子比例"
+				Tooltip: 华丽罐子尝试生成的次数的倍率。
+			}
+
+			PotionScale: {
+				DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] 药罐比例"
+				Tooltip: 药罐尝试生成的次数的倍率。
+			}
+
+			ScryingScale: {
+				DisplayName: "[i:SpiritReforged/ScryingPotItem] 占卜罐比例"
+				Tooltip: 占卜罐尝试生成的次数的倍率。
+			}
+
+			StuffedScale: {
+				DisplayName: "[i:SpiritReforged/StuffedPotsItem] 填充罐子比例"
+				Tooltip: 填充罐子尝试生成的次数的倍率。
+			}
+
+			WormScale: {
+				DisplayName: "[i:SpiritReforged/WormPotItem] 蠕虫罐子比例"
+				Tooltip: 蠕虫罐子尝试生成的次数的倍率。
+			}
+
+			PlatterScale: {
+				DisplayName: "[i:SpiritReforged/SilverPlattersItem] 银制托盘比例"
+				Tooltip: 银制托盘尝试生成的次数的倍率。
+			}
+
+			AetherScale: {
+				DisplayName: "[i:SpiritReforged/AetherShipmentItem] 以太货物比例"
+				Tooltip: 以太货物尝试生成的次数的倍率。
+			}
+
+			UpsideDownScale: {
+				DisplayName: "[i:SpiritReforged/UpsideDownPotItem] 倒吊罐比例"
+				Tooltip: 倒吊罐尝试生成的次数的倍率。
+			}
+
+			BoulderScale: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] 滚动罐子比例"
+				Tooltip: 滚动罐子尝试生成的次数的倍率。
+			}
+
+			PicnicScale: {
+				DisplayName: "[i:SpiritReforged/WickerBasketsItem] 野餐篮比例"
+				Tooltip: 野餐篮尝试生成的次数的倍率。
+			}
+
+			StackScale: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] 堆叠比例"
+				Tooltip: 堆叠罐子尝试生成的次数的倍率。
+			}
+
+			UncommonScale: {
+				DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] 不常见比例"
+				Tooltip: 不常见的罐子尝试生成的次数的倍率。
+			}
+
+			ZenithScale: {
+				DisplayName: "[i:SpiritReforged/ZenithPotsItem] 天顶罐子比例"
+				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
+			}
+		}
+
+		Presets: {
+			Tasty: {
+				Name: "[i:4029] 美味"
+				Tooltip: 有人留下了数量多得离谱的食物。这些到底是谁做的？
+			}
+
+			Occult: {
+				Name: "[i:SpiritReforged/ScryingPotItem] 玄秘"
+				Tooltip: 无数法师与术士的失败实验散落在洞穴各处。
+			}
+		}
+	}
+
+	Caves: {
+		Name: 洞穴
+		Description: 控制杂项洞穴补充内容。
+
+		Members: {
+			SignChance: {
+				DisplayName: "[i:171] （房屋）标牌几率"
+				Tooltip: 地下小屋中标牌生成的几率的分母（1/x）。
+			}
+
+			MannequinChance: {
+				DisplayName: "[i:498] （房屋）人体模型几率"
+				Tooltip: 地下小屋中人体模型生成的几率的分母（1/x）。
+			}
+
+			LoomChance: {
+				DisplayName: "[i:332] （房屋）织布机几率"
+				Tooltip: 地下小屋成为“织布机小屋”（会添加旗帜和织布机）的几率的分母（1/x）。
+			}
+
+			RareSignChance: {
+				DisplayName: "[i:3617] （房屋）稀有标牌比率"
+				Tooltip: 地下标牌出现稀有信息的几率的分母（1/x）。
+			}
+
+			CartSpawnRate: {
+				DisplayName: "[i:13]（装饰）矿车比率"
+				Tooltip: 世界中生成的矿石矿车的最大数量的倍率。
+			}
+
+			BoomshroomRate: {
+				DisplayName: "[i:SpiritReforged/BoomShroom] （装饰）蘑菇比率"
+				Tooltip: 世界中生成的爆炸蘑菇的最大数量的倍率。
+			}
+
+			CovesSpawnRate: {
+				DisplayName: "[i:SpiritReforged/KoiTotem] （小湾）倍率"
+				Tooltip:
+					'''
+					世界中生成的钓鱼小湾的最大数量的倍率。
+					这可能会与其他生成结构的模组产生冲突。
+					'''
+			}
+
+			NeonMossChance: {
+				DisplayName: "[i:SpiritReforged/FlaskRadon] （氖苔藓）自定义苔藓几率"
+				Tooltip: 选中魂灵新魄的自定义发光苔藓而非原版苔藓的几率（x/6）。
+			}
+
+			StatueCountModifier: {
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] （雕像）最大数量"
+				Tooltip: 世界中生成的魂灵新魄雕像的最大数量。
+			}
+
+			StructuresMax: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）倍率"
+				Tooltip: 世界中生成的陶器结构数量的倍率。
+			}
+
+			StructureScale: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）比例"
+				Tooltip: 应用于陶器结构大小的比例。
+			}
+
+			PotSpam: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
+				Tooltip: 陶器结构放置罐子的最小尝试次数。
+			}
+		}
+
+		Presets: {
+			Inhabited: {
+				Name: "[i:498] 曾有人迹"
+				Tooltip: 地下各处都有友好探险者的踪迹……他们后来怎样了？
+			}
+
+			Empty: {
+				Name: "[i:1176] 空"
+				Tooltip: 有人在这儿吗？
+			}
+		}
+	}
+
+	Ziggurat: {
+		Name: 庙塔
+		Description: 控制庙塔和其内容的具体方面。
+
+		Members: {
+			UsedWidth: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 宽度"
+				Tooltip:
+					'''
+					用于确定庙塔大小的宽度，不一定是实际宽度。
+					高于默认值的值会强制庙塔生成在金字塔之上，否则它可能根本无法生成。
+					'''
+			}
+
+			UsedHeight: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] 高度"
+				Tooltip:
+					'''
+					用于确定庙塔大小的高度，不一定是实际高度。
+					高于默认值的值会强制庙塔生成在金字塔之上，否则它可能根本无法生成。
+					'''
+			}
+
+			MaxInfections: {
+				DisplayName: "[i:SpiritReforged/PaleHiveItem] 侵染最大数量"
+				Tooltip: 庙塔中每层被侵染（巢）的数量。取值范围为0到该值。
+			}
+
+			PotChance: {
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] 罐子几率"
+				Tooltip: 庙塔中罐子被放置的几率。
+			}
+
+			LapisPotChance: {
+				DisplayName: "[i:SpiritReforged/LapisPotsItem] 青金石罐子几率"
+				Tooltip: 庙塔中青金石罐子被放置的几率。
+			}
+
+			UncommonChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] 不常见的罐子几率"
+				Tooltip: 不常见的罐子被放置的几率。
+			}
+
+			MaxSpikeStripWidth: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] 最大刺带宽度"
+				Tooltip: 一条刺带的最大宽度。
+			}
+
+			SpikeStripChance: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] 刺带几率"
+				Tooltip: 非特殊房间中一条刺带被放置的几率。
+			}
+
+			SpecialRoomChance: {
+				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] 特殊房间几率"
+				Tooltip:
+					'''
+					任意庙塔房间变为特殊房间的几率；也就是以下任意一种：
+					图书馆，储藏室，墓室
+					'''
+			}
+
+			SkipRoomChance: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] 跳过房间几率"
+				Tooltip: 任意房间被跳过而非生成的几率。
+			}
+
+			ChestNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱归一化"
+				Tooltip:
+					'''
+					宝箱战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			DresserNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台归一化"
+				Tooltip:
+					'''
+					梳妆台战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			AncientBannerChance: {
+				DisplayName: "[i:SpiritReforged/AncientBannerItem] 远古旗帜几率"
+				Tooltip: 远古旗帜生成的几率。
+			}
+
+			BannerChance: {
+				DisplayName: "[i:340] 旗帜几率"
+				Tooltip: 原版旗帜生成的几率。
+			}
+
+			CenserChance: {
+				DisplayName: "[i:SpiritReforged/CenserItem] 香炉几率"
+				Tooltip: 香炉生成的几率。
+			}
+
+			TabletChance: {
+				DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] 远古碑牌几率"
+				Tooltip: 非藏宝室房间中远古碑牌生成的几率。
+			}
+
+			FloorDivotChance: {
+				DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] 地面凹陷几率"
+				Tooltip: 地面凹陷（随机风化效果）发生的几率。
+			}
+
+			SandSplatChance: {
+				DisplayName: "[i:169] 沙溅斑块几率"
+				Tooltip: 沙溅斑块（随机风化效果）发生的几率。
+			}
+
+			PillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] 岩柱几率"
+				Tooltip: 岩柱生成的几率。
+			}
+
+			LightChance: {
+				DisplayName: "[i:SpiritReforged/SunDropper] 光照几率"
+				Tooltip: 一束光线生成的几率。
+			}
+
+			ChestItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] 宝箱战利品数量"
+				Tooltip: 宝箱中物品数量的范围值。每个宝箱中必定有3个物品。
+			}
+
+			DresserItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台战利品数量"
+				Tooltip: 梳妆台中物品数量的范围值。
+			}
+		}
+
+		Presets: {
+			Plagued: {
+				Name: "[i:SpiritReforged/PaleHiveItem] 虫扰"
+				Tooltip: 这座庙塔曾有过更好的光景。那些没有被黄沙掩埋的部分，如今爬满了甲虫。
+			}
+
+			Opulent: {
+				Name: "[i:SpiritReforged/LapisPotsItem] 豪华"
+				Tooltip: 无论是谁建造的这座庙塔，都不惜工本。
+			}
+
+			Perilous: {
+				Name: "[i:SpiritReforged/NeedleTrapItem] 险地"
+				Tooltip: 更多的战利品，但也有更多的陷阱。真是个诱人的前景。
+			}
+		}
+	}
+
+	Desert: {
+		Name: 沙漠
+		Description: 控制魂灵新魄的沙漠生成的各种方面。
+
+		Members: {
+			PalmChanceLow: {
+				DisplayName: "[i:2504] （绿洲）棕榈树几率（低）"
+				Tooltip: 在已经至少放置一棵棕榈树后，再放置棕榈树的几率。
+			}
+
+			PalmChanceHigh: {
+				DisplayName: "[i:2504] （绿洲）棕榈树几率（高）"
+				Tooltip: 在尚未放置任何棕榈树前，放置棕榈树的几率。
+			}
+
+			CattailChance: {
+				DisplayName: "[i:2996] （绿洲）香蒲几率"
+				Tooltip: 香蒲被放置的几率。
+			}
+
+			OasisPlantChance: {
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] （绿洲）绿洲植物几率"
+				Tooltip: 绿洲植物被放置的几率。
+			}
+
+			GlowflowerChance: {
+				DisplayName: "[i:4045] （绿洲）发光花几率"
+				Tooltip: 发光花被放置的几率。
+			}
+
+			PineappleChance: {
+				DisplayName: "[i:4294] （绿洲）菠萝几率"
+				Tooltip: 菠萝被放置的几率。
+			}
+
+			SeaOatsChance: {
+				DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] （绿洲）海燕麦几率"
+				Tooltip: 海燕麦被放置的几率。海燕麦是生长在海洋或绿洲附近的草质谷物植物。
+			}
+
+			PoolWidth: {
+				DisplayName: "[i:206] （绿洲）水池宽度"
+				Tooltip: 地下绿洲水池宽度的范围值（以格为单位）。
+			}
+
+			PoolDepth: {
+				DisplayName: "[i:206] （绿洲）水池深度"
+				Tooltip: 地下绿洲水池深度的范围值（以格为单位）。
+			}
+
+			MainNormalization: {
+				DisplayName: "[i:1298] （绿洲）主要归一化"
+				Tooltip:
+					'''
+					主要物品战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			ItemNormalization: {
+				DisplayName: "[i:1298] （绿洲）其他归一化"
+				Tooltip:
+					'''
+					非主要物品战利品池的归一化系数。
+					值越高，所有物品的抽取概率就越“平均”。
+					'''
+			}
+
+			ChestItemCountMin: {
+				DisplayName: "[i:1298] （绿洲）最小宝箱物品"
+				Tooltip: 地下绿洲的宝箱中出现的物品的最小数量。
+			}
+
+			ChestItemCountRange: {
+				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
+				Tooltip: 追加到地下绿洲宝箱物品最小数量上的随机范围值。
+			}
+
+			FossilCount: {
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] （琥珀）矿脉数量"
+				Tooltip: 地下沙漠中琥珀矿脉的最大数量。
+			}
+
+			FossilMultiplier: {
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）世界倍率"
+				Tooltip: 基于世界大小应用于琥珀矿脉数量的倍率。
+			}
+
+			PatchScale: {
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] （琥珀）矿脉比例"
+				Tooltip: 应用于琥珀矿脉大小的比例。
+			}
+
+			RuinCount: {
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] （废墟）生成范围"
+				Tooltip: 每个绿洲中生成地下沙漠废墟数量的范围值。
+			}
+
+			LightRange: {
+				DisplayName: "[i:SpiritReforged/SunDropper] （绿洲）光线数量"
+				Tooltip: 地下绿洲中光线数量的最小值与额外的随机范围值。
+			}
+
+			ChestItemRange: {
+				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
+				Tooltip: 地下绿洲宝箱中物品物品数量的范围值。
+			}
+
+			RuinSegments: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] （废墟）分段范围"
+				Tooltip: 地下废墟可能有的分段数量的范围值。
+			}
+		}
+
+		Presets: {
+			Overgrown: {
+				Name: "[i:2996] 繁茂"
+				Tooltip: 这片沙漠中的绿洲繁茂而狂野。它们是如何蓬勃生长的？
+			}
+
+			Petrified: {
+				Name: "[i:154] 石化"
+				Tooltip: 黄沙之下掩藏着亿万年的化石生态系统。你能将它们全部找出来吗？
+			}
+
+			Ruined: {
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] 废墟"
+				Tooltip: 一个古老的、被遗忘已久的文明曾于这片沙漠之下蓬勃发展。他们的遗迹至今犹存。
+			}
+		}
+	}
+}
+
+Enums: {
+	OceanShape: {
+		Default: {
+			DisplayName: 原版
+			Tooltip: 原版默认的海洋生成。这会禁用大部分魂灵新魄的改动。
+		}
+
+		SlantedSine: {
+			DisplayName: 倾斜正弦
+			Tooltip: 一种修改后的形状，其中海洋由倾斜的正弦波定义。
+		}
+
+		Piecewise: {
+			DisplayName: 分段
+			Tooltip: 一个更复杂的分段函数定义了海洋的形状。
+		}
+
+		Piecewise_M: {
+			DisplayName: 分段（M）
+			Tooltip: 分段函数修改后的版本，具有略微不同的斜率。
+		}
+
+		Piecewise_V: {
+			DisplayName: 魂灵新魄
+			Tooltip: 分段预设的最终版本，包含各种微小修改。
+		}
+	}
+}

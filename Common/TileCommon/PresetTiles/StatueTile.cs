@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class StatueTile : ModTile, IAutoloadTileItem
+public abstract class StatueTile : ModTile, ILoadItem
 {
 	public abstract int NPCType { get; }
 
@@ -12,16 +12,15 @@ public abstract class StatueTile : ModTile, IAutoloadTileItem
 	{
 		Main.tileFrameImportant[Type] = true;
 		Main.tileObsidianKill[Type] = true;
+		Main.tileSpelunker[Type] = true;
+
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.IsAMechanism[Type] = true;
-		Main.tileSpelunker[Type] = true;
 
 		DustType = DustID.Stone;
 		AdjTiles = [TileID.Statues];
 
 		AddObjectData();
-
-		RegisterItemDrop(this.AutoItem().type);
 		AddMapEntry(new Color(144, 148, 144), Language.GetText("MapObject.Statue"));
 	}
 

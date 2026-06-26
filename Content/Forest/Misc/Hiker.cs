@@ -67,7 +67,7 @@ public class Hiker : WorldNPC
 		NPCID.Sets.DangerDetectRange[Type] = 500;
 		NPCID.Sets.PrettySafe[Type] = 50;
 		NPCID.Sets.AttackType[Type] = 3;
-		NPCID.Sets.AttackTime[Type] = 20;
+		NPCID.Sets.AttackTime[Type] = 16;
 		NPCID.Sets.HatOffsetY[Type] = 2;
 		NPCID.Sets.AttackAverageChance[Type] = 30;
 

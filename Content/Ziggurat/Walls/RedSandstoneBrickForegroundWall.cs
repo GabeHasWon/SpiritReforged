@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
-public class RedSandstoneBrickForegroundWall : ModWall, IAutoloadWallItem
+public class RedSandstoneBrickForegroundWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<RedSandstoneBrickWall>(), 4).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
 

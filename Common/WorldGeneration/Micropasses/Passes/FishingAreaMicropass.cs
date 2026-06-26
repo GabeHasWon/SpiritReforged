@@ -1,17 +1,21 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 using static SpiritReforged.Common.WorldGeneration.QuickConversion;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class FishingAreaMicropass : Micropass
+internal class FishingAreaMicropass : Micropass, IGenerationPage
 {
 	[WorldBound]
 	public static readonly HashSet<Rectangle> Coves = [];
+
 	private static readonly Dictionary<int, Point16[]> OffsetsBySubId = new()
 	{
 		{ 0, [new Point16(9, 5), new Point16(54, 19), new Point16(6, 15)] },
@@ -21,14 +25,25 @@ internal class FishingAreaMicropass : Micropass
 		{ 4, [new Point16(23, 3), new Point16(4, 15), new Point16(51, 2), new Point16(49, 20)] }
 	};
 
+	[GenConfigurable(0.25f, 4, 0.05f)]
+	[Slider]
+	internal static float CovesSpawnRate = 1;
+
 	public override string WorldGenName => "Fishing Coves";
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new UndergroundHouseMicropass()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Gem Caves"));
 
 	public override void Run(GenerationProgress progress, Terraria.IO.GameConfiguration config)
 	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.FishingCoves");
-		int repeats = (int)(Main.maxTilesX / 4200f * 8);
+		int repeats = (int)(Main.maxTilesX / 4200f * 8 * CovesSpawnRate);
 
 		for (int i = 0; i < repeats; ++i)
 		{

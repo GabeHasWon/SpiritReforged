@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class EnlilStatue : ModTile, IAutoloadTileItem
+public class EnlilStatue : ModTile, ILoadItem
 {
 	public class EnlilBuff : ModBuff
 	{
