@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
@@ -9,27 +7,17 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Glyphs.Dazzling;
 using SpiritReforged.Content.Particles;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using static SpiritReforged.Content.Forest.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
+
 public class SanguineGlyph : GlyphItem
 {
-	public override void SetStaticDefaults()
+	public sealed class SanguineStackingBuff : ModBuff
 	{
-		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	}
-
-	internal class SanguineStackingBuff : ModBuff
-	{
-		public override void SetStaticDefaults()
-		{
-			Main.buffNoSave[Type] = true;
-		}
+		public override void SetStaticDefaults() => Main.buffNoSave[Type] = true;
 
 		public override void Update(Player player, ref int buffIndex)
 		{
@@ -96,7 +84,7 @@ public class SanguineGlyph : GlyphItem
 		public float damageBonus;
 	}
 
-	internal class SanguinePlayer : ModPlayer
+	public sealed class SanguinePlayer : ModPlayer
 	{
 		internal List<SanguineStack> stacks = new();
 		internal int lifestealCooldown;
@@ -224,6 +212,26 @@ public class SanguineGlyph : GlyphItem
 		}
 	}
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(Color.DarkRed);
+	}
+
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		item.damage -= (int)Math.Round(item.damage * 0.2f);
+		base.OnApplyGlyph(item, context);
+	}
+
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
 		for (int j = 0; j < 4; j++)
@@ -314,20 +322,6 @@ public class SanguineGlyph : GlyphItem
 
 			ParticleHandler.SpawnParticle(new StickyBloodParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), Main.rand.NextFloat(0.02f, 0.12f)));
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(Color.DarkRed);
-	}
-
-	protected override void OnApplyGlyph(Item item, IApplicationContext context)
-	{
-		item.damage -= (int)Math.Round(item.damage * 0.2f);
-		base.OnApplyGlyph(item, context);
 	}
 }
 

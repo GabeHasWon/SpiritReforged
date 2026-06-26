@@ -6,18 +6,11 @@ using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Forest.Glyphs.Void;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using System.Linq;
-using static System.Net.Mime.MediaTypeNames;
-using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Content.Underground.Tiles;
-using Terraria;
-using static AssGen.Assets;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Shock;
 
@@ -280,6 +273,14 @@ public class ShockGlyph : GlyphItem
 		}
 	}
 
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(Color.Yellow);
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -307,7 +308,7 @@ public class ShockGlyph : GlyphItem
 		Vector2 pos = parameters.Position;
 		if (globalItem.shockTimer > 0)
 			pos += Main.rand.NextVector2CircularEdge(1.5f, 1.5f) * globalItem.shockTimer / 40f;
-		
+
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
@@ -339,7 +340,7 @@ public class ShockGlyph : GlyphItem
 
 		if (Main.rand.NextBool(120) && globalItem.shockTimer <= 0)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.3f}, item.Center);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.3f }, item.Center);
 
 			globalItem.shockTimer = 40;
 			for (int i = 0; i < 5; i++)
@@ -356,13 +357,5 @@ public class ShockGlyph : GlyphItem
 
 			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(Color.Yellow);
 	}
 }

@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -13,18 +12,6 @@ namespace SpiritReforged.Content.Forest.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-
-		//Because of how terraria is programmed, we have to bind one shader to one item id
-		//Bound shaders for drawdata can't have their parameters dynamically adjusted when applied, to my knowledge
-		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
-
-		GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
-		GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
-	}
-
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void MeleeEffects(Item item, Rectangle hitbox)
@@ -37,6 +24,7 @@ public class BlazeGlyph : GlyphItem
 				dust.noLightEmittence = true;
 			}
 		}
+
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
@@ -121,6 +109,34 @@ public class BlazeGlyph : GlyphItem
 				});
 			}
 		}
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		//Because of how Terraria is programmed, we have to bind one shader to one item id
+		//Bound shaders for drawdata can't have their parameters dynamically adjusted when applied, to my knowledge
+		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
+
+		GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+		GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.height = Item.width = 28;
+		Item.rare = ItemRarityID.Pink;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(new(233, 143, 26));
+	}
+
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		item.damage += (int)Math.Round(item.damage * 0.25f);
+		item.crit += 10;
+
+		base.OnApplyGlyph(item, context);
 	}
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
@@ -213,7 +229,6 @@ public class BlazeGlyph : GlyphItem
 		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
 			Vector2 velocity = Vector2.Zero;
 
 			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 0.2f, 40);
@@ -261,22 +276,6 @@ public class BlazeGlyph : GlyphItem
 			particle.OverrideDrawLayer(ParticleLayer.BelowProjectile);
 			ParticleHandler.SpawnParticle(particle);
 		}
-	}
-
-	protected override void OnApplyGlyph(Item item, IApplicationContext context)
-	{
-		item.damage += (int)Math.Round(item.damage * 0.25f);
-		item.crit += 10;
-
-		base.OnApplyGlyph(item, context);
-	}
-
-	public override void SetDefaults()
-	{
-		Item.height = Item.width = 28;
-		Item.rare = ItemRarityID.Pink;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(233, 143, 26));
 	}
 }
 

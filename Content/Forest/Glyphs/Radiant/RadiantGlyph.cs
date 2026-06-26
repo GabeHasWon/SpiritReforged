@@ -1,5 +1,3 @@
-using Humanizer;
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -15,12 +13,6 @@ namespace SpiritReforged.Content.Forest.Glyphs.Radiant;
 
 public class RadiantGlyph : GlyphItem
 {
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	}
-
 	public sealed class DivineStrike : ModBuff
 	{
 		public override void SetStaticDefaults()
@@ -41,7 +33,7 @@ public class RadiantGlyph : GlyphItem
 		}
 	}
 
-	public class RadiantItem : GlobalItem
+	public sealed class RadiantGlobalItem : GlobalItem
 	{
 		public override bool InstancePerEntity => true;
 
@@ -64,7 +56,7 @@ public class RadiantGlyph : GlyphItem
 		}
 	}
 
-	public class RadiantPlayer : ModPlayer
+	public sealed class RadiantPlayer : ModPlayer
 	{
 		public float radiantCooldown;
 		public bool divineStrike;
@@ -346,6 +338,12 @@ public class RadiantGlyph : GlyphItem
 			if (divineStrike && proj.GetGlobalProjectile<GlyphGlobalProjectile>().glyph.ItemType == ModContent.ItemType<RadiantGlyph>())
 				modifiers.FinalDamage *= 2.5f;
 		}
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()

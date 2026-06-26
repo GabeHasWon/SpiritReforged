@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.CombatTextCommon;
+﻿using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -15,12 +13,6 @@ namespace SpiritReforged.Content.Forest.Glyphs.Rage;
 
 public class RageGlyph : GlyphItem
 {
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new RageGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	}
-
 	public sealed class RagePlayer : ModPlayer
 	{
 		// what percentage of overflow damage should be stored
@@ -247,6 +239,20 @@ public class RageGlyph : GlyphItem
 		}
 	}
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new RageGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(new(176, 16, 20));
+	}
+
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
 		float shakeCounter = Math.Max((float)Math.Sin(Main.timeForVisualEffects * 0.025f), 0);
@@ -353,14 +359,6 @@ public class RageGlyph : GlyphItem
 				Layer = ParticleLayer.AboveItem
 			}, 3);
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(176, 16, 20));
 	}
 }
 

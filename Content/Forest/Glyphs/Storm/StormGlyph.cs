@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
@@ -20,12 +19,6 @@ namespace SpiritReforged.Content.Forest.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() 
-	{
-		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	}
-
 	/// this is from windshear scepter with minor changes to color and behavior
 	[Autoload(Side = ModSide.Client)]
 	public sealed class StormMetaballSystem : ModSystem
@@ -567,9 +560,20 @@ public class StormGlyph : GlyphItem
 		ItemID.Zenith,
 	];
 
-	// can only apply to items that shoot projectiles
-	// also no summon weapons
-	// also also a lot of edge cases
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(new(142, 186, 231));
+	}
+
 	public override bool CanApplyGlyph(Item item)
 	{
 		// todo: add checks for Rapiers, Katanas, etc when subclassdate
@@ -579,15 +583,7 @@ public class StormGlyph : GlyphItem
 		if (vanillaBlacklist.Contains(item.type))
 			return false;
 
-		return base.CanApplyGlyph(item) && item.shoot > 0 && item.DamageType != DamageClass.Summon;
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(142, 186, 231));
+		return base.CanApplyGlyph(item) && item.shoot != ProjectileID.None && item.DamageType != DamageClass.Summon;
 	}
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
@@ -663,6 +659,7 @@ public class StormGlyph : GlyphItem
 
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
+
 	public static Vector2 FindGroundFromPosition(Vector2 input)
 	{
 		const int dimensions = 8;
