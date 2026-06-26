@@ -1,11 +1,16 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics;
+using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Blaze;
@@ -14,6 +19,62 @@ public class BlazeGlyph : GlyphItem
 {
 	public sealed class BlazePlayer : ModPlayer
 	{
+		internal class BlazeDebuff : ModBuff
+		{
+			public override void SetStaticDefaults()
+			{
+				Main.debuff[Type] = true;
+				Main.pvpBuff[Type] = true;
+				Main.buffNoSave[Type] = true;
+				Main.buffNoTimeDisplay[Type] = true;
+				BuffID.Sets.LongerExpertDebuff[Type] = true;
+			}
+
+			public override void Update(Player player, ref int buffIndex)
+			{
+				player.GetModPlayer<BlazePlayer>().hasDebuff = true;
+				
+				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+
+				if (Main.rand.NextBool())
+				{
+					var particle = new EmberParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+					particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
+					ParticleHandler.SpawnParticle(particle);
+				}
+
+				if (Main.rand.NextBool())
+				{
+					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+				}
+
+				if (Main.rand.NextBool(4))
+				{
+					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
+				}
+			}
+		}
+
+		public bool hasDebuff;
+		public override void ResetEffects()
+		{
+			hasDebuff = false;
+		}
+
+		public override void UpdateBadLifeRegen()
+		{
+			if (hasDebuff)
+			{
+				if (Player.lifeRegen > 0)
+					Player.lifeRegen = 0;
+
+				Player.lifeRegen -= 16;
+			}
+		}
+
 		public override void MeleeEffects(Item item, Rectangle hitbox)
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>() && Main.rand.NextBool(5))
@@ -29,24 +90,24 @@ public class BlazeGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				if (!Player.HasBuff(BuffID.OnFire))
+				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
-				Player.AddBuff(BuffID.OnFire, 60);
+				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
 				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center), target.DirectionTo(Player.Center).ToRotation());
 			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				if (!Player.HasBuff(BuffID.OnFire))
+				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
 				//fireFlashTimer = 120;
 
-				Player.AddBuff(BuffID.OnFire, 60);
+				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
 				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
 			}
 		}
@@ -253,21 +314,6 @@ public class BlazeGlyph : GlyphItem
 
 		if (Main.rand.NextBool(60))
 		{
-			/*Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
-			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.5f, 1f);
-			int dir = Main.rand.NextBool() ? -1 : 1;
-
-			ParticleHandler.SpawnParticle(new CurvingEmberParticle(pos, velocity, Main.rand.Next(emberColors), 0.15f, 180, dir, 60)
-			{
-				rotationalStrength = 0.01f
-			});
-
-			ParticleHandler.SpawnParticle(new CurvingEmberParticle(pos, velocity, Color.LightYellow * 0.5f, 0.1f, 180, dir, 60)
-			{
-				rotationalStrength = 0.01f
-			});*/
-
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1.25f, 1.5f);

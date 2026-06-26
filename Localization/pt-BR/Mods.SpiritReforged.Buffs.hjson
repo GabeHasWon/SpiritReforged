@@ -162,3 +162,8 @@ SanguineStackingBuff: {
 	// DisplayName: Sanguine Curse
 	// Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
 }
+
+BlazeDebuff: {
+	// DisplayName: Blazing
+	// Description: This is fine!
+}
