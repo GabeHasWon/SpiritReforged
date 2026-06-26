@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Forest.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
@@ -58,7 +58,7 @@ public class BlazeGlyph : GlyphItem
 
 				//fireFlashTimer = 120;
 
-				Player.AddBuff(BuffID.OnFire, 60);			
+				Player.AddBuff(BuffID.OnFire, 60);
 				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
 			}
 		}
@@ -113,7 +113,7 @@ public class BlazeGlyph : GlyphItem
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
-				}			
+				}
 
 				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40)
 				{
@@ -125,7 +125,7 @@ public class BlazeGlyph : GlyphItem
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
-		for(int j = 0; j < 4; j++)
+		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
 			DrawData item = input;
@@ -168,7 +168,7 @@ public class BlazeGlyph : GlyphItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-		
+
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
@@ -177,7 +177,7 @@ public class BlazeGlyph : GlyphItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.GameViewMatrix.TransformationMatrix);
-		
+
 		effect.Parameters["uColor1"].SetValue(c1.Additive().ToVector4() * 0.4f);
 		effect.Parameters["uColor2"].SetValue(c2.Additive().ToVector4() * 0.4f);
 
@@ -203,7 +203,7 @@ public class BlazeGlyph : GlyphItem
 
 		Lighting.AddLight(item.Center, Color.Lerp(c1, c2, sin).ToVector3() / 2);
 
-		Color[] emberColors = { 
+		Color[] emberColors = {
 			Color.Orange,
 			Color.DarkOrange,
 			Color.OrangeRed,
@@ -226,7 +226,7 @@ public class BlazeGlyph : GlyphItem
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.25f, 0.07f, EaseFunction.EaseQuadOut, 60, false));
-			
+
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.5f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
 
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
@@ -292,7 +292,7 @@ public class BlazeGlyphShaderData(Asset<Effect> shader, string shaderPass, Vecto
 		Color c1, c2;
 		c1 = Color.Lerp(Color.Yellow, Color.DarkOrange, sin);
 		c2 = Color.Lerp(Color.Red, Color.OrangeRed, cos);
-		if(additive)
+		if (additive)
 		{
 			c1 = c1.Additive();
 			c2 = c2.Additive();
@@ -309,7 +309,7 @@ public class BlazeGlyphShaderData(Asset<Effect> shader, string shaderPass, Vecto
 		GetEffect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.0015f);
 
 		//Shouldn't ever actually be null but just in case
-		float uPixelRes = (drawData == null ? 1 : drawData.Value.texture.Size().X);
+		float uPixelRes = drawData == null ? 1 : drawData.Value.texture.Size().X;
 		GetEffect.Parameters["uPixelRes"].SetValue(uPixelRes);
 
 		GetEffect.Parameters["uStrength"].SetValue(MathHelper.Lerp(0.03f, 0.06f, Math.Abs((float)Math.Sin(Main.GlobalTimeWrappedHourly / 2))));

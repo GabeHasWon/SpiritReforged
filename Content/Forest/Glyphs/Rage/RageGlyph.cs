@@ -46,7 +46,7 @@ public class RageGlyph : GlyphItem
 
 			SpriteBatch sb = Main.spriteBatch;
 
-			var rageIcon = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/RageGlyphAnger").Value;
+			var rageIcon = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/Rage/RageGlyphAnger").Value;
 
 			if (startSpriteBatch)
 				sb.BeginDefault();

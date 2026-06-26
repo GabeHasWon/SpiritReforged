@@ -4,7 +4,9 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Glyphs.Dazzling;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria;
@@ -96,43 +98,8 @@ public class SanguineGlyph : GlyphItem
 
 	internal class SanguinePlayer : ModPlayer
 	{
-		internal bool GlyphActive => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>();
-
 		internal List<SanguineStack> stacks = new();
 		internal int lifestealCooldown;
-
-		internal static int[] maxTimeLefts = new int[Main.maxCombatText];
-
-		public override void Load()
-		{
-			On_CombatText.UpdateCombatText += FadeDamageText;
-		}
-
-		private void FadeDamageText(On_CombatText.orig_UpdateCombatText orig)
-		{
-			orig();
-
-			for (int i = 0; i < Main.maxCombatText; i++)
-			{
-				CombatText text = Main.combatText[i];
-				if (maxTimeLefts[i] > 0)
-				{
-					if (text.active)
-					{
-						Color blue, orange;
-
-						blue = text.crit ? Color.DarkRed : Color.Red;
-						orange = text.crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
-
-						text.color = Color.Lerp(blue, orange, EaseBuilder.EaseCircularInOut.Ease(1f - text.lifeTime / (float)maxTimeLefts[i]));
-					}
-					else
-					{
-						maxTimeLefts[i] = 0;
-					}
-				}
-			}
-		}
 
 		public override void ResetEffects()
 		{
@@ -150,120 +117,108 @@ public class SanguineGlyph : GlyphItem
 				lifestealCooldown--;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (GlyphActive && stacks.Count > 0)
+			if (item.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
 			{
 				float damageBonus = 1f;
 				foreach (SanguineStack stack in stacks)
 					damageBonus += stack.damageBonus;
 
 				modifiers.FinalDamage *= damageBonus;
-
-				modifiers.HideCombatText();
 			}
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (GlyphActive)
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
 			{
-				bool leechedLife = false;
+				float damageBonus = 1f;
+				foreach (SanguineStack stack in stacks)
+					damageBonus += stack.damageBonus;
 
-				if (Player.statLife < Player.statLifeMax2 && target.canGhostHeal && lifestealCooldown <= 0)
-				{
-					float amountToHeal = (float)damageDone / 10;
-
-					amountToHeal *= MathHelper.Lerp(1f, 3f, 1f - Player.statLife / (float)Player.statLifeMax2);
-					if ((int)amountToHeal < 1)
-						amountToHeal = 1;
-					
-					if (!Player.HasBuff<SanguineStackingBuff>())
-						Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
-
-					if (amountToHeal > 10)
-						amountToHeal = 10;
-
-					Player.Heal((int)amountToHeal);
-					stacks.Add(new SanguineStack(180, 0.03f + damageDone * 0.001f)); // 3% increase, plus 0.1% of the damage dealt, ex: 3% + (10 * 0.001) = 4% boost
-
-					leechedLife = true;
-					lifestealCooldown = 20;
-				}
-
-				HitVisuals(target, leechedLife);
-
-				if (stacks.Count > 0)
-				{
-					Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
-
-					float damageBonus = 1f;
-					foreach (SanguineStack stack in stacks)
-						damageBonus += stack.damageBonus;
-
-					int originalDamage = (int)(damageDone / damageBonus);
-					int bonusDamage = damageDone - originalDamage;
-
-					if (bonusDamage > 0)
-					{
-						CombatText.NewText(target.getRect(), orange, Math.Max(originalDamage, 1), hit.Crit);
-						int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max(bonusDamage, 1), hit.Crit);
-
-						maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
-					}
-					else
-						CombatText.NewText(target.getRect(), orange, damageDone, hit.Crit);
-				}
+				modifiers.FinalDamage *= damageBonus;
 			}
 		}
 
-		internal void HitVisuals(NPC target, bool leechedLife)
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			if (item.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
+				HitEffects(target, damageDone);
+		}
+
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
+				HitEffects(target, damageDone);
+		}
+
+		internal void HitEffects(NPC target, int damageDone)
+		{
+			bool leechedLife = false;
+
+			if (Player.statLife < Player.statLifeMax2 && target.canGhostHeal && lifestealCooldown <= 0)
+			{
+				float amountToHeal = (float)damageDone / 10;
+
+				amountToHeal *= MathHelper.Lerp(1f, 3f, 1f - Player.statLife / (float)Player.statLifeMax2);
+				if ((int)amountToHeal < 1)
+					amountToHeal = 1;
+
+				if (!Player.HasBuff<SanguineStackingBuff>())
+					Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
+
+				if (amountToHeal > 10)
+					amountToHeal = 10;
+
+				Player.Heal((int)amountToHeal);
+				stacks.Add(new SanguineStack(180, 0.03f + damageDone * 0.001f)); // 3% increase, plus 0.1% of the damage dealt, ex: 3% + (10 * 0.001) = 4% boost
+
+				leechedLife = true;
+				lifestealCooldown = 20;
+			}
+
 			float angle = Main.rand.NextFloat(MathHelper.Pi);
-			var position = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
+
+			Vector2 dir = target.DirectionTo(Player.Center);
+			Vector2 position = target.Center + dir * target.width / 2;
 
 			Color c1, c2;
 			c1 = Color.DarkRed;
 			c2 = new Color(200, 25, 100);
-			
-			
-			for (int i = 0; i < 3; i++)
+
+			ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.DarkRed * 0.3f, 0.06f, EaseFunction.EaseQuadOut, 30, false)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.DarkRed * 0.3f, 0.06f, EaseFunction.EaseQuadOut, 30, false));
+				Pixellate = true,
+				PixelDivisor = 4
+			});
 
-				Dust dust = Dust.NewDustPerfect(position, DustID.Blood, Main.rand.NextVector2Circular(1.5f, 1.5f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
-				dust.noGravity = Main.rand.NextBool();
-				dust.fadeIn = 2;
+			Dust dust = Dust.NewDustPerfect(position, DustID.Blood, Main.rand.NextVector2Circular(1.5f, 1.5f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
+			dust.noGravity = Main.rand.NextBool();
+			dust.fadeIn = 2;
 
-				if (Main.rand.NextBool())
-					ParticleHandler.SpawnParticle(new StickyBloodParticle(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.2f));
-			}
+			if (Main.rand.NextBool())
+				ParticleHandler.SpawnParticle(new StickyBloodParticle(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.2f));
 
 			if (leechedLife)
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/WispHit") with { Pitch = -0.5f, PitchVariance = 0.2f }, target.Center);
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, PitchVariance = 0.1f }, target.Center);
-				
-				ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, c1.Additive() * 0.5f, c1.Additive() * 0.5f, 0.6f, 25, 0.1f));
-				ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.White.Additive() * 0.5f, c2.Additive() * 0.5f, 0.3f, 25));
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, c1.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
-				{
-					Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
-				});
+				ParticleHandler.SpawnParticle(new BloodHit(target, dir * target.width / 2, Main.rand.Next(35, 55), dir.ToRotation(), Main.rand.NextFloat(0.7f, 1.4f)));
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, c2.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
+				for (int i = 0; i < 2; i++)
 				{
-					Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
-				});
-
-				for (int i = 0; i < 4; i++)
-				{
-					Dust dust = Dust.NewDustPerfect(position, DustID.Blood, -Vector2.UnitY * 2f + position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 6f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
+					dust = Dust.NewDustPerfect(position, DustID.Blood, -Vector2.UnitY * 2f + position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 6f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
 					dust.noGravity = Main.rand.NextBool();
 					dust.fadeIn = 2;
 
 					ParticleHandler.SpawnParticle(new StickyBloodParticle(position, -Vector2.UnitY * 2f + position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 7f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.1f));
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(position, position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 3f), Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
+					{
+						Pixellate = true,
+						PixelDivisor = 3
+					});
 				}
 			}
 		}

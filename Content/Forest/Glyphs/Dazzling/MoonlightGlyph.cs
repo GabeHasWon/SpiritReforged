@@ -14,15 +14,15 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Forest.Glyphs.Dazzling;
 
 public class MoonlightGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() 
-	{ 
+	public override void SetStaticDefaults()
+	{
 		base.SetStaticDefaults();
 		GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	} 
+	}
 
 	public sealed class MoonlightPlayer : ModPlayer
 	{
@@ -86,9 +86,7 @@ public class MoonlightGlyph : GlyphItem
 			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, 2f * strength, 15));
 
 			for (int i = 0; i < 50 * strength; i++)
-			{
 				ParticleHandler.SpawnParticle(new MagicParticle(position, Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextBool() ? c1 : c2, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30)));
-			}
 
 			if (Player.statMana < Player.statManaMax2)
 			{
@@ -187,7 +185,7 @@ public class MoonlightGlyph : GlyphItem
 
 		effect.Parameters["baseDepth"].SetValue(4f);
 		effect.Parameters["scale"].SetValue(0.66f);
-		
+
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
