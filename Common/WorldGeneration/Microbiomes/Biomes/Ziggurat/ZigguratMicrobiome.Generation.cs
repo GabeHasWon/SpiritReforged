@@ -32,6 +32,8 @@ using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
@@ -548,7 +550,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		{
 			Point16 pos = chestPositions.Dequeue();
 
-			if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
+			//if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
 				minChestCount--;
 		}
 
@@ -628,99 +630,97 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		return success;
 	}
 
+	#region furniture placement
 	/// <summary> Places a random lapis furniture tile, excluding chests. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate. </param>
 	/// <returns> Whether the tile was successfully placed. </returns>
 	public static bool PlaceRandomFurniture(int i, int j)
 	{
-		LapisSet set = ModContent.GetInstance<LapisSet>();
-
 		while (true)
 		{
-			FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+			string[] nameArray = LapisSet.TileTypes.Keys.ToArray();
+			string name = nameArray[WorldGen.genRand.Next(nameArray.Length)];
 
-			if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out _))
-				return PlaceFurniture(i, j, type);
+			if (name != nameof(ChestTile))
+				return PlaceFurniture(i, j, LapisSet.TileTypes[name]);
 		}
 	}
 
 	/// <summary> Places a lapis furniture item at the provided coordinates. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate. </param>
-	/// <param name="type"> The furniture type to place. </param>
-	public static bool PlaceFurniture(int i, int j, FurnitureSet.Types type)
+	/// <param name="tileType"> The furniture type to place. </param>
+	public static bool PlaceFurniture(int i, int j, int tileType)
 	{
-		LapisSet set = ModContent.GetInstance<LapisSet>();
+		int style = -1;
+		string name = (TileLoader.GetTile(tileType) as FurnitureTile).FurnitureName;
 
-		if (set.TryGetTileType(type, out int tileType))
+		if (name is nameof(CandleTile) or nameof(ChandelierTile) or nameof(LampTile) or nameof(LanternTile) or nameof(CandelabraTile))
+			style = 1; //Off states
+
+		if (name is nameof(TableTile) or nameof(ChairTile)) //Place an organized table and chair set
 		{
-			int style = -1;
+			int tableType = LapisSet.TileTypes[nameof(TableTile)];
 
-			if (type is FurnitureSet.Types.Candle or FurnitureSet.Types.Chandelier or FurnitureSet.Types.Lamp or FurnitureSet.Types.Lantern or FurnitureSet.Types.Candelabra)
-				style = 1; //Off states
-
-			if (type is FurnitureSet.Types.Table or FurnitureSet.Types.Chair) //Place an organized table and chair set
+			if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
 			{
-				int tableType = set.GetTileType(FurnitureSet.Types.Table);
+				int chairType = LapisSet.TileTypes[nameof(ChairTile)];
 
-				if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
+				Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
+				Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
+
+				TryPlaceSmallLight(i, j);
+
+				return true;
+			}
+		}
+		else if (name == nameof(DresserTile))
+		{
+			if (Placer.Check(i, j, tileType, style).IsClear().success)
+			{
+				WorldGen.Place3x2(i, j, (ushort)tileType);
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == tileType)
 				{
-					int chairType = set.GetTileType(FurnitureSet.Types.Chair);
-
-					Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
-					Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
-
-					TryPlaceSmallLight(i, j, set);
+					PopulateDresserChest(i, j);
+					TryPlaceSmallLight(i, j);
 
 					return true;
 				}
 			}
-			else if (type == FurnitureSet.Types.Dresser)
+		}
+		else
+		{
+			bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
+
+			if (name == nameof(ChestTile))
 			{
-				if (Placer.Check(i, j, tileType, style).IsClear().success)
-				{
-					WorldGen.Place3x2(i, j, (ushort)tileType);
-					Tile tile = Main.tile[i, j];
+				int chest = Chest.CreateChest(i, j - 1);
 
-					if (tile.HasTile && tile.TileType == tileType)
-					{
-						PopulateDresserChest(i, j);
-						TryPlaceSmallLight(i, j, set);
-						return true;
-					}
-				}
+				if (chest != -1)
+					PopulateChest(Main.chest[chest]);
 			}
-			else
-			{
-				bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
 
-				if (type == FurnitureSet.Types.Chest)
-				{
-					int chest = Chest.CreateChest(i, j - 1);
-
-					if (chest != -1)
-						PopulateChest(Main.chest[chest]);
-				}
-
-				return success;
-			}
+			return success;
 		}
 
 		return false;
 	}
 
-	private static void TryPlaceSmallLight(int i, int j, LapisSet set)
+	private static void TryPlaceSmallLight(int i, int j)
 	{
-		FurnitureSet.Types lightSetType = WorldGen.genRand.NextFromList(FurnitureSet.Types.Candle, FurnitureSet.Types.Candelabra);
-		int lightType = set.GetTileType(lightSetType);
+		string name = WorldGen.genRand.NextFromList(nameof(CandelabraTile), nameof(CandleTile));
+		int lightType = LapisSet.TileTypes[name];
 
-		if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && lightSetType is FurnitureSet.Types.Candle) //Candle style fix
+		if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && name == nameof(CandleTile)) //Candle style fix
 		{
 			Main.tile[i, j - 2].TileFrameX = 18;
 			Main.tile[i, j - 2].TileFrameY = 0;
 		}
 	}
+	#endregion;
 
 	private static void PopulateDresserChest(int i, int j)
 	{

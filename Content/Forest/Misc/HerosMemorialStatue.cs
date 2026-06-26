@@ -1,23 +1,20 @@
-using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class HerosMemorialStatue : ModTile, IAutoloadTileItem
+public class HerosMemorialStatue : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.SetItemDefaults(ModItem item)
+	public void SetItemDefaults(ModItem modItem)
 	{
-		item.Item.rare = ItemRarityID.Orange;
-		item.Item.Size = new Vector2(30, 48);
+		modItem.Item.rare = ItemRarityID.Orange;
+		modItem.Item.Size = new Vector2(30, 48);
 	}
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item)
-	{
-		item.CreateRecipe()
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe()
 			.AddIngredient(ItemID.StoneBlock, 50)
 			.AddTile(TileID.HeavyWorkBench)
 			.Register();
-	}
 
 	public override void SetStaticDefaults()
 	{
