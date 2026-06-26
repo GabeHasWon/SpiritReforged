@@ -11,7 +11,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
+using static SpiritReforged.Content.Forest.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
 public class SanguineGlyph : GlyphItem

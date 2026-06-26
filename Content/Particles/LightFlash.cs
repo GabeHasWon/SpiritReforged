@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Forest.Glyphs;
-using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
+using static SpiritReforged.Content.Forest.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Particles;
 

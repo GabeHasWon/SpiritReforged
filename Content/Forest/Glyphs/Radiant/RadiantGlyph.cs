@@ -7,24 +7,19 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
-using System.Threading;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using Terraria.WorldBuilding;
-using static AssGen.Assets;
-using static SpiritReforged.Content.Forest.Glyphs.RadiantGlyph;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Forest.Glyphs.Radiant;
 
 public class RadiantGlyph : GlyphItem
 {
-	public override void SetStaticDefaults() 
+	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 		GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	} 
+	}
 
 	public sealed class DivineStrike : ModBuff
 	{
@@ -37,9 +32,7 @@ public class RadiantGlyph : GlyphItem
 		public override void Update(Player player, ref int buffIndex)
 		{
 			if (player.GetModPlayer<RadiantPlayer>().divineStrike)
-			{
 				player.buffTime[buffIndex] = 18000;
-			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -63,15 +56,11 @@ public class RadiantGlyph : GlyphItem
 		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
-			{
 				if (Main.dayTime)
-				{
 					if (timeInWorld < 180)
 						timeInWorld++;
-				}
 				else if (timeInWorld > 0)
 					timeInWorld -= 3;
-			}
 		}
 	}
 
@@ -107,10 +96,10 @@ public class RadiantGlyph : GlyphItem
 						continue;
 
 					float lerp = 1f - radiantPlayer._flashTimer / 30f;
-					lerp = EaseBuilder.EaseCircularOut.Ease(Math.Min(lerp, 1));
+					lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(lerp, 1));
 
 					if (radiantPlayer.dissipateTimer > 0)
-						lerp = EaseBuilder.EaseCircularIn.Ease(Math.Min(radiantPlayer.dissipateTimer / 20f, 1));
+						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(radiantPlayer.dissipateTimer / 20f, 1));
 
 					Vector2 pos = player.Center + new Vector2(-9 * player.direction, player.gfxOffY - 25 * lerp) - player.velocity * 0.5f;
 
@@ -136,21 +125,21 @@ public class RadiantGlyph : GlyphItem
 					];
 
 					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-					
+
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[1] * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
 
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[0] * lerp, 0f, tex.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[1] * 0.4f * lerp, 0f, tex.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, tex.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White * 0.3f * lerp, 0f, tex.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-					
+
 					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[0] * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
 
 					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[1] * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
@@ -178,10 +167,10 @@ public class RadiantGlyph : GlyphItem
 				if (divineStrike || dissipateTimer > 0)
 				{
 					float lerp = 1f - _flashTimer / 30f;
-					lerp = EaseBuilder.EaseCircularOut.Ease(Math.Min(lerp, 1));
-					
+					lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(lerp, 1));
+
 					if (dissipateTimer > 0)
-						lerp = EaseBuilder.EaseCircularIn.Ease(Math.Min(dissipateTimer / 20f, 1));
+						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(dissipateTimer / 20f, 1));
 
 					Lighting.AddLight(Player.Center, Color.LightGoldenrodYellow.ToVector3() * 0.5f * lerp);
 				}
@@ -232,7 +221,7 @@ public class RadiantGlyph : GlyphItem
 
 					if (Main.rand.NextBool(35))
 					{
-						Vector2 pos = new Vector2(-9, -25);
+						var pos = new Vector2(-9, -25);
 
 						float rot = Main.rand.NextFloat(6.28f);
 						int dir = Main.rand.NextBool() ? -1 : 1;
@@ -260,7 +249,7 @@ public class RadiantGlyph : GlyphItem
 
 				divineStrike = false;
 				radiantCooldown = 0;
-				
+
 				_baseScale = 0f;
 				_flashTimer = 0;
 			}
@@ -448,7 +437,7 @@ public class RadiantGlyph : GlyphItem
 
 		if (Main.rand.NextBool(60))
 		{
-			Vector2 pos = new Vector2(0f, 0f);
+			var pos = new Vector2(0f, 0f);
 
 			float rot = Main.rand.NextFloat(6.28f);
 			int dir = Main.rand.NextBool() ? -1 : 1;
