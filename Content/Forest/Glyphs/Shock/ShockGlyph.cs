@@ -11,6 +11,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using System.Linq;
+using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Shock;
 
@@ -18,67 +19,58 @@ public class ShockGlyph : GlyphItem
 {
 	public sealed class ShockPlayer : ModPlayer
 	{
-		public bool Active => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>();
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-
-		}
-
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-
+			if (hit.Crit && item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>())
+				ChannelLightning(target, damageDone);
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Active)
+			if (hit.Crit && proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>())
+				ChannelLightning(target, damageDone);
+		}
+
+		private void ChannelLightning(NPC target, int damage)
+		{
+			NPC[] closestNPCs = Main.npc.Where(n => n.whoAmI != target.whoAmI && n.CanBeChasedBy(Player) && n.DistanceSQ(target.Center) < 250000f).OrderBy(n => n.DistanceSQ(target.Center)).Take(3).ToArray();
+
+			if (closestNPCs.Length <= 0)
+				return;
+
+			for (int i = 0; i < closestNPCs.Length; i++)
 			{
-				if (proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>() && hit.Crit)
-				{
-					NPC[] closestNPCs = Main.npc.Where(n => n.whoAmI != target.whoAmI && n.CanBeChasedBy(Player) && n.DistanceSQ(target.Center) < 250000f).OrderBy(n => n.DistanceSQ(target.Center)).Take(3).ToArray();
-
-					if (closestNPCs.Length <= 0)
-						return;
-
-					for (int i = 0; i < closestNPCs.Length; i++)
-					{
-						Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
-							ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damageDone * 0.25f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
-					}
-
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricSting") with { Volume = 1.5f }, target.Center);
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.5f }, target.Center);
-
-					ScreenshakeHelper.Shake(target.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
-
-					for (int i = 0; i < 3; i++)
-					{
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
-							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
-
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
-							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
-
-						Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
-						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
-
-						pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
-						velocity = Main.rand.NextVector2Circular(4f, 4f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
-					}
-
-					static void DecelerateAction(Particle p)
-					{
-						p.Velocity *= 0.9f;
-					}
-				}
+				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
+					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.25f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
 			}
+
+			SoundEngine.PlaySound(ElectricSting, target.Center);
+			SoundEngine.PlaySound(ElectricZap, target.Center);
+
+			ScreenshakeHelper.Shake(target.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
+
+			for (int i = 0; i < 3; i++)
+			{
+				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
+
+				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
+
+				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
+				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+
+				pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
+				velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+			}
+
+			static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 		}
 	}
 
@@ -273,6 +265,16 @@ public class ShockGlyph : GlyphItem
 		}
 	}
 
+	public static readonly SoundStyle ElectricSting = new("SpiritReforged/Assets/SFX/Projectile/ElectricSting")
+	{
+		Volume = 1.5f
+	};
+
+	public static readonly SoundStyle ElectricZap = new("SpiritReforged/Assets/SFX/Projectile/ElectricZap")
+	{
+		Volume = 0.5f
+	};
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 28;
@@ -332,11 +334,12 @@ public class ShockGlyph : GlyphItem
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
-	int shockTimer;
-
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		var globalItem = item.GetGlobalItem<ShockGlobalItem>();
+		if (Main.dedServ)
+			return;
+
+		ShockGlobalItem globalItem = item.GetGlobalItem<ShockGlobalItem>();
 
 		if (Main.rand.NextBool(120) && globalItem.shockTimer <= 0)
 		{
@@ -346,7 +349,6 @@ public class ShockGlyph : GlyphItem
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
 				ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 			}
 		}
@@ -354,7 +356,6 @@ public class ShockGlyph : GlyphItem
 		if (Main.rand.NextBool(50))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
 			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 		}
 	}
