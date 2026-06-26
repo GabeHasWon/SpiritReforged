@@ -37,7 +37,7 @@ public class StargrassTile : GrassTile, ISetConversion
 
 		int mowType = ModContent.TileType<StargrassMowed>();
 		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
 
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));

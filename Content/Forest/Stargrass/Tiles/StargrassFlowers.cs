@@ -21,7 +21,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
@@ -76,7 +76,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		spriteBatch.Draw(TextureAssets.Tile[type].Value, drawPos + offset + dataOffset, source, Lighting.GetColor(i, j), rotation, origin, 1, default, 0);
 
-		Texture2D glowmask = Sets.TileGlowmask[Type].Texture.Value;
+		Texture2D glowmask = TileHelperSets.TileGlowmask[Type].Texture.Value;
 		spriteBatch.Draw(glowmask, drawPos + offset + dataOffset, source, GetGlow(new(i, j)), rotation, origin, 1, default, 0);
 
 		static Color GetGlow(Point16 coords)

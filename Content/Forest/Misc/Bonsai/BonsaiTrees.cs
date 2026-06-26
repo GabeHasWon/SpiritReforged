@@ -17,7 +17,7 @@ public class BonsaiTrees : ModTile, IDrawPreview
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		TileObjectData.newTile.CoordinateWidth = 18;
@@ -81,7 +81,7 @@ public class BonsaiTrees : ModTile, IDrawPreview
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offsetX, 2);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, position, source, color * 3, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, source, color * 3, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		
 		return false;
 	}

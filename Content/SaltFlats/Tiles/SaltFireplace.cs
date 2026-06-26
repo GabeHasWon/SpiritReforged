@@ -24,7 +24,7 @@ public class SaltFireplace : ModTile, ILoadItem
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Campfire, 0));
 		TileObjectData.newTile.StyleLineSkip = 9;

@@ -103,7 +103,7 @@ public class Magmastone : ModTile, ILoadItem
 		Main.tileBlockLight[Type] = true;
 
 		TileID.Sets.CanBeDugByShovel[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		AddMapEntry(new Color(200, 160, 80));
 		this.Merge(TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>(), TileID.Stone);

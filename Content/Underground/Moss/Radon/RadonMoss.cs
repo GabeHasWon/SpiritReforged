@@ -9,7 +9,7 @@ public class RadonMoss : OganessonMoss
 {
 	public override void SetEntry()
 	{
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
 
 		RegisterItemDrop(ModContent.ItemType<RadonMossItem>());
 		AddMapEntry(new Color(252, 248, 3), this.GetLocalization("MapEntry"));

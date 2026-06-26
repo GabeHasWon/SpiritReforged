@@ -71,7 +71,10 @@
             <summary> Gets the research count of <paramref name="modItem"/> based on a variety of conditions, defaulting to 1.<para/>
             See <see cref="F:TileHelper.Common.DataStructures.ResearchConditions"/> to provide custom conditions for this method. </summary>
         </member>
-        <member name="F:TileHelper.Common.Sets.TileGlowmask">
+        <member name="T:TileHelper.Common.TileHelperSets">
+            <summary> Provides sets to reference static tile information by tile type, like <see cref="T:Terraria.ID.TileID.Sets"/>. </summary>
+        </member>
+        <member name="F:TileHelper.Common.TileHelperSets.TileGlowmask">
             <summary> Stores custom tile glowmasks. </summary>
         </member>
         <member name="T:TileHelper.Common.FurnitureTypeAttribute">

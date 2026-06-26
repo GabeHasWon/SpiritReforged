@@ -14,7 +14,7 @@ public class RadonMossBrick : ModTile, ILoadItem
 		Main.tileBlockLight[Type] = true;
 		Main.tileBrick[Type] = true;
 		Main.tileMergeDirt[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		AddMapEntry(new Color(252, 248, 3));
 		HitSound = SoundID.Tink;

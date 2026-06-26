@@ -22,7 +22,7 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 		Main.tileFrameImportant[Type] = true;
 
 		TileID.Sets.CanDropFromRightClick[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		const int height = 30;
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -59,7 +59,7 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 		float lerp = (float)Math.Sin(Main.timeForVisualEffects / 50f) * .25f;
 		float mult = MathHelper.Clamp(1f - Main.LocalPlayer.Distance(new Vector2(i, j) * 16) / 150f, 0, 1);
 
-		spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, position - Main.screenPosition + TileExtensions.TileOffset, 
+		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position - Main.screenPosition + TileExtensions.TileOffset, 
 			source, Color.White * (mult + lerp), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 		if (!Main.gamePaused && mult > .15f && Main.rand.NextBool(5))

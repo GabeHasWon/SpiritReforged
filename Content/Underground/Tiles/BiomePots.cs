@@ -148,7 +148,7 @@ public class BiomePots : PotTile, ILootable
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(200, 200, 200));
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(200, 200, 200));
 	}
 
 	public override void AddMapData() => AddMapEntry(new Color(112, 60, 70), Language.GetText("MapObject.Pot"));

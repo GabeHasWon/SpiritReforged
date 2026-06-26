@@ -55,7 +55,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
         TileObjectData.newTile.CoordinateHeights = new[] { 30 };
@@ -162,7 +162,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
 		float opacity = GetOpacity(i, j);
 		if (opacity > 0)
 		{
-			Texture2D glowmask = Sets.TileGlowmask[Type].Texture.Value;
+			Texture2D glowmask = TileHelperSets.TileGlowmask[Type].Texture.Value;
 
 			spriteBatch.Draw(glowmask, position, source, (new Color(0, 255, 190) * opacity).Additive(), rotation, origin, 1, 0, 0);
 			spriteBatch.Draw(glowmask, position, source, (Color.White * opacity * 0.2f).Additive(), rotation, origin, 1, 0, 0);

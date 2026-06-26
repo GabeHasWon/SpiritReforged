@@ -60,7 +60,7 @@ public class ScarabMusicBox : ModItem
 
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
-			Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			TileObjectData.newTile.Origin = new Point16(0, 1);

@@ -14,7 +14,7 @@ public class RadonMossGrayBrick : GrassTile
 		base.SetStaticDefaults();
 
 		Main.tileLighted[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(252, 248, 3));

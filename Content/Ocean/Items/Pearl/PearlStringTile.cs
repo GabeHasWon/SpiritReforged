@@ -17,7 +17,7 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 		Main.tileNoFail[Type] = true;
 
 		TileID.Sets.CanDropFromRightClick[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.CoordinateHeights = [16];
@@ -94,7 +94,7 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 		var position = (new Vector2(i, j) + offset) * 16 - Main.screenPosition;
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, position, source, color * 2, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, source, color * 2, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 		var rect = new Rectangle(i * 16, j * 16, 16, 16);
 		if (!Main.gamePaused && Main.rand.NextBool(50) && Main.LocalPlayer.Distance(rect.Center()) < 100) //Nearby dust effects

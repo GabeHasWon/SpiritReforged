@@ -29,7 +29,7 @@ public class Starflower : ModTile, ISwayTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 2;
@@ -93,7 +93,7 @@ public class Starflower : ModTile, ISwayTile
 		var source = new Rectangle(t.TileFrameX, t.TileFrameY, data.CoordinateWidth, heights);
 
 		spriteBatch.Draw(texture, drawPos + offset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, drawPos + offset, source, TileExtensions.GetTint(i, j, Color.White), rotation, origin, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, drawPos + offset, source, TileExtensions.GetTint(i, j, Color.White), rotation, origin, 1, SpriteEffects.None, 0);
 	}
 
 	public float Physics(Point16 topLeft)

@@ -31,7 +31,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(100, 100, 100, 0));
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(100, 100, 100, 0));
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(1, 3);

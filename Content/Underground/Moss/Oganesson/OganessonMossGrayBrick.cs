@@ -15,7 +15,7 @@ public class OganessonMossGrayBrick : GrassTile
 		base.SetStaticDefaults();
 
 		Main.tileLighted[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(220, 220, 220));

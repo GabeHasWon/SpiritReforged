@@ -18,7 +18,7 @@ public class GravelPile : ModTile, IAutoloadRubble
 		Main.tileNoFail[Type] = true;
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, Magmastone.GetGlowColor);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, Magmastone.GetGlowColor);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);

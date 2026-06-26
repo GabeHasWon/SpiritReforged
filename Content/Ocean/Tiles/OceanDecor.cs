@@ -15,7 +15,7 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileLighted[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		AddTileObjectData();
 

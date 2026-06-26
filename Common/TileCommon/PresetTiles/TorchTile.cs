@@ -21,7 +21,7 @@ public abstract class TorchTile : ModTile
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.DisableSmartInteract[Type] = true;
 		TileID.Sets.Torch[Type] = true;
-		Sets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.StyleTorch);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
@@ -81,7 +81,7 @@ public abstract class TorchTile : ModTile
 			float yy = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
 			var position = new Vector2(i * 16 - (int)Main.screenPosition.X - 4 / 2f + xx, j * 16 - (int)Main.screenPosition.Y + offsetY + yy) + TileExtensions.TileOffset;
 
-			spriteBatch.Draw(Sets.TileGlowmask[Type].Texture.Value, position, frame, new Color(100, 100, 100, 0), 0f, default, 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, frame, new Color(100, 100, 100, 0), 0f, default, 1f, SpriteEffects.None, 0f);
 		}
 	}
 
