@@ -11,7 +11,7 @@ namespace SpiritReforged.Content.Forest.Glyphs.Bee;
 
 public sealed class BeeGlyphPlayer : ModPlayer
 {
-	internal static int[] maxTimeLefts = new int[Main.maxCombatText];
+	private static int[] _maxTimeLefts = new int[Main.maxCombatText];
 
 	public override void Load() => On_CombatText.UpdateCombatText += FadeDamageText;
 
@@ -22,7 +22,7 @@ public sealed class BeeGlyphPlayer : ModPlayer
 		for (int i = 0; i < Main.maxCombatText; i++)
 		{
 			CombatText text = Main.combatText[i];
-			if (maxTimeLefts[i] > 0)
+			if (_maxTimeLefts[i] > 0)
 			{
 				if (text.active)
 				{
@@ -31,11 +31,11 @@ public sealed class BeeGlyphPlayer : ModPlayer
 					blue = text.crit ? Color.Goldenrod : Color.Yellow;
 					orange = text.crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
 
-					text.color = Color.Lerp(blue, orange, EaseBuilder.EaseCircularInOut.Ease(1f - text.lifeTime / (float)maxTimeLefts[i]));
+					text.color = Color.Lerp(blue, orange, EaseFunction.EaseCircularInOut.Ease(1f - text.lifeTime / (float)_maxTimeLefts[i]));
 				}
 				else
 				{
-					maxTimeLefts[i] = 0;
+					_maxTimeLefts[i] = 0;
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public sealed class BeeGlyphPlayer : ModPlayer
 		CombatText.NewText(target.getRect(), orange, Math.Max((int)(damageDone * 0.8f), 1), hit.Crit);
 		int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
 
-		maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
+		_maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
 	}
 }
 
@@ -82,29 +82,29 @@ public class BeeGlobalNPC : GlobalNPC
 
 	public override bool InstancePerEntity => true;
 
-	public bool _tagged;
-	public int _tagCooldown;
-	public int _decayTimer;
+	public bool tagged;
+	public int tagCooldown;
+	private int _decayTimer;
 
-	public bool CanExplode => _tagged && _tagCooldown <= 0;
+	public bool CanExplode => tagged && tagCooldown <= 0;
 
 	public override void ResetEffects(NPC npc)
 	{
-		if (_tagCooldown > 0)
-			_tagCooldown--;
+		if (tagCooldown > 0)
+			tagCooldown--;
 
 		if (_decayTimer > 0)
 			_decayTimer--;
 		else
-			_tagged = false;
+			tagged = false;
 	}
 
 	public override void AI(NPC npc)
 	{
-		if (!Main.dedServ && _tagged && Main.rand.NextBool(5) && ParticleHandler.Particles.Where(p => p is BeeOnNPC && (p as BeeOnNPC).Parent == npc).Count() < 3)
+		if (!Main.dedServ && tagged && Main.rand.NextBool(5) && ParticleHandler.Particles.Where(p => p is BeeOnNPC && (p as BeeOnNPC).Parent == npc).Count() < 3)
 			ParticleHandler.SpawnParticle(new BeeOnNPC(npc, Main.rand.NextVector2Circular(25f, 25f)));
 
-		if (Main.rand.NextBool(100) && _tagged)
+		if (Main.rand.NextBool(100) && tagged)
 			ParticleHandler.SpawnParticle(new LargeBeeParticle(npc.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(2f, 2f), 0f, Main.rand.NextFloat(0.8f, 1.1f), 90 + Main.rand.Next(60)));
 	}
 
@@ -113,8 +113,9 @@ public class BeeGlobalNPC : GlobalNPC
 		if (item.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
 		{
 			HitEffects(npc);
-			if (!_tagged)
-				_tagged = true;
+
+			if (!tagged)
+				tagged = true;
 
 			_decayTimer = 600;
 		}
@@ -134,14 +135,14 @@ public class BeeGlobalNPC : GlobalNPC
 			}
 
 			TagEffects(owner, npc);
-			_tagged = false;
-			_tagCooldown = MAX_TAG_COOLDOWN;
+			tagged = false;
+			tagCooldown = MAX_TAG_COOLDOWN;
 		}
 		else if (!projectile.IsMinionOrSentryRelated && projectile.type is not ProjectileID.Bee or ProjectileID.GiantBee && projectile.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
 		{
 			HitEffects(npc);
-			if (!_tagged)
-				_tagged = true;
+			if (!tagged)
+				tagged = true;
 
 			_decayTimer = 600;
 		}

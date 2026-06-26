@@ -121,7 +121,7 @@ public class BeeGlyph : GlyphItem
 			else if (Progress > 0.75f)
 				fade = 1f - (Progress - 0.75f) / 0.25f;
 
-			float glyphEffectProgress = 1f - Parent.GetGlobalNPC<BeeGlobalNPC>()._tagCooldown / (float)BeeGlobalNPC.MAX_TAG_COOLDOWN;
+			float glyphEffectProgress = 1f - Parent.GetGlobalNPC<BeeGlobalNPC>().tagCooldown / (float)BeeGlobalNPC.MAX_TAG_COOLDOWN;
 
 			Vector2 offset = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * EaseFunction.EaseCircularIn.Ease(glyphEffectProgress);
 
@@ -152,10 +152,6 @@ public class BeeGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(Color.Goldenrod);
 	}
-					}
-				}
-			}
-		}
 
 	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !ContentSamples.ItemsByType[item.type].DamageType.CountsAsClass(DamageClass.Summon);
 
@@ -165,9 +161,7 @@ public class BeeGlyph : GlyphItem
 			.AddSubClass(new(item.DamageType, 0.8f))
 			.AddSubClass(new(DamageClass.Summon, 0.2f));
 
-			for (int i = 0; i < 3; i++)
-				Projectile.NewProjectile(target.GetSource_OnHurt(player), target.Center, Main.rand.NextVector2Unit(), type, 10, 0, player.whoAmI); // Make into a tag bonus
-		}
+		base.OnApplyGlyph(item, context);
 	}
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
@@ -256,13 +250,6 @@ public class BeeGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 		}
-	protected override void OnApplyGlyph(Item item, IApplicationContext context)
-	{
-		item.DamageType = ModContent.GetInstance<HybridDamageClass>().Clone()
-			.AddSubClass(new(item.DamageType, 0.8f))
-			.AddSubClass(new(DamageClass.Summon, 0.2f));
-
-		base.OnApplyGlyph(item, context);
 	}
 }
 
