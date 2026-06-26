@@ -2,6 +2,8 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Content.Forest.Glyphs.Sanguine;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,9 +16,21 @@ public class RotStackingDebuff : ModBuff
 	{
 		public BlightSpread blightSpread = new(); //Local changes will need to be synced
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HeldItem.GetGlyph().ItemType != ModContent.ItemType<RotGlyph>() || !target.TryGetGlobalNPC(out RotGlobalNPC rotGlobalNPC))
+			if (item.GetGlyph().ItemType == ModContent.ItemType<RotGlyph>())
+				HitEffects(target);
+		}
+
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<RotGlyph>())
+				HitEffects(target);
+		}
+
+		public void HitEffects(NPC target)
+		{
+			if (!target.TryGetGlobalNPC(out RotGlobalNPC rotGlobalNPC))
 				return;
 
 			SpreadNearby(target.Center, 100);
@@ -39,21 +53,21 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(2f, 2f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.2f, Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, target.DirectionTo(Player.Center).RotatedByRandom(1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.15f, Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, target.DirectionTo(Player.Center).RotatedByRandom(1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.25f, Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 				}
@@ -90,7 +104,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.4f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
@@ -99,7 +113,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.3f, 0.03f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
@@ -108,7 +122,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.3f, 0.03f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 				}
@@ -140,7 +154,7 @@ public class RotStackingDebuff : ModBuff
 			if (blightSpread.Active)
 			{
 				if (blightSpread.Active)
-					npc.lifeRegen = Math.Min(npc.lifeRegen, 0) - blightSpread.stacks * 2;
+					npc.lifeRegen = Math.Min(npc.lifeRegen, 0) - blightSpread.stacks * 3;
 
 				damage = 1;
 			}
@@ -157,7 +171,7 @@ public class RotStackingDebuff : ModBuff
 			if (!blightSpread.Active)
 				return;
 
-			if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.decayTime % 30 == 0)
+			if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.decayTime % 45 == 0)
 				SpreadNearby(npc.Center, 80, 1); //Periodically spread to nearby NPCs
 
 			if (!Main.dedServ && npc.Opacity > 0 && Main.rand.NextBool(30 - blightSpread.stacks * 2))
@@ -180,7 +194,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, npc.width * 0.001f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
@@ -189,7 +203,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
@@ -198,7 +212,7 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 				}
@@ -217,7 +231,7 @@ public class RotStackingDebuff : ModBuff
 				npc.AddBuff(ModContent.BuffType<RotStackingDebuff>(), 60);
 
 			blightSpread.stacks = Math.Min(blightSpread.stacks + stackCount, BlightSpread.MaxStacks);
-			blightSpread.decayTime = 180;
+			blightSpread.decayTime = 240;
 		}
 	}
 
@@ -234,6 +248,8 @@ public class RotStackingDebuff : ModBuff
 
 				if (Main.dedServ || rotGlobalNPC.blightSpread.stacks > 1)
 					continue;
+				
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.1f, PitchVariance = 0.5f }, npc.Center);
 
 				for (int i = 0; i < 8; i++)
 				{
@@ -243,21 +259,21 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(87, 94, 1, 255) * 0.2f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.AboveNPC
 					});
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(131, 124, 1) * 0.15f, 0.02f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.AboveNPC
 					});
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(169, 158, 38) * 0.25f, 0.01f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
-						PixelDivisor = 2,
+						PixelDivisor = 3,
 						Layer = ParticleLayer.AboveNPC
 					});
 				}

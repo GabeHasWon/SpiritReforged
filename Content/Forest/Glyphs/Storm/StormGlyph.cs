@@ -355,7 +355,8 @@ public class StormGlyph : GlyphItem
 
 		public override bool PreDraw(Projectile projectile, ref Color lightColor)
 		{
-			var star = AssetLoader.LoadedTextures["Star"].Value;
+			Main.instance.LoadProjectile(79);
+			var star = TextureAssets.Projectile[79].Value;
 
 			if (doVisuals)
 			{
@@ -371,7 +372,7 @@ public class StormGlyph : GlyphItem
 				}
 
 				if (doWindBurst) 
-					Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.15f, 0f, 0f);
+					Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.35f, 0f, 0f);
 			}
 
 			return base.PreDraw(projectile, ref lightColor);
@@ -384,13 +385,13 @@ public class StormGlyph : GlyphItem
 			SoundEngine.PlaySound(SoundID.DD2_SonicBoomBladeSlash with { Volume = 1f, PitchVariance = 0.2f }, projectile.Center);
 			SoundEngine.PlaySound(SoundID.DoubleJump with { Volume = 2f, PitchVariance = 0.2f, Pitch = -0.2f }, projectile.Center);
 
-			for (int i = 0; i < 25; i++)
+			for (int i = 0; i < 35; i++)
 			{
 				StormMetaballSystem.Add(new StormParticle(Main.rand.Next(2))
 				{
 					LocalPosition = projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
 					Scale = Vector2.One * Main.rand.NextFloat(0.7f, 1.2f),
-					Velocity = Main.rand.NextVector2Circular(1.5f, 1.5f) - Vector2.UnitY * Main.rand.NextFloat(),
+					Velocity = Main.rand.NextVector2Circular(4.5f, 4.5f) - Vector2.UnitY * Main.rand.NextFloat(),
 					TimeToLive = Main.rand.Next(30, 70),
 					Opacity = 1f,
 					floatSpeed = Main.rand.NextFloat(0.01f, 0.1f),
@@ -398,7 +399,11 @@ public class StormGlyph : GlyphItem
 				});
 
 				ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(40f, 40f),
-					Main.rand.NextVector2Circular(1.5f, 1.5f) - Vector2.UnitY * Main.rand.NextFloat(), Color.LightCyan * 0.25f, 0.1f, EaseFunction.EaseQuadOut, 60, false));
+					Main.rand.NextVector2Circular(2.5f, 2.5f) - Vector2.UnitY * Main.rand.NextFloat(), Color.LightGray * 0.4f, 0.12f, EaseFunction.EaseQuadOut, Main.rand.Next(45, 75), false)
+				{
+					Pixellate = true,
+					PixelDivisor = 3,
+				});
 			}
 		}
 
@@ -671,20 +676,27 @@ public class StormGlyph : GlyphItem
 		return input + new Vector2(0, dimensions);
 	}
 
-	public Vector2? tilePosition;
+	sealed class StormGlyphGlobalItem : GlobalItem
+	{
+		public Vector2? tilePosition;
+
+		public override bool InstancePerEntity => true;
+	}
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		if (tilePosition is null && item.velocity == Vector2.Zero)
-			tilePosition = FindGroundFromPosition(item.Center);
+		var globalItem = item.GetGlobalItem<StormGlyphGlobalItem>();
+
+		if (globalItem.tilePosition is null && item.velocity == Vector2.Zero)
+			globalItem.tilePosition = FindGroundFromPosition(item.Center);
 
 		gravity *= 0.33f;
 
-		if (tilePosition.HasValue && Math.Abs(item.Center.Y - tilePosition.Value.Y) < 24 && Math.Abs(item.Center.Y - tilePosition.Value.Y) > 0)
-			item.velocity.Y -= 0.12f;
+		if (globalItem.tilePosition.HasValue && Math.Abs(item.Center.Y - globalItem.tilePosition.Value.Y) < 18 && Math.Abs(item.Center.Y - globalItem.tilePosition.Value.Y) > 0)
+			item.velocity.Y -= 0.06f;
 
 		if (item.velocity.X != 0)
-			tilePosition = null;
+			globalItem.tilePosition = null;
 
 		if (item.velocity.Y < 0)
 		{

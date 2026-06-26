@@ -204,7 +204,7 @@ public class SanguineGlyph : GlyphItem
 			{
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { Pitch = -0.3f, PitchVariance = 0.1f }, target.Center);
 
-				ParticleHandler.SpawnParticle(new BloodHit(target, dir * target.width / 2, Main.rand.Next(35, 55), dir.ToRotation(), Main.rand.NextFloat(0.7f, 1.4f)));
+				ParticleHandler.SpawnParticle(new BloodHit(target, dir * target.width / 2, Main.rand.Next(20, 35), dir.ToRotation(), Main.rand.NextFloat(0.9f, 1.1f)));
 
 				for (int i = 0; i < 2; i++)
 				{
