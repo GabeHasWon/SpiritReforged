@@ -108,6 +108,9 @@ internal class EcotoneMapperDisplay : ModSystem
 
 	private static void DrawSelection(DynamicSpriteFont font, float panX, float panY, EcotoneSurfaceMapping.EcotoneEntry entry, ref int entryId, ref Rectangle lastRectangle)
 	{
+		if (EcotoneMapperHooks.MappingEcotone is null)
+			return;
+
 		Rectangle drawRectangle = ModifyRectangle(OffscreenXMin, OffscreenYMin, panX, panY, entry.Bounds, true);
 
 		bool hover = drawRectangle.Contains(Main.MouseScreen.ToPoint());

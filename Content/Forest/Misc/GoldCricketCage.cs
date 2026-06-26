@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class GoldCricketCage : CricketCage, IAutoloadTileItem
+public class GoldCricketCage : CricketCage, ILoadItem
 {
 	public override void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Terrarium).AddIngredient(AutoContent.ItemType<GoldCricket>()).Register();
 

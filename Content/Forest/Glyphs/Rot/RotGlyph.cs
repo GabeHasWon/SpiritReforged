@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -19,6 +18,14 @@ public class RotGlyph : GlyphItem
 		//dummy item id again for shader binding
 		GameShaders.Armor.BindShader(ModContent.ItemType<EnchantedStamp>(), new RotGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", 0.5f, false));
 		GameShaders.Armor.BindShader(Type, new RotGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", 0.75f, true));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(new(220, 198, 57));
 	}
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
@@ -117,14 +124,6 @@ public class RotGlyph : GlyphItem
 				PixelDivisor = 3
 			});
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(220, 198, 57));
 	}
 }
 

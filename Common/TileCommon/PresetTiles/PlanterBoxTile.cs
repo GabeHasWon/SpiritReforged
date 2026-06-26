@@ -1,8 +1,6 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-namespace SpiritReforged.Common.TileCommon.PresetTiles;
-
-public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
+public abstract class PlanterBoxTile : ModTile
 {
 	public virtual void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 25;
 	public virtual void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 1);
@@ -61,7 +59,7 @@ public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
 }
 
 /// <summary> Allows <see cref="PlanterBoxTile"/> and vanilla planter boxes to merge. </summary>
-public class PlanterBoxMerge : GlobalTile
+public sealed class PlanterBoxMerge : GlobalTile
 {
 	/// <summary> Includes modded tile types that use <see cref="TileID.PlanterBox"/> or <see cref="TileID.ClayPot"/> behaviour.<para/>
 	/// Types are expected to be added during <see cref="ModType.SetStaticDefaults"/>. </summary>

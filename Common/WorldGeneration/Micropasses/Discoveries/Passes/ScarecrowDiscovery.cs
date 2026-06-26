@@ -1,17 +1,31 @@
-﻿using SpiritReforged.Content.Forest.Botanist.Tiles;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+using SpiritReforged.Content.Forest.Botanist.Tiles;
 using Terraria.DataStructures;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 
-internal class ScarecrowDiscovery : Discovery
+internal class ScarecrowDiscovery : Discovery, IGenerationPage
 {
 	/// <summary> The position of the generated scarecrow tile, cleared after worldgen. </summary>
 	[WorldBound]
 	public static Point Position;
 
+	[GenConfigurable(2, 40)]
+	[Slider]
+	public static int FieldSize = 8;
+
 	public override string WorldGenName => "Scarecrow";
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, List<Discovery> discoveries, ref bool afterIndex)
 	{
@@ -27,12 +41,12 @@ internal class ScarecrowDiscovery : Discovery
 		int region = (int)(Main.maxTilesX * .45f);
 		int tries = 0;
 
-		int fieldSize = WorldGen.GetWorldSize() switch
+		FieldSize = this.GetPage().ValueOrDefault(nameof(FieldSize), WorldGen.GetWorldSize() switch
 		{
 			1 => 8,
 			2 => 12,
 			_ => 5
-		};
+		});
 
 		while (tries < maxTries)
 		{
@@ -47,9 +61,9 @@ internal class ScarecrowDiscovery : Discovery
 			var tile = Main.tile[x, y];
 			if (tile.TileType == TileID.Dirt && tile.LiquidAmount == 0)
 			{
-				var area = new Rectangle(x - fieldSize, y - 2, fieldSize * 2 + 1, 3);
+				var area = new Rectangle(x - FieldSize, y - 2, FieldSize * 2 + 1, 3);
 
-				if (TryGenArea(new Point16(x, y), fieldSize) && GenVars.structures.CanPlace(area, 2))
+				if (TryGenArea(new Point16(x, y), FieldSize) && GenVars.structures.CanPlace(area, 2))
 				{
 					GenVars.structures.AddProtectedStructure(area, 2);
 					return;

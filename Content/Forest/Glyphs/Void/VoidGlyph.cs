@@ -567,6 +567,14 @@ public class VoidGlyph : GlyphItem
 		}
 	}
 
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(new(225, 63, 255));
+	}
+
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
 		Texture2D whiteTexture = TextureColorCache.ColorSolid(parameters.Texture, Color.White);
@@ -662,14 +670,4 @@ public class VoidGlyph : GlyphItem
 			});
 		}
 	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(new(225, 63, 255));
-	}
-
-	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item);
 }

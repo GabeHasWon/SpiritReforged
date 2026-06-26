@@ -4,12 +4,15 @@ using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class DeadTree : CustomTree
 {
 	public override int TreeHeight => WorldGen.genRand.Next(3, 11);
+
+	public override HashSet<SegmentType> ShakeableTreetops => [SegmentType.Bare, SegmentType.Default];
 
 	public override void PreAddObjectData()
 	{
@@ -42,11 +45,8 @@ public class DeadTree : CustomTree
 
 	protected override void OnShakeTree(int i, int j)
 	{
-		if (Main.rand.NextBool(3))
-		{
-			Vector2 position = new Vector2(i, j - 3) * 16;
-			Item.NewItem(null, new Rectangle((int)position.X, (int)position.Y, 16, 16), AutoContent.ItemType<Drywood>(), Main.rand.Next(3, 11));
-		}
+		Vector2 position = new Vector2(i, j - 3) * 16;
+		Item.NewItem(new EntitySource_ShakeTree(i, j), new Rectangle((int)position.X, (int)position.Y, 16, 16), AutoContent.ItemType<Drywood>(), Main.rand.Next(3, 11));
 
 		GrowEffects(i, j, true);
 	}

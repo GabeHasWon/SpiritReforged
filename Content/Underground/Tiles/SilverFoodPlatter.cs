@@ -3,10 +3,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.UI;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
+public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{

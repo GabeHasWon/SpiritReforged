@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Noise;
@@ -9,8 +10,10 @@ using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Walls;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -19,16 +22,81 @@ internal class ZigguratMicropass : Micropass
 {
 	public override string WorldGenName => "Ziggurat";
 
+	[GenConfigurable(0, 12)]
+	[Slider]
+	private static int DebrisMinimum = 1;
+
+	[GenConfigurable(0, 13)]
+	[Slider]
+	private static int DebrisRange = 5;
+
+	[GenConfigurable(1, 30)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int TopPlatChance = 3;
+
+	[GenConfigurable(1, 30)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int BottomPlatChance = 3;
+
+	[GenConfigurable(1, 25)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int FlagpoleChance = 2;
+
+	[GenConfigurable(1, 15)]
+	[Slider]
+	[PriorityModifier(nameof(FlagpoleChance))]
+	private static int FlagpoleCountMinumum = 1;
+
+	[GenConfigurable(0, 15)]
+	[Slider]
+	[PriorityModifier(nameof(FlagpoleChance))]
+	private static int FlagpoleCountRange = 2;
+
+	[GenConfigurable(1, 25)]
+	[Slider]
+	[PriorityModifier(nameof(FlagpoleChance))]
+	private static int FlagpoleHeightMin = 3;
+
+	[GenConfigurable(0, 25)]
+	[Slider]
+	[PriorityModifier(nameof(FlagpoleChance))]
+	private static int FlagpoleHeightRange = 3;
+
+	[GenConfigurable(0f, 10f, 0.1f)]
+	[Slider]
+	private static float PotMultiplier = 2f;
+
+	[GenConfigurable(1, 12)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int ChestChance = 2;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	private static float UncommonPotChance = 0.15f;
+
+	[GenConfigurable(1, 30)]
+	[Slider]
+	private static int AbovegroundPillarChance = 3;
+
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids");
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		const int scanRadius = 50;
-		const int range = ZigguratMicrobiome.Width / 2;
+		
+		int range = ZigguratMicrobiome.UsedWidth / 2;
 
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		Point finalPosition = Point.Zero;
 
-		for (int a = 0; a < 300; a++)
+		for (int a = 0; a < 500; a++)
 		{
 			int rangeLeft = WorldGen.genRand.Next(loc.Left, Math.Max((int)(loc.Center().X - range), loc.Left + 20));
 			int rangeRight = WorldGen.genRand.Next(Math.Min((int)(loc.Center().X + range), loc.Right - 20), loc.Right);
@@ -39,12 +107,13 @@ internal class ZigguratMicropass : Micropass
 			if (!WorldUtils.Find(new(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
 				return; // ?? big hole where the desert is?
 
-			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.Height * 0.3f));
+			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.DefaultHeight * 0.3f));
 
 			Dictionary<ushort, int> typeToCount = [];
-			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(new Rectangle(-(ZigguratMicrobiome.Width / 2), -(ZigguratMicrobiome.Height / 2), ZigguratMicrobiome.Width, ZigguratMicrobiome.Height)), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
+			Rectangle area = new Rectangle(-(ZigguratMicrobiome.UsedWidth / 2), -(ZigguratMicrobiome.UsedHeight / 2), ZigguratMicrobiome.UsedWidth, ZigguratMicrobiome.UsedHeight);
+			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(area), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10)
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10 && !ZigguratMicrobiome.UnnaturallyBig)
 				continue;
 
 			CreateDunes(new(foundPos.X - 80, foundPos.Y - 10, 160, 10));
@@ -56,7 +125,7 @@ internal class ZigguratMicropass : Micropass
 		if (finalPosition != Point.Zero) //Gen didn't fail
 		{
 			int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
-			int ruinsWidth = (int)(ZigguratMicrobiome.Width / 1.5f) * worldScalar;
+			int ruinsWidth = (int)(ZigguratMicrobiome.DefaultWidth / 1.5f) * worldScalar;
 			WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
 		}
 	}
@@ -136,7 +205,8 @@ internal class ZigguratMicropass : Micropass
 		GenVars.structures.AddProtectedStructure(region);
 		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));
 
-		for (int c = 0; c < WorldGen.genRand.Next(1, 6); c++)
+		int debrisCount = DebrisMinimum + WorldGen.genRand.Next(DebrisRange + 1);
+		for (int c = 0; c < debrisCount; c++)
 		{
 			Point debrisPos = new(foundPos.X + WorldGen.genRand.Next(-20, 20 + 1), foundPos.Y);
 			WorldMethods.FindGround(debrisPos.X, ref debrisPos.Y);
@@ -210,10 +280,11 @@ internal class ZigguratMicropass : Micropass
 				new Actions.SetTileKeepWall((ushort)ModContent.TileType<SandySandstone>()))); //Add sandy tops
 
 			GenAction pAction = Actions.Chain(new Modifiers.SkipWalls(skipWallTypes), new Modifiers.SkipTiles(TileID.Sand), new Actions.ClearTile(), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
-			if (WorldGen.genRand.NextBool(3))
+			
+			if (WorldGen.genRand.NextBool(TopPlatChance))
 				WorldUtils.Gen(a.Location + new Point(1, -1), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add top platforms
 
-			if (WorldGen.genRand.NextBool(3))
+			if (WorldGen.genRand.NextBool(BottomPlatChance))
 				WorldUtils.Gen(a.Location + new Point(1, a.Height), new Shapes.Rectangle(a.Width - 2, 1), pAction); //Add bottom platforms
 
 			for (int p = -1; p < a.Width + 1; p++)
@@ -244,11 +315,11 @@ internal class ZigguratMicropass : Micropass
 		result.Inflate(2, 2);
 		Decorator decorator = new(result); //Add decorations
 
-		if (WorldGen.genRand.NextBool())
-			decorator.Enqueue(AddFlagpole, WorldGen.genRand.Next(1, 3));
+		if (WorldGen.genRand.NextBool(FlagpoleChance))
+			decorator.Enqueue(AddFlagpole, FlagpoleCountMinumum + WorldGen.genRand.Next(FlagpoleCountRange + 1));
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
-		decorator.Enqueue(PlacePot, segments * 2);
+		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));
 		decorator.Enqueue(PlaceDoor, 1);
 		decorator.Run();
 
@@ -325,9 +396,17 @@ internal class ZigguratMicropass : Micropass
 
 		//Begin an optional extension of the room
 		CreateArray(new(area.Center.X - 4, area.Bottom - 8, 8, 8), GetRandomDirections(WorldGen.genRand.Next(5)), out List<Rectangle> areas);
+
+		if (areas.Count == 0)
+			return area;
+
 		areas.RemoveAll(NotInSandOrSandstone);
 
 		Rectangle result = Maximize(areas);
+
+		if (!WorldGen.InWorld(result.X, result.Y, 40) || WorldGen.InWorld(result.Right, result.Bottom, 40))
+			return result;
+
 		int segments = areas.Count;
 		Decorator decorator = new(result);
 
@@ -367,10 +446,18 @@ internal class ZigguratMicropass : Micropass
 				decorator.Enqueue(ModContent.TileType<DustyTomb>(), tombCount);
 		}
 
-		if (WorldGen.genRand.NextBool())
-			decorator.Enqueue(static (x, y) => WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2), 1);
+		if (WorldGen.genRand.NextBool(ChestChance))
+		{
+			decorator.Enqueue(static (x, y) =>
+			{
+				if (!WorldGen.InWorld(x, y, 40))
+					return false;
 
-		decorator.Enqueue(PlacePot, segments * 2);
+				return WorldGen.AddBuriedChest(x, y, 0, false, (int)Chests.VanillaChestID2.Sandstone, false, TileID.Containers2);
+			}, 1);
+		}
+
+		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));
 		decorator.Run();
 
 		return result;
@@ -446,7 +533,7 @@ internal class ZigguratMicropass : Micropass
 
 	private static bool AddFlagpole(int x, int y)
 	{
-		int height = WorldGen.genRand.Next(3, 7);
+		int height = FlagpoleHeightMin + WorldGen.genRand.Next(FlagpoleHeightRange + 1);
 		int flagHeight = Math.Max(height - WorldGen.genRand.Next(0, 2), 3);
 		bool result = false;
 		Tile tile = Main.tile[x, y];
@@ -478,7 +565,7 @@ internal class ZigguratMicropass : Micropass
 
 		if (tile.WallType != WallID.None && WorldGen.SolidTile(x, y + 1))
 		{
-			if (WorldGen.genRand.NextFloat() < 0.85f) //Add a branch for vanilla pots because traditional tile placement methods don't work
+			if (WorldGen.genRand.NextFloat() < 1 - UncommonPotChance) //Add a branch for vanilla pots because traditional tile placement methods don't work
 				return WorldGen.PlacePot(x, y, 28, WorldGen.genRand.Next(34, 37));
 			else
 				return Placer.PlaceTile(x, y, ModContent.TileType<BiomePots>(), PotsMicropass.GetStyleRange(BiomePots.Style.Desert)).success;
@@ -594,7 +681,7 @@ internal class ZigguratMicropass : Micropass
 			new Actions.SetTileKeepWall(TileID.HardenedSand)
 		));
 
-		if (WorldGen.genRand.NextBool(3))
+		if (WorldGen.genRand.NextBool(AbovegroundPillarChance))
 		{
 			WorldUtils.Gen(new(x, y - 5), new Shapes.Rectangle(2, 5), Actions.Chain(
 				new Modifiers.IsNotSolid(),

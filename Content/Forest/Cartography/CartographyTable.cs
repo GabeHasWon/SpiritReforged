@@ -2,10 +2,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
-public class CartographyTable : ModTile, IAutoloadTileItem
+public class CartographyTable : ModTile, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 1, silver: 20);
 

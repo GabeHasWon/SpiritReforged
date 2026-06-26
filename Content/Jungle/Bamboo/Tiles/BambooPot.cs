@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooPot : ModTile, IAutoloadTileItem
+public class BambooPot : ModTile, ILoadItem
 {
 	public void SetItemDefaults(ModItem item)
 	{
@@ -12,8 +12,7 @@ public class BambooPot : ModTile, IAutoloadTileItem
 		item.Item.width = item.Item.height = 16;
 	}
 
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
-		.AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 5).AddTile(TileID.Sawmill).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 5).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()
 	{

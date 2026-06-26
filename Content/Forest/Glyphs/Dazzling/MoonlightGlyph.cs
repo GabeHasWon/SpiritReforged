@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
@@ -8,22 +7,14 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Dazzling;
 
 public class MoonlightGlyph : GlyphItem
 {
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
-	}
-
 	public sealed class MoonlightPlayer : ModPlayer
 	{
 		// up to 25% more damage at zero mana
@@ -142,6 +133,31 @@ public class MoonlightGlyph : GlyphItem
 		}
 	}
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.width = Item.height = 28;
+		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
+		settings = new(Color.RoyalBlue);
+	}
+
+	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !ContentSamples.ItemsByType[item.type].DamageType.CountsAsClass(DamageClass.Magic);
+
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		item.DamageType = ModContent.GetInstance<HybridDamageClass>().Clone()
+			.AddSubClass(new(item.DamageType, 0.8f))
+			.AddSubClass(new(DamageClass.Magic, 0.2f));
+
+		base.OnApplyGlyph(item, context);
+	}
+
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
 		for (int j = 0; j < 4; j++)
@@ -224,25 +240,6 @@ public class MoonlightGlyph : GlyphItem
 				Layer = ParticleLayer.AboveItem
 			});
 		}
-	}
-
-	public override void SetDefaults()
-	{
-		Item.width = Item.height = 28;
-		Item.rare = ItemRarityID.Green;
-		Item.maxStack = Item.CommonMaxStack;
-		settings = new(Color.RoyalBlue);
-	}
-
-	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !item.DamageType.CountsAsClass(DamageClass.Magic);
-
-	protected override void OnApplyGlyph(Item item, IApplicationContext context)
-	{
-		item.DamageType = ModContent.GetInstance<HybridDamageClass>().Clone()
-			.AddSubClass(new(item.DamageType, 0.8f))
-			.AddSubClass(new(DamageClass.Magic, 0.2f));
-
-		base.OnApplyGlyph(item, context);
 	}
 }
 

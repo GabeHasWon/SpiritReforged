@@ -31,7 +31,7 @@ public class DiverZombie : ModNPC, ISubstitute
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 40f;
 		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 3;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
 		BannerItem = Item.BannerToItem(Banner);

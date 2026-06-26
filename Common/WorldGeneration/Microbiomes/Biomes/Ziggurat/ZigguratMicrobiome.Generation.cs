@@ -3,6 +3,10 @@ using ReLogic.Utilities;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
@@ -24,18 +28,21 @@ using SpiritReforged.Content.Ziggurat.Windshear;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
-public partial class ZigguratMicrobiome : Microbiome
+public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 {
 	/// <summary> The maximum width of the biome. </summary>
-	public const int Width = 180;
+	public const int DefaultWidth = 180;
 	/// <summary> The maximum height of the biome. </summary>
-	public const int Height = 90;
+	public const int DefaultHeight = 90;
 
 	public const int HallwayWidth = 4;
 
@@ -44,10 +51,10 @@ public partial class ZigguratMicrobiome : Microbiome
 	{
 		get
 		{
-			Rectangle bounds = new(Position.X - Width / 2, Position.Y - Height / 2, Width, Height);
+			Rectangle bounds = new(Position.X - UsedWidth / 2, Position.Y - UsedHeight / 2, UsedWidth, UsedHeight);
 
 			if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
-				bounds = new Rectangle(Position.X - Width - 16, Position.Y - Height / 2, Width * 2 + 32, Height * 4);
+				bounds = new Rectangle(Position.X - UsedWidth - 16, Position.Y - UsedHeight / 2, UsedWidth * 2 + 32, UsedHeight * 4);
 
 			return bounds;
 		}
@@ -56,8 +63,157 @@ public partial class ZigguratMicrobiome : Microbiome
 	[WorldBound]
 	public static readonly HashSet<Rectangle> TotalBounds = [];
 
+	public static bool UnnaturallyBig => UsedWidth > DefaultWidth && UsedHeight > DefaultHeight;
+
 	private static HashSet<GenRoom> TotalRooms;
 	private static int ChestCounter = 0;
+
+	[GenConfigurable(40, DefaultWidth * 6)]
+	[Slider]
+	internal static int UsedWidth = DefaultWidth;
+
+	[GenConfigurable(40, DefaultHeight * 4)]
+	[Slider]
+	[PriorityModifier(nameof(UsedWidth))]
+	internal static int UsedHeight = DefaultHeight;
+
+	[GenConfigurable(0, 12)]
+	[Slider]
+	private static int MaxInfections = 3;
+
+	[GenConfigurable(1, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int PotChance = 10;
+
+	[GenConfigurable(1, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	[PriorityModifier(nameof(PotChance))]
+	private static int LapisPotChance = 10;
+
+	[GenConfigurable(1, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	[PriorityModifier(nameof(PotChance))]
+	private static int UncommonChance = 5;
+
+	[GenConfigurable(4, 15)]
+	[Slider]
+	private static int MaxSpikeStripWidth = 6;
+
+	[GenConfigurable(1, 50)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	[PriorityModifier(nameof(MaxSpikeStripWidth))]
+	private static int SpikeStripChance = 3;
+
+	[GenConfigurable("1 0", "15 15")]
+	private static GenRange ChestItemRange = new GenRange(3, 2);
+
+	[GenConfigurable("1 0", "15 15")]
+	private static GenRange DresserItemRange = new GenRange(2, 3);
+
+	[GenConfigurable(1, 10)]
+	[Slider]
+	[Denominator]
+	private static int SpecialRoomChance = 4;
+
+	[GenConfigurable(1, 40)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	private static int SkipRoomChance = 4;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	[PriorityModifier(nameof(ChestItemRange))]
+	private static float ChestNormalization = 0;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	[PriorityModifier(nameof(DresserItemRange))]
+	private static float DresserNormalization = 0;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	private static float AncientBannerChance = 1 / 20f;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	private static float BannerChance = 1 / 20f;
+
+	[GenConfigurable(1, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int CenserChance = 3;
+
+	[GenConfigurable(0f, 1f, 0.001f)]
+	[Slider]
+	private static float TabletChance = 1 / 100f;
+
+	[GenConfigurable(10, 150)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int FloorDivotChance = 50;
+
+	[GenConfigurable(20, 200)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int SandSplatChance = 80;
+
+	[GenConfigurable(2, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int PillarChance = 12;
+
+	[GenConfigurable(2, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int LightChance = 10;
+
+	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	{
+		Presets =
+		[
+			new("Plagued",
+				[
+					new IndividualPreset(nameof(MaxInfections), 12),
+					new IndividualPreset(nameof(SandSplatChance), 20),
+					new IndividualPreset(nameof(FloorDivotChance), 20),
+					new IndividualPreset(nameof(SkipRoomChance), 3),
+				]),
+
+			new("Opulent",
+				[
+					new IndividualPreset(nameof(SpecialRoomChance), 1),
+					new IndividualPreset(nameof(MaxInfections), 1),
+					new IndividualPreset(nameof(LapisPotChance), 5),
+					new IndividualPreset(nameof(UncommonChance), 2),
+					new IndividualPreset(nameof(SandSplatChance), 200),
+					new IndividualPreset(nameof(SkipRoomChance), 15),
+					new IndividualPreset(nameof(CenserChance), 2)
+				]),
+
+		new("Perilous",
+				[
+					new IndividualPreset(nameof(SpikeStripChance), 1),
+					new IndividualPreset(nameof(MaxSpikeStripWidth), 14),
+					new IndividualPreset(nameof(ChestItemRange), new GenRange(6, 3)),
+				]),
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override void OnPlace(Point16 point)
 	{
@@ -83,7 +239,7 @@ public partial class ZigguratMicrobiome : Microbiome
 
 		for (int i = 2; i < bounds.Count; i++)
 		{
-			int infectionCount = WorldGen.genRand.Next(3);
+			int infectionCount = WorldGen.genRand.Next(MaxInfections + 1);
 
 			if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
 				infectionCount = WorldGen.genRand.Next(0, i - 1);
@@ -112,6 +268,8 @@ public partial class ZigguratMicrobiome : Microbiome
 
 		if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
 			layers = (int)(Main.maxTilesX / 4200f * 20);
+		else if (UsedHeight != DefaultHeight)
+			layers = (int)(UsedHeight / 20f);
 
 		int finalLayerHeight = (int)(fullArea.Height / layers * finalHeight);
 		int commonLayerHeight = (fullArea.Height - finalLayerHeight) / (layers - 1);
@@ -252,11 +410,11 @@ public partial class ZigguratMicrobiome : Microbiome
 			{
 				//Floor indentations
 				var tile = Main.tile[i, j];
-				if (WorldGen.genRand.NextBool(50) && tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile3(i, j - 1))
+				if (WorldGen.genRand.NextBool(FloorDivotChance) && tile.HasTile && tile.TileType == ModContent.TileType<RedSandstoneBrick>() && !WorldGen.SolidTile3(i, j - 1))
 					CreateFloorDivot(i, j);
 
 				//Large sand splatters
-				if (WorldGen.genRand.NextBool(80) && tile.HasTile && tile.TileType == TileID.Sand)
+				if (WorldGen.genRand.NextBool(SandSplatChance) && tile.HasTile && tile.TileType == TileID.Sand)
 				{
 					WorldUtils.Gen(new(i, j), new GenTypes.Splatter(8, 10, 20), Actions.Chain(
 						new Modifiers.Blotches(),
@@ -268,7 +426,7 @@ public partial class ZigguratMicrobiome : Microbiome
 
 							if (type == TileID.Sandstone)
 							{
-								if (WorldGen.genRand.NextBool(12))
+								if (WorldGen.genRand.NextBool(PillarChance))
 								{
 									WorldUtils.Gen(new(x, y), new Shapes.Tail(WorldGen.genRand.Next(4, 8), new Vector2D(0, WorldGen.genRand.Next(4, 9))), Actions.Chain(
 										new Modifiers.IsNotSolid(),
@@ -278,7 +436,7 @@ public partial class ZigguratMicrobiome : Microbiome
 										new Actions.ClearTile()
 									));
 								}
-								else if (WorldGen.genRand.NextBool(10))
+								else if (WorldGen.genRand.NextBool(LightChance))
 								{
 									WorldGen.PlaceTile(x, y + 1, ModContent.TileType<LightShaft>(), true);
 								}
@@ -345,11 +503,11 @@ public partial class ZigguratMicrobiome : Microbiome
 			bounds.Inflate(2, 2);
 
 			Decorator decorator = new Decorator(bounds)
-				.Enqueue(ModContent.TileType<AncientBanner>(), 1 / 20f)
-				.Enqueue(TileID.Banners, 1 / 20f, new(static () => WorldGen.genRand.Next(4, 7)))
+				.Enqueue(ModContent.TileType<AncientBanner>(), AncientBannerChance)
+				.Enqueue(TileID.Banners, BannerChance, new(static () => WorldGen.genRand.Next(4, 7)))
 				.Enqueue(PlacePot, 0);
 
-			if (WorldGen.genRand.NextBool(3))
+			if (WorldGen.genRand.NextBool(CenserChance))
 				decorator.Enqueue(PlaceCenser, 1);
 
 			if (room is ZigguratRooms.LibraryRoom)
@@ -378,12 +536,12 @@ public partial class ZigguratMicrobiome : Microbiome
 					return false;
 				}, 0);
 
-				if (WorldGen.genRand.NextBool(3))
+				if (WorldGen.genRand.NextBool(SpikeStripChance))
 					decorator.Enqueue(LaySpikeStrip, 1);
 			}
 
 			if (room is not ZigguratRooms.TreasureRoom) // Low chance to place scarab tablet in any non-treasure room
-				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), 1 / 100f, new(static () => WorldGen.genRand.Next(2)));
+				decorator.Enqueue(ModContent.TileType<ScarabTablet>(), TabletChance, new(static () => WorldGen.genRand.Next(2)));
 
 			decorator.Run();
 		}
@@ -392,7 +550,7 @@ public partial class ZigguratMicrobiome : Microbiome
 		{
 			Point16 pos = chestPositions.Dequeue();
 
-			if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
+			//if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
 				minChestCount--;
 		}
 
@@ -430,13 +588,13 @@ public partial class ZigguratMicrobiome : Microbiome
 
 	private static bool PlacePot(int i, int j)
 	{
-		if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(10)) //Place pots
+		if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(PotChance)) //Place pots
 		{
 			int type = WorldGen.genRand.NextFromList(ModContent.TileType<BronzePots>(), TileID.Pots);
 
-			if (WorldGen.genRand.NextBool(10))
+			if (WorldGen.genRand.NextBool(LapisPotChance))
 				type = ModContent.TileType<LapisPots>();
-			else if (WorldGen.genRand.NextBool(5))
+			else if (WorldGen.genRand.NextBool(UncommonChance))
 				type = ModContent.TileType<BiomePots>();
 
 			int style = -1;
@@ -456,7 +614,7 @@ public partial class ZigguratMicrobiome : Microbiome
 	private static bool LaySpikeStrip(int i, int j)
 	{
 		bool success = false;
-		int width = WorldGen.genRand.Next(3, 6);
+		int width = WorldGen.genRand.Next(3, MaxSpikeStripWidth);
 		int halfWidth = width / 2;
 		int y = j;
 
@@ -472,99 +630,97 @@ public partial class ZigguratMicrobiome : Microbiome
 		return success;
 	}
 
+	#region furniture placement
 	/// <summary> Places a random lapis furniture tile, excluding chests. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate. </param>
 	/// <returns> Whether the tile was successfully placed. </returns>
 	public static bool PlaceRandomFurniture(int i, int j)
 	{
-		LapisSet set = ModContent.GetInstance<LapisSet>();
-
 		while (true)
 		{
-			FurnitureSet.Types type = WorldGen.genRand.Next(Enum.GetValues<FurnitureSet.Types>());
+			string[] nameArray = LapisSet.TileTypes.Keys.ToArray();
+			string name = nameArray[WorldGen.genRand.Next(nameArray.Length)];
 
-			if (type is not FurnitureSet.Types.Chest && set.TryGetTileType(type, out _))
-				return PlaceFurniture(i, j, type);
+			if (name != nameof(ChestTile))
+				return PlaceFurniture(i, j, LapisSet.TileTypes[name]);
 		}
 	}
 
 	/// <summary> Places a lapis furniture item at the provided coordinates. </summary>
 	/// <param name="i"> The X coordinate. </param>
 	/// <param name="j"> The Y coordinate. </param>
-	/// <param name="type"> The furniture type to place. </param>
-	public static bool PlaceFurniture(int i, int j, FurnitureSet.Types type)
+	/// <param name="tileType"> The furniture type to place. </param>
+	public static bool PlaceFurniture(int i, int j, int tileType)
 	{
-		LapisSet set = ModContent.GetInstance<LapisSet>();
+		int style = -1;
+		string name = (TileLoader.GetTile(tileType) as FurnitureTile).FurnitureName;
 
-		if (set.TryGetTileType(type, out int tileType))
+		if (name is nameof(CandleTile) or nameof(ChandelierTile) or nameof(LampTile) or nameof(LanternTile) or nameof(CandelabraTile))
+			style = 1; //Off states
+
+		if (name is nameof(TableTile) or nameof(ChairTile)) //Place an organized table and chair set
 		{
-			int style = -1;
+			int tableType = LapisSet.TileTypes[nameof(TableTile)];
 
-			if (type is FurnitureSet.Types.Candle or FurnitureSet.Types.Chandelier or FurnitureSet.Types.Lamp or FurnitureSet.Types.Lantern or FurnitureSet.Types.Candelabra)
-				style = 1; //Off states
-
-			if (type is FurnitureSet.Types.Table or FurnitureSet.Types.Chair) //Place an organized table and chair set
+			if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
 			{
-				int tableType = set.GetTileType(FurnitureSet.Types.Table);
+				int chairType = LapisSet.TileTypes[nameof(ChairTile)];
 
-				if (Placer.Check(i, j, tableType, style).IsClear().Place().success)
+				Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
+				Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
+
+				TryPlaceSmallLight(i, j);
+
+				return true;
+			}
+		}
+		else if (name == nameof(DresserTile))
+		{
+			if (Placer.Check(i, j, tileType, style).IsClear().success)
+			{
+				WorldGen.Place3x2(i, j, (ushort)tileType);
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == tileType)
 				{
-					int chairType = set.GetTileType(FurnitureSet.Types.Chair);
-
-					Placer.Check(i - 2, j, chairType, 1).IsClear().Place();
-					Placer.Check(i + 2, j, chairType, 0).IsClear().Place();
-
-					TryPlaceSmallLight(i, j, set);
+					PopulateDresserChest(i, j);
+					TryPlaceSmallLight(i, j);
 
 					return true;
 				}
 			}
-			else if (type == FurnitureSet.Types.Dresser)
+		}
+		else
+		{
+			bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
+
+			if (name == nameof(ChestTile))
 			{
-				if (Placer.Check(i, j, tileType, style).IsClear().success)
-				{
-					WorldGen.Place3x2(i, j, (ushort)tileType);
-					Tile tile = Main.tile[i, j];
+				int chest = Chest.CreateChest(i, j - 1);
 
-					if (tile.HasTile && tile.TileType == tileType)
-					{
-						PopulateDresserChest(i, j);
-						TryPlaceSmallLight(i, j, set);
-						return true;
-					}
-				}
+				if (chest != -1)
+					PopulateChest(Main.chest[chest]);
 			}
-			else
-			{
-				bool success = Placer.Check(i, j, tileType, style).IsClear().Place().success;
 
-				if (type == FurnitureSet.Types.Chest)
-				{
-					int chest = Chest.CreateChest(i, j - 1);
-
-					if (chest != -1)
-						PopulateChest(Main.chest[chest]);
-				}
-
-				return success;
-			}
+			return success;
 		}
 
 		return false;
 	}
 
-	private static void TryPlaceSmallLight(int i, int j, LapisSet set)
+	private static void TryPlaceSmallLight(int i, int j)
 	{
-		FurnitureSet.Types lightSetType = WorldGen.genRand.NextFromList(FurnitureSet.Types.Candle, FurnitureSet.Types.Candelabra);
-		int lightType = set.GetTileType(lightSetType);
+		string name = WorldGen.genRand.NextFromList(nameof(CandelabraTile), nameof(CandleTile));
+		int lightType = LapisSet.TileTypes[name];
 
-		if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && lightSetType is FurnitureSet.Types.Candle) //Candle style fix
+		if (Placer.Check(i, j - 2, lightType, 1).IsClear().Place().success && name == nameof(CandleTile)) //Candle style fix
 		{
 			Main.tile[i, j - 2].TileFrameX = 18;
 			Main.tile[i, j - 2].TileFrameY = 0;
 		}
 	}
+	#endregion;
 
 	private static void PopulateDresserChest(int i, int j)
 	{
@@ -574,10 +730,10 @@ public partial class ZigguratMicrobiome : Microbiome
 		items.Add((ItemID.Amethyst, 5..9));
 		items.Add((ItemID.Topaz, 5..9));
 		items.Add((ItemID.Silk, 5..9), 1.5f);
-		items.Add((ItemID.AncientCloth, 5..9), 0.33f);
-		items.Add((ItemID.GoldCoin, 1..2), 0.25f);
-		items.Add((ItemID.SilverCoin, 3..8), 0.5f);
-		items.Add((ItemID.Cobweb, 3..8), 0.8f);
+		items.Add((ItemID.AncientCloth, 5..9), Normalize(0.33f));
+		items.Add((ItemID.GoldCoin, 1..2), Normalize(0.25f));
+		items.Add((ItemID.SilverCoin, 3..8), Normalize(0.5f));
+		items.Add((ItemID.Cobweb, 3..8), Normalize(0.8f));
 
 		if (GenVars.silver == TileID.Silver)
 			items.Add((ItemID.SilverBar, 2..4));
@@ -593,13 +749,15 @@ public partial class ZigguratMicrobiome : Microbiome
 		if (CrossMod.Verdant.CheckFind("AquamarineItem", out ModItem aquamarineVerdant))
 			items.Add((aquamarineVerdant.Type, 4..8));
 
-		int count = WorldGen.genRand.Next(2, 5);
+		int count = DresserItemRange.RollRange();
 
 		for (int k = 0; k < count; ++k)
 		{
 			(int itemType, Range range) = items.Get();
 			Main.chest[chest].item[k] = new(itemType, WorldGen.genRand.Next(range.Start.Value, range.End.Value + 1));
 		}
+
+		static float Normalize(float input) => MathHelper.Lerp(input, 1, DresserNormalization);
 	}
 
 	internal static void PopulateChest(Chest chest)
@@ -611,8 +769,8 @@ public partial class ZigguratMicrobiome : Microbiome
 		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
 
 		secondary.Add((ItemID.WhitePearl, 2..5));
-		secondary.Add((ItemID.BlackPearl, 1..3), 0.12f);
-		secondary.Add((ItemID.PinkPearl, 2..4), 0.05f);
+		secondary.Add((ItemID.BlackPearl, 1..3), Normalize(0.12f));
+		secondary.Add((ItemID.PinkPearl, 2..4), Normalize(0.05f));
 
 		(string name, float weight)[] thoriumLoot =
 		[
@@ -631,11 +789,11 @@ public partial class ZigguratMicrobiome : Microbiome
 		foreach (var (name, weight) in thoriumLoot)
 		{
 			if (CrossMod.Thorium.CheckFind(name, out ModItem thorium))
-				secondary.Add((thorium.Type, 1..1), weight);
+				secondary.Add((thorium.Type, 1..1), Normalize(weight));
 		}
 
 		if (CrossMod.Redemption.CheckFind("CorpseWalkerStaff", out ModItem walkerStaff))
-			secondary.Add((walkerStaff.Type, 1..1), 0.15f);
+			secondary.Add((walkerStaff.Type, 1..1), Normalize(0.15f));
 
 		// Gems
 		WeightedRandom<(int, Range)> gemPool = new();
@@ -654,6 +812,32 @@ public partial class ZigguratMicrobiome : Microbiome
 			gemPool.Add((aquamarineVerdant.Type, 4..8));
 
 		// Misc
+		PriorityQueue<(int, Range), float> miscQueue = GenerateMiscellaneousLoot();
+
+		chest.item[0] = new Item(main[ChestCounter++ % main.Count]);
+
+		var (type, stack) = secondary.Get();
+		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
+
+		var (gemType, gemStack) = gemPool.Get();
+		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
+
+		int miscCount = ChestItemRange.RollRange();
+
+		for (int i = 0; i < miscCount; ++i)
+		{
+			if (miscQueue.Count == 1)
+				miscQueue = GenerateMiscellaneousLoot();
+
+			var (miscType, miscStack) = miscQueue.Dequeue();
+			chest.item[3 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
+		}
+
+		static float Normalize(float input) => MathHelper.Lerp(input, 1, ChestNormalization);
+	}
+
+	private static PriorityQueue<(int, Range), float> GenerateMiscellaneousLoot()
+	{
 		PriorityQueue<(int, Range), float> miscQueue = new();
 		miscQueue.Enqueue((ItemID.ThrowingKnife, 25..50), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.FlamingArrow, 25..50), WorldGen.genRand.NextFloat());
@@ -669,22 +853,7 @@ public partial class ZigguratMicrobiome : Microbiome
 		miscQueue.Enqueue((ItemID.GoldCoin, 1..4), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((AutoContent.ItemType<WaningSun>(), 1..1), WorldGen.genRand.NextFloat());
 		miscQueue.Enqueue((ItemID.ScarabBomb, 5..9), WorldGen.genRand.NextFloat());
-
-		chest.item[0] = new Item(main[ChestCounter++ % main.Count]);
-
-		var (type, stack) = secondary.Get();
-		chest.item[1] = new Item(type, WorldGen.genRand.Next(stack.Start.Value, stack.End.Value));
-
-		var (gemType, gemStack) = gemPool.Get();
-		chest.item[2] = new Item(gemType, WorldGen.genRand.Next(gemStack.Start.Value, gemStack.End.Value + 1));
-
-		int miscCount = WorldGen.genRand.Next(3, 5);
-
-		for (int i = 0; i < miscCount; ++i)
-		{
-			var (miscType, miscStack) = miscQueue.Dequeue();
-			chest.item[3 + i] = new Item(miscType, WorldGen.genRand.Next(miscStack.Start.Value, miscStack.End.Value + 1));
-		}
+		return miscQueue;
 	}
 
 	private static void AddRooms(IEnumerable<Rectangle> bounds, out List<GenRoom> rooms)
@@ -739,7 +908,7 @@ public partial class ZigguratMicrobiome : Microbiome
 		ZigguratRooms.RoomNoise noise = new(3);
 		ZigguratRooms.BasicRoom selection;
 
-		if (WorldGen.genRand.NextBool(4))
+		if (WorldGen.genRand.NextBool(SpecialRoomChance))
 			selection = WorldGen.genRand.NextFromList<ZigguratRooms.BasicRoom>(new ZigguratRooms.StorageRoom(bound, noise), new ZigguratRooms.LibraryRoom(bound, noise), new ZigguratRooms.BurialRoom(bound, noise));
 		else
 			selection = new ZigguratRooms.BasicRoom(bound, noise);
@@ -758,7 +927,7 @@ public partial class ZigguratMicrobiome : Microbiome
 
 			selection = new ZigguratRooms.EntranceRoom(bound, style, noise);
 		}
-		else if (skips == 0 && WorldGen.genRand.NextBool(4))
+		else if (skips == 0 && WorldGen.genRand.NextBool(SkipRoomChance))
 		{
 			return null; //Randomly cause a skip
 		}
