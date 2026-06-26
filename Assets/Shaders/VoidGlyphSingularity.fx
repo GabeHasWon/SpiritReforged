@@ -30,7 +30,7 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
     
     float2 uv = coords;
     
-    float2 size = uScreenResolution / 2.0 * uZoom.x;
+    float2 size = uImageSize1 / (uZoom.x * 2.0);
     uv = floor(coords * size) / size;
 
     // our render target overlay

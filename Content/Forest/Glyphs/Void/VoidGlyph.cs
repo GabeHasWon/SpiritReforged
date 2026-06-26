@@ -7,6 +7,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -113,6 +114,7 @@ public class VoidGlyph : GlyphItem
 						Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
 
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
+					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseIntensity(2f * Main.GameViewMatrix.Zoom.X);
 				}
 				else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
 				{
@@ -222,6 +224,13 @@ public class VoidGlyph : GlyphItem
 				var p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
 				p.timeLeft = COLLAPSE_TIME;
 			}
+			else if (voidNPC.stacks + stacksToAdd < MAX_STACKS)
+			{
+				Projectile p = Main.projectile.Where(p => p.ModProjectile is CollapseProjectile && (p.ModProjectile as CollapseProjectile).TargetIndex == targetIndex).FirstOrDefault();
+
+				if (p != default)
+					(p.ModProjectile as CollapseProjectile).rotationTimer = 60;
+			}
 
 			voidNPC.stacks += stacksToAdd;
 
@@ -247,6 +256,9 @@ public class VoidGlyph : GlyphItem
 
 		public bool _dying;
 		public int _stacksOnDeath;
+
+		public int rotationTimer;
+		public float starRotation;
 
 		public Vector2 pos;
 
@@ -284,6 +296,14 @@ public class VoidGlyph : GlyphItem
 
 		public override void AI()
 		{
+			if (rotationTimer > 0)
+			{
+				starRotation += rotationTimer * 0.001f;
+				rotationTimer--;
+			}
+			else
+				starRotation *= 0.75f;
+
 			if (Target is null || !Target.active)
 			{
 				if (!_dying)
@@ -489,6 +509,16 @@ public class VoidGlyph : GlyphItem
 
 			Color[] voidColors = [new(255, 65, 255, 0), new(255, 65, 185, 0), new(211, 65, 255, 0), new(166, 65, 255, 0)];
 
+			if (starRotation > 0)
+			{
+				float progress = EaseBuilder.EaseQuarticInOut.Ease(rotationTimer / 60f);
+
+				float _scale = 0.03f * stacks;
+
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * progress, starRotation, star.Size() / 2f, _scale * progress, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * progress * 0.75f, starRotation, star.Size() / 2f, _scale * 0.66f * progress, 0f, 0f);
+			}
+
 			if (scale.LengthSquared() > 0f)
 			{
 				float progressTillHit = EaseBuilder.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 30f) / 30f);
@@ -613,7 +643,7 @@ public class VoidGlyph : GlyphItem
 				Layer = ParticleLayer.AboveItem
 			});
 		}
-		else if (Main.rand.NextBool(90))
+		else if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
