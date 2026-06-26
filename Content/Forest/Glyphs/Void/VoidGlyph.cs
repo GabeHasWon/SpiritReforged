@@ -145,7 +145,10 @@ public class VoidGlyph : GlyphItem
 
 		public void ProcSingularity(NPC target, int damageDone)
 		{
-			VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone);
+			if (!Main.rand.NextBool(5))
+				return;
+
+			VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone / 2);
 
 			for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
 			{
@@ -193,12 +196,12 @@ public class VoidGlyph : GlyphItem
 
 	public sealed class VoidNPC : GlobalNPC
 	{
-		public const int COOLDOWN_TIME = 60;
+		public const int COOLDOWN_TIME = 120;
 
 		public override bool InstancePerEntity => true;
 
-		const int MAX_STACKS = 10;
-		const int COLLAPSE_TIME = 600;
+		public const int MAX_STACKS = 15;
+		public const int COLLAPSE_TIME = 900;
 		
 		public int stacks;
 		public int cooldown;
@@ -220,7 +223,9 @@ public class VoidGlyph : GlyphItem
 				p.timeLeft = COLLAPSE_TIME;
 			}
 
-			if (++voidNPC.stacks > MAX_STACKS)
+			voidNPC.stacks += stacksToAdd;
+
+			if (voidNPC.stacks > MAX_STACKS)
 				voidNPC.stacks = MAX_STACKS;
 
 			voidNPC.collapseDamage += damageDealt;
@@ -370,7 +375,7 @@ public class VoidGlyph : GlyphItem
 			if (Projectile.position != Projectile.oldPosition)
 				Projectile.netUpdate = true;
 
-			if ((Projectile.timeLeft == 1 || gnpc.stacks >= 10) && !_dying)
+			if ((Projectile.timeLeft == 1 || gnpc.stacks >= VoidNPC.MAX_STACKS) && !_dying)
 			{
 				SingularityVisualSystem.projectiles.Add(this);
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
