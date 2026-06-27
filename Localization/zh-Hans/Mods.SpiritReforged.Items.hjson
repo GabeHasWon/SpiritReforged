@@ -3302,3 +3302,8 @@ MariglowSeedPouch: {
 	// DisplayName: Mariglow Seed Pouch
 	// Tooltip: Scatters seeds which sprout into mariglow on sand
 }
+
+SkyPylonItem: {
+	// DisplayName: Sky Pylon Item
+	// Tooltip: ""
+}

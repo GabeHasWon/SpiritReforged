@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: Nas Salinas
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
+	// InSpace: In Space
 }
 
 Misc: {
