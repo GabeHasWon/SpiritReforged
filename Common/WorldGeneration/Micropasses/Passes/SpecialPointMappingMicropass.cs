@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
@@ -12,10 +13,11 @@ using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.IO;
+using Terraria.ModLoader.Core;
 using Terraria.WorldBuilding;
-using static SpiritReforged.Common.ModCompat.CrossMod;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
@@ -23,24 +25,28 @@ internal class SpecialPointMappingMicropass : Micropass
 {
 	public override string WorldGenName => "Points of Interest";
 
-	//Fables compatibility
-	private static int WulfrumVaultType = -1;
-	private static bool TryGetWulfrumVaultType(out int type)
+	private readonly static List<Point> GreenhousePositions = []; 
+
+	public override void PostSetupContent(Mod mod)
 	{
-		if (WulfrumVaultType != -1)
+		if (CrossMod.Spooky.Enabled)
 		{
-			type = WulfrumVaultType;
-			return true;
-		}
+			Assembly asm = CrossMod.Spooky.Instance.Code;
+			Type type = asm.GetType("VegetableGarden");
 
-		if (Fables.TryFind("WulfrumVault", out ModTile tile))
-		{
-			type = WulfrumVaultType = tile.Type;
-			return true;
+			MethodInfo greenhouseHook = type.GetMethod("CanPlaceGreenhouse");
+			MonoModHooks.Add(greenhouseHook, CheckAddGreenhouse);
 		}
+	}
 
-		type = 0;
-		return false;
+	public static bool CheckAddGreenhouse(Func<int, int, bool> orig, int PositionX, int PositionY)
+	{
+		bool canPlace = orig(PositionX, PositionY);
+
+		if (canPlace)
+			GreenhousePositions.Add(new Point(PositionX, PositionY));
+
+		return canPlace;
 	}
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
@@ -54,9 +60,14 @@ internal class SpecialPointMappingMicropass : Micropass
 		HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
 		HashSet<InterestType> placed = [];
 
-		for (int i = 10; i < Main.maxTilesX - 20; i++)
+		int fablesVaultType = -1;
+
+		if (CrossMod.Fables.CheckFind("WulfrumVault", out ModTile fablesVault))
+			fablesVaultType = fablesVault.Type;
+
+		for (int i = 20; i < Main.maxTilesX - 20; i++)
 		{
-			for (int j = 10; j < Main.maxTilesY - 20; j++)
+			for (int j = 20; j < Main.maxTilesY - 20; j++)
 			{
 				Tile tile = Main.tile[i, j];
 
@@ -73,7 +84,7 @@ internal class SpecialPointMappingMicropass : Micropass
 						Add(i, j, InterestType.Savanna);
 					else if (tile.TileType == TileID.LargePiles2 && tile.TileFrameX == 920 && tile.TileFrameY == 0)
 						Add(i, j, InterestType.EnchantedSword);
-					else if (Fables.Enabled && TryGetWulfrumVaultType(out int type) && type == tile.TileType && TileObjectData.IsTopLeft(i, j))
+					else if (fablesVaultType == tile.TileType && TileObjectData.IsTopLeft(i, j))
 						Add(i, j, InterestType.WulfrumBunker);
 					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !placed.Contains(InterestType.SaltFlat))
 						Add(i, j, InterestType.SaltFlat);
@@ -90,7 +101,16 @@ internal class SpecialPointMappingMicropass : Micropass
 			}
 		}
 
-		if (Thorium.Enabled && ((Mod)Thorium).Call("GetBloodChamberBounds") is Rectangle bounds)
+		if (CrossMod.Spooky.TryFind("Krampus", out ModNPC krampus) && NPC.FindFirstNPC(krampus.Type) is { } index and not -1)
+		{
+			Point pos = Main.npc[index].Center.ToTileCoordinates();
+			Add(pos.X, pos.Y, InterestType.Spooky_KrampusWorkshop);
+		}
+
+		foreach (Point greenhouse in GreenhousePositions)
+			Add(greenhouse.X, greenhouse.Y, InterestType.Spooky_FetidFarms);
+
+		if (CrossMod.Thorium.TryCall(out Rectangle bounds, "GetBloodChamberBounds"))
 			Add(bounds.Center.X, bounds.Center.Y, InterestType.BloodAltar);
 
 		foreach (Microbiome biome in MicrobiomeSystem.Microbiomes)

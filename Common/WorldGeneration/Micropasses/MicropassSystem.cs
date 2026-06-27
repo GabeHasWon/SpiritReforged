@@ -21,4 +21,10 @@ internal class MicropassSystem : ModSystem
 			tasks.Insert(index, new PassLegacy(micropass.WorldGenName, micropass.Run));
 		}
 	}
+
+	public override void PostSetupContent()
+	{
+		foreach (var micropass in ModContent.GetContent<Micropass>())
+			micropass.PostSetupContent(Mod);
+	}
 }

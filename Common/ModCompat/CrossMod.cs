@@ -50,6 +50,33 @@ internal static class CrossMod
 			return Enabled && ((Mod)this).TryFind(s, out t);
 		}
 
+		public readonly bool TryCall(out object result, params object[] parameters)
+		{
+			result = null;
+
+			if (!Enabled)
+				return false;
+
+			result = Instance.Call(parameters);
+			return true;
+		}
+
+		public readonly bool TryCall<T>(out T result, params object[] parameters)
+		{
+			result = default;
+
+			if (!Enabled)
+				return false;
+
+			object res = Instance.Call(parameters);
+
+			if (res is not T t)
+				return false;
+
+			result = t;
+			return true;
+		}
+
 		public static explicit operator Mod(ModEntry e) => e.Instance;
 	}
 

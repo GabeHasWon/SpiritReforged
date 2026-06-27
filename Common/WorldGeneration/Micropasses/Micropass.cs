@@ -16,4 +16,5 @@ public abstract class Micropass : ILoadable
 
 	public virtual void Load(Mod mod) { }
 	public virtual void Unload() { }
+	public virtual void PostSetupContent(Mod mod) { }
 }

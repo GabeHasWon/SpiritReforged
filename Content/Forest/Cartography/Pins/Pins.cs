@@ -38,3 +38,23 @@ public class PinWulfrum : PinItem
 public class PinSaltFlat : PinItem;
 
 public class PinZiggurat : PinItem;
+
+public class PinSpookyNose : PinItem
+{
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+}
+
+public class PinSpookyKrampus : PinItem
+{
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+}
+
+public class PinSpookyFarms : PinItem
+{
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+}
+
+public class PinSpookyRotten : PinItem
+{
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+}
