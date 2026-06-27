@@ -5,10 +5,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutoloadTileItem
+public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, ILoadItem
 {
 	public const int FrameWidth = 36;
 
@@ -45,7 +46,7 @@ public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutolo
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}
@@ -104,7 +105,8 @@ public class SaltTallGateOpen : EntityTile<SaltTallGateEntity>, ICustomDoor
 
 		RegisterItemDrop(AutoContent.ItemType<SaltTallGate>());
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Door"));
+
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}

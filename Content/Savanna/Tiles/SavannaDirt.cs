@@ -1,13 +1,11 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
+public class SavannaDirt : ModTile, ILoadItem, ICheckItemUse
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe().AddIngredient(ItemID.SandBlock).AddIngredient(ItemID.MudBlock).Register();

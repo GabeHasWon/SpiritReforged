@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Cloud.Tiles;
 
-public class CloudstalkBox : PlanterBoxTile
+public class CloudstalkBox : PlanterBoxTile, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{

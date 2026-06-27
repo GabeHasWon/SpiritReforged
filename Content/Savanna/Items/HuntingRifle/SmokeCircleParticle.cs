@@ -54,7 +54,7 @@ public class SmokeCircleParticle : Particle
 		effect.Parameters["uTexture"].SetValue(tex);
 		effect.Parameters["texExponent"].SetValue(.25f);
 
-		effect.Parameters["noise"].SetValue(TextureAssets.Extra[193].Value);
+		effect.Parameters["noise"].SetValue(TextureAssets.Extra[ExtrasID.MagicMissileTrailErosion].Value);
 		effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
 		effect.Parameters["scroll"].SetValue(_scrollOffset);
 		effect.Parameters["coordMods"].SetValue(_noiseScale);

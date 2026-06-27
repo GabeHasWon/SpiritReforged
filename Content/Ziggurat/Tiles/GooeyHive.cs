@@ -4,10 +4,11 @@ using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Ziggurat.NPCs;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GooeyHive : ModTile, IAutoloadTileItem
+public class GooeyHive : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddCondition(Condition.InGraveyard).Register();
 

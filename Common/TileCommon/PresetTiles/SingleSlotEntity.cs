@@ -2,6 +2,7 @@
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
@@ -113,7 +114,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 /// <summary> Helper tile to be used in conjunction with <see cref="SingleSlotEntity"/>. </summary>
 public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEntity
 {
-	public int ItemType => (this is IAutoloadTileItem) ? this.AutoItem().type : ItemID.None;
+	public int ItemType => (this is ILoadItem) ? this.AutoItem().type : ItemID.None;
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
