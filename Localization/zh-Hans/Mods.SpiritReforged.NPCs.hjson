@@ -304,6 +304,30 @@ Cartographer: {
 				2: 就是这儿。偶尔发现点遗迹也是我工作的一部分。别担心，我们定规矩是有原因的。不过，天啊，一脚踩进去差点被地面刺穿了？温馨提示，有时候我跑得还是挺快的。
 			}
 
+			Spooky_FetidFarms: {
+				// 0: I try not to go in the jungle, right? Wet, treacherous, bees and stingers everywhere. It started to smell like rotting around...here, I think. I saw a glasshouse shortly before falling as the mushy floor gives way. That was awful.
+				// 1: Should be here...ahem. I don't have the strongest stomach, but they say honey will cure what ails you. Well, let me tell you, keep walking long enough in the underground jungle, come face to face with a big, rotten carrot thing thrashing in a glasshouse...I'll spare the details.
+				// 2: It's here or whereabouts, honestly I didn't really pay much attention. I held my torch up, illuminated this weird glasshouse, and there was like a...veggie ghost trying to eat the glass. Unsuccessfully. Well, maybe. I didn't stick around to check.
+			}
+
+			Spooky_NoseCult: {
+				// 0: Okay, here, I think. I don't know, I remember smelling awful because this place was coated in like...I don't know, slime? I hope it's slime. A big guy turned to look at me and his nose was most of his face and I just didn't want that.
+				// 1: Take it from me: there's a area of the underworld, about...here on your map, you just don't need to go to. Cult? Absolutely. Coated in eyes and like flesh and stuff? Totally. Flying bug with big nose screaming at you? Why not. Pass. Pass. I didn't like it.
+				// 2: Often, it feels like the world punishes me for exploring. Here, it told me hey, you simply do not need to be here. I look up, hell's in front of me. Fine, I'm used to it. I draw on the map. I look up, eyes. Noses. Organs and tissues. I turn around. Keep it simple.
+			}
+
+			Spooky_KrampusWorkshop: {
+				// 0: Here it is. I don't explore deep in the snow much, it's just so cumbersome, but when I saw that...big...blue...maze? I smiled, turned around, and kept moving.
+				// 1: So I was going about the deep cold, as you tend to do when you fall very far down a hole, and around here I saw a massive man-beast look surprised at me, looking through a window. I think he tried to wave, but I turned around too quickly and faceplanted in snow.
+				// 2: A small campfire, some nice prepared food, and a wall. I lay back down, around here, and...don't you know it, I hear mechanical groaning and like, gears or plastic hitting walls through the snow. I think I just froze in that spot - not literally, figuratively - until it quieted down.
+			}
+
+			Spooky_RottenDepths: {
+				// 0: Here, ah...are you sure? You want to go here? Big ol water hole with like a big eye looking back at you? I'd reconsider. Aside from that I just saw some vents exploding. Maybe it's at least pleasantly warm?
+				// 1: Ah, the beach. To be honest, I just guessed where the pin goes. Hopefully it's right! I was having a nice swim, finally putting down the 20 maps I carry on me at all times, and below me? Skeleton fish. Haha! Ah...I can swim faster than I thought.
+				// 2: I came back up on the ocean the other day, and there was this building with a diving helmet in it, so I thought...heh, don't mind if I do. Dip my head in the water, freak out when the sand drops out below me, I hear a roar burst through the water below me and then a sickening crunch. Thankfully, I was maybe four or five feet from the shore.
+			}
+
 			FirstPin: 我已将这个图钉加入了“图钉收藏”，你随时可从地图左下角查看。
 		}
 	}

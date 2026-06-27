@@ -106,7 +106,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 
-		if (PointOfInterestSystem.AnyInterests && _hasPin)
+		if (PointOfInterestSystem.AnyInterests)// && _hasPin)
 			button2 = Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Buttons.Map");
 		else if (LastPosition != Point16.Zero)
 			button2 = Language.GetTextValue("LegacyInterface.108"); //Open map
@@ -120,7 +120,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		}
 		else
 		{
-			if (PointOfInterestSystem.AnyInterests && _hasPin)
+			if (PointOfInterestSystem.AnyInterests)// && _hasPin)
 			{
 				PointOfInterestSystem.Interest interest;
 				Point16 position;

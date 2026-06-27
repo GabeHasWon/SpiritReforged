@@ -3153,3 +3153,23 @@ SaltGraveMarkerItem: {
 	DisplayName: Salt Grave Marker
 	Tooltip: ""
 }
+
+PinSpookyFarms: {
+	DisplayName: Fetid Farms Pin
+	Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	DisplayName: Krampus' Workshop Pin
+	Tooltip: ""
+}
+
+PinSpookyNose: {
+	DisplayName: Temple of Moco Pin
+	Tooltip: ""
+}
+
+PinSpookyRotten: {
+	DisplayName: Rotten Depths Pin
+	Tooltip: ""
+}

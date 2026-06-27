@@ -16,7 +16,6 @@ using SpiritReforged.Content.Savanna.Tiles;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.IO;
-using Terraria.ModLoader.Core;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -25,23 +24,48 @@ internal class SpecialPointMappingMicropass : Micropass
 {
 	public override string WorldGenName => "Points of Interest";
 
-	private readonly static List<Point> GreenhousePositions = []; 
+	private readonly static List<Point> GreenhousePositions = [];
+
+	private static Point NoseArena = new(-1, -1);
+	private static Point RottenDepths = new(-1, -1);
 
 	public override void PostSetupContent(Mod mod)
 	{
 		if (CrossMod.Spooky.Enabled)
 		{
 			Assembly asm = CrossMod.Spooky.Instance.Code;
-			Type type = asm.GetType("VegetableGarden");
 
+			Type type = asm.GetType("Spooky.Content.Generation.VegetableGarden");
 			MethodInfo greenhouseHook = type.GetMethod("CanPlaceGreenhouse");
 			MonoModHooks.Add(greenhouseHook, CheckAddGreenhouse);
+
+			Type hellType = asm.GetType("Spooky.Content.Generation.SpookyHell");
+			MethodInfo arenaHook = hellType.GetMethod("GenerateNoseTempleStructure");
+			MonoModHooks.Add(arenaHook, CheckAddArena);
+
+			Type rottenType = asm.GetType("Spooky.Content.Generation.ZombieOcean");
+			MethodInfo rottenHook = rottenType.GetMethod("PlaceAmbience");
+			MonoModHooks.Add(rottenHook, CheckRottenDepths);
 		}
 	}
 
-	public static bool CheckAddGreenhouse(Func<int, int, bool> orig, int PositionX, int PositionY)
+	private static void CheckRottenDepths(Action<object, int, int, int, int> orig, object self, int PositionX, int PositionY, int SizeX, int SizeY)
 	{
-		bool canPlace = orig(PositionX, PositionY);
+		orig(self, PositionX, PositionY, SizeX, SizeY);
+		RottenDepths = new Point(PositionX + SizeX / 2, PositionY + SizeY / 2);
+	}
+
+	private static void CheckAddArena(Action<object, int, int, string, int, int> orig, object self, int startX, int startY, string StructureFile, int offsetX, int offsetY)
+	{
+		orig(self, startX, startY, StructureFile, offsetX, offsetY);
+
+		if (StructureFile == "MinibossArena")
+			NoseArena = new Point(startX + offsetX / 2, startY + offsetY / 2);
+	}
+
+	public static bool CheckAddGreenhouse(Func<object, int, int, bool> orig, object self, int PositionX, int PositionY)
+	{
+		bool canPlace = orig(self, PositionX, PositionY);
 
 		if (canPlace)
 			GreenhousePositions.Add(new Point(PositionX, PositionY));
@@ -101,6 +125,7 @@ internal class SpecialPointMappingMicropass : Micropass
 			}
 		}
 
+		// Spooky mod content
 		if (CrossMod.Spooky.TryFind("Krampus", out ModNPC krampus) && NPC.FindFirstNPC(krampus.Type) is { } index and not -1)
 		{
 			Point pos = Main.npc[index].Center.ToTileCoordinates();
@@ -110,6 +135,13 @@ internal class SpecialPointMappingMicropass : Micropass
 		foreach (Point greenhouse in GreenhousePositions)
 			Add(greenhouse.X, greenhouse.Y, InterestType.Spooky_FetidFarms);
 
+		if (NoseArena != new Point(-1, -1))
+			Add(NoseArena.X, NoseArena.Y, InterestType.Spooky_NoseCult);
+
+		if (RottenDepths != new Point(-1, -1))
+			Add(RottenDepths.X, RottenDepths.Y, InterestType.Spooky_RottenDepths);
+
+		// Thorium
 		if (CrossMod.Thorium.TryCall(out Rectangle bounds, "GetBloodChamberBounds"))
 			Add(bounds.Center.X, bounds.Center.Y, InterestType.BloodAltar);
 
