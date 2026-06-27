@@ -30,28 +30,23 @@ internal class IceMannequinInventory : MannequinInventory
 		}
 	}
 
-	public override void SetMannequin(Point16 position)
+	public override void SetMannequin(int whoAmI)
 	{
 		Item[] inv = [new(ItemID.EskimoHood), new(ItemID.EskimoCoat), new(ItemID.EskimoPants),
 			new(), new(), new(), new(), new()];
 
 		float chance = WorldGen.genRand.NextFloat();
 
-		if (chance < .10f)
+		if (chance < 0.10f)
 		{
 			inv[0] = new(ItemID.VikingHelmet);
 			inv[1] = new();
 			inv[2] = new();
 		}
 
-		if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te) || te is not TEDisplayDoll mannequin)
-		{
-			int id = TEDisplayDoll.Place(position.X, position.Y);
-			mannequin = TileEntity.ByID[id] as TEDisplayDoll;
-		}
+		var mannequin = TileEntity.ByID[whoAmI] as TEDisplayDoll;
+		inv[WorldGen.genRand.Next(5) + 3] = new Item(AccType);
 
-		int slot = WorldGen.genRand.Next(5) + 3;
-		inv[slot] = new Item(AccType);
-		UndergroundHouseMicropass.teDollInventory.SetValue(mannequin, inv);
+		HouseLoader.DisplayDollItems.SetValue(mannequin, inv);
 	}
 }

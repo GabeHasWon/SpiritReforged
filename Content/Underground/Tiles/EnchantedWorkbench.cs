@@ -1,12 +1,17 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
+using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Chests;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Forest.Glyphs;
 using Terraria.DataStructures;
+using Terraria.GameContent.Biomes.CaveHouse;
+using Terraria.ModLoader.Config;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class EnchantedWorkbench : ModTile
+public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 {
 	public const int FullFrameWidth = 18 * 3;
 
@@ -18,6 +23,46 @@ public class EnchantedWorkbench : ModTile
 	public static Point16 ActiveCoordinates { get; private set; }
 
 	public static void RemoveCoords() => ActiveCoordinates = Point16.Zero;
+	#endregion
+
+	#region worldgen
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new HouseLoader()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
+	[GenConfigurable(1, 50)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	private static int EnchantedWorkbenchChance = 10;
+
+	public override void Load() => HouseLoader.BuilderAction += FillEnchantedWorkbenche;
+
+	public static void FillEnchantedWorkbenche(HouseBuilder houseBuilder)
+	{
+		if (houseBuilder.Type is not HouseType.Wood)
+			return;
+
+		bool placedWorkbench = false;
+		bool filledChest = false;
+
+		foreach (Rectangle room in houseBuilder.Rooms)
+		{
+			if (!filledChest && HouseLoader.TryFindChest(room, out Chest chest) && Array.FindIndex(chest.item, static (x) => x.IsAir) is int index && index != -1) //Search for the first instance of air
+			{
+				ChestPoolUtils.PlaceChestItems([new ChestPoolUtils.ChestInfo(3, 7, 1f, ModContent.ItemType<ChromaticWax>())], chest, index);
+				filledChest = true;
+			}
+
+			if (!placedWorkbench && WorldGen.genRand.NextBool(EnchantedWorkbenchChance) && HouseLoader.TryPlace(room, ModContent.TileType<EnchantedWorkbench>(), out PlaceAttempt placeAttempt))
+			{
+				placedWorkbench = true;
+			}
+		}
+	}
 	#endregion
 
 	public override void SetStaticDefaults()

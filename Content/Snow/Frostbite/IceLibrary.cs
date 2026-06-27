@@ -14,6 +14,7 @@ internal class IceLibrary : ILoadable
 	private static int GenCount;
 
 	public void Load(Mod mod) => On_HouseBuilder.FillRooms += AddBooks;
+
 	private static void AddBooks(On_HouseBuilder.orig_FillRooms orig, HouseBuilder self)
 	{
 		if (self.Type != HouseType.Ice)
@@ -39,7 +40,7 @@ internal class IceLibrary : ILoadable
 		orig(self);
 	}
 
-	static void PlaceShelf(int originX, int originY, Point size, int style, ref bool canGen)
+	private static void PlaceShelf(int originX, int originY, Point size, int style, ref bool canGen)
 	{
 		HashSet<Point> safe = []; //Tracks empty shelves for Frostbite gen
 

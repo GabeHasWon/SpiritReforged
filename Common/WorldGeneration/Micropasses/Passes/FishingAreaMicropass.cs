@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;
@@ -33,7 +32,7 @@ internal class FishingAreaMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundHouseMicropass()
+		CopiedPage = new HouseLoader()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

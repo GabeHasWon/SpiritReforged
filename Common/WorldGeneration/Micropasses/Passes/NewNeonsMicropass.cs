@@ -23,7 +23,7 @@ internal class NewNeonsMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
 	{
-		CopiedPage = new UndergroundHouseMicropass()
+		CopiedPage = new HouseLoader()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

@@ -28,7 +28,7 @@ internal class PotteryStructureMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundHouseMicropass(),
+		CopiedPage = new HouseLoader(),
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

@@ -1,5 +1,4 @@
-﻿using Terraria.DataStructures;
-using Terraria.GameContent.Biomes.CaveHouse;
+﻿using Terraria.GameContent.Biomes.CaveHouse;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
 
@@ -19,5 +18,5 @@ public abstract class MannequinInventory : ModSystem
 
 	public abstract void Setup();
 
-	public abstract void SetMannequin(Point16 position);
+	public abstract void SetMannequin(int whoAmI);
 }
