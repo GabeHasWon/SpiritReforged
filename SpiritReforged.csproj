@@ -29,4 +29,10 @@
   <ItemGroup>
     <Folder Include="Localization\ru-RU\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="3.6.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>
