@@ -2,10 +2,13 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using System.Linq;
-using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Content.Particles;
 
+/// <summary>
+/// Renders a composite smoke
+/// Partially referenced from https://github.com/IbanPlay/FablesRelease/blob/c83ceb82fdf976226619b11ab34f5834b66f3c09/Particles/BlendedSmoke.cs#L119
+/// </summary>
 public class SmokeTargetSystem : ModSystem
 {
 	private readonly static BlendState Max = new()
@@ -63,7 +66,7 @@ public class SmokeTargetSystem : ModSystem
 	}
 
 	/// <summary>
-	/// Draws the composite smoke with the frame dependent on the layer
+	/// Draws the composite smoke with the Y frame dependent on the layer
 	/// Called in ParticleDetours.cs
 	/// </summary>
 	/// <param name="frameY">0-8, corresponds to each layer of ParticleLayer</param>
@@ -88,10 +91,6 @@ public class SmokeTargetSystem : ModSystem
 
 public class CompositeSmoke : Particle
 {
-	internal int _variant;
-
-	internal float _opacity;
-
 	internal bool _addLight;
 	internal bool _addBloom;
 
