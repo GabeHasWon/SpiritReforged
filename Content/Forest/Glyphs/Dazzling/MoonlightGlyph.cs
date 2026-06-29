@@ -7,9 +7,12 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
+using static SpiritReforged.Content.Particles.SnowflakeParticle;
 
 namespace SpiritReforged.Content.Forest.Glyphs.Dazzling;
 
@@ -238,6 +241,47 @@ public class MoonlightGlyph : GlyphItem
 			{
 				Rotation = 0f,
 				Layer = ParticleLayer.AboveItem
+			});
+		}
+	}
+
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Vector2 pos = position + normalized * item.width;
+			Vector2 vel = normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 5f);
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.1f, 45, 0, UpdateAction));
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.05f, 40, 0, UpdateAction, false));
+
+			static void UpdateAction(Particle p)
+			{
+				p.Rotation += p.Velocity.Length() * 0.1f;
+				p.Velocity *= 0.95f;			
+			}
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(5 + 3 * projectile.extraUpdates))
+		{
+			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.DarkBlue.Additive(), 0.09f, 40, 0, scaleFactor: 0.01f)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveNPC
+			});
+
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightCyan.Additive(), 0.04f, 35, 0, AddLight: false, scaleFactor: 0.01f)
+			{
+				Rotation = 0f,
+				Layer = ParticleLayer.AboveNPC
 			});
 		}
 	}

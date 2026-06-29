@@ -151,6 +151,13 @@ public class GlyphGlobalProjectile : GlobalProjectile
 		}
 	}
 
+	public override void AI(Projectile projectile)
+	{
+		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
+			(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
+			
+	}
+
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => binaryWriter.Write(glyph.ItemType);
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
@@ -235,6 +242,14 @@ public abstract class GlyphItem : ModItem
 
 				StopItemConsumption = true;
 			}
+		}
+
+		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			if (!item.channel && HasGlyph(out var glyphItem))
+				glyphItem.GlyphShootEffects(item, player, source, position, velocity, type, damage, knockback);
+
+			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
 		}
 
 		public override bool ConsumeItem(Item item, Player player)
@@ -446,5 +461,17 @@ public abstract class GlyphItem : ModItem
 	public virtual void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed) { }
 
 	public virtual void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input) { }
+
+	/// <summary>
+	/// Effects that should happen when an item with a glyph shoots a projectile
+	/// mirrors Item.Shoot()
+	/// </summary>
+	public virtual void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) { }
+
+	/// <summary>
+	/// Update hook for projectiles with glyphs, used for vfx
+	/// Ran in Projectile.AI()
+	/// </summary>
+	public virtual void UpdateGlyphProjectile(Projectile projectile) { }
 }
 #endregion

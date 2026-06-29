@@ -323,6 +323,34 @@ public class BlazeGlyph : GlyphItem
 			ParticleHandler.SpawnParticle(particle);
 		}
 	}
+
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Dust.NewDustPerfect(position + normalized * item.width, DustID.Torch, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 70, default, 1.2f).noGravity = true;
+
+			ParticleHandler.SpawnParticle(new CurvingEmberParticle(position + normalized * item.width, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1.2f), Color.DarkOrange, 0.05f, 40, -Math.Sign(velocity.X), 20));
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(3 + 1 * projectile.extraUpdates))
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Torch, -projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(0.9f, 1.5f)).noGravity = true;
+
+		if (Main.rand.NextBool(5 + 4 * projectile.extraUpdates))
+		{
+			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+
+			ParticleHandler.SpawnParticle(new FireParticle(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), colors, 1, Main.rand.NextFloat(0.02f, 0.04f), EaseFunction.EaseQuadOut, 40)
+			{
+				Layer = ParticleLayer.BelowProjectile
+			});
+		}		
+	}
 }
 
 public class BlazeGlyphShaderData(Asset<Effect> shader, string shaderPass, Vector2 colorMod, bool additive) : ArmorShaderData(shader, shaderPass)

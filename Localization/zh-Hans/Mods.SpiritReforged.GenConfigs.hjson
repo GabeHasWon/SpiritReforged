@@ -468,6 +468,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
 				Tooltip: 陶器结构放置罐子的最小尝试次数。
 			}
+
+			EnchantedWorkbenchChance: {
+				// DisplayName: EnchantedWorkbenchChance
+				// Tooltip: EnchantedWorkbenchChance
+			}
 		}
 
 		Presets: {

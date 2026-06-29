@@ -14,18 +14,24 @@ public class ModTarget2D : ILoadable, IDisposable
 	private readonly Action<SpriteBatch> _drawAction;
 	private readonly bool _prepare;
 	private readonly SamplerState _samplerState;
+	private readonly Vector2? _scale; // Typically used for pixelation effects (0.5x scale RT drawn at 2x scale), defaults to 1x scale. Can be scaled independently for odd-sized Render Targets
 
 	protected ModTarget2D() { } //Include an empty constructor so that ILoadable can function
 
 	/// <param name="activeCondition"></param>
 	/// <param name="drawAction"></param>
 	/// <param name="prepare"> Whether <see cref="Prepare"/> should be called. This logic should be handled manually in <paramref name="drawAction"/> otherwise. </param>
-	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null, bool prepare = true, SamplerState samplerState = null)
+	public ModTarget2D(Func<bool> activeCondition, Action<SpriteBatch> drawAction = null, bool prepare = true, SamplerState samplerState = null, Vector2? scale = null)
 	{
 		_activeCondition = activeCondition;
 		_drawAction = drawAction;
 		_prepare = prepare;
 		_samplerState = samplerState;
+
+		if (scale.HasValue)
+			_scale = scale;
+		else
+			_scale = Vector2.One;
 
 		Register();
 	}
@@ -38,7 +44,7 @@ public class ModTarget2D : ILoadable, IDisposable
 		Main.QueueMainThreadAction(() =>
 		{
 			var gd = Main.instance.GraphicsDevice;
-			Target = new RenderTarget2D(gd, gd.Viewport.Width, gd.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+			Target = new RenderTarget2D(gd, (int)(gd.Viewport.Width * _scale.Value.X), (int)(gd.Viewport.Height * _scale.Value.Y), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 		});
 
 		Targets.Add(this);
@@ -50,7 +56,7 @@ public class ModTarget2D : ILoadable, IDisposable
 		var gd = Main.instance.GraphicsDevice;
 
 		Target.Dispose();
-		Target = new RenderTarget2D(gd, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+		Target = new RenderTarget2D(gd, (int)(size.X * _scale.Value.X), (int)(size.Y * _scale.Value.Y), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 	});
 
 	/// <summary> Draws the contents of <see cref="DrawInto(SpriteBatch)"/> and automatically handles <paramref name="spriteBatch"/> modes.<br/>

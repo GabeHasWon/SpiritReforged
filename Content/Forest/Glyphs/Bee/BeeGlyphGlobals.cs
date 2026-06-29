@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.CombatTextCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -70,9 +71,9 @@ public sealed class BeeGlyphPlayer : ModPlayer
 		Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
 
 		CombatText.NewText(target.getRect(), orange, Math.Max((int)(damageDone * 0.8f), 1), hit.Crit);
-		int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
+		int summonDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
 
-		_maxTimeLefts[magicDamage] = Main.combatText[magicDamage]?.lifeTime ?? 10;
+		ColoredCombatText.AddCombatText(summonDamage, Color.Yellow, Color.Goldenrod);
 	}
 }
 
@@ -134,7 +135,7 @@ public class BeeGlobalNPC : GlobalNPC
 					p.Kill();
 			}
 
-			TagEffects(owner, npc);
+			TagEffects(owner, npc, damageDone);
 			tagged = false;
 			tagCooldown = MAX_TAG_COOLDOWN;
 		}
@@ -166,7 +167,7 @@ public class BeeGlobalNPC : GlobalNPC
 			ParticleHandler.SpawnParticle(new BeeOnNPC(target, Main.rand.NextVector2Circular(25f, 25f)));
 	}
 
-	private static void TagEffects(Player player, NPC target)
+	private static void TagEffects(Player player, NPC target, int damageDone)
 	{
 		SoundEngine.PlaySound(SoundID.Item97 with { Volume = 1f, PitchVariance = 0.25f }, target.Center);
 
@@ -179,9 +180,9 @@ public class BeeGlobalNPC : GlobalNPC
 			ParticleHandler.SpawnParticle(new StickyHoneyParticle(target.Center + Main.rand.NextVector2Circular(5f, 5f), Main.rand.NextVector2Circular(8f, 8f), 1f, 30, 0.15f));
 		}
 
-		int type = player.hornet ? ProjectileID.GiantBee : ProjectileID.Bee;
+		int type = player.beeType();
 
 		for (int i = 0; i < 3; i++)
-			Projectile.NewProjectile(target.GetSource_OnHurt(player), target.Center, Main.rand.NextVector2Unit(), type, 10, 0, player.whoAmI); // Make into a tag bonus
+			Projectile.NewProjectile(target.GetSource_OnHurt(player), target.Center, Main.rand.NextVector2Unit(), type, player.beeDamage(1 + damageDone / 3), player.beeKB(2f), player.whoAmI); // Make into a tag bonus
 	}
 }

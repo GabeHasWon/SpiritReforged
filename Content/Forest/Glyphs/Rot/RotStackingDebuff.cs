@@ -191,7 +191,17 @@ public class RotStackingDebuff : ModBuff
 				{
 					position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, npc.width * 0.001f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255), npc.width * 0.005f + Main.rand.NextFloat(0.5f, 0.8f), 50, false, false, SmokeUpdate)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+					
+					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), npc.width * 0.005f + Main.rand.NextFloat(0.5f, 0.8f), 50, false, false, SmokeUpdate)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+
+					/*ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, npc.width * 0.001f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
 						PixelDivisor = 3,
@@ -214,7 +224,13 @@ public class RotStackingDebuff : ModBuff
 						Pixellate = true,
 						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
-					});
+					});*/
+
+					static void SmokeUpdate(Particle p)
+					{
+						p.Velocity.Y -= 0.02f;
+						p.Velocity.X *= 0.95f;
+					}
 				}
 			}
 		}

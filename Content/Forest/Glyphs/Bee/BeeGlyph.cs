@@ -4,6 +4,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
@@ -249,7 +250,36 @@ public class BeeGlyph : GlyphItem
 		if (Main.rand.NextBool(50))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
+
+			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f);
+
+			if (Main.rand.NextBool(3))
+				ParticleHandler.SpawnParticle(new LargeBeeParticle(pos, velocity, 0f, 1f, 180));
+			else
+				ParticleHandler.SpawnParticle(new BeeParticle(pos, velocity, 0f, 1f, 90));
 		}
+	}
+
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Dust.NewDustPerfect(position + normalized * item.width, DustID.Honey2, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 70, default, 1.5f).noGravity = true;
+
+			if (Main.rand.NextBool())
+				Dust.NewDustPerfect(position + normalized * item.width, DustID.Honey2, normalized.SafeNormalize(Vector2.One).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 100, default, 0.85f);
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Honey2, -projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
+
+		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
+			ParticleHandler.SpawnParticle(new BeeParticle(projectile.Center, Main.rand.NextVector2Circular(3f, 3f), 0f, Main.rand.NextFloat(0.8f, 1.2f), 40));
 	}
 }
 
