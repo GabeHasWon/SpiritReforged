@@ -468,6 +468,16 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
 				Tooltip: 陶器结构放置罐子的最小尝试次数。
 			}
+
+			EnchantedWorkbenchChance: {
+				// DisplayName: "[i:36] (Houses) Workbench Chance"
+				// Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+			}
+
+			DisplayCaseChance: {
+				// DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
+				// Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+			}
 		}
 
 		Presets: {

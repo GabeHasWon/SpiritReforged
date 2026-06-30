@@ -3289,3 +3289,8 @@ MariglowSeedPouch: {
 	// DisplayName: Mariglow Seed Pouch
 	// Tooltip: Scatters seeds which sprout into mariglow on sand
 }
+
+DisplayCaseItem: {
+	// DisplayName: Display Case
+	// Tooltip: <right> to place accessory in case
+}

@@ -468,6 +468,16 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
 				Tooltip: The minimum number of attempts pottery structures have to place pots.
 			}
+
+			EnchantedWorkbenchChance: {
+				DisplayName: "[i:36] (Houses) Workbench Chance"
+				Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+			}
+
+			DisplayCaseChance: {
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
+				Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+			}
 		}
 
 		Presets: {
