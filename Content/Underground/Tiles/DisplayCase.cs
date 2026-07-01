@@ -60,10 +60,10 @@ public class DisplayCase : SingleSlotTile<DisplayCase.DisplayCaseSlot>, ILoadIte
 
 		foreach (Rectangle room in houseBuilder.Rooms)
 		{
-			if (WorldGen.genRand.NextBool(DisplayCaseChance) && HouseLoader.TryPlace(new(room.X, room.Y + room.Height - 1, room.Width, 1), ModContent.TileType<DisplayCase>(), out PlaceAttempt placeAttempt))
+			if (WorldGen.genRand.NextBool(DisplayCaseChance) && HouseLoader.TryPlace(new(room.X, room.Y + room.Height - 3, room.Width, 1), ModContent.TileType<DisplayCase>(), out PlaceAttempt placeAttempt))
 			{
 				placeAttempt.PostPlacement(out DisplayCaseSlot displayCaseSlot);
-				displayCaseSlot.item = new Item(WorldGen.genRand.NextFromList(ItemID.BandofRegeneration, ItemID.ManaRegenerationBand, ItemID.HermesBoots, ItemID.CloudinaBottle, ItemID.Aglet));
+				displayCaseSlot.item = new Item(WorldGen.genRand.NextFromList(ItemID.BandofRegeneration, ItemID.Radar, ItemID.HermesBoots, ItemID.CloudinaBottle, ItemID.Aglet));
 
 				return new(true, nameof(HouseLoader.FillMannequin));
 			}
@@ -98,7 +98,7 @@ public class DisplayCase : SingleSlotTile<DisplayCase.DisplayCaseSlot>, ILoadIte
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 
-		AddMapEntry(new Color(140, 140, 140), Language.GetText("Mods.SpiritReforged.Items.DisplayCase.DisplayName"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("Mods.SpiritReforged.Items.DisplayCaseItem.DisplayName"));
 		DustType = -1;
 	}
 

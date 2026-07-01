@@ -210,8 +210,9 @@ public class HouseLoader : ILoadable, IGenerationPage
 		for (int a = 0; a < attempts; a++)
 		{
 			(int i, int j) = (WorldGen.genRand.Next(bounds.Left, bounds.Right + 1), WorldGen.genRand.Next(bounds.Top, bounds.Bottom + 1));
+			placeAttempt = Placer.PlaceTile(i, j, type, style);
 
-			if ((placeAttempt = Placer.Check(i, j, type, style).IsClear().Place()).success)
+			if (placeAttempt.success)
 				return true;
 		}
 
