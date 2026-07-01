@@ -90,6 +90,8 @@ public class BlazeGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
+				target.AddBuff(BuffID.OnFire3, 90);
+
 				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
@@ -105,7 +107,7 @@ public class BlazeGlyph : GlyphItem
 				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
-				//fireFlashTimer = 120;
+				target.AddBuff(BuffID.OnFire3, 90);
 
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
 				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
@@ -339,13 +341,13 @@ public class BlazeGlyph : GlyphItem
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
 		if (Main.rand.NextBool(3 + 1 * projectile.extraUpdates))
-			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Torch, -projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(0.9f, 1.5f)).noGravity = true;
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Torch, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(0.9f, 1.5f)).noGravity = true;
 
 		if (Main.rand.NextBool(5 + 4 * projectile.extraUpdates))
 		{
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
-			ParticleHandler.SpawnParticle(new FireParticle(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), colors, 1, Main.rand.NextFloat(0.02f, 0.04f), EaseFunction.EaseQuadOut, 40)
+			ParticleHandler.SpawnParticle(new FireParticle(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), colors, 1, Main.rand.NextFloat(0.02f, 0.04f), EaseFunction.EaseQuadOut, 40)
 			{
 				Layer = ParticleLayer.BelowProjectile
 			});

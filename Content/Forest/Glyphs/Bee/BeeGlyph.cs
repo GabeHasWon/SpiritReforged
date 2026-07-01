@@ -276,7 +276,7 @@ public class BeeGlyph : GlyphItem
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
 		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
-			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Honey2, -projectile.velocity.SafeNormalize(Vector2.UnitX * projectile.direction).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Honey2, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
 
 		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
 			ParticleHandler.SpawnParticle(new BeeParticle(projectile.Center, Main.rand.NextVector2Circular(3f, 3f), 0f, Main.rand.NextFloat(0.8f, 1.2f), 40));

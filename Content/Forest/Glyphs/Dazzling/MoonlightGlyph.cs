@@ -271,18 +271,18 @@ public class MoonlightGlyph : GlyphItem
 		if (Main.rand.NextBool(5 + 3 * projectile.extraUpdates))
 		{
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
+			
+			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(2f, 2f);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.DarkBlue.Additive(), 0.09f, 40, 0, scaleFactor: 0.01f)
-			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveNPC
-			});
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.12f, 45, 0.5f, UpdateAction, true, 0.02f));
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightCyan.Additive(), 0.04f, 35, 0, AddLight: false, scaleFactor: 0.01f)
+			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.07f, 40, 0.5f, UpdateAction, false, 0.02f));
+
+			static void UpdateAction(Particle p)
 			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveNPC
-			});
+				p.Rotation += p.Velocity.Length() * 0.1f;
+				p.Velocity *= 0.95f;
+			}
 		}
 	}
 }

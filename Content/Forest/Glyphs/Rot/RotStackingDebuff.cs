@@ -5,6 +5,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Forest.Glyphs.Sanguine;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -50,24 +51,9 @@ public class RotStackingDebuff : ModBuff
 					ParticleHandler.SpawnParticle(new MaggotParticle(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.3f)
 						* Main.rand.NextFloat(2.5f) - Vector2.UnitY, Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 20 + Main.rand.Next(20)));
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(2f, 2f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.2f, Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.5f)
+						* Main.rand.NextFloat(2.5f), new Color(87, 94, 1), 40, false, false)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.BelowNPC
-					});
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, target.DirectionTo(Player.Center).RotatedByRandom(1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.15f, Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
-					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.BelowNPC
-					});
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, target.DirectionTo(Player.Center).RotatedByRandom(1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.25f, Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
-					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 				}
@@ -84,7 +70,7 @@ public class RotStackingDebuff : ModBuff
 
 		public override void UpdateEquips()
 		{
-			if (!Main.dedServ && blightSpread.Active && Main.rand.NextBool(24 - blightSpread.stacks * 2))
+			if (!Main.dedServ && blightSpread.Active && Main.rand.NextBool((int)MathHelper.Lerp(15, 4, blightSpread.stacks / (float)BlightSpread.MaxStacks)))
 			{
 				Vector2 position = Player.Center + Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2);
 				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
@@ -101,30 +87,26 @@ public class RotStackingDebuff : ModBuff
 				{
 					position = Player.Center + Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.4f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
-					position = Player.Center + Main.rand.NextVector2Circular(Player.width / 2, Player.height / 2);
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.3f, 0.03f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), 40, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
-					position = Player.Center + Main.rand.NextVector2Circular(Player.width / 2, Player.height / 2);
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.3f, 0.03f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new AttachedCompositeSmoke(Player, Main.rand.NextVector2CircularEdge(Player.width / 2, Player.height / 2), Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(169, 158, 38), 45, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
+
+					static void SmokeUpdate(Particle p)
+					{
+						p.Velocity.Y -= 0.02f;
+						p.Velocity.X *= 0.95f;
+					}
 				}
 			}
 		}
@@ -171,10 +153,10 @@ public class RotStackingDebuff : ModBuff
 			if (!blightSpread.Active)
 				return;
 
-			if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.decayTime % 45 == 0)
-				SpreadNearby(npc.Center, 80, 1); //Periodically spread to nearby NPCs
+			//if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.decayTime % 45 == 0)
+			//	SpreadNearby(npc.Center, 80, 1); //Periodically spread to nearby NPCs
 
-			if (!Main.dedServ && npc.Opacity > 0 && Main.rand.NextBool(30 - blightSpread.stacks * 2))
+			if (!Main.dedServ && npc.Opacity > 0 && Main.rand.NextBool((int)MathHelper.Lerp(15, 4, blightSpread.stacks / (float)BlightSpread.MaxStacks)))
 			{
 				Vector2 position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
 				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
@@ -191,40 +173,24 @@ public class RotStackingDebuff : ModBuff
 				{
 					position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255), npc.width * 0.005f + Main.rand.NextFloat(0.5f, 0.8f), 50, false, false, SmokeUpdate)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
-					
-					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), npc.width * 0.005f + Main.rand.NextFloat(0.5f, 0.8f), 50, false, false, SmokeUpdate)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1), 40, false, false, SmokeUpdate)
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
 
-					/*ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1, 255) * 0.3f, npc.width * 0.001f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
+
+					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), 40, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
 
-					position = npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2);
+					position = npc.Center + Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(131, 124, 1) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new AttachedCompositeSmoke(npc, Main.rand.NextVector2CircularEdge(npc.width / 2, npc.height / 2), Vector2.UnitY, new Color(169, 158, 38), 40, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
 						Layer = ParticleLayer.BelowNPC
 					});
-
-					position = npc.Center + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2);
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, -Vector2.UnitY * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38) * 0.2f, npc.width * 0.001f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
-					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.BelowNPC
-					});*/
 
 					static void SmokeUpdate(Particle p)
 					{
@@ -233,6 +199,19 @@ public class RotStackingDebuff : ModBuff
 					}
 				}
 			}
+		}
+
+		public override void OnKill(NPC npc)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.Active)
+			{
+				// spread a stack to up to 3 random npcs upon dying
+
+				for (int i = 0; i < 3; i++)
+				{
+					SpreadNearby(npc.Center, 500, 1);
+				}
+			}			
 		}
 
 		public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
@@ -264,36 +243,32 @@ public class RotStackingDebuff : ModBuff
 
 				if (Main.dedServ || rotGlobalNPC.blightSpread.stacks > 1)
 					continue;
-				
+
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.1f, PitchVariance = 0.5f }, npc.Center);
 
 				for (int i = 0; i < 8; i++)
 				{
 					Vector2 center = npc.Center;
+
 					ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(87, 94, 1, 255) * 0.2f, 0.03f + Main.rand.NextFloat(0.01f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.AboveNPC
+						Layer = ParticleLayer.BelowNPC
 					});
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(131, 124, 1) * 0.15f, 0.02f + Main.rand.NextFloat(0.04f, 0.08f), EaseFunction.EaseQuadOut, 60, false)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
 					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.AboveNPC
-					});
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(center, Main.rand.NextVector2CircularEdge(1.5f, 1.5f), new Color(169, 158, 38) * 0.25f, 0.01f + Main.rand.NextFloat(0.02f, 0.05f), EaseFunction.EaseQuadOut, 60, false)
-					{
-						Pixellate = true,
-						PixelDivisor = 3,
-						Layer = ParticleLayer.AboveNPC
+						Layer = ParticleLayer.BelowNPC
 					});
 				}
 			}
+		}
+
+		static void SmokeUpdate(Particle p)
+		{
+			p.Velocity.Y -= 0.05f;
+			p.Velocity *= 0.93f;
 		}
 	}
 
