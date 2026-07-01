@@ -140,17 +140,20 @@ public class RageGlyph : GlyphItem
 
 		public override void OnHurt(Player.HurtInfo info)
 		{
-			_overflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
-			_overflowDecayTimer = 600;
-
-			SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.Center);
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Player.Center);
-			
-			for (int i = 0; i < 7; i++)
+			if (GlyphActive)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+				_overflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
+				_overflowDecayTimer = 600;
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+				SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.Center);
+				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Player.Center);
+
+				for (int i = 0; i < 7; i++)
+				{
+					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+				}
 			}
 		}
 
