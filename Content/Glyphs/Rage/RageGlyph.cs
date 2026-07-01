@@ -53,7 +53,7 @@ public class RageGlyph : GlyphItem
 
 			Color drawColor = Color.Lerp(Color.Red, Color.OrangeRed, lerp);
 
-			float scale = MathHelper.Lerp(1f, 1.2f, lerp);
+			float scale = MathHelper.Lerp(0.8f, 1f, lerp);
 
 			string text = mp._overflowDamage.ToString();
 
@@ -227,6 +227,7 @@ public class RageGlyph : GlyphItem
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			// Rage hits can't proc rage
 			if (proj.type == ModContent.ProjectileType<RageHit>())
 				return;
 
