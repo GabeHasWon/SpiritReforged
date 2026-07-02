@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Particles;
+namespace SpiritReforged.Content.Particles.Basic;
 
 public class DropParticle(int lifeTime, Color color, Entity anchor = default) : ABasicParticle
 {

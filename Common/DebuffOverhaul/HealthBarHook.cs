@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
-namespace SpiritReforged.DebuffOverhaul.Common;
+namespace SpiritReforged.Common.DebuffOverhaul;
 
 public sealed class HealthBarHook : GlobalNPC
 {

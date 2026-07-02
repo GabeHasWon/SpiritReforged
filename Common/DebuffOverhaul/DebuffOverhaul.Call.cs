@@ -1,4 +1,4 @@
-/*using MonoMod.Utils;
+/*using MonoMod.Utils; //LEGACY
 using System.Reflection;
 using SpiritReforged.DebuffOverhaul.Common;
 

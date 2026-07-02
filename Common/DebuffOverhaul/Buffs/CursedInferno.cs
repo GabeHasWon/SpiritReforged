@@ -1,13 +1,12 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.DebuffOverhaul.Common;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class CursedInferno : DoTExtension
 {
-    public static readonly Asset<Texture2D> CursedHealth = ModContent.Request<Texture2D>(nameof(DebuffOverhaul) + "/Assets/Textures/CursedHealthBar");
+    public static readonly Asset<Texture2D> CursedHealth = ModContent.Request<Texture2D>(VanillaTextures + "CursedHealthBar");
 
-    public override Settings LocalSettings => new(0.3f, 1500);
+	public override Settings LocalSettings => new(0.3f, 1500);
 
     public override void Load() => Handler.Register(this, BuffID.CursedInferno);
 

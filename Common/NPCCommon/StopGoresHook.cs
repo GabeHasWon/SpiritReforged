@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿namespace SpiritReforged.Common.NPCCommon;
 
-namespace DebuffOverhaul.Common;
-
-internal sealed class StopGoresHook : ILoadable
+public sealed class StopGoresHook : ILoadable
 {
     /// <summary> Determines when NPCs should be prevented from spawning gores on death. </summary>
     public static Func<NPC, bool> Conditions { get; set; }
@@ -21,10 +18,8 @@ internal sealed class StopGoresHook : ILoadable
     {
         var enumerator = Conditions.GetInvocationList().GetEnumerator();
         while (enumerator.MoveNext())
-        {
             if (enumerator.Current is Func<NPC, bool> func && (Tracking = func.Invoke(self)))
                 break;
-        }
 
         orig(self, hit);
         Tracking = false;

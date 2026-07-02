@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.DebuffOverhaul.Common;
+﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
 public abstract class BuffExtension : ILoadable
 {
@@ -23,7 +23,7 @@ public abstract class BuffExtension : ILoadable
         public static bool Register(BuffExtension extension, int type) => BuffByType.TryAdd(type, extension);
         public static void Register(BuffExtension extension, params int[] types)
         {
-            foreach (var type in types)
+            foreach (int type in types)
                 Register(extension, type);
         }
     }

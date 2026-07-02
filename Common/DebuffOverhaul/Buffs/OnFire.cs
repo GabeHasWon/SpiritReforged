@@ -1,17 +1,15 @@
-﻿using DebuffOverhaul.Common;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.DebuffOverhaul.Common;
-using SpiritReforged.DebuffOverhaul.Content.Particles;
+using SpiritReforged.Content.Particles.Basic;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class OnFire : DoTExtension
 {
-	public static readonly Asset<Texture2D> BurningHealth = ModContent.Request<Texture2D>(SpiritReforgedMod.ModName + "/DebuffOverhaul/Assets/FireHealthBar");
-    public static readonly Asset<Texture2D> Flame = ModContent.Request<Texture2D>(SpiritReforgedMod.ModName + "/DebuffOverhaul/Assets/SmallFlame");
+	public static readonly Asset<Texture2D> BurningHealth = ModContent.Request<Texture2D>(VanillaTextures + "FireHealthBar");
+    public static readonly Asset<Texture2D> Flame = ModContent.Request<Texture2D>(VanillaTextures + "SmallFlame");
 
     public override Settings LocalSettings => new(0.2f, 500);
 
@@ -31,13 +29,11 @@ public class OnFire : DoTExtension
             int amount = npc.width / 5;
 
             if (npc.collideY || Collision.SolidCollision(new(npc.position.X, npc.position.Y + 4), npc.width, npc.height))
-			{
 				for (int i = 0; i < amount; i++)
 				{
 					Vector2 position = npc.Bottom + Main.rand.NextVector2Circular(npc.width / 2 + 5, 2) + new Vector2(0, 2);
 					ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.FlameWaders, new() { PositionInWorld = position });
 				}
-			}
 
             for (int i = 0; i < amount; i++)
             {
@@ -59,9 +55,7 @@ public class OnFire : DoTExtension
         base.OnApply(reApplied);
 
         if (!reApplied)
-		{
 			for (int i = 0; i < 5; i++)
-			{
 				Main.ParticleSystem_World_OverPlayers.Add(new EmberParticle(120)
 				{
 					LocalPosition = NPC.Center,
@@ -69,8 +63,6 @@ public class OnFire : DoTExtension
 					Scale = new Vector2(1) * Main.rand.NextFloat(0.2f, 0.8f),
 					AccelerationPerFrame = new(0, -0.01f)
 				});
-			}
-		}
     }
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)

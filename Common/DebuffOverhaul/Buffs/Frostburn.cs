@@ -1,14 +1,13 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.DebuffOverhaul.Common;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Frostburn : DoTExtension
 {
-    public static readonly Asset<Texture2D> FrozenHealth = ModContent.Request<Texture2D>(nameof(DebuffOverhaul) + "/Assets/Textures/FrostHealthBar");
-    public static readonly Asset<Texture2D> Snowflake = ModContent.Request<Texture2D>(nameof(DebuffOverhaul) + "/Assets/Textures/Snowflake");
+    public static readonly Asset<Texture2D> FrozenHealth = ModContent.Request<Texture2D>(VanillaTextures + "FrostHealthBar");
+	public static readonly Asset<Texture2D> Snowflake = ModContent.Request<Texture2D>(VanillaTextures + "Snowflake");
 
-    public override Settings LocalSettings => new(0.25f, 500);
+	public override Settings LocalSettings => new(0.25f, 500);
 
     public override void Load() => Handler.Register(this, BuffID.Frostburn);
 

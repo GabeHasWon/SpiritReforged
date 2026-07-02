@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.DebuffOverhaul.Common;
+﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
 internal sealed class BuffDetours : ILoadable
 {
@@ -24,7 +24,7 @@ internal sealed class BuffDetours : ILoadable
     private static void DrawExtensionHealthBars(HealthBarHook.Options options, Entity entity)
     {
         if (entity is NPC npc && npc.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
-            foreach (var type in global.buffByType.Keys)
+            foreach (int type in global.buffByType.Keys)
             {
                 global.buffByType[type].PostDrawHealthBar(Main.spriteBatch, options);
                 break;
@@ -49,7 +49,7 @@ internal sealed class BuffDetours : ILoadable
     {
         bool doDefault = true;
         if (self.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
-            foreach (var type in global.buffByType.Keys)
+            foreach (int type in global.buffByType.Keys)
             {
                 BuffExtension b = global.buffByType[type];
 
@@ -93,7 +93,7 @@ public sealed class BuffGlobalNPC : GlobalNPC
 
     public override void UpdateLifeRegen(NPC npc, ref int damage)
     {
-        foreach (var type in buffByType.Keys)
+        foreach (int type in buffByType.Keys)
             buffByType[type].UpdateLifeRegen(ref damage);
     }
 }

@@ -2,7 +2,7 @@
 using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Particles;
+namespace SpiritReforged.Content.Particles.Basic;
 
 public class EmberParticle(int lifeTime) : ABasicParticle
 {

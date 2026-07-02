@@ -1,7 +1,6 @@
-﻿using DebuffOverhaul.Common;
-using SpiritReforged.Common.NPCCommon;
+﻿using SpiritReforged.Common.NPCCommon;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Hellfire : OnFire
 {

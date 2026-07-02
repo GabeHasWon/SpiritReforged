@@ -1,13 +1,12 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.DebuffOverhaul.Common;
 
-namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class ShadowFlame : DoTExtension
 {
-    public static readonly Asset<Texture2D> ShadowFlameHealth = ModContent.Request<Texture2D>(nameof(DebuffOverhaul) + "/Assets/Textures/ShadowFlameHealthBar");
+    public static readonly Asset<Texture2D> ShadowFlameHealth = ModContent.Request<Texture2D>(VanillaTextures + "ShadowFlameHealthBar");
 
-    public override Settings LocalSettings => new(0.5f, 2000);
+	public override Settings LocalSettings => new(0.5f, 2000);
 
     public override void Load() => Handler.Register(this, BuffID.ShadowFlame);
 

@@ -1,5 +1,5 @@
-﻿using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.DebuffOverhaul.Common;
+﻿using SpiritReforged.Common.DebuffOverhaul;
+using SpiritReforged.Common.Multiplayer;
 using System.IO;
 
 namespace SpiritReforged.Common.NPCCommon;

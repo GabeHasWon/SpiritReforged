@@ -1,10 +1,13 @@
-﻿namespace SpiritReforged.DebuffOverhaul.Common;
+﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
 public abstract class DoTExtension : BuffExtension
 {
-    /// <param name="Scalability"> Determines how well this buff scales from weapon damage. </param>
-    /// <param name="DamageLimit"> The maximum amount of damage this buff can deal per second. </param>
-    public readonly record struct Settings(float Scalability, int DamageLimit);
+	public const string VanillaTextures = SpiritReforgedMod.ModName + "/Common/DebuffOverhaul/Textures/";
+
+	/// <param name="Scalability"> Determines how well this buff scales from weapon damage. </param>
+	/// <param name="DamageLimit"> The maximum amount of damage this buff can deal per second. </param>
+	public readonly record struct Settings(float Scalability, int DamageLimit);
+
     public abstract Settings LocalSettings { get; }
 
     protected float _damagePerSecond;

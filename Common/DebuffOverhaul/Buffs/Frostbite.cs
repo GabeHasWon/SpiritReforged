@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.DebuffOverhaul.Content.Buffs;
+﻿namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Frostbite : Frostburn
 {
