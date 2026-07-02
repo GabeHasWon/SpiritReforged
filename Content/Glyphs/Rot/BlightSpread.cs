@@ -1,4 +1,4 @@
-namespace SpiritReforged.Content.Forest.Glyphs.Rot;
+namespace SpiritReforged.Content.Glyphs.Rot;
 
 public class BlightSpread
 {

@@ -6,10 +6,9 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Forest.Glyphs.Shock;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
-using static SpiritReforged.Content.Forest.Glyphs.Shock.ShockGlyph;
+using static SpiritReforged.Content.Glyphs.Shock.ShockGlyph;
 
 namespace SpiritReforged.Content.Particles;
 

@@ -3,9 +3,9 @@ using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Terraria.UI;
-using static SpiritReforged.Content.Forest.Glyphs.GlyphItem;
+using static SpiritReforged.Content.Glyphs.GlyphItem;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Glyphs;
 
 public class GlyphItemLayer : PlayerDrawLayer
 {

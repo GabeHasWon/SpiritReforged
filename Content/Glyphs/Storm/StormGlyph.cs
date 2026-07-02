@@ -15,7 +15,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Storm;
+namespace SpiritReforged.Content.Glyphs.Storm;
 
 public class StormGlyph : GlyphItem
 {
@@ -65,20 +65,18 @@ public class StormGlyph : GlyphItem
 				spriteBatch.Draw(data.texture, data.position, data.sourceRect, data.color, data.rotation, data.origin, data.scale, data.effect, 0);
 
 			foreach (WindBurstProjectile burst in bursts)
-			{
 				if (burst.Projectile.active)
 					burst.Draw(spriteBatch);
-			}
 
 			Data.Clear();
 		}
 
-		public override void PostUpdateProjectiles() 
+		public override void PostUpdateProjectiles()
 		{
 			StormParticleRenderer.Update();
 
 			bursts.RemoveAll(p => !p.Projectile.active);
-		}	
+		}
 	}
 
 	public class StormParticle(int style) : ABasicParticle
@@ -98,9 +96,7 @@ public class StormGlyph : GlyphItem
 			base.Update(ref settings);
 
 			if (++_timeSinceSpawn > TimeToLive)
-			{
 				ShouldBeRemovedFromRenderer = true;
-			}
 			else
 			{
 				Velocity *= 0.95f;
@@ -135,17 +131,14 @@ public class StormGlyph : GlyphItem
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			if (Active)
-			{
 				// projectiles get an extra update when they do the wind burst (double speed)
 				if (_cooldown > 0)
 					velocity *= 1.5f;
-			}			
 		}
 
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (Active)
-			{				
 				if (_cooldown <= 0)
 				{
 					for (float k = 0; k < 6.28f; k += 0.1f)
@@ -164,7 +157,6 @@ public class StormGlyph : GlyphItem
 				}
 				else
 					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SmallProjectileWoosh_1") with { Volume = 2f, PitchVariance = 0.2f }, position);
-			}
 
 			return base.Shoot(item, source, position, velocity, type, damage, knockback);
 		}
@@ -188,7 +180,7 @@ public class StormGlyph : GlyphItem
 		public bool doWindBurst;
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph() is GlyphItem.GlyphType itemGlyph && itemGlyph.ItemType == ModContent.ItemType<StormGlyph>())
+			if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph() is GlyphType itemGlyph && itemGlyph.ItemType == ModContent.ItemType<StormGlyph>())
 			{
 				Player player = Main.player[projectile.owner];
 
@@ -290,7 +282,7 @@ public class StormGlyph : GlyphItem
 				if (Main.myPlayer == projectile.owner)
 				{
 					ScreenshakeHelper.Shake(projectile.Center, projectile.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
-					Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+					var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
 
 					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
 				}
@@ -306,7 +298,6 @@ public class StormGlyph : GlyphItem
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (doVisuals)
-			{
 				for (int i = 0; i < 4; i++)
 				{
 					Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
@@ -327,15 +318,14 @@ public class StormGlyph : GlyphItem
 						p.Velocity *= 0.965f;
 						p.Velocity = p.Velocity.RotatedBy(-0.09f);
 					}
-				}			
-			}
+				}
 
 			if (doWindBurst)
 			{
 				if (Main.myPlayer == projectile.owner)
 				{
 					ScreenshakeHelper.Shake(target.Center, target.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
-					Projectile p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+					var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
 
 					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
 				}
@@ -356,15 +346,13 @@ public class StormGlyph : GlyphItem
 				_stormParticleRenderer.Draw(Main.spriteBatch);
 
 				if (_trails != null)
-				{
 					foreach (VertexTrail trail in _trails)
 					{
 						trail.Opacity = 1f;
 						trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, Main.spriteBatch.GraphicsDevice);
 					}
-				}
 
-				if (doWindBurst) 
+				if (doWindBurst)
 					Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, star.Size() / 2f, 0.35f, 0f, 0f);
 			}
 
@@ -453,20 +441,20 @@ public class StormGlyph : GlyphItem
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			var tex = DrawHelpers.RequestLocal(typeof(StormParticle), "StormParticle", false).Value;
-			
+
 			float frame = 1f - Projectile.timeLeft / 45f;
 			Rectangle source = tex.Frame(2, 5, 0, (int)(EaseFunction.EaseCubicIn.Ease(frame) * 5f), -2, -2);
 
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, Color.White * EaseBuilder.EaseCircularOut.Ease(1f - frame), Projectile.rotation, source.Size() / 2, MathHelper.Lerp(0.5f, 2.5f, EaseBuilder.EaseCircularOut.Ease(frame)), default, 0);
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, Color.White * EaseFunction.EaseCircularOut.Ease(1f - frame), Projectile.rotation, source.Size() / 2, MathHelper.Lerp(0.5f, 2.5f, EaseFunction.EaseCircularOut.Ease(frame)), default, 0);
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
 			var star = AssetLoader.LoadedTextures["Star"].Value;
-			
+
 			float progress = Projectile.timeLeft / 45f;
 
-			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.LightCyan.Additive() * progress, 0f, star.Size() / 2f, new Vector2(MathHelper.Lerp(0.25f, 0.6f, EaseBuilder.EaseCircularIn.Ease(1f - progress)), MathHelper.Lerp(0.2f, 0.01f, EaseBuilder.EaseCircularIn.Ease(1f - progress))), 0f, 0f);
+			Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.LightCyan.Additive() * progress, 0f, star.Size() / 2f, new Vector2(MathHelper.Lerp(0.25f, 0.6f, EaseFunction.EaseCircularIn.Ease(1f - progress)), MathHelper.Lerp(0.2f, 0.01f, EaseFunction.EaseCircularIn.Ease(1f - progress))), 0f, 0f);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -720,7 +708,7 @@ public class StormGlyph : GlyphItem
 
 				ParticleHandler.SpawnParticle(new SmokeCloud(pos, Vector2.UnitY * Main.rand.NextFloat(2f), Color.LightCyan * 0.35f, 0.04f, EaseFunction.EaseQuadOut, 60, false));
 			}
-		}		
+		}
 
 		if (Main.rand.NextBool(50))
 		{
@@ -744,7 +732,7 @@ public class StormGlyph : GlyphItem
 
 			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 3, DecelerateAction));
 			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 3, DecelerateAction));
-			
+
 			velocity = Vector2.UnitY * Main.rand.NextFloat(0.5f, 1f);
 
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity, Color.White * 0.15f, 0.05f, EaseFunction.EaseQuadOut, 60, false));

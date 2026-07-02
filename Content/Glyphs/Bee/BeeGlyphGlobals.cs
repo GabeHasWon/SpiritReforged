@@ -6,9 +6,9 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Audio;
-using static SpiritReforged.Content.Forest.Glyphs.Bee.BeeGlyph;
+using static SpiritReforged.Content.Glyphs.Bee.BeeGlyph;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Bee;
+namespace SpiritReforged.Content.Glyphs.Bee;
 
 public sealed class BeeGlyphPlayer : ModPlayer
 {
@@ -24,7 +24,6 @@ public sealed class BeeGlyphPlayer : ModPlayer
 		{
 			CombatText text = Main.combatText[i];
 			if (_maxTimeLefts[i] > 0)
-			{
 				if (text.active)
 				{
 					Color blue, orange;
@@ -35,10 +34,7 @@ public sealed class BeeGlyphPlayer : ModPlayer
 					text.color = Color.Lerp(blue, orange, EaseFunction.EaseCircularInOut.Ease(1f - text.lifeTime / (float)_maxTimeLefts[i]));
 				}
 				else
-				{
 					_maxTimeLefts[i] = 0;
-				}
-			}
 		}
 	}
 
@@ -130,10 +126,8 @@ public class BeeGlobalNPC : GlobalNPC
 		if (projectile.IsMinionOrSentryRelated && CanExplode)
 		{
 			foreach (Particle p in ParticleHandler.Particles)
-			{
 				if (p is BeeOnNPC && (p as BeeOnNPC).Parent == npc)
 					p.Kill();
-			}
 
 			TagEffects(owner, npc, damageDone);
 			tagged = false;

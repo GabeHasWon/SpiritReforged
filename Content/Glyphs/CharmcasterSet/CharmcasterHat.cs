@@ -1,4 +1,4 @@
-namespace SpiritReforged.Content.Forest.Glyphs.CharmcasterSet;
+namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Head)]
 public class CharmcasterHat : ModItem

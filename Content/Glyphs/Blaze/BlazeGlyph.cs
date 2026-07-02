@@ -13,7 +13,7 @@ using Terraria.Graphics;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Blaze;
+namespace SpiritReforged.Content.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
@@ -33,7 +33,7 @@ public class BlazeGlyph : GlyphItem
 			public override void Update(Player player, ref int buffIndex)
 			{
 				player.GetModPlayer<BlazePlayer>().hasDebuff = true;
-				
+
 				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
 				if (Main.rand.NextBool())
@@ -44,17 +44,13 @@ public class BlazeGlyph : GlyphItem
 				}
 
 				if (Main.rand.NextBool())
-				{
 					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
-				}
 
 				if (Main.rand.NextBool(4))
-				{
 					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
-				}
 			}
 		}
 
@@ -351,7 +347,7 @@ public class BlazeGlyph : GlyphItem
 			{
 				Layer = ParticleLayer.BelowProjectile
 			});
-		}		
+		}
 	}
 }
 

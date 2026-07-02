@@ -1,4 +1,4 @@
-namespace SpiritReforged.Content.Forest.Glyphs.CharmcasterSet;
+namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Legs)]
 public class CharmcasterLeggings : ModItem

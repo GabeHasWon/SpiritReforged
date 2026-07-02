@@ -4,14 +4,13 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Glyphs.Dazzling;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Sanguine;
+namespace SpiritReforged.Content.Glyphs.Sanguine;
 
 public class SanguineGlyph : GlyphItem
 {
@@ -22,10 +21,8 @@ public class SanguineGlyph : GlyphItem
 		public override void Update(Player player, ref int buffIndex)
 		{
 			if (player.GetModPlayer<SanguinePlayer>().stacks.Count > 0)
-			{
 				// find the stack with the most timer and use that for the time display
 				player.buffTime[buffIndex] = player.GetModPlayer<SanguinePlayer>().stacks.OrderBy(s => s.timer).Last().timer;
-			}				
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -60,7 +57,7 @@ public class SanguineGlyph : GlyphItem
 
 			float lerp = mp.lifestealCooldown / 20f;
 
-			Color drawColor = Color.Lerp(Color.White, Color.Red.Additive(), lerp);
+			var drawColor = Color.Lerp(Color.White, Color.Red.Additive(), lerp);
 
 			float scale = MathHelper.Lerp(1f, 1.2f, lerp);
 
@@ -94,10 +91,8 @@ public class SanguineGlyph : GlyphItem
 			stacks ??= new();
 
 			foreach (SanguineStack stack in stacks)
-			{
 				if (stack.timer > 0)
 					stack.timer--;
-			}
 
 			stacks.RemoveAll(s => s.timer <= 0);
 
@@ -181,7 +176,7 @@ public class SanguineGlyph : GlyphItem
 				PixelDivisor = 4
 			});
 
-			Dust dust = Dust.NewDustPerfect(position, DustID.Blood, Main.rand.NextVector2Circular(1.5f, 1.5f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
+			var dust = Dust.NewDustPerfect(position, DustID.Blood, Main.rand.NextVector2Circular(1.5f, 1.5f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
 			dust.noGravity = Main.rand.NextBool();
 			dust.fadeIn = 2;
 
@@ -311,7 +306,7 @@ public class SanguineGlyph : GlyphItem
 
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Vector2.Zero, Color.DarkRed, 0.05f, EaseFunction.EaseQuadOut, 30, false));
 
-			Dust dust = Dust.NewDustPerfect(pos, DustID.Blood, Main.rand.NextVector2Circular(0.5f, 0.5f), 150, default, 1.25f);
+			var dust = Dust.NewDustPerfect(pos, DustID.Blood, Main.rand.NextVector2Circular(0.5f, 0.5f), 150, default, 1.25f);
 			dust.noGravity = true;
 			dust.fadeIn = 3;
 		}

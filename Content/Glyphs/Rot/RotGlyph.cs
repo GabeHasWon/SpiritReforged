@@ -9,7 +9,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Rot;
+namespace SpiritReforged.Content.Glyphs.Rot;
 
 public class RotGlyph : GlyphItem
 {

@@ -5,7 +5,7 @@ using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;

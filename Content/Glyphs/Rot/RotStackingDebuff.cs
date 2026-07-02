@@ -1,15 +1,13 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Forest.Glyphs.Sanguine;
 using SpiritReforged.Content.Particles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Rot;
+namespace SpiritReforged.Content.Glyphs.Rot;
 
 public class RotStackingDebuff : ModBuff
 {
@@ -76,12 +74,10 @@ public class RotStackingDebuff : ModBuff
 				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
 
 				if (Main.rand.NextBool(3))
-				{
 					ParticleHandler.SpawnParticle(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40)
 					{
 						Layer = ParticleLayer.AbovePlayer
 					});
-				}
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -162,12 +158,10 @@ public class RotStackingDebuff : ModBuff
 				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
 
 				if (Main.rand.NextBool(3))
-				{
 					ParticleHandler.SpawnParticle(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40)
 					{
 						Layer = ParticleLayer.AboveNPC
 					});
-				}
 
 				for (int i = 0; i < 2; i++)
 				{
@@ -204,14 +198,10 @@ public class RotStackingDebuff : ModBuff
 		public override void OnKill(NPC npc)
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient && blightSpread.Active)
-			{
 				// spread a stack to up to 3 random npcs upon dying
 
 				for (int i = 0; i < 3; i++)
-				{
 					SpreadNearby(npc.Center, 500, 1);
-				}
-			}			
 		}
 
 		public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
@@ -233,7 +223,6 @@ public class RotStackingDebuff : ModBuff
 	public static void SpreadNearby(Vector2 origin, int range, int stackLimit = BlightSpread.MaxStacks)
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
-		{
 			if (npc.CanBeChasedBy() && npc.DistanceSQ(origin) < range * range && npc.TryGetGlobalNPC(out RotGlobalNPC rotGlobalNPC))
 			{
 				if (rotGlobalNPC.blightSpread.stacks >= stackLimit)
@@ -263,7 +252,6 @@ public class RotStackingDebuff : ModBuff
 					});
 				}
 			}
-		}
 
 		static void SmokeUpdate(Particle p)
 		{
@@ -278,9 +266,7 @@ public class RotStackingDebuff : ModBuff
 	{
 		RotPlayer rotPlayer = player.GetModPlayer<RotPlayer>();
 		if (rotPlayer.blightSpread.Active)
-		{
 			player.buffTime[buffIndex] = 60 * rotPlayer.blightSpread.stacks;
-		}
 		else
 		{
 			player.DelBuff(buffIndex);

@@ -12,7 +12,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Void;
+namespace SpiritReforged.Content.Glyphs.Void;
 
 public class VoidGlyph : GlyphItem
 {
@@ -77,13 +77,13 @@ public class VoidGlyph : GlyphItem
 
 				var projectile = singularity.Projectile;
 
-				float progress = EaseBuilder.EaseQuinticInOut.Ease(1f - projectile.timeLeft / 60f);
+				float progress = EaseFunction.EaseQuinticInOut.Ease(1f - projectile.timeLeft / 60f);
 				float intensity = singularity._stacksOnDeath / 10f;
 
 				// Shader uses the G channel for the progress of the black hole.
 				// Shader uses the B channel for the stacks of the black hole (increases singularity intensity)
-				Color dataColor = new Color(1f, progress, intensity, 1f);
-				
+				var dataColor = new Color(1f, progress, intensity, 1f);
+
 				float sizeInterpolant = progress < 0.5f ? progress / 0.5f : 1f - (progress - 0.5f) / 0.5f;
 				float visualScale = (1.2f + intensity * 0.2f) * sizeInterpolant;
 
@@ -97,7 +97,7 @@ public class VoidGlyph : GlyphItem
 
 				float progress = particle.TimeActive / (float)particle.MaxTime;
 
-				Color dataColor = new Color(1f, progress, 0.5f, 1f);
+				var dataColor = new Color(1f, progress, 0.5f, 1f);
 				float visualScale = particle.Scale * (1f - progress);
 
 				spriteBatch.Draw(bloom, particle.Position - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, visualScale, 0f, 0f);
@@ -107,7 +107,6 @@ public class VoidGlyph : GlyphItem
 		public override void PostUpdateEverything()
 		{
 			if (!Main.dedServ)
-			{
 				if (SingularityTarget is not null && SingularityTarget.Active)
 				{
 					if (!Main.dedServ && !Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
@@ -121,7 +120,6 @@ public class VoidGlyph : GlyphItem
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(TextureAssets.Npc[0]);
 					Filters.Scene.Deactivate("SpiritReforged:VoidGlyphSingularity");
 				}
-			}
 		}
 	}
 
@@ -204,7 +202,7 @@ public class VoidGlyph : GlyphItem
 
 		public const int MAX_STACKS = 15;
 		public const int COLLAPSE_TIME = 900;
-		
+
 		public int stacks;
 		public int cooldown;
 		public int collapseDamage;
@@ -305,20 +303,17 @@ public class VoidGlyph : GlyphItem
 				starRotation *= 0.75f;
 
 			if (Target is null || !Target.active)
-			{
 				if (!_dying)
 				{
 					Projectile.Kill();
 					return;
-				}			
-			}
+				}
 
 			var gnpc = Target.GetGlobalNPC<VoidNPC>();
 
 			if (_dying)
 			{
 				if (Projectile.timeLeft == 30)
-				{
 					for (int i = 0; i < 4; i++)
 					{
 						Vector2 velocity = Main.rand.NextVector2Circular(12f, 2f);
@@ -349,12 +344,11 @@ public class VoidGlyph : GlyphItem
 							p.Rotation += p.Velocity.Length() * 0.1f;
 						}
 					}
-				}
 
 				if (Projectile.timeLeft > 30)
 				{
 					float progressTillHit = (Projectile.timeLeft - 30f) / 30f;
-					
+
 					if (Main.rand.NextBool(5))
 					{
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(30f, 30f) * progressTillHit;
@@ -414,42 +408,36 @@ public class VoidGlyph : GlyphItem
 			}
 
 			if (Target is not null)
-			{
 				pos = Target.Center;
-			}
 		}
 
 		public override void OnKill(int timeLeft) => SingularityVisualSystem.projectiles.Remove(this);
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			
+
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			SoundEngine.PlaySound(Wisp.Death with { Volume = 2f, Pitch = -0.5f}, target.Center);
+			SoundEngine.PlaySound(Wisp.Death with { Volume = 2f, Pitch = -0.5f }, target.Center);
 			//pos = target.Center;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Main.instance.LoadProjectile(79);
-			
+
 			int stacks = -1;
 
 			if (!_dying)
-			{
 				if (Target is not null)
 				{
 					var gnpc = Target.GetGlobalNPC<VoidNPC>();
 					stacks = gnpc.stacks;
-				}	
-			}
-			else
-			{
-				stacks = _stacksOnDeath;
-			}
+				}
+				else
+					stacks = _stacksOnDeath;
 
 			if (stacks < 0)
 				return false;
@@ -465,7 +453,7 @@ public class VoidGlyph : GlyphItem
 			float x = 0.15f * stacks;
 			float y = 0.05f * stacks;
 
-			Vector2 scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
+			var scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
 
 			Vector2 offset = Vector2.Zero;
 			if (Projectile.timeLeft < 60 && !_dying)
@@ -473,13 +461,13 @@ public class VoidGlyph : GlyphItem
 
 			if (_dying)
 			{
-				float progress = EaseBuilder.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
+				float progress = EaseFunction.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
 
 				if (progress < 0.5f)
 				{
 					float lerp = progress / 0.5f;
 
-					Color c = new Color(60, 0, 65, 0);
+					var c = new Color(60, 0, 65, 0);
 
 					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
 					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
@@ -490,7 +478,7 @@ public class VoidGlyph : GlyphItem
 				{
 					float lerp = 1f - (progress - 0.5f) / 0.5f;
 
-					Color c = new Color(60, 0, 65, 0);
+					var c = new Color(60, 0, 65, 0);
 
 					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
 					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
@@ -501,7 +489,7 @@ public class VoidGlyph : GlyphItem
 				if (Projectile.timeLeft > 30)
 				{
 					float progressTillHit = (Projectile.timeLeft - 30f) / 30f;
-					scale *= EaseBuilder.EaseQuinticOut.Ease(progressTillHit);
+					scale *= EaseFunction.EaseQuinticOut.Ease(progressTillHit);
 				}
 				else
 					scale *= 0f;
@@ -511,7 +499,7 @@ public class VoidGlyph : GlyphItem
 
 			if (starRotation > 0)
 			{
-				float progress = EaseBuilder.EaseQuarticInOut.Ease(rotationTimer / 60f);
+				float progress = EaseFunction.EaseQuarticInOut.Ease(rotationTimer / 60f);
 
 				float _scale = 0.03f * stacks;
 
@@ -521,7 +509,7 @@ public class VoidGlyph : GlyphItem
 
 			if (scale.LengthSquared() > 0f)
 			{
-				float progressTillHit = EaseBuilder.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 30f) / 30f);
+				float progressTillHit = EaseFunction.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 30f) / 30f);
 
 				Color c = DrawHelpers.MulticolorLerp(cos, voidColors);
 
@@ -538,7 +526,7 @@ public class VoidGlyph : GlyphItem
 
 					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black, 0f, bloomNonPreMult.Size() / 2f, x * 0.2f * progressTillHit, 0f, 0f);
 					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f, 0f, bloomNonPreMult.Size() / 2f, x * 0.4f * progressTillHit, 0f, 0f);
-					
+
 					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, new Color(60, 0, 65) * 0.6f, 0f, starNonPreMult.Size() / 2f, scale * 0.9f * progressTillHit, 0f, 0f);
 					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.4f, 0f, starNonPreMult.Size() / 2f, scale * 0.7f * progressTillHit, 0f, 0f);
 
@@ -549,7 +537,7 @@ public class VoidGlyph : GlyphItem
 
 			if (_dying)
 			{
-				float progress = EaseBuilder.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
+				float progress = EaseFunction.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
 
 				x = 0.2f * stacks;
 				y = 0.1f * stacks;
@@ -591,7 +579,7 @@ public class VoidGlyph : GlyphItem
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.01f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.015f));
 
-		Color main = Color.Lerp(new(225, 63, 255), new(166, 63, 255), sin);
+		var main = Color.Lerp(new(225, 63, 255), new(166, 63, 255), sin);
 		if (sin > 0.5f)
 			main = Color.Lerp(main, Color.Black, sin);
 

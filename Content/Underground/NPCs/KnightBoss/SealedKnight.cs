@@ -3,7 +3,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.GameContent.ItemDropRules;

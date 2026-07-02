@@ -8,7 +8,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Bee;
+namespace SpiritReforged.Content.Glyphs.Bee;
 
 public class BeeGlyph : GlyphItem
 {
@@ -114,7 +114,7 @@ public class BeeGlyph : GlyphItem
 			Rectangle source = texture.Frame(1, Main.projFrames[type], 0, (int)(TimeActive / 4 % Main.projFrames[type]), 0, 0);
 			Color color = Lighting.GetColor(Position.ToTileCoordinates());
 			SpriteEffects effects = Position.X < Parent.Center.X ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			
+
 			float fade = 1f;
 
 			if (Progress < 0.25f)
@@ -127,7 +127,7 @@ public class BeeGlyph : GlyphItem
 			Vector2 offset = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * EaseFunction.EaseCircularIn.Ease(glyphEffectProgress);
 
 			float scale = MathHelper.Lerp(0.6f, 1.1f, EaseFunction.EaseCircularIn.Ease(glyphEffectProgress));
-			
+
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 

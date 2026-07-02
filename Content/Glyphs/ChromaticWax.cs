@@ -18,7 +18,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader.IO;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Glyphs;
 
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem

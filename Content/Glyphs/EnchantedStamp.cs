@@ -3,7 +3,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
-namespace SpiritReforged.Content.Forest.Glyphs;
+namespace SpiritReforged.Content.Glyphs;
 
 public class EnchantedStamp : ModItem
 {
@@ -15,7 +15,7 @@ public class EnchantedStamp : ModItem
 		public override string HoverTexture => Texture + "_Hover";
 
 		public override bool Active() => Main.LocalPlayer.GetModPlayer<StampPlayer>().usedStamp;
-		public override string DisplayValue() => Language.GetTextValue("Mods.SpiritReforged.Items.EnchantedStamp." + ((CurrentState == InactiveState) ? "Inactive" : "Active"));
+		public override string DisplayValue() => Language.GetTextValue("Mods.SpiritReforged.Items.EnchantedStamp." + (CurrentState == InactiveState ? "Inactive" : "Active"));
 		public override bool Draw(SpriteBatch spriteBatch, ref BuilderToggleDrawParams drawParams)
 		{
 			if (CurrentState == InactiveState)

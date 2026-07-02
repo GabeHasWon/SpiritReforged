@@ -13,7 +13,7 @@ using Terraria.Graphics.Renderers;
 using System.Linq;
 using SpiritReforged.Common.ProjectileCommon;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Shock;
+namespace SpiritReforged.Content.Glyphs.Shock;
 
 public class ShockGlyph : GlyphItem
 {
@@ -39,10 +39,8 @@ public class ShockGlyph : GlyphItem
 				return;
 
 			for (int i = 0; i < closestNPCs.Length; i++)
-			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
 					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.25f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
-			}
 
 			SoundEngine.PlaySound(ElectricSting, target.Center);
 			SoundEngine.PlaySound(ElectricZap, target.Center);
@@ -144,7 +142,7 @@ public class ShockGlyph : GlyphItem
 
 			Color color = Color.Yellow * 0.66f;
 
-			float progress = EaseBuilder.EaseCircularInOut.Ease(Progress);
+			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
 			if (_dying)
 				progress = Projectile.timeLeft / 200f;
 
@@ -221,7 +219,7 @@ public class ShockGlyph : GlyphItem
 		{
 			var tex = AssetLoader.LoadedTextures["Bloom"].Value;
 
-			float progress = EaseBuilder.EaseCircularInOut.Ease(Progress);
+			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
 			if (_dying)
 				progress = Projectile.timeLeft / 200f;
 
@@ -230,7 +228,7 @@ public class ShockGlyph : GlyphItem
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow with { A = 0 } * 0.5f * progress, 0, tex.Size() / 2, 0.15f, SpriteEffects.None, 0);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Cyan with { A = 0 } * 0.4f * progress, 0, tex.Size() / 2, 0.1f, SpriteEffects.None, 0);
-			
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.LightCyan with { A = 0 } * 0.4f * progress, 0, tex.Size() / 2, 0.1f, SpriteEffects.None, 0);
 
 			return false;
@@ -239,16 +237,14 @@ public class ShockGlyph : GlyphItem
 		public void LightningDraw(SpriteBatch spriteBatch)
 		{
 			if (_trails != null)
-			{
 				foreach (VertexTrail trail in _trails)
 				{
-					trail.Opacity = EaseBuilder.EaseCircularInOut.Ease(Progress);
+					trail.Opacity = EaseFunction.EaseCircularInOut.Ease(Progress);
 					if (_dying)
 						trail.Opacity = Projectile.timeLeft / 200f;
 
 					trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
 				}
-			}
 		}
 	}
 

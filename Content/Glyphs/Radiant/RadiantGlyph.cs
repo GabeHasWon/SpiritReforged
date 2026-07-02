@@ -9,7 +9,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Radiant;
+namespace SpiritReforged.Content.Glyphs.Radiant;
 
 public class RadiantGlyph : GlyphItem
 {
@@ -51,8 +51,8 @@ public class RadiantGlyph : GlyphItem
 				if (Main.dayTime)
 					if (timeInWorld < 180)
 						timeInWorld++;
-				else if (timeInWorld > 0)
-					timeInWorld -= 3;
+					else if (timeInWorld > 0)
+						timeInWorld -= 3;
 		}
 	}
 

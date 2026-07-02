@@ -14,7 +14,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using static SpiritReforged.Content.Particles.SnowflakeParticle;
 
-namespace SpiritReforged.Content.Forest.Glyphs.Dazzling;
+namespace SpiritReforged.Content.Glyphs.Dazzling;
 
 public class MoonlightGlyph : GlyphItem
 {
@@ -261,7 +261,7 @@ public class MoonlightGlyph : GlyphItem
 			static void UpdateAction(Particle p)
 			{
 				p.Rotation += p.Velocity.Length() * 0.1f;
-				p.Velocity *= 0.95f;			
+				p.Velocity *= 0.95f;
 			}
 		}
 	}
@@ -271,7 +271,7 @@ public class MoonlightGlyph : GlyphItem
 		if (Main.rand.NextBool(5 + 3 * projectile.extraUpdates))
 		{
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
-			
+
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(2f, 2f);
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.12f, 45, 0.5f, UpdateAction, true, 0.02f));
