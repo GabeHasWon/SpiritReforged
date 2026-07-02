@@ -4,7 +4,7 @@ using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
-using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Glyphs;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.ModLoader.Config;

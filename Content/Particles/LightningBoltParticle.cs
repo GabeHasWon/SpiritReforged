@@ -6,10 +6,9 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Forest.Glyphs.Shock;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
-using static SpiritReforged.Content.Forest.Glyphs.Shock.ShockGlyph;
+using static SpiritReforged.Content.Glyphs.Shock.ShockGlyph;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -17,8 +16,8 @@ public class LightningSystem : ModSystem
 {
 	private static readonly ModTarget2D LightningTarget = new(static () => particles.Count != 0 || projectiles.Count != 0, DrawLightningTarget);
 
-	public static readonly List<LightningBoltParticle> particles = new();
-	public static readonly List<ShockGlyphLightningBolt> projectiles = new();
+	public static readonly List<LightningBoltParticle> particles = [];
+	public static readonly List<ShockGlyphLightningBolt> projectiles = [];
 	public override void Load() => On_Main.DrawProjectiles += Pixelate;
 	private static void Pixelate(On_Main.orig_DrawProjectiles orig, Main self)
 	{

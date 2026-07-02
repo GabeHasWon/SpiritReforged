@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Content.Forest.Glyphs;
-
+using SpiritReforged.Content.Glyphs;
 namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions

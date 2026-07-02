@@ -44,7 +44,7 @@ public class PrefixVoucher : ModItem
 				Texture2D texture = TextureAssets.Item[item.type].Value;
 
 				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
-					spriteBatch.Draw(TextureColorCache.ColorSolid(texture, Color.White), position + offset * scale, null, voucher._info.Color.Additive() * 0.25f, 0, texture.Size() / 2, scale, 0, 0));
+					spriteBatch.Draw(TextureColorCache.ColorSolid(texture, Color.White), position + offset * scale, frame, voucher._info.Color.Additive() * 0.25f, 0, frame.Size() / 2, scale, 0, 0));
 			}
 
 			return true;
