@@ -73,6 +73,8 @@ public class DisplayCase : SingleSlotTile<DisplayCase.DisplayCaseSlot>, ILoadIte
 	}
 	#endregion
 
+	void ILoadItem.AddItemRecipes(ModItem modItem) => modItem.CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 10).AddIngredient(ItemID.Glass, 8).AddTile(TileID.Sawmill).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileTable[Type] = true;
