@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: 于盐滩
 	IsPrickly: 有刺
 	InZiggurat: 于庙塔
+	// InSpace: In Space
 }
 
 Misc: {
