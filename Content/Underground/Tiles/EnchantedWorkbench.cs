@@ -39,29 +39,31 @@ public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 	[Denominator]
 	private static int EnchantedWorkbenchChance = 10;
 
-	public override void Load() => HouseLoader.BuilderAction += FillEnchantedWorkbenche;
+	public override void Load() => HouseLoader.BuilderAction += FillEnchantedWorkbench;
 
-	public static void FillEnchantedWorkbenche(HouseBuilder houseBuilder)
+	public static HouseLoader.BuilderResult FillEnchantedWorkbench(HouseBuilder houseBuilder)
 	{
 		if (houseBuilder.Type is not HouseType.Wood)
-			return;
+			return HouseLoader.Fail;
 
 		bool placedWorkbench = false;
 		bool filledChest = false;
 
 		foreach (Rectangle room in houseBuilder.Rooms)
 		{
-			if (!filledChest && HouseLoader.TryFindChest(room, out Chest chest) && Array.FindIndex(chest.item, static (x) => x.IsAir) is int index && index != -1) //Search for the first instance of air
-			{
-				ChestPoolUtils.PlaceChestItems([new ChestPoolUtils.ChestInfo(3, 7, 1f, ModContent.ItemType<ChromaticWax>())], chest, index);
-				filledChest = true;
-			}
-
 			if (!placedWorkbench && WorldGen.genRand.NextBool(EnchantedWorkbenchChance) && HouseLoader.TryPlace(room, ModContent.TileType<EnchantedWorkbench>(), out PlaceAttempt placeAttempt))
 			{
 				placedWorkbench = true;
 			}
+
+			if (placedWorkbench && !filledChest && HouseLoader.TryFindChest(room, out Chest chest) && Array.FindIndex(chest.item, static (x) => x.IsAir) is int index && index != -1) //Search for the first instance of air
+			{
+				ChestPoolUtils.PlaceChestItems([new ChestPoolUtils.ChestInfo(3, 7, 1f, ModContent.ItemType<ChromaticWax>())], chest, index);
+				filledChest = true;
+			}
 		}
+
+		return HouseLoader.Success;
 	}
 	#endregion
 
