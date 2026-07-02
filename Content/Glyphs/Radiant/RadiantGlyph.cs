@@ -77,7 +77,7 @@ public class RadiantGlyph : GlyphItem
 
 			if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 			{
-				var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/Radiant/RadiantGlyph_Aura2").Value;
+				var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Glyphs/Radiant/RadiantGlyph_Aura2").Value;
 				var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 				var star = AssetLoader.LoadedTextures["Star"].Value;
 				var spriteBatch = Main.spriteBatch;
