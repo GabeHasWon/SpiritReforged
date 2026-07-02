@@ -62,7 +62,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] Саванна на спавне"
+				DisplayName: "[i:50] Саванна на спавне"
 				Tooltip: Саванна сгенерируется прямо в точке появления игрока, как с сидом «savanna».
 			}
 
@@ -72,7 +72,7 @@ Pages: {
 			}
 
 			CampsiteChance: {
-				DisplayName: "[i:966] Шанс на лагерь"
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] Шанс на лагерь"
 				Tooltip: Устанавливает знаменатель (1/x) шанса генерации лагеря.
 			}
 
@@ -86,7 +86,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:31] Шанс на горшок"
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] Шанс на горшок"
 				Tooltip:
 					'''
 					Устанавливает знаменатель (1/x) шанса генерации горшка.
@@ -129,7 +129,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] Солончаковые равнины на спавне"
+				DisplayName: "[i:50] Солончаковые равнины на спавне"
 				Tooltip: Солончаковые равнины сгенерируется прямо в точке появления игрока, как с сидом «salt».
 			}
 
@@ -190,7 +190,7 @@ Pages: {
 
 			Treacherous: {
 				Name: "[i:SpiritReforged/LeatherBackpack] Провал"
-				Tooltip: По ландшафту будут разбросаны глубокие ущелья. Не смотрите вниз!
+				Tooltip: По ландшафту могут быть разбросаны глубокие ущелья. Не смотрите вниз!
 			}
 		}
 
@@ -206,8 +206,8 @@ Pages: {
 			}
 
 			SizeMultiplier: {
-				DisplayName: "[i:126] Размер карстов"
-				Tooltip: Устанавливает множитель размера всех углублений, формируемых карстами.
+				DisplayName: "[i:747] Размер карстов"
+				Tooltip: Устанавливает множитель размера всех углублений, формируемых карстами (заросших пещер).
 			}
 
 			FieldSize: {
@@ -415,13 +415,13 @@ Pages: {
 
 		Presets: {
 			Tasty: {
-				// Name: "[i:4029] Tasty"
-				// Tooltip: Someone has left a frankly absurd amount of food lying around. Who made all of this?
+				Name: "[i:4029] Вкусный"
+				Tooltip: Кто-то оставил вокруг совершенно абсурдное количество еды. Кто это всё приготовил?
 			}
 
 			Occult: {
-				// Name: "[i:SpiritReforged/ScryingPotItem] Occult"
-				// Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
+				Name: "[i:SpiritReforged/ScryingPotItem] Загадочный"
+				Tooltip: Пещеры усеяны неудачными экспериментами бесчисленных магов и волшебников.
 			}
 		}
 	}
@@ -466,7 +466,7 @@ Pages: {
 			}
 
 			CovesSpawnRate: {
-				DisplayName: "[i:2291] Множ. рыбацких бухт"
+				DisplayName: "[i:SpiritReforged/KoiTotem] Множ. рыбацких бухт"
 				Tooltip:
 					'''
 					Устанавливает множитель максимального возможного количества рыбацких бухт в мире.
@@ -480,8 +480,8 @@ Pages: {
 			}
 
 			StatueCountModifier: {
-				// DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
-				// Tooltip: The maximum amount of Reforged statues spawned in-world.
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] Статуи"
+				Tooltip: Устанавливает максимальное возможное количество сгенерированых в мире статуй, добавляемых Reforged.
 			}
 
 			StructuresMax: {
@@ -507,19 +507,19 @@ Pages: {
 			}
 
 			Empty: {
-				// Name: Empty
-				// Tooltip: Empty
+				// Name: "[i:1176] Empty"
+				// Tooltip: Is anyone out there?
 			}
 		}
 	}
 
 	Ziggurat: {
-		// Name: Ziggurat
-		// Description: Controls aspects of the Ziggurat and its contents.
+		Name: Зиккурат
+		Description: Настройка элементов генерации Зиккурата и его содержимого.
 
 		Members: {
 			UsedWidth: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Width"
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ширина"
 				/* Tooltip:
 					'''
 					The width used for determining the size of the Ziggurat, not necessarily the actual width.
@@ -528,7 +528,7 @@ Pages: {
 			}
 
 			UsedHeight: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Height"
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Высота"
 				/* Tooltip:
 					'''
 					The height used for determining the size of the Ziggurat, not necessarily the actual width.
@@ -542,12 +542,12 @@ Pages: {
 			}
 
 			PotChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePotsItem] Pot Chance"
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] Шанс на горшок"
 				// Tooltip: Chance for pots to be placed in the Ziggurat.
 			}
 
 			LapisPotChance: {
-				// DisplayName: "[i:SpiritReforged/LapisPotsItem] Lapis Pot Chance"
+				DisplayName: "[i:SpiritReforged/LapisPotsItem] Шанс на лаз. горшок"
 				// Tooltip: Chance for a pot placed to be a Lapis pot.
 			}
 
@@ -668,8 +668,8 @@ Pages: {
 	}
 
 	Desert: {
-		// Name: Desert
-		// Description: Controls various aspects of Reforged's Desert generation.
+		Name: Пустыня
+		Description: Настройка элементов генерации пустыни, добавляемых Reforged.
 
 		Members: {
 			PalmChanceLow: {
