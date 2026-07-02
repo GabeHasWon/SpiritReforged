@@ -10,10 +10,12 @@ using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Glyphs.Storm;
 
@@ -125,21 +127,37 @@ public class StormGlyph : GlyphItem
 
 	public sealed class StormGlyphPlayer : ModPlayer
 	{
-		internal int _cooldown;
+		public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1")
+		{
+			Volume = 1.5f,
+			PitchVariance = 0.2f
+		};
+
+		public static readonly SoundStyle Whoosh = new("SpiritReforged/Assets/SFX/Projectile/SmallProjectileWoosh_1")
+		{
+			Volume = 2f,
+			PitchVariance = 0.2f
+		};
+
 		public bool Active => Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<StormGlyph>();
+
+		public int cooldown;
 
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			if (Active)
+			{
 				// projectiles get an extra update when they do the wind burst (double speed)
-				if (_cooldown > 0)
+				if (cooldown > 0)
 					velocity *= 1.5f;
+			}
 		}
 
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (Active)
-				if (_cooldown <= 0)
+			{
+				if (cooldown <= 0)
 				{
 					for (float k = 0; k < 6.28f; k += 0.1f)
 					{
@@ -153,24 +171,30 @@ public class StormGlyph : GlyphItem
 							velocity * 0.2f + new Vector2(x, y).RotatedBy(velocity.ToRotation() + MathHelper.PiOver2) * 0.06f, Color.LightCyan * 0.05f, Main.rand.NextFloat(0.02f, 0.07f), EaseFunction.EaseQuadOut, 60, false));
 					}
 
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") with { Volume = 1.5f, PitchVariance = 0.2f }, position);
+					SoundEngine.PlaySound(Slash, position);
 				}
 				else
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SmallProjectileWoosh_1") with { Volume = 2f, PitchVariance = 0.2f }, position);
+				{
+					SoundEngine.PlaySound(Whoosh, position);
+				}
+			}
 
-			return base.Shoot(item, source, position, velocity, type, damage, knockback);
+			return true;
 		}
 
 		public override void ResetEffects()
 		{
-			if (_cooldown > 0)
-				_cooldown--;
+			if (cooldown > 0)
+				cooldown--;
 		}
 	}
 
 	public sealed class StormGlyphGlobalProjectile : GlobalProjectile
 	{
+		public const int CooldownMax = 60 * 5;
+
 		public override bool InstancePerEntity => true;
+
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly;
 
 		private readonly ParticleRenderer _stormParticleRenderer = new();
@@ -178,46 +202,49 @@ public class StormGlyph : GlyphItem
 
 		public bool doVisuals;
 		public bool doWindBurst;
+
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
 			if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph() is GlyphType itemGlyph && itemGlyph.ItemType == ModContent.ItemType<StormGlyph>())
 			{
-				Player player = Main.player[projectile.owner];
+				ApplyStormEffects(projectile);
 
-				var mp = player.GetModPlayer<StormGlyphPlayer>();
-
-				if (mp._cooldown <= 0)
-				{
-					doWindBurst = true;
-					projectile.extraUpdates++;
-					projectile.velocity *= 1.2f;
-					mp._cooldown = 60 * 5; // 5 seconds;
-				}
-
-				doVisuals = true;
+				projectile.velocity *= 1.2f;
 				projectile.netUpdate = true;
 			}
 		}
 
+		private void ApplyStormEffects(Projectile projectile)
+		{
+			Player player = Main.player[projectile.owner];
+			StormGlyphPlayer stormGlyphPlayer = player.GetModPlayer<StormGlyphPlayer>();
+
+			if (stormGlyphPlayer.cooldown <= 0 || stormGlyphPlayer.cooldown == CooldownMax) //Allow projectiles to continue receiving the bonus if the cooldown was just applied this frame
+			{
+				projectile.extraUpdates++;
+				stormGlyphPlayer.cooldown = CooldownMax; // 5 seconds;
+
+				doWindBurst = true;
+			}
+
+			doVisuals = true;
+		}
+
 		public override void AI(Projectile projectile)
 		{
-			if (doVisuals)
+			if (doVisuals && projectile.Opacity > 0 && !Main.dedServ)
 			{
-				if (!Main.dedServ)
-				{
-					if (_trails == null)
-						CreateTrail(projectile);
+				if (_trails == null)
+					CreateTrail(projectile);
 
-					foreach (VertexTrail trail in _trails)
-						trail.Update();
-				}
+				foreach (VertexTrail trail in _trails)
+					trail.Update();
 
 				if (projectile.timeLeft % 3 == 0)
 				{
 					Vector2 pos = projectile.Center;
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.White * 0.15f, 0.03f, EaseFunction.EaseQuadOut, 60, false));
-
 					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.LightCyan * 0.25f, 0.02f, EaseFunction.EaseQuadOut, 60, false));
 				}
 
@@ -264,7 +291,7 @@ public class StormGlyph : GlyphItem
 		{
 			// check for held projctiles- if a glyph is applied to one we want to make sure its ignored
 			// works great for things like the vortex beater- entity sources carry the glyph to the bullets fired but the vortex beater itself does not have the effects
-			if (doVisuals && Main.player[projectile.owner].heldProj > -1 && Main.player[projectile.owner].heldProj == projectile.whoAmI)
+			if (doVisuals && projectile.TryGetOwner(out Player owner) && owner.heldProj == projectile.whoAmI)
 			{
 				doVisuals = false;
 				if (doWindBurst)
@@ -359,9 +386,26 @@ public class StormGlyph : GlyphItem
 			return base.PreDraw(projectile, ref lightColor);
 		}
 
-		private void WindBurstEffects(Projectile projectile)
+		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") with { Volume = 1.5f, PitchVariance = 0.2f }, projectile.Center);
+			bitWriter.WriteBit(doWindBurst);
+			bitWriter.WriteBit(doVisuals);
+		}
+
+		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+		{
+			bool didWindBurst = doWindBurst;
+
+			doWindBurst = bitReader.ReadBit();
+			doVisuals = bitReader.ReadBit();
+
+			if (!didWindBurst && doWindBurst)
+				ApplyStormEffects(projectile); //Sync
+		}
+
+		private static void WindBurstEffects(Projectile projectile)
+		{
+			SoundEngine.PlaySound(StormGlyphPlayer.Slash, projectile.Center);
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 1f, PitchVariance = 0.1f }, projectile.Center);
 			SoundEngine.PlaySound(SoundID.DD2_SonicBoomBladeSlash with { Volume = 1f, PitchVariance = 0.2f }, projectile.Center);
 			SoundEngine.PlaySound(SoundID.DoubleJump with { Volume = 2f, PitchVariance = 0.2f, Pitch = -0.2f }, projectile.Center);

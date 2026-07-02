@@ -3295,6 +3295,6 @@ MariglowSeedPouch: {
 }
 
 SkyPylonItem: {
-	// DisplayName: Sky Pylon Item
-	// Tooltip: ""
+	// DisplayName: Space Pylon
+	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
