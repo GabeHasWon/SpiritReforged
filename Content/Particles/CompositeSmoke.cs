@@ -27,6 +27,9 @@ public class SmokeTargetSystem : ModSystem
 
 	private static readonly ModTarget2D SmokeTarget = new(static () => particles.Count != 0, BuildTarget, scale: new Vector2(0.5f, 9 * 0.5f));
 
+	public override void PostUpdateEverything() =>
+			particles.RemoveAll(p => p.TimeActive > p.MaxTime);
+
 	private static void BuildTarget(SpriteBatch spriteBatch)
 	{
 		if (particles.Count == 0) // Don't restart the spritebatch if there are no particles present
@@ -99,7 +102,7 @@ public class SmokeTargetSystem : ModSystem
 		{
 			spriteBatch.End();
 			spriteBatch.BeginDefault();
-		}	
+		}
 	}
 
 	/// <summary>
@@ -128,6 +131,8 @@ public class SmokeTargetSystem : ModSystem
 
 public class CompositeSmoke : Particle
 {
+	internal bool addedToList = false;
+
 	internal bool _addLight;
 	internal bool _addBloom;
 
@@ -155,8 +160,6 @@ public class CompositeSmoke : Particle
 		_addBloom = addBloom;
 		_action = extraUpdateAction;
 
-		SmokeTargetSystem.particles.Add(this);
-
 		if (HorizontalFrames > 1)
 			_variant = Main.rand.Next(HorizontalFrames);
 		else
@@ -165,6 +168,12 @@ public class CompositeSmoke : Particle
 
 	public override void Update()
 	{
+		if (!addedToList)
+		{
+			SmokeTargetSystem.particles.Add(this);
+			addedToList = true;
+		}
+
 		Velocity *= 0.98f;
 
 		if (_addLight)
