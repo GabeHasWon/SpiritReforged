@@ -107,7 +107,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		return false;
 	}
 
-	protected override void Load()
+	public override void Load()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
 		TileEvents.OnPlacePot += ConvertPot;
