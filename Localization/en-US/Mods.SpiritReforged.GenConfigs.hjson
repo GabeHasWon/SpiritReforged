@@ -470,7 +470,7 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				DisplayName: Enchanted Workbench Chance
+				DisplayName: EnchantedWorkbenchChance
 				Tooltip: EnchantedWorkbenchChance
 			}
 		}

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Glyphs;
+using SpiritReforged.Content.Glyphs;
 using Terraria.Graphics.Renderers;
 using Terraria.UI;
 

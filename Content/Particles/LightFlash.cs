@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using static SpiritReforged.Content.Forest.Glyphs.Radiant.RadiantGlyph;
+using static SpiritReforged.Content.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -78,7 +78,7 @@ public class LightFlash : Particle
 	{
 		//Main.NewText(Rotation);
 
-		var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Forest/Glyphs/Radiant/RadiantGlyph_Shine").Value;
+		var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Glyphs/Radiant/RadiantGlyph_Shine").Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float progress = 1f - Progress;

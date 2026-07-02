@@ -167,3 +167,8 @@ BlazeDebuff: {
 	// DisplayName: Blazing
 	// Description: This is fine!
 }
+
+RageGlyphBuff: {
+	// DisplayName: Rage Glyph Buff
+	// Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+}

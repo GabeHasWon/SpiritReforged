@@ -3196,7 +3196,11 @@ MoonlightGlyph: {
 
 RotGlyph: {
 	// DisplayName: Rot Glyph
-	// Tooltip: Attacks inflict a contagious blight
+	/* Tooltip:
+		'''
+		Attacks inflict a contagious blight
+		This blight can be inflicted on to you by enemies suffering from it
+		''' */
 	// Effect: Blighted
 }
 
@@ -3250,7 +3254,7 @@ EnchantedStamp: {
 
 RageGlyph: {
 	// DisplayName: Rage Glyph
-	// Tooltip: Excessive damage is stored for your next attack
+	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
 	// Effect: Wrathful
 }
 

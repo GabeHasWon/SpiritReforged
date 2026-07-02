@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Common.Particle;
 
@@ -19,6 +20,8 @@ internal sealed class ParticleDetours : ILoadable
 	{
 		orig(self);
 
+		SmokeTargetSystem.DrawCompositeSmoke(8, false);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveItem);
 	}
 
@@ -32,14 +35,20 @@ internal sealed class ParticleDetours : ILoadable
 			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AbovePlayer);
 			Main.spriteBatch.RestartToDefault();
+
+			SmokeTargetSystem.DrawCompositeSmoke(4, false);
 		}
 	}
 
 	private static void AboveNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
+		SmokeTargetSystem.DrawCompositeSmoke(2, false);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowNPC);
 
 		orig(self, behindTiles);
+
+		SmokeTargetSystem.DrawCompositeSmoke(3, false);
 
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveNPC);
 	}
@@ -52,17 +61,25 @@ internal sealed class ParticleDetours : ILoadable
 			return;
 		}
 
+		SmokeTargetSystem.DrawCompositeSmoke(0, true);
+
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowProjectile);
 		Main.spriteBatch.End();
 
 		orig(self);
+
+		SmokeTargetSystem.DrawCompositeSmoke(1, true);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveProjectile);
 	}
 
 	private static void BelowSolid(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
-		orig(self);
+		orig(self); 
+
+		SmokeTargetSystem.DrawCompositeSmoke(6, false);
+
 		ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
 	}
 
@@ -76,6 +93,8 @@ internal sealed class ParticleDetours : ILoadable
 			
 			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveSolid);
 			Main.spriteBatch.End();
+
+			SmokeTargetSystem.DrawCompositeSmoke(5, true);
 		}
 	}
 
@@ -88,6 +107,8 @@ internal sealed class ParticleDetours : ILoadable
 
 			ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
 			Main.spriteBatch.RestartToDefault();
+
+			SmokeTargetSystem.DrawCompositeSmoke(7, false);
 		}
 
 		orig(self);

@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Content.Forest.Glyphs;
+﻿using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using Terraria.DataStructures;
