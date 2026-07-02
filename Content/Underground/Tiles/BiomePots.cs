@@ -432,6 +432,8 @@ public class BiomePots : PotTile, ILootable
 				loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.DownedSkeletron), ItemID.Bone, 2, 10, 15));
 			if (style is Style.Granite)
 				loot.AddCommon(ItemID.Geode, 3);
+			if (style is Style.Desert)
+				loot.AddCommon(ItemID.FossilOre, 6, 4, 10);
 			else
 				loot.AddCommon(type, 2, 10, 15);
 		}
