@@ -5,6 +5,7 @@ namespace SpiritReforged.Common.NPCCommon;
 public class NPCEvents : GlobalNPC
 {
 	public delegate void NPCDelegate(NPC npc);
+	public delegate void HitEffectDelegate(NPC npc, NPC.HitInfo hit);
 	public delegate void SpawnRateDelegate(Player player, ref int spawnRate, ref int maxSpawns);
 	public delegate void SetBestiaryDelegate(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry);
 	public delegate void PlatformCollisionDelegate(NPC npc, ref bool fall);
@@ -12,11 +13,13 @@ public class NPCEvents : GlobalNPC
 	public delegate void ModifyJourneyStrengthScalingDelegate(NPC npc, ref float strength);
 
 	public static event NPCDelegate OnNPCLoot;
+	public static event HitEffectDelegate HitEffectEvent;
 	public static event SpawnRateDelegate OnEditSpawnRate;
 	public static event SetBestiaryDelegate OnSetBestiary;
 	public static event PlatformCollisionDelegate OnPlatformCollision;
 	public static event ModifyCollisionParametersDelegate ModifyCollisionParameters;
 	public static event ModifyJourneyStrengthScalingDelegate ModifyJourneyStrengthScaling;
+	
 
 	public override void Load()
 	{
@@ -31,6 +34,8 @@ public class NPCEvents : GlobalNPC
 		orig(self);
 		OnNPCLoot?.Invoke(self);
 	}
+
+	public override void HitEffect(NPC npc, NPC.HitInfo hit) => HitEffectEvent?.Invoke(npc, hit);
 
 	private static bool DecideToFall(On_NPC.orig_Collision_DecideFallThroughPlatforms orig, NPC self)
 	{

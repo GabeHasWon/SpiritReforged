@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.DebuffOverhaul.Common;
 using System.IO;
 
 namespace SpiritReforged.Common.NPCCommon;
@@ -67,6 +68,19 @@ public static class NPCHelper
 	#endregion
 
 	#region buff handling
+	/// <summary> Gets the data associated with the buff of <paramref name="type"/> from this NPC. Returns null if no data exists. </summary>
+	public static bool TryGetBuff(this NPC npc, int type, out BuffExtension buffExtension)
+	{
+		if (npc.GetGlobalNPC<BuffGlobalNPC>().buffByType.TryGetValue(type, out var value))
+		{
+			buffExtension = value;
+			return true;
+		}
+
+		buffExtension = null;
+		return false;
+	}
+
 	/// <summary> Safely removes <paramref name="buffType"/> from this NPC with considerations for multiplayer clients. </summary>
 	public static void RemoveBuff(this NPC npc, int buffType)
 	{
