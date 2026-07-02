@@ -468,6 +468,11 @@ Pages: {
 				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
 				// Tooltip: The minimum number of attempts pottery structures have to place pots.
 			}
+
+			EnchantedWorkbenchChance: {
+				// DisplayName: EnchantedWorkbenchChance
+				// Tooltip: EnchantedWorkbenchChance
+			}
 		}
 
 		Presets: {

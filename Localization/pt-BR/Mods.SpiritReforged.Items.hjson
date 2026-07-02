@@ -3289,3 +3289,9 @@ MariglowSeedPouch: {
 	// DisplayName: Mariglow Seed Pouch
 	// Tooltip: Scatters seeds which sprout into mariglow on sand
 }
+
+StarChart: {
+	// DisplayName: Star Chart
+	// Tooltip: Permanently reveals more of the map when exploring
+	// StatusText: You feel more perceptive
+}
