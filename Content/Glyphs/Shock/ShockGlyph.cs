@@ -339,7 +339,7 @@ public class ShockGlyph : GlyphItem
 
 		if (Main.rand.NextBool(120) && globalItem.shockTimer <= 0)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.3f }, item.Center);
+			SoundEngine.PlaySound(ElectricZap with { Volume = 0.3f }, item.Center);
 
 			globalItem.shockTimer = 40;
 			for (int i = 0; i < 5; i++)
