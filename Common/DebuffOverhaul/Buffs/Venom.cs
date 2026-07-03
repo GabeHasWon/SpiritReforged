@@ -9,10 +9,10 @@ public class Venom : DoTExtension
 
     public override void Load() => BuffHandler.Register(this, BuffID.Venom);
 
-    public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
+    public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
     {
         Texture2D front = TextureAssets.Hb1.Value;
-        float progress = (float)NPC.life / NPC.lifeMax;
+        float progress = (float)npc.life / npc.lifeMax;
         float fadeout = MathHelper.Min(BuffTime / 30f, 1);
         float lightness = options.Lightness * 2;
         Rectangle bounds = new(0, 0, (int)(front.Width * progress), front.Height);
@@ -27,9 +27,9 @@ public class Venom : DoTExtension
         spriteBatch.Draw(bubble, endPosition, source, color * lightness, 0, source.Size() / 2, options.Scale, default, 0);
 
         if ((int)Main.timeForVisualEffects % 12 == 0 && fadeout == 1)
-            TerrariaParticles.OverHealthBars.Add(new BubbleParticle(30, color * lightness, NPC)
+            TerrariaParticles.OverHealthBars.Add(new BubbleParticle(30, color * lightness, npc)
             {
-                LocalPosition = Vector2.Lerp(options.Position + new Vector2(0, front.Height / 2), endPosition, Main.rand.NextFloat()) + Main.screenPosition - NPC.Center,
+                LocalPosition = Vector2.Lerp(options.Position + new Vector2(0, front.Height / 2), endPosition, Main.rand.NextFloat()) + Main.screenPosition - npc.Center,
                 Scale = new Vector2(0.8f) * options.Scale,
                 AccelerationPerFrame = new(Main.rand.NextFloat(-0.01f, 0.01f), -0.02f)
             });

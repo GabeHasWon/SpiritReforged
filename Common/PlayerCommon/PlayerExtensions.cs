@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.BuffCommon;
-using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Common.PlayerCommon;
 

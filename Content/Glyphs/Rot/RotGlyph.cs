@@ -1,11 +1,8 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 

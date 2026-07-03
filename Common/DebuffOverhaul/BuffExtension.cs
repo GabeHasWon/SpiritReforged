@@ -28,9 +28,9 @@ public abstract class BuffExtension : ILoadable
         }
     }
 
-    public int BuffTime => NPC.FindBuffIndex(Type) is int value && value != -1 ? NPC.buffTime[value] : 0;
+	public int BuffTime => (NPC.FindBuffIndex(Type) is int value && value != -1) ? NPC.buffTime[value] : 0;
 
-    /// <summary> The NPC this instance is applied to. </summary>
+    /// <summary> The NPC this instance has been applied to. </summary>
     public NPC NPC { get; private set; }
     /// <summary> The specific type of buff this instance is applied on behalf of. </summary>
     public int Type { get; private set; }
@@ -40,7 +40,7 @@ public abstract class BuffExtension : ILoadable
     public bool Active() => NPC.HasBuff(Type);
     public void ApplyTo(NPC npc, bool reApplied)
     {
-        NPC = npc;
+		NPC = npc;
         OnApply(reApplied);
     }
 
@@ -50,5 +50,57 @@ public abstract class BuffExtension : ILoadable
     protected virtual void OnApply(bool reApplied) { }
     public virtual void UpdateLifeRegen(ref int damage) { }
     public virtual void DoVisuals() => UsesCustomVFX = false;
-    public virtual void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options) { }
+    public virtual void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options) { }
 }
+
+/*public abstract class PlayerBuffExtension : ILoadable
+{
+	public static class BuffHandler
+	{
+		private static readonly Dictionary<int, PlayerBuffExtension> BuffByType = [];
+
+		/// <summary> Gets a new instance associated with the provided buff type. </summary>
+		public static PlayerBuffExtension FromType(int type)
+		{
+			if (BuffByType.TryGetValue(type, out var value))
+			{
+				var result = (PlayerBuffExtension)value.MemberwiseClone();
+				result.Type = type;
+
+				return result;
+			}
+
+			return null;
+		}
+
+		public static bool Register(PlayerBuffExtension extension, int type) => BuffByType.TryAdd(type, extension);
+		public static void Register(PlayerBuffExtension extension, params int[] types)
+		{
+			foreach (int type in types)
+				Register(extension, type);
+		}
+	}
+
+	public int BuffTime => (Player.FindBuffIndex(Type) is int value && value != -1) ? Player.buffTime[value] : 0;
+
+	/// <summary> The Player this instance has been applied to. </summary>
+	public Player Player { get; private set; }
+	/// <summary> The specific type of buff this instance is applied on behalf of. </summary>
+	public int Type { get; private set; }
+	public bool UsesCustomVFX { get; private set; } = true;
+
+	public void Load(Mod mod) => Load();
+	public bool Active() => Player.HasBuff(Type);
+	public void ApplyTo(Player player, bool reApplied)
+	{
+		Player = player;
+		OnApply(reApplied);
+	}
+
+	public virtual void Load() { }
+	public virtual void Unload() { }
+
+	protected virtual void OnApply(bool reApplied) { }
+	public virtual void UpdateLifeRegen() { }
+	public virtual void DoVisuals() => UsesCustomVFX = false;
+}*/

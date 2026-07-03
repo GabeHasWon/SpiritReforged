@@ -10,7 +10,7 @@ public abstract class DoTExtension : BuffExtension
 
     public abstract Settings LocalSettings { get; }
 
-    protected float _damagePerSecond;
+    public float damagePerSecond;
     private bool _justApplied;
 
     //NPC.lastInteraction is not set before OnApply, so instead of calling CountPlayerDamage here, delay the task to just before the value is used in UpdateLifeRegen
@@ -18,20 +18,20 @@ public abstract class DoTExtension : BuffExtension
 
     public override void UpdateLifeRegen(ref int damage)
     {
-        if (_justApplied && NPC.AnyInteractions())
-        {
-            CountPlayerDamage();
-            _justApplied = false;
-        }
+		if (_justApplied && NPC.AnyInteractions())
+		{
+			CountPlayerDamage();
+			_justApplied = false;
+		}
 
-        NPC.lifeRegen -= (int)(_damagePerSecond * 2);
-    }
+		NPC.lifeRegen -= (int)(damagePerSecond * 2);
+	}
 
     private float CountPlayerDamage()
     {
         Player player = Main.player[NPC.lastInteraction];
         float increase = Main.DamageVar(player.HeldItem.damage, player.luck) * LocalSettings.Scalability;
 
-        return _damagePerSecond = Math.Min(_damagePerSecond + increase, LocalSettings.DamageLimit);
+        return damagePerSecond = Math.Min(damagePerSecond + increase, LocalSettings.DamageLimit);
     }
 }

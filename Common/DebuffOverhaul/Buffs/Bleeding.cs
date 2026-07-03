@@ -9,10 +9,10 @@ public class Bleeding : DoTExtension
 
     public override void Load() => BuffHandler.Register(this, BuffID.Bleeding);
 
-    public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
+    public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
     {
         Texture2D front = TextureAssets.Hb1.Value;
-        float progress = (float)NPC.life / NPC.lifeMax;
+        float progress = (float)npc.life / npc.lifeMax;
         float fadeout = MathHelper.Min(BuffTime / 30f, 1);
         float lightness = options.Lightness * 2;
         Rectangle bounds = new(0, 0, (int)(front.Width * progress), front.Height);
@@ -27,9 +27,9 @@ public class Bleeding : DoTExtension
         spriteBatch.Draw(bubble, endPosition, source, color * lightness, 0, source.Size() / 2, options.Scale, default, 0);
 
         if ((int)Main.timeForVisualEffects % 25 == 0 && fadeout == 1)
-            TerrariaParticles.OverHealthBars.Add(new DropParticle(40, color * lightness, NPC)
+            TerrariaParticles.OverHealthBars.Add(new DropParticle(40, color * lightness, npc)
             {
-                LocalPosition = endPosition + Main.screenPosition - NPC.Center,
+                LocalPosition = endPosition + Main.screenPosition - npc.Center,
                 Scale = new Vector2(0.7f) * options.Scale,
                 AccelerationPerFrame = new(0, 0.02f)
             });

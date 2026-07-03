@@ -10,9 +10,9 @@ public class ShadowFlame : DoTExtension
 
     public override void Load() => BuffHandler.Register(this, BuffID.ShadowFlame);
 
-    public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
+    public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
     {
-        float progress = (float)NPC.life / NPC.lifeMax;
+        float progress = (float)npc.life / npc.lifeMax;
         float fadeout = MathHelper.Min(BuffTime / 30f, 1);
         float lightness = 1f; //options.Lightness;
         float flameScale = options.Scale * Math.Min(fadeout, progress * 10) * 0.6f;

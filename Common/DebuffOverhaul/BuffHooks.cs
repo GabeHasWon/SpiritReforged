@@ -7,9 +7,10 @@ internal sealed class BuffDetours : ILoadable
 
     public void Load(Mod mod)
     {
-        On_NPC.AddBuff += AddExtensionData;
-        On_NPC.UpdateNPC_BuffApplyVFX += DisableVFX;
+        On_NPC.AddBuff += AddExtensionData; //NPC hooks
         On_NPC.DelBuff += ClearExtension;
+		On_NPC.UpdateNPC_BuffApplyVFX += DisableVFX;
+
         HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
 
         //Handle DoT combat text
@@ -21,44 +22,34 @@ internal sealed class BuffDetours : ILoadable
         };
     }
 
-    private static void DrawExtensionHealthBars(HealthBarHook.Options options, Entity entity)
+	private static void DrawExtensionHealthBars(HealthBarHook.Options options, Entity entity)
     {
-        if (entity is NPC npc && npc.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
-            foreach (int type in global.buffByType.Keys)
-            {
-                global.buffByType[type].PostDrawHealthBar(Main.spriteBatch, options);
-                break;
-            }
+        if (entity is NPC npc && npc.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+		{
+			foreach (int type in global.buffByType.Keys)
+			{
+				global.buffByType[type].PostDrawHealthBar(Main.spriteBatch, npc, options);
+				break;
+			}
+		}
     }
 
     private static void AddExtensionData(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
     {
-        if (!self.buffImmune[type] && self.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
-            if (global.buffByType.TryGetValue(type, out BuffExtension extension))
-                extension.ApplyTo(self, true);
-            else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b)
-            {
-                global.buffByType.Add(type, b);
-                global.buffByType[type].ApplyTo(self, false);
-            }
+        if (!self.buffImmune[type] && self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+		{
+			if (global.buffByType.TryGetValue(type, out BuffExtension extension))
+			{
+				extension.ApplyTo(self, true);
+			}
+			else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b)
+			{
+				global.buffByType.Add(type, b);
+				global.buffByType[type].ApplyTo(self, false);
+			}
+		}
 
         orig(self, type, time, quiet);
-    }
-
-    private static void DisableVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC self)
-    {
-        bool doDefault = true;
-        if (self.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
-            foreach (int type in global.buffByType.Keys)
-            {
-                BuffExtension b = global.buffByType[type];
-
-                b.DoVisuals();
-                doDefault |= !b.UsesCustomVFX;
-            }
-
-        if (doDefault)
-            orig(self); //Skip orig
     }
 
     private static void ClearExtension(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
@@ -67,24 +58,42 @@ internal sealed class BuffDetours : ILoadable
 
         orig(self, buffIndex);
 
-        if (self.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
+        if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
             global.buffByType.Remove(type);
     }
 
-    private static int DisableDoT(On_CombatText.orig_NewText_Rectangle_Color_string_bool_bool orig, Rectangle location, Color color, string text, bool dramatic, bool dot)
-    {
-        int value = orig(location, color, text, dramatic, dot);
+	private static void DisableVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC self)
+	{
+		bool doDefault = true;
+		if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+		{
+			foreach (int type in global.buffByType.Keys)
+			{
+				BuffExtension b = global.buffByType[type];
 
-        if (dot && BlockDoTText)
-            Main.combatText[value].active = false;
+				b.DoVisuals();
+				doDefault |= !b.UsesCustomVFX;
+			}
+		}
 
-        return value;
-    }
+		if (doDefault)
+			orig(self); //Skip orig
+	}
 
-    public void Unload() { }
+	private static int DisableDoT(On_CombatText.orig_NewText_Rectangle_Color_string_bool_bool orig, Rectangle location, Color color, string text, bool dramatic, bool dot)
+	{
+		int value = orig(location, color, text, dramatic, dot);
+
+		if (dot && BlockDoTText)
+			Main.combatText[value].active = false;
+
+		return value;
+	}
+
+	public void Unload() { }
 }
 
-public sealed class BuffGlobalNPC : GlobalNPC
+public sealed class ExtendedBuffGlobalNPC : GlobalNPC
 {
     public override bool InstancePerEntity => true;
 

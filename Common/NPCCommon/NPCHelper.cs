@@ -69,11 +69,11 @@ public static class NPCHelper
 
 	#region buff handling
 	/// <summary> Gets the data associated with the buff of <paramref name="type"/> from this NPC. Returns null if no data exists. </summary>
-	public static bool TryGetBuff(this NPC npc, int type, out BuffExtension buffExtension)
+	public static bool TryGetBuffExtension<T>(this NPC npc, int type, out T buffExtension) where T : BuffExtension
 	{
-		if (npc.GetGlobalNPC<BuffGlobalNPC>().buffByType.TryGetValue(type, out var value))
+		if (npc.TryGetGlobalNPC(out ExtendedBuffGlobalNPC extendedBuffGlobalNPC) && extendedBuffGlobalNPC.buffByType.TryGetValue(type, out var value))
 		{
-			buffExtension = value;
+			buffExtension = (T)value;
 			return true;
 		}
 

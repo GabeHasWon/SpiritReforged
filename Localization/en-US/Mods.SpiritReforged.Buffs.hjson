@@ -153,7 +153,7 @@ DivineStrike: {
 	Description: Your next attack is empowered
 }
 
-RotStackingDebuff: {
+RotDebuff: {
 	DisplayName: Rotting [{0}]
 	Description: "'Your skin is turning green'"
 }
