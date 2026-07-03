@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
@@ -92,10 +93,13 @@ public class BlunderbussProj : ModProjectile
 		Volume = 0.25f,
 		Pitch = -0.5f
 	};
+
 	private static readonly Asset<Texture2D> FlashTexture = DrawHelpers.RequestLocal(typeof(Blunderbuss), "Blunderbuss_Flash", false);
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);
+
+	public override void SetStaticDefaults() => SpiritSets.IsHeldProjectile[Type] = true;
 
 	public override void SetDefaults()
     {

@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: In Salt Flats
 	IsPrickly: When prickly
 	InZiggurat: In the Ziggurat
+	InSpace: In Space
 }
 
 Misc: {

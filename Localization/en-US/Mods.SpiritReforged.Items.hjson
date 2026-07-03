@@ -3311,3 +3311,8 @@ DisplayCaseItem: {
 	DisplayName: Display Case
 	Tooltip: <right> to place accessory in case
 }
+
+SkyPylonItem: {
+	DisplayName: Space Pylon
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}

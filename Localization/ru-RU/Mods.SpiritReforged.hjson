@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: В солончаковых равнинах
 	IsPrickly: Со стактусов с розовым цветком
 	InZiggurat: В Зиккурате
+	// InSpace: In Space
 }
 
 Misc: {

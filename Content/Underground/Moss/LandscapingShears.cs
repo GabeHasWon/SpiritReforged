@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
@@ -15,11 +16,16 @@ public class LandscapingShears : ModItem
 
 		public static readonly SoundStyle Clip = new("SpiritReforged/Assets/SFX/Item/Clippers")
 		{
-			PitchVariance = .4f
+			PitchVariance = 0.4f
 		};
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<LandscapingShears>().DisplayName;
-		public override void SetStaticDefaults() => Main.projFrames[Type] = 2;
+
+		public override void SetStaticDefaults()
+		{
+			Main.projFrames[Type] = 2;
+			SpiritSets.IsHeldProjectile[Type] = true;
+		}
 
 		public override void SetDefaults()
 		{

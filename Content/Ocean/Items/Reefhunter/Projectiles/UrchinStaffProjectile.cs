@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ProjectileCommon;
 using System.IO;
@@ -12,6 +13,8 @@ public class UrchinStaffProjectile : ModProjectile
 	public Vector2 RelativeTargetPosition { get; set; }
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.UrchinStaff.DisplayName");
+
+	public override void SetStaticDefaults() => SpiritSets.IsHeldProjectile[Type] = true;
 
 	public override void SetDefaults()
 	{

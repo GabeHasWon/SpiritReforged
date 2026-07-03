@@ -13,6 +13,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -137,16 +138,30 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 	public GlyphItem.GlyphType glyph;
 
+	public static bool TryGetGlyphFromContext(IEntitySource source, out GlyphItem.GlyphType glyphType)
+	{
+		if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph().ItemType > 0)
+		{
+			glyphType = item.GetGlyph(); //Transfer the associated item glyph to this projectile
+			return true;
+		}
+		else if (source is EntitySource_Parent { Entity: Entity entity } && entity is Projectile parent && parent.GetGlyph().ItemType > 0)
+		{
+			glyphType = parent.GetGlyph(); //Transfer the parent projectile glyph to this projectile
+			return true;
+		}
+		else
+		{
+			glyphType = default;
+			return false;
+		}
+	}
+
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (source is IEntitySource_WithStatsFromItem { Item: Item item } && item.GetGlyph() is GlyphItem.GlyphType itemGlyph && itemGlyph.ItemType > 0)
+		if (TryGetGlyphFromContext(source, out GlyphItem.GlyphType glyphType))
 		{
-			glyph = itemGlyph; //Transfer the associated item glyph to this projectile
-			projectile.netUpdate = true;
-		}
-		else if (source is EntitySource_Parent { Entity: Entity entity } && entity is Projectile parent && parent.GetGlyph() is GlyphItem.GlyphType projGlyph && projGlyph.ItemType > 0)
-		{
-			glyph = projGlyph; //Transfer the parent projectile glyph to this projectile
+			glyph = glyphType; 
 			projectile.netUpdate = true;
 		}
 	}
