@@ -1,3 +1,5 @@
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
@@ -5,6 +7,7 @@ using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.ModLoader.Config;
@@ -131,6 +134,29 @@ public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 	{
 		if (!closer && ActiveCoordinates == new Point16(i, j) && Main.LocalPlayer.DistanceSQ(ActiveCoordinates.ToWorldCoordinates()) > 100 * 100)
 			UISystem.SetInactive<EnchantmentUI>();
+	}
+
+	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
+	{
+		if (visible && Framing.GetTileSafely(i, j).TileFrameX < FullFrameWidth)
+		{
+			Vector2 position = new Vector2(i, j).ToWorldCoordinates();
+			float distance = Main.LocalPlayer.DistanceSQ(position);
+
+			if (distance < 100 * 100)
+			{
+				if (Main.rand.NextBool(25))
+				{
+					float scale = Main.rand.NextFloat(0.5f, 1);
+
+					ParticleHandler.SpawnParticle(Main.rand.NextBool() 
+						? new ShimmerStar(position, ChromaticWax.SpecialColor.Additive(), scale, 20, -Vector2.UnitY)
+						: new EmberParticle(position, -Vector2.UnitY, ChromaticWax.SpecialColor.Additive(), scale * 0.5f, 60, 1));
+				}
+
+				Lighting.AddLight(position, ChromaticWax.SpecialColor.ToVector3() * MathHelper.Clamp(1f - distance / (100 * 100), 0, 1) * 0.5f);
+			}
+		}
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
