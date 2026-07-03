@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.CombatTextCommon;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
@@ -415,11 +416,15 @@ public class VoidGlyph : GlyphItem
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-
+			modifiers.HideCombatText();
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
+
+			ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
+
 			SoundEngine.PlaySound(Wisp.Death with { Volume = 2f, Pitch = -0.5f }, target.Center);
 			//pos = target.Center;
 		}
@@ -431,13 +436,15 @@ public class VoidGlyph : GlyphItem
 			int stacks = -1;
 
 			if (!_dying)
+			{
 				if (Target is not null)
 				{
 					var gnpc = Target.GetGlobalNPC<VoidNPC>();
 					stacks = gnpc.stacks;
 				}
-				else
-					stacks = _stacksOnDeath;
+			}
+			else
+				stacks = _stacksOnDeath;
 
 			if (stacks < 0)
 				return false;

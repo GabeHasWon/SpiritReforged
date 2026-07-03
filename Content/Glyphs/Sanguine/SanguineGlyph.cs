@@ -156,11 +156,11 @@ public class SanguineGlyph : GlyphItem
 
 				Player.Heal((int)amountToHeal);
 
-				if (stacks.Count < 10)
+				if (stacks.Count < 15)
 					stacks.Add(new SanguineStack(180, 0.03f + damageDone * 0.001f)); // 3% increase, plus 0.1% of the damage dealt, ex: 3% + (10 * 0.001) = 4% boost
 
 				leechedLife = true;
-				lifestealCooldown = 60;
+				lifestealCooldown = 30;
 			}
 
 			float angle = Main.rand.NextFloat(MathHelper.Pi);
