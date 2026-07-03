@@ -4,6 +4,8 @@ using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.MannequinInventories;
+using SpiritReforged.Content.Underground.Tiles;
+using System.Collections;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
@@ -15,6 +17,13 @@ namespace SpiritReforged.Common.WorldGeneration;
 
 public class HouseLoader : ILoadable, IGenerationPage
 {
+	public readonly record struct BuilderResult(bool Success, string Blacklist = null);
+
+	public static readonly BuilderResult Success = new(true);
+	public static readonly BuilderResult Fail = new(false);
+
+	public delegate BuilderResult BuilderDelegate(HouseBuilder houseBuilder);
+
 	internal static FieldInfo DisplayDollItems { get; private set; }
 
 	#region generation page
@@ -76,7 +85,7 @@ public class HouseLoader : ILoadable, IGenerationPage
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 	#endregion
 
-	public static event Action<HouseBuilder> BuilderAction;
+	public static event BuilderDelegate BuilderAction;
 
 	public void Load(Mod mod)
 	{
@@ -94,14 +103,26 @@ public class HouseLoader : ILoadable, IGenerationPage
 	private static void PostBuildHouse(On_HouseBuilder.orig_Place orig, HouseBuilder self, HouseBuilderContext context, StructureMap structures)
 	{
 		orig(self, context, structures);
-		BuilderAction?.Invoke(self);
+
+		//BuilderAction?.Invoke(self);
+		if (BuilderAction != null)
+		{
+			HashSet<string> blacklist = [];
+			IEnumerator enumerator = BuilderAction.GetInvocationList().GetEnumerator();
+
+			while (enumerator.MoveNext())
+			{
+				if (enumerator.Current is BuilderDelegate dele && !blacklist.Contains(dele.Method.Name) && dele.Invoke(self).Success && dele.Invoke(self).Blacklist is string ignoreItem)
+					blacklist.Add(ignoreItem);
+			}
+		}
 	}
 
 	#region content
-	public static void FillMannequin(HouseBuilder houseBuilder)
+	public static BuilderResult FillMannequin(HouseBuilder houseBuilder)
 	{
 		if (houseBuilder.Type is not HouseType.Wood and not HouseType.Desert and not HouseType.Ice)
-			return;
+			return Fail;
 
 		foreach (Rectangle room in houseBuilder.Rooms)
 		{
@@ -117,9 +138,11 @@ public class HouseLoader : ILoadable, IGenerationPage
 				int whoAmI = TEDisplayDoll.Place(location.X, location.Y);
 				MannequinInventory.InventoryByBiome[houseBuilder.Type].SetMannequin(whoAmI);
 
-				return;
+				return new(true, nameof(DisplayCase.FillDisplayCase));
 			}
 		}
+
+		return Fail;
 
 		static void ManualUpdateFrame(Rectangle area, int frameNumber)
 		{
@@ -131,36 +154,41 @@ public class HouseLoader : ILoadable, IGenerationPage
 		}
 	}
 
-	public static void FillLoom(HouseBuilder houseBuilder)
+	public static BuilderResult FillLoom(HouseBuilder houseBuilder)
 	{
 		if (houseBuilder.Type is not HouseType.Wood)
-			return;
+			return Fail;
 
 		bool placedLoom = false;
-		bool filledChest = false;
 
 		foreach (Rectangle room in houseBuilder.Rooms)
 		{
-			if (!filledChest && TryFindChest(room, out Chest chest) && Array.FindIndex(chest.item, static (x) => x.IsAir) is int index && index != -1) //Search for the first instance of air
-			{
-				ChestPoolUtils.PlaceChestItems([new ChestPoolUtils.ChestInfo(4, 9, 1f, ItemID.Silk)], chest, index);
-				filledChest = true;
-			}
-
 			if (!placedLoom && WorldGen.genRand.NextBool(LoomChance) && TryPlace(room, TileID.Loom, out PlaceAttempt placeAttempt))
 			{
+				for (int i = 0; i < room.Width / 9; i++)
+					TryPlace(new(room.X, room.Y, room.Width, 1), TileID.Banners, out _, style: Main.rand.Next(4));
+
 				placedLoom = true;
 			}
+
+			if (placedLoom && TryFindChest(room, out Chest chest) && Array.FindIndex(chest.item, static (x) => x.IsAir) is int index && index != -1) //Search for the first instance of air
+			{
+				ChestPoolUtils.PlaceChestItems([new ChestPoolUtils.ChestInfo(4, 9, 1f, ItemID.Silk)], chest, index);
+				return Success;
+			}
 		}
+
+		return Success;
 	}
 
-	public static void FillSign(HouseBuilder houseBuilder)
+	public static BuilderResult FillSign(HouseBuilder houseBuilder)
 	{
 		if (houseBuilder.Type is not HouseType.Wood)
-			return;
+			return Fail;
 
 		foreach (Rectangle room in houseBuilder.Rooms)
-			if (WorldGen.genRand.NextBool(SignChance) && TryPlace(room, TileID.Signs, out PlaceAttempt placeAttempt))
+		{
+			if (WorldGen.genRand.NextBool(SignChance) && TryPlace(new(room.X, room.Y, room.Width, 1), TileID.Signs, out PlaceAttempt placeAttempt))
 			{
 				(int i, int j) = (placeAttempt.Coords.X, placeAttempt.Coords.Y);
 
@@ -168,6 +196,9 @@ public class HouseLoader : ILoadable, IGenerationPage
 					? Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Rare." + Main.rand.Next(3))
 					: Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Common." + Main.rand.Next(11));
 			}
+		}
+
+		return Success;
 	}
 	#endregion
 
@@ -178,9 +209,10 @@ public class HouseLoader : ILoadable, IGenerationPage
 
 		for (int a = 0; a < attempts; a++)
 		{
-			(int i, int j) = (WorldGen.genRand.Next(bounds.Left, bounds.Right), WorldGen.genRand.Next(bounds.Top, bounds.Bottom));
+			(int i, int j) = (WorldGen.genRand.Next(bounds.Left, bounds.Right + 1), WorldGen.genRand.Next(bounds.Top, bounds.Bottom + 1));
+			placeAttempt = Placer.PlaceTile(i, j, type, style);
 
-			if ((placeAttempt = Placer.Check(i, j, type, style).IsClear().Place()).success)
+			if (placeAttempt.success)
 				return true;
 		}
 
