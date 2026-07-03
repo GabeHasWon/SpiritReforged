@@ -249,12 +249,16 @@ public class RadiantGlyph : GlyphItem
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			radiantCooldown = 0;
+
 			if (divineStrike && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 				HitEffects(target, damageDone);
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			radiantCooldown = 0;
+
 			if (divineStrike && proj.GetGlobalProjectile<GlyphGlobalProjectile>().glyph.ItemType == ModContent.ItemType<RadiantGlyph>())
 				HitEffects(target, damageDone);
 		}
