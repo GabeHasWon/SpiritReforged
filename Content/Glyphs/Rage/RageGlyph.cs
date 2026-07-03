@@ -233,6 +233,10 @@ public class RageGlyph : GlyphItem
 
 		public void HitEffects(NPC target, int damageDone)
 		{
+			// Does not work against friendly npcs or critters
+			if (target.lifeMax < 5 || target.friendly || NPCID.Sets.CountsAsCritter[target.type])
+				return;
+
 			// cap overflow damage to 2500 in hardmode and 500 in pre-hardmode
 			_overflowDamage = (int)MathHelper.Min(Main.hardMode ? 2500 : 500, _overflowDamage);
 
