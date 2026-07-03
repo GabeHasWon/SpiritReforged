@@ -36,7 +36,7 @@ internal sealed class BuffDetours : ILoadable
         if (!self.buffImmune[type] && self.TryGetGlobalNPC<BuffGlobalNPC>(out var global))
             if (global.buffByType.TryGetValue(type, out BuffExtension extension))
                 extension.ApplyTo(self, true);
-            else if (BuffExtension.Handler.FromType(type) is BuffExtension b)
+            else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b)
             {
                 global.buffByType.Add(type, b);
                 global.buffByType[type].ApplyTo(self, false);

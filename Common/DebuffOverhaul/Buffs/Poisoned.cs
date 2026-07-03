@@ -7,7 +7,7 @@ public class Poisoned : DoTExtension
 {
     public override Settings LocalSettings => new(0.1f, 500);
 
-    public override void Load() => Handler.Register(this, BuffID.Poisoned);
+    public override void Load() => BuffHandler.Register(this, BuffID.Poisoned);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

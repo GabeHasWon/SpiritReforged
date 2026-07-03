@@ -8,7 +8,7 @@ public class CursedInferno : DoTExtension
 
 	public override Settings LocalSettings => new(0.3f, 1500);
 
-    public override void Load() => Handler.Register(this, BuffID.CursedInferno);
+    public override void Load() => BuffHandler.Register(this, BuffID.CursedInferno);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

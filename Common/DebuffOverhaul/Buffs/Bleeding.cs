@@ -7,7 +7,7 @@ public class Bleeding : DoTExtension
 {
     public override Settings LocalSettings => new(1f, 800);
 
-    public override void Load() => Handler.Register(this, BuffID.Bleeding);
+    public override void Load() => BuffHandler.Register(this, BuffID.Bleeding);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

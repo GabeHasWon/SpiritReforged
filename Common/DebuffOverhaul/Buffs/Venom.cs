@@ -7,7 +7,7 @@ public class Venom : DoTExtension
 {
     public override Settings LocalSettings => new(0.5f, 1000);
 
-    public override void Load() => Handler.Register(this, BuffID.Venom);
+    public override void Load() => BuffHandler.Register(this, BuffID.Venom);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

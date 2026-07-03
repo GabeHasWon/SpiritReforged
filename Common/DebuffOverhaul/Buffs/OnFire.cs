@@ -15,7 +15,7 @@ public class OnFire : DoTExtension
 
     public override void Load()
     {
-        Handler.Register(this, BuffID.OnFire);
+        BuffHandler.Register(this, BuffID.OnFire);
 
         StopGoresHook.Conditions += static (npc) => npc.HasBuff(BuffID.OnFire);
         NPCEvents.HitEffectEvent += FireDeathEffects;

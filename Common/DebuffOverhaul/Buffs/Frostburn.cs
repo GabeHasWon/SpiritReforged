@@ -9,7 +9,7 @@ public class Frostburn : DoTExtension
 
 	public override Settings LocalSettings => new(0.25f, 500);
 
-    public override void Load() => Handler.Register(this, BuffID.Frostburn);
+    public override void Load() => BuffHandler.Register(this, BuffID.Frostburn);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

@@ -8,7 +8,7 @@ public class ShadowFlame : DoTExtension
 
 	public override Settings LocalSettings => new(0.5f, 2000);
 
-    public override void Load() => Handler.Register(this, BuffID.ShadowFlame);
+    public override void Load() => BuffHandler.Register(this, BuffID.ShadowFlame);
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, HealthBarHook.Options options)
     {

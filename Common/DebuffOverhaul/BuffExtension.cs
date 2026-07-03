@@ -2,7 +2,7 @@
 
 public abstract class BuffExtension : ILoadable
 {
-    public static class Handler
+    public static class BuffHandler
     {
         private static readonly Dictionary<int, BuffExtension> BuffByType = [];
 
