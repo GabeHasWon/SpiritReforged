@@ -373,7 +373,7 @@
             <inheritdoc/>
         </member>
         <member name="P:TileHelper.Content.Tiles.DoorTile.OpenType">
-            <inheritdoc/>
+            <summary> The tile type of this door's when open. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.DoorTile.Load">
             <inheritdoc/>
@@ -394,6 +394,24 @@
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.DoorTile.DrawWithFrameOffset(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Point)">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.AutoloadedDoorOpen.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.AutoloadedDoorOpen.Texture">
+            <inheritdoc/>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.AutoloadedDoorOpen.ClosedType">
+            <summary> The tile type of this door's when closed. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.AutoloadedDoorOpen.SetStaticDefaults">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.AutoloadedDoorOpen.HasSmartInteract(System.Int32,System.Int32,Terraria.GameContent.ObjectInteractions.SmartInteractScanSettings)">
+            <inheritdoc/>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.AutoloadedDoorOpen.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
         <member name="P:TileHelper.Content.Tiles.DresserTile.MapEntry">
