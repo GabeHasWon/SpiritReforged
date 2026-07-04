@@ -3316,3 +3316,13 @@ SkyPylonItem: {
 	DisplayName: Space Pylon
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
+
+CandlewickItem: {
+	DisplayName: Candlewick
+	Tooltip: ""
+}
+
+WaxBlockItem: {
+	DisplayName: Wax Block
+	Tooltip: ""
+}

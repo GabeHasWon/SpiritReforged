@@ -7,6 +7,7 @@ using SpiritReforged.Common.UI.System;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.IO;
@@ -158,6 +159,8 @@ public class Enchanter : ModNPC
 		.Add<CharmcasterHat>()
 		.Add<CharmcasterRobe>()
 		.Add<CharmcasterLeggings>()
+		.Add(AutoContent.ItemType<WaxBlock>())
+		.Add(AutoContent.ItemType<Candlewick>())
 		.Register();
 
 	public override void HitEffect(NPC.HitInfo hit)
