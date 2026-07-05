@@ -23,12 +23,11 @@ internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber
 	public UIImageButton button = null!;
 
     private bool _dragging = false;
-	private Type? _enumType = null;
 
 	/// <summary>
-	/// Creates a slider with the start point, step, minimum, maximum and color. <paramref name="enumType"/> adds in markers for each enum value.
+	/// Creates a slider with the start point, step, minimum, maximum and color.
 	/// </summary>
-	public UISlider(T start, T increment, T min, T max, Color color, Type? enumType = null)
+	public UISlider(T start, T increment, T min, T max, Color color)
 	{
 		Value = start;
 		Start = start;
@@ -36,8 +35,6 @@ internal class UISlider<T> : UIElement where T : global::System.Numerics.INumber
 		Minimum = min;
 		Maximum = max;
 		Color = color;
-
-		_enumType = enumType;
 
 		button = new(Button)
 		{

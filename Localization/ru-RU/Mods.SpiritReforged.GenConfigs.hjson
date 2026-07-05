@@ -34,7 +34,7 @@ UI: {
 		[c/AAAAFF:Ranges] work by setting the minimum and a randomized addition.
 		The value shown is the actual range used in-game when rolling randomly.
 		''' */
-	// LoadError: An error has occured while loading a preset ({0}). Report this to the Discord (and check client.log):
+	// LoadError: An error has occurred while loading a preset ({0}). Report this to the Discord (and check client.log):
 	// Duplicate: (Duplicate preset not added)
 }
 

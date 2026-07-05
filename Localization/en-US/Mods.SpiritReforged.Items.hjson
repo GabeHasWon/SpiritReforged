@@ -2821,7 +2821,7 @@ SaltCampfireItem: {
 }
 
 SaltFountainItem: {
-	DisplayName: Salt Flats Fountain
+	DisplayName: Salt Flats Water Fountain
 	Tooltip: ""
 }
 

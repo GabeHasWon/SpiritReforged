@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
@@ -58,7 +59,6 @@ public class LocustCrook : ModItem
 		public NPC Target => TargetWhoAmI > 0 ? Main.npc[TargetWhoAmI] : null;
 
 		private readonly List<BabyLocust> _orbitingLocusts = new();
-		private Vector2 _oldVelocity = Vector2.Zero;
 		private int _tileHitTimer;
 
 		public override string Texture => ModContent.GetInstance<LocustCrook>().Texture;
@@ -76,7 +76,7 @@ public class LocustCrook : ModItem
 			Projectile.Size = new Vector2(14);
 			Projectile.timeLeft = Projectile.SentryLifeTime;
 			Projectile.sentry = true;
-
+			Projectile.tileCollide = false;
 			Projectile.hide = true;
 		}
 
@@ -87,6 +87,24 @@ public class LocustCrook : ModItem
 		public override bool PreAI()
 		{
 			Timer++;
+
+			bool oldHitTile = HitTile;
+			HitTile = CollisionChecks.Tiles(Projectile.Hitbox, CollisionChecks.AnySurface);
+
+			if (HitTile && !oldHitTile) //Just hit a tile
+			{
+				_orbitingLocusts.Clear();
+
+				for (int i = 0; i < 3; i++)
+					_orbitingLocusts.Add(new BabyLocust(60, Projectile.whoAmI, false));
+
+				_tileHitTimer = 20;
+				AttackTimer = MAX_ATTACK_COOLDOWN - 60;
+
+				Projectile.position += Projectile.velocity * 0.5f;
+				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+				SoundEngine.PlaySound(EmbedSound, Projectile.Center);
+			}
 
 			if (HitTile)
 			{
@@ -133,8 +151,6 @@ public class LocustCrook : ModItem
 
 				float progress = _tileHitTimer / 20f;
 
-				Projectile.velocity = _oldVelocity;
-
 				if (progress < 1f)
 					Projectile.rotation = Projectile.velocity.ToRotation() + (Main.rand.NextBool() ? -1 : 1) * (Main.rand.NextFloat(0.15f, 0.3f) * EaseFunction.EaseCircularIn.Ease(progress)) + MathHelper.PiOver4;
 				else
@@ -170,35 +186,10 @@ public class LocustCrook : ModItem
 						Projectile.velocity.Y *= 1.1f;
 				}
 				else
+				{
 					Projectile.velocity.Y = 16f;
+				}
 			}
-		}
-
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			if (!HitTile)
-			{
-				for (int i = 0; i < 3; i++)
-					_orbitingLocusts.Add(new BabyLocust(60, Projectile.whoAmI, false));
-
-				HitTile = true;
-				_tileHitTimer = 20;
-				AttackTimer = MAX_ATTACK_COOLDOWN - 60;
-
-				Projectile.position += oldVelocity * 1.25f;
-				_oldVelocity = oldVelocity;
-				Projectile.rotation = oldVelocity.ToRotation() + MathHelper.PiOver4;
-				SoundEngine.PlaySound(EmbedSound, Projectile.Center);
-			}
-
-			return false;
-		}
-
-		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
-		{
-			fallThrough = false;
-
-			return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
 		}
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
@@ -219,6 +210,7 @@ public class LocustCrook : ModItem
 			Vector2 drawPos = Projectile.Center + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver4);
 
 			if (!HitTile)
+			{
 				for (int i = 0; i < Projectile.oldPos.Length; i++)
 				{
 					Vector2 pos = Projectile.oldPos[i] + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver4) + Projectile.Size / 2f;
@@ -227,6 +219,7 @@ public class LocustCrook : ModItem
 					Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, new Color(255, 150, 0, 0) * 0.25f * fade * lerp,
 					  Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0, 0f);
 				}
+			}
 			else 
 			{
 				float outLineFade = 1f;
@@ -279,19 +272,11 @@ public class LocustCrook : ModItem
 			return false;
 		}
 
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.WriteVector2(_oldVelocity);
-			writer.Write(_tileHitTimer);
-		}
+		public override void SendExtraAI(BinaryWriter writer) => writer.Write(_tileHitTimer);
 
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			_oldVelocity = reader.ReadVector2();
-			_tileHitTimer = reader.ReadInt32();
-		}
+		public override void ReceiveExtraAI(BinaryReader reader) => _tileHitTimer = reader.ReadInt32();
 
-		internal NPC FindTarget() => Main.npc.Where(n => n.CanBeChasedBy() && n.DistanceSQ(Projectile.Center) < 1000f * 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+		public NPC FindTarget() => Main.npc.Where(n => n.CanBeChasedBy() && n.DistanceSQ(Projectile.Center) < 1000f * 1000f).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 	}
 
 	public override void SetDefaults()

@@ -118,7 +118,10 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 		var position = new Vector2(i, j - 3) * 16;
 		int dropType = (int)drop;
-		if (dropType > ItemID.None)
+
+		if (dropType == ModContent.NPCType<Sparrow>())
+			NPC.NewNPC(new EntitySource_ShakeTree(i, j), i * 16, j * 16, dropType);
+		else if (dropType > ItemID.None)
 			Item.NewItem(new EntitySource_ShakeTree(i, j), new Rectangle((int)position.X, (int)position.Y, 16, 16), dropType);
 
 		GrowEffects(i, j, true, ModContent.GoreType<AcaciaTreeLeaf>());
