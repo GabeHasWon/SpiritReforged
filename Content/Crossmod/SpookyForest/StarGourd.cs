@@ -1,6 +1,10 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ID;
+using TileHelper.Common;
+using TileHelper.Content;
 
 namespace SpiritReforged.Content.Crossmod.SpookyForest;
 
@@ -9,13 +13,19 @@ internal abstract class StarGourd : ModTile
 	public interface IGourdInfo
 	{
 		public int ItemType { get; }
-		public int CarvedType { get; }
+		public bool HasGlow { get; }
+		public void CreateCarvedType(Mod mod);
 	}
 
-	public readonly record struct GourdInfo<T>(string ItemName) : IGourdInfo where T : StarGourd
+	public readonly record struct GourdInfo<TSelf>(string ItemName, bool HasGlow = true) : IGourdInfo where TSelf : StarGourd, new()
 	{
 		public int ItemType => CrossMod.Spooky.CheckFind(ItemName, out ModItem item) ? item.Type : throw null;
-		public int CarvedType => ModContent.TileType<T>();
+		
+		public void CreateCarvedType(Mod mod)
+		{
+			CarvedStarGourd<TSelf> gourd = new();
+			mod.AddContent(gourd);
+		}
 	}
 
 	protected static SoundStyle CarveSound;
@@ -23,18 +33,18 @@ internal abstract class StarGourd : ModTile
 	protected abstract IGourdInfo Info { get; }
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+	public sealed override void Load() => Info.CreateCarvedType(Mod);
+	public sealed override void SetStaticDefaults() => StaticDefaults(Type, true);
 
-	public override void SetStaticDefaults()
+	public void StaticDefaults(int type, bool addEntry)
 	{
 		CarveSound = new("Spooky/Content/Sounds/PumpkinCarve", SoundType.Sound);
 
-		Main.tileSolid[Type] = false;
-		Main.tileFrameImportant[Type] = true;
-		Main.tileNoAttach[Type] = true;
+		Main.tileSolid[type] = false;
+		Main.tileFrameImportant[type] = true;
+		Main.tileNoAttach[type] = true;
 
-		TileID.Sets.BreakableWhenPlacing[Type] = true;
-
-		AddMapEntry(new Color(25, 197, 87));
+		TileID.Sets.BreakableWhenPlacing[type] = true;
 
 		DustType = DustID.DesertWater2;
 
@@ -42,11 +52,13 @@ internal abstract class StarGourd : ModTile
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.DrawYOffset = 2;
 
-		ModifyObjectData(TileObjectData.newTile);
-		TileObjectData.addTile(Type);
+		if (ModifyObjectData(TileObjectData.newTile) && addEntry)
+			AddMapEntry(new Color(25, 197, 87));
+
+		TileObjectData.addTile(type);
 	}
 
-	protected virtual void ModifyObjectData(TileObjectData newTile) { }
+	protected virtual bool ModifyObjectData(TileObjectData newTile) => true;
 
 	public override void MouseOver(int i, int j)
 	{
@@ -79,27 +91,121 @@ internal abstract class StarGourd : ModTile
 		if (player.HeldItem.type == carving.Type)
 		{
 			SoundEngine.PlaySound(CarveSound, new Vector2(i * 16, j * 16));
+			TileObjectData data = TileObjectData.GetTileData(Main.tile[i, j]);
 
-			int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % 3;
-			int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % 2;
+			int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % data.Width;
+			int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % data.Height;
 
-			for (int x = left; x < left + 3; x++)
+			for (int x = left; x < left + data.Width; x++)
 			{
-				for (int y = top; y < top + 2; y++)
+				for (int y = top; y < top + data.Height; y++)
 				{
 					Tile tile = Framing.GetTileSafely(x, y);
-					tile.TileType = (ushort)Info.CarvedType;
+					tile.TileType = Mod.Find<ModTile>(Name + "Carved").Type;
 				}
 			}
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
-			{
-				NetMessage.SendTileSquare(-1, left, top, 12);
-			}
+				NetMessage.SendTileSquare(-1, left, top, Math.Max(data.Width, data.Height));
 		}
 
 		return true;
 	}
 
 	public override void KillMultiTile(int i, int j, int fX, int fY) => Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, Info.ItemType, Main.rand.Next(15, 26));
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (!Info.HasGlow || !TileExtensions.GetVisualInfo(i, j, out _, out Texture2D tex))
+			return;
+
+		Tile tile = Main.tile[i, j];
+		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + 36, 16, 16), Color.White);
+	}
+}
+
+[Autoload(false)]
+internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, new()
+{
+	public override string Name => new T().Name + "Carved";
+
+	public override void SetStaticDefaults() => new T().StaticDefaults(Type, false);
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		var data = TileObjectData.GetTileData(Type, 0);
+
+		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle) && frameY > data.Height * 18)
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, data.Width * 16, data.Height * 16), candle.Type);
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle))
+			return;
+		
+		Player player = Main.LocalPlayer;
+		bool hasCandle = player.HeldItem.type == candle.Type;
+
+		player.cursorItemIconEnabled = hasCandle;
+		player.cursorItemIconID = hasCandle ? candle.Type : 0;
+		player.cursorItemIconText = "";
+	}
+
+	public override void MouseOverFar(int i, int j)
+	{
+		MouseOver(i, j);
+		Player player = Main.LocalPlayer;
+		player.cursorItemIconEnabled = false;
+		player.cursorItemIconID = ItemID.None;
+	}
+
+	public override bool RightClick(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+
+		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle))
+			return false;
+
+		if (player.HeldItem.type == candle.Type && player.ConsumeItem(candle.Type))
+		{
+			SoundEngine.PlaySound(SoundID.Dig, new Vector2(i * 16, j * 16));
+			TileObjectData data = TileObjectData.GetTileData(Main.tile[i, j]);
+
+			int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % data.Width;
+			int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % data.Height;
+
+			for (int x = left; x < left + data.Width; x++)
+			{
+				for (int y = top; y < top + data.Height; y++)
+				{
+					Tile tile = Framing.GetTileSafely(x, y);
+					tile.TileFrameY += (short)(18 * data.Height);
+				}
+			}
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+				NetMessage.SendTileSquare(-1, left, top, Math.Max(data.Width, data.Height));
+		}
+
+		return true;
+	}
+
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) 
+	{
+		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D tex))
+			return false;
+
+		Tile tile = Main.tile[i, j];
+		int frameY = tile.TileFrameY;
+		TileObjectData data = TileObjectData.GetTileData(tile);
+
+		if (tile.TileFrameY >= data.Height * 18)
+			frameY -= data.Height * 18;
+
+		Vector2 position = TileExtensions.DrawPosition(i, j, new Vector2(0, -2));
+		spriteBatch.Draw(tex, position, new Rectangle(tile.TileFrameX, frameY, 16, 16), color);
+		spriteBatch.Draw(tex, position, new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), Color.White);
+		return false;
+	}
 }

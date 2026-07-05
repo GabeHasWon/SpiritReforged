@@ -14,6 +14,7 @@ public abstract class GrassTile : ModTile
 
 		this.Merge(DirtType, TileID.Grass);
 		this.AnchorSelfTo(TileID.Sunflower);
+
 		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;

@@ -3160,3 +3160,18 @@ PinSpookyRotten: {
 	// DisplayName: Rotten Depths Pin
 	// Tooltip: ""
 }
+
+StarGourdGreenCarvedItem: {
+	// DisplayName: Star Gourd Green Carved Item
+	// Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	// DisplayName: Star Gourd Lime Carved Item
+	// Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	// DisplayName: Star Gourd Orange Lime Carved Item
+	// Tooltip: ""
+}

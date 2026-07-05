@@ -100,6 +100,26 @@ public class StarConversion : ModBiomeConversion
 
 			if (CrossMod.Spooky.CheckFind("SpookyGrass", out ModTile orange))
 				TileLoader.RegisterSimpleConversion(orange.Type, Type, ModContent.TileType<OrangeSpookyStargrass>());
+
+			ConvertGourd<StarGourdGreen>("GourdGreen");
+			ConvertGourd<StarGourdGreen>("GourdLime");
+			ConvertGourd<StarGourdGreen>("GourdLimeOrange");
+
+			static void ConvertGourd<T>(string name) where T : StarGourd
+			{
+				if (!CrossMod.Spooky.CheckFind(name, out ModTile tile))
+					return;
+
+				TileLoader.RegisterConversion(tile.Type, ConversionType, (i, j, type, conversionType) =>
+				{
+					if (Framing.GetTileSafely(i, j + 1).TileType == type)
+						return false; //Return if this is not the base of the flower
+
+					TileObjectData data = TileObjectData.GetTileData(type, 0);
+					TileExtensions.GetTopLeft(ref i, ref j);
+					return ConversionHelper.ConvertTiles(i, j, data.Width, data.Height, ModContent.TileType<T>());
+				});
+			}
 		}
 	}
 }
