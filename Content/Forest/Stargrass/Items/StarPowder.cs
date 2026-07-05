@@ -1,5 +1,7 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
+using SpiritReforged.Content.Crossmod.SpookyForest;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 
@@ -84,5 +86,20 @@ public class StarConversion : ModBiomeConversion
 
 		TileLoader.RegisterSimpleConversion(TileID.Grass, Type, ModContent.TileType<StargrassTile>());
 		TileLoader.RegisterSimpleConversion(TileID.GolfGrass, Type, ModContent.TileType<StargrassMowed>());
+
+		//	{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+		//	{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+		//	{ BiomeConversionID.Hallow, TileID.GolfGrassHallowed },
+		//	{ BiomeConversionID.PurificationPowder, TileID.GolfGrass },
+		//	{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+
+		if (CrossMod.Spooky.Enabled)
+		{
+			if (CrossMod.Spooky.CheckFind("SpookyGrassGreen", out ModTile green))
+				TileLoader.RegisterSimpleConversion(green.Type, Type, ModContent.TileType<GreenSpookyStargrass>());
+
+			if (CrossMod.Spooky.CheckFind("SpookyGrass", out ModTile orange))
+				TileLoader.RegisterSimpleConversion(orange.Type, Type, ModContent.TileType<OrangeSpookyStargrass>());
+		}
 	}
 }

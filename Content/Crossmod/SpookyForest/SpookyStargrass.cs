@@ -1,26 +1,19 @@
-﻿using SpiritReforged.Common;
+﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Savanna.Items;
-using SpiritReforged.Content.Savanna.Tiles;
-using TileHelper.Common;
 
-namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
+namespace SpiritReforged.Content.Crossmod.SpookyForest;
 
-public class StargrassTile : GrassTile
+public class GreenSpookyStargrass : GrassTile
 {
-	//public virtual ConversionHandler.Set ConversionSet => new()
-	//{
-	//	{ BiomeConversionID.Corruption, TileID.CorruptGrass },
-	//	{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
-	//	{ BiomeConversionID.Hallow, TileID.HallowedGrass },
-	//	{ BiomeConversionID.PurificationPowder, TileID.Grass },
-	//	{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
-	//};
+	public virtual int PlantsType => ModContent.TileType<GreenStargrassPlants>();
+	public virtual int VineType => ModContent.TileType<StargrassVine>();
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public static Color GetGlowColor(int i, int j) 
 	{
@@ -35,15 +28,17 @@ public class StargrassTile : GrassTile
 		Main.tileLighted[Type] = true;
 		TileID.Sets.Conversion.Grass[Type] = true;
 
-		int mowType = ModContent.TileType<StargrassMowed>();
-		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
-		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
+		//int mowType = ModContent.TileType<StargrassMowed>();
+		//SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
+		//TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
 
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
 
 		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
+
+		TileID.Sets.Conversion.Grass[Type] = true;
 	}
 
 	public override void FloorVisuals(Player player)
@@ -80,12 +75,6 @@ public class StargrassTile : GrassTile
 		}
 	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (ConversionHandler.FindSet(nameof(StargrassTile), conversionType, out int newType))
-			WorldGen.ConvertTile(i, j, newType);
-	}
-
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		if (!WorldGen.TileIsExposedToAir(i, j))
@@ -104,9 +93,25 @@ public class StargrassTile : GrassTile
 
 		int style = Main.rand.Next(StargrassFlowers.StyleRange);
 
-		WorldGen.PlaceObject(i, j - 1, ModContent.TileType<StargrassFlowers>(), true, style);
-		NetMessage.SendObjectPlacement(-1, i, j - 1, ModContent.TileType<StargrassFlowers>(), style, 0, -1, -1);
+		WorldGen.PlaceObject(i, j - 1, PlantsType, true, style);
+		NetMessage.SendObjectPlacement(-1, i, j - 1, PlantsType, style, 0, -1, -1);
 	}
 
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.2f, 0.5f);
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.05f, 0.5f, 0.2f);
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D tex))
+			return;
+
+		Tile tile = Main.tile[i, j];
+		spriteBatch.Draw(tex, new Vector2(i, j) * 16, new Rectangle(tile.TileFrameX, tile.TileFrameY + tex.Height / 2, 16, 16), GetGlowColor(i, j).MultiplyRGB(color));
+	}
+}
+
+public class OrangeSpookyStargrass : GreenSpookyStargrass
+{
+	public override int PlantsType => ModContent.TileType<OrangeStargrassPlants>();
+
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.35f, 0.35f, 0.05f);
 }

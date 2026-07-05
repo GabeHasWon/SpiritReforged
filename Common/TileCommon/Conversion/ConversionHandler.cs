@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.TileCommon.PresetTiles;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Content.Crossmod.SpookyForest;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
 
@@ -34,7 +36,7 @@ public class ConversionHandler : GlobalTile
 				CreateSet(modTile.Name, s);
 		}
 
-		CreateSet(Plants, new()
+		Set plantsSet = new()
 		{
 			{ TileID.CorruptGrass, TileID.CorruptPlants },
 			{ TileID.CrimsonGrass, TileID.CrimsonPlants },
@@ -44,11 +46,35 @@ public class ConversionHandler : GlobalTile
 			{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaFoliageCrimson>() },
 			{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaFoliageHallow>() },
 			{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaFoliage>() },
-			{ ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassFlowers>() }
-		});
+			{ ModContent.TileType<StargrassTile>(), ModContent.TileType<StargrassFlowers>() },
+		};
 
-		AddFrameActions(CommonPlants, TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2);
-		AddFrameActions(CommonVines, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
+		// This list handles plants that will automatically convert to other plants.
+		List<int> convertablePlants = [TileID.Plants, TileID.Plants2, TileID.CorruptPlants, TileID.CrimsonPlants, TileID.HallowedPlants, TileID.HallowedPlants2];
+		List<int> convertableVines = [TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines];
+
+		if (CrossMod.Spooky.Enabled)
+		{
+			plantsSet.Add(ModContent.TileType<OrangeSpookyStargrass>(), ModContent.TileType<OrangeStargrassPlants>());
+			plantsSet.Add(ModContent.TileType<GreenSpookyStargrass>(), ModContent.TileType<GreenStargrassPlants>());
+
+			if (CrossMod.Spooky.CheckFind("SpookyWeedsOrange", out ModTile orangeWeeds) && CrossMod.Spooky.CheckFind("SpookyGrass", out ModTile orange))
+			{
+				plantsSet.Add(orange.Type, orangeWeeds.Type);
+				convertablePlants.Add(orangeWeeds.Type);
+			}
+
+			if (CrossMod.Spooky.CheckFind("SpookyWeedsGreen", out ModTile greenWeeds) && CrossMod.Spooky.CheckFind("SpookyGrassGreen", out ModTile green))
+			{
+				plantsSet.Add(green.Type, greenWeeds.Type);
+				convertablePlants.Add(greenWeeds.Type);
+			}
+		}
+
+		CreateSet(Plants, plantsSet);
+
+		AddFrameActions(CommonPlants, [.. convertablePlants]);
+		AddFrameActions(CommonVines, [.. convertableVines]);
 	}
 
 	/// <summary> Caches <paramref name="conversions"/> by <paramref name="name"/> to be easily accessed at <see cref="SetByName"/>.<br/>

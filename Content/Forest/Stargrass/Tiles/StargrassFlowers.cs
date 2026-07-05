@@ -21,7 +21,9 @@ public class StargrassFlowers : ModTile, ISwayTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
-		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+
+		if (Type == ModContent.TileType<StargrassFlowers>())
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
@@ -34,6 +36,8 @@ public class StargrassFlowers : ModTile, ISwayTile
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
+
+		ModifyObjectData(TileObjectData.newTile);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(20, 190, 130));
@@ -41,10 +45,13 @@ public class StargrassFlowers : ModTile, ISwayTile
 		HitSound = SoundID.Grass;
 	}
 
+	protected virtual void ModifyObjectData(TileObjectData newTile) { }
+
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
+
 		if (frame >= 6)
 			(r, g, b) = (0.025f, 0.1f, 0.25f);
 	}
@@ -64,7 +71,7 @@ public class StargrassFlowers : ModTile, ISwayTile
 		return true;
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	public virtual void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
 	{
 		var tile = Framing.GetTileSafely(i, j);
 		int type = tile.TileType;
