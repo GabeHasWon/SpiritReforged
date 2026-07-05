@@ -3322,11 +3322,11 @@ SkyPylonItem: {
 }
 
 CandlewickItem: {
-	// DisplayName: Candlewick Item
+	// DisplayName: Candlewick
 	// Tooltip: ""
 }
 
 WaxBlockItem: {
-	// DisplayName: Wax Block Item
+	// DisplayName: Wax Block
 	// Tooltip: ""
 }

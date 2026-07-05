@@ -347,7 +347,8 @@ public class RadiantGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()

@@ -139,7 +139,9 @@ public class MoonlightGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new MoonlightGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()

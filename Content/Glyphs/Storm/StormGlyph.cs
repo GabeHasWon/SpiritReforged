@@ -495,7 +495,9 @@ public class StormGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()

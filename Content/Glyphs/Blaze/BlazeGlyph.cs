@@ -177,9 +177,11 @@ public class BlazeGlyph : GlyphItem
 		//Because of how Terraria is programmed, we have to bind one shader to one item id
 		//Bound shaders for drawdata can't have their parameters dynamically adjusted when applied, to my knowledge
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
-
-		GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
-		GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
+		if (!Main.dedServ)
+		{
+			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+			GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
+		}			
 	}
 
 	public override void SetDefaults()

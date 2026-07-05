@@ -212,7 +212,9 @@ public class SanguineGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new SanguineGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()

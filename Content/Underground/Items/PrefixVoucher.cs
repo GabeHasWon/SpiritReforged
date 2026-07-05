@@ -124,7 +124,9 @@ public class PrefixVoucher : ModItem
 		Item.maxStack = 1;
 
 		prefix = RollRandomPrefix();
-		FindInfo();
+
+		if (!Main.dedServ)
+			FindInfo();
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -165,7 +167,7 @@ public class PrefixVoucher : ModItem
 	public override void NetReceive(BinaryReader reader)
 	{
 		prefix = reader.ReadInt32();
-		FindInfo();
+		//FindInfo();
 	}
 
 	public override void SaveData(TagCompound tag) => tag[nameof(prefix)] = prefix;
@@ -173,6 +175,6 @@ public class PrefixVoucher : ModItem
 	public override void LoadData(TagCompound tag)
 	{
 		prefix = tag.GetInt(nameof(prefix));
-		FindInfo();
+		//FindInfo();
 	}
 }

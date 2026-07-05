@@ -143,7 +143,9 @@ public class BeeGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
-		GameShaders.Armor.BindShader(Type, new BeeGlyphShaderData(AssetLoader.LoadedShaders["LiquidGlyphShader"], "mainPass"));
+
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new BeeGlyphShaderData(AssetLoader.LoadedShaders["LiquidGlyphShader"], "mainPass"));
 	}
 
 	public override void SetDefaults()
