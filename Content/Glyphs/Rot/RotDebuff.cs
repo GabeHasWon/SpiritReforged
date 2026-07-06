@@ -7,6 +7,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Particles.Basic;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.DebuffOverhaul.BuffExtension;
@@ -65,7 +66,7 @@ public class RotDebuff : ModBuff
 
 		public void HitEffects(NPC target)
 		{
-			if (!target.TryGetGlobalNPC(out RotSpreadNPC rotGlobalNPC))
+			if (!target.TryGetGlobalNPC(out RotSpreadNPC rotGlobalNPC) || Main.npc.Where(n => n.active && n.HasBuff<RotDebuff>()).Count() > 10)
 				return;
 
 			SpreadNearby(target.Center, 100);
@@ -205,6 +206,11 @@ public class RotDebuff : ModBuff
 	/// <summary> Spreads to <b>ALL</b> NPCs near <paramref name="origin"/>. </summary>
 	public static void SpreadNearby(Vector2 origin, int range)
 	{
+		int buffCount = Main.npc.Where(n => n.active && n.HasBuff<RotDebuff>()).Count();
+
+		if (buffCount > 10)
+			return;
+
 		int buffType = ModContent.BuffType<RotDebuff>();
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
@@ -212,6 +218,13 @@ public class RotDebuff : ModBuff
 			{
 				bool hasBuff = npc.HasBuff(buffType);
 				npc.AddBuff(buffType, 180);
+
+				buffCount++;
+
+				// Keep track of the buff count in each iteration to make sure to break once 10 npcs have it
+				// Without this, you could theoretically infect more than 10 npcs at once, bypassing the restriction
+				if (buffCount > 10)
+					break;
 
 				if (Main.dedServ || hasBuff)
 					continue;
