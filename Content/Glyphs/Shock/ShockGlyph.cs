@@ -15,6 +15,7 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using System.IO;
+using SpiritReforged.Common.CombatTextCommon;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -82,7 +83,7 @@ public class ShockGlyph : GlyphItem
 			for (int i = 0; i < closestNPCs.Length; i++)
 			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
-					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.25f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
+					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.35f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
 			}
 
 			SoundEngine.PlaySound(ElectricSting, target.Center);
@@ -144,6 +145,9 @@ public class ShockGlyph : GlyphItem
 
 			Projectile.penetrate = 1;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
+
+			// TODO: Balance Adjustments here
+			Projectile.ArmorPenetration = Main.hardMode ? 20 : 10;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -218,6 +222,10 @@ public class ShockGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
+
+			ColoredCombatText.AddCombatText(idx, Color.LightCyan, Color.Cyan);
+
 			for (int i = 0; i < 2; i++)
 			{
 				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
@@ -372,6 +380,10 @@ public class ShockGlyph : GlyphItem
 
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
+
+	// Summon weapons cannot crit
+	// Zealous is a crit-chance only reforge so can be used to check if a weapon can crit (I think)
+	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && item.CanApplyPrefix(PrefixID.Zealous);
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
