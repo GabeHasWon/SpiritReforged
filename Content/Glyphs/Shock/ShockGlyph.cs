@@ -12,6 +12,9 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using System.Linq;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Content.Desert.ScarabBoss.Items;
+using System.IO;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -19,28 +22,68 @@ public class ShockGlyph : GlyphItem
 {
 	public sealed class ShockPlayer : ModPlayer
 	{
+		private class ShockPacket : PacketData
+		{
+			private readonly short _player;
+			private readonly short _npc;
+			private readonly int _damage;
+
+			public ShockPacket() : base() { }
+
+			public ShockPacket(short npc, short player, int damage)
+			{
+				_npc = npc;
+				_player = player;
+				_damage = damage;
+			}
+
+			public override void OnReceive(BinaryReader reader, int whoAmI)
+			{
+				short npc = reader.ReadInt16();
+				short player = reader.ReadInt16();
+				int damage = reader.ReadInt32();
+
+				ChannelLightning(Main.player[player], Main.npc[npc], damage);
+			}
+
+			public override void OnSend(ModPacket modPacket)
+			{
+				modPacket.Write(_npc);
+				modPacket.Write(_player);
+				modPacket.Write(_damage);
+			}
+		}
+
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (hit.Crit && item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>())
-				ChannelLightning(target, damageDone);
+			if (hit.Crit && item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && Main.myPlayer == Player.whoAmI)
+				ChannelLightning(Player, target, damageDone);
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hit.Crit && proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>())
-				ChannelLightning(target, damageDone);
+			{
+				ChannelLightning(Player, target, damageDone);
+			}		
 		}
 
-		private void ChannelLightning(NPC target, int damage)
+		public static void ChannelLightning(Player Player, NPC target, int damage)
 		{
 			NPC[] closestNPCs = Main.npc.Where(n => n.whoAmI != target.whoAmI && n.CanBeChasedBy(Player) && n.DistanceSQ(target.Center) < 250000f).OrderBy(n => n.DistanceSQ(target.Center)).Take(3).ToArray();
 
 			if (closestNPCs.Length <= 0)
 				return;
 
+			// Absolutely no idea if I am doing this right
+			if (Main.netMode == NetmodeID.Server)
+				new ShockPacket((short)target.whoAmI, (short)Player.whoAmI, damage).Send(ignoreClient: Player.whoAmI);
+
 			for (int i = 0; i < closestNPCs.Length; i++)
+			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
 					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.25f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
+			}
 
 			SoundEngine.PlaySound(ElectricSting, target.Center);
 			SoundEngine.PlaySound(ElectricZap, target.Center);
