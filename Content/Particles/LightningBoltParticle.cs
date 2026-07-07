@@ -1,19 +1,23 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
+
 using static SpiritReforged.Content.Glyphs.Shock.ShockGlyph;
 
 namespace SpiritReforged.Content.Particles;
 
 public class LightningSystem : ModSystem
 {
+	public interface ILightningProjectile
+	{
+		public bool Invalid { get; set; }
+	}
+
 	private static readonly ModTarget2D LightningTarget = new(static () => particles.Count != 0 || projectiles.Count != 0, DrawLightningTarget);
 
 	public static readonly List<LightningBoltParticle> particles = [];
@@ -62,6 +66,8 @@ public class LightningSystem : ModSystem
 
 			projectile.LightningDraw(spriteBatch);
 		}
+
+		projectiles.RemoveAll(x => x is null || !x.Projectile.active || x is not ILightningProjectile light || light.Invalid);
 	}
 }
 

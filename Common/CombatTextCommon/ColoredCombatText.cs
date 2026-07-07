@@ -46,13 +46,16 @@ public class ColoredCombatText : ILoadable
 	}
 
 	/// <summary>
-	/// Adds a combat text to be faded
+	/// Adds a combat text to be faded. This will do nothing if the combat text max is reached.
 	/// </summary>
 	/// <param name="index">the index of the combat text</param>
 	/// <param name="color">the color the combat text should start as</param>
 	/// <param name="critColor">the color the combat text should start as if its a crit</param>
 	public static void AddCombatText(int index, Color color, Color critColor)
 	{
+		if (index >= Main.combatText.Length)
+			return;
+
 		maxTimeLefts[index] = Main.combatText[index]?.lifeTime ?? 10;
 
 		colors[index] = color;

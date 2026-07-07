@@ -8,14 +8,13 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using System.Linq;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Content.Desert.ScarabBoss.Items;
 using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
+using System.Runtime.CompilerServices;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -64,9 +63,7 @@ public class ShockGlyph : GlyphItem
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (hit.Crit && proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>())
-			{
 				ChannelLightning(Player, target, damageDone);
-			}		
 		}
 
 		public static void ChannelLightning(Player Player, NPC target, int damage)
@@ -116,18 +113,27 @@ public class ShockGlyph : GlyphItem
 		}
 	}
 
-	public class ShockGlyphLightningBolt : ModProjectile
+	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
 	{
-		public bool _dying;
+		public override string Texture => AssetLoader.EmptyTexture;
 
-		private readonly ParticleRenderer _lightningParticleRenderer = new();
-		private VertexTrail[] _trails;
+		public int TargetWhoAmI => (int)Projectile.ai[0];
+
+		public int Delay
+		{
+			get => (int)Projectile.ai[1];
+			set => Projectile.ai[1] = value;
+		}
+
+		public bool Initialized = false;
+
+		public float Progress => 1f - Projectile.timeLeft / 40f;
+
+		public bool Invalid { get; set; }
 
 		public Vector2 startPos;
-		public int delay;
-		public override string Texture => AssetLoader.EmptyTexture;
-		public int TargetWhoAmI => (int)Projectile.ai[0];
-		public float Progress => 1f - Projectile.timeLeft / 40f;
+
+		private VertexTrail[] _trails;
 
 		public override void SetDefaults()
 		{
@@ -150,39 +156,35 @@ public class ShockGlyph : GlyphItem
 			Projectile.ArmorPenetration = Main.hardMode ? 20 : 10;
 		}
 
-		public override bool? CanHitNPC(NPC target)
-		{
-			return target.whoAmI == TargetWhoAmI;
-		}
+		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetWhoAmI;
 
-		public override void OnSpawn(IEntitySource source)
-		{
-			LightningSystem.projectiles.Add(this);
-
-			startPos = Projectile.Center;
-			Projectile.netUpdate = true;
-
-			delay = 10 * Main.rand.Next(7);
-		}
-
-		public override void OnKill(int timeLeft)
-		{
-			LightningSystem.projectiles.Remove(this);
-		}
+		public override void OnKill(int timeLeft) => LightningSystem.projectiles.Remove(this);
 
 		public override void AI()
 		{
-			if (delay > 0)
+			if (Delay > 0)
 			{
-				delay--;
+				Delay--;
 				Projectile.timeLeft = 40;
 			}
 
-			if (!Main.dedServ)
+			if (!Initialized)
 			{
-				if (_trails == null)
+				LightningSystem.projectiles.Add(this);
+
+				startPos = Projectile.Center;
+				Projectile.netUpdate = true;
+
+				Delay = 10 * Main.rand.Next(7);
+
+				if (!Main.dedServ && _trails == null)
 					CreateTrail();
 
+				Initialized = true;
+			}
+
+			if (!Main.dedServ && _trails is not null)
+			{
 				foreach (VertexTrail trail in _trails)
 					trail.Update();
 			}
@@ -190,30 +192,37 @@ public class ShockGlyph : GlyphItem
 			Color color = Color.Yellow * 0.66f;
 
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
-			if (_dying)
+
+			if (Invalid)
 				progress = Projectile.timeLeft / 200f;
 
 			Lighting.AddLight(Projectile.Center, color.R / 255f * progress, color.G / 255f * progress, color.B / 255f * progress);
 
-			if (!_dying)
+			if (!Invalid && !Main.dedServ)
 			{
 				if (Progress > 0.25f)
 				{
 					if (Main.rand.NextBool(25))
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f),
-								Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+					{
+						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f);
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+					}
 
 					if (Main.rand.NextBool(25))
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f),
-								Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+					{
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
+						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f);
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+					}
 				}
 
 				Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2CircularEdge(11f, 11f) * MathHelper.Lerp(0.4f, 1f, 1f - Progress);
 			}
 
-			if (Projectile.timeLeft == 1 && !_dying)
+			if (Projectile.timeLeft == 1 && !Invalid && Main.myPlayer == Projectile.owner)
 			{
-				_dying = true;
+				Invalid = true;
 
 				Projectile.timeLeft = 200;
 				Projectile.Center = Main.npc[TargetWhoAmI].Center;
@@ -222,8 +231,10 @@ public class ShockGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
+			if (Main.dedServ) 
+				return;
 
+			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
 			ColoredCombatText.AddCombatText(idx, Color.LightCyan, Color.Cyan);
 
 			for (int i = 0; i < 2; i++)
@@ -247,10 +258,7 @@ public class ShockGlyph : GlyphItem
 				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
 			}
 
-			static void DecelerateAction(Particle p)
-			{
-				p.Velocity *= 0.9f;
-			}
+			static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 		}
 
 		private void CreateTrail()
@@ -271,7 +279,7 @@ public class ShockGlyph : GlyphItem
 			var tex = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
-			if (_dying)
+			if (Invalid)
 				progress = Projectile.timeLeft / 200f;
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow with { A = 0 } * 0.1f * progress, 0, tex.Size() / 2, 0.3f, SpriteEffects.None, 0);
@@ -291,7 +299,7 @@ public class ShockGlyph : GlyphItem
 				foreach (VertexTrail trail in _trails)
 				{
 					trail.Opacity = EaseFunction.EaseCircularInOut.Ease(Progress);
-					if (_dying)
+					if (Invalid)
 						trail.Opacity = Projectile.timeLeft / 200f;
 
 					trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
@@ -383,7 +391,8 @@ public class ShockGlyph : GlyphItem
 
 	// Summon weapons cannot crit
 	// Zealous is a crit-chance only reforge so can be used to check if a weapon can crit (I think)
-	public override bool CanApplyGlyph(Item item) => base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && item.CanApplyPrefix(PrefixID.Zealous);
+	public override bool CanApplyGlyph(Item item) 
+		=> base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && item.CanApplyPrefix(PrefixID.Zealous);
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
