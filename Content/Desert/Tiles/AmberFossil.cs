@@ -77,6 +77,20 @@ public class AmberFossil : EntityTile<FossilEntity>
 		if (CrossMod.Verdant.CheckFind("SnailShellBlockItem", out ModItem snailShell))
 			RandomItem.Add(snailShell.Type, 0.005f);
 
+		if (CrossMod.Spooky.Enabled)
+		{
+			AddModItem(CrossMod.Spooky, "FlySmallItem", 1);
+			AddModItem(CrossMod.Spooky, "InchwormGreenItem", 0.33f);
+			AddModItem(CrossMod.Spooky, "InchwormOrangeItem", 0.33f);
+			AddModItem(CrossMod.Spooky, "InchwormBlackItem", 0.33f);
+		}
+
+		static void AddModItem(CrossMod.ModEntry entry, string itemName, float weight)
+		{
+			if (entry.CheckFind(itemName, out ModItem item))
+				RandomItem.Add(item.Type, weight);
+		}
+
 		#endregion
 	}
 
@@ -191,7 +205,7 @@ public class FossilEntity : ModTileEntity
 			if (Main.netMode == NetmodeID.Server) //Relay to other clients
 				new FossilData(x, y, itemType).Send(ignoreClient: whoAmI);
 
-			((FossilEntity)TileEntity.ByID[ModContent.GetInstance<FossilEntity>().Place(x, y)]).itemType = itemType;
+			((FossilEntity)ByID[ModContent.GetInstance<FossilEntity>().Place(x, y)]).itemType = itemType;
 		}
 
 		public override void OnSend(ModPacket modPacket)
