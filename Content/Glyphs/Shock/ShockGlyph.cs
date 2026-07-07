@@ -17,6 +17,10 @@ using SpiritReforged.Common.CombatTextCommon;
 using System.Runtime.CompilerServices;
 using static System.Net.Mime.MediaTypeNames;
 using Terraria.ModLoader.IO;
+using Terraria.DataStructures;
+using Terraria.Graphics.Shaders;
+using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Content.Glyphs.Dazzling;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -356,6 +360,14 @@ public class ShockGlyph : GlyphItem
 		Volume = 0.5f
 	};
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new ShockGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 28;
@@ -415,6 +427,27 @@ public class ShockGlyph : GlyphItem
 		base.DrawInWorld(item, spriteBatch, parameters);
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+			DrawData item = input;
+			item.position += offset;
+			item.color = Color.CornflowerBlue.Additive() * 0.1f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	// Summon weapons cannot crit
 	// Zealous is a crit-chance only reforge so can be used to check if a weapon can crit (I think)
 	public override bool CanApplyGlyph(Item item) 
@@ -451,6 +484,36 @@ public class ShockGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
+		}
+	}
+
+	public class ShockGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+	{
+		private Effect GetEffect => shader.Value;
+
+		public override void Apply(Entity entity, DrawData? drawData = null)
+		{
+			if (!drawData.HasValue)
+				return;
+
+			GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+			GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+			GetEffect.Parameters["intensity"].SetValue(MathHelper.Lerp(0.03f, 0.3f, (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.02f))));
+
+			GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+			GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["ElectricNoise"].Value);
+			GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size() / 2);
+
+			float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.03f));
+
+			GetEffect.Parameters["uColor1"].SetValue(Color.Cyan.ToVector4() * 0.5f);
+			GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(Color.LightYellow, Color.CornflowerBlue, cos).ToVector4() * 0.5f);
+			GetEffect.Parameters["uColor3"].SetValue(Color.Yellow.Additive().ToVector4());
+
+			GetEffect.Parameters["baseDepth"].SetValue(4f);
+			GetEffect.Parameters["scale"].SetValue(1f);
+
+			Apply();
 		}
 	}
 }

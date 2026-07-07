@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.CombatTextCommon;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -10,8 +11,10 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using static SpiritReforged.Content.Glyphs.Shock.ShockGlyph;
 
 namespace SpiritReforged.Content.Glyphs.Void;
 
@@ -19,6 +22,8 @@ public class VoidGlyph : GlyphItem
 {
 	public sealed class VoidParticle : Particle
 	{
+		bool initialized = false;
+
 		public VoidParticle(Vector2 position, Vector2 velocity, Color color, float rotation, float scale, int maxTime)
 		{
 			Position = position;
@@ -27,12 +32,16 @@ public class VoidGlyph : GlyphItem
 			Scale = scale;
 			MaxTime = maxTime;
 			Velocity = velocity;
-
-			SingularityVisualSystem.particles.Add(this);
 		}
 
 		public override void Update()
 		{
+			if (!initialized)
+			{
+				SingularityVisualSystem.particles.Add(this);
+				initialized = true;
+			}
+
 			Velocity *= 0.97f;
 			Rotation += Velocity.Length() * 0.02f;
 		}
@@ -561,7 +570,13 @@ public class VoidGlyph : GlyphItem
 			return false;
 		}
 	}
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
 
+		if (!Main.dedServ)
+			GameShaders.Armor.BindShader(Type, new VoidGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
+	}
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 28;
@@ -626,6 +641,27 @@ public class VoidGlyph : GlyphItem
 			spriteBatch.Draw(whiteTexture, parameters.Position, parameters.Source, Color.Black * 0.5f * sin, parameters.Rotation, parameters.Origin, parameters.Scale, 0, 0);
 	}
 
+	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.color = Color.Black * 0.5f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
+			DrawData item = input;
+			item.position += offset;
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(Type);
+			drawInfo.DrawDataCache.Add(item);
+		}
+	}
+
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.01f));
@@ -663,6 +699,41 @@ public class VoidGlyph : GlyphItem
 				Rotation = 0f,
 				Layer = ParticleLayer.AboveItem
 			});
+		}
+	}
+
+	public class VoidGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
+	{
+		private Effect GetEffect => shader.Value;
+
+		public override void Apply(Entity entity, DrawData? drawData = null)
+		{
+			if (!drawData.HasValue)
+				return;
+
+			GetEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.0025f);
+			GetEffect.Parameters["screenPos"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / new Vector2(Main.screenWidth, Main.screenHeight));
+			GetEffect.Parameters["intensity"].SetValue(0.15f * (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.01f)));
+
+			GetEffect.Parameters["uImage1"].SetValue(AssetLoader.LoadedTextures["swirlNoise2"].Value);
+			GetEffect.Parameters["uImage2"].SetValue(AssetLoader.LoadedTextures["noiseCrystal"].Value);
+			GetEffect.Parameters["itemSize"].SetValue(drawData.Value.texture.Size());
+
+			float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.01f));
+			float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.015f));
+
+			var main = Color.Lerp(new(225, 63, 255), new(166, 63, 255), sin);
+			if (sin > 0.5f)
+				main = Color.Lerp(main, Color.Black, sin);
+
+			GetEffect.Parameters["uColor1"].SetValue(main.ToVector4() * 0.5f);
+			GetEffect.Parameters["uColor2"].SetValue(Color.Lerp(new(255, 63, 230), new(255, 63, 192), cos).ToVector4() * 0.5f);
+			GetEffect.Parameters["uColor3"].SetValue(Color.Black.ToVector4());
+
+			GetEffect.Parameters["baseDepth"].SetValue(4f);
+			GetEffect.Parameters["scale"].SetValue(0.66f);
+
+			Apply();
 		}
 	}
 }
