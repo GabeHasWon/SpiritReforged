@@ -41,7 +41,7 @@ public class LightningSystem : ModSystem
 
 			effect.CurrentTechnique.Passes[0].Apply();
 
-			spriteBatch.Draw(LightningTarget, Vector2.Zero, Color.White);
+			spriteBatch.Draw(LightningTarget, Vector2.Zero, null, Color.White, 0f, Vector2.Zero, 1f, 0f, 0f);
 
 			spriteBatch.End();
 		}

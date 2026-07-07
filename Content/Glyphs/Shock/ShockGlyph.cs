@@ -15,6 +15,8 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
 using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -56,14 +58,24 @@ public class ShockGlyph : GlyphItem
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (hit.Crit && item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && Main.myPlayer == Player.whoAmI)
+			if (hit.Crit && item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && Main.myPlayer == Player.whoAmI) 
+			{
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					new ShockPacket((short)target.whoAmI, (short)Player.whoAmI, damageDone).Send(ignoreClient: Player.whoAmI);
+
 				ChannelLightning(Player, target, damageDone);
+			}			
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (hit.Crit && proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>())
+			if (hit.Crit && proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>() && proj.type != ModContent.ProjectileType<ShockGlyphLightningBolt>() && Main.myPlayer == Player.whoAmI)
+			{
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					new ShockPacket((short)target.whoAmI, (short)Player.whoAmI, damageDone).Send(ignoreClient: Player.whoAmI);
+
 				ChannelLightning(Player, target, damageDone);
+			}
 		}
 
 		public static void ChannelLightning(Player Player, NPC target, int damage)
@@ -73,43 +85,11 @@ public class ShockGlyph : GlyphItem
 			if (closestNPCs.Length <= 0)
 				return;
 
-			// Absolutely no idea if I am doing this right
-			if (Main.netMode == NetmodeID.Server)
-				new ShockPacket((short)target.whoAmI, (short)Player.whoAmI, damage).Send(ignoreClient: Player.whoAmI);
-
 			for (int i = 0; i < closestNPCs.Length; i++)
 			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero,
-					ModContent.ProjectileType<ShockGlyphLightningBolt>(), (int)(damage * 0.35f), 1f, Player.whoAmI, closestNPCs[i].whoAmI);
+					ModContent.ProjectileType<ShockGlyphLightningBolt>(), 5 + (int)(damage * 0.35f), 1f, Player.whoAmI, closestNPCs[i].whoAmI, ai2: i == 0 ? 1 : 0);
 			}
-
-			SoundEngine.PlaySound(ElectricSting, target.Center);
-			SoundEngine.PlaySound(ElectricZap, target.Center);
-
-			ScreenshakeHelper.Shake(target.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
-
-			for (int i = 0; i < 3; i++)
-			{
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
-					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
-
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
-					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
-
-				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
-				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
-
-				pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
-				velocity = Main.rand.NextVector2Circular(4f, 4f);
-
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
-			}
-
-			static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 		}
 	}
 
@@ -130,6 +110,7 @@ public class ShockGlyph : GlyphItem
 		public float Progress => 1f - Projectile.timeLeft / 40f;
 
 		public bool Invalid { get; set; }
+		public bool Dying;
 
 		public Vector2 startPos;
 
@@ -137,7 +118,7 @@ public class ShockGlyph : GlyphItem
 
 		public override void SetDefaults()
 		{
-			Projectile.Size = new Vector2(16);
+			Projectile.Size = new Vector2(64);
 
 			Projectile.DamageType = DamageClass.Generic;
 
@@ -158,10 +139,17 @@ public class ShockGlyph : GlyphItem
 
 		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetWhoAmI;
 
-		public override void OnKill(int timeLeft) => LightningSystem.projectiles.Remove(this);
+		public override void OnKill(int timeLeft) 
+		{
+			Invalid = true;
+			LightningSystem.projectiles.Remove(this);
+		}
+		
 
 		public override void AI()
 		{
+			Main.NewText(Main.npc[TargetWhoAmI]);
+
 			if (Delay > 0)
 			{
 				Delay--;
@@ -170,6 +158,37 @@ public class ShockGlyph : GlyphItem
 
 			if (!Initialized)
 			{
+				if (Projectile.ai[2] == 1 && !Main.dedServ)
+				{
+					SoundEngine.PlaySound(ElectricSting, Projectile.Center);
+					SoundEngine.PlaySound(ElectricZap, Projectile.Center);
+
+					ScreenshakeHelper.Shake(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
+
+					for (int i = 0; i < 3; i++)
+					{
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
+
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
+
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+
+						pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+					}
+
+					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
+				}
+
 				LightningSystem.projectiles.Add(this);
 
 				startPos = Projectile.Center;
@@ -198,7 +217,7 @@ public class ShockGlyph : GlyphItem
 
 			Lighting.AddLight(Projectile.Center, color.R / 255f * progress, color.G / 255f * progress, color.B / 255f * progress);
 
-			if (!Invalid && !Main.dedServ)
+			if (!Dying && !Main.dedServ)
 			{
 				if (Progress > 0.25f)
 				{
@@ -220,22 +239,25 @@ public class ShockGlyph : GlyphItem
 				Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2CircularEdge(11f, 11f) * MathHelper.Lerp(0.4f, 1f, 1f - Progress);
 			}
 
-			if (Projectile.timeLeft == 1 && !Invalid && Main.myPlayer == Projectile.owner)
+			if (Projectile.timeLeft == 1 && !Dying && Main.myPlayer == Projectile.owner)
 			{
-				Invalid = true;
+				Dying = true;
+				Projectile.netUpdate = true;
 
 				Projectile.timeLeft = 200;
-				Projectile.Center = Main.npc[TargetWhoAmI].Center;
+				Projectile.Center = Main.npc[TargetWhoAmI].Center + Main.npc[TargetWhoAmI].velocity;
 			}
 		}
 
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HideCombatText();
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Main.dedServ) 
-				return;
-
 			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
 			ColoredCombatText.AddCombatText(idx, Color.LightCyan, Color.Cyan);
+			
+			if (Main.dedServ)
+				return;
 
 			for (int i = 0; i < 2; i++)
 			{
@@ -279,7 +301,8 @@ public class ShockGlyph : GlyphItem
 			var tex = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
-			if (Invalid)
+
+			if (Dying)
 				progress = Projectile.timeLeft / 200f;
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow with { A = 0 } * 0.1f * progress, 0, tex.Size() / 2, 0.3f, SpriteEffects.None, 0);
@@ -299,12 +322,15 @@ public class ShockGlyph : GlyphItem
 				foreach (VertexTrail trail in _trails)
 				{
 					trail.Opacity = EaseFunction.EaseCircularInOut.Ease(Progress);
-					if (Invalid)
+					if (Dying)
 						trail.Opacity = Projectile.timeLeft / 200f;
 
 					trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
 				}
 		}
+
+		public override void SendExtraAI(BinaryWriter writer) => writer.Write(Dying);
+		public override void ReceiveExtraAI(BinaryReader reader) => Dying = reader.ReadBoolean();
 	}
 
 	public sealed class ShockGlobalItem : GlobalItem
@@ -392,7 +418,15 @@ public class ShockGlyph : GlyphItem
 	// Summon weapons cannot crit
 	// Zealous is a crit-chance only reforge so can be used to check if a weapon can crit (I think)
 	public override bool CanApplyGlyph(Item item) 
-		=> base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && item.CanApplyPrefix(PrefixID.Zealous);
+	{
+		// We need to check the sample item because if an item has a glyph applied no prefixes can be applied, thus wrongly returning false here
+		Item sampleItem = ContentSamples.ItemsByType[item.type];
+
+		bool prefix = sampleItem.CanApplyPrefix(PrefixID.Zealous);
+
+		return base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && prefix;
+	}
+	
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
