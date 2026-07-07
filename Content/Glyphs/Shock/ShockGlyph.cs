@@ -152,8 +152,6 @@ public class ShockGlyph : GlyphItem
 
 		public override void AI()
 		{
-			Main.NewText(Main.npc[TargetWhoAmI]);
-
 			if (Delay > 0)
 			{
 				Delay--;
@@ -216,7 +214,7 @@ public class ShockGlyph : GlyphItem
 
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
 
-			if (Invalid)
+			if (Dying)
 				progress = Projectile.timeLeft / 200f;
 
 			Lighting.AddLight(Projectile.Center, color.R / 255f * progress, color.G / 255f * progress, color.B / 255f * progress);
@@ -258,7 +256,7 @@ public class ShockGlyph : GlyphItem
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
-			ColoredCombatText.AddCombatText(idx, Color.LightCyan, Color.Cyan);
+			ColoredCombatText.AddCombatText(idx, Color.Cyan, Color.DarkCyan);
 			
 			if (Main.dedServ)
 				return;
@@ -295,8 +293,8 @@ public class ShockGlyph : GlyphItem
 
 			_trails =
 			[
-				new VertexTrail(new GradientTrail(new Color(255, 240, 65), new Color(0, 255, 255), EaseFunction.EaseQuarticInOut), tCap, tPos, tShader, 30, 360, 1),
-				new VertexTrail(new GradientTrail(Color.White, Color.Transparent, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 25, 360, 1),
+				new VertexTrail(new GradientTrail(new Color(255, 240, 65, 0), new Color(0, 255, 255, 0), EaseFunction.EaseQuarticInOut), tCap, tPos, tShader, 30, 360, 1),
+				new VertexTrail(new GradientTrail(Color.White.Additive(), Color.Transparent, EaseFunction.EaseQuarticOut), tCap, tPos, tShader, 25, 360, 1),
 			];
 		}
 

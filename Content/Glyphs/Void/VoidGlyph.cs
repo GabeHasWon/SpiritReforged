@@ -14,7 +14,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
-using static SpiritReforged.Content.Glyphs.Shock.ShockGlyph;
 
 namespace SpiritReforged.Content.Glyphs.Void;
 
@@ -258,6 +257,16 @@ public class VoidGlyph : GlyphItem
 		}
 	}
 
+	public static readonly SoundStyle VoidHit1 = new("SpiritReforged/Assets/SFX/Glyph/VoidGlyphExplode1")
+	{
+		Volume = 1.25f
+	};
+
+	public static readonly SoundStyle VoidHit2 = new("SpiritReforged/Assets/SFX/Glyph/VoidGlyphExplode2")
+	{
+		Volume = 1.25f
+	};
+
 	public sealed class CollapseProjectile : ModProjectile
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
@@ -434,7 +443,7 @@ public class VoidGlyph : GlyphItem
 
 			ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
 
-			SoundEngine.PlaySound(Wisp.Death with { Volume = 2f, Pitch = -0.5f }, target.Center);
+			SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, target.Center);
 			//pos = target.Center;
 		}
 
@@ -643,6 +652,15 @@ public class VoidGlyph : GlyphItem
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
+		for (int j = 0; j < 4; j++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 4;
+			DrawData item = input;
+			item.position += offset;
+			item.color = Color.Violet * 0.25f;
+			drawInfo.DrawDataCache.Add(item);
+		}
+
 		for (int j = 0; j < 4; j++)
 		{
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;

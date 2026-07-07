@@ -322,6 +322,25 @@ public class SanguineGlyph : GlyphItem
 			ParticleHandler.SpawnParticle(new StickyBloodParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), Main.rand.NextFloat(0.02f, 0.12f)));
 		}
 	}
+
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Dust.NewDustPerfect(position + normalized * item.width, DustID.Blood, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 50, default, 1.75f).noGravity = true;
+
+			if (Main.rand.NextBool())
+				Dust.NewDustPerfect(position + normalized * item.width, DustID.Blood, normalized.SafeNormalize(Vector2.One).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 35, default, 0.85f);
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Blood, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
+	}
 }
 
 public class SanguineGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
