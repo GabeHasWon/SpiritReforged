@@ -239,14 +239,12 @@ public class StormGlyph : GlyphItem
 					CreateTrail(projectile);
 					_spawnedTrails = true;
 				}
+				
+				if (Main.rand.NextBool(4 + 2 * projectile.extraUpdates))
+					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Smoke, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 120 + Main.rand.Next(30), default, Main.rand.NextFloat(1f, 1.7f)).noGravity = true;
 
-				if (projectile.timeLeft % 3 == 0)
-				{
-					Vector2 pos = projectile.Center;
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.White * 0.15f, 0.03f, EaseFunction.EaseQuadOut, 60, false));
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, projectile.velocity * Main.rand.NextFloat(0.3f), Color.LightCyan * 0.25f, 0.02f, EaseFunction.EaseQuadOut, 60, false));
-				}
+				if (Main.rand.NextBool(7 + 6 * projectile.extraUpdates))
+					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Cloud, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 20 + Main.rand.Next(30), default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
 
 				if (doWindBurst)
 				{
@@ -393,10 +391,7 @@ public class StormGlyph : GlyphItem
 
 		private static void WindBurstEffects(Projectile projectile)
 		{
-			SoundEngine.PlaySound(StormGlyphPlayer.Slash, projectile.Center);
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 1f, PitchVariance = 0.1f }, projectile.Center);
-			SoundEngine.PlaySound(SoundID.DD2_SonicBoomBladeSlash with { Volume = 1f, PitchVariance = 0.2f }, projectile.Center);
-			SoundEngine.PlaySound(SoundID.DoubleJump with { Volume = 2f, PitchVariance = 0.2f, Pitch = -0.2f }, projectile.Center);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Glyph/ZephyrGlyphWindBurst"), projectile.Center);
 
 			for (int i = 0; i < 35; i++)
 			{
