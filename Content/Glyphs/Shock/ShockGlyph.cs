@@ -21,6 +21,8 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Content.Glyphs.Dazzling;
+using static SpiritReforged.Content.Glyphs.Void.VoidGlyph;
+using SpiritReforged.Content.Dusts;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -186,6 +188,13 @@ public class ShockGlyph : GlyphItem
 
 						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
 						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+					}
+
+					for (int i = 0; i < 5; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<YellowElectricDust>(), Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
+
+						Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
 					}
 
 					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
@@ -483,6 +492,25 @@ public class ShockGlyph : GlyphItem
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 		}
+	}
+
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+
+		for (int i = 0; i < 3; i++)
+		{
+			Dust.NewDustPerfect(position + normalized * item.width, Main.rand.NextBool() ? DustID.Electric : ModContent.DustType<YellowElectricDust>(), normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(9f), 0, default, 0.5f).noGravity = true;
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
+			ParticleHandler.SpawnParticle(new LightningBoltParticle(projectile.Center, projectile.velocity * 0.4f, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.7f), 20 + Main.rand.Next(10, 30)));
+
+		if (Main.rand.NextBool(12 + 10 * projectile.extraUpdates))
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextBool() ? DustID.Electric : ModContent.DustType<YellowElectricDust>(), -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(12f), 0, default, Main.rand.NextFloat(0.4f, 0.6f)).noGravity = true;
 	}
 
 	public class ShockGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)

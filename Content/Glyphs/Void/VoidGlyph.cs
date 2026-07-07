@@ -720,6 +720,31 @@ public class VoidGlyph : GlyphItem
 		}
 	}
 
+	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+		Vector2 pos = position + normalized * item.width;
+
+		for (int i = 0; i < 2; i++)
+		{
+			Vector2 vel = normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f);
+
+			ParticleHandler.SpawnParticle(new ImpactLine(pos, vel * 1.5f, Color.Purple * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 40, 0.95f));
+
+			if (Main.rand.NextBool(3))
+				ParticleHandler.SpawnParticle(new VoidParticle(pos, vel, Color.Purple.Additive(), 0f, 0.2f, 65));
+		}
+	}
+
+	public override void UpdateGlyphProjectile(Projectile projectile)
+	{
+		if (Main.rand.NextBool(45 + 40 * projectile.extraUpdates))
+			ParticleHandler.SpawnParticle(new VoidParticle(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(1.5f), Color.Purple.Additive(), 0f, 0.3f, 65));
+
+		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
+			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Granite, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 150 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
+	}
+
 	public class VoidGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 	{
 		private Effect GetEffect => shader.Value;
