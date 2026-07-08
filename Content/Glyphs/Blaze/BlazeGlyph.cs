@@ -43,8 +43,8 @@ public class BlazeGlyph : GlyphItem
 					ParticleHandler.SpawnParticle(particle);
 				}
 
-				if (Main.rand.NextBool())
-					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
+				if (Main.rand.NextBool(6))
+					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
 					{
 						Layer = ParticleLayer.BelowNPC
 					});
@@ -62,12 +62,12 @@ public class BlazeGlyph : GlyphItem
 
 		public override void UpdateBadLifeRegen()
 		{
-			if (hasDebuff)
+			if (hasDebuff && Player.statLife > 5)
 			{
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
 
-				Player.lifeRegen -= 16;
+				Player.lifeRegen -= (int)Math.Max(6, Player.statLife * 0.1f);
 			}
 		}
 
@@ -86,7 +86,7 @@ public class BlazeGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				target.AddBuff(BuffID.OnFire3, 90);
+				target.AddBuff(BuffID.OnFire, 90);
 
 				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
@@ -103,7 +103,7 @@ public class BlazeGlyph : GlyphItem
 				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
-				target.AddBuff(BuffID.OnFire3, 90);
+				target.AddBuff(BuffID.OnFire, 90);
 
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
 				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());

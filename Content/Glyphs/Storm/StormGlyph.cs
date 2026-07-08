@@ -241,10 +241,10 @@ public class StormGlyph : GlyphItem
 				}
 				
 				if (Main.rand.NextBool(4 + 2 * projectile.extraUpdates))
-					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Smoke, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 120 + Main.rand.Next(30), default, Main.rand.NextFloat(1f, 1.7f)).noGravity = true;
+					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Smoke, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 180 + Main.rand.Next(30), default, Main.rand.NextFloat(1f, 1.7f)).noGravity = true;
 
 				if (Main.rand.NextBool(7 + 6 * projectile.extraUpdates))
-					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Cloud, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 20 + Main.rand.Next(30), default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
+					Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Cloud, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 120 + Main.rand.Next(50), default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
 
 				if (doWindBurst)
 				{

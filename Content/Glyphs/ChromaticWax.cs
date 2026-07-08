@@ -169,8 +169,16 @@ public class GlyphGlobalProjectile : GlobalProjectile
 	public override void AI(Projectile projectile)
 	{
 		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
-			(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
-			
+		{
+			// Bee gun is just so many projectiles
+			if (projectile.type == ProjectileID.Bee || projectile.type == ProjectileID.GiantBee)
+			{
+				if (Main.rand.NextBool(10))
+					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
+			}	
+			else
+				(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
+		}
 	}
 
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => binaryWriter.Write(glyph.ItemType);
