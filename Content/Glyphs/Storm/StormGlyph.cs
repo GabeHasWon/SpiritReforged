@@ -145,15 +145,14 @@ public class StormGlyph : GlyphItem
 
 		public int cooldown;
 
-		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+		/*public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			if (Active)
 			{
-				// projectiles get an extra update when they do the wind burst (double speed)
 				if (cooldown > 0)
 					velocity *= 1.5f;
 			}
-		}
+		}*/
 
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
@@ -194,6 +193,7 @@ public class StormGlyph : GlyphItem
 	public sealed class StormGlyphGlobalProjectile : GlobalProjectile
 	{
 		public const int CooldownMax = 60 * 5;
+		public const int HighSpeedTime = 60 * 2;
 
 		public override bool InstancePerEntity => true;
 
@@ -203,13 +203,19 @@ public class StormGlyph : GlyphItem
 		public bool doVisuals;
 		public bool doWindBurst;
 
+		public float speedBoost = 0;
+
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
+			//recursion fix
+			if (projectile.type == ModContent.ProjectileType<WindBurstProjectile>())
+				return;
+
 			if (!SpiritSets.IsHeldProjectile[projectile.type] && GlyphGlobalProjectile.TryGetGlyphFromContext(source, out GlyphType glyphType) && glyphType.ItemType == ModContent.ItemType<StormGlyph>())
 			{
 				ApplyStormEffects(projectile);
 
-				projectile.velocity *= 1.2f;
+				speedBoost += 0.33f;
 				projectile.netUpdate = true;
 			}
 		}
@@ -221,13 +227,23 @@ public class StormGlyph : GlyphItem
 
 			if (stormGlyphPlayer.cooldown is <= 0 or CooldownMax) //Allow projectiles to continue receiving the bonus if the cooldown was just applied this frame
 			{
-				projectile.extraUpdates++;
+				speedBoost += 0.67f;
 				stormGlyphPlayer.cooldown = CooldownMax;
 
 				doWindBurst = true;
 			}
 
 			doVisuals = true;
+		}
+
+		public override bool PreAI(Projectile projectile)
+		{
+			if(speedBoost > 0)
+				projectile.GetGlobalProjectile<SpeedModifierProjectile>().speed += EaseFunction.EaseQuadOut.Ease(1 * speedBoost) * (1 + projectile.extraUpdates);
+
+			speedBoost = Math.Max(speedBoost - (1f / (HighSpeedTime * (1 + projectile.extraUpdates))), 0);
+
+			return base.PreAI(projectile);
 		}
 
 		public override void AI(Projectile projectile)
@@ -295,7 +311,7 @@ public class StormGlyph : GlyphItem
 				if (doWindBurst)
 				{
 					doWindBurst = false;
-					projectile.extraUpdates--;
+					speedBoost = 0;
 				}
 			}
 		}
@@ -315,6 +331,7 @@ public class StormGlyph : GlyphItem
 				WindBurstEffects(projectile);
 
 				doWindBurst = false;
+				speedBoost /= 2;
 			}
 
 			return base.OnTileCollide(projectile, oldVelocity);
@@ -358,6 +375,7 @@ public class StormGlyph : GlyphItem
 				WindBurstEffects(projectile);
 
 				doWindBurst = false;
+				speedBoost /= 2;
 			}
 		}
 
@@ -376,6 +394,7 @@ public class StormGlyph : GlyphItem
 		{
 			bitWriter.WriteBit(doWindBurst);
 			bitWriter.WriteBit(doVisuals);
+			binaryWriter.Write((Half)speedBoost);
 		}
 
 		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
@@ -384,6 +403,7 @@ public class StormGlyph : GlyphItem
 
 			doWindBurst = bitReader.ReadBit();
 			doVisuals = bitReader.ReadBit();
+			speedBoost = (float)binaryReader.ReadHalf();
 
 			if (!didWindBurst && doWindBurst)
 				ApplyStormEffects(projectile); //Sync
