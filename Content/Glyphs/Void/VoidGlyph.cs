@@ -10,6 +10,7 @@ using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -86,17 +87,24 @@ public class VoidGlyph : GlyphItem
 
 				var projectile = singularity.Projectile;
 
-				float progress = EaseFunction.EaseQuinticInOut.Ease(1f - projectile.timeLeft / 60f);
-				float intensity = singularity._stacksOnDeath / 10f;
+				float progress = singularity.Progress;
+				float intensity = singularity.Intensity;
 
 				// Shader uses the G channel for the progress of the black hole.
 				// Shader uses the B channel for the stacks of the black hole (increases singularity intensity)
 				var dataColor = new Color(1f, progress, intensity, 1f);
 
 				float sizeInterpolant = progress < 0.5f ? progress / 0.5f : 1f - (progress - 0.5f) / 0.5f;
-				float visualScale = (1.2f + intensity * 0.2f) * sizeInterpolant;
+				float visualScale = (1.3f + singularity._stacksOnDeath / (float)VoidNPC.MAX_STACKS) * sizeInterpolant;
 
-				spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, visualScale, 0f, 0f);
+				Vector2 actualScale = new Vector2(visualScale);
+
+				if (singularity._pulseTimer > 0)
+				{
+					actualScale = new Vector2(visualScale * MathHelper.Lerp(1.0f, 1.2f, singularity._pulseTimer / 60f), visualScale * MathHelper.Lerp(1.0f, 0.85f, singularity._pulseTimer / 60f));
+				}
+
+				spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, dataColor, 0f, bloom.Size() / 2f, actualScale, 0f, 0f);
 			}
 
 			foreach (VoidParticle particle in particles)
@@ -122,6 +130,7 @@ public class VoidGlyph : GlyphItem
 						Filters.Scene.Activate("SpiritReforged:VoidGlyphSingularity");
 
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(SingularityTarget);
+					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseImage(AssetLoader.LoadedTextures["swirlNoise"], 1);
 					Filters.Scene["SpiritReforged:VoidGlyphSingularity"].GetShader().UseIntensity(2f * Main.GameViewMatrix.Zoom.X);
 				}
 				else if (Filters.Scene["SpiritReforged:VoidGlyphSingularity"].IsActive())
@@ -148,64 +157,22 @@ public class VoidGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.TryGetGlobalNPC(out VoidNPC voidNPC) && voidNPC.stacks > 0)
-				ProcSingularity(target, damageDone); //Allow any damage source to contribute to the singularity if it already exists
+			//if (target.TryGetGlobalNPC(out VoidNPC voidNPC) && voidNPC.stacks > 0)
+			//	ProcSingularity(target, damageDone); //Allow any damage source to contribute to the singularity if it already exists
 		}
 
 		public void ProcSingularity(NPC target, int damageDone)
 		{
-			if (!Main.rand.NextBool(5))
-				return;
+			//if (!Main.rand.NextBool(5))
+			//	return;
 
 			VoidNPC.AddStack(Player.whoAmI, target.whoAmI, damageDone / 2);
-
-			for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
-			{
-				Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
-				float rotation = Main.rand.NextFloat(6.28f);
-
-				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
-				{
-					Rotation = rotation
-				});
-
-				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
-				{
-					Rotation = rotation
-				});
-
-				static void DecelerateAction(Particle p)
-				{
-					p.Velocity *= 0.95f;
-					p.Rotation += p.Velocity.Length() * 0.1f;
-				}
-
-				velocity = Main.rand.NextVector2Circular(4f, 4f);
-				float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-				bool rotDir = Main.rand.NextBool();
-
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
-
-				static void SpinAction(Particle p)
-				{
-					p.Velocity *= 0.97f;
-					p.Velocity = p.Velocity.RotatedBy(0.08f);
-				}
-
-				static void SpinAction_2(Particle p)
-				{
-					p.Velocity *= 0.97f;
-					p.Velocity = p.Velocity.RotatedBy(-0.08f);
-				}
-			}
 		}
 	}
 
 	public sealed class VoidNPC : GlobalNPC
 	{
-		public const int COOLDOWN_TIME = 120;
+		public const int COOLDOWN_TIME = 720;
 
 		public override bool InstancePerEntity => true;
 
@@ -226,28 +193,76 @@ public class VoidGlyph : GlyphItem
 			if (!target.TryGetGlobalNPC(out VoidNPC voidNPC) || voidNPC.cooldown > 0 || voidNPC.stacks >= MAX_STACKS)
 				return;
 
-			if (voidNPC.stacks <= 0)
-			{
-				var p = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
-				p.timeLeft = COLLAPSE_TIME;
-			}
-			else if (voidNPC.stacks + stacksToAdd < MAX_STACKS)
-			{
-				Projectile p = Main.projectile.Where(p => p.ModProjectile is CollapseProjectile && (p.ModProjectile as CollapseProjectile).TargetIndex == targetIndex).FirstOrDefault();
+			Projectile p = Main.projectile.Where(p => p.ModProjectile is CollapseProjectile && (p.ModProjectile as CollapseProjectile).TargetIndex == targetIndex && !(p.ModProjectile as CollapseProjectile)._dying).FirstOrDefault();
 
-				if (p != default)
-					(p.ModProjectile as CollapseProjectile).rotationTimer = 60;
+			if (voidNPC.stacks <= 0 && player.ownedProjectileCounts[ModContent.ProjectileType<CollapseProjectile>()] <= 0)
+			{
+				var singularity = Projectile.NewProjectileDirect(player.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<CollapseProjectile>(), 0, 0, playerIndex, targetIndex);
+				singularity.timeLeft = COLLAPSE_TIME;
+
+				p = singularity;
 			}
 
-			voidNPC.stacks += stacksToAdd;
+			if (p != default)
+			{
+				if (voidNPC.stacks + stacksToAdd < MAX_STACKS)
+				{
+					if (p != default)
+						(p.ModProjectile as CollapseProjectile).rotationTimer = 60;
+				}
 
-			if (voidNPC.stacks > MAX_STACKS)
-				voidNPC.stacks = MAX_STACKS;
+				voidNPC.stacks += 1;
 
-			voidNPC.collapseDamage += damageDealt;
+				if (voidNPC.stacks > MAX_STACKS)
+					voidNPC.stacks = MAX_STACKS;
 
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * voidNPC.stacks }, target.Center);
-			SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * voidNPC.stacks }, target.Center);
+				voidNPC.collapseDamage += damageDealt;
+
+				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * voidNPC.stacks }, target.Center);
+				SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * voidNPC.stacks }, target.Center);
+
+				for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
+				{
+					Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
+					float rotation = Main.rand.NextFloat(6.28f);
+
+					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+					{
+						Rotation = rotation
+					});
+
+					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
+					{
+						Rotation = rotation
+					});
+
+					static void DecelerateAction(Particle p)
+					{
+						p.Velocity *= 0.95f;
+						p.Rotation += p.Velocity.Length() * 0.1f;
+					}
+
+					velocity = Main.rand.NextVector2Circular(4f, 4f);
+					float scale = Main.rand.NextFloat(0.1f, 0.3f);
+
+					bool rotDir = Main.rand.NextBool();
+
+					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
+
+					static void SpinAction(Particle p)
+					{
+						p.Velocity *= 0.97f;
+						p.Velocity = p.Velocity.RotatedBy(0.08f);
+					}
+
+					static void SpinAction_2(Particle p)
+					{
+						p.Velocity *= 0.97f;
+						p.Velocity = p.Velocity.RotatedBy(-0.08f);
+					}
+				}
+			}
 		}
 
 		public override void ResetEffects(NPC npc)
@@ -271,6 +286,8 @@ public class VoidGlyph : GlyphItem
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
+		public int _pulseTimer;
+
 		public bool _dying;
 		public int _stacksOnDeath;
 
@@ -280,6 +297,17 @@ public class VoidGlyph : GlyphItem
 		public Vector2 pos;
 
 		public int TargetIndex => (int)Projectile.ai[0];
+		public float Progress
+		{
+			get => Projectile.ai[1];
+			set => Projectile.ai[1] = value;
+		}
+		public float Intensity
+		{
+			get => Projectile.ai[2];
+			set => Projectile.ai[2] = value;
+		}
+
 		public NPC Target => Main.npc[TargetIndex];
 
 		public override void Load()
@@ -300,19 +328,22 @@ public class VoidGlyph : GlyphItem
 			Projectile.DamageType = DamageClass.Generic;
 			Projectile.friendly = true;
 
-			Projectile.penetrate = 1;
+			Projectile.penetrate = -1;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
 
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = -1;
 		}
 
-		public override bool? CanDamage() => _dying && Projectile.timeLeft < 30;
+		public override bool? CanDamage() => false; // _dying && Projectile.timeLeft < 30;
 
 		public override bool? CanHitNPC(NPC target) => target.active ? target.whoAmI == TargetIndex : null;
 
 		public override void AI()
 		{
+			if (_pulseTimer > 0)
+				_pulseTimer--;
+
 			if (rotationTimer > 0)
 			{
 				starRotation += rotationTimer * 0.001f;
@@ -332,67 +363,90 @@ public class VoidGlyph : GlyphItem
 
 			if (_dying)
 			{
-				if (Projectile.timeLeft == 30)
-					for (int i = 0; i < 4; i++)
-					{
-						Vector2 velocity = Main.rand.NextVector2Circular(12f, 2f);
+				if (_pulseTimer > 0)
+					Projectile.Center += Main.rand.NextVector2Circular(1.5f, 1.5f) * _pulseTimer / 60f;
 
-						float rotation = Main.rand.NextFloat(6.28f);
-
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
-						{
-							Rotation = rotation
-						});
-
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
-						{
-							Rotation = rotation
-						});
-
-						velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
-
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
-
-						ParticleHandler.SpawnParticle(new VoidParticle(Projectile.Center, Main.rand.NextVector2CircularEdge(7f, 2f) * Main.rand.NextFloat(0.75f, 1f), Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.2f, 0.25f), 45));
-
-						static void DecelerateAction(Particle p)
-						{
-							p.Velocity *= 0.95f;
-
-							p.Rotation += p.Velocity.Length() * 0.1f;
-						}
-					}
-
-				if (Projectile.timeLeft > 30)
+				if (Projectile.timeLeft > 360)
 				{
-					float progressTillHit = (Projectile.timeLeft - 30f) / 30f;
-
-					if (Main.rand.NextBool(5))
+					Progress = MathHelper.Lerp(0, 0.5f, EaseBuilder.EaseQuinticInOut.Ease(1f - (Projectile.timeLeft - 360) / 60f));
+					Intensity = 1f - (Projectile.timeLeft - 360) / 60f;
+				}
+				else
+				{
+					if (Main.rand.NextBool())
 					{
-						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(30f, 30f) * progressTillHit;
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2CircularEdge(150f, 150f) * Intensity;
+						Vector2 velocity = pos.DirectionTo(Projectile.Center) * 3f;
 
-						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-						float scale = Main.rand.NextFloat(0.1f, 0.3f);
-
-						bool rotDir = Main.rand.NextBool();
-
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
+						Dust.NewDustPerfect(pos, DustID.Granite, velocity, 230, default, Main.rand.NextFloat(1f, 1.5f)).noGravity = true;
 					}
 
-					static void SpinAction(Particle p)
+					if (Main.rand.NextBool(15))
 					{
-						p.Velocity *= 0.97f;
-						p.Velocity = p.Velocity.RotatedBy(0.08f);
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2CircularEdge(150f, 150f) * Intensity;
+						Vector2 velocity = pos.DirectionTo(Projectile.Center) * 3f;
+
+						ParticleHandler.SpawnParticle(new VoidParticle(pos, velocity, Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.25f, 0.4f) * Intensity, 45));
 					}
 
-					static void SpinAction_2(Particle p)
+					if (Projectile.timeLeft % 60 == 0)
 					{
-						p.Velocity *= 0.97f;
-						p.Velocity = p.Velocity.RotatedBy(-0.08f);
+						Intensity -= 0.1f;
+						Progress -= 0.05f;
+						_pulseTimer = 60;
+
+						for (int i = 0; i < 4; i++)
+						{
+							Vector2 velocity = Main.rand.NextVector2Circular(12f, 2f);
+							float rotation = Main.rand.NextFloat(6.28f);
+							ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+							{
+								Rotation = rotation
+							});
+							ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
+							{
+								Rotation = rotation
+							});
+
+							velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
+
+							ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
+							ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
+
+							static void DecelerateAction(Particle p)
+							{
+								p.Velocity *= 0.95f;
+
+								p.Rotation += p.Velocity.Length() * 0.1f;
+							}
+						}
+
+						SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, Projectile.Center);
+					}
+
+					if (Projectile.timeLeft < 60f)
+					{
+						Progress = MathHelper.Lerp(0, 0.2f, EaseBuilder.EaseQuinticOut.Ease(Projectile.timeLeft / 60f));
+						Intensity = MathHelper.Lerp(0, 0.4f, EaseBuilder.EaseQuinticOut.Ease(Projectile.timeLeft / 60f));
 					}
 				}
+
+				NPC closest = Main.npc.Where(n => n.CanBeChasedBy() && n.DistanceSQ(Projectile.Center) < 100000f).FirstOrDefault();
+
+				if (closest != default)
+				{
+					if (Projectile.Center != closest.Center)
+					{
+						Vector2 direction = Projectile.DirectionTo(closest.Center);
+
+						direction *= 1.25f;
+						Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.15f);
+					}
+				}
+				else
+					Projectile.velocity *= 0.97f;
+
+				return;
 			}
 
 			int stacks = gnpc.stacks;
@@ -400,7 +454,7 @@ public class VoidGlyph : GlyphItem
 			if (_dying)
 				stacks = _stacksOnDeath;
 
-			Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * (stacks / 10f));
+			Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * (stacks / (float)VoidNPC.MAX_STACKS));
 
 			if (pos != Vector2.Zero)
 				Projectile.Center = pos;
@@ -414,7 +468,8 @@ public class VoidGlyph : GlyphItem
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
 
 				_dying = true;
-				Projectile.timeLeft = 60;
+				Projectile.timeLeft = 420;
+				Projectile.velocity = Target.velocity * 0.1f;
 
 				_stacksOnDeath = gnpc.stacks;
 
@@ -430,9 +485,44 @@ public class VoidGlyph : GlyphItem
 				pos = Target.Center;
 		}
 
-		public override void OnKill(int timeLeft) => SingularityVisualSystem.projectiles.Remove(this);
+		public override void OnKill(int timeLeft)
+		{
+			if (_dying)
+			{
+				SoundEngine.PlaySound((Main.rand.NextBool() ? VoidHit1 : VoidHit2) with { Volume = 0.5f, Pitch = -0.3f}, Projectile.Center);
 
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+				for (int i = 0; i < 2; i++)
+				{
+					Vector2 velocity = Main.rand.NextVector2Circular(12f, 2f);
+					float rotation = Main.rand.NextFloat(6.28f);
+					ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+					{
+						Rotation = rotation
+					});
+					ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
+					{
+						Rotation = rotation
+					});
+					velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
+
+					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
+					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
+
+					ParticleHandler.SpawnParticle(new VoidParticle(Projectile.Center, Main.rand.NextVector2CircularEdge(7f, 2f) * Main.rand.NextFloat(0.75f, 1f), Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.2f, 0.25f), 45));
+
+					static void DecelerateAction(Particle p)
+					{
+						p.Velocity *= 0.95f;
+
+						p.Rotation += p.Velocity.Length() * 0.1f;
+					}
+				}
+
+				SingularityVisualSystem.projectiles.Remove(this);
+			}
+		}
+
+		/*public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			modifiers.HideCombatText();
 		}
@@ -444,8 +534,8 @@ public class VoidGlyph : GlyphItem
 			ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
 
 			SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, target.Center);
-			//pos = target.Center;
 		}
+		*/
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -479,41 +569,31 @@ public class VoidGlyph : GlyphItem
 			float y = 0.05f * stacks;
 
 			var scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
-
 			Vector2 offset = Vector2.Zero;
-			if (Projectile.timeLeft < 60 && !_dying)
-				offset = Main.rand.NextVector2Circular(2f, 2f) * (1f - Projectile.timeLeft / 60f);
+
+			if (Projectile.timeLeft < 60 && _dying)
+				scale *= Projectile.timeLeft / 60f;
 
 			if (_dying)
 			{
-				float progress = EaseFunction.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
+				float progress = EaseFunction.EaseQuarticInOut.Ease(1f - (Projectile.timeLeft - 360f) / 60f);
+				if (Projectile.timeLeft is <= 360 and > 60)
+					progress = 1f;
+				else if (Projectile.timeLeft <= 60f)
+					progress = Projectile.timeLeft / 60f;
 
-				if (progress < 0.5f)
+				offset = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) * progress;
+
+				var c = new Color(60, 0, 65, 0);
+
+				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.4f * progress * Intensity, 0f, 0f);
+				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.3f * progress * Intensity, 0f, 0f);
+				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.3f * progress * Intensity, 0f, 0f);
+				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.25f * progress * Intensity, 0f, 0f);
+
+				if (Projectile.timeLeft > 360)
 				{
-					float lerp = progress / 0.5f;
-
-					var c = new Color(60, 0, 65, 0);
-
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, scale.X * 0.25f * lerp, 0f, 0f);
-				}
-				else
-				{
-					float lerp = 1f - (progress - 0.5f) / 0.5f;
-
-					var c = new Color(60, 0, 65, 0);
-
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.4f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0), 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c, 0f, bloom.Size() / 2f, scale.X * 0.3f * lerp, 0f, 0f);
-					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), 0f, bloom.Size() / 2f, scale.X * 0.25f * lerp, 0f, 0f);
-				}
-
-				if (Projectile.timeLeft > 30)
-				{
-					float progressTillHit = (Projectile.timeLeft - 30f) / 30f;
+					float progressTillHit = (Projectile.timeLeft - 360f) / 60f;
 					scale *= EaseFunction.EaseQuinticOut.Ease(progressTillHit);
 				}
 				else
@@ -534,7 +614,9 @@ public class VoidGlyph : GlyphItem
 
 			if (scale.LengthSquared() > 0f)
 			{
-				float progressTillHit = EaseFunction.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 30f) / 30f);
+				float progressTillHit = EaseFunction.EaseQuinticOut.Ease(1f - (Projectile.timeLeft - 360f) / 60f);
+				if (Projectile.timeLeft < 360f)
+					progressTillHit = 1f;
 
 				Color c = DrawHelpers.MulticolorLerp(cos, voidColors);
 
@@ -549,11 +631,11 @@ public class VoidGlyph : GlyphItem
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black, 0f, bloomNonPreMult.Size() / 2f, x * 0.2f * progressTillHit, 0f, 0f);
-					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f, 0f, bloomNonPreMult.Size() / 2f, x * 0.4f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black, 0f, bloomNonPreMult.Size() / 2f, x * 0.2f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black * 0.5f, 0f, bloomNonPreMult.Size() / 2f, x * 0.4f * progressTillHit, 0f, 0f);
 
-					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, new Color(60, 0, 65) * 0.6f, 0f, starNonPreMult.Size() / 2f, scale * 0.9f * progressTillHit, 0f, 0f);
-					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.4f, 0f, starNonPreMult.Size() / 2f, scale * 0.7f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, new Color(60, 0, 65) * 0.6f, 0f, starNonPreMult.Size() / 2f, scale * 0.9f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black * 0.4f, 0f, starNonPreMult.Size() / 2f, scale * 0.7f * progressTillHit, 0f, 0f);
 
 					Main.spriteBatch.End();
 					Main.spriteBatch.BeginDefault();
@@ -562,18 +644,18 @@ public class VoidGlyph : GlyphItem
 
 			if (_dying)
 			{
-				float progress = EaseFunction.EaseQuarticInOut.Ease(1f - Projectile.timeLeft / 60f);
+				float progress = EaseFunction.EaseQuarticOut.Ease(1f - _pulseTimer / 60f);
 
 				x = 0.2f * stacks;
 				y = 0.1f * stacks;
 
 				scale = new Vector2(x + 0.02f * sin, y + 0.02f * sin);
 
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * progress, 0f, 0f);
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.65f * progress, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * progress * Intensity, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.65f * progress * Intensity, 0f, 0f);
 
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(60, 0, 65, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * 0.5f * progress, 0f, 0f);
-				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.25f * progress, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(60, 0, 65, 0) * (1f - progress) * 1.5f, 0f, star.Size() / 2f, scale * 0.5f * progress * Intensity, 0f, 0f);
+				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * (1f - progress) * 0.75f, 0f, star.Size() / 2f, scale * 0.25f * progress * Intensity, 0f, 0f);
 			}
 
 			return false;

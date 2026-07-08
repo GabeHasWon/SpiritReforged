@@ -63,11 +63,14 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
     }
     
     // this creates a twisting distortion
-    float2 twistDir = float2(-outwardDir.y, outwardDir.x);
-    float twistAmount = 1.0;
-    float2 combinedPullDirection = normalize(outwardDir + (twistDir * twistAmount));
+    float angle = atan2(outwardDir.y, outwardDir.x);
 
-    float distortionStrength = lerp(0.01, 0.02, progress / 0.5);
+    float swirlDistortionAngle = angle + (uTime * 4.0) + (pow(mask, 1.5) * 10.0);
+
+    float edgeFade = smoothstep(0.02, 0.5, mask);
+    float2 combinedPullDirection = float2(cos(swirlDistortionAngle), sin(swirlDistortionAngle)) * edgeFade;
+
+    float distortionStrength = lerp(0.01, 0.03, progress / 0.5);
     float progressInterpolant;
     
     if (progress < 0.5)
@@ -80,14 +83,14 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
         distortionStrength = lerp(0.02, 0.0, 1.0 - progressInterpolant);
     }
     
-    float pullStrength = pow(mask, 2.0);
+    float pullStrength = pow(mask, 2.5);
 
     float2 pullVector = combinedPullDirection * pullStrength * progress * distortionStrength * intensity * uZoom.x;
     pullVector.x /= aspectRatio;
     
-    float2 distortedUV = uv;
+    float2 distortedUV = coords;
     if (progress > 0)
-        distortedUV += pullVector * 1.5;
+        distortedUV = lerp(coords, uv + pullVector, edgeFade);
     
     float4 screen = tex2D(uImage0, distortedUV);
 
@@ -99,8 +102,6 @@ float4 main(float2 coords : TEXCOORD0) : COLOR0
     ringColor.rgb *= progressInterpolant;
     screen.rgb += ringColor * intensity;
     
-    float angle = atan2(outwardDir.y, outwardDir.x);
-
     float spinSpeed = uTime * 2.0;
     float swirlAngle = angle + spinSpeed + mask * 4.0;
 
