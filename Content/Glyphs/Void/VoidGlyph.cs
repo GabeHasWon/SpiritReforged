@@ -566,10 +566,12 @@ public class VoidGlyph : GlyphItem
 				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.3f * progress * Intensity, 0f, 0f);
 				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, c * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.3f * progress * Intensity, 0f, 0f);
 				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * 0.5f, 0f, bloom.Size() / 2f, scale.X * 0.25f * progress * Intensity, 0f, 0f);
+				
+				float prog = 1f - Projectile.timeLeft / (float)SINGULARITY_LIFETIME;
 
-				if (Projectile.timeLeft > 360)
+				if (prog < 0.3f)
 				{
-					float progressTillHit = (Projectile.timeLeft - 360f) / 60f;
+					float progressTillHit = 1f - prog / 0.3f;
 					scale *= EaseFunction.EaseQuinticOut.Ease(progressTillHit);
 				}
 				else
@@ -610,8 +612,8 @@ public class VoidGlyph : GlyphItem
 					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black, 0f, bloomNonPreMult.Size() / 2f, x * 0.2f * progressTillHit, 0f, 0f);
 					Main.spriteBatch.Draw(bloomNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black * 0.5f, 0f, bloomNonPreMult.Size() / 2f, x * 0.4f * progressTillHit, 0f, 0f);
 
-					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, new Color(60, 0, 65) * 0.6f, 0f, starNonPreMult.Size() / 2f, scale * 0.9f * progressTillHit, 0f, 0f);
-					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black * 0.4f, 0f, starNonPreMult.Size() / 2f, scale * 0.7f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, new Color(60, 0, 65) * 0.6f, 0f, starNonPreMult.Size() / 2f, scale * 1.5f * progressTillHit, 0f, 0f);
+					Main.spriteBatch.Draw(starNonPreMult, Projectile.Center + offset - Main.screenPosition, null, Color.Black * 0.4f, 0f, starNonPreMult.Size() / 2f, scale * 1.2f * progressTillHit, 0f, 0f);
 
 					Main.spriteBatch.End();
 					Main.spriteBatch.BeginDefault();
