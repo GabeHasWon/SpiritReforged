@@ -304,15 +304,18 @@ public class StormGlyph : GlyphItem
 		{
 			if (doWindBurst)
 			{
-				if (Main.myPlayer == projectile.owner)
+				if (!Main.dedServ)
 				{
-					ScreenshakeHelper.Shake(projectile.Center, projectile.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
-					var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+					if (Main.myPlayer == projectile.owner)
+					{
+						ScreenshakeHelper.Shake(projectile.Center, projectile.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
+						var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
 
-					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
+						StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
+					}
+
+					WindBurstEffects(projectile);
 				}
-
-				WindBurstEffects(projectile);
 
 				doWindBurst = false;
 			}
@@ -323,6 +326,7 @@ public class StormGlyph : GlyphItem
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (doVisuals)
+			{
 				for (int i = 0; i < 4; i++)
 				{
 					Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
@@ -344,18 +348,22 @@ public class StormGlyph : GlyphItem
 						p.Velocity = p.Velocity.RotatedBy(-0.09f);
 					}
 				}
+			}
 
 			if (doWindBurst)
 			{
-				if (Main.myPlayer == projectile.owner)
+				if (!Main.dedServ)
 				{
-					ScreenshakeHelper.Shake(target.Center, target.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
-					var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
+					if (Main.myPlayer == projectile.owner)
+					{
+						ScreenshakeHelper.Shake(target.Center, target.DirectionTo(Main.player[projectile.owner].Center), 1, 4, 10);
+						var p = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), projectile.Center, Vector2.Zero, ModContent.ProjectileType<WindBurstProjectile>(), (int)(10 * projectile.knockBack), projectile.knockBack * Main.rand.NextFloat(3f, 5f), projectile.owner);
 
-					StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
+						StormMetaballSystem.Add(p.ModProjectile as WindBurstProjectile);
+					}
+
+					WindBurstEffects(projectile);
 				}
-
-				WindBurstEffects(projectile);
 
 				doWindBurst = false;
 			}

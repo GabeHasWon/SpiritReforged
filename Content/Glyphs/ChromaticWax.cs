@@ -171,7 +171,7 @@ public class GlyphGlobalProjectile : GlobalProjectile
 		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
 		{
 			// Bee gun is just so many projectiles
-			if (projectile.type == ProjectileID.Bee || projectile.type == ProjectileID.GiantBee)
+			if (projectile.type is ProjectileID.Bee or ProjectileID.GiantBee)
 			{
 				if (Main.rand.NextBool(10))
 					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
@@ -485,16 +485,10 @@ public abstract class GlyphItem : ModItem
 
 	public virtual void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input) { }
 
-	/// <summary>
-	/// Effects that should happen when an item with a glyph shoots a projectile
-	/// mirrors Item.Shoot()
-	/// </summary>
+	/// <summary> Effects that should happen when an item with a glyph shoots a projectile </summary>
 	public virtual void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) { }
 
-	/// <summary>
-	/// Update hook for projectiles with glyphs, used for vfx
-	/// Ran in Projectile.AI()
-	/// </summary>
+	/// <summary> General update hook called for projectiles affected by glyphs, used primarily for particles and other visual effects </summary>
 	public virtual void UpdateGlyphProjectile(Projectile projectile) { }
 }
 #endregion
