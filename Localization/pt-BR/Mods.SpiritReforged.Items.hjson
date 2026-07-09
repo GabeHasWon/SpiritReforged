@@ -3239,6 +3239,7 @@ PrefixVoucher: {
 		Can be used on items with <right>
 		Applies [c/{0}:{1}]
 		''' */
+	// BlankTooltip: a prefix
 }
 
 EnchantedStamp: {
