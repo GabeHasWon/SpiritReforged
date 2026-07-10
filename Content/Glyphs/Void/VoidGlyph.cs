@@ -22,9 +22,12 @@ public class VoidGlyph : GlyphItem
 {
 	public sealed class VoidParticle : Particle
 	{
+		internal Entity _ent = null;
+		internal Vector2 _offset;
+
 		bool initialized = false;
 
-		public VoidParticle(Vector2 position, Vector2 velocity, Color color, float rotation, float scale, int maxTime)
+		public VoidParticle(Vector2 position, Vector2 velocity, Color color, float rotation, float scale, int maxTime, Entity attached = null)
 		{
 			Position = position;
 			Color = color;
@@ -32,6 +35,11 @@ public class VoidGlyph : GlyphItem
 			Scale = scale;
 			MaxTime = maxTime;
 			Velocity = velocity;
+
+			_ent = attached;
+
+			if (_ent != null)
+				_offset = Position - _ent.Center;
 		}
 
 		public override void Update()
@@ -40,6 +48,18 @@ public class VoidGlyph : GlyphItem
 			{
 				SingularityVisualSystem.particles.Add(this);
 				initialized = true;
+			}
+
+			if (_ent != null)
+			{
+				if (!_ent.active)
+				{
+					_ent = null;
+					return;
+				}
+
+				Position = _ent.Center + _offset;
+				_offset += Velocity;
 			}
 
 			Velocity *= 0.97f;
@@ -173,9 +193,11 @@ public class VoidGlyph : GlyphItem
 		}
 	}
 
+	// TODO: Make defense reduction a ModBuff (?)
 	public sealed class VoidNPC : GlobalNPC
 	{
 		public const int COOLDOWN_TIME = 180;
+		public const float DEFENSE_REDUCTION_MULT = 0.8f; // % amount of defense reduction for the defense reduction debuff
 
 		public override bool InstancePerEntity => true;
 
@@ -185,6 +207,8 @@ public class VoidGlyph : GlyphItem
 		public int stacks;
 		public int cooldown;
 		public int collapseDamage;
+
+		public int defenseReductionTimer; 
 
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.CanBeChasedBy();
 
@@ -274,6 +298,39 @@ public class VoidGlyph : GlyphItem
 		{
 			if (cooldown > 0)
 				cooldown--;
+
+			if (defenseReductionTimer > 0)
+				defenseReductionTimer--;
+		}
+
+		public override void ModifyHitNPC(NPC npc, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (defenseReductionTimer > 0)
+				modifiers.Defense *= DEFENSE_REDUCTION_MULT;
+		}
+
+		public override void AI(NPC npc)
+		{
+			if (defenseReductionTimer > 0 && Main.rand.NextBool(240))
+			{
+				if (!Main.dedServ)
+				{
+					ParticleHandler.SpawnParticle(new VoidParticle(npc.Center, Vector2.Zero, Color.Purple.Additive(), 0f, 0.3f, 60, npc));
+				}
+			}
+		}
+
+		public override void DrawEffects(NPC npc, ref Color drawColor)
+		{
+			if (defenseReductionTimer > 0)
+			{
+				Color darken = Color.Lerp(drawColor, Color.Black, 0.5f);
+
+				if (defenseReductionTimer < 60)
+					drawColor = Color.Lerp(drawColor, darken, defenseReductionTimer / 60f);
+				else
+					drawColor = darken;
+			}
 		}
 	}
 
@@ -434,33 +491,40 @@ public class VoidGlyph : GlyphItem
 							Progress -= 0.15f / PULSE_COUNT;
 							_pulseTimer = 30;
 
-							for (int i = 0; i < 4; i++)
+							if (!Main.dedServ)
 							{
-								Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
-								float rotation = Main.rand.NextFloat(6.28f);
-								ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+								for (int i = 0; i < 4; i++)
 								{
-									Rotation = rotation
-								});
-								ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
-								{
-									Rotation = rotation
-								});
+									Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
+									float rotation = Main.rand.NextFloat(6.28f);
+									ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+									{
+										Rotation = rotation
+									});
+									ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
+									{
+										Rotation = rotation
+									});
 
-								velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
+									velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
 
-								ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
-								ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
+									ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
+									ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
 
-								static void DecelerateAction(Particle p)
-								{
-									p.Velocity *= 0.95f;
+									ParticleHandler.SpawnParticle(new ImpactLine(pos, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Purple * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
 
-									p.Rotation += p.Velocity.Length() * 0.1f;
+									ParticleHandler.SpawnParticle(new ImpactLine(pos, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Black * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
+
+									static void DecelerateAction(Particle p)
+									{
+										p.Velocity *= 0.95f;
+
+										p.Rotation += p.Velocity.Length() * 0.1f;
+									}
 								}
-							}
 
-							SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, Projectile.Center);
+								SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, Projectile.Center);
+							}					
 						}
 					}
 				}
@@ -469,7 +533,6 @@ public class VoidGlyph : GlyphItem
 
 				return;
 			}
-
 
 			Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3() * (_stacksOnDeath / (float)VoidNPC.MAX_STACKS));
 
@@ -516,6 +579,9 @@ public class VoidGlyph : GlyphItem
 			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
 
 			ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
+
+			if (target.TryGetGlobalNPC<VoidNPC>(out var gnpc))
+				gnpc.defenseReductionTimer = 300;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -584,7 +650,7 @@ public class VoidGlyph : GlyphItem
 			{
 				float progress = EaseFunction.EaseQuarticInOut.Ease(rotationTimer / 60f);
 
-				float _scale = 0.03f * stacks;
+				float _scale = 0.06f + 0.04f * stacks;
 
 				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, new Color(255, 65, 255, 0) * progress, starRotation, star.Size() / 2f, _scale * progress, 0f, 0f);
 				Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * progress * 0.75f, starRotation, star.Size() / 2f, _scale * 0.66f * progress, 0f, 0f);
