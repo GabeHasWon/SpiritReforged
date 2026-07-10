@@ -152,8 +152,8 @@ public class SanguineGlyph : GlyphItem
 				if (!Player.HasBuff<SanguineStackingBuff>())
 					Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
 
-				if (amountToHeal > 10)
-					amountToHeal = 10;
+				if (amountToHeal > 6)
+					amountToHeal = 6;
 
 				Player.Heal((int)amountToHeal);
 
