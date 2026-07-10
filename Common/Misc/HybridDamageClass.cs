@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using StructureHelper.Content.GUI;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace SpiritReforged.Common.Misc;
@@ -12,28 +13,30 @@ public class HybridDamageClass : DamageClass
 			if (item.DamageType is not HybridDamageClass hybridDamageClass)
 				return;
 
+			DamageSlice[] slices = hybridDamageClass._subClasses.ToArray();
+
 			string result = string.Empty;
 			int totalDamage = Main.LocalPlayer.GetWeaponDamage(item, true);
 			float totalWeight = hybridDamageClass.GetTotalWeight();
 
-			foreach (TooltipLine tooltip in tooltips)
+			int index = tooltips.FindIndex(tt => tt.Mod.Equals("Terraria") && tt.Name.Equals("Damage"));
+
+			if (index != -1 && hybridDamageClass._subClasses.Count > 0)
 			{
-				if (tooltip.Name == "Damage")
+				DamageSlice first = slices[0];
+				tooltips[index].Text = $"{Math.Round(totalDamage * (float)(first.Weight / totalWeight))}{first.Class.DisplayName}";
+
+				for (int i = 1; i < slices.Length; i++)
 				{
-					foreach (DamageSlice subClass in hybridDamageClass._subClasses)
-					{
-						if (result != string.Empty)
-							result += '\n';
+					DamageSlice subClass = slices[i];
 
-						result += $"{Math.Round(totalDamage * (float)(subClass.Weight / totalWeight))}{subClass.Class.DisplayName}";
-					}
-
-					tooltip.Text = result;
-					break;
+					tooltips.Insert(index + i, new TooltipLine(Mod, $"SpiritReforged: HybridDamageClass Line: #{i}", $"{Math.Round(totalDamage * (float)(subClass.Weight / totalWeight))}{subClass.Class.DisplayName}"));
 				}
-			}
+			}	
 		}
 	}
+
+	public override bool UseStandardCritCalcs => true;
 
 	public readonly record struct DamageSlice(DamageClass Class, float Weight);
 
@@ -43,6 +46,9 @@ public class HybridDamageClass : DamageClass
 
 	public override StatInheritanceData GetModifierInheritance(DamageClass damageClass)
 	{
+		if (damageClass == Generic)
+			return StatInheritanceData.Full;
+
 		foreach (DamageSlice subClass in _subClasses)
 		{
 			if (damageClass == subClass.Class)
@@ -73,7 +79,7 @@ public class HybridDamageClass : DamageClass
 	public HybridDamageClass Clone()
 	{
 		var result = (HybridDamageClass)MemberwiseClone();
-		_subClasses = new();
+		result._subClasses = new HashSet<DamageSlice>(_subClasses);
 
 		return result;
 	}
