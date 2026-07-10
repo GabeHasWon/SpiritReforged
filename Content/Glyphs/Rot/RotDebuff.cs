@@ -134,6 +134,7 @@ public class RotDebuff : ModBuff
 	{
 		Main.buffNoSave[Type] = true;
 		Main.debuff[Type] = true;
+		BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
 
 		BuffHandler.Register(ModContent.GetInstance<BlightExtension>(), ModContent.BuffType<RotDebuff>());
 	}
