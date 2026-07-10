@@ -7,12 +7,9 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
-using static SpiritReforged.Content.Particles.SnowflakeParticle;
 
 namespace SpiritReforged.Content.Glyphs.Dazzling;
 
@@ -25,7 +22,7 @@ public class MoonlightGlyph : GlyphItem
 
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
+			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
 			{
 				modifiers.HideCombatText();
 
@@ -36,7 +33,7 @@ public class MoonlightGlyph : GlyphItem
 
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (proj.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
 			{
 				modifiers.HideCombatText();
 
@@ -47,17 +44,17 @@ public class MoonlightGlyph : GlyphItem
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
+			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
 				HitEffects(target, hit, damageDone);
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (proj.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>())
+			if (proj.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
 				HitEffects(target, hit, damageDone);
 		}
 
-		internal void HitEffects(NPC target, NPC.HitInfo hit, int damageDone)
+		private void HitEffects(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float strength = MathHelper.Lerp(0.125f, 0.22f, 1f - Player.statMana / (float)Player.statManaMax2);
 
@@ -89,7 +86,6 @@ public class MoonlightGlyph : GlyphItem
 				int manaIncrease = (int)Math.Max(damageDone / 5f, 1);
 
 				Player.statMana = Math.Min(Player.statMana + manaIncrease, Player.statManaMax2);
-
 				Player.ManaEffect(manaIncrease); //Leeching
 
 				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
@@ -119,12 +115,6 @@ public class MoonlightGlyph : GlyphItem
 						Rotation = 0
 					});
 				}
-
-				static void DecelerateAction(Particle p)
-				{
-					p.Velocity *= 0.97f;
-					p.Rotation += p.Velocity.Length() * 0.2f;
-				}
 			}
 
 			Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
@@ -133,6 +123,12 @@ public class MoonlightGlyph : GlyphItem
 			int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
 
 			ColoredCombatText.AddCombatText(magicDamage, Color.RoyalBlue, Color.DarkSlateBlue);
+
+			static void DecelerateAction(Particle p)
+			{
+				p.Velocity *= 0.97f;
+				p.Rotation += p.Velocity.Length() * 0.2f;
+			}
 		}
 	}
 
@@ -229,7 +225,7 @@ public class MoonlightGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		if (Main.rand.NextBool(90))
+		if (!Main.dedServ && Main.rand.NextBool(90))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
@@ -270,21 +266,19 @@ public class MoonlightGlyph : GlyphItem
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
-		if (Main.rand.NextBool(5 + 3 * projectile.extraUpdates))
+		if (!Main.dedServ && Main.rand.NextBool(5 + 3 * projectile.extraUpdates))
 		{
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
-
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(2f, 2f);
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.12f, 45, 0.5f, UpdateAction, true, 0.02f));
-
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.07f, 40, 0.5f, UpdateAction, false, 0.02f));
+		}
 
-			static void UpdateAction(Particle p)
-			{
-				p.Rotation += p.Velocity.Length() * 0.1f;
-				p.Velocity *= 0.95f;
-			}
+		static void UpdateAction(Particle p)
+		{
+			p.Rotation += p.Velocity.Length() * 0.1f;
+			p.Velocity *= 0.95f;
 		}
 	}
 }
