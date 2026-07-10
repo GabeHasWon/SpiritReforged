@@ -5,6 +5,7 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -113,6 +114,17 @@ public class EnchanterUI : AutoUIState
 		}
 
 		base.Update(gameTime);
+	}
+
+	public override void OnDeactivate()
+	{
+		if (!_slot.Item.IsAir)
+		{
+			IEntitySource source = (NPC.FindFirstNPC(ModContent.NPCType<Enchanter>()) is int whoAmI) ? Main.npc[whoAmI].GetSource_GiftOrReward() : null;
+			
+			Main.LocalPlayer.QuickSpawnItem(source, _slot.Item.Clone());
+			_slot.Item.TurnToAir();
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
