@@ -1,4 +1,5 @@
 using Humanizer;
+using ReLogic.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -56,18 +57,21 @@ public class ChromaticWax : ModItem
 	public override void PostDrawTooltipLine(DrawableTooltipLine line)
 	{
 		if (line.Name == "ItemName")
-		{
-			Vector2 lineSize = line.Font.MeasureString(line.Text);
-			Rectangle source = new(line.X, line.Y, (int)lineSize.X, (int)lineSize.Y);
-			Color color = SpecialColor.Additive();
+			DrawNameGlow(line.Text, line.Font, new(line.X, line.Y));
+	}
 
-			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			Main.EntitySpriteDraw(bloom, source.Center(), null, color * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), default);
+	public static void DrawNameGlow(string text, DynamicSpriteFont font, Point origin)
+	{
+		Vector2 lineSize = font.MeasureString(text);
+		Rectangle source = new(origin.X, origin.Y, (int)lineSize.X, (int)lineSize.Y);
+		Color color = SpecialColor.Additive();
 
-			DrawStar(new(source.X, source.Y), color * 0.15f, 22);
-			DrawStar(new(source.X + source.Width * 0.5f, source.Y + source.Height * 0.7f), color * 0.3f, 30);
-			DrawStar(new(source.Right, source.Y + source.Height * 0.3f), color * 0.1f, 25);
-		}
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Main.EntitySpriteDraw(bloom, source.Center(), null, color * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), default);
+
+		DrawStar(new(source.X, source.Y), color * 0.15f, 22);
+		DrawStar(new(source.X + source.Width * 0.5f, source.Y + source.Height * 0.7f), color * 0.3f, 30);
+		DrawStar(new(source.Right, source.Y + source.Height * 0.3f), color * 0.1f, 25);
 
 		static void DrawStar(Vector2 position, Color color, float duration)
 		{

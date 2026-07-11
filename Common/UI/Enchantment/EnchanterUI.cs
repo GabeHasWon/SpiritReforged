@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using Humanizer;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
@@ -32,7 +33,16 @@ public class EnchanterUI : AutoUIState
 					spriteBatch.Draw(texture, GetDimensions().Center() + offset.RotatedBy(Main.timeForVisualEffects / 20f), source, Color.White.Additive() * 0.3f, 0, source.Size() / 2, 1, 0, 0));
 			}
 
-			spriteBatch.Draw(texture, GetDimensions().Center(), source, hovering ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texture, GetDimensions().Center(), source, (hovering || IsRichEnough()) ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
+
+			static bool IsRichEnough()
+			{
+				if (_hovered?.Type is not int type)
+					return false;
+
+				int cost = Enchanter.SpecialShop[type];
+				return Main.LocalPlayer.CountItem(ModContent.ItemType<ChromaticWax>(), cost) >= cost;
+			}
 		}
 	}
 
@@ -74,7 +84,8 @@ public class EnchanterUI : AutoUIState
 
 		_confirmButton = new();
 		_confirmButton.Width = _confirmButton.Height = new(30, 0);
-		_confirmButton.Left.Set(_slot.Width.Pixels + 4, 0);
+		_confirmButton.Left.Set(_slot.Width.Pixels + 5, 0);
+		_confirmButton.Top.Set(16, 0);
 		_confirmButton.OnLeftClick += OnClickConfirmButton;
 
 		OverrideSamplerState = SamplerState.PointClamp;
@@ -138,11 +149,14 @@ public class EnchanterUI : AutoUIState
 			Main.spriteBatch.Draw(texture, area.Center() + new Vector2(81, -4), null, Color.White * 0.8f, 0, texture.Size() / 2, 1, 0, 0);
 		}
 
-		if (_slot.Item.IsAir)
-		{
-			Vector2 position = _slot.GetDimensions().ToRectangle().TopRight() + new Vector2(6, 0);
-			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant"), position, Main.MouseTextColorReal, 1, 0, 0);
-		}
+		Vector2 position = _slot.GetDimensions().ToRectangle().TopRight() + new Vector2(6, 0);
+		Color color = ChromaticWax.SpecialColor;
+
+		string text = _slot.Item.IsAir 
+			? Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant") 
+			: $"{Language.GetTextValue("LegacyInterface.46")}: {((_hovered?.Type is int type) ? Enchanter.SpecialShop[type].ToString() : 3)}" + " [c/{0}:{1}]".FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), ModContent.GetInstance<ChromaticWax>().DisplayName);
+
+		Utils.DrawBorderString(spriteBatch, text, position, Main.MouseTextColorReal, 1, 0, 0);
 
 		base.Draw(spriteBatch);
 	}
@@ -216,14 +230,6 @@ public class EnchanterUI : AutoUIState
 		info.Width.Set(width, 0);
 		info.Height.Set(40, 0);
 		info.Action += NameInfo_Action;
-
-		_infoList.AddEntry(info);
-
-		info = new CatalogueInfo();
-		info.Width.Set(width / 2, 0);
-		info.Height.Set(30, 0);
-		info.HAlign = 0.5f;
-		info.Action += PriceInfo_Action;
 
 		_infoList.AddEntry(info);
 

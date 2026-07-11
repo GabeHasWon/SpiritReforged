@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
@@ -62,9 +63,7 @@ public class RadiantGlyph : GlyphItem
 		public bool divineStrike;
 
 		private int _flashTimer;
-		private float _baseScale;
-
-		private int dissipateTimer;
+		private int _dissipateTimer;
 
 		// Two seconds, plus 5% of the items use time.
 		public int ChargeTime => (int)(120 + Player.HeldItem.useTime * 0.05f);
@@ -84,14 +83,14 @@ public class RadiantGlyph : GlyphItem
 
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (!player.TryGetModPlayer(out RadiantPlayer radiantPlayer) || !radiantPlayer.divineStrike && radiantPlayer.dissipateTimer <= 0)
+					if (!player.TryGetModPlayer(out RadiantPlayer radiantPlayer) || !radiantPlayer.divineStrike && radiantPlayer._dissipateTimer <= 0)
 						continue;
 
 					float lerp = 1f - radiantPlayer._flashTimer / 30f;
 					lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(lerp, 1));
 
-					if (radiantPlayer.dissipateTimer > 0)
-						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(radiantPlayer.dissipateTimer / 20f, 1));
+					if (radiantPlayer._dissipateTimer > 0)
+						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(radiantPlayer._dissipateTimer / 20f, 1));
 
 					Vector2 pos = player.Center + new Vector2(-9 * player.direction, player.gfxOffY - 25 * lerp) - player.velocity * 0.5f;
 
@@ -116,26 +115,19 @@ public class RadiantGlyph : GlyphItem
 						new Color(255, 220, 218),
 					];
 
-					spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-
+					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+					
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[1] * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
-
+					
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[0] * lerp, 0f, tex.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[1] * 0.4f * lerp, 0f, tex.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, tex.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(tex, pos - Main.screenPosition, null, Color.White * 0.3f * lerp, 0f, tex.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-
+					
 					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[0] * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[1] * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
-
 					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[2] * lerp, 0f, star.Size() / 2f, new Vector2(0.3f, 0.15f) * scaleFactor, flip, 0f);
 
 					spriteBatch.End();
@@ -148,21 +140,21 @@ public class RadiantGlyph : GlyphItem
 
 		public override void PreUpdate()
 		{
-			if (dissipateTimer > 0)
-				dissipateTimer--;
+			if (_dissipateTimer > 0)
+				_dissipateTimer--;
 
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 			{
 				if (_flashTimer > 0)
 					_flashTimer--;
 
-				if (divineStrike || dissipateTimer > 0)
+				if (divineStrike || _dissipateTimer > 0)
 				{
 					float lerp = 1f - _flashTimer / 30f;
 					lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(lerp, 1));
 
-					if (dissipateTimer > 0)
-						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(dissipateTimer / 20f, 1));
+					if (_dissipateTimer > 0)
+						lerp = EaseFunction.EaseCircularIn.Ease(Math.Min(_dissipateTimer / 20f, 1));
 
 					Lighting.AddLight(Player.Center, Color.LightGoldenrodYellow.ToVector3() * 0.5f * lerp);
 				}
@@ -237,12 +229,10 @@ public class RadiantGlyph : GlyphItem
 			else
 			{
 				if (divineStrike)
-					dissipateTimer = 20;
+					_dissipateTimer = 20;
 
 				divineStrike = false;
 				radiantCooldown = 0;
-
-				_baseScale = 0f;
 				_flashTimer = 0;
 			}
 		}
@@ -259,7 +249,7 @@ public class RadiantGlyph : GlyphItem
 		{
 			radiantCooldown = 0;
 
-			if (divineStrike && proj.GetGlobalProjectile<GlyphGlobalProjectile>().glyph.ItemType == ModContent.ItemType<RadiantGlyph>())
+			if (divineStrike && proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 				HitEffects(target, damageDone);
 		}
 
@@ -319,7 +309,7 @@ public class RadiantGlyph : GlyphItem
 				});
 			}
 
-			dissipateTimer = 20;
+			_dissipateTimer = 20;
 
 			radiantCooldown = 0;
 			divineStrike = false;
@@ -339,7 +329,7 @@ public class RadiantGlyph : GlyphItem
 
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (divineStrike && proj.GetGlobalProjectile<GlyphGlobalProjectile>().glyph.ItemType == ModContent.ItemType<RadiantGlyph>())
+			if (divineStrike && proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 				modifiers.FinalDamage *= 2.5f;
 		}
 	}
@@ -347,6 +337,7 @@ public class RadiantGlyph : GlyphItem
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
 		if (!Main.dedServ)
 			GameShaders.Armor.BindShader(Type, new RadiantGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
@@ -421,6 +412,9 @@ public class RadiantGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(180))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
