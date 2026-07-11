@@ -3313,3 +3313,8 @@ WaxBlockItem: {
 	// DisplayName: Wax Block
 	// Tooltip: ""
 }
+
+WaxPotItem: {
+	// DisplayName: Wax Pot Item
+	// Tooltip: ""
+}
