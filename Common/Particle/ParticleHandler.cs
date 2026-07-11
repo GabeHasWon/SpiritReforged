@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.Particle;
 
@@ -209,7 +210,7 @@ public class ParticleHandler : ILoadable
 		if (batchedNonpremultiplyParticles.Count != 0)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 			foreach (Particle batchedParticle in batchedNonpremultiplyParticles)
 			{

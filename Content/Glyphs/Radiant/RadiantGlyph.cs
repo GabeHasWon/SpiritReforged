@@ -116,7 +116,7 @@ public class RadiantGlyph : GlyphItem
 						new Color(255, 220, 218),
 					];
 
-					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
 

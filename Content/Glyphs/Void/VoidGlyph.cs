@@ -94,7 +94,7 @@ public class VoidGlyph : GlyphItem
 			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			foreach (CollapseProjectile singularity in projectiles)
 			{
