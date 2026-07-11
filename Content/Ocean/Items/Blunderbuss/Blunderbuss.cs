@@ -99,7 +99,7 @@ public class BlunderbussProj : ModProjectile
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);
 
-	public override void SetStaticDefaults() => SpiritSets.IsHeldProjectile[Type] = true;
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
     {

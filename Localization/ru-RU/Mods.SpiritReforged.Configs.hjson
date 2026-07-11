@@ -53,4 +53,15 @@ ReforgedServerConfig: {
 		Label: Лимит плавающих предметов
 		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно.
 	}
+
+	AutoloadHeldProjectiles: {
+		// Label: Autoload Held Projectiles
+		/* Tooltip:
+			'''
+			Enables a system that automatically detects 'held projectiles' during loading.
+			This may substantially increase load times or cause load errors if enabled with other mods,
+			but may also fix some issues with certain mechanics (such as glyphs) in-game.
+			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+			''' */
+	}
 }

@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common;
+﻿using SpiritReforged.Common.ProjectileCommon;
+
+namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public class SpiritSets : ModSystem
@@ -25,10 +27,6 @@ public class SpiritSets : ModSystem
 	/// <summary> The type that this item will transform into when Shimmered, according to <see cref="Content.Aether.Items.ScryingLens"/>. </summary>
 	public static readonly int[] ShimmerDisplayResult = ItemFactory.CreateNamedSet(nameof(ShimmerDisplayResult)).Description("The Shimmer item type that Scrying Lens will display").RegisterIntSet();
 
-	public static readonly bool[] IsHeldProjectile = ItemFactory.CreateNamedSet(nameof(IsHeldProjectile)).Description("Whether this projectile type is held")
-		.RegisterBoolSet(ProjectileID.Arkhalis, ProjectileID.Terragrim, ProjectileID.MonkStaffT1, ProjectileID.MonkStaffT2, ProjectileID.MonkStaffT3, ProjectileID.PiercingStarlight, 
-		ProjectileID.SolarWhipSword, ProjectileID.PiercingStarlight);
-
 	/// <summary> Whether this NPC is associated with the Corruption or Crimson biomes. </summary>
 	public static readonly bool[] IsCorrupt = NPCFactory.CreateNamedSet(nameof(IsCorrupt)).Description("Whether this NPC is associated with the Corruption or Crimson biomes")
 		.RegisterBoolSet(NPCID.CorruptBunny, NPCID.CorruptGoldfish, NPCID.Corruptor, NPCID.CorruptPenguin, NPCID.CorruptSlime, NPCID.BigMimicCorruption, NPCID.DesertGhoulCorruption, 
@@ -54,26 +52,4 @@ public class SpiritSets : ModSystem
 
 	/// <summary> Whether this type blocks light. </summary>
 	public static readonly bool[] WallBlocksLight = WallFactory.CreateBoolSet();
-
-	static SpiritSets()
-	{
-		int contentSampleCount = ContentSamples.ProjectilesByType.Count;
-		for (int type = 0; type < ProjectileLoader.ProjectileCount; type++)
-		{
-			if (type < contentSampleCount)
-			{
-				if (ProjectileID.Sets.IsAWhip[type])
-				{
-					IsHeldProjectile[type] = true;
-				}
-				else
-				{
-					int aiStyle = ContentSamples.ProjectilesByType[type].aiStyle;
-
-					if (aiStyle is ProjAIStyleID.Yoyo or ProjAIStyleID.Spear or ProjAIStyleID.Flail or ProjAIStyleID.ShortSword)
-						IsHeldProjectile[type] = true;
-				}
-			}
-		}
-	}
 }
