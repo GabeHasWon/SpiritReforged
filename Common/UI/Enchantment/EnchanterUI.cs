@@ -257,25 +257,6 @@ public class EnchanterUI : AutoUIState
 	}
 
 	#region draw actions
-	private bool PriceInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
-	{
-		if (_hovered == default)
-			return false;
-
-		bounds.Y -= 4;
-		Rectangle innerBounds = new(bounds.X, bounds.Y, 50, bounds.Height);
-		CatalogueUI.DrawPanel(spriteBatch, innerBounds, Color.Black * 0.3f, Color.Black * 0.2f);
-		Texture2D texture = ChromaticWax.WorldTexture.Value;
-
-		spriteBatch.Draw(texture, innerBounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
-		Utils.DrawBorderString(spriteBatch, Enchanter.SpecialShop[_hovered.Type].ToString(), innerBounds.Right() + new Vector2(-12, 4), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);
-
-		if (innerBounds.Contains(Main.MouseScreen.ToPoint()))
-			Main.hoverItemName = Language.GetTextValue("LegacyInterface.46");
-
-		return false;
-	}
-
 	private bool NameInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
 	{
 		if (_hovered == default)

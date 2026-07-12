@@ -32,7 +32,7 @@ public class Enchanter : ModNPC
 	public static readonly Dictionary<int, int> SpecialShop = [];
 
 	private static readonly Vector2[] TailOrigin = [
-			new(54, 32),
+		new(54, 32),
 		new(60, 34),
 		new(58, 28),
 		new(54, 32),
@@ -178,6 +178,8 @@ public class Enchanter : ModNPC
 		if (Main.dedServ)
 			return;
 
+		NPC.frame.Height = frameHeight = 56;
+
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		Rectangle fallFrame = texture.Frame(1, Main.npcFrameCount[Type], 0, 2, 0, -2);
 		bool falling = NPC.velocity.Y > 0;
@@ -187,16 +189,6 @@ public class Enchanter : ModNPC
 		else if (NPC.frame == fallFrame)
 			NPC.frame.Y += frameHeight; //Forcefully skip `fallFrame` during the walk cycle
 	}
-
-	/*public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-	{
-		Texture2D npcTexture = TextureAssets.Npc[Type].Value;
-		Rectangle npcSource = NPC.frame;
-		SpriteEffects effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-		Main.EntitySpriteDraw(npcTexture, NPC.Center - Main.screenPosition + new Vector2(0, NPC.gfxOffY), npcSource, NPC.DrawColor(drawColor), NPC.rotation, npcSource.Size() / 2, NPC.scale, effects);
-		return false;
-	}*/
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
@@ -214,6 +206,8 @@ public class Enchanter : ModNPC
 			Vector2 position = NPC.Center - npcSource.Size() / 2 - screenPos + new Vector2(NPC.spriteDirection == 1 ? npcSource.Width - offset.X : offset.X, offset.Y + NPC.gfxOffY) + Main.rand.NextVector2Circular(2, 2);
 			Main.EntitySpriteDraw(flameTexture, position, flameSource, NPC.DrawColor(Color.White.Additive()), NPC.rotation, flameSource.Size() / 2, NPC.scale, 0);
 		}
+
+		Utils.DrawBorderString(spriteBatch, NPC.frame.ToString(), NPC.Center - screenPos + new Vector2(0, -40), Color.White);
 	}
 
 	#region attack
