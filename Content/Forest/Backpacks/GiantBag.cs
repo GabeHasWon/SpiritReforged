@@ -53,6 +53,8 @@ public class GiantBag : BackpackItem
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		ItemMethods.HideEquipSlot(Type, EquipType.Back, TextureAssets.AccBack);
 		ItemMethods.HideEquipSlot(Type, EquipType.Front, TextureAssets.AccFront);
 	}
