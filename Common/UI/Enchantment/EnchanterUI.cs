@@ -29,8 +29,8 @@ public class EnchanterUI : AutoUIState
 				Main.hoverItemName = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
 				Main.mouseText = true;
 
-				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
-					spriteBatch.Draw(texture, GetDimensions().Center() + offset.RotatedBy(Main.timeForVisualEffects / 20f), source, Color.White.Additive() * 0.3f, 0, source.Size() / 2, 1, 0, 0));
+				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+				spriteBatch.Draw(bloom, GetDimensions().Center(), null, Color.Cyan.Additive(), 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), 0, 0);
 			}
 
 			spriteBatch.Draw(texture, GetDimensions().Center(), source, (hovering || IsRichEnough()) ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
@@ -110,6 +110,9 @@ public class EnchanterUI : AutoUIState
 
 		if (_slot.Item.IsAir)
 		{
+			if (_slot.IsMouseHovering && !CanEnchant(Main.mouseItem))
+				Main.mouseLeft = Main.mouseLeftRelease = false; //Prevent interaction with the slot if it is empty and an invalid item is held
+
 			if (_populated)
 				ClearList();
 
@@ -159,6 +162,18 @@ public class EnchanterUI : AutoUIState
 		Utils.DrawBorderString(spriteBatch, text, position, Main.MouseTextColorReal, 1, 0, 0);
 
 		base.Draw(spriteBatch);
+	}
+
+	/// <summary> Checks whether <paramref name="item"/> can be affected by any glyph within <see cref="Enchanter.SpecialShop"/>. </summary>
+	public static bool CanEnchant(Item item)
+	{
+		foreach (int type in Enchanter.SpecialShop.Keys)
+		{
+			if (ItemLoader.GetItem(type) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+				return true;
+		}
+
+		return false;
 	}
 
 	private void PopulateList()
