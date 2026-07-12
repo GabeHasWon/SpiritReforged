@@ -74,7 +74,8 @@ public class Enchanter : ModNPC
 		NPCID.Sets.AttackFrameCount[Type] = 4;
 		NPCID.Sets.DangerDetectRange[Type] = 600;
 		NPCID.Sets.AttackType[Type] = 2;
-		NPCID.Sets.AttackTime[Type] = 20;
+		NPCID.Sets.AttackTime[Type] = 30;
+		NPCID.Sets.MagicAuraColor[Type] = Color.Goldenrod;
 		NPCID.Sets.HatOffsetY[Type] = 2;
 		NPCID.Sets.IsTownChild[Type] = true;
 		NPCID.Sets.ShimmerTownTransform[Type] = true;
@@ -98,6 +99,7 @@ public class Enchanter : ModNPC
 		NPC.Size = new Vector2(30, 40);
 
 		AnimationType = NPCID.Guide;
+		NPCID.Sets.MagicAuraColor[Type] = Main.hardMode ? Color.Purple : Color.Goldenrod;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
@@ -188,6 +190,12 @@ public class Enchanter : ModNPC
 			NPC.frame = fallFrame;
 		else if (NPC.frame == fallFrame)
 			NPC.frame.Y += frameHeight; //Forcefully skip `fallFrame` during the walk cycle
+
+		if (NPC.ai[0] == 14) //Start a custom attacking animation
+		{
+			int frameY = (int)MathHelper.Lerp(21, 25, 1f - NPC.ai[1] / NPCID.Sets.AttackTime[Type]);
+			NPC.frame = texture.Frame(1, Main.npcFrameCount[Type], 0, frameY, 0, -2);
+		}
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -206,14 +214,28 @@ public class Enchanter : ModNPC
 			Vector2 position = NPC.Center - npcSource.Size() / 2 - screenPos + new Vector2(NPC.spriteDirection == 1 ? npcSource.Width - offset.X : offset.X, offset.Y + NPC.gfxOffY) + Main.rand.NextVector2Circular(2, 2);
 			Main.EntitySpriteDraw(flameTexture, position, flameSource, NPC.DrawColor(Color.White.Additive()), NPC.rotation, flameSource.Size() / 2, NPC.scale, 0);
 		}
-
-		Utils.DrawBorderString(spriteBatch, NPC.frame.ToString(), NPC.Center - screenPos + new Vector2(0, -40), Color.White);
 	}
 
 	#region attack
-	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown) => base.TownNPCAttackCooldown(ref cooldown, ref randExtraCooldown);
+	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown) => cooldown = randExtraCooldown = 0;
 
-	public override void TownNPCAttackProj(ref int projType, ref int attackDelay) => projType = Main.hardMode ? ModContent.ProjectileType<VexpowderBlueDust>() : ModContent.ProjectileType<FlarepowderDust>();
+	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
+	{
+		projType = Main.hardMode ? ModContent.ProjectileType<VexpowderBlueDust>() : ModContent.ProjectileType<FlarepowderDust>();
+		attackDelay = NPCID.Sets.AttackTime[Type] / 2;
+	}
+
+	public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
+	{
+		multiplier = 5;
+		randomOffset = 1.2f;
+	}
+
+	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+	{
+		damage = 15;
+		knockback = 1.5f;
+	}
 
 	public override void TownNPCAttackMagic(ref float auraLightMultiplier) => base.TownNPCAttackMagic(ref auraLightMultiplier);
 	#endregion
