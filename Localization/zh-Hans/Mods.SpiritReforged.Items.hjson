@@ -3175,16 +3175,46 @@ PinSpookyRotten: {
 }
 
 StarGourdGreenCarvedItem: {
-	// DisplayName: Star Gourd Green Carved Item
+	// DisplayName: Carved Green Stargourd
 	// Tooltip: ""
 }
 
 StarGourdLimeCarvedItem: {
-	// DisplayName: Star Gourd Lime Carved Item
+	// DisplayName: Carved Lime Stargourd
 	// Tooltip: ""
 }
 
 StarGourdOrangeLimeCarvedItem: {
-	// DisplayName: Star Gourd Orange Lime Carved Item
+	// DisplayName: Carved Orange-Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	// DisplayName: Carved Orange Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	// DisplayName: Carved Red Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	// DisplayName: Carved Rotten Stargourd
+	// Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	// DisplayName: Carved White Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	// DisplayName: Carved Yellow Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	// DisplayName: Carved Yellow-Green Stargourd
 	// Tooltip: ""
 }

@@ -102,24 +102,81 @@ public class StarConversion : ModBiomeConversion
 				TileLoader.RegisterSimpleConversion(orange.Type, Type, ModContent.TileType<OrangeSpookyStargrass>());
 
 			ConvertGourd<StarGourdGreen>("GourdGreen");
-			ConvertGourd<StarGourdGreen>("GourdLime");
-			ConvertGourd<StarGourdGreen>("GourdLimeOrange");
-
-			static void ConvertGourd<T>(string name) where T : StarGourd
-			{
-				if (!CrossMod.Spooky.CheckFind(name, out ModTile tile))
-					return;
-
-				TileLoader.RegisterConversion(tile.Type, ConversionType, (i, j, type, conversionType) =>
-				{
-					if (Framing.GetTileSafely(i, j + 1).TileType == type)
-						return false; //Return if this is not the base of the flower
-
-					TileObjectData data = TileObjectData.GetTileData(type, 0);
-					TileExtensions.GetTopLeft(ref i, ref j);
-					return ConversionHelper.ConvertTiles(i, j, data.Width, data.Height, ModContent.TileType<T>());
-				});
-			}
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdGreenCarved").Type, "GourdGreenCarved");
+			ConvertGourd<StarGourdLime>("GourdLime");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdLimeCarved").Type, "GourdLimeCarved");
+			ConvertGourd<StarGourdOrangeLime>("GourdLimeOrangeLime");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdOrangeLimeCarved").Type, "GourdLimeOrangeCarved");
+			ConvertGourd<StarGourdOrange>("GourdLimeOrange");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdOrangeCarved").Type, "GourdOrangeCarved");
+			ConvertGourd<StarGourdRed>("GourdRed");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdRedCarved").Type, "GourdRedCarved");
+			ConvertGourd<StarGourdRotten>("GourdRotten");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdRottenCarved").Type, "GourdRottenCarved");
+			ConvertGourd<StarGourdOrange>("GourdOrange");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdOrangeCarved").Type, "GourdOrangeCarved");
+			ConvertGourd<StarGourdWhite>("GourdWhite");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdWhiteCarved").Type, "GourdWhiteCarved");
+			ConvertGourd<StarGourdYellow>("GourdYellow");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdYellowCarved").Type, "GourdYellowCarved");
+			ConvertGourd<StarGourdYellowGreen>("GourdYellowGreen");
+			ConvertCarvedGourd(Mod.Find<ModTile>("StarGourdYellowGreenCarved").Type, "GourdYellowGreenCarved");
 		}
+	}
+
+	static void ConvertCarvedGourd(int gourd, string name)
+	{
+		ConvertLitGourd(gourd, name + "Lit");
+		ConvertGourd(gourd, name);
+	}
+
+	static void ConvertGourd<T>(string name) where T : StarGourd => ConvertGourd(ModContent.TileType<T>(), name);
+
+	static void ConvertGourd(int gourd, string name)
+	{
+		if (!CrossMod.Spooky.CheckFind(name, out ModTile tile))
+			return;
+
+		TileLoader.RegisterConversion(tile.Type, ConversionType, (i, j, type, conversionType) =>
+		{
+			if (Framing.GetTileSafely(i, j + 1).TileType == type)
+				return false; //Return if this is not the base of the flower
+
+			TileObjectData data = TileObjectData.GetTileData(type, 0);
+			TileExtensions.GetTopLeft(ref i, ref j);
+			return ConversionHelper.ConvertTiles(i, j, data.Width, data.Height, gourd);
+		});
+	}
+
+	static void ConvertLitGourd(int gourd, string name)
+	{
+		if (!CrossMod.Spooky.CheckFind(name, out ModTile tile))
+			return;
+
+		TileLoader.RegisterConversion(tile.Type, ConversionType, (i, j, type, conversionType) =>
+		{
+			if (Framing.GetTileSafely(i, j + 1).TileType == type)
+				return false; //Return if this is not the base of the flower
+
+			TileObjectData data = TileObjectData.GetTileData(type, 0);
+			TileExtensions.GetTopLeft(ref i, ref j);
+			bool val = ConversionHelper.ConvertTiles(i, j, data.Width, data.Height, gourd);
+
+			if (val)
+			{
+				for (int k = 0; k < data.Width; ++k)
+				{
+					for (int v = 0; v < data.Height; ++v)
+					{
+						Tile tile = Framing.GetTileSafely(i + k, j + v);
+						tile.TileFrameY += (short)(18 * data.Height);
+					}
+				}
+
+				NetMessage.SendTileSquare(-1, i, j, data.Width, data.Height);
+			}
+
+			return val;
+		});
 	}
 }

@@ -3,4 +3,5 @@ author = Team Spirit
 version = 0.2.1.1
 dllReferences = NPCUtils, StructureHelper, RubbleAutoloader, TileHelper, ILLogger
 modReferences = SpiritMusic
+weakReferences = Spooky@1.4.3
 buildIgnore = Assets/Shaders/*.dll

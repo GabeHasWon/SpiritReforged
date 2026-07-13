@@ -2,9 +2,7 @@
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.ID;
 using TileHelper.Common;
-using TileHelper.Content;
 
 namespace SpiritReforged.Content.Crossmod.SpookyForest;
 
@@ -34,31 +32,32 @@ internal abstract class StarGourd : ModTile
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 	public sealed override void Load() => Info.CreateCarvedType(Mod);
-	public sealed override void SetStaticDefaults() => StaticDefaults(Type, true);
+	public sealed override void SetStaticDefaults() => StaticDefaults(this, this, true);
 
-	public void StaticDefaults(int type, bool addEntry)
+	public static void StaticDefaults(ModTile tile, StarGourd copyInstance, bool addEntry)
 	{
 		CarveSound = new("Spooky/Content/Sounds/PumpkinCarve", SoundType.Sound);
 
-		Main.tileSolid[type] = false;
-		Main.tileFrameImportant[type] = true;
-		Main.tileNoAttach[type] = true;
+		Main.tileSolid[tile.Type] = false;
+		Main.tileFrameImportant[tile.Type] = true;
+		Main.tileNoAttach[tile.Type] = true;
 
-		TileID.Sets.BreakableWhenPlacing[type] = true;
+		//TileID.Sets.BreakableWhenPlacing[tile.Type] = true;
 
-		DustType = DustID.DesertWater2;
+		tile.DustType = DustID.DesertWater2;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.DrawYOffset = 2;
+		//TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<GreenSpookyStargrass>(), ModContent.TileType<OrangeSpookyStargrass>(), ModContent.TileType<StargrassTile>()];
 
-		if (ModifyObjectData(TileObjectData.newTile) && addEntry)
-			AddMapEntry(new Color(25, 197, 87));
+		if (copyInstance.ModifyObjectData(tile, TileObjectData.newTile) && addEntry)
+			tile.AddMapEntry(new Color(25, 197, 87));
 
-		TileObjectData.addTile(type);
+		TileObjectData.addTile(tile.Type);
 	}
 
-	protected virtual bool ModifyObjectData(TileObjectData newTile) => true;
+	protected virtual bool ModifyObjectData(ModTile tile, TileObjectData newTile) => true;
 
 	public override void MouseOver(int i, int j)
 	{
@@ -91,8 +90,8 @@ internal abstract class StarGourd : ModTile
 		if (player.HeldItem.type == carving.Type)
 		{
 			SoundEngine.PlaySound(CarveSound, new Vector2(i * 16, j * 16));
-			TileObjectData data = TileObjectData.GetTileData(Main.tile[i, j]);
 
+			var data = TileObjectData.GetTileData(Main.tile[i, j]);
 			int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % data.Width;
 			int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % data.Height;
 
@@ -120,16 +119,36 @@ internal abstract class StarGourd : ModTile
 			return;
 
 		Tile tile = Main.tile[i, j];
-		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + 36, 16, 16), Color.White);
+		var data = TileObjectData.GetTileData(tile);
+		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), Color.White);
 	}
 }
 
 [Autoload(false)]
 internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, new()
 {
+	private T Instance = new();
+
 	public override string Name => new T().Name + "Carved";
 
-	public override void SetStaticDefaults() => new T().StaticDefaults(Type, false);
+	public override void SetStaticDefaults()
+	{
+		Instance = new T();
+		StarGourd.StaticDefaults(this, Instance, false);
+
+		Main.tileLighted[Type] = true;
+	}
+
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+	{
+		var data = TileObjectData.GetTileData(Type, 0);
+
+		if (Main.tile[i, j].TileFrameY > data.Height * 18)
+		{
+			Vector3 glow = new Vector3(247, 211, 134f) / 250f;
+			(r, g, b) = (glow.X, glow.Y, glow.Z);
+		}
+	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
@@ -141,7 +160,10 @@ internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, ne
 
 	public override void MouseOver(int i, int j)
 	{
-		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle))
+		Tile tile = Main.tile[i, j];
+		var data = TileObjectData.GetTileData(tile);
+
+		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle) && tile.TileFrameY < data.Height * 18)
 			return;
 		
 		Player player = Main.LocalPlayer;
@@ -167,10 +189,12 @@ internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, ne
 		if (!CrossMod.Spooky.CheckFind("CandleItem", out ModItem candle))
 			return false;
 
-		if (player.HeldItem.type == candle.Type && player.ConsumeItem(candle.Type))
+		Tile anchor = Main.tile[i, j];
+		var data = TileObjectData.GetTileData(anchor);
+
+		if (player.HeldItem.type == candle.Type && player.ConsumeItem(candle.Type) && anchor.TileFrameY < data.Height * 18)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, new Vector2(i * 16, j * 16));
-			TileObjectData data = TileObjectData.GetTileData(Main.tile[i, j]);
 
 			int left = i - Framing.GetTileSafely(i, j).TileFrameX / 18 % data.Width;
 			int top = j - Framing.GetTileSafely(i, j).TileFrameY / 18 % data.Height;
@@ -198,7 +222,7 @@ internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, ne
 
 		Tile tile = Main.tile[i, j];
 		int frameY = tile.TileFrameY;
-		TileObjectData data = TileObjectData.GetTileData(tile);
+		var data = TileObjectData.GetTileData(tile);
 
 		if (tile.TileFrameY >= data.Height * 18)
 			frameY -= data.Height * 18;
