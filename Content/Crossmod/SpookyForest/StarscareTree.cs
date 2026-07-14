@@ -3,7 +3,21 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Crossmod.SpookyForest;
 
-[ExtendsFromMod("Spooky")]
+public class StarscareTreeLoader : ILoadable
+{
+	void ILoadable.Load(Mod mod)
+	{
+		if (ModLoader.HasMod("Spooky"))
+		{
+			mod.AddContent(new StarscareTree());
+			mod.AddContent(new StarscareTreeGreen());
+		}
+	}
+
+	void ILoadable.Unload() { }
+}
+
+[Autoload(false)]
 public class StarscareTree : ModTree
 {
 	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTree";

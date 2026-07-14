@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Crossmod.SpookyForest;
 
-[ExtendsFromMod("Spooky")]
+[Autoload(false)]
 public class StarscareTreeGreen : ModTree
 {
 	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTreeGreen";
