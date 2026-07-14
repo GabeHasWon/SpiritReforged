@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 /// <summary>
 /// Defines the base of an ecotone. This is mostly generation data, alongside metadata for the ecotone selection screen.
 /// </summary>
-public abstract class EcotoneBase : ILoadable
+public abstract class EcotoneBase : ModType
 {
 	/// <summary>
 	/// Simple wrapper for defining and storing a mod icon texture.
@@ -32,18 +32,15 @@ public abstract class EcotoneBase : ILoadable
 
 	public virtual string EcotoneEdgeName => GetType().Name.Replace("Ecotone", "");
 
-	public void Load(Mod mod)
-	{
-		Ecotones.Add(this);
-		
-		Load();
-
-		Icon = GetIcon();
-		DisplayName = Language.GetOrRegister($"Mods.{mod.Name}.Ecotones.{GetType().Name}", () => GetType().Name);
-	}
-
-	protected virtual void Load() { }
-	public void Unload() { }
 	public abstract void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries);
 	protected abstract EcotoneIcon GetIcon();
+
+	protected override void Register()
+	{
+		Ecotones.Add(this);
+
+		Icon = GetIcon();
+		DisplayName = Language.GetOrRegister($"Mods.{Mod.Name}.Ecotones.{GetType().Name}", () => GetType().Name);
+		ModTypeLookup<EcotoneBase>.Register(this);
+	}
 }
