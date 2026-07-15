@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
@@ -24,7 +25,7 @@ public class LandscapingShears : ModItem
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Type] = 2;
-			SpiritSets.IsHeldProjectile[Type] = true;
+			HeldProjectileSet.HeldProjectile[Type] = true;
 		}
 
 		public override void SetDefaults()

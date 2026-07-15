@@ -205,7 +205,7 @@ public class StormGlyph : GlyphItem
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			if (!SpiritSets.IsHeldProjectile[projectile.type] && GlyphGlobalProjectile.TryGetGlyphFromContext(source, out GlyphType glyphType) && glyphType.ItemType == ModContent.ItemType<StormGlyph>())
+			if (!HeldProjectileSet.HeldProjectile[projectile.type] && GlyphGlobalProjectile.TryGetGlyphFromContext(source, out GlyphType gly) && gly.ItemType == ModContent.ItemType<StormGlyph>())
 			{
 				ApplyStormEffects(projectile);
 

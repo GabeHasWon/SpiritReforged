@@ -108,6 +108,8 @@ internal class BombCannonHeld : ModProjectile
 
 	private bool _released;
 
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 	public override void SetDefaults()
 	{
 		Projectile.ignoreWater = true;
