@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Poisoned : DoTExtension
 {
-    public override Settings LocalSettings => new(0.1f, 500);
+    public override Settings LocalSettings => new(0.1f * VanillaScaling, (int)(500 * VanillaMaximum));
 
     public override void Load() => BuffHandler.Register(this, BuffID.Poisoned);
 

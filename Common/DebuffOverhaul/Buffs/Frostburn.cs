@@ -7,7 +7,7 @@ public class Frostburn : DoTExtension
     public static readonly Asset<Texture2D> FrozenHealth = ModContent.Request<Texture2D>(VanillaTextures + "FrostHealthBar");
 	public static readonly Asset<Texture2D> Snowflake = ModContent.Request<Texture2D>(VanillaTextures + "Snowflake");
 
-	public override Settings LocalSettings => new(0.25f, 500);
+	public override Settings LocalSettings => new(0.25f * VanillaScaling, (int)(500 * VanillaMaximum));
 
     public override void Load() => BuffHandler.Register(this, BuffID.Frostburn);
 
