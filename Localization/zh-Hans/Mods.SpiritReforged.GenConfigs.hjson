@@ -385,6 +385,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] 天顶罐子比例"
 				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
 			}
+
+			WaxScale: {
+				// DisplayName: WaxScale
+				// Tooltip: WaxScale
+			}
 		}
 
 		Presets: {

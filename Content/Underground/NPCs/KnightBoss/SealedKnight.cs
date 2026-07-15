@@ -14,6 +14,8 @@ namespace SpiritReforged.Content.Underground.NPCs.KnightBoss;
 [AutoloadBossHead]
 public class SealedKnight : ModNPC
 {
+	// UNFINISHED CONTENT
+	public override bool IsLoadingEnabled(Mod mod) => false;
 	public enum State
 	{
 		Inactive,

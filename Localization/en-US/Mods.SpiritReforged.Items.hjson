@@ -3291,7 +3291,7 @@ VoidGlyph: {
 	Tooltip:
 		'''
 		Attacks inflict stacks of Void Collapse
-		Void Collapse creates a damaging singularity after a short time
+		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
 		'''
 	Effect: Null
 }
@@ -3324,5 +3324,10 @@ CandlewickItem: {
 
 WaxBlockItem: {
 	DisplayName: Wax Block
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: Wax Pot Item
 	Tooltip: ""
 }

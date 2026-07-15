@@ -1,5 +1,5 @@
 using Humanizer;
-using Mono.Cecil;
+using ReLogic.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -13,7 +13,6 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -58,18 +57,21 @@ public class ChromaticWax : ModItem
 	public override void PostDrawTooltipLine(DrawableTooltipLine line)
 	{
 		if (line.Name == "ItemName")
-		{
-			Vector2 lineSize = line.Font.MeasureString(line.Text);
-			Rectangle source = new(line.X, line.Y, (int)lineSize.X, (int)lineSize.Y);
-			Color color = SpecialColor.Additive();
+			DrawNameGlow(line.Text, line.Font, new(line.X, line.Y));
+	}
 
-			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			Main.EntitySpriteDraw(bloom, source.Center(), null, color * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), default);
+	public static void DrawNameGlow(string text, DynamicSpriteFont font, Point origin)
+	{
+		Vector2 lineSize = font.MeasureString(text);
+		Rectangle source = new(origin.X, origin.Y, (int)lineSize.X, (int)lineSize.Y);
+		Color color = SpecialColor.Additive();
 
-			DrawStar(new(source.X, source.Y), color * 0.15f, 22);
-			DrawStar(new(source.X + source.Width * 0.5f, source.Y + source.Height * 0.7f), color * 0.3f, 30);
-			DrawStar(new(source.Right, source.Y + source.Height * 0.3f), color * 0.1f, 25);
-		}
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Main.EntitySpriteDraw(bloom, source.Center(), null, color * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), default);
+
+		DrawStar(new(source.X, source.Y), color * 0.15f, 22);
+		DrawStar(new(source.X + source.Width * 0.5f, source.Y + source.Height * 0.7f), color * 0.3f, 30);
+		DrawStar(new(source.Right, source.Y + source.Height * 0.3f), color * 0.1f, 25);
 
 		static void DrawStar(Vector2 position, Color color, float duration)
 		{
@@ -171,7 +173,7 @@ public class GlyphGlobalProjectile : GlobalProjectile
 		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
 		{
 			// Bee gun is just so many projectiles
-			if (projectile.type == ProjectileID.Bee || projectile.type == ProjectileID.GiantBee)
+			if (projectile.type is ProjectileID.Bee or ProjectileID.GiantBee)
 			{
 				if (Main.rand.NextBool(10))
 					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
@@ -438,7 +440,7 @@ public abstract class GlyphItem : ModItem
 		Enchanter.SpecialShop.Add(Type, 3);
 	}
 
-	public virtual bool CanApplyGlyph(Item item) => item.damage >= 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type;
+	public virtual bool CanApplyGlyph(Item item) => item.damage > 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type && !item.accessory;
 
 	/// <summary> Called when this glyph effect is applied to <paramref name="item"/>. </summary>
 	/// <param name="item"> The item being affected. </param>
@@ -485,16 +487,10 @@ public abstract class GlyphItem : ModItem
 
 	public virtual void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input) { }
 
-	/// <summary>
-	/// Effects that should happen when an item with a glyph shoots a projectile
-	/// mirrors Item.Shoot()
-	/// </summary>
+	/// <summary> Effects that should happen when an item with a glyph shoots a projectile </summary>
 	public virtual void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) { }
 
-	/// <summary>
-	/// Update hook for projectiles with glyphs, used for vfx
-	/// Ran in Projectile.AI()
-	/// </summary>
+	/// <summary> General update hook called for projectiles affected by glyphs, used primarily for particles and other visual effects </summary>
 	public virtual void UpdateGlyphProjectile(Projectile projectile) { }
 }
 #endregion

@@ -21,8 +21,9 @@ public class SanguineGlyph : GlyphItem
 		public override void Update(Player player, ref int buffIndex)
 		{
 			if (player.GetModPlayer<SanguinePlayer>().stacks.Count > 0)
-				// find the stack with the most timer and use that for the time display
-				player.buffTime[buffIndex] = player.GetModPlayer<SanguinePlayer>().stacks.OrderBy(s => s.timer).Last().timer;
+			{
+				player.buffTime[buffIndex] = player.GetModPlayer<SanguinePlayer>().stacks.OrderBy(s => s.timer).Last().timer; //Find the stack with the greatest timer
+			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -151,8 +152,8 @@ public class SanguineGlyph : GlyphItem
 				if (!Player.HasBuff<SanguineStackingBuff>())
 					Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
 
-				if (amountToHeal > 10)
-					amountToHeal = 10;
+				if (amountToHeal > 6)
+					amountToHeal = 6;
 
 				Player.Heal((int)amountToHeal);
 
@@ -304,6 +305,9 @@ public class SanguineGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
@@ -325,6 +329,9 @@ public class SanguineGlyph : GlyphItem
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (Main.dedServ)
+			return;
+
 		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 
 		for (int i = 0; i < 3; i++)
@@ -338,7 +345,7 @@ public class SanguineGlyph : GlyphItem
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
-		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
+		if (!Main.dedServ && Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Blood, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
 	}
 }

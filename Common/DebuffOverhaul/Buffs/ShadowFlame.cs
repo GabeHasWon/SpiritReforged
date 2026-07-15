@@ -6,7 +6,7 @@ public class ShadowFlame : DoTExtension
 {
     public static readonly Asset<Texture2D> ShadowFlameHealth = ModContent.Request<Texture2D>(VanillaTextures + "ShadowFlameHealthBar");
 
-	public override Settings LocalSettings => new(0.5f, 2000);
+	public override Settings LocalSettings => new(0.5f * VanillaScaling, (int)(2000 * VanillaMaximum));
 
     public override void Load() => BuffHandler.Register(this, BuffID.ShadowFlame);
 

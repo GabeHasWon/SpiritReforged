@@ -385,6 +385,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Zenith Pot Scale"
 				Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
 			}
+
+			WaxScale: {
+				DisplayName: WaxScale
+				Tooltip: WaxScale
+			}
 		}
 
 		Presets: {

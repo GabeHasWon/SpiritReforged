@@ -2,6 +2,10 @@
 
 public abstract class DoTExtension : BuffExtension
 {
+	public const float VanillaMaximum = 0.2f;
+
+	public const float VanillaScaling = 0.2f;
+
 	public const string VanillaTextures = SpiritReforgedMod.ModName + "/Common/DebuffOverhaul/Textures/";
 
 	/// <param name="Scalability"> Determines how well this buff scales from weapon damage. </param>

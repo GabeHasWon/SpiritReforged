@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
-using Terraria.Graphics.Shaders;
 using Terraria.UI;
 using static SpiritReforged.Content.Glyphs.GlyphItem;
 
@@ -15,7 +14,7 @@ public class GlyphItemLayer : PlayerDrawLayer
 	{
 		Player player = drawInfo.drawPlayer;
 
-		if (player.JustDroppedAnItem || !player.HeldItem.HasGlyph())
+		if (player.JustDroppedAnItem || player.vortexStealthActive || !player.HeldItem.HasGlyph())
 			return;
 
 		if (player.heldProj >= 0 && drawInfo.shadow == 0f && drawInfo.heldProjOverHand)
@@ -25,9 +24,10 @@ public class GlyphItemLayer : PlayerDrawLayer
 
 		Item heldItem = drawInfo.heldItem;
 		int type = heldItem.type;
+
 		Main.instance.LoadItem(type);
 		float itemScale = player.GetAdjustedItemScale(heldItem);
-		Texture2D tex = TextureColorCache.ColorSolid(TextureAssets.Item[player.HeldItem.type].Value, Color.White);
+		Texture2D tex = TextureColorCache.ColorSolid(TextureAssets.Item[type].Value, Color.White);
 		var position = new Vector2((int)(drawInfo.ItemLocation.X - Main.screenPosition.X), (int)(drawInfo.ItemLocation.Y - Main.screenPosition.Y));
 		Rectangle frame = player.GetItemDrawFrame(type);
 		drawInfo.itemColor = Lighting.GetColor((int)(drawInfo.Position.X + player.width * 0.5) / 16,
@@ -61,12 +61,11 @@ public class GlyphItemLayer : PlayerDrawLayer
 			return;
 
 		Vector2 basePosition = Vector2.Zero;
-
-		var origin = new Vector2(frame.Width * 0.5f - frame.Width * 0.5f * player.direction, frame.Height);
+		Vector2 origin = new(frame.Width * 0.5f - frame.Width * 0.5f * player.direction, frame.Height);
 
 		if (heldItem.useStyle == ItemUseStyleID.DrinkLiquid && player.itemAnimation > 0)
 		{
-			var vector2 = new Vector2(0.5f, 0.4f);
+			Vector2 vector2 = new(0.5f, 0.4f);
 			origin = frame.Size() * vector2;
 		}
 

@@ -133,6 +133,9 @@ public class RotDebuff : ModBuff
 	public override void SetStaticDefaults()
 	{
 		Main.buffNoSave[Type] = true;
+		Main.debuff[Type] = true;
+		BuffID.Sets.NurseCannotRemoveDebuff[Type] = true;
+
 		BuffHandler.Register(ModContent.GetInstance<BlightExtension>(), ModContent.BuffType<RotDebuff>());
 	}
 

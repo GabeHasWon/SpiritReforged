@@ -411,6 +411,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Зенитные горшки"
 				Tooltip: Устанавливает множитель количества попыток сгенерировать зенитный горшок в мирах с сидом «Зенит».
 			}
+
+			WaxScale: {
+				// DisplayName: WaxScale
+				// Tooltip: WaxScale
+			}
 		}
 
 		Presets: {

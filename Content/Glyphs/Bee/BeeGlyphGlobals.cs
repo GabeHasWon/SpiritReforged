@@ -12,32 +12,6 @@ namespace SpiritReforged.Content.Glyphs.Bee;
 
 public sealed class BeeGlyphPlayer : ModPlayer
 {
-	private static int[] _maxTimeLefts = new int[Main.maxCombatText];
-
-	public override void Load() => On_CombatText.UpdateCombatText += FadeDamageText;
-
-	private static void FadeDamageText(On_CombatText.orig_UpdateCombatText orig)
-	{
-		orig();
-
-		for (int i = 0; i < Main.maxCombatText; i++)
-		{
-			CombatText text = Main.combatText[i];
-			if (_maxTimeLefts[i] > 0)
-				if (text.active)
-				{
-					Color blue, orange;
-
-					blue = text.crit ? Color.Goldenrod : Color.Yellow;
-					orange = text.crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
-
-					text.color = Color.Lerp(blue, orange, EaseFunction.EaseCircularInOut.Ease(1f - text.lifeTime / (float)_maxTimeLefts[i]));
-				}
-				else
-					_maxTimeLefts[i] = 0;
-		}
-	}
-
 	public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 	{
 		if (item.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
@@ -53,17 +27,19 @@ public sealed class BeeGlyphPlayer : ModPlayer
 	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		if (item.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
-			OnGlyphHit(target, hit, damageDone);
+			OnGlyphHit(Player, target, hit, damageDone);
 	}
 
 	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		if (proj.GetGlyph().ItemType == ModContent.ItemType<BeeGlyph>())
-			OnGlyphHit(target, hit, damageDone);
+			OnGlyphHit(Player, target, hit, damageDone);
 	}
 
-	public static void OnGlyphHit(NPC target, NPC.HitInfo hit, int damageDone)
+	public static void OnGlyphHit(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
+		player.MinionAttackTargetNPC = target.whoAmI;
+
 		Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
 
 		CombatText.NewText(target.getRect(), orange, Math.Max((int)(damageDone * 0.8f), 1), hit.Crit);
@@ -177,6 +153,6 @@ public class BeeGlobalNPC : GlobalNPC
 		int type = player.beeType();
 
 		for (int i = 0; i < 3; i++)
-			Projectile.NewProjectile(target.GetSource_OnHurt(player), target.Center, Main.rand.NextVector2Unit(), type, player.beeDamage(1 + damageDone / 3), player.beeKB(2f), player.whoAmI); // Make into a tag bonus
+			Projectile.NewProjectileDirect(target.GetSource_OnHurt(player), target.Center, Main.rand.NextVector2Unit(), type, player.beeDamage(3 + damageDone / 2), player.beeKB(2f), player.whoAmI).ArmorPenetration += Main.hardMode ? 15 : 5;
 	}
 }

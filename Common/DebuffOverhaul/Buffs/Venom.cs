@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Venom : DoTExtension
 {
-    public override Settings LocalSettings => new(0.5f, 1000);
+    public override Settings LocalSettings => new(0.5f * VanillaScaling, (int)(1000 * VanillaMaximum));
 
     public override void Load() => BuffHandler.Register(this, BuffID.Venom);
 

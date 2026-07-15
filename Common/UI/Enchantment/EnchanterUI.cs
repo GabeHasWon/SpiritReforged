@@ -1,10 +1,12 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿using Humanizer;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -27,11 +29,20 @@ public class EnchanterUI : AutoUIState
 				Main.hoverItemName = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
 				Main.mouseText = true;
 
-				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
-					spriteBatch.Draw(texture, GetDimensions().Center() + offset.RotatedBy(Main.timeForVisualEffects / 20f), source, Color.White.Additive() * 0.3f, 0, source.Size() / 2, 1, 0, 0));
+				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+				spriteBatch.Draw(bloom, GetDimensions().Center(), null, Color.Cyan.Additive(), 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), 0, 0);
 			}
 
-			spriteBatch.Draw(texture, GetDimensions().Center(), source, hovering ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texture, GetDimensions().Center(), source, (hovering || IsRichEnough()) ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
+
+			static bool IsRichEnough()
+			{
+				if (_hovered?.Type is not int type)
+					return false;
+
+				int cost = Enchanter.SpecialShop[type];
+				return Main.LocalPlayer.CountItem(ModContent.ItemType<ChromaticWax>(), cost) >= cost;
+			}
 		}
 	}
 
@@ -73,7 +84,8 @@ public class EnchanterUI : AutoUIState
 
 		_confirmButton = new();
 		_confirmButton.Width = _confirmButton.Height = new(30, 0);
-		_confirmButton.Left.Set(_slot.Width.Pixels + 4, 0);
+		_confirmButton.Left.Set(_slot.Width.Pixels + 5, 0);
+		_confirmButton.Top.Set(16, 0);
 		_confirmButton.OnLeftClick += OnClickConfirmButton;
 
 		OverrideSamplerState = SamplerState.PointClamp;
@@ -98,6 +110,9 @@ public class EnchanterUI : AutoUIState
 
 		if (_slot.Item.IsAir)
 		{
+			if (_slot.IsMouseHovering && !CanEnchant(Main.mouseItem))
+				Main.mouseLeft = Main.mouseLeftRelease = false; //Prevent interaction with the slot if it is empty and an invalid item is held
+
 			if (_populated)
 				ClearList();
 
@@ -115,6 +130,17 @@ public class EnchanterUI : AutoUIState
 		base.Update(gameTime);
 	}
 
+	public override void OnDeactivate()
+	{
+		if (!_slot.Item.IsAir)
+		{
+			IEntitySource source = (NPC.FindFirstNPC(ModContent.NPCType<Enchanter>()) is int whoAmI) ? Main.npc[whoAmI].GetSource_GiftOrReward() : null;
+			
+			Main.LocalPlayer.QuickSpawnItem(source, _slot.Item.Clone());
+			_slot.Item.TurnToAir();
+		}
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		//Draw the background panel
@@ -126,13 +152,28 @@ public class EnchanterUI : AutoUIState
 			Main.spriteBatch.Draw(texture, area.Center() + new Vector2(81, -4), null, Color.White * 0.8f, 0, texture.Size() / 2, 1, 0, 0);
 		}
 
-		if (_slot.Item.IsAir)
-		{
-			Vector2 position = _slot.GetDimensions().ToRectangle().TopRight() + new Vector2(6, 0);
-			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant"), position, Main.MouseTextColorReal, 1, 0, 0);
-		}
+		Vector2 position = _slot.GetDimensions().ToRectangle().TopRight() + new Vector2(6, 0);
+		Color color = ChromaticWax.SpecialColor;
+
+		string text = _slot.Item.IsAir 
+			? Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant") 
+			: $"{Language.GetTextValue("LegacyInterface.46")}: {((_hovered?.Type is int type) ? Enchanter.SpecialShop[type].ToString() : 3)}" + " [c/{0}:{1}]".FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), ModContent.GetInstance<ChromaticWax>().DisplayName);
+
+		Utils.DrawBorderString(spriteBatch, text, position, Main.MouseTextColorReal, 1, 0, 0);
 
 		base.Draw(spriteBatch);
+	}
+
+	/// <summary> Checks whether <paramref name="item"/> can be affected by any glyph within <see cref="Enchanter.SpecialShop"/>. </summary>
+	public static bool CanEnchant(Item item)
+	{
+		foreach (int type in Enchanter.SpecialShop.Keys)
+		{
+			if (ItemLoader.GetItem(type) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+				return true;
+		}
+
+		return false;
 	}
 
 	private void PopulateList()
@@ -208,14 +249,6 @@ public class EnchanterUI : AutoUIState
 		_infoList.AddEntry(info);
 
 		info = new CatalogueInfo();
-		info.Width.Set(width / 2, 0);
-		info.Height.Set(30, 0);
-		info.HAlign = 0.5f;
-		info.Action += PriceInfo_Action;
-
-		_infoList.AddEntry(info);
-
-		info = new CatalogueInfo();
 		info.Width.Set(width, 0);
 		info.Height.Set(32 + UIHelper.GetTextHeight(_hovered.Tooltip.Value, (int)info.Width.Pixels), 0);
 		info.Action += DescInfo_Action;
@@ -224,25 +257,6 @@ public class EnchanterUI : AutoUIState
 	}
 
 	#region draw actions
-	private bool PriceInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
-	{
-		if (_hovered == default)
-			return false;
-
-		bounds.Y -= 4;
-		Rectangle innerBounds = new(bounds.X, bounds.Y, 50, bounds.Height);
-		CatalogueUI.DrawPanel(spriteBatch, innerBounds, Color.Black * 0.3f, Color.Black * 0.2f);
-		Texture2D texture = ChromaticWax.WorldTexture.Value;
-
-		spriteBatch.Draw(texture, innerBounds.Left() + new Vector2(14, 0), null, Color.White, 0, texture.Size() / 2, 1, 0, 0);
-		Utils.DrawBorderString(spriteBatch, Enchanter.SpecialShop[_hovered.Type].ToString(), innerBounds.Right() + new Vector2(-12, 4), Main.MouseTextColorReal, 0.9f, 0.5f, 0.5f);
-
-		if (innerBounds.Contains(Main.MouseScreen.ToPoint()))
-			Main.hoverItemName = Language.GetTextValue("LegacyInterface.46");
-
-		return false;
-	}
-
 	private bool NameInfo_Action(SpriteBatch spriteBatch, Rectangle bounds)
 	{
 		if (_hovered == default)

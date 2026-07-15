@@ -2,6 +2,20 @@
 
 public static class DrawHelpers
 {
+	public static BlendState AdditiveNoAlpha = new BlendState
+	{
+		AlphaBlendFunction = BlendFunction.Add,
+		ColorBlendFunction = BlendFunction.Add,
+		ColorSourceBlend = Blend.SourceAlpha,
+		ColorDestinationBlend = Blend.One,
+		AlphaSourceBlend = Blend.SourceAlpha,
+		AlphaDestinationBlend = Blend.One,
+		ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels1 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels2 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels3 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue
+	};
+
 	public delegate void DelegateAction(Vector2 positionOffset, Color colorMod);
 	public static Color MulticolorLerp(float increment, params Color[] colors)
 	{

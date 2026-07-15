@@ -37,13 +37,13 @@ public class EnchantedStamp : ModItem
 
 	private static bool ReplacePrefixes(Item item, int prefix)
 	{
-		if (!Main.gameMenu)
+		if (prefix != -3 && !Main.gameMenu)
 		{
 			var stampToggle = ModContent.GetInstance<StampToggle>();
-			if (stampToggle.Active() && stampToggle.CurrentState != StampToggle.InactiveState && WorldGen.genRand.NextBool(5)) //Randomly replace prefixes with Glyph effects when active
+			if (stampToggle.Active() && stampToggle.CurrentState != StampToggle.InactiveState && Main.rand.NextBool(5)) //Randomly replace prefixes with Glyph effects when active
 			{
 				GlyphItem[] array = ModContent.GetContent<GlyphItem>().ToArray();
-				GlyphItem glyphItem = array[WorldGen.genRand.Next(array.Length)];
+				GlyphItem glyphItem = array[Main.rand.Next(array.Length)];
 
 				if (item.SetGlyph(new(glyphItem.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)) && item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
 					glyphGlobalItem.StartAnimation();

@@ -98,8 +98,14 @@ public class PrefixVoucher : ModItem
 			return _info = new(color, rare, text, source);
 		}
 
-		return _info = new(color, rare, string.Empty, Rectangle.Empty);
+		//Apply a default name override
+		Item.ClearNameOverride();
+		Item.SetNameOverride(Item.Name.Remove(0, 4));
+
+		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty); //Display "None"
 	}
+
+	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
 
 	public static int RollRandomPrefix()
 	{
@@ -167,7 +173,9 @@ public class PrefixVoucher : ModItem
 	public override void NetReceive(BinaryReader reader)
 	{
 		prefix = reader.ReadInt32();
-		//FindInfo();
+
+		if (!Main.dedServ)
+			FindInfo();
 	}
 
 	public override void SaveData(TagCompound tag) => tag[nameof(prefix)] = prefix;
@@ -175,6 +183,8 @@ public class PrefixVoucher : ModItem
 	public override void LoadData(TagCompound tag)
 	{
 		prefix = tag.GetInt(nameof(prefix));
-		//FindInfo();
+
+		if (!Main.dedServ)
+			FindInfo();
 	}
 }

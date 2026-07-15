@@ -1,16 +1,12 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.Graphics;
-using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Glyphs.Blaze;
@@ -19,50 +15,9 @@ public class BlazeGlyph : GlyphItem
 {
 	public sealed class BlazePlayer : ModPlayer
 	{
-		internal class BlazeDebuff : ModBuff
-		{
-			public override void SetStaticDefaults()
-			{
-				Main.debuff[Type] = true;
-				Main.pvpBuff[Type] = true;
-				Main.buffNoSave[Type] = true;
-				Main.buffNoTimeDisplay[Type] = true;
-				BuffID.Sets.LongerExpertDebuff[Type] = true;
-			}
-
-			public override void Update(Player player, ref int buffIndex)
-			{
-				player.GetModPlayer<BlazePlayer>().hasDebuff = true;
-
-				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
-
-				if (Main.rand.NextBool())
-				{
-					var particle = new EmberParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-					particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-					ParticleHandler.SpawnParticle(particle);
-				}
-
-				if (Main.rand.NextBool(6))
-					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
-
-				if (Main.rand.NextBool(4))
-					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
-			}
-		}
-
-		public bool hasDebuff;
-		public override void ResetEffects()
-		{
-			hasDebuff = false;
-		}
-
 		public override void UpdateBadLifeRegen()
 		{
-			if (hasDebuff && Player.statLife > 5)
+			if (Player.HasBuff<BlazeDebuff>() && Player.statLife > 5)
 			{
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
@@ -170,6 +125,43 @@ public class BlazeGlyph : GlyphItem
 		}
 	}
 
+	public sealed class BlazeDebuff : ModBuff
+	{
+		public override void SetStaticDefaults()
+		{
+			Main.debuff[Type] = true;
+			Main.pvpBuff[Type] = true;
+			Main.buffNoSave[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+
+			BuffID.Sets.LongerExpertDebuff[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (!Main.dedServ)
+			{
+				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+
+				if (Main.rand.NextBool())
+				{
+					var particle = new EmberParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+					particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
+					ParticleHandler.SpawnParticle(particle);
+				}
+
+				if (Main.rand.NextBool(6))
+					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
+					{
+						Layer = ParticleLayer.BelowNPC
+					});
+
+				if (Main.rand.NextBool(4))
+					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
+			}
+		}
+	}
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -271,6 +263,9 @@ public class BlazeGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
+		if (Main.dedServ)
+			return;
+
 		float sin = (float)Math.Abs(Math.Sin(Main.timeForVisualEffects * 0.005f));
 		float cos = (float)Math.Abs(Math.Cos(Main.timeForVisualEffects * 0.0075f));
 
@@ -302,7 +297,6 @@ public class BlazeGlyph : GlyphItem
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.25f, 0.07f, EaseFunction.EaseQuadOut, 60, false));
-
 			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.5f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
 
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
@@ -326,19 +320,21 @@ public class BlazeGlyph : GlyphItem
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (Main.dedServ)
+			return;
+
 		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 
 		for (int i = 0; i < 3; i++)
 		{
 			Dust.NewDustPerfect(position + normalized * item.width, DustID.Torch, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 70, default, 1.2f).noGravity = true;
-
 			ParticleHandler.SpawnParticle(new CurvingEmberParticle(position + normalized * item.width, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1.2f), Color.DarkOrange, 0.05f, 40, -Math.Sign(velocity.X), 20));
 		}
 	}
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
-		if (Main.rand.NextBool(3 + 1 * projectile.extraUpdates))
+		if (!Main.dedServ && Main.rand.NextBool(3 + 1 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Torch, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(0.9f, 1.5f)).noGravity = true;
 	}
 }
