@@ -1,4 +1,5 @@
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
@@ -12,6 +13,8 @@ public class BambooHalberd : ModItem
 		private readonly int lungeLength = 54;
 
 		public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooHalberd.DisplayName");
+
+		public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 		public override void SetDefaults()
 		{

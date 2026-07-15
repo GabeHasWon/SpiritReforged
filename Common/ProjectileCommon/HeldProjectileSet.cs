@@ -22,7 +22,10 @@ internal class HeldProjectileSet : ModSystem
 		ProjectileID.MonkStaffT3_Alt, ProjectileID.Celeb2Weapon, ProjectileID.ThunderSpear, ProjectileID.Terragrim, ProjectileID.GladiusStab, ProjectileID.RulerStab, 
 		ProjectileID.ShadowJoustingLance, ProjectileID.HallowJoustingLance, ProjectileID.PiercingStarlight, ProjectileID.CopperShortswordStab, ProjectileID.TinShortswordStab, 
 		ProjectileID.IronShortswordStab, ProjectileID.LeadShortswordStab, ProjectileID.SilverShortswordStab, ProjectileID.TungstenShortswordStab, ProjectileID.GoldShortswordStab, 
-		ProjectileID.PlatinumShortswordStab, ProjectileID.HiveFive, ProjectileID.VortexBeater, ProjectileID.Valor, ProjectileID.LaserDrill);
+		ProjectileID.PlatinumShortswordStab, ProjectileID.HiveFive, ProjectileID.VortexBeater, ProjectileID.Valor, ProjectileID.LaserDrill,
+		ProjectileID.Mace, ProjectileID.ChainKnife, ProjectileID.FlamingMace, ProjectileID.BallOHurt, ProjectileID.TheMeatball,
+		ProjectileID.BlueMoon, ProjectileID.Sunfury, ProjectileID.ChainGuillotine, ProjectileID.TheDaoofPow, ProjectileID.Anchor, ProjectileID.DripplerFlail, ProjectileID.BoxingGlove,
+		ProjectileID.GolemFist, ProjectileID.Flairon);
 
 	public static readonly bool[] SkipAutoHeldCheck = ProjectileID.Sets.Factory.CreateNamedSet(SpiritReforgedMod.Instance, nameof(SkipAutoHeldCheck))
 		.Description("Whether this projectile ID skips the auto-check for Reforged's automatic held projectile detection system.")

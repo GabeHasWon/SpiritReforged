@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -26,6 +27,8 @@ public class ReefSpearProjectile : ModProjectile
 	private bool _hitEffectCooldown = false;
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.ReefSpear.DisplayName");
+
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
 	{

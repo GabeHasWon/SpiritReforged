@@ -3,6 +3,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -109,6 +110,8 @@ public class WindshearScepter : ModItem
 
 	public class WindshearScepterSwing : SwungProjectile
 	{
+		public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 		public override string Texture => ModContent.GetInstance<WindshearScepter>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<WindshearScepter>().DisplayName;
 

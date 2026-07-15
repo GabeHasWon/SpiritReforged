@@ -154,6 +154,7 @@ public class HuntingRifleProj : ModProjectile
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.HuntingRifle.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
     {

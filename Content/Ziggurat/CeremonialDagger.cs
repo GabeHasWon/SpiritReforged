@@ -1,18 +1,19 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Forest.RoguesCrest;
+using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Ziggurat.Windshear;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using SpiritReforged.Content.Ziggurat.Windshear;
-using SpiritReforged.Common.ItemCommon;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat;
@@ -87,6 +88,8 @@ public class CeremonialDaggerSwing : SwungProjectile
 	public override LocalizedText DisplayName => ModContent.GetInstance<CeremonialDagger>().DisplayName;
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
+
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30);
 
