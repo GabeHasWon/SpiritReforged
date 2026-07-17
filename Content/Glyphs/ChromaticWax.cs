@@ -353,10 +353,10 @@ public abstract class GlyphItem : ModItem
 						Height = 30 * progress,
 						Length = 240,
 						Color = Color.Black * 0.5f
-					}, blurEffect);
+					}, blurEffect, useUiMatrix: true);
 
-					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect);
-					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect);
+					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect, useUiMatrix: true);
+					PrimitiveRenderer.DrawPrimitiveShape(coloredLine, blurEffect, useUiMatrix: true);
 
 					spriteBatch.Draw(splashTexture, position, null, Color.White * EaseFunction.EaseCubicOut.Ease(progress), 0, splashTexture.Size() / 2, splashScale, 0, 0);
 				}

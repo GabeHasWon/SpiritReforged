@@ -199,7 +199,7 @@ public class EnchantmentUI : AutoUIState
 			{
 				Point16 target = EnchantedWorkbench.ActiveCoordinates;
 
-				EnchantedWorkbench.Deactivate(target.X, target.Y);
+				//EnchantedWorkbench.Deactivate(target.X, target.Y);
 				EnchantedWorkbench.RemoveCoords();
 			}
 		}
