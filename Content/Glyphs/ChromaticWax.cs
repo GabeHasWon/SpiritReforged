@@ -1,5 +1,6 @@
 using Humanizer;
 using ReLogic.Graphics;
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -170,6 +171,9 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
+		if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
+			return;
+
 		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
 		{
 			// Bee gun is just so many projectiles
@@ -271,7 +275,7 @@ public abstract class GlyphItem : ModItem
 
 		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			if (!item.channel && HasGlyph(out var glyphItem))
+			if (ModContent.GetInstance<ReforgedClientConfig>().GlyphItemVisualEffects && !item.channel && HasGlyph(out var glyphItem))
 				glyphItem.GlyphShootEffects(item, player, source, position, velocity, type, damage, knockback);
 
 			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
@@ -299,7 +303,7 @@ public abstract class GlyphItem : ModItem
 
 		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
 		{
-			if (HasGlyph(out var glyphItem))
+			if (HasGlyph(out var glyphItem) && ModContent.GetInstance<ReforgedClientConfig>().GlyphItemVisualEffects)
 				glyphItem.UpdateInWorld(item, ref gravity, ref maxFallSpeed);
 		}
 
@@ -307,8 +311,11 @@ public abstract class GlyphItem : ModItem
 		{
 			if (HasGlyph(out var glyphItem))
 			{
-				glyphItem.DrawInWorld(item, spriteBatch, item.GetDrawParams(lightColor, rotation));
-				return false;
+				if (ModContent.GetInstance<ReforgedClientConfig>().GlyphItemVisualEffects)
+				{
+					glyphItem.DrawInWorld(item, spriteBatch, item.GetDrawParams(lightColor, rotation));
+					return false;
+				}			
 			}
 
 			return true;
@@ -487,10 +494,10 @@ public abstract class GlyphItem : ModItem
 
 	public virtual void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input) { }
 
-	/// <summary> Effects that should happen when an item with a glyph shoots a projectile </summary>
+	/// <summary> Visual effects that should happen when an item with a glyph shoots a projectile </summary>
 	public virtual void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) { }
 
-	/// <summary> General update hook called for projectiles affected by glyphs, used primarily for particles and other visual effects </summary>
+	/// <summary> General update hook called for projectiles affected by glyphs, used only for particles and other visual effects </summary>
 	public virtual void UpdateGlyphProjectile(Projectile projectile) { }
 }
 #endregion

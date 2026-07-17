@@ -20,6 +20,12 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(1)]
 	public float ScreenshakeStrength { get; set; }
 
+	[DefaultValue(true)]
+	public bool GlyphProjectileVisualEffects { get; set; }
+
+	[DefaultValue(true)]
+	public bool GlyphItemVisualEffects { get; set; }
+
 	[DefaultValue(false)]
 	[ReloadRequired]
 	public bool DisableWater { get; set; }

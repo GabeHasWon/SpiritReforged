@@ -35,6 +35,16 @@ ReforgedClientConfig: {
 	}
 
 	Headers.Developer: Для разработчиков
+
+	GlyphProjectileEffects: {
+		// Label: Glyph Projectile Effects
+		// Tooltip: ""
+	}
+
+	GlyphItemEffects: {
+		// Label: Glyph Item Effects
+		// Tooltip: ""
+	}
 }
 
 ReforgedServerConfig: {
