@@ -119,8 +119,21 @@ public class MoonlightGlyph : GlyphItem
 
 			Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
 
-			CombatText.NewText(target.getRect(), orange, Math.Max((int)(damageDone * 0.8f), 1), hit.Crit);
-			int magicDamage = CombatText.NewText(target.getRect(), Color.White, Math.Max((int)(damageDone * 0.2f), 1), hit.Crit);
+			var rect = target.getRect();
+
+			int damage = Math.Max((int)(damageDone * 0.8f), 1);
+
+			CombatText.NewText(rect, orange, damage, hit.Crit);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				NetMessage.SendData(MessageID.CombatTextInt, number: (int)orange.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
+			
+			damage = Math.Max((int)(damageDone * 0.2f), 1);
+
+			int magicDamage = CombatText.NewText(rect, Color.White, damage, hit.Crit);
+			
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				NetMessage.SendData(MessageID.CombatTextInt, number: (int)orange.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
 
 			ColoredCombatText.AddCombatText(magicDamage, Color.RoyalBlue, Color.DarkSlateBlue);
 

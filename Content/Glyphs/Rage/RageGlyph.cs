@@ -6,6 +6,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -346,7 +347,14 @@ public class RageGlyph : GlyphItem
 
 			public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 			{
-				int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
+				var rect = target.getRect();
+
+				int damage = Math.Max(damageDone, 1);
+
+				int idx = CombatText.NewText(rect, Color.White, damage, hit.Crit);
+				
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					NetMessage.SendData(MessageID.CombatTextInt, number: (int)Color.White.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
 
 				ColoredCombatText.AddCombatText(idx, Color.Red, Color.DarkRed);
 

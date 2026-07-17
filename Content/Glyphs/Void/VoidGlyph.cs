@@ -576,7 +576,14 @@ public class VoidGlyph : GlyphItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			int idx = CombatText.NewText(target.getRect(), Color.White, Math.Max(damageDone, 1), hit.Crit);
+			var rect = target.getRect();
+
+			int damage = Math.Max(damageDone, 1);
+
+			int idx = CombatText.NewText(rect, Color.White, damage, hit.Crit);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				NetMessage.SendData(MessageID.CombatTextInt, number: (int)Color.White.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
 
 			ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
 
