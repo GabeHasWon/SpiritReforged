@@ -104,8 +104,6 @@ public class Enchanter : ModNPC
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
 
-	public override string GetChat() => Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Dialogue." + Main.rand.Next(5));
-
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
 
 	public override bool CanTownNPCSpawn(int numTownNPCs)
@@ -128,7 +126,7 @@ public class Enchanter : ModNPC
 		List<string> names = [];
 
 		for (int i = 0; i < 6; ++i)
-			names.Add(Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Names." + i));
+			names.Add(Language.GetTextValue("Mods.SpiritReforged.NPCs.Enchanter.Names." + i));
 
 		return names;
 	}

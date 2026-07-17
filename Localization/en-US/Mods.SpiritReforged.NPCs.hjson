@@ -694,13 +694,42 @@ Enchanter: {
 	DisplayName: Enchanter
 	Entry: ""
 
+	Names: {
+		0: Albion
+		1: Bertilak
+		2: Eango
+		3: Enki
+		4: Gil
+		5: Heka
+		6: Ilmarinen
+		7: Itani
+		8: Kokabiel
+		9: Mallyck
+		10: Mazdak
+		11: Morrigan
+		12: Myrrdin
+		13: Oeti
+		14: Ose
+		15: Sulyvahn
+		16: Tethra
+		17: Themisto
+		18: Vorv
+		19: Ywain
+	}
+
 	TownNPCMood: {
 		Content: I am content.
-		NoHome: I hate not having a home.
-		FarFromHome: I am too far from home.
-		LoveSpace: I love having so much space.
-		DislikeCrowded: I dislike how crowded I am.
-		HateCrowded: I hate how crowded I am.
+		NoHome: I don't imagine you've got a place for me to rest my head?
+		FarFromHome: I am quite far for from my workspace and bed. May we return home soon?
+		LoveSpace: This town has a satisfying populace. Never lonely, and my study remains a quiet and peaceful sanctuary...
+		DislikeCrowded: It is a bit difficult for me to get ample rest with all this chatter around.
+		HateCrowded: There are far too many people living here. One too many people are knocking down my door asking for magical enchantments and I've had enough.
+		LoveNPC: "{NPCName.Wizard}'s hot chocolate is absolutely to die for. The last time I went to exchange notes with them, they pulled a coin out from behind my ear! I couldn't stop laughing."
+		LikeNPC: I never thought loud, crackling lights in the sky could make my day, but i'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
+		DislikeNPC: "{NPCName.GoblinTinkerer}'s methods of weapon augmentation are barbaric. Magical implements do not enjoy being brutalized by a hammer!"
+		HateNPC: I cannot stand {NPCName.DD2Bartender} 's bar stories... he has one too many stories pertaining to the diminishing of kobolds.
+		LikeBiome: Here above the clouds, I feel so much more connected to the world's magical forces. Not to mention that the rain can't put my candles out...
+		DislikeBiome: I hate living so close to such an abundant source of paraffin that's also so fickle! I'm covered in countless stings and scrapes.
 		LikeNPC_Princess: I like {NPCName}.
 		Princess_LovesNPC: I like {NPCName}.
 	}
