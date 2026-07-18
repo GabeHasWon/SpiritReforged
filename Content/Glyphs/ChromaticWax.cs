@@ -4,6 +4,7 @@ using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -125,6 +126,36 @@ public class GlyphGlobalNPC : GlobalNPC
 		if (npc.type is NPCID.DarkCaster or NPCID.GoblinSorcerer)
 		{
 			npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
+		}
+
+		// Crossmod Wax Drops
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.CheckFind("BlueHag", out ModNPC blueHag) && CrossMod.Thorium.CheckFind("GreenHag", out ModNPC greenHag) && CrossMod.Thorium.CheckFind("CyanHag", out ModNPC cyanHag) && CrossMod.Thorium.CheckFind("RedHag", out ModNPC redHag))
+			{
+				int[] hags = { blueHag.Type, greenHag.Type, redHag.Type, cyanHag.Type };
+
+				if (hags.Contains(npc.type))
+					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
+			}
+
+			if (CrossMod.Thorium.CheckFind("Illusionist", out ModNPC illusionist))
+			{
+				if (npc.type == illusionist.Type)
+				{
+					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
+					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
+				}
+			}
+		}
+
+		if (CrossMod.Redemption.Enabled)
+		{
+			if (CrossMod.Redemption.CheckFind("MoonflareCaster", out ModNPC moonflareCaster))
+			{
+				if (npc.type == moonflareCaster.Type)
+					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
+			}
 		}
 	}
 
