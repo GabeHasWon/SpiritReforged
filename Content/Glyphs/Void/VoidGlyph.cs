@@ -9,6 +9,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.Audio;
@@ -399,6 +400,22 @@ public class VoidGlyph : GlyphItem
 			Projectile.localNPCHitCooldown = 15;
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(_dying);
+			writer.Write(_stacksOnDeath);
+			writer.Write(_pulseTimer);
+			writer.Write(_attackTimer);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			_dying = reader.ReadBoolean();
+			_stacksOnDeath = reader.ReadInt32();
+			_pulseTimer = reader.ReadInt32();
+			_attackTimer = reader.ReadInt32();
+		}
+
 		public override bool? CanDamage() => _pulseTimer > 20;
 
 		public override void AI()
@@ -418,7 +435,7 @@ public class VoidGlyph : GlyphItem
 			{
 				SingularityVisualSystem.projectiles.Add(this);
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 3f, Pitch = -0.5f }, Projectile.Center);
-				
+
 				Projectile.timeLeft = SINGULARITY_LIFETIME;
 				Projectile.damage += 5;
 				Vector2 oldCenter = Projectile.Center;
@@ -440,6 +457,8 @@ public class VoidGlyph : GlyphItem
 				}			
 
 				_dying = true;
+
+				Projectile.netUpdate = true;
 			}
 
 			if (_dying)
