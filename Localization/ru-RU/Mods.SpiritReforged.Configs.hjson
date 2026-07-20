@@ -38,11 +38,21 @@ ReforgedClientConfig: {
 
 	GlyphProjectileEffects: {
 		// Label: Glyph Projectile Effects
-		// Tooltip: ""
+		// Tooltip: Determines if projectiles with glyphs should create visual effects
 	}
 
 	GlyphItemEffects: {
 		// Label: Glyph Item Effects
+		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+	}
+
+	GlyphProjectileVisualEffects: {
+		// Label: Glyph Projectile Visual Effects
+		// Tooltip: ""
+	}
+
+	GlyphItemVisualEffects: {
+		// Label: Glyph Item Visual Effects
 		// Tooltip: ""
 	}
 }
