@@ -76,7 +76,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			Vector2 drawPos = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset - new Vector2(8, 16));
 			float rotation = 0f;
 
-			if (tile.WallType <= 0)
+			if (tile.WallType <= WallID.None)
 				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
 
 			drawPos.X += rotation * 2f;
@@ -98,7 +98,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			var position = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset);
 			float rotation = 0f;
 
-			if (tile.WallType <= 0)
+			if (tile.WallType <= WallID.None)
 				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
 
 			if (rotation < 0f)

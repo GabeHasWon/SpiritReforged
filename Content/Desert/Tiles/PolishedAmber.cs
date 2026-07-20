@@ -5,11 +5,12 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
 /// <summary> A placeable amber tile that also generates naturally. </summary>
-public class PolishedAmber : ModTile, IAutoloadTileItem
+public class PolishedAmber : ModTile, ILoadItem
 {
 	public sealed class AmberGridOverlay : TileGridOverlay
 	{
@@ -64,8 +65,6 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		}
 	}
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(10).AddIngredient(ItemID.Amber).AddTile(TileID.WorkBenches).Register();
@@ -78,6 +77,7 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = false;
 		Main.tileLighted[Type] = true;
+
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(Color.Orange);
@@ -85,8 +85,6 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 
 		DustType = DustID.GemAmber;
 		MineResist = 0.5f;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);

@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
-public class OganessonMossBrickWall : ModWall, IAutoloadWallItem
+public class OganessonMossBrickWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

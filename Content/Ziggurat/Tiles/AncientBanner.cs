@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class AncientBanner : ModTile, ISwayTile, IAutoloadTileItem
+public class AncientBanner : ModTile, ISwayTile, ILoadItem
 {
 	public int Style => (int)TileDrawing.TileCounterType.MultiTileVine;
 

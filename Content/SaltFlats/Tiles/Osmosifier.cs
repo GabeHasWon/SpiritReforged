@@ -9,15 +9,17 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ModLoader.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
+public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 {
 	private const int FrameHeight = 38;
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
+	public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.sellPrice(gold: 1);
+
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe()
 		.AddRecipeGroup("SilverBars", 5)
 		.AddTile(TileID.Anvils)
 		.Register();

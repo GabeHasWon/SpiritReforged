@@ -1,15 +1,18 @@
 using System.Linq;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class PaintingTile : FurnitureTile
+public abstract class PaintingTile : ModTile, ILoadItem
 {
 	public virtual Point TileSize => new(2, 2);
 
-	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 2);
+	public virtual void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(gold: 2);
 
-	public override void StaticDefaults()
+	public virtual void AddItemRecipes(ModItem modItem) { }
+
+	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;

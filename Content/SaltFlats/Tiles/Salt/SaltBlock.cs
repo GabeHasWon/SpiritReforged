@@ -1,11 +1,11 @@
 using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
-public abstract class SaltBlock : ModTile, IAutoloadTileItem
+public abstract class SaltBlock : ModTile, ILoadItem
 {
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)

@@ -6,10 +6,11 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ZigguratTorch : ModTile, IAutoloadTileItem
+public class ZigguratTorch : ModTile, ILoadItem
 {
 	public const int FrameHeight = 20;
 	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal<ZigguratTorch>("ZigguratTorch_Flame", false);
@@ -24,8 +25,9 @@ public class ZigguratTorch : ModTile, IAutoloadTileItem
 		PitchVariance = 0.2f
 	};
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 5;
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddIngredient(ItemID.Torch, 1).Register();
+	public void SetItemStaticDefaults(ModItem modItem) => modItem.Item.ResearchUnlockCount = 5;
+
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 2).AddIngredient(ItemID.Torch).Register();
 
 	public override void SetStaticDefaults()
 	{

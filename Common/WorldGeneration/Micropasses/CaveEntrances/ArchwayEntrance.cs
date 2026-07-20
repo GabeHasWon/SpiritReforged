@@ -171,7 +171,7 @@ internal class ArchwayEntrance : CaveEntrance
 					Tile tile = Main.tile[i, j];
 					tile.HasTile = false;
 
-					if (tile.WallType > 0)
+					if (tile.WallType > WallID.None)
 						tile.WallType = distance > size * 0.9f ? WallID.Dirt : WallID.GrassUnsafe;
 				}
 			}

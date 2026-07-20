@@ -17,11 +17,12 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 using static SpiritReforged.Content.Ziggurat.Tiles.ScarabAltar;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
+public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 {
 	public sealed class FloatingGem : ModProjectile
 	{
@@ -155,7 +156,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	internal static int FablesDeadStormlionLarvaType = -1;
 	internal static int FablesStormlionBucketType = -1;
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item)
+	void ILoadItem.AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5)
 			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();

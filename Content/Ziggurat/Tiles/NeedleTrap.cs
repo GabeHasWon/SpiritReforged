@@ -3,17 +3,15 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class NeedleTrap : ModTile, IAutoloadTileItem
+public class NeedleTrap : ModTile, ILoadItem
 {
-	/// <summary>
-	/// Utility class solely used to run player step functionality on sp/server.
-	/// </summary>
+	/// <summary> Utility class solely used to run player step functionality on sp/server. </summary>
 	public class NeedleTrapPlayer : ModPlayer
 	{
 		public override void PreUpdate()
@@ -29,7 +27,8 @@ public class NeedleTrap : ModTile, IAutoloadTileItem
 	public static readonly SoundStyle Extend = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapExtend") { MaxInstances = 3 };
 	public static readonly SoundStyle Retract = new("SpiritReforged/Assets/SFX/Tile/SpikeTrapRetract") { MaxInstances = 3 };
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 30;
+
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddRecipeGroup("CopperBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()

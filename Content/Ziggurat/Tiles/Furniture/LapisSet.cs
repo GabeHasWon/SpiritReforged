@@ -1,22 +1,44 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
+using static TileHelper.Autoloader;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles.Furniture;
 
-public class LapisSet : FurnitureSet
+public class LapisSet : ILoadable
 {
-	public override string Name => "Lapis";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<CarvedLapis>(), new(0.9f, 0.9f, 0.74f), DustID.Cobalt);
-	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Candle, Types.Lantern);
+	public static Dictionary<string, int> TileTypes { get; } = [];
+
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadLapisFurniture;
+
+	private static void LoadLapisFurniture()
+	{
+		string saltName = typeof(LapisSet).Namespace + ".Lapis";
+		TileHelper.ArgumentCollection arguments;
+
+		LoadFurnitureSet(saltName, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
+			- new BarrelTile()
+			- new BenchTile()
+			- new CandleTile()
+			- new LanternTile(),
+			AutoContent.ItemType<CarvedLapis>()
+		);
+
+		foreach (FurnitureTile tile in arguments.Arguments)
+			TileTypes.Add(tile.FurnitureName, tile.Type); //Collect the resulting types
+
+		LapisCandle lapisCandle = ModContent.GetInstance<LapisCandle>();
+		TileTypes.Add(lapisCandle.FurnitureName, lapisCandle.Type); //Manually include the candle as it's not added to arguments
+	}
+
+	public void Unload() { }
 }
 
-public class LapisCandle : CandleTile
+public class LapisCandle : CandleTile, ILoadItem
 {
-	public override IFurnitureData Info => ModContent.GetInstance<LapisSet>().GetInfo(this);
+	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<CarvedLapis>());
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
@@ -29,14 +51,11 @@ public class LapisCandle : CandleTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
-		AddMapEntry(CommonColor, Language.GetText("ItemName.Candle"));
+		AddMapEntry(MapColor, Language.GetText("ItemName.Candle"));
+
 		AdjTiles = [TileID.Candles];
 		DustType = -1;
-	}
-}
 
-[AutoloadGlowmask("0,0,0", false, true)]
-public class LapisLantern : LanternTile
-{
-	public override IFurnitureData Info => ModContent.GetInstance<LapisSet>().GetInfo(this);
+		base.SetStaticDefaults();
+	}
 }

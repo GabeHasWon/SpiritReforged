@@ -19,6 +19,9 @@
 	<Reference Include="RubbleAutoloader">
 		<HintPath>lib\RubbleAutoloader.dll</HintPath>
 	</Reference>
+	  <Reference Include="TileHelper">
+		  <HintPath>lib\TileHelper.dll</HintPath>
+	  </Reference>
 	<Reference Include="ILLogger">
 		<HintPath>lib\ILLogger.dll</HintPath>
 	</Reference>

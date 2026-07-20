@@ -1,12 +1,11 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GildedRedSandstone : ModTile, IAutoloadTileItem
+public class GildedRedSandstone : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sandstone, 20).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()

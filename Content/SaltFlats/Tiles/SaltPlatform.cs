@@ -1,13 +1,11 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltPlatform : ModTile, IAutoloadTileItem
+public class SaltPlatform : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 200;
-
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(2).AddIngredient(AutoContent.ItemType<SaltBlockDull>()).Register();
@@ -43,6 +41,7 @@ public class SaltPlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
+
 		DustType = DustID.Pearlsand;
 		AdjTiles = [TileID.Platforms];
 	}

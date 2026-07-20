@@ -1,2 +1,2 @@
-v0.2.1.1
-- Fixed Acacia Trees dropping Chlorophyte Helmets instead of spawning a Sparrow lol
+v0.2.1.2
+- Fixed Enlil statue not shimmering into Bast statues properly

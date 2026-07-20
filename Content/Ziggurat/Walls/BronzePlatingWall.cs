@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Ziggurat.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
-public class BronzePlatingWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class BronzePlatingWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("BronzePlatingWallUnsafe").Type;
 

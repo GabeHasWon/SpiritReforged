@@ -21,7 +21,7 @@ internal class ResistanceTextHandler : ILoadable
 			if (resistanceDamage == 0)
 				return;
 
-			var shield = TextureAssets.Extra[58].Value;
+			var shield = TextureAssets.Extra[ExtrasID.DefenseShield].Value;
 
 			var cText = Main.combatText[cIndex];
 			int time = Math.Clamp(cText.lifeTime - 35, 0, timeMax);

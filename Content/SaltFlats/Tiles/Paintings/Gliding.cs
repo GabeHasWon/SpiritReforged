@@ -10,10 +10,11 @@ namespace SpiritReforged.Content.SaltFlats.Tiles.Paintings;
 public class Gliding : PaintingTile
 {
 	public override Point TileSize => new(4, 2);
-	public override void StaticDefaults()
+
+	public override void SetStaticDefaults()
 	{
-		base.StaticDefaults();
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(Type, Condition.TimeDay, SpiritConditions.InSaltFlats)));
+		base.SetStaticDefaults();
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Painter, new NPCShop.Entry(this.AutoItemType(), Condition.TimeDay, SpiritConditions.InSaltFlats)));
 	}
 
 	public override void AddItemRecipes(ModItem item) 
