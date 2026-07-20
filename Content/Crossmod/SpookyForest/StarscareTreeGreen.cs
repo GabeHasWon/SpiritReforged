@@ -37,8 +37,8 @@ public class StarscareTreeGreen : ModTree
 
 	public override void SetTreeFoliageSettings(int i, int j, Tile tile, int xoffset, ref int treeFrame, int floorY, ref int topTextureFrameWidth, ref int topTextureFrameHeight) 
 	{
-		topTextureFrameWidth = 228;
-		topTextureFrameHeight = 136;
+		topTextureFrameWidth = 196;
+		topTextureFrameHeight = 144;
 	}
 
 	public override int TreeLeaf()

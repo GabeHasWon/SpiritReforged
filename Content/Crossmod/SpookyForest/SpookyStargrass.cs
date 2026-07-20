@@ -12,6 +12,7 @@ public class GreenSpookyStargrass : GrassTile
 {
 	public virtual int PlantsType => ModContent.TileType<GreenStargrassPlants>();
 	public virtual int VineType => ModContent.TileType<StargrassVine>();
+	protected virtual Color ParticleColor => new Color(157, 130, 80) * 0.66f;
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
@@ -33,13 +34,15 @@ public class GreenSpookyStargrass : GrassTile
 		//TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
 
 		RegisterItemDrop(ItemID.DirtBlock);
-		AddMapEntry(new Color(28, 216, 151));
+		AddGrassMapEntry();
 		DustType = DustID.Flare_Blue;
 
 		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
 
 		TileID.Sets.Conversion.Grass[Type] = true;
 	}
+
+	protected virtual void AddGrassMapEntry() => AddMapEntry(new Color(108, 180, 88));
 
 	public override void FloorVisuals(Player player)
 	{
@@ -62,7 +65,7 @@ public class GreenSpookyStargrass : GrassTile
 			bool left = true;
 
 			ParticleHandler.SpawnParticle(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
-				new Color(0, 157, 227) * 0.66f, Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
+				ParticleColor(), Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
 				{
 					p.Velocity = p.Velocity.RotatedBy(left ? 0.1f : -0.1f);
 
@@ -74,6 +77,7 @@ public class GreenSpookyStargrass : GrassTile
 				}));
 		}
 	}
+
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
@@ -112,6 +116,8 @@ public class GreenSpookyStargrass : GrassTile
 public class OrangeSpookyStargrass : GreenSpookyStargrass
 {
 	public override int PlantsType => ModContent.TileType<OrangeStargrassPlants>();
+	protected override Color ParticleColor => new Color(77, 196, 25) * 0.66f;
 
+	protected override void AddGrassMapEntry() => AddMapEntry(new Color(255, 156, 67));
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.35f, 0.35f, 0.05f);
 }
