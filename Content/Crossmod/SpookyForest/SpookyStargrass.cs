@@ -52,7 +52,7 @@ public class GreenSpookyStargrass : GrassTile
 			SpawnParticles(player);
 	}
 
-	internal static void SpawnParticles(Player player)
+	internal void SpawnParticles(Player player)
 	{
 		if (Main.rand.NextBool(5))
 		{
@@ -65,7 +65,7 @@ public class GreenSpookyStargrass : GrassTile
 			bool left = true;
 
 			ParticleHandler.SpawnParticle(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
-				ParticleColor(), Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
+				ParticleColor, Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
 				{
 					p.Velocity = p.Velocity.RotatedBy(left ? 0.1f : -0.1f);
 
@@ -77,7 +77,6 @@ public class GreenSpookyStargrass : GrassTile
 				}));
 		}
 	}
-
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
