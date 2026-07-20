@@ -55,7 +55,7 @@ public abstract class ClockTile : FurnitureTile
 		int hours = (int)time;
 		int minutes = (int)((time - hours) * 60.0);
 
-		bool use24Hour = CrossMod.RussianTranslate.Enabled;
+		bool use24Hour = CrossMod.RussianTranslate.Enabled && Language.ActiveCulture.Name == "ru-RU";
 
 		string timeText;
 

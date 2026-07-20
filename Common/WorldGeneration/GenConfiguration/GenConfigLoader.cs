@@ -96,7 +96,7 @@ internal class GenConfigLoader : ModSystem
 
 		int leftOffset = -274;
 
-		if (CrossMod.RussianTranslate.Enabled)
+		if (CrossMod.RussianTranslate.Enabled && Language.ActiveCulture.Name == "ru-RU")
 		{
 			leftOffset = -334;
 		}
