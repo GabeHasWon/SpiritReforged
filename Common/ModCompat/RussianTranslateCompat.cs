@@ -16,7 +16,7 @@ internal class RussianTranslateCompat : ModSystem
 	{
 		var spiritR = Mod;
 
-		if (!CrossMod.RussianTranslate.Enabled || Language.ActiveCulture.Name != "ru-RU")
+		if (!CrossMod.RussianLocalizable)
 			return;
 
 		var tru = CrossMod.RussianTranslate.Instance;
