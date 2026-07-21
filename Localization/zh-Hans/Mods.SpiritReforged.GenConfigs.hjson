@@ -705,16 +705,6 @@ Pages: {
 					'''
 			}
 
-			ChestItemCountMin: {
-				DisplayName: "[i:1298] （绿洲）最小宝箱物品"
-				Tooltip: 地下绿洲的宝箱中出现的物品的最小数量。
-			}
-
-			ChestItemCountRange: {
-				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
-				Tooltip: 追加到地下绿洲宝箱物品最小数量上的随机范围值。
-			}
-
 			FossilCount: {
 				DisplayName: "[i:SpiritReforged/PolishedAmberItem] （琥珀）矿脉数量"
 				Tooltip: 地下沙漠中琥珀矿脉的最大数量。
