@@ -2,6 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
@@ -15,6 +16,72 @@ namespace SpiritReforged.Content.Underground.Tiles;
 
 public sealed class EnchantedMirror : ModTile, ILoadItem
 {
+	public sealed class MirrorReturnPortal : ModProjectile, IInteractable
+	{
+		public override string Texture => ModContent.GetInstance<EnchantedMirror>().AutoModItem().Texture;
+
+		public Vector2 Origin
+		{
+			get => new(Projectile.ai[0], Projectile.ai[1]);
+			set
+			{
+				Projectile.ai[0] = value.X;
+				Projectile.ai[1] = value.Y;
+			}
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.tileCollide = false;
+			Projectile.Size = new(38);
+			Projectile.Opacity = 0;
+		}
+
+		public override void AI()
+		{
+			Vector2 compareSpot = Vector2.Zero;
+			Player owner = Main.player[Projectile.owner];
+
+			if (owner.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) && Projectile.Opacity == 1)
+			{
+				if (Main.mouseRight && Main.mouseRightRelease)
+				{
+					owner.Teleport(Origin); //Return
+					Projectile.Kill();
+				}
+			}
+
+			if (!Main.dedServ)
+			{
+				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.BlueFlare, 0, -5).noGravity = true;
+			}
+
+			Projectile.Opacity = MathHelper.Min(Projectile.Opacity + 0.1f, 1); //Fade in
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			float sine = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 60f);
+			float rotation = Projectile.rotation + (sine - 0.25f) * 0.05f;
+
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			Texture2D outline = TextureColorCache.ColorSolid(texture, Color.White);
+			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, sine * 5 + Projectile.gfxOffY);
+
+			DrawHelpers.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
+			{
+				Main.EntitySpriteDraw(texture, position + offset * 2, null, Color.Cyan.Additive() * 0.5f, rotation, texture.Size() / 2, Projectile.scale, 0);
+				Main.EntitySpriteDraw(texture, position + offset, null, Color.Cyan.Additive(), rotation, texture.Size() / 2, Projectile.scale, 0);
+			});
+
+			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(Color.LightCyan.Additive(130)), rotation, texture.Size() / 2, Projectile.scale, 0);
+
+			return false;
+		}
+
+		public override bool? CanDamage() => false;
+	}
+
 	#region special drawing
 	private static readonly EasyTarget MirrorTarget = new(), FilterTarget = new();
 	private static readonly HashSet<Point16> SpecialPositions = [];
@@ -130,6 +197,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 		Main.tileLighted[Type] = true;
+
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
@@ -154,6 +222,10 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 	public override bool RightClick(int i, int j)
 	{
 		Player player = Main.LocalPlayer;
+
+		(int left, int top) = Helpers.GetTopLeft(i, j);
+		Vector2 startPosition = new Vector2(left, top + 1).ToWorldCoordinates();
+
 		player.RemoveAllGrapplingHooks();
 		player.Spawn(PlayerSpawnContext.RecallFromItem);
 
@@ -167,6 +239,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		{ Layer = ParticleLayer.AbovePlayer, Rotation = 0 });
 
 		SoundEngine.PlaySound(Wisp.Death);
+		Projectile.NewProjectile(null, player.Center - new Vector2(0, 16), Vector2.Zero, ModContent.ProjectileType<MirrorReturnPortal>(), 0, 0, Main.myPlayer, startPosition.X, startPosition.Y);
 
 		return true;
 	}
