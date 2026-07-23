@@ -7,7 +7,6 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -46,9 +45,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		{
 			Player owner = Main.player[Projectile.owner];
 			Vector2 compareSpot = owner.Center;
-			
 
-			if (owner.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot))
+			if (owner.whoAmI == Main.myPlayer && owner.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot))
 			{
 				bool usingSmartCursor = Main.SmartCursorIsUsed || PlayerInput.UsingGamepad;
 				bool mouseOver = Projectile.Hitbox.Contains(Main.MouseWorld.ToPoint());
@@ -97,6 +95,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		{
 			float sine = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 60f);
 			float rotation = Projectile.rotation + (sine - 0.25f) * 0.05f;
+			float mult = (Projectile.owner == Main.myPlayer) ? 1 : 0.3f;
 
 			Texture2D texture = TextureAssets.Projectile[Type].Value;
 			Texture2D outline = TextureColorCache.ColorSolid(texture, Color.White);
@@ -104,14 +103,14 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 
 			DrawHelpers.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
 			{
-				Main.EntitySpriteDraw(texture, position + offset * 2, null, Color.Cyan.Additive() * 0.5f, rotation, texture.Size() / 2, Projectile.scale, 0);
-				Main.EntitySpriteDraw(texture, position + offset, null, Color.Cyan.Additive(), rotation, texture.Size() / 2, Projectile.scale, 0);
+				Main.EntitySpriteDraw(texture, position + offset * 2, null, Projectile.GetAlpha(Color.Cyan.Additive()) * 0.5f * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
+				Main.EntitySpriteDraw(texture, position + offset, null, Projectile.GetAlpha(Color.Cyan.Additive()) * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
 			});
 
-			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(Color.LightCyan.Additive(130)), rotation, texture.Size() / 2, Projectile.scale, 0);
+			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(Color.LightCyan.Additive(130)) * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
 
 			if (_inInteractionRange)
-				Main.EntitySpriteDraw(Highlight.Value, position, null, Projectile.GetAlpha(Color.Yellow), rotation, texture.Size() / 2, Projectile.scale, 0);
+				Main.EntitySpriteDraw(Highlight.Value, position, null, Projectile.GetAlpha(Color.Yellow) * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
 
 			return false;
 		}
