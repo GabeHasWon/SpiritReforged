@@ -7,9 +7,11 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using Terraria.GameInput;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
@@ -18,6 +20,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 {
 	public sealed class MirrorReturnPortal : ModProjectile, IInteractable
 	{
+		public static readonly Asset<Texture2D> Highlight = DrawHelpers.RequestLocal<EnchantedMirror>("EnchantedMirrorItem_Highlight", false);
+
 		public override string Texture => ModContent.GetInstance<EnchantedMirror>().AutoModItem().Texture;
 
 		public Vector2 Origin
@@ -30,33 +34,63 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			}
 		}
 
+		private bool _inInteractionRange;
+
 		public override void SetDefaults()
 		{
 			Projectile.tileCollide = false;
 			Projectile.Size = new(38);
-			Projectile.Opacity = 0;
 		}
 
 		public override void AI()
 		{
-			Vector2 compareSpot = Vector2.Zero;
 			Player owner = Main.player[Projectile.owner];
+			Vector2 compareSpot = owner.Center;
+			
 
-			if (owner.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot) && Projectile.Opacity == 1)
+			if (owner.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot))
 			{
-				if (Main.mouseRight && Main.mouseRightRelease)
+				bool usingSmartCursor = Main.SmartCursorIsUsed || PlayerInput.UsingGamepad;
+				bool mouseOver = Projectile.Hitbox.Contains(Main.MouseWorld.ToPoint());
+
+				_inInteractionRange = usingSmartCursor;
+
+				if (mouseOver)
 				{
-					owner.Teleport(Origin); //Return
-					Projectile.Kill();
+					owner.noThrow = 2;
+					owner.cursorItemIconEnabled = true;
+					owner.cursorItemIconID = ModContent.GetInstance<EnchantedMirror>().AutoItemType();
 				}
+
+				if (mouseOver || usingSmartCursor)
+				{
+					Main.HasInteractibleObjectThatIsNotATile = true;
+
+					if (Main.mouseRight && Main.mouseRightRelease)
+					{
+						Main.mouseRightRelease = false;
+
+						owner.tileInteractAttempted = true;
+						owner.tileInteractionHappened = true;
+						owner.releaseUseTile = false;
+
+						owner.Teleport(Origin, TeleportationStyleID.RecallPotion); //Return
+						Projectile.Kill();
+					}
+				}
+			}
+			else
+			{
+				_inInteractionRange = false;
 			}
 
 			if (!Main.dedServ)
 			{
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.BlueFlare, 0, -5).noGravity = true;
+				
+				if (Main.rand.NextBool())
+					ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
 			}
-
-			Projectile.Opacity = MathHelper.Min(Projectile.Opacity + 0.1f, 1); //Fade in
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -75,6 +109,9 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			});
 
 			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(Color.LightCyan.Additive(130)), rotation, texture.Size() / 2, Projectile.scale, 0);
+
+			if (_inInteractionRange)
+				Main.EntitySpriteDraw(Highlight.Value, position, null, Projectile.GetAlpha(Color.Yellow), rotation, texture.Size() / 2, Projectile.scale, 0);
 
 			return false;
 		}
@@ -228,6 +265,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 
 		player.RemoveAllGrapplingHooks();
 		player.Spawn(PlayerSpawnContext.RecallFromItem);
+		Main.mouseRightRelease = false;
 
 		for (int x = 0; x < 10; x++)
 			ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(player.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
@@ -238,10 +276,26 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		ParticleHandler.SpawnParticle(new SharpStarParticle(player.Center, Vector2.Zero, Color.White.Additive(), 0.7f, 20)
 		{ Layer = ParticleLayer.AbovePlayer, Rotation = 0 });
 
+		KillOldPortals(player, out int type);
+
 		SoundEngine.PlaySound(Wisp.Death);
-		Projectile.NewProjectile(null, player.Center - new Vector2(0, 16), Vector2.Zero, ModContent.ProjectileType<MirrorReturnPortal>(), 0, 0, Main.myPlayer, startPosition.X, startPosition.Y);
+		Projectile.NewProjectile(null, player.Center - new Vector2(0, 16), Vector2.Zero, type, 0, 0, Main.myPlayer, startPosition.X, startPosition.Y);
 
 		return true;
+	}
+
+	private static void KillOldPortals(Player owner, out int type)
+	{
+		type = ModContent.ProjectileType<MirrorReturnPortal>();
+
+		if (owner.ownedProjectileCounts[type] < 1)
+			return;
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.owner == owner.whoAmI && projectile.type == type)
+				projectile.Kill();
+		}
 	}
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
