@@ -298,6 +298,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		}
 	}
 
+	public override bool CanDrop(int i, int j) => false; //Don't drop the dedicated item
+
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
 		if (TileObjectData.IsTopLeft(i, j) && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates(16, 8)) < 100 * 100)
