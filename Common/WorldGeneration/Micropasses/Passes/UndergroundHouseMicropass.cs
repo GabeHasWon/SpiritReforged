@@ -115,7 +115,7 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 			}
 
 			if (!skipFlags.HasFlag(AddedHouseFlags.Mannequin) && WorldGen.genRand.NextBool(MannequinChance) 
-				&& PlaceDecorInRoom(room, y, WorldGen.genRand.NextBool() ? TileID.Womannequin : TileID.Mannequin, Main.rand.Next(2)))
+				&& PlaceDecorInRoom(room, y, WorldGen.genRand.NextBool() ? TileID.Womannequin : TileID.Mannequin, WorldGen.genRand.Next(2)))
 			{
 				hasPlaced = true;
 				skipFlags |= AddedHouseFlags.Mannequin;
@@ -123,13 +123,13 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 
 			if (!skipFlags.HasFlag(AddedHouseFlags.LoomHouse) && WorldGen.genRand.NextBool(LoomChance) && self.Type == HouseType.Wood)
 			{
-				if (PlaceDecorInRoom(room, y, TileID.Loom, Main.rand.Next(2)))
+				if (PlaceDecorInRoom(room, y, TileID.Loom, WorldGen.genRand.Next(2)))
 				{
 					int topY = room.Y + 2;
 					int count = room.Width / 9;
 
 					for (int i = 0; i < count; ++i)
-						PlaceDecorInRoom(room, topY, TileID.Banners, Main.rand.Next(4));
+						PlaceDecorInRoom(room, topY, TileID.Banners, WorldGen.genRand.Next(4));
 
 					skipFlags |= AddedHouseFlags.LoomHouse;
 				}
@@ -168,8 +168,8 @@ internal class UndergroundHouseMicropass : ModSystem, IGenerationPage
 							int sign = Sign.ReadSign(x, y);
 
 							Main.sign[sign].text = WorldGen.genRand.NextBool(RareSignChance)
-								? Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Rare." + Main.rand.Next(3))
-								: Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Common." + Main.rand.Next(11));
+								? Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Rare." + WorldGen.genRand.Next(3))
+								: Language.GetTextValue("Mods.SpiritReforged.Generation.Signs.Underground.Common." + WorldGen.genRand.Next(11));
 						}
 						else if (TileID.Sets.BasicChest[tile.TileType] && !addedToChest)
 							addedToChest = AddToChest(x, y, skipFlags);

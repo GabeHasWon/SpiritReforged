@@ -378,13 +378,13 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		bool genWateringHole = false;
 		bool genBaobabTree = false;
 
-		if (area.Width > 150 && Main.rand.NextBool(3)) //Choose objects to gen
+		if (area.Width > 150 && WorldGen.genRand.NextBool(3)) //Choose objects to gen
 		{
 			genWateringHole = genBaobabTree = true;
 		}
 		else if (area.Width > 50)
 		{
-			if (Main.rand.NextBool())
+			if (WorldGen.genRand.NextBool())
 				genWateringHole = true;
 			else
 				genBaobabTree = true;
