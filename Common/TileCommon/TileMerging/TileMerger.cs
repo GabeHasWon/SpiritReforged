@@ -26,9 +26,10 @@ public sealed class TileMerger : ModSystem
 
 		Add(TileID.Sand, "Sand");
 		Add(TileID.Dirt, "Dirt");
+		Add(TileID.Granite, "Granite");
 		AddRange("RedSandstone", ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
 		AddRange("Hive", ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
-		All = [.. _texturePatchByType.Keys];
+		All = [.. _texturePatchByType.Keys]; //Must be last
 
 		return;
 
