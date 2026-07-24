@@ -738,7 +738,7 @@ Enchanter: {
 		Idle: {
 			// 0: I have unfortunately allowed my nights and days to become flipped. While others are out and about, I sometimes find myself fast asleep!
 			// 1: It's easy to lose track of time in a room lit only by the flicker of candlelight...
-			// 2: Have you come to learn about the magical properties wax possesses?
+			// 2: Have you come to learn about the various magical properties wax possesses?
 		}
 
 		IdleNight: {

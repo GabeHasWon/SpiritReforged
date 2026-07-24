@@ -14,11 +14,11 @@ public class PrefixVoucher : ModItem
 		/// <summary> Prevents item consumption for the local client only. </summary>
 		private static bool StopItemConsumption;
 
-		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is PrefixVoucher voucher && item.CanApplyPrefix(voucher.prefix);
+		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is PrefixVoucher voucher && item.prefix != voucher.prefix && item.CanApplyPrefix(voucher.prefix);
 
 		public override void RightClick(Item item, Player player)
 		{
-			if (Main.mouseItem.ModItem is PrefixVoucher voucher && item.CanApplyPrefix(voucher.prefix))
+			if (Main.mouseItem.ModItem is PrefixVoucher voucher && item.prefix != voucher.prefix && item.CanApplyPrefix(voucher.prefix))
 			{
 				item.ResetPrefix();
 				item.Prefix(voucher.prefix);
@@ -112,11 +112,10 @@ public class PrefixVoucher : ModItem
 		int result = 0;
 		while (result == 0)
 		{
-			int index = Main.rand.Next(_sampleTypes.Length);
-			Item item = new(_sampleTypes[index]);
+			Item item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
 			item.Prefix(-2);
 
-			if (item.prefix != 0 /*&& !PrefixID.Sets.ReducedNaturalChance[item.prefix]*/)
+			if (item.prefix != 0 && item.rare >= item.OriginalRarity)
 				result = item.prefix;
 		}
 

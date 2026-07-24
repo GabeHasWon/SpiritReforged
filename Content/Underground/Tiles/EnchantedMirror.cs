@@ -10,6 +10,7 @@ using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.GameInput;
 using TileHelper.Common;
 
@@ -234,6 +235,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		Main.tileLavaDeath[Type] = true;
 		Main.tileLighted[Type] = true;
 
+		TileID.Sets.HasOutlines[Type] = true;
+		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
@@ -246,6 +249,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		AddMapEntry(FurnitureTile.MapColor, this.AutoModItem().DisplayName);
 		DustType = -1;
 	}
+
+	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
 	public override void MouseOver(int i, int j)
 	{
