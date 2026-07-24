@@ -42,14 +42,13 @@ internal abstract class StarGourd : ModTile
 		Main.tileFrameImportant[tile.Type] = true;
 		Main.tileNoAttach[tile.Type] = true;
 
-		//TileID.Sets.BreakableWhenPlacing[tile.Type] = true;
+		TileID.Sets.BreakableWhenPlacing[tile.Type] = true;
 
 		tile.DustType = DustID.DesertWater2;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.DrawYOffset = 2;
-		//TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<GreenSpookyStargrass>(), ModContent.TileType<OrangeSpookyStargrass>(), ModContent.TileType<StargrassTile>()];
 
 		if (copyInstance.ModifyObjectData(tile, TileObjectData.newTile) && addEntry)
 			tile.AddMapEntry(new Color(25, 197, 87));
@@ -120,7 +119,8 @@ internal abstract class StarGourd : ModTile
 
 		Tile tile = Main.tile[i, j];
 		var data = TileObjectData.GetTileData(tile);
-		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), Color.White);
+		Color color = Color.White * 0.7f * MathF.Sin(i * 0.6f + j * 0.6f + (float)Main.timeForVisualEffects * 0.03f) * 0.3f;
+		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), color);
 	}
 }
 

@@ -1,8 +1,10 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PostDrawTreeHookSystem;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Content.Crossmod.SpookyForest;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 
@@ -10,6 +12,43 @@ namespace SpiritReforged.Content.Forest.Stargrass;
 
 internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 {
+	internal class StarscareGlowEffects : ILoadable, IPostDrawTree
+	{
+		private static Asset<Texture2D> _topTex;
+		private static Asset<Texture2D> _branchTex;
+
+		public void Load(Mod mod)
+		{
+			_topTex = ModContent.Request<Texture2D>($"{StarscareTree.Path}TopsGlow");
+			_branchTex = ModContent.Request<Texture2D>($"{StarscareTree.Path}BranchesGlow");
+		}
+
+		public void Unload() { }
+		void IPostDrawTree.PostDrawTree(int i, int j) => DrawGlow(i, j, Main.spriteBatch, null, _topTex.Value, _branchTex.Value);
+	}
+
+	internal class StarscareGlowGreenEffects : ILoadable, IPostDrawTree
+	{
+		private static Asset<Texture2D> _topTex;
+		private static Asset<Texture2D> _branchTex;
+
+		public void Load(Mod mod)
+		{
+			_topTex = ModContent.Request<Texture2D>($"{StarscareTree.Path}GreenTopsGlow");
+			_branchTex = ModContent.Request<Texture2D>($"{StarscareTree.Path}GreenBranchesGlow");
+		}
+
+		public void Unload() { }
+		void IPostDrawTree.PostDrawTree(int i, int j) => DrawGlow(i, j, Main.spriteBatch, null, _topTex.Value, _branchTex.Value);
+	}
+
+	public enum GlowTreeType
+	{
+		Stargrass,
+		Spooky_Starscare,
+		Spooky_StarscareGreen
+	}
+
 	private static Asset<Texture2D> _baseTexture;
 	private static Asset<Texture2D> _topTexture;
 	private static Asset<Texture2D> _branchTexture;
@@ -23,34 +62,55 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 
 	public override void NearbyEffects(int i, int j, int type, bool closer)
 	{
-		if (IsStargrassTree(i, j, type))
-			Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.2f, 0.2f, 0.5f));
+		if (IsStargrassTree(i, j, type, out GlowTreeType treeType))
+		{
+			Tile tile = Main.tile[i, j];
+			Vector3 glow = treeType switch
+			{
+				GlowTreeType.Spooky_Starscare => new Vector3(0.45f, 0.2f, 0.2f),
+				GlowTreeType.Spooky_StarscareGreen => new Vector3(0.15f, 0.48f, 0.15f),
+				_ => new Vector3(0.2f, 0.2f, 0.5f),
+			};
+
+			if (tile.TileFrameX is 44 or 66 && treeType != GlowTreeType.Stargrass)
+				glow *= 0.4f;
+
+			Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), glow);
+		}
 	}
 
 	public override void DrawEffects(int i, int j, int type, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 	{
-		if (IsStargrassTree(i, j, type))
+		if (IsStargrassTree(i, j, type, out GlowTreeType treeType))
 		{
-			PostDrawTreeHook.AddPoint(new Point(i, j), this);
+			PostDrawTreeHook.AddPoint(new Point(i, j), GetTreeDrawer(treeType));
 			CheckBranch(i - 1, j, type);
 			CheckBranch(i + 1, j, type);
 		}
 	}
 
-	private void CheckBranch(int i, int j, int type)
+	private static void CheckBranch(int i, int j, int type)
 	{
 		Tile tile = Main.tile[i, j];
 
 		if (tile.TileFrameY >= 198)
 		{
-			if (tile.TileFrameX == 44 && IsStargrassTree(i + 1, j, type))
-				PostDrawTreeHook.AddPoint(new Point(i, j), this);
-			else if (tile.TileFrameX == 66 && IsStargrassTree(i - 1, j, type))
-				PostDrawTreeHook.AddPoint(new Point(i, j), this);
+			if (tile.TileFrameX == 44 && IsStargrassTree(i + 1, j, type, out GlowTreeType treeType))
+				PostDrawTreeHook.AddPoint(new Point(i, j), GetTreeDrawer(treeType));
+			else if (tile.TileFrameX == 66 && IsStargrassTree(i - 1, j, type, out GlowTreeType treeType2))
+				PostDrawTreeHook.AddPoint(new Point(i, j), GetTreeDrawer(treeType2));
 		}
 	}
 
-	private static void DrawGlow(int i, int j, SpriteBatch spriteBatch)
+	public static IPostDrawTree GetTreeDrawer(GlowTreeType type) => type switch
+	{
+		GlowTreeType.Stargrass => ModContent.GetInstance<StargrassTreeGlowEffects>(),
+		GlowTreeType.Spooky_Starscare => new StarscareGlowEffects(),
+		GlowTreeType.Spooky_StarscareGreen => new StarscareGlowGreenEffects(),
+		_ => throw new Exception("How did you get here?")
+	};
+
+	private static void DrawGlow(int i, int j, SpriteBatch spriteBatch, Texture2D trunkTexture, Texture2D topsTexture, Texture2D branchTexture)
 	{
 		Tile tile = Main.tile[i, j];
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
@@ -58,7 +118,8 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * .25f;
 		Color color = (Color.White * (.3f - (float)lerp)).Additive();
 
-		spriteBatch.Draw(_baseTexture.Value, TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset), frame, color);
+		if (trunkTexture is not null)
+			spriteBatch.Draw(trunkTexture, TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset), frame, color);
 
 		if (tile.TileFrameY < 198)
 			return;
@@ -72,7 +133,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, 0, ref treeFrame, ref _, out _, out int topTextureFrameWidth3, out int topTextureFrameHeight3))
 				return;
 
-			Texture2D treeTopTexture = _topTexture.Value;
+			Texture2D treeTopTexture = topsTexture;
 			Vector2 drawPos = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset - new Vector2(8, 16));
 			float rotation = 0f;
 
@@ -94,7 +155,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, -1, ref treeFrame, ref _, out _, out int _, out int _))
 				return;
 
-			Texture2D treeBranchTexture = _branchTexture.Value;
+			Texture2D treeBranchTexture = branchTexture;
 			var position = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset);
 			float rotation = 0f;
 
@@ -127,8 +188,10 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		}
 	}
 
-	private static bool IsStargrassTree(int i, int j, int type)
+	private static bool IsStargrassTree(int i, int j, int type, out GlowTreeType treeType)
 	{
+		treeType = GlowTreeType.Stargrass;
+
 		if (type == TileID.Trees)
 		{
 			while (Main.tile[i, j].TileType == TileID.Trees)
@@ -136,10 +199,25 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 
 			if (Main.tile[i, j].TileType == ModContent.TileType<StargrassTile>())
 				return true;
+
+			if (CrossMod.Spooky.Enabled)
+			{
+				if (Main.tile[i, j].TileType == ModContent.TileType<OrangeSpookyStargrass>())
+				{
+					treeType = GlowTreeType.Spooky_Starscare;
+					return true;
+				}
+
+				if (Main.tile[i, j].TileType == ModContent.TileType<GreenSpookyStargrass>())
+				{
+					treeType = GlowTreeType.Spooky_StarscareGreen;
+					return true;
+				}
+			}
 		}
 
 		return false;
 	}
 
-	void IPostDrawTree.PostDrawTree(int i, int j) => DrawGlow(i, j, Main.spriteBatch);
+	void IPostDrawTree.PostDrawTree(int i, int j) => DrawGlow(i, j, Main.spriteBatch, _baseTexture.Value, _topTexture.Value, _branchTexture.Value);
 }
