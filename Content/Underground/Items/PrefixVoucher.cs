@@ -116,7 +116,7 @@ public class PrefixVoucher : ModItem
 			Item item = new(_sampleTypes[index]);
 			item.Prefix(-2);
 
-			if (item.prefix != 0)
+			if (item.prefix != 0 /*&& !PrefixID.Sets.ReducedNaturalChance[item.prefix]*/)
 				result = item.prefix;
 		}
 

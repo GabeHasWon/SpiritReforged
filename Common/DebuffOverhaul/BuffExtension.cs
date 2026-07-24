@@ -1,5 +1,6 @@
 ﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
+/// <summary>An extended buff data system designed for NPCs. See <see cref="ExtendedBuffGlobalNPC"/> for application.</summary>
 public abstract class BuffExtension : ILoadable
 {
     public static class BuffHandler
@@ -52,55 +53,3 @@ public abstract class BuffExtension : ILoadable
     public virtual void DoVisuals() => UsesCustomVFX = false;
     public virtual void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options) { }
 }
-
-/*public abstract class PlayerBuffExtension : ILoadable
-{
-	public static class BuffHandler
-	{
-		private static readonly Dictionary<int, PlayerBuffExtension> BuffByType = [];
-
-		/// <summary> Gets a new instance associated with the provided buff type. </summary>
-		public static PlayerBuffExtension FromType(int type)
-		{
-			if (BuffByType.TryGetValue(type, out var value))
-			{
-				var result = (PlayerBuffExtension)value.MemberwiseClone();
-				result.Type = type;
-
-				return result;
-			}
-
-			return null;
-		}
-
-		public static bool Register(PlayerBuffExtension extension, int type) => BuffByType.TryAdd(type, extension);
-		public static void Register(PlayerBuffExtension extension, params int[] types)
-		{
-			foreach (int type in types)
-				Register(extension, type);
-		}
-	}
-
-	public int BuffTime => (Player.FindBuffIndex(Type) is int value && value != -1) ? Player.buffTime[value] : 0;
-
-	/// <summary> The Player this instance has been applied to. </summary>
-	public Player Player { get; private set; }
-	/// <summary> The specific type of buff this instance is applied on behalf of. </summary>
-	public int Type { get; private set; }
-	public bool UsesCustomVFX { get; private set; } = true;
-
-	public void Load(Mod mod) => Load();
-	public bool Active() => Player.HasBuff(Type);
-	public void ApplyTo(Player player, bool reApplied)
-	{
-		Player = player;
-		OnApply(reApplied);
-	}
-
-	public virtual void Load() { }
-	public virtual void Unload() { }
-
-	protected virtual void OnApply(bool reApplied) { }
-	public virtual void UpdateLifeRegen() { }
-	public virtual void DoVisuals() => UsesCustomVFX = false;
-}*/

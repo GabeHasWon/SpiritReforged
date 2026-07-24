@@ -1,14 +1,14 @@
 ﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
-internal sealed class BuffDetours : ILoadable
+public sealed class BuffDetours : ILoadable
 {
-    /// <summary> Whether combat text caused by damage over time should be prevented. </summary>
-    public static bool BlockDoTText { get; set; }
+	/// <summary> Whether combat text caused by damage over time should be prevented. </summary>
+	public static bool BlockDoTText { get; set; }
 
     public void Load(Mod mod)
     {
-        On_NPC.AddBuff += AddExtensionData; //NPC hooks
-        On_NPC.DelBuff += ClearExtension;
+        On_NPC.AddBuff += AddExtension; //NPC hooks
+        On_NPC.DelBuff += DelExtension;
 		On_NPC.UpdateNPC_BuffApplyVFX += DisableVFX;
 
         HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
@@ -34,15 +34,15 @@ internal sealed class BuffDetours : ILoadable
 		}
     }
 
-    private static void AddExtensionData(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+    private static void AddExtension(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
     {
         if (!self.buffImmune[type] && self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
 		{
-			if (global.buffByType.TryGetValue(type, out BuffExtension extension))
+			if (global.buffByType.TryGetValue(type, out BuffExtension extension)) //The buff extension is already present, reapply
 			{
 				extension.ApplyTo(self, true);
 			}
-			else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b)
+			else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b) //The buff extension is not present, newly apply
 			{
 				global.buffByType.Add(type, b);
 				global.buffByType[type].ApplyTo(self, false);
@@ -52,7 +52,7 @@ internal sealed class BuffDetours : ILoadable
         orig(self, type, time, quiet);
     }
 
-    private static void ClearExtension(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
+    private static void DelExtension(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
     {
         int type = self.buffType[buffIndex];
 
