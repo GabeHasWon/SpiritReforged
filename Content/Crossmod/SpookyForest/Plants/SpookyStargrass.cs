@@ -6,7 +6,7 @@ using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest;
+namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
 
 public class GreenSpookyStargrass : GrassTile
 {

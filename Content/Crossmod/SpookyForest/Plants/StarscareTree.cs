@@ -1,12 +1,26 @@
 using SpiritReforged.Common.ModCompat;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest;
+namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
+
+public class StarscareTreeLoader : ILoadable
+{
+	void ILoadable.Load(Mod mod)
+	{
+		if (ModLoader.HasMod("Spooky"))
+		{
+			mod.AddContent(new StarscareTree());
+			mod.AddContent(new StarscareTreeGreen());
+		}
+	}
+
+	void ILoadable.Unload() { }
+}
 
 [Autoload(false)]
-public class StarscareTreeGreen : ModTree
+public class StarscareTree : ModTree
 {
-	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTreeGreen";
+	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTree";
 
 	public override TreePaintingSettings TreeShaderSettings => new()
 	{
@@ -17,12 +31,12 @@ public class StarscareTreeGreen : ModTree
 		SpecialGroupMaximumSaturationValue = 1f
 	};
 
-	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<GreenSpookyStargrass>()];
+	public override void SetStaticDefaults() => GrowsOnTileId = [ModContent.TileType<OrangeSpookyStargrass>()];
 
 	public override int SaplingGrowthType(ref int style)
 	{
 		style = 0;
-		return ModContent.TileType<StarscareSaplingGreen>();
+		return ModContent.TileType<StarscareSapling>();
 	}
 
 	public override int DropWood()
@@ -31,19 +45,19 @@ public class StarscareTreeGreen : ModTree
 		return wood.Type;
 	}
 
-	public override Asset<Texture2D> GetTexture() => ModContent.Request<Texture2D>("SpiritReforged/Content/Crossmod/SpookyForest/StarscareTree");
+	public override Asset<Texture2D> GetTexture() => ModContent.Request<Texture2D>(Path);
 	public override Asset<Texture2D> GetBranchTextures() => ModContent.Request<Texture2D>(Path + "Branches");
 	public override Asset<Texture2D> GetTopTextures() => ModContent.Request<Texture2D>(Path + "Tops");
 
 	public override void SetTreeFoliageSettings(int i, int j, Tile tile, int xoffset, ref int treeFrame, int floorY, ref int topTextureFrameWidth, ref int topTextureFrameHeight) 
 	{
-		topTextureFrameWidth = 196;
-		topTextureFrameHeight = 144;
+		topTextureFrameWidth = 228;
+		topTextureFrameHeight = 136;
 	}
 
 	public override int TreeLeaf()
 	{
-		CrossMod.Spooky.CheckFind("LeafGreen", out ModGore gore);
+		CrossMod.Spooky.CheckFind(Main.rand.NextBool() ? "LeafOrange" : "LeafRed", out ModGore gore);
 		return gore.Type;
 	}
 
@@ -60,7 +74,7 @@ public class StarscareTreeGreen : ModTree
 	}
 }
 
-public class StarscareSaplingGreen : ModTile
+public class StarscareSapling : ModTile
 {
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
@@ -82,7 +96,7 @@ public class StarscareSaplingGreen : ModTile
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.newTile.CoordinateWidth = 16;
 		TileObjectData.newTile.CoordinatePadding = 2;
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<GreenSpookyStargrass>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<OrangeSpookyStargrass>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.DrawFlipHorizontal = true;
 		TileObjectData.newTile.WaterPlacement = LiquidPlacement.NotAllowed;

@@ -3,7 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest;
+namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
 
 internal class OrangeStargrassPlants : StargrassFlowers
 {

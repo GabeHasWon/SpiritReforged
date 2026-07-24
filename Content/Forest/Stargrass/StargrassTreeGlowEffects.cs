@@ -4,7 +4,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PostDrawTreeHookSystem;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration.Noise;
-using SpiritReforged.Content.Crossmod.SpookyForest;
+using SpiritReforged.Content.Crossmod.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 
