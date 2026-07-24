@@ -3160,12 +3160,6 @@ BlazeGlyph: {
 	// Death: "{0} was consumed by Rage..."
 }
 
-NullGlyph: {
-	// DisplayName: Null Glyph
-	// Tooltip: Removes the effects of a Glyph
-	// RightClick: Hold this glyph and right-click the item whose glyph you want to remove
-}
-
 RadiantGlyph: {
 	// DisplayName: Radiant Glyph
 	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
@@ -3317,4 +3311,9 @@ WaxBlockItem: {
 WaxPotItem: {
 	// DisplayName: Wax Pot Item
 	// Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	// DisplayName: Mirror of Return
+	// Tooltip: <right> to teleport home and create a portal
 }

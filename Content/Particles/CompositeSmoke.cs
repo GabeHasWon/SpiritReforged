@@ -218,7 +218,7 @@ public class CompositeSmoke : Particle
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
 		if (_addBloom)
-			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color with { A = 0 } * 0.33f * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
+			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Additive() * 0.08f * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
 	}
 }
 
