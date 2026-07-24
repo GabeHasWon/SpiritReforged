@@ -11,6 +11,7 @@ using SpiritReforged.Content.Underground.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Events;
+using Terraria.GameContent.Personalities;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
@@ -91,6 +92,13 @@ public class Enchanter : ModNPC
 			new Profiles.DefaultNPCProfile(Texture, NPCHeadLoader.GetHeadSlot(HeadTexture)),
 			new Profiles.DefaultNPCProfile(Texture + "_Shimmer", NPCHeadLoader.GetHeadSlot(Texture + "_Shimmer_Head"))
 		);
+
+		NPC.Happiness
+			.SetNPCAffection(NPCID.Wizard, AffectionLevel.Love)
+			.SetNPCAffection(NPCID.PartyGirl, AffectionLevel.Like)
+			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Dislike)
+			.SetBiomeAffection<SkyShoppingBiome>(AffectionLevel.Like)
+			.SetBiomeAffection<JungleBiome>(AffectionLevel.Dislike);
 	}
 
 	public override void SetDefaults()
@@ -163,6 +171,9 @@ public class Enchanter : ModNPC
 
 		if (NPC.FindFirstNPC(NPCID.GoblinTinkerer) is { } ind and not -1)
 			options.Add(this.GetLocalization("Dialogue.Goblin").Format(Main.npc[ind].GivenName));
+
+		if (NPC.FindFirstNPC(NPCID.Golfer) is { } ind2 and not -1)
+			options.Add(this.GetLocalization("Dialogue.Golfer").Format(Main.npc[ind2].GivenName));
 
 		return options.Get();
 	}

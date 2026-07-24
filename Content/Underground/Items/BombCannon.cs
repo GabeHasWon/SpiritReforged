@@ -265,6 +265,8 @@ internal class CannonBomb : BombProjectile
 	private bool _justSpawned;
 	private int _lastTimeLeft;
 
+	public override void SetStaticDefaults() => HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

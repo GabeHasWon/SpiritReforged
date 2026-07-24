@@ -145,7 +145,12 @@ internal class FlarepowderDust : ModProjectile
 	public (float, float) randomTimeLeft;
 	private bool _spawned = true;
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 3;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(8);
