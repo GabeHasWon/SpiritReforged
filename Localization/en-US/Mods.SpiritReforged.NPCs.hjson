@@ -718,20 +718,42 @@ Enchanter: {
 	}
 
 	TownNPCMood: {
-		Content: I am content.
+		Content: I take a moment and feel...all is well.
 		NoHome: I don't imagine you've got a place for me to rest my head?
 		FarFromHome: I am quite far for from my workspace and bed. May we return home soon?
 		LoveSpace: This town has a satisfying populace. Never lonely, and my study remains a quiet and peaceful sanctuary...
 		DislikeCrowded: It is a bit difficult for me to get ample rest with all this chatter around.
 		HateCrowded: There are far too many people living here. One too many people are knocking down my door asking for magical enchantments and I've had enough.
 		LoveNPC: "{NPCName.Wizard}'s hot chocolate is absolutely to die for. The last time I went to exchange notes with them, they pulled a coin out from behind my ear! I couldn't stop laughing."
-		LikeNPC: I never thought loud, crackling lights in the sky could make my day, but i'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
+		LikeNPC: I never thought loud, crackling lights in the sky could make my day, but I'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
 		DislikeNPC: "{NPCName.GoblinTinkerer}'s methods of weapon augmentation are barbaric. Magical implements do not enjoy being brutalized by a hammer!"
-		HateNPC: I cannot stand {NPCName.DD2Bartender} 's bar stories... he has one too many stories pertaining to the diminishing of kobolds.
+		HateNPC: I cannot stand {NPCName.DD2Bartender}'s bar stories... he has one too many pertaining to the diminishing of kobolds.
 		LikeBiome: Here above the clouds, I feel so much more connected to the world's magical forces. Not to mention that the rain can't put my candles out...
-		DislikeBiome: I hate living so close to such an abundant source of paraffin that's also so fickle! I'm covered in countless stings and scrapes.
-		LikeNPC_Princess: I like {NPCName}.
-		Princess_LovesNPC: I like {NPCName}.
+		DislikeBiome: I hate living so close to such an abundant yet fickle source of paraffin! I'm covered in countless stings and scrapes.
+		LikeNPC_Princess: The girl {NPCName} carries more whimsy than I do.
+		Princess_LovesNPC: "{NPCName} does some really cool magic with those fancy stones!"
+	}
+
+	Dialogue: {
+		Idle: {
+			0: I have unfortunately allowed my nights and days to become flipped. While others are out and about, I sometimes find myself fast asleep!
+			1: It's easy to lose track of time in a room lit only by the flicker of candlelight...
+			2: Have you come to learn about the various magical properties wax possesses?
+		}
+
+		IdleNight: {
+			0: The moon is high, and the glowing light of candles is brighter than ever!
+			1: Fireflies fill the sky like small, dancing flame. There is magic everywhere we look...
+			2: It's far beyond my second bedtime. I kindly request you make this quick.
+		}
+
+		BloodMoon: {
+			0: I cannot sleep on a night such as...this. When I close my eyes, all I see is red.
+			1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+		}
+
+		Party: I am not fond of this much noise, but I can't help but be charmed by these festivities. This was worth staying up for.
+		Goblin: You'd be surprised what you can stick seals onto. {0} asked me to enchant his grappling hook and he's been flying around all day!
 	}
 }
 

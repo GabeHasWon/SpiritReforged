@@ -10,7 +10,9 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.Events;
 using Terraria.ModLoader.IO;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Glyphs;
 
@@ -135,6 +137,34 @@ public class Enchanter : ModNPC
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+	}
+
+	public override string GetChat()
+	{
+		WeightedRandom<string> options = new();
+
+		for (int i = 0; i < 3; ++i)
+			options.Add(this.GetLocalizedValue("Dialogue.Idle." + i));
+
+		if (!Main.dayTime)
+		{
+			for (int i = 0; i < 3; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.IdleNight." + i));
+		}
+
+		if (Main.bloodMoon)
+		{
+			for (int i = 0; i < 2; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.BloodMoon." + i), 1.2f);
+		}
+
+		if (BirthdayParty.PartyIsUp)
+			options.Add(this.GetLocalizedValue("Dialogue.Party"), 1.2f);
+
+		if (NPC.FindFirstNPC(NPCID.GoblinTinkerer) is { } ind and not -1)
+			options.Add(this.GetLocalization("Dialogue.Goblin").Format(Main.npc[ind].GivenName));
+
+		return options.Get();
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
