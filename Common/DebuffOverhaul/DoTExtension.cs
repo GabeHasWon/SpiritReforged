@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.DebuffOverhaul;
+﻿using System.IO;
+
+namespace SpiritReforged.Common.DebuffOverhaul;
 
 public abstract class DoTExtension : BuffExtension
 {
@@ -38,4 +40,8 @@ public abstract class DoTExtension : BuffExtension
 
         return damagePerSecond = Math.Min(damagePerSecond + increase, LocalSettings.DamageLimit);
     }
+
+	public override void NetSend(BinaryWriter writer) => writer.Write(damagePerSecond);
+
+	public override void NetReceive(BinaryReader reader) => damagePerSecond = reader.ReadSingle();
 }
