@@ -2,7 +2,7 @@
 
 public interface IInteractable
 {
-	public sealed class IteractableHook : ILoadable
+	public sealed class InteractableHook : ILoadable
 	{
 		public void Load(Mod mod) => On_Projectile.IsInteractible += OverrideInteractable;
 

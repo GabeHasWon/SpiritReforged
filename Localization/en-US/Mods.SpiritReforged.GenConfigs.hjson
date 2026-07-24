@@ -485,8 +485,8 @@ Pages: {
 			}
 
 			MirrorRate: {
-				DisplayName: MirrorRate
-				Tooltip: MirrorRate
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
+				Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
 			}
 		}
 
