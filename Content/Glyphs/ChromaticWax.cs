@@ -19,6 +19,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ModLoader.IO;
+using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
 
@@ -214,7 +215,9 @@ public class GlyphGlobalProjectile : GlobalProjectile
 					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
 			}	
 			else
+			{
 				(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
+			}
 		}
 	}
 
@@ -282,9 +285,9 @@ public abstract class GlyphItem : ModItem
 			}
 		}
 
-		public override bool AllowPrefix(Item item, int pre) => !HasGlyph(out _);  //No glyph effect is present
+		public override bool AllowPrefix(Item item, int pre) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active();  //No glyph effect is present
 
-		public override bool CanReforge(Item item) => !HasGlyph(out _); //No glyph effect is present
+		public override bool CanReforge(Item item) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active(); //No glyph effect is present
 
 		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
 
@@ -488,7 +491,9 @@ public abstract class GlyphItem : ModItem
 		if (context is ApplyContext)
 			SoundEngine.PlaySound(EnchantSound);
 
-		item.prefix = 0;
+		if (!ModContent.GetInstance<CelestialStampToggle>().Active())
+			item.prefix = 0; //Don't clear prefix if the celestial stamp is active
+
 		item.ClearNameOverride();
 		item.SetNameOverride($"{Effect} " + item.Name);
 

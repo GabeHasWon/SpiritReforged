@@ -3246,6 +3246,18 @@ EnchantedStamp: {
 	// Inactive: Enchantment off
 }
 
+CelestialStamp: {
+	// DisplayName: Celestial Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		Additionally allows items to receive prefixes and glyph effect simultaneously
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
 RageGlyph: {
 	// DisplayName: Rage Glyph
 	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
