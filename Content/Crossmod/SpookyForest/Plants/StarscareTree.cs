@@ -20,7 +20,7 @@ public class StarscareTreeLoader : ILoadable
 [Autoload(false)]
 public class StarscareTree : ModTree
 {
-	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTree";
+	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/Plants/StarscareTree";
 
 	public override TreePaintingSettings TreeShaderSettings => new()
 	{

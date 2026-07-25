@@ -3218,3 +3218,30 @@ StarGourdYellowGreenCarvedItem: {
 	DisplayName: Carved Yellow-Green Stargourd
 	Tooltip: ""
 }
+
+PumpkinPailOrange: {
+	DisplayName: Pumpkin Pail
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		'''
+}
+
+PumpkinPailPurple: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		'''
+}
+
+PumpkinPailWhite: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		'''
+}

@@ -3,7 +3,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses;
 
-public abstract class Micropass : ILoadable
+public abstract class Micropass : ModType
 {
 	/// <summary> Defines the name of the micropass in the task list. This is unrelated to the message that displays on the generation screen. </summary>
 	public abstract string WorldGenName { get; }
@@ -14,7 +14,7 @@ public abstract class Micropass : ILoadable
 	/// <param name="afterIndex"> Whether the task will be inserted <b>after</b> the given index. True by default. </param>
 	public abstract int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex);
 
-	public virtual void Load(Mod mod) { }
-	public virtual void Unload() { }
+	protected sealed override void Register() => ModTypeLookup<Micropass>.Register(this);
+
 	public virtual void PostSetupContent(Mod mod) { }
 }

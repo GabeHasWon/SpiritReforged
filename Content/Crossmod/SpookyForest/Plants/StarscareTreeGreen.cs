@@ -3,10 +3,11 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
 
+// This is manually loaded by a loader in StarscareTree
 [Autoload(false)]
 public class StarscareTreeGreen : ModTree
 {
-	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/StarscareTreeGreen";
+	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/Plants/StarscareTreeGreen";
 
 	public override TreePaintingSettings TreeShaderSettings => new()
 	{
@@ -31,7 +32,7 @@ public class StarscareTreeGreen : ModTree
 		return wood.Type;
 	}
 
-	public override Asset<Texture2D> GetTexture() => ModContent.Request<Texture2D>("SpiritReforged/Content/Crossmod/SpookyForest/StarscareTree");
+	public override Asset<Texture2D> GetTexture() => ModContent.Request<Texture2D>("SpiritReforged/Content/Crossmod/SpookyForest/Plants/StarscareTree");
 	public override Asset<Texture2D> GetBranchTextures() => ModContent.Request<Texture2D>(Path + "Branches");
 	public override Asset<Texture2D> GetTopTextures() => ModContent.Request<Texture2D>(Path + "Tops");
 

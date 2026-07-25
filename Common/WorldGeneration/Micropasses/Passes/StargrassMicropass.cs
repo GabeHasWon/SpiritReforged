@@ -51,7 +51,7 @@ internal class StargrassMicropass : Micropass, IGenerationPage
 				continue;
 
 			int size = WorldGen.genRand.Next(30, 61);
-			WorldGen.Convert(x, y, StarConversion.ConversionType, size);
+			WorldGen.Convert(x, y, StarConversion.ConversionType, size, true, true);
 
 			if (++count > MaxStargrassCount)
 				break;

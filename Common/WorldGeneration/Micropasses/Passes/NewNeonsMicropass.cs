@@ -28,7 +28,7 @@ internal class NewNeonsMicropass : Micropass, IGenerationPage
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
-	public override void Load(Mod mod)
+	public override void Load() 
 	{
 		NeonMossInfo = typeof(WorldGen).GetField("neonMossType", BindingFlags.Static | BindingFlags.NonPublic);
 		On_WorldGen.randMoss += ForceNewMoss;

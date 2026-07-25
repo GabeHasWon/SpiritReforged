@@ -2,6 +2,7 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Crossmod.SpookyForest;
+using SpiritReforged.Content.Crossmod.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 
