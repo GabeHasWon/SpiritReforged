@@ -55,6 +55,11 @@ ReforgedClientConfig: {
 		Label: Glyph Item Visual Effects
 		Tooltip: ""
 	}
+
+	BannerJingle: {
+		Label: Banner Jingle
+		Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
+	}
 }
 
 ReforgedServerConfig: {

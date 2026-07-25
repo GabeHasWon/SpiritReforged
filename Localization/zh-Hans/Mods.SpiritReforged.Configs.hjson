@@ -55,6 +55,11 @@ ReforgedClientConfig: {
 		// Label: Glyph Item Visual Effects
 		// Tooltip: ""
 	}
+
+	BannerJingle: {
+		// Label: Banner Jingle
+		// Tooltip: ""
+	}
 }
 
 ReforgedServerConfig: {

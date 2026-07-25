@@ -1,3 +1,4 @@
+using SpiritReforged.Content.Ocean.Boids;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
@@ -29,6 +30,9 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(false)]
 	[ReloadRequired]
 	public bool DisableWater { get; set; }
+
+	[DefaultValue(true)]
+	public bool BannerJingle { get; set; }
 
 	[Header("Developer")]
 	[DefaultValue(false)]
