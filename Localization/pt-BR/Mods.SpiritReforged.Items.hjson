@@ -3252,7 +3252,7 @@ CelestialStamp: {
 		'''
 		Unlocks an ability toggle to the left of the inventory
 		When enabled occasionally grants glyph effects to crafted, looted and reforged items
-		Additionally allows items to receive prefixes and glyph effect simultaneously
+		Additionally allows items to receive prefixes and glyph effects simultaneously
 		''' */
 	// Active: Enchantment on
 	// Inactive: Enchantment off
@@ -3328,4 +3328,9 @@ WaxPotItem: {
 EnchantedMirrorItem: {
 	// DisplayName: Mirror of Return
 	// Tooltip: <right> to teleport home and create a portal
+}
+
+MirrorItem: {
+	// DisplayName: Mirror
+	// Tooltip: ""
 }

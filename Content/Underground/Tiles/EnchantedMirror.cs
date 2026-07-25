@@ -171,7 +171,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		{
 			const float scale = 1;
 
-			Texture2D noise = AssetLoader.GetTexture("EnchantedMirror_Shine", DrawHelpers.RequestLocal<EnchantedMirror>("EnchantedMirror_Shine")).Value;
+			Texture2D noise = AssetLoader.LoadedTextures["MirrorShine"].Value;
 			float scroll = EaseFunction.EaseCubicInOut.Ease((float)Main.timeForVisualEffects / 100f % 1);
 
 			for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
