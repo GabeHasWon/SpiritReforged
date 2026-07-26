@@ -3338,7 +3338,7 @@ WaxBlockItem: {
 }
 
 WaxPotItem: {
-	// DisplayName: Wax Pot Item
+	// DisplayName: Wax Pot
 	// Tooltip: ""
 }
 

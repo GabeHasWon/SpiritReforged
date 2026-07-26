@@ -9,22 +9,22 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Pottery;
-using static SpiritReforged.Content.Underground.Tiles.DisplayCase;
 using Terraria.Audio;
 using SpiritReforged.Common.ItemCommon;
 
 namespace SpiritReforged.Content.Underground.Tiles;
+
 public class WaxPot : PotTile, ILootable
 {
-	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("GoldBars", 5)
-		.AddIngredient(ItemID.DirtBlock, 15).AddIngredient<ChromaticWax>(5).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddIngredient(ItemID.ClayBlock, 5)
+		.AddIngredient(AutoContent.ItemType<WaxBlock>(), 3).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0] } };
 
 	public override TileRecord AddRecord(int type, StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
-		return record.AddRating(1).AddDescription(Language.GetText(TileRecord.DescKey + ".Wax"));
+		return record.AddRating(3).AddDescription(Language.GetText(TileRecord.DescKey + ".Wax"));
 	}
 
 	public override void AddObjectData()

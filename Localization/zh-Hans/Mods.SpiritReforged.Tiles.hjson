@@ -27,6 +27,7 @@ Records: {
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
 	Boulder: 受到扰动时会沿着地面滚动。
+	// Wax: Imbued with potent magical energies.
 }
 
 FablesGraves: {
