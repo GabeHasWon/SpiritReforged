@@ -30,7 +30,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
 	[WorldBound]
-	public static List<Rectangle> SavannaAreas = new();
+	public static List<Rectangle> SavannaAreas = [];
 
 	[GenConfigurable(true)]
 	private static bool OverSpawn = false;
@@ -218,6 +218,8 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	private static void GenerateIndividualSavanna(GenerationProgress progress, (int, int) bounds)
 	{
+		EcotoneSurfaceMapping.AddSpawnedEcotone<SavannaEcotone>();
+
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
 
 		int startX = bounds.Item1;
