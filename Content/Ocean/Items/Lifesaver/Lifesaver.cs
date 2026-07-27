@@ -11,7 +11,7 @@ public class Lifesaver : ModItem
 		Item.useTime = Item.useAnimation = 20;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.rare = ItemRarityID.Yellow;
-		Item.UseSound = SoundID.Item2;
+		Item.UseSound = SoundID.Item3;
 		Item.noMelee = true;
 		Item.mountType = ModContent.MountType<MantarayMount>();
 		Item.value = Item.sellPrice(gold: 5);
