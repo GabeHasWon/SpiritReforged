@@ -3217,7 +3217,7 @@ RotGlyph: {
 
 ShockGlyph: {
 	// DisplayName: Shock Glyph
-	// Tooltip: Critical strikes shock nearby enemies
+	// Tooltip: Critical strikes deal 25% more damage and shock nearby enemies
 	// Effect: Shocking
 }
 

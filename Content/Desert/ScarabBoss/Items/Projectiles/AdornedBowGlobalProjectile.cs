@@ -69,7 +69,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 // global projectile for visuals and effects attached to power shot arrows
 public class AdornedBowGlobalProjectile : GlobalProjectile
 {
-	public const int MAX_TRAIL_LENGTH = 12;
+	public const int MAX_TRAIL_LENGTH = 24;
 	public const int MAX_PRISMATIC_TIMER = 50;
 
 	public override bool InstancePerEntity => true;

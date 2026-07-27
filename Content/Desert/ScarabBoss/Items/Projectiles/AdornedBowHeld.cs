@@ -55,7 +55,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		if (perfectShot)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
-			projectile.velocity *= 1.5f;
+			projectile.extraUpdates++;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
