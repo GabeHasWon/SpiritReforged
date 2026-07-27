@@ -112,7 +112,7 @@ public class Enchanter : ModNPC
 		NPCID.Sets.MagicAuraColor[Type] = Main.hardMode ? Color.Purple : Color.Goldenrod;
 	}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Surface");
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sky");
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
 
