@@ -57,6 +57,8 @@ public class PrefixVoucher : ModItem
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
 
 	public int prefix;
+
+	private Item _tooltipPrefixItem;
 	private ExtendedPrefixInfo _info;
 
 	/// <summary> <see cref="prefix"/> must be valid before calling. </summary>
@@ -107,19 +109,24 @@ public class PrefixVoucher : ModItem
 
 	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
 
-	public static int RollRandomPrefix()
+	private static Item GetPrefixableItem(int prefix)
 	{
-		int result = 0;
-		while (result == 0)
+		Item item = new(ItemID.WoodenSword);
+		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
 		{
-			Item item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
-			item.Prefix(-2);
-
-			if (item.prefix != 0 && item.rare >= item.OriginalRarity)
-				result = item.prefix;
+			item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
+			item.Prefix(prefix);
 		}
 
-		return result;
+		return item;
+	}
+
+	public static int RollRandomPrefix(out int sampleItemType)
+	{
+		Item item = GetPrefixableItem(-2);
+		sampleItemType = item.type;
+
+		return item.prefix;
 	}
 
 	public override void SetDefaults()
@@ -128,7 +135,8 @@ public class PrefixVoucher : ModItem
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
 
-		prefix = RollRandomPrefix();
+		prefix = RollRandomPrefix(out int itemType);
+		_tooltipPrefixItem = new(itemType, 1, prefix);
 
 		if (!Main.dedServ)
 			FindInfo();
@@ -139,7 +147,29 @@ public class PrefixVoucher : ModItem
 		if (tooltips.FindIndex(static x => x.Name == "Tooltip1") is int index && index >= 0)
 		{
 			Color color = _info.Color * (Main.mouseTextColor / 255f);
-			tooltips[index].Text = tooltips[index].Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText);
+			Item tooltipItem = _tooltipPrefixItem ?? new(ItemID.WoodenSword);
+			int tooltipCount = (30 + tooltipItem.ToolTip?.Lines).GetValueOrDefault();
+
+			string[] tooltipNames = new string[tooltipCount];
+			string[] tooltipLines = new string[tooltipCount];
+			bool[] prefixLine = new bool[tooltipCount];
+			bool[] badPrefixLine = new bool[tooltipCount];
+
+			int numLines = 1;
+			float knockBack = tooltipItem.knockBack;
+			int yoyoLogo = 0;
+			int researchLine = 0;
+
+			Main.MouseText_DrawItemTooltip_GetLinesInfo(tooltipItem, ref yoyoLogo, ref researchLine, knockBack, ref numLines, tooltipLines, prefixLine, badPrefixLine, tooltipNames, out int _);
+			tooltips[index].Text = tooltips[index].Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText); //Add the name of the prefix
+
+			for (int i = 0; i < tooltipLines.Length; i++) //Add prefix stat information
+			{
+				string line = tooltipLines[i];
+
+				if (i < prefixLine.Length && prefixLine[i])
+				tooltips[index].Text += "\n" + line;
+			}
 		}
 	}
 
@@ -172,6 +202,7 @@ public class PrefixVoucher : ModItem
 	public override void NetReceive(BinaryReader reader)
 	{
 		prefix = reader.ReadInt32();
+		_tooltipPrefixItem = GetPrefixableItem(prefix);
 
 		if (!Main.dedServ)
 			FindInfo();
@@ -182,6 +213,7 @@ public class PrefixVoucher : ModItem
 	public override void LoadData(TagCompound tag)
 	{
 		prefix = tag.GetInt(nameof(prefix));
+		_tooltipPrefixItem = GetPrefixableItem(prefix);
 
 		if (!Main.dedServ)
 			FindInfo();
