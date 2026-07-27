@@ -4,7 +4,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using TileHelper.Common;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
+namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 
 internal abstract class StarGourd : ModTile
 {

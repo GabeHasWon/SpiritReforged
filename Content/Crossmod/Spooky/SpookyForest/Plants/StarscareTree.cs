@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ModCompat;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
+namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 
 public class StarscareTreeLoader : ILoadable
 {
@@ -20,7 +20,7 @@ public class StarscareTreeLoader : ILoadable
 [Autoload(false)]
 public class StarscareTree : ModTree
 {
-	public const string Path = "SpiritReforged/Content/Crossmod/SpookyForest/Plants/StarscareTree";
+	public const string Path = "SpiritReforged/Content/Crossmod/Spooky/SpookyForest/Plants/StarscareTree";
 
 	public override TreePaintingSettings TreeShaderSettings => new()
 	{

@@ -40,6 +40,8 @@ internal static class CrossMod
 			}
 		}
 
+		public readonly T Find<T>(string s) where T : ModType => Instance.Find<T>(s);
+
 		/// <inheritdoc cref="Mod.TryFind{T}(string, out T)"/>
 		public readonly bool TryFind<T>(string s, out T t) where T : ModType => ((Mod)this).TryFind(s, out t);
 

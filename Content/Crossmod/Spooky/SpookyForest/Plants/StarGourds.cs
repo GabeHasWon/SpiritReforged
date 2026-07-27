@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest.Plants;
+namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 
 internal class StarGourdGreen : StarGourd
 {

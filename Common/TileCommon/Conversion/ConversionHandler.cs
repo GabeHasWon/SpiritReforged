@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Crossmod.SpookyForest;
-using SpiritReforged.Content.Crossmod.SpookyForest.Plants;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
 

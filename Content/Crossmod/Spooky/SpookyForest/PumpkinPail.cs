@@ -2,7 +2,7 @@
 using SpiritReforged.Common.UI.BackpackInterface;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest;
+namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 
 // [AutoloadEquip(EquipType.Back, EquipType.Front)]
 internal class PumpkinPailOrange : BackpackItem

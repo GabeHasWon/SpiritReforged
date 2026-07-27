@@ -1,17 +1,64 @@
-﻿using SpiritReforged.Common.ModCompat;
+﻿using SpiritReforged.Common.ItemCommon.Pins;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Content.Forest.Stargrass.Items;
+using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Crossmod.SpookyForest;
+namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 
 internal class SpookyForestGen : Micropass
 {
 	public override string WorldGenName => "Spirit Halloween: Spooky Forest";
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+
+	public override void Load()
+	{
+		Type forestType = CrossMod.Spooky.Instance.Code.GetType("Spooky.Content.Generation.SpookyForest");
+		MethodInfo info = forestType.GetMethod("PostWorldGen", BindingFlags.Public | BindingFlags.Instance);
+
+		MonoModHooks.Add(info, DetourPostWorldGen);
+	}
+
+	public static void DetourPostWorldGen(Action<object> orig, object self)
+	{
+		orig(self);
+
+		int chestType = CrossMod.Spooky.Find<ModTile>("OldWoodChest").Type;
+		int empType = CrossMod.Spooky.Find<ModItem>("EMFReaderBroke").Type;
+
+		for (int i = 0; i < Main.maxChests; i++)
+		{
+			Chest chest = Main.chest[i];
+
+			if (chest == null || !WorldGen.InWorld(chest.x, chest.y))
+				continue;
+
+			Tile chestTile = Main.tile[chest.x, chest.y];
+
+			if (chestTile.TileType == chestType && chest.item[0].type != empType)
+			{
+				int index = 0;
+
+				while (!chest.item[index].IsAir)
+					index++;
+
+				if (WorldGen.genRand.NextBool(2))
+				{
+					chest.item[index] = new Item(WorldGen.genRand.Next(3) switch
+					{
+						0 => ModContent.ItemType<PumpkinPailOrange>(),
+						1 => ModContent.ItemType<PumpkinPailPurple>(),
+						_ => ModContent.ItemType<PumpkinPailWhite>()
+					});
+				}
+			}
+		}
+	}
+
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Guide");
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)

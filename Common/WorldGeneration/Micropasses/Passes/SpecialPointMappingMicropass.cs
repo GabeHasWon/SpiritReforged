@@ -126,7 +126,7 @@ internal class SpecialPointMappingMicropass : Micropass
 		}
 
 		// Spooky mod content
-		if (CrossMod.Spooky.TryFind("Krampus", out ModNPC krampus) && NPC.FindFirstNPC(krampus.Type) is { } index and not -1)
+		if (CrossMod.Spooky.CheckFind("Krampus", out ModNPC krampus) && NPC.FindFirstNPC(krampus.Type) is { } index and not -1)
 		{
 			Point pos = Main.npc[index].Center.ToTileCoordinates();
 			Add(pos.X, pos.Y, InterestType.Spooky_KrampusWorkshop);
