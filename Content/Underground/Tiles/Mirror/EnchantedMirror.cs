@@ -311,7 +311,13 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost with { Pitch = 0.5f }, new Vector2(i, j).ToWorldCoordinates());
 			SoundEngine.PlaySound(SoundID.NPCDeath27 with { Pitch = -1 }, new Vector2(i, j).ToWorldCoordinates());
 
-			Main.LocalPlayer.AddBuff(ModContent.BuffType<Unlucky>(), 60 * 60 * 10);
+			if (Main.LocalPlayer.TryGetModPlayer(out LuckPlayer luckPlayer))
+			{
+				luckPlayer.luckModifier -= 0.5f;
+				luckPlayer.luckResetTime = 60 * 60 * 10;
+
+				Main.LocalPlayer.luckNeedsSync = true;
+			}
 
 			firstHit = true;
 		}
