@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 
 namespace SpiritReforged.Content.Particles;
+
 public class TriangleParticle : Particle
 {
 	private Color bloomColor;

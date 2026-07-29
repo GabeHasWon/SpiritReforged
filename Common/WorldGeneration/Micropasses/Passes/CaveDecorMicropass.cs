@@ -2,6 +2,7 @@
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Underground.Tiles.Mirror;
 using Terraria.DataStructures;
 using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
