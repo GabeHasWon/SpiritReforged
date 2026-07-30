@@ -113,7 +113,7 @@ public class GlyphGlobalNPC : GlobalNPC
 	public override void OnKill(NPC npc)
 	{
 		if (npc.boss && Main.BestiaryTracker.Kills.GetKillCount(npc) == 1)
-			DropGlyphs(npc, npc.GetSource_Death()); //Drop glyphs on first boss death
+			DropGlyphs(npc, npc.GetSource_Death()); //Drop unlisted glyphs on first boss death
 	}
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
@@ -163,7 +163,11 @@ public class GlyphGlobalNPC : GlobalNPC
 	public static int DropGlyphs(NPC npc, IEntitySource source)
 	{
 		int stack = (int)Math.Max(npc.value / Item.gold, 3);
-		return Item.NewItem(source, npc.Hitbox, new Item(ModContent.ItemType<ChromaticWax>(), stack));
+
+		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC _))
+			stack = 10; //Override chromatic wax amount
+
+		return Item.NewItem(source, npc.Hitbox, new Item(ModContent.ItemType<ChromaticWax>(), stack + Main.rand.Next(0, 3)));
 	}
 }
 
