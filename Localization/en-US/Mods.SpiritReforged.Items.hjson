@@ -3347,3 +3347,8 @@ MirrorItem: {
 	DisplayName: Mirror
 	Tooltip: ""
 }
+
+EnchantedWorkbenchItem: {
+	DisplayName: Enchanted Workbench
+	Tooltip: ""
+}

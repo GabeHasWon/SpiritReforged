@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -11,10 +12,11 @@ using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.ModLoader.Config;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public sealed class EnchantedWorkbench : ModTile, IGenerationPage
+public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 {
 	public const int FullFrameWidth = 18 * 3;
 
@@ -70,6 +72,8 @@ public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 	}
 	#endregion
 
+	void ILoadItem.SetItemDefaults(ModItem modItem) => modItem.Item.placeStyle = 1;
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -83,8 +87,7 @@ public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		DustType = DustID.WoodFurniture;
-
+		DustType = -1;
 		AddMapEntry(new Color(50, 25, 55), CreateMapEntryName());
 	}
 
@@ -114,7 +117,7 @@ public sealed class EnchantedWorkbench : ModTile, IGenerationPage
 		Player player = Main.LocalPlayer;
 
 		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = ModContent.ItemType<ChromaticWax>();
+		player.cursorItemIconID = this.AutoItemType();
 		player.noThrow = 2;
 	}
 

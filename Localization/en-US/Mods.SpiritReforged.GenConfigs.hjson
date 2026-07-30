@@ -475,7 +475,7 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				DisplayName: "[i:36] (Houses) Workbench Chance"
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
 				Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
 			}
 
