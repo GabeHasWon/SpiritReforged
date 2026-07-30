@@ -64,10 +64,12 @@ public partial class SanguineGlyph
 				HitEffects(target, damageDone);
 		}
 
-		internal void HitEffects(NPC target, int damageDone)
+		public void HitEffects(NPC target, int damageDone)
 		{
-			bool leechedLife = false;
+			if (!target.CanBeChasedBy())
+				return;
 
+			bool leechedLife = false;
 			if (Player.statLife < Player.statLifeMax2 && target.canGhostHeal && lifestealCooldown <= 0)
 			{
 				float amountToHeal = (float)damageDone / 10;
