@@ -145,7 +145,7 @@ Pages: {
 
 			MaxSteps: {
 				DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] 最大段数"
-				Tooltip: 盐滩中反射盐滩平原的最大数量。
+				Tooltip: 盐滩中反光盐滩平原的最大数量。
 			}
 
 			StupaChance: {
