@@ -8,6 +8,7 @@ using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged;
 
@@ -117,9 +118,20 @@ public partial class SpiritReforgedMod : Mod
 
 						return BotanistHat.SetActive(args[1] as Player);
 					}
+					// Used solely for Scourge x Scarab
 				case "fablescrossmod.kaiju":
 					{
 						return Scarabeus.HandleModCall(args);
+					}
+				case "AddHerb":
+					{
+						if (args.Length == 1)
+							throw new ArgumentException("AddHerb requires at least two arguments! string AddHerb, int type or string tileFullName, bool customDrawing");
+
+						if (args.Length > 3)
+							throw new ArgumentException("AddHerb requires at most three arguments! string AddHerb, int type or string tileFullName, bool customDrawing");
+
+						return HerbSet.CallAddHerb(args[1], args.Length == 3 ? args[2] : null);
 					}
 				default:
 					{

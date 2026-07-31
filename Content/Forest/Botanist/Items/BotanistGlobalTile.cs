@@ -7,7 +7,7 @@ internal class BotanistGlobalTile : GlobalTile
 {
 	public override bool PreDraw(int i, int j, int type, SpriteBatch spriteBatch)
 	{
-		if (HerbTile.HerbTypes.Contains(type) && BotanistHat.SetActive(Main.LocalPlayer))
+		if (HerbSet.IsHerb[type] && BotanistHat.SetActive(Main.LocalPlayer))
 		{
 			Tile tile = Main.tile[i, j];
 			float darkness = (1.2f - Lighting.Brightness(i, j)) / 1.2f;
