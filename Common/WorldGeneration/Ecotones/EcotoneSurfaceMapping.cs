@@ -85,7 +85,9 @@ public class EcotoneSurfaceMapping : ModSystem
 	public static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
 
 	[WorldBound]
-	private static List<EcotoneBase> SpawnedBases = [];
+	private readonly static List<EcotoneBase> SpawnedBases = [];
+
+	private readonly static List<string> UnloadedBases = [];
 
 	public static List<EcotoneEntry> Entries { get; internal set; } = [];
 
@@ -110,9 +112,28 @@ public class EcotoneSurfaceMapping : ModSystem
 	}
 
 	public static bool ContainsEcotone<T>() where T : EcotoneBase => SpawnedBases.Any(x => x is T);
+	public static bool ContainsEcotone(string name) => SpawnedBases.Any(x => x.FullName == name);
 
-	public override void SaveWorldData(TagCompound tag) => tag.Add("spawnedBases", SpawnedBases);
-	public override void LoadWorldData(TagCompound tag) => SpawnedBases = new List<EcotoneBase>(tag.GetList<EcotoneBase>("spawnedBases")) ?? [];
+	public override void SaveWorldData(TagCompound tag)
+	{
+		var baseNames = SpawnedBases.Select(x => x.FullName).ToList();
+		baseNames.AddRange(UnloadedBases);
+		tag.Add("spawnedBases", baseNames);
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		IList<string> list = tag.GetList<string>("spawnedBases");
+		SpawnedBases.Clear();
+
+		foreach (string name in list)
+		{
+			if (ModContent.TryFind(name, out EcotoneBase ecotone))
+				SpawnedBases.Add(ecotone);
+			else
+				UnloadedBases.Add(name);
+		}
+	}
 
 	public override void ClearWorld()
 	{

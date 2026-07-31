@@ -3,3 +3,11 @@ v0.2.1.2
 - Fixed an issue where using both CalamityRuTranslate (internal name) and Reforged would assume the game's language is Russian potentially incorrectly
 - Updated Russian localization
 - Improved seeding consistency during world generation
+- Added flags that determine if a world has or doesn't have a (naturally spawned) ecotone
+	This will not work on existing worlds
+	This will work on crossmod ecotones, and will work if an ecotone is unloaded, then re-loaded
+- Added WorldHasEcotone Mod.Call, which checks if a certain ecotone was naturally spawned in the world (i.e. spiritReforged.Call("WorldHasEcotone", "SpiritReforged/SavannaEcotone"))
+- Fixed issue where Saltskipper quest fish (Salt Flats quest) spawns on worlds without Salt Flats
+- Added AddHerb Mod.Call and named set to add additional support for crossmod herb tiles that work with the Botanist set, alongside the existing PlayerBotanist call
+- Added CustomBotanistDisplay named set, which works with the above Mod.Call as well for mods that want to register their tile as a herb but use custom botanist drawing
+- Fixed issue where herbs wouldn't draw properly when the Botanist armor set is active

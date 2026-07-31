@@ -9,6 +9,7 @@ using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 
 namespace SpiritReforged;
 
@@ -132,6 +133,16 @@ public partial class SpiritReforgedMod : Mod
 							throw new ArgumentException("AddHerb requires at most three arguments! string AddHerb, int type or string tileFullName, bool customDrawing");
 
 						return HerbSet.CallAddHerb(args[1], args.Length == 3 ? args[2] : null);
+					}
+				case "WorldHasEcotone":
+					{
+						if (args.Length != 2)
+							throw new ArgumentException("WorldHasEcotone requires two arguments exactly. string WorldHasEcotone, string name (the FullName of the ecotone)");
+
+						if (args[1] is not string s)
+							throw new ArgumentException("WorldHasEcotone requires two argument, string WorldHasEcotone, string name (the FullName of the ecotone)");
+
+						return EcotoneSurfaceMapping.ContainsEcotone(s);
 					}
 				default:
 					{
