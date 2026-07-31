@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -46,9 +47,20 @@ public class Vajra : ModItem, IDrawHeld
 				float offset = Math.Max(40 * (0.5f - Progress * 2), -10);
 				HoldDistance = offset;
 			}
+			else
+			{
+				HoldDistance = -18 * Progress;
+			}
 		}
 
-		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch) => base.GetRotation(out armRotation, out stretch);
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
+		{
+			float value = GetAbsoluteAngle();
+			armRotation = value - 1.57f;
+			stretch = ProgressiveStretch();
+
+			return value + 1 * Progress * SwingDirection;
+		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
