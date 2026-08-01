@@ -1,5 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.Tiles;
@@ -10,9 +12,22 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class OasisMicropass : Micropass
+internal class OasisMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Underground Oasis";
+
+	[GenConfigurable("1 0", "20 30")]
+	internal static GenRange RuinSegments = new GenRange(2, 3);
+
+	[GenConfigurable("0 0", "50 25")]
+	internal static GenRange RuinCount = new GenRange(0, 4);
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new UndergroundOasisBiome()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -31,11 +46,17 @@ internal class OasisMicropass : Micropass
 		int amount = 3 * (WorldGen.GetWorldSize() + 1);
 		Rectangle region = new(GenVars.desertHiveLeft, (int)Main.worldSurface + 40, GenVars.desertHiveRight - GenVars.desertHiveLeft, GenVars.desertHiveLow - GenVars.desertHiveHigh);
 
+		if (CrossMod.Remnants.Enabled) // Remnants doesn't set the above values in the way we use them, use the below...which may be better anyway?
+			region = GenVars.UndergroundDesertLocation;
+
 		HashSet<Rectangle> biomesRectangles = [];
 
 		for (int i = 0; i < amount; i++)
 		{
 			var pt = WorldGen.genRand.NextVector2FromRectangle(region).ToPoint();
+
+			if (!WorldGen.InWorld(pt.X, pt.Y))
+				break;
 
 			if (!GenVars.structures.CanPlace(new Rectangle(pt.X - area / 2, pt.Y - area / 2, area, area), 4) || biomesRectangles.Any(x => x.Contains(pt)))
 			{
@@ -61,7 +82,7 @@ internal class OasisMicropass : Micropass
 			rectangle.Inflate(100, 100);
 
 			biomesRectangles.Add(rectangle);
-			int ruinCount = WorldGen.genRand.Next(4);
+			int ruinCount = RuinCount.RollRange();
 
 			if (ruinCount > 0)
 				WorldMethods.Generate(GenerateRuins, ruinCount, out _, rectangle, 50);
@@ -82,7 +103,7 @@ internal class OasisMicropass : Micropass
 		if (!GenVars.structures.CanPlace(structureAreaEstimate) || !GenVars.UndergroundDesertLocation.Contains(foundPos))
 			return false;
 
-		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, WorldGen.genRand.Next(2, 5));
+		Rectangle region = CreateRuin(foundPos.X, foundPos.Y, RuinSegments.RollRange());
 
 		GenVars.structures.AddProtectedStructure(region);
 		WorldDetours.Regions.Add(new(region, WorldDetours.Context.Walls | WorldDetours.Context.Piles));

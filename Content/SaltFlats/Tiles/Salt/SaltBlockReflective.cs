@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -5,11 +6,10 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
-using Terraria.GameContent.Events;
 using Terraria.Graphics;
-using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -86,6 +86,17 @@ public class SaltBlockReflective : SaltBlock
 			if (Reflections.Detail > 1)
 			{
 				//Reflections.DrawBlack(Main.instance, true);
+				if (Reflections.Detail > 2)
+				{
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
+
+					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
+					Main.spriteBatch.RestartToDefault();
+
+					SmokeTargetSystem.DrawCompositeSmoke(7, false);
+				}
+
 				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
 				
 				if (Reflections.Detail > 2)
@@ -100,6 +111,12 @@ public class SaltBlockReflective : SaltBlock
 					CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawBehindNonSolidTiles");
 
 				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
+
+				if (Reflections.Detail > 2)
+				{
+					SmokeTargetSystem.DrawCompositeSmoke(6, false);
+					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
+				}
 
 				DrawOrderSystem.DrawNonsolid();
 				spriteBatch.End();
@@ -129,6 +146,17 @@ public class SaltBlockReflective : SaltBlock
 			{
 				spriteBatch.BeginDefault();
 				spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+				if (Reflections.Detail > 2)
+				{
+					spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveSolid);
+					Main.spriteBatch.End();
+					spriteBatch.BeginDefault();
+
+					SmokeTargetSystem.DrawCompositeSmoke(5, false);
+				}
+
 				DrawOrderSystem.DrawSolid();
 				spriteBatch.End();
 
@@ -186,7 +214,6 @@ public class SaltBlockReflective : SaltBlock
 				Main.instance.DrawItems();
 				Reflections.DrawRain();
 				Reflections.DrawGore(Main.instance);
-				ParticleHandler.DrawAllParticles(Main.spriteBatch, x => true);
 				spriteBatch.End();
 				Reflections.DrawDust(Main.instance);
 				spriteBatch.BeginDefault();
@@ -197,6 +224,9 @@ public class SaltBlockReflective : SaltBlock
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsOverWiresUI, false);
 				Main.instance.DrawInfernoRings();
 			}
+
+			if (Reflections.Detail > 1 && CrossMod.Fables.Enabled)
+				CrossMod.Fables.Instance.Call("vfx.customDrawLayers.drawabovewater");
 
 			spriteBatch.End();
 			gd.SetRenderTarget(null);
@@ -335,6 +365,13 @@ public class SaltBlockReflective : SaltBlock
 
 	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
 	private static SaltGridOverlay Overlay;
+
+	public override void AddItemRecipes(ModItem item)
+	{
+		base.AddItemRecipes(item);
+
+		item.CreateRecipe().AddIngredient(ModContent.GetInstance<SaltBlockDull>().AutoItemType()).AddCondition(Condition.NearWater).Register();
+	}
 
 	public override void Load()
 	{

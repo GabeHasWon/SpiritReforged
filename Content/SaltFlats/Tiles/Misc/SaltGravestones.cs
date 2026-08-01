@@ -14,7 +14,7 @@ public class SaltGravestones : ILoadable
 
 	public void Load(Mod mod)
 	{
-		if (CrossMod.Fables.Enabled && false)
+		if (CrossMod.Fables.Enabled)
 		{
 			DesertGravesetIndex = (int)CrossMod.Fables.Instance.Call("gravestones.getGravesetIndex", "desert");
 			IceGravesetIndex = (int)CrossMod.Fables.Instance.Call("gravestones.getGravesetIndex", "ice");

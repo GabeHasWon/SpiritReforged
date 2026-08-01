@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Walls;
 
-public class CobbledBrickWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class CobbledBrickWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>(nameof(CobbledBrickWall) + "Unsafe").Type;
 
@@ -26,8 +27,6 @@ public class CobbledBrickWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
 		WallLoader.GetWall(UnsafeType).AddMapEntry(entryColor);
 
 		DustType = DustID.Stone;
-
-		this.AutoItem().ResearchUnlockCount = 400;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;

@@ -102,7 +102,11 @@ public class KendoBladeSwing : ModProjectile
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 5;
+		HeldProjectileSet.HeldProjectile[Type] = true;
+	}
 
 	public override void SetDefaults()
 	{
@@ -213,7 +217,12 @@ public class KendoBladeLunge : ModProjectile
 	public override string Texture => "SpiritReforged/Content/Jungle/Bamboo/Items/BambooKendoBladeProj";
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 5;
+		HeldProjectileSet.HeldProjectile[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(38);

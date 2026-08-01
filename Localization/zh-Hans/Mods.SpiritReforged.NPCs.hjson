@@ -425,7 +425,7 @@ PotterySlime: {
 	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
 }
 
-StompableGnome.DisplayName: 可被踩头的侏儒
+StompableGnome.DisplayName: 可踩侏儒
 
 DunceCrab: {
 	DisplayName: 笨蟹
@@ -433,12 +433,12 @@ DunceCrab: {
 }
 
 Wheezer: {
-	DisplayName: 响尾兽
-	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
+	DisplayName: 息鸣螈
+	Entry: 息鸣螈是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
 }
 
 WorldFrog: {
-	DisplayName: 看起来有帮助的青蛙
+	DisplayName: 有用青蛙
 	Button: 更新世界
 
 	Sounds: {
@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: 金龙虱
-	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
-TinyGrub.DisplayName: 小幼虫
+TinyGrub: {
+	DisplayName: 小幼虫
+	Entry: 其潜力跟恶心程度一样大。
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,14 +573,188 @@ VeiledZombie: {
 	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
-Cricket.DisplayName: 蟋蟀
-GoldCricket.DisplayName: 金蟋蟀
+Cricket: {
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
+	DisplayName: 蟋蟀
+}
+
+GoldCricket: {
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
+	DisplayName: 金蟋蟀
+}
 
 BeetleTownPet: {
-	// DisplayName: Beetle
-	// Chitter: Chitter
+	DisplayName: 甲虫
+	Entry: 虽然它们不适合用来拥抱，但笨拙的样子让它们显得十分惹人喜爱。
+	Chitter0: *快乐的叽叽声*
+	Chitter1: *虫子的噪音声*
+	Chitter2: *甲虫的噪音声*
 
 	Names: {
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Scarb
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Cannonball
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Grumpy
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Pebbles
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Spoon
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramel
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topaz
+		JewelBeetle15: Zahrah
+		Weevil0: Archibald
+		Weevil1: Boots
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Hubert
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lawrence
+		Weevil12: Lord Eggleston Esquire III
+		Weevil13: Poky
+		Weevil14: Sniffles
+		Weevil15: Winnifred
+		Maybug0: April
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Holly
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Piper
+		Maybug14: Popcorn
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Cinnamon
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Lovely
+		Ladybug8: Missy
+		Ladybug9: Pin
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Spots
+		Ladybug14: Titania
+		Ladybug15: Tulip
+	}
+}
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: Full of charm and whimsy, the Enchanter deals with various seals and spells. If some weapons or tools need a little more magic, just ask!
+
+	Names: {
+		// 0: Albion
+		// 1: Bertilak
+		// 2: Eango
+		// 3: Enki
+		// 4: Gil
+		// 5: Heka
+		// 6: Ilmarinen
+		// 7: Itani
+		// 8: Kokabiel
+		// 9: Mallyck
+		// 10: Mazdak
+		// 11: Morrigan
+		// 12: Myrrdin
+		// 13: Oeti
+		// 14: Ose
+		// 15: Sulyvahn
+		// 16: Tethra
+		// 17: Themisto
+		// 18: Vorv
+		// 19: Ywain
+	}
+
+	TownNPCMood: {
+		// Content: I take a moment and feel...all is well.
+		// NoHome: I don't imagine you've got a place for me to rest my head?
+		// FarFromHome: I am quite far for from my workspace and bed. May we return home soon?
+		// LoveSpace: This town has a satisfying populace. Never lonely, and my study remains a quiet and peaceful sanctuary...
+		// DislikeCrowded: It is a bit difficult for me to get ample rest with all this chatter around.
+		// HateCrowded: There are far too many people living here. One too many people are knocking down my door asking for magical enchantments and I've had enough.
+		// LoveNPC: "{NPCName.Wizard}'s hot chocolate is absolutely to die for. The last time I went to exchange notes with them, they pulled a coin out from behind my ear! I couldn't stop laughing."
+		// LikeNPC: I never thought loud, crackling lights in the sky could make my day, but I'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
+		// DislikeNPC: "{NPCName.GoblinTinkerer}'s methods of weapon augmentation are barbaric. Magical implements do not enjoy being brutalized by a hammer!"
+		// HateNPC: I cannot stand {NPCName.DD2Bartender}'s bar stories... he has one too many pertaining to the diminishing of kobolds.
+		// LikeBiome: Here above the clouds, I feel so much more connected to the world's magical forces. Not to mention that the rain can't put my candles out...
+		// DislikeBiome: I hate living so close to such an abundant yet fickle source of paraffin! I'm covered in countless stings and scrapes.
+		// LikeNPC_Princess: The girl {NPCName} carries more whimsy than I do.
+		// Princess_LovesNPC: "{NPCName} does some really cool magic with those fancy stones!"
+	}
+
+	Dialogue: {
+		Idle: {
+			// 0: I have unfortunately allowed my nights and days to become flipped. While others are out and about, I sometimes find myself fast asleep!
+			// 1: It's easy to lose track of time in a room lit only by the flicker of candlelight...
+			// 2: Have you come to learn about the various magical properties wax possesses?
+		}
+
+		IdleNight: {
+			// 0: The moon is high, and the glowing light of candles is brighter than ever!
+			// 1: Fireflies fill the sky like small, dancing flame. There is magic everywhere we look...
+			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+		}
+
+		BloodMoon: {
+			// 0: I cannot sleep on a night such as...this. When I close my eyes, all I see is red.
+			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+		}
+
+		// Party: I am not fond of this much noise, but I can't help but be charmed by these festivities. This was worth staying up for.
+		// Goblin: You'd be surprised what you can stick seals onto. {0} asked me to enchant his grappling hook and he's been flying around all day!
+		// Golfer: I feel like the only one in town who doesn't play golf. I'm always far too tired to play such a sport, but {0} always makes sure to invite me. I feel a little guilty, but also very welcomed.
 		// RoyalScarab0: Azure
 		// RoyalScarab1: Berry
 		// RoyalScarab2: Bluey
@@ -676,3 +853,5 @@ BeetleTownPet: {
 		// Ladybug15: Tulip
 	}
 }
+
+// SealedKnight.DisplayName: Sealed Knight

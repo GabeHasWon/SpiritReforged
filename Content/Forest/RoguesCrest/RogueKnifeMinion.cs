@@ -2,6 +2,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using Terraria.Audio;
 
@@ -32,6 +33,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 		Main.projFrames[Type] = 6;
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
 		ProjectileID.Sets.TrailingMode[Type] = 0;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void AbstractSetDefaults()

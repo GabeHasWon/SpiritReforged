@@ -1,35 +1,34 @@
-﻿using ReLogic.Utilities;
-using SpiritReforged.Common;
+﻿using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats.Items.Crates;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.SaltFlats.Walls;
-using SpiritReforged.Content.Savanna.Tiles.Paintings;
-using SpiritReforged.Content.Ziggurat.Tiles;
-using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.SaltFlats;
 
-internal class SaltFlatsEcotone : EcotoneBase
+internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 {
 	/// <summary>Contains info for generating the biome surface.</summary>
 	/// <param name="Left">The left merge coordinates.</param>
@@ -56,10 +55,78 @@ internal class SaltFlatsEcotone : EcotoneBase
 	}
 
 	[WorldBound]
-	public static Rectangle SaltFlatsArea;
+	public static List<Rectangle> SaltFlatsAreas = new();
+
+	[GenConfigurable(true)]
+	private static bool OverSpawn = false;
+
+	[GenConfigurable(1, 10)]
+	private static int MaxSteps = 3;
+
+	[GenConfigurable(2, 25)]
+	[Slider]
+	private static int LakeRadius = 6;
+
+	[GenConfigurable(2, 25)]
+	[Slider]
+	private static int CaveRadius = 3;
+
+	[GenConfigurable(1, 20)]
+	[Slider]
+	private static int RuinQty = 2;
+
+	[GenConfigurable(1, 24)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int StupaChance = 12;
+
+	[GenConfigurable(1, 200)]
+	[Slider]
+	[Denominator]
+	[ReverseMinMax]
+	private static int TreeChance = 35;
 
 	private static FastNoiseLite Noise;
 
+	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false))
+	{
+		Presets = 
+		[
+			new("SunkenRuin", 
+			[
+				new IndividualPreset(nameof(RuinQty), 20),
+				new IndividualPreset(nameof(StupaChance), 4),
+				new IndividualPreset(nameof(LakeRadius), 20),
+				new IndividualPreset(nameof(CaveRadius), 5),
+				new IndividualPreset(nameof(MaxSteps), 4),
+			]),
+
+			new("Dessicated", 
+			[
+				new IndividualPreset(nameof(TreeChance), 4),
+				new IndividualPreset(nameof(CaveRadius), 9),
+				new IndividualPreset(nameof(LakeRadius), 2),
+				new IndividualPreset(nameof(StupaChance), 8),
+				new IndividualPreset(nameof(MaxSteps), 6),
+				new IndividualPreset(nameof(RuinQty), 3),
+			]),
+
+			new("BlankCanvas", 
+			[
+				new IndividualPreset(nameof(MaxSteps), 1),
+				new IndividualPreset(nameof(CaveRadius), 2),
+				new IndividualPreset(nameof(StupaChance), 20),
+				new IndividualPreset(nameof(TreeChance), 150),
+				new IndividualPreset(nameof(LakeRadius), 2),
+				new IndividualPreset(nameof(RuinQty), 1),
+			])
+		]
+	}; 
+	
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
+	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
 	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
 
 	/// <summary> Converts pots placed atop dull salt into stone stupas. </summary>
@@ -82,7 +149,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
 	{
 		if (tasks.FindIndex(x => x.Name == "Beaches") is int index && index != -1)
-			tasks.Insert(index, new PassLegacy("Salt Flats", Generation));
+			tasks.Insert(index, new EcotonePass("Salt Flats", Generation, this));
 	}
 
 	private static bool CanGenerate(out (int, int) bounds)
@@ -90,7 +157,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 2; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed is SaltSeed)
+		if (SecretSeedSystem.WorldSecretSeed is SaltSeed || OverSpawn)
 		{
 			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{
@@ -98,11 +165,11 @@ internal class SaltFlatsEcotone : EcotoneBase
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) 
-			&& EcotoneSurfaceMapping.OnSurface(x)) is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420))
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x), false) 
+			is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420) && !entry.Definition.Ecotone)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
-			return true; //Uniquely, salt flats cannot normally generate over spawn
+			return true; // Uniquely, salt flats cannot normally generate over spawn
 		}
 
 		return false;
@@ -110,20 +177,45 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 	private static void Generation(GenerationProgress progress, GameConfiguration configuration)
 	{
-		SaltFlatsArea = Rectangle.Empty;
+		GenConfigPage page = GenConfigLoader.GetPage<SaltFlatsEcotone>();
+		RuinQty = page.ValueOrDefault(nameof(RuinQty), WorldGen.genRand.Next(1,3));
+		CaveRadius = page.ValueOrDefault(nameof(CaveRadius), WorldGen.genRand.Next(3, 10));
+		LakeRadius = page.ValueOrDefault(nameof(LakeRadius), WorldGen.genRand.Next(6, 10));
+
+		if (EcotoneMapperHooks.AnyForced<SaltFlatsEcotone>())
+		{
+			foreach (EcotoneMapperHooks.EcotoneEntryPair pair in EcotoneMapperHooks.ForcedEcotones.Values)
+			{
+				const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
+
+				GenerateIndividualFlats(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
+			}
+
+			return;
+		}
+
 		if (!CanGenerate(out var bounds))
 			return;
 
+		GenerateIndividualFlats(progress, bounds);
+	}
+
+	private static void GenerateIndividualFlats(GenerationProgress progress, (int, int) bounds)
+	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		int leftBound = bounds.Item1;
 		int rightBound = bounds.Item2;
 
+		leftBound = Math.Max(leftBound, Main.offLimitBorderTiles + 1);
+		rightBound = Math.Min(rightBound, Main.maxTilesX - Main.offLimitBorderTiles - 1);
+
 		Noise = new FastNoiseLite(WorldGen.genRand.Next());
 		Noise.SetFrequency(0.03f);
 
-		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, 3);
+		int steps = Math.Clamp((rightBound - leftBound) / 200, 1, MaxSteps);
 		int finalLength = (rightBound - leftBound) / steps;
+
 		int y = EcotoneSurfaceMapping.TotalSurfaceY[(short)leftBound];
 		Rectangle area = Rectangle.Empty;
 		SaltFlatsSystem.SurfaceHeight = Main.maxTilesY;
@@ -148,9 +240,9 @@ internal class SaltFlatsEcotone : EcotoneBase
 			area = (area == Rectangle.Empty) ? info.Area : new(Math.Min(area.X, info.Area.X), Math.Min(area.Y, info.Area.Y), Math.Max(area.Width, info.Area.Right - area.Left), Math.Max(area.Height, info.Area.Bottom - area.Top + info.Depth + 20));
 		}
 
-		SaltFlatsArea = area;
-		Decorate(SaltFlatsArea);
-		WorldDetours.Regions.Add(new(SaltFlatsArea, WorldDetours.Context.Piles));
+		SaltFlatsAreas.Add(area);
+		Decorate(area);
+		WorldDetours.Regions.Add(new(area, WorldDetours.Context.Piles));
 	}
 
 	private static void FillSurface(SurfaceInfo info)
@@ -215,10 +307,10 @@ internal class SaltFlatsEcotone : EcotoneBase
 		}
 
 		foreach (Point o in caveOrigins)
-			CreateCave(o, WorldGen.genRand.Next(3, 10));
+			CreateCave(o, CaveRadius);
 
 		foreach (Point o in lakeOrigins)
-			CreateLake(o, WorldGen.genRand.Next(6, 10));
+			CreateLake(o, LakeRadius);
 
 		static void AddObject(int x, int y, bool condition, ref List<Point> list) //Improves readability
 		{
@@ -270,7 +362,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 				if (!WorldGen.SolidTile(i, j - 1) && aboveTile.LiquidAmount < 20)
 				{
-					if (WorldGen.genRand.NextBool(12))
+					if (WorldGen.genRand.NextBool(StupaChance))
 						Placer.PlaceTile<StoneStupas>(i - 1, j - 1, WorldGen.genRand.Next(0, 3));
 
 					if (WorldGen.genRand.NextBool(24))
@@ -290,7 +382,7 @@ internal class SaltFlatsEcotone : EcotoneBase
 
 					Vector2 pt = new(i, j - 1);
 
-					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(35) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
+					if (aboveTile.WallType == WallID.None && WorldGen.genRand.NextBool(TreeChance) && !treePoints.Any(x => x.DistanceSQ(pt) < 8 * 8) && CustomTree.GrowTree<DeadTree>(i, j - 1))
 						treePoints.Add(pt);
 				}
 
@@ -304,12 +396,11 @@ internal class SaltFlatsEcotone : EcotoneBase
 			return false;
 		}, out _, area);
 
-		int ruinCount = Math.Min(area.Width / 50, 2);
 		Decorator decorator = new(area);
 		decorator.Enqueue(PlaceReliquary, Math.Max(area.Width / 150, 1)).Enqueue(PlaceSaltwortPatch, Math.Max(area.Width / 80, 1));
 
-		if (ruinCount > 0)
-			decorator.Enqueue(CreateRuin, ruinCount);
+		if (RuinQty > 0)
+			decorator.Enqueue(CreateRuin, RuinQty);
 
 		decorator.Run();
 	}

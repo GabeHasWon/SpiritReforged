@@ -10,7 +10,10 @@ internal class GlowmaskAutoloader : ModSystem
 
 		foreach (var type in types)
 		{
-			Func<object, Color> color = AutoloadGlowmaskAttribute.GetAttributeInfo(Mod, type.GetType(), out bool autoDraw);
+			Func<object, Color> color = AutoloadGlowmaskAttribute.GetAttributeInfo(Mod, type.GetType(), out bool autoDraw, out bool forceUnset);
+
+			if (forceUnset)
+				continue;
 
 			if (type is ModNPC npc)
 			{
@@ -19,12 +22,12 @@ internal class GlowmaskAutoloader : ModSystem
 					GlowmaskNPC.NpcIdToGlowmask.Add(id, new(glowMask, color, autoDraw));
 			}
 
-			else if (type is ModTile tile)
+			/*else if (type is ModTile tile)
 			{
 				int id = tile.Type;
 				if (TryGetGlowmask(ModContent.GetModTile(id).Texture, out var glowMask))
 					GlowmaskTile.TileIdToGlowmask.Add(id, new(glowMask, color, autoDraw));
-			}
+			}*/
 
 			else if (type is ModProjectile projectile)
 			{

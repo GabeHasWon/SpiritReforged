@@ -3,22 +3,128 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Jungle.Pineapple;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 #nullable enable
-public class UndergroundOasisBiome : Microbiome
+public class UndergroundOasisBiome : Microbiome, IGenerationPage
 {
 	private static WeightedRandom<int> MainWaterItem = null!;
 	private static WeightedRandom<(int type, Range stackRange, Func<bool>? canPlace)> RandomItem = null!;
+
+	public static readonly Point16 Size = new(50, 40);
+	public static readonly HashSet<Rectangle> OasisAreas = [];
+
+	[GenConfigurable(1, 50)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int PalmChanceLow = 15;
+
+	[GenConfigurable(1, 25)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	[PriorityModifier(nameof(PalmChanceLow))]
+	private static int PalmChanceHigh = 5;
+
+	[GenConfigurable(1, 25)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int CattailChance = 3;
+
+	[GenConfigurable(1, 30)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int OasisPlantChance = 3;
+
+	[GenConfigurable(1, 30)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int GlowflowerChance = 4;
+
+	[GenConfigurable(1, 30)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int PineappleChance = 3;
+
+	[GenConfigurable(1, 30)]
+	[ReverseMinMax]
+	[Slider]
+	[Denominator]
+	private static int SeaOatsChance = 2;
+
+	[GenConfigurable("0 0", "10 15")]
+	private static GenRange LightRange = new GenRange(1, 3);
+
+	[GenConfigurable("1 0", "15 8")]
+	private static GenRange PoolWidth = new GenRange(6, 5);
+
+	[GenConfigurable("1 0", "10 15")]
+	private static GenRange PoolDepth = new GenRange(3, 3);
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	private static float MainNormalization = 0;
+
+	[GenConfigurable(0f, 1f, 0.01f)]
+	[Slider]
+	private static float ItemNormalization = 0;
+
+	[GenConfigurable("1 0", "10 15")]
+	private static GenRange ChestItemRange = new GenRange(6, 2);
+
+	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false))
+	{
+		Presets =
+		[
+			new("Overgrown",
+				[
+					new IndividualPreset(nameof(PalmChanceHigh), 2),
+					new IndividualPreset(nameof(PalmChanceLow), 20),
+					new IndividualPreset(nameof(CattailChance), 1),
+					new IndividualPreset(nameof(OasisPlantChance), 2),
+					new IndividualPreset(nameof(GlowflowerChance), 2),
+					new IndividualPreset(nameof(GlowflowerChance), 2),
+					new IndividualPreset(nameof(LightRange), GenRange.Empty),
+					new IndividualPreset(nameof(PoolWidth), new GenRange(10, 5)),
+					new IndividualPreset(nameof(PoolDepth), new GenRange(7, 10)),
+				]),
+
+			new("Petrified",
+				[
+					new IndividualPreset(nameof(DesertMicropass.FossilCount), 45),
+					new IndividualPreset(nameof(DesertMicropass.FossilMultiplier), 5f),
+					new IndividualPreset(nameof(DesertMicropass.PatchScale), 22)
+				]),
+
+			new("Ruined",
+				[
+					new IndividualPreset(nameof(OasisMicropass.RuinCount), new GenRange(3, 7)),
+					new IndividualPreset(nameof(OasisMicropass.RuinSegments), new GenRange(5, 11)),
+				]),
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
+	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
 	public static bool InUndergroundOasis(Player p)
 	{
@@ -33,11 +139,6 @@ public class UndergroundOasisBiome : Microbiome
 
 		return result;
 	}
-
-	public static readonly Point16 Size = new(50, 40);
-	public static readonly HashSet<Rectangle> OasisAreas = [];
-
-	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
 	#region detours
 	public override void Load()
@@ -147,7 +248,7 @@ public class UndergroundOasisBiome : Microbiome
 		WorldUtils.Gen(origin, new ModShapes.All(clearingShape), Actions.Chain(
 			new Modifiers.OnlyTiles(TileID.Sand),
 			new Actions.Custom((i, j, args) => {
-				if (WorldGen.genRand.NextBool(palmCount == 0 ? 5 : 15) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
+				if (WorldGen.genRand.NextBool(palmCount == 0 ? PalmChanceHigh : PalmChanceLow) && Main.tile[i, j].Slope == SlopeType.Solid && !Main.tile[i, --j].HasTile)
 					if (CreatePalmTree(i, j, WorldGen.genRand.Next(8, 16)))
 						palmCount++;
 
@@ -163,7 +264,7 @@ public class UndergroundOasisBiome : Microbiome
 
 				if (Main.tile[i, j].LiquidAmount > 100)
 				{
-					if (WorldGen.genRand.NextBool(3))
+					if (WorldGen.genRand.NextBool(CattailChance))
 					{
 						WorldGen.PlaceCatTail(i, j);
 
@@ -174,16 +275,16 @@ public class UndergroundOasisBiome : Microbiome
 				}
 				else
 				{
-					if (WorldGen.genRand.NextBool(3))
+					if (WorldGen.genRand.NextBool(OasisPlantChance))
 						WorldGen.PlaceOasisPlant(i, j);
 
-					if (WorldGen.genRand.NextBool(4))
+					if (WorldGen.genRand.NextBool(GlowflowerChance))
 						Placer.PlaceTile(i, j, ModContent.TileType<Glowflower>());
 
-					if (WorldGen.genRand.NextBool(8))
+					if (WorldGen.genRand.NextBool(PineappleChance))
 						Placer.PlaceTile(i, j, ModContent.TileType<PineapplePlant>());
 
-					if (WorldGen.genRand.NextBool(2))
+					if (WorldGen.genRand.NextBool(SeaOatsChance))
 					{
 						var t = Main.tile[i, j];
 
@@ -206,7 +307,7 @@ public class UndergroundOasisBiome : Microbiome
 		int x = point.X;
 		int y = point.Y;
 
-		int count = WorldGen.genRand.Next(1, 4);
+		int count = LightRange.RollRange();// LightAmountMin + WorldGen.genRand.Next(LightAmountRange + 1);
 		HashSet<int> lastX = [];
 
 		for (int i = 0; i < count; i++)
@@ -257,7 +358,7 @@ public class UndergroundOasisBiome : Microbiome
 		WorldMethods.FindGround(origin.X, ref origin.Y);
 		ShapeData shape = new();
 
-		WorldUtils.Gen(origin, new Shapes.Circle(WorldGen.genRand.Next(6, 11), WorldGen.genRand.Next(3, 6)), Actions.Chain(
+		WorldUtils.Gen(origin, new Shapes.Circle(PoolWidth.RollRange(), PoolDepth.RollRange()), Actions.Chain(
 			new Modifiers.IsSolid(),
 			new Actions.ClearTile(),
 			new Actions.SetLiquid(LiquidID.Water)
@@ -275,14 +376,16 @@ public class UndergroundOasisBiome : Microbiome
 		{
 			MainWaterItem = new(WorldGen.genRand);
 			MainWaterItem.Add(ItemID.FloatingTube, 1);
-			MainWaterItem.Add(ItemID.BreathingReed, 0.8);
+			MainWaterItem.Add(ItemID.BreathingReed, Normalization(0.8f));
 			MainWaterItem.Add(ItemID.Flipper, 1);
 			MainWaterItem.Add(ItemID.Trident, 1);
 			MainWaterItem.Add(ItemID.WaterWalkingBoots, 1);
-			MainWaterItem.Add(ItemID.MagicConch, 1.5);
+			MainWaterItem.Add(ItemID.MagicConch, Normalization(1.5f));
 			MainWaterItem.Add(ItemID.AncientChisel, 1);
 			MainWaterItem.Add(ItemID.MysticCoilSnake, 1);
 			MainWaterItem.Add(ItemID.SandBoots, 1);
+
+			static float Normalization(float input) => MathHelper.Lerp(input, 1, MainNormalization);
 		}
 
 		if (RandomItem is null) 
@@ -293,21 +396,23 @@ public class UndergroundOasisBiome : Microbiome
 			RandomItem.Add((ItemID.LeadBar, 5..14, static () => GenVars.iron == TileID.Lead), 1);
 			RandomItem.Add((ItemID.SilverBar, 5..14, static () => GenVars.silver == TileID.Silver), 1);
 			RandomItem.Add((ItemID.TungstenBar, 5..14, static () => GenVars.silver == TileID.Tungsten), 1);
-			RandomItem.Add((ItemID.RegenerationPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.GillsPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.NightOwlPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.SwiftnessPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.ShinePotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.ArcheryPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.HunterPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.MiningPotion, 1..2, null), 0.33);
-			RandomItem.Add((ItemID.TrapsightPotion, 1..2, null), 0.33);
+			RandomItem.Add((ItemID.RegenerationPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.GillsPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.NightOwlPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.SwiftnessPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.ShinePotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.ArcheryPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.HunterPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.MiningPotion, 1..2, null), Normalization(0.33f));
+			RandomItem.Add((ItemID.TrapsightPotion, 1..2, null), Normalization(0.33f));
 			RandomItem.Add((ItemID.RecallPotion, 2..4, null), 1);
 			RandomItem.Add((ItemID.Extractinator, 1..1, null), 1);
 			RandomItem.Add((ItemID.Bomb, 10..19, null), 1);
-			RandomItem.Add((ItemID.ThrowingKnife, 8..15, null), 1.5f);
-			RandomItem.Add((ItemID.Shuriken, 8..15, null), 1.5f);
-			RandomItem.Add((ItemID.WoodenArrow, 5..12, null), 2f);
+			RandomItem.Add((ItemID.ThrowingKnife, 8..15, null), Normalization(1.5f));
+			RandomItem.Add((ItemID.Shuriken, 8..15, null), Normalization(1.5f));
+			RandomItem.Add((ItemID.WoodenArrow, 5..12, null), Normalization(2f));
+
+			static float Normalization(float input) => MathHelper.Lerp(input, 1, ItemNormalization);
 		}
 
 		// Try a few times
@@ -323,7 +428,7 @@ public class UndergroundOasisBiome : Microbiome
 				chest.item[0] = new(MainWaterItem.Get());
 				chest.item[0].Prefix(-1);
 
-				int miscLength = WorldGen.genRand.Next(6, 9);
+				int miscLength = ChestItemRange.RollRange();
 				HashSet<int> takenRandomIds = [];
 
 				for (int j = 1; j < miscLength; ++j)

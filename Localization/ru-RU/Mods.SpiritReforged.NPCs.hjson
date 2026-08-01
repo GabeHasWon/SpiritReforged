@@ -14,7 +14,7 @@ VanillaDialogue: {
 	}
 
 	TravellingMerchant: {
-		Cartographer1: В своих странствиях я часто встречаю одного своенравную картографшу. Честное слово, с ней не расслабишься!
+		Cartographer1: В своих странствиях я часто встречаю одну своенравную картографшу. Честное слово, с ней не расслабишься!
 		Cartographer2: О, {0}! В прошлом месяце она показала мне дорогу, а потом почти сразу же свалилась в канаву.
 		Discoveries: Иногда в своих путешествиях я натыкаюсь на редкие диковинки. Если будешь внимателен, может быть и сам что найдёшь.
 	}
@@ -85,7 +85,7 @@ Gar: {
 
 GoldGar: {
 	DisplayName: Золотой панцирник
-	Entry: Только чудовище способно распороть золотого панцирника ради её нежной икры. Только чудовище...
+	Entry: Только чудовище способно распороть золотого панцирника ради его нежной икры. Только чудовище...
 }
 
 OceanSlime: {
@@ -210,7 +210,7 @@ Cartographer: {
 				0:
 					'''
 					Где же это было... Ах, вот! Я спускался по тёмной и опасной пещере, когда заметил впереди яркое розовое сияние. По-настоящему завораживающее зрелище.
-					Знаешь, что такой цвет означает в природе? «Держись подальше». Вот и я так сделал.
+					Знаешь, что такой цвет означает в природе? «Держись подальше». Вот и я так сделала.
 					'''
 				1:
 					'''
@@ -233,7 +233,7 @@ Cartographer: {
 				1:
 					'''
 					Взгляни сюда. Ты когда-нибудь шёл вперёд, уткнувшись взглядом в землю? Так делать не стоит. Но вот недавно, когда я так шла, вдруг заметила: трава постепенно меняет цвет с ярко-зелёного на какой-то болезненно-зелёный.
-					Поднимаю голову — а передо мной самая высокая трава, какую я когда-либо видела. И густая... Жуть. И что я сделал? Ну... Просто развернулась и ушла. Лезть в ТАКУЮ чащу — это не по моей части.
+					Поднимаю голову — а передо мной самая высокая трава, какую я когда-либо видела. И густая... Жуть. И что я сделала? Ну... Просто развернулась и ушла. Лезть в ТАКУЮ чащу — это не по моей части.
 					'''
 				2:
 					'''
@@ -252,7 +252,7 @@ Cartographer: {
 				0:
 					'''
 					Вот мы и здесь. Знаешь, я часто блуждаю, наслаждаясь видами и размышляя вслух... Но всё это теряет смысл, когда целуешь лицом землю.
-					Я споткнулась здесь обо что-то, но так разозлилась, что даже не стал смотреть, обо что именно.
+					Я споткнулась здесь обо что-то, но так разозлилась, что даже не стала смотреть, обо что именно.
 					'''
 				1:
 					'''
@@ -288,8 +288,8 @@ Cartographer: {
 
 			BloodAltar: {
 				0: И... Вот и всё! Исследовать поверхность — это лишь начало. Под землёй мне встречается столько странных вещей, что я предпочитаю держаться подальше... Что? Я — картограф, а не искатель приключений!
-				1: Кажется, я нашла именно то, что искала! Ты человек смекалистый, это сразу видно. Я встретила одного живого мертвеца — и, к моему изумлению, он был в полном здравии — и он продал мне вот эту... Руку. Я последовала туда, куда она указывала, и очутилась в мрачном склепе... Может, тебе повезёт больше, а я туда больше ни ногой.
-				2: Любишь испытания? Я уж точно нет. В одном подземелье есть камера, от которой буквально несёт кровью... И посреди неё стоит какой-то странный алтарь. В общем, я там долго не задержался.
+				1: Кажется, я нашла именно то, что искала! Ты человек смекалистый, это сразу видно. Я встретила одного живого мертвеца — который, к моему изумлению, он был вполне разумен — и он продал мне вот эту... Руку. Я последовала туда, куда она указывала, и очутилась в мрачном склепе... Может, тебе повезёт больше, а я туда больше ни ногой.
+				2: Любишь испытания? Я уж точно нет. В одном подземелье есть камера, от которой буквально несёт кровью... И посреди неё стоит какой-то странный алтарь. В общем, я там долго не задержалась.
 			}
 
 			SaltFlat: {
@@ -379,7 +379,7 @@ HideZombieBig: {
 
 HideZombieSmall: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Их наряд — последний писк моды в мире нежити
+	Entry: Их наряд — последний писк моды в мире нежити.
 }
 
 PotterySlime: {
@@ -475,7 +475,7 @@ Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
 	DisplayName: Фламинго
-	Entry: Собираясь для безопасности в большие группы, они начинают фильтровать воду в поисках в ней микроорганизмов, составляющих их основной рацион.
+	Entry: Сбиваясь в большие стаи, они фильтруют воду в поисках микроорганизмов, составляющих основу их рациона.
 }
 
 DivingBeetle: {
@@ -499,22 +499,22 @@ Grub: {
 }
 
 DesertStactus: {
-	DisplayName: Кактусеница
-	Entry: Эти кактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
+	DisplayName: Стактус
+	Entry: Эти стактусики на самом деле очень миролюбивые существа, но им трудно заводить друзей из-за своего колкого характера.
 }
 
 CorruptStactus: {
-	DisplayName: Искажённая кактусеница
+	DisplayName: Искажённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
-	DisplayName: Багряная кактусеница
+	DisplayName: Багряный стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
-	DisplayName: Освящённая кактусеница
+	DisplayName: Освящённый стактус
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
@@ -530,7 +530,7 @@ GoldenBrineShrimp: {
 
 Wisp: {
 	DisplayName: Блуждающий огонёк
-	Entry: Странные сгустки энергии, которые пассивно летают среди равнин, если их не потревожить. Как известно, они исчезают при малейшем намеке на рассвет солнца.
+	Entry: Странные сгустки энергии, которые пассивно летают среди равнин, если их не потревожить. Как известно, они исчезают при малейшем намеке на лучи солнца.
 }
 
 DecrepitMummy: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Используйте любой самоцвет на [i:SpiritReforged/ScarabAltarItem] древнем алтаре в Зиккурате.
 }
 
-TinyGrub.DisplayName: Маленькая личинка
+TinyGrub: {
+	DisplayName: Маленькая личинка
+	Entry: Почти настолько же полна потенциала, насколько она отвратительна.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,14 +573,188 @@ VeiledZombie: {
 	Entry: Одеться для защиты от жары — только один из элементов выживания в пустыне. Взятие с собой еды и воды — совсем не тот шаг, который стоит опускать.
 }
 
-Cricket.DisplayName: Сверчок
-GoldCricket.DisplayName: Золотой сверчок
+Cricket: {
+	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
+	DisplayName: Сверчок
+}
+
+GoldCricket: {
+	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
+	DisplayName: Золотой сверчок
+}
 
 BeetleTownPet: {
-	// DisplayName: Beetle
-	// Chitter: Chitter
+	DisplayName: Жук
+	Entry: Милое и неуклюжие насекомое. К сожалению, обнимать их будет не очень удобно.
+	Chitter0: *Счастливое стрекотание*
+	Chitter1: *Звуки жука*
+	Chitter2: *Звуки букашки*
 
 	Names: {
+		RoyalScarab0: Лазурь
+		RoyalScarab1: Ягодка
+		RoyalScarab2: Блю
+		RoyalScarab3: Корончик
+		RoyalScarab4: Хепри
+		RoyalScarab5: Ляпис
+		RoyalScarab6: Луми
+		RoyalScarab7: Минибеус
+		RoyalScarab8: Принц
+		RoyalScarab9: Коралина
+		RoyalScarab10: Скарб
+		RoyalScarab11: Сэди
+		RoyalScarab12: Сапфир
+		RoyalScarab13: Скиппи
+		RoyalScarab14: Санни
+		RoyalScarab15: Скаб
+		DungBeetle0: Асбест
+		DungBeetle1: Кусик
+		DungBeetle2: Кирпич
+		DungBeetle3: Ядр
+		DungBeetle4: Клэй
+		DungBeetle5: Дэйв
+		DungBeetle6: Грязнуля
+		DungBeetle7: Грэг
+		DungBeetle8: Ворчун
+		DungBeetle9: Геркулес
+		DungBeetle10: Джефф
+		DungBeetle11: Лакрица
+		DungBeetle12: Галька
+		DungBeetle13: Пити
+		DungBeetle14: Сажик
+		DungBeetle15: Ложка
+		JewelBeetle0: Обри
+		JewelBeetle1: Би
+		JewelBeetle2: Бонбон
+		JewelBeetle3: Карамель
+		JewelBeetle4: Блестик
+		JewelBeetle5: Златовласка
+		JewelBeetle6: Хумус
+		JewelBeetle7: Кайли
+		JewelBeetle8: Зефирка
+		JewelBeetle9: Мина
+		JewelBeetle10: Обол
+		JewelBeetle11: Сирша
+		JewelBeetle12: Шейла
+		JewelBeetle13: Таффи
+		JewelBeetle14: Топаз
+		JewelBeetle15: Захра
+		Weevil0: Арчибальд
+		Weevil1: Сапожок
+		Weevil2: Шарлемань
+		Weevil3: Динки
+		Weevil4: Герцогин
+		Weevil5: Элеонора
+		Weevil6: Хьюберт
+		Weevil7: Икабод
+		Weevil8: Джебедия
+		Weevil9: Джонсон
+		Weevil10: Книвел
+		Weevil11: Лоуренс
+		Weevil12: Лорд Эгглстон, эсквайр III
+		Weevil13: Простачок
+		Weevil14: Шмыг
+		Weevil15: Уиннифред
+		Maybug0: Эйприл
+		Maybug1: Шарлотта
+		Maybug2: Кловер
+		Maybug3: Росинка
+		Maybug4: Диззи
+		Maybug5: Фаззи
+		Maybug6: Джиджи
+		Maybug7: Холли
+		Maybug8: Джунипер
+		Maybug9: Мэнди
+		Maybug10: Майя
+		Maybug11: Минки
+		Maybug12: Паприка
+		Maybug13: Пайпер
+		Maybug14: Попкорн
+		Maybug16: Вельвет
+		Ladybug0: Базиль
+		Ladybug1: Чача
+		Ladybug2: Синнамон
+		Ladybug3: Неженка
+		Ladybug4: Пижон
+		Ladybug5: Дива
+		Ladybug6: Леди
+		Ladybug7: Милашка
+		Ladybug8: Мисси
+		Ladybug9: Пин
+		Ladybug10: Полька
+		Ladybug11: Роза
+		Ladybug12: Скарлет
+		Ladybug13: Пятнышка
+		Ladybug14: Титания
+		Ladybug15: Тюльпан
+	}
+}
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: Full of charm and whimsy, the Enchanter deals with various seals and spells. If some weapons or tools need a little more magic, just ask!
+
+	Names: {
+		// 0: Albion
+		// 1: Bertilak
+		// 2: Eango
+		// 3: Enki
+		// 4: Gil
+		// 5: Heka
+		// 6: Ilmarinen
+		// 7: Itani
+		// 8: Kokabiel
+		// 9: Mallyck
+		// 10: Mazdak
+		// 11: Morrigan
+		// 12: Myrrdin
+		// 13: Oeti
+		// 14: Ose
+		// 15: Sulyvahn
+		// 16: Tethra
+		// 17: Themisto
+		// 18: Vorv
+		// 19: Ywain
+	}
+
+	TownNPCMood: {
+		// Content: I take a moment and feel...all is well.
+		// NoHome: I don't imagine you've got a place for me to rest my head?
+		// FarFromHome: I am quite far for from my workspace and bed. May we return home soon?
+		// LoveSpace: This town has a satisfying populace. Never lonely, and my study remains a quiet and peaceful sanctuary...
+		// DislikeCrowded: It is a bit difficult for me to get ample rest with all this chatter around.
+		// HateCrowded: There are far too many people living here. One too many people are knocking down my door asking for magical enchantments and I've had enough.
+		// LoveNPC: "{NPCName.Wizard}'s hot chocolate is absolutely to die for. The last time I went to exchange notes with them, they pulled a coin out from behind my ear! I couldn't stop laughing."
+		// LikeNPC: I never thought loud, crackling lights in the sky could make my day, but I'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
+		// DislikeNPC: "{NPCName.GoblinTinkerer}'s methods of weapon augmentation are barbaric. Magical implements do not enjoy being brutalized by a hammer!"
+		// HateNPC: I cannot stand {NPCName.DD2Bartender}'s bar stories... he has one too many pertaining to the diminishing of kobolds.
+		// LikeBiome: Here above the clouds, I feel so much more connected to the world's magical forces. Not to mention that the rain can't put my candles out...
+		// DislikeBiome: I hate living so close to such an abundant yet fickle source of paraffin! I'm covered in countless stings and scrapes.
+		// LikeNPC_Princess: The girl {NPCName} carries more whimsy than I do.
+		// Princess_LovesNPC: "{NPCName} does some really cool magic with those fancy stones!"
+	}
+
+	Dialogue: {
+		Idle: {
+			// 0: I have unfortunately allowed my nights and days to become flipped. While others are out and about, I sometimes find myself fast asleep!
+			// 1: It's easy to lose track of time in a room lit only by the flicker of candlelight...
+			// 2: Have you come to learn about the various magical properties wax possesses?
+		}
+
+		IdleNight: {
+			// 0: The moon is high, and the glowing light of candles is brighter than ever!
+			// 1: Fireflies fill the sky like small, dancing flame. There is magic everywhere we look...
+			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+		}
+
+		BloodMoon: {
+			// 0: I cannot sleep on a night such as...this. When I close my eyes, all I see is red.
+			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+		}
+
+		// Party: I am not fond of this much noise, but I can't help but be charmed by these festivities. This was worth staying up for.
+		// Goblin: You'd be surprised what you can stick seals onto. {0} asked me to enchant his grappling hook and he's been flying around all day!
+		// Golfer: I feel like the only one in town who doesn't play golf. I'm always far too tired to play such a sport, but {0} always makes sure to invite me. I feel a little guilty, but also very welcomed.
 		// RoyalScarab0: Azure
 		// RoyalScarab1: Berry
 		// RoyalScarab2: Bluey
@@ -676,3 +853,5 @@ BeetleTownPet: {
 		// Ladybug15: Tulip
 	}
 }
+
+// SealedKnight.DisplayName: Sealed Knight

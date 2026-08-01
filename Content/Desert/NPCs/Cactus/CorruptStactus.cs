@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using SpiritReforged.Common;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.Utilities;
 
@@ -7,6 +8,12 @@ namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 [AutoloadBanner]
 public class CorruptStactus : Stactus
 {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		SpiritSets.IsCorrupt[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -40,7 +47,6 @@ public class CorruptStactus : Stactus
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		base.HitEffect(hit);
-
 		SoundEngine.PlaySound(SoundID.NPCHit18, NPC.Center);
 	}
 

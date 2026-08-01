@@ -22,11 +22,12 @@ Records: {
 	Worm: Lança uma variedade de minhocas após ser destruído.
 	Platter: Uma refeição quentinha pronta para você. Quem deixaria isso para trás?
 	WickerBasket: Um piquenique, só pra você!
-	// Aether: Provides various useful, sparkly upgrades.
+	Aether: Oferece diversas melhorias úteis e brilhantes.
 	Stuffed: Que lugar estranho para encontrar um comerciante. Ele está praticamente pedindo para ser incomodad.
 	Scrying: Revela uma larga porção do mapa ao ser destruído.
 	Biome: Contém uma variedade maior de saque em relação aos vasos comuns.
 	Boulder: Vai girando até bater no chão quando incomodado.
+	// Wax: Imbued with potent magical energies.
 }
 
 FablesGraves: {
@@ -44,5 +45,7 @@ Starflower.MapEntry: Flor Estrelar
 BonsaiTrees.MapEntry: Bonsai
 DustyTomb.MapEntry: Túmulo Empoirado
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
-// OganessonMoss.MapEntry: Oganesson Moss
-// RadonMoss.MapEntry: Radon Moss
+OganessonMoss.MapEntry: Musgo de Oganessônio
+RadonMoss.MapEntry: Musgo de Radônio
+// EnchantedAnvil.MapEntry: Enchanted Anvil
+// EnchantedWorkbench.MapEntry: Enchanted Workbench

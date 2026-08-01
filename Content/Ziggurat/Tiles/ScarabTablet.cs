@@ -4,6 +4,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using System.Linq;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
@@ -44,7 +45,7 @@ public class ScarabTablet : ModTile
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.DynastyShingle_Red;
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Painting"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Painting"));
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

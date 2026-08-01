@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: 魂灵新魄客户端配置
 
-	OceanShape: {
-		Label: 海洋形状
-		Tooltip:
-			'''
-			以某些方式修改海洋生成
-			默认为分段_V生成
-			仅推荐在游玩魂灵模组时使用分段_V生成
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: 反射细节
 		Tooltip:
@@ -24,34 +14,51 @@ ReforgedClientConfig: {
 		Label: 环境音
 		Tooltip: 在特定生物群系中播放环境音
 	}
-}
 
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: 默认
-		Tooltip: ""
+	ScreenshakeStrength: {
+		Label: 屏幕震动强度
+		Tooltip: 控制魂灵新魄屏幕震动的强度。
 	}
 
-	SlantedSine: {
-		Label: 倾斜正弦
-		Tooltip: ""
+	DisableWater: {
+		Label: 禁用水体视觉效果
+		Tooltip: 禁用魂灵新魄水体的视觉效果。
 	}
 
-	Piecewise: {
-		Label: 分段
-		Tooltip: ""
+	DebugEcotones: {
+		Label: 过渡带调试（WorldGen Previewer）
+		Tooltip:
+			'''
+			需要WorldGen Previewer（世界生成预览）
+			允许开发者和玩家通过一个实用的叠加界面使用过渡带系统，来调试问题并理解过渡带。
+			'''
 	}
 
-	Piecewise_M: {
-		Label: 分段_ M
-		Tooltip: ""
+	Headers.Developer: 开发者工具
+
+	GlyphProjectileEffects: {
+		// Label: Glyph Projectile Effects
+		// Tooltip: Determines if projectiles with glyphs should create visual effects
 	}
 
-	Piecewise_V: {
-		Label: 分段_ V
-		Tooltip: ""
+	GlyphItemEffects: {
+		// Label: Glyph Item Effects
+		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+	}
+
+	GlyphProjectileVisualEffects: {
+		// Label: Glyph Projectile Visual Effects
+		// Tooltip: ""
+	}
+
+	GlyphItemVisualEffects: {
+		// Label: Glyph Item Visual Effects
+		// Tooltip: ""
+	}
+
+	BannerJingle: {
+		// Label: Banner Jingle
+		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
 	}
 }
 
@@ -71,5 +78,18 @@ ReforgedServerConfig: {
 	MaxFloatingItemCount: {
 		Label: 漂浮物上限
 		Tooltip: 影响一个世界内同时可以有多少漂浮物。
+	}
+
+	AutoloadHeldProjectiles: {
+		// Label: Autoload Held Projectiles
+		/* Tooltip:
+			'''
+			Enables a system that automatically detects 'held projectiles' during loading.
+			This may substantially increase load times or cause load errors if enabled with other mods,
+			but may fix some issues with certain mechanics (such as glyphs) in-game.
+			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+
+			This has NO effect on vanilla or Reforged projectiles, which are already set.
+			''' */
 	}
 }

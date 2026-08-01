@@ -1,11 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles.Chains;
 
-public class ChainLoop : ModTile, IAutoloadTileItem
+public class ChainLoop : ModTile, ILoadItem
 {
 	public static byte GetSegmentCount() => (byte)(1 + Math.Abs(Player.FlexibleWandCycleOffset) % 6);
 
@@ -29,8 +28,12 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 		}
 	}
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 80);
-	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
+	public void SetItemStaticDefaults(ModItem modItem) => modItem.Item.ResearchUnlockCount = 30;
+
+	public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.sellPrice(copper: 80);
+
+	public virtual void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe().AddIngredient(ItemID.Chain, 5).AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -47,8 +50,6 @@ public class ChainLoop : ModTile, IAutoloadTileItem
 
 		AddMapEntry(new Color(150, 150, 150));
 		DustType = -1;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void PostDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, Rectangle frame, Vector2 position, Color color, bool validPlacement, SpriteEffects spriteEffects)

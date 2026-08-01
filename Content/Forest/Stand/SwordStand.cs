@@ -70,6 +70,8 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		Main.tileTable[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
@@ -81,8 +83,7 @@ public class SwordStand : SingleSlotTile<SwordStand.SwordStandSlot>
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
-		ModTileEntity tileEntity = ModContent.GetInstance<SwordStandSlot>();
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.AnchorWall = true;

@@ -1,14 +1,14 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.VerletChains;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
-public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
+public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, ILoadItem
 {
 	public class FlagRingEntity : ModTileEntity, IEntityUpdate, IEntityDraw
 	{
@@ -107,6 +107,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		Main.tileNoFail[Type] = true;
 		Main.tileSolid[Type] = false;
 		Main.tileFrameImportant[Type] = true;
+
 		TileID.Sets.CanBeSloped[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -116,7 +117,6 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(165, 85, 55));
-		RegisterItemDrop(this.AutoItemType());
 		DustType = -1;
 		HitSound = SoundID.Item37;
 	}

@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Abstract;
-using Terraria.Graphics.CameraModifiers;
+using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
@@ -8,7 +9,7 @@ internal static class PlayerExtensions
 {
 	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<TItem>().Name) == true;
 
-	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoPlayer>().info[itemName];
+	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoItem.InfoPlayer>().info[itemName];
 	public static bool HasInfoItem<TItem>(this Player player) where TItem : InfoItem => player.HasInfoItem(ModContent.GetInstance<TItem>().Name);
 
 	/// <summary> Checks whether the set bonus related to this item is active on <paramref name="player"/>.<br/>
@@ -37,6 +38,7 @@ internal static class PlayerExtensions
 
 	/// <summary> Gets <see cref="Player.GetFrontHandPosition"/> rotated by <see cref="Player.RotatedRelativePoint"/>. </summary>
 	public static Vector2 GetHandRotated(this Player player, Player.CompositeArmStretchAmount stretch, float rotation) => player.RotatedRelativePoint(player.GetFrontHandPosition(stretch, rotation));
+
 	/// <summary> Gets rotation from <see cref="GetHandRotated(Player, Player.CompositeArmStretchAmount, float)"/> automatically using <paramref name="player"/>'s front composite arm data. </summary>
 	public static Vector2 GetHandRotated(this Player player)
 	{
@@ -51,7 +53,6 @@ internal static class PlayerExtensions
 	public static void SimpleShakeScreen(this Player player, float strength, float vibrationCycles, int frames, float distanceFalloff, string uniqueIdentity = null)
 	{
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
-		PunchCameraModifier modifier = new(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
-		Main.instance.CameraModifiers.Add(modifier);
+		ScreenshakeHelper.Shake(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
 	}
 }

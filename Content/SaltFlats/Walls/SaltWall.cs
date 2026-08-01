@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Walls;
 
-public class SaltWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class SaltWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("SaltWallUnsafe").Type;
 

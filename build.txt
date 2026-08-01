@@ -1,6 +1,6 @@
 displayName = Spirit Reforged
 author = Team Spirit
 version = 0.2.1.1
-dllReferences = NPCUtils, StructureHelper, RubbleAutoloader, ILLogger
+dllReferences = NPCUtils, StructureHelper, RubbleAutoloader, TileHelper, ILLogger
 modReferences = SpiritMusic
 buildIgnore = Assets/Shaders/*.dll

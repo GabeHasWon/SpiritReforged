@@ -64,6 +64,8 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		ProjectileID.Sets.TrailCacheLength[Type] = 6;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
 
+		HeldProjectileSet.HeldProjectile[Type] = true;
+
 		SafeSetStaticDefaults();
 	}
 

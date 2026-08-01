@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.ConfigurationCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
@@ -119,8 +120,8 @@ public class EnergyPlunge : ModProjectile
 		if (Main.rand.NextFloat(odds) < 0.05f)
 		{
 			float mag = Main.rand.NextFloat();
-			var linePos = Projectile.Center + Main.rand.NextVector2Unit() * mag * 15f;
-			var lineVel = Vector2.Normalize(owner.velocity) * mag * 4f;
+			Vector2 linePos = Projectile.Center + Main.rand.NextVector2Unit() * mag * 15f;
+			Vector2 lineVel = Vector2.Normalize(owner.velocity) * mag * 4f;
 
 			ParticleHandler.SpawnParticle(new ImpactLine(linePos, lineVel, Color.Blue.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f), (int)(mag * 15)));
 			ParticleHandler.SpawnParticle(new ImpactLine(linePos, lineVel, Color.White.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f) * 0.5f, (int)(mag * 15)));
@@ -149,9 +150,7 @@ public class EnergyPlunge : ModProjectile
 		{
 			if (Projectile.owner == Main.myPlayer)
 			{
-				var modifier = new Terraria.Graphics.CameraModifiers.PunchCameraModifier(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
-				Main.instance.CameraModifiers.Add(modifier);
-
+				ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitY, Math.Max(strengthCapped, 0.5f) * 12f, 3, 20);
 				Projectile.NewProjectile(Projectile.GetSource_Death(), center, Vector2.Zero, ModContent.ProjectileType<EnergyImpact>(), damage, knockback, Projectile.owner, strengthCapped);
 			}
 
@@ -163,7 +162,7 @@ public class EnergyPlunge : ModProjectile
 				var lineCol = ((i == 0) ? Color.Cyan : Color.White).Additive();
 				var scale = new Vector2(1, 3) * ((i == 0) ? 1.4f : 1f) * strengthCapped;
 
-				ParticleHandler.SpawnParticle(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15));
+				ParticleHandler.SpawnParticle(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15) { Rotation = MathHelper.PiOver2 });
 			}
 
 			for (int i = 0; i < 20; i++)
