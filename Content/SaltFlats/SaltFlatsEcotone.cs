@@ -202,6 +202,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static void GenerateIndividualFlats(GenerationProgress progress, (int, int) bounds)
 	{
+		EcotoneSurfaceMapping.AddSpawnedEcotone<SaltFlatsEcotone>();
+
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		int leftBound = bounds.Item1;

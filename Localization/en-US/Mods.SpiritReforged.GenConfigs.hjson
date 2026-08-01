@@ -705,16 +705,6 @@ Pages: {
 					'''
 			}
 
-			ChestItemCountMin: {
-				DisplayName: "[i:1298] (Oasis) Chest Item Minimum"
-				Tooltip: The minimum amount of items in an underground Oasis chest.
-			}
-
-			ChestItemCountRange: {
-				DisplayName: "[i:1298] (Oasis) Chest Item Range"
-				Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
-			}
-
 			FossilCount: {
 				DisplayName: "[i:SpiritReforged/PolishedAmberItem] (Amber) Deposit Amount"
 				Tooltip: The maximum number of amber veins in the Underground Desert.

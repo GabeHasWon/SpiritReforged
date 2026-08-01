@@ -145,7 +145,7 @@ Pages: {
 
 			MaxSteps: {
 				DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] 最大段数"
-				Tooltip: 盐滩中反射盐滩平原的最大数量。
+				Tooltip: 盐滩中反光盐滩平原的最大数量。
 			}
 
 			StupaChance: {
@@ -703,16 +703,6 @@ Pages: {
 					非主要物品战利品池的归一化系数。
 					值越高，所有物品的抽取概率就越“平均”。
 					'''
-			}
-
-			ChestItemCountMin: {
-				DisplayName: "[i:1298] （绿洲）最小宝箱物品"
-				Tooltip: 地下绿洲的宝箱中出现的物品的最小数量。
-			}
-
-			ChestItemCountRange: {
-				DisplayName: "[i:1298] （绿洲）宝箱物品范围"
-				Tooltip: 追加到地下绿洲宝箱物品最小数量上的随机范围值。
 			}
 
 			FossilCount: {

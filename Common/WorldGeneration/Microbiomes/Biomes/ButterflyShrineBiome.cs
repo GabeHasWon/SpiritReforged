@@ -23,14 +23,14 @@ public class ButterflyShrineBiome : Microbiome
 	private static void Populate(Rectangle rect)
 	{
 		const int tries = 20;
-		int randomCount = Main.rand.Next(3, 6);
+		int randomCount = WorldGen.genRand.Next(3, 6);
 
 		for (int i = 0; i < randomCount; i++)
 		{
 			var pos = Vector2.Zero;
 			for (int t = 0; t < tries; t++)
 			{
-				pos = Main.rand.NextVector2FromRectangle(rect).ToWorldCoordinates();
+				pos = WorldGen.genRand.NextVector2FromRectangle(rect).ToWorldCoordinates();
 				if (!Collision.SolidCollision(pos, 8, 8))
 					break;
 			}

@@ -99,7 +99,7 @@ internal class ScarecrowDiscovery : Discovery, IGenerationPage
 			}
 			else
 			{
-				WorldGen.PlaceTile(x, y - 1, ModContent.TileType<Wheatgrass>(), true, style: Main.rand.Next(6));
+				WorldGen.PlaceTile(x, y - 1, ModContent.TileType<Wheatgrass>(), true, style: WorldGen.genRand.Next(6));
 			}
 		}
 

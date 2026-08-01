@@ -228,7 +228,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 		));
 
 		int deviation = radius.X / 2;
-		Point lakeOrigin = new(origin.X + Main.rand.Next(-deviation, deviation), origin.Y);
+		Point lakeOrigin = new(origin.X + WorldGen.genRand.Next(-deviation, deviation), origin.Y);
 		CarveLake(lakeOrigin);
 
 		PlaceStalactites(origin, radius.X, WorldGen.genRand.Next(4, 8));
@@ -292,7 +292,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 						{
 							t.ResetToType(TileID.SeaOats);
 							t.HasTile = true;
-							t.TileFrameX = (short)(18 * Main.rand.Next(15));
+							t.TileFrameX = (short)(18 * WorldGen.genRand.Next(15));
 						}
 					}
 				}
@@ -418,7 +418,7 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 		// Try a few times
 		for (int i = 0; i < 3; ++i)
 		{
-			int chestX = origin.X + Main.rand.Next(-2, 3);
+			int chestX = origin.X + WorldGen.genRand.Next(-2, 3);
 			WorldMethods.FindGround(chestX, ref origin.Y);
 			int chestIndex = WorldGen.PlaceChest(chestX, origin.Y - 1, TileID.Containers, false, 17);
 

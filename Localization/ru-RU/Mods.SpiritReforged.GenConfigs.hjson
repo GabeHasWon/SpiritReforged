@@ -4,7 +4,7 @@ UI: {
 		'''
 		Устанавливает все настройки на значение наименьшей генерации.
 		Таким образом, настройки в стиле «Максимум чего-то» будут установлены на минимум, 
-		а настройки «Шанс на что-то (1 к значению)» будут установлены на максимум.
+		а настройки «Шанс на что-то (1/x)» будут установлены на максимум.
 		'''
 	Max: Всё на макс.
 	MaxDescription:
@@ -28,14 +28,14 @@ UI: {
 	CantSave: (Вы не можете сохранить стандартные установки)
 	Load: Загрузить набор предустановок
 	HoverDescription: Открывает меню настройки некоторых элементов генерации мира из Spirit Reforged.
-	// FailedToLoad: Preset isn't for this page. Page expected: {0}
-	/* ConfigNotice:
+	FailedToLoad: Эта предустановка предназначена для другой страницы. Ожидаемая страница: {0}
+	ConfigNotice:
 		'''
-		[c/AAAAFF:Ranges] work by setting the minimum and a randomized addition.
-		The value shown is the actual range used in-game when rolling randomly.
-		''' */
-	// LoadError: An error has occurred while loading a preset ({0}). Report this to the Discord (and check client.log):
-	// Duplicate: (Duplicate preset not added)
+		[c/AAAAFF:Разброс] определяется установкой минимальных и максимальных значений.
+		Для генерации в игре будет использовано случайное значение в этом промежутке.
+		'''
+	LoadError: Произошла ошибка при загрузке предустановки ({0}). Проверьте файл client.log и сообщите об ошибке в нашем Discord:
+	Duplicate: (Эта предустановка уже была добавлена)
 }
 
 Pages: {
@@ -62,7 +62,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] Саванна на спавне"
+				DisplayName: "[i:50] Саванна на спавне"
 				Tooltip: Саванна сгенерируется прямо в точке появления игрока, как с сидом «savanna».
 			}
 
@@ -72,7 +72,7 @@ Pages: {
 			}
 
 			CampsiteChance: {
-				DisplayName: "[i:966] Шанс на лагерь"
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] Шанс на лагерь"
 				Tooltip: Устанавливает знаменатель (1/x) шанса генерации лагеря.
 			}
 
@@ -86,7 +86,7 @@ Pages: {
 			}
 
 			PotChance: {
-				DisplayName: "[i:31] Шанс на горшок"
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] Шанс на горшок"
 				Tooltip:
 					'''
 					Устанавливает знаменатель (1/x) шанса генерации горшка.
@@ -129,7 +129,7 @@ Pages: {
 
 		Members: {
 			OverSpawn: {
-				DisplayName: "[i:27] Солончаковые равнины на спавне"
+				DisplayName: "[i:50] Солончаковые равнины на спавне"
 				Tooltip: Солончаковые равнины сгенерируется прямо в точке появления игрока, как с сидом «salt».
 			}
 
@@ -190,7 +190,7 @@ Pages: {
 
 			Treacherous: {
 				Name: "[i:SpiritReforged/LeatherBackpack] Провал"
-				Tooltip: По ландшафту будут разбросаны глубокие ущелья. Не смотрите вниз!
+				Tooltip: По ландшафту могут быть разбросаны глубокие ущелья. Не смотрите вниз!
 			}
 		}
 
@@ -206,8 +206,8 @@ Pages: {
 			}
 
 			SizeMultiplier: {
-				DisplayName: "[i:126] Размер карстов"
-				Tooltip: Устанавливает множитель размера всех углублений, формируемых карстами.
+				DisplayName: "[i:747] Размер карстов"
+				Tooltip: Устанавливает множитель размера всех углублений, формируемых карстами (заросших пещер).
 			}
 
 			FieldSize: {
@@ -239,8 +239,8 @@ Pages: {
 			}
 
 			ReforgedCaveWeight: {
-				// DisplayName: "[i:30] (Caves) Custom Weight"
-				// Tooltip: The weight for a Reforged custom cave to spawn over a vanilla 'mountain' cave.
+				DisplayName: "[i:30] Коэфф. генерации пещер"
+				Tooltip: Устанавливает коэффициент генерации типов пещер, добавляемых Reforged, вместо ванильных.
 			}
 		}
 	}
@@ -287,7 +287,7 @@ Pages: {
 
 			SandRange: {
 				DisplayName: "[i:169] Разброс глубины песка"
-				Tooltip: Максимальное возможное значение разброса глубины песка.
+				Tooltip: Устанавливает значения разброса глубины песка.
 			}
 
 			CoralLowChance: {
@@ -404,7 +404,7 @@ Pages: {
 
 			UncommonScale: {
 				DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] Редкие горшки"
-				Tooltip: Устанавливает множитель количества попыток сгенерировать всех редких горшков.
+				Tooltip: Устанавливает множитель количества попыток сгенерировать любой редкий горшок.
 			}
 
 			ZenithScale: {
@@ -415,13 +415,13 @@ Pages: {
 
 		Presets: {
 			Tasty: {
-				// Name: "[i:4029] Tasty"
-				// Tooltip: Someone has left a frankly absurd amount of food lying around. Who made all of this?
+				Name: "[i:4029] Вкусный"
+				Tooltip: Кто-то оставил вокруг совершенно абсурдное количество еды. Кто это всё приготовил?
 			}
 
 			Occult: {
-				// Name: "[i:SpiritReforged/ScryingPotItem] Occult"
-				// Tooltip: The failed experiments of countless mages and sorcerers litter the caverns.
+				Name: "[i:SpiritReforged/ScryingPotItem] Загадочный"
+				Tooltip: Пещеры усеяны неудачными экспериментами бесчисленных магов и волшебников.
 			}
 		}
 	}
@@ -466,7 +466,7 @@ Pages: {
 			}
 
 			CovesSpawnRate: {
-				DisplayName: "[i:2291] Множ. рыбацких бухт"
+				DisplayName: "[i:SpiritReforged/KoiTotem] Множ. рыбацких бухт"
 				Tooltip:
 					'''
 					Устанавливает множитель максимального возможного количества рыбацких бухт в мире.
@@ -480,321 +480,326 @@ Pages: {
 			}
 
 			StatueCountModifier: {
-				// DisplayName: "[i:SpiritReforged/WheezerStatueItem] (Statues) Maximum"
-				// Tooltip: The maximum amount of Reforged statues spawned in-world.
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] Статуи"
+				Tooltip: Устанавливает максимальное возможное количество сгенерированых в мире статуй, добавляемых Reforged.
 			}
 
 			StructuresMax: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Multiplier"
-				// Tooltip: The multiplier to the number of pottery structures in a world.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Множ. гончарных"
+				Tooltip: Устанавливает множитель максимального возможного количества гончарных мастерских в мире.
 			}
 
 			StructureScale: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Scale"
-				// Tooltip: The scale applied to the size of pottery structures.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Размер гончарных"
+				Tooltip: Устанавливает множитель размера гончарных мастерских.
 			}
 
 			PotSpam: {
-				// DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
-				// Tooltip: The minimum number of attempts pottery structures have to place pots.
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Горшки в гончарных"
+				Tooltip:
+					'''
+					Устанавливает максимальное возможное количество сгенерированых горшок в гончарной мастерской.
+					Это не гарантирует того, что все горшки сгенерируются.
+					'''
 			}
 		}
 
 		Presets: {
 			Inhabited: {
-				// Name: "[i:498] Inhabited"
-				// Tooltip: There are signs of friendly explorers all across the Underground... what happened to them?
+				Name: "[i:498] Заселённый"
+				Tooltip: В подземелье полно следов предыдущих исследователей... Что с ними случилось?
 			}
 
 			Empty: {
-				// Name: "[i:1176] Empty"
-				// Tooltip: Is anyone out there?
+				Name: "[i:1176] Пустой"
+				Tooltip: Тут кто-нибудь есть?
 			}
 		}
 	}
 
 	Ziggurat: {
-		// Name: Ziggurat
-		// Description: Controls aspects of the Ziggurat and its contents.
+		Name: Зиккурат
+		Description: Настройка элементов генерации Зиккурата и его содержимого.
 
 		Members: {
 			UsedWidth: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Width"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ширина"
+				Tooltip:
 					'''
-					The width used for determining the size of the Ziggurat, not necessarily the actual width.
-					Higher-than-default values will force the Ziggurat to spawn over a Pyramid, as otherwise it may not spawn at all.
-					''' */
+					Задаёт базовую ширину Зиккурата при генерации. Реальная ширина структуры может отличаться.
+					При значениях выше базового Зиккурат может перекрывать пирамиды,
+					чтобы предотвратить ситуации, при которых структура не генерируется вообще.
+					'''
 			}
 
 			UsedHeight: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Height"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Высота"
+				Tooltip:
 					'''
-					The height used for determining the size of the Ziggurat, not necessarily the actual width.
-					Higher-than-default values will force the Ziggurat to spawn over a Pyramid, as otherwise it may not spawn at all.
-					''' */
+					Задаёт базовую высоту Зиккурата при генерации. Реальная высота структуры может отличаться.
+					При значениях выше базового Зиккурат может перекрывать пирамиды,
+					чтобы предотвратить ситуации, при которых структура не генерируется вообще.
+					'''
 			}
 
 			MaxInfections: {
-				// DisplayName: "[i:SpiritReforged/PaleHiveItem] Max Infections"
-				// Tooltip: The amount of infections (nests) per floor of the Ziggurat. Ranges from 0 to this value.
+				DisplayName: "[i:SpiritReforged/PaleHiveItem] Максимум гнёзд"
+				Tooltip: Устанавливает максимальное возможное количество сгенерированых гнёзд на этаже Зиккурата.
 			}
 
 			PotChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePotsItem] Pot Chance"
-				// Tooltip: Chance for pots to be placed in the Ziggurat.
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] Шанс на горшок"
+				Tooltip:
+					'''
+					Устанавливает шанс генерации горшка.
+					Горшки не перекрывают собой существующие тайлы,
+					поэтому установка значения на 1 НЕ приведёт к генерации горшков на каждом блоке.
+					'''
 			}
 
 			LapisPotChance: {
-				// DisplayName: "[i:SpiritReforged/LapisPotsItem] Lapis Pot Chance"
-				// Tooltip: Chance for a pot placed to be a Lapis pot.
+				DisplayName: "[i:SpiritReforged/LapisPotsItem] Шанс на лаз. горшок"
+				Tooltip: Устанавливает шанс того, что сгенерированный горшок окажется лазуритовым.
 			}
 
 			UncommonChance: {
-				// DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Uncommon Pot Chance"
-				// Tooltip: Chance for a pot placed to be an Uncommon pot.
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Шанс на ред. горшок"
+				Tooltip: Устанавливает шанс того, что сгенерированный горшок окажется редким.
 			}
 
 			MaxSpikeStripWidth: {
-				// DisplayName: "[i:SpiritReforged/NeedleTrapItem] Max Spike Strip Width"
-				// Tooltip: The maximum width of a spike strip.
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] Ширина ловушек"
+				Tooltip: Устанавливает максимальную возможную ширину ловушки с иглой.
 			}
 
 			SpikeStripChance: {
-				// DisplayName: "[i:SpiritReforged/NeedleTrapItem] Spike Strip Chance"
-				// Tooltip: The chance for a spike strip to be placed in non-special rooms.
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] Шанс на ловушку"
+				Tooltip: Устанавливает шанс генерации ловушки с иглой в обычных комнатах.
 			}
 
 			SpecialRoomChance: {
-				// DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Special Room Chance"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Шанс на особую комнату"
+				Tooltip:
 					'''
-					The chance that any Ziggurat room is a special room; that is, any of these:
-					Library room, Storage room, Burial room
-					''' */
+					Устанавливает шанс генерации особой комнаты в Зиккурате:
+					библиотеки, склада или погребальной.
+					'''
 			}
 
 			SkipRoomChance: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] Skip Room Chance"
-				// Tooltip: The chance for any room to be skipped instead of built.
+				DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] Шанс на пропуск комнаты"
+				Tooltip: Устанавливает шанс пропустить генерацию комнаты на этаже.
 			}
 
 			ChestNormalization: {
-				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Normalization"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/LapisChestItem] Нормализация сундуков"
+				Tooltip:
 					'''
-					The factor at which the chest loot pool is normalized.
-					The higher this value is, the more "even" all items are to roll.
-					''' */
+					Определяет степень нормализации списка содержимого сундуков.
+					Чем выше это значение, тем более равномерно распределяются шансы появления всех предметов.
+					'''
 			}
 
 			DresserNormalization: {
-				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Normalization"
-				/* Tooltip:
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Нормализация комодов"
+				Tooltip:
 					'''
-					The factor at which the dresser loot pool is normalized.
-					The higher this value is, the more "even" all items are to roll.
-					''' */
+					Определяет степень нормализации списка содержимого комодов.
+					Чем выше это значение, тем более равномерно распределяются шансы появления всех предметов.
+					'''
 			}
 
 			AncientBannerChance: {
-				// DisplayName: "[i:SpiritReforged/AncientBannerItem] Ancient Banner Chance"
-				// Tooltip: The chance for Ancient Banners to spawn.
+				DisplayName: "[i:SpiritReforged/AncientBannerItem] Шанс на древ. знамя"
+				Tooltip: Устанавливает шанс генерации древнего знамени.
 			}
 
 			BannerChance: {
-				// DisplayName: "[i:340] Banner Chance"
-				// Tooltip: The chance for vanilla banners to spawn.
+				DisplayName: "[i:340] Шанс на знамя"
+				Tooltip: Устанавливает шанс генерации ванильных знамён.
 			}
 
 			CenserChance: {
-				// DisplayName: "[i:SpiritReforged/CenserItem] Censer Chance"
-				// Tooltip: The chance for censers to spawn.
+				DisplayName: "[i:SpiritReforged/CenserItem] Шанс на кадило"
+				Tooltip: Устанавливает шанс генерации кадило.
 			}
 
 			TabletChance: {
-				// DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] Ancient Tablet Chance"
-				// Tooltip: The chance for Ancient Tablets to spawn in non-Treasure rooms.
+				DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] Шанс на скрижаль"
+				Tooltip: Устанавливает шанс генерации скрижали в не складах.
 			}
 
 			FloorDivotChance: {
-				// DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] Floor Divot Chance"
-				// Tooltip: The chance for a floor divot (random weathering effect) to occur.
+				DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] Шанс на расщелины пола"
+				Tooltip: Устанавливает шанс генерации расщелин (случайного эффекта выветривания) в полу.
 			}
 
 			SandSplatChance: {
-				// DisplayName: "[i:169] Sand Splat Chance"
-				// Tooltip: The chance for a 'sand splat' (random weathering effect) to occur.
+				DisplayName: "[i:169] Шанс на песчаный завал"
+				Tooltip: Устанавливает шанс генерации песчаных завалов (случайного эффекта выветривания).
 			}
 
 			PillarChance: {
-				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Pillar Chance"
-				// Tooltip: The chance for a pillar to spawn.
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Шанс на колонну"
+				Tooltip: Устанавливает шанс генерации колонны.
 			}
 
 			LightChance: {
-				// DisplayName: "[i:SpiritReforged/SunDropper] Light Chance"
-				// Tooltip: The chance for a light ray to spawn.
+				DisplayName: "[i:SpiritReforged/SunDropper] Шанс на луч солнца"
+				Tooltip: Устанавливает шанс генерации магического луча света.
 			}
 
 			ChestItemRange: {
-				// DisplayName: "[i:SpiritReforged/LapisChestItem] Chest Loot Amount"
-				// Tooltip: The range for the number of items in a chest. Three items are guaranteed per chest.
+				DisplayName: "[i:SpiritReforged/LapisChestItem] Кол-во содержимого сундуков"
+				Tooltip: Устанавливает значение разброса количества содержимого в сундуке. В каждом сундуке будет как минимум 3 предмета.
 			}
 
 			DresserItemRange: {
-				// DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
-				// Tooltip: The range for the number of items in a dresser.
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Кол-во содержимого комодов"
+				Tooltip: Устанавливает значение разброса количества содержимого в комоде.
 			}
 		}
 
 		Presets: {
 			Plagued: {
-				// Name: "[i:SpiritReforged/PaleHiveItem] Plagued"
-				// Tooltip: This Ziggurat has seen better days. The parts that haven't been buried by sand are crawling with Scarabs.
+				Name: "[i:SpiritReforged/PaleHiveItem] Улей"
+				Tooltip: Зиккурат переживает не лучшие времена. Комнаты, что не засыпало песком, теперь кишат скарабеями.
 			}
 
 			Opulent: {
-				// Name: "[i:SpiritReforged/LapisPotsItem] Opulent"
-				// Tooltip: Whoever built this Ziggurat spared no expense.
+				Name: "[i:SpiritReforged/LapisPotsItem] Роскошный"
+				Tooltip: Те, кто строили этот зиккурат, денег не жалели.
 			}
 
 			Perilous: {
-				// Name: "[i:SpiritReforged/NeedleTrapItem] Perilous"
-				// Tooltip: More loot, but more traps. A tantalizing prospect.
+				Name: "[i:SpiritReforged/NeedleTrapItem] Опасный"
+				Tooltip: Больше добычи, но и больше ловушек. Весьма заманчиво.
 			}
 		}
 	}
 
 	Desert: {
-		// Name: Desert
-		// Description: Controls various aspects of Reforged's Desert generation.
+		Name: Пустыня
+		Description: Настройка элементов генерации пустыни, добавляемых Reforged.
 
 		Members: {
 			PalmChanceLow: {
-				// DisplayName: "[i:2504] (Oasis) Palm Chance (Low)"
-				// Tooltip: Chance for a palm to be placed after at least one has already been placed.
+				DisplayName: "[i:2504] Шанс на пальму (нач.)"
+				Tooltip: Устанавливает шанс генерации пальмы в подземном оазисе после размещения первой пальмы.
 			}
 
 			PalmChanceHigh: {
-				// DisplayName: "[i:2504] (Oasis) Palm Chance (High)"
-				// Tooltip: Chance for a palm to be placed before at least one has already been placed.
+				DisplayName: "[i:2504] Шанс на пальму (пос.)"
+				Tooltip: Устанавливает шанс генерации пальмы в подземном оазисе до размещения первой пальмы.
 			}
 
 			CattailChance: {
-				// DisplayName: "[i:2996] (Oasis) Cattail Chance"
-				// Tooltip: Chance for a cattail to be placed.
+				DisplayName: "[i:2996] Шанс на рогоз"
+				Tooltip: Устанавливает шанс генерации рогоза в подземном оазисе.
 			}
 
 			OasisPlantChance: {
-				// DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oasis) Oasis Plant Chance"
-				// Tooltip: Chance for an Oasis Plant to be placed.
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] Шанс на растительность"
+				Tooltip: Устанавливает шанс генерации растительности в подземном оазисе.
 			}
 
 			GlowflowerChance: {
-				// DisplayName: "[i:4045] (Oasis) Glowflower Chance"
-				// Tooltip: Chance for a Glowflower to be placed.
+				DisplayName: "[i:4045] Шанс на цветы"
+				Tooltip: Устанавливает шанс генерации светящегося цветка в подземном оазисе.
 			}
 
 			PineappleChance: {
-				// DisplayName: "[i:4294] (Oasis) Pineapple Chance"
-				// Tooltip: Chance for a Pineapple to be placed.
+				DisplayName: "[i:4294] Шанс на ананас"
+				Tooltip: Устанавливает шанс генерации ананаса в подземном оазисе.
 			}
 
 			SeaOatsChance: {
-				// DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] (Oasis) Sea Oats Chance"
-				// Tooltip: Chance for Sea Oats to be placed. Sea oats are the grassy grain plants near the Ocean or Oases.
+				DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] Шанс на морской овёс"
+				Tooltip:
+					'''
+					Устанавливает шанс генерации морского овса в подземном оазисе.
+					Морской овёс — это вид короткой травы, растущий возле океана и обычного оазиса.
+					'''
 			}
 
 			PoolWidth: {
-				// DisplayName: "[i:206] (Oasis) Pool Width"
-				// Tooltip: The range for an underground Oasis's pool's width (in tiles).
+				DisplayName: "[i:206] Разброс ширины озера"
+				Tooltip: Устанавливает значение разброса ширины озера подземного оазиса (в тайлах).
 			}
 
 			PoolDepth: {
-				// DisplayName: "[i:206] (Oasis) Pool Depth"
-				// Tooltip: The range for an underground Oasis's pool's depth (in tiles).
+				DisplayName: "[i:206] Разброс глубины озера"
+				Tooltip: Устанавливает значение разброса глубины озера подземного оазиса (в тайлах).
 			}
 
 			MainNormalization: {
-				// DisplayName: "[i:1298] (Oasis) Main Normalization"
-				/* Tooltip:
+				DisplayName: "[i:1298] Нормализация основ. добычи"
+				Tooltip:
 					'''
-					The factor at which the main item loot pool is normalized.
-					The higher this value is, the more "even" all items are to roll.
-					''' */
+					Определяет степень нормализации списка основного содержимого сундуков в подземном оазисе.
+					Чем выше это значение, тем более равномерно распределяются шансы появления всех предметов.
+					'''
 			}
 
 			ItemNormalization: {
-				// DisplayName: "[i:1298] (Oasis) Other Normalization"
-				/* Tooltip:
+				DisplayName: "[i:1298] Нормализация доп. добычи"
+				Tooltip:
 					'''
-					The factor at which the non-main item loot pool is normalized.
-					The higher this value is, the more "even" all items are to roll.
-					''' */
-			}
-
-			ChestItemCountMin: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Minimum"
-				// Tooltip: The minimum amount of items in an underground Oasis chest.
-			}
-
-			ChestItemCountRange: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Range"
-				// Tooltip: The random range added to the minimum number of items in an underground Oasis chest.
+					Определяет степень нормализации списка дополнительного содержимого сундуков в подземном оазисе.
+					Чем выше это значение, тем более равномерно распределяются шансы появления всех предметов.
+					'''
 			}
 
 			FossilCount: {
-				// DisplayName: "[i:SpiritReforged/PolishedAmberItem] (Amber) Deposit Amount"
-				// Tooltip: The maximum number of amber veins in the Underground Desert.
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] Макс. янтарных жил"
+				Tooltip: Устанавливает максимальное возможное количество янтарных жил в подземной пустыне.
 			}
 
 			FossilMultiplier: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) World Multiplier"
-				// Tooltip: The multiplier applied to the number of amber veins based on world size.
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Множ. размера мира"
+				Tooltip: Устанавливает множитель, применяемый к количеству янтарных жил в зависимости от размера мира.
 			}
 
 			PatchScale: {
-				// DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] (Amber) Deposit Scale"
-				// Tooltip: The scaling applied to the size of an amber vein.
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Множ. размера жил"
+				Tooltip: Устанавливает множитель размера янтарных жил.
 			}
 
 			RuinCount: {
-				// DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] (Ruins) Spawn Range"
-				// Tooltip: The range of how many underground desert ruins spawn per Oasis.
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Разброс кол-ва руин"
+				Tooltip: Устанавливает значение разброса количества пустынных руин, генерируемых в зависимости от количества оазисов в мире.
 			}
 
 			LightRange: {
-				// DisplayName: "[i:SpiritReforged/SunDropper] (Oasis) Light Ray Count"
-				// Tooltip: The minimum and additional random range for the amount of light rays in an underground oasis.
+				DisplayName: "[i:SpiritReforged/SunDropper] Кол-во лучей солнца"
+				Tooltip: Устанавливает значение разброса количества магического света в подземном оазисе.
 			}
 
 			ChestItemRange: {
-				// DisplayName: "[i:1298] (Oasis) Chest Item Range"
-				// Tooltip: The range for the number of items in an underground Oasis chest.
+				DisplayName: "[i:1298] Разброс содержимого сундуков"
+				Tooltip: Устанавливает значение разброса количества предметов в сундуках подземного оазиса.
 			}
 
 			RuinSegments: {
-				// DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] (Ruins) Segment Range"
-				// Tooltip: The range for how many segments an underground ruin may have.
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Разброс кол-ва сегментов"
+				Tooltip: Устанавливает значение разброса количества сегментов, из которых будут состоять руины подземной пустыни.
 			}
 		}
 
 		Presets: {
 			Overgrown: {
-				// Name: "[i:2996] Overgrown"
-				// Tooltip: The oases in this desert are overgrown and wild. How do they thrive?
+				Name: "[i:2996] Заросший"
+				Tooltip: Оазисы в этой пустыне полны жизни и растительности и одичали. Как им только это удалось?
 			}
 
 			Petrified: {
-				// Name: "[i:154] Petrified"
-				// Tooltip: The sands hide aeons of fossilized ecosystems. Can you find them all?
+				Name: "[i:154] Окаменевший"
+				Tooltip: Пески скрывают целые эпохи окаменевших экосистем. Сможете ли вы найти их все?
 			}
 
 			Ruined: {
-				// Name: "[i:SpiritReforged/RedSandstoneSlabItem] Ruined"
-				// Tooltip: An ancient, long-forgotten civilization thrived below the Desert once. Their ruins remain.
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] Заброшенный"
+				Tooltip: Когда-то под этой пустыней процветала древняя, давно забытая цивилизация. Сейчас от неё остались лишь руины.
 			}
 		}
 	}

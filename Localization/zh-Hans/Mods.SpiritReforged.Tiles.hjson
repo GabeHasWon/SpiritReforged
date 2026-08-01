@@ -40,7 +40,7 @@ HydrothermalVent.MapEntry: 热液喷口
 OreCarts.MapEntry: 矿车
 PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
-Starflower.MapEntry: 星状花
+Starflower.MapEntry: 向星葵
 BonsaiTrees.MapEntry: 盆栽
 DustyTomb.MapEntry: 尘埃陵墓
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality

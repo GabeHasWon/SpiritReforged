@@ -97,6 +97,8 @@ internal static class CrossMod
 	public static readonly ModEntry WorldGenPreviewer = new("WorldGenPreviewer");
 	public static readonly ModEntry Spooky = new("Spooky");
 
+	public static bool RussianLocalizable => RussianTranslate.Enabled && Language.ActiveCulture.Name == "ru-RU";
+
 	/// <summary> The names and instances of loaded crossmod mods per <see cref="ModEntry"/>. </summary>
 	private static readonly Dictionary<string, Mod> LoadedMods = [];
 }
