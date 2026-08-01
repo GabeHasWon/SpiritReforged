@@ -91,14 +91,9 @@ internal class StarGourdRotten : StarGourd
 	public override void KillMultiTile(int i, int j, int fX, int fY)
 	{
 		if (Main.rand.NextBool() && CrossMod.Spooky.TryFind("RottenChunk", out ModItem chunk) && CrossMod.Spooky.TryCall(out bool value, "BossDowned", "downedRotGourd") && value)
-		{
-			int randomAmount = Main.rand.Next(2, 6);
+			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, chunk.Type, Main.rand.Next(2, 6));
 
-			for (int numItems = 0; numItems <= randomAmount; numItems++)
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, chunk.Type);
-		}
-
-		base.KillMultiTile(i, j, fX, fY);
+		Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 32, 16, Info.ItemType, 1);
 	}
 }
 
