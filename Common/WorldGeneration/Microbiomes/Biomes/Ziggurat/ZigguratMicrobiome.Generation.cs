@@ -550,7 +550,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		{
 			Point16 pos = chestPositions.Dequeue();
 
-			//if (PlaceFurniture(pos.X, pos.Y, FurnitureSet.Types.Chest))
+			if (PlaceFurniture(pos.X, pos.Y, LapisSet.TileTypes[nameof(ChestTile)]))
 				minChestCount--;
 		}
 

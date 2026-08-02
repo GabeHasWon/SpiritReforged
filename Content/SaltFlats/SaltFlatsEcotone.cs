@@ -127,7 +127,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SaltBiome>();
-	protected override void Load() => TileEvents.OnPlacePot += ConvertPot;
+	public override void Load() => TileEvents.OnPlacePot += ConvertPot;
 
 	/// <summary> Converts pots placed atop dull salt into stone stupas. </summary>
 	private static bool ConvertPot(int x, int y, ushort type, int style)
@@ -202,6 +202,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static void GenerateIndividualFlats(GenerationProgress progress, (int, int) bounds)
 	{
+		EcotoneSurfaceMapping.AddSpawnedEcotone<SaltFlatsEcotone>();
+
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SaltFlats");
 
 		int leftBound = bounds.Item1;

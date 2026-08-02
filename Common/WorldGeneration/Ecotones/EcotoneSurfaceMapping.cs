@@ -8,8 +8,8 @@ using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
-using static SpiritReforged.Common.WorldGeneration.GenTypes;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
@@ -84,6 +84,11 @@ public class EcotoneSurfaceMapping : ModSystem
 	public static readonly Dictionary<short, short> TotalSurfaceY = [];
 	public static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
 
+	[WorldBound]
+	private readonly static List<EcotoneBase> SpawnedBases = [];
+
+	private readonly static List<string> UnloadedBases = [];
+
 	public static List<EcotoneEntry> Entries { get; internal set; } = [];
 
 	private static ILHook _modifyCorruptionHook = null!;
@@ -99,6 +104,36 @@ public class EcotoneSurfaceMapping : ModSystem
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "_vanillaGenPasses")]
 	private extern static ref Dictionary<string, GenPass> GetVanillaGenPasses(WorldGen? gen);
+
+	public static void AddSpawnedEcotone<T>() where T : EcotoneBase
+	{
+		if (!ContainsEcotone<T>())
+			SpawnedBases.Add(ModContent.GetInstance<T>());
+	}
+
+	public static bool ContainsEcotone<T>() where T : EcotoneBase => SpawnedBases.Any(x => x is T);
+	public static bool ContainsEcotone(string name) => SpawnedBases.Any(x => x.FullName == name);
+
+	public override void SaveWorldData(TagCompound tag)
+	{
+		var baseNames = SpawnedBases.Select(x => x.FullName).ToList();
+		baseNames.AddRange(UnloadedBases);
+		tag.Add("spawnedBases", baseNames);
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		IList<string> list = tag.GetList<string>("spawnedBases");
+		SpawnedBases.Clear();
+
+		foreach (string name in list)
+		{
+			if (ModContent.TryFind(name, out EcotoneBase ecotone))
+				SpawnedBases.Add(ecotone);
+			else
+				UnloadedBases.Add(name);
+		}
+	}
 
 	public override void ClearWorld()
 	{

@@ -30,7 +30,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
 	[WorldBound]
-	public static List<Rectangle> SavannaAreas = new();
+	public static List<Rectangle> SavannaAreas = [];
 
 	[GenConfigurable(true)]
 	private static bool OverSpawn = false;
@@ -107,7 +107,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		return false;
 	}
 
-	protected override void Load()
+	public override void Load()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
 		TileEvents.OnPlacePot += ConvertPot;
@@ -218,19 +218,14 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 	private static void GenerateIndividualSavanna(GenerationProgress progress, (int, int) bounds)
 	{
+		EcotoneSurfaceMapping.AddSpawnedEcotone<SavannaEcotone>();
+
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
 
 		int startX = bounds.Item1;
 		int endX = bounds.Item2;
 		short startY = EcotoneSurfaceMapping.TotalSurfaceY[(short)startX];
 		short endY = EcotoneSurfaceMapping.TotalSurfaceY[(short)endX];
-
-		//A hash of tile types which can be replaced
-		HashSet<int> validIds = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone];
-		HashSet<int> validClears = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone, TileID.Mud, TileID.JungleGrass, TileID.Sand,
-			TileID.HardenedSand, TileID.Trees, TileID.Ebonstone, TileID.Crimstone, TileID.Iron, TileID.Copper, TileID.Tin, TileID.Lead, TileID.Silver, TileID.Platinum, TileID.Gold, 
-			TileID.Tungsten, TileID.ClayBlock];
-
 		var topBottomY = new Point(Math.Min(startY, endY), Math.Max(startY, endY));
 		var sandNoise = new Common.WorldGeneration.Noise.FastNoiseLite(WorldGen.genRand.Next());
 		sandNoise.SetFrequency(0.04f);
@@ -267,10 +262,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 
 				if (depth >= 0)
 				{
-					if ((depth < 15 || tile.WallType == WallID.None) && !CorrWall(tile.WallType) && !CorrWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
+					if ((depth < 15 || tile.WallType == WallID.None) && !InvalidWall(tile.WallType) && !InvalidWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
 						tile.HasTile = true;
 
-					if (tile.HasTile && !validIds.Contains(tile.TileType) && !TileID.Sets.Ore[tile.TileType])
+					if (tile.HasTile && !SavannaGenSets.SavannaCanReplace[tile.TileType] && !TileID.Sets.Ore[tile.TileType])
 						continue; //Can this tile be replaced by type?
 
 					if (y < topBottomY.X)
@@ -284,7 +279,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 					int wall = tile.WallType;
 
 					// Skip corrupt walls
-					if (!CorrWall(wall) || depth == 0)
+					if (!InvalidWall(wall) || depth == 0)
 					{
 						if (depth > 1) //Convert walls
 						{
@@ -295,15 +290,15 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 							else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
 								tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
 						}
-						else if (!Main.wallDungeon[tile.WallType])
+						else if (SavannaGenSets.SavannaCanReplaceWall[tile.WallType])
 							tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 					}
 				}
-				else if (validClears.Contains(tile.TileType))
+				else if (SavannaGenSets.SavannaCanClear[tile.TileType])
 				{
 					TileDataType clears = TileDataType.Tile;
 
-					if (!Main.wallDungeon[tile.WallType])
+					if (SavannaGenSets.SavannaCanReplaceWall[tile.WallType])
 					{
 						Main.tile[x, y + 1].Clear(TileDataType.Wall);
 						clears |= TileDataType.Wall;
@@ -355,7 +350,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		}
 	}
 
-	private static bool CorrWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall] || Main.wallDungeon[wall];
+	/// <summary>
+	/// Whether this wall ID can be replaced by the Savanna's generation. Defaults to avoiding corrupt, crimson and invalid <see cref="SavannaGenSets.SavannaCanReplaceWall"/> wall IDs.
+	/// </summary>
+	private static bool InvalidWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall] || !SavannaGenSets.SavannaCanReplaceWall[wall];
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -378,13 +376,13 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 		bool genWateringHole = false;
 		bool genBaobabTree = false;
 
-		if (area.Width > 150 && Main.rand.NextBool(3)) //Choose objects to gen
+		if (area.Width > 150 && WorldGen.genRand.NextBool(3)) //Choose objects to gen
 		{
 			genWateringHole = genBaobabTree = true;
 		}
 		else if (area.Width > 50)
 		{
-			if (Main.rand.NextBool())
+			if (WorldGen.genRand.NextBool())
 				genWateringHole = true;
 			else
 				genBaobabTree = true;
