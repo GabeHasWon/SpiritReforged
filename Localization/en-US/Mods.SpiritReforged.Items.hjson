@@ -3381,8 +3381,8 @@ Vajra: {
 	DisplayName: Vajra
 	Tooltip:
 		'''
-		Hold <left> to charge an electrifying dash, marking struck enemies
-		marked enemies channel damaging lightning
+		Struck enemies are marked with electricity
+		<right> to dash through marked enemies
 		'''
 }
 

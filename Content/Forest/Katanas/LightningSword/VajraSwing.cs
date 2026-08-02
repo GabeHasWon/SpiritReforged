@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
@@ -7,9 +8,11 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs.Shock;
+using SpiritReforged.Content.Jungle.Bamboo.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Forest.Katanas.LightningSword;
 
@@ -20,6 +23,7 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 	public override LocalizedText DisplayName => ModContent.GetInstance<Vajra>().DisplayName;
 
 	private int _npcTarget = -1;
+	private BasicNoiseCone _noiseCone;
 
 	public override void SetStaticDefaults()
 	{
@@ -28,77 +32,129 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		ProjectileID.Sets.TrailingMode[Type] = 0;
 	}
 
-	public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 84, 25);
+	public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseQuarticOut, 84, 25);
 
 	public override void AI()
 	{
-		base.AI();
-
 		Player owner = Main.player[Projectile.owner];
-		DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
+		bool justSpawned = Counter == 0;
 
 		if (Secondary)
 		{
-			if (FindNearestTarget(Main.player[Projectile.owner], out NPC nearestNPC))
-				Projectile.velocity = Projectile.DirectionTo(nearestNPC.Center);
+			//Set swung projectile default AI
+			Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
+			Projectile.Center = owner.Center;
 
-			HoldDistance = Math.Max((1 - EaseFunction.EaseCubicOut.Ease(Progress) * 3) * 24, -8);
-			mp.SetDash(30);
+			owner.heldProj = Projectile.whoAmI;
 
-			if (Counter > SwingTime - 5)
-			{
-				owner.velocity *= 0.5f;
+			if (++Counter < SwingTime - 2)
+				owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
 
-				if (Counter > SwingTime - 3)
-					owner.opacityForAnimation = 1;
-			}
-			else
-			{
-				const int magnitude = 20;
-
-				owner.velocity = Vector2.Lerp(owner.velocity, Projectile.velocity * magnitude * 2, EaseFunction.EaseQuinticIn.Ease(Progress));
-				owner.opacityForAnimation = 0.5f - Progress;
-
-				if (Counter == SwingTime / 2)
-				{
-					owner.velocity = Projectile.velocity * magnitude;
-					SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
-					SoundEngine.PlaySound(Wisp.Death with { Pitch = 0.8f, PitchVariance = 0.2f }, Projectile.Center);
-				}
-
-				if (Counter == 0)
-					SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -1 }, Projectile.Center);
-
-				if (!Main.dedServ)
-					ParticleHandler.SpawnParticle(new EmberParticle(Main.rand.NextVector2FromRectangle(owner.Hitbox), owner.velocity * Main.rand.NextFloat(0.1f, 0.2f), Color.Goldenrod, Color.Red, Main.rand.NextFloat(0.1f, 1), 25, 3));
-			}
-
-			if (Progress > 0.4f)
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.Ash, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
-					dust.noGravity = true;
-					dust.velocity = Projectile.velocity * 3;
-				}
-
-				for (int i = 0; i < 2; i++)
-					ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity, Color.PaleGoldenrod * 0.7f, 15, false));
-			}
-		}
-
-		if (Secondary)
-		{
-			HoldDistance = -14;
-		}
-		else if (SwingArc == 0)
-		{
-			float offset = Math.Max(40 * (0.5f - Progress * 2), -10);
-			HoldDistance = offset;
+			DashAI(owner);
 		}
 		else
 		{
-			HoldDistance = -18 * Progress;
+			base.AI();
+
+			if (SwingArc == 0)
+			{
+				float offset = Math.Max(40 * (0.5f - Progress * 2), -10);
+				HoldDistance = offset;
+
+				if (!Main.dedServ && justSpawned)
+					_noiseCone = (BasicNoiseCone)new BasicNoiseCone(Projectile.Center, Projectile.velocity, 20, new(50, 250)).SetColors(Color.White.Additive(100), Color.Goldenrod).SetIntensity(2).AttachTo(Projectile);
+			}
+			else
+			{
+				HoldDistance = -18 * Progress;
+			}
+		}
+
+		if (justSpawned)
+			SoundEngine.PlaySound(KendoBladeLunge.BigSwing with { Pitch = (SwingArc == 0) ? 1 : 0.5f, PitchVariance = 0.2f }, Projectile.Center);
+
+		if (_noiseCone != null) //Update the noise cone if any
+		{
+			_noiseCone.TimeActive++;
+			_noiseCone.Position += _noiseCone.Velocity;
+
+			_noiseCone.Update();
+
+			if (_noiseCone.TimeActive > _noiseCone.MaxTime && _noiseCone.MaxTime > 0)
+				_noiseCone.Kill();
+		}
+	}
+
+	private void DashAI(Player owner)
+	{
+		DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
+
+		if (FindNearestTarget(Main.player[Projectile.owner], out NPC nearestNPC))
+			Projectile.velocity = Projectile.DirectionTo(nearestNPC.Center);
+
+		Projectile.Opacity = 0;
+		HoldDistance = Math.Max((1 - EaseFunction.EaseCubicOut.Ease(Progress) * 3) * 24, -8);
+		mp.SetDash(30);
+
+		if (Counter > SwingTime - 5)
+		{
+			owner.velocity *= 0.5f;
+
+			if (Counter > SwingTime - 3)
+				owner.opacityForAnimation = 1;
+		}
+		else
+		{
+			const int magnitude = 20;
+
+			owner.velocity = Vector2.Lerp(owner.velocity, Projectile.velocity * magnitude * 2, EaseFunction.EaseQuinticIn.Ease(Progress));
+			owner.opacityForAnimation = 0.5f - Progress;
+
+			if (Counter == SwingTime / 2)
+			{
+				owner.velocity = Projectile.velocity * magnitude;
+
+				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
+				SoundEngine.PlaySound(Wisp.Death with { Pitch = 0.8f, PitchVariance = 0.2f }, Projectile.Center);
+			}
+			else if (Counter >= SwingTime / 2 && owner.TryGetModPlayer(out CollisionPlayer cPlayer))
+			{
+				cPlayer.IgnorePlatforms = true;
+			}
+
+			if (Counter == 1)
+				SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -1 }, Projectile.Center);
+
+			if (!Main.dedServ)
+				ParticleHandler.SpawnParticle(new EmberParticle(Main.rand.NextVector2FromRectangle(owner.Hitbox), owner.velocity * Main.rand.NextFloat(0.1f, 0.2f), Color.Goldenrod, Color.PaleVioletRed, Main.rand.NextFloat(0.1f, 1), 25, 3));
+		}
+
+		if (Progress > 0.4f)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				var dust = Dust.NewDustDirect(owner.position, owner.width, owner.height, DustID.Ash, 0, 0, 120, default, Main.rand.NextFloat() * 1.5f);
+				dust.noGravity = true;
+				dust.velocity = Projectile.velocity * 3;
+			}
+
+			for (int i = 0; i < 2; i++)
+				ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity, Color.PaleGoldenrod * 0.7f, 15, false));
+		}
+	}
+
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		if (Secondary)
+		{
+			Rectangle playerHitbox = Main.player[Projectile.owner].Hitbox;
+			playerHitbox.Inflate(20, 20);
+
+			return playerHitbox.Intersects(targetHitbox);
+		}
+		else
+		{
+			return base.Colliding(projHitbox, targetHitbox);
 		}
 	}
 
@@ -109,21 +165,6 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		stretch = ProgressiveStretch();
 
 		return value + 0.5f * Progress * SwingDirection;
-	}
-
-	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-	{
-		/*if (Secondary)
-		{
-			float collisionPoint = 0;
-			Vector2 start = Projectile.oldPos[ProjectileID.Sets.TrailCacheLength[Type] / 2] + Projectile.Size / 2;
-
-			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, Projectile.Center, 20, ref collisionPoint);
-		}
-		else*/
-		{
-			return base.Colliding(projHitbox, targetHitbox);
-		}
 	}
 
 	/// <summary> Finds the nearest NPC for dash purposes. </summary>
@@ -163,37 +204,26 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		int buffType = BuffAutoloader.GetAutoloadedBuffType<Vajra>();
-		if (!Secondary)
+		if (!Secondary) //Apply the buff
 		{
+			int buffType = BuffAutoloader.GetAutoloadedBuffType<Vajra>();
 			if (!target.HasBuff(buffType))
 			{
 				SoundEngine.PlaySound(ShockGlyph.ElectricSting, target.Center);
 				SoundEngine.PlaySound(ShockGlyph.ElectricZap, target.Center);
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.Goldenrod, 1, 14));
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.Goldenrod, Color.PaleVioletRed, 1, 14));
 				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.White.Additive(), 0.5f, 14));
 			}
 
 			target.AddBuff(buffType, 480);
 		}
-		else
-		{
-			target.RemoveBuff(buffType);
-
-			foreach (NPC npc in Main.ActiveNPCs)
-			{
-				if (npc != target && (npc.CanBeChasedBy() || npc.active && npc.type == NPCID.TargetDummy) && npc.DistanceSQ(target.Center) < 200 * 200)
-				{
-					Projectile.NewProjectile(target.GetSource_OnHurt(Projectile), target.Center, Vector2.Zero, ModContent.ProjectileType<VajraLightning>(), Projectile.damage, Projectile.knockBack, Projectile.owner, npc.whoAmI);
-					break;
-				}
-			}
-		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
+		const int afterimages = 5;
+
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
 		Vector2 origin = new(4, 28); //The handle
@@ -209,13 +239,17 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		else
 		{
 			source = texture.Frame(2, Main.projFrames[Type], 0, frameY, -2, -2);
+
+			for (int i = 0; i < afterimages; i++)
+			{
+				float progress = 1f / afterimages * i;
+				float rotation = Projectile.rotation - progress * SwingDirection * GetConfig<BasicConfiguration>().Easing.Ease(1f - Progress) * 0.5f;
+
+				DrawHeld(Projectile.GetAlpha(lightColor).Additive(100) * (1f - progress) * 0.2f, origin, rotation, effects, source);
+			}
 		}
 
-		DrawHeld(lightColor, origin, Projectile.rotation, effects, source);
-
-		if (Secondary)
-			DrawHeld(Color.White.Additive() * Progress * 2f, origin, Projectile.rotation, effects, source);
-
+		DrawHeld(Projectile.GetAlpha(lightColor), origin, Projectile.rotation, effects, source);
 		return false;
 	}
 
@@ -242,24 +276,17 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 
 			IDrawPixelated.PixelateDrawPosition(ref position);
 
-			spriteBatch.Draw(bloom, position, null, Color.Goldenrod.Additive() * opacity, 0, bloom.Size() / 2, 0.1f, 0, 0);
+			spriteBatch.Draw(bloom, position, null, Color.Lerp(Color.Goldenrod, Color.Orange, Progress).Additive() * opacity, 0, bloom.Size() / 2, 0.1f, 0, 0);
 			spriteBatch.Draw(bloom, position, null, Color.White.Additive() * opacity, 0, bloom.Size() / 2, 0.05f, 0, 0);
-
-			Vector2 endPosition = GetEndPosition(-30) - Main.screenPosition;
-			IDrawPixelated.PixelateDrawPosition(ref endPosition);
-
-			Texture2D star = AssetLoader.LoadedTextures["Star"].Value; //Star drawing
-			Main.EntitySpriteDraw(star, endPosition, null, Color.Goldenrod.Additive() * (1f - Progress), 0, star.Size() / 2, 0.3f * Progress, 0);
-			Main.EntitySpriteDraw(star, endPosition, null, Color.White.Additive() * (1f - Progress), 0, star.Size() / 2, 0.2f * Progress, 0);
 		}
 
-		if (SwingArc != 0)
+		/*if (SwingArc != 0)
 		{
 			//Draw a custom smear
 			Main.instance.LoadProjectile(985);
 			Texture2D smear = TextureAssets.Projectile[985].Value;
 
-			SpriteEffects effects = SwingDirection == -1 ? SpriteEffects.FlipVertically : default;
+			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
 			Player player = Main.player[Projectile.owner];
 			Rectangle source = smear.Frame(1, 4, 0, (int)(Progress * 18f));
 			float rotation = Projectile.rotation;
@@ -271,9 +298,11 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 
 			IDrawPixelated.PixelateDrawPosition(ref smearDrawPosition);
 
-			spriteBatch.Draw(smear, smearDrawPosition, source, lightColor.MultiplyRGB(new Color(71, 59, 45)), rotation, origin, 0.5f, effects, 0);
-			spriteBatch.Draw(smear, smearDrawPosition, source, lightColor.MultiplyRGB(new Color(244, 187, 82)), rotation, origin, 0.45f, effects, 0);
-			spriteBatch.Draw(smear, smearDrawPosition, source, lightColor.MultiplyRGB(new Color(255, 254, 140)), rotation, origin, 0.25f, effects, 0);
-		}
+			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(71, 59, 45))), rotation, origin, 0.5f, effects, 0);
+			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(244, 187, 82))), rotation, origin, 0.45f, effects, 0);
+			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(255, 254, 140))), rotation, origin, 0.25f, effects, 0);
+		}*/
+
+		_noiseCone?.CustomDraw(spriteBatch);
 	}
 }

@@ -54,7 +54,7 @@ public class VajraLightning : ModProjectile, IDrawPixelated
 
 			for (int i = 0; i < 8; i++)
 			{
-				Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldCoin, Main.rand.NextVector2Circular(4, 4) * Main.rand.NextFloat(), 0, Color.Yellow.Additive(), 1);
+				var dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldCoin, Main.rand.NextVector2Circular(4, 4) * Main.rand.NextFloat(), 0, Color.Yellow.Additive(), 1);
 				dust.fadeIn = 1.2f;
 				dust.noGravity = true;
 			}
@@ -85,7 +85,7 @@ public class VajraLightning : ModProjectile, IDrawPixelated
 
 		IDrawPixelated.PixelateDrawPosition(ref position);
 
-		spriteBatch.Draw(bloom, position, null, Color.Goldenrod.Additive() * opacity, Projectile.rotation, bloom.Size() / 2, scale * 0.1f, 0, 0);
+		spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * opacity, Projectile.rotation, bloom.Size() / 2, scale * 0.1f, 0, 0);
 		spriteBatch.Draw(bloom, position, null, Color.White.Additive() * opacity, Projectile.rotation, bloom.Size() / 2, scale * 0.05f, 0, 0);
 	}
 }

@@ -3,6 +3,7 @@ using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
@@ -16,6 +17,29 @@ public class Vajra : ModItem, IDrawHeld
 	public sealed class LightningVisualNPC : GlobalNPC
 	{
 		public static readonly Asset<Texture2D> Electricity = DrawHelpers.RequestLocal<Vajra>("VajraMark", false);
+
+		public override void HitEffect(NPC npc, NPC.HitInfo hit)
+		{
+			const int zap_distance = 200;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				return;
+
+			int buffType = BuffAutoloader.GetAutoloadedBuffType<Vajra>();
+			if (npc.HasBuff(buffType))
+			{
+				npc.RemoveBuff(buffType);
+
+				foreach (NPC otherNPC in Main.ActiveNPCs)
+				{
+					if (otherNPC != npc && (otherNPC.CanBeChasedBy() || otherNPC.active && otherNPC.type == NPCID.TargetDummy) && otherNPC.DistanceSQ(npc.Center) < zap_distance * zap_distance)
+					{
+						Projectile.NewProjectile(npc.GetSource_OnHurt(null), npc.Center, Vector2.Zero, ModContent.ProjectileType<VajraLightning>(), 10, 2, -1, otherNPC.whoAmI);
+						break;
+					}
+				}
+			}
+		}
 
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
