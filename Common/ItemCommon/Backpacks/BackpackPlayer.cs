@@ -44,7 +44,7 @@ internal class BackpackPlayer : ModPlayer
 			return true;
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 					return true;
 
@@ -63,7 +63,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
 					continue;
@@ -124,7 +124,7 @@ internal class BackpackPlayer : ModPlayer
 	{
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 				{
