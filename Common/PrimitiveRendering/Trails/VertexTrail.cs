@@ -111,7 +111,7 @@ public class VertexTrail : BaseTrail
 		_points.Add(_points.Last() + between * newPointDistance);
 	}
 
-	public override void Draw(Effect effect, BasicEffect effect2, GraphicsDevice device)
+	public override void Draw(Effect effect, GraphicsDevice device, Matrix? view = null)
 	{
 		if (CanBeDisposed || _points.Count <= 1)
 			return;
@@ -159,14 +159,10 @@ public class VertexTrail : BaseTrail
 			previousColor = color;
 		}
 
-		//set effect parameter for matrix (todo: try have this only calculated when screen size changes?)
-		int width = device.Viewport.Width;
-		int height = device.Viewport.Height;
-		Vector2 zoom = Main.GameViewMatrix.Zoom;
-		Matrix view = Matrix.CreateLookAt(Vector3.Zero, Vector3.UnitZ, Vector3.Up) * Matrix.CreateTranslation(width / 2, height / -2, 0) * Matrix.CreateRotationZ(MathHelper.Pi) * Matrix.CreateScale(zoom.X, zoom.Y, 1f);
-		var projection = Matrix.CreateOrthographic(width, height, 0, 1000);
-		effect.Parameters["WorldViewProjection"].SetValue(view * projection);
-		//effect.Parameters["WorldViewProjection"].SetValue(Main.GameViewMatrix.TransformationMatrix * Main.GameViewMatrix.ZoomMatrix);
+		view ??= Main.GameViewMatrix.TransformationMatrix;
+		Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+
+		effect.Parameters["WorldViewProjection"].SetValue(view.Value * projection);
 
 		//apply this trail's shader pass and draw
 		_trailShader.ApplyShader(effect, this, _points);

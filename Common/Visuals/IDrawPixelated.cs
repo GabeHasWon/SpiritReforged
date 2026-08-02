@@ -32,6 +32,12 @@ public interface IDrawPixelated
 					iDrawPixelated.DrawPixelated(spriteBatch);
 			}
 
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
+					iDrawPixelated.DrawPixelated(spriteBatch);
+			}
+
 			spriteBatch.End();
 			graphics.SetRenderTarget(null);
 		}

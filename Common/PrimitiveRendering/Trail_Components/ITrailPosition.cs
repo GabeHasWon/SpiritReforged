@@ -5,10 +5,12 @@ public interface ITrailPosition
 	Vector2 GetNextTrailPosition();
 }
 
-public readonly struct EntityTrailPosition(Entity entity) : ITrailPosition
+public readonly struct EntityTrailPosition(Entity entity, Vector2 offset = default) : ITrailPosition
 {
 	public readonly Entity Entity = entity;
-	public Vector2 GetNextTrailPosition() => Entity.Center;
+	public readonly Vector2 Offset = offset;
+
+	public Vector2 GetNextTrailPosition() => Entity.Center + Offset;
 }
 
 public readonly struct ProjectileOffsetTrailPosition(Projectile entity, Vector2 offset, float rotationOffset = 0f) : ITrailPosition
