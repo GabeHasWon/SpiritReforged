@@ -3,6 +3,7 @@ using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
@@ -47,10 +48,12 @@ public class Vajra : ModItem, IDrawHeld
 		MoRHelper.SetSlashBonus(Item);
 	}
 
+	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		_swingArc = _swingArc == 0 ? Main.rand.NextFromList(-5, 5) : 0;
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source);
+		_swingArc = (_swingArc == 0) ? Main.rand.NextFromList(-5, 5) : 0;
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
 
 		return false;
 	}

@@ -3379,7 +3379,11 @@ ShinobiHeadband: {
 
 Vajra: {
 	// DisplayName: Vajra
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Hold <left> to charge an electrifying dash, marking struck enemies
+		marked enemies channel damaging lightning
+		''' */
 }
 
 GhostBlade: {

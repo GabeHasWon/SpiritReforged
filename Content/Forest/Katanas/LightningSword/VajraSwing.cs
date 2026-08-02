@@ -1,6 +1,7 @@
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -14,11 +15,11 @@ namespace SpiritReforged.Content.Forest.Katanas.LightningSword;
 
 public class VajraSwing : SwungProjectile, IDrawPixelated
 {
-	public bool Charged { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
+	public bool Secondary { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
 
 	public override LocalizedText DisplayName => ModContent.GetInstance<Vajra>().DisplayName;
 
-	private int _chargeCounter;
+	private int _npcTarget = -1;
 
 	public override void SetStaticDefaults()
 	{
@@ -36,14 +37,17 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		Player owner = Main.player[Projectile.owner];
 		DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
 
-		if (Charged)
+		if (Secondary)
 		{
+			if (FindNearestTarget(Main.player[Projectile.owner], out NPC nearestNPC))
+				Projectile.velocity = Projectile.DirectionTo(nearestNPC.Center);
+
 			HoldDistance = Math.Max((1 - EaseFunction.EaseCubicOut.Ease(Progress) * 3) * 24, -8);
 			mp.SetDash(30);
 
-			if (Counter > SwingTime - 8)
+			if (Counter > SwingTime - 5)
 			{
-				owner.velocity *= 0.7f;
+				owner.velocity *= 0.5f;
 
 				if (Counter > SwingTime - 3)
 					owner.opacityForAnimation = 1;
@@ -82,32 +86,8 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 					ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity, Color.PaleGoldenrod * 0.7f, 15, false));
 			}
 		}
-		else
-		{
-			const int charge_max = 30;
 
-			if (owner.channel && mp.HasDashCharge) //Charge the weapon
-			{
-				if (++_chargeCounter == charge_max && Main.myPlayer == Projectile.owner)
-					SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap, Projectile.Center); //Play an audio cue
-
-				if (Counter >= SwingTime - 3)
-					Counter--;
-			}
-			else if (_chargeCounter >= charge_max)
-			{
-				if (Main.myPlayer == Projectile.owner)
-				{
-					Projectile.velocity = owner.DirectionTo(Main.MouseWorld);
-					Projectile.netUpdate = true;
-				}
-
-				Counter = 0;
-				Charged = true;
-			}
-		}
-
-		if (Charged)
+		if (Secondary)
 		{
 			HoldDistance = -14;
 		}
@@ -133,46 +113,82 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		if (Charged)
+		/*if (Secondary)
 		{
 			float collisionPoint = 0;
 			Vector2 start = Projectile.oldPos[ProjectileID.Sets.TrailCacheLength[Type] / 2] + Projectile.Size / 2;
 
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, Projectile.Center, 20, ref collisionPoint);
 		}
-		else
+		else*/
 		{
 			return base.Colliding(projHitbox, targetHitbox);
 		}
 	}
 
+	/// <summary> Finds the nearest NPC for dash purposes. </summary>
+	private bool FindNearestTarget(Player owner, out NPC nearestNPC)
+	{
+		const int max_distance = 500;
+		int buffType = BuffAutoloader.GetAutoloadedBuffType<Vajra>();
+
+		if (_npcTarget != -1 && Main.npc[_npcTarget] is NPC cachedNPC && cachedNPC.active && cachedNPC.HasBuff(buffType)) //Use the cached target
+		{
+			nearestNPC = Main.npc[_npcTarget];
+			return true;
+		}
+
+		float distance = max_distance;
+		int npcWhoAmI = _npcTarget = -1;
+
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			float currentDistance = npc.Distance(owner.Center);
+			if (npc.HasBuff(buffType) && currentDistance < distance)
+			{
+				distance = currentDistance;
+				npcWhoAmI = npc.whoAmI;
+			}
+		}
+
+		if (npcWhoAmI < 0 || npcWhoAmI >= Main.maxNPCs)
+		{
+			nearestNPC = null;
+			return false;
+		}
+
+		nearestNPC = Main.npc[_npcTarget = npcWhoAmI];
+		return true;
+	}
+
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		int buffType = BuffAutoloader.GetAutoloadedBuffType<Vajra>();
-
-		if (target.HasBuff(buffType))
+		if (!Secondary)
 		{
-			const int maxDistance = 250;
+			if (!target.HasBuff(buffType))
+			{
+				SoundEngine.PlaySound(ShockGlyph.ElectricSting, target.Center);
+				SoundEngine.PlaySound(ShockGlyph.ElectricZap, target.Center);
+
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.Goldenrod, 1, 14));
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.White.Additive(), 0.5f, 14));
+			}
+
+			target.AddBuff(buffType, 480);
+		}
+		else
+		{
+			target.RemoveBuff(buffType);
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc != target && (npc.CanBeChasedBy() || npc.active && npc.type == NPCID.TargetDummy) && npc.DistanceSQ(target.Center) < maxDistance * maxDistance)
+				if (npc != target && (npc.CanBeChasedBy() || npc.active && npc.type == NPCID.TargetDummy) && npc.DistanceSQ(target.Center) < 200 * 200)
 				{
 					Projectile.NewProjectile(target.GetSource_OnHurt(Projectile), target.Center, Vector2.Zero, ModContent.ProjectileType<VajraLightning>(), Projectile.damage, Projectile.knockBack, Projectile.owner, npc.whoAmI);
 					break;
 				}
 			}
-		}
-
-		if (Charged)
-		{
-			target.AddBuff(buffType, 480);
-
-			SoundEngine.PlaySound(ShockGlyph.ElectricSting, target.Center);
-			SoundEngine.PlaySound(ShockGlyph.ElectricZap, target.Center);
-
-			ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.Goldenrod, 1, 14));
-			ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, Vector2.Zero, Color.White.Additive(), 0.5f, 14));
 		}
 	}
 
@@ -183,12 +199,12 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		Vector2 origin = new(4, 28); //The handle
 
 		Rectangle source;
-		float visCounter = MathHelper.Min(Counter / (SwingTime / (Charged ? 2.5f : 1.5f)), 1);
+		float visCounter = MathHelper.Min(Counter / (SwingTime / (Secondary ? 2.5f : 1.5f)), 1);
 		int frameY = (int)(visCounter * (Main.projFrames[Type] - 1));
 
 		if (SwingArc == 0)
 		{
-			source = Charged ? texture.Frame(2, Main.projFrames[Type], 1, frameY, -2, -2) :  texture.Frame(2, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, -2, -2);
+			source = Secondary ? texture.Frame(2, Main.projFrames[Type], 1, frameY, -2, -2) :  texture.Frame(2, Main.projFrames[Type], 0, Main.projFrames[Type] - 1, -2, -2);
 		}
 		else
 		{
@@ -197,7 +213,7 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 
 		DrawHeld(lightColor, origin, Projectile.rotation, effects, source);
 
-		if (Charged)
+		if (Secondary)
 			DrawHeld(Color.White.Additive() * Progress * 2f, origin, Projectile.rotation, effects, source);
 
 		return false;
@@ -206,7 +222,7 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 	void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
 	{
 		Player owner = Main.player[Projectile.owner];
-		if (Charged)
+		if (Secondary)
 		{
 			if (Progress > 0.5f)
 			{

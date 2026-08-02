@@ -84,10 +84,14 @@ public static class NPCHelper
 	/// <summary> Safely removes <paramref name="buffType"/> from this NPC with considerations for multiplayer clients. </summary>
 	public static void RemoveBuff(this NPC npc, int buffType)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-			new RequestBuffRemovalData((short)npc.whoAmI, buffType).Send();
-		else
-			npc.DelBuff(npc.FindBuffIndex(buffType));
+		int index = npc.FindBuffIndex(buffType);
+		if (index != -1)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				new RequestBuffRemovalData((short)npc.whoAmI, buffType).Send();
+			else
+				npc.DelBuff(index);
+		}
 	}
 
 	/// <summary> Requests buff removal by the server from a client. </summary>
