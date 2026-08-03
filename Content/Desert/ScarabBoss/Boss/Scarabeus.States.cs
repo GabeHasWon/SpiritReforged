@@ -62,13 +62,17 @@ public partial class Scarabeus : ModNPC
 						ParticleHandler.SpawnQueuedParticle(new ScarabParticle(scarabPos, Main.rand.NextFloat(0.3f, 0.9f), backgroundScarab ? 1 : -1, backgroundScarab), Main.rand.Next(spawnDelayRange) + spawnDelayStatic);
 					}
 
-					Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
-					var easeAnimation = new AnimationSequence()
-						.Add(new EaseSegment(120, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
-						.Add(new FollowSegment(270, NPC))
-						.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+					if (Main.LocalPlayer.Distance(NPC.Center) < Main.screenWidth / 2) //Only play the intro camera cinematic for the local player if they are close enough
+					{
+						Vector2 targetPosition = NPC.Center - Main.ScreenSize.ToVector2() / 2;
 
-					Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+						AnimationSequence easeAnimation = new AnimationSequence()
+							.Add(new EaseSegment(120, Main.screenPosition, targetPosition, EaseFunction.EaseCubicInOut))
+							.Add(new FollowSegment(270, NPC))
+							.Add(new SequenceCameraModifier.ReturnSegment(60, EaseFunction.EaseCubicInOut));
+
+						Main.instance.CameraModifiers.Add(new SequenceCameraModifier(easeAnimation));
+					}
 				}
 			}
 
