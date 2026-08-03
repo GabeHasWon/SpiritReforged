@@ -37,7 +37,7 @@ public class CelestialStamp : ModItem
 
 	private static bool ReplacePrefixes(Item item, int prefix)
 	{
-		if (prefix is -1 or -2 && !Main.gameMenu) //Is a naturally-occuring or goblin reforge
+		if (prefix == -1 && !Main.gameMenu) //Is a naturally-occuring reforge
 		{
 			CelestialStampToggle stampToggle = ModContent.GetInstance<CelestialStampToggle>();
 			if (stampToggle.Active() && stampToggle.CurrentState != CelestialStampToggle.InactiveState && Main.rand.NextBool(5)) //Randomly replace prefixes with Glyph effects when active
