@@ -177,14 +177,6 @@ public class VoidGlyph : GlyphItem
 				ProcSingularity(target, damageDone);
 		}
 
-		// One hit can proc singularity twice with this
-		// It's not terrible though, allows players to get some stacks easier
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (target.TryGetGlobalNPC(out VoidNPC voidNPC) && voidNPC.stacks > 0)
-				ProcSingularity(target, damageDone); //Allow any damage source to contribute to the singularity if it already exists
-		}
-
 		public void ProcSingularity(NPC target, int damageDone)
 		{
 			if (!Main.rand.NextBool(2))
@@ -209,7 +201,9 @@ public class VoidGlyph : GlyphItem
 		public int cooldown;
 		public int collapseDamage;
 
-		public int defenseReductionTimer; 
+		public int defenseReductionTimer;
+
+		public int decayTimer;
 
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.CanBeChasedBy();
 
@@ -245,8 +239,10 @@ public class VoidGlyph : GlyphItem
 				if (voidNPC.stacks > MAX_STACKS)
 					voidNPC.stacks = MAX_STACKS;
 
-				voidNPC.collapseDamage += damageDealt / 4;
-				voidNPC.collapseDamage += Main.hardMode ? 10 : 3;
+				voidNPC.collapseDamage += 1 + damageDealt / 6;
+				voidNPC.collapseDamage += Main.hardMode ? 6 : 2;
+
+				voidNPC.decayTimer = 300;
 
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * voidNPC.stacks }, target.Center);
 				SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * voidNPC.stacks }, target.Center);
@@ -302,6 +298,17 @@ public class VoidGlyph : GlyphItem
 
 			if (defenseReductionTimer > 0)
 				defenseReductionTimer--;
+
+			if (decayTimer > 0)
+			{
+				decayTimer--;
+				if (decayTimer == 0 && stacks > 0)
+				{
+					cooldown = 60;
+					decayTimer = 60;
+					stacks--;
+				}
+			}
 		}
 
 		public override void ModifyHitNPC(NPC npc, NPC target, ref NPC.HitModifiers modifiers)
@@ -457,7 +464,6 @@ public class VoidGlyph : GlyphItem
 				}			
 
 				_dying = true;
-
 				Projectile.netUpdate = true;
 			}
 
@@ -543,7 +549,9 @@ public class VoidGlyph : GlyphItem
 								}
 
 								SoundEngine.PlaySound(Main.rand.NextBool() ? VoidHit1 : VoidHit2, Projectile.Center);
-							}					
+							}
+
+							Projectile.netUpdate = true;
 						}
 					}
 				}

@@ -9,11 +9,42 @@ using Terraria.Audio;
 using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Content.Dusts;
+using SpiritReforged.Common.Multiplayer;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
 public partial class ShockGlyph
 {
+	/*private class ShockPacket : PacketData
+	{
+		private readonly short _player;
+		private readonly short _npc;
+		private readonly int _damage;
+
+		public ShockPacket() : base() { }
+
+		public ShockPacket(short npc, short player, int damage)
+		{
+			_npc = npc;
+			_player = player;
+			_damage = damage;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			short npc = reader.ReadInt16();
+			short player = reader.ReadInt16();
+			int damage = reader.ReadInt32();
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_npc);
+			modPacket.Write(_player);
+			modPacket.Write(_damage);
+		}
+	}*/
+
 	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
@@ -77,15 +108,56 @@ public partial class ShockGlyph
 
 			if (!Initialized)
 			{
+				if (Projectile.ai[2] == 1 && !Main.dedServ)
+				{
+					SoundEngine.PlaySound(ElectricSting, Projectile.Center);
+					SoundEngine.PlaySound(ElectricZap, Projectile.Center);
+
+					for (int i = 0; i < 3; i++)
+					{
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
+
+						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
+
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+
+						pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+					}
+
+					for (int i = 0; i < 5; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<YellowElectricDust>(), Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
+
+						Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
+					}
+
+					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
+				}
+
 				LightningSystem.projectiles.Add(this);
-
-				startPos = Projectile.Center;
-				Projectile.netUpdate = true;
-
-				Delay = 10 * Main.rand.Next(7);
-
 				if (!Main.dedServ && _trails == null)
 					CreateTrail();
+
+				startPos = Projectile.Center;
+
+				if (Main.myPlayer == Projectile.owner)
+				{
+					ScreenshakeHelper.Shake(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
+
+					Projectile.netUpdate = true;
+
+					Delay = 10 * Main.rand.Next(7);
+				}
 
 				Initialized = true;
 			}
@@ -127,7 +199,7 @@ public partial class ShockGlyph
 				Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2CircularEdge(11f, 11f) * MathHelper.Lerp(0.4f, 1f, 1f - Progress);
 			}
 
-			if (Projectile.timeLeft == 1 && !Dying && Main.myPlayer == Projectile.owner)
+			if (Projectile.timeLeft == 1 && !Dying)
 			{
 				Dying = true;
 				Projectile.netUpdate = true;
