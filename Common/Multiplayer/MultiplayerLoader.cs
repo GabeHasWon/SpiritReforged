@@ -5,6 +5,8 @@ using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.Multiplayer;
 
+/// <summary> Denotes a static method than can be synced using <see cref="MultiplayerLoader.Send"/>. </summary>
+/// <param name="Relay"> Whether the method will automatically be called back on other clients. Only has an effect if <see cref="MultiplayerLoader.Send"/> is called on a multiplayer client. </param>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 internal class NetSyncedAttribute(bool Relay = false) : Attribute
 {
@@ -51,7 +53,8 @@ internal partial class MultiplayerLoader : ILoadable
 
 	public void Unload() { }
 
-	/// <summary> Sends a method labeled with <see cref="NetSyncedAttribute"/>. </summary>
+	/// <summary> Sends a method labeled with <see cref="NetSyncedAttribute"/> with the provided <paramref name="parameters"/>.<br/>
+	/// Ensure all data types passed as parameters are registered in <see cref="Load"/> to ensure accurate reading and writing. </summary>
 	public static void Send(string methodName, int toClient = -1, int ignoreClient = -1, params object[] parameters)
 	{
 		byte id = NetMethods.Where(x => x.Value.Name == methodName).First().Key;
