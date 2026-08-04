@@ -8,7 +8,7 @@ using Terraria.Audio;
 
 namespace SpiritReforged.Content.Savanna.NPCs;
 
-/// <summary> Mimics an NPC. </summary>
+/// <summary> Mimics an NPC. This is used to simplify how many can be spawned &amp; hit logic. </summary>
 public class DevourerOfSoil : SimpleEntity //Use SimpleEntity to avoid appearing on browsers
 {
 	private static readonly Point[] Dimensions = [new Point(30, 38), new Point(22, 18), new Point(14, 22)]; //Excludes 2px(y) padding
@@ -21,6 +21,7 @@ public class DevourerOfSoil : SimpleEntity //Use SimpleEntity to avoid appearing
 	private bool _justSpawned = true;
 	private float _rotation;
 	private int _soundDelay;
+	private short _immuneTime;
 
 	public override void Load()
 	{
@@ -126,6 +127,7 @@ public class DevourerOfSoil : SimpleEntity //Use SimpleEntity to avoid appearing
 		_rotation = velocity.ToRotation();
 		position += velocity;
 		_soundDelay = Math.Max(_soundDelay - 1, 0);
+		_immuneTime++;
 
 		if (Center.Distance(Main.LocalPlayer.Center) < 1500)
 			ChooseMusic.SetMusic(MusicID.Boss1); //Play Boss 1
@@ -143,7 +145,7 @@ public class DevourerOfSoil : SimpleEntity //Use SimpleEntity to avoid appearing
 
 	public void OnHit()
 	{
-		if (_justSpawned)
+		if (_justSpawned || _immuneTime < 20)
 			return; //Can't be damaged when just spawned
 
 		velocity.Y -= 2f;
