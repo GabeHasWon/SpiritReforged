@@ -2,11 +2,13 @@ using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -45,31 +47,44 @@ public class MoonlightGlyph : GlyphItem
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
-				HitEffects(target, hit, damageDone);
+			{
+				MoonlightHitEffects(target, Player, damageDone, hit.Crit);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(MoonlightHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<MoonlightGlyph>() && target.CanBeChasedBy())
-				HitEffects(target, hit, damageDone);
+			{
+				MoonlightHitEffects(target, Player, damageDone, hit.Crit);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(MoonlightHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
 		}
 
-		private void HitEffects(NPC target, NPC.HitInfo hit, int damageDone)
+		[NetSynced(true)]
+		private static void MoonlightHitEffects(NPC target, Player owner, int damageDone, bool crit)
 		{
-			float strength = MathHelper.Lerp(0.125f, 0.22f, 1f - Player.statMana / (float)Player.statManaMax2);
+			if (Main.dedServ)
+				return;
 
+			float strength = MathHelper.Lerp(0.125f, 0.22f, 1f - owner.statMana / (float)owner.statManaMax2);
 			float angle = Main.rand.NextFloat(MathHelper.Pi);
-			var position = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
+			Vector2 position = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
 
 			Color c1, c2;
 			c1 = Color.Lerp(Color.DarkCyan, Color.MidnightBlue, Main.rand.NextFloat());
 			c2 = Color.Lerp(Color.DarkSlateBlue, Color.RoyalBlue, Main.rand.NextFloat());
 
-			var circle = new TexturedPulseCircle(position, (c1 * 0.5f).Additive(), 2, 250 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+			TexturedPulseCircle circle = new(position, (c1 * 0.5f).Additive(), 2, 250 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 			circle.Angle = angle;
 			ParticleHandler.SpawnParticle(circle);
 
-			var circle2 = new TexturedPulseCircle(position, (Color.White * 0.5f).Additive(), 1, 230 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+			TexturedPulseCircle circle2 = new(position, (Color.White * 0.5f).Additive(), 1, 230 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 			circle2.Angle = angle;
 			ParticleHandler.SpawnParticle(circle2);
 
@@ -79,62 +94,40 @@ public class MoonlightGlyph : GlyphItem
 			for (int i = 0; i < 50 * strength; i++)
 				ParticleHandler.SpawnParticle(new MagicParticle(position, Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextBool() ? c1 : c2, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30)));
 
-			if (Player.statMana < Player.statManaMax2)
+			if (owner.statMana < owner.statManaMax2)
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/WispHit") with { Pitch = -0.1f, PitchVariance = 0.2f }, target.Center);
+				SoundEngine.PlaySound(Wisp.Hit with { Pitch = -0.1f, PitchVariance = 0.2f }, target.Center);
 
 				int manaIncrease = (int)Math.Max(damageDone / 5f, 1);
 
-				Player.statMana = Math.Min(Player.statMana + manaIncrease, Player.statManaMax2);
-				Player.ManaEffect(manaIncrease); //Leeching
+				owner.statMana = Math.Min(owner.statMana + manaIncrease, owner.statManaMax2);
+				owner.ManaEffect(manaIncrease); //Leeching
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
-				{
-					Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
-				});
+				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
+				{ Rotation = position.DirectionTo(owner.Center).ToRotation() + MathHelper.PiOver2 });
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(Player.Center) * 20, Vector2.Zero, Color.White.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
-				{
-					Rotation = position.DirectionTo(Player.Center).ToRotation() + MathHelper.PiOver2,
-				});
+				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.White.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
+				{ Rotation = position.DirectionTo(owner.Center).ToRotation() + MathHelper.PiOver2 });
 
 				for (int i = 0; i < 3; i++)
 				{
-					Vector2 velocity = position.DirectionTo(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 10f);
+					Vector2 velocity = position.DirectionTo(owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 10f);
 
 					float scale = Main.rand.NextFloat(0.3f, 1f);
 					int lifeTime = Main.rand.Next(20, 60);
 
 					ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, c2.Additive() * 0.5f, c1.Additive() * 0.5f, scale * strength, lifeTime, 0, DecelerateAction)
-					{
-						Rotation = 0
-					});
+					{ Rotation = 0 });
 
 					ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, scale * 0.9f * strength, lifeTime - 5, 0, DecelerateAction)
-					{
-						Rotation = 0
-					});
+					{ Rotation = 0 });
 				}
 			}
 
-			Color orange = hit.Crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
+			Color orangeyColor = crit ? CombatText.DamagedHostileCrit : CombatText.DamagedHostile;
+			CombatText.NewText(target.Hitbox, orangeyColor, Math.Max((int)(damageDone * 0.8f), 1), crit);
 
-			var rect = target.getRect();
-
-			int damage = Math.Max((int)(damageDone * 0.8f), 1);
-
-			CombatText.NewText(rect, orange, damage, hit.Crit);
-
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				NetMessage.SendData(MessageID.CombatTextInt, number: (int)orange.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
-			
-			damage = Math.Max((int)(damageDone * 0.2f), 1);
-
-			int magicDamage = CombatText.NewText(rect, Color.White, damage, hit.Crit);
-			
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				NetMessage.SendData(MessageID.CombatTextInt, number: (int)orange.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
-
+			int magicDamage = CombatText.NewText(target.Hitbox, Color.White, Math.Max((int)(damageDone * 0.2f), 1), crit);
 			ColoredCombatText.AddCombatText(magicDamage, Color.RoyalBlue, Color.DarkSlateBlue);
 
 			static void DecelerateAction(Particle p)
@@ -258,6 +251,9 @@ public class MoonlightGlyph : GlyphItem
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (Main.dedServ)
+			return;
+
 		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 
 		for (int i = 0; i < 3; i++)
@@ -266,7 +262,6 @@ public class MoonlightGlyph : GlyphItem
 			Vector2 vel = normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 5f);
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.1f, 45, 0, UpdateAction));
-
 			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.05f, 40, 0, UpdateAction, false));
 
 			static void UpdateAction(Particle p)

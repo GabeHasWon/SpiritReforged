@@ -116,27 +116,26 @@ public class RotGlyph : GlyphItem
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
 			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(87, 94, 1), 40, false, false, SmokeUpdate)
-			{
-				Layer = ParticleLayer.BelowNPC
-			});
+			{ Layer = ParticleLayer.BelowNPC });
 
 			pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
 			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(131, 124, 1), 40, false, false, SmokeUpdate)
-			{
-				Layer = ParticleLayer.BelowNPC
-			});
+			{ Layer = ParticleLayer.BelowNPC });
+		}
 
-			static void SmokeUpdate(Particle p)
-			{
-				p.Velocity.Y -= 0.01f;
-				p.Velocity *= 0.95f;
-			}
+		static void SmokeUpdate(Particle p)
+		{
+			p.Velocity.Y -= 0.01f;
+			p.Velocity *= 0.95f;
 		}
 	}
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (Main.dedServ)
+			return;
+
 		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 
 		for (int i = 0; i < 5; i++)
@@ -147,19 +146,17 @@ public class RotGlyph : GlyphItem
 			Dust.NewDustPerfect(pos, DustID.Poisoned, vel, 100, default, 1.5f).noGravity = true;
 
 			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(pos, vel, new Color(131, 124, 1), 35, false, false, SmokeUpdate)
-			{
-				Layer = ParticleLayer.BelowNPC
-			});
-
-			static void SmokeUpdate(Particle p)
-			{
-				p.Velocity *= 0.95f;
-			}
+			{ Layer = ParticleLayer.BelowNPC });
 		}
+
+		static void SmokeUpdate(Particle p) => p.Velocity *= 0.95f;
 	}
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(4 + 3 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Poisoned, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
 
@@ -169,19 +166,13 @@ public class RotGlyph : GlyphItem
 		if (Main.rand.NextBool(3 + 2 * projectile.extraUpdates))
 		{
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
-
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 
 			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(pos, vel, new Color(169, 158, 38), 20, false, false, SmokeUpdate)
-			{
-				Layer = ParticleLayer.BelowNPC
-			});
-
-			static void SmokeUpdate(Particle p)
-			{
-				p.Velocity *= 0.95f;
-			}
+			{ Layer = ParticleLayer.BelowNPC });
 		}
+
+		static void SmokeUpdate(Particle p) => p.Velocity *= 0.95f;
 	}
 }
 

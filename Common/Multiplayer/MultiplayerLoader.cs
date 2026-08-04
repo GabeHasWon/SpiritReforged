@@ -31,12 +31,16 @@ internal partial class MultiplayerLoader : ILoadable
 		WriteSigns.Add(typeof(int), static (modPacket, argument) => modPacket.Write((int)argument));
 		WriteSigns.Add(typeof(float), static (modPacket, argument) => modPacket.Write((float)argument));
 		WriteSigns.Add(typeof(Vector2), static (modPacket, argument) => modPacket.WriteVector2((Vector2)argument));
+		WriteSigns.Add(typeof(Player), static (modPacket, argument) => modPacket.Write((ushort)argument));
+		WriteSigns.Add(typeof(NPC), static (modPacket, argument) => modPacket.Write((ushort)argument));
 
 		//Add supported signs for BinaryReader
 		ReadSigns.Add(typeof(bool), static (binaryReader) => binaryReader.ReadBoolean());
 		ReadSigns.Add(typeof(int), static (binaryReader) => binaryReader.ReadInt32());
 		ReadSigns.Add(typeof(float), static (binaryReader) => binaryReader.ReadSingle());
 		ReadSigns.Add(typeof(Vector2), static (binaryReader) => binaryReader.ReadVector2());
+		ReadSigns.Add(typeof(Player), static (binaryReader) => Main.player[binaryReader.ReadUInt16()]);
+		ReadSigns.Add(typeof(NPC), static (binaryReader) => Main.npc[binaryReader.ReadUInt16()]);
 
 		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
@@ -53,8 +57,9 @@ internal partial class MultiplayerLoader : ILoadable
 
 	public void Unload() { }
 
-	/// <summary> Sends a method labeled with <see cref="NetSyncedAttribute"/> with the provided <paramref name="parameters"/>.<br/>
-	/// Ensure all data types passed as parameters are registered in <see cref="Load"/> to ensure accurate reading and writing. </summary>
+	/// <summary> Sends a method labeled with <see cref="NetSyncedAttribute"/> with the provided <paramref name="parameters"/>.<para/>
+	/// Ensure all data types passed as parameters are registered in <see cref="Load"/> to ensure accurate reading and writing.<br/>
+	/// Additionally, ensure the labeled method uses a completely unique name for identification. </summary>
 	public static void Send(string methodName, int toClient = -1, int ignoreClient = -1, params object[] parameters)
 	{
 		byte id = NetMethods.Where(x => x.Value.Name == methodName).First().Key;

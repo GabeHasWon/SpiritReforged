@@ -243,6 +243,9 @@ public class BeeGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(45))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2CircularEdge(item.width / 3, item.height / 3);
@@ -264,8 +267,10 @@ public class BeeGlyph : GlyphItem
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
+		if (Main.dedServ)
+			return;
 
+		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 		for (int i = 0; i < 3; i++)
 		{
 			Dust.NewDustPerfect(position + normalized * item.width, DustID.Honey2, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 70, default, 1.5f).noGravity = true;
@@ -277,6 +282,9 @@ public class BeeGlyph : GlyphItem
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
+		if (Main.dedServ)
+			return;
+
 		if (Main.rand.NextBool(2 + 1 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Honey2, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
 

@@ -43,7 +43,7 @@ public class BlazeGlyph : GlyphItem
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
 				if (!Player.HasBuff<BlazeDebuff>())
-					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+					BlazeHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
 				target.AddBuff(BuffID.OnFire, 90);
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
@@ -51,10 +51,10 @@ public class BlazeGlyph : GlyphItem
 				Vector2 position = target.Hitbox.ClosestPointInRect(Player.Center);
 				float rotation = target.DirectionTo(Player.Center).ToRotation();
 
-				SpawnHitEffects(position, rotation, 1f);
+				BlazeHitEffects(position, rotation, 1f);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(SpawnHitEffects), -1, -1, position, rotation, 1f);
+					MultiplayerLoader.Send(nameof(BlazeHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
@@ -63,7 +63,7 @@ public class BlazeGlyph : GlyphItem
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
 				if (!Player.HasBuff<BlazeDebuff>())
-					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+					BlazeHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
 				target.AddBuff(BuffID.OnFire, 90);
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
@@ -71,15 +71,15 @@ public class BlazeGlyph : GlyphItem
 				Vector2 position = proj.Center;
 				float rotation = proj.DirectionTo(Player.Center).ToRotation();
 
-				SpawnHitEffects(position, rotation, 1f);
+				BlazeHitEffects(position, rotation, 1f);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(SpawnHitEffects), -1, -1, position, rotation, 1f);
+					MultiplayerLoader.Send(nameof(BlazeHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
 		[NetSynced(true)]
-		public static void SpawnHitEffects(Vector2 position, float angle, float scale = 1f)
+		public static void BlazeHitEffects(Vector2 position, float angle, float scale = 1f)
 		{
 			if (Main.dedServ)
 				return;

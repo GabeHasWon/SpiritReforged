@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.CombatTextCommon;
+﻿using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -11,7 +10,6 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
