@@ -10,40 +10,46 @@ using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Common.Multiplayer;
+using Terraria.Chat;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
 public partial class ShockGlyph
 {
-	/*private class ShockPacket : PacketData
+	private class ShockPacket : PacketData
 	{
-		private readonly short _player;
+		private readonly bool _crit;
 		private readonly short _npc;
 		private readonly int _damage;
 
 		public ShockPacket() : base() { }
 
-		public ShockPacket(short npc, short player, int damage)
+		public ShockPacket(short npc, int damage, bool crit)
 		{
 			_npc = npc;
-			_player = player;
 			_damage = damage;
+			_crit = crit;
 		}
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
 			short npc = reader.ReadInt16();
-			short player = reader.ReadInt16();
+			bool crit = reader.ReadBoolean();
 			int damage = reader.ReadInt32();
+
+			if (Main.netMode == NetmodeID.Server)
+				new ShockPacket(npc, damage, crit).Send(-1, whoAmI);
+			else if (Main.netMode == NetmodeID.MultiplayerClient)
+				ShockGlyphLightningBolt.LightningHit(Main.npc[npc], damage, crit);
 		}
 
 		public override void OnSend(ModPacket modPacket)
 		{
 			modPacket.Write(_npc);
-			modPacket.Write(_player);
+			modPacket.Write(_crit);
 			modPacket.Write(_damage);
 		}
-	}*/
+	}
 
 	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
 	{
@@ -202,8 +208,6 @@ public partial class ShockGlyph
 			if (Projectile.timeLeft == 1 && !Dying)
 			{
 				Dying = true;
-				Projectile.netUpdate = true;
-
 				Projectile.timeLeft = 200;
 				Projectile.Center = Main.npc[TargetWhoAmI].Center + Main.npc[TargetWhoAmI].velocity;
 			}
@@ -213,17 +217,24 @@ public partial class ShockGlyph
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				new ShockPacket((short)target.whoAmI, damageDone, hit.Crit).Send();
+
+			LightningHit(target, damageDone, hit.Crit);
+		}
+
+		public static void LightningHit(NPC target, int damageDone, bool crit)
+		{
+			Main.NewText(Main.LocalPlayer.whoAmI);
+
 			var rect = target.getRect();
 
 			int damage = Math.Max(damageDone, 1);
 
-			int idx = CombatText.NewText(rect, Color.White, damage, hit.Crit);
-
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				NetMessage.SendData(MessageID.CombatTextInt, number: (int)Color.White.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
+			int idx = CombatText.NewText(rect, Color.White, damage, crit);
 
 			ColoredCombatText.AddCombatText(idx, Color.Cyan, Color.DarkCyan);
-			
+
 			if (Main.dedServ)
 				return;
 
