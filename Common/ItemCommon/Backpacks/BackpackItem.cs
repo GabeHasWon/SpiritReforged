@@ -14,8 +14,8 @@ public abstract class BackpackItem : ModItem
 
 	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCount);
 
-	/// <summary> The absolute number of slots this backpack has. </summary> //Check gameMenu to assist with LoadData
-	public int SlotCount => slotCount + ((Main.gameMenu || Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+	/// <summary> The absolute number of slots this backpack has. </summary>
+	public int SlotCount => slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
 
 	public Item[] Items
 	{
@@ -77,7 +77,7 @@ public abstract class BackpackItem : ModItem
 		if (!BackpackUISlot.CanClickItem(player.GetModPlayer<BackpackPlayer>().backpack))
 			return;
 
-		var oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
+		Item oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
@@ -85,13 +85,13 @@ public abstract class BackpackItem : ModItem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		foreach (var item in Items)
+		foreach (Item item in Items)
 			ItemIO.Send(item, writer, true);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		foreach (var item in Items)
+		foreach (Item item in Items)
 			ItemIO.Receive(item, reader, true);
 	}
 

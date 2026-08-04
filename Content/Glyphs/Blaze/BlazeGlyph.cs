@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
@@ -41,13 +42,19 @@ public class BlazeGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				target.AddBuff(BuffID.OnFire, 90);
-
 				if (!Player.HasBuff<BlazeDebuff>())
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
+				target.AddBuff(BuffID.OnFire, 90);
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
-				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center), target.DirectionTo(Player.Center).ToRotation());
+
+				Vector2 position = target.Hitbox.ClosestPointInRect(Player.Center);
+				float rotation = target.DirectionTo(Player.Center).ToRotation();
+
+				SpawnHitEffects(position, rotation, 1f);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(SpawnHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
@@ -59,14 +66,24 @@ public class BlazeGlyph : GlyphItem
 					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
 				target.AddBuff(BuffID.OnFire, 90);
-
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
-				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
+
+				Vector2 position = proj.Center;
+				float rotation = proj.DirectionTo(Player.Center).ToRotation();
+
+				SpawnHitEffects(position, rotation, 1f);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(SpawnHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
-		public void SpawnHitEffects(Vector2 position, float angle, float scale = 1f)
+		[NetSynced(true)]
+		public static void SpawnHitEffects(Vector2 position, float angle, float scale = 1f)
 		{
+			if (Main.dedServ)
+				return;
+
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f * scale, 30, 0)
@@ -93,7 +110,7 @@ public class BlazeGlyph : GlyphItem
 					dust.fadeIn = 1.1f;
 				dust.noLightEmittence = true;
 
-				var particle = new EmberParticle(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				EmberParticle particle = new(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
 				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 				ParticleHandler.SpawnParticle(particle);
 
@@ -107,20 +124,14 @@ public class BlazeGlyph : GlyphItem
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.15f, PitchVariance = 0.15f }, position);
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
+					{ Layer = ParticleLayer.BelowNPC });
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
+					{ Layer = ParticleLayer.BelowNPC });
 				}
 
 				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40)
-				{
-					Layer = ParticleLayer.BelowNPC
-				});
+				{ Layer = ParticleLayer.BelowNPC });
 			}
 		}
 	}
@@ -139,26 +150,25 @@ public class BlazeGlyph : GlyphItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (!Main.dedServ)
+			if (Main.dedServ)
+				return;
+
+			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+
+			if (Main.rand.NextBool())
 			{
-				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+				EmberParticle particle = new(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 
-				if (Main.rand.NextBool())
-				{
-					var particle = new EmberParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-					particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-					ParticleHandler.SpawnParticle(particle);
-				}
-
-				if (Main.rand.NextBool(6))
-					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
-
-				if (Main.rand.NextBool(4))
-					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
+				ParticleHandler.SpawnParticle(particle);
 			}
+
+			if (Main.rand.NextBool(6))
+				ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
+				{ Layer = ParticleLayer.BelowNPC });
+
+			if (Main.rand.NextBool(4))
+				Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
 		}
 	}
 
