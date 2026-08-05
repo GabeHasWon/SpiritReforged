@@ -13,7 +13,7 @@ public class VoidPlayer : ModPlayer
 {
 	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (proj.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>() && Main.rand.NextBool())
+		if (proj.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>() && Main.rand.NextBool() && target.CanBeChasedBy())
 		{
 			VoidNPC.AddVoidStack(Player, target, damageDone / 2);
 
@@ -24,7 +24,7 @@ public class VoidPlayer : ModPlayer
 
 	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (item.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>() && Main.rand.NextBool())
+		if (item.GetGlyph().ItemType == ModContent.ItemType<VoidGlyph>() && Main.rand.NextBool() && target.CanBeChasedBy())
 		{
 			VoidNPC.AddVoidStack(Player, target, damageDone / 2);
 

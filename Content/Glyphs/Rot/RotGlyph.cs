@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 
@@ -10,6 +11,12 @@ namespace SpiritReforged.Content.Glyphs.Rot;
 
 public class RotGlyph : GlyphItem
 {
+	public static readonly SoundStyle BlightImpact = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid")
+	{
+		Volume = 0.1f,
+		PitchVariance = 0.5f
+	};
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

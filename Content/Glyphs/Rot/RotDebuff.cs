@@ -2,12 +2,12 @@ using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Particles.Basic;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.DebuffOverhaul.BuffExtension;
@@ -55,37 +55,45 @@ public class RotDebuff : ModBuff
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<RotGlyph>())
-				HitEffects(target);
+			{
+				BlightHitEffects(target, Player);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(BlightHitEffects), -1, -1, target, Player);
+			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<RotGlyph>())
-				HitEffects(target);
+			{
+				BlightHitEffects(target, Player);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(BlightHitEffects), -1, -1, target, Player);
+			}
 		}
 
-		public void HitEffects(NPC target)
+		[NetSynced(true)]
+		public static void BlightHitEffects(NPC target, Player owner)
 		{
-			if (!target.TryGetGlobalNPC(out RotSpreadNPC rotGlobalNPC) || Main.npc.Where(n => n.active && n.HasBuff<RotDebuff>()).Count() > 10)
-				return;
-
 			SpreadNearby(target.Center, 100);
 
 			if (!Main.dedServ)
 			{
-				Vector2 position = target.Hitbox.ClosestPointInRect(Player.Center);
+				Vector2 position = target.Hitbox.ClosestPointInRect(owner.Center);
 				float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.05f, PitchVariance = 0.5f }, target.Center);
+				SoundEngine.PlaySound(RotGlyph.BlightImpact, target.Center);
 
 				for (int i = 0; i < 3; i++)
 				{
-					ParticleHandler.SpawnParticle(new FlyParticle(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1.5f), 0f, 0.5f, 45));
+					ParticleHandler.SpawnParticle(new FlyParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1.5f), 0f, 0.5f, 45));
 
-					ParticleHandler.SpawnParticle(new MaggotParticle(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.3f)
+					ParticleHandler.SpawnParticle(new MaggotParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.3f)
 						* Main.rand.NextFloat(2.5f) - Vector2.UnitY, Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 20 + Main.rand.Next(20)));
 
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, target.Center.DirectionTo(Player.Center).RotatedByRandom(0.5f)
+					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.5f)
 						* Main.rand.NextFloat(2.5f), new Color(87, 94, 1), 40, false, false)
 						{ Layer = ParticleLayer.BelowNPC });
 				}
@@ -206,45 +214,48 @@ public class RotDebuff : ModBuff
 		}
 	}
 
-	/// <summary> Spreads to <b>ALL</b> NPCs near <paramref name="origin"/>. </summary>
+	/// <summary> Spreads to NPCs near <paramref name="origin"/> within a limit. </summary>
 	public static void SpreadNearby(Vector2 origin, int range)
 	{
-		int buffCount = Main.npc.Where(n => n.active && n.HasBuff<RotDebuff>()).Count();
+		const int spread_limit = 5;
 
-		if (buffCount > 10)
-			return;
-
+		NPC[] possibleVectors = new NPC[spread_limit];
 		int buffType = ModContent.BuffType<RotDebuff>();
+		int index = 0;
+
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
 			if (npc.CanBeChasedBy() && npc.DistanceSQ(origin) < range * range)
 			{
-				bool hasBuff = npc.HasBuff(buffType);
-				npc.AddBuff(buffType, 180);
+				possibleVectors[index] = npc;
 
-				buffCount++;
-
-				// Keep track of the buff count in each iteration to make sure to break once 10 npcs have it
-				// Without this, you could theoretically infect more than 10 npcs at once, bypassing the restriction
-				if (buffCount > 10)
+				if (++index >= spread_limit)
 					break;
+			}
+		}
 
-				if (Main.dedServ || hasBuff)
-					continue;
+		foreach (NPC npc in possibleVectors)
+		{
+			bool hasBuff = npc.HasBuff(buffType);
 
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid") with { Volume = 0.1f, PitchVariance = 0.5f }, npc.Center);
-				Vector2 center = npc.Center;
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+				npc.AddBuff(buffType, 180); //Prevent potential redundant application
 
-				for (int i = 0; i < 8; i++)
-				{
-					ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+			if (Main.dedServ || hasBuff)
+				continue;
 
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
-					{ Layer = ParticleLayer.BelowNPC });
+			SoundEngine.PlaySound(RotGlyph.BlightImpact, npc.Center);
+			Vector2 center = npc.Center;
 
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
-					{ Layer = ParticleLayer.BelowNPC });
-				}
+			for (int i = 0; i < 8; i++)
+			{
+				ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+
+				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
+				{ Layer = ParticleLayer.BelowNPC });
+
+				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
+				{ Layer = ParticleLayer.BelowNPC });
 			}
 		}
 
