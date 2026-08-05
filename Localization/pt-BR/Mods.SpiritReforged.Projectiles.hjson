@@ -100,7 +100,7 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // LightningBlast.DisplayName: Lightning Blast
 // Firefall.DisplayName: Firefall
 // WindBurstProjectile.DisplayName: Wind Burst Projectile
-// CollapseProjectile.DisplayName: Collapse Projectile
+// SingularCollapse.DisplayName: Collapse
 // ShockGlyphLightningBolt.DisplayName: Shock Glyph Lightning Bolt
 // MariglowSeed.DisplayName: Mariglow Seed
 // RageHit.DisplayName: Rage Hit

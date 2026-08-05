@@ -21,7 +21,7 @@ public class RadiantGlyph : GlyphItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (player.GetModPlayer<RadiantPlayer>().divineStrike)
+			if (player.GetModPlayer<RadiantPlayer>().DivineStrike)
 				player.buffTime[buffIndex] = 18000;
 			else
 			{

@@ -31,8 +31,8 @@ internal partial class MultiplayerLoader : ILoadable
 		WriteSigns.Add(typeof(int), static (modPacket, argument) => modPacket.Write((int)argument));
 		WriteSigns.Add(typeof(float), static (modPacket, argument) => modPacket.Write((float)argument));
 		WriteSigns.Add(typeof(Vector2), static (modPacket, argument) => modPacket.WriteVector2((Vector2)argument));
-		WriteSigns.Add(typeof(Player), static (modPacket, argument) => modPacket.Write((ushort)argument));
-		WriteSigns.Add(typeof(NPC), static (modPacket, argument) => modPacket.Write((ushort)argument));
+		WriteSigns.Add(typeof(Player), static (modPacket, argument) => modPacket.Write((ushort)((Player)argument).whoAmI));
+		WriteSigns.Add(typeof(NPC), static (modPacket, argument) => modPacket.Write((ushort)((NPC)argument).whoAmI));
 
 		//Add supported signs for BinaryReader
 		ReadSigns.Add(typeof(bool), static (binaryReader) => binaryReader.ReadBoolean());
@@ -70,6 +70,8 @@ internal partial class MultiplayerLoader : ILoadable
 		{
 			if (WriteSigns.TryGetValue(parameter.GetType(), out var writeAction))
 				writeAction.Invoke(packet, parameter);
+			else
+				SpiritReforgedMod.Instance.Logger.Warn($"[Synchronization] Send failed! No registered sign for type {parameter.GetType()}");
 		}
 
 		packet.Send(toClient, ignoreClient);

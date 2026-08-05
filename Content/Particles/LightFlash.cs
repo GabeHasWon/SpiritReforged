@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Glyphs.Radiant;
 using static SpiritReforged.Content.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Particles;
@@ -58,7 +59,7 @@ public class LightFlash : Particle
 
 			gfx = p.gfxOffY;
 			// Gross check for radiant glyph specifically so the particles fade quick after striking with Radiant Glyph
-			if (fromRadiant && !p.GetModPlayer<RadiantPlayer>().divineStrike)
+			if (fromRadiant && !p.GetModPlayer<RadiantPlayer>().DivineStrike)
 			{
 				Color *= 0.9f;
 				TimeActive += 2;
