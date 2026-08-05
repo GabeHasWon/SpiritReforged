@@ -36,6 +36,8 @@ public class VoidPlayer : ModPlayer
 
 public class VoidNPC : GlobalNPC
 {
+	private enum SingularityResult { Created, Found, NotCreated, FoundDying }
+
 	/// <summary> Defense strength multiplier for use with <see cref="defenseReductionTimer"/>. </summary>
 	public const float DEFENSE_REDUCTION_MULT = 0.8f;
 	public const int MAX_STACKS = 15;
@@ -47,34 +49,40 @@ public class VoidNPC : GlobalNPC
 	[NetSynced(true)]
 	public static void AddVoidStack(Player owner, NPC target, int damageDealt)
 	{
-		if (target.TryGetGlobalNPC(out VoidNPC voidNPC) && TryGetSingularity(owner, target, out SingularCollapse collapse) && collapse.Stacks < MAX_STACKS)
+		float pitchMultiplier = 1;
+		SingularityResult result = TryGetSingularity(owner, target, out SingularCollapse collapse, owner.whoAmI == Main.myPlayer);
+
+		if (result is SingularityResult.Created or SingularityResult.Found && collapse.Stacks < MAX_STACKS)
 		{
 			collapse.Stacks = Math.Min(collapse.Stacks + 1, MAX_STACKS);
 			collapse.Projectile.damage += (int)Math.Ceiling(damageDealt / 6f) + (Main.hardMode ? 6 : 2);
 
-			if (!Main.dedServ)
+			pitchMultiplier = collapse.Stacks;
+		}
+
+		//Still run application effects if the singularity has not been created (for non-owning clients specifically on first application)
+		if (!Main.dedServ && collapse.Stacks < MAX_STACKS && result is SingularityResult.Created or SingularityResult.Found or SingularityResult.NotCreated)
+		{
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * pitchMultiplier }, target.Center);
+			SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * pitchMultiplier }, target.Center);
+
+			for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
 			{
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * collapse.Stacks }, target.Center);
-				SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * collapse.Stacks }, target.Center);
+				Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
+				float rotation = Main.rand.NextFloat(6.28f);
 
-				for (int i = 0; i < 1 + Main.rand.Next(0, 3); i++)
-				{
-					Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
-					float rotation = Main.rand.NextFloat(6.28f);
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+				{ Rotation = rotation });
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
-					{ Rotation = rotation });
+				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
+				{ Rotation = rotation });
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
-					{ Rotation = rotation });
+				velocity = Main.rand.NextVector2Circular(4f, 4f);
+				float scale = Main.rand.NextFloat(0.1f, 0.3f);
+				bool rotDir = Main.rand.NextBool();
 
-					velocity = Main.rand.NextVector2Circular(4f, 4f);
-					float scale = Main.rand.NextFloat(0.1f, 0.3f);
-					bool rotDir = Main.rand.NextBool();
-
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
-					ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
-				}
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
 			}
 		}
 
@@ -98,19 +106,19 @@ public class VoidNPC : GlobalNPC
 	}
 
 	/// <summary> Gets a <see cref="SingularCollapse"/> instance from <paramref name="owner"/>. </summary>
-	private static bool TryGetSingularity(Player owner, NPC target, out SingularCollapse singularity, bool create = true)
+	private static SingularityResult TryGetSingularity(Player owner, NPC target, out SingularCollapse singularity, bool create = true)
 	{
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
 			if (projectile.ModProjectile is SingularCollapse singularCollapse && singularCollapse.TargetIndex == target.whoAmI)
 			{
 				singularity = singularCollapse;
-				return !singularCollapse.dying;
+				return singularCollapse.dying ? SingularityResult.FoundDying : SingularityResult.Found;
 			}
 		}
 
 		singularity = create ? (SingularCollapse)Projectile.NewProjectileDirect(owner.GetSource_OnHit(target, "SpiritReforged: Void Glyph Apply"), target.Center, Vector2.Zero, ModContent.ProjectileType<SingularCollapse>(), 0, 7f, owner.whoAmI, target.whoAmI).ModProjectile : null;
-		return create;
+		return create ? SingularityResult.Created : SingularityResult.NotCreated;
 	}
 
 	public override void ResetEffects(NPC npc)

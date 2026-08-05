@@ -32,7 +32,15 @@ public abstract class BuffExtension : ILoadable
         }
     }
 
-	public int BuffTime => (NPC.FindBuffIndex(Type) is int value && value != -1) ? NPC.buffTime[value] : 0;
+	public int BuffTime
+	{
+		get => (NPC.FindBuffIndex(Type) is int index && index != -1) ? NPC.buffTime[index] : 0;
+		set
+		{
+			if (NPC.FindBuffIndex(Type) is int index && index != -1)
+				NPC.buffTime[index] = value;
+		}
+	}
 
     /// <summary> The NPC this instance has been applied to. </summary>
     public NPC NPC { get; private set; }
@@ -53,6 +61,7 @@ public abstract class BuffExtension : ILoadable
     public virtual void Unload() { }
 
     protected virtual void OnApply(bool reApplied) { }
+	/// <summary> Called on all clients and the server. </summary>
     public virtual void UpdateLifeRegen(ref int damage) { }
     public virtual void DoVisuals() => UsesCustomVFX = false;
     public virtual void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options) { }

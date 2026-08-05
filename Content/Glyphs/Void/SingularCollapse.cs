@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -251,14 +252,21 @@ public class SingularCollapse : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		Rectangle hitbox = target.Hitbox;
-		int damage = Math.Max(damageDone, 1);
-		int idx = CombatText.NewText(hitbox, Color.White, damage, hit.Crit);
+		SingularityHitEffects(target, damageDone, hit.Crit);
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-			NetMessage.SendData(MessageID.CombatTextInt, number: (int)Color.White.PackedValue, number2: hitbox.X, number3: hitbox.Y, number4: damage);
+		if (Main.netMode != NetmodeID.SinglePlayer)
+			MultiplayerLoader.Send(nameof(SingularityHitEffects), -1, -1, target, damageDone, hit.Crit);
+	}
 
-		ColoredCombatText.AddCombatText(idx, Color.Purple, Color.DarkViolet);
+	[NetSynced(true)]
+	public static void SingularityHitEffects(NPC target, int damage, bool crit)
+	{
+		if (!Main.dedServ)
+		{
+			Rectangle hitbox = target.Hitbox;
+			int index = CombatText.NewText(hitbox, Color.White, damage, crit);
+			ColoredCombatText.AddCombatText(index, Color.Purple, Color.DarkViolet);
+		}
 
 		if (target.TryGetGlobalNPC(out VoidNPC gnpc))
 			gnpc.defenseReductionTimer = 300;

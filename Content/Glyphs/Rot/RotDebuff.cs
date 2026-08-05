@@ -18,7 +18,7 @@ public class RotDebuff : ModBuff
 {
 	public class BlightExtension : DoTExtension
 	{
-		public override Settings LocalSettings => new(0.1f, 500);
+		public override BuffSettings Settings => new(0.1f, 500);
 
 		public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
 		{

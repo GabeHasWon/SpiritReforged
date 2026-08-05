@@ -11,7 +11,7 @@ public class OnFire : DoTExtension
 	public static readonly Asset<Texture2D> BurningHealth = ModContent.Request<Texture2D>(VanillaTextures + "FireHealthBar");
     public static readonly Asset<Texture2D> Flame = ModContent.Request<Texture2D>(VanillaTextures + "SmallFlame");
 
-    public override Settings LocalSettings => new(0.2f * VanillaScaling, (int)(500 * VanillaMaximum));
+    public override BuffSettings Settings => new(0.2f * VanillaScaling, (int)(500 * VanillaMaximum), false, FireScaling);
 
     public override void Load()
     {

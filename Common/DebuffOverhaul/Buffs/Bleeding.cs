@@ -5,7 +5,7 @@ namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Bleeding : DoTExtension
 {
-    public override Settings LocalSettings => new(1f * VanillaScaling, (int)(800 * VanillaMaximum));
+    public override BuffSettings Settings => new(1f * VanillaScaling, (int)(800 * VanillaMaximum), true);
 
     public override void Load() => BuffHandler.Register(this, BuffID.Bleeding);
 
