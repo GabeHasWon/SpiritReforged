@@ -151,15 +151,19 @@ public static class WorldMethods
 
 	/// <returns> Whether gen was successful. </returns>
 	public delegate bool GenDelegate(int x, int y);
+
 	/// <summary> Selects a random location within <paramref name="area"/> and calls <paramref name="del"/>. </summary>
-	/// <param name="del"></param>
+	/// <param name="del"> The action to run. </param>
 	/// <param name="count"> The desired number of items to generate. </param>
 	/// <param name="generated"> The actual number of items generated. </param>
 	/// <param name="area"> The area to select a point within. Provides a valid default area. </param>
 	/// <param name="maxTries"> The unconditional maximum number of locations that can be selected. </param>
-	public static void Generate(GenDelegate del, int count, out int generated, Rectangle area = default, int maxTries = 1000)
+	/// <param name="scale"> The scaling applied to both of <paramref name="count"/> and <paramref name="scale"/>. </param>
+	public static void Generate(GenDelegate del, float count, out int generated, Rectangle area = default, float maxTries = 1000, float scale = 1f)
 	{
 		int currentCount = 0;
+		count *= scale;
+		maxTries *= scale;
 
 		if (area == default) //Default area
 		{

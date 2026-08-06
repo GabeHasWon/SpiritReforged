@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Ziggurat.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
-public class PaleHiveWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, IAutoloadWallItem
+public class PaleHiveWall : ModWall, IAutoloadUnsafeWall, IPostWallFrame, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>(nameof(PaleHiveWall) + "Unsafe").Type;
 

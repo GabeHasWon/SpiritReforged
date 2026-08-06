@@ -86,13 +86,13 @@ internal class ArchwayEntrance : CaveEntrance
 		}
 
 		Vector2 top = Vector2.Lerp(start, end, 0.5f) - new Vector2(0, WorldGen.genRand.NextFloat(5, 12));
-		var holes = new Vector2[Main.rand.Next(1, 3)];
+		var holes = new Vector2[WorldGen.genRand.Next(1, 3)];
 
 		if (forceEdges is not null)
 			top.Y -= 20;
 
 		for (int i = 0; i < holes.Length; ++i)
-			holes[i] = GetPoint(Main.rand.NextFloat(0.3f, 0.7f));
+			holes[i] = GetPoint(WorldGen.genRand.NextFloat(0.3f, 0.7f));
 
 		while (true)
 		{
@@ -171,7 +171,7 @@ internal class ArchwayEntrance : CaveEntrance
 					Tile tile = Main.tile[i, j];
 					tile.HasTile = false;
 
-					if (tile.WallType > 0)
+					if (tile.WallType > WallID.None)
 						tile.WallType = distance > size * 0.9f ? WallID.Dirt : WallID.GrassUnsafe;
 				}
 			}

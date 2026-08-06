@@ -21,6 +21,7 @@ public class OasisBiome : Microbiome
 	}
 
 	public static readonly Point16 Size = new(80, 40);
+
 	public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
 
 	#region detours

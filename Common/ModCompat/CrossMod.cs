@@ -64,6 +64,10 @@ internal static class CrossMod
 	public static readonly ModEntry Verdant = new("Verdant");
 	public static readonly ModEntry RussianTranslate = new("CalamityRuTranslate");
 	public static readonly ModEntry BossChecklist = new("BossChecklist");
+	public static readonly ModEntry SubworldLibrary = new("SubworldLibrary");
+	public static readonly ModEntry WorldGenPreviewer = new("WorldGenPreviewer");
+
+	public static bool RussianLocalizable => RussianTranslate.Enabled && Language.ActiveCulture.Name == "ru-RU";
 
 	/// <summary> The names and instances of loaded crossmod mods per <see cref="ModEntry"/>. </summary>
 	private static readonly Dictionary<string, Mod> LoadedMods = [];

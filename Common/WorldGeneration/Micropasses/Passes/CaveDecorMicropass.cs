@@ -1,13 +1,31 @@
-﻿using Terraria.WorldBuilding;
-using SpiritReforged.Content.Underground.Tiles;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
+using SpiritReforged.Content.Underground.Tiles;
+using Terraria.ModLoader.Config;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 /// <summary> A pass for cave filler, inserted after "Micro Biomes". </summary>
-internal class CaveDecorMicropass : Micropass
+internal class CaveDecorMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Cave Objects";
+
+	[GenConfigurable(0.05f, 50f, 0.05f)]
+	[Slider]
+	internal static float CartSpawnRate = 1;
+
+	[GenConfigurable(0.33f, 250f, 0.05f)]
+	[Slider]
+	private static float BoomshroomRate = 1;
+
+	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	{
+		CopiedPage = new UndergroundHouseMicropass()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -19,8 +37,8 @@ internal class CaveDecorMicropass : Micropass
 	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Caves");
 
-		int maxCarts = Main.maxTilesX / WorldGen.WorldSizeSmallX * 17;
-		int maxShrooms = Main.maxTilesX / WorldGen.WorldSizeSmallX * WorldGen.genRand.Next(3, 5);
+		int maxCarts = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * 17 * CartSpawnRate);
+		int maxShrooms = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * WorldGen.genRand.Next(3, 5) * BoomshroomRate);
 
 		WorldMethods.Generate(CreateCart, maxCarts, out _, maxTries: 1800);
 		WorldMethods.Generate(CreateShroom, maxShrooms, out _, new Rectangle(20, (int)Main.rockLayer, Main.maxTilesX - 40, Main.maxTilesY - (int)Main.rockLayer - 20));

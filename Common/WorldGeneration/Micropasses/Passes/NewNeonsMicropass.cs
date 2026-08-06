@@ -1,4 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
@@ -8,13 +10,23 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class NewNeonsMicropass : Micropass
+internal class NewNeonsMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "New Neon Mosses";
 
 	/// <summary> An array of natural glowing moss types from Spirit and vanilla. </summary>
 	public static int[] NeonMossTypes { get; private set; }
 	private static FieldInfo NeonMossInfo;
+
+	[GenConfigurable(1, 6)]
+	private static int NeonMossChance = 2;
+
+	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	{
+		CopiedPage = new UndergroundHouseMicropass()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Load(Mod mod)
 	{
@@ -28,7 +40,7 @@ internal class NewNeonsMicropass : Micropass
 
 		NeonMossTypes ??= [TileID.KryptonMoss, TileID.XenonMoss, TileID.ArgonMoss, TileID.VioletMoss, ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()];
 
-		if (WorldGen.genRand.NextBool(6))
+		if (WorldGen.genRand.NextBool(NeonMossChance, NeonMossTypes.Length))
 			NeonMossInfo.SetValue(null, (ushort)WorldGen.genRand.Next([ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()]));
 	}
 

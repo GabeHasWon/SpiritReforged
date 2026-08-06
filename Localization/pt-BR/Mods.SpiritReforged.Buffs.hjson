@@ -143,6 +143,11 @@ ScarabLightPetBuff: {
 	Description: "'Ele tá tramando algo...'"
 }
 
+ScarabMountBuff: {
+	DisplayName: Montaria de tatu-bola
+	Description: "'Segura ai!'"
+}
+
 OffBalance: {
 	// DisplayName: Off Balance
 	// Description: Mods.SpiritReforged.Buffs.OffBalance.Description

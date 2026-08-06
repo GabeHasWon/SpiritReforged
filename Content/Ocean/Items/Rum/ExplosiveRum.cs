@@ -61,7 +61,7 @@ public class ExplosiveRumProj : ModProjectile
 
 	public override void AI()
 	{
-		var dust = Dust.NewDustPerfect(Projectile.Center + 15 * (Projectile.rotation - 1.57f).ToRotationVector2(), 6);
+		var dust = Dust.NewDustPerfect(Projectile.Center + 15 * (Projectile.rotation - 1.57f).ToRotationVector2(), DustID.Torch);
 		dust.noGravity = true;
 		dust.scale = Main.rand.NextFloat(0.6f, 0.9f);
 		dust.fadeIn = .75f;

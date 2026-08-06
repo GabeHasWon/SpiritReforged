@@ -1,0 +1,22 @@
+﻿namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
+
+#nullable enable
+
+/// <summary>
+/// Marks a property or field as one that can be configured, alongside their minimum, maximum and step (if any).
+/// </summary>
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
+internal class GenConfigurableAttribute(object min, object max, object? step = null) : Attribute
+{
+	public readonly object Min = min;
+	public readonly object Max = max;
+	public readonly object? Step = step;
+
+	/// <summary>
+	/// Overload for simplifying booleans.
+	/// </summary>
+	public GenConfigurableAttribute(bool value) : this(false, true, true)
+	{
+		
+	}
+}

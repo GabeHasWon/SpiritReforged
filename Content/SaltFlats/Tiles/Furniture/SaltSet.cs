@@ -1,28 +1,43 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using Terraria.DataStructures;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
+using static TileHelper.Autoloader;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Furniture;
 
-public class SaltSet : FurnitureSet
+public class SaltSet : ILoadable
 {
-	public override string Name => "Salt";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<SaltPanel>(), new(0.75f, 0.75f, 0.95f), 
-		DustID.BubbleBurst_White, false, SaltBlock.Break);
-	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Clock, Types.Chandelier);
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadSaltFurniture;
+
+	private static void LoadSaltFurniture()
+	{
+		string saltName = typeof(SaltSet).Namespace + ".Salt";
+		TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new Vector3(0.75f, 0.75f, 0.95f), SaltBlock.Break, false)
+			- new ClockTile()
+			- new BarrelTile()
+			- new BenchTile();
+
+		arguments.Get<ChandelierTile>().WindCycle = 0;
+
+		LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<SaltPanel>());
+	}
+
+	public void Unload() { }
 }
 
-public class SaltClock : ClockTile
+public class SaltClock : ClockTile, ILoadItem
 {
 	private const int FrameHeight = 90;
-	public override IFurnitureData Info => ModContent.GetInstance<SaltSet>().GetInfo(this);
 
-	public override void StaticDefaults()
+	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<SaltPanel>());
+
+	public override void SetStaticDefaults()
 	{
-		base.StaticDefaults();
+		base.SetStaticDefaults();
+
 		AnimationFrameHeight = FrameHeight;
+		HitSound = SaltBlock.Break;
 	}
 
 	public override void AnimateTile(ref int frame, ref int frameCounter)
@@ -33,10 +48,4 @@ public class SaltClock : ClockTile
 			frame = ++frame % 5;
 		}
 	}
-}
-
-public class SaltChandelier : ChandelierTile
-{
-	public override IFurnitureData Info => ModContent.GetInstance<SaltSet>().GetInfo(this);
-	public override float Physics(Point16 topLeft) => 0;
 }

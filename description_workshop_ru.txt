@@ -1,5 +1,5 @@
 ﻿--- Spirit Reforged ---
-от команды Team Spirit
+от Team Spirit
 
 English (от Team Spirit)
 Português Brasileiro (от Lucas Rotulo и Hari)
@@ -22,4 +22,4 @@ Spirit Reforged — это мод, расширяющий различные а�
 Надеемся, вам понравится Spirit Reforged, и вы присоединитесь к Team Spirit в нашем новом приключении!
 
 -- Люди, вложившие вклад --
-tomat, alinahvoshch, Halmska, mathica
+tomat, alinahvoshch, Halmska, mathica, z_e_n_

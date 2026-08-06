@@ -90,7 +90,7 @@ internal class SecretSeedSystem : ModSystem
 		if (HasSecretSeed)
 		{
 			Main.rand = new UnifiedRandom();
-			seed = Main.rand.Next(999999999);
+			seed = Main.rand.Next(int.MaxValue);
 		}
 
 		return seed;

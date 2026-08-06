@@ -27,7 +27,7 @@ public class GiantBag : BackpackItem
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Backpacks);
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.drawPlayer.back == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Back))
+			if (drawInfo.drawPlayer.back == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Back) && Texture is not null)
 				DrawSelf(ref drawInfo, Texture.Value, drawInfo.cBack);
 		}
 

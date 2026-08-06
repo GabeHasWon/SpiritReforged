@@ -1,21 +1,17 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.Audio;
-using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-[AutoloadGlowmask("255,255,255", false)]
-public class SaltFireplace : ModTile, IAutoloadTileItem
+public class SaltFireplace : ModTile, ILoadItem
 {
-	private const int fullFrameHeight = 18 * 2;
+	private const int FullFrameHeight = 18 * 2;
 
-	private static bool OnFire(int i, int j) => Main.tile[i, j].TileFrameY < fullFrameHeight;
+	private static bool OnFire(int i, int j) => Main.tile[i, j].TileFrameY < FullFrameHeight;
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltBlockDull>(), 14).AddIngredient(ModContent.ItemType<SaltTorchItem>(), 5).AddTile(TileID.WorkBenches).Register();
 
@@ -28,12 +24,13 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.GetTileData(TileID.Campfire, 0));
 		TileObjectData.newTile.StyleLineSkip = 9;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("ItemName.Campfire"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("ItemName.Campfire"));
 		AdjTiles = [TileID.Fireplace];
 		DustType = -1;
 	}
@@ -67,7 +64,7 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 	public override void HitWire(int i, int j)
 	{
 		TileExtensions.GetTopLeft(ref i, ref j);
-		short frameAdjustment = (short)(!OnFire(i, j) ? -fullFrameHeight : fullFrameHeight);
+		short frameAdjustment = (short)(!OnFire(i, j) ? -FullFrameHeight : FullFrameHeight);
 
 		for (int x = i; x < i + 3; x++)
 		{
@@ -96,13 +93,9 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 	public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 	{
 		if (OnFire(i, j))
-			frameYOffset = Main.tileFrame[type] * fullFrameHeight;
+			frameYOffset = Main.tileFrame[type] * FullFrameHeight;
 		else
 			frameYOffset = 252;
-	}
-
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-	{
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
@@ -111,21 +104,6 @@ public class SaltFireplace : ModTile, IAutoloadTileItem
 		{
 			float pulse = Main.rand.Next(28, 42) * 0.005f + (270 - Main.mouseTextColor) / 700f;
 			(r, g, b) = (0.75f + pulse, 0.75f + pulse, 0.95f + pulse);
-		}
-	}
-
-	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
-	{
-		Tile tile = Main.tile[i, j];
-		if (TileDrawing.IsVisible(tile) && OnFire(i, j))
-		{
-			int addFrameX = 0, addFrameY = 0;
-			TileLoader.SetAnimationFrame(Type, i, j, ref addFrameX, ref addFrameY);
-
-			Rectangle source = new(tile.TileFrameX, tile.TileFrameY + addFrameY, 16, 16);
-			Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
-
-			spriteBatch.Draw(GlowmaskTile.TileIdToGlowmask[Type].Glowmask.Value, position, source, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}
 	}
 }

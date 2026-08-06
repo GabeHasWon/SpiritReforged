@@ -1,9 +1,9 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class BronzePlating : ModTile, IAutoloadTileItem
+public class BronzePlating : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(20).AddRecipeGroup("CopperBars").AddTile(TileID.Anvils).Register();
 
@@ -19,7 +19,6 @@ public class BronzePlating : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(200, 74, 48));
 
 		DustType = DustID.Copper;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 }

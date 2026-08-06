@@ -131,7 +131,7 @@ public class SaltBGStyle : CustomSurfaceBackgroundStyle
 		if ((double)(Main.screenPosition.Y / 16f) < Main.worldSurface + 2.0)
 		{
 			Main.InfoToSetBackColor info = default(Main.InfoToSetBackColor);
-			info.isInGameMenuOrIsServer = Main.gameMenu || Main.netMode == 2;
+			info.isInGameMenuOrIsServer = Main.gameMenu || Main.netMode == NetmodeID.Server;
 			info.CorruptionBiomeInfluence = Main.SceneMetrics.EvilTileCount / (float)SceneMetrics.CorruptionTileMax;
 			info.CrimsonBiomeInfluence = Main.SceneMetrics.BloodTileCount / (float)SceneMetrics.CrimsonTileMax;
 			info.JungleBiomeInfluence = Main.SceneMetrics.JungleTileCount / (float)SceneMetrics.JungleTileMax;

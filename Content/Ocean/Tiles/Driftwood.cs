@@ -3,10 +3,11 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.TileCommon;
 using Terraria.GameContent.ItemDropRules;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class Driftwood : ModTile, IAutoloadTileItem
+public class Driftwood : ModTile, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -20,7 +21,6 @@ public class Driftwood : ModTile, IAutoloadTileItem
 		//Set item StaticDefaults
 		var item = this.AutoItem();
 		Recipes.AddToGroup(RecipeGroupID.Wood, item.type);
-		item.ResearchUnlockCount = 100;
 
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(item.type, 4, 15, 35));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(item.type, 4, 15, 35));

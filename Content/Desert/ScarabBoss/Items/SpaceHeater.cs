@@ -170,7 +170,7 @@ internal class SpaceHeater : ModItem
 		{
 			Point16 topLeft = TileObjectData.TopLeft(i, j);
 
-			if (TileEntity.ByPosition[topLeft] is SpaceHeaterEntity heater)
+			if (TileEntity.ByPosition.TryGetValue(topLeft, out TileEntity te) && te is SpaceHeaterEntity heater)
 				HeaterSystem.HeatEffect = heater.Strength;
 		}
 

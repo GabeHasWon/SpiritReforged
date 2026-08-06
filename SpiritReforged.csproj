@@ -19,11 +19,20 @@
 	<Reference Include="RubbleAutoloader">
 		<HintPath>lib\RubbleAutoloader.dll</HintPath>
 	</Reference>
+	  <Reference Include="TileHelper">
+		  <HintPath>lib\TileHelper.dll</HintPath>
+	  </Reference>
 	<Reference Include="ILLogger">
 		<HintPath>lib\ILLogger.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Localization\ru-RU\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GitInfo" Version="3.6.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 </Project>

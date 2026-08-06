@@ -1,17 +1,17 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
+using TileHelper.Common;
 using static Terraria.GameContent.Drawing.TileDrawing;
 
 namespace SpiritReforged.Content.Forest.Cloud.Tiles;
 
-public class HangingCloudstalk : ModTile, ISwayTile, IAutoloadTileItem
+public class HangingCloudstalk : ModTile, ISwayTile, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(0, 0, 1, 50);
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.PotSuspended)
-		.AddIngredient(ModContent.ItemType<Items.Cloudstalk>()).Register();
+
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.PotSuspended).AddIngredient(ModContent.ItemType<Items.Cloudstalk>()).Register();
 
 	public int Style => (int)TileCounterType.MultiTileVine;
 
@@ -36,8 +36,6 @@ public class HangingCloudstalk : ModTile, ISwayTile, IAutoloadTileItem
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(28, 138, 72));
-		RegisterItemDrop(this.AutoItem().type);
-
 		DustType = -1;
 
 		SpiritClassic.AddItemReplacement("HangingCloudstalk", this.AutoItem().type);

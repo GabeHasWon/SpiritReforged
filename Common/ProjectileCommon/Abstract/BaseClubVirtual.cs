@@ -1,8 +1,7 @@
 using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.Misc;
 using System.IO;
 using Terraria.Audio;
-using Terraria.Graphics.CameraModifiers;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
@@ -40,7 +39,7 @@ public abstract partial class BaseClubProj : ModProjectile
 	/// The percentage value of progress through the default swing the projectile needs to be at in order to collide with tiles. <br />
 	/// Returns 0.25f by default, ie 25% through the swing.
 	/// </summary>
-	public virtual float SwingPhaseThreshold => 0.25f;
+	public virtual float SwingPhaseThreshold => 0.38f;
 
 	/// <summary>
 	/// The percentage value of progress through the default swing the projectile needs to be at to start shrinking and stop colliding with tiles. <br />
@@ -122,8 +121,11 @@ public abstract partial class BaseClubProj : ModProjectile
 				SoundEngine.PlaySound(SoundID.Item70.WithVolumeScale(volume), Projectile.Center);
 				SoundEngine.PlaySound(DefaultSmash.WithVolumeScale(volume), Projectile.Center);
 
-				if (Main.LocalPlayer == owner)
-					Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.screenPosition, Vector2.Normalize(Projectile.oldPosition - Projectile.position), 1 + Charge * 2, 6, (int)(20 * (0.5f + Charge / 2))));
+				if (Main.myPlayer == owner.whoAmI)
+				{
+					var direction = Vector2.Normalize(Projectile.oldPosition - Projectile.position);
+					ScreenshakeHelper.Shake(owner.Center, direction, 1 + Charge * 2, 6, (int)(20 * (0.5f + Charge / 2)));
+				}
 			}
 		}
 

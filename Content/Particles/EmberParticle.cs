@@ -13,6 +13,7 @@ public class EmberParticle : Particle
 	private readonly Color _startColor;
 	private readonly Color _endColor;
 	private ParticleLayer _drawLayer = ParticleLayer.BelowProjectile;
+	private Action<Particle> _extraAction;
 	private readonly Vector2[] oldPositions = [];
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
@@ -21,6 +22,12 @@ public class EmberParticle : Particle
 	public EmberParticle OverrideDrawLayer(ParticleLayer newLayer)
 	{
 		_drawLayer = newLayer;
+		return this;
+	}
+
+	public EmberParticle AddAction(Action<Particle> action)
+	{
+		_extraAction = action;
 		return this;
 	}
 
@@ -56,6 +63,8 @@ public class EmberParticle : Particle
 
 		Velocity = Velocity.RotatedByRandom(0.1f);
 		Velocity *= 0.99f;
+
+		_extraAction?.Invoke(this);
 
 		if (oldPositions.Length != 0)
 		{

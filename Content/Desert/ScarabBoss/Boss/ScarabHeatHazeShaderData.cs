@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Skies;
+using SpiritReforged.Content.Savanna.Biome;
 using Terraria.GameContent.Events;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
@@ -54,20 +55,33 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 		On_Main.DrawSunAndMoon += DrawSunHaze;
 	}
 
+	public static float SunShineMultiplier
+	{
+		get
+		{
+			float sunIntensity = MathF.Min(1, SavannaSky.TimeProgress() * 10f);
+			if (!Main.IsItDay())
+				sunIntensity = 0;
+			sunIntensity *= (1 - Main.cloudAlpha) * 0.8f;
+			return sunIntensity;
+		}
+	}
+
 	private static void DrawSunHaze(On_Main.orig_DrawSunAndMoon orig, Main self, Main.SceneArea sceneArea, Color moonColor, Color sunColor, float tempMushroomInfluence)
 	{
 		orig(self, sceneArea, moonColor, sunColor, tempMushroomInfluence);
 
-		if (Main.remixWorld || !Main.dayTime || heatHazeOpacity <= 0.01f)
+		float sunshineOpacity = SunShineMultiplier;
+		if (Main.remixWorld || sunshineOpacity <= 0 || heatHazeOpacity <= 0.01f)
 			return;
 
 		Texture2D sunTex = TextureAssets.Sun.Value;
 		Vector2 position = SunMoonILEdit.SunDrawData.Position;
 		sunPosition = position;
 
-		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
-		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * 0.2f, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
-		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
+		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * SunShineMultiplier, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1f, 0, 0);
+		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * 0.2f * SunShineMultiplier, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 1.4f, 0, 0);
+		Main.spriteBatch.Draw(sunTex, position, null, (Color.White with { A = 0 }) * heatHazeOpacity * SunShineMultiplier, 0f, sunTex.Size() / 2f, SunMoonILEdit.SunDrawData.Scale * 0.7f, 0, 0);
 	}
 
 	private static void UpdateShaderParameters()
@@ -119,6 +133,10 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 		base.Shader.Parameters["tileTarget"]?.SetValue(Main.instance.tileTarget);
 		base.Shader.Parameters["tileTargetTopLeft"]?.SetValue(tileTargetCorner);
 		base.Shader.Parameters["tileTargetBottomRight"]?.SetValue(tileTargetCorner2);
+
+
+		base.Shader.Parameters["sunIntensity"]?.SetValue(SunShineMultiplier);
+		
 		base.Apply();
 	}
 }

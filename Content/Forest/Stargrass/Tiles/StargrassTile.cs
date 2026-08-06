@@ -3,15 +3,14 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
 public class StargrassTile : GrassTile, ISetConversion
 {
 	public virtual ConversionHandler.Set ConversionSet => new()
@@ -23,10 +22,9 @@ public class StargrassTile : GrassTile, ISetConversion
 		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
 	};
 
-	public static Color Glow(object obj) 
+	public static Color GetGlowColor(int i, int j) 
 	{
-		var pos = (Point)obj;
-		float sine = (float)((Math.Sin(NoiseSystem.Perlin(pos.X * 1.2f, pos.Y * 0.2f) * 3f + Main.GlobalTimeWrappedHourly * 1.3f) + 1f) * 0.5f);
+		float sine = (float)((Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 3f + Main.GlobalTimeWrappedHourly * 1.3f) + 1f) * 0.5f);
 		return Color.White * MathHelper.Lerp(0.2f, 1f, sine);
 	}
 
@@ -39,6 +37,7 @@ public class StargrassTile : GrassTile, ISetConversion
 
 		int mowType = ModContent.TileType<StargrassMowed>();
 		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
 
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
