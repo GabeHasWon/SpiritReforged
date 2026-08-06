@@ -8,7 +8,6 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Content.SaltFlats.Tiles.SaltDebris;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
@@ -154,6 +153,25 @@ public class SilverEstoc : ModItem
 		Item.autoReuse = true;
 		MoRHelper.SetSlashBonus(Item);
 	}
+
+	#region duo
+	public override bool CanRightClick() => Main.mouseItem.type == ((Type == ModContent.ItemType<SilverEstoc>()) ? ModContent.ItemType<TungstenSabre>() : ModContent.ItemType<SilverEstoc>());
+
+	public override void RightClick(Player player)
+	{
+		int prefix = (Item.prefix == 0) ? Main.mouseItem.prefix : Item.prefix;
+
+		Item.ChangeItemType(ModContent.ItemType<EstocSabreDuo>());
+		Item.Prefix(prefix);
+		Item.stack++; //Prevent the item from vanishing
+
+		Main.mouseItem.TurnToAir();
+		Recipe.FindRecipes();
+		SoundEngine.PlaySound(SoundID.ResearchComplete);
+	}
+
+	public override bool ConsumeItem(Player player) => false; //Prevent RightClick from destroying the item
+	#endregion
 
 	public override bool AltFunctionUse(Player player) => true;
 

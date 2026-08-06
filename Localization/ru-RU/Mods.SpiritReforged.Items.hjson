@@ -3222,3 +3222,8 @@ Jian: {
 		<right> to parry, unleashing a flurry of stabs empowered by combo
 		''' */
 }
+
+EstocSabreDuo: {
+	// DisplayName: Sabre & Estoc
+	// Tooltip: ""
+}
