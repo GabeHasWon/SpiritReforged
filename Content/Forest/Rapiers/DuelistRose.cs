@@ -58,6 +58,10 @@ public class DuelistRose : EquippableItem
 		public override void Update(NPC npc, ref int buffIndex) => npc.GetStats().statDefense -= 10;
 	}
 
+	public const float DODGE_BONUS = 0.5f;
+
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(Math.Round(DODGE_BONUS * 100));
+
 	public override void SetDefaults()
 	{
 		Item.width = 32;
@@ -67,7 +71,7 @@ public class DuelistRose : EquippableItem
 		Item.accessory = true;
 	}
 
-	public override void UpdateAccessory(Player player, bool hideVisual) => player.GetModPlayer<FreeDodgePlayer>().freeDodgeTime *= 1.5f;
+	public override void UpdateAccessory(Player player, bool hideVisual) => player.GetModPlayer<FreeDodgePlayer>().freeDodgeTime += DODGE_BONUS;
 
 	/// <summary> Activates the effects of the accessory. Should be placed in a relevant OnHitNPC method. </summary>
 	public static void ApplyEffect(Player player, NPC target, NPC.HitInfo hit)
