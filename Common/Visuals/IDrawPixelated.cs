@@ -57,6 +57,9 @@ public interface IDrawPixelated
 		}
 	}
 
+	/// <summary> Sets the view to <see cref="Matrix.Identity"/> when drawing primitives. </summary>
+	public static bool PrimitiveDrawing { get; set; }
+
 	public void DrawPixelated(SpriteBatch spriteBatch);
 
 	public static void PixelateDrawPosition(ref Vector2 position)
