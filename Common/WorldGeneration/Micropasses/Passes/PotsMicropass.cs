@@ -178,13 +178,13 @@ internal class PotsMicropass : Micropass, IGenerationPage
 			{
 				if (WorldGen.genRand.NextBool())
 				{
-					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next(3));
+					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next(3));
 					return false;
 				}
 			}
 			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
+				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next([3, 4, 5]));
 				return false;
 			}
 		}
@@ -226,7 +226,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 		if (Main.zenithWorld)
 			Generate(CreateZenith, 200, out _, scale: ZenithScale);
 
-		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
+		PotteryTracker.Remaining = (ushort)WorldGen.genRand.Next(pots / 2);
 	}
 
 	public static bool CreateOrnate(int x, int y)
@@ -252,7 +252,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 			return false;
 
 		int type = ModContent.TileType<PotionVats>();
-		var attempt = Placer.Check(x, y, type, style: Main.rand.Next([0, 3, 6])).IsClear().Place().PostPlacement(out VatSlot slot);
+		var attempt = Placer.Check(x, y, type, style: WorldGen.genRand.Next([0, 3, 6])).IsClear().Place().PostPlacement(out VatSlot slot);
 
 		if (attempt.success)
 		{
@@ -481,7 +481,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 		if (wall is WallID.Dirt or WallID.GrassUnsafe || y > Main.worldSurface && y < Main.UnderworldLayer 
 			&& (tile is TileID.Dirt or TileID.Stone or TileID.ClayBlock or TileID.WoodBlock or TileID.Granite || WoodenPlatform(Main.tile[x, y + 1])))
 		{
-			if (Main.rand.NextBool()) //Generate a stack of 3 in a pyramid
+			if (WorldGen.genRand.NextBool()) //Generate a stack of 3 in a pyramid
 			{
 				if (!AreaClear(x - 1, y - 3, 4, 4, true))
 					return false;

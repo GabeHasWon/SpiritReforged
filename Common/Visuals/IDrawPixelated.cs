@@ -15,7 +15,7 @@ public interface IDrawPixelated
 			On_Main.DrawItems += DrawPixelTarget;
 		}
 
-		private static void SetupPixelTarget()
+		private static void SetupPixelTarget() //TODO: DEACTIVATE WHEN NOT IN USE
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;

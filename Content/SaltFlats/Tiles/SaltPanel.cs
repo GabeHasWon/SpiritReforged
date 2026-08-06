@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.SaltFlats.Tiles;
 
 public class SaltPanel : ModTile, ILoadItem
 {
-	public void ItemRecipes(ModItem modItem)
+	public void AddItemRecipes(ModItem modItem)
 	{
 		modItem.CreateRecipe().AddRecipeGroup("Salt").AddTile(TileID.WorkBenches).Register();
 		modItem.CreateRecipe().AddIngredient(AutoContent.ItemType<SaltPlate>()).AddTile(TileID.WorkBenches).Register();

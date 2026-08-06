@@ -99,7 +99,7 @@ Lifesaver: {
 	DisplayName: 救生圈
 	Tooltip:
 		'''
-		召唤可骑行的蝠鲼坐骑
+		召唤一只可骑乘的蝠鲼坐骑
 		蝠鲼不能在陆地上移动，但可以漂浮在液体上
 		'''
 }
@@ -296,7 +296,7 @@ SteamedMussels: {
 
 JellyCandle: {
 	DisplayName: 水母蜡烛
-	Tooltip: 召唤漂浮水母跟着你
+	Tooltip: 召唤一只漂浮水母跟着你
 }
 
 SmallDriftwoodItem: {
@@ -392,7 +392,7 @@ MessageBottle: {
 	DisplayName: 瓶中信
 	Tooltip:
 		'''
-		召唤木筏坐骑
+		召唤一个木筏坐骑
 		在木筏上时增加渔力
 		'''
 }
@@ -430,7 +430,7 @@ KoiTotem: {
 
 FairyWhistle: {
 	DisplayName: 仙灵哨
-	Tooltip: 召唤保护仙灵环绕在你的身边
+	Tooltip: 召唤一个保护仙灵环绕在你的身边
 }
 
 TermiteItem: {
@@ -440,7 +440,7 @@ TermiteItem: {
 
 StarPowder: {
 	DisplayName: 星之尘
-	Tooltip: 扔在草地上，用星光为草地注能！
+	Tooltip: 扔在草地上，用星光灌注草地！
 }
 
 TermiteJar: {
@@ -452,7 +452,7 @@ ButterflyStaff: {
 	DisplayName: 缥缈幻蝶杖
 	Tooltip:
 		'''
-		召唤魔法幻蝶为你而战
+		召唤一只魔法幻蝶为你而战
 		“由完美的樱花形成”
 		'''
 }
@@ -469,7 +469,7 @@ PoolNoodle: {
 
 ToucaneItem: {
 	DisplayName: 巨嘴鸟手杖
-	Tooltip: 召唤愤怒的巨嘴鸟为你而战
+	Tooltip: 召唤一只愤怒的巨嘴鸟为你而战
 }
 
 QuenchPotion: {
@@ -499,7 +499,7 @@ LivingBaobabWand: {
 
 WrithingSticks: {
 	DisplayName: 扭形枝
-	Tooltip: 召唤友善的风滚草跟着你
+	Tooltip: 召唤一个友善的风滚草跟着你
 }
 
 BaobabFruit: {
@@ -1308,7 +1308,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
 
 OceanDepthsBoxItem: {
-	DisplayName: 八音盒（海洋深处）
+	DisplayName: 八音盒（深海）
 	Tooltip: ""
 }
 
@@ -1412,7 +1412,7 @@ MudBombSticky: {
 }
 
 HideTunic: {
-	DisplayName: 隐匿束腰外衣
+	DisplayName: 皮制束腰外衣
 	Tooltip: 增加25%近战大小和击退
 }
 
@@ -1620,7 +1620,7 @@ BombCannon: {
 	Tooltip:
 		'''
 		使用炸弹作为弹药
-		大炮发射的炸弹不会破坏五块
+		大炮发射的炸弹不会破坏物块
 		“一项开创性的发明”
 		'''
 }
@@ -1840,7 +1840,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: 八音盒（魂灵主界面）
+	DisplayName: 八音盒（魂灵标题）
 	Tooltip: ""
 }
 
@@ -2654,7 +2654,7 @@ TinyDragon: {
 	DisplayName: 小龙
 	Tooltip:
 		'''
-		召唤小龙跟着你
+		召唤一只小龙跟着你
 		“最后的同类”
 		'''
 }
@@ -2785,12 +2785,12 @@ SaltCrateHardmode: {
 }
 
 SaltCrateRestored: {
-	DisplayName: 修复的盐腌匣
+	DisplayName: 复原的盐腌匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
-	DisplayName: 修复的盐水匣
+	DisplayName: 复原的盐水匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 

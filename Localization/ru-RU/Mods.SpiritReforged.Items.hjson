@@ -305,17 +305,17 @@ JellyCandle: {
 
 SmallDriftwoodItem: {
 	DisplayName: Маленькая коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 MediumDriftwoodItem: {
 	DisplayName: Средняя коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 LargeDriftwoodItem: {
 	DisplayName: Большая коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 DriftwoodChestplate: {
@@ -467,7 +467,7 @@ PoolNoodle: {
 		'''
 		3 ед. урона от метки призывателя
 		{$CommonItemTooltip.Whips}
-		Атаки миньонов по отмеченным врага создают взрывы пузырей
+		Атаки миньонов по отмеченным врагам создают взрывы пузырей
 		'''
 }
 
@@ -536,7 +536,7 @@ CustardApple: {
 }
 
 BeachUmbrellaItem: {
-	DisplayName: Пляжный зонт
+	DisplayName: Пляжный зонтик
 	Tooltip: ""
 }
 
@@ -876,7 +876,7 @@ BikiniTop: {
 
 SwimmingTrunks: {
 	DisplayName: Плавки
-	Tooltip: «Хотя они особо не защищают, они, определённо, выглядят стильно»
+	Tooltip: «Хоть они особо не защищают, выглядят они, безусловно, очень стильно»
 }
 
 TintedGlasses: {
@@ -1009,7 +1009,7 @@ GildedScarab: {
 	DisplayName: Позолоченный скарабей
 	Tooltip:
 		'''
-		Увеличивает защиту после получения урона
+		Ненадолго увеличивает защиту после получения урона
 		Чем больше урона было получено, тем выше будет бонус к защите
 		'''
 }
@@ -1036,17 +1036,17 @@ SafekeeperRing: {
 PeevedTumblerBannerItem.DisplayName: Знамя раздражённого перекати-поля
 
 LeatherHood: {
-	DisplayName: Капюшон застрельщика
+	DisplayName: Капюшон меткого стрелка
 	Tooltip: Увеличивает шанс критического удара на 5%
 }
 
 LeatherLegs: {
-	DisplayName: Ботинки застрельщика
+	DisplayName: Ботинки меткого стрелка
 	Tooltip: ""
 }
 
 LeatherPlate: {
-	DisplayName: Нагрудник застрельщика
+	DisplayName: Куртка меткого стрелка
 	Tooltip: ""
 }
 
@@ -1054,9 +1054,9 @@ ExplorerTreadsItem: {
 	DisplayName: Ботинки исследователя
 	Tooltip:
 		'''
-		Даёт 50% шанс уклониться от урона ловушки
+		Даёт 50% шанс избежать урона от ловушки
 		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
-		«С такими ботинками даже исследование храмов превращаются в обычную прогулку»
+		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
 
@@ -1099,7 +1099,7 @@ DriftwoodFenceItem: {
 }
 
 ArcaneNecklaceGold: {
-	DisplayName: Арканное ожерелье
+	DisplayName: Мистическое ожерелье
 	Tooltip:
 		'''
 		Увеличивает максимальный запас маны на 20 ед.
@@ -1756,7 +1756,7 @@ BassSlapper: {
 
 Shockhammer: {
 	DisplayName: Ударный молот
-	Tooltip: При полном заряде выпускает ударную волну, протягивающуюся по земле
+	Tooltip: При полном заряде создаёт ударную волну, протягивающуюся по земле
 }
 
 Bowlder: {
@@ -1956,17 +1956,17 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-	DisplayName: Древний капюшон застрельщика
+	DisplayName: Древний капюшон меткого стрелка
 	Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	DisplayName: Древние ботинки застрельщика
+	DisplayName: Древние ботинки меткого стрелка
 	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	DisplayName: Древний нагрудник застрельщика
+	DisplayName: Древняя куртка меткого стрелка
 	Tooltip: ""
 }
 
@@ -2299,8 +2299,8 @@ SleightOfHand: {
 	DisplayName: Ловкость рук
 	Tooltip:
 		'''
-		Дважды нажмите клавишу {0}, держа стрелковое оружие, чтобы сменить используемые боеприпасы
-		Работает даже в инвентаре
+		Позволяет менять используемые боеприпасы двойным нажатием клавиши {0}, если у вас в руках есть стрелковое оружие
+		Работает даже находясь в инвентаре
 		'''
 }
 
@@ -2311,12 +2311,12 @@ RuinedSandstonePillarItem: {
 
 GlidingItem: {
 	DisplayName: Картина «Планирование»
-	Tooltip: «Тикс Э. Лун»
+	Tooltip: «Тикс А. Лун»
 }
 
 ViciousFlamingoItem: {
 	DisplayName: Картина «Свирепый фламинго»
-	Tooltip: «Тикс Э. Лун»
+	Tooltip: «Тикс А. Лун»
 }
 
 SaltWallItem: {
@@ -2550,7 +2550,7 @@ MahakalaMaskRed: {
 }
 
 RedSandstoneSlabItem: {
-	DisplayName: Красная песчаниковая плитка
+	DisplayName: Красная песчаниковая плита
 	Tooltip: ""
 }
 
@@ -2560,7 +2560,7 @@ CenserItem: {
 }
 
 CarvedLapisWallItem: {
-	DisplayName: Стена из резного лазурита
+	DisplayName: Резная лазуритовая стена
 	Tooltip: ""
 }
 
@@ -2734,7 +2734,7 @@ ScarabAltarItem: {
 }
 
 RedSandstoneBrickCrackedWallItem: {
-	DisplayName: Стена из потрескавшегося красного песчаникового кирпича
+	DisplayName: Потрескавшаяся стена из красного песчаникового кирпича
 	Tooltip: ""
 }
 
@@ -2754,7 +2754,7 @@ SaltPanelWallItem: {
 }
 
 SaltPlateWallItem: {
-	DisplayName: Стена из соляной плитки
+	DisplayName: Стена из соляной пластины
 	Tooltip: ""
 }
 
@@ -2774,7 +2774,7 @@ SaltPanelItem: {
 }
 
 SaltPlateItem: {
-	DisplayName: Соляная плитка
+	DisplayName: Соляная пластина
 	Tooltip: ""
 }
 
@@ -2880,7 +2880,7 @@ FlagRingItem: {
 }
 
 CobbledBrickWallItem: {
-	DisplayName: Стена из мощёного кирпича
+	DisplayName: Мощёная кирпичная стена
 	Tooltip: ""
 }
 
@@ -2965,7 +2965,7 @@ CarrotCake: {
 }
 
 AvianRitualMask: {
-	DisplayName: Ритуальная маска птаха
+	DisplayName: Ритуальная маска птицы
 	Tooltip: ""
 }
 
@@ -2975,7 +2975,7 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	DisplayName: Злачёный большой лук
+	DisplayName: Золочёный большой лук
 	Tooltip:
 		'''
 		Зарядите, чтобы совершить усиленный выстрел

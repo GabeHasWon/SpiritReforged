@@ -139,7 +139,7 @@ internal class FishingAreaMicropass : Micropass, IGenerationPage
 
 		void Add(int type, int stack = 1, int chanceDenominator = 1)
 		{
-			if (chanceDenominator < 2 || Main.rand.NextBool(chanceDenominator))
+			if (chanceDenominator < 2 || WorldGen.genRand.NextBool(chanceDenominator))
 			{
 				if (items.IndexOf(items.FirstOrDefault(x => x.type == type)) is int index && index != -1)
 					items[index].stack += stack; //If the item type already exists in the pool, stack it instead

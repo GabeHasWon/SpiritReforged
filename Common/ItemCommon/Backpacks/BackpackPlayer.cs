@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
@@ -32,6 +33,113 @@ internal class BackpackPlayer : ModPlayer
 	{
 		On_Player.QuickBuff_PickBestFoodItem += SelectFoodFromPack;
 		On_Player.QuickHeal_GetItemToUse += SelectHealingFromPack;
+		On_Player.TakeUnityPotion += CheckBackpacksForWormholePot;
+		On_Player.HasUnityPotion += AddUnityPotionCheck;
+		On_Player.QuickBuff += On_Player_QuickBuff;
+	}
+
+	private bool AddUnityPotionCheck(On_Player.orig_HasUnityPotion orig, Player self)
+	{
+		if (orig(self))
+			return true;
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+			foreach (Item item in i.items)
+				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
+					return true;
+
+		return false;
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "QuickBuff_ShouldBotherUsingThisBuff")]
+	public static extern bool QuickBuff_ShouldBotherUsingThisBuff(Player player, int attemptedType);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_CheckCanUse")]
+	public static extern bool ItemCheck_CheckCanUse(Player player, Item item);
+
+	private void On_Player_QuickBuff(On_Player.orig_QuickBuff orig, Player self)
+	{
+		orig(self);
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			foreach (Item item in i.items)
+			{
+				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
+					continue;
+
+				bool canUse = CombinedHooks.CanUseItem(self, item) && QuickBuff_ShouldBotherUsingThisBuff(self, item.buffType);
+
+				if (item.mana > 0 && canUse)
+				{
+					if (self.CheckMana(item, -1, pay: true, blockQuickMana: true))
+						self.manaRegenDelay = (int)self.maxRegenDelay;
+					else
+						canUse = false;
+				}
+
+				if (self.whoAmI == Main.myPlayer && item.type == ItemID.Carrot && !Main.runningCollectorsEdition)
+					canUse = false;
+
+				int buffType = item.buffType;
+
+				if (item.buffType == BuffID.FairyBlue)
+				{
+					buffType = Main.rand.Next(3);
+
+					if (buffType == 0)
+						buffType = 27;
+					else if (buffType == 1)
+						buffType = 101;
+					else
+						buffType = 102;
+				}
+
+				if (!canUse)
+					continue;
+
+				ItemLoader.UseItem(item, self);
+				
+				int buffTime = item.buffTime;
+
+				if (buffTime == 0)
+					buffTime = 3600;
+				
+				self.AddBuff(buffType, buffTime);
+
+				if (item.consumable && ItemLoader.ConsumeItem(item, self))
+				{
+					item.stack--;
+					if (item.stack <= 0)
+						item.TurnToAir();
+				}
+
+				if (self.CountBuffs() == Player.MaxBuffs)
+					break;
+			}
+		}
+	}
+
+	private void CheckBackpacksForWormholePot(On_Player.orig_TakeUnityPotion orig, Player self)
+	{
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			foreach (Item item in i.items)
+			{
+				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
+				{
+					if (ItemLoader.ConsumeItem(item, self))
+						item.stack--;
+
+					if (item.stack <= 0)
+						item.SetDefaults();
+
+					return;
+				}
+			}
+		}
+
+		orig(self);
 	}
 
 	private static Item SelectFoodFromPack(On_Player.orig_QuickBuff_PickBestFoodItem orig, Player self)

@@ -85,7 +85,8 @@ public class EnlilStatue : ModTile, ILoadItem
 
 		return true;
 	}
-	public void StaticItemDefaults()
+
+	void ILoadItem.SetItemStaticDefaults(ModItem item)
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.CatBast;
 		ItemID.Sets.ShimmerTransformToItem[ItemID.CatBast] = Type;
