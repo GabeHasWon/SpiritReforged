@@ -236,26 +236,29 @@ public class RotDebuff : ModBuff
 
 		foreach (NPC npc in possibleVectors)
 		{
-			bool hasBuff = npc.HasBuff(buffType);
-
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-				npc.AddBuff(buffType, 180); //Prevent potential redundant application
-
-			if (Main.dedServ || hasBuff)
-				continue;
-
-			SoundEngine.PlaySound(RotGlyph.BlightImpact, npc.Center);
-			Vector2 center = npc.Center;
-
-			for (int i = 0; i < 8; i++)
+			if (npc != null)
 			{
-				ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+				bool hasBuff = npc.HasBuff(buffType);
 
-				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
-				{ Layer = ParticleLayer.BelowNPC });
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+					npc.AddBuff(buffType, 180); //Prevent potential redundant application
 
-				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
-				{ Layer = ParticleLayer.BelowNPC });
+				if (Main.dedServ || hasBuff)
+					continue;
+
+				SoundEngine.PlaySound(RotGlyph.BlightImpact, npc.Center);
+				Vector2 center = npc.Center;
+
+				for (int i = 0; i < 8; i++)
+				{
+					ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
+					{ Layer = ParticleLayer.BelowNPC });
+
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
+					{ Layer = ParticleLayer.BelowNPC });
+				}
 			}
 		}
 
