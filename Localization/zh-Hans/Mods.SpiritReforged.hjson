@@ -114,7 +114,9 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
+DamageClasses: {
+	// HybridDamageClass.DisplayName: Hybrid Damage Class
+	// GreatshieldClass.DisplayName: Greatshield Class
+}
 
 // GreatshieldClass_Class.DisplayName: greatshieldclass damage
-// DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

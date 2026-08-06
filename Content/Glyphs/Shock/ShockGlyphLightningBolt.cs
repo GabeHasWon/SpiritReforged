@@ -304,7 +304,7 @@ public partial class ShockGlyph
 					if (Dying)
 						trail.Opacity = Projectile.timeLeft / 200f;
 
-					trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+					trail?.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 				}
 		}
 

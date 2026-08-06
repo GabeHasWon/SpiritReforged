@@ -3388,7 +3388,11 @@ SharpeningStone: {
 
 Cinderbrand: {
 	DisplayName: Cinderbrand
-	Tooltip: ""
+	Tooltip:
+		'''
+		Sweetspot hits deal critical damage
+		<right> to parry, releasing a powerful wave of fire
+		'''
 }
 
 DuelistRose: {
