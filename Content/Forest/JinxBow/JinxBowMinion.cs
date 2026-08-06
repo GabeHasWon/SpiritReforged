@@ -43,6 +43,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
 		ProjectileID.Sets.TrailingMode[Type] = 0;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void AbstractSetDefaults() => Projectile.minionSlots = 0f;

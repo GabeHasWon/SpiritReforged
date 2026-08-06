@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: Nas Salinas
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
+	// InSpace: In Space
 }
 
 Misc: {
@@ -32,6 +33,11 @@ Misc: {
 		Move: Mover Alfinete
 		Obtained: Você já possui este alfinete
 		UseItem: Clique direito para adicionar este alfinete à sua coleção
+	}
+
+	Enchantment: {
+		// PlaceToEnchant: Place an item here to enchant
+		// Enchant: Enchant
 	}
 
 	NoStock: Fora de estoque
@@ -75,6 +81,7 @@ GameTips: {
 Emotes: {
 	CartographerEmote.Command: cartografo
 	HikerEmote.Command: caminhante
+	// EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -106,6 +113,8 @@ EcotoneEdges: {
 	Savanna: "{$Ecotones.SavannaEcotone}"
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
+
+// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
 
 // GreatshieldClass_Class.DisplayName: greatshieldclass damage
 // DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

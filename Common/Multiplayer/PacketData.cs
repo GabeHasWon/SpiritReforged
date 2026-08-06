@@ -15,7 +15,7 @@ internal abstract class PacketData
 	/// <summary> This must be called after creating a new packet instance in order for it to be sent. </summary>
 	public void Send(int toClient = -1, int ignoreClient = -1)
 	{
-		byte id = MultiplayerHandler.PacketTypes.Where(x => x.Value.GetType() == GetType()).First().Key;
+		byte id = MultiplayerLoader.PacketTypes.Where(x => x.Value.GetType() == GetType()).First().Key;
 
 		var packet = SpiritReforgedMod.Instance.GetPacket();
 		packet.Write(id);

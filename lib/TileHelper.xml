@@ -130,12 +130,12 @@
             <summary> Provides a selection of tile related helper methods. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.GetTopLeft(System.Int32,System.Int32)">
-            <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>. </summary>
+            <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>, and <see cref="M:Terraria.ObjectData.TileObjectData.TopLeft(System.Int32,System.Int32)"/>. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.TryGetBlockItem(Terraria.ModLoader.ModBlockType,Terraria.ModLoader.ModItem@)">
             <summary> Safely gets the <see cref="T:Terraria.ModLoader.ModItem"/> associated with the provided <paramref name="blockType"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.Helpers.GetTileOffset(System.Int32,System.Int32)">
+        <member name="M:TileHelper.Common.Helpers.GetTilePosition(System.Int32,System.Int32)">
             <summary> Gets the draw position of the tile at the provided coordinates. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.RequestGlowmask(Terraria.ModLoader.ModTexturedType,TileHelper.Common.GlowmaskTile.CoordinateColor)">

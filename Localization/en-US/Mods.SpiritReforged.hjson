@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: In Salt Flats
 	IsPrickly: When prickly
 	InZiggurat: In the Ziggurat
+	InSpace: In Space
 }
 
 Misc: {
@@ -32,6 +33,11 @@ Misc: {
 		Move: Move Pin
 		Obtained: You already own this pin
 		UseItem: Right click to add this pin to your collection
+	}
+
+	Enchantment: {
+		PlaceToEnchant: Place an item here to enchant
+		Enchant: Enchant
 	}
 
 	NoStock: Out of stock
@@ -75,6 +81,7 @@ GameTips: {
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
+	EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -106,6 +113,8 @@ EcotoneEdges: {
 	Savanna: "{$Ecotones.SavannaEcotone}"
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
+
+DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
 
 GreatshieldClass_Class.DisplayName: greatshieldclass damage
 DamageClasses.GreatshieldClass.DisplayName: Greatshield Class

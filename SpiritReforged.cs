@@ -55,5 +55,5 @@ public partial class SpiritReforgedMod : Mod
 		Main.spriteBatch.End();
 	}
 
-	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerHandler.HandlePacket(reader, whoAmI);
+	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerLoader.HandlePacket(reader, whoAmI);
 }

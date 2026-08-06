@@ -4,6 +4,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Content.Forest.Cloud.Items;
+using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
@@ -413,6 +414,7 @@ public class BiomePots : PotTile, ILootable
 
 		loot.AddOneFromOptions(32, [.. flasks]);
 		loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.Multiplayer), ItemID.WormholePotion, 30));
+		loot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<PrefixVoucher>(), 30, 25));
 
 		int type = style switch
 		{
@@ -430,6 +432,8 @@ public class BiomePots : PotTile, ILootable
 				loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.DownedSkeletron), ItemID.Bone, 2, 10, 15));
 			if (style is Style.Granite)
 				loot.AddCommon(ItemID.Geode, 3);
+			if (style is Style.Desert)
+				loot.AddCommon(ItemID.FossilOre, 6, 4, 10);
 			else
 				loot.AddCommon(type, 2, 10, 15);
 		}

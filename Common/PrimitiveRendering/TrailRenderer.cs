@@ -22,7 +22,7 @@ public class TrailRenderer<T> where T : BaseTrail
 	public virtual void Draw(SpriteBatch spriteBatch)
 	{
 		foreach (BaseTrail trail in Trails)
-			trail.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+			trail.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 	}
 }
 
@@ -33,6 +33,11 @@ public sealed class ProjectileTrailRenderer : TrailRenderer<BaseTrail>
 
 	public void CreateTrail(Projectile projectile, BaseTrail trail)
 	{
+#if !DEBUG
+		if (Main.gameMenu)
+			return;
+#endif
+
 		Trails.Add(trail);
 		_trailSettings.Add(new(projectile));
 	}

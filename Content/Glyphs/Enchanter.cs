@@ -1,0 +1,281 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.UI.Enchantment;
+using SpiritReforged.Common.UI.System;
+using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Content.Glyphs.CharmcasterSet;
+using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
+using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.Events;
+using Terraria.GameContent.Personalities;
+using Terraria.ModLoader.IO;
+using Terraria.Utilities;
+
+namespace SpiritReforged.Content.Glyphs;
+
+[AutoloadHead]
+public class Enchanter : ModNPC
+{
+	/// <summary> Used to track whether <see cref="Enchanter"/> has spawned previously in this world. Not useable on multiplayer clients. </summary>
+	public sealed class EnchanterSystem : ModSystem
+	{
+		public bool enchanterSpawned;
+
+		public override void ClearWorld() => enchanterSpawned = false;
+
+		public override void SaveWorldData(TagCompound tag) => tag[nameof(enchanterSpawned)] = enchanterSpawned;
+		public override void LoadWorldData(TagCompound tag) => enchanterSpawned = tag.GetBool(nameof(enchanterSpawned));
+	}
+
+	/// <summary> Stores a shop value by item type. </summary>
+	public static readonly Dictionary<int, int> SpecialShop = [];
+
+	private static readonly Vector2[] TailOrigin = [
+		new(54, 32),
+		new(60, 34),
+		new(58, 28),
+		new(54, 32),
+		new(52, 32),
+		new(50, 32),
+		new(50, 32),
+		new(52, 32),
+		new(54, 32),
+		new(54, 32),
+		new(54, 32),
+		new(52, 32),
+		new(50, 32),
+		new(50, 32),
+		new(50, 32),
+		new(52, 32),
+		new(54, 32),
+		new(54, 32),
+		new(50, 30),
+		new(54, 32),
+		new(54, 32),
+		new(52, 32),
+		new(52, 32),
+		new(54, 32),
+		new(54, 32),
+		new(52, 32),
+	];
+
+	private static Profiles.StackedNPCProfile NPCProfile;
+
+	public override void Load() => Mod.AddNPCHeadTexture(Type, Texture + "_Shimmer_Head");
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		Main.npcFrameCount[Type] = 26;
+
+		NPCID.Sets.ExtraFramesCount[Type] = 6;
+		NPCID.Sets.AttackFrameCount[Type] = 4;
+		NPCID.Sets.DangerDetectRange[Type] = 600;
+		NPCID.Sets.AttackType[Type] = 2;
+		NPCID.Sets.AttackTime[Type] = 30;
+		NPCID.Sets.MagicAuraColor[Type] = Color.Goldenrod;
+		NPCID.Sets.HatOffsetY[Type] = 2;
+		NPCID.Sets.IsTownChild[Type] = true;
+		NPCID.Sets.ShimmerTownTransform[Type] = true;
+
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		});
+
+		NPCProfile = new Profiles.StackedNPCProfile(
+			new Profiles.DefaultNPCProfile(Texture, NPCHeadLoader.GetHeadSlot(HeadTexture)),
+			new Profiles.DefaultNPCProfile(Texture + "_Shimmer", NPCHeadLoader.GetHeadSlot(Texture + "_Shimmer_Head"))
+		);
+
+		NPC.Happiness
+			.SetNPCAffection(NPCID.Wizard, AffectionLevel.Love)
+			.SetNPCAffection(NPCID.PartyGirl, AffectionLevel.Like)
+			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Dislike)
+			.SetBiomeAffection<SkyShoppingBiome>(AffectionLevel.Like)
+			.SetBiomeAffection<JungleBiome>(AffectionLevel.Dislike);
+	}
+
+	public override void SetDefaults()
+	{
+		NPC.CloneDefaults(NPCID.Merchant);
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = SoundID.DD2_WyvernDiveDown;
+		NPC.Size = new Vector2(30, 40);
+
+		AnimationType = NPCID.Guide;
+		NPCID.Sets.MagicAuraColor[Type] = Main.hardMode ? Color.Purple : Color.Goldenrod;
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sky");
+
+	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
+
+	public override bool CanTownNPCSpawn(int numTownNPCs)
+	{
+		if (ModContent.GetInstance<EnchanterSystem>().enchanterSpawned || NPC.downedSlimeKing || NPC.downedBoss1 || Main.hardMode) //Has downed a boss or has spawned previously
+			return true;
+
+		foreach (Player player in Main.ActivePlayers)
+			foreach (Item item in player.inventory)
+				if (!item.IsAir && (item.type == ModContent.ItemType<ChromaticWax>() || item.GetGlyph() != default)) //The item is Chromatic Wax or has an enchantment
+					return true;
+
+		return false;
+	}
+
+	public override void OnSpawn(IEntitySource source) => ModContent.GetInstance<EnchanterSystem>().enchanterSpawned = true;
+
+	public override List<string> SetNPCNameList()
+	{
+		List<string> names = [];
+
+		for (int i = 0; i < 6; ++i)
+			names.Add(Language.GetTextValue("Mods.SpiritReforged.NPCs.Enchanter.Names." + i));
+
+		return names;
+	}
+
+	public override void SetChatButtons(ref string button, ref string button2)
+	{
+		button = Language.GetTextValue("LegacyInterface.28");
+		button2 = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+	}
+
+	public override string GetChat()
+	{
+		WeightedRandom<string> options = new();
+
+		for (int i = 0; i < 3; ++i)
+			options.Add(this.GetLocalizedValue("Dialogue.Idle." + i));
+
+		if (!Main.dayTime)
+		{
+			for (int i = 0; i < 3; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.IdleNight." + i));
+		}
+
+		if (Main.bloodMoon)
+		{
+			for (int i = 0; i < 2; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.BloodMoon." + i), 1.2f);
+		}
+
+		if (BirthdayParty.PartyIsUp)
+			options.Add(this.GetLocalizedValue("Dialogue.Party"), 1.2f);
+
+		if (NPC.FindFirstNPC(NPCID.GoblinTinkerer) is { } ind and not -1)
+			options.Add(this.GetLocalization("Dialogue.Goblin").Format(Main.npc[ind].GivenName));
+
+		if (NPC.FindFirstNPC(NPCID.Golfer) is { } ind2 and not -1)
+			options.Add(this.GetLocalization("Dialogue.Golfer").Format(Main.npc[ind2].GivenName));
+
+		return options.Get();
+	}
+
+	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
+	{
+		if (firstButton)
+			shopName = "Shop";
+		else
+		{
+			Main.playerInventory = true;
+			UISystem.SetActive<EnchanterUI>();
+		}
+	}
+
+	public override void AddShops() => new NPCShop(Type)
+		.Add<EnchantedStamp>()
+		.Add<Flarepowder>(Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add<VexpowderBlue>(Condition.CorruptWorld, Condition.BloodMoonOrHardmode)
+		.Add<VexpowderRed>(Condition.CrimsonWorld, Condition.BloodMoonOrHardmode)
+		.Add(ItemID.PeaceCandle, Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add(ItemID.WaterCandle, Condition.NotBloodMoon, Condition.Hardmode)
+		.Add(ItemID.ShadowCandle, Condition.BloodMoon)
+		.Add<CharmcasterHat>()
+		.Add<CharmcasterRobe>()
+		.Add<CharmcasterLeggings>()
+		.Add(AutoContent.ItemType<WaxBlock>())
+		.Add(AutoContent.ItemType<Candlewick>())
+		.Register();
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		if (!Main.dedServ && NPC.life <= 0)
+			for (int i = 0; i < 10; i++)
+				ParticleHandler.SpawnParticle(new CartoonSmoke(Main.rand.NextVector2FromRectangle(NPC.Hitbox), 30, 1, Main.rand.NextVector2Circular(2, 2)));
+
+		for (int d = 0; d < 8; d++)
+			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));
+	}
+
+	public override void FindFrame(int frameHeight)
+	{
+		if (Main.dedServ)
+			return;
+
+		NPC.frame.Height = frameHeight = 56;
+
+		Texture2D texture = TextureAssets.Npc[Type].Value;
+		Rectangle fallFrame = texture.Frame(1, Main.npcFrameCount[Type], 0, 2, 0, -2);
+		bool falling = NPC.velocity.Y > 0;
+
+		if (falling)
+			NPC.frame = fallFrame;
+		else if (NPC.frame == fallFrame)
+			NPC.frame.Y += frameHeight; //Forcefully skip `fallFrame` during the walk cycle
+
+		if (NPC.ai[0] == 14) //Start a custom attacking animation
+		{
+			int frameY = (int)MathHelper.Lerp(21, 25, 1f - NPC.ai[1] / NPCID.Sets.AttackTime[Type]);
+			NPC.frame = texture.Frame(1, Main.npcFrameCount[Type], 0, frameY, 0, -2);
+		}
+	}
+
+	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D npcTexture = TextureAssets.Npc[Type].Value;
+		Texture2D flameTexture = TextureAssets.Flames[0].Value;
+
+		Rectangle npcSource = NPC.frame;
+		Rectangle flameSource = new(22, 0, 22, 22);
+
+		int frame = NPC.frame.Y / (npcTexture.Height / Main.npcFrameCount[Type]);
+		Vector2 offset = frame >= 0 && frame < TailOrigin.Length ? TailOrigin[frame] : TailOrigin[0];
+
+		for (int i = 0; i < 3; i++)
+		{
+			Vector2 position = NPC.Center - npcSource.Size() / 2 - screenPos + new Vector2(NPC.spriteDirection == 1 ? npcSource.Width - offset.X : offset.X, offset.Y + NPC.gfxOffY) + Main.rand.NextVector2Circular(2, 2);
+			Main.EntitySpriteDraw(flameTexture, position, flameSource, NPC.DrawColor(Color.White.Additive()), NPC.rotation, flameSource.Size() / 2, NPC.scale, 0);
+		}
+	}
+
+	#region attack
+	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown) => cooldown = randExtraCooldown = 0;
+
+	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
+	{
+		projType = Main.hardMode ? ModContent.ProjectileType<VexpowderBlueDust>() : ModContent.ProjectileType<FlarepowderDust>();
+		attackDelay = NPCID.Sets.AttackTime[Type] / 2;
+	}
+
+	public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
+	{
+		multiplier = 5;
+		randomOffset = 1.2f;
+	}
+
+	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
+	{
+		damage = 15;
+		knockback = 1.5f;
+	}
+
+	public override void TownNPCAttackMagic(ref float auraLightMultiplier) => base.TownNPCAttackMagic(ref auraLightMultiplier);
+	#endregion
+}

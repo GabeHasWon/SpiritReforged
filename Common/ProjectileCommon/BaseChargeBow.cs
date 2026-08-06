@@ -22,6 +22,8 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	protected bool _fired = false;
 	protected Vector2 _direction = Vector2.Zero;
 
+	public sealed override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 	public sealed override void SetDefaults()
 	{
 		Projectile.hostile = false;
