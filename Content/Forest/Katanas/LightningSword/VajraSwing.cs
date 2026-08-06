@@ -283,6 +283,8 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 			spriteBatch.Draw(bloom, position, null, Color.White.Additive() * opacity, 0, bloom.Size() / 2, 0.05f, 0, 0);
 		}
 
+		IDrawPixelated.PrimitiveDrawing = true;
 		_noiseCone?.CustomDraw(spriteBatch);
+		IDrawPixelated.PrimitiveDrawing = false;
 	}
 }

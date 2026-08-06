@@ -43,8 +43,8 @@ internal class BackpackPlayer : ModPlayer
 		if (orig(self))
 			return true;
 
-		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
-			foreach (Item item in i.items)
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem backpackItem)
+			foreach (Item item in backpackItem.Items)
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 					return true;
 
@@ -61,9 +61,9 @@ internal class BackpackPlayer : ModPlayer
 	{
 		orig(self);
 
-		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem backpackItem)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in backpackItem.Items)
 			{
 				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
 					continue;
@@ -122,9 +122,9 @@ internal class BackpackPlayer : ModPlayer
 
 	private void CheckBackpacksForWormholePot(On_Player.orig_TakeUnityPotion orig, Player self)
 	{
-		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem backpackItem)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in backpackItem.Items)
 			{
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 				{

@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Visuals.RenderTargets;
+﻿using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -57,6 +56,9 @@ public interface IDrawPixelated
 			orig(self);
 		}
 	}
+
+	/// <summary> Sets the view to <see cref="Matrix.Identity"/> when drawing primitives. </summary>
+	public static bool PrimitiveDrawing { get; set; }
 
 	public void DrawPixelated(SpriteBatch spriteBatch);
 

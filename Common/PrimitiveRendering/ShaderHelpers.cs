@@ -1,22 +1,20 @@
-using Terraria;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.PrimitiveRendering;
 
-    static partial class ShaderHelpers
-    {
-       public static bool HasParameter(this Effect effect, string parameterName)
-        {
-            foreach (EffectParameter parameter in effect.Parameters)
-            {
-                if (parameter.Name == parameterName)
-                {
-                    return true;
-                }
-            }
+static partial class ShaderHelpers
+{
+	public static bool HasParameter(this Effect effect, string parameterName)
+	{
+		foreach (EffectParameter parameter in effect.Parameters)
+		{
+			if (parameter.Name == parameterName)
+			{
+				return true;
+			}
+		}
 
-            return false;
+		return false;
 	}
 
 	public static void SetBasicEffectMatrices(ref BasicEffect effect)
@@ -37,9 +35,11 @@ namespace SpiritReforged.Common.PrimitiveRendering;
 
 	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false)
 	{
-		view = Main.GameViewMatrix.TransformationMatrix;
-		if (useUiMatrix)
-			view = Main.UIScaleMatrix;
+		view = useUiMatrix ? Main.UIScaleMatrix : Main.GameViewMatrix.TransformationMatrix;
+
+		if (IDrawPixelated.PrimitiveDrawing)
+			view = Matrix.Identity;
+
 		GetProjection(out projection);
 	}
 
