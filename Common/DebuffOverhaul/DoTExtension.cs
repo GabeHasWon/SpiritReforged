@@ -52,6 +52,8 @@ public abstract class DoTExtension : BuffExtension
 		}
 
 		NPC.lifeRegen -= (int)(damagePerSecond * 2);
+
+		_timeActive++;
 		Settings.ScalingBehaviour?.Invoke();
 	}
 
