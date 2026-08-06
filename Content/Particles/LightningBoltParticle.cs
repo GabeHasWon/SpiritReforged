@@ -143,7 +143,7 @@ public class LightningBoltParticle : Particle
 			foreach (VertexTrail trail in _trails)
 			{
 				trail.Opacity = EaseBuilder.EaseCircularInOut.Ease(1f - Progress);
-				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+				trail?.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 			}
 		}
 	}
