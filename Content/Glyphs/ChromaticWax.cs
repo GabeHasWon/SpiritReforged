@@ -34,7 +34,13 @@ public class ChromaticWax : ModItem
 
 	public static readonly Asset<Texture2D> WorldTexture = DrawHelpers.RequestLocal<ChromaticWax>("ChromaticWax_World", false);
 
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
+	public override void SetStaticDefaults()
+	{
+		Item.ResearchUnlockCount = 5;
+
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrate, ItemDropRule.Common(Type, 6, 2, 3));
+		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 6, 2, 3));
+	}
 
 	public override void SetDefaults()
 	{
