@@ -183,7 +183,7 @@ public class RotDebuff : ModBuff
 
 	private static void Update(Entity entity, float intensity)
 	{
-		if (Main.rand.NextFloat() > intensity)
+		if (Main.dedServ || Main.rand.NextFloat() > intensity)
 			return;
 
 		for (int i = 0; i < 2; i++)

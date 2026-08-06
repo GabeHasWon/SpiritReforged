@@ -300,7 +300,7 @@ public class RageGlyph : GlyphItem
 			}
 		}
 
-		internal class RageHit : ModProjectile
+		public	sealed class RageHit : ModProjectile
 		{
 			public override string Texture => AssetLoader.EmptyTexture;
 
