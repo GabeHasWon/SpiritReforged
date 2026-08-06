@@ -1,6 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -9,11 +9,10 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Content.Forest.Katanas.DamascusKatana;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class BlackBlade : ModItem
+public class BlackBlade : ModItem, IDrawHeld
 {
 	public sealed class BlackBladePlayer : ModPlayer
 	{
@@ -170,9 +169,10 @@ public class BlackBlade : ModItem
 		}
 	}
 
+	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<BlackBlade>("BlackBlade_Held", false);
 	private float _swingArc;
 
-	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -183,6 +183,12 @@ public class BlackBlade : ModItem
 		Item.knockBack = 3;
 		Item.autoReuse = true;
 		MoRHelper.SetSlashBonus(Item);
+	}
+
+	public override void HoldItem(Player player)
+	{
+		if (!player.ItemAnimationActive)
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.1f * player.direction);
 	}
 
 	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
@@ -203,4 +209,10 @@ public class BlackBlade : ModItem
 	}
 
 	public override void AddRecipes() { }
+
+	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		if (!drawinfo.drawPlayer.ItemAnimationActive)
+			IDrawHeld.DrawSwordHeld(ref drawinfo, HeldTexture.Value);
+	}
 }

@@ -69,6 +69,8 @@ public class BambooKendoBlade : ModItem, IDrawHeld
 		return false;
 	}
 
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
+
 	public void DrawHeld(ref PlayerDrawSet info)
 	{
 		if (info.drawPlayer.ItemAnimationActive || !HeldTexture.IsLoaded)
@@ -80,13 +82,11 @@ public class BambooKendoBlade : ModItem, IDrawHeld
 		var center = info.drawPlayer.MountedCenter;
 		var drawPos = new Vector2((int)(center.X - Main.screenPosition.X), (int)(center.Y + 6 * info.drawPlayer.gravDir - Main.screenPosition.Y + info.drawPlayer.gfxOffY));
 
-		float rotation = -.15f * info.drawPlayer.direction + info.drawPlayer.fullRotation + MathHelper.Pi;
+		float rotation = -0.15f * info.drawPlayer.direction + info.drawPlayer.fullRotation + MathHelper.Pi;
 		var color = Lighting.GetColor((int)info.drawPlayer.Center.X / 16, (int)info.drawPlayer.Center.Y / 16);
 
 		info.DrawDataCache.Add(new DrawData(texture.Value, drawPos, frame, color, rotation, new Vector2(30), 1, info.playerEffect, 0));
 	}
-
-	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
 }
 
 public class KendoBladeSwing : ModProjectile

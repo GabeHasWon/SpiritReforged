@@ -1,8 +1,6 @@
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -12,7 +10,6 @@ using SpiritReforged.Content.Jungle.Bamboo.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
-using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Forest.Katanas.LightningSword;
 
@@ -67,6 +64,12 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 			else
 			{
 				HoldDistance = -18 * Progress;
+
+				if (Progress < 0.5f && Main.rand.NextBool())
+				{
+					Vector2 velocity = Vector2.UnitY.RotatedBy(Projectile.rotation) * Main.rand.NextFloat(2f) * SwingDirection;
+					ParticleHandler.SpawnParticle(new EmberParticle(GetEndPosition(-10) + Main.rand.NextVector2Circular(5, 5), velocity, Color.Goldenrod, Color.PaleVioletRed, Main.rand.NextFloat(0.1f, 0.5f), 25, 3));
+				}
 			}
 		}
 
@@ -279,29 +282,6 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 			spriteBatch.Draw(bloom, position, null, Color.Lerp(Color.Goldenrod, Color.Orange, Progress).Additive() * opacity, 0, bloom.Size() / 2, 0.1f, 0, 0);
 			spriteBatch.Draw(bloom, position, null, Color.White.Additive() * opacity, 0, bloom.Size() / 2, 0.05f, 0, 0);
 		}
-
-		/*if (SwingArc != 0)
-		{
-			//Draw a custom smear
-			Main.instance.LoadProjectile(985);
-			Texture2D smear = TextureAssets.Projectile[985].Value;
-
-			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
-			Player player = Main.player[Projectile.owner];
-			Rectangle source = smear.Frame(1, 4, 0, (int)(Progress * 18f));
-			float rotation = Projectile.rotation;
-
-			Color lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
-			Vector2 origin = new(source.Width, source.Height / 2);
-			Vector2 smearWorldPosition = player.Center + (Vector2.UnitX * (GetConfig<BasicConfiguration>().Reach + 10)).RotatedBy(rotation);
-			Vector2 smearDrawPosition = smearWorldPosition - Main.screenPosition;
-
-			IDrawPixelated.PixelateDrawPosition(ref smearDrawPosition);
-
-			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(71, 59, 45))), rotation, origin, 0.5f, effects, 0);
-			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(244, 187, 82))), rotation, origin, 0.45f, effects, 0);
-			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(255, 254, 140))), rotation, origin, 0.25f, effects, 0);
-		}*/
 
 		_noiseCone?.CustomDraw(spriteBatch);
 	}

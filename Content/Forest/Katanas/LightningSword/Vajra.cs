@@ -56,9 +56,10 @@ public class Vajra : ModItem, IDrawHeld
 		}
 	}
 
+	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<Vajra>("Vajra_Held", false);
 	private float _swingArc;
 
-	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -72,6 +73,12 @@ public class Vajra : ModItem, IDrawHeld
 		MoRHelper.SetSlashBonus(Item);
 	}
 
+	public override void HoldItem(Player player)
+	{
+		if (!player.ItemAnimationActive)
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.1f * player.direction);
+	}
+
 	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -82,7 +89,11 @@ public class Vajra : ModItem, IDrawHeld
 		return false;
 	}
 
-	public void DrawHeld(ref PlayerDrawSet info) { }
-
 	public override void AddRecipes() { }
+
+	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		if (!drawinfo.drawPlayer.ItemAnimationActive)
+			IDrawHeld.DrawSwordHeld(ref drawinfo, HeldTexture.Value);
+	}
 }

@@ -1,5 +1,6 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -7,6 +8,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -14,7 +16,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class GhostBlade : ModItem
+public class GhostBlade : ModItem, IDrawHeld
 {
 	[AutoloadGlowmask("255,255,255", false)]
 	public sealed class GhostShuriken : ModProjectile
@@ -134,9 +136,10 @@ public class GhostBlade : ModItem
 		}
 	}
 
+	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<GhostBlade>("GhostBlade_Held", false);
 	private float _swingArc;
 
-	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -167,5 +170,11 @@ public class GhostBlade : ModItem
 
 		SwungProjectile.Spawn(position, Vector2.Normalize(velocity), type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
 		return false;
+	}
+
+	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		if (!drawinfo.drawPlayer.ItemAnimationActive)
+			IDrawHeld.DrawSwordHeld(ref drawinfo, HeldTexture.Value);
 	}
 }

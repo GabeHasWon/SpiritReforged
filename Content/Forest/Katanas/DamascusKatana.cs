@@ -1,12 +1,14 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class DamascusKatana : ModItem
+public class DamascusKatana : ModItem, IDrawHeld
 {
 	public sealed class DamascusKatanaSwing : SwungProjectile
 	{
@@ -55,9 +57,10 @@ public class DamascusKatana : ModItem
 		}
 	}
 
+	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<DamascusKatana>("DamascusKatana_Held", false);
 	private float _swingArc;
 
-	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
+	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -67,6 +70,12 @@ public class DamascusKatana : ModItem
 		Item.knockBack = 3;
 		Item.autoReuse = true;
 		MoRHelper.SetSlashBonus(Item);
+	}
+
+	public override void HoldItem(Player player)
+	{
+		if (!player.ItemAnimationActive)
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.1f * player.direction);
 	}
 
 	public override bool AltFunctionUse(Player player) => true;
@@ -93,4 +102,10 @@ public class DamascusKatana : ModItem
 	}
 
 	public override void AddRecipes() { }
+
+	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
+	{
+		if (!drawinfo.drawPlayer.ItemAnimationActive)
+			IDrawHeld.DrawSwordHeld(ref drawinfo, HeldTexture.Value);
+	}
 }
