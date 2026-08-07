@@ -39,7 +39,7 @@
             Furniture types can be revoked or added using basic signs, alongside the template tile name.<para/>
             For example, you can use the following:
             <code>AllArgs(DustID.Marble, new(0.75f, 0.75f, 0.95f), distortGlow: false) - new BarrelTile() + new UniqueFurnitureTile()</code></param>
-            <param name="ingredient"> The primary ingredient used in crafting. </param>
+            <param name="ingredient"> The primary ingredient used in crafting. If <see cref="F:Terraria.ID.ItemID.None"/>, no recipe will be created for any item. </param>
             <param name="loadItems"> Whether this set should autoload an item for each tile. </param>
         </member>
         <member name="M:TileHelper.Autoloader.Load(Terraria.ModLoader.Mod)">
@@ -130,12 +130,12 @@
             <summary> Provides a selection of tile related helper methods. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.GetTopLeft(System.Int32,System.Int32)">
-            <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>. </summary>
+            <summary> Gets the top-leftmost tile of the multitile at the provided coordinates, based on <see cref="P:Terraria.Tile.TileFrameX"/> and <see cref="P:Terraria.Tile.TileFrameY"/>, and <see cref="M:Terraria.ObjectData.TileObjectData.TopLeft(System.Int32,System.Int32)"/>. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.TryGetBlockItem(Terraria.ModLoader.ModBlockType,Terraria.ModLoader.ModItem@)">
             <summary> Safely gets the <see cref="T:Terraria.ModLoader.ModItem"/> associated with the provided <paramref name="blockType"/>. </summary>
         </member>
-        <member name="M:TileHelper.Common.Helpers.GetTileOffset(System.Int32,System.Int32)">
+        <member name="M:TileHelper.Common.Helpers.GetTilePosition(System.Int32,System.Int32)">
             <summary> Gets the draw position of the tile at the provided coordinates. </summary>
         </member>
         <member name="M:TileHelper.Common.Helpers.RequestGlowmask(Terraria.ModLoader.ModTexturedType,TileHelper.Common.GlowmaskTile.CoordinateColor)">
