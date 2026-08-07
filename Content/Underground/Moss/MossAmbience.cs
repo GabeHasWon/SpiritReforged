@@ -5,6 +5,7 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
 using Terraria.DataStructures;
+using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.Graphics.Renderers;
 
@@ -37,6 +38,7 @@ public sealed class MossAmbience : GlobalTile
 	{
 		On_Main.UpdateParticleSystems += UpdateParticles;
 		On_Main.DrawInfernoRings += DrawAbovePlayer;
+		On_LiquidRenderer.DrawNormalLiquids += ResetChunks;
 
 		WaterAlpha.OnWaterColor += ApplyMossWaterAlpha;
 	}
@@ -106,6 +108,12 @@ public sealed class MossAmbience : GlobalTile
 		OverPlayers.Draw(Main.spriteBatch);
 
 		orig(self);
+	}
+
+	private static void ResetChunks(On_LiquidRenderer.orig_DrawNormalLiquids orig, LiquidRenderer self, SpriteBatch spriteBatch, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw)
+	{
+		orig(self, spriteBatch, drawOffset, waterStyle, globalAlpha, isBackgroundDraw);
+		ColorSampleChunks.Clear();
 	}
 
 	private static bool ApplyMossWaterAlpha(int x, int y, ref VertexColors colors, bool isPartial)
@@ -385,9 +393,9 @@ public class FloatingMoss(int style, Color color, Color outlineColor) : ABasicPa
 		Velocity.X = MathHelper.Clamp(Velocity.X, -0.05f, 0.05f); //Limit maximum horizontal velocity
 
 		if (fadeIn)
-			_opacity = Math.Min(_opacity + 0.03f, 1);
+			_opacity = Math.Min(_opacity + 0.02f, 1);
 		else
-			_opacity = Math.Max(_opacity - 0.03f, 0);
+			_opacity = Math.Max(_opacity - 0.02f, 0);
 
 		if (Collision.SolidCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height) && _timeActive < time_left - fade_out_time)
 			_timeActive = time_left - fade_out_time; //Fade out on collision with a solid tile
@@ -408,7 +416,7 @@ public class FloatingMoss(int style, Color color, Color outlineColor) : ABasicPa
 		Rectangle source = texture.Frame(FRAME_COUNT, 2, _style, drawOutline ? 1 : 0, 0, -2);
 		Color variableColor = color.Additive(200);
 
-		if (_opacity > 0)
+		if (_opacity > 0.5f)
 		{
 			Lighting.AddLight(LocalPosition, color.ToVector3() * 0.3f * _opacity);
 
