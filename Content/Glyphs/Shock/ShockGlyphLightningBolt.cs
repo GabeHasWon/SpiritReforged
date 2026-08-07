@@ -225,8 +225,6 @@ public partial class ShockGlyph
 
 		public static void LightningHit(NPC target, int damageDone, bool crit)
 		{
-			Main.NewText(Main.LocalPlayer.whoAmI);
-
 			var rect = target.getRect();
 
 			int damage = Math.Max(damageDone, 1);
