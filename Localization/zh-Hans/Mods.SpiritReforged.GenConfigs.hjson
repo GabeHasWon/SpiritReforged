@@ -27,6 +27,7 @@ UI: {
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
+	// LoadFolder: Load a folder of presets
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 	FailedToLoad: 预设不适用于此页面。预期页面：{0}
 	ConfigNotice:

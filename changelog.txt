@@ -1,20 +1,3 @@
-v0.2.1.2
-- Fixed Enlil statue not shimmering into Bast statues properly
-- Fixed an issue where using both CalamityRuTranslate and Reforged would assume the game's language is Russian unconditionally
-- Updated Russian localization
-- Updated Chinese localization
-- Substantially improved seeding consistency during world generation
-- Added flags that determine if a world has or doesn't have a (naturally spawned) ecotone
-	This will not work on existing worlds
-	This will work on crossmod ecotones, and will work if an ecotone is unloaded, then re-loaded
-- Added WorldHasEcotone Mod.Call, which checks if a certain ecotone was naturally spawned in the world (i.e. spiritReforged.Call("WorldHasEcotone", "SpiritReforged/SavannaEcotone"))
-- Fixed issue where Saltskipper quest fish (Salt Flats quest) spawns on worlds without Salt Flats
-- Added AddHerb Mod.Call and named set to add additional support for crossmod herb tiles that work with the Botanist set, alongside the existing PlayerBotanist call
-- Added CustomBotanistDisplay named set, which works with the above Mod.Call as well for mods that want to register their tile as a herb but use custom botanist drawing
-- Fixed issue where herbs wouldn't draw properly when the Botanist armor set is active
-- Allowed Wormhole Potions to be used from Backpacks
-- Allowed Quick Buff to use potions from Backpacks
-- Fixed an issue with Space Heater in some multiplayer situations
-- Publicized/modified certain things regarding the Ecotone system in order to simplify access for other mods
-- Added better Savanna generation logic w/ crossmod support to account for other mods adding replacement-immune areas (i.e. alt evils)
-- Added a fix for a wildly niche but bothersome Finger Blaster issue when doing certain specific actions
+v0.2.1.3
+- Allowed the Generation Configuration menu to select folders of presets alongside individual presets
+- Added clarification "no sun" to Scarabeus Altar when hovered at night to show it's not usable
