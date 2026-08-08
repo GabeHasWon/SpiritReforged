@@ -340,7 +340,7 @@ public class RoyalKhopeshThrown : ModProjectile
 				trail.Opacity = fadeOut;
 				if (Stuck)
 					trail.Opacity = Projectile.timeLeft > MAX_TIMELEFT - 30 ? (Projectile.timeLeft - MAX_TIMELEFT - 30) / 30f : 0f;
-				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, Main.spriteBatch.GraphicsDevice);
+				trail?.Draw(TrailSystem.TrailShaders, Main.spriteBatch.GraphicsDevice);
 			}
 		}
 
