@@ -3153,3 +3153,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Salt Grave Marker
 	Tooltip: ""
 }
+
+NotSunItemIcon: {
+	DisplayName: Not Sun Item Icon
+	Tooltip: ""
+}

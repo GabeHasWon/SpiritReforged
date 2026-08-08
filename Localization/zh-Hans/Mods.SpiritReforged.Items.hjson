@@ -3153,3 +3153,8 @@ SaltGraveMarkerItem: {
 	DisplayName: 盐墓石碑
 	Tooltip: ""
 }
+
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}

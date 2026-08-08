@@ -3157,3 +3157,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Соляная могильная табличка
 	Tooltip: ""
 }
+
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}

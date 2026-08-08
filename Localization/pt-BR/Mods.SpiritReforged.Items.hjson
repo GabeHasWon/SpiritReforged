@@ -3140,3 +3140,8 @@ SaltGraveMarkerItem: {
 	DisplayName: Obelisco de Sal
 	Tooltip: ""
 }
+
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}

@@ -18,7 +18,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using TileHelper.Common;
-using static SpiritReforged.Content.Ziggurat.Tiles.ScarabAltar;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
@@ -220,13 +219,23 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 
 	public override void MouseOver(int i, int j)
 	{
+		Player player = Main.LocalPlayer;
+
 		if (!CanReceiveOfferings)
+		{
+			if (!Main.dayTime)
+			{
+				player.noThrow = 2;
+				player.cursorItemIconEnabled = true;
+				player.cursorItemIconID = ModContent.ItemType<NotSunItemIcon>();
+			}
+
 			return;
+		}
 
 		if (_hoverTypes == null)
 			InitializeHoverTypes();
 
-		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
 		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
@@ -426,14 +435,14 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	{
 		get
 		{
-			int projectileType = ModContent.ProjectileType<FloatingGem>();
+			int projectileType = ModContent.ProjectileType<ScarabAltar.FloatingGem>();
 			int value = consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType];
 
 			if (Main.LocalPlayer.ownedProjectileCounts[projectileType] > 0)
 			{
 				foreach (Projectile projectile in Main.ActiveProjectiles)
 				{
-					if (projectile.ModProjectile is FloatingGem floatingGem && FablesStormlionItems[floatingGem.ItemType])
+					if (projectile.ModProjectile is ScarabAltar.FloatingGem floatingGem && ScarabAltar.FablesStormlionItems[floatingGem.ItemType])
 						value += FablesSecretNumber;
 				}
 			}
