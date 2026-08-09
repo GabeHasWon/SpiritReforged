@@ -4,8 +4,6 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 using SpiritReforged.Content.Underground.Moss.Radon;
-using Terraria.DataStructures;
-using Terraria.GameContent.Liquid;
 using Terraria.Graphics;
 using Terraria.Graphics.Renderers;
 
@@ -17,28 +15,47 @@ public sealed class MossAmbience : GlobalTile
 	public static readonly ParticleRenderer OverPlayers = new();
 	public static readonly Dictionary<int, Color> ColorByMoss = [];
 
-	private static readonly Dictionary<Point16, Color> ColorSampleChunks = [];
+	public static Color LerpedWaterTint { get; private set; }
+	private static Color ActiveWaterTint;
 
-	public static void SetChunk(int x, int y, Color color, int accuracy = 5)
+	private static bool TryFindColorChunk(int x, int y, int depth, out Color topColor, out Color bottomColor)
 	{
-		(x, y) = (x / accuracy, y / accuracy);
-		ColorSampleChunks.TryAdd(new Point16(x, y), color);
-	}
+		bool success = false;
+		int iDepth = 0;
 
-	public static bool GetChunk(int x, int y, out Color color, int accuracy = 5)
-	{
-		(x, y) = (x / accuracy, y / accuracy);
-		if (ColorSampleChunks.TryGetValue(new Point16(x, y), out color))
+		for (int i = 0; i <= depth; i++)
+		{
+			if (i == 0 && WorldGen.SolidOrSlopedTile(x, y))
+			{
+
+			}
+			else if (Main.tile[x, y].LiquidAmount < 255)
+			{
+				success = true;
+				iDepth = i;
+				break;
+			}
+
+			y--;
+		}
+
+		if (success)
+		{
+			topColor = Color.Lerp(LerpedWaterTint, Color.Transparent, (iDepth - 1f) / depth);
+			bottomColor = Color.Lerp(LerpedWaterTint, Color.Transparent, iDepth / (float)depth);
+
 			return true;
+		}
 
+		topColor = bottomColor = default;
 		return false;
 	}
 
 	public override void Load()
 	{
-		On_Main.UpdateParticleSystems += UpdateParticles;
+		On_Main.UpdateParticleSystems += UpdateVisuals;
 		On_Main.DrawInfernoRings += DrawAbovePlayer;
-		On_LiquidRenderer.DrawNormalLiquids += ResetChunks;
+		On_SceneMetrics.ScanAndExportToMain += ExportWaterTint;
 
 		WaterAlpha.OnWaterColor += ApplyMossWaterAlpha;
 	}
@@ -55,9 +72,11 @@ public sealed class MossAmbience : GlobalTile
 		ColorByMoss.Add(ModContent.TileType<OganessonMoss>(), new Color(255, 255, 255));
 	}
 
-	private static void UpdateParticles(On_Main.orig_UpdateParticleSystems orig, Main self)
+	private static void UpdateVisuals(On_Main.orig_UpdateParticleSystems orig, Main self)
 	{
 		OverPlayers.Update();
+		LerpedWaterTint = Color.Lerp(LerpedWaterTint, ActiveWaterTint, 0.05f); //Lerp to the new color
+
 		orig(self);
 	}
 
@@ -67,26 +86,22 @@ public sealed class MossAmbience : GlobalTile
 			return;
 
 		Tile tileAbove = Main.tile[i, j - 1];
-		if (/*Main.tileMoss[type] && Main.tileLighted[type] && */!WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount > 0 && tileAbove.WallType == WallID.None && Main.rand.NextBool(130))
+		if (!WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount > 0 && tileAbove.WallType == WallID.None && Main.rand.NextBool(180))
 		{
-			if (ColorByMoss.TryGetValue(type, out Color waterMossColor))
+			if (ColorByMoss.TryGetValue(type, out _)) //Check if this is a registered moss tile
 			{
 				Vector2 position = new Vector2(i, j - 1).ToWorldCoordinates(Main.rand.NextFloat(16), 8);
-				Color color = waterMossColor;
-				Color outlineColor = Color.Lerp(waterMossColor, Color.Black, 0.5f);
-
-				OverPlayers.Add(new FloatingMoss(Main.rand.Next(FloatingMoss.FRAME_COUNT), color, outlineColor)
+				OverPlayers.Add(new FloatingMoss(Main.rand.Next(FloatingMoss.FRAME_COUNT))
 				{
 					LocalPosition = position,
 					Scale = Vector2.One * 0.8f,
-					Velocity = Vector2.Zero,
 					Rotation = Main.rand.NextFloat(MathHelper.Pi)
 				});
 			}
 		}
 
 		if (Main.rand.NextBool(2400) && ColorByMoss.TryGetValue(type, out Color floatingColor))
-			SpawnFloatingParticles(i, j, floatingColor);
+			SpawnAirParticles(i, j, floatingColor);
 	}
 
 	private static void DrawAbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -110,66 +125,59 @@ public sealed class MossAmbience : GlobalTile
 		orig(self);
 	}
 
-	private static void ResetChunks(On_LiquidRenderer.orig_DrawNormalLiquids orig, LiquidRenderer self, SpriteBatch spriteBatch, Vector2 drawOffset, int waterStyle, float globalAlpha, bool isBackgroundDraw)
+	private static void ExportWaterTint(On_SceneMetrics.orig_ScanAndExportToMain orig, SceneMetrics self, SceneMetricsScanSettings settings)
 	{
-		orig(self, spriteBatch, drawOffset, waterStyle, globalAlpha, isBackgroundDraw);
-		ColorSampleChunks.Clear();
+		orig(self, settings);
+
+		if (NeonMossScene.InNeonMoss)
+		{
+			SceneTileCounter.Survey survey = SceneTileCounter.GetSurvey<NeonMossScene>();
+			var counts = survey.countByType;
+			int highestCount = 0;
+			int highestType = 0;
+
+			foreach (int type in counts.Keys)
+			{
+				if (counts[type] > highestCount)
+				{
+					highestCount = counts[type];
+					highestType = type; //Find the most prominent moss type
+				}
+			}
+
+			if (ColorByMoss.TryGetValue(highestType, out Color sampleColor))
+				ActiveWaterTint = sampleColor;
+		}
+		else
+		{
+			ActiveWaterTint = Color.Transparent;
+		}
 	}
 
 	private static bool ApplyMossWaterAlpha(int x, int y, ref VertexColors colors, bool isPartial)
 	{
-		const int full_depth = 2;
-		if (NeonMossScene.InNeonMoss && GetChunksInDepth(x, y, full_depth, out Color color))
+		if (NeonMossScene.InNeonMoss && TryFindColorChunk(x, y, 2, out Color topColor, out Color bottomColor))
 		{
-			LightRange(x, y, full_depth, ref colors, color.Additive());
-			//ColorSampleChunks.Clear();
+			(topColor, bottomColor) = (topColor.Additive(), bottomColor.Additive());
+
+			ClampColor(ref colors.TopLeftColor, topColor, x, y);
+			ClampColor(ref colors.TopRightColor, topColor, x + 1, y);
+			ClampColor(ref colors.BottomLeftColor, bottomColor, x, y + 1);
+			ClampColor(ref colors.BottomRightColor, bottomColor, x + 1, y + 1);
 
 			return false;
 		}
 
 		return true;
 
-		static bool GetChunksInDepth(int x, int y, int depth, out Color color) //Calls GetChunk with multiple tile depth support
+		static void ClampColor(ref Color color, Color tint, int x, int y)
 		{
-			for (int i = 0; i <= depth; i++)
-			{
-				if (GetChunk(x, y - i, out color))
-					return true;
-			}
-
-			color = default;
-			return false;
+			tint *= Lighting.Brightness(x, y) * 4;
+			(color.R, color.G, color.B) = ((byte)Math.Min(color.R + tint.R, 255), (byte)Math.Min(color.G + tint.G, 255), (byte)Math.Min(color.B + tint.B, 255));
 		}
-
-		static void LightRange(int x, int y, int depth, ref VertexColors colors, Color tint)
-		{
-			for (int i = 0; i < depth; i++)
-			{
-				Tile tile = Framing.GetTileSafely(x, y - i - 1);
-				if (tile.LiquidAmount < 255)
-				{
-					if (i == depth - 1)
-					{
-						ClampColor(ref colors.TopLeftColor, tint, x, y);
-						ClampColor(ref colors.TopRightColor, tint, x + 1, y);
-					}
-					else
-					{
-						ClampColor(ref colors.TopLeftColor, tint, x, y);
-						ClampColor(ref colors.TopRightColor, tint, x + 1, y);
-						ClampColor(ref colors.BottomLeftColor, tint, x, y + 1);
-						ClampColor(ref colors.BottomRightColor, tint, x + 1, y + 1);
-					}
-
-					break;
-				}
-			}
-		}
-
-		static void ClampColor(ref Color color, Color tint, int x, int y) => color = Color.Lerp(color, tint, Lighting.Brightness(x, y) * 2);
 	}
 
-	private static void SpawnFloatingParticles(int i, int j, Color mossColor)
+	private static void SpawnAirParticles(int i, int j, Color mossColor)
 	{
 		Vector2 startPos = new Vector2(i, j).ToWorldCoordinates();
 		Vector2 velocity = new(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.6f, -0.2f));
@@ -350,15 +358,13 @@ public sealed class MossAmbience : GlobalTile
 	#endregion
 }
 
-public class FloatingMoss(int style, Color color, Color outlineColor) : ABasicParticle
+public class FloatingMoss(int style) : ABasicParticle
 {
-	public const int FRAME_COUNT = 4;
+	public const int FRAME_COUNT = 7;
 	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<FloatingMoss>("FloatingMoss", false);
 
 	public Rectangle Hitbox => new((int)LocalPosition.X - 2, (int)LocalPosition.Y - 2, 4, 4);
 
-	public Color color = color;
-	public Color outlineColor = outlineColor;
 	public bool drawOutline;
 
 	protected readonly int _style = style;
@@ -368,66 +374,75 @@ public class FloatingMoss(int style, Color color, Color outlineColor) : ABasicPa
 	public override void Update(ref ParticleRendererSettings settings)
 	{
 		const int time_left = 2000;
-		const int fade_out_time = 20;
+		const int death_fade_out = 20;
+		const int fade_out = 57;
+
+		if (Collision.SolidCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height) && _timeActive < time_left - death_fade_out)
+		{
+			//_timeActive = time_left - fade_out_time; //Fade out on collision with a solid tile
+			Velocity = Vector2.Zero;
+		}
 
 		bool fadeIn;
 		if (Collision.WetCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height))
 		{
-			Velocity.Y = Math.Max(Velocity.Y - 0.01f, -1); //Float
+			Velocity.Y = Math.Max(Velocity.Y - 0.1f, -5); //Float
 			fadeIn = false;
 		}
-		else if (Collision.WetCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height + 2))
+		else if (Collision.WetCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height + 6))
 		{
-			Velocity.Y *= 0.7f; //Settle at the top of liquid
+			Velocity.Y *= 0.5f; //Settle at the top of liquid
 			fadeIn = true;
+
+			if (Main.rand.NextBool(150))
+				Velocity.Y += 0.1f;
 		}
 		else
 		{
-			Velocity.Y += 0.02f; //Sink outside of liquid
-			fadeIn = true;
+			Velocity.Y = Math.Min(Velocity.Y + 0.1f, 5); //Sink outside of liquid
+			fadeIn = false;
 		}
 
-		if (_timeActive % 60 == 0) //Randomly set acceleration at intervals
-			AccelerationPerFrame = new Vector2(Main.rand.NextFloat(-0.001f, 0.001f), 0);
+		if (Main.LocalPlayer.Hitbox.Intersects(Hitbox))
+			Velocity += Main.LocalPlayer.velocity * 0.05f;
 
-		Velocity.X = MathHelper.Clamp(Velocity.X, -0.05f, 0.05f); //Limit maximum horizontal velocity
+		Velocity.X *= 0.97f;
 
 		if (fadeIn)
-			_opacity = Math.Min(_opacity + 0.02f, 1);
+			_opacity = Math.Min(_opacity + 1f / fade_out, 1);
 		else
-			_opacity = Math.Max(_opacity - 0.02f, 0);
+			_opacity = Math.Max(_opacity - 1f / fade_out, 0);
 
-		if (Collision.SolidCollision(Hitbox.TopLeft(), Hitbox.Width, Hitbox.Height) && _timeActive < time_left - fade_out_time)
-			_timeActive = time_left - fade_out_time; //Fade out on collision with a solid tile
+		if (_timeActive > time_left - death_fade_out)
+			Scale *= 1f - 1f / death_fade_out;
 
 		if (++_timeActive >= time_left)
 			ShouldBeRemovedFromRenderer = true;
-
-		if (_timeActive > time_left - fade_out_time)
-			Scale *= 1f - 1f / fade_out_time;
 
 		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 	{
+		Color variableColor = MossAmbience.LerpedWaterTint;
 		Texture2D texture = Texture.Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Rectangle source = texture.Frame(FRAME_COUNT, 2, _style, drawOutline ? 1 : 0, 0, -2);
-		Color variableColor = color.Additive(200);
+		Vector2 position = LocalPosition + settings.AnchorPosition - Main.screenPosition + new Vector2(0, 2);
 
-		if (_opacity > 0.5f)
+		Vector3 hsl = Main.rgbToHsl(variableColor);
+
+		if (variableColor != Color.White)
+			(hsl.Y, hsl.Z) = (1, 0.5f);
+
+		variableColor = Main.hslToRgb(hsl);
+
+		spritebatch.Draw(texture, position, source, variableColor * _opacity, Rotation, source.Size() / 2, Scale, default, 0);
+
+		if (!drawOutline)
 		{
-			Lighting.AddLight(LocalPosition, color.ToVector3() * 0.3f * _opacity);
-
-			Point16 coords = LocalPosition.ToTileCoordinates16();
-			MossAmbience.SetChunk(coords.X, coords.Y, color); //Add a color chunk
+			spritebatch.Draw(bloom, position, null, variableColor.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
+			Lighting.AddLight(LocalPosition, MossAmbience.LerpedWaterTint.ToVector3() * 0.3f * _opacity);
 		}
-
-		if (drawOutline)
-			variableColor = outlineColor;
-
-		spritebatch.Draw(bloom, LocalPosition + settings.AnchorPosition - Main.screenPosition, null, color.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
-		spritebatch.Draw(texture, LocalPosition + settings.AnchorPosition - Main.screenPosition, source, variableColor * _opacity, Rotation, source.Size() / 2, Scale, default, 0);
 	}
 }

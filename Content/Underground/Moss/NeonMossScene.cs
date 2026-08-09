@@ -11,12 +11,11 @@ public class NeonMossScene : ModSceneEffect
 		get
 		{
 			int type = ModContent.GetInstance<NeonMossScene>().Type;
-			if (!SceneTileCounter.SurveyByType.ContainsKey(type)) //DEBUG- scene will not load, for some reason!
-			{
+
+			if (!SceneTileCounter.SurveyByType.ContainsKey(type)) //DEBUG: scene not calling SetStaticDefaults
 				SceneTileCounter.SurveyByType.Add(type, new([TileID.ArgonMoss, TileID.KryptonMoss,
-					TileID.XenonMoss, TileID.VioletMoss, TileID.RainbowMoss, ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()], 200));
-			}
-			
+				TileID.XenonMoss, TileID.VioletMoss, TileID.RainbowMoss, ModContent.TileType<RadonMoss>(), ModContent.TileType<OganessonMoss>()], 200));
+
 			return SceneTileCounter.SurveyByType.TryGetValue(type, out var survey) && survey.Success;
 		}
 	}
