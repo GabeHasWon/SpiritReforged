@@ -692,7 +692,7 @@ BeetleTownPet: {
 
 Enchanter: {
 	// DisplayName: Enchanter
-	// Entry: Full of charm and whimsy, the Enchanter deals with various seals and spells. If some weapons or tools need a little more magic, just ask!
+	// Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
 
 	Names: {
 		// 0: Albion
@@ -718,43 +718,58 @@ Enchanter: {
 	}
 
 	TownNPCMood: {
-		// Content: I take a moment and feel...all is well.
-		// NoHome: I don't imagine you've got a place for me to rest my head?
-		// FarFromHome: I am quite far for from my workspace and bed. May we return home soon?
-		// LoveSpace: This town has a satisfying populace. Never lonely, and my study remains a quiet and peaceful sanctuary...
-		// DislikeCrowded: It is a bit difficult for me to get ample rest with all this chatter around.
-		// HateCrowded: There are far too many people living here. One too many people are knocking down my door asking for magical enchantments and I've had enough.
-		// LoveNPC: "{NPCName.Wizard}'s hot chocolate is absolutely to die for. The last time I went to exchange notes with them, they pulled a coin out from behind my ear! I couldn't stop laughing."
-		// LikeNPC: I never thought loud, crackling lights in the sky could make my day, but I'm pleasantly surprised when people like {NPCName.PartyGirl} show up to prove me wrong.
-		// DislikeNPC: "{NPCName.GoblinTinkerer}'s methods of weapon augmentation are barbaric. Magical implements do not enjoy being brutalized by a hammer!"
-		// HateNPC: I cannot stand {NPCName.DD2Bartender}'s bar stories... he has one too many pertaining to the diminishing of kobolds.
-		// LikeBiome: Here above the clouds, I feel so much more connected to the world's magical forces. Not to mention that the rain can't put my candles out...
-		// DislikeBiome: I hate living so close to such an abundant yet fickle source of paraffin! I'm covered in countless stings and scrapes.
-		// LikeNPC_Princess: The girl {NPCName} carries more whimsy than I do.
-		// Princess_LovesNPC: "{NPCName} does some really cool magic with those fancy stones!"
+		// Content: I take a moment and feel... all is well.
+		// NoHome: I don't imagine you've got a place for me to rest my weary bones?
+		// FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
+		// LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but no so many it becomes overwhelming.
+		// DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
+		// HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
+		// LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
+		// LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
+		// DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
+		// HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
+		// LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
+		// DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
+		// LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
+		// Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
 	}
 
 	Dialogue: {
 		Idle: {
-			// 0: I have unfortunately allowed my nights and days to become flipped. While others are out and about, I sometimes find myself fast asleep!
-			// 1: It's easy to lose track of time in a room lit only by the flicker of candlelight...
-			// 2: Have you come to learn about the various magical properties wax possesses?
+			// 0: Do stop to smell the roses from time to time. Rest is good for you!
+			// 1: It's easy to lose track of time when you are snout deep in a good tome.
+			// 2: Have you come to learn about the wondrous properties of wax?
+			// 3: What can I enchant for you today?
 		}
 
 		IdleNight: {
-			// 0: The moon is high, and the glowing light of candles is brighter than ever!
-			// 1: Fireflies fill the sky like small, dancing flame. There is magic everywhere we look...
+			// 0: The moon is high, and my candles burn brighter than ever!
+			// 1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
 			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
 		}
 
 		BloodMoon: {
-			// 0: I cannot sleep on a night such as...this. When I close my eyes, all I see is red.
+			// 0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
 			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
 		}
 
-		// Party: I am not fond of this much noise, but I can't help but be charmed by these festivities. This was worth staying up for.
-		// Goblin: You'd be surprised what you can stick seals onto. {0} asked me to enchant his grappling hook and he's been flying around all day!
-		// Golfer: I feel like the only one in town who doesn't play golf. I'm always far too tired to play such a sport, but {0} always makes sure to invite me. I feel a little guilty, but also very welcomed.
+		Rain: {
+			// 0: There's nothing quite like the sound of rain pattering against the windows.
+			// 1: I'm not going outside again. I only just got my hat dry from last time!
+		}
+
+		Graveyard: {
+			// 0: I usually like it quiet, but the air is completely still. It's unnerving.
+			// 1: I can't shake the feeling that something is watching me.
+		}
+
+		// Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
+		// Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
+		// Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
+		// Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
+		// Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
+		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
+		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
 	}
 }
 
