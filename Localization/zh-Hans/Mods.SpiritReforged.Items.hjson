@@ -3154,6 +3154,11 @@ SaltGraveMarkerItem: {
 	Tooltip: ""
 }
 
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}
+
 PinSpookyFarms: {
 	// DisplayName: Fetid Farms Pin
 	// Tooltip: ""

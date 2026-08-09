@@ -27,6 +27,7 @@ UI: {
 	Create: Сохранить предустановку
 	CantSave: (Вы не можете сохранить стандартные установки)
 	Load: Загрузить набор предустановок
+	// LoadFolder: Load a folder of presets
 	HoverDescription: Открывает меню настройки некоторых элементов генерации мира из Spirit Reforged.
 	FailedToLoad: Эта предустановка предназначена для другой страницы. Ожидаемая страница: {0}
 	ConfigNotice:

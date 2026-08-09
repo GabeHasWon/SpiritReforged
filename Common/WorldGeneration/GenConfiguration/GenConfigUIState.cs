@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.IO;
@@ -57,6 +58,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		base.Update(gameTime);
 
+		Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
+		TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
+		warningText.Recalculate();
 		warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
 		warningTimer--;
 
@@ -66,6 +70,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			updatePage = false;
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_textScale")]
+	public static extern ref float TextScale(UIText text);
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -841,7 +848,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		loadButton.OnUpdate += _ =>
 		{
 			bool hover = loadButton.ContainsPoint(Main.MouseScreen);
-			loadButton.SetFrame(new Rectangle(0, hover ? 50 : 0, 44, 44));
+			loadButton.SetFrame(new Rectangle(0, hover ? 46 : 0, 44, 44));
 
 			if (hover)
 				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Load");
@@ -849,6 +856,74 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		pagePanel.Append(loadButton);
 		AddHoverTicks(loadButton);
+
+		UIImageFramed loadFolderButton = new(DrawHelpers.RequestLocal(GetType(), "LoadFolder", false), new Rectangle(0, 0, 44, 44))
+		{
+			Width = StyleDimension.FromPixels(44),
+			Height = StyleDimension.FromPixels(44),
+			HAlign = 1f,
+			VAlign = 1,
+			Left = StyleDimension.FromPixels(-100)
+		};
+
+		loadFolderButton.OnUpdate += _ =>
+		{
+			bool hover = loadFolderButton.ContainsPoint(Main.MouseScreen);
+			loadFolderButton.SetFrame(new Rectangle(0, hover ? 50 : 0, 44, 44));
+
+			if (hover)
+				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.LoadFolder");
+		};
+
+		loadFolderButton.OnLeftClick += (_, _) => LoadFolderPresets(page);
+		pagePanel.Append(loadFolderButton);
+		AddHoverTicks(loadFolderButton);
+	}
+
+	private void LoadFolderPresets(GenConfigPage page)
+	{
+		AssurePresetsPathExists();
+		var result = nativefiledialog.NFD_PickFolder(PresetsPath, out string loadPath);
+
+		if (result == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			string[] files = Directory.GetFiles(loadPath);
+			Dictionary<string, List<string>> duplicates = [];
+
+			foreach (string file in files)
+			{
+				if (!file.EndsWith(".txt"))
+					continue;
+
+				TagCompound tag = TagIO.FromFile(file);
+				string name = file[(file.LastIndexOf('\\') + 1)..file.LastIndexOf('.')];
+
+				if (!LoadFromTag(null, tag, name, duplicates))
+					return;
+
+				pageConfig = page.PageInfo.Presets.Count - 1;
+				ApplyCurrentPreset(page);
+			}
+
+			hoverText += "\n" + Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ConfigNotice");
+
+			if (duplicates.Count > 0)
+			{
+				string dupes = "";
+
+				foreach (KeyValuePair<string, List<string>> dupe in duplicates)
+				{
+					dupes += dupe.Key + ": ";
+
+					foreach (string entry in dupe.Value)
+						dupes += entry + ", ";
+				}
+
+				warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate", dupes[..^2]));
+				warningText.Recalculate();
+				warningTimer = 600;
+			}
+		}
 	}
 
 	private void ApplyCurrentPreset(GenConfigPage page)
@@ -895,7 +970,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return false;
 	}
 
-	private bool LoadFromTag(GenConfigPage? page, TagCompound tag, string configName)
+	private bool LoadFromTag(GenConfigPage? page, TagCompound tag, string configName, Dictionary<string, List<string>>? duplicates = null)
 	{
 		string name = tag.GetString("pageName");
 		string[] paths = name.Split('/');
@@ -954,9 +1029,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			page.PageInfo.Presets.Add(preset);
 		else
 		{
-			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate"));
+			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate", page.DisplayName.Value));
 			warningText.Recalculate();
 			warningTimer = 300;
+
+			duplicates?.TryAdd(page.DisplayName.Value, []);
+			duplicates?[page.DisplayName.Value].Add(configName);
 		}
 
 		return true;
