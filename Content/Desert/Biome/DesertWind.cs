@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
@@ -17,7 +18,7 @@ public class DesertWind : ILoadable
 
 	private static void SpawnWind(int i, int j, int type, bool closer)
 	{
-		if (!closer || Main.gamePaused || !Main.LocalPlayer.ZoneDesert || j > Main.worldSurface || Math.Abs(Main.windSpeedCurrent) < 0.3f || !WorldGen.InWorld(i, j, 4))
+		if (!closer || Main.gamePaused || !Main.LocalPlayer.ZoneDesert || j > Main.worldSurface || Math.Abs(Main.windSpeedCurrent) < 0.3f || !WorldGen.InWorld(i, j, 4) || SubworldUtils.InSubworld())
 			return;
 
 		var tileAbove = Main.tile[i, j - 1];
@@ -25,7 +26,12 @@ public class DesertWind : ILoadable
 		if (SandTypes.Contains(type) && !WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount == 0 && tileAbove.WallType == WallID.None)
 		{
 			float odds = MathHelper.Lerp(1, 0.25f, Math.Abs(Main.windSpeedCurrent));
-			if (Main.rand.NextBool((int)(2000 * odds)))
+			int chance = (int)(2000 * odds);
+
+			if (chance <= 0)
+				return;
+			
+			if (Main.rand.NextBool(chance))
 			{
 				var position = new Vector2(i, j + 2) * 16;
 				var velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(2, 4), 0.2f);
@@ -36,7 +42,6 @@ public class DesertWind : ILoadable
 				int timeLeft = Main.rand.Next(250, 500);
 
 				var color = Color.Beige * 0.6f;
-				var hsl = Main.rgbToHsl(color);
 
 				ParticleHandler.SpawnParticle(new DesertCloud(position, velocity, Color.Beige * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
 				{
@@ -45,11 +50,13 @@ public class DesertWind : ILoadable
 				});
 
 				for (int x = 0; x < 3; x++)
+				{
 					ParticleHandler.SpawnParticle(new DesertCloud(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f), velocity * Main.rand.NextFloat(), color * 0.4f, Main.rand.NextFloat(0.8f, 1f), EaseFunction.EaseCircularOut, timeLeft)
 					{
 						SecondaryColor = Color.SaddleBrown.Additive(20) * 0.2f,
 						TertiaryColor = Color.Transparent
 					});
+				}
 			}
 
 			if (Main.rand.NextBool((int)(800 * odds)))

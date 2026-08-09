@@ -45,6 +45,7 @@ internal class AnimateModIconHook : ILoadable
 			if (DateTime.Now.Month == 4 && DateTime.Now.Day == 1)
 			{
 				tex = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("Assets/Textures/AprilFools/FablesReforgedIcon", AssetRequestMode.ImmediateLoad);
+				alt = tex;
 				scroll = SpiritReforgedMod.Instance.Assets.Request<Texture2D>("Assets/Textures/AprilFools/FablesReforgedScroll2", AssetRequestMode.ImmediateLoad);
 			}
 

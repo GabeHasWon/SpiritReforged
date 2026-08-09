@@ -31,7 +31,9 @@ public class Gar : ModNPC
 		NPCID.Sets.TakesDamageFromHostilesWithoutBeingFriendly[Type] = true;
 		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 
-		Recipes.AddToGroup(RecipeGroupID.FishForDinner, this.AutoItemType());
+		// Removed - FishForDinner isn't a usable ID.
+		//int type = this.AutoItemType();
+		//Recipes.AddToGroup(RecipeGroupID.FishForDinner, type);
 	}
 
 	public virtual void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item => item.value = Item.sellPrice(0, 0, 5, 37));

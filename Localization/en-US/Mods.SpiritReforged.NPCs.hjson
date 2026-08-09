@@ -485,7 +485,7 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: Gold Diving Beetle
-	Entry: Rarely, critters are found coated entirely in gold! They are worth great coin to shopkeepers and fish absolutely love golden bait!
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
@@ -524,8 +524,8 @@ BrineShrimp: {
 }
 
 GoldenBrineShrimp: {
-	DisplayName: Golden Brine Shrimp
-	Entry: Golden and rare, the Golden Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+	DisplayName: Gold Brine Shrimp
+	Entry: Golden and rare, the Gold Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
 }
 
 Wisp: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
 }
 
-TinyGrub.DisplayName: Tiny Grub
+TinyGrub: {
+	DisplayName: Tiny Grub
+	Entry: Almost as full of potential as it is grossness.
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,12 +573,22 @@ VeiledZombie: {
 	Entry: Dressing to beat the heat is only one part to surviving the desert. Bringing food and water is not a step that should be overlooked.
 }
 
-Cricket.DisplayName: Cricket
-GoldCricket.DisplayName: Gold Cricket
+Cricket: {
+	DisplayName: Cricket
+	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+}
+
+GoldCricket: {
+	DisplayName: Gold Cricket
+	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+}
 
 BeetleTownPet: {
 	DisplayName: Beetle
-	Chitter: Chitter
+	Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
+	Chitter0: *Happy chittering*
+	Chitter1: *Bug noises*
+	Chitter2: *Beetle noises*
 
 	Names: {
 		RoyalScarab0: Azure

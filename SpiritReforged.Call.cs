@@ -7,6 +7,9 @@ using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using SpiritReforged.Content.Desert.ScarabBoss.Boss;
+using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 
 namespace SpiritReforged;
 
@@ -33,7 +36,12 @@ public partial class SpiritReforgedMod : Mod
 					}
 				case "GetSavannaArea":
 					{
-						return SavannaEcotone.SavannaArea;
+						Logger.Debug("\"GetSavannaArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSavannaAreas\" instead.");
+						return SavannaEcotone.SavannaAreas[0];
+					}
+				case "GetSavannaAreas":
+					{
+						return SavannaEcotone.SavannaAreas;
 					}
 				case "SetSavannaArea":
 					{
@@ -41,13 +49,26 @@ public partial class SpiritReforgedMod : Mod
 							throw new Exception("SavannaArea is unused outside of worldgen. Are you sure you're using this right?");
 
 						if (args.Length == 2 && args[1] is Rectangle rectangle)
-							return SavannaEcotone.SavannaArea = rectangle;
+						{
+							if (SavannaEcotone.SavannaAreas.Count == 0)
+							{
+								SavannaEcotone.SavannaAreas.Add(rectangle);
+								return rectangle;
+							}
+
+							return SavannaEcotone.SavannaAreas[0] = rectangle;
+						}
 						else
 							throw new ArgumentException("SetSavannaArea parameters should be two elements long: (\"SetSavannaArea\", rectangle)!");
 					}
 				case "GetSaltFlatsArea":
 					{
-						return SaltFlatsEcotone.SaltFlatsArea;
+						Logger.Debug("\"GetSaltFlatsArea\" will not work properly for manual ecotone mapping. This is deprecated. Use \"GetSaltFlatsAreas\" instead.");
+						return SaltFlatsEcotone.SaltFlatsAreas[0];
+					}
+				case "GetSaltFlatsAreas":
+					{
+						return SaltFlatsEcotone.SaltFlatsAreas;
 					}
 				case "AddPotionVat":
 					{
@@ -97,6 +118,31 @@ public partial class SpiritReforgedMod : Mod
 							throw new ArgumentException("PlayerBotanist parameter 1 should be a Player.");
 
 						return BotanistHat.SetActive(args[1] as Player);
+					}
+					// Used solely for Scourge x Scarab
+				case "fablescrossmod.kaiju":
+					{
+						return Scarabeus.HandleModCall(args);
+					}
+				case "AddHerb":
+					{
+						if (args.Length == 1)
+							throw new ArgumentException("AddHerb requires at least two arguments! string AddHerb, int type or string tileFullName, bool customDrawing");
+
+						if (args.Length > 3)
+							throw new ArgumentException("AddHerb requires at most three arguments! string AddHerb, int type or string tileFullName, bool customDrawing");
+
+						return HerbSet.CallAddHerb(args[1], args.Length == 3 ? args[2] : null);
+					}
+				case "WorldHasEcotone":
+					{
+						if (args.Length != 2)
+							throw new ArgumentException("WorldHasEcotone requires two arguments exactly. string WorldHasEcotone, string name (the FullName of the ecotone)");
+
+						if (args[1] is not string s)
+							throw new ArgumentException("WorldHasEcotone requires two argument, string WorldHasEcotone, string name (the FullName of the ecotone)");
+
+						return EcotoneSurfaceMapping.ContainsEcotone(s);
 					}
 				default:
 					{

@@ -143,6 +143,11 @@ ScarabLightPetBuff: {
 	Description: "'Ele tá tramando algo...'"
 }
 
+ScarabMountBuff: {
+	DisplayName: Montaria de tatu-bola
+	Description: "'Segura ai!'"
+}
+
 StonemasonBuff: {
 	// DisplayName: Stonemason Block
 	// Description: Your next attack deals double knockback

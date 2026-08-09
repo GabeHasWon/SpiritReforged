@@ -1,9 +1,6 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
-using Terraria;
-using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 

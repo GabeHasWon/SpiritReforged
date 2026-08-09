@@ -4,10 +4,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Botanist.Tiles;
 
-public class Scarecrow : SingleSlotTile<ScarecrowSlot>, IAutoloadTileItem, ISwayTile
+public class Scarecrow : SingleSlotTile<ScarecrowSlot>, ILoadItem, ISwayTile
 {
 	private bool IsTop(int i, int j, out ScarecrowSlot entity)
 	{

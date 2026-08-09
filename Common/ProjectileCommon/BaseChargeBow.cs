@@ -1,10 +1,8 @@
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using System.IO;
-using static Microsoft.Xna.Framework.MathHelper;
-using static Terraria.Player;
-using static SpiritReforged.Common.Easing.EaseFunction;
+using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Easing;
 
 namespace SpiritReforged.Common.ProjectileCommon;
 
@@ -46,7 +44,12 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		SafeAI();
 		AdjustDirection();
 
-		player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
+		if (Main.myPlayer == Projectile.owner && Main.netMode != NetmodeID.SinglePlayer)
+			new PlayerMouseHandler.ShareMouseData((byte)Main.myPlayer, Main.MouseWorld).Send();
+
+		Vector2 mouse = PlayerMouseHandler.GetMouse(Projectile.owner);
+
+		player.ChangeDir(mouse.X > player.position.X ? 1 : -1);
 		player.heldProj = Projectile.whoAmI;
 		player.itemTime = 2;
 		player.itemAnimation = 2;
@@ -54,71 +57,98 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		Projectile.velocity = Vector2.Zero;
 		Projectile.rotation = _direction.ToRotation();
 
-		CompositeArmStretchAmount frontStretch = EaseCircularOut.Ease(Charge) switch
+		Player.CompositeArmStretchAmount frontStretch = EaseFunction.EaseCircularOut.Ease(Charge) switch
 		{
-			< 0.25f => CompositeArmStretchAmount.Full,
-			< 0.5f => CompositeArmStretchAmount.ThreeQuarters,
-			< 0.75f => CompositeArmStretchAmount.Quarter,
-			_ => CompositeArmStretchAmount.None
+			< 0.25f => Player.CompositeArmStretchAmount.Full,
+			< 0.5f => Player.CompositeArmStretchAmount.ThreeQuarters,
+			< 0.75f => Player.CompositeArmStretchAmount.Quarter,
+			_ => Player.CompositeArmStretchAmount.None
 		};
 
 		player.SetCompositeArmFront(true, frontStretch, player.itemRotation);
-		player.SetCompositeArmBack(true, CompositeArmStretchAmount.Full, player.itemRotation);
+		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
 
-		if (!_fired)
+		if (Main.myPlayer == Projectile.owner)
 		{
-			Projectile.timeLeft = STRING_BOUNCE_TIME;
-			if (player.channel)
+			if (!_fired)
 			{
-				if (Charge < 1)
-					Charge = Min(Charge + 1 / ChargeTime, 1);
+				Projectile.timeLeft = STRING_BOUNCE_TIME;
 
-				Charging();
-			}
-			else
-			{
-				bool perfectShot = Charge == 1 && _perfectShotCurTimer > 0;
-				Shoot(perfectShot);
-				_fired = true;
-				Projectile.netUpdate = true;
+				if (player.channel)
+				{
+					if (Charge < 1)
+						Charge = MathF.Min(Charge + 1 / ChargeTime, 1);
+
+					Charging();
+				}
+				else
+				{
+					bool perfectShot = Charge == 1 && _perfectShotCurTimer > 0;
+					Shoot(perfectShot);
+					_fired = true;
+					Projectile.netUpdate = true;
+				}
 			}
 		}
-		else
+
+		if (_fired)
 			AfterShoot();
 
-		if(Charge == 1)
-			_perfectShotCurTimer = (int)Max(--_perfectShotCurTimer, 0);
+		if (Charge == 1)
+			_perfectShotCurTimer = (int)MathF.Max(--_perfectShotCurTimer, 0);
 	}
 
 	public override bool? CanDamage() => false;
 
+	/// <summary>
+	/// Shoots the projectile. Runs only on the local client.
+	/// </summary>
 	protected void Shoot(bool perfectShot)
 	{
 		Projectile.TryGetOwner(out Player player);
 		Item playerWeapon = player.HeldItem;
-		float chargeMod = Lerp(1, _chargePowerMax, Charge);
+		float chargeMod = MathHelper.Lerp(1, _chargePowerMax, Charge);
 		if (perfectShot)
 			chargeMod *= _perfectShotPower;
 
 		float speed = playerWeapon.shootSpeed * chargeMod;
 		int damage = (int)(Projectile.damage * chargeMod);
 		float knockBack = Projectile.knockBack * chargeMod;
-		int type = GetCurAmmoType();
+		int type = GetShotProjectileType();
 
 		var p = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), player.Center, _direction * speed, type, damage, knockBack, Projectile.owner);
-		ModifyFiredProj(ref p, Charge == 1, perfectShot);
+		ModifyFiredProj(p, Charge == 1, perfectShot);
 
 		OnShoot(perfectShot);
 	}
 
+	/// <summary>
+	/// Runs while the bow is charging. Only run on the local client.
+	/// </summary>
 	protected virtual void Charging() { }
-	protected virtual void OnShoot(bool perfectShot) { }
-	protected virtual void AfterShoot() { }
-	protected virtual void SafeSetDefaults() { }
-	protected virtual void SafeAI() { }
-	protected virtual void ModifyFiredProj(ref Projectile projectile, bool fullCharge, bool perfectShot) { }
 
-	protected virtual int? OverrideProjectile(bool fullCharge, bool perfectShot) => null;
+	/// <summary>
+	/// Run after the projectile is shot. Only run on the local client.
+	/// </summary>
+	protected virtual void OnShoot(bool perfectShot) { }
+
+	/// <summary>
+	/// Runs while the bow is alive after shooting. Run on all clients and server.
+	/// </summary>
+	protected virtual void AfterShoot() { }
+
+	/// <inheritdoc cref="SetDefaults"/>
+	protected virtual void SafeSetDefaults() { }
+
+	/// <summary>
+	/// Runs right after the projectile is confirmed as player-owned, before all other functionality. Runs on all clients + server.
+	/// </summary>
+	protected virtual void SafeAI() { }
+
+	/// <summary>
+	/// Allows the projectile to be modified directly after its fired. Only run on the local client.
+	/// </summary>
+	protected virtual void ModifyFiredProj(Projectile projectile, bool fullCharge, bool perfectShot) { }
 
 	public abstract void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
 
@@ -126,19 +156,19 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	{
 		Texture2D projTex = TextureAssets.Projectile[Type].Value;
 
-		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
+		float perfectShotProgress = EaseFunction.EaseSine.Ease(EaseFunction.EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
 
 		//Draw string
 		SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
 
-		float stringHalfLength = stringLength/2;
+		float stringHalfLength = stringLength / 2;
 		const float stringScale = 2;
 		stringColor = stringColor.MultiplyRGB(lightColor);
 		stringColor = Color.Lerp(stringColor, Color.White, perfectShotProgress);
 
 		float timeLeftProgress = 1 - (float)Projectile.timeLeft / STRING_BOUNCE_TIME;
-		float easedCharge = EaseCircularOut.Ease(Charge);
-		float curDrawback = easedCharge - EaseOutElastic().Ease(timeLeftProgress) * easedCharge;
+		float easedCharge = EaseFunction.EaseCircularOut.Ease(Charge);
+		float curDrawback = easedCharge - EaseFunction.EaseOutElastic().Ease(timeLeftProgress) * easedCharge;
 		curDrawback *= maxDrawback;
 
 		var pointTop = new Vector2(stringOrigin.X, stringOrigin.Y - stringHalfLength);
@@ -146,6 +176,7 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		var pointBottom = new Vector2(stringOrigin.X, stringOrigin.Y + stringHalfLength);
 		int splineIterations = 30;
 		Vector2[] spline = Spline.CreateSpline([pointTop, pointMiddle, pointBottom], splineIterations);
+
 		for (int i = 0; i < splineIterations; i++)
 		{
 			var pixelPos = spline[i];
@@ -158,9 +189,9 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		}
 
 		//Draw arrow
-		if(!_fired)
+		if (!_fired)
 		{
-			int type = GetCurAmmoType();
+			int type = GetShotProjectileType();
 			Texture2D arrowTex = TextureAssets.Projectile[type].Value;
 			Vector2 arrowPos = pointMiddle.RotatedBy(Projectile.rotation);
 			arrowPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
@@ -178,12 +209,14 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 
 		return false;
 	}
+
 	protected virtual void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgress, Color lightColor)
 	{
-		Main.spriteBatch.Draw(arrowTex, arrowPos, null, lightColor, Projectile.rotation + PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(arrowTex, arrowPos, null, lightColor, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
+		Color color = Color.White.Additive() * perfectShotProgress;
 
 		for (int i = 0; i < 2; i++)
-			Main.spriteBatch.Draw(arrowTex, arrowPos, null, Color.White.Additive() * perfectShotProgress, Projectile.rotation + PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(arrowTex, arrowPos, null, color, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
 	}
 
 	protected void AdjustDirection(float deviation = 0f)
@@ -200,15 +233,10 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		if (player.direction != 1)
 			player.itemRotation -= 3.14f;
 
-		player.itemRotation = WrapAngle(player.itemRotation) - player.direction * PiOver2;
+		player.itemRotation = MathHelper.WrapAngle(player.itemRotation) - player.direction * MathHelper.PiOver2;
 	}
 
-	protected int GetCurAmmoType()
-	{
-		bool perfectShot = _perfectShotCurTimer < _perfectShotMaxTime && _perfectShotCurTimer > 0;
-		bool fullCharge = Charge == 1;
-		return OverrideProjectile(fullCharge, perfectShot) ?? (int)SelectedAmmo;
-	}
+	protected int GetShotProjectileType() => (int)SelectedAmmo;
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{

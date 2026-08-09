@@ -60,10 +60,10 @@ internal sealed class AssetLoader : ILoadable
 		}
 
 		//Register some vanilla textures under our own system for convenience
-		LoadedTextures.Add("FlameTrail", TextureAssets.Extra[189]);
-		LoadedTextures.Add("SwirlNoise", TextureAssets.Extra[193]);
-		LoadedTextures.Add("EnergyTrail", TextureAssets.Extra[194]);
-		LoadedTextures.Add("GlowTrail_2", TextureAssets.Extra[197]);
+		LoadedTextures.Add("FlameTrail", TextureAssets.Extra[ExtrasID.FlameLashTrailShape]);
+		LoadedTextures.Add("SwirlNoise", TextureAssets.Extra[ExtrasID.MagicMissileTrailErosion]);
+		LoadedTextures.Add("EnergyTrail", TextureAssets.Extra[ExtrasID.MagicMissileTrailShape]);
+		LoadedTextures.Add("GlowTrail_2", TextureAssets.Extra[ExtrasID.RainbowRodTrailShape]);
 	}
 
 	/// <summary> Requests and/or registers the texture of <paramref name="fullPath"/>. </summary>

@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class EnlilStatue : ModTile, IAutoloadTileItem
+public class EnlilStatue : ModTile, ILoadItem
 {
 	public class EnlilBuff : ModBuff
 	{
@@ -18,7 +18,7 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.jumpSpeedBoost += 0.8f;
+			player.jumpSpeedBoost += 2.4f;
 			player.maxFallSpeed *= 1.5f;
 			player.gravity += 0.05f;
 		}
@@ -85,7 +85,8 @@ public class EnlilStatue : ModTile, IAutoloadTileItem
 
 		return true;
 	}
-	public void StaticItemDefaults()
+
+	void ILoadItem.SetItemStaticDefaults(ModItem item)
 	{
 		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.CatBast;
 		ItemID.Sets.ShimmerTransformToItem[ItemID.CatBast] = Type;

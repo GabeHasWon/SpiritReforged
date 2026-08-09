@@ -1,14 +1,15 @@
 ﻿using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")] //Use Stargrass' glow
 public class StargrassVine : VineTile
 {
 	public override void PreAddObjectData()
 	{
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, StargrassTile.GetGlowColor);
+
 		AddMapEntry(new Color(24, 135, 28));
 	}
 }

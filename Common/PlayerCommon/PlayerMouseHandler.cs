@@ -26,7 +26,7 @@ internal class PlayerMouseHandler
 			Vector2 mouse = reader.ReadVector2();
 
 			if (Main.netMode == NetmodeID.Server)
-				new ShareMouseData(who, mouse).Send(); //Relay to other clients
+				new ShareMouseData(who, mouse).Send(-1, who); //Relay to other clients
 
 			if (!MouseByWhoAmI.TryAdd(who, mouse))
 				MouseByWhoAmI[who] = mouse;

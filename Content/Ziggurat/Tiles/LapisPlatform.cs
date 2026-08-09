@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class LapisPlatform : ModTile, IAutoloadTileItem
+public class LapisPlatform : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -38,10 +38,9 @@ public class LapisPlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
+
 		DustType = DustID.Cobalt;
 		AdjTiles = [TileID.Platforms];
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: Configurações do Cliente do Reforged
 
-	OceanShape: {
-		Label: Formato do Oceano
-		Tooltip:
-			'''
-			Modifica a geração de mundo do Oceano
-			Por padrão, utiliza-se a geração Piecewise_V.
-			A geração Piecewise_V é recomendada para jogatinas com o Spirit.
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: Detalhes nas reflexões
 		Tooltip:
@@ -24,35 +14,27 @@ ReforgedClientConfig: {
 		Label: Sons de Ambiente
 		Tooltip: Novos sons em biomas específicos
 	}
-}
 
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: Padrão
+	ScreenshakeStrength: {
+		Label: Tremor da tela
 		Tooltip: ""
 	}
 
-	SlantedSine: {
-		Label: Seno Inclinado
-		Tooltip: ""
+	DisableWater: {
+		Label: Desativa Visuais da Água
+		Tooltip: Tira todas as alterações visuais da água do Reforged.
 	}
 
-	Piecewise: {
-		Label: Piecewise
-		Tooltip: ""
+	DebugEcotones: {
+		Label: Debug de Ecotonos (com o WorldGen Previewer)
+		Tooltip:
+			'''
+			PRECISA de WorldGen Previewer Mod.
+			Permite que desenvolvedores e jogadores que utilizam o sistema Ecotone depurem problemas e compreendam os ecótonos com uma interface intuitiva.
+			'''
 	}
 
-	Piecewise_M: {
-		Label: Piecewise_ M
-		Tooltip: ""
-	}
-
-	Piecewise_V: {
-		Label: Piecewise_ V
-		Tooltip: ""
-	}
+	Headers.Developer: Ferramentas de Desenvolvidor
 }
 
 ReforgedServerConfig: {

@@ -22,7 +22,7 @@ public class TrailRenderer<T> where T : BaseTrail
 	public virtual void Draw(SpriteBatch spriteBatch)
 	{
 		foreach (BaseTrail trail in Trails)
-			trail.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+			trail.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 	}
 }
 

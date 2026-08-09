@@ -18,7 +18,10 @@ internal class BossFlags : GlobalNPC
 			DownedBossIds.Clear();
 
 			foreach (string boss in bosses)
-				DownedBossIds.Add(SpiritReforgedMod.Instance.Find<ModNPC>(boss).Type);
+			{
+				if (Mod.TryFind(boss, out ModNPC modNPC))
+					DownedBossIds.Add(modNPC.Type);
+			}
 		}
 
 		public override void NetSend(BinaryWriter writer)

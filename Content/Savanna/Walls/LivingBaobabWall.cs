@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Savanna.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Walls;
 
-public class LivingBaobabWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class LivingBaobabWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

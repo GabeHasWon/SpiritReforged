@@ -1,13 +1,13 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class CarvedLapis : ModTile, IAutoloadTileItem
+public class CarvedLapis : ModTile, ILoadItem
 {
 	public class LapisGridOverlay : TileGridOverlay
 	{
@@ -115,6 +115,7 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 	}
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sapphire).AddTile(TileID.WorkBenches).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = true;
@@ -127,7 +128,6 @@ public class CarvedLapis : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(28, 67, 194));
 
 		DustType = DustID.Cobalt;
-		this.AutoItem().ResearchUnlockCount = 100;
 		HitSound = SoundID.Tink;
 	}
 

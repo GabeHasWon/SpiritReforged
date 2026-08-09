@@ -4,7 +4,9 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using System.IO;
 using Terraria.Audio;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
@@ -122,6 +124,18 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		_oldPositions[0] = Projectile.Center + Projectile.velocity * 0.5f;
 
 		static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
+	}
+
+	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		bitWriter.WriteBit(active);
+		bitWriter.WriteBit(_hitNPC);
+	}
+
+	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+	{
+		active = bitReader.ReadBit();
+		_hitNPC = bitReader.ReadBit();
 	}
 
 	public override bool PreDraw(Projectile Projectile, ref Color lightColor)

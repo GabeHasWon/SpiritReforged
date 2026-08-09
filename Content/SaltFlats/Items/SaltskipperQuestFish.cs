@@ -1,3 +1,4 @@
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
 
@@ -21,7 +22,7 @@ public class SaltskipperQuestFish : ModItem
 
 	public override bool IsQuestFish() => true; 
 
-	public override bool IsAnglerQuestAvailable() => true;
+	public override bool IsAnglerQuestAvailable() => EcotoneSurfaceMapping.ContainsEcotone<SaltFlatsEcotone>();
 
 	public override void AnglerQuestChat(ref string description, ref string catchLocation)
 	{
