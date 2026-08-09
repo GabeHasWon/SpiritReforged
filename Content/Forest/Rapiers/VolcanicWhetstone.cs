@@ -117,7 +117,7 @@ public class VolcanicWhetstone : EquippableItem
 		Item.width = 32;
 		Item.height = 22;
 		Item.value = Item.sellPrice(gold: 1, silver: 30);
-		Item.rare = ItemRarityID.Blue;
+		Item.rare = ItemRarityID.Green;
 		Item.accessory = true;
 	}
 
