@@ -10,6 +10,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
@@ -216,8 +217,11 @@ public class GlyphGlobalProjectile : GlobalProjectile
 		if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
 			return;
 
-		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0 && Main.player[projectile.owner].heldProj != projectile.whoAmI)
+		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
 		{
+			if (Main.player[projectile.owner].heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+				return;
+
 			// Bee gun is just so many projectiles
 			if (projectile.type is ProjectileID.Bee or ProjectileID.GiantBee)
 			{
