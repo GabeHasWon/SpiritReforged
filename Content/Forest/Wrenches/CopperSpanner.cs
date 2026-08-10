@@ -4,35 +4,39 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.OreWrenches;
+namespace SpiritReforged.Content.Forest.Wrenches;
 
-public class CopperSpanner : ModItem, IHitSentry
+public class CopperSpanner : ModItem
 {
-	public sealed class SpeedUpProjectile : GlobalProjectile
+	private class SpeedUpProjectile : GlobalProjectile, IWrenchGlobal
 	{
 		public override bool InstancePerEntity => true;
 
-		internal short empoweredTime = 0;
+		public int Duration { get; set; }
 
-		public override bool PreAI(Projectile projectile)
+		public override void AI(Projectile projectile)
 		{
-			empoweredTime = (short)Math.Max(empoweredTime - 1, 0);
-
-			if (empoweredTime > 0)
+			if (Duration > 0)
 			{
-				projectile.GetGlobalProjectile<SpeedModifierProjectile>().speed += 0.12f;
+				Duration--;
+				projectile.GetGlobalProjectile<SpeedModifierProjectile>().SpeedModifier += 0.2f;
 
 				if (Main.rand.NextBool(16))
 					Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
 			}
+		}
 
-			return true;
+		public override void PostDraw(Projectile projectile, Color lightColor)
+		{
+			if (Duration > 0)
+				IWrenchGlobal.DrawDurationBar(projectile, Duration / (5 * 60f));
 		}
 	}
 
-	public class CopperSpannerSwing : SwungProjectile, IDrawPixelated
+	public class CopperSpannerSwing : SwungProjectile, IDrawPixelated, IHitSentry
 	{
 		public override LocalizedText DisplayName => ModContent.GetInstance<CopperSpanner>().DisplayName;
 
@@ -47,6 +51,14 @@ public class CopperSpanner : ModItem, IHitSentry
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => IHitSentry.DropScrap(Main.player[Projectile.owner], target);
+
+		void IHitSentry.OnHitSentry(Player player, Projectile sentry, ref int cooldown)
+		{
+			IHitSentry.ClientHitEffects(sentry);
+
+			player.GetModPlayer<WrenchPlayer>().StoredScrap--;
+			sentry.GetGlobalProjectile<SpeedUpProjectile>().Duration = 5 * 60;
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -73,7 +85,7 @@ public class CopperSpanner : ModItem, IHitSentry
 
 			Color lightColor = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
 			Vector2 origin = new(source.Width, source.Height / 2);
-			Vector2 smearWorldPosition = owner.Center + (Vector2.UnitX * (GetConfig<BasicConfiguration>().Reach + 10)).RotatedBy(rotation);
+			Vector2 smearWorldPosition = owner.Center + (Vector2.UnitX * (GetConfig<BasicConfiguration>().Reach + 20)).RotatedBy(rotation);
 			Vector2 smearDrawPosition = smearWorldPosition - Main.screenPosition;
 
 			IDrawPixelated.PixelateDrawPosition(ref smearDrawPosition);
@@ -103,16 +115,6 @@ public class CopperSpanner : ModItem, IHitSentry
 	{
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 3, source);
 		return false;
-	}
-
-	bool IHitSentry.CanHitSentry(Player player, Projectile sentry) => player.GetModPlayer<WrenchPlayer>().StoredScrap > 0;
-
-	void IHitSentry.OnHitSentry(Player player, Projectile sentry) 
-	{
-		const int duration = 5 * 60;
-
-		player.GetModPlayer<WrenchPlayer>().StoredScrap--;
-		sentry.GetGlobalProjectile<SpeedUpProjectile>().empoweredTime = duration;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.CopperBar, 12).AddTile(TileID.Anvils).Register();

@@ -61,10 +61,46 @@ public class ScrapPickup : ModItem, IDrawPixelated
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<WrenchPlayer>().StoredScrap += Item.stack;
+		if (player.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
+		{
+			wrenchPlayer.StoredScrap += Item.stack;
 
-		SoundEngine.PlaySound(SoundID.Grab with { PitchRange = (-0.3f, 0.3f) }, player.Center);
-		SoundEngine.PlaySound(SoundID.CoinPickup, player.Center);
+			SoundEngine.PlaySound(SoundID.Grab with { PitchRange = (-0.3f, 0.3f) }, player.Center);
+			SoundEngine.PlaySound(SoundID.CoinPickup, player.Center);
+
+			#region popup text
+			const int max_popup_text = 20;
+
+			bool createNew = true;
+			string itemName = DisplayName.Value;
+			Color textColor = Color.Yellow;
+
+			for (int i = 0; i < max_popup_text; i++)
+			{
+				PopupText popup = Main.popupText[i];
+
+				if (!popup.active || !popup.name.Contains(itemName) || popup.color != textColor)
+					continue;
+
+				popup.name = wrenchPlayer.StoredScrap + $" {itemName}";
+				createNew = false;
+
+				break;
+			}
+
+			if (createNew)
+			{
+				int index = PopupText.NewText(PopupTextContext.RegularItemPickup, Item, 1);
+				if (index != -1)
+				{
+					PopupText popup = Main.popupText[index];
+
+					popup.name = wrenchPlayer.StoredScrap + $" {itemName}";
+					popup.color = textColor;
+				}
+			}
+			#endregion
+		}
 
 		return false;
 	}

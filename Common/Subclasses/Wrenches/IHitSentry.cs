@@ -7,16 +7,52 @@ namespace SpiritReforged.Common.Subclasses.Wrenches;
 /// Hooks: <see cref="CanHitSentry(Player, Projectile)"/>, <see cref="OnHitSentry(Player, Projectile)"/>, <see cref="PreHitEffects(ref SoundStyle, ref int, ref int)"/> </summary>
 public interface IHitSentry
 {
-	public class SentryHitProjectile : GlobalProjectile
+	public sealed class SentryHitProjectile : GlobalProjectile
 	{
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => lateInstantiation && entity.ModProjectile is IHitSentry;
 
 		public override void PostAI(Projectile projectile)
 		{
-			if (projectile.ModProjectile is not IHitSentry)
+			Player owner = Main.player[projectile.owner];
+			if (projectile.ModProjectile is not IHitSentry iHitSentry || !owner.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
 				return;
 
-			Main.player[projectile.owner].GetModPlayer<WrenchPlayer>().IsSentryHitProjectile[projectile.whoAmI] = true;
+			foreach (Projectile sentry in Main.ActiveProjectiles)
+			{
+				if (!sentry.sentry || sentry.owner != projectile.owner)
+					continue;
+
+				if (projectile.Colliding(projectile.Hitbox, sentry.Hitbox) && iHitSentry.CanHitSentry(owner, sentry))
+				{
+					int immuneTime = owner.itemAnimationMax - 2;
+					iHitSentry.OnHitSentry(owner, sentry, ref immuneTime);
+
+					wrenchPlayer.sentryImmune[sentry.type] = immuneTime; //Set immune time
+				}
+			}
+		}
+	}
+
+	public sealed class SentryHitItem : GlobalItem
+	{
+		public override void UseItemHitbox(Item item, Player player, ref Rectangle hitbox, ref bool noHitbox)
+		{
+			if (noHitbox || item.ModItem is not IHitSentry iHitSentry || !player.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
+				return;
+
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (!projectile.sentry || projectile.owner != player.whoAmI)
+					continue;
+
+				if (hitbox.Intersects(projectile.Hitbox) && iHitSentry.CanHitSentry(player, projectile))
+				{
+					int immuneTime = player.itemAnimationMax - 2;
+					iHitSentry.OnHitSentry(player, projectile, ref immuneTime);
+					
+					wrenchPlayer.sentryImmune[projectile.type] = immuneTime; //Set immune time
+				}
+			}
 		}
 	}
 
@@ -28,11 +64,24 @@ public interface IHitSentry
 			ItemMethods.NewItemSynced(attacker.GetSource_OnHit(target), ModContent.ItemType<ScrapPickup>(), target.Center);
 	}
 
-	/// <summary>  Whether the player can hit a sentry. Returns true by default. </summary>
-	public bool CanHitSentry(Player player, Projectile sentry) => true;
+	public static void ClientHitEffects(Projectile sentry, int dustCount = 4, int dustType = DustID.MinecartSpark)
+	{
+		SoundEngine.PlaySound(SoundID.Item53 with { Pitch = 0.5f, PitchVariance = 0.3f });
+		SoundEngine.PlaySound(SoundID.Item52 with { Pitch = -0.5f, PitchVariance = 0.5f });
+
+		for (int i = 0; i < dustCount; i++)
+		{
+			Dust dust = Main.dust[Dust.NewDust(sentry.position, sentry.width, sentry.height, dustType)];
+			dust.fadeIn = 2;
+			dust.scale = 0.2f;
+		}
+	}
+
+	/// <summary> Whether the player can hit a sentry. Returns true by default. </summary>
+	public bool CanHitSentry(Player player, Projectile sentry) => player.GetModPlayer<WrenchPlayer>().StoredScrap > 0 && player.GetModPlayer<WrenchPlayer>().sentryImmune[sentry.type] == 0;
 
 	/// <summary> Runs when the player hits a sentry. </summary>
-	public void OnHitSentry(Player player, Projectile sentry);
+	public void OnHitSentry(Player player, Projectile sentry, ref int immuneTime) => ClientHitEffects(sentry);
 
 	/// <summary> Runs before the default hit effects occur. </summary>
 	public bool PreHitEffects(ref SoundStyle style, ref int dustType, ref int dustCount) => true;

@@ -5,6 +5,11 @@ CommonTooltips: {
 		Você precisa esvaziar antes de tirá-la
 		'''
 	Shimmerable: "{0} Se transforma em brilho"
+	/* Wrench:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries grants temporary buffs at the cost of scrap
+		''' */
 }
 
 Kelp: {
@@ -3151,21 +3156,7 @@ StonemasonGreatshield: {
 	// Tooltip: ""
 }
 
-CopperSpanner: {
-	// DisplayName: Copper Spanner
-	/* Tooltip:
-		'''
-		Allows scrap to be collected from enemies
-		Hitting sentries uses scrap to buff them for a short time
-		''' */
-}
-
-TinSpanner: {
-	// DisplayName: Tin Spanner
-	// Tooltip: "{$CopperSpanner.Tooltip}"
-}
-
-ScrapItem: {
+ScrapPickup: {
 	// DisplayName: Scrap
 	/* Tooltip:
 		'''
@@ -3174,7 +3165,26 @@ ScrapItem: {
 		''' */
 }
 
-ScrapPickup: {
-	// DisplayName: Scrap Pickup
-	// Tooltip: ""
+CopperSpanner: {
+	// DisplayName: Copper Spanner
+	// Tooltip: "{CommonTooltips.Wrench}"
+}
+
+TinSpanner: {
+	// DisplayName: Tin Spanner
+	// Tooltip: "{CommonTooltips.Wrench}"
+}
+
+MagnetiteWrench: {
+	// DisplayName: Magnetite Wrench
+	// Tooltip: "{CommonTooltips.Wrench}"
+}
+
+LargeWrench: {
+	// DisplayName: Comically Large Wrench
+	/* Tooltip:
+		'''
+		{CommonTooltips.Wrench}
+		Charged strikes move sentries to the cursor position
+		''' */
 }

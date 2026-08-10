@@ -1,23 +1,19 @@
 ﻿namespace SpiritReforged.Common.ProjectileCommon;
 
-/// <summary>
-/// Allows projectiles to arbitrarily speed up. Slow down not currently implemented.<br/>
-/// Set the projectile's <see cref="speed"/> to >0 to increase it's speed (if set every frame), or use <see cref="ProjectileSpeedModifierPlayer.GetProjectileModifierSpeed"/>
-/// for more dynamic, arbitrary player-wide changes (such as an accessory).
-/// </summary>
+/// <summary> Allows projectiles to arbitrarily speed up. Slow down not currently implemented.<br/>
+/// Set the projectile's <see cref="SpeedModifier"/> to >0 to increase it's speed (if set every frame), or use <see cref="ProjectileSpeedModifierPlayer.GetProjectileModifierSpeed"/>
+/// for more dynamic, arbitrary player-wide changes (such as an accessory). </summary>
 internal class SpeedModifierProjectile : GlobalProjectile
 {
-	/// <summary>
-	/// Safety measure to stop recursion. I don't know if it's needed. - Gabe
-	/// </summary>
+	/// <summary> Safety measure to stop recursion. I don't know if it's needed. - Gabe </summary>
 	private static bool Recursion = false;
 
 	public override bool InstancePerEntity => true;
 
-	internal float speed = 0;
+	public StatModifier SpeedModifier { get; set; } = StatModifier.Default;
 	
-	// Actual tracker for speed. Don't modify this directly.
-	private float timer = 0;
+	//Internal tracker for speed. Don't modify this directly.
+	private float _timer = 0;
 
 	public override bool PreAI(Projectile projectile)
 	{
@@ -30,20 +26,19 @@ internal class SpeedModifierProjectile : GlobalProjectile
 		if (!projectile.TryGetOwner(out Player plr))
 			return;
 
-		self.timer += plr.GetModPlayer<ProjectileSpeedModifierPlayer>().Invoke(projectile);
-		self.timer += self.speed;
-		self.speed = 0;
+		self._timer += plr.GetModPlayer<ProjectileSpeedModifierPlayer>().Invoke(projectile);
+		self._timer += self.SpeedModifier.ApplyTo(1) - 1f;
 
-		while (self.timer > 1)
+		self.SpeedModifier = StatModifier.Default; //Reset field
+
+		while (self._timer > 1)
 		{
 			RepeatAI(projectile, 1);
-			self.timer--;
+			self._timer--;
 		}
 	}
 
-	/// <summary>
-	/// Method used to run AI again, with recursion checks & respecting <see cref="ModProjectile.AIType"/>.
-	/// </summary>
+	/// <summary> Method used to run AI again, with recursion checks & respecting <see cref="ModProjectile.AIType"/>. </summary>
 	public static void RepeatAI(Projectile projectile, int repeats)
 	{
 		if (Recursion)

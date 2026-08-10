@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Visuals;
 
-namespace SpiritReforged.Content.Forest.OreWrenches;
+namespace SpiritReforged.Content.Forest.Wrenches;
 
 public class TinSpanner : CopperSpanner
 {
