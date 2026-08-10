@@ -3155,6 +3155,6 @@ SaltGraveMarkerItem: {
 }
 
 NotSunItemIcon: {
-	// DisplayName: Not Sun Item Icon
-	// Tooltip: ""
+	DisplayName: 非日
+	Tooltip: ""
 }
