@@ -48,7 +48,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 
 	public static HouseLoader.BuilderResult FillEnchantedWorkbench(HouseBuilder houseBuilder)
 	{
-		if (houseBuilder.Type is not HouseType.Wood)
+		if (houseBuilder.Type is not (HouseType.Wood or HouseType.Jungle or HouseType.Ice))
 			return HouseLoader.Fail;
 
 		bool placedWorkbench = false;

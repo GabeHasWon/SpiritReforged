@@ -1,22 +1,24 @@
-﻿using SpiritReforged.Content.Forest.ArcaneNecklace;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Content.Forest.ArcaneNecklace;
+using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Forest.Cloud.Items;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Forest.RoguesCrest;
+using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Granite.Vanity;
 using SpiritReforged.Content.Jungle.Misc.DyeCrate;
 using SpiritReforged.Content.Jungle.Toucane;
 using SpiritReforged.Content.Ocean.Items.PoolNoodle;
 using SpiritReforged.Content.Ocean.Items.Vanity;
-using SpiritReforged.Content.Underground.Items.BoulderClub;
-using SpiritReforged.Content.Underground.Items.ExplorerTreads;
-using SpiritReforged.Content.Underground.Items.Zipline;
-using SpiritReforged.Content.Forest.MagicPowder;
-using SpiritReforged.Content.Forest.Cartography.Maps;
-using SpiritReforged.Content.Underworld.Blasphemer;
-using SpiritReforged.Content.Underground.Items.FingerGun;
-using SpiritReforged.Content.Granite.Vanity;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using SpiritReforged.Content.Underground.Items;
+using SpiritReforged.Content.Underground.Items.BoulderClub;
+using SpiritReforged.Content.Underground.Items.ExplorerTreads;
+using SpiritReforged.Content.Underground.Items.FingerGun;
+using SpiritReforged.Content.Underground.Items.Zipline;
+using SpiritReforged.Content.Underworld.Blasphemer;
+using System.Linq;
 using static SpiritReforged.Common.WorldGeneration.Chests.ChestPoolUtils;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
@@ -53,5 +55,11 @@ public class ChestLoot : ModSystem
 		//AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<SharpshooterGlove>()), (int)VanillaChestID.Granite, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.25f, ModContent.ItemType<HardlightVisor>()), (int)VanillaChestID.Granite, 1);
 		AddToVanillaChest(new ChestInfo(1, 0.2f, ModContent.ItemType<PrefixVoucher>()), (int)VanillaChestID.Gold, Main.rand.Next(2, 4));
+
+		if (WorldGen.everythingWorldGen)
+		{
+			int[] glyphTypes = Enchanter.SpecialShop.Keys.ToArray(); //Have gold chests generate with glyphs in zenith worlds
+			AddToVanillaChest(new ChestInfo(1, 0.2f, glyphTypes), (int)VanillaChestID.Gold, WorldGen.genRand.Next(1, 4));
+		}
 	}
 }
