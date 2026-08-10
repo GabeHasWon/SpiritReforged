@@ -721,7 +721,7 @@ Enchanter: {
 		Content: I take a moment and feel... all is well.
 		NoHome: I don't imagine you've got a place for me to rest my weary bones?
 		FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
-		LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but no so many it becomes overwhelming.
+		LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
 		DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
 		HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
 		LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
