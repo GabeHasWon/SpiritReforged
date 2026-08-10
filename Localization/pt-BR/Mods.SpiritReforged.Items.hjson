@@ -3154,7 +3154,7 @@ BlazeGlyph: {
 	/* Tooltip:
 		'''
 		Dealing damage sets you ablaze
-		+25% damage and +10% critical strike chance
+		up to +40% damage and +20% critical strike chance depending on lost hp
 		''' */
 	// Effect: Blazing
 	// Death: "{0} was consumed by Rage..."

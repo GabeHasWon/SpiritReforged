@@ -8,6 +8,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
+using System.Linq;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Glyphs.Radiant;
@@ -94,7 +95,7 @@ public class RadiantPlayer : ModPlayer
 
 	public override void PreUpdate()
 	{
-		if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>() || Main.projectile.Any(p => p.active && p.owner == Player.whoAmI && Main.projPet[p.type] && p.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>()))
 		{
 			if (!Main.dedServ)
 			{
@@ -186,23 +187,33 @@ public class RadiantPlayer : ModPlayer
 
 	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (DivineStrike && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone, hit.Crit);
+			if (DivineStrike)
+			{
+				RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
+			else
+				radiantCounter = 0;	
 		}
 	}
 
 	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (DivineStrike && proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone, hit.Crit);
+			if (DivineStrike)
+			{
+				RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
+			else
+				radiantCounter = 0;
 		}
 	}
 

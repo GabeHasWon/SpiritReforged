@@ -50,7 +50,7 @@ public class VoidNPC : GlobalNPC
 	public static void AddVoidStack(Player owner, NPC target, int damageDealt)
 	{
 		float pitchMultiplier = 1;
-		SingularityResult result = TryGetSingularity(owner, target, out SingularCollapse collapse, owner.whoAmI == Main.myPlayer);
+		SingularityResult result = TryGetSingularity(owner, target, out SingularCollapse collapse, owner.whoAmI == Main.myPlayer && owner.ownedProjectileCounts[ModContent.ProjectileType<SingularCollapse>()] <= 0);
 
 		if (result is SingularityResult.Created or SingularityResult.Found && collapse.Stacks < MAX_STACKS)
 		{
