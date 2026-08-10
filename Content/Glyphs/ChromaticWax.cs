@@ -325,6 +325,24 @@ public abstract class GlyphItem : ModItem
 			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
 		}
 
+		public override void ModifyWeaponCrit(Item item, Player player, ref float crit)
+		{
+			if (HasGlyph(out var glyphItem))
+				glyphItem.ModifyGlyphedItemCrit(player, ref crit);
+		}
+
+		public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
+		{
+			if (HasGlyph(out var glyphItem))
+				glyphItem.ModifyGlyphedItemDamage(player, ref damage);
+		}
+
+		public override void ModifyWeaponKnockback(Item item, Player player, ref StatModifier knockback)
+		{
+			if (HasGlyph(out var glyphItem))
+				glyphItem.ModifyGlyphedItemKnockback(player, ref knockback);
+		}
+
 		public override bool ConsumeItem(Item item, Player player)
 		{
 			bool value = StopItemConsumption;
@@ -359,7 +377,7 @@ public abstract class GlyphItem : ModItem
 				{
 					glyphItem.DrawInWorld(item, spriteBatch, item.GetDrawParams(lightColor, rotation));
 					return false;
-				}			
+				}
 			}
 
 			return true;
@@ -530,6 +548,10 @@ public abstract class GlyphItem : ModItem
 			OverrideColor = new Color(120, 190, 120)
 		});
 	}
+
+	public virtual void ModifyGlyphedItemCrit(Player player, ref float crit) { }
+	public virtual void ModifyGlyphedItemDamage(Player player, ref StatModifier damage) { }
+	public virtual void ModifyGlyphedItemKnockback(Player player, ref StatModifier knockBack) { }
 
 	/// <summary> Used to modify drawing of glyph-affected items in the world. </summary>
 	/// <param name="item"> The item being drawn. </param>

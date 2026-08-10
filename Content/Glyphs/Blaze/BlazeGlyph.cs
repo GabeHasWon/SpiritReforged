@@ -14,6 +14,12 @@ namespace SpiritReforged.Content.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
+	public const float MAX_CRIT_BONUS = 20f; // the critical strike chance bonus when the player is at 1hp
+	public const float MIN_CRIT_BONUS = 5f; // the critical strike chance bonus when the player is at full hp
+
+	public const float MAX_DAMAGE_BONUS = 0.4f; // the damage bonus when the player is at 1hp
+	public const float MIN_DAMAGE_BONUS = 0.1f; // the damage bonus when the player is at full hp
+
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void UpdateBadLifeRegen()
@@ -23,7 +29,7 @@ public class BlazeGlyph : GlyphItem
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
 
-				Player.lifeRegen -= (int)Math.Max(6, Player.statLife * 0.1f);
+				Player.lifeRegen -= 8 + (int)(Player.statLife * 0.075f);
 			}
 		}
 
@@ -196,9 +202,6 @@ public class BlazeGlyph : GlyphItem
 
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
-		item.damage += (int)Math.Round(item.damage * 0.25f);
-		item.crit += 10;
-
 		base.OnApplyGlyph(item, context);
 	}
 
@@ -328,6 +331,8 @@ public class BlazeGlyph : GlyphItem
 		}
 	}
 
+	public override void ModifyGlyphedItemCrit(Player player, ref float crit) => crit += MathHelper.Lerp(MIN_CRIT_BONUS, MAX_CRIT_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
+	public override void ModifyGlyphedItemDamage(Player player, ref StatModifier damage) => damage += MathHelper.Lerp(MIN_DAMAGE_BONUS, MAX_DAMAGE_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (Main.dedServ)
