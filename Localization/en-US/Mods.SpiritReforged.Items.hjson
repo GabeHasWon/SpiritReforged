@@ -3324,8 +3324,8 @@ SkyPylonItem: {
 }
 
 CandlewickItem: {
-	DisplayName: Candlewick
-	Tooltip: ""
+	DisplayName: Candlewick Rope
+	Tooltip: "Can be climbed on"
 }
 
 WaxBlockItem: {
