@@ -1,87 +1,91 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
 using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
-using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.Subclasses.Wrenches;
 
-/// <summary>
-/// Controls wrench (sentry onhit) functionality and the scrap UI element on the mouse.
-/// </summary>
-internal class WrenchPlayer : ModPlayer
+/// <summary> Controls wrench (sentry onhit) functionality and the scrap UI element on the mouse. </summary>
+public sealed class WrenchPlayer : ModPlayer
 {
-	const int MeleeHitTime = 60000;
+	public const int SCRAP_GRAB_MAX = 15;
+	private const int MELEE_HIT_TIME = 60000;
 
-	/// <summary>
-	/// Sparse array where projectiles set their own flag in <see cref="ISentryHitEntity.SentryHitProjectile.PostAI(Projectile)"/> for checking in <see cref="PostUpdateEquips"/>.
-	/// </summary>
+	/// <summary> Sparse array where projectiles set their own flag in <see cref="IHitSentry.SentryHitProjectile.PostAI(Projectile)"/> for checking in <see cref="PostUpdateEquips"/>. </summary>
 	internal readonly bool[] IsSentryHitProjectile = new bool[Main.maxProjectiles];
 
-	/// <summary>
-	/// Internal sparse array for per-projectile immune frames.
-	/// </summary>
+	/// <summary> Internal sparse array for per-projectile immune frames. </summary>
 	private readonly int[] _sentryImmune = new int[Main.maxProjectiles];
 
-	public int StoredScrap { get; private set; }
+	public static bool DisplayUI => !Main.LocalPlayer.mouseInterface && Main.LocalPlayer.HeldItem.ModItem is IHitSentry; //REMOVE PROPERTY
 
-	private int _scrapGrabTimer = 0;
-	private int _lastScrapAmount = 0;
-
-	public override void Load() => CustomCursor.DrawCustomCursor += AddScrapIcon;
-
-	private static void AddScrapIcon(bool thick)
+	public int StoredScrap
 	{
-		if (thick || Main.LocalPlayer.HeldItem.ModItem is not IScrapDropEntity and not ISentryHitEntity || Main.LocalPlayer.mouseInterface)
-			return;
-
-		const int Offset = 30;
-
-		int type = ModContent.ItemType<ScrapItem>();
-		Main.instance.LoadItem(type);
-		Texture2D tex = TextureAssets.Item[type].Value;
-		Vector2 pos = Main.MouseScreen;
-		float opacity = 1f;
-
-		if (pos.X < Main.screenWidth - Offset * 2)
-			pos.X += Offset;
-		else
-			pos.X -= Offset;
-
-		WrenchPlayer plr = Main.LocalPlayer.GetModPlayer<WrenchPlayer>();
-		string text = "x" + plr.StoredScrap.ToString();
-		Color color = Main.MouseTextColorReal;
-		float adjustedTimer = MathF.Max(0, plr._scrapGrabTimer * 0.02f);
-		float textScale = 1f + adjustedTimer;
-
-		if (text == "x0")
+		get => _storedScrap;
+		set
 		{
-			text = "x";
-			opacity = 0.6f;
-			color = new Color(255, 140, 140);
+			_scrapGrabTimer = SCRAP_GRAB_MAX;
+			_lastScrapAmount = _storedScrap;
+			_uiDisplayTime = 0;
+
+			_storedScrap = value;
 		}
-
-		color = Color.Lerp(color, plr._lastScrapAmount >= 0 ? Color.Yellow : Color.Red, plr._scrapGrabTimer / 15f);
-		Main.spriteBatch.Draw(tex, pos, Color.White * opacity);
-
-		pos += new Vector2(16, 14);
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, pos, color * opacity, adjustedTimer, Vector2.Zero, new(textScale));
 	}
 
-	/// <summary>
-	/// Allows the amount of scrap to be modified. This is done to make sure <see cref="_scrapGrabTimer"/> can be set to animate the UI properly.
-	/// </summary>
-	/// <param name="amount"></param>
-	public void ModifyScrap(int amount)
+	private int _storedScrap;
+	private int _scrapGrabTimer;
+	private int _lastScrapAmount;
+	private int _uiDisplayTime;
+
+	public override void Load() => CustomCursor.DrawCustomCursor += DrawScrapIcon;
+
+	private static void DrawScrapIcon(bool thick)
 	{
-		StoredScrap += amount;
-		_lastScrapAmount = amount;
-		_scrapGrabTimer = 15;
+		const int inactive_fade_time = 120;
+
+		if (thick && !Main.LocalPlayer.mouseInterface && Main.LocalPlayer.HeldItem.ModItem is IHitSentry)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+			Texture2D texture = ScrapPickup.WorldIcon.Value;
+			Texture2D gridTexture = AssetLoader.LoadedTextures["GridPattern"].Value;
+
+			Rectangle source = texture.Frame(3, 1, 0, 0, -2, 0);
+			Vector2 position = Main.MouseScreen + new Vector2(30);
+
+			if (Main.LocalPlayer.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
+			{
+				float opacity = 0.2f + EaseFunction.EaseCircularOut.Ease(1f - Math.Min(wrenchPlayer._uiDisplayTime / (float)inactive_fade_time, 1)) * 0.8f;
+				float lerp = wrenchPlayer._scrapGrabTimer / (float)SCRAP_GRAB_MAX;
+				float rotation = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 60f) * 0.1f;
+				bool increase = wrenchPlayer._lastScrapAmount < wrenchPlayer.StoredScrap;
+
+				Color lerpColor = Color.Lerp(Color.Yellow, increase ? Color.White : Color.PaleVioletRed, lerp) * opacity;
+				Vector2 iconOffset = new Vector2(0, lerp * (increase ? 5 : -5)) + Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 50f);
+
+				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+				{
+					Texture2D solid = TextureColorCache.ColorSolid(texture, Color.White);
+					spriteBatch.Draw(solid, position + offset - iconOffset, source, Color.Yellow.Additive() * (opacity - 0.2f), rotation, source.Size() / 2, 1, 0, 0);
+				});
+
+				spriteBatch.Draw(texture, position - iconOffset, source, Color.White * opacity, rotation, source.Size() / 2, 1, 0, 0);
+
+				Utils.DrawBorderString(spriteBatch, wrenchPlayer.StoredScrap.ToString(), position + new Vector2(4, 0), lerpColor, 1 + lerp * 0.2f, 0, 0.3f);
+			}
+		}
 	}
 
 	public override void PostUpdateEquips() 
 	{
-		_scrapGrabTimer--;
+		if (_scrapGrabTimer > 0)
+			_scrapGrabTimer--;
+
+		if (Main.LocalPlayer.HeldItem.ModItem is IHitSentry)
+			_uiDisplayTime++;
+		else
+			_uiDisplayTime = 0;
 
 		bool hasItem = Player.itemAnimation > 0 && !Player.ItemAnimationJustStarted;
 		Rectangle drawHitbox = Item.GetDrawHitbox(Player.HeldItem.type, Player);
@@ -94,7 +98,7 @@ internal class WrenchPlayer : ModPlayer
 			if (timer <= 0)
 				continue;
 
-			if (timer == MeleeHitTime) // Melee hits are hardcoded to only reset when the item being used "resets"
+			if (timer == MELEE_HIT_TIME) // Melee hits are hardcoded to only reset when the item being used "resets"
 			{
 				if (!hasItem) // Only decrement when the item is no longer in use or has been reused
 					timer = 0;
@@ -108,12 +112,12 @@ internal class WrenchPlayer : ModPlayer
 			if (proj.owner != Player.whoAmI || !proj.sentry || _sentryImmune[proj.whoAmI] > 0)
 				continue;
 
-			if (hasItem && hitbox.Intersects(proj.Hitbox) && Player.HeldItem.ModItem is ISentryHitEntity wrench && wrench.CanHitSentry(Player, proj))
+			if (hasItem && hitbox.Intersects(proj.Hitbox) && Player.HeldItem.ModItem is IHitSentry wrench && wrench.CanHitSentry(Player, proj))
 				OnHitSentry(wrench, proj, true);
 
 			for (int i = 0; i < IsSentryHitProjectile.Length; ++i)
 			{
-				if (IsSentryHitProjectile[i] && Main.projectile[i].ModProjectile is ISentryHitEntity wrenchProj && wrenchProj.CanHitSentry(Player, proj))
+				if (IsSentryHitProjectile[i] && Main.projectile[i].ModProjectile is IHitSentry wrenchProj && wrenchProj.CanHitSentry(Player, proj))
 					OnHitSentry(wrenchProj, proj, false);
 
 				IsSentryHitProjectile[i] = false;
@@ -121,7 +125,7 @@ internal class WrenchPlayer : ModPlayer
 		}
 	}
 
-	private void OnHitSentry(ISentryHitEntity wrench, Projectile proj, bool isMelee)
+	private void OnHitSentry(IHitSentry wrench, Projectile proj, bool isMelee)
 	{
 		wrench.OnHitSentry(Player, proj);
 		_sentryImmune[proj.whoAmI] = 15; // Immune time defaults to 15 frames (1/4th of a second)...
@@ -129,7 +133,7 @@ internal class WrenchPlayer : ModPlayer
 		wrench.ModifySentryImmuneTime(proj, ref _sentryImmune[proj.whoAmI], ref isMelee);
 
 		if (isMelee) // ...unless the item or self-marked projectile counts as "melee", where it will last for as long as the item is being used
-			_sentryImmune[proj.whoAmI] = MeleeHitTime;
+			_sentryImmune[proj.whoAmI] = MELEE_HIT_TIME;
 
 		SoundStyle sound = Main.rand.NextBool() ? SoundID.Item53 : SoundID.Item52;
 		int dustType = DustID.MinecartSpark;

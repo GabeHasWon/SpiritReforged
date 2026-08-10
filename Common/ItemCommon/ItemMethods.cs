@@ -13,6 +13,9 @@ internal static class ItemMethods
 	{
 		int id = Item.NewItem(source, position, item, noGrabDelay: noGrabDelay);
 
+		if (!noGrabDelay)
+			Main.item[id].noGrabDelay = 100;
+
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			NetMessage.SendData(MessageID.SyncItem, number: id, number2: noGrabDelay ? 1 : 0);
 	}

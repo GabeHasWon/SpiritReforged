@@ -3173,3 +3173,8 @@ ScrapItem: {
 		'Sharp! (ow)'
 		''' */
 }
+
+ScrapPickup: {
+	// DisplayName: Scrap Pickup
+	// Tooltip: ""
+}
