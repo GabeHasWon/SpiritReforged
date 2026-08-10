@@ -19,7 +19,7 @@ public class RadiantPlayer : ModPlayer
 
 	public bool DivineStrike => radiantCounter >= ChargeTime;
 
-	public int ChargeTime => (int)(120 + Player.HeldItem.useTime * 0.05f);
+	public int ChargeTime => (int)(180 + Player.HeldItem.useTime * 0.06f);
 
 	public int radiantCounter;
 	private float _ease;
@@ -188,10 +188,10 @@ public class RadiantPlayer : ModPlayer
 	{
 		if (DivineStrike && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone);
+			RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone);
+				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
 		}
 	}
 
@@ -199,15 +199,15 @@ public class RadiantPlayer : ModPlayer
 	{
 		if (DivineStrike && proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone);
+			RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone);
+				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
 		}
 	}
 
 	[NetSynced(true)]
-	private static void RadiantHitEffects(NPC target, Player owner, int damageDone)
+	private static void RadiantHitEffects(NPC target, Player owner, int damageDone, bool crit)
 	{
 		float scaleModifier = MathHelper.Lerp(0.75f, 2f, Math.Min(damageDone / 200f, 1));
 
@@ -264,7 +264,11 @@ public class RadiantPlayer : ModPlayer
 		}
 
 		if (owner.TryGetModPlayer(out RadiantPlayer radiantPlayer))
+		{
 			radiantPlayer.radiantCounter = 0;
+			if (crit) // 4 second delay when a crit occurs
+				radiantPlayer.radiantCounter -= 240;
+		}
 
 		static void DecelerateAction(Particle p)
 		{
