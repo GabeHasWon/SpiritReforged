@@ -7,6 +7,7 @@ public class Overloader : CopperSpanner
 {
 	public sealed class OverloaderExplosion : ModProjectile
 	{
+		public override string Texture => AssetLoader.EmptyTexture;
 		public ref float Power => ref Projectile.ai[0];
 
 		public int WindupTime { get; private set; }
