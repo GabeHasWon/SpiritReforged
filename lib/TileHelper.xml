@@ -39,7 +39,7 @@
             Furniture types can be revoked or added using basic signs, alongside the template tile name.<para/>
             For example, you can use the following:
             <code>AllArgs(DustID.Marble, new(0.75f, 0.75f, 0.95f), distortGlow: false) - new BarrelTile() + new UniqueFurnitureTile()</code></param>
-            <param name="ingredient"> The primary ingredient used in crafting. </param>
+            <param name="ingredient"> The primary ingredient used in crafting. If <see cref="F:Terraria.ID.ItemID.None"/>, no recipe will be created for any item. </param>
             <param name="loadItems"> Whether this set should autoload an item for each tile. </param>
         </member>
         <member name="M:TileHelper.Autoloader.Load(Terraria.ModLoader.Mod)">

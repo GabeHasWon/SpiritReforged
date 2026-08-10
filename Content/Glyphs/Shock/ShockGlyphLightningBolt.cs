@@ -225,8 +225,6 @@ public partial class ShockGlyph
 
 		public static void LightningHit(NPC target, int damageDone, bool crit)
 		{
-			Main.NewText(Main.LocalPlayer.whoAmI);
-
 			var rect = target.getRect();
 
 			int damage = Math.Max(damageDone, 1);
@@ -304,7 +302,7 @@ public partial class ShockGlyph
 					if (Dying)
 						trail.Opacity = Projectile.timeLeft / 200f;
 
-					trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+					trail?.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 				}
 		}
 

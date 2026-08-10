@@ -76,6 +76,10 @@ GameTips: {
 	ReforgedTip14: 沙漠底下的绿洲或许能带来一丝难得的宁静。
 	ReforgedTip15: 琥珀中藏着秘密！或许你能在其中发现一些奖励……
 	ReforgedTip16: 在沙漠废墟中行走时请多加小心！有些地面可能没有你想象的那么牢固。
+	# Spellbound
+	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
+	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
+	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
 }
 
 Emotes: {

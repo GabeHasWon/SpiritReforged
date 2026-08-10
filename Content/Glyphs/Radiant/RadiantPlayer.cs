@@ -5,6 +5,7 @@ using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
 using Terraria.Audio;
@@ -13,16 +14,15 @@ namespace SpiritReforged.Content.Glyphs.Radiant;
 
 public class RadiantPlayer : ModPlayer
 {
-	public static Asset<Texture2D> Aura2 => DrawHelpers.RequestLocal<RadiantPlayer>("RadiantGlyph_Aura2", false);
-
-	private const int FLASH_MAX = 30;
+	public static readonly Asset<Texture2D> Aura2 = DrawHelpers.RequestLocal<RadiantPlayer>("RadiantGlyph_Aura2", false);
+	private const int EASE_MAX = 30;
 
 	public bool DivineStrike => radiantCounter >= ChargeTime;
 
 	public int ChargeTime => (int)(120 + Player.HeldItem.useTime * 0.05f);
 
 	public int radiantCounter;
-	private int _flash;
+	private float _ease;
 
 	public override void Load() => On_Main.DrawCachedProjs += DrawParhelia;
 
@@ -32,47 +32,57 @@ public class RadiantPlayer : ModPlayer
 
 		if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 		{
-			Texture2D aura = Aura2.Value;
-			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-			Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
-			SpriteBatch spriteBatch = Main.spriteBatch;
+			List<RadiantPlayer> queued = [];
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (!player.TryGetModPlayer(out RadiantPlayer radiantPlayer) || radiantPlayer._flash <= 0)
-					continue;
+				if (player.TryGetModPlayer(out RadiantPlayer radiantPlayer) && radiantPlayer._ease != 0)
+					queued.Add(radiantPlayer);
+			}
 
-				float lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(1f - radiantPlayer._flash / 30f, 1));
-				Vector2 pos = player.Center + new Vector2(-9 * player.direction, player.gfxOffY - 25 * lerp) - player.velocity * 0.5f;
-				float scaleFactor = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.05f;
-
-				SpriteEffects flip = (player.direction == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-				if (player.direction == -1)
-					flip = SpriteEffects.FlipHorizontally;
+			if (queued.Count > 0)
+			{
+				Texture2D aura = Aura2.Value;
+				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+				Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+				SpriteBatch spriteBatch = Main.spriteBatch;
 
 				if (!startSpriteBatch)
 					spriteBatch.End();
 
-				Color[] sunColors = [
-					new Color(255, 150, 50),
+				spriteBatch.Begin(SpriteSortMode.Deferred, AfterimagePlayer.AdditiveNoAlpha, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+				foreach (RadiantPlayer radiantPlayer in queued)
+				{
+					Player player = radiantPlayer.Player;
+					float lerp = EaseFunction.EaseCircularOut.Ease(radiantPlayer._ease / EASE_MAX);
+					Vector2 pos = player.Center + new Vector2(-9 * player.direction, player.gfxOffY - 25 * lerp) - player.velocity * 0.5f;
+					float scaleFactor = 1f + (float)Math.Sin(Main.GlobalTimeWrappedHourly) * 0.05f;
+
+					SpriteEffects flip = (player.direction == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+					if (player.direction == -1)
+						flip = SpriteEffects.FlipHorizontally;
+
+					Color[] sunColors =
+					[
+						new Color(255, 150, 50),
 						new Color(255, 200, 101),
 						new Color(255, 220, 218),
 					];
 
-				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[1] * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
 
-				spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[0] * 0.4f * lerp, 0f, bloom.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-				spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[1] * 0.35f * lerp, 0f, bloom.Size() / 2f, 0.5f * scaleFactor, flip, 0f);
-				spriteBatch.Draw(bloom, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, bloom.Size() / 2f, 0.4f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[0] * lerp, 0f, aura.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[1] * 0.4f * lerp, 0f, aura.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, aura.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
+					spriteBatch.Draw(aura, pos - Main.screenPosition, null, Color.White * 0.3f * lerp, 0f, aura.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
 
-				spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[0] * lerp, 0f, aura.Size() / 2f, 0.8f * scaleFactor, flip, 0f);
-				spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[1] * 0.4f * lerp, 0f, aura.Size() / 2f, 0.75f * scaleFactor, flip, 0f);
-				spriteBatch.Draw(aura, pos - Main.screenPosition, null, sunColors[2] * 0.3f * lerp, 0f, aura.Size() / 2f, 0.7f * scaleFactor, flip, 0f);
-				spriteBatch.Draw(aura, pos - Main.screenPosition, null, Color.White * 0.3f * lerp, 0f, aura.Size() / 2f, 0.6f * scaleFactor, flip, 0f);
-
-				spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[0] * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
-				spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[1] * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
-				spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[2] * lerp, 0f, star.Size() / 2f, new Vector2(0.3f, 0.15f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[0] * 0.3f * lerp, 0f, star.Size() / 2f, new Vector2(0.45f, 0.225f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[1] * lerp, 0f, star.Size() / 2f, new Vector2(0.4f, 0.2f) * scaleFactor, flip, 0f);
+					spriteBatch.Draw(star, pos - Main.screenPosition, null, sunColors[2] * lerp, 0f, star.Size() / 2f, new Vector2(0.3f, 0.15f) * scaleFactor, flip, 0f);
+				}
 
 				spriteBatch.End();
 
@@ -88,16 +98,15 @@ public class RadiantPlayer : ModPlayer
 		{
 			if (!Main.dedServ)
 			{
-				_flash = Math.Max(_flash - 1, 0);
-				if (DivineStrike || _flash > 0)
+				if (DivineStrike || _ease > 0)
 				{
-					float lerp = EaseFunction.EaseCircularOut.Ease(Math.Min(1f - _flash / (float)FLASH_MAX, 1));
+					float lerp = EaseFunction.EaseCircularOut.Ease(_ease / (float)EASE_MAX);
 					Lighting.AddLight(Player.Center, Color.LightGoldenrodYellow.ToVector3() * 0.5f * lerp);
 				}
 			}
 
 			bool hadDivineStrike = DivineStrike;
-			if (++radiantCounter > ChargeTime)
+			if (++radiantCounter >= ChargeTime)
 			{
 				if (!Main.dedServ)
 				{
@@ -122,8 +131,6 @@ public class RadiantPlayer : ModPlayer
 								Layer = ParticleLayer.AbovePlayer
 							});
 						}
-
-						_flash = FLASH_MAX;
 					}
 
 					if (Main.rand.NextBool(60))
@@ -162,13 +169,18 @@ public class RadiantPlayer : ModPlayer
 					}
 				}
 
+				_ease = Math.Min(_ease + 1, EASE_MAX);
 				Player.AddBuff(ModContent.BuffType<RadiantGlyph.DivineStrike>(), 60);
+			}
+			else
+			{
+				_ease = Math.Max(_ease - 1, 0);
 			}
 		}
 		else
 		{
 			radiantCounter = 0;
-			_flash = 0;
+			_ease = Math.Max(_ease - 1, 0);
 		}
 	}
 
