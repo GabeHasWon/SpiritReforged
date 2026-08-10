@@ -76,6 +76,10 @@ GameTips: {
 	ReforgedTip14: Os oásis encontrados sob as areias do deserto podem oferecer um pouco de tranquilidade bem-vinda.
 	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
 	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
+	# Spellbound
+	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
+	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
+	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
 }
 
 Emotes: {
