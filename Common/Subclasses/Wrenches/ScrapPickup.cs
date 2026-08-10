@@ -64,8 +64,6 @@ public class ScrapPickup : ModItem, IDrawPixelated
 		if (player.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
 		{
 			wrenchPlayer.StoredScrap += Item.stack;
-
-			SoundEngine.PlaySound(SoundID.Grab with { PitchRange = (-0.3f, 0.3f) }, player.Center);
 			SoundEngine.PlaySound(SoundID.CoinPickup, player.Center);
 
 			#region popup text

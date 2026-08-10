@@ -21,8 +21,7 @@ public class MagnetiteWrench : ModItem
 				Duration--;
 				projectile.GetGlobalProjectile<SpeedModifierProjectile>().SpeedModifier += 0.25f;
 
-				if (Main.rand.NextBool(16))
-					Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
+				IWrenchGlobal.ClientPassiveEffects(projectile, 0.5f);
 
 				//Spawn shockwaves
 			}

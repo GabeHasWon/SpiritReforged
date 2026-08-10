@@ -27,8 +27,7 @@ public class LargeWrench : ModItem
 				Duration--;
 				projectile.GetGlobalProjectile<SpeedModifierProjectile>().SpeedModifier -= 0.15f;
 
-				if (Main.rand.NextBool(16))
-					Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
+				IWrenchGlobal.ClientPassiveEffects(projectile, 0.5f);
 			}
 		}
 
@@ -49,7 +48,7 @@ public class LargeWrench : ModItem
 
 		public bool FullyCharged => _chargeTime >= CHARGE_TIME_MAX;
 
-		private const int CHARGE_TIME_MAX = 60;
+		private const int CHARGE_TIME_MAX = 40;
 		private int _chargeTime;
 		private bool _released;
 		private bool _didStrikeSentry;
@@ -106,6 +105,12 @@ public class LargeWrench : ModItem
 		}
 
 		public override bool? CanDamage() => _released ? base.CanDamage() : false;
+
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (FullyCharged)
+				modifiers.FinalDamage *= 1.5f;
+		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => IHitSentry.DropScrap(Main.player[Projectile.owner], target);
 
@@ -175,7 +180,7 @@ public class LargeWrench : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 5, source);
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 4.2f, source);
 		return false;
 	}
 }

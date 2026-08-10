@@ -85,6 +85,10 @@ public interface IHitSentry
 			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.PaleGoldenrod.Additive(100), new Vector2(0.5f, Math.Abs(velocity.Y) / 2), 30));
 			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.White.Additive(), new Vector2(0.25f, Math.Abs(velocity.Y) / 4), 30));
 		}
+
+		ParticleHandler.SpawnParticle(new PulseCircle(sentry.Center, Color.PaleGoldenrod.Additive(100), Color.Goldenrod, 0.1f, 200, 30, Easing.EaseFunction.EaseOutBack(0.2f)));
+		ParticleHandler.SpawnParticle(new ImpactLinePrim(sentry.Center, Vector2.Zero, Color.PaleGoldenrod.Additive(100), new Vector2(2, 3), 20, 0)
+		{ Rotation = MathHelper.PiOver2 });
 	}
 
 	/// <summary> Whether the player can hit a sentry. Returns true by default. </summary>

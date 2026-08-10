@@ -1,10 +1,24 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Common.Subclasses.Wrenches;
 
 public interface IWrenchGlobal
 {
 	public int Duration { get; set; }
+
+	public static void ClientPassiveEffects(Projectile sentry, float intensity = 1)
+	{
+		if (Main.rand.NextBool(10))
+		{
+			Vector2 position = sentry.BottomLeft + new Vector2(Main.rand.NextFloat(sentry.width), 0);
+			Vector2 velocity = Vector2.UnitY * -(Main.rand.NextFloat(4) * intensity);
+
+			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.PaleGoldenrod.Additive(100), new Vector2(0.5f, Math.Abs(velocity.Y) / 2), 30));
+			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.White.Additive(), new Vector2(0.25f, Math.Abs(velocity.Y) / 4), 30));
+		}
+	}
 
 	public static void DrawDurationBar(Projectile projectile, float progress)
 	{

@@ -4,6 +4,7 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
+using System.IO;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Wrenches;
@@ -23,8 +24,7 @@ public class CopperSpanner : ModItem
 				Duration--;
 				projectile.GetGlobalProjectile<SpeedModifierProjectile>().SpeedModifier += 0.2f;
 
-				//if (Main.rand.NextBool(16))
-				//	Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
+				IWrenchGlobal.ClientPassiveEffects(projectile, 0.5f);
 			}
 		}
 
@@ -41,6 +41,8 @@ public class CopperSpanner : ModItem
 
 		public override string Texture => ModContent.GetInstance<CopperSpanner>().Texture;
 
+		private bool _recoiling;
+
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 40, 25);
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
@@ -51,12 +53,30 @@ public class CopperSpanner : ModItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => IHitSentry.DropScrap(Main.player[Projectile.owner], target);
 
+		public override bool? CanDamage() => _recoiling ? false : base.CanDamage(); //Never deal damage while recoiling
+
 		void IHitSentry.OnHitSentry(Player player, Projectile sentry, ref int cooldown)
 		{
 			IHitSentry.ClientHitEffects(sentry);
 
 			player.GetModPlayer<WrenchPlayer>().StoredScrap--;
 			sentry.GetGlobalProjectile<SpeedUpProjectile>().Duration = 5 * 60;
+
+			SetRecoil();
+		}
+
+		public void SetRecoil()
+		{
+			_recoiling = true; //Sync me
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				Projectile.velocity = Main.player[Projectile.owner].DirectionTo(Main.MouseWorld).RotatedBy(-MathHelper.PiOver4 * SwingDirection);
+				Projectile.netUpdate = true;
+			}
+
+			SwingArc = -1;
+			Counter = 0;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -68,7 +88,11 @@ public class CopperSpanner : ModItem
 			return false;
 		}
 
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => DrawPixelatedSmear(spriteBatch, new Color(183, 88, 35));
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
+		{
+			if (!_recoiling)
+				DrawPixelatedSmear(spriteBatch, new Color(183, 88, 35));
+		}
 
 		public void DrawPixelatedSmear(SpriteBatch spriteBatch, Color color)
 		{
@@ -91,6 +115,18 @@ public class CopperSpanner : ModItem
 
 			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)), rotation, origin, 0.25f, effects, 0);
 			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)).Additive(100), rotation, origin, 0.2f, effects, 0);
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			base.SendExtraAI(writer);
+			writer.Write(_recoiling);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			base.ReceiveExtraAI(reader);
+			_recoiling = reader.ReadBoolean();
 		}
 	}
 
