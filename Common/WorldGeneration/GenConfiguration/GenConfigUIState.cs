@@ -115,6 +115,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			}
 		}
 
+		int index = GenConfigLoader.LoadedPages.FindIndex(x => x.Mod is SpiritReforgedMod);
+
+		if (index != -1)
+			pageNumber = index;
+
 		ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
 	}
 
@@ -1221,7 +1226,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		modIcon.OnUpdate += _ =>
 		{
 			if (modIcon.ContainsPoint(Main.MouseScreen))
-				hoverText = "[c/AAAAAA:from] " + page.Mod.DisplayName;
+				hoverText = $"[c/AAAAAA:{Language.GetText("Mods.SpiritReforged.GenConfigs.UI.From")}] " + page.Mod.DisplayName;
 		};
 
 		backPanel.Append(modIcon);

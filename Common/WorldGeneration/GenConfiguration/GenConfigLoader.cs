@@ -255,6 +255,21 @@ public class GenConfigLoader : ModSystem
 
 	private static void GetConfigs(ref Action? delay, Type type, IGenerationPage page, GenConfigPage configPage)
 	{
+		if (CrossmodConfigurables.TryGetValue(page.Mod.Name + "/" + page.Info.PageName, out var hook))
+		{
+			var crossModManualMembers = hook.Invoke();
+
+			foreach (var member in crossModManualMembers)
+			{
+				ConfigInfo info = member.info;
+
+				if (member.member is PropertyInfo prop)
+					delay += () => InternalGenerateProp(page, configPage, prop, info);
+				else if (member.member is FieldInfo field)
+					delay += () => InternalGenerateField(page, configPage, field, info);
+			}
+		}
+
 		MemberInfo[] members = [.. type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static),
 			.. type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)];
 
@@ -264,21 +279,6 @@ public class GenConfigLoader : ModSystem
 				delay += () => GeneratePropConfig(page, configPage, prop);
 			else if (member is FieldInfo field)
 				delay += () => GenerateFieldConfig(page, configPage, field);
-		}
-
-		if (!CrossmodConfigurables.TryGetValue(page.Mod.Name + "/" + page.Info.PageName, out var hook))
-			return;
-
-		var crossModManualMembers = hook.Invoke();
-
-		foreach (var member in crossModManualMembers)
-		{
-			ConfigInfo info = member.info;
-
-			if (member.member is PropertyInfo prop)
-				delay += () => InternalGenerateProp(page, configPage, prop, info);
-			else if (member.member is FieldInfo field)
-				delay += () => InternalGenerateField(page, configPage, field, info);
 		}
 	}
 
