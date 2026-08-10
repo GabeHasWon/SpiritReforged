@@ -71,11 +71,11 @@ public sealed class WrenchPlayer : ModPlayer
 					Texture2D solid = TextureColorCache.ColorSolid(texture, Color.White);
 					float outlineOpacity = EaseFunction.EaseCubicOut.Ease(1f - Math.Min(wrenchPlayer._uiDisplayTime / (float)inactive_fade_time, 1));
 
-					spriteBatch.Draw(solid, position + offset - iconOffset, source, Color.Yellow.Additive() * outlineOpacity, rotation, source.Size() / 2, 1, 0, 0);
+					spriteBatch.Draw(solid, position + offset - iconOffset, source, Color.PaleGoldenrod.Additive() * outlineOpacity, rotation, source.Size() / 2, 1, 0, 0);
 				});
 
 				spriteBatch.Draw(texture, position - iconOffset, source, Color.White * opacity, rotation, source.Size() / 2, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, wrenchPlayer.StoredScrap.ToString(), position + new Vector2(4, 0), lerpColor, 1 + lerp * 0.2f, 0, 0.3f);
+				Utils.DrawBorderString(spriteBatch, wrenchPlayer.StoredScrap.ToString(), position + new Vector2(6, 0), lerpColor, 1 + lerp * 0.2f, 0, 0.3f);
 			}
 		}
 	}

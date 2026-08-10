@@ -119,7 +119,7 @@ public class ScrapPickup : ModItem, IDrawPixelated
 			float opacity = Math.Max(_timeSinceGrabbed / 30f, 1f - Item.timeSinceItemSpawned / 30f);
 			Texture2D solid = TextureColorCache.ColorSolid(texture, Color.White);
 
-			spriteBatch.Draw(solid, position + offset, source, Item.GetAlpha(Color.Yellow).Additive() * opacity, itemRotation, source.Size() / 2, itemScale, 0, 0);
+			spriteBatch.Draw(solid, position + offset, source, Item.GetAlpha(Color.PaleGoldenrod).Additive() * opacity, itemRotation, source.Size() / 2, itemScale, 0, 0);
 			spriteBatch.Draw(solid, position + offset * 2, source, Item.GetAlpha(Color.Orange).Additive() * opacity * 0.3f, itemRotation, source.Size() / 2, itemScale, 0, 0);
 		});
 

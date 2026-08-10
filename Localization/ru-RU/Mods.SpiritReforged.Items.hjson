@@ -3184,24 +3184,24 @@ ScrapPickup: {
 
 CopperSpanner: {
 	// DisplayName: Copper Spanner
-	// Tooltip: "{CommonTooltips.Wrench}"
+	// Tooltip: "{$CommonTooltips.Wrench}"
 }
 
 TinSpanner: {
 	// DisplayName: Tin Spanner
-	// Tooltip: "{CommonTooltips.Wrench}"
+	// Tooltip: "{$CommonTooltips.Wrench}"
 }
 
 MagnetiteWrench: {
 	// DisplayName: Magnetite Wrench
-	// Tooltip: "{CommonTooltips.Wrench}"
+	// Tooltip: "{$CommonTooltips.Wrench}"
 }
 
 LargeWrench: {
 	// DisplayName: Comically Large Wrench
 	/* Tooltip:
 		'''
-		{CommonTooltips.Wrench}
+		{$CommonTooltips.Wrench}
 		Charged strikes move sentries to the cursor position
 		''' */
 }

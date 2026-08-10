@@ -1,4 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
 namespace SpiritReforged.Common.Subclasses.Wrenches;
@@ -71,9 +74,16 @@ public interface IHitSentry
 
 		for (int i = 0; i < dustCount; i++)
 		{
+			Vector2 position = sentry.BottomLeft + new Vector2(Main.rand.NextFloat(sentry.width), 0);
+			Vector2 velocity = Vector2.UnitY * -Main.rand.NextFloat(4);
+
 			Dust dust = Main.dust[Dust.NewDust(sentry.position, sentry.width, sentry.height, dustType)];
-			dust.fadeIn = 2;
-			dust.scale = 0.2f;
+			dust.fadeIn = 3;
+			dust.scale = 1f;
+			dust.velocity = velocity;
+
+			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.PaleGoldenrod.Additive(100), new Vector2(0.5f, Math.Abs(velocity.Y) / 2), 30));
+			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.White.Additive(), new Vector2(0.25f, Math.Abs(velocity.Y) / 4), 30));
 		}
 	}
 

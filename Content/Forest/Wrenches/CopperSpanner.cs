@@ -4,7 +4,6 @@ using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
-using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Wrenches;
@@ -24,8 +23,8 @@ public class CopperSpanner : ModItem
 				Duration--;
 				projectile.GetGlobalProjectile<SpeedModifierProjectile>().SpeedModifier += 0.2f;
 
-				if (Main.rand.NextBool(16))
-					Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
+				//if (Main.rand.NextBool(16))
+				//	Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Electric);
 			}
 		}
 
