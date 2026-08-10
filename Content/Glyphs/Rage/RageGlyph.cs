@@ -59,8 +59,8 @@ public class RageGlyph : GlyphItem
 		public static readonly Asset<Texture2D> RageIcon = DrawHelpers.RequestLocal<RagePlayer>("RageGlyph_Icon", false);
 
 		// what percentage of overflow damage should be stored
-		public const float OVERFLOW_DAMAGE_MULT = 2f;
-		public const float DAMAGE_TAKEN_MULT = 1f;
+		public const float OVERFLOW_DAMAGE_MULT = 2.25f;
+		public const float DAMAGE_TAKEN_MULT = 1.5f;
 
 		public bool activateOverflow;
 		public int overflowDamage;
