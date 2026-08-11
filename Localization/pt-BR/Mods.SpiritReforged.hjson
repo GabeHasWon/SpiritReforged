@@ -26,6 +26,7 @@ Conditions: {
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
 	// InSpace: In Space
+	// NotSnow: Not in the Snow
 }
 
 Misc: {

@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.BuffCommon;
-using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
 
 namespace SpiritReforged.Common.PlayerCommon;
@@ -55,4 +55,80 @@ internal static class PlayerExtensions
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
 		ScreenshakeHelper.Shake(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
 	}
+
+	#region find item
+	[Flags]
+	public enum FindItemContext
+	{
+		Inventory = 0,
+		VoidBag = 1,
+		Backpack = 2
+	}
+
+	public static FindItemContext FindAll = FindItemContext.Inventory | FindItemContext.VoidBag | FindItemContext.Backpack;
+
+	public readonly record struct FoundItems(params Item[] Items)
+	{
+		public readonly int Count
+		{
+			get
+			{
+				int value = 0;
+
+				foreach (Item item in Items)
+					value += item.stack;
+
+				return value;
+			}
+		}
+
+		public readonly bool Consume()
+		{
+			foreach (Item item in Items)
+			{
+				if (!item.IsAir && --item.stack <= 0)
+				{
+					item.TurnToAir();
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
+
+	public static bool FindItems(this Player player, int type, FindItemContext context, out FoundItems foundItems)
+	{
+		List<Item> result = [];
+		if (context.HasFlag(FindItemContext.Inventory))
+		{
+			foreach (Item item in player.inventory)
+			{
+				if (item.type == type)
+					result.Add(item);
+			}
+		}
+
+		if (context.HasFlag(FindItemContext.VoidBag))
+		{
+			foreach (Item item in player.bank4.item)
+			{
+				if (item.type == type)
+					result.Add(item);
+			}
+		}
+
+		if (context.HasFlag(FindItemContext.Backpack) && player.TryGetModPlayer(out BackpackPlayer backpackPlayer) && backpackPlayer.backpack.ModItem is BackpackItem backpack)
+		{
+			foreach (Item item in backpack.Items)
+			{
+				if (item.type == type)
+					result.Add(item);
+			}
+		}
+
+		foundItems = new(result.ToArray());
+		return result.Count > 0;
+	}
+	#endregion
 }
