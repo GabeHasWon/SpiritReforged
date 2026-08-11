@@ -53,8 +53,8 @@ public abstract class DoTExtension : BuffExtension
 
 		NPC.lifeRegen -= (int)(damagePerSecond * 2);
 
-		Settings.ScalingBehaviour?.Invoke();
 		_timeActive++;
+		Settings.ScalingBehaviour?.Invoke();
 	}
 
     protected float CountPlayerDamage()
