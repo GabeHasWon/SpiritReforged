@@ -3154,6 +3154,11 @@ SaltGraveMarkerItem: {
 	Tooltip: ""
 }
 
+NotSunItemIcon: {
+	DisplayName: 非日图标
+	Tooltip: ""
+}
+
 ChromaticWax: {
 	// DisplayName: Chromatic Wax
 	// Tooltip: Can be exchanged for magical glyphs

@@ -27,6 +27,7 @@ UI: {
 	Create: Save as a custom preset
 	CantSave: (You can't save a default preset)
 	Load: Load a custom preset
+	LoadFolder: Load a folder of presets
 	HoverDescription: Open to configure specific aspects of Spirit Reforged's generation.
 	FailedToLoad: Preset isn't for this page. Page expected: {0}
 	ConfigNotice:
@@ -35,7 +36,8 @@ UI: {
 		The value shown is the actual range used in-game when rolling randomly.
 		'''
 	LoadError: An error has occurred while loading a preset ({0}). Report this to the Discord (and check client.log):
-	Duplicate: (Duplicate preset not added)
+	Duplicate: (Duplicate preset(s) not added - {0})
+	From: from
 }
 
 Pages: {

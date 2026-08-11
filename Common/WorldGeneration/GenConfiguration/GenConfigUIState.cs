@@ -1,12 +1,11 @@
-﻿using JetBrains.Annotations;
-using ReLogic.Graphics;
+﻿using ReLogic.Graphics;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
-using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.IO;
@@ -57,6 +56,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		base.Update(gameTime);
 
+		Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
+		TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
+		warningText.Recalculate();
 		warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
 		warningTimer--;
 
@@ -66,6 +68,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			updatePage = false;
 		}
 	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_textScale")]
+	public static extern ref float TextScale(UIText text);
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -109,6 +114,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				}
 			}
 		}
+
+		int index = GenConfigLoader.LoadedPages.FindIndex(x => x.Mod is SpiritReforgedMod);
+
+		if (index != -1)
+			pageNumber = index;
 
 		ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
 	}
@@ -183,7 +193,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 		mainPanel.Append(pageName);
 
-		AppendNextPriorButtons(mainPanel, page);
+		AppendTopButtons(mainPanel, page);
 
 		UIText pageDescription = new(page.Tooltip, 0.45f, true)
 		{
@@ -519,7 +529,8 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				sbyte => (object)sbyte.Parse(text),
 				long => (object)long.Parse(text),
 #pragma warning disable IDE0004
-				_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
+				_ => throw new NotSupportedException($"Manual input data type ({defaultValue.GetType().Name}) not supported. Use one of the following types, or report to Reforged:" +
+					"int, double, short, float, byte, ushort, sbyte, long")
 			};
 
 			if (isNumber)
@@ -841,7 +852,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		loadButton.OnUpdate += _ =>
 		{
 			bool hover = loadButton.ContainsPoint(Main.MouseScreen);
-			loadButton.SetFrame(new Rectangle(0, hover ? 50 : 0, 44, 44));
+			loadButton.SetFrame(new Rectangle(0, hover ? 46 : 0, 44, 44));
 
 			if (hover)
 				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Load");
@@ -849,6 +860,74 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		pagePanel.Append(loadButton);
 		AddHoverTicks(loadButton);
+
+		UIImageFramed loadFolderButton = new(DrawHelpers.RequestLocal(GetType(), "LoadFolder", false), new Rectangle(0, 0, 44, 44))
+		{
+			Width = StyleDimension.FromPixels(44),
+			Height = StyleDimension.FromPixels(44),
+			HAlign = 1f,
+			VAlign = 1,
+			Left = StyleDimension.FromPixels(-100)
+		};
+
+		loadFolderButton.OnUpdate += _ =>
+		{
+			bool hover = loadFolderButton.ContainsPoint(Main.MouseScreen);
+			loadFolderButton.SetFrame(new Rectangle(0, hover ? 50 : 0, 44, 44));
+
+			if (hover)
+				hoverText = Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.LoadFolder");
+		};
+
+		loadFolderButton.OnLeftClick += (_, _) => LoadFolderPresets(page);
+		pagePanel.Append(loadFolderButton);
+		AddHoverTicks(loadFolderButton);
+	}
+
+	private void LoadFolderPresets(GenConfigPage page)
+	{
+		AssurePresetsPathExists();
+		var result = nativefiledialog.NFD_PickFolder(PresetsPath, out string loadPath);
+
+		if (result == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			string[] files = Directory.GetFiles(loadPath);
+			Dictionary<string, List<string>> duplicates = [];
+
+			foreach (string file in files)
+			{
+				if (!file.EndsWith(".txt"))
+					continue;
+
+				TagCompound tag = TagIO.FromFile(file);
+				string name = file[(file.LastIndexOf('\\') + 1)..file.LastIndexOf('.')];
+
+				if (!LoadFromTag(null, tag, name, duplicates))
+					return;
+
+				pageConfig = page.PageInfo.Presets.Count - 1;
+				ApplyCurrentPreset(page);
+			}
+
+			hoverText += "\n" + Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ConfigNotice");
+
+			if (duplicates.Count > 0)
+			{
+				string dupes = "";
+
+				foreach (KeyValuePair<string, List<string>> dupe in duplicates)
+				{
+					dupes += dupe.Key + ": ";
+
+					foreach (string entry in dupe.Value)
+						dupes += entry + ", ";
+				}
+
+				warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate", dupes[..^2]));
+				warningText.Recalculate();
+				warningTimer = 600;
+			}
+		}
 	}
 
 	private void ApplyCurrentPreset(GenConfigPage page)
@@ -895,7 +974,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return false;
 	}
 
-	private bool LoadFromTag(GenConfigPage? page, TagCompound tag, string configName)
+	private bool LoadFromTag(GenConfigPage? page, TagCompound tag, string configName, Dictionary<string, List<string>>? duplicates = null)
 	{
 		string name = tag.GetString("pageName");
 		string[] paths = name.Split('/');
@@ -954,9 +1033,12 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			page.PageInfo.Presets.Add(preset);
 		else
 		{
-			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate"));
+			warningText.SetText(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Duplicate", page.DisplayName.Value));
 			warningText.Recalculate();
 			warningTimer = 300;
+
+			duplicates?.TryAdd(page.DisplayName.Value, []);
+			duplicates?[page.DisplayName.Value].Add(configName);
 		}
 
 		return true;
@@ -1045,7 +1127,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
 	}
 
-	private void AppendNextPriorButtons(UIElement backPanel, GenConfigPage page)
+	private void AppendTopButtons(UIElement backPanel, GenConfigPage page)
 	{
 		float width = ChatManager.GetStringSize(FontAssets.DeathText.Value, page.DisplayName.Value, new(0.7f)).X;
 		GenConfigPage prior = GetPriorPage();
@@ -1131,6 +1213,23 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		backPanel.Append(nextButton);
+
+		if (page.Mod.SmallModIcon is not { } icon)
+			return;
+
+		UIImage modIcon = new(icon)
+		{
+			HAlign = 1,
+			VAlign = 0,
+		};
+
+		modIcon.OnUpdate += _ =>
+		{
+			if (modIcon.ContainsPoint(Main.MouseScreen))
+				hoverText = $"[c/AAAAAA:{Language.GetText("Mods.SpiritReforged.GenConfigs.UI.From")}] " + page.Mod.DisplayName;
+		};
+
+		backPanel.Append(modIcon);
 	}
 
 	private GenConfigPage GetPriorPage()
@@ -1160,17 +1259,18 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		dynamic min = config.Params.Min;
 		dynamic max = config.Params.Max;
 
-		UIElement slider = config.Get() switch
+		UIElement slider = def switch
 		{
 			Enum => new UISlider<int>((int)def, (int)1, (int)min, (int)max, Color.CornflowerBlue),
-			int => new UISlider<int>(def, step, min, max, Color.CornflowerBlue),
-			double => new UISlider<double>(def, step, min, max, Color.CornflowerBlue),
-			short => new UISlider<short>(def, step, min, max, Color.CornflowerBlue),
-			byte => new UISlider<byte>(def, step, min, max, Color.CornflowerBlue),
-			float => new UISlider<float>(def, step, min, max, Color.CornflowerBlue),
-			ushort => new UISlider<ushort>(def, step, min, max, Color.CornflowerBlue),
-			uint => new UISlider<uint>(def, step, min, max, Color.CornflowerBlue),
-			_ => throw new NotSupportedException("I didn't write a type case for this. Write one!")
+			int => new UISlider<int>((int)def, (int)step, (int)min, (int)max, Color.CornflowerBlue),
+			double => new UISlider<double>((double)def, (double)step, (double)min, (double)max, Color.CornflowerBlue),
+			short => new UISlider<short>((short)def, (short)step, (short)min, (short)max, Color.CornflowerBlue),
+			byte => new UISlider<byte>((byte)def, (byte)step, (byte)min, (byte)max, Color.CornflowerBlue),
+			float => new UISlider<float>((float)def, (float)step, (float)min, (float)max, Color.CornflowerBlue),
+			ushort => new UISlider<ushort>((ushort)def, (ushort)step, (ushort)min, (ushort)max, Color.CornflowerBlue),
+			uint => new UISlider<uint>((uint)def, (uint)step, (uint)min, (uint)max, Color.CornflowerBlue),
+			_ => throw new NotSupportedException($"Data type ({def.GetType().Name}) not supported for sliders. Use one of the following data types, or report to Reforged: " +
+				"enum, int, double, short, byte, float, ushort, uint")
 		};
 
 		DefineSliderInfo(slider);

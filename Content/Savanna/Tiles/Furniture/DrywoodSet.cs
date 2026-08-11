@@ -59,7 +59,7 @@ public class DrywoodChair : ChairTile, ILoadItem
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Chair"));
+		//AddMapEntry(new Color(100, 100, 60), Language.GetText("MapObject.Chair"));
 
 		AdjTiles = [TileID.Chairs];
 		DustType = -1;
