@@ -11,15 +11,19 @@ public class ImpactLine : Particle
 	public bool UseLightColor { get; set; }
 
 	internal readonly Entity _ent = null;
+	internal readonly Action<Particle> _action = null;
 
 	internal Color _color;
 	internal Vector2 _scaleMod;
 	internal Vector2 _offset;
 	internal readonly float _acceleration;
 
+	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
+	public override ParticleLayer DrawLayer => Layer;
+
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null)
+	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;
 		Velocity = velocity;
@@ -28,12 +32,13 @@ public class ImpactLine : Particle
 		MaxTime = timeLeft;
 		_ent = attatchedEntity;
 		_acceleration = acceleration;
+		_action = extraUpdateAction;
 
-		if(_ent != null)
+		if (_ent != null)
 			_offset = Position - _ent.Center;
 	}
 
-	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, Entity attatchedEntity = null) : this(position, velocity, color, scale, timeLeft, 1, attatchedEntity) { }
+	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, Entity attatchedEntity = null, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, scale, timeLeft, 1, attatchedEntity, extraUpdateAction) { }
 
 	public override void Update()
 	{
@@ -57,6 +62,8 @@ public class ImpactLine : Particle
 			Position = _ent.Center + _offset;
 			_offset += Velocity;
 		}
+
+		_action?.Invoke(this);
 
 		Velocity *= _acceleration;
 	}

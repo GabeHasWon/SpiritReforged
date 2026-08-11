@@ -25,6 +25,7 @@ Conditions: {
 	InSaltFlats: In Salt Flats
 	IsPrickly: When prickly
 	InZiggurat: In the Ziggurat
+	InSpace: In Space
 }
 
 Misc: {
@@ -32,6 +33,11 @@ Misc: {
 		Move: Move Pin
 		Obtained: You already own this pin
 		UseItem: Right click to add this pin to your collection
+	}
+
+	Enchantment: {
+		PlaceToEnchant: Place an item here to enchant
+		Enchant: Enchant
 	}
 
 	NoStock: Out of stock
@@ -52,29 +58,34 @@ DamageSources: {
 GameTips: {
 	# Release
 	ReforgedTip0: Always carry around food. You never know when it could be useful!
-	ReforgedTip1: Rarely, butterflies are known to hide in underground groves.
-	ReforgedTip2: Pins are useful! Check your pin inventory on the bottom-left of your map.
+	ReforgedTip1: Rarely, butterflies can be found hiding in underground groves.
+	ReforgedTip2: Pins are useful! Check your pinventory on the bottom-left of your map.
 	ReforgedTip3: Savanna animals cannot be caught in bug nets.
 	ReforgedTip4: Backpacks. You've got more space now.
-	ReforgedTip5: The inky void of the ocean offers many boons.
+	ReforgedTip5: The depths of the ocean hold many things of interest.
 	ReforgedTip6: Stargrass offers a nice reprieve in the darkness of night.
-	ReforgedTip7: Cloudstalk always grows under clouds.
-	ReforgedTip8: The top of Acacia trees can be stood on if you need some height.
-	ReforgedTip9: Items randomly float atop the ocean; check in once in a while!
+	ReforgedTip7: Cloudstalk always grows under clouds. Don't forget to look up!
+	ReforgedTip8: You can stand on Acacia trees on if you need some height.
+	ReforgedTip9: Sometimes things wash ashore in the ocean; check in once in a while!
 	# Caves & Clubs
 	ReforgedTip10: Many pots dot the caves under your feet! Keep an eye open.
 	ReforgedTip11: Clubs offer strong, focused single-target damage.
 	# Sunscorched
 	ReforgedTip12: Legends speak of an offering of gems atop an ancient altar...
 	ReforgedTip13: Careful when exploring the ancient Ziggurat! Surprises hide around every corner.
-	ReforgedTip14: The oases found under the desert sands may offer some welcome calm.
-	ReforgedTip15: Amber hides secrets! Perhaps you may find some rewards inside...
-	ReforgedTip16: Careful walking around the ruins of the desert! Some floors may be less solid than you think.
+	ReforgedTip14: Sunken oases can provide much-needed reprieve from the chaos of the underground desert.
+	ReforgedTip15: Amber hides secrets! Perhaps you may find something inside...
+	ReforgedTip16: Careful walking around the ruins in the desert! Some floors may be less solid than you think.
+	# Spellbound
+	ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
+	ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
+	ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
 }
 
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
+	EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -106,6 +117,8 @@ EcotoneEdges: {
 	Savanna: "{$Ecotones.SavannaEcotone}"
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
+
+DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
 
 DamageClasses: {
 	GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"

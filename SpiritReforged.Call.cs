@@ -1,15 +1,15 @@
-﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+﻿using SpiritReforged.Common.DebuffOverhaul;
+using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
-using SpiritReforged.Content.SaltFlats.Items;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
-using SpiritReforged.Content.Desert.ScarabBoss.Boss;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.WorldGeneration.Ecotones;
 
 namespace SpiritReforged;
 
@@ -143,6 +143,10 @@ public partial class SpiritReforgedMod : Mod
 							throw new ArgumentException("WorldHasEcotone requires two argument, string WorldHasEcotone, string name (the FullName of the ecotone)");
 
 						return EcotoneSurfaceMapping.ContainsEcotone(s);
+					}
+				case "AddCustomDoT":
+					{
+						return CustomDoT.AddCustomDoT(args[1..]);
 					}
 				default:
 					{

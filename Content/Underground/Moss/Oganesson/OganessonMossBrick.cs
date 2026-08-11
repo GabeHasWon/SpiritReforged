@@ -5,7 +5,7 @@ namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
 public class OganessonMossBrick : ModTile, ILoadItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<OganessonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<OganessonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
 	
 	public override void SetStaticDefaults()
 	{

@@ -148,6 +148,31 @@ ScarabMountBuff: {
 	Description: "'Segura ai!'"
 }
 
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Your next attack is empowered
+}
+
+RotDebuff: {
+	// DisplayName: Rotting [{0}]
+	// Description: "'Your skin is turning green'"
+}
+
+SanguineStackingBuff: {
+	// DisplayName: Sanguine Curse
+	// Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+}
+
+BlazeDebuff: {
+	// DisplayName: Blazing
+	// Description: This is fine!
+}
+
+RageGlyphBuff: {
+	// DisplayName: Rage Glyph Buff
+	// Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+}
+
 StonemasonBuff: {
 	// DisplayName: Stonemason Block
 	// Description: Your next attack deals double knockback

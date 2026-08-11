@@ -33,6 +33,11 @@ public sealed class ProjectileTrailRenderer : TrailRenderer<BaseTrail>
 
 	public void CreateTrail(Projectile projectile, BaseTrail trail)
 	{
+#if !DEBUG
+		if (Main.gameMenu)
+			return;
+#endif
+
 		Trails.Add(trail);
 		_trailSettings.Add(new(projectile));
 	}

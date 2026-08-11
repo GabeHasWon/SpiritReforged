@@ -386,6 +386,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] 天顶罐子比例"
 				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
 			}
+
+			WaxScale: {
+				// DisplayName: WaxScale
+				// Tooltip: WaxScale
+			}
 		}
 
 		Presets: {
@@ -468,6 +473,21 @@ Pages: {
 			PotSpam: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
 				Tooltip: 陶器结构放置罐子的最小尝试次数。
+			}
+
+			EnchantedWorkbenchChance: {
+				// DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
+				// Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+			}
+
+			DisplayCaseChance: {
+				// DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
+				// Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+			}
+
+			MirrorRate: {
+				// DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
+				// Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
 			}
 		}
 
