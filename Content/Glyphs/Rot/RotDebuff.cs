@@ -18,7 +18,7 @@ public class RotDebuff : ModBuff
 {
 	public class BlightExtension : DoTExtension
 	{
-		public override BuffSettings Settings => new(0.1f, 500);
+		public override BuffSettings Settings => new(0.06f, 500, true, PoisonScaling);
 
 		public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
 		{
@@ -239,9 +239,7 @@ public class RotDebuff : ModBuff
 			if (npc != null)
 			{
 				bool hasBuff = npc.HasBuff(buffType);
-
-				if (Main.netMode != NetmodeID.MultiplayerClient)
-					npc.AddBuff(buffType, 180); //Prevent potential redundant application
+				npc.AddBuff(buffType, 180);
 
 				if (Main.dedServ || hasBuff)
 					continue;

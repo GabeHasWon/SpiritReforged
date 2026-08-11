@@ -92,7 +92,7 @@ public abstract class BackpackItem : ModItem
 	public override void NetReceive(BinaryReader reader)
 	{
 		foreach (Item item in Items)
-			ItemIO.Receive(item, reader, true);
+			ItemIO.Receive(item, reader, true); //Glitter Purse causes read error in multiplayer because send does not acknowledge slots
 	}
 
 	public override void SaveData(TagCompound tag)
