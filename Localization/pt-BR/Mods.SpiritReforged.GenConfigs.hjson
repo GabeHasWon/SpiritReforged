@@ -37,7 +37,6 @@ UI: {
 		''' */
 	// LoadError: An error has occurred while loading a preset ({0}). Report this to the Discord (and check client.log):
 	// Duplicate: (Duplicate preset(s) not added - {0})
-	// From: from
 }
 
 Pages: {

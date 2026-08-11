@@ -1,7 +1,9 @@
-﻿using ReLogic.Graphics;
+﻿using JetBrains.Annotations;
+using ReLogic.Graphics;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -115,11 +117,6 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			}
 		}
 
-		int index = GenConfigLoader.LoadedPages.FindIndex(x => x.Mod is SpiritReforgedMod);
-
-		if (index != -1)
-			pageNumber = index;
-
 		ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
 	}
 
@@ -193,7 +190,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 		mainPanel.Append(pageName);
 
-		AppendTopButtons(mainPanel, page);
+		AppendNextPriorButtons(mainPanel, page);
 
 		UIText pageDescription = new(page.Tooltip, 0.45f, true)
 		{
@@ -529,8 +526,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 				sbyte => (object)sbyte.Parse(text),
 				long => (object)long.Parse(text),
 #pragma warning disable IDE0004
-				_ => throw new NotSupportedException($"Manual input data type ({defaultValue.GetType().Name}) not supported. Use one of the following types, or report to Reforged:" +
-					"int, double, short, float, byte, ushort, sbyte, long")
+				_ => throw new NotSupportedException("Man! I didn't add a switch for this! Do it (EnterText delegate) - gabe")
 			};
 
 			if (isNumber)
@@ -1127,7 +1123,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		return Language.GetTextValue(Key + "Preset") + " " + (pageConfig == -1 ? noneText : page.PresetLocalization[pageConfig].Name.Value);
 	}
 
-	private void AppendTopButtons(UIElement backPanel, GenConfigPage page)
+	private void AppendNextPriorButtons(UIElement backPanel, GenConfigPage page)
 	{
 		float width = ChatManager.GetStringSize(FontAssets.DeathText.Value, page.DisplayName.Value, new(0.7f)).X;
 		GenConfigPage prior = GetPriorPage();
@@ -1213,23 +1209,6 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		};
 
 		backPanel.Append(nextButton);
-
-		if (page.Mod.SmallModIcon is not { } icon)
-			return;
-
-		UIImage modIcon = new(icon)
-		{
-			HAlign = 1,
-			VAlign = 0,
-		};
-
-		modIcon.OnUpdate += _ =>
-		{
-			if (modIcon.ContainsPoint(Main.MouseScreen))
-				hoverText = $"[c/AAAAAA:{Language.GetText("Mods.SpiritReforged.GenConfigs.UI.From")}] " + page.Mod.DisplayName;
-		};
-
-		backPanel.Append(modIcon);
 	}
 
 	private GenConfigPage GetPriorPage()
@@ -1259,18 +1238,17 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		dynamic min = config.Params.Min;
 		dynamic max = config.Params.Max;
 
-		UIElement slider = def switch
+		UIElement slider = config.Get() switch
 		{
 			Enum => new UISlider<int>((int)def, (int)1, (int)min, (int)max, Color.CornflowerBlue),
-			int => new UISlider<int>((int)def, (int)step, (int)min, (int)max, Color.CornflowerBlue),
-			double => new UISlider<double>((double)def, (double)step, (double)min, (double)max, Color.CornflowerBlue),
-			short => new UISlider<short>((short)def, (short)step, (short)min, (short)max, Color.CornflowerBlue),
-			byte => new UISlider<byte>((byte)def, (byte)step, (byte)min, (byte)max, Color.CornflowerBlue),
-			float => new UISlider<float>((float)def, (float)step, (float)min, (float)max, Color.CornflowerBlue),
-			ushort => new UISlider<ushort>((ushort)def, (ushort)step, (ushort)min, (ushort)max, Color.CornflowerBlue),
-			uint => new UISlider<uint>((uint)def, (uint)step, (uint)min, (uint)max, Color.CornflowerBlue),
-			_ => throw new NotSupportedException($"Data type ({def.GetType().Name}) not supported for sliders. Use one of the following data types, or report to Reforged: " +
-				"enum, int, double, short, byte, float, ushort, uint")
+			int => new UISlider<int>(def, step, min, max, Color.CornflowerBlue),
+			double => new UISlider<double>(def, step, min, max, Color.CornflowerBlue),
+			short => new UISlider<short>(def, step, min, max, Color.CornflowerBlue),
+			byte => new UISlider<byte>(def, step, min, max, Color.CornflowerBlue),
+			float => new UISlider<float>(def, step, min, max, Color.CornflowerBlue),
+			ushort => new UISlider<ushort>(def, step, min, max, Color.CornflowerBlue),
+			uint => new UISlider<uint>(def, step, min, max, Color.CornflowerBlue),
+			_ => throw new NotSupportedException("I didn't write a type case for this. Write one!")
 		};
 
 		DefineSliderInfo(slider);

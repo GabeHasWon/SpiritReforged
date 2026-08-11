@@ -37,7 +37,6 @@ UI: {
 		'''
 	LoadError: 在加载（{0}）预设时发生了一个错误。请在Discord报告该错误（并查看client.log）：
 	Duplicate: （重复的预设未被添加）
-	// From: from
 }
 
 Pages: {
