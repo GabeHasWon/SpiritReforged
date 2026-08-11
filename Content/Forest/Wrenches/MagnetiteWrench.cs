@@ -9,7 +9,7 @@ namespace SpiritReforged.Content.Forest.Wrenches;
 
 public class MagnetiteWrench : ModItem
 {
-	private class MagnetiteBoostProjectile : GlobalProjectile, IWrenchGlobal, IHitSentry
+	private class MagnetiteBoostProjectile : GlobalProjectile, IWrenchGlobal
 	{
 		public override bool InstancePerEntity => true;
 
@@ -28,14 +28,6 @@ public class MagnetiteWrench : ModItem
 			}
 		}
 
-		void IHitSentry.OnHitSentry(Player player, Projectile sentry, ref int cooldown)
-		{
-			IHitSentry.ClientHitEffects(sentry);
-
-			player.GetModPlayer<WrenchPlayer>().StoredScrap--;
-			sentry.GetGlobalProjectile<MagnetiteBoostProjectile>().Duration = 5 * 60;
-		}
-
 		public override void PostDraw(Projectile projectile, Color lightColor)
 		{
 			if (Duration > 0)
@@ -43,12 +35,20 @@ public class MagnetiteWrench : ModItem
 		}
 	}
 
-	public class MagnetiteWrenchSwing : CopperSpanner.CopperSpannerSwing, IDrawPixelated
+	public class MagnetiteWrenchSwing : CopperSpanner.CopperSpannerSwing, IDrawPixelated, IHitSentry
 	{
 		public override LocalizedText DisplayName => ModContent.GetInstance<MagnetiteWrench>().DisplayName;
 		public override string Texture => ModContent.GetInstance<MagnetiteWrench>().Texture;
 
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 50, 25);
+
+		void IHitSentry.OnHitSentry(Player player, Projectile sentry, ref int cooldown)
+		{
+			IHitSentry.ClientHitEffects(sentry);
+
+			player.GetModPlayer<WrenchPlayer>().StoredScrap--;
+			sentry.GetGlobalProjectile<MagnetiteBoostProjectile>().Duration = 5 * 60;
+		}
 
 		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
 		{

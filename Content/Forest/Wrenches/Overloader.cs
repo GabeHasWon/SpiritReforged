@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
@@ -12,6 +13,30 @@ namespace SpiritReforged.Content.Forest.Wrenches;
 
 public class Overloader : CopperSpanner
 {
+	private class ToastedProjectile : GlobalProjectile, IWrenchGlobal
+	{
+		public const int DURATION_LIMIT = 5 * 60;
+
+		public override bool InstancePerEntity => true;
+
+		public int Duration { get; set; }
+
+		public override void AI(Projectile projectile)
+		{
+			if (Duration-- > 0 && Main.rand.NextBool(10))
+			{
+				Vector2 position = projectile.Center + Main.rand.NextVector2Circular(30, 30) * Main.rand.NextFloat();
+
+				ParticleHandler.SpawnParticle(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, false, false));
+				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, false, false));
+			}
+		}
+
+		public override Color? GetAlpha(Projectile projectile, Color lightColor) => (Duration > 0) 
+			? lightColor.MultiplyRGB(Color.Lerp(Color.White, Color.DarkGray, Duration / (float)DURATION_LIMIT * 5)) * projectile.Opacity 
+			: null;
+	}
+
 	public sealed class OverloaderExplosion : ModProjectile
 	{
 		public float Power
@@ -115,12 +140,13 @@ public class Overloader : CopperSpanner
 			if (player.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
 			{
 				int totalScrap = wrenchPlayer.StoredScrap;
-				//wrenchPlayer.StoredScrap = 0; //DEBUG
+				wrenchPlayer.StoredScrap = 0;
 
 				if (player.whoAmI == Main.myPlayer) //EXPLODE
 					Projectile.NewProjectile(sentry.GetSource_Misc("WrenchHit"), sentry.Center, Vector2.Zero, ModContent.ProjectileType<OverloaderExplosion>(), 999, 9, Projectile.owner, totalScrap);
 			}
 
+			sentry.GetGlobalProjectile<ToastedProjectile>().Duration = ToastedProjectile.DURATION_LIMIT;
 			SetRecoil();
 		}
 
@@ -131,12 +157,13 @@ public class Overloader : CopperSpanner
 		}
 	}
 
-	public override void SetStaticDefaults() => base.SetStaticDefaults(); //Register on tinkerer's shop
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => shop.NpcType == NPCID.GoblinTinkerer, new NPCShop.Entry(Type)));
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
+		Item.SetShopValues(ItemRarityColor.Orange3, Item.buyPrice(gold: 4, silver: 30));
 		Item.damage = 20;
 		Item.useTime = Item.useAnimation = 22;
 		Item.shoot = ModContent.ProjectileType<OverloaderSwing>();
