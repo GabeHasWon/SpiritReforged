@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Terraria.Audio;
@@ -7,7 +8,6 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.IO;
 using Terraria.ModLoader.Config;
-using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
@@ -15,16 +15,7 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 
 #nullable enable
 
-/// <summary>
-/// Controls the basic necessary parameters used for creating a configurable member.
-/// </summary>
 public readonly record struct GenConfigParameters(object Min, object Max, object Step);
-
-/// <summary>
-/// Controls all parameters required for creating a configurable member, 
-/// including many optional ones that mimic strong reference attributes (such as <see cref="ReverseMinMaxAttribute"/>).
-/// </summary>
-public readonly record struct ConfigInfo(GenConfigParameters Parameters, bool ReverseMinMax, bool Slider, bool IsDenominator, string? PriorityConfig);
 
 public record LoadedConfig(object Default, string Name, GenConfigParameters Params, LocalizedText DisplayName, LocalizedText Tip, bool IsSlider, Func<object> Get, Action<object> Set, 
 	bool ReverseMinMax, bool IsDenominator, string? PriorityConfig)
@@ -32,36 +23,18 @@ public record LoadedConfig(object Default, string Name, GenConfigParameters Para
 	public bool Modified = false;
 }
 
-public class GenConfigLoader : ModSystem
+internal class GenConfigLoader : ModSystem
 {
-	public static readonly List<Mod> LoadingMods = [];
-	public static readonly List<GenConfigPage> LoadedPages = [];
-	public static readonly Dictionary<string, GenConfigPage> PagesByModAndName = [];
-	public static readonly Dictionary<Type, GenConfigPage> PagesByType = [];
+	public static List<Mod> LoadingMods = [];
+	public static List<GenConfigPage> LoadedPages = [];
+	public static Dictionary<string, GenConfigPage> PagesByModAndName = [];
+	public static Dictionary<Type, GenConfigPage> PagesByType = [];
 
-	/// <summary>
-	/// Lookup table designed to be called in <see cref="Mod.Load"/> (or other Load methods) to add custom configurable values.<br/>
-	/// The way the system works is it creates a wrapper around a member (property with get/set or writeable field) in order to automatically create a configurable element, alongside
-	/// the info provided in the attached <see cref="ConfigInfo"/>.<para/>
-	/// At minimum, all values in the returned list must be a valid, non-null <see cref="MemberInfo"/>, and a <see cref="ConfigInfo"/> with a non-null 
-	/// <see cref="ConfigInfo.Parameters"/>'s <see cref="GenConfigParameters.Min"/> <see cref="GenConfigParameters.Max"/> and <see cref="GenConfigParameters.Step"/>, and the rest may be
-	/// left default.<para/>
-	/// This is indexed by page name (<see cref="IGenerationPage.Info"/>.Name) and mod name (<see cref="IGenerationPage.Mod"/>.Name), so something like SpiritReforged/Savanna.
-	/// </summary>
-	public static readonly Dictionary<string, Func<List<(MemberInfo member, ConfigInfo info)>>> CrossmodConfigurables = [];
-
-	/// <summary>
-	/// Gets the <see cref="GenConfigPage"/> associated with <paramref name="t"/>. Throws if invalid.
-	/// </summary>
 	public static GenConfigPage GetPage(Type t) => PagesByType[t];
-
-	/// <summary>
-	/// Gets the <see cref="GenConfigPage"/> associated with <typeparamref name="T"/>. Throws if invalid.
-	/// </summary>
 	public static GenConfigPage GetPage<T>() => GetPage(typeof(T));
 
 	[WorldBound]
-	internal static bool Configured = false;
+	public static bool Configured = false;
 
 	public override void Load()
 	{
@@ -195,7 +168,7 @@ public class GenConfigLoader : ModSystem
 
 		foreach (Mod mod in LoadingMods)
 		{
-			var types = AssemblyManager.GetLoadableTypes(mod.Code);
+			var types = mod.Code.GetTypes();
 
 			foreach (var type in types)
 			{
@@ -229,8 +202,7 @@ public class GenConfigLoader : ModSystem
 	{
 		string pageName = page.Info.PageName;
 		string key = $"Mods.{page.Mod.Name}.GenConfigs.Pages.{pageName}.";
-		GenConfigPage configPage = new(page.Mod, page.Info, Language.GetOrRegister(key + "Name", () => pageName), 
-			Language.GetOrRegister(key + "Description", () => ""), page.Info.Presets.Count);
+		GenConfigPage configPage = new(page.Mod, page.Info, Language.GetOrRegister(key + "Name", () => pageName), Language.GetOrRegister(key + "Description", () => ""), page.Info.Presets.Count);
 
 		if (PagesByModAndName.TryAdd(configPage.FullName, configPage))
 		{
@@ -255,22 +227,7 @@ public class GenConfigLoader : ModSystem
 
 	private static void GetConfigs(ref Action? delay, Type type, IGenerationPage page, GenConfigPage configPage)
 	{
-		if (CrossmodConfigurables.TryGetValue(page.Mod.Name + "/" + page.Info.PageName, out var hook))
-		{
-			var crossModManualMembers = hook.Invoke();
-
-			foreach (var member in crossModManualMembers)
-			{
-				ConfigInfo info = member.info;
-
-				if (member.member is PropertyInfo prop)
-					delay += () => InternalGenerateProp(page, configPage, prop, info);
-				else if (member.member is FieldInfo field)
-					delay += () => InternalGenerateField(page, configPage, field, info);
-			}
-		}
-
-		MemberInfo[] members = [.. type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static),
+		MemberInfo[] members = [.. type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static), 
 			.. type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)];
 
 		foreach (var member in members)
@@ -333,25 +290,20 @@ public class GenConfigLoader : ModSystem
 	{
 		if (field.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
 		{
+			var getDelegate = new Func<object>(() => field.GetValue(null)!);
+			var setDelegate = new Action<object>((val) => field.SetValue(null, val));
+			object def = getDelegate();
+
+			GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
 			bool hasReverse = field.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			bool isDenom = field.GetCustomAttribute<DenominatorAttribute>() is { };
 			string? prioConfig = field.GetCustomAttribute<PriorityModifierAttribute>() is PriorityModifierAttribute prior ? prior.ParentName : null;
-			InternalGenerateField(page, configPage, field, new ConfigInfo(GenerateParameters(attribute, field.FieldType), hasReverse, IsSlider(field), isDenom, prioConfig));
+			LoadedConfig config = new(def, field.Name, GenerateParameters(attribute, field.FieldType), text, tip, IsSlider(field), getDelegate, setDelegate, hasReverse, isDenom, prioConfig);
+			configPage.ConfigsByName.Add(field.Name, config);
+
+			if (field.FieldType.IsEnum)
+				GenerateEnumLocalization(page, field.FieldType);
 		}
-	}
-
-	private static void InternalGenerateField(IGenerationPage page, GenConfigPage configPage, FieldInfo field, ConfigInfo info)
-	{
-		var getDelegate = new Func<object>(() => field.GetValue(null)!);
-		var setDelegate = new Action<object>((val) => field.SetValue(null, val));
-		object def = getDelegate();
-
-		GenerateLocalization(page, field.Name, out LocalizedText text, out LocalizedText tip);
-		LoadedConfig config = new(def, field.Name, info.Parameters, text, tip, info.Slider, getDelegate, setDelegate, info.ReverseMinMax, info.IsDenominator, info.PriorityConfig);
-		configPage.ConfigsByName.Add(field.Name, config);
-
-		if (field.FieldType.IsEnum)
-			GenerateEnumLocalization(page, field.FieldType);
 	}
 
 	private static void GenerateEnumLocalization(IGenerationPage page, Type type)
@@ -370,29 +322,21 @@ public class GenConfigLoader : ModSystem
 	{
 		if (prop.GetCustomAttributes().FirstOrDefault(x => x is GenConfigurableAttribute) is GenConfigurableAttribute attribute)
 		{
+			MethodInfo getMethod = prop.GetGetMethod()!;
+			var getDelegate = (Func<object>)Delegate.CreateDelegate(typeof(Func<object>), getMethod);
+			var setDelegate = (Action<object>)Delegate.CreateDelegate(typeof(Action<object>), prop.GetSetMethod()!);
+			object def = getDelegate();
+
+			GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
 			bool rev = prop.GetCustomAttribute<ReverseMinMaxAttribute>() is { };
 			bool isDenom = prop.GetCustomAttribute<DenominatorAttribute>() is { };
 			string? prioConfig = prop.GetCustomAttribute<PriorityModifierAttribute>() is PriorityModifierAttribute prior ? prior.ParentName : null;
-			InternalGenerateProp(page, configPage, prop, new ConfigInfo(GenerateParameters(attribute, prop.GetGetMethod()!.ReturnType), rev, IsSlider(prop), isDenom, prioConfig));
+			LoadedConfig config = new(def, prop.Name, GenerateParameters(attribute, getMethod.ReturnType), text, tip, IsSlider(prop), getDelegate, setDelegate, rev, isDenom, prioConfig);
+			configPage.ConfigsByName.Add(prop.Name, config);
+
+			if (getMethod.ReturnType.IsEnum)
+				GenerateEnumLocalization(page, getMethod.ReturnType);
 		}
-	}
-
-	private static void InternalGenerateProp(IGenerationPage page, GenConfigPage configPage, PropertyInfo prop, ConfigInfo info)
-	{
-		MethodInfo getMethod = prop.GetGetMethod()!;
-		MethodInfo setMethod = prop.GetSetMethod()!;
-
-		object getDelegate() => getMethod.Invoke(null, null)!;
-		void setDelegate(object input) => setMethod.Invoke(null, [input]);
-
-		object def = getDelegate();
-
-		GenerateLocalization(page, prop.Name, out LocalizedText text, out LocalizedText tip);
-		LoadedConfig config = new(def, prop.Name, info.Parameters, text, tip, info.Slider, getDelegate, setDelegate, info.ReverseMinMax, info.IsDenominator, info.PriorityConfig);
-		configPage.ConfigsByName.Add(prop.Name, config);
-
-		if (getMethod.ReturnType.IsEnum)
-			GenerateEnumLocalization(page, getMethod.ReturnType);
 	}
 
 	private static bool IsSlider(MemberInfo member) => member.GetCustomAttribute<SliderAttribute>() is not null;
