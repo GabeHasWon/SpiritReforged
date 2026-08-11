@@ -67,6 +67,9 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			ResetPage(GenConfigLoader.LoadedPages[pageNumber]);
 			updatePage = false;
 		}
+
+		if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+			ReturnAction();
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_textScale")]
