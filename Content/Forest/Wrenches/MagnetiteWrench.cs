@@ -50,7 +50,11 @@ public class MagnetiteWrench : ModItem
 
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 50, 25);
 
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => DrawPixelatedSmear(spriteBatch, new Color(187, 165, 124));
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
+		{
+			if (!_recoiling)
+				DrawPixelatedSmear(spriteBatch, new Color(187, 165, 124));
+		}
 	}
 
 	public override void SetDefaults()

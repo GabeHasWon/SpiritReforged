@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
@@ -13,82 +14,90 @@ public class Overloader : CopperSpanner
 {
 	public sealed class OverloaderExplosion : ModProjectile
 	{
-		public const int EXPLOSION_TIME = 15;
+		public float Power
+		{
+			get => MathHelper.Min(Projectile.ai[0], 30);
+			set => Projectile.ai[0] = value;
+		}
 
-		public ref float Power => ref Projectile.ai[0];
-
-		public int WindupTime { get; private set; }
+		private bool _initialized;
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 9;
 
 		public override void SetDefaults()
 		{
+			Projectile.Size = new Vector2(100);
 			Projectile.ignoreWater = true;
 			Projectile.tileCollide = false;
-			Projectile.Opacity = 0;
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
+			Projectile.timeLeft = 20;
+
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
 		}
 
 		public override void AI()
 		{
-			if (WindupTime == 0)
+			if (!_initialized)
 			{
-				WindupTime = 30 + Math.Min((int)Power, 60); //90 ticks of windup maximum
-				Projectile.timeLeft = WindupTime + EXPLOSION_TIME;
-			} //Initialize times
-
-			if (Projectile.timeLeft <= EXPLOSION_TIME)
-			{
-				if (!Main.dedServ && Projectile.Opacity == 0) //One-time explosion effects
+				if (!Main.dedServ) //One-time explosion effects
 				{
+					Main.LocalPlayer.SimpleShakeScreen(4, 5, 10, 300);
+
 					SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-					EaseFunction ease = EaseFunction.EaseCircularOut;
 					Vector2 stretch = Vector2.One;
-					float power = Power * 5;
 
-					ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * power, 20, "Smoke", stretch, ease)
-					{ Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi) });
-
-					ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), 0.5f, 30 * power, 20, "Smoke", stretch, ease)
-					{ Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi) });
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, 0.04f * power, EaseFunction.EaseCubicOut, 40));
-
-					for (int i = 0; i < power * 2; i++)
+					for (int i = 0; i < 8 + Power * 0.2f; i++)
 					{
-						float magnitude = Main.rand.NextFloat();
+						Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(50, 50) * Main.rand.NextFloat();
 
-						Color color = Color.OrangeRed.Additive();
-						Vector2 velocity = Main.rand.NextVector2Unit() * magnitude * 10f;
-						float scale = (1f - magnitude) * 0.08f * power;
+						ParticleHandler.SpawnParticle(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, false, false));
+						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, false, false));
 
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 10, 3));
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, Color.White.Additive(), scale * 0.5f, 10, 3));
-
-						var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16f * power), DustID.Torch, Scale: Main.rand.NextFloat() + 0.5f);
-						d.noGravity = true;
+						ParticleHandler.SpawnParticle(new EmberParticle(position, Projectile.Center.DirectionTo(position) * Main.rand.NextFloat(3), Color.OrangeRed, 0.8f, Main.rand.Next(20, 40), 5));
 					}
 				}
 
-				Projectile.Opacity = 1;
-				Projectile.UpdateFrame(50);
+				Vector2 center = Projectile.Center;
+				Projectile.Size += new Vector2((int)(Power * 5));
+				Projectile.Center = center;
+
+				_initialized = true;
 			}
+
+			Projectile.UpdateFrame(30);
 		}
 
-		public override void OnKill(int timeLeft)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			//Explode and die
-		}
+			target.AddBuff(BuffID.OnFire, 120 + 10 * (int)Power);
 
-		public override bool? CanDamage() => (Projectile.timeLeft <= EXPLOSION_TIME) ? null : false;
+			ParticleHandler.SpawnParticle(new FireParticle(target.Center, Vector2.UnitY * -4f, [Color.White, Color.Orange, Color.Red], 1f, 0.12f, EaseFunction.EaseCircularOut, 35)
+			{ PixelDivisor = 2 });
+
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 position = target.Center + Main.rand.NextVector2Circular(20, 20) * Main.rand.NextFloat();
+
+				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Black, 30, false, false));
+				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 30, false, false));
+			}
+
+			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.OrangeRed.Additive(), new Vector2(1, 2), 10, 0));
+			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.White.Additive(), Vector2.One, 10, 0));
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D texture = TextureAssets.Projectile[Type].Value;
 			Rectangle source = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, 0, -2);
 
-			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, source, Projectile.GetAlpha(Color.White), Projectile.rotation, source.Size() / 2, Projectile.scale, 0);
+			for (int i = 0; i < 3; i++)
+			{
+				Color color = Projectile.GetAlpha(Color.White.Additive(100) * (1f - i * 0.2f));
+				Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, source, color, Projectile.rotation, source.Size() / 2, Projectile.scale + i * 0.1f, 0);
+			}
 
 			return false;
 		}
@@ -103,8 +112,6 @@ public class Overloader : CopperSpanner
 
 		void IHitSentry.OnHitSentry(Player player, Projectile sentry, ref int cooldown)
 		{
-			IHitSentry.ClientHitEffects(sentry);
-
 			if (player.TryGetModPlayer(out WrenchPlayer wrenchPlayer))
 			{
 				int totalScrap = wrenchPlayer.StoredScrap;
@@ -117,8 +124,14 @@ public class Overloader : CopperSpanner
 			SetRecoil();
 		}
 
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => DrawPixelatedSmear(spriteBatch, new Color(187, 165, 124));
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
+		{
+			if (!_recoiling)
+				DrawPixelatedSmear(spriteBatch, new Color(187, 165, 124));
+		}
 	}
+
+	public override void SetStaticDefaults() => base.SetStaticDefaults(); //Register on tinkerer's shop
 
 	public override void SetDefaults()
 	{

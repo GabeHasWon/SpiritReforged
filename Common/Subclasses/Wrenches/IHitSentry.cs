@@ -25,7 +25,7 @@ public interface IHitSentry
 				if (!sentry.sentry || sentry.owner != projectile.owner)
 					continue;
 
-				if (projectile.Colliding(projectile.Hitbox, sentry.Hitbox) && iHitSentry.CanHitSentry(owner, sentry))
+				if (projectile.ModProjectile?.CanDamage() != false && projectile.Colliding(projectile.Hitbox, sentry.Hitbox) && iHitSentry.CanHitSentry(owner, sentry))
 				{
 					int immuneTime = owner.itemAnimationMax - 2;
 					iHitSentry.OnHitSentry(owner, sentry, ref immuneTime);

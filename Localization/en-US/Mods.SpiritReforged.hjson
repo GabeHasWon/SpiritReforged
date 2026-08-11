@@ -118,9 +118,8 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
-
 DamageClasses: {
+	HybridDamageClass.DisplayName: Hybrid Damage Class
 	GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	WrenchClass.DisplayName: "{$LegacyTooltip.53}"
 }

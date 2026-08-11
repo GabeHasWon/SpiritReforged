@@ -41,7 +41,7 @@ public class CopperSpanner : ModItem
 
 		public override string Texture => ModContent.GetInstance<CopperSpanner>().Texture;
 
-		private bool _recoiling;
+		protected bool _recoiling;
 
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 40, 25);
 
@@ -81,8 +81,9 @@ public class CopperSpanner : ModItem
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
-			Vector2 origin = new(4, (effects == SpriteEffects.FlipVertically) ? (TextureAssets.Projectile[Type].Value.Height - 34) : 34); //The handle
+			Vector2 origin = new(4, (effects == SpriteEffects.FlipVertically) ? 6 : texture.Height - 6); //The handle
 
 			DrawHeld(lightColor, origin, Projectile.rotation, effects);
 			return false;

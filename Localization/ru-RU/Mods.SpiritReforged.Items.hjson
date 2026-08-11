@@ -3407,5 +3407,9 @@ LargeWrench: {
 
 Overloader: {
 	// DisplayName: Overloader
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries consumes all scrap to create an explosion
+		''' */
 }

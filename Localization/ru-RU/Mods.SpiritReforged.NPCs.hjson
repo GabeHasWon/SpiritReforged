@@ -739,7 +739,8 @@ Enchanter: {
 			// 0: Do stop to smell the roses from time to time. Rest is good for you!
 			// 1: It's easy to lose track of time when you are snout deep in a good tome.
 			// 2: Have you come to learn about the wondrous properties of wax?
-			// 3: What can I enchant for you today?
+			// 3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
+			// 4: Greetings! What can I enchant for you today?
 		}
 
 		IdleNight: {
