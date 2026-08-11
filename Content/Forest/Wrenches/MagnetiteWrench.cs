@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ProjectileCommon;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
@@ -46,6 +47,8 @@ public class MagnetiteWrench : ModItem
 	{
 		public override LocalizedText DisplayName => ModContent.GetInstance<MagnetiteWrench>().DisplayName;
 		public override string Texture => ModContent.GetInstance<MagnetiteWrench>().Texture;
+
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 50, 25);
 
 		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => DrawPixelatedSmear(spriteBatch, new Color(187, 165, 124));
 	}

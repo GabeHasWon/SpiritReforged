@@ -95,3 +95,4 @@ SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
 GreatshieldHitbox.DisplayName: Greatshield Hitbox
+OverloaderExplosion.DisplayName: Overloader Explosion

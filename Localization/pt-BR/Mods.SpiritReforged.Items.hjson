@@ -3188,3 +3188,8 @@ LargeWrench: {
 		Charged strikes move sentries to the cursor position
 		''' */
 }
+
+Overloader: {
+	// DisplayName: Overloader
+	// Tooltip: ""
+}
