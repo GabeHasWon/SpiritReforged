@@ -1,3 +1,4 @@
 v0.2.1.3
 - Allowed the Generation Configuration menu to select folders of presets alongside individual presets
 - Added clarification "no sun" to Scarabeus Altar when hovered at night to show it's not usable
+- Added crossmod support for weakref Gen Configuration tooling
