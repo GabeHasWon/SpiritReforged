@@ -120,10 +120,7 @@ public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEnti
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly)
-			return;
-
-		if (Entity(i, j) is T slot && !slot.item.IsAir)
+		if (!effectOnly && Entity(i, j) is T slot && !slot.item.IsAir)
 		{
 			fail = noItem = true;
 
