@@ -16,7 +16,7 @@ public sealed class MossAmbience : GlobalTile
 	public static readonly Dictionary<int, Color> ColorByMoss = [];
 
 	public static Color LerpedWaterTint { get; private set; }
-	private static Color ActiveWaterTint;
+	public static Color ActiveWaterTint { get; private set; }
 
 	private static bool TryFindColorChunk(int x, int y, int depth, out Color topColor, out Color bottomColor)
 	{
@@ -432,7 +432,7 @@ public class FloatingMoss(int style) : ABasicParticle
 
 		Vector3 hsl = Main.rgbToHsl(variableColor);
 
-		if (variableColor != Color.White)
+		if (MossAmbience.ActiveWaterTint != Color.White)
 			(hsl.Y, hsl.Z) = (1, 0.5f);
 
 		variableColor = Main.hslToRgb(hsl);
