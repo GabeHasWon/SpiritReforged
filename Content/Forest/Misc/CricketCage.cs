@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class CricketCage : CageTile, IAutoloadTileItem
+public class CricketCage : CageTile, ILoadItem
 {
 	public override int NumFrames => 9;
 

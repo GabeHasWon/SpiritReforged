@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
-public class GildedSandstone : ModTile, IAutoloadTileItem
+public class GildedSandstone : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sandstone, 20).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
 
@@ -17,7 +17,6 @@ public class GildedSandstone : ModTile, IAutoloadTileItem
 		AddMapEntry(new Color(198, 124, 78));
 
 		DustType = DustID.Sand;
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);

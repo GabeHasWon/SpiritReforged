@@ -41,7 +41,7 @@ public class AdornedBow : ModItem
 		Item.noUseGraphic = true;
 		Item.DamageType = DamageClass.Ranged;
 		Item.useTurn = false;
-		Item.autoReuse = true;
+		Item.autoReuse = false;
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
 		Item.useStyle = ItemUseStyleID.Swing;

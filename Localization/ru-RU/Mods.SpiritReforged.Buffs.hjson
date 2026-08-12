@@ -110,7 +110,7 @@ ExplorerMine: {
 
 JinxMark: {
 	DisplayName: Метка сглаза
-	Description: ""
+	Description: Вы отмечены луком сглаза
 }
 
 FlaskOfFrost_Buff: {
@@ -120,12 +120,12 @@ FlaskOfFrost_Buff: {
 
 Slowed: {
 	DisplayName: Замедленный
-	Description: ""
+	Description: Ваши движения становятся вялыми
 }
 
 ToucaneMinion_Buff: {
 	DisplayName: Туканотрость
-	Description: За вас сражается туканострость?
+	Description: За вас сражается туканотрость?
 }
 
 TinyDragonPet_Buff: {
@@ -141,4 +141,39 @@ EnlilBuff: {
 ScarabLightPetBuff: {
 	DisplayName: Скарабейчик
 	Description: «Он что-то замышляет...»
+}
+
+ScarabMountBuff: {
+	DisplayName: Ездовой жук-пилюльщик
+	Description: «Держитесь!»
+}
+
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Your next attack is empowered
+}
+
+RotDebuff: {
+	// DisplayName: Rotting [{0}]
+	// Description: "'Your skin is turning green'"
+}
+
+SanguineStackingBuff: {
+	// DisplayName: Sanguine Curse
+	// Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+}
+
+BlazeDebuff: {
+	// DisplayName: Blazing
+	// Description: This is fine!
+}
+
+RageGlyphBuff: {
+	// DisplayName: Rage Glyph Buff
+	// Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+}
+
+StonemasonBuff: {
+	// DisplayName: Stonemason Block
+	// Description: Your next attack deals double knockback
 }

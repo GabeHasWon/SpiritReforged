@@ -7,10 +7,10 @@ using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-[AutoloadGlowmask("100,100,100,0")]
 public class ButterflyStump : ModTile, IAutoloadRubble
 {
 	private const int FrameHeight = 18 * 4;
@@ -31,6 +31,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(100, 100, 100, 0));
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(1, 3);
@@ -138,7 +139,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 		if (!HasItem(i, j))
 			return;
 
-		var color = new Vector3(255, 125, 255) * .001f;
+		var color = new Vector3(255, 125, 255) * 0.001f;
 		(r, g, b) = (color.X, color.Y, color.Z);
 	}
 }

@@ -15,6 +15,31 @@ NeonMosses: Musgo brilhante
 Pottery: Empilhando vasos
 Scarecrow: Assustando pássaros
 
+Mapping: {
+	Exit: Aperte "Escape" para sair do mapeamento mais cedo
+	Tilde: Segure "Tilde" para esconder a sobreposição
+	Help:
+		'''
+		Ecotonos são mapeados através do mundo multiplas vezes
+		Elas possuem três "definições" associadas a eles: borda esquerda, sua própria e borda direita.
+		Seria algo como Floresta < Deserto < Floresta
+		    Ponta da esquerda é uma Floresta
+		    O bioma atual é um Deserto
+		    Ponta da Direita é uma Floresta
+		O retângulo vermelho representa os limites de seus valores mínimo e máximo.
+		O retângulo azul representa a dimensão de início a fim, ou seja, o início e o fim da superfície mapeada.
+		A dimensão mostrada acima da ecotona corresponde à dimensão do retângulo vermelho, juntamente com a altura do retângulo azul.
+		'''
+	Toggle: Aperte {0} para controle manual de geração de ecotonos na geração
+	Enable: ativar
+	Disable: desativar
+	Select: Clique em áreas para forçar que {0} apareça ali.
+	Continue: Clique no texto para continuar
+	OrEscape: (ou aperte Escape)
+	Step: Mapeando {0}
+	Invalid: (Não pode ser selecionado - {0})
+}
+
 Signs: {
 	Underground: {
 		Common: {

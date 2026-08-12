@@ -1,13 +1,37 @@
-﻿using Terraria.WorldBuilding;
-using SpiritReforged.Content.Underground.Tiles;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
+using SpiritReforged.Content.Underground.Tiles;
+using SpiritReforged.Content.Underground.Tiles.Mirror;
+using Terraria.DataStructures;
+using Terraria.ModLoader.Config;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 /// <summary> A pass for cave filler, inserted after "Micro Biomes". </summary>
-internal class CaveDecorMicropass : Micropass
+internal class CaveDecorMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Cave Objects";
+
+	[GenConfigurable(0.05f, 50f, 0.05f)]
+	[Slider]
+	internal static float CartSpawnRate = 1;
+
+	[GenConfigurable(0.33f, 250f, 0.05f)]
+	[Slider]
+	private static float BoomshroomRate = 1;
+
+	[GenConfigurable(0.1f, 100f, 0.05f)]
+	[Slider]
+	private static float MirrorRate = 1;
+
+	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	{
+		CopiedPage = new HouseLoader()
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -19,11 +43,14 @@ internal class CaveDecorMicropass : Micropass
 	{
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Caves");
 
-		int maxCarts = Main.maxTilesX / WorldGen.WorldSizeSmallX * 17;
-		int maxShrooms = Main.maxTilesX / WorldGen.WorldSizeSmallX * WorldGen.genRand.Next(3, 5);
+		int maxCarts = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * 17 * CartSpawnRate);
+		int maxShrooms = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * WorldGen.genRand.Next(3, 5) * BoomshroomRate);
+		int maxMirrors = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * 10 * MirrorRate);
 
 		WorldMethods.Generate(CreateCart, maxCarts, out _, maxTries: 1800);
 		WorldMethods.Generate(CreateShroom, maxShrooms, out _, new Rectangle(20, (int)Main.rockLayer, Main.maxTilesX - 40, Main.maxTilesY - (int)Main.rockLayer - 20));
+
+		CreateMirrors(maxMirrors);
 	}
 
 	private static bool CreateCart(int x, int y)
@@ -52,5 +79,49 @@ internal class CaveDecorMicropass : Micropass
 			WorldGen.OreRunner(x, y + 1, WorldGen.genRand.Next(3, 6), WorldGen.genRand.Next(1, 4), (ushort)ModContent.TileType<Magmastone>());
 
 		return Main.tile[x, y].TileType == type;
+	}
+
+	private static void CreateMirrors(int count)
+	{
+		int instantaneousAttempts = 0;
+
+		for (int a = 0; a < count; a++)
+		{
+			bool fail = false;
+			int range = WorldGen.genRand.Next(Main.maxTilesX / count * a, Main.maxTilesX / count * (a + 1));
+			Point16 plot = new(range, WorldGen.genRand.Next((int)Main.worldSurface, Main.UnderworldLayer));
+
+			(int x, int y) = (plot.X, plot.Y);
+			WorldMethods.FindGround(x, ref y);
+
+			if ((Main.tile[x, y].TileType == TileID.Granite || instantaneousAttempts > 200) && !Main.tile[x, y - 1].CheckingLiquid) //Generate anywhere, but favour granite microbiomes initially
+			{
+				y--;
+
+				int type = ModContent.TileType<EnchantedMirror>();
+				WorldGen.PlaceTile(x, y, type, true);
+
+				if (Main.tile[x, y].TileType == type)
+					instantaneousAttempts = 0; //Success - reset attempts
+				else
+					fail = true;
+			}
+			else
+			{
+				fail = true;
+			}
+
+			if (fail)
+			{
+				if (++instantaneousAttempts > 500)
+				{
+					instantaneousAttempts = 0; //Complete failure - move on
+				}
+				else
+				{
+					a--;
+				}
+			}
+		}
 	}
 }

@@ -1,8 +1,9 @@
 using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Walls;
 
-public class SavannaDirtWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class SavannaDirtWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; }
 

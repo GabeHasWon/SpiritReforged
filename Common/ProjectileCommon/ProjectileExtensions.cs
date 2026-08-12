@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.MathHelpers;
-
+using SpiritReforged.Content.Glyphs;
 namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions
@@ -172,4 +172,6 @@ internal static class ProjectileExtensions
 	}
 
 	public static bool BelongsToPlayer(this Projectile p) => !(p.npcProj || p.owner == 255 || p.trap);
+
+	public static GlyphItem.GlyphType GetGlyph(this Projectile projectile) => projectile.TryGetGlobalProjectile(out GlyphGlobalProjectile glyphProjectile) ? glyphProjectile.glyph : default;
 }

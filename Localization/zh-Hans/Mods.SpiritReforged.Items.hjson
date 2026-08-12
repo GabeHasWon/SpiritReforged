@@ -5,6 +5,11 @@ CommonTooltips: {
 		取下背包前需要清空背包
 		'''
 	Shimmerable: "{0} 在微光中转化"
+	/* Wrench:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries grants temporary buffs at the cost of scrap
+		''' */
 }
 
 Kelp: {
@@ -76,7 +81,7 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: 珊瑚猎人胸甲
+	DisplayName: 珊瑚猎人护胸
 	Tooltip: 50%击退抗性
 }
 
@@ -99,7 +104,7 @@ Lifesaver: {
 	DisplayName: 救生圈
 	Tooltip:
 		'''
-		召唤可骑行的蝠鲼坐骑
+		召唤一只可骑乘的蝠鲼坐骑
 		蝠鲼不能在陆地上移动，但可以漂浮在液体上
 		'''
 }
@@ -236,7 +241,7 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: 锈蚀潜渊者胸甲
+	DisplayName: 锈蚀潜渊者板甲
 	Tooltip: ""
 }
 
@@ -296,7 +301,7 @@ SteamedMussels: {
 
 JellyCandle: {
 	DisplayName: 水母蜡烛
-	Tooltip: 召唤漂浮水母跟着你
+	Tooltip: 召唤一只漂浮水母跟着你
 }
 
 SmallDriftwoodItem: {
@@ -315,7 +320,7 @@ LargeDriftwoodItem: {
 }
 
 DriftwoodChestplate: {
-	DisplayName: 浮木胸甲
+	DisplayName: 浮木护胸
 	Tooltip: ""
 }
 
@@ -325,7 +330,7 @@ DriftwoodHelmet: {
 }
 
 DriftwoodLeggings: {
-	DisplayName: 浮木护胫
+	DisplayName: 浮木护腿
 	Tooltip: ""
 }
 
@@ -392,7 +397,7 @@ MessageBottle: {
 	DisplayName: 瓶中信
 	Tooltip:
 		'''
-		召唤木筏坐骑
+		召唤一个木筏坐骑
 		在木筏上时增加渔力
 		'''
 }
@@ -430,7 +435,7 @@ KoiTotem: {
 
 FairyWhistle: {
 	DisplayName: 仙灵哨
-	Tooltip: 召唤保护仙灵环绕在你的身边
+	Tooltip: 召唤一个保护仙灵环绕在你的身边
 }
 
 TermiteItem: {
@@ -440,7 +445,7 @@ TermiteItem: {
 
 StarPowder: {
 	DisplayName: 星之尘
-	Tooltip: 扔在草地上，用星光为草地注能！
+	Tooltip: 扔在草地上，用星光灌注草地！
 }
 
 TermiteJar: {
@@ -452,7 +457,7 @@ ButterflyStaff: {
 	DisplayName: 缥缈幻蝶杖
 	Tooltip:
 		'''
-		召唤魔法幻蝶为你而战
+		召唤一只魔法幻蝶为你而战
 		“由完美的樱花形成”
 		'''
 }
@@ -469,7 +474,7 @@ PoolNoodle: {
 
 ToucaneItem: {
 	DisplayName: 巨嘴鸟手杖
-	Tooltip: 召唤愤怒的巨嘴鸟为你而战
+	Tooltip: 召唤一只愤怒的巨嘴鸟为你而战
 }
 
 QuenchPotion: {
@@ -494,12 +499,12 @@ LivingBaobabLeafWand: {
 
 LivingBaobabWand: {
 	DisplayName: 活面包树魔棒
-	Tooltip: 放置活面包树
+	Tooltip: 放置活面包木
 }
 
 WrithingSticks: {
 	DisplayName: 扭形枝
-	Tooltip: 召唤友善的风滚草跟着你
+	Tooltip: 召唤一个友善的风滚草跟着你
 }
 
 BaobabFruit: {
@@ -626,7 +631,7 @@ SunStaff: {
 }
 
 SavannaMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原）
+	DisplayName: 八音盒（稀树平原）
 	Tooltip: ""
 }
 
@@ -900,7 +905,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（尘暴）
+	DisplayName: 八音盒（尘暴）
 }
 
 FishLure: {
@@ -928,7 +933,7 @@ GravelItem: {
 }
 
 MagmastoneItem: {
-	DisplayName: 熔岩石
+	DisplayName: 岩浆石
 	Tooltip: ""
 }
 
@@ -987,7 +992,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		在你的前方变出暴雪
-		无视敌人5点的防御力
+		无视敌人10点的防御力
 		'''
 }
 
@@ -1021,7 +1026,7 @@ Blunderbuss: {
 }
 
 SafekeeperRing: {
-	DisplayName: 保管员戒指
+	DisplayName: 守护者之戒
 	Tooltip:
 		'''
 		小幅度增加对亡灵生物的伤害
@@ -1042,7 +1047,7 @@ LeatherLegs: {
 }
 
 LeatherPlate: {
-	DisplayName: 神射手裤
+	DisplayName: 神射手板甲
 	Tooltip: ""
 }
 
@@ -1218,12 +1223,12 @@ DyeCrateItem: {
 	Tooltip:
 		'''
 		{$CommonItemTooltip.RightClickToOpen}
-		“闻起来...居然这么好闻！”
+		“闻起来……居然这么好闻！”
 		'''
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: 音乐盒（稀树平原 - 夜）
+	DisplayName: 八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
@@ -1308,7 +1313,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
 
 OceanDepthsBoxItem: {
-	DisplayName: 音乐盒（海洋深处）
+	DisplayName: 八音盒（深海）
 	Tooltip: ""
 }
 
@@ -1412,7 +1417,7 @@ MudBombSticky: {
 }
 
 HideTunic: {
-	DisplayName: 隐匿束腰外衣
+	DisplayName: 皮制束腰外衣
 	Tooltip: 增加25%近战大小和击退
 }
 
@@ -1620,7 +1625,7 @@ BombCannon: {
 	Tooltip:
 		'''
 		使用炸弹作为弹药
-		大炮发射的炸弹不会破坏五块
+		大炮发射的炸弹不会破坏物块
 		“一项开创性的发明”
 		'''
 }
@@ -1641,10 +1646,10 @@ PotionVatsAlchemyItem: {
 }
 
 DunceCrabBannerItem.DisplayName: 笨蟹旗
-WheezerBannerItem.DisplayName: 响尾兽旗
+WheezerBannerItem.DisplayName: 息鸣螈旗
 
 WheezerStatueItem: {
-	DisplayName: 响尾兽雕像
+	DisplayName: 息鸣螈雕像
 	Tooltip: ""
 }
 
@@ -1761,7 +1766,7 @@ Bowlder: {
 }
 
 BoStaff: {
-	DisplayName: 长棍法杖
+	DisplayName: 长棍
 	Tooltip: 连续命中积累连击
 }
 
@@ -1790,17 +1795,17 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 昼）
+	DisplayName: 异界八音盒（稀树平原 - 昼）
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: 异界音乐盒（稀树平原 - 夜）
+	DisplayName: 异界八音盒（稀树平原 - 夜）
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: 异界音乐盒（尘暴）
+	DisplayName: 异界八音盒（尘暴）
 	Tooltip: ""
 }
 
@@ -1840,7 +1845,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: 音乐盒（魂灵主界面）
+	DisplayName: 八音盒（魂灵标题）
 	Tooltip: ""
 }
 
@@ -1988,7 +1993,7 @@ SharpshooterGlove: {
 }
 
 BonsaiPot: {
-	DisplayName: 盆栽用盆
+	DisplayName: 盆栽盆
 	Tooltip: 用于制作装饰性盆栽
 }
 
@@ -2023,12 +2028,12 @@ EarthshakerWarmask: {
 }
 
 GraniteBody: {
-	DisplayName: 动能胸甲
+	DisplayName: 动能护胸
 	Tooltip: 小幅度增加跳跃高度
 }
 
 GraniteHead: {
-	DisplayName: 动能面甲
+	DisplayName: 动能面罩
 	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
@@ -2053,10 +2058,10 @@ FlaskOfFrost: {
 }
 
 HardlightVisor: {
-	DisplayName: 强光面甲
+	DisplayName: 强光面罩
 	Tooltip: ""
-	AltDisplayName: 硬光面甲
-	AltTooltip: “请勿与强光面甲混淆”
+	AltDisplayName: 硬光面罩
+	AltTooltip: “请勿与强光面罩混淆”
 }
 
 PolishedAmberItem: {
@@ -2126,7 +2131,7 @@ SilkSirwal: {
 }
 
 SilkTop: {
-	DisplayName: 太阳舞者上衣
+	DisplayName: 太阳舞者上装
 	Tooltip: 增加7%魔法伤害
 }
 
@@ -2141,7 +2146,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: 棘球
-	Tooltip: 粘在图格上
+	Tooltip: 会粘在图格上以及减速敌人
 }
 
 SaltBlockDullItem: {
@@ -2171,7 +2176,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: 渗透装置
-	Tooltip: 放置在水中时会被动生成盐块
+	Tooltip: 放置在水中时会被动生成暗淡盐块
 }
 
 GoldDivingBeetleItem: {
@@ -2522,7 +2527,7 @@ TrellisTwoShadewoodItem: {
 
 ChainLoopItem: {
 	DisplayName: 链环
-	Tooltip: 放置时按上/下建可调整链条长度
+	Tooltip: 放置时按上/下键可调整链条长度
 }
 
 GoldChainLoopItem: {
@@ -2537,7 +2542,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: 摩诃迦罗面具
-	Tooltip: 降低所受到的来自腐化敌人的伤害
+	Tooltip: 降低所受到的来自邪恶敌人的伤害，并增加对邪恶敌人造成的伤害
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2586,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: 青铜格栅
+	DisplayName: 青铜格栅墙
 	Tooltip: ""
 }
 
@@ -2617,7 +2622,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: 前景赤沙岩砖墙
-	Tooltip: ""
+	Tooltip: 显示在玩家前面
 }
 
 SaltPylonItem: {
@@ -2627,12 +2632,12 @@ SaltPylonItem: {
 
 SaltNightMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩 - 夜）
+	DisplayName: 八音盒（盐滩 - 夜）
 }
 
 SaltMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: 音乐盒（盐滩）
+	DisplayName: 八音盒（盐滩）
 }
 
 PineappleSeeds: {
@@ -2654,7 +2659,7 @@ TinyDragon: {
 	DisplayName: 小龙
 	Tooltip:
 		'''
-		召唤小龙跟着你
+		召唤一只小龙跟着你
 		“最后的同类”
 		'''
 }
@@ -2695,7 +2700,7 @@ SaltTorchItem: {
 }
 
 ZigguratMusicBoxItem: {
-	DisplayName: 音乐盒（庙塔）
+	DisplayName: 八音盒（庙塔）
 	Tooltip: ""
 }
 
@@ -2711,7 +2716,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: 力量手镯
-	Tooltip: 永久性强化近战攻击
+	Tooltip: 定期强化近战攻击
 }
 
 ScarabTabletOneItem: {
@@ -2776,29 +2781,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: 盐腌匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: 盐水匣
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
-	DisplayName: 修复的盐腌匣
-	Tooltip: ""
+	DisplayName: 复原的盐腌匣
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
-	DisplayName: 修复的盐水匣
-	Tooltip: ""
+	DisplayName: 复原的盐水匣
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: 盗墓者旗
 
 GiantBag: {
 	DisplayName: 战利品袋
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“各地恶棍与歹徒的最爱”
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2883,12 +2892,12 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: 青铜格栅门
-	Tooltip: ""
+	Tooltip: 允许液体通过，即便被关闭
 }
 
 CalmingBellItem: {
 	DisplayName: 宁静之铃
-	Tooltip: 右键降低刷怪率
+	Tooltip: 右键降低敌人的生成速度
 }
 
 BrownShinglesItem: {
@@ -2907,8 +2916,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: 青铜格栅块
-	Tooltip: ""
+	DisplayName: 青铜格栅
+	Tooltip: 仅允许液体通过
 }
 
 BedouinBreastplate: {
@@ -2922,7 +2931,7 @@ BedouinCowl: {
 }
 
 BedouinLeggings: {
-	DisplayName: 贝都因人护胫
+	DisplayName: 贝都因人护腿
 	Tooltip: 增加10%移动速度
 }
 
@@ -3006,7 +3015,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: 音乐盒（圣甲虫）
+	DisplayName: 八音盒（圣甲虫）
 	Tooltip: ""
 
 	Toggle: {
@@ -3025,7 +3034,7 @@ LocustCrook: {
 	Tooltip:
 		'''
 		召唤一个哨兵
-		扔出一根曲柄杖，其会吸引蝗虫来寄生敌人
+		扔出一根曲柄杖，其会吸引蝗虫来侵扰敌人
 		'''
 }
 
@@ -3044,20 +3053,361 @@ ScarabLightPetItem: {
 }
 
 BeetleLicense: {
-	// DisplayName: Beetle License
+	DisplayName: 甲虫许可证
+	Tooltip:
+		'''
+		用于为城镇领养一只甲虫
+		已经养了甲虫？
+		再用一张许可证可以激活宠物交换计划！
+		找到最搭你的甲虫！
+		'''
+	LicenseUse: 发送许可证给甲虫运送服务站……
+}
+
+GooeyHiveItem: {
+	DisplayName: 黏糊蜂巢
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: 忍冬花芽
+	Tooltip: 召唤一只鼠妇坐骑
+}
+
+SandySandstoneItem: {
+	DisplayName: 砂质沙岩
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: 赤陶墓石
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: 赤陶墓石碑
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: 赤陶墓碑
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: 赤陶方尖碑
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: 干木墓石
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: 稀树平原墓碑
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: 干木墓石碑
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: 干木十字墓石碑
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: 现代方尖碑
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: 现代屏墓
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: 现代墓碑
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: 现代碑石
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: 盐碑石
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: 盐墓石
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: 盐墓碑
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: 盐墓石碑
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}
+
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
+	// Tooltip: Can be exchanged for magical glyphs
+	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	// Target: Can only be applied to weapons
+	// RightClick: Hold this glyph and right-click the item you want to enchant
+}
+
+BlazeGlyph: {
+	// DisplayName: Blaze Glyph
 	/* Tooltip:
 		'''
-		Use to adopt a beetle for your town
-		Already have a beetle?
-		Use additional licenses to activate the Pet Exchange Program!
-		Find the perfect fit for you and your beetle!
+		Dealing damage sets you ablaze
+		up to +40% damage and +20% critical strike chance depending on lost hp
 		''' */
-	// LicenseUse: The license teleports away to the beetle delivery service...
+	// Effect: Blazing
+	// Death: "{0} was consumed by Rage..."
+}
+
+RadiantGlyph: {
+	// DisplayName: Radiant Glyph
+	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	// Effect: Radiant
+}
+
+StormGlyph: {
+	// DisplayName: Storm Glyph
+	/* Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		''' */
+	// Effect: Billowed
+}
+
+MoonlightGlyph: {
+	// DisplayName: Moonlight Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		''' */
+	// Effect: Dazzling
+}
+
+RotGlyph: {
+	// DisplayName: Rot Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict a contagious blight
+		This blight can be inflicted on to you by enemies suffering from it
+		''' */
+	// Effect: Blighted
+}
+
+ShockGlyph: {
+	// DisplayName: Shock Glyph
+	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
+	// Effect: Shocking
+}
+
+BeeGlyph: {
+	// DisplayName: Bee Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		''' */
+	// Effect: Buzzing
+}
+
+SanguineGlyph: {
+	// DisplayName: Sanguine Glyph
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
+}
+
+PrefixVoucher: {
+	// DisplayName: "{0} Prefix Voucher"
+	/* Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		''' */
+}
+
+EnchantedStamp: {
+	// DisplayName: Enchanted Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+CelestialStamp: {
+	// DisplayName: Celestial Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		Additionally allows items to receive prefixes and glyph effects simultaneously
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+RageGlyph: {
+	// DisplayName: Rage Glyph
+	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
+	// Effect: Wrathful
+}
+
+CharmcasterHat: {
+	// DisplayName: Charmcaster's Hat
+	// Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	// DisplayName: Charmcaster's Leggings
+	// Tooltip: ""
+}
+
+CharmcasterRobe: {
+	// DisplayName: Charmcaster's Robe
+	// Tooltip: ""
+}
+
+VoidGlyph: {
+	// DisplayName: Void Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
+		''' */
+	// Effect: Null
+}
+
+GlitterPurse: {
+	// DisplayName: Glitter Purse
+	// Tooltip: Permanently increases the item capacity of backpacks
+	// StatusText: Your backpacks grow larger
+}
+
+MariglowSeedPouch: {
+	// DisplayName: Mariglow Seed Pouch
+	// Tooltip: Scatters seeds which sprout into mariglow on sand
+}
+
+DisplayCaseItem: {
+	// DisplayName: Display Case
+	// Tooltip: <right> to place accessory in case
+}
+
+SkyPylonItem: {
+	// DisplayName: Space Pylon
+	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	// DisplayName: Candlewick Rope
+	// Tooltip: Can be climbed on
+}
+
+WaxBlockItem: {
+	// DisplayName: Wax Block
+	// Tooltip: ""
+}
+
+WaxPotItem: {
+	// DisplayName: Wax Pot
+	// Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	// DisplayName: Mirror of Return
+	// Tooltip: <right> to teleport home and create a portal
+}
+
+MirrorItem: {
+	// DisplayName: Mirror
+	// Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	// DisplayName: Enchanted Workbench
+	// Tooltip: ""
 }
 
 StonemasonGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
+}
+
+ScrapPickup: {
+	// DisplayName: Scrap
+	/* Tooltip:
+		'''
+		Used by various wrenches on sentries
+		'Sharp! (ow)'
+		''' */
+}
+
+CopperSpanner: {
+	// DisplayName: Copper Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+TinSpanner: {
+	// DisplayName: Tin Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+MagnetiteWrench: {
+	// DisplayName: Magnetite Wrench
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+LargeWrench: {
+	// DisplayName: Comically Large Wrench
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Wrench}
+		Charged strikes move sentries to the cursor position
+		''' */
+}
+
+Overloader: {
+	// DisplayName: Overloader
+	/* Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries consumes all scrap to create an explosion
+		''' */
 }
 
 Nightlight: {

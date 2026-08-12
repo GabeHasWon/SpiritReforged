@@ -1,16 +1,18 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
+public class ZigguratTikiTorch : ModTile, ILoadItem
 {
 	public const int FrameWidth = 18;
+
+	public void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 5;
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 4).AddIngredient(ItemID.Torch, 1).Register();
 
@@ -28,7 +30,6 @@ public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
 		RegisterItemDrop(this.AutoItemType());
 
 		DustType = -1;
-		this.AutoItem().ResearchUnlockCount = 5;
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;

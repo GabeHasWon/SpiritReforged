@@ -31,6 +31,7 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
 	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 14;
@@ -58,8 +59,11 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 		const float secondaryArc = 5;
 
 		if (player.altFunctionUse == 0) //Primary function
+		{
 			if (_swingArc == secondaryArc) //Primary attacks following a secondary are always uppercuts
+			{
 				_swingArc = -4.2f;
+			}
 			else
 			{
 				float oldSwingArc = _swingArc;
@@ -69,8 +73,11 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 				if (_swingArc == 0)
 					velocity = velocity.RotatedByRandom(0.5f);
 			}
+		}
 		else //Secondary function
+		{
 			_swingArc = secondaryArc;
+		}
 
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
 		return false;
@@ -88,7 +95,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public static readonly SoundStyle Slash = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1") { Volume = 0.5f, Pitch = 0.5f, PitchVariance = 0.15f };
 
-	public override Configuration SetConfiguration() => new(EaseFunction.EaseCubicOut, 58, 30);
+	public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 58, 30);
 
 	public override void AI()
 	{
@@ -144,7 +151,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 				_ => Player.CompositeArmStretchAmount.Full
 			};
 
-			GetRotation(out float armRotation);
+			GetRotation(out float armRotation, out var stretch);
 
 			owner.SetCompositeArmFront(true, amount, armRotation);
 			Projectile.Center = owner.GetFrontHandPosition(amount, armRotation);
@@ -159,10 +166,10 @@ public class CeremonialDaggerSwing : SwungProjectile
 		}
 	}
 
-	public override float GetRotation(out float armRotation)
+	public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 	{
 		int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
-		float value = base.GetRotation(out armRotation) + direction * Progress * 2;
+		float value = base.GetRotation(out armRotation, out stretch) + direction * Progress * 2;
 
 		return value + MathHelper.PiOver4;
 	}
@@ -188,23 +195,25 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (AltFunction)
-			if (target.HasBuff(BuffID.Bleeding))
-			{
-				modifiers.SetCrit();
-				target.RemoveBuff(BuffID.Bleeding);
-				Vector2 hitPos = target.Hitbox.ClosestPointInRect(Projectile.Center);
+		if (!AltFunction)
+			return;
 
-				for (int i = 0; i < 10; i++)
-					Dust.NewDustPerfect(hitPos + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+		if (target.HasBuff(BuffID.Bleeding))
+		{
+			modifiers.SetCrit();
+			target.RemoveBuff(BuffID.Bleeding);
+			Vector2 hitPos = target.Hitbox.ClosestPointInRect(Projectile.Center);
 
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, Pitch = 0.7f }, Projectile.Center);
-			}
-			else
-			{
-				modifiers.Knockback += 1;
-				modifiers.DisableCrit();
-			}
+			for (int i = 0; i < 10; i++)
+				Dust.NewDustPerfect(hitPos + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, Pitch = 0.7f }, Projectile.Center);
+		}
+		else
+		{
+			modifiers.Knockback += 1;
+			modifiers.DisableCrit();
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -218,11 +227,11 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 		if (!Stab && !Flourishing)
 		{
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), config.Reach + 10, effects: effects);
-			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), config.Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(137, 93, 46)).Additive(100)) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 8f), GetConfig<BasicConfiguration>().Reach + 10, effects: effects);
+			DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(new Color(200, 160, 90)).Additive((byte)(AltFunction ? 0 : 255))) * Math.Min(Progress * 3, 1) * 0.5f, rotation, (int)(Progress * 12f), GetConfig<BasicConfiguration>().Reach + 10, effects: effects);
 
 			if (AltFunction && Progress > 0.2f)
-				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, config.Reach + 10, effects: effects);
+				DrawSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Goldenrod).Additive()) * (1f - Progress * 2), rotation, 3, GetConfig<BasicConfiguration>().Reach + 10, effects: effects);
 		}
 
 		if (AltFunction)

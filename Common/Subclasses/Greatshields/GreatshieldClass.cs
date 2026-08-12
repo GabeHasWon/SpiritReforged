@@ -12,5 +12,5 @@ internal class GreatshieldClass : SubclassClass
 
 	public override bool GetEffectInheritance(DamageClass damageClass) => damageClass == Melee;
 
-	public override void SetDefaultStats(Player player) => player.GetDamage<GreatshieldClass>().Flat += player.statDefense;
+	public override void SetDefaultStats(Player player) => player.GetDamage<GreatshieldClass>().Flat += player.TryGetModPlayer(out GreatshieldPlayer shield) ? shield.LastDefense : 0;
 }

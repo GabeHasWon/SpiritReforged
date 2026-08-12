@@ -35,7 +35,7 @@ public class DashSwordPlayer : ModPlayer
 	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable) => dashing;
 }
 
-public class DashSwordLayer : PlayerDrawLayer
+public class HoldingSwordLayer : PlayerDrawLayer
 {
 	public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
 

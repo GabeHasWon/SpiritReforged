@@ -2,7 +2,29 @@
 
 public static class DrawHelpers
 {
+	public static BlendState AdditiveNoAlpha = new BlendState
+	{
+		AlphaBlendFunction = BlendFunction.Add,
+		ColorBlendFunction = BlendFunction.Add,
+		ColorSourceBlend = Blend.SourceAlpha,
+		ColorDestinationBlend = Blend.One,
+		AlphaSourceBlend = Blend.SourceAlpha,
+		AlphaDestinationBlend = Blend.One,
+		ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels1 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels2 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels3 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue
+	};
+
 	public delegate void DelegateAction(Vector2 positionOffset, Color colorMod);
+	public static Color MulticolorLerp(float increment, params Color[] colors)
+	{
+		increment %= 0.999f;
+		int currentColorIndex = (int)(increment * colors.Length);
+		Color color = colors[currentColorIndex];
+		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
+		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
+	}
 
 	public static void DrawChromaticAberration(Vector2 direction, float strength, DelegateAction action)
 	{
@@ -65,7 +87,7 @@ public static class DrawHelpers
 		spriteBatch.Draw(ray, position, null, rayColor, rotation, new Vector2(ray.Width / 2, 0), rayscale, SpriteEffects.None, 0);
 	}
 
-	/// <summary> Requests the texture of <paramref name="name"/> is the namespace of <paramref name="type"/>. </summary>
+	/// <summary> Requests the texture of <paramref name="name"/> in the namespace of <paramref name="type"/>. </summary>
 	public static Asset<Texture2D> RequestLocal(Type type, string name, bool immediate = false) => ModContent.Request<Texture2D>(RequestLocal(type, name), immediate ? AssetRequestMode.ImmediateLoad : AssetRequestMode.AsyncLoad);
 	/// <summary> Gets the string key for a texture resulting from the given arguments. See the overload for <see cref="Texture2D"/>. </summary>
 	public static string RequestLocal(Type type, string name) => (type.Namespace + '.' + name).Replace('.', '/');

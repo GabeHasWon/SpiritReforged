@@ -237,7 +237,7 @@ Cartographer: {
 					'''
 				2:
 					'''
-					之前有次测试被丛林蝙蝠追能跑多快，结果“砰！”的一下，就在地图这个位置，突然漫天沙尘。一片热带草原在我的眼前展开！壮观的嘞！
+					之前有次测试被丛林蝙蝠追能跑多快，结果“砰！”的一下，就在地图这个位置，突然漫天沙尘。一片稀树平原在我的眼前展开！壮观的嘞！
 					顺便说一句，我发现逃命时我能跑得贼快。
 					'''
 			}
@@ -425,7 +425,7 @@ PotterySlime: {
 	Census.SpawnCondition: 打碎洞穴中不常见的罐子 [i:SpiritReforged/PotsCavernItem]
 }
 
-StompableGnome.DisplayName: 可被踩头的侏儒
+StompableGnome.DisplayName: 可踩侏儒
 
 DunceCrab: {
 	DisplayName: 笨蟹
@@ -433,12 +433,12 @@ DunceCrab: {
 }
 
 Wheezer: {
-	DisplayName: 响尾兽
-	Entry: 响尾兽是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
+	DisplayName: 息鸣螈
+	Entry: 息鸣螈是蝾螈的一个毒性极强的近亲，以具有攻击性而知名。奇怪的是，它们的最爱食物是刚萌芽的冬青植物，与它们的食肉倾向相矛盾。
 }
 
 WorldFrog: {
-	DisplayName: 看起来有帮助的青蛙
+	DisplayName: 有用青蛙
 	Button: 更新世界
 
 	Sounds: {
@@ -485,12 +485,12 @@ DivingBeetle: {
 
 GoldDivingBeetle: {
 	DisplayName: 金龙虱
-	Entry: 偶尔会发现浑身包裹着金子的小动物！它们能跟商人们换来大把金币，鱼儿也特别喜欢这种金色鱼饵！
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
 	DisplayName: 跳鼠
-	Entry: 这种活泼好动的小家伙喜欢干旱气候，能在在平坦的沙漠上飞驰，也会在稀树草原的草丛中捕食昆虫。
+	Entry: 这种活泼好动的小家伙喜欢干旱气候，能在在平坦的沙漠上飞驰，也会在稀树平原的草丛中捕食昆虫。
 }
 
 Grub: {
@@ -553,7 +553,10 @@ Scarabeus: {
 	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
-TinyGrub.DisplayName: 小幼虫
+TinyGrub: {
+	DisplayName: 小幼虫
+	Entry: 其潜力跟恶心程度一样大。
+}
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
@@ -570,109 +573,205 @@ VeiledZombie: {
 	Entry: 靠着衣装来抵御酷热，只是沙漠求生的一部分。携带食物和水也是不可忽视的一环。
 }
 
-Cricket.DisplayName: 蟋蟀
-GoldCricket.DisplayName: 金蟋蟀
+Cricket: {
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
+	DisplayName: 蟋蟀
+}
+
+GoldCricket: {
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
+	DisplayName: 金蟋蟀
+}
 
 BeetleTownPet: {
-	// DisplayName: Beetle
-	// Chitter: Chitter
+	DisplayName: 甲虫
+	Entry: 虽然它们不适合用来拥抱，但笨拙的样子让它们显得十分惹人喜爱。
+	Chitter0: *快乐的叽叽声*
+	Chitter1: *虫子的噪音声*
+	Chitter2: *甲虫的噪音声*
 
 	Names: {
-		// RoyalScarab0: Azure
-		// RoyalScarab1: Berry
-		// RoyalScarab2: Bluey
-		// RoyalScarab3: Crowno
-		// RoyalScarab4: Khepri
-		// RoyalScarab5: Lapis
-		// RoyalScarab6: Lumi
-		// RoyalScarab7: Minibeus
-		// RoyalScarab8: Prince
-		// RoyalScarab9: Queenie
-		// RoyalScarab10: Scarb
-		// RoyalScarab11: Sadie
-		// RoyalScarab12: Sapphire
-		// RoyalScarab13: Skippy
-		// RoyalScarab14: Sunny
-		// RoyalScarab15: Scab
-		// DungBeetle0: Asbestos
-		// DungBeetle1: Bit
-		// DungBeetle2: Brick
-		// DungBeetle3: Cannonball
-		// DungBeetle4: Clay
-		// DungBeetle5: Dave
-		// DungBeetle6: Dirt
-		// DungBeetle7: Greg
-		// DungBeetle8: Grumpy
-		// DungBeetle9: Hercules
-		// DungBeetle10: Jeff
-		// DungBeetle11: Licorice
-		// DungBeetle12: Pebbles
-		// DungBeetle13: Petey
-		// DungBeetle14: Soot
-		// DungBeetle15: Spoon
-		// JewelBeetle0: Aubrey
-		// JewelBeetle1: Bea
-		// JewelBeetle2: Bonbon
-		// JewelBeetle3: Caramel
-		// JewelBeetle4: Glinty
-		// JewelBeetle5: Goldilocks
-		// JewelBeetle6: Hummus
-		// JewelBeetle7: Kylie
-		// JewelBeetle8: Mallow
-		// JewelBeetle9: Mina
-		// JewelBeetle10: Obol
-		// JewelBeetle11: Saoirse
-		// JewelBeetle12: Sheila
-		// JewelBeetle13: Taffy
-		// JewelBeetle14: Topaz
-		// JewelBeetle15: Zahrah
-		// Weevil0: Archibald
-		// Weevil1: Boots
-		// Weevil2: Charlamagne
-		// Weevil3: Dinky
-		// Weevil4: Duchess
-		// Weevil5: Eleanor
-		// Weevil6: Hubert
-		// Weevil7: Ickabod
-		// Weevil8: Jebediah
-		// Weevil9: Johnson
-		// Weevil10: Knievel
-		// Weevil11: Lawrence
-		// Weevil12: Lord Eggleston Esquire III
-		// Weevil13: Poky
-		// Weevil14: Sniffles
-		// Weevil15: Winnifred
-		// Maybug0: April
-		// Maybug1: Charlotte
-		// Maybug2: Clover
-		// Maybug3: Dew
-		// Maybug4: Dizzy
-		// Maybug5: Fuzzy
-		// Maybug6: Gigi
-		// Maybug7: Holly
-		// Maybug8: Juniper
-		// Maybug9: Mandy
-		// Maybug10: Maya
-		// Maybug11: Minky
-		// Maybug12: Paprika
-		// Maybug13: Piper
-		// Maybug14: Popcorn
-		// Maybug16: Velvet
-		// Ladybug0: Basil
-		// Ladybug1: Chacha
-		// Ladybug2: Cinnamon
-		// Ladybug3: Dainty
-		// Ladybug4: Dandy
-		// Ladybug5: Diva
-		// Ladybug6: Lady
-		// Ladybug7: Lovely
-		// Ladybug8: Missy
-		// Ladybug9: Pin
-		// Ladybug10: Polka
-		// Ladybug11: Rosa
-		// Ladybug12: Scarlet
-		// Ladybug13: Spots
-		// Ladybug14: Titania
-		// Ladybug15: Tulip
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Scarb
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Cannonball
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Grumpy
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Pebbles
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Spoon
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramel
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topaz
+		JewelBeetle15: Zahrah
+		Weevil0: Archibald
+		Weevil1: Boots
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Hubert
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lawrence
+		Weevil12: Lord Eggleston Esquire III
+		Weevil13: Poky
+		Weevil14: Sniffles
+		Weevil15: Winnifred
+		Maybug0: April
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Holly
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Piper
+		Maybug14: Popcorn
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Cinnamon
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Lovely
+		Ladybug8: Missy
+		Ladybug9: Pin
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Spots
+		Ladybug14: Titania
+		Ladybug15: Tulip
 	}
 }
+
+Enchanter: {
+	// DisplayName: Enchanter
+	// Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
+
+	Names: {
+		// 0: Albion
+		// 1: Bertilak
+		// 2: Eango
+		// 3: Enki
+		// 4: Gil
+		// 5: Heka
+		// 6: Ilmarinen
+		// 7: Itani
+		// 8: Kokabiel
+		// 9: Mallyck
+		// 10: Mazdak
+		// 11: Morrigan
+		// 12: Myrrdin
+		// 13: Oeti
+		// 14: Ose
+		// 15: Sulyvahn
+		// 16: Tethra
+		// 17: Themisto
+		// 18: Vorv
+		// 19: Ywain
+	}
+
+	TownNPCMood: {
+		// Content: I take a moment and feel... all is well.
+		// NoHome: I don't imagine you've got a place for me to rest my weary bones?
+		// FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
+		// LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
+		// DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
+		// HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
+		// LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
+		// LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
+		// DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
+		// HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
+		// LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
+		// DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
+		// LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
+		// Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
+	}
+
+	Dialogue: {
+		Idle: {
+			// 0: Do stop to smell the roses from time to time. Rest is good for you!
+			// 1: It's easy to lose track of time when you are snout deep in a good tome.
+			// 2: Have you come to learn about the wondrous properties of wax?
+			// 3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
+			// 4: Greetings! What can I enchant for you today?
+		}
+
+		IdleNight: {
+			// 0: The moon is high, and my candles burn brighter than ever!
+			// 1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
+			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+		}
+
+		BloodMoon: {
+			// 0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
+			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+		}
+
+		Rain: {
+			// 0: There's nothing quite like the sound of rain pattering against the windows.
+			// 1: I'm not going outside again. I only just got my hat dry from last time!
+		}
+
+		Graveyard: {
+			// 0: I usually like it quiet, but the air is completely still. It's unnerving.
+			// 1: I can't shake the feeling that something is watching me.
+		}
+
+		// Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
+		// Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
+		// Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
+		// Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
+		// Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
+		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
+		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
+	}
+}
+
+// SealedKnight.DisplayName: Sealed Knight

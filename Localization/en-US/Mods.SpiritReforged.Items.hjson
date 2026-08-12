@@ -5,6 +5,11 @@ CommonTooltips: {
 		You must empty this before taking it off
 		'''
 	Shimmerable: "{0} Transforms in shimmer"
+	Wrench:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries grants temporary buffs at the cost of scrap
+		'''
 }
 
 Kelp: {
@@ -987,7 +992,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Conjures a blizzard in front of you
-		Ignores 5 points of enemy Defense
+		Ignores 10 points of enemy Defense
 		'''
 }
 
@@ -2141,7 +2146,7 @@ CeremonialDagger: {
 
 Thornball: {
 	DisplayName: Thornball
-	Tooltip: Sticks to tiles
+	Tooltip: Sticks to tiles and slows enemies
 }
 
 SaltBlockDullItem: {
@@ -2171,7 +2176,7 @@ SunDropper: {
 
 OsmosifierItem: {
 	DisplayName: Osmosifier
-	Tooltip: Passively produces salt blocks when placed in water
+	Tooltip: Passively produces dull salt blocks when placed in water
 }
 
 GoldDivingBeetleItem: {
@@ -2537,7 +2542,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Mahakala Mask
-	Tooltip: Reduces damage taken from corrupt enemies
+	Tooltip: Reduces damage taken from and dealt to evil enemies
 }
 
 MahakalaMaskRed: {
@@ -2581,7 +2586,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Bronze Grate
+	DisplayName: Bronze Grate Wall
 	Tooltip: ""
 }
 
@@ -2617,7 +2622,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Foreground Red Sandstone Brick Wall
-	Tooltip: ""
+	Tooltip: Displays in front of players
 }
 
 SaltPylonItem: {
@@ -2670,7 +2675,7 @@ BrineShrimpItem: {
 }
 
 GoldenBrineShrimpItem: {
-	DisplayName: Golden Brine Shrimp
+	DisplayName: Gold Brine Shrimp
 	Tooltip: ""
 }
 
@@ -2776,29 +2781,33 @@ SaltPlateItem: {
 
 SaltCrate: {
 	DisplayName: Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmode: {
 	DisplayName: Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateRestored: {
 	DisplayName: Restored Salted Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
 	DisplayName: Restored Brine Crate
-	Tooltip: ""
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 GraverobberBannerItem.DisplayName: Graverobber Banner
 
 GiantBag: {
 	DisplayName: Loot Bag
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'A favourite of scoundrels and miscreants everywhere'
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2817,7 +2826,7 @@ SaltCampfireItem: {
 }
 
 SaltFountainItem: {
-	DisplayName: Salt Flats Fountain
+	DisplayName: Salt Flats Water Fountain
 	Tooltip: ""
 }
 
@@ -2883,7 +2892,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Bronze Grate Door
-	Tooltip: ""
+	Tooltip: Allows liquids through even when closed
 }
 
 CalmingBellItem: {
@@ -2907,8 +2916,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Bronze Grate Block
-	Tooltip: ""
+	DisplayName: Bronze Grate
+	Tooltip: Allows only liquids through
 }
 
 BedouinBreastplate: {
@@ -3055,9 +3064,350 @@ BeetleLicense: {
 	LicenseUse: The license teleports away to the beetle delivery service...
 }
 
+GooeyHiveItem: {
+	DisplayName: Gooey Hive
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Honeysuckle Bud
+	Tooltip: Summons a pillbug mount
+}
+
+SandySandstoneItem: {
+	DisplayName: Sandy Sandstone
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Terracotta Tombstone
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Terracotta Grave Marker
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Terracotta Gravestone
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Terracotta Obelisk
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Drywood Tombstone
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Savanna Gravestone
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Drywood Grave Marker
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Drywood Cross Grave Marker
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Modern Obelisk
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Modern Tombscreen
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Modern Gravestone
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Modern Headstone
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Salt Headstone
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Salt Tombstone
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Salt Gravestone
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Salt Grave Marker
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	DisplayName: Not Sun Item Icon
+	Tooltip: ""
+}
+
+ChromaticWax: {
+	DisplayName: Chromatic Wax
+	Tooltip: Can be exchanged for magical glyphs
+	Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	Target: Can only be applied to weapons
+	RightClick: Hold this glyph and right-click the item you want to enchant
+}
+
+BlazeGlyph: {
+	DisplayName: Blaze Glyph
+	Tooltip:
+		'''
+		Dealing damage sets you ablaze
+		up to +40% damage and +20% critical strike chance depending on lost hp
+		'''
+	Effect: Blazing
+	Death: "{0} was consumed by Rage..."
+}
+
+RadiantGlyph: {
+	DisplayName: Radiant Glyph
+	Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	Effect: Radiant
+}
+
+StormGlyph: {
+	DisplayName: Storm Glyph
+	Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		'''
+	Effect: Billowed
+}
+
+MoonlightGlyph: {
+	DisplayName: Moonlight Glyph
+	Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		'''
+	Effect: Dazzling
+}
+
+RotGlyph: {
+	DisplayName: Rot Glyph
+	Tooltip:
+		'''
+		Attacks inflict a contagious blight
+		This blight can be inflicted on to you by enemies suffering from it
+		'''
+	Effect: Blighted
+}
+
+ShockGlyph: {
+	DisplayName: Shock Glyph
+	Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
+	Effect: Shocking
+}
+
+BeeGlyph: {
+	DisplayName: Bee Glyph
+	Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		'''
+	Effect: Buzzing
+}
+
+SanguineGlyph: {
+	DisplayName: Sanguine Glyph
+	Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		'''
+	Effect: Leeching
+}
+
+PrefixVoucher: {
+	DisplayName: "{0} Prefix Voucher"
+	Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		'''
+}
+
+EnchantedStamp: {
+	DisplayName: Enchanted Stamp
+	Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		'''
+	Active: Enchantment on
+	Inactive: Enchantment off
+}
+
+CelestialStamp: {
+	DisplayName: Celestial Stamp
+	Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		Additionally allows items to receive prefixes and glyph effects simultaneously
+		'''
+	Active: Enchantment on
+	Inactive: Enchantment off
+}
+
+RageGlyph: {
+	DisplayName: Rage Glyph
+	Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
+	Effect: Wrathful
+}
+
+CharmcasterHat: {
+	DisplayName: Charmcaster's Hat
+	Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	DisplayName: Charmcaster's Leggings
+	Tooltip: ""
+}
+
+CharmcasterRobe: {
+	DisplayName: Charmcaster's Robe
+	Tooltip: ""
+}
+
+VoidGlyph: {
+	DisplayName: Void Glyph
+	Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
+		'''
+	Effect: Null
+}
+
+GlitterPurse: {
+	DisplayName: Glitter Purse
+	Tooltip: Permanently increases the item capacity of backpacks
+	StatusText: Your backpacks grow larger
+}
+
+MariglowSeedPouch: {
+	DisplayName: Mariglow Seed Pouch
+	Tooltip: Scatters seeds which sprout into mariglow on sand
+}
+
+DisplayCaseItem: {
+	DisplayName: Display Case
+	Tooltip: <right> to place accessory in case
+}
+
+SkyPylonItem: {
+	DisplayName: Space Pylon
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	DisplayName: Candlewick Rope
+	Tooltip: Can be climbed on
+}
+
+WaxBlockItem: {
+	DisplayName: Wax Block
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: Wax Pot
+	Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	DisplayName: Mirror of Return
+	Tooltip: <right> to teleport home and create a portal
+}
+
+MirrorItem: {
+	DisplayName: Mirror
+	Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	DisplayName: Enchanted Workbench
+	Tooltip: ""
+}
+
 StonemasonGreatshield: {
 	DisplayName: Stonemason Greatshield
 	Tooltip: ""
+}
+
+ScrapPickup: {
+	DisplayName: Scrap
+	Tooltip:
+		'''
+		Used by various wrenches on sentries
+		'Sharp! (ow)'
+		'''
+}
+
+CopperSpanner: {
+	DisplayName: Copper Spanner
+	Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+TinSpanner: {
+	DisplayName: Tin Spanner
+	Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+MagnetiteWrench: {
+	DisplayName: Magnetite Wrench
+	Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+LargeWrench: {
+	DisplayName: Comically Large Wrench
+	Tooltip:
+		'''
+		{$CommonTooltips.Wrench}
+		Charged strikes move sentries to the cursor position
+		'''
+}
+
+Overloader: {
+	DisplayName: Overloader
+	Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries consumes all scrap to create an explosion
+		'''
 }
 
 Nightlight: {

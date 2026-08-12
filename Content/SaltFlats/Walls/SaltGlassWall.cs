@@ -1,11 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
 using Terraria.Audio;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Walls;
 
-public class SaltGlassWall : ModWall, IAutoloadWallItem
+public class SaltGlassWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

@@ -3,7 +3,43 @@ using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-/// <summary> Used for quickly building herb tiles. See <see cref="GetYield"/>. </summary>
+#nullable enable
+
+[ReinitializeDuringResizeArrays]
+public class HerbSet
+{
+	public static readonly bool[] IsHerb = TileID.Sets.Factory.CreateNamedSet(nameof(IsHerb)).Description("Whether this tile is considered an herb.").
+		RegisterBoolSet(false, TileID.BloomingHerbs, TileID.MatureHerbs);
+
+	public static readonly bool[] CustomBotanistDisplay = TileID.Sets.Factory.CreateNamedSet(nameof(CustomBotanistDisplay)).Description("Whether this herb tile will use custom drawing " +
+		"for botanist tiles. A tile must also be in the IsHerb set for this to be used.").RegisterBoolSet(false);
+
+	internal static object CallAddHerb(object arg, object? arg2)
+	{
+		bool hasCustomDrawing = arg2 is bool b && b;
+		
+		if (arg is string s)
+			SetHerb(ModContent.Find<ModTile>(s).Type, hasCustomDrawing);
+		else if (arg is int i)
+			SetHerb(i, hasCustomDrawing);
+		else if (arg is short sh)
+			SetHerb(sh, hasCustomDrawing);
+		else if (arg is ushort us)
+			SetHerb(us, hasCustomDrawing);
+		else
+			throw new ArgumentException("Argument to AddHerb must be a string (the tile's FullName) or int, short or ushort (the tile's type!)");
+
+		return true;
+	}
+
+	private static void SetHerb(int type, bool customDrawing)
+	{
+		IsHerb[type] = true;
+		CustomBotanistDisplay[type] = customDrawing;
+	}
+}
+
+/// <summary> Used for quickly building herb tiles. See <see cref="GetItemDrops(int, int)"/>. </summary>
 public abstract class HerbTile : ModTile, ICheckItemUse
 {
 	public enum PlantStage : byte
@@ -14,8 +50,6 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 	}
 
 	public static int GetFrameWidth(int i, int j) => TileObjectData.GetTileData(Main.tile[i, j])?.CoordinateFullWidth ?? 18;
-
-	public static readonly HashSet<int> HerbTypes = [TileID.BloomingHerbs, TileID.MatureHerbs];
 
 	/// <summary> The seed item type associated with this herb. </summary>
 	public int SeedType { get; protected set; }
@@ -36,7 +70,7 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
-		HerbTypes.Add(Type);
+		HerbSet.IsHerb[Type] = true;
 
 		HitSound = SoundID.Grass;
 		DustType = DustID.Grass;

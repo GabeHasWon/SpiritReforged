@@ -10,12 +10,17 @@ public class SharpStarParticle : Particle
 	private Color bloomColor;
 	private float progress;
 
+	private bool addLight = true;
+	private float _scaleFactor;
+
 	private readonly float rotSpeed;
 	private readonly Action<Particle> _action;
+	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
+	public override ParticleLayer DrawLayer => Layer;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public SharpStarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null)
+	public SharpStarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null, bool AddLight = true, float scaleFactor = 0.05f)
 	{
 		Position = position;
 		Velocity = velocity;
@@ -26,15 +31,19 @@ public class SharpStarParticle : Particle
 		MaxTime = maxTime;
 		rotSpeed = rotationSpeed;
 		_action = extraUpdateAction;
+		addLight = AddLight;
+
+		_scaleFactor = scaleFactor;
 	}
 
-	public SharpStarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, rotationSpeed, extraUpdateAction) { }
+	public SharpStarParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null, bool AddLight = true, float scaleFactor = 0.05f) : this(position, velocity, color, color, scale, maxTime, rotationSpeed, extraUpdateAction, AddLight, scaleFactor) { }
 
 	public override void Update()
 	{
 		progress = (float)Math.Sin(Progress * MathHelper.Pi);
 		Color = bloomColor;
-		Lighting.AddLight(Position, Color.R / 255f * progress, Color.G / 255f * progress, Color.B / 255f * progress);
+		if (addLight)
+			Lighting.AddLight(Position, Color.R / 255f * progress, Color.G / 255f * progress, Color.B / 255f * progress);
 		Velocity *= 0.98f;
 		Rotation += rotSpeed * progress * (Velocity.X > 0 ? 0.07f : -0.07f);
 
@@ -46,7 +55,7 @@ public class SharpStarParticle : Particle
 		Texture2D basetexture = ParticleHandler.GetTexture(Type);
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 		
-		float scale = Scale + (float)Math.Sin(TimeActive * 0.5f) * 0.05f;
+		float scale = Scale + (float)Math.Sin(TimeActive * 0.5f) * _scaleFactor;
 
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, bloomColor * 0.25f, 0, bloomtexture.Size() / 2, scale * 0.66f * progress, SpriteEffects.None, 0);
 

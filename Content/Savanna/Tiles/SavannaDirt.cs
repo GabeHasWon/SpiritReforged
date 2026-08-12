@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
+public class SavannaDirt : ModTile, ILoadItem, ICheckItemUse
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -24,8 +24,6 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		this.Merge(TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
 		AddMapEntry(new Color(138, 79, 45));
 		MineResist = 0.5f;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)

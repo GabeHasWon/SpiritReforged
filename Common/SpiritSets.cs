@@ -1,9 +1,12 @@
-﻿namespace SpiritReforged.Common;
+﻿using SpiritReforged.Common.ProjectileCommon;
+
+namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public class SpiritSets : ModSystem
 {
 	internal static SetFactory ItemFactory = new(ItemLoader.ItemCount, "SpiritItems");
+	internal static SetFactory ProjectileFactory = new(ProjectileLoader.ProjectileCount, "SpiritProjectiles");
 	internal static SetFactory NPCFactory = new(NPCLoader.NPCCount, "SpiritNPCs");
 	internal static SetFactory TileFactory = new(TileLoader.TileCount, "SpiritTiles");
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
@@ -14,7 +17,7 @@ public class SpiritSets : ModSystem
 		ItemID.NightsEdge, ItemID.TrueNightsEdge, ItemID.Excalibur, ItemID.TrueExcalibur, ItemID.Arkhalis, ItemID.Terragrim, ItemID.TheHorsemansBlade, ItemID.BloodyMachete, ItemID.Swordfish,
 		ItemID.ObsidianSwordfish, ItemID.JoustingLance, ItemID.HallowJoustingLance, ItemID.ShadowJoustingLance, ItemID.PiercingStarlight);
 
-	/// <summary> Whether this item is Jem. </summary>
+	/// <summary> Whether this item is a gem. </summary>
 	public static readonly bool[] Gemstone = ItemFactory.CreateNamedSet(nameof(Gemstone)).Description("Whether this item is a gem").RegisterBoolSet(ItemID.Amethyst, ItemID.Topaz, ItemID.Sapphire, 
 		ItemID.Ruby, ItemID.Emerald, ItemID.Diamond, ItemID.Amber);
 

@@ -1,12 +1,12 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Walls;
 
-public class SaltPanelWall : ModWall, IAutoloadWallItem
+public class SaltPanelWall : ModWall, ILoadItem
 {
-	public void AddItemRecipes(ModItem item)
+	void ILoadItem.AddItemRecipes(ModItem item)
 	{
 		int block = AutoContent.ItemType<SaltPanel>();
 		int wall = AutoContent.ItemType<SaltPanelWall>();

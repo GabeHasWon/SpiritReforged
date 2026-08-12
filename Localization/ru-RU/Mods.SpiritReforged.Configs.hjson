@@ -1,57 +1,64 @@
 ReforgedClientConfig: {
 	DisplayName: Клиентская конфигурация
 
-	OceanShape: {
-		Label: Генерация океана
-		Tooltip:
-			'''
-			Определяет способ генерации океана
-			По умолчанию используется тип «Кусочная_V»
-			Генерация «Кусочная_V» рекомендуется для игры в Spirit
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: Детализация отражений
 		Tooltip:
 			'''
-			Определяет уровень детализации отражений
-			Более высокие значения оказывают большую нагрузку на производительность
+			Определяет уровень детализации отражений.
+			Более высокие значения оказывают большую нагрузку на производительность.
 			'''
 	}
 
 	AmbientSounds: {
 		Label: Звуки окружения
-		Tooltip: Добавляет новые звуки окружения в некоторые биомы
-	}
-}
-
-OceanShape: {
-	Tooltip: ""
-
-	Default: {
-		Label: Стандартная
-		Tooltip: ""
+		Tooltip: Добавляет новые звуки окружения в некоторые биомы.
 	}
 
-	SlantedSine: {
-		Label: Наклонная синусоида
-		Tooltip: ""
+	ScreenshakeStrength: {
+		Label: Множитель силы тряски экрана
+		Tooltip: Определяет уровень силы тряски экрана, создаваемой контентом Reforged.
 	}
 
-	Piecewise: {
-		Label: Кусочная
-		Tooltip: ""
+	DisableWater: {
+		Label: Отключить эффекты воды
+		Tooltip: Отключает все визуальные эффекты воды, добавляемые Reforged.
 	}
 
-	Piecewise_M: {
-		Label: Кусочная_M
-		Tooltip: ""
+	DebugEcotones: {
+		Label: Отладка экотонов в WorldGen Previewer
+		Tooltip:
+			'''
+			ТОЛЬКО с модом WorldGen Previewer.
+			Позволяет отлаживать проблемы с экотонами и лучше понимать их работу с помощью наглядного оверлея.
+			'''
 	}
 
-	Piecewise_V: {
-		Label: Кусочная_V
-		Tooltip: ""
+	Headers.Developer: Для разработчиков
+
+	GlyphProjectileEffects: {
+		// Label: Glyph Projectile Effects
+		// Tooltip: Determines if projectiles with glyphs should create visual effects
+	}
+
+	GlyphItemEffects: {
+		// Label: Glyph Item Effects
+		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+	}
+
+	GlyphProjectileVisualEffects: {
+		// Label: Glyph Projectile Visual Effects
+		// Tooltip: ""
+	}
+
+	GlyphItemVisualEffects: {
+		// Label: Glyph Item Visual Effects
+		// Tooltip: ""
+	}
+
+	BannerJingle: {
+		// Label: Banner Jingle
+		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
 	}
 }
 
@@ -62,13 +69,26 @@ ReforgedServerConfig: {
 		Label: Живность возле гидротермальных источников
 		Tooltip:
 			'''
-			Рядом с гидротермальными источниками будут появляться различная живность
-			Она не влияет на частоту появления обычных врагов, но будет учитываться в общем лимите существ в мире
+			Рядом с гидротермальными источниками будут появляться различная живность.
+			Она не влияет на частоту появления обычных врагов, но будет учитываться в общем лимите существ в мире.
 			'''
 	}
 
 	MaxFloatingItemCount: {
 		Label: Лимит плавающих предметов
-		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно
+		Tooltip: Ограничивает количество предметов, которые могут плавать на поверхности воды одновременно.
+	}
+
+	AutoloadHeldProjectiles: {
+		// Label: Autoload Held Projectiles
+		/* Tooltip:
+			'''
+			Enables a system that automatically detects 'held projectiles' during loading.
+			This may substantially increase load times or cause load errors if enabled with other mods,
+			but may fix some issues with certain mechanics (such as glyphs) in-game.
+			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+
+			This has NO effect on vanilla or Reforged projectiles, which are already set.
+			''' */
 	}
 }

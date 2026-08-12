@@ -1,16 +1,6 @@
 ReforgedClientConfig: {
 	DisplayName: Reforged Client Config
 
-	OceanShape: {
-		Label: Ocean Shape
-		Tooltip:
-			'''
-			Modifies the Ocean generation in certain ways
-			Defaults to a Piecewise_V generation
-			The Piecewise_V generation is recommended for Spirit playthroughs
-			'''
-	}
-
 	ReflectionDetail: {
 		Label: Reflection Detail
 		Tooltip:
@@ -24,34 +14,51 @@ ReforgedClientConfig: {
 		Label: Ambient Sounds
 		Tooltip: Plays ambient sounds in specific biomes
 	}
-}
 
-OceanShape: {
-	Tooltip: ""
+	ScreenshakeStrength: {
+		Label: Screenshake Strength
+		Tooltip: Controls how strong all of Reforged's screenshake is.
+	}
 
-	Default: {
-		Label: Default
+	DisableWater: {
+		Label: Disable Water Visuals
+		Tooltip: Disables the Reforged water visuals.
+	}
+
+	DebugEcotones: {
+		Label: Ecotone Debugging (with WorldGen Previewer)
+		Tooltip:
+			'''
+			REQUIRES WorldGen Previewer.
+			Allows developers and players using the Ecotone system to debug issues with and understand ecotones with a helpful overlay.
+			'''
+	}
+
+	Headers.Developer: Developer Tools
+
+	GlyphProjectileEffects: {
+		Label: Glyph Projectile Effects
+		Tooltip: Determines if projectiles with glyphs should create visual effects
+	}
+
+	GlyphItemEffects: {
+		Label: Glyph Item Effects
+		Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+	}
+
+	GlyphProjectileVisualEffects: {
+		Label: Glyph Projectile Visual Effects
 		Tooltip: ""
 	}
 
-	SlantedSine: {
-		Label: Slanted Sine
+	GlyphItemVisualEffects: {
+		Label: Glyph Item Visual Effects
 		Tooltip: ""
 	}
 
-	Piecewise: {
-		Label: Piecewise
-		Tooltip: ""
-	}
-
-	Piecewise_M: {
-		Label: Piecewise_ M
-		Tooltip: ""
-	}
-
-	Piecewise_V: {
-		Label: Piecewise_ V
-		Tooltip: ""
+	BannerJingle: {
+		Label: Banner Jingle
+		Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
 	}
 }
 
@@ -71,5 +78,18 @@ ReforgedServerConfig: {
 	MaxFloatingItemCount: {
 		Label: Floating Item Cap
 		Tooltip: Determines how many floating items can be active in the world at one time.
+	}
+
+	AutoloadHeldProjectiles: {
+		Label: Autoload Held Projectiles
+		Tooltip:
+			'''
+			Enables a system that automatically detects 'held projectiles' during loading.
+			This may substantially increase load times or cause load errors if enabled with other mods,
+			but may fix some issues with certain mechanics (such as glyphs) in-game.
+			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+
+			This has NO effect on vanilla or Reforged projectiles, which are already set.
+			'''
 	}
 }

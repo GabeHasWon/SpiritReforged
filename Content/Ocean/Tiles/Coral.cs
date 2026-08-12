@@ -18,10 +18,10 @@ public class Coral3x3 : ModTile, IDrawPreview, IAutoloadRubble
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+		TileID.Sets.DisableSmartCursor[Type] = true;
 
 		SetObjectData();
 
-		TileID.Sets.DisableSmartCursor[Type] = true;
 		DustType = DustID.Coralstone;
 		AddMapEntry(new Color(87, 61, 51), Language.GetText("ItemName.Coral"));
 	}

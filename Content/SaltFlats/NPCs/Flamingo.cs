@@ -58,6 +58,7 @@ public class Flamingo : ModNPC
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		Main.npcFrameCount[Type] = 12; //Rows
 		NPCID.Sets.CountsAsCritter[Type] = true;
 	}
@@ -325,7 +326,7 @@ public class Flamingo : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (!spawnInfo.Common() || spawnInfo.Water || !spawnInfo.Player.InModBiome<SaltBiome>() || !SceneTileCounter.GetSurvey<SaltBiome>().tileTypes.Contains(spawnInfo.SpawnTileType))
+		if (!spawnInfo.Common() || spawnInfo.Water || !spawnInfo.Player.InModBiome<SaltBiome>() || !SceneTileCounter.GetSurvey<SaltBiome>().typesToRead.Contains(spawnInfo.SpawnTileType))
 			return 0;
 
 		return 0.2f;

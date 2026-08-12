@@ -2,10 +2,11 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class BronzeGrateBlock : ModTile, IAutoloadTileItem
+public class BronzeGrateBlock : ModTile, ILoadItem
 {
 	public static readonly SoundStyle Damage = new("SpiritReforged/Assets/SFX/Tile/MetalBreak")
 	{
@@ -22,6 +23,8 @@ public class BronzeGrateBlock : ModTile, IAutoloadTileItem
 		TileID.Sets.DrawsWalls[Type] = true;
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+		TileID.Sets.BlocksWaterDrawingBehindSelf[Type] = false;
+
 		SpiritSets.AllowsLiquid[Type] = true;
 
 		this.Merge(ModContent.TileType<BronzePlating>());

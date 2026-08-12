@@ -4,19 +4,14 @@ namespace SpiritReforged.Common.ItemCommon;
 
 public interface IDrawHeld
 {
-	public sealed class DrawHeldLoader : ILoadable
+	public sealed class DashSwordLayer : PlayerDrawLayer
 	{
-		public void Load(Mod mod) => On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
+		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
 
-		private static void DrawHeldItem(On_PlayerDrawLayers.orig_DrawPlayer_27_HeldItem orig, ref PlayerDrawSet drawinfo)
+		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawinfo.drawPlayer.HeldItem.ModItem is IDrawHeld iHeld)
-			{
-				iHeld.DrawHeld(ref drawinfo);
-				return; //Skips orig
-			}
-
-			orig(ref drawinfo);
+			if (drawInfo.drawPlayer.HeldItem.ModItem is IDrawHeld iHeld)
+				iHeld.DrawHeld(ref drawInfo);
 		}
 
 		public void Unload() { }

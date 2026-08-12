@@ -26,13 +26,14 @@ Records: {
 	Stuffed: Какое странное место для торговца. Похоже, он только и ждёт, чтобы его побеспокоили.
 	Scrying: При разрушении открывает небольшую часть карты.
 	Biome: Содержит больше разнообразной добычи, чем обычные горшки.
-	Boulder: Покатиться по земле, если его задеть.
+	Boulder: Покатится по земле, если его задеть.
+	// Wax: Imbued with potent magical energies.
 }
 
 FablesGraves: {
 	SetNames: {
 		Savanna: Надгробия саванны
-		SaltFlats: Соляные надгробья
+		SaltFlats: Солончаковые надгробья
 	}
 }
 
@@ -46,3 +47,5 @@ DustyTomb.MapEntry: Запылившийся гроб
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: "{$Items.OganessonMossItem.DisplayName}"
 RadonMoss.MapEntry: "{$Items.RadonMossItem.DisplayName}"
+// EnchantedAnvil.MapEntry: Enchanted Anvil
+// EnchantedWorkbench.MapEntry: Enchanted Workbench
