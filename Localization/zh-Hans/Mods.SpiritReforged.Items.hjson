@@ -3160,8 +3160,8 @@ SaltGraveMarkerItem: {
 }
 
 NotSunItemIcon: {
-	DisplayName: 非日图标
-	Tooltip: ""
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
 }
 
 ChromaticWax: {
@@ -3360,11 +3360,6 @@ MirrorItem: {
 
 EnchantedWorkbenchItem: {
 	// DisplayName: Enchanted Workbench
-	// Tooltip: ""
-}
-
-NotSunItemIcon: {
-	// DisplayName: Not Sun Item Icon
 	// Tooltip: ""
 }
 

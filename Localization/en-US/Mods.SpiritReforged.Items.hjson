@@ -3363,11 +3363,6 @@ EnchantedWorkbenchItem: {
 	Tooltip: ""
 }
 
-NotSunItemIcon: {
-	DisplayName: Not Sun Item Icon
-	Tooltip: ""
-}
-
 StonemasonGreatshield: {
 	DisplayName: Stonemason Greatshield
 	Tooltip: ""
