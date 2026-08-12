@@ -66,6 +66,10 @@ public class Overloader : CopperSpanner
 		{
 			if (!_initialized)
 			{
+				Vector2 center = Projectile.Center;
+				Projectile.Size += new Vector2((int)(Power * 5));
+				Projectile.Center = center;
+
 				if (!Main.dedServ) //One-time explosion effects
 				{
 					Main.LocalPlayer.SimpleShakeScreen(4, 5, 10, 300);
@@ -83,10 +87,6 @@ public class Overloader : CopperSpanner
 						ParticleHandler.SpawnParticle(new EmberParticle(position, Projectile.Center.DirectionTo(position) * Main.rand.NextFloat(3), Color.OrangeRed, 0.8f, Main.rand.Next(20, 40), 5));
 					}
 				}
-
-				Vector2 center = Projectile.Center;
-				Projectile.Size += new Vector2((int)(Power * 5));
-				Projectile.Center = center;
 
 				_initialized = true;
 			}

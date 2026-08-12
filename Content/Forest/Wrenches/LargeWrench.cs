@@ -69,13 +69,13 @@ public class LargeWrench : ModItem
 			}
 			else
 			{
-				_released = true;
-				
-				if (Main.myPlayer == Projectile.owner)
+				if (Main.myPlayer == Projectile.owner && !_released)
 				{
 					Projectile.velocity = owner.DirectionTo(Main.MouseWorld);
 					Projectile.netUpdate = true;
 				}
+
+				_released = true;
 			}
 
 			if (_released && FullyCharged && !_didStrikeSentry)
@@ -83,8 +83,15 @@ public class LargeWrench : ModItem
 				//Fully charged swing
 				foreach (Projectile projectile in Main.ActiveProjectiles)
 				{
-					if (projectile.owner == Projectile.owner && projectile.sentry)
+					if (projectile.owner == Projectile.owner && projectile.sentry && Projectile.Colliding(Projectile.Hitbox, projectile.Hitbox))
 					{
+						for (int i = 0; i < 15; i++)
+						{
+							Dust dust = Dust.NewDustDirect(projectile.position, projectile.width, projectile.height, DustID.Smoke, 0, -1);
+							dust.noGravity = true;
+							dust.fadeIn = 2;
+						}
+
 						projectile.velocity = Vector2.UnitY * -3;
 						projectile.Center = Main.MouseWorld;
 
@@ -101,7 +108,7 @@ public class LargeWrench : ModItem
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			float value = base.GetRotation(out armRotation, out stretch);
-			return value + (MathHelper.PiOver4 - Progress) * SwingDirection;
+			return value + (MathHelper.PiOver4 - Progress - Math.Min(_chargeTime / (float)CHARGE_TIME_MAX, 1) * 0.1f) * SwingDirection;
 		}
 
 		public override bool? CanDamage() => _released ? base.CanDamage() : false;
