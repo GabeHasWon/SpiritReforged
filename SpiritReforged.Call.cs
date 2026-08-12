@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
@@ -10,6 +11,8 @@ using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System.Reflection;
+using Terraria.ModLoader.Core;
 
 namespace SpiritReforged;
 
@@ -177,4 +180,63 @@ public partial class SpiritReforgedMod : Mod
 
 		return value;
 	}
+}
+
+public sealed class ModCallSystem : ILoadable
+{
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+	internal class ModCallAttribute : Attribute;
+
+	private static readonly Dictionary<Type, Action<string>> Throws = [];
+	private static readonly Dictionary<string, MethodInfo> CallMethods = [];
+
+	public static bool CallMethod(params object[] arguments)
+	{
+		if (arguments[0] is not string name)
+			throw new ArgumentException("TEST");
+
+		if (CallMethods.TryGetValue(name, out MethodInfo info))
+		{
+			arguments = arguments[1..];
+
+			var parameters = info.GetParameters();
+			object[] namedObjects = new object[parameters.Length];
+
+			for (int c = 0; c < arguments.Length; c++)
+			{
+				object argument = arguments[c];
+				Type argumentType = parameters[c].GetType();
+
+				if (argument.GetType() == argumentType)
+				{
+					namedObjects[c] = argument;
+				}
+				else
+				{
+					throw new ArgumentException(name + $" argument {c} requires an object of type {argumentType.Name}");
+				}
+			}
+
+			info.Invoke(null, namedObjects);
+			return true;
+		}
+
+		return false;
+	}
+
+	void ILoadable.Load(Mod mod)
+	{
+		Throws.Add(typeof(int), static (name) => throw new ArgumentException(name + "HSIOA"));
+
+		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
+		{
+			foreach (MethodInfo methodInfo in type.GetMethods()) //Register net methods
+			{
+				if (methodInfo.IsStatic && methodInfo.GetCustomAttribute(typeof(ModCallAttribute)) != null)
+					CallMethods.Add(methodInfo.Name, methodInfo);
+			}
+		}
+	}
+
+	void ILoadable.Unload() { }
 }
