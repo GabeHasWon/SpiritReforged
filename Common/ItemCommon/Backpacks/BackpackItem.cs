@@ -12,31 +12,27 @@ public abstract class BackpackItem : ModItem
 {
 	protected override bool CloneNewInstances => true;
 
-	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCount);
-
-	/// <summary> The absolute number of slots this backpack has. </summary>
-	public int SlotCount => slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(Items.Length);
 
 	public Item[] Items
 	{
 		get
 		{
-			_items ??= Enumerable.Repeat(new Item(), SlotCount).ToArray();
+			int count = slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+			_items ??= Enumerable.Repeat(new Item(), count).ToArray();
 
-			if (_items.Length != SlotCount) //SlotCount has changed, readjust the array and preserve contents
+			if (_items.Length < count) //Length has increased, resize the array and preserve contents
 			{
 				var preScale = (Item[])_items.Clone();
-				_items = Enumerable.Repeat(new Item(), SlotCount).ToArray();
+				_items = Enumerable.Repeat(new Item(), count).ToArray(); //Elongate the array
 
 				for (int i = 0; i < _items.Length; i++)
-				{
-					if (i < preScale.Length)
-						_items[i] = preScale[i].Clone();
-				}
+					_items[i] = preScale[i].Clone();
 			}
 
 			return _items;
 		}
+		set => _items = value;
 	}
 
 	private Item[] _items;
@@ -92,7 +88,7 @@ public abstract class BackpackItem : ModItem
 	public override void NetReceive(BinaryReader reader)
 	{
 		foreach (Item item in Items)
-			ItemIO.Receive(item, reader, true); //Glitter Purse causes read error in multiplayer because send does not acknowledge slots
+			ItemIO.Receive(item, reader, true); 
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -124,16 +120,17 @@ public abstract class BackpackItem : ModItem
 		}
 		else //New loading
 		{
+			List<Item> loaded = [];
 			foreach (var item in packCompound)
 			{
 				if (packCompound.TryGet(item.Key, out TagCompound value))
 				{
 					int index = int.Parse(item.Key[item.Key.Length - 1].ToString()); //The last value in the key is always an integer corresponding to the slot
-					
-					if (index < Items.Length)
-						Items[index] = ItemIO.Load(value);
+					loaded.Add(ItemIO.Load(value));
 				}
 			}
+
+			Items = loaded.ToArray(); //Load all items regardless of normal slot limit
 		}
 	}
 }
