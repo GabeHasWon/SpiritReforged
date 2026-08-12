@@ -42,17 +42,17 @@ public partial class ShockGlyph
 			}
 		}
 
-		//25% damage increase with critical hits for single target utility (not sure if needs to be synced??)
+		// 10% damage increase on crits
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>())
-				modifiers.CritDamage += 0.25f;
+				modifiers.CritDamage += 0.1f;
 		}
 
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<ShockGlyph>())
-				modifiers.CritDamage += 0.25f;
+				modifiers.CritDamage += 0.1f;
 		}
 	}
 }

@@ -14,21 +14,21 @@ public sealed class BuffDetours : ILoadable
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			int npcIndex = reader.ReadInt32();
+			int npcIndex = reader.ReadInt32(); //Read the npc index to sync
 			NPC npc = Main.npc[npcIndex];
 
 			if (npc.TryGetGlobalNPC(out ExtendedBuffGlobalNPC globalNPC))
 			{
 				globalNPC.buffByType.Clear();
-				int count = reader.ReadByte();
+				byte count = reader.ReadByte(); //Read the number of extensions
 
 				for (int c = 0; c < count; c++)
 				{
-					int type = reader.ReadByte();
+					ushort type = reader.ReadUInt16(); //Read the buff type
 					if (BuffExtension.BuffHandler.FromType(type, npc) is BuffExtension b)
 					{
 						globalNPC.buffByType.Add(type, b);
-						globalNPC.buffByType[type].NetReceive(reader);
+						globalNPC.buffByType[type].NetReceive(reader); //Read the associated buff data
 					}
 				}
 			}
@@ -36,16 +36,16 @@ public sealed class BuffDetours : ILoadable
 
 		public override void OnSend(ModPacket modPacket)
 		{
-			modPacket.Write(_npcIndex);
+			modPacket.Write(_npcIndex); //Write the npc index to sync
 			NPC npc = Main.npc[_npcIndex];
 
 			if (npc.TryGetGlobalNPC(out ExtendedBuffGlobalNPC globalNPC))
 			{
-				modPacket.Write((byte)globalNPC.buffByType.Count);
+				modPacket.Write((byte)globalNPC.buffByType.Count); //Write the number of extensions
 				foreach (int type in globalNPC.buffByType.Keys)
 				{
-					modPacket.Write((byte)type);
-					globalNPC.buffByType[type].NetSend(modPacket);
+					modPacket.Write((ushort)type); //Write the buff type
+					globalNPC.buffByType[type].NetSend(modPacket); //Write the associated buff data
 				}
 			}
 		}
@@ -96,18 +96,17 @@ public sealed class BuffDetours : ILoadable
 				global.buffByType.Add(type, b);
 				global.buffByType[type].ApplyTo(self, false);
 			}
-
-			if (Main.netMode == NetmodeID.Server)
-				new SyncExtensionData(self.whoAmI).Send();
 		}
 
         orig(self, type, time, quiet);
-    }
+
+		if (!quiet && Main.netMode == NetmodeID.Server)
+			new SyncExtensionData(self.whoAmI).Send();
+	}
 
     private static void DelExtension(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
     {
         int type = self.buffType[buffIndex];
-
         orig(self, buffIndex);
 
         if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))

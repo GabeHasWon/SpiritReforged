@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
@@ -41,7 +42,7 @@ public class EnchanterUI : AutoUIState
 					return false;
 
 				int cost = Enchanter.SpecialShop[type];
-				return Main.LocalPlayer.CountItem(ModContent.ItemType<ChromaticWax>(), cost) >= cost;
+				return Main.LocalPlayer.FindItems(ModContent.ItemType<ChromaticWax>(), PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost;
 			}
 		}
 	}
@@ -220,10 +221,10 @@ public class EnchanterUI : AutoUIState
 			int cost = Enchanter.SpecialShop[_hovered.Type];
 			int type = ModContent.ItemType<ChromaticWax>();
 
-			if (Main.LocalPlayer.CountItem(type, cost) >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
+			if (Main.LocalPlayer.FindItems(type, PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
 			{
 				for (int c = 0; c < cost; c++) //Consume the necessary number of currency
-					Main.LocalPlayer.ConsumeItem(type);
+					foundItems.Consume();
 
 				if (_slot.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
 					glyphGlobalItem.StartAnimation();

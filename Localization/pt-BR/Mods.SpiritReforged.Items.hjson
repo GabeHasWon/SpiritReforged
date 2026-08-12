@@ -3146,6 +3146,11 @@ SaltGraveMarkerItem: {
 	Tooltip: ""
 }
 
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}
+
 ChromaticWax: {
 	// DisplayName: Chromatic Wax
 	// Tooltip: Can be exchanged for magical glyphs
@@ -3159,7 +3164,7 @@ BlazeGlyph: {
 	/* Tooltip:
 		'''
 		Dealing damage sets you ablaze
-		+25% damage and +10% critical strike chance
+		up to +40% damage and +20% critical strike chance depending on lost hp
 		''' */
 	// Effect: Blazing
 	// Death: "{0} was consumed by Rage..."
@@ -3205,7 +3210,7 @@ RotGlyph: {
 
 ShockGlyph: {
 	// DisplayName: Shock Glyph
-	// Tooltip: Critical strikes deal 25% more damage and shock nearby enemies
+	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
 	// Effect: Shocking
 }
 
@@ -3316,8 +3321,8 @@ SkyPylonItem: {
 }
 
 CandlewickItem: {
-	// DisplayName: Candlewick
-	// Tooltip: ""
+	// DisplayName: Candlewick Rope
+	// Tooltip: Can be climbed on
 }
 
 WaxBlockItem: {

@@ -26,6 +26,7 @@ Conditions: {
 	IsPrickly: When prickly
 	InZiggurat: In the Ziggurat
 	InSpace: In Space
+	NotSnow: Not in the Snow
 }
 
 Misc: {

@@ -27,7 +27,7 @@ UI: {
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
-	// LoadFolder: Load a folder of presets
+	LoadFolder: 加载预设文件夹
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 	FailedToLoad: 预设不适用于此页面。预期页面：{0}
 	ConfigNotice:
@@ -36,7 +36,8 @@ UI: {
 		显示的值是游戏中随机取值时实际使用的范围。
 		'''
 	LoadError: 在加载（{0}）预设时发生了一个错误。请在Discord报告该错误（并查看client.log）：
-	Duplicate: （重复的预设未被添加）
+	Duplicate: （重复的预设未被添加 - {0}）
+	From: 来自
 }
 
 Pages: {

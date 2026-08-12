@@ -8,6 +8,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
+using System.Linq;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Glyphs.Radiant;
@@ -19,7 +20,7 @@ public class RadiantPlayer : ModPlayer
 
 	public bool DivineStrike => radiantCounter >= ChargeTime;
 
-	public int ChargeTime => (int)(120 + Player.HeldItem.useTime * 0.05f);
+	public int ChargeTime => (int)(180 + Player.HeldItem.useTime * 0.06f);
 
 	public int radiantCounter;
 	private float _ease;
@@ -94,7 +95,7 @@ public class RadiantPlayer : ModPlayer
 
 	public override void PreUpdate()
 	{
-		if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>() || Main.projectile.Any(p => p.active && p.owner == Player.whoAmI && Main.projPet[p.type] && p.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>()))
 		{
 			if (!Main.dedServ)
 			{
@@ -186,28 +187,38 @@ public class RadiantPlayer : ModPlayer
 
 	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (DivineStrike && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone);
+			if (DivineStrike)
+			{
+				RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
+			else
+				radiantCounter = 0;	
 		}
 	}
 
 	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (DivineStrike && proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
+		if (proj.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
 		{
-			RadiantHitEffects(target, Player, damageDone);
+			if (DivineStrike)
+			{
+				RadiantHitEffects(target, Player, damageDone, hit.Crit);
 
-			if (Main.netMode != NetmodeID.SinglePlayer)
-				MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RadiantHitEffects), -1, -1, target, Player, damageDone, hit.Crit);
+			}
+			else
+				radiantCounter = 0;
 		}
 	}
 
 	[NetSynced(true)]
-	private static void RadiantHitEffects(NPC target, Player owner, int damageDone)
+	private static void RadiantHitEffects(NPC target, Player owner, int damageDone, bool crit)
 	{
 		float scaleModifier = MathHelper.Lerp(0.75f, 2f, Math.Min(damageDone / 200f, 1));
 
@@ -264,7 +275,11 @@ public class RadiantPlayer : ModPlayer
 		}
 
 		if (owner.TryGetModPlayer(out RadiantPlayer radiantPlayer))
+		{
 			radiantPlayer.radiantCounter = 0;
+			if (crit) // 4 second delay when a crit occurs
+				radiantPlayer.radiantCounter -= 240;
+		}
 
 		static void DecelerateAction(Particle p)
 		{

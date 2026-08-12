@@ -26,6 +26,7 @@ Conditions: {
 	IsPrickly: Со стактусов с розовым цветком
 	InZiggurat: В Зиккурате
 	// InSpace: In Space
+	// NotSnow: Not in the Snow
 }
 
 Misc: {

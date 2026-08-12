@@ -31,30 +31,6 @@ public class RadiantGlyph : GlyphItem
 		}
 	}
 
-	public sealed class RadiantGlobalItem : GlobalItem
-	{
-		public override bool InstancePerEntity => true;
-
-		public int timeInWorld;
-
-		public override void UpdateInventory(Item item, Player player)
-		{
-			if (timeInWorld > 0)
-				timeInWorld = 0;
-		}
-
-		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
-		{
-			if (Main.dayTime && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
-			{
-				if (timeInWorld < 180)
-					timeInWorld++;
-				else if (timeInWorld > 0)
-					timeInWorld -= 3;
-			}
-		}
-	}
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

@@ -26,6 +26,7 @@ Conditions: {
 	IsPrickly: 有刺
 	InZiggurat: 于庙塔
 	// InSpace: In Space
+	// NotSnow: Not in the Snow
 }
 
 Misc: {
