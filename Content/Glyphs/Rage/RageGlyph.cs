@@ -242,7 +242,7 @@ public class RageGlyph : GlyphItem
 			if (!owner.TryGetModPlayer(out RagePlayer ragePlayer))
 				return;
 
-			int overDamage = damageDone - target.life;
+			int overDamage = target.life * -1;
 
 			if (target.life > 0)
 			{
@@ -291,7 +291,7 @@ public class RageGlyph : GlyphItem
 			}
 		}
 
-		public	sealed class RageHit : ModProjectile
+		public sealed class RageHit : ModProjectile
 		{
 			public override string Texture => AssetLoader.EmptyTexture;
 
