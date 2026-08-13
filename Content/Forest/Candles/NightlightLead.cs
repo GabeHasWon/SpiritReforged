@@ -3,17 +3,41 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
-namespace SpiritReforged.Content.Forest.Misc;
+namespace SpiritReforged.Content.Forest.Candles;
 
-public class Nightlight : ModItem, IDrawHeld
+public class NightlightLead : ModItem, IDrawHeld
 {
-	public class NightlightFireball : ModProjectile
+	public class DrawGrid : DrawAnimation
+	{
+		public readonly int Columns;
+		public readonly int Rows;
+
+		public DrawGrid(int columns, int rows, int frame = 0)
+		{
+			Frame = frame;
+			FrameCounter = 0;
+			TicksPerFrame = 1;
+			Rows = rows;
+			Columns = columns;
+		}
+
+		public override void Update() { }
+
+		public override Rectangle GetFrame(Texture2D texture, int frameCounterOverride = -1)
+		{
+			int frame = (frameCounterOverride >= 0) ? Math.Clamp(frameCounterOverride, 0, Columns * Rows - 1) : Frame;
+			return texture.Frame(Columns, Rows, frame % Columns, frame / Columns, -2, -2);
+		}
+	}
+
+	public sealed class NightlightFireball : ModProjectile
 	{
 		private bool _didSpawnEffects;
 
@@ -38,7 +62,10 @@ public class Nightlight : ModItem, IDrawHeld
 			if (!_didSpawnEffects)
 			{
 				Color[] colors = [Color.Goldenrod.Additive(100), Color.PaleVioletRed.Additive(100), Color.Red.Additive(100)];
-				ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Vector2.UnitY * -3, colors, 0.8f, 0.1f, EaseFunction.EaseQuarticOut, 18));
+				
+				for (int i = 0; i < 2; i++)
+					ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Vector2.UnitY * -3, colors, 0.8f, 0.05f, EaseFunction.EaseQuarticOut, 18)
+					{ PixelDivisor = 2 });
 
 				_didSpawnEffects = true;
 
@@ -97,52 +124,61 @@ public class Nightlight : ModItem, IDrawHeld
 		}
 	}
 
-	public class NightlightAura : ModProjectile
+	public sealed class NightlightAura : ModProjectile
 	{
 		public const int MaxTimeLeft = 300;
 
 		public override string Texture => AssetLoader.EmptyTexture;
 
-		public float Distance => 150 * GetStrength(Main.player[Projectile.owner]) * ((float)Projectile.timeLeft / MaxTimeLeft);
+		public float distance;
 
 		public override void SetDefaults()
 		{
-			Projectile.Opacity = 0.2f;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
+			Projectile.penetrate = -1;
 		}
 
 		public override void AI()
 		{
+			const int fade_out_time = 30;
+			const int maximum_range = 150;
+
 			Player owner = Main.player[Projectile.owner];
+			float strength = GetManaStrength(Main.player[Projectile.owner]);
+			float result = maximum_range * strength;
 
 			Projectile.Center = owner.Center;
 			Projectile.gfxOffY = owner.gfxOffY;
 
-			foreach (NPC npc in Main.ActiveNPCs)
-			{
-				if (npc.Distance(Projectile.Center) < Distance)
+			foreach (NPC npc in Main.ActiveNPCs) //Debuff nearby NPCs of any kind
+				if (!npc.immortal && npc.Distance(Projectile.Center) < distance)
 					npc.AddBuff(ModContent.BuffType<Slowed>(), 60);
-			}
 
-			if (owner.HeldItem.type == ModContent.ItemType<Nightlight>())
-			{
+			if (strength > 0 && owner.HeldItem.ModItem is NightlightLead)
 				Projectile.timeLeft = MaxTimeLeft;
-			}
+
+			if (result > distance)
+				distance = MathHelper.Lerp(distance, result, 0.05f);
+			else
+				distance *= 1f - 1f / MaxTimeLeft;
+
+			if (Projectile.timeLeft < fade_out_time)
+				Projectile.Opacity -= 1 / (float)fade_out_time;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			float thicknessReduction = Distance * 0.0001f;
-			DrawRing(Color.PaleVioletRed, lightColor, Projectile.Opacity, 0.04f - thicknessReduction);
-			DrawRing(Color.White, lightColor, Projectile.Opacity, 0.02f - thicknessReduction);
+			float thicknessReduction = distance * 0.0001f;
+			DrawRing(Color.PaleVioletRed, lightColor, Projectile.Opacity * 0.2f, 0.08f - thicknessReduction);
+			DrawRing(Color.White, lightColor, Projectile.Opacity * 0.2f, 0.04f - thicknessReduction);
 
 			return false;
 		}
 
 		private void DrawRing(Color color, Color lightColor, float opacity, float thickness)
 		{
-			float scale = Distance * 4;
+			float scale = distance * 4;
 			Effect effect = AssetLoader.LoadedShaders["PulseCircle"].Value;
 
 			effect.Parameters["RingColor"].SetValue(color.ToVector4() * opacity);
@@ -165,15 +201,13 @@ public class Nightlight : ModItem, IDrawHeld
 		public override bool? CanDamage() => false;
 	}
 
-	public static float GetStrength(Player player)
-	{
-		float value = 1f - player.statMana / (float)player.statManaMax2;
-		return Math.Min(value * 1.1f, 1f);
-	}
+	public const int MANA_LIMIT = 100;
+
+	public static float GetManaStrength(Player player) => Math.Min(player.GetManaConsumed() / (float)MANA_LIMIT, 1);
 
 	public override void SetStaticDefaults()
 	{
-		Main.RegisterItemAnimation(Type, new DrawAnimationVertical(2, 3) { NotActuallyAnimating = true });
+		Main.RegisterItemAnimation(Type, new DrawGrid(3, 2, 1));
 		MoRHelper.AddElement(Item, MoRHelper.Arcane, true);
 	}
 
@@ -183,26 +217,35 @@ public class Nightlight : ModItem, IDrawHeld
 		Item.damage = 11;
 		Item.mana = 8;
 		Item.useStyle = ItemUseStyleID.HoldUp;
-		Item.holdStyle = ItemHoldStyleID.HoldFront;
+		Item.noUseGraphic = true;
 		Item.UseSound = SoundID.Item1;
 		Item.maxStack = 1;
 		Item.value = Item.sellPrice(silver: 40);
 	}
 
-	public override void UseItemFrame(Player player) => player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -MathHelper.PiOver2 * player.direction);
-
 	public override void HoldItem(Player player)
 	{
-		if (Main.myPlayer == player.whoAmI)
+		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, -MathHelper.PiOver2 * player.direction);
+		float strength = GetManaStrength(player);
+
+		if (player.ItemAnimationActive)
+		{
+			float progress = 1f - player.itemAnimation / (float)player.itemAnimationMax;
+			var stretch = (progress > 0.5f) ? Player.CompositeArmStretchAmount.Full : Player.CompositeArmStretchAmount.Quarter;
+
+			player.SetCompositeArmFront(true, stretch, (EaseFunction.EaseCubicOut.Ease(progress) * 2 - 1.5f - MathHelper.PiOver2) * player.direction);
+		}
+
+		if (strength > 0 && Main.myPlayer == player.whoAmI)
 		{
 			int type = ModContent.ProjectileType<NightlightAura>();
+
 			if (player.ownedProjectileCounts[type] == 0)
 				Projectile.NewProjectile(Item.GetSource_FromThis(), player.Center, Vector2.Zero, type, 0, 0, player.whoAmI);
 		}
 
 		if (!Main.dedServ)
 		{
-			float strength = GetStrength(player);
 			Lighting.AddLight(player.Center, new Vector3(0.8f, 0.7f, 0.38f) * strength);
 
 			if (strength > 0 && Main.rand.NextFloat() < strength / 2f)
@@ -219,37 +262,38 @@ public class Nightlight : ModItem, IDrawHeld
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		position = player.Center + Main.rand.NextVector2CircularEdge(30, 50);
+		position = player.Center + new Vector2(20 * player.direction, -10 * player.gravDir);
 		velocity = new Vector2(velocity.Length(), 0).RotatedBy(position.AngleTo(Main.MouseWorld));
 	}
 
-	public void DrawHeld(ref PlayerDrawSet drawinfo)
+	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
 	{
+		Player player = drawinfo.drawPlayer;
 		Texture2D texture = TextureAssets.Item[Type].Value;
-		Rectangle source = texture.Frame(1, 3, 0, 0, 0, -2);
+		Rectangle source = Main.itemAnimations[Type].GetFrame(texture, 3);
 
-		Vector2 origin = source.Size() / 2;
-		Vector2 dirOffset = drawinfo.drawPlayer.ItemAnimationActive ? new(15, -2) : new(15, 0);
+		Vector2 bobOffset = Main.OffsetsPlayerHeadgear[player.bodyFrame.Y / player.bodyFrame.Height] * player.gravDir;
+		Vector2 center = player.MountedCenter + bobOffset + new Vector2(18 * player.direction, -6 * player.gravDir);
+		Vector2 drawPosition = new((int)(center.X - Main.screenPosition.X), (int)(center.Y - Main.screenPosition.Y + player.gfxOffY));
 
-		dirOffset.X *= drawinfo.drawPlayer.direction;
-		Vector2 location = (drawinfo.drawPlayer.Center - Main.screenPosition + dirOffset + new Vector2(0, drawinfo.drawPlayer.gfxOffY)).Floor();
-		Color color = drawinfo.drawPlayer.HeldItem.GetAlpha(Lighting.GetColor((drawinfo.ItemLocation / 16).ToPoint()));
-		float strength = Math.Min(GetStrength(drawinfo.drawPlayer) * 1.1f, 1);
+		float rotation = 0; //player.itemRotation
+		float strength = Math.Min(GetManaStrength(player) * 1.1f, 1);
+		Color color = Lighting.GetColor((int)center.X / 16, (int)center.Y / 16);
 
 		if (strength > 0)
-			source = texture.Frame(1, 3, 0, 1, 0, -2);
+			source = Main.itemAnimations[Type].GetFrame(texture, 4);
 
-		drawinfo.DrawDataCache.Add(new DrawData(texture, location, source, color, drawinfo.drawPlayer.itemRotation, origin, 1, drawinfo.itemEffect));
+		drawinfo.DrawDataCache.Add(new DrawData(texture, drawPosition, source, color, rotation, source.Size() / 2, 1, drawinfo.playerEffect, 0));
 
-		Rectangle flameSource = new(0, 64, 10, 10);
-		
-		for (int i = 0; i < 2; i++)
+		if (strength > 0)
 		{
-			Vector2 flameLocation = location + new Vector2(4 * drawinfo.drawPlayer.direction, -13) + Main.rand.NextVector2Circular(2, 2);
-			float sine = (float)Math.Sin(Main.timeForVisualEffects / 10f) * 0.25f;
+			for (int i = 0; i < 2; i++)
+			{
+				source = Main.itemAnimations[Type].GetFrame(texture, 5);
 
-			drawinfo.DrawDataCache.Add(new DrawData(texture, flameLocation, flameSource, Color.White.Additive(100) * 0.5f, drawinfo.drawPlayer.itemRotation + (float)Math.Sin(Main.timeForVisualEffects / 5f) * 0.1f,
-				new Vector2(flameSource.Width / 2, flameSource.Height), new Vector2(1 + sine, 1 - sine) * strength, drawinfo.itemEffect)); //Frame
+				drawinfo.DrawDataCache.Add(new DrawData(texture, drawPosition + Main.rand.NextVector2Circular(2, 2), source, Color.Orange.Additive(100),
+					rotation + (float)Math.Sin(Main.timeForVisualEffects / 5f) * 0.1f * strength, source.Size() / 2, 1, drawinfo.itemEffect));
+			}
 		}
 	}
 }

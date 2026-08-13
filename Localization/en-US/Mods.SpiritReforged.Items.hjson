@@ -3418,3 +3418,26 @@ Nightlight: {
 		Slows nearby enemies as mana is spent
 		'''
 }
+
+NightlightLead: {
+	DisplayName: Nightlight
+	Tooltip:
+		'''
+		Casts short-ranged fireballs
+		Slows nearby enemies as mana is spent
+		'''
+}
+
+NightlightTin: {
+	DisplayName: "{$NightlightLead.DisplayName}"
+	Tooltip: "{$NightlightLead.Tooltip}"
+}
+
+GravekeeperLantern: {
+	DisplayName: Gravekeeper's Lantern
+	Tooltip:
+		'''
+		Casts ghostly fireballs
+		Spawns ghosts to cast additional attacks as mana is spent
+		'''
+}

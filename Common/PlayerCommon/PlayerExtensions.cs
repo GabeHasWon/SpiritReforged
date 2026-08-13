@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Subclasses;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
@@ -55,6 +56,9 @@ internal static class PlayerExtensions
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
 		ScreenshakeHelper.Shake(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
 	}
+
+	/// <summary> Gets the total amount of mana consumed by the held item type. Resets when a different item type is used. </summary>
+	public static int GetManaConsumed(this Player player) => player.TryGetModPlayer(out ManaStrengthPlayer manaStrengthPlayer) ? manaStrengthPlayer.totalManaConsumed : 0;
 
 	#region find item
 	[Flags]
