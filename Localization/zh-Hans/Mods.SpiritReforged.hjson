@@ -39,6 +39,8 @@ Misc: {
 	Enchantment: {
 		// PlaceToEnchant: Place an item here to enchant
 		// Enchant: Enchant
+		// Clear: Remove enchantment
+		// Random: Randomize enchantment
 	}
 
 	NoStock: 无库存
