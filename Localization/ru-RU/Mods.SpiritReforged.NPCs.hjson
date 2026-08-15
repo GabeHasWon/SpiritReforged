@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
 	DisplayName: Сверчок
+	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
 }
 
 GoldCricket: {
-	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
 	DisplayName: Золотой сверчок
+	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
 }
 
 BeetleTownPet: {
@@ -772,6 +772,8 @@ Enchanter: {
 		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
 		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
 	}
+
+	// Census.SpawnCondition: Conditions unknown
 }
 
 // SealedKnight.DisplayName: Sealed Knight

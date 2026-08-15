@@ -3272,8 +3272,6 @@ CelestialStamp: {
 		When enabled occasionally grants glyph effects to crafted, looted and reforged items
 		Additionally allows items to receive prefixes and glyph effects simultaneously
 		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
 }
 
 RageGlyph: {

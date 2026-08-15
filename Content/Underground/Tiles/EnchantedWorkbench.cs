@@ -88,7 +88,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		TileObjectData.addTile(Type);
 
 		DustType = -1;
-		AddMapEntry(new Color(50, 25, 55), CreateMapEntryName());
+		AddMapEntry(new Color(50, 25, 55), Language.GetText("Mods.SpiritReforged.Items.EnchantedWorkbenchItem.DisplayName"));
 	}
 
 	/// <summary> Deactivates the workbench tile at the provided coordinates and syncs it. </summary>

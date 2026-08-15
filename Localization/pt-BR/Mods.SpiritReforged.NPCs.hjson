@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: À noite, esses pequenos bichinhos podem aparecer em vários tipos de grama. Eles são os principais responsáveis ​​pelos sons da noite.
 	DisplayName: Grilo
+	Entry: À noite, esses pequenos bichinhos podem aparecer em vários tipos de grama. Eles são os principais responsáveis ​​pelos sons da noite.
 }
 
 GoldCricket: {
-	Entry: Os moradores da cidade dizem que ver um grilo dourado traz boa sorte. Alguns podem dizer que é porque eles vendem bem, e outros dizem que não... certamente que não.
 	DisplayName: Grilo de Ouro
+	Entry: Os moradores da cidade dizem que ver um grilo dourado traz boa sorte. Alguns podem dizer que é porque eles vendem bem, e outros dizem que não... certamente que não.
 }
 
 BeetleTownPet: {
@@ -772,6 +772,8 @@ Enchanter: {
 		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
 		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
 	}
+
+	// Census.SpawnCondition: Conditions unknown
 }
 
 // SealedKnight.DisplayName: Sealed Knight
