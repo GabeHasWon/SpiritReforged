@@ -7,6 +7,7 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -15,35 +16,35 @@ namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchanterUI : AutoUIState
 {
-	private class ConfirmButton : UIElement
+	private class EnchanterButton(int style, LocalizedText hoverText) : UIElement
 	{
-		public static readonly Asset<Texture2D> IconTexture = DrawHelpers.RequestLocal<EnchanterUI>("EnchantButton", false);
+		public const int COLUMNS = 3;
+		public const int ROWS = 2;
+
+		public static readonly Asset<Texture2D> IconTexture = DrawHelpers.RequestLocal<EnchanterUI>(nameof(EnchanterButton), false);
+
+		public readonly int style = style;
+		public readonly LocalizedText hoverText = hoverText;
+
+		public bool ShowHoverEffects { get; set; }
+		public Color DrawColor { get; set; }
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
 		{
-			bool hovering = IsMouseHovering && _hovered != default;
+			bool hovering = ShowHoverEffects;
 			Texture2D texture = IconTexture.Value;
-			Rectangle source = texture.Frame(1, 2, 0, hovering ? 1 : 0, 0, -2);
+			Rectangle source = texture.Frame(COLUMNS, ROWS, style, hovering ? 1 : 0, -2, -2);
 
 			if (hovering)
 			{
-				Main.hoverItemName = Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Enchant");
+				Main.hoverItemName = hoverText.Value;
 				Main.mouseText = true;
 
 				Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 				spriteBatch.Draw(bloom, GetDimensions().Center(), null, Color.Cyan.Additive(), 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * source.Width * 1.5f, 1f / bloom.Height * source.Height), 0, 0);
 			}
 
-			spriteBatch.Draw(texture, GetDimensions().Center(), source, (hovering || IsRichEnough()) ? Color.White : Color.Gray * 0.5f, 0, source.Size() / 2, 1, 0, 0);
-
-			static bool IsRichEnough()
-			{
-				if (_hovered?.Type is not int type)
-					return false;
-
-				int cost = Enchanter.SpecialShop[type];
-				return Main.LocalPlayer.FindItems(ModContent.ItemType<ChromaticWax>(), PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost;
-			}
+			spriteBatch.Draw(texture, GetDimensions().Center(), source, DrawColor, 0, source.Size() / 2, 1, 0, 0);
 		}
 	}
 
@@ -54,7 +55,7 @@ public class EnchanterUI : AutoUIState
 	private CatalogueList _list;
 	private CatalogueList _infoList;
 	private BasicItemSlot _slot;
-	private ConfirmButton _confirmButton;
+	private EnchanterButton _confirmButton, _clearButton, _randomButton;
 
 	private bool _populated;
 
@@ -83,17 +84,29 @@ public class EnchanterUI : AutoUIState
 		_slot.Left.Set(0, 0);
 		_slot.Top.Set(0, 0);
 
-		_confirmButton = new();
+		_confirmButton = new(0, Language.GetText("Mods.SpiritReforged.Misc.Enchantment.Enchant"));
 		_confirmButton.Width = _confirmButton.Height = new(30, 0);
 		_confirmButton.Left.Set(_slot.Width.Pixels + 5, 0);
 		_confirmButton.Top.Set(16, 0);
 		_confirmButton.OnLeftClick += OnClickConfirmButton;
+		_confirmButton.OnUpdate += OnHoverConfirmButton;
+
+		_clearButton = new(1, Language.GetText("Mods.SpiritReforged.Misc.Enchantment.Clear"));
+		_clearButton.Width = _clearButton.Height = new(30, 0);
+		_clearButton.Left.Set(_list.Width.Pixels - 50, 0);
+		_clearButton.Top.Set(_list.Height.Pixels + 20, 0);
+		_clearButton.OnLeftClick += OnClickClearButton;
+		_clearButton.OnUpdate += OnHoverDefaultButton;
+
+		_randomButton = new(2, Language.GetText("Mods.SpiritReforged.Misc.Enchantment.Random"));
+		_randomButton.Width = _randomButton.Height = new(30, 0);
+		_randomButton.Left.Set(_list.Width.Pixels - 20, 0);
+		_randomButton.Top.Set(_list.Height.Pixels + 20, 0);
+		_randomButton.OnLeftClick += OnClickRandomButton;
+		_randomButton.OnUpdate += OnHoverDefaultButton;
 
 		OverrideSamplerState = SamplerState.PointClamp;
-		//Append(_list);
-		//Append(_infoList);
 		Append(_slot);
-		//Append(_confirmButton);
 	}
 
 	public override void Update(GameTime gameTime)
@@ -182,6 +195,8 @@ public class EnchanterUI : AutoUIState
 		Append(_list);
 		Append(_infoList);
 		Append(_confirmButton);
+		Append(_clearButton);
+		Append(_randomButton);
 
 		foreach (int type in Enchanter.SpecialShop.Keys)
 		{
@@ -200,11 +215,16 @@ public class EnchanterUI : AutoUIState
 		RemoveChild(_list);
 		RemoveChild(_infoList);
 		RemoveChild(_confirmButton);
+		RemoveChild(_clearButton);
+		RemoveChild(_randomButton);
 
 		_list.ClearEntries();
 		_infoList.ClearEntries();
+
+		_hovered = default;
 	}
 
+	#region evt
 	private void OnClickGlyphButton(UIMouseEvent evt, UIElement listeningElement)
 	{
 		if (ItemLoader.GetItem((listeningElement as GlyphButton).itemType) is GlyphItem glyphItem)
@@ -214,14 +234,80 @@ public class EnchanterUI : AutoUIState
 		}
 	}
 
+	private void OnHoverConfirmButton(UIElement element)
+	{
+		var ui = element as EnchanterButton;
+
+		ui.ShowHoverEffects = element.IsMouseHovering && _hovered != default && IsRichEnough();
+		ui.DrawColor = (_hovered != default && IsRichEnough()) ? Color.White : Color.Gray * 0.5f;
+
+		static bool IsRichEnough()
+		{
+			if (_hovered?.Type is not int type)
+				return false;
+
+			int cost = Enchanter.SpecialShop[type];
+			return Main.LocalPlayer.FindItems(ModContent.ItemType<ChromaticWax>(), PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost;
+		}
+	}
+
+	private void OnHoverDefaultButton(UIElement element)
+	{
+		var ui = element as EnchanterButton;
+		bool hovering = element.IsMouseHovering;
+
+		ui.ShowHoverEffects = hovering;
+		ui.DrawColor = hovering ? Color.White : Color.Gray * 0.5f;
+	}
+
 	private void OnClickConfirmButton(UIMouseEvent evt, UIElement listeningElement)
 	{
-		if (_hovered != default)
-		{
-			int cost = Enchanter.SpecialShop[_hovered.Type];
-			int type = ModContent.ItemType<ChromaticWax>();
+		if (_hovered == default)
+			return;
 
-			if (Main.LocalPlayer.FindItems(type, PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
+		int cost = Enchanter.SpecialShop[_hovered.Type];
+		int type = ModContent.ItemType<ChromaticWax>();
+
+		if (Main.LocalPlayer.FindItems(type, PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) && foundItems.Count >= cost && _slot.Item.SetGlyph(new(_hovered.Type), new GlyphItem.ApplyContext(Main.LocalPlayer)))
+		{
+			for (int c = 0; c < cost; c++) //Consume the necessary number of currency
+				foundItems.Consume();
+
+			if (_slot.Item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphGlobalItem))
+				glyphGlobalItem.StartAnimation();
+
+			ClearList(); //Reset the list
+			PopulateList();
+			SpawnCenteredText(_slot.Item, Main.LocalPlayer.Top);
+		}
+	}
+
+	private void OnClickClearButton(UIMouseEvent evt, UIElement listeningElement)
+	{
+		Item item = _slot.Item;
+
+		item.SetGlyph(default);
+		item.prefix = 0;
+		item.ClearNameOverride();
+		item.Refresh(false);
+
+		ClearList(); //Reset the list
+		PopulateList();
+		SpawnCenteredText(_slot.Item, Main.LocalPlayer.Top);
+	}
+
+	private void OnClickRandomButton(UIMouseEvent evt, UIElement listeningElement)
+	{
+		while (true)
+		{
+			int[] types = Enchanter.SpecialShop.Keys.ToArray();
+			int selectedType = types[Main.rand.Next(types.Length)];
+			int cost = Enchanter.SpecialShop[selectedType];
+
+			if (!Main.LocalPlayer.FindItems(ModContent.ItemType<ChromaticWax>(), PlayerExtensions.FindAll, out PlayerExtensions.FoundItems foundItems) || foundItems.Count < cost)
+				return;
+
+			if (_slot.Item.SetGlyph(new(selectedType), new GlyphItem.ApplyContext(Main.LocalPlayer)))
 			{
 				for (int c = 0; c < cost; c++) //Consume the necessary number of currency
 					foundItems.Consume();
@@ -231,11 +317,13 @@ public class EnchanterUI : AutoUIState
 
 				ClearList(); //Reset the list
 				PopulateList();
+				SpawnCenteredText(_slot.Item, Main.LocalPlayer.Top);
 
-				PopupText.NewText(PopupTextContext.ItemReforge, _slot.Item, _slot.Item.stack, noStack: true);
+				break;
 			}
 		}
 	}
+	#endregion
 
 	private void AddInfoElements()
 	{
@@ -255,6 +343,18 @@ public class EnchanterUI : AutoUIState
 		info.Action += DescInfo_Action;
 
 		_infoList.AddEntry(info);
+	}
+
+	private static void SpawnCenteredText(Item item, Vector2 center)
+	{
+		int index = PopupText.NewText(PopupTextContext.ItemReforge, item, item.stack, noStack: true);
+		if (index != -1)
+		{
+			PopupText popup = Main.popupText[index];
+
+			Vector2 stringSize = FontAssets.MouseText.Value.MeasureString(popup.name);
+			popup.position = Main.LocalPlayer.Center - stringSize / 2;
+		}
 	}
 
 	#region draw actions
