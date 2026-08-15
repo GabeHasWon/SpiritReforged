@@ -3158,3 +3158,8 @@ NotSunItemIcon: {
 	DisplayName: Not Sun Item Icon
 	Tooltip: ""
 }
+
+BasaltTileItem: {
+	DisplayName: Basalt Tile Item
+	Tooltip: ""
+}
