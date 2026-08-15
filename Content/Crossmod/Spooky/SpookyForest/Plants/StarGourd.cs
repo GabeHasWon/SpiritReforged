@@ -29,6 +29,7 @@ internal abstract class StarGourd : ModTile
 	protected static SoundStyle CarveSound;
 
 	protected abstract IGourdInfo Info { get; }
+	protected virtual bool HasOriginalObjectData => true;
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 	public sealed override void Load() => Info.CreateCarvedType(Mod);
@@ -46,9 +47,12 @@ internal abstract class StarGourd : ModTile
 
 		tile.DustType = DustID.DesertWater2;
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
-		TileObjectData.newTile.Origin = new Point16(1, 1);
-		TileObjectData.newTile.DrawYOffset = 2;
+		if (copyInstance.HasOriginalObjectData)
+		{
+			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+			TileObjectData.newTile.Origin = new Point16(1, 1);
+			TileObjectData.newTile.DrawYOffset = 2;
+		}
 
 		if (copyInstance.ModifyObjectData(tile, TileObjectData.newTile) && addEntry)
 			tile.AddMapEntry(new Color(25, 197, 87));

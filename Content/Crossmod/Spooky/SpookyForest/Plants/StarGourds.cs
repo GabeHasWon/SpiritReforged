@@ -30,6 +30,8 @@ internal class StarGourdLime : StarGourd
 
 internal class StarGourdOrangeLime : StarGourd
 {
+	protected override bool HasOriginalObjectData => false;
+
 	protected override IGourdInfo Info => new GourdInfo<StarGourdOrangeLime>("GourdBlockLimeOrangeItem", false);
 
 	protected override bool ModifyObjectData(ModTile tile, TileObjectData newTile)
@@ -76,6 +78,8 @@ internal class StarGourdRed : StarGourd
 
 internal class StarGourdRotten : StarGourd
 {
+	protected override bool HasOriginalObjectData => false;
+
 	protected override IGourdInfo Info => new GourdInfo<StarGourdRotten>("RottenSeed", false);
 
 	protected override bool ModifyObjectData(ModTile tile, TileObjectData newTile)
@@ -119,6 +123,8 @@ internal class StarGourdWhite : StarGourd
 
 internal class StarGourdYellow : StarGourd
 {
+	protected override bool HasOriginalObjectData => false;
+
 	protected override IGourdInfo Info => new GourdInfo<StarGourdYellow>("GourdBlockYellowItem");
 
 	protected override bool ModifyObjectData(ModTile tile, TileObjectData newTile)
@@ -136,6 +142,8 @@ internal class StarGourdYellow : StarGourd
 
 internal class StarGourdYellowGreen : StarGourd
 {
+	protected override bool HasOriginalObjectData => false;
+
 	protected override IGourdInfo Info => new GourdInfo<StarGourdYellowGreen>("GourdBlockYellowGreenItem");
 
 	protected override bool ModifyObjectData(ModTile tile, TileObjectData newTile)
