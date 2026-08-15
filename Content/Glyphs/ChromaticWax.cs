@@ -139,7 +139,7 @@ public class GlyphGlobalNPC : GlobalNPC
 		// Crossmod Wax Drops
 		if (CrossMod.Thorium.Enabled)
 		{
-			if (CrossMod.Thorium.CheckFind("BlueHag", out ModNPC blueHag) && CrossMod.Thorium.CheckFind("GreenHag", out ModNPC greenHag) && CrossMod.Thorium.CheckFind("CyanHag", out ModNPC cyanHag) && CrossMod.Thorium.CheckFind("RedHag", out ModNPC redHag))
+			if (CrossMod.Thorium.TryFind("BlueHag", out ModNPC blueHag) && CrossMod.Thorium.TryFind("GreenHag", out ModNPC greenHag) && CrossMod.Thorium.TryFind("CyanHag", out ModNPC cyanHag) && CrossMod.Thorium.TryFind("RedHag", out ModNPC redHag))
 			{
 				int[] hags = { blueHag.Type, greenHag.Type, redHag.Type, cyanHag.Type };
 
@@ -147,23 +147,17 @@ public class GlyphGlobalNPC : GlobalNPC
 					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
 			}
 
-			if (CrossMod.Thorium.CheckFind("Illusionist", out ModNPC illusionist))
+			if (CrossMod.Thorium.TryFind("Illusionist", out ModNPC illusionist) && npc.type == illusionist.Type)
 			{
-				if (npc.type == illusionist.Type)
-				{
-					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
-					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
-				}
+				npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
+				npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
 			}
 		}
 
 		if (CrossMod.Redemption.Enabled)
 		{
-			if (CrossMod.Redemption.CheckFind("MoonflareCaster", out ModNPC moonflareCaster))
-			{
-				if (npc.type == moonflareCaster.Type)
-					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
-			}
+			if (CrossMod.Redemption.TryFind("MoonflareCaster", out ModNPC moonflareCaster) && npc.type == moonflareCaster.Type)
+				npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
 		}
 	}
 
