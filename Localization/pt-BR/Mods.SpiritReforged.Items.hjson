@@ -3236,7 +3236,7 @@ PrefixVoucher: {
 	/* Tooltip:
 		'''
 		Can be used on items with <right>
-		Applies [c/{0}:{1}]
+		Applies the [c/{0}:{1}] prefix
 		''' */
 }
 

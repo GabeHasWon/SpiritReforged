@@ -772,6 +772,8 @@ Enchanter: {
 		Stylist: {0}说服了我去给鳞片打蜡，但我不确定这有什么吸引力。我像一条刚捕上来的鱼一样闪闪发光！
 		WitchDoctor: "{0}身上有一种神秘的气质，我想更深入地了解他。或许你能……帮我们引荐一下吗？"
 	}
+
+	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
 }
 
 SealedKnight.DisplayName: 漆印骑士
