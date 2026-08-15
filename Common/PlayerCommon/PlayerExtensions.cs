@@ -58,7 +58,7 @@ internal static class PlayerExtensions
 	}
 
 	/// <summary> Gets the total amount of mana consumed by the held item type. Resets when a different item type is used. </summary>
-	public static int GetManaConsumed(this Player player) => player.TryGetModPlayer(out ManaStrengthPlayer manaStrengthPlayer) ? manaStrengthPlayer.totalManaConsumed : 0;
+	public static int GetManaConsumed(this Player player) => player.TryGetModPlayer(out IManaBoon.ManaStrengthPlayer manaStrengthPlayer) ? manaStrengthPlayer.totalManaConsumed : 0;
 
 	#region find item
 	[Flags]

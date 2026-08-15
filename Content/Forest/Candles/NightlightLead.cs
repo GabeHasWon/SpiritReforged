@@ -3,16 +3,16 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Subclasses;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Candles;
 
-public class NightlightLead : ModItem, IDrawHeld
+public class NightlightLead : ModItem, IDrawHeld, IManaBoon
 {
 	public class DrawGrid : DrawAnimation
 	{
@@ -33,7 +33,7 @@ public class NightlightLead : ModItem, IDrawHeld
 		public override Rectangle GetFrame(Texture2D texture, int frameCounterOverride = -1)
 		{
 			int frame = (frameCounterOverride >= 0) ? Math.Clamp(frameCounterOverride, 0, Columns * Rows - 1) : Frame;
-			return texture.Frame(Columns, Rows, frame % Columns, frame / Columns, -2, -2);
+			return texture.Frame(Columns, Rows, frame % Columns, frame / Columns, (Columns == 1) ? 0 : -2, (Rows == 1) ? 0 : -2);
 		}
 	}
 
@@ -145,7 +145,7 @@ public class NightlightLead : ModItem, IDrawHeld
 			const int maximum_range = 150;
 
 			Player owner = Main.player[Projectile.owner];
-			float strength = GetManaStrength(Main.player[Projectile.owner]);
+			float strength = IManaBoon.GetManaStrength(ModContent.GetInstance<NightlightLead>(), Main.player[Projectile.owner]);
 			float result = maximum_range * strength;
 
 			Projectile.Center = owner.Center;
@@ -201,9 +201,7 @@ public class NightlightLead : ModItem, IDrawHeld
 		public override bool? CanDamage() => false;
 	}
 
-	public const int MANA_LIMIT = 100;
-
-	public static float GetManaStrength(Player player) => Math.Min(player.GetManaConsumed() / (float)MANA_LIMIT, 1);
+	public int ManaLimit => 100;
 
 	public override void SetStaticDefaults()
 	{
@@ -226,7 +224,7 @@ public class NightlightLead : ModItem, IDrawHeld
 	public override void HoldItem(Player player)
 	{
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, -MathHelper.PiOver2 * player.direction);
-		float strength = GetManaStrength(player);
+		float strength = IManaBoon.GetManaStrength(this, player);
 
 		if (player.ItemAnimationActive)
 		{
@@ -277,7 +275,7 @@ public class NightlightLead : ModItem, IDrawHeld
 		Vector2 drawPosition = new((int)(center.X - Main.screenPosition.X), (int)(center.Y - Main.screenPosition.Y + player.gfxOffY));
 
 		float rotation = 0; //player.itemRotation
-		float strength = Math.Min(GetManaStrength(player) * 1.1f, 1);
+		float strength = Math.Min(IManaBoon.GetManaStrength(this, player) * 1.1f, 1);
 		Color color = Lighting.GetColor((int)center.X / 16, (int)center.Y / 16);
 
 		if (strength > 0)

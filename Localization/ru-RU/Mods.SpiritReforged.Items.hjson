@@ -3445,3 +3445,13 @@ GravekeeperLantern: {
 		Spawns ghosts to cast additional attacks as mana is spent
 		''' */
 }
+
+ShadowSconce: {
+	// DisplayName: Shadow Sconce
+	// Tooltip: ""
+}
+
+Flamebelcher: {
+	// DisplayName: Flamebelcher
+	// Tooltip: ""
+}

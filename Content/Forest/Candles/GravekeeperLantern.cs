@@ -1,21 +1,20 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Subclasses;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Forest.Candles;
 
-public class GravekeeperLantern : ModItem, IDrawHeld
+public class GravekeeperLantern : ModItem, IDrawHeld, IManaBoon
 {
-	public sealed class GhostlyFlame : ModProjectile
+	public sealed class GhostlyFlame : ModProjectile, IDrawPixelated
 	{
-		private bool _didSpawnEffects;
-
-		public ref float Angle => ref Projectile.ai[0];
+		private readonly ParticleRenderer _renderer = new();
 
 		public override void SetStaticDefaults()
 		{
@@ -29,78 +28,79 @@ public class GravekeeperLantern : ModItem, IDrawHeld
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.timeLeft = 80;
+
+			Projectile.Opacity = 0;
 		}
 
 		public override void AI()
 		{
-			if (!_didSpawnEffects)
-			{
-				Color[] colors = [Color.Goldenrod.Additive(100), Color.PaleVioletRed.Additive(100), Color.Red.Additive(100)];
-				
-				for (int i = 0; i < 2; i++)
-					ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Vector2.UnitY * -3, colors, 0.8f, 0.05f, EaseFunction.EaseQuarticOut, 18)
-					{ PixelDivisor = 2 });
-
-				_didSpawnEffects = true;
-
-				if (Projectile.owner == Main.myPlayer)
-				{
-					Player owner = Main.player[Projectile.owner];
-					float angle = owner.Center.Y - Projectile.Center.Y;
-					Angle = angle / 1800f * owner.direction;
-				}
-			}
-
 			Projectile.velocity *= 0.97f;
-			Projectile.velocity = Projectile.velocity.RotatedBy(Angle);
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
-			if (Main.rand.NextBool(5))
+			if (!Main.dedServ)
 			{
-				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.WhiteTorch, newColor: Color.White.Additive());
-				dust.velocity = Projectile.velocity * 0.8f;
-				dust.noGravity = true;
-				dust.fadeIn = 1.1f * Projectile.scale;
+				if (Projectile.timeLeft > 20 && Main.rand.NextBool(4))
+				{
+					_renderer.Add(new GhostFlameParticle()
+					{
+						LocalPosition = Projectile.Center + Main.rand.NextVector2Circular(10, 10) * Main.rand.NextFloat(),
+						Velocity = Projectile.velocity * 0.2f,
+						Scale = Vector2.One,
+						TimeLeft = Main.rand.Next(15, 30)
+					});
+				}
+
+				_renderer.Settings.AnchorPosition = -Main.screenPosition;
+				_renderer.Update();
 			}
 
 			Projectile.scale = Math.Min(Projectile.timeLeft / 20f, 1);
+			Projectile.Opacity = Math.Min(Projectile.Opacity + 0.1f, 1);
 		}
 
 		public override void OnKill(int timeLeft)
 		{
-			if (timeLeft <= 0)
-				return;
+			if (!Main.dedServ)
+			{
+				for (int i = 0; i < 3; i++)
+					ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, Main.rand.NextVector2Circular(1, 1), Color.White, 30, false));
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.PaleVioletRed, 0.5f, 100, 18, "supPerlin", Vector2.One * 3, EaseFunction.EaseCubicOut).WithSkew(0.5f, Main.rand.NextFloat(MathHelper.PiOver2)));
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.PaleVioletRed, 0.5f, 100, 18, "supPerlin", Vector2.One * 3, EaseFunction.EaseCubicOut).WithSkew(0.5f, Main.rand.NextFloat(MathHelper.PiOver2)));
-			ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, 0, Color.Goldenrod, 0.5f, 16));
-
-			for (int i = 0; i < 4; i++)
-				ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(2, 2), Color.Goldenrod, Color.Red, 0.5f, 30, 3));
+				ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, 0, Color.White, 0.5f, 20)
+				{ noLight = true });
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			_renderer.Draw(Main.spriteBatch);
+			return false;
+		}
+
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
+		{
 			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			Vector2 scale = new Vector2(Math.Min(Projectile.velocity.Length() / 3f, 1), 1) * Projectile.scale * 0.5f;
 			int length = ProjectileID.Sets.TrailCacheLength[Type];
 
 			for (int i = 0; i < length; i++)
 			{
-				Vector2 drawPosition = Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition;
+				Vector2 trailPosition = Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition;
 				float progress = i / (float)length;
-				var color = Color.Lerp(Color.White, Color.PaleVioletRed, progress).Additive() * (1f - progress);
+				Color color = Color.Lerp(Color.White, Color.PaleVioletRed, progress) * (1f - progress);
 
-				Main.EntitySpriteDraw(texture, drawPosition, null, color, Projectile.rotation, texture.Size() / 2, Projectile.scale * (1f - progress), 0);
+				IDrawPixelated.PixelateDrawPosition(ref trailPosition);
+
+				Main.EntitySpriteDraw(texture, trailPosition, null, Projectile.GetAlpha(color).Additive(150), Projectile.rotation, texture.Size() / 2, scale * (1f - progress), 0);
 			}
 
-			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(Color.White).Additive(200), Projectile.rotation, texture.Size() / 2, Projectile.scale, 0);
-			return false;
+			Vector2 position = Projectile.Center - Main.screenPosition;
+			IDrawPixelated.PixelateDrawPosition(ref position);
+
+			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(Color.White).Additive(150), Projectile.rotation, texture.Size() / 2, scale, 0);
 		}
 	}
 
-	public const int MANA_LIMIT = 100;
-
-	public static float GetManaStrength(Player player) => Math.Min(player.GetManaConsumed() / (float)MANA_LIMIT, 1);
+	public int ManaLimit => 100;
 
 	public override void SetStaticDefaults()
 	{
@@ -120,7 +120,19 @@ public class GravekeeperLantern : ModItem, IDrawHeld
 		Item.value = Item.sellPrice(silver: 40);
 	}
 
-	public override void HoldItem(Player player) => player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, -MathHelper.PiOver2 * player.direction);
+	public override void HoldItem(Player player)
+	{
+		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, -MathHelper.PiOver2 * player.direction);
+		
+		if (!Main.dedServ)
+			Lighting.AddLight(player.Center, Color.PaleTurquoise.ToVector3() * IManaBoon.GetManaStrength(this, player) * 0.7f);
+	}
+
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		position += new Vector2(10 * player.direction, 12 * player.gravDir);
+		velocity = new Vector2(velocity.Length(), 0).RotatedBy(position.AngleTo(Main.MouseWorld));
+	}
 
 	void IDrawHeld.DrawHeld(ref PlayerDrawSet drawinfo)
 	{
@@ -133,7 +145,7 @@ public class GravekeeperLantern : ModItem, IDrawHeld
 		Vector2 drawPosition = new((int)(center.X - Main.screenPosition.X), (int)(center.Y - Main.screenPosition.Y + player.gfxOffY));
 
 		float rotation = 0; //player.itemRotation
-		float strength = Math.Min(GetManaStrength(player) * 1.1f, 1);
+		float strength = Math.Min(IManaBoon.GetManaStrength(this, player) * 1.1f, 1);
 		Color color = Lighting.GetColor((int)center.X / 16, (int)center.Y / 16);
 
 		if (strength > 0)
