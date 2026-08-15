@@ -39,6 +39,8 @@ Misc: {
 	Enchantment: {
 		PlaceToEnchant: 将物品放置于此以附魔
 		Enchant: 附魔
+		Clear: 移除附魔
+		Random: 随机附魔
 	}
 
 	NoStock: 无库存
