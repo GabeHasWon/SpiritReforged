@@ -171,7 +171,7 @@ public class GlyphGlobalNPC : GlobalNPC
 	{
 		int stack = (int)Math.Max(npc.value / Item.gold, 3);
 
-		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC _))
+		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC modNPC) && npc.type == modNPC.Type)
 			stack = 10; //Override chromatic wax amount
 
 		return Item.NewItem(source, npc.Hitbox, new Item(ModContent.ItemType<ChromaticWax>(), stack + Main.rand.Next(0, 3)));
@@ -219,19 +219,14 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
 		{
-			if (Main.player[projectile.owner].heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+			Player owner = Main.player[projectile.owner];
+			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
 				return;
 
-			// Bee gun is just so many projectiles
-			if (projectile.type is ProjectileID.Bee or ProjectileID.GiantBee)
-			{
-				if (Main.rand.NextBool(10))
-					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
-			}	
-			else
-			{
+			int counts = owner.ownedProjectileCounts[projectile.type] - 1;
+
+			if (Main.rand.NextFloat() > Math.Min(counts / 10f, 0.9f)) //Reduce odds with inversely with projectile counts of the same type
 				(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
-			}
 		}
 	}
 
@@ -307,7 +302,13 @@ public abstract class GlyphItem : ModItem
 
 		public override bool AllowPrefix(Item item, int pre) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active();  //No glyph effect is present
 
-		public override bool CanReforge(Item item) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active(); //No glyph effect is present
+		public override bool CanReforge(Item item)
+		{
+			if (HasGlyph(out _) && !ModContent.GetInstance<CelestialStampToggle>().Active())
+				SetGlyph(item, default, new ApplyContext()); //Remove the glyph
+
+			return true;
+		}
 
 		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
 
