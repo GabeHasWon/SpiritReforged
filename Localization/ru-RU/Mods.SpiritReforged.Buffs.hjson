@@ -135,7 +135,7 @@ TinyDragonPet_Buff: {
 
 EnlilBuff: {
 	DisplayName: Благословение Энлиля
-	Description: Вертикальная подвижность увеличена
+	Description: Вертикальная мобильность увеличена
 }
 
 ScarabLightPetBuff: {
