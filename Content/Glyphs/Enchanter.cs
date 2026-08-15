@@ -96,7 +96,8 @@ public class Enchanter : ModNPC
 		NPC.Happiness
 			.SetNPCAffection(NPCID.Wizard, AffectionLevel.Love)
 			.SetNPCAffection(NPCID.PartyGirl, AffectionLevel.Like)
-			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Dislike)
+			.SetNPCAffection(NPCID.GoblinTinkerer, AffectionLevel.Dislike)
+			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Hate)
 			.SetBiomeAffection<SkyShoppingBiome>(AffectionLevel.Like)
 			.SetBiomeAffection<JungleBiome>(AffectionLevel.Dislike);
 	}
