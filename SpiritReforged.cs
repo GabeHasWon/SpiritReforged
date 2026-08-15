@@ -39,7 +39,6 @@ public partial class SpiritReforgedMod : Mod
 
 #if DEBUG
 		On_Main.DrawMenu += AddDebugInfo;
-#endif
 	}
 
 	private void AddDebugInfo(On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)
@@ -53,6 +52,7 @@ public partial class SpiritReforgedMod : Mod
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, new Vector2(10), Color.White, Color.Black * 0.4f, 0f, Vector2.Zero, Vector2.One, -1, 2);
 
 		Main.spriteBatch.End();
+#endif
 	}
 
 	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerLoader.HandlePacket(reader, whoAmI);
