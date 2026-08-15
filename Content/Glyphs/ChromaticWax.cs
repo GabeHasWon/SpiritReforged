@@ -274,10 +274,16 @@ public abstract class GlyphItem : ModItem
 		/// <summary> Applies the provided glyph effect to <paramref name="item"/>. </summary>
 		/// <param name="item"></param>
 		/// <param name="type"></param>
+		/// <param name="context"></param>
 		/// <returns> Whether <paramref name="type"/> was successfully applied. </returns>
 		public bool SetGlyph(Item item, GlyphType type, IApplicationContext context)
 		{
-			if (ItemLoader.GetItem(type.ItemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			if (type.ItemType == ItemID.None)
+			{
+				Glyph = type; //Remove glyph
+				return true;
+			}
+			else if (ItemLoader.GetItem(type.ItemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
 			{
 				Glyph = type;
 				glyphItem.OnApplyGlyph(item, context);
@@ -480,10 +486,10 @@ public abstract class GlyphItem : ModItem
 
 	public readonly record struct GlyphSettings(Color Color);
 
-	public LocalizedText Effect => this.GetLocalization("Effect");
 	public static LocalizedText Gain => Language.GetText(glyphLocalization + "Gain");
 	public static LocalizedText Target => Language.GetText(glyphLocalization + "Target");
 	public static LocalizedText Enchant => Language.GetText(glyphLocalization + "RightClick");
+	public LocalizedText Effect => this.GetLocalization("Effect");
 
 	public Asset<Texture2D> IconTexture
 	{
