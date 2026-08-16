@@ -1,18 +1,23 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
+using static TileHelper.Autoloader;
 
 namespace SpiritReforged.Content.Ocean.Tiles.Furniture;
 
-public class DriftwoodSet : FurnitureSet
+public class DriftwoodSet : ModSystem
 {
-	public override string Name => "Driftwood";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile) => new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<Driftwood>(), Color.Orange.ToVector3(), DustID.t_BorealWood, true);
-	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Chest, Types.Sofa);
+	public override void Load() => ILoadItem.PostAutoloadItems += LoadDriftwoodFurniture;
 
-	public override void OnPostSetupContent()
+	private static void LoadDriftwoodFurniture()
 	{
-		SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);
+		LoadFurnitureSet(typeof(DriftwoodSet).Namespace + ".Driftwood", AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
+			- new ChestTile()
+			- new SofaTile(),
+			AutoContent.ItemType<Driftwood>()
+		);
 	}
+
+	public override void PostSetupContent() => SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);
 }

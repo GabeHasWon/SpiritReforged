@@ -50,11 +50,11 @@ internal class TileEntityData : PacketData
 	{
 		short id = reader.ReadInt16();
 
-		if (Main.netMode == NetmodeID.Server) //Relay to other clients
-			new TileEntityData(id).Send(ignoreClient: whoAmI);
-
 		if (TileEntity.ByID.TryGetValue(id, out var value))
 			value.NetReceive(reader);
+
+		if (Main.netMode == NetmodeID.Server) //Relay to other clients
+			new TileEntityData(id).Send(ignoreClient: whoAmI);
 	}
 
 	public override void OnSend(ModPacket modPacket)

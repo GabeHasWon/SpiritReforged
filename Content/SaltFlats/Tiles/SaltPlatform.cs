@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltPlatform : ModTile, IAutoloadTileItem
+public class SaltPlatform : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -41,10 +41,9 @@ public class SaltPlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
+
 		DustType = DustID.Pearlsand;
 		AdjTiles = [TileID.Platforms];
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

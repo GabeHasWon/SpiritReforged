@@ -63,7 +63,7 @@ internal class MarksmanPlayer : ModPlayer
 			SoundEngine.PlaySound(SoundID.Item98 with { Volume = .5f }, Player.Center);
 		}
 
-		concentratedCooldown = 360;
+		concentratedCooldown = 500;
 	}
 
 	public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)

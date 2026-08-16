@@ -14,7 +14,7 @@ public class SavannaGravestones : ILoadable
 
 	public void Load(Mod mod)
 	{
-		if (CrossMod.Fables.Enabled && false)
+		if (CrossMod.Fables.Enabled)
 		{
 			DesertGravesetIndex = (int)CrossMod.Fables.Instance.Call("gravestones.getGravesetIndex", "desert");
 			JungleGravesetIndex = (int)CrossMod.Fables.Instance.Call("gravestones.getGravesetIndex", "jungle");

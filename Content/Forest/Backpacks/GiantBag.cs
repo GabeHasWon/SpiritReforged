@@ -27,7 +27,7 @@ public class GiantBag : BackpackItem
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Backpacks);
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.drawPlayer.back == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Back))
+			if (drawInfo.drawPlayer.back == EquipLoader.GetEquipSlot(Mod, nameof(GiantBag), EquipType.Back) && Texture is not null)
 				DrawSelf(ref drawInfo, Texture.Value, drawInfo.cBack);
 		}
 
@@ -51,18 +51,20 @@ public class GiantBag : BackpackItem
 		}
 	}
 
-	protected override int SlotCap => 6;
-
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		ItemMethods.HideEquipSlot(Type, EquipType.Back, TextureAssets.AccBack);
 		ItemMethods.HideEquipSlot(Type, EquipType.Front, TextureAssets.AccFront);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.Size = new Vector2(34, 28);
 		Item.value = Item.buyPrice(0, 0, 5, 0);
 		Item.rare = ItemRarityID.Blue;
+
+		slotCount = 6;
 	}
 }

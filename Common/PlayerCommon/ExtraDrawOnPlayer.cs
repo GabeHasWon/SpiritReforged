@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using SpiritReforged.Common.Visuals;
+using System.Linq;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
@@ -85,7 +86,7 @@ public class ExtraDrawOnPlayer : ModPlayer
 
 		if (additiveCallPlayers.Count != 0)
 		{
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, SamplerState.PointClamp, null, RasterizerState.CullCounterClockwise, null, Main.GameViewMatrix.ZoomMatrix);
 			foreach (ExtraDrawOnPlayer player in additiveCallPlayers)
 				player.DrawAllCallsOfType(Main.spriteBatch, DrawType.Additive);
 

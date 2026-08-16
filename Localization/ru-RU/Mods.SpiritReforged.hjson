@@ -23,8 +23,10 @@ Conditions: {
 	Discovered: Был найден в мире
 	Submerged: Если полностью погружён в воду
 	InSaltFlats: В солончаковых равнинах
-	IsPrickly: C кактусениц с розовым цветком
+	IsPrickly: Со стактусов с розовым цветком
 	InZiggurat: В Зиккурате
+	// InSpace: In Space
+	// NotSnow: Not in the Snow
 }
 
 Misc: {
@@ -32,6 +34,13 @@ Misc: {
 		Move: Переместить булавку
 		Obtained: Такая булавка уже есть в вашей коллекции
 		UseItem: Нажмите ПКМ по булавке, чтобы добавить её в коллекцию
+	}
+
+	Enchantment: {
+		// PlaceToEnchant: Place an item here to enchant
+		// Enchant: Enchant
+		// Clear: Remove enchantment
+		// Random: Randomize enchantment
 	}
 
 	NoStock: Нет в наличии
@@ -50,21 +59,36 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: Всегда носите с собой еду — никогда не знаешь, когда она пригодится!
 	ReforgedTip1: Некоторые бабочки прячутся в подземных рощах.
 	ReforgedTip2: Булавки очень полезны! Проверьте свои булавки в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
-	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей.
+	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей!
 	ReforgedTip5: В тёмных глубинах океана сокрыто множество сокровищ.
 	ReforgedTip6: Под покровом ночи свечение звёздной травы дарит приятное облегчение.
-	ReforgedTip7: Облачник всегда рядом с облаками.
-	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вам нужно забраться повыше.
+	ReforgedTip7: Облачник всегда растёт рядом с облаками.
+	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вы хотите забраться повыше.
 	ReforgedTip9: Иногда на поверхность океана всплывают случайные предметы — проверяйте его почаще!
+	# Caves & Clubs
+	ReforgedTip10: В пещерах полно различных горшков! Смотрите внимательно!
+	ReforgedTip11: Дубины полезны для фокусированных атак по одиночным целям.
+	# Sunscorched
+	ReforgedTip12: Легенды говорят об одном древнем алтаре, принимающем подношения в виде самоцветов...
+	ReforgedTip13: Будьте осторожны, исследуя Зиккурат! Сюрпризы прячутся в каждом углу.
+	ReforgedTip14: Подземные оазисы — хорошее место для отдыха от опасности пустынных пещер.
+	ReforgedTip15: Янтарь полон секретов! Быть может,  внутри них вы найдёте что-нибудь интересное...
+	ReforgedTip16: Будьте бдительны, исследуя руины в пустыне! Иногда пол оказывается не таким прочным, как на первый взгляд.
+	# Spellbound
+	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
+	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
+	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
 }
 
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
+	// EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -74,10 +98,31 @@ InfoDisplays: {
 	}
 
 	ScryingLensInfoDisplay: {
-		DisplayName: Трасмутации в мерцании
+		DisplayName: Трансмутации в мерцании
 		Description: Видимость трансмутаций: ВКЛ
 	}
 }
 
-// GreatshieldClass_Class.DisplayName: greatshieldclass damage
-// DamageClasses.GreatshieldClass.DisplayName: greatshield damage
+Ecotones: {
+	SaltFlatsEcotone: Солончаковые равнины
+	SavannaEcotone: Саванна
+}
+
+EcotoneEdges: {
+	Forest: Лес
+	Desert: Пустыня
+	Ocean: Океан
+	Snow: Снега
+	Jungle: Джунгли
+	Corruption: Искажение
+	Crimson: Багрянец
+	Hallow: Освящение
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses: {
+	// HybridDamageClass.DisplayName: Hybrid Damage Class
+	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
+	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+}

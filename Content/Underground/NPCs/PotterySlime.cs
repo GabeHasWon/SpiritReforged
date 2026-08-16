@@ -27,7 +27,7 @@ public class PotterySlime : ModNPC
 		NPCID.Sets.IsTownPet[Type] = true;
 
 		NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new()
-		{ Velocity = 0.25f };
+		{ Velocity = -0.25f, SpriteDirection = 1 };
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 

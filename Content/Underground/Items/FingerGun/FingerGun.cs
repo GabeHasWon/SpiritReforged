@@ -82,6 +82,18 @@ public class FingerGun : ModItem
 
 public class FingerGunArmManager : ModPlayer
 {
+	public override void Load() => On_PlayerDrawLayers.DrawPlayer_29_OnhandAcc += StopInvalidDrawingIds;
+
+	private void StopInvalidDrawingIds(On_PlayerDrawLayers.orig_DrawPlayer_29_OnhandAcc orig, ref PlayerDrawSet drawinfo)
+	{
+		int handOn = drawinfo.drawPlayer.handon;
+
+		if (handOn >= ArmorIDs.HandOn.Count && TextureAssets.AccHandsOn[handOn] is null)
+			return;
+
+		orig(ref drawinfo);
+	}
+
 	private static bool IsFingerGunHeld(Player player) => player.HeldItem.type == ModContent.ItemType<FingerGun>();
 
 	public override void PostUpdate()

@@ -1,12 +1,14 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Savanna.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -120,18 +122,23 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 			type.Add(NPCID.EnchantedNightcrawler, .25);
 			type.Add(NPCID.GoldWorm, .05);
 
-			int wormCount = Main.rand.Next(3, 7);
-
-			for (int w = 0; w < wormCount; w++)
-			{
-				var npc = NPC.NewNPCDirect(new EntitySource_TileBreak(i, j), position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), (int)type);
-				npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(.5f, 2f)).RotatedByRandom(2f);
-			}
-
 			ItemMethods.SplitCoins(Main.rand.Next(30000, 50000), delegate (int type, int stack)
 			{
 				Item.NewItem(new EntitySource_TileBreak(i, j), position, new Item(type, stack), noGrabDelay: true);
 			});
+
+			if (Main.rand.NextFloat() < 0.0001f)
+				SimpleEntitySystem.NewEntity(SimpleEntitySystem.Types[typeof(DevourerOfSoil)], new Vector2(i, j).ToWorldCoordinates(8));
+			else
+			{
+				int wormCount = Main.rand.Next(3, 7);
+
+				for (int w = 0; w < wormCount; w++)
+				{
+					var npc = NPC.NewNPCDirect(new EntitySource_TileBreak(i, j), position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), (int)type);
+					npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(.5f, 2f)).RotatedByRandom(2f);
+				}
+			}
 
 			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}

@@ -1,5 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 
@@ -14,11 +16,20 @@ public partial class ZigguratMicrobiome : Microbiome
 
 		WorldMethods.Generate(static (i, j) =>
 		{
-			FastNoiseLite noise = new(WorldGen.genRand.Next());
-			noise.SetFrequency(0.1f);
-
 			if (WorldGen.SolidTile(i, j))
-				CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, 60, -0.25f);
+			{
+				FastNoiseLite noise = new(WorldGen.genRand.Next());
+				noise.SetFrequency(0.1f);
+				float outerThickness = 60;
+
+				if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+				{
+					noise.SetFrequency(WorldGen.genRand.NextFloat(0.05f, 0.15f));
+					outerThickness = WorldGen.genRand.NextFloat(50, 100);
+				}
+
+				CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, outerThickness, -0.25f);
+			}
 
 			return true;
 		}, count, out _, bound);

@@ -32,6 +32,8 @@ public abstract class SwungProjectile : ModProjectile
 	/// <summary> Gets <see cref="_config"/> and automatically casts the result. </summary>
 	public T GetConfig<T>() where T : IConfiguration => (T)_config;
 
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 	/// <summary><inheritdoc cref="ModProjectile.SetDefaults"/><para/>
 	/// Prefer overriding <see cref="SetConfiguration"/> instead of this method. </summary>
 	public sealed override void SetDefaults()

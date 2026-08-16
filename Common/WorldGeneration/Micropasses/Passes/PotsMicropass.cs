@@ -1,15 +1,20 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
 using System.Linq;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class PotsMicropass : Micropass
+internal class PotsMicropass : Micropass, IGenerationPage
 {
+	public const float MaxPots = 1001;
+
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
 
@@ -18,11 +23,129 @@ internal class PotsMicropass : Micropass
 		get
 		{
 			float worldScale = Main.maxTilesX / (float)WorldGen.WorldSizeSmallX;
-			return worldScale + (worldScale - 1);
+			return (worldScale + (worldScale - 1)) * WorldMultiplierMultiplier;
 		}
 	}
 
+	[GenConfigurable(0.01f, 100, 0.01f)]
+	[Slider]
+	private static float WorldMultiplierMultiplier = 1;
+
+	[GenConfigurable(1, 15)]
+	[Slider]
+	[ReverseMinMax]
+	[Denominator]
+	private static int RollingPotChance = 3;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float OrnateScale = 5;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float PotionScale = 46;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float ScryingScale = 20;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float WaxScale = 15;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float StuffedScale = 12;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float WormScale = 18;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float PlatterScale = 24;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float AetherScale = 3;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float UpsideDownScale = 4;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float BoulderScale = 15;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	private static float PicnicScale = 2;
+
+	[GenConfigurable(0.00005, 0.05, 0.00005)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	public static double StackScale = 0.0005;
+
+	[GenConfigurable(0.00005, 0.05, 0.00005)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	public static double UncommonScale = 0.00055;
+
+	[GenConfigurable(1, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
+	public static float ZenithScale = 200;
+
 	public override string WorldGenName => "Pots";
+
+	PageInfo IGenerationPage.Info => new("Pots", DrawHelpers.RequestLocal(GetType(), "PotsPage", false), DrawHelpers.RequestLocal(GetType(), "PotsPageButton", false))
+	{
+		Presets =
+		[
+			new("Tasty",
+				[
+					new IndividualPreset(nameof(PicnicScale), 1000),
+					new IndividualPreset(nameof(PlatterScale), 350),
+					new IndividualPreset(nameof(WormScale), 150),
+					new IndividualPreset(nameof(RollingPotChance), 10),
+					new IndividualPreset(nameof(OrnateScale), 2),
+					new IndividualPreset(nameof(PotionScale), 16),
+					new IndividualPreset(nameof(ScryingScale), 5),
+					new IndividualPreset(nameof(StuffedScale), 6),
+					new IndividualPreset(nameof(AetherScale), 2),
+					new IndividualPreset(nameof(UpsideDownScale), 2),
+					new IndividualPreset(nameof(BoulderScale), 6),
+				]),
+
+			new("Occult",
+				[
+					new IndividualPreset(nameof(PotionScale), 200),
+					new IndividualPreset(nameof(ScryingScale), 100),
+					new IndividualPreset(nameof(WormScale), 4),
+					new IndividualPreset(nameof(RollingPotChance), 10),
+					new IndividualPreset(nameof(OrnateScale), 2),
+					new IndividualPreset(nameof(WormScale), 8),
+					new IndividualPreset(nameof(PlatterScale), 5),
+					new IndividualPreset(nameof(StuffedScale), 6),
+					new IndividualPreset(nameof(AetherScale), 10),
+					new IndividualPreset(nameof(UpsideDownScale), 2),
+					new IndividualPreset(nameof(BoulderScale), 6),
+				]),
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override void Load(Mod mod)
 	{
@@ -32,7 +155,7 @@ internal class PotsMicropass : Micropass
 
 	private static bool PotBoulderConversion(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
 	{
-		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(3))
+		if (WorldGen.generatingWorld && Type == TileID.Boulder && WorldGen.genRand.NextBool(RollingPotChance))
 		{
 			int placed = ModContent.TileType<RollingPots>();
 
@@ -55,13 +178,13 @@ internal class PotsMicropass : Micropass
 			{
 				if (WorldGen.genRand.NextBool())
 				{
-					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next(3));
+					WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next(3));
 					return false;
 				}
 			}
 			else if (ground.HasTile && ground.TileType is TileID.Granite or TileID.GraniteBlock) // Add smooth granite for Remnants compatibility
 			{
-				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: Main.rand.Next([3, 4, 5]));
+				WorldGen.PlaceTile(x, y, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next([3, 4, 5]));
 				return false;
 			}
 		}
@@ -83,26 +206,27 @@ internal class PotsMicropass : Micropass
 
 	public static void RunMultipliedTask(float multiplier)
 	{
-		float scale = WorldMultiplier * multiplier;
+		int scale = (int)(WorldMultiplier * multiplier);
 
-		Generate(CreateOrnate, (int)(scale * 5), out _);
-		Generate(CreatePotion, (int)(scale * 46), out _);
-		Generate(CreateScrying, (int)(scale * 20), out _);
-		Generate(CreateStuffed, (int)(scale * 12), out _);
-		Generate(CreateWorm, (int)(scale * 18), out _);
-		Generate(CreatePlatter, (int)(scale * 24), out _);
-		Generate(CreateAether, (int)(scale * 3), out _);
-		Generate(CreateUpsideDown, (int)(scale * 4), out _);
-		Generate(CreateBoulder, (int)(scale * 15), out _);
-		Generate(CreatePicnic, (int)(scale * 2), out _, WickerBaskets.GetPicnicArea());
+		Generate(CreateOrnate, scale, out _, scale: OrnateScale);
+		Generate(CreatePotion, scale, out _, scale: PotionScale);
+		Generate(CreateScrying, scale, out _, scale: ScryingScale);
+		Generate(CreateStuffed, scale, out _, scale: StuffedScale);
+		Generate(CreateWorm, scale, out _, scale: WormScale);
+		Generate(CreatePlatter, scale, out _, scale: PlatterScale);
+		Generate(CreateAether, scale, out _, scale: AetherScale);
+		Generate(CreateUpsideDown, scale, out _, scale: UpsideDownScale);
+		Generate(CreateBoulder, scale, out _, scale: BoulderScale);
+		Generate(CreatePicnic, scale, out _, scale: PicnicScale);
+		Generate(CreateWax, scale, out _, scale: WaxScale);
 
-		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * 0.0005 * multiplier), out _, maxTries: 4000); //Normal pot generation weight is 0.0008
-		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * 0.00055 * multiplier), out int pots, maxTries: 4000);
+		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * StackScale * multiplier), out _, maxTries: 30_000); //Normal pot generation weight is 0.0008
+		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * UncommonScale * multiplier), out int pots, maxTries: 30_000);
 
 		if (Main.zenithWorld)
-			Generate(CreateZenith, (int)(scale * 200), out _);
+			Generate(CreateZenith, 200, out _, scale: ZenithScale);
 
-		PotteryTracker.Remaining = (ushort)Main.rand.Next(pots / 2);
+		PotteryTracker.Remaining = (ushort)WorldGen.genRand.Next(pots / 2);
 	}
 
 	public static bool CreateOrnate(int x, int y)
@@ -124,11 +248,11 @@ internal class PotsMicropass : Micropass
 		FindGround(x, ref y);
 		y--;
 
-		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y, true))
 			return false;
 
 		int type = ModContent.TileType<PotionVats>();
-		var attempt = Placer.Check(x, y, type, style: Main.rand.Next([0, 3, 6])).IsClear().Place().PostPlacement(out VatSlot slot);
+		var attempt = Placer.Check(x, y, type, style: WorldGen.genRand.Next([0, 3, 6])).IsClear().Place().PostPlacement(out VatSlot slot);
 
 		if (attempt.success)
 		{
@@ -148,6 +272,20 @@ internal class PotsMicropass : Micropass
 			return false;
 
 		int type = ModContent.TileType<ScryingPot>();
+		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreateWax(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<WaxPot>();
 		Placer.Check(x, y, type).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;
@@ -340,9 +478,10 @@ internal class PotsMicropass : Micropass
 		int tile = Main.tile[x, y + 1].TileType;
 		int wall = Main.tile[x, y].WallType;
 
-		if (wall is WallID.Dirt or WallID.GrassUnsafe || y > Main.worldSurface && y < Main.UnderworldLayer && (tile is TileID.Dirt or TileID.Stone or TileID.ClayBlock or TileID.WoodBlock or TileID.Granite || WoodenPlatform(Main.tile[x, y + 1])))
+		if (wall is WallID.Dirt or WallID.GrassUnsafe || y > Main.worldSurface && y < Main.UnderworldLayer 
+			&& (tile is TileID.Dirt or TileID.Stone or TileID.ClayBlock or TileID.WoodBlock or TileID.Granite || WoodenPlatform(Main.tile[x, y + 1])))
 		{
-			if (Main.rand.NextBool()) //Generate a stack of 3 in a pyramid
+			if (WorldGen.genRand.NextBool()) //Generate a stack of 3 in a pyramid
 			{
 				if (!AreaClear(x - 1, y - 3, 4, 4, true))
 					return false;
@@ -370,5 +509,10 @@ internal class PotsMicropass : Micropass
 	}
 
 	/// <summary> Checks whether a pot can be placed at the given coordinates. </summary>
-	private static bool CommonSurface(int x, int y) => !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && Main.tile[x, y].LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots);
+	private static bool CommonSurface(int x, int y, bool excludeCorrupt = false)
+	{
+		Tile tile = Main.tile[x, y];
+		return !CommonBlacklist.Contains(Main.tile[x, y + 1].TileType) && tile.LiquidAmount < 100 && !WorldDetours.AnyContains(x, y, WorldDetours.Context.Pots)
+			&& (!excludeCorrupt || (!TileID.Sets.Corrupt[tile.TileType] && !TileID.Sets.Crimson[tile.TileType]));
+	}
 }

@@ -1,14 +1,16 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Content.Ziggurat.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class TallSandstoneShelf : ModTile, IAutoloadTileItem
+public class TallSandstoneShelf : ModTile, ILoadItem
 {
+	public void SetItemStaticDefaults(ModItem item) => item.Item.ResearchUnlockCount = 30;
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 10).AddIngredient(AutoContent.ItemType<AncientBooks>()).AddTile(TileID.Sawmill).Register();
+	
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolidTop[Type] = true;
@@ -16,10 +18,10 @@ public class TallSandstoneShelf : ModTile, IAutoloadTileItem
 		Main.tileTable[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
 
-		AddMapEntry(FurnitureTile.CommonColor);
+		AddMapEntry(FurnitureTile.MapColor);
 
+		AdjTiles = [TileID.Bookcases];
 		DustType = DustID.Dirt;
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)

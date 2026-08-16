@@ -67,7 +67,7 @@ public class Hiker : WorldNPC
 		NPCID.Sets.DangerDetectRange[Type] = 500;
 		NPCID.Sets.PrettySafe[Type] = 50;
 		NPCID.Sets.AttackType[Type] = 3;
-		NPCID.Sets.AttackTime[Type] = 20;
+		NPCID.Sets.AttackTime[Type] = 16;
 		NPCID.Sets.HatOffsetY[Type] = 2;
 		NPCID.Sets.AttackAverageChance[Type] = 30;
 
@@ -156,14 +156,14 @@ public class Hiker : WorldNPC
 		});
 
 		var backpack = newItem.ModItem as BackpackItem;
-		bool checkForDuplicates = ItemPool.elements.Count >= backpack.items.Length; //Only check for duplicates if enough items exist in the pool
+		bool checkForDuplicates = ItemPool.elements.Count >= backpack.Items.Length; //Only check for duplicates if enough items exist in the pool
 
-		for (int i = 0; i < backpack.items.Length; ++i)
+		for (int i = 0; i < backpack.Items.Length; ++i)
 		{
-			var slot = backpack.items[i];
+			var slot = backpack.Items[i];
 			(int type, Range stackRange) = ItemPool.Get();
 
-			if (checkForDuplicates && backpack.items.Where(x => x.type == type).Any()) //This is a duplicate item type; try again
+			if (checkForDuplicates && backpack.Items.Where(x => x.type == type).Any()) //This is a duplicate item type; try again
 			{
 				i--;
 				continue;

@@ -20,6 +20,7 @@ internal class StonemasonGreatshield : GreatshieldItem
 	}
 
 	public override GreatshieldAltInfo Info => new(20, 60, 120, 40);
+	public override bool Release => true;
 
 	public override void SetDefaults()
 	{

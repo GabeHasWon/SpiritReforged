@@ -11,14 +11,17 @@ namespace SpiritReforged.Common.Visuals.Glowmasks;
 /// <code>[AutoloadGlowmask("Method:Content.Savanna.NPCs.Gar.Gar Glow")]</code><br/>
 /// This would call <c>Gar.Glow</c>. 
 /// </summary>
-/// <param name="stringData"></param>
+/// <param name="stringData">The method path or color data for the glow.</param>
+/// <param name="drawAutomatically">If true, the glowmask will use the default glow rendering.</param>
+/// <param name="forceUnset">If true, this will negate the attribute on this class. Useful for hiding inherited attributes.</param>
 [AttributeUsage(AttributeTargets.Class)]
-internal class AutoloadGlowmaskAttribute(string stringData, bool drawAutomatically = true) : Attribute
+internal class AutoloadGlowmaskAttribute(string stringData, bool drawAutomatically = true, bool forceUnset = false) : Attribute
 {
 	public const BindingFlags SearchFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 	public string StringData = stringData;
 	public bool DrawAutomatically = drawAutomatically;
+	public bool ForceUnset = forceUnset;
 
 	public static Color GetColorFromString(string colorString)
 	{
@@ -37,10 +40,17 @@ internal class AutoloadGlowmaskAttribute(string stringData, bool drawAutomatical
 		return new Color(r, g, b, byte.Parse(rgba[3]));
 	}
 
-	public static Func<object, Color> GetAttributeInfo(Mod mod, Type type, out bool autoDraw)
+	public static Func<object, Color> GetAttributeInfo(Mod mod, Type type, out bool autoDraw, out bool forceUnset)
 	{
 		var attribute = GetCustomAttribute(type, typeof(AutoloadGlowmaskAttribute)) as AutoloadGlowmaskAttribute;
 		string colString = attribute.StringData;
+
+		forceUnset = attribute.ForceUnset;
+		autoDraw = attribute.DrawAutomatically;
+
+		if (forceUnset)
+			return null;
+
 		Func<object, Color> color;
 
 		if (!colString.StartsWith("Method:"))
@@ -52,7 +62,6 @@ internal class AutoloadGlowmaskAttribute(string stringData, bool drawAutomatical
 			color = Delegate.CreateDelegate(typeof(Func<object, Color>), null, colorMethod) as Func<object, Color>;
 		}
 
-		autoDraw = attribute.DrawAutomatically;
 		return color;
 	}
 }

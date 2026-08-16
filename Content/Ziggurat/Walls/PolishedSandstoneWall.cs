@@ -1,10 +1,20 @@
 ﻿using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Walls;
 
-public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, IAutoloadWallItem
+public class PolishedSandstoneWall : ModWall, IAutoloadUnsafeWall, ILoadItem
 {
 	public static int UnsafeType { get; private set; } = SpiritReforgedMod.Instance.Find<ModWall>("PolishedSandstoneWallUnsafe").Type;
+
+	public void AddItemRecipes(ModItem item)
+	{
+		int brick = ItemID.Sandstone;
+		int type = item.Type;
+
+		item.CreateRecipe(4).AddIngredient(brick).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(brick).AddIngredient(type, 4).AddTile(TileID.WorkBenches).Register();
+	}
 
 	public override void SetStaticDefaults()
 	{

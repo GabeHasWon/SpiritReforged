@@ -64,6 +64,8 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		LeafyTop
 	}
 
+	public virtual HashSet<SegmentType> ShakeableTreetops => [SegmentType.LeafyTop];
+
 	/// <summary> Common frame size for tree tiles. </summary>
 	public const int FrameSize = 22;
 
@@ -162,13 +164,18 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		while (Framing.GetTileSafely(i, j + 1).TileType == Type)
 			j++; //Move to the base of the tree
 
-		if (FindSegment(i, j) is SegmentType.LeafyTop && TileExtensions.ShakeTree(i, j))
+		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileExtensions.ShakeTree(i, j))
+		{
+			while (Framing.GetTileSafely(i, j - 1).TileType == Type)
+				j--;
+
 			OnShakeTree(i, j);
+		}
 	}
 
 	protected virtual void OnShakeTree(int i, int j) => GrowEffects(i, j, true);
 
-	public void GrowEffects(int i, int j, bool shake = false)
+	public void GrowEffects(int i, int j, bool shake = false, int goreType = GoreID.TreeLeaf_Normal)
 	{
 		int height = 1;
 		while (Framing.GetTileSafely(i, j - height).TileType == Type)
@@ -177,7 +184,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		if (shake)
 			height = 1;
 
-		OnGrowEffects(i, j - (height - 1), height);
+		OnGrowEffects(i, j - (height - 1), height, goreType);
 	}
 
 	/// <summary> Used to create effects when the tree is grown, such as leaves. Doubles for shake effects by default. </summary>

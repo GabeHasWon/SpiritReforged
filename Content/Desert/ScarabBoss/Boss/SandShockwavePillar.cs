@@ -1,4 +1,6 @@
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Graphics.CameraModifiers;
@@ -86,9 +88,9 @@ public class SandShockwavePillar : ModProjectile
 		Vector2 dustPosition = Projectile.Center + Vector2.UnitY * 4f;
 		Point tilePosition = dustPosition.ToTileCoordinates();
 		float ySpeedMult = ParticleVerticalSpeedMult;
-
 		int dustCount = HitboxHeight / 15;
-		Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitY, HitboxHeight / 10f, 5, 35, 600, "shockwaveSand"));
+
+		ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitY, HitboxHeight / 10f, 5, 35, 600, "shockwaveSand");
 
 		for (int i = 0; i < dustCount; i++)
 		{

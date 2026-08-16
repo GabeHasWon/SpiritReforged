@@ -71,7 +71,7 @@ public class SwingTrail(Projectile projectile, SwingTrailParameters parameters, 
 
 	public float GetSwingProgress() => _swingProgress;
 
-	public override void Draw(Effect effect, BasicEffect _, GraphicsDevice device)
+	public override void Draw(Effect effect, GraphicsDevice device, Matrix? view = null)
 	{
 		if (CanBeDisposed || _timeLeft <= 1) 
 			return;

@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class BronzePlatform : ModTile, IAutoloadTileItem
+public class BronzePlatform : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -38,11 +38,10 @@ public class BronzePlatform : ModTile, IAutoloadTileItem
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
+
 		DustType = DustID.Copper;
 		AdjTiles = [TileID.Platforms];
 		HitSound = SoundID.Tink;
-
-		this.AutoItem().ResearchUnlockCount = 200;
 	}
 
 	public override void PostSetDefaults() => Main.tileNoSunLight[Type] = false;

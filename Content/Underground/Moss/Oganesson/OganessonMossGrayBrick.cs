@@ -2,10 +2,10 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
-[AutoloadGlowmask("255,255,255")]
 public class OganessonMossGrayBrick : GrassTile
 {
 	protected override int DirtType => TileID.GrayBrick;
@@ -15,6 +15,7 @@ public class OganessonMossGrayBrick : GrassTile
 		base.SetStaticDefaults();
 
 		Main.tileLighted[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(220, 220, 220));

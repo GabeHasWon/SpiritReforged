@@ -5,6 +5,11 @@ CommonTooltips: {
 		Перед снятием из него необходимо достать все предметы
 		'''
 	Shimmerable: "{0} Можно трансмутировать в мерцании"
+	/* Wrench:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries grants temporary buffs at the cost of scrap
+		''' */
 }
 
 Kelp: {
@@ -134,7 +139,7 @@ SkullSentry: {
 }
 
 UrchinStaff: {
-	DisplayName: Метатель морских ежей
+	DisplayName: Метатель ежей
 	Tooltip: ""
 }
 
@@ -163,7 +168,7 @@ Sushi: {
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
-		Позволяют дышать под водой
+		Позволяет дышать под водой
 		«Холодные и свежие!»
 		'''
 }
@@ -173,7 +178,7 @@ Nigiri: {
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
-		Позволяют свободно передвигаться в жидкостях
+		Позволяет свободно передвигаться в жидкостях
 		«Точное искусство»
 		'''
 }
@@ -203,7 +208,11 @@ CrystalFish: {
 
 RawMeat: {
 	DisplayName: Сырое мясо
-	Tooltip: «Оно съедобно... но не лучше ли сначала его приготовить?»
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		«Оно съедобно... но не лучше ли сначала его приготовить?»
+		'''
 }
 
 CookedMeat: {
@@ -252,7 +261,7 @@ DiverLegs: {
 
 SailorCap: {
 	DisplayName: Бескозырка
-	Tooltip: «Отдать паруса!»
+	Tooltip: «Все на борт!»
 }
 
 StrippedBambooItem: {
@@ -301,17 +310,17 @@ JellyCandle: {
 
 SmallDriftwoodItem: {
 	DisplayName: Маленькая коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 MediumDriftwoodItem: {
 	DisplayName: Средняя коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 LargeDriftwoodItem: {
 	DisplayName: Большая коряга
-	Tooltip: «Приятна для глаз»
+	Tooltip: «Выглядит эстетично»
 }
 
 DriftwoodChestplate: {
@@ -463,7 +472,7 @@ PoolNoodle: {
 		'''
 		3 ед. урона от метки призывателя
 		{$CommonItemTooltip.Whips}
-		Атаки миньонов по отмеченным врага создают взрывы пузырей
+		Атаки миньонов по отмеченным врагам создают взрывы пузырей
 		'''
 }
 
@@ -532,7 +541,7 @@ CustardApple: {
 }
 
 BeachUmbrellaItem: {
-	DisplayName: Пляжный зонт
+	DisplayName: Пляжный зонтик
 	Tooltip: ""
 }
 
@@ -622,7 +631,7 @@ SafariVest: {
 
 SunStaff: {
 	DisplayName: Скипетр рассвета
-	Tooltip: Обрушивает солнечный свет перед вами
+	Tooltip: Обрушивает перед вами солнечный свет
 }
 
 SavannaMusicBoxItem: {
@@ -666,7 +675,7 @@ DrywoodClockItem: {
 }
 
 DrywoodDresserItem: {
-	DisplayName: Комод из из сухого дерева
+	DisplayName: Комод из сухого дерева
 	Tooltip: ""
 }
 
@@ -867,12 +876,12 @@ BikiniBottom: {
 
 BikiniTop: {
 	DisplayName: Бюстгальтер
-	Tooltip: «Вопреки ожиданиям, он действительно не предоставляет никакой защиты»
+	Tooltip: «Вопреки ожиданиям, он действительно не даёт никакой защиты»
 }
 
 SwimmingTrunks: {
 	DisplayName: Плавки
-	Tooltip: «Хотя они особо не защищают, они, определённо, выглядят стильно»
+	Tooltip: «Хоть они особо не защищают, выглядят они, безусловно, очень стильно»
 }
 
 TintedGlasses: {
@@ -884,7 +893,7 @@ WheatgrassSeedPouch: {
 	DisplayName: Мешочек с семенами пырея
 	Tooltip:
 		'''
-		На земле, на которой будет рассыпаны семена, моментально вырастет пырей
+		На земле, на которой будут рассыпаны семена, моментально вырастет пырей
 		«Пересыпаются и шуршат в руках»
 		'''
 }
@@ -987,7 +996,7 @@ FrostbiteItem: {
 	Tooltip:
 		'''
 		Вызывает перед вами снежную бурю
-		Игнорирует 5 ед. защиты врага
+		Игнорирует 10 ед. защиты врага
 		'''
 }
 
@@ -1005,7 +1014,7 @@ GildedScarab: {
 	DisplayName: Позолоченный скарабей
 	Tooltip:
 		'''
-		Увеличивает защиту после получения урона
+		Ненадолго увеличивает защиту после получения урона
 		Чем больше урона было получено, тем выше будет бонус к защите
 		'''
 }
@@ -1032,17 +1041,17 @@ SafekeeperRing: {
 PeevedTumblerBannerItem.DisplayName: Знамя раздражённого перекати-поля
 
 LeatherHood: {
-	DisplayName: Капюшон застрельщика
+	DisplayName: Капюшон меткого стрелка
 	Tooltip: Увеличивает шанс критического удара на 5%
 }
 
 LeatherLegs: {
-	DisplayName: Ботинки застрельщика
+	DisplayName: Ботинки меткого стрелка
 	Tooltip: ""
 }
 
 LeatherPlate: {
-	DisplayName: Нагрудник застрельщика
+	DisplayName: Куртка меткого стрелка
 	Tooltip: ""
 }
 
@@ -1050,9 +1059,9 @@ ExplorerTreadsItem: {
 	DisplayName: Ботинки исследователя
 	Tooltip:
 		'''
-		Даёт 50% шанс уклониться от урона ловушки
+		Даёт 50% шанс избежать урона от ловушки
 		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
-		«С такими ботинками даже исследование храмов превращаются в обычную прогулку»
+		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
 
@@ -1095,7 +1104,7 @@ DriftwoodFenceItem: {
 }
 
 ArcaneNecklaceGold: {
-	DisplayName: Арканное ожерелье
+	DisplayName: Мистическое ожерелье
 	Tooltip:
 		'''
 		Увеличивает максимальный запас маны на 20 ед.
@@ -1272,7 +1281,7 @@ NightSky: {
 }
 
 Pearlberry: {
-	DisplayName: Жемчужика
+	DisplayName: Жемчужника
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
@@ -1421,7 +1430,7 @@ PotteryWheelItem: {
 	Tooltip:
 		'''
 		Используется для создания декоративных горшков
-		Нажмите ПКМ по установленному кругу, чтобы просмотреть доступные рецепты
+		Нажмите ПКМ по размещённому кругу, чтобы просмотреть доступные рецепты
 		'''
 }
 
@@ -1611,7 +1620,7 @@ OganessonMossBrickWallItem: {
 }
 
 ScryingPotItem: {
-	DisplayName: Гадальный горшок
+	DisplayName: Горшок предвидения
 	Tooltip: ""
 }
 
@@ -1752,12 +1761,12 @@ BassSlapper: {
 
 Shockhammer: {
 	DisplayName: Ударный молот
-	Tooltip: При полном заряде выпускает ударную волну, протягивающуюся по земле
+	Tooltip: При полном заряде создаёт ударную волну, протягивающуюся по земле
 }
 
 Bowlder: {
 	DisplayName: Глыба
-	Tooltip: При полном заряде запускают смертоносную катящуюся глыбу
+	Tooltip: При полном заряде запускает смертоносную катящуюся глыбу
 }
 
 BoStaff: {
@@ -1917,7 +1926,7 @@ JinxBow: {
 	DisplayName: Лук сглаза
 	Tooltip:
 		'''
-		Стреляет по врагам стрелами, не расходующими боеприпасы и имеющие шанс наложить метку сглаза
+		Стреляет по врагам стрелами, не расходующими боеприпасы и имеющими шанс наложить метку сглаза
 		Атаки по отмеченным врагам стрелковым оружием выпустят из лука мощную магическую стрелу
 		'''
 }
@@ -1952,17 +1961,17 @@ BreakawayChair: {
 }
 
 AncientMarksmanHood: {
-	DisplayName: Древний капюшон застрельщика
+	DisplayName: Древний капюшон меткого стрелка
 	Tooltip: "{$Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	DisplayName: Древние ботинки застрельщика
+	DisplayName: Древние ботинки меткого стрелка
 	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	DisplayName: Древний нагрудник застрельщика
+	DisplayName: Древняя куртка меткого стрелка
 	Tooltip: ""
 }
 
@@ -2056,7 +2065,7 @@ HardlightVisor: {
 	DisplayName: Твёрдосветовой визор
 	Tooltip: ""
 	AltDisplayName: Твердосветовой визор
-	AltTooltip: «Не путать с твёрдосветовой визором»
+	AltTooltip: «Не путать с твёрдосветовым визором»
 }
 
 PolishedAmberItem: {
@@ -2134,14 +2143,14 @@ CeremonialDagger: {
 	DisplayName: Церемониальный нож
 	Tooltip:
 		'''
-		Может наносить урон городским НИПам
+		Можно использовать для приношения городских НИПов в жертву
 		Атака ПКМ всегда наносит критические удары, но только по врагам с кровотечением
 		'''
 }
 
 Thornball: {
 	DisplayName: Кактусовый шар
-	Tooltip: Прилипает к блокам
+	Tooltip: Прилипает к блокам и замедляет поражённых врагов
 }
 
 SaltBlockDullItem: {
@@ -2295,8 +2304,8 @@ SleightOfHand: {
 	DisplayName: Ловкость рук
 	Tooltip:
 		'''
-		Дважды нажмите клавишу {0}, держа стрелковое оружие, чтобы сменить используемые боеприпасы
-		Работает даже в инвентаре
+		Позволяет менять используемые боеприпасы двойным нажатием клавиши {0}, если у вас в руках есть стрелковое оружие
+		Работает даже находясь в инвентаре
 		'''
 }
 
@@ -2307,12 +2316,12 @@ RuinedSandstonePillarItem: {
 
 GlidingItem: {
 	DisplayName: Картина «Планирование»
-	Tooltip: «Тикс Э. Лун»
+	Tooltip: «Тикс А. Лун»
 }
 
 ViciousFlamingoItem: {
 	DisplayName: Картина «Свирепый фламинго»
-	Tooltip: «Тикс Э. Лун»
+	Tooltip: «Тикс А. Лун»
 }
 
 SaltWallItem: {
@@ -2537,7 +2546,7 @@ SaltPlatformItem: {
 
 MahakalaMaskBlue: {
 	DisplayName: Маска Махакалы
-	Tooltip: Снижает урон, получаемый от врагов заражений
+	Tooltip: Снижает урон, получаемый от врагов заражений, а также наносимый по ним урон
 }
 
 MahakalaMaskRed: {
@@ -2546,7 +2555,7 @@ MahakalaMaskRed: {
 }
 
 RedSandstoneSlabItem: {
-	DisplayName: Красная песчаниковая плитка
+	DisplayName: Красная песчаниковая плита
 	Tooltip: ""
 }
 
@@ -2556,7 +2565,7 @@ CenserItem: {
 }
 
 CarvedLapisWallItem: {
-	DisplayName: Стена из резного лазурита
+	DisplayName: Резная лазуритовая стена
 	Tooltip: ""
 }
 
@@ -2581,7 +2590,7 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Бронзовая решётка
+	DisplayName: Стена из бронзовой решётки
 	Tooltip: ""
 }
 
@@ -2617,7 +2626,7 @@ SwordStandSandstoneItem: {
 
 RedSandstoneBrickForegroundWallItem: {
 	DisplayName: Передняя стена из красного песчаникового кирпича
-	Tooltip: ""
+	Tooltip: Отображается перед, а не за игроком
 }
 
 SaltPylonItem: {
@@ -2674,10 +2683,10 @@ GoldenBrineShrimpItem: {
 	Tooltip: ""
 }
 
-CorruptStactusBannerItem.DisplayName: Знамя искажённой кактусеницы
-CrimsonStactusBannerItem.DisplayName: Знамя багряной кактусеницы
-DesertStactusBannerItem.DisplayName: Знамя пустынной кактусеницы
-HallowedStactusBannerItem.DisplayName: Знамя освящённой кактусеницы
+CorruptStactusBannerItem.DisplayName: Знамя искажённого стактуса
+CrimsonStactusBannerItem.DisplayName: Знамя багряного стактуса
+DesertStactusBannerItem.DisplayName: Знамя стактуса
+HallowedStactusBannerItem.DisplayName: Знамя освящённого стактуса
 
 AncientBannerItem: {
 	DisplayName: Древнее знамя
@@ -2730,7 +2739,7 @@ ScarabAltarItem: {
 }
 
 RedSandstoneBrickCrackedWallItem: {
-	DisplayName: Стена из потрескавшегося красного песчаникового кирпича
+	DisplayName: Потрескавшаяся стена из красного песчаникового кирпича
 	Tooltip: ""
 }
 
@@ -2750,7 +2759,7 @@ SaltPanelWallItem: {
 }
 
 SaltPlateWallItem: {
-	DisplayName: Стена из соляной плитки
+	DisplayName: Стена из соляной пластины
 	Tooltip: ""
 }
 
@@ -2770,7 +2779,7 @@ SaltPanelItem: {
 }
 
 SaltPlateItem: {
-	DisplayName: Соляная плитка
+	DisplayName: Соляная пластина
 	Tooltip: ""
 }
 
@@ -2798,7 +2807,11 @@ GraverobberBannerItem.DisplayName: Знамя расхитителя могил
 
 GiantBag: {
 	DisplayName: Большой мешок
-	Tooltip: "{$CommonTooltips.Backpack}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		«Излюбленный выбор мошенников и прохвостов со всего мира!»
+		'''
 }
 
 CrackedSandstoneItem: {
@@ -2847,7 +2860,7 @@ GooBlockItem: {
 }
 
 WindshearScepter: {
-	DisplayName: Скипетр ветрового сдвига
+	DisplayName: Скипетр порыва ветра
 	Tooltip: Выпускает пронзающий ветряной шквал
 }
 
@@ -2872,7 +2885,7 @@ FlagRingItem: {
 }
 
 CobbledBrickWallItem: {
-	DisplayName: Стена из мощённого кирпича
+	DisplayName: Мощёная кирпичная стена
 	Tooltip: ""
 }
 
@@ -2883,7 +2896,7 @@ CobbledBrickItem: {
 
 BronzeGrateDoorItem: {
 	DisplayName: Бронзовая решётчатая дверь
-	Tooltip: ""
+	Tooltip: Пропускает через себя жидкости, даже если закрыта
 }
 
 CalmingBellItem: {
@@ -2907,8 +2920,8 @@ GildedRedSandstoneItem: {
 }
 
 BronzeGrateBlockItem: {
-	DisplayName: Блок бронзовой решётки
-	Tooltip: ""
+	DisplayName: Бронзовая решётка
+	Tooltip: Пропускает через себя только жидкости
 }
 
 BedouinBreastplate: {
@@ -2957,7 +2970,7 @@ CarrotCake: {
 }
 
 AvianRitualMask: {
-	DisplayName: Ритуальная маска птаха
+	DisplayName: Ритуальная маска птицы
 	Tooltip: ""
 }
 
@@ -2967,7 +2980,7 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	DisplayName: Злачёный большой лук
+	DisplayName: Золочёный большой лук
 	Tooltip:
 		'''
 		Зарядите, чтобы совершить усиленный выстрел
@@ -3044,20 +3057,361 @@ ScarabLightPetItem: {
 }
 
 BeetleLicense: {
-	// DisplayName: Beetle License
+	DisplayName: Жучий паспорт
+	Tooltip:
+		'''
+		Используйте, чтобы заселить в городе жука
+		Жук уже есть?
+		Используйте дополнительные паспорта для запуска программы по обмену питомцами!
+		Найдите своего идеального жука!
+		'''
+	LicenseUse: Паспорт телепортируется в жучью службу доставки...
+}
+
+GooeyHiveItem: {
+	DisplayName: Липкий улей
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Бутон жимолости
+	Tooltip: Призывает ездового жука-пилюльщика
+}
+
+SandySandstoneItem: {
+	DisplayName: Песчаный песчаник
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Терракотовая надгробная плита
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Терракотовая могильная табличка
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Терракотовая могильная плита
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Терракотовый обелиск
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Надгробная плита из сухого дерева
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Могильная плита саванны
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Могильная табличка из сухого дерева
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Могильный крест из сухого дерева
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Современный обелиск
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Современный надгробный экран
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Современная могильная плита
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Современное надгробие
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Соляное надгробие
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Соляная надгробная плита
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Соляная могильная плита
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Соляная могильная табличка
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	// DisplayName: Not Sun Item Icon
+	// Tooltip: ""
+}
+
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
+	// Tooltip: Can be exchanged for magical glyphs
+	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	// Target: Can only be applied to weapons
+	// RightClick: Hold this glyph and right-click the item you want to enchant
+}
+
+BlazeGlyph: {
+	// DisplayName: Blaze Glyph
 	/* Tooltip:
 		'''
-		Use to adopt a beetle for your town
-		Already have a beetle?
-		Use additional licenses to activate the Pet Exchange Program!
-		Find the perfect fit for you and your beetle!
+		Dealing damage sets you ablaze
+		up to +40% damage and +20% critical strike chance depending on lost hp
 		''' */
-	// LicenseUse: The license teleports away to the beetle delivery service...
+	// Effect: Blazing
+	// Death: "{0} was consumed by Rage..."
+}
+
+RadiantGlyph: {
+	// DisplayName: Radiant Glyph
+	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	// Effect: Radiant
+}
+
+StormGlyph: {
+	// DisplayName: Storm Glyph
+	/* Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		''' */
+	// Effect: Billowed
+}
+
+MoonlightGlyph: {
+	// DisplayName: Moonlight Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		''' */
+	// Effect: Dazzling
+}
+
+RotGlyph: {
+	// DisplayName: Rot Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict a contagious blight
+		This blight can be inflicted on to you by enemies suffering from it
+		''' */
+	// Effect: Blighted
+}
+
+ShockGlyph: {
+	// DisplayName: Shock Glyph
+	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
+	// Effect: Shocking
+}
+
+BeeGlyph: {
+	// DisplayName: Bee Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		''' */
+	// Effect: Buzzing
+}
+
+SanguineGlyph: {
+	// DisplayName: Sanguine Glyph
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
+}
+
+PrefixVoucher: {
+	// DisplayName: "{0} Prefix Voucher"
+	/* Tooltip:
+		'''
+		Can be used on items with <right>
+		Applies [c/{0}:{1}]
+		''' */
+}
+
+EnchantedStamp: {
+	// DisplayName: Enchanted Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+CelestialStamp: {
+	// DisplayName: Celestial Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		Additionally allows items to receive prefixes and glyph effects simultaneously
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+RageGlyph: {
+	// DisplayName: Rage Glyph
+	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
+	// Effect: Wrathful
+}
+
+CharmcasterHat: {
+	// DisplayName: Charmcaster's Hat
+	// Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	// DisplayName: Charmcaster's Leggings
+	// Tooltip: ""
+}
+
+CharmcasterRobe: {
+	// DisplayName: Charmcaster's Robe
+	// Tooltip: ""
+}
+
+VoidGlyph: {
+	// DisplayName: Void Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
+		''' */
+	// Effect: Null
+}
+
+GlitterPurse: {
+	// DisplayName: Glitter Purse
+	// Tooltip: Permanently increases the item capacity of backpacks
+	// StatusText: Your backpacks grow larger
+}
+
+MariglowSeedPouch: {
+	// DisplayName: Mariglow Seed Pouch
+	// Tooltip: Scatters seeds which sprout into mariglow on sand
+}
+
+DisplayCaseItem: {
+	// DisplayName: Display Case
+	// Tooltip: <right> to place accessory in case
+}
+
+SkyPylonItem: {
+	// DisplayName: Space Pylon
+	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	// DisplayName: Candlewick Rope
+	// Tooltip: Can be climbed on
+}
+
+WaxBlockItem: {
+	// DisplayName: Wax Block
+	// Tooltip: ""
+}
+
+WaxPotItem: {
+	// DisplayName: Wax Pot
+	// Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	// DisplayName: Mirror of Return
+	// Tooltip: <right> to teleport home and create a portal
+}
+
+MirrorItem: {
+	// DisplayName: Mirror
+	// Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	// DisplayName: Enchanted Workbench
+	// Tooltip: ""
 }
 
 StonemasonGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
+}
+
+ScrapPickup: {
+	// DisplayName: Scrap
+	/* Tooltip:
+		'''
+		Used by various wrenches on sentries
+		'Sharp! (ow)'
+		''' */
+}
+
+CopperSpanner: {
+	// DisplayName: Copper Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+TinSpanner: {
+	// DisplayName: Tin Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+MagnetiteWrench: {
+	// DisplayName: Magnetite Wrench
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+LargeWrench: {
+	// DisplayName: Comically Large Wrench
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Wrench}
+		Charged strikes move sentries to the cursor position
+		''' */
+}
+
+Overloader: {
+	// DisplayName: Overloader
+	/* Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries consumes all scrap to create an explosion
+		''' */
 }
 
 LightningBolt: {

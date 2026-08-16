@@ -185,7 +185,7 @@ public class OceanKelp : ModTile, ISetConversion
 		if (Main.rand.Next(1000) <= 1) //Spawns little bubbles
 		{
 			Vector2 pos = new Vector2(i * 16, j * 16) + new Vector2(2 + Main.rand.Next(12), Main.rand.Next(16));
-			Dust.NewDustPerfect(pos, 34, new Vector2(Main.rand.NextFloat(-0.08f, 0.08f), Main.rand.NextFloat(-0.2f, -0.02f)));
+			Dust.NewDustPerfect(pos, DustID.BreatheBubble, new Vector2(Main.rand.NextFloat(-0.08f, 0.08f), Main.rand.NextFloat(-0.2f, -0.02f)));
 		}
 	}
 

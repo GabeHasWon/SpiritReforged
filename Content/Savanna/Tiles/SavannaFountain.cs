@@ -5,14 +5,15 @@ using SpiritReforged.Content.Savanna.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaFountain : ModTile, IAutoloadTileItem
+public class SavannaFountain : ModTile, ILoadItem
 {
 	private const int FrameHeight = 72;
 
-	void IAutoloadTileItem.SetItemDefaults(ModItem item) => item.Item.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(0, 4, 0, 0));
+	public void SetItemDefaults(ModItem item) => item.Item.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(0, 4, 0, 0));
 
 	public override void SetStaticDefaults()
 	{
@@ -34,9 +35,9 @@ public class SavannaFountain : ModTile, IAutoloadTileItem
 		AnimationFrameHeight = FrameHeight;
 		AdjTiles = [TileID.WaterFountain];
 
-		int itemId = Mod.Find<ModItem>("SavannaFountainItem").Type;
-		RegisterItemDrop(itemId);
-		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(itemId)));
+		int itemType = ((ILoadItem)this).ItemType;
+		RegisterItemDrop(itemType);
+		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(shop => shop.NpcType == NPCID.WitchDoctor, new NPCShop.Entry(itemType)));
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
