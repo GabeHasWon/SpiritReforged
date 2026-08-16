@@ -67,7 +67,7 @@ public class MoonlightGlyph : GlyphItem
 		}
 
 		[NetSynced(true)]
-		private static void MoonlightHitEffects(NPC target, Player owner, int damageDone, bool crit)
+		public static void MoonlightHitEffects(NPC target, Player owner, int damageDone, bool crit)
 		{
 			if (Main.dedServ)
 				return;
