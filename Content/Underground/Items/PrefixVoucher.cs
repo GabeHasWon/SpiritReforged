@@ -207,7 +207,6 @@ public class PrefixVoucher : ModItem
 			return;
 
 		Rectangle area =  new(line.X + _info.TooltipSource.X, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
-		Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, area, Color.White * 0.4f);
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Main.EntitySpriteDraw(bloom, area.Center(), null, _info.Color.Additive() * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * area.Width * 1.5f, 1f / bloom.Height * area.Height), default);
 
