@@ -108,3 +108,4 @@ SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
 // LightningBoltProj.DisplayName: Lightning Bolt Proj
+// BaubleWandSwung.DisplayName: Bauble Wand Swung

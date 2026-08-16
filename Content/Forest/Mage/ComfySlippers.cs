@@ -1,6 +1,6 @@
 ﻿namespace SpiritReforged.Content.Forest.Mage;
 
-[AutoloadEquip(EquipType.Shoes)]
+[AutoloadEquip(EquipType.Legs)]
 public class ComfySlippers : ModItem
 {
 	public const int MANA_INCREASE = 40;

@@ -3412,12 +3412,12 @@ Overloader: {
 
 ComfySlippers: {
 	DisplayName: Comfy Slippers
-	Tooltip: "Increases maximum mana by {0} and reduces mana cost by {1}%"
+	Tooltip: Increases maximum mana by {0} and reduces mana cost by {1}%
 }
 
 Monocle: {
 	DisplayName: Monocle
-	Tooltip: "Increases magic damage by {0}% and spell book fire rate by {1}%"
+	Tooltip: Increases magic damage by {0}% and spell book fire rate by {1}%
 }
 
 TomeHolder: {
@@ -3427,10 +3427,20 @@ TomeHolder: {
 
 Bookmark: {
 	DisplayName: Bookmark
-	Tooltip: Tomes periodically fire an additional origami crane 
+	Tooltip: Tomes periodically fire an additional origami crane
 }
 
 LightningBolt: {
 	DisplayName: Lightning Bolt
 	Tooltip: ""
+}
+
+Pageflight: {
+	DisplayName: Pageflight
+	Tooltip: ""
+}
+
+StarBauble: {
+	DisplayName: Star Bauble
+	Tooltip: <right> to swing your staff, restoring mana
 }

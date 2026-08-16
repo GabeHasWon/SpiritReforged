@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.ProjectileCommon;
-
-namespace SpiritReforged.Common;
+﻿namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public class SpiritSets : ModSystem
@@ -11,6 +9,7 @@ public class SpiritSets : ModSystem
 	internal static SetFactory TileFactory = new(TileLoader.TileCount, "SpiritTiles");
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
 
+	#region item sets
 	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
 	/// Added in <see cref="Content.Forest.Stand.SwordStand.RegisterIsSword"/>. </summary>
 	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet(ItemID.Zenith, ItemID.TerraBlade,
@@ -27,6 +26,11 @@ public class SpiritSets : ModSystem
 	/// <summary> The type that this item will transform into when Shimmered, according to <see cref="Content.Aether.Items.ScryingLens"/>. </summary>
 	public static readonly int[] ShimmerDisplayResult = ItemFactory.CreateNamedSet(nameof(ShimmerDisplayResult)).Description("The Shimmer item type that Scrying Lens will display").RegisterIntSet();
 
+	/// <summary> Whether this type is considered a spell tome weapon. </summary>
+	public static readonly bool[] MagicBook = ItemFactory.CreateNamedSet(nameof(MagicBook)).RegisterBoolSet(ItemID.DemonScythe, ItemID.BookofSkulls, ItemID.WaterBolt, 
+		ItemID.CrystalStorm, ItemID.CursedFlames, ItemID.GoldenShower, ItemID.MagnetSphere, ItemID.RazorbladeTyphoon, ItemID.LunarFlareBook);
+	#endregion
+
 	/// <summary> Whether this NPC is associated with the Corruption or Crimson biomes. </summary>
 	public static readonly bool[] IsCorrupt = NPCFactory.CreateNamedSet(nameof(IsCorrupt)).Description("Whether this NPC is associated with the Corruption or Crimson biomes")
 		.RegisterBoolSet(NPCID.CorruptBunny, NPCID.CorruptGoldfish, NPCID.Corruptor, NPCID.CorruptPenguin, NPCID.CorruptSlime, NPCID.BigMimicCorruption, NPCID.DesertGhoulCorruption, 
@@ -34,6 +38,7 @@ public class SpiritSets : ModSystem
 		NPCID.CrimsonPenguin, NPCID.BigMimicCrimson, NPCID.DesertGhoulCrimson, NPCID.PigronCrimson, NPCID.SandsharkCrimson, NPCID.EaterofSouls, NPCID.VileSpit,
 		NPCID.VileSpitEaterOfWorlds, NPCID.DevourerBody, NPCID.DevourerHead, NPCID.DevourerTail, NPCID.FaceMonster);
 
+	#region tiles & walls
 	/// <summary> Whether this type converts into the provided type when mowed with a lawnmower. </summary>
 	public static readonly int[] Mowable = TileFactory.CreateIntSet();
 
@@ -52,4 +57,5 @@ public class SpiritSets : ModSystem
 
 	/// <summary> Whether this type blocks light. </summary>
 	public static readonly bool[] WallBlocksLight = WallFactory.CreateBoolSet();
+	#endregion
 }
