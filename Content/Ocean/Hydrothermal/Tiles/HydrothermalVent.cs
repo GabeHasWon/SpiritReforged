@@ -81,45 +81,42 @@ public class HydrothermalVent : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer) //Client effects
 	{
-		if (!TileObjectData.IsTopLeft(i, j) || Main.gamePaused)
+		if (Main.dedServ || Main.gamePaused || !TileObjectData.IsTopLeft(i, j))
 			return;
 
 		Tile tile = Framing.GetTileSafely(i, j);
 		int fullWidth = TileObjectData.GetTileData(tile).CoordinateFullWidth;
 		Vector2 position = new Vector2(i, j) * 16 + tops[tile.TileFrameX / fullWidth].ToVector2();
 
-		if (!Main.dedServ)
+		if (Main.rand.NextBool(5)) //Passive smoke effects
 		{
-			if (Main.rand.NextBool(5)) //Passive smoke effects
+			Vector2 velocity = new(0, -Main.rand.NextFloat(2f, 2.5f));
+			SmokeCloud smoke = new(position, velocity, new Color(40, 40, 50), Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(50, 120), false)
 			{
-				var velocity = new Vector2(0, -Main.rand.NextFloat(2f, 2.5f));
-				var smoke = new SmokeCloud(position, velocity, new Color(40, 40, 50), Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(50, 120), false)
-				{
-					SecondaryColor = Color.SlateGray,
-					TertiaryColor = Color.Black,
-					ColorLerpExponent = 0.5f,
-					Intensity = 0.25f,
-					Pixellate = true,
-					PixelDivisor = 4
-				};
+				SecondaryColor = Color.SlateGray,
+				TertiaryColor = Color.Black,
+				ColorLerpExponent = 0.5f,
+				Intensity = 0.25f,
+				Pixellate = true,
+				PixelDivisor = 4
+			};
 
-				ParticleHandler.SpawnParticle(smoke);
-			}
-
-			if (Main.rand.NextBool(12))
-				ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(4), -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.35f), 60));
-
-			if (Main.rand.NextBool()) //Passive ash effects
-			{
-				float range = Main.rand.NextFloat();
-				var velocity = new Vector2(0, -Main.rand.NextFloat(range * 8f)).RotatedByRandom((1f - range) * 1.5f);
-
-				var dust = Dust.NewDustPerfect(position, DustID.Ash, velocity, Alpha: 180);
-				dust.noGravity = true;
-			}
-
-			BubbleSoundPlayer.StartSound(new Vector2(i, j) * 16);
+			ParticleHandler.SpawnParticle(smoke);
 		}
+
+		if (Main.rand.NextBool(12))
+			ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(4), -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.35f), 60));
+
+		if (Main.rand.NextBool()) //Passive ash effects
+		{
+			float range = Main.rand.NextFloat();
+			Vector2 velocity = new Vector2(0, -Main.rand.NextFloat(range * 8f)).RotatedByRandom((1f - range) * 1.5f);
+
+			var dust = Dust.NewDustPerfect(position, DustID.Ash, velocity, Alpha: 180);
+			dust.noGravity = true;
+		}
+
+		BubbleSoundPlayer.StartSound(new Vector2(i, j) * 16);
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
