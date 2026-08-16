@@ -18,7 +18,7 @@ internal class RussianGendering : ModSystem
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.RussianTranslate.Enabled;
 
-	public override void PostSetupContent()
+	public static void GlyphGendering()
 	{
 		if (!CrossMod.RussianLocalizable)
 			return;
@@ -41,5 +41,10 @@ internal class RussianGendering : ModSystem
 			foreach (int val in value)
 				TypeMap[val] = name;
 		}
+	}
+	public override void PostSetupContent()
+	{
+		RussianTranslateCompat.tRUSupport();
+		RussianGendering.GlyphGendering();
 	}
 }
