@@ -3176,23 +3176,43 @@ BlazeGlyph: {
 		'''
 	Effect: 点燃
 	Death: "{0}被怒火吞噬了……"
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
+	}
 }
 
 RadiantGlyph: {
 	DisplayName: 辐光雕文
 	Tooltip: 不造成伤害时会积蓄神圣能量，强化你的下次攻击
 	Effect: 辐光
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 StormGlyph: {
 	DisplayName: 风暴雕文
-	Tooltip: 
+	Tooltip:
 		'''
 		只能附魔于发射弹幕的武器上
 		增加弹幕速度
 		弹幕偶尔会生成强力烈风
 		'''
 	Effect: 风涌
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 MoonlightGlyph: {
@@ -3204,22 +3224,40 @@ MoonlightGlyph: {
 		伤害敌人会汲取魔力
 		'''
 	Effect: 耀目
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 RotGlyph: {
 	DisplayName: 腐烂雕文
 	Tooltip:
-	'''
-	攻击会造成传染性枯萎病
-	染病的敌人也会对你造成枯萎病
-	'''
+		'''
+		攻击会造成传染性枯萎病
+		染病的敌人也会对你造成枯萎病
+		'''
 	Effect: 枯萎
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 ShockGlyph: {
 	DisplayName: 雷击雕文
 	Tooltip: 暴击会造成10%额外伤害并电击附近的敌人
 	Effect: 感电
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 BeeGlyph: {
@@ -3231,6 +3269,12 @@ BeeGlyph: {
 		被标记的敌人在受到仆从的攻击时会释放蜜蜂
 		'''
 	Effect: 嗡鸣
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 SanguineGlyph: {
@@ -3242,6 +3286,12 @@ SanguineGlyph: {
 		偷取生命时会获得衰减的可叠加增益
 		'''
 	Effect: 汲血
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 PrefixVoucher: {
@@ -3280,6 +3330,12 @@ RageGlyph: {
 	DisplayName: 愤怒雕文
 	Tooltip: 击杀敌人造成的过量伤害和你受到的伤害会被存储并应用于下次攻击
 	Effect: 狂怒
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 CharmcasterHat: {
@@ -3305,6 +3361,12 @@ VoidGlyph: {
 		虚空坍塌在叠加一定层数后会创造一个降低敌人防御力的伤害性奇点
 		'''
 	Effect: 空无
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 GlitterPurse: {

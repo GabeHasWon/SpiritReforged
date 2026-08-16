@@ -155,7 +155,7 @@ DivineStrike: {
 
 RotDebuff: {
 	DisplayName: 腐化 [{0}]
-	Description: "“你的皮肤变绿了”"
+	Description: “你的皮肤变绿了”
 }
 
 SanguineStackingBuff: {
