@@ -3409,3 +3409,23 @@ Overloader: {
 		Hitting sentries consumes all scrap to create an explosion
 		'''
 }
+
+ComfySlippers: {
+	DisplayName: Comfy Slippers
+	Tooltip: "Increases maximum mana by {0} and reduces mana cost by {1}%"
+}
+
+Monocle: {
+	DisplayName: Monocle
+	Tooltip: "Increases magic damage by {0}% and spell book fire rate by {1}%"
+}
+
+TomeHolder: {
+	DisplayName: Tome Holder
+	Tooltip: The first tome in your hotbar is used alongside your weapon
+}
+
+Bookmark: {
+	DisplayName: Bookmark
+	Tooltip: Tomes periodically fire an additional origami crane 
+}
