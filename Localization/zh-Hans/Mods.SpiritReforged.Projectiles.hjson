@@ -107,3 +107,4 @@ SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}
 // MirrorReturnPortal.DisplayName: Mirror Return Portal
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
+// LightningBoltProj.DisplayName: Lightning Bolt Proj

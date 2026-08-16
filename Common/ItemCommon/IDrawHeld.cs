@@ -4,7 +4,7 @@ namespace SpiritReforged.Common.ItemCommon;
 
 public interface IDrawHeld
 {
-	public sealed class DashSwordLayer : PlayerDrawLayer
+	public sealed class HeldItemLayer : PlayerDrawLayer
 	{
 		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
 

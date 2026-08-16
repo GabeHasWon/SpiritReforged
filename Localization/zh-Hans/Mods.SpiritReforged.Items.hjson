@@ -3409,3 +3409,8 @@ Overloader: {
 		Hitting sentries consumes all scrap to create an explosion
 		''' */
 }
+
+LightningBolt: {
+	// DisplayName: Lightning Bolt
+	// Tooltip: ""
+}

@@ -3429,3 +3429,8 @@ Bookmark: {
 	DisplayName: Bookmark
 	Tooltip: Tomes periodically fire an additional origami crane 
 }
+
+LightningBolt: {
+	DisplayName: Lightning Bolt
+	Tooltip: ""
+}
