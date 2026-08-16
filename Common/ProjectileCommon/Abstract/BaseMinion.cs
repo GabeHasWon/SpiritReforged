@@ -70,7 +70,7 @@ public abstract class BaseMinion(float TargettingRange, float DeaggroRange, Vect
 			_targetNPC = miniontarget;
 		else
 		{
-			var validtargets = Main.npc.Where(x => x != null && CanReachTarget(x, true));
+			var validtargets = Main.npc.Where(x => x != null && x.active && CanReachTarget(x, true));
 
 			if (!validtargets.Contains(_targetNPC))
 				_targetNPC = null;
