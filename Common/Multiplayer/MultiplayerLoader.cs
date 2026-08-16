@@ -18,7 +18,9 @@ internal partial class MultiplayerLoader : ILoadable
 	public static readonly Dictionary<byte, PacketData> PacketTypes = [];
 	private static readonly Dictionary<byte, MethodInfo> NetMethods = [];
 
+	/// <summary> A list of write behaviours for respective types. Must contain types equal to <see cref="ReadSigns"/>. </summary>
 	private static readonly Dictionary<Type, Action<ModPacket, object>> WriteSigns = [];
+	/// <summary> A list of read behaviours for respective types. Must contain types equal to <see cref="WriteSigns"/>. </summary>
 	private static readonly Dictionary<Type, Func<BinaryReader, object>> ReadSigns = [];
 
 	/// <summary> Loads all data definitions into static lookups. Must be ordered consistently between clients. </summary>
@@ -26,6 +28,7 @@ internal partial class MultiplayerLoader : ILoadable
 	{
 		byte count = 0;
 
+		#region sign registration
 		//Add supported signs for ModPacket
 		WriteSigns.Add(typeof(bool), static (modPacket, argument) => modPacket.Write((bool)argument));
 		WriteSigns.Add(typeof(int), static (modPacket, argument) => modPacket.Write((int)argument));
@@ -41,6 +44,7 @@ internal partial class MultiplayerLoader : ILoadable
 		ReadSigns.Add(typeof(Vector2), static (binaryReader) => binaryReader.ReadVector2());
 		ReadSigns.Add(typeof(Player), static (binaryReader) => Main.player[binaryReader.ReadUInt16()]);
 		ReadSigns.Add(typeof(NPC), static (binaryReader) => Main.npc[binaryReader.ReadUInt16()]);
+		#endregion
 
 		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
