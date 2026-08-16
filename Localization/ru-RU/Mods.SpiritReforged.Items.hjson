@@ -3181,6 +3181,14 @@ BlazeGlyph: {
 		'''
 	Effect: Пылающий
 	Death: Игрока {0} поглотила ярость...
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Пылающая
+		Neutral: Пылающее
+		Plural: Пылающие
+	}
 }
 
 RadiantGlyph: {
@@ -3191,6 +3199,12 @@ RadiantGlyph: {
 		Накопив энергию вам дастся бафф, усиливающий следующую атаку
 		'''
 	Effect: Сияющий
+
+	Gendered: {
+		Fem: Сияющая
+		Neutral: Сияющее
+		Plural: Сияющие
+	}
 }
 
 StormGlyph: {
@@ -3202,6 +3216,12 @@ StormGlyph: {
 		Снаряды будут периодически создавать сильный порыв ветра
 		'''
 	Effect: Взмывающий
+
+	Gendered: {
+		Fem: Взмывающая
+		Neutral: Взмывающее
+		Plural: Взмывающие
+	}
 }
 
 MoonlightGlyph: {
@@ -3213,6 +3233,12 @@ MoonlightGlyph: {
 		Атаки по врагам восстанавливают ману
 		'''
 	Effect: Сверкающий
+
+	Gendered: {
+		Fem: Сверкающая
+		Neutral: Сверкающее
+		Plural: Сверкающие
+	}
 }
 
 RotGlyph: {
@@ -3223,12 +3249,24 @@ RotGlyph: {
 		Заражённые враги могут перенести скверну так и на других врагов, так и на вас
 		'''
 	Effect: Скверный
+
+	Gendered: {
+		Fem: Скверная
+		Neutral: Скверное
+		Plural: Скверные
+	}
 }
 
 ShockGlyph: {
 	DisplayName: Глиф электрошока
 	Tooltip: Критические удары наносят на 10% больше урона и поражают электричеством ближайших врагов
 	Effect: Электрошоковый
+
+	Gendered: {
+		Fem: Электрошоковая
+		Neutral: Электрошоковое
+		Plural: Электрошоковые
+	}
 }
 
 BeeGlyph: {
@@ -3240,6 +3278,12 @@ BeeGlyph: {
 		Атаки миньонов по отмеченным врагам призывают атакующих пчёл
 		'''
 	Effect: Жужжащий
+
+	Gendered: {
+		Fem: Жужжащая
+		Neutral: Жужжащее
+		Plural: Жужжащие
+	}
 }
 
 SanguineGlyph: {
@@ -3251,6 +3295,12 @@ SanguineGlyph: {
 		Высасывание здоровья даёт суммирующийся бафф, увеличивающий урон
 		'''
 	Effect: Высасывающий
+
+	Gendered: {
+		Fem: Высасывающая
+		Neutral: Высасывающие
+		Plural: Высасывающее
+	}
 }
 
 PrefixVoucher: {
@@ -3286,6 +3336,12 @@ RageGlyph: {
 	DisplayName: Глиф ярости
 	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
 	Effect: Мстительный
+
+	Gendered: {
+		Fem: Мстительная
+		Neutral: Мстительное
+		Plural: Мстительные
+	}
 }
 
 CharmcasterHat: {
@@ -3310,7 +3366,13 @@ VoidGlyph: {
 		Атаки периодически накладывают суммирующийся эффект пустотного коллапса
 		Достаточное количество стаков пустотного коллапса создаст сингулярность, наносящую урон врагам и снижающую их защиту
 		'''
-	Effect: Пустой
+	Effect: Пустотный
+
+	Gendered: {
+		Fem: Пустотная
+		Neutral: Пустотное
+		Plural: Пустотные
+	}
 }
 
 GlitterPurse: {

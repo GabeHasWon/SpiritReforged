@@ -415,8 +415,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: WaxScale
-				// Tooltip: WaxScale
+				DisplayName: "[i:SpiritReforged/WaxPotItem] Восковые горшки"
+				Tooltip: Устанавливает множитель количества попыток сгенерировать восковые горшки.
 			}
 		}
 

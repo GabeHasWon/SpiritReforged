@@ -2,6 +2,7 @@ using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using System.IO;
+using System.Linq;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
 
@@ -92,10 +93,37 @@ public class PrefixVoucher : ModItem
 			Item.ClearNameOverride();
 			Item.SetNameOverride(Item.Name.FormatWith(text));
 
-			Vector2 lineTwoSize = font.MeasureString(lines[1].Split(' ')[0]);
-			Vector2 prefixSize = font.MeasureString(text);
+			// Split string,
+			string[] strings = lines[1].Split(' ');
+			int index = -1;
 
-			Rectangle source = new((int)lineTwoSize.X, 0, (int)prefixSize.X, (int)prefixSize.Y);
+			for (int i = 0; i < strings.Length; i++)
+			{
+				string s = strings[i];
+
+				if (s.Contains("{1}"))
+				{
+					index = i;
+					break;
+				}
+			}
+
+			// Find the replacement index, if any, or set to default (second word)
+			if (index == -1)
+				index = 1;
+
+			// Default offset to the height of the font - maybe this has issues with resource packs?
+			Vector2 offset = new(0, 29);
+
+			for (int i = 0; i < index; i++)
+			{
+				string s = strings[i];
+				offset.X += font.MeasureString(s + " ").X;
+			}
+
+			// Adjust string offset and set source
+			Vector2 prefixNameSize = font.MeasureString(text);
+			Rectangle source = new((int)offset.X, 0, (int)prefixNameSize.X, (int)offset.Y);
 
 			return _info = new(color, rare, text, source);
 		}
@@ -178,7 +206,8 @@ public class PrefixVoucher : ModItem
 		if (line.Name != "Tooltip1")
 			return;
 
-		Rectangle area = new(line.X + _info.TooltipSource.X + 8, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
+		Rectangle area =  new(line.X + _info.TooltipSource.X, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
+		Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, area, Color.White * 0.4f);
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Main.EntitySpriteDraw(bloom, area.Center(), null, _info.Color.Additive() * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * area.Width * 1.5f, 1f / bloom.Height * area.Height), default);
 
