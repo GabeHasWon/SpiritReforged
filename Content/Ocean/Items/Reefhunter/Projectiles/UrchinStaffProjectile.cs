@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ProjectileCommon;
 using System.IO;
@@ -12,14 +11,15 @@ public class UrchinStaffProjectile : ModProjectile
 	public Vector2 ShotTrajectory { get; set; }
 	public Vector2 RelativeTargetPosition { get; set; }
 
+	private Vector2 UrchinPos => Projectile.Center + new Vector2(35, -35).RotatedBy(Projectile.rotation) * Projectile.scale;
+
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.UrchinStaff.DisplayName");
 
 	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
 	{
-		Projectile.width = 2;
-		Projectile.height = 2;
+		Projectile.Size = new Vector2(2);
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
 		Projectile.tileCollide = false;
@@ -30,45 +30,47 @@ public class UrchinStaffProjectile : ModProjectile
 		DrawHeldProjInFrontOfHeldItemAndArms = false;
 	}
 
-	public override bool? CanDamage() => false;
-
 	public override void AI()
 	{
-		Player p = Main.player[Projectile.owner];
-		p.heldProj = Projectile.whoAmI;
+		Player owner = Main.player[Projectile.owner];
+		owner.heldProj = Projectile.whoAmI;
 
-		Projectile.timeLeft = p.itemAnimation;
-		float animationProgress = p.itemAnimation / (float)p.itemAnimationMax;
+		Projectile.timeLeft = owner.itemAnimation;
+		float animationProgress = owner.itemAnimation / (float)owner.itemAnimationMax;
 
 		animationProgress = EaseFunction.EaseQuadIn.Ease(animationProgress);
-		if (p.direction < 0)
+		if (owner.direction < 0)
 			Projectile.spriteDirection = -1;
 
-		float rotation = ShotTrajectory.ToRotation() + MathHelper.WrapAngle(MathHelper.Lerp(MathHelper.PiOver2 * 1.25f * p.direction, -MathHelper.Pi * p.direction, animationProgress));
+		float rotation = ShotTrajectory.ToRotation() + MathHelper.WrapAngle(MathHelper.Lerp(MathHelper.PiOver2 * 1.25f * owner.direction, -MathHelper.Pi * owner.direction, animationProgress));
 
 		Projectile.rotation = rotation - MathHelper.PiOver4;
-		if (p.direction < 0)
+		if (owner.direction < 0)
 			Projectile.rotation += MathHelper.Pi;
 
 		float armRot = MathHelper.Pi + rotation;
-		if (p.direction < 0)
+		if (owner.direction < 0)
 			armRot -= MathHelper.Pi;
 
-		p.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
-		p.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
-		Projectile.Center = p.MountedCenter;
-		Projectile.scale = EaseFunction.EaseCircularOut.Ease((float)Math.Sin((p.itemAnimation / (float)p.itemAnimationMax) * MathHelper.Pi));
+		owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRot);
+		owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, armRot);
+		Projectile.Center = owner.MountedCenter;
+		Projectile.scale = EaseFunction.EaseCircularOut.Ease((float)Math.Sin((owner.itemAnimation / (float)owner.itemAnimationMax) * MathHelper.Pi));
 
 		float shotTime = 0.7f;
 
-		if (p.itemAnimation == (int)(shotTime * p.itemAnimationMax))
+		if (owner.itemAnimation == (int)(shotTime * owner.itemAnimationMax))
 		{
 			if (Projectile.owner == Main.myPlayer)
-				ShootUrchin(p);
+				ShootUrchin(owner);
 
 			SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
 		}
 	}
+
+	public override bool ShouldUpdatePosition() => false;
+
+	public override bool? CanDamage() => false;
 
 	private void ShootUrchin(Player player)
 	{
@@ -83,8 +85,6 @@ public class UrchinStaffProjectile : ModProjectile
 		Projectile.netUpdate = true;
 		Projectile.ai[0]++;
 	}
-
-	private Vector2 UrchinPos => Projectile.Center + new Vector2(35, -35).RotatedBy(Projectile.rotation) * Projectile.scale;
 
 	public override bool PreDraw(ref Color lightColor)
 	{

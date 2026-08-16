@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
-using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
@@ -16,13 +16,11 @@ public class AfterimagePlayer : ModPlayer
 
 	public static readonly SoundStyle Magic = new("SpiritReforged/Assets/SFX/Projectile/MagicJingle");
 
-	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
-	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
-
-	/// <summary> Whether a duplicate projectile was created on the local client. </summary>
-	public static bool Duplicate { get; private set; }
+	/// <summary> Whether projectile afterimage visuals should be enabled by the owning client. </summary>
+	public static bool AfterimageVisuals { get; private set; }
 
 	public bool setActive = false;
+
 	private int _manaCounter;
 	private byte _duplicateDelay;
 
@@ -34,7 +32,7 @@ public class AfterimagePlayer : ModPlayer
 	private readonly Player[] _playerStateCache = new Player[30];
 	private float _manaEase;
 
-	public static BlendState AdditiveNoAlpha = new BlendState
+	public static readonly BlendState AdditiveNoAlpha = new()
 	{
 		AlphaBlendFunction = BlendFunction.Add,
 		ColorBlendFunction = BlendFunction.Add,
@@ -146,20 +144,16 @@ public class AfterimagePlayer : ModPlayer
 			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.2f, Pitch = 0.5f }, ImagePosition);
 			SoundEngine.PlaySound(Magic with { Volume = 0.05f, Pitch = 0.3f, PitchVariance = 0.1f }, ImagePosition);
 
-			var glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
-			var ease = Bomb.EffectEase;
-			var stretch = Vector2.One;
+			Vector2 glowPos = ImagePosition + Player.Size / 2 - new Vector2(0, 12).RotatedBy(Player.fullRotation);
+			EaseFunction ease = Bomb.EffectEase;
+			Vector2 stretch = Vector2.One;
 			float angle = Main.rand.NextFloat(MathHelper.Pi);
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
-			{
-				Angle = angle
-			});
+			{ Angle = angle });
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 180, 20, "Smoke", stretch, ease)
-			{
-				Angle = angle
-			});
+			{ Angle = angle });
 
 			Vector2 lineScale = new(0.8f, 2.5f);
 
@@ -184,21 +178,10 @@ public class AfterimagePlayer : ModPlayer
 
 		if (Player.whoAmI == Main.myPlayer)
 		{
-			Duplicate = true;
-			Vector2 oldPosition = Player.position;
-			Player.position = ImagePosition; //Briefly adjust the player position so that projectiles appear at the afterimage instead
-
-			ItemCheck_Shoot(Player, Player.whoAmI, Player.HeldItem, Player.HeldItem.damage);
-
-			Player.position = oldPosition;
-			Duplicate = false;
+			AfterimageVisuals = true;
+			ProjectileDuplicator.ShootFrom(ImagePosition, Player);
+			AfterimageVisuals = false;
 		}
-	}
-
-	public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-	{
-		if (Duplicate)
-			ProjectileEdits.ChangeStats(item, ref position, ref velocity, ref type, ref damage, ref knockback);
 	}
 
 	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

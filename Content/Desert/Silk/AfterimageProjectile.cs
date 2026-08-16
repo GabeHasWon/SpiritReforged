@@ -13,6 +13,8 @@ namespace SpiritReforged.Content.Desert.Silk;
 public class AfterimageProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
+
+	/// <summary> Whether this projectile uses custom afterimage visuals. </summary>
 	public bool Afterimage { get; private set; }
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
@@ -38,12 +40,10 @@ public class AfterimageProjectile : GlobalProjectile
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (source is EntitySource_ItemUse_WithAmmo && AfterimagePlayer.Duplicate)
+		if (source is EntitySource_ItemUse_WithAmmo && AfterimagePlayer.AfterimageVisuals)
 		{
 			Afterimage = true;
 			projectile.netUpdate = true;
-
-			ProjectileEdits.OnSpawn(projectile);
 
 			CreateTrail(projectile);
 		}

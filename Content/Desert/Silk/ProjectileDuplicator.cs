@@ -3,17 +3,19 @@ using MonoMod.Cil;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Content.Ocean.Items.Reefhunter;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
-using Terraria;
+using System.Runtime.CompilerServices;
 
 namespace SpiritReforged.Content.Desert.Silk;
 
-internal sealed class ProjectileEdits : ILoadable
+internal sealed class ProjectileDuplicator : ModPlayer
 {
 	public delegate void ModifyShootStatsDelegate(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback);
 	public delegate void ModifyOnSpawnDelegate(Projectile projectile);
 
 	private static Dictionary<int, ModifyShootStatsDelegate> DelegateByItem = null;
-	private static Dictionary<int, ModifyOnSpawnDelegate> OnSpawnByProjectile = null;
+
+	/// <summary> Whether a fired projectile is considered a duplicate. </summary>
+	public static bool Duplicate { get; private set; }
 
 	#region detours
 	public void Load(Mod mod) => IL_Projectile.AI_047_MagnetSphere += AllowAfterimage;
@@ -55,12 +57,31 @@ internal sealed class ProjectileEdits : ILoadable
 	}
 	#endregion
 
-	/// <summary> Allows for adjusted values even if <see cref="ChangeStats(Item, ref Vector2, ref Vector2, ref int, ref int, ref float)"/> has changed type/other values. </summary>
-	/// <param name="projectile"></param>
-	public static void OnSpawn(Projectile projectile)
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
+	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
+
+	public static void ShootFrom(Vector2 position, Player player, Item item = null, bool preserveDirection = false)
 	{
-		if (OnSpawnByProjectile.TryGetValue(projectile.type, out var action))
-			action.Invoke(projectile);
+		Duplicate = true;
+		Vector2 oldPosition = player.position;
+		int oldDirection = player.direction;
+
+		player.position = position; //Briefly adjust the player position so that projectiles appear at the afterimage instead
+		item ??= player.HeldItem;
+
+		ItemCheck_Shoot(player, player.whoAmI, item, item.damage);
+
+		if (preserveDirection)
+			player.direction = oldDirection;
+
+		player.position = oldPosition;
+		Duplicate = false;
+	}
+
+	public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		if (Duplicate)
+			ChangeStats(item, ref position, ref velocity, ref type, ref damage, ref knockback);
 	}
 
 	/// <summary> Compensates for logic failures when firing specific duplicated projectiles. </summary>
@@ -81,16 +102,9 @@ internal sealed class ProjectileEdits : ILoadable
 		{
 			type = ModContent.ProjectileType<UrchinBall>();
 			position.Y -= 32;
-		});
 
-		OnSpawnByProjectile = [];
-
-		OnSpawnByProjectile.Add(ModContent.ProjectileType<UrchinBall>(), static (Projectile projectile) =>
-		{
-			Player owner = Main.player[projectile.owner];
-			Vector2 shotTrajectory = owner.GetArcVel(Main.MouseWorld, 0.25f, 10);
-			var adjustedTrajectory = ArcVelocityHelper.GetArcVel(owner.MountedCenter, Main.MouseWorld, 0.25f, shotTrajectory.Length());
-			projectile.velocity = adjustedTrajectory;
+			Vector2 shotTrajectory = Main.LocalPlayer.GetArcVel(Main.MouseWorld, 0.25f, 10); //LocalPlayer can be used as this is a locally invoked method only
+			velocity = ArcVelocityHelper.GetArcVel(Main.LocalPlayer.MountedCenter, Main.MouseWorld, 0.25f, shotTrajectory.Length());
 		});
 	}
 }

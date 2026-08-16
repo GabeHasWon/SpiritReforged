@@ -1,9 +1,12 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Mage;
@@ -12,6 +15,8 @@ public class StarBauble : EquippableItem
 {
 	public sealed class BaubleWandSwung : SwungProjectile, IDrawPixelated
 	{
+		public static readonly Asset<Texture2D> BaubleTexture = DrawHelpers.RequestLocal<StarBauble>(nameof(StarBauble) + "_Held", false);
+
 		public override string Texture => AssetLoader.EmptyTexture;
 
 		public int ItemType
@@ -37,13 +42,24 @@ public class StarBauble : EquippableItem
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Player owner = Main.player[Projectile.owner];
-			int increase = (int)Math.Ceiling(damageDone * 0.1f);
+			int increase = (int)Math.Ceiling(damageDone * 0.25f);
 			int statManaOld = owner.statMana;
 
 			owner.statMana = Math.Min(owner.statMana + increase, owner.statManaMax2);
 
 			if (statManaOld < owner.statMana)
-			owner.ManaEffect(owner.statMana - statManaOld);
+			{
+				owner.ManaEffect(owner.statMana - statManaOld);
+				Vector2 center = target.Hitbox.ClosestPointInRect(Projectile.Center);
+
+				for (int i = 0; i < 5; i++)
+					Dust.NewDustPerfect(center, DustID.ManaRegeneration, Main.rand.NextVector2Circular(2, 2) * Main.rand.NextFloat(), 150, Color.White.Additive());
+
+				ParticleHandler.SpawnParticle(new SharpStarParticle(center, Vector2.Zero, Color.BlueViolet.Additive(150), 0.5f, 10, 0)
+				{ Rotation = 0 });
+				ParticleHandler.SpawnParticle(new SharpStarParticle(center, Vector2.Zero, Color.White.Additive(100), 0.3f, 10, 0)
+				{ Rotation = 0 });
+			}
 		}
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
@@ -55,11 +71,18 @@ public class StarBauble : EquippableItem
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D texture = TextureAssets.Item[ItemType].Value;
+			Texture2D baubleTexture = BaubleTexture.Value;
+
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
 			Vector2 origin = new(4, (effects == SpriteEffects.FlipVertically) ? 6 : texture.Height - 6); //The handle
 
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
+
+			if (GlowmaskItem.ItemIdToGlowmask.TryGetValue(ItemType, out GlowmaskInfo info))
+				Main.EntitySpriteDraw(info.Glowmask.Value, position, null, Projectile.GetAlpha(Color.White), Projectile.rotation, origin, Projectile.scale, effects);
+
+			Main.EntitySpriteDraw(baubleTexture, position, null, Projectile.GetAlpha(lightColor), 0, new Vector2(baubleTexture.Width / 2, 0), Projectile.scale, 0);
 
 			return false;
 		}
@@ -85,8 +108,8 @@ public class StarBauble : EquippableItem
 
 			IDrawPixelated.PixelateDrawPosition(ref smearDrawPosition);
 
-			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)), rotation, origin, 0.25f, effects, 0);
-			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)).Additive(100), rotation, origin, 0.2f, effects, 0);
+			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)) * 0.5f, rotation, origin, 0.25f, effects, 0);
+			spriteBatch.Draw(smear, smearDrawPosition, source, Projectile.GetAlpha(lightColor.MultiplyRGB(color)).Additive(100) * 0.5f, rotation, origin, 0.2f, effects, 0);
 		}
 	}
 
@@ -119,7 +142,7 @@ public class StarBauble : EquippableItem
 		{
 			if (player.altFunctionUse == 2 && Active(item, player))
 			{
-				SwungProjectile.Spawn(position, velocity, ModContent.ProjectileType<BaubleWandSwung>(), damage, knockback, player, 3, source, item.type);
+				SwungProjectile.Spawn(position, velocity, ModContent.ProjectileType<BaubleWandSwung>(), damage / 3, knockback * 2, player, 3, source, item.type);
 				return false;
 			}
 
