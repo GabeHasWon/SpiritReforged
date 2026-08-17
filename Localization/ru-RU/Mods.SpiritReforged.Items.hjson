@@ -3429,3 +3429,8 @@ EnchantedWorkbenchItem: {
 	DisplayName: Зачарованный верстак
 	Tooltip: ""
 }
+
+CandlewickCoil: {
+	DisplayName: Моток верёвки из фитиля
+	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
+}

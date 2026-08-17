@@ -3298,7 +3298,7 @@ PrefixVoucher: {
 	DisplayName: "{0} Prefix Voucher"
 	Tooltip:
 		'''
-		Can be used on items with <right>
+		Can be used on {0} with <right>
 		Applies [c/{0}:{1}]
 		'''
 }
@@ -3416,4 +3416,9 @@ MirrorItem: {
 EnchantedWorkbenchItem: {
 	DisplayName: Enchanted Workbench
 	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: Candlewick Rope Coil
+	Tooltip: Throw to create a climbable line of candlewick rope
 }

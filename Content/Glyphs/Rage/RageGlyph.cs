@@ -218,10 +218,10 @@ public class RageGlyph : GlyphItem
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				RageHitEffects(target, Player, damageDone);
+				RageHitEffects(target, Player);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player, damageDone);
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
 			}
 		}
 
@@ -229,15 +229,15 @@ public class RageGlyph : GlyphItem
 		{
 			if (proj.type != ModContent.ProjectileType<RageHit>() && proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				RageHitEffects(target, Player, damageDone);
+				RageHitEffects(target, Player);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player, damageDone);
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
 			}
 		}
 
 		[NetSynced(true)]
-		private static void RageHitEffects(NPC target, Player owner, int damageDone)
+		public static void RageHitEffects(NPC target, Player owner)
 		{
 			if (!owner.TryGetModPlayer(out RagePlayer ragePlayer))
 				return;

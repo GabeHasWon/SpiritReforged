@@ -2,7 +2,6 @@ using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using System.IO;
-using System.Linq;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
 
@@ -52,7 +51,7 @@ public class PrefixVoucher : ModItem
 		}
 	}
 
-	private readonly record struct ExtendedPrefixInfo(Color Color, int Rarity, string PrefixText, Rectangle TooltipSource);
+	private readonly record struct ExtendedPrefixInfo(Color Color, int Rarity, string PrefixText, Rectangle TooltipSource, bool Accessory);
 
 	/// <summary> Item types to sample for prefix rarity color. </summary>
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
@@ -67,15 +66,16 @@ public class PrefixVoucher : ModItem
 	{
 		Color color = Color.White;
 		int rare = ItemRarityID.White;
+		bool accessory = false;
 
 		for (int i = 0; i < _sampleTypes.Length; i++)
 		{
 			Item item = new(_sampleTypes[i]);
-
-			if (item.Prefix(prefix))
+			if (item.Prefix(prefix) && item.prefix != 0)
 			{
 				rare = item.rare - item.OriginalRarity;
 				color = ItemRarity.GetColor(rare);
+				accessory = item.accessory;
 
 				break;
 			}
@@ -93,46 +93,19 @@ public class PrefixVoucher : ModItem
 			Item.ClearNameOverride();
 			Item.SetNameOverride(Item.Name.FormatWith(text));
 
-			// Split string,
-			string[] strings = lines[1].Split(' ');
-			int index = -1;
+			string appliesLine = lines[1].Remove(lines[1].IndexOf(' ') + 1); //Return the tooltip line before any whitespace
+			Vector2 firstMeasure = font.MeasureString(appliesLine);
+			Vector2 secondMeasure = font.MeasureString(text);
 
-			for (int i = 0; i < strings.Length; i++)
-			{
-				string s = strings[i];
-
-				if (s.Contains("{1}"))
-				{
-					index = i;
-					break;
-				}
-			}
-
-			// Find the replacement index, if any, or set to default (second word)
-			if (index == -1)
-				index = 1;
-
-			// Default offset to the height of the font - maybe this has issues with resource packs?
-			Vector2 offset = new(0, 29);
-
-			for (int i = 0; i < index; i++)
-			{
-				string s = strings[i];
-				offset.X += font.MeasureString(s + " ").X;
-			}
-
-			// Adjust string offset and set source
-			Vector2 prefixNameSize = font.MeasureString(text);
-			Rectangle source = new((int)offset.X, 0, (int)prefixNameSize.X, (int)offset.Y);
-
-			return _info = new(color, rare, text, source);
+			Rectangle source = new((int)firstMeasure.X, 0, (int)secondMeasure.X, (int)secondMeasure.Y);
+			return _info = new(color, rare, text, source, accessory);
 		}
 
 		//Apply a default name override
 		Item.ClearNameOverride();
-		Item.SetNameOverride(Item.Name.Remove(0, 4));
+		Item.SetNameOverride(Item.Name.Remove(0, 4)); //Remove format characters
 
-		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty); //Display "None"
+		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty, accessory); //Display "None"
 	}
 
 	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
@@ -172,31 +145,40 @@ public class PrefixVoucher : ModItem
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		if (tooltips.FindIndex(static x => x.Name == "Tooltip1") is int index && index >= 0)
+		for (int index = 0; index < tooltips.Count; index++)
 		{
-			Color color = _info.Color * (Main.mouseTextColor / 255f);
-			Item tooltipItem = _tooltipPrefixItem ?? new(ItemID.WoodenSword);
-			int tooltipCount = (30 + tooltipItem.ToolTip?.Lines).GetValueOrDefault();
-
-			string[] tooltipNames = new string[tooltipCount];
-			string[] tooltipLines = new string[tooltipCount];
-			bool[] prefixLine = new bool[tooltipCount];
-			bool[] badPrefixLine = new bool[tooltipCount];
-
-			int numLines = 1;
-			float knockBack = tooltipItem.knockBack;
-			int yoyoLogo = 0;
-			int researchLine = 0;
-
-			Main.MouseText_DrawItemTooltip_GetLinesInfo(tooltipItem, ref yoyoLogo, ref researchLine, knockBack, ref numLines, tooltipLines, prefixLine, badPrefixLine, tooltipNames, out int _);
-			tooltips[index].Text = tooltips[index].Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText); //Add the name of the prefix
-
-			for (int i = 0; i < tooltipLines.Length; i++) //Add prefix stat information
+			TooltipLine line = tooltips[index];
+			if (line.Name == "Tooltip0")
 			{
-				string line = tooltipLines[i];
+				string accessories = Language.GetTextValue("CreativePowers.TabAccessories");
+				string weapons = Language.GetTextValue("CreativePowers.TabWeapons");
 
-				if (i < prefixLine.Length && prefixLine[i])
-				tooltips[index].Text += "\n" + line;
+				line.Text = line.Text.FormatWith(_info.Accessory ? accessories : weapons); //Add category names
+			}
+			else if (line.Name == "Tooltip1")
+			{
+				Color color = _info.Color * (Main.mouseTextColor / 255f);
+				Item tooltipItem = _tooltipPrefixItem ?? new(ItemID.WoodenSword);
+				int tooltipCount = (30 + tooltipItem.ToolTip?.Lines).GetValueOrDefault();
+
+				string[] tooltipNames = new string[tooltipCount];
+				string[] tooltipLines = new string[tooltipCount];
+				bool[] prefixLine = new bool[tooltipCount];
+				bool[] badPrefixLine = new bool[tooltipCount];
+
+				int numLines = 1;
+				float knockBack = tooltipItem.knockBack;
+				int yoyoLogo = 0;
+				int researchLine = 0;
+
+				Main.MouseText_DrawItemTooltip_GetLinesInfo(tooltipItem, ref yoyoLogo, ref researchLine, knockBack, ref numLines, tooltipLines, prefixLine, badPrefixLine, tooltipNames, out int _);
+				line.Text = line.Text.FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), _info.PrefixText); //Add the name of the prefix
+
+				for (int i = 0; i < tooltipLines.Length; i++) //Add prefix stat information
+				{
+					if (i < prefixLine.Length && prefixLine[i])
+						line.Text += "\n" + tooltipLines[i];
+				}
 			}
 		}
 	}
@@ -207,7 +189,6 @@ public class PrefixVoucher : ModItem
 			return;
 
 		Rectangle area =  new(line.X + _info.TooltipSource.X, line.Y + _info.TooltipSource.Y, _info.TooltipSource.Width, _info.TooltipSource.Height);
-		Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, area, Color.White * 0.4f);
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Main.EntitySpriteDraw(bloom, area.Center(), null, _info.Color.Additive() * 0.25f, 0, bloom.Size() / 2, new Vector2(1f / bloom.Width * area.Width * 1.5f, 1f / bloom.Height * area.Height), default);
 
