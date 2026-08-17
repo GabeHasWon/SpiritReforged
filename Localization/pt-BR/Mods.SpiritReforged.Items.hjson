@@ -3285,9 +3285,11 @@ PrefixVoucher: {
 	// DisplayName: "{0} Prefix Voucher"
 	/* Tooltip:
 		'''
-		Can be used on {0} with <right>
+		{0}
 		Applies [c/{0}:{1}]
 		''' */
+	// AccessoryTooltip: Can be used on accessories with right click
+	// WeaponTooltip: Can be used on weapons with right click
 }
 
 EnchantedStamp: {
@@ -3407,5 +3409,5 @@ EnchantedWorkbenchItem: {
 
 CandlewickCoil: {
 	// DisplayName: Candlewick Rope Coil
-	// Tooltip: ""
+	// Tooltip: Throw to create a climbable line of candlewick rope
 }
