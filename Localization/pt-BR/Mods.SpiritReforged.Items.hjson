@@ -3406,3 +3406,8 @@ EnchantedWorkbenchItem: {
 	// DisplayName: Enchanted Workbench
 	// Tooltip: ""
 }
+
+CandlewickCoil: {
+	// DisplayName: Candlewick Rope Coil
+	// Tooltip: ""
+}

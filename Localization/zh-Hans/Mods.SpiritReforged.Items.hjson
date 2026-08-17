@@ -3419,3 +3419,8 @@ EnchantedWorkbenchItem: {
 	DisplayName: 附魔工作台
 	Tooltip: ""
 }
+
+CandlewickCoil: {
+	// DisplayName: Candlewick Rope Coil
+	// Tooltip: ""
+}
