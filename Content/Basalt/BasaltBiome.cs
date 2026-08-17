@@ -8,18 +8,19 @@ internal class BasaltBiome : Microbiome
 {
 	protected override void OnPlace(Point16 point)
 	{
-		int reps = WorldGen.genRand.Next();
+		int reps = WorldGen.genRand.Next(5) + 1;
 
-		PlaceMainTunnel(point);
+		for (int i = 0; i < reps; ++i)
+			point = PlaceMainTunnel(point);
 	}
 
-	private void PlaceMainTunnel(Point16 point)
+	private static Point16 PlaceMainTunnel(Point16 point)
 	{
 		const float AngleRange = 1f;
 
 		ushort wallType = WallID.WhiteDynasty;
-		int width = WorldGen.genRand.Next(100, 130);
-		int height = WorldGen.genRand.Next(80, 115);
+		int width = WorldGen.genRand.Next(80, 110);
+		int height = WorldGen.genRand.Next(60, 95);
 		float angle = WorldGen.genRand.NextFloat(-AngleRange, AngleRange);
 		Vector2 position = point.ToVector2();
 
@@ -55,6 +56,9 @@ internal class BasaltBiome : Microbiome
 				}
 			}
 		}
+
+		var newPos = (new Vector2(Main.rand.NextFloat(width / -3f, width / 3f) * 0.95f, 0).RotatedBy(angle) + position).ToPoint16();
+		return newPos;
 	}
 
 	private static float[] GetRandomizedHeights(int width, int rangeMin, int rangeMax, bool abs)
