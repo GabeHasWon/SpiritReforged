@@ -1,6 +1,11 @@
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Mage;
@@ -15,48 +20,76 @@ public class Sparkler : ModItem
 		public override string Texture => AssetLoader.EmptyTexture;
 
 		private NPC _target;
+		private Vector2 _targetPosition;
+		private Vector2 _initialVelocity;
+		private VertexTrail _trail;
 
 		public override void SetDefaults()
 		{
 			Projectile.Size = new(16);
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Magic;
-			Projectile.Opacity = 0;
-			Projectile.penetrate = 3;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = -1;
 		}
 
 		public override void AI()
 		{
-			if (++Counter > 20)
+			const int slow_duration = 20;
+
+			if (_initialVelocity == Vector2.Zero)
+			{
+				_initialVelocity = Projectile.velocity;
+				Projectile.velocity = Main.rand.NextVector2Circular(8, 8) * Main.rand.NextFloat(0.8f, 1);
+
+				if (!Main.dedServ)
+				{
+					_trail = new VertexTrail(new GradientTrail(Color.White, Color.Yellow), new NoCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 8, 50);
+
+					ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, Color.Goldenrod.Additive(100), 0.2f, 80, 15));
+					ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, Vector2.Zero, Color.Goldenrod.Additive(100), 0.5f, 20, 0));
+				}
+			} //Just spawned
+
+			if (++Counter > slow_duration)
 			{
 				if (_target == null || !_target.active)
 				{
 					const int max_distance = 500;
+					bool foundTarget = false;
+
 					foreach (NPC npc in Main.ActiveNPCs)
 					{
 						if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < max_distance * max_distance)
 						{
 							_target = npc;
+							foundTarget = true;
+
 							break;
 						}
+					}
+
+					if (!foundTarget)
+					{
+						Projectile.velocity = Vector2.Lerp(Projectile.velocity, _initialVelocity, 0.1f);
 					}
 				}
 				else
 				{
-					const int move_speed = 8;
-					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(_target.Center) * move_speed, 0.05f);
+					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(_target.Center) * _initialVelocity.Length(), 0.02f);
 				}
 			}
 			else
 			{
-				Projectile.velocity *= 0.97f;
+				Projectile.velocity *= 0.95f;
 			}
+
+			if (!Main.dedServ)
+				_trail?.Update();
 		}
 
 		public override void OnKill(int timeLeft)
 		{
+			for (int i = 0; i < 5; i++)
+				Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustID.YellowStarDust, Main.rand.NextVector2Circular(2, 2) * Main.rand.NextFloat(0.9f, 1f), 0, Color.White.Additive());
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -68,38 +101,39 @@ public class Sparkler : ModItem
 		{
 			Texture2D starTexture = AssetLoader.LoadedTextures["Star"].Value;
 			Texture2D bloomTexture = AssetLoader.LoadedTextures["Bloom"].Value;
-			Vector2 position = Projectile.Center - Main.screenPosition;
+			Vector2 position = Projectile.Center - Projectile.velocity - Main.screenPosition;
 
+			_trail?.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice, Matrix.Identity);
 			IDrawPixelated.PixelateDrawPosition(ref position);
 
-			spriteBatch.Draw(bloomTexture, position, null, Color.Goldenrod.Additive() * 0.25f, 0, bloomTexture.Size() / 2, Projectile.scale * 0.1f, SpriteEffects.None, 0);
-			spriteBatch.Draw(starTexture, position, null, Color.Goldenrod.Additive(), Projectile.rotation, starTexture.Size() / 2, Projectile.scale * 0.2f, SpriteEffects.None, 0);
+			spriteBatch.Draw(bloomTexture, position, null, Color.Goldenrod.Additive() * 0.3f, 0, bloomTexture.Size() / 2, Projectile.scale * 0.15f, SpriteEffects.None, 0);
+			spriteBatch.Draw(starTexture, position, null, Color.Goldenrod.Additive(), Projectile.rotation, starTexture.Size() / 2, Projectile.scale * 0.1f, SpriteEffects.None, 0);
 		}
 	}
 
 	public override void SetDefaults()
 	{
-		Item.damage = 28;
+		Item.damage = 15;
 		Item.mana = 10;
 		Item.knockBack = 6.5f;
 		Item.width = Item.height = 46;
-		Item.useTime = Item.useAnimation = 34;
+		Item.useTime = Item.useAnimation = 18;
 		Item.DamageType = DamageClass.Magic;
-		Item.useStyle = ItemUseStyleID.Swing;
+		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.3f };
 		Item.shoot = ModContent.ProjectileType<SparkleStar>();
 		Item.shootSpeed = 14f;
 		Item.autoReuse = true;
-		Item.useTurn = true;
-		Item.noUseGraphic = true;
 		Item.noMelee = true;
+
+		Item.staff[Type] = true; //DEBUG
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		Vector2 offset = Vector2.Normalize(velocity) * 30;
+		Vector2 offset = Vector2.Normalize(velocity) * 60;
 
 		if (Collision.CanHit(position, 2, 2, position + velocity, 2, 2))
 			position += offset;
@@ -107,10 +141,8 @@ public class Sparkler : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		float length = velocity.Length();
-
 		for (int i = 0; i < 3; i++)
-			Projectile.NewProjectile(source, position, Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(length * 0.8f, length * 1.2f), type, damage, knockback, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
 		return false;
 	}

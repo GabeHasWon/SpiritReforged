@@ -16,7 +16,6 @@ public class Bloodbath : ModItem
 			Projectile.Size = new(16);
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Magic;
-			Projectile.timeLeft = 40;
 			Projectile.penetrate = 3;
 			Projectile.extraUpdates = 1;
 		}
@@ -39,17 +38,21 @@ public class Bloodbath : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults() { } //DROPS
+	public override void SetStaticDefaults()
+	{
+		Item.staff[Type] = true;
+		//DROPS
+	}
 
 	public override void SetDefaults()
 	{
-		Item.damage = 28;
-		Item.mana = 10;
+		Item.damage = 9;
+		Item.mana = 3;
 		Item.knockBack = 6.5f;
 		Item.width = Item.height = 46;
-		Item.useTime = Item.useAnimation = 34;
+		Item.useTime = Item.useAnimation = 8;
 		Item.DamageType = DamageClass.Magic;
-		Item.useStyle = ItemUseStyleID.Swing;
+		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.3f };
@@ -57,7 +60,6 @@ public class Bloodbath : ModItem
 		Item.shootSpeed = 14f;
 		Item.autoReuse = true;
 		Item.useTurn = true;
-		Item.noUseGraphic = true;
 		Item.noMelee = true;
 	}
 

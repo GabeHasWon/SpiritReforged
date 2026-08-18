@@ -3444,3 +3444,13 @@ StarBauble: {
 	DisplayName: Star Bauble
 	Tooltip: <right> to swing your staff, restoring mana
 }
+
+Bloodbath: {
+	DisplayName: Bloodbath
+	Tooltip: ""
+}
+
+Sparkler: {
+	DisplayName: Sparkler
+	Tooltip: ""
+}
