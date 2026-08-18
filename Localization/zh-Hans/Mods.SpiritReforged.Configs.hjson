@@ -37,13 +37,13 @@ ReforgedClientConfig: {
 	Headers.Developer: 开发者工具
 
 	GlyphProjectileVisualEffects: {
-		Label: 雕文弹幕视觉效果
-		Tooltip: ""
+		Label: 雕文弹幕效果
+		Tooltip: 决定带有雕文的弹幕是否应创建视觉效果
 	}
 
 	GlyphItemVisualEffects: {
-		Label: 雕文物品视觉效果
-		Tooltip: ""
+		Label: 雕文物品效果
+		Tooltip: 决定带有雕文的物品掉落在世界上时是否有着色器和视觉效果
 	}
 
 	BannerJingle: {

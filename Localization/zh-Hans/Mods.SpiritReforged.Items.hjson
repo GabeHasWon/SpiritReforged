@@ -3180,9 +3180,9 @@ BlazeGlyph: {
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
 	# The Effect key above is the masculine/default form
 	Gendered: {
-		// Fem: Feminine
-		// Neutral: Neutral
-		// Plural: Plural
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
 	}
 }
 
@@ -3298,11 +3298,11 @@ PrefixVoucher: {
 	DisplayName: "{0}前缀凭证"
 	Tooltip:
 		'''
-		可右键对物品使用
+		{0}
 		附魔[c/{0}:{1}]
 		'''
-	// AccessoryTooltip: Can be used on accessories with right click
-	// WeaponTooltip: Can be used on weapons with right click
+	AccessoryTooltip: 可右键对饰品使用
+	WeaponTooltip: 可右键对武器使用
 }
 
 EnchantedStamp: {
@@ -3421,6 +3421,6 @@ EnchantedWorkbenchItem: {
 }
 
 CandlewickCoil: {
-	// DisplayName: Candlewick Rope Coil
-	// Tooltip: Throw to create a climbable line of candlewick rope
+	DisplayName: 烛芯绳圈
+	Tooltip: 抛出以形成可攀爬的烛芯绳索
 }

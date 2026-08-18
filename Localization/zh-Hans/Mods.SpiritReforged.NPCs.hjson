@@ -773,7 +773,7 @@ Enchanter: {
 		WitchDoctor: "{0}身上有一种神秘的气质，我想更深入地了解他。或许你能……帮我们引荐一下吗？"
 	}
 
-	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
+	Census.SpawnCondition: 持有任意附魔物品或彩蜡 [i:SpiritReforged/ChromaticWax]、或击败一位Boss
 }
 
 SealedKnight.DisplayName: 漆印骑士
