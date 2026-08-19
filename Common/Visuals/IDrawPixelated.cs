@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Visuals.RenderTargets;
+﻿using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -34,6 +35,15 @@ public interface IDrawPixelated
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
 				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
+					iDrawPixelated.DrawPixelated(spriteBatch);
+			}
+
+			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			{
+				if (particle is null || particle.TimeActive > particle.MaxTime)
+					continue;
+
+				if (particle is IDrawPixelated iDrawPixelated)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 			}
 

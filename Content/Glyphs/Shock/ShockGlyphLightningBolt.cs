@@ -51,7 +51,7 @@ public partial class ShockGlyph
 		}
 	}
 
-	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
+	public class ShockGlyphLightningBolt : ModProjectile, ShockGlyphLightningSystem.ILightningProjectile
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -100,7 +100,7 @@ public partial class ShockGlyph
 		public override void OnKill(int timeLeft) 
 		{
 			Invalid = true;
-			LightningSystem.projectiles.Remove(this);
+			ShockGlyphLightningSystem.projectiles.Remove(this);
 		}
 		
 
@@ -121,10 +121,10 @@ public partial class ShockGlyph
 
 					for (int i = 0; i < 3; i++)
 					{
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
@@ -150,7 +150,7 @@ public partial class ShockGlyph
 					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 				}
 
-				LightningSystem.projectiles.Add(this);
+				ShockGlyphLightningSystem.projectiles.Add(this);
 				if (!Main.dedServ && _trails == null)
 					CreateTrail();
 
@@ -191,14 +191,14 @@ public partial class ShockGlyph
 					{
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f);
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 
 					if (Main.rand.NextBool(25))
 					{
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 				}
 
@@ -238,10 +238,10 @@ public partial class ShockGlyph
 
 			for (int i = 0; i < 2; i++)
 			{
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
