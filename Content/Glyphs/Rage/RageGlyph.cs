@@ -37,8 +37,8 @@ public class RageGlyph : GlyphItem
 		{
 			int dmg = Main.LocalPlayer.GetModPlayer<RagePlayer>().OverflowDamage;
 
-			buffName = "Wrathful Damage [" + dmg + "]";
-			tip = $"Stored damage: {dmg}";
+			buffName = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.DisplayName", dmg);
+			tip = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.Description", dmg);
 			rare = ItemRarityID.Red;
 		}
 

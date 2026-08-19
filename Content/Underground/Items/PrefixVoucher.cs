@@ -150,10 +150,10 @@ public class PrefixVoucher : ModItem
 			TooltipLine line = tooltips[index];
 			if (line.Name == "Tooltip0")
 			{
-				string accessories = Language.GetTextValue("CreativePowers.TabAccessories");
-				string weapons = Language.GetTextValue("CreativePowers.TabWeapons");
+				string accessories = Language.GetTextValue("Mods.SpiritReforged.Items.PrefixVoucher.AccessoryTooltip");
+				string weapons = Language.GetTextValue("Mods.SpiritReforged.Items.PrefixVoucher.WeaponTooltip");
 
-				line.Text = line.Text.FormatWith(_info.Accessory ? accessories : weapons); //Add category names
+				line.Text = line.Text.FormatWith(_info.Accessory ? accessories : weapons);
 			}
 			else if (line.Name == "Tooltip1")
 			{

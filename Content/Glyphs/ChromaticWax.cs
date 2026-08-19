@@ -530,7 +530,13 @@ public abstract class GlyphItem : ModItem
 			item.prefix = 0; //Don't clear prefix if the celestial stamp is active
 
 		item.ClearNameOverride();
-		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + item.Name);
+
+		string itemName = item.Name;
+
+		if (CrossMod.RussianLocalizable)
+			itemName = itemName.ToLowerInvariant();
+
+		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + itemName);
 
 		if (item.rare < ItemRarityID.Purple)
 			item.rare++;

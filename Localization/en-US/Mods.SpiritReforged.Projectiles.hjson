@@ -94,14 +94,10 @@ SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
 SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
-RadiantEnergy.DisplayName: Radiant Energy
-SlicingGust.DisplayName: Slicing Gust
-ZephyrWave.DisplayName: Zephyr Wave
-LightningBlast.DisplayName: Lightning Blast
 Firefall.DisplayName: Firefall
-WindBurstProjectile.DisplayName: Wind Burst Projectile
-SingularCollapse.DisplayName: Collapse
-ShockGlyphLightningBolt.DisplayName: Shock Glyph Lightning Bolt
+WindBurstProjectile.DisplayName: Wind Burst
+SingularCollapse.DisplayName: Singularity
+ShockGlyphLightningBolt.DisplayName: Lightning Bolt
 MariglowSeed.DisplayName: Mariglow Seed
 RageHit.DisplayName: Rage Hit
-MirrorReturnPortal.DisplayName: Mirror Return Portal
+MirrorReturnPortal.DisplayName: Mirror of Return Portal
