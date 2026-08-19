@@ -1,15 +1,14 @@
-using SpiritReforged.Common.NPCCommon;
-using Terraria.GameContent.ItemDropRules;
-
 namespace SpiritReforged.Content.Forest.Mage;
 
-public class Bloodbath : ModItem
+public class Ferroflood : ModItem
 {
-	public class BloodStream : ModProjectile
+	public class Ferrofluid : ModProjectile
 	{
 		public ref float Counter => ref Projectile.ai[0];
 
 		public override string Texture => AssetLoader.EmptyTexture;
+
+		private NPC _target;
 
 		public override void SetDefaults()
 		{
@@ -22,10 +21,31 @@ public class Bloodbath : ModItem
 
 		public override void AI()
 		{
-			if (++Counter > 30)
-				Projectile.velocity.Y += 0.25f;
+			if (_target == null || !_target.active)
+			{
+				const int max_distance = 50;
+				bool foundTarget = false;
 
-			Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Projectile.velocity * 0.5f);
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < max_distance * max_distance)
+					{
+						_target = npc;
+						foundTarget = true;
+
+						break;
+					}
+				}
+
+				if (!foundTarget)
+				{
+					Projectile.velocity *= 0.98f;
+				}
+			}
+			else
+			{
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(_target.Center) * 3, 0.02f);
+			}
 		}
 
 		public override void OnKill(int timeLeft)
@@ -38,11 +58,7 @@ public class Bloodbath : ModItem
 		}
 	}
 
-	public override void SetStaticDefaults()
-	{
-		Item.staff[Type] = true;
-		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.BloodZombie, NPCID.Drippler), ItemDropRule.Common(Type, 25)));
-	}
+	public override void SetStaticDefaults() => Item.staff[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -56,7 +72,7 @@ public class Bloodbath : ModItem
 		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.3f };
-		Item.shoot = ModContent.ProjectileType<BloodStream>();
+		Item.shoot = ModContent.ProjectileType<Ferrofluid>();
 		Item.shootSpeed = 14f;
 		Item.autoReuse = true;
 		Item.noMelee = true;
