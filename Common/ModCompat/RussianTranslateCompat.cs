@@ -12,9 +12,9 @@ namespace SpiritReforged.Common.ModCompat;
 
 internal class RussianTranslateCompat : ModSystem
 {
-	public override void PostSetupContent()
+	public static void tRUSupport()
 	{
-		var spiritR = Mod;
+		ModLoader.TryGetMod("SpiritReforged", out Mod spiritR);
 
 		if (!CrossMod.RussianLocalizable)
 			return;

@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
 	DisplayName: 蟋蟀
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
 }
 
 GoldCricket: {
-	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
 	DisplayName: 金蟋蟀
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
 }
 
 BeetleTownPet: {
@@ -773,7 +773,7 @@ Enchanter: {
 		WitchDoctor: "{0}身上有一种神秘的气质，我想更深入地了解他。或许你能……帮我们引荐一下吗？"
 	}
 
-	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
+	Census.SpawnCondition: 持有任意附魔物品或彩蜡 [i:SpiritReforged/ChromaticWax]、或击败一位Boss
 }
 
 SealedKnight.DisplayName: 漆印骑士

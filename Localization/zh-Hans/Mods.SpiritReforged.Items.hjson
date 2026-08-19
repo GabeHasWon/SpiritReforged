@@ -3180,9 +3180,9 @@ BlazeGlyph: {
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
 	# The Effect key above is the masculine/default form
 	Gendered: {
-		// Fem: Feminine
-		// Neutral: Neutral
-		// Plural: Plural
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
 	}
 }
 
@@ -3298,9 +3298,11 @@ PrefixVoucher: {
 	DisplayName: "{0}前缀凭证"
 	Tooltip:
 		'''
-		可右键对物品使用
+		{0}
 		附魔[c/{0}:{1}]
 		'''
+	AccessoryTooltip: 可右键对饰品使用
+	WeaponTooltip: 可右键对武器使用
 }
 
 EnchantedStamp: {
@@ -3322,8 +3324,6 @@ CelestialStamp: {
 		开启时，在制作、掠夺和重铸物品时有几率获得雕文效果
 		此外，允许物品同时获得前缀和雕文效果
 		'''
-	Active: 附魔开
-	Inactive: 附魔关
 }
 
 RageGlyph: {
@@ -3421,6 +3421,6 @@ EnchantedWorkbenchItem: {
 }
 
 CandlewickCoil: {
-	// DisplayName: Candlewick Rope Coil
-	// Tooltip: Throw to create a climbable line of candlewick rope
+	DisplayName: 烛芯绳圈
+	Tooltip: 抛出以形成可攀爬的烛芯绳索
 }

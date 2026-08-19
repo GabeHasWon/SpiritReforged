@@ -415,8 +415,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: "[i:SpiritReforged/WaxPotItem] Wax Pot Scale"
-				// Tooltip: Multiplier to the number of attempts for Wax Pots.
+				DisplayName: "[i:SpiritReforged/WaxPotItem] Восковые горшки"
+				Tooltip: Устанавливает множитель количества попыток сгенерировать восковые горшки.
 			}
 		}
 
@@ -511,18 +511,18 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				// DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
-				// Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] Шанс на верстак"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации зачарованного верстака в подземной хижине.
 			}
 
 			DisplayCaseChance: {
-				// DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
-				// Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] Шанс на витрину"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации витрины в подземной хижине.
 			}
 
 			MirrorRate: {
-				// DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
-				// Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] Множ. зеркал"
+				Tooltip: Устанавливает множитель максимального возможного количества зеркал возвращения в мире.
 			}
 		}
 
