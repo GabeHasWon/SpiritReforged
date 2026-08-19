@@ -159,8 +159,8 @@ RotDebuff: {
 }
 
 SanguineStackingBuff: {
-	DisplayName: 染血诅咒
-	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+	DisplayName: 染血能量 [{0}]
+	Description: 伤害增加{0}%
 }
 
 BlazeDebuff: {
@@ -169,6 +169,6 @@ BlazeDebuff: {
 }
 
 RageGlyphBuff: {
-	DisplayName: 愤怒雕文增益
-	Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+	DisplayName: 狂怒伤害 [{0}]
+	Description: 存储的伤害：{0}
 }

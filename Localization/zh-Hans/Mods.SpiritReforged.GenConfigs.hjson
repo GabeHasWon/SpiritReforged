@@ -389,8 +389,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: "[i:SpiritReforged/WaxPotItem] Wax Pot Scale"
-				// Tooltip: Multiplier to the number of attempts for Wax Pots.
+				DisplayName: "[i:SpiritReforged/WaxPotItem] 蜡罐比例"
+				Tooltip: 蜡罐尝试生成的次数的倍率。
 			}
 		}
 
