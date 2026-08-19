@@ -59,8 +59,9 @@ public sealed class BuffDetours : ILoadable
         On_NPC.AddBuff += AddExtension; //NPC hooks
         On_NPC.DelBuff += DelExtension;
 		On_NPC.UpdateNPC_BuffApplyVFX += DisableVFX;
+		//On_NPC.UpdateNPC_BuffSetFlags += SetExtensionFlags;
 
-        HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
+		HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
 
         //Handle DoT combat text
         On_CombatText.NewText_Rectangle_Color_string_bool_bool += DisableDoT;
@@ -83,22 +84,25 @@ public sealed class BuffDetours : ILoadable
 		}
     }
 
-    private static void AddExtension(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
-    {
-        if (!self.buffImmune[type] && self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
-		{
-			if (global.buffByType.TryGetValue(type, out BuffExtension extension)) //The buff extension is already present, reapply
-			{
-				extension.ApplyTo(self, true);
-			}
-			else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b) //The buff extension is not present, newly apply
-			{
-				global.buffByType.Add(type, b);
-				global.buffByType[type].ApplyTo(self, false);
-			}
-		}
+	/*private static void SetExtensionFlags(On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
+	{
+		orig(self, lowerBuffTime);
 
-        orig(self, type, time, quiet);
+		for (int i = 0; i < NPC.maxBuffs; i++)
+		{
+			int type = self.buffType[i];
+
+			if (type != 0 && self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+				global.AddExtension(self, type); //Activate buff extensions when necessary
+		}
+	}*/
+
+	private static void AddExtension(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+    {
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+			global.AddExtension(self, type);
+
+		orig(self, type, time, quiet);
 
 		if (!quiet && Main.netMode == NetmodeID.Server)
 			new SyncExtensionData(self.whoAmI).Send();
@@ -109,14 +113,14 @@ public sealed class BuffDetours : ILoadable
         int type = self.buffType[buffIndex];
         orig(self, buffIndex);
 
-        if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
-            global.buffByType.Remove(type);
-    }
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+			global.RemoveExtension(self, type);
+	}
 
 	private static void DisableVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC self)
 	{
 		bool doDefault = true;
-		if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
 		{
 			foreach (int type in global.buffByType.Keys)
 			{
@@ -151,9 +155,39 @@ public sealed class ExtendedBuffGlobalNPC : GlobalNPC
     /// <summary> Buff extension data indexed by buff ID. </summary>
     public readonly Dictionary<int, BuffExtension> buffByType = [];
 
-    public override void UpdateLifeRegen(NPC npc, ref int damage)
+	public void AddExtension(NPC npc, int type)
+	{
+		if (npc.buffImmune[type])
+			return;
+
+		if (buffByType.TryGetValue(type, out BuffExtension extension)) //The buff extension is already present, reapply
+		{
+			extension.ApplyTo(npc, true);
+		}
+		else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b) //The buff extension is not present, newly apply
+		{
+			buffByType.Add(type, b);
+			buffByType[type].ApplyTo(npc, false);
+		}
+	}
+
+	public void RemoveExtension(NPC npc, int type) => buffByType.Remove(type);
+
+	public override void UpdateLifeRegen(NPC npc, ref int damage)
     {
+		List<int> queuedForRemoval = [];
         foreach (int type in buffByType.Keys)
-            buffByType[type].UpdateLifeRegen(ref damage);
-    }
+		{
+			BuffExtension extension = buffByType[type];
+
+			if (!npc.HasBuff(extension.Type))
+				queuedForRemoval.Add(type); //Remove (if BuffDetours.DelExtension does not catch it)
+			else
+				extension.UpdateLifeRegen(ref damage); //Update life regen
+		}
+
+		foreach (int type in queuedForRemoval)
+			buffByType.Remove(type); //Remove all queued buff extensions
+
+	}
 }
