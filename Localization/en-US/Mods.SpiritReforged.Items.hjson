@@ -3447,10 +3447,20 @@ StarBauble: {
 
 Bloodbath: {
 	DisplayName: Bloodbath
-	Tooltip: ""
+	Tooltip: Casts a piercing stream of bloom
 }
 
 Sparkler: {
 	DisplayName: Sparkler
-	Tooltip: ""
+	Tooltip: Casts a burst of lightly homing sparkles
+}
+
+Ferroflood: {
+	DisplayName: Ferroflood
+	Tooltip: Casts ferrofluid globs that stick to enemies, attracting magic attacks
+}
+
+ShadowseerWand: {
+	DisplayName: Shadowseer Wand
+	Tooltip: Charges up a shadow ball that explodes on contact
 }

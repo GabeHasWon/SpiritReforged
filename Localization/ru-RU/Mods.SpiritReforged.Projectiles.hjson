@@ -112,3 +112,5 @@ SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}
 // MagicTome.DisplayName: Magic Tome
 // BloodStream.DisplayName: Blood Stream
 // SparkleStar.DisplayName: Sparkle Star
+// Ferrofluid.DisplayName: Ferrofluid
+// Shadowball.DisplayName: Shadowball

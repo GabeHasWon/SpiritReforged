@@ -73,7 +73,7 @@ public class Ferroflood : ModItem
 		Item.rare = ItemRarityID.Blue;
 		Item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.3f };
 		Item.shoot = ModContent.ProjectileType<Ferrofluid>();
-		Item.shootSpeed = 14f;
+		Item.shootSpeed = 7f;
 		Item.autoReuse = true;
 		Item.noMelee = true;
 	}

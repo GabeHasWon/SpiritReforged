@@ -37,7 +37,7 @@ public class ShadowseerWand : ModItem
 			{
 				if (!_released && Projectile.owner == Main.myPlayer)
 				{
-					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, ModContent.ProjectileType<ShadowBall>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, ModContent.ProjectileType<Shadowball>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 				} //Just released
 
 				_released = true;
@@ -58,7 +58,7 @@ public class ShadowseerWand : ModItem
 		}
 	}
 
-	public sealed class ShadowBall : ModProjectile
+	public sealed class Shadowball : ModProjectile
 	{
 		public override void SetDefaults() => base.SetDefaults();
 

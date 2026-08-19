@@ -1,8 +1,10 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
@@ -13,6 +15,31 @@ namespace SpiritReforged.Content.Forest.Mage;
 [AutoloadGlowmask("255,255,255")]
 public class Sparkler : ModItem
 {
+	public class SparklerSwing : SwungProjectile
+	{
+		public override LocalizedText DisplayName => ModContent.GetInstance<Sparkler>().DisplayName;
+
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 40, 25);
+
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
+		{
+			float value = base.GetRotation(out armRotation, out stretch);
+			return value + MathHelper.PiOver4 * SwingDirection;
+		}
+
+		public override bool? CanDamage() => false; //Never deal damage
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipVertically : default;
+			Vector2 origin = new(2, (effects == SpriteEffects.FlipVertically) ? 2 : texture.Height - 2); //The handle
+
+			DrawHeld(lightColor, origin, Projectile.rotation, effects);
+			return false;
+		}
+	}
+
 	public class SparkleStar : ModProjectile, IDrawPixelated
 	{
 		public ref float Counter => ref Projectile.ai[0];
@@ -120,16 +147,17 @@ public class Sparkler : ModItem
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Blue;
-		Item.UseSound = SoundID.DD2_BookStaffCast with { Pitch = 0.3f };
+		Item.UseSound = SoundID.DD2_DarkMageAttack with { Pitch = 0.5f };
 		Item.shoot = ModContent.ProjectileType<SparkleStar>();
 		Item.shootSpeed = 14f;
+		Item.noUseGraphic = true;
 		Item.autoReuse = true;
 		Item.noMelee = true;
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		Vector2 offset = Vector2.Normalize(velocity) * 60;
+		Vector2 offset = Vector2.Normalize(velocity) * 40;
 
 		if (Collision.CanHit(position, 2, 2, position + velocity, 2, 2))
 			position += offset;
@@ -140,6 +168,7 @@ public class Sparkler : ModItem
 		for (int i = 0; i < 3; i++)
 			Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
+		SwungProjectile.Spawn(position, velocity, ModContent.ProjectileType<SparklerSwing>(), damage, knockback, player, 0.5f, source);
 		return false;
 	}
 }
