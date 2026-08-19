@@ -3409,5 +3409,5 @@ EnchantedWorkbenchItem: {
 
 CandlewickCoil: {
 	// DisplayName: Candlewick Rope Coil
-	// Tooltip: ""
+	// Tooltip: Throw to create a climbable line of candlewick rope
 }

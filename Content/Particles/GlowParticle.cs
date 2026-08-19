@@ -14,7 +14,7 @@ public class GlowParticle : Particle
 	private readonly Action<Particle> _action;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	private readonly Vector2[] oldPositions = [];
+	protected readonly Vector2[] oldPositions = [];
 
 	private ParticleLayer _drawLayer = ParticleLayer.BelowProjectile;
 
