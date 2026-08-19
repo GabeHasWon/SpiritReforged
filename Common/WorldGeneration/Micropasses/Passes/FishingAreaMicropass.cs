@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Forest.Misc;
 using SpiritReforged.Content.Savanna.Items.Gar;

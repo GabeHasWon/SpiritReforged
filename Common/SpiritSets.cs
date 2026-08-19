@@ -43,6 +43,9 @@ public class SpiritSets : ModSystem
 	/// <summary> Whether this tile type allows liquid to pass through unconditionally. </summary>
 	public static readonly bool[] AllowsLiquid = TileFactory.CreateBoolSet();
 
+	public static readonly bool[] IsPlanterBox = TileFactory.CreateNamedSet(SpiritReforgedMod.Instance, nameof(IsPlanterBox)).Description("Whether a tile is a planter box or not.")
+		.RegisterBoolSet(false, TileID.PlanterBox);
+
 	/// <summary> Whether this type is a dungeon wall variant. </summary>
 	public static readonly bool[] DungeonWall = WallFactory.CreateBoolSet(WallID.BlueDungeonSlabUnsafe, WallID.BlueDungeonTileUnsafe, WallID.BlueDungeonUnsafe, 
 		WallID.GreenDungeonSlabUnsafe, WallID.GreenDungeonTileUnsafe, WallID.GreenDungeonUnsafe, WallID.PinkDungeonSlabUnsafe, WallID.PinkDungeonTileUnsafe, WallID.PinkDungeonUnsafe);

@@ -51,6 +51,7 @@ public class SavannaDirt : ModTile, ILoadItem, ICheckItemUse
 			switch (type)
 			{
 				case ItemID.StaffofRegrowth:
+				case ItemID.AcornAxe:
 					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
 					break;
 				case ItemID.CorruptSeeds:

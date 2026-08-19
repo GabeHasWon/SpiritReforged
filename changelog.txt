@@ -1,4 +1,6 @@
-v0.2.1.4
-- Fixed an issue where some Ocean definitions would incorrectly be placed at 0, 0 and stretch to near the right world edge - visible with the debug display or mapping tool
-- Fixed issues where ecotones wouldn't spawn without World Gen Previewer enabled
-- Updated Russian localization
+v0.2.1.5
+- Fixed Recluse origin custom world spawn not working properly
+- Allowed Axe of Regrowth to grow Savanna grass alongside Staff of Regrowth
+- Made the two Regrowth items not break Cloudstalk (like other herbs) unless directly hovering over it
+- Added smart cursor support for our Planter Box-like tiles (currently only Cloudstalk Planter Boxes)
+- Allowed torches (and other tiles like workbenches) to be placed on our Planter Box-like tiles 
