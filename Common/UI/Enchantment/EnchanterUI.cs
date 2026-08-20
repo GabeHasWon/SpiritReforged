@@ -171,7 +171,7 @@ public class EnchanterUI : AutoUIState
 
 		string text = _slot.Item.IsAir 
 			? Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.PlaceToEnchant") 
-			: $"{Language.GetTextValue("LegacyInterface.46")}: {((_hovered?.Type is int type) ? Enchanter.SpecialShop[type].ToString() : 3)}" + " [c/{0}:{1}]".FormatWith(string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B), ModContent.GetInstance<ChromaticWax>().DisplayName);
+			: $"{Language.GetTextValue("LegacyInterface.46")}: " + Language.GetTextValue("Mods.SpiritReforged.Misc.Enchantment.Cost", (_hovered?.Type is int type) ? Enchanter.SpecialShop[type].ToString() : 3, string.Format("{0:X2}{1:X2}{2:X2}", color.R, color.G, color.B));
 
 		Utils.DrawBorderString(spriteBatch, text, position, Main.MouseTextColorReal, 1, 0, 0);
 

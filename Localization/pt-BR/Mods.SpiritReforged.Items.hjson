@@ -3168,12 +3168,26 @@ BlazeGlyph: {
 		''' */
 	// Effect: Blazing
 	// Death: "{0} was consumed by Rage..."
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
+	}
 }
 
 RadiantGlyph: {
 	// DisplayName: Radiant Glyph
 	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
 	// Effect: Radiant
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 StormGlyph: {
@@ -3185,6 +3199,12 @@ StormGlyph: {
 		Projectiles occasionally create powerful bursts of wind
 		''' */
 	// Effect: Billowed
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 MoonlightGlyph: {
@@ -3196,6 +3216,12 @@ MoonlightGlyph: {
 		Damaging enemies leeches mana
 		''' */
 	// Effect: Dazzling
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 RotGlyph: {
@@ -3206,12 +3232,24 @@ RotGlyph: {
 		This blight can be inflicted on to you by enemies suffering from it
 		''' */
 	// Effect: Blighted
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 ShockGlyph: {
 	// DisplayName: Shock Glyph
 	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
 	// Effect: Shocking
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 BeeGlyph: {
@@ -3223,6 +3261,12 @@ BeeGlyph: {
 		Tagged enemies release bees when struck by minions
 		''' */
 	// Effect: Buzzing
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 SanguineGlyph: {
@@ -3234,15 +3278,23 @@ SanguineGlyph: {
 		Stealing life grants stacks of a decaying damage buff
 		''' */
 	// Effect: Leeching
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 PrefixVoucher: {
 	// DisplayName: "{0} Prefix Voucher"
 	/* Tooltip:
 		'''
-		Can be used on items with <right>
+		{0}
 		Applies [c/{0}:{1}]
 		''' */
+	// AccessoryTooltip: Can be used on accessories with right click
+	// WeaponTooltip: Can be used on weapons with right click
 }
 
 EnchantedStamp: {
@@ -3264,14 +3316,18 @@ CelestialStamp: {
 		When enabled occasionally grants glyph effects to crafted, looted and reforged items
 		Additionally allows items to receive prefixes and glyph effects simultaneously
 		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
 }
 
 RageGlyph: {
 	// DisplayName: Rage Glyph
 	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
 	// Effect: Wrathful
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 CharmcasterHat: {
@@ -3297,6 +3353,12 @@ VoidGlyph: {
 		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
 		''' */
 	// Effect: Null
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
 }
 
 GlitterPurse: {
@@ -3348,6 +3410,11 @@ MirrorItem: {
 EnchantedWorkbenchItem: {
 	// DisplayName: Enchanted Workbench
 	// Tooltip: ""
+}
+
+CandlewickCoil: {
+	// DisplayName: Candlewick Rope Coil
+	// Tooltip: Throw to create a climbable line of candlewick rope
 }
 
 StonemasonGreatshield: {

@@ -218,7 +218,7 @@ public class RadiantPlayer : ModPlayer
 	}
 
 	[NetSynced(true)]
-	private static void RadiantHitEffects(NPC target, Player owner, int damageDone, bool crit)
+	public static void RadiantHitEffects(NPC target, Player owner, int damageDone, bool crit)
 	{
 		float scaleModifier = MathHelper.Lerp(0.75f, 2f, Math.Min(damageDone / 200f, 1));
 

@@ -35,8 +35,7 @@ public static class Placer
 	/// <returns> Whether the tile at the given coordinates is generally replaceable and safe to be cleared. Useful for random plant growth. </returns>
 	public static bool IsReplaceable(int i, int j)
 	{
-		var tile = Main.tile[i, j];
-
+		Tile tile = Main.tile[i, j];
 		if (!tile.HasTile)
 			return true;
 

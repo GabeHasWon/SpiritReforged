@@ -37,13 +37,13 @@ public partial class SanguineGlyph
 
 			int count = stacks.Count;
 
-			buffName = "Sanguine Energy [" + count + "]";
+			buffName = Language.GetTextValue("Mods.SpiritReforged.Buffs.SanguineStackingBuff.DisplayName", count);
 
 			float damage = 0;
 			foreach (SanguineStack stack in stacks)
 				damage += stack.damageBonus;
 
-			tip = "Damage increased by " + Math.Round(damage * 100, 2) + "%";
+			tip = Language.GetTextValue("Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description", Math.Round(damage * 100, 2));
 
 			rare = ItemRarityID.Red;
 		}

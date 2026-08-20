@@ -36,29 +36,19 @@ ReforgedClientConfig: {
 
 	Headers.Developer: 开发者工具
 
-	GlyphProjectileEffects: {
-		// Label: Glyph Projectile Effects
-		// Tooltip: Determines if projectiles with glyphs should create visual effects
-	}
-
-	GlyphItemEffects: {
-		// Label: Glyph Item Effects
-		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
-	}
-
 	GlyphProjectileVisualEffects: {
-		// Label: Glyph Projectile Visual Effects
-		// Tooltip: ""
+		Label: 雕文弹幕效果
+		Tooltip: 决定带有雕文的弹幕是否应创建视觉效果
 	}
 
 	GlyphItemVisualEffects: {
-		// Label: Glyph Item Visual Effects
-		// Tooltip: ""
+		Label: 雕文物品效果
+		Tooltip: 决定带有雕文的物品掉落在世界上时是否有着色器和视觉效果
 	}
 
 	BannerJingle: {
-		// Label: Banner Jingle
-		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
+		Label: 旗帜叮当声
+		Tooltip: 启用旗帜叮当声，在生成某个NPC类型的第一个旗帜时播放。
 	}
 }
 
@@ -81,15 +71,15 @@ ReforgedServerConfig: {
 	}
 
 	AutoloadHeldProjectiles: {
-		// Label: Autoload Held Projectiles
-		/* Tooltip:
+		Label: 自动加载手持弹幕
+		Tooltip:
 			'''
-			Enables a system that automatically detects 'held projectiles' during loading.
-			This may substantially increase load times or cause load errors if enabled with other mods,
-			but may fix some issues with certain mechanics (such as glyphs) in-game.
-			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+			启用一个在加载时自动探测“手持弹幕”的系统。
+			如果与其他模组一同启用，可能会显著增加加载时间或导致加载错误，
+			但可能会修复特定机制（如雕文）在游戏中的一些问题。
+			理想情况下，其他模组为了稳定的兼容性会使用名为弹幕集的HeldProjectile（布尔值）。
 
-			This has NO effect on vanilla or Reforged projectiles, which are already set.
-			''' */
+			这对原版或魂灵新魄的弹幕无效，因为它们已经设置好了。
+			'''
 	}
 }

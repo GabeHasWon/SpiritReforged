@@ -6,6 +6,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.LocalizationTools;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -16,6 +17,7 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -528,13 +530,35 @@ public abstract class GlyphItem : ModItem
 			item.prefix = 0; //Don't clear prefix if the celestial stamp is active
 
 		item.ClearNameOverride();
-		item.SetNameOverride($"{Effect} " + item.Name);
+
+		string itemName = item.Name;
+
+		if (CrossMod.RussianLocalizable)
+			itemName = itemName.ToLowerInvariant();
+
+		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + itemName);
 
 		if (item.rare < ItemRarityID.Purple)
 			item.rare++;
 
 		if (context is not SyncContext)
 			item.Refresh(false); //Always prompts a netsync
+	}
+
+	private static string GenderItemEffect(Item item, string baseKey)
+	{
+		if (!CrossMod.RussianLocalizable)
+			return Language.GetTextValue(baseKey + "Effect");
+
+		string gender = RussianGendering.GetGender(item.type);
+
+		return gender switch
+		{
+			"Feminine" => Language.GetTextValue(baseKey + "Gendered.Fem"),
+			"Neuter" => Language.GetTextValue(baseKey + "Gendered.Neutral"),
+			"Plural" => Language.GetTextValue(baseKey + "Gendered.Plural"),
+			_ => Language.GetTextValue(baseKey + "Effect"),
+		};
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
