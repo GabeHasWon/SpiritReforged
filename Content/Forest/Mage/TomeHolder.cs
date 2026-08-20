@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
@@ -49,19 +51,36 @@ public class TomeHolder : EquippableItem
 
 		public override void AI()
 		{
-			Vector2 targetCenter = Owner.Center - new Vector2(30 * Owner.direction, 20 * Owner.gravDir);
-			Projectile.Center = targetCenter - Owner.velocity;
+			const int inactive_time = 120;
 
-			if (!Owner.ItemAnimationActive && Counter++ >= UseTime && Item != null)
+			Vector2 targetCenter = Owner.Center - new Vector2(30 * Owner.direction, 20 * Owner.gravDir);
+			float opacity = Counter / UseTime;
+
+			if (Counter < 1)
+			{
+				if (Owner.ItemAnimationActive) //If using an item, start the counter
+				{
+					Counter = 1;
+				}
+				else if (Counter-- < -inactive_time)
+				{
+					targetCenter = Owner.Center;
+
+					if (Projectile.DistanceSQ(targetCenter) < 50)
+						Projectile.Kill();
+				}
+			}
+			else if (Counter++ >= UseTime && Item != null)
 			{
 				if (Owner.whoAmI == Main.myPlayer)
-					ProjectileDuplicator.ShootFrom(Projectile.Center - Owner.Size / 2, Owner, Item, true);
+					ProjectileDuplicator.ShootFrom(Projectile.Center - Owner.Size / 2, Owner, Item, ProjectileDuplicator.ShootSettings.None);
 
 				Counter = 0;
 			}
 
-			if (!Main.dedServ && Main.rand.NextBool(10))
-				ParticleHandler.SpawnParticle(new EmberParticle(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), -Vector2.UnitY, Color.Cyan, 0.8f, 25, 2));
+			Projectile.Center = Vector2.Lerp(Projectile.Center, targetCenter, 0.05f);
+			Projectile.rotation = (EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 50f) - 0.5f) * 0.1f;
+			Projectile.direction = Projectile.spriteDirection = Math.Sign(Owner.Center.X - Projectile.Center.X);
 		}
 
 		public override bool? CanDamage() => false;
@@ -70,29 +89,48 @@ public class TomeHolder : EquippableItem
 		{
 			Texture2D texture = TextureAssets.Item[ItemType].Value;
 			Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+			float opacity = Counter / UseTime;
 
-			SpriteEffects effects = (Owner.direction == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			SpriteEffects effects = (Projectile.spriteDirection == -1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY + EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) * 3);
 
-			DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
-				Main.EntitySpriteDraw(TextureColorCache.ColorSolid(texture, Color.White), position + offset, null, Projectile.GetAlpha(Color.Cyan).Additive(), Projectile.rotation, texture.Size() / 2, Projectile.scale, effects));
+			if (opacity > 0)
+			{
+				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+					Main.EntitySpriteDraw(texture, position + offset, null, Projectile.GetAlpha(Color.White).Additive() * opacity, Projectile.rotation, texture.Size() / 2, Projectile.scale, effects));
 
-			Main.EntitySpriteDraw(bloom, position, null, Projectile.GetAlpha(Color.Cyan).Additive() * 0.5f, Projectile.rotation, bloom.Size() / 2, Projectile.scale * 0.3f, effects);
+				Main.EntitySpriteDraw(bloom, position, null, Projectile.GetAlpha(Color.Cyan).Additive() * 0.5f * opacity, Projectile.rotation, bloom.Size() / 2, Projectile.scale * 0.3f, effects);
+			}
+
 			Main.EntitySpriteDraw(texture, position, null, Projectile.GetAlpha(lightColor), Projectile.rotation, texture.Size() / 2, Projectile.scale, effects);
-
 			return false;
 		}
 	}
 
 	private sealed class TomeSummonPlayer : ModPlayer
 	{
+		public bool TryGetTome(out int type)
+		{
+			const int hotbar_slots = 9;
+
+			for (int i = 0; i < hotbar_slots; i++)
+			{
+				Item item = Player.inventory[i];
+				if (SpiritSets.MagicBook[item.type])
+				{
+					type = item.type;
+					return true;
+				}
+			}
+
+			type = ItemID.None;
+			return false;
+		}
+
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			if (Player.HasEquip<TomeHolder>() && Player.ownedProjectileCounts[ModContent.ProjectileType<MagicTome>()] == 0)
-			{
-				int tomeType = ItemID.CrystalStorm;
+			if (Player.HasEquip<TomeHolder>() && Player.ownedProjectileCounts[ModContent.ProjectileType<MagicTome>()] == 0 && TryGetTome(out int tomeType))
 				Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<MagicTome>(), damage, knockback, Player.whoAmI, tomeType);
-			}
 
 			return true;
 		}

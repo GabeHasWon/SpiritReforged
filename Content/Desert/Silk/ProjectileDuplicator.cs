@@ -12,10 +12,18 @@ internal sealed class ProjectileDuplicator : ModPlayer
 	public delegate void ModifyShootStatsDelegate(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback);
 	public delegate void ModifyOnSpawnDelegate(Projectile projectile);
 
-	private static Dictionary<int, ModifyShootStatsDelegate> DelegateByItem = null;
+	[Flags]
+	public enum ShootSettings
+	{
+		None = 0,
+		UpdateDirection = 1,
+		SetItemTime = 2
+	}
 
 	/// <summary> Whether a fired projectile is considered a duplicate. </summary>
 	public static bool Duplicate { get; private set; }
+
+	private static Dictionary<int, ModifyShootStatsDelegate> DelegateByItem = null;
 
 	#region detours
 	public void Load(Mod mod) => IL_Projectile.AI_047_MagnetSphere += AllowAfterimage;
@@ -60,19 +68,30 @@ internal sealed class ProjectileDuplicator : ModPlayer
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_Shoot")]
 	private static extern void ItemCheck_Shoot(Player player, int i, Item sItem, int weaponDamage);
 
-	public static void ShootFrom(Vector2 position, Player player, Item item = null, bool preserveDirection = false)
+	public static void ShootFrom(Vector2 position, Player player, Item item = null, ShootSettings settings = ShootSettings.UpdateDirection | ShootSettings.SetItemTime)
 	{
 		Duplicate = true;
+
 		Vector2 oldPosition = player.position;
 		int oldDirection = player.direction;
+		int oldItemTime = player.itemTime;
+		int oldItemTimeMax = player.itemTimeMax;
+		int oldItemAnimation = player.itemAnimation;
 
 		player.position = position; //Briefly adjust the player position so that projectiles appear at the afterimage instead
 		item ??= player.HeldItem;
 
 		ItemCheck_Shoot(player, player.whoAmI, item, item.damage);
 
-		if (preserveDirection)
-			player.direction = oldDirection;
+		if (!settings.HasFlag(ShootSettings.UpdateDirection))
+			player.ChangeDir(oldDirection); //Preserve the old player direction
+
+		if (!settings.HasFlag(ShootSettings.SetItemTime))
+		{
+			player.itemTime = oldItemTime; //Reset the player's item time and animation
+			player.itemTimeMax = oldItemTimeMax;
+			player.itemAnimation = oldItemAnimation;
+		}
 
 		player.position = oldPosition;
 		Duplicate = false;

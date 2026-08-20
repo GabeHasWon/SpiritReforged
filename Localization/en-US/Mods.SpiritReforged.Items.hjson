@@ -3418,6 +3418,7 @@ ComfySlippers: {
 Monocle: {
 	DisplayName: Monocle
 	Tooltip: Increases magic damage by {0}% and spell book fire rate by {1}%
+	SetBonus: "{0}% increased magic knockback"
 }
 
 TomeHolder: {

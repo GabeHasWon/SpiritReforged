@@ -3418,6 +3418,7 @@ ComfySlippers: {
 Monocle: {
 	// DisplayName: Monocle
 	// Tooltip: Increases magic damage by {0}% and spell book fire rate by {1}%
+	// SetBonus: "{0}% increased magic knockback"
 }
 
 TomeHolder: {
@@ -3447,20 +3448,20 @@ StarBauble: {
 
 Bloodbath: {
 	// DisplayName: Bloodbath
-	// Tooltip: ""
+	// Tooltip: Casts a piercing stream of bloom
 }
 
 Sparkler: {
 	// DisplayName: Sparkler
-	// Tooltip: ""
+	// Tooltip: Casts a burst of lightly homing sparkles
 }
 
 Ferroflood: {
 	// DisplayName: Ferroflood
-	// Tooltip: ""
+	// Tooltip: Casts ferrofluid globs that stick to enemies, attracting magic attacks
 }
 
 ShadowseerWand: {
 	// DisplayName: Shadowseer Wand
-	// Tooltip: ""
+	// Tooltip: Charges up a shadow ball that explodes on contact
 }
