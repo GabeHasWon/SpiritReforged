@@ -1,9 +1,12 @@
-﻿namespace SpiritReforged.Common;
+﻿using SpiritReforged.Common.ProjectileCommon;
+
+namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public class SpiritSets : ModSystem
 {
 	internal static SetFactory ItemFactory = new(ItemLoader.ItemCount, "SpiritItems");
+	internal static SetFactory ProjectileFactory = new(ProjectileLoader.ProjectileCount, "SpiritProjectiles");
 	internal static SetFactory NPCFactory = new(NPCLoader.NPCCount, "SpiritNPCs");
 	internal static SetFactory TileFactory = new(TileLoader.TileCount, "SpiritTiles");
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");

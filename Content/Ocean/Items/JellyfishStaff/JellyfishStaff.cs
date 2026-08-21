@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -11,8 +12,11 @@ public class JellyfishStaff : ModItem
 {
 	public override void SetStaticDefaults()
 	{
-		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.PinkJellyfish), ItemDropRule.Common(Type, 100)));
-		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.BlueJellyfish), ItemDropRule.Common(Type, 500)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.PinkJellyfish), ItemDropRule.Common(Type, 50)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.BlueJellyfish), ItemDropRule.Common(Type, 250)));
+
+		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 15));
+		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 15));
 
 		MoRHelper.AddElement(Item, MoRHelper.Thunder);
 		MoRHelper.AddElement(Item, MoRHelper.Water, true);
@@ -25,7 +29,7 @@ public class JellyfishStaff : ModItem
 		Item.value = Item.sellPrice(0, 2, 0, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.mana = 10;
-		Item.damage = 12;
+		Item.damage = 14;
 		Item.knockBack = 2.5f;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.useTime = 30;

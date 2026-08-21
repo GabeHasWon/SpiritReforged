@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
+using System;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Tile_Entities;
@@ -40,7 +41,7 @@ internal class DesertMannequinInventory : MannequinInventory
 		}
 	}
 
-	public override void SetMannequin(Point16 position)
+	public override void SetMannequin(int whoAmI)
 	{
 		Item[] inv = [new(), new(), new(), new(), new(), new(), new(), new()];
 		float chance = WorldGen.genRand.NextFloat();
@@ -87,15 +88,10 @@ internal class DesertMannequinInventory : MannequinInventory
 		if (slots.Contains(2) && set != DesertSet.PharaohVanity)
 			inv[2] = new(LegsType(set));
 
-		if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te) || te is not TEDisplayDoll mannequin)
-		{
-			int id = TEDisplayDoll.Place(position.X, position.Y);
-			mannequin = TileEntity.ByID[id] as TEDisplayDoll;
-		}
+		var mannequin = TileEntity.ByID[whoAmI] as TEDisplayDoll;
+		inv[WorldGen.genRand.Next(5) + 3] = new Item(AccType);
 
-		int slot = WorldGen.genRand.Next(5) + 3;
-		inv[slot] = new Item(AccType);
-		UndergroundHouseMicropass.teDollInventory.SetValue(mannequin, inv);
+		HouseLoader.DisplayDollItems.SetValue(mannequin, inv);
 
 		static int HeadType(DesertSet set) => set switch
 		{

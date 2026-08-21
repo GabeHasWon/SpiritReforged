@@ -8,6 +8,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
@@ -43,6 +44,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 
 		private Vector2 _origin;
 		private Color[] _sampleColors;
+
+		public override void SetStaticDefaults() => HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 
 		public override void SetDefaults()
 		{

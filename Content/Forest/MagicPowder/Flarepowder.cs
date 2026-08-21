@@ -73,8 +73,6 @@ public class Flarepowder : ModItem
 		
 		if (!IsDerived)
 		{
-			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
-
 			TileLootSystem.RegisterLoot(static (loot) =>
 			{
 				int chance = (loot is TileLootTable t && t.Coordinates.Y < Main.rockLayer) ? 17 : 0;
@@ -147,7 +145,12 @@ internal class FlarepowderDust : ModProjectile
 	public (float, float) randomTimeLeft;
 	private bool _spawned = true;
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 3;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(8);

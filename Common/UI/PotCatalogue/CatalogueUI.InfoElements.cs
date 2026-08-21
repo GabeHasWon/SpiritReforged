@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.System;
+using System.Linq;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -79,13 +80,16 @@ public partial class CatalogueUI : AutoUIState
 			foreach (IItemDropRule item in loot.Get())
 				item.ReportDroprates(list, ratesInfo);
 
-			foreach (var rateInfo in list)
+			foreach (DropRateInfo rateInfo in list)
 			{
-				info = new CatalogueItemInfo(rateInfo);
-				info.Width.Pixels = width;
-				info.Height.Set(30, 0);
+				if (rateInfo.conditions == null || rateInfo.conditions.All(static x => x.CanShowItemDropInUI()))
+				{
+					info = new CatalogueItemInfo(rateInfo);
+					info.Width.Pixels = width;
+					info.Height.Set(30, 0);
 
-				_info.AddEntry(info);
+					_info.AddEntry(info);
+				}
 			}
 		}
 	}
