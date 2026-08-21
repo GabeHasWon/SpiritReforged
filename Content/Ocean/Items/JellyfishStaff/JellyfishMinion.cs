@@ -31,7 +31,7 @@ public class JellyfishMinionColors // stores colors for each variant
 	public Color ParticleTwo = Color.White;
 	public Color SmokeColor = Color.White;
 
-	public JellyfishMinionColors(bool pink) // will have pink colors if pink.. yeah
+	public JellyfishMinionColors(bool pink, bool green = false) // will have pink colors if pink.. yeah
 	{
 		if (pink)
 		{
@@ -40,7 +40,7 @@ public class JellyfishMinionColors // stores colors for each variant
 			LightningEnd = new(255, 132, 229);
 			AuraBase = new(231, 0, 131);
 			AuraLight = new(255, 213, 249);
-			SmokeColor = new(245, 175, 230);
+			SmokeColor = new(225, 197, 222);
 			ParticleOne = new(255, 133, 242);
 			ParticleTwo = Color.White;
 		}
@@ -51,8 +51,20 @@ public class JellyfishMinionColors // stores colors for each variant
 			LightningEnd = new(155, 255, 255);
 			AuraBase = new(0, 216, 255);
 			AuraLight = new(213, 251, 255);
-			SmokeColor = new(155, 255, 255);
+			SmokeColor = new(183, 192, 225);
 			ParticleOne = new(119, 146, 225);
+			ParticleTwo = Color.White;
+		}
+
+		if (green)
+		{
+			BaseColor = new(92, 254, 109);
+			LightningStart = new(125, 255, 125);
+			LightningEnd = new(180, 255, 190);
+			AuraBase = new(0, 213, 160);
+			AuraLight = new(213, 255, 237);
+			SmokeColor = new(183, 220, 201);
+			ParticleOne = new(133, 255, 146);
 			ParticleTwo = Color.White;
 		}
 	}
@@ -71,6 +83,7 @@ public class JellyfishMinion : BaseMinion
 	public JellyfishMinion() : base(600, 800, new Vector2(28, 28)) { }
 
 	public bool IsPink = false;
+	public bool IsGreen = false;
 	private ref float AiTimer => ref Projectile.ai[0];
 	private ref float AttackTimer => ref Projectile.ai[1];
 	private ref float ChargeTimer => ref Projectile.ai[2];
@@ -90,10 +103,17 @@ public class JellyfishMinion : BaseMinion
 	public override void OnSpawn(IEntitySource source)
 	{
 		IsPink = Main.rand.NextBool(3);
+
+		if (Main.hardMode && Main.rand.NextBool(5))
+		{
+			IsPink = false;
+			IsGreen = true;
+		}
+
 		Projectile.velocity += Main.rand.NextVector2Circular(3f, 3f);
 		Projectile.netUpdate = true;
 
-		JellyColors = new JellyfishMinionColors(IsPink);
+		JellyColors = new JellyfishMinionColors(IsPink, IsGreen);
 	}
 
 	public override void IdleMovement(Player player)
@@ -263,7 +283,11 @@ public class JellyfishMinion : BaseMinion
 
 			if (Projectile.owner == Main.myPlayer)
 			{
-				PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JellyfishBolt>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI, IsPink ? 1 : 0, 0);
+				int color = IsPink ? 1 : 0;
+				if (IsGreen)
+					color = 2;
+
+				PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JellyfishBolt>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI, color, 0);
 
 				Projectile.netUpdate = true;
 			}
@@ -272,6 +296,9 @@ public class JellyfishMinion : BaseMinion
 			Projectile.velocity -= aimDirection * 3f;
 
 			ChargeTimer = 0 - Main.rand.Next(20); //slight randomization here so minions dont sync up too hard
+
+			if (player.HasMinionAttackTargetNPC && _targetNPC.whoAmI != player.MinionAttackTargetNPC)
+				_targetNPC = null; // can retarget into players minion target between shots
 		}
 	}
 

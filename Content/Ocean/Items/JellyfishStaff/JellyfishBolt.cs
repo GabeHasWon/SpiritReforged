@@ -29,7 +29,12 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 	public int TargetWhoAmI => (int)Projectile.ai[0];
 	public bool IsPink
 	{
-		get => (int)Projectile.ai[1] != 0;
+		get => (int)Projectile.ai[1] == 1;
+		set => Projectile.ai[1] = value ? 1 : 0;
+	}
+	public bool IsGreen
+	{
+		get => (int)Projectile.ai[1] == 2;
 		set => Projectile.ai[1] = value ? 1 : 0;
 	}
 	public int ChainCount => (int)Projectile.ai[2];
@@ -64,6 +69,8 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = MAX_TIMELEFT / 2;
+
+		Projectile.ArmorPenetration += 5;
 	}
 
 	public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetWhoAmI && Delay <= 0 && Initialized;
@@ -92,7 +99,7 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 
 		if (!Initialized)
 		{
-			JellyColors = new(IsPink);
+			JellyColors = new(IsPink, IsGreen);
 
 			if (!Main.dedServ && _trails == null)
 				CreateTrail();
@@ -169,7 +176,7 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 		{
 			ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center, Main.rand.NextVector2Circular(5f, 5f), JellyColors.LightningStart, JellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
 
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, JellyColors.SmokeColor * 0.8f, 50, bloomOpacity: 0.025f));
+			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, JellyColors.SmokeColor * 0.8f, 50, bloomOpacity: 0.035f));
 		}
 
 		hitTargets.Add(target);
@@ -177,7 +184,11 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 		NPC newTarget = Main.npc.Where(n => n.CanBeChasedBy() && !hitTargets.Contains(n) && n.Distance(Projectile.Center) < MAX_CHAIN_DISTANCE).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 		if (newTarget != null && ChainCount < 4 && Projectile.penetrate >= 2)
 		{
-			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JellyfishBolt>(), Projectile.damage, Projectile.knockBack, Projectile.owner, newTarget.whoAmI, IsPink ? 1 : 0, ChainCount + 1, p => (p.ModProjectile as JellyfishBolt).hitTargets = hitTargets);
+			int color = IsPink ? 1 : 0;
+			if (IsGreen)
+				color = 2;
+
+			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JellyfishBolt>(), Projectile.damage, Projectile.knockBack, Projectile.owner, newTarget.whoAmI, color, ChainCount + 1, p => (p.ModProjectile as JellyfishBolt).hitTargets = hitTargets);
 		}
 	}
 
