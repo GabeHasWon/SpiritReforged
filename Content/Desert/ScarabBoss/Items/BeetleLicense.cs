@@ -1,10 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Spooky.Generation;
-using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.NPCs.TownBeetle;
 using Terraria.Chat;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -29,9 +25,6 @@ public class BeetleLicense : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		Microbiome.Create<RottenGourdMicrobiome>(pos);
-		return true;
 		if (player.ItemAnimationJustStarted && (!WorldSystem.CheckWorldFlag(UsedLicense) || NPC.AnyNPCs(ModContent.NPCType<BeetleTownPet>())))
 		{
 			if (player.whoAmI == Main.myPlayer)
