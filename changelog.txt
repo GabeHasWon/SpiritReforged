@@ -4,3 +4,7 @@ v0.2.1.5
 - Made the two Regrowth items not break Cloudstalk (like other herbs) unless directly hovering over it
 - Added smart cursor support for our Planter Box-like tiles (currently only Cloudstalk Planter Boxes)
 - Allowed torches (and other tiles like workbenches) to be placed on our Planter Box-like tiles 
+- Added "Can mine meteorite" to Serrated Claws tooltip for consistency with pickaxes of the same power
+- Allowed Armored Vikings to drop the Frost Giant's Belt (1/12 chance)
+- Fixed Hydrothermal Vents spawning particles on the server
+- Fixed some of our custom minions being able to target inactive NPCs
