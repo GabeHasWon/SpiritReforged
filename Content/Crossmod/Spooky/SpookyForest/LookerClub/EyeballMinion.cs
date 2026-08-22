@@ -29,8 +29,8 @@ public class EyeballMinion : BaseMinion
 	{
 		Projectile.minionSlots = 0;
 		Projectile.DamageType = ModContent.GetInstance<HybridDamageClass>().Clone()
-			.AddSubClass(new(DamageClass.Melee, 0.5f))
-			.AddSubClass(new(DamageClass.Summon, 0.5f));
+			.AddSubClass(new(DamageClass.Melee, 1f))
+			.AddSubClass(new(DamageClass.Summon, 1f));
 
 		Projectile.timeLeft = 600;
 		Projectile.penetrate = 4;
