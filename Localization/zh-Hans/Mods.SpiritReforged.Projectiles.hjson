@@ -101,15 +101,7 @@ ShockGlyphLightningBolt.DisplayName: 闪电矢
 MariglowSeed.DisplayName: 光盏种子
 RageHit.DisplayName: 愤怒一击
 MirrorReturnPortal.DisplayName: 返回之镜传送门
-// RadiantEnergy.DisplayName: Radiant Energy
-// SlicingGust.DisplayName: Slicing Gust
-// ZephyrWave.DisplayName: Zephyr Wave
-// LightningBlast.DisplayName: Lightning Blast
-// Firefall.DisplayName: Firefall
-// WindBurstProjectile.DisplayName: Wind Burst Projectile
-// SingularCollapse.DisplayName: Collapse
-// ShockGlyphLightningBolt.DisplayName: Shock Glyph Lightning Bolt
-// MariglowSeed.DisplayName: Mariglow Seed
-// RageHit.DisplayName: Rage Hit
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
+// StoneshieldBash.DisplayName: Stoneshield Bash
+// ScutumBash.DisplayName: Scutum Bash

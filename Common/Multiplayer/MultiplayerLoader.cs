@@ -7,10 +7,12 @@ namespace SpiritReforged.Common.Multiplayer;
 
 /// <summary> Denotes a public static method than can be synced using <see cref="MultiplayerLoader.Send"/>. </summary>
 /// <param name="Relay"> Whether the method will automatically be called back on other clients. Only has an effect if <see cref="MultiplayerLoader.Send"/> is called on a multiplayer client. </param>
+/// <param name="Log"> Whether the method name will be logged when read. </param>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-internal class NetSyncedAttribute(bool Relay = false) : Attribute
+internal class NetSyncedAttribute(bool Relay = false, bool Log = true) : Attribute
 {
 	public readonly bool RelayToClients = Relay;
+	public readonly bool LogInteraction = Log;
 }
 
 internal partial class MultiplayerLoader : ILoadable
@@ -104,11 +106,16 @@ internal partial class MultiplayerLoader : ILoadable
 			for (int index = 0; index < parameters.Length; index++)
 				parameterObjects[index] = ReadSigns.TryGetValue(parameters[index].ParameterType, out var readAction) ? readAction.Invoke(reader) : reader.Read();
 
-			SpiritReforgedMod.Instance.Logger.Debug("[Synchronization] Reading incoming method: " + info.Name);
-			info.Invoke(null, parameterObjects);
+			if (info.GetCustomAttribute(typeof(NetSyncedAttribute)) is NetSyncedAttribute netSyncedAttribute)
+			{
+				if (netSyncedAttribute.LogInteraction)
+					SpiritReforgedMod.Instance.Logger.Debug("[Synchronization] Reading incoming method: " + info.Name);
 
-			if (Main.dedServ && info.GetCustomAttribute(typeof(NetSyncedAttribute)) is NetSyncedAttribute netSyncedAttribute && netSyncedAttribute.RelayToClients)
-				Send(info.Name, -1, whoAmI, parameterObjects); //Relay to clients
+				info.Invoke(null, parameterObjects);
+
+				if (Main.dedServ && netSyncedAttribute.RelayToClients)
+					Send(info.Name, -1, whoAmI, parameterObjects); //Relay to clients
+			}
 		}
 		else
 		{

@@ -3185,9 +3185,9 @@ BlazeGlyph: {
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
 	# The Effect key above is the masculine/default form
 	Gendered: {
-		// Fem: ""
-		// Neutral: ""
-		// Plural: ""
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
 	}
 }
 
@@ -3430,7 +3430,7 @@ CandlewickCoil: {
 	Tooltip: 抛出以形成可攀爬的烛芯绳索
 }
 
-StonemasonGreatshield: {
+StoneGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
 }
@@ -3475,4 +3475,14 @@ Overloader: {
 		Allows scrap to be collected from enemies
 		Hitting sentries consumes all scrap to create an explosion
 		''' */
+}
+
+SpikedScutumPurple: {
+	// DisplayName: Spiked Scutum Purple
+	// Tooltip: ""
+}
+
+SpikedScutumRed: {
+	// DisplayName: Spiked Scutum Red
+	// Tooltip: ""
 }

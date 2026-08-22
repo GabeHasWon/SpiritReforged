@@ -126,9 +126,8 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона
 DamageClasses: {
-	// HybridDamageClass.DisplayName: Hybrid Damage Class
+	HybridDamageClass.DisplayName: ед. гибридного урона
 	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
 }

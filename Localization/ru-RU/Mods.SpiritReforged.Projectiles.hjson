@@ -101,15 +101,7 @@ ShockGlyphLightningBolt.DisplayName: Электрический удар
 MariglowSeed.DisplayName: Семена бархатца
 RageHit.DisplayName: Яростный удар
 MirrorReturnPortal.DisplayName: Портал зеркала возвращения
-// RadiantEnergy.DisplayName: Radiant Energy
-// SlicingGust.DisplayName: Slicing Gust
-// ZephyrWave.DisplayName: Zephyr Wave
-// LightningBlast.DisplayName: Lightning Blast
-// Firefall.DisplayName: Firefall
-// WindBurstProjectile.DisplayName: Wind Burst Projectile
-// SingularCollapse.DisplayName: Collapse
-// ShockGlyphLightningBolt.DisplayName: Shock Glyph Lightning Bolt
-// MariglowSeed.DisplayName: Mariglow Seed
-// RageHit.DisplayName: Rage Hit
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
+// StoneshieldBash.DisplayName: Stoneshield Bash
+// ScutumBash.DisplayName: Scutum Bash

@@ -3442,7 +3442,7 @@ CandlewickCoil: {
 	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
 }
 
-StonemasonGreatshield: {
+StoneGreatshield: {
 	// DisplayName: Stonemason Greatshield
 	// Tooltip: ""
 }
@@ -3487,4 +3487,14 @@ Overloader: {
 		Allows scrap to be collected from enemies
 		Hitting sentries consumes all scrap to create an explosion
 		''' */
+}
+
+SpikedScutumPurple: {
+	// DisplayName: Spiked Scutum Purple
+	// Tooltip: ""
+}
+
+SpikedScutumRed: {
+	// DisplayName: Spiked Scutum Red
+	// Tooltip: ""
 }

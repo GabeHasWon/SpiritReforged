@@ -1,78 +1,118 @@
-﻿using Terraria.DataStructures;
+﻿using SpiritReforged.Common.Multiplayer;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Greatshields;
 
-internal class GreatshieldPlayer : ModPlayer
+public class GreatshieldPlayer : ModPlayer
 {
-	public int LastDefense { get; private set; } // Last frame's defense for use in GreatshieldClass's damage boost
-
-	public float AnimationFactor => parryAnim / (float)parryAnimMax;
-
-	internal int parryTime = 0; // How long between parries
-	internal int parryTimeMax = 0;
-	internal int decayWait = 0; // How long until the boosted health decays
-	internal int decayTimer = 0; // Timer for decaying boosted health
-	internal int boostHealth = 0; // How much added health the player has from guarding
-	internal int parryAnim = 0; // How long the parry animation lasts
-	internal int parryAnimMax = 0;
-
-	internal Action<Player, Player.HurtInfo> lastBlockHook = null;
-
-	public override void ResetEffects()
+	public sealed class GreatshieldItemLayer : PlayerDrawLayer
 	{
-		parryTime = Math.Max(parryTime - 1, 0);
-		decayWait = Math.Max(decayWait - 1, 0);
-		parryAnim = Math.Max(parryAnim - 1, 0);
+		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccBack);
+
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+			Player player = drawInfo.drawPlayer;
+
+			if (!player.dead && player.HeldItem.ModItem is GreatshieldItem shield)
+				shield.DrawShield(ref drawInfo, player.ItemAnimationActive);
+		}
 	}
 
-	public override void PostUpdateEquips() 
+	/// <summary> The rate in which shields regenerate or drain shield health. </summary>
+	public const float SHIELD_RATE = 0.2f;
+
+	public int LastDefense { get; private set; } // Last frame's defense for use in GreatshieldClass's damage boost
+
+	public bool Blocking
 	{
-		LastDefense = Player.statDefense;
-		Player.statLifeMax2 += boostHealth;
-
-		if (decayWait <= 0 && boostHealth > 0)
+		get => _blocking;
+		set
 		{
-			decayTimer++;
-
-			if (decayTimer % 15 == 0)
+			bool oldValue = _blocking;
+			if (oldValue != value)
 			{
-				boostHealth = Math.Max(boostHealth - 1, 0);
-				Player.statLife = Math.Max(Player.statLife - 1, 0);
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(SetBlocking), -1, Player.whoAmI, Player, value); //Automatically sync
+
+				SetBlocking(Player, value);
 			}
 		}
 	}
 
-	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+	/// <summary> Used for multiplayer syncing. Assign <see cref="Blocking"/> instead of calling this method. </summary>
+	[NetSynced(true)]
+	public static void SetBlocking(Player player, bool value)
 	{
-		if (boostHealth <= 0)
-			return;
-
-		modifiers.ModifyHurtInfo += (ref Player.HurtInfo info) =>
+		if (player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer))
 		{
-			int dif = Math.Min(boostHealth, info.Damage);
-			boostHealth = Math.Max(boostHealth - info.Damage, 0);
-
-			lastBlockHook?.Invoke(Player, info);
-
-			if (boostHealth > 0)
-				Player.statLife += dif;
-		};
+			shieldPlayer._delayCounter = 0; //Reset delay time
+			shieldPlayer._blocking = value;
+		}
 	}
 
-	internal void Guard(GreatshieldAltInfo info)
+	public float shieldHealth;
+
+	private bool _blocking;
+	private int _delayCounter;
+
+	public override void PostUpdateEquips() 
 	{
-		if (boostHealth > info.BoostHealth)
-			return;
+		LastDefense = Player.statDefense;
 
-		int dif = info.BoostHealth - boostHealth;
+		if (Player.HeldItem.ModItem is GreatshieldItem shieldItem)
+		{
+			var info = shieldItem.Info;
+			if (++_delayCounter >= shieldItem.Info.DelayTime)
+			{
+				if (Blocking)
+				{
+					shieldHealth = Math.Max(shieldHealth - SHIELD_RATE, 0); //Remove shield health
+				}
+				else
+				{
+					shieldHealth = Math.Min(shieldHealth + SHIELD_RATE, info.ShieldHealth); //Regenerate shield health
+				}
+			}
 
-		parryTimeMax = parryTime = info.ParryTime;
-		decayWait = info.DelayDecay;
-		boostHealth = info.BoostHealth;
-		parryAnim = parryAnimMax = info.AnimationTime;
+			Player.statDefense += shieldItem.Item.defense;
+		}
+		else
+		{
+			shieldHealth = 0;
+		}
 
-		Player.statLifeMax2 += boostHealth;
-		Player.statLife += dif;
+		if (Blocking)
+			Player.itemTime = Player.itemAnimation = 2; //Lock player item time
+
+		if (Player.whoAmI == Main.myPlayer && !Main.mouseRight)
+			Blocking = false; //Stop blocking if right click is released
+	}
+
+	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+	{
+		if (Blocking && shieldHealth > 0)
+			modifiers.ModifyHurtInfo += ModifyShieldHurt;
+	}
+
+	public void ModifyShieldHurt(ref Player.HurtInfo info)
+	{
+		if (Player.HeldItem.ModItem is GreatshieldItem shieldItem)
+			shieldItem.OnBlockDamage(Player, info);
+
+		shieldHealth = Math.Max((int)(shieldHealth - info.Damage), 0);
+		info.Knockback /= 2;
+
+		if (info.Damage - (int)shieldHealth <= 0) //Damage was blocked completely
+		{
+			info.Cancelled = true;
+
+			Player.velocity += new Vector2(info.HitDirection * info.Knockback, -1);
+			Player.SetImmuneTimeForAllTypes(30); //TODO: add more feedback
+		}
+		else //Damage was blocked partially
+		{
+			info.Damage -= (int)shieldHealth;
+		}
 	}
 
 	public override void HideDrawLayers(PlayerDrawSet drawInfo)

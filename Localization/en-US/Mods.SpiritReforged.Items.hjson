@@ -10,6 +10,11 @@ CommonTooltips: {
 		Allows scrap to be collected from enemies
 		Hitting sentries grants temporary buffs at the cost of scrap
 		'''
+	Greatshield:
+		'''
+		<right> to block limited damage
+		Gains increased damage with defense
+		'''
 }
 
 Kelp: {
@@ -3430,11 +3435,6 @@ CandlewickCoil: {
 	Tooltip: Throw to create a climbable line of candlewick rope
 }
 
-StonemasonGreatshield: {
-	DisplayName: Stonemason Greatshield
-	Tooltip: ""
-}
-
 ScrapPickup: {
 	DisplayName: Scrap
 	Tooltip:
@@ -3475,4 +3475,19 @@ Overloader: {
 		Allows scrap to be collected from enemies
 		Hitting sentries consumes all scrap to create an explosion
 		'''
+}
+
+StoneGreatshield: {
+	DisplayName: Stonemason Greatshield
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumPurple: {
+	DisplayName: Spiked Scutum
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumRed: {
+	DisplayName: "{$SpikedScutumPurple.DisplayName}"
+	Tooltip: "{$SpikedScutumPurple.Tooltip}"
 }
