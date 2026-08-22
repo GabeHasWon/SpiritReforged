@@ -42,31 +42,38 @@ public class StoneGreatshield : GreatshieldItem
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			int direction = Projectile.direction;
+			DrawBash(this, lightColor);
+			return false;
+		}
 
-			Texture2D texture = ModContent.GetInstance<StoneGreatshield>().HeldTexture;
-			SpriteEffects effects = (direction == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
-			Color color = Projectile.GetAlpha(lightColor);
-			float rotation = Projectile.rotation + EaseFunction.EaseSine.Ease(Progress * 2) * 0.2f * Projectile.direction;
+		public static void DrawBash(SwungProjectile swung, Color lightColor)
+		{
+			Projectile projectile = swung.Projectile;
+			int direction = projectile.direction;
+			Color color = projectile.GetAlpha(lightColor);
+			BasicConfiguration config = swung.GetConfig<BasicConfiguration>();
 
-			BasicConfiguration config = GetConfig<BasicConfiguration>();
+			if (Main.player[projectile.owner].HeldItem.ModItem is GreatshieldItem shieldItem)
+			{
+				Texture2D texture = shieldItem.HeldTexture;
+				SpriteEffects effects = (direction == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
+				float rotation = projectile.rotation + EaseFunction.EaseSine.Ease(swung.Progress * 2) * 0.2f * projectile.direction;
 
-			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) 
-				+ (Vector2.UnitX * (config.Reach / 2f) * config.Easing.Ease(1f - Progress)).RotatedBy(Projectile.rotation);
+				Vector2 position = projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY)
+					+ (Vector2.UnitX * (config.Reach / 2f) * config.Easing.Ease(1f - swung.Progress)).RotatedBy(projectile.rotation);
 
-			Main.EntitySpriteDraw(texture, position, null, color, rotation, texture.Size() / 2, Projectile.scale, effects);
+				Main.EntitySpriteDraw(texture, position, null, color, rotation, texture.Size() / 2, projectile.scale, effects);
+			}
 
 			#region wave
 			Main.instance.LoadProjectile(ProjectileID.DD2SquireSonicBoom);
 
 			Texture2D waveTexture = TextureAssets.Projectile[ProjectileID.DD2SquireSonicBoom].Value;
-			Vector2 wavePosition = Projectile.Center - Main.screenPosition + (Vector2.UnitX * config.Reach * Progress).RotatedBy(Projectile.rotation);
+			Vector2 wavePosition = projectile.Center - Main.screenPosition + (Vector2.UnitX * config.Reach * swung.Progress).RotatedBy(projectile.rotation);
 
-			Main.EntitySpriteDraw(waveTexture, wavePosition, null, color * (1f - Progress) * 0.3f, Projectile.rotation + MathHelper.PiOver2, 
-				waveTexture.Size() / 2, new Vector2(0.7f + Progress * 0.3f, 1f - Progress * 0.3f) * Projectile.scale * 0.7f, 0);
+			Main.EntitySpriteDraw(waveTexture, wavePosition, null, color * (1f - swung.Progress) * 0.3f, projectile.rotation + MathHelper.PiOver2,
+				waveTexture.Size() / 2, new Vector2(0.7f + swung.Progress * 0.3f, 1f - swung.Progress * 0.3f) * projectile.scale * 0.7f, 0);
 			#endregion
-
-			return false;
 		}
 	}
 

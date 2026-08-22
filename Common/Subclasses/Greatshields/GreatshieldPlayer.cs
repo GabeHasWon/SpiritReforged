@@ -7,7 +7,13 @@ public class GreatshieldPlayer : ModPlayer
 {
 	public sealed class GreatshieldItemLayer : PlayerDrawLayer
 	{
-		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccBack);
+		public override Position GetDefaultPosition() => new Multiple()
+		{
+			{ new Between(PlayerDrawLayers.FrontAccBack, PlayerDrawLayers.Shield), drawinfo => LayerEqual(drawinfo, GreatshieldItem.DrawLayer.FrontArm) },
+			{ new Between(PlayerDrawLayers.Backpacks, PlayerDrawLayers.Tails), drawinfo => LayerEqual(drawinfo, GreatshieldItem.DrawLayer.BackArm) }
+		};
+
+		private static bool LayerEqual(PlayerDrawSet set, GreatshieldItem.DrawLayer layer) => set.heldItem.ModItem is GreatshieldItem shieldItem && shieldItem.Layer == layer;
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{

@@ -3491,3 +3491,27 @@ SpikedScutumRed: {
 	DisplayName: "{$SpikedScutumPurple.DisplayName}"
 	Tooltip: "{$SpikedScutumPurple.Tooltip}"
 }
+
+Firewall: {
+	DisplayName: Firewall
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+KiteShield: {
+	DisplayName: Kite Shield
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+RhosRydd: {
+	DisplayName: Rhos Rydd
+	Tooltip:
+		'''
+		{$CommonTooltips.Greatshield}
+		Hold to perform a short-ranged dash
+		'''
+}
+
+Roromaraugi: {
+	DisplayName: Roromaraugi
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}

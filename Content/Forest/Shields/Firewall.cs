@@ -5,9 +5,9 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Shields;
 
-public class SpikedScutumPurple : GreatshieldItem
+public class Firewall : GreatshieldItem
 {
-	public class ScutumBash : SwungProjectile
+	public class FirewallBash : SwungProjectile
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -37,11 +37,11 @@ public class SpikedScutumPurple : GreatshieldItem
 
 	public override ShieldInfo SetInfo()
 	{
-		Item.defense = 6;
+		Item.defense = 4;
 		Item.damage = 28;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 12;
-		Item.shoot = ModContent.ProjectileType<ScutumBash>();
+		Item.shoot = ModContent.ProjectileType<FirewallBash>();
 
 		return new ShieldInfo(40, 60);
 	}
@@ -50,9 +50,9 @@ public class SpikedScutumPurple : GreatshieldItem
 
 	public override void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
 	{
-		if (drawInfo.drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<ScutumBash>()] == 0) //Don't draw while performing a shield bash
+		if (drawInfo.drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<FirewallBash>()] == 0) //Don't draw while performing a shield bash
 			base.DrawShield(ref drawInfo, guarding);
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.DemoniteBar, 5).AddIngredient(ItemID.Ebonwood, 18).AddTile(TileID.Anvils).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.HellstoneBar, 8).AddIngredient(ItemID.Obsidian, 20).AddTile(TileID.Anvils).Register();
 }

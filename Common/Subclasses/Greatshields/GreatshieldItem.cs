@@ -13,6 +13,9 @@ public abstract class GreatshieldItem : ModItem
 
 	public Texture2D HeldTexture => TextureByType[Type].Value;
 	public ShieldInfo Info { get; private set; }
+	public enum DrawLayer { FrontArm, BackArm }
+
+	public virtual DrawLayer Layer { get; private set; } = DrawLayer.FrontArm;
 
 	public override void SetStaticDefaults() => TextureByType.Add(Type, ModContent.Request<Texture2D>(Texture + "_Held"));
 
@@ -78,19 +81,19 @@ public abstract class GreatshieldItem : ModItem
 		}
 
 		drawInfo.DrawDataCache.Add(new(texture, position.Floor(), null, color, rotation, texture.Size() / 2, 1, effects, 0));
+	}
 
-		static Vector2 GetOffhand(Player player, out int frame)
-		{
-			Vector2 offhand = Main.OffsetsPlayerOffhand[frame = player.bodyFrame.Y / player.bodyFrame.Height];
+	public static Vector2 GetOffhand(Player player, out int frame)
+	{
+		Vector2 offhand = Main.OffsetsPlayerOffhand[frame = player.bodyFrame.Y / player.bodyFrame.Height];
 
-			if (player.direction != 1)
-				offhand.X = player.width - offhand.X;
+		if (player.direction != 1)
+			offhand.X = player.width - offhand.X;
 
-			if (player.gravDir != 1f)
-				offhand.Y -= player.height;
+		if (player.gravDir != 1f)
+			offhand.Y -= player.height;
 
-			return offhand;
-		}
+		return offhand;
 	}
 
 	public override void HoldItem(Player player)

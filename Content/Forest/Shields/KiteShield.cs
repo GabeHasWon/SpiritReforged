@@ -5,9 +5,9 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Shields;
 
-public class SpikedScutumPurple : GreatshieldItem
+public class KiteShield : GreatshieldItem
 {
-	public class ScutumBash : SwungProjectile
+	public class KiteShieldSwing : SwungProjectile
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -37,22 +37,20 @@ public class SpikedScutumPurple : GreatshieldItem
 
 	public override ShieldInfo SetInfo()
 	{
-		Item.defense = 6;
+		Item.defense = 3;
 		Item.damage = 28;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 12;
-		Item.shoot = ModContent.ProjectileType<ScutumBash>();
+		Item.shoot = ModContent.ProjectileType<KiteShieldSwing>();
 
-		return new ShieldInfo(40, 60);
+		return new ShieldInfo(30, 60);
 	}
 
 	public override void OnBlockDamage(Player player, Player.HurtInfo info) { }
 
 	public override void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
 	{
-		if (drawInfo.drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<ScutumBash>()] == 0) //Don't draw while performing a shield bash
+		if (drawInfo.drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<KiteShieldSwing>()] == 0) //Don't draw while performing a shield bash
 			base.DrawShield(ref drawInfo, guarding);
 	}
-
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.DemoniteBar, 5).AddIngredient(ItemID.Ebonwood, 18).AddTile(TileID.Anvils).Register();
 }
