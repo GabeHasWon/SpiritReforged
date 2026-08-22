@@ -3424,3 +3424,88 @@ CandlewickCoil: {
 	DisplayName: Candlewick Rope Coil
 	Tooltip: Throw to create a climbable line of candlewick rope
 }
+
+LookerClub: {
+	DisplayName: Looker Club
+	Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	DisplayName: Pumpkin Pail Orange
+	Tooltip: ""
+}
+
+PumpkinPailPurple: {
+	DisplayName: Pumpkin Pail Purple
+	Tooltip: ""
+}
+
+PumpkinPailWhite: {
+	DisplayName: Pumpkin Pail White
+	Tooltip: ""
+}
+
+PinSpookyFarms: {
+	DisplayName: Pin Spooky Farms
+	Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	DisplayName: Pin Spooky Krampus
+	Tooltip: ""
+}
+
+PinSpookyNose: {
+	DisplayName: Pin Spooky Nose
+	Tooltip: ""
+}
+
+PinSpookyRotten: {
+	DisplayName: Pin Spooky Rotten
+	Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	DisplayName: Star Gourd Green Carved Item
+	Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	DisplayName: Star Gourd Lime Carved Item
+	Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	DisplayName: Star Gourd Orange Carved Item
+	Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	DisplayName: Star Gourd Orange Lime Carved Item
+	Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	DisplayName: Star Gourd Red Carved Item
+	Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	DisplayName: Star Gourd Rotten Carved Item
+	Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	DisplayName: Star Gourd White Carved Item
+	Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	DisplayName: Star Gourd Yellow Carved Item
+	Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	DisplayName: Star Gourd Yellow Green Carved Item
+	Tooltip: ""
+}
