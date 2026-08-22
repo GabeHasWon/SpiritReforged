@@ -3158,3 +3158,269 @@ NotSunItemIcon: {
 	DisplayName: 非日图标
 	Tooltip: ""
 }
+
+ChromaticWax: {
+	DisplayName: 彩蜡
+	Tooltip: 可用于兑换魔法雕文
+	Gain: 被附魔的武器将获得：[c/{0}:{1}]
+	Target: 只能附魔于武器上
+	RightClick: 手持此雕文并右键你想要附魔的武器
+}
+
+BlazeGlyph: {
+	DisplayName: 炽焰雕文
+	Tooltip:
+		'''
+		造成伤害时会将你点燃
+		基于损失的生命值，至多可增加40%伤害和20%暴击率
+		'''
+	Effect: 点燃
+	Death: "{0}被怒火吞噬了……"
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
+	}
+}
+
+RadiantGlyph: {
+	DisplayName: 辐光雕文
+	Tooltip: 不造成伤害时会积蓄神圣能量，强化你的下次攻击
+	Effect: 辐光
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+StormGlyph: {
+	DisplayName: 风暴雕文
+	Tooltip:
+		'''
+		只能附魔于发射弹幕的武器上
+		增加弹幕速度
+		弹幕偶尔会生成强力烈风
+		'''
+	Effect: 风涌
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+MoonlightGlyph: {
+	DisplayName: 月光雕文
+	Tooltip:
+		'''
+		将20%的物品伤害转化为魔法伤害
+		伤害会随着魔力值的降低而增加
+		伤害敌人会汲取魔力
+		'''
+	Effect: 耀目
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+RotGlyph: {
+	DisplayName: 腐烂雕文
+	Tooltip:
+		'''
+		攻击会造成传染性枯萎病
+		染病的敌人也会对你造成枯萎病
+		'''
+	Effect: 枯萎
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+ShockGlyph: {
+	DisplayName: 雷击雕文
+	Tooltip: 暴击会造成10%额外伤害并电击附近的敌人
+	Effect: 感电
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+BeeGlyph: {
+	DisplayName: 蜜蜂雕文
+	Tooltip:
+		'''
+		将20%的物品伤害转化为召唤伤害
+		标记被击中的敌人
+		被标记的敌人在受到仆从的攻击时会释放蜜蜂
+		'''
+	Effect: 嗡鸣
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+SanguineGlyph: {
+	DisplayName: 染血雕文
+	Tooltip:
+		'''
+		降低20%伤害
+		攻击会偷取生命，偷取效果随着生命值的降低而增加
+		偷取生命时会获得衰减的可叠加增益
+		'''
+	Effect: 汲血
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+PrefixVoucher: {
+	DisplayName: "{0}前缀凭证"
+	Tooltip:
+		'''
+		{0}
+		附魔[c/{0}:{1}]
+		'''
+	AccessoryTooltip: 可右键对饰品使用
+	WeaponTooltip: 可右键对武器使用
+}
+
+EnchantedStamp: {
+	DisplayName: 附魔印章
+	Tooltip:
+		'''
+		解锁物品栏左侧的能力开关
+		开启时，在制作、掠夺和重铸物品时有几率获得雕文效果
+		'''
+	Active: 附魔开
+	Inactive: 附魔关
+}
+
+CelestialStamp: {
+	DisplayName: 天界印章
+	Tooltip:
+		'''
+		解锁物品栏左侧的能力开关
+		开启时，在制作、掠夺和重铸物品时有几率获得雕文效果
+		此外，允许物品同时获得前缀和雕文效果
+		'''
+}
+
+RageGlyph: {
+	DisplayName: 愤怒雕文
+	Tooltip: 击杀敌人造成的过量伤害和你受到的伤害会被存储并应用于下次攻击
+	Effect: 狂怒
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+CharmcasterHat: {
+	DisplayName: 魔石法师帽子
+	Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	DisplayName: 魔石法师护胫
+	Tooltip: ""
+}
+
+CharmcasterRobe: {
+	DisplayName: 魔石法师长袍
+	Tooltip: ""
+}
+
+VoidGlyph: {
+	DisplayName: 虚空雕文
+	Tooltip:
+		'''
+		攻击有几率造成可叠加的虚空坍塌
+		虚空坍塌在叠加一定层数后会创造一个降低敌人防御力的伤害性奇点
+		'''
+	Effect: 空无
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+GlitterPurse: {
+	DisplayName: 闪亮钱袋
+	Tooltip: 永久性增加背包的物品容量
+	StatusText: 你的背包变得更大了
+}
+
+MariglowSeedPouch: {
+	DisplayName: 光盏种子袋
+	Tooltip: 撒下会在沙子上长出光盏的种子
+}
+
+DisplayCaseItem: {
+	DisplayName: 展示柜
+	Tooltip: <right>将饰品放置在展示柜中
+}
+
+SkyPylonItem: {
+	DisplayName: 太空晶塔
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	DisplayName: 烛芯绳
+	Tooltip: 可以攀爬
+}
+
+WaxBlockItem: {
+	DisplayName: 蜡块
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: 蜡罐
+	Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	DisplayName: 返回之镜
+	Tooltip: <right>将你传送回家并创建一个传送门
+}
+
+MirrorItem: {
+	DisplayName: 镜子
+	Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	DisplayName: 附魔工作台
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: 烛芯绳圈
+	Tooltip: 抛出以形成可攀爬的烛芯绳索
+}

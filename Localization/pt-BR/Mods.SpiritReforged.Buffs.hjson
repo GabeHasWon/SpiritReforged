@@ -147,3 +147,28 @@ ScarabMountBuff: {
 	DisplayName: Montaria de tatu-bola
 	Description: "'Segura ai!'"
 }
+
+DivineStrike: {
+	// DisplayName: Divine Strike
+	// Description: Your next attack is empowered
+}
+
+RotDebuff: {
+	// DisplayName: Rotting [{0}]
+	// Description: "'Your skin is turning green'"
+}
+
+SanguineStackingBuff: {
+	// DisplayName: Sanguine Energy [{0}]
+	// Description: Damage increased by {0}%
+}
+
+BlazeDebuff: {
+	// DisplayName: Blazing
+	// Description: This is fine!
+}
+
+RageGlyphBuff: {
+	// DisplayName: Wrathful Damage [{0}]
+	// Description: Stored damage: {0}
+}

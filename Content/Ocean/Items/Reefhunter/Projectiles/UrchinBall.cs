@@ -64,6 +64,7 @@ public class UrchinBall : ModProjectile
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 6;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void SetDefaults()

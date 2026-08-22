@@ -387,6 +387,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] 天顶罐子比例"
 				Tooltip: 天顶世界中天顶罐子尝试生成的次数的倍率。
 			}
+
+			WaxScale: {
+				DisplayName: "[i:SpiritReforged/WaxPotItem] 蜡罐比例"
+				Tooltip: 蜡罐尝试生成的次数的倍率。
+			}
 		}
 
 		Presets: {
@@ -469,6 +474,21 @@ Pages: {
 			PotSpam: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] （贮藏地）罐子数量"
 				Tooltip: 陶器结构放置罐子的最小尝试次数。
+			}
+
+			EnchantedWorkbenchChance: {
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] （房屋）工作台几率"
+				Tooltip: 地下小屋中附魔工作台生成的几率的分母（1/x）。
+			}
+
+			DisplayCaseChance: {
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] （房屋）展示柜几率"
+				Tooltip: 地下小屋中展示柜生成的几率的分母（1/x）。
+			}
+
+			MirrorRate: {
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] （装饰）镜子比率"
+				Tooltip: 世界中生成的返回之镜的最大数量的倍率。
 			}
 		}
 

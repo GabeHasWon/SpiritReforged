@@ -32,7 +32,7 @@ internal class FishingAreaMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundHouseMicropass()
+		CopiedPage = new HouseLoader()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

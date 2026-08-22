@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Particle;
@@ -13,7 +12,7 @@ namespace SpiritReforged.Content.Granite.Sharpshooter;
 [AutoloadEquip(EquipType.HandsOn)]
 [AutoloadGlowmask("255,255,255")]
 [FromClassic("ShurikenLauncher")]
-public class SharpshooterGlove : EquippableItem
+public class SharpshooterGlove : ModItem, IFlagged
 {
 	public const int EffectiveDistance = 480;
 	public override bool IsLoadingEnabled(Mod mod) => false;
@@ -63,7 +62,7 @@ internal class SharpshooterPlayer : ModPlayer
 	{
 		orig(self, iNPCIndex, behindTiles);
 
-		if (Main.LocalPlayer.HasEquip<SharpshooterGlove>())
+		if (Main.LocalPlayer.HasFlag<SharpshooterGlove>())
 		{
 			var npc = Main.npc[iNPCIndex];
 			bool onCooldown = CooldownByNPC.TryGetValue(npc.whoAmI, out float value);
@@ -115,11 +114,11 @@ internal class SharpshooterPlayer : ModPlayer
 		}
 	}
 
-	public override void ResetEffects() => Stacks = Player.HasEquip<SharpshooterGlove>() ? Math.Max(Stacks - 0.0005f, 0) : 0;
+	public override void ResetEffects() => Stacks = Player.HasFlag<SharpshooterGlove>() ? Math.Max(Stacks - 0.0005f, 0) : 0;
 
 	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (!Player.HasEquip<SharpshooterGlove>() || !proj.DamageType.CountsAsClass(DamageClass.Ranged) || !AtRange(Player, target))
+		if (!Player.HasFlag<SharpshooterGlove>() || !proj.DamageType.CountsAsClass(DamageClass.Ranged) || !AtRange(Player, target))
 			return;
 
 		modifiers.FinalDamage *= GetDamageModifier(proj, modifiers);

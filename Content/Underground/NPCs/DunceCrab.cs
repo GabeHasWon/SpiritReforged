@@ -397,10 +397,10 @@ public class DunceCrab : ModNPC
 
 		int x = spawnInfo.SpawnTileX;
 		int y = spawnInfo.SpawnTileY;
-		float mossMultiplier = ModContent.GetInstance<MossTileCounts>().neonCount >= 200 ? 1.2f : 1f;
+		float mossMultiplier = NeonMossScene.InNeonMoss ? 1.2f : 1f;
 
 		if (y > Main.worldSurface && spawnInfo.Player.ZonePurity && !spawnInfo.Water && NPC.IsValidSpawningGroundTile(x, y))
-			return (Main.hardMode ? .06f : .12f) * mossMultiplier;
+			return (Main.hardMode ? 0.06f : 0.12f) * mossMultiplier;
 
 		return 0;
 	}

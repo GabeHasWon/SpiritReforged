@@ -43,6 +43,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
 		ProjectileID.Sets.TrailingMode[Type] = 0;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void AbstractSetDefaults() => Projectile.minionSlots = 0f;
@@ -54,7 +55,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 	public override bool PreAI()
 	{
 		Player owner = Main.player[Projectile.owner];
-		if (owner.HasEquip<JinxBow>())
+		if (owner.HasFlag<JinxBow>())
 			Projectile.timeLeft = 2;
 
 		if (_selectedArrow == default)

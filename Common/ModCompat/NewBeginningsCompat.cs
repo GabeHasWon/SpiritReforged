@@ -266,7 +266,7 @@ internal class NewBeginningsCompat : ModSystem
 	private void AddHikerBackpack(Player player)
 	{
 		player.GetModPlayer<BackpackPlayer>().backpack = new Item(ModContent.ItemType<LeatherBackpack>(), 1);
-		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).items[0] = new Item(ItemID.CalmingPotion, 3);
+		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).Items[0] = new Item(ItemID.CalmingPotion, 3);
 	}
 
 	private static Point16 FindHunterSpawn()

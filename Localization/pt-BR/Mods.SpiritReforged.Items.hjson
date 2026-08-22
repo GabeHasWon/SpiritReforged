@@ -3145,3 +3145,269 @@ NotSunItemIcon: {
 	// DisplayName: Not Sun Item Icon
 	// Tooltip: ""
 }
+
+ChromaticWax: {
+	// DisplayName: Chromatic Wax
+	// Tooltip: Can be exchanged for magical glyphs
+	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
+	// Target: Can only be applied to weapons
+	// RightClick: Hold this glyph and right-click the item you want to enchant
+}
+
+BlazeGlyph: {
+	// DisplayName: Blaze Glyph
+	/* Tooltip:
+		'''
+		Dealing damage sets you ablaze
+		up to +40% damage and +20% critical strike chance depending on lost hp
+		''' */
+	// Effect: Blazing
+	// Death: "{0} was consumed by Rage..."
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
+	}
+}
+
+RadiantGlyph: {
+	// DisplayName: Radiant Glyph
+	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
+	// Effect: Radiant
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+StormGlyph: {
+	// DisplayName: Storm Glyph
+	/* Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		''' */
+	// Effect: Billowed
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+MoonlightGlyph: {
+	// DisplayName: Moonlight Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into magic damage
+		Increases damage the lower your mana is
+		Damaging enemies leeches mana
+		''' */
+	// Effect: Dazzling
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+RotGlyph: {
+	// DisplayName: Rot Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict a contagious blight
+		This blight can be inflicted on to you by enemies suffering from it
+		''' */
+	// Effect: Blighted
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+ShockGlyph: {
+	// DisplayName: Shock Glyph
+	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
+	// Effect: Shocking
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+BeeGlyph: {
+	// DisplayName: Bee Glyph
+	/* Tooltip:
+		'''
+		Converts 20% of the item's damage into summon damage
+		Hitting enemies tags them
+		Tagged enemies release bees when struck by minions
+		''' */
+	// Effect: Buzzing
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+SanguineGlyph: {
+	// DisplayName: Sanguine Glyph
+	/* Tooltip:
+		'''
+		20% reduced damage
+		Attacks gain lifesteal that increases as your health decreases
+		Stealing life grants stacks of a decaying damage buff
+		''' */
+	// Effect: Leeching
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+PrefixVoucher: {
+	// DisplayName: "{0} Prefix Voucher"
+	/* Tooltip:
+		'''
+		{0}
+		Applies [c/{0}:{1}]
+		''' */
+	// AccessoryTooltip: Can be used on accessories with right click
+	// WeaponTooltip: Can be used on weapons with right click
+}
+
+EnchantedStamp: {
+	// DisplayName: Enchanted Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		''' */
+	// Active: Enchantment on
+	// Inactive: Enchantment off
+}
+
+CelestialStamp: {
+	// DisplayName: Celestial Stamp
+	/* Tooltip:
+		'''
+		Unlocks an ability toggle to the left of the inventory
+		When enabled occasionally grants glyph effects to crafted, looted and reforged items
+		Additionally allows items to receive prefixes and glyph effects simultaneously
+		''' */
+}
+
+RageGlyph: {
+	// DisplayName: Rage Glyph
+	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
+	// Effect: Wrathful
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+CharmcasterHat: {
+	// DisplayName: Charmcaster's Hat
+	// Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	// DisplayName: Charmcaster's Leggings
+	// Tooltip: ""
+}
+
+CharmcasterRobe: {
+	// DisplayName: Charmcaster's Robe
+	// Tooltip: ""
+}
+
+VoidGlyph: {
+	// DisplayName: Void Glyph
+	/* Tooltip:
+		'''
+		Attacks inflict stacks of Void Collapse
+		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
+		''' */
+	// Effect: Null
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+GlitterPurse: {
+	// DisplayName: Glitter Purse
+	// Tooltip: Permanently increases the item capacity of backpacks
+	// StatusText: Your backpacks grow larger
+}
+
+MariglowSeedPouch: {
+	// DisplayName: Mariglow Seed Pouch
+	// Tooltip: Scatters seeds which sprout into mariglow on sand
+}
+
+DisplayCaseItem: {
+	// DisplayName: Display Case
+	// Tooltip: <right> to place accessory in case
+}
+
+SkyPylonItem: {
+	// DisplayName: Space Pylon
+	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	// DisplayName: Candlewick Rope
+	// Tooltip: Can be climbed on
+}
+
+WaxBlockItem: {
+	// DisplayName: Wax Block
+	// Tooltip: ""
+}
+
+WaxPotItem: {
+	// DisplayName: Wax Pot
+	// Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	// DisplayName: Mirror of Return
+	// Tooltip: <right> to teleport home and create a portal
+}
+
+MirrorItem: {
+	// DisplayName: Mirror
+	// Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	// DisplayName: Enchanted Workbench
+	// Tooltip: ""
+}
+
+CandlewickCoil: {
+	// DisplayName: Candlewick Rope Coil
+	// Tooltip: Throw to create a climbable line of candlewick rope
+}

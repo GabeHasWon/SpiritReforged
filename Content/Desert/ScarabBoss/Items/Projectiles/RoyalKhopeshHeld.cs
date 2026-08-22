@@ -7,6 +7,7 @@ using SpiritReforged.Common.Easing;
 using Terraria.Graphics.CameraModifiers;
 using SpiritReforged.Common.Visuals;
 using System.IO;
+using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 public class RoyalKhopeshHeld : ModProjectile
@@ -26,6 +27,9 @@ public class RoyalKhopeshHeld : ModProjectile
 
 	public bool _empoweredStrike;
 	private float _originalScale;
+
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 	public override void SetDefaults()
 	{
 		Projectile.penetrate = -1;
