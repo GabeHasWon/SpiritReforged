@@ -81,7 +81,7 @@ class LookerClubProj : BaseClubProj
 
 		if (FullCharge && Main.myPlayer == Projectile.owner)
 		{
-			for (int k = 0; k < Main.rand.Next(2, 5); k++)
+			for (int k = 0; k < 2 + Main.rand.Next(2, 5); k++)
 			{
 				Projectile.NewProjectile(Projectile.GetSource_FromThis("SpiritReforged: Looker Club Smash"), position - Vector2.UnitY * 30,
 					Main.rand.NextVector2Circular(4f, 0.1f) - Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 8f), ModContent.ProjectileType<EyeballMinion>(), Projectile.damage / 3, 1f, Projectile.owner);

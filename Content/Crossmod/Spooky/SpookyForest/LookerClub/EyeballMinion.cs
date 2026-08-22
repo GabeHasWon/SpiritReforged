@@ -64,7 +64,7 @@ public class EyeballMinion : BaseMinion
 	{
 		float playerDist = Projectile.DistanceSQ(player.Center);
 
-		Projectile.timeLeft -= 1;
+		Projectile.timeLeft -= 2;
 
 		if (!Grounded())
 		{
@@ -156,6 +156,8 @@ public class EyeballMinion : BaseMinion
 
 	void Jump(Vector2 targetPosition, Vector2 extraVelocity, float speed)
 	{
+		SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.5f, Pitch = 0.3f}, Projectile.Center);
+
 		Projectile.velocity += Projectile.DirectionTo(targetPosition) * speed + extraVelocity;
 
 		var easeFunction = EaseBuilder.EaseCubicOut;
@@ -207,15 +209,15 @@ public class EyeballMinion : BaseMinion
 		Projectile.velocity.Y -= 4f;
 		Projectile.velocity.X = oldDirection * -2f;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 2; i++)
 		{
-			Dust.NewDustPerfect(Projectile.Center, DustID.Smoke, Main.rand.NextVector2Circular(4f, 4f), 125, default, 1.25f).noGravity = true;
+			Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2f, 2f), 125, default, 0.95f).noGravity = true;
 		}
 	}
 
 	public override void OnKill(int timeLeft)
 	{
-		SoundEngine.PlaySound(SoundID.NPCHit8 with { Volume = 0.65f, PitchVariance = 0.4f}, Projectile.Center);
+		SoundEngine.PlaySound(SoundID.NPCHit8 with { Volume = 0.45f, PitchVariance = 0.4f}, Projectile.Center);
 
 		for (int i = 0; i < 3; i++)
 		{

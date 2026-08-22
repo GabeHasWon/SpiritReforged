@@ -3426,8 +3426,12 @@ CandlewickCoil: {
 }
 
 LookerClub: {
-	DisplayName: Looker Club
-	Tooltip: ""
+	DisplayName: The Looker
+	Tooltip:
+		'''
+		Can be charged to increase damage and knockback
+		Charged strikes create mini eyeballs that fight for you
+		'''
 }
 
 PumpkinPailOrange: {
