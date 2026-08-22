@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
@@ -15,6 +16,7 @@ public class ScarabLightPetItem : ModItem
 		{
 			Main.projFrames[Type] = 7;
 			Main.projPet[Type] = true;
+			HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 		}
 
 		public override void SetDefaults()

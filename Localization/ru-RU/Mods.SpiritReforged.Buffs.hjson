@@ -135,7 +135,7 @@ TinyDragonPet_Buff: {
 
 EnlilBuff: {
 	DisplayName: Благословение Энлиля
-	Description: Вертикальная подвижность увеличена
+	Description: Вертикальная мобильность увеличена
 }
 
 ScarabLightPetBuff: {
@@ -146,4 +146,29 @@ ScarabLightPetBuff: {
 ScarabMountBuff: {
 	DisplayName: Ездовой жук-пилюльщик
 	Description: «Держитесь!»
+}
+
+DivineStrike: {
+	DisplayName: Божественный удар
+	Description: Ваша следующая атака нанесёт больше урона
+}
+
+RotDebuff: {
+	DisplayName: Гниение [{0}]
+	Description: «Ваша кожа зеленеет»
+}
+
+SanguineStackingBuff: {
+	DisplayName: Кровяная энергия [{0}]
+	Description: Урон увеличен на {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Пылающий
+	Description: This is fine!
+}
+
+RageGlyphBuff: {
+	DisplayName: Мстительный урон [{0}]
+	Description: Накоплено {0} ед. урона
 }

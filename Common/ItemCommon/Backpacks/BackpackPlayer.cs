@@ -44,7 +44,7 @@ internal class BackpackPlayer : ModPlayer
 			return true;
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 					return true;
 
@@ -63,7 +63,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
 					continue;
@@ -124,7 +124,7 @@ internal class BackpackPlayer : ModPlayer
 	{
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 				{
@@ -148,7 +148,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self).LastOrDefault();
 
 			if (!item.IsAir && item.buffTime > 0 && item.buffType != 0 && !HasBetterFoodBuff(self, item.buffType, item.buffTime))
 				return item;
@@ -180,7 +180,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self, true).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self, true).LastOrDefault();
 
 			if (!item.IsAir && item.potion && item.healLife > 0)
 				return item;
@@ -208,7 +208,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (backpack.ModItem is BackpackItem bp) //Update backpack contents as though they were in the inventory
 		{
-			foreach (var item in bp.items)
+			foreach (var item in bp.Items)
 			{
 				ItemLoader.UpdateInventory(item, Player);
 				Player.RefreshInfoAccsFromItemType(item);

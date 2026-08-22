@@ -35,6 +35,21 @@ ReforgedClientConfig: {
 	}
 
 	Headers.Developer: Ferramentas de Desenvolvidor
+
+	GlyphProjectileVisualEffects: {
+		// Label: Glyph Projectile Effects
+		// Tooltip: Determines if projectiles with glyphs should create visual effects
+	}
+
+	GlyphItemVisualEffects: {
+		// Label: Glyph Item Effects
+		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+	}
+
+	BannerJingle: {
+		// Label: Banner Jingle
+		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
+	}
 }
 
 ReforgedServerConfig: {
@@ -53,5 +68,18 @@ ReforgedServerConfig: {
 	MaxFloatingItemCount: {
 		Label: Limite de Itens Flutuantes
 		Tooltip: Determina quantos itens flutuantes podem estar ativos no mundo ao mesmo tempo.
+	}
+
+	AutoloadHeldProjectiles: {
+		// Label: Autoload Held Projectiles
+		/* Tooltip:
+			'''
+			Enables a system that automatically detects 'held projectiles' during loading.
+			This may substantially increase load times or cause load errors if enabled with other mods,
+			but may fix some issues with certain mechanics (such as glyphs) in-game.
+			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+
+			This has NO effect on vanilla or Reforged projectiles, which are already set.
+			''' */
 	}
 }

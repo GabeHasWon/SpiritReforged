@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;

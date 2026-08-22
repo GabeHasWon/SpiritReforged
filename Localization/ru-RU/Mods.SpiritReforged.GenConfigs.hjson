@@ -413,6 +413,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Зенитные горшки"
 				Tooltip: Устанавливает множитель количества попыток сгенерировать зенитный горшок в мирах с сидом «Зенит».
 			}
+
+			WaxScale: {
+				DisplayName: "[i:SpiritReforged/WaxPotItem] Восковые горшки"
+				Tooltip: Устанавливает множитель количества попыток сгенерировать восковые горшки.
+			}
 		}
 
 		Presets: {
@@ -503,6 +508,21 @@ Pages: {
 					Устанавливает максимальное возможное количество сгенерированых горшок в гончарной мастерской.
 					Это не гарантирует того, что все горшки сгенерируются.
 					'''
+			}
+
+			EnchantedWorkbenchChance: {
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] Шанс на верстак"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации зачарованного верстака в подземной хижине.
+			}
+
+			DisplayCaseChance: {
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] Шанс на витрину"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации витрины в подземной хижине.
+			}
+
+			MirrorRate: {
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] Множ. зеркал"
+				Tooltip: Устанавливает множитель максимального возможного количества зеркал возвращения в мире.
 			}
 		}
 

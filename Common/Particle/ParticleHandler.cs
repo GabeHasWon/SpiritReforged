@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
-using System.Linq;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.Particle;
 
@@ -7,11 +7,13 @@ public enum ParticleLayer
 {
 	BelowProjectile,
 	AboveProjectile,
+	BelowNPC,
 	AboveNPC,
 	AbovePlayer,
 	AboveSolid,
 	BelowSolid,
-	BelowWall
+	BelowWall,
+	AboveItem
 }
 
 public enum ParticleDrawType
@@ -171,6 +173,7 @@ public class ParticleHandler : ILoadable
 	}
 
 	internal static void DrawAllParticles(SpriteBatch spriteBatch, ParticleLayer drawLayer) => DrawAllParticles(spriteBatch, (p) => p.DrawLayer == drawLayer);
+
 	internal static void DrawAllParticles(SpriteBatch spriteBatch, Func<Particle, bool> func)
 	{
 		var batchedNonpremultiplyParticles = new List<Particle>();
@@ -207,7 +210,7 @@ public class ParticleHandler : ILoadable
 		if (batchedNonpremultiplyParticles.Count != 0)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, Main.DefaultSamplerState, DepthStencilState.None, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 			foreach (Particle batchedParticle in batchedNonpremultiplyParticles)
 			{
