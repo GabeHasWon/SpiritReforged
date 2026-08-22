@@ -55,7 +55,7 @@ public abstract class DoTExtension : BuffExtension
     protected float CountPlayerDamage()
     {
         Player player = Main.player[NPC.lastInteraction];
-        float increase = Main.DamageVar(player.HeldItem.damage, player.luck) * Settings.Scalability;
+        float increase = Main.DamageVar(player.GetWeaponDamage(player.HeldItem), player.luck) * Settings.Scalability;
 
         return damagePerSecond = Math.Min(damagePerSecond + increase, Settings.DamageLimit);
     }
