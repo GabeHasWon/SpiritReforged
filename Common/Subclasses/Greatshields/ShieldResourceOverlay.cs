@@ -15,7 +15,7 @@ public class ShieldResourceOverlay : ModResourceOverlay
 	{
 		Asset<Texture2D> asset = context.texture;
 
-		if (Main.LocalPlayer.HeldItem.ModItem is GreatshieldItem shieldItem && context.resourceNumber < shieldItem.Info.ShieldHealth / 20f)
+		if (Main.LocalPlayer.HeldItem.ModItem is GreatshieldItem shieldItem && context.resourceNumber < shieldItem.Info.GetShieldHealth(Main.LocalPlayer) / 20f)
 		{
 			if (CompareAssets(asset, FancyFolder + "Heart_Left") || CompareAssets(asset, FancyFolder + "Heart_Middle") || CompareAssets(asset, FancyFolder + "Heart_Right") || CompareAssets(asset, FancyFolder + "Heart_Right_Fancy") || CompareAssets(asset, FancyFolder + "Heart_Single_Fancy"))
 			{

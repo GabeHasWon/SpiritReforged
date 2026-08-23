@@ -24,7 +24,7 @@ public class GreatshieldPlayer : ModPlayer
 		}
 	}
 
-	/// <summary> The rate in which shields regenerate or drain shield health. </summary>
+	/// <summary> The rate in which shield health regenerates or drains. </summary>
 	public const float SHIELD_RATE = 0.2f;
 
 	public int LastDefense { get; private set; } // Last frame's defense for use in GreatshieldClass's damage boost
@@ -45,21 +45,26 @@ public class GreatshieldPlayer : ModPlayer
 		}
 	}
 
+	public StatModifier ShieldHealthStat = StatModifier.Default;
+	public StatModifier ShieldRegenStat = StatModifier.Default;
+
+	public float shieldHealth;
+	public int delayCounter;
+
+	private bool _blocking;
+
 	/// <summary> Used for multiplayer syncing. Assign <see cref="Blocking"/> instead of calling this method. </summary>
 	[NetSynced(true)]
 	public static void SetBlocking(Player player, bool value)
 	{
 		if (player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer))
 		{
-			shieldPlayer._delayCounter = 0; //Reset delay time
+			shieldPlayer.delayCounter = 0; //Reset delay time
 			shieldPlayer._blocking = value;
 		}
 	}
 
-	public float shieldHealth;
-
-	private bool _blocking;
-	private int _delayCounter;
+	public override void ResetEffects() => ShieldHealthStat = ShieldRegenStat = StatModifier.Default;
 
 	public override void PostUpdateEquips() 
 	{
@@ -68,7 +73,7 @@ public class GreatshieldPlayer : ModPlayer
 		if (Player.HeldItem.ModItem is GreatshieldItem shieldItem)
 		{
 			var info = shieldItem.Info;
-			if (++_delayCounter >= shieldItem.Info.DelayTime)
+			if (++delayCounter >= shieldItem.Info.DelayTime)
 			{
 				if (Blocking)
 				{
@@ -76,7 +81,7 @@ public class GreatshieldPlayer : ModPlayer
 				}
 				else
 				{
-					shieldHealth = Math.Min(shieldHealth + SHIELD_RATE, info.ShieldHealth); //Regenerate shield health
+					shieldHealth = Math.Min(shieldHealth + ShieldRegenStat.ApplyTo(SHIELD_RATE), info.GetShieldHealth(Player)); //Regenerate shield health
 				}
 			}
 

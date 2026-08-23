@@ -3516,6 +3516,15 @@ Roromaraugi: {
 	Tooltip: "{$CommonTooltips.Greatshield}"
 }
 
+StaminaRing: {
+	DisplayName: Ring of Stamina
+	Tooltip:
+		'''
+		Increases Greatshield guard by {0}
+		Increases Greatshield guard regeneration speed by {1}%
+		'''
+}
+
 Pepperbox: {
 	DisplayName: Pepperbox
 	Tooltip: ""

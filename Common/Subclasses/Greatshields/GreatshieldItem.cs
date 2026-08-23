@@ -6,7 +6,11 @@ namespace SpiritReforged.Common.Subclasses.Greatshields;
 
 public abstract class GreatshieldItem : ModItem
 {
-	public readonly record struct ShieldInfo(int ShieldHealth, int DelayTime);
+	public readonly record struct ShieldInfo(int ShieldHealth, int DelayTime)
+	{
+		/// <summary> Gets the final shield health value modified by <paramref name="player"/> stats. </summary>
+		public readonly int GetShieldHealth(Player player) => player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer) ? (int)shieldPlayer.ShieldHealthStat.ApplyTo(ShieldHealth) : ShieldHealth;
+	}
 
 	/// <summary> Contains shield held textures by item type. </summary>
 	private static readonly Dictionary<int, Asset<Texture2D>> TextureByType = [];
