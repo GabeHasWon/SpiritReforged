@@ -3527,3 +3527,8 @@ Roromaraugi: {
 	// DisplayName: Roromaraugi
 	// Tooltip: "{$CommonTooltips.Greatshield}"
 }
+
+Pepperbox: {
+	// DisplayName: Pepperbox
+	// Tooltip: ""
+}

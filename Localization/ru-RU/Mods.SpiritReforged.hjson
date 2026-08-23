@@ -130,4 +130,5 @@ DamageClasses: {
 	HybridDamageClass.DisplayName: ед. гибридного урона
 	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+	// MagazineDamageClass.DisplayName: Magazine Damage Class
 }

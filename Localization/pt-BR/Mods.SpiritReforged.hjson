@@ -126,4 +126,5 @@ DamageClasses: {
 	// HybridDamageClass.DisplayName: Hybrid Damage Class
 	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+	// MagazineDamageClass.DisplayName: Magazine Damage Class
 }
