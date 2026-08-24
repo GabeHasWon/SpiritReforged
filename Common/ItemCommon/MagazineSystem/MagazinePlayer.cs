@@ -108,29 +108,53 @@ public class MagazinePlayer : ModPlayer
 
 	private static void DrawAmmo(bool thick)
 	{
-		if (!Main.LocalPlayer.mouseInterface && HoldingMagazineWeapon && Main.LocalPlayer.HeldItem.TryGetGlobalItem<MagazineGlobalItem>(out var globalItem) && globalItem.AmmoRemaining > 0)
+		if (!Main.LocalPlayer.mouseInterface && HoldingMagazineWeapon && Main.LocalPlayer.HeldItem.TryGetGlobalItem<MagazineGlobalItem>(out var globalItem))
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
+			var data = globalItem.GetMagazineData();
+			var magazine = globalItem.GetCurrentMagazine();
+
 			int count = globalItem.AmmoRemaining;
+			if (globalItem.Reloading)
+				count = (int)MathHelper.Lerp(0, data._magazineSize, 1 - magazine.ReloadTimer / (float)data._reloadTime);
+
+			Main.NewText(count);
 
 			if (Main.LocalPlayer.TryGetModPlayer(out MagazinePlayer modPlayer))
 			{
 				const int offsetSize = 12;
-
+				
 				for (int i = 0; i < count; i++)
 				{
+					float fadeOut = 1f;
+
+					if (count >= 5)
+					{
+						if (i < count - 5) // anything more than five just gets turned invisible
+							fadeOut = 0f;
+						else
+						{
+							fadeOut = (i - (count - 5)) / 5f;
+						}
+					}
+					else
+					{
+						fadeOut = (i + 1) / (float)count;
+					}
+
 					Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell").Value;
 					Texture2D outlineTexture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell_Outline").Value;
 
 					Vector2 position = Main.MouseScreen + new Vector2(32, globalItem.GetMagazineData()._magazineSize * offsetSize);
 
-					float moveShellUp = MathHelper.Lerp((globalItem.GetCurrentMagazine().AmmoUsed - 1) * offsetSize, globalItem.GetCurrentMagazine().AmmoUsed * offsetSize, EaseBuilder.EaseCircularIn.Ease(1 - shellMoveTime / (float)maxMoveTime));
-
+					float moveShellUp = MathHelper.Lerp((globalItem.GetCurrentMagazine().AmmoUsed - 1) * offsetSize, globalItem.GetCurrentMagazine().AmmoUsed * offsetSize, EaseBuilder.EaseCircularOut.Ease(1 - shellMoveTime / (float)maxMoveTime));
 					Vector2 offset = new Vector2(0, -offsetSize * i - moveShellUp);
+					if (globalItem.Reloading)
+						offset = new Vector2(0, -offsetSize * i - count);
 
-					sb.Draw(outlineTexture, position + offset, null, Main.MouseBorderColor, 0f, outlineTexture.Size() / 2f, 1f, 0f, 0f);
-					sb.Draw(texture, position + offset, null, Main.mouseColor, 0f, texture.Size() / 2f, 1f, 0f, 0f);
+					sb.Draw(outlineTexture, position + offset, null, Main.MouseBorderColor * fadeOut, 0f, outlineTexture.Size() / 2f, 1f, 0f, 0f);
+					sb.Draw(texture, position + offset, null, Main.mouseColor * fadeOut, 0f, texture.Size() / 2f, 1f, 0f, 0f);
 				}
 			}
 		}
