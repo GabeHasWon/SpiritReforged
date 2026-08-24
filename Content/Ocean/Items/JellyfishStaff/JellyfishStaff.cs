@@ -1,7 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
@@ -42,6 +45,18 @@ public class JellyfishStaff : ModItem
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => position = Main.MouseWorld;
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => player.altFunctionUse != 2;
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		SoundEngine.PlaySound(SoundID.SplashWeak with { PitchVariance = 0.3f }, position);
+
+		for (int i = 0; i < 3; i++)
+		{
+			ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Circular(15f, 15f), Main.rand.NextVector2Circular(2.5f, 2.5f), Main.rand.NextFloat(0.12f, 0.26f), Main.rand.Next(20, 40)));
+
+			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(15f, 15f), DustID.Water, Main.rand.NextVector2Circular(5f, 5f), 55, default, 0.7f).noGravity = true;
+		}
+
+		return true;
+	}
 	public override void Update(ref float gravity, ref float maxFallSpeed) => Lighting.AddLight(Item.position, .224f * 2, .133f * 2, .255f * 2);
 }
