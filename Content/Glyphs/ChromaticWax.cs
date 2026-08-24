@@ -269,6 +269,9 @@ public abstract class GlyphItem : ModItem
 		/// <returns> Whether <paramref name="type"/> was successfully applied. </returns>
 		public bool SetGlyph(Item item, GlyphType type, IApplicationContext context)
 		{
+			if (ItemLoader.GetItem(type.ItemType) is GlyphItem g && type == default) // removing glyph
+				g.OnRemoveGlyph(item, context);
+
 			if (type.ItemType == ItemID.None)
 			{
 				Glyph = type; //Remove glyph
@@ -544,6 +547,8 @@ public abstract class GlyphItem : ModItem
 		if (context is not SyncContext)
 			item.Refresh(false); //Always prompts a netsync
 	}
+
+	protected virtual void OnRemoveGlyph(Item item, IApplicationContext context) { }
 
 	private static string GenderItemEffect(Item item, string baseKey)
 	{

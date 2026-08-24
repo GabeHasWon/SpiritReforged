@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using SpiritReforged.Content.Dusts;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -50,6 +51,13 @@ public partial class ShockGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(Color.Yellow);
 	}
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		MoRHelper.OverrideElement(item, MoRHelper.Thunder);
+
+		base.OnApplyGlyph(item, context);
+	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Thunder, -1);
 
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
