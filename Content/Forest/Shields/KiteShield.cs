@@ -19,7 +19,7 @@ public class KiteShield : GreatshieldItem
 
 			if (Progress < 0.5f)
 			{
-				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity * 10 + Main.rand.NextVector2Circular(30, 30) * Main.rand.NextFloat(), DustID.Blood, Projectile.velocity, 100);
+				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity * 10 + Main.rand.NextVector2Circular(30, 30) * Main.rand.NextFloat(), DustID.Cloud, Projectile.velocity, 100);
 				dust.noGravity = true;
 			}
 

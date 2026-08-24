@@ -46,6 +46,15 @@ public class Firewall : GreatshieldItem
 		return new ShieldInfo(40, 60);
 	}
 
+	public override void HoldItem(Player player)
+	{
+		base.HoldItem(player);
+		if (player.whoAmI == Main.myPlayer && player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer) && shieldPlayer.Blocking)
+		{
+			//Create fire
+		}
+	}
+
 	public override void OnBlockDamage(Player player, Player.HurtInfo info) { }
 
 	public override void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
