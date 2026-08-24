@@ -1,22 +1,15 @@
-using System.Linq;
-using Terraria.DataStructures;
-using Microsoft.CodeAnalysis;
-using SpiritReforged.Common.ProjectileCommon;
-using Terraria.Audio;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
-using SpiritReforged.Common.PrimitiveRendering.Trails;
-using SpiritReforged.Common.PrimitiveRendering;
-using Terraria.Graphics.Renderers;
 using SpiritReforged.Common.Visuals;
-using System.IO;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
+using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.JellyfishStaff;
 
@@ -79,6 +72,11 @@ public class JellyfishMinion : BaseMinion
 	private const int MAX_DASH_TIMER = 25;
 
 	public static int SHOOT_RANGE { get; set; } = 400; //Static because it's used by the bolt class
+
+	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion", false);
+	public static readonly Asset<Texture2D> OutlineTexture = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion_Outline", false);
+	public static readonly Asset<Texture2D> AttackTexture = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion_Attack", false);
+	public static readonly Asset<Texture2D> AttackAura = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion_AttackAura", false);
 
 	public JellyfishMinion() : base(600, 800, new Vector2(28, 28)) { }
 
@@ -327,11 +325,11 @@ public class JellyfishMinion : BaseMinion
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		var texture = ModContent.Request<Texture2D>(Texture).Value;
-		var outlineTexture = ModContent.Request<Texture2D>(Texture + "_Outline").Value;
+		var texture = BaseTexture.Value;
+		var outlineTexture = OutlineTexture.Value;
 
-		var attackTexture = ModContent.Request<Texture2D>(Texture + "_Attack").Value;
-		var attackAura = ModContent.Request<Texture2D>(Texture + "_AttackAura").Value;
+		var attackTexture = AttackTexture.Value;
+		var attackAura = AttackAura.Value;
 
 		Color drawColor = JellyColors.BaseColor;
 		Color auraColor = JellyColors.AuraBase;
