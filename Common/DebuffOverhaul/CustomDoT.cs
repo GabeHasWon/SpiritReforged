@@ -1,7 +1,7 @@
 ﻿namespace SpiritReforged.Common.DebuffOverhaul;
 
 /// <summary> A damage-over-time buff extension that can be registered through mod call. </summary>
-public class CustomDoT(float scalability, int damageLimit, bool stackable, Action scalingBehaviour = null, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null) : DoTExtension
+public class CustomDoT(float scalability, int damageLimit, bool stackable, DoTExtension.Category category, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null) : DoTExtension
 {
 	public static bool AddCustomDoT(object[] args)
 	{
@@ -28,23 +28,23 @@ public class CustomDoT(float scalability, int damageLimit, bool stackable, Actio
 
 		bool stackable = (bool)args[3];
 
-		if (args[4] is not Action or null)
-			throw new ArgumentException("AddCustomDoT parameter 5 should be an Action or null.");
+		if (args[4] is not int)
+			throw new ArgumentException("AddCustomDoT parameter 5 should be an int.");
 
-		var scalingBehaviour = (Action)args[4];
+		int category = (int)args[4];
 
 		if (args[5] is not Action<SpriteBatch, NPC, Color, Vector2, float, float> or null)
 			throw new ArgumentException("AddCustomDoT parameter 6 should be an Action<SpriteBatch, NPC, Color, Vector2, float, float> or null.");
 
 		var onPostDraw = (Action<SpriteBatch, NPC, Color, Vector2, float, float>)args[5];
 
-		BuffHandler.Register(new CustomDoT(scalability, damageLimit, stackable, scalingBehaviour, onPostDraw), buffType);
+		BuffHandler.Register(new CustomDoT(scalability, damageLimit, stackable, (Category)category, onPostDraw), buffType);
 		return true;
 	}
 
 	public override BuffSettings Settings => _settings;
 
-    private readonly BuffSettings _settings = new(scalability, damageLimit, stackable, scalingBehaviour);
+    private readonly BuffSettings _settings = new(scalability, damageLimit, stackable, category);
     private readonly Action<SpriteBatch, NPC, Color, Vector2, float, float> _onPostDraw = onPostDraw;
 
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options) => _onPostDraw?.Invoke(spriteBatch, npc, options.Color, options.Position, options.Lightness, options.Scale);

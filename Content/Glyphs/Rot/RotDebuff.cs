@@ -18,7 +18,7 @@ public class RotDebuff : ModBuff
 {
 	public class BlightExtension : DoTExtension
 	{
-		public override BuffSettings Settings => new(0.06f, 500, true, PoisonScaling);
+		public override BuffSettings Settings => new(0.06f, 500, true, Category.Poison);
 
 		public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
 		{
