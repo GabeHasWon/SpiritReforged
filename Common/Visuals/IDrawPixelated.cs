@@ -41,7 +41,7 @@ public interface IDrawPixelated
 					continue;
 
 				if (particle is IDrawPixelated iDrawPixelated)
-					iDrawPixelated.DrawPixelated(spriteBatch);
+					pixelQueue.Add(iDrawPixelated);
 			}
 
 			spriteBatch.End();
