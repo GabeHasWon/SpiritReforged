@@ -36,8 +36,6 @@ public partial class SanguineGlyph : GlyphItem
 		base.OnApplyGlyph(item, context);
 	}
 	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Blood, -1);
-
-
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
 		for (int j = 0; j < 4; j++)

@@ -44,8 +44,6 @@ public interface IDrawPixelated
 					pixelQueue.Add(iDrawPixelated);
 			}
 
-			spriteBatch.End();
-			graphics.SetRenderTarget(null);
 			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
 			{
 				graphics.SetRenderTarget(PixelTarget.Value);
