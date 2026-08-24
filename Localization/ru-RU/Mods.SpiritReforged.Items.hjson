@@ -3532,9 +3532,8 @@ StaminaRing: {
 	// DisplayName: Ring of Stamina
 	/* Tooltip:
 		'''
-		Increases guard by {0}
-		Increases guard regeneration speed by {1}%
-		'Effective on greatshields'
+		Increases Greatshield guard by {0}
+		Increases Greatshield guard regeneration speed by {1}%
 		''' */
 }
 

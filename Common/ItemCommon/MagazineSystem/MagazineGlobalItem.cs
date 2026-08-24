@@ -55,6 +55,8 @@ public class MagazineGlobalItem : GlobalItem
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
 
+	public int AmmoRemaining => _magazineData._magazineSize - _currentMagazine.AmmoUsed;
+
 	public void ActivateMagazine(MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		_shotRecoil = shotRecoil;
@@ -101,6 +103,8 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			MagazinePlayer.EjectUIShell(item, item.useTime);
+
 			_currentMagazine.AmmoUsed++;
 
 			if (_currentMagazine.AmmoUsed == _magazineData._magazineSize)
@@ -279,7 +283,7 @@ public class MagazineGlobalItem : GlobalItem
 
 				player.itemTime = 2;
 				player.itemAnimation = 2;
-			}			
+			}
 		}
 	}
 }
