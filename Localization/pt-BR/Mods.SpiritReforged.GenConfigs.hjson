@@ -389,8 +389,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: WaxScale
-				// Tooltip: WaxScale
+				// DisplayName: "[i:SpiritReforged/WaxPotItem] Wax Pot Scale"
+				// Tooltip: Multiplier to the number of attempts for Wax Pots.
 			}
 		}
 

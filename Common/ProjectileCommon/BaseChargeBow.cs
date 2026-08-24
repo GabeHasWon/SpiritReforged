@@ -46,10 +46,7 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		SafeAI();
 		AdjustDirection();
 
-		if (Main.myPlayer == Projectile.owner && Main.netMode != NetmodeID.SinglePlayer)
-			new PlayerMouseHandler.ShareMouseData((byte)Main.myPlayer, Main.MouseWorld).Send();
-
-		Vector2 mouse = PlayerMouseHandler.GetMouse(Projectile.owner);
+		Vector2 mouse = PlayerMouseHandler.GetMouse(Projectile.owner, true);
 
 		player.ChangeDir(mouse.X > player.position.X ? 1 : -1);
 		player.heldProj = Projectile.whoAmI;

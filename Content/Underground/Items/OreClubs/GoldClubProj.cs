@@ -106,8 +106,8 @@ class GoldClubProj : BaseClubProj
 	{
 		if (!Main.dedServ)
 		{
-			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 			CreateTrail(TrailSystem.ProjectileRenderer);
+			Main.NewText("DEBUG");
 		}
 	}
 

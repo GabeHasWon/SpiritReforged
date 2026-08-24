@@ -1,52 +1,51 @@
 ﻿using SpiritReforged.Common.Multiplayer;
-using System.IO;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
-internal class PlayerMouseHandler
+public static class PlayerMouseHandler
 {
-	internal class ShareMouseData : PacketData
+	private static readonly Dictionary<int, Vector2> _MouseByWhoAmI = [];
+
+	/// <summary> Gets <see cref="Main.MouseWorld"/> from the client <paramref name="who"/>. <br/>
+	/// <paramref name="refresh"/> automatically updates the cached position for client <paramref name="who"/>. <para/>
+	/// <b>DO NOT</b> use this for syncing-important content, only for unimportant visuals or vfx. </summary>
+	public static Vector2 GetMouse(int who, bool refresh = true)
 	{
-		public override bool Log => false;
-
-		private readonly byte _playerWho;
-		private readonly Vector2 _mouse;
-
-		public ShareMouseData() { }
-
-		public ShareMouseData(byte playerWho, Vector2 mouse)
+		if (Main.myPlayer == who)
 		{
-			_playerWho = playerWho;
-			_mouse = mouse;
+			return Main.MouseWorld;
+		}
+		else if (refresh)
+		{
+			MultiplayerLoader.Send(nameof(RequestMousePosition), -1, -1, Main.myPlayer, who);
 		}
 
-		public override void OnReceive(BinaryReader reader, int whoAmI)
+		if (_MouseByWhoAmI.TryGetValue(who, out Vector2 mouse))
 		{
-			byte who = reader.ReadByte();
-			Vector2 mouse = reader.ReadVector2();
-
-			if (Main.netMode == NetmodeID.Server)
-				new ShareMouseData(who, mouse).Send(-1, who); //Relay to other clients
-
-			if (!MouseByWhoAmI.TryAdd(who, mouse))
-				MouseByWhoAmI[who] = mouse;
+			return mouse;
 		}
 
-		public override void OnSend(ModPacket modPacket)
-		{
-			modPacket.Write(_playerWho);
-			modPacket.WriteVector2(_mouse);
-		}
+		return Main.player[who].Center;
 	}
 
-	public static Dictionary<int, Vector2> MouseByWhoAmI = [];
+	/// <summary> Requests the mouse position of <paramref name="requestedPlayer"/> and sends it back to <paramref name="requestingPlayer"/>.<br/>
+	/// Expected to be sent by multiplayer clients only. </summary>
+	[NetSynced(Log: false)]
+	public static void RequestMousePosition(int requestingPlayer, int requestedPlayer)
+	{
+		if (Main.dedServ)
+			MultiplayerLoader.Send(nameof(RequestMousePosition), requestedPlayer, -1, requestingPlayer, requestedPlayer); //(1) Recieved by the server after GetMouse was called, send to fromPlayer for Main.MouseWorld
+		else if (Main.myPlayer == requestedPlayer)
+			MultiplayerLoader.Send(nameof(SendMousePosition), -1, -1, requestingPlayer, requestedPlayer, Main.MouseWorld); //(2) Recieved by toPlayer, send to server
+	}
 
-	/// <summary>
-	/// Gets either <see cref="Main.MouseWorld"/> for the local client, or <see cref="MouseByWhoAmI"/>[<paramref name="who"/>] for remote clients.<br/>
-	/// Must be used in tandem with a <see cref="ShareMouseData"/> packet, otherwise the mouse data will not be updated properly.<br/>
-	/// If clients have not yet recieved the mouse packet, this will default to a few tiles above the remove player.<br/>
-	/// <b>DO NOT</b> use this for syncing-important content, only for unimportant visuals or vfx.
-	/// </summary>
-	public static Vector2 GetMouse(int who) => Main.myPlayer == who ? Main.MouseWorld : 
-		(MouseByWhoAmI.TryGetValue(who, out Vector2 mouse) ? mouse : Main.player[who].Center - new Vector2(0, 40));
+	[NetSynced(Log: false)]
+	public static void SendMousePosition(int requestingPlayer, int requestedPlayer, Vector2 position)
+	{
+		if (Main.dedServ)
+			MultiplayerLoader.Send(nameof(SendMousePosition), requestingPlayer, -1, requestingPlayer, requestedPlayer, position); //(3) Recieved by the server, send to fromPlayer
+
+		if (!_MouseByWhoAmI.TryAdd(requestedPlayer, position))
+			_MouseByWhoAmI[requestedPlayer] = position;
+	}
 }

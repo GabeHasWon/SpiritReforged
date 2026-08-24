@@ -47,7 +47,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 	{
 		Player mp = Main.player[Projectile.owner];
 
-		if (mp.HasEquip<RogueCrest>())
+		if (mp.HasFlag<RogueCrest>())
 			Projectile.timeLeft = 2;
 
 		return true;

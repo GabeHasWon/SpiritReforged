@@ -22,6 +22,9 @@ public abstract class SwungProjectile : ModProjectile
 	/// <summary> The absolute direction of the swing. </summary>
 	public int SwingDirection => Projectile.direction * Math.Sign(SwingArc);
 
+	/// <summary> The reach of this projectile multiplied by scale. </summary>
+	public float ScaledReach => _config.Reach * Projectile.scale;
+
 	/// <summary> The full arc of the swing in radians. </summary>
 	public float SwingArc;
 	/// <summary> The progress of the swing. </summary>
@@ -89,10 +92,10 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	public override bool ShouldUpdatePosition() => false;
-	public override void CutTiles() => Projectile.PlotTileCut(_config.Reach, Projectile.width);
+	public override void CutTiles() => Projectile.PlotTileCut(ScaledReach, Projectile.width);
 	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 	{
-		var endPos = Projectile.Center + (Vector2.UnitX * _config.Reach).RotatedBy(GetAbsoluteAngle());
+		var endPos = Projectile.Center + (Vector2.UnitX * ScaledReach).RotatedBy(GetAbsoluteAngle());
 		float collisionPoint = 0f;
 
 		return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, endPos, _config.Width, ref collisionPoint);
@@ -123,7 +126,7 @@ public abstract class SwungProjectile : ModProjectile
 	}
 
 	#region helper methods
-	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), _config.Reach + 10, effects: effects);
+	public void DrawSmear(Color color, float rotation, SpriteEffects effects = default) => DrawSmear(color, rotation, (int)(Progress * 12f), ScaledReach + 10, effects: effects);
 	public void DrawSmear(Color color, float rotation, int frame, float distance, float scale = 0.75f, SpriteEffects effects = default)
 	{
 		Main.instance.LoadProjectile(985);
@@ -157,7 +160,7 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(_config.Reach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(ScaledReach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4);
 
 	public Player.CompositeArmStretchAmount ProgressiveStretch() => (int)(Progress * 4f) switch
 	{
