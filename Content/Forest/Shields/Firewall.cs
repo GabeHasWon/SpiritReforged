@@ -38,6 +38,7 @@ public class Firewall : GreatshieldItem
 	public override ShieldInfo SetInfo()
 	{
 		Item.defense = 4;
+		Item.rare = ItemRarityID.Orange;
 		Item.damage = 28;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 12;

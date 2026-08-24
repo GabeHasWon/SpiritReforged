@@ -12,7 +12,7 @@ CommonTooltips: {
 		'''
 	Greatshield:
 		'''
-		<right> to block limited damage
+		<right> to block incoming damage
 		Gains increased damage with defense
 		'''
 }

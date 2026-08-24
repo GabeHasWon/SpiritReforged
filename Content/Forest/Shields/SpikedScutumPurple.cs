@@ -38,6 +38,7 @@ public class SpikedScutumPurple : GreatshieldItem
 	public override ShieldInfo SetInfo()
 	{
 		Item.defense = 6;
+		Item.rare = ItemRarityID.Blue;
 		Item.damage = 28;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 12;

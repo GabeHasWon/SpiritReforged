@@ -27,6 +27,7 @@ public abstract class GreatshieldItem : ModItem
 	{
 		Item.DamageType = ModContent.GetInstance<GreatshieldClass>();
 		Item.useTime = Item.useAnimation = 30;
+		Item.UseSound = SoundID.Item1;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.useStyle = -1;

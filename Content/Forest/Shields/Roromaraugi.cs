@@ -1,17 +1,75 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Jungle.Bamboo.Items;
+using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Shields;
 
 public class Roromaraugi : GreatshieldItem
 {
+	public sealed class SurfaceImpactNPC : GlobalNPC
+	{
+		public override bool InstancePerEntity => true;
+
+		public bool canImpact;
+
+		public override void AI(NPC npc)
+		{
+			if (canImpact)
+			{
+				if (Collision.SolidCollision(npc.position - new Vector2(2), npc.width + 4, npc.height + 4))
+				{
+					canImpact = false;
+					float damage = Math.Min(npc.velocity.Y / 50f, 1) * 50;
+
+					if (damage > 5 && npc.GetWereThereAnyInteractions() && Main.player[npc.lastInteraction] is Player player)
+					{
+						player.ApplyDamageToNPC(npc, (int)damage, 2, Math.Sign(npc.velocity.X), false, DamageClass.Melee, true);
+						npc.velocity.Y = -7 * npc.knockBackResist; //Bounce up
+
+						if (Main.netMode == NetmodeID.MultiplayerClient)
+							new NPCVelocityPacketData((short)npc.whoAmI, npc.velocity).Send();
+					}
+
+					if (!Main.dedServ)
+					{
+						for (int i = 0; i < 3; i++)
+						{
+							Vector2 velocity = (Vector2.UnitY * -(Math.Clamp(npc.velocity.Y, 1.5f, 3) + Main.rand.NextFloat(-1f, 1f))).RotatedByRandom(1.5f);
+							ParticleHandler.SpawnParticle(new CartoonHit(npc.Bottom, 20, 1, velocity.ToRotation() - MathHelper.PiOver2 - MathHelper.PiOver4, velocity));
+						}
+
+						SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = 0.5f }, npc.Center);
+						Collision.TileCollision(npc.position, npc.velocity, npc.width, npc.height);
+					}
+				}
+				else
+				{
+					npc.velocity.Y++;
+				}
+			}
+		}
+
+		public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter) => bitWriter.WriteBit(canImpact);
+
+		public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader) => canImpact = bitReader.ReadBit();
+	}
+
 	public class RoromaraugiSwing : SwungProjectile
 	{
 		public override string Texture => DrawHelpers.RequestLocal<Roromaraugi>("Roromaraugi_Held");
+
+		public override float SwingTime => (_chargeTimeMax == 0 || !FullyCharged) ? base.SwingTime : base.SwingTime * 2f; //Check if _chargeTimeMax equals zero to avoid recursion
 
 		public int ChargeTimeMax
 		{
@@ -29,13 +87,11 @@ public class Roromaraugi : GreatshieldItem
 		private int _chargeTime;
 		private bool _released;
 
-		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCubicOut, 54, 25);
+		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseCircularOut, 54, 25);
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			float value = base.GetRotation(out armRotation, out stretch);
-			//armRotation += MathHelper.PiOver2;
-
 			return value + MathHelper.PiOver2 + Progress * SwingDirection;
 		}
 
@@ -46,20 +102,61 @@ public class Roromaraugi : GreatshieldItem
 
 			if (owner.channel && !_released)
 			{
-				_chargeTime++;
+				if (++_chargeTime == ChargeTimeMax && Main.myPlayer == Projectile.owner)
+					SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+
+				Counter--;
 				Projectile.velocity = owner.DirectionTo(PlayerMouseHandler.GetMouse(Projectile.owner));
 			}
 			else 
 			{
 				if (FullyCharged)
 				{
+					if (Progress > 0.8f)
+						Projectile.scale = Math.Max(Projectile.scale - 0.1f, 0);
+					else
+						Projectile.scale = Math.Min(Projectile.scale + 0.1f, 1.5f);
 
+					if (!Main.dedServ && !_released)
+					{
+						SoundEngine.PlaySound(KendoBladeLunge.BigSwing, Projectile.Center);
+						Projectile.damage *= 2; //Double damage
+					}
 				}
 
 				_released = true;
 			}
+		}
 
-			//owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+		public override bool? CanDamage() => _released ? base.CanDamage() : false;
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			int direction = Math.Sign(SwingArc);
+			bool sendVelocity = false;
+
+			if (direction == 1)
+			{
+				if (FullyCharged && !Collision.SolidCollision(target.position, target.width, target.height + 2) && target.TryGetGlobalNPC(out SurfaceImpactNPC impactNPC))
+				{
+					impactNPC.canImpact = true;
+					target.netUpdate = true;
+
+					sendVelocity = true;
+				}
+			}
+			else
+			{
+				sendVelocity = true;
+			}
+
+			if (sendVelocity)
+			{
+				target.velocity.Y += Projectile.knockBack * 5 * direction * target.knockBackResist;
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+					new NPCVelocityPacketData((short)target.whoAmI, target.velocity).Send(); //Sync NPC velocity from the multiplayer client
+			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -72,6 +169,10 @@ public class Roromaraugi : GreatshieldItem
 			float smearRotation = Projectile.rotation - SwingArc * 0.5f * Projectile.spriteDirection + ((Projectile.spriteDirection == -1) ? MathHelper.Pi : 0);
 
 			DrawHeld(lightColor, origin, Projectile.rotation, effects);
+
+			if (!_released && FullyCharged) //Charge visual
+				DrawHeld(Color.White.Additive() * EaseFunction.EaseSine.Ease((_chargeTime - ChargeTimeMax) / 30f) * 0.5f, origin, Projectile.rotation, effects);
+
 			DrawSmear(smearColor, smearRotation, (SwingDirection == -1) ? SpriteEffects.FlipVertically : default);
 
 			return false;
@@ -83,8 +184,10 @@ public class Roromaraugi : GreatshieldItem
 	public override ShieldInfo SetInfo()
 	{
 		Item.damage = 12;
-		Item.useTime = Item.useAnimation = 40;
-		Item.knockBack = 12;
+		Item.rare = ItemRarityID.Green;
+		Item.useTime = Item.useAnimation = 20;
+		Item.knockBack = 3.8f;
+		Item.channel = true;
 		Item.shoot = ModContent.ProjectileType<RoromaraugiSwing>();
 
 		return new ShieldInfo(30, 60);
@@ -96,7 +199,16 @@ public class Roromaraugi : GreatshieldItem
 		return false;
 	}
 
-	public override void OnBlockDamage(Player player, Player.HurtInfo info) { }
+	public override void OnBlockDamage(Player player, Player.HurtInfo info)
+	{
+		if (player.whoAmI == Main.myPlayer)
+		{
+			int damage = player.GetWeaponDamage(Item);
+			float knockback = player.GetWeaponKnockback(Item);
+
+			SwungProjectile.Spawn(player.Center, Vector2.UnitX * player.direction, ModContent.ProjectileType<RoromaraugiSwing>(), damage, knockback, player, -3);
+		}
+	}
 
 	public override void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
 	{

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Greatshields;
@@ -38,7 +39,8 @@ public class RhosRydd : GreatshieldItem
 
 			if (owner.channel && !_released)
 			{
-				_chargeTime++;
+				if (++_chargeTime == ChargeTimeMax && Main.myPlayer == Projectile.owner)
+					SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 
 				Counter--; //Freeze counter
 				Projectile.velocity = owner.DirectionTo(PlayerMouseHandler.GetMouse(Projectile.owner));
@@ -78,10 +80,10 @@ public class RhosRydd : GreatshieldItem
 					mp.SetDash();
 
 					owner.armorEffectDrawShadowEOCShield = true;
-				}
 
-				if (owner.TryGetModPlayer(out GreatshieldPlayer shieldPlayer))
-					shieldPlayer.shieldHealth = 0; //Set shield health to zero until the projectile dies
+					if (owner.TryGetModPlayer(out GreatshieldPlayer shieldPlayer))
+						shieldPlayer.shieldHealth = 0; //Set shield health to zero until the projectile dies
+				}
 
 				_released = true;
 
@@ -125,6 +127,12 @@ public class RhosRydd : GreatshieldItem
 					+ (Vector2.UnitX * reach).RotatedBy(Projectile.rotation);
 
 				Main.EntitySpriteDraw(texture, position, null, color, rotation, texture.Size() / 2, Projectile.scale, effects);
+
+				if (!_released && FullyCharged) //Charge visual
+				{
+					Color additiveColor = Color.White.Additive() * EaseFunction.EaseSine.Ease((_chargeTime - ChargeTimeMax) / 30f) * 0.5f;
+					Main.EntitySpriteDraw(texture, position, null, additiveColor, rotation, texture.Size() / 2, Projectile.scale, effects);
+				}
 			}
 
 			if (_released) //Draw a wave
@@ -145,6 +153,7 @@ public class RhosRydd : GreatshieldItem
 	public override ShieldInfo SetInfo()
 	{
 		Item.defense = 2;
+		Item.rare = ItemRarityID.Blue;
 		Item.damage = 12;
 		Item.useTime = Item.useAnimation = 20;
 		Item.knockBack = 12;

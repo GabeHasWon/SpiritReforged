@@ -26,8 +26,6 @@ public class KiteShield : GreatshieldItem
 			Main.player[Projectile.owner].SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
 		}
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.Bleeding, 60 * 5);
-
 		public override bool PreDraw(ref Color lightColor)
 		{
 			StoneGreatshield.StoneshieldBash.DrawBash(this, lightColor);
@@ -38,6 +36,7 @@ public class KiteShield : GreatshieldItem
 	public override ShieldInfo SetInfo()
 	{
 		Item.defense = 3;
+		Item.rare = ItemRarityID.Green;
 		Item.damage = 28;
 		Item.useTime = Item.useAnimation = 40;
 		Item.knockBack = 12;
