@@ -41,10 +41,12 @@ public interface IDrawPixelated
 					continue;
 
 				if (particle is IDrawPixelated iDrawPixelated)
+				{
 					pixelQueue.Add(iDrawPixelated);
+				}
 			}
 
-			if (true) //Avoid restarting the spritebatch if there is nothing in queue
+			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
 			{
 				graphics.SetRenderTarget(PixelTarget.Value);
 				graphics.Clear(Color.Transparent);

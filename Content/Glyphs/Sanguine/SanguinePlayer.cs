@@ -167,9 +167,9 @@ public partial class SanguineGlyph
 			numBlood = (int)MathHelper.Clamp(numBlood, 2, 5);
 			for(int i = 0; i < numBlood; i++)
 			{
-				Vector2 posOffset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(62, 92);
-				Vector2 velocity = Vector2.Normalize(posOffset).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(7, 14);
-				float scale = Main.rand.NextFloat(1, 1.5f);
+				Vector2 posOffset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(32, 52);
+				Vector2 velocity = Vector2.Normalize(posOffset).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(5, 8);
+				float scale = Main.rand.NextFloat(0.75f, 1.33f);
 
 				ParticleHandler.SpawnQueuedParticle(new SanguineBlood(Player, Player.MountedCenter + posOffset, velocity, scale, 60), Main.rand.Next(10));
 			}
