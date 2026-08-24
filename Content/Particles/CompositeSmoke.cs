@@ -240,17 +240,10 @@ public class AttachedCompositeSmoke : CompositeSmoke
 
 	public override void Update()
 	{
+		base.Update();
+
 		Position = Parent.Center + _offset;
-
-		_offset -= Velocity;
-		Velocity *= 0.98f;
-
-		Rotation += Velocity.Length() * 0.01f;
-
-		if (_addLight)
-			Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
-
-		_action?.Invoke(this);
+		_offset += Velocity;
 	}
 }
 

@@ -3525,6 +3525,15 @@ StaminaRing: {
 		'''
 }
 
+Vendetta: {
+	DisplayName: Vendetta
+	Tooltip:
+		'''
+		Enemies that damage you are marked for a limited time
+		Marked enemies take {0}% more damage
+		'''
+}
+
 Pepperbox: {
 	DisplayName: Pepperbox
 	Tooltip: ""

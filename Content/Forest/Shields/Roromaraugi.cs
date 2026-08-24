@@ -92,7 +92,7 @@ public class Roromaraugi : GreatshieldItem
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			float value = base.GetRotation(out armRotation, out stretch);
-			return value + MathHelper.PiOver2 + Progress * SwingDirection;
+			return value + MathHelper.PiOver2 - Progress * SwingDirection * (FullyCharged ? -1 : 1);
 		}
 
 		public override void AI()
@@ -165,8 +165,8 @@ public class Roromaraugi : GreatshieldItem
 			SpriteEffects effects = (SwingDirection == -1) ? SpriteEffects.FlipHorizontally : default;
 			Vector2 origin = new(texture.Width / 2, texture.Height - 6); //The handle
 
-			Color smearColor = Projectile.GetAlpha(lightColor).MultiplyRGB(Color.PaleVioletRed) * Math.Min(Counter / SwingTime * 3, 1) * 0.5f;
-			float smearRotation = Projectile.rotation - SwingArc * 0.5f * Projectile.spriteDirection + ((Projectile.spriteDirection == -1) ? MathHelper.Pi : 0);
+			Color smearColor = Projectile.GetAlpha(lightColor).MultiplyRGB(Color.PaleVioletRed) * Math.Min(Counter / SwingTime * 3, 1) * 0.7f;
+			float smearRotation = Projectile.rotation - Math.Abs(SwingArc) * 0.5f;
 
 			DrawHeld(lightColor, origin, Projectile.rotation, effects);
 
@@ -195,7 +195,7 @@ public class Roromaraugi : GreatshieldItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 3, source);
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 3.5f, source);
 		return false;
 	}
 

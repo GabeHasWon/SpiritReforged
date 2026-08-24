@@ -12,7 +12,7 @@ CommonTooltips: {
 		''' */
 	/* Greatshield:
 		'''
-		<right> to block limited damage
+		<right> to block incoming damage
 		Gains increased damage with defense
 		''' */
 }
@@ -3534,6 +3534,15 @@ StaminaRing: {
 		'''
 		Increases Greatshield guard by {0}
 		Increases Greatshield guard regeneration speed by {1}%
+		''' */
+}
+
+Vendetta: {
+	// DisplayName: Vendetta
+	/* Tooltip:
+		'''
+		Enemies that damage you are marked for a limited time
+		Marked enemies take {0}% more damage
 		''' */
 }
 

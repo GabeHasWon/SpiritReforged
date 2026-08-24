@@ -77,11 +77,7 @@ public class ShieldResourceOverlay : ModResourceOverlay
 			Color defaultColor = context.color;
 			Rectangle shieldBar = new(190, 0, 22, (int)(22 * progress));
 
-			context.color = Color.Yellow.Additive() * 0.5f; //Draw additive progress cap
-			context.source = shieldBar with { Height = shieldBar.Height + 4 };
-			context.Draw();
-
-			context.color = Color.White.Additive();
+			context.color = Color.DimGray * 0.5f;
 			context.source = shieldBar with { Height = shieldBar.Height + 2 };
 			context.Draw();
 

@@ -177,3 +177,8 @@ StonemasonBuff: {
 	// DisplayName: Stonemason Block
 	// Description: Your next attack deals double knockback
 }
+
+Vendetta_Buff: {
+	// DisplayName: Vendetta_ Buff
+	// Description: Mods.SpiritReforged.Buffs.Vendetta_Buff.Description
+}
