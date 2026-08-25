@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: 15% increased movement in water
 }
 
-JellyfishStaff: {
-	DisplayName: Jellyfish Staff
+JellyfishJamJar: {
+	DisplayName: Jellyfish Jam Jar
 	Tooltip: Summons a tiny jellyfish to fight for you!
 }
 

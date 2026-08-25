@@ -90,9 +90,9 @@ CascadeLeggings: {
 	Tooltip: 在水中时增加15%移动速度
 }
 
-JellyfishStaff: {
-	DisplayName: 水母法杖
-	Tooltip: 召唤一只小水母为你而战！
+JellyfishJamJar: {
+	// DisplayName: Jellyfish Jam Jar
+	// Tooltip: Summons a tiny jellyfish to fight for you!
 }
 
 Lifesaver: {

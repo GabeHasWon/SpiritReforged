@@ -90,9 +90,9 @@ CascadeLeggings: {
 	Tooltip: Увеличивает скорость передвижения в воде на 15%
 }
 
-JellyfishStaff: {
-	DisplayName: Посох медузы
-	Tooltip: Призывает крошку-медузу сражаться за вас!
+JellyfishJamJar: {
+	// DisplayName: Jellyfish Jam Jar
+	// Tooltip: Summons a tiny jellyfish to fight for you!
 }
 
 Lifesaver: {
