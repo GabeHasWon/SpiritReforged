@@ -12,9 +12,8 @@ namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 /// </summary>
 /// <param name="magazineSize">Amount of shots before reloading</param>
 /// <param name="reloadTime">time in takes to reload, in ticks</param>
-public class MagazineData(SoundStyle shootSound, float minPitch, float maxPitch, int magazineSize, int reloadTime)
+public class MagazineData(float minPitch, float maxPitch, int magazineSize, int reloadTime)
 {
-	public SoundStyle shootSound = shootSound;
 	public float minPitch = minPitch;
 	public float maxPitch = maxPitch;
 
@@ -27,10 +26,15 @@ public record struct CurrentMagazine(int AmmoUsed, int ReloadTimer);
 public class MagazineGlobalItem : GlobalItem
 {
 	/// Animation methods for the custom use style. If null, default will be used, unless <see cref="_useCustomUseStyle"/> is false
-	public delegate void ShotUseStyle(Item item, Player player, Rectangle heldItemFrame);
-	public delegate void ShotUseFrame(Item item, Player player);
-	public delegate void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame);
-	public delegate void ReloadUseFrame(Item item, Player player);
+	public delegate void ShotUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin);
+	public delegate void ShotUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin);
+	public delegate void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress);
+	public delegate void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress);
+
+	/// <summary>
+	/// Method that is called upon firing the weapon. Should always use the pitch parameter to ensure the sound is pitched depending on ammo remaining
+	/// </summary>
+	public delegate void ShootSoundInvokation(float pitch, Vector2 position);
 
 	public override bool InstancePerEntity => true;
 	private MagazineData _magazineData = null;
@@ -41,6 +45,8 @@ public class MagazineGlobalItem : GlobalItem
 	private ShotUseFrame _shotUseFrame = null;
 	private ReloadUseStyle _reloadUseStyle = null;
 	private ReloadUseFrame _reloadUseFrame = null;
+
+	private ShootSoundInvokation _soundInvokation = null;
 
 	// used for custom UseStyle drawing
 	private float _shotRecoil;
@@ -61,8 +67,10 @@ public class MagazineGlobalItem : GlobalItem
 
 	public int AmmoRemaining => _magazineData._magazineSize - _currentMagazine.AmmoUsed;
 	public float MagazineProgress => 1f - AmmoRemaining / (float)_magazineData._magazineSize;
-	public void ActivateMagazine(MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
+	public void ActivateMagazine(ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
+		_soundInvokation = soundMethod;
+
 		_shotRecoil = shotRecoil;
 		_rotationRecoil = rotationRecoil;
 
@@ -85,7 +93,7 @@ public class MagazineGlobalItem : GlobalItem
 	/// <param name="shotFrame">The UseItemFrame of the shooting animation</param>
 	/// <param name="reloadStyle">The UseStyle of the reload animation</param>
 	/// <param name="reloadFrame">The UseItemFrame of the reload animation</param>
-	public void SetAnimations(Vector2? animationRatio = null,ShotUseStyle shotStyle = null, ShotUseFrame shotFrame = null, ReloadUseStyle reloadStyle = null, ReloadUseFrame reloadFrame = null)
+	public void SetAnimations(Vector2? animationRatio = null, ShotUseStyle shotStyle = null, ShotUseFrame shotFrame = null, ReloadUseStyle reloadStyle = null, ReloadUseFrame reloadFrame = null)
 	{
 		_animationRatio = animationRatio;
 
@@ -134,8 +142,7 @@ public class MagazineGlobalItem : GlobalItem
 			if (AmmoRemaining <= 0)
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
 
-			if (data.shootSound != default)
-				SoundEngine.PlaySound(data.shootSound with { Pitch = MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress) }, position);
+			_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress), position);
 
 			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
 			_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
@@ -150,15 +157,21 @@ public class MagazineGlobalItem : GlobalItem
 		{
 			if (Reloading)
 			{
+				if (Main.myPlayer == player.whoAmI)
+					player.direction = _shootDirection;
+
+				if (_reloadAnimationTimer > 0)
+					_reloadAnimationTimer--;
+
 				if (_reloadUseStyle is not null)
-					_reloadUseStyle.Invoke(item, player, heldItemFrame);
+					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)_magazineData._reloadTime);
 				else
 					ReloadStyle(player);
 			}
 			else
 			{
 				if (_shotUseStyle is not null)
-					_shotUseStyle.Invoke(item, player, heldItemFrame);
+					_shotUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 				else
 					ItemVisualHelpers.SetGunUseStyle(player, item, _shootDirection, _shotRecoil, EaseCircularOut, EaseOutBack(), _itemSize, _itemOrigin, _animationRatio);
 			}
@@ -168,9 +181,6 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation style. Should usually be overridden with the delegate.
 	void ReloadStyle(Player player)
 	{
-		if (_reloadAnimationTimer > 0)
-			_reloadAnimationTimer--;
-
 		float animProgress = 1f - _reloadAnimationTimer / (float)_magazineData._reloadTime;
 
 		if (Main.myPlayer == player.whoAmI)
@@ -207,15 +217,18 @@ public class MagazineGlobalItem : GlobalItem
 		{
 			if (Reloading)
 			{
+				if (Main.myPlayer == player.whoAmI)
+					player.direction = _shootDirection;
+
 				if (_reloadUseFrame is not null)
-					_reloadUseFrame.Invoke(item, player);
+					_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)_magazineData._reloadTime);
 				else
 					ReloadFrame(player);
 			}
 			else
 			{
 				if (_shotUseFrame is not null)
-					_shotUseFrame.Invoke(item, player);
+					_shotUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 				else
 					ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, _rotationRecoil, EaseCircularOut, EaseOutBack(), false, _animationRatio);
 			}
@@ -225,9 +238,6 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation frame. Should usually be overridden with the delegate.
 	void ReloadFrame(Player player)
 	{
-		if (Main.myPlayer == player.whoAmI)
-			player.direction = _shootDirection;
-
 		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_magazineData._reloadTime;
 		float rotation = _shootRotation * player.gravDir + 1.5707964f;
 		float frontArmRotation = _shootRotation * player.gravDir + 1.5707964f;

@@ -19,6 +19,7 @@ public abstract class ShotgunItem(ShotgunStats stats) : ModItem
 
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.useAmmo = ModContent.ItemType<ShotgunAmmoType>();
+		Item.shootSpeed = 1f;
 	}
 
 	public virtual void SafeSetDefaults()
@@ -43,6 +44,8 @@ public abstract class ShotgunItem(ShotgunStats stats) : ModItem
 				shotgunPlayer.ModifySpread(ammo._spreadAmount, shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
 				shotgunPlayer.ModifySpeed(ammo._speed, shotgunStats._additionalSpeed, shotgunStats._speedMultiplier), 
 				damage, knockback);
+
+			AdditionalShoot(player, source, position, velocity, ammo, damage, knockback);
 		}
 
 		return false;
@@ -51,5 +54,5 @@ public abstract class ShotgunItem(ShotgunStats stats) : ModItem
 	/// <summary>
 	/// For any behavior that should happen on top of ammo shooting behavior.
 	/// </summary>
-	public virtual void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) { }
+	public virtual void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback) { }
 }

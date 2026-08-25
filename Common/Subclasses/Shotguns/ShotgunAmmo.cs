@@ -111,7 +111,12 @@ public struct ShotgunStats
 {
 	public ShotgunStats(int additionalShots = 0, float shotMultiplier = 0, float additionalSpread = 0, float spreadMultiplier = 0, float additionalSpeed = 0, float speedMultiplier = 0)
 	{
-		
+		_additionalShots = additionalShots;
+		_shotMultiplier = shotMultiplier;
+		_additionalSpread = additionalSpread;
+		_spreadMultiplier = spreadMultiplier;
+		_additionalSpeed = additionalSpeed;
+		_speedMultiplier = speedMultiplier;
 	}
 
 	// TODO: better naming convention here
