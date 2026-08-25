@@ -2,7 +2,9 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Wrenches;
 using SpiritReforged.Common.Visuals;
+using Terraria.Audio;
 using Terraria.ModLoader;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 
@@ -38,7 +40,7 @@ public class MagazinePlayer : ModPlayer
 			offset += _velocity;
 
 			rotation += _velocity.Length() * 0.05f;
-
+			 
 			if (--_timeLeft <= 0)
 				Active = false;
 		}
@@ -104,54 +106,77 @@ public class MagazinePlayer : ModPlayer
 
 		foreach (UIShell shell in shellsToRemove)
 			_ejectedShells.Remove(shell);
+
+		if (UIActive && Main.LocalPlayer.HeldItem.TryGetGlobalItem<MagazineGlobalItem>(out var globalItem))
+		{
+			var data = globalItem.GetMagazineData();
+			var magazine = globalItem.GetCurrentMagazine();
+
+			if (globalItem.Reloading)
+			{
+				float interpolant = 1 - (magazine.ReloadTimer - 1) / ((float)data._reloadTime - 1);
+
+				_oldCount = _count;
+				_count = (int)MathHelper.Lerp(0, data._magazineSize, interpolant);
+
+				if (_count != _oldCount && _count > 0 && Main.myPlayer == Player.whoAmI)
+				{
+					if (_count == data._magazineSize)
+					{
+						SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f});
+						_oldCount = _count;
+					}		
+					else
+						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+				}
+			}
+			else
+				_count = globalItem.AmmoRemaining;
+		}
 	}
+	static int _count;
+	static int _oldCount;
+
+	static bool UIActive => !Main.LocalPlayer.mouseInterface && HoldingMagazineWeapon;
 
 	private static void DrawAmmo(bool thick)
 	{
-		if (!Main.LocalPlayer.mouseInterface && HoldingMagazineWeapon && Main.LocalPlayer.HeldItem.TryGetGlobalItem<MagazineGlobalItem>(out var globalItem))
+		if (UIActive && Main.LocalPlayer.HeldItem.TryGetGlobalItem<MagazineGlobalItem>(out var globalItem) && _count > 0)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
 			var data = globalItem.GetMagazineData();
 			var magazine = globalItem.GetCurrentMagazine();
 
-			int count = globalItem.AmmoRemaining;
-			if (globalItem.Reloading)
-				count = (int)MathHelper.Lerp(0, data._magazineSize, 1 - magazine.ReloadTimer / (float)data._reloadTime);
-
-			Main.NewText(count);
-
 			if (Main.LocalPlayer.TryGetModPlayer(out MagazinePlayer modPlayer))
 			{
 				const int offsetSize = 12;
 				
-				for (int i = 0; i < count; i++)
+				for (int i = 0; i < _count; i++)
 				{
-					float fadeOut = 1f;
+					float fadeOut = (i + 1) / (float)_count;
 
-					if (count >= 5)
+					if (_count >= 5)
 					{
-						if (i < count - 5) // anything more than five just gets turned invisible
+						if (i < _count - 5) // anything more than five just gets turned invisible
 							fadeOut = 0f;
 						else
 						{
-							fadeOut = (i - (count - 5)) / 5f;
+							fadeOut = (i - (_count - 5)) / 5f;
 						}
-					}
-					else
-					{
-						fadeOut = (i + 1) / (float)count;
 					}
 
 					Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell").Value;
 					Texture2D outlineTexture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell_Outline").Value;
 
-					Vector2 position = Main.MouseScreen + new Vector2(32, globalItem.GetMagazineData()._magazineSize * offsetSize);
+					Vector2 position = Main.MouseScreen + new Vector2(32, data._magazineSize * offsetSize);
 
-					float moveShellUp = MathHelper.Lerp((globalItem.GetCurrentMagazine().AmmoUsed - 1) * offsetSize, globalItem.GetCurrentMagazine().AmmoUsed * offsetSize, EaseBuilder.EaseCircularOut.Ease(1 - shellMoveTime / (float)maxMoveTime));
-					Vector2 offset = new Vector2(0, -offsetSize * i - moveShellUp);
+					float moveShellUp = MathHelper.Lerp((magazine.AmmoUsed - 1) * offsetSize, magazine.AmmoUsed * offsetSize, EaseBuilder.EaseCircularOut.Ease(1 - shellMoveTime / (float)maxMoveTime));
+
 					if (globalItem.Reloading)
-						offset = new Vector2(0, -offsetSize * i - count);
+						moveShellUp = (globalItem.GetCurrentMagazine().AmmoUsed - _count) * offsetSize;
+					
+					Vector2 offset = new Vector2(0, -offsetSize * i - moveShellUp);
 
 					sb.Draw(outlineTexture, position + offset, null, Main.MouseBorderColor * fadeOut, 0f, outlineTexture.Size() / 2f, 1f, 0f, 0f);
 					sb.Draw(texture, position + offset, null, Main.mouseColor * fadeOut, 0f, texture.Size() / 2f, 1f, 0f, 0f);
@@ -160,10 +185,10 @@ public class MagazinePlayer : ModPlayer
 		}
 	}
 
-	public static void EjectUIShell(Item item, int useTime)
+	public static void EjectUIShell(Item item)
 	{
-		shellMoveTime = useTime;
-		maxMoveTime = useTime;
+		shellMoveTime = item.useTime;
+		maxMoveTime = item.useTime;
 
 		Vector2 position = Main.MouseWorld + new Vector2(32, 0) / Main.GameViewMatrix.Zoom;
 

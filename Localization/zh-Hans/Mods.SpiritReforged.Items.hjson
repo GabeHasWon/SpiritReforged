@@ -3538,3 +3538,13 @@ Pepperbox: {
 	// DisplayName: Pepperbox
 	// Tooltip: ""
 }
+
+ShotgunAmmoType: {
+	// DisplayName: Shotgun Ammo Type
+	// Tooltip: ""
+}
+
+Shot: {
+	// DisplayName: Shot
+	// Tooltip: ""
+}

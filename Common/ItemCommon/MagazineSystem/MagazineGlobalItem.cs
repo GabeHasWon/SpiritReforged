@@ -12,8 +12,12 @@ namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 /// </summary>
 /// <param name="magazineSize">Amount of shots before reloading</param>
 /// <param name="reloadTime">time in takes to reload, in ticks</param>
-public class MagazineData(int magazineSize, int reloadTime)
+public class MagazineData(SoundStyle shootSound, float minPitch, float maxPitch, int magazineSize, int reloadTime)
 {
+	public SoundStyle shootSound = shootSound;
+	public float minPitch = minPitch;
+	public float maxPitch = maxPitch;
+
 	public int _magazineSize = magazineSize;
 	public int _reloadTime = reloadTime;
 }
@@ -56,7 +60,7 @@ public class MagazineGlobalItem : GlobalItem
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
 
 	public int AmmoRemaining => _magazineData._magazineSize - _currentMagazine.AmmoUsed;
-
+	public float MagazineProgress => 1f - AmmoRemaining / (float)_magazineData._magazineSize;
 	public void ActivateMagazine(MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		_shotRecoil = shotRecoil;
@@ -103,7 +107,7 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			MagazinePlayer.EjectUIShell(item, item.useTime);
+			MagazinePlayer.EjectUIShell(item);
 
 			_currentMagazine.AmmoUsed++;
 
@@ -125,6 +129,14 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			var data = _magazineData;
+
+			if (AmmoRemaining <= 0)
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
+
+			if (data.shootSound != default)
+				SoundEngine.PlaySound(data.shootSound with { Pitch = MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress) }, position);
+
 			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
 			_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
 		}
@@ -205,7 +217,7 @@ public class MagazineGlobalItem : GlobalItem
 				if (_shotUseFrame is not null)
 					_shotUseFrame.Invoke(item, player);
 				else
-					ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, _rotationRecoil, EaseCircularOut, EaseOutBack(), true, _animationRatio);
+					ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, _rotationRecoil, EaseCircularOut, EaseOutBack(), false, _animationRatio);
 			}
 		}
 	}
