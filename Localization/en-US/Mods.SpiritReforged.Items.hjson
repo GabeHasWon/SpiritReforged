@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Serrated Claws
-	Tooltip: ""
+	Tooltip: Can mine Meteorite
 }
 
 FlagRingItem: {
