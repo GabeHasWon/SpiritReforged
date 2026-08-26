@@ -308,4 +308,25 @@ public class MagazineGlobalItem : GlobalItem
 			}
 		}
 	}
+
+	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+	{
+		if (Active)
+		{
+			int index = tooltips.FindIndex(tt => tt.Mod.Equals("Terraria") && tt.Name.Equals("ItemName"));
+			if (index != -1)
+			{
+				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Keyword", "Magazine Weapon")
+				{
+					OverrideColor = Color.Gray,				
+				});
+			}
+
+			index = tooltips.FindIndex(tt => tt.Mod.Equals("Terraria") && tt.Name.Equals("Damage"));
+			if (index != -1)
+			{
+				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Size", $"Can fire {_magazineData._magazineSize} shots before needing to reload"));
+			}
+		}
+	}
 }

@@ -90,8 +90,18 @@ public class MagazinePlayer : ModPlayer
 	protected static int shellMoveTime;
 	protected static int maxMoveTime;
 
+	public int additionalMagazineSize;
+	public float magazineSizeMultiplier;
+	public int additionalReloadTime; // in ticks
+	public float reloadTimeMultiplier;
+
 	public override void ResetEffects()
 	{
+		additionalMagazineSize = 0;
+		magazineSizeMultiplier = 1;
+		additionalReloadTime = 0;
+		reloadTimeMultiplier = 1;
+
 		if (shellMoveTime > 0)
 			shellMoveTime--;
 

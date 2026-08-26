@@ -3556,5 +3556,5 @@ ClockworkCane: {
 
 ChokeTube: {
 	DisplayName: Choke Tube
-	Tooltip: ""
+	Tooltip: "Reduces the spread of shotgun weapons by 50%"
 }
