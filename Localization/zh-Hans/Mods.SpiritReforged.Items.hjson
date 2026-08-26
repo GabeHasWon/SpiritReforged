@@ -3553,3 +3553,8 @@ ClockworkCane: {
 	// DisplayName: Clockwork Cane
 	// Tooltip: ""
 }
+
+ChokeTube: {
+	// DisplayName: Choke Tube
+	// Tooltip: ""
+}

@@ -106,7 +106,7 @@ public class ShotProjectile : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.66f, Pitch = 0.1f}, target.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.25f, Pitch = 0.1f}, target.Center);
 
 		ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, Vector2.Zero, Color.Orange, 0.4f, 30)
 		{

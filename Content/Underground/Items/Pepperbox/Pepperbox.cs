@@ -18,6 +18,44 @@ namespace SpiritReforged.Content.Underground.Items.Pepperbox;
 
 public class Pepperbox() : ShotgunItem(new ShotgunStats())
 {
+	class PepperboxFlash : Particle
+	{
+		int _variant;
+		public override ParticleLayer DrawLayer => ParticleLayer.BelowProjectile;
+		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+
+		public PepperboxFlash(Vector2 position, float scale, int maxTime)
+		{
+			Position = position;
+			Velocity = Vector2.Zero;
+			Scale = scale;
+			MaxTime = maxTime;
+
+			Color = Color.White;
+
+			_variant = Main.rand.Next(3);
+		}
+
+		public override void CustomDraw(SpriteBatch spriteBatch)
+		{
+			var texture = ParticleHandler.GetTexture(Type);
+			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+
+			var frame = texture.Frame(1, 3, 0, _variant);
+
+			float progress = EaseBuilder.EaseCircularOut.Ease(1f - Progress);
+
+			if (progress > 0.95f)
+			{
+				float lerp = (progress - 0.95f) / 0.05f;
+
+				Main.spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * lerp, 0f, frame.Size() / 2f, Scale, 0f, 0f);
+			}
+
+			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 150, 0, 0) * progress * 0.5f, 0f, bloom.Size() / 2f, Scale * 0.4f, 0f, 0f);
+		}
+	}
+
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedEyeOfCthulhu)));
 
 	public override void SafeSetDefaults()
@@ -36,13 +74,25 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
 
-		globalItem.ActivateMagazine((pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.3f, 4, 90), new(52, 24), new(-24, -2), true, -6, -0.15f);
+		globalItem.ActivateMagazine((pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.5f, 4, 90), new(52, 24), new(-24, -2), true, -6, -0.15f);
 		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
 	}
 
 	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
 	{
-		ParticleHandler.SpawnParticle(new ShotgunShellParticle(position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation()), -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
+		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
+
+		ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+
+		ParticleHandler.SpawnParticle(new PepperboxFlash(muzzlePosition, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
+
+		for (int i = 0; i < 3; i++)
+		{
+			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Vector2.Zero, Color.Gray, 75, false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
+
+			ParticleHandler.SpawnParticle(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
+		}
 	}
 
 	public void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
