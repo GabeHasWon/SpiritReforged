@@ -3548,3 +3548,8 @@ Shot: {
 	DisplayName: Shot
 	Tooltip: ""
 }
+
+ClockworkCane: {
+	DisplayName: Clockwork Cane
+	Tooltip: ""
+}
