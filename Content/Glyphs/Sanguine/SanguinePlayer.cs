@@ -116,7 +116,7 @@ public partial class SanguineGlyph
 				leechedLife = true;
 				lifestealCooldown = 30;
 
-				HealVFX(target.Center, healthPercentageReverse);
+				HealVFX(healthPercentageReverse);
 			}
 
 			HitVFX(target, leechedLife);
@@ -161,17 +161,17 @@ public partial class SanguineGlyph
 			}
 		}
 
-		private void HealVFX(Vector2 targetPos, float strength)
+		private void HealVFX(float strength)
 		{
-			int numBlood = (int)(strength * 5);
-			numBlood = (int)MathHelper.Clamp(numBlood, 2, 5);
+			int numBlood = (int)(strength * 6);
+			numBlood = (int)MathHelper.Clamp(numBlood, 1, 4);
 			for(int i = 0; i < numBlood; i++)
 			{
 				Vector2 posOffset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(32, 52);
 				Vector2 velocity = Vector2.Normalize(posOffset).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(5, 8);
 				float scale = Main.rand.NextFloat(0.75f, 1.33f);
 
-				ParticleHandler.SpawnQueuedParticle(new SanguineBlood(Player, Player.MountedCenter + posOffset, velocity, scale, 60), Main.rand.Next(10));
+				ParticleHandler.SpawnQueuedParticle(new SanguineBlood(Player, posOffset, velocity, scale, 60), Main.rand.Next(10));
 			}
 		}
 	}

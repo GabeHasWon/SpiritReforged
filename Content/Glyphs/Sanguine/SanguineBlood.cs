@@ -34,16 +34,16 @@ public class SanguineBlood : Particle, IDrawPixelated
 		float magnetFactor = MathHelper.Lerp(0, 1, (float)Math.Pow(Progress, 1.25f));
 
 		Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
-		Velocity = Vector2.Normalize(Vector2.Lerp(Velocity, (_owner.MountedCenter - Position).SafeNormalize(Vector2.Zero) * velocityLength, 0.01f)) * Velocity.Length();
-		Position = Vector2.Lerp(Position, _owner.MountedCenter, magnetFactor);
+		Velocity = Vector2.Normalize(Vector2.Lerp(Velocity, (-Position).SafeNormalize(Vector2.Zero) * velocityLength, 0.01f)) * Velocity.Length();
+		Position = Vector2.Lerp(Position, Vector2.Zero, magnetFactor);
 
 		if(TimeActive == MaxTime / 2)
 		{
 			for(int i = 0; i < 2; i++)
 			{
-				Vector2 position = _owner.MountedCenter + Main.rand.NextVector2Square(-20, 20);
+				Vector2 stickyBloodPos = _owner.MountedCenter + Main.rand.NextVector2Square(-20, 20);
 
-				ParticleHandler.SpawnParticle(new StickyBloodParticle(position, position.DirectionFrom(_owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(30, 40), 0.1f));
+				ParticleHandler.SpawnParticle(new StickyBloodParticle(stickyBloodPos, stickyBloodPos.DirectionFrom(_owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(30, 40), 0.1f));
 			}
 
 			ParticleHandler.SpawnParticle(new SmokeCloud(_owner.MountedCenter, -Vector2.UnitY, Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
@@ -77,16 +77,24 @@ public class SanguineBlood : Particle, IDrawPixelated
 		effect.Parameters["uColorDark"].SetValue(new Color(112, 1, 25).ToVector4());
 		effect.Parameters["progress"].SetValue(1 - EaseFunction.EaseQuadIn.Ease(EaseFunction.EaseSine.Ease(Progress)));
 
-		Vector2[] vertices = _oldPosition;
+		Vector2[] vertices = new Vector2[_oldPosition.Length];
 		float stripLength = 0;
-		for (int i = 1; i < vertices.Length; i++)
+
+		for (int i = 0; i < vertices.Length; i++)
+		{
+			vertices[i] = _oldPosition[i] + _owner.MountedCenter;
+
+			if (i == 0)
+				continue;
+
 			stripLength += Vector2.Distance(vertices[i], vertices[i - 1]);
+		}
 
 		effect.Parameters["repeats"].SetValue(5f * stripLength / uTex.Width);
 
 		var strip = new PrimitiveStrip
 		{
-			Color = Lighting.GetColor(Position.ToTileCoordinates()),
+			Color = Lighting.GetColor(vertices[0].ToTileCoordinates()),
 			Width = 12 * Scale,
 			PositionArray = vertices
 		};
