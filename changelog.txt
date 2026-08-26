@@ -1,4 +1,2 @@
-v0.2.1.4
-- Fixed an issue where some Ocean definitions would incorrectly be placed at 0, 0 and stretch to near the right world edge - visible with the debug display or mapping tool
-- Fixed issues where ecotones wouldn't spawn without World Gen Previewer enabled
-- Updated Russian localization
+v0.2.1.5
+- Fixed an incompatibility issue with Advanced World Generation that stopped Reforged seeds from working properly

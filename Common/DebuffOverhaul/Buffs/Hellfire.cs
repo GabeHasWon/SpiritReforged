@@ -4,7 +4,7 @@ namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
 
 public class Hellfire : OnFire
 {
-    public override BuffSettings Settings => new(0.25f * VanillaScaling, (int)(800 * VanillaMaximum), false, FireScaling);
+    public override BuffSettings Settings => new(Category.Fire);
     public override void Load()
     {
         BuffHandler.Register(this, BuffID.OnFire3);

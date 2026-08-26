@@ -100,9 +100,9 @@ CascadeLeggings: {
 	Tooltip: 15% de aumento de movimento na água
 }
 
-JellyfishStaff: {
-	DisplayName: Cajado de Água-Viva
-	Tooltip: Invoca uma água-viva pequenininha para lutar por você!
+JellyfishJamJar: {
+	// DisplayName: Jellyfish Jam Jar
+	// Tooltip: Summons a tiny jellyfish to fight for you!
 }
 
 Lifesaver: {

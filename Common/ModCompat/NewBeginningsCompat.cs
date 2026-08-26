@@ -294,14 +294,34 @@ internal class NewBeginningsCompat : ModSystem
 	{
 		var area = WorldGen.genRand.Next([.. FishingAreaMicropass.Coves]);
 
+		// Check for and spawn on Koi Totem if possible,
 		for (int x = area.Left; x < area.Right; x++)
-			for (int y = area.Top; x < area.Bottom; y++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
 			{
 				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<KoiTotemTile>())
 					return new Point16(x, y);
 			}
+		}
 
-		return new Point16(Main.spawnTileX, Main.spawnTileY);
+		HashSet<int> validGrounds = [TileID.Stone, TileID.Platforms, TileID.WoodBlock, TileID.BorealWood, TileID.RichMahogany];
+		HashSet<Point16> positions = [];
+
+		// if not, spawn anywhere valid,
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
+			{
+				if (Main.tile[x, y].HasTile && validGrounds.Contains(Main.tile[x, y].TileType))
+					positions.Add(new Point16(x, y - 3));
+			}
+		}
+
+		// else, default to spawn.
+		if (positions.Count == 0)
+			return new Point16(Main.spawnTileX, Main.spawnTileY);
+
+		return WorldGen.genRand.Next(positions.ToList());
 	}
 
 	private static Point16 FindScarecrowSpawnPoint()

@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Content.Desert.NPCs.ZombieVariants;
 using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Ocean.Items.JellyfishStaff;
+using SpiritReforged.Content.Ocean.Items.JellyMinion;
 using SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 using SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -56,7 +56,7 @@ internal class ThoriumGlobalNPC : GlobalNPC
 			npcLoot.AddCommon(ItemID.Leather, 1, 5, 10);
 
 		if (CrossMod.Thorium.TryFind("ManofWar", out ModNPC bigJellyfish) && npc.type == bigJellyfish.Type)
-			npcLoot.AddCommon(ModContent.ItemType<JellyfishStaff>(), 50);
+			npcLoot.AddCommon(ModContent.ItemType<JellyfishJamJar>(), 50);
 	}
 
 	public override void ModifyShop(NPCShop shop)
