@@ -13,10 +13,10 @@ public class LapisSet : ILoadable
 
 	private static void LoadLapisFurniture()
 	{
-		string saltName = typeof(LapisSet).Namespace + ".Lapis";
+		string name = typeof(LapisSet).Namespace + ".Lapis";
 		TileHelper.ArgumentCollection arguments;
 
-		LoadFurnitureSet(saltName, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
+		LoadFurnitureSet(name, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
 			- new BarrelTile()
 			- new BenchTile()
 			- new CandleTile()

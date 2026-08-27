@@ -12,7 +12,7 @@ public class DrywoodSet : ILoadable
 
 	private static void LoadDrywoodFurniture()
 	{
-		string saltName = typeof(DrywoodSet).Namespace + ".Drywood";
+		string name = typeof(DrywoodSet).Namespace + ".Drywood";
 		TileHelper.ArgumentCollection arguments = AllArgs(DustID.Pearlwood, Color.Orange.ToVector3(), distortGlow: true)
 			- new BarrelTile()
 			- new BenchTile()
@@ -24,7 +24,7 @@ public class DrywoodSet : ILoadable
 		lanternTile.WindCycle = 0;
 		lanternTile.DistortGlow = false;
 
-		LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<Drywood>());
+		LoadFurnitureSet(name, arguments, AutoContent.ItemType<Drywood>());
 	}
 
 	public void Unload() { }
