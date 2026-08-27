@@ -91,8 +91,8 @@ CascadeLeggings: {
 }
 
 JellyfishJamJar: {
-	// DisplayName: Jellyfish Jam Jar
-	// Tooltip: Summons a tiny jellyfish to fight for you!
+	DisplayName: Банка с медузным джемом
+	Tooltip: Призывает крошку-медузу сражаться за вас!
 }
 
 Lifesaver: {
@@ -2871,7 +2871,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Зазубренные клешни
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
