@@ -2854,7 +2854,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Garras Serrilhadas
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
