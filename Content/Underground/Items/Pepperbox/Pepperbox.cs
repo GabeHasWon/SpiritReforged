@@ -24,16 +24,21 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		public override ParticleLayer DrawLayer => ParticleLayer.BelowProjectile;
 		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-		public PepperboxFlash(Vector2 position, float scale, int maxTime)
+		public PepperboxFlash(Vector2 position, Vector2 velocity, float scale, int maxTime)
 		{
 			Position = position;
-			Velocity = Vector2.Zero;
+			Velocity = velocity;
 			Scale = scale;
 			MaxTime = maxTime;
 
 			Color = Color.White;
 
 			_variant = Main.rand.Next(3);
+		}
+
+		public override void Update()
+		{
+			Velocity *= 0.95f;
 		}
 
 		public override void CustomDraw(SpriteBatch spriteBatch)
@@ -45,14 +50,16 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 			float progress = EaseBuilder.EaseCircularOut.Ease(1f - Progress);
 
-			if (progress > 0.95f)
+			if (progress > 0.9f)
 			{
-				float lerp = (progress - 0.95f) / 0.05f;
+				float lerp = (progress - 0.9f) / 0.1f;
 
-				Main.spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * lerp, 0f, frame.Size() / 2f, Scale, 0f, 0f);
+				Main.spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * lerp, 0f, frame.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - lerp), 0f, 0f);
 			}
 
-			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 150, 0, 0) * progress * 0.5f, 0f, bloom.Size() / 2f, Scale * 0.4f, 0f, 0f);
+			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 150, 0, 0) * progress * 0.25f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.33f, 0f, 0f);
+
+			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 180, 0, 0) * progress * 0.2f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.25f, 0f, 0f);
 		}
 	}
 
@@ -85,7 +92,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 
-		ParticleHandler.SpawnParticle(new PepperboxFlash(muzzlePosition, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
+		ParticleHandler.SpawnParticle(new PepperboxFlash(muzzlePosition, velocity, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
 
 		for (int i = 0; i < 3; i++)
 		{

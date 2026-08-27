@@ -28,10 +28,20 @@ public class ShotgunShellParticle : Particle
 
 	public override void Update()
 	{
+		Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16);
+
 		if (HitTile)
 		{
-			Velocity *= 0f;
-			Velocity.Y += 0.01f;
+			if (!tile.HasTile)
+				Velocity.Y += 0.08f;
+			else
+				Velocity.Y *= 0.9f;
+
+			Velocity *= 0.935f;
+
+			Rotation += Velocity.Length() * 0.03f;
+			TimeActive++;
+
 			return;
 		}
 
@@ -40,12 +50,10 @@ public class ShotgunShellParticle : Particle
 
 		Rotation += Velocity.Length() * 0.03f;
 
-		Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16);
-
 		if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !HitTile)
 		{
-			TimeActive++;
-			Velocity *= -0.1f;
+			Velocity.X *= 0.75f;
+			Velocity.Y *= -0.75f;
 			HitTile = true;
 		}
 	}
