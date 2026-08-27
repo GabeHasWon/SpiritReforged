@@ -3538,7 +3538,11 @@ Shot: {
 
 ClockworkCane: {
 	// DisplayName: Clockwork Cane
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Summons a spinning cog to dash at your enemies
+		Collects scrap from enemies while holding a wrench
+		''' */
 }
 
 ChokeTube: {
