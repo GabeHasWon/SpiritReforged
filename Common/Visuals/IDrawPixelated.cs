@@ -46,20 +46,21 @@ public interface IDrawPixelated
 				}
 			}
 
+			graphics.SetRenderTarget(PixelTarget.Value);
+			graphics.Clear(Color.Transparent);
+
 			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
 			{
-				graphics.SetRenderTarget(PixelTarget.Value);
-				graphics.Clear(Color.Transparent);
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
-
 				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
 
 				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 
 				spriteBatch.End();
-				graphics.SetRenderTarget(null);
 			}
+
+			graphics.SetRenderTarget(null);
 		}
 
 		private static void DrawPixelTarget(On_Main.orig_DrawItems orig, Main self)

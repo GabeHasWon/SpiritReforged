@@ -182,3 +182,8 @@ Vendetta_Buff: {
 	// DisplayName: Vendetta_ Buff
 	// Description: Mods.SpiritReforged.Buffs.Vendetta_Buff.Description
 }
+
+ClockworkCog_Buff: {
+	// DisplayName: Clockwork Cog
+	// Description: The tiny cog fights for you!
+}
