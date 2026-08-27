@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using SpiritReforged.Content.Forest.ShotAmmo;
+using SpiritReforged.Content.Forest.Ammo;
 
 namespace SpiritReforged.Content.Particles;
 

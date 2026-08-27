@@ -87,10 +87,9 @@ public class MagazinePlayer : ModPlayer
 		magazineSizeMultiplier = 1;
 		additionalReloadTime = 0;
 		reloadTimeMultiplier = 1;
-
-		UpdateUI();
 	}
 
+	public override void PostUpdateEquips() => UpdateUI();
 	void UpdateUI()
 	{
 		if (empoweredShellFlashTimer > 0)
@@ -135,7 +134,7 @@ public class MagazinePlayer : ModPlayer
 				}
 			}
 			else
-				_count = magazineWeapon.AmmoRemaining;
+				_count = magazineWeapon.AmmoRemaining(Player);
 		}
 	}
 
@@ -228,15 +227,15 @@ public class MagazinePlayer : ModPlayer
 	static int empoweredShellFlashTimer;
 	const int maxEmpoweredShellFlashTimer = 30;
 
-	static bool UIActive => !Main.gameMenu && !Main.LocalPlayer.mouseInterface && GetMagazineWeapon(Main.LocalPlayer) is not null;
+	static bool UIActive => !Main.gameMenu && !Main.LocalPlayer.mouseInterface;
 
 	private static void DrawAmmo(bool thick)
 	{
-		if (UIActive && TryGetMagazineWeapon(Main.LocalPlayer, out var magazineWeapon) && _count > 0)
+		if (UIActive && _count > 0)
 		{
 			SpriteBatch sb = Main.spriteBatch;
 
-			if (Main.LocalPlayer.TryGetModPlayer(out MagazinePlayer modPlayer))
+			if (Main.LocalPlayer.TryGetModPlayer(out MagazinePlayer modPlayer) && TryGetMagazineWeapon(Main.LocalPlayer, out var magazineWeapon))
 			{
 				Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell").Value;
 				Texture2D outlineTexture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell_Outline").Value;
@@ -264,7 +263,7 @@ public class MagazinePlayer : ModPlayer
 
 					Vector2 position = Main.MouseScreen + new Vector2(32, magazineSize * offsetSize);
 
-					float moveShellUp = MathHelper.Lerp((magazine.AmmoUsed - 1) * offsetSize, magazine.AmmoUsed * offsetSize, EaseBuilder.EaseCircularOut.Ease(1 - shellMoveTime / (float)maxMoveTime));
+					float moveShellUp = MathHelper.Lerp((magazine.AmmoUsed - 1) * offsetSize, magazine.AmmoUsed * offsetSize, shellMoveTime > 0 ? EaseBuilder.EaseCircularOut.Ease(1 - shellMoveTime / (float)maxMoveTime) : 1f);
 
 					if (magazineWeapon.Reloading)
 						moveShellUp = (magazineWeapon.GetCurrentMagazine().AmmoUsed - _count) * offsetSize;

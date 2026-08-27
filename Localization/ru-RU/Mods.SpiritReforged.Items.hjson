@@ -3579,3 +3579,13 @@ LastWord: {
 	// DisplayName: Last Word
 	// Tooltip: The last bullet in your magazine deals 50% more damage
 }
+
+Buckshot: {
+	// DisplayName: Buckshot
+	// Tooltip: ""
+}
+
+SuperExtendoMags: {
+	// DisplayName: Super Extendo Mags
+	// Tooltip: ""
+}

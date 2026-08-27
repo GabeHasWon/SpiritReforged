@@ -64,8 +64,8 @@ public class MagazineGlobalItem : GlobalItem
 
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
-	public int AmmoRemaining => _magazineData._magazineSize - _currentMagazine.AmmoUsed;
-	public float MagazineProgress => 1f - AmmoRemaining / (float)_magazineData._magazineSize;
+	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player) - _currentMagazine.AmmoUsed;
+	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player);
 	public void ActivateMagazine(ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		_soundInvokation = soundMethod;
@@ -139,10 +139,10 @@ public class MagazineGlobalItem : GlobalItem
 		{
 			var data = _magazineData;
 
-			if (AmmoRemaining <= 0)
+			if (AmmoRemaining(player) <= 0)
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
 
-			_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress), position);
+			_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
 
 			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
 			_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
@@ -164,7 +164,7 @@ public class MagazineGlobalItem : GlobalItem
 					_reloadAnimationTimer--;
 
 				if (_reloadUseStyle is not null)
-					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)_magazineData._reloadTime);
+					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
 				else
 					ReloadStyle(player);
 			}
@@ -181,7 +181,7 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation style. Should usually be overridden with the delegate.
 	void ReloadStyle(Player player)
 	{
-		float animProgress = 1f - _reloadAnimationTimer / (float)_magazineData._reloadTime;
+		float animProgress = 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player);
 
 		if (Main.myPlayer == player.whoAmI)
 			player.direction = _shootDirection;
@@ -221,7 +221,7 @@ public class MagazineGlobalItem : GlobalItem
 					player.direction = _shootDirection;
 
 				if (_reloadUseFrame is not null)
-					_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)_magazineData._reloadTime);
+					_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
 				else
 					ReloadFrame(player);
 			}
@@ -238,7 +238,7 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation frame. Should usually be overridden with the delegate.
 	void ReloadFrame(Player player)
 	{
-		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_magazineData._reloadTime;
+		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player);
 		float rotation = _shootRotation * player.gravDir + 1.5707964f;
 		float frontArmRotation = _shootRotation * player.gravDir + 1.5707964f;
 

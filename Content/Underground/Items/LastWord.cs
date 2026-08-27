@@ -25,9 +25,6 @@ public class LastWord : ModItem
 	public override void UpdateEquip(Player player)
 	{
 		player.GetModPlayer<LastWordPlayer>().equipped = true;
-
-		if (MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining == 1 && MagazinePlayer.empoweredShellCount <= 0)
-			MagazinePlayer.EmpowerUIShell();
 	}
 
 	class LastWordPlayer : ModPlayer
@@ -35,6 +32,11 @@ public class LastWord : ModItem
 		public bool equipped;
 
 		public override void ResetEffects() => equipped = false;
+		public override void PostUpdateEquips() // we must use PostUpdateEquips to ensure it works with magazine changes
+		{
+			if (MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredShellCount <= 0)
+				MagazinePlayer.EmpowerUIShell();
+		}
 	}
 
 	class LastWordGlobalProjectile : GlobalProjectile
@@ -50,7 +52,7 @@ public class LastWord : ModItem
 			if (!player.GetModPlayer<LastWordPlayer>().equipped)
 				return;
 
-			if (projectile.DamageType.CountsAsClass(DamageClass.Ranged) && source is EntitySource_ItemUse_WithAmmo ammoSource && MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining == 0)
+			if (projectile.DamageType.CountsAsClass(DamageClass.Ranged) && source is EntitySource_ItemUse_WithAmmo ammoSource && MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(player) == 0)
 			{
 				Item ammoItem = ammoSource.AmmoItemIdUsed > 0 ? ContentSamples.ItemsByType[ammoSource.AmmoItemIdUsed] : null;
 

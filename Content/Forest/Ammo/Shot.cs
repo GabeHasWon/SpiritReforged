@@ -16,7 +16,7 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
 
-namespace SpiritReforged.Content.Forest.ShotAmmo;
+namespace SpiritReforged.Content.Forest.Ammo;
 public class Shot : ShotgunAmmoItem
 {
 	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
@@ -31,9 +31,7 @@ public class Shot : ShotgunAmmoItem
 			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
 
 			for (int x = 0; x < 3; x++)
-			{
 				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 3f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
-			}
 
 			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
 		}
@@ -47,6 +45,8 @@ public class Shot : ShotgunAmmoItem
 public class ShotProjectile : ModProjectile
 {
 	public const int MAX_TIMELEFT = 25;
+
+	public Color BaseColor = new(230, 150, 0);
 
 	public override string Texture => AssetLoader.EmptyTexture;
 
@@ -88,8 +88,7 @@ public class ShotProjectile : ModProjectile
 			var texture = TextureAssets.Projectile[873].Value;
 
 			float lerp = 1f - i / (float)(trailLength - 1);
-			var brightest = new Color(230, 150, 0);
-			var color = (Color.Lerp(brightest.MultiplyRGBA(Color.Black * .5f), brightest, lerp) with { A = 0 }) * lerp;
+			var color = (Color.Lerp(BaseColor.MultiplyRGBA(Color.Black * .5f), BaseColor, lerp) with { A = 0 }) * lerp;
 			var position = Projectile.oldPos[i] - Main.screenPosition;
 			var scale = new Vector2(time, 1f) * Projectile.scale;
 
@@ -108,7 +107,9 @@ public class ShotProjectile : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.25f, Pitch = 0.1f}, target.Center);
+		SoundEngine.PlaySound(SoundID.Item10, target.Center);
+
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.25f, Pitch = 0.1f }, target.Center);
 
 		ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, Vector2.Zero, Color.Orange, 0.4f, 30)
 		{
