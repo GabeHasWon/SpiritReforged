@@ -89,7 +89,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Vector2.Zero, Color.Gray, 75, false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
+			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White, 75, false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
 
 			ParticleHandler.SpawnParticle(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
