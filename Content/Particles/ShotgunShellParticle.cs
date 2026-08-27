@@ -30,8 +30,11 @@ public class ShotgunShellParticle : Particle
 	{
 		if (HitTile)
 		{
-			Velocity *= 0f;
-			Velocity.Y += 0.01f;
+			Velocity.Y += 0.025f;
+			Velocity *= 0.935f;
+
+			Rotation += Velocity.Length() * 0.03f;
+
 			return;
 		}
 
@@ -44,8 +47,8 @@ public class ShotgunShellParticle : Particle
 
 		if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !HitTile)
 		{
-			TimeActive++;
-			Velocity *= -0.1f;
+			Velocity.X *= 0.75f;
+			Velocity.Y *= -0.5f;
 			HitTile = true;
 		}
 	}

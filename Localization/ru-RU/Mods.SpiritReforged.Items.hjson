@@ -3573,5 +3573,5 @@ ChokeTube: {
 
 LastWord: {
 	// DisplayName: Last Word
-	// Tooltip: ""
+	// Tooltip: The last bullet in your magazine deals 50% more damage
 }
