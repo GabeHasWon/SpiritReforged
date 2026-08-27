@@ -32,7 +32,7 @@ public class MagazineGlobalItem : GlobalItem
 	public delegate void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress);
 
 	/// <summary>
-	/// Method that is called upon firing the weapon. Should always use the pitch parameter to ensure the sound is pitched depending on ammo remaining
+	/// Method for playing sound that is called upon firing the weapon. Should always use the pitch parameter to ensure the sound is pitched depending on ammo remaining
 	/// </summary>
 	public delegate void ShootSoundInvokation(float pitch, Vector2 position);
 
@@ -64,7 +64,6 @@ public class MagazineGlobalItem : GlobalItem
 
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
-
 	public int AmmoRemaining => _magazineData._magazineSize - _currentMagazine.AmmoUsed;
 	public float MagazineProgress => 1f - AmmoRemaining / (float)_magazineData._magazineSize;
 	public void ActivateMagazine(ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
@@ -81,7 +80,6 @@ public class MagazineGlobalItem : GlobalItem
 		_itemSize = itemSize;
 		_itemOrigin = itemOrigin;
 	}
-
 	public MagazineData GetMagazineData() => _magazineData;
 	public CurrentMagazine GetCurrentMagazine() => _currentMagazine;
 
@@ -115,13 +113,15 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			var mp = player.GetModPlayer<MagazinePlayer>();
+
 			MagazinePlayer.EjectUIShell(item);
 
 			_currentMagazine.AmmoUsed++;
 
-			if (_currentMagazine.AmmoUsed == _magazineData._magazineSize)
+			if (_currentMagazine.AmmoUsed == mp.GetMagazineSize(_magazineData._magazineSize))
 			{
-				int reloadTime = _magazineData._reloadTime;
+				int reloadTime = mp.GetReloadTime(_magazineData._reloadTime);
 
 				_currentMagazine.ReloadTimer = reloadTime;
 				_reloadAnimationTimer = reloadTime;
@@ -313,6 +313,8 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			int magazineSize = Main.LocalPlayer.GetModPlayer<MagazinePlayer>().GetMagazineSize(item.GetGlobalItem<MagazineGlobalItem>()._magazineData._magazineSize);
+
 			int index = tooltips.FindIndex(tt => tt.Mod.Equals("Terraria") && tt.Name.Equals("ItemName"));
 			if (index != -1)
 			{
@@ -325,7 +327,7 @@ public class MagazineGlobalItem : GlobalItem
 			index = tooltips.FindIndex(tt => tt.Mod.Equals("Terraria") && tt.Name.Equals("Damage"));
 			if (index != -1)
 			{
-				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Size", $"Can fire {_magazineData._magazineSize} shots before needing to reload"));
+				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Size", $"Can fire {magazineSize} shots before needing to reload"));
 			}
 		}
 	}

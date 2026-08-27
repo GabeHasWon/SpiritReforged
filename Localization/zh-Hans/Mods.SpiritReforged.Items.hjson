@@ -3556,5 +3556,10 @@ ClockworkCane: {
 
 ChokeTube: {
 	// DisplayName: Choke Tube
+	// Tooltip: Reduces the spread of shotgun weapons by 50%
+}
+
+LastWord: {
+	// DisplayName: Last Word
 	// Tooltip: ""
 }

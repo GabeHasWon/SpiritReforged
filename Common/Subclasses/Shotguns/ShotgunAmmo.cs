@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpiritReforged.Common.Subclasses.Greatshields;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +43,7 @@ public abstract class ShotgunAmmoItem : ModItem
 
 	public sealed override void SetDefaults()
 	{
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
 		Item.ammo = ModContent.ItemType<ShotgunAmmoType>();
 
 		Item.consumable = true;
@@ -147,6 +149,19 @@ public class ShotgunPlayer : ModPlayer
 	}
 
 	/// <summary>
+	/// Calculates the amount of shots the players held shotgun item would shoot when used with <paramref name="ammo"/>, taking bonuses into account.
+	/// </summary>
+	/// <param name="ammo"></param>
+	/// <returns>-1, if no shotgun item was found, otherwise the amount of shots</returns>
+	public int GetShotCount(ShotgunAmmoItem ammo)
+	{
+		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
+			return -1;
+
+		return ModifyShotCount(ammo._shotCount, shotGunItem.shotgunStats._additionalShots, shotGunItem.shotgunStats._shotMultiplier);
+	}
+
+	/// <summary>
 	/// Modifies the amount of shots a shotgun should shoot according to <see cref="ShotgunPlayer.shotgunStats"/>. Supports adding additional shots and additional multiplier (for item support as well)
 	/// </summary>
 	/// <param name="baseShots">The base amount of shots</param>
@@ -156,6 +171,19 @@ public class ShotgunPlayer : ModPlayer
 	public int ModifyShotCount(int baseShots, int additionalShots = 0, float additionalShotMultiplier = 0f) => Math.Max(1, (int)((baseShots + shotgunStats._additionalShots + additionalShots) * (shotgunStats._shotMultiplier + additionalShotMultiplier)));
 	
 	/// <summary>
+	/// Calculates the spread amount the players held shotgun item would have when used with <paramref name="ammo"/>, taking bonuses into account.
+	/// </summary>
+	/// <param name="ammo"></param>
+	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
+	public float GetSpreadAmount(ShotgunAmmoItem ammo)
+	{
+		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
+			return -1;
+
+		return ModifySpread(ammo._spreadAmount, shotGunItem.shotgunStats._additionalSpread, shotGunItem.shotgunStats._spreadMultiplier);
+	}
+
+	/// <summary>
 	/// Modifies the amount of spread a shotgun has according to <see cref="ShotgunPlayer.shotgunStats"/>. Supports adding additional spread and additional spread multiplier (for item support as well)
 	/// </summary>
 	/// <param name="baseSpread">The base amount of spread</param>
@@ -164,6 +192,19 @@ public class ShotgunPlayer : ModPlayer
 	/// <returns></returns>
 	public float ModifySpread(float baseSpread, float additionalSpread = 0, float additionalSpreadMultiplier = 0f) => Math.Max(0f, (baseSpread + shotgunStats._additionalSpread + additionalSpread) * (shotgunStats._spreadMultiplier + additionalSpreadMultiplier));
 	
+	/// <summary>
+	/// Calculates the shoot speed the players held shotgun item would have when used with <paramref name="ammo"/>, taking bonuses into account.
+	/// </summary>
+	/// <param name="ammo"></param>
+	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
+	public float GetSpeedAmount(ShotgunAmmoItem ammo)
+	{
+		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
+			return -1;
+
+		return ModifySpread(ammo._speed, shotGunItem.shotgunStats._additionalSpeed, shotGunItem.shotgunStats._speedMultiplier);
+	}
+
 	/// <summary>
 	/// Modifies the amount of speed a shotgun should add to its ammo according to <see cref="ShotgunPlayer.shotgunStats"/>. Supports adding additional speed and additional speed multiplier (for item support as well)
 	/// </summary>

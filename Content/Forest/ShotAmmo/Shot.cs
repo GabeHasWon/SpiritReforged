@@ -28,7 +28,7 @@ public class Shot : ShotgunAmmoItem
 			if (spreadAmount > 0f && i != 0) // no spread on first shot
 				spreadDir = direction.RotatedByRandom(spreadAmount);
 
-			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.5f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
+			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
 
 			for (int x = 0; x < 3; x++)
 			{
@@ -39,7 +39,9 @@ public class Shot : ShotgunAmmoItem
 		}
 	}
 
-	public Shot() : base(Behavior, 6, .4f, 10f) { }
+	public Shot() : base(Behavior, 6, .4f, 12.5f) { }
+
+	public override void SafeSetDefaults() => Item.damage = 5;
 }
 
 public class ShotProjectile : ModProjectile
