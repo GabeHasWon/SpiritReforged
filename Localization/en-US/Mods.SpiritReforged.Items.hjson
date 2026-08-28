@@ -3426,86 +3426,86 @@ CandlewickCoil: {
 }
 
 CandleBathtubItem: {
-	DisplayName: Candle Bathtub Item
+	DisplayName: Candle Bathtub
 	Tooltip: ""
 }
 
 CandleBedItem: {
-	DisplayName: Candle Bed Item
+	DisplayName: Candle Bed
 	Tooltip: ""
 }
 
 CandleBookcaseItem: {
-	DisplayName: Candle Bookcase Item
+	DisplayName: Candle Bookcase
 	Tooltip: ""
 }
 
 CandleCandelabraItem: {
-	DisplayName: Candle Candelabra Item
+	DisplayName: Candle Candelabra
 	Tooltip: ""
 }
 
 CandleCandleItem: {
-	DisplayName: Candle Candle Item
+	DisplayName: Candle Candle
 	Tooltip: ""
 }
 
 CandleChairItem: {
-	DisplayName: Candle Chair Item
+	DisplayName: Candle Chair
 	Tooltip: ""
 }
 
 CandleChandelierItem: {
-	DisplayName: Candle Chandelier Item
+	DisplayName: Candle Chandelier
 	Tooltip: ""
 }
 
 CandleChestItem: {
-	DisplayName: Candle Chest Item
+	DisplayName: Candle Chest
 	Tooltip: ""
 }
 
 CandleDoorItem: {
-	DisplayName: Candle Door Item
+	DisplayName: Candle Door
 	Tooltip: ""
 }
 
 CandleDresserItem: {
-	DisplayName: Candle Dresser Item
+	DisplayName: Candle Dresser
 	Tooltip: ""
 }
 
 CandleLampItem: {
-	DisplayName: Candle Lamp Item
+	DisplayName: Candle Lamp
 	Tooltip: ""
 }
 
 CandleLanternItem: {
-	DisplayName: Candle Lantern Item
+	DisplayName: Candle Lantern
 	Tooltip: ""
 }
 
 CandleSinkItem: {
-	DisplayName: Candle Sink Item
+	DisplayName: Candle Sink
 	Tooltip: ""
 }
 
 CandleSofaItem: {
-	DisplayName: Candle Sofa Item
+	DisplayName: Candle Sofa
 	Tooltip: ""
 }
 
 CandleTableItem: {
-	DisplayName: Candle Table Item
+	DisplayName: Candle Table
 	Tooltip: ""
 }
 
 CandleToiletItem: {
-	DisplayName: Candle Toilet Item
+	DisplayName: Candle Toilet
 	Tooltip: ""
 }
 
 CandleWorkBenchItem: {
-	DisplayName: Candle Work Bench Item
+	DisplayName: Candle Work Bench
 	Tooltip: ""
 }
