@@ -1,2 +1,7 @@
-v0.2.1.5
-- Fixed an incompatibility issue with Advanced World Generation that stopped Reforged seeds from working properly
+v0.2.2
+- Added Glyphs, a unique enchantment system for weapons that serves as an alternative to Reforges! Instead of basic stat increases, Glyphs augment your weapons with unique and powerful effects. Test and discover what Glyphs work best for your weapons and playstyles!
+- Added a new Town NPC, the Enchanter
+- Added the Enchanted Stamp and Chromatic Wax
+- Added Enchanted Workbench encounters
+- Overhauled Debuff Healthbar visuals
+... and so much more!
