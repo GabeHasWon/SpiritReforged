@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
 		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
+		// Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
+		// Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
 	}
 }
 
