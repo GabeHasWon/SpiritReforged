@@ -1,3 +1,4 @@
+using SpiritReforged.Content.Ocean.Boids;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
@@ -20,9 +21,18 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(1)]
 	public float ScreenshakeStrength { get; set; }
 
+	[DefaultValue(true)]
+	public bool GlyphProjectileVisualEffects { get; set; }
+
+	[DefaultValue(true)]
+	public bool GlyphItemVisualEffects { get; set; }
+
 	[DefaultValue(false)]
 	[ReloadRequired]
 	public bool DisableWater { get; set; }
+
+	[DefaultValue(true)]
+	public bool BannerJingle { get; set; }
 
 	[Header("Developer")]
 	[DefaultValue(false)]

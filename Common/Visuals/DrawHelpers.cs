@@ -2,7 +2,29 @@
 
 public static class DrawHelpers
 {
+	public static BlendState AdditiveNoAlpha = new BlendState
+	{
+		AlphaBlendFunction = BlendFunction.Add,
+		ColorBlendFunction = BlendFunction.Add,
+		ColorSourceBlend = Blend.SourceAlpha,
+		ColorDestinationBlend = Blend.One,
+		AlphaSourceBlend = Blend.SourceAlpha,
+		AlphaDestinationBlend = Blend.One,
+		ColorWriteChannels = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels1 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels2 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue,
+		ColorWriteChannels3 = ColorWriteChannels.Red | ColorWriteChannels.Green | ColorWriteChannels.Blue
+	};
+
 	public delegate void DelegateAction(Vector2 positionOffset, Color colorMod);
+	public static Color MulticolorLerp(float increment, params Color[] colors)
+	{
+		increment %= 0.999f;
+		int currentColorIndex = (int)(increment * colors.Length);
+		Color color = colors[currentColorIndex];
+		Color nextColor = colors[(currentColorIndex + 1) % colors.Length];
+		return Color.Lerp(color, nextColor, increment * colors.Length % 1f);
+	}
 
 	public static void DrawChromaticAberration(Vector2 direction, float strength, DelegateAction action)
 	{

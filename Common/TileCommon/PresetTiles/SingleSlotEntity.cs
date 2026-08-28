@@ -116,20 +116,18 @@ public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEnti
 {
 	public int ItemType => (this is ILoadItem) ? this.AutoItem().type : ItemID.None;
 
+	public override void SetStaticDefaults() => TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly)
-			return;
-
-		if (Entity(i, j) is T slot && !slot.item.IsAir)
+		if (!effectOnly && Entity(i, j) is T slot && !slot.item.IsAir)
 		{
-			fail = true;
+			fail = noItem = true;
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				TileExtensions.GetTopLeft(ref i, ref j);
-
-				var pos = new Vector2(i, j).ToWorldCoordinates();
+				Vector2 pos = new Vector2(i, j).ToWorldCoordinates();
 
 				Item.NewItem(new EntitySource_TileBreak(i, j), pos, slot.item);
 				slot.RemoveItem();

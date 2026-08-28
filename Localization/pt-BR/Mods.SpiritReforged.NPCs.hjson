@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
 		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
+		// Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
+		// Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
 	}
 }
 
@@ -547,9 +549,9 @@ Graverobber: {
 LootBag.DisplayName: Sacola de Brindes
 
 Scarabeus: {
-	DisplayName: Escarabeus
+	DisplayName: Escaravelhaos
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
-	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas.
+	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ela permanece viva até hoje, aguardando oferendas.
 	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
@@ -585,7 +587,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Besouro
-	Entry: Embora não sejam muito bons para abraços, seu jeito desajeitado os tornam bem cativantes.
+	Entry: Embora não sejam muito bons para abraçar, seus jeitos desajeitados os tornam bem cativantes.
 	Chitter0: *Sons animados de chiado*
 	Chitter1: *Sons de inseto*
 	Chitter2: *Sons de Besouro*
@@ -689,3 +691,91 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 }
+
+Enchanter: {
+	DisplayName: Encantadore
+	Entry: Com um cansaço perpétuo em si, mas doce de coração, está criatura consegue lidar com magia e feitiços. Se algumas armas parecem sem sal para você, venha aqui!
+
+	Names: {
+		// 0: Albion
+		// 1: Bertilak
+		// 2: Eango
+		// 3: Enki
+		// 4: Gil
+		// 5: Heka
+		// 6: Ilmarinen
+		// 7: Itani
+		// 8: Kokabiel
+		// 9: Mallyck
+		// 10: Mazdak
+		// 11: Morrigan
+		// 12: Myrrdin
+		// 13: Oeti
+		// 14: Ose
+		// 15: Sulyvahn
+		// 16: Tethra
+		// 17: Themisto
+		// 18: Vorv
+		// 19: Ywain
+	}
+
+	TownNPCMood: {
+		Content: As vezes, dedico um tempo de mim para sentir... que tudo ficará bem.
+		NoHome: Imagino que você não tenha um lugar para eu descansar meus ossos desgastados?
+		FarFromHome: Estou até que longe de meu espaço de trabalho, e de minha cama. Poderiamos voltar em breve, certo?
+		LoveSpace: Este lugar é bem pitoresco. Pessoas o suficiente para bater um papo, mas não ao ponto de ser cansativo.
+		DislikeCrowded: Está sendo dificil manter minha concentração com toda essa baderna.
+		HateCrowded: Tem gente demais vivendo aqui. Não consigo dormir bem já faz um tempinho.
+		LoveNPC: O achocolatado de {NPCName} é de cair o queixo! Ah e seus truques de salão, me encantam tanto!
+		LikeNPC: Eu não sei que tipo de magia que {NPCName} para fazer o céu brilhar assim, Mas é espetacular! Uma pena que faça tanto barulho, fiquei com uma dor de cabeça por 3 dias após aquilo...
+		DislikeNPC: As ideias que {NPCName} tem para melhorar equipamentos são horrorosas! Como bater com um martelo vai ajudar em algo?!
+		HateNPC: Eu juro, se {NPCName} me contar mais uma história sobre matar Kobolds no meio do meu chá da tarde, irei transformar ele numa ovelha!
+		LikeBiome: Aqui, acima das nuvens, sinto uma conexão bem maior com os fluidos da minha magia. Isso sem mencionar a vista!
+		DislikeBiome: Abelhas produzem uma cera de qualidade tão alta, mas qual a necessidade de serem tão agressivas? Me cobriram da cabeça aos pés em picadas!
+		LikeNPC_Princess: "{NPCName} é uma garota tão doce, mas eu mal consigo manter um papo com ela. Como pode um corpo tão pequeno conter toda aquela energia?"
+		Princess_LovesNPC: A magia de {NPCName} é diferente de qualquer outra que eu ja vi! Me pergunto qual seja a fonte dela?
+	}
+
+	Dialogue: {
+		Idle: {
+			0: As vezes você deveria dar uma parada pra cheirar as flores. Descanso é bom para você!
+			1: É fácil perder noção do tempo quando você dá uma boa soneca lendo seu livro de feitiços.
+			2: Você já tentou aprender as incríveis propriedades da cera?
+			3: Você gostaria de uma xícara de cha? Eu tenho chá preto, verde, de ervas, camomila, frutinhas, cítrico...
+			4: Seja bem-vindo(a)! O que poderia encantar por você?
+		}
+
+		IdleNight: {
+			0: A lua está brilhando, e minhas velas brilham mais forte que nunca!
+			1: Vagalumes criam pontinhos no céu, como se fossem chamas dançarinas. Tem magia em todo lugar que nós olhamos.
+			2: Já passou da hora da minha segunda soneca. Gostaria de pedir que faça isso ser rápido.
+		}
+
+		BloodMoon: {
+			0: Não consigo ter minha soneca em uma noite como essa. Quando fecho meus olhos, tudo que eu vejo é vermelho.
+			1: Minhas velas soam estar com uma leve chama carmim. Algo horrível irá acontecer está noite.
+		}
+
+		Rain: {
+			0: Não tem nada como o som das gotas da chuva batendo sobre minha janela.
+			1: Eu não vou sair novamente. Acabei de secar meu chapéu da última vez!
+		}
+
+		Graveyard: {
+			0: Eu gosto de um lugar calmo, mas parece tudo tão monótono. É desconfortante.
+			1: Só consigo sentir que algo está me observando.
+		}
+
+		Thunderstorm: É a hora perfeita de dar uma parada em uma fogueira e compartilhar algumas histórias assustadoras!
+		Eclipse: Como eu vou ter meu chá da tarde sem saber se é dia ou noite?
+		Party: Essas festividades humanas são bem fascinantes, se não forem... um pouco estranhas pro meu gosto. Talvez tenha que me retirar em breve.
+		Goblin: Aquele goblin insiste em ficar colocando selos nas coisas dos outros, além disso, ele insiste em ficar pedindo pra eu encantar as várias invenções dele. Geralmente não dá muito certo...
+		Golfer: "{0} sempre me convida pra jogar golfe com os outros, mas sempre acabo cochilando... Eu não tenho o coração para ficar rejeitando os convites dele."
+		Stylist: Eu smpre deixo {0} me convencer a deixar minhas escamas revestidas com cera, eu não sei como qual é o apelo. Mas eu fico brilhando como um peixe fresquinho do lago!
+		WitchDoctor: "{0} tem uma aura tão misteriosa sobre ele, mas eu gostaria de conhecer ele melhor. Você poderia... talvez, me introduzir a ele?"
+	}
+
+	Census.SpawnCondition: Segure qualquer item encantado ou Cera Cromática [i:SpiritReforged/ChromaticWax], ou derrote um chefe.
+}
+
+// SealedKnight.DisplayName: Sealed Knight

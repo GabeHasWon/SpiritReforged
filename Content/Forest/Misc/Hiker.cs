@@ -62,6 +62,8 @@ public class Hiker : WorldNPC
 
 		Main.npcFrameCount[Type] = 25;
 
+		NPCHeadLayer.Types.Add(Type);
+
 		NPCID.Sets.ExtraFramesCount[Type] = 9;
 		NPCID.Sets.AttackFrameCount[Type] = 4;
 		NPCID.Sets.DangerDetectRange[Type] = 500;
@@ -156,14 +158,14 @@ public class Hiker : WorldNPC
 		});
 
 		var backpack = newItem.ModItem as BackpackItem;
-		bool checkForDuplicates = ItemPool.elements.Count >= backpack.items.Length; //Only check for duplicates if enough items exist in the pool
+		bool checkForDuplicates = ItemPool.elements.Count >= backpack.Items.Length; //Only check for duplicates if enough items exist in the pool
 
-		for (int i = 0; i < backpack.items.Length; ++i)
+		for (int i = 0; i < backpack.Items.Length; ++i)
 		{
-			var slot = backpack.items[i];
+			var slot = backpack.Items[i];
 			(int type, Range stackRange) = ItemPool.Get();
 
-			if (checkForDuplicates && backpack.items.Where(x => x.type == type).Any()) //This is a duplicate item type; try again
+			if (checkForDuplicates && backpack.Items.Where(x => x.type == type).Any()) //This is a duplicate item type; try again
 			{
 				i--;
 				continue;

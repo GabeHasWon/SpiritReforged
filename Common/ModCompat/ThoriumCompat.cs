@@ -1,7 +1,11 @@
-﻿using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Ocean.Items.JellyfishStaff;
+﻿using SpiritReforged.Content.Desert.NPCs.ZombieVariants;
+using SpiritReforged.Content.Forest.Cloud.Items;
+using SpiritReforged.Content.Ocean.Items.JellyMinion;
+using SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
+using SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Underground.Items.ExplorerTreads;
+using SpiritReforged.Content.Ziggurat.NPCs;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ModCompat;
@@ -10,13 +14,49 @@ internal class ThoriumGlobalNPC : GlobalNPC
 {
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Thorium.Enabled;
 
+	public override void SetDefaults(NPC entity)
+	{
+		//Repellents
+		var thorium = CrossMod.Thorium.Instance;
+
+		int[] zombieTypes =
+		[
+			ModContent.NPCType<HideZombieBig>(),
+			ModContent.NPCType<HideZombieSmall>(),
+			ModContent.NPCType<DiverZombie>(),
+			ModContent.NPCType<SafariZombie>(),
+			ModContent.NPCType<KelpZombie>(),
+			ModContent.NPCType<SailorZombie>(),
+			ModContent.NPCType<TridentZombie>(),
+			ModContent.NPCType<TumbleZombie>(),
+			ModContent.NPCType<CactusZombie>(),
+			ModContent.NPCType<TumbleZombie>(),
+			ModContent.NPCType<VeiledZombie>()
+		];
+
+		foreach (int zombieNPC in zombieTypes)
+		{
+			thorium.Call("AddZombieRepellentNPCID", zombieNPC, true);
+		}
+
+		int[] bugTypes =
+		[
+			ModContent.NPCType<Grub>()
+		];
+
+		foreach (int bugNPC in bugTypes)
+		{
+			thorium.Call("AddZombieRepellentNPCID", bugNPC, true);
+		}
+	}
+
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		if (CrossMod.Thorium.TryFind("RagingMinotaur", out ModNPC minotaur) && npc.type == minotaur.Type)
 			npcLoot.AddCommon(ItemID.Leather, 1, 5, 10);
 
 		if (CrossMod.Thorium.TryFind("ManofWar", out ModNPC bigJellyfish) && npc.type == bigJellyfish.Type)
-			npcLoot.AddCommon(ModContent.ItemType<JellyfishStaff>(), 50);
+			npcLoot.AddCommon(ModContent.ItemType<JellyfishJamJar>(), 50);
 	}
 
 	public override void ModifyShop(NPCShop shop)

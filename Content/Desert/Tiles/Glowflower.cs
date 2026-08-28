@@ -17,6 +17,7 @@ public class Glowflower : ModTile, ISwayTile
 	public const int TileHeight = 22;
 
 	public override void Load() => TileEvents.OnRandomUpdate += Regrow;
+
 	/// <summary> Causes Glowflower to regrow inside of underground oasis microbiomes. </summary>
 	private static void Regrow(int i, int j, int type)
 	{
@@ -61,29 +62,26 @@ public class Glowflower : ModTile, ISwayTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (closer)
-			if (!Main.gamePaused && Main.rand.NextBool(100))
+		if (closer && !Main.gamePaused && Main.rand.NextBool(100))
+		{
+			var position = new Vector2(i, j).ToWorldCoordinates();
+			ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Lerp(Color.GreenYellow, Color.Goldenrod, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
 			{
-				var position = new Vector2(i, j).ToWorldCoordinates();
-				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Lerp(Color.GreenYellow, Color.Goldenrod, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
-				{
-					p.Velocity = p.Velocity.RotatedByRandom(0.3f);
+				p.Velocity = p.Velocity.RotatedByRandom(0.3f);
 
-					if (p.Position.DistanceSQ(position) > 100 * 100)
-						p.Velocity = Vector2.Lerp(p.Velocity, p.Position.DirectionTo(position), 0.05f);
-					else if (Collision.SolidCollision(p.Position - new Vector2(2), 4, 4))
-						p.Velocity.Y -= 0.05f;
-				}));
-			}
-		//else // Don't use this as the range is too high
-		//	Main.SceneMetrics.HasSunflower = true;
+				if (p.Position.DistanceSQ(position) > 100 * 100)
+					p.Velocity = Vector2.Lerp(p.Velocity, p.Position.DirectionTo(position), 0.05f);
+				else if (Collision.SolidCollision(p.Position - new Vector2(2), 4, 4))
+					p.Velocity.Y -= 0.05f;
+			}));
+		}
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool())
 		{
-			var position = new Vector2(i, j).ToWorldCoordinates();
+			Vector2 position = new Vector2(i, j).ToWorldCoordinates();
 			int whoAmI = NPC.NewNPC(new EntitySource_TileBreak(i, j), (int)position.X, (int)position.Y, NPCID.Firefly);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)

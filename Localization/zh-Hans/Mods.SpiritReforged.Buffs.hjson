@@ -147,3 +147,28 @@ ScarabMountBuff: {
 	DisplayName: 鼠妇坐骑
 	Description: “抓稳了！”
 }
+
+DivineStrike: {
+	DisplayName: 神圣惩击
+	Description: 你的下一次攻击被强化了
+}
+
+RotDebuff: {
+	DisplayName: 腐化 [{0}]
+	Description: “你的皮肤变绿了”
+}
+
+SanguineStackingBuff: {
+	DisplayName: 染血能量 [{0}]
+	Description: 伤害增加{0}%
+}
+
+BlazeDebuff: {
+	DisplayName: 点燃
+	Description: 这很好！
+}
+
+RageGlyphBuff: {
+	DisplayName: 狂怒伤害 [{0}]
+	Description: 存储的伤害：{0}
+}
