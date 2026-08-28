@@ -4,14 +4,13 @@ using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
-using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Forest.WoodClub;
+using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
@@ -137,13 +136,10 @@ internal class NewBeginningsCompat : ModSystem
 		{
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<CharmcasterHat>(), ModContent.ItemType<CharmcasterRobe>(), 
 				ModContent.ItemType<CharmcasterLeggings>(), Array.Empty<int>());
-			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<Flarepowder>());
-			object dele = GetDelegateData(() => true, list => { }, () => false, null, player =>
-			{
-				player.inventory[0].stack = 60;
-			});
+			object misc = beginnings.Call("MiscData", 100, 20, ModContent.NPCType<Enchanter>());
+			object dele = GetDelegateData(() => true, list => { }, () => false, () => Point16.Zero);
 
-			AddOrigin("Enchanter", [], equip, misc, null);
+			AddOrigin("Enchanter", [(ModContent.ItemType<Flarepowder>(), 60), (ModContent.ItemType<ChromaticWax>(), 3)], equip, misc, dele);
 		}
 
 		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
