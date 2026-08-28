@@ -3426,96 +3426,96 @@ CandlewickCoil: {
 }
 
 CandleBathtubItem: {
-	// DisplayName: Candle Bathtub Item
-	// Tooltip: ""
+	DisplayName: 蜡浴缸
+	Tooltip: ""
 }
 
 CandleBedItem: {
-	// DisplayName: Candle Bed Item
-	// Tooltip: ""
+	DisplayName: 蜡床
+	Tooltip: ""
 }
 
 CandleBookcaseItem: {
-	// DisplayName: Candle Bookcase Item
-	// Tooltip: ""
+	DisplayName: 蜡书架
+	Tooltip: ""
 }
 
 CandleCandelabraItem: {
-	// DisplayName: Candle Candelabra Item
-	// Tooltip: ""
+	DisplayName: 蜡烛台
+	Tooltip: ""
 }
 
 CandleCandleItem: {
-	// DisplayName: Candle Candle Item
-	// Tooltip: ""
+	DisplayName: 蜡蜡烛
+	Tooltip: ""
 }
 
 CandleChairItem: {
-	// DisplayName: Candle Chair Item
-	// Tooltip: ""
+	DisplayName: 蜡椅
+	Tooltip: ""
 }
 
 CandleChandelierItem: {
-	// DisplayName: Candle Chandelier Item
-	// Tooltip: ""
+	DisplayName: 蜡吊灯
+	Tooltip: ""
 }
 
 CandleChestItem: {
-	// DisplayName: Candle Chest Item
-	// Tooltip: ""
+	DisplayName: 蜡箱
+	Tooltip: ""
 }
 
 CandleDoorItem: {
-	// DisplayName: Candle Door Item
-	// Tooltip: ""
+	DisplayName: 蜡门
+	Tooltip: ""
 }
 
 CandleDresserItem: {
-	// DisplayName: Candle Dresser Item
-	// Tooltip: ""
+	DisplayName: 蜡梳妆台
+	Tooltip: ""
 }
 
 CandleLampItem: {
-	// DisplayName: Candle Lamp Item
-	// Tooltip: ""
+	DisplayName: 蜡灯
+	Tooltip: ""
 }
 
 CandleLanternItem: {
-	// DisplayName: Candle Lantern Item
-	// Tooltip: ""
+	DisplayName: 蜡灯笼
+	Tooltip: ""
 }
 
 CandleSinkItem: {
-	// DisplayName: Candle Sink Item
-	// Tooltip: ""
+	DisplayName: 蜡水槽
+	Tooltip: ""
 }
 
 CandleSofaItem: {
-	// DisplayName: Candle Sofa Item
-	// Tooltip: ""
+	DisplayName: 蜡沙发
+	Tooltip: ""
 }
 
 CandleTableItem: {
-	// DisplayName: Candle Table Item
-	// Tooltip: ""
+	DisplayName: 蜡桌
+	Tooltip: ""
 }
 
 CandleToiletItem: {
-	// DisplayName: Candle Toilet Item
-	// Tooltip: ""
+	DisplayName: 蜡马桶
+	Tooltip: ""
 }
 
 CandleWorkBenchItem: {
-	// DisplayName: Candle Work Bench Item
-	// Tooltip: ""
+	DisplayName: 蜡工作台
+	Tooltip: ""
 }
 
 CandleClockItem: {
-	// DisplayName: Candle Clock Item
-	// Tooltip: ""
+	DisplayName: 蜡钟
+	Tooltip: ""
 }
 
 CandlePianoItem: {
-	// DisplayName: Candle Piano Item
-	// Tooltip: ""
+	DisplayName: 蜡钢琴
+	Tooltip: ""
 }
