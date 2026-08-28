@@ -91,8 +91,8 @@ CascadeLeggings: {
 }
 
 JellyfishJamJar: {
-	// DisplayName: Jellyfish Jam Jar
-	// Tooltip: Summons a tiny jellyfish to fight for you!
+	DisplayName: Jarro de Águas-Vivas Festejantes
+	Tooltip: Invoca Águas-Vivas pequenininhas para lutarem por você!
 }
 
 Lifesaver: {
@@ -3225,9 +3225,8 @@ RotGlyph: {
 		'''
 		Ataques lançam uma praga contagiosa
 		Essa praga pode ser transmitida a você por inimigos que sofrem dela
-		Effect: Assolado
 		'''
-	// Effect: Blighted
+	Effect: Assolado
 
 	Gendered: {
 		Fem: Assolada
@@ -3414,96 +3413,96 @@ CandlewickCoil: {
 }
 
 CandleBathtubItem: {
-	// DisplayName: Candle Bathtub Item
-	// Tooltip: ""
+	DisplayName: Banheira de Vela
+	Tooltip: ""
 }
 
 CandleBedItem: {
-	// DisplayName: Candle Bed Item
-	// Tooltip: ""
+	DisplayName: Cama de Vela
+	Tooltip: ""
 }
 
 CandleBookcaseItem: {
-	// DisplayName: Candle Bookcase Item
-	// Tooltip: ""
+	DisplayName: Estante de Vela
+	Tooltip: ""
 }
 
 CandleCandelabraItem: {
-	// DisplayName: Candle Candelabra Item
-	// Tooltip: ""
+	DisplayName: Candelabro de Vela
+	Tooltip: ""
 }
 
 CandleCandleItem: {
-	// DisplayName: Candle Candle Item
-	// Tooltip: ""
+	DisplayName: Vela de Vela
+	Tooltip: ""
 }
 
 CandleChairItem: {
-	// DisplayName: Candle Chair Item
-	// Tooltip: ""
+	DisplayName: Cadeira de Vela
+	Tooltip: ""
 }
 
 CandleChandelierItem: {
-	// DisplayName: Candle Chandelier Item
-	// Tooltip: ""
+	DisplayName: Lustre de Vela
+	Tooltip: ""
 }
 
 CandleChestItem: {
-	// DisplayName: Candle Chest Item
-	// Tooltip: ""
+	DisplayName: Baú de Vela
+	Tooltip: ""
 }
 
 CandleDoorItem: {
-	// DisplayName: Candle Door Item
-	// Tooltip: ""
+	DisplayName: Porta de Vela
+	Tooltip: ""
 }
 
 CandleDresserItem: {
-	// DisplayName: Candle Dresser Item
-	// Tooltip: ""
+	DisplayName: Cômoda de Vela
+	Tooltip: ""
 }
 
 CandleLampItem: {
-	// DisplayName: Candle Lamp Item
-	// Tooltip: ""
+	DisplayName: Lâmpada de Vela
+	Tooltip: ""
 }
 
 CandleLanternItem: {
-	// DisplayName: Candle Lantern Item
-	// Tooltip: ""
+	DisplayName: Lanterna de Vela
+	Tooltip: ""
 }
 
 CandleSinkItem: {
-	// DisplayName: Candle Sink Item
-	// Tooltip: ""
+	DisplayName: Pia de Vela
+	Tooltip: ""
 }
 
 CandleSofaItem: {
-	// DisplayName: Candle Sofa Item
-	// Tooltip: ""
+	DisplayName: Sofá de Vela
+	Tooltip: ""
 }
 
 CandleTableItem: {
-	// DisplayName: Candle Table Item
-	// Tooltip: ""
+	DisplayName: Mesa de Vela
+	Tooltip: ""
 }
 
 CandleToiletItem: {
-	// DisplayName: Candle Toilet Item
-	// Tooltip: ""
+	DisplayName: Privada de Vela
+	Tooltip: ""
 }
 
 CandleWorkBenchItem: {
-	// DisplayName: Candle Work Bench Item
-	// Tooltip: ""
+	DisplayName: Bancada de Trabalho de Vela
+	Tooltip: ""
 }
 
 CandleClockItem: {
-	// DisplayName: Candle Clock Item
-	// Tooltip: ""
+	DisplayName: Relógio de Vela
+	Tooltip: ""
 }
 
 CandlePianoItem: {
-	// DisplayName: Candle Piano Item
-	// Tooltip: ""
+	DisplayName: Piano de Vela
+	Tooltip: ""
 }

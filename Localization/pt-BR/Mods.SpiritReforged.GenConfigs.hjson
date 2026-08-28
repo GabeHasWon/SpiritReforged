@@ -27,7 +27,7 @@ UI: {
 	Create: Salvar como predefinição customizada.
 	CantSave: (Não é possível salvar uma predefinição padrão)
 	Load: Carregar uma predefinição customizada.
-	// LoadFolder: Load a folder of presets
+	LoadFolder: Carregue uma pasta de predefinições
 	HoverDescription: Abra para configurar aspectos específicos da geração do Spirit Reforged.
 	FailedToLoad: A predefinição selecionada não é para esta página. Página esperada: {0}
 	ConfigNotice:
@@ -37,7 +37,7 @@ UI: {
 		'''
 	LoadError: Ocorreu um erro ao carregar uma predefinição ({0}). Relate isso no Discord (e verifique o client.log):
 	Duplicate: (Predefinição duplicada não adicionada)
-	// From: from
+	From: de
 }
 
 Pages: {
@@ -297,8 +297,8 @@ Pages: {
 			}
 
 			GravelMultiplier: {
-				// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
-				// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
+				DisplayName: "[i:SpiritReforged/GravelItem] Multiplicador de Cascalhos"
+				Tooltip: O modificador do tamanho das manchas de cascalho oceânico (que inclui a pedra de magma).
 			}
 
 			Shape: {
@@ -680,8 +680,8 @@ Pages: {
 			}
 
 			OasisPlantChance: {
-				// DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oasis) Oasis Plant Chance"
-				// Tooltip: Chance for an Oasis Plant to be placed.
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oásis) Chance de Planta de Oásis"
+				Tooltip: Chance de uma planta de Oásis ser colocada.
 			}
 
 			GlowflowerChance: {

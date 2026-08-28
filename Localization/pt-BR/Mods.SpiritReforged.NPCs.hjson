@@ -455,8 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
 		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
-		// Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
-		// Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
+		Spellbound_0: Novas mesas cheias de encantamentos para encontrar; sei que com elas, você irá se deslumbrar!
+		Spellbound_1: Agora você poderá encontrar esses espelhos, procure por eles, este é meu conselho!
 	}
 }
 
@@ -778,4 +778,4 @@ Enchanter: {
 	Census.SpawnCondition: Segure qualquer item encantado ou Cera Cromática [i:SpiritReforged/ChromaticWax], ou derrote um chefe.
 }
 
-// SealedKnight.DisplayName: Sealed Knight
+    SealedKnight.DisplayName: Cavaleiro Vendado

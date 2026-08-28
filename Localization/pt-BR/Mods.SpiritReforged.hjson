@@ -26,7 +26,7 @@ Conditions: {
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
 	InSpace: No Espaço
-	// NotSnow: Not in the Snow
+	NotSnow: Fora da Neve
 }
 
 Misc: {
@@ -39,9 +39,9 @@ Misc: {
 	Enchantment: {
 		PlaceToEnchant: Coloque um item para encantar
 		Enchant: Encantar
-		// Cost: "{0} [c/{1}:Chromatic Wax]"
-		// Clear: Remove enchantment
-		// Random: Randomize enchantment
+		Cost: "{0} [c/{1}:Cera Cromática]"
+		Clear: Remover encantamento
+		Random: Randomizar encantamento
 	}
 
 	NoStock: Fora de estoque
