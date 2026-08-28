@@ -685,8 +685,8 @@ Pages: {
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:4045] （绿洲）发光花几率"
-				Tooltip: 发光花被放置的几率。
+				DisplayName: "[i:4045] （绿洲）光盏几率"
+				Tooltip: 光盏被放置的几率。
 			}
 
 			PineappleChance: {
