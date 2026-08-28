@@ -1,18 +1,18 @@
 UI: {
 	Min: Tudo do Mínimo
 	MinDescription:
-	'''
-	Define todas as configurações com os valores que mais reduziriam a geração.
-	Assim, um valor como "máximo de árvores" seria definido no seu mínimo,
-	mas um valor para "chance de árvore (1/x)" seria definido no seu máximo.
-	''' 
+		'''
+		Define todas as configurações com os valores que mais reduziriam a geração.
+		Assim, um valor como "máximo de árvores" seria definido no seu mínimo,
+		mas um valor para "chance de árvore (1/x)" seria definido no seu máximo.
+		'''
 	Max: Tudo no Máxima
 	MaxDescription:
-	'''
-	Define todas as configurações com os valores que maximizariam a geração.
-	Assim, um parâmetro como "número máximo de árvores" seria definido em seu valor máximo,
-	enquanto um parâmetro como "probabilidade de árvore (1/x)" seria definido em seu valor mínimo.
-	''' 
+		'''
+		Define todas as configurações com os valores que maximizariam a geração.
+		Assim, um parâmetro como "número máximo de árvores" seria definido em seu valor máximo,
+		enquanto um parâmetro como "probabilidade de árvore (1/x)" seria definido em seu valor mínimo.
+		'''
 	Preset: Predefinição:
 	NoPresets: (Sem Predefinições)
 	None: Nenhum
@@ -27,15 +27,17 @@ UI: {
 	Create: Salvar como predefinição customizada.
 	CantSave: (Não é possível salvar uma predefinição padrão)
 	Load: Carregar uma predefinição customizada.
+	// LoadFolder: Load a folder of presets
 	HoverDescription: Abra para configurar aspectos específicos da geração do Spirit Reforged.
 	FailedToLoad: A predefinição selecionada não é para esta página. Página esperada: {0}
 	ConfigNotice:
-	'''
-	[c/AAAAFF:Alcances] funcionam definindo o valor mínimo e um acréscimo aleatório.
-	O valor exibido é o intervalo real utilizado no jogo ao realizar uma rolagem aleatória.
-	''' 
+		'''
+		[c/AAAAFF:Alcances] funcionam definindo o valor mínimo e um acréscimo aleatório.
+		O valor exibido é o intervalo real utilizado no jogo ao realizar uma rolagem aleatória.
+		'''
 	LoadError: Ocorreu um erro ao carregar uma predefinição ({0}). Relate isso no Discord (e verifique o client.log):
 	Duplicate: (Predefinição duplicada não adicionada)
+	// From: from
 }
 
 Pages: {
@@ -82,7 +84,7 @@ Pages: {
 					'''
 					O denominador (1/x) da probabilidade de uma árvore surgir em um determinado bloco.
 					Essa chance aumenta até que uma árvore seja colocada e, então, é reiniciada.
-					''' 
+					'''
 			}
 
 			PotChance: {
@@ -91,7 +93,7 @@ Pages: {
 					'''
 					O denominador (1/x) da probabilidade de um vaso surgir ao decorar.
 					Isso não substitui os peças existentes; portanto, um valor de 1 NÃO colocará um Vaso em cada bloco.
-					''' 
+					'''
 			}
 
 			TermiteChance: {
@@ -149,12 +151,12 @@ Pages: {
 			}
 
 			StupaChance: {
-				DisplayName: "[i:SpiritReforged/StoneStupasItem] "Chance de Estupa"
+				DisplayName: "[i:SpiritReforged/StoneStupasItem] Chance de Estupa"
 				Tooltip:
 					'''
 					O denominador (1/x) da probabilidade de surgir um vaso (Estupa de Pedra) na geração.
 					Isso não substitui peças existentes; portanto, um valor de 1 NÃO colocará um vaso em todos os blocos.
-					''' 
+					'''
 			}
 
 			TreeChance: {
@@ -163,14 +165,14 @@ Pages: {
 					'''
 					O denominador (1/x) da probabilidade de uma árvore surgir em um determinado bloco.
 					Essa probabilidade aumenta até que uma árvore seja colocada e, então, é reiniciada.
-					''' 
+					'''
 			}
 		}
 	}
 
 	Surface: {
-		   Name: Surface
-		   Description: Controls specific aspects of Reforged's additions and edits to the surface.
+		Name: Surface
+		Description: Controls specific aspects of Reforged's additions and edits to the surface.
 
 		Presets: {
 			Whimsical: {
@@ -228,8 +230,8 @@ Pages: {
 	}
 
 	Ocean: {
-		   Name: Oceano
-		   Description: Controla aspectos específicos do oceano reformulado do Reforged.
+		Name: Oceano
+		Description: Controla aspectos específicos do oceano reformulado do Reforged.
 
 		Presets: {
 			KelpForest: {
@@ -294,9 +296,9 @@ Pages: {
 				Tooltip: A altura máxima, em blocos, na qual as algas marinhas podem surgir.
 			}
 
-			GravelMultiplicador: {
-				DisplayName: "[i:SpiritReforged/GravelItem] Multiplicador de Tamanho de Cascalho"
-				Tooltip: O modificador do tamanho das manchas de cascalho oceânico (que inclui a pedra de magma).
+			GravelMultiplier: {
+				// DisplayName: "[i:SpiritReforged/GravelItem] Gravel Size Multiplier"
+				// Tooltip: The modifier to the size of ocean gravel patches (which includes magmastone).
 			}
 
 			Shape: {
@@ -325,7 +327,7 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/OrnatePotsItem] Chance de Vaso Ornamentado"
 				Tooltip: O multiplicador do número de tentativas por Vaso.
 			}
-			
+
 			PotionScale: {
 				DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] Escala de Tanque de Clonagem de Poções"
 				Tooltip: O multiplicador do número de tentativas por Tanque de Clonagem de Poções.
@@ -406,23 +408,23 @@ Pages: {
 	}
 
 	Caves: {
-		   Name: Cavernas
-		   Description: Controla adições diversas às Cavernas.
+		Name: Cavernas
+		Description: Controla adições diversas às Cavernas.
 
 		Members: {
 			SignChance: {
-				   DisplayName: "[i:171] (Casinhas) Chance de Placas"
-				   Tooltip: O denominador (1/x) da probabilidade de uma placa surgir em uma casinha subterrânea.
+				DisplayName: "[i:171] (Casinhas) Chance de Placas"
+				Tooltip: O denominador (1/x) da probabilidade de uma placa surgir em uma casinha subterrânea.
 			}
 
 			MannequinChance: {
-				   DisplayName: "[i:498] (Casinhas) Chance de Manequim"
-				   Tooltip: O denominador (1/x) da probabilidade de um manequim surgir em uma casinha subterrânea.
+				DisplayName: "[i:498] (Casinhas) Chance de Manequim"
+				Tooltip: O denominador (1/x) da probabilidade de um manequim surgir em uma casinha subterrânea.
 			}
 
 			LoomChance: {
-				   DisplayName: "[i:332] (Casinhas) Chance de Tear"
-				   Tooltip: O denominador (1/x) da probabilidade de uma casinha ser uma "casa de tear" — que inclui estandartes e um tear.
+				DisplayName: "[i:332] (Casinhas) Chance de Tear"
+				Tooltip: O denominador (1/x) da probabilidade de uma casinha ser uma "casa de tear" — que inclui estandartes e um tear.
 			}
 
 			RareSignChance: {
@@ -446,7 +448,7 @@ Pages: {
 					'''
 					O multiplicador para a quantidade máxima de Covas de Pesca que surgem em um mundo.
 					Isso pode causar problemas com outros mods que geram estruturas.
-					''' 
+					'''
 			}
 
 			NeonMossChance: {
@@ -514,7 +516,7 @@ Pages: {
 					'''
 					A largura usada para determinar o tamanho do Zigurate, não necessariamente a largura real.
 					Valores acima do padrão forçarão o Zigurate a surgir sobre uma Pirâmide, pois, caso contrário, ele pode acabar não surgindo.
-					''' 
+					'''
 			}
 
 			UsedHeight: {
@@ -523,7 +525,7 @@ Pages: {
 					'''
 					A altura usada para determinar o tamanho do Zigurate, não necessariamente a altura real.
 					Valores acima do padrão forçarão o Zigurate a surgir sobre uma Pirâmide, pois, caso contrário, ele poderá não surgir de forma alguma.
-					''' 
+					'''
 			}
 
 			MaxInfections: {
@@ -562,7 +564,7 @@ Pages: {
 					'''
 					A probabilidade de qualquer sala do Zigurate ser uma sala especial; isto é, qualquer uma destas:
 					Sala de biblioteca, sala de armazenamento, sala de sepultamento
-					''' 
+					'''
 			}
 
 			SkipRoomChance: {
@@ -585,7 +587,7 @@ Pages: {
 					'''
 					O fator pelo qual o conjunto de itens da cômoda é normalizado.
 					Quanto maior esse valor, mais "equilibrada" é a probabilidade de obtenção de cada item.
-					''' 
+					'''
 			}
 
 			AncientBannerChance: {
@@ -677,9 +679,9 @@ Pages: {
 				Tooltip: Chance de uma Tifa ser posicionada.
 			}
 
-			OásisPlantChance: {
-				DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oásis) Chance de Planta de Oásis"
-				Tooltip: Chance de Plantas de Oásis serem posicionadas.
+			OasisPlantChance: {
+				// DisplayName: "[i:SpiritReforged/PineappleSeeds] (Oasis) Oasis Plant Chance"
+				// Tooltip: Chance for an Oasis Plant to be placed.
 			}
 
 			GlowflowerChance: {
@@ -713,7 +715,7 @@ Pages: {
 					'''
 					O fator pelo qual os tesouros principais é normalizado.
 					Quanto maior esse valor, mais "equilibrada" é a chance de obtenção de todos os itens.
-					''' 
+					'''
 			}
 
 			ItemNormalization: {
@@ -722,7 +724,7 @@ Pages: {
 					'''
 					O fator pelo qual os tesouros não principais é normalizado.
 					Quanto maior esse valor, mais "equilibrada" é a chance de obter qualquer um dos itens.
-					''' 
+					'''
 			}
 
 			FossilCount: {
@@ -778,7 +780,7 @@ Pages: {
 			}
 		}
 	}
-} 
+}
 
 Enums: {
 	OceanShape: {

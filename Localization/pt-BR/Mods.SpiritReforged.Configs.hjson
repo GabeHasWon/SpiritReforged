@@ -36,16 +36,6 @@ ReforgedClientConfig: {
 
 	Headers.Developer: Ferramentas de Desenvolvidor
 
-	GlyphProjectileEffects: {
-		Label: Efeitos de Projéteis de Glifos
-		Tooltip: Determina de projéteis com glifos terão efeitos visuais.
-	}
-
-	GlyphItemEffects: {
-		Label: Efeitos de Itens de Glifos
-		Tooltip: Determina se itens com um glifo aplicado a eles terão efeitos visuais ao serem descartados no chão.
-	}
-
 	GlyphProjectileVisualEffects: {
 		Label: Efeitos Visuais de Projéteis de Glifos
 		Tooltip: ""
@@ -90,6 +80,6 @@ ReforgedServerConfig: {
 			Idealmente, outros mods utilizam o conjunto de projéteis nomeado 'HeldProjectile' (bool) para garantir uma compatibilidade estável.
 
 			Isso não tem efeito algum sobre projéteis originais do vanilla ou do Reforged, que já estão definidos.
-			''' 
+			'''
 	}
 }
