@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.MapCommon;
-using System.Reflection;
 using Terraria.Graphics.Renderers;
 using Terraria.Map;
 
@@ -12,10 +11,7 @@ internal class NPCHeadLayer : ModMapLayer
 	{
 		internal static float LastMinimapScale = 0;
 
-		public override void PostUpdate()
-		{
-			LastMinimapScale = Main.mapMinimapScale;
-		}
+		public override void PostUpdate() => LastMinimapScale = Main.mapMinimapScale;
 	}
 
 	/// <summary> The types of outlier NPCs that use <see cref="AutoloadHead"/>. </summary>
