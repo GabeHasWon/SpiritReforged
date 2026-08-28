@@ -53,7 +53,7 @@ Purifier: {
 }
 
 Enchanter: {
-	// DisplayName: Enchanter
-	// Flavor: Huzzah! Need a little more flare? Let's begin with a spark!
-	// Description: Starts with 60 Flarepowder, 3 Chromatic Wax and the Charmcaster vanity set, alongside the Enchanter NPC.
+	DisplayName: 附魔师
+	Flavor: 好哇！想要更多火光吗？让我们从一簇火花开始吧！
+	Description: 以60个闪耀之尘、3个彩蜡和魔石法师时装开始游戏。
 }

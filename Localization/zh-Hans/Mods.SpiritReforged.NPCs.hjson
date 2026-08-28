@@ -455,8 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: 莫叹空空洞穴幽，百瓮藏宝待君收！
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
-		// Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
-		// Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
+		Spellbound_0: 附魔新台绑雕文，遍寻世界皆可见！
+		Spellbound_1: 镜子现已随处见，静待新遇来示现！
 	}
 }
 
