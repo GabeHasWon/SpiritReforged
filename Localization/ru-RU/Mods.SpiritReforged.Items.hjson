@@ -3436,3 +3436,98 @@ CandlewickCoil: {
 	DisplayName: Моток верёвки из фитиля
 	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
 }
+
+CandleBathtubItem: {
+	// DisplayName: Candle Bathtub Item
+	// Tooltip: ""
+}
+
+CandleBedItem: {
+	// DisplayName: Candle Bed Item
+	// Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	// DisplayName: Candle Bookcase Item
+	// Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	// DisplayName: Candle Candelabra Item
+	// Tooltip: ""
+}
+
+CandleCandleItem: {
+	// DisplayName: Candle Candle Item
+	// Tooltip: ""
+}
+
+CandleChairItem: {
+	// DisplayName: Candle Chair Item
+	// Tooltip: ""
+}
+
+CandleChandelierItem: {
+	// DisplayName: Candle Chandelier Item
+	// Tooltip: ""
+}
+
+CandleChestItem: {
+	// DisplayName: Candle Chest Item
+	// Tooltip: ""
+}
+
+CandleDoorItem: {
+	// DisplayName: Candle Door Item
+	// Tooltip: ""
+}
+
+CandleDresserItem: {
+	// DisplayName: Candle Dresser Item
+	// Tooltip: ""
+}
+
+CandleLampItem: {
+	// DisplayName: Candle Lamp Item
+	// Tooltip: ""
+}
+
+CandleLanternItem: {
+	// DisplayName: Candle Lantern Item
+	// Tooltip: ""
+}
+
+CandleSinkItem: {
+	// DisplayName: Candle Sink Item
+	// Tooltip: ""
+}
+
+CandleSofaItem: {
+	// DisplayName: Candle Sofa Item
+	// Tooltip: ""
+}
+
+CandleTableItem: {
+	// DisplayName: Candle Table Item
+	// Tooltip: ""
+}
+
+CandleToiletItem: {
+	// DisplayName: Candle Toilet Item
+	// Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	// DisplayName: Candle Work Bench Item
+	// Tooltip: ""
+}
+
+CandleClockItem: {
+	// DisplayName: Candle Clock Item
+	// Tooltip: ""
+}
+
+CandlePianoItem: {
+	// DisplayName: Candle Piano Item
+	// Tooltip: ""
+}

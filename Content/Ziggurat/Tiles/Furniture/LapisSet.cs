@@ -13,22 +13,22 @@ public class LapisSet : ILoadable
 
 	private static void LoadLapisFurniture()
 	{
-		string saltName = typeof(LapisSet).Namespace + ".Lapis";
+		string name = typeof(LapisSet).Namespace + ".Lapis";
 		TileHelper.ArgumentCollection arguments;
 
-		LoadFurnitureSet(saltName, arguments = AllArgs(DustID.Cobalt, new(0.9f, 0.9f, 0.74f), distortGlow: false)
-			- new BarrelTile()
-			- new BenchTile()
-			- new CandleTile()
-			- new LanternTile(),
+		LoadFurnitureSet(name, arguments = AllArgs(DustID.Cobalt, new(new Vector3(0.9f, 0.9f, 0.74f), false))
+			- nameof(BarrelTile)
+			- nameof(BenchTile)
+			- nameof(CandleTile)
+			- nameof(LanternTile),
 			AutoContent.ItemType<CarvedLapis>()
 		);
 
 		foreach (FurnitureTile tile in arguments.Arguments)
 			TileTypes.Add(tile.FurnitureName, tile.Type); //Collect the resulting types
 
-		LapisCandle lapisCandle = ModContent.GetInstance<LapisCandle>();
-		TileTypes.Add(lapisCandle.FurnitureName, lapisCandle.Type); //Manually include the candle as it's not added to arguments
+		LapisCandle candle = ModContent.GetInstance<LapisCandle>();
+		TileTypes.Add(candle.FurnitureName, candle.Type); //Manually include the candle as it's not added to arguments
 	}
 
 	public void Unload() { }
