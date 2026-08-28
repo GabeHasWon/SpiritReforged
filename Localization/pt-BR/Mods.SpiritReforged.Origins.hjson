@@ -55,5 +55,5 @@ Purifier: {
 Enchanter: {
 	// DisplayName: Enchanter
 	// Flavor: Huzzah! Need a little more flare? Let's begin with a spark!
-	// Description: Starts with 60 Flarepowder, 3 Chromatic Wax and the Charmcaster vanity set.
+	// Description: Starts with 60 Flarepowder, 3 Chromatic Wax and the Charmcaster vanity set, alongside the Enchanter NPC.
 }

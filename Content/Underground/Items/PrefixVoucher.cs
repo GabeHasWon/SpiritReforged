@@ -93,12 +93,51 @@ public class PrefixVoucher : ModItem
 			Item.ClearNameOverride();
 			Item.SetNameOverride(Item.Name.FormatWith(text));
 
-			string appliesLine = lines[1].Remove(lines[1].IndexOf(' ') + 1); //Return the tooltip line before any whitespace
-			Vector2 firstMeasure = font.MeasureString(appliesLine);
-			Vector2 secondMeasure = font.MeasureString(text);
+			// Split string,
+			string[] strings = lines[1].Split(' ');
+			int index = -1;
 
-			Rectangle source = new((int)firstMeasure.X, 0, (int)secondMeasure.X, (int)secondMeasure.Y);
+			for (int i = 0; i < strings.Length; i++)
+			{
+				string s = strings[i];
+
+				if (s.Contains("{1}"))
+				{
+					index = i;
+					break;
+				}
+			}
+
+			// Find the replacement index, if any, or set to default (second word)
+			if (index == -1)
+				index = 1;
+
+			// Default offset to the height of the font - maybe this has issues with resource packs?
+			Vector2 offset = new(0, 29);
+
+			for (int i = 0; i < index; i++)
+			{
+				string s = strings[i];
+				offset.X += font.MeasureString(s + " ").X;
+			}
+
+			// Adjust string offset and set source
+			Vector2 prefixNameSize = font.MeasureString(text);
+			Rectangle source = new((int)offset.X, 0, (int)prefixNameSize.X, (int)offset.Y);
+
 			return _info = new(color, rare, text, source, accessory);
+
+			// New code from QM kept for posterity, or in case we need to re-adjust
+			////Apply a name override
+			//Item.ClearNameOverride();
+			//Item.SetNameOverride(Item.Name.FormatWith(text));
+
+			//string appliesLine = lines[1].Remove(lines[1].IndexOf(' ') + 1); //Return the tooltip line before any whitespace
+			//Vector2 firstMeasure = font.MeasureString(appliesLine);
+			//Vector2 secondMeasure = font.MeasureString(text);
+
+			//Rectangle source = new((int)firstMeasure.X, 0, (int)secondMeasure.X, (int)secondMeasure.Y);
+			//return _info = new(color, rare, text, source, accessory);
 		}
 
 		//Apply a default name override

@@ -775,7 +775,7 @@ Enchanter: {
 		WitchDoctor: "{0} tem uma aura tão misteriosa sobre ele, mas eu gostaria de conhecer ele melhor. Você poderia... talvez, me introduzir a ele?"
 	}
 
-	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
+	Census.SpawnCondition: Segure qualquer item encantado ou Cera Cromática [i:SpiritReforged/ChromaticWax], ou derrote um chefe.
 }
 
 // SealedKnight.DisplayName: Sealed Knight
