@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Фокус-фокус, грусть прочь гони — в пещерах есть теперь что найти!
 		CavesAndClubs_1: Абра-кадабра, в пещеры ступай — с новыми горшками там не скучай!
+		// Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
+		// Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
 	}
 }
 

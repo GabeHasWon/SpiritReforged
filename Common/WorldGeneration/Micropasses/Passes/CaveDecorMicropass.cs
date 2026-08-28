@@ -81,7 +81,7 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 		return Main.tile[x, y].TileType == type;
 	}
 
-	private static void CreateMirrors(int count)
+	public static void CreateMirrors(int count)
 	{
 		int instantaneousAttempts = 0;
 
