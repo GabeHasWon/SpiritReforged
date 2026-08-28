@@ -15,7 +15,7 @@ public class CandleSet : ILoadable
 		- nameof(BenchTile)
 		- nameof(ClockTile)
 		- nameof(PianoTile),
-		AutoContent.ItemType<WaxBlock>(), false //Don't load items until assets are implemented
+		AutoContent.ItemType<WaxBlock>() //Don't load items until assets are implemented
 	);
 
 	public void Unload() { }
