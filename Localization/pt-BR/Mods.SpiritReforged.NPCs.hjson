@@ -574,13 +574,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: À noite, esses pequenos bichinhos podem aparecer em vários tipos de grama. Eles são os principais responsáveis ​​pelos sons da noite.
 	DisplayName: Grilo
+	Entry: À noite, esses pequenos bichinhos podem aparecer em vários tipos de grama. Eles são os principais responsáveis ​​pelos sons da noite.
 }
 
 GoldCricket: {
-	Entry: Os moradores da cidade dizem que ver um grilo dourado traz boa sorte. Alguns podem dizer que é porque eles vendem bem, e outros dizem que não... certamente que não.
 	DisplayName: Grilo de Ouro
+	Entry: Os moradores da cidade dizem que ver um grilo dourado traz boa sorte. Alguns podem dizer que é porque eles vendem bem, e outros dizem que não... certamente que não.
 }
 
 BeetleTownPet: {
@@ -731,7 +731,7 @@ Enchanter: {
 		LikeBiome: Aqui, acima das nuvens, sinto uma conexão bem maior com os fluidos da minha magia. Isso sem mencionar a vista!
 		DislikeBiome: Abelhas produzem uma cera de qualidade tão alta, mas qual a necessidade de serem tão agressivas? Me cobriram da cabeça aos pés em picadas!
 		LikeNPC_Princess: "{NPCName} é uma garota tão doce, mas eu mal consigo manter um papo com ela. Como pode um corpo tão pequeno conter toda aquela energia?"
-		Princess_LovesNPC: "A magia de {NPCName} é diferente de qualquer outra que eu ja vi! Me pergunto qual seja a fonte dela?"
+		Princess_LovesNPC: A magia de {NPCName} é diferente de qualquer outra que eu ja vi! Me pergunto qual seja a fonte dela?
 	}
 
 	Dialogue: {
@@ -768,10 +768,12 @@ Enchanter: {
 		Eclipse: Como eu vou ter meu chá da tarde sem saber se é dia ou noite?
 		Party: Essas festividades humanas são bem fascinantes, se não forem... um pouco estranhas pro meu gosto. Talvez tenha que me retirar em breve.
 		Goblin: Aquele goblin insiste em ficar colocando selos nas coisas dos outros, além disso, ele insiste em ficar pedindo pra eu encantar as várias invenções dele. Geralmente não dá muito certo...
-		Golfer: {0} sempre me convida pra jogar golfe com os outros, mas sempre acabo cochilando... Eu não tenho o coração para ficar rejeitando os convites dele.
+		Golfer: "{0} sempre me convida pra jogar golfe com os outros, mas sempre acabo cochilando... Eu não tenho o coração para ficar rejeitando os convites dele."
 		Stylist: Eu smpre deixo {0} me convencer a deixar minhas escamas revestidas com cera, eu não sei como qual é o apelo. Mas eu fico brilhando como um peixe fresquinho do lago!
-		WitchDoctor: "{0} tem uma aura tão misteriosa sobre ele, mas eu gostaria de conhecer ele melhor. Você poderia... talvez, me introduzir a ele?
+		WitchDoctor: "{0} tem uma aura tão misteriosa sobre ele, mas eu gostaria de conhecer ele melhor. Você poderia... talvez, me introduzir a ele?"
 	}
+
+	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
 }
 
-// SealedKnight.DisplayName: Cavaleiro Vendado
+// SealedKnight.DisplayName: Sealed Knight

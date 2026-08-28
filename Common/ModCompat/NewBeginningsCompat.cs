@@ -9,8 +9,10 @@ using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Forest.WoodClub;
+using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
@@ -48,6 +50,7 @@ internal class NewBeginningsCompat : ModSystem
 			AddDisentombed();
 			AddWorshipper();
 			AddPurifier();
+			AddEnchanter();
 		});
 
 		void AddDiver()
@@ -128,6 +131,19 @@ internal class NewBeginningsCompat : ModSystem
 			});
 
 			AddOrigin("Purifier", [], equip, misc, dele);
+		}
+
+		void AddEnchanter()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<CharmcasterHat>(), ModContent.ItemType<CharmcasterRobe>(), 
+				ModContent.ItemType<CharmcasterLeggings>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<Flarepowder>());
+			object dele = GetDelegateData(() => true, list => { }, () => false, null, player =>
+			{
+				player.inventory[0].stack = 60;
+			});
+
+			AddOrigin("Enchanter", [], equip, misc, null);
 		}
 
 		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 

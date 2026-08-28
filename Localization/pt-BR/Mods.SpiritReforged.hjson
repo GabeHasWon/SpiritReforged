@@ -26,6 +26,7 @@ Conditions: {
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
 	InSpace: No Espaço
+	// NotSnow: Not in the Snow
 }
 
 Misc: {
@@ -38,6 +39,9 @@ Misc: {
 	Enchantment: {
 		PlaceToEnchant: Coloque um item para encantar
 		Enchant: Encantar
+		// Cost: "{0} [c/{1}:Chromatic Wax]"
+		// Clear: Remove enchantment
+		// Random: Randomize enchantment
 	}
 
 	NoStock: Fora de estoque
@@ -77,7 +81,7 @@ GameTips: {
 	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
 	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
 	# Spellbound
-    ReforgedTip17: Glifos irão dar poderosos efeitos a suas armas, que mudam como elas serão usadas!
+	ReforgedTip17: Glifos irão dar poderosos efeitos a suas armas, que mudam como elas serão usadas!
 	ReforgedTip18: Cera Cromática pode ser achada em baús, em vasos, em caixas, e até ao derrotar certo inimigos.
 	ReforgedTip19: Encantadore irá alterar suas armas com um certo alcance de efeitos de glifos. Teste todos eles!
 }
@@ -118,4 +122,4 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
- DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
+DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
