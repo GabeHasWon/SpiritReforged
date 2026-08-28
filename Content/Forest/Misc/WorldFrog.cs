@@ -28,6 +28,7 @@ public class WorldFrog : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
+		NPCHeadLayer.Types.Add(Type);
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()

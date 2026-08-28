@@ -62,6 +62,8 @@ public class Hiker : WorldNPC
 
 		Main.npcFrameCount[Type] = 25;
 
+		NPCHeadLayer.Types.Add(Type);
+
 		NPCID.Sets.ExtraFramesCount[Type] = 9;
 		NPCID.Sets.AttackFrameCount[Type] = 4;
 		NPCID.Sets.DangerDetectRange[Type] = 500;
