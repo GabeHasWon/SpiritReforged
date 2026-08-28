@@ -6,15 +6,15 @@ Português Brasileiro (by Lucas Rotulo and Hari)
 Русский (by Nana Team and RUnion)
 简体中文 (by Lacewing, Fox Radish, and Lin)
 
-[c/ffc163:Spirit Reforged] is a general content mod which aims to create a fleshed out, high-quality experience for players at all points of progression. We want to make your world come to life by creating memorable environments, encounters, and high-quality items. 
+Spirit Reforged is a general content mod which aims to create a fleshed out, high-quality experience for players at all points of progression. We want to make your world come to life by creating memorable environments, encounters, and high-quality items. 
 
-Spirit Reforged is the latest and main project developed by Team Spirit, also responsible for the original Spirit Mod (now called [c/cffffd:Spirit Classic]). 
+Spirit Reforged is the latest and main project developed by Team Spirit, also responsible for the original Spirit Mod (now called Spirit Classic). 
 
-Spirit Reforged is a [c/ffc163:standalone] project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
+Spirit Reforged is a standalone project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
 Our brand new update, Spellbound (v0.2.2), introduces a new weapon enchantment system called Glyphs to the game! 
 
--- Additions--
+-- Additions --
 At a glance, Spirit Reforged adds:
 - 615 Items, including tons of new weapons and gear
 - 2 New Ecotone Biomes: The Savanna and the Salt Flats
