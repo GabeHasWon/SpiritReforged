@@ -53,7 +53,7 @@ Purifier: {
 }
 
 Enchanter: {
-	// DisplayName: Enchanter
-	// Flavor: Huzzah! Need a little more flare? Let's begin with a spark!
-	// Description: Starts with 60 Flarepowder, 3 Chromatic Wax and the Charmcaster vanity set, alongside the Enchanter NPC.
+	DisplayName: Чародей
+	Flavor: Чтобы разжечь пламя души, кто-то сперва должен сколдовать искру!
+	Description: Начинает с 60 искрящимися порошками, 3 хроматическими восками, полным набором одежды колдуна, а также с чародеем вместо гида в новых мирах.
 }
