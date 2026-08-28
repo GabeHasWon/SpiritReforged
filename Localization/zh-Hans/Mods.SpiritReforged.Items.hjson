@@ -3509,3 +3509,13 @@ CandleWorkBenchItem: {
 	// DisplayName: Candle Work Bench Item
 	// Tooltip: ""
 }
+
+CandleClockItem: {
+	// DisplayName: Candle Clock Item
+	// Tooltip: ""
+}
+
+CandlePianoItem: {
+	// DisplayName: Candle Piano Item
+	// Tooltip: ""
+}

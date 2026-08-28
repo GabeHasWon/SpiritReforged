@@ -15,13 +15,13 @@ public class CandleSet : ILoadable
 		- nameof(BenchTile)
 		- nameof(ClockTile)
 		- nameof(PianoTile),
-		AutoContent.ItemType<WaxBlock>() //Don't load items until assets are implemented
+		AutoContent.ItemType<WaxBlock>()
 	);
 
 	public void Unload() { }
 }
 
-public class CandleClock : ClockTile/*, ILoadItem*/, ILightTile
+public class CandleClock : ClockTile, ILoadItem, ILightTile
 {
 	public LightingSettings Settings { get; set; } = new LightingSettings(Color.Orange.ToVector3(), true);
 
@@ -48,7 +48,7 @@ public class CandleClock : ClockTile/*, ILoadItem*/, ILightTile
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch) => PostDrawGlowmask(spriteBatch, i, j, Settings.Distorted);
 }
 
-public class CandlePiano : PianoTile/*, ILoadItem*/, ILightTile
+public class CandlePiano : PianoTile, ILoadItem, ILightTile
 {
 	public LightingSettings Settings { get; set; } = new LightingSettings(Color.Orange.ToVector3(), true);
 
