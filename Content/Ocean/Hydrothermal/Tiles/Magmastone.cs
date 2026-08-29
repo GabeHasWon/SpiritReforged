@@ -101,6 +101,7 @@ public class Magmastone : ModTile, ILoadItem
 		Main.tileSolid[Type] = true;
 		Main.tileMergeDirt[Type] = true;
 		Main.tileBlockLight[Type] = true;
+		Main.tileLighted[Type] = true;
 
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
@@ -120,6 +121,8 @@ public class Magmastone : ModTile, ILoadItem
 		else
 			ToggleWireGlowPoint(i, j);
 	}
+
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.1f, 0.05f, 0f);
 }
 
 internal class MagmaGlowData : PacketData
