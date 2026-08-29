@@ -38,4 +38,13 @@ public class Buckshot : ShotgunAmmoItem
 		Item.damage = 8;
 		Item.knockBack = 3f;
 	}
+
+	public override void AddRecipes()
+	{
+		CreateRecipe(50).
+			AddIngredient<Shot>(50).
+			AddRecipeGroup(RecipeGroupID.IronBar, 2).
+			AddTile(TileID.Anvils).
+			Register();
+	}
 }

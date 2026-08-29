@@ -3577,3 +3577,8 @@ SuperExtendoMags: {
 	DisplayName: Super Extendo Mags
 	Tooltip: ""
 }
+
+SaltShot: {
+	DisplayName: Salt Shot
+	Tooltip: ""
+}

@@ -161,12 +161,14 @@ public class MagazineGlobalItem : GlobalItem
 					player.direction = _shootDirection;
 
 				if (_reloadAnimationTimer > 0)
-					_reloadAnimationTimer--;
+				{
+					if (_reloadUseStyle is not null)
+						_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
+					else
+						ReloadStyle(player);
 
-				if (_reloadUseStyle is not null)
-					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
-				else
-					ReloadStyle(player);
+					_reloadAnimationTimer--;
+				}
 			}
 			else
 			{

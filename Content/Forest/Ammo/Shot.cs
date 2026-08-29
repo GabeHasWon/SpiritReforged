@@ -15,10 +15,13 @@ using Terraria.Audio;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.NPCCommon;
 
 namespace SpiritReforged.Content.Forest.Ammo;
 public class Shot : ShotgunAmmoItem
 {
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
+
 	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
 		for (int i = 0; i < shotCount; i++)
@@ -39,7 +42,11 @@ public class Shot : ShotgunAmmoItem
 
 	public Shot() : base(Behavior, 6, .4f, 12.5f) { }
 
-	public override void SafeSetDefaults() => Item.damage = 5;
+	public override void SafeSetDefaults()
+	{
+		Item.damage = 5;
+		Item.value = Item.buyPrice(copper: 15);
+	}
 }
 
 public class ShotProjectile : ModProjectile
