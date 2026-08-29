@@ -3531,3 +3531,18 @@ CandlePianoItem: {
 	DisplayName: Свечное пианино
 	Tooltip: ""
 }
+
+PumpkinPailOrange: {
+	// DisplayName: Pumpkin Pail Orange
+	// Tooltip: ""
+}
+
+PumpkinPailPurple: {
+	// DisplayName: Pumpkin Pail Purple
+	// Tooltip: ""
+}
+
+PumpkinPailWhite: {
+	// DisplayName: Pumpkin Pail White
+	// Tooltip: ""
+}
