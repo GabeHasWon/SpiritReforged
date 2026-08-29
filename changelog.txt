@@ -5,3 +5,5 @@ v0.2.2
 - Added Enchanted Workbench encounters
 - Overhauled Debuff Healthbar visuals
 ... and so much more!
+
+Full changelogs: https://docs.google.com/document/u/1/d/1pHdgdJdmLiTo6IkJ7uQZf1HZm77tV1z6m1ona-EJLx0/edit?usp=sharing

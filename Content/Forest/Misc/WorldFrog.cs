@@ -153,7 +153,7 @@ public class WorldFrog : ModNPC
 		var texture = TextureAssets.Npc[Type].Value;
 		var effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : default;
 
-		var frame = NPC.frame with { Width = NPC.frame.Width - 2, Height = NPC.frame.Height - 2 };
+		var frame = NPC.frame with { X = NPC.frame.X + 4, Width = 36, Height = 38 };
 		var origin = new Vector2(frame.Width / 2, frame.Height);
 		var position = NPC.Bottom - screenPos + new Vector2(0, NPC.gfxOffY + 2);
 
