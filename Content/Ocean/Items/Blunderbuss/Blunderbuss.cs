@@ -1,13 +1,14 @@
 ﻿using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Blunderbuss;
 
-public class Blunderbuss : ModItem
+public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15f))
 {
 	public static readonly SoundStyle Fire = new("SpiritReforged/Assets/SFX/Item/Cannon_1")
 	{
@@ -22,7 +23,7 @@ public class Blunderbuss : ModItem
 
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, new("SpiritReforged/Assets/SFX/Item/Ring") { Pitch = -0.5f });
 
-	public override void SetDefaults()
+	public override void SafeSetDefaults()
     {
         Item.width = Item.height = 12;
         Item.damage = 5;
@@ -34,56 +35,33 @@ public class Blunderbuss : ModItem
         Item.autoReuse = true;
         Item.rare = ItemRarityID.Blue;
         Item.useStyle = ItemUseStyleID.Shoot;
-        Item.DamageType = DamageClass.Ranged;
-        Item.shoot = ProjectileID.Bullet;
-        Item.useAmmo = AmmoID.Bullet;
-        Item.shootSpeed = 10f;
 		Item.value = Item.buyPrice(0, 5, 0, 0);
 
 		if (NPC.downedBoss3)
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.QuadBarrelShotgun;
 	}
 
-    public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-    {
-		const float spread = .4f; //In radians
-		const float speedVariance = .5f;
+	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
+	{
+		velocity *= 10f;
 
-        var unit = Vector2.Normalize(velocity);
+		var unit = Vector2.Normalize(velocity);
 		float fxDistance = 30;
 
 		SoundEngine.PlaySound(Fire2, position);
 
 		for (int i = 0; i < 10; i++)
-            Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(12f), 
+			Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(12f),
 				DustID.Torch, unit * Main.rand.NextFloat(), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
-        for (int i = 0; i < 15; i++)
-            Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), 
+		for (int i = 0; i < 15; i++)
+			Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f),
 				DustID.Smoke, unit.RotatedByRandom(1f) * Main.rand.NextFloat(), 240, default, Main.rand.NextFloat(3f, 6f));
 
 		player.velocity -= velocity * .15f; //Player knockback
 
 		//Spawn a harmless animated projectile
 		Projectile.NewProjectile(source, position, unit, ModContent.ProjectileType<BlunderbussProj>(), 0, 0, player.whoAmI);
-
-		for (int i = 0; i < 6; i++)
-		{
-			PreNewProjectile.New(source, position, velocity.RotatedByRandom(spread) * Main.rand.NextFloat(1f - speedVariance, 1f + speedVariance), type, damage, knockback, player.whoAmI, preSpawnAction: (Projectile projectile) =>
-			{
-				if (projectile.TryGetGlobalProjectile(out BlunderbussProjectile bProj))
-				{
-					bProj.firedFromBlunderbuss = true;
-					projectile.scale = Main.rand.NextFloat(.25f, 1f);
-					projectile.timeLeft = BlunderbussProjectile.timeLeftMax; //Shorten lifespan
-
-					for (int d = 0; d < 3; d++)
-						Dust.NewDustPerfect(position + unit * fxDistance, DustID.Torch, projectile.velocity * Main.rand.NextFloat(.5f, 1.5f)).noGravity = true;
-				}
-			});
-		}
-
-		return false;
-    }
+	}
 }
 
 public class BlunderbussProj : ModProjectile

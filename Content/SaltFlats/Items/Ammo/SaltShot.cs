@@ -50,9 +50,9 @@ public class SaltShot : ShotgunAmmoItem
 		}
 	}
 
-	public SaltShot() : base(Behavior, 4, .55f, 13.5f) { }
+	public SaltShot() : base(Behavior, 4, .55f, 9.5f) { }
 
-	public override void SetStaticDefaults()
+	public override void SafeSetDefaults()
 	{
 		Item.rare = ItemRarityID.Blue;
 		Item.damage = 6;
@@ -74,11 +74,11 @@ public class SaltShotProjectile : ModProjectile
 	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<SaltShotProjectile>("SaltShotProjectile", false);
 
 	public const int MAX_TIMELEFT = 240;
-	public const int TIME_TILL_GRAVITY = 20; // how many frames before gravity kicks in, and the fire effects fade off
+	public const int TIME_TILL_GRAVITY = 30; // how many frames before gravity kicks in, and the fire effects fade off
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailingMode[Type] = 0;
-		ProjectileID.Sets.TrailCacheLength[Type] = 5;
+		ProjectileID.Sets.TrailCacheLength[Type] = 6;
 	}
 
 	public override void SetDefaults()
@@ -91,7 +91,8 @@ public class SaltShotProjectile : ModProjectile
 		Projectile.scale = Main.rand.NextFloat(.33f, 1f);
 		Projectile.frame = Main.rand.Next(4);
 		Projectile.usesLocalNPCImmunity = true;
-		Projectile.localNPCHitCooldown = 10;
+		Projectile.localNPCHitCooldown = 20;
+		Projectile.extraUpdates = 1;
 	}
 
 	public override void AI()
@@ -100,11 +101,11 @@ public class SaltShotProjectile : ModProjectile
 
 		if (Projectile.timeLeft < MAX_TIMELEFT - TIME_TILL_GRAVITY)
 		{
-			Projectile.velocity *= 0.95f;
-			Projectile.velocity.Y += 0.25f;
+			Projectile.velocity *= 0.97f;
+			Projectile.velocity.Y += 0.1f;
 
 			if (Projectile.velocity.Y > 0)
-				Projectile.velocity.Y *= 1.1f;
+				Projectile.velocity.Y *= 1.05f;
 
 			if (Projectile.velocity.Y > 16f)
 				Projectile.velocity.Y = 16f;
@@ -118,7 +119,7 @@ public class SaltShotProjectile : ModProjectile
 
 		var frame = tex.Frame(1, 4, 0, Projectile.frame);
 
-		const int bloomFade = 50;
+		const int bloomFade = 70;
 		int bloomTime = MAX_TIMELEFT - bloomFade;
 
 		if (Projectile.timeLeft > MAX_TIMELEFT - bloomFade)
@@ -192,7 +193,7 @@ public class SaltShotProjectile : ModProjectile
 
 		SoundEngine.PlaySound(SoundID.Tink with { Pitch = 0.25f, Volume = 0.5f }, target.Center);
 
-		Projectile.velocity *= -0.25f;
+		Projectile.velocity *= -0.35f;
 		Projectile.velocity.Y -= 2;
 
 		SpawnDusts();
