@@ -1,6 +1,2 @@
-v0.2.2.1
-- Fixed Helpful Frog gore and map icon not matching the new hat
-- Fixed Helpful Frog spawning in Subworlds
-- Increased Peaceful Candle sell price to 90 silver to avoid easy money farming
-- Fixed Mod of Redemption compat issue
-- Updated Brazilian Portuguese localization
+v0.2.2.3
+- Fixed an issue where prefixes would be loaded in the main menu, potentially causing issues with other mods

@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 
@@ -47,7 +48,7 @@ public class PileOfConsequencesPet : ModProjectile
 		int direction = Math.Sign(Projectile.velocity.X);
 		Projectile.direction = Projectile.spriteDirection = (result.Length() < 0.2f) ? owner.direction : direction;
 		Projectile.rotation = Projectile.velocity.Y * 0.1f * Projectile.direction;
-		bool hasItem = owner.HasItem(ModContent.ItemType<PileOfConsequences>());
+		bool hasItem = BackpackPlayer.HasItemInInventoryOrBackpack(owner, ModContent.ItemType<PileOfConsequences>());
 
 		if (distance < 16 * 3 || !hasItem)
 			Projectile.Opacity = Math.Max(Projectile.Opacity - 0.1f, 0);

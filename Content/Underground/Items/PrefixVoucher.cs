@@ -152,6 +152,10 @@ public class PrefixVoucher : ModItem
 	private static Item GetPrefixableItem(int prefix)
 	{
 		Item item = new(ItemID.WoodenSword);
+
+		if (Main.gameMenu) // Stops an infinite loop in load
+			return item;
+
 		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
 		{
 			item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
@@ -174,6 +178,9 @@ public class PrefixVoucher : ModItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
+
+		if (Main.gameMenu) // Don't load data in menu for the template instance
+			return;
 
 		prefix = RollRandomPrefix(out int itemType);
 		_tooltipPrefixItem = new(itemType, 1, prefix);

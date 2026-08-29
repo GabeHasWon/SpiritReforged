@@ -117,6 +117,8 @@ public class Enchanter : ModNPC
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
 
+	public override bool CanGoToStatue(bool toKingStatue) => true;
+
 	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
 		if (ModContent.GetInstance<EnchanterSystem>().enchanterSpawned || NPC.downedSlimeKing || NPC.downedBoss1 || Main.hardMode) //Has downed a boss or has spawned previously
