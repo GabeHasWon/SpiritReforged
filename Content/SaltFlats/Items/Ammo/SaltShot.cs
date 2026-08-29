@@ -33,7 +33,7 @@ public class SaltShot : ShotgunAmmoItem
 
 			for (int x = 0; x < 2; x++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.LightCyan * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
+				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.LightPink * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
@@ -45,7 +45,7 @@ public class SaltShot : ShotgunAmmoItem
 					PixelDivisor = 3,
 				});
 
-				Dust.NewDustPerfect(position, DustID.IceTorch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
+				Dust.NewDustPerfect(position, DustID.WhiteTorch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
 			}
 		}
 	}
@@ -73,6 +73,22 @@ public class SaltShotProjectile : ModProjectile
 {
 	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<SaltShotProjectile>("SaltShotProjectile", false);
 
+	private static readonly List<int> eyeEnemies = [
+		NPCID.EyeofCthulhu,
+		NPCID.EyeballFlyingFish,
+		NPCID.Eyezor,
+		NPCID.WanderingEye,
+		NPCID.Retinazer,
+		NPCID.Spazmatism,
+		NPCID.Creeper,
+		NPCID.MoonLordFreeEye,
+		NPCID.MoonLordHand,
+		NPCID.MoonLordHead,
+		NPCID.ServantofCthulhu,
+		NPCID.Drippler,
+		NPCID.WallofFleshEye,
+	];
+
 	public const int MAX_TIMELEFT = 240;
 	public const int TIME_TILL_GRAVITY = 30; // how many frames before gravity kicks in, and the fire effects fade off
 	public override void SetStaticDefaults()
@@ -88,7 +104,7 @@ public class SaltShotProjectile : ModProjectile
 		Projectile.penetrate = 2;
 		Projectile.Size = new(4);
 		Projectile.timeLeft = MAX_TIMELEFT;
-		Projectile.scale = Main.rand.NextFloat(.33f, 1f);
+		Projectile.scale = Main.rand.NextFloat(.5f, 1.1f);
 		Projectile.frame = Main.rand.Next(4);
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
@@ -126,11 +142,11 @@ public class SaltShotProjectile : ModProjectile
 		{
 			float fadeOut = (Projectile.timeLeft - bloomTime) / (float)bloomFade;
 
-			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.LightCyan.Additive() * 0.3f * fadeOut, Projectile.rotation, bloom.Size() / 2f, Projectile.scale * 0.135f, 0f, 0f);
+			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.MediumPurple.Additive() * 0.3f * fadeOut, Projectile.rotation, bloom.Size() / 2f, Projectile.scale * 0.135f, 0f, 0f);
 			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.White.Additive() * 0.25f * fadeOut, Projectile.rotation, bloom.Size() / 2f, Projectile.scale * 0.11f, 0f, 0f);
 		}
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor * 0.55f, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
 
 		int fadeTime = MAX_TIMELEFT - TIME_TILL_GRAVITY;
 
@@ -153,15 +169,15 @@ public class SaltShotProjectile : ModProjectile
 				var texture = TextureAssets.Projectile[873].Value;
 
 				float lerp = 1f - i / (float)(trailLength - 1);
-				var color = (Color.Lerp(Color.Cyan, baseColor, lerp) with { A = 0 }) * lerp;
+				var color = (Color.Lerp(Color.Purple, baseColor, lerp) with { A = 0 }) * lerp;
 				var position = Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition;
-				var scale = new Vector2(time, 1f) * Projectile.scale * 1.15f;
+				var scale = new Vector2(time, 1f) * Projectile.scale * 1.05f;
 
 				if (i == 0)
 				{
 					color = Color.White with { A = 0 };
 					texture = TextureAssets.Extra[ExtrasID.FallingStar].Value;
-					scale = new Vector2(MathHelper.Max(time, .25f), 1f) * Projectile.scale * .55f;
+					scale = new Vector2(MathHelper.Max(time, .25f), 1f) * Projectile.scale * .4f;
 				}
 
 				Main.EntitySpriteDraw(texture, position - Projectile.velocity * 0.5f, null, color * fadeIn, Projectile.rotation, texture.Size() / 2, scale * fadeIn, SpriteEffects.None);
@@ -186,6 +202,12 @@ public class SaltShotProjectile : ModProjectile
 		return false;
 	}
 
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (eyeEnemies.Contains(target.type) || target.BannerID() == NPCID.DemonEye)
+			modifiers.FinalDamage *= 2f;
+	}
+
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		if (Projectile.timeLeft > MAX_TIMELEFT - TIME_TILL_GRAVITY)
@@ -197,6 +219,10 @@ public class SaltShotProjectile : ModProjectile
 		Projectile.velocity.Y -= 2;
 
 		SpawnDusts();
+
+		if (eyeEnemies.Contains(target.type) || target.BannerID() == NPCID.DemonEye)
+			for (int i = 0; i < 3; i++)
+				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2.5f, 2.5f), 100, default, 0.9f).noGravity = true;
 	}
 
 	public override void OnKill(int timeLeft)

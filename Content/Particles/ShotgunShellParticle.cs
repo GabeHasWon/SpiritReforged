@@ -75,12 +75,12 @@ public class ShotgunShellParticle : Particle
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.DarkRed * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.35f, 0, 0);
+		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.35f, 0, 0);
 
 		spriteBatch.End();
 		spriteBatch.BeginDefault();
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color * fade, rotation, texture.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Lighting.GetColor((int)Position.X / 16, (int)Position.Y / 16, Color) * fade, rotation, texture.Size() / 2, Scale, 0, 0);
 	}
 
 	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
