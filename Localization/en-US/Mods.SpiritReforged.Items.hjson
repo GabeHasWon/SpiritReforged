@@ -3520,17 +3520,94 @@ CandlePianoItem: {
 	Tooltip: ""
 }
 
-PumpkinPailOrange: {
-	DisplayName: Pumpkin Pail Orange
+PinSpookyFarms: {
+	DisplayName: Fetid Farms Pin
 	Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	DisplayName: Krampus' Workshop Pin
+	Tooltip: ""
+}
+
+PinSpookyNose: {
+	DisplayName: Temple of Moco Pin
+	Tooltip: ""
+}
+
+PinSpookyRotten: {
+	DisplayName: Rotten Depths Pin
+	Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	DisplayName: Carved Green Stargourd
+	Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	DisplayName: Carved Lime Stargourd
+	Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	DisplayName: Carved Orange-Lime Stargourd
+	Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	DisplayName: Carved Orange Stargourd
+	Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	DisplayName: Carved Red Stargourd
+	Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	DisplayName: Carved Rotten Stargourd
+	Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	DisplayName: Carved White Stargourd
+	Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	DisplayName: Carved Yellow Stargourd
+	Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	DisplayName: Carved Yellow-Green Stargourd
+	Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	DisplayName: Pumpkin Pail
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		'''
 }
 
 PumpkinPailPurple: {
-	DisplayName: Pumpkin Pail Purple
-	Tooltip: ""
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		'''
 }
 
 PumpkinPailWhite: {
-	DisplayName: Pumpkin Pail White
-	Tooltip: ""
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		'''
 }
