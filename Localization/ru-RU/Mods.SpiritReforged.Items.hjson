@@ -3438,96 +3438,96 @@ CandlewickCoil: {
 }
 
 CandleBathtubItem: {
-	// DisplayName: Candle Bathtub Item
-	// Tooltip: ""
+	DisplayName: Свечная ванна
+	Tooltip: ""
 }
 
 CandleBedItem: {
-	// DisplayName: Candle Bed Item
-	// Tooltip: ""
+	DisplayName: Свечная кровать
+	Tooltip: ""
 }
 
 CandleBookcaseItem: {
-	// DisplayName: Candle Bookcase Item
-	// Tooltip: ""
+	DisplayName: Свечной книжный шкаф
+	Tooltip: ""
 }
 
 CandleCandelabraItem: {
-	// DisplayName: Candle Candelabra Item
-	// Tooltip: ""
+	DisplayName: Свечной подсвечник
+	Tooltip: ""
 }
 
 CandleCandleItem: {
-	// DisplayName: Candle Candle Item
-	// Tooltip: ""
+	DisplayName: Свечная свеча
+	Tooltip: ""
 }
 
 CandleChairItem: {
-	// DisplayName: Candle Chair Item
-	// Tooltip: ""
+	DisplayName: Свечной стул
+	Tooltip: ""
 }
 
 CandleChandelierItem: {
-	// DisplayName: Candle Chandelier Item
-	// Tooltip: ""
+	DisplayName: Свечная люстра
+	Tooltip: ""
 }
 
 CandleChestItem: {
-	// DisplayName: Candle Chest Item
-	// Tooltip: ""
+	DisplayName: Свечной сундук
+	Tooltip: ""
 }
 
 CandleDoorItem: {
-	// DisplayName: Candle Door Item
-	// Tooltip: ""
+	DisplayName: Свечная дверь
+	Tooltip: ""
 }
 
 CandleDresserItem: {
-	// DisplayName: Candle Dresser Item
-	// Tooltip: ""
+	DisplayName: Свечной комод
+	Tooltip: ""
 }
 
 CandleLampItem: {
-	// DisplayName: Candle Lamp Item
-	// Tooltip: ""
+	DisplayName: Свечная напольная лампа
+	Tooltip: ""
 }
 
 CandleLanternItem: {
-	// DisplayName: Candle Lantern Item
-	// Tooltip: ""
+	DisplayName: Свечной фонарь
+	Tooltip: ""
 }
 
 CandleSinkItem: {
-	// DisplayName: Candle Sink Item
-	// Tooltip: ""
+	DisplayName: Свечная раковина
+	Tooltip: ""
 }
 
 CandleSofaItem: {
-	// DisplayName: Candle Sofa Item
-	// Tooltip: ""
+	DisplayName: Свечной диван
+	Tooltip: ""
 }
 
 CandleTableItem: {
-	// DisplayName: Candle Table Item
-	// Tooltip: ""
+	DisplayName: Свечной стол
+	Tooltip: ""
 }
 
 CandleToiletItem: {
-	// DisplayName: Candle Toilet Item
-	// Tooltip: ""
+	DisplayName: Свечной унитаз
+	Tooltip: ""
 }
 
 CandleWorkBenchItem: {
-	// DisplayName: Candle Work Bench Item
-	// Tooltip: ""
+	DisplayName: Свечной верстак
+	Tooltip: ""
 }
 
 CandleClockItem: {
-	// DisplayName: Candle Clock Item
-	// Tooltip: ""
+	DisplayName: Свечные напольные часы
+	Tooltip: ""
 }
 
 CandlePianoItem: {
-	// DisplayName: Candle Piano Item
-	// Tooltip: ""
+	DisplayName: Свечное пианино
+	Tooltip: ""
 }
