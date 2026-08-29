@@ -224,7 +224,7 @@ public class Enchanter : ModNPC
 		.Add<Flarepowder>()
 		.Add<VexpowderBlue>(Condition.CorruptWorld, Condition.BloodMoonOrHardmode)
 		.Add<VexpowderRed>(Condition.CrimsonWorld, Condition.BloodMoonOrHardmode)
-		.Add(ItemID.PeaceCandle, Condition.NotBloodMoon)
+		.Add(new Item(ItemID.PeaceCandle) { shopCustomPrice = Item.buyPrice(0, 0, 90, 0) }, Condition.NotBloodMoon)
 		.Add(ItemID.WaterCandle, Condition.NotBloodMoon, Condition.Hardmode)
 		.Add(ItemID.ShadowCandle, Condition.BloodMoon)
 		.Add(new Item(ItemID.Teacup) { shopCustomPrice = Item.buyPrice(0, 0, 10, 0) })

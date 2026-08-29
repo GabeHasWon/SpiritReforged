@@ -1,9 +1,6 @@
-v0.2.2
-- Added Glyphs, a unique enchantment system for weapons that serves as an alternative to Reforges! Instead of basic stat increases, Glyphs augment your weapons with unique and powerful effects. Test and discover what Glyphs work best for your weapons and playstyles!
-- Added a new Town NPC, the Enchanter
-- Added the Enchanted Stamp and Chromatic Wax
-- Added Enchanted Workbench encounters
-- Overhauled Debuff Healthbar visuals
-... and so much more!
-
-Full changelogs: https://docs.google.com/document/u/1/d/1pHdgdJdmLiTo6IkJ7uQZf1HZm77tV1z6m1ona-EJLx0/edit?usp=sharing
+v0.2.2.1
+- Fixed Helpful Frog gore and map icon not matching the new hat
+- Fixed Helpful Frog spawning in Subworlds
+- Increased Peaceful Candle sell price to 90 silver to avoid easy money farming
+- Fixed Mod of Redemption compat issue
+- Updated Brazilian Portuguese localization

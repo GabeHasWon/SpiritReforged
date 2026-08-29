@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using MonoMod.Utils;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -194,7 +195,7 @@ internal class UpdaterSystem : ModSystem
 	{
 		orig(playerIndex);
 
-		if (Main.netMode == NetmodeID.SinglePlayer && Instance.AnyTask()) //Only spawn in singleplayer to avoid potential complications
+		if (Main.netMode == NetmodeID.SinglePlayer && Instance.AnyTask() && !SubworldUtils.InSubworld()) //Only spawn in singleplayer to avoid potential complications
 			NPC.NewNPC(new EntitySource_SpawnNPC(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<WorldFrog>());
 	}
 

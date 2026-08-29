@@ -401,7 +401,7 @@ Pages: {
 			}
 
 			Occult: {
-				Name: "[i:SpiritReforged/ScryingVasoItem] Oculto"
+				Name: "[i:SpiritReforged/ScryingPotItem] Oculto"
 				Tooltip: Os experimentos falhos de incontáveis feiticeiros espalhados pelas cavernas.
 			}
 		}
@@ -462,17 +462,17 @@ Pages: {
 			}
 
 			StructuresMax: {
-				DisplayName: "[i:SpiritReforged/VasoteryWheelItem] (Armazém) Multiplicador"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Armazém) Multiplicador"
 				Tooltip: O multiplicador para o número de estruturas Cerâmica em um mundo.
 			}
 
 			StructureScale: {
-				DisplayName: "[i:SpiritReforged/VasoteryWheelItem] (Armazém) Escala"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Armazém) Escala"
 				Tooltip: A escala aplicada ao tamanho das estruturas de Cerâmica.
 			}
 
 			PotSpam: {
-				DisplayName: "[i:SpiritReforged/VasoteryWheelItem] (Armazém) Contador Vasos"
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Armazém) Contador Vasos"
 				Tooltip: O número mínimo de tentativas que as estruturas Vasotery precisam realizar para posicionar Vasos.
 			}
 
@@ -544,7 +544,7 @@ Pages: {
 			}
 
 			UncommonChance: {
-				DisplayName: "[i:SpiritReforged/BiomeVasosDesertItem] Uncommon Vaso Chance"
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Uncommon Vaso Chance"
 				Tooltip: Chance for a Vaso placed to be an Uncommon Vaso.
 			}
 

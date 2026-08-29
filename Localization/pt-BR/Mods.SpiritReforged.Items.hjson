@@ -2103,8 +2103,8 @@ SunEarrings: {
 	DisplayName: Brinco da Dançarina Solar
 	Tooltip:
 		'''
-		   Aumenta a mana máxima em 20
-		7% de aumento no dano por magia
+		Aumenta a mana máxima em 20
+		   7% de aumento no dano por magia
 		'''
 }
 
@@ -2967,22 +2967,22 @@ AdornedBow: {
 }
 
 BagOScarabs: {
-	DisplayName: Bolsa do Tesouro (Escarabeus)
+	DisplayName: Bolsa do Tesouro (Escaravelhaos)
 	Tooltip: ""
 }
 
 ScarabMask: {
-	DisplayName: Máscara do Escarabeus
+	DisplayName: Máscara da Escaravelhaos
 	Tooltip: ""
 }
 
 ScarabRelic: {
-	DisplayName: Relíquia do Escarabeus
+	DisplayName: Relíquia da Escaravelhaos
 	Tooltip: ""
 }
 
 ScarabTrophy: {
-	DisplayName: Troféu do Escarabeus
+	DisplayName: Troféu da Escaravelhaos
 	Tooltip: ""
 }
 
@@ -2997,7 +2997,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: Caixinha de Música (Escarabeus)
+	DisplayName: Caixinha de Música (Escaravelhaos)
 	Tooltip: ""
 
 	Toggle: {
@@ -3175,7 +3175,7 @@ BlazeGlyph: {
 
 RadiantGlyph: {
 	DisplayName: Glifo da Fortitude
-	Tooltip: Cria uma energia enquanto você não está atacando, deixando seu próximo ataque mais poderoso
+	Tooltip: Cria uma energia enquanto você não está atacando, deixando seu próximo ataque mais forte
 	Effect: Fortitude
 
 	Gendered: {
@@ -3208,7 +3208,7 @@ MoonlightGlyph: {
 		'''
 		Converte 20% do dano do seu item em danos por magia
 		Quanto menos mana você tem, mais forte seus ataques ficarão
-		Atacar inimigos irá sugar mana
+		Atacar inimigos irá absorver mana
 		'''
 	Effect: Deslumbrante
 
@@ -3224,7 +3224,7 @@ RotGlyph: {
 	Tooltip:
 		'''
 		Ataques lançam uma praga contagiosa
-		Essa praga pode ser transmitida a você por inimigos que sofrem dela
+		Essa praga pode ser transmitida para você a partir inimigos que sofrem dela
 		'''
 	Effect: Assolado
 
@@ -3237,7 +3237,7 @@ RotGlyph: {
 
 ShockGlyph: {
 	DisplayName: Glifo Elétrico
-	Tooltip: Ataques críticos irão dar 25% a mais de dano e lançar raios
+	Tooltip: Ataques críticos irão causar 25% a mais de dano e lançar raios
 	Effect: Eletrizante
 
 	Gendered: {
@@ -3269,7 +3269,7 @@ SanguineGlyph: {
 	Tooltip:
 		'''
 		20% de redução nos danos
-		Ataques sugam vida, efeito que fica mais forte quando menor sua vida
+		Ataques sugam vida dos inimigos, efeito que fica mais forte quando você está mais perto de morrer
 		Roubar vida irá te dar níveis de redução de ano
 		'''
 	Effect: Sanguessuga
@@ -3344,7 +3344,7 @@ VoidGlyph: {
 	DisplayName: Glifo do Vazio
 	Tooltip:
 		'''
-		Ataques inflingem níveis de Colapso do Vazio
+		Ataques infligem níveis de Colapso do Vazio
 		Colapso do Vazio cria um singularidade ameaçadora que após chegar em um certo nível, reduz a defesa inimiga
 		'''
 	Effect: Vazio
