@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -35,6 +36,14 @@ public class RotGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(new(220, 198, 57));
 	}
+
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		MoRHelper.OverrideElement(item, MoRHelper.Poison);
+
+		base.OnApplyGlyph(item, context);
+	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Poison, -1);
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{

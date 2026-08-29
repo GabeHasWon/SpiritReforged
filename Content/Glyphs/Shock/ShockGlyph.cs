@@ -7,6 +7,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
 using SpiritReforged.Content.Dusts;
+using SpiritReforged.Common.ModCompat;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -50,6 +51,13 @@ public partial class ShockGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(Color.Yellow);
 	}
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		MoRHelper.OverrideElement(item, MoRHelper.Thunder);
+
+		base.OnApplyGlyph(item, context);
+	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Thunder, -1);
 
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{
@@ -151,14 +159,14 @@ public partial class ShockGlyph : GlyphItem
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 			}
 		}
 
 		if (Main.rand.NextBool(50))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-			ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
+			ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 		}
 	}
 
@@ -175,7 +183,7 @@ public partial class ShockGlyph : GlyphItem
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
 		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
-			ParticleHandler.SpawnParticle(new LightningBoltParticle(projectile.Center, projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.1f) * Main.rand.NextFloat(15f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.7f), 20 + Main.rand.Next(10, 30)));
+			ParticleHandler.SpawnParticle(new ShockBoltParticle(projectile.Center, projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.1f) * Main.rand.NextFloat(15f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.7f), 20 + Main.rand.Next(10, 30)));
 
 		if (Main.rand.NextBool(12 + 10 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextBool() ? DustID.Electric : ModContent.DustType<YellowElectricDust>(), -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(12f), 0, default, Main.rand.NextFloat(0.4f, 0.6f)).noGravity = true;

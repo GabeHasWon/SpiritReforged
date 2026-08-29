@@ -1,13 +1,12 @@
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.DrawPreviewHook;
+using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Particles;
-using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc.Bonsai;
 
-public class BonsaiTrees : ModTile, IDrawPreview
+public class BonsaiTrees : ModTile
 {
 	public const int FrameWidth = 60;
 	public const int FrameHeight = 72;
@@ -56,58 +55,85 @@ public class BonsaiTrees : ModTile, IDrawPreview
 
 			int width = 48 - fluff * 2;
 			int height = 38;
-			var position = new Vector2(i, j) * 16 + new Vector2(fluff);
+			Vector2 position = new Vector2(i, j) * 16 + new Vector2(fluff);
 
 			float scale = Main.rand.NextFloat(0.2f, 0.7f);
 			int timeLeft = Main.rand.Next(15, 30);
 
-			var rectangle = Main.rand.NextVector2FromRectangle(new((int)position.X, (int)position.Y, width, height));
-
-			ParticleHandler.SpawnParticle(new EmberParticle(rectangle, Vector2.Zero, color, scale, timeLeft, 3));
+			Vector2 rectangle = Main.rand.NextVector2FromRectangle(new((int)position.X, (int)position.Y, width, height));
+			ParticleHandler.SpawnParticle(new EmberParticle(rectangle, Vector2.Zero, color, scale, timeLeft, 2));
 		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		Tile tile = Main.tile[i, j];
+
+		if (!TileDrawing.IsVisible(tile))
 			return false;
 
-		var t = Main.tile[i, j];
-		var frame = new Point(t.TileFrameX, t.TileFrameY);
+		Rectangle source = new(tile.TileFrameX, tile.TileFrameY, 18, 16);
+		Vector2 position = Helpers.GetTilePosition(i, j) + GetSpecialOffset(tile.TileFrameX, tile.TileFrameY, out _, out _);
 
-		int offsetX = (frame.X % FrameWidth == 0) ? -2 : ((frame.X % FrameWidth == 40) ? 2 : 0);
+		spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, 0, 0);
 
-		var source = new Rectangle(frame.X, frame.Y, 18, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offsetX, 2);
+		if (TileObjectData.IsTopLeft(i, j))
+			Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomNonSolid);
 
-		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, source, color * 3, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		
 		return false;
 	}
 
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) //Windy drawing
 	{
-		const int wrap = 2;
+		if (TileObjectData.GetTileData(Main.tile[i, j]) is not TileObjectData tileObjectData)
+			return;
 
-		var texture = TextureAssets.Tile[op.Type].Value;
-		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
-		var color = ((op[0, 0] == 1) ? Color.White : Color.Red * .7f) * .5f;
+		(int width, int height) = (tileObjectData.Width, tileObjectData.Height);
+		float physics = Physics(i, j, tileObjectData);
 
-		int style = data.CalculatePlacementStyle(op.Style, op.Alternate, op.Random);
-
-		for (int frameX = 0; frameX < 3; frameX++)
+		for (int x = i; x < i + width; x++)
 		{
-			for (int frameY = 0; frameY < 4; frameY++)
+			for (int y = j; y < j + height; y++)
 			{
-				(int x, int y) = (op.Coordinates.X + frameX, op.Coordinates.Y + frameY);
+				Tile tile = Main.tile[x, y];
+				Vector2 specialOffset = GetSpecialOffset(tile.TileFrameX, tile.TileFrameY, out int gridX, out int gridY);
+				float rotation = (1.5f - (float)gridY / tileObjectData.Origin.Y) * physics * 0.1f;
 
-				var source = new Rectangle(frameX * 20 + style % wrap * data.CoordinateFullWidth, frameY * 18 + style / wrap * data.CoordinateFullHeight, 18, 16);
-				int offsetX = (frameX == 0) ? -2 : ((frameX == 2) ? 2 : 0);
-				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offsetX, 0);
+				Vector2 position = new Vector2(x, y) * 16 - Main.screenPosition + new Vector2(0, Math.Abs(rotation) * 20f) + specialOffset;
+				Vector2 origin = (tileObjectData.Origin.ToVector2() + Vector2.One * 0.5f - new Vector2(gridX, gridY)) * 16;
+				Rectangle source = new(tile.TileFrameX + 20 * 6, tile.TileFrameY, 18, 16);
+				Color lightColor = Lighting.GetColor(x, y);
 
-				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+				spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position + origin, source, lightColor, rotation, origin, 1, 0, 0);
+				spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position + origin, source, lightColor * 3, rotation, origin, 1, 0, 0);
 			}
 		}
+	}
+
+	private static Vector2 GetSpecialOffset(int frameX, int frameY, out int gridX, out int gridY)
+	{
+		(gridX, gridY) = (frameX / 20 % 3, frameY / 18 % 4);
+		return new Vector2(2 + gridX * 2 - 6, 2);
+	}
+
+	public static float Physics(int i, int j, TileObjectData tileObjectData)
+	{
+		(int width, int height) = (1, tileObjectData.Height);
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(++i, j, TileSwaySystem.TreeWindCounter);
+
+		if (!WorldGen.InAPlaceWithWind(i, j, width, height))
+			rotation = 0f;
+
+		return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(i, j, width, height, 30, 3f, 2, true)) * 0.3f;
+	}
+
+	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
+	{
+		Texture2D texture = TextureAssets.Tile[Type].Value;
+
+		position += GetSpecialOffset(frame.X, frame.Y, out _, out _) + Vector2.UnitX; //Mystery X offset
+		spriteBatch.Draw(texture, position, frame with { X = frame.X + 20 * 6 }, color, 0, Vector2.Zero, 1, spriteEffects, 0);
+
+		return true;
 	}
 }

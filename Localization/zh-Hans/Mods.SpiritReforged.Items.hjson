@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: 在水中时增加15%移动速度
 }
 
-JellyfishStaff: {
-	DisplayName: 水母法杖
+JellyfishJamJar: {
+	DisplayName: 水母果酱罐
 	Tooltip: 召唤一只小水母为你而战！
 }
 
@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: 锯齿爪
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3180,9 +3180,9 @@ BlazeGlyph: {
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
 	# The Effect key above is the masculine/default form
 	Gendered: {
-		// Fem: ""
-		// Neutral: ""
-		// Plural: ""
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
 	}
 }
 
@@ -3423,4 +3423,99 @@ EnchantedWorkbenchItem: {
 CandlewickCoil: {
 	DisplayName: 烛芯绳圈
 	Tooltip: 抛出以形成可攀爬的烛芯绳索
+}
+
+CandleBathtubItem: {
+	DisplayName: 蜡浴缸
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: 蜡床
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: 蜡书架
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: 蜡烛台
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: 蜡蜡烛
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: 蜡椅
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: 蜡吊灯
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: 蜡箱
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: 蜡门
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: 蜡梳妆台
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: 蜡灯
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: 蜡灯笼
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: 蜡水槽
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: 蜡沙发
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: 蜡桌
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: 蜡马桶
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: 蜡工作台
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: 蜡钟
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: 蜡钢琴
+	Tooltip: ""
 }

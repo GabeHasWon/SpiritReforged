@@ -27,7 +27,7 @@ Records: {
 	Scrying: Revela uma larga porção do mapa ao ser destruído.
 	Biome: Contém uma variedade maior de saque em relação aos vasos comuns.
 	Boulder: Vai girando até bater no chão quando incomodado.
-	// Wax: Imbued with potent magical energies.
+	Wax: Cheia de energia mágica poderosa.
 }
 
 FablesGraves: {

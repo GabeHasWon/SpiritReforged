@@ -6,7 +6,7 @@ public class CursedInferno : DoTExtension
 {
     public static readonly Asset<Texture2D> CursedHealth = ModContent.Request<Texture2D>(VanillaTextures + "CursedHealthBar");
 
-	public override BuffSettings Settings => new(0.3f * VanillaScaling, (int)(1500 * VanillaMaximum), false, FireScaling);
+	public override BuffSettings Settings => new(Category.Fire);
 
     public override void Load() => BuffHandler.Register(this, BuffID.CursedInferno);
 
