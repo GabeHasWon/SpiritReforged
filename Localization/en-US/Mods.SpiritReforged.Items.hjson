@@ -3582,3 +3582,8 @@ SaltShot: {
 	DisplayName: Salt Shot
 	Tooltip: ""
 }
+
+DragonsBreath: {
+	DisplayName: Dragons Breath
+	Tooltip: ""
+}
