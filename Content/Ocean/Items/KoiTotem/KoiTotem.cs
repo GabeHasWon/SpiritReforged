@@ -3,7 +3,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.KoiTotem;
 
@@ -103,29 +102,6 @@ public class KoiTotemTile : ModTile
 
 	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
 	{
-		return false;
-	}
-
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position) //MERGE ME
-	{
-		var texture = TextureAssets.Tile[op.Type].Value;
-		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
-		var color = ((op[0, 0] == 1) ? Color.White : Color.Red * .7f) * .5f;
-
-		int style = data.CalculatePlacementStyle(op.Style, op.Alternate, op.Random);
-
-		for (int frameX = 0; frameX < 2; frameX++)
-		{
-			for (int frameY = 0; frameY < 4; frameY++)
-			{
-				(int x, int y) = (op.Coordinates.X + frameX, op.Coordinates.Y + frameY);
-
-				var source = new Rectangle(frameX * 20 + style * data.CoordinateFullWidth, frameY * 18, 18, (frameY == 3) ? 18 : 16);
-				int offX = (frameX == 0) ? -2 : 0;
-				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(offX, 0);
-
-				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
-			}
-		}
+		return true;
 	}
 }

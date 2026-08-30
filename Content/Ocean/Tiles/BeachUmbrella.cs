@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class BeachUmbrella : ModTile, ILoadItem, IModifySmartTarget
+public class BeachUmbrella : ModTile, WindTileRenderer.IDrawInWind, ILoadItem, IModifySmartTarget
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 20);
 
@@ -14,7 +15,6 @@ public class BeachUmbrella : ModTile, ILoadItem, IModifySmartTarget
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = false;
 		Main.tileFrameImportant[Type] = true;
-		Main.tileLighted[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 1;
@@ -37,50 +37,71 @@ public class BeachUmbrella : ModTile, ILoadItem, IModifySmartTarget
 		DustType = -1;
 	}
 
-	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var t = Main.tile[i, j];
-		if (t.TileFrameY == 0)
+		const int width = 4;
+		const int height = 5;
+
+		Tile tile = Main.tile[i, j];
+		if (TileDrawing.IsVisible(tile) && TileObjectData.IsTopLeft(i, j) && TileObjectData.GetTileData(Main.tile[i, j]) is TileObjectData tileObjectData)
 		{
-			if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
-				return false;
+			Texture2D texture = Helpers.GetTileTextureValue(tile);
+			float physics = (this as WindTileRenderer.IDrawInWind).GetWindStrength(i, j);
+			bool flipped = tile.TileFrameX == 18;
 
-			CustomDraw(i, j, spriteBatch, TileObjectData.GetTileData(t), texture, color);
-		}
-
-		return false;
-	}
-
-	private static void CustomDraw(int i, int j, SpriteBatch spriteBatch, TileObjectData data, Texture2D texture, Color color)
-	{
-		bool flipped = data.Style == 1;
-		var sizeOffset = new Point(flipped ? 1 : 2, 2);
-
-		for (int frameX = 0; frameX < 4; frameX++)
-		{
-			for (int frameY = 0; frameY < 5; frameY++)
+			for (int x = i; x < i + width; x++)
 			{
-				(int x, int y) = (i + frameX - sizeOffset.X, j + frameY - sizeOffset.Y);
+				for (int y = j; y < j + height; y++)
+				{
+					(int gridX, int gridY) = (x - i, y - j);
+					Rectangle source = new(gridX * 18 + (flipped ? (18 * width) : 0), gridY * 18, 16, 18);
 
-				var source = new Rectangle((flipped ? 4 * 18 : 0) + frameX * 18, frameY * 18, 16, (frameY == 4) ? 18 : 16);
-				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileMethods.TileOffset;
+					rotation = (1.5f - gridY / (height - 1f)) * physics * 0.1f;
+					position = new Vector2(x, y) * 16 - Main.screenPosition + new Vector2(0, Math.Abs(rotation) * 20f);
+					origin = (tileObjectData.Origin.ToVector2() + Vector2.One * 2.5f - new Vector2(gridX, gridY)) * 16;
 
-				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+					spriteBatch.Draw(texture, position + origin - new Vector2(16 * 2), source, Lighting.GetColor(x, y), rotation, origin, 1, SpriteEffects.None, 0);
+				}
 			}
 		}
 	}
 
-	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
+	float WindTileRenderer.IDrawInWind.GetWindStrength(int i, int j)
 	{
-		return false;
+		if (TileObjectData.GetTileData(Framing.GetTileSafely(i, j)) is TileObjectData tileObjectData)
+		{
+			float rotation = WorldGen.InAPlaceWithWind(i, j, tileObjectData.Width, tileObjectData.Height) ? Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter) : 0f;
+			return (rotation + WindTileRenderer.GetHighestWindGridPushComplex(i, j, tileObjectData.Width, tileObjectData.Height, 40, 1f, 3, true)) * 0.5f;
+		}
+
+		return 0f;
 	}
 
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)  //MERGE ME
+	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
 	{
-		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
-		var color = ((op[0, 0] == 1) ? Color.White : Color.Red * .7f) * .5f;
+		const int width = 4;
+		const int height = 5;
 
-		CustomDraw(op.Coordinates.X, op.Coordinates.Y, spriteBatch, data, TextureAssets.Tile[Type].Value, color);
+		if (frame.Y == 0)
+		{
+			Texture2D texture = TextureAssets.Tile[Type].Value;
+			bool flipped = frame.X == 18;
+
+			for (int x = i; x < i + width; x++)
+			{
+				for (int y = j; y < j + height; y++)
+				{
+					(int gridX, int gridY) = (x - i, y - j);
+
+					position = new Vector2(x, y) * 16f - Main.screenPosition + (Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange));
+					Rectangle source = new(gridX * 18 + (flipped ? (18 * width) : 0), gridY * 18, 16, 18);
+
+					spriteBatch.Draw(texture, position - new Vector2(16 * 2), source, color, 0, Vector2.Zero, 1, spriteEffects, 0);
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public void ModifyTarget(ref int x, ref int y)
