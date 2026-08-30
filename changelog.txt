@@ -1,2 +1,2 @@
-v0.2.2.3
-- Fixed an issue where prefixes would be loaded in the main menu, potentially causing issues with other mods
+v0.2.2.4
+- Fixed Candle Chest not being sheeted properly
