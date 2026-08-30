@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -126,7 +125,7 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 	{
 		const int height = 3; //Pseudo tile height
 
-		if (!TileExtensions.GetVisualInfo(i, j, out _, out _))
+		if (!TileMethods.GetVisualInfo(i, j, out _, out _))
 			return false;
 
 		var t = Main.tile[i, j];
@@ -153,17 +152,17 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 
 		static float Physics(Point16 topLeft)
 		{
-			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.GrassWindCounter * 2.25f);
+			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, WindTileRenderer.GrassWindCounter * 2.25f);
 			if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, 1, height))
 				rotation = 0f;
 
-			return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, 1, height, 20, 3f, 1, true)) * 1.9f;
+			return (rotation + WindTileRenderer.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, 1, height, 20, 3f, 1, true)) * 1.9f;
 		}
 	}
 
 	public virtual void DrawFront(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin, Point frame)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
@@ -175,7 +174,7 @@ public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 
 	public virtual void DrawBack(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin, Point frame)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
 		var source = new Rectangle(frame.X, frame.Y + FullFrameHeight, 16, 16);

@@ -8,6 +8,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Ocean.Items.Rum;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
@@ -136,11 +137,11 @@ public class SunkenTreasureTile : ModTile
 
 	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
 
-	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileExtensions.DrawSingleTile(i, j, true, Vector2.Zero);
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
 
 	private static void Drop(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		SoundEngine.PlaySound(SoundID.Coins with { Pitch = 0.5f }, new Vector2(i + 1, j + 1) * 16);
 		SoundEngine.PlaySound(SoundID.CoinPickup, new Vector2(i + 1, j + 1) * 16);
@@ -174,7 +175,7 @@ public class SunkenTreasureTile : ModTile
 		if (tile.TileFrameX / data.CoordinateFullWidth > 1)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int frameX = 0; frameX < data.Width; frameX++)
 			for (int frameY = 0; frameY < data.Height; frameY++)

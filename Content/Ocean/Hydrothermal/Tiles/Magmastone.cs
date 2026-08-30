@@ -109,7 +109,7 @@ public class Magmastone : ModTile, ILoadItem
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		AddMapEntry(new Color(200, 160, 80));
-		this.Merge(TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>(), TileID.Stone);
+		TileMethods.Merge(Type, TileID.Sand, TileID.HardenedSand, ModContent.TileType<Gravel>(), TileID.Stone);
 
 		DustType = DustID.Asphalt;
 		MineResist = 0.5f;

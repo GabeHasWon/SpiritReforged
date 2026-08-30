@@ -74,7 +74,7 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 
 	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
 
-	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileExtensions.DrawSingleTile(i, j, true, Vector2.Zero);
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
 }
 
 public class OceanDecor2x2 : OceanDecor1x2

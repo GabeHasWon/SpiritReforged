@@ -1,11 +1,10 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using Terraria.DataStructures;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class BeachUmbrella : ModTile, IDrawPreview, ILoadItem, IModifySmartTarget
+public class BeachUmbrella : ModTile, ILoadItem, IModifySmartTarget
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 20);
 
@@ -43,7 +42,7 @@ public class BeachUmbrella : ModTile, IDrawPreview, ILoadItem, IModifySmartTarge
 		var t = Main.tile[i, j];
 		if (t.TileFrameY == 0)
 		{
-			if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+			if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 				return false;
 
 			CustomDraw(i, j, spriteBatch, TileObjectData.GetTileData(t), texture, color);
@@ -64,14 +63,19 @@ public class BeachUmbrella : ModTile, IDrawPreview, ILoadItem, IModifySmartTarge
 				(int x, int y) = (i + frameX - sizeOffset.X, j + frameY - sizeOffset.Y);
 
 				var source = new Rectangle((flipped ? 4 * 18 : 0) + frameX * 18, frameY * 18, 16, (frameY == 4) ? 18 : 16);
-				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileMethods.TileOffset;
 
 				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 			}
 		}
 	}
 
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)
+	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
+	{
+		return false;
+	}
+
+	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)  //MERGE ME
 	{
 		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
 		var color = ((op[0, 0] == 1) ? Color.White : Color.Red * .7f) * .5f;

@@ -245,7 +245,7 @@ public class OceanKelp : ModTile, ISetConversion
 
 	private static void DrawClump(int i, int j, SpriteBatch spriteBatch, int clumpAmount, Rectangle frame, Vector2 drawPos, int clump)
 	{
-		TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture);
+		TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture);
 
 		var tint = color.MultiplyRGB(Color.Lerp(Color.White, Color.Black, clump / (float)clumpAmount));
 		frame = new Rectangle(GetGroupFrameX(i, j) == 48 ? 168 : 94, frame.Y / 18 * 34, 72, 32);
@@ -255,7 +255,7 @@ public class OceanKelp : ModTile, ISetConversion
 
 	private static void DrawSingleKelp(int i, int j, SpriteBatch spriteBatch, int clumpAmount, Rectangle frame, Vector2 drawPos, int clump, int realClump)
 	{
-		TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture);
+		TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture);
 
 		var tint = color.MultiplyRGB(Color.Lerp(Color.White, Color.Black, clump / (float)clumpAmount));
 		frame.X = GetGroupFrameX(i + clump, j);

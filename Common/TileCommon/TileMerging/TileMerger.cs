@@ -50,7 +50,7 @@ public sealed class TileMerger : ModSystem
 	public override void Unload() => GarbagePaintHackSystem.ClearRenderTargets -= _paintCache.Clear;
 
 	/// <summary> Draws merge overlays according to <paramref name="types"/>. </summary>
-	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, params int[] types) => DrawMerge(spriteBatch, i, j, Lighting.GetColor(i, j), TileExtensions.TileOffset, types);
+	public static void DrawMerge(SpriteBatch spriteBatch, int i, int j, params int[] types) => DrawMerge(spriteBatch, i, j, Lighting.GetColor(i, j), TileMethods.TileOffset, types);
 
 	/// <summary><inheritdoc cref="DrawMerge(SpriteBatch, int, int, int[])"/>
 	/// <br/>See the overload for a simpler method approach. </summary>

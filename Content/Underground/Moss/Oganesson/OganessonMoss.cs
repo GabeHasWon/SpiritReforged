@@ -20,8 +20,7 @@ public class OganessonMoss : GrassTile
 		TileID.Sets.Conversion.Moss[Type] = true;
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
-		this.Merge(DirtType, TileID.GrayBrick);
-
+		TileMethods.Merge(Type, DirtType, TileID.GrayBrick);
 		SetEntry();
 	}
 

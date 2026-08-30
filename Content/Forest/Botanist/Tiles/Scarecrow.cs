@@ -1,14 +1,13 @@
 ﻿using MonoMod.Cil;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Botanist.Tiles;
 
-public class Scarecrow : SingleSlotTile<ScarecrowSlot>, ILoadItem, ISwayTile
+public class Scarecrow : SingleSlotTile<ScarecrowSlot>, ILoadItem, WindTileRenderer.IDrawInWind
 {
 	private bool IsTop(int i, int j, out ScarecrowSlot entity)
 	{
@@ -62,29 +61,28 @@ public class Scarecrow : SingleSlotTile<ScarecrowSlot>, ILoadItem, ISwayTile
 			base.MouseOver(i, j);
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
-			return;
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData tileObjectData)
+		{
+			Vector2 offset = new(-15, 0);
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, tileObjectData.CoordinateWidth, tileObjectData.CoordinateHeights[tile.TileFrameY / 18]);
+			Color lightColor = Lighting.GetColor(i, j);
 
-		var t = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(t);
-		var dataOffset = new Vector2(data.DrawXOffset - 15, data.DrawYOffset);
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y) + dataOffset;
-		var source = new Rectangle(t.TileFrameX, t.TileFrameY, data.CoordinateWidth, data.CoordinateHeights[t.TileFrameY / 18]);
-
-		spriteBatch.Draw(texture, drawPos + offset, source, color, rotation, origin, 1, SpriteEffects.None, 0f);
+			spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position + offset, source, lightColor, rotation, origin, 1, SpriteEffects.None, 0f);
+		}
 	}
 
-	public float Physics(Point16 topLeft)
+	float WindTileRenderer.IDrawInWind.GetWindStrength(int i, int j)
 	{
-		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.TreeWindCounter);
+		if (TileObjectData.GetTileData(Framing.GetTileSafely(i, j)) is TileObjectData tileObjectData)
+		{
+			float rotation = WorldGen.InAPlaceWithWind(i, j, tileObjectData.Width, tileObjectData.Height) ? Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter) : 0f;
+			return (rotation + WindTileRenderer.GetHighestWindGridPushComplex(i, j, tileObjectData.Width, tileObjectData.Height, 20, 3f, 1, true)) * 0.5f;
+		}
 
-		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
-			rotation = 0f;
-
-		return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 20, 3f, 1, true)) * .5f;
+		return 0f;
 	}
 }
 
@@ -96,7 +94,7 @@ public class ScarecrowSlot : SingleSlotEntity
 	/// <returns> null if no entity is found. </returns>
 	private static ScarecrowSlot GetMe(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		int id = ModContent.GetInstance<ScarecrowSlot>().Find(i, j);
 		if (id == -1)
@@ -148,8 +146,8 @@ public class ScarecrowSlot : SingleSlotEntity
 		float rotation = 0;
 		int direction = -1;
 
-		if (TileLoader.GetTile(ModContent.TileType<Scarecrow>()) is ISwayTile sway && TileObjectData.GetTileData(Framing.GetTileSafely(Position)) != null)
-			rotation = sway.Physics(Position) * 0.12f;
+		if (TileLoader.GetTile(ModContent.TileType<Scarecrow>()) is WindTileRenderer.IDrawInWind iDrawInWind && TileObjectData.GetTileData(Framing.GetTileSafely(Position)) != null)
+			rotation = iDrawInWind.GetWindStrength(Position.X, Position.Y) * 0.12f;
 
 		if (TileObjectData.GetTileStyle(Framing.GetTileSafely(Position)) == 1)
 			direction = 1;

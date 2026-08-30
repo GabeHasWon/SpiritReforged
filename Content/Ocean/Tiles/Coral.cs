@@ -1,11 +1,10 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class Coral3x3 : ModTile, IDrawPreview, IAutoloadRubble
+public class Coral3x3 : ModTile, IAutoloadRubble
 {
 	public virtual Point FrameOffset => Point.Zero;
 
@@ -54,30 +53,10 @@ public class Coral3x3 : ModTile, IDrawPreview, IAutoloadRubble
 
 		var frame = new Point(tile.TileFrameX + 18 * FrameOffset.X, tile.TileFrameY + 18 * FrameOffset.Y);
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset;
 
 		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return false;
-	}
-
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 pos)
-	{
-		var texture = TextureAssets.Tile[op.Type].Value;
-
-		for (int frameX = 0; frameX < op.Size.X; frameX++)
-		{
-			for (int frameY = 0; frameY < op.Size.Y; frameY++)
-			{
-				(int x, int y) = (op.Coordinates.X + frameX, op.Coordinates.Y + frameY);
-
-				var color = ((op[frameX, frameY] == 1) ? Color.White : Color.Red * .7f) * .5f;
-				var frame = new Point(frameX * 18 + 36 * op.Style + 18 * FrameOffset.X, frameY * 18 + 18 * FrameOffset.Y);
-				var source = new Rectangle(frame.X, frame.Y, 16, 16);
-				var position = new Vector2(x, y) * 16 - Main.screenPosition + TileExtensions.TileOffset;
-
-				spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-			}
-		}
 	}
 }
 

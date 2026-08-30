@@ -177,7 +177,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 				if (!isTile && tile.WallType == WallID.None)
 					tile.WallType = (ushort)BronzeGrate.UnsafeType;
 
-				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
+				if (isTile && tile.Active(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
 					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>());
 			}
 		}

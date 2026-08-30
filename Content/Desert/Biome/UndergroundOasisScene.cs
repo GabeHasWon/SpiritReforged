@@ -43,7 +43,7 @@ public class UndergroundOasisScene : ModSceneEffect
 				Vector2 instantParallax = new(MathHelper.Clamp((player.Center.X - roundedPos.X) * 0.03f, -16, 16), 0);
 				Vector2 center = roundedPos + scroll + new Vector2(16 + 110, 32 - 130);
 
-				sb.Draw(TextureAssets.MagicPixel.Value, center + instantParallax - Main.screenPosition + TileExtensions.TileOffset, subBackground.Bounds, Color.Black * transition, 0, subBackground.Size() / 2, 1, default, 0);
+				sb.Draw(TextureAssets.MagicPixel.Value, center + instantParallax - Main.screenPosition + TileMethods.TileOffset, subBackground.Bounds, Color.Black * transition, 0, subBackground.Size() / 2, 1, default, 0);
 
 				DrawBackgroundSliced(sb, subBackground, center + instantParallax, Color.White * 0.7f * transition);
 				DrawBackgroundSliced(sb, background, center, Color.White * transition);
@@ -62,7 +62,7 @@ public class UndergroundOasisScene : ModSceneEffect
 					Vector3 light = Lighting.GetSubLight(topLeft + offset) * 0.9f;
 					Rectangle source = new((int)offset.X, (int)offset.Y, sliceScale, sliceScale);
 
-					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileExtensions.TileOffset, source, tint is Color finalTint ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
+					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileMethods.TileOffset, source, tint is Color finalTint ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
 				}
 		}
 	}

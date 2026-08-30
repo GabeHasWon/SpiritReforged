@@ -242,7 +242,7 @@ public static class ZigguratRooms
 				Tile tile = Main.tile[i, j];
 				Tile aboveTile = Main.tile[i, j - 1];
 
-				if (!aboveTile.HasTileType(ModContent.TileType<RuinedSandstonePillar>()))
+				if (!aboveTile.Active(ModContent.TileType<RuinedSandstonePillar>()))
 					tile.ResetToType((ushort)ModContent.TileType<BronzePlating>());
 
 				return false;

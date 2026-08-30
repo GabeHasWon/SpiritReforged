@@ -2,6 +2,7 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 
@@ -40,7 +41,7 @@ public class AcaciaRootsLarge : ModTile, ISetConversion
 	{
 		if (ConversionHandler.FindSet(nameof(AcaciaRootsLarge), conversionType, out int newType) && Type != newType)
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			ConversionHelper.ConvertTiles(i, j, 3, 1, newType);
 		}
 	}

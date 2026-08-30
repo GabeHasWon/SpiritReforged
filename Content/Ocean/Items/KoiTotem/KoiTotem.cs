@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon.FloatingItem;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.DrawPreviewHook;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -24,7 +23,7 @@ public class KoiTotem : FloatingItem
 	}
 }
 
-public class KoiTotemTile : ModTile, IDrawPreview
+public class KoiTotemTile : ModTile
 {
 	public override void SetStaticDefaults()
 	{
@@ -47,7 +46,7 @@ public class KoiTotemTile : ModTile, IDrawPreview
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Ash;
-		AddMapEntry(new Color(107, 90, 64), Language.GetText("Mods.SpiritReforged.Items.KoiTotem.DisplayName"));
+		AddMapEntry(new Color(107, 90, 64), ModContent.GetInstance<KoiTotem>().DisplayName);
 	}
 
 	public override void NearbyEffects(int i, int j, bool closer)
@@ -88,21 +87,26 @@ public class KoiTotemTile : ModTile, IDrawPreview
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return false;
 
 		var t = Main.tile[i, j];
 		var frame = new Point(t.TileFrameX, t.TileFrameY);
 		var source = new Rectangle(frame.X, frame.Y, 18, (frame.Y == 54) ? 18 : 16);
 		int offX = (frame.X % TileObjectData.GetTileData(Type, 0).CoordinateFullWidth == 0) ? -2 : 0;
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offX, 0);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(offX, 0);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
 		return false;
 	}
 
-	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position)
+	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
+	{
+		return false;
+	}
+
+	public void DrawPreview(SpriteBatch spriteBatch, TileObjectPreviewData op, Vector2 position) //MERGE ME
 	{
 		var texture = TextureAssets.Tile[op.Type].Value;
 		var data = TileObjectData.GetTileData(op.Type, op.Style, op.Alternate);
@@ -118,7 +122,7 @@ public class KoiTotemTile : ModTile, IDrawPreview
 
 				var source = new Rectangle(frameX * 20 + style * data.CoordinateFullWidth, frameY * 18, 18, (frameY == 3) ? 18 : 16);
 				int offX = (frameX == 0) ? -2 : 0;
-				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(offX, 0);
+				var drawPos = new Vector2(x, y) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(offX, 0);
 
 				spriteBatch.Draw(texture, drawPos, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 			}
