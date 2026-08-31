@@ -3386,7 +3386,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: 太空晶塔
+	DisplayName: 天空晶塔
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
