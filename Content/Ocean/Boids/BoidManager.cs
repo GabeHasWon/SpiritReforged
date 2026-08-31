@@ -1,3 +1,4 @@
+using Microsoft.Xna.Framework.Graphics;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Ocean.Boids;
@@ -24,12 +25,15 @@ public class BoidManager : ModSystem
 		for (int i = 0; i < numTypes; i++)
 			Types.Add(i, ModContent.Request<Texture2D>("SpiritReforged/Content/Ocean/Boids/Textures/fish_" + i));
 
-		On_Main.DrawWoF += static (On_Main.orig_DrawWoF orig, Main self) =>
+		On_Main.DrawPlayers_BehindNPCs += static (On_Main.orig_DrawPlayers_BehindNPCs orig, Main self) =>
 		{
 			if (!Main.gamePaused) //Update here because boids are largely visual
 				Update();
 
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			Draw(Main.spriteBatch);
+			Main.spriteBatch.End();
+
 			orig(self);
 		};
 	}
