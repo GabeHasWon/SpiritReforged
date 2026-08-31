@@ -1,7 +1,9 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Savanna.Items.Vanity;
 using System.IO;
+using System.Reflection;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
 
@@ -56,10 +58,14 @@ public class PrefixVoucher : ModItem
 	/// <summary> Item types to sample for prefix rarity color. </summary>
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
 
+	private static FieldInfo _isLoadingInfo = null;
+
 	public int prefix;
 
 	private Item _tooltipPrefixItem;
 	private ExtendedPrefixInfo _info;
+
+	public override void Load() => _isLoadingInfo = typeof(ModLoader).GetField("isLoading", BindingFlags.Static | BindingFlags.NonPublic);
 
 	/// <summary> <see cref="prefix"/> must be valid before calling. </summary>
 	private ExtendedPrefixInfo FindInfo()
@@ -153,7 +159,10 @@ public class PrefixVoucher : ModItem
 	{
 		Item item = new(ItemID.WoodenSword);
 
-		if (Main.gameMenu) // Stops an infinite loop in load
+		if (_isLoadingInfo.GetValue(null) is true)// Main.gameMenu && !Main.dedServ) // Stops an infinite loop in load
+			return item;
+
+		if (Main.dedServ && prefix == 0)
 			return item;
 
 		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
@@ -179,7 +188,7 @@ public class PrefixVoucher : ModItem
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
 
-		if (Main.gameMenu) // Don't load data in menu for the template instance
+		if (_isLoadingInfo.GetValue(null) is true) // Don't load data in menu for the template instance
 			return;
 
 		prefix = RollRandomPrefix(out int itemType);

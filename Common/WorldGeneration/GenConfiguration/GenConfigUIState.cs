@@ -986,7 +986,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		string[] paths = name.Split('/');
 
 		// Get page if it's not passed in
-		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
+
+		if (page is null)
+		{
+			if (GenConfigLoader.PagesByModAndName.TryGetValue(paths[0] + "/" + paths[1], out var newPage))
+				page = newPage;
+			else
+				return false;
+		}
 
 		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
 		{

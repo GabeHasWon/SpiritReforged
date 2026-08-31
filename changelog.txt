@@ -1,2 +1,9 @@
 v0.2.2.4
 - Fixed Candle Chest not being sheeted properly
+- Fixed Candle Clock, Piano not being obtainable
+- Fixed Backpacks not cloning items properly, creating shared individual instances
+- Fixed Backpacks not cloning item arrays properly, creating shared inventories
+- Extra-fixed issue where prefix vouchers could cause issues with other mods when loading
+- Fixed issue where prefix vouchers would fail on servers (headless especially)
+- Fixed issue where presets for unloaded generation configuration pages would crash the UI and softlock
+- Fixed an issue where Max Desert config pages would hang indefinitely

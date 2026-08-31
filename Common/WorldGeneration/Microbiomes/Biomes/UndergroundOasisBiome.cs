@@ -436,7 +436,12 @@ public class UndergroundOasisBiome : Microbiome, IGenerationPage
 					var (type, stackRange, canPlace) = RandomItem.Get();
 
 					while (takenRandomIds.Contains(type) || canPlace?.Invoke() == false)
+					{
+						if (takenRandomIds.Count >= 18)
+							return;
+
 						(type, stackRange, canPlace) = RandomItem.Get();
+					}
 
 					chest.item[j] = new(type, WorldGen.genRand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
 					takenRandomIds.Add(type);
