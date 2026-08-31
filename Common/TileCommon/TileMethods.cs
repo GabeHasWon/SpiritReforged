@@ -5,8 +5,11 @@ using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon;
 
-public static class TileExtensions
+public static class TileMethods
 {
+	public static Vector2 TileOffset => Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+
+	#region shake
 	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "treeShakeX")]
 	private static extern ref int[] TreeShakeX(WorldGen worldGen);
 
@@ -42,6 +45,7 @@ public static class TileExtensions
 
 		return true;
 	}
+	#endregion
 
 	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawSingleTile")]
 	private static extern void DrawSingleTile(TileDrawing drawing, TileDrawInfo drawData, bool solidLayer, int waterStyleOverride, Vector2 screenPosition, Vector2 screenOffset, int tileX, int tileY);
@@ -116,10 +120,7 @@ public static class TileExtensions
 		return color;
 	}
 
-	public static Vector2 TileOffset => Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-	public static Vector2 DrawPosition(int i, int j, Vector2 off = default) => new Vector2(i, j) * 16 - Main.screenPosition - off + TileOffset;
-
-	/// <summary> Default tile slope drawing. See the overload for more customizeablility. </summary>
+	/// <summary> Default tile slope drawing. See overload for more customizeablility. </summary>
 	public static void DrawSloped(int i, int j)
 	{
 		var texture = TextureAssets.Tile[Main.tile[i, j].TileType].Value;
@@ -211,19 +212,6 @@ public static class TileExtensions
 		}
 	}
 
-	/// <summary> Gets the top left tile in a multitile using the given coordinates. Useful for things like tile entities whos data is stored only in a single tile. <br/>
-	/// This method relies on tileFrame to get the tile and may not work depending on how those variables are used. </summary>
-	public static void GetTopLeft(ref int i, ref int j)
-	{
-		var tile = Framing.GetTileSafely(i, j);
-		var data = TileObjectData.GetTileData(tile);
-
-		if (data is null)
-			return;
-
-		(i, j) = (i - tile.TileFrameX % data.CoordinateFullWidth / 18, j - tile.TileFrameY % data.CoordinateFullHeight / 18);
-	}
-
 	/// <summary> Checks if the tile at i, j is a chest, and returns what kind of chest it is if so. </summary>
 	/// <param name="i">X position.</param>
 	/// <param name="j">Y position.</param>
@@ -243,48 +231,18 @@ public static class TileExtensions
 		return false;
 	}
 
-	/// <summary>
-	/// Quickly retrieves a given tile's data.
-	/// </summary>
-	/// <param name="tile">The tile to get data from.</param>
-	/// <returns>The tile data.</returns>
-	public static TileObjectData SafelyGetData(this Tile tile) => TileObjectData.GetTileData(tile);
-
 	/// <summary> Returns whether <see cref="Tile.HasTile"/> and <see cref="Tile.TileType"/> equals <paramref name="type"/>. </summary>
-	public static bool HasTileType(this Tile tile, int type) => tile.HasTile && tile.TileType == type;
+	public static bool Active(this Tile tile, int type) => tile.HasTile && tile.TileType == type;
 
-	/// <summary> Mutually merges the given tile with all of the ids in <paramref name="otherIds"/>. </summary>
-	/// <param name="tile">The tile to merge with.</param>
-	/// <param name="otherIds">All other tiles to merge with.</param>
-	public static void Merge(this ModTile tile, params int[] otherIds)
+	/// <summary> Mutually merges the tile of <paramref name="thisType"/> with all of the ids in <paramref name="mergeTypes"/>. </summary>
+	/// <param name="thisType"> The tile to merge with. </param>
+	/// <param name="mergeTypes"> All other tiles to merge with. </param>
+	public static void Merge(int thisType, params int[] mergeTypes)
 	{
-		foreach (int id in otherIds)
+		foreach (int type in mergeTypes)
 		{
-			Main.tileMerge[tile.Type][id] = true;
-			Main.tileMerge[id][tile.Type] = true;
-		}
-	}
-
-	/// <inheritdoc cref="Merge(ModTile, int[])"/>
-	public static void Merge(int thisId, params int[] otherIds)
-	{
-		foreach (int id in otherIds)
-		{
-			Main.tileMerge[thisId][id] = true;
-			Main.tileMerge[id][thisId] = true;
-		}
-	}
-
-	/// <summary> Allows <paramref name="types"/> to anchor to this ModTile. </summary>
-	public static void AnchorSelfTo(this ModTile tile, params int[] types) => AnchorSelfTo(tile.Type, types);
-
-	/// <inheritdoc cref="AnchorSelfTo"/>
-	public static void AnchorSelfTo(int modTileType, params int[] types)
-	{
-		foreach (int type in types)
-		{
-			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
-				data.AnchorValidTiles = [.. data.AnchorValidTiles, modTileType];
+			Main.tileMerge[thisType][type] = true;
+			Main.tileMerge[type][thisType] = true;
 		}
 	}
 }

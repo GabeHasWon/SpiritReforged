@@ -79,7 +79,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 	{
 		if (HasItem(i, j) && !Autoloader.IsRubble(Type))
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 			for (int x = i; x < i + 2; x++)
 				for (int y = j; y < j + 4; y++)

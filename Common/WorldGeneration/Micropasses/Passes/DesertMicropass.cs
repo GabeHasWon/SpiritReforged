@@ -84,7 +84,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 		{
 			var coords = (new Vector2(i, j) + WorldGen.genRand.NextVector2Unit() * WorldGen.genRand.Next(scale)).ToPoint();
 			
-			if (Framing.GetTileSafely(coords).HasTileType(ModContent.TileType<PolishedAmber>()))
+			if (Framing.GetTileSafely(coords).Active(ModContent.TileType<PolishedAmber>()))
 				Framing.GetTileSafely(coords).TileType = (ushort)ModContent.TileType<AmberFossil>();
 		}
 	}

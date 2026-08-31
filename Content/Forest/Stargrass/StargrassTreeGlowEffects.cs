@@ -1,10 +1,10 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PostDrawTreeHookSystem;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass;
 
@@ -55,10 +55,10 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		Tile tile = Main.tile[i, j];
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
-		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * .25f;
-		Color color = (Color.White * (.3f - (float)lerp)).Additive();
+		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * 0.25f;
+		Color color = (Color.White * (0.3f - (float)lerp)).Additive();
 
-		spriteBatch.Draw(_baseTexture.Value, TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset), frame, color);
+		spriteBatch.Draw(_baseTexture.Value, Helpers.GetTilePosition(i, j), frame, color);
 
 		if (tile.TileFrameY < 198)
 			return;
@@ -73,11 +73,11 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				return;
 
 			Texture2D treeTopTexture = _topTexture.Value;
-			Vector2 drawPos = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset - new Vector2(8, 16));
+			Vector2 drawPos = Helpers.GetTilePosition(i, j) - new Vector2(8, 16);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
-				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
+				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter);
 
 			drawPos.X += rotation * 2f;
 			drawPos.Y += Math.Abs(rotation) * 2f;
@@ -95,11 +95,11 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				return;
 
 			Texture2D treeBranchTexture = _branchTexture.Value;
-			var position = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset);
+			Vector2 position = Helpers.GetTilePosition(i, j);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
-				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
+				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter);
 
 			if (rotation < 0f)
 				position.X += rotation;

@@ -87,7 +87,7 @@ public class ScarabMusicBox : ModItem
 			int width = data.CoordinateFullWidth;
 			float pitch = 0;
 
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 			for (int y = 0; y < data.Width; y++)
 			{

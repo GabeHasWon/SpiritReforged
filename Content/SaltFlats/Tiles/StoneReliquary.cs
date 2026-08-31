@@ -55,7 +55,7 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer, ILoadItem
 
 	public static bool HasChest(int i, int j, out Chest chest)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		if (Chest.FindChest(i, j) is int search && search != -1)
 		{
 			chest = Main.chest[search];

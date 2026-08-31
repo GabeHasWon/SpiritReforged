@@ -564,7 +564,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	private static bool PlaceCenser(int i, int j)
 	{
 		int space = GetSpace(i, j, 8);
-		if (Framing.GetTileSafely(i, j - 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()) && space > 2 && Placer.PlaceTile<GoldChainLoop>(i, j).success)
+		if (Framing.GetTileSafely(i, j - 1).Active(ModContent.TileType<RedSandstoneBrick>()) && space > 2 && Placer.PlaceTile<GoldChainLoop>(i, j).success)
 		{
 			byte segments = (byte)Math.Min(WorldGen.genRand.Next(3, 7), space - 2);
 			ChainObjectSystem.AddObject(ModContent.GetInstance<GoldChainLoop>().CreateObject(new(i, j), segments));
@@ -620,7 +620,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 		for (int x = i - halfWidth; x < i + halfWidth; x++)
 		{
-			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+			if (!WorldGen.SolidOrSlopedTile(x, y - 1) && Framing.GetTileSafely(x, y).Active(ModContent.TileType<RedSandstoneBrick>()))
 			{
 				Framing.GetTileSafely(x, y).ResetToType((ushort)ModContent.TileType<NeedleTrap>());
 				success = true;

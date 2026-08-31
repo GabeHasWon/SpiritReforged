@@ -1,13 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Savanna.Items.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class BaobabPod : ModTile, ISwayTile
+public class BaobabPod : ModTile, WindTileRenderer.IDrawInWind
 {
 	private const int numStages = 3;
 
@@ -36,11 +36,11 @@ public class BaobabPod : ModTile, ISwayTile
 			return;
 
 		fail = true;
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (!Main.dedServ)
 		{
-			ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f), fail);
+			WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-1f, 1f));
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/NPCHit/HardNaturalHit") with { Pitch = stage - 1 }, new Vector2(i + 1, j + 1) * 16);
 			for (int d = 0; d < 10; d++)
@@ -104,7 +104,7 @@ public class BaobabPod : ModTile, ISwayTile
 			return false;
 		}
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int frameX = 0; frameX < data.Width; frameX++)
 			for (int frameY = 0; frameY < data.Height; frameY++)
@@ -132,46 +132,46 @@ public class BaobabPod : ModTile, ISwayTile
 			NetMessage.SendData(MessageID.SyncItem, number: id, number2: 100f);
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
-		var t = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(t);
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData tileObjectData)
+		{
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, 16, tileObjectData.CoordinateHeights[tile.TileFrameY / 18]);
+			Vector2 fixedPosition = new Vector2(i, j) * 16 - Main.screenPosition + origin;
 
-		var position = new Vector2(i, j) * 16 - Main.screenPosition;
-		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, data.CoordinateHeights[t.TileFrameY / 18]);
+			(int x, int y) = Helpers.GetTopLeft(i, j);
+			spriteBatch.Draw(texture, fixedPosition, source, color, WindTileRenderer.WindGrid.GetWind(x, y), origin, 1, SpriteEffects.None, 0);
 
-		spriteBatch.Draw(texture, position + origin, source, color, ISwayTile.GetInstancedRotation(i, j), origin, 1, SpriteEffects.None, 0);
-
-		if (t.TileFrameY > 0)
-			DrawGrassOverlay(i, j, spriteBatch, offset, rotation, origin);
+			if (tile.TileFrameY > 0)
+				DrawGrassOverlay(i, j, spriteBatch, position, rotation, origin);
+		}
 	}
 
-	private static void DrawGrassOverlay(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	private static void DrawGrassOverlay(int i, int j, SpriteBatch spriteBatch, Vector2 position, float rotation, Vector2 origin)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is not TileObjectData tileObjectData)
 			return;
 
-		var t = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(t);
-		int frameX = t.TileFrameX % data.CoordinateFullWidth;
+		int frameX = tile.TileFrameX % tileObjectData.CoordinateFullWidth;
+		Rectangle source = new(18 * 6, frameX, 18, 18);
+		Color lightColor = Lighting.GetColor(i, j);
 
-		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2((frameX == 0) ? -2 : 0, 0);
-		var source = new Rectangle(18 * 6, frameX, 18, 18);
-
-		spriteBatch.Draw(texture, position + offset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+		spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position, source, lightColor, rotation, origin, 1, SpriteEffects.None, 0);
 	}
 
-	public float Physics(Point16 topLeft)
+	float WindTileRenderer.IDrawInWind.GetWindStrength(int i, int j)
 	{
-		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.GrassWindCounter);
+		if (TileObjectData.GetTileData(Framing.GetTileSafely(i, j)) is TileObjectData tileObjectData)
+		{
+			float rotation = WorldGen.InAPlaceWithWind(i, j, tileObjectData.Width, tileObjectData.Height) ? Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.GrassWindCounter) : 0f;
+			return rotation + WindTileRenderer.GetHighestWindGridPushComplex(i, j, tileObjectData.Width, tileObjectData.Height, 20, 3f, 1, true);
+		}
 
-		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
-			rotation = 0f;
-
-		return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 20, 3f, 1, true)) * 1f;
+		return 0f;
 	}
 }

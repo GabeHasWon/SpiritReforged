@@ -7,6 +7,7 @@ using SpiritReforged.Content.Vanilla.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Items;
 
@@ -22,7 +23,7 @@ public class CampfireSpit : ModItem
 
 		if (target.HasTile && TileID.Sets.Campfire[target.TileType] && player.IsTargetTileInItemRange(Item))
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			return ModContent.GetInstance<CampfireSlot>().Find(i, j) == -1; //Invalid if this entity already exists
 		}
 
@@ -62,8 +63,7 @@ public class CampfireSpit : ModItem
 				int i = Player.tileTargetX;
 				int j = Player.tileTargetY;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
-
+				(i, j) = Helpers.GetTopLeft(i, j);
 				int type = ModContent.TileEntityType<CampfireSlot>();
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -99,7 +99,7 @@ public class CampfireSlot : SingleSlotEntity
 		if (Main.tile[i, j].TileType != campfire)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		// Generally will only be called during generation so the multiplayer
 		// client path will never be hit, but if a mod calls it then we don't
@@ -162,7 +162,7 @@ public class RoastGlobalTile : GlobalTile
 		if (!TileID.Sets.Campfire[Main.tile[i, j].TileType])
 			return null;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		int id = ModContent.GetInstance<CampfireSlot>().Find(i, j);
 
 		return (id == -1) ? null : TileEntity.ByID[id];
@@ -224,7 +224,7 @@ public class RoastGlobalTile : GlobalTile
 
 		if (Entity(i, j) is CampfireSlot slot)
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 			slot.Kill(i, j);
 
@@ -243,7 +243,7 @@ public class RoastGlobalTile : GlobalTile
 	{
 		if (TileID.Sets.Campfire[type] && TileObjectData.IsTopLeft(i, j) && Entity(i, j) is CampfireSlot slot)
 		{
-			var position = new Vector2(i, j) * 16 - Main.screenPosition - new Vector2(0, 16) + TileExtensions.TileOffset;
+			var position = new Vector2(i, j) * 16 - Main.screenPosition - new Vector2(0, 16) + TileMethods.TileOffset;
 			spriteBatch.Draw(TileTexture.Value, position, Lighting.GetColor(i + 1, j + 1));
 
 			if (!slot.item.IsAir)

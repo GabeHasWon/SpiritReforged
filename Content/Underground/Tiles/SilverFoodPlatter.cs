@@ -55,7 +55,7 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, ILoadItem
 
 			int yOffset = 18 - t.TileFrameX / 36 * 2;
 
-			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileExtensions.TileOffset;
+			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileMethods.TileOffset;
 			spriteBatch.Draw(texture, position, source, currentColor, 0f, origin, scale, default, 0);
 
 			if (slot.item.color != default)

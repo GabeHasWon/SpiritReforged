@@ -19,9 +19,10 @@ public class SavannaGrass : GrassTile, ISetConversion
 		base.SetStaticDefaults();
 
 		SpiritSets.Mowable[Type] = ModContent.TileType<SavannaGrassMowed>();
+
 		RegisterItemDrop(AutoContent.ItemType<SavannaDirt>());
 		AddMapEntry(MapColor);
-		this.Merge(ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassCrimson>());
+		TileMethods.Merge(Type, ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaGrassCrimson>());
 	}
 
 	public override void RandomUpdate(int i, int j)
