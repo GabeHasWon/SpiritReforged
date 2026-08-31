@@ -3,6 +3,8 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Items.KoiTotem;
 
@@ -24,6 +26,8 @@ public class KoiTotem : FloatingItem
 
 public class KoiTotemTile : ModTile
 {
+	public static readonly SoundStyle Feedback = new("SpiritReforged/Assets/SFX/Ambient/MagicFeedback", 2);
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -50,7 +54,7 @@ public class KoiTotemTile : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		var player = Main.LocalPlayer;
+		Player player = Main.LocalPlayer;
 
 		if (!closer)
 		{
@@ -59,49 +63,51 @@ public class KoiTotemTile : ModTile
 		}
 		else if (TileObjectData.IsTopLeft(i, j) && KoiTotemBuff.CursorOpacity > 0) //Create fancy visuals when bait is replenished
 		{
-			var t = Main.tile[i, j];
-			int height = TileObjectData.GetTileData(t)?.Height ?? 0;
-			var pos = new Vector2(i, j).ToWorldCoordinates(0, height * 16);
+			int height = TileObjectData.GetTileData(Main.tile[i, j])?.Height ?? 0;
+			Vector2 position = new Vector2(i, j).ToWorldCoordinates(0, height * 16);
 
 			if (Main.rand.NextBool())
 			{
 				var color = Color.Lerp(Color.LightBlue, Color.Cyan, Main.rand.NextFloat());
 				float magnitude = Main.rand.NextFloat();
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos + new Vector2(Main.rand.NextFloat(32), 0), Vector2.UnitY * -magnitude, color, (1f - magnitude) * .25f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
-					{ p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-.1f, .1f)); }));
+				ParticleHandler.SpawnParticle(new GlowParticle(position + new Vector2(Main.rand.NextFloat(32), 0), Vector2.UnitY * -magnitude, color, (1f - magnitude) * .25f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
+					{ p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)); }));
 			}
 
-			if (KoiTotemBuff.CursorOpacity > .9f)
+			if (KoiTotemBuff.CursorOpacity > 0.9f)
 			{
-				const string path = "SpiritReforged/Assets/SFX/Ambient/MagicFeedback";
+				ParticleHandler.SpawnParticle(new DissipatingImage(position + new Vector2(18, 0), Color.Cyan * 0.15f, 0, 0.25f, 1f, "Bloom", 120));
 
-				ParticleHandler.SpawnParticle(new DissipatingImage(pos + new Vector2(18, 0), Color.Cyan * .15f, 0, .25f, 1f, "Bloom", 120));
-
-				SoundEngine.PlaySound(new SoundStyle(path + 1) with { Volume = .3f, PitchRange = (-1, -.75f) }, pos);
-				SoundEngine.PlaySound(new SoundStyle(path + 2) with { Volume = .4f, PitchRange = (-.65f, -.35f) }, pos);
+				SoundEngine.PlaySound(Feedback with { Volume = 0.3f, PitchRange = (-1, -0.75f) }, position);
+				SoundEngine.PlaySound(Feedback with { Volume = 0.4f, PitchRange = (-0.65f, -0.35f) }, position);
 			}
 		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
+		Tile tile = Main.tile[i, j];
+
+		if (!TileDrawing.IsVisible(tile) || TileObjectData.GetTileData(tile) is not TileObjectData tileObjectData)
 			return false;
 
-		var t = Main.tile[i, j];
-		var frame = new Point(t.TileFrameX, t.TileFrameY);
-		var source = new Rectangle(frame.X, frame.Y, 18, (frame.Y == 54) ? 18 : 16);
-		int offX = (frame.X % TileObjectData.GetTileData(Type, 0).CoordinateFullWidth == 0) ? -2 : 0;
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(offX, 0);
+		int offset = (tile.TileFrameX % tileObjectData.CoordinateFullWidth == 0) ? -2 : 0;
+		Rectangle source = new(tile.TileFrameX, tile.TileFrameY, 18, (tile.TileFrameY == 54) ? 18 : 16);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(offset, 0);
 
-		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
+		spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, 0, 0);
 		return false;
 	}
 
 	public override bool PreDrawPlacementPreview(int i, int j, SpriteBatch spriteBatch, ref Rectangle frame, ref Vector2 position, ref Color color, bool validPlacement, ref SpriteEffects spriteEffects)
 	{
+		if (TileObjectData.GetTileData(Type, 0) is TileObjectData tileObjectData)
+		{
+			int offset = (frame.X % tileObjectData.CoordinateFullWidth == 0) ? -2 : 0;
+			position += Vector2.UnitX * (offset + 1);
+		}
+
 		return true;
 	}
 }
