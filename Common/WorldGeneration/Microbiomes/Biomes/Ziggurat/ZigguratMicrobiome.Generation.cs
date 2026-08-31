@@ -37,7 +37,7 @@ using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 
-public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
+public partial class ZigguratMicrobiome : MicrobiomeSystem.Microbiome, IGenerationPage
 {
 	/// <summary> The maximum width of the biome. </summary>
 	public const int DefaultWidth = 180;
@@ -215,7 +215,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
-	protected override void OnPlace(Point16 point)
+	protected override void OnCreated(Point16 point)
 	{
 		List<Rectangle> bounds = GetBounds(FullArea);
 		ChestCounter = WorldGen.genRand.Next(4);

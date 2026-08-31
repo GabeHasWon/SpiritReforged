@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria;
 using Terraria.Audio;
@@ -12,7 +11,7 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
+public class AdornedBowHeld() : ChargeBowProjectile(1.15f, 2f, 40)
 {
 	public const int MAX_FLASH_TIMER = 60;
 
@@ -55,7 +54,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		if (perfectShot)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
-			projectile.extraUpdates++;
+			projectile.velocity *= 1.5f;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
@@ -77,8 +76,8 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		{
 			_flashTimer--;
 
-			Lighting.AddLight(Projectile.Center,
-				 DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
+			Lighting.AddLight(Projectile.Center, 
+				AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
 				* 0.5f * (_flashTimer / (float)MAX_FLASH_TIMER));
 		}
 		
@@ -113,7 +112,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		Texture2D glowmaskTex = glowmaskInfo.Glowmask.Value;
 		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
-		Color color = (_flashTimer > 0f ? Color.Lerp(DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
+		Color color = (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
 		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
 		float strength = Charge * (Projectile.timeLeft / 30f);
 
@@ -178,7 +177,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 
 		var square = new SquarePrimitive
 		{
-			Color =  (_flashTimer > 0f ? Color.Lerp(DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
+			Color =  (_flashTimer > 0f ? Color.Lerp(AdornedBowGlobalProjectile.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive() * Projectile.Opacity,
 			Height = dimensions.X,
 			Length = dimensions.Y,
 			Position = Projectile.Center + new Vector2(0f, Projectile.gfxOffY) - Main.screenPosition + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5,

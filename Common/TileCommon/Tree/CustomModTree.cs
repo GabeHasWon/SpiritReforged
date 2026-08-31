@@ -33,5 +33,4 @@ public sealed class CustomModTree(int saplingType, params int[] anchorTypes) : M
 	public override Asset<Texture2D> GetBranchTextures() => TextureAssets.TreeBranch[0];
 	public override Asset<Texture2D> GetTexture() => TextureAssets.Tile[TileID.Trees];
 	public override Asset<Texture2D> GetTopTextures() => TextureAssets.TreeTop[0];
-	public override void SetTreeFoliageSettings(Tile tile, ref int xoffset, ref int treeFrame, ref int floorY, ref int topTextureFrameWidth, ref int topTextureFrameHeight) { }
 }
