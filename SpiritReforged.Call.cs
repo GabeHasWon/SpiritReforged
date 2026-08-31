@@ -7,6 +7,7 @@ using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Underground.Tiles.Potion;
@@ -147,6 +148,10 @@ public partial class SpiritReforgedMod : Mod
 				case "AddCustomDoT":
 					{
 						return CustomDoT.AddCustomDoT(args[1..]);
+					}
+				case "TrellisVine":
+					{
+						return CrossmodTrellis.Recieve(args[1..]);
 					}
 				default:
 					{

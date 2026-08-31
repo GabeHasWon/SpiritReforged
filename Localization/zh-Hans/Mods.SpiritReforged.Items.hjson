@@ -3611,3 +3611,23 @@ PumpkinPailWhite: {
 		'Actually spooky'
 		''' */
 }
+
+TrellisOldBirchItem: {
+	// DisplayName: Crossed Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	// DisplayName: Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
