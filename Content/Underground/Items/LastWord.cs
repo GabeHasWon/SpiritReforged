@@ -34,8 +34,8 @@ public class LastWord : ModItem
 		public override void ResetEffects() => equipped = false;
 		public override void PostUpdateEquips() // we must use PostUpdateEquips to ensure it works with magazine changes
 		{
-			if (equipped && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredShellCount <= 0)
-				MagazinePlayer.EmpowerUIShell();
+			if (equipped && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading)
+				MagazinePlayer.EmpowerShot();
 		}
 	}
 

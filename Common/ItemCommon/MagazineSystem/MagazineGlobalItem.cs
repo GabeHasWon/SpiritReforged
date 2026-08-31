@@ -8,8 +8,33 @@ using static SpiritReforged.Common.Easing.EaseFunction;
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 
 /// <summary>
-/// Holds data for a weapons magazine
+/// The type of reload the weapon uses.
+/// OneAtATime: The weapon reloads one ammo at a time, spread out during the reload animation. The player can fire to cancel the reload animation, assuming they have any ammo.
+/// EntireMagazine: The weapon reloads the entire magazine at once. The player cannot cancel the reload animation.
 /// </summary>
+public enum MagazineReloadType
+{
+	OneAtATime = 0,
+	EntireMagazine = 1,
+}
+
+public enum MagazineUIType
+{
+	Shell = 0, // Shotguns
+	Bullet = 1, // Guns that are not shotguns
+	Flamethrower = 2, // Flamethrowers
+	Bow = 3, // Greatbows, Bows,
+	Bolt = 4, // Crossbows
+	Dart = 5, // Dart Weapons
+	Rocket = 6, // Launchers
+	Misc = 7, // .. Anything else? Might not be needed
+}
+
+/// <summary>
+/// Holds data for a weapons magazine. Sound playing is handled by <see cref="MagazineGlobalItem.ShootSoundInvokation"/>
+/// </summary>
+/// <param name="minPitch">The pitch of the sound with a full magazine</param>
+/// <param name="maxPitch">The pitch of the sound with an empty magazine</param>
 /// <param name="magazineSize">Amount of shots before reloading</param>
 /// <param name="reloadTime">time in takes to reload, in ticks</param>
 public class MagazineData(float minPitch, float maxPitch, int magazineSize, int reloadTime)
@@ -55,19 +80,31 @@ public class MagazineGlobalItem : GlobalItem
 	private float _shootRotation;
 	private int _shootDirection;
 
-	private int _reloadAnimationTimer;
+	private int _maxReloadTimer;
+
+	private int _singleLoadTime;
+
+	// used to automatically reload after a period of not doing anything.
+	private int _reloadIdleTimer;
+	private int _maxReloadIdleTimer = 300;
 
 	private Vector2 _itemSize;
 	private Vector2 _itemOrigin;
 
 	private Vector2? _animationRatio = null;
 
+	public MagazineReloadType ReloadType;
+	public MagazineUIType UIType;
+
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
 	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player) - _currentMagazine.AmmoUsed;
 	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player);
-	public void ActivateMagazine(ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
+	public void ActivateMagazine(ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
+		ReloadType = reloadType;
+		UIType = uiType;
+
 		_soundInvokation = soundMethod;
 
 		_shotRecoil = shotRecoil;
@@ -104,7 +141,12 @@ public class MagazineGlobalItem : GlobalItem
 	public override bool CanUseItem(Item item, Player player)
 	{
 		if (Active)
-			return _currentMagazine.ReloadTimer <= 0;
+		{
+			if (ReloadType == MagazineReloadType.OneAtATime)
+				return AmmoRemaining(player) > 0; // if the player has any ammo, let them shoot it
+			else
+				return _currentMagazine.ReloadTimer <= 0;
+		}
 
 		return true;
 	}
@@ -113,24 +155,49 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			_reloadIdleTimer = 0;
+
 			var mp = player.GetModPlayer<MagazinePlayer>();
 
-			MagazinePlayer.EjectUIShell(item);
+			MagazinePlayer.Fire(item);
 
 			_currentMagazine.AmmoUsed++;
 
-			if (_currentMagazine.AmmoUsed == mp.GetMagazineSize(_magazineData._magazineSize))
-			{
-				int reloadTime = mp.GetReloadTime(_magazineData._reloadTime);
+			int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
 
-				_currentMagazine.ReloadTimer = reloadTime;
-				_reloadAnimationTimer = reloadTime;
-			}
+			if (_currentMagazine.AmmoUsed == magazineSize)
+				ActivateReload(player, magazineSize);
 
 			return null;
 		}
 
 		return null;
+	}
+
+	void ActivateReload(Player player, int ammoUsed)
+	{
+		_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
+		_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
+
+		var mp = player.GetModPlayer<MagazinePlayer>();
+
+		int reloadTime = mp.GetReloadTime(_magazineData._reloadTime);
+
+		if (ReloadType == MagazineReloadType.OneAtATime)
+		{
+			int maxReloadTime = (int)MathHelper.Lerp(reloadTime, reloadTime / 2, 1f - MagazineProgress(player));
+			int singleLoadTime = maxReloadTime / ammoUsed;
+
+			_singleLoadTime = singleLoadTime;
+
+			_maxReloadTimer = maxReloadTime;
+			_currentMagazine.ReloadTimer = maxReloadTime;
+		}
+		else
+		{
+			_maxReloadTimer = reloadTime;
+			_currentMagazine.ReloadTimer = reloadTime;
+		}
 	}
 
 	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -160,15 +227,11 @@ public class MagazineGlobalItem : GlobalItem
 				if (Main.myPlayer == player.whoAmI)
 					player.direction = _shootDirection;
 
-				if (_reloadAnimationTimer > 0)
-				{
-					if (_reloadUseStyle is not null)
-						_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
-					else
-						ReloadStyle(player);
+				if (_reloadUseStyle is not null)
+					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer);
+				else
+					ReloadStyle(player);
 
-					_reloadAnimationTimer--;
-				}
 			}
 			else
 			{
@@ -176,6 +239,8 @@ public class MagazineGlobalItem : GlobalItem
 					_shotUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 				else
 					ItemVisualHelpers.SetGunUseStyle(player, item, _shootDirection, _shotRecoil, EaseCircularOut, EaseOutBack(), _itemSize, _itemOrigin, _animationRatio);
+
+				_reloadIdleTimer = 0;
 			}
 		}
 	}
@@ -183,7 +248,7 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation style. Should usually be overridden with the delegate.
 	void ReloadStyle(Player player)
 	{
-		float animProgress = 1f - _reloadAnimationTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player);
+		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
 
 		if (Main.myPlayer == player.whoAmI)
 			player.direction = _shootDirection;
@@ -222,8 +287,8 @@ public class MagazineGlobalItem : GlobalItem
 				if (Main.myPlayer == player.whoAmI)
 					player.direction = _shootDirection;
 
-				if (_reloadUseFrame is not null)
-					_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player));
+				if (_reloadUseFrame is not null && _maxReloadTimer > 0)
+					_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer);
 				else
 					ReloadFrame(player);
 			}
@@ -240,7 +305,7 @@ public class MagazineGlobalItem : GlobalItem
 	// default reload animation frame. Should usually be overridden with the delegate.
 	void ReloadFrame(Player player)
 	{
-		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)player.GetModPlayer<MagazinePlayer>().GetReloadTime(player);
+		float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
 		float rotation = _shootRotation * player.gravDir + 1.5707964f;
 		float frontArmRotation = _shootRotation * player.gravDir + 1.5707964f;
 
@@ -297,16 +362,51 @@ public class MagazineGlobalItem : GlobalItem
 
 	public override void UpdateInventory(Item item, Player player)
 	{
-		if (Active)
+		if (Active && player.HeldItem == item)
 		{
 			if (_currentMagazine.ReloadTimer > 0)
 			{
 				_currentMagazine.ReloadTimer--;
-				if (_currentMagazine.ReloadTimer == 0)
-					_currentMagazine.AmmoUsed = 0;
 
 				player.itemTime = 2;
 				player.itemAnimation = 2;
+			}
+			else
+			{
+				if (_singleLoadTime > 0)
+					_singleLoadTime = 0;
+
+				if (_currentMagazine.AmmoUsed > 0)
+				{
+					Main.NewText(_reloadIdleTimer);
+					if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
+					{
+						ActivateReload(player, _currentMagazine.AmmoUsed);
+
+						_reloadIdleTimer = 0;
+					}
+				}			
+			}
+
+			if (ReloadType == MagazineReloadType.OneAtATime && _singleLoadTime > 0)
+			{
+				float interpolant = 1 - MagazineProgress(player);
+
+				if (_currentMagazine.ReloadTimer > 0 && _currentMagazine.ReloadTimer % _singleLoadTime == 0)
+				{
+					Main.NewText(_currentMagazine.ReloadTimer + " " + _currentMagazine.AmmoUsed);
+
+					_currentMagazine.AmmoUsed--;
+					if (_currentMagazine.AmmoUsed < 0) // safety check. Should reasonably never occur
+						_currentMagazine.AmmoUsed = 0;
+
+					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+				}
+			}
+			else if (ReloadType == MagazineReloadType.EntireMagazine)
+			{
+				if (_currentMagazine.ReloadTimer == 0)
+					_currentMagazine.AmmoUsed = 0;
 			}
 		}
 	}
@@ -332,5 +432,32 @@ public class MagazineGlobalItem : GlobalItem
 				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Size", $"Can fire {magazineSize} shots before needing to reload"));
 			}
 		}
+	}
+
+	public override GlobalItem Clone(Item from, Item to)
+	{
+		MagazineGlobalItem clone = (MagazineGlobalItem)base.Clone(from, to);
+
+		clone._magazineData = _magazineData;
+		clone._currentMagazine = _currentMagazine;
+		clone._useCustomUseStyle = _useCustomUseStyle;
+
+		clone._shotUseStyle = _shotUseStyle;
+		clone._shotUseFrame = _shotUseFrame;
+		clone._reloadUseStyle = _reloadUseStyle;
+		clone._reloadUseFrame = _reloadUseFrame;
+		clone._soundInvokation = _soundInvokation;
+
+		clone._maxReloadTimer = _maxReloadTimer;
+		clone._singleLoadTime = _singleLoadTime;
+		clone._reloadIdleTimer = _reloadIdleTimer;
+		clone._itemSize = _itemSize;
+		clone._itemOrigin = _itemOrigin;
+		clone._animationRatio = _animationRatio;
+
+		clone.ReloadType = ReloadType;
+		clone.UIType = UIType;
+
+		return clone;
 	}
 }
