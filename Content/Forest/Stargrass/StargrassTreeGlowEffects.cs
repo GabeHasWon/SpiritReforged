@@ -58,7 +58,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * 0.25f;
 		Color color = (Color.White * (0.3f - (float)lerp)).Additive();
 
-		spriteBatch.Draw(_baseTexture.Value, Helpers.GetTilePosition(i, j), frame, color);
+		spriteBatch.Draw(_baseTexture.Value, new Vector2(i, j) * 16f - Main.screenPosition, frame, color);
 
 		if (tile.TileFrameY < 198)
 			return;
@@ -73,7 +73,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				return;
 
 			Texture2D treeTopTexture = _topTexture.Value;
-			Vector2 drawPos = Helpers.GetTilePosition(i, j) - new Vector2(8, 16);
+			Vector2 drawPos = new Vector2(i, j) * 16f - Main.screenPosition - new Vector2(8, 16);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
@@ -95,7 +95,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				return;
 
 			Texture2D treeBranchTexture = _branchTexture.Value;
-			Vector2 position = Helpers.GetTilePosition(i, j);
+			Vector2 position = new Vector2(i, j) * 16f - Main.screenPosition;
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
