@@ -153,22 +153,32 @@ public class PrefixVoucher : ModItem
 		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty, accessory); //Display "None"
 	}
 
-	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
+	public void RecalculatePrefixInfo() => FindInfo(); // Publicly accessible portal for FindInfo
 
 	private static Item GetPrefixableItem(int prefix)
 	{
 		Item item = new(ItemID.WoodenSword);
 
-		if (_isLoadingInfo.GetValue(null) is true)// Main.gameMenu && !Main.dedServ) // Stops an infinite loop in load
+		if (_isLoadingInfo.GetValue(null) is true) // Stops an infinite loop in load
 			return item;
 
 		if (Main.dedServ && prefix == 0)
 			return item;
 
-		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
+		int attempts = 0;
+
+		while (item.prefix == 0 || item.rare < item.OriginalRarity) // Has no prefix or is a negative prefix
 		{
 			item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
 			item.Prefix(prefix);
+
+			attempts++;
+
+			if (attempts > 100)
+			{
+				attempts = 0;
+				prefix = -2;
+			}
 		}
 
 		return item;
