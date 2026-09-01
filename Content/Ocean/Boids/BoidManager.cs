@@ -25,14 +25,12 @@ public class BoidManager : ModSystem
 		for (int i = 0; i < numTypes; i++)
 			Types.Add(i, ModContent.Request<Texture2D>("SpiritReforged/Content/Ocean/Boids/Textures/fish_" + i));
 
-		On_Main.DrawPlayers_BehindNPCs += static (On_Main.orig_DrawPlayers_BehindNPCs orig, Main self) =>
+		On_Main.DoDraw_Tiles_NonSolid += static (On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self) =>
 		{
 			if (!Main.gamePaused) //Update here because boids are largely visual
 				Update();
 
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 			Draw(Main.spriteBatch);
-			Main.spriteBatch.End();
 
 			orig(self);
 		};
