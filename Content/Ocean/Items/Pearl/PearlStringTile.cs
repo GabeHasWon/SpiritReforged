@@ -31,7 +31,7 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 
 		AddMapEntry(new Color(100, 100, 120));
 		RegisterItemDrop(ModContent.ItemType<PearlString>());
-		TileExtensions.Merge(this, _sandyTypes);
+		TileMethods.Merge(Type, _sandyTypes);
 
 		DustType = DustID.Sand;
 	}

@@ -16,7 +16,7 @@ public class SandySandstone : ModTile, ILoadItem
 
 		TileID.Sets.ChecksForMerge[Type] = true;
 
-		this.Merge(TileID.Sandstone, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<CrackedSandstone>());
+		TileMethods.Merge(Type, TileID.Sandstone, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<CrackedSandstone>());
 		AddMapEntry(new Color(174, 74, 48));
 		RegisterItemDrop(AutoContent.ItemType<CrackedSandstone>());
 

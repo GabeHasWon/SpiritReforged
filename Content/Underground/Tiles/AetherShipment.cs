@@ -3,22 +3,22 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
+public class AetherShipment : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
 	private const int FullHeight = 36;
-	private static Color GlowColor => Main.DiscoColor; //Color.Lerp(Color.Magenta, Color.CadetBlue, (float)(Math.Sin(Main.timeForVisualEffects / 40f) / 2f) + .5f);
+	private static Color GlowColor => Main.DiscoColor;
 
 	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
@@ -78,7 +78,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 			return;
 
 		fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 	}
 
 	public override void AnimateTile(ref int frame, ref int frameCounter)
@@ -96,7 +96,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 			return true;
 
 		bool fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 
 		var cache = Main.tile[i, j];
 		WorldGen.KillTile_MakeTileDust(i, j, cache);
@@ -129,7 +129,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 	{
 		const int fullWidth = FullHeight;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (Main.tile[i, j].TileFrameX > fullWidth)
 			return false; //Frame has already been adjusted
@@ -166,30 +166,28 @@ public class AetherShipment : PotTile, ISwayTile, ILootable, ICutAttempt
 		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var tile = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(tile);
-
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + Main.tileFrame[Type] * FullHeight, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
-		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
-
-        var color = Lighting.GetColor(i, j);
-
-        if (Main.LocalPlayer.findTreasure)
-            color = TileExtensions.GetSpelunkerTint(color);
-
-        spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, drawPos + origin + dataOffset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
-
-		if (tile.TileFrameX % 36 == 18 && tile.TileFrameY % 36 == 18) //Bottom right frame
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData tileObjectData)
 		{
-			var bloom = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY + Main.tileFrame[Type] * FullHeight, tileObjectData.CoordinateWidth, tileObjectData.CoordinateHeights[tile.TileFrameY / 18]);
+			Color color = Lighting.GetColor(i, j);
 
-			float value = Main.LocalPlayer.DistanceSQ(new Vector2(i, j) * 16) / (200 * 200);
-			Color glow = GlowColor.Additive() * (1f - value) * .5f;
+			if (Main.LocalPlayer.findTreasure)
+				color = TileMethods.GetSpelunkerTint(color);
 
-			spriteBatch.Draw(bloom, drawPos + new Vector2(0, 16), null, glow, rotation, bloom.Size() / 2, new Vector2(1, .5f) * .4f, SpriteEffects.None, 0);
+			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, position, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+
+			if (tile.TileFrameX % 36 == 18 && tile.TileFrameY % 36 == 18) //Bottom right frame
+			{
+				Texture2D bloom = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
+
+				float value = Main.LocalPlayer.DistanceSQ(new Vector2(i, j) * 16) / (200 * 200);
+				Color glow = GlowColor.Additive() * (1f - value) * .5f;
+
+				spriteBatch.Draw(bloom, position + new Vector2(0, 16), null, glow, rotation, bloom.Size() / 2, new Vector2(1, .5f) * .4f, SpriteEffects.None, 0);
+			}
 		}
 	}
 

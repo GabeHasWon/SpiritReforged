@@ -3394,7 +3394,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Пилон космоса
+	DisplayName: Пилон небес
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 

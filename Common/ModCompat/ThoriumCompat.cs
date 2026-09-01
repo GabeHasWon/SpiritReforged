@@ -28,7 +28,6 @@ internal class ThoriumGlobalNPC : GlobalNPC
 			ModContent.NPCType<KelpZombie>(),
 			ModContent.NPCType<SailorZombie>(),
 			ModContent.NPCType<TridentZombie>(),
-			ModContent.NPCType<TumbleZombie>(),
 			ModContent.NPCType<CactusZombie>(),
 			ModContent.NPCType<TumbleZombie>(),
 			ModContent.NPCType<VeiledZombie>()

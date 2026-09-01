@@ -1,4 +1,5 @@
 ﻿using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon;
 
@@ -22,7 +23,7 @@ public class CutAttemptTile : ModSystem
 			int i = x;
 			int j = y;
 
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			var key = new Point16(i, j);
 
 			if (Cooldowns.ContainsKey(key))

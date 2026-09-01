@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.ProjectileCommon;
-
-namespace SpiritReforged.Common;
+﻿namespace SpiritReforged.Common;
 
 [ReinitializeDuringResizeArrays]
 public class SpiritSets : ModSystem

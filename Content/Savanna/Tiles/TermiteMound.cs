@@ -77,7 +77,7 @@ public class TermiteMoundLarge : ModTile
 
 		var frame = new Point(tile.TileFrameX + 18 * frameXOffset, tile.TileFrameY + 18 * frameYOffset);
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(0, 2);
 
 		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 	}

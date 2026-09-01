@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -179,12 +180,12 @@ internal class SpaceHeater : ModItem
 			TileObjectData data = TileObjectData.GetTileData(Main.tile[i, j]);
 			bool isBottomRight = TileObjectData.IsTopLeft(i - data.Width + 1, j - data.Height + 1);
 			Point16 topLeft = TileObjectData.TopLeft(i, j);
-			bool hideSlider = !TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture);
+			bool hideSlider = !TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture);
 
 			if (!isBottomRight || TileEntity.ByPosition[topLeft] is not SpaceHeaterEntity heater)
 				return;
 
-			Vector2 position = TileExtensions.DrawPosition(i - data.Width + 1, j - data.Height + 1, new Vector2(-10, heater.Strength * 50 - 54));
+			Vector2 position = Helpers.GetTilePosition(i - data.Width + 1, j - data.Height + 1) - new Vector2(-10, heater.Strength * 50 - 54);
 
 			if (!hideSlider)
 			{
@@ -200,11 +201,11 @@ internal class SpaceHeater : ModItem
 				{
 					for (int y = 0; y < data.Height; ++y)
 					{
-						if (TileExtensions.GetVisualInfo(topLeft.X + x, topLeft.Y + y, out Color tileColor, out Texture2D individualTileTexture))
+						if (TileMethods.GetVisualInfo(topLeft.X + x, topLeft.Y + y, out Color tileColor, out Texture2D individualTileTexture))
 						{
 							glow.X = 36 + 18 * x;
 							glow.Y = 0 + 18 * y;
-							spriteBatch.Draw(individualTileTexture, TileExtensions.DrawPosition(i + x, j + y, new Vector2(16, 48)), glow, tileColor * heater.Strength);
+							spriteBatch.Draw(individualTileTexture, Helpers.GetTilePosition(i + x, j + y) - new Vector2(16, 48), glow, tileColor * heater.Strength);
 						}
 					}
 				}

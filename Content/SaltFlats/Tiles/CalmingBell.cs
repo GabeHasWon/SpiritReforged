@@ -3,17 +3,17 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
+public class CalmingBell : ModTile, WindTileRenderer.IDrawInWind, ICutAttempt, ILoadItem
 {
 	/// <summary> Used to sync <see cref="CalmingBell"/> use effects by client-side methods. Should only be recieved by multiplayer clients. </summary>
 	internal class BellUseData : PacketData
@@ -93,7 +93,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
 	{
 		if (!Main.dedServ)
 		{
-			TileSwayHelper.SetWindTime(i, j, Vector2.UnitX * 5);
+			WindTileRenderer.SetWindTime(i, j, Vector2.UnitX * 2);
 
 			Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 
@@ -128,7 +128,7 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
 	{
 		if (!Main.dedServ)
 		{
-			TileSwayHelper.SetWindTime(i, j, Vector2.UnitX * 5);
+			WindTileRenderer.SetWindTime(i, j, Vector2.UnitX * 3);
 
 			Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 
@@ -148,26 +148,27 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
         player.cursorItemIconID = this.AutoItemType();
     }
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		Tile tile = Main.tile[i, j];
+		if (!TileDrawing.IsVisible(tile))
 			return;
 
-		Vector2 position = new Vector2(i, j).ToWorldCoordinates(8, -2) - Main.screenPosition;
-		Rectangle source = TextureAssets.Tile[Type].Frame();
-		origin = new(source.Width / 2, 0);
+		Texture2D texture = Helpers.GetTileTextureValue(tile);
+		Rectangle source = texture.Frame();
 
-		spriteBatch.Draw(texture, position, source, color, rotation, origin, 1, 0, 0);
+		position = new Vector2(i, j).ToWorldCoordinates(8, 0) - Main.screenPosition;
+		origin = new Vector2(source.Width / 2, 0);
+
+		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), rotation, origin, 1, 0, 0);
 
 		float opacity = GetOpacity(i, j);
-		if (opacity > 0)
+		if (opacity > 0 && Helpers.TryGetGlowmask(i, j, out Texture2D glowmask, out _))
 		{
-			Texture2D glowmask = TileHelperSets.TileGlowmask[Type].Texture.Value;
+			spriteBatch.Draw(glowmask, position, source, new Color(0, 255, 190).Additive() * opacity, rotation, origin, 1, 0, 0);
+			spriteBatch.Draw(glowmask, position, source, Color.White.Additive() * opacity * 0.3f, rotation, origin, 1, 0, 0);
 
-			spriteBatch.Draw(glowmask, position, source, (new Color(0, 255, 190) * opacity).Additive(), rotation, origin, 1, 0, 0);
-			spriteBatch.Draw(glowmask, position, source, (Color.White * opacity * 0.2f).Additive(), rotation, origin, 1, 0, 0);
-
-			if (!Main.gamePaused && Main.rand.NextFloat() < GetOpacity(i, j) * 0.05f)
+			if (!Main.gamePaused && Main.rand.NextFloat() < opacity * 0.05f) //Spawn particles
 			{
 				Vector2 emberPosition = Main.rand.NextVector2FromRectangle(new(i * 16, j * 16, 16, 16));
 				ParticleHandler.SpawnParticle(new EmberParticle(emberPosition, Vector2.UnitY * -0.1f, Color.Cyan, Main.rand.NextFloat(0.1f, 0.3f), Main.rand.Next(60, 80), 5));
@@ -178,14 +179,14 @@ public class CalmingBell : ModTile, ISwayTile, ICutAttempt, ILoadItem
 			spriteBatch.Draw(TextureAssets.HighlightMask[Type].Value, position, source, actuallySelected ? Color.Yellow : Color.Gray, rotation, origin, 1, SpriteEffects.None, 0);
 	}
 
-	public float Physics(Point16 topLeft)
+	float WindTileRenderer.IDrawInWind.GetWindStrength(int i, int j)
 	{
-		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.SunflowerWindCounter);
+		if (TileObjectData.GetTileData(Main.tile[i, j]) is TileObjectData tileObjectData)
+		{
+			float rotation = WorldGen.InAPlaceWithWind(i, j, tileObjectData.Width, tileObjectData.Height) ? Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.SunflowerWindCounter) : 0f;
+			return rotation + Main.instance.TilesRenderer.GetWindGridPushComplex(i, j, 30, 3f, 3, true);
+		}
 
-		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
-			rotation = 0f;
-
-		return rotation + Main.instance.TilesRenderer.GetWindGridPushComplex(topLeft.X, topLeft.Y, 30, 3f, 3, true);
+		return 0f;
 	}
 }

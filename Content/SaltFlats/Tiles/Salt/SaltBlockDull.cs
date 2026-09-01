@@ -13,7 +13,7 @@ public class SaltBlockDull : SaltBlock
 		base.SetStaticDefaults();
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
+		TileMethods.Merge(Type, ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
 		AddMapEntry(new Color(180, 170, 170));
 	}
 
@@ -29,7 +29,7 @@ public class SaltBlockDull : SaltBlock
 			if (Main.rand.NextBool(32))
 				Placer.Check(i, j - 1, ModContent.TileType<SaltwortTall>()).IsClear().Place().Send();
 
-			if (Main.rand.NextBool(8) && (above.HasTileType(ModContent.TileType<Saltwort>()) || above.HasTileType(ModContent.TileType<SaltwortTall>())))
+			if (Main.rand.NextBool(8) && (above.Active(ModContent.TileType<Saltwort>()) || above.Active(ModContent.TileType<SaltwortTall>())))
 			{
 				Tile tile = Main.tile[i, j];
 				Point16 result = new(126, 252);

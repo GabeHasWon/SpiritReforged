@@ -1,7 +1,9 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Savanna.Items.Vanity;
 using System.IO;
+using System.Reflection;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
 
@@ -56,10 +58,14 @@ public class PrefixVoucher : ModItem
 	/// <summary> Item types to sample for prefix rarity color. </summary>
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
 
+	private static FieldInfo _isLoadingInfo = null;
+
 	public int prefix;
 
 	private Item _tooltipPrefixItem;
 	private ExtendedPrefixInfo _info;
+
+	public override void Load() => _isLoadingInfo = typeof(ModLoader).GetField("isLoading", BindingFlags.Static | BindingFlags.NonPublic);
 
 	/// <summary> <see cref="prefix"/> must be valid before calling. </summary>
 	private ExtendedPrefixInfo FindInfo()
@@ -147,19 +153,32 @@ public class PrefixVoucher : ModItem
 		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty, accessory); //Display "None"
 	}
 
-	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
+	public void RecalculatePrefixInfo() => FindInfo(); // Publicly accessible portal for FindInfo
 
 	private static Item GetPrefixableItem(int prefix)
 	{
 		Item item = new(ItemID.WoodenSword);
 
-		if (Main.gameMenu) // Stops an infinite loop in load
+		if (_isLoadingInfo.GetValue(null) is true) // Stops an infinite loop in load
 			return item;
 
-		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
+		if (Main.dedServ && prefix == 0)
+			return item;
+
+		int attempts = 0;
+
+		while (item.prefix == 0 || item.rare < item.OriginalRarity) // Has no prefix or is a negative prefix
 		{
 			item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
 			item.Prefix(prefix);
+
+			attempts++;
+
+			if (attempts > 100)
+			{
+				attempts = 0;
+				prefix = -2;
+			}
 		}
 
 		return item;
@@ -179,7 +198,7 @@ public class PrefixVoucher : ModItem
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
 
-		if (Main.gameMenu) // Don't load data in menu for the template instance
+		if (_isLoadingInfo.GetValue(null) is true) // Don't load data in menu for the template instance
 			return;
 
 		prefix = RollRandomPrefix(out int itemType);

@@ -299,7 +299,7 @@ internal class ZigguratMicropass : Micropass
 				Point basePosition = new(p + a.X, lowestY + 1);
 				Tile tile = Framing.GetTileSafely(basePosition);
 
-				if (isTile && tile.HasTileType(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
+				if (isTile && tile.Active(TileID.Sand) && WorldGen.TileIsExposedToAir(basePosition.X, basePosition.Y))
 					tile.ResetToType((ushort)ModContent.TileType<GildedSandstone>()); //Add pillar foundations
 
 				result.Height = Math.Max(result.Height, lowestY - result.Top); //Adjust resulting bounds
@@ -470,7 +470,7 @@ internal class ZigguratMicropass : Micropass
 				for (int y = rectangle.Y; y < rectangle.Y + rectangle.Height; y++)
 				{
 					Tile tile = Framing.GetTileSafely(x, y);
-					if (tile.HasTileType(TileID.Sand) || tile.HasTileType(TileID.Sandstone) || tile.HasTileType(TileID.HardenedSand))
+					if (tile.Active(TileID.Sand) || tile.Active(TileID.Sandstone) || tile.Active(TileID.HardenedSand))
 						sandyCount++;
 				}
 			}
@@ -538,7 +538,7 @@ internal class ZigguratMicropass : Micropass
 		bool result = false;
 		Tile tile = Main.tile[x, y];
 
-		if (tile.WallType == WallID.None && Framing.GetTileSafely(x, y + 1).HasTileType(ModContent.TileType<RedSandstoneBrick>()))
+		if (tile.WallType == WallID.None && Framing.GetTileSafely(x, y + 1).Active(ModContent.TileType<RedSandstoneBrick>()))
 		{
 			for (int i = 0; i < height; i++)
 			{

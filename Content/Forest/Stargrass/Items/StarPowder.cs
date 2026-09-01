@@ -5,6 +5,7 @@ using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Items;
 
@@ -81,7 +82,7 @@ public class StarConversion : ModBiomeConversion
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
 				return false; //Return if this is not the base of the flower
 
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			return ConversionHelper.ConvertTiles(i, j, 2, 4, ModContent.TileType<Starflower>());
 		});
 

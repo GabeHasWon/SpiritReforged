@@ -158,20 +158,21 @@ public class Hiker : WorldNPC
 		});
 
 		var backpack = newItem.ModItem as BackpackItem;
-		bool checkForDuplicates = ItemPool.elements.Count >= backpack.Items.Length; //Only check for duplicates if enough items exist in the pool
+		backpack.EnsureNewItemArray(Main.LocalPlayer);
+		bool checkForDuplicates = ItemPool.elements.Count >= backpack.Items.Length; // Only check for duplicates if enough items exist in the pool
 
 		for (int i = 0; i < backpack.Items.Length; ++i)
 		{
-			var slot = backpack.Items[i];
+			ref var slot = ref backpack.Items[i];
 			(int type, Range stackRange) = ItemPool.Get();
 
-			if (checkForDuplicates && backpack.Items.Where(x => x.type == type).Any()) //This is a duplicate item type; try again
+			if (checkForDuplicates && backpack.Items.Where(x => x.type == type).Any()) // This is a duplicate item type; try again
 			{
 				i--;
 				continue;
 			}
 
-			slot.SetDefaults(type);
+			slot = new Item(type);
 			slot.stack = Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1);
 		}
 

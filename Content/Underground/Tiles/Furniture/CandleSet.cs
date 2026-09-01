@@ -1,16 +1,16 @@
 ﻿using SpiritReforged.Common.ItemCommon;
+using TileHelper;
 using TileHelper.Common;
 using TileHelper.Content.Tiles;
-using static TileHelper.Autoloader;
 using static TileHelper.Common.ILightTile;
 
 namespace SpiritReforged.Content.Underground.Tiles.Furniture;
 
 public class CandleSet : ILoadable
 {
-	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadWaxFurniture;
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadWax;
 
-	private static void LoadWaxFurniture() => LoadFurnitureSet(typeof(CandleSet).Namespace + ".Candle", AllArgs(DustID.Bone, new(Color.Orange.ToVector3(), true))
+	private static void LoadWax() => Autoloader.LoadFurnitureSet(typeof(CandleSet).Namespace + ".Candle", Autoloader.AllArgs(DustID.Bone, new(Color.Orange.ToVector3(), true))
 		- nameof(BarrelTile)
 		- nameof(BenchTile)
 		- nameof(ClockTile)
@@ -24,6 +24,8 @@ public class CandleSet : ILoadable
 public class CandleClock : ClockTile, ILoadItem, ILightTile
 {
 	public LightingSettings Settings { get; set; } = new LightingSettings(Color.Orange.ToVector3(), true);
+
+	void ILoadItem.AddItemRecipes(ModItem modItem) => DataStructures.Recipes["ClockTile"].Invoke(modItem, AutoContent.ItemType<WaxBlock>());
 
 	public override void SetStaticDefaults()
 	{
@@ -51,6 +53,8 @@ public class CandleClock : ClockTile, ILoadItem, ILightTile
 public class CandlePiano : PianoTile, ILoadItem, ILightTile
 {
 	public LightingSettings Settings { get; set; } = new LightingSettings(Color.Orange.ToVector3(), true);
+
+	void ILoadItem.AddItemRecipes(ModItem modItem) => DataStructures.Recipes["PianoTile"].Invoke(modItem, AutoContent.ItemType<WaxBlock>());
 
 	public override void SetStaticDefaults()
 	{

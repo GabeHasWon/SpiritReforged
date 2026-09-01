@@ -2,11 +2,11 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PostDrawTreeHookSystem;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass;
 
@@ -115,11 +115,11 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		Tile tile = Main.tile[i, j];
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
-		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * .25f;
-		Color color = (Color.White * (.3f - (float)lerp)).Additive();
+		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * 0.25f;
+		Color color = (Color.White * (0.3f - (float)lerp)).Additive();
 
-		if (trunkTexture is not null)
-			spriteBatch.Draw(trunkTexture, TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset), frame, color);
+		Vector2 baseDrawPos = new Vector2(i + 1, j + 2) * 16f - Main.screenPosition;
+		spriteBatch.Draw(_baseTexture.Value, baseDrawPos, frame, color);
 
 		if (tile.TileFrameY < 198)
 			return;
@@ -133,12 +133,12 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, 0, ref treeFrame, ref _, out _, out int topTextureFrameWidth3, out int topTextureFrameHeight3))
 				return;
 
-			Texture2D treeTopTexture = topsTexture;
-			Vector2 drawPos = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset - new Vector2(8, 16));
+			Texture2D treeTopTexture = _topTexture.Value;
+			Vector2 drawPos = baseDrawPos - new Vector2(8, 16);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
-				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
+				rotation = Main.instance.TilesRenderer.GetWindCycle(i + 1, j + 2, WindTileRenderer.TreeWindCounter - MathHelper.PiOver4);
 
 			drawPos.X += rotation * 2f;
 			drawPos.Y += Math.Abs(rotation) * 2f;
@@ -155,12 +155,12 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, -1, ref treeFrame, ref _, out _, out int _, out int _))
 				return;
 
-			Texture2D treeBranchTexture = branchTexture;
-			var position = TileExtensions.DrawPosition(i, j, TileExtensions.TileOffset);
+			Texture2D treeBranchTexture = _branchTexture.Value;
+			Vector2 position = baseDrawPos;
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
-				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter);
+				rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter);
 
 			if (rotation < 0f)
 				position.X += rotation;

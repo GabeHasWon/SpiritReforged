@@ -53,7 +53,7 @@ public class CartographyTable : ModTile, ILoadItem
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			float y = (float)Math.Sin(Main.timeForVisualEffects / 20f) * 2f;
-			var position = new Vector2(i, j).ToWorldCoordinates(24, -8 + y) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(24, -8 + y) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
 			spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.3f, 0, bloom.Size() / 2, 0.2f, default, 0);

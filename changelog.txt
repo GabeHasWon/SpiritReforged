@@ -1,2 +1,4 @@
-v0.2.2.3
-- Fixed an issue where prefixes would be loaded in the main menu, potentially causing issues with other mods
+v0.2.2.5
+- Fixed vanity fish in the ocean being much faster than they should be
+- Fixed? an issue with Prefix Voucher hanging some worlds. Maybe. Please?
+- Fixed visual offset issue for Stargrass trees
