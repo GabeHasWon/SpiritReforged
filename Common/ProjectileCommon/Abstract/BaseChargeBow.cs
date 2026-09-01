@@ -1,13 +1,30 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using System.IO;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Visuals;
+using System.IO;
+using Terraria;
+using Terraria.Audio;
 
 namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShotPower = 1.5f, int perfectShotTime = 30) : ModProjectile
 {
+	#region Fields
+	// TODO: change these sfx
+	public static readonly SoundStyle ArrowShootSFX = new SoundStyle("SpiritReforged/Assets/SFX/Item/GreatbowShot")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.15f
+	};
+
+	public static readonly SoundStyle Flash = new("SpiritReforged/Assets/SFX/Item/ClubReady")
+	{
+		Volume = 0.5f,
+		PitchVariance = 0.15f
+	};
+
 	private const int STRING_BOUNCE_TIME = 30; //Could be adjusted to be dynamic if really needed
 
 	protected float Charge { get => Projectile.ai[0]; set => Projectile.ai[0] = value; }
@@ -22,6 +39,9 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	protected bool _fired = false;
 	protected Vector2 _direction = Vector2.Zero;
 
+	#endregion
+
+	#region ModProjectile Logic
 	public sealed override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public sealed override void SetDefaults()
@@ -35,6 +55,9 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		SafeSetDefaults();
 	}
 
+	public override bool? CanDamage() => false;
+
+	//Behavior methods
 	public sealed override void AI()
 	{
 		if (!Projectile.TryGetOwner(out Player player))
@@ -68,6 +91,7 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
 
 		if (Main.myPlayer == Projectile.owner)
+		{
 			if (!_fired)
 			{
 				Projectile.timeLeft = STRING_BOUNCE_TIME;
@@ -76,6 +100,14 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 				{
 					if (Charge < 1)
 						Charge = MathF.Min(Charge + 1 / ChargeTime, 1);
+
+					if (Charge == 1 && _perfectShotCurTimer == _perfectShotMaxTime)
+					{
+						if (!Main.dedServ)
+							SoundEngine.PlaySound(Flash, Projectile.Center);
+
+						PerfectShotReady();
+					}
 
 					Charging();
 				}
@@ -87,6 +119,7 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 					Projectile.netUpdate = true;
 				}
 			}
+		}
 
 		if (_fired)
 			AfterShoot();
@@ -95,7 +128,22 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 			_perfectShotCurTimer = (int)MathF.Max(--_perfectShotCurTimer, 0);
 	}
 
-	public override bool? CanDamage() => false;
+	protected void AdjustDirection()
+	{
+		Player player = Main.player[Projectile.owner];
+
+		if (Main.myPlayer == player.whoAmI && !_fired)
+		{
+			_direction = Vector2.Lerp(_direction, player.DirectionTo(Main.MouseWorld), 0.2f);
+			Projectile.netUpdate = true;
+		}
+
+		player.itemRotation = _direction.ToRotation();
+		if (player.direction != 1)
+			player.itemRotation -= 3.14f;
+
+		player.itemRotation = MathHelper.WrapAngle(player.itemRotation) - player.direction * MathHelper.PiOver2;
+	}
 
 	/// <summary>
 	/// Shoots the projectile. Runs only on the local client.
@@ -113,16 +161,114 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		float knockBack = Projectile.knockBack * chargeMod;
 		int type = GetShotProjectileType();
 
+		if(!Main.dedServ)
+			ArrowSound();
+
 		var p = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), player.Center, _direction * speed, type, damage, knockBack, Projectile.owner);
 		ModifyFiredProj(p, Charge == 1, perfectShot);
 
 		OnShoot(perfectShot);
 	}
 
+	protected int GetShotProjectileType() => (int)SelectedAmmo;
+
+	//Drawing methods
+	public override bool PreDraw(ref Color lightColor)
+	{
+		Texture2D projTex = TextureAssets.Projectile[Type].Value;
+		Player owner = Main.player[Projectile.owner];
+		Vector2 ownerOffset = owner.gfxOffY * Vector2.UnitY;
+
+		float perfectShotProgress = EaseFunction.EaseSine.Ease(EaseFunction.EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
+
+		//Draw string
+		Vector2 pointMiddle = DoStringDraw(ownerOffset, lightColor, projTex, perfectShotProgress);
+
+		//Draw arrow
+		if (!_fired)
+		{
+			int type = GetShotProjectileType();
+			Texture2D arrowTex = TextureAssets.Projectile[type].Value;
+			Vector2 arrowPos = pointMiddle.RotatedBy(Projectile.rotation);
+			arrowPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
+			arrowPos += Projectile.Center + ownerOffset - Main.screenPosition;
+			var arrowOrigin = new Vector2(arrowTex.Width / 2, arrowTex.Height);
+
+			DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
+		}
+
+		//Draw proj
+		Projectile.QuickDraw();
+
+		for (int i = 0; i < 2; i++)
+			Projectile.QuickDraw(drawColor: Color.White.Additive() * perfectShotProgress);
+
+		return false;
+	}
+
+	private Vector2 DoStringDraw(Vector2 ownerOffset, Color lightColor, Texture2D projTex, float perfectShotProgress)
+	{
+		SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
+
+		float stringHalfLength = stringLength / 2;
+		const float stringScale = 2;
+		stringColor = stringColor.MultiplyRGB(lightColor);
+		stringColor = Color.Lerp(stringColor, Color.White, perfectShotProgress);
+
+		float timeLeftProgress = 1 - (float)Projectile.timeLeft / STRING_BOUNCE_TIME;
+		float easedCharge = EaseFunction.EaseCircularOut.Ease(Charge);
+		float curDrawback = easedCharge - EaseFunction.EaseOutElastic().Ease(timeLeftProgress) * easedCharge;
+		curDrawback *= maxDrawback;
+
+		var pointTop = new Vector2(stringOrigin.X, stringOrigin.Y - stringHalfLength);
+		var pointMiddle = new Vector2(stringOrigin.X - curDrawback, stringOrigin.Y);
+		var pointBottom = new Vector2(stringOrigin.X, stringOrigin.Y + stringHalfLength);
+		int splineIterations = 30;
+		Vector2[] spline = Spline.CreateSpline([pointTop, pointMiddle, pointBottom], splineIterations);
+
+		for (int i = 0; i < splineIterations; i++)
+		{
+			var pixelPos = spline[i];
+
+			pixelPos = pixelPos.RotatedBy(Projectile.rotation);
+			pixelPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
+			pixelPos += Projectile.Center + ownerOffset - Main.screenPosition;
+
+			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pixelPos, new Rectangle(0, 0, 1, 1), stringColor, Projectile.rotation, Vector2.Zero, stringScale, SpriteEffects.None, 0);
+		}
+
+		return pointMiddle;
+	}
+
+	//Syncing
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_fired);
+		writer.Write(_perfectShotCurTimer);
+		writer.WriteVector2(_direction);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		_fired = reader.ReadBoolean();
+		_perfectShotCurTimer = reader.ReadInt32();
+		_direction = reader.ReadVector2();
+	}
+
+	#endregion
+
+	#region Abstract/Virtual Methods
+	protected virtual void ArrowSound() => SoundEngine.PlaySound(ArrowShootSFX.WithPitchOffset(MathHelper.Lerp(0.3f, -0.3f, Charge)).WithVolumeScale(Math.Max(Charge, 0.66f)), Projectile.Center);
+
 	/// <summary>
 	/// Runs while the bow is charging. Only run on the local client.
 	/// </summary>
 	protected virtual void Charging() { }
+
+	/// <summary>
+	/// Called one time when the projectile's charge first reaches its maximum value.
+	/// </summary>
+	protected virtual void PerfectShotReady() { }
 
 	/// <summary>
 	/// Run after the projectile is shot. Only run on the local client.
@@ -149,64 +295,6 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 
 	public abstract void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
 
-	public override bool PreDraw(ref Color lightColor)
-	{
-		Texture2D projTex = TextureAssets.Projectile[Type].Value;
-
-		float perfectShotProgress = EaseFunction.EaseSine.Ease(EaseFunction.EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
-
-		//Draw string
-		SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
-
-		float stringHalfLength = stringLength / 2;
-		const float stringScale = 2;
-		stringColor = stringColor.MultiplyRGB(lightColor);
-		stringColor = Color.Lerp(stringColor, Color.White, perfectShotProgress);
-
-		float timeLeftProgress = 1 - (float)Projectile.timeLeft / STRING_BOUNCE_TIME;
-		float easedCharge = EaseFunction.EaseCircularOut.Ease(Charge);
-		float curDrawback = easedCharge - EaseFunction.EaseOutElastic().Ease(timeLeftProgress) * easedCharge;
-		curDrawback *= maxDrawback;
-
-		var pointTop = new Vector2(stringOrigin.X, stringOrigin.Y - stringHalfLength);
-		var pointMiddle = new Vector2(stringOrigin.X - curDrawback, stringOrigin.Y);
-		var pointBottom = new Vector2(stringOrigin.X, stringOrigin.Y + stringHalfLength);
-		int splineIterations = 30;
-		Vector2[] spline = Spline.CreateSpline([pointTop, pointMiddle, pointBottom], splineIterations);
-
-		for (int i = 0; i < splineIterations; i++)
-		{
-			var pixelPos = spline[i];
-
-			pixelPos = pixelPos.RotatedBy(Projectile.rotation);
-			pixelPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
-			pixelPos += Projectile.Center - Main.screenPosition;
-
-			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, pixelPos, new Rectangle(0, 0, 1, 1), stringColor, Projectile.rotation, Vector2.Zero, stringScale, SpriteEffects.None, 0);
-		}
-
-		//Draw arrow
-		if (!_fired)
-		{
-			int type = GetShotProjectileType();
-			Texture2D arrowTex = TextureAssets.Projectile[type].Value;
-			Vector2 arrowPos = pointMiddle.RotatedBy(Projectile.rotation);
-			arrowPos -= (projTex.Size() / 2).RotatedBy(Projectile.rotation);
-			arrowPos += Projectile.Center - Main.screenPosition;
-			var arrowOrigin = new Vector2(arrowTex.Width / 2, arrowTex.Height);
-
-			DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
-		}
-
-		//Draw proj
-		Projectile.QuickDraw();
-
-		for (int i = 0; i < 2; i++)
-			Projectile.QuickDraw(drawColor: Color.White.Additive() * perfectShotProgress);
-
-		return false;
-	}
-
 	protected virtual void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgress, Color lightColor)
 	{
 		Main.spriteBatch.Draw(arrowTex, arrowPos, null, lightColor, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
@@ -216,36 +304,5 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 			Main.spriteBatch.Draw(arrowTex, arrowPos, null, color, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
 	}
 
-	protected void AdjustDirection(float deviation = 0f)
-	{
-		Player player = Main.player[Projectile.owner];
-
-		if (Main.myPlayer == player.whoAmI && !_fired)
-		{
-			_direction = Vector2.Lerp(_direction, player.DirectionTo(Main.MouseWorld), 0.2f);
-			Projectile.netUpdate = true;
-		}
-
-		player.itemRotation = _direction.ToRotation();
-		if (player.direction != 1)
-			player.itemRotation -= 3.14f;
-
-		player.itemRotation = MathHelper.WrapAngle(player.itemRotation) - player.direction * MathHelper.PiOver2;
-	}
-
-	protected int GetShotProjectileType() => (int)SelectedAmmo;
-
-	public override void SendExtraAI(BinaryWriter writer)
-	{
-		writer.Write(_fired);
-		writer.Write(_perfectShotCurTimer);
-		writer.WriteVector2(_direction);
-	}
-
-	public override void ReceiveExtraAI(BinaryReader reader)
-	{
-		_fired = reader.ReadBoolean();
-		_perfectShotCurTimer = reader.ReadInt32();
-		_direction = reader.ReadVector2();
-	}
+	#endregion
 }

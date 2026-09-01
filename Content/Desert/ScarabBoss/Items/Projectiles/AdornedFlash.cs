@@ -78,7 +78,6 @@ public class AdornedFlash : ModProjectile
 		Projectile.DamageType = DamageClass.Ranged;
 
 		Projectile.tileCollide = false;
-		Projectile.friendly = true;
 		Projectile.penetrate = 3;
 
 		Projectile.stopsDealingDamageAfterPenetrateHits = true;
@@ -123,8 +122,9 @@ public class AdornedFlash : ModProjectile
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);
+ 
+	public override bool? CanHitNPC(NPC target) => target.whoAmI != HitTargetID ? null : false;
 
-	public override bool? CanHitNPC(NPC target) => target.whoAmI != HitTargetID;
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		SoundEngine.PlaySound(FlashHit, target.Center);

@@ -14,30 +14,10 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 [AutoloadGlowmask("255,255,255", false)]
 public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 {
-	public const int MAX_FLASH_TIMER = 60;
-
-	// TODO: change these sfx
-	public static readonly SoundStyle ArrowShoot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
-	{
-		Volume = 0.5f,
-		PitchVariance = 0.15f
-	};
-
-	public static readonly SoundStyle PerfectShot = new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
-	{
-		Volume = 0.5f,
-		PitchVariance = 0.2f
-	};
-
-	public static readonly SoundStyle Flash = new("SpiritReforged/Assets/SFX/Item/ClubReady")
-	{
-		Volume = 0.5f,
-		PitchVariance = 0.15f
-	};
-
 	private readonly AdornedBow.PrismaticPalette _palette = new();
-	private bool _flashed;
+
 	private int _flashTimer;
+	private const int MAX_FLASH_TIMER = 60;
 
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
@@ -49,9 +29,6 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 
 	protected override void ModifyFiredProj(Projectile projectile, bool fullCharge, bool perfectShot)
 	{
-		if (!Main.dedServ)
-			SoundEngine.PlaySound(ArrowShoot, projectile.Center);
-
 		if (perfectShot)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
@@ -59,42 +36,15 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
-
-			SoundStyle perfectFlash = new("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh")
-			{
-				Volume = 0.5f,
-				PitchVariance = 0.15f
-			};
-
-			if (!Main.dedServ)
-				SoundEngine.PlaySound(PerfectShot, projectile.Center);
 		}
 	}
 
 	public override void PostAI()
 	{
-		if (_flashTimer > 0)
-		{
-			_flashTimer--;
-
-			Lighting.AddLight(Projectile.Center,
-				 DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
-				* 0.5f * (_flashTimer / (float)MAX_FLASH_TIMER));
-		}
-		
 		float radius = 1.2f * Charge / 1f;  // shakes rapidly whilst charging up a shot
 
 		if (Charge == 1f)
 		{
-			if (!_flashed)
-			{
-				if (!Main.dedServ)
-					SoundEngine.PlaySound(Flash, Projectile.Center);
-
-				_flashTimer = MAX_FLASH_TIMER;
-				_flashed = true;
-			}
-
 			if (_perfectShotCurTimer > 0) // shakes less whilst the window for a perfect shot closes
 				radius = 2f * _perfectShotCurTimer / _perfectShotMaxTime;
 			else                          // no longer shakes when the perfect shot window is over
@@ -105,7 +55,18 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 			radius *= Projectile.timeLeft / 30f;
 
 		Projectile.Center += Main.rand.NextVector2Circular(radius, radius);
+
+		if (_flashTimer > 0)
+		{
+			_flashTimer--;
+
+			Lighting.AddLight(Projectile.Center,
+				 DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, [Color.Magenta, Color.Orange, Color.Cyan]).ToVector3()
+				* 0.5f * (_flashTimer / (float)MAX_FLASH_TIMER));
+		}
 	}
+
+	protected override void PerfectShotReady() => _flashTimer = MAX_FLASH_TIMER;
 
 	public override void PostDraw(Color lightColor)
 	{
