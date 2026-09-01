@@ -198,6 +198,18 @@ public class MagazinePlayer : ModPlayer
 		empoweredCount += amount;
 		empoweredFlashTimer = maxEmpoweredFlashTimer;
 	}
+
+	/// <summary>
+	/// Reduces the amount of empowered shots by one. Used when reloading with a <see cref="MagazineReloadType.OneAtATime"/> weapon.
+	/// </summary>
+	/// <param name="amount"></param>
+	public static void UnempowerShot(int amount = 1)
+	{
+		if (empoweredCount > 0)
+			empoweredCount -= amount;
+		if (empoweredCount < 0)
+			empoweredCount = 0;
+	}
 	#endregion
 }
 

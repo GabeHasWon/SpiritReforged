@@ -81,7 +81,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
 
-		globalItem.ActivateMagazine((pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.5f, 4, 90), new(52, 24), new(-24, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, -6, -0.15f);
+		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.5f, 4, 90), new(52, 24), new(-24, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, -6, -0.15f);
 		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
 	}
 

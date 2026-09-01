@@ -50,7 +50,7 @@ public class SaltShot : ShotgunAmmoItem
 		}
 	}
 
-	public SaltShot() : base(Behavior, 4, .55f, 9.5f) { }
+	public SaltShot() : base(Behavior, 4, .55f, 18.5f) { }
 
 	public override void SafeSetDefaults()
 	{
@@ -117,7 +117,7 @@ public class SaltShotProjectile : ModProjectile
 
 		if (Projectile.timeLeft < MAX_TIMELEFT - TIME_TILL_GRAVITY)
 		{
-			Projectile.velocity *= 0.97f;
+			Projectile.velocity *= 0.995f;
 			Projectile.velocity.Y += 0.1f;
 
 			if (Projectile.velocity.Y > 0)
@@ -125,7 +125,9 @@ public class SaltShotProjectile : ModProjectile
 
 			if (Projectile.velocity.Y > 16f)
 				Projectile.velocity.Y = 16f;
-		}	
+		}
+		else
+			Projectile.velocity *= 0.96f;
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -192,8 +194,9 @@ public class SaltShotProjectile : ModProjectile
 		if (Projectile.timeLeft > MAX_TIMELEFT - TIME_TILL_GRAVITY)
 			Projectile.timeLeft = MAX_TIMELEFT - TIME_TILL_GRAVITY;
 
-		Projectile.velocity.X = oldVelocity.X * 0.5f;
+		Projectile.velocity.X = oldVelocity.X * 0.75f;
 		Projectile.velocity.Y = -oldVelocity.Y * 0.4f;
+		Projectile.damage = (int)(Projectile.damage * 0.75f);
 
 		Projectile.penetrate--;
 
