@@ -1,9 +1,8 @@
-﻿using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
-using Terraria.DataStructures;
+﻿using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
-public class AdornedBow : ModItem
+public class AdornedBow : BaseGreatbowItem
 {
 	public readonly record struct PrismaticPalette
 	{
@@ -30,32 +29,11 @@ public class AdornedBow : ModItem
 		}
 	}
 
-	public override void SetDefaults()
+	internal override void SafeSetDefaults()
 	{
 		Item.damage = 25;
 		Item.Size = new Vector2(48, 52);
-		Item.useTime = Item.useAnimation = 60;
-		Item.knockBack = 1f;
-		Item.noMelee = true;
-		Item.channel = true;
-		Item.noUseGraphic = true;
-		Item.DamageType = DamageClass.Ranged;
-		Item.useTurn = false;
-		Item.autoReuse = false;
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
-		Item.useStyle = ItemUseStyleID.Swing;
-		Item.shoot = ModContent.ProjectileType<AdornedBowHeld>();
-		Item.shootSpeed = 10;
-		Item.useAmmo = AmmoID.Arrow;
 	}
-
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-	{
-		int useTime = (int)(Item.useTime / player.GetTotalAttackSpeed(DamageClass.Ranged));
-		Projectile.NewProjectileDirect(source, position, Vector2.Zero, Item.shoot, damage, knockback, player.whoAmI, 0, useTime, type);
-		return false;
-	}
-
-	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[Item.shoot] == 0;
 }

@@ -4,7 +4,7 @@ using System.IO;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Easing;
 
-namespace SpiritReforged.Common.ProjectileCommon;
+namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
 public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShotPower = 1.5f, int perfectShotTime = 30) : ModProjectile
 {
@@ -68,7 +68,6 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, player.itemRotation);
 
 		if (Main.myPlayer == Projectile.owner)
-		{
 			if (!_fired)
 			{
 				Projectile.timeLeft = STRING_BOUNCE_TIME;
@@ -88,7 +87,6 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 					Projectile.netUpdate = true;
 				}
 			}
-		}
 
 		if (_fired)
 			AfterShoot();
