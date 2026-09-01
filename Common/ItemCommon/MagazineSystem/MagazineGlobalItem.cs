@@ -81,12 +81,14 @@ public class MagazineGlobalItem : GlobalItem
 	private int _shootDirection;
 
 	private int _maxReloadTimer;
-
-	private int _singleLoadTime;
+	private int _oldAmmoUsed;
 
 	// used to automatically reload after a period of not doing anything.
 	private int _reloadIdleTimer;
 	private int _maxReloadIdleTimer = 300;
+
+	// because we have to manually interrupt item time to cancel a reload, we store a seperate timer to ensure proper behavior.
+	private int reloadCancelCooldown;
 
 	private Vector2 _itemSize;
 	private Vector2 _itemOrigin;
@@ -186,9 +188,9 @@ public class MagazineGlobalItem : GlobalItem
 		if (ReloadType == MagazineReloadType.OneAtATime)
 		{
 			int maxReloadTime = (int)MathHelper.Lerp(reloadTime, reloadTime / 2, 1f - MagazineProgress(player));
-			int singleLoadTime = maxReloadTime / ammoUsed;
+			//int singleLoadTime = maxReloadTime / ammoUsed;
 
-			_singleLoadTime = singleLoadTime;
+			_oldAmmoUsed = ammoUsed;	
 
 			_maxReloadTimer = maxReloadTime;
 			_currentMagazine.ReloadTimer = maxReloadTime;
@@ -364,8 +366,21 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active && player.HeldItem == item)
 		{
+			if (reloadCancelCooldown > 0)
+				reloadCancelCooldown = 0;
+
 			if (_currentMagazine.ReloadTimer > 0)
 			{
+				if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
+				{
+					reloadCancelCooldown = item.useTime;
+					player.itemTime = 0;
+					player.itemAnimation = 0;
+					_maxReloadTimer = 0;
+					_currentMagazine.ReloadTimer = 0;
+					return;
+				}
+
 				_currentMagazine.ReloadTimer--;
 
 				player.itemTime = 2;
@@ -373,12 +388,11 @@ public class MagazineGlobalItem : GlobalItem
 			}
 			else
 			{
-				if (_singleLoadTime > 0)
-					_singleLoadTime = 0;
+				if (_oldAmmoUsed > 0)
+					_oldAmmoUsed = 0;
 
 				if (_currentMagazine.AmmoUsed > 0)
 				{
-					Main.NewText(_reloadIdleTimer);
 					if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
 					{
 						ActivateReload(player, _currentMagazine.AmmoUsed);
@@ -388,19 +402,26 @@ public class MagazineGlobalItem : GlobalItem
 				}			
 			}
 
-			if (ReloadType == MagazineReloadType.OneAtATime && _singleLoadTime > 0)
+			if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
 			{
 				float interpolant = 1 - MagazineProgress(player);
+				float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
 
-				if (_currentMagazine.ReloadTimer > 0 && _currentMagazine.ReloadTimer % _singleLoadTime == 0)
+				const float padding = 0.15f;
+
+				// between 15% and 85% of the reload animation
+				if (reloadProgress is > padding and < (1f - padding))
 				{
-					Main.NewText(_currentMagazine.ReloadTimer + " " + _currentMagazine.AmmoUsed);
+					float lerp = (reloadProgress - padding) / (1f - padding * 2);
 
-					_currentMagazine.AmmoUsed--;
-					if (_currentMagazine.AmmoUsed < 0) // safety check. Should reasonably never occur
-						_currentMagazine.AmmoUsed = 0;
+					int old = _currentMagazine.AmmoUsed;
+					_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
 
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+					if (old != _currentMagazine.AmmoUsed)
+					{
+						Main.NewText("Old: " + old + " Ammo Used: " + _currentMagazine.AmmoUsed);
+						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+					}
 				}
 			}
 			else if (ReloadType == MagazineReloadType.EntireMagazine)
@@ -449,7 +470,7 @@ public class MagazineGlobalItem : GlobalItem
 		clone._soundInvokation = _soundInvokation;
 
 		clone._maxReloadTimer = _maxReloadTimer;
-		clone._singleLoadTime = _singleLoadTime;
+		clone._oldAmmoUsed = _oldAmmoUsed;
 		clone._reloadIdleTimer = _reloadIdleTimer;
 		clone._itemSize = _itemSize;
 		clone._itemOrigin = _itemOrigin;
