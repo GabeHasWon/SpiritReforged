@@ -2,14 +2,12 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.Visuals;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 
 namespace SpiritReforged.Common.ProjectileCommon.Abstract;
 
-public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShotPower = 1.5f, int perfectShotTime = 30) : ModProjectile
+public abstract class BaseChargeBow : ModProjectile
 {
 	#region Fields
 	// TODO: change these sfx
@@ -31,11 +29,11 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 	protected float ChargeTime => Projectile.ai[1];  //Set by the item that spawns this projectile, using that item's usetime
 	protected float SelectedAmmo => Projectile.ai[2];
 
-	protected readonly float _chargePowerMax = maxChargePower; //The modifier to damage and shot speed when fully charged
-	protected readonly float _perfectShotPower = perfectShotPower; //Additional modifier during a perfect shot
-	protected readonly float _perfectShotMaxTime = perfectShotTime; //Amount of frames after fully charging that a perfect shot can be performed
+	protected float _chargePowerMax; //The modifier to damage and shot speed when fully charged
+	protected float _perfectShotPower; //Additional modifier during a perfect shot
+	protected int _perfectShotMaxTime; //Amount of frames after fully charging that a perfect shot can be performed
 
-	protected int _perfectShotCurTimer = perfectShotTime;
+	protected int _perfectShotCurTimer;
 	protected bool _fired = false;
 	protected Vector2 _direction = Vector2.Zero;
 
@@ -53,6 +51,13 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		Projectile.tileCollide = false;
 		Projectile.timeLeft = STRING_BOUNCE_TIME;
 		SafeSetDefaults();
+	}
+
+	public void SetStats(float chargePowerMax, float perfectShotPower, int perfectShotTime)
+	{
+		_chargePowerMax = chargePowerMax;
+		_perfectShotPower = perfectShotPower;
+		_perfectShotCurTimer = _perfectShotMaxTime = perfectShotTime;
 	}
 
 	public override bool? CanDamage() => false;
@@ -162,7 +167,12 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		int type = GetShotProjectileType();
 
 		if(!Main.dedServ)
+		{
+			if(Charge == 1)
+				ScreenshakeHelper.Shake(player.Center, -_direction, perfectShot ? 2.5f : 1, 2, 15);
+
 			ArrowSound();
+		}
 
 		var p = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), player.Center, _direction * speed, type, damage, knockBack, Projectile.owner);
 		ModifyFiredProj(p, Charge == 1, perfectShot);
@@ -172,6 +182,8 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 
 	protected int GetShotProjectileType() => (int)SelectedAmmo;
 
+	protected float GetPerfectShotProgress => (float)_perfectShotCurTimer / _perfectShotMaxTime;
+
 	//Drawing methods
 	public override bool PreDraw(ref Color lightColor)
 	{
@@ -179,10 +191,10 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 		Player owner = Main.player[Projectile.owner];
 		Vector2 ownerOffset = owner.gfxOffY * Vector2.UnitY;
 
-		float perfectShotProgress = EaseFunction.EaseSine.Ease(EaseFunction.EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
+		float perfectShotProgressEased = EaseFunction.EaseSine.Ease(EaseFunction.EaseCircularOut.Ease(1 - GetPerfectShotProgress));
 
 		//Draw string
-		Vector2 pointMiddle = DoStringDraw(ownerOffset, lightColor, projTex, perfectShotProgress);
+		Vector2 pointMiddle = DoStringDraw(ownerOffset, lightColor, projTex, perfectShotProgressEased);
 
 		//Draw arrow
 		if (!_fired)
@@ -194,14 +206,14 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 			arrowPos += Projectile.Center + ownerOffset - Main.screenPosition;
 			var arrowOrigin = new Vector2(arrowTex.Width / 2, arrowTex.Height);
 
-			DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
+			DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgressEased, lightColor);
 		}
 
 		//Draw proj
 		Projectile.QuickDraw();
 
 		for (int i = 0; i < 2; i++)
-			Projectile.QuickDraw(drawColor: Color.White.Additive() * perfectShotProgress);
+			Projectile.QuickDraw(drawColor: Color.White.Additive() * perfectShotProgressEased);
 
 		return false;
 	}
@@ -295,10 +307,10 @@ public abstract class BaseChargeBow(float maxChargePower = 2f, float perfectShot
 
 	public abstract void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor);
 
-	protected virtual void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgress, Color lightColor)
+	protected virtual void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgressEased, Color lightColor)
 	{
 		Main.spriteBatch.Draw(arrowTex, arrowPos, null, lightColor, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);
-		Color color = Color.White.Additive() * perfectShotProgress;
+		Color color = Color.White.Additive() * perfectShotProgressEased;
 
 		for (int i = 0; i < 2; i++)
 			Main.spriteBatch.Draw(arrowTex, arrowPos, null, color, Projectile.rotation + MathHelper.PiOver2, arrowOrigin, Projectile.scale, SpriteEffects.None, 0);

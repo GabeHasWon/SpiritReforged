@@ -17,6 +17,8 @@ CommonTooltips: {
 		''' */
 }
 
+// TooltipExtras.GreatbowDamage: " on a perfect shot"
+
 Kelp: {
 	DisplayName: Alga Marinha
 	Tooltip: Deve ser plantada na água

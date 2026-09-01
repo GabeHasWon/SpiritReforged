@@ -29,6 +29,9 @@ public class AdornedBow : BaseGreatbowItem
 		}
 	}
 
+	internal override float ChargeScaling => 1.75f;
+	internal override float PerfectShotScaling => 1.33f;
+
 	internal override void SafeSetDefaults()
 	{
 		Item.damage = 25;

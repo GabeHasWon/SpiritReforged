@@ -17,6 +17,8 @@ CommonTooltips: {
 		''' */
 }
 
+// TooltipExtras.GreatbowDamage: " on a perfect shot"
+
 Kelp: {
 	DisplayName: Ламинария
 	Tooltip: Можно посадить только в воде

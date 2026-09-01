@@ -17,6 +17,8 @@ CommonTooltips: {
 		''' */
 }
 
+// TooltipExtras.GreatbowDamage: " on a perfect shot"
+
 Kelp: {
 	DisplayName: 海带
 	Tooltip: 必须放置在水中

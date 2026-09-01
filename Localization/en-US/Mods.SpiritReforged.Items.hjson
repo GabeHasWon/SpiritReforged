@@ -17,6 +17,8 @@ CommonTooltips: {
 		'''
 }
 
+TooltipExtras.GreatbowDamage: " on a perfect shot"
+
 Kelp: {
 	DisplayName: Kelp
 	Tooltip: Must be planted in water
@@ -2985,7 +2987,8 @@ AdornedBow: {
 	Tooltip:
 		'''
 		Charges an empowered shot
-		Perfectly timed shots cause arrows to refract on hit
+		Fully charged shots cause arrows to refract on hit
+		Perfect shots deal more damage and move faster
 		'''
 }
 

@@ -4,15 +4,13 @@ using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using Terraria;
-using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 [AutoloadGlowmask("255,255,255", false)]
-public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
+public class AdornedBowHeld : BaseChargeBow
 {
 	private readonly AdornedBow.PrismaticPalette _palette = new();
 
@@ -29,10 +27,12 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 
 	protected override void ModifyFiredProj(Projectile projectile, bool fullCharge, bool perfectShot)
 	{
-		if (perfectShot)
+		if (fullCharge)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
-			projectile.extraUpdates++;
+
+			if(perfectShot)
+				projectile.extraUpdates++;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
@@ -46,7 +46,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		if (Charge == 1f)
 		{
 			if (_perfectShotCurTimer > 0) // shakes less whilst the window for a perfect shot closes
-				radius = 2f * _perfectShotCurTimer / _perfectShotMaxTime;
+				radius = 2f * GetPerfectShotProgress;
 			else                          // no longer shakes when the perfect shot window is over
 				radius *= 0f;
 		}
@@ -75,7 +75,7 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		Texture2D starTex = AssetLoader.LoadedTextures["StarChromatic"].Value;
 
 		Color color = (_flashTimer > 0f ? Color.Lerp(DrawHelpers.MulticolorLerp(_flashTimer / (float)MAX_FLASH_TIMER, _palette.Colors), Color.LightSteelBlue, 1f - _flashTimer / (float)MAX_FLASH_TIMER) : Color.LightSteelBlue).Additive();
-		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - _perfectShotCurTimer / _perfectShotMaxTime));
+		float perfectShotProgress = EaseSine.Ease(EaseCircularOut.Ease(1 - GetPerfectShotProgress));
 		float strength = Charge * (Projectile.timeLeft / 30f);
 
 		int numGlow = 8;
@@ -94,25 +94,25 @@ public class AdornedBowHeld() : BaseChargeBow(1.15f, 2f, 40)
 		Main.spriteBatch.Draw(starTex, center, null, color, Projectile.rotation, starOrigin, scale, SpriteEffects.None, 0);
 	}
 
-	protected override void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgress, Color lightColor)
+	protected override void DrawArrow(Texture2D arrowTex, Vector2 arrowPos, Vector2 arrowOrigin, float perfectShotProgressEased, Color lightColor)
 	{
-		float opacity = 1 - _perfectShotCurTimer / _perfectShotMaxTime;
-		opacity = Math.Max(opacity, 1.5f * perfectShotProgress);
+		float opacity = GetPerfectShotProgress;
+		opacity = Math.Max(opacity, 1.5f * perfectShotProgressEased);
 
 		if (Charge == 1)
 		{
 			Main.spriteBatch.RestartToDefault(); 
-			ConeNoise(-10, 0.5f * opacity, 10, perfectShotProgress);
+			ConeNoise(-10, 0.5f * opacity, 10, perfectShotProgressEased);
 		}
 
 		//arrowPos -= new Vector2(0f, -6f).RotatedBy(Projectile.rotation);
 
-		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgress, lightColor);
+		base.DrawArrow(arrowTex, arrowPos, arrowOrigin, perfectShotProgressEased, lightColor);
 
 		if (Charge == 1)
 		{
 			Main.spriteBatch.RestartToDefault();
-			ConeNoise(10, 0.5f * opacity, 0, perfectShotProgress);
+			ConeNoise(10, 0.5f * opacity, 0, perfectShotProgressEased);
 		}
 	}
 
