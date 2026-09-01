@@ -11,12 +11,26 @@ public class PoolNoodle : ModItem
 {
 	protected override bool CloneNewInstances => true;
 
-	public const int NumStyles = 3;
-	public byte style = NumStyles;
+	public const int NUM_STYLES = 3;
+
+	public byte Style
+	{
+		get => _style;
+		set
+		{
+			_style = value;
+
+			if (!Main.dedServ && Main.ContentLoaded && Item.TryGetGlobalItem(out VariantItemRenderer global))
+				global.subID = value;
+		}
+	}
+	private byte _style;
+
+	public override string Texture => base.Texture + "0";
 
 	public override void SetStaticDefaults()
 	{
-		VariantGlobalItem.AddVariants(Type, NumStyles, false);
+		VariantItemRenderer.VariantCounts[Type] = 3;
 
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 8));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 8));
@@ -31,40 +45,27 @@ public class PoolNoodle : ModItem
 		Item.rare = ItemRarityID.Blue;
 		Item.value = Item.sellPrice(silver: 45);
 
-		style = (byte)Main.rand.Next(NumStyles);
+		Style = (byte)Main.rand.Next(NUM_STYLES);
 	}
 
 	public override ModItem Clone(Item itemClone)
 	{
 		var myClone = (PoolNoodle)base.Clone(itemClone);
-		myClone.style = style;
+		myClone.Style = Style;
 		return myClone;
 	}
 
 	public override bool MeleePrefix() => true;
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: style);
+		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: Style);
 		return false;
 	}
 
-	public override void SaveData(TagCompound tag) => tag[nameof(style)] = style;
-	public override void LoadData(TagCompound tag)
-	{
-		style = tag.Get<byte>(nameof(style));
-		SetVisualStyle();
-	}
+	public override void SaveData(TagCompound tag) => tag[nameof(Style)] = Style;
+	public override void LoadData(TagCompound tag) => Style = tag.Get<byte>(nameof(Style));
 
-	public override void NetSend(BinaryWriter writer) => writer.Write(style);
-	public override void NetReceive(BinaryReader reader)
-	{
-		style = reader.ReadByte();
-		SetVisualStyle();
-	}
-
-	private void SetVisualStyle()
-	{
-		if (!Main.dedServ && Item.TryGetGlobalItem(out VariantGlobalItem v))
-			v.subID = style;
-	}
+	public override void NetSend(BinaryWriter writer) => writer.Write(Style);
+	public override void NetReceive(BinaryReader reader) => Style = reader.ReadByte();
 }
